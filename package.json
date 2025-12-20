@@ -32,6 +32,7 @@
     "@angular-devkit/schematics": "~21.0.3",
     "@angular/aria": "~21.0.5",
     "@angular/build": "~21.0.3",
+    "@angular/cdk": "~21.0.5",
     "@angular/cli": "~21.0.3",
     "@angular/compiler-cli": "~21.0.6",
     "@angular/language-service": "~21.0.6",
