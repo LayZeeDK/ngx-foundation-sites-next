@@ -3,13 +3,13 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "build": "nx run-many --targets=build",
-    "ci": "npm run format:check && nx run-many --targets=lint,test,build,e2e",
+    "build": "nx run-many --targets=build,build-storybook",
+    "ci": "npm run format:check && nx run-many --targets=lint,test,test-storybook,build,build-storybook,e2e",
     "e2e": "nx run-many --targets=e2e",
     "format": "nx format",
     "format:check": "nx format:check",
     "lint": "nx run-many --targets=lint",
-    "test": "nx run-many --targets=test"
+    "test": "nx run-many --targets=test,test-storybook"
   },
   "private": true,
   "dependencies": {
