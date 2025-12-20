@@ -73,14 +73,22 @@
       "executor": "nx:run-commands",
       "options": {
         "command": "test-storybook -c packages/ngx-foundation-sites/.storybook --url=http://localhost:4400"
-      }
+      },
+      "dependsOn": [
+        {
+          "target": "static-storybook",
+          "params": "forward"
+        }
+      ]
     },
     "static-storybook": {
       "executor": "@nx/web:file-server",
+      "continuous": true,
       "dependsOn": ["build-storybook"],
       "options": {
         "buildTarget": "ngx-foundation-sites:build-storybook",
         "staticFilePath": "dist/storybook/ngx-foundation-sites",
+        "port": 4400,
         "spa": true
       },
       "configurations": {
