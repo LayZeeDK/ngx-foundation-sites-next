@@ -1,0 +1,17 @@
+// Global Foundation for Sites settings
+// Override Foundation defaults with CSS custom properties for theming
+
+// Text direction
+$global-text-direction: ltr !default;
+
+// Layout
+$global-flexbox: true !default;
+
+// Colors - use CSS custom properties for theming
+$foundation-palette: (
+  primary: #1779ba,
+  secondary: #767676,
+  success: #3adb76,
+  warning: #ffae00,
+  alert: #cc4b37,
+) !default;

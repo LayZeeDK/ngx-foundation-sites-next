@@ -1,0 +1,10 @@
+// Foundation component includes for global styles
+@use 'foundation-sites/scss/foundation';
+
+@mixin foundation-global-styles {
+  @include foundation.foundation-global-styles;
+  @include foundation.foundation-typography;
+  @include foundation.foundation-forms;
+  @include foundation.foundation-button;
+  // Add more global components as needed
+}
