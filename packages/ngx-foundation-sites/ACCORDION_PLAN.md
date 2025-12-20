@@ -286,6 +286,20 @@ Add accordion to global styles:
 @include accordion.foundation-accordion;
 ```
 
+### Phase 1 Implementation Notes ✅
+
+**Adjustments made during implementation:**
+
+1. **Simplified directory structure**: Did not create separate wrapper files for `accordion-trigger.ts`, `accordion-panel.ts`, or `accordion-content.ts` - the @angular/aria directives are used directly in `NfsAccordionItem`
+
+2. **Used `model()` for two-way binding**: The `expanded` property on `NfsAccordionItem` uses Angular's `model()` function for proper two-way binding with @angular/aria's `AccordionTrigger`
+
+3. **Skipped `allowAllClosed`**: Deferred to Phase 3 (section 3.5) since @angular/aria doesn't support this natively
+
+4. **Skipped component SCSS file**: `accordion.component.scss` not needed - Foundation's global accordion styles are sufficient
+
+**Actual file contents differ slightly from plan examples** - see committed files for accurate implementation.
+
 ---
 
 ## Phase 2: Storybook Stories & Interaction Tests
@@ -527,6 +541,21 @@ readonly deepLinkSmudgeDelay = input(300);
 readonly updateHistory = input(false);
 ```
 
+### 3.5 Allow All Closed Support
+
+**Goal:** Implement Foundation's `allowAllClosed` behavior (by default, at least one panel must be open).
+
+@angular/aria's AccordionGroup doesn't enforce this - it allows closing all panels by default.
+Custom logic is needed to prevent closing the last open panel when `allowAllClosed=false`.
+
+**Update:** `packages/ngx-foundation-sites/src/lib/accordion/accordion.ts`
+
+```typescript
+readonly allowAllClosed = input(false);
+```
+
+Implementation will intercept the expand/collapse logic to enforce the constraint.
+
 ---
 
 ## Phase 4: Keyboard Navigation
@@ -607,11 +636,11 @@ npm run ci
 | `src/lib/_foundation-settings.scss`                     | Global Foundation settings  | ✅     |
 | `src/lib/_foundation-components.scss`                   | Foundation component mixins | ✅     |
 | `src/storybook/styles.scss`                             | Storybook global styles     | ✅     |
-| `src/lib/accordion/index.ts`                            | Public exports              |
-| `src/lib/accordion/accordion.ts`                        | Accordion group component   |
-| `src/lib/accordion/accordion-item.ts`                   | Accordion item component    |
-| `src/lib/accordion/accordion-title.ts`                  | Title directive             |
-| `src/lib/accordion/_foundation-accordion-settings.scss` | Component SCSS settings     |
+| `src/lib/accordion/index.ts`                            | Public exports              | ✅     |
+| `src/lib/accordion/accordion.ts`                        | Accordion group component   | ✅     |
+| `src/lib/accordion/accordion-item.ts`                   | Accordion item component    | ✅     |
+| `src/lib/accordion/accordion-title.ts`                  | Title directive             | ✅     |
+| `src/lib/accordion/_foundation-accordion-settings.scss` | Component SCSS settings     | ✅     |
 | `src/lib/accordion/accordion.stories.ts`                | Storybook stories           |
 | `src/lib/accordion/accordion.spec.ts`                   | Unit tests                  |
 | `src/lib/accordion/accordion-deep-link.service.ts`      | Deep linking service        |
@@ -622,14 +651,14 @@ npm run ci
 | ----------------------------------------------------- | ------------------------------- | ------ |
 | `packages/ngx-foundation-sites/project.json`          | Add styles to storybook targets | ✅     |
 | `packages/ngx-foundation-sites/.storybook/preview.ts` | Add preview configuration       | ✅     |
-| `packages/ngx-foundation-sites/src/index.ts`          | Export accordion module         |        |
+| `packages/ngx-foundation-sites/src/index.ts`          | Export accordion module         | ✅     |
 
 ---
 
 ## Implementation Order
 
 1. **Phase 0** - Foundation styles infrastructure (required for all components) ✅
-2. **Phase 1** - Core accordion with @angular/aria
+2. **Phase 1** - Core accordion with @angular/aria ✅
 3. **Phase 2** - Storybook stories with interaction tests
 4. **Phase 3** - Advanced features (animation, deep linking)
 5. **Phase 4** - Keyboard navigation verification
