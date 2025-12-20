@@ -1,6 +1,8 @@
 {
   "name": "ngx-foundation-sites",
   "version": "0.0.1",
-  "peerDependencies": {},
+  "peerDependencies": {
+    "@angular/core": "~21.0.6"
+  },
   "sideEffects": false
 }
