@@ -229,19 +229,22 @@ From [Angular ARIA Overview](https://angular.dev/guide/aria/overview):
 
 ## Cross-Cutting Angular APIs for Custom Components
 
-| Use Case           | API                                                 | Source                   |
-| ------------------ | --------------------------------------------------- | ------------------------ |
-| **State**          | `signal()`, `computed()`, `effect()`                | `@angular/core`          |
-| **Lifecycle**      | `afterRender()`, `afterNextRender()`                | `@angular/core`          |
-| **Lazy loading**   | `@defer (on viewport)`, `@defer (on idle)`          | `@angular/core`          |
-| **DOM**            | `Renderer2`, `ElementRef`                           | `@angular/core`          |
-| **Inputs/Outputs** | `input()`, `output()`, `model()`                    | `@angular/core`          |
-| **Keyboard codes** | `ARROW_*`, `ENTER`, `ESCAPE`, `HOME`, `END`         | `@angular/cdk/keycodes`  |
-| **Type coercion**  | `coerceBooleanProperty()`, `coerceNumberProperty()` | `@angular/cdk/coercion`  |
-| **Accessibility**  | `FocusMonitor`, `LiveAnnouncer`, `ListKeyManager`   | `@angular/cdk/a11y`      |
-| **Responsive**     | `BreakpointObserver`                                | `@angular/cdk/layout`    |
-| **Scrolling**      | `ScrollDispatcher`, `ViewportRuler`                 | `@angular/cdk/scrolling` |
-| **Platform**       | `isPlatformBrowser()`                               | `@angular/common`        |
+| Use Case               | API                                                 | Source                   |
+| ---------------------- | --------------------------------------------------- | ------------------------ |
+| **State**              | `signal()`, `computed()`, `effect()`                | `@angular/core`          |
+| **Lifecycle**          | `afterRender()`, `afterNextRender()`                | `@angular/core`          |
+| **Lazy loading**       | `@defer (on viewport)`, `@defer (on idle)`          | `@angular/core`          |
+| **DOM**                | `Renderer2`, `ElementRef`                           | `@angular/core`          |
+| **Inputs/Outputs**     | `input()`, `output()`, `model()`                    | `@angular/core`          |
+| **Dynamic components** | `NgComponentOutlet`                                 | `@angular/common`        |
+| **Dynamic templates**  | `NgTemplateOutlet`                                  | `@angular/common`        |
+| **Portals**            | `Portal`, `PortalOutlet`, `CdkPortalOutlet`         | `@angular/cdk/portal`    |
+| **Keyboard codes**     | `ARROW_*`, `ENTER`, `ESCAPE`, `HOME`, `END`         | `@angular/cdk/keycodes`  |
+| **Type coercion**      | `coerceBooleanProperty()`, `coerceNumberProperty()` | `@angular/cdk/coercion`  |
+| **Accessibility**      | `FocusMonitor`, `LiveAnnouncer`, `ListKeyManager`   | `@angular/cdk/a11y`      |
+| **Responsive**         | `BreakpointObserver`                                | `@angular/cdk/layout`    |
+| **Scrolling**          | `ScrollDispatcher`, `ViewportRuler`                 | `@angular/cdk/scrolling` |
+| **Platform**           | `isPlatformBrowser()`                               | `@angular/common`        |
 
 ## Browser APIs Summary
 
@@ -254,7 +257,11 @@ From [Angular ARIA Overview](https://angular.dev/guide/aria/overview):
 | `CSS transitions`  | Smooth animations            | All components |
 | `setInterval`      | Auto-play timing             | Orbit          |
 
-**Note**: Use `@defer (on viewport)` instead of raw `IntersectionObserver` for viewport-based lazy loading. Angular's `@defer` uses `IntersectionObserver` internally but provides better integration with Angular's rendering lifecycle.
+**Notes**:
+
+- Use `@defer (on viewport)` instead of raw `IntersectionObserver` for viewport-based lazy loading. Angular's `@defer` uses `IntersectionObserver` internally but provides better integration with Angular's rendering lifecycle.
+- `IntersectionObserver` is still appropriate for scroll position tracking (e.g., Magellan, Sticky) where you need continuous observation rather than one-time lazy loading.
+- Prefer **structural directives** when attribute directives or components are not sufficient for the desired behavior pattern.
 
 ---
 
