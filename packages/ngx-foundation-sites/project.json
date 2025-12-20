@@ -42,6 +42,7 @@
     },
     "storybook": {
       "executor": "@storybook/angular:start-storybook",
+      "continuous": true,
       "options": {
         "port": 4400,
         "configDir": "packages/ngx-foundation-sites/.storybook",
