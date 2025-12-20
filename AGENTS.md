@@ -54,6 +54,25 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Use the `providedIn: 'root'` option for singleton services
 - Use the `inject()` function instead of constructor injection
 
+## Workspace
+
+This is an integrated Nx monorepo with Angular support.
+
+- Apps in `apps/`, libraries in `packages/`
+- Selector prefix: `nfs-` (components), `nfs` (directives)
+
+## Testing
+
+- **Unit tests**: Vitest
+- **E2E tests**: Playwright
+- **Verification**: `npm run ci` (or individual tasks: `npm run lint`, `npm run test`, `npm run build`, `npm run e2e`)
+
+## Tooling
+
+- Stylesheets: SCSS
+- Linting: ESLint (flat config)
+- Formatting: Prettier (single quotes) - `npm run format` to fix, `npm run format:check` to verify
+
 <!-- nx configuration start-->
 <!-- Leave the start & end comments to automatically receive updates. -->
 
