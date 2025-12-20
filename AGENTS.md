@@ -1,5 +1,52 @@
 You are an expert in TypeScript, Angular, and scalable web application development. You write functional, maintainable, performant, and accessible code following Angular and TypeScript best practices.
 
+## Project Overview
+
+**ngx-foundation-sites** is an Angular component library that provides Angular implementations of UI components from the [Foundation for Sites](https://get.foundation/sites/docs/) CSS framework.
+
+### Purpose
+
+- Provide **Angular-native components** based on Foundation's design system
+- Use **Foundation's Sass styles only** - no Foundation JavaScript dependencies
+- Build with **modern Angular APIs** (signals, input/output functions, new control flow)
+- Ensure **accessibility first** using `@angular/aria` and `@angular/cdk`
+
+### Design Philosophy
+
+1. **CSS-Only Integration**: Components apply Foundation's CSS classes directly (`.button`, `.menu`, `.accordion`) without relying on Foundation's JavaScript
+2. **Composable Architecture**: Small, focused components following Angular's composition patterns
+3. **Progressive Enhancement**: Core functionality works without JavaScript; interactivity is layered on top
+4. **Naming Alignment**: Component names should follow both Foundation for Sites component names from their docs AND their CSS class names (e.g., `Accordion` from docs → `.accordion` class, `Reveal` from docs → `.reveal` class)
+
+### Implementation Hierarchy
+
+When building components, follow this priority order:
+
+1. **@angular/aria** - Always use Angular ARIA building blocks first. Ask before falling back to alternatives.
+2. **@angular/cdk** - Use CDK primitives when ARIA doesn't provide what's needed
+3. **Custom Angular** - Only as a last resort when neither ARIA nor CDK suffices
+
+### Building Blocks
+
+Consider these Angular patterns as building blocks:
+- `@defer` - For performance optimizations and lazy loading (preferred over IntersectionObserver)
+- `@angular/cdk/portal` - For dynamic content projection
+- `NgComponentOutlet` - For dynamic component rendering
+- `NgTemplateOutlet` - For template-based content projection
+- **Structural directives** - When attribute directives or components are not possible
+
+### Storybook Stories
+
+- Add **interaction tests** to component stories using Storybook's play functions
+- Cover user interactions, state changes, and accessibility behaviors
+
+### Visual Testing with Playwright
+
+Use the Playwright MCP server to:
+- Inspect component stories in Storybook
+- Compare implementations against Foundation for Sites docs
+- Verify behavior matches Angular ARIA and Angular CDK examples
+
 ## TypeScript Best Practices
 
 - Use strict type checking
