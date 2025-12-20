@@ -73,6 +73,14 @@ This is an integrated Nx monorepo with Angular support.
 - Linting: ESLint (flat config)
 - Formatting: Prettier (single quotes) - `npm run format` to fix, `npm run format:check` to verify
 
+## Storybook
+
+Component development and visual testing uses Storybook on port 4400.
+
+- **Dev server**: `npm run storybook`
+- **Build**: `npx nx build-storybook ngx-foundation-sites`
+- **Test**: `npx nx test-storybook ngx-foundation-sites`
+
 <!-- nx configuration start-->
 <!-- Leave the start & end comments to automatically receive updates. -->
 
