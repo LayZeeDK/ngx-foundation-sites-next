@@ -9,6 +9,7 @@
     "format": "nx format",
     "format:check": "nx format:check",
     "lint": "nx run-many --targets=lint",
+    "storybook": "nx storybook ngx-foundation-sites",
     "test": "nx run-many --targets=test,test-storybook"
   },
   "private": true,
