@@ -3,12 +3,8 @@
 @use '../lib/foundation-components' as components;
 @use 'foundation-sites/scss/util/util';
 
-// Include global Foundation styles
+// Include global Foundation styles (includes accordion)
 @include components.foundation-global-styles;
-
-// Component styles
-@use 'foundation-sites/scss/components/accordion';
-@include accordion.foundation-accordion;
 
 // CSS Custom Properties for theming (nfs- prefix)
 :root {

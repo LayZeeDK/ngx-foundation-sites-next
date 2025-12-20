@@ -6,5 +6,5 @@
   @include foundation.foundation-typography;
   @include foundation.foundation-forms;
   @include foundation.foundation-button;
-  // Add more global components as needed
+  @include foundation.foundation-accordion;
 }
