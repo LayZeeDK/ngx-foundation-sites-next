@@ -1,0 +1,21 @@
+// Foundation Accordion settings with CSS custom properties (nfs- prefix)
+@use 'foundation-sites/scss/util/util';
+
+$accordion-background: var(--nfs-accordion-background, #fefefe) !default;
+$accordion-title-font-size: var(
+  --nfs-accordion-title-font-size,
+  #{util.rem-calc(12)}
+) !default;
+$accordion-item-color: var(
+  --nfs-accordion-item-color,
+  var(--nfs-primary-color, #1779ba)
+) !default;
+$accordion-item-background-hover: var(
+  --nfs-accordion-item-background-hover,
+  #e6e6e6
+) !default;
+$accordion-content-background: var(
+  --nfs-accordion-content-background,
+  #fefefe
+) !default;
+$accordion-content-color: var(--nfs-accordion-content-color, #0a0a0a) !default;

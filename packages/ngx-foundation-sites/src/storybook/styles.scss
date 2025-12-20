@@ -6,6 +6,10 @@
 // Include global Foundation styles
 @include components.foundation-global-styles;
 
+// Component styles
+@use 'foundation-sites/scss/components/accordion';
+@include accordion.foundation-accordion;
+
 // CSS Custom Properties for theming (nfs- prefix)
 :root {
   --nfs-primary-color: #{map.get(settings.$foundation-palette, primary)};
