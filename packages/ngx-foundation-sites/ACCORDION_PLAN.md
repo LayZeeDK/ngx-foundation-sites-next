@@ -302,159 +302,69 @@ Add accordion to global styles:
 
 ---
 
-## Phase 2: Storybook Stories & Interaction Tests
+## Phase 2: Storybook Stories & Interaction Tests ✅
 
 **Goal:** Create comprehensive stories with interaction tests.
 
-### 2.1 Basic Stories
+### 2.1 Template-Based Architecture for Angular ARIA
 
-**File:** `packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts`
+**Challenge:** Angular ARIA's `AccordionTrigger` and `AccordionPanel` inject `ACCORDION_GROUP` token, but this token is internal (not exported). When using wrapper components (`NfsAccordion`, `NfsAccordionItem`), the DI chain breaks because projected content can't access the parent's directive providers.
 
-```typescript
-import type { Meta, StoryObj } from '@storybook/angular';
-import { userEvent, within, expect, waitFor } from 'storybook/test';
-import { NfsAccordion } from './accordion';
-import { NfsAccordionItem } from './accordion-item';
-import { NfsAccordionTitle } from './accordion-title';
+**Solution:** Render all Angular ARIA directives in `NfsAccordion`'s template and use `NgTemplateOutlet` to project user content:
 
-interface AccordionStoryArgs {
-  multiExpandable: boolean;
-  disabled: boolean;
-  allowAllClosed: boolean;
-}
+1. **`NfsAccordionItem`** - Collects title/content templates via `contentChild`
+2. **`NfsAccordion`** - Renders `ngAccordionGroup`, `ngAccordionTrigger`, `ngAccordionPanel` in its own template
+3. **Structural directives** - `*nfsAccordionTitle` and `*nfsAccordionContent` provide clean API
 
-const meta: Meta<AccordionStoryArgs> = {
-  title: 'Components/Accordion',
-  tags: ['autodocs'],
-  argTypes: {
-    multiExpandable: {
-      control: 'boolean',
-      description: 'Allow multiple panels open simultaneously',
-    },
-    disabled: {
-      control: 'boolean',
-      description: 'Disable all accordion interactions',
-    },
-    allowAllClosed: {
-      control: 'boolean',
-      description: 'Allow all panels to be closed',
-    },
-  },
-};
+### 2.2 Updated Component API
 
-export default meta;
-type Story = StoryObj<AccordionStoryArgs>;
+**Usage:**
 
-export const Default: Story = {
-  args: { multiExpandable: false, disabled: false, allowAllClosed: false },
-  render: (args) => ({
-    props: args,
-    moduleMetadata: {
-      imports: [NfsAccordion, NfsAccordionItem, NfsAccordionTitle],
-    },
-    template: `
-      <nfs-accordion [multiExpandable]="multiExpandable" [disabled]="disabled">
-        <nfs-accordion-item panelId="panel-1">
-          <span nfsAccordionTitle>Accordion 1</span>
-          <p>Panel 1 content. Lorem ipsum dolor sit amet.</p>
-        </nfs-accordion-item>
-        <nfs-accordion-item panelId="panel-2">
-          <span nfsAccordionTitle>Accordion 2</span>
-          <p>Panel 2 content. Suspendisse eu ligula.</p>
-        </nfs-accordion-item>
-        <nfs-accordion-item panelId="panel-3">
-          <span nfsAccordionTitle>Accordion 3</span>
-          <p>Panel 3 content. Nullam sed est.</p>
-        </nfs-accordion-item>
-      </nfs-accordion>
-    `,
-  }),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    // Click first accordion
-    const trigger1 = canvas.getByRole('button', { name: /Accordion 1/i });
-    await userEvent.click(trigger1);
-
-    await waitFor(() => {
-      expect(trigger1).toHaveAttribute('aria-expanded', 'true');
-    });
-
-    // Click second accordion - first should close (single expand mode)
-    const trigger2 = canvas.getByRole('button', { name: /Accordion 2/i });
-    await userEvent.click(trigger2);
-
-    await waitFor(() => {
-      expect(trigger1).toHaveAttribute('aria-expanded', 'false');
-      expect(trigger2).toHaveAttribute('aria-expanded', 'true');
-    });
-  },
-};
-
-export const MultiExpand: Story = {
-  args: { multiExpandable: true, disabled: false, allowAllClosed: true },
-  render: Default.render,
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    const trigger1 = canvas.getByRole('button', { name: /Accordion 1/i });
-    const trigger2 = canvas.getByRole('button', { name: /Accordion 2/i });
-
-    // Open both panels
-    await userEvent.click(trigger1);
-    await userEvent.click(trigger2);
-
-    await waitFor(() => {
-      expect(trigger1).toHaveAttribute('aria-expanded', 'true');
-      expect(trigger2).toHaveAttribute('aria-expanded', 'true');
-    });
-  },
-};
-
-export const Disabled: Story = {
-  args: { multiExpandable: false, disabled: true, allowAllClosed: false },
-  render: (args) => ({
-    props: args,
-    moduleMetadata: {
-      imports: [NfsAccordion, NfsAccordionItem, NfsAccordionTitle],
-    },
-    template: `
-      <nfs-accordion [multiExpandable]="multiExpandable" [disabled]="disabled">
-        <nfs-accordion-item panelId="panel-1" [disabled]="true">
-          <span nfsAccordionTitle>Disabled Accordion</span>
-          <p>This panel cannot be opened.</p>
-        </nfs-accordion-item>
-        <nfs-accordion-item panelId="panel-2">
-          <span nfsAccordionTitle>Enabled Accordion</span>
-          <p>This panel can be opened.</p>
-        </nfs-accordion-item>
-      </nfs-accordion>
-    `,
-  }),
-};
-
-export const InitiallyExpanded: Story = {
-  args: { multiExpandable: false, disabled: false, allowAllClosed: false },
-  render: (args) => ({
-    props: args,
-    moduleMetadata: {
-      imports: [NfsAccordion, NfsAccordionItem, NfsAccordionTitle],
-    },
-    template: `
-      <nfs-accordion [multiExpandable]="multiExpandable">
-        <nfs-accordion-item panelId="panel-1" [expanded]="true">
-          <span nfsAccordionTitle>Initially Open</span>
-          <p>This panel starts expanded.</p>
-        </nfs-accordion-item>
-        <nfs-accordion-item panelId="panel-2">
-          <span nfsAccordionTitle>Initially Closed</span>
-          <p>This panel starts collapsed.</p>
-        </nfs-accordion-item>
-      </nfs-accordion>
-    `,
-  }),
-};
+```html
+<nfs-accordion [multiExpandable]="true">
+  <nfs-accordion-item panelId="panel-1">
+    <span *nfsAccordionTitle>Accordion 1</span>
+    <p *nfsAccordionContent>Panel 1 content.</p>
+  </nfs-accordion-item>
+</nfs-accordion>
 ```
+
+**Exports:**
+
+- `NfsAccordion` - Accordion group component
+- `NfsAccordionItem` - Item component (collects templates)
+- `NfsAccordionTitleDef` - Structural directive for title
+- `NfsAccordionContentDef` - Structural directive for content
+
+### 2.3 Stories Implemented
+
+| Story                | Purpose              | Interaction Test                     |
+| -------------------- | -------------------- | ------------------------------------ |
+| `Default`            | Single-expand mode   | Click tests, verify aria-expanded    |
+| `MultiExpand`        | Multiple panels open | Open multiple, verify both stay open |
+| `Disabled`           | Disabled state       | Group and item-level disabled        |
+| `InitiallyExpanded`  | Pre-expanded panel   | Verify initial state                 |
+| `KeyboardNavigation` | Keyboard a11y        | Arrow keys, Enter/Space              |
+
+### Phase 2 Implementation Notes ✅
+
+**Adjustments made during implementation:**
+
+1. **Template-based architecture**: Used `NgTemplateOutlet` to project user content within Angular ARIA directive context, ensuring proper `ACCORDION_GROUP` injection
+
+2. **Structural directive syntax**: Changed from attribute directive (`<span nfsAccordionTitle>`) to structural directive (`<span *nfsAccordionTitle>`) for cleaner template capture
+
+3. **Added `NfsAccordionContentDef`**: New directive to capture content templates separately from title
+
+4. **Renamed exports**: `NfsAccordionTitle` → `NfsAccordionTitleDef` to clarify it's a template definition directive
+
+5. **Added `@angular/common` peer dependency**: Required for `NgTemplateOutlet`
+
+6. **Keyboard navigation included**: Angular ARIA provides Arrow keys, Home/End, Enter/Space - tested in `KeyboardNavigation` story
+
+7. **CSS override for Foundation**: Foundation CSS uses `.is-active` class to show accordion content, but Angular ARIA uses `aria-expanded`. Added component styles using `:has(button[aria-expanded="true"])` selector to bridge this gap.
+
+**Actual file contents differ from original plan examples** - see committed files for accurate implementation.
 
 ---
 
@@ -639,11 +549,12 @@ npm run ci
 | `src/lib/accordion/index.ts`                            | Public exports              | ✅     |
 | `src/lib/accordion/accordion.ts`                        | Accordion group component   | ✅     |
 | `src/lib/accordion/accordion-item.ts`                   | Accordion item component    | ✅     |
-| `src/lib/accordion/accordion-title.ts`                  | Title directive             | ✅     |
+| `src/lib/accordion/accordion-title.ts`                  | Title template directive    | ✅     |
+| `src/lib/accordion/accordion-content.ts`                | Content template directive  | ✅     |
 | `src/lib/accordion/_foundation-accordion-settings.scss` | Component SCSS settings     | ✅     |
-| `src/lib/accordion/accordion.stories.ts`                | Storybook stories           |
-| `src/lib/accordion/accordion.spec.ts`                   | Unit tests                  |
-| `src/lib/accordion/accordion-deep-link.service.ts`      | Deep linking service        |
+| `src/lib/accordion/accordion.stories.ts`                | Storybook stories           | ✅     |
+| `src/lib/accordion/accordion.spec.ts`                   | Unit tests                  |        |
+| `src/lib/accordion/accordion-deep-link.service.ts`      | Deep linking service        |        |
 
 ### Modified Files
 
@@ -659,9 +570,9 @@ npm run ci
 
 1. **Phase 0** - Foundation styles infrastructure (required for all components) ✅
 2. **Phase 1** - Core accordion with @angular/aria ✅
-3. **Phase 2** - Storybook stories with interaction tests
+3. **Phase 2** - Storybook stories with interaction tests ✅
 4. **Phase 3** - Advanced features (animation, deep linking)
-5. **Phase 4** - Keyboard navigation verification
+5. **Phase 4** - Keyboard navigation verification (partially done in Phase 2)
 6. **Phase 5** - Testing and documentation
 
 ---
