@@ -15,5 +15,5 @@ import { Directive, inject, TemplateRef } from '@angular/core';
   selector: '[nfsAccordionTitle]',
 })
 export class NfsAccordionTitleDef {
-  readonly templateRef = inject(TemplateRef);
+  readonly templateRef = inject(TemplateRef<unknown>);
 }
