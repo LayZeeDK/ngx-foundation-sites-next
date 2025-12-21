@@ -167,13 +167,16 @@ export class NfsAccordion {
   /** If true, adds to browser history; if false, replaces current entry */
   readonly updateHistory = input(false);
 
+  /** Allow all panels to be closed. If false, at least one panel must remain open. */
+  readonly allowAllClosed = input(false);
+
   /** Computed CSS value for slide speed */
   protected readonly slideSpeedCss = computed(() => `${this.slideSpeed()}ms`);
 
   /** Collected accordion items */
   protected readonly items = contentChildren(NfsAccordionItem);
 
-  /** Track the last expanded panel ID to detect changes */
+  /** Track the last expanded panel ID for deep linking and allowAllClosed */
   private lastExpandedPanelId: string | null = null;
 
   constructor() {
@@ -183,39 +186,91 @@ export class NfsAccordion {
         this.handleInitialHash();
         this.setupHashChangeListener();
       }
+
+      // Ensure at least one panel is open when allowAllClosed=false
+      this.enforceAllowAllClosed();
     });
 
-    // Track expansion changes and update hash
-    effect(() => {
-      const items = this.items();
-      const deepLink = this.deepLink();
+    // Track expansion changes for deep linking and allowAllClosed enforcement
+    effect(
+      () => {
+        const items = this.items();
+        if (items.length === 0) return;
 
-      if (!deepLink || items.length === 0) return;
+        // Find the currently expanded panel(s)
+        const expandedItems = items.filter((item) => item.expanded());
+        const expandedPanelId = expandedItems[0]?.panelId() ?? null;
 
-      // Find the currently expanded panel
-      const expandedItem = items.find((item) => item.expanded());
-      const expandedPanelId = expandedItem?.panelId() ?? null;
+        // Handle allowAllClosed enforcement (skip if accordion is disabled)
+        if (
+          !this.allowAllClosed() &&
+          !this.disabled() &&
+          expandedItems.length === 0
+        ) {
+          // Re-open the last expanded panel, or the first non-disabled panel
+          const panelToOpen = this.lastExpandedPanelId
+            ? items.find(
+                (item) =>
+                  item.panelId() === this.lastExpandedPanelId &&
+                  !item.disabled(),
+              )
+            : items.find((item) => !item.disabled());
 
-      // Use untracked to avoid re-triggering when updating hash
-      untracked(() => {
-        if (expandedPanelId !== this.lastExpandedPanelId) {
-          this.lastExpandedPanelId = expandedPanelId;
-
-          if (expandedPanelId) {
-            this.deepLinkService.updateHash(expandedPanelId, this.updateHistory());
-
-            if (this.deepLinkSmudge()) {
-              this.deepLinkService.scrollToPanel(
-                expandedPanelId,
-                this.deepLinkSmudgeDelay()
-              );
-            }
-          } else {
-            this.deepLinkService.clearHash(this.updateHistory());
+          if (panelToOpen) {
+            // Use queueMicrotask to write signal outside effect context
+            queueMicrotask(() => {
+              panelToOpen.expanded.set(true);
+            });
+            return;
           }
         }
-      });
-    });
+
+        // Track expanded panel for future reference
+        if (expandedPanelId && expandedPanelId !== this.lastExpandedPanelId) {
+          this.lastExpandedPanelId = expandedPanelId;
+        }
+
+        // Handle deep linking (use untracked to avoid re-triggering on hash updates)
+        if (this.deepLink()) {
+          untracked(() => {
+            if (expandedPanelId) {
+              this.deepLinkService.updateHash(
+                expandedPanelId,
+                this.updateHistory(),
+              );
+
+              if (this.deepLinkSmudge()) {
+                this.deepLinkService.scrollToPanel(
+                  expandedPanelId,
+                  this.deepLinkSmudgeDelay(),
+                );
+              }
+            } else if (this.allowAllClosed()) {
+              // Only clear hash if we're actually allowing all closed
+              this.deepLinkService.clearHash(this.updateHistory());
+            }
+          });
+        }
+      },
+      { allowSignalWrites: true },
+    );
+  }
+
+  /** Ensures at least one panel is open when allowAllClosed=false */
+  private enforceAllowAllClosed(): void {
+    if (this.allowAllClosed() || this.disabled()) return;
+
+    const items = this.items();
+    const hasExpanded = items.some((item) => item.expanded());
+
+    if (!hasExpanded && items.length > 0) {
+      // Open the first non-disabled panel
+      const firstEnabled = items.find((item) => !item.disabled());
+      if (firstEnabled) {
+        firstEnabled.expanded.set(true);
+        this.lastExpandedPanelId = firstEnabled.panelId();
+      }
+    }
   }
 
   /** Handles the initial URL hash when the component loads */
@@ -231,7 +286,10 @@ export class NfsAccordion {
       this.lastExpandedPanelId = hashPanelId;
 
       if (this.deepLinkSmudge()) {
-        this.deepLinkService.scrollToPanel(hashPanelId, this.deepLinkSmudgeDelay());
+        this.deepLinkService.scrollToPanel(
+          hashPanelId,
+          this.deepLinkSmudgeDelay(),
+        );
       }
     }
   }
@@ -249,7 +307,10 @@ export class NfsAccordion {
         this.lastExpandedPanelId = panelId;
 
         if (this.deepLinkSmudge()) {
-          this.deepLinkService.scrollToPanel(panelId, this.deepLinkSmudgeDelay());
+          this.deepLinkService.scrollToPanel(
+            panelId,
+            this.deepLinkSmudgeDelay(),
+          );
         }
       }
     });
