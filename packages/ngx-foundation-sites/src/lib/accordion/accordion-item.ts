@@ -1,44 +1,35 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  contentChild,
   input,
-  model,
 } from '@angular/core';
-import {
-  AccordionTrigger,
-  AccordionPanel,
-  AccordionContent,
-} from '@angular/aria/accordion';
+import { NfsAccordionTitleDef } from './accordion-title';
+import { NfsAccordionContentDef } from './accordion-content';
 
+/**
+ * Accordion item component that collects title and content templates.
+ * The actual rendering is handled by the parent NfsAccordion component
+ * which uses Angular ARIA directives.
+ */
 @Component({
   selector: 'nfs-accordion-item',
-  imports: [AccordionTrigger, AccordionPanel, AccordionContent],
-  template: `
-    <li class="accordion-item" [class.is-active]="expanded()">
-      <button
-        type="button"
-        class="accordion-title"
-        ngAccordionTrigger
-        [panelId]="panelId()"
-        [disabled]="disabled()"
-        [(expanded)]="expanded"
-      >
-        <ng-content select="[nfsAccordionTitle]" />
-      </button>
-      <div ngAccordionPanel [panelId]="panelId()" class="accordion-content">
-        <ng-template ngAccordionContent>
-          <ng-content />
-        </ng-template>
-      </div>
-    </li>
-  `,
-  host: {
-    style: 'display: contents',
-  },
+  template: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NfsAccordionItem {
+  /** Unique identifier for the panel, used for ARIA relationships */
   readonly panelId = input.required<string>();
+
+  /** Whether this item is disabled */
   readonly disabled = input(false);
-  readonly expanded = model(false);
+
+  /** Initial expanded state */
+  readonly expanded = input(false);
+
+  /** Reference to the title template */
+  readonly titleDef = contentChild(NfsAccordionTitleDef);
+
+  /** Reference to the content template */
+  readonly contentDef = contentChild(NfsAccordionContentDef);
 }

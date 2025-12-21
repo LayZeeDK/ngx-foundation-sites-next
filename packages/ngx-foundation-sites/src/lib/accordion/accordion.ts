@@ -1,22 +1,72 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { AccordionGroup } from '@angular/aria/accordion';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  contentChildren,
+  input,
+} from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
+import {
+  AccordionGroup,
+  AccordionTrigger,
+  AccordionPanel,
+} from '@angular/aria/accordion';
+import { NfsAccordionItem } from './accordion-item';
 
 @Component({
   selector: 'nfs-accordion',
-  hostDirectives: [
-    {
-      directive: AccordionGroup,
-      inputs: ['multiExpandable', 'disabled', 'wrap'],
-    },
-  ],
   template: `
-    <ul class="accordion" role="presentation">
-      <ng-content />
+    <ul
+      ngAccordionGroup
+      class="accordion"
+      [multiExpandable]="multiExpandable()"
+      [disabled]="disabled()"
+    >
+      @for (item of items(); track item.panelId()) {
+        <li class="accordion-item">
+          <button
+            ngAccordionTrigger
+            type="button"
+            class="accordion-title"
+            [panelId]="item.panelId()"
+            [disabled]="item.disabled()"
+            [expanded]="item.expanded()"
+          >
+            @if (item.titleDef(); as titleDef) {
+              <ng-container *ngTemplateOutlet="titleDef.templateRef" />
+            }
+          </button>
+          <div
+            ngAccordionPanel
+            class="accordion-content"
+            [panelId]="item.panelId()"
+          >
+            @if (item.contentDef(); as contentDef) {
+              <ng-container *ngTemplateOutlet="contentDef.templateRef" />
+            }
+          </div>
+        </li>
+      }
     </ul>
+  `,
+  styles: `
+    /* Override Foundation's .is-active requirement with aria-expanded */
+    .accordion-item:has(button[aria-expanded='true']) > .accordion-content {
+      display: block;
+    }
   `,
   host: {
     style: 'display: block',
   },
+  imports: [AccordionGroup, AccordionTrigger, AccordionPanel, NgTemplateOutlet],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NfsAccordion {}
+export class NfsAccordion {
+  /** Allow multiple panels to be expanded simultaneously */
+  readonly multiExpandable = input(false);
+
+  /** Disable all accordion interactions */
+  readonly disabled = input(false);
+
+  /** Collected accordion items */
+  protected readonly items = contentChildren(NfsAccordionItem);
+}

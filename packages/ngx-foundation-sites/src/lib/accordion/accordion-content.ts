@@ -1,7 +1,7 @@
 import { Directive, inject, TemplateRef } from '@angular/core';
 
 /**
- * Structural directive to mark accordion item title content.
+ * Structural directive to mark accordion item content.
  *
  * @example
  * ```html
@@ -12,8 +12,8 @@ import { Directive, inject, TemplateRef } from '@angular/core';
  * ```
  */
 @Directive({
-  selector: '[nfsAccordionTitle]',
+  selector: '[nfsAccordionContent]',
 })
-export class NfsAccordionTitleDef {
+export class NfsAccordionContentDef {
   readonly templateRef = inject(TemplateRef);
 }
