@@ -348,8 +348,7 @@ describe('NfsAccordion', () => {
     it('should reopen panel when trying to close the last open panel', async () => {
       expect(isExpanded(0)).toBe(true);
 
-      clickTrigger(0);
-      await fixture.whenStable();
+      await clickTrigger(0);
 
       // Panel should reopen since allowAllClosed=false
       expect(isExpanded(0)).toBe(true);
@@ -361,8 +360,7 @@ describe('NfsAccordion', () => {
 
       expect(isExpanded(0)).toBe(true);
 
-      clickTrigger(0);
-      await fixture.whenStable();
+      await clickTrigger(0);
 
       expect(isExpanded(0)).toBe(false);
     });
@@ -434,12 +432,11 @@ describe('NfsAccordion', () => {
   });
 
   describe('deep linking', () => {
-    it('should not call deep link service when deepLink=false', () => {
+    it('should not call deep link service when deepLink=false', async () => {
       host.deepLink.set(false);
       fixture.detectChanges();
 
-      clickTrigger(0);
-      fixture.detectChanges();
+      await clickTrigger(0);
 
       expect(mockDeepLinkService.updateHash).not.toHaveBeenCalled();
     });
@@ -477,8 +474,7 @@ describe('NfsAccordion', () => {
       fixture.detectChanges();
       await fixture.whenStable();
 
-      clickTrigger(0);
-      await fixture.whenStable();
+      await clickTrigger(0);
 
       expect(mockDeepLinkService.updateHash).toHaveBeenCalledWith(
         'panel-1',
@@ -492,8 +488,7 @@ describe('NfsAccordion', () => {
       fixture.detectChanges();
       await fixture.whenStable();
 
-      clickTrigger(0);
-      await fixture.whenStable();
+      await clickTrigger(0);
 
       expect(mockDeepLinkService.updateHash).toHaveBeenCalledWith(
         'panel-1',
@@ -508,8 +503,7 @@ describe('NfsAccordion', () => {
       fixture.detectChanges();
       await fixture.whenStable();
 
-      clickTrigger(0);
-      await fixture.whenStable();
+      await clickTrigger(0);
 
       expect(mockDeepLinkService.scrollToPanel).toHaveBeenCalledWith(
         'panel-1',
@@ -549,8 +543,7 @@ describe('NfsAccordion', () => {
 
       mockDeepLinkService.clearHash.mockClear();
 
-      clickTrigger(0);
-      await fixture.whenStable();
+      await clickTrigger(0);
 
       expect(mockDeepLinkService.clearHash).toHaveBeenCalledWith(false);
     });
