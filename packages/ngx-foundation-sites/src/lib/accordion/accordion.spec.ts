@@ -445,6 +445,8 @@ describe('NfsAccordion', () => {
       mockDeepLinkService.getHashPanelId.mockReturnValue('panel-2');
 
       // Recreate fixture to trigger initial hash handling
+      vi.clearAllMocks();
+      mockDeepLinkService.getHashPanelId.mockReturnValue('panel-2');
       TestBed.resetTestingModule();
       await TestBed.configureTestingModule({
         imports: [TestHostComponent],
@@ -514,6 +516,7 @@ describe('NfsAccordion', () => {
     it('should setup hash change listener when deepLink=true', async () => {
       // Need to create a new fixture with deepLink=true before first render
       // because afterNextRender only runs once
+      vi.clearAllMocks();
       TestBed.resetTestingModule();
       await TestBed.configureTestingModule({
         imports: [TestHostComponent],
@@ -705,6 +708,7 @@ describe('NfsAccordion', () => {
       })
       class EmptyAccordionHost {}
 
+      vi.clearAllMocks();
       TestBed.resetTestingModule();
       await TestBed.configureTestingModule({
         imports: [EmptyAccordionHost],
