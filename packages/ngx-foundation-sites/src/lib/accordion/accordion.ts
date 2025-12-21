@@ -195,6 +195,13 @@ export class NfsAccordion {
         const items = this.items();
         if (items.length === 0) return;
 
+        // Early return if neither deep link nor allowAllClosed enforcement needed
+        const needsAllowAllClosedEnforcement =
+          !this.allowAllClosed() && !this.disabled();
+        const needsDeepLink = this.deepLink();
+
+        if (!needsAllowAllClosedEnforcement && !needsDeepLink) return;
+
         // Find the currently expanded panel(s)
         const expandedItems = items.filter((item) => item.expanded());
         const expandedPanelId = expandedItems[0]?.panelId() ?? null;
