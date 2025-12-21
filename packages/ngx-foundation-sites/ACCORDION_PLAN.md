@@ -482,9 +482,12 @@ Keyboard navigation is tested in the `KeyboardNavigation` story (implemented in 
 
 ## Phase 5: Testing & Documentation
 
-### 5.1 Unit Tests
+### 5.1 Unit Tests ✅
 
-**File:** `packages/ngx-foundation-sites/src/lib/accordion/accordion.spec.ts`
+**Files:**
+
+- `packages/ngx-foundation-sites/src/lib/accordion/accordion.spec.ts` (33 tests)
+- `packages/ngx-foundation-sites/src/lib/accordion/accordion-deep-link.service.spec.ts` (15 tests)
 
 Test cases:
 
@@ -494,6 +497,18 @@ Test cases:
 - Initially expanded panels render content
 - Deep linking activates correct panel
 - Keyboard navigation works correctly
+
+**Implementation Notes:**
+
+1. **Vitest Browser mode**: Configured with Playwright (Chromium) because jsdom doesn't support modern CSS (`@starting-style`, `:has()`) used by the accordion component
+
+2. **Zoneless testing**: Uses `provideZonelessChangeDetection()` and `fixture.whenStable()` instead of `fakeAsync`/`tick` (zone-testing.js not available in Vitest)
+
+3. **Keyboard events for triggers**: Angular ARIA's AccordionTrigger doesn't respond to native `.click()` in tests; uses `KeyboardEvent('keydown', { key: 'Enter' })` instead
+
+4. **afterNextRender behavior**: Deep link initialization tests require creating fixture with `deepLink=true` before first render (afterNextRender only runs once)
+
+5. **Edge case coverage**: Added tests for allowAllClosed enforcement, slideSpeed CSS property, expansion state tracking, and service error handling
 
 ### 5.2 Accessibility Tests
 
@@ -593,17 +608,20 @@ npm run ci
 | `src/lib/accordion/accordion-content.ts`                | Content template directive  | ✅                  |
 | `src/lib/accordion/_foundation-accordion-settings.scss` | Component SCSS settings     | ❌ Removed (unused) |
 | `src/lib/accordion/accordion.stories.ts`                | Storybook stories           | ✅                  |
-| `src/lib/accordion/accordion.spec.ts`                   | Unit tests                  |                     |
+| `src/lib/accordion/accordion.spec.ts`                   | Unit tests                  | ✅                  |
 | `src/lib/accordion/accordion-deep-link.service.ts`      | Deep linking service        | ✅                  |
+| `src/lib/accordion/accordion-deep-link.service.spec.ts` | Service unit tests          | ✅                  |
 | `apps/.../accordion-deep-link.spec.ts`                  | Playwright E2E tests        |                     |
 
 ### Modified Files
 
-| Path                                                  | Change                          | Status |
-| ----------------------------------------------------- | ------------------------------- | ------ |
-| `packages/ngx-foundation-sites/project.json`          | Add styles to storybook targets | ✅     |
-| `packages/ngx-foundation-sites/.storybook/preview.ts` | Add preview configuration       | ✅     |
-| `packages/ngx-foundation-sites/src/index.ts`          | Export accordion module         | ✅     |
+| Path                                                  | Change                              | Status |
+| ----------------------------------------------------- | ----------------------------------- | ------ |
+| `packages/ngx-foundation-sites/project.json`          | Add styles to storybook targets     | ✅     |
+| `packages/ngx-foundation-sites/project.json`          | Add Vitest Browser mode (chromium)  | ✅     |
+| `packages/ngx-foundation-sites/.storybook/preview.ts` | Add preview configuration           | ✅     |
+| `packages/ngx-foundation-sites/src/index.ts`          | Export accordion module             | ✅     |
+| `package.json`                                        | Add @vitest/browser-playwright      | ✅     |
 
 ---
 
@@ -615,6 +633,10 @@ npm run ci
 4. **Phase 3** - Advanced features (animation, deep linking) ✅
 5. **Phase 4** - Keyboard navigation verification (partially done in Phase 2) ✅
 6. **Phase 5** - Testing and documentation
+   - **5.1** Unit tests ✅ (48 tests: 33 component + 15 service)
+   - **5.2** Accessibility tests
+   - **5.3** Deep linking E2E tests (Playwright)
+   - **5.4** CI verification
 
 ---
 
