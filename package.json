@@ -82,7 +82,8 @@
     "typescript-eslint": "^8.40.0",
     "verdaccio": "^6.0.5",
     "vite": "^7.0.0",
-    "vitest": "4.0.9"
+    "vitest": "4.0.9",
+    "wait-on": "^9.0.3"
   },
   "overrides": {
     "@swc/core": "$@swc/core"
