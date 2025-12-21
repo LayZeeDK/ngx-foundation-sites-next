@@ -551,7 +551,74 @@ Test cases:
 - Verify focus management
 - Test screen reader announcements
 
-### 5.3 Run CI Verification
+### 5.3 Deep Linking E2E Tests (Playwright)
+
+**Why E2E?** Deep linking cannot be reliably tested in Storybook interaction tests because stories run in an iframe with its own URL context. Playwright E2E tests run in a real browser and can:
+
+- Navigate directly to URLs with hash fragments
+- Verify URL hash changes after user interactions
+- Test browser back/forward navigation
+
+**File:** `apps/ngx-foundation-sites-e2e/src/accordion-deep-link.spec.ts`
+
+```typescript
+import { test, expect } from '@playwright/test';
+
+test.describe('Accordion Deep Linking', () => {
+  const storyUrl = '/iframe.html?id=components-accordion--deep-link';
+
+  test('opens panel from initial URL hash', async ({ page }) => {
+    await page.goto(`${storyUrl}#panel-2`);
+
+    const trigger2 = page.getByRole('button', { name: /Accordion 2/i });
+    await expect(trigger2).toHaveAttribute('aria-expanded', 'true');
+  });
+
+  test('updates URL hash when panel is expanded', async ({ page }) => {
+    await page.goto(storyUrl);
+
+    await page.getByRole('button', { name: /Accordion 1/i }).click();
+
+    await expect(page).toHaveURL(/#panel-1$/);
+  });
+
+  test('responds to browser back/forward navigation', async ({ page }) => {
+    await page.goto(storyUrl);
+
+    // Open panel 1, then panel 2
+    await page.getByRole('button', { name: /Accordion 1/i }).click();
+    await page.getByRole('button', { name: /Accordion 2/i }).click();
+
+    // Go back - panel 1 should be active
+    await page.goBack();
+    const trigger1 = page.getByRole('button', { name: /Accordion 1/i });
+    await expect(trigger1).toHaveAttribute('aria-expanded', 'true');
+  });
+
+  test('scrolls to panel when deepLinkSmudge is enabled', async ({ page }) => {
+    // Add content above accordion to test scroll behavior
+    await page.goto(`${storyUrl}#panel-3`);
+
+    // Verify panel 3 is in viewport after smudge delay
+    const trigger3 = page.getByRole('button', { name: /Accordion 3/i });
+    await expect(trigger3).toBeInViewport();
+  });
+});
+```
+
+**Test Cases:**
+
+| Test Case                        | Description                                                     |
+| -------------------------------- | --------------------------------------------------------------- |
+| Initial hash opens panel         | Navigate to `#panel-2`, verify panel 2 is expanded              |
+| Click updates hash               | Click panel 1, verify URL ends with `#panel-1`                  |
+| Browser back/forward             | Open panels sequentially, use back button, verify correct panel |
+| Scroll to panel (smudge)         | Navigate with hash, verify panel scrolls into view              |
+| Hash cleared when panel closed   | In multi-expand, close all panels, verify hash is cleared       |
+| Invalid hash ignored             | Navigate with `#invalid-panel`, verify no panel opens           |
+| updateHistory=false uses replace | Verify history.replaceState is used (history.length unchanged)  |
+
+### 5.4 Run CI Verification
 
 ```bash
 npm run ci
@@ -576,7 +643,8 @@ npm run ci
 | `src/lib/accordion/_foundation-accordion-settings.scss` | Component SCSS settings     | ❌ Removed (unused) |
 | `src/lib/accordion/accordion.stories.ts`                | Storybook stories           | ✅                  |
 | `src/lib/accordion/accordion.spec.ts`                   | Unit tests                  |                     |
-| `src/lib/accordion/accordion-deep-link.service.ts`      | Deep linking service        |                     |
+| `src/lib/accordion/accordion-deep-link.service.ts`      | Deep linking service        | ✅                  |
+| `apps/.../accordion-deep-link.spec.ts`                  | Playwright E2E tests        |                     |
 
 ### Modified Files
 
