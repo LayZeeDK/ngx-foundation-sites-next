@@ -548,4 +548,151 @@ describe('NfsAccordion', () => {
       expect(mockDeepLinkService.clearHash).toHaveBeenCalledWith(false);
     });
   });
+
+  describe('keyboard navigation', () => {
+    function pressKey(key: string, element?: HTMLElement): void {
+      const target = element ?? document.activeElement ?? getTriggers()[0];
+      target.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          key,
+          code: key,
+          bubbles: true,
+          cancelable: true,
+        }),
+      );
+    }
+
+    function getFocusedTriggerIndex(): number {
+      const triggers = getTriggers();
+      return triggers.findIndex((t) => t === document.activeElement);
+    }
+
+    it('should move focus to next trigger with ArrowDown', async () => {
+      const triggers = getTriggers();
+      triggers[0].focus();
+      fixture.detectChanges();
+
+      pressKey('ArrowDown');
+      await fixture.whenStable();
+
+      expect(getFocusedTriggerIndex()).toBe(1);
+    });
+
+    it('should move focus to previous trigger with ArrowUp', async () => {
+      const triggers = getTriggers();
+      triggers[1].focus();
+      fixture.detectChanges();
+
+      pressKey('ArrowUp');
+      await fixture.whenStable();
+
+      expect(getFocusedTriggerIndex()).toBe(0);
+    });
+
+    it('should move focus to first trigger with Home', async () => {
+      const triggers = getTriggers();
+      triggers[2].focus();
+      fixture.detectChanges();
+
+      pressKey('Home');
+      await fixture.whenStable();
+
+      expect(getFocusedTriggerIndex()).toBe(0);
+    });
+
+    it('should move focus to last trigger with End', async () => {
+      const triggers = getTriggers();
+      triggers[0].focus();
+      fixture.detectChanges();
+
+      pressKey('End');
+      await fixture.whenStable();
+
+      expect(getFocusedTriggerIndex()).toBe(2);
+    });
+
+    it('should toggle expansion with Enter key', async () => {
+      const triggers = getTriggers();
+      triggers[0].focus();
+      fixture.detectChanges();
+
+      expect(isExpanded(0)).toBe(false);
+
+      pressKey('Enter');
+      await fixture.whenStable();
+      fixture.detectChanges();
+
+      expect(isExpanded(0)).toBe(true);
+    });
+
+    it('should toggle expansion with Space key', async () => {
+      const triggers = getTriggers();
+      triggers[1].focus();
+      fixture.detectChanges();
+
+      expect(isExpanded(1)).toBe(false);
+
+      pressKey(' ');
+      await fixture.whenStable();
+      fixture.detectChanges();
+
+      expect(isExpanded(1)).toBe(true);
+    });
+
+    it('should wrap focus when wrap=true and at last item', async () => {
+      host.wrap.set(true);
+      fixture.detectChanges();
+
+      const triggers = getTriggers();
+      triggers[2].focus();
+      fixture.detectChanges();
+
+      pressKey('ArrowDown');
+      await fixture.whenStable();
+
+      expect(getFocusedTriggerIndex()).toBe(0);
+    });
+
+    it('should wrap focus when wrap=true and at first item', async () => {
+      host.wrap.set(true);
+      fixture.detectChanges();
+
+      const triggers = getTriggers();
+      triggers[0].focus();
+      fixture.detectChanges();
+
+      pressKey('ArrowUp');
+      await fixture.whenStable();
+
+      expect(getFocusedTriggerIndex()).toBe(2);
+    });
+
+    it('should not wrap focus when wrap=false and at last item', async () => {
+      host.wrap.set(false);
+      fixture.detectChanges();
+
+      const triggers = getTriggers();
+      triggers[2].focus();
+      fixture.detectChanges();
+
+      pressKey('ArrowDown');
+      await fixture.whenStable();
+
+      expect(getFocusedTriggerIndex()).toBe(2);
+    });
+
+    it('should not wrap focus when wrap=false and at first item', async () => {
+      host.wrap.set(false);
+      fixture.detectChanges();
+
+      const triggers = getTriggers();
+      triggers[0].focus();
+      fixture.detectChanges();
+
+      pressKey('ArrowUp');
+      await fixture.whenStable();
+
+      expect(getFocusedTriggerIndex()).toBe(0);
+    });
+  });
 });
