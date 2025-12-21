@@ -67,7 +67,7 @@ export const Default: Story = {
     deepLinkSmudge: false,
     deepLinkSmudgeDelay: 300,
     updateHistory: false,
-    allowAllClosed: true,
+    allowAllClosed: false,
   },
   render: (args) => ({
     props: args,
