@@ -1,9 +1,14 @@
 import {
+  afterNextRender,
   ChangeDetectionStrategy,
   Component,
   computed,
   contentChildren,
+  DestroyRef,
+  effect,
+  inject,
   input,
+  untracked,
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import {
@@ -13,6 +18,7 @@ import {
   AccordionContent,
 } from '@angular/aria/accordion';
 import { NfsAccordionItem } from './accordion-item';
+import { AccordionDeepLinkService } from './accordion-deep-link.service';
 
 @Component({
   selector: 'nfs-accordion',
@@ -134,6 +140,9 @@ import { NfsAccordionItem } from './accordion-item';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NfsAccordion {
+  private readonly deepLinkService = inject(AccordionDeepLinkService);
+  private readonly destroyRef = inject(DestroyRef);
+
   /** Allow multiple panels to be expanded simultaneously */
   readonly multiExpandable = input(false);
 
@@ -146,9 +155,105 @@ export class NfsAccordion {
   /** Animation duration in milliseconds for expand/collapse transitions */
   readonly slideSpeed = input(250);
 
+  /** Link the location hash to the open pane */
+  readonly deepLink = input(false);
+
+  /** Adjust scroll position when deep linking to ensure panel is visible */
+  readonly deepLinkSmudge = input(false);
+
+  /** Delay in milliseconds before scroll adjustment (allows animation to complete) */
+  readonly deepLinkSmudgeDelay = input(300);
+
+  /** If true, adds to browser history; if false, replaces current entry */
+  readonly updateHistory = input(false);
+
   /** Computed CSS value for slide speed */
   protected readonly slideSpeedCss = computed(() => `${this.slideSpeed()}ms`);
 
   /** Collected accordion items */
   protected readonly items = contentChildren(NfsAccordionItem);
+
+  /** Track the last expanded panel ID to detect changes */
+  private lastExpandedPanelId: string | null = null;
+
+  constructor() {
+    // Handle initial hash on first render
+    afterNextRender(() => {
+      if (this.deepLink()) {
+        this.handleInitialHash();
+        this.setupHashChangeListener();
+      }
+    });
+
+    // Track expansion changes and update hash
+    effect(() => {
+      const items = this.items();
+      const deepLink = this.deepLink();
+
+      if (!deepLink || items.length === 0) return;
+
+      // Find the currently expanded panel
+      const expandedItem = items.find((item) => item.expanded());
+      const expandedPanelId = expandedItem?.panelId() ?? null;
+
+      // Use untracked to avoid re-triggering when updating hash
+      untracked(() => {
+        if (expandedPanelId !== this.lastExpandedPanelId) {
+          this.lastExpandedPanelId = expandedPanelId;
+
+          if (expandedPanelId) {
+            this.deepLinkService.updateHash(expandedPanelId, this.updateHistory());
+
+            if (this.deepLinkSmudge()) {
+              this.deepLinkService.scrollToPanel(
+                expandedPanelId,
+                this.deepLinkSmudgeDelay()
+              );
+            }
+          } else {
+            this.deepLinkService.clearHash(this.updateHistory());
+          }
+        }
+      });
+    });
+  }
+
+  /** Handles the initial URL hash when the component loads */
+  private handleInitialHash(): void {
+    const hashPanelId = this.deepLinkService.getHashPanelId();
+    if (!hashPanelId) return;
+
+    const items = this.items();
+    const matchingItem = items.find((item) => item.panelId() === hashPanelId);
+
+    if (matchingItem) {
+      matchingItem.expanded.set(true);
+      this.lastExpandedPanelId = hashPanelId;
+
+      if (this.deepLinkSmudge()) {
+        this.deepLinkService.scrollToPanel(hashPanelId, this.deepLinkSmudgeDelay());
+      }
+    }
+  }
+
+  /** Sets up listener for browser back/forward navigation */
+  private setupHashChangeListener(): void {
+    const cleanup = this.deepLinkService.onHashChange((panelId) => {
+      if (!panelId) return;
+
+      const items = this.items();
+      const matchingItem = items.find((item) => item.panelId() === panelId);
+
+      if (matchingItem && !matchingItem.expanded()) {
+        matchingItem.expanded.set(true);
+        this.lastExpandedPanelId = panelId;
+
+        if (this.deepLinkSmudge()) {
+          this.deepLinkService.scrollToPanel(panelId, this.deepLinkSmudgeDelay());
+        }
+      }
+    });
+
+    this.destroyRef.onDestroy(cleanup);
+  }
 }
