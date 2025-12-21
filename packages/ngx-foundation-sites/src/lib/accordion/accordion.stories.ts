@@ -281,7 +281,8 @@ export const SlowAnimation: Story = {
     const accordion = canvasElement.querySelector('nfs-accordion');
     expect(accordion).toBeTruthy();
 
-    const style = getComputedStyle(accordion!);
+    if (!accordion) return;
+    const style = getComputedStyle(accordion);
     expect(style.getPropertyValue('--nfs-accordion-slide-speed').trim()).toBe(
       '500ms',
     );
@@ -314,7 +315,8 @@ export const NoAnimation: Story = {
     const accordion = canvasElement.querySelector('nfs-accordion');
     expect(accordion).toBeTruthy();
 
-    const style = getComputedStyle(accordion!);
+    if (!accordion) return;
+    const style = getComputedStyle(accordion);
     expect(style.getPropertyValue('--nfs-accordion-slide-speed').trim()).toBe(
       '0ms',
     );
