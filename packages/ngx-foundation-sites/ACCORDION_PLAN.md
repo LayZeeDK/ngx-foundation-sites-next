@@ -390,81 +390,41 @@ Add accordion to global styles:
 
 ---
 
-## Phase 3: Advanced Features
+## Phase 3: Advanced Features ✅
 
 **Goal:** Implement all Foundation Accordion features.
 
-### 3.1 Animation Support (slide-speed)
+### 3.1 Animation Support (slide-speed) ✅
 
-Add CSS transitions for smooth expand/collapse:
+Used Angular v21's native CSS animation with `animate.enter`/`animate.leave` instead of `@angular/animations`:
 
-**Update:** `packages/ngx-foundation-sites/src/lib/accordion/_foundation-accordion-settings.scss`
+**Implementation:**
 
-```scss
-// Animation (nfs- prefix)
-$accordion-slide-speed: var(--nfs-accordion-slide-speed, 250ms) !default;
-```
+- CSS Grid animation using `grid-template-rows: 0fr → 1fr` with `@starting-style`
+- CSS custom property `--nfs-accordion-slide-speed` for configurable duration
+- `slideSpeed` input on `NfsAccordion` component
 
-**Add custom styles** in component or global styles:
+**Stories added:** `SlowAnimation`, `NoAnimation`
 
-```scss
-.accordion-content {
-  overflow: hidden;
-  transition: max-height $accordion-slide-speed ease-out;
-
-  &[hidden] {
-    display: block !important;
-    max-height: 0;
-    padding: 0;
-    border: 0;
-  }
-}
-```
-
-### 3.2 Deep Linking Support
+### 3.2 Deep Linking Support ✅
 
 **File:** `packages/ngx-foundation-sites/src/lib/accordion/accordion-deep-link.service.ts`
 
-```typescript
-import { Injectable, inject } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
+Service provides:
 
-@Injectable({ providedIn: 'root' })
-export class AccordionDeepLinkService {
-  private document = inject(DOCUMENT);
+- `getHashPanelId()` - Read panel ID from URL hash
+- `updateHash()` - Update URL hash with `pushState` or `replaceState`
+- `clearHash()` - Clear URL hash
+- `scrollToPanel()` - Scroll to panel after delay
+- `onHashChange()` - Listen for browser back/forward navigation
 
-  getHashPanelId(): string | null {
-    const hash = this.document.location.hash;
-    return hash ? hash.slice(1) : null;
-  }
+### 3.3 Deep Link Smudge (Scroll Adjustment) ✅
 
-  updateHash(panelId: string, useHistory: boolean): void {
-    const url = `#${panelId}`;
-    if (useHistory) {
-      history.pushState(null, '', url);
-    } else {
-      history.replaceState(null, '', url);
-    }
-  }
-}
-```
+Implemented in `AccordionDeepLinkService.scrollToPanel()` with configurable delay.
 
-### 3.3 Deep Link Smudge (Scroll Adjustment)
+### 3.4 Update Accordion with Deep Link Inputs ✅
 
-Add scroll adjustment after deep link activation:
-
-```typescript
-scrollToPanel(panelId: string, delay: number = 300): void {
-  setTimeout(() => {
-    const element = this.document.getElementById(panelId);
-    element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, delay);
-}
-```
-
-### 3.4 Update Accordion with Deep Link Inputs
-
-**Update:** `packages/ngx-foundation-sites/src/lib/accordion/accordion.ts`
+**Inputs added to `NfsAccordion`:**
 
 ```typescript
 readonly deepLink = input(false);
@@ -473,24 +433,37 @@ readonly deepLinkSmudgeDelay = input(300);
 readonly updateHistory = input(false);
 ```
 
-### 3.5 Allow All Closed Support
+**Story added:** `DeepLink`
+
+### 3.5 Allow All Closed Support ✅
 
 **Goal:** Implement Foundation's `allowAllClosed` behavior (by default, at least one panel must be open).
 
-@angular/aria's AccordionGroup doesn't enforce this - it allows closing all panels by default.
-Custom logic is needed to prevent closing the last open panel when `allowAllClosed=false`.
+**Implementation:**
 
-**Update:** `packages/ngx-foundation-sites/src/lib/accordion/accordion.ts`
+- Added `allowAllClosed` input (default: `false`)
+- Effect watches expansion state and re-opens last expanded panel when all close
+- Uses `queueMicrotask` to write signals outside effect context
+- Skips enforcement when accordion group is disabled
+- `allowSignalWrites: true` option on effect
 
-```typescript
-readonly allowAllClosed = input(false);
-```
+**Story added:** `RequireOneOpen`
 
-Implementation will intercept the expand/collapse logic to enforce the constraint.
+### Phase 3 Implementation Notes
+
+**Adjustments made during implementation:**
+
+1. **Animation approach**: Used Angular v21's native `animate.enter`/`animate.leave` with CSS Grid animation instead of `@angular/animations` (which is deprecated)
+
+2. **Deep linking in Storybook**: Cannot be reliably tested in Storybook interaction tests due to iframe context - added E2E test plan for Phase 5.3
+
+3. **allowAllClosed timing**: Required careful signal management with `queueMicrotask` and `allowSignalWrites: true` to properly enforce the constraint
+
+4. **Disabled accordion handling**: Added check to skip `allowAllClosed` enforcement when the accordion group is disabled
 
 ---
 
-## Phase 4: Keyboard Navigation
+## Phase 4: Keyboard Navigation ✅
 
 **Goal:** Ensure full keyboard accessibility (handled by @angular/aria).
 
@@ -501,31 +474,9 @@ Angular ARIA's `AccordionGroup` provides:
 - Enter/Space to toggle
 - Tab navigation respects `disabled` and `wrap` settings
 
-### 4.1 Verify Keyboard Navigation in Stories
+### 4.1 Verify Keyboard Navigation in Stories ✅
 
-Add keyboard navigation tests:
-
-```typescript
-export const KeyboardNavigation: Story = {
-  args: { multiExpandable: false },
-  render: Default.render,
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    const trigger1 = canvas.getByRole('button', { name: /Accordion 1/i });
-    trigger1.focus();
-
-    // Press Enter to open
-    await userEvent.keyboard('{Enter}');
-    expect(trigger1).toHaveAttribute('aria-expanded', 'true');
-
-    // Press ArrowDown to move to next
-    await userEvent.keyboard('{ArrowDown}');
-    const trigger2 = canvas.getByRole('button', { name: /Accordion 2/i });
-    expect(document.activeElement).toBe(trigger2);
-  },
-};
-```
+Keyboard navigation is tested in the `KeyboardNavigation` story (implemented in Phase 2).
 
 ---
 
@@ -661,8 +612,8 @@ npm run ci
 1. **Phase 0** - Foundation styles infrastructure (required for all components) ✅
 2. **Phase 1** - Core accordion with @angular/aria ✅
 3. **Phase 2** - Storybook stories with interaction tests ✅
-4. **Phase 3** - Advanced features (animation, deep linking)
-5. **Phase 4** - Keyboard navigation verification (partially done in Phase 2)
+4. **Phase 3** - Advanced features (animation, deep linking) ✅
+5. **Phase 4** - Keyboard navigation verification (partially done in Phase 2) ✅
 6. **Phase 5** - Testing and documentation
 
 ---
