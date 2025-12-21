@@ -3,6 +3,7 @@ import {
   Component,
   contentChild,
   input,
+  model,
 } from '@angular/core';
 import { NfsAccordionTitleDef } from './accordion-title';
 import { NfsAccordionContentDef } from './accordion-content';
@@ -24,8 +25,8 @@ export class NfsAccordionItem {
   /** Whether this item is disabled */
   readonly disabled = input(false);
 
-  /** Initial expanded state */
-  readonly expanded = input(false);
+  /** Expanded state (two-way bindable) */
+  readonly expanded = model(false);
 
   /** Reference to the title template */
   readonly titleDef = contentChild(NfsAccordionTitleDef);

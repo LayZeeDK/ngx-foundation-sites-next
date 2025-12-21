@@ -9,6 +9,7 @@ import {
   AccordionGroup,
   AccordionTrigger,
   AccordionPanel,
+  AccordionContent,
 } from '@angular/aria/accordion';
 import { NfsAccordionItem } from './accordion-item';
 
@@ -18,8 +19,10 @@ import { NfsAccordionItem } from './accordion-item';
     <ul
       ngAccordionGroup
       class="accordion"
+      role="presentation"
       [multiExpandable]="multiExpandable()"
       [disabled]="disabled()"
+      [wrap]="wrap()"
     >
       @for (item of items(); track item.panelId()) {
         <li class="accordion-item">
@@ -29,7 +32,7 @@ import { NfsAccordionItem } from './accordion-item';
             class="accordion-title"
             [panelId]="item.panelId()"
             [disabled]="item.disabled()"
-            [expanded]="item.expanded()"
+            [(expanded)]="item.expanded"
           >
             @if (item.titleDef(); as titleDef) {
               <ng-container *ngTemplateOutlet="titleDef.templateRef" />
@@ -40,9 +43,11 @@ import { NfsAccordionItem } from './accordion-item';
             class="accordion-content"
             [panelId]="item.panelId()"
           >
-            @if (item.contentDef(); as contentDef) {
-              <ng-container *ngTemplateOutlet="contentDef.templateRef" />
-            }
+            <ng-template ngAccordionContent>
+              @if (item.contentDef(); as contentDef) {
+                <ng-container *ngTemplateOutlet="contentDef.templateRef" />
+              }
+            </ng-template>
           </div>
         </li>
       }
@@ -57,7 +62,13 @@ import { NfsAccordionItem } from './accordion-item';
   host: {
     style: 'display: block',
   },
-  imports: [AccordionGroup, AccordionTrigger, AccordionPanel, NgTemplateOutlet],
+  imports: [
+    AccordionGroup,
+    AccordionTrigger,
+    AccordionPanel,
+    AccordionContent,
+    NgTemplateOutlet,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NfsAccordion {
@@ -66,6 +77,9 @@ export class NfsAccordion {
 
   /** Disable all accordion interactions */
   readonly disabled = input(false);
+
+  /** Whether keyboard navigation wraps from last to first item */
+  readonly wrap = input(false);
 
   /** Collected accordion items */
   protected readonly items = contentChildren(NfsAccordionItem);
