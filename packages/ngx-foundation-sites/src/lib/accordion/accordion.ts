@@ -187,9 +187,6 @@ export class NfsAccordion {
         this.handleInitialHash();
         this.setupHashChangeListener();
       }
-
-      // Ensure at least one panel is open when allowAllClosed=false
-      this.enforceAllowAllClosed();
     });
 
     // Track expansion changes for deep linking and allowAllClosed enforcement
