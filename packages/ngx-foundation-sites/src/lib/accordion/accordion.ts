@@ -49,6 +49,7 @@ import { AccordionDeepLinkService } from './accordion-deep-link.service';
             ngAccordionPanel
             class="accordion-content"
             [panelId]="item.panelId()"
+            [id]="item.panelId()"
           >
             <ng-template ngAccordionContent>
               <div
