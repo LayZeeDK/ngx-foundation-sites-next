@@ -124,6 +124,34 @@ export const Disabled: Story = {
       </nfs-accordion>
     `,
   }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const trigger1 = canvas.getByRole('button', {
+      name: /Disabled Accordion/i,
+    });
+    const trigger2 = canvas.getByRole('button', {
+      name: /Also Disabled \(via group\)/i,
+    });
+
+    // Both triggers should have aria-disabled="true"
+    expect(trigger1).toHaveAttribute('aria-disabled', 'true');
+    expect(trigger2).toHaveAttribute('aria-disabled', 'true');
+
+    // Both should start collapsed
+    expect(trigger1).toHaveAttribute('aria-expanded', 'false');
+    expect(trigger2).toHaveAttribute('aria-expanded', 'false');
+
+    // Clicking disabled buttons should not expand them
+    await userEvent.click(trigger1);
+    await userEvent.click(trigger2);
+
+    // Verify they remain collapsed after click attempts
+    await waitFor(() => {
+      expect(trigger1).toHaveAttribute('aria-expanded', 'false');
+      expect(trigger2).toHaveAttribute('aria-expanded', 'false');
+    });
+  },
 };
 
 export const InitiallyExpanded: Story = {
@@ -151,6 +179,22 @@ export const InitiallyExpanded: Story = {
       </nfs-accordion>
     `,
   }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const trigger1 = canvas.getByRole('button', { name: /Initially Open/i });
+    const trigger2 = canvas.getByRole('button', { name: /Initially Closed/i });
+
+    // First panel should start expanded
+    expect(trigger1).toHaveAttribute('aria-expanded', 'true');
+
+    // Second panel should start collapsed
+    expect(trigger2).toHaveAttribute('aria-expanded', 'false');
+
+    // Verify content is visible for expanded panel
+    const panel1Content = canvas.getByText(/This panel starts expanded/i);
+    expect(panel1Content).toBeVisible();
+  },
 };
 
 export const KeyboardNavigation: Story = {
