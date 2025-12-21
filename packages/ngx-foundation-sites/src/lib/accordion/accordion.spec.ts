@@ -695,4 +695,108 @@ describe('NfsAccordion', () => {
       expect(getFocusedTriggerIndex()).toBe(0);
     });
   });
+
+  describe('edge cases', () => {
+    it('should render empty accordion without error', async () => {
+      // Create a separate test host with no items
+      @Component({
+        template: `<nfs-accordion></nfs-accordion>`,
+        imports: [NfsAccordion],
+      })
+      class EmptyAccordionHost {}
+
+      TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [EmptyAccordionHost],
+        providers: [
+          provideZonelessChangeDetection(),
+          { provide: AccordionDeepLinkService, useValue: mockDeepLinkService },
+        ],
+      }).compileComponents();
+
+      const emptyFixture = TestBed.createComponent(EmptyAccordionHost);
+      emptyFixture.detectChanges();
+
+      const ul = emptyFixture.nativeElement.querySelector('ul.accordion');
+      expect(ul).toBeTruthy();
+      expect(ul.children).toHaveLength(0);
+
+      emptyFixture.destroy();
+    });
+
+    it('should not allow any panel to open when all items are disabled', async () => {
+      host.item1Disabled.set(true);
+      host.item2Disabled.set(true);
+      host.item3Disabled.set(true);
+      fixture.detectChanges();
+
+      await clickTrigger(0);
+      await clickTrigger(1);
+      await clickTrigger(2);
+
+      expect(isExpanded(0)).toBe(false);
+      expect(isExpanded(1)).toBe(false);
+      expect(isExpanded(2)).toBe(false);
+    });
+
+    it('should ignore invalid panel ID in URL hash', async () => {
+      mockDeepLinkService.getHashPanelId.mockReturnValue('non-existent-panel');
+
+      vi.clearAllMocks();
+      TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [TestHostComponent],
+        providers: [
+          provideZonelessChangeDetection(),
+          { provide: AccordionDeepLinkService, useValue: mockDeepLinkService },
+        ],
+      }).compileComponents();
+
+      const newFixture = TestBed.createComponent(TestHostComponent);
+      newFixture.componentInstance.deepLink.set(true);
+      newFixture.detectChanges();
+      await newFixture.whenStable();
+
+      const triggers = Array.from(
+        newFixture.nativeElement.querySelectorAll('button.accordion-title'),
+      ) as HTMLButtonElement[];
+
+      // No panel should be expanded since hash doesn't match any panel
+      expect(triggers[0].getAttribute('aria-expanded')).toBe('false');
+      expect(triggers[1].getAttribute('aria-expanded')).toBe('false');
+      expect(triggers[2].getAttribute('aria-expanded')).toBe('false');
+
+      newFixture.destroy();
+    });
+
+    it('should handle rapid clicks correctly', async () => {
+      // Rapidly click all three triggers without waiting
+      const trigger0 = getTriggers()[0];
+      const trigger1 = getTriggers()[1];
+      const trigger2 = getTriggers()[2];
+
+      trigger0.focus();
+      trigger0.dispatchEvent(
+        new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }),
+      );
+      trigger1.focus();
+      trigger1.dispatchEvent(
+        new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }),
+      );
+      trigger2.focus();
+      trigger2.dispatchEvent(
+        new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }),
+      );
+
+      await fixture.whenStable();
+      fixture.detectChanges();
+
+      // In single-expand mode, only the last clicked should be expanded
+      const expandedCount = getTriggers().filter(
+        (t) => t.getAttribute('aria-expanded') === 'true',
+      ).length;
+      expect(expandedCount).toBe(1);
+      expect(isExpanded(2)).toBe(true);
+    });
+  });
 });
