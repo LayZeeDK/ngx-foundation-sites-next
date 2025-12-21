@@ -261,23 +261,6 @@ export class NfsAccordion {
     );
   }
 
-  /** Ensures at least one panel is open when allowAllClosed=false */
-  private enforceAllowAllClosed(): void {
-    if (this.allowAllClosed() || this.disabled()) return;
-
-    const items = this.items();
-    const hasExpanded = items.some((item) => item.expanded());
-
-    if (!hasExpanded && items.length > 0) {
-      // Open the first non-disabled panel
-      const firstEnabled = items.find((item) => !item.disabled());
-      if (firstEnabled) {
-        firstEnabled.expanded.set(true);
-        this.lastExpandedPanelId = firstEnabled.panelId();
-      }
-    }
-  }
-
   /** Handles the initial URL hash when the component loads */
   private handleInitialHash(): void {
     const hashPanelId = this.deepLinkService.getHashPanelId();
