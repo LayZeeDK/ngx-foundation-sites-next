@@ -8,6 +8,7 @@ import { NfsAccordionContentDef } from './accordion-content';
 interface AccordionStoryArgs {
   multiExpandable: boolean;
   disabled: boolean;
+  slideSpeed: number;
 }
 
 const meta: Meta<AccordionStoryArgs> = {
@@ -22,6 +23,10 @@ const meta: Meta<AccordionStoryArgs> = {
       control: 'boolean',
       description: 'Disable all accordion interactions',
     },
+    slideSpeed: {
+      control: { type: 'range', min: 0, max: 1000, step: 50 },
+      description: 'Animation duration in milliseconds',
+    },
   },
 };
 
@@ -29,7 +34,7 @@ export default meta;
 type Story = StoryObj<AccordionStoryArgs>;
 
 export const Default: Story = {
-  args: { multiExpandable: false, disabled: false },
+  args: { multiExpandable: false, disabled: false, slideSpeed: 250 },
   render: (args) => ({
     props: args,
     moduleMetadata: {
@@ -41,7 +46,7 @@ export const Default: Story = {
       ],
     },
     template: `
-      <nfs-accordion [multiExpandable]="multiExpandable" [disabled]="disabled">
+      <nfs-accordion [multiExpandable]="multiExpandable" [disabled]="disabled" [slideSpeed]="slideSpeed">
         <nfs-accordion-item panelId="panel-1">
           <span *nfsAccordionTitle>Accordion 1</span>
           <p *nfsAccordionContent>Panel 1 content. Lorem ipsum dolor sit amet.</p>
@@ -80,7 +85,7 @@ export const Default: Story = {
 };
 
 export const MultiExpand: Story = {
-  args: { multiExpandable: true, disabled: false },
+  args: { multiExpandable: true, disabled: false, slideSpeed: 250 },
   render: Default.render,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -100,7 +105,7 @@ export const MultiExpand: Story = {
 };
 
 export const Disabled: Story = {
-  args: { multiExpandable: false, disabled: true },
+  args: { multiExpandable: false, disabled: true, slideSpeed: 250 },
   render: (args) => ({
     props: args,
     moduleMetadata: {
@@ -112,7 +117,7 @@ export const Disabled: Story = {
       ],
     },
     template: `
-      <nfs-accordion [multiExpandable]="multiExpandable" [disabled]="disabled">
+      <nfs-accordion [multiExpandable]="multiExpandable" [disabled]="disabled" [slideSpeed]="slideSpeed">
         <nfs-accordion-item panelId="panel-1" [disabled]="true">
           <span *nfsAccordionTitle>Disabled Accordion</span>
           <p *nfsAccordionContent>This panel cannot be opened.</p>
@@ -155,7 +160,7 @@ export const Disabled: Story = {
 };
 
 export const InitiallyExpanded: Story = {
-  args: { multiExpandable: false, disabled: false },
+  args: { multiExpandable: false, disabled: false, slideSpeed: 250 },
   render: (args) => ({
     props: args,
     moduleMetadata: {
@@ -167,7 +172,7 @@ export const InitiallyExpanded: Story = {
       ],
     },
     template: `
-      <nfs-accordion [multiExpandable]="multiExpandable">
+      <nfs-accordion [multiExpandable]="multiExpandable" [slideSpeed]="slideSpeed">
         <nfs-accordion-item panelId="panel-1" [expanded]="true">
           <span *nfsAccordionTitle>Initially Open</span>
           <p *nfsAccordionContent>This panel starts expanded.</p>
@@ -198,7 +203,7 @@ export const InitiallyExpanded: Story = {
 };
 
 export const KeyboardNavigation: Story = {
-  args: { multiExpandable: false, disabled: false },
+  args: { multiExpandable: false, disabled: false, slideSpeed: 250 },
   render: Default.render,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -217,6 +222,56 @@ export const KeyboardNavigation: Story = {
     const trigger2 = canvas.getByRole('button', { name: /Accordion 2/i });
     await waitFor(() => {
       expect(document.activeElement).toBe(trigger2);
+    });
+  },
+};
+
+export const SlowAnimation: Story = {
+  args: { multiExpandable: false, disabled: false, slideSpeed: 500 },
+  render: Default.render,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Verify CSS custom property is set
+    const accordion = canvasElement.querySelector('nfs-accordion');
+    expect(accordion).toBeTruthy();
+
+    const style = getComputedStyle(accordion!);
+    expect(style.getPropertyValue('--nfs-accordion-slide-speed').trim()).toBe(
+      '500ms'
+    );
+
+    // Click to expand and verify animation works
+    const trigger1 = canvas.getByRole('button', { name: /Accordion 1/i });
+    await userEvent.click(trigger1);
+
+    await waitFor(() => {
+      expect(trigger1).toHaveAttribute('aria-expanded', 'true');
+    });
+  },
+};
+
+export const NoAnimation: Story = {
+  args: { multiExpandable: false, disabled: false, slideSpeed: 0 },
+  render: Default.render,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Verify CSS custom property is set to 0
+    const accordion = canvasElement.querySelector('nfs-accordion');
+    expect(accordion).toBeTruthy();
+
+    const style = getComputedStyle(accordion!);
+    expect(style.getPropertyValue('--nfs-accordion-slide-speed').trim()).toBe(
+      '0ms'
+    );
+
+    // Click to expand - should be instant
+    const trigger1 = canvas.getByRole('button', { name: /Accordion 1/i });
+    await userEvent.click(trigger1);
+
+    await waitFor(() => {
+      expect(trigger1).toHaveAttribute('aria-expanded', 'true');
     });
   },
 };

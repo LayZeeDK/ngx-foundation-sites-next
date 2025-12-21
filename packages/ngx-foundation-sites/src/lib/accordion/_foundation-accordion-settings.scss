@@ -1,0 +1,8 @@
+// Foundation Accordion settings with CSS custom properties (nfs- prefix)
+// These variables can be customized via CSS custom properties
+
+// Animation duration for expand/collapse transitions
+$accordion-slide-speed: var(--nfs-accordion-slide-speed, 250ms) !default;
+
+// Animation easing function
+$accordion-slide-easing: var(--nfs-accordion-slide-easing, ease-out) !default;
