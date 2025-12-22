@@ -5,58 +5,24 @@ import { NfsAccordionItem } from './accordion-item';
 import { NfsAccordionTitleDef } from './accordion-title';
 import { NfsAccordionContentDef } from './accordion-content';
 
-interface AccordionStoryArgs {
-  multiExpandable: boolean;
-  disabled: boolean;
-  slideSpeed: number;
-  deepLink: boolean;
-  deepLinkSmudge: boolean;
-  deepLinkSmudgeDelay: number;
-  updateHistory: boolean;
-  allowAllClosed: boolean;
-}
-
-const meta: Meta<AccordionStoryArgs> = {
+const meta: Meta<NfsAccordion> = {
   title: 'Components/Accordion',
+  component: NfsAccordion,
   tags: ['autodocs'],
+  // Descriptions come from JSDoc comments in the component via Compodoc.
+  // Only custom control configurations are needed here.
   argTypes: {
-    multiExpandable: {
-      control: 'boolean',
-      description: 'Allow multiple panels open simultaneously',
-    },
-    disabled: {
-      control: 'boolean',
-      description: 'Disable all accordion interactions',
-    },
     slideSpeed: {
       control: { type: 'range', min: 0, max: 1000, step: 50 },
-      description: 'Animation duration in milliseconds',
-    },
-    deepLink: {
-      control: 'boolean',
-      description: 'Link the location hash to the open pane',
-    },
-    deepLinkSmudge: {
-      control: 'boolean',
-      description: 'Adjust scroll position when deep linking',
     },
     deepLinkSmudgeDelay: {
       control: { type: 'number', min: 0, max: 1000 },
-      description: 'Delay in milliseconds before scroll adjustment',
-    },
-    updateHistory: {
-      control: 'boolean',
-      description: 'Add panel changes to browser history',
-    },
-    allowAllClosed: {
-      control: 'boolean',
-      description: 'Allow all panels to be closed (default: false)',
     },
   },
 };
 
 export default meta;
-type Story = StoryObj<AccordionStoryArgs>;
+type Story = StoryObj<NfsAccordion>;
 
 export const Default: Story = {
   args: {
