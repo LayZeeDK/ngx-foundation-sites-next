@@ -516,12 +516,17 @@ Test cases:
 
 - `packages/ngx-foundation-sites/.storybook/main.ts` - Addon registration
 - `packages/ngx-foundation-sites/.storybook/preview.ts` - AXE configuration
+- `packages/ngx-foundation-sites/.storybook/tsconfig.json` - TypeScript configuration for Compodoc
 - `packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts` - Accessibility stories
+- `packages/ngx-foundation-sites/src/lib/_foundation-settings.scss` - WCAG AA color palette
+- `packages/ngx-foundation-sites/src/lib/_foundation-components.scss` - Consolidated palette import
 
 **Test coverage:**
 
 - ✅ Verify ARIA attributes (aria-expanded, aria-controls, aria-labelledby, aria-disabled)
+- ✅ Verify `role="region"` on accordion panels
 - ✅ Test with AXE in Storybook (@storybook/addon-a11y)
+- ✅ Programmatic AXE checks in CI via `test: 'error'`
 - ✅ Verify focus management with disabled items
 - ✅ WCAG 2.0 A/AA and 2.1 A/AA compliance
 
@@ -536,19 +541,48 @@ Test cases:
 
 1. **@storybook/addon-a11y**: Configured AXE-based accessibility testing with WCAG rules. Disabled landmark rules not applicable to isolated components (`landmark-one-main`, `page-has-heading-one`, `region`).
 
-2. **WCAG AA color compliance**: Foundation's default primary color (#1779ba) failed contrast requirements (3.75:1). Updated to WCAG AA compliant palette using Sass module configuration (`@use ... with`):
+2. **@storybook/addon-docs with Compodoc**: Added documentation addon for autodocs generation:
+   - Added `@storybook/addon-docs` to `main.ts` addons array
+   - Added `tags: ['autodocs']` to `preview.ts` for automatic documentation
+   - Configured `setCompodocJson()` in `preview.ts` for Angular component documentation
+   - Added `component: NfsAccordion` to story meta for Compodoc integration
+   - Configured Compodoc with `-p packages/ngx-foundation-sites/tsconfig.lib.json` in `project.json`
+   - Added `resolveJsonModule: true` to `.storybook/tsconfig.json` for JSON import
+
+3. **Programmatic AXE checks in CI**: Added `test: 'error'` to `parameters.a11y` in `preview.ts`:
+   - When `test-storybook` runs, axe-core checks are automatically executed for each story
+   - Violations cause test failures (CI will fail)
+   - No additional dependencies (axe-playwright) or configuration files needed
+   - Uses the same WCAG rules configured in `parameters.a11y.config`
+
+4. **WCAG AA color compliance**: Foundation's default primary color (#1779ba) failed contrast requirements (3.75:1). Updated to WCAG AA compliant palette using Sass module configuration (`@use ... with`):
    - primary: #0d5a89 (4.5:1 contrast ratio)
    - secondary: #595959
    - success: #1a7f3e
    - warning: #8a6500
    - alert: #a33a2a
 
-3. **Angular ARIA focus behavior**: Unlike Foundation's JavaScript, Angular ARIA allows disabled items to receive focus (for screen reader announcement) but prevents activation. This is correct WCAG behavior - tests verify:
+5. **Color palette consolidation**: Eliminated duplicate palette definitions by having `_foundation-components.scss` import from `_foundation-settings.scss`:
+   ```scss
+   @use './foundation-settings' as settings;
+   @use 'foundation-sites/scss/foundation' with (
+     $foundation-palette: settings.$foundation-palette
+   );
+   ```
+
+6. **Angular ARIA focus behavior**: Unlike Foundation's JavaScript, Angular ARIA allows disabled items to receive focus (for screen reader announcement) but prevents activation. This is correct WCAG behavior - tests verify:
    - Arrow keys move focus through ALL items including disabled
    - Click, Enter, and Space do NOT activate disabled items
    - `aria-disabled="true"` is set on disabled triggers
 
-4. **aria-disabled assertion**: Angular ARIA sets `aria-disabled="false"` explicitly on enabled buttons. Tests check `not.toHaveAttribute('aria-disabled', 'true')` rather than absence of attribute.
+7. **aria-disabled assertion**: Angular ARIA sets `aria-disabled="false"` explicitly on enabled buttons. Tests check `not.toHaveAttribute('aria-disabled', 'true')` rather than absence of attribute.
+
+8. **aria-labelledby verification**: Added comprehensive verification in `Accessibility` story:
+   - Each panel has an `aria-labelledby` attribute
+   - The attribute value references an existing element ID
+   - The referenced element is the correct trigger button
+
+9. **role="region" verification**: Added verification in `Accessibility` story confirming all panels have `role="region"` per ARIA Authoring Practices, enabling screen reader landmark navigation.
 
 ### 5.3 Deep Linking E2E Tests (Playwright)
 
