@@ -476,6 +476,12 @@ export const Accessibility: Story = {
     expect(labelledByTrigger2).toBe(trigger2);
     expect(labelledByTrigger3).toBe(trigger3);
 
+    // Verify panels have role="region" per ARIA Authoring Practices
+    // This creates a landmark that screen reader users can navigate to directly
+    expect(panel1).toHaveAttribute('role', 'region');
+    expect(panel2).toHaveAttribute('role', 'region');
+    expect(panel3).toHaveAttribute('role', 'region');
+
     // ═══════════════════════════════════════════════════════════════════════
     // 2. EXPAND/COLLAPSE STATE CHANGES
     // ═══════════════════════════════════════════════════════════════════════
