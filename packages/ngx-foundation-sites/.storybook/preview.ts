@@ -10,6 +10,8 @@ const preview: Preview = {
   parameters: {
     controls: { expanded: true },
     a11y: {
+      // Enable accessibility testing in test-storybook (fails CI on violations)
+      test: 'error',
       // Configure axe-core options
       config: {
         rules: [
