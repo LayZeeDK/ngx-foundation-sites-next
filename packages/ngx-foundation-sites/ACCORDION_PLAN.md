@@ -587,11 +587,94 @@ Test cases:
 
 ### 5.3 Deep Linking E2E Tests (Playwright)
 
-**Why E2E?** Deep linking cannot be reliably tested in Storybook interaction tests because stories run in an iframe with its own URL context. Playwright E2E tests run in a real browser and can:
+**Why E2E?** Deep linking cannot be reliably tested in Storybook interaction tests because:
 
-- Navigate directly to URLs with hash fragments
-- Verify URL hash changes after user interactions
-- Test browser back/forward navigation
+1. Stories run in an iframe with its own isolated URL context
+2. `window.location.hash` changes affect the iframe, not the parent Storybook URL
+3. Browser back/forward navigation can't be simulated within the iframe
+
+**Testing Strategy Alignment with Phase 6:**
+
+The dual-strategy architecture in Phase 6 informs our testing approach:
+
+| Strategy         | Scroll API                          | Testable in Storybook? | Best Test Location        |
+| ---------------- | ----------------------------------- | ---------------------- | ------------------------- |
+| Native (current) | `scrollIntoView()`                  | ❌ Browser API         | **Playwright E2E**        |
+| Router (Phase 6) | `ViewportScroller.scrollToAnchor()` | ✅ Can spy/mock        | **Storybook interaction** |
+
+#### 5.3.1 E2E App Directory Structure
+
+```
+apps/
+└── ngx-foundation-sites-e2e/
+    ├── src/
+    │   └── accordion-deep-link.spec.ts
+    ├── playwright.config.ts
+    ├── project.json
+    ├── tsconfig.json
+    └── .eslintrc.json
+```
+
+#### 5.3.2 project.json
+
+```json
+{
+  "name": "ngx-foundation-sites-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/ngx-foundation-sites-e2e/src",
+  "implicitDependencies": ["ngx-foundation-sites"]
+}
+```
+
+> **Note:** The `@nx/playwright` plugin auto-infers the `e2e` target from `playwright.config.ts`
+
+#### 5.3.3 playwright.config.ts
+
+```typescript
+import { defineConfig, devices } from '@playwright/test';
+import { nxE2EPreset } from '@nx/playwright/preset';
+import { workspaceRoot } from '@nx/devkit';
+
+const baseURL = process.env['BASE_URL'] || 'http://localhost:4400';
+
+export default defineConfig({
+  ...nxE2EPreset(__filename, { testDir: './src' }),
+  use: {
+    baseURL,
+    trace: 'on-first-retry',
+  },
+  webServer: {
+    command: 'npx nx static-storybook ngx-foundation-sites',
+    url: 'http://localhost:4400',
+    reuseExistingServer: !process.env['CI'],
+    cwd: workspaceRoot,
+  },
+  projects: [
+    {
+      name: 'chromium',
+      use: { ...devices['Desktop Chrome'] },
+    },
+  ],
+});
+```
+
+#### 5.3.4 tsconfig.json
+
+```json
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "allowJs": true,
+    "outDir": "../../dist/out-tsc",
+    "module": "commonjs",
+    "sourceMap": false
+  },
+  "include": ["**/*.ts", "**/*.js", "playwright.config.ts"]
+}
+```
+
+#### 5.3.5 accordion-deep-link.spec.ts
 
 **File:** `apps/ngx-foundation-sites-e2e/src/accordion-deep-link.spec.ts`
 
@@ -621,36 +704,169 @@ test.describe('Accordion Deep Linking', () => {
 
     // Open panel 1, then panel 2
     await page.getByRole('button', { name: /Accordion 1/i }).click();
+    await page.waitForURL(/#panel-1$/);
+
     await page.getByRole('button', { name: /Accordion 2/i }).click();
+    await page.waitForURL(/#panel-2$/);
 
     // Go back - panel 1 should be active
     await page.goBack();
+
     const trigger1 = page.getByRole('button', { name: /Accordion 1/i });
     await expect(trigger1).toHaveAttribute('aria-expanded', 'true');
   });
 
   test('scrolls to panel when deepLinkSmudge is enabled', async ({ page }) => {
-    // Add content above accordion to test scroll behavior
     await page.goto(`${storyUrl}#panel-3`);
 
-    // Verify panel 3 is in viewport after smudge delay
+    // Wait for smudge delay (300ms default)
+    await page.waitForTimeout(400);
+
     const trigger3 = page.getByRole('button', { name: /Accordion 3/i });
     await expect(trigger3).toBeInViewport();
+  });
+
+  test('clears hash when all panels are closed in multi-expand mode', async ({ page }) => {
+    // Use multi-expand story with deep linking
+    const multiStoryUrl = '/iframe.html?id=components-accordion--multi-expand-deep-link';
+    await page.goto(`${multiStoryUrl}#panel-1`);
+
+    // Close the expanded panel
+    await page.getByRole('button', { name: /Accordion 1/i }).click();
+
+    // Hash should be cleared
+    await expect(page).not.toHaveURL(/#panel/);
+  });
+
+  test('ignores invalid hash', async ({ page }) => {
+    await page.goto(`${storyUrl}#invalid-panel-id`);
+
+    // No panel should be expanded
+    const triggers = page.getByRole('button', { name: /Accordion/i });
+    const count = await triggers.count();
+
+    for (let i = 0; i < count; i++) {
+      await expect(triggers.nth(i)).toHaveAttribute('aria-expanded', 'false');
+    }
+  });
+
+  test('uses replaceState when updateHistory is false', async ({ page }) => {
+    // Use story with updateHistory=false
+    const replaceStoryUrl = '/iframe.html?id=components-accordion--deep-link-no-history';
+    await page.goto(replaceStoryUrl);
+
+    const initialHistoryLength = await page.evaluate(() => history.length);
+
+    await page.getByRole('button', { name: /Accordion 1/i }).click();
+    await page.getByRole('button', { name: /Accordion 2/i }).click();
+
+    const finalHistoryLength = await page.evaluate(() => history.length);
+
+    // History length should not increase with replaceState
+    expect(finalHistoryLength).toBe(initialHistoryLength);
   });
 });
 ```
 
-**Test Cases:**
+#### 5.3.6 ESLint Configuration (Optional)
 
-| Test Case                        | Description                                                     |
-| -------------------------------- | --------------------------------------------------------------- |
-| Initial hash opens panel         | Navigate to `#panel-2`, verify panel 2 is expanded              |
-| Click updates hash               | Click panel 1, verify URL ends with `#panel-1`                  |
-| Browser back/forward             | Open panels sequentially, use back button, verify correct panel |
-| Scroll to panel (smudge)         | Navigate with hash, verify panel scrolls into view              |
-| Hash cleared when panel closed   | In multi-expand, close all panels, verify hash is cleared       |
-| Invalid hash ignored             | Navigate with `#invalid-panel`, verify no panel opens           |
-| updateHistory=false uses replace | Verify history.replaceState is used (history.length unchanged)  |
+**File:** `apps/ngx-foundation-sites-e2e/.eslintrc.json`
+
+```json
+{
+  "extends": ["../../.eslintrc.json"],
+  "ignorePatterns": ["!**/*"],
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "rules": {}
+    },
+    {
+      "files": ["src/**/*.ts"],
+      "extends": ["plugin:playwright/recommended"],
+      "rules": {}
+    }
+  ]
+}
+```
+
+#### 5.3.7 Required Story Variants
+
+The E2E tests require these additional story variants in `accordion.stories.ts`:
+
+| Story Name            | Purpose                              |
+| --------------------- | ------------------------------------ |
+| `MultiExpandDeepLink` | Multi-expand with `deepLink=true`    |
+| `DeepLinkNoHistory`   | Deep link with `updateHistory=false` |
+
+#### 5.3.8 Test Cases
+
+| Test Case                | Description                             | Why E2E?            |
+| ------------------------ | --------------------------------------- | ------------------- |
+| Initial hash opens panel | Navigate to `#panel-2`, verify expanded | Real URL navigation |
+| Click updates hash       | Click panel, verify URL hash            | Browser URL access  |
+| Browser back/forward     | Navigate history, verify state          | Real history API    |
+| Scroll to panel (smudge) | Verify scroll position                  | Real viewport       |
+| Hash cleared on close    | Close all, verify hash gone             | URL verification    |
+| Invalid hash ignored     | Bad hash, no panel opens                | URL parsing         |
+| updateHistory=false      | replaceState used                       | History stack       |
+
+#### 5.3.9 Files to Create
+
+| Path                                                            | Purpose                  |
+| --------------------------------------------------------------- | ------------------------ |
+| `apps/ngx-foundation-sites-e2e/project.json`                    | Nx project configuration |
+| `apps/ngx-foundation-sites-e2e/playwright.config.ts`            | Playwright configuration |
+| `apps/ngx-foundation-sites-e2e/tsconfig.json`                   | TypeScript configuration |
+| `apps/ngx-foundation-sites-e2e/src/accordion-deep-link.spec.ts` | E2E test file            |
+| `apps/ngx-foundation-sites-e2e/.eslintrc.json`                  | ESLint config (optional) |
+
+#### 5.3.10 Files to Modify
+
+| Path                                          | Change                                                           |
+| --------------------------------------------- | ---------------------------------------------------------------- |
+| `packages/.../accordion/accordion.stories.ts` | Add `MultiExpandDeepLink` and `DeepLinkNoHistory` story variants |
+
+#### 5.3.11 Verification
+
+```bash
+# Run E2E tests only
+npx nx e2e ngx-foundation-sites-e2e
+
+# Run full CI (includes E2E)
+npm run ci
+```
+
+#### 5.3.12 Future: Phase 6 Router Strategy Testing
+
+When Phase 6 (Angular Router integration) is implemented, Storybook interaction tests become possible:
+
+```typescript
+export const DeepLinkRouter: Story = {
+  decorators: [
+    applicationConfig({
+      providers: [provideRouter([], withHashLocation()), provideLocationMocks(), provideAccordionDeepLink('router')],
+    }),
+  ],
+  play: async ({ canvasElement }) => {
+    const location = TestBed.inject(Location);
+    const viewportScroller = TestBed.inject(ViewportScroller);
+    const scrollSpy = vi.spyOn(viewportScroller, 'scrollToAnchor');
+
+    location.go('/#panel-2');
+
+    const trigger2 = within(canvasElement).getByRole('button', { name: /Accordion 2/i });
+    await expect(trigger2).toHaveAttribute('aria-expanded', 'true');
+    await waitFor(() => expect(scrollSpy).toHaveBeenCalledWith('panel-2'));
+  },
+};
+```
+
+| Aspect       | E2E (Native)         | Storybook (Router)          |
+| ------------ | -------------------- | --------------------------- |
+| URL changes  | Real browser URL     | Mocked `Location` service   |
+| Back/forward | `page.goBack()`      | `location.simulateUrlPop()` |
+| Scroll       | Real viewport scroll | Spy on `ViewportScroller`   |
 
 ### 5.4 Run CI Verification
 
