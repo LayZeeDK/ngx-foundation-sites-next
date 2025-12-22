@@ -436,3 +436,232 @@ export const RequireOneOpen: Story = {
     });
   },
 };
+
+/**
+ * Comprehensive accessibility testing story.
+ * Verifies all ARIA attributes, focus management, and keyboard interactions
+ * required for WCAG 2.1 AA compliance.
+ */
+export const Accessibility: Story = {
+  args: {
+    multiExpandable: false,
+    disabled: false,
+    slideSpeed: 0, // Instant animation for reliable testing
+    allowAllClosed: true,
+  },
+  render: Default.render,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Get all accordion triggers
+    const trigger1 = canvas.getByRole('button', { name: /Accordion 1/i });
+    const trigger2 = canvas.getByRole('button', { name: /Accordion 2/i });
+    const trigger3 = canvas.getByRole('button', { name: /Accordion 3/i });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 1. ARIA ATTRIBUTE VERIFICATION
+    // ═══════════════════════════════════════════════════════════════════════
+
+    // Verify all triggers have proper type="button"
+    expect(trigger1).toHaveAttribute('type', 'button');
+    expect(trigger2).toHaveAttribute('type', 'button');
+    expect(trigger3).toHaveAttribute('type', 'button');
+
+    // Verify initial aria-expanded states (all collapsed)
+    expect(trigger1).toHaveAttribute('aria-expanded', 'false');
+    expect(trigger2).toHaveAttribute('aria-expanded', 'false');
+    expect(trigger3).toHaveAttribute('aria-expanded', 'false');
+
+    // Verify aria-controls points to correct panel IDs
+    expect(trigger1).toHaveAttribute('aria-controls', 'panel-1');
+    expect(trigger2).toHaveAttribute('aria-controls', 'panel-2');
+    expect(trigger3).toHaveAttribute('aria-controls', 'panel-3');
+
+    // Verify panels have correct IDs matching aria-controls
+    const panel1 = canvasElement.querySelector('#panel-1');
+    const panel2 = canvasElement.querySelector('#panel-2');
+    const panel3 = canvasElement.querySelector('#panel-3');
+    expect(panel1).toBeTruthy();
+    expect(panel2).toBeTruthy();
+    expect(panel3).toBeTruthy();
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 2. EXPAND/COLLAPSE STATE CHANGES
+    // ═══════════════════════════════════════════════════════════════════════
+
+    // Expand panel 1 and verify aria-expanded updates
+    await userEvent.click(trigger1);
+    await waitFor(() => {
+      expect(trigger1).toHaveAttribute('aria-expanded', 'true');
+    });
+
+    // Expand panel 2 - should close panel 1 (single expand mode)
+    await userEvent.click(trigger2);
+    await waitFor(() => {
+      expect(trigger1).toHaveAttribute('aria-expanded', 'false');
+      expect(trigger2).toHaveAttribute('aria-expanded', 'true');
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 3. FOCUS MANAGEMENT
+    // ═══════════════════════════════════════════════════════════════════════
+
+    // Focus should stay on trigger after click (not move to panel)
+    expect(document.activeElement).toBe(trigger2);
+
+    // Tab should move focus to next trigger
+    trigger1.focus();
+    expect(document.activeElement).toBe(trigger1);
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 4. KEYBOARD NAVIGATION (Arrow Keys)
+    // ═══════════════════════════════════════════════════════════════════════
+
+    // ArrowDown should move focus to next trigger
+    await userEvent.keyboard('{ArrowDown}');
+    await waitFor(() => {
+      expect(document.activeElement).toBe(trigger2);
+    });
+
+    // ArrowDown again to trigger 3
+    await userEvent.keyboard('{ArrowDown}');
+    await waitFor(() => {
+      expect(document.activeElement).toBe(trigger3);
+    });
+
+    // ArrowUp should move focus back to trigger 2
+    await userEvent.keyboard('{ArrowUp}');
+    await waitFor(() => {
+      expect(document.activeElement).toBe(trigger2);
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 5. KEYBOARD ACTIVATION (Enter and Space)
+    // ═══════════════════════════════════════════════════════════════════════
+
+    // Focus on trigger3 and activate with Enter
+    trigger3.focus();
+    await userEvent.keyboard('{Enter}');
+    await waitFor(() => {
+      expect(trigger3).toHaveAttribute('aria-expanded', 'true');
+      expect(trigger2).toHaveAttribute('aria-expanded', 'false');
+    });
+
+    // Activate with Space to toggle
+    await userEvent.keyboard(' ');
+    await waitFor(() => {
+      expect(trigger3).toHaveAttribute('aria-expanded', 'false');
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 6. HOME/END KEY NAVIGATION
+    // ═══════════════════════════════════════════════════════════════════════
+
+    // Home should move focus to first trigger
+    await userEvent.keyboard('{Home}');
+    await waitFor(() => {
+      expect(document.activeElement).toBe(trigger1);
+    });
+
+    // End should move focus to last trigger
+    await userEvent.keyboard('{End}');
+    await waitFor(() => {
+      expect(document.activeElement).toBe(trigger3);
+    });
+  },
+};
+
+/**
+ * Tests focus management when accordion items are disabled.
+ * Angular ARIA allows focus on disabled items (for screen reader announcement)
+ * but prevents their activation via click, Enter, or Space.
+ */
+export const FocusManagementWithDisabled: Story = {
+  args: {
+    multiExpandable: false,
+    disabled: false,
+    slideSpeed: 0,
+    allowAllClosed: true,
+  },
+  render: (args) => ({
+    props: args,
+    moduleMetadata: {
+      imports: [
+        NfsAccordion,
+        NfsAccordionItem,
+        NfsAccordionTitleDef,
+        NfsAccordionContentDef,
+      ],
+    },
+    template: `
+      <nfs-accordion
+        [multiExpandable]="multiExpandable"
+        [disabled]="disabled"
+        [slideSpeed]="slideSpeed"
+        [allowAllClosed]="allowAllClosed"
+      >
+        <nfs-accordion-item panelId="panel-1">
+          <span *nfsAccordionTitle>Enabled 1</span>
+          <p *nfsAccordionContent>Panel 1 content.</p>
+        </nfs-accordion-item>
+        <nfs-accordion-item panelId="panel-2" [disabled]="true">
+          <span *nfsAccordionTitle>Disabled</span>
+          <p *nfsAccordionContent>Panel 2 content (disabled).</p>
+        </nfs-accordion-item>
+        <nfs-accordion-item panelId="panel-3">
+          <span *nfsAccordionTitle>Enabled 2</span>
+          <p *nfsAccordionContent>Panel 3 content.</p>
+        </nfs-accordion-item>
+      </nfs-accordion>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const trigger1 = canvas.getByRole('button', { name: /Enabled 1/i });
+    const trigger2 = canvas.getByRole('button', { name: /Disabled/i });
+    const trigger3 = canvas.getByRole('button', { name: /Enabled 2/i });
+
+    // Verify disabled trigger has aria-disabled="true"
+    expect(trigger2).toHaveAttribute('aria-disabled', 'true');
+    // Enabled triggers should not be marked as disabled
+    // Note: @angular/aria may set aria-disabled="false" explicitly, which is valid ARIA
+    expect(trigger1).not.toHaveAttribute('aria-disabled', 'true');
+    expect(trigger3).not.toHaveAttribute('aria-disabled', 'true');
+
+    // Focus first trigger
+    trigger1.focus();
+    expect(document.activeElement).toBe(trigger1);
+
+    // ArrowDown moves focus to disabled trigger (Angular ARIA allows focus on disabled items
+    // for screen reader announcement, but prevents activation)
+    await userEvent.keyboard('{ArrowDown}');
+    await waitFor(() => {
+      expect(document.activeElement).toBe(trigger2);
+    });
+
+    // ArrowDown again moves to third trigger
+    await userEvent.keyboard('{ArrowDown}');
+    await waitFor(() => {
+      expect(document.activeElement).toBe(trigger3);
+    });
+
+    // ArrowUp moves back to disabled trigger
+    await userEvent.keyboard('{ArrowUp}');
+    await waitFor(() => {
+      expect(document.activeElement).toBe(trigger2);
+    });
+
+    // Clicking disabled trigger should not expand it
+    await userEvent.click(trigger2);
+    await waitFor(() => {
+      expect(trigger2).toHaveAttribute('aria-expanded', 'false');
+    });
+
+    // Pressing Enter on disabled trigger should not expand it
+    await userEvent.keyboard('{Enter}');
+    await waitFor(() => {
+      expect(trigger2).toHaveAttribute('aria-expanded', 'false');
+    });
+  },
+};
