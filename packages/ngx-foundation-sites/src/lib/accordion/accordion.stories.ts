@@ -451,6 +451,31 @@ export const Accessibility: Story = {
     expect(panel2).toBeTruthy();
     expect(panel3).toBeTruthy();
 
+    // Verify panels have aria-labelledby pointing to their trigger
+    // This is required by ARIA Authoring Practices for screen reader context
+    const panel1LabelledBy = panel1?.getAttribute('aria-labelledby');
+    const panel2LabelledBy = panel2?.getAttribute('aria-labelledby');
+    const panel3LabelledBy = panel3?.getAttribute('aria-labelledby');
+
+    expect(panel1LabelledBy).toBeTruthy();
+    expect(panel2LabelledBy).toBeTruthy();
+    expect(panel3LabelledBy).toBeTruthy();
+
+    // Verify aria-labelledby references exist and match the triggers
+    const labelledByTrigger1 = canvasElement.querySelector(
+      `#${panel1LabelledBy}`,
+    );
+    const labelledByTrigger2 = canvasElement.querySelector(
+      `#${panel2LabelledBy}`,
+    );
+    const labelledByTrigger3 = canvasElement.querySelector(
+      `#${panel3LabelledBy}`,
+    );
+
+    expect(labelledByTrigger1).toBe(trigger1);
+    expect(labelledByTrigger2).toBe(trigger2);
+    expect(labelledByTrigger3).toBe(trigger3);
+
     // ═══════════════════════════════════════════════════════════════════════
     // 2. EXPAND/COLLAPSE STATE CHANGES
     // ═══════════════════════════════════════════════════════════════════════
