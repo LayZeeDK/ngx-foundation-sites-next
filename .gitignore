@@ -53,3 +53,6 @@ vitest.config.*.timestamp*
 
 storybook-static
 __screenshots__/
+
+# Compodoc generated documentation
+**/documentation.json
