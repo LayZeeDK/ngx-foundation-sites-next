@@ -49,7 +49,15 @@
         "port": 4400,
         "configDir": "packages/ngx-foundation-sites/.storybook",
         "browserTarget": "ngx-foundation-sites:build-storybook",
-        "compodoc": false,
+        "compodoc": true,
+        "compodocArgs": [
+          "-p",
+          "packages/ngx-foundation-sites/tsconfig.lib.json",
+          "-e",
+          "json",
+          "-d",
+          "packages/ngx-foundation-sites"
+        ],
         "styles": ["packages/ngx-foundation-sites/src/storybook/styles.scss"]
       },
       "configurations": {
@@ -60,12 +68,20 @@
     },
     "build-storybook": {
       "executor": "@storybook/angular:build-storybook",
-      "outputs": ["{options.outputDir}"],
+      "outputs": ["{options.outputDir}", "{projectRoot}/documentation.json"],
       "options": {
         "outputDir": "dist/storybook/ngx-foundation-sites",
         "configDir": "packages/ngx-foundation-sites/.storybook",
         "browserTarget": "ngx-foundation-sites:build-storybook",
-        "compodoc": false,
+        "compodoc": true,
+        "compodocArgs": [
+          "-p",
+          "packages/ngx-foundation-sites/tsconfig.lib.json",
+          "-e",
+          "json",
+          "-d",
+          "packages/ngx-foundation-sites"
+        ],
         "styles": ["packages/ngx-foundation-sites/src/storybook/styles.scss"]
       },
       "configurations": {
