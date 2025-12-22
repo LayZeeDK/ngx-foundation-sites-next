@@ -1,5 +1,14 @@
 // Foundation component includes for global styles
-@use 'foundation-sites/scss/foundation';
+// Configure Foundation with WCAG AA compliant colors
+@use 'foundation-sites/scss/foundation' with (
+  $foundation-palette: (
+    primary: #0d5a89,
+    secondary: #595959,
+    success: #1a7f3e,
+    warning: #8a6500,
+    alert: #a33a2a,
+  )
+);
 
 @mixin foundation-global-styles {
   @include foundation.foundation-global-styles;
