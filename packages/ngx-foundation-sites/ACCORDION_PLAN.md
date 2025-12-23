@@ -1223,14 +1223,16 @@ Add to accordion component documentation:
 | `disabled` (group)     | ✅ Exposed as input                 | ✅     |
 | `disabled` (item)      | ✅ Exposed on `NfsAccordionItem`    | ✅     |
 | `wrap`                 | ✅ Exposed as input                 | ✅     |
-| `softDisabled`         | Not exposed                         | ❌     |
-| `expandAll()` method   | Not exposed                         | ❌     |
-| `collapseAll()` method | Not exposed                         | ❌     |
-| `preserveContent`      | Not exposed                         | ❌     |
+| `softDisabled`         | ✅ Exposed as input                 | ✅     |
+| `expandAll()` method   | ✅ Exposed as public method         | ✅     |
+| `collapseAll()` method | ✅ Exposed as public method         | ✅     |
+| `preserveContent`      | ❌ Not public API (internal)        | ⚠️     |
 | `textDirection`        | Not exposed (auto via Angular ARIA) | ⚠️     |
 | Lazy rendering         | ✅ Built-in                         | ✅     |
 
-**Result: 5/10 features accessible to consumers (50%)**
+**Result: 8/10 features accessible to consumers (80%)**
+
+> **Note:** `preserveContent` is inherited from Angular ARIA's internal `DeferredContentAware` class and is not exported as a public API. The `textDirection` is automatically handled by Angular ARIA based on the document direction.
 
 ### 7.2 Implementation: Foundation Feature Parity
 
@@ -1260,14 +1262,18 @@ scrollToPanel(panelId: string, delay = 300, offset = 0): void {
 }
 ```
 
-### 7.3 Implementation: Angular ARIA Feature Exposure
+### 7.3 Implementation: Angular ARIA Feature Exposure ✅
 
-#### 7.3.1 Add `softDisabled` Input
+#### 7.3.1 Add `softDisabled` Input ✅
 
 **File:** `packages/ngx-foundation-sites/src/lib/accordion/accordion.ts`
 
 ```typescript
-/** When true, disabled items can receive focus but not be activated */
+/** Whether to allow disabled items to receive focus.
+ * When true, disabled items are focusable but not interactive.
+ * When false, disabled items are skipped during navigation.
+ * Default: true (allows focus for screen reader announcement)
+ */
 readonly softDisabled = input(true);
 ```
 
@@ -1277,40 +1283,61 @@ Update template:
 <ul ngAccordionGroup ... [softDisabled]="softDisabled()"></ul>
 ```
 
-#### 7.3.2 Add `preserveContent` Input to `NfsAccordionItem`
+#### 7.3.2 Add `preserveContent` Input to `NfsAccordionItem` — NOT IMPLEMENTED
 
-**File:** `packages/ngx-foundation-sites/src/lib/accordion/accordion-item.ts`
+**Discovery:** During implementation, TypeScript compilation revealed that `preserveContent` is inherited from `DeferredContentAware`, which is an **internal class** not exported from `@angular/aria/accordion`. Attempting to bind to this property results in:
 
-```typescript
-/** Whether to keep content in DOM after panel collapses (default: true) */
-readonly preserveContent = input(true);
+```
+NG3004: Unable to import symbol DeferredContentAware.
+The symbol is not exported from @angular/aria/accordion
 ```
 
-**File:** `packages/ngx-foundation-sites/src/lib/accordion/accordion.ts`
+**Decision:** This feature cannot be exposed as it's not part of Angular ARIA's public API. The default behavior (content preserved after first expansion) is maintained.
 
-Update template:
-
-```html
-<div ngAccordionPanel ... [preserveContent]="item.preserveContent()"></div>
-```
-
-#### 7.3.3 Expose `expandAll()` and `collapseAll()` Methods
+#### 7.3.3 Expose `expandAll()` and `collapseAll()` Methods ✅
 
 **File:** `packages/ngx-foundation-sites/src/lib/accordion/accordion.ts`
 
 ```typescript
-@ViewChild(AccordionGroup) private accordionGroup!: AccordionGroup;
+/** Reference to the AccordionGroup directive for programmatic control */
+private readonly accordionGroup = viewChild(AccordionGroup);
 
-/** Expands all panels (only works when multiExpandable is true) */
+/**
+ * Expands all accordion panels.
+ * Only works when `multiExpandable` is true.
+ */
 expandAll(): void {
-  this.accordionGroup?.expandAll();
+  this.accordionGroup()?.expandAll();
 }
 
-/** Collapses all panels */
+/**
+ * Collapses all accordion panels.
+ * Note: If `allowAllClosed` is false, at least one panel will remain open.
+ */
 collapseAll(): void {
-  this.accordionGroup?.collapseAll();
+  this.accordionGroup()?.collapseAll();
 }
 ```
+
+#### 7.3.4 Phase 7.3 Implementation Notes
+
+**Adjustments made during implementation:**
+
+1. **Signal-based viewChild**: Used `viewChild(AccordionGroup)` instead of `@ViewChild` decorator for consistency with Angular's modern signal-based APIs.
+
+2. **preserveContent unavailable**: The `preserveContent` property is not a public API in Angular ARIA. It's inherited from the internal `DeferredContentAware` class which controls lazy content rendering. This feature was removed from the implementation scope.
+
+3. **softDisabled behavior**: When `softDisabled=true` (default), disabled accordion items can receive keyboard focus for screen reader announcement but cannot be activated. When `softDisabled=false`, disabled items are completely skipped during keyboard navigation.
+
+**Stories added:**
+
+- `SoftDisabled` - Demonstrates focus skipping when `softDisabled=false`
+- `ExpandCollapseAll` - Demonstrates programmatic `expandAll()` and `collapseAll()` methods with external buttons
+
+**Unit tests added:**
+
+- `softDisabled` - 3 tests for focus behavior with disabled items
+- `expandAll and collapseAll` - 4 tests for programmatic panel control
 
 ### 7.4 Implementation: CSS Custom Properties for Theming ✅
 
@@ -1510,50 +1537,57 @@ collapseAll(): void {
 #### 7.5.1 Unit Tests
 
 - Test `deepLinkSmudgeOffset` with various offset values — ⏳
-- Test `softDisabled` focus behavior — ⏳
-- Test `preserveContent` DOM cleanup — ⏳
-- Test `expandAll()` / `collapseAll()` methods — ⏳
+- Test `softDisabled` focus behavior — ✅ (3 tests added in Phase 7.3)
+- Test `preserveContent` DOM cleanup — ❌ (not implemented, internal API)
+- Test `expandAll()` / `collapseAll()` methods — ✅ (4 tests added in Phase 7.3)
 - Test CSS custom property binding — ✅ (3 tests added in Phase 7.4)
 
 #### 7.5.2 Storybook Stories
 
-| Story Name             | Purpose                                     | Status |
-| ---------------------- | ------------------------------------------- | ------ |
-| `DeepLinkWithOffset`   | Demonstrate sticky header offset            | ⏳     |
-| `SoftDisabled`         | Show focus behavior on disabled items       | ⏳     |
-| `ExpandCollapseAll`    | Buttons to trigger programmatic methods     | ⏳     |
-| `CustomTheme`          | Demonstrate CSS custom property theming     | ✅     |
-| `ThemeControls`        | Interactive controls for ALL CSS properties | ✅     |
-| `PreserveContentFalse` | Show DOM cleanup when panel closes          | ⏳     |
+| Story Name             | Purpose                                     | Status                      |
+| ---------------------- | ------------------------------------------- | --------------------------- |
+| `DeepLinkWithOffset`   | Demonstrate sticky header offset            | ⏳                          |
+| `SoftDisabled`         | Show focus behavior on disabled items       | ✅ (Phase 7.3)              |
+| `ExpandCollapseAll`    | Buttons to trigger programmatic methods     | ✅ (Phase 7.3)              |
+| `CustomTheme`          | Demonstrate CSS custom property theming     | ✅ (Phase 7.4)              |
+| `ThemeControls`        | Interactive controls for ALL CSS properties | ✅ (Phase 7.4)              |
+| `PreserveContentFalse` | Show DOM cleanup when panel closes          | ❌ (not possible, internal) |
 
 ### 7.6 Files to Modify
 
-| File                                  | Changes                                                | Status                              |
-| ------------------------------------- | ------------------------------------------------------ | ----------------------------------- |
-| `accordion.ts`                        | Add 14 new inputs, 2 methods, ViewChild, host bindings | ⏳                                  |
-| `accordion-item.ts`                   | Add `preserveContent` input                            | ⏳                                  |
-| `accordion-deep-link.service.ts`      | Add offset parameter to `scrollToPanel()`              | ⏳                                  |
-| `styles.scss`                         | Add CSS custom property fallbacks                      | ✅ 7.4                              |
-| `accordion.stories.ts`                | Add 5 new stories                                      | ✅ 7.4 (CustomTheme, ThemeControls) |
-| `accordion.spec.ts`                   | Add unit tests for new features                        | ✅ 7.4 (theming tests)              |
-| `accordion-deep-link.service.spec.ts` | Add offset tests                                       | ⏳                                  |
+| File                                  | Changes                                                | Status                                   |
+| ------------------------------------- | ------------------------------------------------------ | ---------------------------------------- |
+| `accordion.ts`                        | Add `softDisabled` input, `viewChild`, 2 methods       | ✅ 7.3                                   |
+| `accordion-item.ts`                   | Add `preserveContent` input                            | ❌ (not possible, internal API)          |
+| `accordion-deep-link.service.ts`      | Add offset parameter to `scrollToPanel()`              | ⏳                                       |
+| `styles.scss`                         | Add CSS custom property fallbacks                      | ✅ 7.4                                   |
+| `accordion.stories.ts`                | Add stories for new features                           | ✅ 7.3 + 7.4 (4 stories)                 |
+| `accordion.spec.ts`                   | Add unit tests for new features                        | ✅ 7.3 + 7.4 (softDisabled, expand/collapse, theming) |
+| `accordion-deep-link.service.spec.ts` | Add offset tests                                       | ⏳                                       |
 
 ### 7.7 Implementation Order
 
 1. **deepLinkSmudgeOffset** (simplest, completes Foundation parity) — ⏳ Pending
-2. **softDisabled** (simple input passthrough) — ⏳ Pending
-3. **preserveContent** (simple input passthrough) — ⏳ Pending
-4. **expandAll/collapseAll** (requires ViewChild) — ⏳ Pending
+2. **softDisabled** (simple input passthrough) — ✅ Complete (Phase 7.3)
+3. **preserveContent** (simple input passthrough) — ❌ Not possible (internal API)
+4. **expandAll/collapseAll** (requires viewChild) — ✅ Complete (Phase 7.3)
 5. **CSS custom properties** (most complex, requires style updates) — ✅ Complete (Phase 7.4)
 
 ### 7.8 Expected Outcome
 
-After implementing Phase 7:
+**Current status after Phase 7.3 + 7.4:**
+
+- **89%** Foundation JavaScript options (8/9 — missing `deepLinkSmudgeOffset`)
+- **100%** WAI-ARIA compliance (unchanged)
+- **80%** Angular ARIA features exposed (8/10 — `preserveContent` internal, `textDirection` auto)
+- **92%** Foundation Sass variables as CSS custom properties (11/12 — excluding plusminus icons)
+
+**After completing Phase 7.2 (deepLinkSmudgeOffset):**
 
 - **100%** Foundation JavaScript options
 - **100%** WAI-ARIA compliance (unchanged)
-- **90%** Angular ARIA features exposed
-- **100%** Foundation Sass variables as CSS custom properties
+- **80%** Angular ARIA features exposed
+- **92%** Foundation Sass variables as CSS custom properties
 
 ---
 
