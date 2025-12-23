@@ -56,7 +56,10 @@
           "--disablePrivate",
           "--disableProtected",
           "--disableInternal",
-          "--disableLifeCycleHooks"
+          "--disableLifeCycleHooks",
+          "--disableSourceCode",
+          "--disableCoverage",
+          "--disableRoutesGraph"
         ],
         "styles": ["packages/ngx-foundation-sites/src/storybook/styles.scss"]
       },
@@ -80,7 +83,10 @@
           "--disablePrivate",
           "--disableProtected",
           "--disableInternal",
-          "--disableLifeCycleHooks"
+          "--disableLifeCycleHooks",
+          "--disableSourceCode",
+          "--disableCoverage",
+          "--disableRoutesGraph"
         ],
         "styles": ["packages/ngx-foundation-sites/src/storybook/styles.scss"]
       },
