@@ -79,8 +79,16 @@ Use the Playwright MCP server to:
 - Use strict type checking
 - Prefer type inference when the type is obvious
 - Avoid the `any` type; use `unknown` when type is uncertain
-- Use JS-native `#` private fields instead of TypeScript's `private` keyword for true runtime privacy
-  - **Exception**: Angular signal queries (`viewChild`, `contentChild`, `contentChildren`) require TypeScript `private` because Angular needs compile-time access
+
+### Member Visibility
+
+Use these guidelines for class member visibility (ensures proper runtime privacy and clean Storybook Controls):
+
+- **`#` (ES private fields)**: Use for truly private members not accessed by templates or Angular APIs
+- **`protected`**: Use for members accessed by component templates OR Angular signal queries (`viewChild`, `contentChild`, `contentChildren`) — Angular needs compile-time access so `#` cannot be used
+- **`public` (no modifier)**: Use for the component's public API (`input()`, `output()`, public methods)
+
+Do NOT use TypeScript's `private` keyword — use `#` for true runtime privacy instead.
 
 ## Angular Best Practices
 
