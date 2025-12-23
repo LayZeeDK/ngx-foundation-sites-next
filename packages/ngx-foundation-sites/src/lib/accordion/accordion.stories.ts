@@ -853,7 +853,7 @@ export const ThemeControls: ThemeControlsStory = {
     accordionContentColor: '#0a0a0a',
     accordionContentPadding: '1rem',
     accordionSlideSpeed: '250ms',
-    accordionSlideEasing: 'ease-out',
+    accordionSlideEasing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
   },
   argTypes: {
     // CSS Custom Property controls

@@ -82,6 +82,7 @@ import { AccordionDeepLinkService } from './accordion-deep-link.service';
     /*
      * CSS Grid animation for smooth expand/collapse using @starting-style
      * Uses grid-template-rows transition from 0fr to 1fr
+     * Easing matches Foundation's jQuery swing (easeOutQuad)
      */
     .accordion-content {
       display: grid !important;
@@ -111,7 +112,7 @@ import { AccordionDeepLinkService } from './accordion-deep-link.service';
       display: grid;
       grid-template-rows: 1fr;
       transition: grid-template-rows var(--nfs-accordion-slide-speed, 250ms)
-        var(--nfs-accordion-slide-easing, ease-out);
+        var(--nfs-accordion-slide-easing, cubic-bezier(0.25, 0.46, 0.45, 0.94));
 
       @starting-style {
         grid-template-rows: 0fr;
@@ -126,7 +127,7 @@ import { AccordionDeepLinkService } from './accordion-deep-link.service';
       display: grid;
       grid-template-rows: 0fr;
       transition: grid-template-rows var(--nfs-accordion-slide-speed, 250ms)
-        var(--nfs-accordion-slide-easing, ease-out);
+        var(--nfs-accordion-slide-easing, cubic-bezier(0.25, 0.46, 0.45, 0.94));
 
       > * {
         overflow: hidden;
