@@ -401,8 +401,8 @@ Used Angular v21's native CSS animation with `animate.enter`/`animate.leave` ins
 **Implementation:**
 
 - CSS Grid animation using `grid-template-rows: 0fr → 1fr` with `@starting-style`
-- CSS custom property `--nfs-accordion-slide-speed` for configurable duration
-- `slideSpeed` input on `NfsAccordion` component
+- CSS custom property `--nfs-accordion-slide-speed` for configurable duration (default: `250ms`)
+- No Angular input property — CSS-only approach aligns with Phase 7.4 theming pattern
 
 **Stories added:** `SlowAnimation`, `NoAnimation`
 
@@ -1180,17 +1180,17 @@ Add to accordion component documentation:
 
 #### Foundation JavaScript Options (9 total)
 
-| Foundation Option              | Default | Our Input             | Status     |
-| ------------------------------ | ------- | --------------------- | ---------- |
-| `data-slide-speed`             | 250     | `slideSpeed`          | ✅         |
-| `data-multi-expand`            | false   | `multiExpandable`     | ✅         |
-| `data-allow-all-closed`        | false   | `allowAllClosed`      | ✅         |
-| `data-deep-link`               | false   | `deepLink`            | ✅         |
-| `data-deep-link-smudge`        | false   | `deepLinkSmudge`      | ✅         |
-| `data-deep-link-smudge-delay`  | 300     | `deepLinkSmudgeDelay` | ✅         |
-| `data-deep-link-smudge-offset` | 0       | —                     | ❌ MISSING |
-| `data-update-history`          | false   | `updateHistory`       | ✅         |
-| `disabled` (attr)              | —       | `disabled`            | ✅         |
+| Foundation Option              | Default | Our Input                           | Status     |
+| ------------------------------ | ------- | ----------------------------------- | ---------- |
+| `data-slide-speed`             | 250     | `--nfs-accordion-slide-speed` (CSS) | ✅         |
+| `data-multi-expand`            | false   | `multiExpandable`                   | ✅         |
+| `data-allow-all-closed`        | false   | `allowAllClosed`                    | ✅         |
+| `data-deep-link`               | false   | `deepLink`                          | ✅         |
+| `data-deep-link-smudge`        | false   | `deepLinkSmudge`                    | ✅         |
+| `data-deep-link-smudge-delay`  | 300     | `deepLinkSmudgeDelay`               | ✅         |
+| `data-deep-link-smudge-offset` | 0       | —                                   | ❌ MISSING |
+| `data-update-history`          | false   | `updateHistory`                     | ✅         |
+| `disabled` (attr)              | —       | `disabled`                          | ✅         |
 
 **Result: 8/9 options implemented (89%)**
 
@@ -1376,19 +1376,19 @@ collapseAll(): void {
 
 #### 7.4.2 Available CSS Custom Properties
 
-| Property                                | Description            | Default                          |
-| --------------------------------------- | ---------------------- | -------------------------------- |
-| `--nfs-accordion-background`            | Container background   | `#fefefe`                        |
-| `--nfs-accordion-title-font-size`       | Title font size        | `rem-calc(12)`                   |
-| `--nfs-accordion-item-color`            | Title text color       | `#0d5a89`                        |
-| `--nfs-accordion-item-background-hover` | Title hover background | `#e6e6e6`                        |
-| `--nfs-accordion-item-padding`          | Title padding          | `1.25rem 1rem`                   |
-| `--nfs-accordion-content-background`    | Content background     | `#fefefe`                        |
-| `--nfs-accordion-content-border`        | Content border         | `1px solid #e6e6e6`              |
-| `--nfs-accordion-content-color`         | Content text color     | `#0a0a0a`                        |
-| `--nfs-accordion-content-padding`       | Content padding        | `1rem`                           |
-| `--nfs-accordion-slide-speed`           | Animation duration     | `250ms` (via `slideSpeed` input) |
-| `--nfs-accordion-slide-easing`          | Animation easing       | `ease-out`                       |
+| Property                                | Description            | Default             |
+| --------------------------------------- | ---------------------- | ------------------- |
+| `--nfs-accordion-background`            | Container background   | `#fefefe`           |
+| `--nfs-accordion-title-font-size`       | Title font size        | `rem-calc(12)`      |
+| `--nfs-accordion-item-color`            | Title text color       | `#0d5a89`           |
+| `--nfs-accordion-item-background-hover` | Title hover background | `#e6e6e6`           |
+| `--nfs-accordion-item-padding`          | Title padding          | `1.25rem 1rem`      |
+| `--nfs-accordion-content-background`    | Content background     | `#fefefe`           |
+| `--nfs-accordion-content-border`        | Content border         | `1px solid #e6e6e6` |
+| `--nfs-accordion-content-color`         | Content text color     | `#0a0a0a`           |
+| `--nfs-accordion-content-padding`       | Content padding        | `1rem`              |
+| `--nfs-accordion-slide-speed`           | Animation duration     | `250ms`             |
+| `--nfs-accordion-slide-easing`          | Animation easing       | `ease-out`          |
 
 #### 7.4.3 Updated Storybook Styles
 
@@ -1557,15 +1557,15 @@ collapseAll(): void {
 
 ### 7.6 Files to Modify
 
-| File                                  | Changes                                                | Status                                   |
-| ------------------------------------- | ------------------------------------------------------ | ---------------------------------------- |
-| `accordion.ts`                        | Add `softDisabled` input, `viewChild`, 2 methods       | ✅ 7.3                                   |
-| `accordion-item.ts`                   | Add `preserveContent` input                            | ❌ (not possible, internal API)          |
-| `accordion-deep-link.service.ts`      | Add offset parameter to `scrollToPanel()`              | ⏳                                       |
-| `styles.scss`                         | Add CSS custom property fallbacks                      | ✅ 7.4                                   |
-| `accordion.stories.ts`                | Add stories for new features                           | ✅ 7.3 + 7.4 (4 stories)                 |
-| `accordion.spec.ts`                   | Add unit tests for new features                        | ✅ 7.3 + 7.4 (softDisabled, expand/collapse, theming) |
-| `accordion-deep-link.service.spec.ts` | Add offset tests                                       | ⏳                                       |
+| File                                  | Changes                                          | Status                                                |
+| ------------------------------------- | ------------------------------------------------ | ----------------------------------------------------- |
+| `accordion.ts`                        | Add `softDisabled` input, `viewChild`, 2 methods | ✅ 7.3                                                |
+| `accordion-item.ts`                   | Add `preserveContent` input                      | ❌ (not possible, internal API)                       |
+| `accordion-deep-link.service.ts`      | Add offset parameter to `scrollToPanel()`        | ⏳                                                    |
+| `styles.scss`                         | Add CSS custom property fallbacks                | ✅ 7.4                                                |
+| `accordion.stories.ts`                | Add stories for new features                     | ✅ 7.3 + 7.4 (4 stories)                              |
+| `accordion.spec.ts`                   | Add unit tests for new features                  | ✅ 7.3 + 7.4 (softDisabled, expand/collapse, theming) |
+| `accordion-deep-link.service.spec.ts` | Add offset tests                                 | ⏳                                                    |
 
 ### 7.7 Implementation Order
 
