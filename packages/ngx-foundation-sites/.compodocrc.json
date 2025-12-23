@@ -1,0 +1,10 @@
+{
+  "exportFormat": "json",
+  "disablePrivate": true,
+  "disableProtected": true,
+  "disableInternal": true,
+  "disableLifeCycleHooks": true,
+  "disableSourceCode": true,
+  "disableCoverage": true,
+  "disableRoutesGraph": true
+}

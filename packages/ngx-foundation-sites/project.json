@@ -51,15 +51,8 @@
         "browserTarget": "ngx-foundation-sites:build-storybook",
         "compodoc": true,
         "compodocArgs": [
-          "-e",
-          "json",
-          "--disablePrivate",
-          "--disableProtected",
-          "--disableInternal",
-          "--disableLifeCycleHooks",
-          "--disableSourceCode",
-          "--disableCoverage",
-          "--disableRoutesGraph"
+          "-c",
+          "packages/ngx-foundation-sites/.compodocrc.json"
         ],
         "styles": ["packages/ngx-foundation-sites/src/storybook/styles.scss"]
       },
@@ -78,15 +71,8 @@
         "browserTarget": "ngx-foundation-sites:build-storybook",
         "compodoc": true,
         "compodocArgs": [
-          "-e",
-          "json",
-          "--disablePrivate",
-          "--disableProtected",
-          "--disableInternal",
-          "--disableLifeCycleHooks",
-          "--disableSourceCode",
-          "--disableCoverage",
-          "--disableRoutesGraph"
+          "-c",
+          "packages/ngx-foundation-sites/.compodocrc.json"
         ],
         "styles": ["packages/ngx-foundation-sites/src/storybook/styles.scss"]
       },
