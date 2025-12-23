@@ -9,6 +9,7 @@
     "format": "nx format",
     "format:check": "nx format:check",
     "lint": "nx run-many --targets=lint",
+    "kill-storybook": "kill-port 4400",
     "storybook": "nx storybook ngx-foundation-sites",
     "test": "nx run-many --targets=test,test-storybook"
   },
@@ -75,6 +76,7 @@
     "jiti": "2.4.2",
     "jsdom": "~22.1.0",
     "jsonc-eslint-parser": "^2.1.0",
+    "kill-port": "^2.0.1",
     "ng-packagr": "~21.0.0",
     "nx": "22.3.1",
     "postcss": "^8.4.5",

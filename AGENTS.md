@@ -29,6 +29,7 @@ When building components, follow this priority order:
 ### Building Blocks
 
 Consider these Angular patterns as building blocks:
+
 - `@defer` - For performance optimizations and lazy loading (preferred over IntersectionObserver)
 - `@angular/cdk/portal` - For dynamic content projection
 - `NgComponentOutlet` - For dynamic component rendering
@@ -43,6 +44,7 @@ Consider these Angular patterns as building blocks:
 ### Visual Testing with Playwright
 
 Use the Playwright MCP server to:
+
 - Inspect component stories in Storybook
 - Compare implementations against Foundation for Sites docs
 - Verify behavior matches Angular ARIA and Angular CDK examples
@@ -127,6 +129,7 @@ Component development and visual testing uses Storybook on port 4400.
 - **Dev server**: `npm run storybook`
 - **Build**: `npx nx build-storybook ngx-foundation-sites`
 - **Test**: `npx nx test-storybook ngx-foundation-sites`
+- **Kill process**: `npm run kill-storybook` (kills any process on port 4400)
 
 <!-- nx configuration start-->
 <!-- Leave the start & end comments to automatically receive updates. -->
