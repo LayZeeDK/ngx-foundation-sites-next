@@ -1629,11 +1629,11 @@ TypeScript's `private` keyword is erased at compile time — runtime code can st
 
 ### 8.2 Migration Summary
 
-| File                            | Members Migrated                                                                    |
-| ------------------------------- | ----------------------------------------------------------------------------------- |
-| `accordion.ts`                  | `#deepLinkService`, `#destroyRef`, `#lastExpandedPanelId`, `#initialHashProcessed` |
-| `accordion.ts`                  | `#handleInitialHash()`, `#setupHashChangeListener()`                               |
-| `accordion-deep-link.service.ts`| `#document`                                                                         |
+| File                             | Members Migrated                                                                   |
+| -------------------------------- | ---------------------------------------------------------------------------------- |
+| `accordion.ts`                   | `#deepLinkService`, `#destroyRef`, `#lastExpandedPanelId`, `#initialHashProcessed` |
+| `accordion.ts`                   | `#handleInitialHash()`, `#setupHashChangeListener()`                               |
+| `accordion-deep-link.service.ts` | `#document`                                                                        |
 
 ### 8.3 Angular Limitation
 
