@@ -89,6 +89,18 @@
       },
       "dependsOn": [
         {
+          "target": "storybook",
+          "params": "forward"
+        }
+      ]
+    },
+    "test-static-storybook": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx wait-on http://localhost:4400 && npx test-storybook -c packages/ngx-foundation-sites/.storybook --url=http://localhost:4400"
+      },
+      "dependsOn": [
+        {
           "target": "static-storybook",
           "params": "forward"
         }

@@ -4,14 +4,14 @@
   "license": "MIT",
   "scripts": {
     "build": "nx run-many --targets=build,build-storybook",
-    "ci": "npm run format:check && nx run-many --targets=lint,test,test-storybook,build,build-storybook,e2e",
+    "ci": "npm run format:check && nx run-many --targets=lint,test,test-static-storybook,build,build-storybook,e2e",
     "e2e": "nx run-many --targets=e2e",
     "format": "nx format",
     "format:check": "nx format:check",
     "lint": "nx run-many --targets=lint",
     "kill-storybook": "kill-port 4400",
     "storybook": "nx storybook ngx-foundation-sites",
-    "test": "nx run-many --targets=test,test-storybook"
+    "test": "nx run-many --targets=test,test-static-storybook"
   },
   "private": true,
   "dependencies": {
