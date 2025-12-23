@@ -32,7 +32,7 @@ import { AccordionDeepLinkService } from './accordion-deep-link.service';
       [wrap]="wrap()"
     >
       @for (item of items(); track item.panelId()) {
-        <li class="accordion-item">
+        <li class="accordion-item" [class.is-active]="item.expanded()">
           <button
             ngAccordionTrigger
             type="button"
@@ -68,9 +68,14 @@ import { AccordionDeepLinkService } from './accordion-deep-link.service';
     </ul>
   `,
   styles: `
-    /* Override Foundation's .is-active requirement with aria-expanded */
-    .accordion-item:has(button[aria-expanded='true']) > .accordion-content {
-      display: block;
+    /*
+     * Button elements need explicit styles (Foundation assumes <a> elements)
+     * - width: 100% because buttons don't fill container like display:block anchors
+     * - cursor: pointer because buttons default to cursor:default
+     */
+    .accordion-title {
+      width: 100%;
+      cursor: pointer;
     }
 
     /*
@@ -89,12 +94,12 @@ import { AccordionDeepLinkService } from './accordion-deep-link.service';
       }
     }
 
-    .accordion-item:has(button[aria-expanded='true']) > .accordion-content {
+    .accordion-item.is-active > .accordion-content {
       grid-template-rows: 1fr;
-      /* Restore Foundation padding when expanded - uses CSS custom properties */
+      /* Restore Foundation padding/border when expanded - uses CSS custom properties */
       padding: var(--nfs-accordion-content-padding, 1rem);
       border: var(--nfs-accordion-content-border, 1px solid #e6e6e6);
-      border-top: 0;
+      border-bottom: 0; /* Foundation removes bottom border, keeps top as separator */
     }
 
     /*
