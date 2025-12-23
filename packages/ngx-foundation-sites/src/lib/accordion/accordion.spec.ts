@@ -23,7 +23,6 @@ import { AccordionDeepLinkService } from './accordion-deep-link.service';
       [disabled]="disabled()"
       [softDisabled]="softDisabled()"
       [wrap]="wrap()"
-      [slideSpeed]="slideSpeed()"
       [deepLink]="deepLink()"
       [deepLinkSmudge]="deepLinkSmudge()"
       [deepLinkSmudgeDelay]="deepLinkSmudgeDelay()"
@@ -71,7 +70,6 @@ class TestHostComponent {
   disabled = signal(false);
   softDisabled = signal(true);
   wrap = signal(false);
-  slideSpeed = signal(250);
   deepLink = signal(false);
   deepLinkSmudge = signal(false);
   deepLinkSmudgeDelay = signal(300);
@@ -384,29 +382,37 @@ describe('NfsAccordion', () => {
   });
 
   describe('slideSpeed CSS custom property', () => {
-    it('should set default slide speed', () => {
-      const accordion = fixture.nativeElement.querySelector('nfs-accordion');
+    it('should use CSS fallback value (250ms) when custom property is not set', () => {
+      const accordion = fixture.nativeElement.querySelector(
+        'nfs-accordion',
+      ) as HTMLElement;
 
+      // The custom property is not set directly, CSS uses fallback value
+      // We verify the property is not explicitly set on the element
       expect(
         accordion.style.getPropertyValue('--nfs-accordion-slide-speed'),
-      ).toBe('250ms');
+      ).toBe('');
     });
 
-    it('should update slide speed when input changes', () => {
-      host.slideSpeed.set(500);
-      fixture.detectChanges();
+    it('should allow setting slide speed via CSS custom property', () => {
+      const accordion = fixture.nativeElement.querySelector(
+        'nfs-accordion',
+      ) as HTMLElement;
 
-      const accordion = fixture.nativeElement.querySelector('nfs-accordion');
+      accordion.style.setProperty('--nfs-accordion-slide-speed', '500ms');
+
       expect(
         accordion.style.getPropertyValue('--nfs-accordion-slide-speed'),
       ).toBe('500ms');
     });
 
-    it('should handle zero slide speed', () => {
-      host.slideSpeed.set(0);
-      fixture.detectChanges();
+    it('should allow disabling animation with zero slide speed', () => {
+      const accordion = fixture.nativeElement.querySelector(
+        'nfs-accordion',
+      ) as HTMLElement;
 
-      const accordion = fixture.nativeElement.querySelector('nfs-accordion');
+      accordion.style.setProperty('--nfs-accordion-slide-speed', '0ms');
+
       expect(
         accordion.style.getPropertyValue('--nfs-accordion-slide-speed'),
       ).toBe('0ms');

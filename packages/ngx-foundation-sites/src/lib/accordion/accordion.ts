@@ -2,7 +2,6 @@ import {
   afterNextRender,
   ChangeDetectionStrategy,
   Component,
-  computed,
   contentChildren,
   DestroyRef,
   effect,
@@ -135,7 +134,6 @@ import { AccordionDeepLinkService } from './accordion-deep-link.service';
     }
   `,
   host: {
-    '[style.--nfs-accordion-slide-speed]': 'slideSpeedCss()',
     style: 'display: block',
   },
   imports: [
@@ -167,9 +165,6 @@ export class NfsAccordion {
   /** Whether keyboard navigation wraps from last to first item */
   readonly wrap = input(false);
 
-  /** Animation duration in milliseconds for expand/collapse transitions */
-  readonly slideSpeed = input(250);
-
   /** Link the location hash to the open pane */
   readonly deepLink = input(false);
 
@@ -184,9 +179,6 @@ export class NfsAccordion {
 
   /** Allow all panels to be closed. If false, at least one panel must remain open. */
   readonly allowAllClosed = input(false);
-
-  /** Computed CSS value for slide speed */
-  protected readonly slideSpeedCss = computed(() => `${this.slideSpeed()}ms`);
 
   /** Collected accordion items */
   protected readonly items = contentChildren(NfsAccordionItem);
@@ -211,75 +203,72 @@ export class NfsAccordion {
     });
 
     // Track expansion changes for deep linking and allowAllClosed enforcement
-    effect(
-      () => {
-        const items = this.items();
-        if (items.length === 0) return;
+    effect(() => {
+      const items = this.items();
+      if (items.length === 0) return;
 
-        // Early return if neither deep link nor allowAllClosed enforcement needed
-        const needsAllowAllClosedEnforcement =
-          !this.allowAllClosed() && !this.disabled();
-        const needsDeepLink = this.deepLink();
+      // Early return if neither deep link nor allowAllClosed enforcement needed
+      const needsAllowAllClosedEnforcement =
+        !this.allowAllClosed() && !this.disabled();
+      const needsDeepLink = this.deepLink();
 
-        if (!needsAllowAllClosedEnforcement && !needsDeepLink) return;
+      if (!needsAllowAllClosedEnforcement && !needsDeepLink) return;
 
-        // Find the currently expanded panel(s)
-        const expandedItems = items.filter((item) => item.expanded());
-        const expandedPanelId = expandedItems[0]?.panelId() ?? null;
+      // Find the currently expanded panel(s)
+      const expandedItems = items.filter((item) => item.expanded());
+      const expandedPanelId = expandedItems[0]?.panelId() ?? null;
 
-        // Handle allowAllClosed enforcement (skip if accordion is disabled)
-        if (
-          !this.allowAllClosed() &&
-          !this.disabled() &&
-          expandedItems.length === 0
-        ) {
-          // Re-open the last expanded panel, or the first non-disabled panel
-          const panelToOpen = this.lastExpandedPanelId
-            ? items.find(
-                (item) =>
-                  item.panelId() === this.lastExpandedPanelId &&
-                  !item.disabled(),
-              )
-            : items.find((item) => !item.disabled());
+      // Handle allowAllClosed enforcement (skip if accordion is disabled)
+      if (
+        !this.allowAllClosed() &&
+        !this.disabled() &&
+        expandedItems.length === 0
+      ) {
+        // Re-open the last expanded panel, or the first non-disabled panel
+        const panelToOpen = this.lastExpandedPanelId
+          ? items.find(
+              (item) =>
+                item.panelId() === this.lastExpandedPanelId && !item.disabled(),
+            )
+          : items.find((item) => !item.disabled());
 
-          if (panelToOpen) {
-            // Use queueMicrotask to write signal outside effect context
-            queueMicrotask(() => {
-              panelToOpen.expanded.set(true);
-            });
-            return;
-          }
-        }
-
-        // Track expanded panel for future reference
-        if (expandedPanelId && expandedPanelId !== this.lastExpandedPanelId) {
-          this.lastExpandedPanelId = expandedPanelId;
-        }
-
-        // Handle deep linking (use untracked to avoid re-triggering on hash updates)
-        if (this.deepLink()) {
-          untracked(() => {
-            if (expandedPanelId) {
-              this.deepLinkService.updateHash(
-                expandedPanelId,
-                this.updateHistory(),
-              );
-
-              if (this.deepLinkSmudge()) {
-                this.deepLinkService.scrollToPanel(
-                  expandedPanelId,
-                  this.deepLinkSmudgeDelay(),
-                );
-              }
-            } else if (this.allowAllClosed() && this.initialHashProcessed) {
-              // Only clear hash if we're actually allowing all closed
-              // and initial hash has already been processed
-              this.deepLinkService.clearHash(this.updateHistory());
-            }
+        if (panelToOpen) {
+          // Use queueMicrotask to write signal outside effect context
+          queueMicrotask(() => {
+            panelToOpen.expanded.set(true);
           });
+          return;
         }
-      },
-    );
+      }
+
+      // Track expanded panel for future reference
+      if (expandedPanelId && expandedPanelId !== this.lastExpandedPanelId) {
+        this.lastExpandedPanelId = expandedPanelId;
+      }
+
+      // Handle deep linking (use untracked to avoid re-triggering on hash updates)
+      if (this.deepLink()) {
+        untracked(() => {
+          if (expandedPanelId) {
+            this.deepLinkService.updateHash(
+              expandedPanelId,
+              this.updateHistory(),
+            );
+
+            if (this.deepLinkSmudge()) {
+              this.deepLinkService.scrollToPanel(
+                expandedPanelId,
+                this.deepLinkSmudgeDelay(),
+              );
+            }
+          } else if (this.allowAllClosed() && this.initialHashProcessed) {
+            // Only clear hash if we're actually allowing all closed
+            // and initial hash has already been processed
+            this.deepLinkService.clearHash(this.updateHistory());
+          }
+        });
+      }
+    });
   }
 
   /**

@@ -12,9 +12,6 @@ const meta: Meta<NfsAccordion> = {
   // Descriptions come from JSDoc comments in the component via Compodoc.
   // Only custom control configurations are needed here.
   argTypes: {
-    slideSpeed: {
-      control: { type: 'range', min: 0, max: 1000, step: 50 },
-    },
     deepLinkSmudgeDelay: {
       control: { type: 'number', min: 0, max: 1000 },
     },
@@ -32,7 +29,6 @@ interface ThemeControlsArgs {
   // Component inputs
   multiExpandable: boolean;
   disabled: boolean;
-  slideSpeed: number;
   allowAllClosed: boolean;
   // CSS Custom Properties
   accordionBackground: string;
@@ -44,6 +40,7 @@ interface ThemeControlsArgs {
   accordionContentBorder: string;
   accordionContentColor: string;
   accordionContentPadding: string;
+  accordionSlideSpeed: string;
   accordionSlideEasing: string;
 }
 type ThemeControlsStory = StoryObj<ThemeControlsArgs>;
@@ -53,7 +50,6 @@ export const Default: Story = {
     multiExpandable: false,
     disabled: false,
     softDisabled: true,
-    slideSpeed: 250,
     deepLink: false,
     deepLinkSmudge: false,
     deepLinkSmudgeDelay: 300,
@@ -75,7 +71,6 @@ export const Default: Story = {
         [multiExpandable]="multiExpandable"
         [disabled]="disabled"
         [softDisabled]="softDisabled"
-        [slideSpeed]="slideSpeed"
         [deepLink]="deepLink"
         [deepLinkSmudge]="deepLinkSmudge"
         [deepLinkSmudgeDelay]="deepLinkSmudgeDelay"
@@ -120,7 +115,7 @@ export const Default: Story = {
 };
 
 export const MultiExpand: Story = {
-  args: { multiExpandable: true, disabled: false, slideSpeed: 250 },
+  args: { multiExpandable: true, disabled: false },
   render: Default.render,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -140,7 +135,7 @@ export const MultiExpand: Story = {
 };
 
 export const Disabled: Story = {
-  args: { multiExpandable: false, disabled: true, slideSpeed: 250 },
+  args: { multiExpandable: false, disabled: true },
   render: (args) => ({
     props: args,
     moduleMetadata: {
@@ -152,7 +147,7 @@ export const Disabled: Story = {
       ],
     },
     template: `
-      <nfs-accordion [multiExpandable]="multiExpandable" [disabled]="disabled" [slideSpeed]="slideSpeed">
+      <nfs-accordion [multiExpandable]="multiExpandable" [disabled]="disabled">
         <nfs-accordion-item panelId="panel-1" [disabled]="true">
           <span *nfsAccordionTitle>Disabled Accordion</span>
           <p *nfsAccordionContent>This panel cannot be opened.</p>
@@ -195,7 +190,7 @@ export const Disabled: Story = {
 };
 
 export const InitiallyExpanded: Story = {
-  args: { multiExpandable: false, disabled: false, slideSpeed: 250 },
+  args: { multiExpandable: false, disabled: false },
   render: (args) => ({
     props: args,
     moduleMetadata: {
@@ -207,7 +202,7 @@ export const InitiallyExpanded: Story = {
       ],
     },
     template: `
-      <nfs-accordion [multiExpandable]="multiExpandable" [slideSpeed]="slideSpeed">
+      <nfs-accordion [multiExpandable]="multiExpandable">
         <nfs-accordion-item panelId="panel-1" [expanded]="true">
           <span *nfsAccordionTitle>Initially Open</span>
           <p *nfsAccordionContent>This panel starts expanded.</p>
@@ -240,7 +235,7 @@ export const InitiallyExpanded: Story = {
 };
 
 export const KeyboardNavigation: Story = {
-  args: { multiExpandable: false, disabled: false, slideSpeed: 250 },
+  args: { multiExpandable: false, disabled: false },
   render: Default.render,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -263,9 +258,43 @@ export const KeyboardNavigation: Story = {
   },
 };
 
+/**
+ * Demonstrates slow animation using CSS custom property.
+ * Animation speed is controlled via `--nfs-accordion-slide-speed` CSS custom property.
+ */
 export const SlowAnimation: Story = {
-  args: { multiExpandable: false, disabled: false, slideSpeed: 500 },
-  render: Default.render,
+  args: { multiExpandable: false, disabled: false },
+  render: (args) => ({
+    props: args,
+    moduleMetadata: {
+      imports: [
+        NfsAccordion,
+        NfsAccordionItem,
+        NfsAccordionTitleDef,
+        NfsAccordionContentDef,
+      ],
+    },
+    template: `
+      <nfs-accordion
+        [multiExpandable]="multiExpandable"
+        [disabled]="disabled"
+        style="--nfs-accordion-slide-speed: 500ms"
+      >
+        <nfs-accordion-item panelId="panel-1">
+          <span *nfsAccordionTitle>Accordion 1</span>
+          <p *nfsAccordionContent>Panel 1 content. Lorem ipsum dolor sit amet.</p>
+        </nfs-accordion-item>
+        <nfs-accordion-item panelId="panel-2">
+          <span *nfsAccordionTitle>Accordion 2</span>
+          <p *nfsAccordionContent>Panel 2 content. Suspendisse eu ligula.</p>
+        </nfs-accordion-item>
+        <nfs-accordion-item panelId="panel-3">
+          <span *nfsAccordionTitle>Accordion 3</span>
+          <p *nfsAccordionContent>Panel 3 content. Nullam sed est.</p>
+        </nfs-accordion-item>
+      </nfs-accordion>
+    `,
+  }),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -289,17 +318,55 @@ export const SlowAnimation: Story = {
   },
 };
 
+/**
+ * Demonstrates disabling animation using CSS custom property.
+ * Set `--nfs-accordion-slide-speed: 0ms` to disable animation.
+ * This is also useful for reduced motion accessibility preferences.
+ */
 export const NoAnimation: Story = {
   args: {
     multiExpandable: false,
     disabled: false,
-    slideSpeed: 0,
     deepLink: false,
     deepLinkSmudge: false,
     deepLinkSmudgeDelay: 300,
     updateHistory: false,
   },
-  render: Default.render,
+  render: (args) => ({
+    props: args,
+    moduleMetadata: {
+      imports: [
+        NfsAccordion,
+        NfsAccordionItem,
+        NfsAccordionTitleDef,
+        NfsAccordionContentDef,
+      ],
+    },
+    template: `
+      <nfs-accordion
+        [multiExpandable]="multiExpandable"
+        [disabled]="disabled"
+        [deepLink]="deepLink"
+        [deepLinkSmudge]="deepLinkSmudge"
+        [deepLinkSmudgeDelay]="deepLinkSmudgeDelay"
+        [updateHistory]="updateHistory"
+        style="--nfs-accordion-slide-speed: 0ms"
+      >
+        <nfs-accordion-item panelId="panel-1">
+          <span *nfsAccordionTitle>Accordion 1</span>
+          <p *nfsAccordionContent>Panel 1 content. Lorem ipsum dolor sit amet.</p>
+        </nfs-accordion-item>
+        <nfs-accordion-item panelId="panel-2">
+          <span *nfsAccordionTitle>Accordion 2</span>
+          <p *nfsAccordionContent>Panel 2 content. Suspendisse eu ligula.</p>
+        </nfs-accordion-item>
+        <nfs-accordion-item panelId="panel-3">
+          <span *nfsAccordionTitle>Accordion 3</span>
+          <p *nfsAccordionContent>Panel 3 content. Nullam sed est.</p>
+        </nfs-accordion-item>
+      </nfs-accordion>
+    `,
+  }),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -327,7 +394,6 @@ export const DeepLink: Story = {
   args: {
     multiExpandable: false,
     disabled: false,
-    slideSpeed: 250,
     deepLink: true,
     deepLinkSmudge: true,
     deepLinkSmudgeDelay: 300,
@@ -370,7 +436,6 @@ export const MultiExpandDeepLink: Story = {
   args: {
     multiExpandable: true,
     disabled: false,
-    slideSpeed: 250,
     deepLink: true,
     deepLinkSmudge: true,
     deepLinkSmudgeDelay: 300,
@@ -389,7 +454,6 @@ export const DeepLinkNoHistory: Story = {
   args: {
     multiExpandable: false,
     disabled: false,
-    slideSpeed: 250,
     deepLink: true,
     deepLinkSmudge: false,
     deepLinkSmudgeDelay: 300,
@@ -403,7 +467,6 @@ export const RequireOneOpen: Story = {
   args: {
     multiExpandable: false,
     disabled: false,
-    slideSpeed: 250,
     allowAllClosed: false,
   },
   render: (args) => ({
@@ -420,7 +483,6 @@ export const RequireOneOpen: Story = {
       <nfs-accordion
         [multiExpandable]="multiExpandable"
         [disabled]="disabled"
-        [slideSpeed]="slideSpeed"
         [allowAllClosed]="allowAllClosed"
       >
         <nfs-accordion-item panelId="panel-1">
@@ -476,10 +538,41 @@ export const Accessibility: Story = {
   args: {
     multiExpandable: false,
     disabled: false,
-    slideSpeed: 0, // Instant animation for reliable testing
     allowAllClosed: true,
   },
-  render: Default.render,
+  render: (args) => ({
+    props: args,
+    moduleMetadata: {
+      imports: [
+        NfsAccordion,
+        NfsAccordionItem,
+        NfsAccordionTitleDef,
+        NfsAccordionContentDef,
+      ],
+    },
+    // Use instant animation (0ms) for reliable testing
+    template: `
+      <nfs-accordion
+        [multiExpandable]="multiExpandable"
+        [disabled]="disabled"
+        [allowAllClosed]="allowAllClosed"
+        style="--nfs-accordion-slide-speed: 0ms"
+      >
+        <nfs-accordion-item panelId="panel-1">
+          <span *nfsAccordionTitle>Accordion 1</span>
+          <p *nfsAccordionContent>Panel 1 content. Lorem ipsum dolor sit amet.</p>
+        </nfs-accordion-item>
+        <nfs-accordion-item panelId="panel-2">
+          <span *nfsAccordionTitle>Accordion 2</span>
+          <p *nfsAccordionContent>Panel 2 content. Suspendisse eu ligula.</p>
+        </nfs-accordion-item>
+        <nfs-accordion-item panelId="panel-3">
+          <span *nfsAccordionTitle>Accordion 3</span>
+          <p *nfsAccordionContent>Panel 3 content. Nullam sed est.</p>
+        </nfs-accordion-item>
+      </nfs-accordion>
+    `,
+  }),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -641,7 +734,6 @@ export const CustomTheme: Story = {
   args: {
     multiExpandable: false,
     disabled: false,
-    slideSpeed: 250,
     allowAllClosed: true,
   },
   render: (args) => ({
@@ -658,7 +750,6 @@ export const CustomTheme: Story = {
       <nfs-accordion
         [multiExpandable]="multiExpandable"
         [disabled]="disabled"
-        [slideSpeed]="slideSpeed"
         [allowAllClosed]="allowAllClosed"
         style="
           --nfs-accordion-background: #1a1a2e;
@@ -750,7 +841,6 @@ export const ThemeControls: ThemeControlsStory = {
   args: {
     multiExpandable: false,
     disabled: false,
-    slideSpeed: 250,
     allowAllClosed: true,
     // CSS Custom Property args
     accordionBackground: '#fefefe',
@@ -762,6 +852,7 @@ export const ThemeControls: ThemeControlsStory = {
     accordionContentBorder: '1px solid #e6e6e6',
     accordionContentColor: '#0a0a0a',
     accordionContentPadding: '1rem',
+    accordionSlideSpeed: '250ms',
     accordionSlideEasing: 'ease-out',
   },
   argTypes: {
@@ -820,6 +911,13 @@ export const ThemeControls: ThemeControlsStory = {
       control: { type: 'text' },
       table: { category: 'CSS Custom Properties' },
     },
+    accordionSlideSpeed: {
+      name: '--nfs-accordion-slide-speed',
+      description:
+        'Animation duration for expand/collapse transitions (CSS time value)',
+      control: { type: 'text' },
+      table: { category: 'CSS Custom Properties' },
+    },
     accordionSlideEasing: {
       name: '--nfs-accordion-slide-easing',
       description: 'Easing function for expand/collapse animation',
@@ -849,7 +947,6 @@ export const ThemeControls: ThemeControlsStory = {
       <nfs-accordion
         [multiExpandable]="multiExpandable"
         [disabled]="disabled"
-        [slideSpeed]="slideSpeed"
         [allowAllClosed]="allowAllClosed"
         [style.--nfs-accordion-background]="accordionBackground"
         [style.--nfs-accordion-title-font-size]="accordionTitleFontSize"
@@ -860,6 +957,7 @@ export const ThemeControls: ThemeControlsStory = {
         [style.--nfs-accordion-content-border]="accordionContentBorder"
         [style.--nfs-accordion-content-color]="accordionContentColor"
         [style.--nfs-accordion-content-padding]="accordionContentPadding"
+        [style.--nfs-accordion-slide-speed]="accordionSlideSpeed"
         [style.--nfs-accordion-slide-easing]="accordionSlideEasing"
       >
         <nfs-accordion-item panelId="theme-1">
@@ -883,7 +981,7 @@ export const ThemeControls: ThemeControlsStory = {
               <li><code>--nfs-accordion-content-color</code> — Content text color</li>
               <li><code>--nfs-accordion-content-padding</code> — Content padding</li>
               <li><code>--nfs-accordion-slide-easing</code> — Animation easing</li>
-              <li><code>--nfs-accordion-slide-speed</code> — Animation duration (via slideSpeed input)</li>
+              <li><code>--nfs-accordion-slide-speed</code> — Animation duration</li>
             </ul>
           </div>
         </nfs-accordion-item>
@@ -953,7 +1051,6 @@ export const SoftDisabled: Story = {
   args: {
     multiExpandable: false,
     disabled: false,
-    slideSpeed: 0,
     allowAllClosed: true,
     softDisabled: false, // Disabled items will be skipped during navigation
   },
@@ -967,13 +1064,14 @@ export const SoftDisabled: Story = {
         NfsAccordionContentDef,
       ],
     },
+    // Use instant animation (0ms) for reliable testing
     template: `
       <nfs-accordion
         [multiExpandable]="multiExpandable"
         [disabled]="disabled"
-        [slideSpeed]="slideSpeed"
         [allowAllClosed]="allowAllClosed"
         [softDisabled]="softDisabled"
+        style="--nfs-accordion-slide-speed: 0ms"
       >
         <nfs-accordion-item panelId="panel-1">
           <span *nfsAccordionTitle>Enabled 1</span>
@@ -1028,7 +1126,6 @@ export const ExpandCollapseAll: Story = {
   args: {
     multiExpandable: true, // Required for expandAll to work
     disabled: false,
-    slideSpeed: 250,
     allowAllClosed: true,
   },
   render: (args) => ({
@@ -1064,7 +1161,6 @@ export const ExpandCollapseAll: Story = {
           #accordion
           [multiExpandable]="multiExpandable"
           [disabled]="disabled"
-          [slideSpeed]="slideSpeed"
           [allowAllClosed]="allowAllClosed"
         >
           <nfs-accordion-item panelId="panel-1">
@@ -1123,7 +1219,6 @@ export const FocusManagementWithDisabled: Story = {
   args: {
     multiExpandable: false,
     disabled: false,
-    slideSpeed: 0,
     allowAllClosed: true,
   },
   render: (args) => ({
@@ -1136,12 +1231,13 @@ export const FocusManagementWithDisabled: Story = {
         NfsAccordionContentDef,
       ],
     },
+    // Use instant animation (0ms) for reliable testing
     template: `
       <nfs-accordion
         [multiExpandable]="multiExpandable"
         [disabled]="disabled"
-        [slideSpeed]="slideSpeed"
         [allowAllClosed]="allowAllClosed"
+        style="--nfs-accordion-slide-speed: 0ms"
       >
         <nfs-accordion-item panelId="panel-1">
           <span *nfsAccordionTitle>Enabled 1</span>
