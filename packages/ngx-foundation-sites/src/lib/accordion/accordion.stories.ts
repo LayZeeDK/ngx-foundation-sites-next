@@ -607,6 +607,115 @@ export const Accessibility: Story = {
 };
 
 /**
+ * Demonstrates runtime theming using CSS custom properties.
+ * All visual aspects of the accordion can be customized by setting
+ * `--nfs-accordion-*` CSS custom properties on the component or any ancestor.
+ */
+export const CustomTheme: Story = {
+  args: {
+    multiExpandable: false,
+    disabled: false,
+    slideSpeed: 250,
+    allowAllClosed: true,
+  },
+  render: (args) => ({
+    props: args,
+    moduleMetadata: {
+      imports: [
+        NfsAccordion,
+        NfsAccordionItem,
+        NfsAccordionTitleDef,
+        NfsAccordionContentDef,
+      ],
+    },
+    template: `
+      <nfs-accordion
+        [multiExpandable]="multiExpandable"
+        [disabled]="disabled"
+        [slideSpeed]="slideSpeed"
+        [allowAllClosed]="allowAllClosed"
+        style="
+          --nfs-accordion-background: #1a1a2e;
+          --nfs-accordion-title-font-size: 1rem;
+          --nfs-accordion-item-color: #ff8fa3;
+          --nfs-accordion-item-background-hover: #16213e;
+          --nfs-accordion-item-padding: 1rem 1.5rem;
+          --nfs-accordion-content-background: #0f0f23;
+          --nfs-accordion-content-border: 2px solid #ff8fa3;
+          --nfs-accordion-content-color: #eaeaea;
+          --nfs-accordion-content-padding: 1.5rem;
+        "
+      >
+        <nfs-accordion-item panelId="theme-1">
+          <span *nfsAccordionTitle>🎨 Custom Dark Theme</span>
+          <div *nfsAccordionContent>
+            <p>This accordion uses a custom dark theme with vibrant accent colors.</p>
+            <p>All styling is done via CSS custom properties set on the component.</p>
+          </div>
+        </nfs-accordion-item>
+        <nfs-accordion-item panelId="theme-2">
+          <span *nfsAccordionTitle>⚙️ Available Properties</span>
+          <div *nfsAccordionContent>
+            <ul style="margin: 0; padding-left: 1.5rem;">
+              <li><code>--nfs-accordion-background</code></li>
+              <li><code>--nfs-accordion-title-font-size</code></li>
+              <li><code>--nfs-accordion-item-color</code></li>
+              <li><code>--nfs-accordion-item-background-hover</code></li>
+              <li><code>--nfs-accordion-item-padding</code></li>
+              <li><code>--nfs-accordion-content-background</code></li>
+              <li><code>--nfs-accordion-content-border</code></li>
+              <li><code>--nfs-accordion-content-color</code></li>
+              <li><code>--nfs-accordion-content-padding</code></li>
+            </ul>
+          </div>
+        </nfs-accordion-item>
+        <nfs-accordion-item panelId="theme-3">
+          <span *nfsAccordionTitle>📝 Usage Example</span>
+          <div *nfsAccordionContent>
+            <pre style="margin: 0; font-size: 0.875rem; overflow-x: auto;"><code>nfs-accordion {{'{'}}
+  --nfs-accordion-item-color: #ff8fa3;
+  --nfs-accordion-content-background: #0f0f23;
+{{'}'}}</code></pre>
+          </div>
+        </nfs-accordion-item>
+      </nfs-accordion>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Verify custom theme is applied by checking computed styles
+    const accordion = canvasElement.querySelector('nfs-accordion');
+    expect(accordion).toBeTruthy();
+
+    if (!accordion) return;
+    const style = getComputedStyle(accordion);
+
+    // Check that CSS custom properties are set
+    expect(style.getPropertyValue('--nfs-accordion-item-color').trim()).toBe(
+      '#ff8fa3',
+    );
+    expect(
+      style.getPropertyValue('--nfs-accordion-content-background').trim(),
+    ).toBe('#0f0f23');
+
+    // Click to expand and verify the accordion works with custom theme
+    const trigger1 = canvas.getByRole('button', {
+      name: /Custom Dark Theme/i,
+    });
+    await userEvent.click(trigger1);
+
+    await waitFor(() => {
+      expect(trigger1).toHaveAttribute('aria-expanded', 'true');
+    });
+
+    // Verify content is visible
+    const content = canvas.getByText(/CSS custom properties/i);
+    expect(content).toBeVisible();
+  },
+};
+
+/**
  * Tests focus management when accordion items are disabled.
  * Angular ARIA allows focus on disabled items (for screen reader announcement)
  * but prevents their activation via click, Enter, or Space.
