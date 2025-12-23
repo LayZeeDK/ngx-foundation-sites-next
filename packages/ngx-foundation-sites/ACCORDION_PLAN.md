@@ -955,6 +955,7 @@ npm run ci
    - **5.3** Deep linking E2E tests (Playwright) ✅ (7 tests)
    - **5.4** CI verification
 7. **Phase 6** - Angular Router integration (Future Enhancement) — Deferred
+8. **Phase 7** - Feature Parity & Theming Enhancements
 
 ---
 
@@ -1168,6 +1169,280 @@ Add to accordion component documentation:
 - [withInMemoryScrolling()](https://angular.dev/api/router/withInMemoryScrolling)
 - [Router.navigate() fragment option](https://angular.dev/api/router/NavigationExtras#fragment)
 - Current implementation: `src/lib/accordion/accordion-deep-link.service.ts`
+
+---
+
+## Phase 7: Feature Parity & Theming Enhancements
+
+**Goal:** Complete Foundation feature parity, expose Angular ARIA features, and add CSS custom properties for runtime theming.
+
+### 7.1 Feature Comparison Analysis
+
+#### Foundation JavaScript Options (9 total)
+
+| Foundation Option              | Default | Our Input             | Status     |
+| ------------------------------ | ------- | --------------------- | ---------- |
+| `data-slide-speed`             | 250     | `slideSpeed`          | ✅         |
+| `data-multi-expand`            | false   | `multiExpandable`     | ✅         |
+| `data-allow-all-closed`        | false   | `allowAllClosed`      | ✅         |
+| `data-deep-link`               | false   | `deepLink`            | ✅         |
+| `data-deep-link-smudge`        | false   | `deepLinkSmudge`      | ✅         |
+| `data-deep-link-smudge-delay`  | 300     | `deepLinkSmudgeDelay` | ✅         |
+| `data-deep-link-smudge-offset` | 0       | —                     | ❌ MISSING |
+| `data-update-history`          | false   | `updateHistory`       | ✅         |
+| `disabled` (attr)              | —       | `disabled`            | ✅         |
+
+**Result: 8/9 options implemented (89%)**
+
+#### Foundation Sass Variables (12 total)
+
+| Sass Variable                      | Default                 | CSS Custom Property              | Status |
+| ---------------------------------- | ----------------------- | -------------------------------- | ------ |
+| `$accordion-background`            | `$white`                | —                                | ❌     |
+| `$accordion-plusminus`             | `true`                  | —                                | ❌     |
+| `$accordion-plus-content`          | `'\002B'`               | —                                | ❌     |
+| `$accordion-minus-content`         | `'\2013'`               | —                                | ❌     |
+| `$accordion-title-font-size`       | `rem-calc(12)`          | —                                | ❌     |
+| `$accordion-item-color`            | `$primary-color`        | `--nfs-primary-color` (indirect) | ⚠️     |
+| `$accordion-item-background-hover` | `$light-gray`           | —                                | ❌     |
+| `$accordion-item-padding`          | `1.25rem 1rem`          | —                                | ❌     |
+| `$accordion-content-background`    | `$white`                | —                                | ❌     |
+| `$accordion-content-border`        | `1px solid $light-gray` | —                                | ❌     |
+| `$accordion-content-color`         | `$body-font-color`      | —                                | ❌     |
+| `$accordion-content-padding`       | `1rem`                  | —                                | ❌     |
+
+**Result: 1/12 partially exposed (8%)**
+
+#### Angular ARIA Features (10 total)
+
+| Angular ARIA Feature   | Our Implementation                  | Status |
+| ---------------------- | ----------------------------------- | ------ |
+| `multiExpandable`      | ✅ Exposed as input                 | ✅     |
+| `disabled` (group)     | ✅ Exposed as input                 | ✅     |
+| `disabled` (item)      | ✅ Exposed on `NfsAccordionItem`    | ✅     |
+| `wrap`                 | ✅ Exposed as input                 | ✅     |
+| `softDisabled`         | Not exposed                         | ❌     |
+| `expandAll()` method   | Not exposed                         | ❌     |
+| `collapseAll()` method | Not exposed                         | ❌     |
+| `preserveContent`      | Not exposed                         | ❌     |
+| `textDirection`        | Not exposed (auto via Angular ARIA) | ⚠️     |
+| Lazy rendering         | ✅ Built-in                         | ✅     |
+
+**Result: 5/10 features accessible to consumers (50%)**
+
+### 7.2 Implementation: Foundation Feature Parity
+
+#### 7.2.1 Add `deepLinkSmudgeOffset` Input
+
+**File:** `packages/ngx-foundation-sites/src/lib/accordion/accordion.ts`
+
+```typescript
+/** Scroll offset in pixels for sticky headers when deep linking */
+readonly deepLinkSmudgeOffset = input(0);
+```
+
+**File:** `packages/ngx-foundation-sites/src/lib/accordion/accordion-deep-link.service.ts`
+
+Update `scrollToPanel()` to accept offset parameter:
+
+```typescript
+scrollToPanel(panelId: string, delay = 300, offset = 0): void {
+  setTimeout(() => {
+    const element = document.getElementById(panelId);
+    if (element) {
+      const rect = element.getBoundingClientRect();
+      const scrollTop = window.pageYOffset + rect.top - offset;
+      window.scrollTo({ top: scrollTop, behavior: 'smooth' });
+    }
+  }, delay);
+}
+```
+
+### 7.3 Implementation: Angular ARIA Feature Exposure
+
+#### 7.3.1 Add `softDisabled` Input
+
+**File:** `packages/ngx-foundation-sites/src/lib/accordion/accordion.ts`
+
+```typescript
+/** When true, disabled items can receive focus but not be activated */
+readonly softDisabled = input(true);
+```
+
+Update template:
+
+```html
+<ul ngAccordionGroup ... [softDisabled]="softDisabled()"></ul>
+```
+
+#### 7.3.2 Add `preserveContent` Input to `NfsAccordionItem`
+
+**File:** `packages/ngx-foundation-sites/src/lib/accordion/accordion-item.ts`
+
+```typescript
+/** Whether to keep content in DOM after panel collapses (default: true) */
+readonly preserveContent = input(true);
+```
+
+**File:** `packages/ngx-foundation-sites/src/lib/accordion/accordion.ts`
+
+Update template:
+
+```html
+<div ngAccordionPanel ... [preserveContent]="item.preserveContent()"></div>
+```
+
+#### 7.3.3 Expose `expandAll()` and `collapseAll()` Methods
+
+**File:** `packages/ngx-foundation-sites/src/lib/accordion/accordion.ts`
+
+```typescript
+@ViewChild(AccordionGroup) private accordionGroup!: AccordionGroup;
+
+/** Expands all panels (only works when multiExpandable is true) */
+expandAll(): void {
+  this.accordionGroup?.expandAll();
+}
+
+/** Collapses all panels */
+collapseAll(): void {
+  this.accordionGroup?.collapseAll();
+}
+```
+
+### 7.4 Implementation: CSS Custom Properties for Theming
+
+#### 7.4.1 Add Component-Level CSS Custom Properties
+
+**File:** `packages/ngx-foundation-sites/src/lib/accordion/accordion.ts`
+
+Add inputs for customizable properties:
+
+```typescript
+/** Background color of accordion container */
+readonly accordionBackground = input<string | null>(null);
+
+/** Font size of accordion titles */
+readonly titleFontSize = input<string | null>(null);
+
+/** Text color of accordion titles */
+readonly itemColor = input<string | null>(null);
+
+/** Background color of titles on hover */
+readonly itemBackgroundHover = input<string | null>(null);
+
+/** Padding of accordion titles */
+readonly itemPadding = input<string | null>(null);
+
+/** Background color of content panels */
+readonly contentBackground = input<string | null>(null);
+
+/** Border of content panels */
+readonly contentBorder = input<string | null>(null);
+
+/** Text color of content panels */
+readonly contentColor = input<string | null>(null);
+
+/** Padding of content panels */
+readonly contentPadding = input<string | null>(null);
+```
+
+Update host bindings:
+
+```typescript
+host: {
+  '[style.--nfs-accordion-slide-speed]': 'slideSpeedCss()',
+  '[style.--nfs-accordion-background]': 'accordionBackground()',
+  '[style.--nfs-accordion-title-font-size]': 'titleFontSize()',
+  '[style.--nfs-accordion-item-color]': 'itemColor()',
+  '[style.--nfs-accordion-item-background-hover]': 'itemBackgroundHover()',
+  '[style.--nfs-accordion-item-padding]': 'itemPadding()',
+  '[style.--nfs-accordion-content-background]': 'contentBackground()',
+  '[style.--nfs-accordion-content-border]': 'contentBorder()',
+  '[style.--nfs-accordion-content-color]': 'contentColor()',
+  '[style.--nfs-accordion-content-padding]': 'contentPadding()',
+  'style': 'display: block',
+}
+```
+
+#### 7.4.2 Update Storybook Styles to Use CSS Custom Properties
+
+**File:** `packages/ngx-foundation-sites/src/storybook/styles.scss`
+
+Override Foundation's default styles with CSS custom properties:
+
+```scss
+.accordion {
+  background: var(--nfs-accordion-background, $white);
+}
+
+.accordion-title {
+  font-size: var(--nfs-accordion-title-font-size, rem-calc(12));
+  color: var(--nfs-accordion-item-color, $primary-color);
+  padding: var(--nfs-accordion-item-padding, 1.25rem 1rem);
+
+  &:hover,
+  &:focus {
+    background-color: var(--nfs-accordion-item-background-hover, $light-gray);
+  }
+}
+
+.accordion-content {
+  background: var(--nfs-accordion-content-background, $white);
+  border: var(--nfs-accordion-content-border, 1px solid $light-gray);
+  color: var(--nfs-accordion-content-color, $body-font-color);
+  padding: var(--nfs-accordion-content-padding, 1rem);
+}
+```
+
+### 7.5 Testing & Documentation
+
+#### 7.5.1 Unit Tests
+
+- Test `deepLinkSmudgeOffset` with various offset values
+- Test `softDisabled` focus behavior
+- Test `preserveContent` DOM cleanup
+- Test `expandAll()` / `collapseAll()` methods
+- Test CSS custom property binding
+
+#### 7.5.2 Storybook Stories
+
+| Story Name             | Purpose                                 |
+| ---------------------- | --------------------------------------- |
+| `DeepLinkWithOffset`   | Demonstrate sticky header offset        |
+| `SoftDisabled`         | Show focus behavior on disabled items   |
+| `ExpandCollapseAll`    | Buttons to trigger programmatic methods |
+| `CustomTheme`          | Demonstrate CSS custom property theming |
+| `PreserveContentFalse` | Show DOM cleanup when panel closes      |
+
+### 7.6 Files to Modify
+
+| File                                  | Changes                                                |
+| ------------------------------------- | ------------------------------------------------------ |
+| `accordion.ts`                        | Add 14 new inputs, 2 methods, ViewChild, host bindings |
+| `accordion-item.ts`                   | Add `preserveContent` input                            |
+| `accordion-deep-link.service.ts`      | Add offset parameter to `scrollToPanel()`              |
+| `styles.scss`                         | Add CSS custom property fallbacks                      |
+| `accordion.stories.ts`                | Add 5 new stories                                      |
+| `accordion.spec.ts`                   | Add unit tests for new features                        |
+| `accordion-deep-link.service.spec.ts` | Add offset tests                                       |
+
+### 7.7 Implementation Order
+
+1. **deepLinkSmudgeOffset** (simplest, completes Foundation parity)
+2. **softDisabled** (simple input passthrough)
+3. **preserveContent** (simple input passthrough)
+4. **expandAll/collapseAll** (requires ViewChild)
+5. **CSS custom properties** (most complex, requires style updates)
+
+### 7.8 Expected Outcome
+
+After implementing Phase 7:
+
+- **100%** Foundation JavaScript options
+- **100%** WAI-ARIA compliance (unchanged)
+- **90%** Angular ARIA features exposed
+- **100%** Foundation Sass variables as CSS custom properties
 
 ---
 
