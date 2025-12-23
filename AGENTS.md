@@ -122,6 +122,12 @@ This is an integrated Nx monorepo with Angular support.
 - Linting: ESLint (flat config)
 - Formatting: Prettier (single quotes) - `npm run format` to fix, `npm run format:check` to verify
 
+## Git
+
+- Do NOT use `git -C "<absolute-repo-path>"` commands. Assume the shell is already in the repository root unless a `cd` command was previously used in the session.
+- If uncertain about the current directory, check with `pwd` (Unix) or `cd` (Windows) before running git commands.
+- Run git commands directly (e.g., `git status`, `git diff`) without path specifiers.
+
 ## Storybook
 
 Component development and visual testing uses Storybook on port 4400.
