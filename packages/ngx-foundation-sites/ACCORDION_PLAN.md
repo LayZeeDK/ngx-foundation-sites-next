@@ -585,6 +585,39 @@ Test cases:
 
 9. **role="region" verification**: Added verification in `Accessibility` story confirming all panels have `role="region"` per ARIA Authoring Practices, enabling screen reader landmark navigation.
 
+### 5.2.10 Storybook Testing Workflow ✅
+
+The project supports two Storybook testing modes for different use cases:
+
+| Target                 | Command                                  | Storybook Mode | Use Case                         |
+| ---------------------- | ---------------------------------------- | -------------- | -------------------------------- |
+| `test-storybook`       | `npx nx test-storybook ngx-foundation-sites` | Dev server     | Development with watch mode/HMR  |
+| `test-static-storybook`| `npx nx test-static-storybook ngx-foundation-sites` | Static files   | CI/CD pipelines                  |
+
+**Development workflow:**
+
+```bash
+# Run Storybook tests with watch mode (uses dev server)
+npx nx test-storybook ngx-foundation-sites
+```
+
+The dev server provides Hot Module Replacement (HMR), enabling instant feedback when modifying component code or stories.
+
+**CI workflow:**
+
+```bash
+# Run full CI (uses static files for Storybook tests)
+npm run ci
+```
+
+The `npm run ci` script uses `test-static-storybook` which builds static files first, then runs tests against them. This is slower but ensures tests run against the exact output that would be deployed.
+
+**Implementation notes:**
+
+- Nx configurations can only override `options`, not `dependsOn`, so separate targets are required for different dependency chains
+- `test-storybook` depends on `storybook` (dev server)
+- `test-static-storybook` depends on `static-storybook` → `build-storybook`
+
 ### 5.3 Deep Linking E2E Tests (Playwright) ✅
 
 **Why E2E?** Deep linking cannot be reliably tested in Storybook interaction tests because:
