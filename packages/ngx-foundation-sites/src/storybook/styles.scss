@@ -14,3 +14,46 @@
   --nfs-warning-color: #{map.get(settings.$foundation-palette, warning)};
   --nfs-alert-color: #{map.get(settings.$foundation-palette, alert)};
 }
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// Accordion CSS Custom Property Overrides
+// ═══════════════════════════════════════════════════════════════════════════════
+// These overrides allow runtime theming of accordion components via CSS custom
+// properties. Set these on the nfs-accordion element or any ancestor.
+//
+// Available properties:
+//   --nfs-accordion-background          Background of accordion container
+//   --nfs-accordion-title-font-size     Font size of titles
+//   --nfs-accordion-item-color          Text color of titles
+//   --nfs-accordion-item-background-hover  Hover background of titles
+//   --nfs-accordion-item-padding        Padding of titles
+//   --nfs-accordion-content-background  Background of content panels
+//   --nfs-accordion-content-border      Border of content panels
+//   --nfs-accordion-content-color       Text color of content panels
+//   --nfs-accordion-content-padding     Padding of content panels
+//   --nfs-accordion-slide-speed         Animation duration (set via slideSpeed input)
+//   --nfs-accordion-slide-easing        Animation easing function
+// ═══════════════════════════════════════════════════════════════════════════════
+
+.accordion {
+  background: var(--nfs-accordion-background, #fefefe);
+}
+
+.accordion-title {
+  font-size: var(--nfs-accordion-title-font-size, #{util.rem-calc(12)});
+  color: var(--nfs-accordion-item-color, var(--nfs-primary-color, #0d5a89));
+  padding: var(--nfs-accordion-item-padding, 1.25rem 1rem);
+
+  &:hover,
+  &:focus {
+    background-color: var(--nfs-accordion-item-background-hover, #e6e6e6);
+  }
+}
+
+.accordion-content {
+  background: var(--nfs-accordion-content-background, #fefefe);
+  color: var(--nfs-accordion-content-color, #0a0a0a);
+
+  // Note: border and padding are controlled by the component's animation styles
+  // when expanded. These properties serve as documentation of the theming options.
+}

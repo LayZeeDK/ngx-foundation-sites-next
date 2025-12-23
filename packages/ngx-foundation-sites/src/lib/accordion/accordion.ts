@@ -91,9 +91,9 @@ import { AccordionDeepLinkService } from './accordion-deep-link.service';
 
     .accordion-item:has(button[aria-expanded='true']) > .accordion-content {
       grid-template-rows: 1fr;
-      /* Restore Foundation padding when expanded */
-      padding: 1rem;
-      border: 1px solid #e6e6e6;
+      /* Restore Foundation padding when expanded - uses CSS custom properties */
+      padding: var(--nfs-accordion-content-padding, 1rem);
+      border: var(--nfs-accordion-content-border, 1px solid #e6e6e6);
       border-top: 0;
     }
 
