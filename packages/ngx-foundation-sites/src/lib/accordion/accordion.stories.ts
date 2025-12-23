@@ -52,6 +52,7 @@ export const Default: Story = {
   args: {
     multiExpandable: false,
     disabled: false,
+    softDisabled: true,
     slideSpeed: 250,
     deepLink: false,
     deepLinkSmudge: false,
@@ -73,6 +74,7 @@ export const Default: Story = {
       <nfs-accordion
         [multiExpandable]="multiExpandable"
         [disabled]="disabled"
+        [softDisabled]="softDisabled"
         [slideSpeed]="slideSpeed"
         [deepLink]="deepLink"
         [deepLinkSmudge]="deepLinkSmudge"
@@ -930,8 +932,9 @@ export const ThemeControls: ThemeControlsStory = {
       expect(trigger1).toHaveAttribute('aria-expanded', 'true');
     });
 
-    // Verify content is visible
-    const content = canvas.getByText(/Controls panel below/i);
+    // Verify content is visible (use findByText to wait for deferred content)
+    // Note: Search for text after the <strong> tag to avoid split element issues
+    const content = await canvas.findByText(/adjust CSS custom properties/i);
     expect(content).toBeVisible();
   },
 };
@@ -941,6 +944,181 @@ export const ThemeControls: ThemeControlsStory = {
  * Angular ARIA allows focus on disabled items (for screen reader announcement)
  * but prevents their activation via click, Enter, or Space.
  */
+/**
+ * Demonstrates the `softDisabled` input.
+ * When softDisabled=true (default), disabled items can receive focus for screen reader announcement.
+ * When softDisabled=false, disabled items are skipped during keyboard navigation.
+ */
+export const SoftDisabled: Story = {
+  args: {
+    multiExpandable: false,
+    disabled: false,
+    slideSpeed: 0,
+    allowAllClosed: true,
+    softDisabled: false, // Disabled items will be skipped during navigation
+  },
+  render: (args) => ({
+    props: args,
+    moduleMetadata: {
+      imports: [
+        NfsAccordion,
+        NfsAccordionItem,
+        NfsAccordionTitleDef,
+        NfsAccordionContentDef,
+      ],
+    },
+    template: `
+      <nfs-accordion
+        [multiExpandable]="multiExpandable"
+        [disabled]="disabled"
+        [slideSpeed]="slideSpeed"
+        [allowAllClosed]="allowAllClosed"
+        [softDisabled]="softDisabled"
+      >
+        <nfs-accordion-item panelId="panel-1">
+          <span *nfsAccordionTitle>Enabled 1</span>
+          <p *nfsAccordionContent>Panel 1 content.</p>
+        </nfs-accordion-item>
+        <nfs-accordion-item panelId="panel-2" [disabled]="true">
+          <span *nfsAccordionTitle>Disabled (skipped)</span>
+          <p *nfsAccordionContent>Panel 2 content (disabled).</p>
+        </nfs-accordion-item>
+        <nfs-accordion-item panelId="panel-3">
+          <span *nfsAccordionTitle>Enabled 2</span>
+          <p *nfsAccordionContent>Panel 3 content.</p>
+        </nfs-accordion-item>
+      </nfs-accordion>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const trigger1 = canvas.getByRole('button', { name: /Enabled 1/i });
+    const trigger2 = canvas.getByRole('button', { name: /Disabled/i });
+    const trigger3 = canvas.getByRole('button', { name: /Enabled 2/i });
+
+    // Verify disabled trigger has aria-disabled="true"
+    expect(trigger2).toHaveAttribute('aria-disabled', 'true');
+
+    // Focus first trigger
+    trigger1.focus();
+    expect(document.activeElement).toBe(trigger1);
+
+    // With softDisabled=false, ArrowDown should SKIP the disabled trigger
+    // and move directly to the third trigger
+    await userEvent.keyboard('{ArrowDown}');
+    await waitFor(() => {
+      // Focus should skip trigger2 and go directly to trigger3
+      expect(document.activeElement).toBe(trigger3);
+    });
+
+    // ArrowUp should also skip the disabled trigger
+    await userEvent.keyboard('{ArrowUp}');
+    await waitFor(() => {
+      expect(document.activeElement).toBe(trigger1);
+    });
+  },
+};
+
+/**
+ * Demonstrates programmatic `expandAll()` and `collapseAll()` methods.
+ * These methods allow external control over all accordion panels.
+ */
+export const ExpandCollapseAll: Story = {
+  args: {
+    multiExpandable: true, // Required for expandAll to work
+    disabled: false,
+    slideSpeed: 250,
+    allowAllClosed: true,
+  },
+  render: (args) => ({
+    props: args,
+    moduleMetadata: {
+      imports: [
+        NfsAccordion,
+        NfsAccordionItem,
+        NfsAccordionTitleDef,
+        NfsAccordionContentDef,
+      ],
+    },
+    template: `
+      <main>
+        <div style="margin-bottom: 1rem;">
+          <button
+            type="button"
+            class="button primary"
+            style="margin-right: 0.5rem;"
+            (click)="accordion.expandAll()"
+          >
+            Expand All
+          </button>
+          <button
+            type="button"
+            class="button secondary"
+            (click)="accordion.collapseAll()"
+          >
+            Collapse All
+          </button>
+        </div>
+        <nfs-accordion
+          #accordion
+          [multiExpandable]="multiExpandable"
+          [disabled]="disabled"
+          [slideSpeed]="slideSpeed"
+          [allowAllClosed]="allowAllClosed"
+        >
+          <nfs-accordion-item panelId="panel-1">
+            <span *nfsAccordionTitle>Panel 1</span>
+            <p *nfsAccordionContent>Content for panel 1.</p>
+          </nfs-accordion-item>
+          <nfs-accordion-item panelId="panel-2">
+            <span *nfsAccordionTitle>Panel 2</span>
+            <p *nfsAccordionContent>Content for panel 2.</p>
+          </nfs-accordion-item>
+          <nfs-accordion-item panelId="panel-3">
+            <span *nfsAccordionTitle>Panel 3</span>
+            <p *nfsAccordionContent>Content for panel 3.</p>
+          </nfs-accordion-item>
+        </nfs-accordion>
+      </main>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const expandAllBtn = canvas.getByRole('button', { name: /Expand All/i });
+    const collapseAllBtn = canvas.getByRole('button', {
+      name: /Collapse All/i,
+    });
+    const trigger1 = canvas.getByRole('button', { name: /Panel 1/i });
+    const trigger2 = canvas.getByRole('button', { name: /Panel 2/i });
+    const trigger3 = canvas.getByRole('button', { name: /Panel 3/i });
+
+    // Initially all panels should be collapsed
+    expect(trigger1).toHaveAttribute('aria-expanded', 'false');
+    expect(trigger2).toHaveAttribute('aria-expanded', 'false');
+    expect(trigger3).toHaveAttribute('aria-expanded', 'false');
+
+    // Click Expand All button
+    await userEvent.click(expandAllBtn);
+
+    await waitFor(() => {
+      expect(trigger1).toHaveAttribute('aria-expanded', 'true');
+      expect(trigger2).toHaveAttribute('aria-expanded', 'true');
+      expect(trigger3).toHaveAttribute('aria-expanded', 'true');
+    });
+
+    // Click Collapse All button
+    await userEvent.click(collapseAllBtn);
+
+    await waitFor(() => {
+      expect(trigger1).toHaveAttribute('aria-expanded', 'false');
+      expect(trigger2).toHaveAttribute('aria-expanded', 'false');
+      expect(trigger3).toHaveAttribute('aria-expanded', 'false');
+    });
+  },
+};
+
 export const FocusManagementWithDisabled: Story = {
   args: {
     multiExpandable: false,

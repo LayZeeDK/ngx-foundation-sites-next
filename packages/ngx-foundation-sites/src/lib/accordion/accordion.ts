@@ -9,6 +9,7 @@ import {
   inject,
   input,
   untracked,
+  viewChild,
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import {
@@ -29,6 +30,7 @@ import { AccordionDeepLinkService } from './accordion-deep-link.service';
       role="presentation"
       [multiExpandable]="multiExpandable()"
       [disabled]="disabled()"
+      [softDisabled]="softDisabled()"
       [wrap]="wrap()"
     >
       @for (item of items(); track item.panelId()) {
@@ -155,6 +157,13 @@ export class NfsAccordion {
   /** Disable all accordion interactions */
   readonly disabled = input(false);
 
+  /** Whether to allow disabled items to receive focus.
+   * When true, disabled items are focusable but not interactive.
+   * When false, disabled items are skipped during navigation.
+   * Default: true (allows focus for screen reader announcement)
+   */
+  readonly softDisabled = input(true);
+
   /** Whether keyboard navigation wraps from last to first item */
   readonly wrap = input(false);
 
@@ -181,6 +190,9 @@ export class NfsAccordion {
 
   /** Collected accordion items */
   protected readonly items = contentChildren(NfsAccordionItem);
+
+  /** Reference to the AccordionGroup directive for programmatic control */
+  private readonly accordionGroup = viewChild(AccordionGroup);
 
   /** Track the last expanded panel ID for deep linking and allowAllClosed */
   private lastExpandedPanelId: string | null = null;
@@ -269,6 +281,22 @@ export class NfsAccordion {
       },
       { allowSignalWrites: true },
     );
+  }
+
+  /**
+   * Expands all accordion panels.
+   * Only works when `multiExpandable` is true.
+   */
+  expandAll(): void {
+    this.accordionGroup()?.expandAll();
+  }
+
+  /**
+   * Collapses all accordion panels.
+   * Note: If `allowAllClosed` is false, at least one panel will remain open.
+   */
+  collapseAll(): void {
+    this.accordionGroup()?.collapseAll();
   }
 
   /** Handles the initial URL hash when the component loads */

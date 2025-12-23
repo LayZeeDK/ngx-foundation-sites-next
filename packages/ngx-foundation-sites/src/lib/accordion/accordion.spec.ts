@@ -2,6 +2,7 @@ import {
   Component,
   provideZonelessChangeDetection,
   signal,
+  viewChild,
 } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
@@ -17,8 +18,10 @@ import { AccordionDeepLinkService } from './accordion-deep-link.service';
 @Component({
   template: `
     <nfs-accordion
+      #accordion
       [multiExpandable]="multiExpandable()"
       [disabled]="disabled()"
+      [softDisabled]="softDisabled()"
       [wrap]="wrap()"
       [slideSpeed]="slideSpeed()"
       [deepLink]="deepLink()"
@@ -61,8 +64,12 @@ import { AccordionDeepLinkService } from './accordion-deep-link.service';
   ],
 })
 class TestHostComponent {
+  /** Reference to the accordion component for testing programmatic methods */
+  readonly accordion = viewChild.required(NfsAccordion);
+
   multiExpandable = signal(false);
   disabled = signal(false);
+  softDisabled = signal(true);
   wrap = signal(false);
   slideSpeed = signal(250);
   deepLink = signal(false);
@@ -776,6 +783,158 @@ describe('NfsAccordion', () => {
       await fixture.whenStable();
 
       expect(getFocusedTriggerIndex()).toBe(0);
+    });
+  });
+
+  describe('softDisabled', () => {
+    function pressKey(key: string): void {
+      const target = document.activeElement ?? getTriggers()[0];
+      target.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          key,
+          code: key,
+          bubbles: true,
+          cancelable: true,
+        }),
+      );
+    }
+
+    function getFocusedTriggerIndex(): number {
+      const triggers = getTriggers();
+      return triggers.findIndex((t) => t === document.activeElement);
+    }
+
+    it('should allow focus on disabled items when softDisabled=true (default)', async () => {
+      host.softDisabled.set(true);
+      host.item2Disabled.set(true);
+      fixture.detectChanges();
+
+      const triggers = getTriggers();
+      triggers[0].focus();
+      fixture.detectChanges();
+
+      // With softDisabled=true, ArrowDown should move to disabled item (for screen reader)
+      pressKey('ArrowDown');
+      await fixture.whenStable();
+
+      // Focus should be on the disabled trigger (index 1)
+      expect(getFocusedTriggerIndex()).toBe(1);
+    });
+
+    it('should skip disabled items when softDisabled=false', async () => {
+      host.softDisabled.set(false);
+      host.item2Disabled.set(true);
+      fixture.detectChanges();
+
+      const triggers = getTriggers();
+      triggers[0].focus();
+      fixture.detectChanges();
+
+      // With softDisabled=false, ArrowDown should skip disabled item
+      pressKey('ArrowDown');
+      await fixture.whenStable();
+
+      // Focus should skip index 1 (disabled) and go to index 2
+      expect(getFocusedTriggerIndex()).toBe(2);
+    });
+
+    it('should skip disabled items in reverse navigation with softDisabled=false', async () => {
+      host.softDisabled.set(false);
+      host.item2Disabled.set(true);
+      fixture.detectChanges();
+
+      const triggers = getTriggers();
+      triggers[2].focus();
+      fixture.detectChanges();
+
+      // With softDisabled=false, ArrowUp should skip disabled item
+      pressKey('ArrowUp');
+      await fixture.whenStable();
+
+      // Focus should skip index 1 (disabled) and go to index 0
+      expect(getFocusedTriggerIndex()).toBe(0);
+    });
+  });
+
+  describe('expandAll and collapseAll', () => {
+    it('should expand all panels when expandAll() is called in multi-expand mode', async () => {
+      host.multiExpandable.set(true);
+      host.allowAllClosed.set(true);
+      fixture.detectChanges();
+
+      // Initially all collapsed
+      expect(isExpanded(0)).toBe(false);
+      expect(isExpanded(1)).toBe(false);
+      expect(isExpanded(2)).toBe(false);
+
+      // Call expandAll
+      host.accordion().expandAll();
+      await fixture.whenStable();
+      fixture.detectChanges();
+
+      // All should be expanded
+      expect(isExpanded(0)).toBe(true);
+      expect(isExpanded(1)).toBe(true);
+      expect(isExpanded(2)).toBe(true);
+    });
+
+    it('should collapse all panels when collapseAll() is called', async () => {
+      host.multiExpandable.set(true);
+      host.allowAllClosed.set(true);
+      host.item1Expanded.set(true);
+      host.item2Expanded.set(true);
+      host.item3Expanded.set(true);
+      fixture.detectChanges();
+
+      // Initially all expanded
+      expect(isExpanded(0)).toBe(true);
+      expect(isExpanded(1)).toBe(true);
+      expect(isExpanded(2)).toBe(true);
+
+      // Call collapseAll
+      host.accordion().collapseAll();
+      await fixture.whenStable();
+      fixture.detectChanges();
+
+      // All should be collapsed
+      expect(isExpanded(0)).toBe(false);
+      expect(isExpanded(1)).toBe(false);
+      expect(isExpanded(2)).toBe(false);
+    });
+
+    it('should not expand all when multiExpandable=false', async () => {
+      host.multiExpandable.set(false);
+      fixture.detectChanges();
+
+      // expandAll should not work in single-expand mode
+      host.accordion().expandAll();
+      await fixture.whenStable();
+      fixture.detectChanges();
+
+      // Should remain collapsed or at most one expanded
+      const expandedCount = getTriggers().filter(
+        (t) => t.getAttribute('aria-expanded') === 'true',
+      ).length;
+      expect(expandedCount).toBeLessThanOrEqual(1);
+    });
+
+    it('should respect allowAllClosed when collapseAll() is called', async () => {
+      host.multiExpandable.set(true);
+      host.allowAllClosed.set(false);
+      host.item1Expanded.set(true);
+      host.item2Expanded.set(true);
+      fixture.detectChanges();
+
+      // Call collapseAll
+      host.accordion().collapseAll();
+      await fixture.whenStable();
+      fixture.detectChanges();
+
+      // At least one panel should remain open due to allowAllClosed=false
+      const expandedCount = getTriggers().filter(
+        (t) => t.getAttribute('aria-expanded') === 'true',
+      ).length;
+      expect(expandedCount).toBeGreaterThanOrEqual(1);
     });
   });
 
