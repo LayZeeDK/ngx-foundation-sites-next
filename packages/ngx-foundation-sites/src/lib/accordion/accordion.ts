@@ -180,6 +180,9 @@ export class NfsAccordion {
   /** Track the last expanded panel ID for deep linking and allowAllClosed */
   private lastExpandedPanelId: string | null = null;
 
+  /** Flag to prevent hash clearing until after initial hash is processed */
+  private initialHashProcessed = false;
+
   constructor() {
     // Handle initial hash on first render
     afterNextRender(() => {
@@ -187,6 +190,7 @@ export class NfsAccordion {
         this.handleInitialHash();
         this.setupHashChangeListener();
       }
+      this.initialHashProcessed = true;
     });
 
     // Track expansion changes for deep linking and allowAllClosed enforcement
@@ -250,8 +254,9 @@ export class NfsAccordion {
                   this.deepLinkSmudgeDelay(),
                 );
               }
-            } else if (this.allowAllClosed()) {
+            } else if (this.allowAllClosed() && this.initialHashProcessed) {
               // Only clear hash if we're actually allowing all closed
+              // and initial hash has already been processed
               this.deepLinkService.clearHash(this.updateHistory());
             }
           });
