@@ -11,14 +11,14 @@ import { DOCUMENT } from '@angular/common';
  */
 @Injectable({ providedIn: 'root' })
 export class AccordionDeepLinkService {
-  private readonly document = inject(DOCUMENT);
+  readonly #document = inject(DOCUMENT);
 
   /**
    * Gets the panel ID from the current URL hash.
    * @returns The panel ID (without the # prefix) or null if no hash exists
    */
   getHashPanelId(): string | null {
-    const hash = this.document.location?.hash;
+    const hash = this.#document.location?.hash;
     return hash ? hash.slice(1) : null;
   }
 
@@ -42,7 +42,7 @@ export class AccordionDeepLinkService {
    */
   clearHash(useHistory: boolean): void {
     const url =
-      this.document.location?.pathname + this.document.location?.search;
+      this.#document.location?.pathname + this.#document.location?.search;
     if (useHistory) {
       history.pushState(null, '', url);
     } else {
@@ -57,7 +57,7 @@ export class AccordionDeepLinkService {
    */
   scrollToPanel(panelId: string, delay = 300): void {
     setTimeout(() => {
-      const element = this.document.getElementById(panelId);
+      const element = this.#document.getElementById(panelId);
       element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, delay);
   }
@@ -72,10 +72,10 @@ export class AccordionDeepLinkService {
       callback(this.getHashPanelId());
     };
 
-    this.document.defaultView?.addEventListener('hashchange', handler);
+    this.#document.defaultView?.addEventListener('hashchange', handler);
 
     return () => {
-      this.document.defaultView?.removeEventListener('hashchange', handler);
+      this.#document.defaultView?.removeEventListener('hashchange', handler);
     };
   }
 }

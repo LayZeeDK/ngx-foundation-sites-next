@@ -146,8 +146,8 @@ import { AccordionDeepLinkService } from './accordion-deep-link.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NfsAccordion {
-  private readonly deepLinkService = inject(AccordionDeepLinkService);
-  private readonly destroyRef = inject(DestroyRef);
+  readonly #deepLinkService = inject(AccordionDeepLinkService);
+  readonly #destroyRef = inject(DestroyRef);
 
   /** Allow multiple panels to be expanded simultaneously */
   readonly multiExpandable = input(false);
@@ -183,23 +183,27 @@ export class NfsAccordion {
   /** Collected accordion items */
   protected readonly items = contentChildren(NfsAccordionItem);
 
-  /** Reference to the AccordionGroup directive for programmatic control */
+  /**
+   * Reference to the AccordionGroup directive for programmatic control.
+   * Note: Uses TypeScript `private` instead of `#` because Angular's
+   * `viewChild` requires compile-time access to the field.
+   */
   private readonly accordionGroup = viewChild(AccordionGroup);
 
   /** Track the last expanded panel ID for deep linking and allowAllClosed */
-  private lastExpandedPanelId: string | null = null;
+  #lastExpandedPanelId: string | null = null;
 
   /** Flag to prevent hash clearing until after initial hash is processed */
-  private initialHashProcessed = false;
+  #initialHashProcessed = false;
 
   constructor() {
     // Handle initial hash on first render
     afterNextRender(() => {
       if (this.deepLink()) {
-        this.handleInitialHash();
-        this.setupHashChangeListener();
+        this.#handleInitialHash();
+        this.#setupHashChangeListener();
       }
-      this.initialHashProcessed = true;
+      this.#initialHashProcessed = true;
     });
 
     // Track expansion changes for deep linking and allowAllClosed enforcement
@@ -225,10 +229,11 @@ export class NfsAccordion {
         expandedItems.length === 0
       ) {
         // Re-open the last expanded panel, or the first non-disabled panel
-        const panelToOpen = this.lastExpandedPanelId
+        const panelToOpen = this.#lastExpandedPanelId
           ? items.find(
               (item) =>
-                item.panelId() === this.lastExpandedPanelId && !item.disabled(),
+                item.panelId() === this.#lastExpandedPanelId &&
+                !item.disabled(),
             )
           : items.find((item) => !item.disabled());
 
@@ -242,29 +247,29 @@ export class NfsAccordion {
       }
 
       // Track expanded panel for future reference
-      if (expandedPanelId && expandedPanelId !== this.lastExpandedPanelId) {
-        this.lastExpandedPanelId = expandedPanelId;
+      if (expandedPanelId && expandedPanelId !== this.#lastExpandedPanelId) {
+        this.#lastExpandedPanelId = expandedPanelId;
       }
 
       // Handle deep linking (use untracked to avoid re-triggering on hash updates)
       if (this.deepLink()) {
         untracked(() => {
           if (expandedPanelId) {
-            this.deepLinkService.updateHash(
+            this.#deepLinkService.updateHash(
               expandedPanelId,
               this.updateHistory(),
             );
 
             if (this.deepLinkSmudge()) {
-              this.deepLinkService.scrollToPanel(
+              this.#deepLinkService.scrollToPanel(
                 expandedPanelId,
                 this.deepLinkSmudgeDelay(),
               );
             }
-          } else if (this.allowAllClosed() && this.initialHashProcessed) {
+          } else if (this.allowAllClosed() && this.#initialHashProcessed) {
             // Only clear hash if we're actually allowing all closed
             // and initial hash has already been processed
-            this.deepLinkService.clearHash(this.updateHistory());
+            this.#deepLinkService.clearHash(this.updateHistory());
           }
         });
       }
@@ -288,8 +293,8 @@ export class NfsAccordion {
   }
 
   /** Handles the initial URL hash when the component loads */
-  private handleInitialHash(): void {
-    const hashPanelId = this.deepLinkService.getHashPanelId();
+  #handleInitialHash(): void {
+    const hashPanelId = this.#deepLinkService.getHashPanelId();
     if (!hashPanelId) return;
 
     const items = this.items();
@@ -297,10 +302,10 @@ export class NfsAccordion {
 
     if (matchingItem) {
       matchingItem.expanded.set(true);
-      this.lastExpandedPanelId = hashPanelId;
+      this.#lastExpandedPanelId = hashPanelId;
 
       if (this.deepLinkSmudge()) {
-        this.deepLinkService.scrollToPanel(
+        this.#deepLinkService.scrollToPanel(
           hashPanelId,
           this.deepLinkSmudgeDelay(),
         );
@@ -309,8 +314,8 @@ export class NfsAccordion {
   }
 
   /** Sets up listener for browser back/forward navigation */
-  private setupHashChangeListener(): void {
-    const cleanup = this.deepLinkService.onHashChange((panelId) => {
+  #setupHashChangeListener(): void {
+    const cleanup = this.#deepLinkService.onHashChange((panelId) => {
       if (!panelId) return;
 
       const items = this.items();
@@ -318,10 +323,10 @@ export class NfsAccordion {
 
       if (matchingItem && !matchingItem.expanded()) {
         matchingItem.expanded.set(true);
-        this.lastExpandedPanelId = panelId;
+        this.#lastExpandedPanelId = panelId;
 
         if (this.deepLinkSmudge()) {
-          this.deepLinkService.scrollToPanel(
+          this.#deepLinkService.scrollToPanel(
             panelId,
             this.deepLinkSmudgeDelay(),
           );
@@ -329,6 +334,6 @@ export class NfsAccordion {
       }
     });
 
-    this.destroyRef.onDestroy(cleanup);
+    this.#destroyRef.onDestroy(cleanup);
   }
 }
