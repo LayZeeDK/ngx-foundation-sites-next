@@ -54,7 +54,8 @@
           "-c",
           "packages/ngx-foundation-sites/.compodocrc.json"
         ],
-        "styles": ["packages/ngx-foundation-sites/src/storybook/styles.scss"]
+        "styles": ["packages/ngx-foundation-sites/src/storybook/styles.scss"],
+        "experimentalZoneless": true
       },
       "configurations": {
         "ci": {
@@ -74,7 +75,8 @@
           "-c",
           "packages/ngx-foundation-sites/.compodocrc.json"
         ],
-        "styles": ["packages/ngx-foundation-sites/src/storybook/styles.scss"]
+        "styles": ["packages/ngx-foundation-sites/src/storybook/styles.scss"],
+        "experimentalZoneless": true
       },
       "configurations": {
         "ci": {
