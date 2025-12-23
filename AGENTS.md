@@ -18,6 +18,31 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 3. **Progressive Enhancement**: Core functionality works without JavaScript; interactivity is layered on top
 4. **Naming Alignment**: Component names should follow both Foundation for Sites component names from their docs AND their CSS class names (e.g., `Accordion` from docs → `.accordion` class, `Reveal` from docs → `.reveal` class)
 
+### Styling Guidelines
+
+**Prefer Foundation's existing styles over custom CSS.** The goal is to leverage Foundation's battle-tested CSS rather than duplicating or overriding it.
+
+1. **Always apply Foundation's CSS classes** — Use the same class names Foundation expects (`.accordion`, `.accordion-item`, `.accordion-title`, etc.)
+
+2. **Use Foundation's state classes** — Apply state classes like `.is-active`, `.is-open`, `.disabled` via Angular class bindings:
+
+   ```html
+   <li class="accordion-item" [class.is-active]="item.expanded()"></li>
+   ```
+
+3. **Only add custom CSS when necessary** — Valid reasons include:
+   - Using a different HTML element for accessibility (e.g., `<button>` instead of `<a>` may need `width: 100%`)
+   - Integrating with Angular-specific features (e.g., animation hooks)
+   - Bridging ARIA attributes to Foundation's class-based styling
+
+4. **Document custom CSS** — When custom styles are unavoidable, add a comment explaining why:
+   ```css
+   /* Button elements need explicit width (Foundation assumes <a> elements) */
+   .accordion-title {
+     width: 100%;
+   }
+   ```
+
 ### Implementation Hierarchy
 
 When building components, follow this priority order:
