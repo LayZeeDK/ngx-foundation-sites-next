@@ -1406,7 +1406,43 @@ collapseAll(): void {
 - `packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts` - Added `CustomTheme` story demonstrating dark theme
 - `packages/ngx-foundation-sites/src/lib/accordion/accordion.spec.ts` - Added unit tests for CSS custom property theming
 
-**Story added:** `CustomTheme` - Demonstrates runtime theming with a dark color scheme
+**Stories added:**
+
+- `CustomTheme` - Demonstrates runtime theming with a dark color scheme
+- `ThemeControls` - Interactive Storybook controls for ALL CSS custom properties
+
+#### 7.4.6 ThemeControls Story Implementation ✅
+
+**Purpose:** Provides interactive Storybook controls for all 11 CSS custom properties, enabling real-time theme customization in the Storybook UI.
+
+**Implementation approach:**
+
+1. **Custom TypeScript interface**: Created `ThemeControlsArgs` interface to extend story args with CSS custom property values (since `StoryObj<NfsAccordion>` only accepts component inputs)
+
+2. **argTypes configuration**: Each CSS property mapped to an appropriate Storybook control:
+   - Color properties → `control: { type: 'color' }` with color picker
+   - Text properties (padding, font-size, border) → `control: { type: 'text' }`
+   - Easing function → `control: 'select'` with predefined options
+
+3. **Category grouping**: All CSS controls grouped under `table: { category: 'CSS Custom Properties' }` for clear organization in the Controls panel
+
+4. **Angular style bindings**: Template uses `[style.--nfs-accordion-*]` bindings to pass arg values as CSS custom properties
+
+**CSS Custom Properties with controls:**
+
+| Property                                | Control Type | Default Value       |
+| --------------------------------------- | ------------ | ------------------- |
+| `--nfs-accordion-background`            | color        | `#fefefe`           |
+| `--nfs-accordion-title-font-size`       | text         | `0.75rem`           |
+| `--nfs-accordion-item-color`            | color        | `#0d5a89`           |
+| `--nfs-accordion-item-background-hover` | color        | `#e6e6e6`           |
+| `--nfs-accordion-item-padding`          | text         | `1.25rem 1rem`      |
+| `--nfs-accordion-content-background`    | color        | `#fefefe`           |
+| `--nfs-accordion-content-border`        | text         | `1px solid #e6e6e6` |
+| `--nfs-accordion-content-color`         | color        | `#0a0a0a`           |
+| `--nfs-accordion-content-padding`       | text         | `1rem`              |
+| `--nfs-accordion-slide-easing`          | select       | `ease-out`          |
+| `--nfs-accordion-slide-speed`           | (via input)  | `250ms`             |
 
 #### 7.4.5 Bugfix: Plus/Minus Icon Not Toggling ✅
 
@@ -1481,25 +1517,26 @@ collapseAll(): void {
 
 #### 7.5.2 Storybook Stories
 
-| Story Name             | Purpose                                 | Status |
-| ---------------------- | --------------------------------------- | ------ |
-| `DeepLinkWithOffset`   | Demonstrate sticky header offset        | ⏳     |
-| `SoftDisabled`         | Show focus behavior on disabled items   | ⏳     |
-| `ExpandCollapseAll`    | Buttons to trigger programmatic methods | ⏳     |
-| `CustomTheme`          | Demonstrate CSS custom property theming | ✅     |
-| `PreserveContentFalse` | Show DOM cleanup when panel closes      | ⏳     |
+| Story Name             | Purpose                                     | Status |
+| ---------------------- | ------------------------------------------- | ------ |
+| `DeepLinkWithOffset`   | Demonstrate sticky header offset            | ⏳     |
+| `SoftDisabled`         | Show focus behavior on disabled items       | ⏳     |
+| `ExpandCollapseAll`    | Buttons to trigger programmatic methods     | ⏳     |
+| `CustomTheme`          | Demonstrate CSS custom property theming     | ✅     |
+| `ThemeControls`        | Interactive controls for ALL CSS properties | ✅     |
+| `PreserveContentFalse` | Show DOM cleanup when panel closes          | ⏳     |
 
 ### 7.6 Files to Modify
 
-| File                                  | Changes                                                | Status                 |
-| ------------------------------------- | ------------------------------------------------------ | ---------------------- |
-| `accordion.ts`                        | Add 14 new inputs, 2 methods, ViewChild, host bindings | ⏳                     |
-| `accordion-item.ts`                   | Add `preserveContent` input                            | ⏳                     |
-| `accordion-deep-link.service.ts`      | Add offset parameter to `scrollToPanel()`              | ⏳                     |
-| `styles.scss`                         | Add CSS custom property fallbacks                      | ✅ 7.4                 |
-| `accordion.stories.ts`                | Add 5 new stories                                      | ✅ 7.4 (CustomTheme)   |
-| `accordion.spec.ts`                   | Add unit tests for new features                        | ✅ 7.4 (theming tests) |
-| `accordion-deep-link.service.spec.ts` | Add offset tests                                       | ⏳                     |
+| File                                  | Changes                                                | Status                              |
+| ------------------------------------- | ------------------------------------------------------ | ----------------------------------- |
+| `accordion.ts`                        | Add 14 new inputs, 2 methods, ViewChild, host bindings | ⏳                                  |
+| `accordion-item.ts`                   | Add `preserveContent` input                            | ⏳                                  |
+| `accordion-deep-link.service.ts`      | Add offset parameter to `scrollToPanel()`              | ⏳                                  |
+| `styles.scss`                         | Add CSS custom property fallbacks                      | ✅ 7.4                              |
+| `accordion.stories.ts`                | Add 5 new stories                                      | ✅ 7.4 (CustomTheme, ThemeControls) |
+| `accordion.spec.ts`                   | Add unit tests for new features                        | ✅ 7.4 (theming tests)              |
+| `accordion-deep-link.service.spec.ts` | Add offset tests                                       | ⏳                                  |
 
 ### 7.7 Implementation Order
 
