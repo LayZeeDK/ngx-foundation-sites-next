@@ -1408,6 +1408,67 @@ collapseAll(): void {
 
 **Story added:** `CustomTheme` - Demonstrates runtime theming with a dark color scheme
 
+#### 7.4.5 Bugfix: Plus/Minus Icon Not Toggling ✅
+
+**Issue:** The accordion's +/- indicator icon always showed `+` even when expanded, and icons overlapped title text.
+
+**Root Cause Analysis:**
+
+1. **Icon not toggling:** Foundation's CSS uses `.is-active` class on `.accordion-item` to switch from `+` to `–`:
+
+   ```scss
+   .is-active > .accordion-title::before {
+     content: '\2013'; // en-dash (–)
+   }
+   ```
+
+   Our component used `aria-expanded` attribute but never applied `.is-active` class.
+
+2. **Icon overlapping text:** Foundation's `.accordion-title` styles assume `<a>` elements (which fill container width with `display: block`). Our `<button>` elements sized to content, causing the absolutely-positioned icon to overlap.
+
+**Fixes Applied:**
+
+1. **Template binding** — Added `.is-active` class sync in `accordion.ts`:
+
+   ```html
+   <li class="accordion-item" [class.is-active]="item.expanded()"></li>
+   ```
+
+2. **Button styles CSS** — Added minimal CSS overrides for button elements:
+
+   ```css
+   /*
+    * Button elements need explicit styles (Foundation assumes <a> elements)
+    * - width: 100% because buttons don't fill container like display:block anchors
+    * - cursor: pointer because buttons default to cursor:default
+    */
+   .accordion-title {
+     width: 100%;
+     cursor: pointer;
+   }
+   ```
+
+3. **Border correction** — Fixed content border to match Foundation (keeps top border as separator from title):
+
+   ```css
+   .accordion-item.is-active > .accordion-content {
+     border: var(--nfs-accordion-content-border, 1px solid #e6e6e6);
+     border-bottom: 0; /* Foundation removes bottom border, keeps top as separator */
+   }
+   ```
+
+4. **Simplified CSS selectors** — Changed from `:has(button[aria-expanded='true'])` to `.is-active` for better consistency with Foundation and simpler CSS:
+
+   ```css
+   /* Before (complex, less compatible): */
+   .accordion-item:has(button[aria-expanded='true']) > .accordion-content { ... }
+
+   /* After (simpler, Foundation-aligned): */
+   .accordion-item.is-active > .accordion-content { ... }
+   ```
+
+**Design Decision:** Prefer Foundation's existing CSS classes over custom CSS rules. The `.is-active` class binding leverages Foundation's battle-tested styling rather than duplicating logic with custom ARIA-aware selectors.
+
 ### 7.5 Testing & Documentation
 
 #### 7.5.1 Unit Tests
