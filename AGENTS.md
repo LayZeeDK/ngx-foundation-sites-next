@@ -79,6 +79,8 @@ Use the Playwright MCP server to:
 - Use strict type checking
 - Prefer type inference when the type is obvious
 - Avoid the `any` type; use `unknown` when type is uncertain
+- Use JS-native `#` private fields instead of TypeScript's `private` keyword for true runtime privacy
+  - **Exception**: Angular signal queries (`viewChild`, `contentChild`, `contentChildren`) require TypeScript `private` because Angular needs compile-time access
 
 ## Angular Best Practices
 
