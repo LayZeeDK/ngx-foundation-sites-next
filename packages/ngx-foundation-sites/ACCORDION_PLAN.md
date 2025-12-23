@@ -585,7 +585,7 @@ Test cases:
 
 9. **role="region" verification**: Added verification in `Accessibility` story confirming all panels have `role="region"` per ARIA Authoring Practices, enabling screen reader landmark navigation.
 
-### 5.3 Deep Linking E2E Tests (Playwright)
+### 5.3 Deep Linking E2E Tests (Playwright) ✅
 
 **Why E2E?** Deep linking cannot be reliably tested in Storybook interaction tests because:
 
@@ -868,6 +868,39 @@ export const DeepLinkRouter: Story = {
 | Back/forward | `page.goBack()`      | `location.simulateUrlPop()` |
 | Scroll       | Real viewport scroll | Spy on `ViewportScroller`   |
 
+#### 5.3.13 Implementation Notes ✅
+
+**Completed:** E2E project scaffolded and all 7 test cases passing.
+
+**Scaffolding approach (per user preference):**
+
+1. Generated temporary Angular app with Playwright E2E using `@nx/angular:application`
+2. Removed temporary app using `@nx/workspace:remove` generator
+3. Moved/renamed E2E project to `packages/ngx-foundation-sites-e2e` using `@nx/workspace:move` generator
+4. Manually verified no `temp` references remained after move
+
+**Adjustments made during implementation:**
+
+1. **E2E project location**: Placed in `packages/` rather than `apps/` for consistency with library project
+
+2. **Story variants for E2E**: Created `MultiExpandDeepLink` and `DeepLinkNoHistory` stories without play functions to avoid interference with E2E test interactions
+
+3. **Race condition fix in accordion.ts**: Discovered and fixed a race condition where `effect()` would clear the URL hash before `afterNextRender()` could read the initial hash. Added `initialHashProcessed` flag to prevent premature hash clearing in `allowAllClosed` mode.
+
+4. **Test for "ignores invalid hash"**: Updated to use `DeepLinkNoHistory` story which has `allowAllClosed: true` so that invalid hashes don't trigger auto-open of first panel
+
+**Files created:**
+
+- `packages/ngx-foundation-sites-e2e/project.json` - Nx project with `implicitDependencies: ["ngx-foundation-sites"]`
+- `packages/ngx-foundation-sites-e2e/playwright.config.ts` - Configured for static-storybook on port 4400
+- `packages/ngx-foundation-sites-e2e/tsconfig.json` - TypeScript configuration
+- `packages/ngx-foundation-sites-e2e/src/accordion-deep-link.spec.ts` - 7 E2E test cases
+
+**Files modified:**
+
+- `packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts` - Added `MultiExpandDeepLink` and `DeepLinkNoHistory` stories
+- `packages/ngx-foundation-sites/src/lib/accordion/accordion.ts` - Fixed race condition with `initialHashProcessed` flag
+
 ### 5.4 Run CI Verification
 
 ```bash
@@ -895,7 +928,7 @@ npm run ci
 | `src/lib/accordion/accordion.spec.ts`                   | Unit tests                  | ✅                  |
 | `src/lib/accordion/accordion-deep-link.service.ts`      | Deep linking service        | ✅                  |
 | `src/lib/accordion/accordion-deep-link.service.spec.ts` | Service unit tests          | ✅                  |
-| `apps/.../accordion-deep-link.spec.ts`                  | Playwright E2E tests        |                     |
+| `packages/.../accordion-deep-link.spec.ts`              | Playwright E2E tests        | ✅                  |
 
 ### Modified Files
 
@@ -919,7 +952,7 @@ npm run ci
 6. **Phase 5** - Testing and documentation
    - **5.1** Unit tests ✅ (48 tests: 33 component + 15 service)
    - **5.2** Accessibility tests ✅
-   - **5.3** Deep linking E2E tests (Playwright)
+   - **5.3** Deep linking E2E tests (Playwright) ✅ (7 tests)
    - **5.4** CI verification
 7. **Phase 6** - Angular Router integration (Future Enhancement) — Deferred
 
