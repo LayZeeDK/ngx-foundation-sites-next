@@ -335,6 +335,72 @@ export const DeepLink: Story = {
   },
 };
 
+/**
+ * Multi-expand mode with deep linking enabled.
+ * Used by E2E tests to verify hash clearing when all panels are closed.
+ */
+export const MultiExpandDeepLink: Story = {
+  args: {
+    multiExpandable: true,
+    disabled: false,
+    slideSpeed: 250,
+    deepLink: true,
+    deepLinkSmudge: true,
+    deepLinkSmudgeDelay: 300,
+    updateHistory: true,
+    allowAllClosed: true,
+  },
+  render: Default.render,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Click to expand first panel
+    const trigger1 = canvas.getByRole('button', { name: /Accordion 1/i });
+    await userEvent.click(trigger1);
+
+    await waitFor(() => {
+      expect(trigger1).toHaveAttribute('aria-expanded', 'true');
+    });
+
+    // In multi-expand mode, clicking second panel should not close first
+    const trigger2 = canvas.getByRole('button', { name: /Accordion 2/i });
+    await userEvent.click(trigger2);
+
+    await waitFor(() => {
+      expect(trigger1).toHaveAttribute('aria-expanded', 'true');
+      expect(trigger2).toHaveAttribute('aria-expanded', 'true');
+    });
+  },
+};
+
+/**
+ * Deep linking with updateHistory=false.
+ * Uses replaceState instead of pushState, so browser history is not modified.
+ */
+export const DeepLinkNoHistory: Story = {
+  args: {
+    multiExpandable: false,
+    disabled: false,
+    slideSpeed: 250,
+    deepLink: true,
+    deepLinkSmudge: false,
+    deepLinkSmudgeDelay: 300,
+    updateHistory: false,
+  },
+  render: Default.render,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Click to expand first panel
+    const trigger1 = canvas.getByRole('button', { name: /Accordion 1/i });
+    await userEvent.click(trigger1);
+
+    await waitFor(() => {
+      expect(trigger1).toHaveAttribute('aria-expanded', 'true');
+    });
+  },
+};
+
 export const RequireOneOpen: Story = {
   args: {
     multiExpandable: false,
