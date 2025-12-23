@@ -8,6 +8,8 @@ setCompodocJson(docJson);
 const preview: Preview = {
   tags: ['autodocs'],
   parameters: {
+    // Private/protected members are filtered from documentation.json
+    // by the filter-documentation.mjs script (runs via compodoc target)
     controls: { expanded: true },
     a11y: {
       // Enable accessibility testing in test-storybook (fails CI on violations)

@@ -13,6 +13,22 @@
   },
   "tags": [],
   "targets": {
+    "compodoc": {
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{projectRoot}/src/**/*.ts",
+        "{projectRoot}/.storybook/filter-documentation.mjs"
+      ],
+      "outputs": ["{projectRoot}/documentation.json"],
+      "cache": true,
+      "options": {
+        "commands": [
+          "npx compodoc -p packages/ngx-foundation-sites/tsconfig.lib.json -e json -d packages/ngx-foundation-sites",
+          "node packages/ngx-foundation-sites/.storybook/filter-documentation.mjs"
+        ],
+        "parallel": false
+      }
+    },
     "build": {
       "executor": "@nx/angular:package",
       "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
@@ -45,19 +61,12 @@
     "storybook": {
       "executor": "@storybook/angular:start-storybook",
       "continuous": true,
+      "dependsOn": ["compodoc"],
       "options": {
         "port": 4400,
         "configDir": "packages/ngx-foundation-sites/.storybook",
         "browserTarget": "ngx-foundation-sites:build-storybook",
-        "compodoc": true,
-        "compodocArgs": [
-          "-p",
-          "packages/ngx-foundation-sites/tsconfig.lib.json",
-          "-e",
-          "json",
-          "-d",
-          "packages/ngx-foundation-sites"
-        ],
+        "compodoc": false,
         "styles": ["packages/ngx-foundation-sites/src/storybook/styles.scss"]
       },
       "configurations": {
@@ -69,19 +78,12 @@
     "build-storybook": {
       "executor": "@storybook/angular:build-storybook",
       "outputs": ["{options.outputDir}", "{projectRoot}/documentation.json"],
+      "dependsOn": ["compodoc"],
       "options": {
         "outputDir": "dist/storybook/ngx-foundation-sites",
         "configDir": "packages/ngx-foundation-sites/.storybook",
         "browserTarget": "ngx-foundation-sites:build-storybook",
-        "compodoc": true,
-        "compodocArgs": [
-          "-p",
-          "packages/ngx-foundation-sites/tsconfig.lib.json",
-          "-e",
-          "json",
-          "-d",
-          "packages/ngx-foundation-sites"
-        ],
+        "compodoc": false,
         "styles": ["packages/ngx-foundation-sites/src/storybook/styles.scss"]
       },
       "configurations": {
