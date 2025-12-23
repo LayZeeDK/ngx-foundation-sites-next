@@ -1196,22 +1196,24 @@ Add to accordion component documentation:
 
 #### Foundation Sass Variables (12 total)
 
-| Sass Variable                      | Default                 | CSS Custom Property              | Status |
-| ---------------------------------- | ----------------------- | -------------------------------- | ------ |
-| `$accordion-background`            | `$white`                | —                                | ❌     |
-| `$accordion-plusminus`             | `true`                  | —                                | ❌     |
-| `$accordion-plus-content`          | `'\002B'`               | —                                | ❌     |
-| `$accordion-minus-content`         | `'\2013'`               | —                                | ❌     |
-| `$accordion-title-font-size`       | `rem-calc(12)`          | —                                | ❌     |
-| `$accordion-item-color`            | `$primary-color`        | `--nfs-primary-color` (indirect) | ⚠️     |
-| `$accordion-item-background-hover` | `$light-gray`           | —                                | ❌     |
-| `$accordion-item-padding`          | `1.25rem 1rem`          | —                                | ❌     |
-| `$accordion-content-background`    | `$white`                | —                                | ❌     |
-| `$accordion-content-border`        | `1px solid $light-gray` | —                                | ❌     |
-| `$accordion-content-color`         | `$body-font-color`      | —                                | ❌     |
-| `$accordion-content-padding`       | `1rem`                  | —                                | ❌     |
+| Sass Variable                      | Default                 | CSS Custom Property                     | Status |
+| ---------------------------------- | ----------------------- | --------------------------------------- | ------ |
+| `$accordion-background`            | `$white`                | `--nfs-accordion-background`            | ✅     |
+| `$accordion-plusminus`             | `true`                  | —                                       | ❌     |
+| `$accordion-plus-content`          | `'\002B'`               | —                                       | ❌     |
+| `$accordion-minus-content`         | `'\2013'`               | —                                       | ❌     |
+| `$accordion-title-font-size`       | `rem-calc(12)`          | `--nfs-accordion-title-font-size`       | ✅     |
+| `$accordion-item-color`            | `$primary-color`        | `--nfs-accordion-item-color`            | ✅     |
+| `$accordion-item-background-hover` | `$light-gray`           | `--nfs-accordion-item-background-hover` | ✅     |
+| `$accordion-item-padding`          | `1.25rem 1rem`          | `--nfs-accordion-item-padding`          | ✅     |
+| `$accordion-content-background`    | `$white`                | `--nfs-accordion-content-background`    | ✅     |
+| `$accordion-content-border`        | `1px solid $light-gray` | `--nfs-accordion-content-border`        | ✅     |
+| `$accordion-content-color`         | `$body-font-color`      | `--nfs-accordion-content-color`         | ✅     |
+| `$accordion-content-padding`       | `1rem`                  | `--nfs-accordion-content-padding`       | ✅     |
 
-**Result: 1/12 partially exposed (8%)**
+**Result: 9/12 exposed as CSS custom properties (75%)**
+
+> **Note:** The `$accordion-plusminus`, `$accordion-plus-content`, and `$accordion-minus-content` variables control the ±/- icons and are not yet exposed. These would require component-level CSS changes to support custom icons.
 
 #### Angular ARIA Features (10 total)
 
@@ -1310,130 +1312,141 @@ collapseAll(): void {
 }
 ```
 
-### 7.4 Implementation: CSS Custom Properties for Theming
+### 7.4 Implementation: CSS Custom Properties for Theming ✅
 
-#### 7.4.1 Add Component-Level CSS Custom Properties
+#### 7.4.1 CSS-First Approach (No Angular Inputs)
 
-**File:** `packages/ngx-foundation-sites/src/lib/accordion/accordion.ts`
+**Decision:** Instead of Angular inputs with host bindings, CSS custom properties are set directly via CSS or inline styles. This provides:
 
-Add inputs for customizable properties:
+- **No framework overhead** - Pure CSS theming without Angular change detection
+- **CSS cascade support** - Properties can be set at any ancestor level
+- **Media query compatibility** - Properties can change based on `@media` rules
+- **CSS-in-JS flexibility** - Works with any styling approach
 
-```typescript
-/** Background color of accordion container */
-readonly accordionBackground = input<string | null>(null);
+**Usage:**
 
-/** Font size of accordion titles */
-readonly titleFontSize = input<string | null>(null);
+```html
+<!-- Inline styles -->
+<nfs-accordion
+  style="--nfs-accordion-item-color: #ff8fa3;
+         --nfs-accordion-content-background: #1a1a2e;"
+>
+  ...
+</nfs-accordion>
 
-/** Text color of accordion titles */
-readonly itemColor = input<string | null>(null);
-
-/** Background color of titles on hover */
-readonly itemBackgroundHover = input<string | null>(null);
-
-/** Padding of accordion titles */
-readonly itemPadding = input<string | null>(null);
-
-/** Background color of content panels */
-readonly contentBackground = input<string | null>(null);
-
-/** Border of content panels */
-readonly contentBorder = input<string | null>(null);
-
-/** Text color of content panels */
-readonly contentColor = input<string | null>(null);
-
-/** Padding of content panels */
-readonly contentPadding = input<string | null>(null);
+<!-- Or via CSS class -->
+<nfs-accordion class="dark-theme">...</nfs-accordion>
 ```
 
-Update host bindings:
-
-```typescript
-host: {
-  '[style.--nfs-accordion-slide-speed]': 'slideSpeedCss()',
-  '[style.--nfs-accordion-background]': 'accordionBackground()',
-  '[style.--nfs-accordion-title-font-size]': 'titleFontSize()',
-  '[style.--nfs-accordion-item-color]': 'itemColor()',
-  '[style.--nfs-accordion-item-background-hover]': 'itemBackgroundHover()',
-  '[style.--nfs-accordion-item-padding]': 'itemPadding()',
-  '[style.--nfs-accordion-content-background]': 'contentBackground()',
-  '[style.--nfs-accordion-content-border]': 'contentBorder()',
-  '[style.--nfs-accordion-content-color]': 'contentColor()',
-  '[style.--nfs-accordion-content-padding]': 'contentPadding()',
-  'style': 'display: block',
+```css
+.dark-theme {
+  --nfs-accordion-item-color: #ff8fa3;
+  --nfs-accordion-content-background: #1a1a2e;
 }
 ```
 
-#### 7.4.2 Update Storybook Styles to Use CSS Custom Properties
+#### 7.4.2 Available CSS Custom Properties
+
+| Property                                | Description            | Default                          |
+| --------------------------------------- | ---------------------- | -------------------------------- |
+| `--nfs-accordion-background`            | Container background   | `#fefefe`                        |
+| `--nfs-accordion-title-font-size`       | Title font size        | `rem-calc(12)`                   |
+| `--nfs-accordion-item-color`            | Title text color       | `#0d5a89`                        |
+| `--nfs-accordion-item-background-hover` | Title hover background | `#e6e6e6`                        |
+| `--nfs-accordion-item-padding`          | Title padding          | `1.25rem 1rem`                   |
+| `--nfs-accordion-content-background`    | Content background     | `#fefefe`                        |
+| `--nfs-accordion-content-border`        | Content border         | `1px solid #e6e6e6`              |
+| `--nfs-accordion-content-color`         | Content text color     | `#0a0a0a`                        |
+| `--nfs-accordion-content-padding`       | Content padding        | `1rem`                           |
+| `--nfs-accordion-slide-speed`           | Animation duration     | `250ms` (via `slideSpeed` input) |
+| `--nfs-accordion-slide-easing`          | Animation easing       | `ease-out`                       |
+
+#### 7.4.3 Updated Storybook Styles
 
 **File:** `packages/ngx-foundation-sites/src/storybook/styles.scss`
 
-Override Foundation's default styles with CSS custom properties:
-
 ```scss
 .accordion {
-  background: var(--nfs-accordion-background, $white);
+  background: var(--nfs-accordion-background, #fefefe);
 }
 
 .accordion-title {
-  font-size: var(--nfs-accordion-title-font-size, rem-calc(12));
-  color: var(--nfs-accordion-item-color, $primary-color);
+  font-size: var(--nfs-accordion-title-font-size, #{util.rem-calc(12)});
+  color: var(--nfs-accordion-item-color, var(--nfs-primary-color, #0d5a89));
   padding: var(--nfs-accordion-item-padding, 1.25rem 1rem);
 
   &:hover,
   &:focus {
-    background-color: var(--nfs-accordion-item-background-hover, $light-gray);
+    background-color: var(--nfs-accordion-item-background-hover, #e6e6e6);
   }
 }
 
 .accordion-content {
-  background: var(--nfs-accordion-content-background, $white);
-  border: var(--nfs-accordion-content-border, 1px solid $light-gray);
-  color: var(--nfs-accordion-content-color, $body-font-color);
-  padding: var(--nfs-accordion-content-padding, 1rem);
+  background: var(--nfs-accordion-content-background, #fefefe);
+  color: var(--nfs-accordion-content-color, #0a0a0a);
 }
 ```
+
+#### 7.4.4 Phase 7.4 Implementation Notes
+
+**Adjustments made during implementation:**
+
+1. **Pure CSS approach**: Rejected Angular input properties in favor of CSS custom properties set directly via CSS or inline styles. This aligns with modern CSS theming patterns and avoids unnecessary framework overhead.
+
+2. **Fallback chain**: Properties use `var(--nfs-property, fallback)` syntax, allowing Foundation's defaults to apply when custom properties aren't set.
+
+3. **Component-level CSS**: The accordion component's internal styles also use CSS custom properties for content padding and border during animation transitions.
+
+4. **WCAG compliance**: The `CustomTheme` story uses `#ff8fa3` instead of `#e94560` to meet WCAG 4.5:1 contrast requirements against the dark background.
+
+**Files created/modified:**
+
+- `packages/ngx-foundation-sites/src/storybook/styles.scss` - Added CSS custom property overrides
+- `packages/ngx-foundation-sites/src/lib/accordion/accordion.ts` - Updated component styles to use CSS custom properties for content padding/border
+- `packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts` - Added `CustomTheme` story demonstrating dark theme
+- `packages/ngx-foundation-sites/src/lib/accordion/accordion.spec.ts` - Added unit tests for CSS custom property theming
+
+**Story added:** `CustomTheme` - Demonstrates runtime theming with a dark color scheme
 
 ### 7.5 Testing & Documentation
 
 #### 7.5.1 Unit Tests
 
-- Test `deepLinkSmudgeOffset` with various offset values
-- Test `softDisabled` focus behavior
-- Test `preserveContent` DOM cleanup
-- Test `expandAll()` / `collapseAll()` methods
-- Test CSS custom property binding
+- Test `deepLinkSmudgeOffset` with various offset values — ⏳
+- Test `softDisabled` focus behavior — ⏳
+- Test `preserveContent` DOM cleanup — ⏳
+- Test `expandAll()` / `collapseAll()` methods — ⏳
+- Test CSS custom property binding — ✅ (3 tests added in Phase 7.4)
 
 #### 7.5.2 Storybook Stories
 
-| Story Name             | Purpose                                 |
-| ---------------------- | --------------------------------------- |
-| `DeepLinkWithOffset`   | Demonstrate sticky header offset        |
-| `SoftDisabled`         | Show focus behavior on disabled items   |
-| `ExpandCollapseAll`    | Buttons to trigger programmatic methods |
-| `CustomTheme`          | Demonstrate CSS custom property theming |
-| `PreserveContentFalse` | Show DOM cleanup when panel closes      |
+| Story Name             | Purpose                                 | Status |
+| ---------------------- | --------------------------------------- | ------ |
+| `DeepLinkWithOffset`   | Demonstrate sticky header offset        | ⏳     |
+| `SoftDisabled`         | Show focus behavior on disabled items   | ⏳     |
+| `ExpandCollapseAll`    | Buttons to trigger programmatic methods | ⏳     |
+| `CustomTheme`          | Demonstrate CSS custom property theming | ✅     |
+| `PreserveContentFalse` | Show DOM cleanup when panel closes      | ⏳     |
 
 ### 7.6 Files to Modify
 
-| File                                  | Changes                                                |
-| ------------------------------------- | ------------------------------------------------------ |
-| `accordion.ts`                        | Add 14 new inputs, 2 methods, ViewChild, host bindings |
-| `accordion-item.ts`                   | Add `preserveContent` input                            |
-| `accordion-deep-link.service.ts`      | Add offset parameter to `scrollToPanel()`              |
-| `styles.scss`                         | Add CSS custom property fallbacks                      |
-| `accordion.stories.ts`                | Add 5 new stories                                      |
-| `accordion.spec.ts`                   | Add unit tests for new features                        |
-| `accordion-deep-link.service.spec.ts` | Add offset tests                                       |
+| File                                  | Changes                                                | Status                 |
+| ------------------------------------- | ------------------------------------------------------ | ---------------------- |
+| `accordion.ts`                        | Add 14 new inputs, 2 methods, ViewChild, host bindings | ⏳                     |
+| `accordion-item.ts`                   | Add `preserveContent` input                            | ⏳                     |
+| `accordion-deep-link.service.ts`      | Add offset parameter to `scrollToPanel()`              | ⏳                     |
+| `styles.scss`                         | Add CSS custom property fallbacks                      | ✅ 7.4                 |
+| `accordion.stories.ts`                | Add 5 new stories                                      | ✅ 7.4 (CustomTheme)   |
+| `accordion.spec.ts`                   | Add unit tests for new features                        | ✅ 7.4 (theming tests) |
+| `accordion-deep-link.service.spec.ts` | Add offset tests                                       | ⏳                     |
 
 ### 7.7 Implementation Order
 
-1. **deepLinkSmudgeOffset** (simplest, completes Foundation parity)
-2. **softDisabled** (simple input passthrough)
-3. **preserveContent** (simple input passthrough)
-4. **expandAll/collapseAll** (requires ViewChild)
-5. **CSS custom properties** (most complex, requires style updates)
+1. **deepLinkSmudgeOffset** (simplest, completes Foundation parity) — ⏳ Pending
+2. **softDisabled** (simple input passthrough) — ⏳ Pending
+3. **preserveContent** (simple input passthrough) — ⏳ Pending
+4. **expandAll/collapseAll** (requires ViewChild) — ⏳ Pending
+5. **CSS custom properties** (most complex, requires style updates) — ✅ Complete (Phase 7.4)
 
 ### 7.8 Expected Outcome
 
