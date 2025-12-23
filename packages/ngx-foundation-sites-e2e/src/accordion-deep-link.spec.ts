@@ -68,9 +68,12 @@ test.describe('Accordion Deep Linking', () => {
   });
 
   test('ignores invalid hash', async ({ page }) => {
-    await page.goto(`${storyUrl}#invalid-panel-id`);
+    // Use story with allowAllClosed=true so invalid hash doesn't trigger auto-open
+    const allowAllClosedStoryUrl =
+      '/iframe.html?id=components-accordion--deep-link-no-history';
+    await page.goto(`${allowAllClosedStoryUrl}#invalid-panel-id`);
 
-    // No panel should be expanded
+    // No panel should be expanded when hash doesn't match any panel ID
     const triggers = page.getByRole('button', { name: /Accordion/i });
     const count = await triggers.count();
 
