@@ -24,6 +24,30 @@ const meta: Meta<NfsAccordion> = {
 export default meta;
 type Story = StoryObj<NfsAccordion>;
 
+/**
+ * Extended args type for the ThemeControls story.
+ * Includes CSS custom property values alongside component inputs.
+ */
+interface ThemeControlsArgs {
+  // Component inputs
+  multiExpandable: boolean;
+  disabled: boolean;
+  slideSpeed: number;
+  allowAllClosed: boolean;
+  // CSS Custom Properties
+  accordionBackground: string;
+  accordionTitleFontSize: string;
+  accordionItemColor: string;
+  accordionItemBackgroundHover: string;
+  accordionItemPadding: string;
+  accordionContentBackground: string;
+  accordionContentBorder: string;
+  accordionContentColor: string;
+  accordionContentPadding: string;
+  accordionSlideEasing: string;
+}
+type ThemeControlsStory = StoryObj<ThemeControlsArgs>;
+
 export const Default: Story = {
   args: {
     multiExpandable: false,
@@ -711,6 +735,203 @@ export const CustomTheme: Story = {
 
     // Verify content is visible
     const content = canvas.getByText(/CSS custom properties/i);
+    expect(content).toBeVisible();
+  },
+};
+
+/**
+ * Interactive theme controls story.
+ * Demonstrates all available CSS custom properties with live Storybook controls.
+ * Each property can be adjusted in real-time to see the visual effect.
+ */
+export const ThemeControls: ThemeControlsStory = {
+  args: {
+    multiExpandable: false,
+    disabled: false,
+    slideSpeed: 250,
+    allowAllClosed: true,
+    // CSS Custom Property args
+    accordionBackground: '#fefefe',
+    accordionTitleFontSize: '0.75rem',
+    accordionItemColor: '#0d5a89',
+    accordionItemBackgroundHover: '#e6e6e6',
+    accordionItemPadding: '1.25rem 1rem',
+    accordionContentBackground: '#fefefe',
+    accordionContentBorder: '1px solid #e6e6e6',
+    accordionContentColor: '#0a0a0a',
+    accordionContentPadding: '1rem',
+    accordionSlideEasing: 'ease-out',
+  },
+  argTypes: {
+    // CSS Custom Property controls
+    accordionBackground: {
+      name: '--nfs-accordion-background',
+      description: 'Background color of the accordion container',
+      control: { type: 'color' },
+      table: { category: 'CSS Custom Properties' },
+    },
+    accordionTitleFontSize: {
+      name: '--nfs-accordion-title-font-size',
+      description: 'Font size of accordion titles',
+      control: { type: 'text' },
+      table: { category: 'CSS Custom Properties' },
+    },
+    accordionItemColor: {
+      name: '--nfs-accordion-item-color',
+      description: 'Text color of accordion titles',
+      control: { type: 'color' },
+      table: { category: 'CSS Custom Properties' },
+    },
+    accordionItemBackgroundHover: {
+      name: '--nfs-accordion-item-background-hover',
+      description: 'Background color of accordion titles on hover/focus',
+      control: { type: 'color' },
+      table: { category: 'CSS Custom Properties' },
+    },
+    accordionItemPadding: {
+      name: '--nfs-accordion-item-padding',
+      description: 'Padding of accordion titles (CSS padding value)',
+      control: { type: 'text' },
+      table: { category: 'CSS Custom Properties' },
+    },
+    accordionContentBackground: {
+      name: '--nfs-accordion-content-background',
+      description: 'Background color of accordion content panels',
+      control: { type: 'color' },
+      table: { category: 'CSS Custom Properties' },
+    },
+    accordionContentBorder: {
+      name: '--nfs-accordion-content-border',
+      description: 'Border of accordion content panels (CSS border value)',
+      control: { type: 'text' },
+      table: { category: 'CSS Custom Properties' },
+    },
+    accordionContentColor: {
+      name: '--nfs-accordion-content-color',
+      description: 'Text color of accordion content panels',
+      control: { type: 'color' },
+      table: { category: 'CSS Custom Properties' },
+    },
+    accordionContentPadding: {
+      name: '--nfs-accordion-content-padding',
+      description: 'Padding of accordion content panels (CSS padding value)',
+      control: { type: 'text' },
+      table: { category: 'CSS Custom Properties' },
+    },
+    accordionSlideEasing: {
+      name: '--nfs-accordion-slide-easing',
+      description: 'Easing function for expand/collapse animation',
+      control: 'select',
+      options: [
+        'linear',
+        'ease',
+        'ease-in',
+        'ease-out',
+        'ease-in-out',
+        'cubic-bezier(0.4, 0, 0.2, 1)',
+      ],
+      table: { category: 'CSS Custom Properties' },
+    },
+  },
+  render: (args) => ({
+    props: args,
+    moduleMetadata: {
+      imports: [
+        NfsAccordion,
+        NfsAccordionItem,
+        NfsAccordionTitleDef,
+        NfsAccordionContentDef,
+      ],
+    },
+    template: `
+      <nfs-accordion
+        [multiExpandable]="multiExpandable"
+        [disabled]="disabled"
+        [slideSpeed]="slideSpeed"
+        [allowAllClosed]="allowAllClosed"
+        [style.--nfs-accordion-background]="accordionBackground"
+        [style.--nfs-accordion-title-font-size]="accordionTitleFontSize"
+        [style.--nfs-accordion-item-color]="accordionItemColor"
+        [style.--nfs-accordion-item-background-hover]="accordionItemBackgroundHover"
+        [style.--nfs-accordion-item-padding]="accordionItemPadding"
+        [style.--nfs-accordion-content-background]="accordionContentBackground"
+        [style.--nfs-accordion-content-border]="accordionContentBorder"
+        [style.--nfs-accordion-content-color]="accordionContentColor"
+        [style.--nfs-accordion-content-padding]="accordionContentPadding"
+        [style.--nfs-accordion-slide-easing]="accordionSlideEasing"
+      >
+        <nfs-accordion-item panelId="theme-1">
+          <span *nfsAccordionTitle>🎨 Theme Controls Demo</span>
+          <div *nfsAccordionContent>
+            <p>Use the <strong>Controls</strong> panel below to adjust CSS custom properties in real-time.</p>
+            <p>All properties are organized under the "CSS Custom Properties" category.</p>
+          </div>
+        </nfs-accordion-item>
+        <nfs-accordion-item panelId="theme-2">
+          <span *nfsAccordionTitle>📐 Available Properties</span>
+          <div *nfsAccordionContent>
+            <ul style="margin: 0; padding-left: 1.5rem;">
+              <li><code>--nfs-accordion-background</code> — Container background</li>
+              <li><code>--nfs-accordion-title-font-size</code> — Title font size</li>
+              <li><code>--nfs-accordion-item-color</code> — Title text color</li>
+              <li><code>--nfs-accordion-item-background-hover</code> — Title hover background</li>
+              <li><code>--nfs-accordion-item-padding</code> — Title padding</li>
+              <li><code>--nfs-accordion-content-background</code> — Content background</li>
+              <li><code>--nfs-accordion-content-border</code> — Content border</li>
+              <li><code>--nfs-accordion-content-color</code> — Content text color</li>
+              <li><code>--nfs-accordion-content-padding</code> — Content padding</li>
+              <li><code>--nfs-accordion-slide-easing</code> — Animation easing</li>
+              <li><code>--nfs-accordion-slide-speed</code> — Animation duration (via slideSpeed input)</li>
+            </ul>
+          </div>
+        </nfs-accordion-item>
+        <nfs-accordion-item panelId="theme-3">
+          <span *nfsAccordionTitle>💡 Usage Tips</span>
+          <div *nfsAccordionContent>
+            <p>Set CSS custom properties via:</p>
+            <ul style="margin: 0; padding-left: 1.5rem;">
+              <li>Inline styles: <code>[style.--nfs-accordion-item-color]="'#ff0000'"</code></li>
+              <li>CSS classes on the component or any ancestor</li>
+              <li>Global CSS with <code>:root</code> or scoped selectors</li>
+            </ul>
+          </div>
+        </nfs-accordion-item>
+      </nfs-accordion>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Verify the accordion renders with custom properties
+    const accordion = canvasElement.querySelector('nfs-accordion');
+    expect(accordion).toBeTruthy();
+
+    if (!accordion) return;
+    const style = getComputedStyle(accordion);
+
+    // Check that CSS custom properties are set
+    expect(
+      style.getPropertyValue('--nfs-accordion-background').trim(),
+    ).toBeTruthy();
+    expect(
+      style.getPropertyValue('--nfs-accordion-item-color').trim(),
+    ).toBeTruthy();
+    expect(
+      style.getPropertyValue('--nfs-accordion-content-background').trim(),
+    ).toBeTruthy();
+
+    // Click to expand first panel and verify accordion works
+    const trigger1 = canvas.getByRole('button', {
+      name: /Theme Controls Demo/i,
+    });
+    await userEvent.click(trigger1);
+
+    await waitFor(() => {
+      expect(trigger1).toHaveAttribute('aria-expanded', 'true');
+    });
+
+    // Verify content is visible
+    const content = canvas.getByText(/Controls panel below/i);
     expect(content).toBeVisible();
   },
 };
