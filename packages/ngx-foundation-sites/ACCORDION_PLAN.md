@@ -1329,6 +1329,8 @@ collapseAll(): void {
 
 3. **softDisabled behavior**: When `softDisabled=true` (default), disabled accordion items can receive keyboard focus for screen reader announcement but cannot be activated. When `softDisabled=false`, disabled items are completely skipped during keyboard navigation.
 
+4. **Removed deprecated `allowSignalWrites` flag**: Angular 21 no longer requires `{ allowSignalWrites: true }` on effects—signal writes are always allowed. Removed the deprecated option to eliminate console warnings.
+
 **Stories added:**
 
 - `SoftDisabled` - Demonstrates focus skipping when `softDisabled=false`

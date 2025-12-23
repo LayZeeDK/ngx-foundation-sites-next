@@ -279,7 +279,6 @@ export class NfsAccordion {
           });
         }
       },
-      { allowSignalWrites: true },
     );
   }
 
