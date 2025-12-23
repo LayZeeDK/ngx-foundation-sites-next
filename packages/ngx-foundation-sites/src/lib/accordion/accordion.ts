@@ -185,10 +185,10 @@ export class NfsAccordion {
 
   /**
    * Reference to the AccordionGroup directive for programmatic control.
-   * Note: Uses TypeScript `private` instead of `#` because Angular's
+   * Note: Uses TypeScript `protected` instead of `#` because Angular's
    * `viewChild` requires compile-time access to the field.
    */
-  private readonly accordionGroup = viewChild(AccordionGroup);
+  protected readonly accordionGroup = viewChild(AccordionGroup);
 
   /** Track the last expanded panel ID for deep linking and allowAllClosed */
   #lastExpandedPanelId: string | null = null;
