@@ -147,10 +147,15 @@ This is an integrated Nx monorepo with Angular support.
 - Linting: ESLint (flat config)
 - Formatting: Prettier (single quotes) - `npm run format` to fix, `npm run format:check` to verify
 
-## Git
+## Shell & Git
 
-- Do NOT use `git -C "<absolute-repo-path>"` commands. Assume the shell is already in the repository root unless a `cd` command was previously used in the session.
-- If uncertain about the current directory, check with `pwd` (Unix) or `cd` (Windows) before running git commands.
+- Assume the shell is already in the repository root unless a `cd` command was previously used in the session.
+- If uncertain about the current directory, check with `pwd` (Unix) or `cd` (Windows) before running commands.
+- Do NOT use commands that embed absolute paths to change directories:
+  - `git -C "<absolute-repo-path>"` — run git commands directly instead
+  - `cd /d <absolute-repo-path> && ...` — run commands directly instead
+  - `Push-Location "<absolute-repo-path>"; ...; Pop-Location` — run commands directly instead
+  - `Set-Location "<absolute-repo-path>"` with absolute paths — use relative paths or run directly
 - Run git commands directly (e.g., `git status`, `git diff`) without path specifiers.
 
 ## Storybook
