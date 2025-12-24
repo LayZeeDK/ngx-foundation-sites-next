@@ -618,6 +618,68 @@ The `npm run ci` script uses `test-static-storybook` which builds static files f
 - `test-storybook` depends on `storybook` (dev server)
 - `test-static-storybook` depends on `static-storybook` → `build-storybook`
 
+### 5.2.11 Storybook Story Args Best Practices ✅
+
+**Discovery:** Compodoc correctly extracts default values from Angular's modern `input()` function into `documentation.json`. Storybook then uses this metadata via `setCompodocJson()` to auto-populate the Controls panel.
+
+**Problem solved:** The `Default` story previously duplicated component defaults in its `args` object, creating two sources of truth that could get out of sync:
+
+```typescript
+// ❌ BAD: Duplicates component defaults (can get out of sync)
+export const Default: Story = {
+  args: {
+    multiExpandable: false,
+    disabled: false,
+    softDisabled: true,
+    plusminus: true,
+    deepLink: false,
+    // ... more duplicated defaults
+  },
+  render: (args) => ({ ... }),
+};
+```
+
+**Solution:** Remove explicit `args` from stories that use component defaults. Compodoc extracts these defaults and Storybook displays them in the Controls panel automatically:
+
+```typescript
+// ✅ GOOD: Component defaults used, no duplication
+export const Default: Story = {
+  render: (args) => ({ ... }),
+  play: async ({ canvasElement }) => { ... },
+};
+```
+
+**When to use `args`:**
+
+| Scenario                               | Use `args`? | Example                                    |
+| -------------------------------------- | ----------- | ------------------------------------------ |
+| Story uses component defaults          | ❌ No       | `Default` story                            |
+| Story intentionally overrides defaults | ✅ Yes      | `MultiExpand` sets `multiExpandable: true` |
+| Story needs non-default initial state  | ✅ Yes      | `DeepLink` sets `deepLink: true`           |
+
+**How it works:**
+
+1. **Compodoc** parses TypeScript AST and extracts `input()` defaults into `documentation.json`:
+
+   ```json
+   { "name": "multiExpandable", "defaultValue": "false" }
+   { "name": "softDisabled", "defaultValue": "true" }
+   ```
+
+2. **Storybook** imports this via `preview.ts`:
+
+   ```typescript
+   import { setCompodocJson } from '@storybook/addon-docs/angular';
+   import docJson from '../documentation.json';
+   setCompodocJson(docJson);
+   ```
+
+3. **Controls panel** shows actual component defaults without requiring explicit `args`
+
+**Files modified:**
+
+- `accordion.stories.ts` — Removed explicit `args` from `Default` and `NoAnimation` stories
+
 ### 5.3 Deep Linking E2E Tests (Playwright) ✅
 
 **Why E2E?** Deep linking cannot be reliably tested in Storybook interaction tests because:
