@@ -1322,3 +1322,115 @@ export const FocusManagementWithDisabled: Story = {
     });
   },
 };
+
+/**
+ * Demonstrates Right-to-Left (RTL) language support.
+ *
+ * The accordion automatically adapts to RTL mode when the document or any ancestor
+ * has `dir="rtl"` set. This includes:
+ * - Text alignment flips to right-to-left
+ * - +/- icons move to the LEFT side (via CSS Logical Properties)
+ * - Keyboard navigation works correctly (ArrowDown = forward, ArrowUp = backward)
+ *
+ * RTL support requires two complementary layers:
+ * 1. **Behavior** (Angular CDK Directionality): Auto-detects `dir` attribute for keyboard navigation
+ * 2. **Styling** (CSS Logical Properties): `inset-inline-end` auto-maps to `right` (LTR) or `left` (RTL)
+ */
+export const RightToLeft: Story = {
+  args: {
+    multiExpandable: false,
+    disabled: false,
+    allowAllClosed: true,
+  },
+  render: (args) => ({
+    props: args,
+    moduleMetadata: {
+      imports: [
+        NfsAccordion,
+        NfsAccordionItem,
+        NfsAccordionTitleDef,
+        NfsAccordionContentDef,
+      ],
+    },
+    template: `
+      <div dir="rtl" lang="ar">
+        <nfs-accordion
+          [multiExpandable]="multiExpandable"
+          [disabled]="disabled"
+          [allowAllClosed]="allowAllClosed"
+          style="--nfs-accordion-slide-speed: 0ms"
+        >
+          <nfs-accordion-item panelId="panel-1">
+            <span *nfsAccordionTitle>العنصر الأول</span>
+            <p *nfsAccordionContent>محتوى اللوحة الأولى. هذا نص تجريبي.</p>
+          </nfs-accordion-item>
+          <nfs-accordion-item panelId="panel-2">
+            <span *nfsAccordionTitle>العنصر الثاني</span>
+            <p *nfsAccordionContent>محتوى اللوحة الثانية.</p>
+          </nfs-accordion-item>
+          <nfs-accordion-item panelId="panel-3">
+            <span *nfsAccordionTitle>العنصر الثالث</span>
+            <p *nfsAccordionContent>محتوى اللوحة الثالثة.</p>
+          </nfs-accordion-item>
+        </nfs-accordion>
+      </div>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Verify RTL container is present
+    const rtlContainer = canvasElement.querySelector('[dir="rtl"]');
+    expect(rtlContainer).toBeTruthy();
+
+    const trigger1 = canvas.getByRole('button', { name: /العنصر الأول/i });
+    const trigger2 = canvas.getByRole('button', { name: /العنصر الثاني/i });
+    const trigger3 = canvas.getByRole('button', { name: /العنصر الثالث/i });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 1. VERIFY +/- ICON POSITION (should be on LEFT in RTL)
+    // ═══════════════════════════════════════════════════════════════════════
+    // CSS Logical Properties: `inset-inline-end: 1rem` resolves to `left: 1rem` in RTL
+    const iconStyle = getComputedStyle(trigger1, '::before');
+    // In RTL mode, the icon should be positioned on the left side
+    // inset-inline-end: 1rem maps to left: 16px (1rem = 16px) in RTL
+    const leftValue = parseFloat(iconStyle.left);
+    expect(leftValue).toBeLessThan(50); // Icon should be near the left edge (16px = 1rem)
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 2. KEYBOARD NAVIGATION (ArrowDown = forward in both LTR and RTL)
+    // ═══════════════════════════════════════════════════════════════════════
+    trigger1.focus();
+    expect(document.activeElement).toBe(trigger1);
+
+    // ArrowDown should move to next trigger (forward navigation)
+    await userEvent.keyboard('{ArrowDown}');
+    await waitFor(() => {
+      expect(document.activeElement).toBe(trigger2);
+    });
+
+    // ArrowDown again to move to third trigger
+    await userEvent.keyboard('{ArrowDown}');
+    await waitFor(() => {
+      expect(document.activeElement).toBe(trigger3);
+    });
+
+    // ArrowUp should move back to second trigger
+    await userEvent.keyboard('{ArrowUp}');
+    await waitFor(() => {
+      expect(document.activeElement).toBe(trigger2);
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 3. ACTIVATION (Enter key should expand panel)
+    // ═══════════════════════════════════════════════════════════════════════
+    await userEvent.keyboard('{Enter}');
+    await waitFor(() => {
+      expect(trigger2).toHaveAttribute('aria-expanded', 'true');
+    });
+
+    // Verify content is visible
+    const content = canvas.getByText(/محتوى اللوحة الثانية/i);
+    expect(content).toBeVisible();
+  },
+};
