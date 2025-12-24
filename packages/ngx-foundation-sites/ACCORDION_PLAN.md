@@ -1250,22 +1250,22 @@ Add to accordion component documentation:
 
 #### Angular ARIA Features (10 total)
 
-| Angular ARIA Feature   | Our Implementation                  | Status |
-| ---------------------- | ----------------------------------- | ------ |
-| `multiExpandable`      | ✅ Exposed as input                 | ✅     |
-| `disabled` (group)     | ✅ Exposed as input                 | ✅     |
-| `disabled` (item)      | ✅ Exposed on `NfsAccordionItem`    | ✅     |
-| `wrap`                 | ✅ Exposed as input                 | ✅     |
-| `softDisabled`         | ✅ Exposed as input                 | ✅     |
-| `expandAll()` method   | ✅ Exposed as public method         | ✅     |
-| `collapseAll()` method | ✅ Exposed as public method         | ✅     |
-| `preserveContent`      | ❌ Not public API (internal)        | ⚠️     |
-| `textDirection`        | Not exposed (auto via Angular ARIA) | ⚠️     |
-| Lazy rendering         | ✅ Built-in                         | ✅     |
+| Angular ARIA Feature   | Our Implementation                   | Status |
+| ---------------------- | ------------------------------------ | ------ |
+| `multiExpandable`      | ✅ Exposed as input                  | ✅     |
+| `disabled` (group)     | ✅ Exposed as input                  | ✅     |
+| `disabled` (item)      | ✅ Exposed on `NfsAccordionItem`     | ✅     |
+| `wrap`                 | ✅ Exposed as input                  | ✅     |
+| `softDisabled`         | ✅ Exposed as input                  | ✅     |
+| `expandAll()` method   | ✅ Exposed as public method          | ✅     |
+| `collapseAll()` method | ✅ Exposed as public method          | ✅     |
+| `preserveContent`      | ❌ Not public API (internal)         | ⚠️     |
+| `textDirection`        | ✅ Auto-detected via `dir` attribute | ✅     |
+| Lazy rendering         | ✅ Built-in                          | ✅     |
 
-**Result: 8/10 features accessible to consumers (80%)**
+**Result: 9/10 features accessible to consumers (90%)**
 
-> **Note:** `preserveContent` is inherited from Angular ARIA's internal `DeferredContentAware` class and is not exported as a public API. The `textDirection` is automatically handled by Angular ARIA based on the document direction.
+> **Note:** `preserveContent` is inherited from Angular ARIA's internal `DeferredContentAware` class and is not exported as a public API. The `textDirection` is automatically detected from the nearest `dir` attribute (or document root) via Angular CDK's `Directionality` service — no explicit input is needed. Both keyboard navigation behavior AND visual styling (via CSS Logical Properties) automatically adapt to RTL mode.
 
 ### 7.2 Implementation: Foundation Feature Parity ✅
 
@@ -1567,9 +1567,90 @@ collapseAll(): void {
 
 **Design Decision:** Prefer Foundation's existing CSS classes over custom CSS rules. The `.is-active` class binding leverages Foundation's battle-tested styling rather than duplicating logic with custom ARIA-aware selectors.
 
-### 7.5 Testing & Documentation
+### 7.5 Implementation: RTL (Right-to-Left) Support ✅
 
-#### 7.5.1 Unit Tests
+#### 7.5.1 Background: Layered RTL Architecture
+
+RTL support in Angular applications requires two complementary layers:
+
+| Layer        | Responsibility                         | Technology                                                  | How It Works                        |
+| ------------ | -------------------------------------- | ----------------------------------------------------------- | ----------------------------------- |
+| **Behavior** | Keyboard navigation, focus management  | Angular CDK `Directionality` → Angular ARIA `textDirection` | Auto-detects `dir` attribute        |
+| **Styling**  | Visual layout (icon position, margins) | CSS Logical Properties                                      | Auto-flips based on `dir` attribute |
+
+**Why Two Layers?**
+
+- **Angular CDK's `Directionality` service** reads the `dir` attribute and provides a reactive signal
+- **Angular ARIA's `AccordionGroup.textDirection`** consumes this signal for keyboard behavior
+- **Foundation's CSS** uses compile-time Sass variables (`$global-right`) that don't respond to runtime `dir` changes
+- **CSS Logical Properties** provide the missing runtime styling support
+
+#### 7.5.2 Layer 1: Behavior (Already Working)
+
+Angular ARIA automatically handles RTL keyboard navigation:
+
+```
+dir="rtl" attribute
+      ↓
+Angular CDK Directionality service
+      ↓
+AccordionGroup.textDirection signal
+      ↓
+Keyboard navigation adapts automatically
+```
+
+**No action needed** — this layer works out of the box.
+
+#### 7.5.3 Layer 2: Styling (CSS Logical Properties)
+
+**File:** `packages/ngx-foundation-sites/src/storybook/styles.scss`
+
+CSS Logical Properties automatically map to physical properties based on text direction:
+
+| Logical Property      | LTR equivalent  | RTL equivalent |
+| --------------------- | --------------- | -------------- |
+| `inset-inline-start`  | `left`          | `right`        |
+| `inset-inline-end`    | `right`         | `left`         |
+| `margin-inline-start` | `margin-left`   | `margin-right` |
+| `padding-inline-end`  | `padding-right` | `padding-left` |
+
+**Implementation:**
+
+```scss
+// RTL Support: Use CSS logical properties for automatic direction handling
+.accordion-title::before {
+  right: unset; // Remove Foundation's physical property
+  inset-inline-end: 1rem; // Automatically maps to right (LTR) or left (RTL)
+}
+```
+
+**Browser Support:** All modern browsers (Chrome 87+, Firefox 66+, Safari 14.1+, Edge 87+)
+
+#### 7.5.4 Story Added
+
+| Story Name  | Purpose                                                                     |
+| ----------- | --------------------------------------------------------------------------- |
+| RightToLeft | RTL layout with Arabic text, verifies icon position and keyboard navigation |
+
+#### 7.5.5 What Users Need to Know
+
+To enable RTL mode:
+
+1. Set `dir="rtl"` on the accordion's ancestor element (or `<html>`)
+2. Both behavior AND styling automatically adapt:
+   - +/- icons flip to the left side (CSS Logical Properties)
+   - Keyboard navigation works correctly (Angular CDK Directionality)
+3. No component inputs or configuration required
+
+#### 7.5.6 References
+
+- [CSS Logical Properties (MDN)](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_logical_properties_and_values)
+- [Angular CDK Bidi/Directionality](https://material.angular.io/cdk/bidi/overview)
+- [CSS-Tricks: CSS Logical Properties](https://css-tricks.com/css-logical-properties-and-values/)
+
+### 7.6 Testing & Documentation
+
+#### 7.6.1 Unit Tests
 
 - Test `deepLinkSmudgeOffset` with various offset values — ✅ (2 tests added in Phase 7.2)
 - Test `softDisabled` focus behavior — ✅ (3 tests added in Phase 7.3)
@@ -1577,7 +1658,7 @@ collapseAll(): void {
 - Test `expandAll()` / `collapseAll()` methods — ✅ (4 tests added in Phase 7.3)
 - Test CSS custom property binding — ✅ (3 tests added in Phase 7.4)
 
-#### 7.5.2 Storybook Stories
+#### 7.6.2 Storybook Stories
 
 | Story Name             | Purpose                                     | Status                      |
 | ---------------------- | ------------------------------------------- | --------------------------- |
@@ -1586,35 +1667,37 @@ collapseAll(): void {
 | `ExpandCollapseAll`    | Buttons to trigger programmatic methods     | ✅ (Phase 7.3)              |
 | `CustomTheme`          | Demonstrate CSS custom property theming     | ✅ (Phase 7.4)              |
 | `ThemeControls`        | Interactive controls for ALL CSS properties | ✅ (Phase 7.4)              |
+| `RightToLeft`          | RTL layout with Arabic text and icon tests  | ✅ (Phase 7.5)              |
 | `PreserveContentFalse` | Show DOM cleanup when panel closes          | ❌ (not possible, internal) |
 
-### 7.6 Files to Modify
+### 7.7 Files to Modify
 
 | File                                  | Changes                                          | Status                                                |
 | ------------------------------------- | ------------------------------------------------ | ----------------------------------------------------- |
 | `accordion.ts`                        | Add `softDisabled` input, `viewChild`, 2 methods | ✅ 7.3                                                |
 | `accordion-item.ts`                   | Add `preserveContent` input                      | ❌ (not possible, internal API)                       |
 | `accordion-deep-link.service.ts`      | Add offset parameter to `scrollToPanel()`        | ✅ 7.2                                                |
-| `styles.scss`                         | Add CSS custom property fallbacks                | ✅ 7.4                                                |
-| `accordion.stories.ts`                | Add stories for new features                     | ✅ 7.3 + 7.4 (4 stories)                              |
+| `styles.scss`                         | Add CSS custom property fallbacks, RTL support   | ✅ 7.4 + 7.5                                          |
+| `accordion.stories.ts`                | Add stories for new features                     | ✅ 7.3 + 7.4 + 7.5 (5 stories)                        |
 | `accordion.spec.ts`                   | Add unit tests for new features                  | ✅ 7.3 + 7.4 (softDisabled, expand/collapse, theming) |
 | `accordion-deep-link.service.spec.ts` | Add offset tests                                 | ✅ 7.2                                                |
 
-### 7.7 Implementation Order
+### 7.8 Implementation Order
 
 1. **deepLinkSmudgeOffset** (simplest, completes Foundation parity) — ✅ Complete (Phase 7.2)
 2. **softDisabled** (simple input passthrough) — ✅ Complete (Phase 7.3)
 3. **preserveContent** (simple input passthrough) — ❌ Not possible (internal API)
 4. **expandAll/collapseAll** (requires viewChild) — ✅ Complete (Phase 7.3)
 5. **CSS custom properties** (most complex, requires style updates) — ✅ Complete (Phase 7.4)
+6. **RTL support** (CSS Logical Properties for +/- icons) — ✅ Complete (Phase 7.5)
 
-### 7.8 Expected Outcome
+### 7.9 Expected Outcome
 
-**Current status after Phase 7.2 + 7.3 + 7.4:**
+**Current status after Phase 7.2 + 7.3 + 7.4 + 7.5:**
 
 - **100%** Foundation JavaScript options (9/9 — all implemented ✅)
 - **100%** WAI-ARIA compliance (unchanged)
-- **80%** Angular ARIA features exposed (8/10 — `preserveContent` internal, `textDirection` auto)
+- **90%** Angular ARIA features exposed (9/10 — `preserveContent` internal, `textDirection` ✅ via CSS Logical Properties)
 - **92%** Foundation Sass variables as CSS custom properties (11/12 — excluding plusminus icons)
 
 ---
