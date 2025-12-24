@@ -1213,19 +1213,19 @@ Add to accordion component documentation:
 
 #### Foundation JavaScript Options (9 total)
 
-| Foundation Option              | Default | Our Input                           | Status     |
-| ------------------------------ | ------- | ----------------------------------- | ---------- |
-| `data-slide-speed`             | 250     | `--nfs-accordion-slide-speed` (CSS) | ✅         |
-| `data-multi-expand`            | false   | `multiExpandable`                   | ✅         |
-| `data-allow-all-closed`        | false   | `allowAllClosed`                    | ✅         |
-| `data-deep-link`               | false   | `deepLink`                          | ✅         |
-| `data-deep-link-smudge`        | false   | `deepLinkSmudge`                    | ✅         |
-| `data-deep-link-smudge-delay`  | 300     | `deepLinkSmudgeDelay`               | ✅         |
-| `data-deep-link-smudge-offset` | 0       | —                                   | ❌ MISSING |
-| `data-update-history`          | false   | `updateHistory`                     | ✅         |
-| `disabled` (attr)              | —       | `disabled`                          | ✅         |
+| Foundation Option              | Default | Our Input                           | Status |
+| ------------------------------ | ------- | ----------------------------------- | ------ |
+| `data-slide-speed`             | 250     | `--nfs-accordion-slide-speed` (CSS) | ✅     |
+| `data-multi-expand`            | false   | `multiExpandable`                   | ✅     |
+| `data-allow-all-closed`        | false   | `allowAllClosed`                    | ✅     |
+| `data-deep-link`               | false   | `deepLink`                          | ✅     |
+| `data-deep-link-smudge`        | false   | `deepLinkSmudge`                    | ✅     |
+| `data-deep-link-smudge-delay`  | 300     | `deepLinkSmudgeDelay`               | ✅     |
+| `data-deep-link-smudge-offset` | 0       | `deepLinkSmudgeOffset`              | ✅     |
+| `data-update-history`          | false   | `updateHistory`                     | ✅     |
+| `disabled` (attr)              | —       | `disabled`                          | ✅     |
 
-**Result: 8/9 options implemented (89%)**
+**Result: 9/9 options implemented (100%) ✅**
 
 #### Foundation Sass Variables (12 total)
 
@@ -1267,9 +1267,9 @@ Add to accordion component documentation:
 
 > **Note:** `preserveContent` is inherited from Angular ARIA's internal `DeferredContentAware` class and is not exported as a public API. The `textDirection` is automatically handled by Angular ARIA based on the document direction.
 
-### 7.2 Implementation: Foundation Feature Parity
+### 7.2 Implementation: Foundation Feature Parity ✅
 
-#### 7.2.1 Add `deepLinkSmudgeOffset` Input
+#### 7.2.1 Add `deepLinkSmudgeOffset` Input ✅
 
 **File:** `packages/ngx-foundation-sites/src/lib/accordion/accordion.ts`
 
@@ -1571,7 +1571,7 @@ collapseAll(): void {
 
 #### 7.5.1 Unit Tests
 
-- Test `deepLinkSmudgeOffset` with various offset values — ⏳
+- Test `deepLinkSmudgeOffset` with various offset values — ✅ (2 tests added in Phase 7.2)
 - Test `softDisabled` focus behavior — ✅ (3 tests added in Phase 7.3)
 - Test `preserveContent` DOM cleanup — ❌ (not implemented, internal API)
 - Test `expandAll()` / `collapseAll()` methods — ✅ (4 tests added in Phase 7.3)
@@ -1581,7 +1581,7 @@ collapseAll(): void {
 
 | Story Name             | Purpose                                     | Status                      |
 | ---------------------- | ------------------------------------------- | --------------------------- |
-| `DeepLinkWithOffset`   | Demonstrate sticky header offset            | ⏳                          |
+| `DeepLinkWithOffset`   | Demonstrate sticky header offset            | ✅ (Phase 7.2)              |
 | `SoftDisabled`         | Show focus behavior on disabled items       | ✅ (Phase 7.3)              |
 | `ExpandCollapseAll`    | Buttons to trigger programmatic methods     | ✅ (Phase 7.3)              |
 | `CustomTheme`          | Demonstrate CSS custom property theming     | ✅ (Phase 7.4)              |
@@ -1594,15 +1594,15 @@ collapseAll(): void {
 | ------------------------------------- | ------------------------------------------------ | ----------------------------------------------------- |
 | `accordion.ts`                        | Add `softDisabled` input, `viewChild`, 2 methods | ✅ 7.3                                                |
 | `accordion-item.ts`                   | Add `preserveContent` input                      | ❌ (not possible, internal API)                       |
-| `accordion-deep-link.service.ts`      | Add offset parameter to `scrollToPanel()`        | ⏳                                                    |
+| `accordion-deep-link.service.ts`      | Add offset parameter to `scrollToPanel()`        | ✅ 7.2                                                |
 | `styles.scss`                         | Add CSS custom property fallbacks                | ✅ 7.4                                                |
 | `accordion.stories.ts`                | Add stories for new features                     | ✅ 7.3 + 7.4 (4 stories)                              |
 | `accordion.spec.ts`                   | Add unit tests for new features                  | ✅ 7.3 + 7.4 (softDisabled, expand/collapse, theming) |
-| `accordion-deep-link.service.spec.ts` | Add offset tests                                 | ⏳                                                    |
+| `accordion-deep-link.service.spec.ts` | Add offset tests                                 | ✅ 7.2                                                |
 
 ### 7.7 Implementation Order
 
-1. **deepLinkSmudgeOffset** (simplest, completes Foundation parity) — ⏳ Pending
+1. **deepLinkSmudgeOffset** (simplest, completes Foundation parity) — ✅ Complete (Phase 7.2)
 2. **softDisabled** (simple input passthrough) — ✅ Complete (Phase 7.3)
 3. **preserveContent** (simple input passthrough) — ❌ Not possible (internal API)
 4. **expandAll/collapseAll** (requires viewChild) — ✅ Complete (Phase 7.3)
@@ -1610,19 +1610,12 @@ collapseAll(): void {
 
 ### 7.8 Expected Outcome
 
-**Current status after Phase 7.3 + 7.4:**
+**Current status after Phase 7.2 + 7.3 + 7.4:**
 
-- **89%** Foundation JavaScript options (8/9 — missing `deepLinkSmudgeOffset`)
+- **100%** Foundation JavaScript options (9/9 — all implemented ✅)
 - **100%** WAI-ARIA compliance (unchanged)
 - **80%** Angular ARIA features exposed (8/10 — `preserveContent` internal, `textDirection` auto)
 - **92%** Foundation Sass variables as CSS custom properties (11/12 — excluding plusminus icons)
-
-**After completing Phase 7.2 (deepLinkSmudgeOffset):**
-
-- **100%** Foundation JavaScript options
-- **100%** WAI-ARIA compliance (unchanged)
-- **80%** Angular ARIA features exposed
-- **92%** Foundation Sass variables as CSS custom properties
 
 ---
 
@@ -1822,19 +1815,19 @@ Due to [NG3004: Unable to import symbol DeferredContentAware](./ANGULAR_ARIA_BUG
 ```html
 <div class="accordion-content-inner">
   @defer (when item.expanded()) {
-    <ng-container *ngTemplateOutlet="contentDef.templateRef" />
+  <ng-container *ngTemplateOutlet="contentDef.templateRef" />
   }
 </div>
 ```
 
 **Trade-offs:**
 
-| Aspect | Original (`ngAccordionContent`) | Current (`@defer`) |
-|--------|--------------------------------|-------------------|
-| Animation | `animate.enter`/`animate.leave` with CSS keyframes | CSS Grid transitions only |
-| Deferred loading | Via `DeferredContent` directive | Via `@defer` block |
-| Content persistence | `preserveContent` input | Automatic (once loaded) |
-| Library build | ❌ NG3004 error | ✅ Works |
+| Aspect              | Original (`ngAccordionContent`)                    | Current (`@defer`)        |
+| ------------------- | -------------------------------------------------- | ------------------------- |
+| Animation           | `animate.enter`/`animate.leave` with CSS keyframes | CSS Grid transitions only |
+| Deferred loading    | Via `DeferredContent` directive                    | Via `@defer` block        |
+| Content persistence | `preserveContent` input                            | Automatic (once loaded)   |
+| Library build       | ❌ NG3004 error                                    | ✅ Works                  |
 
 ### 10.3 When to Revert
 
@@ -1856,11 +1849,11 @@ Once [angular/components#32591](https://github.com/angular/components/pull/32591
 
 ### 10.5 Files to Modify
 
-| File | Changes |
-|------|---------|
-| `accordion.ts` | Restore `AccordionContent`, add `animate.enter`/`animate.leave`, add `[preserveContent]` |
-| `accordion.spec.ts` | Update tests if timing behavior changes |
-| `ANGULAR_ARIA_BUG_REPORT.md` | Mark as resolved, add link to fix |
+| File                         | Changes                                                                                  |
+| ---------------------------- | ---------------------------------------------------------------------------------------- |
+| `accordion.ts`               | Restore `AccordionContent`, add `animate.enter`/`animate.leave`, add `[preserveContent]` |
+| `accordion.spec.ts`          | Update tests if timing behavior changes                                                  |
+| `ANGULAR_ARIA_BUG_REPORT.md` | Mark as resolved, add link to fix                                                        |
 
 ### 10.6 Tracking
 
