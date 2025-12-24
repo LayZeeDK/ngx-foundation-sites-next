@@ -15,7 +15,6 @@ import {
   AccordionGroup,
   AccordionTrigger,
   AccordionPanel,
-  AccordionContent,
 } from '@angular/aria/accordion';
 import { NfsAccordionItem } from './accordion-item';
 import { AccordionDeepLinkService } from './accordion-deep-link.service';
@@ -51,19 +50,24 @@ import { AccordionDeepLinkService } from './accordion-deep-link.service';
             class="accordion-content"
             [panelId]="item.panelId()"
             [id]="item.panelId()"
-            [preserveContent]="true"
           >
-            <ng-template ngAccordionContent>
-              <div
-                class="accordion-content-inner"
-                animate.enter="nfs-accordion-enter"
-                animate.leave="nfs-accordion-leave"
-              >
+            <!--
+              Wrapper is always present for CSS Grid animation.
+              @defer loads content when panel is first expanded.
+              Once loaded, content stays in DOM (enabling CSS animations).
+
+              TODO: Revert to ngAccordionContent + animate.enter/leave once
+              https://github.com/angular/components/pull/32591 is merged.
+              Currently, using AccordionContent causes NG3004 in library builds
+              because DeferredContentAware is not exported from @angular/aria.
+            -->
+            <div class="accordion-content-inner">
+              @defer (when item.expanded()) {
                 @if (item.contentDef(); as contentDef) {
                   <ng-container *ngTemplateOutlet="contentDef.templateRef" />
                 }
-              </div>
-            </ng-template>
+              }
+            </div>
           </div>
         </li>
       }
@@ -81,15 +85,26 @@ import { AccordionDeepLinkService } from './accordion-deep-link.service';
     }
 
     /*
-     * CSS Grid animation for smooth expand/collapse using @starting-style
+     * CSS Grid animation for smooth expand/collapse
      * Uses grid-template-rows transition from 0fr to 1fr
      * Easing matches Foundation's jQuery swing (easeOutQuad)
+     *
+     * Content is deferred via @defer (when expanded) for lazy loading.
+     * Once loaded, content stays in DOM enabling CSS animations.
+     * The panel's [inert] attribute handles accessibility when collapsed.
      */
     .accordion-content {
       display: grid !important;
       grid-template-rows: 0fr;
       padding: 0;
       border: 0;
+      transition:
+        grid-template-rows var(--nfs-accordion-slide-speed, 250ms)
+          var(--nfs-accordion-slide-easing, cubic-bezier(0.25, 0.46, 0.45, 0.94)),
+        padding var(--nfs-accordion-slide-speed, 250ms)
+          var(--nfs-accordion-slide-easing, cubic-bezier(0.25, 0.46, 0.45, 0.94)),
+        border var(--nfs-accordion-slide-speed, 250ms)
+          var(--nfs-accordion-slide-easing, cubic-bezier(0.25, 0.46, 0.45, 0.94));
 
       /* Inner wrapper to contain content */
       > * {
@@ -105,46 +120,11 @@ import { AccordionDeepLinkService } from './accordion-deep-link.service';
       border-bottom: 0; /* Foundation removes bottom border, keeps top as separator */
     }
 
-    /*
-     * Native CSS animations using Angular's animate.enter/animate.leave
-     * with @starting-style for enter animations
-     */
-    .nfs-accordion-enter {
-      display: grid;
-      grid-template-rows: 1fr;
-      transition: grid-template-rows var(--nfs-accordion-slide-speed, 250ms)
-        var(--nfs-accordion-slide-easing, cubic-bezier(0.25, 0.46, 0.45, 0.94));
-
-      @starting-style {
-        grid-template-rows: 0fr;
-      }
-
-      > * {
-        overflow: hidden;
-      }
-    }
-
-    .nfs-accordion-leave {
-      display: grid;
-      grid-template-rows: 0fr;
-      transition: grid-template-rows var(--nfs-accordion-slide-speed, 250ms)
-        var(--nfs-accordion-slide-easing, cubic-bezier(0.25, 0.46, 0.45, 0.94));
-
-      > * {
-        overflow: hidden;
-      }
-    }
   `,
   host: {
     style: 'display: block',
   },
-  imports: [
-    AccordionGroup,
-    AccordionTrigger,
-    AccordionPanel,
-    AccordionContent,
-    NgTemplateOutlet,
-  ],
+  imports: [AccordionGroup, AccordionTrigger, AccordionPanel, NgTemplateOutlet],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NfsAccordion {
