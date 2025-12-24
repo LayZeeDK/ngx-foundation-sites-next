@@ -78,3 +78,27 @@
   right: unset; // Remove Foundation's physical property
   inset-inline-end: 1rem; // Automatically maps to right (LTR) or left (RTL)
 }
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// Plus/Minus Icon CSS Custom Properties
+// ═══════════════════════════════════════════════════════════════════════════════
+// Customize the +/- indicator icons:
+//   --nfs-accordion-plus-content      Icon for collapsed state (default: '+')
+//   --nfs-accordion-minus-content     Icon for expanded state (default: '–')
+//
+// Note: Icon color inherits from --nfs-accordion-item-color (title text color)
+// matching Foundation's behavior where icons share the same color as the title.
+// ═══════════════════════════════════════════════════════════════════════════════
+
+.accordion-title::before {
+  content: var(--nfs-accordion-plus-content, '+');
+}
+
+.accordion-item.is-active > .accordion-title::before {
+  content: var(--nfs-accordion-minus-content, '–');
+}
+
+// Hide icons when plusminus input is false (applies .nfs-accordion-no-plusminus class)
+.nfs-accordion-no-plusminus .accordion-title::before {
+  display: none;
+}

@@ -131,6 +131,7 @@ import { AccordionDeepLinkService } from './accordion-deep-link.service';
   `,
   host: {
     style: 'display: block',
+    '[class.nfs-accordion-no-plusminus]': '!plusminus()',
   },
   imports: [AccordionGroup, AccordionTrigger, AccordionPanel, NgTemplateOutlet],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -172,6 +173,9 @@ export class NfsAccordion {
 
   /** Allow all panels to be closed. If false, at least one panel must remain open. */
   readonly allowAllClosed = input(false);
+
+  /** Enable/disable the +/- indicator icons. Default: true */
+  readonly plusminus = input(true);
 
   /** Collected accordion items */
   protected readonly items = contentChildren(NfsAccordionItem);
