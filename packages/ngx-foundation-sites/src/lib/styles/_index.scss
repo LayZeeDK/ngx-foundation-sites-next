@@ -1,0 +1,100 @@
+// ═══════════════════════════════════════════════════════════════════════════════
+// ngx-foundation-sites Global Styles
+// ═══════════════════════════════════════════════════════════════════════════════
+//
+// Usage:
+//   @use 'ngx-foundation-sites/styles' as nfs;
+//   @include nfs.nfs-all-global-styles;
+//
+// Or selectively:
+//   @include nfs.foundation-global-styles;
+//   @include nfs.foundation-typography;
+//   @include nfs.foundation-button;
+//   @include nfs.nfs-theme-properties;
+//
+// ═══════════════════════════════════════════════════════════════════════════════
+
+@use 'sass:map';
+@use '../foundation-settings' as settings;
+@forward '../foundation-settings'; // Re-export settings for consumers
+
+@use 'foundation-sites/scss/foundation' as foundation with (
+  $foundation-palette: settings.$foundation-palette
+);
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// CORE GLOBAL STYLES (recommended for all projects)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/// Core resets, box-sizing, and base HTML/body styles
+@mixin foundation-global-styles {
+  @include foundation.foundation-global-styles;
+}
+
+/// Base typography (headings, paragraphs, lists, links)
+@mixin foundation-typography {
+  @include foundation.foundation-typography;
+}
+
+/// Base form element styles
+@mixin foundation-forms {
+  @include foundation.foundation-forms;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// GENERIC COMPONENTS
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/// Button component styles
+@mixin foundation-button {
+  @include foundation.foundation-button;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// HELPERS (optional utility classes)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/// Visibility utility classes (show/hide at breakpoints)
+@mixin foundation-visibility-classes {
+  @include foundation.foundation-visibility-classes;
+}
+
+/// Float utility classes
+@mixin foundation-float-classes {
+  @include foundation.foundation-float-classes;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// CSS CUSTOM PROPERTIES (theming)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/// Sets up CSS custom properties for theming with --nfs- prefix
+/// These properties can be overridden at runtime for dynamic theming.
+@mixin nfs-theme-properties {
+  :root {
+    --nfs-primary-color: #{map.get(settings.$foundation-palette, primary)};
+    --nfs-secondary-color: #{map.get(settings.$foundation-palette, secondary)};
+    --nfs-success-color: #{map.get(settings.$foundation-palette, success)};
+    --nfs-warning-color: #{map.get(settings.$foundation-palette, warning)};
+    --nfs-alert-color: #{map.get(settings.$foundation-palette, alert)};
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// CONVENIENCE: Include all recommended global styles
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/// Includes all recommended global styles for typical projects.
+/// This is equivalent to calling the individual mixins for:
+/// - foundation-global-styles
+/// - foundation-typography
+/// - foundation-forms
+/// - foundation-button
+/// - nfs-theme-properties
+@mixin nfs-all-global-styles {
+  @include foundation-global-styles;
+  @include foundation-typography;
+  @include foundation-forms;
+  @include foundation-button;
+  @include nfs-theme-properties;
+}

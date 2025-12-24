@@ -3,5 +3,6 @@
   "dest": "../../dist/packages/ngx-foundation-sites",
   "lib": {
     "entryFile": "src/index.ts"
-  }
+  },
+  "assets": ["./src/lib/styles", "./src/lib/_foundation-*.scss"]
 }
