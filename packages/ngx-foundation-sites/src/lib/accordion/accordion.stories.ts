@@ -42,6 +42,9 @@ interface ThemeControlsArgs {
   accordionContentPadding: string;
   accordionSlideSpeed: string;
   accordionSlideEasing: string;
+  // Icon CSS Custom Properties
+  accordionPlusContent: string;
+  accordionMinusContent: string;
 }
 type ThemeControlsStory = StoryObj<ThemeControlsArgs>;
 
@@ -50,6 +53,7 @@ export const Default: Story = {
     multiExpandable: false,
     disabled: false,
     softDisabled: true,
+    plusminus: true,
     deepLink: false,
     deepLinkSmudge: false,
     deepLinkSmudgeDelay: 300,
@@ -71,6 +75,7 @@ export const Default: Story = {
         [multiExpandable]="multiExpandable"
         [disabled]="disabled"
         [softDisabled]="softDisabled"
+        [plusminus]="plusminus"
         [deepLink]="deepLink"
         [deepLinkSmudge]="deepLinkSmudge"
         [deepLinkSmudgeDelay]="deepLinkSmudgeDelay"
@@ -872,6 +877,9 @@ export const ThemeControls: ThemeControlsStory = {
     accordionContentPadding: '1rem',
     accordionSlideSpeed: '250ms',
     accordionSlideEasing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+    // Icon CSS Custom Properties
+    accordionPlusContent: "'+'",
+    accordionMinusContent: "'–'",
   },
   argTypes: {
     // CSS Custom Property controls
@@ -950,6 +958,21 @@ export const ThemeControls: ThemeControlsStory = {
       ],
       table: { category: 'CSS Custom Properties' },
     },
+    // Icon CSS Custom Property controls
+    accordionPlusContent: {
+      name: '--nfs-accordion-plus-content',
+      description:
+        'Icon content for collapsed state (include quotes for characters)',
+      control: { type: 'text' },
+      table: { category: 'CSS Custom Properties' },
+    },
+    accordionMinusContent: {
+      name: '--nfs-accordion-minus-content',
+      description:
+        'Icon content for expanded state (include quotes for characters)',
+      control: { type: 'text' },
+      table: { category: 'CSS Custom Properties' },
+    },
   },
   render: (args) => ({
     props: args,
@@ -977,6 +1000,8 @@ export const ThemeControls: ThemeControlsStory = {
         [style.--nfs-accordion-content-padding]="accordionContentPadding"
         [style.--nfs-accordion-slide-speed]="accordionSlideSpeed"
         [style.--nfs-accordion-slide-easing]="accordionSlideEasing"
+        [style.--nfs-accordion-plus-content]="accordionPlusContent"
+        [style.--nfs-accordion-minus-content]="accordionMinusContent"
       >
         <nfs-accordion-item panelId="theme-1">
           <span *nfsAccordionTitle>🎨 Theme Controls Demo</span>
@@ -1000,7 +1025,9 @@ export const ThemeControls: ThemeControlsStory = {
               <li><code>--nfs-accordion-content-padding</code> — Content padding</li>
               <li><code>--nfs-accordion-slide-easing</code> — Animation easing</li>
               <li><code>--nfs-accordion-slide-speed</code> — Animation duration</li>
-            </ul>
+              <li><code>--nfs-accordion-plus-content</code> — Collapsed icon character</li>
+              <li><code>--nfs-accordion-minus-content</code> — Expanded icon character</li>
+                          </ul>
           </div>
         </nfs-accordion-item>
         <nfs-accordion-item panelId="theme-3">
@@ -1432,5 +1459,110 @@ export const RightToLeft: Story = {
     // Verify content is visible
     const content = canvas.getByText(/محتوى اللوحة الثانية/i);
     expect(content).toBeVisible();
+  },
+};
+
+/**
+ * Demonstrates custom +/- icons using CSS custom properties.
+ * Uses chevron symbols (▶/▼) instead of the default +/– icons.
+ */
+export const CustomIcons: Story = {
+  args: {
+    multiExpandable: false,
+    disabled: false,
+    allowAllClosed: true,
+  },
+  render: (args) => ({
+    props: args,
+    moduleMetadata: {
+      imports: [
+        NfsAccordion,
+        NfsAccordionItem,
+        NfsAccordionTitleDef,
+        NfsAccordionContentDef,
+      ],
+    },
+    template: `
+      <nfs-accordion
+        [multiExpandable]="multiExpandable"
+        [disabled]="disabled"
+        [allowAllClosed]="allowAllClosed"
+        style="
+          --nfs-accordion-plus-content: '▶';
+          --nfs-accordion-minus-content: '▼';
+          --nfs-accordion-item-color: #e94560;
+        "
+      >
+        <nfs-accordion-item panelId="icon-1">
+          <span *nfsAccordionTitle>Custom Chevron Icons</span>
+          <p *nfsAccordionContent>This accordion uses custom chevron icons instead of +/–.</p>
+        </nfs-accordion-item>
+        <nfs-accordion-item panelId="icon-2">
+          <span *nfsAccordionTitle>CSS Custom Properties</span>
+          <div *nfsAccordionContent>
+            <ul style="margin: 0; padding-left: 1.5rem;">
+              <li><code>--nfs-accordion-plus-content: '▶'</code></li>
+              <li><code>--nfs-accordion-minus-content: '▼'</code></li>
+              <li><code>--nfs-accordion-item-color: #e94560</code> (title &amp; icon color)</li>
+            </ul>
+          </div>
+        </nfs-accordion-item>
+      </nfs-accordion>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Verify CSS custom property is set
+    const accordion = canvasElement.querySelector('nfs-accordion');
+    expect(accordion).toBeTruthy();
+
+    if (!accordion) return;
+    const style = getComputedStyle(accordion);
+    expect(style.getPropertyValue('--nfs-accordion-plus-content').trim()).toBe(
+      "'▶'",
+    );
+
+    // Click to expand and verify accordion works
+    const trigger1 = canvas.getByRole('button', {
+      name: /Custom Chevron Icons/i,
+    });
+    await userEvent.click(trigger1);
+
+    await waitFor(() => {
+      expect(trigger1).toHaveAttribute('aria-expanded', 'true');
+    });
+  },
+};
+
+/**
+ * Demonstrates hiding the +/- icons using the `plusminus` input.
+ * When set to false, the accordion title shows no indicator icons.
+ */
+export const NoPlusminus: Story = {
+  args: {
+    multiExpandable: false,
+    disabled: false,
+    allowAllClosed: true,
+    plusminus: false,
+  },
+  render: Default.render,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Verify the nfs-accordion-no-plusminus class is applied
+    const accordion = canvasElement.querySelector('nfs-accordion');
+    expect(accordion).toHaveClass('nfs-accordion-no-plusminus');
+
+    // Verify the icon is hidden (display: none)
+    const trigger1 = canvas.getByRole('button', { name: /Accordion 1/i });
+    const iconStyle = getComputedStyle(trigger1, '::before');
+    expect(iconStyle.display).toBe('none');
+
+    // Verify accordion still works
+    await userEvent.click(trigger1);
+    await waitFor(() => {
+      expect(trigger1).toHaveAttribute('aria-expanded', 'true');
+    });
   },
 };
