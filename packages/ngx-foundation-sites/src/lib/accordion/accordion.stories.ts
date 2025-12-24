@@ -1471,7 +1471,7 @@ export const CustomIcons: Story = {
         style="
           --nfs-accordion-plus-content: '▶';
           --nfs-accordion-minus-content: '▼';
-          --nfs-accordion-item-color: #e94560;
+          --nfs-accordion-item-color: #b91c3c;
         "
       >
         <nfs-accordion-item panelId="icon-1">
@@ -1484,7 +1484,7 @@ export const CustomIcons: Story = {
             <ul style="margin: 0; padding-left: 1.5rem;">
               <li><code>--nfs-accordion-plus-content: '▶'</code></li>
               <li><code>--nfs-accordion-minus-content: '▼'</code></li>
-              <li><code>--nfs-accordion-item-color: #e94560</code> (title &amp; icon color)</li>
+              <li><code>--nfs-accordion-item-color: #b91c3c</code> (title &amp; icon color)</li>
             </ul>
           </div>
         </nfs-accordion-item>
