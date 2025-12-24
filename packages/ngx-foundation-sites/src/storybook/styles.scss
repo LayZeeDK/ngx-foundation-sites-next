@@ -57,3 +57,24 @@
   // Note: border and padding are controlled by the component's animation styles
   // when expanded. These properties serve as documentation of the theming options.
 }
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// RTL (Right-to-Left) Support
+// ═══════════════════════════════════════════════════════════════════════════════
+// Foundation's compiled CSS uses physical properties (right: 1rem) which don't
+// respond to runtime dir="rtl" changes. CSS Logical Properties automatically
+// flip based on the document's text direction:
+//
+// | Logical Property     | LTR equivalent | RTL equivalent |
+// |----------------------|----------------|----------------|
+// | inset-inline-end     | right          | left           |
+// | inset-inline-start   | left           | right          |
+//
+// Browser support: Chrome 87+, Firefox 66+, Safari 14.1+, Edge 87+
+// See: https://developer.mozilla.org/en-US/docs/Web/CSS/inset-inline-end
+// ═══════════════════════════════════════════════════════════════════════════════
+
+.accordion-title::before {
+  right: unset; // Remove Foundation's physical property
+  inset-inline-end: 1rem; // Automatically maps to right (LTR) or left (RTL)
+}
