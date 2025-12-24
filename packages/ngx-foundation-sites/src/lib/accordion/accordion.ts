@@ -24,7 +24,6 @@ import { AccordionDeepLinkService } from './accordion-deep-link.service';
   templateUrl: './accordion.html',
   styleUrl: './accordion.scss',
   host: {
-    style: 'display: block',
     '[class.nfs-accordion-no-plusminus]': '!plusminus()',
   },
   imports: [AccordionGroup, AccordionTrigger, AccordionPanel, NgTemplateOutlet],

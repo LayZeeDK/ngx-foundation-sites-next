@@ -1,3 +1,7 @@
+:host {
+  display: block;
+}
+
 /*
  * Button elements need explicit styles (Foundation assumes <a> elements)
  * - width: 100% because buttons don't fill container like display:block anchors
