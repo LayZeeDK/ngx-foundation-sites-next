@@ -125,8 +125,21 @@ describe('AccordionDeepLinkService', () => {
   });
 
   describe('scrollToPanel', () => {
+    let scrollToSpy: ReturnType<typeof vi.fn>;
+    let mockElement: { getBoundingClientRect: ReturnType<typeof vi.fn> };
+
     beforeEach(() => {
       vi.useFakeTimers();
+      scrollToSpy = vi.fn();
+      mockDocument.defaultView = {
+        ...mockDocument.defaultView!,
+        pageYOffset: 100,
+        scrollTo: scrollToSpy,
+      } as unknown as typeof mockDocument.defaultView;
+
+      mockElement = {
+        getBoundingClientRect: vi.fn().mockReturnValue({ top: 200 }),
+      };
     });
 
     afterEach(() => {
@@ -134,9 +147,6 @@ describe('AccordionDeepLinkService', () => {
     });
 
     it('should scroll to element after default delay', () => {
-      const mockElement = {
-        scrollIntoView: vi.fn(),
-      };
       mockDocument.getElementById.mockReturnValue(mockElement);
 
       service.scrollToPanel('panel-1');
@@ -146,16 +156,13 @@ describe('AccordionDeepLinkService', () => {
       vi.advanceTimersByTime(300);
 
       expect(mockDocument.getElementById).toHaveBeenCalledWith('panel-1');
-      expect(mockElement.scrollIntoView).toHaveBeenCalledWith({
+      expect(scrollToSpy).toHaveBeenCalledWith({
+        top: 300, // pageYOffset (100) + rect.top (200) - offset (0)
         behavior: 'smooth',
-        block: 'start',
       });
     });
 
     it('should scroll to element after custom delay', () => {
-      const mockElement = {
-        scrollIntoView: vi.fn(),
-      };
       mockDocument.getElementById.mockReturnValue(mockElement);
 
       service.scrollToPanel('panel-2', 500);
@@ -165,7 +172,33 @@ describe('AccordionDeepLinkService', () => {
 
       vi.advanceTimersByTime(1);
       expect(mockDocument.getElementById).toHaveBeenCalledWith('panel-2');
-      expect(mockElement.scrollIntoView).toHaveBeenCalled();
+      expect(scrollToSpy).toHaveBeenCalled();
+    });
+
+    it('should scroll with offset for sticky headers', () => {
+      mockDocument.getElementById.mockReturnValue(mockElement);
+
+      service.scrollToPanel('panel-1', 300, 60);
+
+      vi.advanceTimersByTime(300);
+
+      expect(scrollToSpy).toHaveBeenCalledWith({
+        top: 240, // pageYOffset (100) + rect.top (200) - offset (60)
+        behavior: 'smooth',
+      });
+    });
+
+    it('should handle large offset values', () => {
+      mockDocument.getElementById.mockReturnValue(mockElement);
+
+      service.scrollToPanel('panel-1', 300, 150);
+
+      vi.advanceTimersByTime(300);
+
+      expect(scrollToSpy).toHaveBeenCalledWith({
+        top: 150, // pageYOffset (100) + rect.top (200) - offset (150)
+        behavior: 'smooth',
+      });
     });
 
     it('should not throw when element is not found', () => {
@@ -175,6 +208,7 @@ describe('AccordionDeepLinkService', () => {
       vi.advanceTimersByTime(300);
 
       expect(mockDocument.getElementById).toHaveBeenCalledWith('non-existent');
+      expect(scrollToSpy).not.toHaveBeenCalled();
     });
   });
 

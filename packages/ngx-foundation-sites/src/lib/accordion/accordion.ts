@@ -100,11 +100,20 @@ import { AccordionDeepLinkService } from './accordion-deep-link.service';
       border: 0;
       transition:
         grid-template-rows var(--nfs-accordion-slide-speed, 250ms)
-          var(--nfs-accordion-slide-easing, cubic-bezier(0.25, 0.46, 0.45, 0.94)),
+          var(
+            --nfs-accordion-slide-easing,
+            cubic-bezier(0.25, 0.46, 0.45, 0.94)
+          ),
         padding var(--nfs-accordion-slide-speed, 250ms)
-          var(--nfs-accordion-slide-easing, cubic-bezier(0.25, 0.46, 0.45, 0.94)),
+          var(
+            --nfs-accordion-slide-easing,
+            cubic-bezier(0.25, 0.46, 0.45, 0.94)
+          ),
         border var(--nfs-accordion-slide-speed, 250ms)
-          var(--nfs-accordion-slide-easing, cubic-bezier(0.25, 0.46, 0.45, 0.94));
+          var(
+            --nfs-accordion-slide-easing,
+            cubic-bezier(0.25, 0.46, 0.45, 0.94)
+          );
 
       /* Inner wrapper to contain content */
       > * {
@@ -119,7 +128,6 @@ import { AccordionDeepLinkService } from './accordion-deep-link.service';
       border: var(--nfs-accordion-content-border, 1px solid #e6e6e6);
       border-bottom: 0; /* Foundation removes bottom border, keeps top as separator */
     }
-
   `,
   host: {
     style: 'display: block',
@@ -155,6 +163,9 @@ export class NfsAccordion {
 
   /** Delay in milliseconds before scroll adjustment (allows animation to complete) */
   readonly deepLinkSmudgeDelay = input(300);
+
+  /** Scroll offset in pixels for sticky headers when deep linking */
+  readonly deepLinkSmudgeOffset = input(0);
 
   /** If true, adds to browser history; if false, replaces current entry */
   readonly updateHistory = input(false);
@@ -246,6 +257,7 @@ export class NfsAccordion {
               this.#deepLinkService.scrollToPanel(
                 expandedPanelId,
                 this.deepLinkSmudgeDelay(),
+                this.deepLinkSmudgeOffset(),
               );
             }
           } else if (this.allowAllClosed() && this.#initialHashProcessed) {
@@ -290,6 +302,7 @@ export class NfsAccordion {
         this.#deepLinkService.scrollToPanel(
           hashPanelId,
           this.deepLinkSmudgeDelay(),
+          this.deepLinkSmudgeOffset(),
         );
       }
     }
@@ -311,6 +324,7 @@ export class NfsAccordion {
           this.#deepLinkService.scrollToPanel(
             panelId,
             this.deepLinkSmudgeDelay(),
+            this.deepLinkSmudgeOffset(),
           );
         }
       }

@@ -605,6 +605,7 @@ describe('NfsAccordion', () => {
       expect(mockDeepLinkService.scrollToPanel).toHaveBeenCalledWith(
         'panel-1',
         200,
+        0, // default offset
       );
     });
 

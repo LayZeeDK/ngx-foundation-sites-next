@@ -463,6 +463,24 @@ export const DeepLinkNoHistory: Story = {
   render: Default.render,
 };
 
+/**
+ * Deep linking with sticky header offset.
+ * Demonstrates using deepLinkSmudgeOffset to account for fixed navigation.
+ * The offset (60px) is subtracted from the scroll position.
+ */
+export const DeepLinkWithOffset: Story = {
+  args: {
+    multiExpandable: false,
+    disabled: false,
+    deepLink: true,
+    deepLinkSmudge: true,
+    deepLinkSmudgeDelay: 300,
+    deepLinkSmudgeOffset: 60,
+    updateHistory: true,
+  },
+  render: Default.render,
+};
+
 export const RequireOneOpen: Story = {
   args: {
     multiExpandable: false,

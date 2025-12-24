@@ -54,11 +54,20 @@ export class AccordionDeepLinkService {
    * Scrolls to the panel element after a delay (for deep link smudge).
    * @param panelId - The panel ID to scroll to
    * @param delay - Delay in milliseconds before scrolling (allows animation to complete)
+   * @param offset - Scroll offset in pixels for sticky headers (default: 0)
    */
-  scrollToPanel(panelId: string, delay = 300): void {
+  scrollToPanel(panelId: string, delay = 300, offset = 0): void {
     setTimeout(() => {
       const element = this.#document.getElementById(panelId);
-      element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (element) {
+        const rect = element.getBoundingClientRect();
+        const scrollTop =
+          (this.#document.defaultView?.pageYOffset ?? 0) + rect.top - offset;
+        this.#document.defaultView?.scrollTo({
+          top: scrollTop,
+          behavior: 'smooth',
+        });
+      }
     }, delay);
   }
 
