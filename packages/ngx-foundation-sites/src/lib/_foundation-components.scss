@@ -9,6 +9,6 @@
   @include foundation.foundation-global-styles;
   @include foundation.foundation-typography;
   @include foundation.foundation-forms;
-  @include foundation.foundation-button;
-  // Note: Accordion styles are now component-scoped (loaded by nfs-accordion)
+  // Note: Component styles (button, accordion, etc.) are now component-scoped
+  // or opt-in via explicit mixin calls
 }

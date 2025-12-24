@@ -9,8 +9,11 @@
 // Or selectively:
 //   @include nfs.foundation-global-styles;
 //   @include nfs.foundation-typography;
-//   @include nfs.foundation-button;
+//   @include nfs.foundation-forms;
 //   @include nfs.nfs-theme-properties;
+//
+// Component styles (opt-in, not included in nfs-all-global-styles):
+//   @include nfs.foundation-button;  // Until nfs-button component exists
 //
 // ═══════════════════════════════════════════════════════════════════════════════
 
@@ -42,10 +45,12 @@
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// GENERIC COMPONENTS
+// COMPONENT STYLES (opt-in)
 // ═══════════════════════════════════════════════════════════════════════════════
+// These are NOT included in nfs-all-global-styles. Include explicitly if needed.
+// When nfs-button component is created, this will move to component-scoped styles.
 
-/// Button component styles
+/// Button component styles (opt-in, not included in nfs-all-global-styles)
 @mixin foundation-button {
   @include foundation.foundation-button;
 }
@@ -89,12 +94,13 @@
 /// - foundation-global-styles
 /// - foundation-typography
 /// - foundation-forms
-/// - foundation-button
 /// - nfs-theme-properties
+///
+/// Note: Component styles (foundation-button, etc.) are NOT included.
+/// They should be loaded by their respective Angular components or added explicitly.
 @mixin nfs-all-global-styles {
   @include foundation-global-styles;
   @include foundation-typography;
   @include foundation-forms;
-  @include foundation-button;
   @include nfs-theme-properties;
 }

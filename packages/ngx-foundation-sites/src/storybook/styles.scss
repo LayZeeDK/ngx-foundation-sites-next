@@ -12,3 +12,7 @@
 
 // Include all recommended global styles
 @include nfs.nfs-all-global-styles;
+
+// Include button styles for Storybook demos (e.g., ExpandCollapseAll story)
+// This is opt-in; consumers should use nfs-button component when available
+@include nfs.foundation-button;
