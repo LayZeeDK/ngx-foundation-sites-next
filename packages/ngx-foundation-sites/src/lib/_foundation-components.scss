@@ -10,5 +10,5 @@
   @include foundation.foundation-typography;
   @include foundation.foundation-forms;
   @include foundation.foundation-button;
-  @include foundation.foundation-accordion;
+  // Note: Accordion styles are now component-scoped (loaded by nfs-accordion)
 }

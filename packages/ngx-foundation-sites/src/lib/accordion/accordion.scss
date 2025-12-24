@@ -1,26 +1,161 @@
+// ═══════════════════════════════════════════════════════════════════════════════
+// ngx-foundation-sites Accordion Component Styles
+// ═══════════════════════════════════════════════════════════════════════════════
+//
+// This stylesheet loads Foundation's accordion styles and applies custom
+// overrides for Angular integration and CSS Custom Property theming.
+//
+// ═══════════════════════════════════════════════════════════════════════════════
+
+// Foundation global settings (custom palette for WCAG AA compliance)
+@use '../foundation-settings' as settings;
+
+// Foundation utilities for rem-calc
+@use 'foundation-sites/scss/util/util';
+
+// Accordion-specific settings with CSS Custom Property support
+@use 'foundation-accordion-settings' as accordion-settings;
+
+// Foundation main module (provides global variables like $global-left)
+// Configured with our custom accordion settings for CSS Custom Property support
+@use 'foundation-sites/scss/foundation' as foundation with (
+  $foundation-palette: settings.$foundation-palette,
+  $accordion-background: accordion-settings.$accordion-background,
+  $accordion-title-font-size: accordion-settings.$accordion-title-font-size,
+  $accordion-item-color: accordion-settings.$accordion-item-color,
+  $accordion-item-background-hover:
+    accordion-settings.$accordion-item-background-hover,
+  $accordion-item-padding: accordion-settings.$accordion-item-padding,
+  $accordion-content-background:
+    accordion-settings.$accordion-content-background,
+  $accordion-content-border: accordion-settings.$accordion-content-border,
+  $accordion-content-color: accordion-settings.$accordion-content-color,
+  $accordion-content-padding: accordion-settings.$accordion-content-padding,
+  $accordion-plusminus: accordion-settings.$accordion-plusminus,
+  $accordion-plus-content: accordion-settings.$accordion-plus-content,
+  $accordion-minus-content: accordion-settings.$accordion-minus-content
+);
+
+// Include only accordion styles (not all Foundation styles)
+@include foundation.foundation-accordion;
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// Host Element Styles
+// ═══════════════════════════════════════════════════════════════════════════════
+
 :host {
   display: block;
 }
 
-/*
- * Button elements need explicit styles (Foundation assumes <a> elements)
- * - width: 100% because buttons don't fill container like display:block anchors
- * - cursor: pointer because buttons default to cursor:default
- */
+// ═══════════════════════════════════════════════════════════════════════════════
+// Button Element Overrides
+// ═══════════════════════════════════════════════════════════════════════════════
+// Foundation assumes <a> elements for accordion titles. When using <button>
+// elements for accessibility, explicit styles are needed.
+
 .accordion-title {
   width: 100%;
   cursor: pointer;
 }
 
-/*
- * CSS Grid animation for smooth expand/collapse
- * Uses grid-template-rows transition from 0fr to 1fr
- * Easing matches Foundation's jQuery swing (easeOutQuad)
- *
- * Content is deferred via @defer (when expanded) for lazy loading.
- * Once loaded, content stays in DOM enabling CSS animations.
- * The panel's [inert] attribute handles accessibility when collapsed.
- */
+// ═══════════════════════════════════════════════════════════════════════════════
+// CSS Custom Property Theming Overrides
+// ═══════════════════════════════════════════════════════════════════════════════
+// These overrides allow runtime theming of accordion components via CSS custom
+// properties. Set these on the nfs-accordion element or any ancestor.
+//
+// Available properties:
+//   --nfs-accordion-background          Background of accordion container
+//   --nfs-accordion-title-font-size     Font size of titles
+//   --nfs-accordion-item-color          Text color of titles
+//   --nfs-accordion-item-background-hover  Hover background of titles
+//   --nfs-accordion-item-padding        Padding of titles
+//   --nfs-accordion-content-background  Background of content panels
+//   --nfs-accordion-content-border      Border of content panels
+//   --nfs-accordion-content-color       Text color of content panels
+//   --nfs-accordion-content-padding     Padding of content panels
+//   --nfs-accordion-slide-speed         Animation duration (set via slideSpeed input)
+//   --nfs-accordion-slide-easing        Animation easing function
+//   --nfs-accordion-plus-content        Icon for collapsed state (default: '+')
+//   --nfs-accordion-minus-content       Icon for expanded state (default: '–')
+// ═══════════════════════════════════════════════════════════════════════════════
+
+.accordion {
+  background: var(--nfs-accordion-background, #fefefe);
+}
+
+.accordion-title {
+  font-size: var(--nfs-accordion-title-font-size, #{util.rem-calc(12)});
+  color: var(--nfs-accordion-item-color, var(--nfs-primary-color, #0d5a89));
+  padding: var(--nfs-accordion-item-padding, 1.25rem 1rem);
+
+  &:hover,
+  &:focus {
+    background-color: var(--nfs-accordion-item-background-hover, #e6e6e6);
+  }
+}
+
+.accordion-content {
+  background: var(--nfs-accordion-content-background, #fefefe);
+  color: var(--nfs-accordion-content-color, #0a0a0a);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// RTL (Right-to-Left) Support
+// ═══════════════════════════════════════════════════════════════════════════════
+// Foundation's compiled CSS uses physical properties (right: 1rem) which don't
+// respond to runtime dir="rtl" changes. CSS Logical Properties automatically
+// flip based on the document's text direction:
+//
+// | Logical Property     | LTR equivalent | RTL equivalent |
+// |----------------------|----------------|----------------|
+// | inset-inline-end     | right          | left           |
+// | inset-inline-start   | left           | right          |
+//
+// Browser support: Chrome 87+, Firefox 66+, Safari 14.1+, Edge 87+
+// See: https://developer.mozilla.org/en-US/docs/Web/CSS/inset-inline-end
+// ═══════════════════════════════════════════════════════════════════════════════
+
+.accordion-title::before {
+  right: unset; // Remove Foundation's physical property
+  inset-inline-end: 1rem; // Automatically maps to right (LTR) or left (RTL)
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// Plus/Minus Icon CSS Custom Properties
+// ═══════════════════════════════════════════════════════════════════════════════
+// Customize the +/- indicator icons via CSS custom properties.
+// Icon color inherits from --nfs-accordion-item-color (title text color)
+// matching Foundation's behavior where icons share the same color as the title.
+// ═══════════════════════════════════════════════════════════════════════════════
+
+.accordion-title::before {
+  content: var(--nfs-accordion-plus-content, '+');
+}
+
+.accordion-item.is-active > .accordion-title::before {
+  content: var(--nfs-accordion-minus-content, '–');
+}
+
+// Hide icons when plusminus input is false (applies .nfs-accordion-no-plusminus class to host)
+// Uses :host() to properly target the host element with Angular's view encapsulation
+// Duplicate class selector increases specificity to override Foundation's accordion-plusminus styles
+:host(.nfs-accordion-no-plusminus.nfs-accordion-no-plusminus)
+  .accordion-title::before {
+  display: none;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// CSS Grid Animation for Expand/Collapse
+// ═══════════════════════════════════════════════════════════════════════════════
+// Uses grid-template-rows transition from 0fr to 1fr for smooth animations.
+// Easing matches Foundation's jQuery swing (easeOutQuad).
+//
+// Content is deferred via @defer (when expanded) for lazy loading.
+// Once loaded, content stays in DOM enabling CSS animations.
+// The panel's [inert] attribute handles accessibility when collapsed.
+// ═══════════════════════════════════════════════════════════════════════════════
+
 .accordion-content {
   display: grid !important;
   grid-template-rows: 0fr;
@@ -34,7 +169,7 @@
     border var(--nfs-accordion-slide-speed, 250ms)
       var(--nfs-accordion-slide-easing, cubic-bezier(0.25, 0.46, 0.45, 0.94));
 
-  /* Inner wrapper to contain content */
+  // Inner wrapper to contain content
   > * {
     overflow: hidden;
   }
@@ -42,8 +177,8 @@
 
 .accordion-item.is-active > .accordion-content {
   grid-template-rows: 1fr;
-  /* Restore Foundation padding/border when expanded - uses CSS custom properties */
+  // Restore Foundation padding/border when expanded - uses CSS custom properties
   padding: var(--nfs-accordion-content-padding, 1rem);
   border: var(--nfs-accordion-content-border, 1px solid #e6e6e6);
-  border-bottom: 0; /* Foundation removes bottom border, keeps top as separator */
+  border-bottom: 0; // Foundation removes bottom border, keeps top as separator
 }
