@@ -49,17 +49,6 @@ interface ThemeControlsArgs {
 type ThemeControlsStory = StoryObj<ThemeControlsArgs>;
 
 export const Default: Story = {
-  args: {
-    multiExpandable: false,
-    disabled: false,
-    softDisabled: true,
-    plusminus: true,
-    deepLink: false,
-    deepLinkSmudge: false,
-    deepLinkSmudgeDelay: 300,
-    updateHistory: false,
-    allowAllClosed: false,
-  },
   render: (args) => ({
     props: args,
     moduleMetadata: {
@@ -329,14 +318,6 @@ export const SlowAnimation: Story = {
  * This is also useful for reduced motion accessibility preferences.
  */
 export const NoAnimation: Story = {
-  args: {
-    multiExpandable: false,
-    disabled: false,
-    deepLink: false,
-    deepLinkSmudge: false,
-    deepLinkSmudgeDelay: 300,
-    updateHistory: false,
-  },
   render: (args) => ({
     props: args,
     moduleMetadata: {
