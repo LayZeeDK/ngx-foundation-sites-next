@@ -1,0 +1,45 @@
+/*
+ * Button elements need explicit styles (Foundation assumes <a> elements)
+ * - width: 100% because buttons don't fill container like display:block anchors
+ * - cursor: pointer because buttons default to cursor:default
+ */
+.accordion-title {
+  width: 100%;
+  cursor: pointer;
+}
+
+/*
+ * CSS Grid animation for smooth expand/collapse
+ * Uses grid-template-rows transition from 0fr to 1fr
+ * Easing matches Foundation's jQuery swing (easeOutQuad)
+ *
+ * Content is deferred via @defer (when expanded) for lazy loading.
+ * Once loaded, content stays in DOM enabling CSS animations.
+ * The panel's [inert] attribute handles accessibility when collapsed.
+ */
+.accordion-content {
+  display: grid !important;
+  grid-template-rows: 0fr;
+  padding: 0;
+  border: 0;
+  transition:
+    grid-template-rows var(--nfs-accordion-slide-speed, 250ms)
+      var(--nfs-accordion-slide-easing, cubic-bezier(0.25, 0.46, 0.45, 0.94)),
+    padding var(--nfs-accordion-slide-speed, 250ms)
+      var(--nfs-accordion-slide-easing, cubic-bezier(0.25, 0.46, 0.45, 0.94)),
+    border var(--nfs-accordion-slide-speed, 250ms)
+      var(--nfs-accordion-slide-easing, cubic-bezier(0.25, 0.46, 0.45, 0.94));
+
+  /* Inner wrapper to contain content */
+  > * {
+    overflow: hidden;
+  }
+}
+
+.accordion-item.is-active > .accordion-content {
+  grid-template-rows: 1fr;
+  /* Restore Foundation padding/border when expanded - uses CSS custom properties */
+  padding: var(--nfs-accordion-content-padding, 1rem);
+  border: var(--nfs-accordion-content-border, 1px solid #e6e6e6);
+  border-bottom: 0; /* Foundation removes bottom border, keeps top as separator */
+}

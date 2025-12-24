@@ -1,0 +1,48 @@
+<ul
+  ngAccordionGroup
+  class="accordion"
+  role="presentation"
+  [multiExpandable]="multiExpandable()"
+  [disabled]="disabled()"
+  [softDisabled]="softDisabled()"
+  [wrap]="wrap()"
+>
+  @for (item of items(); track item.panelId()) {
+  <li class="accordion-item" [class.is-active]="item.expanded()">
+    <button
+      ngAccordionTrigger
+      type="button"
+      class="accordion-title"
+      [panelId]="item.panelId()"
+      [disabled]="item.disabled()"
+      [(expanded)]="item.expanded"
+    >
+      @if (item.titleDef(); as titleDef) {
+      <ng-container *ngTemplateOutlet="titleDef.templateRef" />
+      }
+    </button>
+    <div
+      ngAccordionPanel
+      class="accordion-content"
+      [panelId]="item.panelId()"
+      [id]="item.panelId()"
+    >
+      <!--
+          Wrapper is always present for CSS Grid animation.
+          @defer loads content when panel is first expanded.
+          Once loaded, content stays in DOM (enabling CSS animations).
+
+          TODO: Revert to ngAccordionContent + animate.enter/leave once
+          https://github.com/angular/components/pull/32591 is merged.
+          Currently, using AccordionContent causes NG3004 in library builds
+          because DeferredContentAware is not exported from @angular/aria.
+        -->
+      <div class="accordion-content-inner">
+        @defer (when item.expanded()) { @if (item.contentDef(); as contentDef) {
+        <ng-container *ngTemplateOutlet="contentDef.templateRef" />
+        } }
+      </div>
+    </div>
+  </li>
+  }
+</ul>
