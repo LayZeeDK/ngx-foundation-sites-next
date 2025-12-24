@@ -323,9 +323,11 @@ describe('NfsAccordion', () => {
       expect(isExpanded(0)).toBe(true);
     });
 
-    it('should render content when panel is initially expanded', () => {
+    it('should render content when panel is initially expanded', async () => {
       host.item2Expanded.set(true);
       fixture.detectChanges();
+      // Wait for @defer block to render the content
+      await fixture.whenStable();
 
       const panels = getPanels();
       expect(panels[1].textContent).toContain('Item 2 Content');
