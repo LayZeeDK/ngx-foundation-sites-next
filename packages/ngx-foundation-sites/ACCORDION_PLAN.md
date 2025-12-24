@@ -1229,12 +1229,12 @@ Add to accordion component documentation:
 
 #### Foundation Sass Variables (12 total)
 
-| Sass Variable                      | Default                 | CSS Custom Property                     | Status |
+| Sass Variable                      | Default                 | CSS Custom Property / Input             | Status |
 | ---------------------------------- | ----------------------- | --------------------------------------- | ------ |
 | `$accordion-background`            | `$white`                | `--nfs-accordion-background`            | ✅     |
-| `$accordion-plusminus`             | `true`                  | —                                       | ❌     |
-| `$accordion-plus-content`          | `'\002B'`               | —                                       | ❌     |
-| `$accordion-minus-content`         | `'\2013'`               | —                                       | ❌     |
+| `$accordion-plusminus`             | `true`                  | `plusminus` input                       | ✅     |
+| `$accordion-plus-content`          | `'\002B'`               | `--nfs-accordion-plus-content`          | ✅     |
+| `$accordion-minus-content`         | `'\2013'`               | `--nfs-accordion-minus-content`         | ✅     |
 | `$accordion-title-font-size`       | `rem-calc(12)`          | `--nfs-accordion-title-font-size`       | ✅     |
 | `$accordion-item-color`            | `$primary-color`        | `--nfs-accordion-item-color`            | ✅     |
 | `$accordion-item-background-hover` | `$light-gray`           | `--nfs-accordion-item-background-hover` | ✅     |
@@ -1244,9 +1244,7 @@ Add to accordion component documentation:
 | `$accordion-content-color`         | `$body-font-color`      | `--nfs-accordion-content-color`         | ✅     |
 | `$accordion-content-padding`       | `1rem`                  | `--nfs-accordion-content-padding`       | ✅     |
 
-**Result: 9/12 exposed as CSS custom properties (75%)**
-
-> **Note:** The `$accordion-plusminus`, `$accordion-plus-content`, and `$accordion-minus-content` variables control the ±/- icons and are not yet exposed. These would require component-level CSS changes to support custom icons.
+**Result: 12/12 exposed as CSS custom properties or inputs (100%) ✅**
 
 #### Angular ARIA Features (10 total)
 
@@ -1264,6 +1262,12 @@ Add to accordion component documentation:
 | Lazy rendering         | ✅ Built-in                          | ✅     |
 
 **Result: 9/10 features accessible to consumers (90%)**
+
+#### Additional Component Inputs
+
+| Input       | Description                                  | Status |
+| ----------- | -------------------------------------------- | ------ |
+| `plusminus` | Enable/disable +/- indicator icons (boolean) | ✅     |
 
 > **Note:** `preserveContent` is inherited from Angular ARIA's internal `DeferredContentAware` class and is not exported as a public API. The `textDirection` is automatically detected from the nearest `dir` attribute (or document root) via Angular CDK's `Directionality` service — no explicit input is needed. Both keyboard navigation behavior AND visual styling (via CSS Logical Properties) automatically adapt to RTL mode.
 
@@ -1409,19 +1413,21 @@ collapseAll(): void {
 
 #### 7.4.2 Available CSS Custom Properties
 
-| Property                                | Description            | Default             |
-| --------------------------------------- | ---------------------- | ------------------- |
-| `--nfs-accordion-background`            | Container background   | `#fefefe`           |
-| `--nfs-accordion-title-font-size`       | Title font size        | `rem-calc(12)`      |
-| `--nfs-accordion-item-color`            | Title text color       | `#0d5a89`           |
-| `--nfs-accordion-item-background-hover` | Title hover background | `#e6e6e6`           |
-| `--nfs-accordion-item-padding`          | Title padding          | `1.25rem 1rem`      |
-| `--nfs-accordion-content-background`    | Content background     | `#fefefe`           |
-| `--nfs-accordion-content-border`        | Content border         | `1px solid #e6e6e6` |
-| `--nfs-accordion-content-color`         | Content text color     | `#0a0a0a`           |
-| `--nfs-accordion-content-padding`       | Content padding        | `1rem`              |
-| `--nfs-accordion-slide-speed`           | Animation duration     | `250ms`             |
-| `--nfs-accordion-slide-easing`          | Animation easing       | `ease-out`          |
+| Property                                | Description              | Default             |
+| --------------------------------------- | ------------------------ | ------------------- |
+| `--nfs-accordion-background`            | Container background     | `#fefefe`           |
+| `--nfs-accordion-title-font-size`       | Title font size          | `rem-calc(12)`      |
+| `--nfs-accordion-item-color`            | Title text color         | `#0d5a89`           |
+| `--nfs-accordion-item-background-hover` | Title hover background   | `#e6e6e6`           |
+| `--nfs-accordion-item-padding`          | Title padding            | `1.25rem 1rem`      |
+| `--nfs-accordion-content-background`    | Content background       | `#fefefe`           |
+| `--nfs-accordion-content-border`        | Content border           | `1px solid #e6e6e6` |
+| `--nfs-accordion-content-color`         | Content text color       | `#0a0a0a`           |
+| `--nfs-accordion-content-padding`       | Content padding          | `1rem`              |
+| `--nfs-accordion-slide-speed`           | Animation duration       | `250ms`             |
+| `--nfs-accordion-slide-easing`          | Animation easing         | `ease-out`          |
+| `--nfs-accordion-plus-content`          | Collapsed icon character | `'+'`               |
+| `--nfs-accordion-minus-content`         | Expanded icon character  | `'–'`               |
 
 #### 7.4.3 Updated Storybook Styles
 
@@ -1648,6 +1654,75 @@ To enable RTL mode:
 - [Angular CDK Bidi/Directionality](https://material.angular.io/cdk/bidi/overview)
 - [CSS-Tricks: CSS Logical Properties](https://css-tricks.com/css-logical-properties-and-values/)
 
+### 7.10 Implementation: Plus/Minus Icon Customization ✅
+
+**Goal:** Complete Foundation Sass variable coverage by exposing the remaining 3 plusminus-related variables.
+
+#### 7.10.1 Foundation Sass Variables Covered
+
+| Sass Variable              | Default   | Implementation                      |
+| -------------------------- | --------- | ----------------------------------- |
+| `$accordion-plusminus`     | `true`    | `plusminus` Angular input           |
+| `$accordion-plus-content`  | `'\002B'` | `--nfs-accordion-plus-content` CSS  |
+| `$accordion-minus-content` | `'\2013'` | `--nfs-accordion-minus-content` CSS |
+
+#### 7.10.2 Implementation Approach
+
+**Why Angular input for `plusminus` boolean?**
+
+The CSS `if()` function (Chrome 137+) could theoretically toggle icon display based on a CSS custom property, but browser support is insufficient (2025). Instead, we use an Angular `input()` with a host class binding:
+
+```typescript
+/** Enable/disable the +/- indicator icons. Default: true */
+readonly plusminus = input(true);
+
+// In @Component host:
+host: {
+  '[class.nfs-accordion-no-plusminus]': '!plusminus()',
+}
+```
+
+**CSS implementation (styles.scss):**
+
+```scss
+// Plus/Minus Icon CSS Custom Properties
+.accordion-title::before {
+  content: var(--nfs-accordion-plus-content, '+');
+  // Color inherited from .accordion-title (--nfs-accordion-item-color)
+}
+
+.accordion-item.is-active > .accordion-title::before {
+  content: var(--nfs-accordion-minus-content, '–');
+}
+
+// Hide icons when plusminus input is false
+.nfs-accordion-no-plusminus .accordion-title::before {
+  display: none;
+}
+```
+
+#### 7.10.3 Stories Added
+
+| Story Name    | Purpose                                     |
+| ------------- | ------------------------------------------- |
+| `CustomIcons` | Demonstrates chevron icons (▶/▼) via CSS   |
+| `NoPlusminus` | Shows accordion without any indicator icons |
+
+#### 7.10.4 ThemeControls Updates
+
+Added 2 new controls under "CSS Custom Properties" category:
+
+| Control                         | Type | Default |
+| ------------------------------- | ---- | ------- |
+| `--nfs-accordion-plus-content`  | text | `'+'`   |
+| `--nfs-accordion-minus-content` | text | `'–'`   |
+
+> **Note:** Icon color inherits from `--nfs-accordion-item-color`, matching Foundation's behavior.
+
+#### 7.10.5 Result
+
+**Foundation Sass variable coverage: 12/12 (100%) ✅**
+
 ### 7.6 Testing & Documentation
 
 #### 7.6.1 Unit Tests
@@ -1660,27 +1735,29 @@ To enable RTL mode:
 
 #### 7.6.2 Storybook Stories
 
-| Story Name             | Purpose                                     | Status                      |
-| ---------------------- | ------------------------------------------- | --------------------------- |
-| `DeepLinkWithOffset`   | Demonstrate sticky header offset            | ✅ (Phase 7.2)              |
-| `SoftDisabled`         | Show focus behavior on disabled items       | ✅ (Phase 7.3)              |
-| `ExpandCollapseAll`    | Buttons to trigger programmatic methods     | ✅ (Phase 7.3)              |
-| `CustomTheme`          | Demonstrate CSS custom property theming     | ✅ (Phase 7.4)              |
-| `ThemeControls`        | Interactive controls for ALL CSS properties | ✅ (Phase 7.4)              |
-| `RightToLeft`          | RTL layout with Arabic text and icon tests  | ✅ (Phase 7.5)              |
-| `PreserveContentFalse` | Show DOM cleanup when panel closes          | ❌ (not possible, internal) |
+| Story Name             | Purpose                                        | Status                      |
+| ---------------------- | ---------------------------------------------- | --------------------------- |
+| `DeepLinkWithOffset`   | Demonstrate sticky header offset               | ✅ (Phase 7.2)              |
+| `SoftDisabled`         | Show focus behavior on disabled items          | ✅ (Phase 7.3)              |
+| `ExpandCollapseAll`    | Buttons to trigger programmatic methods        | ✅ (Phase 7.3)              |
+| `CustomTheme`          | Demonstrate CSS custom property theming        | ✅ (Phase 7.4)              |
+| `ThemeControls`        | Interactive controls for ALL CSS properties    | ✅ (Phase 7.4 + 7.10)       |
+| `RightToLeft`          | RTL layout with Arabic text and icon tests     | ✅ (Phase 7.5)              |
+| `CustomIcons`          | Custom chevron icons via CSS custom properties | ✅ (Phase 7.10)             |
+| `NoPlusminus`          | Accordion without +/- indicator icons          | ✅ (Phase 7.10)             |
+| `PreserveContentFalse` | Show DOM cleanup when panel closes             | ❌ (not possible, internal) |
 
 ### 7.7 Files to Modify
 
-| File                                  | Changes                                          | Status                                                |
-| ------------------------------------- | ------------------------------------------------ | ----------------------------------------------------- |
-| `accordion.ts`                        | Add `softDisabled` input, `viewChild`, 2 methods | ✅ 7.3                                                |
-| `accordion-item.ts`                   | Add `preserveContent` input                      | ❌ (not possible, internal API)                       |
-| `accordion-deep-link.service.ts`      | Add offset parameter to `scrollToPanel()`        | ✅ 7.2                                                |
-| `styles.scss`                         | Add CSS custom property fallbacks, RTL support   | ✅ 7.4 + 7.5                                          |
-| `accordion.stories.ts`                | Add stories for new features                     | ✅ 7.3 + 7.4 + 7.5 (5 stories)                        |
-| `accordion.spec.ts`                   | Add unit tests for new features                  | ✅ 7.3 + 7.4 (softDisabled, expand/collapse, theming) |
-| `accordion-deep-link.service.spec.ts` | Add offset tests                                 | ✅ 7.2                                                |
+| File                                  | Changes                                                      | Status                                                |
+| ------------------------------------- | ------------------------------------------------------------ | ----------------------------------------------------- |
+| `accordion.ts`                        | Add `softDisabled`, `plusminus` inputs, `viewChild`, methods | ✅ 7.3 + 7.10                                         |
+| `accordion-item.ts`                   | Add `preserveContent` input                                  | ❌ (not possible, internal API)                       |
+| `accordion-deep-link.service.ts`      | Add offset parameter to `scrollToPanel()`                    | ✅ 7.2                                                |
+| `styles.scss`                         | Add CSS custom property fallbacks, RTL, icon properties      | ✅ 7.4 + 7.5 + 7.10                                   |
+| `accordion.stories.ts`                | Add stories for new features                                 | ✅ 7.3 + 7.4 + 7.5 + 7.10 (7 stories)                 |
+| `accordion.spec.ts`                   | Add unit tests for new features                              | ✅ 7.3 + 7.4 (softDisabled, expand/collapse, theming) |
+| `accordion-deep-link.service.spec.ts` | Add offset tests                                             | ✅ 7.2                                                |
 
 ### 7.8 Implementation Order
 
@@ -1690,15 +1767,16 @@ To enable RTL mode:
 4. **expandAll/collapseAll** (requires viewChild) — ✅ Complete (Phase 7.3)
 5. **CSS custom properties** (most complex, requires style updates) — ✅ Complete (Phase 7.4)
 6. **RTL support** (CSS Logical Properties for +/- icons) — ✅ Complete (Phase 7.5)
+7. **Plusminus icons** (CSS custom properties + Angular input) — ✅ Complete (Phase 7.10)
 
 ### 7.9 Expected Outcome
 
-**Current status after Phase 7.2 + 7.3 + 7.4 + 7.5:**
+**Current status after Phase 7.2 + 7.3 + 7.4 + 7.5 + 7.10:**
 
 - **100%** Foundation JavaScript options (9/9 — all implemented ✅)
 - **100%** WAI-ARIA compliance (unchanged)
 - **90%** Angular ARIA features exposed (9/10 — `preserveContent` internal, `textDirection` ✅ via CSS Logical Properties)
-- **92%** Foundation Sass variables as CSS custom properties (11/12 — excluding plusminus icons)
+- **100%** Foundation Sass variables as CSS custom properties or inputs (12/12 — including plusminus icons ✅)
 
 ---
 
