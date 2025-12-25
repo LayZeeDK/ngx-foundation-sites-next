@@ -156,8 +156,11 @@ nfs-accordion.nfs-accordion-no-plusminus .accordion-title::before {
 // The panel's [inert] attribute handles accessibility when collapsed.
 // ═══════════════════════════════════════════════════════════════════════════════
 
-.accordion-content {
-  display: grid !important;
+// Override Foundation's display: none with display: grid for smooth animations.
+// Using .accordion prefix matches Foundation's specificity (0,2,0) and wins by source order
+// since component styles load after @include foundation.foundation-accordion.
+.accordion .accordion-content {
+  display: grid;
   grid-template-rows: 0fr;
   padding: 0;
   border: 0;
@@ -175,7 +178,7 @@ nfs-accordion.nfs-accordion-no-plusminus .accordion-title::before {
   }
 }
 
-.accordion-item.is-active > .accordion-content {
+.accordion .accordion-item.is-active > .accordion-content {
   grid-template-rows: 1fr;
   // Restore Foundation padding/border when expanded - uses CSS custom properties
   padding: var(--nfs-accordion-content-padding, 1rem);
