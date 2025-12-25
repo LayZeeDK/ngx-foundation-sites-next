@@ -12,6 +12,11 @@
     }
   },
   "tags": [],
+  "generators": {
+    "@nx/angular:component": {
+      "viewEncapsulation": "None"
+    }
+  },
   "targets": {
     "build": {
       "executor": "@nx/angular:package",

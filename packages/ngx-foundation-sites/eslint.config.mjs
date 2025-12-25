@@ -1,5 +1,9 @@
-import nx from '@nx/eslint-plugin';
+import nx, { loadWorkspaceRules } from '@nx/eslint-plugin';
 import baseConfig from '../../eslint.config.mjs';
+
+// Load custom workspace ESLint rules from tools/eslint-rules
+// See: https://nx.dev/docs/technologies/eslint/guides/custom-workspace-rules
+const nfsRules = await loadWorkspaceRules('tools/eslint-rules');
 
 export default [
   ...baseConfig,
@@ -19,6 +23,18 @@ export default [
   },
   ...nx.configs['flat/angular'],
   ...nx.configs['flat/angular-template'],
+  {
+    // Apply custom rules to library component files only (exclude tests)
+    files: ['**/src/lib/**/*.ts'],
+    ignores: ['**/*.spec.ts', '**/*.test.ts'],
+    plugins: {
+      '@nfs': { rules: nfsRules },
+    },
+    rules: {
+      // Enforce ViewEncapsulation.None for all library components
+      '@nfs/require-view-encapsulation-none': 'error',
+    },
+  },
   {
     files: ['**/*.ts'],
     rules: {
