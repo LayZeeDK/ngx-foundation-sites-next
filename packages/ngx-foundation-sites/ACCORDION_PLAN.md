@@ -2169,19 +2169,68 @@ $accordion-item-color: var(--nfs-accordion-item-color, var(--nfs-primary-color, 
 // ... etc
 ```
 
-### 11.3 Angular View Encapsulation Consideration
+### 11.3 Angular View Encapsulation: ViewEncapsulation.None ✅
 
-**Issue encountered:** The `.nfs-accordion-no-plusminus` class is applied to the host element, but Angular's view encapsulation adds `_ngcontent-*` attributes to CSS selectors. Host elements have `_nghost-*` attributes instead.
+**Decision:** Use `ViewEncapsulation.None` for all components in the library.
 
-**Solution:** Use `:host()` selector with duplicate class for specificity:
+**Benefits:**
 
-```scss
-:host(.nfs-accordion-no-plusminus.nfs-accordion-no-plusminus) .accordion-title::before {
-  display: none;
+- Eliminates Angular's `_ngcontent-*` attribute selectors from CSS output
+- Reduces bundle size
+- Simplifies selectors (no need for `:host()` or specificity workarounds)
+- Better Foundation CSS compatibility
+
+**Styling conventions:**
+
+| Selector Type              | Purpose                               | Example                             |
+| -------------------------- | ------------------------------------- | ----------------------------------- |
+| Host element               | Target the component host             | `nfs-accordion { display: block; }` |
+| Foundation class overrides | Customize Foundation's default styles | `.accordion-title { width: 100%; }` |
+| `nfs-` prefixed classes    | Custom component-specific behavior    | `.nfs-accordion-no-plusminus`       |
+
+**Why element selectors for host styles?**
+
+- Same specificity as class selectors (0,0,1,0)
+- No need to add extra classes to the host element
+- More idiomatic for Angular components
+
+**Why `nfs-` prefix for custom behavior classes?**
+
+- Prevents clashes with consumer's global styles
+- Clear distinction between "adapting Foundation" and "adding new behavior"
+
+**Enforcement:**
+
+A custom ESLint rule (`@nfs/require-view-encapsulation-none`) enforces this across all library components:
+
+```javascript
+// packages/ngx-foundation-sites/eslint.config.mjs
+{
+  files: ['**/src/lib/**/*.ts'],
+  ignores: ['**/*.spec.ts', '**/*.test.ts'],
+  plugins: {
+    '@nfs': { rules: nfsRules },
+  },
+  rules: {
+    '@nfs/require-view-encapsulation-none': 'error',
+  },
 }
 ```
 
-**Future consideration:** Using `ViewEncapsulation.None` would simplify CSS selectors and reduce bundle size by removing attribute selectors entirely.
+**Generator defaults:**
+
+New components automatically use `ViewEncapsulation.None` via project-level generator config:
+
+```json
+// packages/ngx-foundation-sites/project.json
+{
+  "generators": {
+    "@nx/angular:component": {
+      "viewEncapsulation": "None"
+    }
+  }
+}
+```
 
 ### 11.4 Files Created
 
