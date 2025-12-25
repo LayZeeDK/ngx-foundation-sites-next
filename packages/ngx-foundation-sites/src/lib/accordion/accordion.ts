@@ -9,6 +9,7 @@ import {
   input,
   untracked,
   viewChild,
+  ViewEncapsulation,
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import {
@@ -23,6 +24,7 @@ import { AccordionDeepLinkService } from './accordion-deep-link.service';
   selector: 'nfs-accordion',
   templateUrl: './accordion.html',
   styleUrl: './accordion.scss',
+  encapsulation: ViewEncapsulation.None,
   host: {
     '[class.nfs-accordion-no-plusminus]': '!plusminus()',
   },

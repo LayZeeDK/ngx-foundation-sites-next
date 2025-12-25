@@ -42,8 +42,10 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 // Host Element Styles
 // ═══════════════════════════════════════════════════════════════════════════════
+// With ViewEncapsulation.None, we use the element selector directly instead of :host.
+// This reduces bundle size and simplifies selectors.
 
-:host {
+nfs-accordion {
   display: block;
 }
 
@@ -138,10 +140,8 @@
 }
 
 // Hide icons when plusminus input is false (applies .nfs-accordion-no-plusminus class to host)
-// Uses :host() to properly target the host element with Angular's view encapsulation
-// Duplicate class selector increases specificity to override Foundation's accordion-plusminus styles
-:host(.nfs-accordion-no-plusminus.nfs-accordion-no-plusminus)
-  .accordion-title::before {
+// With ViewEncapsulation.None, we target the element selector directly
+nfs-accordion.nfs-accordion-no-plusminus .accordion-title::before {
   display: none;
 }
 

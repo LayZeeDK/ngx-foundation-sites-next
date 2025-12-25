@@ -4,6 +4,7 @@ import {
   contentChild,
   input,
   model,
+  ViewEncapsulation,
 } from '@angular/core';
 import { NfsAccordionTitleDef } from './accordion-title';
 import { NfsAccordionContentDef } from './accordion-content';
@@ -16,6 +17,7 @@ import { NfsAccordionContentDef } from './accordion-content';
 @Component({
   selector: 'nfs-accordion-item',
   template: ``,
+  encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NfsAccordionItem {
