@@ -1,13 +1,32 @@
-import type { Meta, StoryObj } from '@storybook/angular';
-import { userEvent, within, expect, waitFor } from 'storybook/test';
+import {
+  argsToTemplate,
+  moduleMetadata,
+  type Meta,
+  type StoryObj,
+} from '@storybook/angular';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 import { NfsAccordion } from './accordion';
-import { NfsAccordionItemDef } from './accordion-item-def';
-import { NfsAccordionHeaderDef } from './accordion-header-def';
 import { NfsAccordionContentDef } from './accordion-content';
+import { NfsAccordionHeaderDef } from './accordion-header-def';
+import { NfsAccordionItemDef } from './accordion-item-def';
 
 const meta: Meta<NfsAccordion> = {
   title: 'Components/Accordion',
   component: NfsAccordion,
+  subcomponents: [
+    // NfsAccordionItemDef,
+    // NfsAccordionHeaderDef,
+    // NfsAccordionContentDef,
+  ],
+  decorators: [
+    moduleMetadata({
+      imports: [
+        NfsAccordionItemDef,
+        NfsAccordionHeaderDef,
+        NfsAccordionContentDef,
+      ],
+    }),
+  ],
   tags: ['autodocs'],
   // Descriptions come from JSDoc comments in the component via Compodoc.
   // Only custom control configurations are needed here.
@@ -16,6 +35,31 @@ const meta: Meta<NfsAccordion> = {
       control: { type: 'number', min: 0, max: 1000 },
     },
   },
+  render: (args) => ({
+    props: args,
+    template: `
+      <nfs-accordion ${argsToTemplate(args)}>
+        <ng-template nfsAccordionItem panelId="panel-1">
+          <ng-template nfsAccordionHeader>Accordion 1</ng-template>
+          <ng-template nfsAccordionContent>
+            <p>Panel 1 content. Lorem ipsum dolor sit amet.</p>
+          </ng-template>
+        </ng-template>
+        <ng-template nfsAccordionItem panelId="panel-2">
+          <ng-template nfsAccordionHeader>Accordion 2</ng-template>
+          <ng-template nfsAccordionContent>
+            <p>Panel 2 content. Suspendisse eu ligula.</p>
+          </ng-template>
+        </ng-template>
+        <ng-template nfsAccordionItem panelId="panel-3">
+          <ng-template nfsAccordionHeader>Accordion 3</ng-template>
+          <ng-template nfsAccordionContent>
+            <p>Panel 3 content. Nullam sed est.</p>
+          </ng-template>
+        </ng-template>
+      </nfs-accordion>
+    `,
+  }),
 };
 
 export default meta;
@@ -49,49 +93,6 @@ interface ThemeControlsArgs {
 type ThemeControlsStory = StoryObj<ThemeControlsArgs>;
 
 export const Default: Story = {
-  render: (args) => ({
-    props: args,
-    moduleMetadata: {
-      imports: [
-        NfsAccordion,
-        NfsAccordionItemDef,
-        NfsAccordionHeaderDef,
-        NfsAccordionContentDef,
-      ],
-    },
-    template: `
-      <nfs-accordion
-        [multiExpandable]="multiExpandable"
-        [disabled]="disabled"
-        [softDisabled]="softDisabled"
-        [plusminus]="plusminus"
-        [deepLink]="deepLink"
-        [deepLinkSmudge]="deepLinkSmudge"
-        [deepLinkSmudgeDelay]="deepLinkSmudgeDelay"
-        [updateHistory]="updateHistory"
-        [allowAllClosed]="allowAllClosed"
-      >
-        <ng-template nfsAccordionItem panelId="panel-1">
-          <ng-template nfsAccordionHeader>Accordion 1</ng-template>
-          <ng-template nfsAccordionContent>
-            <p>Panel 1 content. Lorem ipsum dolor sit amet.</p>
-          </ng-template>
-        </ng-template>
-        <ng-template nfsAccordionItem panelId="panel-2">
-          <ng-template nfsAccordionHeader>Accordion 2</ng-template>
-          <ng-template nfsAccordionContent>
-            <p>Panel 2 content. Suspendisse eu ligula.</p>
-          </ng-template>
-        </ng-template>
-        <ng-template nfsAccordionItem panelId="panel-3">
-          <ng-template nfsAccordionHeader>Accordion 3</ng-template>
-          <ng-template nfsAccordionContent>
-            <p>Panel 3 content. Nullam sed est.</p>
-          </ng-template>
-        </ng-template>
-      </nfs-accordion>
-    `,
-  }),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -115,8 +116,7 @@ export const Default: Story = {
 };
 
 export const MultiExpand: Story = {
-  args: { multiExpandable: true, disabled: false },
-  render: Default.render,
+  args: { multiExpandable: true },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -135,19 +135,11 @@ export const MultiExpand: Story = {
 };
 
 export const Disabled: Story = {
-  args: { multiExpandable: false, disabled: true },
-  render: (args) => ({
+  args: { disabled: true },
+  render: ({ disabled, ...args }) => ({
     props: args,
-    moduleMetadata: {
-      imports: [
-        NfsAccordion,
-        NfsAccordionItemDef,
-        NfsAccordionHeaderDef,
-        NfsAccordionContentDef,
-      ],
-    },
     template: `
-      <nfs-accordion [multiExpandable]="multiExpandable" [disabled]="disabled">
+      <nfs-accordion [disabled]="${disabled}" ${argsToTemplate(args)}>
         <ng-template nfsAccordionItem panelId="panel-1" [disabled]="true">
           <ng-template nfsAccordionHeader>Disabled Accordion</ng-template>
           <ng-template nfsAccordionContent>
@@ -194,19 +186,10 @@ export const Disabled: Story = {
 };
 
 export const InitiallyExpanded: Story = {
-  args: { multiExpandable: false, disabled: false },
   render: (args) => ({
     props: args,
-    moduleMetadata: {
-      imports: [
-        NfsAccordion,
-        NfsAccordionItemDef,
-        NfsAccordionHeaderDef,
-        NfsAccordionContentDef,
-      ],
-    },
     template: `
-      <nfs-accordion [multiExpandable]="multiExpandable">
+      <nfs-accordion ${argsToTemplate(args)}>
         <ng-template nfsAccordionItem panelId="panel-1" [expanded]="true">
           <ng-template nfsAccordionHeader>Initially Open</ng-template>
           <ng-template nfsAccordionContent>
@@ -244,7 +227,6 @@ export const InitiallyExpanded: Story = {
 
 export const KeyboardNavigation: Story = {
   args: { multiExpandable: false, disabled: false },
-  render: Default.render,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -271,22 +253,11 @@ export const KeyboardNavigation: Story = {
  * Animation speed is controlled via `--nfs-accordion-slide-speed` CSS custom property.
  */
 export const SlowAnimation: Story = {
-  args: { multiExpandable: false, disabled: false },
   render: (args) => ({
     props: args,
-    moduleMetadata: {
-      imports: [
-        NfsAccordion,
-        NfsAccordionItemDef,
-        NfsAccordionHeaderDef,
-        NfsAccordionContentDef,
-      ],
-    },
     template: `
-      <nfs-accordion
-        [multiExpandable]="multiExpandable"
-        [disabled]="disabled"
-        style="--nfs-accordion-slide-speed: 500ms"
+      <nfs-accordion ${argsToTemplate(args)}
+        [style.--nfs-accordion-slide-speed.ms]="500"
       >
         <ng-template nfsAccordionItem panelId="panel-1">
           <ng-template nfsAccordionHeader>Accordion 1</ng-template>
@@ -340,23 +311,9 @@ export const SlowAnimation: Story = {
 export const NoAnimation: Story = {
   render: (args) => ({
     props: args,
-    moduleMetadata: {
-      imports: [
-        NfsAccordion,
-        NfsAccordionItemDef,
-        NfsAccordionHeaderDef,
-        NfsAccordionContentDef,
-      ],
-    },
     template: `
-      <nfs-accordion
-        [multiExpandable]="multiExpandable"
-        [disabled]="disabled"
-        [deepLink]="deepLink"
-        [deepLinkSmudge]="deepLinkSmudge"
-        [deepLinkSmudgeDelay]="deepLinkSmudgeDelay"
-        [updateHistory]="updateHistory"
-        style="--nfs-accordion-slide-speed: 0ms"
+      <nfs-accordion ${argsToTemplate(args)}
+        [style.--nfs-accordion-slide-speed.ms]="0"
       >
         <ng-template nfsAccordionItem panelId="panel-1">
           <ng-template nfsAccordionHeader>Accordion 1</ng-template>
@@ -411,7 +368,6 @@ export const DeepLink: Story = {
     deepLinkSmudgeDelay: 300,
     updateHistory: true,
   },
-  render: Default.render,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -454,7 +410,6 @@ export const MultiExpandDeepLink: Story = {
     updateHistory: true,
     allowAllClosed: true,
   },
-  render: Default.render,
 };
 
 /**
@@ -472,7 +427,6 @@ export const DeepLinkNoHistory: Story = {
     updateHistory: false,
     allowAllClosed: true,
   },
-  render: Default.render,
 };
 
 /**
@@ -490,31 +444,16 @@ export const DeepLinkWithOffset: Story = {
     deepLinkSmudgeOffset: 60,
     updateHistory: true,
   },
-  render: Default.render,
 };
 
 export const RequireOneOpen: Story = {
   args: {
-    multiExpandable: false,
-    disabled: false,
     allowAllClosed: false,
   },
-  render: (args) => ({
+  render: ({ allowAllClosed, ...args }) => ({
     props: args,
-    moduleMetadata: {
-      imports: [
-        NfsAccordion,
-        NfsAccordionItemDef,
-        NfsAccordionHeaderDef,
-        NfsAccordionContentDef,
-      ],
-    },
     template: `
-      <nfs-accordion
-        [multiExpandable]="multiExpandable"
-        [disabled]="disabled"
-        [allowAllClosed]="allowAllClosed"
-      >
+      <nfs-accordion [allowAllClosed]="${allowAllClosed}" ${argsToTemplate(args)}>
         <ng-template nfsAccordionItem panelId="panel-1">
           <ng-template nfsAccordionHeader>Panel 1</ng-template>
           <ng-template nfsAccordionContent>
@@ -572,27 +511,14 @@ export const RequireOneOpen: Story = {
  */
 export const Accessibility: Story = {
   args: {
-    multiExpandable: false,
-    disabled: false,
     allowAllClosed: true,
   },
   render: (args) => ({
     props: args,
-    moduleMetadata: {
-      imports: [
-        NfsAccordion,
-        NfsAccordionItemDef,
-        NfsAccordionHeaderDef,
-        NfsAccordionContentDef,
-      ],
-    },
     // Use instant animation (0ms) for reliable testing
     template: `
-      <nfs-accordion
-        [multiExpandable]="multiExpandable"
-        [disabled]="disabled"
-        [allowAllClosed]="allowAllClosed"
-        style="--nfs-accordion-slide-speed: 0ms"
+      <nfs-accordion ${argsToTemplate(args)}
+        [style.--nfs-accordion-slide-speed.ms]="0"
       >
         <ng-template nfsAccordionItem panelId="panel-1">
           <ng-template nfsAccordionHeader>Accordion 1</ng-template>
@@ -774,25 +700,12 @@ export const Accessibility: Story = {
  */
 export const CustomTheme: Story = {
   args: {
-    multiExpandable: false,
-    disabled: false,
     allowAllClosed: true,
   },
   render: (args) => ({
     props: args,
-    moduleMetadata: {
-      imports: [
-        NfsAccordion,
-        NfsAccordionItemDef,
-        NfsAccordionHeaderDef,
-        NfsAccordionContentDef,
-      ],
-    },
     template: `
-      <nfs-accordion
-        [multiExpandable]="multiExpandable"
-        [disabled]="disabled"
-        [allowAllClosed]="allowAllClosed"
+      <nfs-accordion ${argsToTemplate(args)}
         style="
           --nfs-accordion-background: #1a1a2e;
           --nfs-accordion-title-font-size: 1rem;
@@ -887,8 +800,6 @@ export const CustomTheme: Story = {
  */
 export const ThemeControls: ThemeControlsStory = {
   args: {
-    multiExpandable: false,
-    disabled: false,
     allowAllClosed: true,
     // CSS Custom Property args
     accordionBackground: '#fefefe',
@@ -1001,14 +912,6 @@ export const ThemeControls: ThemeControlsStory = {
   },
   render: (args) => ({
     props: args,
-    moduleMetadata: {
-      imports: [
-        NfsAccordion,
-        NfsAccordionItemDef,
-        NfsAccordionHeaderDef,
-        NfsAccordionContentDef,
-      ],
-    },
     template: `
       <nfs-accordion
         [multiExpandable]="multiExpandable"
@@ -1125,29 +1028,15 @@ export const ThemeControls: ThemeControlsStory = {
  */
 export const SoftDisabled: Story = {
   args: {
-    multiExpandable: false,
-    disabled: false,
     allowAllClosed: true,
     softDisabled: false, // Disabled items will be skipped during navigation
   },
   render: (args) => ({
     props: args,
-    moduleMetadata: {
-      imports: [
-        NfsAccordion,
-        NfsAccordionItemDef,
-        NfsAccordionHeaderDef,
-        NfsAccordionContentDef,
-      ],
-    },
     // Use instant animation (0ms) for reliable testing
     template: `
-      <nfs-accordion
-        [multiExpandable]="multiExpandable"
-        [disabled]="disabled"
-        [allowAllClosed]="allowAllClosed"
-        [softDisabled]="softDisabled"
-        style="--nfs-accordion-slide-speed: 0ms"
+      <nfs-accordion ${argsToTemplate(args)}
+        [style.--nfs-accordion-slide-speed.ms]="0"
       >
         <ng-template nfsAccordionItem panelId="panel-1">
           <ng-template nfsAccordionHeader>Enabled 1</ng-template>
@@ -1207,19 +1096,10 @@ export const SoftDisabled: Story = {
 export const ExpandCollapseAll: Story = {
   args: {
     multiExpandable: true, // Required for expandAll to work
-    disabled: false,
     allowAllClosed: true,
   },
   render: (args) => ({
     props: args,
-    moduleMetadata: {
-      imports: [
-        NfsAccordion,
-        NfsAccordionItemDef,
-        NfsAccordionHeaderDef,
-        NfsAccordionContentDef,
-      ],
-    },
     template: `
       <main>
         <div style="margin-bottom: 1rem;">
@@ -1239,11 +1119,8 @@ export const ExpandCollapseAll: Story = {
             Collapse All
           </button>
         </div>
-        <nfs-accordion
+        <nfs-accordion ${argsToTemplate(args)}
           #accordion
-          [multiExpandable]="multiExpandable"
-          [disabled]="disabled"
-          [allowAllClosed]="allowAllClosed"
         >
           <ng-template nfsAccordionItem panelId="panel-1">
             <ng-template nfsAccordionHeader>Panel 1</ng-template>
@@ -1305,27 +1182,14 @@ export const ExpandCollapseAll: Story = {
 
 export const FocusManagementWithDisabled: Story = {
   args: {
-    multiExpandable: false,
-    disabled: false,
     allowAllClosed: true,
   },
   render: (args) => ({
     props: args,
-    moduleMetadata: {
-      imports: [
-        NfsAccordion,
-        NfsAccordionItemDef,
-        NfsAccordionHeaderDef,
-        NfsAccordionContentDef,
-      ],
-    },
     // Use instant animation (0ms) for reliable testing
     template: `
-      <nfs-accordion
-        [multiExpandable]="multiExpandable"
-        [disabled]="disabled"
-        [allowAllClosed]="allowAllClosed"
-        style="--nfs-accordion-slide-speed: 0ms"
+      <nfs-accordion ${argsToTemplate(args)}
+        [style.--nfs-accordion-slide-speed.ms]="0"
       >
         <ng-template nfsAccordionItem panelId="panel-1">
           <ng-template nfsAccordionHeader>Enabled 1</ng-template>
@@ -1414,27 +1278,14 @@ export const FocusManagementWithDisabled: Story = {
  */
 export const RightToLeft: Story = {
   args: {
-    multiExpandable: false,
-    disabled: false,
     allowAllClosed: true,
   },
   render: (args) => ({
     props: args,
-    moduleMetadata: {
-      imports: [
-        NfsAccordion,
-        NfsAccordionItemDef,
-        NfsAccordionHeaderDef,
-        NfsAccordionContentDef,
-      ],
-    },
     template: `
       <div dir="rtl" lang="ar">
-        <nfs-accordion
-          [multiExpandable]="multiExpandable"
-          [disabled]="disabled"
-          [allowAllClosed]="allowAllClosed"
-          style="--nfs-accordion-slide-speed: 0ms"
+        <nfs-accordion ${argsToTemplate(args)}
+          [style.--nfs-accordion-slide-speed.ms]="0"
         >
           <ng-template nfsAccordionItem panelId="panel-1">
             <ng-template nfsAccordionHeader>العنصر الأول</ng-template>
@@ -1523,25 +1374,12 @@ export const RightToLeft: Story = {
  */
 export const CustomIcons: Story = {
   args: {
-    multiExpandable: false,
-    disabled: false,
     allowAllClosed: true,
   },
   render: (args) => ({
     props: args,
-    moduleMetadata: {
-      imports: [
-        NfsAccordion,
-        NfsAccordionItemDef,
-        NfsAccordionHeaderDef,
-        NfsAccordionContentDef,
-      ],
-    },
     template: `
-      <nfs-accordion
-        [multiExpandable]="multiExpandable"
-        [disabled]="disabled"
-        [allowAllClosed]="allowAllClosed"
+      <nfs-accordion ${argsToTemplate(args)}
         style="
           --nfs-accordion-plus-content: '▶';
           --nfs-accordion-minus-content: '▼';
@@ -1605,7 +1443,6 @@ export const NoPlusminus: Story = {
     allowAllClosed: true,
     plusminus: false,
   },
-  render: Default.render,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -1633,26 +1470,12 @@ export const NoPlusminus: Story = {
  */
 export const EagerVsLazyContent: Story = {
   args: {
-    multiExpandable: false,
-    disabled: false,
     allowAllClosed: true,
   },
   render: (args) => ({
     props: args,
-    moduleMetadata: {
-      imports: [
-        NfsAccordion,
-        NfsAccordionItemDef,
-        NfsAccordionHeaderDef,
-        NfsAccordionContentDef,
-      ],
-    },
     template: `
-      <nfs-accordion
-        [multiExpandable]="multiExpandable"
-        [disabled]="disabled"
-        [allowAllClosed]="allowAllClosed"
-      >
+      <nfs-accordion ${argsToTemplate(args)}>
         <ng-template nfsAccordionItem panelId="panel-1">
           <ng-template nfsAccordionHeader>Eager Content Example</ng-template>
           <!-- This content renders immediately when accordion initializes -->
