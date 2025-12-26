@@ -1,51 +1,335 @@
 # Accordion Option B: Template-Based Implementation Plan
 
-## Current State (Before Implementation)
+## Goal
 
-**The codebase is currently broken.** The previous attempt (content projection with Angular ARIA) failed due to DI limitations. Key files need attention:
+Change the accordion API from structural directives to template directives while preserving the "parent renders everything" architecture that makes Angular ARIA's DI work.
 
-| File                     | Status                                                                               |
-| ------------------------ | ------------------------------------------------------------------------------------ |
-| `accordion.ts`           | Broken - uses `AccordionGroup` in template but content projection doesn't work       |
-| `accordion-item.ts`      | Broken - uses `AccordionTrigger`/`AccordionPanel` which can't find `ACCORDION_GROUP` |
-| `accordion-header.ts`    | Exists but will be replaced                                                          |
-| `accordion-content.ts`   | Keep - `NfsAccordionContentDef` works as-is                                          |
-| `accordion.stories.ts`   | Uses broken API                                                                      |
-| `nfs-accordion-group.ts` | Deleted                                                                              |
+## Design Decisions
 
-**Storybook shows**: `NG0201: No provider found for InjectionToken ACCORDION_GROUP`
+- **Eager content is the default**: DOM content directly in item template renders immediately
+- **Lazy content uses `<ng-template nfsAccordionContent>`**: Rendered only when expanded
+- **Use ViewContainerRef**: Programmatic view creation, no hidden DOM containers
 
-## Comparison: Committed vs Uncommitted vs Option B
+## Current API (Working)
 
-| Aspect                        | Committed (Working)                                                 | Uncommitted (Broken)                                 | Option B (Planned)                                     |
-| ----------------------------- | ------------------------------------------------------------------- | ---------------------------------------------------- | ------------------------------------------------------ |
-| **API**                       | `*nfsAccordionTitle` / `*nfsAccordionContent` structural directives | `<nfs-accordion-item>` component with `<ng-content>` | `<ng-template nfsAccordionItem>` with nested templates |
-| **How items provided**        | Structural directives on elements                                   | Content-projected components                         | Template directives queried by parent                  |
-| **Who renders trigger/panel** | NfsAccordion (parent renders all)                                   | NfsAccordionItem (self-renders)                      | NfsAccordion (parent renders all)                      |
-| **Angular ARIA DI**           | Works (view children)                                               | Broken (content children)                            | Works (view children)                                  |
-| **Status**                    | ✓ Working                                                           | ✗ `NG0201` error                                     | Planned                                                |
-
-### Why Committed Works
-
-The committed version uses structural directives (`*nfsAccordionTitle`). NfsAccordion queries these `TemplateRef`s and renders them **in its own template** with `ngAccordionTrigger`/`ngAccordionPanel`. Angular ARIA's DI works because everything is a view child.
-
-### Why Uncommitted is Broken
-
-The uncommitted attempt uses content projection (`<nfs-accordion-item>`). NfsAccordionItem tries to use `ngAccordionTrigger`/`ngAccordionPanel` internally, but they can't find `ACCORDION_GROUP` because content-projected components use their **declaration site's** injector.
-
-### Why Option B Will Work
-
-Option B returns to having NfsAccordion render everything, but with a cleaner API using `<ng-template>` instead of structural directives. The key is that Angular ARIA directives are **always rendered by NfsAccordion**, keeping them as view children.
-
-## Recommendation for Next Session
-
-**Start fresh from committed state:**
-
-```bash
-git restore packages/ngx-foundation-sites/src/lib/accordion/
+```html
+<nfs-accordion>
+  <nfs-accordion-item panelId="panel-1" [(expanded)]="isOpen">
+    <span *nfsAccordionTitle>Title</span>
+    <p *nfsAccordionContent>Content</p>
+  </nfs-accordion-item>
+</nfs-accordion>
 ```
 
-Then implement Option B on top of the working committed code.
+## Target API (Option B)
+
+```html
+<nfs-accordion>
+  <ng-template nfsAccordionItem [panelId]="'panel-1'" [(expanded)]="isOpen">
+    <ng-template nfsAccordionHeader>Title</ng-template>
+    <p>Eager content - renders immediately</p>
+    <ng-template nfsAccordionContent>Lazy content - renders when expanded</ng-template>
+  </ng-template>
+</nfs-accordion>
+```
+
+### Content Behavior
+
+When the item template is rendered:
+
+- `<ng-template nfsAccordionHeader>` → renders as HTML comment (invisible)
+- `<p>Eager content</p>` → renders as visible DOM immediately
+- `<ng-template nfsAccordionContent>` → renders as HTML comment (invisible)
+
+The header and lazy content templates are extracted and rendered separately in the accordion structure.
+
+## Implementation Approach
+
+### Key Insight: ng-template renders as comments
+
+When you render a template containing `<ng-template>` elements, they become HTML comments in the DOM. Only the non-template content is visible. This means:
+
+1. Render `item.templateRef` in the panel → shows eager content + comment nodes
+2. Render `item.headerDef().templateRef` in the trigger → shows header content
+3. Render `item.lazyContentDef().templateRef` via @defer → shows lazy content when expanded
+
+### DI Registration Pattern with Custom Injector
+
+Inner directives need to inject their parent `NfsAccordionItemDef`. Since the item is on a content-child ng-template, we use `ngTemplateOutletInjector` to provide it:
+
+```typescript
+// In NfsAccordion
+readonly #injector = inject(Injector);
+
+createItemInjector(item: NfsAccordionItemDef): Injector {
+  return Injector.create({
+    providers: [{ provide: NfsAccordionItemDef, useValue: item }],
+    parent: this.#injector
+  });
+}
+```
+
+```html
+<ng-container
+  [ngTemplateOutlet]="item.templateRef"
+  [ngTemplateOutletInjector]="createItemInjector(item)"
+/>
+```
+
+---
+
+## Implementation Phases
+
+### Phase 1: Create Template Directives
+
+#### 1.1 `NfsAccordionItemDef` (accordion-item-def.ts)
+
+```typescript
+@Directive({
+  selector: 'ng-template[nfsAccordionItem]',
+})
+export class NfsAccordionItemDef {
+  readonly panelId = input.required<string>();
+  readonly expanded = model(false);
+  readonly disabled = input(false);
+  readonly templateRef: TemplateRef<void> = inject(TemplateRef);
+
+  // Populated by child registration during template instantiation
+  readonly headerDef = signal<NfsAccordionHeaderDef | null>(null);
+  readonly lazyContentDef = signal<NfsAccordionContentDef | null>(null);
+}
+```
+
+#### 1.2 `NfsAccordionHeaderDef` (accordion-header-def.ts)
+
+```typescript
+@Directive({
+  selector: 'ng-template[nfsAccordionHeader]',
+})
+export class NfsAccordionHeaderDef {
+  readonly templateRef: TemplateRef<void> = inject(TemplateRef);
+
+  constructor() {
+    // Register with parent item (injected via ngTemplateOutletInjector)
+    const parentItem = inject(NfsAccordionItemDef, { optional: true });
+    parentItem?.headerDef.set(this);
+  }
+}
+```
+
+#### 1.3 Update `NfsAccordionContentDef` (accordion-content.ts)
+
+Add parent registration:
+
+```typescript
+@Directive({
+  selector: 'ng-template[nfsAccordionContent]',
+})
+export class NfsAccordionContentDef {
+  readonly templateRef: TemplateRef<void> = inject(TemplateRef);
+
+  constructor() {
+    // Register with parent item for lazy content
+    const parentItem = inject(NfsAccordionItemDef, { optional: true });
+    parentItem?.lazyContentDef.set(this);
+  }
+}
+```
+
+### Phase 2: Rewrite NfsAccordion Template
+
+```html
+<!-- Wait for initialization to ensure headerDef is populated -->
+@if (initialized()) {
+<ul
+  ngAccordionGroup
+  class="accordion"
+  role="presentation"
+  [multiExpandable]="multiExpandable()"
+  [disabled]="disabled()"
+  [softDisabled]="softDisabled()"
+  [wrap]="wrap()"
+>
+  @for (item of itemDefs(); track item.panelId()) {
+  <li class="accordion-item" [class.is-active]="item.expanded()">
+    <button
+      ngAccordionTrigger
+      type="button"
+      class="accordion-title"
+      [panelId]="item.panelId()"
+      [disabled]="item.disabled()"
+      [(expanded)]="item.expanded"
+    >
+      <!-- Render header template -->
+      @if (item.headerDef(); as headerDef) {
+      <ng-container [ngTemplateOutlet]="headerDef.templateRef" />
+      }
+    </button>
+    <div
+      ngAccordionPanel
+      class="accordion-content"
+      [panelId]="item.panelId()"
+      [id]="item.panelId()"
+    >
+      <div class="accordion-content-inner">
+        <!-- Render item template (eager content + comment nodes) -->
+        <ng-container
+          [ngTemplateOutlet]="item.templateRef"
+          [ngTemplateOutletInjector]="createItemInjector(item)"
+        />
+
+        <!-- Render lazy content when expanded -->
+        @if (item.lazyContentDef(); as lazyDef) { @defer (when item.expanded()) {
+        <ng-container [ngTemplateOutlet]="lazyDef.templateRef" />
+        } }
+      </div>
+    </div>
+  </li>
+  }
+</ul>
+}
+```
+
+### Phase 3: NfsAccordion Component Updates
+
+**Critical: Initialization Timing**
+
+The trigger button renders BEFORE the panel content. Without pre-initialization, `item.headerDef()` would be `null` when rendering the trigger because the header directive hasn't been instantiated yet.
+
+**Solution**: Initialize all item templates in `ngAfterContentInit` to trigger registration before the accordion structure renders.
+
+```typescript
+@Component({
+  selector: 'nfs-accordion',
+  templateUrl: './accordion.html',
+  styleUrl: './accordion.scss',
+  encapsulation: ViewEncapsulation.None,
+  imports: [AccordionGroup, AccordionTrigger, AccordionPanel, NgTemplateOutlet],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class NfsAccordion implements AfterContentInit {
+  readonly #injector = inject(Injector);
+  readonly #viewContainer = inject(ViewContainerRef);
+
+  /** Query all item template definitions */
+  readonly itemDefs = contentChildren(NfsAccordionItemDef);
+
+  /** Track initialization state for template rendering (protected for template access) */
+  protected readonly initialized = signal(false);
+
+  // ... existing inputs (multiExpandable, disabled, softDisabled, wrap, etc.)
+
+  ngAfterContentInit(): void {
+    // Initialize all item templates to trigger header/content registration
+    // This happens BEFORE the template renders, ensuring headerDef is populated
+    for (const item of this.itemDefs()) {
+      const injector = Injector.create({
+        providers: [{ provide: NfsAccordionItemDef, useValue: item }],
+        parent: this.#injector,
+      });
+      // Create embedded view to instantiate directives
+      const view = this.#viewContainer.createEmbeddedView(
+        item.templateRef,
+        null,
+        { injector }
+      );
+      view.detectChanges(); // Ensure directive constructors run
+      view.destroy(); // Safe to destroy - directive instances & templateRefs remain valid
+    }
+    this.initialized.set(true);
+  }
+
+  /** Create injector for item template to enable child registration */
+  protected createItemInjector(item: NfsAccordionItemDef): Injector {
+    return Injector.create({
+      providers: [{ provide: NfsAccordionItemDef, useValue: item }],
+      parent: this.#injector,
+    });
+  }
+}
+```
+
+**Why This Works**:
+
+1. `createEmbeddedView()` instantiates all directives in the template
+2. `NfsAccordionHeaderDef` constructor runs, injecting `NfsAccordionItemDef` via the custom injector
+3. Header registers itself: `parentItem.headerDef.set(this)`
+4. After `view.destroy()`, the directive instance and its `templateRef` remain valid
+5. When the accordion template renders, `item.headerDef()` returns the registered header
+
+### Phase 4: Port Existing Features
+
+All existing features remain unchanged:
+
+- Deep linking (same logic, just use `itemDefs()` instead of `items()`)
+- allowAllClosed enforcement
+- expandAll/collapseAll methods
+- plusminus toggle CSS class
+
+### Phase 5: Update Stories
+
+Example story with new API:
+
+```typescript
+export const Default: Story = {
+  render: (args) => ({
+    props: args,
+    moduleMetadata: {
+      imports: [
+        NfsAccordion,
+        NfsAccordionItemDef,
+        NfsAccordionHeaderDef,
+        NfsAccordionContentDef,
+      ],
+    },
+    template: `
+      <nfs-accordion [multiExpandable]="multiExpandable" [disabled]="disabled">
+        <ng-template nfsAccordionItem panelId="panel-1">
+          <ng-template nfsAccordionHeader>Accordion 1</ng-template>
+          <p>Panel 1 eager content. Lorem ipsum dolor sit amet.</p>
+        </ng-template>
+        <ng-template nfsAccordionItem panelId="panel-2">
+          <ng-template nfsAccordionHeader>Accordion 2</ng-template>
+          <p>Panel 2 eager content.</p>
+          <ng-template nfsAccordionContent>
+            <p>Lazy loaded content for panel 2.</p>
+          </ng-template>
+        </ng-template>
+      </nfs-accordion>
+    `,
+  }),
+};
+```
+
+---
+
+## File Changes Summary
+
+| File                    | Action       | Path                                                                       |
+| ----------------------- | ------------ | -------------------------------------------------------------------------- |
+| `accordion-item-def.ts` | **NEW**      | `packages/ngx-foundation-sites/src/lib/accordion/accordion-item-def.ts`    |
+| `accordion-header.ts`   | **REWRITE**  | Rename to `accordion-header-def.ts`, change to directive                   |
+| `accordion-content.ts`  | **MODIFY**   | Add parent registration                                                    |
+| `accordion.ts`          | **MODIFY**   | Query itemDefs, add initialization logic, add createItemInjector           |
+| `accordion.html`        | **REWRITE**  | New template structure with @if (initialized())                            |
+| `accordion-item.ts`     | **DELETE**   | Replaced by `NfsAccordionItemDef` directive                                |
+| `accordion-title.ts`    | **DELETE**   | Replaced by `NfsAccordionHeaderDef` directive                              |
+| `index.ts`              | **UPDATE**   | Export changes                                                             |
+| `accordion.stories.ts`  | **REWRITE**  | New API                                                                    |
+
+---
+
+## Migration Guide
+
+| Old API                                  | New API                                                                                          |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `<nfs-accordion-item panelId="x">`       | `<ng-template nfsAccordionItem panelId="x">`                                                     |
+| `<span *nfsAccordionTitle>Title</span>`  | `<ng-template nfsAccordionHeader>Title</ng-template>`                                            |
+| `<p *nfsAccordionContent>Content</p>`    | `<p>Content</p>` (eager) or `<ng-template nfsAccordionContent>Content</ng-template>` (lazy)      |
+| `[(expanded)]="isOpen"`                  | `[(expanded)]="isOpen"` (unchanged)                                                              |
+| `[disabled]="true"`                      | `[disabled]="true"` (unchanged)                                                                  |
+
+---
 
 ## Key Learnings (See ANGULAR_ARIA_ACCORDION_FINDINGS.md)
 
@@ -54,321 +338,3 @@ Then implement Option B on top of the working committed code.
 3. **Angular Material/CDK works differently** - exported tokens, optional injection
 4. **CDK Accordion lacks accessibility** - ruled out as alternative
 5. **Solution**: Render Angular ARIA directives as VIEW CHILDREN (templates)
-
-## Goal
-
-Implement an accordion component using Angular ARIA that works around the content projection DI limitation by having users provide templates that NfsAccordion renders as view children.
-
-## Target API
-
-```html
-<nfs-accordion [multiExpandable]="false" [disabled]="false">
-  <!-- Each item is a template that NfsAccordion will render -->
-  <ng-template nfsAccordionItem [panelId]="'panel-1'">
-    <nfs-accordion-header>First Panel</nfs-accordion-header>
-    <p>Eager content - rendered immediately</p>
-  </ng-template>
-
-  <ng-template nfsAccordionItem [panelId]="'panel-2'" [expanded]="true">
-    <nfs-accordion-header>Second Panel (Initially Open)</nfs-accordion-header>
-    <p>This panel starts expanded</p>
-  </ng-template>
-
-  <ng-template nfsAccordionItem [panelId]="'panel-3'" [disabled]="true">
-    <nfs-accordion-header>Disabled Panel</nfs-accordion-header>
-    <p>This panel cannot be opened</p>
-  </ng-template>
-
-  <ng-template nfsAccordionItem [panelId]="'panel-4'">
-    <nfs-accordion-header>Lazy Panel</nfs-accordion-header>
-    <!-- Lazy content - only rendered when first expanded -->
-    <ng-template nfsAccordionContent>
-      <heavy-component />
-    </ng-template>
-  </ng-template>
-</nfs-accordion>
-```
-
-## Why This Works
-
-```
-NfsAccordion's View (DI chain intact!)
-┌──────────────────────────────────────────────────────────┐
-│ <div ngAccordionGroup>                                   │ ← Provides ACCORDION_GROUP
-│   @for (item of itemDefs(); track item.panelId()) {     │
-│     <div class="accordion-item">                         │
-│       <button ngAccordionTrigger>                        │ ← Injects ACCORDION_GROUP ✓
-│         <ng-container [ngTemplateOutlet]="item.header"/> │
-│       </button>                                          │
-│       <div ngAccordionPanel>                             │ ← Injects ACCORDION_GROUP ✓
-│         <ng-container [ngTemplateOutlet]="item.content"/>│
-│       </div>                                             │
-│     </div>                                               │
-│   }                                                      │
-│ </div>                                                   │
-└──────────────────────────────────────────────────────────┘
-```
-
-Because NfsAccordion renders the structure (including `ngAccordionTrigger` and `ngAccordionPanel`), the Angular ARIA directives are **view children** of the element with `ngAccordionGroup`, so DI works.
-
-## Component Architecture
-
-### 1. NfsAccordionItemDef (Directive on ng-template)
-
-Captures the user's template and its configuration inputs.
-
-```typescript
-@Directive({
-  selector: 'ng-template[nfsAccordionItem]',
-})
-export class NfsAccordionItemDef {
-  /** Unique panel identifier */
-  readonly panelId = input.required<string>();
-
-  /** Whether this item starts expanded */
-  readonly expanded = input(false);
-
-  /** Whether this item is disabled */
-  readonly disabled = input(false);
-
-  /** Reference to the template */
-  readonly templateRef = inject(TemplateRef);
-}
-```
-
-### 2. NfsAccordionHeader (Marker Component)
-
-Simple component that marks the header content within a template.
-
-```typescript
-@Component({
-  selector: 'nfs-accordion-header',
-  template: `<ng-content />`,
-  host: { style: 'display: contents' },
-})
-export class NfsAccordionHeader {}
-```
-
-### 3. NfsAccordionContentDef (Lazy Content Directive)
-
-Marks content that should be lazily loaded.
-
-```typescript
-@Directive({
-  selector: 'ng-template[nfsAccordionContent]',
-})
-export class NfsAccordionContentDef {
-  readonly templateRef = inject(TemplateRef);
-}
-```
-
-### 4. NfsAccordion (Main Container)
-
-Queries item templates and renders them with Angular ARIA directives.
-
-```typescript
-@Component({
-  selector: 'nfs-accordion',
-  imports: [AccordionGroup, AccordionTrigger, AccordionPanel, NgTemplateOutlet],
-  template: `
-    <div class="accordion" ngAccordionGroup [multiExpandable]="multiExpandable()" [disabled]="disabled()" [softDisabled]="softDisabled()" [wrap]="wrap()">
-      @for (item of itemDefs(); track item.panelId()) {
-        <div class="accordion-item" [class.is-active]="itemExpanded(item)">
-          <button ngAccordionTrigger type="button" class="accordion-title" [panelId]="item.panelId()" [disabled]="item.disabled()" [(expanded)]="itemExpandedStates()[item.panelId()]">
-            <!-- Render header from template -->
-            <ng-container [ngTemplateOutlet]="getHeaderTemplate(item)" />
-          </button>
-          <div ngAccordionPanel class="accordion-content" [panelId]="item.panelId()" [id]="item.panelId()">
-            <div class="accordion-content-inner">
-              <!-- Render content (lazy or eager) -->
-              @if (getLazyContent(item); as lazyDef) {
-                @defer (when itemExpanded(item)) {
-                  <ng-container [ngTemplateOutlet]="lazyDef.templateRef" />
-                }
-              } @else {
-                <ng-container [ngTemplateOutlet]="getEagerContent(item)" />
-              }
-            </div>
-          </div>
-        </div>
-      }
-    </div>
-  `,
-})
-export class NfsAccordion {
-  /** Query all item templates */
-  protected readonly itemDefs = contentChildren(NfsAccordionItemDef);
-
-  /** Accordion inputs */
-  readonly multiExpandable = input(false);
-  readonly disabled = input(false);
-  readonly softDisabled = input(false);
-  readonly wrap = input(false);
-
-  // ... methods to extract header/content from templates
-}
-```
-
-## Template Parsing Challenge
-
-The main challenge is extracting the header and content from each item template. Options:
-
-### Option A: Render Template, Query Children
-
-1. Render the full template into a hidden container
-2. Query for `NfsAccordionHeader` and `NfsAccordionContentDef`
-3. Extract their templates/content
-
-**Pros**: Works with any template structure
-**Cons**: Complex, requires extra rendering
-
-### Option B: Convention-Based Structure
-
-Require users to structure templates in a specific way:
-
-```html
-<ng-template nfsAccordionItem [panelId]="'panel-1'">
-  <nfs-accordion-header>Title</nfs-accordion-header>
-  <!-- Everything else is content -->
-</ng-template>
-```
-
-Then NfsAccordion renders the template twice with different selectors.
-
-**Pros**: Simple
-**Cons**: Renders template content multiple times
-
-### Option C: Separate Header Template
-
-Require header as a separate nested template:
-
-```html
-<ng-template nfsAccordionItem [panelId]="'panel-1'">
-  <ng-template nfsAccordionHeader>Title</ng-template>
-  <p>Content</p>
-</ng-template>
-```
-
-**Pros**: Clean separation
-**Cons**: More verbose API
-
-### Option D: ViewContainerRef Dynamic Rendering
-
-Render each item template into a ViewContainerRef, then query/move elements.
-
-**Pros**: Full control
-**Cons**: Complex DOM manipulation
-
-## Recommended Approach: Option C (Separate Header Template)
-
-This provides the cleanest separation and easiest implementation:
-
-```html
-<nfs-accordion>
-  <ng-template nfsAccordionItem [panelId]="'panel-1'">
-    <ng-template nfsAccordionHeader>
-      <span>First Panel Title</span>
-    </ng-template>
-    <p>Panel content goes here</p>
-    <!-- Optional lazy content -->
-    <ng-template nfsAccordionContent>
-      <heavy-component />
-    </ng-template>
-  </ng-template>
-</nfs-accordion>
-```
-
-### Implementation Details
-
-```typescript
-@Directive({
-  selector: 'ng-template[nfsAccordionItem]',
-})
-export class NfsAccordionItemDef {
-  readonly panelId = input.required<string>();
-  readonly expanded = input(false);
-  readonly disabled = input(false);
-
-  // Query nested templates
-  readonly headerDef = contentChild(NfsAccordionHeaderDef);
-  readonly contentDef = contentChild(NfsAccordionContentDef);
-
-  // The main template (for eager content)
-  readonly templateRef = inject(TemplateRef);
-}
-
-@Directive({
-  selector: 'ng-template[nfsAccordionHeader]',
-})
-export class NfsAccordionHeaderDef {
-  readonly templateRef = inject(TemplateRef);
-}
-```
-
-## File Changes
-
-| File                      | Action                                      |
-| ------------------------- | ------------------------------------------- |
-| `accordion-item-def.ts`   | **NEW** - NfsAccordionItemDef directive     |
-| `accordion-header-def.ts` | **NEW** - NfsAccordionHeaderDef directive   |
-| `accordion-content.ts`    | Keep - NfsAccordionContentDef               |
-| `accordion.ts`            | **REWRITE** - Template rendering approach   |
-| `accordion-item.ts`       | **DELETE** - No longer needed               |
-| `accordion-header.ts`     | **DELETE** - Replaced by template directive |
-| `accordion.scss`          | Update selectors                            |
-| `index.ts`                | Update exports                              |
-| `accordion.stories.ts`    | **REWRITE** - New API                       |
-
-## Migration Guide
-
-| Old API                             | New API                            |
-| ----------------------------------- | ---------------------------------- |
-| `<nfs-accordion-item>` component    | `<ng-template nfsAccordionItem>`   |
-| `<nfs-accordion-header>` component  | `<ng-template nfsAccordionHeader>` |
-| Direct content                      | Content inside item template       |
-| `<ng-template nfsAccordionContent>` | Same (unchanged)                   |
-
-## Implementation Phases
-
-### Phase 1: Create Template Directives
-
-- Create `NfsAccordionItemDef`
-- Create `NfsAccordionHeaderDef`
-- Keep existing `NfsAccordionContentDef`
-
-### Phase 2: Rewrite NfsAccordion
-
-- Remove hostDirectives approach
-- Implement template rendering with @for
-- Add ngAccordionGroup to inner div
-- Render items with ngAccordionTrigger/Panel
-
-### Phase 3: Handle State Management
-
-- Track expanded state per item
-- Implement two-way binding for expanded
-- Support initial expanded state
-
-### Phase 4: Deep Linking & Features
-
-- Port deep linking logic
-- Port allowAllClosed logic
-- Port plusminus toggle
-
-### Phase 5: Update Stories & Test
-
-- Rewrite all Storybook stories
-- Verify in Storybook
-- Run accessibility tests
-
-## Open Questions
-
-1. **Expanded state binding**: How to provide two-way binding for `expanded` on templates?
-   - Option: Use a context object passed to the template
-   - Option: Emit events that bubble up
-
-2. **Template context**: Should we provide context to templates (e.g., `let-expanded`)?
-
-3. **Animation**: How to preserve CSS Grid animation with the new structure?
-
-4. **Deep linking**: Does the new structure affect deep linking implementation?
