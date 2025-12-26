@@ -58,6 +58,7 @@ nfs-accordion {
 .accordion-title {
   width: 100%;
   cursor: pointer;
+  text-align: start; // Foundation uses left-aligned titles (start for RTL support)
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -118,9 +119,18 @@ nfs-accordion {
 // See: https://developer.mozilla.org/en-US/docs/Web/CSS/inset-inline-end
 // ═══════════════════════════════════════════════════════════════════════════════
 
-.accordion-title::before {
-  right: unset; // Remove Foundation's physical property
-  inset-inline-end: 1rem; // Automatically maps to right (LTR) or left (RTL)
+// Foundation's ::before styles need explicit positioning for the +/- icons
+.accordion-title {
+  position: relative; // Required for absolute positioning of ::before
+
+  &::before {
+    position: absolute;
+    // Use Foundation's centering: top 50% with negative margin offset
+    top: 50%;
+    margin-top: -0.5rem;
+    right: unset; // Remove Foundation's physical property
+    inset-inline-end: 1rem; // Automatically maps to right (LTR) or left (RTL)
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════

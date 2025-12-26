@@ -1,4 +1,5 @@
 import {
+  AfterContentInit,
   afterNextRender,
   ChangeDetectionStrategy,
   Component,
@@ -6,8 +7,11 @@ import {
   DestroyRef,
   effect,
   inject,
+  Injector,
   input,
+  signal,
   untracked,
+  ViewContainerRef,
   viewChild,
   ViewEncapsulation,
 } from '@angular/core';
@@ -17,7 +21,7 @@ import {
   AccordionTrigger,
   AccordionPanel,
 } from '@angular/aria/accordion';
-import { NfsAccordionItem } from './accordion-item';
+import { NfsAccordionItemDef } from './accordion-item-def';
 import { AccordionDeepLinkService } from './accordion-deep-link.service';
 
 @Component({
@@ -26,14 +30,19 @@ import { AccordionDeepLinkService } from './accordion-deep-link.service';
   styleUrl: './accordion.scss',
   encapsulation: ViewEncapsulation.None,
   host: {
-    '[class.nfs-accordion-no-plusminus]': '!plusminus()',
+    '[class.nfs-accordion-no-plusminus]': 'plusminus() === false',
   },
   imports: [AccordionGroup, AccordionTrigger, AccordionPanel, NgTemplateOutlet],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NfsAccordion {
+export class NfsAccordion implements AfterContentInit {
+  readonly #injector = inject(Injector);
+  readonly #viewContainer = inject(ViewContainerRef);
   readonly #deepLinkService = inject(AccordionDeepLinkService);
   readonly #destroyRef = inject(DestroyRef);
+
+  /** Cache for item injectors to avoid creating new instances on each change detection */
+  readonly #itemInjectorCache = new WeakMap<NfsAccordionItemDef, Injector>();
 
   /** Allow multiple panels to be expanded simultaneously */
   readonly multiExpandable = input(false);
@@ -72,8 +81,14 @@ export class NfsAccordion {
   /** Enable/disable the +/- indicator icons. Default: true */
   readonly plusminus = input(true);
 
-  /** Collected accordion items */
-  protected readonly items = contentChildren(NfsAccordionItem);
+  /** Query all item template definitions from content */
+  readonly itemDefs = contentChildren(NfsAccordionItemDef);
+
+  /**
+   * Track initialization state for template rendering.
+   * Protected for template access.
+   */
+  protected readonly initialized = signal(false);
 
   /**
    * Reference to the AccordionGroup directive for programmatic control.
@@ -100,7 +115,7 @@ export class NfsAccordion {
 
     // Track expansion changes for deep linking and allowAllClosed enforcement
     effect(() => {
-      const items = this.items();
+      const items = this.itemDefs();
       if (items.length === 0) return;
 
       // Early return if neither deep link nor allowAllClosed enforcement needed
@@ -170,6 +185,53 @@ export class NfsAccordion {
   }
 
   /**
+   * Initialize all item templates to trigger header/content registration.
+   *
+   * This runs BEFORE the template renders, ensuring headerDef is populated
+   * when the accordion structure needs to render the trigger button.
+   */
+  ngAfterContentInit(): void {
+    for (const item of this.itemDefs()) {
+      const injector = Injector.create({
+        providers: [{ provide: NfsAccordionItemDef, useValue: item }],
+        parent: this.#injector,
+      });
+
+      // Cache the injector for template use (prevents infinite change detection)
+      this.#itemInjectorCache.set(item, injector);
+
+      // Create embedded view to instantiate directives
+      const view = this.#viewContainer.createEmbeddedView(
+        item.templateRef,
+        null,
+        { injector },
+      );
+      view.detectChanges(); // Ensure directive constructors run
+      view.destroy(); // Safe to destroy - directive instances & templateRefs remain valid
+    }
+    this.initialized.set(true);
+  }
+
+  /**
+   * Get cached injector for item template.
+   * Returns the injector created during ngAfterContentInit to avoid
+   * creating new instances on each change detection cycle.
+   */
+  protected getItemInjector(item: NfsAccordionItemDef): Injector {
+    const cached = this.#itemInjectorCache.get(item);
+    if (!cached) {
+      // Fallback for dynamically added items (shouldn't happen normally)
+      const injector = Injector.create({
+        providers: [{ provide: NfsAccordionItemDef, useValue: item }],
+        parent: this.#injector,
+      });
+      this.#itemInjectorCache.set(item, injector);
+      return injector;
+    }
+    return cached;
+  }
+
+  /**
    * Expands all accordion panels.
    * Only works when `multiExpandable` is true.
    */
@@ -190,7 +252,7 @@ export class NfsAccordion {
     const hashPanelId = this.#deepLinkService.getHashPanelId();
     if (!hashPanelId) return;
 
-    const items = this.items();
+    const items = this.itemDefs();
     const matchingItem = items.find((item) => item.panelId() === hashPanelId);
 
     if (matchingItem) {
@@ -212,7 +274,7 @@ export class NfsAccordion {
     const cleanup = this.#deepLinkService.onHashChange((panelId) => {
       if (!panelId) return;
 
-      const items = this.items();
+      const items = this.itemDefs();
       const matchingItem = items.find((item) => item.panelId() === panelId);
 
       if (matchingItem && !matchingItem.expanded()) {

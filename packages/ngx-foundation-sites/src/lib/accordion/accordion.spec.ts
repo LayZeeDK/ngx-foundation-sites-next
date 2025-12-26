@@ -7,13 +7,13 @@ import {
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { NfsAccordion } from './accordion';
-import { NfsAccordionItem } from './accordion-item';
-import { NfsAccordionTitleDef } from './accordion-title';
+import { NfsAccordionItemDef } from './accordion-item-def';
+import { NfsAccordionHeaderDef } from './accordion-header-def';
 import { NfsAccordionContentDef } from './accordion-content';
 import { AccordionDeepLinkService } from './accordion-deep-link.service';
 
 /**
- * Test host component for accordion tests
+ * Test host component for accordion tests (Option B API)
  */
 @Component({
   template: `
@@ -29,36 +29,39 @@ import { AccordionDeepLinkService } from './accordion-deep-link.service';
       [updateHistory]="updateHistory()"
       [allowAllClosed]="allowAllClosed()"
     >
-      <nfs-accordion-item
+      <ng-template
+        nfsAccordionItem
         panelId="panel-1"
         [disabled]="item1Disabled()"
         [expanded]="item1Expanded()"
       >
-        <span *nfsAccordionTitle>Item 1 Title</span>
-        <p *nfsAccordionContent>Item 1 Content</p>
-      </nfs-accordion-item>
-      <nfs-accordion-item
+        <ng-template nfsAccordionHeader>Item 1 Title</ng-template>
+        <ng-template nfsAccordionContent>Item 1 Content</ng-template>
+      </ng-template>
+      <ng-template
+        nfsAccordionItem
         panelId="panel-2"
         [disabled]="item2Disabled()"
         [expanded]="item2Expanded()"
       >
-        <span *nfsAccordionTitle>Item 2 Title</span>
-        <p *nfsAccordionContent>Item 2 Content</p>
-      </nfs-accordion-item>
-      <nfs-accordion-item
+        <ng-template nfsAccordionHeader>Item 2 Title</ng-template>
+        <ng-template nfsAccordionContent>Item 2 Content</ng-template>
+      </ng-template>
+      <ng-template
+        nfsAccordionItem
         panelId="panel-3"
         [disabled]="item3Disabled()"
         [expanded]="item3Expanded()"
       >
-        <span *nfsAccordionTitle>Item 3 Title</span>
-        <p *nfsAccordionContent>Item 3 Content</p>
-      </nfs-accordion-item>
+        <ng-template nfsAccordionHeader>Item 3 Title</ng-template>
+        <ng-template nfsAccordionContent>Item 3 Content</ng-template>
+      </ng-template>
     </nfs-accordion>
   `,
   imports: [
     NfsAccordion,
-    NfsAccordionItem,
-    NfsAccordionTitleDef,
+    NfsAccordionItemDef,
+    NfsAccordionHeaderDef,
     NfsAccordionContentDef,
   ],
 })

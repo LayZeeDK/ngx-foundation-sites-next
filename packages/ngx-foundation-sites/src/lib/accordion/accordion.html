@@ -1,3 +1,10 @@
+<!--
+  Wait for initialization to ensure headerDef is populated.
+  During ngAfterContentInit, we instantiate all item templates to trigger
+  directive registration (header/content). Without this guard, the trigger
+  button would render before headerDef is available.
+-->
+@if (initialized()) {
 <ul
   ngAccordionGroup
   class="accordion"
@@ -7,7 +14,7 @@
   [softDisabled]="softDisabled()"
   [wrap]="wrap()"
 >
-  @for (item of items(); track item.panelId()) {
+  @for (item of itemDefs(); track item.panelId()) {
   <li class="accordion-item" [class.is-active]="item.expanded()">
     <button
       ngAccordionTrigger
@@ -17,8 +24,9 @@
       [disabled]="item.disabled()"
       [(expanded)]="item.expanded"
     >
-      @if (item.titleDef(); as titleDef) {
-      <ng-container *ngTemplateOutlet="titleDef.templateRef" />
+      <!-- Render header template -->
+      @if (item.headerDef(); as headerDef) {
+      <ng-container [ngTemplateOutlet]="headerDef.templateRef" />
       }
     </button>
     <div
@@ -28,21 +36,25 @@
       [id]="item.panelId()"
     >
       <!--
-          Wrapper is always present for CSS Grid animation.
-          @defer loads content when panel is first expanded.
-          Once loaded, content stays in DOM (enabling CSS animations).
-
-          TODO: Revert to ngAccordionContent + animate.enter/leave once
-          https://github.com/angular/components/pull/32591 is merged.
-          Currently, using AccordionContent causes NG3004 in library builds
-          because DeferredContentAware is not exported from @angular/aria.
-        -->
+        Wrapper is always present for CSS Grid animation.
+        Item template renders eager content + comment nodes for nested ng-templates.
+        Lazy content is rendered separately via @defer.
+      -->
       <div class="accordion-content-inner">
-        @defer (when item.expanded()) { @if (item.contentDef(); as contentDef) {
-        <ng-container *ngTemplateOutlet="contentDef.templateRef" />
+        <!-- Render item template (eager content + invisible ng-template comments) -->
+        <ng-container
+          [ngTemplateOutlet]="item.templateRef"
+          [ngTemplateOutletInjector]="getItemInjector(item)"
+        />
+
+        <!-- Render lazy content when expanded -->
+        @if (item.lazyContentDef(); as lazyDef) { @defer (when item.expanded())
+        {
+        <ng-container [ngTemplateOutlet]="lazyDef.templateRef" />
         } }
       </div>
     </div>
   </li>
   }
 </ul>
+}
