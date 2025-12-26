@@ -1,96 +1,96 @@
 import { describe, it, expect } from 'vitest';
-import { argsToTemplateValue } from './args-to-template-value';
+import { argsToLiteralTemplate } from './args-to-literal-template';
 
-describe('argsToTemplateValue', () => {
+describe('argsToLiteralTemplate', () => {
   describe('basic value types', () => {
     it('should format boolean true', () => {
-      const result = argsToTemplateValue({ disabled: true });
+      const result = argsToLiteralTemplate({ disabled: true });
       expect(result).toBe('[disabled]="true"');
     });
 
     it('should format boolean false', () => {
-      const result = argsToTemplateValue({ disabled: false });
+      const result = argsToLiteralTemplate({ disabled: false });
       expect(result).toBe('[disabled]="false"');
     });
 
     it('should format numbers', () => {
-      const result = argsToTemplateValue({ count: 42 });
+      const result = argsToLiteralTemplate({ count: 42 });
       expect(result).toBe('[count]="42"');
     });
 
     it('should format zero', () => {
-      const result = argsToTemplateValue({ delay: 0 });
+      const result = argsToLiteralTemplate({ delay: 0 });
       expect(result).toBe('[delay]="0"');
     });
 
     it('should format negative numbers', () => {
-      const result = argsToTemplateValue({ offset: -10 });
+      const result = argsToLiteralTemplate({ offset: -10 });
       expect(result).toBe('[offset]="-10"');
     });
 
     it('should format floating point numbers', () => {
-      const result = argsToTemplateValue({ ratio: 3.14 });
+      const result = argsToLiteralTemplate({ ratio: 3.14 });
       expect(result).toBe('[ratio]="3.14"');
     });
 
     it('should format strings with single quotes', () => {
-      const result = argsToTemplateValue({ name: 'hello' });
+      const result = argsToLiteralTemplate({ name: 'hello' });
       expect(result).toBe('[name]="\'hello\'"');
     });
 
     it('should format empty strings', () => {
-      const result = argsToTemplateValue({ name: '' });
+      const result = argsToLiteralTemplate({ name: '' });
       expect(result).toBe('[name]="\'\'"');
     });
 
     it('should escape single quotes in strings', () => {
-      const result = argsToTemplateValue({ message: "it's working" });
+      const result = argsToLiteralTemplate({ message: "it's working" });
       expect(result).toBe("[message]=\"'it\\'s working'\"");
     });
 
     it('should format null values', () => {
-      const result = argsToTemplateValue({ data: null });
+      const result = argsToLiteralTemplate({ data: null });
       expect(result).toBe('[data]="null"');
     });
 
     it('should format undefined values', () => {
-      const result = argsToTemplateValue({ data: undefined });
+      const result = argsToLiteralTemplate({ data: undefined });
       expect(result).toBe('[data]="undefined"');
     });
   });
 
   describe('complex value types', () => {
     it('should format arrays', () => {
-      const result = argsToTemplateValue({ items: [1, 2, 3] });
+      const result = argsToLiteralTemplate({ items: [1, 2, 3] });
       expect(result).toBe('[items]="[1,2,3]"');
     });
 
     it('should format objects with single quotes', () => {
-      const result = argsToTemplateValue({ config: { key: 'value' } });
+      const result = argsToLiteralTemplate({ config: { key: 'value' } });
       expect(result).toBe("[config]=\"{'key':'value'}\"");
     });
 
     it('should format nested objects', () => {
-      const result = argsToTemplateValue({
+      const result = argsToLiteralTemplate({
         options: { nested: { deep: true } },
       });
       expect(result).toBe("[options]=\"{'nested':{'deep':true}}\"");
     });
 
     it('should format empty arrays', () => {
-      const result = argsToTemplateValue({ items: [] });
+      const result = argsToLiteralTemplate({ items: [] });
       expect(result).toBe('[items]="[]"');
     });
 
     it('should format empty objects', () => {
-      const result = argsToTemplateValue({ config: {} });
+      const result = argsToLiteralTemplate({ config: {} });
       expect(result).toBe('[config]="{}"');
     });
   });
 
   describe('multiple properties', () => {
     it('should join multiple properties with spaces', () => {
-      const result = argsToTemplateValue({
+      const result = argsToLiteralTemplate({
         disabled: true,
         count: 5,
       });
@@ -98,7 +98,7 @@ describe('argsToTemplateValue', () => {
     });
 
     it('should handle mixed value types', () => {
-      const result = argsToTemplateValue({
+      const result = argsToLiteralTemplate({
         enabled: true,
         delay: 300,
         label: 'Submit',
@@ -109,14 +109,14 @@ describe('argsToTemplateValue', () => {
     });
 
     it('should return empty string for empty object', () => {
-      const result = argsToTemplateValue({});
+      const result = argsToLiteralTemplate({});
       expect(result).toBe('');
     });
   });
 
   describe('include option', () => {
     it('should only include specified properties', () => {
-      const result = argsToTemplateValue(
+      const result = argsToLiteralTemplate(
         { disabled: true, count: 5, label: 'test' },
         { include: ['disabled', 'count'] },
       );
@@ -125,7 +125,7 @@ describe('argsToTemplateValue', () => {
 
     it('should return empty string if no properties match include', () => {
       // Use type assertion to test runtime behavior when types are bypassed
-      const result = argsToTemplateValue(
+      const result = argsToLiteralTemplate(
         { disabled: true },
         {
           include: ['nonexistent' as 'disabled'],
@@ -135,7 +135,7 @@ describe('argsToTemplateValue', () => {
     });
 
     it('should handle single property in include', () => {
-      const result = argsToTemplateValue(
+      const result = argsToLiteralTemplate(
         { a: 1, b: 2, c: 3 },
         { include: ['b'] },
       );
@@ -145,7 +145,7 @@ describe('argsToTemplateValue', () => {
 
   describe('exclude option', () => {
     it('should exclude specified properties', () => {
-      const result = argsToTemplateValue(
+      const result = argsToLiteralTemplate(
         { disabled: true, count: 5, label: 'test' },
         { exclude: ['label'] },
       );
@@ -153,12 +153,12 @@ describe('argsToTemplateValue', () => {
     });
 
     it('should return all properties if exclude list is empty', () => {
-      const result = argsToTemplateValue({ disabled: true }, { exclude: [] });
+      const result = argsToLiteralTemplate({ disabled: true }, { exclude: [] });
       expect(result).toBe('[disabled]="true"');
     });
 
     it('should handle excluding all properties', () => {
-      const result = argsToTemplateValue(
+      const result = argsToLiteralTemplate(
         { a: 1, b: 2 },
         { exclude: ['a', 'b'] },
       );
@@ -167,7 +167,7 @@ describe('argsToTemplateValue', () => {
 
     it('should ignore non-existent properties in exclude', () => {
       // Use type assertion to test runtime behavior when types are bypassed
-      const result = argsToTemplateValue(
+      const result = argsToLiteralTemplate(
         { disabled: true },
         {
           exclude: ['nonexistent' as 'disabled'],
@@ -179,7 +179,7 @@ describe('argsToTemplateValue', () => {
 
   describe('combined include and exclude options', () => {
     it('should apply both include and exclude filters', () => {
-      const result = argsToTemplateValue(
+      const result = argsToLiteralTemplate(
         { a: 1, b: 2, c: 3, d: 4 },
         { include: ['a', 'b', 'c'], exclude: ['b'] },
       );
@@ -189,7 +189,7 @@ describe('argsToTemplateValue', () => {
 
   describe('real-world Angular component scenarios', () => {
     it('should format typical accordion args', () => {
-      const result = argsToTemplateValue({
+      const result = argsToLiteralTemplate({
         multiExpandable: true,
         disabled: false,
         allowAllClosed: true,
@@ -200,7 +200,7 @@ describe('argsToTemplateValue', () => {
     });
 
     it('should format args with numeric delay values', () => {
-      const result = argsToTemplateValue({
+      const result = argsToLiteralTemplate({
         deepLink: true,
         deepLinkSmudge: true,
         deepLinkSmudgeDelay: 300,

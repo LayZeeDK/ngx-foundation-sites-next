@@ -3,9 +3,9 @@
  */
 
 /**
- * Options for the argsToTemplateValue function.
+ * Options for the argsToLiteralTemplate function.
  */
-export interface ArgsToTemplateValueOptions<T> {
+export interface ArgsToLiteralTemplateOptions<T> {
   /**
    * Properties to exclude from the output.
    */
@@ -26,7 +26,7 @@ export interface ArgsToTemplateValueOptions<T> {
  * @example
  * ```typescript
  * // Input
- * argsToTemplateValue({ allowAllClosed: true, disabled: false, name: 'test' })
+ * argsToLiteralTemplate({ allowAllClosed: true, disabled: false, name: 'test' })
  *
  * // Output
  * '[allowAllClosed]="true" [disabled]="false" [name]="\'test\'"'
@@ -35,7 +35,7 @@ export interface ArgsToTemplateValueOptions<T> {
  * @example
  * ```typescript
  * // With exclude option
- * argsToTemplateValue({ disabled: true, name: 'test' }, { exclude: ['name'] })
+ * argsToLiteralTemplate({ disabled: true, name: 'test' }, { exclude: ['name'] })
  *
  * // Output
  * '[disabled]="true"'
@@ -45,9 +45,9 @@ export interface ArgsToTemplateValueOptions<T> {
  * @param options - Optional configuration for include/exclude lists
  * @returns A string of Angular template bindings with literal values
  */
-export function argsToTemplateValue<T extends Record<string, unknown>>(
+export function argsToLiteralTemplate<T extends Record<string, unknown>>(
   args: T,
-  { exclude, include }: ArgsToTemplateValueOptions<T> = {},
+  { exclude, include }: ArgsToLiteralTemplateOptions<T> = {},
 ): string {
   return Object.entries(args)
     .filter(([key]) => {

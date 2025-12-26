@@ -1,9 +1,5 @@
-import {
-  argsToTemplate,
-  moduleMetadata,
-  type Meta,
-  type StoryObj,
-} from '@storybook/angular';
+import { moduleMetadata, type Meta, type StoryObj } from '@storybook/angular';
+import { argsToLiteralTemplate } from '../util-storybook/args-to-literal-template';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 import { NfsAccordion } from './accordion';
 import { NfsAccordionContentDef } from './accordion-content';
@@ -38,7 +34,7 @@ const meta: Meta<NfsAccordion> = {
   render: (args) => ({
     props: args,
     template: `
-      <nfs-accordion ${argsToTemplate(args)}>
+      <nfs-accordion ${argsToLiteralTemplate(args)}>
         <ng-template nfsAccordionItem panelId="panel-1">
           <ng-template nfsAccordionHeader>Accordion 1</ng-template>
           <ng-template nfsAccordionContent>
@@ -139,7 +135,7 @@ export const Disabled: Story = {
   render: ({ disabled, ...args }) => ({
     props: args,
     template: `
-      <nfs-accordion [disabled]="${disabled}" ${argsToTemplate(args)}>
+      <nfs-accordion [disabled]="${disabled}" ${argsToLiteralTemplate(args)}>
         <ng-template nfsAccordionItem panelId="panel-1" [disabled]="true">
           <ng-template nfsAccordionHeader>Disabled Accordion</ng-template>
           <ng-template nfsAccordionContent>
@@ -189,7 +185,7 @@ export const InitiallyExpanded: Story = {
   render: (args) => ({
     props: args,
     template: `
-      <nfs-accordion ${argsToTemplate(args)}>
+      <nfs-accordion ${argsToLiteralTemplate(args)}>
         <ng-template nfsAccordionItem panelId="panel-1" [expanded]="true">
           <ng-template nfsAccordionHeader>Initially Open</ng-template>
           <ng-template nfsAccordionContent>
@@ -256,7 +252,7 @@ export const SlowAnimation: Story = {
   render: (args) => ({
     props: args,
     template: `
-      <nfs-accordion ${argsToTemplate(args)}
+      <nfs-accordion ${argsToLiteralTemplate(args)}
         [style.--nfs-accordion-slide-speed.ms]="500"
       >
         <ng-template nfsAccordionItem panelId="panel-1">
@@ -312,7 +308,7 @@ export const NoAnimation: Story = {
   render: (args) => ({
     props: args,
     template: `
-      <nfs-accordion ${argsToTemplate(args)}
+      <nfs-accordion ${argsToLiteralTemplate(args)}
         [style.--nfs-accordion-slide-speed.ms]="0"
       >
         <ng-template nfsAccordionItem panelId="panel-1">
@@ -453,7 +449,7 @@ export const RequireOneOpen: Story = {
   render: ({ allowAllClosed, ...args }) => ({
     props: args,
     template: `
-      <nfs-accordion [allowAllClosed]="${allowAllClosed}" ${argsToTemplate(args)}>
+      <nfs-accordion [allowAllClosed]="${allowAllClosed}" ${argsToLiteralTemplate(args)}>
         <ng-template nfsAccordionItem panelId="panel-1">
           <ng-template nfsAccordionHeader>Panel 1</ng-template>
           <ng-template nfsAccordionContent>
@@ -517,7 +513,7 @@ export const Accessibility: Story = {
     props: args,
     // Use instant animation (0ms) for reliable testing
     template: `
-      <nfs-accordion ${argsToTemplate(args)}
+      <nfs-accordion ${argsToLiteralTemplate(args)}
         [style.--nfs-accordion-slide-speed.ms]="0"
       >
         <ng-template nfsAccordionItem panelId="panel-1">
@@ -705,7 +701,7 @@ export const CustomTheme: Story = {
   render: (args) => ({
     props: args,
     template: `
-      <nfs-accordion ${argsToTemplate(args)}
+      <nfs-accordion ${argsToLiteralTemplate(args)}
         style="
           --nfs-accordion-background: #1a1a2e;
           --nfs-accordion-title-font-size: 1rem;
@@ -1035,7 +1031,7 @@ export const SoftDisabled: Story = {
     props: args,
     // Use instant animation (0ms) for reliable testing
     template: `
-      <nfs-accordion ${argsToTemplate(args)}
+      <nfs-accordion ${argsToLiteralTemplate(args)}
         [style.--nfs-accordion-slide-speed.ms]="0"
       >
         <ng-template nfsAccordionItem panelId="panel-1">
@@ -1119,7 +1115,7 @@ export const ExpandCollapseAll: Story = {
             Collapse All
           </button>
         </div>
-        <nfs-accordion ${argsToTemplate(args)}
+        <nfs-accordion ${argsToLiteralTemplate(args)}
           #accordion
         >
           <ng-template nfsAccordionItem panelId="panel-1">
@@ -1188,7 +1184,7 @@ export const FocusManagementWithDisabled: Story = {
     props: args,
     // Use instant animation (0ms) for reliable testing
     template: `
-      <nfs-accordion ${argsToTemplate(args)}
+      <nfs-accordion ${argsToLiteralTemplate(args)}
         [style.--nfs-accordion-slide-speed.ms]="0"
       >
         <ng-template nfsAccordionItem panelId="panel-1">
@@ -1284,7 +1280,7 @@ export const RightToLeft: Story = {
     props: args,
     template: `
       <div dir="rtl" lang="ar">
-        <nfs-accordion ${argsToTemplate(args)}
+        <nfs-accordion ${argsToLiteralTemplate(args)}
           [style.--nfs-accordion-slide-speed.ms]="0"
         >
           <ng-template nfsAccordionItem panelId="panel-1">
@@ -1379,7 +1375,7 @@ export const CustomIcons: Story = {
   render: (args) => ({
     props: args,
     template: `
-      <nfs-accordion ${argsToTemplate(args)}
+      <nfs-accordion ${argsToLiteralTemplate(args)}
         style="
           --nfs-accordion-plus-content: '▶';
           --nfs-accordion-minus-content: '▼';
@@ -1475,7 +1471,7 @@ export const EagerVsLazyContent: Story = {
   render: (args) => ({
     props: args,
     template: `
-      <nfs-accordion ${argsToTemplate(args)}>
+      <nfs-accordion ${argsToLiteralTemplate(args)}>
         <ng-template nfsAccordionItem panelId="panel-1">
           <ng-template nfsAccordionHeader>Eager Content Example</ng-template>
           <!-- This content renders immediately when accordion initializes -->
