@@ -9,6 +9,9 @@ const preview: Preview = {
   tags: ['autodocs'],
   parameters: {
     controls: { expanded: true },
+    docs: {
+      codePanel: true,
+    },
     a11y: {
       // Enable accessibility testing in test-storybook (fails CI on violations)
       test: 'error',
