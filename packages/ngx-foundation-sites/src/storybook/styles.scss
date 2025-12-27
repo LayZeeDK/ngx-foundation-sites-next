@@ -9,6 +9,9 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 
 @use '../lib/styles' as nfs;
+// Foundation is already configured with our palette via nfs.
+// We can use it directly since Sass caches module configurations.
+@use 'foundation-sites/scss/foundation' as foundation;
 
 // Include all recommended global styles
 @include nfs.nfs-all-global-styles;
@@ -16,3 +19,37 @@
 // Include button styles for Storybook demos (e.g., ExpandCollapseAll story)
 // This is opt-in; consumers should use nfs-button component when available
 @include nfs.foundation-button;
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// STORYBOOK-ONLY UTILITIES
+// ═══════════════════════════════════════════════════════════════════════════════
+// These utilities are only available in Storybook for demo purposes.
+// They are NOT part of the public API.
+
+// Foundation Prototype utilities
+// Provides: .margin-*, .padding-*, .overflow-*, .no-bullet, etc.
+@include foundation.foundation-prototype-spacing;
+@include foundation.foundation-prototype-overflow;
+@include foundation.foundation-prototype-list-style-type;
+
+// Text color utilities using theme CSS custom properties
+// Provides: .text-primary, .text-secondary, .text-success, .text-warning, .text-alert
+.text-primary {
+  color: var(--nfs-primary-color);
+}
+
+.text-secondary {
+  color: var(--nfs-secondary-color);
+}
+
+.text-success {
+  color: var(--nfs-success-color);
+}
+
+.text-warning {
+  color: var(--nfs-warning-color);
+}
+
+.text-alert {
+  color: var(--nfs-alert-color);
+}
