@@ -66,6 +66,33 @@ Consider these Angular patterns as building blocks:
 - Add **interaction tests** to component stories using Storybook's play functions
 - Cover user interactions, state changes, and accessibility behaviors
 
+### Storybook Demo Styling
+
+When writing Storybook stories, **prefer Foundation Prototype utility classes over inline styles**:
+
+1. **Spacing** (values: 0=0, 1=1rem, 2=2rem, 3=3rem):
+   - `.margin-0` through `.margin-3` (all sides)
+   - `.margin-top-1`, `.margin-bottom-2`, `.margin-left-1`, `.margin-right-1`
+   - `.padding-0` through `.padding-3` with same directional variants
+
+2. **Display & Overflow**:
+   - `.display-inline`, `.display-block`, `.display-inline-block`
+   - `.overflow-hidden`, `.overflow-scroll`, `.overflow-x-scroll`
+
+3. **Lists**:
+   - `.no-bullet`, `.list-disc`, `.list-circle`, `.list-square`
+
+4. **Text Colors** (use utility classes for theme colors):
+   - `.text-primary`, `.text-secondary`, `.text-success`, `.text-warning`, `.text-alert`
+
+5. **Keep inline styles only for**:
+   - CSS custom property demonstrations (`--nfs-*`)
+   - `[style.--nfs-*]` bindings for interactive controls
+   - Values not available in Foundation (e.g., arbitrary pixel values)
+   - Semantic attributes like `dir="rtl"`
+
+**Note:** These utilities are only available in Storybook (not in the public API). Values must match Foundation's scale (0, 1rem, 2rem, 3rem) — adjust non-standard values to the nearest option.
+
 ### Visual Testing with Playwright
 
 Use the Playwright MCP server to:
