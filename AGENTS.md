@@ -17,6 +17,11 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 2. **Composable Architecture**: Small, focused components following Angular's composition patterns
 3. **Progressive Enhancement**: Core functionality works without JavaScript; interactivity is layered on top
 4. **Naming Alignment**: Component names should follow both Foundation for Sites component names from their docs AND their CSS class names (e.g., `Accordion` from docs → `.accordion` class, `Reveal` from docs → `.reveal` class)
+5. **Input Naming**: Component inputs should match Foundation's naming conventions:
+   - Use Foundation's `data-*` attribute names in camelCase (e.g., `data-multi-expand` → `multiExpand`)
+   - Use Foundation's Sass variable names for styling options (e.g., `$accordion-plusminus` → `plusminus`)
+   - Document the Foundation equivalent in JSDoc comments
+6. **Token Naming**: Injection tokens should use camelCase with a `Token` suffix (e.g., `nfsAccordionToken`)
 
 ### Styling Guidelines
 
@@ -50,6 +55,34 @@ When building components, follow this priority order:
 1. **@angular/aria** - Always use Angular ARIA building blocks first. Ask before falling back to alternatives.
 2. **@angular/cdk** - Use CDK primitives when ARIA doesn't provide what's needed
 3. **Custom Angular** - Only as a last resort when neither ARIA nor CDK suffices
+
+### Content Projection and DI
+
+When building components that support content projection (e.g., `<nfs-accordion>` containing `<nfs-accordion-item>`), follow this pattern to avoid DI failures:
+
+1. **Export the injection token** so consumers can provide alternatives
+2. **Use optional injection** with `skipSelf` in child components
+3. **Allow standalone usage** when parent is not required
+
+Example:
+
+```typescript
+// Token file
+export const nfsAccordionToken = new InjectionToken<NfsAccordion>('nfsAccordionToken');
+
+// Parent component
+@Component({
+  providers: [{ provide: nfsAccordionToken, useExisting: NfsAccordion }],
+})
+export class NfsAccordion { ... }
+
+// Child component (content-projected)
+export class NfsAccordionItem {
+  readonly accordion = inject(nfsAccordionToken, { optional: true, skipSelf: true });
+}
+```
+
+This pattern is required because Angular's DI for content-projected elements follows the **declaration site** injector, not the DOM tree.
 
 ### Building Blocks
 
