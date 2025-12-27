@@ -222,7 +222,6 @@ export const InitiallyExpanded: Story = {
 };
 
 export const KeyboardNavigation: Story = {
-  args: { multiExpandable: false, disabled: false },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -357,11 +356,8 @@ export const NoAnimation: Story = {
 
 export const DeepLink: Story = {
   args: {
-    multiExpandable: false,
-    disabled: false,
     deepLink: true,
     deepLinkSmudge: true,
-    deepLinkSmudgeDelay: 300,
     updateHistory: true,
   },
   play: async ({ canvasElement }) => {
@@ -399,10 +395,8 @@ export const DeepLink: Story = {
 export const MultiExpandDeepLink: Story = {
   args: {
     multiExpandable: true,
-    disabled: false,
     deepLink: true,
     deepLinkSmudge: true,
-    deepLinkSmudgeDelay: 300,
     updateHistory: true,
     allowAllClosed: true,
   },
@@ -415,12 +409,7 @@ export const MultiExpandDeepLink: Story = {
  */
 export const DeepLinkNoHistory: Story = {
   args: {
-    multiExpandable: false,
-    disabled: false,
     deepLink: true,
-    deepLinkSmudge: false,
-    deepLinkSmudgeDelay: 300,
-    updateHistory: false,
     allowAllClosed: true,
   },
 };
@@ -432,24 +421,18 @@ export const DeepLinkNoHistory: Story = {
  */
 export const DeepLinkWithOffset: Story = {
   args: {
-    multiExpandable: false,
-    disabled: false,
     deepLink: true,
     deepLinkSmudge: true,
-    deepLinkSmudgeDelay: 300,
     deepLinkSmudgeOffset: 60,
     updateHistory: true,
   },
 };
 
 export const RequireOneOpen: Story = {
-  args: {
-    allowAllClosed: false,
-  },
-  render: ({ allowAllClosed, ...args }) => ({
+  render: (args) => ({
     props: args,
     template: `
-      <nfs-accordion [allowAllClosed]="${allowAllClosed}" ${argsToLiteralTemplate(args)}>
+      <nfs-accordion ${argsToLiteralTemplate(args)}>
         <ng-template nfsAccordionItem panelId="panel-1">
           <ng-template nfsAccordionHeader>Panel 1</ng-template>
           <ng-template nfsAccordionContent>
@@ -906,13 +889,10 @@ export const ThemeControls: ThemeControlsStory = {
       table: { category: 'CSS Custom Properties' },
     },
   },
-  render: (args) => ({
+  render: ({ allowAllClosed, ...args }) => ({
     props: args,
     template: `
-      <nfs-accordion
-        [multiExpandable]="multiExpandable"
-        [disabled]="disabled"
-        [allowAllClosed]="allowAllClosed"
+      <nfs-accordion [allowAllClosed]="${allowAllClosed}"
         [style.--nfs-accordion-background]="accordionBackground"
         [style.--nfs-accordion-title-font-size]="accordionTitleFontSize"
         [style.--nfs-accordion-item-color]="accordionItemColor"
@@ -1434,8 +1414,6 @@ export const CustomIcons: Story = {
  */
 export const NoPlusminus: Story = {
   args: {
-    multiExpandable: false,
-    disabled: false,
     allowAllClosed: true,
     plusminus: false,
   },
