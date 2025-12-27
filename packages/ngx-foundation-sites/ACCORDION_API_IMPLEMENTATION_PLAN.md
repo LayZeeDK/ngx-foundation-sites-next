@@ -18,6 +18,7 @@ The accordion is implemented using a **template-based approach**:
 ```
 
 **Key characteristics:**
+
 - Uses `ng-template` directives (`NfsAccordionItemDef`, `NfsAccordionHeaderDef`, `NfsAccordionContentDef`)
 - Delegates ARIA to `@angular/aria/accordion` directives
 - Supports deep linking, animations, and all Foundation options
@@ -39,6 +40,7 @@ The API design specifies a **component-based content projection** approach:
 ```
 
 **Key differences:**
+
 - Uses components instead of template directives
 - Manual ARIA attributes instead of Angular ARIA delegation
 - Component names match Foundation CSS classes (`.accordion-title` → `NfsAccordionTitle`)
@@ -49,20 +51,21 @@ The API design specifies a **component-based content projection** approach:
 
 The Angular Material Expansion Panel provides a well-established pattern for accordion APIs:
 
-| Material API | NfsAccordion Equivalent | Description |
-|--------------|-------------------------|-------------|
-| `<mat-accordion>` | `<nfs-accordion>` | Container with shared configuration |
-| `<mat-expansion-panel>` | `<nfs-accordion-item>` | Individual collapsible panel |
-| `<mat-expansion-panel-header>` | `<nfs-accordion-title>` | Clickable trigger region |
-| `ng-template[matExpansionPanelContent]` | `ng-template[nfsAccordionContent]` | Lazy-loaded content |
-| `[multi]` | `[multiExpand]` | Allow multiple panels open |
-| `[(expanded)]` | `[(expanded)]` | Two-way binding for panel state |
-| `(opened)`, `(closed)` | `(opened)`, `(closed)` | State change events |
-| `(afterExpand)`, `(afterCollapse)` | `(afterExpand)`, `(afterCollapse)` | Animation completion events |
-| `open()`, `close()`, `toggle()` | `open()`, `close()`, `toggle()` | Programmatic control methods |
-| `openAll()`, `closeAll()` | `openAll()`, `closeAll()` | Bulk operations on container |
+| Material API                            | NfsAccordion Equivalent            | Description                         |
+| --------------------------------------- | ---------------------------------- | ----------------------------------- |
+| `<mat-accordion>`                       | `<nfs-accordion>`                  | Container with shared configuration |
+| `<mat-expansion-panel>`                 | `<nfs-accordion-item>`             | Individual collapsible panel        |
+| `<mat-expansion-panel-header>`          | `<nfs-accordion-title>`            | Clickable trigger region            |
+| `ng-template[matExpansionPanelContent]` | `ng-template[nfsAccordionContent]` | Lazy-loaded content                 |
+| `[multi]`                               | `[multiExpand]`                    | Allow multiple panels open          |
+| `[(expanded)]`                          | `[(expanded)]`                     | Two-way binding for panel state     |
+| `(opened)`, `(closed)`                  | `(opened)`, `(closed)`             | State change events                 |
+| `(afterExpand)`, `(afterCollapse)`      | `(afterExpand)`, `(afterCollapse)` | Animation completion events         |
+| `open()`, `close()`, `toggle()`         | `open()`, `close()`, `toggle()`    | Programmatic control methods        |
+| `openAll()`, `closeAll()`               | `openAll()`, `closeAll()`          | Bulk operations on container        |
 
 **Key API principles from Material:**
+
 - Two-way binding (`[(expanded)]`) for declarative state management
 - Separate events for state change vs. animation completion
 - Container-level configuration that items inherit
@@ -79,48 +82,39 @@ From [WAI-ARIA APG Accordion Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/a
 ```html
 <!-- Heading wrapper (optional but recommended for document outline) -->
 <h3>
-  <button id="trigger-1"
-          aria-expanded="true|false"
-          aria-controls="panel-1"
-          aria-disabled="true|false">
-    Section Title
-  </button>
+  <button id="trigger-1" aria-expanded="true|false" aria-controls="panel-1" aria-disabled="true|false">Section Title</button>
 </h3>
 
 <!-- Content panel -->
-<div id="panel-1"
-     role="region"
-     aria-labelledby="trigger-1">
-  Panel content...
-</div>
+<div id="panel-1" role="region" aria-labelledby="trigger-1">Panel content...</div>
 ```
 
 ### Required ARIA Attributes
 
-| Element | Attribute | Purpose |
-|---------|-----------|---------|
-| Trigger | `aria-expanded` | Indicates whether the panel is open |
-| Trigger | `aria-controls` | Points to the panel ID |
-| Trigger | `aria-disabled` | Indicates disabled state (keep focusable) |
-| Panel | `role="region"` | Identifies the content region |
-| Panel | `aria-labelledby` | Points to the trigger ID |
+| Element | Attribute         | Purpose                                   |
+| ------- | ----------------- | ----------------------------------------- |
+| Trigger | `aria-expanded`   | Indicates whether the panel is open       |
+| Trigger | `aria-controls`   | Points to the panel ID                    |
+| Trigger | `aria-disabled`   | Indicates disabled state (keep focusable) |
+| Panel   | `role="region"`   | Identifies the content region             |
+| Panel   | `aria-labelledby` | Points to the trigger ID                  |
 
 ### Required Keyboard Navigation
 
-| Key | Action |
-|-----|--------|
-| `Enter` / `Space` | Toggle the focused panel |
-| `Tab` | Move to next focusable element |
-| `Shift+Tab` | Move to previous focusable element |
+| Key               | Action                             |
+| ----------------- | ---------------------------------- |
+| `Enter` / `Space` | Toggle the focused panel           |
+| `Tab`             | Move to next focusable element     |
+| `Shift+Tab`       | Move to previous focusable element |
 
 ### Optional Keyboard Navigation
 
-| Key | Action |
-|-----|--------|
-| `↓` (Down Arrow) | Move focus to next accordion header |
-| `↑` (Up Arrow) | Move focus to previous accordion header |
-| `Home` | Move focus to first accordion header |
-| `End` | Move focus to last accordion header |
+| Key              | Action                                  |
+| ---------------- | --------------------------------------- |
+| `↓` (Down Arrow) | Move focus to next accordion header     |
+| `↑` (Up Arrow)   | Move focus to previous accordion header |
+| `Home`           | Move focus to first accordion header    |
+| `End`            | Move focus to last accordion header     |
 
 ---
 
@@ -154,18 +148,18 @@ From [WAI-ARIA APG Accordion Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/a
 
 ## Gap Analysis
 
-| Feature | API Design | Current | Status |
-|---------|------------|---------|--------|
-| **Architecture** | Component-based | Template-based | 🔒 Blocked |
-| **Container** | `NfsAccordion` | `NfsAccordion` | ✅ Match |
-| **Item** | `NfsAccordionItem` (component) | `NfsAccordionItemDef` (directive) | ⚠️ Naming |
-| **Title** | `NfsAccordionTitle` (component) | `NfsAccordionHeaderDef` (directive) | ⚠️ Naming |
-| **Lazy content** | `NfsAccordionContent` | `NfsAccordionContentDef` | ⚠️ Naming |
-| **Input: multi** | `multiExpand` | `multiExpandable` | ⚠️ Naming |
-| **Input: heading** | `titleHeadingLevel` | Not implemented | ❌ Missing |
-| **Item events** | `opened`, `closed`, `afterExpand`, `afterCollapse` | Not implemented | ❌ Missing |
-| **Item methods** | `open()`, `close()`, `toggle()` | Not implemented | ❌ Missing |
-| **DI token** | `nfsAccordionToken` | Uses Angular ARIA | 🔒 Blocked |
+| Feature            | API Design                                         | Current                             | Status     |
+| ------------------ | -------------------------------------------------- | ----------------------------------- | ---------- |
+| **Architecture**   | Component-based                                    | Template-based                      | 🔒 Blocked |
+| **Container**      | `NfsAccordion`                                     | `NfsAccordion`                      | ✅ Match   |
+| **Item**           | `NfsAccordionItem` (component)                     | `NfsAccordionItemDef` (directive)   | ⚠️ Naming  |
+| **Title**          | `NfsAccordionTitle` (component)                    | `NfsAccordionHeaderDef` (directive) | ⚠️ Naming  |
+| **Lazy content**   | `NfsAccordionContent`                              | `NfsAccordionContentDef`            | ⚠️ Naming  |
+| **Input: multi**   | `multiExpand`                                      | `multiExpandable`                   | ⚠️ Naming  |
+| **Input: heading** | `titleHeadingLevel`                                | Not implemented                     | ❌ Missing |
+| **Item events**    | `opened`, `closed`, `afterExpand`, `afterCollapse` | Not implemented                     | ❌ Missing |
+| **Item methods**   | `open()`, `close()`, `toggle()`                    | Not implemented                     | ❌ Missing |
+| **DI token**       | `nfsAccordionToken`                                | Uses Angular ARIA                   | 🔒 Blocked |
 
 ---
 
@@ -193,22 +187,24 @@ readonly multiExpandable = this.multiExpand; // Alias for backwards compat
 #### 1.2 Rename Header → Title
 
 **Files to rename:**
+
 - `accordion-header-def.ts` → `accordion-title-def.ts`
 - Class: `NfsAccordionHeaderDef` → `NfsAccordionTitleDef`
 - Selector: `nfsAccordionHeader` → `nfsAccordionTitle`
 
 **Deprecation alias in `index.ts`:**
+
 ```typescript
 /** @deprecated Use NfsAccordionTitleDef instead */
 export { NfsAccordionTitleDef as NfsAccordionHeaderDef } from './accordion-title-def';
 ```
 
-| Task | Description | Status |
-|------|-------------|--------|
-| 1.1 | Rename `multiExpandable` → `multiExpand` (with deprecation alias) | Pending |
-| 1.2 | Rename `NfsAccordionHeaderDef` → `NfsAccordionTitleDef` | Pending |
-| 1.3 | Rename selector `nfsAccordionHeader` → `nfsAccordionTitle` | Pending |
-| 1.4 | Add deprecation aliases in `index.ts` | Pending |
+| Task | Description                                                       | Status  |
+| ---- | ----------------------------------------------------------------- | ------- |
+| 1.1  | Rename `multiExpandable` → `multiExpand` (with deprecation alias) | Pending |
+| 1.2  | Rename `NfsAccordionHeaderDef` → `NfsAccordionTitleDef`           | Pending |
+| 1.3  | Rename selector `nfsAccordionHeader` → `nfsAccordionTitle`        | Pending |
+| 1.4  | Add deprecation aliases in `index.ts`                             | Pending |
 
 ---
 
@@ -230,15 +226,11 @@ readonly titleHeadingLevel = input<1 | 2 | 3 | 4 | 5 | 6 | null>(null);
 ```html
 <!-- Wrap trigger in heading when titleHeadingLevel is set -->
 @if (titleHeadingLevel(); as level) {
-  <div role="heading" [attr.aria-level]="level">
-    <button ngAccordionTrigger ...>
-      ...
-    </button>
-  </div>
+<div role="heading" [attr.aria-level]="level">
+  <button ngAccordionTrigger ...>...</button>
+</div>
 } @else {
-  <button ngAccordionTrigger ...>
-    ...
-  </button>
+<button ngAccordionTrigger ...>...</button>
 }
 ```
 
@@ -283,12 +275,12 @@ toggle(): void {
 }
 ```
 
-| Task | Description | Status |
-|------|-------------|--------|
-| 2.1 | Add `titleHeadingLevel` input for ARIA heading wrapper | Pending |
-| 2.2 | Add `opened`, `closed` event outputs to item | Pending |
-| 2.3 | Add `afterExpand`, `afterCollapse` animation event outputs | Pending |
-| 2.4 | Add `open()`, `close()`, `toggle()` methods to item | Pending |
+| Task | Description                                                | Status  |
+| ---- | ---------------------------------------------------------- | ------- |
+| 2.1  | Add `titleHeadingLevel` input for ARIA heading wrapper     | Pending |
+| 2.2  | Add `opened`, `closed` event outputs to item               | Pending |
+| 2.3  | Add `afterExpand`, `afterCollapse` animation event outputs | Pending |
+| 2.4  | Add `open()`, `close()`, `toggle()` methods to item        | Pending |
 
 ---
 
@@ -303,6 +295,7 @@ This PR resolves the Angular ARIA DI issue that prevents content-projected eleme
 3. What is the migration cost vs. benefit?
 
 **Options after PR merges:**
+
 - **Option A:** Keep template-based approach (current)
 - **Option B:** Migrate to component-based content projection (matches API design)
 
@@ -311,12 +304,14 @@ This PR resolves the Angular ARIA DI issue that prevents content-projected eleme
 ## Files to Modify
 
 ### Phase 1 (Naming)
+
 - `src/lib/accordion/accordion.ts` — Add `multiExpand` input
 - `src/lib/accordion/accordion-header-def.ts` → `accordion-title-def.ts` — Rename
 - `src/lib/accordion/accordion.html` — Update selector references
 - `src/lib/accordion/index.ts` — Update exports and add deprecation aliases
 
 ### Phase 2 (Features)
+
 - `src/lib/accordion/accordion.ts` — Add `titleHeadingLevel` input
 - `src/lib/accordion/accordion.html` — Add heading wrapper conditional
 - `src/lib/accordion/accordion-item-def.ts` — Add events and methods
@@ -324,6 +319,7 @@ This PR resolves the Angular ARIA DI issue that prevents content-projected eleme
 - `src/lib/accordion/accordion.stories.ts` — Add stories for new features
 
 ### Phase 3 (Architecture)
+
 - TBD based on PR #32591 outcome
 
 ---
