@@ -710,16 +710,16 @@ export const CustomTheme: Story = {
           <ng-template nfsAccordionHeader>Available Properties</ng-template>
           <ng-template nfsAccordionContent>
             <div>
-              <ul style="margin: 0; padding-left: 1.5rem;">
-                <li><code>--nfs-accordion-background</code></li>
-                <li><code>--nfs-accordion-title-font-size</code></li>
-                <li><code>--nfs-accordion-item-color</code></li>
-                <li><code>--nfs-accordion-item-background-hover</code></li>
-                <li><code>--nfs-accordion-item-padding</code></li>
-                <li><code>--nfs-accordion-content-background</code></li>
-                <li><code>--nfs-accordion-content-border</code></li>
-                <li><code>--nfs-accordion-content-color</code></li>
-                <li><code>--nfs-accordion-content-padding</code></li>
+              <ul class="margin-0 padding-left-2">
+                <li><code class="code-inline">--nfs-accordion-background</code></li>
+                <li><code class="code-inline">--nfs-accordion-title-font-size</code></li>
+                <li><code class="code-inline">--nfs-accordion-item-color</code></li>
+                <li><code class="code-inline">--nfs-accordion-item-background-hover</code></li>
+                <li><code class="code-inline">--nfs-accordion-item-padding</code></li>
+                <li><code class="code-inline">--nfs-accordion-content-background</code></li>
+                <li><code class="code-inline">--nfs-accordion-content-border</code></li>
+                <li><code class="code-inline">--nfs-accordion-content-color</code></li>
+                <li><code class="code-inline">--nfs-accordion-content-padding</code></li>
               </ul>
             </div>
           </ng-template>
@@ -728,7 +728,7 @@ export const CustomTheme: Story = {
           <ng-template nfsAccordionHeader>Usage Example</ng-template>
           <ng-template nfsAccordionContent>
             <div>
-              <pre style="margin: 0; font-size: 0.875rem; overflow-x: auto;"><code>nfs-accordion {{'{'}}
+              <pre class="code-block margin-0"><code>nfs-accordion {{'{'}}
   --nfs-accordion-item-color: #ff8fa3;
   --nfs-accordion-content-background: #0f0f23;
 {{'}'}}</code></pre>
@@ -920,21 +920,21 @@ export const ThemeControls: ThemeControlsStory = {
           <ng-template nfsAccordionHeader>Available Properties</ng-template>
           <ng-template nfsAccordionContent>
             <div>
-              <ul style="margin: 0; padding-left: 1.5rem;">
-                <li><code>--nfs-accordion-background</code> — Container background</li>
-                <li><code>--nfs-accordion-title-font-size</code> — Title font size</li>
-                <li><code>--nfs-accordion-item-color</code> — Title text color</li>
-                <li><code>--nfs-accordion-item-background-hover</code> — Title hover background</li>
-                <li><code>--nfs-accordion-item-padding</code> — Title padding</li>
-                <li><code>--nfs-accordion-content-background</code> — Content background</li>
-                <li><code>--nfs-accordion-content-border</code> — Content border</li>
-                <li><code>--nfs-accordion-content-color</code> — Content text color</li>
-                <li><code>--nfs-accordion-content-padding</code> — Content padding</li>
-                <li><code>--nfs-accordion-slide-easing</code> — Animation easing</li>
-                <li><code>--nfs-accordion-slide-speed</code> — Animation duration</li>
-                <li><code>--nfs-accordion-plus-content</code> — Collapsed icon character</li>
-                <li><code>--nfs-accordion-minus-content</code> — Expanded icon character</li>
-                            </ul>
+              <ul class="margin-0 padding-left-2">
+                <li><code class="code-inline">--nfs-accordion-background</code> — Container background</li>
+                <li><code class="code-inline">--nfs-accordion-title-font-size</code> — Title font size</li>
+                <li><code class="code-inline">--nfs-accordion-item-color</code> — Title text color</li>
+                <li><code class="code-inline">--nfs-accordion-item-background-hover</code> — Title hover background</li>
+                <li><code class="code-inline">--nfs-accordion-item-padding</code> — Title padding</li>
+                <li><code class="code-inline">--nfs-accordion-content-background</code> — Content background</li>
+                <li><code class="code-inline">--nfs-accordion-content-border</code> — Content border</li>
+                <li><code class="code-inline">--nfs-accordion-content-color</code> — Content text color</li>
+                <li><code class="code-inline">--nfs-accordion-content-padding</code> — Content padding</li>
+                <li><code class="code-inline">--nfs-accordion-slide-easing</code> — Animation easing</li>
+                <li><code class="code-inline">--nfs-accordion-slide-speed</code> — Animation duration</li>
+                <li><code class="code-inline">--nfs-accordion-plus-content</code> — Collapsed icon character</li>
+                <li><code class="code-inline">--nfs-accordion-minus-content</code> — Expanded icon character</li>
+              </ul>
             </div>
           </ng-template>
         </ng-template>
@@ -943,10 +943,10 @@ export const ThemeControls: ThemeControlsStory = {
           <ng-template nfsAccordionContent>
             <div>
               <p>Set CSS custom properties via:</p>
-              <ul style="margin: 0; padding-left: 1.5rem;">
-                <li>Inline styles: <code>[style.--nfs-accordion-item-color]="'#ff0000'"</code></li>
+              <ul class="margin-0 padding-left-2">
+                <li>Inline styles: <code class="code-inline">[style.--nfs-accordion-item-color]="'#ff0000'"</code></li>
                 <li>CSS classes on the component or any ancestor</li>
-                <li>Global CSS with <code>:root</code> or scoped selectors</li>
+                <li>Global CSS with <code class="code-inline">:root</code> or scoped selectors</li>
               </ul>
             </div>
           </ng-template>
@@ -1078,11 +1078,10 @@ export const ExpandCollapseAll: Story = {
     props: args,
     template: `
       <main>
-        <div style="margin-bottom: 1rem;">
+        <div class="margin-bottom-1">
           <button
             type="button"
-            class="button primary"
-            style="margin-right: 0.5rem;"
+            class="button primary margin-right-1"
             (click)="accordion.expandAll()"
           >
             Expand All
@@ -1372,10 +1371,10 @@ export const CustomIcons: Story = {
           <ng-template nfsAccordionHeader>CSS Custom Properties</ng-template>
           <ng-template nfsAccordionContent>
             <div>
-              <ul style="margin: 0; padding-left: 1.5rem;">
-                <li><code>--nfs-accordion-plus-content: '▶'</code></li>
-                <li><code>--nfs-accordion-minus-content: '▼'</code></li>
-                <li><code>--nfs-accordion-item-color: #b91c3c</code> (title &amp; icon color)</li>
+              <ul class="margin-0 padding-left-2">
+                <li><code class="code-inline">--nfs-accordion-plus-content: '▶'</code></li>
+                <li><code class="code-inline">--nfs-accordion-minus-content: '▼'</code></li>
+                <li><code class="code-inline">--nfs-accordion-item-color: #b91c3c</code> (title &amp; icon color)</li>
               </ul>
             </div>
           </ng-template>
@@ -1453,22 +1452,22 @@ export const EagerVsLazyContent: Story = {
         <ng-template nfsAccordionItem panelId="panel-1">
           <ng-template nfsAccordionHeader>Eager Content Example</ng-template>
           <!-- This content renders immediately when accordion initializes -->
-          <p style="color: green;">This paragraph is eager content - rendered immediately!</p>
+          <p class="text-success">This paragraph is eager content - rendered immediately!</p>
         </ng-template>
         <ng-template nfsAccordionItem panelId="panel-2">
           <ng-template nfsAccordionHeader>Lazy Content Example</ng-template>
           <ng-template nfsAccordionContent>
             <!-- This content renders only when panel is expanded -->
-            <p style="color: blue;">This paragraph is lazy content - rendered when expanded!</p>
+            <p class="text-primary">This paragraph is lazy content - rendered when expanded!</p>
           </ng-template>
         </ng-template>
         <ng-template nfsAccordionItem panelId="panel-3">
           <ng-template nfsAccordionHeader>Mixed Content Example</ng-template>
           <!-- Eager content -->
-          <p style="color: green;">Eager: Always visible in DOM</p>
+          <p class="text-success">Eager: Always visible in DOM</p>
           <ng-template nfsAccordionContent>
             <!-- Lazy content -->
-            <p style="color: blue;">Lazy: Only visible when expanded</p>
+            <p class="text-primary">Lazy: Only visible when expanded</p>
           </ng-template>
         </ng-template>
       </nfs-accordion>
@@ -1481,30 +1480,80 @@ export const EagerVsLazyContent: Story = {
     const trigger1 = canvas.getByRole('button', {
       name: /Eager Content Example/i,
     });
+    const trigger2 = canvas.getByRole('button', {
+      name: /Lazy Content Example/i,
+    });
     const trigger3 = canvas.getByRole('button', {
       name: /Mixed Content Example/i,
     });
 
-    // Expand first panel to see eager content
+    // ═══════════════════════════════════════════════════════════════════════
+    // 1. VERIFY INITIAL STATE - Lazy content NOT in DOM before expansion
+    // ═══════════════════════════════════════════════════════════════════════
+
+    // Lazy content from panel 2 should NOT be in the DOM yet
+    expect(
+      canvas.queryByText(/This paragraph is lazy content/i),
+    ).not.toBeInTheDocument();
+
+    // Lazy content from panel 3 should NOT be in the DOM yet
+    expect(
+      canvas.queryByText(/Lazy: Only visible when expanded/i),
+    ).not.toBeInTheDocument();
+
+    // Eager content from panel 1 IS in the DOM (but hidden by collapsed panel)
+    expect(
+      canvas.queryByText(/This paragraph is eager content/i),
+    ).toBeInTheDocument();
+
+    // Eager content from panel 3 IS in the DOM (but hidden by collapsed panel)
+    expect(
+      canvas.queryByText(/Eager: Always visible in DOM/i),
+    ).toBeInTheDocument();
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 2. EXPAND PANEL 2 - Verify lazy content appears
+    // ═══════════════════════════════════════════════════════════════════════
+
+    await userEvent.click(trigger2);
+    await waitFor(() => {
+      expect(trigger2).toHaveAttribute('aria-expanded', 'true');
+    });
+
+    // Now lazy content from panel 2 should be visible
+    const lazyContent = canvas.getByText(/This paragraph is lazy content/i);
+    expect(lazyContent).toBeVisible();
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 3. COLLAPSE PANEL 2, EXPAND PANEL 3 - Verify mixed content behavior
+    // ═══════════════════════════════════════════════════════════════════════
+
+    await userEvent.click(trigger3);
+    await waitFor(() => {
+      expect(trigger3).toHaveAttribute('aria-expanded', 'true');
+      // Panel 2 should close (single expand mode)
+      expect(trigger2).toHaveAttribute('aria-expanded', 'false');
+    });
+
+    // Panel 3's eager content should be visible
+    const mixedEager = canvas.getByText(/Eager: Always visible in DOM/i);
+    expect(mixedEager).toBeVisible();
+
+    // Panel 3's lazy content should now be visible (rendered on expand)
+    const mixedLazy = canvas.getByText(/Lazy: Only visible when expanded/i);
+    expect(mixedLazy).toBeVisible();
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 4. EXPAND PANEL 1 - Verify eager content is visible
+    // ═══════════════════════════════════════════════════════════════════════
+
     await userEvent.click(trigger1);
     await waitFor(() => {
       expect(trigger1).toHaveAttribute('aria-expanded', 'true');
     });
 
-    // Verify eager content is visible
+    // Eager content should be visible
     const eagerContent = canvas.getByText(/This paragraph is eager content/i);
     expect(eagerContent).toBeVisible();
-
-    // Expand third panel to see mixed content
-    await userEvent.click(trigger3);
-    await waitFor(() => {
-      expect(trigger3).toHaveAttribute('aria-expanded', 'true');
-    });
-
-    // Verify both eager and lazy content are visible
-    const mixedEager = canvas.getByText(/Eager: Always visible in DOM/i);
-    const mixedLazy = canvas.getByText(/Lazy: Only visible when expanded/i);
-    expect(mixedEager).toBeVisible();
-    expect(mixedLazy).toBeVisible();
   },
 };
