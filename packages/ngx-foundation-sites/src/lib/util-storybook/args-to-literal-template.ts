@@ -49,14 +49,22 @@ export function argsToLiteralTemplate<T extends Record<string, unknown>>(
   args: T,
   { exclude, include }: ArgsToLiteralTemplateOptions<T> = {},
 ): string {
+  // Convert to Sets for O(1) lookups (inspired by Storybook's argsToTemplate)
+  const excludeSet = exclude ? new Set(exclude) : null;
+  const includeSet = include ? new Set(include) : null;
+
   return Object.entries(args)
-    .filter(([key]) => {
+    .filter(([key, value]) => {
+      // Skip undefined values (matches Storybook behavior)
+      if (value === undefined) {
+        return false;
+      }
       // Apply include filter
-      if (include && !include.includes(key as keyof T)) {
+      if (includeSet && !includeSet.has(key as keyof T)) {
         return false;
       }
       // Apply exclude filter
-      if (exclude && exclude.includes(key as keyof T)) {
+      if (excludeSet && excludeSet.has(key as keyof T)) {
         return false;
       }
       return true;

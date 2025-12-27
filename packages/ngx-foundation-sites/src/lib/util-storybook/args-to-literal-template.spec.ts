@@ -53,9 +53,18 @@ describe('argsToLiteralTemplate', () => {
       expect(result).toBe('[data]="null"');
     });
 
-    it('should format undefined values', () => {
+    it('should skip undefined values', () => {
       const result = argsToLiteralTemplate({ data: undefined });
-      expect(result).toBe('[data]="undefined"');
+      expect(result).toBe('');
+    });
+
+    it('should skip undefined values while keeping other properties', () => {
+      const result = argsToLiteralTemplate({
+        name: 'test',
+        data: undefined,
+        count: 42,
+      });
+      expect(result).toBe('[name]="\'test\'" [count]="42"');
     });
   });
 
