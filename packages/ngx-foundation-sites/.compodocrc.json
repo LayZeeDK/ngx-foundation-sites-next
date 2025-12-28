@@ -1,10 +1,11 @@
 {
-  "exportFormat": "json",
-  "disablePrivate": true,
-  "disableProtected": true,
+  "disableCoverage": true,
   "disableInternal": true,
   "disableLifeCycleHooks": true,
+  "disablePrivate": true,
+  "disableProtected": true,
+  "disableRoutesGraph": true,
   "disableSourceCode": true,
-  "disableCoverage": true,
-  "disableRoutesGraph": true
+  "exportFormat": "json",
+  "output": "packages/ngx-foundation-sites"
 }
