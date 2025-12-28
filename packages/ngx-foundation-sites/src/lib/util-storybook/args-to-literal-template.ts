@@ -20,8 +20,9 @@ export interface ArgsToLiteralTemplateOptions<T> {
  * Converts story args to Angular template bindings with literal values.
  *
  * Unlike Storybook's `argsToTemplate` which outputs `[propName]="propName"` (referencing a variable),
- * this function outputs `[propName]="true"` or `[propName]="'stringValue'"` with the actual values
- * embedded in the template.
+ * this function outputs the actual values embedded in the template:
+ * - String values use static attribute syntax: `name="test"`
+ * - Other values use property binding syntax: `[disabled]="true"`
  *
  * @example
  * ```typescript
@@ -29,7 +30,7 @@ export interface ArgsToLiteralTemplateOptions<T> {
  * argsToLiteralTemplate({ allowAllClosed: true, disabled: false, name: 'test' })
  *
  * // Output
- * '[allowAllClosed]="true" [disabled]="false" [name]="\'test\'"'
+ * '[allowAllClosed]="true" [disabled]="false" name="test"'
  * ```
  *
  * @example
@@ -69,15 +70,35 @@ export function argsToLiteralTemplate<T extends Record<string, unknown>>(
       }
       return true;
     })
-    .map(([key, value]) => {
-      const formattedValue = formatValue(value);
-      return `[${key}]="${formattedValue}"`;
-    })
+    .map(([key, value]) => formatBinding(key, value))
     .join(' ');
 }
 
 /**
- * Formats a value for embedding in an Angular template binding.
+ * Formats a key-value pair as an Angular template binding.
+ *
+ * Uses static attribute syntax (`prop="value"`) for string literals,
+ * and property binding syntax (`[prop]="value"`) for other types.
+ *
+ * @param key - The property name
+ * @param value - The value to bind
+ * @returns A formatted Angular template binding
+ */
+function formatBinding(key: string, value: unknown): string {
+  // Use static attribute syntax for strings (cleaner output)
+  if (typeof value === 'string') {
+    // Escape double quotes for HTML attribute value
+    const escaped = value.replace(/"/g, '&quot;');
+    return `${key}="${escaped}"`;
+  }
+
+  // Use property binding syntax for non-string values
+  const formattedValue = formatValue(value);
+  return `[${key}]="${formattedValue}"`;
+}
+
+/**
+ * Formats a value for embedding in an Angular template property binding.
  *
  * @param value - The value to format
  * @returns A string representation suitable for Angular template binding
@@ -95,11 +116,6 @@ function formatValue(value: unknown): string {
     case 'boolean':
     case 'number':
       return String(value);
-
-    case 'string':
-      // Strings need to be wrapped in single quotes within the double-quoted binding
-      // Escape any existing single quotes in the string
-      return `'${value.replace(/'/g, "\\'")}'`;
 
     case 'object':
       // For arrays and objects, use JSON serialization

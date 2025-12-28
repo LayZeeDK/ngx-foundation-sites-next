@@ -33,19 +33,19 @@ describe('argsToLiteralTemplate', () => {
       expect(result).toBe('[ratio]="3.14"');
     });
 
-    it('should format strings with single quotes', () => {
+    it('should format strings as static attributes', () => {
       const result = argsToLiteralTemplate({ name: 'hello' });
-      expect(result).toBe('[name]="\'hello\'"');
+      expect(result).toBe('name="hello"');
     });
 
     it('should format empty strings', () => {
       const result = argsToLiteralTemplate({ name: '' });
-      expect(result).toBe('[name]="\'\'"');
+      expect(result).toBe('name=""');
     });
 
-    it('should escape single quotes in strings', () => {
-      const result = argsToLiteralTemplate({ message: "it's working" });
-      expect(result).toBe("[message]=\"'it\\'s working'\"");
+    it('should escape double quotes in strings', () => {
+      const result = argsToLiteralTemplate({ message: 'Say "hello"' });
+      expect(result).toBe('message="Say &quot;hello&quot;"');
     });
 
     it('should format null values', () => {
@@ -64,7 +64,7 @@ describe('argsToLiteralTemplate', () => {
         data: undefined,
         count: 42,
       });
-      expect(result).toBe('[name]="\'test\'" [count]="42"');
+      expect(result).toBe('name="test" [count]="42"');
     });
   });
 
@@ -112,9 +112,7 @@ describe('argsToLiteralTemplate', () => {
         delay: 300,
         label: 'Submit',
       });
-      expect(result).toBe(
-        '[enabled]="true" [delay]="300" [label]="\'Submit\'"',
-      );
+      expect(result).toBe('[enabled]="true" [delay]="300" label="Submit"');
     });
 
     it('should return empty string for empty object', () => {
@@ -218,6 +216,15 @@ describe('argsToLiteralTemplate', () => {
       expect(result).toBe(
         '[deepLink]="true" [deepLinkSmudge]="true" [deepLinkSmudgeDelay]="300" [updateHistory]="false"',
       );
+    });
+
+    it('should format mixed string and boolean args', () => {
+      const result = argsToLiteralTemplate({
+        color: 'primary',
+        disabled: false,
+      });
+      // String uses static attribute, boolean uses property binding
+      expect(result).toBe('color="primary" [disabled]="false"');
     });
   });
 });
