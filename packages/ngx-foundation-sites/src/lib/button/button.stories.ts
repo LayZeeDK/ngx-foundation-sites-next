@@ -423,6 +423,7 @@ interface ThemeControlsArgs {
   buttonFontSize: string;
   buttonRadius: string;
   buttonOpacityDisabled: number;
+  buttonTransition: string;
 }
 type ThemeControlsStory = StoryObj<ThemeControlsArgs>;
 
@@ -442,6 +443,7 @@ export const ThemeControls: ThemeControlsStory = {
     buttonFontSize: '0.9rem',
     buttonRadius: '0',
     buttonOpacityDisabled: 0.25,
+    buttonTransition: 'background-color 0.25s ease-out, color 0.25s ease-out',
   },
   argTypes: {
     buttonPadding: {
@@ -464,6 +466,11 @@ export const ThemeControls: ThemeControlsStory = {
       control: { type: 'range', min: 0, max: 1, step: 0.05 },
       table: { category: 'CSS Custom Properties' },
     },
+    buttonTransition: {
+      name: '--nfs-button-transition',
+      control: 'text',
+      table: { category: 'CSS Custom Properties' },
+    },
   },
   render: (args) => ({
     props: args,
@@ -473,6 +480,7 @@ export const ThemeControls: ThemeControlsStory = {
         [style.--nfs-button-font-size]="buttonFontSize"
         [style.--nfs-button-radius]="buttonRadius"
         [style.--nfs-button-opacity-disabled]="buttonOpacityDisabled"
+        [style.--nfs-button-transition]="buttonTransition"
       >
         <div class="margin-bottom-1">
           <button nfsButton color="primary" class="margin-right-1">Primary</button>
@@ -516,6 +524,9 @@ export const ThemeControls: ThemeControlsStory = {
     const disabledButton = canvas.getByRole('button', { name: /Disabled/i });
     const disabledStyle = getComputedStyle(disabledButton);
     expect(disabledStyle.opacity).toBe(String(args.buttonOpacityDisabled));
+
+    // Verify transition is applied
+    expect(primaryStyle.transition).toBe(args.buttonTransition);
   },
 };
 
