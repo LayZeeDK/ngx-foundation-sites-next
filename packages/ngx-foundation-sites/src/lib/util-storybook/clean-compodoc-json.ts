@@ -1,23 +1,11 @@
-/** Object with potentially absent properties (compatible with exactOptionalPropertyTypes) */
-type JsonObject = { [K in string]?: JsonValue };
-
-/** JSON-compatible value type for recursive transformation */
-type JsonValue =
-  | string
-  | number
-  | boolean
-  | null
-  | JsonValue[]
-  | JsonObject;
+import type { JsonObject, JsonValue } from './json-value';
 
 /**
  * Recursively transforms Compodoc JSON to clean up placeholder strings.
  * Compodoc uses `___COMPODOC_EMPTY_LINE___` to preserve empty lines in JSDoc,
  * but Storybook doesn't process these. This removes them (surrounding \n provides spacing).
  */
-export function cleanCompodocJson<T extends JsonObject>(
-  obj: T,
-): T {
+export function cleanCompodocJson<T extends JsonObject>(obj: T): T {
   return cleanValue(obj) as T;
 }
 

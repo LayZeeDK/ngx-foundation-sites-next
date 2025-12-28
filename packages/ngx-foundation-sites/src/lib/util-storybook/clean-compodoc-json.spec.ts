@@ -121,7 +121,10 @@ describe('cleanCompodocJson', () => {
 
     it('should handle objects containing arrays of strings', () => {
       const result = cleanCompodocJson({
-        tags: ['tag1___COMPODOC_EMPTY_LINE___', '___COMPODOC_EMPTY_LINE___tag2'],
+        tags: [
+          'tag1___COMPODOC_EMPTY_LINE___',
+          '___COMPODOC_EMPTY_LINE___tag2',
+        ],
       });
       expect(result).toEqual({
         tags: ['tag1', 'tag2'],
@@ -138,7 +141,8 @@ describe('cleanCompodocJson', () => {
         inputs: [
           {
             name: 'size',
-            description: 'Size variant.\n___COMPODOC_EMPTY_LINE___\nOptions: tiny, small, default, large',
+            description:
+              'Size variant.\n___COMPODOC_EMPTY_LINE___\nOptions: tiny, small, default, large',
           },
         ],
       };
@@ -149,7 +153,8 @@ describe('cleanCompodocJson', () => {
         inputs: [
           {
             name: 'size',
-            description: 'Size variant.\n\nOptions: tiny, small, default, large',
+            description:
+              'Size variant.\n\nOptions: tiny, small, default, large',
           },
         ],
       });
