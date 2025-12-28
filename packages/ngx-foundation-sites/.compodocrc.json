@@ -7,5 +7,6 @@
   "disableRoutesGraph": true,
   "disableSourceCode": true,
   "exportFormat": "json",
-  "output": "packages/ngx-foundation-sites"
+  "output": "packages/ngx-foundation-sites",
+  "tsconfig": "packages/ngx-foundation-sites/tsconfig.lib.json"
 }
