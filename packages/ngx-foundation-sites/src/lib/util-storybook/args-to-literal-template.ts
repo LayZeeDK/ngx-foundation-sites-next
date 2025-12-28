@@ -14,6 +14,10 @@ export interface ArgsToLiteralTemplateOptions<T> {
    * Properties to include in the output. If not specified, all properties are included.
    */
   readonly include?: (keyof T)[];
+  /**
+   * Number of spaces for indentation in multiline output. Defaults to 2.
+   */
+  readonly indentSize?: number;
 }
 
 /**
@@ -24,22 +28,31 @@ export interface ArgsToLiteralTemplateOptions<T> {
  * - String values use static attribute syntax: `name="test"`
  * - Other values use property binding syntax: `[disabled]="true"`
  *
+ * When more than 2 properties are present, each binding is placed on its own line
+ * with configurable indentation for better readability.
+ *
  * @example
  * ```typescript
- * // Input
- * argsToLiteralTemplate({ allowAllClosed: true, disabled: false, name: 'test' })
+ * // Two properties (single line)
+ * argsToLiteralTemplate({ disabled: false, name: 'test' })
+ * // Output: '[disabled]="false" name="test"'
  *
- * // Output
- * '[allowAllClosed]="true" [disabled]="false" name="test"'
+ * // Three+ properties (multiline with indentation)
+ * argsToLiteralTemplate({ allowAllClosed: true, disabled: false, name: 'test' })
+ * // Output: '\n  [allowAllClosed]="true"\n  [disabled]="false"\n  name="test"\n'
+ * // Which renders as:
+ * // <my-component
+ * //   [allowAllClosed]="true"
+ * //   [disabled]="false"
+ * //   name="test"
+ * // >
  * ```
  *
  * @example
  * ```typescript
  * // With exclude option
  * argsToLiteralTemplate({ disabled: true, name: 'test' }, { exclude: ['name'] })
- *
- * // Output
- * '[disabled]="true"'
+ * // Output: '[disabled]="true"'
  * ```
  *
  * @param args - The story args object containing property names and values
@@ -48,13 +61,13 @@ export interface ArgsToLiteralTemplateOptions<T> {
  */
 export function argsToLiteralTemplate<T extends Record<string, unknown>>(
   args: T,
-  { exclude, include }: ArgsToLiteralTemplateOptions<T> = {},
+  { exclude, include, indentSize = 2 }: ArgsToLiteralTemplateOptions<T> = {},
 ): string {
   // Convert to Sets for O(1) lookups (inspired by Storybook's argsToTemplate)
   const excludeSet = exclude ? new Set(exclude) : null;
   const includeSet = include ? new Set(include) : null;
 
-  return Object.entries(args)
+  const bindings = Object.entries(args)
     .filter(([key, value]) => {
       // Skip undefined values (matches Storybook behavior)
       if (value === undefined) {
@@ -70,8 +83,16 @@ export function argsToLiteralTemplate<T extends Record<string, unknown>>(
       }
       return true;
     })
-    .map(([key, value]) => formatBinding(key, value))
-    .join(' ');
+    .map(([key, value]) => formatBinding(key, value));
+
+  // Use multiline format when more than 2 properties
+  // Format: \n<indent>binding1\n<indent>binding2\n (initial newline, indented lines, trailing newline)
+  if (bindings.length > 2) {
+    const indent = ' '.repeat(indentSize);
+    return '\n' + indent + bindings.join('\n' + indent) + '\n';
+  }
+
+  return bindings.join(' ');
 }
 
 /**

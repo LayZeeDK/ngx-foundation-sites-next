@@ -106,13 +106,16 @@ describe('argsToLiteralTemplate', () => {
       expect(result).toBe('[disabled]="true" [count]="5"');
     });
 
-    it('should handle mixed value types', () => {
+    it('should use newlines with indentation for more than two properties', () => {
       const result = argsToLiteralTemplate({
         enabled: true,
         delay: 300,
         label: 'Submit',
       });
-      expect(result).toBe('[enabled]="true" [delay]="300" label="Submit"');
+      // Format: initial newline, 2-space indent per line, trailing newline
+      expect(result).toBe(
+        '\n  [enabled]="true"\n  [delay]="300"\n  label="Submit"\n',
+      );
     });
 
     it('should return empty string for empty object', () => {
@@ -194,27 +197,65 @@ describe('argsToLiteralTemplate', () => {
     });
   });
 
+  describe('indentSize option', () => {
+    it('should use default 2-space indentation', () => {
+      const result = argsToLiteralTemplate({
+        a: true,
+        b: false,
+        c: 'test',
+      });
+      expect(result).toBe('\n  [a]="true"\n  [b]="false"\n  c="test"\n');
+    });
+
+    it('should use custom 4-space indentation', () => {
+      const result = argsToLiteralTemplate(
+        { a: true, b: false, c: 'test' },
+        { indentSize: 4 },
+      );
+      expect(result).toBe('\n    [a]="true"\n    [b]="false"\n    c="test"\n');
+    });
+
+    it('should use 0-space indentation (no indent)', () => {
+      const result = argsToLiteralTemplate(
+        { a: true, b: false, c: 'test' },
+        { indentSize: 0 },
+      );
+      expect(result).toBe('\n[a]="true"\n[b]="false"\nc="test"\n');
+    });
+
+    it('should not affect single-line output', () => {
+      const result = argsToLiteralTemplate(
+        { a: true, b: false },
+        { indentSize: 8 },
+      );
+      // 2 properties = single line, indentSize ignored
+      expect(result).toBe('[a]="true" [b]="false"');
+    });
+  });
+
   describe('real-world Angular component scenarios', () => {
-    it('should format typical accordion args', () => {
+    it('should format typical accordion args with multiline', () => {
       const result = argsToLiteralTemplate({
         multiExpandable: true,
         disabled: false,
         allowAllClosed: true,
       });
+      // 3 properties use newlines with indentation
       expect(result).toBe(
-        '[multiExpandable]="true" [disabled]="false" [allowAllClosed]="true"',
+        '\n  [multiExpandable]="true"\n  [disabled]="false"\n  [allowAllClosed]="true"\n',
       );
     });
 
-    it('should format args with numeric delay values', () => {
+    it('should format args with numeric delay values multiline', () => {
       const result = argsToLiteralTemplate({
         deepLink: true,
         deepLinkSmudge: true,
         deepLinkSmudgeDelay: 300,
         updateHistory: false,
       });
+      // 4 properties use newlines with indentation
       expect(result).toBe(
-        '[deepLink]="true" [deepLinkSmudge]="true" [deepLinkSmudgeDelay]="300" [updateHistory]="false"',
+        '\n  [deepLink]="true"\n  [deepLinkSmudge]="true"\n  [deepLinkSmudgeDelay]="300"\n  [updateHistory]="false"\n',
       );
     });
 
@@ -223,7 +264,7 @@ describe('argsToLiteralTemplate', () => {
         color: 'primary',
         disabled: false,
       });
-      // String uses static attribute, boolean uses property binding
+      // 2 properties use single line, string uses static attribute
       expect(result).toBe('color="primary" [disabled]="false"');
     });
   });
