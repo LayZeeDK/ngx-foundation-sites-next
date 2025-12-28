@@ -9,7 +9,8 @@ import docJson from '../documentation.json';
  */
 function cleanCompodocJson<T>(obj: T): T {
   if (typeof obj === 'string') {
-    return obj.split('___COMPODOC_EMPTY_LINE___').join('\n') as T;
+    // Remove Compodoc placeholder - the surrounding \n already provides spacing
+    return obj.split('___COMPODOC_EMPTY_LINE___').join('') as T;
   }
   if (Array.isArray(obj)) {
     return obj.map(cleanCompodocJson) as T;
