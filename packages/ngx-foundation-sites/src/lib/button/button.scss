@@ -1,0 +1,49 @@
+// ═══════════════════════════════════════════════════════════════════════════════
+// ngx-foundation-sites Button Component Styles
+// ═══════════════════════════════════════════════════════════════════════════════
+//
+// This stylesheet loads Foundation's button styles and applies custom
+// overrides for CSS Custom Property theming.
+//
+// ═══════════════════════════════════════════════════════════════════════════════
+
+// Foundation global settings (custom palette for WCAG AA compliance)
+@use '../foundation-settings' as settings;
+
+// Foundation main module
+@use 'foundation-sites/scss/foundation' as foundation with (
+  $foundation-palette: settings.$foundation-palette
+);
+
+// Include Foundation button styles
+@include foundation.foundation-button;
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// CSS Custom Property Theming
+// ═══════════════════════════════════════════════════════════════════════════════
+// Enable runtime theming via CSS custom properties.
+// Set these on any ancestor element to customize buttons.
+//
+// Available properties:
+//   --nfs-button-padding           Button padding
+//   --nfs-button-font-size         Font size
+//   --nfs-button-radius            Border radius
+//   --nfs-button-opacity-disabled  Opacity for disabled state
+//   --nfs-button-transition        Transition for hover effects
+// ═══════════════════════════════════════════════════════════════════════════════
+
+.button {
+  padding: var(--nfs-button-padding, 0.85em 1em);
+  font-size: var(--nfs-button-font-size, 0.9rem);
+  border-radius: var(--nfs-button-radius, 0);
+  transition: var(
+    --nfs-button-transition,
+    background-color 0.25s ease-out,
+    color 0.25s ease-out
+  );
+
+  &.disabled,
+  &:disabled {
+    opacity: var(--nfs-button-opacity-disabled, 0.25);
+  }
+}
