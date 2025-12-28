@@ -4,7 +4,7 @@ import { NfsButton } from './button';
 import { argsToLiteralTemplate } from '../util-storybook/args-to-literal-template';
 
 const meta: Meta<NfsButton> = {
-  title: 'Components/Button',
+  title: 'Controls/Button',
   component: NfsButton,
   tags: ['autodocs'],
   argTypes: {
