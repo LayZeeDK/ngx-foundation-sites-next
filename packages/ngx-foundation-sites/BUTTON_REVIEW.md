@@ -197,14 +197,9 @@ Same applies to `softDisabled`.
 
 ## Suggestions for Improvement
 
-### 9. Consider Adding Button Group Support
+### 9. ~~Consider Adding Button Group Support~~ N/A
 
-**Severity:** Enhancement
-
-Foundation has a [Button Group](https://get.foundation/sites/docs/button-group.html) component that works with buttons. Consider:
-
-- Ensuring `NfsButton` works well inside a future `NfsButtonGroup`
-- Adding documentation about using buttons in groups
+**Status:** Intentionally not supported — Button Group is out of scope for this library.
 
 ---
 
@@ -279,8 +274,8 @@ All 13 Button Storybook interaction tests pass:
 | -------------------- | ----- |
 | Critical Issues      | 3     |
 | Missing Features     | 2     |
-| Documentation Issues | 2     |
-| Suggestions          | 3     |
+| Documentation Issues | 1     |
+| Suggestions          | 2     |
 
 ### Priority Fixes
 
@@ -290,5 +285,5 @@ All 13 Button Storybook interaction tests pass:
 
 ---
 
-_Review conducted: 2024-12-28_
+_Review conducted: 2025-12-28_
 _Reviewed against: BUTTON_API_DESIGN.md, Foundation for Sites 6.9.0_
