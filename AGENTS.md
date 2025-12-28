@@ -207,9 +207,63 @@ This is an integrated Nx monorepo with Angular support.
 
 ## Testing
 
-- **Unit tests**: Vitest
-- **E2E tests**: Playwright
-- **Verification**: `npm run ci` (or individual tasks: `npm run lint`, `npm run test`, `npm run build`, `npm run e2e`)
+### Testing Strategy
+
+**Prefer Storybook interactive tests over component unit tests.** Storybook's play functions provide better documentation-as-tests and cover real user interactions in a browser environment.
+
+| Test Type             | Tool                     | Use Case                                                      |
+| --------------------- | ------------------------ | ------------------------------------------------------------- |
+| **Interactive tests** | Storybook play functions | UI interactions, state changes, a11y checks                   |
+| **E2E tests**         | Playwright               | Web-native APIs not testable in Storybook (History API, etc.) |
+| **Unit tests**        | Vitest                   | Pure functions, services, complex logic (rare)                |
+
+### Storybook Interactive Tests (Primary)
+
+Use Storybook play functions for most component testing:
+
+```typescript
+export const Default: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByRole('button');
+
+    // Interaction test
+    await userEvent.click(button);
+    await expect(button).toHaveAttribute('aria-expanded', 'true');
+
+    // a11y check
+    await expect(button).toBeAccessible();
+  },
+};
+```
+
+### Playwright E2E Tests (Web-Native APIs)
+
+Use Playwright e2e tests when testing features that require real browser APIs not available in Storybook's test environment:
+
+- **History API** (deep linking, URL hash changes, pushState/replaceState)
+- **Navigation** (page reloads, back/forward)
+- **Storage APIs** (localStorage, sessionStorage persistence)
+- **Viewport-dependent behaviors** (responsive breakpoints)
+
+Navigate to Storybook's **iframe story view** for isolation:
+
+```typescript
+// packages/ngx-foundation-sites-e2e/src/example.spec.ts
+test('deep link updates URL hash', async ({ page }) => {
+  // Use iframe view for isolated story testing
+  await page.goto('/iframe.html?id=components-accordion--deep-link&viewMode=story');
+
+  // Test History API integration
+  await page.click('[data-panel-id="section-2"] button');
+  await expect(page).toHaveURL(/#section-2$/);
+});
+```
+
+### Verification
+
+- **Full CI**: `npm run ci`
+- **Individual tasks**: `npm run lint`, `npm run test`, `npm run build`, `npm run e2e`
 
 ## Tooling
 
