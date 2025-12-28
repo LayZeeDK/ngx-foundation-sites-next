@@ -2,6 +2,8 @@ import { type Meta, type StoryObj } from '@storybook/angular';
 import { expect, userEvent, within } from 'storybook/test';
 import { NfsButton } from './button';
 import { argsToLiteralTemplate } from '../util-storybook/args-to-literal-template';
+import { pxToEm } from '../util-storybook/px-to-em';
+import { pxToRem } from '../util-storybook/px-to-rem';
 
 const meta: Meta<NfsButton> = {
   title: 'Controls/Button',
@@ -486,22 +488,34 @@ export const ThemeControls: ThemeControlsStory = {
     `,
   }),
   play: async ({ canvasElement, args }) => {
-    // Verify CSS custom properties are applied
-    const container = canvasElement.querySelector('div') as HTMLElement;
-    const style = getComputedStyle(container);
+    const canvas = within(canvasElement);
 
-    expect(style.getPropertyValue('--nfs-button-padding').trim()).toBe(
-      args.buttonPadding,
+    // Verify CSS custom properties actually affect button computed styles
+    const primaryButton = canvas.getByRole('button', { name: /Primary/i });
+    const primaryStyle = getComputedStyle(primaryButton);
+    const fontSizePx = parseFloat(primaryStyle.fontSize);
+
+    // Verify padding is applied (em is relative to element's font-size)
+    // Format: '0.85em 1em' = vertical horizontal
+    const [expectedVertical, expectedHorizontal] =
+      args.buttonPadding.split(' ');
+    expect(pxToEm(primaryStyle.paddingTop, fontSizePx)).toBe(expectedVertical);
+    expect(pxToEm(primaryStyle.paddingLeft, fontSizePx)).toBe(
+      expectedHorizontal,
     );
-    expect(style.getPropertyValue('--nfs-button-font-size').trim()).toBe(
-      args.buttonFontSize,
-    );
-    expect(style.getPropertyValue('--nfs-button-radius').trim()).toBe(
-      args.buttonRadius,
-    );
-    expect(style.getPropertyValue('--nfs-button-opacity-disabled').trim()).toBe(
-      String(args.buttonOpacityDisabled),
-    );
+
+    // Verify font-size is applied (convert computed px back to rem for readable assertion)
+    expect(pxToRem(primaryStyle.fontSize)).toBe(args.buttonFontSize);
+
+    // Verify border-radius is applied (computed styles always use 'px')
+    const expectedRadius =
+      args.buttonRadius === '0' ? '0px' : args.buttonRadius;
+    expect(primaryStyle.borderRadius).toBe(expectedRadius);
+
+    // Verify disabled button opacity
+    const disabledButton = canvas.getByRole('button', { name: /Disabled/i });
+    const disabledStyle = getComputedStyle(disabledButton);
+    expect(disabledStyle.opacity).toBe(String(args.buttonOpacityDisabled));
   },
 };
 
