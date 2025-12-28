@@ -6,95 +6,43 @@ This document reviews the `NfsButton` implementation against the [BUTTON_API_DES
 
 ## Critical Issues
 
-### 1. `softDisabled` Does Not Prevent Click Events
+### ~~1. `softDisabled` Does Not Prevent Click Events~~ ✅ RESOLVED
 
-**Severity:** High
+**Status:** Fixed — Click handler in capture phase blocks all clicks when `softDisabled` is true.
 
-**Issue:** The `softDisabled` input only applies visual styling (`aria-disabled="true"`, `.disabled` class) but does NOT prevent click events from firing. Consumers must manually check the disabled state in their click handlers.
-
-**Current Behavior:**
+**Implementation:** Uses `addEventListener` with `capture: true` to intercept clicks BEFORE Angular's template bindings (which use bubble phase). This ensures `stopImmediatePropagation()` blocks ALL click handlers including template `(click)` bindings.
 
 ```typescript
-// button.ts - only visual/ARIA attributes, no click prevention
-'[class.disabled]': 'softDisabled()',
-'[attr.aria-disabled]': 'softDisabled() || null',
-```
-
-**Expected Behavior:** Angular Material's `disabledInteractive` prevents the click event from propagating while keeping the button focusable.
-
-**Recommendation:** Add a host listener to prevent default and stop propagation when `softDisabled()` is true:
-
-```typescript
-host: {
-  '(click)': 'softDisabled() && $event.preventDefault() && $event.stopImmediatePropagation()',
+constructor() {
+  const destroyRef = inject(DestroyRef);
+  const handleClick = (event: MouseEvent): void => {
+    if (this.softDisabled()) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    }
+  };
+  this.#elementRef.nativeElement.addEventListener('click', handleClick, { capture: true });
+  destroyRef.onDestroy(() => {
+    this.#elementRef.nativeElement.removeEventListener('click', handleClick, { capture: true });
+  });
 }
 ```
 
-Or use a more robust approach with a method:
-
-```typescript
-@HostListener('click', ['$event'])
-protected _handleClick(event: MouseEvent): void {
-  if (this.softDisabled()) {
-    event.preventDefault();
-    event.stopImmediatePropagation();
-  }
-}
-```
+**Test Coverage:** `SoftDisabledClickPrevention` story verifies button clicks, form submission, and anchor navigation are all prevented.
 
 ---
 
-### 2. Anchor `softDisabled` Does Not Prevent Navigation
+### ~~2. Anchor `softDisabled` Does Not Prevent Navigation~~ ✅ RESOLVED
 
-**Severity:** High
-
-**Issue:** For `<a nfsButton [softDisabled]="true">`, the `tabindex="-1"` prevents keyboard activation, but clicking the link still navigates (if `href` is present).
-
-**Current Implementation:**
-
-```typescript
-'[attr.tabindex]': 'softDisabled() && isAnchor ? -1 : null',
-```
-
-**Missing:** Click prevention for anchors when `softDisabled` is true.
+**Status:** Fixed — Same capture-phase click handler prevents anchor navigation via `event.preventDefault()`.
 
 ---
 
-### 3. `softDisabled` Submit Buttons Still Trigger Form Submission
+### ~~3. `softDisabled` Submit Buttons Still Trigger Form Submission~~ ✅ RESOLVED
 
-**Severity:** High
+**Status:** Fixed — Same capture-phase click handler prevents form submission via `event.preventDefault()`.
 
-**Issue:** A `softDisabled` button with `type="submit"` inside a form will still trigger:
-
-- Native form `submit` event
-- Angular's `(ngSubmit)` output
-
-**Example of broken behavior:**
-
-```html
-<form (ngSubmit)="onSubmit()">
-  <input type="text" />
-  <!-- This button looks disabled but STILL submits the form! -->
-  <button nfsButton type="submit" [softDisabled]="!isValid">Submit</button>
-</form>
-```
-
-**Recommendation:** The click handler must call `event.preventDefault()` to prevent form submission:
-
-```typescript
-host: {
-  '(click)': '_handleClick($event)',
-}
-
-protected _handleClick(event: MouseEvent): void {
-  if (this.softDisabled()) {
-    event.preventDefault();
-    event.stopImmediatePropagation();
-  }
-}
-```
-
-This single handler addresses issues #1, #2, and #3 together.
+**Test Coverage:** `SoftDisabledClickPrevention` story includes form submission test.
 
 ---
 
@@ -244,7 +192,7 @@ protected _handleSpaceKey(event: KeyboardEvent): void {
 
 ### Passing Tests
 
-All 13 Button Storybook interaction tests pass:
+All 14 Button Storybook interaction tests pass:
 
 - Default
 - ColorVariants
@@ -258,11 +206,12 @@ All 13 Button Storybook interaction tests pass:
 - KeyboardNavigation
 - ThemeControls
 - AccessibilityComprehensive
+- SoftDisabledClickPrevention _(added 2025-12-29)_
 
 ### Missing Test Coverage
 
-1. **Click prevention for `softDisabled`** - No test verifies clicks are prevented
-2. **Form submission prevention** - No test verifies `softDisabled` submit buttons don't trigger `(ngSubmit)`
+1. ~~**Click prevention for `softDisabled`**~~ ✅ Now tested in `SoftDisabledClickPrevention`
+2. ~~**Form submission prevention**~~ ✅ Now tested in `SoftDisabledClickPrevention`
 3. **Space key on anchor buttons** - No test for keyboard activation
 4. **Dynamic input changes** - No tests for changing inputs at runtime
 
@@ -270,20 +219,21 @@ All 13 Button Storybook interaction tests pass:
 
 ## Summary
 
-| Category             | Count |
-| -------------------- | ----- |
-| Critical Issues      | 3     |
-| Missing Features     | 2     |
-| Documentation Issues | 1     |
-| Suggestions          | 2     |
+| Category             | Count | Resolved |
+| -------------------- | ----- | -------- |
+| Critical Issues      | 3     | 3 ✅     |
+| Missing Features     | 2     | 0        |
+| Documentation Issues | 1     | 0        |
+| Suggestions          | 2     | 0        |
 
 ### Priority Fixes
 
-1. **[Critical]** Add click prevention for `softDisabled` buttons (fixes click events, anchor navigation, AND form submission in one handler)
+1. ~~**[Critical]** Add click prevention for `softDisabled` buttons~~ ✅ DONE
 2. **[Medium]** Add Space key handling for anchor buttons with `role="button"`
 3. **[Low]** Add `booleanAttribute` transforms for boolean inputs
 
 ---
 
 _Review conducted: 2025-12-28_
+_Last updated: 2025-12-29 (softDisabled click prevention implemented)_
 _Reviewed against: BUTTON_API_DESIGN.md, Foundation for Sites 6.9.0_
