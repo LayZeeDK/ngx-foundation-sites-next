@@ -187,23 +187,11 @@ Same applies to `softDisabled`.
 
 ---
 
-### 8. `isAnchor` Visibility
+### 8. ~~`isAnchor` Visibility~~ ✅ RESOLVED
 
-**Severity:** Low
+**Status:** Fixed - `disableProtected: true` in `.compodocrc.json` correctly filters protected members from Storybook Controls after regenerating `documentation.json`.
 
-**Issue:** `isAnchor` is `protected` but appears in Storybook Controls as a settable property. According to AGENTS.md guidelines:
-
-> **`protected`**: Use for members accessed by component templates OR Angular signal queries
-
-Since `isAnchor` IS used in the template (via host bindings), `protected` is correct. However, it shows up in Storybook which may confuse users.
-
-**Recommendation:** The Storybook `argTypes` should explicitly hide `isAnchor`:
-
-```typescript
-argTypes: {
-  isAnchor: { table: { disable: true } },
-}
-```
+**Root Cause:** Stale Nx cache was serving old `documentation.json`. Added `inputs` to `storybook` and `build-storybook` targets in `project.json` to ensure cache invalidates when `.compodocrc.json` changes.
 
 ---
 
@@ -291,7 +279,7 @@ All 13 Button Storybook interaction tests pass:
 | -------------------- | ----- |
 | Critical Issues      | 3     |
 | Missing Features     | 2     |
-| Documentation Issues | 3     |
+| Documentation Issues | 2     |
 | Suggestions          | 3     |
 
 ### Priority Fixes
@@ -299,7 +287,6 @@ All 13 Button Storybook interaction tests pass:
 1. **[Critical]** Add click prevention for `softDisabled` buttons (fixes click events, anchor navigation, AND form submission in one handler)
 2. **[Medium]** Add Space key handling for anchor buttons with `role="button"`
 3. **[Low]** Add `booleanAttribute` transforms for boolean inputs
-4. **[Low]** Hide `isAnchor` from Storybook Controls
 
 ---
 

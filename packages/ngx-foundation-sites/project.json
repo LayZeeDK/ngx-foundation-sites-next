@@ -50,6 +50,11 @@
     "storybook": {
       "executor": "@storybook/angular:start-storybook",
       "continuous": true,
+      "inputs": [
+        "default",
+        "{projectRoot}/.compodocrc.json",
+        "{projectRoot}/.storybook/**/*"
+      ],
       "options": {
         "port": 4400,
         "configDir": "packages/ngx-foundation-sites/.storybook",
@@ -70,6 +75,11 @@
     },
     "build-storybook": {
       "executor": "@storybook/angular:build-storybook",
+      "inputs": [
+        "default",
+        "{projectRoot}/.compodocrc.json",
+        "{projectRoot}/.storybook/**/*"
+      ],
       "outputs": ["{options.outputDir}", "{projectRoot}/documentation.json"],
       "options": {
         "outputDir": "dist/storybook/ngx-foundation-sites",
