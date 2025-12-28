@@ -8,52 +8,10 @@ const meta: Meta<NfsButton> = {
   component: NfsButton,
   tags: ['autodocs'],
   argTypes: {
-    size: {
-      control: 'select',
-      options: ['tiny', 'small', 'default', 'large'],
-      description: 'Button size variant. Maps to Foundation CSS classes.',
-      table: {
-        type: { summary: "'tiny' | 'small' | 'default' | 'large'" },
-        defaultValue: { summary: 'default' },
-      },
-    },
+    // 5+ options renders as "Set object" button; use select for cleaner UX
     color: {
       control: 'select',
       options: ['primary', 'secondary', 'success', 'alert', 'warning'],
-      description: 'Button color variant. Maps to Foundation palette classes.',
-      table: {
-        type: {
-          summary: "'primary' | 'secondary' | 'success' | 'alert' | 'warning'",
-        },
-        defaultValue: { summary: 'primary' },
-      },
-    },
-    fill: {
-      control: 'select',
-      options: ['solid', 'hollow', 'clear'],
-      description:
-        'Button fill style. Solid (default), hollow (outline), or clear (text only).',
-      table: {
-        type: { summary: "'solid' | 'hollow' | 'clear'" },
-        defaultValue: { summary: 'solid' },
-      },
-    },
-    expanded: {
-      control: 'boolean',
-      description: 'Whether the button spans full width.',
-      table: {
-        type: { summary: 'boolean' },
-        defaultValue: { summary: 'false' },
-      },
-    },
-    softDisabled: {
-      control: 'boolean',
-      description:
-        'Soft disabled state. Button appears disabled but remains focusable for tooltips.',
-      table: {
-        type: { summary: 'boolean' },
-        defaultValue: { summary: 'false' },
-      },
     },
   },
   render: (args) => ({
@@ -73,13 +31,6 @@ type Story = StoryObj<NfsButton>;
  * Default button with primary color.
  */
 export const Default: Story = {
-  args: {
-    color: 'primary',
-    size: 'default',
-    fill: 'solid',
-    expanded: false,
-    softDisabled: false,
-  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const button = canvas.getByRole('button', { name: /Button/i });
