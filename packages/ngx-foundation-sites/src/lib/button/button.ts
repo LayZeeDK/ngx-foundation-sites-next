@@ -127,5 +127,5 @@ export class NfsButton {
    * Whether the host element is an anchor (`<a>`).
    * Used for applying appropriate ARIA attributes (role="button").
    */
-  readonly isAnchor = this.#elementRef.nativeElement.tagName === 'A';
+  protected readonly isAnchor = this.#elementRef.nativeElement.tagName === 'A';
 }

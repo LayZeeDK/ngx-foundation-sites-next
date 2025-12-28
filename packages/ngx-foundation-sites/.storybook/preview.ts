@@ -1,10 +1,19 @@
 import type { Preview } from '@storybook/angular';
 import { setCompodocJson } from '@storybook/addon-docs/angular';
 import docJson from '../documentation.json';
-import { cleanCompodocJson } from './clean-compodoc-json';
+import compodocConfig from '../.compodocrc.json';
+import { cleanCompodocJson } from '../src/lib/util-storybook/clean-compodoc-json';
+import { filterPrivateFields } from '../src/lib/util-storybook/filter-private-fields';
 
 // Configure Compodoc documentation for automatic prop extraction
-setCompodocJson(cleanCompodocJson(docJson));
+// Apply transformations: clean placeholders, then filter ES private fields if configured
+// Note: filterPrivateFields is needed because Compodoc's disablePrivate option doesn't
+// filter ES private fields (#) from JSON output (see https://github.com/compodoc/compodoc/issues/1687)
+let processedJson = cleanCompodocJson(docJson);
+if (compodocConfig.disablePrivate) {
+  processedJson = filterPrivateFields(processedJson);
+}
+setCompodocJson(processedJson);
 
 const preview: Preview = {
   tags: ['autodocs'],

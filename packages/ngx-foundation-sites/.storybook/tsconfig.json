@@ -13,6 +13,7 @@
     "../src/**/*.stories.tsx",
     "../src/**/*.stories.mdx",
     "../documentation.json",
+    "../.compodocrc.json",
     "*.js",
     "*.ts"
   ]

@@ -7,9 +7,6 @@ const config: StorybookConfig = {
     name: '@storybook/angular',
     options: {},
   },
-  features: {
-    angularFilterNonInputControls: true,
-  },
 };
 
 export default config;
