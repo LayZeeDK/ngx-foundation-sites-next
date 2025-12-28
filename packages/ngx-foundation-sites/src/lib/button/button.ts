@@ -1,9 +1,11 @@
 import {
+  afterRenderEffect,
   ChangeDetectionStrategy,
   Component,
   ElementRef,
   inject,
   input,
+  NgZone,
   ViewEncapsulation,
 } from '@angular/core';
 
@@ -128,4 +130,37 @@ export class NfsButton {
    * Used for applying appropriate ARIA attributes (role="button").
    */
   protected readonly isAnchor = this.#elementRef.nativeElement.tagName === 'A';
+
+  constructor() {
+    const ngZone = inject(NgZone);
+    const element = this.#elementRef.nativeElement;
+
+    // Handler to block clicks. Uses capture phase to intercept clicks BEFORE
+    // Angular's template bindings (which use bubble phase).
+    //
+    // Event flow: Document → Element (capture) → Element → Document (bubble)
+    // With capture:true, we run first and can stopImmediatePropagation().
+    const handleClick = (event: MouseEvent): void => {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    };
+
+    // Reactively add/remove click listener based on softDisabled signal.
+    // Only adds listener when softDisabled is true (rare), so most buttons
+    // have zero click-handling overhead. SSR-safe (only runs in browser).
+    afterRenderEffect(() => {
+      if (this.softDisabled()) {
+        // Run outside Angular zone to avoid triggering change detection.
+        ngZone.runOutsideAngular(() => {
+          element.addEventListener('click', handleClick, { capture: true });
+        });
+
+        // Cleanup: remove listener when softDisabled becomes false or on destroy
+        return () => {
+          element.removeEventListener('click', handleClick, { capture: true });
+        };
+      }
+      return;
+    });
+  }
 }

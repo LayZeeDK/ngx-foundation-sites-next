@@ -600,3 +600,109 @@ export const AccessibilityComprehensive: Story = {
     expect(iconBtn).toHaveAttribute('aria-label', 'Close dialog');
   },
 };
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// Soft Disabled Click Prevention
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * Verifies that `softDisabled` buttons prevent click events from firing.
+ *
+ * This is critical for:
+ * - Preventing user-defined click handlers from executing
+ * - Blocking form submission on submit buttons
+ * - Preventing anchor navigation
+ *
+ * Uses `event.preventDefault()` and `event.stopImmediatePropagation()`.
+ */
+export const SoftDisabledClickPrevention: Story = {
+  render: () => ({
+    props: {
+      clickCount: 0,
+      formSubmitCount: 0,
+      anchorClickCount: 0,
+    },
+    template: `
+      <main>
+        <section class="margin-bottom-2">
+          <h3>Button Click Prevention</h3>
+          <button
+            nfsButton
+            [softDisabled]="true"
+            (click)="clickCount = clickCount + 1"
+            data-testid="soft-disabled-btn"
+          >
+            Soft Disabled (clicks: {{ clickCount }})
+          </button>
+        </section>
+
+        <section class="margin-bottom-2">
+          <h3>Form Submission Prevention</h3>
+          <form (ngSubmit)="formSubmitCount = formSubmitCount + 1">
+            <button
+              nfsButton
+              type="submit"
+              [softDisabled]="true"
+              color="success"
+              data-testid="soft-disabled-submit"
+            >
+              Submit (submits: {{ formSubmitCount }})
+            </button>
+          </form>
+        </section>
+
+        <section>
+          <h3>Anchor Navigation Prevention</h3>
+          <a
+            nfsButton
+            href="#should-not-navigate"
+            [softDisabled]="true"
+            (click)="anchorClickCount = anchorClickCount + 1"
+            data-testid="soft-disabled-anchor"
+          >
+            Link Button (clicks: {{ anchorClickCount }})
+          </a>
+        </section>
+      </main>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Test 1: Button click prevention
+    const softDisabledBtn = canvas.getByTestId('soft-disabled-btn');
+    expect(softDisabledBtn).toHaveTextContent('clicks: 0');
+
+    // Simulate click via dispatchEvent (userEvent.click respects aria-disabled)
+    softDisabledBtn.dispatchEvent(
+      new MouseEvent('click', { bubbles: true, cancelable: true }),
+    );
+    expect(softDisabledBtn).toHaveTextContent('clicks: 0');
+
+    // Test 2: Form submission prevention
+    const softDisabledSubmit = canvas.getByTestId('soft-disabled-submit');
+    expect(softDisabledSubmit).toHaveTextContent('submits: 0');
+
+    softDisabledSubmit.dispatchEvent(
+      new MouseEvent('click', { bubbles: true, cancelable: true }),
+    );
+    expect(softDisabledSubmit).toHaveTextContent('submits: 0');
+
+    // Test 3: Anchor navigation prevention
+    const softDisabledAnchor = canvas.getByTestId('soft-disabled-anchor');
+    expect(softDisabledAnchor).toHaveTextContent('clicks: 0');
+
+    // Capture the current URL hash before click
+    const hashBefore = window.location.hash;
+
+    softDisabledAnchor.dispatchEvent(
+      new MouseEvent('click', { bubbles: true, cancelable: true }),
+    );
+
+    // Click handler should not have fired
+    expect(softDisabledAnchor).toHaveTextContent('clicks: 0');
+
+    // Hash should not have changed (navigation prevented)
+    expect(window.location.hash).toBe(hashBefore);
+  },
+};
