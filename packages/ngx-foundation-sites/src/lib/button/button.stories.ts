@@ -209,8 +209,8 @@ export const LinksAsButtons: Story = {
   render: () => ({
     template: `
       <div class="margin-bottom-1">
-        <a nfsButton href="#" class="margin-right-1">Link Button</a>
-        <a nfsButton href="#" color="secondary" class="margin-right-1">Secondary Link</a>
+        <a nfsButton href="#" (click)="$event.preventDefault()" class="margin-right-1">Link Button</a>
+        <a nfsButton href="#" (click)="$event.preventDefault()" color="secondary" class="margin-right-1">Secondary Link</a>
         <a nfsButton [softDisabled]="true">Disabled Link</a>
       </div>
     `,
@@ -525,7 +525,7 @@ export const AccessibilityComprehensive: Story = {
         </div>
         <div class="margin-bottom-1">
           <h3>Links as Buttons</h3>
-          <a nfsButton href="#" class="margin-right-1">Link Button</a>
+          <a nfsButton href="#" (click)="$event.preventDefault()" class="margin-right-1">Link Button</a>
           <a nfsButton [softDisabled]="true">Disabled Link</a>
         </div>
         <div>
