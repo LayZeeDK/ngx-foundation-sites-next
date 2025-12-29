@@ -10,23 +10,46 @@ This document reviews the `NfsButton` implementation against the [BUTTON_API_DES
 
 **Status:** Fixed — Click handler in capture phase blocks all clicks when `softDisabled` is true.
 
-**Implementation:** Uses `addEventListener` with `capture: true` to intercept clicks BEFORE Angular's template bindings (which use bubble phase). This ensures `stopImmediatePropagation()` blocks ALL click handlers including template `(click)` bindings.
+**Implementation:** Uses `Renderer2.listen()` with `{ capture: true }` to intercept clicks BEFORE Angular's template bindings (which use bubble phase). This ensures `stopImmediatePropagation()` blocks ALL click handlers including template `(click)` bindings.
 
 ```typescript
-constructor() {
-  const destroyRef = inject(DestroyRef);
-  const handleClick = (event: MouseEvent): void => {
-    if (this.softDisabled()) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-    }
+readonly #ngZone = inject(NgZone);
+readonly #renderer = inject(Renderer2);
+
+readonly #softDisabledClickEffect = (): (() => void) | undefined => {
+  if (!this.softDisabled()) {
+    return;
+  }
+
+  // Run outside NgZone because we don't change state.
+  // Use capture phase to intercept clicks before Angular event bindings.
+  const removeClickListener = this.#ngZone.runOutsideAngular(() =>
+    this.#renderer.listen(
+      this.#elementRef.nativeElement,
+      'click',
+      (event: MouseEvent) => {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+      },
+      { capture: true },
+    ),
+  );
+
+  return () => {
+    removeClickListener();
   };
-  this.#elementRef.nativeElement.addEventListener('click', handleClick, { capture: true });
-  destroyRef.onDestroy(() => {
-    this.#elementRef.nativeElement.removeEventListener('click', handleClick, { capture: true });
-  });
+};
+
+constructor() {
+  afterRenderEffect(this.#softDisabledClickEffect);
 }
 ```
+
+**Key features:**
+- `afterRenderEffect` — Reactively adds/removes listener when `softDisabled` signal changes
+- Arrow function class member — Automatic `this` binding, no `.bind()` needed
+- `runOutsideAngular` — Avoids triggering change detection
+- Zero overhead for buttons with `softDisabled=false` (early return)
 
 **Test Coverage:** `SoftDisabledClickPrevention` story verifies button clicks, form submission, and anchor navigation are all prevented.
 
