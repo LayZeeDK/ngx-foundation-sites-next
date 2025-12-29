@@ -114,24 +114,19 @@ constructor() {
 
 ## Documentation/Consistency Issues
 
-### 6. Component vs Directive Terminology
+### ~~6. Component vs Directive Terminology~~ ✅ RESOLVED
 
-**Severity:** Low
+**Status:** Fixed — Updated `BUTTON_API_DESIGN.md` to use "component" terminology throughout.
 
-**Issue:** The API design document says "Directive" but the implementation uses `@Component`. The code comment explains this is intentional for style loading:
+**Changes made:**
 
-```typescript
-/**
- * Uses component pattern (not directive) to enable style loading via styleUrl.
- */
-@Component({
-  // eslint-disable-next-line @angular-eslint/component-selector
-  selector: 'button[nfsButton], a[nfsButton]',
-  ...
-})
-```
+- Goal section: "uses directive" → "uses component with attribute selector"
+- Section header: "Proposed Directive API" → "Proposed Component API"
+- Code example: `@Directive` → `@Component` with template, styleUrl, changeDetection
+- Design decisions table: Updated rationale to explain style loading benefit
+- Rationale section: "Why Directive Instead of Component?" → "Why Component with Attribute Selector?"
 
-**Recommendation:** Update the design document to reflect that it's technically a component with an attribute selector (not a directive), and explain why.
+The design document now accurately reflects the implementation and explains why `@Component` is used (enables `styleUrl` for Foundation CSS integration while the attribute selector preserves native element accessibility).
 
 ---
 
@@ -255,7 +250,7 @@ All 16 Button Storybook interaction tests pass:
 | -------------------- | ----- | -------- |
 | Critical Issues      | 3     | 3 ✅     |
 | Missing Features     | 2     | 0        |
-| Documentation Issues | 2     | 1 ✅     |
+| Documentation Issues | 2     | 2 ✅     |
 | Suggestions          | 2     | 1 ✅     |
 
 ### Priority Fixes
@@ -267,5 +262,5 @@ All 16 Button Storybook interaction tests pass:
 ---
 
 _Review conducted: 2025-12-28_
-_Last updated: 2025-12-30 (booleanAttribute transforms for boolean inputs implemented)_
+_Last updated: 2025-12-30 (component vs directive terminology fixed in design document)_
 _Reviewed against: BUTTON_API_DESIGN.md, Foundation for Sites 6.9.0_

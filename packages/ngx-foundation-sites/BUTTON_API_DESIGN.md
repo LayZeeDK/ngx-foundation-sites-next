@@ -5,7 +5,7 @@
 Design an Angular directive API for Foundation Button that:
 
 - Uses **Foundation for Sites CSS** (no Foundation JavaScript)
-- Preserves **native button/anchor accessibility** (uses directive, not component)
+- Preserves **native button/anchor accessibility** (uses component with attribute selector)
 - Follows **Angular Material button API conventions**
 - Uses **modern Angular APIs** (signals, input functions)
 - Complies with **WAI-ARIA Button pattern**
@@ -81,7 +81,7 @@ Key patterns:
 
 ---
 
-## Proposed Directive API
+## Proposed Component API
 
 ### Component Hierarchy
 
@@ -90,15 +90,18 @@ NfsButton (directive on <button> or <a>)
 └── Applies Foundation CSS classes based on inputs
 ```
 
-### NfsButton Directive
+### NfsButton Component
 
 **Selector:** `button[nfsButton], a[nfsButton]`
 
 **Host Element:** Native `<button>` or `<a>` element
 
 ```typescript
-@Directive({
+@Component({
   selector: 'button[nfsButton], a[nfsButton]',
+  template: '<ng-content />',
+  styleUrl: './button.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: 'button',
     '[class.tiny]': 'size() === "tiny"',
@@ -324,12 +327,12 @@ No custom keyboard handling needed — native `<button>` and `<a role="button">`
 
 ## Implementation Notes
 
-### Why Directive Instead of Component?
+### Why Component with Attribute Selector?
 
-1. **Preserves native accessibility** - Native `<button>` has built-in ARIA semantics
-2. **Works with native attributes** - `disabled`, `type="submit"`, etc. work naturally
-3. **Smaller bundle size** - No extra wrapper elements
-4. **Follows Material pattern** - Familiar API for Angular developers
+1. **Enables style loading** - `@Component` allows `styleUrl` for Foundation CSS integration
+2. **Preserves native accessibility** - Attribute selector keeps native `<button>` semantics intact
+3. **Works with native attributes** - `disabled`, `type="submit"`, etc. work naturally
+4. **Follows Material pattern** - Angular Material uses the same approach (`MatButton` is a component)
 
 ### Link vs Button Semantics
 
@@ -357,18 +360,18 @@ packages/ngx-foundation-sites/src/lib/button/
 
 ## Design Decisions
 
-| Decision               | Choice                               | Rationale                                 |
-| ---------------------- | ------------------------------------ | ----------------------------------------- |
-| Directive vs Component | **Directive**                        | Preserves native `<button>` accessibility |
-| Selector               | `button[nfsButton], a[nfsButton]`    | Matches Material pattern                  |
-| Size input             | `size="tiny\|small\|default\|large"` | Maps to Foundation CSS classes            |
-| Color input            | `color="primary\|secondary\|..."`    | Maps to Foundation palette classes        |
-| Fill input             | `fill="solid\|hollow\|clear"`        | Maps to Foundation fill classes           |
-| Expanded               | Boolean input                        | Maps to `.expanded` class                 |
-| Disabled               | Native + `softDisabled` input        | Native for hard disable, input for soft   |
-| Link accessibility     | Auto `role="button"`                 | Required for `<a>` elements               |
-| Toggle buttons         | Not included                         | Keep simple; separate component if needed |
-| Config token           | Not included                         | Keep minimal for v1                       |
+| Decision               | Choice                               | Rationale                                                                               |
+| ---------------------- | ------------------------------------ | --------------------------------------------------------------------------------------- |
+| Directive vs Component | **Component**                        | Enables style loading via `styleUrl`; attribute selector preserves native accessibility |
+| Selector               | `button[nfsButton], a[nfsButton]`    | Matches Material pattern                                                                |
+| Size input             | `size="tiny\|small\|default\|large"` | Maps to Foundation CSS classes                                                          |
+| Color input            | `color="primary\|secondary\|..."`    | Maps to Foundation palette classes                                                      |
+| Fill input             | `fill="solid\|hollow\|clear"`        | Maps to Foundation fill classes                                                         |
+| Expanded               | Boolean input                        | Maps to `.expanded` class                                                               |
+| Disabled               | Native + `softDisabled` input        | Native for hard disable, input for soft                                                 |
+| Link accessibility     | Auto `role="button"`                 | Required for `<a>` elements                                                             |
+| Toggle buttons         | Not included                         | Keep simple; separate component if needed                                               |
+| Config token           | Not included                         | Keep minimal for v1                                                                     |
 
 ---
 
