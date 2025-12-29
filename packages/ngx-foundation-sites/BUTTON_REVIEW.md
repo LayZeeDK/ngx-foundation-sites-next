@@ -186,28 +186,36 @@ The Storybook stories show form integration, but there's no documentation about 
 
 ---
 
-### 11. Space Key Handling for Anchor Buttons
+### ~~11. Space Key Handling for Anchor Buttons~~ ✅ RESOLVED
 
-**Severity:** Medium
+**Status:** Fixed — Added `(keydown.space)` host binding that triggers click on anchor elements.
 
-**Issue:** Native `<a>` elements don't respond to Space key for activation (only Enter). When `role="button"` is applied, users expect Space to work too.
-
-**Current:** The implementation relies on native behavior, but anchors with `role="button"` should respond to Space.
-
-**Recommendation:** Add keyboard handler for Space on anchor elements:
+**Implementation:** Uses Angular's host binding syntax to handle Space key only on anchor elements:
 
 ```typescript
 host: {
-  '(keydown.space)': 'isAnchor && _handleSpaceKey($event)',
+  '(keydown.space)': 'isAnchor && handleSpaceKey($event)',
 }
 
-protected _handleSpaceKey(event: KeyboardEvent): void {
+protected handleSpaceKey(event: Event): void {
+  // Prevent page scroll (Space's default behavior)
+  event.preventDefault();
+
+  // Only trigger click if not soft-disabled
   if (!this.softDisabled()) {
-    event.preventDefault();
     (event.target as HTMLElement).click();
   }
 }
 ```
+
+**Key features:**
+
+- Only applies to anchor elements (`isAnchor` check in host binding)
+- Always prevents default to stop page scroll (per WAI-ARIA)
+- Respects `softDisabled` state
+- Zero overhead for native `<button>` elements (they handle Space natively)
+
+**Test Coverage:** `AnchorSpaceKeyActivation` story verifies Space key activation on normal anchors and prevention on soft-disabled anchors.
 
 ---
 
@@ -215,7 +223,7 @@ protected _handleSpaceKey(event: KeyboardEvent): void {
 
 ### Passing Tests
 
-All 14 Button Storybook interaction tests pass:
+All 15 Button Storybook interaction tests pass:
 
 - Default
 - ColorVariants
@@ -230,12 +238,13 @@ All 14 Button Storybook interaction tests pass:
 - ThemeControls
 - AccessibilityComprehensive
 - SoftDisabledClickPrevention _(added 2025-12-29)_
+- AnchorSpaceKeyActivation _(added 2025-12-29)_
 
 ### Missing Test Coverage
 
 1. ~~**Click prevention for `softDisabled`**~~ ✅ Now tested in `SoftDisabledClickPrevention`
 2. ~~**Form submission prevention**~~ ✅ Now tested in `SoftDisabledClickPrevention`
-3. **Space key on anchor buttons** - No test for keyboard activation
+3. ~~**Space key on anchor buttons**~~ ✅ Now tested in `AnchorSpaceKeyActivation`
 4. **Dynamic input changes** - No tests for changing inputs at runtime
 
 ---
@@ -247,16 +256,16 @@ All 14 Button Storybook interaction tests pass:
 | Critical Issues      | 3     | 3 ✅     |
 | Missing Features     | 2     | 0        |
 | Documentation Issues | 1     | 0        |
-| Suggestions          | 2     | 0        |
+| Suggestions          | 2     | 1 ✅     |
 
 ### Priority Fixes
 
 1. ~~**[Critical]** Add click prevention for `softDisabled` buttons~~ ✅ DONE
-2. **[Medium]** Add Space key handling for anchor buttons with `role="button"`
+2. ~~**[Medium]** Add Space key handling for anchor buttons with `role="button"`~~ ✅ DONE
 3. **[Low]** Add `booleanAttribute` transforms for boolean inputs
 
 ---
 
 _Review conducted: 2025-12-28_
-_Last updated: 2025-12-29 (softDisabled click prevention implemented)_
+_Last updated: 2025-12-29 (Space key handling for anchor buttons implemented)_
 _Reviewed against: BUTTON_API_DESIGN.md, Foundation for Sites 6.9.0_
