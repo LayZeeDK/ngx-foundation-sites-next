@@ -70,6 +70,9 @@ import {
     // Anchor-specific accessibility
     '[attr.role]': 'isAnchor ? "button" : null',
     '[attr.tabindex]': 'softDisabled() && isAnchor ? -1 : null',
+
+    // Space key activation for anchors (native buttons handle this automatically)
+    '(keydown.space)': 'isAnchor && handleSpaceKey($event)',
   },
 })
 export class NfsButton {
@@ -173,5 +176,27 @@ export class NfsButton {
     // Only adds listener when softDisabled is true (rare), so most buttons
     // have zero click-handling overhead. SSR-safe (only runs in browser).
     afterRenderEffect(this.#softDisabledClickEffect);
+  }
+
+  /**
+   * Handles Space key activation for anchor elements with `role="button"`.
+   *
+   * Native `<button>` elements respond to both Enter and Space keys, but
+   * `<a>` elements only respond to Enter. When we add `role="button"` to
+   * anchors, users expect Space to work too (per WAI-ARIA button pattern).
+   *
+   * Always prevents default to stop page scroll (Space's native behavior).
+   * Only triggers click if not soft-disabled.
+   *
+   * @see https://www.w3.org/WAI/ARIA/apg/patterns/button/
+   */
+  protected handleSpaceKey(event: Event): void {
+    // Prevent page scroll (Space's default behavior)
+    event.preventDefault();
+
+    // Only trigger click if not soft-disabled
+    if (!this.softDisabled()) {
+      (event.target as HTMLElement).click();
+    }
   }
 }

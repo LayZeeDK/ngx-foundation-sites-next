@@ -706,3 +706,90 @@ export const SoftDisabledClickPrevention: Story = {
     expect(window.location.hash).toBe(hashBefore);
   },
 };
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// Anchor Space Key Activation
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * Verifies that anchor buttons respond to Space key per WAI-ARIA button pattern.
+ *
+ * Native `<button>` elements respond to both Enter and Space keys, but `<a>`
+ * elements only respond to Enter. When `role="button"` is applied to anchors,
+ * users expect Space to work too.
+ *
+ * @see https://www.w3.org/WAI/ARIA/apg/patterns/button/
+ */
+export const AnchorSpaceKeyActivation: Story = {
+  render: () => ({
+    props: {
+      normalClickCount: 0,
+      disabledClickCount: 0,
+    },
+    template: `
+      <main>
+        <section class="margin-bottom-2">
+          <h3>Normal Anchor Button</h3>
+          <a
+            nfsButton
+            href="#"
+            (click)="$event.preventDefault(); normalClickCount = normalClickCount + 1"
+            data-testid="normal-anchor"
+          >
+            Link Button (clicks: {{ normalClickCount }})
+          </a>
+          <p class="margin-top-1 text-secondary">Focus and press Space to activate</p>
+        </section>
+
+        <section>
+          <h3>Soft Disabled Anchor Button</h3>
+          <a
+            nfsButton
+            [softDisabled]="true"
+            href="#"
+            (click)="$event.preventDefault(); disabledClickCount = disabledClickCount + 1"
+            data-testid="disabled-anchor"
+          >
+            Disabled Link (clicks: {{ disabledClickCount }})
+          </a>
+          <p class="margin-top-1 text-secondary">Space should NOT activate when disabled</p>
+        </section>
+      </main>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Test 1: Space key activates normal anchor button
+    const normalAnchor = canvas.getByTestId('normal-anchor');
+    expect(normalAnchor).toHaveTextContent('clicks: 0');
+    expect(normalAnchor).toHaveAttribute('role', 'button');
+
+    // Focus and press Space
+    normalAnchor.focus();
+    expect(document.activeElement).toBe(normalAnchor);
+
+    await userEvent.keyboard(' '); // Space key
+    expect(normalAnchor).toHaveTextContent('clicks: 1');
+
+    // Press Space again to confirm consistent behavior
+    await userEvent.keyboard(' ');
+    expect(normalAnchor).toHaveTextContent('clicks: 2');
+
+    // Test 2: Space key does NOT activate soft-disabled anchor
+    const disabledAnchor = canvas.getByTestId('disabled-anchor');
+    expect(disabledAnchor).toHaveTextContent('clicks: 0');
+    expect(disabledAnchor).toHaveAttribute('aria-disabled', 'true');
+
+    // Force focus (tabindex=-1 prevents normal tab navigation)
+    disabledAnchor.focus();
+
+    await userEvent.keyboard(' ');
+    expect(disabledAnchor).toHaveTextContent('clicks: 0'); // Should NOT increment
+
+    // Test 3: Enter key still works on normal anchor
+    normalAnchor.focus();
+    await userEvent.keyboard('{Enter}');
+    expect(normalAnchor).toHaveTextContent('clicks: 3'); // Should increment
+  },
+};
