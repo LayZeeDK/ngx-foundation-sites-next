@@ -157,7 +157,7 @@ From [Angular ARIA Overview](https://angular.dev/guide/aria/overview):
 
 | Category         | APIs                                                                                  |
 | ---------------- | ------------------------------------------------------------------------------------- |
-| **Angular Core** | `signal()`, `computed()`, `effect()`, `afterRender()`, `input()`, `output()`          |
+| **Angular Core** | `signal()`, `computed()`, `effect()`, `afterRenderEffect()`, `input()`, `output()`    |
 | **Angular Core** | `@defer (on viewport)` for lazy-loading slides, auto-pause when out of view           |
 | **CDK a11y**     | `@angular/cdk/keycodes` (ARROW_LEFT, ARROW_RIGHT, HOME, END), `LiveAnnouncer`         |
 | **CDK a11y**     | `FocusMonitor`, `ListKeyManager` (optional for slide focus)                           |
@@ -193,7 +193,7 @@ From [Angular ARIA Overview](https://angular.dev/guide/aria/overview):
 
 | Category         | APIs                                                             |
 | ---------------- | ---------------------------------------------------------------- |
-| **Angular Core** | `@Directive()`, `inject()`, `signal()`, `afterRender()`          |
+| **Angular Core** | `@Directive()`, `inject()`, `signal()`, `afterRenderEffect()`    |
 | **CDK a11y**     | `LiveAnnouncer` (announce scroll completion to screen readers)   |
 | **Browser APIs** | `Element.scrollIntoView({ behavior: 'smooth', block: 'start' })` |
 | **Browser APIs** | `element.focus()` for keyboard navigation after scroll           |
@@ -204,11 +204,11 @@ From [Angular ARIA Overview](https://angular.dev/guide/aria/overview):
 
 #### 18. Toggler
 
-| Category         | APIs                                                              |
-| ---------------- | ----------------------------------------------------------------- |
-| **Angular Core** | `signal<boolean>()`, `@Directive()`, `Renderer2`, `afterRender()` |
-| **Angular Core** | `animate.enter`/`animate.leave` for enter/exit animations         |
-| **Browser APIs** | `classList.toggle()`, CSS `transition`/`@keyframes`               |
+| Category         | APIs                                                                    |
+| ---------------- | ----------------------------------------------------------------------- |
+| **Angular Core** | `signal<boolean>()`, `@Directive()`, `Renderer2`, `afterRenderEffect()` |
+| **Angular Core** | `animate.enter`/`animate.leave` for enter/exit animations               |
+| **Browser APIs** | `classList.toggle()`, CSS `transition`/`@keyframes`                     |
 
 **ARIA attributes**: `aria-expanded`, `aria-controls`, `aria-hidden`
 
@@ -216,12 +216,12 @@ From [Angular ARIA Overview](https://angular.dev/guide/aria/overview):
 
 #### 19. Equalizer
 
-| Category         | APIs                                                              |
-| ---------------- | ----------------------------------------------------------------- |
-| **Angular Core** | `signal()`, `computed()`, `afterRender()`, `Renderer2.setStyle()` |
-| **Angular Core** | `@defer (on viewport)` for lazy calculation when visible          |
-| **CDK layout**   | `BreakpointObserver` (re-equalize on breakpoint change)           |
-| **Browser APIs** | `ResizeObserver` (observe element size changes)                   |
+| Category         | APIs                                                                    |
+| ---------------- | ----------------------------------------------------------------------- |
+| **Angular Core** | `signal()`, `computed()`, `afterRenderEffect()`, `Renderer2.setStyle()` |
+| **Angular Core** | `@defer (on viewport)` for lazy calculation when visible                |
+| **CDK layout**   | `BreakpointObserver` (re-equalize on breakpoint change)                 |
+| **Browser APIs** | `ResizeObserver` (observe element size changes)                         |
 
 **Implementation**: Directive that observes children, calculates max height per row, applies `min-height`
 
@@ -229,22 +229,22 @@ From [Angular ARIA Overview](https://angular.dev/guide/aria/overview):
 
 ## Cross-Cutting Angular APIs for Custom Components
 
-| Use Case               | API                                                 | Source                   |
-| ---------------------- | --------------------------------------------------- | ------------------------ |
-| **State**              | `signal()`, `computed()`, `effect()`                | `@angular/core`          |
-| **Lifecycle**          | `afterRender()`, `afterNextRender()`                | `@angular/core`          |
-| **Lazy loading**       | `@defer (on viewport)`, `@defer (on idle)`          | `@angular/core`          |
-| **DOM**                | `Renderer2`, `ElementRef`                           | `@angular/core`          |
-| **Inputs/Outputs**     | `input()`, `output()`, `model()`                    | `@angular/core`          |
-| **Dynamic components** | `NgComponentOutlet`                                 | `@angular/common`        |
-| **Dynamic templates**  | `NgTemplateOutlet`                                  | `@angular/common`        |
-| **Portals**            | `Portal`, `PortalOutlet`, `CdkPortalOutlet`         | `@angular/cdk/portal`    |
-| **Keyboard codes**     | `ARROW_*`, `ENTER`, `ESCAPE`, `HOME`, `END`         | `@angular/cdk/keycodes`  |
-| **Type coercion**      | `coerceBooleanProperty()`, `coerceNumberProperty()` | `@angular/cdk/coercion`  |
-| **Accessibility**      | `FocusMonitor`, `LiveAnnouncer`, `ListKeyManager`   | `@angular/cdk/a11y`      |
-| **Responsive**         | `BreakpointObserver`                                | `@angular/cdk/layout`    |
-| **Scrolling**          | `ScrollDispatcher`, `ViewportRuler`                 | `@angular/cdk/scrolling` |
-| **Platform**           | `isPlatformBrowser()`                               | `@angular/common`        |
+| Use Case               | API                                                              | Source                   |
+| ---------------------- | ---------------------------------------------------------------- | ------------------------ |
+| **State**              | `signal()`, `computed()`, `effect()`                             | `@angular/core`          |
+| **Lifecycle**          | `afterRenderEffect()`, `afterEveryRender()`, `afterNextRender()` | `@angular/core`          |
+| **Lazy loading**       | `@defer (on viewport)`, `@defer (on idle)`                       | `@angular/core`          |
+| **DOM**                | `Renderer2`, `ElementRef`                                        | `@angular/core`          |
+| **Inputs/Outputs**     | `input()`, `output()`, `model()`                                 | `@angular/core`          |
+| **Dynamic components** | `NgComponentOutlet`                                              | `@angular/common`        |
+| **Dynamic templates**  | `NgTemplateOutlet`                                               | `@angular/common`        |
+| **Portals**            | `Portal`, `PortalOutlet`, `CdkPortalOutlet`                      | `@angular/cdk/portal`    |
+| **Keyboard codes**     | `ARROW_*`, `ENTER`, `ESCAPE`, `HOME`, `END`                      | `@angular/cdk/keycodes`  |
+| **Type coercion**      | `coerceBooleanProperty()`, `coerceNumberProperty()`              | `@angular/cdk/coercion`  |
+| **Accessibility**      | `FocusMonitor`, `LiveAnnouncer`, `ListKeyManager`                | `@angular/cdk/a11y`      |
+| **Responsive**         | `BreakpointObserver`                                             | `@angular/cdk/layout`    |
+| **Scrolling**          | `ScrollDispatcher`, `ViewportRuler`                              | `@angular/cdk/scrolling` |
+| **Platform**           | `isPlatformBrowser()`                                            | `@angular/common`        |
 
 ## Browser APIs Summary
 
@@ -341,8 +341,9 @@ Select which components to implement by marking with [x]:
 
 ### Angular Core APIs
 
-- [Angular Lifecycle Hooks - afterRender](https://angular.dev/guide/components/lifecycle)
+- [Angular afterRender APIs](https://angular.dev/guide/components/lifecycle#afterrender-and-afternextrender)
 - [Angular @defer block](https://angular.dev/guide/defer)
+- [Using DOM APIs](https://angular.dev/guide/components/dom-apis) - ElementRef, Renderer2, afterRender
 - [Angular Renderer2](https://angular.dev/api/core/Renderer2)
 - [Angular Animations Migration](https://angular.dev/guide/animations/migration) - `@angular/animations` deprecated in v20.2
 
