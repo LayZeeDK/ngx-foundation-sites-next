@@ -793,3 +793,100 @@ export const AnchorSpaceKeyActivation: Story = {
     expect(normalAnchor).toHaveTextContent('clicks: 3'); // Should increment
   },
 };
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// Boolean Attribute Syntax
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * Demonstrates HTML boolean attribute syntax support via `booleanAttribute` transform.
+ *
+ * Angular's `booleanAttribute` transform allows boolean inputs to be set using
+ * standard HTML attribute syntax (without square brackets), matching native HTML
+ * boolean attributes like `disabled`, `readonly`, etc.
+ *
+ * **Supported syntaxes:**
+ * - `expanded` — presence means `true` (HTML attribute style)
+ * - `[expanded]="true"` — property binding (Angular style)
+ * - `expanded="true"` — string `"true"` coerced to boolean `true`
+ * - `expanded="false"` — string `"false"` coerced to boolean `false`
+ *
+ * @see https://angular.dev/api/core/booleanAttribute
+ */
+export const BooleanAttributeSyntax: Story = {
+  render: () => ({
+    template: `
+      <main>
+        <section class="margin-bottom-2">
+          <h3>HTML Attribute Syntax (presence = true)</h3>
+          <div class="margin-bottom-1">
+            <button nfsButton expanded data-testid="expanded-attr">Expanded (attribute)</button>
+          </div>
+          <div class="margin-bottom-1">
+            <button nfsButton softDisabled data-testid="soft-disabled-attr">Soft Disabled (attribute)</button>
+          </div>
+        </section>
+
+        <section class="margin-bottom-2">
+          <h3>Property Binding Syntax (traditional)</h3>
+          <div class="margin-bottom-1">
+            <button nfsButton [expanded]="true" data-testid="expanded-binding">Expanded (binding)</button>
+          </div>
+          <div class="margin-bottom-1">
+            <button nfsButton [softDisabled]="true" data-testid="soft-disabled-binding">Soft Disabled (binding)</button>
+          </div>
+        </section>
+
+        <section class="margin-bottom-2">
+          <h3>String Attribute Syntax (coerced)</h3>
+          <div class="margin-bottom-1">
+            <button nfsButton expanded="true" data-testid="expanded-string-true">expanded="true"</button>
+          </div>
+          <div class="margin-bottom-1">
+            <button nfsButton expanded="false" data-testid="expanded-string-false">expanded="false"</button>
+          </div>
+        </section>
+
+        <section>
+          <h3>No Attribute (default false)</h3>
+          <div>
+            <button nfsButton data-testid="no-attrs">Default (no expanded, no softDisabled)</button>
+          </div>
+        </section>
+      </main>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Test 1: HTML attribute syntax (presence = true)
+    const expandedAttr = canvas.getByTestId('expanded-attr');
+    expect(expandedAttr).toHaveClass('expanded');
+
+    const softDisabledAttr = canvas.getByTestId('soft-disabled-attr');
+    expect(softDisabledAttr).toHaveClass('disabled');
+    expect(softDisabledAttr).toHaveAttribute('aria-disabled', 'true');
+
+    // Test 2: Property binding syntax (traditional Angular)
+    const expandedBinding = canvas.getByTestId('expanded-binding');
+    expect(expandedBinding).toHaveClass('expanded');
+
+    const softDisabledBinding = canvas.getByTestId('soft-disabled-binding');
+    expect(softDisabledBinding).toHaveClass('disabled');
+    expect(softDisabledBinding).toHaveAttribute('aria-disabled', 'true');
+
+    // Test 3: String attribute syntax - "true" should coerce to true
+    const expandedStringTrue = canvas.getByTestId('expanded-string-true');
+    expect(expandedStringTrue).toHaveClass('expanded');
+
+    // Test 4: String attribute syntax - "false" should coerce to false
+    const expandedStringFalse = canvas.getByTestId('expanded-string-false');
+    expect(expandedStringFalse).not.toHaveClass('expanded');
+
+    // Test 5: No attributes (default false values)
+    const noAttrs = canvas.getByTestId('no-attrs');
+    expect(noAttrs).not.toHaveClass('expanded');
+    expect(noAttrs).not.toHaveClass('disabled');
+    expect(noAttrs).not.toHaveAttribute('aria-disabled');
+  },
+};
