@@ -46,6 +46,7 @@ constructor() {
 ```
 
 **Key features:**
+
 - `afterRenderEffect` — Reactively adds/removes listener when `softDisabled` signal changes
 - Arrow function class member — Automatic `this` binding, no `.bind()` needed
 - `runOutsideAngular` — Avoids triggering change detection
@@ -134,27 +135,25 @@ constructor() {
 
 ---
 
-### 7. `expanded` Input Type Inconsistency
+### ~~7. `expanded` Input Type Inconsistency~~ ✅ RESOLVED
 
-**Severity:** Low
+**Status:** Fixed — Added `booleanAttribute` transform to `expanded` and `softDisabled` inputs.
 
-**Issue:** The `expanded` input accepts `boolean` but doesn't use `booleanAttribute` transform, so string `"true"` won't work:
-
-```html
-<!-- This works -->
-<button nfsButton [expanded]="true">
-  <!-- This does NOT work (common HTML pattern) -->
-  <button nfsButton expanded></button>
-</button>
-```
-
-**Recommendation:** Add `booleanAttribute` transform for HTML attribute compatibility:
+**Implementation:** Uses Angular's built-in `booleanAttribute` transform to support HTML boolean attribute syntax:
 
 ```typescript
 readonly expanded = input(false, { transform: booleanAttribute });
+readonly softDisabled = input(false, { transform: booleanAttribute });
 ```
 
-Same applies to `softDisabled`.
+**Supported syntaxes:**
+
+- `expanded` — presence means `true` (HTML attribute style)
+- `[expanded]="true"` — property binding (Angular style)
+- `expanded="true"` — string `"true"` coerced to boolean `true`
+- `expanded="false"` — string `"false"` coerced to boolean `false`
+
+**Test Coverage:** `BooleanAttributeSyntax` story verifies all syntax variants for both `expanded` and `softDisabled` inputs.
 
 ---
 
@@ -223,7 +222,7 @@ protected handleSpaceKey(event: Event): void {
 
 ### Passing Tests
 
-All 15 Button Storybook interaction tests pass:
+All 16 Button Storybook interaction tests pass:
 
 - Default
 - ColorVariants
@@ -239,6 +238,7 @@ All 15 Button Storybook interaction tests pass:
 - AccessibilityComprehensive
 - SoftDisabledClickPrevention _(added 2025-12-29)_
 - AnchorSpaceKeyActivation _(added 2025-12-29)_
+- BooleanAttributeSyntax _(added 2025-12-30)_
 
 ### Missing Test Coverage
 
@@ -255,17 +255,17 @@ All 15 Button Storybook interaction tests pass:
 | -------------------- | ----- | -------- |
 | Critical Issues      | 3     | 3 ✅     |
 | Missing Features     | 2     | 0        |
-| Documentation Issues | 1     | 0        |
+| Documentation Issues | 2     | 1 ✅     |
 | Suggestions          | 2     | 1 ✅     |
 
 ### Priority Fixes
 
 1. ~~**[Critical]** Add click prevention for `softDisabled` buttons~~ ✅ DONE
 2. ~~**[Medium]** Add Space key handling for anchor buttons with `role="button"`~~ ✅ DONE
-3. **[Low]** Add `booleanAttribute` transforms for boolean inputs
+3. ~~**[Low]** Add `booleanAttribute` transforms for boolean inputs~~ ✅ DONE
 
 ---
 
 _Review conducted: 2025-12-28_
-_Last updated: 2025-12-29 (Space key handling for anchor buttons implemented)_
+_Last updated: 2025-12-30 (booleanAttribute transforms for boolean inputs implemented)_
 _Reviewed against: BUTTON_API_DESIGN.md, Foundation for Sites 6.9.0_
