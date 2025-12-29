@@ -6,6 +6,7 @@ import {
   inject,
   input,
   NgZone,
+  Renderer2,
   ViewEncapsulation,
 } from '@angular/core';
 
@@ -123,7 +124,10 @@ export class NfsButton {
    */
   readonly softDisabled = input(false);
 
-  readonly #elementRef = inject(ElementRef);
+  readonly #elementRef: ElementRef<HTMLAnchorElement | HTMLButtonElement> =
+    inject(ElementRef);
+  readonly #ngZone = inject(NgZone);
+  readonly #renderer = inject(Renderer2);
 
   /**
    * Whether the host element is an anchor (`<a>`).
@@ -131,36 +135,43 @@ export class NfsButton {
    */
   protected readonly isAnchor = this.#elementRef.nativeElement.tagName === 'A';
 
-  constructor() {
-    const ngZone = inject(NgZone);
-    const element = this.#elementRef.nativeElement;
+  /**
+   * Effect callback for soft-disabled click prevention.
+   *
+   * Since toggling `softDisabled` to `true` is rare, we only add/remove
+   * the click listener when needed (zero overhead for most buttons).
+   *
+   * @returns Cleanup function to remove listener, or undefined if not needed.
+   */
+  readonly #softDisabledClickEffect = (): (() => void) | undefined => {
+    if (!this.softDisabled()) {
+      return;
+    }
 
-    // Handler to block clicks. Uses capture phase to intercept clicks BEFORE
-    // Angular's template bindings (which use bubble phase).
-    //
-    // Event flow: Document → Element (capture) → Element → Document (bubble)
-    // With capture:true, we run first and can stopImmediatePropagation().
-    const handleClick = (event: MouseEvent): void => {
-      event.preventDefault();
-      event.stopImmediatePropagation();
+    // Run outside NgZone because we don't change state.
+    // Use capture phase to intercept clicks before Angular event bindings.
+    const removeClickListener = this.#ngZone.runOutsideAngular(() =>
+      this.#renderer.listen(
+        this.#elementRef.nativeElement,
+        'click',
+        (event: MouseEvent) => {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+        },
+        { capture: true },
+      ),
+    );
+
+    // Cleanup: remove listener when `softDisabled` becomes `false` or on destroy.
+    return () => {
+      removeClickListener();
     };
+  };
 
+  constructor() {
     // Reactively add/remove click listener based on softDisabled signal.
     // Only adds listener when softDisabled is true (rare), so most buttons
     // have zero click-handling overhead. SSR-safe (only runs in browser).
-    afterRenderEffect(() => {
-      if (this.softDisabled()) {
-        // Run outside Angular zone to avoid triggering change detection.
-        ngZone.runOutsideAngular(() => {
-          element.addEventListener('click', handleClick, { capture: true });
-        });
-
-        // Cleanup: remove listener when softDisabled becomes false or on destroy
-        return () => {
-          element.removeEventListener('click', handleClick, { capture: true });
-        };
-      }
-      return;
-    });
+    afterRenderEffect(this.#softDisabledClickEffect);
   }
 }
