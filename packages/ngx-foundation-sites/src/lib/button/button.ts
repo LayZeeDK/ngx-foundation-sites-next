@@ -1,5 +1,6 @@
 import {
   afterRenderEffect,
+  booleanAttribute,
   ChangeDetectionStrategy,
   Component,
   ElementRef,
@@ -110,9 +111,13 @@ export class NfsButton {
    * Whether the button spans full width.
    * Maps to Foundation `.expanded` class.
    *
+   * Supports both property binding and HTML attribute syntax:
+   * - `[expanded]="true"` — property binding
+   * - `expanded` — HTML attribute (presence means true)
+   *
    * @default false
    */
-  readonly expanded = input(false);
+  readonly expanded = input(false, { transform: booleanAttribute });
 
   /**
    * Soft disabled state - button appears disabled but remains focusable.
@@ -123,9 +128,13 @@ export class NfsButton {
    *
    * Note: For hard disable (not focusable), use native `disabled` attribute instead.
    *
+   * Supports both property binding and HTML attribute syntax:
+   * - `[softDisabled]="true"` — property binding
+   * - `softDisabled` — HTML attribute (presence means true)
+   *
    * @default false
    */
-  readonly softDisabled = input(false);
+  readonly softDisabled = input(false, { transform: booleanAttribute });
 
   readonly #elementRef: ElementRef<HTMLAnchorElement | HTMLButtonElement> =
     inject(ElementRef);
