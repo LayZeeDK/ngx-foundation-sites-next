@@ -15,6 +15,22 @@ const meta: Meta<NfsButton> = {
       control: 'select',
       options: ['primary', 'secondary', 'success', 'alert', 'warning'],
     },
+    expanded: {
+      control: 'select',
+      options: [
+        false,
+        true,
+        'small-only',
+        'medium-only',
+        'large-only',
+        'medium',
+        'large',
+        'medium-down',
+        'large-down',
+      ],
+      description:
+        'Full-width expansion. Use breakpoint values for responsive behavior.',
+    },
   },
   render: (args) => ({
     props: args,
@@ -888,5 +904,239 @@ export const BooleanAttributeSyntax: Story = {
     expect(noAttrs).not.toHaveClass('expanded');
     expect(noAttrs).not.toHaveClass('disabled');
     expect(noAttrs).not.toHaveAttribute('aria-disabled');
+  },
+};
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// Responsive Expanded
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * Responsive expanded buttons change width based on viewport breakpoints.
+ *
+ * Foundation breakpoints (default):
+ * - **small**: 0px+ (mobile first)
+ * - **medium**: 640px+
+ * - **large**: 1024px+
+ *
+ * **Breakpoint-only classes** (exclusive to one breakpoint):
+ * - `small-only-expanded`: Full-width only on small screens (< 640px)
+ * - `medium-only-expanded`: Full-width only on medium screens (640px - 1023px)
+ * - `large-only-expanded`: Full-width only on large screens (1024px+)
+ *
+ * **Breakpoint-up classes** (breakpoint and larger):
+ * - `medium-expanded`: Full-width on medium screens and larger (640px+)
+ * - `large-expanded`: Full-width on large screens and larger (1024px+)
+ *
+ * **Breakpoint-down classes** (breakpoint and smaller):
+ * - `medium-down-expanded`: Full-width on medium screens and smaller (< 1024px)
+ * - `large-down-expanded`: Full-width on large screens and smaller (all screens)
+ *
+ * @see https://get.foundation/sites/docs/button.html#responsive-expanded
+ */
+export const ResponsiveExpanded: Story = {
+  render: () => ({
+    template: `
+      <main>
+        <section class="margin-bottom-2">
+          <h3>Breakpoint-Only (exclusive to one breakpoint)</h3>
+          <div class="margin-bottom-1">
+            <button nfsButton expanded="small-only" data-testid="small-only">
+              small-only-expanded (full-width only on small)
+            </button>
+          </div>
+          <div class="margin-bottom-1">
+            <button nfsButton expanded="medium-only" data-testid="medium-only">
+              medium-only-expanded (full-width only on medium)
+            </button>
+          </div>
+          <div class="margin-bottom-1">
+            <button nfsButton expanded="large-only" data-testid="large-only">
+              large-only-expanded (full-width only on large)
+            </button>
+          </div>
+        </section>
+
+        <section class="margin-bottom-2">
+          <h3>Breakpoint and Up</h3>
+          <div class="margin-bottom-1">
+            <button nfsButton expanded="medium" data-testid="medium-up">
+              medium-expanded (full-width on medium+)
+            </button>
+          </div>
+          <div class="margin-bottom-1">
+            <button nfsButton expanded="large" data-testid="large-up">
+              large-expanded (full-width on large+)
+            </button>
+          </div>
+        </section>
+
+        <section class="margin-bottom-2">
+          <h3>Breakpoint and Down</h3>
+          <div class="margin-bottom-1">
+            <button nfsButton expanded="medium-down" data-testid="medium-down">
+              medium-down-expanded (full-width on medium and smaller)
+            </button>
+          </div>
+          <div class="margin-bottom-1">
+            <button nfsButton expanded="large-down" data-testid="large-down">
+              large-down-expanded (full-width on large and smaller)
+            </button>
+          </div>
+        </section>
+
+        <section>
+          <h3>Always Expanded (existing behavior)</h3>
+          <div>
+            <button nfsButton expanded data-testid="always-expanded">
+              expanded (always full-width)
+            </button>
+          </div>
+        </section>
+      </main>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Verify breakpoint-only classes
+    const smallOnly = canvas.getByTestId('small-only');
+    expect(smallOnly).toHaveClass('small-only-expanded');
+    expect(smallOnly).not.toHaveClass('expanded');
+
+    const mediumOnly = canvas.getByTestId('medium-only');
+    expect(mediumOnly).toHaveClass('medium-only-expanded');
+    expect(mediumOnly).not.toHaveClass('expanded');
+
+    const largeOnly = canvas.getByTestId('large-only');
+    expect(largeOnly).toHaveClass('large-only-expanded');
+    expect(largeOnly).not.toHaveClass('expanded');
+
+    // Verify breakpoint-up classes
+    const mediumUp = canvas.getByTestId('medium-up');
+    expect(mediumUp).toHaveClass('medium-expanded');
+    expect(mediumUp).not.toHaveClass('expanded');
+
+    const largeUp = canvas.getByTestId('large-up');
+    expect(largeUp).toHaveClass('large-expanded');
+    expect(largeUp).not.toHaveClass('expanded');
+
+    // Verify breakpoint-down classes
+    const mediumDown = canvas.getByTestId('medium-down');
+    expect(mediumDown).toHaveClass('medium-down-expanded');
+    expect(mediumDown).not.toHaveClass('expanded');
+
+    const largeDown = canvas.getByTestId('large-down');
+    expect(largeDown).toHaveClass('large-down-expanded');
+    expect(largeDown).not.toHaveClass('expanded');
+
+    // Verify always-expanded
+    const alwaysExpanded = canvas.getByTestId('always-expanded');
+    expect(alwaysExpanded).toHaveClass('expanded');
+    expect(alwaysExpanded).not.toHaveClass(
+      'small-only-expanded',
+      'medium-only-expanded',
+      'large-only-expanded',
+      'medium-expanded',
+      'large-expanded',
+      'medium-down-expanded',
+      'large-down-expanded',
+    );
+  },
+};
+
+/**
+ * Demonstrates all supported syntaxes for the responsive expanded input.
+ *
+ * The `expanded` input supports:
+ * - **Boolean values**: `[expanded]="true"` / `[expanded]="false"`
+ * - **Attribute presence**: `expanded` (= true)
+ * - **String boolean**: `expanded="true"` / `expanded="false"`
+ * - **Breakpoint strings**: `expanded="medium"`, `expanded="large-down"`, etc.
+ */
+export const ExpandedInputSyntax: Story = {
+  render: () => ({
+    template: `
+      <main>
+        <section class="margin-bottom-2">
+          <h3>Boolean Property Binding</h3>
+          <div class="margin-bottom-1">
+            <button nfsButton [expanded]="true" data-testid="binding-true">
+              [expanded]="true"
+            </button>
+          </div>
+          <div class="margin-bottom-1">
+            <button nfsButton [expanded]="false" data-testid="binding-false">
+              [expanded]="false"
+            </button>
+          </div>
+        </section>
+
+        <section class="margin-bottom-2">
+          <h3>Attribute Presence (= true)</h3>
+          <div class="margin-bottom-1">
+            <button nfsButton expanded data-testid="attr-presence">
+              expanded (attribute presence)
+            </button>
+          </div>
+        </section>
+
+        <section class="margin-bottom-2">
+          <h3>String Boolean Values</h3>
+          <div class="margin-bottom-1">
+            <button nfsButton expanded="true" data-testid="string-true">
+              expanded="true"
+            </button>
+          </div>
+          <div class="margin-bottom-1">
+            <button nfsButton expanded="false" data-testid="string-false">
+              expanded="false"
+            </button>
+          </div>
+        </section>
+
+        <section>
+          <h3>String Breakpoint Values</h3>
+          <div class="margin-bottom-1">
+            <button nfsButton expanded="medium" data-testid="string-medium">
+              expanded="medium"
+            </button>
+          </div>
+          <div class="margin-bottom-1">
+            <button nfsButton expanded="large-down" data-testid="string-large-down">
+              expanded="large-down"
+            </button>
+          </div>
+        </section>
+      </main>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Boolean binding true -> .expanded
+    expect(canvas.getByTestId('binding-true')).toHaveClass('expanded');
+
+    // Boolean binding false -> no expanded class
+    expect(canvas.getByTestId('binding-false')).not.toHaveClass('expanded');
+
+    // Attribute presence -> .expanded
+    expect(canvas.getByTestId('attr-presence')).toHaveClass('expanded');
+
+    // String "true" -> .expanded
+    expect(canvas.getByTestId('string-true')).toHaveClass('expanded');
+
+    // String "false" -> no expanded class
+    expect(canvas.getByTestId('string-false')).not.toHaveClass('expanded');
+
+    // String "medium" -> .medium-expanded (not .expanded)
+    const mediumBtn = canvas.getByTestId('string-medium');
+    expect(mediumBtn).toHaveClass('medium-expanded');
+    expect(mediumBtn).not.toHaveClass('expanded');
+
+    // String "large-down" -> .large-down-expanded (not .expanded)
+    const largeDownBtn = canvas.getByTestId('string-large-down');
+    expect(largeDownBtn).toHaveClass('large-down-expanded');
+    expect(largeDownBtn).not.toHaveClass('expanded');
   },
 };
