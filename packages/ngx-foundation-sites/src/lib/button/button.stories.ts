@@ -1,5 +1,6 @@
 import { type Meta, type StoryObj } from '@storybook/angular';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
+import { useArgs } from 'storybook/preview-api';
 import { NfsButton } from './button';
 import { argsToLiteralTemplate } from '../util-storybook/args-to-literal-template';
 import { pxToEm } from '../util-storybook/px-to-em';
@@ -1138,5 +1139,301 @@ export const ExpandedInputSyntax: Story = {
     const largeDownBtn = canvas.getByTestId('string-large-down');
     expect(largeDownBtn).toHaveClass('large-down-expanded');
     expect(largeDownBtn).not.toHaveClass('expanded');
+  },
+};
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// Dynamic Input Changes
+// ═══════════════════════════════════════════════════════════════════════════════
+
+interface DynamicInputChangesArgs {
+  color: string;
+  size: string;
+  fill: string;
+  expanded: boolean;
+  softDisabled: boolean;
+}
+
+/**
+ * Tests that NfsButton responds correctly to runtime input changes.
+ *
+ * This verifies that Angular's signal-based inputs properly re-render the
+ * component when values change dynamically after initial mount.
+ *
+ * **Inputs tested:**
+ * - `color`: CSS class changes from `.primary` → `.alert`
+ * - `size`: CSS class changes from default → `.large`
+ * - `fill`: CSS class changes from solid → `.hollow`
+ * - `expanded`: CSS class `.expanded` added/removed
+ * - `softDisabled`: Click prevention enabled/disabled
+ *
+ * Uses Storybook's `useArgs` hook to simulate runtime prop changes.
+ *
+ * ---
+ *
+ * **Important: `waitFor` is required after `updateArgs`**
+ *
+ * When using `useArgs` with `test-storybook` (Playwright-based test runner),
+ * calling `updateArgs` inside a play function may cause the test runner to
+ * finish early without waiting for the re-render. Wrapping assertions in
+ * `waitFor()` ensures the test runner waits for the re-render cycle.
+ *
+ * @example
+ * ```typescript
+ * // ❌ May fail - test finishes before re-render
+ * await userEvent.click(setColorButton);
+ * expect(button).toHaveClass('alert');
+ *
+ * // ✅ Correct - waits for re-render
+ * await userEvent.click(setColorButton);
+ * await waitFor(() => {
+ *   expect(button).toHaveClass('alert');
+ * });
+ * ```
+ *
+ * **Note:** Storybook 10 recommends migrating to the Vitest addon
+ * (`@storybook/addon-test`), which handles re-renders more natively and
+ * may eliminate the need for `waitFor` workarounds.
+ *
+ * **On `resetArgs`:** Some discussions recommend calling `resetArgs()` at
+ * the start and end of play functions to prevent state pollution.
+ *
+ * Testing shows different behavior depending on how the story is accessed:
+ * - **`test-storybook` CLI** — No pollution (fresh iframe load per test)
+ * - **Sidebar navigation** — CAUSES pollution! Storybook preserves modified
+ *   args in browser history, so navigating away and back retains changes.
+ * - **Interactions debugger** — Uses sidebar navigation internally, so it
+ *   can also experience pollution when re-running tests.
+ *
+ * **Recommendation:** Call `resetArgs()` at BOTH the START and END of play
+ * functions when the story modifies args via `updateArgs`:
+ * - **Start**: Ensures test begins with clean defaults (protects from pollution)
+ * - **End**: Cleans up after the test (prevents polluting subsequent tests)
+ *
+ * **Implementation:** Since `resetArgs` is only available from `useArgs()` in
+ * the render function, expose it via a hidden button that the play function
+ * can click:
+ * ```typescript
+ * render: () => {
+ *   const [args, updateArgs, resetArgs] = useArgs();
+ *   return {
+ *     props: { ...args, resetArgs },
+ *     template: `
+ *       <button (click)="resetArgs()" data-testid="reset-args" class="hide">
+ *         Reset
+ *       </button>
+ *       ...
+ *     `,
+ *   };
+ * },
+ * play: async ({ canvasElement }) => {
+ *   const canvas = within(canvasElement);
+ *   await userEvent.click(canvas.getByTestId('reset-args')); // Reset at start
+ *   // ... tests ...
+ *   await userEvent.click(canvas.getByTestId('reset-args')); // Reset at end
+ * },
+ * ```
+ *
+ * This defensive pattern ensures the Interactions debugger can reliably
+ * re-run tests without manual resets.
+ *
+ * @see https://storybook.js.org/docs/writing-stories/play-function
+ * @see https://storybook.js.org/docs/vitest-addon
+ * @see https://github.com/storybookjs/storybook/discussions/17140#discussioncomment-5738652
+ */
+export const DynamicInputChanges: StoryObj<DynamicInputChangesArgs> = {
+  args: {
+    color: 'primary',
+    size: 'default',
+    fill: 'solid',
+    expanded: false,
+    softDisabled: false,
+  },
+  argTypes: {
+    color: { control: 'select', options: ['primary', 'alert', 'success'] },
+    size: { control: 'select', options: ['default', 'large', 'tiny'] },
+    fill: { control: 'select', options: ['solid', 'hollow', 'clear'] },
+    expanded: { control: 'boolean' },
+    softDisabled: { control: 'boolean' },
+  },
+  render: () => {
+    const [args, updateArgs, resetArgs] = useArgs<DynamicInputChangesArgs>();
+    return {
+      props: { ...args, updateArgs, resetArgs },
+      template: `
+        <main>
+          <!-- Hidden reset button for play function to call resetArgs -->
+          <button nfsButton size="small" (click)="resetArgs()" data-testid="reset-args" class="hide">
+            Reset Args
+          </button>
+          <section class="margin-bottom-2">
+            <h3>Dynamic Input Test</h3>
+            <button
+              nfsButton
+              [color]="color"
+              [size]="size"
+              [fill]="fill"
+              [expanded]="expanded"
+              [softDisabled]="softDisabled"
+              data-testid="dynamic-btn"
+            >
+              Button
+            </button>
+          </section>
+
+          <section class="margin-bottom-2">
+            <h4>Current State</h4>
+            <ul class="no-bullet">
+              <li><strong>color:</strong> {{ color }}</li>
+              <li><strong>size:</strong> {{ size }}</li>
+              <li><strong>fill:</strong> {{ fill }}</li>
+              <li><strong>expanded:</strong> {{ expanded }}</li>
+              <li><strong>softDisabled:</strong> {{ softDisabled }}</li>
+            </ul>
+          </section>
+
+          <section>
+            <h4>Test Controls</h4>
+            <div class="margin-bottom-1">
+              <button nfsButton size="small" (click)="updateArgs({ color: 'alert' })" data-testid="set-color-alert">
+                Set color=alert
+              </button>
+              <button nfsButton size="small" (click)="updateArgs({ color: 'primary' })" data-testid="set-color-primary" class="margin-left-1">
+                Set color=primary
+              </button>
+            </div>
+            <div class="margin-bottom-1">
+              <button nfsButton size="small" (click)="updateArgs({ size: 'large' })" data-testid="set-size-large">
+                Set size=large
+              </button>
+              <button nfsButton size="small" (click)="updateArgs({ size: 'default' })" data-testid="set-size-default" class="margin-left-1">
+                Set size=default
+              </button>
+            </div>
+            <div class="margin-bottom-1">
+              <button nfsButton size="small" (click)="updateArgs({ fill: 'hollow' })" data-testid="set-fill-hollow">
+                Set fill=hollow
+              </button>
+              <button nfsButton size="small" (click)="updateArgs({ fill: 'solid' })" data-testid="set-fill-solid" class="margin-left-1">
+                Set fill=solid
+              </button>
+            </div>
+            <div class="margin-bottom-1">
+              <button nfsButton size="small" (click)="updateArgs({ expanded: true })" data-testid="set-expanded-true">
+                Set expanded=true
+              </button>
+              <button nfsButton size="small" (click)="updateArgs({ expanded: false })" data-testid="set-expanded-false" class="margin-left-1">
+                Set expanded=false
+              </button>
+            </div>
+            <div>
+              <button nfsButton size="small" (click)="updateArgs({ softDisabled: true })" data-testid="set-soft-disabled-true">
+                Set softDisabled=true
+              </button>
+              <button nfsButton size="small" (click)="updateArgs({ softDisabled: false })" data-testid="set-soft-disabled-false" class="margin-left-1">
+                Set softDisabled=false
+              </button>
+            </div>
+          </section>
+        </main>
+      `,
+    };
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Reset args to defaults to prevent state pollution from sidebar navigation
+    // Click hidden reset button which calls resetArgs() from useArgs hook
+    await userEvent.click(canvas.getByTestId('reset-args'));
+
+    const button = canvas.getByTestId('dynamic-btn');
+
+    // Wait for args reset to take effect
+    await waitFor(() => {
+      expect(button).toHaveClass('button', 'primary');
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // Test 1: Color change (primary → alert → primary)
+    // ═══════════════════════════════════════════════════════════════════════════
+    expect(button).toHaveClass('button', 'primary');
+
+    await userEvent.click(canvas.getByTestId('set-color-alert'));
+    await waitFor(() => {
+      expect(button).toHaveClass('alert');
+      expect(button).not.toHaveClass('primary');
+    });
+
+    await userEvent.click(canvas.getByTestId('set-color-primary'));
+    await waitFor(() => {
+      expect(button).toHaveClass('primary');
+      expect(button).not.toHaveClass('alert');
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // Test 2: Size change (default → large → default)
+    // ═══════════════════════════════════════════════════════════════════════════
+    expect(button).not.toHaveClass('large', 'tiny', 'small');
+
+    await userEvent.click(canvas.getByTestId('set-size-large'));
+    await waitFor(() => {
+      expect(button).toHaveClass('large');
+    });
+
+    await userEvent.click(canvas.getByTestId('set-size-default'));
+    await waitFor(() => {
+      expect(button).not.toHaveClass('large');
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // Test 3: Fill change (solid → hollow → solid)
+    // ═══════════════════════════════════════════════════════════════════════════
+    expect(button).not.toHaveClass('hollow', 'clear');
+
+    await userEvent.click(canvas.getByTestId('set-fill-hollow'));
+    await waitFor(() => {
+      expect(button).toHaveClass('hollow');
+    });
+
+    await userEvent.click(canvas.getByTestId('set-fill-solid'));
+    await waitFor(() => {
+      expect(button).not.toHaveClass('hollow');
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // Test 4: Expanded toggle (false → true → false)
+    // ═══════════════════════════════════════════════════════════════════════════
+    expect(button).not.toHaveClass('expanded');
+
+    await userEvent.click(canvas.getByTestId('set-expanded-true'));
+    await waitFor(() => {
+      expect(button).toHaveClass('expanded');
+    });
+
+    await userEvent.click(canvas.getByTestId('set-expanded-false'));
+    await waitFor(() => {
+      expect(button).not.toHaveClass('expanded');
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // Test 5: SoftDisabled toggle with click prevention
+    // ═══════════════════════════════════════════════════════════════════════════
+    expect(button).not.toHaveClass('disabled');
+    expect(button).not.toHaveAttribute('aria-disabled');
+
+    await userEvent.click(canvas.getByTestId('set-soft-disabled-true'));
+    await waitFor(() => {
+      expect(button).toHaveClass('disabled');
+      expect(button).toHaveAttribute('aria-disabled', 'true');
+    });
+
+    await userEvent.click(canvas.getByTestId('set-soft-disabled-false'));
+    await waitFor(() => {
+      expect(button).not.toHaveClass('disabled');
+      expect(button).not.toHaveAttribute('aria-disabled');
+    });
+
+    // Reset args at end to clean up for subsequent tests (sidebar navigation)
+    await userEvent.click(canvas.getByTestId('reset-args'));
   },
 };

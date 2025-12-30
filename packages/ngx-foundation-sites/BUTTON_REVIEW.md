@@ -253,13 +253,14 @@ All 18 Button Storybook interaction tests pass:
 - BooleanAttributeSyntax _(added 2025-12-30)_
 - ResponsiveExpanded _(added 2025-12-30)_
 - ExpandedInputSyntax _(added 2025-12-30)_
+- DynamicInputChanges _(added 2025-12-30)_
 
 ### Missing Test Coverage
 
 1. ~~**Click prevention for `softDisabled`**~~ ✅ Now tested in `SoftDisabledClickPrevention`
 2. ~~**Form submission prevention**~~ ✅ Now tested in `SoftDisabledClickPrevention`
 3. ~~**Space key on anchor buttons**~~ ✅ Now tested in `AnchorSpaceKeyActivation`
-4. **Dynamic input changes** - No tests for changing inputs at runtime
+4. ~~**Dynamic input changes**~~ ✅ Now tested in `DynamicInputChanges`
 
 ---
 
@@ -282,5 +283,5 @@ All 18 Button Storybook interaction tests pass:
 ---
 
 _Review conducted: 2025-12-28_
-_Last updated: 2025-12-30 (responsive expanded classes added)_
+_Last updated: 2025-12-30 (dynamic input change tests added)_
 _Reviewed against: BUTTON_API_DESIGN.md, Foundation for Sites 6.9.0_
