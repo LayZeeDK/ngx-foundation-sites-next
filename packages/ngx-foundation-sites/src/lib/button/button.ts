@@ -12,6 +12,61 @@ import {
 } from '@angular/core';
 
 /**
+ * Responsive expanded breakpoint values.
+ * Matches Foundation's responsive expanded class suffixes.
+ *
+ * @see https://get.foundation/sites/docs/button.html#responsive-expanded
+ */
+export type NfsButtonExpandedBreakpoint =
+  | 'small-only'
+  | 'medium-only'
+  | 'large-only'
+  | 'medium'
+  | 'large'
+  | 'medium-down'
+  | 'large-down';
+
+/**
+ * Type for the expanded input.
+ * - `false`: Not expanded (default)
+ * - `true`: Always expanded (`.expanded` class)
+ * - Breakpoint string: Responsive expanded (e.g., `.medium-expanded` class)
+ */
+export type NfsButtonExpanded = boolean | NfsButtonExpandedBreakpoint;
+
+/**
+ * Valid breakpoint values for responsive expanded.
+ */
+const VALID_EXPANDED_BREAKPOINTS: ReadonlySet<string> = new Set([
+  'small-only',
+  'medium-only',
+  'large-only',
+  'medium',
+  'large',
+  'medium-down',
+  'large-down',
+]);
+
+/**
+ * Transform for the expanded input.
+ * Delegates to Angular's booleanAttribute for boolean coercion,
+ * while also accepting responsive breakpoint strings.
+ *
+ * @param value - Raw input value from template
+ * @returns Normalized NfsButtonExpanded value
+ */
+function expandedTransform(value: unknown): NfsButtonExpanded {
+  // Check for valid breakpoint strings FIRST (before booleanAttribute converts them)
+  if (typeof value === 'string' && VALID_EXPANDED_BREAKPOINTS.has(value)) {
+    return value as NfsButtonExpandedBreakpoint;
+  }
+
+  // Delegate all other values to Angular's booleanAttribute
+  // This handles: true, false, '', 'true', 'false', null, undefined
+  return booleanAttribute(value);
+}
+
+/**
  * NfsButton - Foundation Button component with attribute selector.
  *
  * Applies Foundation CSS classes to native `<button>` and `<a>` elements.
@@ -50,8 +105,17 @@ import {
     '[class.small]': 'size() === "small"',
     '[class.large]': 'size() === "large"',
 
-    // Expanded (full-width)
-    '[class.expanded]': 'expanded()',
+    // Expanded (full-width) - always expanded
+    '[class.expanded]': 'expanded() === true',
+
+    // Responsive expanded classes - breakpoint-specific
+    '[class.small-only-expanded]': 'expanded() === "small-only"',
+    '[class.medium-only-expanded]': 'expanded() === "medium-only"',
+    '[class.large-only-expanded]': 'expanded() === "large-only"',
+    '[class.medium-expanded]': 'expanded() === "medium"',
+    '[class.large-expanded]': 'expanded() === "large"',
+    '[class.medium-down-expanded]': 'expanded() === "medium-down"',
+    '[class.large-down-expanded]': 'expanded() === "large-down"',
 
     // Color classes
     '[class.primary]': 'color() === "primary"',
@@ -108,16 +172,28 @@ export class NfsButton {
   readonly fill = input<'solid' | 'hollow' | 'clear'>('solid');
 
   /**
-   * Whether the button spans full width.
-   * Maps to Foundation `.expanded` class.
+   * Whether the button spans full width, optionally at specific breakpoints.
+   *
+   * Maps to Foundation CSS classes:
+   * - `true` or `expanded` attribute: `.expanded` (always full-width)
+   * - `'small-only'`: `.small-only-expanded` (full-width only on small screens)
+   * - `'medium-only'`: `.medium-only-expanded` (full-width only on medium screens)
+   * - `'large-only'`: `.large-only-expanded` (full-width only on large screens)
+   * - `'medium'`: `.medium-expanded` (full-width on medium and larger)
+   * - `'large'`: `.large-expanded` (full-width on large and larger)
+   * - `'medium-down'`: `.medium-down-expanded` (full-width on medium and smaller)
+   * - `'large-down'`: `.large-down-expanded` (full-width on large and smaller)
    *
    * Supports both property binding and HTML attribute syntax:
-   * - `[expanded]="true"` — property binding
-   * - `expanded` — HTML attribute (presence means true)
+   * - `[expanded]="true"` or `expanded` — always expanded
+   * - `expanded="medium"` — responsive expanded
    *
+   * @see https://get.foundation/sites/docs/button.html#responsive-expanded
    * @default false
    */
-  readonly expanded = input(false, { transform: booleanAttribute });
+  readonly expanded = input<NfsButtonExpanded, unknown>(false, {
+    transform: expandedTransform,
+  });
 
   /**
    * Soft disabled state - button appears disabled but remains focusable.

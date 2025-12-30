@@ -1,1 +1,5 @@
-export { NfsButton } from './button';
+export {
+  NfsButton,
+  type NfsButtonExpanded,
+  type NfsButtonExpandedBreakpoint,
+} from './button';

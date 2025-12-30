@@ -10,9 +10,10 @@
 // Foundation global settings (custom palette for WCAG AA compliance)
 @use '../foundation-settings' as settings;
 
-// Foundation main module
+// Foundation main module - enable responsive expanded classes
 @use 'foundation-sites/scss/foundation' as foundation with (
-  $foundation-palette: settings.$foundation-palette
+  $foundation-palette: settings.$foundation-palette,
+  $button-responsive-expanded: true
 );
 
 // Include Foundation button styles
