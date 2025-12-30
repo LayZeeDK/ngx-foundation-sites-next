@@ -72,19 +72,36 @@ constructor() {
 
 ## Missing Features
 
-### 4. No Responsive Expanded Classes
+### ~~4. No Responsive Expanded Classes~~ ✅ RESOLVED
 
-**Severity:** Low
+**Status:** Fixed — Extended the `expanded` input to accept responsive breakpoint strings.
 
-**Issue:** Foundation supports responsive expanded classes like `small-only-expanded`, `medium-expanded`, `large-down-expanded`, etc. These are not exposed in the Angular API.
+**Implementation:** The `expanded` input now accepts both boolean values and breakpoint strings:
 
-**Foundation Usage:**
-
-```html
-<a class="button small medium-expanded" href="#">Expand on medium and larger</a>
+```typescript
+type NfsButtonExpanded = boolean | 'small-only' | 'medium-only' | 'large-only' | 'medium' | 'large' | 'medium-down' | 'large-down';
 ```
 
-**Recommendation:** Consider adding for v2, or document as a limitation. Users can still add these classes manually via `class` binding.
+**Usage:**
+
+```html
+<!-- Boolean (existing behavior) -->
+<button nfsButton expanded>Always expanded</button>
+
+<!-- Responsive breakpoint strings (new) -->
+<button nfsButton expanded="medium">Expanded on medium and larger</button>
+<button nfsButton expanded="large-down">Expanded on large and smaller</button>
+<button nfsButton expanded="small-only">Expanded only on small</button>
+```
+
+**Key features:**
+
+- Custom `expandedTransform` delegates to `booleanAttribute` for boolean coercion
+- Breakpoint strings are preserved and map to Foundation CSS classes
+- `$button-responsive-expanded: true` enabled in SCSS to generate responsive styles
+- Supports all Foundation breakpoint patterns: `-only`, `-up` (implicit), and `-down`
+
+**Test Coverage:** `ResponsiveExpanded` and `ExpandedInputSyntax` stories verify all breakpoint options and input syntaxes.
 
 ---
 
@@ -217,7 +234,7 @@ protected handleSpaceKey(event: Event): void {
 
 ### Passing Tests
 
-All 16 Button Storybook interaction tests pass:
+All 18 Button Storybook interaction tests pass:
 
 - Default
 - ColorVariants
@@ -234,6 +251,8 @@ All 16 Button Storybook interaction tests pass:
 - SoftDisabledClickPrevention _(added 2025-12-29)_
 - AnchorSpaceKeyActivation _(added 2025-12-29)_
 - BooleanAttributeSyntax _(added 2025-12-30)_
+- ResponsiveExpanded _(added 2025-12-30)_
+- ExpandedInputSyntax _(added 2025-12-30)_
 
 ### Missing Test Coverage
 
@@ -249,7 +268,7 @@ All 16 Button Storybook interaction tests pass:
 | Category             | Count | Resolved |
 | -------------------- | ----- | -------- |
 | Critical Issues      | 3     | 3 ✅     |
-| Missing Features     | 2     | 0        |
+| Missing Features     | 2     | 1 ✅     |
 | Documentation Issues | 2     | 2 ✅     |
 | Suggestions          | 2     | 1 ✅     |
 
@@ -258,9 +277,10 @@ All 16 Button Storybook interaction tests pass:
 1. ~~**[Critical]** Add click prevention for `softDisabled` buttons~~ ✅ DONE
 2. ~~**[Medium]** Add Space key handling for anchor buttons with `role="button"`~~ ✅ DONE
 3. ~~**[Low]** Add `booleanAttribute` transforms for boolean inputs~~ ✅ DONE
+4. ~~**[Low]** Add responsive expanded breakpoint support~~ ✅ DONE
 
 ---
 
 _Review conducted: 2025-12-28_
-_Last updated: 2025-12-30 (component vs directive terminology fixed in design document)_
+_Last updated: 2025-12-30 (responsive expanded classes added)_
 _Reviewed against: BUTTON_API_DESIGN.md, Foundation for Sites 6.9.0_
