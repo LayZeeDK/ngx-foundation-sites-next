@@ -32,6 +32,10 @@
 @include foundation.foundation-prototype-overflow;
 @include foundation.foundation-prototype-list-style-type;
 
+// Foundation Visibility utilities
+// Provides: .hide, .invisible, .show-for-sr, .hide-for-*, .show-for-*, etc.
+@include foundation.foundation-visibility-classes;
+
 // Text color utilities using theme CSS custom properties
 // Provides: .text-primary, .text-secondary, .text-success, .text-warning, .text-alert
 .text-primary {
