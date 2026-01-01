@@ -64,7 +64,17 @@
           "-c",
           "packages/ngx-foundation-sites/.compodocrc.json"
         ],
-        "styles": ["packages/ngx-foundation-sites/src/storybook/styles.scss"],
+        "stylePreprocessorOptions": {
+          "includePaths": [
+            "packages/ngx-foundation-sites/src/storybook",
+            "node_modules"
+          ]
+        },
+        "styles": [
+          "packages/ngx-foundation-sites/src/storybook/styles.scss",
+          "packages/ngx-foundation-sites/src/lib/scss/accordion.scss",
+          "packages/ngx-foundation-sites/src/lib/scss/button.scss"
+        ],
         "experimentalZoneless": true
       },
       "configurations": {
@@ -90,7 +100,17 @@
           "-c",
           "packages/ngx-foundation-sites/.compodocrc.json"
         ],
-        "styles": ["packages/ngx-foundation-sites/src/storybook/styles.scss"],
+        "stylePreprocessorOptions": {
+          "includePaths": [
+            "packages/ngx-foundation-sites/src/storybook",
+            "node_modules"
+          ]
+        },
+        "styles": [
+          "packages/ngx-foundation-sites/src/storybook/styles.scss",
+          "packages/ngx-foundation-sites/src/lib/scss/accordion.scss",
+          "packages/ngx-foundation-sites/src/lib/scss/button.scss"
+        ],
         "experimentalZoneless": true
       },
       "configurations": {

@@ -1,0 +1,12 @@
+// ═══════════════════════════════════════════════════════════════════════════════
+// Storybook Theme Configuration
+// ═══════════════════════════════════════════════════════════════════════════════
+//
+// This file forwards the library's foundation-settings for use in Storybook.
+// It mirrors what consumers would create in their own src/styles/_nfs-settings.scss
+//
+// ═══════════════════════════════════════════════════════════════════════════════
+
+// Forward all settings from the library's foundation-settings
+// Storybook uses the library's default values (no overrides)
+@forward '../lib/scss/foundation-settings';

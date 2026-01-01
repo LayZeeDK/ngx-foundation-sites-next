@@ -2,23 +2,34 @@
 // Storybook Global Styles
 // ═══════════════════════════════════════════════════════════════════════════════
 //
-// This file imports the ngx-foundation-sites public stylesheet and includes
-// all recommended global styles. Component-specific styles (like accordion)
-// are loaded by the components themselves.
+// This file sets up global styles for Storybook. Component-specific styles
+// (accordion, button) are loaded dynamically via NfsStyleLoader when
+// components are rendered.
 //
 // ═══════════════════════════════════════════════════════════════════════════════
 
-@use '../lib/styles' as nfs;
-// Foundation is already configured with our palette via nfs.
-// We can use it directly since Sass caches module configurations.
-@use 'foundation-sites/scss/foundation' as foundation;
+// Load Storybook's theme configuration (mirrors consumer setup)
+@use 'nfs-settings' as config;
 
-// Include all recommended global styles
-@include nfs.nfs-all-global-styles;
+// Configure Foundation with our settings
+@use 'foundation-sites/scss/foundation' as foundation with (
+  $foundation-palette: config.$foundation-palette,
+  $global-text-direction: config.$global-text-direction,
+  $global-flexbox: config.$global-flexbox
+);
 
-// Include button styles for Storybook demos (e.g., ExpandCollapseAll story)
-// This is opt-in; consumers should use nfs-button component when available
-@include nfs.foundation-button;
+// ═══════════════════════════════════════════════════════════════════════════════
+// GLOBAL STYLES
+// ═══════════════════════════════════════════════════════════════════════════════
+
+// Core resets and base styles
+@include foundation.foundation-global-styles;
+
+// Typography (headings, paragraphs, lists, links)
+@include foundation.foundation-typography;
+
+// Form element styles
+@include foundation.foundation-forms;
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // STORYBOOK-ONLY UTILITIES
@@ -36,24 +47,24 @@
 // Provides: .hide, .invisible, .show-for-sr, .hide-for-*, .show-for-*, etc.
 @include foundation.foundation-visibility-classes;
 
-// Text color utilities using theme CSS custom properties
+// Text color utilities using theme palette colors
 // Provides: .text-primary, .text-secondary, .text-success, .text-warning, .text-alert
 .text-primary {
-  color: var(--nfs-primary-color);
+  color: map-get(config.$foundation-palette, primary);
 }
 
 .text-secondary {
-  color: var(--nfs-secondary-color);
+  color: map-get(config.$foundation-palette, secondary);
 }
 
 .text-success {
-  color: var(--nfs-success-color);
+  color: map-get(config.$foundation-palette, success);
 }
 
 .text-warning {
-  color: var(--nfs-warning-color);
+  color: map-get(config.$foundation-palette, warning);
 }
 
 .text-alert {
-  color: var(--nfs-alert-color);
+  color: map-get(config.$foundation-palette, alert);
 }
