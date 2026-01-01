@@ -46,7 +46,7 @@ This plan implements the Foundation for Sites Accordion component using Angular 
 | `src/lib/accordion/accordion-item-def.ts`               | Accordion item directive    | ✅     |
 | `src/lib/accordion/accordion-header-def.ts`             | Header template directive   | ✅     |
 | `src/lib/accordion/accordion-content.ts`                | Content template directive  | ✅     |
-| `src/lib/accordion/_foundation-accordion-settings.scss` | Component SCSS settings     | ✅     |
+| `src/lib/scss/accordion.scss`                           | Component SCSS (distributed)| ✅     |
 | `src/lib/accordion/accordion.stories.ts`                | Storybook stories           | ✅     |
 | `src/lib/accordion/accordion.spec.ts`                   | Unit tests                  | ✅     |
 | `src/lib/accordion/accordion-deep-link.service.ts`      | Deep linking service        | ✅     |

@@ -1,198 +1,202 @@
 # Phase 11: Styles Architecture Refactoring ✅
 
-**Goal:** Separate global Foundation styles from component-specific styles so that:
+**Goal:** Implement a Sass-only styling architecture that enables:
 
-1. The library exposes a public SCSS stylesheet for consumers to import global styles
-2. Component-specific styles (like accordion) are loaded only when the component is used
-3. Bundle size is reduced for consumers who don't use all components
+1. Full Sass variable theming at consumer's build time
+2. Lazy-loaded component styles for optimal bundle size
+3. Compile-time RTL support via `$global-text-direction`
 
-## 11.1 Background
+## 11.1 Architecture Overview
 
-Previously, all Foundation styles (including accordion) were loaded globally via `storybook/styles.scss`. This meant:
-
-- Consumers had no public stylesheet to import
-- Accordion CSS was always included even if the component wasn't used
-- No clear separation between global and component-scoped styles
-
-## 11.2 Architecture Changes
-
-### 11.2.1 Public Global Stylesheet Entry Point
-
-**File:** `src/lib/styles/_index.scss`
-
-Created a new public stylesheet that exposes Foundation styles via mixins:
-
-```scss
-@use 'ngx-foundation-sites/styles' as nfs;
-
-// Option 1: Include all recommended global styles
-@include nfs.nfs-all-global-styles;
-
-// Option 2: Selectively include
-@include nfs.foundation-global-styles;
-@include nfs.foundation-typography;
-@include nfs.foundation-forms;
-@include nfs.foundation-button;
-@include nfs.nfs-theme-properties;
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                        CONSUMER APPLICATION                          │
+├─────────────────────────────────────────────────────────────────────┤
+│  angular.json (inject: false)          │  src/styles/_nfs-settings.scss│
+│  ┌─────────────────────────────────────┤  ┌────────────────────────┐ │
+│  │ "styles": [                         │  │ @forward '...' with (  │ │
+│  │   { "input": ".../accordion.scss",  │  │   $primary: #1e88e5,   │ │
+│  │     "bundleName": "assets/nfs/...", │  │   $button-radius: 4px  │ │
+│  │     "inject": false }               │  │ );                     │ │
+│  │ ]                                   │  └────────────────────────┘ │
+│  └─────────────────────────────────────┘            │                │
+│          │                                          │                │
+│          │ Sass compile (with consumer's config) ◄──┘                │
+│          ▼                                                           │
+│  ┌─────────────────────────────────────────────────────────────────┐ │
+│  │  dist/assets/ngx-foundation-sites/                              │ │
+│  │      ├── accordion.css  ◄── NOT injected, lazy-loaded           │ │
+│  │      └── button.css     ◄── NOT injected, lazy-loaded           │ │
+│  └─────────────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    │ NfsStyleLoader.load()
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                     ngx-foundation-sites LIBRARY                     │
+├─────────────────────────────────────────────────────────────────────┤
+│  Components call: inject(NfsStyleLoader).load('accordion')          │
+│  Styles load from: /assets/ngx-foundation-sites/accordion.css       │
+└─────────────────────────────────────────────────────────────────────┘
 ```
 
-**Available mixins:**
+## 11.2 Key Design Decisions
 
-| Mixin                           | Description                             |
-| ------------------------------- | --------------------------------------- |
-| `foundation-global-styles`      | Core resets, box-sizing, base HTML/body |
-| `foundation-typography`         | Headings, paragraphs, lists, links      |
-| `foundation-forms`              | Base form element styles                |
-| `foundation-button`             | Button component styles                 |
-| `foundation-visibility-classes` | Show/hide at breakpoints                |
-| `foundation-float-classes`      | Float utility classes                   |
-| `nfs-theme-properties`          | CSS custom properties (--nfs-\* prefix) |
-| `nfs-all-global-styles`         | All recommended styles (convenience)    |
+### 11.2.1 Sass-Only Theming (No CSS Custom Properties)
 
-### 11.2.2 Component-Scoped Accordion Styles
+**Why Sass variables instead of CSS Custom Properties?**
 
-**File:** `src/lib/accordion/accordion.scss`
+Foundation uses Sass functions like `scale-color()`, `map-get()`, and conditional logic that cannot accept CSS custom properties. A Sass-only API provides:
 
-The accordion component now loads Foundation's accordion styles directly:
+- Full access to Foundation's mixins and functions
+- Compile-time optimization (only used values in output)
+- Native RTL support via `$global-text-direction`
 
-```scss
-@use 'foundation-sites/scss/foundation' as foundation with (
-  $foundation-palette: settings.$foundation-palette,
-  $accordion-background: accordion-settings.$accordion-background // ... all accordion settings
-);
+### 11.2.2 Consumer-Compiled SCSS
 
-@include foundation.foundation-accordion;
-```
+Component SCSS files are distributed as source and compiled by the consumer's build:
 
-**Key changes:**
-
-1. Foundation's main module is imported to get global variables (`$global-left`, etc.)
-2. Accordion-specific settings use CSS Custom Properties for runtime theming
-3. All accordion customizations (RTL, animations, plusminus icons) are in component stylesheet
-
-### 11.2.3 Accordion Settings with CSS Custom Properties
-
-**File:** `src/lib/accordion/_foundation-accordion-settings.scss`
-
-Maps Foundation Sass variables to CSS Custom Properties:
-
-```scss
-$accordion-background: var(--nfs-accordion-background, #fefefe);
-$accordion-item-color: var(--nfs-accordion-item-color, var(--nfs-primary-color, #0d5a89));
-// ... etc
-```
-
-## 11.3 Angular View Encapsulation: ViewEncapsulation.None ✅
-
-**Decision:** Use `ViewEncapsulation.None` for all components in the library.
-
-**Benefits:**
-
-- Eliminates Angular's `_ngcontent-*` attribute selectors from CSS output
-- Reduces bundle size
-- Simplifies selectors (no need for `:host()` or specificity workarounds)
-- Better Foundation CSS compatibility
-
-**Styling conventions:**
-
-| Selector Type              | Purpose                               | Example                             |
-| -------------------------- | ------------------------------------- | ----------------------------------- |
-| Host element               | Target the component host             | `nfs-accordion { display: block; }` |
-| Foundation class overrides | Customize Foundation's default styles | `.accordion-title { width: 100%; }` |
-| `nfs-` prefixed classes    | Custom component-specific behavior    | `.nfs-accordion-no-plusminus`       |
-
-**Why element selectors for host styles?**
-
-- Same specificity as class selectors (0,0,1,0)
-- No need to add extra classes to the host element
-- More idiomatic for Angular components
-
-**Why `nfs-` prefix for custom behavior classes?**
-
-- Prevents clashes with consumer's global styles
-- Clear distinction between "adapting Foundation" and "adding new behavior"
-
-**Enforcement:**
-
-A custom ESLint rule (`@nfs/require-view-encapsulation-none`) enforces this across all library components:
-
-```javascript
-// packages/ngx-foundation-sites/eslint.config.mjs
+```json
+// Consumer's angular.json
 {
-  files: ['**/src/lib/**/*.ts'],
-  ignores: ['**/*.spec.ts', '**/*.test.ts'],
-  plugins: {
-    '@nfs': { rules: nfsRules },
-  },
-  rules: {
-    '@nfs/require-view-encapsulation-none': 'error',
-  },
+  "styles": [
+    {
+      "input": "node_modules/ngx-foundation-sites/scss/accordion.scss",
+      "bundleName": "assets/ngx-foundation-sites/accordion",
+      "inject": false
+    }
+  ]
 }
 ```
 
-**Generator defaults:**
+**Benefits:**
+- Consumer's Sass variable overrides apply to component styles
+- Lazy loading via `inject: false` reduces initial bundle
+- Consumer controls which components to include
 
-New components automatically use `ViewEncapsulation.None` via project-level generator config:
+### 11.2.3 NfsStyleLoader Service
 
-```json
-// packages/ngx-foundation-sites/project.json
-{
-  "generators": {
-    "@nx/angular:component": {
-      "viewEncapsulation": "None"
-    }
+Components load styles dynamically instead of using `styleUrl`:
+
+```typescript
+@Component({
+  selector: 'nfs-accordion',
+  // NO styleUrl - styles loaded dynamically
+  encapsulation: ViewEncapsulation.None,
+})
+export class NfsAccordion {
+  constructor() {
+    inject(NfsStyleLoader).load('accordion');
   }
 }
 ```
 
-## 11.4 Files Created
+**Benefits:**
+- Works with consumer-compiled SCSS
+- Styles load once per component (tracked by service)
+- Configurable base path via `NFS_STYLE_BASE_PATH` token
 
-| File                                                    | Purpose                                |
-| ------------------------------------------------------- | -------------------------------------- |
-| `src/lib/styles/_index.scss`                            | Public global stylesheet entry point   |
-| `src/lib/accordion/_foundation-accordion-settings.scss` | Accordion CSS Custom Property settings |
+## 11.3 File Structure
 
-## 11.5 Files Modified
-
-| File                                  | Change                                           |
-| ------------------------------------- | ------------------------------------------------ |
-| `ng-package.json`                     | Added `assets` config to export SCSS files       |
-| `src/lib/_foundation-components.scss` | Removed accordion include (now component-scoped) |
-| `src/lib/accordion/accordion.scss`    | Loads Foundation accordion + all customizations  |
-| `src/storybook/styles.scss`           | Simplified to use new public stylesheet          |
-
-## 11.6 Consumer Usage
-
-After publishing, consumers can use the library:
-
-**Option 1: Include all recommended global styles**
-
-```scss
-@use 'ngx-foundation-sites/styles' as nfs;
-@include nfs.nfs-all-global-styles;
+```
+src/lib/
+├── core/
+│   ├── nfs-style-loader.service.ts   # Dynamic CSS loading
+│   └── index.ts                      # Public exports
+│
+├── scss/                             # Distributed as npm assets
+│   ├── _foundation-settings.scss     # Configurable variables
+│   ├── accordion.scss                # Compiled by consumer
+│   └── button.scss
+│
+├── styles/
+│   └── _index.scss                   # Public Sass API (global styles)
+│
+└── accordion/
+    └── accordion.ts                  # NO styleUrl, uses NfsStyleLoader
 ```
 
-**Option 2: Selectively include only what you need**
+## 11.4 Consumer Theme Configuration
+
+Consumers create a settings file to customize Foundation variables:
 
 ```scss
-@use 'ngx-foundation-sites/styles' as nfs;
-
-@include nfs.foundation-global-styles;
-@include nfs.foundation-typography;
-@include nfs.nfs-theme-properties;
+// src/styles/_nfs-settings.scss
+@forward 'ngx-foundation-sites/scss/foundation-settings' with (
+  $foundation-palette: (
+    primary: #1e88e5,
+    secondary: #757575,
+    success: #43a047,
+    warning: #fb8c00,
+    alert: #e53935,
+  ),
+  $button-radius: 4px,
+  $accordion-plusminus: true,
+  $global-text-direction: ltr
+);
 ```
 
-**Option 3: Access Foundation settings for customization**
+## 11.5 RTL Support
+
+RTL is a compile-time decision via `$global-text-direction`:
 
 ```scss
-@use 'ngx-foundation-sites/styles' as nfs;
-@use 'sass:map';
-
-$my-primary: map.get(nfs.$foundation-palette, primary);
+@forward 'ngx-foundation-sites/scss/foundation-settings' with (
+  $global-text-direction: rtl
+);
 ```
 
-## 11.7 Bundle Size Impact
+Foundation automatically adjusts all directional styles (margins, paddings, icon positions).
 
-- **Before:** Accordion CSS always included in global styles (~2KB)
-- **After:** Accordion CSS only loaded when `<nfs-accordion>` is used
-- **Benefit:** Smaller initial bundle for apps that don't use accordion
+## 11.6 Testing Environments
+
+For Storybook and unit tests where styles are bundled directly:
+
+```typescript
+import { provideNfsTesting } from 'ngx-foundation-sites/testing';
+
+// Prevents 404 errors for /assets/ngx-foundation-sites/*.css
+providers: [provideNfsTesting()]
+```
+
+## 11.7 ViewEncapsulation.None ✅
+
+All components use `ViewEncapsulation.None` because:
+
+- Foundation's class selectors work directly
+- No `_ngcontent-*` attribute pollution in CSS
+- Simpler selectors and smaller bundle size
+
+Enforced via custom ESLint rule: `@nfs/require-view-encapsulation-none`
+
+## 11.8 Files Created/Modified
+
+### New Files
+
+| File | Purpose |
+|------|---------|
+| `src/lib/core/nfs-style-loader.service.ts` | Dynamic CSS loading service |
+| `src/lib/scss/_foundation-settings.scss` | Configurable Sass variables |
+| `src/lib/scss/accordion.scss` | Accordion styles (consumer-compiled) |
+| `src/lib/scss/button.scss` | Button styles (consumer-compiled) |
+| `testing/src/provide-nfs-testing.ts` | Testing environment providers |
+
+### Modified Files
+
+| File | Change |
+|------|--------|
+| `ng-package.json` | Export scss/ and styles/ as assets |
+| `src/lib/accordion/accordion.ts` | Use NfsStyleLoader instead of styleUrl |
+| `src/lib/button/button.ts` | Use NfsStyleLoader instead of styleUrl |
+| `.storybook/preview.ts` | Use provideNfsTesting() |
+
+## 11.9 Migration from Previous Architecture
+
+The previous architecture used:
+- `styleUrl` with component-scoped SCSS
+- CSS Custom Properties for runtime theming
+
+The new architecture provides:
+- Full Sass variable theming (compile-time)
+- Consumer controls compilation with their theme config
+- Lazy-loaded styles from conventional path
