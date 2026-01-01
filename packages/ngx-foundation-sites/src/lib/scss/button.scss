@@ -1,0 +1,31 @@
+// ═══════════════════════════════════════════════════════════════════════════════
+// ngx-foundation-sites Button Component Styles
+// ═══════════════════════════════════════════════════════════════════════════════
+//
+// This stylesheet is compiled by the CONSUMER'S build with their theme config.
+// It loads Foundation's button styles configured with the consumer's settings.
+//
+// Consumer Setup:
+//   1. Create src/styles/_nfs-settings.scss that @forward's foundation-settings
+//   2. Add this file to angular.json styles with inject: false
+//   3. The NfsStyleLoader service loads the compiled CSS at runtime
+//
+// ═══════════════════════════════════════════════════════════════════════════════
+
+// Load consumer's theme configuration
+// Resolves to consumer's src/styles/_nfs-settings.scss via includePaths
+@use 'nfs-settings' as config;
+
+// Configure Foundation with consumer's settings
+@use 'foundation-sites/scss/foundation' as foundation with (
+  $foundation-palette: config.$foundation-palette,
+  $global-text-direction: config.$global-text-direction,
+  $global-flexbox: config.$global-flexbox,
+  $button-padding: config.$button-padding,
+  $button-radius: config.$button-radius,
+  $button-opacity-disabled: config.$button-opacity-disabled,
+  $button-responsive-expanded: config.$button-responsive-expanded
+);
+
+// Include Foundation button styles
+@include foundation.foundation-button;

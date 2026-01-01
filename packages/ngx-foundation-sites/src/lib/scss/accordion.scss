@@ -1,0 +1,118 @@
+// ═══════════════════════════════════════════════════════════════════════════════
+// ngx-foundation-sites Accordion Component Styles
+// ═══════════════════════════════════════════════════════════════════════════════
+//
+// This stylesheet is compiled by the CONSUMER'S build with their theme config.
+// It loads Foundation's accordion styles and applies Angular integration overrides.
+//
+// Consumer Setup:
+//   1. Create src/styles/_nfs-settings.scss that @forward's foundation-settings
+//   2. Add this file to angular.json styles with inject: false
+//   3. The NfsStyleLoader service loads the compiled CSS at runtime
+//
+// ═══════════════════════════════════════════════════════════════════════════════
+
+// Load consumer's theme configuration
+// Resolves to consumer's src/styles/_nfs-settings.scss via includePaths
+@use 'nfs-settings' as config;
+
+// Foundation utilities for rem-calc
+@use 'foundation-sites/scss/util/util';
+
+// Configure Foundation with consumer's settings
+@use 'foundation-sites/scss/foundation' as foundation with (
+  $foundation-palette: config.$foundation-palette,
+  $global-text-direction: config.$global-text-direction,
+  $global-flexbox: config.$global-flexbox,
+  $accordion-background: config.$accordion-background,
+  $accordion-title-font-size: config.$accordion-title-font-size,
+  $accordion-item-color: config.$accordion-item-color,
+  $accordion-item-background-hover: config.$accordion-item-background-hover,
+  $accordion-item-padding: config.$accordion-item-padding,
+  $accordion-content-background: config.$accordion-content-background,
+  $accordion-content-border: config.$accordion-content-border,
+  $accordion-content-color: config.$accordion-content-color,
+  $accordion-content-padding: config.$accordion-content-padding,
+  $accordion-plusminus: config.$accordion-plusminus,
+  $accordion-plus-content: config.$accordion-plus-content,
+  $accordion-minus-content: config.$accordion-minus-content
+);
+
+// Include Foundation accordion styles
+@include foundation.foundation-accordion;
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// Host Element Styles
+// ═══════════════════════════════════════════════════════════════════════════════
+// With ViewEncapsulation.None, we use the element selector directly.
+
+nfs-accordion {
+  display: block;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// Button Element Overrides
+// ═══════════════════════════════════════════════════════════════════════════════
+// Foundation assumes <a> elements for accordion titles. When using <button>
+// elements for accessibility, explicit styles are needed.
+
+.accordion-title {
+  width: 100%;
+  cursor: pointer;
+  text-align: start; // Supports RTL via logical properties
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// RTL (Right-to-Left) Support
+// ═══════════════════════════════════════════════════════════════════════════════
+// Foundation's compiled CSS uses physical properties (right: 1rem). CSS Logical
+// Properties automatically flip based on document direction.
+//
+// Browser support: Chrome 87+, Firefox 66+, Safari 14.1+, Edge 87+
+
+.accordion-title {
+  position: relative; // Required for absolute positioning of ::before
+
+  &::before {
+    position: absolute;
+    top: 50%;
+    margin-top: -0.5rem;
+    right: unset; // Remove Foundation's physical property
+    inset-inline-end: 1rem; // Maps to right (LTR) or left (RTL)
+  }
+}
+
+// Hide icons when plusminus input is false
+nfs-accordion.nfs-accordion-no-plusminus .accordion-title::before {
+  display: none;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// CSS Grid Animation for Expand/Collapse
+// ═══════════════════════════════════════════════════════════════════════════════
+// Uses grid-template-rows transition from 0fr to 1fr for smooth animations.
+// Content is deferred via @defer for lazy loading.
+
+.accordion .accordion-content {
+  display: grid;
+  grid-template-rows: 0fr;
+  padding: 0;
+  border: 0;
+  transition:
+    grid-template-rows config.$accordion-slide-speed
+      cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    padding config.$accordion-slide-speed cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    border config.$accordion-slide-speed cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+  // Inner wrapper to contain content
+  > * {
+    overflow: hidden;
+  }
+}
+
+.accordion .accordion-item.is-active > .accordion-content {
+  grid-template-rows: 1fr;
+  padding: config.$accordion-content-padding;
+  border: config.$accordion-content-border;
+  border-bottom: 0; // Foundation removes bottom border
+}
