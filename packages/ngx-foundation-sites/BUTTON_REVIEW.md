@@ -127,6 +127,89 @@ type NfsButtonExpanded = boolean | 'small-only' | 'medium-only' | 'large-only' |
 
 **Recommendation:** Either implement the color custom properties or update the design document to reflect the actual API.
 
+#### Implementation Plan
+
+**Properties to implement:**
+
+| Property                        | Purpose              | Fallback Pattern                    |
+| ------------------------------- | -------------------- | ----------------------------------- |
+| `--nfs-button-background`       | Background color     | `var(--nfs-primary-color, #0d5a89)` |
+| `--nfs-button-background-hover` | Hover/focus bg color | `#0b4d75` (15% darker)              |
+| `--nfs-button-color`            | Text color           | `#fefefe`                           |
+
+**Design decisions:**
+
+1. **Scope to primary/default buttons only** — Use `:not()` selectors to exclude color variants (`.secondary`, `.success`, `.warning`, `.alert`). Foundation's color variant classes override via CSS specificity.
+
+2. **Follow existing pattern** — Reference `--nfs-primary-color` (from `_index.scss`) as intermediate fallback, matching the accordion's approach.
+
+3. **Handle fill variants** — Solid, hollow, and clear fills need different handling:
+   - Solid: Uses `--nfs-button-background` for background
+   - Hollow: Uses `--nfs-button-background` for border/text color (transparent background)
+   - Clear: Uses `--nfs-button-background` for text color (transparent background/border)
+
+**Files to modify:**
+
+1. `button.scss` — Add color CSS custom properties scoped to primary buttons:
+
+```scss
+// Color Custom Properties (Primary/Default only)
+// Color variants (.secondary, .success, etc.) retain Foundation's compiled colors.
+&:not(.secondary):not(.success):not(.warning):not(.alert) {
+  // Solid fill (default)
+  &:not(.hollow):not(.clear) {
+    background-color: var(--nfs-button-background, var(--nfs-primary-color, #0d5a89));
+    color: var(--nfs-button-color, #fefefe);
+
+    &:hover,
+    &:focus {
+      background-color: var(--nfs-button-background-hover, #0b4d75);
+    }
+  }
+
+  // Hollow fill
+  &.hollow {
+    border-color: var(--nfs-button-background, var(--nfs-primary-color, #0d5a89));
+    color: var(--nfs-button-background, var(--nfs-primary-color, #0d5a89));
+
+    &:hover,
+    &:focus {
+      border-color: var(--nfs-button-background-hover, #0b4d75);
+      color: var(--nfs-button-background-hover, #0b4d75);
+    }
+  }
+
+  // Clear fill
+  &.clear {
+    color: var(--nfs-button-background, var(--nfs-primary-color, #0d5a89));
+
+    &:hover,
+    &:focus {
+      color: var(--nfs-button-background-hover, #0b4d75);
+    }
+  }
+}
+```
+
+2. `button.stories.ts` — Update `ThemeControls` story with color controls and add `ColorCustomProperties` story with interaction tests.
+
+3. `BUTTON_API_DESIGN.md` — Update CSS Custom Properties section to use WCAG AA colors and remove non-existent `--nfs-primary-color-dark` reference.
+
+**Testing strategy:**
+
+- Storybook interaction tests verify `getComputedStyle()` matches custom properties
+- Verify color variants (secondary, success, etc.) are NOT affected
+- Test hollow/clear buttons inherit from `--nfs-button-background`
+- Use Playwright MCP for visual verification
+
+**Commit strategy:**
+
+1. Add color CSS custom properties to `button.scss`
+2. Update `ThemeControls` story with color controls and tests
+3. Add `ColorCustomProperties` story with tests
+4. Update `BUTTON_API_DESIGN.md` with correct colors
+5. Mark issue #5 resolved in `BUTTON_REVIEW.md`
+
 ---
 
 ## Documentation/Consistency Issues
@@ -185,15 +268,9 @@ readonly softDisabled = input(false, { transform: booleanAttribute });
 
 ---
 
-### 10. Form Submission Behavior Documentation
+### ~~10. Form Submission Behavior Documentation~~ N/A
 
-**Severity:** Enhancement
-
-The Storybook stories show form integration, but there's no documentation about the `.submit` class that Foundation recommends:
-
-> Add the attribute `type="button"` to `<button>` elements, unless the button submits a form, in which case you should add the class `.submit`
-
-**Recommendation:** Document this Foundation convention or add a `submit` variant.
+**Status:** Not applicable — The `.submit` class has no CSS styles in Foundation. Modern HTML uses `type="submit"` (default) vs `type="button"` instead.
 
 ---
 
@@ -271,7 +348,7 @@ All 18 Button Storybook interaction tests pass:
 | Critical Issues      | 3     | 3 ✅     |
 | Missing Features     | 2     | 1 ✅     |
 | Documentation Issues | 2     | 2 ✅     |
-| Suggestions          | 2     | 1 ✅     |
+| Suggestions          | 3     | 2 ✅     |
 
 ### Priority Fixes
 
@@ -283,5 +360,5 @@ All 18 Button Storybook interaction tests pass:
 ---
 
 _Review conducted: 2025-12-28_
-_Last updated: 2025-12-30 (dynamic input change tests added)_
+_Last updated: 2025-12-30 (marked .submit class as N/A)_
 _Reviewed against: BUTTON_API_DESIGN.md, Foundation for Sites 6.9.0_
