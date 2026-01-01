@@ -15,7 +15,10 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "ngx-foundation-sites": ["packages/ngx-foundation-sites/src/index.ts"]
+      "ngx-foundation-sites": ["packages/ngx-foundation-sites/src/index.ts"],
+      "ngx-foundation-sites/testing": [
+        "packages/ngx-foundation-sites/testing/src/index.ts"
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]
