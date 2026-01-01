@@ -10,6 +10,7 @@ import {
   Renderer2,
   ViewEncapsulation,
 } from '@angular/core';
+import { NfsStyleLoader } from '../core';
 
 /**
  * Responsive expanded breakpoint values.
@@ -93,7 +94,7 @@ function expandedTransform(value: unknown): NfsButtonExpanded {
   // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'button[nfsButton], a[nfsButton]',
   template: '<ng-content />',
-  styleUrl: './button.scss',
+  // Styles loaded dynamically via NfsStyleLoader (compiled by consumer's build)
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
@@ -257,6 +258,9 @@ export class NfsButton {
   };
 
   constructor() {
+    // Load button styles (compiled by consumer's build with their theme config)
+    inject(NfsStyleLoader).load('button');
+
     // Reactively add/remove click listener based on softDisabled signal.
     // Only adds listener when softDisabled is true (rare), so most buttons
     // have zero click-handling overhead. SSR-safe (only runs in browser).

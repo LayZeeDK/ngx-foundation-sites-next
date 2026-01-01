@@ -21,13 +21,14 @@ import {
   AccordionTrigger,
   AccordionPanel,
 } from '@angular/aria/accordion';
+import { NfsStyleLoader } from '../core';
 import { NfsAccordionItemDef } from './accordion-item-def';
 import { AccordionDeepLinkService } from './accordion-deep-link.service';
 
 @Component({
   selector: 'nfs-accordion',
   templateUrl: './accordion.html',
-  styleUrl: './accordion.scss',
+  // Styles loaded dynamically via NfsStyleLoader (compiled by consumer's build)
   encapsulation: ViewEncapsulation.None,
   host: {
     '[class.nfs-accordion-no-plusminus]': 'plusminus() === false',
@@ -104,6 +105,9 @@ export class NfsAccordion implements AfterContentInit {
   #initialHashProcessed = false;
 
   constructor() {
+    // Load accordion styles (compiled by consumer's build with their theme config)
+    inject(NfsStyleLoader).load('accordion');
+
     // Handle initial hash on first render
     afterNextRender(() => {
       if (this.deepLink()) {
