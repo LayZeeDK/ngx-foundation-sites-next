@@ -1,25 +1,30 @@
 // ═══════════════════════════════════════════════════════════════════════════════
-// ngx-foundation-sites Foundation Settings
+// ngx-foundation-sites
 // ═══════════════════════════════════════════════════════════════════════════════
 //
-// Re-exports all Foundation for Sites settings variables for consumer theming.
-// Consumers can override any Foundation variable using @forward ... with (...).
+// Re-exports Foundation for Sites for Angular applications.
+// Component-specific styles are loaded by their respective Angular components.
 //
-// Consumer Setup:
-//   // In consumer's src/styles/_nfs-settings.scss
-//   @forward 'ngx-foundation-sites/scss/foundation-settings' with (
+// Usage:
+//   @use 'ngx-foundation-sites/scss/foundation' as foundation with (
 //     $foundation-palette: (
 //       primary: #1e88e5,
 //       secondary: #757575,
-//       ...
+//       success: #43a047,
+//       warning: #fb8c00,
+//       alert: #e53935,
 //     ),
-//     $button-radius: 4px,
-//     $global-text-direction: rtl
+//     $global-flexbox: true,
+//     $global-text-direction: ltr
 //   );
+//
+//   @include foundation.foundation-global-styles;
+//   @include foundation.foundation-typography;
+//   @include foundation.foundation-forms;
 //
 // See Foundation's documentation for the complete list of configurable variables:
 // https://get.foundation/sites/docs/sass.html
 //
 // ═══════════════════════════════════════════════════════════════════════════════
 
-@forward 'foundation-sites/scss/settings/settings';
+@forward 'foundation-sites/scss/foundation';
