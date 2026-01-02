@@ -124,7 +124,7 @@ Consumers create a settings file to customize Foundation variables:
 
 ```scss
 // src/styles/_nfs-settings.scss
-@forward 'ngx-foundation-sites/scss/foundation-settings' with (
+@forward 'ngx-foundation-sites/scss/global' with (
   $foundation-palette: (
     primary: #1e88e5,
     secondary: #757575,
@@ -143,7 +143,7 @@ Consumers create a settings file to customize Foundation variables:
 RTL is a compile-time decision via `$global-text-direction`:
 
 ```scss
-@forward 'ngx-foundation-sites/scss/foundation-settings' with (
+@forward 'ngx-foundation-sites/scss/global' with (
   $global-text-direction: rtl
 );
 ```
@@ -170,17 +170,18 @@ Storybook supports dynamic direction switching via a toolbar control. This is im
    - `src/storybook/all-components-rtl.scss` - RTL styles
 
 2. **Parameterized settings** (`src/storybook/_nfs-settings.scss`):
+
    ```scss
    // Default direction, configurable via @use ... with ($_direction: rtl)
    $_direction: ltr !default;
 
    @forward 'foundation-sites/scss/global' with (
-     $global-text-direction: $_direction,
-     // ... other config
+     $global-text-direction: $_direction // ... other config
    );
    ```
 
 3. **Dynamic stylesheet swapping** in `preview.ts`:
+
    ```typescript
    // Import both as raw CSS strings via webpack ?inline query
    import ltrStyles from '../src/storybook/all-components-ltr.scss?inline';
@@ -212,7 +213,7 @@ Enforced via custom ESLint rule: `@nfs/require-view-encapsulation-none`
 | File                                       | Purpose                                  |
 | ------------------------------------------ | ---------------------------------------- |
 | `src/lib/core/nfs-style-loader.service.ts` | Dynamic CSS loading service              |
-| `src/lib/scss/_settings.scss`              | Re-exports Foundation settings           |
+| `src/lib/scss/_global.scss`                | Re-exports Foundation global settings    |
 | `src/lib/scss/accordion.scss`              | Accordion styles (consumer-compiled)     |
 | `src/lib/scss/button.scss`                 | Button styles (consumer-compiled)        |
 | `testing/src/provide-nfs-testing.ts`       | Testing environment providers            |
@@ -222,13 +223,13 @@ Enforced via custom ESLint rule: `@nfs/require-view-encapsulation-none`
 
 ### Modified Files
 
-| File                             | Change                                      |
-| -------------------------------- | ------------------------------------------- |
-| `ng-package.json`                | Export scss/ and styles/ as assets          |
-| `src/lib/accordion/accordion.ts` | Use NfsStyleLoader instead of styleUrl      |
-| `src/lib/button/button.ts`       | Use NfsStyleLoader instead of styleUrl      |
-| `.storybook/preview.ts`          | Dynamic RTL/LTR stylesheet swapping         |
-| `.storybook/main.ts`             | Webpack config for ?inline SCSS imports     |
+| File                             | Change                                  |
+| -------------------------------- | --------------------------------------- |
+| `ng-package.json`                | Export scss/ and styles/ as assets      |
+| `src/lib/accordion/accordion.ts` | Use NfsStyleLoader instead of styleUrl  |
+| `src/lib/button/button.ts`       | Use NfsStyleLoader instead of styleUrl  |
+| `.storybook/preview.ts`          | Dynamic RTL/LTR stylesheet swapping     |
+| `.storybook/main.ts`             | Webpack config for ?inline SCSS imports |
 
 ## 11.9 Migration from Previous Architecture
 

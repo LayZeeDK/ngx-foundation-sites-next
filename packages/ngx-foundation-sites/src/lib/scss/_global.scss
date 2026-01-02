@@ -1,13 +1,20 @@
 // ═══════════════════════════════════════════════════════════════════════════════
-// ngx-foundation-sites Foundation Settings
+// ngx-foundation-sites Global Settings
 // ═══════════════════════════════════════════════════════════════════════════════
 //
-// Re-exports all Foundation for Sites settings variables for consumer theming.
+// Re-exports Foundation's global settings for consumer theming.
 // Consumers can override any Foundation variable using @forward ... with (...).
+//
+// NAMING: This file is named `_global.scss` to match Foundation's own
+// `foundation-sites/scss/global` module, providing a familiar API.
+//
+// TECHNICAL: We forward Foundation's `_global.scss` (not `settings/_settings.scss`)
+// because only `_global.scss` declares variables with `!default`, enabling
+// consumer overrides via the `with` clause.
 //
 // Consumer Setup:
 //   // In consumer's src/styles/_nfs-settings.scss
-//   @forward 'ngx-foundation-sites/scss/settings' with (
+//   @forward 'ngx-foundation-sites/scss/global' with (
 //     $foundation-palette: (
 //       primary: #1e88e5,
 //       secondary: #757575,
@@ -22,4 +29,4 @@
 //
 // ═══════════════════════════════════════════════════════════════════════════════
 
-@forward 'foundation-sites/scss/settings/settings';
+@forward 'foundation-sites/scss/global';
