@@ -2,92 +2,30 @@
 // ngx-foundation-sites Global Styles
 // ═══════════════════════════════════════════════════════════════════════════════
 //
-// This file provides global Foundation styles (typography, forms, resets) for
-// consumer applications. Component-specific styles are loaded dynamically by
-// their respective Angular components via NfsStyleLoader.
+// Re-exports Foundation's global style mixins for consumer applications.
+// Component-specific styles are loaded by their respective Angular components.
 //
 // Usage:
 //   // In consumer's src/styles.scss
-//   @use './nfs-settings';  // Consumer's theme config (must load first)
-//   @use 'ngx-foundation-sites/styles' as nfs;
+//   @use 'ngx-foundation-sites/styles' as foundation with (
+//     $foundation-palette: (
+//       primary: #1e88e5,
+//       secondary: #757575,
+//       success: #43a047,
+//       warning: #fb8c00,
+//       alert: #e53935,
+//     ),
+//     $global-flexbox: true,
+//     $global-text-direction: ltr
+//   );
 //
-//   @include nfs.nfs-global-styles;  // All recommended global styles
+//   @include foundation.foundation-global-styles;
+//   @include foundation.foundation-typography;
+//   @include foundation.foundation-forms;
 //
-// Or selectively:
-//   @include nfs.foundation-global-styles;
-//   @include nfs.foundation-typography;
-//   @include nfs.foundation-forms;
+// See Foundation's documentation for the complete list of configurable variables:
+// https://get.foundation/sites/docs/sass.html
 //
 // ═══════════════════════════════════════════════════════════════════════════════
 
-// Load consumer's theme configuration (resolves via includePaths)
-@use 'nfs-settings' as config;
-
-// Configure Foundation with consumer's settings
-@use 'foundation-sites/scss/foundation' as foundation with (
-  $foundation-palette: config.$foundation-palette,
-  $global-text-direction: config.$global-text-direction,
-  $global-flexbox: config.$global-flexbox,
-  $global-radius: config.$global-radius,
-  $global-margin: config.$global-margin,
-  $global-padding: config.$global-padding
-);
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// CORE GLOBAL STYLES (recommended for all projects)
-// ═══════════════════════════════════════════════════════════════════════════════
-
-/// Core resets, box-sizing, and base HTML/body styles
-/// @output CSS reset and global element styles
-@mixin foundation-global-styles {
-  @include foundation.foundation-global-styles;
-}
-
-/// Base typography (headings, paragraphs, lists, links)
-/// @output Typography styles for body, h1-h6, p, ul, ol, a, etc.
-@mixin foundation-typography {
-  @include foundation.foundation-typography;
-}
-
-/// Base form element styles (inputs, labels, select, textarea)
-/// @output Form element styles
-@mixin foundation-forms {
-  @include foundation.foundation-forms;
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// HELPERS (optional utility classes)
-// ═══════════════════════════════════════════════════════════════════════════════
-
-/// Visibility utility classes (show/hide at breakpoints)
-/// @output .show-for-*, .hide-for-* classes
-@mixin foundation-visibility-classes {
-  @include foundation.foundation-visibility-classes;
-}
-
-/// Float utility classes
-/// @output .float-left, .float-right, .float-center classes
-@mixin foundation-float-classes {
-  @include foundation.foundation-float-classes;
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// CONVENIENCE: Include all recommended global styles
-// ═══════════════════════════════════════════════════════════════════════════════
-
-/// Includes all recommended global styles for typical projects.
-///
-/// This mixin includes:
-/// - `foundation-global-styles` - Resets and base styles
-/// - `foundation-typography` - Typography styles
-/// - `foundation-forms` - Form element styles
-///
-/// Note: Component styles (button, accordion, etc.) are NOT included.
-/// Components load their own styles via NfsStyleLoader.
-///
-/// @output Complete global stylesheet
-@mixin nfs-global-styles {
-  @include foundation-global-styles;
-  @include foundation-typography;
-  @include foundation-forms;
-}
+@forward 'foundation-sites/scss/foundation';
