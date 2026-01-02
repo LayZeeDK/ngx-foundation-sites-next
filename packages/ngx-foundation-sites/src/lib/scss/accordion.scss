@@ -82,11 +82,6 @@ nfs-accordion {
   }
 }
 
-// Hide icons when plusminus input is false
-nfs-accordion.nfs-accordion-no-plusminus .accordion-title::before {
-  display: none;
-}
-
 // ═══════════════════════════════════════════════════════════════════════════════
 // CSS Grid Animation for Expand/Collapse
 // ═══════════════════════════════════════════════════════════════════════════════

@@ -36,22 +36,22 @@ This plan implements the Foundation for Sites Accordion component using Angular 
 
 ### New Files
 
-| Path                                                    | Purpose                     | Status |
-| ------------------------------------------------------- | --------------------------- | ------ |
-| `src/lib/_foundation-settings.scss`                     | Global Foundation settings  | ✅     |
-| `src/lib/_foundation-components.scss`                   | Foundation component mixins | ✅     |
-| `src/storybook/styles.scss`                             | Storybook global styles     | ✅     |
-| `src/lib/accordion/index.ts`                            | Public exports              | ✅     |
-| `src/lib/accordion/accordion.ts`                        | Accordion group component   | ✅     |
-| `src/lib/accordion/accordion-item-def.ts`               | Accordion item directive    | ✅     |
-| `src/lib/accordion/accordion-header-def.ts`             | Header template directive   | ✅     |
-| `src/lib/accordion/accordion-content.ts`                | Content template directive  | ✅     |
-| `src/lib/scss/accordion.scss`                           | Component SCSS (distributed)| ✅     |
-| `src/lib/accordion/accordion.stories.ts`                | Storybook stories           | ✅     |
-| `src/lib/accordion/accordion.spec.ts`                   | Unit tests                  | ✅     |
-| `src/lib/accordion/accordion-deep-link.service.ts`      | Deep linking service        | ✅     |
-| `src/lib/accordion/accordion-deep-link.service.spec.ts` | Service unit tests          | ✅     |
-| `packages/.../accordion-deep-link.spec.ts`              | Playwright E2E tests        | ✅     |
+| Path                                                    | Purpose                      | Status |
+| ------------------------------------------------------- | ---------------------------- | ------ |
+| `src/lib/_foundation-settings.scss`                     | Global Foundation settings   | ✅     |
+| `src/lib/_foundation-components.scss`                   | Foundation component mixins  | ✅     |
+| `src/storybook/styles.scss`                             | Storybook global styles      | ✅     |
+| `src/lib/accordion/index.ts`                            | Public exports               | ✅     |
+| `src/lib/accordion/accordion.ts`                        | Accordion group component    | ✅     |
+| `src/lib/accordion/accordion-item-def.ts`               | Accordion item directive     | ✅     |
+| `src/lib/accordion/accordion-header-def.ts`             | Header template directive    | ✅     |
+| `src/lib/accordion/accordion-content.ts`                | Content template directive   | ✅     |
+| `src/lib/scss/accordion.scss`                           | Component SCSS (distributed) | ✅     |
+| `src/lib/accordion/accordion.stories.ts`                | Storybook stories            | ✅     |
+| `src/lib/accordion/accordion.spec.ts`                   | Unit tests                   | ✅     |
+| `src/lib/accordion/accordion-deep-link.service.ts`      | Deep linking service         | ✅     |
+| `src/lib/accordion/accordion-deep-link.service.spec.ts` | Service unit tests           | ✅     |
+| `packages/.../accordion-deep-link.spec.ts`              | Playwright E2E tests         | ✅     |
 
 ### Modified Files
 

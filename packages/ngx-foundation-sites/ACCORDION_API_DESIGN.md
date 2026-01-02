@@ -111,9 +111,6 @@ export class NfsAccordion {
   /** Use pushState instead of replaceState for deep linking (data-update-history) */
   readonly updateHistory = input(false);
 
-  /** Show plus/minus expand indicators ($accordion-plusminus Sass variable) */
-  readonly plusminus = input(true);
-
   // === Inputs (Angular extensions, not in Foundation) ===
 
   /** Keyboard navigation wraps from last to first (and vice versa) */
@@ -490,7 +487,6 @@ export class MyComponent {
 - `deepLinkSmudgeDelay` - Scroll delay (data-deep-link-smudge-delay)
 - `deepLinkSmudgeOffset` - Scroll offset (data-deep-link-smudge-offset)
 - `updateHistory` - Use pushState (data-update-history)
-- `plusminus` - Show plus/minus icons ($accordion-plusminus)
 
 **Angular extensions (not in Foundation):**
 
@@ -570,13 +566,13 @@ packages/ngx-foundation-sites/src/lib/accordion/
 
 ## Design Decisions (Finalized)
 
-| Decision            | Choice                              | Rationale                                                |
-| ------------------- | ----------------------------------- | -------------------------------------------------------- |
-| Input naming        | Match Foundation data attributes    | `multiExpand`, `allowAllClosed`, `deepLink`, etc.        |
-| Plus/minus icons    | `[plusminus]` input (default: true) | Matches `$accordion-plusminus` Sass variable             |
-| `titleHeadingLevel` | Default to `null` (no heading)      | Set to 1-6 to wrap triggers in heading elements for ARIA |
-| `softDisabled`      | Include (Angular extension)         | Better a11y - disabled items stay in tab order           |
-| Action row          | Skip for v1                         | Keep API minimal                                         |
-| Eager/lazy content  | Both supported                      | `ng-template[nfsAccordionContent]` for lazy              |
-| Component names     | Match Foundation CSS classes        | `.accordion-title` → `NfsAccordionTitle`                 |
-| Token naming        | camelCase with `Token` suffix       | `nfsAccordionToken`                                      |
+| Decision            | Choice                               | Rationale                                                |
+| ------------------- | ------------------------------------ | -------------------------------------------------------- |
+| Input naming        | Match Foundation data attributes     | `multiExpand`, `allowAllClosed`, `deepLink`, etc.        |
+| Plus/minus icons    | `$accordion-plusminus` Sass variable | Compile-time theming via consumer's settings file        |
+| `titleHeadingLevel` | Default to `null` (no heading)       | Set to 1-6 to wrap triggers in heading elements for ARIA |
+| `softDisabled`      | Include (Angular extension)          | Better a11y - disabled items stay in tab order           |
+| Action row          | Skip for v1                          | Keep API minimal                                         |
+| Eager/lazy content  | Both supported                       | `ng-template[nfsAccordionContent]` for lazy              |
+| Component names     | Match Foundation CSS classes         | `.accordion-title` → `NfsAccordionTitle`                 |
+| Token naming        | camelCase with `Token` suffix        | `nfsAccordionToken`                                      |

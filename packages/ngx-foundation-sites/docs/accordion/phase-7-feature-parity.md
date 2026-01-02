@@ -25,7 +25,7 @@
 | Sass Variable                      | Default                 | CSS Custom Property / Input             | Status |
 | ---------------------------------- | ----------------------- | --------------------------------------- | ------ |
 | `$accordion-background`            | `$white`                | `--nfs-accordion-background`            | ✅     |
-| `$accordion-plusminus`             | `true`                  | `plusminus` input                       | ✅     |
+| `$accordion-plusminus`             | `true`                  | Sass variable (compile-time)            | ✅     |
 | `$accordion-plus-content`          | `'\002B'`               | `--nfs-accordion-plus-content`          | ✅     |
 | `$accordion-minus-content`         | `'\2013'`               | `--nfs-accordion-minus-content`         | ✅     |
 | `$accordion-title-font-size`       | `rem-calc(12)`          | `--nfs-accordion-title-font-size`       | ✅     |
@@ -55,12 +55,6 @@
 | Lazy rendering         | ✅ Built-in                          | ✅     |
 
 **Result: 9/10 features accessible to consumers (90%)**
-
-### Additional Component Inputs
-
-| Input       | Description                                  | Status |
-| ----------- | -------------------------------------------- | ------ |
-| `plusminus` | Enable/disable +/- indicator icons (boolean) | ✅     |
 
 > **Note:** `preserveContent` is inherited from Angular ARIA's internal `DeferredContentAware` class and is not exported as a public API. The `textDirection` is automatically detected from the nearest `dir` attribute (or document root) via Angular CDK's `Directionality` service — no explicit input is needed. Both keyboard navigation behavior AND visual styling (via CSS Logical Properties) automatically adapt to RTL mode.
 
@@ -449,33 +443,30 @@ To enable RTL mode:
 
 ## 7.10 Implementation: Plus/Minus Icon Customization ✅
 
-**Goal:** Complete Foundation Sass variable coverage by exposing the remaining 3 plusminus-related variables.
+**Goal:** Complete Foundation Sass variable coverage for plusminus-related variables.
 
 ### 7.10.1 Foundation Sass Variables Covered
 
 | Sass Variable              | Default   | Implementation                      |
 | -------------------------- | --------- | ----------------------------------- |
-| `$accordion-plusminus`     | `true`    | `plusminus` Angular input           |
+| `$accordion-plusminus`     | `true`    | Sass variable (compile-time)        |
 | `$accordion-plus-content`  | `'\002B'` | `--nfs-accordion-plus-content` CSS  |
 | `$accordion-minus-content` | `'\2013'` | `--nfs-accordion-minus-content` CSS |
 
 ### 7.10.2 Implementation Approach
 
-**Why Angular input for `plusminus` boolean?**
+**Why Sass variable for `$accordion-plusminus`?**
 
-The CSS `if()` function (Chrome 137+) could theoretically toggle icon display based on a CSS custom property, but browser support is insufficient (2025). Instead, we use an Angular `input()` with a host class binding:
+The `$accordion-plusminus` boolean is configured at compile-time in the consumer's `_nfs-settings.scss` file. This matches Foundation's native approach where boolean toggles are decided at build time rather than runtime.
 
-```typescript
-/** Enable/disable the +/- indicator icons. Default: true */
-readonly plusminus = input(true);
-
-// In @Component host:
-host: {
-  '[class.nfs-accordion-no-plusminus]': '!plusminus()',
-}
+```scss
+// Consumer's src/styles/_nfs-settings.scss
+@forward 'ngx-foundation-sites/scss/foundation-settings' with (
+  $accordion-plusminus: false // Disable +/- icons at compile time
+);
 ```
 
-**CSS implementation (styles.scss):**
+**CSS Custom Properties for icon content:**
 
 ```scss
 // Plus/Minus Icon CSS Custom Properties
@@ -487,19 +478,13 @@ host: {
 .accordion-item.is-active > .accordion-title::before {
   content: var(--nfs-accordion-minus-content, '–');
 }
-
-// Hide icons when plusminus input is false
-.nfs-accordion-no-plusminus .accordion-title::before {
-  display: none;
-}
 ```
 
 ### 7.10.3 Stories Added
 
-| Story Name    | Purpose                                     |
-| ------------- | ------------------------------------------- |
-| `CustomIcons` | Demonstrates chevron icons (▶/▼) via CSS   |
-| `NoPlusminus` | Shows accordion without any indicator icons |
+| Story Name    | Purpose                                   |
+| ------------- | ----------------------------------------- |
+| `CustomIcons` | Demonstrates chevron icons (▶/▼) via CSS |
 
 ### 7.10.4 ThemeControls Updates
 
@@ -537,20 +522,19 @@ Added 2 new controls under "CSS Custom Properties" category:
 | `ThemeControls`        | Interactive controls for ALL CSS properties    | ✅ (Phase 7.4 + 7.10)       |
 | `RightToLeft`          | RTL layout with Arabic text and icon tests     | ✅ (Phase 7.5)              |
 | `CustomIcons`          | Custom chevron icons via CSS custom properties | ✅ (Phase 7.10)             |
-| `NoPlusminus`          | Accordion without +/- indicator icons          | ✅ (Phase 7.10)             |
 | `PreserveContentFalse` | Show DOM cleanup when panel closes             | ❌ (not possible, internal) |
 
 ## 7.7 Files to Modify
 
-| File                                  | Changes                                                      | Status                                                |
-| ------------------------------------- | ------------------------------------------------------------ | ----------------------------------------------------- |
-| `accordion.ts`                        | Add `softDisabled`, `plusminus` inputs, `viewChild`, methods | ✅ 7.3 + 7.10                                         |
-| `accordion-item.ts`                   | Add `preserveContent` input                                  | ❌ (not possible, internal API)                       |
-| `accordion-deep-link.service.ts`      | Add offset parameter to `scrollToPanel()`                    | ✅ 7.2                                                |
-| `styles.scss`                         | Add CSS custom property fallbacks, RTL, icon properties      | ✅ 7.4 + 7.5 + 7.10                                   |
-| `accordion.stories.ts`                | Add stories for new features                                 | ✅ 7.3 + 7.4 + 7.5 + 7.10 (7 stories)                 |
-| `accordion.spec.ts`                   | Add unit tests for new features                              | ✅ 7.3 + 7.4 (softDisabled, expand/collapse, theming) |
-| `accordion-deep-link.service.spec.ts` | Add offset tests                                             | ✅ 7.2                                                |
+| File                                  | Changes                                                 | Status                                                |
+| ------------------------------------- | ------------------------------------------------------- | ----------------------------------------------------- |
+| `accordion.ts`                        | Add `softDisabled` input, `viewChild`, methods          | ✅ 7.3                                                |
+| `accordion-item.ts`                   | Add `preserveContent` input                             | ❌ (not possible, internal API)                       |
+| `accordion-deep-link.service.ts`      | Add offset parameter to `scrollToPanel()`               | ✅ 7.2                                                |
+| `styles.scss`                         | Add CSS custom property fallbacks, RTL, icon properties | ✅ 7.4 + 7.5 + 7.10                                   |
+| `accordion.stories.ts`                | Add stories for new features                            | ✅ 7.3 + 7.4 + 7.5 + 7.10 (7 stories)                 |
+| `accordion.spec.ts`                   | Add unit tests for new features                         | ✅ 7.3 + 7.4 (softDisabled, expand/collapse, theming) |
+| `accordion-deep-link.service.spec.ts` | Add offset tests                                        | ✅ 7.2                                                |
 
 ## 7.8 Implementation Order
 
@@ -560,7 +544,7 @@ Added 2 new controls under "CSS Custom Properties" category:
 4. **expandAll/collapseAll** (requires viewChild) — ✅ Complete (Phase 7.3)
 5. **CSS custom properties** (most complex, requires style updates) — ✅ Complete (Phase 7.4)
 6. **RTL support** (CSS Logical Properties for +/- icons) — ✅ Complete (Phase 7.5)
-7. **Plusminus icons** (CSS custom properties + Angular input) — ✅ Complete (Phase 7.10)
+7. **Plusminus icons** (CSS custom properties for icon content) — ✅ Complete (Phase 7.10)
 
 ## 7.9 Expected Outcome
 
@@ -569,4 +553,4 @@ Added 2 new controls under "CSS Custom Properties" category:
 - **100%** Foundation JavaScript options (9/9 — all implemented ✅)
 - **100%** WAI-ARIA compliance (unchanged)
 - **90%** Angular ARIA features exposed (9/10 — `preserveContent` internal, `textDirection` ✅ via CSS Logical Properties)
-- **100%** Foundation Sass variables as CSS custom properties or inputs (12/12 — including plusminus icons ✅)
+- **100%** Foundation Sass variables as CSS custom properties or Sass variables (12/12 ✅)

@@ -45,10 +45,10 @@ beforeEach(() => {
 
 ## Exports
 
-| Export | Description |
-|--------|-------------|
-| `provideNfsTesting()` | Returns `EnvironmentProviders` that configure all testing services |
-| `NfsTestingStyleLoader` | No-op style loader for bundled environments |
+| Export                  | Description                                                        |
+| ----------------------- | ------------------------------------------------------------------ |
+| `provideNfsTesting()`   | Returns `EnvironmentProviders` that configure all testing services |
+| `NfsTestingStyleLoader` | No-op style loader for bundled environments                        |
 
 ## Why Use This?
 

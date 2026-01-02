@@ -1408,35 +1408,6 @@ export const CustomIcons: Story = {
 };
 
 /**
- * Demonstrates hiding the +/- icons using the `plusminus` input.
- * When set to false, the accordion title shows no indicator icons.
- */
-export const NoPlusminus: Story = {
-  args: {
-    allowAllClosed: true,
-    plusminus: false,
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    // Verify the nfs-accordion-no-plusminus class is applied
-    const accordion = canvasElement.querySelector('nfs-accordion');
-    expect(accordion).toHaveClass('nfs-accordion-no-plusminus');
-
-    // Verify the icon is hidden (display: none)
-    const trigger1 = canvas.getByRole('button', { name: /Accordion 1/i });
-    const iconStyle = getComputedStyle(trigger1, '::before');
-    expect(iconStyle.display).toBe('none');
-
-    // Verify accordion still works
-    await userEvent.click(trigger1);
-    await waitFor(() => {
-      expect(trigger1).toHaveAttribute('aria-expanded', 'true');
-    });
-  },
-};
-
-/**
  * Demonstrates eager vs lazy content rendering.
  * - Content directly in the template renders immediately (eager)
  * - Content in nfsAccordionContent renders only when expanded (lazy)

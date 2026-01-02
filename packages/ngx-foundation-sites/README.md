@@ -280,7 +280,6 @@ import { NfsAccordion, NfsAccordionItemDef, NfsAccordionHeader, NfsAccordionCont
 - `disabled` - Disable all interactions (default: `false`)
 - `wrap` - Keyboard navigation wraps (default: `false`)
 - `allowAllClosed` - Allow closing all panels (default: `false`)
-- `plusminus` - Show +/- icons (default: `true`)
 - `deepLink` - Sync with URL hash (default: `false`)
 - `deepLinkSmudge` - Auto-scroll on deep link (default: `false`)
 - `deepLinkSmudgeDelay` - Scroll delay in ms (default: `300`)

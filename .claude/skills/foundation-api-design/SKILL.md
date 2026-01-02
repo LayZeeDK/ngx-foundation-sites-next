@@ -183,7 +183,8 @@ Match Foundation's naming:
 - `data-multi-expand` → `multiExpand`
 - `data-allow-all-closed` → `allowAllClosed`
 - `data-deep-link` → `deepLink`
-- Sass variables: `$accordion-plusminus` → `plusminus`
+
+Note: Sass boolean variables (e.g., `$accordion-plusminus`) are compile-time configuration in the consumer's `_nfs-settings.scss`, not Angular inputs.
 
 ### Token Names
 

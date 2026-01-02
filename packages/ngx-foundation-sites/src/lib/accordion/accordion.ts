@@ -30,9 +30,7 @@ import { AccordionDeepLinkService } from './accordion-deep-link.service';
   templateUrl: './accordion.html',
   // Styles loaded dynamically via NfsStyleLoader (compiled by consumer's build)
   encapsulation: ViewEncapsulation.None,
-  host: {
-    '[class.nfs-accordion-no-plusminus]': 'plusminus() === false',
-  },
+  host: {},
   imports: [AccordionGroup, AccordionTrigger, AccordionPanel, NgTemplateOutlet],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -78,9 +76,6 @@ export class NfsAccordion implements AfterContentInit {
 
   /** Allow all panels to be closed. If false, at least one panel must remain open. */
   readonly allowAllClosed = input(false);
-
-  /** Enable/disable the +/- indicator icons. Default: true */
-  readonly plusminus = input(true);
 
   /** Query all item template definitions from content */
   readonly itemDefs = contentChildren(NfsAccordionItemDef);

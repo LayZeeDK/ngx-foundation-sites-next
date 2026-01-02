@@ -149,7 +149,6 @@ export const Default: Story = {
     multiExpandable: false,
     disabled: false,
     softDisabled: true,
-    plusminus: true,
     deepLink: false,
     // ... more duplicated defaults
   },

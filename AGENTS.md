@@ -19,8 +19,8 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 4. **Naming Alignment**: Component names should follow both Foundation for Sites component names from their docs AND their CSS class names (e.g., `Accordion` from docs → `.accordion` class, `Reveal` from docs → `.reveal` class)
 5. **Input Naming**: Component inputs should match Foundation's naming conventions:
    - Use Foundation's `data-*` attribute names in camelCase (e.g., `data-multi-expand` → `multiExpand`)
-   - Use Foundation's Sass variable names for styling options (e.g., `$accordion-plusminus` → `plusminus`)
    - Document the Foundation equivalent in JSDoc comments
+   - Note: Sass boolean variables (e.g., `$accordion-plusminus`) are compile-time configuration, not Angular inputs
 6. **Token Naming**: Injection tokens should use camelCase with a `Token` suffix (e.g., `nfsAccordionToken`)
 
 ### Styling Guidelines

@@ -70,6 +70,7 @@ Component SCSS files are distributed as source and compiled by the consumer's bu
 ```
 
 **Benefits:**
+
 - Consumer's Sass variable overrides apply to component styles
 - Lazy loading via `inject: false` reduces initial bundle
 - Consumer controls which components to include
@@ -92,6 +93,7 @@ export class NfsAccordion {
 ```
 
 **Benefits:**
+
 - Works with consumer-compiled SCSS
 - Styles load once per component (tracked by service)
 - Configurable base path via `NFS_STYLE_BASE_PATH` token
@@ -156,7 +158,7 @@ For Storybook and unit tests where styles are bundled directly:
 import { provideNfsTesting } from 'ngx-foundation-sites/testing';
 
 // Prevents 404 errors for /assets/ngx-foundation-sites/*.css
-providers: [provideNfsTesting()]
+providers: [provideNfsTesting()];
 ```
 
 ## 11.7 ViewEncapsulation.None ✅
@@ -173,30 +175,32 @@ Enforced via custom ESLint rule: `@nfs/require-view-encapsulation-none`
 
 ### New Files
 
-| File | Purpose |
-|------|---------|
-| `src/lib/core/nfs-style-loader.service.ts` | Dynamic CSS loading service |
-| `src/lib/scss/_foundation-settings.scss` | Configurable Sass variables |
-| `src/lib/scss/accordion.scss` | Accordion styles (consumer-compiled) |
-| `src/lib/scss/button.scss` | Button styles (consumer-compiled) |
-| `testing/src/provide-nfs-testing.ts` | Testing environment providers |
+| File                                       | Purpose                              |
+| ------------------------------------------ | ------------------------------------ |
+| `src/lib/core/nfs-style-loader.service.ts` | Dynamic CSS loading service          |
+| `src/lib/scss/_foundation-settings.scss`   | Configurable Sass variables          |
+| `src/lib/scss/accordion.scss`              | Accordion styles (consumer-compiled) |
+| `src/lib/scss/button.scss`                 | Button styles (consumer-compiled)    |
+| `testing/src/provide-nfs-testing.ts`       | Testing environment providers        |
 
 ### Modified Files
 
-| File | Change |
-|------|--------|
-| `ng-package.json` | Export scss/ and styles/ as assets |
+| File                             | Change                                 |
+| -------------------------------- | -------------------------------------- |
+| `ng-package.json`                | Export scss/ and styles/ as assets     |
 | `src/lib/accordion/accordion.ts` | Use NfsStyleLoader instead of styleUrl |
-| `src/lib/button/button.ts` | Use NfsStyleLoader instead of styleUrl |
-| `.storybook/preview.ts` | Use provideNfsTesting() |
+| `src/lib/button/button.ts`       | Use NfsStyleLoader instead of styleUrl |
+| `.storybook/preview.ts`          | Use provideNfsTesting()                |
 
 ## 11.9 Migration from Previous Architecture
 
 The previous architecture used:
+
 - `styleUrl` with component-scoped SCSS
 - CSS Custom Properties for runtime theming
 
 The new architecture provides:
+
 - Full Sass variable theming (compile-time)
 - Consumer controls compilation with their theme config
 - Lazy-loaded styles from conventional path
