@@ -2,41 +2,21 @@
 // ngx-foundation-sites Accordion Component Styles
 // ═══════════════════════════════════════════════════════════════════════════════
 //
-// This stylesheet is compiled by the CONSUMER'S build with their theme config.
-// It loads Foundation's accordion styles and applies Angular integration overrides.
+// This stylesheet provides accordion styles and is included AFTER Foundation
+// has been configured by the consumer or Storybook entry point.
 //
 // Consumer Setup:
-//   1. Create src/styles/_nfs-settings.scss that @forward's foundation-settings
-//   2. Add this file to angular.json styles with inject: false
+//   1. Create an entry point that configures Foundation with your theme
+//   2. Import this stylesheet after Foundation is configured
 //   3. The NfsStyleLoader service loads the compiled CSS at runtime
 //
 // ═══════════════════════════════════════════════════════════════════════════════
 
-// Load consumer's theme configuration
-// Resolves to consumer's src/styles/_nfs-settings.scss via includePaths
+// Use Foundation's pre-configured module (configured by entry point)
+@use 'foundation-sites/scss/foundation' as foundation;
+
+// Load settings for custom variables (animation speed, etc.)
 @use 'nfs-settings' as config;
-
-// Foundation utilities for rem-calc
-@use 'foundation-sites/scss/util/util';
-
-// Configure Foundation with consumer's settings
-@use 'foundation-sites/scss/foundation' as foundation with (
-  $foundation-palette: config.$foundation-palette,
-  $global-text-direction: config.$global-text-direction,
-  $global-flexbox: config.$global-flexbox,
-  $accordion-background: config.$accordion-background,
-  $accordion-title-font-size: config.$accordion-title-font-size,
-  $accordion-item-color: config.$accordion-item-color,
-  $accordion-item-background-hover: config.$accordion-item-background-hover,
-  $accordion-item-padding: config.$accordion-item-padding,
-  $accordion-content-background: config.$accordion-content-background,
-  $accordion-content-border: config.$accordion-content-border,
-  $accordion-content-color: config.$accordion-content-color,
-  $accordion-content-padding: config.$accordion-content-padding,
-  $accordion-plusminus: config.$accordion-plusminus,
-  $accordion-plus-content: config.$accordion-plus-content,
-  $accordion-minus-content: config.$accordion-minus-content
-);
 
 // Include Foundation accordion styles
 @include foundation.foundation-accordion;
@@ -44,7 +24,6 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 // Host Element Styles
 // ═══════════════════════════════════════════════════════════════════════════════
-// With ViewEncapsulation.None, we use the element selector directly.
 
 nfs-accordion {
   display: block;
@@ -55,18 +34,18 @@ nfs-accordion {
 // ═══════════════════════════════════════════════════════════════════════════════
 // Foundation assumes <a> elements for accordion titles. When using <button>
 // elements for accessibility, explicit styles are needed.
+// Uses Foundation's $global-left for proper RTL support.
 
 .accordion-title {
   width: 100%;
   cursor: pointer;
-  text-align: start;
+  text-align: config.$global-left;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // CSS Grid Animation for Expand/Collapse
 // ═══════════════════════════════════════════════════════════════════════════════
 // Uses grid-template-rows transition from 0fr to 1fr for smooth animations.
-// Content is deferred via @defer for lazy loading.
 
 .accordion .accordion-content {
   display: grid;
@@ -79,7 +58,6 @@ nfs-accordion {
     padding config.$accordion-slide-speed cubic-bezier(0.25, 0.46, 0.45, 0.94),
     border config.$accordion-slide-speed cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
-  // Inner wrapper to contain content
   > * {
     overflow: hidden;
   }
@@ -87,7 +65,7 @@ nfs-accordion {
 
 .accordion .accordion-item.is-active > .accordion-content {
   grid-template-rows: 1fr;
-  padding: config.$accordion-content-padding;
-  border: config.$accordion-content-border;
-  border-bottom: 0; // Foundation removes bottom border
+  padding: foundation.$accordion-content-padding;
+  border: foundation.$accordion-content-border;
+  border-bottom: 0;
 }

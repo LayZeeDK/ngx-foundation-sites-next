@@ -1,17 +1,15 @@
 // ═══════════════════════════════════════════════════════════════════════════════
-// Storybook All Component Styles (RTL)
+// Storybook All Component Styles (LTR)
 // ═══════════════════════════════════════════════════════════════════════════════
 //
-// This file compiles component styles with RTL text direction for Storybook.
+// This file compiles component styles with LTR text direction for Storybook.
 // It loads the settings first, then configures Foundation, and finally imports
 // component stylesheets that use the pre-configured Foundation module.
 //
 // ═══════════════════════════════════════════════════════════════════════════════
 
-// Load Storybook's RTL theme settings
-@use 'nfs-settings' as config with (
-  $_direction: rtl
-);
+// Load Storybook's LTR theme settings
+@use 'nfs-settings' as config;
 
 // Configure Foundation with Storybook settings
 // This MUST happen before importing component stylesheets

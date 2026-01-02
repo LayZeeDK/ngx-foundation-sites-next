@@ -1,51 +1,45 @@
 // ═══════════════════════════════════════════════════════════════════════════════
-// Storybook Theme Configuration (LTR)
+// Storybook Theme Configuration
 // ═══════════════════════════════════════════════════════════════════════════════
 //
-// This file provides Storybook's theme settings with WCAG AA compliant colors.
-// It mirrors what consumers would create in their own src/styles/_nfs-settings.scss
+// This file configures Foundation's global settings for Storybook.
+// It sets the text direction and WCAG-compliant colors, then forwards
+// Foundation's configured globals for component stylesheets.
 //
-// Only variables that OVERRIDE Foundation's defaults are defined here.
-// For all other variables, use Foundation's settings directly.
+// USAGE:
+//   LTR: @use 'nfs-settings';
+//   RTL: @use 'nfs-settings' with ($_direction: rtl);
 //
 // ═══════════════════════════════════════════════════════════════════════════════
 
 // ─────────────────────────────────────────────────────────────────────────────────
-// Global Settings
+// Direction Configuration
 // ─────────────────────────────────────────────────────────────────────────────────
-
-/// Text direction for LTR support.
-$global-text-direction: ltr !default;
-
-/// Enable flexbox-based grid system.
-$global-flexbox: true !default;
+$_direction: ltr !default;
 
 // ─────────────────────────────────────────────────────────────────────────────────
-// Color Palette (WCAG AA Compliant)
+// Configure and Forward Foundation's Global Settings
 // ─────────────────────────────────────────────────────────────────────────────────
-// These colors are adjusted from Foundation's defaults to meet WCAG AA contrast
-// requirements (4.5:1 minimum for normal text) against common backgrounds.
+// We configure Foundation's _global.scss with Storybook's theme, then forward
+// it so all Foundation variables are available to component stylesheets.
 
-/// Main color palette used throughout Foundation components.
-/// Colors are darkened from Foundation defaults for WCAG AA compliance.
-$foundation-palette: (
-  primary: #0d5a89,
-  // Darkened from #1779ba for 4.5:1 contrast
-  secondary: #595959,
-  // Darkened from #767676 for better contrast
-  success: #1a7f3e,
-  // Darkened from #3adb76 for readability
-  warning: #8a6500,
-  // Darkened from #ffae00 for text legibility
-  alert: #a33a2a, // Darkened from #cc4b37 for accessibility
-) !default;
+@forward 'foundation-sites/scss/global' with (
+  $global-text-direction: $_direction,
+  $global-flexbox: true,
+  // WCAG AA compliant colors (4.5:1 contrast ratio minimum)
+  $foundation-palette: (
+      primary: #0d5a89,
+      secondary: #595959,
+      success: #1a7f3e,
+      warning: #8a6500,
+      alert: #a33a2a,
+    )
+);
 
 // ─────────────────────────────────────────────────────────────────────────────────
 // ngx-foundation-sites Custom Variables
 // ─────────────────────────────────────────────────────────────────────────────────
-// Variables prefixed with $nfs- are custom to this library (not from Foundation).
-// These replace Foundation's JavaScript data-* attributes with Sass equivalents.
 
 /// Accordion expand/collapse animation duration.
 /// Replaces Foundation's data-slide-speed JavaScript option.
-$nfs-accordion-slide-speed: 250ms !default;
+$accordion-slide-speed: 250ms !default;

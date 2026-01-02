@@ -5,20 +5,46 @@ import docJson from '../documentation.json';
 import { cleanCompodocJson } from '../src/lib/util-storybook/clean-compodoc-json';
 import { provideNfsTesting } from 'ngx-foundation-sites/testing';
 
+// Import both LTR and RTL stylesheets as raw CSS strings for dynamic swapping.
+// The ?inline query triggers our custom webpack rule in main.ts.
+// Foundation compiles direction-specific CSS (e.g., `right: 1rem` for LTR vs `left: 1rem` for RTL).
+// Loading both simultaneously causes conflicts, so we swap between them.
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore - webpack ?inline query imports CSS as string
+import ltrStyles from '../src/storybook/all-components-ltr.scss?inline';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore - webpack ?inline query imports CSS as string
+import rtlStyles from '../src/storybook/all-components-rtl.scss?inline';
+
 // Configure Compodoc documentation for automatic prop extraction
 // cleanCompodocJson removes placeholder strings like "___COMPODOC_EMPTY_LINE___"
 setCompodocJson(cleanCompodocJson(docJson));
 
+const DIRECTION_STYLE_ID = 'nfs-direction-styles';
+
 /**
- * Set the document's text direction for RTL testing.
+ * Set the document's text direction and swap stylesheets for RTL/LTR.
  *
- * Both LTR and RTL styles are loaded together. RTL styles are scoped with
- * [dir='rtl'] selector, so they only apply when dir="rtl" is set on an ancestor.
- * This leverages Foundation's compile-time RTL while enabling runtime switching.
+ * Foundation compiles direction-specific CSS (e.g., `right: 1rem` vs `left: 1rem`).
+ * Loading both stylesheets causes conflicts. This function:
+ * 1. Sets the `dir` attribute on <html>
+ * 2. Swaps the active stylesheet (only one is active at a time)
  */
 function setDirection(direction: 'ltr' | 'rtl'): void {
   document.documentElement.dir = direction;
+
+  // Remove existing direction stylesheet
+  document.getElementById(DIRECTION_STYLE_ID)?.remove();
+
+  // Inject the appropriate stylesheet
+  const style = document.createElement('style');
+  style.id = DIRECTION_STYLE_ID;
+  style.textContent = direction === 'rtl' ? rtlStyles : ltrStyles;
+  document.head.appendChild(style);
 }
+
+// Initialize LTR styles immediately (before any story renders)
+setDirection('ltr');
 
 const preview: Preview = {
   tags: ['autodocs'],
