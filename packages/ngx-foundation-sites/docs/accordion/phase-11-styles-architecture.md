@@ -161,6 +161,40 @@ import { provideNfsTesting } from 'ngx-foundation-sites/testing';
 providers: [provideNfsTesting()];
 ```
 
+### Storybook RTL/LTR Testing
+
+Storybook supports dynamic direction switching via a toolbar control. This is implemented through:
+
+1. **Separate entry points** compile Foundation with LTR or RTL direction:
+   - `src/storybook/all-components-ltr.scss` - Default LTR styles
+   - `src/storybook/all-components-rtl.scss` - RTL styles
+
+2. **Parameterized settings** (`src/storybook/_nfs-settings.scss`):
+   ```scss
+   // Default direction, configurable via @use ... with ($_direction: rtl)
+   $_direction: ltr !default;
+
+   @forward 'foundation-sites/scss/global' with (
+     $global-text-direction: $_direction,
+     // ... other config
+   );
+   ```
+
+3. **Dynamic stylesheet swapping** in `preview.ts`:
+   ```typescript
+   // Import both as raw CSS strings via webpack ?inline query
+   import ltrStyles from '../src/storybook/all-components-ltr.scss?inline';
+   import rtlStyles from '../src/storybook/all-components-rtl.scss?inline';
+
+   // Swap stylesheets when direction changes
+   function setDirection(direction: 'ltr' | 'rtl'): void {
+     document.documentElement.dir = direction;
+     // Inject appropriate stylesheet (only one active at a time)
+   }
+   ```
+
+This approach ensures Foundation's directional CSS (e.g., `left: 1rem` vs `right: 1rem`) doesn't conflict, since only one stylesheet is active.
+
 ## 11.7 ViewEncapsulation.None ✅
 
 All components use `ViewEncapsulation.None` because:
@@ -175,22 +209,26 @@ Enforced via custom ESLint rule: `@nfs/require-view-encapsulation-none`
 
 ### New Files
 
-| File                                       | Purpose                              |
-| ------------------------------------------ | ------------------------------------ |
-| `src/lib/core/nfs-style-loader.service.ts` | Dynamic CSS loading service          |
-| `src/lib/scss/_foundation-settings.scss`   | Configurable Sass variables          |
-| `src/lib/scss/accordion.scss`              | Accordion styles (consumer-compiled) |
-| `src/lib/scss/button.scss`                 | Button styles (consumer-compiled)    |
-| `testing/src/provide-nfs-testing.ts`       | Testing environment providers        |
+| File                                       | Purpose                                  |
+| ------------------------------------------ | ---------------------------------------- |
+| `src/lib/core/nfs-style-loader.service.ts` | Dynamic CSS loading service              |
+| `src/lib/scss/_settings.scss`              | Re-exports Foundation settings           |
+| `src/lib/scss/accordion.scss`              | Accordion styles (consumer-compiled)     |
+| `src/lib/scss/button.scss`                 | Button styles (consumer-compiled)        |
+| `testing/src/provide-nfs-testing.ts`       | Testing environment providers            |
+| `src/storybook/_nfs-settings.scss`         | Storybook theme with direction parameter |
+| `src/storybook/all-components-ltr.scss`    | LTR entry point for Storybook            |
+| `src/storybook/all-components-rtl.scss`    | RTL entry point for Storybook            |
 
 ### Modified Files
 
-| File                             | Change                                 |
-| -------------------------------- | -------------------------------------- |
-| `ng-package.json`                | Export scss/ and styles/ as assets     |
-| `src/lib/accordion/accordion.ts` | Use NfsStyleLoader instead of styleUrl |
-| `src/lib/button/button.ts`       | Use NfsStyleLoader instead of styleUrl |
-| `.storybook/preview.ts`          | Use provideNfsTesting()                |
+| File                             | Change                                      |
+| -------------------------------- | ------------------------------------------- |
+| `ng-package.json`                | Export scss/ and styles/ as assets          |
+| `src/lib/accordion/accordion.ts` | Use NfsStyleLoader instead of styleUrl      |
+| `src/lib/button/button.ts`       | Use NfsStyleLoader instead of styleUrl      |
+| `.storybook/preview.ts`          | Dynamic RTL/LTR stylesheet swapping         |
+| `.storybook/main.ts`             | Webpack config for ?inline SCSS imports     |
 
 ## 11.9 Migration from Previous Architecture
 
