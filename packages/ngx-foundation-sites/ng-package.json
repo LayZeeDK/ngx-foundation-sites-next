@@ -6,7 +6,6 @@
   },
   "assets": [
     { "input": "./src/lib/styles", "glob": "**/*.scss", "output": "styles" },
-    "./src/lib/_foundation-*.scss",
     { "input": "./src/lib/scss", "glob": "**/*.scss", "output": "scss" }
   ]
 }
