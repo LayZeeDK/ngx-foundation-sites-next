@@ -9,9 +9,43 @@ import { provideNfsTesting } from 'ngx-foundation-sites/testing';
 // cleanCompodocJson removes placeholder strings like "___COMPODOC_EMPTY_LINE___"
 setCompodocJson(cleanCompodocJson(docJson));
 
+/**
+ * Set the document's text direction for RTL testing.
+ *
+ * Both LTR and RTL styles are loaded together. RTL styles are scoped with
+ * [dir='rtl'] selector, so they only apply when dir="rtl" is set on an ancestor.
+ * This leverages Foundation's compile-time RTL while enabling runtime switching.
+ */
+function setDirection(direction: 'ltr' | 'rtl'): void {
+  document.documentElement.dir = direction;
+}
+
 const preview: Preview = {
   tags: ['autodocs'],
+  globalTypes: {
+    direction: {
+      description: 'Text direction for RTL testing',
+      toolbar: {
+        title: 'Direction',
+        icon: 'globe',
+        items: [
+          { value: 'ltr', title: 'LTR', right: '→' },
+          { value: 'rtl', title: 'RTL', right: '←' },
+        ],
+        dynamicTitle: true,
+      },
+    },
+  },
+  initialGlobals: {
+    direction: 'ltr',
+  },
   decorators: [
+    // Apply direction based on toolbar selection
+    (story, context) => {
+      const direction = context.globals['direction'] || 'ltr';
+      setDirection(direction);
+      return story();
+    },
     // Use testing providers since Storybook bundles styles directly via webpack.
     // This prevents 404 errors for /assets/ngx-foundation-sites/*.css in the console.
     applicationConfig({

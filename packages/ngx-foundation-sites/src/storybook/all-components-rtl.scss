@@ -1,0 +1,98 @@
+// ═══════════════════════════════════════════════════════════════════════════════
+// Storybook All Component Styles (RTL)
+// ═══════════════════════════════════════════════════════════════════════════════
+//
+// This file compiles Foundation component styles with RTL text direction,
+// scoped to [dir=rtl] so they only apply when that attribute is set.
+//
+// Both LTR and RTL stylesheets are loaded together. The [dir=rtl] wrapper
+// ensures RTL styles override LTR styles only when dir="rtl" is on an ancestor.
+//
+// ═══════════════════════════════════════════════════════════════════════════════
+
+// Load RTL theme configuration
+@use 'nfs-settings-rtl' as config;
+
+// Foundation utilities
+@use 'foundation-sites/scss/util/util';
+
+// Configure Foundation with RTL settings
+@use 'foundation-sites/scss/foundation' as foundation with (
+  $foundation-palette: config.$foundation-palette,
+  $global-text-direction: config.$global-text-direction,
+  $global-flexbox: config.$global-flexbox,
+  // Accordion settings
+  $accordion-background: config.$accordion-background,
+  $accordion-title-font-size: config.$accordion-title-font-size,
+  $accordion-item-color: config.$accordion-item-color,
+  $accordion-item-background-hover: config.$accordion-item-background-hover,
+  $accordion-item-padding: config.$accordion-item-padding,
+  $accordion-content-background: config.$accordion-content-background,
+  $accordion-content-border: config.$accordion-content-border,
+  $accordion-content-color: config.$accordion-content-color,
+  $accordion-content-padding: config.$accordion-content-padding,
+  $accordion-plusminus: config.$accordion-plusminus,
+  $accordion-plus-content: config.$accordion-plus-content,
+  $accordion-minus-content: config.$accordion-minus-content,
+  // Button settings
+  $button-padding: config.$button-padding,
+  $button-radius: config.$button-radius,
+  $button-opacity-disabled: config.$button-opacity-disabled,
+  $button-responsive-expanded: config.$button-responsive-expanded
+);
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// RTL-SCOPED STYLES
+// ═══════════════════════════════════════════════════════════════════════════════
+// All styles are wrapped in [dir=rtl] so they only apply when RTL is active.
+// This allows both LTR and RTL styles to coexist, with RTL taking precedence
+// when the dir attribute is set.
+
+[dir='rtl'] {
+  // ═══════════════════════════════════════════════════════════════════════════
+  // ACCORDION COMPONENT
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  @include foundation.foundation-accordion;
+
+  nfs-accordion {
+    display: block;
+  }
+
+  // Button element overrides (Foundation assumes <a> elements)
+  .accordion-title {
+    width: 100%;
+    cursor: pointer;
+    text-align: start;
+  }
+
+  // CSS Grid animation for expand/collapse
+  .accordion .accordion-content {
+    display: grid;
+    grid-template-rows: 0fr;
+    padding: 0;
+    border: 0;
+    transition:
+      grid-template-rows config.$accordion-slide-speed
+        cubic-bezier(0.25, 0.46, 0.45, 0.94),
+      padding config.$accordion-slide-speed cubic-bezier(0.25, 0.46, 0.45, 0.94),
+      border config.$accordion-slide-speed cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+    > * {
+      overflow: hidden;
+    }
+  }
+
+  .accordion .accordion-item.is-active > .accordion-content {
+    grid-template-rows: 1fr;
+    padding: config.$accordion-content-padding;
+    border: config.$accordion-content-border;
+    border-bottom: 0;
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // BUTTON COMPONENT
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  @include foundation.foundation-button;
+}

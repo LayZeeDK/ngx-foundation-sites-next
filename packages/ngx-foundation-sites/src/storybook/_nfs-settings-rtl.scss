@@ -1,0 +1,13 @@
+// ═══════════════════════════════════════════════════════════════════════════════
+// Storybook RTL Theme Configuration
+// ═══════════════════════════════════════════════════════════════════════════════
+//
+// This file configures Foundation for RTL (right-to-left) rendering.
+// Used by Storybook's direction toggle to test RTL layouts.
+//
+// ═══════════════════════════════════════════════════════════════════════════════
+
+// Forward all settings from the library's foundation-settings with RTL override
+@forward '../lib/scss/foundation-settings' with (
+  $global-text-direction: rtl
+);

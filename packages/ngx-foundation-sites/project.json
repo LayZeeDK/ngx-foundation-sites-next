@@ -72,8 +72,8 @@
         },
         "styles": [
           "packages/ngx-foundation-sites/src/storybook/styles.scss",
-          "packages/ngx-foundation-sites/src/lib/scss/accordion.scss",
-          "packages/ngx-foundation-sites/src/lib/scss/button.scss"
+          "packages/ngx-foundation-sites/src/storybook/all-components.scss",
+          "packages/ngx-foundation-sites/src/storybook/all-components-rtl.scss"
         ],
         "experimentalZoneless": true
       },
@@ -108,8 +108,8 @@
         },
         "styles": [
           "packages/ngx-foundation-sites/src/storybook/styles.scss",
-          "packages/ngx-foundation-sites/src/lib/scss/accordion.scss",
-          "packages/ngx-foundation-sites/src/lib/scss/button.scss"
+          "packages/ngx-foundation-sites/src/storybook/all-components.scss",
+          "packages/ngx-foundation-sites/src/storybook/all-components-rtl.scss"
         ],
         "experimentalZoneless": true
       },

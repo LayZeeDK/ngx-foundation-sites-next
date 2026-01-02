@@ -1255,6 +1255,10 @@ export const RightToLeft: Story = {
   args: {
     allowAllClosed: true,
   },
+  globals: {
+    // Activate RTL stylesheet for compile-time RTL testing
+    direction: 'rtl',
+  },
   render: (args) => ({
     props: args,
     template: `
@@ -1298,10 +1302,10 @@ export const RightToLeft: Story = {
     // ═══════════════════════════════════════════════════════════════════════
     // 1. VERIFY +/- ICON POSITION (should be on LEFT in RTL)
     // ═══════════════════════════════════════════════════════════════════════
-    // CSS Logical Properties: `inset-inline-end: 1rem` resolves to `left: 1rem` in RTL
+    // Foundation compiles with $global-text-direction: rtl, placing icon on left
     const iconStyle = getComputedStyle(trigger1, '::before');
     // In RTL mode, the icon should be positioned on the left side
-    // inset-inline-end: 1rem maps to left: 16px (1rem = 16px) in RTL
+    // Foundation's #{$global-right} becomes 'left' when compiled with RTL
     const leftValue = parseFloat(iconStyle.left);
     expect(leftValue).toBeLessThan(50); // Icon should be near the left edge (16px = 1rem)
 

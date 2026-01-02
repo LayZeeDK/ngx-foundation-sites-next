@@ -1,29 +1,26 @@
 // ═══════════════════════════════════════════════════════════════════════════════
-// ngx-foundation-sites Accordion Component Styles
+// Storybook All Component Styles (LTR)
 // ═══════════════════════════════════════════════════════════════════════════════
 //
-// This stylesheet is compiled by the CONSUMER'S build with their theme config.
-// It loads Foundation's accordion styles and applies Angular integration overrides.
+// This file compiles all ngx-foundation-sites component styles for Storybook.
+// It uses the default LTR (left-to-right) text direction.
 //
-// Consumer Setup:
-//   1. Create src/styles/_nfs-settings.scss that @forward's foundation-settings
-//   2. Add this file to angular.json styles with inject: false
-//   3. The NfsStyleLoader service loads the compiled CSS at runtime
+// For RTL testing, see all-components-rtl.scss which compiles with RTL settings.
 //
 // ═══════════════════════════════════════════════════════════════════════════════
 
-// Load consumer's theme configuration
-// Resolves to consumer's src/styles/_nfs-settings.scss via includePaths
+// Load LTR theme configuration
 @use 'nfs-settings' as config;
 
-// Foundation utilities for rem-calc
+// Foundation utilities
 @use 'foundation-sites/scss/util/util';
 
-// Configure Foundation with consumer's settings
+// Configure Foundation with LTR settings
 @use 'foundation-sites/scss/foundation' as foundation with (
   $foundation-palette: config.$foundation-palette,
   $global-text-direction: config.$global-text-direction,
   $global-flexbox: config.$global-flexbox,
+  // Accordion settings
   $accordion-background: config.$accordion-background,
   $accordion-title-font-size: config.$accordion-title-font-size,
   $accordion-item-color: config.$accordion-item-color,
@@ -35,39 +32,32 @@
   $accordion-content-padding: config.$accordion-content-padding,
   $accordion-plusminus: config.$accordion-plusminus,
   $accordion-plus-content: config.$accordion-plus-content,
-  $accordion-minus-content: config.$accordion-minus-content
+  $accordion-minus-content: config.$accordion-minus-content,
+  // Button settings
+  $button-padding: config.$button-padding,
+  $button-radius: config.$button-radius,
+  $button-opacity-disabled: config.$button-opacity-disabled,
+  $button-responsive-expanded: config.$button-responsive-expanded
 );
 
-// Include Foundation accordion styles
-@include foundation.foundation-accordion;
+// ═══════════════════════════════════════════════════════════════════════════════
+// ACCORDION COMPONENT
+// ═══════════════════════════════════════════════════════════════════════════════
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// Host Element Styles
-// ═══════════════════════════════════════════════════════════════════════════════
-// With ViewEncapsulation.None, we use the element selector directly.
+@include foundation.foundation-accordion;
 
 nfs-accordion {
   display: block;
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// Button Element Overrides
-// ═══════════════════════════════════════════════════════════════════════════════
-// Foundation assumes <a> elements for accordion titles. When using <button>
-// elements for accessibility, explicit styles are needed.
-
+// Button element overrides (Foundation assumes <a> elements)
 .accordion-title {
   width: 100%;
   cursor: pointer;
   text-align: start;
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// CSS Grid Animation for Expand/Collapse
-// ═══════════════════════════════════════════════════════════════════════════════
-// Uses grid-template-rows transition from 0fr to 1fr for smooth animations.
-// Content is deferred via @defer for lazy loading.
-
+// CSS Grid animation for expand/collapse
 .accordion .accordion-content {
   display: grid;
   grid-template-rows: 0fr;
@@ -79,7 +69,6 @@ nfs-accordion {
     padding config.$accordion-slide-speed cubic-bezier(0.25, 0.46, 0.45, 0.94),
     border config.$accordion-slide-speed cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
-  // Inner wrapper to contain content
   > * {
     overflow: hidden;
   }
@@ -89,5 +78,11 @@ nfs-accordion {
   grid-template-rows: 1fr;
   padding: config.$accordion-content-padding;
   border: config.$accordion-content-border;
-  border-bottom: 0; // Foundation removes bottom border
+  border-bottom: 0;
 }
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// BUTTON COMPONENT
+// ═══════════════════════════════════════════════════════════════════════════════
+
+@include foundation.foundation-button;
