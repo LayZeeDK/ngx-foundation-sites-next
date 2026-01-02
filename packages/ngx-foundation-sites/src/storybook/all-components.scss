@@ -9,35 +9,20 @@
 //
 // ═══════════════════════════════════════════════════════════════════════════════
 
-// Load LTR theme configuration
+// Load Storybook's theme overrides (WCAG palette, flexbox, direction)
 @use 'nfs-settings' as config;
+
+// Load Foundation's settings directly for non-overridden values
+@use 'foundation-sites/scss/settings/settings' as foundation-settings;
 
 // Foundation utilities
 @use 'foundation-sites/scss/util/util';
 
-// Configure Foundation with LTR settings
+// Configure Foundation with our overrides only
 @use 'foundation-sites/scss/foundation' as foundation with (
   $foundation-palette: config.$foundation-palette,
   $global-text-direction: config.$global-text-direction,
-  $global-flexbox: config.$global-flexbox,
-  // Accordion settings
-  $accordion-background: config.$accordion-background,
-  $accordion-title-font-size: config.$accordion-title-font-size,
-  $accordion-item-color: config.$accordion-item-color,
-  $accordion-item-background-hover: config.$accordion-item-background-hover,
-  $accordion-item-padding: config.$accordion-item-padding,
-  $accordion-content-background: config.$accordion-content-background,
-  $accordion-content-border: config.$accordion-content-border,
-  $accordion-content-color: config.$accordion-content-color,
-  $accordion-content-padding: config.$accordion-content-padding,
-  $accordion-plusminus: config.$accordion-plusminus,
-  $accordion-plus-content: config.$accordion-plus-content,
-  $accordion-minus-content: config.$accordion-minus-content,
-  // Button settings
-  $button-padding: config.$button-padding,
-  $button-radius: config.$button-radius,
-  $button-opacity-disabled: config.$button-opacity-disabled,
-  $button-responsive-expanded: config.$button-responsive-expanded
+  $global-flexbox: config.$global-flexbox
 );
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -58,16 +43,19 @@ nfs-accordion {
 }
 
 // CSS Grid animation for expand/collapse
+// Uses $nfs-accordion-slide-speed (our Sass replacement for Foundation's data-slide-speed)
 .accordion .accordion-content {
   display: grid;
   grid-template-rows: 0fr;
   padding: 0;
   border: 0;
   transition:
-    grid-template-rows config.$accordion-slide-speed
+    grid-template-rows config.$nfs-accordion-slide-speed
       cubic-bezier(0.25, 0.46, 0.45, 0.94),
-    padding config.$accordion-slide-speed cubic-bezier(0.25, 0.46, 0.45, 0.94),
-    border config.$accordion-slide-speed cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    padding config.$nfs-accordion-slide-speed
+      cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    border config.$nfs-accordion-slide-speed
+      cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
   > * {
     overflow: hidden;
@@ -76,8 +64,8 @@ nfs-accordion {
 
 .accordion .accordion-item.is-active > .accordion-content {
   grid-template-rows: 1fr;
-  padding: config.$accordion-content-padding;
-  border: config.$accordion-content-border;
+  padding: foundation-settings.$accordion-content-padding;
+  border: foundation-settings.$accordion-content-border;
   border-bottom: 0;
 }
 

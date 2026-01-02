@@ -67,7 +67,8 @@
         "stylePreprocessorOptions": {
           "includePaths": [
             "packages/ngx-foundation-sites/src/storybook",
-            "node_modules"
+            "node_modules",
+            "node_modules/foundation-sites/scss"
           ]
         },
         "styles": [
@@ -103,7 +104,8 @@
         "stylePreprocessorOptions": {
           "includePaths": [
             "packages/ngx-foundation-sites/src/storybook",
-            "node_modules"
+            "node_modules",
+            "node_modules/foundation-sites/scss"
           ]
         },
         "styles": [

@@ -2,9 +2,8 @@
 // ngx-foundation-sites Foundation Settings
 // ═══════════════════════════════════════════════════════════════════════════════
 //
-// This file contains all configurable Sass variables with !default.
-// Consumers override these by creating their own _nfs-settings.scss that
-// @forward's this file with customizations.
+// Re-exports all Foundation for Sites settings variables for consumer theming.
+// Consumers can override any Foundation variable using @forward ... with (...).
 //
 // Consumer Setup:
 //   // In consumer's src/styles/_nfs-settings.scss
@@ -14,136 +13,13 @@
 //       secondary: #757575,
 //       ...
 //     ),
-//     $button-radius: 4px
+//     $button-radius: 4px,
+//     $global-text-direction: rtl
 //   );
+//
+// See Foundation's documentation for the complete list of configurable variables:
+// https://get.foundation/sites/docs/sass.html
 //
 // ═══════════════════════════════════════════════════════════════════════════════
 
-// ─────────────────────────────────────────────────────────────────────────────────
-// Global Settings
-// ─────────────────────────────────────────────────────────────────────────────────
-
-/// Text direction for RTL support. Set to 'rtl' for right-to-left languages.
-/// @type String
-$global-text-direction: ltr !default;
-
-/// Enable flexbox-based grid system.
-/// @type Boolean
-$global-flexbox: true !default;
-
-/// Default border radius for components.
-/// @type Number
-$global-radius: 0 !default;
-
-/// Default margin spacing.
-/// @type Number
-$global-margin: 1rem !default;
-
-/// Default padding spacing.
-/// @type Number
-$global-padding: 1rem !default;
-
-// ─────────────────────────────────────────────────────────────────────────────────
-// Color Palette (WCAG AA Compliant)
-// ─────────────────────────────────────────────────────────────────────────────────
-// These colors are adjusted from Foundation's defaults to meet WCAG AA contrast
-// requirements (4.5:1 minimum for normal text) against common backgrounds.
-
-/// Main color palette used throughout Foundation components.
-/// Colors are darkened from Foundation defaults for WCAG AA compliance.
-/// @type Map
-$foundation-palette: (
-  primary: #0d5a89,
-  // Darkened from #1779ba for 4.5:1 contrast
-  secondary: #595959,
-  // Darkened from #767676 for better contrast
-  success: #1a7f3e,
-  // Darkened from #3adb76 for readability
-  warning: #8a6500,
-  // Darkened from #ffae00 for text legibility
-  alert: #a33a2a, // Darkened from #cc4b37 for accessibility
-) !default;
-
-// ─────────────────────────────────────────────────────────────────────────────────
-// Button Settings
-// ─────────────────────────────────────────────────────────────────────────────────
-
-/// Button padding.
-/// @type List
-$button-padding: 0.85em 1em !default;
-
-/// Button font size.
-/// @type Number
-$button-font-size: 0.9rem !default;
-
-/// Button border radius.
-/// @type Number
-$button-radius: $global-radius !default;
-
-/// Opacity for disabled buttons.
-/// @type Number
-$button-opacity-disabled: 0.25 !default;
-
-/// Enable responsive expanded button classes (.expanded-for-small, etc.)
-/// @type Boolean
-$button-responsive-expanded: true !default;
-
-// ─────────────────────────────────────────────────────────────────────────────────
-// Accordion Settings
-// ─────────────────────────────────────────────────────────────────────────────────
-
-/// Accordion container background color.
-/// @type Color
-$accordion-background: #fefefe !default;
-
-/// Accordion title font size.
-/// @type Number
-$accordion-title-font-size: 0.75rem !default;
-
-/// Accordion title/item text color.
-/// @type Color
-$accordion-item-color: map-get($foundation-palette, primary) !default;
-
-/// Accordion title hover background color.
-/// @type Color
-$accordion-item-background-hover: #e6e6e6 !default;
-
-/// Accordion title padding.
-/// @type List
-$accordion-item-padding: 1.25rem 1rem !default;
-
-/// Accordion content panel background color.
-/// @type Color
-$accordion-content-background: #fefefe !default;
-
-/// Accordion content panel border.
-/// @type Border
-$accordion-content-border: 1px solid #e6e6e6 !default;
-
-/// Accordion content panel text color.
-/// @type Color
-$accordion-content-color: #0a0a0a !default;
-
-/// Accordion content panel padding.
-/// @type Number
-$accordion-content-padding: 1rem !default;
-
-/// Enable plus/minus icons for accordion items.
-/// @type Boolean
-$accordion-plusminus: true !default;
-
-/// Content for collapsed accordion icon.
-/// @type String
-$accordion-plus-content: '+' !default;
-
-/// Content for expanded accordion icon.
-/// @type String
-$accordion-minus-content: '\2013' !default; // en-dash (–)
-
-// ─────────────────────────────────────────────────────────────────────────────────
-// Animation Settings
-// ─────────────────────────────────────────────────────────────────────────────────
-
-/// Default accordion slide animation duration.
-/// @type Time
-$accordion-slide-speed: 250ms !default;
+@forward 'foundation-sites/scss/settings/settings';
