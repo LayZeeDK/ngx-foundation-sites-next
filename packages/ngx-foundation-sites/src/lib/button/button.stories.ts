@@ -3,8 +3,6 @@ import { expect, userEvent, waitFor, within } from 'storybook/test';
 import { useArgs } from 'storybook/preview-api';
 import { NfsButton } from './button';
 import { argsToLiteralTemplate } from '../util-storybook/args-to-literal-template';
-import { pxToEm } from '../util-storybook/px-to-em';
-import { pxToRem } from '../util-storybook/px-to-rem';
 
 const meta: Meta<NfsButton> = {
   title: 'Controls/Button',
@@ -428,122 +426,6 @@ export const KeyboardNavigation: Story = {
 
     // Activate with Space (native behavior)
     await userEvent.keyboard(' ');
-  },
-};
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// CSS Custom Property Theming
-// ═══════════════════════════════════════════════════════════════════════════════
-
-interface ThemeControlsArgs {
-  buttonPadding: string;
-  buttonFontSize: string;
-  buttonRadius: string;
-  buttonOpacityDisabled: number;
-  buttonTransition: string;
-}
-type ThemeControlsStory = StoryObj<ThemeControlsArgs>;
-
-/**
- * Customize button appearance via CSS custom properties.
- *
- * Available properties:
- * - `--nfs-button-padding`: Button padding
- * - `--nfs-button-font-size`: Font size
- * - `--nfs-button-radius`: Border radius
- * - `--nfs-button-opacity-disabled`: Opacity for disabled state
- * - `--nfs-button-transition`: Hover transition
- */
-export const ThemeControls: ThemeControlsStory = {
-  args: {
-    buttonPadding: '0.85em 1em',
-    buttonFontSize: '0.9rem',
-    buttonRadius: '0',
-    buttonOpacityDisabled: 0.25,
-    buttonTransition: 'background-color 0.25s ease-out, color 0.25s ease-out',
-  },
-  argTypes: {
-    buttonPadding: {
-      name: '--nfs-button-padding',
-      control: 'text',
-      table: { category: 'CSS Custom Properties' },
-    },
-    buttonFontSize: {
-      name: '--nfs-button-font-size',
-      control: 'text',
-      table: { category: 'CSS Custom Properties' },
-    },
-    buttonRadius: {
-      name: '--nfs-button-radius',
-      control: 'text',
-      table: { category: 'CSS Custom Properties' },
-    },
-    buttonOpacityDisabled: {
-      name: '--nfs-button-opacity-disabled',
-      control: { type: 'range', min: 0, max: 1, step: 0.05 },
-      table: { category: 'CSS Custom Properties' },
-    },
-    buttonTransition: {
-      name: '--nfs-button-transition',
-      control: 'text',
-      table: { category: 'CSS Custom Properties' },
-    },
-  },
-  render: (args) => ({
-    props: args,
-    template: `
-      <div
-        [style.--nfs-button-padding]="buttonPadding"
-        [style.--nfs-button-font-size]="buttonFontSize"
-        [style.--nfs-button-radius]="buttonRadius"
-        [style.--nfs-button-opacity-disabled]="buttonOpacityDisabled"
-        [style.--nfs-button-transition]="buttonTransition"
-      >
-        <div class="margin-bottom-1">
-          <button nfsButton color="primary" class="margin-right-1">Primary</button>
-          <button nfsButton color="secondary" class="margin-right-1">Secondary</button>
-          <button nfsButton color="success">Success</button>
-        </div>
-        <div class="margin-bottom-1">
-          <button nfsButton fill="hollow" class="margin-right-1">Hollow</button>
-          <button nfsButton fill="clear" class="margin-right-1">Clear</button>
-          <button nfsButton [softDisabled]="true">Disabled</button>
-        </div>
-      </div>
-    `,
-  }),
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    // Verify CSS custom properties actually affect button computed styles
-    const primaryButton = canvas.getByRole('button', { name: /Primary/i });
-    const primaryStyle = getComputedStyle(primaryButton);
-    const fontSizePx = parseFloat(primaryStyle.fontSize);
-
-    // Verify padding is applied (em is relative to element's font-size)
-    // Format: '0.85em 1em' = vertical horizontal
-    const [expectedVertical, expectedHorizontal] =
-      args.buttonPadding.split(' ');
-    expect(pxToEm(primaryStyle.paddingTop, fontSizePx)).toBe(expectedVertical);
-    expect(pxToEm(primaryStyle.paddingLeft, fontSizePx)).toBe(
-      expectedHorizontal,
-    );
-
-    // Verify font-size is applied (convert computed px back to rem for readable assertion)
-    expect(pxToRem(primaryStyle.fontSize)).toBe(args.buttonFontSize);
-
-    // Verify border-radius is applied (computed styles always use 'px')
-    const expectedRadius =
-      args.buttonRadius === '0' ? '0px' : args.buttonRadius;
-    expect(primaryStyle.borderRadius).toBe(expectedRadius);
-
-    // Verify disabled button opacity
-    const disabledButton = canvas.getByRole('button', { name: /Disabled/i });
-    const disabledStyle = getComputedStyle(disabledButton);
-    expect(disabledStyle.opacity).toBe(String(args.buttonOpacityDisabled));
-
-    // Verify transition is applied
-    expect(primaryStyle.transition).toBe(args.buttonTransition);
   },
 };
 

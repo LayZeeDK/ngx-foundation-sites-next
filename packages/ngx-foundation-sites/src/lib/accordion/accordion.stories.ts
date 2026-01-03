@@ -61,33 +61,6 @@ const meta: Meta<NfsAccordion> = {
 export default meta;
 type Story = StoryObj<NfsAccordion>;
 
-/**
- * Extended args type for the ThemeControls story.
- * Includes CSS custom property values alongside component inputs.
- */
-interface ThemeControlsArgs {
-  // Component inputs
-  multiExpandable: boolean;
-  disabled: boolean;
-  allowAllClosed: boolean;
-  // CSS Custom Properties
-  accordionBackground: string;
-  accordionTitleFontSize: string;
-  accordionItemColor: string;
-  accordionItemBackgroundHover: string;
-  accordionItemPadding: string;
-  accordionContentBackground: string;
-  accordionContentBorder: string;
-  accordionContentColor: string;
-  accordionContentPadding: string;
-  accordionSlideSpeed: string;
-  accordionSlideEasing: string;
-  // Icon CSS Custom Properties
-  accordionPlusContent: string;
-  accordionMinusContent: string;
-}
-type ThemeControlsStory = StoryObj<ThemeControlsArgs>;
-
 export const Default: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -243,117 +216,6 @@ export const KeyboardNavigation: Story = {
   },
 };
 
-/**
- * Demonstrates slow animation using CSS custom property.
- * Animation speed is controlled via `--nfs-accordion-slide-speed` CSS custom property.
- */
-export const SlowAnimation: Story = {
-  render: (args) => ({
-    props: args,
-    template: `
-      <nfs-accordion ${argsToLiteralTemplate(args)}
-        [style.--nfs-accordion-slide-speed.ms]="500"
-      >
-        <ng-template nfsAccordionItem panelId="panel-1">
-          <ng-template nfsAccordionHeader>Accordion 1</ng-template>
-          <ng-template nfsAccordionContent>
-            <p>Panel 1 content. Lorem ipsum dolor sit amet.</p>
-          </ng-template>
-        </ng-template>
-        <ng-template nfsAccordionItem panelId="panel-2">
-          <ng-template nfsAccordionHeader>Accordion 2</ng-template>
-          <ng-template nfsAccordionContent>
-            <p>Panel 2 content. Suspendisse eu ligula.</p>
-          </ng-template>
-        </ng-template>
-        <ng-template nfsAccordionItem panelId="panel-3">
-          <ng-template nfsAccordionHeader>Accordion 3</ng-template>
-          <ng-template nfsAccordionContent>
-            <p>Panel 3 content. Nullam sed est.</p>
-          </ng-template>
-        </ng-template>
-      </nfs-accordion>
-    `,
-  }),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    // Verify CSS custom property is set
-    const accordion = canvasElement.querySelector('nfs-accordion');
-    expect(accordion).toBeTruthy();
-
-    if (!accordion) return;
-    const style = getComputedStyle(accordion);
-    expect(style.getPropertyValue('--nfs-accordion-slide-speed').trim()).toBe(
-      '500ms',
-    );
-
-    // Click to expand and verify animation works
-    const trigger1 = canvas.getByRole('button', { name: /Accordion 1/i });
-    await userEvent.click(trigger1);
-
-    await waitFor(() => {
-      expect(trigger1).toHaveAttribute('aria-expanded', 'true');
-    });
-  },
-};
-
-/**
- * Demonstrates disabling animation using CSS custom property.
- * Set `--nfs-accordion-slide-speed: 0ms` to disable animation.
- * This is also useful for reduced motion accessibility preferences.
- */
-export const NoAnimation: Story = {
-  render: (args) => ({
-    props: args,
-    template: `
-      <nfs-accordion ${argsToLiteralTemplate(args)}
-        [style.--nfs-accordion-slide-speed.ms]="0"
-      >
-        <ng-template nfsAccordionItem panelId="panel-1">
-          <ng-template nfsAccordionHeader>Accordion 1</ng-template>
-          <ng-template nfsAccordionContent>
-            <p>Panel 1 content. Lorem ipsum dolor sit amet.</p>
-          </ng-template>
-        </ng-template>
-        <ng-template nfsAccordionItem panelId="panel-2">
-          <ng-template nfsAccordionHeader>Accordion 2</ng-template>
-          <ng-template nfsAccordionContent>
-            <p>Panel 2 content. Suspendisse eu ligula.</p>
-          </ng-template>
-        </ng-template>
-        <ng-template nfsAccordionItem panelId="panel-3">
-          <ng-template nfsAccordionHeader>Accordion 3</ng-template>
-          <ng-template nfsAccordionContent>
-            <p>Panel 3 content. Nullam sed est.</p>
-          </ng-template>
-        </ng-template>
-      </nfs-accordion>
-    `,
-  }),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    // Verify CSS custom property is set to 0
-    const accordion = canvasElement.querySelector('nfs-accordion');
-    expect(accordion).toBeTruthy();
-
-    if (!accordion) return;
-    const style = getComputedStyle(accordion);
-    expect(style.getPropertyValue('--nfs-accordion-slide-speed').trim()).toBe(
-      '0ms',
-    );
-
-    // Click to expand - should be instant
-    const trigger1 = canvas.getByRole('button', { name: /Accordion 1/i });
-    await userEvent.click(trigger1);
-
-    await waitFor(() => {
-      expect(trigger1).toHaveAttribute('aria-expanded', 'true');
-    });
-  },
-};
-
 export const DeepLink: Story = {
   args: {
     deepLink: true,
@@ -494,11 +356,8 @@ export const Accessibility: Story = {
   },
   render: (args) => ({
     props: args,
-    // Use instant animation (0ms) for reliable testing
     template: `
-      <nfs-accordion ${argsToLiteralTemplate(args)}
-        [style.--nfs-accordion-slide-speed.ms]="0"
-      >
+      <nfs-accordion ${argsToLiteralTemplate(args)}>
         <ng-template nfsAccordionItem panelId="panel-1">
           <ng-template nfsAccordionHeader>Accordion 1</ng-template>
           <ng-template nfsAccordionContent>
@@ -673,326 +532,6 @@ export const Accessibility: Story = {
 };
 
 /**
- * Demonstrates runtime theming using CSS custom properties.
- * All visual aspects of the accordion can be customized by setting
- * `--nfs-accordion-*` CSS custom properties on the component or any ancestor.
- */
-export const CustomTheme: Story = {
-  args: {
-    allowAllClosed: true,
-  },
-  render: (args) => ({
-    props: args,
-    template: `
-      <nfs-accordion ${argsToLiteralTemplate(args)}
-        style="
-          --nfs-accordion-background: #1a1a2e;
-          --nfs-accordion-title-font-size: 1rem;
-          --nfs-accordion-item-color: #ff8fa3;
-          --nfs-accordion-item-background-hover: #16213e;
-          --nfs-accordion-item-padding: 1rem 1.5rem;
-          --nfs-accordion-content-background: #0f0f23;
-          --nfs-accordion-content-border: 2px solid #ff8fa3;
-          --nfs-accordion-content-color: #eaeaea;
-          --nfs-accordion-content-padding: 1.5rem;
-        "
-      >
-        <ng-template nfsAccordionItem panelId="theme-1">
-          <ng-template nfsAccordionHeader>Custom Dark Theme</ng-template>
-          <ng-template nfsAccordionContent>
-            <div>
-              <p>This accordion uses a custom dark theme with vibrant accent colors.</p>
-              <p>All styling is done via CSS custom properties set on the component.</p>
-            </div>
-          </ng-template>
-        </ng-template>
-        <ng-template nfsAccordionItem panelId="theme-2">
-          <ng-template nfsAccordionHeader>Available Properties</ng-template>
-          <ng-template nfsAccordionContent>
-            <div>
-              <ul class="margin-0 padding-left-2">
-                <li><code class="code-inline">--nfs-accordion-background</code></li>
-                <li><code class="code-inline">--nfs-accordion-title-font-size</code></li>
-                <li><code class="code-inline">--nfs-accordion-item-color</code></li>
-                <li><code class="code-inline">--nfs-accordion-item-background-hover</code></li>
-                <li><code class="code-inline">--nfs-accordion-item-padding</code></li>
-                <li><code class="code-inline">--nfs-accordion-content-background</code></li>
-                <li><code class="code-inline">--nfs-accordion-content-border</code></li>
-                <li><code class="code-inline">--nfs-accordion-content-color</code></li>
-                <li><code class="code-inline">--nfs-accordion-content-padding</code></li>
-              </ul>
-            </div>
-          </ng-template>
-        </ng-template>
-        <ng-template nfsAccordionItem panelId="theme-3">
-          <ng-template nfsAccordionHeader>Usage Example</ng-template>
-          <ng-template nfsAccordionContent>
-            <div>
-              <pre class="code-block margin-0"><code>nfs-accordion {{'{'}}
-  --nfs-accordion-item-color: #ff8fa3;
-  --nfs-accordion-content-background: #0f0f23;
-{{'}'}}</code></pre>
-            </div>
-          </ng-template>
-        </ng-template>
-      </nfs-accordion>
-    `,
-  }),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    // Verify custom theme is applied by checking computed styles
-    const accordion = canvasElement.querySelector('nfs-accordion');
-    expect(accordion).toBeTruthy();
-
-    if (!accordion) return;
-    const style = getComputedStyle(accordion);
-
-    // Check that CSS custom properties are set
-    expect(style.getPropertyValue('--nfs-accordion-item-color').trim()).toBe(
-      '#ff8fa3',
-    );
-    expect(
-      style.getPropertyValue('--nfs-accordion-content-background').trim(),
-    ).toBe('#0f0f23');
-
-    // Click to expand and verify the accordion works with custom theme
-    const trigger1 = canvas.getByRole('button', {
-      name: /Custom Dark Theme/i,
-    });
-    await userEvent.click(trigger1);
-
-    await waitFor(() => {
-      expect(trigger1).toHaveAttribute('aria-expanded', 'true');
-    });
-
-    // Verify content is visible
-    const content = canvas.getByText(/CSS custom properties/i);
-    expect(content).toBeVisible();
-  },
-};
-
-/**
- * Interactive theme controls story.
- * Demonstrates all available CSS custom properties with live Storybook controls.
- * Each property can be adjusted in real-time to see the visual effect.
- */
-export const ThemeControls: ThemeControlsStory = {
-  args: {
-    allowAllClosed: true,
-    // CSS Custom Property args
-    accordionBackground: '#fefefe',
-    accordionTitleFontSize: '0.75rem',
-    accordionItemColor: '#0d5a89',
-    accordionItemBackgroundHover: '#e6e6e6',
-    accordionItemPadding: '1.25rem 1rem',
-    accordionContentBackground: '#fefefe',
-    accordionContentBorder: '1px solid #e6e6e6',
-    accordionContentColor: '#0a0a0a',
-    accordionContentPadding: '1rem',
-    accordionSlideSpeed: '250ms',
-    accordionSlideEasing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-    // Icon CSS Custom Properties
-    accordionPlusContent: "'+'",
-    accordionMinusContent: "'–'",
-  },
-  argTypes: {
-    // CSS Custom Property controls
-    accordionBackground: {
-      name: '--nfs-accordion-background',
-      description: 'Background color of the accordion container',
-      control: { type: 'color' },
-      table: { category: 'CSS Custom Properties' },
-    },
-    accordionTitleFontSize: {
-      name: '--nfs-accordion-title-font-size',
-      description: 'Font size of accordion titles',
-      control: { type: 'text' },
-      table: { category: 'CSS Custom Properties' },
-    },
-    accordionItemColor: {
-      name: '--nfs-accordion-item-color',
-      description: 'Text color of accordion titles',
-      control: { type: 'color' },
-      table: { category: 'CSS Custom Properties' },
-    },
-    accordionItemBackgroundHover: {
-      name: '--nfs-accordion-item-background-hover',
-      description: 'Background color of accordion titles on hover/focus',
-      control: { type: 'color' },
-      table: { category: 'CSS Custom Properties' },
-    },
-    accordionItemPadding: {
-      name: '--nfs-accordion-item-padding',
-      description: 'Padding of accordion titles (CSS padding value)',
-      control: { type: 'text' },
-      table: { category: 'CSS Custom Properties' },
-    },
-    accordionContentBackground: {
-      name: '--nfs-accordion-content-background',
-      description: 'Background color of accordion content panels',
-      control: { type: 'color' },
-      table: { category: 'CSS Custom Properties' },
-    },
-    accordionContentBorder: {
-      name: '--nfs-accordion-content-border',
-      description: 'Border of accordion content panels (CSS border value)',
-      control: { type: 'text' },
-      table: { category: 'CSS Custom Properties' },
-    },
-    accordionContentColor: {
-      name: '--nfs-accordion-content-color',
-      description: 'Text color of accordion content panels',
-      control: { type: 'color' },
-      table: { category: 'CSS Custom Properties' },
-    },
-    accordionContentPadding: {
-      name: '--nfs-accordion-content-padding',
-      description: 'Padding of accordion content panels (CSS padding value)',
-      control: { type: 'text' },
-      table: { category: 'CSS Custom Properties' },
-    },
-    accordionSlideSpeed: {
-      name: '--nfs-accordion-slide-speed',
-      description:
-        'Animation duration for expand/collapse transitions (CSS time value)',
-      control: { type: 'text' },
-      table: { category: 'CSS Custom Properties' },
-    },
-    accordionSlideEasing: {
-      name: '--nfs-accordion-slide-easing',
-      description: 'Easing function for expand/collapse animation',
-      control: 'select',
-      options: [
-        'linear',
-        'ease',
-        'ease-in',
-        'ease-out',
-        'ease-in-out',
-        'cubic-bezier(0.4, 0, 0.2, 1)',
-      ],
-      table: { category: 'CSS Custom Properties' },
-    },
-    // Icon CSS Custom Property controls
-    accordionPlusContent: {
-      name: '--nfs-accordion-plus-content',
-      description:
-        'Icon content for collapsed state (include quotes for characters)',
-      control: { type: 'text' },
-      table: { category: 'CSS Custom Properties' },
-    },
-    accordionMinusContent: {
-      name: '--nfs-accordion-minus-content',
-      description:
-        'Icon content for expanded state (include quotes for characters)',
-      control: { type: 'text' },
-      table: { category: 'CSS Custom Properties' },
-    },
-  },
-  render: ({ allowAllClosed, ...args }) => ({
-    props: args,
-    template: `
-      <nfs-accordion [allowAllClosed]="${allowAllClosed}"
-        [style.--nfs-accordion-background]="accordionBackground"
-        [style.--nfs-accordion-title-font-size]="accordionTitleFontSize"
-        [style.--nfs-accordion-item-color]="accordionItemColor"
-        [style.--nfs-accordion-item-background-hover]="accordionItemBackgroundHover"
-        [style.--nfs-accordion-item-padding]="accordionItemPadding"
-        [style.--nfs-accordion-content-background]="accordionContentBackground"
-        [style.--nfs-accordion-content-border]="accordionContentBorder"
-        [style.--nfs-accordion-content-color]="accordionContentColor"
-        [style.--nfs-accordion-content-padding]="accordionContentPadding"
-        [style.--nfs-accordion-slide-speed]="accordionSlideSpeed"
-        [style.--nfs-accordion-slide-easing]="accordionSlideEasing"
-        [style.--nfs-accordion-plus-content]="accordionPlusContent"
-        [style.--nfs-accordion-minus-content]="accordionMinusContent"
-      >
-        <ng-template nfsAccordionItem panelId="theme-1">
-          <ng-template nfsAccordionHeader>Theme Controls Demo</ng-template>
-          <ng-template nfsAccordionContent>
-            <div>
-              <p>Use the <strong>Controls</strong> panel below to adjust CSS custom properties in real-time.</p>
-              <p>All properties are organized under the "CSS Custom Properties" category.</p>
-            </div>
-          </ng-template>
-        </ng-template>
-        <ng-template nfsAccordionItem panelId="theme-2">
-          <ng-template nfsAccordionHeader>Available Properties</ng-template>
-          <ng-template nfsAccordionContent>
-            <div>
-              <ul class="margin-0 padding-left-2">
-                <li><code class="code-inline">--nfs-accordion-background</code> — Container background</li>
-                <li><code class="code-inline">--nfs-accordion-title-font-size</code> — Title font size</li>
-                <li><code class="code-inline">--nfs-accordion-item-color</code> — Title text color</li>
-                <li><code class="code-inline">--nfs-accordion-item-background-hover</code> — Title hover background</li>
-                <li><code class="code-inline">--nfs-accordion-item-padding</code> — Title padding</li>
-                <li><code class="code-inline">--nfs-accordion-content-background</code> — Content background</li>
-                <li><code class="code-inline">--nfs-accordion-content-border</code> — Content border</li>
-                <li><code class="code-inline">--nfs-accordion-content-color</code> — Content text color</li>
-                <li><code class="code-inline">--nfs-accordion-content-padding</code> — Content padding</li>
-                <li><code class="code-inline">--nfs-accordion-slide-easing</code> — Animation easing</li>
-                <li><code class="code-inline">--nfs-accordion-slide-speed</code> — Animation duration</li>
-                <li><code class="code-inline">--nfs-accordion-plus-content</code> — Collapsed icon character</li>
-                <li><code class="code-inline">--nfs-accordion-minus-content</code> — Expanded icon character</li>
-              </ul>
-            </div>
-          </ng-template>
-        </ng-template>
-        <ng-template nfsAccordionItem panelId="theme-3">
-          <ng-template nfsAccordionHeader>Usage Tips</ng-template>
-          <ng-template nfsAccordionContent>
-            <div>
-              <p>Set CSS custom properties via:</p>
-              <ul class="margin-0 padding-left-2">
-                <li>Inline styles: <code class="code-inline">[style.--nfs-accordion-item-color]="'#ff0000'"</code></li>
-                <li>CSS classes on the component or any ancestor</li>
-                <li>Global CSS with <code class="code-inline">:root</code> or scoped selectors</li>
-              </ul>
-            </div>
-          </ng-template>
-        </ng-template>
-      </nfs-accordion>
-    `,
-  }),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    // Verify the accordion renders with custom properties
-    const accordion = canvasElement.querySelector('nfs-accordion');
-    expect(accordion).toBeTruthy();
-
-    if (!accordion) return;
-    const style = getComputedStyle(accordion);
-
-    // Check that CSS custom properties are set
-    expect(
-      style.getPropertyValue('--nfs-accordion-background').trim(),
-    ).toBeTruthy();
-    expect(
-      style.getPropertyValue('--nfs-accordion-item-color').trim(),
-    ).toBeTruthy();
-    expect(
-      style.getPropertyValue('--nfs-accordion-content-background').trim(),
-    ).toBeTruthy();
-
-    // Click to expand first panel and verify accordion works
-    const trigger1 = canvas.getByRole('button', {
-      name: /Theme Controls Demo/i,
-    });
-    await userEvent.click(trigger1);
-
-    await waitFor(() => {
-      expect(trigger1).toHaveAttribute('aria-expanded', 'true');
-    });
-
-    // Verify content is visible (use findByText to wait for deferred content)
-    // Note: Search for text after the <strong> tag to avoid split element issues
-    const content = await canvas.findByText(/adjust CSS custom properties/i);
-    expect(content).toBeVisible();
-  },
-};
-
-/**
  * Tests focus management when accordion items are disabled.
  * Angular ARIA allows focus on disabled items (for screen reader announcement)
  * but prevents their activation via click, Enter, or Space.
@@ -1009,11 +548,8 @@ export const SoftDisabled: Story = {
   },
   render: (args) => ({
     props: args,
-    // Use instant animation (0ms) for reliable testing
     template: `
-      <nfs-accordion ${argsToLiteralTemplate(args)}
-        [style.--nfs-accordion-slide-speed.ms]="0"
-      >
+      <nfs-accordion ${argsToLiteralTemplate(args)}>
         <ng-template nfsAccordionItem panelId="panel-1">
           <ng-template nfsAccordionHeader>Enabled 1</ng-template>
           <ng-template nfsAccordionContent>
@@ -1161,11 +697,8 @@ export const FocusManagementWithDisabled: Story = {
   },
   render: (args) => ({
     props: args,
-    // Use instant animation (0ms) for reliable testing
     template: `
-      <nfs-accordion ${argsToLiteralTemplate(args)}
-        [style.--nfs-accordion-slide-speed.ms]="0"
-      >
+      <nfs-accordion ${argsToLiteralTemplate(args)}>
         <ng-template nfsAccordionItem panelId="panel-1">
           <ng-template nfsAccordionHeader>Enabled 1</ng-template>
           <ng-template nfsAccordionContent>
@@ -1263,9 +796,7 @@ export const RightToLeft: Story = {
     props: args,
     template: `
       <div dir="rtl" lang="ar">
-        <nfs-accordion ${argsToLiteralTemplate(args)}
-          [style.--nfs-accordion-slide-speed.ms]="0"
-        >
+        <nfs-accordion ${argsToLiteralTemplate(args)}>
           <ng-template nfsAccordionItem panelId="panel-1">
             <ng-template nfsAccordionHeader>العنصر الأول</ng-template>
             <ng-template nfsAccordionContent>
@@ -1344,70 +875,6 @@ export const RightToLeft: Story = {
     // Verify content is visible
     const content = canvas.getByText(/محتوى اللوحة الثانية/i);
     expect(content).toBeVisible();
-  },
-};
-
-/**
- * Demonstrates custom +/- icons using CSS custom properties.
- * Uses chevron symbols (▶/▼) instead of the default +/– icons.
- */
-export const CustomIcons: Story = {
-  args: {
-    allowAllClosed: true,
-  },
-  render: (args) => ({
-    props: args,
-    template: `
-      <nfs-accordion ${argsToLiteralTemplate(args)}
-        style="
-          --nfs-accordion-plus-content: '▶';
-          --nfs-accordion-minus-content: '▼';
-          --nfs-accordion-item-color: #b91c3c;
-        "
-      >
-        <ng-template nfsAccordionItem panelId="icon-1">
-          <ng-template nfsAccordionHeader>Custom Chevron Icons</ng-template>
-          <ng-template nfsAccordionContent>
-            <p>This accordion uses custom chevron icons instead of +/–.</p>
-          </ng-template>
-        </ng-template>
-        <ng-template nfsAccordionItem panelId="icon-2">
-          <ng-template nfsAccordionHeader>CSS Custom Properties</ng-template>
-          <ng-template nfsAccordionContent>
-            <div>
-              <ul class="margin-0 padding-left-2">
-                <li><code class="code-inline">--nfs-accordion-plus-content: '▶'</code></li>
-                <li><code class="code-inline">--nfs-accordion-minus-content: '▼'</code></li>
-                <li><code class="code-inline">--nfs-accordion-item-color: #b91c3c</code> (title &amp; icon color)</li>
-              </ul>
-            </div>
-          </ng-template>
-        </ng-template>
-      </nfs-accordion>
-    `,
-  }),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    // Verify CSS custom property is set
-    const accordion = canvasElement.querySelector('nfs-accordion');
-    expect(accordion).toBeTruthy();
-
-    if (!accordion) return;
-    const style = getComputedStyle(accordion);
-    expect(style.getPropertyValue('--nfs-accordion-plus-content').trim()).toBe(
-      "'▶'",
-    );
-
-    // Click to expand and verify accordion works
-    const trigger1 = canvas.getByRole('button', {
-      name: /Custom Chevron Icons/i,
-    });
-    await userEvent.click(trigger1);
-
-    await waitFor(() => {
-      expect(trigger1).toHaveAttribute('aria-expanded', 'true');
-    });
   },
 };
 
