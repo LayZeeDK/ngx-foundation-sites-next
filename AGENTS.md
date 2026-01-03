@@ -128,11 +128,46 @@ When writing Storybook stories, **prefer Foundation Prototype utility classes ov
 
 ### Visual Testing with Playwright
 
-Use the Playwright MCP server to:
+**Always use the Playwright MCP server** (not WebFetch) when you need to browse websites visually. Playwright provides accurate rendering, interactive capabilities, and screenshots that are essential for component development.
 
-- Inspect component stories in Storybook
-- Compare implementations against Foundation for Sites docs
-- Verify behavior matches Angular ARIA and Angular CDK examples
+#### When to Use Playwright
+
+Use the Playwright MCP tools for:
+
+- **Inspecting Storybook stories** — View component rendering, test interactions, verify styling
+- **Comparing against Foundation docs** — Ensure components match Foundation for Sites examples
+- **Referencing Angular docs** — Verify ARIA patterns and framework best practices
+- **Referencing Angular Material docs** — CDK primitives and component API design patterns
+- **Debugging visual issues** — Take screenshots, inspect accessibility trees
+
+#### Key Reference Sites
+
+| Site                     | URL                                  | Use Case                                               |
+| ------------------------ | ------------------------------------ | ------------------------------------------------------ |
+| **Storybook (local)**    | `http://localhost:4400`              | Component development and testing                      |
+| **Foundation for Sites** | `https://get.foundation/sites/docs/` | CSS classes, component structure, design patterns      |
+| **Angular Docs**         | `https://angular.dev`                | Framework APIs, @angular/aria patterns                 |
+| **Angular Material**     | `https://material.angular.dev`       | @angular/cdk primitives, component API design patterns |
+
+#### Playwright Workflow
+
+1. **Navigate** — Use `browser_navigate` to open the target URL
+2. **Snapshot** — Use `browser_snapshot` to get the accessibility tree (preferred for interactions)
+3. **Screenshot** — Use `browser_take_screenshot` when you need visual verification
+4. **Interact** — Use `browser_click`, `browser_type`, etc. to test component behavior
+5. **Close** — Use `browser_close` when done to free resources
+
+#### Example: Comparing with Foundation Docs
+
+```
+1. browser_navigate to Foundation's accordion docs
+2. browser_snapshot to understand the expected HTML structure
+3. browser_navigate to local Storybook accordion story
+4. browser_snapshot to compare our implementation
+5. Verify CSS classes and ARIA attributes match
+```
+
+**Note:** Ensure Storybook is running (`npm run storybook`) before browsing localhost:4400.
 
 ## TypeScript Best Practices
 
