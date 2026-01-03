@@ -273,31 +273,6 @@ export class NfsButton {
 
 ---
 
-## CSS Custom Properties
-
-```scss
-// Button theming via CSS custom properties
-:root {
-  // Colors (from Foundation palette)
-  --nfs-button-background: var(--nfs-primary-color, #1779ba);
-  --nfs-button-background-hover: var(--nfs-primary-color-dark, #14679e);
-  --nfs-button-color: #fefefe;
-
-  // Sizing
-  --nfs-button-padding: 0.85em 1em;
-  --nfs-button-font-size: 0.9rem;
-  --nfs-button-radius: 0;
-
-  // Disabled
-  --nfs-button-opacity-disabled: 0.25;
-
-  // Transitions
-  --nfs-button-transition: background-color 0.25s ease-out, color 0.25s ease-out;
-}
-```
-
----
-
 ## Keyboard Navigation
 
 | Key         | Action                            |

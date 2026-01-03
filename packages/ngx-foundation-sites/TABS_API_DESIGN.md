@@ -41,23 +41,6 @@ Design an Angular component API for Foundation Tabs that:
 | `data-match-height`            | `matchHeight`          | `boolean` | `false` |
 | `data-auto-focus`              | `autoFocus`            | `boolean` | `false` |
 
-### Foundation Sass Variables → CSS Custom Properties
-
-| Sass Variable                | CSS Custom Property               |
-| ---------------------------- | --------------------------------- |
-| `$tab-margin`                | `--nfs-tab-margin`                |
-| `$tab-background`            | `--nfs-tab-background`            |
-| `$tab-color`                 | `--nfs-tab-color`                 |
-| `$tab-background-active`     | `--nfs-tab-background-active`     |
-| `$tab-active-color`          | `--nfs-tab-active-color`          |
-| `$tab-item-font-size`        | `--nfs-tab-item-font-size`        |
-| `$tab-item-background-hover` | `--nfs-tab-item-background-hover` |
-| `$tab-item-padding`          | `--nfs-tab-item-padding`          |
-| `$tab-content-background`    | `--nfs-tab-content-background`    |
-| `$tab-content-border`        | `--nfs-tab-content-border`        |
-| `$tab-content-color`         | `--nfs-tab-content-color`         |
-| `$tab-content-padding`       | `--nfs-tab-content-padding`       |
-
 ### WAI-ARIA Requirements
 
 | Element       | Role       | ARIA Attributes                                                    |

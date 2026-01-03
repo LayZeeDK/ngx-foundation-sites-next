@@ -428,29 +428,6 @@ export class MyComponent {
 
 ---
 
-## CSS Custom Properties
-
-```scss
-// Theming via CSS custom properties
-:root {
-  --nfs-accordion-background: #{$accordion-background};
-  --nfs-accordion-title-font-size: #{$accordion-title-font-size};
-  --nfs-accordion-item-color: #{$accordion-item-color};
-  --nfs-accordion-item-background-hover: #{$accordion-item-background-hover};
-  --nfs-accordion-item-padding: #{$accordion-item-padding};
-  --nfs-accordion-content-background: #{$accordion-content-background};
-  --nfs-accordion-content-border: #{$accordion-content-border};
-  --nfs-accordion-content-color: #{$accordion-content-color};
-  --nfs-accordion-content-padding: #{$accordion-content-padding};
-  --nfs-accordion-slide-speed: 250ms;
-  --nfs-accordion-slide-easing: ease;
-  --nfs-accordion-plus-content: '\002B'; // "+"
-  --nfs-accordion-minus-content: '\2013'; // "–"
-}
-```
-
----
-
 ## Keyboard Navigation
 
 | Key               | Action                             |
@@ -528,7 +505,7 @@ Use CSS Grid animation for smooth expand/collapse:
 .accordion-content {
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows var(--nfs-accordion-slide-speed) var(--nfs-accordion-slide-easing);
+  transition: grid-template-rows $nfs-accordion-slide-speed cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
   > * {
     overflow: hidden;
