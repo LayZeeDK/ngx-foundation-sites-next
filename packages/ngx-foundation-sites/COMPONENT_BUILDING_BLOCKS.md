@@ -179,7 +179,7 @@ From [Angular ARIA Overview](https://angular.dev/guide/aria/overview):
 | **CDK coercion** | `coerceNumberProperty()` for min/max/step attributes         |
 | **CDK keycodes** | ARROW_LEFT, ARROW_RIGHT, PAGE_UP, PAGE_DOWN, HOME, END       |
 | **Browser APIs** | Native `<input type="range">` (built-in keyboard + ARIA)     |
-| **Styling**      | CSS custom properties for track fill percentage              |
+| **Styling**      | Sass variables for track fill styling                        |
 
 **ARIA**: Native `<input type="range">` provides `aria-valuemin`, `aria-valuemax`, `aria-valuenow`
 

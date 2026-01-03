@@ -23,7 +23,7 @@ This plan implements the Foundation for Sites Accordion component using Angular 
 | [Phase 4](./docs/accordion/phase-4-keyboard-navigation.md)   | Keyboard Navigation                   | ✅       | Full keyboard accessibility via @angular/aria            |
 | [Phase 5](./docs/accordion/phase-5-testing-documentation.md) | Testing & Documentation               | ✅       | Unit tests, accessibility tests, E2E tests               |
 | [Phase 6](./docs/accordion/phase-6-router-integration.md)    | Angular Router Integration            | Deferred | Optional Router integration for deep linking             |
-| [Phase 7](./docs/accordion/phase-7-feature-parity.md)        | Feature Parity & Theming              | ✅       | Complete Foundation parity, CSS custom properties        |
+| [Phase 7](./docs/accordion/phase-7-feature-parity.md)        | Feature Parity & Theming              | ✅       | Complete Foundation parity, Sass variable theming        |
 | [Phase 8](./docs/accordion/phase-8-private-fields.md)        | JS-Native Private Fields              | ✅       | Migrate to `#` private fields                            |
 | [Phase 9](./docs/accordion/phase-9-zoneless-config.md)       | Zoneless Angular Configuration        | ✅       | Configure zoneless change detection                      |
 | [Phase 10](./docs/accordion/phase-10-native-animations.md)   | Native Animations                     | Pending  | Restore `ngAccordionContent` with animations             |
@@ -105,8 +105,8 @@ This plan implements the Foundation for Sites Accordion component using Angular 
 
 ## Naming Conventions
 
-All custom CSS properties and class prefixes use `nfs-` (ngx-foundation-sites):
+All custom Sass variables and class prefixes use `nfs-` (ngx-foundation-sites):
 
-- CSS custom properties: `--nfs-primary-color`, `--nfs-accordion-background`
+- Sass variables: `$nfs-accordion-slide-speed`
 - Component selectors: `nfs-accordion`, `nfs-accordion-item`
 - Directive selectors: `nfsAccordionItem`, `nfsAccordionHeader`, `nfsAccordionContent`
