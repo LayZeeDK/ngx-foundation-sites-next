@@ -24,8 +24,13 @@
 // Foundation uses @import internally, so it reads from globals, not modules
 @import 'nfs-settings';
 
-// Import Foundation (it will use the global variables set above)
-@import 'foundation-sites/scss/foundation';
+// Granular Foundation imports (optimized for faster compilation)
+// - util/util: All utilities (rem-calc, breakpoint, etc.)
+// - global: Global settings ($white, $primary-color, $global-left, etc.)
+// - components/accordion: Only the accordion component
+@import 'foundation-sites/scss/util/util';
+@import 'foundation-sites/scss/global';
+@import 'foundation-sites/scss/components/accordion';
 
 // Include Foundation accordion styles
 @include foundation-accordion;
