@@ -2,24 +2,33 @@
 // ngx-foundation-sites Accordion Component Styles
 // ═══════════════════════════════════════════════════════════════════════════════
 //
-// This stylesheet provides accordion styles and is included AFTER Foundation
-// has been configured by the consumer or Storybook entry point.
+// This stylesheet is compiled by the consumer's build with their theme settings.
 //
-// Consumer Setup:
-//   1. Create an entry point that configures Foundation with your theme
-//   2. Import this stylesheet after Foundation is configured
-//   3. The NfsStyleLoader service loads the compiled CSS at runtime
+// ARCHITECTURE:
+// Foundation v6.9.0 uses the legacy @import system internally, so variables must
+// be set as GLOBALS before Foundation is imported. The modern @use ... with (...)
+// syntax configures module scope, which Foundation doesn't read.
+//
+// CONSUMER SETUP:
+//   1. Create _nfs-settings.scss that sets $foundation-palette, $global-text-direction, etc.
+//   2. Add this stylesheet to angular.json with inject: false
+//   3. Ensure stylePreprocessorOptions.includePaths includes the settings folder
+//
+// EXPECTED WARNINGS:
+// Sass @import deprecation warnings are expected and cannot be avoided while
+// Foundation uses @import internally. They do not affect functionality.
 //
 // ═══════════════════════════════════════════════════════════════════════════════
 
-// Use Foundation's pre-configured module (configured by entry point)
-@use 'foundation-sites/scss/foundation' as foundation;
+// IMPORTANT: Import consumer settings FIRST to set global variables
+// Foundation uses @import internally, so it reads from globals, not modules
+@import 'nfs-settings';
 
-// Load settings for custom variables (animation speed, etc.)
-@use 'nfs-settings' as config;
+// Import Foundation (it will use the global variables set above)
+@import 'foundation-sites/scss/foundation';
 
 // Include Foundation accordion styles
-@include foundation.foundation-accordion;
+@include foundation-accordion;
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // Host Element Styles
@@ -39,7 +48,7 @@ nfs-accordion {
 .accordion-title {
   width: 100%;
   cursor: pointer;
-  text-align: config.$global-left;
+  text-align: $global-left;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -53,10 +62,10 @@ nfs-accordion {
   padding: 0;
   border: 0;
   transition:
-    grid-template-rows config.$accordion-slide-speed
+    grid-template-rows $accordion-slide-speed
       cubic-bezier(0.25, 0.46, 0.45, 0.94),
-    padding config.$accordion-slide-speed cubic-bezier(0.25, 0.46, 0.45, 0.94),
-    border config.$accordion-slide-speed cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    padding $accordion-slide-speed cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    border $accordion-slide-speed cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
   > * {
     overflow: hidden;
@@ -65,7 +74,7 @@ nfs-accordion {
 
 .accordion .accordion-item.is-active > .accordion-content {
   grid-template-rows: 1fr;
-  padding: foundation.$accordion-content-padding;
-  border: foundation.$accordion-content-border;
+  padding: $accordion-content-padding;
+  border: $accordion-content-border;
   border-bottom: 0;
 }

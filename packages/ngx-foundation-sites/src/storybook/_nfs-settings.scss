@@ -2,39 +2,33 @@
 // Storybook Theme Configuration
 // ═══════════════════════════════════════════════════════════════════════════════
 //
-// This file configures Foundation's global settings for Storybook.
-// It sets the text direction and WCAG-compliant colors, then forwards
-// Foundation's configured globals for component stylesheets.
-//
-// USAGE:
-//   LTR: @use 'nfs-settings';
-//   RTL: @use 'nfs-settings' with ($_direction: rtl);
+// This file configures Foundation's global variables for Storybook.
+// It follows the same legacy @import pattern as consumer applications
+// for compatibility with Foundation v6.9.0's internal @import system.
 //
 // ═══════════════════════════════════════════════════════════════════════════════
 
 // ─────────────────────────────────────────────────────────────────────────────────
 // Direction Configuration
 // ─────────────────────────────────────────────────────────────────────────────────
-$_direction: ltr !default;
+$global-text-direction: ltr !default;
 
 // ─────────────────────────────────────────────────────────────────────────────────
-// Configure and Forward Foundation's Global Settings
+// Foundation Global Settings
 // ─────────────────────────────────────────────────────────────────────────────────
-// We configure Foundation's _global.scss with Storybook's theme, then forward
-// it so all Foundation variables are available to component stylesheets.
+// These variables MUST be set as globals before Foundation is imported.
+// Foundation uses @import internally, so it reads from global scope.
 
-@forward 'foundation-sites/scss/global' with (
-  $global-text-direction: $_direction,
-  $global-flexbox: true,
-  // WCAG AA compliant colors (4.5:1 contrast ratio minimum)
-  $foundation-palette: (
-      primary: #0d5a89,
-      secondary: #595959,
-      success: #1a7f3e,
-      warning: #8a6500,
-      alert: #a33a2a,
-    )
-);
+$global-flexbox: true !default;
+
+// WCAG AA compliant colors (4.5:1 contrast ratio minimum)
+$foundation-palette: (
+  primary: #0d5a89,
+  secondary: #595959,
+  success: #1a7f3e,
+  warning: #8a6500,
+  alert: #a33a2a,
+) !default;
 
 // ─────────────────────────────────────────────────────────────────────────────────
 // ngx-foundation-sites Custom Variables

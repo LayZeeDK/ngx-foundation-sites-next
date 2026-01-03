@@ -2,24 +2,11 @@
 // Storybook All Component Styles (LTR)
 // ═══════════════════════════════════════════════════════════════════════════════
 //
-// This file compiles component styles with LTR text direction for Storybook.
-// It loads the settings first, then configures Foundation, and finally imports
-// component stylesheets that use the pre-configured Foundation module.
+// This file compiles all component styles with LTR text direction for Storybook.
+// Component SCSS files handle their own Foundation imports and mixin includes.
 //
 // ═══════════════════════════════════════════════════════════════════════════════
 
-// Load Storybook's LTR theme settings
-@use 'nfs-settings' as config;
-
-// Configure Foundation with Storybook settings
-// This MUST happen before importing component stylesheets
-@use 'foundation-sites/scss/foundation' as foundation with (
-  $foundation-palette: config.$foundation-palette,
-  $global-text-direction: config.$global-text-direction,
-  $global-flexbox: config.$global-flexbox
-);
-
-// Include component styles
-// These use the pre-configured Foundation module
+// Import component styles (each file imports settings and Foundation)
 @import '../lib/scss/accordion';
 @import '../lib/scss/button';

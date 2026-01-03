@@ -2,26 +2,15 @@
 // Storybook All Component Styles (RTL)
 // ═══════════════════════════════════════════════════════════════════════════════
 //
-// This file compiles component styles with RTL text direction for Storybook.
-// It loads the settings first, then configures Foundation, and finally imports
-// component stylesheets that use the pre-configured Foundation module.
+// This file compiles all component styles with RTL text direction for Storybook.
+// Sets RTL direction before importing components.
 //
 // ═══════════════════════════════════════════════════════════════════════════════
 
-// Load Storybook's RTL theme settings
-@use 'nfs-settings' as config with (
-  $_direction: rtl
-);
+// Set RTL direction BEFORE importing components
+// The !default in _nfs-settings.scss will respect this value
+$global-text-direction: rtl;
 
-// Configure Foundation with Storybook settings
-// This MUST happen before importing component stylesheets
-@use 'foundation-sites/scss/foundation' as foundation with (
-  $foundation-palette: config.$foundation-palette,
-  $global-text-direction: config.$global-text-direction,
-  $global-flexbox: config.$global-flexbox
-);
-
-// Include component styles
-// These use the pre-configured Foundation module
+// Import component styles (each file imports settings and Foundation)
 @import '../lib/scss/accordion';
 @import '../lib/scss/button';

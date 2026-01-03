@@ -2,30 +2,44 @@
 // ngx-foundation-sites Global Settings
 // ═══════════════════════════════════════════════════════════════════════════════
 //
-// Re-exports Foundation's global settings for consumer theming.
-// Consumers can override any Foundation variable using @forward ... with (...).
+// This file re-exports Foundation's global settings module.
 //
-// NAMING: This file is named `_global.scss` to match Foundation's own
-// `foundation-sites/scss/global` module, providing a familiar API.
+// IMPORTANT: Foundation v6.9.0 uses the legacy @import system internally.
+// This means consumers cannot use @use ... with (...) to configure variables,
+// as Foundation reads from global scope, not module scope.
 //
-// TECHNICAL: We forward Foundation's `_global.scss` (not `settings/_settings.scss`)
-// because only `_global.scss` declares variables with `!default`, enabling
-// consumer overrides via the `with` clause.
+// ─────────────────────────────────────────────────────────────────────────────
+// Consumer Setup
+// ─────────────────────────────────────────────────────────────────────────────
 //
-// Consumer Setup:
-//   // In consumer's src/styles/_nfs-settings.scss
-//   @forward 'ngx-foundation-sites/scss/global' with (
-//     $foundation-palette: (
-//       primary: #1e88e5,
-//       secondary: #757575,
-//       ...
-//     ),
-//     $button-radius: 4px,
-//     $global-text-direction: rtl
-//   );
+// Consumers must create a `_nfs-settings.scss` file that sets global variables:
 //
-// See Foundation's documentation for the complete list of configurable variables:
-// https://get.foundation/sites/docs/sass.html
+//   // src/styles/_nfs-settings.scss
+//   $foundation-palette: (
+//     primary: #1e88e5,
+//     secondary: #757575,
+//     success: #43a047,
+//     warning: #fb8c00,
+//     alert: #e53935,
+//   ) !default;
+//
+//   $global-text-direction: ltr !default;
+//   $global-flexbox: true !default;
+//
+// Component SCSS files (accordion.scss, button.scss, etc.) will:
+//   1. @import 'nfs-settings' - loads consumer's globals
+//   2. @import 'foundation-sites/scss/foundation' - Foundation reads globals
+//   3. @include foundation-<component> - generates themed CSS
+//
+// ─────────────────────────────────────────────────────────────────────────────
+// Why Not @use ... with?
+// ─────────────────────────────────────────────────────────────────────────────
+//
+// The modern Sass syntax `@use ... with (...)` only configures module scope.
+// Foundation's internal code uses @import, which reads from global scope.
+// These two scopes don't communicate, so @use configuration is ignored.
+//
+// See: https://get.foundation/sites/docs/sass.html
 //
 // ═══════════════════════════════════════════════════════════════════════════════
 

@@ -2,18 +2,30 @@
 // ngx-foundation-sites Button Component Styles
 // ═══════════════════════════════════════════════════════════════════════════════
 //
-// This stylesheet provides button styles and is included AFTER Foundation
-// has been configured by the consumer or Storybook entry point.
+// This stylesheet is compiled by the consumer's build with their theme settings.
 //
-// Consumer Setup:
-//   1. Create an entry point that configures Foundation with your theme
-//   2. Import this stylesheet after Foundation is configured
-//   3. The NfsStyleLoader service loads the compiled CSS at runtime
+// ARCHITECTURE:
+// Foundation v6.9.0 uses the legacy @import system internally, so variables must
+// be set as GLOBALS before Foundation is imported. The modern @use ... with (...)
+// syntax configures module scope, which Foundation doesn't read.
+//
+// CONSUMER SETUP:
+//   1. Create _nfs-settings.scss that sets $foundation-palette, $global-text-direction, etc.
+//   2. Add this stylesheet to angular.json with inject: false
+//   3. Ensure stylePreprocessorOptions.includePaths includes the settings folder
+//
+// EXPECTED WARNINGS:
+// Sass @import deprecation warnings are expected and cannot be avoided while
+// Foundation uses @import internally. They do not affect functionality.
 //
 // ═══════════════════════════════════════════════════════════════════════════════
 
-// Use Foundation's pre-configured module (configured by entry point)
-@use 'foundation-sites/scss/foundation' as foundation;
+// IMPORTANT: Import consumer settings FIRST to set global variables
+// Foundation uses @import internally, so it reads from globals, not modules
+@import 'nfs-settings';
+
+// Import Foundation (it will use the global variables set above)
+@import 'foundation-sites/scss/foundation';
 
 // Include Foundation button styles
-@include foundation.foundation-button;
+@include foundation-button;
