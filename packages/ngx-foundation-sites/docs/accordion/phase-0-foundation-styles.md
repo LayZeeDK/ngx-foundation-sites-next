@@ -8,7 +8,7 @@
 
 ```scss
 // Global Foundation for Sites settings
-// Override Foundation defaults with CSS custom properties for theming
+// Override Foundation defaults with Sass variables
 
 @use 'foundation-sites/scss/settings' as foundation-settings;
 
@@ -18,7 +18,7 @@ $global-text-direction: ltr !default;
 // Layout
 $global-flexbox: true !default;
 
-// Colors - use CSS custom properties for theming
+// Colors
 $foundation-palette: (
   primary: #1779ba,
   secondary: #767676,
@@ -56,15 +56,6 @@ $foundation-palette: (
 
 // Include global Foundation styles
 @include components.foundation-global-styles;
-
-// CSS Custom Properties for theming (nfs- prefix)
-:root {
-  --nfs-primary-color: #{map-get(settings.$foundation-palette, primary)};
-  --nfs-secondary-color: #{map-get(settings.$foundation-palette, secondary)};
-  --nfs-success-color: #{map-get(settings.$foundation-palette, success)};
-  --nfs-warning-color: #{map-get(settings.$foundation-palette, warning)};
-  --nfs-alert-color: #{map-get(settings.$foundation-palette, alert)};
-}
 ```
 
 ## 0.4 Configure Storybook to Load Styles ✅

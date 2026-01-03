@@ -1,6 +1,6 @@
 # Phase 7: Feature Parity & Theming Enhancements
 
-**Goal:** Complete Foundation feature parity, expose Angular ARIA features, and add CSS custom properties for runtime theming.
+**Goal:** Complete Foundation feature parity, expose Angular ARIA features, and enable compile-time Sass variable theming.
 
 ## 7.1 Feature Comparison Analysis
 
@@ -8,7 +8,7 @@
 
 | Foundation Option              | Default | Our Input                           | Status |
 | ------------------------------ | ------- | ----------------------------------- | ------ |
-| `data-slide-speed`             | 250     | `--nfs-accordion-slide-speed` (CSS) | ✅     |
+| `data-slide-speed`             | 250     | `$nfs-accordion-slide-speed` (Sass) | ✅     |
 | `data-multi-expand`            | false   | `multiExpandable`                   | ✅     |
 | `data-allow-all-closed`        | false   | `allowAllClosed`                    | ✅     |
 | `data-deep-link`               | false   | `deepLink`                          | ✅     |
@@ -22,22 +22,22 @@
 
 ### Foundation Sass Variables (12 total)
 
-| Sass Variable                      | Default                 | CSS Custom Property / Input             | Status |
-| ---------------------------------- | ----------------------- | --------------------------------------- | ------ |
-| `$accordion-background`            | `$white`                | `--nfs-accordion-background`            | ✅     |
-| `$accordion-plusminus`             | `true`                  | Sass variable (compile-time)            | ✅     |
-| `$accordion-plus-content`          | `'\002B'`               | `--nfs-accordion-plus-content`          | ✅     |
-| `$accordion-minus-content`         | `'\2013'`               | `--nfs-accordion-minus-content`         | ✅     |
-| `$accordion-title-font-size`       | `rem-calc(12)`          | `--nfs-accordion-title-font-size`       | ✅     |
-| `$accordion-item-color`            | `$primary-color`        | `--nfs-accordion-item-color`            | ✅     |
-| `$accordion-item-background-hover` | `$light-gray`           | `--nfs-accordion-item-background-hover` | ✅     |
-| `$accordion-item-padding`          | `1.25rem 1rem`          | `--nfs-accordion-item-padding`          | ✅     |
-| `$accordion-content-background`    | `$white`                | `--nfs-accordion-content-background`    | ✅     |
-| `$accordion-content-border`        | `1px solid $light-gray` | `--nfs-accordion-content-border`        | ✅     |
-| `$accordion-content-color`         | `$body-font-color`      | `--nfs-accordion-content-color`         | ✅     |
-| `$accordion-content-padding`       | `1rem`                  | `--nfs-accordion-content-padding`       | ✅     |
+| Sass Variable                      | Default                 | Implementation | Status |
+| ---------------------------------- | ----------------------- | -------------- | ------ |
+| `$accordion-background`            | `$white`                | Sass variable  | ✅     |
+| `$accordion-plusminus`             | `true`                  | Sass variable  | ✅     |
+| `$accordion-plus-content`          | `'\002B'`               | Sass variable  | ✅     |
+| `$accordion-minus-content`         | `'\2013'`               | Sass variable  | ✅     |
+| `$accordion-title-font-size`       | `rem-calc(12)`          | Sass variable  | ✅     |
+| `$accordion-item-color`            | `$primary-color`        | Sass variable  | ✅     |
+| `$accordion-item-background-hover` | `$light-gray`           | Sass variable  | ✅     |
+| `$accordion-item-padding`          | `1.25rem 1rem`          | Sass variable  | ✅     |
+| `$accordion-content-background`    | `$white`                | Sass variable  | ✅     |
+| `$accordion-content-border`        | `1px solid $light-gray` | Sass variable  | ✅     |
+| `$accordion-content-color`         | `$body-font-color`      | Sass variable  | ✅     |
+| `$accordion-content-padding`       | `1rem`                  | Sass variable  | ✅     |
 
-**Result: 12/12 exposed as CSS custom properties or inputs (100%) ✅**
+**Result: 12/12 exposed as Sass variables for compile-time theming (100%) ✅**
 
 ### Angular ARIA Features (10 total)
 
@@ -509,20 +509,16 @@ Added 2 new controls under "CSS Custom Properties" category:
 - Test `softDisabled` focus behavior — ✅ (3 tests added in Phase 7.3)
 - Test `preserveContent` DOM cleanup — ❌ (not implemented, internal API)
 - Test `expandAll()` / `collapseAll()` methods — ✅ (4 tests added in Phase 7.3)
-- Test CSS custom property binding — ✅ (3 tests added in Phase 7.4)
 
 ### 7.6.2 Storybook Stories
 
-| Story Name             | Purpose                                        | Status                      |
-| ---------------------- | ---------------------------------------------- | --------------------------- |
-| `DeepLinkWithOffset`   | Demonstrate sticky header offset               | ✅ (Phase 7.2)              |
-| `SoftDisabled`         | Show focus behavior on disabled items          | ✅ (Phase 7.3)              |
-| `ExpandCollapseAll`    | Buttons to trigger programmatic methods        | ✅ (Phase 7.3)              |
-| `CustomTheme`          | Demonstrate CSS custom property theming        | ✅ (Phase 7.4)              |
-| `ThemeControls`        | Interactive controls for ALL CSS properties    | ✅ (Phase 7.4 + 7.10)       |
-| `RightToLeft`          | RTL layout with Arabic text and icon tests     | ✅ (Phase 7.5)              |
-| `CustomIcons`          | Custom chevron icons via CSS custom properties | ✅ (Phase 7.10)             |
-| `PreserveContentFalse` | Show DOM cleanup when panel closes             | ❌ (not possible, internal) |
+| Story Name             | Purpose                                    | Status                      |
+| ---------------------- | ------------------------------------------ | --------------------------- |
+| `DeepLinkWithOffset`   | Demonstrate sticky header offset           | ✅ (Phase 7.2)              |
+| `SoftDisabled`         | Show focus behavior on disabled items      | ✅ (Phase 7.3)              |
+| `ExpandCollapseAll`    | Buttons to trigger programmatic methods    | ✅ (Phase 7.3)              |
+| `RightToLeft`          | RTL layout with Arabic text and icon tests | ✅ (Phase 7.5)              |
+| `PreserveContentFalse` | Show DOM cleanup when panel closes         | ❌ (not possible, internal) |
 
 ## 7.7 Files to Modify
 
@@ -542,15 +538,13 @@ Added 2 new controls under "CSS Custom Properties" category:
 2. **softDisabled** (simple input passthrough) — ✅ Complete (Phase 7.3)
 3. **preserveContent** (simple input passthrough) — ❌ Not possible (internal API)
 4. **expandAll/collapseAll** (requires viewChild) — ✅ Complete (Phase 7.3)
-5. **CSS custom properties** (most complex, requires style updates) — ✅ Complete (Phase 7.4)
-6. **RTL support** (CSS Logical Properties for +/- icons) — ✅ Complete (Phase 7.5)
-7. **Plusminus icons** (CSS custom properties for icon content) — ✅ Complete (Phase 7.10)
+5. **RTL support** (CSS Logical Properties for +/- icons) — ✅ Complete (Phase 7.5)
 
 ## 7.9 Expected Outcome
 
-**Current status after Phase 7.2 + 7.3 + 7.4 + 7.5 + 7.10:**
+**Current status after Phase 7.2 + 7.3 + 7.5:**
 
 - **100%** Foundation JavaScript options (9/9 — all implemented ✅)
 - **100%** WAI-ARIA compliance (unchanged)
 - **90%** Angular ARIA features exposed (9/10 — `preserveContent` internal, `textDirection` ✅ via CSS Logical Properties)
-- **100%** Foundation Sass variables as CSS custom properties or Sass variables (12/12 ✅)
+- **100%** Foundation Sass variables for compile-time theming (12/12 ✅)

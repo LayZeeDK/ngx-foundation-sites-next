@@ -125,18 +125,18 @@ export * from './lib/accordion';
 **File:** `packages/ngx-foundation-sites/src/lib/accordion/_foundation-accordion-settings.scss`
 
 ```scss
-// Foundation Accordion settings with CSS custom properties (nfs- prefix)
+// Foundation Accordion settings (Sass variables)
 @use 'foundation-sites/scss/util/util';
 
-// Accordion CSS custom properties
-$accordion-background: var(--nfs-accordion-background, #fefefe) !default;
-$accordion-title-font-size: var(--nfs-accordion-title-font-size, #{util.rem-calc(12)}) !default;
-$accordion-item-color: var(--nfs-accordion-item-color, var(--nfs-primary-color, #1779ba)) !default;
-$accordion-item-background-hover: var(--nfs-accordion-item-background-hover, #e6e6e6) !default;
+// Accordion Sass variables
+$accordion-background: #fefefe !default;
+$accordion-title-font-size: util.rem-calc(12) !default;
+$accordion-item-color: #1779ba !default;
+$accordion-item-background-hover: #e6e6e6 !default;
 $accordion-item-padding: 1.25rem 1rem !default;
-$accordion-content-background: var(--nfs-accordion-content-background, #fefefe) !default;
+$accordion-content-background: #fefefe !default;
 $accordion-content-border: 1px solid #e6e6e6 !default;
-$accordion-content-color: var(--nfs-accordion-content-color, #0a0a0a) !default;
+$accordion-content-color: #0a0a0a !default;
 $accordion-content-padding: 1rem !default;
 $accordion-plusminus: true !default;
 ```

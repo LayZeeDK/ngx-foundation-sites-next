@@ -9,10 +9,8 @@ Used Angular v21's native CSS animation with `animate.enter`/`animate.leave` ins
 **Implementation:**
 
 - CSS Grid animation using `grid-template-rows: 0fr → 1fr` with `@starting-style`
-- CSS custom property `--nfs-accordion-slide-speed` for configurable duration (default: `250ms`)
-- No Angular input property — CSS-only approach aligns with Phase 7.4 theming pattern
-
-**Stories added:** `SlowAnimation`, `NoAnimation`
+- Sass variable `$nfs-accordion-slide-speed` for configurable duration (default: `250ms`)
+- Compile-time configuration via Sass variables aligns with Foundation 6 architecture
 
 ## 3.2 Deep Linking Support ✅
 

@@ -272,7 +272,6 @@ These warnings are **expected** and cannot be avoided while Foundation v6 uses `
 The previous architecture attempted to use:
 
 - `@forward ... with (...)` for consumer configuration
-- CSS Custom Properties for runtime theming
 
 The current architecture provides:
 
