@@ -1,0 +1,6 @@
+// RTL wrapper for button styles
+// Imports RTL settings before the component SCSS
+
+@import 'nfs-settings-rtl';
+@import 'foundation-sites/scss/foundation';
+@include foundation-button;

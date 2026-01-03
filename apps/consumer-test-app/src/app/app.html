@@ -1,0 +1,103 @@
+<main class="test-container">
+  <h1 data-testid="app-title">{{ title }}</h1>
+  <p>E2E tests verify consumer Sass theming works correctly.</p>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- Test: Theme Colors -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <section data-testid="color-test-section">
+    <h2>Theme Colors</h2>
+    <p>Buttons should display custom palette colors:</p>
+    <div class="button-row">
+      <button nfsButton color="primary" data-testid="btn-primary">
+        Primary (#6200ea)
+      </button>
+      <button nfsButton color="secondary" data-testid="btn-secondary">
+        Secondary (#00bfa5)
+      </button>
+      <button nfsButton color="success" data-testid="btn-success">
+        Success (#00c853)
+      </button>
+      <button nfsButton color="warning" data-testid="btn-warning">
+        Warning (#ffd600)
+      </button>
+      <button nfsButton color="alert" data-testid="btn-alert">
+        Alert (#ff1744)
+      </button>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- Test: Global Radius -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <section data-testid="radius-test-section">
+    <h2>Global Radius</h2>
+    <p>Buttons should have 8px border-radius (from $global-radius):</p>
+    <button nfsButton color="primary" data-testid="btn-radius-test">
+      8px Border Radius
+    </button>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- Test: Accordion Component -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <section data-testid="accordion-test-section">
+    <h2>Accordion Component</h2>
+    <p>Accordion should load styles lazily and respect theme:</p>
+    <nfs-accordion data-testid="accordion">
+      <ng-template nfsAccordionItem panelId="panel-1" [expanded]="true">
+        <ng-template nfsAccordionHeader>
+          <span data-testid="accordion-header-1">Panel 1 - Expanded</span>
+        </ng-template>
+        <ng-template nfsAccordionContent>
+          <p data-testid="accordion-content-1">
+            This panel is expanded by default. The accordion title should use
+            the primary color (#6200ea) and have +/- icons.
+          </p>
+        </ng-template>
+      </ng-template>
+
+      <ng-template nfsAccordionItem panelId="panel-2">
+        <ng-template nfsAccordionHeader>
+          <span data-testid="accordion-header-2">Panel 2 - Collapsed</span>
+        </ng-template>
+        <ng-template nfsAccordionContent>
+          <p data-testid="accordion-content-2">
+            This panel starts collapsed. Click to expand.
+          </p>
+        </ng-template>
+      </ng-template>
+    </nfs-accordion>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- Test: RTL Layout -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <section data-testid="rtl-test-section">
+    <h2>RTL Layout Test</h2>
+    <p>
+      In RTL mode ($global-text-direction: rtl), text should align right and
+      accordion icons should appear on the left.
+    </p>
+    <div class="direction-indicator" data-testid="direction-indicator">
+      <span>Text alignment indicates direction:</span>
+      <strong data-testid="direction-text">This text shows alignment</strong>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- Test: Lazy Style Loading -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <section data-testid="lazy-load-test-section">
+    <h2>Lazy Style Loading</h2>
+    <p>Component styles should be loaded as separate CSS files:</p>
+    <ul>
+      <li><code>/accordion.css</code> - Accordion styles</li>
+      <li><code>/button.css</code> - Button styles</li>
+    </ul>
+    <p>
+      Check the Network tab or inspect <code>&lt;link&gt;</code> tags in
+      <code>&lt;head&gt;</code>.
+    </p>
+  </section>
+</main>

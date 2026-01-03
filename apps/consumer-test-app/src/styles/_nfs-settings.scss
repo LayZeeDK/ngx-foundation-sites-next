@@ -1,0 +1,49 @@
+// ═══════════════════════════════════════════════════════════════════════════════
+// Consumer Test App - Theme Configuration
+// ═══════════════════════════════════════════════════════════════════════════════
+//
+// This file configures Foundation variables for e2e testing.
+// Tests verify that these values are correctly applied to components.
+//
+// ═══════════════════════════════════════════════════════════════════════════════
+
+// ─────────────────────────────────────────────────────────────────────────────────
+// Color Palette - Distinctive test colors
+// ─────────────────────────────────────────────────────────────────────────────────
+// These colors are intentionally different from Foundation defaults to verify
+// that consumer theming works correctly.
+
+$foundation-palette: (
+  primary: #6200ea,
+  // Deep purple (Foundation default: #1779ba)
+  secondary: #00bfa5,
+  // Teal
+  success: #00c853,
+  // Green
+  warning: #ffd600,
+  // Yellow
+  alert: #ff1744, // Red
+) !default;
+
+// ─────────────────────────────────────────────────────────────────────────────────
+// Global Settings
+// ─────────────────────────────────────────────────────────────────────────────────
+
+/// Text direction - defaults to LTR, can be overridden for RTL tests
+$global-text-direction: ltr !default;
+
+/// Enable flexbox layout
+$global-flexbox: true !default;
+
+/// Global border radius - set to 8px for visible verification
+$global-radius: 8px !default;
+
+// ─────────────────────────────────────────────────────────────────────────────────
+// Component Variables
+// ─────────────────────────────────────────────────────────────────────────────────
+
+/// Accordion animation duration
+$accordion-slide-speed: 200ms !default;
+
+/// Show plus/minus icons on accordion
+$accordion-plusminus: true !default;

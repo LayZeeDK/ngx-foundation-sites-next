@@ -1,0 +1,24 @@
+// ═══════════════════════════════════════════════════════════════════════════════
+// Consumer Test App - RTL Theme Settings
+// ═══════════════════════════════════════════════════════════════════════════════
+// This file is identical to _nfs-settings.scss but with RTL direction.
+// Used to build RTL versions of component stylesheets.
+
+// RTL text direction
+$global-text-direction: rtl !default;
+
+// Custom test palette (same as LTR for consistent testing)
+$foundation-palette: (
+  primary: #6200ea,
+  secondary: #00bfa5,
+  success: #00c853,
+  warning: #ffd600,
+  alert: #ff1744,
+) !default;
+
+// Global settings
+$global-flexbox: true !default;
+$global-radius: 8px !default;
+
+// Animation speed for testing
+$accordion-slide-speed: 200ms !default;

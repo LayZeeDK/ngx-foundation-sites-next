@@ -1,0 +1,22 @@
+// ═══════════════════════════════════════════════════════════════════════════════
+// Consumer Test App - Global Styles
+// ═══════════════════════════════════════════════════════════════════════════════
+
+// Load consumer theme settings first (sets Foundation globals)
+@import 'nfs-settings';
+
+// Load Foundation
+@import 'foundation-sites/scss/foundation';
+
+// Include Foundation global styles
+@include foundation-global-styles;
+@include foundation-typography;
+
+// Base body styles
+body {
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
+    Cantarell, sans-serif;
+  line-height: 1.6;
+  color: #333;
+}
