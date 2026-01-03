@@ -172,7 +172,7 @@ $accordion-plusminus: true !default;
 // ─────────────────────────────────────────────────────────────────────────────
 
 /// Accordion expand/collapse animation duration.
-$accordion-slide-speed: 250ms !default;
+$nfs-accordion-slide-speed: 250ms !default;
 ```
 
 ### Available Variables
@@ -227,7 +227,7 @@ Default palette values:
 | `$accordion-plusminus`             | `true`              | Show +/- icons          |
 | `$accordion-plus-content`          | `'+'`               | Collapsed icon          |
 | `$accordion-minus-content`         | `'\2013'`           | Expanded icon (en-dash) |
-| `$accordion-slide-speed`           | `250ms`             | Animation duration      |
+| `$nfs-accordion-slide-speed`       | `250ms`             | Animation duration      |
 
 See [Foundation's Sass documentation](https://get.foundation/sites/docs/sass.html) for the complete list of configurable variables.
 
