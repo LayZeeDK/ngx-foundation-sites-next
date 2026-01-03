@@ -123,6 +123,26 @@ test.describe('Consumer Sass Theming', () => {
       // Title text color should be primary (#6200ea = rgb(98, 0, 234))
       await expect(accordionTitle).toHaveCSS('color', 'rgb(98, 0, 234)');
     });
+
+    test('accordion animation should use custom $nfs-accordion-slide-speed of 200ms', async ({
+      page,
+    }) => {
+      // Consumer-test-app overrides $nfs-accordion-slide-speed: 200ms
+      // in apps/consumer-test-app/src/styles/_nfs-settings.scss
+      const accordionContent = page.locator('.accordion-content').first();
+      await expect(accordionContent).toBeAttached();
+
+      // Get the transition-duration from computed styles
+      const transitionDuration = await accordionContent.evaluate(
+        (el) => getComputedStyle(el).transitionDuration,
+      );
+
+      // Browser normalizes 200ms to 0.2s
+      // This verifies the consumer's Sass variable override is applied correctly
+      // (NOT the library default of 250ms/0.25s)
+      expect(transitionDuration).toContain('0.2s');
+      expect(transitionDuration).not.toContain('0.25s');
+    });
   });
 
   test.describe('Lazy-Loaded Styles', () => {
