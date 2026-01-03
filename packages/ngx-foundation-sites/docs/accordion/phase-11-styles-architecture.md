@@ -1,4 +1,4 @@
-# Phase 11: Styles Architecture Refactoring ✅
+# Phase 11: Styles Architecture ✅
 
 **Goal:** Implement a Sass-only styling architecture that enables:
 
@@ -9,48 +9,66 @@
 ## 11.1 Architecture Overview
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                        CONSUMER APPLICATION                          │
-├─────────────────────────────────────────────────────────────────────┤
-│  angular.json (inject: false)          │  src/styles/_nfs-settings.scss│
-│  ┌─────────────────────────────────────┤  ┌────────────────────────┐ │
-│  │ "styles": [                         │  │ @forward '...' with (  │ │
-│  │   { "input": ".../accordion.scss",  │  │   $primary: #1e88e5,   │ │
-│  │     "bundleName": "assets/nfs/...", │  │   $button-radius: 4px  │ │
-│  │     "inject": false }               │  │ );                     │ │
-│  │ ]                                   │  └────────────────────────┘ │
-│  └─────────────────────────────────────┘            │                │
-│          │                                          │                │
-│          │ Sass compile (with consumer's config) ◄──┘                │
-│          ▼                                                           │
-│  ┌─────────────────────────────────────────────────────────────────┐ │
-│  │  dist/assets/ngx-foundation-sites/                              │ │
-│  │      ├── accordion.css  ◄── NOT injected, lazy-loaded           │ │
-│  │      └── button.css     ◄── NOT injected, lazy-loaded           │ │
-│  └─────────────────────────────────────────────────────────────────┘ │
-└─────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                        CONSUMER APPLICATION                                 │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  angular.json (inject: false)         │  src/styles/_nfs-settings.scss      │
+│  ┌────────────────────────────────────┤  ┌────────────────────────────────┐ │
+│  │ "styles": [                        │  │ // Global Sass variables       │ │
+│  │   { "input": ".../accordion.scss", │  │ $foundation-palette: (         │ │
+│  │     "bundleName": "accordion",     │  │   primary: #1e88e5, ...        │ │
+│  │     "inject": false }              │  │ ) !default;                    │ │
+│  │ ]                                  │  │ $global-text-direction: ltr;   │ │
+│  └────────────────────────────────────┘  └────────────────────────────────┘ │
+│          │                                          │                       │
+│          │ Sass compile (with consumer's globals) ◄─┘                       │
+│          ▼                                                                  │
+│  ┌─────────────────────────────────────────────────────────────────────────┐│
+│  │  dist/                                                                  ││
+│  │      ├── accordion.css  ◄── NOT injected, lazy-loaded                   ││
+│  │      └── button.css     ◄── NOT injected, lazy-loaded                   ││
+│  └─────────────────────────────────────────────────────────────────────────┘│
+└─────────────────────────────────────────────────────────────────────────────┘
                                     │
                                     │ NfsStyleLoader.load()
                                     ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                     ngx-foundation-sites LIBRARY                     │
-├─────────────────────────────────────────────────────────────────────┤
-│  Components call: inject(NfsStyleLoader).load('accordion')          │
-│  Styles load from: /assets/ngx-foundation-sites/accordion.css       │
-└─────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                     ngx-foundation-sites LIBRARY                            │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  Components call: inject(NfsStyleLoader).load('accordion')                  │
+│  Styles load from: /accordion.css (or configured base path)                 │
+└─────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ## 11.2 Key Design Decisions
 
-### 11.2.1 Sass-Only Theming (No CSS Custom Properties)
+### 11.2.1 Global Sass Variables (Not @use ... with)
 
-**Why Sass variables instead of CSS Custom Properties?**
+**Why global variables instead of `@use ... with (...)`?**
 
-Foundation uses Sass functions like `scale-color()`, `map-get()`, and conditional logic that cannot accept CSS custom properties. A Sass-only API provides:
+Foundation v6.9.0 uses the legacy `@import` system internally. This means:
 
-- Full access to Foundation's mixins and functions
-- Compile-time optimization (only used values in output)
-- Native RTL support via `$global-text-direction`
+- Foundation reads configuration from **global Sass scope**
+- The modern `@use ... with (...)` syntax configures **module scope**
+- These two scopes don't communicate
+
+Consumer's `_nfs-settings.scss` must set variables as globals:
+
+```scss
+// src/styles/_nfs-settings.scss
+
+// These become global variables that Foundation reads via @import
+$foundation-palette: (
+  primary: #1e88e5,
+  secondary: #757575,
+  success: #43a047,
+  warning: #fb8c00,
+  alert: #e53935,
+) !default;
+
+$global-text-direction: ltr !default;
+$global-flexbox: true !default;
+```
 
 ### 11.2.2 Consumer-Compiled SCSS
 
@@ -62,10 +80,13 @@ Component SCSS files are distributed as source and compiled by the consumer's bu
   "styles": [
     {
       "input": "node_modules/ngx-foundation-sites/scss/accordion.scss",
-      "bundleName": "assets/ngx-foundation-sites/accordion",
+      "bundleName": "accordion",
       "inject": false
     }
-  ]
+  ],
+  "stylePreprocessorOptions": {
+    "includePaths": ["src/styles", "node_modules"]
+  }
 }
 ```
 
@@ -75,7 +96,29 @@ Component SCSS files are distributed as source and compiled by the consumer's bu
 - Lazy loading via `inject: false` reduces initial bundle
 - Consumer controls which components to include
 
-### 11.2.3 NfsStyleLoader Service
+### 11.2.3 Component SCSS Structure
+
+Each component SCSS file follows this pattern:
+
+```scss
+// accordion.scss
+
+// 1. Import consumer's settings (sets globals)
+@import 'nfs-settings';
+
+// 2. Import Foundation (reads globals)
+@import 'foundation-sites/scss/foundation';
+
+// 3. Include component styles
+@include foundation-accordion;
+
+// 4. Add custom styles using Foundation variables
+.accordion-title {
+  text-align: $global-left; // RTL-aware
+}
+```
+
+### 11.2.4 NfsStyleLoader Service
 
 Components load styles dynamically instead of using `styleUrl`:
 
@@ -107,12 +150,9 @@ src/lib/
 │   └── index.ts                      # Public exports
 │
 ├── scss/                             # Distributed as npm assets
-│   ├── _foundation-settings.scss     # Configurable variables
+│   ├── _global.scss                  # Re-exports Foundation global
 │   ├── accordion.scss                # Compiled by consumer
 │   └── button.scss
-│
-├── styles/
-│   └── _index.scss                   # Public Sass API (global styles)
 │
 └── accordion/
     └── accordion.ts                  # NO styleUrl, uses NfsStyleLoader
@@ -120,22 +160,37 @@ src/lib/
 
 ## 11.4 Consumer Theme Configuration
 
-Consumers create a settings file to customize Foundation variables:
+Consumers create a settings file with global Sass variables:
 
 ```scss
 // src/styles/_nfs-settings.scss
-@forward 'ngx-foundation-sites/scss/global' with (
-  $foundation-palette: (
-    primary: #1e88e5,
-    secondary: #757575,
-    success: #43a047,
-    warning: #fb8c00,
-    alert: #e53935,
-  ),
-  $button-radius: 4px,
-  $accordion-plusminus: true,
-  $global-text-direction: ltr
-);
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Color Palette
+// ─────────────────────────────────────────────────────────────────────────────
+
+$foundation-palette: (
+  primary: #1e88e5,
+  secondary: #757575,
+  success: #43a047,
+  warning: #fb8c00,
+  alert: #e53935,
+) !default;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Global Settings
+// ─────────────────────────────────────────────────────────────────────────────
+
+$global-text-direction: ltr !default;
+$global-flexbox: true !default;
+$global-radius: 4px !default;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Component Variables
+// ─────────────────────────────────────────────────────────────────────────────
+
+$accordion-plusminus: true !default;
+$accordion-slide-speed: 250ms !default;
 ```
 
 ## 11.5 RTL Support
@@ -143,12 +198,13 @@ Consumers create a settings file to customize Foundation variables:
 RTL is a compile-time decision via `$global-text-direction`:
 
 ```scss
-@forward 'ngx-foundation-sites/scss/global' with (
-  $global-text-direction: rtl
-);
+// src/styles/_nfs-settings.scss
+$global-text-direction: rtl !default;
 ```
 
 Foundation automatically adjusts all directional styles (margins, paddings, icon positions).
+
+**Note:** To support both LTR and RTL, you need separate builds or use Storybook's dynamic stylesheet swapping pattern.
 
 ## 11.6 Testing Environments
 
@@ -157,44 +213,29 @@ For Storybook and unit tests where styles are bundled directly:
 ```typescript
 import { provideNfsTesting } from 'ngx-foundation-sites/testing';
 
-// Prevents 404 errors for /assets/ngx-foundation-sites/*.css
+// Prevents 404 errors for /*.css
 providers: [provideNfsTesting()];
 ```
 
 ### Storybook RTL/LTR Testing
 
-Storybook supports dynamic direction switching via a toolbar control. This is implemented through:
+Storybook supports dynamic direction switching via a toolbar control:
 
 1. **Separate entry points** compile Foundation with LTR or RTL direction:
    - `src/storybook/all-components-ltr.scss` - Default LTR styles
    - `src/storybook/all-components-rtl.scss` - RTL styles
 
-2. **Parameterized settings** (`src/storybook/_nfs-settings.scss`):
-
-   ```scss
-   // Default direction, configurable via @use ... with ($_direction: rtl)
-   $_direction: ltr !default;
-
-   @forward 'foundation-sites/scss/global' with (
-     $global-text-direction: $_direction // ... other config
-   );
-   ```
-
-3. **Dynamic stylesheet swapping** in `preview.ts`:
+2. **Dynamic stylesheet swapping** in `preview.ts`:
 
    ```typescript
-   // Import both as raw CSS strings via webpack ?inline query
    import ltrStyles from '../src/storybook/all-components-ltr.scss?inline';
    import rtlStyles from '../src/storybook/all-components-rtl.scss?inline';
 
-   // Swap stylesheets when direction changes
    function setDirection(direction: 'ltr' | 'rtl'): void {
      document.documentElement.dir = direction;
      // Inject appropriate stylesheet (only one active at a time)
    }
    ```
-
-This approach ensures Foundation's directional CSS (e.g., `left: 1rem` vs `right: 1rem`) doesn't conflict, since only one stylesheet is active.
 
 ## 11.7 ViewEncapsulation.None ✅
 
@@ -204,42 +245,38 @@ All components use `ViewEncapsulation.None` because:
 - No `_ngcontent-*` attribute pollution in CSS
 - Simpler selectors and smaller bundle size
 
-Enforced via custom ESLint rule: `@nfs/require-view-encapsulation-none`
+## 11.8 Expected Sass Warnings
 
-## 11.8 Files Created/Modified
+During compilation, you will see deprecation warnings:
 
-### New Files
+```
+Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+```
 
-| File                                       | Purpose                                  |
-| ------------------------------------------ | ---------------------------------------- |
-| `src/lib/core/nfs-style-loader.service.ts` | Dynamic CSS loading service              |
-| `src/lib/scss/_global.scss`                | Re-exports Foundation global settings    |
-| `src/lib/scss/accordion.scss`              | Accordion styles (consumer-compiled)     |
-| `src/lib/scss/button.scss`                 | Button styles (consumer-compiled)        |
-| `testing/src/provide-nfs-testing.ts`       | Testing environment providers            |
-| `src/storybook/_nfs-settings.scss`         | Storybook theme with direction parameter |
-| `src/storybook/all-components-ltr.scss`    | LTR entry point for Storybook            |
-| `src/storybook/all-components-rtl.scss`    | RTL entry point for Storybook            |
+These warnings are **expected** and cannot be avoided while Foundation v6 uses `@import` internally. They do not affect functionality.
 
-### Modified Files
+## 11.9 Files Created/Modified
 
-| File                             | Change                                  |
-| -------------------------------- | --------------------------------------- |
-| `ng-package.json`                | Export scss/ and styles/ as assets      |
-| `src/lib/accordion/accordion.ts` | Use NfsStyleLoader instead of styleUrl  |
-| `src/lib/button/button.ts`       | Use NfsStyleLoader instead of styleUrl  |
-| `.storybook/preview.ts`          | Dynamic RTL/LTR stylesheet swapping     |
-| `.storybook/main.ts`             | Webpack config for ?inline SCSS imports |
+### Key Files
 
-## 11.9 Migration from Previous Architecture
+| File                                       | Purpose                               |
+| ------------------------------------------ | ------------------------------------- |
+| `src/lib/core/nfs-style-loader.service.ts` | Dynamic CSS loading service           |
+| `src/lib/scss/_global.scss`                | Re-exports Foundation global settings |
+| `src/lib/scss/accordion.scss`              | Accordion styles (consumer-compiled)  |
+| `src/lib/scss/button.scss`                 | Button styles (consumer-compiled)     |
+| `testing/src/provide-nfs-testing.ts`       | Testing environment providers         |
 
-The previous architecture used:
+## 11.10 Migration from Previous Architecture
 
-- `styleUrl` with component-scoped SCSS
+The previous architecture attempted to use:
+
+- `@forward ... with (...)` for consumer configuration
 - CSS Custom Properties for runtime theming
 
-The new architecture provides:
+The current architecture provides:
 
-- Full Sass variable theming (compile-time)
-- Consumer controls compilation with their theme config
-- Lazy-loaded styles from conventional path
+- Global Sass variables for Foundation compatibility
+- Full compile-time theming with all Foundation variables
+- Lazy-loaded styles from conventional paths
+- RTL support via `$global-text-direction`
