@@ -16,8 +16,8 @@
 │  ┌────────────────────────────────────┤  ┌────────────────────────────────┐ │
 │  │ "styles": [                        │  │ // Global Sass variables       │ │
 │  │   { "input": ".../accordion.scss", │  │ $foundation-palette: (         │ │
-│  │     "bundleName": "accordion",     │  │   primary: #1e88e5, ...        │ │
-│  │     "inject": false }              │  │ ) !default;                    │ │
+│  │     "bundleName": "nfs-accordion", │  │   primary: #1e88e5, ...        │ │
+│  │     "inject": false }              │  │ );                             │ │
 │  │ ]                                  │  │ $global-text-direction: ltr;   │ │
 │  └────────────────────────────────────┘  └────────────────────────────────┘ │
 │          │                                          │                       │
@@ -25,8 +25,8 @@
 │          ▼                                                                  │
 │  ┌─────────────────────────────────────────────────────────────────────────┐│
 │  │  dist/                                                                  ││
-│  │      ├── accordion.css  ◄── NOT injected, lazy-loaded                   ││
-│  │      └── button.css     ◄── NOT injected, lazy-loaded                   ││
+│  │      ├── nfs-accordion.css  ◄── NOT injected, lazy-loaded               ││
+│  │      └── nfs-button.css     ◄── NOT injected, lazy-loaded               ││
 │  └─────────────────────────────────────────────────────────────────────────┘│
 └─────────────────────────────────────────────────────────────────────────────┘
                                     │
@@ -35,8 +35,8 @@
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                     ngx-foundation-sites LIBRARY                            │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│  Components call: inject(NfsStyleLoader).load('accordion')                  │
-│  Styles load from: /accordion.css (or configured base path)                 │
+│  Components call: NfsStyleLoader.load('accordion', '/nfs-accordion.css')    │
+│  Service creates <link> element, browser fetches CSS lazily                 │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -64,10 +64,10 @@ $foundation-palette: (
   success: #43a047,
   warning: #fb8c00,
   alert: #e53935,
-) !default;
+);
 
-$global-text-direction: ltr !default;
-$global-flexbox: true !default;
+$global-text-direction: ltr;
+$global-flexbox: true;
 ```
 
 ### 11.2.2 Consumer-Compiled SCSS
@@ -80,12 +80,12 @@ Component SCSS files are distributed as source and compiled by the consumer's bu
   "styles": [
     {
       "input": "node_modules/ngx-foundation-sites/scss/accordion.scss",
-      "bundleName": "accordion",
+      "bundleName": "nfs-accordion",
       "inject": false
     }
   ],
   "stylePreprocessorOptions": {
-    "includePaths": ["src/styles", "node_modules"]
+    "includePaths": ["src/styles", "node_modules/ngx-foundation-sites/scss/defaults", "node_modules"]
   }
 }
 ```
@@ -95,6 +95,8 @@ Component SCSS files are distributed as source and compiled by the consumer's bu
 - Consumer's Sass variable overrides apply to component styles
 - Lazy loading via `inject: false` reduces initial bundle
 - Consumer controls which components to include
+
+**Important:** The `bundleName` must use the `nfs-` prefix (e.g., `nfs-accordion`) to match the paths expected by components.
 
 ### 11.2.3 Component SCSS Structure
 
@@ -107,7 +109,9 @@ Each component SCSS file follows this pattern:
 @import 'nfs-settings';
 
 // 2. Import Foundation (reads globals)
-@import 'foundation-sites/scss/foundation';
+@import 'foundation-sites/scss/util/util';
+@import 'foundation-sites/scss/global';
+@import 'foundation-sites/scss/components/accordion';
 
 // 3. Include component styles
 @include foundation-accordion;
@@ -120,7 +124,7 @@ Each component SCSS file follows this pattern:
 
 ### 11.2.4 NfsStyleLoader Service
 
-Components load styles dynamically instead of using `styleUrl`:
+Components load styles dynamically using `NfsStyleLoader`:
 
 ```typescript
 @Component({
@@ -129,8 +133,17 @@ Components load styles dynamically instead of using `styleUrl`:
   encapsulation: ViewEncapsulation.None,
 })
 export class NfsAccordion {
+  readonly #styleLoader = inject(NfsStyleLoader);
+  readonly #destroyRef = inject(DestroyRef);
+
   constructor() {
-    inject(NfsStyleLoader).load('accordion');
+    afterNextRender(() => {
+      this.#styleLoader.load('accordion', '/nfs-accordion.css');
+    });
+
+    this.#destroyRef.onDestroy(() => {
+      this.#styleLoader.unload('accordion');
+    });
   }
 }
 ```
@@ -138,8 +151,11 @@ export class NfsAccordion {
 **Benefits:**
 
 - Works with consumer-compiled SCSS
-- Styles load once per component (tracked by service)
-- Configurable base path via `NFS_STYLE_BASE_PATH` token
+- Reference-counted: first instance loads, last instance removes
+- Platform-scoped: works across Storybook story boundaries
+- SSR-safe: uses `afterNextRender` to load only in browser
+
+**Why not CSS `@import url()`?** ng-packagr uses ESBuild which resolves and inlines `@import` statements at build time. Runtime URLs don't exist during library builds.
 
 ## 11.3 File Structure
 
@@ -149,13 +165,15 @@ src/lib/
 │   ├── nfs-style-loader.service.ts   # Dynamic CSS loading
 │   └── index.ts                      # Public exports
 │
-├── scss/                             # Distributed as npm assets
+├── scss/
+│   ├── defaults/
+│   │   └── _nfs-settings.scss        # Library defaults (fallback)
 │   ├── _global.scss                  # Re-exports Foundation global
 │   ├── accordion.scss                # Compiled by consumer
 │   └── button.scss
 │
 └── accordion/
-    └── accordion.ts                  # NO styleUrl, uses NfsStyleLoader
+    └── accordion.ts                  # Uses NfsStyleLoader
 ```
 
 ## 11.4 Consumer Theme Configuration
@@ -175,23 +193,25 @@ $foundation-palette: (
   success: #43a047,
   warning: #fb8c00,
   alert: #e53935,
-) !default;
+);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Global Settings
 // ─────────────────────────────────────────────────────────────────────────────
 
-$global-text-direction: ltr !default;
-$global-flexbox: true !default;
-$global-radius: 4px !default;
+$global-text-direction: ltr;
+$global-flexbox: true;
+$global-radius: 4px;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Component Variables
 // ─────────────────────────────────────────────────────────────────────────────
 
-$accordion-plusminus: true !default;
-$accordion-slide-speed: 250ms !default;
+$accordion-plusminus: true;
+$nfs-accordion-slide-speed: 250ms;
 ```
+
+**Note:** Consumer settings should NOT use `!default` since they ARE the overrides. The library's `defaults/_nfs-settings.scss` uses `!default` as the fallback.
 
 ## 11.5 RTL Support
 
@@ -199,43 +219,44 @@ RTL is a compile-time decision via `$global-text-direction`:
 
 ```scss
 // src/styles/_nfs-settings.scss
-$global-text-direction: rtl !default;
+$global-text-direction: rtl;
 ```
 
 Foundation automatically adjusts all directional styles (margins, paddings, icon positions).
 
-**Note:** To support both LTR and RTL, you need separate builds or use Storybook's dynamic stylesheet swapping pattern.
+**For consumers:** RTL is build-time only. Create separate build configurations for LTR and RTL.
 
-## 11.6 Testing Environments
+**For Storybook:** Runtime direction switching is handled via MutationObserver in `preview.ts` that swaps between `/nfs-accordion.css` and `/nfs-accordion-rtl.css`.
 
-For Storybook and unit tests where styles are bundled directly:
+## 11.6 Storybook Configuration
+
+Storybook uses precompiled CSS from the `dist-css/` folder:
 
 ```typescript
-import { provideNfsTesting } from 'ngx-foundation-sites/testing';
-
-// Prevents 404 errors for /*.css
-providers: [provideNfsTesting()];
+// .storybook/main.ts
+const config: StorybookConfig = {
+  staticDirs: [{ from: '../dist-css', to: '/' }],
+};
 ```
 
-### Storybook RTL/LTR Testing
+The `build-css` target compiles both LTR and RTL versions before Storybook starts.
 
-Storybook supports dynamic direction switching via a toolbar control:
+### RTL Testing in Storybook
 
-1. **Separate entry points** compile Foundation with LTR or RTL direction:
-   - `src/storybook/all-components-ltr.scss` - Default LTR styles
-   - `src/storybook/all-components-rtl.scss` - RTL styles
+Storybook's direction toolbar triggers a MutationObserver that swaps stylesheet hrefs:
 
-2. **Dynamic stylesheet swapping** in `preview.ts`:
-
-   ```typescript
-   import ltrStyles from '../src/storybook/all-components-ltr.scss?inline';
-   import rtlStyles from '../src/storybook/all-components-rtl.scss?inline';
-
-   function setDirection(direction: 'ltr' | 'rtl'): void {
-     document.documentElement.dir = direction;
-     // Inject appropriate stylesheet (only one active at a time)
-   }
-   ```
+```typescript
+// .storybook/preview.ts
+function swapNfsStylesheets(direction: string) {
+  document.querySelectorAll<HTMLLinkElement>('link[id^="nfs-style"]').forEach((link) => {
+    if (direction === 'rtl' && !link.href.includes('-rtl.css')) {
+      link.href = link.href.replace('.css', '-rtl.css');
+    } else if (direction !== 'rtl' && link.href.includes('-rtl.css')) {
+      link.href = link.href.replace('-rtl.css', '.css');
+    }
+  });
+}
+```
 
 ## 11.7 ViewEncapsulation.None ✅
 
@@ -259,23 +280,25 @@ These warnings are **expected** and cannot be avoided while Foundation v6 uses `
 
 ### Key Files
 
-| File                                       | Purpose                               |
-| ------------------------------------------ | ------------------------------------- |
-| `src/lib/core/nfs-style-loader.service.ts` | Dynamic CSS loading service           |
-| `src/lib/scss/_global.scss`                | Re-exports Foundation global settings |
-| `src/lib/scss/accordion.scss`              | Accordion styles (consumer-compiled)  |
-| `src/lib/scss/button.scss`                 | Button styles (consumer-compiled)     |
-| `testing/src/provide-nfs-testing.ts`       | Testing environment providers         |
+| File                                       | Purpose                                |
+| ------------------------------------------ | -------------------------------------- |
+| `src/lib/core/nfs-style-loader.service.ts` | Dynamic CSS loading service            |
+| `src/lib/scss/defaults/_nfs-settings.scss` | Library default settings (fallback)    |
+| `src/lib/scss/_global.scss`                | Re-exports Foundation global settings  |
+| `src/lib/scss/accordion.scss`              | Accordion styles (consumer-compiled)   |
+| `src/lib/scss/button.scss`                 | Button styles (consumer-compiled)      |
+| `tools/build-component-css.mjs`            | Precompiles CSS for Storybook/defaults |
 
-## 11.10 Migration from Previous Architecture
+## 11.10 Precompiled CSS Option
 
-The previous architecture attempted to use:
+For consumers who don't need Sass theming, the library ships precompiled CSS:
 
-- `@forward ... with (...)` for consumer configuration
+```
+dist/ngx-foundation-sites/css/
+├── nfs-accordion.css       # LTR (default)
+├── nfs-accordion-rtl.css   # RTL
+├── nfs-button.css
+└── nfs-button-rtl.css
+```
 
-The current architecture provides:
-
-- Global Sass variables for Foundation compatibility
-- Full compile-time theming with all Foundation variables
-- Lazy-loaded styles from conventional paths
-- RTL support via `$global-text-direction`
+Consumers can copy these to their assets folder instead of compiling SCSS.
