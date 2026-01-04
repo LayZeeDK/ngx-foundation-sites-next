@@ -14,6 +14,10 @@ export default [
         'error',
         {
           ignoredFiles: ['{projectRoot}/eslint.config.{js,cjs,mjs,ts,cts,mts}'],
+          // sass is used by tools/build-component-css.mjs (not distributed)
+          // Consumers using precompiled CSS don't need sass
+          // Consumers using Sass theming already have sass via Angular CLI
+          ignoredDependencies: ['sass'],
         },
       ],
     },
