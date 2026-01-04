@@ -18,9 +18,17 @@
     }
   },
   "targets": {
+    "build-css": {
+      "executor": "nx:run-commands",
+      "outputs": ["{projectRoot}/dist-css"],
+      "options": {
+        "command": "node packages/ngx-foundation-sites/tools/build-component-css.mjs"
+      }
+    },
     "build": {
       "executor": "@nx/angular:package",
       "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
+      "dependsOn": ["build-css"],
       "options": {
         "project": "packages/ngx-foundation-sites/ng-package.json",
         "tsConfig": "packages/ngx-foundation-sites/tsconfig.lib.json"
@@ -50,6 +58,7 @@
     "storybook": {
       "executor": "@storybook/angular:start-storybook",
       "continuous": true,
+      "dependsOn": ["build-css"],
       "inputs": [
         "default",
         "{projectRoot}/.compodocrc.json",
@@ -82,6 +91,7 @@
     },
     "build-storybook": {
       "executor": "@storybook/angular:build-storybook",
+      "dependsOn": ["build-css"],
       "inputs": [
         "default",
         "{projectRoot}/.compodocrc.json",

@@ -1,0 +1,35 @@
+// ═══════════════════════════════════════════════════════════════════════════════
+// ngx-foundation-sites Default Settings
+// ═══════════════════════════════════════════════════════════════════════════════
+//
+// This file defines library-specific variables for ngx-foundation-sites.
+// Foundation defaults are loaded via individual component stylesheets.
+//
+// IMPORTANT: This file must NOT import Foundation's settings/settings because
+// that file unconditionally sets $global-text-direction: ltr (no !default),
+// which would override RTL settings.
+//
+// CONSUMER OVERRIDE PATTERN:
+// 1. Create src/styles/_nfs-settings.scss with your customizations
+// 2. Add src/styles to includePaths BEFORE node_modules
+// 3. Sass resolver finds consumer's file first, library default is never loaded
+//
+// Example consumer override:
+//   $foundation-palette: (primary: #6200ea, ...);
+//   $global-text-direction: rtl;
+//
+// ═══════════════════════════════════════════════════════════════════════════════
+
+// NOTE: We intentionally do NOT import Foundation's settings/settings here
+// because it unconditionally sets $global-text-direction: ltr without !default.
+// Foundation defaults are loaded by util/util and global imports in component SCSS.
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// ngx-foundation-sites Custom Variables
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/// Animation speed for accordion expand/collapse.
+/// Replaces Foundation's JavaScript `data-slide-speed` option with CSS transitions.
+/// @type Duration
+/// @group accordion
+$nfs-accordion-slide-speed: 250ms !default;

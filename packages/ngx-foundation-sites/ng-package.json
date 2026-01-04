@@ -4,7 +4,9 @@
   "lib": {
     "entryFile": "src/index.ts"
   },
+  "inlineStyleLanguage": "css",
   "assets": [
-    { "input": "./src/lib/scss", "glob": "**/*.scss", "output": "scss" }
+    { "input": "./src/lib/scss", "glob": "**/*.scss", "output": "scss" },
+    { "input": "./dist-css", "glob": "**/*.css", "output": "css" }
   ]
 }
