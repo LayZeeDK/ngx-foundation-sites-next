@@ -21,14 +21,15 @@ import {
   AccordionTrigger,
   AccordionPanel,
 } from '@angular/aria/accordion';
-import { NfsStyleLoader } from '../core';
 import { NfsAccordionItemDef } from './accordion-item-def';
 import { AccordionDeepLinkService } from './accordion-deep-link.service';
+import { NfsStyleLoader } from '../core/nfs-style-loader.service';
 
 @Component({
   selector: 'nfs-accordion',
   templateUrl: './accordion.html',
-  // Styles loaded dynamically via NfsStyleLoader (compiled by consumer's build)
+  // Styles auto-loaded via NfsStyleLoader at runtime from /nfs-accordion.css
+  // For custom theming: compile Sass with bundleName: "nfs-accordion", inject: false
   encapsulation: ViewEncapsulation.None,
   host: {},
   imports: [AccordionGroup, AccordionTrigger, AccordionPanel, NgTemplateOutlet],
@@ -39,6 +40,7 @@ export class NfsAccordion implements AfterContentInit {
   readonly #viewContainer = inject(ViewContainerRef);
   readonly #deepLinkService = inject(AccordionDeepLinkService);
   readonly #destroyRef = inject(DestroyRef);
+  readonly #styleLoader = inject(NfsStyleLoader);
 
   /** Cache for item injectors to avoid creating new instances on each change detection */
   readonly #itemInjectorCache = new WeakMap<NfsAccordionItemDef, Injector>();
@@ -100,8 +102,15 @@ export class NfsAccordion implements AfterContentInit {
   #initialHashProcessed = false;
 
   constructor() {
-    // Load accordion styles (compiled by consumer's build with their theme config)
-    inject(NfsStyleLoader).load('accordion');
+    // Load component styles on first render (reference-counted)
+    afterNextRender(() => {
+      this.#styleLoader.load('accordion', '/nfs-accordion.css');
+    });
+
+    // Unload styles when component is destroyed
+    this.#destroyRef.onDestroy(() => {
+      this.#styleLoader.unload('accordion');
+    });
 
     // Handle initial hash on first render
     afterNextRender(() => {

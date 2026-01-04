@@ -1,8 +1,10 @@
 import {
+  afterNextRender,
   afterRenderEffect,
   booleanAttribute,
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   ElementRef,
   inject,
   input,
@@ -10,7 +12,7 @@ import {
   Renderer2,
   ViewEncapsulation,
 } from '@angular/core';
-import { NfsStyleLoader } from '../core';
+import { NfsStyleLoader } from '../core/nfs-style-loader.service';
 
 /**
  * Responsive expanded breakpoint values.
@@ -94,7 +96,8 @@ function expandedTransform(value: unknown): NfsButtonExpanded {
   // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'button[nfsButton], a[nfsButton]',
   template: '<ng-content />',
-  // Styles loaded dynamically via NfsStyleLoader (compiled by consumer's build)
+  // Styles auto-loaded via NfsStyleLoader at runtime from /nfs/button.css
+  // For custom theming: compile Sass with inject:false to same path
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
@@ -217,6 +220,8 @@ export class NfsButton {
     inject(ElementRef);
   readonly #ngZone = inject(NgZone);
   readonly #renderer = inject(Renderer2);
+  readonly #styleLoader = inject(NfsStyleLoader);
+  readonly #destroyRef = inject(DestroyRef);
 
   /**
    * Whether the host element is an anchor (`<a>`).
@@ -258,8 +263,15 @@ export class NfsButton {
   };
 
   constructor() {
-    // Load button styles (compiled by consumer's build with their theme config)
-    inject(NfsStyleLoader).load('button');
+    // Load component styles on first render (reference-counted)
+    afterNextRender(() => {
+      this.#styleLoader.load('button', '/nfs-button.css');
+    });
+
+    // Unload styles when component is destroyed
+    this.#destroyRef.onDestroy(() => {
+      this.#styleLoader.unload('button');
+    });
 
     // Reactively add/remove click listener based on softDisabled signal.
     // Only adds listener when softDisabled is true (rare), so most buttons
