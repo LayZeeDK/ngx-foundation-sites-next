@@ -24,20 +24,21 @@
           "apps/consumer-test-app/src/styles.scss",
           {
             "input": "dist/packages/ngx-foundation-sites/scss/accordion.scss",
-            "bundleName": "accordion",
+            "bundleName": "nfs-accordion",
             "inject": false
           },
           {
             "input": "dist/packages/ngx-foundation-sites/scss/button.scss",
-            "bundleName": "button",
+            "bundleName": "nfs-button",
             "inject": false
           }
         ],
         "stylePreprocessorOptions": {
           "includePaths": [
-            "node_modules",
-            "dist/packages",
-            "apps/consumer-test-app/src/styles"
+            "apps/consumer-test-app/src/styles",
+            "dist/packages/ngx-foundation-sites/scss/defaults",
+            "dist/packages/ngx-foundation-sites/scss",
+            "node_modules"
           ]
         }
       },
@@ -67,19 +68,15 @@
           "optimization": false,
           "extractLicenses": false,
           "sourceMap": true,
-          "styles": [
-            "apps/consumer-test-app/src/styles.scss",
-            {
-              "input": "apps/consumer-test-app/src/styles/accordion-rtl.scss",
-              "bundleName": "accordion",
-              "inject": false
-            },
-            {
-              "input": "apps/consumer-test-app/src/styles/button-rtl.scss",
-              "bundleName": "button",
-              "inject": false
-            }
-          ]
+          "stylePreprocessorOptions": {
+            "includePaths": [
+              "apps/consumer-test-app/src/styles-rtl",
+              "apps/consumer-test-app/src/styles",
+              "dist/packages/ngx-foundation-sites/scss/defaults",
+              "dist/packages/ngx-foundation-sites/scss",
+              "node_modules"
+            ]
+          }
         }
       },
       "defaultConfiguration": "production"

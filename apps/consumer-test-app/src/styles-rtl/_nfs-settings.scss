@@ -1,41 +1,35 @@
 // ═══════════════════════════════════════════════════════════════════════════════
-// Consumer Test App - Theme Configuration
+// Consumer Test App - RTL Theme Configuration
 // ═══════════════════════════════════════════════════════════════════════════════
 //
-// This file configures Foundation variables for e2e testing.
-// Tests verify that these values are correctly applied to components.
+// Same settings as the LTR version, but with RTL text direction.
+// This file is used by the RTL build configuration via includePaths.
 //
 // ═══════════════════════════════════════════════════════════════════════════════
 
 // ─────────────────────────────────────────────────────────────────────────────────
-// Color Palette - Distinctive test colors
+// Color Palette - Same as LTR for consistent testing
 // ─────────────────────────────────────────────────────────────────────────────────
-// These colors are intentionally different from Foundation defaults to verify
-// that consumer theming works correctly.
 
 $foundation-palette: (
   primary: #6200ea,
-  // Deep purple (Foundation default: #1779ba)
   secondary: #00bfa5,
-  // Teal
   success: #00c853,
-  // Green
   warning: #ffd600,
-  // Yellow
-  alert: #ff1744, // Red
+  alert: #ff1744,
 ) !default;
 
 // ─────────────────────────────────────────────────────────────────────────────────
 // Global Settings
 // ─────────────────────────────────────────────────────────────────────────────────
 
-/// Text direction - LTR for this configuration (RTL uses styles-rtl/ folder)
-$global-text-direction: ltr;
+/// Text direction - RTL for this configuration
+$global-text-direction: rtl;
 
 /// Enable flexbox layout
 $global-flexbox: true !default;
 
-/// Global border radius - set to 8px for visible verification
+/// Global border radius
 $global-radius: 8px !default;
 
 // ─────────────────────────────────────────────────────────────────────────────────
