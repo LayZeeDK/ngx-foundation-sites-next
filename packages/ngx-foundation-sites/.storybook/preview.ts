@@ -1,50 +1,79 @@
 import type { Preview } from '@storybook/angular';
-import { applicationConfig } from '@storybook/angular';
 import { setCompodocJson } from '@storybook/addon-docs/angular';
 import docJson from '../documentation.json';
 import { cleanCompodocJson } from '../src/lib/util-storybook/clean-compodoc-json';
-import { provideNfsTesting } from 'ngx-foundation-sites/testing';
-
-// Import both LTR and RTL stylesheets as raw CSS strings for dynamic swapping.
-// The ?inline query triggers our custom webpack rule in main.ts.
-// Foundation compiles direction-specific CSS (e.g., `right: 1rem` for LTR vs `left: 1rem` for RTL).
-// Loading both simultaneously causes conflicts, so we swap between them.
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore - webpack ?inline query imports CSS as string
-import ltrStyles from '../src/storybook/all-components-ltr.scss?inline';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore - webpack ?inline query imports CSS as string
-import rtlStyles from '../src/storybook/all-components-rtl.scss?inline';
 
 // Configure Compodoc documentation for automatic prop extraction
 // cleanCompodocJson removes placeholder strings like "___COMPODOC_EMPTY_LINE___"
 setCompodocJson(cleanCompodocJson(docJson));
 
-const DIRECTION_STYLE_ID = 'nfs-direction-styles';
+// ═══════════════════════════════════════════════════════════════════════════════
+// RTL Stylesheet Swapping (Storybook-only)
+// ═══════════════════════════════════════════════════════════════════════════════
+// Watches document.dir and swaps /nfs-*.css ↔ /nfs-*-rtl.css
+// This enables the Storybook direction toolbar to work with NfsStyleLoader
+//
+// Components use NfsStyleLoader to dynamically load their CSS files.
+// Storybook serves pre-built files via staticDirs configured in main.ts.
+//
+// For production apps, consumers compile SCSS with their settings at build time
+// (e.g., $global-text-direction: rtl in _nfs-settings.scss)
 
-/**
- * Set the document's text direction and swap stylesheets for RTL/LTR.
- *
- * Foundation compiles direction-specific CSS (e.g., `right: 1rem` vs `left: 1rem`).
- * Loading both stylesheets causes conflicts. This function:
- * 1. Sets the `dir` attribute on <html>
- * 2. Swaps the active stylesheet (only one is active at a time)
- */
-function setDirection(direction: 'ltr' | 'rtl'): void {
-  document.documentElement.dir = direction;
+let rtlObserver: MutationObserver | null = null;
 
-  // Remove existing direction stylesheet
-  document.getElementById(DIRECTION_STYLE_ID)?.remove();
-
-  // Inject the appropriate stylesheet
-  const style = document.createElement('style');
-  style.id = DIRECTION_STYLE_ID;
-  style.textContent = direction === 'rtl' ? rtlStyles : ltrStyles;
-  document.head.appendChild(style);
+function swapNfsStylesheets(direction: string) {
+  document
+    .querySelectorAll<HTMLLinkElement>('link[id^="nfs-style"]')
+    .forEach((link) => {
+      const href = link.href;
+      if (direction === 'rtl' && !href.includes('-rtl.css')) {
+        link.href = href.replace('.css', '-rtl.css');
+      } else if (direction !== 'rtl' && href.includes('-rtl.css')) {
+        link.href = href.replace('-rtl.css', '.css');
+      }
+    });
 }
 
-// Initialize LTR styles immediately (before any story renders)
-setDirection('ltr');
+function setupRtlStyleSwapping() {
+  // Clean up any existing observer (important for HMR)
+  teardownRtlStyleSwapping();
+
+  let currentDirection = document.documentElement.dir || 'ltr';
+
+  rtlObserver = new MutationObserver(() => {
+    const newDirection = document.documentElement.dir || 'ltr';
+    if (newDirection !== currentDirection) {
+      currentDirection = newDirection;
+      swapNfsStylesheets(newDirection);
+    }
+  });
+
+  rtlObserver.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['dir'],
+  });
+}
+
+function teardownRtlStyleSwapping() {
+  if (rtlObserver) {
+    rtlObserver.disconnect();
+    rtlObserver = null;
+  }
+}
+
+// Initialize on module load
+setupRtlStyleSwapping();
+
+// Cleanup on HMR (Webpack)
+// @ts-expect-error - module.hot is Webpack-specific
+if (module.hot) {
+  // @ts-expect-error - module.hot is Webpack-specific
+  module.hot.dispose(() => {
+    teardownRtlStyleSwapping();
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
 
 const preview: Preview = {
   tags: ['autodocs'],
@@ -69,14 +98,9 @@ const preview: Preview = {
     // Apply direction based on toolbar selection
     (story, context) => {
       const direction = context.globals['direction'] || 'ltr';
-      setDirection(direction);
+      document.documentElement.dir = direction;
       return story();
     },
-    // Use testing providers since Storybook bundles styles directly via webpack.
-    // This prevents 404 errors for /assets/ngx-foundation-sites/*.css in the console.
-    applicationConfig({
-      providers: [provideNfsTesting()],
-    }),
   ],
   parameters: {
     controls: { expanded: true },

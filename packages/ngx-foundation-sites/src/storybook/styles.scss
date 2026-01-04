@@ -3,8 +3,8 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 //
 // This file sets up global styles for Storybook. Component-specific styles
-// (accordion, button) are loaded dynamically via NfsStyleLoader when
-// components are rendered.
+// (accordion, button) are loaded via CSS @import when components render.
+// Precompiled CSS is served from staticDirs and direction-switched via preview.ts.
 //
 // ═══════════════════════════════════════════════════════════════════════════════
 
