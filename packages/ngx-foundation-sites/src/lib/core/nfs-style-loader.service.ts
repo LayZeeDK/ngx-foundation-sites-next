@@ -1,119 +1,95 @@
+import { Injectable, inject, DestroyRef } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
-import { inject, Injectable, InjectionToken } from '@angular/core';
+
+interface StyleLinkRef {
+  element: HTMLLinkElement;
+  count: number;
+}
 
 /**
- * Injection token to customize the base path for component stylesheets.
+ * Service for dynamically loading component stylesheets via `<link>` tags.
  *
- * By default, styles are loaded from `/assets/ngx-foundation-sites/`.
+ * **Platform-scoped**: Uses `providedIn: 'platform'` to ensure a single instance
+ * across all Angular roots. This is important in Storybook where each story
+ * runs in its own root injector but should share stylesheet management.
+ *
+ * **Reference-counted**: First component instance loads the stylesheet,
+ * last instance removes it on destroy.
  *
  * @example
  * ```typescript
- * // In app.config.ts
- * providers: [
- *   { provide: NFS_STYLE_BASE_PATH, useValue: '/assets/my-custom-path' }
- * ]
- * ```
- */
-export const NFS_STYLE_BASE_PATH = new InjectionToken<string>(
-  'NFS_STYLE_BASE_PATH',
-);
-
-/**
- * Service that dynamically loads component stylesheets at runtime.
+ * export class MyComponent {
+ *   readonly #styleLoader = inject(NfsStyleLoader);
+ *   readonly #destroyRef = inject(DestroyRef);
  *
- * This service enables consumer-controlled theming by loading CSS files that were
- * compiled in the consumer's build with their Sass variable overrides applied.
- *
- * ## Why This Pattern?
- *
- * Angular library components with `styleUrl` have their styles pre-compiled during
- * the library build. This means consumer's Sass variable overrides (`$primary-color`,
- * `$button-radius`, etc.) cannot affect the component styles.
- *
- * By removing `styleUrl` from components and using this service, we enable:
- * 1. **Consumer theming** - SCSS is compiled in consumer's build with their config
- * 2. **Lazy loading** - Styles only load when component is first used
- * 3. **Foundation compatibility** - Full access to `scale-color()` and other Sass functions
- *
- * ## Consumer Setup
- *
- * Consumers configure their `angular.json` to compile component SCSS with `inject: false`:
- *
- * ```json
- * {
- *   "styles": [
- *     {
- *       "input": "node_modules/ngx-foundation-sites/scss/accordion.scss",
- *       "bundleName": "assets/ngx-foundation-sites/accordion",
- *       "inject": false
- *     }
- *   ]
- * }
- * ```
- *
- * The compiled CSS lands at `/assets/ngx-foundation-sites/accordion.css`, which this
- * service loads when the accordion component is first instantiated.
- *
- * @usageNotes
- *
- * Components call this service in their constructor:
- *
- * ```typescript
- * @Component({
- *   selector: 'nfs-accordion',
- *   templateUrl: './accordion.html',
- *   // NO styleUrl - styles loaded dynamically
- *   encapsulation: ViewEncapsulation.None,
- * })
- * export class NfsAccordion {
  *   constructor() {
- *     inject(NfsStyleLoader).load('accordion');
+ *     afterNextRender(() => {
+ *       this.#styleLoader.load('my-component', '/nfs-my-component.css');
+ *     });
+ *
+ *     this.#destroyRef.onDestroy(() => {
+ *       this.#styleLoader.unload('my-component');
+ *     });
  *   }
  * }
  * ```
  */
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: 'platform' })
 export class NfsStyleLoader {
   readonly #document = inject(DOCUMENT);
-  readonly #loadedStyles = new Set<string>();
-  readonly #basePath =
-    inject(NFS_STYLE_BASE_PATH, { optional: true }) ??
-    '/assets/ngx-foundation-sites';
+  readonly #linkRefs = new Map<string, StyleLinkRef>();
 
-  /**
-   * Load a component stylesheet from the conventional path.
-   *
-   * Styles are loaded by appending a `<link>` element to `<head>`.
-   * Subsequent calls for the same component are no-ops.
-   *
-   * @param componentName - The component identifier (e.g., 'accordion', 'button')
-   *
-   * @example
-   * ```typescript
-   * // In component constructor
-   * inject(NfsStyleLoader).load('accordion');
-   * // Loads: /assets/ngx-foundation-sites/accordion.css
-   * ```
-   */
-  load(componentName: string): void {
-    if (this.#loadedStyles.has(componentName)) {
-      return;
-    }
-    this.#loadedStyles.add(componentName);
-
-    const link = this.#document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = `${this.#basePath}/${componentName}.css`;
-    this.#document.head.appendChild(link);
+  constructor() {
+    // Register cleanup when platform injector is destroyed
+    inject(DestroyRef).onDestroy(() => this.#removeAllStylesheets());
   }
 
   /**
-   * Check if a component's styles have already been loaded.
+   * Loads a stylesheet via `<link>` tag. Reference-counted for multiple instances.
    *
-   * @param componentName - The component identifier to check
-   * @returns `true` if styles have been loaded, `false` otherwise
+   * If the stylesheet is already loaded, increments the reference count.
+   * Otherwise, creates a new `<link>` element and appends it to `<head>`.
+   *
+   * @param id Unique identifier for the stylesheet (e.g., 'accordion')
+   * @param href URL path to the CSS file (e.g., '/nfs-accordion.css')
    */
-  isLoaded(componentName: string): boolean {
-    return this.#loadedStyles.has(componentName);
+  load(id: string, href: string): void {
+    const existing = this.#linkRefs.get(id);
+    if (existing) {
+      existing.count++;
+      return;
+    }
+
+    const link = this.#document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = href;
+    link.id = `nfs-style-${id}`;
+    this.#document.head.appendChild(link);
+    this.#linkRefs.set(id, { element: link, count: 1 });
+  }
+
+  /**
+   * Decrements reference count and removes `<link>` when no instances remain.
+   *
+   * Safe to call even if the stylesheet was never loaded (no-op).
+   *
+   * @param id Unique identifier for the stylesheet
+   */
+  unload(id: string): void {
+    const existing = this.#linkRefs.get(id);
+    if (!existing) return;
+
+    existing.count--;
+    if (existing.count === 0) {
+      existing.element.remove();
+      this.#linkRefs.delete(id);
+    }
+  }
+
+  #removeAllStylesheets(): void {
+    for (const [, ref] of this.#linkRefs) {
+      ref.element.remove();
+    }
+    this.#linkRefs.clear();
   }
 }
