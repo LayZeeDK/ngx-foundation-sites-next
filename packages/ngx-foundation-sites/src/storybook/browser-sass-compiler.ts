@@ -21,6 +21,7 @@
  */
 
 import { SASS_SOURCES, type AvailableComponent } from './generated/sass-bundle';
+import type { ThemeState } from '../../.storybook/addons/theme-panel/types';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // Types
@@ -474,6 +475,129 @@ export async function compileComponents(
 ): Promise<string> {
   const results = await Promise.all(
     components.map((component) => compileSass(component, palette)),
+  );
+  return results.join('\n');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// ThemeState-based Compilation (Phase 2)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * Builds SCSS source with full theme state including component-specific variables.
+ *
+ * @param component - Component to compile
+ * @param themeState - Complete theme state with palette and component variables
+ * @returns SCSS source string
+ */
+function buildScssSourceWithTheme(
+  component: AvailableComponent,
+  themeState: ThemeState,
+): string {
+  const { palette, accordion, button } = themeState;
+
+  return `
+// ═══════════════════════════════════════════════════════════════════════════════
+// Injected theme variables (runtime)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+// Color Palette
+$foundation-palette: (
+  "primary": ${palette.primary},
+  "secondary": ${palette.secondary},
+  "success": ${palette.success},
+  "warning": ${palette.warning},
+  "alert": ${palette.alert},
+);
+
+// Accordion Variables
+$accordion-background: ${accordion.background};
+$accordion-plusminus: ${accordion.plusminus};
+$accordion-title-font-size: ${accordion.titleFontSize};
+$accordion-item-padding: ${accordion.itemPadding.vertical} ${accordion.itemPadding.horizontal};
+$nfs-accordion-slide-speed: ${accordion.slideSpeed};
+
+// Button Variables
+$button-padding: ${button.padding.vertical} ${button.padding.horizontal};
+$button-radius: ${button.radius};
+$button-font-size: ${button.fontSize};
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// Foundation Setup
+// ═══════════════════════════════════════════════════════════════════════════════
+
+// Import Foundation utilities and global settings
+@import 'foundation-sites/scss/util/util';
+@import 'foundation-sites/scss/global';
+
+// Extract individual color variables from the palette
+// This creates $primary-color, $secondary-color, etc.
+@include add-foundation-colors();
+
+// Import the component
+@import '${component}';
+`;
+}
+
+/**
+ * Compiles a component's Sass with the complete theme state.
+ *
+ * This function uses all theme variables (palette + component-specific)
+ * for more fine-grained control compared to `compileSass()`.
+ *
+ * @param component - Component to compile ('accordion' | 'button')
+ * @param themeState - Complete theme state
+ * @returns Promise resolving to compiled CSS string
+ * @throws Error if compilation fails
+ *
+ * @example
+ * ```typescript
+ * import { compileSassWithTheme } from './browser-sass-compiler';
+ * import { DEFAULT_THEME_STATE } from './theme-defaults';
+ *
+ * const css = await compileSassWithTheme('accordion', {
+ *   ...DEFAULT_THEME_STATE,
+ *   accordion: { ...DEFAULT_THEME_STATE.accordion, background: '#f0f0f0' },
+ * });
+ * ```
+ */
+export async function compileSassWithTheme(
+  component: AvailableComponent,
+  themeState: ThemeState,
+): Promise<string> {
+  const sass = await loadSass();
+  const source = buildScssSourceWithTheme(component, themeState);
+
+  console.log(`[nfs-theme] Compiling ${component} with theme state...`);
+  const startTime = performance.now();
+
+  const legacyFns = createLegacyFunctions(sass);
+
+  const result = await sass.compileStringAsync(source, {
+    importers: [createBundleImporter()],
+    functions: legacyFns,
+    silenceDeprecations: ['import', 'global-builtin'],
+  });
+
+  const compileTime = Math.round(performance.now() - startTime);
+  console.log(`[nfs-theme] ${component} compiled in ${compileTime}ms`);
+
+  return result.css;
+}
+
+/**
+ * Compiles multiple components with the complete theme state.
+ *
+ * @param components - Array of components to compile
+ * @param themeState - Complete theme state
+ * @returns Promise resolving to concatenated CSS string
+ */
+export async function compileComponentsWithTheme(
+  components: AvailableComponent[],
+  themeState: ThemeState,
+): Promise<string> {
+  const results = await Promise.all(
+    components.map((component) => compileSassWithTheme(component, themeState)),
   );
   return results.join('\n');
 }

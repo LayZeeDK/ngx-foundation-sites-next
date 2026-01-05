@@ -6,21 +6,29 @@
  *
  * @example
  * ```typescript
- * import { applyTheme, isThemeApplied, clearThemeCache } from './runtime-theme-injector';
+ * import { applyThemeState, isThemeStateApplied } from './runtime-theme-injector';
+ * import { getDefaultThemeState } from './theme-defaults';
  *
- * // Apply a theme (compiles if not cached)
- * await applyTheme('ocean');
+ * // Apply a custom theme state
+ * const themeState = {
+ *   ...getDefaultThemeState(),
+ *   palette: { ...getDefaultThemeState().palette, primary: '#ff6600' },
+ * };
+ * await applyThemeState(themeState);
  *
- * // Check if a theme is ready
- * if (isThemeApplied('ocean')) {
- *   console.log('Ocean theme is active');
+ * // Check if a theme state is applied
+ * if (isThemeStateApplied(themeState)) {
+ *   console.log('Custom theme is active');
  * }
  * ```
  */
 
-import { compileComponents, preloadSass } from './browser-sass-compiler';
-import { THEME_PRESETS, DEFAULT_THEME, type ThemeName } from './theme-presets';
+import {
+  compileComponentsWithTheme,
+  preloadSass,
+} from './browser-sass-compiler';
 import { AVAILABLE_COMPONENTS } from './generated/sass-bundle';
+import type { ThemeState } from '../../.storybook/addons/theme-panel/types';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // Constants
@@ -42,14 +50,14 @@ const NFS_STYLE_PREFIX = 'nfs-style';
 // ═══════════════════════════════════════════════════════════════════════════════
 
 /**
- * Cache of compiled CSS by theme name.
+ * Cache of compiled CSS by theme state hash.
  */
-const compiledCache = new Map<ThemeName, string>();
+const themeStateCache = new Map<string, string>();
 
 /**
- * Currently applied theme name (null if no theme applied).
+ * Currently applied theme state hash.
  */
-let currentTheme: ThemeName | null = null;
+let currentThemeStateHash: string | null = null;
 
 /**
  * Promise tracking in-flight compilation (prevents duplicate compilations).
@@ -57,9 +65,9 @@ let currentTheme: ThemeName | null = null;
 let compilationPromise: Promise<string> | null = null;
 
 /**
- * Theme being compiled (to prevent duplicate compilations).
+ * Theme state hash being compiled.
  */
-let compilingTheme: ThemeName | null = null;
+let compilingThemeStateHash: string | null = null;
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // DOM Management
@@ -109,37 +117,45 @@ function enablePrecompiledStyles(): void {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// Theme Application
+// Theme State Compilation
 // ═══════════════════════════════════════════════════════════════════════════════
 
 /**
- * Compiles a theme if not already cached.
+ * Generates a hash for a theme state for caching purposes.
+ */
+function hashThemeState(themeState: ThemeState): string {
+  return JSON.stringify(themeState);
+}
+
+/**
+ * Compiles a theme state if not already cached.
  *
- * @param themeName - Theme to compile
+ * @param themeState - Complete theme state to compile
  * @returns Promise resolving to compiled CSS
  */
-async function compileTheme(themeName: ThemeName): Promise<string> {
+async function compileThemeState(themeState: ThemeState): Promise<string> {
+  const hash = hashThemeState(themeState);
+
   // Return cached if available
-  const cached = compiledCache.get(themeName);
+  const cached = themeStateCache.get(hash);
   if (cached) {
     return cached;
   }
 
-  // If already compiling this theme, return the existing promise
-  if (compilingTheme === themeName && compilationPromise) {
+  // If already compiling this theme state, return the existing promise
+  if (compilingThemeStateHash === hash && compilationPromise) {
     return compilationPromise;
   }
 
   // Start new compilation
-  compilingTheme = themeName;
-  const palette = THEME_PRESETS[themeName];
+  compilingThemeStateHash = hash;
 
-  compilationPromise = compileComponents(
+  compilationPromise = compileComponentsWithTheme(
     [...AVAILABLE_COMPONENTS],
-    palette,
+    themeState,
   ).then((css) => {
-    compiledCache.set(themeName, css);
-    compilingTheme = null;
+    themeStateCache.set(hash, css);
+    compilingThemeStateHash = null;
     compilationPromise = null;
     return css;
   });
@@ -147,34 +163,44 @@ async function compileTheme(themeName: ThemeName): Promise<string> {
   return compilationPromise;
 }
 
+// ═══════════════════════════════════════════════════════════════════════════════
+// Theme Application
+// ═══════════════════════════════════════════════════════════════════════════════
+
 /**
- * Applies a theme by compiling (if needed) and injecting CSS.
+ * Applies a complete theme state by compiling (if needed) and injecting CSS.
  *
- * First-time compilation takes ~200-500ms. Subsequent applications
- * of the same theme are instant due to caching.
+ * Provides fine-grained control over all Foundation variables via the
+ * Theme addon panel in Storybook.
  *
- * @param themeName - Theme to apply
+ * @param themeState - Complete theme state with palette and component variables
  * @returns Promise that resolves when theme is applied
  *
  * @example
  * ```typescript
- * // Apply ocean theme
- * await applyTheme('ocean');
+ * import { applyThemeState } from './runtime-theme-injector';
+ * import { getDefaultThemeState } from './theme-defaults';
  *
- * // Theme is now visible
+ * // Apply custom theme
+ * await applyThemeState({
+ *   ...getDefaultThemeState(),
+ *   palette: { ...getDefaultThemeState().palette, primary: '#ff6600' },
+ * });
  * ```
  */
-export async function applyTheme(themeName: ThemeName): Promise<void> {
+export async function applyThemeState(themeState: ThemeState): Promise<void> {
+  const hash = hashThemeState(themeState);
+
   // Skip if already applied
-  if (currentTheme === themeName) {
+  if (currentThemeStateHash === hash) {
     return;
   }
 
-  console.log(`[nfs-theme] Applying theme: ${themeName}`);
+  console.log('[nfs-theme] Applying theme state...');
   const startTime = performance.now();
 
-  // Compile theme (uses cache if available)
-  const css = await compileTheme(themeName);
+  // Compile theme state (uses cache if available)
+  const css = await compileThemeState(themeState);
 
   // Inject CSS
   const styleEl = getStyleElement();
@@ -183,11 +209,11 @@ export async function applyTheme(themeName: ThemeName): Promise<void> {
   // Disable pre-compiled styles to avoid conflicts
   disablePrecompiledStyles();
 
-  currentTheme = themeName;
+  currentThemeStateHash = hash;
 
   const totalTime = Math.round(performance.now() - startTime);
-  const cached = compiledCache.has(themeName) ? ' (cached)' : '';
-  console.log(`[nfs-theme] Theme applied in ${totalTime}ms${cached}`);
+  const cached = themeStateCache.has(hash) ? ' (cached)' : '';
+  console.log(`[nfs-theme] Theme state applied in ${totalTime}ms${cached}`);
 }
 
 /**
@@ -200,7 +226,7 @@ export function removeTheme(): void {
   }
 
   enablePrecompiledStyles();
-  currentTheme = null;
+  currentThemeStateHash = null;
 
   console.log('[nfs-theme] Theme removed, using pre-compiled styles');
 }
@@ -214,27 +240,8 @@ export function removeTheme(): void {
  * Useful for development when Sass sources change.
  */
 export function clearThemeCache(): void {
-  compiledCache.clear();
+  themeStateCache.clear();
   console.log('[nfs-theme] Cache cleared');
-}
-
-/**
- * Pre-compiles all themes to warm the cache.
- * Call this during idle time for instant theme switching.
- *
- * @returns Promise that resolves when all themes are compiled
- */
-export async function precompileAllThemes(): Promise<void> {
-  console.log('[nfs-theme] Pre-compiling all themes...');
-  const startTime = performance.now();
-
-  // Compile all themes in parallel
-  await Promise.all(
-    Object.keys(THEME_PRESETS).map((name) => compileTheme(name as ThemeName)),
-  );
-
-  const totalTime = Math.round(performance.now() - startTime);
-  console.log(`[nfs-theme] All themes compiled in ${totalTime}ms`);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -242,29 +249,20 @@ export async function precompileAllThemes(): Promise<void> {
 // ═══════════════════════════════════════════════════════════════════════════════
 
 /**
- * Gets the currently applied theme name.
- * @returns Current theme name or null if no theme is applied
+ * Checks if a specific theme state is currently applied.
+ * @param themeState - Theme state to check
+ * @returns True if the theme state is currently applied
  */
-export function getCurrentTheme(): ThemeName | null {
-  return currentTheme;
+export function isThemeStateApplied(themeState: ThemeState): boolean {
+  return currentThemeStateHash === hashThemeState(themeState);
 }
 
 /**
- * Checks if a specific theme is currently applied.
- * @param themeName - Theme to check
- * @returns True if the theme is currently applied
+ * Gets the current theme state hash.
+ * @returns Current theme state hash or null if no theme is applied
  */
-export function isThemeApplied(themeName: ThemeName): boolean {
-  return currentTheme === themeName;
-}
-
-/**
- * Checks if a theme has been compiled and cached.
- * @param themeName - Theme to check
- * @returns True if the theme is in the cache
- */
-export function isThemeCached(themeName: ThemeName): boolean {
-  return compiledCache.has(themeName);
+export function getCurrentThemeStateHash(): string | null {
+  return currentThemeStateHash;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -275,24 +273,13 @@ export function isThemeCached(themeName: ThemeName): boolean {
  * Initializes the runtime theming system.
  * Call this early in the application lifecycle to preload Sass.
  *
- * @param precompile - If true, pre-compiles all themes for instant switching
  * @returns Promise that resolves when initialization is complete
  */
-export async function initializeRuntimeTheming(
-  precompile = false,
-): Promise<void> {
+export async function initializeRuntimeTheming(): Promise<void> {
   console.log('[nfs-theme] Initializing runtime theming...');
 
   // Preload Sass compiler
   await preloadSass();
 
-  // Optionally pre-compile all themes
-  if (precompile) {
-    await precompileAllThemes();
-  }
-
   console.log('[nfs-theme] Ready');
 }
-
-// Re-export for convenience
-export { DEFAULT_THEME, THEME_PRESETS, type ThemeName };
