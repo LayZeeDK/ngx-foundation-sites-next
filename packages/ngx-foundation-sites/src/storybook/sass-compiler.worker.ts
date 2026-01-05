@@ -14,26 +14,110 @@
 // Types (duplicated here since workers can't share imports with main thread)
 // ═══════════════════════════════════════════════════════════════════════════════
 
+interface SpacingValue {
+  vertical: string;
+  horizontal: string;
+}
+
+interface LinkedColorValue {
+  mode: 'custom' | 'palette';
+  paletteKey?: 'primary' | 'secondary' | 'success' | 'warning' | 'alert';
+  customColor?: string;
+}
+
+interface PaletteState {
+  primary: string;
+  secondary: string;
+  success: string;
+  warning: string;
+  alert: string;
+}
+
 interface ThemeState {
-  palette: {
-    primary: string;
-    secondary: string;
-    success: string;
-    warning: string;
-    alert: string;
+  palette: PaletteState;
+  globalColors: {
+    white: string;
+    lightGray: string;
+    mediumGray: string;
+    darkGray: string;
+    black: string;
+    bodyBackground: string;
+    bodyFontColor: string;
+  };
+  typography: {
+    globalFontSize: string;
+    globalLineHeight: string;
+    globalWeightNormal: string;
+    globalWeightBold: string;
+    bodyFontFamily: string;
+    headerFontFamily: string;
+    headerLineHeight: string;
+  };
+  spacing: {
+    globalMargin: string;
+    globalPadding: string;
+    globalRadius: string;
+    globalMenuPadding: SpacingValue;
+  };
+  layout: {
+    globalTextDirection: 'ltr' | 'rtl';
+    globalWidth: string;
+    globalFlexbox: boolean;
   };
   accordion: {
     background: string;
     plusminus: boolean;
     titleFontSize: string;
-    itemPadding: { vertical: string; horizontal: string };
+    itemPadding: SpacingValue;
     slideSpeed: string;
+    plusContent: string;
+    minusContent: string;
+    itemColor: LinkedColorValue;
+    itemBackgroundHover: LinkedColorValue;
+    contentBackground: string;
+    contentBorder: string;
+    contentColor: LinkedColorValue;
+    contentPadding: string;
   };
   button: {
-    padding: { vertical: string; horizontal: string };
+    padding: SpacingValue;
     radius: string;
     fontSize: string;
+    fontFamily: string;
+    fontWeight: string;
+    margin: SpacingValue;
+    fill: 'solid' | 'hollow';
+    background: LinkedColorValue;
+    backgroundHover: LinkedColorValue;
+    color: LinkedColorValue;
+    colorAlt: LinkedColorValue;
+    border: string;
+    hollowBorderWidth: string;
+    opacityDisabled: string;
+    backgroundHoverLightness: string;
+    hollowHoverLightness: string;
+    transition: string;
+    responsiveExpanded: boolean;
+    sizes: {
+      tiny: string;
+      small: string;
+      default: string;
+      large: string;
+    };
   };
+}
+
+/**
+ * Resolves a LinkedColorValue to its actual hex color.
+ */
+function resolveLinkedColor(
+  value: LinkedColorValue,
+  palette: PaletteState,
+): string {
+  if (value.mode === 'palette' && value.paletteKey) {
+    return palette[value.paletteKey];
+  }
+  return value.customColor ?? '#000000';
 }
 
 interface WorkerRequest {
@@ -277,10 +361,22 @@ function createLegacyFunctions(
  * Builds SCSS source with injected theme variables.
  */
 function buildScssSource(component: string, themeState: ThemeState): string {
-  const { palette, accordion, button } = themeState;
+  const {
+    palette,
+    globalColors,
+    typography,
+    spacing,
+    layout,
+    accordion,
+    button,
+  } = themeState;
 
   return `
+// ═══════════════════════════════════════════════════════════════════════════════
 // Injected theme variables (runtime - worker)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+// Brand Colors
 $foundation-palette: (
   "primary": ${palette.primary},
   "secondary": ${palette.secondary},
@@ -289,15 +385,74 @@ $foundation-palette: (
   "alert": ${palette.alert},
 );
 
+// Gray Scale & Body Colors
+$white: ${globalColors.white};
+$light-gray: ${globalColors.lightGray};
+$medium-gray: ${globalColors.mediumGray};
+$dark-gray: ${globalColors.darkGray};
+$black: ${globalColors.black};
+$body-background: ${globalColors.bodyBackground};
+$body-font-color: ${globalColors.bodyFontColor};
+
+// Typography
+$global-font-size: ${typography.globalFontSize};
+$global-lineheight: ${typography.globalLineHeight};
+$global-weight-normal: ${typography.globalWeightNormal};
+$global-weight-bold: ${typography.globalWeightBold};
+$body-font-family: ${typography.bodyFontFamily};
+$header-font-family: ${typography.headerFontFamily};
+$header-lineheight: ${typography.headerLineHeight};
+
+// Spacing
+$global-margin: ${spacing.globalMargin};
+$global-padding: ${spacing.globalPadding};
+$global-radius: ${spacing.globalRadius};
+$global-menu-padding: ${spacing.globalMenuPadding.vertical} ${spacing.globalMenuPadding.horizontal};
+
+// Layout
+$global-text-direction: ${layout.globalTextDirection};
+$global-width: ${layout.globalWidth};
+$global-flexbox: ${layout.globalFlexbox};
+
+// Accordion
 $accordion-background: ${accordion.background};
 $accordion-plusminus: ${accordion.plusminus};
+$accordion-plus-content: '${accordion.plusContent}';
+$accordion-minus-content: '${accordion.minusContent}';
 $accordion-title-font-size: ${accordion.titleFontSize};
+$accordion-item-color: ${resolveLinkedColor(accordion.itemColor, palette)};
+$accordion-item-background-hover: ${resolveLinkedColor(accordion.itemBackgroundHover, palette)};
 $accordion-item-padding: ${accordion.itemPadding.vertical} ${accordion.itemPadding.horizontal};
+$accordion-content-background: ${accordion.contentBackground};
+$accordion-content-border: ${accordion.contentBorder};
+$accordion-content-color: ${resolveLinkedColor(accordion.contentColor, palette)};
+$accordion-content-padding: ${accordion.contentPadding};
 $nfs-accordion-slide-speed: ${accordion.slideSpeed};
 
+// Button
+$button-fill: ${button.fill};
+$button-background: ${resolveLinkedColor(button.background, palette)};
+$button-background-hover: ${resolveLinkedColor(button.backgroundHover, palette)};
+$button-background-hover-lightness: ${button.backgroundHoverLightness};
+$button-color: ${resolveLinkedColor(button.color, palette)};
+$button-color-alt: ${resolveLinkedColor(button.colorAlt, palette)};
 $button-padding: ${button.padding.vertical} ${button.padding.horizontal};
+$button-margin: 0 0 ${button.margin.vertical} 0;
 $button-radius: ${button.radius};
-$button-font-size: ${button.fontSize};
+$button-border: ${button.border};
+$button-hollow-border-width: ${button.hollowBorderWidth};
+$button-hollow-hover-lightness: ${button.hollowHoverLightness};
+$button-font-family: ${button.fontFamily};
+$button-font-weight: ${button.fontWeight};
+$button-sizes: (
+  tiny: ${button.sizes.tiny},
+  small: ${button.sizes.small},
+  default: ${button.sizes.default},
+  large: ${button.sizes.large},
+);
+$button-opacity-disabled: ${button.opacityDisabled};
+$button-transition: ${button.transition};
+$button-responsive-expanded: ${button.responsiveExpanded};
 
 @import 'foundation-sites/scss/util/util';
 @import 'foundation-sites/scss/global';

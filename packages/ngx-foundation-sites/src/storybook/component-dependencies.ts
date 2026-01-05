@@ -28,9 +28,21 @@ import {
 // ═══════════════════════════════════════════════════════════════════════════════
 
 /**
+ * Global sections that affect ALL components.
+ * Changes to any of these sections trigger full recompilation.
+ */
+export const GLOBAL_SECTIONS: (keyof ThemeState)[] = [
+  'palette',
+  'globalColors',
+  'typography',
+  'spacing',
+  'layout',
+];
+
+/**
  * Maps each component to the ThemeState sections it depends on.
  *
- * - All components depend on `palette` (global colors like $primary-color)
+ * - All components depend on global sections (palette, globalColors, typography, spacing, layout)
  * - Each component depends on its own settings section
  *
  * When adding new components, add an entry here with its dependencies.
@@ -39,8 +51,8 @@ export const COMPONENT_DEPENDENCIES: Record<
   AvailableComponent,
   (keyof ThemeState)[]
 > = {
-  accordion: ['palette', 'accordion'],
-  button: ['palette', 'button'],
+  accordion: [...GLOBAL_SECTIONS, 'accordion'],
+  button: [...GLOBAL_SECTIONS, 'button'],
 };
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -92,11 +104,29 @@ export function hashComponentState(
 // ═══════════════════════════════════════════════════════════════════════════════
 
 /**
+ * Checks if any global section has changed between two theme states.
+ * Global sections affect all components, so any change triggers full recompilation.
+ */
+function hasGlobalSectionChanged(
+  oldState: ThemeState,
+  newState: ThemeState,
+): boolean {
+  for (const section of GLOBAL_SECTIONS) {
+    if (
+      JSON.stringify(oldState[section]) !== JSON.stringify(newState[section])
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
  * Determines which components need recompilation when ThemeState changes.
  *
  * Optimization logic:
  * 1. If oldState is null (first compilation), all components are affected
- * 2. If palette changed, all components are affected (global colors)
+ * 2. If any global section changed, all components are affected
  * 3. Otherwise, only components whose specific variables changed are affected
  *
  * @param oldState - Previous theme state (null for first compilation)
@@ -112,8 +142,8 @@ export function getAffectedComponents(
     return new Set(AVAILABLE_COMPONENTS);
   }
 
-  // Check palette changes (affects all components)
-  if (JSON.stringify(oldState.palette) !== JSON.stringify(newState.palette)) {
+  // Check global section changes (affects all components)
+  if (hasGlobalSectionChanged(oldState, newState)) {
     return new Set(AVAILABLE_COMPONENTS);
   }
 

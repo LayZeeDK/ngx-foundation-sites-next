@@ -32,8 +32,11 @@ const STORE_NAME = 'compiled-css';
  * Cache version prefix for invalidation.
  * Increment this when Sass sources change in a way that would
  * produce different CSS output for the same theme state.
+ *
+ * v1 → v2: Added full Foundation variable support (56 variables)
+ *          with LinkedColorValue types and reorganized ThemeState
  */
-const CACHE_VERSION = 'v1';
+const CACHE_VERSION = 'v2';
 
 /**
  * Maximum age for cached entries (7 days in milliseconds).
