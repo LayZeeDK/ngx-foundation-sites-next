@@ -109,7 +109,15 @@ let sassSources: Record<string, string> | null = null;
 
 /**
  * Loads Dart Sass from JSPM CDN.
- * Caches the module for subsequent compilations.
+ *
+ * Load priority:
+ * 1. In-memory cache (sassModule) - instant
+ * 2. Browser HTTP cache - fast (~50ms)
+ * 3. CDN fetch - ~200-300ms
+ *
+ * Note: We rely on browser HTTP caching rather than IndexedDB because ES modules
+ * from CDNs like JSPM have internal imports that can't be resolved from blob URLs.
+ * The browser's HTTP cache provides excellent caching for CDN resources.
  */
 async function loadSass(): Promise<SassModule> {
   if (sassModule) return sassModule;
@@ -117,7 +125,7 @@ async function loadSass(): Promise<SassModule> {
   console.log('[sass-worker] Loading Dart Sass from CDN...');
   const startTime = performance.now();
 
-  // Dynamic import in worker context
+  // Dynamic import in worker context - browser HTTP cache handles caching
   const module = await import(/* webpackIgnore: true */ SASS_CDN_URL);
 
   const loadTime = Math.round(performance.now() - startTime);

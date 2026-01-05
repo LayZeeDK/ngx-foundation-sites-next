@@ -98,6 +98,33 @@ let compilationPromise: Promise<string> | null = null;
 let compilingThemeStateHash: string | null = null;
 
 // ═══════════════════════════════════════════════════════════════════════════════
+// Coalescing State (Part 4 optimization)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * Pending theme state during coalescing.
+ * When a new request arrives during compilation, we buffer it here
+ * instead of starting another parallel compilation.
+ */
+let pendingCoalescedState: {
+  themeState: ThemeState;
+  options?: ApplyThemeOptions;
+} | null = null;
+
+/**
+ * Whether a coalesced apply loop is currently running.
+ */
+let isApplyLoopRunning = false;
+
+/**
+ * Statistics for coalescing (visible in console for debugging).
+ */
+let coalescingStats = {
+  coalesced: 0,
+  applied: 0,
+};
+
+// ═══════════════════════════════════════════════════════════════════════════════
 // DOM Management
 // ═══════════════════════════════════════════════════════════════════════════════
 
@@ -263,28 +290,10 @@ export interface ApplyThemeOptions {
 }
 
 /**
- * Applies a complete theme state by compiling (if needed) and injecting CSS.
- *
- * Provides fine-grained control over all Foundation variables via the
- * Theme addon panel in Storybook.
- *
- * @param themeState - Complete theme state with palette and component variables
- * @param options - Optional callbacks for compilation status
- * @returns Promise that resolves when theme is applied
- *
- * @example
- * ```typescript
- * import { applyThemeState } from './runtime-theme-injector';
- * import { getDefaultThemeState } from './theme-defaults';
- *
- * // Apply custom theme with status callbacks
- * await applyThemeState(
- *   { ...getDefaultThemeState(), palette: { ...getDefaultThemeState().palette, primary: '#ff6600' } },
- *   { onCompileStart: () => console.log('Compiling...'), onCompileEnd: () => console.log('Done!') }
- * );
- * ```
+ * Internal implementation of theme application (non-coalesced).
+ * Called by the coalescing wrapper.
  */
-export async function applyThemeState(
+async function applyThemeStateInternal(
   themeState: ThemeState,
   options?: ApplyThemeOptions,
 ): Promise<void> {
@@ -322,10 +331,74 @@ export async function applyThemeState(
   disablePrecompiledStyles();
 
   currentThemeStateHash = hash;
+  coalescingStats.applied++;
 
   const totalTime = Math.round(performance.now() - startTime);
   const cached = isCached ? ' (cached)' : '';
   console.log(`[nfs-theme] Theme state applied in ${totalTime}ms${cached}`);
+}
+
+/**
+ * Applies a complete theme state with compilation coalescing.
+ *
+ * **Coalescing behavior:** When multiple theme state changes arrive rapidly
+ * (e.g., during slider drag), this function buffers them and only compiles
+ * the latest state. This prevents redundant compilations:
+ *
+ * ```
+ * Without coalescing: 10→15→20→25 = 4 compilations
+ * With coalescing:    10→15→20→25 = 2 compilations (first + final)
+ * ```
+ *
+ * @param themeState - Complete theme state with palette and component variables
+ * @param options - Optional callbacks for compilation status
+ * @returns Promise that resolves when this theme state is applied OR coalesced
+ *
+ * @example
+ * ```typescript
+ * import { applyThemeState } from './runtime-theme-injector';
+ * import { getDefaultThemeState } from './theme-defaults';
+ *
+ * // Apply custom theme with status callbacks
+ * await applyThemeState(
+ *   { ...getDefaultThemeState(), palette: { ...getDefaultThemeState().palette, primary: '#ff6600' } },
+ *   { onCompileStart: () => console.log('Compiling...'), onCompileEnd: () => console.log('Done!') }
+ * );
+ * ```
+ */
+export async function applyThemeState(
+  themeState: ThemeState,
+  options?: ApplyThemeOptions,
+): Promise<void> {
+  // Always update the pending state (latest wins)
+  pendingCoalescedState = { themeState, options };
+
+  // If a compilation loop is already running, our state was coalesced
+  if (isApplyLoopRunning) {
+    coalescingStats.coalesced++;
+    console.log(
+      `[nfs-theme] Coalesced (${coalescingStats.coalesced} skipped, ${coalescingStats.applied} applied)`,
+    );
+    return;
+  }
+
+  // Start the apply loop
+  isApplyLoopRunning = true;
+
+  try {
+    // Process pending states until none remain
+    while (pendingCoalescedState !== null) {
+      const { themeState: stateToApply, options: optsToApply } =
+        pendingCoalescedState;
+
+      // Clear before compile - new requests during compile will set it again
+      pendingCoalescedState = null;
+
+      await applyThemeStateInternal(stateToApply, optsToApply);
+    }
+  } finally {
+    isApplyLoopRunning = false;
+  }
 }
 
 /**
@@ -355,7 +428,16 @@ export function clearThemeCache(): void {
   componentCache.clear();
   combinedCache.clear();
   lastAppliedState = null;
+  coalescingStats = { coalesced: 0, applied: 0 };
   console.log('[nfs-theme] Cache cleared');
+}
+
+/**
+ * Gets coalescing statistics for debugging/monitoring.
+ * @returns Object with coalesced and applied counts
+ */
+export function getCoalescingStats(): { coalesced: number; applied: number } {
+  return { ...coalescingStats };
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
