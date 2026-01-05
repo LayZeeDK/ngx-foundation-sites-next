@@ -3,11 +3,12 @@ import { setCompodocJson } from '@storybook/addon-docs/angular';
 import docJson from '../documentation.json';
 import { cleanCompodocJson } from '../src/lib/util-storybook/clean-compodoc-json';
 import {
-  applyTheme,
+  applyThemeState,
   initializeRuntimeTheming,
-  type ThemeName,
 } from '../src/storybook/runtime-theme-injector';
-import { THEME_TOOLBAR_ITEMS } from '../src/storybook/theme-presets';
+import { getDefaultThemeState } from '../src/storybook/theme-defaults';
+import type { ThemeState } from './addons/theme-panel/types';
+import { THEME_STATE_KEY } from './addons/theme-panel/constants';
 
 // Configure Compodoc documentation for automatic prop extraction
 // cleanCompodocJson removes placeholder strings like "___COMPODOC_EMPTY_LINE___"
@@ -83,7 +84,7 @@ if (module.hot) {
 // Runtime Theming (Storybook-only)
 // ═══════════════════════════════════════════════════════════════════════════════
 // Enables runtime Foundation theming in Storybook by compiling Sass in the browser.
-// Users can select preset themes from the toolbar dropdown.
+// Users can customize theme variables via the Theme addon panel.
 //
 // Architecture:
 // 1. Sass sources are bundled at build time (bundle-sass target)
@@ -97,8 +98,8 @@ initializeRuntimeTheming().catch((error) => {
   console.error('[nfs-theme] Failed to initialize:', error);
 });
 
-// Track current theme to detect changes
-let currentTheme: ThemeName | null = null;
+// Track current theme state hash to detect changes
+let currentThemeStateHash: string | null = null;
 
 // ═══════════════════════════════════════════════════════════════════════════════
 
@@ -117,19 +118,11 @@ const preview: Preview = {
         dynamicTitle: true,
       },
     },
-    nfsTheme: {
-      description: 'Foundation color theme',
-      toolbar: {
-        title: 'Theme',
-        icon: 'paintbrush',
-        items: THEME_TOOLBAR_ITEMS,
-        dynamicTitle: true,
-      },
-    },
+    // Theme state is managed by the Theme addon panel, not a toolbar dropdown
   },
   initialGlobals: {
     direction: 'ltr',
-    nfsTheme: 'default',
+    [THEME_STATE_KEY]: getDefaultThemeState(),
   },
   decorators: [
     // Apply direction based on toolbar selection
@@ -138,20 +131,20 @@ const preview: Preview = {
       document.documentElement.dir = direction;
       return story();
     },
-    // Apply theme based on toolbar selection
+    // Apply theme state from addon panel
     (story, context) => {
-      const themeName = (context.globals['nfsTheme'] || 'default') as ThemeName;
+      const themeState =
+        (context.globals[THEME_STATE_KEY] as ThemeState) ||
+        getDefaultThemeState();
+      const hash = JSON.stringify(themeState);
 
-      // Only apply if theme changed (prevents re-compilation on every render)
-      if (themeName !== currentTheme) {
-        currentTheme = themeName;
+      // Only apply if theme state changed (prevents re-compilation on every render)
+      if (hash !== currentThemeStateHash) {
+        currentThemeStateHash = hash;
         // Fire-and-forget: theme will be applied asynchronously
         // The visual update happens when the style element is updated
-        applyTheme(themeName).catch((error) => {
-          console.error(
-            `[nfs-theme] Failed to apply theme '${themeName}':`,
-            error,
-          );
+        applyThemeState(themeState).catch((error) => {
+          console.error('[nfs-theme] Failed to apply theme state:', error);
         });
       }
 
