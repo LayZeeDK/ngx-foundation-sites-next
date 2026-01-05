@@ -1226,104 +1226,149 @@ https://jspm.dev/npm:sass@1.69.5/_/*.js    (internal chunks)
 
 ---
 
-# Part 6: Local Sass Bundle (Attempted, Blocked)
+# Part 6: Local Sass Bundle (Implemented)
 
 ## Goal
 
-Pre-bundle Dart Sass locally using esbuild to eliminate CDN dependency entirely and reduce the ~120ms
-ES module evaluation overhead.
+Pre-bundle Dart Sass locally using esbuild to eliminate CDN dependency entirely and provide
+consistent, offline-capable Sass compilation.
 
 ---
 
 ## Status
 
-| Phase   | Status      | Notes                                      |
-| ------- | ----------- | ------------------------------------------ |
-| Phase 1 | ❌ Failed   | esm.sh CDN - Missing Node.js polyfills     |
-| Phase 2 | ❌ Blocked  | esbuild bundle - process.stdout non-configurable |
+| Phase   | Status    | Notes                                           |
+| ------- | --------- | ----------------------------------------------- |
+| Phase 1 | ❌ Failed | esm.sh CDN - Missing Node.js polyfills          |
+| Phase 2 | ✅ Done   | esbuild bundle with custom process polyfill     |
 
 ---
 
-## What We Tried
+## The Problem
 
-### Phase 1: Alternative CDN (esm.sh)
+Dart Sass (compiled via Dart2JS) checks `process.stdout.isTTY` for colored terminal output.
+The default `esbuild-plugin-polyfill-node` provides `process.stdout = undefined`, causing:
 
-**Approach:** Switch from `jspm.dev/sass` to `esm.sh/sass` for potentially smaller/minified build.
-
-**Result:** Failed with error:
 ```
-Dynamic require of 'url' is not supported
+TypeError: Cannot read properties of undefined (reading 'get$isTTY')
 ```
 
-**Root cause:** esm.sh doesn't include Node.js polyfills (url, path, fs, etc.) that Dart Sass requires
-for browser execution. JSPM provides these polyfills automatically.
+### Failed Approaches
+
+1. **esm.sh CDN**: Missing Node.js polyfills entirely
+2. **Default esbuild polyfill**: `stdout` defined as `undefined` with `configurable: false`
+3. **Banner/inject**: Runs before polyfill, then gets overwritten
 
 ---
 
-### Phase 2: Pre-bundle with esbuild
+## The Solution
 
-**Approach:** Create a local bundle using esbuild with `esbuild-plugin-polyfill-node` to include all
-Node.js polyfills.
+**Disable the polyfill plugin's process and provide our own complete polyfill with TTY stubs.**
 
-**Files created:**
-- `tools/bundle-sass-compiler.mjs` - esbuild bundler script
-- `tools/sass-entry.mjs` - Wrapper to set up TTY polyfills before Sass loads
-- `.storybook/static/sass-browser.mjs` - Output bundle (~3.1MB)
+### Key Changes
 
-**Result:** Failed with error:
-```
-Cannot redefine property: stdout
-```
-
-**Root cause:** The polyfill plugin creates `process.stdout` with `configurable: false`:
+**1. Disable default process polyfill** (`bundle-sass-compiler.mjs`):
 ```javascript
-Object.defineProperty(process, 'stdout', {
-  get: () => undefined,  // or minimal stub
-  configurable: false,   // ← BLOCKS our TTY shim
-});
+polyfillNode({
+  polyfills: {
+    // ... other polyfills
+    process: false,  // DISABLED - we provide our own
+  },
+})
 ```
 
-This prevents us from adding the TTY stub that Dart Sass requires (`process.stdout.isTTY`).
+**2. Provide custom process polyfill** (`sass-entry.mjs`):
+```javascript
+const createTTYStub = () => ({
+  isTTY: false,
+  write: () => true,
+  // ... other TTY methods
+});
 
-**Attempted workarounds:**
-1. ❌ `globalThis.process.stdout = ttyStub` - "Cannot set property stdout"
-2. ❌ `Object.defineProperty(globalThis.process, 'stdout', {...})` - "Cannot redefine property"
-3. ❌ esbuild `inject` option - Runs after polyfill, same error
-4. ❌ esbuild `banner` option - Runs before polyfill creates process, then overwritten
+globalThis.process = {
+  stdout: createTTYStub(),
+  stderr: createTTYStub(),
+  stdin: createTTYStub(),
+  // ... complete Node.js process API
+};
 
----
-
-## Why JSPM CDN Works
-
-JSPM's CDN build includes different polyfills that provide a working `process.stdout.isTTY`:
-- Uses a more complete process polyfill
-- Sets up stdout/stderr with proper TTY stubs
-- The polyfill is configurable (can be overridden if needed)
-
----
-
-## Conclusion
-
-**JSPM CDN + Service Worker caching remains the optimal solution:**
-- SW cache eliminates network latency
-- ~120ms module evaluation is acceptable
-- Works reliably without polyfill conflicts
-- No build-time complexity
-
-**Future options to revisit:**
-1. **Wait for esbuild-plugin-polyfill-node update** - May add option to configure stdout/stderr
-2. **Fork polyfill plugin** - Create custom version with configurable properties
-3. **WebAssembly Sass** - If Dart Sass ever provides a WASM build
-4. **Sass-embedded** - Currently Node.js only, but browser support may come
+export * from 'sass';
+```
 
 ---
 
-## Files Created (May Remove)
+## Implementation Results (2026-01-05)
 
-| File                                    | Purpose                        | Status           |
-| --------------------------------------- | ------------------------------ | ---------------- |
-| `tools/bundle-sass-compiler.mjs`        | esbuild bundler script         | Keep for future  |
-| `tools/sass-entry.mjs`                  | TTY polyfill wrapper           | Keep for future  |
-| `tools/sass-browser-shim.mjs`           | Alternative polyfill (unused)  | Can remove       |
-| `.storybook/static/sass-browser.mjs`    | Built bundle (non-functional)  | Keep for future  |
-| `project.json` (bundle-sass-compiler)   | Build target                   | Keep for future  |
+✅ **Local Sass bundle working successfully**
+
+### Performance
+
+| Metric           | JSPM CDN (cached) | Local Bundle | Notes                    |
+| ---------------- | ----------------- | ------------ | ------------------------ |
+| Sass module load | ~139ms            | ~145-150ms   | Comparable               |
+| Worker pool init | ~157ms            | ~177ms       | Slightly slower          |
+| Total compile    | ~1500ms           | ~1500ms      | Same                     |
+
+### Advantages of Local Bundle
+
+1. **No CDN dependency** - Works offline, no network required
+2. **No Service Worker needed** - Simpler architecture
+3. **Consistent performance** - No cache cold-start issues
+4. **Build-time caching** - Nx caches the bundle, rebuilds only when Sass version changes
+
+### Console Output
+
+```
+[sass-worker] Loading Sass from local bundle...
+[sass-worker] Sass loaded from local bundle in 148ms
+[sass-worker] accordion compiled in 514ms
+[sass-worker] button compiled in 1359ms
+[nfs-theme] Theme state applied in 1504ms
+```
+
+---
+
+## Files Summary
+
+| File                                    | Purpose                                    |
+| --------------------------------------- | ------------------------------------------ |
+| `tools/bundle-sass-compiler.mjs`        | esbuild bundler script                     |
+| `tools/sass-entry.mjs`                  | Custom process polyfill + Sass re-export   |
+| `.storybook/static/sass-browser.mjs`    | Built bundle (~3.1MB)                      |
+| `project.json` (bundle-sass-compiler)   | Nx build target with caching               |
+
+---
+
+## How It Works
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  BUILD TIME (nx bundle-sass-compiler)                           │
+├─────────────────────────────────────────────────────────────────┤
+│  1. sass-entry.mjs sets up globalThis.process with TTY stubs    │
+│  2. sass-entry.mjs imports and re-exports Sass                  │
+│  3. esbuild bundles everything with Node.js polyfills           │
+│  4. Output: .storybook/static/sass-browser.mjs (~3.1MB)         │
+│  5. Nx caches the output (rebuilds only when inputs change)     │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  RUNTIME (Storybook)                                            │
+├─────────────────────────────────────────────────────────────────┤
+│  1. Worker imports /sass-browser.mjs (served from static/)      │
+│  2. Browser parses and evaluates bundle (~145ms)                │
+│  3. Sass compileStringAsync() works (has process.stdout.isTTY)  │
+│  4. Falls back to JSPM CDN if local bundle fails                │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Verification
+
+- ✅ Local bundle loads in ~145-150ms
+- ✅ Sass compilation works without TTY errors
+- ✅ Theme panel interactions work correctly
+- ✅ Falls back to JSPM CDN if local bundle unavailable
+- ✅ Nx caching works for bundle-sass-compiler target

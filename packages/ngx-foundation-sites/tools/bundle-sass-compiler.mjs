@@ -52,9 +52,10 @@ async function bundle() {
       sourcemap: false,
 
       // Node.js polyfills for browser
+      // NOTE: We disable the process polyfill and provide our own in sass-entry.mjs
+      // because the default polyfill has stdout/stderr as undefined, which breaks Dart Sass
       plugins: [
         polyfillNode({
-          // Polyfill these Node.js built-ins
           polyfills: {
             url: true,
             path: true,
@@ -64,7 +65,7 @@ async function bundle() {
             stream: true,
             events: true,
             assert: true,
-            process: true,
+            process: false, // DISABLED - we provide our own with TTY stubs
           },
         }),
       ],

@@ -126,25 +126,23 @@ async function loadSass(): Promise<SassModule> {
 
   const startTime = performance.now();
 
-  // TODO: Re-enable local bundle once TTY polyfill issue is resolved
-  // The esbuild polyfill creates process.stdout with configurable: false,
-  // preventing our TTY shim from working. For now, use JSPM CDN directly.
-  //
-  // try {
-  //   console.log('[sass-worker] Loading Sass from local bundle...');
-  //   const module = await import(/* webpackIgnore: true */ SASS_LOCAL_URL);
-  //   const loadTime = Math.round(performance.now() - startTime);
-  //   console.log(`[sass-worker] Sass loaded from local bundle in ${loadTime}ms`);
-  //   sassModule = extractSassModule(module);
-  //   return sassModule;
-  // } catch (localError) {
-  //   console.warn(
-  //     '[sass-worker] Local bundle not available, falling back to CDN',
-  //     localError instanceof Error ? localError.message : localError,
-  //   );
-  // }
+  // Try local bundle first (faster, no CDN dependency)
+  // The local bundle includes our custom process polyfill with TTY stubs
+  try {
+    console.log('[sass-worker] Loading Sass from local bundle...');
+    const module = await import(/* webpackIgnore: true */ SASS_LOCAL_URL);
+    const loadTime = Math.round(performance.now() - startTime);
+    console.log(`[sass-worker] Sass loaded from local bundle in ${loadTime}ms`);
+    sassModule = extractSassModule(module);
+    return sassModule;
+  } catch (localError) {
+    console.warn(
+      '[sass-worker] Local bundle not available, falling back to CDN',
+      localError instanceof Error ? localError.message : localError,
+    );
+  }
 
-  // Use JSPM CDN (includes proper Node.js polyfills)
+  // Fallback to JSPM CDN
   console.log('[sass-worker] Loading Dart Sass from CDN...');
   const module = await import(/* webpackIgnore: true */ SASS_CDN_URL);
   const loadTime = Math.round(performance.now() - startTime);
