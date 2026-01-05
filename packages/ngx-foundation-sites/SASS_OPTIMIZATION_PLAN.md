@@ -641,8 +641,208 @@ Reduce recompilation time for single-component variable changes by implementing 
 
 ---
 
+# Part 4: Compilation Coalescing + IndexedDB Sass Caching (Planned)
+
+## Goal
+
+Reduce Storybook Sass compilation overhead by **35-45%** through:
+
+1. **Coalescing**: Skip redundant compilations during rapid interactions
+2. **IndexedDB caching**: Eliminate Sass CDN load latency for returning users
+
+---
+
+## Status
+
+| Phase   | Status  | Notes                         |
+| ------- | ------- | ----------------------------- |
+| Phase 1 | Pending | Compilation coalescing        |
+| Phase 2 | Pending | IndexedDB Sass module caching |
+
+---
+
+## Part A: Compilation Coalescing
+
+### Problem
+
+Current flow during rapid slider drag (10 → 15 → 20 → 25):
+
+```
+t=0ms:    User sets 10, debounce starts
+t=300ms:  Debounce fires, compile(10) starts
+t=350ms:  User sets 15, debounce starts
+t=650ms:  Debounce fires, compile(15) starts (while compile(10) still running!)
+...
+Result: 4 compilations, only last one matters
+```
+
+### Solution
+
+Add a **coalescing buffer** in `runtime-theme-injector.ts`:
+
+```typescript
+let pendingState: ThemeState | null = null;
+let isCompiling = false;
+
+async function applyThemeStateCoalesced(themeState: ThemeState, options?: ApplyThemeOptions): Promise<void> {
+  // Always update pending state
+  pendingState = themeState;
+
+  // If compilation in progress, it will pick up pendingState when done
+  if (isCompiling) {
+    return;
+  }
+
+  isCompiling = true;
+
+  try {
+    while (pendingState !== null) {
+      const stateToCompile = pendingState;
+      pendingState = null; // Clear before compile (new requests will set it again)
+
+      await applyThemeStateInternal(stateToCompile, options);
+    }
+  } finally {
+    isCompiling = false;
+  }
+}
+```
+
+**Result**: Same slider drag now does 2 compilations max (first + final).
+
+### Expected Impact
+
+| Scenario                 | Before     | After      | Improvement   |
+| ------------------------ | ---------- | ---------- | ------------- |
+| Rapid slider (5 changes) | 5 compiles | 2 compiles | **60% fewer** |
+
+### Files to Modify
+
+| File                                      | Change                                          |
+| ----------------------------------------- | ----------------------------------------------- |
+| `src/storybook/runtime-theme-injector.ts` | Add coalescing wrapper around `applyThemeState` |
+
+---
+
+## Part B: IndexedDB Sass Module Caching
+
+### Problem
+
+Each worker loads Dart Sass from JSPM CDN:
+
+```typescript
+// sass-compiler.worker.ts
+const sass = await import('https://jspm.dev/sass');
+```
+
+Even with HTTP caching, there's:
+
+- ~200-300ms parse time per worker
+- Network latency for cache validation
+- Cold cache on new browser profiles
+
+### Solution
+
+Cache the Sass module blob in IndexedDB:
+
+```typescript
+// New: sass-indexeddb-cache.ts
+const DB_NAME = 'nfs-sass-cache';
+const STORE_NAME = 'modules';
+const SASS_KEY = 'sass-module';
+const SASS_VERSION = '1.83.0'; // Version to cache
+
+export async function getCachedSassModule(): Promise<Blob | null> {
+  const db = await openDB();
+  const cached = await db.get(STORE_NAME, SASS_KEY);
+
+  if (cached && cached.version === SASS_VERSION) {
+    return cached.blob;
+  }
+  return null;
+}
+
+export async function cacheSassModule(blob: Blob): Promise<void> {
+  const db = await openDB();
+  await db.put(
+    STORE_NAME,
+    {
+      version: SASS_VERSION,
+      blob,
+      timestamp: Date.now(),
+    },
+    SASS_KEY,
+  );
+}
+```
+
+**Worker changes:**
+
+```typescript
+// sass-compiler.worker.ts - modified init
+async function loadSass(): Promise<typeof Sass> {
+  // Try IndexedDB cache first
+  const cachedBlob = await getCachedSassModule();
+  if (cachedBlob) {
+    const url = URL.createObjectURL(cachedBlob);
+    const sass = await import(/* webpackIgnore: true */ url);
+    URL.revokeObjectURL(url);
+    return sass;
+  }
+
+  // Fallback to CDN, then cache
+  const response = await fetch('https://jspm.dev/sass');
+  const blob = await response.blob();
+  await cacheSassModule(blob);
+
+  const url = URL.createObjectURL(blob);
+  const sass = await import(/* webpackIgnore: true */ url);
+  URL.revokeObjectURL(url);
+  return sass;
+}
+```
+
+### Expected Impact
+
+| Scenario            | Before        | After        | Improvement    |
+| ------------------- | ------------- | ------------ | -------------- |
+| Returning user init | ~300ms/worker | ~50ms/worker | **80% faster** |
+
+### Files to Create/Modify
+
+| File                                    | Change                                         |
+| --------------------------------------- | ---------------------------------------------- |
+| `src/storybook/sass-indexeddb-cache.ts` | **Create** - IndexedDB wrapper for Sass module |
+| `src/storybook/sass-compiler.worker.ts` | **Modify** - Load from IndexedDB first         |
+
+---
+
+## Combined Expected Results
+
+| Scenario                 | Before        | After        | Improvement    |
+| ------------------------ | ------------- | ------------ | -------------- |
+| Rapid slider (5 changes) | 5 compiles    | 2 compiles   | **60% fewer**  |
+| Returning user init      | ~300ms/worker | ~50ms/worker | **80% faster** |
+| Overall perceived speed  | Laggy sliders | Responsive   | UX win         |
+
+---
+
+## Verification Plan
+
+1. **Lint/Format**: `npm run lint && npm run format:check`
+2. **Build**: `npx nx build-storybook ngx-foundation-sites`
+3. **Manual Tests**:
+   - Drag slider rapidly → verify console shows ~2 compiles, not 5+
+   - Clear browser data → first load caches Sass
+   - Reload page → verify "loaded from IndexedDB" in console
+4. **Benchmark**: Compare before/after metrics in Sass Benchmark story
+
+---
+
 ## Future Considerations
 
+- **CSS Tree-Shaking**: Post-process compiled CSS to remove unused selectors (25-40% smaller output)
+- **Variable-Level Dependencies**: Track finer-grained dependencies for even more selective caching
+- **Predictive Warm-Start**: Pre-compile common theme variants during initialization
 - **Incremental compilation**: Sass 2.0 may support incremental builds
 - **SharedArrayBuffer**: If COOP/COEP headers added, could share Sass module between workers
-- **More granular caching**: Cache at Sass mixin level for even finer control
