@@ -1223,3 +1223,107 @@ https://jspm.dev/npm:sass@1.69.5/_/*.js    (internal chunks)
 | `src/storybook/service-worker-registration.ts` | **Created** - Registration utility    |
 | `.storybook/main.ts`                           | **Modified** - Added staticDirs entry |
 | `.storybook/preview.ts`                        | **Modified** - Register SW on load    |
+
+---
+
+# Part 6: Local Sass Bundle (Attempted, Blocked)
+
+## Goal
+
+Pre-bundle Dart Sass locally using esbuild to eliminate CDN dependency entirely and reduce the ~120ms
+ES module evaluation overhead.
+
+---
+
+## Status
+
+| Phase   | Status      | Notes                                      |
+| ------- | ----------- | ------------------------------------------ |
+| Phase 1 | ❌ Failed   | esm.sh CDN - Missing Node.js polyfills     |
+| Phase 2 | ❌ Blocked  | esbuild bundle - process.stdout non-configurable |
+
+---
+
+## What We Tried
+
+### Phase 1: Alternative CDN (esm.sh)
+
+**Approach:** Switch from `jspm.dev/sass` to `esm.sh/sass` for potentially smaller/minified build.
+
+**Result:** Failed with error:
+```
+Dynamic require of 'url' is not supported
+```
+
+**Root cause:** esm.sh doesn't include Node.js polyfills (url, path, fs, etc.) that Dart Sass requires
+for browser execution. JSPM provides these polyfills automatically.
+
+---
+
+### Phase 2: Pre-bundle with esbuild
+
+**Approach:** Create a local bundle using esbuild with `esbuild-plugin-polyfill-node` to include all
+Node.js polyfills.
+
+**Files created:**
+- `tools/bundle-sass-compiler.mjs` - esbuild bundler script
+- `tools/sass-entry.mjs` - Wrapper to set up TTY polyfills before Sass loads
+- `.storybook/static/sass-browser.mjs` - Output bundle (~3.1MB)
+
+**Result:** Failed with error:
+```
+Cannot redefine property: stdout
+```
+
+**Root cause:** The polyfill plugin creates `process.stdout` with `configurable: false`:
+```javascript
+Object.defineProperty(process, 'stdout', {
+  get: () => undefined,  // or minimal stub
+  configurable: false,   // ← BLOCKS our TTY shim
+});
+```
+
+This prevents us from adding the TTY stub that Dart Sass requires (`process.stdout.isTTY`).
+
+**Attempted workarounds:**
+1. ❌ `globalThis.process.stdout = ttyStub` - "Cannot set property stdout"
+2. ❌ `Object.defineProperty(globalThis.process, 'stdout', {...})` - "Cannot redefine property"
+3. ❌ esbuild `inject` option - Runs after polyfill, same error
+4. ❌ esbuild `banner` option - Runs before polyfill creates process, then overwritten
+
+---
+
+## Why JSPM CDN Works
+
+JSPM's CDN build includes different polyfills that provide a working `process.stdout.isTTY`:
+- Uses a more complete process polyfill
+- Sets up stdout/stderr with proper TTY stubs
+- The polyfill is configurable (can be overridden if needed)
+
+---
+
+## Conclusion
+
+**JSPM CDN + Service Worker caching remains the optimal solution:**
+- SW cache eliminates network latency
+- ~120ms module evaluation is acceptable
+- Works reliably without polyfill conflicts
+- No build-time complexity
+
+**Future options to revisit:**
+1. **Wait for esbuild-plugin-polyfill-node update** - May add option to configure stdout/stderr
+2. **Fork polyfill plugin** - Create custom version with configurable properties
+3. **WebAssembly Sass** - If Dart Sass ever provides a WASM build
+4. **Sass-embedded** - Currently Node.js only, but browser support may come
+
+---
+
+## Files Created (May Remove)
+
+| File                                    | Purpose                        | Status           |
+| --------------------------------------- | ------------------------------ | ---------------- |
+| `tools/bundle-sass-compiler.mjs`        | esbuild bundler script         | Keep for future  |
+| `tools/sass-entry.mjs`                  | TTY polyfill wrapper           | Keep for future  |
+| `tools/sass-browser-shim.mjs`           | Alternative polyfill (unused)  | Can remove       |
+| `.storybook/static/sass-browser.mjs`    | Built bundle (non-functional)  | Keep for future  |
+| `project.json` (bundle-sass-compiler)   | Build target                   | Keep for future  |

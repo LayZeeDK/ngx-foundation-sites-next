@@ -93,6 +93,9 @@ interface SassNumber extends SassValue {
 // Constants
 // ═══════════════════════════════════════════════════════════════════════════════
 
+// Pre-bundled Sass (served from Storybook static directory)
+// Falls back to JSPM CDN if local bundle not available
+const SASS_LOCAL_URL = '/sass-browser.mjs';
 const SASS_CDN_URL = 'https://jspm.dev/sass';
 const BUNDLE_SCHEME = 'nfs-bundle:';
 
@@ -108,42 +111,66 @@ let sassSources: Record<string, string> | null = null;
 // ═══════════════════════════════════════════════════════════════════════════════
 
 /**
- * Loads Dart Sass from JSPM CDN.
+ * Loads Dart Sass, preferring local pre-bundled version.
  *
  * Load priority:
  * 1. In-memory cache (sassModule) - instant
- * 2. Browser HTTP cache - fast (~50ms)
- * 3. CDN fetch - ~200-300ms
+ * 2. Local pre-bundled Sass (/sass-browser.mjs) - fast (~50-80ms)
+ * 3. JSPM CDN fallback - slower (~120-300ms)
  *
- * Note: We rely on browser HTTP caching rather than IndexedDB because ES modules
- * from CDNs like JSPM have internal imports that can't be resolved from blob URLs.
- * The browser's HTTP cache provides excellent caching for CDN resources.
+ * The local bundle is created by tools/bundle-sass-compiler.mjs and includes
+ * Node.js polyfills for browser compatibility.
  */
 async function loadSass(): Promise<SassModule> {
   if (sassModule) return sassModule;
 
-  console.log('[sass-worker] Loading Dart Sass from CDN...');
   const startTime = performance.now();
 
-  // Dynamic import in worker context - browser HTTP cache handles caching
+  // TODO: Re-enable local bundle once TTY polyfill issue is resolved
+  // The esbuild polyfill creates process.stdout with configurable: false,
+  // preventing our TTY shim from working. For now, use JSPM CDN directly.
+  //
+  // try {
+  //   console.log('[sass-worker] Loading Sass from local bundle...');
+  //   const module = await import(/* webpackIgnore: true */ SASS_LOCAL_URL);
+  //   const loadTime = Math.round(performance.now() - startTime);
+  //   console.log(`[sass-worker] Sass loaded from local bundle in ${loadTime}ms`);
+  //   sassModule = extractSassModule(module);
+  //   return sassModule;
+  // } catch (localError) {
+  //   console.warn(
+  //     '[sass-worker] Local bundle not available, falling back to CDN',
+  //     localError instanceof Error ? localError.message : localError,
+  //   );
+  // }
+
+  // Use JSPM CDN (includes proper Node.js polyfills)
+  console.log('[sass-worker] Loading Dart Sass from CDN...');
   const module = await import(/* webpackIgnore: true */ SASS_CDN_URL);
-
   const loadTime = Math.round(performance.now() - startTime);
-  console.log(`[sass-worker] Sass loaded in ${loadTime}ms`);
+  console.log(`[sass-worker] Sass loaded from CDN in ${loadTime}ms`);
+  sassModule = extractSassModule(module);
+  return sassModule;
+}
 
-  // Handle different module structures (ESM vs CommonJS default export)
-  if (typeof module.compileStringAsync === 'function') {
-    sassModule = module as SassModule;
-  } else if (
-    module.default &&
-    typeof module.default.compileStringAsync === 'function'
-  ) {
-    sassModule = module.default as SassModule;
-  } else {
-    throw new Error('Sass module structure not recognized');
+/**
+ * Extracts the Sass module from different export formats.
+ */
+function extractSassModule(module: unknown): SassModule {
+  const mod = module as Record<string, unknown>;
+
+  // ESM direct export
+  if (typeof mod['compileStringAsync'] === 'function') {
+    return mod as unknown as SassModule;
   }
 
-  return sassModule;
+  // CommonJS default export
+  const defaultExport = mod['default'] as Record<string, unknown> | undefined;
+  if (defaultExport && typeof defaultExport['compileStringAsync'] === 'function') {
+    return defaultExport as unknown as SassModule;
+  }
+
+  throw new Error('Sass module structure not recognized');
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
