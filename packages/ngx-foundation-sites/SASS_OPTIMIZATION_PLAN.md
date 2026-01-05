@@ -859,4 +859,293 @@ Result: 2 compilations (coalescing caught the overlap)
 - **Variable-Level Dependencies**: Track finer-grained dependencies for even more selective caching
 - **Predictive Warm-Start**: Pre-compile common theme variants during initialization
 - **Incremental compilation**: Sass 2.0 may support incremental builds
-- **Service Worker Caching**: Could intercept Sass CDN requests for true offline support
+
+---
+
+# Part 5: Service Worker Caching for Sass CDN (Planned)
+
+## Goal
+
+Add Service Worker caching for the Sass in-browser npm module (`https://jspm.dev/sass`) to reduce
+module loading latency from ~50-70ms (HTTP cache) to near-instant (~0-5ms), shared across all Sass
+compiler workers.
+
+---
+
+## Status
+
+| Phase   | Status  | Notes                         |
+| ------- | ------- | ----------------------------- |
+| Phase 1 | Planned | Service Worker implementation |
+| Phase 2 | Planned | Registration and integration  |
+
+---
+
+## Why This Works (Unlike IndexedDB)
+
+**IndexedDB caching failed** (see Part 4B) because ES modules loaded from blob URLs can't resolve
+internal imports like `/npm:immutable@4`.
+
+**Service Workers solve this** by intercepting requests at the network level and returning cached
+responses with the **original URL intact**. The key difference:
+
+| Approach             | URL Origin         | Internal Imports                 | Result   |
+| -------------------- | ------------------ | -------------------------------- | -------- |
+| IndexedDB + Blob URL | `blob://...`       | Can't resolve `/npm:immutable@4` | ❌ Fails |
+| Service Worker Cache | `https://jspm.dev` | Resolves correctly               | ✅ Works |
+
+---
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    STORYBOOK PREVIEW                            │
+│  preview.ts → Registers jspm-sw.js                              │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+              Service Worker Controls All Threads
+                              │
+        ┌─────────────────────┴─────────────────────┐
+        ▼                                           ▼
+┌───────────────────┐                   ┌───────────────────────┐
+│    Main Thread    │                   │    Web Worker Pool    │
+└───────────────────┘                   │  (sass-compiler.worker)│
+                                        │  import(jspm.dev/sass) │
+                                        └───────────────────────┘
+                                                    │
+                                    Service Worker Intercept
+                                                    ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                      SERVICE WORKER (jspm-sw.js)                │
+│  • Filter: Only intercept jspm.dev/* URLs                       │
+│  • Strategy: Cache-First with Network Fallback                  │
+│  • Cache Name: 'jspm-cdn-v1'                                    │
+└─────────────────────────────────────────────────────────────────┘
+                              │ (Cache miss only)
+                              ▼
+                     https://jspm.dev/sass
+```
+
+**Key insight**: Service Workers can intercept requests from Web Workers. This means all Sass
+compiler workers share the same SW cache.
+
+---
+
+## Implementation Plan
+
+### Phase 1: Service Worker Script
+
+**Create**: `.storybook/sw-public/jspm-sw.js`
+
+```javascript
+// Service Worker for caching JSPM CDN modules (Dart Sass)
+const CACHE_NAME = 'jspm-cdn-v1';
+const JSPM_ORIGIN = 'https://jspm.dev';
+
+self.addEventListener('install', (event) => {
+  console.log('[jspm-sw] Installing...');
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', (event) => {
+  console.log('[jspm-sw] Activating...');
+  event.waitUntil(
+    caches
+      .keys()
+      .then((cacheNames) => {
+        return Promise.all(cacheNames.filter((name) => name.startsWith('jspm-cdn-') && name !== CACHE_NAME).map((name) => caches.delete(name)));
+      })
+      .then(() => self.clients.claim()),
+  );
+});
+
+self.addEventListener('fetch', (event) => {
+  const url = new URL(event.request.url);
+
+  // Only intercept JSPM CDN requests
+  if (url.origin !== JSPM_ORIGIN) return;
+
+  console.log(`[jspm-sw] Intercepting: ${url.pathname}`);
+
+  event.respondWith(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.match(event.request).then((cachedResponse) => {
+        if (cachedResponse) {
+          console.log(`[jspm-sw] Cache hit: ${url.pathname}`);
+          return cachedResponse;
+        }
+
+        console.log(`[jspm-sw] Cache miss, fetching: ${url.pathname}`);
+        return fetch(event.request).then((networkResponse) => {
+          if (networkResponse.ok) {
+            cache.put(event.request, networkResponse.clone());
+          }
+          return networkResponse;
+        });
+      });
+    }),
+  );
+});
+```
+
+**Design decisions**:
+
+- **Cache-first**: JSPM serves versioned, immutable npm packages
+- **URL filtering**: Only intercept `jspm.dev/*` to avoid HMR interference
+- **No Workbox**: Simple enough for manual implementation (~40 lines)
+- **Versioned cache name**: Enables clean invalidation
+
+---
+
+### Phase 2: Registration and Integration
+
+**Create**: `src/storybook/service-worker-registration.ts`
+
+```typescript
+let registrationPromise: Promise<ServiceWorkerRegistration | null> | null = null;
+
+export async function registerJspmServiceWorker(): Promise<ServiceWorkerRegistration | null> {
+  if (registrationPromise) return registrationPromise;
+  registrationPromise = doRegister();
+  return registrationPromise;
+}
+
+async function doRegister(): Promise<ServiceWorkerRegistration | null> {
+  if (!('serviceWorker' in navigator)) {
+    console.warn('[jspm-sw] Service Workers not supported');
+    return null;
+  }
+
+  try {
+    const registration = await navigator.serviceWorker.register('/jspm-sw.js', { scope: '/' });
+    await navigator.serviceWorker.ready;
+    console.log('[jspm-sw] Service worker ready');
+    return registration;
+  } catch (error) {
+    console.error('[jspm-sw] Registration failed:', error);
+    return null;
+  }
+}
+
+export function isJspmServiceWorkerActive(): boolean {
+  return navigator.serviceWorker?.controller !== null;
+}
+
+export async function clearJspmCache(): Promise<void> {
+  const cacheNames = await caches.keys();
+  await Promise.all(cacheNames.filter((name) => name.startsWith('jspm-cdn-')).map((name) => caches.delete(name)));
+  console.log('[jspm-sw] Cache cleared');
+}
+```
+
+**Modify**: `.storybook/main.ts`
+
+```typescript
+staticDirs: [
+  { from: '../dist-css', to: '/' },
+  { from: './sw-public', to: '/' },  // NEW: Serve SW at root scope
+],
+```
+
+**Modify**: `.storybook/preview.ts`
+
+```typescript
+import { registerJspmServiceWorker } from '../src/storybook/service-worker-registration';
+
+// Register SW first (fire-and-forget)
+registerJspmServiceWorker().catch(console.warn);
+
+// Then initialize runtime theming (existing code)
+initializeRuntimeTheming().catch(console.error);
+```
+
+---
+
+## Files Summary
+
+| File                                           | Action | Purpose                  |
+| ---------------------------------------------- | ------ | ------------------------ |
+| `.storybook/sw-public/jspm-sw.js`              | Create | Service Worker script    |
+| `src/storybook/service-worker-registration.ts` | Create | Registration utility     |
+| `.storybook/main.ts`                           | Modify | Add staticDirs entry     |
+| `.storybook/preview.ts`                        | Modify | Register SW before theme |
+
+---
+
+## Expected Performance
+
+| Metric                       | Before (HTTP Cache) | After (SW Cache) | Improvement |
+| ---------------------------- | ------------------- | ---------------- | ----------- |
+| Sass module load             | 50-70ms             | 0-5ms            | **~90%**    |
+| Worker pool init (2 workers) | ~130ms              | ~10ms            | **~92%**    |
+| Cold start (first ever)      | ~200ms              | ~200ms           | Same        |
+
+---
+
+## Cache Invalidation Strategy
+
+1. **Primary**: Bump `CACHE_NAME` version (`v1` → `v2`) in `jspm-sw.js`
+2. **Development**: Call `clearJspmCache()` from browser console
+3. **Automatic**: `activate` event deletes old versioned caches
+
+---
+
+## Testing Verification
+
+### Manual Testing (DevTools)
+
+1. Start Storybook: `npm run storybook`
+2. DevTools → Application → Service Workers → Verify `jspm-sw.js` active
+3. DevTools → Application → Cache Storage → Verify `jspm-cdn-v1` exists
+4. Navigate to "Dev Tools / Sass Benchmark" → Run benchmark
+5. Check console logs for `[jspm-sw] Cache hit` messages
+
+### Programmatic Testing (Playwright MCP)
+
+Use Playwright MCP tools for automated verification without DevTools UI:
+
+**1. Verify Service Worker Registration**
+
+```javascript
+// browser_evaluate
+const registration = await navigator.serviceWorker.getRegistration('/');
+return {
+  active: registration?.active?.state, // 'activated'
+  controlling: navigator.serviceWorker.controller !== null,
+};
+```
+
+**2. Verify Cache Contents**
+
+```javascript
+// browser_evaluate
+const cacheNames = await caches.keys();
+const hasJspmCache = cacheNames.includes('jspm-cdn-v1');
+let cachedUrls = [];
+if (hasJspmCache) {
+  const cache = await caches.open('jspm-cdn-v1');
+  const requests = await cache.keys();
+  cachedUrls = requests.map((r) => r.url);
+}
+return { cacheNames, hasJspmCache, cachedUrls };
+```
+
+**3. Verify Console Logs**
+
+```
+// browser_console_messages (level: 'info')
+// Look for: "[jspm-sw] Cache hit: /sass"
+```
+
+**4. Verify Network Interception**
+
+```
+// browser_network_requests
+// JSPM requests should show as served from Service Worker
+// (status 200, but from SW cache, not network)
+```
+
+### CI Testing
+
+Run `npm run ci` for full test suite (lint, test, build, e2e)
