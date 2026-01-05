@@ -315,11 +315,20 @@ All criteria verified and passing:
 
 ---
 
-## Phase 2: Full Implementation (Future)
+## Phase 2: Full Implementation
 
-After POC validation, expand to full feature set.
+Replace Phase 1 POC (preset theme dropdown) with a custom Storybook addon panel providing fine-grained control over Foundation Sass variables.
 
-### Full Architecture
+### Key Decisions
+
+- **No preset themes** - Custom variable controls with Foundation defaults only
+- **Split sliders for spacing** - Multi-value properties use vertical/horizontal sliders
+- **Export options** - Both copy-to-clipboard AND file download
+- **Debouncing** - 300ms debounce on variable changes
+
+---
+
+### Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -339,276 +348,254 @@ After POC validation, expand to full feature set.
 │           │                              ▲                      │
 │           ▼                              │                      │
 │  ┌─────────────────────────────────────────────────────────┐   │
-│  │              Browser Sass Compiler Service              │   │
-│  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  │   │
-│  │  │ User Vars    │  │ Sass Bundle  │  │ Dart Sass    │  │   │
-│  │  │ (globals)    │  │ (static JS)  │  │ (JSPM CDN)   │  │   │
-│  │  └──────────────┘  └──────────────┘  └──────────────┘  │   │
+│  │              Browser Sass Compiler                       │   │
+│  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐   │   │
+│  │  │ Theme State  │  │ Sass Bundle  │  │ Dart Sass    │   │   │
+│  │  │ (globals)    │  │ (static JS)  │  │ (JSPM CDN)   │   │   │
+│  │  └──────────────┘  └──────────────┘  └──────────────┘   │   │
 │  └─────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-### Full Implementation Steps
+---
 
-#### Step 1: Sass Source Bundler (Build-time Tool)
+### Files to Create
 
-**File**: `packages/ngx-foundation-sites/tools/bundle-sass-sources.mjs`
+#### Type Definitions
 
-Create a Node.js script that:
-
-1. Reads all required Sass files (Foundation + library)
-2. Exports them as a JavaScript module with file paths as keys
-3. Runs as part of the Storybook build
-
-**Output**: `packages/ngx-foundation-sites/src/storybook/sass-bundle.generated.ts`
+**File**: `.storybook/addons/theme-panel/types.ts`
 
 ```typescript
-export const SASS_SOURCES: Record<string, string> = {
-  '_nfs-settings': '/* content */',
-  'foundation-sites/scss/util/util': '/* content */',
-  'foundation-sites/scss/util/_math': '/* content */',
-  // ... all Foundation files
-  accordion: '/* component scss */',
-};
+export type VariableType = 'color' | 'size' | 'spacing' | 'duration' | 'boolean';
+
+export interface VariableDefinition {
+  sassVar: string;
+  label: string;
+  type: VariableType;
+  defaultValue: string | boolean;
+  unit?: string;
+  min?: number;
+  max?: number;
+  step?: number;
+}
+
+export interface VariableSection {
+  id: string;
+  title: string;
+  variables: VariableDefinition[];
+}
+
+export interface SpacingValue {
+  vertical: string; // e.g., "1.25rem"
+  horizontal: string; // e.g., "1rem"
+}
+
+export interface ThemeState {
+  palette: { primary; secondary; success; warning; alert: string };
+  accordion: {
+    background: string;
+    plusminus: boolean;
+    titleFontSize: string;
+    itemPadding: SpacingValue;
+    slideSpeed: string;
+  };
+  button: {
+    padding: SpacingValue;
+    radius: string;
+    fontSize: string;
+  };
+}
 ```
 
-**Files to bundle** (~50-60 files):
+#### Theme Defaults
 
-- Library: `_nfs-settings.scss`, `accordion.scss`, `button.scss`
-- Foundation util: All 11 util files
-- Foundation core: `_global.scss`, `vendor/*`
-- Foundation components: `_accordion.scss`, `_button.scss`, etc.
+**File**: `src/storybook/theme-defaults.ts`
+
+- Foundation's default palette colors (`#1779ba`, `#767676`, etc.)
+- Default accordion variables
+- Default button variables
+- `VARIABLE_SECTIONS` array for UI generation
+- `DEFAULT_THEME_STATE` object
+
+#### Addon Components
+
+**Directory**: `.storybook/addons/theme-panel/`
+
+| File                            | Purpose                                     |
+| ------------------------------- | ------------------------------------------- |
+| `constants.ts`                  | Addon IDs and param keys                    |
+| `manager.tsx`                   | Addon registration with Storybook           |
+| `ThemePanel.tsx`                | Main panel with collapsible sections        |
+| `components/ColorControl.tsx`   | Color picker + hex input                    |
+| `components/SliderControl.tsx`  | Range slider for single-value sizes         |
+| `components/SpacingControl.tsx` | Two sliders for vertical/horizontal spacing |
+| `components/BooleanControl.tsx` | Checkbox toggle                             |
+| `components/SectionHeader.tsx`  | Collapsible section header                  |
 
 ---
 
-#### Step 2: Browser Sass Compiler Service
+### Files to Modify
 
-**File**: `packages/ngx-foundation-sites/src/storybook/services/browser-sass-compiler.service.ts`
+#### Browser Sass Compiler
 
-An Angular service that:
+**File**: `src/storybook/browser-sass-compiler.ts`
 
-1. Lazy-loads Dart Sass from JSPM CDN
-2. Provides a custom importer resolving from `SASS_SOURCES`
-3. Compiles SCSS strings with user variables injected
-4. Returns compiled CSS
+**Add**:
+
+- `compileSassWithTheme(component, themeState)` function
+- `compileComponentsWithTheme(components[], themeState)` function
+- New `buildScssSourceWithTheme()` that injects all variables
+
+#### Runtime Theme Injector
+
+**File**: `src/storybook/runtime-theme-injector.ts`
+
+**Add**:
+
+- `applyThemeState(themeState)` function
+- Hash-based caching (`JSON.stringify(themeState)` as key)
+
+**Remove**:
+
+- `applyTheme(themeName)` function (preset-based)
+
+#### Files to Delete
+
+- `src/storybook/theme-presets.ts` - No longer needed
+
+#### Storybook Config
+
+**File**: `.storybook/main.ts`
 
 ```typescript
-@Injectable({ providedIn: 'root' })
-export class BrowserSassCompilerService {
-  private sass: typeof import('sass') | null = null;
+addons: [
+  '@storybook/addon-docs',
+  '@storybook/addon-a11y',
+  './addons/theme-panel/manager', // NEW
+],
+```
 
-  async compile(component: 'accordion' | 'button', variables: ThemeVariables): Promise<string> {
-    await this.loadSass();
+**File**: `.storybook/preview.ts`
 
-    const scss = this.buildScss(component, variables);
-    const result = await this.sass!.compileStringAsync(scss, {
-      importers: [this.createBundleImporter()],
-    });
+- Remove `nfsTheme` globalType (preset dropdown)
+- Add `nfsThemeState` to `initialGlobals`
+- Update theme decorator to use `applyThemeState()`
 
-    return result.css;
-  }
+**File**: `.storybook/tsconfig.json`
 
-  private buildScss(component: string, vars: ThemeVariables): string {
-    return `
-      // Injected theme variables
-      $foundation-palette: (
-        primary: ${vars.primaryColor},
-        secondary: ${vars.secondaryColor},
-        // ...
-      );
-      $accordion-background: ${vars.accordionBackground};
-
-      // Original component SCSS
-      @import '${component}';
-    `;
-  }
-
-  private createBundleImporter(): Importer {
-    return {
-      canonicalize: (url) => new URL(`sass-bundle:${url}`),
-      load: (url) => ({
-        contents: SASS_SOURCES[url.pathname],
-        syntax: 'scss',
-      }),
-    };
-  }
+```json
+{
+  "compilerOptions": {
+    "jsx": "react-jsx"
+  },
+  "include": ["addons/**/*.tsx", "addons/**/*.ts"]
 }
 ```
 
 ---
 
-#### Step 3: Storybook Theme Addon
+### Configurable Variables
 
-**Files**:
+#### Color Palette (5 colors)
 
-- `packages/ngx-foundation-sites/.storybook/addons/theme-panel/register.tsx`
-- `packages/ngx-foundation-sites/.storybook/addons/theme-panel/ThemePanel.tsx`
-- `packages/ngx-foundation-sites/.storybook/addons/theme-panel/theme-state.ts`
+| Sass Variable | Default   | Control      |
+| ------------- | --------- | ------------ |
+| `primary`     | `#1779ba` | Color picker |
+| `secondary`   | `#767676` | Color picker |
+| `success`     | `#3adb76` | Color picker |
+| `warning`     | `#ffae00` | Color picker |
+| `alert`       | `#cc4b37` | Color picker |
 
-A custom Storybook addon panel that:
+#### Accordion (5 variables)
 
-1. Provides color pickers for `$foundation-palette`
-2. Provides inputs for component-specific variables
-3. Stores state in Storybook globals
-4. Triggers recompilation on change (debounced 300ms)
+| Sass Variable                | Default        | Control             |
+| ---------------------------- | -------------- | ------------------- |
+| `$accordion-background`      | `#ffffff`      | Color picker        |
+| `$accordion-plusminus`       | `true`         | Checkbox            |
+| `$accordion-title-font-size` | `0.75rem`      | Slider (0.5-2rem)   |
+| `$accordion-item-padding`    | `1.25rem 1rem` | Split sliders (v/h) |
+| `$nfs-accordion-slide-speed` | `250ms`        | Slider (0-1000ms)   |
 
-**Panel Structure**:
+#### Button (3 variables)
+
+| Sass Variable       | Default      | Control             |
+| ------------------- | ------------ | ------------------- |
+| `$button-padding`   | `0.85em 1em` | Split sliders (v/h) |
+| `$button-radius`    | `0`          | Slider (0-20px)     |
+| `$button-font-size` | `0.9rem`     | Slider (0.5-2rem)   |
+
+---
+
+### UI Panel Structure
 
 ```
 ┌─ Foundation Theme ────────────────────────────┐
 │                                               │
 │ ▼ Color Palette                               │
-│   Primary     [████████] #0d5a89              │
-│   Secondary   [████████] #595959              │
-│   Success     [████████] #1a7f3e              │
-│   Warning     [████████] #8a6500              │
-│   Alert       [████████] #a33a2a              │
+│   Primary     [████████] #1779ba              │
+│   Secondary   [████████] #767676              │
+│   Success     [████████] #3adb76              │
+│   Warning     [████████] #ffae00              │
+│   Alert       [████████] #cc4b37              │
 │                                               │
-│ ▼ Accordion                                   │
-│   Background  [████████] #fafafa              │
-│   Title Size  [────●────] 1rem                │
-│   Slide Speed [────●────] 250ms               │
+│ ▶ Accordion (collapsed by default)            │
 │                                               │
-│ ▼ Button                                      │
-│   Padding     [────●────] 0.85em 1em          │
-│   Radius      [────●────] 4px                 │
+│ ▶ Button (collapsed by default)               │
 │                                               │
-│ [Reset to Defaults]        [Export Settings]  │
+│ ┌─────────────────┐  ┌─────────────────────┐  │
+│ │ Reset Defaults  │  │ Export ▼            │  │
+│ └─────────────────┘  │ • Copy to Clipboard │  │
+│                      │ • Download File     │  │
+│                      └─────────────────────┘  │
 └───────────────────────────────────────────────┘
 ```
 
 ---
 
-#### Step 4: Theme Decorator
+### Implementation Order
 
-**File**: `packages/ngx-foundation-sites/.storybook/decorators/with-runtime-theme.ts`
+#### Phase A: Core Infrastructure
 
-A Storybook decorator that:
+1. Create `theme-defaults.ts` with Foundation defaults
+2. Create `types.ts` with TypeScript interfaces
+3. Update `.storybook/tsconfig.json` for JSX support
 
-1. Subscribes to theme globals changes
-2. Calls the BrowserSassCompilerService
-3. Injects compiled CSS into a `<style id="nfs-runtime-theme">` tag
-4. Disables/overrides the precompiled CSS from NfsStyleLoader
+#### Phase B: Compiler Extensions
 
-```typescript
-export const withRuntimeTheme: DecoratorFunction = (Story, context) => {
-  const themeVars = context.globals.nfsTheme;
-  const [css, setCss] = useState('');
+4. Extend `browser-sass-compiler.ts` with `compileSassWithTheme()`
+5. Extend `runtime-theme-injector.ts` with `applyThemeState()`
 
-  useEffect(() => {
-    if (themeVars) {
-      compilerService.compile('accordion', themeVars).then(setCss);
-    }
-  }, [themeVars]);
+#### Phase C: Addon Panel
 
-  return (
-    <>
-      <style id="nfs-runtime-theme">{css}</style>
-      <Story />
-    </>
-  );
-};
-```
+6. Create addon constants and control components
+7. Create `ThemePanel.tsx` with debouncing and export
+8. Create `manager.tsx` for addon registration
 
----
+#### Phase D: Integration
 
-#### Step 5: Integration & Configuration
+9. Update `main.ts` to register addon
+10. Update `preview.ts` - remove preset dropdown
+11. Delete `theme-presets.ts`
 
-**Files to modify**:
+#### Phase E: Testing
 
-- `.storybook/main.ts` - Register the addon
-- `.storybook/preview.ts` - Add the decorator, configure globals
-- `project.json` - Add build dependency on sass bundler
-
-**Storybook Configuration**:
-
-```typescript
-// .storybook/main.ts
-export default {
-  addons: [
-    // ... existing addons
-    './addons/theme-panel/register',
-  ],
-};
-
-// .storybook/preview.ts
-export const decorators = [withRuntimeTheme];
-export const globalTypes = {
-  nfsTheme: {
-    name: 'Foundation Theme',
-    defaultValue: DEFAULT_THEME_VARIABLES,
-  },
-};
-```
-
----
-
-### File Structure (New Files)
-
-```
-packages/ngx-foundation-sites/
-├── tools/
-│   └── bundle-sass-sources.mjs          # Build script
-├── src/storybook/
-│   ├── sass-bundle.generated.ts         # Generated bundle
-│   └── services/
-│       └── browser-sass-compiler.service.ts
-├── .storybook/
-│   ├── addons/
-│   │   └── theme-panel/
-│   │       ├── register.tsx             # Addon registration
-│   │       ├── ThemePanel.tsx           # Panel UI component
-│   │       └── theme-state.ts           # Default values, types
-│   └── decorators/
-│       └── with-runtime-theme.ts        # Story decorator
-```
-
----
-
-### Configurable Variables (Initial Set)
-
-#### Foundation Palette
-
-| Variable    | Default   | Type  |
-| ----------- | --------- | ----- |
-| `primary`   | `#0d5a89` | color |
-| `secondary` | `#595959` | color |
-| `success`   | `#1a7f3e` | color |
-| `warning`   | `#8a6500` | color |
-| `alert`     | `#a33a2a` | color |
-
-#### Accordion
-
-| Variable                     | Default        | Type     |
-| ---------------------------- | -------------- | -------- |
-| `$accordion-background`      | `$white`       | color    |
-| `$accordion-plusminus`       | `true`         | boolean  |
-| `$accordion-title-font-size` | `rem-calc(12)` | size     |
-| `$accordion-item-padding`    | `1.25rem 1rem` | spacing  |
-| `$nfs-accordion-slide-speed` | `250ms`        | duration |
-
-#### Button (example expansion)
-
-| Variable            | Default          | Type    |
-| ------------------- | ---------------- | ------- |
-| `$button-padding`   | `0.85em 1em`     | spacing |
-| `$button-radius`    | `$global-radius` | size    |
-| `$button-font-size` | `0.9rem`         | size    |
+12. Test all controls work correctly
+13. Verify debouncing prevents excessive compilation
+14. Test export functionality (clipboard + download)
 
 ---
 
 ### Performance Considerations
 
-1. **Sass Loading**: Dart Sass (~300KB) loaded lazily on first theme change
-2. **Compilation**: ~200-500ms per component (acceptable per user)
+1. **Sass Loading**: Dart Sass (~300KB) loaded lazily on first use
+2. **Compilation**: ~200-500ms per component
 3. **Debouncing**: 300ms debounce on control changes
-4. **Caching**: Memoize compilation results by variable hash
+4. **Caching**: Hash-based caching (`JSON.stringify(themeState)`)
 
 ---
 
 ### Future Enhancements (Out of Scope)
 
-- [ ] Export theme as `_nfs-settings.scss` file
-- [ ] Preset themes (Material, Bootstrap-like, etc.)
 - [ ] Live URL sharing with theme encoded
 - [ ] Per-story theme overrides
+- [ ] Additional component variables as library grows
