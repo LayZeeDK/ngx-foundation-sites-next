@@ -2,6 +2,12 @@ import type { Preview } from '@storybook/angular';
 import { setCompodocJson } from '@storybook/addon-docs/angular';
 import docJson from '../documentation.json';
 import { cleanCompodocJson } from '../src/lib/util-storybook/clean-compodoc-json';
+import {
+  applyTheme,
+  initializeRuntimeTheming,
+  type ThemeName,
+} from '../src/storybook/runtime-theme-injector';
+import { THEME_TOOLBAR_ITEMS } from '../src/storybook/theme-presets';
 
 // Configure Compodoc documentation for automatic prop extraction
 // cleanCompodocJson removes placeholder strings like "___COMPODOC_EMPTY_LINE___"
@@ -74,6 +80,27 @@ if (module.hot) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
+// Runtime Theming (Storybook-only)
+// ═══════════════════════════════════════════════════════════════════════════════
+// Enables runtime Foundation theming in Storybook by compiling Sass in the browser.
+// Users can select preset themes from the toolbar dropdown.
+//
+// Architecture:
+// 1. Sass sources are bundled at build time (bundle-sass target)
+// 2. Dart Sass is lazy-loaded from JSPM CDN on first use
+// 3. Theme changes trigger recompilation (cached for instant switching)
+// 4. Compiled CSS is injected into a <style> element, overriding precompiled styles
+
+// Initialize runtime theming (preloads Sass compiler)
+// Fire-and-forget: don't block Storybook startup
+initializeRuntimeTheming().catch((error) => {
+  console.error('[nfs-theme] Failed to initialize:', error);
+});
+
+// Track current theme to detect changes
+let currentTheme: ThemeName | null = null;
+
+// ═══════════════════════════════════════════════════════════════════════════════
 
 const preview: Preview = {
   tags: ['autodocs'],
@@ -90,15 +117,44 @@ const preview: Preview = {
         dynamicTitle: true,
       },
     },
+    nfsTheme: {
+      description: 'Foundation color theme',
+      toolbar: {
+        title: 'Theme',
+        icon: 'paintbrush',
+        items: THEME_TOOLBAR_ITEMS,
+        dynamicTitle: true,
+      },
+    },
   },
   initialGlobals: {
     direction: 'ltr',
+    nfsTheme: 'default',
   },
   decorators: [
     // Apply direction based on toolbar selection
     (story, context) => {
       const direction = context.globals['direction'] || 'ltr';
       document.documentElement.dir = direction;
+      return story();
+    },
+    // Apply theme based on toolbar selection
+    (story, context) => {
+      const themeName = (context.globals['nfsTheme'] || 'default') as ThemeName;
+
+      // Only apply if theme changed (prevents re-compilation on every render)
+      if (themeName !== currentTheme) {
+        currentTheme = themeName;
+        // Fire-and-forget: theme will be applied asynchronously
+        // The visual update happens when the style element is updated
+        applyTheme(themeName).catch((error) => {
+          console.error(
+            `[nfs-theme] Failed to apply theme '${themeName}':`,
+            error,
+          );
+        });
+      }
+
       return story();
     },
   ],

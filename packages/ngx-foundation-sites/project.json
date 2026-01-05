@@ -18,8 +18,25 @@
     }
   },
   "targets": {
+    "bundle-sass": {
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{projectRoot}/tools/bundle-sass-sources.mjs",
+        "{projectRoot}/src/lib/scss/**/*.scss",
+        "{workspaceRoot}/node_modules/foundation-sites/scss/**/*.scss"
+      ],
+      "outputs": ["{projectRoot}/src/storybook/generated/sass-bundle.ts"],
+      "options": {
+        "command": "node packages/ngx-foundation-sites/tools/bundle-sass-sources.mjs"
+      }
+    },
     "build-css": {
       "executor": "nx:run-commands",
+      "inputs": [
+        "{projectRoot}/tools/build-component-css.mjs",
+        "{projectRoot}/src/lib/scss/**/*.scss",
+        "{workspaceRoot}/node_modules/foundation-sites/scss/**/*.scss"
+      ],
       "outputs": ["{projectRoot}/dist-css"],
       "options": {
         "command": "node packages/ngx-foundation-sites/tools/build-component-css.mjs"
@@ -58,7 +75,7 @@
     "storybook": {
       "executor": "@storybook/angular:start-storybook",
       "continuous": true,
-      "dependsOn": ["build-css"],
+      "dependsOn": ["build-css", "bundle-sass"],
       "inputs": [
         "default",
         "{projectRoot}/.compodocrc.json",
@@ -91,7 +108,7 @@
     },
     "build-storybook": {
       "executor": "@storybook/angular:build-storybook",
-      "dependsOn": ["build-css"],
+      "dependsOn": ["build-css", "bundle-sass"],
       "inputs": [
         "default",
         "{projectRoot}/.compodocrc.json",
