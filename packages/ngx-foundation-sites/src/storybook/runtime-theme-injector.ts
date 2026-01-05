@@ -28,7 +28,7 @@
  * ```
  */
 
-import { compileWithWorker, preloadWorker } from './sass-worker';
+import { compileWithWorker, preloadWorker } from './sass-compiler';
 import type { ThemeState } from '../../.storybook/addons/theme-panel/types';
 
 // ═══════════════════════════════════════════════════════════════════════════════
