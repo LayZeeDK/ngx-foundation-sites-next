@@ -1,8 +1,13 @@
 /**
  * Runtime Theme Injector for Storybook
  *
- * Manages dynamic CSS injection for runtime theming. Compiles Sass on-demand
- * and caches results for instant theme switching after first compilation.
+ * Manages dynamic CSS injection for runtime theming. Compiles Sass in a
+ * Web Worker to prevent UI freezing, with caching for instant theme switching.
+ *
+ * Architecture:
+ * - Web Worker: Sass compilation runs off-main-thread (~1.5-2s without blocking UI)
+ * - Fallback: Main thread compilation if workers unavailable
+ * - Caching: Hash-based cache prevents redundant compilations
  *
  * @example
  * ```typescript
@@ -23,11 +28,7 @@
  * ```
  */
 
-import {
-  compileComponentsWithTheme,
-  preloadSass,
-} from './browser-sass-compiler';
-import { AVAILABLE_COMPONENTS } from './generated/sass-bundle';
+import { compileWithWorker, preloadWorker } from './sass-worker';
 import type { ThemeState } from '../../.storybook/addons/theme-panel/types';
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -129,6 +130,7 @@ function hashThemeState(themeState: ThemeState): string {
 
 /**
  * Compiles a theme state if not already cached.
+ * Uses Web Worker for off-main-thread compilation.
  *
  * @param themeState - Complete theme state to compile
  * @returns Promise resolving to compiled CSS
@@ -147,13 +149,10 @@ async function compileThemeState(themeState: ThemeState): Promise<string> {
     return compilationPromise;
   }
 
-  // Start new compilation
+  // Start new compilation in Web Worker (off-main-thread)
   compilingThemeStateHash = hash;
 
-  compilationPromise = compileComponentsWithTheme(
-    [...AVAILABLE_COMPONENTS],
-    themeState,
-  ).then((css) => {
+  compilationPromise = compileWithWorker(themeState).then((css) => {
     themeStateCache.set(hash, css);
     compilingThemeStateHash = null;
     compilationPromise = null;
@@ -271,15 +270,15 @@ export function getCurrentThemeStateHash(): string | null {
 
 /**
  * Initializes the runtime theming system.
- * Call this early in the application lifecycle to preload Sass.
+ * Call this early in the application lifecycle to preload the worker and Sass.
  *
  * @returns Promise that resolves when initialization is complete
  */
 export async function initializeRuntimeTheming(): Promise<void> {
-  console.log('[nfs-theme] Initializing runtime theming...');
+  console.log('[nfs-theme] Initializing runtime theming (Web Worker)...');
 
-  // Preload Sass compiler
-  await preloadSass();
+  // Preload Web Worker and Sass compiler
+  await preloadWorker();
 
-  console.log('[nfs-theme] Ready');
+  console.log('[nfs-theme] Ready (Web Worker initialized)');
 }
