@@ -1,14 +1,23 @@
 /**
- * Sass Compiler with Web Worker Support
+ * Sass Compiler with Web Worker Pool
  *
- * Provides off-main-thread Sass compilation using a Web Worker. This prevents
- * UI freezes during the ~1.5-2 second compilation time when changing themes.
+ * Provides off-main-thread Sass compilation using a pool of Web Workers.
+ * Each component gets its own dedicated worker, enabling true parallel compilation.
  *
  * Architecture:
- * 1. Main thread creates worker via webpack's native worker URL syntax
- * 2. Main thread sends SASS_SOURCES to worker on init
- * 3. Worker loads Dart Sass from JSPM CDN
- * 4. Compilation requests/responses use postMessage
+ * 1. Main thread creates one worker per component via webpack's native worker URL syntax
+ * 2. Each worker receives SASS_SOURCES on init and loads Dart Sass from JSPM CDN
+ * 3. Compilation requests run in true parallel across all workers
+ * 4. Workers are reused across theme changes for efficiency
+ *
+ * Performance Characteristics:
+ * - Single worker (previous): 2 components × 300ms = 600ms sequential
+ * - Worker pool (current): 2 components × 300ms = ~300ms parallel
+ *
+ * Trade-offs:
+ * - Memory: N × Sass (~300KB each) instead of 1 × Sass
+ * - CDN: Browser caches Sass module, so subsequent loads are fast
+ * - Complexity: Pool management vs single worker
  *
  * @example
  * ```typescript
@@ -17,7 +26,7 @@
  * // Pre-initialize for faster first compilation
  * await preloadWorker();
  *
- * // Compile all components with a theme state
+ * // Compile all components with a theme state (parallel)
  * const css = await compileWithWorker(themeState);
  * ```
  */
@@ -50,89 +59,106 @@ type PendingRequest = {
   reject: (error: Error) => void;
 };
 
+interface WorkerInstance {
+  worker: Worker;
+  component: string;
+  pending: Map<number, PendingRequest>;
+  nextId: number;
+  ready: boolean;
+}
+
 // ═══════════════════════════════════════════════════════════════════════════════
-// Worker Manager (runs on main thread)
+// Worker Pool Manager (runs on main thread)
 // ═══════════════════════════════════════════════════════════════════════════════
 
 /**
- * Manages the Sass worker lifecycle and communication.
+ * Manages a pool of Sass workers for parallel compilation.
  */
-class SassCompiler {
-  #worker: Worker | null = null;
-  #pending = new Map<number, PendingRequest>();
-  #nextId = 1;
-  #ready = false;
-  #readyPromise: Promise<void> | null = null;
+class SassWorkerPool {
+  #workers = new Map<string, WorkerInstance>();
+  #initPromise: Promise<void> | null = null;
 
   /**
-   * Initialize the worker and send SASS_SOURCES.
+   * Initialize the worker pool with one worker per component.
    */
   async init(): Promise<void> {
-    if (this.#readyPromise) {
-      return this.#readyPromise;
+    if (this.#initPromise) {
+      return this.#initPromise;
     }
 
-    this.#readyPromise = this.#doInit();
-    return this.#readyPromise;
+    this.#initPromise = this.#doInit();
+    return this.#initPromise;
   }
 
   async #doInit(): Promise<void> {
-    console.log('[sass-compiler] Creating worker...');
+    const components = [...AVAILABLE_COMPONENTS];
+    console.log(
+      `[sass-compiler] Creating worker pool (${components.length} workers)...`,
+    );
+    const startTime = performance.now();
 
+    // Create and initialize all workers in parallel
+    const initPromises = components.map((component) =>
+      this.#createWorker(component),
+    );
+    await Promise.all(initPromises);
+
+    const initTime = Math.round(performance.now() - startTime);
+    console.log(`[sass-compiler] Worker pool ready in ${initTime}ms`);
+  }
+
+  async #createWorker(component: string): Promise<void> {
     // Create worker using webpack's native worker URL syntax
-    // This bundles the worker separately and handles all the complexity
-    this.#worker = new Worker(
+    const worker = new Worker(
       new URL('./sass-compiler.worker.ts', import.meta.url),
       { type: 'module' },
     );
 
+    const instance: WorkerInstance = {
+      worker,
+      component,
+      pending: new Map(),
+      nextId: 1,
+      ready: false,
+    };
+
+    this.#workers.set(component, instance);
+
     // Set up message handler
-    this.#worker.onmessage = (event: MessageEvent<WorkerResponse>) => {
-      const response = event.data;
-      const pending = this.#pending.get(response.id);
-
-      if (!pending) {
-        // Init response
-        if (response.type === 'ready') {
-          this.#ready = true;
-          console.log('[sass-compiler] Worker ready');
-        }
-        return;
-      }
-
-      this.#pending.delete(response.id);
-
-      if (response.type === 'error') {
-        pending.reject(new Error(response.error));
-      } else if (response.type === 'compiled') {
-        pending.resolve(response.css!);
-      }
+    worker.onmessage = (event: MessageEvent<WorkerResponse>) => {
+      this.#handleMessage(instance, event.data);
     };
 
-    this.#worker.onerror = (event) => {
-      console.error('[sass-compiler] Worker error:', event);
+    worker.onerror = (event) => {
+      console.error(`[sass-compiler] Worker error (${component}):`, event);
     };
 
-    // Send SASS_SOURCES to worker
-    const initId = this.#nextId++;
+    // Initialize worker with SASS_SOURCES
+    await this.#initWorker(instance);
+  }
+
+  async #initWorker(instance: WorkerInstance): Promise<void> {
+    const initId = instance.nextId++;
+
     await new Promise<void>((resolve, reject) => {
       const timeout = setTimeout(() => {
-        reject(new Error('Worker init timeout'));
+        reject(new Error(`Worker init timeout (${instance.component})`));
       }, 30000);
 
-      const originalOnMessage = this.#worker!.onmessage;
-      this.#worker!.onmessage = (event: MessageEvent<WorkerResponse>) => {
+      // Temporarily override handler for init response
+      const originalHandler = instance.worker.onmessage;
+      instance.worker.onmessage = (event: MessageEvent<WorkerResponse>) => {
         if (event.data.id === initId && event.data.type === 'ready') {
           clearTimeout(timeout);
-          this.#worker!.onmessage = originalOnMessage;
-          this.#ready = true;
+          instance.worker.onmessage = originalHandler;
+          instance.ready = true;
           resolve();
-        } else {
-          originalOnMessage?.call(this.#worker!, event);
+        } else if (originalHandler) {
+          originalHandler.call(instance.worker, event);
         }
       };
 
-      this.#worker!.postMessage({
+      instance.worker.postMessage({
         id: initId,
         type: 'init',
         sassSources: SASS_SOURCES,
@@ -140,20 +166,43 @@ class SassCompiler {
     });
   }
 
-  /**
-   * Compile a component in the worker thread.
-   */
-  async compile(component: string, themeState: ThemeState): Promise<string> {
-    if (!this.#ready) {
-      await this.init();
+  #handleMessage(instance: WorkerInstance, response: WorkerResponse): void {
+    const pending = instance.pending.get(response.id);
+    if (!pending) {
+      return;
     }
 
-    const id = this.#nextId++;
+    instance.pending.delete(response.id);
+
+    if (response.type === 'error') {
+      pending.reject(new Error(response.error));
+    } else if (response.type === 'compiled') {
+      pending.resolve(response.css!);
+    }
+  }
+
+  /**
+   * Compile a component using its dedicated worker.
+   */
+  async compile(component: string, themeState: ThemeState): Promise<string> {
+    // Ensure pool is initialized
+    if (!this.#initPromise) {
+      await this.init();
+    } else {
+      await this.#initPromise;
+    }
+
+    const instance = this.#workers.get(component);
+    if (!instance) {
+      throw new Error(`No worker for component: ${component}`);
+    }
+
+    const id = instance.nextId++;
 
     return new Promise((resolve, reject) => {
-      this.#pending.set(id, { resolve, reject });
+      instance.pending.set(id, { resolve, reject });
 
-      this.#worker!.postMessage({
+      instance.worker.postMessage({
         id,
         type: 'compile',
         component,
@@ -163,27 +212,41 @@ class SassCompiler {
   }
 
   /**
-   * Compile multiple components in parallel.
+   * Compile all components in TRUE parallel (each in its own worker).
    */
   async compileAll(themeState: ThemeState): Promise<string> {
+    // Ensure pool is initialized
+    if (!this.#initPromise) {
+      await this.init();
+    } else {
+      await this.#initPromise;
+    }
+
+    const components = [...AVAILABLE_COMPONENTS];
+    const startTime = performance.now();
+
+    // True parallel compilation - each component runs in its own worker
     const results = await Promise.all(
-      [...AVAILABLE_COMPONENTS].map((component) =>
-        this.compile(component, themeState),
-      ),
+      components.map((component) => this.compile(component, themeState)),
     );
+
+    const compileTime = Math.round(performance.now() - startTime);
+    console.log(
+      `[sass-compiler] All components compiled in ${compileTime}ms (parallel)`,
+    );
+
     return results.join('\n');
   }
 
   /**
-   * Terminate the worker.
+   * Terminate all workers in the pool.
    */
   terminate(): void {
-    if (this.#worker) {
-      this.#worker.terminate();
-      this.#worker = null;
-      this.#ready = false;
-      this.#readyPromise = null;
+    for (const instance of this.#workers.values()) {
+      instance.worker.terminate();
     }
+    this.#workers.clear();
+    this.#initPromise = null;
   }
 }
 
@@ -191,34 +254,34 @@ class SassCompiler {
 // Singleton Export
 // ═══════════════════════════════════════════════════════════════════════════════
 
-let compiler: SassCompiler | null = null;
+let pool: SassWorkerPool | null = null;
 
 /**
- * Get the singleton Sass compiler.
- * Lazily creates the worker on first call.
+ * Get the singleton Sass worker pool.
+ * Lazily creates workers on first call.
  */
-async function getCompiler(): Promise<SassCompiler> {
-  if (!compiler) {
-    compiler = new SassCompiler();
-    await compiler.init();
+async function getPool(): Promise<SassWorkerPool> {
+  if (!pool) {
+    pool = new SassWorkerPool();
+    await pool.init();
   }
-  return compiler;
+  return pool;
 }
 
 /**
- * Compile components using the worker.
- * This is the main entry point for off-main-thread compilation.
+ * Compile components using the worker pool.
+ * This is the main entry point for off-main-thread parallel compilation.
  */
 export async function compileWithWorker(
   themeState: ThemeState,
 ): Promise<string> {
-  const instance = await getCompiler();
+  const instance = await getPool();
   return instance.compileAll(themeState);
 }
 
 /**
- * Pre-initialize the worker for faster first compilation.
+ * Pre-initialize the worker pool for faster first compilation.
  */
 export async function preloadWorker(): Promise<void> {
-  await getCompiler();
+  await getPool();
 }
