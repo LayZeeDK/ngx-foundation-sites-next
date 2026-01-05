@@ -585,12 +585,46 @@ addons: [
 
 ---
 
-### Performance Considerations
+### Performance Optimizations ✅
 
-1. **Sass Loading**: Dart Sass (~300KB) loaded lazily on first use
-2. **Compilation**: ~200-500ms per component
-3. **Debouncing**: 300ms debounce on control changes
-4. **Caching**: Hash-based caching (`JSON.stringify(themeState)`)
+The following optimizations ensure smooth UX during theme editing:
+
+#### 1. Control Debouncing
+
+Color pickers and sliders use local state for immediate visual feedback, with debounced callbacks (300ms) to prevent excessive Sass compilations during drag operations.
+
+**Files**: `ColorControl.tsx`, `SliderControl.tsx`, `SpacingControl.tsx`
+
+#### 2. Web Worker Compilation
+
+Sass compilation (~1.5-2s) runs in a separate Web Worker thread, keeping the main UI responsive.
+
+```
+┌─────────────────────────┐
+│    sass-compiler.ts     │  Main Thread (responsive)
+│  - Creates worker       │
+│  - postMessage API      │
+└───────────┬─────────────┘
+            │ new Worker(new URL('./sass-compiler.worker.ts'))
+            ▼
+┌─────────────────────────┐
+│ sass-compiler.worker.ts │  Worker Thread (background)
+│  - Loads Sass from CDN  │
+│  - Compiles components  │
+└─────────────────────────┘
+```
+
+**Files**: `sass-compiler.ts`, `sass-compiler.worker.ts`
+
+#### 3. Compilation Status Indicator
+
+The Theme panel shows "Compiling Sass..." with a spinner during active compilation, using Storybook's channel API to communicate between preview and manager.
+
+**Files**: `ThemePanel.tsx`, `preview.ts`, `runtime-theme-injector.ts`
+
+#### 4. Hash-Based Caching
+
+Compiled CSS is cached using `JSON.stringify(themeState)` as the key, enabling instant theme switching for previously compiled states.
 
 ---
 
