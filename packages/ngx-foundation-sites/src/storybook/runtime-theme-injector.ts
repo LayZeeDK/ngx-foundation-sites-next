@@ -29,6 +29,7 @@
  */
 
 import { compileWithWorker, preloadWorker } from './sass-compiler';
+import { getDefaultThemeState } from './theme-defaults';
 import type { ThemeState } from '../../.storybook/addons/theme-panel/types';
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -299,6 +300,13 @@ export function getCurrentThemeStateHash(): string | null {
  * Initializes the runtime theming system.
  * Call this early in the application lifecycle to preload the worker and Sass.
  *
+ * This function:
+ * 1. Creates the Web Worker and loads Dart Sass
+ * 2. Pre-compiles the default theme (fire-and-forget) to warm the cache
+ *
+ * The pre-compilation ensures the first theme panel interaction is instant
+ * by caching the default theme state during initialization.
+ *
  * @returns Promise that resolves when initialization is complete
  */
 export async function initializeRuntimeTheming(): Promise<void> {
@@ -308,4 +316,16 @@ export async function initializeRuntimeTheming(): Promise<void> {
   await preloadWorker();
 
   console.log('[nfs-theme] Ready (Web Worker initialized)');
+
+  // Pre-compile default theme (fire-and-forget) to warm the cache
+  // This ensures the first theme panel interaction is instant
+  const defaultTheme = getDefaultThemeState();
+  compileThemeState(defaultTheme)
+    .then(() => {
+      console.log('[nfs-theme] Default theme pre-compiled and cached');
+    })
+    .catch((err) => {
+      // Non-fatal: system still works, just has cold-start delay
+      console.warn('[nfs-theme] Default theme pre-compilation failed:', err);
+    });
 }
