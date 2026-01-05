@@ -40,6 +40,13 @@ import {
   getAffectedComponents,
 } from './component-dependencies';
 import { LruCache } from './lru-cache';
+import {
+  getPersistedCSS,
+  setPersistedCSS,
+  clearPersistedCache,
+  createCacheKey,
+  getCacheStats,
+} from './theme-cache-db';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // Constants
@@ -185,20 +192,34 @@ function hashThemeState(themeState: ThemeState): string {
 /**
  * Compiles a theme state with per-component caching.
  *
- * Optimization: Only recompiles components whose relevant variables changed.
- * - Palette changes: recompile all (global colors affect everything)
- * - Component-specific changes: only recompile that component
+ * Optimization layers (checked in order):
+ * 1. In-memory combined cache (fastest, lost on refresh)
+ * 2. IndexedDB combined cache (fast, persists across sessions)
+ * 3. In-memory component cache (avoids recompiling unchanged components)
+ * 4. IndexedDB component cache (persists component CSS across sessions)
+ * 5. Full compilation (slowest, only for cache misses)
  *
  * @param themeState - Complete theme state to compile
  * @returns Promise resolving to compiled CSS
  */
 async function compileThemeState(themeState: ThemeState): Promise<string> {
   const fullHash = hashThemeState(themeState);
+  const combinedKey = createCacheKey(`combined:${fullHash}`);
 
-  // Fast path: combined cache hit
+  // Fast path 1: in-memory combined cache hit
   const cachedCombined = combinedCache.get(fullHash);
   if (cachedCombined) {
     return cachedCombined;
+  }
+
+  // Fast path 2: IndexedDB combined cache hit
+  const persistedCombined = await getPersistedCSS(combinedKey);
+  if (persistedCombined) {
+    console.log('[nfs-theme] IndexedDB cache hit (combined)');
+    // Promote to memory cache
+    combinedCache.set(fullHash, persistedCombined);
+    lastAppliedState = structuredClone(themeState);
+    return persistedCombined;
   }
 
   // If already compiling this theme state, return the existing promise
@@ -221,7 +242,21 @@ async function compileThemeState(themeState: ThemeState): Promise<string> {
 
     for (const component of AVAILABLE_COMPONENTS) {
       const componentHash = hashComponentState(themeState, component);
-      const cachedCss = componentCache.get(componentHash);
+      const componentKey = createCacheKey(`${component}:${componentHash}`);
+
+      // Check in-memory cache first
+      let cachedCss = componentCache.get(componentHash);
+
+      // Check IndexedDB if not in memory and component unchanged
+      if (!cachedCss && !affectedComponents.has(component)) {
+        const persistedCss = await getPersistedCSS(componentKey);
+        if (persistedCss) {
+          console.log(`[nfs-theme] IndexedDB cache hit (${component})`);
+          cachedCss = persistedCss;
+          // Promote to memory cache
+          componentCache.set(componentHash, persistedCss);
+        }
+      }
 
       if (cachedCss && !affectedComponents.has(component)) {
         // Use cached CSS for unchanged components
@@ -247,11 +282,16 @@ async function compileThemeState(themeState: ThemeState): Promise<string> {
         themeState,
       );
 
-      // Update per-component cache and merge results
+      // Update per-component cache and persist to IndexedDB
       for (const [component, css] of freshCss) {
         const componentHash = hashComponentState(themeState, component);
+        const componentKey = createCacheKey(`${component}:${componentHash}`);
+
         componentCache.set(componentHash, css);
         componentCss.set(component, css);
+
+        // Persist to IndexedDB (fire-and-forget)
+        setPersistedCSS(componentKey, css);
       }
     }
 
@@ -260,8 +300,9 @@ async function compileThemeState(themeState: ThemeState): Promise<string> {
       '\n',
     );
 
-    // Cache the combined result
+    // Cache the combined result (memory + IndexedDB)
     combinedCache.set(fullHash, combined);
+    setPersistedCSS(combinedKey, combined); // fire-and-forget
 
     // Update last applied state for next comparison
     lastAppliedState = structuredClone(themeState);
