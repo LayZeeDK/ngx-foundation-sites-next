@@ -11,7 +11,7 @@ Enable runtime Foundation theming in Storybook by compiling Sass in the browser,
 | Phase   | Status      | Notes                                       |
 | ------- | ----------- | ------------------------------------------- |
 | Phase 1 | ✅ Complete | POC validated, all success criteria met     |
-| Phase 2 | 📋 Planned  | Full addon panel with per-variable controls |
+| Phase 2 | ✅ Complete | Full addon panel with per-variable controls |
 
 ---
 
@@ -554,34 +554,34 @@ addons: [
 
 ### Implementation Order
 
-#### Phase A: Core Infrastructure
+#### Phase A: Core Infrastructure ✅
 
-1. Create `theme-defaults.ts` with Foundation defaults
-2. Create `types.ts` with TypeScript interfaces
-3. Update `.storybook/tsconfig.json` for JSX support
+- [x] Create `theme-defaults.ts` with Foundation defaults
+- [x] Create `types.ts` with TypeScript interfaces
+- [x] Update `.storybook/tsconfig.json` for JSX support
 
-#### Phase B: Compiler Extensions
+#### Phase B: Compiler Extensions ✅
 
-4. Extend `browser-sass-compiler.ts` with `compileSassWithTheme()`
-5. Extend `runtime-theme-injector.ts` with `applyThemeState()`
+- [x] Extend `browser-sass-compiler.ts` with `compileSassWithTheme()`
+- [x] Extend `runtime-theme-injector.ts` with `applyThemeState()`
 
-#### Phase C: Addon Panel
+#### Phase C: Addon Panel ✅
 
-6. Create addon constants and control components
-7. Create `ThemePanel.tsx` with debouncing and export
-8. Create `manager.tsx` for addon registration
+- [x] Create addon constants and control components
+- [x] Create `ThemePanel.tsx` with debouncing and export
+- [x] Create `manager.tsx` for addon registration
 
-#### Phase D: Integration
+#### Phase D: Integration ✅
 
-9. Update `main.ts` to register addon
-10. Update `preview.ts` - remove preset dropdown
-11. Delete `theme-presets.ts`
+- [x] Update `main.ts` to register addon
+- [x] Update `preview.ts` - remove preset dropdown
+- [x] Delete `theme-presets.ts`
 
-#### Phase E: Testing
+#### Phase E: Testing ✅
 
-12. Test all controls work correctly
-13. Verify debouncing prevents excessive compilation
-14. Test export functionality (clipboard + download)
+- [x] Test all controls work correctly
+- [x] Verify debouncing prevents excessive compilation
+- [x] Test export functionality (clipboard + download)
 
 ---
 
