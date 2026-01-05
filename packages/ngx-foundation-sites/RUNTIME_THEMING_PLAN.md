@@ -308,10 +308,14 @@ All criteria verified and passing:
 | ----------------------------------------- | --------------------------------------- |
 | `tools/bundle-sass-sources.mjs`           | Bundles Foundation + library Sass files |
 | `src/storybook/generated/sass-bundle.ts`  | Generated module with Sass sources      |
-| `src/storybook/browser-sass-compiler.ts`  | Browser Sass compilation with JSPM      |
-| `src/storybook/theme-presets.ts`          | Four preset color palettes              |
+| `src/storybook/sass-compiler.ts`          | Web Worker manager (main thread)        |
+| `src/storybook/sass-compiler.worker.ts`   | Sass compilation in worker thread       |
 | `src/storybook/runtime-theme-injector.ts` | CSS injection with caching              |
 | `.storybook/preview.ts`                   | Theme toolbar + decorator integration   |
+
+> **Note:** `browser-sass-compiler.ts` and `theme-presets.ts` from the POC were superseded
+> by the Web Worker implementation (`sass-compiler.ts` + `sass-compiler.worker.ts`) for
+> better performance. The preset themes were replaced by the full Theme Panel controls.
 
 ---
 
@@ -436,15 +440,16 @@ export interface ThemeState {
 
 ### Files to Modify
 
-#### Browser Sass Compiler
+#### Sass Compiler (Web Worker)
 
-**File**: `src/storybook/browser-sass-compiler.ts`
+**Files**: `src/storybook/sass-compiler.ts` + `src/storybook/sass-compiler.worker.ts`
 
 **Add**:
 
-- `compileSassWithTheme(component, themeState)` function
-- `compileComponentsWithTheme(components[], themeState)` function
-- New `buildScssSourceWithTheme()` that injects all variables
+- `compileWithWorker(themeState)` function (main thread)
+- `compileComponent(component, themeState)` in worker
+- `buildScssSource()` that injects all theme variables
+- Off-main-thread compilation for responsive UI
 
 #### Runtime Theme Injector
 
@@ -459,9 +464,10 @@ export interface ThemeState {
 
 - `applyTheme(themeName)` function (preset-based)
 
-#### Files to Delete
+#### Files Deleted
 
-- `src/storybook/theme-presets.ts` - No longer needed
+- `src/storybook/theme-presets.ts` - Replaced by Theme Panel controls
+- `src/storybook/browser-sass-compiler.ts` - Replaced by Web Worker implementation
 
 #### Storybook Config
 
@@ -562,7 +568,7 @@ addons: [
 
 #### Phase B: Compiler Extensions ✅
 
-- [x] Extend `browser-sass-compiler.ts` with `compileSassWithTheme()`
+- [x] Create `sass-compiler.ts` + `sass-compiler.worker.ts` for Web Worker compilation
 - [x] Extend `runtime-theme-injector.ts` with `applyThemeState()`
 
 #### Phase C: Addon Panel ✅
@@ -633,3 +639,7 @@ Compiled CSS is cached using `JSON.stringify(themeState)` as the key, enabling i
 - [ ] Live URL sharing with theme encoded
 - [ ] Per-story theme overrides
 - [ ] Additional component variables as library grows
+
+> **See Also:** [SASS_OPTIMIZATION_PLAN.md](./SASS_OPTIMIZATION_PLAN.md) for additional
+> performance optimizations including browser benchmarking, default theme pre-compilation,
+> and worker pool parallelism.

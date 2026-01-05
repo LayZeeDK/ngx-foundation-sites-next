@@ -71,10 +71,7 @@ interface SassCompileOptions {
 }
 
 interface SassImporter {
-  canonicalize: (
-    url: string,
-    context: { containingUrl?: URL },
-  ) => URL | null;
+  canonicalize: (url: string, context: { containingUrl?: URL }) => URL | null;
   load: (url: URL) => { contents: string; syntax: string } | null;
 }
 
