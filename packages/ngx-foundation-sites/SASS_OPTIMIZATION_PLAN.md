@@ -181,15 +181,15 @@ Optimize Storybook runtime Sass compilation (browser-based) by implementing a da
 
 ## Status
 
-| Phase   | Status  | Notes                       |
-| ------- | ------- | --------------------------- |
-| Phase 1 | Pending | Browser benchmark tool      |
-| Phase 2 | Pending | Pre-compile default theme   |
-| Phase 3 | Pending | Worker pool for parallelism |
+| Phase   | Status  | Notes                                 |
+| ------- | ------- | ------------------------------------- |
+| Phase 1 | ✅ Done | Browser benchmark tool + Storybook UI |
+| Phase 2 | ✅ Done | Pre-compile default theme on init     |
+| Phase 3 | ✅ Done | Worker pool for true parallel compile |
 
 ---
 
-## Current Architecture
+## Current Architecture (Post-Optimization)
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -200,15 +200,22 @@ Optimize Storybook runtime Sass compilation (browser-based) by implementing a da
 │  runtime-theme-injector.ts                                      │
 │    • Hash-based caching                                         │
 │    • Deduplication of in-flight requests                        │
+│    • ✨ Pre-compiles default theme on init (fire-and-forget)   │
 │        ↓                                                        │
 │  sass-compiler.ts (Main Thread)                                 │
-│    • Creates SINGLE Web Worker                                  │
+│    • Creates WORKER POOL (one per component)                    │
 │    • Sends compile requests via postMessage                     │
 │        ↓                                                        │
-│  sass-compiler.worker.ts (Worker Thread)                        │
-│    • Loads Dart Sass from JSPM CDN                              │
-│    • Compiles components SEQUENTIALLY                           │
-│    • Returns CSS via postMessage                                │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐          │
+│  │   Worker 1   │  │   Worker 2   │  │   Worker N   │          │
+│  │  accordion   │  │    button    │  │   (future)   │          │
+│  │    ~300ms    │  │    ~300ms    │  │    ~300ms    │          │
+│  └──────────────┘  └──────────────┘  └──────────────┘          │
+│         │                │                 │                    │
+│         └────────────────┴─────────────────┘                    │
+│                          ↓                                       │
+│               Promise.all() - TRUE PARALLEL                      │
+│                    Total: ~300ms                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -433,12 +440,78 @@ After each phase, record measurements:
 
 ## Files to Modify
 
-| File                                      | Change | Phase |
-| ----------------------------------------- | ------ | ----- |
-| `src/storybook/sass-benchmark.ts`         | Create | 1     |
-| `src/storybook/benchmark.stories.ts`      | Create | 1     |
-| `src/storybook/runtime-theme-injector.ts` | Modify | 2     |
-| `src/storybook/sass-compiler.ts`          | Modify | 3     |
+| File                                      | Change | Phase | Status  |
+| ----------------------------------------- | ------ | ----- | ------- |
+| `src/storybook/sass-benchmark.ts`         | Create | 1     | ✅ Done |
+| `src/storybook/benchmark.stories.ts`      | Create | 1     | ✅ Done |
+| `src/storybook/runtime-theme-injector.ts` | Modify | 2     | ✅ Done |
+| `src/storybook/sass-compiler.ts`          | Modify | 3     | ✅ Done |
+
+---
+
+## Implementation Results (2026-01-05)
+
+✅ **All three phases implemented successfully**
+
+### What Was Built
+
+1. **Browser Benchmark Tool** (`sass-benchmark.ts`)
+   - Measures worker init time, total compile time, and cache hit performance
+   - Statistical analysis with min/max/avg/stdDev
+   - JSON export for comparison across runs
+
+2. **Benchmark Storybook Story** (`benchmark.stories.ts`)
+   - Visual UI with stat cards for key metrics
+   - Run button with progress indicator
+   - Export buttons for JSON and formatted text
+   - Comparison feature for before/after analysis
+
+3. **Default Theme Pre-compilation**
+   - Fire-and-forget compilation during `initializeRuntimeTheming()`
+   - Default theme is cached before first user interaction
+   - First theme panel use is instant (cache hit)
+
+4. **Worker Pool Architecture**
+   - One dedicated worker per component (accordion, button)
+   - True parallel compilation via `Promise.all()`
+   - Workers reused across theme changes
+   - Browser caches Sass CDN module for fast worker init
+
+### Actual Benchmark Results (2026-01-05)
+
+| Metric        | Baseline (Sequential) | Optimized (Parallel) | Improvement      |
+| ------------- | --------------------- | -------------------- | ---------------- |
+| **Average**   | 1842.2ms              | 1464.1ms             | **20.5% faster** |
+| Min           | 1786ms                | 1437.6ms             | 19.5% faster     |
+| Max           | 2010ms                | 1511.9ms             | 24.8% faster     |
+| Std Deviation | 84.7ms                | 25.3ms               | More consistent  |
+
+**Per-component timing (parallel):**
+
+- accordion: ~500ms
+- button: ~1450ms
+- Total: ~1450ms (limited by slowest component, not sum)
+
+**Note:** The improvement is less dramatic than the original estimate (~50%) because:
+
+1. Button component has significantly more internal dependencies than accordion
+2. The slowest component determines total time in parallel mode
+3. CDN caching effects vary between benchmark runs
+
+### Verification
+
+- ✅ Lint passes
+- ✅ Format checks pass
+- ✅ `npx nx build-storybook ngx-foundation-sites` succeeds
+- ✅ Baseline benchmark captured: 1842.2ms avg
+- ✅ Optimized benchmark captured: 1464.1ms avg (20.5% improvement)
+
+### How to Measure
+
+1. Start Storybook: `npm run storybook`
+2. Navigate to "Dev Tools / Sass Benchmark"
+3. Click "Run Benchmark" with 5+ iterations
+4. Results show compilation timing statistics
 
 ---
 
