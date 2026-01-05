@@ -22,72 +22,6 @@ import { THEME_STATE_KEY, EVENTS } from './addons/theme-panel/constants';
 setCompodocJson(cleanCompodocJson(docJson));
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// RTL Stylesheet Swapping (Storybook-only)
-// ═══════════════════════════════════════════════════════════════════════════════
-// Watches document.dir and swaps /nfs-*.css ↔ /nfs-*-rtl.css
-// This enables the Storybook direction toolbar to work with NfsStyleLoader
-//
-// Components use NfsStyleLoader to dynamically load their CSS files.
-// Storybook serves pre-built files via staticDirs configured in main.ts.
-//
-// For production apps, consumers compile SCSS with their settings at build time
-// (e.g., $global-text-direction: rtl in _nfs-settings.scss)
-
-let rtlObserver: MutationObserver | null = null;
-
-function swapNfsStylesheets(direction: string) {
-  document
-    .querySelectorAll<HTMLLinkElement>('link[id^="nfs-style"]')
-    .forEach((link) => {
-      const href = link.href;
-      if (direction === 'rtl' && !href.includes('-rtl.css')) {
-        link.href = href.replace('.css', '-rtl.css');
-      } else if (direction !== 'rtl' && href.includes('-rtl.css')) {
-        link.href = href.replace('-rtl.css', '.css');
-      }
-    });
-}
-
-function setupRtlStyleSwapping() {
-  // Clean up any existing observer (important for HMR)
-  teardownRtlStyleSwapping();
-
-  let currentDirection = document.documentElement.dir || 'ltr';
-
-  rtlObserver = new MutationObserver(() => {
-    const newDirection = document.documentElement.dir || 'ltr';
-    if (newDirection !== currentDirection) {
-      currentDirection = newDirection;
-      swapNfsStylesheets(newDirection);
-    }
-  });
-
-  rtlObserver.observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ['dir'],
-  });
-}
-
-function teardownRtlStyleSwapping() {
-  if (rtlObserver) {
-    rtlObserver.disconnect();
-    rtlObserver = null;
-  }
-}
-
-// Initialize on module load
-setupRtlStyleSwapping();
-
-// Cleanup on HMR (Webpack)
-// @ts-expect-error - module.hot is Webpack-specific
-if (module.hot) {
-  // @ts-expect-error - module.hot is Webpack-specific
-  module.hot.dispose(() => {
-    teardownRtlStyleSwapping();
-  });
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
 // Runtime Theming (Storybook-only)
 // ═══════════════════════════════════════════════════════════════════════════════
 // Enables runtime Foundation theming in Storybook by compiling Sass in the browser.
@@ -144,19 +78,24 @@ const preview: Preview = {
     applicationConfig({
       providers: [provideNfsStorybookStyleLoader()],
     }),
-    // Apply direction based on toolbar selection
+    // Apply theme state from addon panel, synced with direction toolbar
     (story, context) => {
-      const direction = context.globals['direction'] || 'ltr';
+      // Get direction from toolbar (synced with theme state's globalTextDirection)
+      const direction = (context.globals['direction'] || 'ltr') as
+        | 'ltr'
+        | 'rtl';
       document.documentElement.dir = direction;
-      return story();
-    },
-    // Apply theme state from addon panel
-    (story, context) => {
+
       // Use mergeWithDefaults to handle partial objects from URL globals restoration
       // Storybook's URL persistence can create partial objects with undefined values
       const themeState = mergeWithDefaults(
         context.globals[THEME_STATE_KEY] as Partial<ThemeState> | undefined,
       );
+
+      // Sync toolbar direction with theme state's globalTextDirection
+      // This enables runtime Sass compilation with correct RTL/LTR settings
+      themeState.layout.globalTextDirection = direction;
+
       const hash = JSON.stringify(themeState);
 
       // Only apply if theme state changed (prevents re-compilation on every render)
