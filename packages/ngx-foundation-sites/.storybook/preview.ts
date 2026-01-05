@@ -7,7 +7,10 @@ import {
   applyThemeState,
   initializeRuntimeTheming,
 } from '../src/storybook/runtime-theme-injector';
-import { getDefaultThemeState } from '../src/storybook/theme-defaults';
+import {
+  getDefaultThemeState,
+  mergeWithDefaults,
+} from '../src/storybook/theme-defaults';
 import type { ThemeState } from './addons/theme-panel/types';
 import { THEME_STATE_KEY, EVENTS } from './addons/theme-panel/constants';
 
@@ -134,9 +137,11 @@ const preview: Preview = {
     },
     // Apply theme state from addon panel
     (story, context) => {
-      const themeState =
-        (context.globals[THEME_STATE_KEY] as ThemeState) ||
-        getDefaultThemeState();
+      // Use mergeWithDefaults to handle partial objects from URL globals restoration
+      // Storybook's URL persistence can create partial objects with undefined values
+      const themeState = mergeWithDefaults(
+        context.globals[THEME_STATE_KEY] as Partial<ThemeState> | undefined,
+      );
       const hash = JSON.stringify(themeState);
 
       // Only apply if theme state changed (prevents re-compilation on every render)

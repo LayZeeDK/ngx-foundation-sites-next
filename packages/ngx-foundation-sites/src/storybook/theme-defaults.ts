@@ -227,6 +227,56 @@ export function areThemeStatesEqual(a: ThemeState, b: ThemeState): boolean {
 }
 
 /**
+ * Deep merges a partial theme state with defaults.
+ *
+ * This is necessary because Storybook's URL-based globals persistence can
+ * create partial objects with `undefined` values for unchanged properties.
+ * For example, changing only the primary color results in:
+ * `{ palette: { primary: '#ff0000' }, accordion: undefined, button: undefined }`
+ *
+ * This function ensures all required properties have valid values.
+ *
+ * @param partial - Partial theme state (possibly with undefined values)
+ * @returns Complete theme state with all defaults filled in
+ */
+export function mergeWithDefaults(
+  partial: Partial<ThemeState> | undefined,
+): ThemeState {
+  const defaults = getDefaultThemeState();
+
+  if (!partial) {
+    return defaults;
+  }
+
+  return {
+    palette: {
+      primary: partial.palette?.primary ?? defaults.palette.primary,
+      secondary: partial.palette?.secondary ?? defaults.palette.secondary,
+      success: partial.palette?.success ?? defaults.palette.success,
+      warning: partial.palette?.warning ?? defaults.palette.warning,
+      alert: partial.palette?.alert ?? defaults.palette.alert,
+    },
+    accordion: {
+      background:
+        partial.accordion?.background ?? defaults.accordion.background,
+      plusminus: partial.accordion?.plusminus ?? defaults.accordion.plusminus,
+      titleFontSize:
+        partial.accordion?.titleFontSize ?? defaults.accordion.titleFontSize,
+      itemPadding: partial.accordion?.itemPadding ?? {
+        ...defaults.accordion.itemPadding,
+      },
+      slideSpeed:
+        partial.accordion?.slideSpeed ?? defaults.accordion.slideSpeed,
+    },
+    button: {
+      padding: partial.button?.padding ?? { ...defaults.button.padding },
+      radius: partial.button?.radius ?? defaults.button.radius,
+      fontSize: partial.button?.fontSize ?? defaults.button.fontSize,
+    },
+  };
+}
+
+/**
  * Generates SCSS variable declarations from a theme state.
  * Used for the "Export" feature.
  *

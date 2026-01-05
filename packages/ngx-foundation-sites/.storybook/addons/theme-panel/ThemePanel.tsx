@@ -14,6 +14,7 @@ import {
   VARIABLE_SECTIONS,
   getDefaultThemeState,
   generateScssExport,
+  mergeWithDefaults,
 } from '../../../src/storybook/theme-defaults';
 import {
   ColorControl,
@@ -182,8 +183,10 @@ export function ThemePanel({ active }: ThemePanelProps) {
     [EVENTS.COMPILE_END]: () => setIsCompiling(false),
   });
 
-  const themeState: ThemeState =
-    (globals[THEME_STATE_KEY] as ThemeState) || getDefaultThemeState();
+  // Use mergeWithDefaults to handle partial objects from URL globals restoration
+  const themeState: ThemeState = mergeWithDefaults(
+    globals[THEME_STATE_KEY] as Partial<ThemeState> | undefined,
+  );
 
   const updateThemeState = useCallback(
     (newState: ThemeState) => {
