@@ -44,7 +44,10 @@ const browserProcess = {
   env: {
     NODE_ENV: 'production',
     PATH: '/usr/bin',
-    LANG: typeof navigator !== 'undefined' ? navigator.language + '.UTF-8' : 'en-US.UTF-8',
+    LANG:
+      typeof navigator !== 'undefined'
+        ? navigator.language + '.UTF-8'
+        : 'en-US.UTF-8',
     PWD: '/',
     HOME: '/home',
     TMP: '/tmp',
@@ -121,12 +124,20 @@ const browserProcess = {
   },
 
   // Stubs for features we don't support
-  binding: () => { throw new Error('process.binding is not supported'); },
-  _linkedBinding: () => { throw new Error('process._linkedBinding is not supported'); },
-  dlopen: () => { throw new Error('process.dlopen is not supported'); },
+  binding: () => {
+    throw new Error('process.binding is not supported');
+  },
+  _linkedBinding: () => {
+    throw new Error('process._linkedBinding is not supported');
+  },
+  dlopen: () => {
+    throw new Error('process.dlopen is not supported');
+  },
   abort: () => {},
   emitWarning: (msg) => console.warn(msg),
-  assert: (condition, message) => { if (!condition) throw new Error(message); },
+  assert: (condition, message) => {
+    if (!condition) throw new Error(message);
+  },
 
   // Features
   features: {

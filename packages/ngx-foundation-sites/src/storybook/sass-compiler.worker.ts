@@ -141,7 +141,10 @@ function extractSassModule(module: unknown): SassModule {
 
   // CommonJS default export
   const defaultExport = mod['default'] as Record<string, unknown> | undefined;
-  if (defaultExport && typeof defaultExport['compileStringAsync'] === 'function') {
+  if (
+    defaultExport &&
+    typeof defaultExport['compileStringAsync'] === 'function'
+  ) {
     return defaultExport as unknown as SassModule;
   }
 
