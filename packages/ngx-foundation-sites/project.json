@@ -26,6 +26,7 @@
         "{workspaceRoot}/node_modules/foundation-sites/scss/**/*.scss"
       ],
       "outputs": ["{projectRoot}/src/storybook/generated/sass-bundle.ts"],
+      "cache": true,
       "options": {
         "command": "node packages/ngx-foundation-sites/tools/bundle-sass-sources.mjs"
       }
@@ -38,6 +39,7 @@
         "{workspaceRoot}/node_modules/foundation-sites/scss/**/*.scss"
       ],
       "outputs": ["{projectRoot}/dist-css"],
+      "cache": true,
       "options": {
         "command": "node packages/ngx-foundation-sites/tools/build-component-css.mjs"
       }
