@@ -28,9 +28,18 @@
  * ```
  */
 
-import { compileWithWorker, preloadWorker } from './sass-compiler';
+import { compileComponentsSelectively, preloadWorker } from './sass-compiler';
 import { getDefaultThemeState } from './theme-defaults';
 import type { ThemeState } from '../../.storybook/addons/theme-panel/types';
+import {
+  AVAILABLE_COMPONENTS,
+  type AvailableComponent,
+} from './generated/sass-bundle';
+import {
+  hashComponentState,
+  getAffectedComponents,
+} from './component-dependencies';
+import { LruCache } from './lru-cache';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // Constants
@@ -52,9 +61,26 @@ const NFS_STYLE_PREFIX = 'nfs-style';
 // ═══════════════════════════════════════════════════════════════════════════════
 
 /**
- * Cache of compiled CSS by theme state hash.
+ * Per-component CSS cache with LRU eviction.
+ * Key: "component:{...relevantState}" - only component's dependencies
+ * Value: Compiled CSS for that single component
+ * Max 50 entries (~2.5MB) - enough for typical theme exploration
  */
-const themeStateCache = new Map<string, string>();
+const componentCache = new LruCache<string, string>(50);
+
+/**
+ * Combined CSS cache with LRU eviction.
+ * Key: Full theme state hash (JSON.stringify)
+ * Value: All components CSS concatenated
+ * Max 10 entries (~500KB) - fewer full-state variations explored
+ */
+const combinedCache = new LruCache<string, string>(10);
+
+/**
+ * Last applied theme state for change detection.
+ * Used to determine which components need recompilation.
+ */
+let lastAppliedState: ThemeState | null = null;
 
 /**
  * Currently applied theme state hash.
@@ -130,35 +156,94 @@ function hashThemeState(themeState: ThemeState): string {
 }
 
 /**
- * Compiles a theme state if not already cached.
- * Uses Web Worker for off-main-thread compilation.
+ * Compiles a theme state with per-component caching.
+ *
+ * Optimization: Only recompiles components whose relevant variables changed.
+ * - Palette changes: recompile all (global colors affect everything)
+ * - Component-specific changes: only recompile that component
  *
  * @param themeState - Complete theme state to compile
  * @returns Promise resolving to compiled CSS
  */
 async function compileThemeState(themeState: ThemeState): Promise<string> {
-  const hash = hashThemeState(themeState);
+  const fullHash = hashThemeState(themeState);
 
-  // Return cached if available
-  const cached = themeStateCache.get(hash);
-  if (cached) {
-    return cached;
+  // Fast path: combined cache hit
+  const cachedCombined = combinedCache.get(fullHash);
+  if (cachedCombined) {
+    return cachedCombined;
   }
 
   // If already compiling this theme state, return the existing promise
-  if (compilingThemeStateHash === hash && compilationPromise) {
+  if (compilingThemeStateHash === fullHash && compilationPromise) {
     return compilationPromise;
   }
 
-  // Start new compilation in Web Worker (off-main-thread)
-  compilingThemeStateHash = hash;
+  compilingThemeStateHash = fullHash;
 
-  compilationPromise = compileWithWorker(themeState).then((css) => {
-    themeStateCache.set(hash, css);
+  compilationPromise = (async () => {
+    // Determine which components need recompilation
+    const affectedComponents = getAffectedComponents(
+      lastAppliedState,
+      themeState,
+    );
+
+    // Collect CSS from cache or mark for compilation
+    const componentCss = new Map<AvailableComponent, string>();
+    const toCompile: AvailableComponent[] = [];
+
+    for (const component of AVAILABLE_COMPONENTS) {
+      const componentHash = hashComponentState(themeState, component);
+      const cachedCss = componentCache.get(componentHash);
+
+      if (cachedCss && !affectedComponents.has(component)) {
+        // Use cached CSS for unchanged components
+        componentCss.set(component, cachedCss);
+      } else {
+        // Need to compile this component
+        toCompile.push(component);
+      }
+    }
+
+    // Log selective compilation info
+    const cachedCount = AVAILABLE_COMPONENTS.length - toCompile.length;
+    if (toCompile.length > 0) {
+      console.log(
+        `[nfs-theme] Selective compile: ${toCompile.join(', ')} (${cachedCount}/${AVAILABLE_COMPONENTS.length} cached)`,
+      );
+    }
+
+    // Compile only affected components
+    if (toCompile.length > 0) {
+      const freshCss = await compileComponentsSelectively(
+        toCompile,
+        themeState,
+      );
+
+      // Update per-component cache and merge results
+      for (const [component, css] of freshCss) {
+        const componentHash = hashComponentState(themeState, component);
+        componentCache.set(componentHash, css);
+        componentCss.set(component, css);
+      }
+    }
+
+    // Combine CSS in consistent order
+    const combined = AVAILABLE_COMPONENTS.map((c) => componentCss.get(c)).join(
+      '\n',
+    );
+
+    // Cache the combined result
+    combinedCache.set(fullHash, combined);
+
+    // Update last applied state for next comparison
+    lastAppliedState = structuredClone(themeState);
+
     compilingThemeStateHash = null;
     compilationPromise = null;
-    return css;
-  });
+
+    return combined;
+  })();
 
   return compilationPromise;
 }
@@ -213,15 +298,15 @@ export async function applyThemeState(
   console.log('[nfs-theme] Applying theme state...');
   const startTime = performance.now();
 
-  // Check if we need to compile (not cached)
-  const isCached = themeStateCache.has(hash);
+  // Check if we need to compile (not in combined cache)
+  const isCached = combinedCache.has(hash);
 
   // Notify compilation start if not cached
   if (!isCached) {
     options?.onCompileStart?.();
   }
 
-  // Compile theme state (uses cache if available)
+  // Compile theme state (uses per-component caching)
   const css = await compileThemeState(themeState);
 
   // Notify compilation end if we compiled
@@ -267,7 +352,9 @@ export function removeTheme(): void {
  * Useful for development when Sass sources change.
  */
 export function clearThemeCache(): void {
-  themeStateCache.clear();
+  componentCache.clear();
+  combinedCache.clear();
+  lastAppliedState = null;
   console.log('[nfs-theme] Cache cleared');
 }
 

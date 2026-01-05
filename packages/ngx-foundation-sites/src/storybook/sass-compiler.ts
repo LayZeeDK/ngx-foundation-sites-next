@@ -31,7 +31,11 @@
  * ```
  */
 
-import { SASS_SOURCES, AVAILABLE_COMPONENTS } from './generated/sass-bundle';
+import {
+  SASS_SOURCES,
+  AVAILABLE_COMPONENTS,
+  type AvailableComponent,
+} from './generated/sass-bundle';
 import type { ThemeState } from '../../.storybook/addons/theme-panel/types';
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -239,6 +243,44 @@ class SassWorkerPool {
   }
 
   /**
+   * Compile specific components in parallel.
+   * Used for selective recompilation when only some components are affected.
+   *
+   * @param components - Components to compile
+   * @param themeState - Theme state for compilation
+   * @returns Map of component name to compiled CSS
+   */
+  async compileComponents(
+    components: AvailableComponent[],
+    themeState: ThemeState,
+  ): Promise<Map<AvailableComponent, string>> {
+    // Ensure pool is initialized
+    if (!this.#initPromise) {
+      await this.init();
+    } else {
+      await this.#initPromise;
+    }
+
+    const startTime = performance.now();
+
+    // Parallel compilation of only the specified components
+    const results = await Promise.all(
+      components.map(async (component) => ({
+        component,
+        css: await this.compile(component, themeState),
+      })),
+    );
+
+    const compileTime = Math.round(performance.now() - startTime);
+    console.log(
+      `[sass-compiler] ${components.length} component(s) compiled in ${compileTime}ms (selective)`,
+    );
+
+    // Convert to Map
+    return new Map(results.map((r) => [r.component, r.css]));
+  }
+
+  /**
    * Terminate all workers in the pool.
    */
   terminate(): void {
@@ -284,4 +326,20 @@ export async function compileWithWorker(
  */
 export async function preloadWorker(): Promise<void> {
   await getPool();
+}
+
+/**
+ * Compile specific components selectively.
+ * Used for per-component caching - only recompiles affected components.
+ *
+ * @param components - Components to compile
+ * @param themeState - Theme state for compilation
+ * @returns Map of component name to compiled CSS
+ */
+export async function compileComponentsSelectively(
+  components: AvailableComponent[],
+  themeState: ThemeState,
+): Promise<Map<AvailableComponent, string>> {
+  const instance = await getPool();
+  return instance.compileComponents(components, themeState);
 }
