@@ -1,9 +1,9 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { useGlobals } from 'storybook/manager-api';
-import { styled } from 'storybook/theming';
+import { useGlobals, useChannel } from 'storybook/manager-api';
+import { styled, keyframes } from 'storybook/theming';
 import { ZoomResetIcon, CopyIcon, DownloadIcon } from '@storybook/icons';
 
-import { THEME_STATE_KEY, DEBOUNCE_MS } from './constants';
+import { THEME_STATE_KEY, DEBOUNCE_MS, EVENTS } from './constants';
 import type {
   ThemeState,
   SpacingValue,
@@ -82,6 +82,29 @@ const SectionContent = styled.div`
   padding: 12px 0;
 `;
 
+// Spinner animation
+const spin = keyframes`
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+`;
+
+const CompileStatus = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: ${(props) => props.theme.color.mediumdark};
+`;
+
+const Spinner = styled.div`
+  width: 12px;
+  height: 12px;
+  border: 2px solid ${(props) => props.theme.color.border};
+  border-top-color: ${(props) => props.theme.color.secondary};
+  border-radius: 50%;
+  animation: ${spin} 0.8s linear infinite;
+`;
+
 // ═══════════════════════════════════════════════════════════════════════════════
 // Helper Functions
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -150,7 +173,14 @@ export function ThemePanel({ active }: ThemePanelProps) {
   const [expandedSections, setExpandedSections] = useState<Set<string>>(
     new Set(['palette']),
   );
+  const [isCompiling, setIsCompiling] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Listen for compilation status events from preview
+  useChannel({
+    [EVENTS.COMPILE_START]: () => setIsCompiling(true),
+    [EVENTS.COMPILE_END]: () => setIsCompiling(false),
+  });
 
   const themeState: ThemeState =
     (globals[THEME_STATE_KEY] as ThemeState) || getDefaultThemeState();
@@ -286,6 +316,12 @@ export function ThemePanel({ active }: ThemePanelProps) {
       <Header>
         <Title>Foundation Theme</Title>
         <Actions>
+          {isCompiling && (
+            <CompileStatus>
+              <Spinner />
+              Compiling Sass...
+            </CompileStatus>
+          )}
           <IconButton onClick={handleReset} title="Reset to defaults">
             <ZoomResetIcon />
           </IconButton>

@@ -1,5 +1,6 @@
 import type { Preview } from '@storybook/angular';
 import { setCompodocJson } from '@storybook/addon-docs/angular';
+import { addons } from 'storybook/preview-api';
 import docJson from '../documentation.json';
 import { cleanCompodocJson } from '../src/lib/util-storybook/clean-compodoc-json';
 import {
@@ -8,7 +9,7 @@ import {
 } from '../src/storybook/runtime-theme-injector';
 import { getDefaultThemeState } from '../src/storybook/theme-defaults';
 import type { ThemeState } from './addons/theme-panel/types';
-import { THEME_STATE_KEY } from './addons/theme-panel/constants';
+import { THEME_STATE_KEY, EVENTS } from './addons/theme-panel/constants';
 
 // Configure Compodoc documentation for automatic prop extraction
 // cleanCompodocJson removes placeholder strings like "___COMPODOC_EMPTY_LINE___"
@@ -141,10 +142,17 @@ const preview: Preview = {
       // Only apply if theme state changed (prevents re-compilation on every render)
       if (hash !== currentThemeStateHash) {
         currentThemeStateHash = hash;
+        const channel = addons.getChannel();
+
         // Fire-and-forget: theme will be applied asynchronously
         // The visual update happens when the style element is updated
-        applyThemeState(themeState).catch((error) => {
+        applyThemeState(themeState, {
+          onCompileStart: () => channel.emit(EVENTS.COMPILE_START),
+          onCompileEnd: () => channel.emit(EVENTS.COMPILE_END),
+        }).catch((error) => {
           console.error('[nfs-theme] Failed to apply theme state:', error);
+          // Ensure we emit end even on error
+          channel.emit(EVENTS.COMPILE_END);
         });
       }
 

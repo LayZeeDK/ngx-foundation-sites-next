@@ -167,12 +167,23 @@ async function compileThemeState(themeState: ThemeState): Promise<string> {
 // ═══════════════════════════════════════════════════════════════════════════════
 
 /**
+ * Options for theme application.
+ */
+export interface ApplyThemeOptions {
+  /** Called when compilation starts (not called if cached) */
+  onCompileStart?: () => void;
+  /** Called when compilation ends (not called if cached) */
+  onCompileEnd?: () => void;
+}
+
+/**
  * Applies a complete theme state by compiling (if needed) and injecting CSS.
  *
  * Provides fine-grained control over all Foundation variables via the
  * Theme addon panel in Storybook.
  *
  * @param themeState - Complete theme state with palette and component variables
+ * @param options - Optional callbacks for compilation status
  * @returns Promise that resolves when theme is applied
  *
  * @example
@@ -180,14 +191,17 @@ async function compileThemeState(themeState: ThemeState): Promise<string> {
  * import { applyThemeState } from './runtime-theme-injector';
  * import { getDefaultThemeState } from './theme-defaults';
  *
- * // Apply custom theme
- * await applyThemeState({
- *   ...getDefaultThemeState(),
- *   palette: { ...getDefaultThemeState().palette, primary: '#ff6600' },
- * });
+ * // Apply custom theme with status callbacks
+ * await applyThemeState(
+ *   { ...getDefaultThemeState(), palette: { ...getDefaultThemeState().palette, primary: '#ff6600' } },
+ *   { onCompileStart: () => console.log('Compiling...'), onCompileEnd: () => console.log('Done!') }
+ * );
  * ```
  */
-export async function applyThemeState(themeState: ThemeState): Promise<void> {
+export async function applyThemeState(
+  themeState: ThemeState,
+  options?: ApplyThemeOptions,
+): Promise<void> {
   const hash = hashThemeState(themeState);
 
   // Skip if already applied
@@ -198,8 +212,21 @@ export async function applyThemeState(themeState: ThemeState): Promise<void> {
   console.log('[nfs-theme] Applying theme state...');
   const startTime = performance.now();
 
+  // Check if we need to compile (not cached)
+  const isCached = themeStateCache.has(hash);
+
+  // Notify compilation start if not cached
+  if (!isCached) {
+    options?.onCompileStart?.();
+  }
+
   // Compile theme state (uses cache if available)
   const css = await compileThemeState(themeState);
+
+  // Notify compilation end if we compiled
+  if (!isCached) {
+    options?.onCompileEnd?.();
+  }
 
   // Inject CSS
   const styleEl = getStyleElement();
@@ -211,7 +238,7 @@ export async function applyThemeState(themeState: ThemeState): Promise<void> {
   currentThemeStateHash = hash;
 
   const totalTime = Math.round(performance.now() - startTime);
-  const cached = themeStateCache.has(hash) ? ' (cached)' : '';
+  const cached = isCached ? ' (cached)' : '';
   console.log(`[nfs-theme] Theme state applied in ${totalTime}ms${cached}`);
 }
 
