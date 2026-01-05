@@ -23,7 +23,7 @@ import {
   selector: 'nfs-benchmark',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="benchmark-container">
+    <main class="benchmark-container">
       <header class="benchmark-header">
         <h1>Sass Compilation Benchmark</h1>
         <p class="text-secondary">
@@ -32,8 +32,11 @@ import {
         </p>
       </header>
 
-      <section class="benchmark-controls margin-bottom-2">
-        <h3>Settings</h3>
+      <section
+        class="benchmark-controls margin-bottom-2"
+        aria-labelledby="settings-heading"
+      >
+        <h2 id="settings-heading">Settings</h2>
         <div class="grid-x grid-margin-x">
           <div class="cell small-6 medium-3">
             <label>
@@ -76,8 +79,11 @@ import {
       }
 
       @if (results()) {
-        <section class="benchmark-results margin-bottom-2">
-          <h3>Results</h3>
+        <section
+          class="benchmark-results margin-bottom-2"
+          aria-labelledby="results-heading"
+        >
+          <h2 id="results-heading">Results</h2>
 
           <!-- Summary Cards -->
           <div class="grid-x grid-margin-x margin-bottom-2">
@@ -120,7 +126,7 @@ import {
           </div>
 
           <!-- Detailed Timing Table -->
-          <h4>Total Compilation Timing</h4>
+          <h3>Total Compilation Timing</h3>
           <table class="hover">
             <thead>
               <tr>
@@ -176,19 +182,22 @@ import {
       }
 
       @if (comparison()) {
-        <section class="benchmark-comparison margin-bottom-2">
-          <h3>Comparison</h3>
+        <section
+          class="benchmark-comparison margin-bottom-2"
+          aria-labelledby="comparison-heading"
+        >
+          <h2 id="comparison-heading">Comparison</h2>
           <pre class="comparison-output">{{ comparison() }}</pre>
         </section>
       }
 
       @if (consoleOutput()) {
-        <section class="benchmark-console">
-          <h3>Console Output</h3>
+        <section class="benchmark-console" aria-labelledby="console-heading">
+          <h2 id="console-heading">Console Output</h2>
           <pre class="console-output">{{ consoleOutput() }}</pre>
         </section>
       }
-    </div>
+    </main>
   `,
   styles: [
     `
