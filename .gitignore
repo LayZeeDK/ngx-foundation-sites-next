@@ -5,6 +5,7 @@ dist
 dist-css
 tmp
 out-tsc
+**/generated/sass-bundle.ts
 
 # dependencies
 node_modules
@@ -38,6 +39,8 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+nul
+NUL
 
 .nx/cache
 .nx/workspace-data
