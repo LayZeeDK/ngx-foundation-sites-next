@@ -6,6 +6,7 @@ dist-css
 tmp
 out-tsc
 **/generated/sass-bundle.ts
+**/sass-browser.mjs
 
 # dependencies
 node_modules
