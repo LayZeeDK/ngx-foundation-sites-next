@@ -7,6 +7,7 @@ import {
   applyThemeState,
   initializeRuntimeTheming,
 } from '../src/storybook/runtime-theme-injector';
+import { registerJspmServiceWorker } from '../src/storybook/service-worker-registration';
 import { getDefaultThemeState } from '../src/storybook/theme-defaults';
 import type { ThemeState } from './addons/theme-panel/types';
 import { THEME_STATE_KEY, EVENTS } from './addons/theme-panel/constants';
@@ -88,10 +89,17 @@ if (module.hot) {
 // Users can customize theme variables via the Theme addon panel.
 //
 // Architecture:
-// 1. Sass sources are bundled at build time (bundle-sass target)
-// 2. Dart Sass is lazy-loaded from JSPM CDN on first use
-// 3. Theme changes trigger recompilation (cached for instant switching)
-// 4. Compiled CSS is injected into a <style> element, overriding precompiled styles
+// 1. Service Worker caches JSPM CDN modules for fast Sass loading
+// 2. Sass sources are bundled at build time (bundle-sass target)
+// 3. Dart Sass is lazy-loaded from JSPM CDN on first use
+// 4. Theme changes trigger recompilation (cached for instant switching)
+// 5. Compiled CSS is injected into a <style> element, overriding precompiled styles
+
+// Register Service Worker first (caches JSPM CDN for faster Sass loading)
+// Fire-and-forget: don't block Storybook startup
+registerJspmServiceWorker().catch((error) => {
+  console.warn('[jspm-sw] Failed to register:', error);
+});
 
 // Initialize runtime theming (preloads Sass compiler)
 // Fire-and-forget: don't block Storybook startup

@@ -16,7 +16,11 @@ const config: StorybookConfig = {
     options: {},
   },
   // Serve precompiled CSS at root (files have nfs- prefix: /nfs-accordion.css)
-  staticDirs: [{ from: '../dist-css', to: '/' }],
+  // Also serve Service Worker for JSPM CDN caching
+  staticDirs: [
+    { from: '../dist-css', to: '/' },
+    { from: './sw-public', to: '/' },
+  ],
 };
 
 export default config;
