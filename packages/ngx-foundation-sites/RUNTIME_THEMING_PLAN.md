@@ -6,7 +6,16 @@ Enable runtime Foundation theming in Storybook by compiling Sass in the browser,
 
 ---
 
-## Phase 1: Proof of Concept
+## Status
+
+| Phase   | Status      | Notes                                       |
+| ------- | ----------- | ------------------------------------------- |
+| Phase 1 | ✅ Complete | POC validated, all success criteria met     |
+| Phase 2 | 📋 Planned  | Full addon panel with per-variable controls |
+
+---
+
+## Phase 1: Proof of Concept ✅
 
 Start with a minimal POC to validate browser Sass compilation with Foundation imports.
 
@@ -274,12 +283,35 @@ Add to `packages/ngx-foundation-sites/project.json`:
 
 ### POC Success Criteria
 
-1. Storybook loads without errors
-2. Theme dropdown appears in toolbar
-3. Selecting a theme triggers Sass compilation (visible in console)
-4. Component colors change according to selected palette
-5. Compilation completes in <500ms after first load
-6. Subsequent theme switches use cached CSS (instant)
+All criteria verified and passing:
+
+- [x] Storybook loads without errors
+- [x] Theme dropdown appears in toolbar
+- [x] Selecting a theme triggers Sass compilation (visible in console)
+- [x] Component colors change according to selected palette
+- [x] Compilation completes in <500ms after first load
+- [x] Subsequent theme switches use cached CSS (instant)
+
+### Implementation Notes
+
+**Key Learnings from POC:**
+
+1. **Foundation color extraction**: Must call `@include add-foundation-colors()` after injecting the palette to populate `-color` suffixed variables (e.g., `$primary-color`).
+
+2. **Sass importer resolution**: Foundation's `@import 'util/util'` chains require careful path normalization. The bundler maps both prefixed (`_util`) and non-prefixed (`util`) paths.
+
+3. **Build-time vs runtime**: The POC validates that browser Sass compilation is viable (~200-300ms per component). Consumer theming still uses build-time compilation via `_nfs-settings.scss`.
+
+**Files Implemented:**
+
+| File                                      | Description                             |
+| ----------------------------------------- | --------------------------------------- |
+| `tools/bundle-sass-sources.mjs`           | Bundles Foundation + library Sass files |
+| `src/storybook/generated/sass-bundle.ts`  | Generated module with Sass sources      |
+| `src/storybook/browser-sass-compiler.ts`  | Browser Sass compilation with JSPM      |
+| `src/storybook/theme-presets.ts`          | Four preset color palettes              |
+| `src/storybook/runtime-theme-injector.ts` | CSS injection with caching              |
+| `.storybook/preview.ts`                   | Theme toolbar + decorator integration   |
 
 ---
 
