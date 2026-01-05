@@ -35,8 +35,11 @@ const STORE_NAME = 'compiled-css';
  *
  * v1 → v2: Added full Foundation variable support (56 variables)
  *          with LinkedColorValue types and reorganized ThemeState
+ * v2 → v3: WCAG-compliant default palette (#0c5f91 replaces #1779ba)
+ * v3 → v4: Fixed MutationObserver to disable dynamically-loaded stylesheets
+ * v4 → v5: Adjusted WCAG palette to barely exceed 4.5:1 minimum (#146ba5 etc.)
  */
-const CACHE_VERSION = 'v2';
+const CACHE_VERSION = 'v5';
 
 /**
  * Maximum age for cached entries (7 days in milliseconds).

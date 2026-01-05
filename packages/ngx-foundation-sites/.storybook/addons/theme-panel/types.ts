@@ -128,6 +128,19 @@ export interface PaletteState {
 }
 
 /**
+ * A pre-defined color palette preset (e.g., Bootstrap, Material Design).
+ * Used by the palette selector dropdown in the Theme panel.
+ */
+export interface PalettePreset {
+  /** Unique identifier for the preset (e.g., 'bootstrap', 'material') */
+  id: string;
+  /** Display name shown in the dropdown (e.g., 'Bootstrap 5') */
+  name: string;
+  /** The color values for this preset */
+  colors: PaletteState;
+}
+
+/**
  * Global colors configuration (gray scale and body colors).
  */
 export interface GlobalColorsState {

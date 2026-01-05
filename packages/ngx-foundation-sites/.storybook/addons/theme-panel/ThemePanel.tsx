@@ -31,6 +31,7 @@ import {
   LinkedColorControl,
   MapControl,
   PercentageControl,
+  PaletteSelectorControl,
 } from './components';
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -324,6 +325,14 @@ export function ThemePanel({ active }: ThemePanelProps) {
     updateThemeState(newState);
   };
 
+  // Handle palette preset selection (updates all 5 colors at once)
+  const handlePaletteSelect = (newPalette: PaletteState) => {
+    updateThemeState({
+      ...themeState,
+      palette: newPalette,
+    });
+  };
+
   const renderControl = (
     section: VariableSection,
     variable: VariableDefinition,
@@ -475,6 +484,13 @@ export function ThemePanel({ active }: ThemePanelProps) {
           />
           {expandedSections.has(section.id) && (
             <SectionContent>
+              {/* Palette selector at the top of Brand Colors section */}
+              {section.id === 'palette' && (
+                <PaletteSelectorControl
+                  currentPalette={themeState.palette}
+                  onSelectPalette={handlePaletteSelect}
+                />
+              )}
               {section.variables.map((variable) =>
                 renderControl(section, variable),
               )}

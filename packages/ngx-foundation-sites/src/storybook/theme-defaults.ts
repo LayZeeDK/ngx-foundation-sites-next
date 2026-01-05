@@ -17,6 +17,7 @@ import type {
   VariableSection,
   SpacingValue,
   PaletteState,
+  PalettePreset,
   GlobalColorsState,
   TypographyState,
   SpacingGlobalState,
@@ -36,16 +37,301 @@ import {
 // ═══════════════════════════════════════════════════════════════════════════════
 
 /**
- * Foundation's default color palette.
+ * Original Foundation color palette (non-WCAG compliant).
+ * These colors may fail WCAG AA contrast requirements on hover backgrounds.
  * @see https://get.foundation/sites/docs/global.html#colors
  */
-export const DEFAULT_PALETTE: PaletteState = {
+export const FOUNDATION_ORIGINAL_PALETTE: PaletteState = {
   primary: '#1779ba',
   secondary: '#767676',
   success: '#3adb76',
   warning: '#ffae00',
   alert: '#cc4b37',
 };
+
+/**
+ * WCAG AA compliant Foundation color palette (default).
+ * Colors are tuned to barely exceed the 4.5:1 contrast ratio minimum
+ * on hover backgrounds (#e6e6e6), staying as close as possible to
+ * Foundation's original vibrant colors while meeting WCAG 2.1 AA requirements.
+ *
+ * Contrast ratios on white / hover:
+ * - primary:   5.66:1 / 4.58:1 ✓ (original: #1779ba)
+ * - secondary: 5.69:1 / 4.60:1 ✓ (original: #767676)
+ * - success:   5.65:1 / 4.56:1 ✓ (original: #3adb76)
+ * - warning:   5.66:1 / 4.57:1 ✓ (original: #ffae00)
+ * - alert:     5.64:1 / 4.56:1 ✓ (original: #cc4b37)
+ */
+export const DEFAULT_PALETTE: PaletteState = {
+  primary: '#146ba5',
+  secondary: '#666666',
+  success: '#16763a',
+  warning: '#8a5e00',
+  alert: '#b3402e',
+};
+
+/**
+ * Pre-defined color palette presets from popular design systems.
+ * Foundation Default is listed first as it's the framework's native palette.
+ *
+ * Each preset includes the 5 standard Foundation palette colors:
+ * primary, secondary, success, warning, alert
+ */
+export const PALETTE_PRESETS: PalettePreset[] = [
+  // Foundation WCAG (Default) - Listed first, accessible colors
+  // Based on original Foundation palette but darkened to meet WCAG AA 4.5:1
+  {
+    id: 'foundation-wcag',
+    name: 'Foundation WCAG (Default)',
+    colors: {
+      primary: '#146ba5',
+      secondary: '#666666',
+      success: '#16763a',
+      warning: '#8a5e00',
+      alert: '#b3402e',
+    },
+  },
+  // Foundation Original - Classic Foundation colors (may not pass WCAG AA)
+  {
+    id: 'foundation-original',
+    name: 'Foundation (Original)',
+    colors: {
+      primary: '#1779ba',
+      secondary: '#767676',
+      success: '#3adb76',
+      warning: '#ffae00',
+      alert: '#cc4b37',
+    },
+  },
+  // 1. Bootstrap 5
+  {
+    id: 'bootstrap',
+    name: 'Bootstrap 5',
+    colors: {
+      primary: '#0d6efd',
+      secondary: '#6c757d',
+      success: '#198754',
+      warning: '#ffc107',
+      alert: '#dc3545',
+    },
+  },
+  // 2. Material Design 3
+  {
+    id: 'material',
+    name: 'Material Design 3',
+    colors: {
+      primary: '#6750a4',
+      secondary: '#625b71',
+      success: '#00c853',
+      warning: '#f9a825',
+      alert: '#b3261e',
+    },
+  },
+  // 3. Tailwind CSS
+  {
+    id: 'tailwind',
+    name: 'Tailwind CSS',
+    colors: {
+      primary: '#3b82f6',
+      secondary: '#6b7280',
+      success: '#10b981',
+      warning: '#f59e0b',
+      alert: '#ef4444',
+    },
+  },
+  // 4. Bulma
+  {
+    id: 'bulma',
+    name: 'Bulma',
+    colors: {
+      primary: '#00d1b2',
+      secondary: '#7a7a7a',
+      success: '#23d160',
+      warning: '#ffdd57',
+      alert: '#ff3860',
+    },
+  },
+  // 5. Chakra UI
+  {
+    id: 'chakra',
+    name: 'Chakra UI',
+    colors: {
+      primary: '#3182ce',
+      secondary: '#718096',
+      success: '#38a169',
+      warning: '#dd6b20',
+      alert: '#e53e3e',
+    },
+  },
+  // 6. Ant Design
+  {
+    id: 'antd',
+    name: 'Ant Design',
+    colors: {
+      primary: '#1677ff',
+      secondary: '#8c8c8c',
+      success: '#52c41a',
+      warning: '#faad14',
+      alert: '#ff4d4f',
+    },
+  },
+  // 7. Evergreen UI
+  {
+    id: 'evergreen',
+    name: 'Evergreen UI',
+    colors: {
+      primary: '#1070ca',
+      secondary: '#66788a',
+      success: '#47b881',
+      warning: '#ffb020',
+      alert: '#ec4c47',
+    },
+  },
+  // 8. Fluent UI
+  {
+    id: 'fluent',
+    name: 'Fluent UI',
+    colors: {
+      primary: '#0078d4',
+      secondary: '#605e5c',
+      success: '#107c10',
+      warning: '#ffb900',
+      alert: '#d13438',
+    },
+  },
+  // 9. IBM Carbon
+  {
+    id: 'carbon',
+    name: 'IBM Carbon',
+    colors: {
+      primary: '#0f62fe',
+      secondary: '#697077',
+      success: '#24a148',
+      warning: '#f1c21b',
+      alert: '#da1e28',
+    },
+  },
+  // 10. Atlassian Design
+  {
+    id: 'atlassian',
+    name: 'Atlassian Design',
+    colors: {
+      primary: '#0052cc',
+      secondary: '#5e6c84',
+      success: '#36b37e',
+      warning: '#ffab00',
+      alert: '#ff5630',
+    },
+  },
+  // 11. Vuetify
+  {
+    id: 'vuetify',
+    name: 'Vuetify',
+    colors: {
+      primary: '#1976d2',
+      secondary: '#424242',
+      success: '#2e7d32',
+      warning: '#fbc02d',
+      alert: '#d32f2f',
+    },
+  },
+  // 12. PrimeVue
+  {
+    id: 'primevue',
+    name: 'PrimeVue',
+    colors: {
+      primary: '#2196f3',
+      secondary: '#9e9e9e',
+      success: '#4caf50',
+      warning: '#ff9800',
+      alert: '#f44336',
+    },
+  },
+  // 13. Quasar
+  {
+    id: 'quasar',
+    name: 'Quasar',
+    colors: {
+      primary: '#027be3',
+      secondary: '#26a69a',
+      success: '#21ba45',
+      warning: '#f2c037',
+      alert: '#c10015',
+    },
+  },
+  // 14. Metro 4 UI
+  {
+    id: 'metro',
+    name: 'Metro 4 UI',
+    colors: {
+      primary: '#0078d7',
+      secondary: '#6c757d',
+      success: '#28a745',
+      warning: '#ffc107',
+      alert: '#dc3545',
+    },
+  },
+  // 15. Adobe Spectrum
+  {
+    id: 'spectrum',
+    name: 'Adobe Spectrum',
+    colors: {
+      primary: '#1473e6',
+      secondary: '#909090',
+      success: '#2d9d78',
+      warning: '#e68619',
+      alert: '#e34850',
+    },
+  },
+  // 16. Shopify Polaris
+  {
+    id: 'polaris',
+    name: 'Shopify Polaris',
+    colors: {
+      primary: '#008060',
+      secondary: '#6d7175',
+      success: '#008060',
+      warning: '#eec200',
+      alert: '#d82c0d',
+    },
+  },
+  // 17. Lightning Design (Salesforce)
+  {
+    id: 'lightning',
+    name: 'Lightning Design (Salesforce)',
+    colors: {
+      primary: '#1589ee',
+      secondary: '#3e3e3c',
+      success: '#04844b',
+      warning: '#ffb75d',
+      alert: '#c23934',
+    },
+  },
+  // 18. Elastic UI
+  {
+    id: 'elastic',
+    name: 'Elastic UI',
+    colors: {
+      primary: '#0077cc',
+      secondary: '#69707d',
+      success: '#017d73',
+      warning: '#f5a700',
+      alert: '#bd271e',
+    },
+  },
+  // 19. Base Web (Uber)
+  {
+    id: 'baseweb',
+    name: 'Base Web (Uber)',
+    colors: {
+      primary: '#276ef1',
+      secondary: '#5c6670',
+      success: '#07a35a',
+      warning: '#ffc043',
+      alert: '#d44333',
+    },
+  },
+];
 
 /**
  * Default gray scale and body colors.

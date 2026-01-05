@@ -12,3 +12,6 @@ export { NumberControl } from './NumberControl';
 export { LinkedColorControl } from './LinkedColorControl';
 export { MapControl } from './MapControl';
 export { PercentageControl } from './PercentageControl';
+
+// Palette selector for brand colors section
+export { PaletteSelectorControl } from './PaletteSelectorControl';
