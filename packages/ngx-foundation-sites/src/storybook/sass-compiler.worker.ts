@@ -94,9 +94,7 @@ interface SassNumber extends SassValue {
 // ═══════════════════════════════════════════════════════════════════════════════
 
 // Pre-bundled Sass (served from Storybook static directory)
-// Falls back to JSPM CDN if local bundle not available
 const SASS_LOCAL_URL = '/sass-browser.mjs';
-const SASS_CDN_URL = 'https://jspm.dev/sass';
 const BUNDLE_SCHEME = 'nfs-bundle:';
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -111,42 +109,21 @@ let sassSources: Record<string, string> | null = null;
 // ═══════════════════════════════════════════════════════════════════════════════
 
 /**
- * Loads Dart Sass, preferring local pre-bundled version.
+ * Loads Dart Sass from the local pre-bundled version.
  *
- * Load priority:
- * 1. In-memory cache (sassModule) - instant
- * 2. Local pre-bundled Sass (/sass-browser.mjs) - fast (~50-80ms)
- * 3. JSPM CDN fallback - slower (~120-300ms)
- *
- * The local bundle is created by tools/bundle-sass-compiler.mjs and includes
- * Node.js polyfills for browser compatibility.
+ * The bundle is created by tools/bundle-sass-compiler.mjs and includes
+ * Node.js polyfills (process, path, etc.) for browser compatibility.
  */
 async function loadSass(): Promise<SassModule> {
   if (sassModule) return sassModule;
 
   const startTime = performance.now();
+  console.log('[sass-worker] Loading Sass from local bundle...');
 
-  // Try local bundle first (faster, no CDN dependency)
-  // The local bundle includes our custom process polyfill with TTY stubs
-  try {
-    console.log('[sass-worker] Loading Sass from local bundle...');
-    const module = await import(/* webpackIgnore: true */ SASS_LOCAL_URL);
-    const loadTime = Math.round(performance.now() - startTime);
-    console.log(`[sass-worker] Sass loaded from local bundle in ${loadTime}ms`);
-    sassModule = extractSassModule(module);
-    return sassModule;
-  } catch (localError) {
-    console.warn(
-      '[sass-worker] Local bundle not available, falling back to CDN',
-      localError instanceof Error ? localError.message : localError,
-    );
-  }
-
-  // Fallback to JSPM CDN
-  console.log('[sass-worker] Loading Dart Sass from CDN...');
-  const module = await import(/* webpackIgnore: true */ SASS_CDN_URL);
+  const module = await import(/* webpackIgnore: true */ SASS_LOCAL_URL);
   const loadTime = Math.round(performance.now() - startTime);
-  console.log(`[sass-worker] Sass loaded from CDN in ${loadTime}ms`);
+  console.log(`[sass-worker] Sass loaded in ${loadTime}ms`);
+
   sassModule = extractSassModule(module);
   return sassModule;
 }

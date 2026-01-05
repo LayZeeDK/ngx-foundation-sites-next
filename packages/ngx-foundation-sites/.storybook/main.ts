@@ -17,11 +17,9 @@ const config: StorybookConfig = {
   },
   // Serve static assets at root:
   // - dist-css: Precompiled CSS (nfs-accordion.css, etc.)
-  // - sw-public: Service Worker for CDN caching (fallback)
   // - static: Pre-bundled Sass compiler (sass-browser.mjs)
   staticDirs: [
     { from: '../dist-css', to: '/' },
-    { from: './sw-public', to: '/' },
     { from: './static', to: '/' },
   ],
 };
