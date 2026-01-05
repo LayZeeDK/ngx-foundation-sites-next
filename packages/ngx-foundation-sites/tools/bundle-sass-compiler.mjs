@@ -5,7 +5,7 @@
  * Creates a pre-bundled, minified version of Dart Sass with Node.js polyfills
  * for use in Web Workers. This eliminates CDN dependency and reduces load time.
  *
- * Output: .storybook/static/sass-browser.mjs (~1.5-2MB minified)
+ * Output: .storybook/static/sass-browser.mjs
  *
  * Usage:
  *   node tools/bundle-sass-compiler.mjs
@@ -45,7 +45,7 @@ async function bundle() {
       bundle: true,
       format: 'esm',
       platform: 'browser',
-      target: ['es2020'],
+      target: ['es2024'], // Modern browsers only (Chrome 117+, Firefox 119+, Safari 17+)
 
       // Minification
       minify: true,
@@ -88,9 +88,13 @@ async function bundle() {
 
     const duration = Math.round(performance.now() - startTime);
 
-    // Calculate bundle size
+    // Calculate bundle size from metafile
     const { outputs } = result.metafile;
-    const outputInfo = outputs[OUTPUT_FILE.replace(/\\/g, '/')];
+    // Try both forward and backslash paths for Windows compatibility
+    const normalizedPath = OUTPUT_FILE.replace(/\\/g, '/');
+    const outputInfo =
+      outputs[normalizedPath] ||
+      outputs[Object.keys(outputs).find((k) => k.endsWith('sass-browser.mjs'))];
     const sizeKB = outputInfo ? Math.round(outputInfo.bytes / 1024) : 'unknown';
 
     console.log(`[bundle-sass] ✅ Bundle created: ${OUTPUT_FILE}`);
