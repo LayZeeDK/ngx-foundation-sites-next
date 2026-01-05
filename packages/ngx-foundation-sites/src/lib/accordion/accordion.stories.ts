@@ -70,13 +70,20 @@ export const Default: Story = {
     // ═══════════════════════════════════════════════════════════════════════
     // The Sass variable controls the CSS transition duration on
     // .accordion-content elements. Browser normalizes 250ms to 0.25s.
+    // Must wait for runtime Sass compilation to complete.
     const accordionContent = canvasElement.querySelector('.accordion-content');
     expect(accordionContent).toBeTruthy();
 
     if (accordionContent) {
-      const style = getComputedStyle(accordionContent);
-      // transitionDuration may be "0.25s, 0.25s, 0.25s" for multiple properties
-      expect(style.transitionDuration).toContain('0.25s');
+      // Wait for runtime Sass compiler to apply transition styles
+      await waitFor(
+        () => {
+          const style = getComputedStyle(accordionContent);
+          // transitionDuration may be "0.25s, 0.25s, 0.25s" for multiple properties
+          expect(style.transitionDuration).toContain('0.25s');
+        },
+        { timeout: 5000 },
+      );
     }
 
     // Click first accordion

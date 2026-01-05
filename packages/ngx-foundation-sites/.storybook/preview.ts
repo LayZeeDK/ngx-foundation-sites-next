@@ -1,11 +1,14 @@
 import type { Preview } from '@storybook/angular';
+import { applicationConfig } from '@storybook/angular';
 import { setCompodocJson } from '@storybook/addon-docs/angular';
 import { addons } from 'storybook/preview-api';
 import docJson from '../documentation.json';
 import { cleanCompodocJson } from '../src/lib/util-storybook/clean-compodoc-json';
+import { provideNfsStorybookStyleLoader } from '../src/storybook/nfs-storybook-style-loader';
 import {
   applyThemeState,
   initializeRuntimeTheming,
+  waitForInitialTheme,
 } from '../src/storybook/runtime-theme-injector';
 import {
   getDefaultThemeState,
@@ -109,6 +112,14 @@ let currentThemeStateHash: string | null = null;
 
 const preview: Preview = {
   tags: ['autodocs'],
+  loaders: [
+    // Wait for initial theme CSS to be compiled and injected before rendering
+    // This ensures a11y tests run against the runtime-compiled CSS, not unstyled content
+    async () => {
+      await waitForInitialTheme();
+      return {};
+    },
+  ],
   globalTypes: {
     direction: {
       description: 'Text direction for RTL testing',
@@ -129,6 +140,10 @@ const preview: Preview = {
     [THEME_STATE_KEY]: getDefaultThemeState(),
   },
   decorators: [
+    // Provide NfsStorybookStyleLoader to disable precompiled stylesheets when runtime theming is active
+    applicationConfig({
+      providers: [provideNfsStorybookStyleLoader()],
+    }),
     // Apply direction based on toolbar selection
     (story, context) => {
       const direction = context.globals['direction'] || 'ltr';

@@ -104,6 +104,20 @@ let compilationPromise: Promise<string> | null = null;
  */
 let compilingThemeStateHash: string | null = null;
 
+/**
+ * Promise that resolves when the initial theme is ready.
+ * Used by Storybook loaders to ensure CSS is in place before story rendering.
+ */
+let initialThemeReadyResolve: (() => void) | null = null;
+const initialThemeReadyPromise = new Promise<void>((resolve) => {
+  initialThemeReadyResolve = resolve;
+});
+
+/**
+ * Whether the initial theme has been applied.
+ */
+let initialThemeApplied = false;
+
 // ═══════════════════════════════════════════════════════════════════════════════
 // Coalescing State (Part 4 optimization)
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -136,6 +150,14 @@ let coalescingStats = {
 // ═══════════════════════════════════════════════════════════════════════════════
 
 /**
+ * MutationObserver to disable dynamically-added NFS stylesheets.
+ * Components load their CSS on-demand via NfsStyleLoader, which happens
+ * AFTER the runtime theme is applied. Without this observer, the precompiled
+ * CSS would override our runtime-compiled theme.
+ */
+let styleObserver: MutationObserver | null = null;
+
+/**
  * Gets or creates the style element for runtime theme CSS.
  */
 function getStyleElement(): HTMLStyleElement {
@@ -164,6 +186,41 @@ function disablePrecompiledStyles(): void {
     .forEach((link) => {
       link.disabled = true;
     });
+}
+
+/**
+ * Starts watching for dynamically-added NFS stylesheets and disables them.
+ * This handles components that load their CSS after the runtime theme is applied.
+ */
+function startStyleObserver(): void {
+  if (styleObserver) return; // Already watching
+
+  styleObserver = new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+      // NodeList needs Array.from() for TypeScript iteration
+      for (const node of Array.from(mutation.addedNodes)) {
+        if (
+          node instanceof HTMLLinkElement &&
+          node.id?.startsWith(NFS_STYLE_PREFIX)
+        ) {
+          node.disabled = true;
+          console.log(`[nfs-theme] Disabled dynamic stylesheet: ${node.id}`);
+        }
+      }
+    }
+  });
+
+  styleObserver.observe(document.head, { childList: true });
+}
+
+/**
+ * Stops watching for dynamically-added stylesheets.
+ */
+function stopStyleObserver(): void {
+  if (styleObserver) {
+    styleObserver.disconnect();
+    styleObserver = null;
+  }
 }
 
 /**
@@ -371,8 +428,17 @@ async function applyThemeStateInternal(
   // Disable pre-compiled styles to avoid conflicts
   disablePrecompiledStyles();
 
+  // Start watching for dynamically-loaded stylesheets (from NfsStyleLoader)
+  startStyleObserver();
+
   currentThemeStateHash = hash;
   coalescingStats.applied++;
+
+  // Signal that initial theme is ready (for Storybook loaders)
+  if (!initialThemeApplied) {
+    initialThemeApplied = true;
+    initialThemeReadyResolve?.();
+  }
 
   const totalTime = Math.round(performance.now() - startTime);
   const cached = isCached ? ' (cached)' : '';
@@ -451,6 +517,9 @@ export function removeTheme(): void {
     styleEl.textContent = '';
   }
 
+  // Stop watching for new stylesheets
+  stopStyleObserver();
+
   enablePrecompiledStyles();
   currentThemeStateHash = null;
 
@@ -502,6 +571,17 @@ export function getCurrentThemeStateHash(): string | null {
   return currentThemeStateHash;
 }
 
+/**
+ * Waits for the initial theme to be applied.
+ * Used by Storybook loaders to ensure CSS is compiled and injected
+ * before story rendering and a11y tests run.
+ *
+ * @returns Promise that resolves when initial theme CSS is ready
+ */
+export function waitForInitialTheme(): Promise<void> {
+  return initialThemeReadyPromise;
+}
+
 // ═══════════════════════════════════════════════════════════════════════════════
 // Initialization
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -522,20 +602,28 @@ export function getCurrentThemeStateHash(): string | null {
 export async function initializeRuntimeTheming(): Promise<void> {
   console.log('[nfs-theme] Initializing runtime theming (Web Worker)...');
 
+  // Start watching for dynamically-loaded stylesheets FIRST
+  // This must happen before any components render and load their CSS
+  startStyleObserver();
+
   // Preload Web Worker and Sass compiler
   await preloadWorker();
 
   console.log('[nfs-theme] Ready (Web Worker initialized)');
 
-  // Pre-compile default theme (fire-and-forget) to warm the cache
-  // This ensures the first theme panel interaction is instant
+  // Apply default theme immediately (not just compile)
+  // This ensures the theme CSS is in place for a11y tests via waitForInitialTheme()
   const defaultTheme = getDefaultThemeState();
-  compileThemeState(defaultTheme)
-    .then(() => {
-      console.log('[nfs-theme] Default theme pre-compiled and cached');
-    })
-    .catch((err) => {
-      // Non-fatal: system still works, just has cold-start delay
-      console.warn('[nfs-theme] Default theme pre-compilation failed:', err);
-    });
+  try {
+    await applyThemeState(defaultTheme);
+    console.log('[nfs-theme] Default theme applied');
+  } catch (err) {
+    // Non-fatal: system still works, decorator will apply theme
+    console.warn('[nfs-theme] Default theme application failed:', err);
+    // Resolve the promise anyway so tests don't hang
+    if (!initialThemeApplied) {
+      initialThemeApplied = true;
+      initialThemeReadyResolve?.();
+    }
+  }
 }
