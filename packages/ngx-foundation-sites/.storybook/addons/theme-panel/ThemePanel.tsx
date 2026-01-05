@@ -9,6 +9,9 @@ import type {
   SpacingValue,
   VariableSection,
   VariableDefinition,
+  LinkedColorValue,
+  PaletteState,
+  ButtonSizesMap,
 } from './types';
 import {
   VARIABLE_SECTIONS,
@@ -22,6 +25,12 @@ import {
   SpacingControl,
   BooleanControl,
   SectionHeader,
+  SelectControl,
+  TextControl,
+  NumberControl,
+  LinkedColorControl,
+  MapControl,
+  PercentageControl,
 } from './components';
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -144,17 +153,76 @@ function getStatePath(sectionId: string, sassVar: string): string {
   }
 
   const varMappings: Record<string, Record<string, string>> = {
+    // Global Colors
+    globalColors: {
+      white: 'globalColors.white',
+      'light-gray': 'globalColors.lightGray',
+      'medium-gray': 'globalColors.mediumGray',
+      'dark-gray': 'globalColors.darkGray',
+      black: 'globalColors.black',
+      'body-background': 'globalColors.bodyBackground',
+      'body-font-color': 'globalColors.bodyFontColor',
+    },
+    // Typography
+    typography: {
+      'global-font-size': 'typography.globalFontSize',
+      'global-lineheight': 'typography.globalLineHeight',
+      'global-weight-normal': 'typography.globalWeightNormal',
+      'global-weight-bold': 'typography.globalWeightBold',
+      'body-font-family': 'typography.bodyFontFamily',
+      'header-font-family': 'typography.headerFontFamily',
+      'header-lineheight': 'typography.headerLineHeight',
+    },
+    // Spacing
+    spacing: {
+      'global-margin': 'spacing.globalMargin',
+      'global-padding': 'spacing.globalPadding',
+      'global-radius': 'spacing.globalRadius',
+      'global-menu-padding': 'spacing.globalMenuPadding',
+    },
+    // Layout
+    layout: {
+      'global-text-direction': 'layout.globalTextDirection',
+      'global-width': 'layout.globalWidth',
+      'global-flexbox': 'layout.globalFlexbox',
+    },
+    // Accordion
     accordion: {
       'accordion-background': 'accordion.background',
       'accordion-plusminus': 'accordion.plusminus',
       'accordion-title-font-size': 'accordion.titleFontSize',
       'accordion-item-padding': 'accordion.itemPadding',
       'nfs-accordion-slide-speed': 'accordion.slideSpeed',
+      'accordion-plus-content': 'accordion.plusContent',
+      'accordion-minus-content': 'accordion.minusContent',
+      'accordion-item-color': 'accordion.itemColor',
+      'accordion-item-background-hover': 'accordion.itemBackgroundHover',
+      'accordion-content-background': 'accordion.contentBackground',
+      'accordion-content-border': 'accordion.contentBorder',
+      'accordion-content-color': 'accordion.contentColor',
+      'accordion-content-padding': 'accordion.contentPadding',
     },
+    // Button
     button: {
       'button-padding': 'button.padding',
       'button-radius': 'button.radius',
       'button-font-size': 'button.fontSize',
+      'button-font-family': 'button.fontFamily',
+      'button-font-weight': 'button.fontWeight',
+      'button-margin': 'button.margin',
+      'button-fill': 'button.fill',
+      'button-background': 'button.background',
+      'button-background-hover': 'button.backgroundHover',
+      'button-color': 'button.color',
+      'button-color-alt': 'button.colorAlt',
+      'button-border': 'button.border',
+      'button-hollow-border-width': 'button.hollowBorderWidth',
+      'button-opacity-disabled': 'button.opacityDisabled',
+      'button-background-hover-lightness': 'button.backgroundHoverLightness',
+      'button-hollow-hover-lightness': 'button.hollowHoverLightness',
+      'button-transition': 'button.transition',
+      'button-responsive-expanded': 'button.responsiveExpanded',
+      'button-sizes': 'button.sizes',
     },
   };
 
@@ -298,6 +366,67 @@ export function ThemePanel({ active }: ThemePanelProps) {
       case 'duration':
         return (
           <SliderControl
+            key={variable.sassVar}
+            value={value as string}
+            onChange={(v) => handleChange(section.id, variable.sassVar, v)}
+            variable={variable}
+          />
+        );
+
+      case 'linkedColor':
+        return (
+          <LinkedColorControl
+            key={variable.sassVar}
+            value={value as LinkedColorValue}
+            onChange={(v) => handleChange(section.id, variable.sassVar, v)}
+            variable={variable}
+            palette={themeState.palette as PaletteState}
+          />
+        );
+
+      case 'select':
+        return (
+          <SelectControl
+            key={variable.sassVar}
+            value={value as string}
+            onChange={(v) => handleChange(section.id, variable.sassVar, v)}
+            variable={variable}
+          />
+        );
+
+      case 'text':
+        return (
+          <TextControl
+            key={variable.sassVar}
+            value={value as string}
+            onChange={(v) => handleChange(section.id, variable.sassVar, v)}
+            variable={variable}
+          />
+        );
+
+      case 'number':
+        return (
+          <NumberControl
+            key={variable.sassVar}
+            value={value as string}
+            onChange={(v) => handleChange(section.id, variable.sassVar, v)}
+            variable={variable}
+          />
+        );
+
+      case 'map':
+        return (
+          <MapControl
+            key={variable.sassVar}
+            value={value as ButtonSizesMap}
+            onChange={(v) => handleChange(section.id, variable.sassVar, v)}
+            variable={variable}
+          />
+        );
+
+      case 'percentage':
+        return (
+          <PercentageControl
             key={variable.sassVar}
             value={value as string}
             onChange={(v) => handleChange(section.id, variable.sassVar, v)}
