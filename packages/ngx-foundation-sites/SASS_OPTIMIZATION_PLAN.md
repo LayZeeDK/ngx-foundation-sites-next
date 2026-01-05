@@ -881,10 +881,10 @@ no longer used at all — Sass is loaded directly from `/sass-browser.mjs`.
 
 ### Files Deleted (2026-01-05)
 
-| File                                           | Reason                         |
-| ---------------------------------------------- | ------------------------------ |
-| `.storybook/sw-public/jspm-sw.js`              | No CDN to cache                |
-| `src/storybook/service-worker-registration.ts` | No SW to register              |
+| File                                           | Reason            |
+| ---------------------------------------------- | ----------------- |
+| `.storybook/sw-public/jspm-sw.js`              | No CDN to cache   |
+| `src/storybook/service-worker-registration.ts` | No SW to register |
 
 ### Historical Performance Data
 
@@ -909,10 +909,10 @@ consistent, offline-capable Sass compilation.
 
 ## Status
 
-| Phase   | Status    | Notes                                           |
-| ------- | --------- | ----------------------------------------------- |
-| Phase 1 | ❌ Failed | esm.sh CDN - Missing Node.js polyfills          |
-| Phase 2 | ✅ Done   | esbuild bundle with custom process polyfill     |
+| Phase   | Status    | Notes                                       |
+| ------- | --------- | ------------------------------------------- |
+| Phase 1 | ❌ Failed | esm.sh CDN - Missing Node.js polyfills      |
+| Phase 2 | ✅ Done   | esbuild bundle with custom process polyfill |
 
 ---
 
@@ -940,16 +940,18 @@ TypeError: Cannot read properties of undefined (reading 'get$isTTY')
 ### Key Changes
 
 **1. Disable default process polyfill** (`bundle-sass-compiler.mjs`):
+
 ```javascript
 polyfillNode({
   polyfills: {
     // ... other polyfills
-    process: false,  // DISABLED - we provide our own
+    process: false, // DISABLED - we provide our own
   },
-})
+});
 ```
 
 **2. Provide custom process polyfill** (`sass-entry.mjs`):
+
 ```javascript
 const createTTYStub = () => ({
   isTTY: false,
@@ -975,11 +977,11 @@ export * from 'sass';
 
 ### Performance
 
-| Metric           | JSPM CDN (cached) | Local Bundle | Notes                    |
-| ---------------- | ----------------- | ------------ | ------------------------ |
-| Sass module load | ~139ms            | ~145-150ms   | Comparable               |
-| Worker pool init | ~157ms            | ~177ms       | Slightly slower          |
-| Total compile    | ~1500ms           | ~1500ms      | Same                     |
+| Metric           | JSPM CDN (cached) | Local Bundle | Notes           |
+| ---------------- | ----------------- | ------------ | --------------- |
+| Sass module load | ~139ms            | ~145-150ms   | Comparable      |
+| Worker pool init | ~157ms            | ~177ms       | Slightly slower |
+| Total compile    | ~1500ms           | ~1500ms      | Same            |
 
 ### Advantages of Local Bundle
 
@@ -1002,12 +1004,12 @@ export * from 'sass';
 
 ## Files Summary
 
-| File                                    | Purpose                                    |
-| --------------------------------------- | ------------------------------------------ |
-| `tools/bundle-sass-compiler.mjs`        | esbuild bundler script                     |
-| `tools/sass-entry.mjs`                  | Custom process polyfill + Sass re-export   |
-| `.storybook/static/sass-browser.mjs`    | Built bundle (~3.1MB)                      |
-| `project.json` (bundle-sass-compiler)   | Nx build target with caching               |
+| File                                  | Purpose                                  |
+| ------------------------------------- | ---------------------------------------- |
+| `tools/bundle-sass-compiler.mjs`      | esbuild bundler script                   |
+| `tools/sass-entry.mjs`                | Custom process polyfill + Sass re-export |
+| `.storybook/static/sass-browser.mjs`  | Built bundle (~3.1MB)                    |
+| `project.json` (bundle-sass-compiler) | Nx build target with caching             |
 
 ---
 
