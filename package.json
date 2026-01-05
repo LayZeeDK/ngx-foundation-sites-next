@@ -57,6 +57,7 @@
     "@storybook/addon-a11y": "^10.1.10",
     "@storybook/addon-docs": "^10.1.10",
     "@storybook/angular": "^10.1.10",
+    "@storybook/icons": "^2.0.1",
     "@storybook/test-runner": "~0.24.2",
     "@swc-node/register": "~1.9.1",
     "@swc/core": "~1.5.7",
