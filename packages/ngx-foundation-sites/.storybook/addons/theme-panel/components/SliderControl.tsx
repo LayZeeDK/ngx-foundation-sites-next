@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { styled } from 'storybook/theming';
 import type { ControlProps } from '../types';
+import { DEBOUNCE_MS } from '../constants';
 
 const Container = styled.div`
   display: flex;
@@ -92,6 +93,9 @@ function parseValue(value: string): { number: number; unit: string } {
 
 /**
  * Slider control for size and duration values.
+ *
+ * Uses local state for live preview while dragging and debounces
+ * parent onChange to throttle Sass compilation.
  */
 export function SliderControl({
   value,
@@ -105,9 +109,53 @@ export function SliderControl({
   const max = variable.max ?? 100;
   const step = variable.step ?? 1;
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = parseFloat(e.target.value);
-    onChange(`${newValue}${unit}`);
+  // Local state for live preview while dragging
+  const [localValue, setLocalValue] = useState(numValue);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Debounced onChange to throttle Sass compilation
+  const debouncedOnChange = useCallback(
+    (newValue: string) => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+      debounceRef.current = setTimeout(() => {
+        onChange(newValue);
+      }, DEBOUNCE_MS);
+    },
+    [onChange],
+  );
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+    };
+  }, []);
+
+  // Sync local state when parent value changes (e.g., reset)
+  useEffect(() => {
+    setLocalValue(numValue);
+  }, [numValue]);
+
+  // Update local preview immediately, debounce parent callback
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newNum = parseFloat(e.target.value);
+    setLocalValue(newNum);
+    debouncedOnChange(`${newNum}${unit}`);
+  };
+
+  // Blur triggers immediate commit (cancels pending debounce)
+  const handleBlur = () => {
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+    const newValue = `${localValue}${unit}`;
+    if (newValue !== value) {
+      onChange(newValue);
+    }
   };
 
   return (
@@ -119,11 +167,15 @@ export function SliderControl({
           min={min}
           max={max}
           step={step}
-          value={numValue}
-          onChange={handleChange}
+          value={localValue}
+          onChange={handleInput}
+          onBlur={handleBlur}
           disabled={disabled}
         />
-        <ValueDisplay>{value}</ValueDisplay>
+        <ValueDisplay>
+          {localValue}
+          {unit}
+        </ValueDisplay>
       </SliderWrapper>
     </Container>
   );

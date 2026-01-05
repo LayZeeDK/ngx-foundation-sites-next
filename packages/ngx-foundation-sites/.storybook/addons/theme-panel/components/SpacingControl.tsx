@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { styled } from 'storybook/theming';
-import type { SpacingControlProps } from '../types';
+import type { SpacingControlProps, SpacingValue } from '../types';
+import { DEBOUNCE_MS } from '../constants';
 
 const Container = styled.div`
   margin-bottom: 12px;
@@ -101,6 +102,9 @@ function parseValue(value: string): { number: number; unit: string } {
 
 /**
  * Dual slider control for spacing values (vertical + horizontal).
+ *
+ * Uses local state for live preview while dragging and debounces
+ * parent onChange to throttle Sass compilation. Blur triggers immediate commit.
  */
 export function SpacingControl({
   value,
@@ -116,20 +120,74 @@ export function SpacingControl({
   const { number: vNum } = parseValue(value.vertical);
   const { number: hNum } = parseValue(value.horizontal);
 
-  const handleVerticalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = parseFloat(e.target.value);
-    onChange({
-      ...value,
-      vertical: `${newValue}${unit}`,
-    });
+  // Local state for live preview while dragging
+  const [localVertical, setLocalVertical] = useState(vNum);
+  const [localHorizontal, setLocalHorizontal] = useState(hNum);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Debounced onChange to throttle Sass compilation
+  const debouncedOnChange = useCallback(
+    (newValue: SpacingValue) => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+      debounceRef.current = setTimeout(() => {
+        onChange(newValue);
+      }, DEBOUNCE_MS);
+    },
+    [onChange],
+  );
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+    };
+  }, []);
+
+  // Sync local state when parent value changes (e.g., reset)
+  useEffect(() => {
+    setLocalVertical(vNum);
+  }, [vNum]);
+
+  useEffect(() => {
+    setLocalHorizontal(hNum);
+  }, [hNum]);
+
+  // Update local preview immediately, debounce parent callback
+  const handleVerticalInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newNum = parseFloat(e.target.value);
+    setLocalVertical(newNum);
+    debouncedOnChange({ ...value, vertical: `${newNum}${unit}` });
   };
 
-  const handleHorizontalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = parseFloat(e.target.value);
-    onChange({
-      ...value,
-      horizontal: `${newValue}${unit}`,
-    });
+  const handleHorizontalInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newNum = parseFloat(e.target.value);
+    setLocalHorizontal(newNum);
+    debouncedOnChange({ ...value, horizontal: `${newNum}${unit}` });
+  };
+
+  // Blur triggers immediate commit (cancels pending debounce)
+  const handleVerticalBlur = () => {
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+    const newVertical = `${localVertical}${unit}`;
+    if (newVertical !== value.vertical) {
+      onChange({ ...value, vertical: newVertical });
+    }
+  };
+
+  const handleHorizontalBlur = () => {
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+    const newHorizontal = `${localHorizontal}${unit}`;
+    if (newHorizontal !== value.horizontal) {
+      onChange({ ...value, horizontal: newHorizontal });
+    }
   };
 
   return (
@@ -144,11 +202,15 @@ export function SpacingControl({
           min={min}
           max={max}
           step={step}
-          value={vNum}
-          onChange={handleVerticalChange}
+          value={localVertical}
+          onChange={handleVerticalInput}
+          onBlur={handleVerticalBlur}
           disabled={disabled}
         />
-        <ValueDisplay>{value.vertical}</ValueDisplay>
+        <ValueDisplay>
+          {localVertical}
+          {unit}
+        </ValueDisplay>
       </SliderRow>
       <SliderRow>
         <SubLabel>Horizontal</SubLabel>
@@ -157,11 +219,15 @@ export function SpacingControl({
           min={min}
           max={max}
           step={step}
-          value={hNum}
-          onChange={handleHorizontalChange}
+          value={localHorizontal}
+          onChange={handleHorizontalInput}
+          onBlur={handleHorizontalBlur}
           disabled={disabled}
         />
-        <ValueDisplay>{value.horizontal}</ValueDisplay>
+        <ValueDisplay>
+          {localHorizontal}
+          {unit}
+        </ValueDisplay>
       </SliderRow>
     </Container>
   );
