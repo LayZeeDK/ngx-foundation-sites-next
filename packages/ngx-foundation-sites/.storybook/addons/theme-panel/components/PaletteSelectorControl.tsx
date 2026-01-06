@@ -61,13 +61,6 @@ const Swatch = styled.div<{ color: string }>`
   }
 `;
 
-const SwatchLabel = styled.span`
-  font-size: 10px;
-  color: ${(props) => props.theme.color.mediumdark};
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-`;
-
 // ═══════════════════════════════════════════════════════════════════════════════
 // Props
 // ═══════════════════════════════════════════════════════════════════════════════

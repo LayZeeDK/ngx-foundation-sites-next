@@ -1,4 +1,4 @@
-const { dirname, join } = require('path');
+const { join } = require('path');
 
 /**
  * Storybook preset for the Foundation Theme Panel addon.
