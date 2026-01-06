@@ -257,24 +257,19 @@ export function ThemePanel({ active }: ThemePanelProps) {
     globals[THEME_STATE_KEY] as Partial<ThemeState> | undefined,
   );
 
-  // Get toolbar direction for bidirectional sync
+  // Get toolbar direction - this is the single source of truth for text direction
+  // The toolbar and theme panel's Text Direction control are kept in sync
   const toolbarDirection = (globals['direction'] || 'ltr') as 'ltr' | 'rtl';
 
-  // Sync toolbar direction → theme panel's globalTextDirection
-  // This ensures the panel shows the correct value when toolbar changes
-  useEffect(() => {
-    if (themeState.layout.globalTextDirection !== toolbarDirection) {
-      updateGlobals({
-        [THEME_STATE_KEY]: {
-          ...themeState,
-          layout: {
-            ...themeState.layout,
-            globalTextDirection: toolbarDirection,
-          },
-        },
-      });
-    }
-  }, [toolbarDirection]); // Only run when toolbar changes
+  // Override themeState.layout.globalTextDirection with toolbar direction
+  // This ensures the panel always displays the toolbar's value
+  const effectiveThemeState: ThemeState = {
+    ...themeState,
+    layout: {
+      ...themeState.layout,
+      globalTextDirection: toolbarDirection,
+    },
+  };
 
   const updateThemeState = useCallback(
     (newState: ThemeState) => {
@@ -321,7 +316,7 @@ export function ThemePanel({ active }: ThemePanelProps) {
   };
 
   const handleCopyToClipboard = async () => {
-    const scss = generateScssExport(themeState);
+    const scss = generateScssExport(effectiveThemeState);
     try {
       await navigator.clipboard.writeText(scss);
       console.log('[nfs-theme] SCSS copied to clipboard');
@@ -331,7 +326,7 @@ export function ThemePanel({ active }: ThemePanelProps) {
   };
 
   const handleDownload = () => {
-    const scss = generateScssExport(themeState);
+    const scss = generateScssExport(effectiveThemeState);
     const blob = new Blob([scss], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -345,7 +340,8 @@ export function ThemePanel({ active }: ThemePanelProps) {
 
   const handleChange = (sectionId: string, sassVar: string, value: unknown) => {
     const path = getStatePath(sectionId, sassVar);
-    const newState = setNestedValue(themeState, path, value);
+    // Use effectiveThemeState to preserve the toolbar's direction value
+    const newState = setNestedValue(effectiveThemeState, path, value);
 
     // Sync theme panel's globalTextDirection → toolbar direction
     // This ensures the toolbar updates when the panel dropdown changes
@@ -362,7 +358,7 @@ export function ThemePanel({ active }: ThemePanelProps) {
   // Handle palette preset selection (updates all 5 colors at once)
   const handlePaletteSelect = (newPalette: PaletteState) => {
     updateThemeState({
-      ...themeState,
+      ...effectiveThemeState,
       palette: newPalette,
     });
   };
@@ -372,7 +368,7 @@ export function ThemePanel({ active }: ThemePanelProps) {
     variable: VariableDefinition,
   ) => {
     const path = getStatePath(section.id, variable.sassVar);
-    const value = getNestedValue(themeState, path);
+    const value = getNestedValue(effectiveThemeState, path);
 
     switch (variable.type) {
       case 'color':
@@ -423,7 +419,7 @@ export function ThemePanel({ active }: ThemePanelProps) {
             value={value as LinkedColorValue}
             onChange={(v) => handleChange(section.id, variable.sassVar, v)}
             variable={variable}
-            palette={themeState.palette as PaletteState}
+            palette={effectiveThemeState.palette as PaletteState}
           />
         );
 
@@ -521,7 +517,7 @@ export function ThemePanel({ active }: ThemePanelProps) {
               {/* Palette selector at the top of Brand Colors section */}
               {section.id === 'palette' && (
                 <PaletteSelectorControl
-                  currentPalette={themeState.palette}
+                  currentPalette={effectiveThemeState.palette}
                   onSelectPalette={handlePaletteSelect}
                 />
               )}
