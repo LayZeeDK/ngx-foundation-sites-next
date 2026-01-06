@@ -117,11 +117,13 @@ This specification follows the **Speckit workflow**:
 
 1. ✅ **Specify** (`/speckit.specify`) - Define WHAT users need (this document)
 2. ✅ **Clarify** (`/speckit.clarify`) - Captured edge-cases and scope boundaries
-3. ✅ **Plan** (`/speckit.plan`) - Retrospective plan artifacts in `specs/feat/button/`
-4. ⏭️ **Tasks** (`/speckit.tasks`) - Optional (implementation is already complete)
-5. ⏭️ **Implement** (`/speckit.implement`) - Optional (use for validation / future changes)
+3. ✅ **Plan** (`/speckit.plan`) - Plan artifacts in `specs/feat/button/`
+4. ✅ **Tasks** (`/speckit.tasks`) - Task breakdown in `specs/feat/button/tasks.md`
+5. ✅ **Checklist** (`/speckit.checklist`) - Requirements checklist in `specs/feat/button/checklists/requirements-quality.md`
+6. ✅ **Analyze** (`/speckit.analyze`) - Cross-artifact consistency review (optional, non-destructive)
+7. ⏭️ **Implement** (`/speckit.implement`) - Optional (implementation already complete; use for future changes)
 
-**Status**: ✅ Specification + Plan Complete
+**Status**: ✅ Spec + Plan + Tasks + Checklist Complete
 
 ## 🔗 Related Documents
 
