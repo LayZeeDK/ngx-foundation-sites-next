@@ -156,4 +156,4 @@ Version numbering follows semantic versioning:
 - **MINOR**: New principle/section added or materially expanded guidance
 - **PATCH**: Clarifications, wording, typo fixes, non-semantic refinements
 
-**Version**: 1.0.0 | **Ratified**: 2025-01-22 | **Last Amended**: 2025-01-22
+**Version**: 1.0.0 | **Ratified**: 2026-01-06 | **Last Amended**: 2026-01-06
