@@ -275,14 +275,14 @@ export class NfsButton {
 
 ## Keyboard Navigation
 
-| Key         | Action                            |
-| ----------- | --------------------------------- |
-| `Enter`     | Activate button (native behavior) |
-| `Space`     | Activate button (native behavior) |
-| `Tab`       | Move focus to next element        |
-| `Shift+Tab` | Move focus to previous element    |
+| Key         | Action                                                            |
+| ----------- | ----------------------------------------------------------------- |
+| `Enter`     | Activate (native for `<button>` and `<a>`)                         |
+| `Space`     | Activate (native for `<button>`; handled for `<a role="button">`) |
+| `Tab`       | Move focus to next element                                        |
+| `Shift+Tab` | Move focus to previous element                                    |
 
-No custom keyboard handling needed — native `<button>` and `<a role="button">` handle this automatically.
+Note: `<a>` elements do **not** activate on Space by default. When we apply `role="button"` to anchors, we also add a Space-key handler (e.g. `(keydown.space)`) to match the WAI-ARIA button pattern.
 
 ---
 

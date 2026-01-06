@@ -125,23 +125,23 @@ The design document now accurately reflects the implementation and explains why 
 
 ### ~~7. `expanded` Input Type Inconsistency~~ ✅ RESOLVED
 
-**Status:** Fixed — Added `booleanAttribute` transform to `expanded` and `softDisabled` inputs.
+**Status:** Fixed — `softDisabled` uses `booleanAttribute`, and `expanded` uses a custom transform that preserves Foundation breakpoint strings and otherwise delegates to `booleanAttribute`.
 
-**Implementation:** Uses Angular's built-in `booleanAttribute` transform to support HTML boolean attribute syntax:
+**Implementation:**
 
 ```typescript
-readonly expanded = input(false, { transform: booleanAttribute });
+readonly expanded = input<NfsButtonExpanded, unknown>(false, { transform: expandedTransform });
 readonly softDisabled = input(false, { transform: booleanAttribute });
 ```
 
-**Supported syntaxes:**
+**Supported syntaxes (expanded):**
 
 - `expanded` — presence means `true` (HTML attribute style)
-- `[expanded]="true"` — property binding (Angular style)
-- `expanded="true"` — string `"true"` coerced to boolean `true`
-- `expanded="false"` — string `"false"` coerced to boolean `false`
+- `[expanded]="true"` / `[expanded]="false"` — boolean property binding
+- `expanded="true"` / `expanded="false"` — string booleans (via `booleanAttribute`)
+- `expanded="medium"`, `expanded="large-down"`, etc. — responsive breakpoint strings
 
-**Test Coverage:** `BooleanAttributeSyntax` story verifies all syntax variants for both `expanded` and `softDisabled` inputs.
+**Test Coverage:** `BooleanAttributeSyntax`, `ResponsiveExpanded`, and `ExpandedInputSyntax` stories verify the supported syntaxes.
 
 ---
 
