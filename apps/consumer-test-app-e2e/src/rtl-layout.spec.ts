@@ -36,17 +36,22 @@ test.describe('RTL Layout Styles', () => {
   test('button row should have reversed visual order in RTL', async ({
     page,
   }) => {
-    // Get positions of first two buttons (on same row)
-    const primaryBox = await page.getByTestId('btn-primary').boundingBox();
-    const secondaryBox = await page.getByTestId('btn-secondary').boundingBox();
+    // Get button locators and assert they're visible
+    const primaryBtn = page.getByTestId('btn-primary');
+    const secondaryBtn = page.getByTestId('btn-secondary');
+    await expect(primaryBtn).toBeVisible();
+    await expect(secondaryBtn).toBeVisible();
 
-    // Ensure both boxes exist before comparing
-    if (!primaryBox || !secondaryBox) {
-      throw new Error('Could not get bounding boxes for buttons');
-    }
+    // Get horizontal positions using evaluate (avoids null checks)
+    const primaryX = await primaryBtn.evaluate(
+      (el) => el.getBoundingClientRect().x,
+    );
+    const secondaryX = await secondaryBtn.evaluate(
+      (el) => el.getBoundingClientRect().x,
+    );
 
     // In RTL with flexbox, the primary button should be RIGHT of secondary
     // (visual order is reversed from reading direction)
-    expect(primaryBox.x).toBeGreaterThan(secondaryBox.x);
+    expect(primaryX).toBeGreaterThan(secondaryX);
   });
 });

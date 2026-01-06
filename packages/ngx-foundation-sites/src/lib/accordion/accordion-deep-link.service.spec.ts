@@ -132,7 +132,8 @@ describe('AccordionDeepLinkService', () => {
       vi.useFakeTimers();
       scrollToSpy = vi.fn();
       mockDocument.defaultView = {
-        ...mockDocument.defaultView!,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
         pageYOffset: 100,
         scrollTo: scrollToSpy,
       } as unknown as typeof mockDocument.defaultView;
