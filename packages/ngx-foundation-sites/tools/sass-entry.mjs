@@ -10,21 +10,23 @@
  */
 
 // Create TTY stub for stdout/stderr
+// eslint-disable-next-line @typescript-eslint/no-empty-function -- Browser polyfill stubs
+const noop = () => {};
 const createTTYStub = () => ({
   isTTY: false,
   write: () => true,
   read: () => null,
-  on: () => {},
-  once: () => {},
-  off: () => {},
+  on: noop,
+  once: noop,
+  off: noop,
   emit: () => false,
-  end: () => {},
-  destroy: () => {},
-  pipe: () => {},
-  unpipe: () => {},
-  setEncoding: () => {},
-  pause: () => {},
-  resume: () => {},
+  end: noop,
+  destroy: noop,
+  pipe: noop,
+  unpipe: noop,
+  setEncoding: noop,
+  pause: noop,
+  resume: noop,
   columns: 80,
   rows: 24,
   getWindowSize: () => [80, 24],
@@ -71,9 +73,9 @@ const browserProcess = {
 
   // Methods
   cwd: () => '/',
-  chdir: () => {},
-  exit: () => {},
-  kill: () => {},
+  chdir: noop,
+  exit: noop,
+  kill: noop,
   umask: () => 0,
   uptime: () => 0,
 
@@ -133,7 +135,7 @@ const browserProcess = {
   dlopen: () => {
     throw new Error('process.dlopen is not supported');
   },
-  abort: () => {},
+  abort: noop,
   emitWarning: (msg) => console.warn(msg),
   assert: (condition, message) => {
     if (!condition) throw new Error(message);
@@ -162,15 +164,15 @@ const browserProcess = {
   // Internal stubs
   _getActiveRequests: () => [],
   _getActiveHandles: () => [],
-  reallyExit: () => {},
-  _kill: () => {},
-  _debugProcess: () => {},
-  _debugEnd: () => {},
-  _startProfilerIdleNotifier: () => {},
-  _stopProfilerIdleNotifier: () => {},
-  _tickCallback: () => {},
-  _fatalExceptions: () => {},
-  setUncaughtExceptionCaptureCallback: () => {},
+  reallyExit: noop,
+  _kill: noop,
+  _debugProcess: noop,
+  _debugEnd: noop,
+  _startProfilerIdleNotifier: noop,
+  _stopProfilerIdleNotifier: noop,
+  _tickCallback: noop,
+  _fatalExceptions: noop,
+  setUncaughtExceptionCaptureCallback: noop,
   hasUncaughtExceptionCaptureCallback: () => false,
   domain: null,
   _exiting: false,
@@ -179,7 +181,7 @@ const browserProcess = {
   allowedNodeEnvironmentFlags: {},
   debugPort: 9229,
   _preload_modules: [],
-  setSourceMapsEnabled: () => {},
+  setSourceMapsEnabled: noop,
 };
 
 // Add bigint support to hrtime

@@ -315,6 +315,9 @@ function createBundleImporter(): SassImporter {
  * Creates legacy math/color functions for Foundation compatibility.
  * Foundation uses deprecated global Sass functions that modern Dart Sass
  * requires to be provided explicitly.
+ *
+ * Note: Non-null assertions are used because Sass guarantees these properties
+ * exist based on the function signatures (e.g., $number always has .value).
  */
 function createLegacyFunctions(
   sass: SassModule,
@@ -324,7 +327,9 @@ function createLegacyFunctions(
   const createMathFn = (fn: (x: number) => number) => {
     return (args: SassValue[]): SassNumber => {
       const num = args[0];
-      return new SassNumber(fn(num.value!), {
+      // Sass guarantees .value exists for $number parameters
+      const value = num.value ?? 0;
+      return new SassNumber(fn(value), {
         numeratorUnits: num.numeratorUnits,
         denominatorUnits: num.denominatorUnits,
       });
@@ -338,18 +343,19 @@ function createLegacyFunctions(
     'abs($number)': createMathFn(Math.abs),
     'percentage($number)': (args: SassValue[]): SassNumber => {
       const num = args[0];
-      return new SassNumber(num.value! * 100, '%');
+      return new SassNumber((num.value ?? 0) * 100, '%');
     },
+    // Color functions - Sass guarantees RGBA properties exist for $color parameters
     'red($color)': (args: SassValue[]): SassNumber =>
-      new SassNumber(args[0].red!),
+      new SassNumber(args[0].red ?? 0),
     'green($color)': (args: SassValue[]): SassNumber =>
-      new SassNumber(args[0].green!),
+      new SassNumber(args[0].green ?? 0),
     'blue($color)': (args: SassValue[]): SassNumber =>
-      new SassNumber(args[0].blue!),
+      new SassNumber(args[0].blue ?? 0),
     'alpha($color)': (args: SassValue[]): SassNumber =>
-      new SassNumber(args[0].alpha!),
+      new SassNumber(args[0].alpha ?? 1),
     'opacity($color)': (args: SassValue[]): SassNumber =>
-      new SassNumber(args[0].alpha!),
+      new SassNumber(args[0].alpha ?? 1),
   };
 }
 
@@ -511,10 +517,14 @@ self.onmessage = async (event: MessageEvent<WorkerRequest>): Promise<void> => {
 
       const response: WorkerResponse = { id: request.id, type: 'ready' };
       self.postMessage(response);
-    } else if (request.type === 'compile') {
+    } else if (
+      request.type === 'compile' &&
+      request.component &&
+      request.themeState
+    ) {
       const { css, timing } = await compileComponent(
-        request.component!,
-        request.themeState!,
+        request.component,
+        request.themeState,
       );
       const response: WorkerResponse = {
         id: request.id,

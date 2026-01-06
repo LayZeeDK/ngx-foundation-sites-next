@@ -180,8 +180,8 @@ class SassWorkerPool {
 
     if (response.type === 'error') {
       pending.reject(new Error(response.error));
-    } else if (response.type === 'compiled') {
-      pending.resolve(response.css!);
+    } else if (response.type === 'compiled' && response.css) {
+      pending.resolve(response.css);
     }
   }
 

@@ -43,9 +43,7 @@ import { LruCache } from './lru-cache';
 import {
   getPersistedCSS,
   setPersistedCSS,
-  clearPersistedCache,
   createCacheKey,
-  getCacheStats,
 } from './theme-cache-db';
 
 // ═══════════════════════════════════════════════════════════════════════════════
