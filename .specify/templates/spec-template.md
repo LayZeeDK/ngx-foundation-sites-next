@@ -5,13 +5,13 @@
 **Status**: Draft  
 **Input**: User description: "$ARGUMENTS"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 <!--
   IMPORTANT: User stories should be PRIORITIZED as user journeys ordered by importance.
   Each user story/journey must be INDEPENDENTLY TESTABLE - meaning if you implement just ONE of them,
   you should still have a viable MVP (Minimum Viable Product) that delivers value.
-  
+
   Assign priorities (P1, P2, P3, etc.) to each story, where P1 is the most critical.
   Think of each story as a standalone slice of functionality that can be:
   - Developed independently
@@ -75,7 +75,7 @@
 - What happens when [boundary condition]?
 - How does system handle [error scenario]?
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 <!--
   ACTION REQUIRED: The content in this section represents placeholders.
@@ -85,22 +85,41 @@
 ### Functional Requirements
 
 - **FR-001**: System MUST [specific capability, e.g., "allow users to create accounts"]
-- **FR-002**: System MUST [specific capability, e.g., "validate email addresses"]  
+- **FR-002**: System MUST [specific capability, e.g., "validate email addresses"]
 - **FR-003**: Users MUST be able to [key interaction, e.g., "reset their password"]
 - **FR-004**: System MUST [data requirement, e.g., "persist user preferences"]
 - **FR-005**: System MUST [behavior, e.g., "log all security events"]
 
-*Example of marking unclear requirements:*
+### Accessibility Requirements (MANDATORY)
+
+- **AR-001**: Component MUST pass all AXE checks
+- **AR-002**: Component MUST meet WCAG AA standards for color contrast (4.5:1 for normal text, 3:1 for large text)
+- **AR-003**: All interactive elements MUST be keyboard accessible (Tab, Enter, Space, Arrow keys as appropriate)
+- **AR-004**: Component MUST include proper ARIA attributes (roles, labels, states, properties)
+- **AR-005**: Focus management MUST be implemented for modal/overlay components
+- **AR-006**: Component MUST be screen reader compatible (tested with NVDA/JAWS/VoiceOver)
+
+### Component API Requirements
+
+- **CA-001**: Component MUST use standalone architecture (no NgModules)
+- **CA-002**: Component inputs MUST use `input()` function with proper type annotations
+- **CA-003**: Component outputs MUST use `output()` function
+- **CA-004**: Component state MUST use signals
+- **CA-005**: Component MUST use `ChangeDetectionStrategy.OnPush`
+- **CA-006**: Component MUST follow naming conventions (align with Foundation component names)
+- **CA-007**: For new/changed Foundation component APIs, an API design document MUST be created/updated using the `foundation-api-design` skill (`.claude/skills/foundation-api-design/SKILL.md`)
+
+_Example of marking unclear requirements:_
 
 - **FR-006**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
 - **FR-007**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **[Entity 1]**: [What it represents, key attributes without implementation]
 - **[Entity 2]**: [What it represents, relationships to other entities]
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 <!--
   ACTION REQUIRED: Define measurable success criteria.

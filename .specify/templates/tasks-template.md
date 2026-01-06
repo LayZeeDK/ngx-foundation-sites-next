@@ -1,6 +1,5 @@
 ---
-
-description: "Task list template for feature implementation"
+description: 'Task list template for feature implementation'
 ---
 
 # Tasks: [FEATURE NAME]
@@ -25,21 +24,21 @@ description: "Task list template for feature implementation"
 - **Mobile**: `api/src/`, `ios/src/` or `android/src/`
 - Paths shown below assume single project - adjust based on plan.md structure
 
-<!-- 
+<!--
   ============================================================================
   IMPORTANT: The tasks below are SAMPLE TASKS for illustration purposes only.
-  
+
   The /speckit.tasks command MUST replace these with actual tasks based on:
   - User stories from spec.md (with their priorities P1, P2, P3...)
   - Feature requirements from plan.md
   - Entities from data-model.md
   - Endpoints from contracts/
-  
+
   Tasks MUST be organized by user story so each story can be:
   - Implemented independently
   - Tested independently
   - Delivered as an MVP increment
-  
+
   DO NOT keep these sample tasks in the generated tasks.md file.
   ============================================================================
 -->
@@ -48,9 +47,11 @@ description: "Task list template for feature implementation"
 
 **Purpose**: Project initialization and basic structure
 
-- [ ] T001 Create project structure per implementation plan
-- [ ] T002 Initialize [language] project with [framework] dependencies
-- [ ] T003 [P] Configure linting and formatting tools
+- [ ] T001 Create library structure per Nx conventions in packages/
+- [ ] T002 Configure library with `ng-packagr` for publishing
+- [ ] T003 [P] Set up component selector prefix (`nfs-` or `nfs`)
+- [ ] T004 [P] Configure linting and formatting tools
+- [ ] T005 [P] Set up Storybook for component development
 
 ---
 
@@ -60,14 +61,15 @@ description: "Task list template for feature implementation"
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-Examples of foundational tasks (adjust based on your project):
+Examples of foundational tasks (adjust based on your component):
 
-- [ ] T004 Setup database schema and migrations framework
-- [ ] T005 [P] Implement authentication/authorization framework
-- [ ] T006 [P] Setup API routing and middleware structure
-- [ ] T007 Create base models/entities that all stories depend on
-- [ ] T008 Configure error handling and logging infrastructure
-- [ ] T009 Setup environment configuration management
+- [ ] T006 Set up Foundation SCSS imports and configuration
+- [ ] T007 [P] Create base component structure with standalone configuration
+- [ ] T008 [P] Implement injection token for parent-child communication (if applicable)
+- [ ] T009 Set up @angular/aria or @angular/cdk dependencies
+- [ ] T010 [P] Create initial Storybook story with Foundation CSS classes
+- [ ] T011 Configure TypeScript strict mode and member visibility patterns
+- [ ] T012 [P] Create/update API design doc using `foundation-api-design` skill in packages/ngx-foundation-sites/ (e.g., `ACCORDION_API_DESIGN.md`)
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -81,19 +83,26 @@ Examples of foundational tasks (adjust based on your project):
 
 ### Tests for User Story 1 (OPTIONAL - only if tests requested) ⚠️
 
-> **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
+> **NOTE: Storybook interactive tests are PREFERRED. Write Storybook play functions FIRST.**
+> **E2E tests are only for web-native APIs (History API, Navigation, Storage, Viewport) and Sass variable verification in the test consumer app**
 
-- [ ] T010 [P] [US1] Contract test for [endpoint] in tests/contract/test_[name].py
-- [ ] T011 [P] [US1] Integration test for [user journey] in tests/integration/test_[name].py
+- [ ] T010 [P] [US1] Storybook interactive test for [user interaction] in packages/[lib]/src/lib/[component].stories.ts
+- [ ] T011 [P] [US1] Accessibility test in Storybook play function (AXE checks, keyboard nav)
+- [ ] T012 [US1] E2E test for [web-native API feature or Sass variable verification] in packages/[lib]-e2e/src/[component].spec.ts (ONLY if History/Storage/Viewport or Sass verification needed)
 
 ### Implementation for User Story 1
 
-- [ ] T012 [P] [US1] Create [Entity1] model in src/models/[entity1].py
-- [ ] T013 [P] [US1] Create [Entity2] model in src/models/[entity2].py
-- [ ] T014 [US1] Implement [Service] in src/services/[service].py (depends on T012, T013)
-- [ ] T015 [US1] Implement [endpoint/feature] in src/[location]/[file].py
-- [ ] T016 [US1] Add validation and error handling
-- [ ] T017 [US1] Add logging for user story 1 operations
+- [ ] T013 [P] [US1] Create component TypeScript file with standalone config in packages/[lib]/src/lib/[component].ts
+- [ ] T014 [P] [US1] Create component template with Foundation CSS classes in packages/[lib]/src/lib/[component].html
+- [ ] T015 [P] [US1] Create component SCSS with minimal custom styles in packages/[lib]/src/lib/[component].scss
+- [ ] T016 [US1] Implement component inputs using `input()` function with signals
+- [ ] T017 [US1] Implement component outputs using `output()` function
+- [ ] T018 [US1] Implement state management using signals and `computed()`
+- [ ] T019 [US1] Add @angular/aria directives or @angular/cdk primitives for accessibility
+- [ ] T020 [US1] Add ARIA attributes and keyboard navigation handlers
+- [ ] T021 [US1] Set `ChangeDetectionStrategy.OnPush` in component decorator
+- [ ] T022 [US1] Add JSDoc comments documenting Foundation equivalents
+- [ ] T023 [US1] Export component from public API (index.ts)
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
 
@@ -107,8 +116,8 @@ Examples of foundational tasks (adjust based on your project):
 
 ### Tests for User Story 2 (OPTIONAL - only if tests requested) ⚠️
 
-- [ ] T018 [P] [US2] Contract test for [endpoint] in tests/contract/test_[name].py
-- [ ] T019 [P] [US2] Integration test for [user journey] in tests/integration/test_[name].py
+- [ ] T018 [P] [US2] Contract test for [endpoint] in tests/contract/test\_[name].py
+- [ ] T019 [P] [US2] Integration test for [user journey] in tests/integration/test\_[name].py
 
 ### Implementation for User Story 2
 
@@ -129,8 +138,8 @@ Examples of foundational tasks (adjust based on your project):
 
 ### Tests for User Story 3 (OPTIONAL - only if tests requested) ⚠️
 
-- [ ] T024 [P] [US3] Contract test for [endpoint] in tests/contract/test_[name].py
-- [ ] T025 [P] [US3] Integration test for [user journey] in tests/integration/test_[name].py
+- [ ] T024 [P] [US3] Contract test for [endpoint] in tests/contract/test\_[name].py
+- [ ] T025 [P] [US3] Integration test for [user journey] in tests/integration/test\_[name].py
 
 ### Implementation for User Story 3
 

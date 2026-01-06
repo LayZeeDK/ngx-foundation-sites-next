@@ -29,9 +29,50 @@
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
-[Gates determined based on constitution file]
+**Angular-Native Components**: ✅ / ⚠️
+
+- [ ] Component implementation uses Angular APIs only (no Foundation JS)
+- [ ] Component names align with Foundation for Sites conventions
+- [ ] Input properties use camelCase equivalents of Foundation `data-*` attributes
+- [ ] Injection tokens follow `Token` suffix convention
+- [ ] API design doc created/updated using `foundation-api-design` skill (when introducing/changing component API)
+
+**Accessibility First**: ✅ / ⚠️
+
+- [ ] Component will pass AXE checks
+- [ ] WCAG AA minimum standards addressed (focus, contrast, ARIA)
+- [ ] Implementation hierarchy: @angular/aria → @angular/cdk → custom Angular
+
+**Foundation CSS-Only Integration**: ✅ / ⚠️
+
+- [ ] Foundation CSS classes applied as Foundation expects
+- [ ] Foundation state classes used via Angular class bindings
+- [ ] Custom CSS limited and justified with comments
+
+**Modern Angular APIs**: ✅ / ⚠️
+
+- [ ] Standalone components only (no NgModules)
+- [ ] Signals for state management
+- [ ] `input()`/`output()` functions instead of decorators
+- [ ] Native control flow (`@if`, `@for`, `@switch`)
+- [ ] `ChangeDetectionStrategy.OnPush` set
+- [ ] Member visibility follows guidelines (`#`, `protected`, public)
+
+**Component Testing Strategy**: ✅ / ⚠️
+
+- [ ] Storybook interactive tests planned
+- [ ] E2E tests only for web-native APIs or Sass variable verification in the test consumer app (if applicable)
+- [ ] Stories include interaction tests
+- [ ] Semantic locators planned for E2E tests
+
+**Nx Monorepo Organization**: ✅ / ⚠️
+
+- [ ] Library follows Nx conventions (packages/)
+- [ ] Selector prefix: `nfs-` (components) or `nfs` (directives)
+- [ ] Module boundaries respected
+- [ ] Tasks run through Nx
 
 ## Project Structure
 
@@ -48,6 +89,7 @@ specs/[###-feature]/
 ```
 
 ### Source Code (repository root)
+
 <!--
   ACTION REQUIRED: Replace the placeholder tree below with the concrete layout
   for this feature. Delete unused options and expand the chosen structure with
@@ -98,7 +140,7 @@ directories captured above]
 
 > **Fill ONLY if Constitution Check has violations that must be justified**
 
-| Violation | Why Needed | Simpler Alternative Rejected Because |
-|-----------|------------|-------------------------------------|
-| [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
-| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |
+| Violation                  | Why Needed         | Simpler Alternative Rejected Because |
+| -------------------------- | ------------------ | ------------------------------------ |
+| [e.g., 4th project]        | [current need]     | [why 3 projects insufficient]        |
+| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient]  |
