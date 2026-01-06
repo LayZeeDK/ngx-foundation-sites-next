@@ -25,17 +25,22 @@ Developers need to create standard interactive buttons (submit, cancel, actions)
 
 ### User Story 2 - Anchor Buttons (Priority: P1)
 
-Developers need to use native `<a>` elements styled as Foundation buttons, while ensuring they behave like buttons for assistive technology and keyboard users.
+Developers need to use native `<a>` elements styled as Foundation buttons.
 
-**Why this priority**: Common for "link that looks like a button" UI patterns. In this library, `<a nfsButton>` is treated as a *button-like* control (it receives `role="button"`).
+- When the anchor **has an `href`**, it is a **link** (navigation) and MUST keep native link semantics.
+- When the anchor **does not have an `href`**, it is treated as a **button-like action control** and MUST follow the WAI-ARIA button pattern.
 
-**Independent Test**: Can be tested by rendering anchor elements with `nfsButton`, verifying they have `role="button"`, respond to Space key (in addition to Enter), and (when `href` is present) still navigate.
+**Why this priority**: Styling links as buttons is common, but semantics must remain correct to avoid confusing screen reader users.
+
+**Independent Test**: Can be tested by rendering anchors both with and without `href`, verifying:
+- With `href`: role remains link, no `role="button"` is applied
+- Without `href`: `role="button"` + `tabindex="0"` are applied and Space activates
 
 **Acceptance Scenarios**:
 
-1. **Given** an `<a>` element with `nfsButton`, **When** the page renders, **Then** the element receives `role="button"`.
-2. **Given** an anchor button with focus, **When** the user presses Space, **Then** the anchor is activated (same as clicking).
-3. **Given** an anchor button with an `href`, **When** the user clicks or activates it, **Then** navigation occurs as expected.
+1. **Given** an `<a nfsButton>` with an `href`, **When** the page renders, **Then** it does NOT receive `role="button"` and remains a link.
+2. **Given** an `<a nfsButton>` without an `href`, **When** the page renders, **Then** it receives `role="button"` and `tabindex="0"`.
+3. **Given** an anchor button (no `href`) with focus, **When** the user presses Space, **Then** the anchor is activated (same as clicking).
 
 ---
 
@@ -125,20 +130,21 @@ Users navigating with keyboard need to access all buttons, activate them with En
 - **FR-007**: Component MUST support responsive expanded breakpoints: `small-only`, `medium-only`, `large-only`, `medium`, `large`, `medium-down`, `large-down`.
 - **FR-008**: Component MUST support soft-disabled state via `softDisabled` input with `aria-disabled="true"`.
 - **FR-009**: Component MUST prevent click events when `softDisabled` is `true` using capture-phase event prevention.
-- **FR-010**: Anchor elements (`<a>`) MUST receive `role="button"` for proper semantics.
-- **FR-011**: Anchor elements MUST respond to Space key activation (in addition to Enter key).
-- **FR-012**: Soft-disabled anchor elements MUST have `tabindex="-1"` to prevent keyboard focus.
-- **FR-013**: Component MUST use Foundation's CSS classes without modification (no custom button styling).
-- **FR-014**: Component MUST load Foundation button styles on first render and unload on destroy.
-- **FR-015**: Component MUST use signals for all reactive state (`size()`, `color()`, `fill()`, `expanded()`, `softDisabled()`).
-- **FR-016**: Component MUST use `booleanAttribute` transform for `softDisabled`, and a custom transform for `expanded` that accepts breakpoint strings and otherwise delegates to `booleanAttribute` (to support HTML attribute syntax).
+- **FR-010**: Anchors WITH `href` MUST keep native link semantics (MUST NOT apply `role="button"`).
+- **FR-011**: Anchors WITHOUT `href` MUST receive `role="button"` and `tabindex="0"`.
+- **FR-012**: Anchors WITHOUT `href` MUST respond to Space key activation (in addition to Enter key).
+- **FR-013**: Soft-disabled anchor elements MUST have `tabindex="-1"` to prevent keyboard focus.
+- **FR-014**: Component MUST use Foundation's CSS classes without modification (no custom button styling).
+- **FR-015**: Component MUST load Foundation button styles on first render and unload on destroy.
+- **FR-016**: Component MUST use signals for all reactive state (`size()`, `color()`, `fill()`, `expanded()`, `softDisabled()`).
+- **FR-017**: Component MUST use `booleanAttribute` transform for `softDisabled`, and a custom transform for `expanded` that accepts breakpoint strings and otherwise delegates to `booleanAttribute` (to support HTML attribute syntax).
 
 ### Accessibility Requirements (MANDATORY)
 
 - **AR-001**: Component MUST pass all AXE accessibility checks with zero violations.
 - **AR-002**: Component MUST meet WCAG AA standards for color contrast (Foundation provides this via Sass configuration).
 - **AR-003**: All button elements MUST be keyboard accessible (Tab to focus, Enter/Space to activate).
-- **AR-004**: Anchor buttons MUST include `role="button"` to communicate button semantics.
+- **AR-004**: Anchor buttons (anchors without `href`) MUST include `role="button"` to communicate button semantics.
 - **AR-005**: Soft-disabled `<button>` elements MUST use `aria-disabled="true"` instead of native `disabled` to remain focusable.
 - **AR-006**: Soft-disabled anchors MUST have `tabindex="-1"` to prevent focus while maintaining `aria-disabled="true"`.
 - **AR-007**: Component MUST provide visible focus indicators (Foundation's `:focus` styles).

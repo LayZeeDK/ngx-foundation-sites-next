@@ -53,9 +53,10 @@ Design an Angular directive API for Foundation Button that:
 
 | Element                | ARIA Attributes                         | Notes                                      |
 | ---------------------- | --------------------------------------- | ------------------------------------------ |
-| `<button>`             | None required                           | Native button has implicit `role="button"` |
-| `<a>` with `nfsButton` | `role="button"`                         | Links styled as buttons need explicit role |
-| Disabled `<a>`         | `aria-disabled="true"`, `tabindex="-1"` | Links can't use `disabled` attr            |
+| `<button>`                 | None required                             | Native button has implicit `role="button"` |
+| `<a nfsButton href>`       | None                                      | Keep native link semantics                  |
+| `<a nfsButton>` (no `href`)| `role="button"`, `tabindex="0"`         | Action anchors must follow button pattern   |
+| Soft-disabled `<a>`        | `aria-disabled="true"`, `tabindex="-1"` | Remove from tab order when soft-disabled    |
 | Icon-only button       | `aria-label`                            | Required for accessibility                 |
 
 ### Angular Material Button Pattern
@@ -258,7 +259,7 @@ export class NfsButton {
 <a nfsButton href="/page">Navigate</a>
 
 <!-- Output -->
-<a class="button primary" href="/page" role="button">Navigate</a>
+<a class="button primary" href="/page">Navigate</a>
 ```
 
 ### Soft Disabled Link
@@ -313,9 +314,12 @@ Note: `<a>` elements do **not** activate on Space by default. When we apply `rol
 
 When `nfsButton` is applied to an `<a>` element:
 
-- Add `role="button"` for screen readers
-- Handle `softDisabled` with `aria-disabled` and `tabindex="-1"`
-- Links can't use native `disabled` attribute
+- If it has an `href`, it remains a **link** (navigation). Do not override semantics with `role`.
+- If it does **not** have an `href`, it is treated as a **button-like action control**:
+  - add `role="button"`
+  - add `tabindex="0"` (so it is keyboard reachable)
+  - handle Space key activation per WAI-ARIA APG
+- For soft-disabled anchors, set `aria-disabled="true"` and `tabindex="-1"`.
 
 ---
 
@@ -344,7 +348,7 @@ packages/ngx-foundation-sites/src/lib/button/
 | Fill input             | `fill="solid\|hollow\|clear"`        | Maps to Foundation fill classes                                                         |
 | Expanded               | Boolean input                        | Maps to `.expanded` class                                                               |
 | Disabled               | Native + `softDisabled` input        | Native for hard disable, input for soft                                                 |
-| Link accessibility     | Auto `role="button"`                 | Required for `<a>` elements                                                             |
+| Link accessibility     | Role only for no-`href` anchors        | Keep `<a href>` as links; only no-`href` anchors get `role="button"`                   |
 | Toggle buttons         | Not included                         | Keep simple; separate component if needed                                               |
 | Config token           | Not included                         | Keep minimal for v1                                                                     |
 
@@ -374,7 +378,7 @@ Each story should include interaction tests covering:
 3. **Click interactions** - Buttons respond to clicks
 4. **Keyboard navigation** - Space/Enter activate buttons
 5. **Disabled behavior** - Disabled buttons don't respond to interaction
-6. **Link role** - Links have `role="button"`
+6. **Anchor semantics** - `<a href>` remains a link; only no-`href` anchors get `role="button"`
 7. **Soft disabled** - `aria-disabled` and `tabindex` are set correctly
 
 ### Example Play Function

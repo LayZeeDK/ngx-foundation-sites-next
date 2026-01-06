@@ -188,10 +188,20 @@ The component has **no custom outputs**. Use native DOM events:
 
 ### For `<a>` Elements
 
+#### `<a>` with `href` (link semantics)
+
 - Base class: `.button` (always applied)
-- `role="button"` (required for screen readers)
-- Responds to Enter key (native) AND Space key (custom handling)
-- When `softDisabled="true"`: sets `tabindex="-1"` to prevent keyboard focus
+- Keeps native link semantics (no `role` override)
+- Enter activates navigation (native behavior)
+- When `softDisabled="true"`: sets `aria-disabled="true"` and `tabindex="-1"` to prevent keyboard focus
+
+#### `<a>` without `href` (button semantics)
+
+- Base class: `.button` (always applied)
+- `role="button"`
+- `tabindex="0"` (anchors without href are not focusable by default)
+- Responds to Enter key AND Space key (Space handling added to match WAI-ARIA)
+- When `softDisabled="true"`: sets `aria-disabled="true"` and `tabindex="-1"`
 
 ---
 
@@ -229,9 +239,10 @@ The component applies Foundation CSS classes based on input values:
 
 | Element Type | Attribute         | Applied When           | Purpose                      |
 | ------------ | ----------------- | ---------------------- | ---------------------------- |
-| `<a>`        | `role="button"`   | Always                 | Screen reader semantics      |
-| Any          | `aria-disabled`   | `softDisabled="true"`  | Announce disabled state      |
-| `<a>`        | `tabindex="-1"`   | `softDisabled="true"`  | Prevent keyboard focus       |
+| `<a>` (no `href`) | `role="button"`    | When no `href`            | Button semantics for AT         |
+| `<a>` (no `href`) | `tabindex="0"`     | When no `href` (enabled)  | Make anchor keyboard focusable  |
+| Any               | `aria-disabled`     | `softDisabled="true"`    | Announce disabled state         |
+| `<a>`             | `tabindex="-1"`    | `softDisabled="true"`    | Prevent keyboard focus          |
 
 ### Keyboard Navigation
 
@@ -240,7 +251,7 @@ The component applies Foundation CSS classes based on input values:
 | Tab             | Both             | Move focus to/from button          |
 | Enter           | Both             | Activate button/link               |
 | Space           | `<button>`       | Activate button (native)           |
-| Space           | `<a>`            | Activate link (custom handling)    |
+| Space           | `<a>` (no `href`) | Activate (custom handling)          |
 
 ### Focus Management
 

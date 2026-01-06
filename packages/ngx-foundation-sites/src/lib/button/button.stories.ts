@@ -225,25 +225,38 @@ export const DisabledStates: Story = {
 export const LinksAsButtons: Story = {
   render: () => ({
     template: `
-      <div class="margin-bottom-1">
-        <a nfsButton href="#" (click)="$event.preventDefault()" class="margin-right-1">Link Button</a>
-        <a nfsButton href="#" (click)="$event.preventDefault()" color="secondary" class="margin-right-1">Secondary Link</a>
-        <a nfsButton [softDisabled]="true">Disabled Link</a>
-      </div>
+      <main>
+        <div class="margin-bottom-1">
+          <a nfsButton href="#" (click)="$event.preventDefault()" class="margin-right-1">Link Button</a>
+          <a nfsButton href="#" (click)="$event.preventDefault()" color="secondary" class="margin-right-1">Secondary Link</a>
+          <a nfsButton (click)="$event.preventDefault()" class="margin-right-1">Action Anchor (no href)</a>
+          <a nfsButton [softDisabled]="true">Disabled Anchor (no href)</a>
+        </div>
+      </main>
     `,
   }),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // Links should have role="button"
-    const linkButton = canvas.getByRole('button', { name: /Link Button/i });
+    // Anchors with href keep native link semantics.
+    const linkButton = canvas.getByRole('link', { name: /Link Button/i });
     expect(linkButton.tagName).toBe('A');
-    expect(linkButton).toHaveAttribute('role', 'button');
+    expect(linkButton).not.toHaveAttribute('role');
 
-    // Disabled link should have proper ARIA
-    const disabledLink = canvas.getByRole('button', { name: /Disabled Link/i });
-    expect(disabledLink).toHaveAttribute('aria-disabled', 'true');
-    expect(disabledLink).toHaveAttribute('tabindex', '-1');
+    // Anchors without href behave as buttons per WAI-ARIA APG.
+    const actionAnchor = canvas.getByRole('button', {
+      name: /Action Anchor \(no href\)/i,
+    });
+    expect(actionAnchor.tagName).toBe('A');
+    expect(actionAnchor).toHaveAttribute('role', 'button');
+    expect(actionAnchor).toHaveAttribute('tabindex', '0');
+
+    // Soft-disabled anchor should have proper ARIA
+    const disabledAnchor = canvas.getByRole('button', {
+      name: /Disabled Anchor \(no href\)/i,
+    });
+    expect(disabledAnchor).toHaveAttribute('aria-disabled', 'true');
+    expect(disabledAnchor).toHaveAttribute('tabindex', '-1');
   },
 };
 
@@ -484,10 +497,10 @@ export const AccessibilityComprehensive: Story = {
     expect(softDisabledBtn).toHaveAttribute('aria-disabled', 'true');
     expect(softDisabledBtn).not.toBeDisabled();
 
-    // Link as button - requires role="button"
-    const linkBtn = canvas.getByRole('button', { name: /Link Button/i });
+    // Link stays a link when href is present
+    const linkBtn = canvas.getByRole('link', { name: /Link Button/i });
     expect(linkBtn.tagName).toBe('A');
-    expect(linkBtn).toHaveAttribute('role', 'button');
+    expect(linkBtn).not.toHaveAttribute('role');
 
     // Disabled link
     const disabledLink = canvas.getByRole('button', { name: /Disabled Link/i });
@@ -631,11 +644,10 @@ export const AnchorSpaceKeyActivation: Story = {
           <h3>Normal Anchor Button</h3>
           <a
             nfsButton
-            href="#"
             (click)="$event.preventDefault(); normalClickCount = normalClickCount + 1"
             data-testid="normal-anchor"
           >
-            Link Button (clicks: {{ normalClickCount }})
+            Anchor Button (clicks: {{ normalClickCount }})
           </a>
           <p class="margin-top-1 text-secondary">Focus and press Space to activate</p>
         </section>
@@ -645,7 +657,6 @@ export const AnchorSpaceKeyActivation: Story = {
           <a
             nfsButton
             [softDisabled]="true"
-            href="#"
             (click)="$event.preventDefault(); disabledClickCount = disabledClickCount + 1"
             data-testid="disabled-anchor"
           >
@@ -663,6 +674,7 @@ export const AnchorSpaceKeyActivation: Story = {
     const normalAnchor = canvas.getByTestId('normal-anchor');
     expect(normalAnchor).toHaveTextContent('clicks: 0');
     expect(normalAnchor).toHaveAttribute('role', 'button');
+    expect(normalAnchor).toHaveAttribute('tabindex', '0');
 
     // Focus and press Space
     normalAnchor.focus();

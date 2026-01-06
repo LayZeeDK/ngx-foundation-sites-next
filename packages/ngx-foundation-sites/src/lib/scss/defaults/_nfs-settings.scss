@@ -33,3 +33,7 @@
 /// @type Duration
 /// @group accordion
 $nfs-accordion-slide-speed: 250ms !default;
+
+// Foundation: generate responsive expanded button classes (e.g. `.medium-expanded`).
+// This matches our NfsButton API which supports breakpoint strings.
+$button-responsive-expanded: true !default;

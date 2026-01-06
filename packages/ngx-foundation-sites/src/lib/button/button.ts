@@ -137,11 +137,14 @@ function expandedTransform(value: unknown): NfsButtonExpanded {
     '[attr.aria-disabled]': 'softDisabled() || null',
 
     // Anchor-specific accessibility
-    '[attr.role]': 'isAnchor ? "button" : null',
-    '[attr.tabindex]': 'softDisabled() && isAnchor ? -1 : null',
+    // - Links with href keep native link semantics (no role override)
+    // - Anchors without href behave like buttons per WAI-ARIA APG
+    '[attr.role]': 'isButtonAnchor ? "button" : null',
+    '[attr.tabindex]': 'anchorTabIndex',
 
-    // Space key activation for anchors (native buttons handle this automatically)
-    '(keydown.space)': 'isAnchor && handleSpaceKey($event)',
+    // Keyboard activation only for anchors acting as buttons (native buttons handle this automatically)
+    '(keydown.space)': 'isButtonAnchor && handleSpaceKey($event)',
+    '(keydown.enter)': 'isButtonAnchor && handleEnterKey($event)',
   },
 })
 export class NfsButton {
@@ -225,9 +228,45 @@ export class NfsButton {
 
   /**
    * Whether the host element is an anchor (`<a>`).
-   * Used for applying appropriate ARIA attributes (role="button").
    */
   protected readonly isAnchor = this.#elementRef.nativeElement.tagName === 'A';
+
+  protected get hasHref(): boolean {
+    if (!this.isAnchor) {
+      return false;
+    }
+
+    const href = (this.#elementRef.nativeElement as HTMLAnchorElement).getAttribute(
+      'href',
+    );
+    return href !== null && href !== '';
+  }
+
+  /**
+   * Whether this anchor should behave as a button per WAI-ARIA APG.
+   * Only anchors WITHOUT href are treated as buttons.
+   */
+  protected get isButtonAnchor(): boolean {
+    return this.isAnchor && !this.hasHref;
+  }
+
+  protected get anchorTabIndex(): number | null {
+    if (!this.isAnchor) {
+      return null;
+    }
+
+    // Soft-disabled anchors are removed from the tab order.
+    if (this.softDisabled()) {
+      return -1;
+    }
+
+    // Anchors without href are not focusable by default; make them keyboard reachable.
+    if (!this.hasHref) {
+      return 0;
+    }
+
+    return null;
+  }
 
   /**
    * Effect callback for soft-disabled click prevention.
@@ -296,6 +335,15 @@ export class NfsButton {
     event.preventDefault();
 
     // Only trigger click if not soft-disabled
+    if (!this.softDisabled()) {
+      (event.target as HTMLElement).click();
+    }
+  }
+
+  protected handleEnterKey(event: Event): void {
+    // Prevent default to ensure consistent "button" activation semantics.
+    event.preventDefault();
+
     if (!this.softDisabled()) {
       (event.target as HTMLElement).click();
     }
