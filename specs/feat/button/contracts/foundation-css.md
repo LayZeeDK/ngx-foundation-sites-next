@@ -2,7 +2,7 @@
 
 **Feature**: Accessible Button Component  
 **Version**: 1.0.0 (Foundation 6.9.0)  
-**Date**: 2025-01-22  
+**Date**: 2026-01-06  
 **Status**: Stable
 
 ## Overview

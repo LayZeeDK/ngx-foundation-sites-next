@@ -1,7 +1,7 @@
 # Feature Specification: Accessible Button Component
 
 **Feature Branch**: `feat/button`  
-**Created**: 2025-01-22  
+**Created**: 2026-01-06  
 **Status**: Final  
 **Input**: User description: "Finalize the accessible, self-contained Button component in the current branch. An Angular-native Button component aligned with Foundation for Sites CSS-only approach. Must be accessible (WCAG AA, passes AXE). Self-contained: no dependency on Foundation JS; uses Foundation Sass styles/classes. Use modern Angular patterns: standalone (default), OnPush, input()/output(), signals; no HostBinding/HostListener."
 
