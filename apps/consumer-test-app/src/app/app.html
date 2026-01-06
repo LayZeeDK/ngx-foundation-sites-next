@@ -39,6 +39,69 @@
   </section>
 
   <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- Test: Button Sizes -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <section data-testid="button-sizes-section">
+    <h2>Button Sizes</h2>
+    <p>Buttons should have custom font sizes from $button-sizes:</p>
+    <div class="button-row">
+      <button nfsButton size="tiny" data-testid="btn-tiny">
+        Tiny (0.5rem)
+      </button>
+      <button nfsButton size="small" data-testid="btn-small">
+        Small (0.65rem)
+      </button>
+      <button nfsButton data-testid="btn-default-size">Default (0.9rem)</button>
+      <button nfsButton size="large" data-testid="btn-large">
+        Large (1.4rem)
+      </button>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- Test: Button States -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <section data-testid="button-states-section">
+    <h2>Button States</h2>
+    <p>Test disabled and hollow button styling:</p>
+    <div class="button-row">
+      <button nfsButton disabled data-testid="btn-disabled">
+        Disabled (0.4 opacity)
+      </button>
+      <button nfsButton hollow data-testid="btn-hollow">
+        Hollow (2px border)
+      </button>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- Test: Button Typography -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <section data-testid="button-typography-section">
+    <h2>Button Typography</h2>
+    <p>
+      Buttons should use Arial font (from $button-font-family) and 600 weight
+      (from $button-font-weight):
+    </p>
+    <button nfsButton data-testid="btn-typography">
+      Font: Arial, weight: 600
+    </button>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- Test: Button Padding & Margin -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <section data-testid="button-spacing-section">
+    <h2>Button Padding & Margin</h2>
+    <p>
+      Button padding: 1em 1.5em (from $button-padding)
+      <br />
+      Button margin-bottom: 1.5rem (from $global-margin / $button-margin)
+    </p>
+    <button nfsButton data-testid="btn-spacing">Test Button Spacing</button>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
   <!-- Test: Accordion Component -->
   <!-- ═══════════════════════════════════════════════════════════════════════ -->
   <section data-testid="accordion-test-section">
@@ -52,7 +115,7 @@
         <ng-template nfsAccordionContent>
           <p data-testid="accordion-content-1">
             This panel is expanded by default. The accordion title should use
-            the primary color (#6200ea) and have +/- icons.
+            the primary color (#6200ea) and have ▸/▾ icons.
           </p>
         </ng-template>
       </ng-template>
@@ -68,6 +131,27 @@
         </ng-template>
       </ng-template>
     </nfs-accordion>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- Test: Accordion Styling Details -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <section data-testid="accordion-styling-section">
+    <h2>Accordion Styling Details</h2>
+    <p>Expected accordion styling from Sass variables:</p>
+    <ul>
+      <li>Background: #f9f9f9 ($accordion-background)</li>
+      <li>Title font-size: 0.875rem (14px) ($accordion-title-font-size)</li>
+      <li>Title padding: 1rem 0.75rem ($accordion-item-padding)</li>
+      <li>
+        Title hover background: #d0d0d0 ($accordion-item-background-hover)
+      </li>
+      <li>Content background: #fafafa ($accordion-content-background)</li>
+      <li>Content border: 1px solid #cccccc ($accordion-content-border)</li>
+      <li>Content color: #222222 ($accordion-content-color)</li>
+      <li>Content padding: 1.25rem ($accordion-content-padding)</li>
+      <li>Slide speed: 200ms ($nfs-accordion-slide-speed)</li>
+    </ul>
   </section>
 
   <!-- ═══════════════════════════════════════════════════════════════════════ -->

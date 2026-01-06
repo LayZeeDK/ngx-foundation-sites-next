@@ -1,49 +1,199 @@
 // ═══════════════════════════════════════════════════════════════════════════════
-// Consumer Test App - Theme Configuration
+// Consumer Test App - Comprehensive Theme Configuration
 // ═══════════════════════════════════════════════════════════════════════════════
 //
-// This file configures Foundation variables for e2e testing.
-// Tests verify that these values are correctly applied to components.
+// This file configures ALL Foundation and ngx-foundation-sites variables for
+// E2E testing. Each variable is set to a distinctive non-default value so tests
+// can verify the variable has an observable effect.
+//
+// Test coverage: Global, Button, and Accordion Sass variables
 //
 // ═══════════════════════════════════════════════════════════════════════════════
 
 // ─────────────────────────────────────────────────────────────────────────────────
-// Color Palette - Distinctive test colors
+// GLOBAL: Color Palette
 // ─────────────────────────────────────────────────────────────────────────────────
-// These colors are intentionally different from Foundation defaults to verify
-// that consumer theming works correctly.
+// Test values: Distinctive colors different from Foundation defaults
+// Foundation defaults: primary: #1779ba, secondary: #767676, success: #3adb76,
+//                      warning: #ffae00, alert: #cc4b37
 
 $foundation-palette: (
   primary: #6200ea,
-  // Deep purple (Foundation default: #1779ba)
+  // Deep purple (default: #1779ba)
   secondary: #00bfa5,
-  // Teal
+  // Teal (default: #767676)
   success: #00c853,
-  // Green
+  // Green (default: #3adb76)
   warning: #ffd600,
-  // Yellow
-  alert: #ff1744, // Red
-) !default;
+  // Yellow (default: #ffae00)
+  alert: #ff1744, // Red (default: #cc4b37)
+);
 
 // ─────────────────────────────────────────────────────────────────────────────────
-// Global Settings
+// GLOBAL: Gray Scale Colors
+// ─────────────────────────────────────────────────────────────────────────────────
+// Test values: Slightly different from Foundation defaults to verify effect
+// Foundation defaults: white: #fefefe, light-gray: #e6e6e6, black: #0a0a0a
+
+$white: #f8f8f8; // (default: #fefefe) - affects button text, accordion backgrounds
+$light-gray: #dddddd; // (default: #e6e6e6) - affects accordion borders, hover backgrounds
+$black: #111111; // (default: #0a0a0a) - affects button alt text color
+
+// ─────────────────────────────────────────────────────────────────────────────────
+// GLOBAL: Layout Settings
 // ─────────────────────────────────────────────────────────────────────────────────
 
 /// Text direction - LTR for this configuration (RTL uses styles-rtl/ folder)
 $global-text-direction: ltr;
 
-/// Enable flexbox layout
-$global-flexbox: true !default;
-
-/// Global border radius - set to 8px for visible verification
-$global-radius: 8px !default;
+/// Enable flexbox layout (default: true)
+$global-flexbox: true;
 
 // ─────────────────────────────────────────────────────────────────────────────────
-// Component Variables
+// GLOBAL: Spacing Settings
+// ─────────────────────────────────────────────────────────────────────────────────
+// Test values: Different from Foundation defaults
+
+/// Global margin - affects button margin (default: 1rem)
+$global-margin: 1.5rem;
+
+/// Global border radius - affects buttons and accordion (default: 0)
+$global-radius: 8px;
+
+// ─────────────────────────────────────────────────────────────────────────────────
+// BUTTON: Padding & Margin
 // ─────────────────────────────────────────────────────────────────────────────────
 
-/// Accordion animation duration
-$nfs-accordion-slide-speed: 200ms !default;
+/// Button padding (default: 0.85em 1em)
+$button-padding: 1em 1.5em;
 
-/// Show plus/minus icons on accordion
-$accordion-plusminus: true !default;
+/// Button margin (default: 0 0 $global-margin 0)
+$button-margin: 0 0 1.5rem 0;
+
+// ─────────────────────────────────────────────────────────────────────────────────
+// BUTTON: Typography
+// ─────────────────────────────────────────────────────────────────────────────────
+
+/// Button font family (default: inherit)
+$button-font-family: 'Arial', sans-serif;
+
+/// Button font weight (default: null, meaning not set)
+$button-font-weight: 600;
+
+// ─────────────────────────────────────────────────────────────────────────────────
+// BUTTON: Colors
+// ─────────────────────────────────────────────────────────────────────────────────
+
+/// Button text color (default: $white)
+$button-color: #f0f0f0;
+
+/// Button alt text color for light backgrounds (default: $black)
+$button-color-alt: #1a1a1a;
+
+// ─────────────────────────────────────────────────────────────────────────────────
+// BUTTON: Border & Shape
+// ─────────────────────────────────────────────────────────────────────────────────
+
+/// Button border (default: 1px solid transparent)
+$button-border: 2px solid transparent;
+
+/// Hollow button border width (default: 1px)
+$button-hollow-border-width: 2px;
+
+// ─────────────────────────────────────────────────────────────────────────────────
+// BUTTON: Sizes
+// ─────────────────────────────────────────────────────────────────────────────────
+// Test values: Different from Foundation defaults
+// Foundation defaults: tiny: 0.6rem, small: 0.75rem, default: 0.9rem, large: 1.25rem
+
+$button-sizes: (
+  tiny: 0.5rem,
+  // (default: 0.6rem)
+  small: 0.65rem,
+  // (default: 0.75rem)
+  default: 0.9rem,
+  // (default: 0.9rem) - keep same
+  large: 1.4rem, // (default: 1.25rem)
+);
+
+// ─────────────────────────────────────────────────────────────────────────────────
+// BUTTON: States
+// ─────────────────────────────────────────────────────────────────────────────────
+
+/// Disabled button opacity (default: 0.25)
+$button-opacity-disabled: 0.4;
+
+// ─────────────────────────────────────────────────────────────────────────────────
+// BUTTON: Hover Effects
+// ─────────────────────────────────────────────────────────────────────────────────
+
+/// Background lightness change on hover (default: -20%)
+$button-background-hover-lightness: -30%;
+
+/// Hollow button hover lightness (default: -50%)
+$button-hollow-hover-lightness: -40%;
+
+// ─────────────────────────────────────────────────────────────────────────────────
+// BUTTON: Transitions
+// ─────────────────────────────────────────────────────────────────────────────────
+
+/// Button transition (default: background-color 0.25s ease-out, color 0.25s ease-out)
+$button-transition:
+  background-color 0.3s ease-in-out,
+  color 0.3s ease-in-out;
+
+// ─────────────────────────────────────────────────────────────────────────────────
+// ACCORDION: Container
+// ─────────────────────────────────────────────────────────────────────────────────
+
+/// Accordion background (default: $white)
+$accordion-background: #f9f9f9;
+
+// ─────────────────────────────────────────────────────────────────────────────────
+// ACCORDION: Icons
+// ─────────────────────────────────────────────────────────────────────────────────
+
+/// Show plus/minus icons (default: true)
+$accordion-plusminus: true;
+
+/// Plus icon content (default: '\002B' which is +)
+$accordion-plus-content: '\25B8'; // ▸ (right-pointing triangle)
+
+/// Minus icon content (default: '\2013' which is –)
+$accordion-minus-content: '\25BE'; // ▾ (down-pointing triangle)
+
+// ─────────────────────────────────────────────────────────────────────────────────
+// ACCORDION: Title Styling
+// ─────────────────────────────────────────────────────────────────────────────────
+
+/// Title font size (default: rem-calc(12) = 0.75rem)
+$accordion-title-font-size: 0.875rem;
+
+/// Title padding (default: 1.25rem 1rem)
+$accordion-item-padding: 1rem 0.75rem;
+
+/// Title hover background (default: $light-gray)
+$accordion-item-background-hover: #d0d0d0;
+
+// ─────────────────────────────────────────────────────────────────────────────────
+// ACCORDION: Content Styling
+// ─────────────────────────────────────────────────────────────────────────────────
+
+/// Content background (default: $white)
+$accordion-content-background: #fafafa;
+
+/// Content border (default: 1px solid $light-gray)
+$accordion-content-border: 1px solid #cccccc;
+
+/// Content text color (default: $body-font-color)
+$accordion-content-color: #222222;
+
+/// Content padding (default: 1rem)
+$accordion-content-padding: 1.25rem;
+
+// ─────────────────────────────────────────────────────────────────────────────────
+// ngx-foundation-sites: Custom Variables
+// ─────────────────────────────────────────────────────────────────────────────────
+
+/// Accordion animation duration (default: 250ms)
+$nfs-accordion-slide-speed: 200ms;
