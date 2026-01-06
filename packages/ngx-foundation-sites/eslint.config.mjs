@@ -6,6 +6,13 @@ import baseConfig from '../../eslint.config.mjs';
 const nfsRules = await loadWorkspaceRules('tools/eslint-rules');
 
 export default [
+  // Ignore generated/bundled files (paths relative to project root)
+  {
+    ignores: [
+      '**/.storybook/static/**', // Bundled Sass compiler
+      '**/dist-css/**', // Compiled component CSS
+    ],
+  },
   ...baseConfig,
   {
     files: ['**/*.json'],
@@ -14,10 +21,14 @@ export default [
         'error',
         {
           ignoredFiles: ['{projectRoot}/eslint.config.{js,cjs,mjs,ts,cts,mts}'],
-          // sass is used by tools/build-component-css.mjs (not distributed)
-          // Consumers using precompiled CSS don't need sass
-          // Consumers using Sass theming already have sass via Angular CLI
-          ignoredDependencies: ['sass'],
+          // Build tools dependencies (not distributed to consumers)
+          // - sass: used by tools/build-component-css.mjs
+          // - esbuild*: used by tools/bundle-sass-compiler.mjs
+          ignoredDependencies: [
+            'sass',
+            'esbuild',
+            'esbuild-plugin-polyfill-node',
+          ],
         },
       ],
     },
