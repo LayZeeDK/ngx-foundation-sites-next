@@ -281,6 +281,23 @@ Use Playwright e2e tests when testing features that require real browser APIs no
 - **Storage APIs** (localStorage, sessionStorage persistence)
 - **Viewport-dependent behaviors** (responsive breakpoints)
 
+**Always use `getBy*` locators instead of `page.locator()`** for more resilient, semantically meaningful tests:
+
+| Locator Method | Use Case                                       | Example                                        |
+| -------------- | ---------------------------------------------- | ---------------------------------------------- |
+| `getByRole`    | Semantic elements (buttons, regions, headings) | `page.getByRole('button', { name: 'Submit' })` |
+| `getByTestId`  | Elements without semantic roles                | `page.getByTestId('accordion-header-1')`       |
+| `getByText`    | Text content matching                          | `page.getByText('Panel 1')`                    |
+| `getByLabel`   | Form fields by label                           | `page.getByLabel('Email')`                     |
+
+**Consider Angular ARIA runtime attributes:** Components using `@angular/aria` directives add semantic roles and ARIA attributes at runtime (e.g., `role`, `aria-expanded`, `aria-controls`). These aren't visible in the static template but enable semantic `getBy*` queries. Before writing locators, inspect the rendered DOM via Playwright MCP's `browser_snapshot` or `browser_evaluate` to identify queryable attributes.
+
+**When `page.locator()` is acceptable:**
+
+- Querying non-semantic DOM elements (e.g., `link[href$=".css"]` for stylesheets)
+- Technical checks on HTML attributes (e.g., `html` element direction)
+- Pseudo-element inspection via `evaluate()`
+
 Navigate to Storybook's **iframe story view** for isolation:
 
 ```typescript
@@ -289,8 +306,8 @@ test('deep link updates URL hash', async ({ page }) => {
   // Use iframe view for isolated story testing
   await page.goto('/iframe.html?id=components-accordion--deep-link&viewMode=story');
 
-  // Test History API integration
-  await page.click('[data-panel-id="section-2"] button');
+  // Test History API integration - use getByRole, not locator
+  await page.getByRole('button', { name: /Section 2/ }).click();
   await expect(page).toHaveURL(/#section-2$/);
 });
 ```
