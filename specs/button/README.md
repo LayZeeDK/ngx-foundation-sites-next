@@ -113,12 +113,12 @@ This specification was created **retrospectively** to document the existing impl
 This specification follows the **Speckit workflow**:
 
 1. ✅ **Specify** (`/speckit.specify`) - Define WHAT users need (this document)
-2. ⏭️ **Clarify** (`/speckit.clarify`) - Not needed (no ambiguities)
-3. ⏭️ **Plan** (`/speckit.plan`) - Not needed (already implemented)
-4. ⏭️ **Tasks** (`/speckit.tasks`) - Not needed (already implemented)
-5. ⏭️ **Implement** (`/speckit.implement`) - Not needed (already implemented)
+2. ✅ **Clarify** (`/speckit.clarify`) - Captured edge-cases and scope boundaries
+3. ✅ **Plan** (`/speckit.plan`) - Retrospective plan artifacts in `specs/feat/button/`
+4. ⏭️ **Tasks** (`/speckit.tasks`) - Optional (implementation is already complete)
+5. ⏭️ **Implement** (`/speckit.implement`) - Optional (use for validation / future changes)
 
-**Status**: ✅ Specification Complete & Validated
+**Status**: ✅ Specification + Plan Complete
 
 ## 🔗 Related Documents
 
