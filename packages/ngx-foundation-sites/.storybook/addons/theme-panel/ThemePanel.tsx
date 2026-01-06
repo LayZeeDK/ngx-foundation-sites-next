@@ -257,6 +257,25 @@ export function ThemePanel({ active }: ThemePanelProps) {
     globals[THEME_STATE_KEY] as Partial<ThemeState> | undefined,
   );
 
+  // Get toolbar direction for bidirectional sync
+  const toolbarDirection = (globals['direction'] || 'ltr') as 'ltr' | 'rtl';
+
+  // Sync toolbar direction → theme panel's globalTextDirection
+  // This ensures the panel shows the correct value when toolbar changes
+  useEffect(() => {
+    if (themeState.layout.globalTextDirection !== toolbarDirection) {
+      updateGlobals({
+        [THEME_STATE_KEY]: {
+          ...themeState,
+          layout: {
+            ...themeState.layout,
+            globalTextDirection: toolbarDirection,
+          },
+        },
+      });
+    }
+  }, [toolbarDirection]); // Only run when toolbar changes
+
   const updateThemeState = useCallback(
     (newState: ThemeState) => {
       updateGlobals({ [THEME_STATE_KEY]: newState });
@@ -293,7 +312,12 @@ export function ThemePanel({ active }: ThemePanelProps) {
   };
 
   const handleReset = () => {
-    updateThemeState(getDefaultThemeState());
+    const defaults = getDefaultThemeState();
+    // Reset both theme state and toolbar direction
+    updateGlobals({
+      direction: defaults.layout.globalTextDirection,
+      [THEME_STATE_KEY]: defaults,
+    });
   };
 
   const handleCopyToClipboard = async () => {
@@ -322,7 +346,17 @@ export function ThemePanel({ active }: ThemePanelProps) {
   const handleChange = (sectionId: string, sassVar: string, value: unknown) => {
     const path = getStatePath(sectionId, sassVar);
     const newState = setNestedValue(themeState, path, value);
-    updateThemeState(newState);
+
+    // Sync theme panel's globalTextDirection → toolbar direction
+    // This ensures the toolbar updates when the panel dropdown changes
+    if (sassVar === 'global-text-direction') {
+      updateGlobals({
+        direction: value as 'ltr' | 'rtl',
+        [THEME_STATE_KEY]: newState,
+      });
+    } else {
+      updateThemeState(newState);
+    }
   };
 
   // Handle palette preset selection (updates all 5 colors at once)
