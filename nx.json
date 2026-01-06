@@ -30,7 +30,10 @@
         "{workspaceRoot}/.eslintrc.json",
         "{workspaceRoot}/.eslintignore",
         "{workspaceRoot}/eslint.config.mjs"
-      ]
+      ],
+      "options": {
+        "maxWarnings": 0
+      }
     },
     "@nx/js:tsc": {
       "cache": true,
@@ -52,6 +55,11 @@
     },
     "build-storybook": {
       "cache": true
+    },
+    "lint": {
+      "options": {
+        "args": "--max-warnings=0"
+      }
     }
   },
   "release": {
