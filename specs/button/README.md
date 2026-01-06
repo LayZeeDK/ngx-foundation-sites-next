@@ -6,6 +6,9 @@ This directory contains the complete specification for the **Accessible Button C
 
 ### Documents
 
+> **About `specs\\button` vs `specs\\feat\\button`**: `specs\\button` is the canonical feature specification + API reference. Speckit-generated planning artifacts (plan/tasks/checklists) live under `specs\\feat\\button`. This split is intentional so the spec remains stable while plans/tasks can be regenerated.
+
+
 1. **[spec.md](./spec.md)** - Feature Specification
    - 6 prioritized user stories (P1-P3)
    - 16 functional requirements
