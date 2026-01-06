@@ -138,6 +138,8 @@ Users navigating with keyboard need to access all buttons, activate them with En
 - **FR-015**: Component MUST load Foundation button styles on first render and unload on destroy.
 - **FR-016**: Component MUST use signals for all reactive state (`size()`, `color()`, `fill()`, `expanded()`, `softDisabled()`).
 - **FR-017**: Component MUST use `booleanAttribute` transform for `softDisabled`, and a custom transform for `expanded` that accepts breakpoint strings and otherwise delegates to `booleanAttribute` (to support HTML attribute syntax).
+- **FR-018**: Component MUST NOT implement Foundation's `.dropdown` or `.arrow-only` button variants (these are dropdown-specific and out of scope for the base button component).
+- **FR-019**: Shipped library CSS MUST be compiled with `$button-responsive-expanded: true` so responsive expanded selectors (e.g. `.small-only-expanded`, `.medium-expanded`, `.medium-down-expanded`, `.large-down-expanded`) exist at runtime.
 
 ### Accessibility Requirements (MANDATORY)
 

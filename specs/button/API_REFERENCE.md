@@ -4,6 +4,15 @@
 
 The `NfsButton` component provides an Angular-native implementation of Foundation for Sites buttons. It applies Foundation CSS classes to native `<button>` and `<a>` elements without requiring Foundation JavaScript.
 
+## Out of Scope
+
+The following Foundation button variants are intentionally **not supported** by `NfsButton` (even though Foundation ships CSS selectors for them):
+
+- `.dropdown`
+- `.arrow-only`
+
+These are dropdown-specific patterns and will be covered by a dedicated dropdown component.
+
 ## Component Selector
 
 ```typescript
