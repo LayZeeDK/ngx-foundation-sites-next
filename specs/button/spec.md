@@ -23,19 +23,19 @@ Developers need to create standard interactive buttons (submit, cancel, actions)
 
 ---
 
-### User Story 2 - Link-Styled Buttons (Priority: P1)
+### User Story 2 - Anchor Buttons (Priority: P1)
 
-Developers need to style navigation links (`<a>` tags) as buttons while maintaining proper semantics and accessibility for screen readers and keyboard users.
+Developers need to use native `<a>` elements styled as Foundation buttons, while ensuring they behave like buttons for assistive technology and keyboard users.
 
-**Why this priority**: Critical for navigation patterns. Links and buttons have different semantic meanings that must be preserved while sharing visual styling.
+**Why this priority**: Common for "link that looks like a button" UI patterns. In this library, `<a nfsButton>` is treated as a *button-like* control (it receives `role="button"`).
 
-**Independent Test**: Can be tested by rendering anchor elements with `nfsButton`, verifying they have `role="button"`, respond to Space key (in addition to Enter), and have proper ARIA attributes.
+**Independent Test**: Can be tested by rendering anchor elements with `nfsButton`, verifying they have `role="button"`, respond to Space key (in addition to Enter), and (when `href` is present) still navigate.
 
 **Acceptance Scenarios**:
 
-1. **Given** an `<a>` element with `nfsButton` and an `href`, **When** the page renders, **Then** the link receives `role="button"` for proper semantics.
-2. **Given** an anchor button with focus, **When** the user presses Space, **Then** the link is activated (same as clicking).
-3. **Given** an anchor button with `href`, **When** the user clicks or activates it, **Then** navigation occurs as expected.
+1. **Given** an `<a>` element with `nfsButton`, **When** the page renders, **Then** the element receives `role="button"`.
+2. **Given** an anchor button with focus, **When** the user presses Space, **Then** the anchor is activated (same as clicking).
+3. **Given** an anchor button with an `href`, **When** the user clicks or activates it, **Then** navigation occurs as expected.
 
 ---
 
@@ -57,7 +57,7 @@ Developers need to create buttons in different sizes (tiny, small, default, larg
 
 ### User Story 4 - Disabled States (Priority: P2)
 
-Developers need both hard-disabled (not focusable) and soft-disabled (focusable but inactive) buttons to support different UX patterns like showing tooltips on disabled buttons.
+Developers need both hard-disabled (not focusable) and soft-disabled ("aria-disabled") buttons to support different UX patterns like showing tooltips on disabled buttons. For native `<button>` elements, soft-disabled remains focusable; for `<a>` elements, soft-disabled is removed from the tab order to prevent keyboard activation.
 
 **Why this priority**: Essential for form validation feedback and tooltip accessibility, but basic button functionality works without it.
 
@@ -68,7 +68,7 @@ Developers need both hard-disabled (not focusable) and soft-disabled (focusable 
 1. **Given** a button with the native `disabled` attribute, **When** a user tabs through the page, **Then** the button is skipped in tab order (not focusable).
 2. **Given** a button with `[softDisabled]="true"`, **When** a user tabs through the page, **Then** the button receives focus and has `aria-disabled="true"`.
 3. **Given** a soft-disabled button with focus, **When** the user clicks it, **Then** the click event is prevented and no action occurs.
-4. **Given** a soft-disabled anchor button, **When** a user tabs through the page, **Then** the anchor has `tabindex="-1"` and is skipped.
+4. **Given** a soft-disabled anchor button, **When** a user tabs through the page, **Then** the anchor has `aria-disabled="true"` and `tabindex="-1"` and is skipped.
 
 ---
 
@@ -108,7 +108,7 @@ Users navigating with keyboard need to access all buttons, activate them with En
 - **What happens when both `disabled` and `softDisabled` are set?** Native `disabled` takes precedence; element is not focusable.
 - **What happens when `softDisabled` changes from `true` to `false` dynamically?** Click listener is removed reactively; button becomes clickable immediately.
 - **What happens when an anchor button has `softDisabled="true"` but no `href`?** Component still applies `aria-disabled="true"` and `tabindex="-1"` consistently.
-- **What happens when invalid `expanded` breakpoint string is provided?** Value is coerced to boolean via `booleanAttribute`; invalid strings become `false`.
+- **What happens when invalid `expanded` breakpoint string is provided?** Value is normalized by the `expanded` input transform: known breakpoint strings are preserved; all other values are delegated to `booleanAttribute` (so arbitrary strings are treated as `true`, except `"false"`).
 - **What happens when multiple color classes are set (e.g., changing from primary to success)?** Angular's host bindings reactively update; old class removed, new class applied.
 - **What happens with icon-only buttons?** Developer must provide `aria-label` manually; component doesn't enforce this (allows flexibility).
 
@@ -131,7 +131,7 @@ Users navigating with keyboard need to access all buttons, activate them with En
 - **FR-013**: Component MUST use Foundation's CSS classes without modification (no custom button styling).
 - **FR-014**: Component MUST load Foundation button styles on first render and unload on destroy.
 - **FR-015**: Component MUST use signals for all reactive state (`size()`, `color()`, `fill()`, `expanded()`, `softDisabled()`).
-- **FR-016**: Component MUST use `booleanAttribute` transform for `softDisabled` and `expanded` to support HTML attribute syntax.
+- **FR-016**: Component MUST use `booleanAttribute` transform for `softDisabled`, and a custom transform for `expanded` that accepts breakpoint strings and otherwise delegates to `booleanAttribute` (to support HTML attribute syntax).
 
 ### Accessibility Requirements (MANDATORY)
 
@@ -139,7 +139,7 @@ Users navigating with keyboard need to access all buttons, activate them with En
 - **AR-002**: Component MUST meet WCAG AA standards for color contrast (Foundation provides this via Sass configuration).
 - **AR-003**: All button elements MUST be keyboard accessible (Tab to focus, Enter/Space to activate).
 - **AR-004**: Anchor buttons MUST include `role="button"` to communicate button semantics.
-- **AR-005**: Soft-disabled buttons MUST use `aria-disabled="true"` instead of native `disabled` to remain focusable.
+- **AR-005**: Soft-disabled `<button>` elements MUST use `aria-disabled="true"` instead of native `disabled` to remain focusable.
 - **AR-006**: Soft-disabled anchors MUST have `tabindex="-1"` to prevent focus while maintaining `aria-disabled="true"`.
 - **AR-007**: Component MUST provide visible focus indicators (Foundation's `:focus` styles).
 - **AR-008**: Icon-only buttons MUST have `aria-label` provided by the developer (component does not enforce this).
@@ -170,7 +170,7 @@ This component is purely presentational and does not involve data entities.
 - **SC-001**: Developers can create a functional button with 1 line of markup: `<button nfsButton>Text</button>`.
 - **SC-002**: Component passes 100% of AXE accessibility checks in Storybook interaction tests.
 - **SC-003**: Keyboard users can navigate to and activate all buttons using only Tab, Enter, and Space keys.
-- **SC-004**: Soft-disabled buttons remain focusable for screen reader users (verified by `aria-disabled` presence and focus test).
+- **SC-004**: Soft-disabled `<button>` elements remain focusable for screen reader users (verified by `aria-disabled` presence and focus test).
 - **SC-005**: Anchor buttons respond identically to native buttons for Space key activation.
 - **SC-006**: All Foundation button CSS classes (`.button`, `.tiny`, `.small`, `.large`, `.expanded`, `.primary`, `.secondary`, `.success`, `.alert`, `.warning`, `.hollow`, `.clear`) are applied correctly based on input values.
 - **SC-007**: Responsive expanded classes are applied at correct breakpoints (`.small-only-expanded`, `.medium-expanded`, etc.).
