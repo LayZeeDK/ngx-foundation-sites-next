@@ -24,3 +24,36 @@ Start using slash commands with your AI agent:
 1. `/speckit.tasks` — Generate an actionable task list from the implementation plan
 1. `/speckit.analyze` (optional) — Cross-artifact consistency and alignment report (after `/speckit.tasks`, before `/speckit.implement`)
 1. `/speckit.implement` — Execute all tasks and build the feature according to the plan
+
+## Specs Artifact Structure (Recommended)
+
+Use one canonical folder per feature using a stable ID/slug:
+
+```text
+specs/
+  ###-feature-slug/
+    spec.md
+    plan.md
+    tasks.md
+    README.md              (optional)
+    API_REFERENCE.md       (optional)
+    VALIDATION_RESULTS.md  (optional)
+    research.md            (optional)
+    data-model.md          (optional)
+    quickstart.md          (optional)
+    contracts/             (optional)
+    checklists/            (optional)
+```
+
+### Artifact Purpose
+
+- **spec.md**: “what/why” — user stories, requirements, acceptance criteria.
+- **plan.md**: “how” — architecture/tech decisions, mapping requirements to implementation.
+- **tasks.md**: executable checklist derived from plan (often dependency-ordered / parallelizable).
+- **contracts/**: interfaces/agreements (API/component contracts, CSS contracts, etc.).
+- **checklists/**: quality gates (requirements quality, consistency checks). Treat as a review harness.
+- **VALIDATION_RESULTS.md**: evidence that the requirements were met (tests run, outcomes, gaps).
+
+## What to Keep After Merge
+
+Recommended to keep the canonical `specs/###-feature-slug/` folder in `main` for traceability. If you want a leaner `main`, consider archiving (not deleting) planning-only artifacts like `research.md`, `data-model.md`, and `checklists/` once the feature is stable.
