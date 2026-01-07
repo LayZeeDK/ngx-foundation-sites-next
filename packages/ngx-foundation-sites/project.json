@@ -98,7 +98,6 @@
       "options": {
         "port": 4400,
         "configDir": "packages/ngx-foundation-sites/.storybook",
-        "browserTarget": "ngx-foundation-sites:build-storybook",
         "compodoc": true,
         "compodocArgs": [
           "-c",
@@ -120,9 +119,20 @@
         }
       }
     },
+    "pre-build-storybook": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx rimraf dist/storybook/ngx-foundation-sites"
+      }
+    },
     "build-storybook": {
       "executor": "@storybook/angular:build-storybook",
-      "dependsOn": ["build-css", "bundle-sass", "bundle-sass-compiler"],
+      "dependsOn": [
+        "pre-build-storybook",
+        "build-css",
+        "bundle-sass",
+        "bundle-sass-compiler"
+      ],
       "inputs": [
         "default",
         "{projectRoot}/.compodocrc.json",
@@ -132,7 +142,6 @@
       "options": {
         "outputDir": "dist/storybook/ngx-foundation-sites",
         "configDir": "packages/ngx-foundation-sites/.storybook",
-        "browserTarget": "ngx-foundation-sites:build-storybook",
         "compodoc": true,
         "compodocArgs": [
           "-c",
