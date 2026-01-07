@@ -1,13 +1,9 @@
----
-description: 'Actionable task list for Accessible Accordion Component implementation'
----
-
 # Tasks: Accessible Accordion Component
 
 **Input**: Design documents from `/specs/002-accordion-component/`
-**Prerequisites**: plan.md ✅, spec.md ✅, research.md ✅, data-model.md ✅, contracts/ ✅
+**Prerequisites**: plan.md ✓, spec.md ✓, research.md ✓, data-model.md ✓, contracts/ ✓
 
-**Tests**: Tests are OPTIONAL - only included in tasks if explicitly requested. The spec does request Storybook play functions as the primary testing approach.
+**Tests**: Tests are OPTIONAL and only included per feature specification request. This implementation focuses on Storybook interactive tests as primary testing strategy per spec.md.
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
 
@@ -17,17 +13,21 @@ description: 'Actionable task list for Accessible Accordion Component implementa
 - **[Story]**: Which user story this task belongs to (e.g., US1, US2, US3)
 - Include exact file paths in descriptions
 
+## Path Conventions
+
+This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Component implementation is in `packages/ngx-foundation-sites/src/lib/accordion/`. Storybook stories are in `packages/ngx-foundation-sites/.storybook/stories/accordion/`.
+
 ---
 
 ## Phase 1: Setup (Shared Infrastructure)
 
-**Purpose**: Project initialization and basic structure for accordion component
+**Purpose**: Project initialization and basic accordion structure
 
-- [ ] T001 Verify Foundation for Sites CSS is available in packages/ngx-foundation-sites/dist-css/
-- [ ] T002 [P] Create accordion directory structure in packages/ngx-foundation-sites/src/lib/accordion/
-- [ ] T003 [P] Set up component selector prefix verification (nfs- for components, nfs for directives)
-- [ ] T004 [P] Create index.ts barrel file in packages/ngx-foundation-sites/src/lib/accordion/index.ts for public API exports
-- [ ] T005 [P] Update main index.ts at packages/ngx-foundation-sites/src/index.ts to re-export accordion components
+- [ ] T001 Verify Nx library structure exists at packages/ngx-foundation-sites/
+- [ ] T002 Verify ng-packagr configuration for library publishing in packages/ngx-foundation-sites/ng-package.json
+- [ ] T003 [P] Verify component selector prefix is `nfs-` in packages/ngx-foundation-sites/project.json
+- [ ] T004 [P] Verify ESLint and Prettier configuration in .eslintrc.json and .prettierrc
+- [ ] T005 [P] Verify Storybook is configured at packages/ngx-foundation-sites/.storybook/
 
 ---
 
@@ -37,20 +37,13 @@ description: 'Actionable task list for Accessible Accordion Component implementa
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T006 Create injection token in packages/ngx-foundation-sites/src/lib/accordion/accordion.token.ts (export const nfsAccordionToken with CDK-style pattern)
-- [ ] T007 [P] Create TypeScript type definitions in packages/ngx-foundation-sites/src/lib/accordion/accordion.types.ts (AccordionHeadingLevel, AccordionItemChangeEvent, ACCORDION_DEFAULTS)
-- [ ] T008 [P] Verify @angular/cdk/a11y is available for FocusMonitor and accessibility utilities
-- [ ] T009 [P] Create base accordion component structure with standalone config in packages/ngx-foundation-sites/src/lib/accordion/accordion.component.ts (skeleton with inputs/outputs signatures)
-- [ ] T010 [P] Create accordion item component structure with standalone config in packages/ngx-foundation-sites/src/lib/accordion/accordion-item.component.ts (skeleton with inputs/outputs)
-- [ ] T011 [P] Create accordion title component structure with standalone config in packages/ngx-foundation-sites/src/lib/accordion/accordion-title.component.ts (skeleton)
-- [ ] T012 [P] Create accordion content directive structure in packages/ngx-foundation-sites/src/lib/accordion/accordion-content.directive.ts (structural directive skeleton)
-- [ ] T013 Create base Storybook story in packages/ngx-foundation-sites/src/storybook/accordion/accordion.stories.ts with Foundation CSS imports
-- [ ] T014 [P] Add README.md in packages/ngx-foundation-sites/src/lib/accordion/README.md documenting Foundation API parity (toggle, down, up methods and events)
-- [ ] T015 Configure TypeScript strict mode compliance for all accordion files in tsconfig.lib.json
-- [ ] T015b Verify Foundation API parity matches contracts/accordion-api.ts FOUNDATION_API_MAPPING (toggle/down/up methods + down/up events)
-  - [ ] Success criteria: NfsAccordionItem exposes toggle(), down(), up()
-  - [ ] Success criteria: NfsAccordion exposes down/up outputs
-  - [ ] Success criteria: output payload matches AccordionItemChangeEvent { itemId, expanded }
+- [ ] T006 Create accordion directory structure at packages/ngx-foundation-sites/src/lib/accordion/
+- [ ] T007 [P] Set up Foundation SCSS imports in packages/ngx-foundation-sites/src/lib/accordion/_accordion-imports.scss
+- [ ] T008 [P] Create injection token file at packages/ngx-foundation-sites/src/lib/accordion/accordion.token.ts (exports nfsAccordionToken for DI)
+- [ ] T009 Install @angular/cdk if not present (for FocusMonitor, ListKeyManager, a11y utilities)
+- [ ] T010 [P] Create public API exports file at packages/ngx-foundation-sites/src/lib/accordion/index.ts
+- [ ] T011 Create API design document using `foundation-api-design` skill at packages/ngx-foundation-sites/src/lib/accordion/ACCORDION_API_DESIGN.md
+- [ ] T012 [P] Create README documentation template at packages/ngx-foundation-sites/src/lib/accordion/README.md
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -58,306 +51,383 @@ description: 'Actionable task list for Accessible Accordion Component implementa
 
 ## Phase 3: User Story 1 - Basic Single Accordion Interaction (Priority: P1) 🎯 MVP
 
-**Goal**: Single-expand mode where clicking a title expands/collapses panels, only one panel open at a time
+**Goal**: Core accordion pattern - one answer visible at a time, click to expand/collapse, Foundation CSS classes applied correctly
 
-**Independent Test**: Render accordion with 3 items, click titles to expand/collapse, verify only one panel open at a time and correct Foundation CSS classes applied
+**Independent Test**: Render a basic accordion with 3 items, click titles to expand/collapse panels, verify only one panel is open at a time. Delivers immediately usable FAQ/content organization functionality.
 
-### Tests for User Story 1
+### Storybook Tests for User Story 1
 
-> **NOTE: Storybook interactive tests are PREFERRED per spec.**
+> **NOTE: Storybook interactive tests are PRIMARY testing strategy per spec.md. Write these FIRST.**
 
-- [ ] T016 [P] [US1] Create Storybook play function for basic click interactions in packages/ngx-foundation-sites/src/storybook/accordion/Basic.story.ts
-- [ ] T017 [P] [US1] Create Storybook play function for single-expand mode validation (only one open) in packages/ngx-foundation-sites/src/storybook/accordion/Basic.story.ts
-- [ ] T018 [P] [US1] Create Storybook play function for Foundation CSS class verification (.accordion, .accordion-item, .accordion-title, .accordion-content, .is-active) in packages/ngx-foundation-sites/src/storybook/accordion/Basic.story.ts
+- [ ] T013 [P] [US1] Create basic Storybook story with 3 FAQ items at packages/ngx-foundation-sites/.storybook/stories/accordion/Basic.story.ts
+- [ ] T014 [US1] Add play function to Basic story: click item 2 title, verify item 2 expands, verify aria-expanded="true"
+- [ ] T015 [US1] Add play function to Basic story: click item 3 title, verify item 3 expands and item 2 collapses
+- [ ] T016 [US1] Add play function to Basic story: click expanded item 1 title, verify item 1 collapses
+- [ ] T017 [P] [US1] Add accessibility checks to Basic story using @storybook/addon-a11y
 
 ### Implementation for User Story 1
 
-- [ ] T019 [P] [US1] Implement NfsAccordion component in packages/ngx-foundation-sites/src/lib/accordion/accordion.component.ts with multiExpand and allowAllClosed inputs using input() function
-- [ ] T020 [P] [US1] Create NfsAccordion template in packages/ngx-foundation-sites/src/lib/accordion/accordion.component.html with <ul class="accordion"> structure and ng-content for items
-- [ ] T021 [P] [US1] Implement NfsAccordionItem component in packages/ngx-foundation-sites/src/lib/accordion/accordion-item.component.ts with panelId, expanded (model), and disabled inputs
-- [ ] T022 [P] [US1] Create NfsAccordionItem template in packages/ngx-foundation-sites/src/lib/accordion/accordion-item.component.html with <li class="accordion-item"> and stable panel wrapper
-- [ ] T023 [US1] Implement parent-child DI communication in NfsAccordionItem (inject nfsAccordionToken with optional: true, skipSelf: true)
-- [ ] T024 [US1] Implement state management signals in NfsAccordion (#openItemIds WritableSignal, computed for allClosed, canCloseItem)
-- [ ] T025 [US1] Implement state management signals in NfsAccordionItem (expanded ModelSignal, computed for shouldRenderContent, ariaExpanded)
-- [ ] T026 [US1] Implement registerItem/unregisterItem/notifyItemToggle methods in NfsAccordion for parent-child coordination
-- [ ] T027 [US1] Implement single-expand logic in NfsAccordion (when multiExpand=false, close others when one opens)
-- [ ] T028 [US1] Implement allowAllClosed enforcement in NfsAccordion (prevent closing last item when allowAllClosed=false)
-- [ ] T029 [US1] Implement Foundation API parity methods in NfsAccordionItem (down(), up(), toggle())
-- [ ] T030 [US1] Implement Foundation API parity outputs in NfsAccordion using output() function (down, up events with AccordionItemChangeEvent payload { itemId, expanded } per contracts/accordion-api.ts)
-- [ ] T031 [US1] Add CSS class bindings to NfsAccordionItem host ([class.is-active]="expanded()")
-- [ ] T032 [US1] Implement stable panel wrapper that stays in DOM, with @if conditional rendering inside it (render content only when expanded; wrapper remains stable for ARIA/SSR)
-- [ ] T033 [US1] Add ChangeDetectionStrategy.OnPush to all accordion components
-- [ ] T034 [US1] Add JSDoc comments documenting Foundation equivalents in all components
+- [ ] T018 [P] [US1] Create NfsAccordion component at packages/ngx-foundation-sites/src/lib/accordion/accordion.component.ts (standalone, OnPush, host class="accordion", selector: nfs-accordion)
+- [ ] T019 [P] [US1] Create NfsAccordionItem component at packages/ngx-foundation-sites/src/lib/accordion/accordion-item.component.ts (standalone, OnPush, host class="accordion-item", selector: nfs-accordion-item)
+- [ ] T020 [P] [US1] Create NfsAccordionTitle component at packages/ngx-foundation-sites/src/lib/accordion/accordion-title.component.ts (standalone, OnPush, selector: nfs-accordion-title, renders as button)
+- [ ] T021 [US1] Implement NfsAccordion inputs using input() function: multiExpand (default: false), allowAllClosed (default: false)
+- [ ] T022 [US1] Implement NfsAccordionItem inputs: panelId (required string), expanded (model signal, default: false), disabled (default: false)
+- [ ] T023 [US1] Implement state management in NfsAccordion: #openItemIds signal, registerItem(), unregisterItem(), notifyItemToggle()
+- [ ] T024 [US1] Implement single-expand logic: when multiExpand=false, expanding one item closes others
+- [ ] T025 [US1] Implement NfsAccordion provides nfsAccordionToken (useExisting pattern)
+- [ ] T026 [US1] Implement NfsAccordionItem injects nfsAccordionToken (optional: true, skipSelf: true)
+- [ ] T027 [US1] Implement click handler in NfsAccordionTitle that calls parent item's toggle() method
+- [ ] T028 [US1] Add Foundation CSS classes: .accordion, .accordion-item, .accordion-title, .accordion-content
+- [ ] T029 [US1] Implement .is-active class binding on NfsAccordionItem when expanded=true
+- [ ] T030 [US1] Add JSDoc comments documenting Foundation for Sites equivalents (data-multi-expand → multiExpand)
+- [ ] T031 [US1] Export all components from packages/ngx-foundation-sites/src/lib/accordion/index.ts
 
-**Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
+**Checkpoint**: User Story 1 should be fully functional - basic FAQ accordion works
 
 ---
 
 ## Phase 4: User Story 2 - Keyboard Navigation and Focus Management (Priority: P1)
 
-**Goal**: Keyboard-only navigation using Tab, arrow keys, Enter, Space, Home, End to expand/collapse without mouse
+**Goal**: Keyboard-only user can navigate using Tab, arrow keys, Enter/Space without a mouse
 
-**Independent Test**: Use only keyboard (Tab to first title, ArrowDown/Up to move between titles, Enter/Space to toggle, Home/End to jump)
+**Independent Test**: Render accordion, use only keyboard (Tab to first title, ArrowDown/Up, Enter/Space to toggle, Home/End). Delivers complete keyboard accessibility.
 
-### Tests for User Story 2
+### Storybook Tests for User Story 2
 
-- [ ] T035 [P] [US2] Create Storybook play function for Tab key navigation in packages/ngx-foundation-sites/src/storybook/accordion/KeyboardNavigation.story.ts
-- [ ] T036 [P] [US2] Create Storybook play function for ArrowDown/ArrowUp navigation in packages/ngx-foundation-sites/src/storybook/accordion/KeyboardNavigation.story.ts
-- [ ] T037 [P] [US2] Create Storybook play function for Home/End key navigation in packages/ngx-foundation-sites/src/storybook/accordion/KeyboardNavigation.story.ts
-- [ ] T038 [P] [US2] Create Storybook play function for Enter/Space toggle in packages/ngx-foundation-sites/src/storybook/accordion/KeyboardNavigation.story.ts
+- [ ] T032 [P] [US2] Create KeyboardNavigation story at packages/ngx-foundation-sites/.storybook/stories/accordion/KeyboardNavigation.story.ts
+- [ ] T033 [US2] Add play function: simulate Tab, verify focus on first title
+- [ ] T034 [US2] Add play function: simulate ArrowDown, verify focus moves to next title
+- [ ] T035 [US2] Add play function: simulate ArrowUp, verify focus moves to previous title (with wraparound from first to last)
+- [ ] T036 [US2] Add play function: simulate Home, verify focus moves to first title
+- [ ] T037 [US2] Add play function: simulate End, verify focus moves to last title
+- [ ] T038 [US2] Add play function: simulate Enter/Space on collapsed title, verify panel expands
+- [ ] T039 [P] [US2] Add accessibility checks for keyboard navigation and focus indicators
 
 ### Implementation for User Story 2
 
-- [ ] T039 [P] [US2] Implement NfsAccordionTitle component in packages/ngx-foundation-sites/src/lib/accordion/accordion-title.component.ts with focus/blur methods
-- [ ] T040 [P] [US2] Create NfsAccordionTitle template in packages/ngx-foundation-sites/src/lib/accordion/accordion-title.component.html with <button class="accordion-title"> and click handler
-- [ ] T041 [US2] Implement keyboard event handler in NfsAccordion component (host: {'(keydown)': 'handleKeydown($event)'})
-- [ ] T042 [US2] Implement arrow key navigation logic in NfsAccordion (focusNextItem, focusPreviousItem methods)
-- [ ] T043 [US2] Implement Home/End key navigation logic in NfsAccordion (focusFirstItem, focusLastItem methods)
-- [ ] T044 [US2] Implement wrap input support in NfsAccordion (wraparound navigation when wrap=true)
-- [ ] T045 [US2] Implement click handler in NfsAccordionTitle that calls parent item's toggle() method
-- [ ] T046 [US2] Add Enter/Space key handling to NfsAccordionTitle button element
-- [ ] T047 [US2] Import and use FocusMonitor from @angular/cdk/a11y for focus management in NfsAccordionTitle
-- [ ] T048 [US2] Implement focus tracking signal in NfsAccordionTitle (#focused WritableSignal)
+- [ ] T040 [US2] Implement keyboard event handler in NfsAccordion: (keydown) host binding with handleKeydown() method
+- [ ] T041 [US2] Implement ArrowDown handler: move focus to next enabled title (skip disabled)
+- [ ] T042 [US2] Implement ArrowUp handler: move focus to previous enabled title (skip disabled)
+- [ ] T043 [US2] Implement Home handler: move focus to first enabled title
+- [ ] T044 [US2] Implement End handler: move focus to last enabled title
+- [ ] T045 [US2] Implement Enter/Space handlers in NfsAccordionTitle: toggle parent item expansion
+- [ ] T046 [US2] Add focus management utilities: focusItem(index), findNextEnabledItem(), findPreviousEnabledItem()
+- [ ] T047 [US2] Implement focus() and blur() public methods on NfsAccordionTitle
+- [ ] T048 [US2] Add tabindex="0" to title buttons for keyboard accessibility
+- [ ] T049 [US2] Ensure focus indicators meet WCAG contrast requirements (verify with Foundation CSS)
 
-**Checkpoint**: At this point, User Stories 1 AND 2 should both work independently
+**Checkpoint**: Keyboard navigation fully functional - all interactions work without mouse
 
 ---
 
 ## Phase 5: User Story 3 - Screen Reader Compatibility (Priority: P1)
 
-**Goal**: Screen reader users understand accordion structure, state (expanded/collapsed), and relationships between titles and content
+**Goal**: Screen reader users understand structure, state, and relationships
 
-**Independent Test**: Test with NVDA/JAWS/VoiceOver by navigating accordion and verifying announcements include role, state, and content
+**Independent Test**: Test with NVDA/JAWS/VoiceOver, verify announcements include role, state, content. Delivers accessible experience.
 
-### Tests for User Story 3
+### Storybook Tests for User Story 3
 
-- [ ] T049 [P] [US3] Create Storybook play function with AXE accessibility checks in packages/ngx-foundation-sites/src/storybook/accordion/ScreenReader.story.ts
-- [ ] T050 [P] [US3] Create Storybook story documenting ARIA attributes for manual screen reader testing in packages/ngx-foundation-sites/src/storybook/accordion/ScreenReader.story.ts
+- [ ] T050 [P] [US3] Create ScreenReader story at packages/ngx-foundation-sites/.storybook/stories/accordion/ScreenReader.story.ts
+- [ ] T051 [US3] Add assertions for ARIA attributes: aria-expanded, aria-controls, aria-labelledby on all items
+- [ ] T052 [US3] Add assertions for role="region" on panel content wrappers
+- [ ] T053 [US3] Add assertions for unique auto-generated IDs (verify no collisions)
+- [ ] T054 [P] [US3] Run AXE checks with @storybook/addon-a11y to verify ARIA compliance
 
 ### Implementation for User Story 3
 
-- [ ] T051 [P] [US3] Implement ID generation strategy in NfsAccordion (static counter + instanceId)
-- [ ] T052 [P] [US3] Generate unique trigger IDs and panel IDs in NfsAccordionItem (triggerId, panelId computed signals)
-- [ ] T052b [US3] Verify auto-generated IDs are unique across multiple accordions rendered on the same page (no collisions)
-- [ ] T052c [US3] Verify nested accordions work independently (DI token skipSelf pattern; no state/ID interference between parent/child accordions)
-- [ ] T053 [US3] Add ARIA attributes to NfsAccordionTitle button (aria-expanded, aria-controls, id)
-- [ ] T054 [US3] Add ARIA attributes to panel wrapper in NfsAccordionItem (role="region", aria-labelledby, id)
-- [ ] T055 [US3] Implement inert attribute binding on panel wrapper when collapsed ([attr.inert]="expanded() ? null : ''")
-- [ ] T056 [US3] Implement titleHeadingLevel support in NfsAccordion (input and provide to children via DI)
-- [ ] T057 [US3] Wrap NfsAccordionTitle button in <div role="heading" aria-level="N"> when titleHeadingLevel is set
-- [ ] T058 [US3] Verify ARIA relationships in computed signals (ariaControls, ariaExpanded, ariaDisabled)
+- [ ] T055 [P] [US3] Implement ARIA attributes on NfsAccordionTitle button: aria-expanded (computed from item.expanded signal)
+- [ ] T056 [P] [US3] Implement ARIA attributes on NfsAccordionTitle button: aria-controls (references panel ID)
+- [ ] T057 [US3] Implement unique ID generation in NfsAccordion: static counter + instance ID (nfs-accordion-${counter++})
+- [ ] T058 [US3] Generate title button ID: ${accordionInstanceId}-title-${itemIndex}
+- [ ] T059 [US3] Use user-provided panelId or generate: ${accordionInstanceId}-panel-${itemIndex}
+- [ ] T060 [P] [US3] Create panel wrapper element in NfsAccordionItem template with role="region"
+- [ ] T061 [P] [US3] Add aria-labelledby on panel wrapper referencing title button ID
+- [ ] T062 [US3] Ensure panel wrapper remains in DOM when collapsed (for stable aria-controls reference)
+- [ ] T063 [US3] Add inert attribute on panel wrapper when collapsed (prevent keyboard access)
+- [ ] T064 [US3] Implement @if conditional rendering for panel content (remove content from DOM when collapsed, keep wrapper)
 
-**Checkpoint**: All P1 user stories should now be independently functional with full accessibility
+**Checkpoint**: Screen reader support complete - ARIA relationships valid, announces correctly
 
 ---
 
 ## Phase 6: User Story 4 - Multi-Expand Mode (Priority: P2)
 
-**Goal**: Allow multiple panels to be open simultaneously (Foundation's data-multi-expand behavior)
+**Goal**: Allow multiple panels open simultaneously
 
-**Independent Test**: Render accordion with multiExpand="true", expand multiple items, verify all remain open
+**Independent Test**: Render accordion with multiExpand=true, expand multiple items, verify all remain open. Delivers comparison/multi-section viewing.
 
-### Tests for User Story 4
+### Storybook Tests for User Story 4
 
-- [ ] T059 [P] [US4] Create Storybook play function for multi-expand mode in packages/ngx-foundation-sites/src/storybook/accordion/MultiExpand.story.ts
-- [ ] T060 [P] [US4] Create Storybook play function verifying multiple open panels in packages/ngx-foundation-sites/src/storybook/accordion/MultiExpand.story.ts
+- [ ] T065 [P] [US4] Create MultiExpand story at packages/ngx-foundation-sites/.storybook/stories/accordion/MultiExpand.story.ts
+- [ ] T066 [US4] Add play function: expand item 1, verify item 1 opens
+- [ ] T067 [US4] Add play function: expand item 2, verify both item 1 and item 2 remain open
+- [ ] T068 [US4] Add play function: collapse item 1, verify item 1 closes and item 2 remains open
 
 ### Implementation for User Story 4
 
-- [ ] T061 [US4] Implement multiExpand input handling in NfsAccordion (update notifyItemToggle to skip closing others when multiExpand=true)
-- [ ] T062 [US4] Update state management in NfsAccordion to track multiple open items in #openItemIds array
-- [ ] T063 [US4] Verify multiExpand interacts correctly with allowAllClosed logic
+- [ ] T069 [US4] Implement multiExpand logic in NfsAccordion.notifyItemToggle(): if multiExpand=true, do not close other items
+- [ ] T070 [US4] Add multiExpand input to NfsAccordion (InputSignal<boolean>, default: false)
+- [ ] T071 [US4] Update #openItemIds signal to support array of multiple open items
+- [ ] T072 [US4] Update state management to track multiple open items when multiExpand=true
 
-**Checkpoint**: User Story 4 complete - multi-expand mode functional
+**Checkpoint**: Multi-expand mode works - multiple panels can be open simultaneously
 
 ---
 
 ## Phase 7: User Story 5 - Allow All Closed Mode (Priority: P2)
 
-**Goal**: Configure whether all panels can be closed simultaneously or require at least one open
+**Goal**: Configure whether all panels can be closed or require one always open
 
-**Independent Test**: Render accordion with allowAllClosed="false", attempt to close last open item, verify it remains open
+**Independent Test**: Render accordion with allowAllClosed=false, attempt to close last open item, verify it remains open. Delivers "always one open" constraint.
 
-### Tests for User Story 5
+### Storybook Tests for User Story 5
 
-- [ ] T064 [P] [US5] Create Storybook play function for allowAllClosed=false in packages/ngx-foundation-sites/src/storybook/accordion/AllowAllClosed.story.ts
-- [ ] T065 [P] [US5] Create Storybook play function verifying last item cannot close when allowAllClosed=false in packages/ngx-foundation-sites/src/storybook/accordion/AllowAllClosed.story.ts
+- [ ] T073 [P] [US5] Create AllowAllClosed story at packages/ngx-foundation-sites/.storybook/stories/accordion/AllowAllClosed.story.ts
+- [ ] T074 [US5] Add play function: set allowAllClosed=false, open only item 1, click item 1, verify it remains open
+- [ ] T075 [US5] Add play function: set allowAllClosed=false with multiExpand, close all but one item, verify last item cannot close
+- [ ] T076 [US5] Add play function: set allowAllClosed=true, close last open item, verify all items collapsed
 
 ### Implementation for User Story 5
 
-- [ ] T066 [US5] Implement allowAllClosed input handling in NfsAccordion
-- [ ] T067 [US5] Implement canCloseItem method in NfsAccordion (check if closing would violate allowAllClosed=false)
-- [ ] T068 [US5] Update NfsAccordionItem toggle logic to check parent's canCloseItem before closing
-- [ ] T069 [US5] Verify allowAllClosed output events do not fire when action is prevented
+- [ ] T077 [US5] Add allowAllClosed input to NfsAccordion (InputSignal<boolean>, default: false per Foundation spec)
+- [ ] T078 [US5] Implement canCloseItem() method in NfsAccordion: returns false if allowAllClosed=false and only one item open
+- [ ] T079 [US5] Update NfsAccordionItem.toggle() to check parent.canCloseItem() before collapsing
+- [ ] T080 [US5] Add computed signal canClose in NfsAccordionItem: calls parent.canCloseItem(this.panelId())
 
-**Checkpoint**: User Story 5 complete - allowAllClosed constraint enforced
+**Checkpoint**: Allow all closed mode works - can enforce "at least one open" rule
 
 ---
 
 ## Phase 8: User Story 6 - Disabled Items (Priority: P2)
 
-**Goal**: Mark specific accordion items as disabled to prevent interaction
+**Goal**: Disable specific accordion items to prevent interaction
 
-**Independent Test**: Render accordion with item 2 disabled, attempt to click/keyboard activate, verify it doesn't expand and is skipped in keyboard navigation
+**Independent Test**: Render accordion with item 2 disabled, attempt to click/keyboard activate, verify it doesn't expand. Delivers item-level control.
 
-### Tests for User Story 6
+### Storybook Tests for User Story 6
 
-- [ ] T070 [P] [US6] Create Storybook play function for disabled item click prevention in packages/ngx-foundation-sites/src/storybook/accordion/DisabledItems.story.ts
-- [ ] T071 [P] [US6] Create Storybook play function for keyboard navigation skipping disabled items in packages/ngx-foundation-sites/src/storybook/accordion/DisabledItems.story.ts
+- [ ] T081 [P] [US6] Create DisabledItems story at packages/ngx-foundation-sites/.storybook/stories/accordion/DisabledItems.story.ts
+- [ ] T082 [US6] Add play function: click disabled item title, verify it does not expand
+- [ ] T083 [US6] Add play function: press Enter on disabled item, verify it does not expand
+- [ ] T084 [US6] Add play function: verify disabled item has aria-disabled="true"
+- [ ] T085 [US6] Add play function: ArrowDown from item 1, verify focus skips disabled item 2 to item 3
+- [ ] T086 [US6] Add play function: ArrowUp from item 3, verify focus skips disabled item 2 to item 1
 
 ### Implementation for User Story 6
 
-- [ ] T072 [P] [US6] Implement disabled input handling in NfsAccordionItem (prevent toggle when disabled=true)
-- [ ] T073 [P] [US6] Implement softDisabled input handling in NfsAccordion (provide to children via DI)
-- [ ] T074 [US6] Add disabled check in NfsAccordionItem toggle method (early return if disabled)
-- [ ] T075 [US6] Update keyboard navigation in NfsAccordion to skip disabled items (filter enabled items only)
-- [ ] T076 [US6] Add aria-disabled attribute binding to NfsAccordionTitle when softDisabled=true ([attr.aria-disabled]="disabled() || null")
-- [ ] T077 [US6] Add disabled attribute binding to NfsAccordionTitle button when softDisabled=false ([attr.disabled]="disabled() || null")
-- [ ] T078 [US6] Add .is-disabled CSS class binding to NfsAccordionItem host ([class.is-disabled]="disabled()")
+- [ ] T087 [P] [US6] Add disabled input to NfsAccordion (InputSignal<boolean>, default: false, disables all items)
+- [ ] T088 [P] [US6] Add disabled input to NfsAccordionItem (InputSignal<boolean>, default: false, disables this item)
+- [ ] T089 [US6] Implement additive disabled logic: item disabled if either accordion.disabled OR item.disabled is true
+- [ ] T090 [US6] Add softDisabled input to NfsAccordion (InputSignal<boolean>, default: true per ARIA best practices)
+- [ ] T091 [US6] Implement soft disabled (softDisabled=true): add aria-disabled="true" to title button, keep in tab order, prevent activation
+- [ ] T092 [US6] Implement hard disabled (softDisabled=false): add disabled attribute to title button, remove from tab order
+- [ ] T093 [US6] Update keyboard navigation to skip disabled items (ArrowUp/Down)
+- [ ] T094 [US6] Add .is-disabled CSS class to NfsAccordionItem when disabled
+- [ ] T095 [US6] Prevent toggle() in NfsAccordionItem if disabled=true (early return)
 
-**Checkpoint**: User Story 6 complete - disabled items functional
+**Checkpoint**: Disabled items work - cannot be activated, keyboard navigation skips them
 
 ---
 
 ## Phase 9: User Story 7 - Initial Open Item Configuration (Priority: P3)
 
-**Goal**: Configure which accordion item(s) should be open when component first renders
+**Goal**: Configure which item(s) are open when component first renders
 
-**Independent Test**: Render accordion with initialOpenIndex="1", verify item at index 1 is expanded on load
+**Independent Test**: Render accordion with initialOpenIndex=1, verify item at index 1 is expanded on load. Delivers controlled initial state.
 
-### Tests for User Story 7
+### Storybook Tests for User Story 7
 
-- [ ] T079 [P] [US7] Create Storybook play function for initial expanded state in packages/ngx-foundation-sites/src/storybook/accordion/InitialState.story.ts
-- [ ] T080 [P] [US7] Create Storybook play function for multiple initial expanded items (multiExpand mode) in packages/ngx-foundation-sites/src/storybook/accordion/InitialState.story.ts
+- [ ] T096 [P] [US7] Add story variant to Basic story: set expanded=true on item at index 1, verify it's open on initial render
+- [ ] T097 [P] [US7] Add story variant to MultiExpand story: set expanded=true on items at indexes 0 and 2, verify both open on render
 
 ### Implementation for User Story 7
 
-- [ ] T081 [US7] Implement initial expanded state handling in NfsAccordionItem (use expanded input default value)
-- [ ] T082 [US7] Verify expanded model signal supports setting initial value from parent template ([expanded]="true")
-- [ ] T083 [US7] Document initial state configuration in README.md with examples
+- [ ] T098 [US7] Document that expanded input (model signal) controls initial state on NfsAccordionItem
+- [ ] T099 [US7] Verify expanded input defaults to false per spec
+- [ ] T100 [US7] Add example to quickstart.md showing initialOpenIndex pattern: [expanded]="true" on specific item
 
-**Checkpoint**: User Story 7 complete - initial state configuration works
+**Checkpoint**: Initial state configuration works - items can be pre-expanded
 
 ---
 
 ## Phase 10: User Story 8 - Dynamic Item Management (Priority: P3)
 
-**Goal**: Support dynamically added/removed accordion items via @for without breaking keyboard navigation or ARIA
+**Goal**: Support adding/removing accordion items dynamically via @for
 
-**Independent Test**: Render accordion with 3 items, add a new item, remove an item, verify keyboard navigation and IDs update correctly
+**Independent Test**: Render accordion with 3 items, add new item, remove item, verify keyboard navigation and IDs update correctly. Delivers dynamic content support.
 
-### Tests for User Story 8
+### Storybook Tests for User Story 8
 
-- [ ] T084 [P] [US8] Create Storybook play function for adding items dynamically in packages/ngx-foundation-sites/src/storybook/accordion/DynamicContent.story.ts
-- [ ] T085 [P] [US8] Create Storybook play function for removing items dynamically in packages/ngx-foundation-sites/src/storybook/accordion/DynamicContent.story.ts
-- [ ] T086 [P] [US8] Create Storybook play function verifying ARIA relationships after item changes in packages/ngx-foundation-sites/src/storybook/accordion/DynamicContent.story.ts
+- [ ] T101 [P] [US8] Create DynamicContent story at packages/ngx-foundation-sites/.storybook/stories/accordion/DynamicContent.story.ts
+- [ ] T102 [US8] Add play function: add new item to array, verify it renders with correct ARIA IDs
+- [ ] T103 [US8] Add play function: remove item 2, verify remaining items maintain correct aria-controls/aria-labelledby
+- [ ] T104 [US8] Add play function: reorder items, verify keyboard navigation follows new DOM order
 
 ### Implementation for User Story 8
 
-- [ ] T087 [US8] Verify registerItem/unregisterItem lifecycle works with dynamic items
-- [ ] T088 [US8] Implement focus management when focused item is removed (move focus to safe location)
-- [ ] T089 [US8] Test dynamic item management with large item count (100 items per spec)
-- [ ] T090 [US8] Document dynamic item patterns in README.md
+- [ ] T105 [US8] Verify registerItem() and unregisterItem() handle dynamic items correctly in NfsAccordion
+- [ ] T106 [US8] Implement ngOnInit in NfsAccordionItem: call parent.registerItem(this)
+- [ ] T107 [US8] Implement ngOnDestroy in NfsAccordionItem: call parent.unregisterItem(this)
+- [ ] T108 [US8] Add focus management for removed items: if focused item is removed, move focus to safe location (next/previous item)
+- [ ] T109 [US8] Verify ID generation remains unique after add/remove operations
+- [ ] T110 [US8] Add example to quickstart.md showing @for with dynamic array
 
-**Checkpoint**: User Story 8 complete - dynamic items fully supported
+**Checkpoint**: Dynamic content works - items can be added/removed without breaking navigation or ARIA
 
 ---
 
 ## Phase 11: User Story 9 - SSR Compatibility (Priority: P3)
 
-**Goal**: Component renders server-side (Angular Universal/SSR) without errors and hydrates correctly on client
+**Goal**: Render accordion server-side without errors, hydrate correctly on client
 
-**Independent Test**: Render accordion in SSR context, verify no server-side errors, confirm client-side hydration activates interactivity
-
-### Tests for User Story 9
-
-- [ ] T091 [P] [US9] Create E2E test for SSR rendering in packages/ngx-foundation-sites-e2e/src/accordion-ssr.spec.ts
-- [ ] T092 [P] [US9] Verify SSR-rendered HTML includes correct semantic structure and ARIA attributes
+**Independent Test**: Render accordion in SSR context, verify no server errors, confirm client hydration activates interactivity. Delivers SSR support.
 
 ### Implementation for User Story 9
 
-- [ ] T093 [US9] Add PLATFORM_ID injection to NfsAccordion component
-- [ ] T094 [US9] Wrap browser-only code (deep linking) in isPlatformBrowser checks
-- [ ] T095 [US9] Use afterRender hook for browser-specific initialization
-- [ ] T096 [US9] Verify no direct window/document references during initialization
-- [ ] T097 [US9] Test component in SSR mode (Angular Universal build)
+- [ ] T111 [P] [US9] Inject PLATFORM_ID in NfsAccordion component
+- [ ] T112 [P] [US9] Use isPlatformBrowser() guard before accessing window, document, history APIs
+- [ ] T113 [US9] Wrap browser-specific code (deep linking) in afterRender() callback
+- [ ] T114 [US9] Verify component renders semantic HTML with ARIA attributes during SSR (no client-only logic in template)
+- [ ] T115 [US9] Test SSR rendering in an Angular Universal sample application (manual verification)
 
-**Checkpoint**: User Story 9 complete - SSR compatibility verified
+**Checkpoint**: SSR works - component renders server-side and hydrates correctly
 
 ---
 
 ## Phase 12: User Story 10 - URL Hash Deep Linking (Priority: P4)
 
-**Goal**: Navigate to URL with hash (#accordion-item-2) and accordion automatically opens matching item
+**Goal**: Automatically open accordion item matching URL hash
 
-**Independent Test**: Navigate to URL with #accordion-item-2, verify accordion opens item 2 and scrolls to it
+**Independent Test**: Navigate to URL with #accordion-item-2, verify accordion opens item 2 and scrolls to it. Delivers deep linking.
 
-### Tests for User Story 10
+### E2E Tests for User Story 10
 
-- [ ] T098 [P] [US10] Create E2E test for URL hash navigation in packages/ngx-foundation-sites-e2e/src/accordion-deeplink.spec.ts (History API requires E2E)
-- [ ] T099 [P] [US10] Create E2E test for deepLinkSmudge scroll behavior in packages/ngx-foundation-sites-e2e/src/accordion-deeplink.spec.ts
-- [ ] T100 [P] [US10] Create Storybook story documenting deep linking in packages/ngx-foundation-sites/src/storybook/accordion/DeepLinking.story.ts
+> **NOTE: E2E tests required ONLY for History API (browser-specific feature)**
+
+- [ ] T116 [P] [US10] Create E2E test at packages/ngx-foundation-sites-e2e/src/accordion/accordion-deeplink.spec.ts
+- [ ] T117 [US10] E2E test: navigate to /page#panel-2, verify accordion item 2 expands automatically
+- [ ] T118 [US10] E2E test: verify browser scrolls to expanded item with correct offset
+- [ ] T119 [US10] E2E test: change URL hash, verify new item expands
+
+### Storybook Tests for User Story 10
+
+- [ ] T120 [P] [US10] Create DeepLinking story at packages/ngx-foundation-sites/.storybook/stories/accordion/DeepLinking.story.ts
+- [ ] T121 [US10] Add story with deepLink=true, simulate hash change, verify item opens
 
 ### Implementation for User Story 10
 
-- [ ] T101 [P] [US10] Implement deepLink input handling in NfsAccordion
-- [ ] T102 [P] [US10] Implement deepLinkSmudge input handling in NfsAccordion
-- [ ] T103 [P] [US10] Implement deepLinkSmudgeDelay input handling in NfsAccordion
-- [ ] T104 [P] [US10] Implement deepLinkSmudgeOffset input handling in NfsAccordion
-- [ ] T105 [P] [US10] Implement updateHistory input handling in NfsAccordion
-- [ ] T106 [US10] Implement URL hash listener in NfsAccordion (afterRender hook + location.hash)
-- [ ] T107 [US10] Implement hash change handler (find item by panelId, expand)
-- [ ] T108 [US10] Implement scroll-to-panel logic with delay and offset
-- [ ] T109 [US10] Implement URL hash update when panel opens (pushState vs replaceState based on updateHistory)
-- [ ] T110 [US10] Wrap all deep linking code in isPlatformBrowser checks for SSR compatibility
+- [ ] T122 [P] [US10] Add deepLink input to NfsAccordion (InputSignal<boolean>, default: false)
+- [ ] T123 [P] [US10] Add deepLinkSmudge input (boolean, default: false)
+- [ ] T124 [P] [US10] Add deepLinkSmudgeDelay input (number, default: 300)
+- [ ] T125 [P] [US10] Add deepLinkSmudgeOffset input (number, default: 0)
+- [ ] T126 [P] [US10] Add updateHistory input (boolean, default: false)
+- [ ] T127 [US10] Implement deep linking initialization in afterRender: read location.hash, find matching item, call item.down()
+- [ ] T128 [US10] Listen for hashchange events (if deepLink=true), expand matching panel
+- [ ] T129 [US10] Update URL hash when panel opens (if deepLink=true): use history.pushState if updateHistory=true, else replaceState
+- [ ] T130 [US10] Implement scroll to panel logic (if deepLinkSmudge=true): wait deepLinkSmudgeDelay, scroll with deepLinkSmudgeOffset
+- [ ] T131 [US10] Handle duplicate panel IDs: expand first matching panel, report error via ErrorHandler.handleError()
+- [ ] T132 [US10] Handle deep linking errors gracefully: report via ErrorHandler, continue component initialization
+- [ ] T133 [US10] Inject ErrorHandler service for error reporting per spec requirements
 
-**Checkpoint**: User Story 10 complete - deep linking functional
+**Checkpoint**: Deep linking works - URL hash opens corresponding panel
 
 ---
 
-## Phase 13: Lazy Content Loading (Enhancement)
+## Phase 13: Foundation API Parity - Events and Methods (Cross-Cutting)
 
-**Goal**: Support ng-template[nfsAccordionContent] directive for lazy rendering of expensive content
+**Goal**: Expose Foundation-equivalent methods and events per API parity requirement
 
-**Independent Test**: Render accordion with lazy content template, verify content only rendered when first opened
+**Independent Test**: Use programmatic methods (down(), up(), toggle()) and listen to events ((down), (up)), verify they match Foundation behavior.
 
-### Tests for Lazy Content
+### Storybook Tests for Foundation API Parity
 
-- [ ] T111 [P] Create Storybook play function for lazy content initialization in packages/ngx-foundation-sites/src/storybook/accordion/LazyContent.story.ts
-- [ ] T112 [P] Create Storybook play function to verify lazy content persists after first expansion (not destroyed on collapse)
+- [ ] T134 [P] Create FoundationApiParity story at packages/ngx-foundation-sites/.storybook/stories/accordion/FoundationApiParity.story.ts
+- [ ] T135 Add play function: call item.down(), verify panel opens and (down) event emits
+- [ ] T136 Add play function: call item.up(), verify panel closes and (up) event emits
+- [ ] T137 Add play function: call item.toggle(), verify panel toggles
+- [ ] T138 Add play function: verify (down) event payload includes itemId and expanded=true
+- [ ] T139 Add play function: verify (up) event payload includes itemId and expanded=false
+
+### Implementation for Foundation API Parity
+
+- [ ] T140 [P] Implement down() method on NfsAccordionItem: set expanded signal to true (if not disabled)
+- [ ] T141 [P] Implement up() method on NfsAccordionItem: set expanded signal to false (if canClose)
+- [ ] T142 [P] Implement toggle() method on NfsAccordionItem: flip expanded signal (if allowed)
+- [ ] T143 [P] Add down output to NfsAccordion (OutputEmitterRef<AccordionItemChangeEvent>)
+- [ ] T144 [P] Add up output to NfsAccordion (OutputEmitterRef<AccordionItemChangeEvent>)
+- [ ] T145 Emit down event in NfsAccordion.notifyItemToggle() when expanded=true
+- [ ] T146 Emit up event in NfsAccordion.notifyItemToggle() when expanded=false
+- [ ] T147 Add JSDoc comments documenting Foundation API equivalents: down() ≈ .down($target), up() ≈ .up($target), toggle() ≈ .toggle($target)
+- [ ] T148 Document (down) output ≈ Foundation's down.zf.accordion event, (up) output ≈ up.zf.accordion event
+
+**Checkpoint**: Foundation API parity complete - methods and events match Foundation JS behavior
+
+---
+
+## Phase 14: Lazy Content Loading (Optional Feature)
+
+**Goal**: Support lazy content loading via ng-template[nfsAccordionContent]
+
+**Independent Test**: Render accordion with lazy content directive, verify content only renders on first expand. Delivers performance optimization.
+
+### Storybook Tests for Lazy Content
+
+- [ ] T149 [P] Create LazyContent story at packages/ngx-foundation-sites/.storybook/stories/accordion/LazyContent.story.ts
+- [ ] T150 Add play function: verify lazy content template is not rendered initially
+- [ ] T151 Add play function: expand item with lazy content, verify template renders
+- [ ] T152 Add play function: collapse item, verify content persists in memory (mirrors @defer behavior)
 
 ### Implementation for Lazy Content
 
-- [ ] T113 [P] Implement NfsAccordionContentDirective in packages/ngx-foundation-sites/src/lib/accordion/accordion-content.directive.ts
-- [ ] T114 Implement templateRef property in NfsAccordionContentDirective (TemplateRef<void>)
-- [ ] T115 Register NfsAccordionContentDirective with parent NfsAccordionItem via DI
-- [ ] T116 Implement hasBeenExpanded tracking signal in NfsAccordionItem so lazy content renders on first expansion and remains available on subsequent collapses (spec FR-027)
-- [ ] T117 Update NfsAccordionItem template to support both eager (ng-content) and lazy (ng-template) content
-- [ ] T118 Implement NgTemplateOutlet rendering in NfsAccordionItem for lazy content
-- [ ] T119 Document lazy content pattern in README.md
+- [ ] T153 [P] Create NfsAccordionContent directive at packages/ngx-foundation-sites/src/lib/accordion/accordion-content.directive.ts (structural directive, selector: ng-template[nfsAccordionContent])
+- [ ] T154 [P] Inject TemplateRef in NfsAccordionContent directive, store as public readonly templateRef
+- [ ] T155 Register NfsAccordionContent with parent NfsAccordionItem via DI
+- [ ] T156 Implement hasBeenExpanded signal in NfsAccordionItem (tracks if item ever expanded)
+- [ ] T157 Update NfsAccordionItem template: @if (lazyContent(); as lazy) { @if (expanded() || hasBeenExpanded()) { render lazy template } }
+- [ ] T158 Implement content lifecycle: once rendered, stays in memory until item destroyed (mirrors @defer behavior)
+- [ ] T159 Export NfsAccordionContent from public API (index.ts)
 
-**Checkpoint**: Lazy content loading functional
+**Checkpoint**: Lazy content works - templates render on first expand, persist in memory
 
 ---
 
-## Phase 14: Polish & Cross-Cutting Concerns
+## Phase 15: Heading Level and Advanced ARIA (Optional Feature)
+
+**Goal**: Support titleHeadingLevel for ARIA document outline and wrap navigation
+
+**Independent Test**: Render accordion with titleHeadingLevel=3, verify buttons wrapped in <div role="heading" aria-level="3">. Test wrap=true for keyboard navigation wraparound.
+
+### Storybook Tests for Advanced ARIA
+
+- [ ] T160 [P] Add story variant to ScreenReader story: set titleHeadingLevel=2, verify heading wrappers present
+- [ ] T161 [P] Add story variant to KeyboardNavigation story: set wrap=true, verify ArrowDown on last wraps to first
+
+### Implementation for Advanced ARIA
+
+- [ ] T162 [P] Add titleHeadingLevel input to NfsAccordion (InputSignal<1|2|3|4|5|6|null>, default: null)
+- [ ] T163 [P] Add wrap input to NfsAccordion (InputSignal<boolean>, default: false)
+- [ ] T164 Update NfsAccordionTitle template: @if (accordion.titleHeadingLevel()) { <div role="heading" [attr.aria-level]="accordion.titleHeadingLevel()"><button>...</button></div> } @else { <button>...</button> }
+- [ ] T165 Update keyboard navigation to support wrap: if wrap=true, ArrowDown on last wraps to first, ArrowUp on first wraps to last
+
+**Checkpoint**: Advanced ARIA features work - heading levels and keyboard wraparound
+
+---
+
+## Phase 16: Polish & Cross-Cutting Concerns
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T120 [P] Update packages/ngx-foundation-sites/src/lib/accordion/README.md with complete usage examples
-- [ ] T121 [P] Add Foundation API parity mapping table to README.md (methods: toggle/down/up, events: down/up)
-- [ ] T122 [P] Document migration guide from Foundation JS to Angular in README.md
-- [ ] T123 [P] Verify all components have complete JSDoc comments
-- [ ] T124 [P] Export all accordion components from packages/ngx-foundation-sites/src/lib/accordion/index.ts
-- [ ] T125 [P] Verify all accordion exports in packages/ngx-foundation-sites/src/index.ts
-- [ ] T126 Run all Storybook interactive tests via test-storybook target
-- [ ] T127 [P] Verify AXE accessibility checks pass on all stories
-- [ ] T128 [P] Perform manual screen reader testing (NVDA, JAWS, VoiceOver)
-- [ ] T129 [P] Performance test with 100 items (spec requirement)
-- [ ] T130 Validate quickstart.md examples are accurate
-- [ ] T131 [P] Add API documentation to Compodoc
-- [ ] T132 Code cleanup and refactoring for consistency
-- [ ] T133 Final review against spec.md requirements (FR-001 through CA-011)
+- [ ] T166 [P] Update README.md at packages/ngx-foundation-sites/src/lib/accordion/README.md with complete usage examples
+- [ ] T167 [P] Verify all JSDoc comments are complete and accurate across all components
+- [ ] T168 [P] Review code for member visibility patterns: use # for private, protected for template-accessible, public for API
+- [ ] T169 Run quickstart.md validation: manually test all examples in quickstart.md
+- [ ] T170 [P] Performance testing: verify accordion with 100 items renders within 5 seconds, toggle within 200ms
+- [ ] T171 [P] Security review: verify component treats projected content as trusted per SR-001 to SR-004
+- [ ] T172 Update main library index.ts at packages/ngx-foundation-sites/src/index.ts to export accordion components
+- [ ] T173 [P] Create comprehensive Storybook docs page at packages/ngx-foundation-sites/.storybook/stories/accordion/Accordion.mdx with API reference and Foundation migration guide
+- [ ] T174 Run AXE accessibility checks on all Storybook stories, verify 100% pass rate
+- [ ] T175 [P] Add unit tests for edge cases (if requested): empty accordion, single item, all disabled, ID collision detection in packages/ngx-foundation-sites/src/lib/accordion/accordion.component.spec.ts
 
 ---
 
@@ -367,113 +437,103 @@ description: 'Actionable task list for Accessible Accordion Component implementa
 
 - **Setup (Phase 1)**: No dependencies - can start immediately
 - **Foundational (Phase 2)**: Depends on Setup completion - BLOCKS all user stories
-- **User Story 1-3 (Phase 3-5)**: All P1 stories depend on Foundational phase completion, can proceed in parallel
-- **User Story 4-6 (Phase 6-8)**: All P2 stories depend on Foundational phase completion, can proceed in parallel (independent of P1 stories)
-- **User Story 7-9 (Phase 9-11)**: All P3 stories depend on Foundational phase completion, can proceed in parallel (independent of P1/P2 stories)
-- **User Story 10 (Phase 12)**: P4 story depends on Foundational phase completion and US9 (SSR) for isPlatformBrowser pattern
-- **Lazy Content (Phase 13)**: Enhancement, can proceed after Foundational phase completion
-- **Polish (Phase 14)**: Depends on all desired user stories being complete
+- **User Stories (Phase 3-12)**: All depend on Foundational phase completion
+  - User Stories 1-3 are P1 (critical for MVP) and should be done first
+  - User Stories 4-6 are P2 (important features) and can follow
+  - User Stories 7-9 are P3 (nice-to-have) and can follow
+  - User Story 10 is P4 (advanced feature) and can be last
+- **Foundation API Parity (Phase 13)**: Can be done in parallel with or after user stories 1-3 (integrates with existing implementation)
+- **Lazy Content (Phase 14)**: Can be done anytime after Phase 3 (extends basic accordion)
+- **Advanced ARIA (Phase 15)**: Can be done anytime after Phase 5 (extends screen reader support)
+- **Polish (Phase 16)**: Depends on all desired user stories being complete
 
 ### User Story Dependencies
 
-- **User Story 1 (P1)**: Can start after Foundational (Phase 2) - No dependencies on other stories
-- **User Story 2 (P1)**: Depends on US1 (needs NfsAccordionTitle integration with NfsAccordionItem)
-- **User Story 3 (P1)**: Depends on US1 and US2 (needs components with keyboard navigation for ARIA)
-- **User Story 4 (P2)**: Can start after Foundational - Independent of other stories (extends US1 logic)
-- **User Story 5 (P2)**: Can start after Foundational - Independent of other stories (extends US1 logic)
-- **User Story 6 (P2)**: Depends on US2 (needs keyboard navigation to skip disabled items)
-- **User Story 7 (P3)**: Can start after Foundational - Independent of other stories (uses existing expanded input)
-- **User Story 8 (P3)**: Depends on US1-US3 (needs full component functionality to test dynamic changes)
-- **User Story 9 (P3)**: Can start after Foundational - Independent of other stories (SSR compatibility checks)
-- **User Story 10 (P4)**: Depends on US1 and US9 (needs basic functionality + SSR pattern for browser checks)
+- **User Story 1 (P1)**: Can start after Foundational - No dependencies on other stories (CORE MVP)
+- **User Story 2 (P1)**: Can start after Foundational - No dependencies, but integrates with US1 (keyboard for US1's accordion)
+- **User Story 3 (P1)**: Can start after Foundational - No dependencies, but adds ARIA to US1/US2 components
+- **User Story 4 (P2)**: Depends on US1 complete (extends expansion logic)
+- **User Story 5 (P2)**: Depends on US1 complete (extends expansion logic)
+- **User Story 6 (P2)**: Depends on US1 and US2 complete (adds disabled state to click and keyboard)
+- **User Story 7 (P3)**: Depends on US1 complete (uses existing expanded input)
+- **User Story 8 (P3)**: Depends on US1, US2, US3 complete (tests dynamic behavior of core features)
+- **User Story 9 (P3)**: Depends on US1 complete (SSR compatibility for basic accordion)
+- **User Story 10 (P4)**: Depends on US1 complete (adds deep linking to basic accordion)
 
 ### Within Each User Story
 
-- Tests (Storybook play functions) SHOULD be written FIRST and FAIL before implementation (TDD approach)
-- Components before templates
-- State management signals before event handlers
+- Tests SHOULD be written and SHOULD FAIL before implementation (Storybook test-driven development)
+- Models/tokens before components
+- Component structure before state management
+- State management before ARIA attributes
 - Core implementation before integration
-- Story complete before moving to next priority
+- Story complete and independently testable before moving to next priority
 
 ### Parallel Opportunities
 
-**Within Setup (Phase 1)**: T002, T003, T004, T005 can run in parallel
-
-**Within Foundational (Phase 2)**: T007, T008, T009, T010, T011, T012, T014 can run in parallel
-
-**After Foundational Complete**:
-- US1 Tests: T016, T017, T018 in parallel
-- US1 Implementation: T019, T020, T021, T022 in parallel (separate files)
-- US2 Tests: T035, T036, T037, T038 in parallel
-- US2 Implementation: T039, T040 in parallel
-- US3 Tests: T049, T050 in parallel
-- US3 Implementation: T051, T052 in parallel
-- US4 Tests: T059, T060 in parallel
-- US5 Tests: T064, T065 in parallel
-- US6 Tests: T070, T071 in parallel
-- US6 Implementation: T072, T073 in parallel
-- US7 Tests: T079, T080 in parallel
-- US8 Tests: T084, T085, T086 in parallel
-- US9 Tests: T091, T092 in parallel
-- US10 Tests: T098, T099, T100 in parallel
-- US10 Implementation: T101, T102, T103, T104, T105 in parallel
-- Lazy Content Tests: T111, T112 in parallel
-- Lazy Content Implementation: T113 in parallel
-- Polish: T120, T121, T122, T123, T124, T125, T127, T128, T129, T131 in parallel
-
-**Parallel User Stories**: After Foundational is complete:
-- Developer A: US1 → US2 → US3 (P1 stories in sequence)
-- Developer B: US4 → US5 (P2 stories)
-- Developer C: US6 → US7 (P2/P3 stories)
-- Developer D: US8 → US9 (P3 stories)
+- All Setup tasks marked [P] can run in parallel
+- All Foundational tasks marked [P] can run in parallel (within Phase 2)
+- User Stories 1, 2, 3 can start in parallel after Foundational (all P1, no inter-dependencies)
+- All Storybook tests within a user story marked [P] can run in parallel
+- Component creation tasks within a story marked [P] can run in parallel (different files)
+- Different user stories can be worked on in parallel by different team members (if staffed)
 
 ---
 
 ## Parallel Example: User Story 1
 
 ```bash
-# Launch all tests for User Story 1 together:
-Task T016: "Create Storybook play function for basic click interactions"
-Task T017: "Create Storybook play function for single-expand mode validation"
-Task T018: "Create Storybook play function for Foundation CSS class verification"
+# Launch all Storybook test tasks for User Story 1 together:
+Task T013: "Create basic Storybook story with 3 FAQ items"
+Task T017: "Add accessibility checks to Basic story"
 
-# Launch component structure tasks together:
-Task T019: "Implement NfsAccordion component"
-Task T020: "Create NfsAccordion template"
-Task T021: "Implement NfsAccordionItem component"
-Task T022: "Create NfsAccordionItem template"
+# Launch all component creation tasks for User Story 1 together:
+Task T018: "Create NfsAccordion component"
+Task T019: "Create NfsAccordionItem component"
+Task T020: "Create NfsAccordionTitle component"
+```
 
-# Then sequential tasks for integration:
-Task T023: "Implement parent-child DI communication"
-Task T024: "Implement state management signals in NfsAccordion"
-Task T025: "Implement state management signals in NfsAccordionItem"
-# ... and so on
+---
+
+## Parallel Example: P1 User Stories (After Foundational)
+
+```bash
+# Three developers can work simultaneously on P1 stories:
+Developer A: User Story 1 (Basic accordion interaction)
+Developer B: User Story 2 (Keyboard navigation)
+Developer C: User Story 3 (Screen reader ARIA)
+
+# They integrate naturally because:
+- US1 builds accordion structure
+- US2 adds keyboard to US1's components
+- US3 adds ARIA to US1's components
 ```
 
 ---
 
 ## Implementation Strategy
 
-### MVP First (User Stories 1-3 Only - All P1)
+### MVP First (User Stories 1-3 Only)
 
 1. Complete Phase 1: Setup
 2. Complete Phase 2: Foundational (CRITICAL - blocks all stories)
-3. Complete Phase 3: User Story 1 (Basic interaction)
-4. Complete Phase 4: User Story 2 (Keyboard navigation)
-5. Complete Phase 5: User Story 3 (Screen reader support)
-6. **STOP and VALIDATE**: Test P1 stories independently - this is a production-ready accordion
+3. Complete Phase 3: User Story 1 (basic accordion)
+4. Complete Phase 4: User Story 2 (keyboard navigation)
+5. Complete Phase 5: User Story 3 (screen reader ARIA)
+6. **STOP and VALIDATE**: Test all three P1 stories together - this is a complete, production-ready accessible accordion
 7. Deploy/demo if ready
+
+**Rationale**: User Stories 1-3 are all P1 (WCAG AA required) and form the minimum viable accessible accordion. This is the smallest shippable increment.
 
 ### Incremental Delivery
 
 1. Complete Setup + Foundational → Foundation ready
-2. Add User Story 1 → Test independently → Basic accordion works
-3. Add User Story 2 → Test independently → Keyboard navigation works
-4. Add User Story 3 → Test independently → Accessible accordion (MVP!) → Deploy/Demo
-5. Add User Story 4 → Test independently → Multi-expand mode → Deploy/Demo
-6. Add User Story 5 → Test independently → Always-one-open constraint → Deploy/Demo
-7. Add User Story 6 → Test independently → Disabled items → Deploy/Demo
-8. Continue with P3/P4 stories as needed
+2. Add User Stories 1+2+3 (P1) → Test together → Deploy/Demo (MVP: accessible accordion!)
+3. Add User Story 4 (P2: multi-expand) → Test independently → Deploy/Demo
+4. Add User Story 5 (P2: allow all closed) → Test independently → Deploy/Demo
+5. Add User Story 6 (P2: disabled items) → Test independently → Deploy/Demo
+6. Add User Stories 7-10 (P3/P4) as needed → Test independently → Deploy/Demo
+7. Each story adds value without breaking previous stories
 
 ### Parallel Team Strategy
 
@@ -481,53 +541,47 @@ With multiple developers:
 
 1. Team completes Setup + Foundational together
 2. Once Foundational is done:
-   - Developer A: User Story 1 → User Story 2 → User Story 3 (P1 sequence)
-   - Developer B: User Story 4 → User Story 5 (P2 features)
-   - Developer C: User Story 6 → User Story 7 (P2/P3 features)
-   - Developer D: User Story 8 → User Story 9 (P3 features)
-3. Stories complete and integrate independently
-4. Final team effort on Phase 14: Polish
-
----
-
-## Notes
-
-- [P] tasks = different files, no dependencies on other tasks completing first
-- [Story] label maps task to specific user story from spec.md for traceability
-- Each user story should be independently completable and testable
-- Storybook play functions are the PRIMARY testing mechanism (per spec)
-- E2E tests ONLY for History API (deep linking) - avoid for other features
-- Verify tests fail before implementing (TDD approach)
-- Commit after each task or logical group
-- Stop at any checkpoint to validate story independently
-- Foundation API parity is MANDATORY: methods (toggle, down, up) and events (down, up)
-- US1-US3 (all P1) form the MVP - fully accessible, keyboard-navigable accordion
-- Avoid: vague tasks, same file conflicts, cross-story dependencies that break independence
+   - Developer A: User Story 1 (basic accordion)
+   - Developer B: User Story 2 (keyboard navigation)
+   - Developer C: User Story 3 (screen reader ARIA)
+3. P1 stories complete and integrate → MVP ready
+4. Team adds P2 stories (4, 5, 6) in parallel or sequence
+5. Team adds P3/P4 stories (7-10) as needed
 
 ---
 
 ## Summary
 
-- **Total Tasks**: 133 tasks
-- **Task Count by User Story**:
-  - Setup: 5 tasks
-  - Foundational: 10 tasks (BLOCKS all stories)
-  - US1 (P1): 20 tasks
-  - US2 (P1): 14 tasks
-  - US3 (P1): 10 tasks
-  - US4 (P2): 5 tasks
-  - US5 (P2): 6 tasks
-  - US6 (P2): 9 tasks
-  - US7 (P3): 5 tasks
-  - US8 (P3): 7 tasks
-  - US9 (P3): 7 tasks
-  - US10 (P4): 13 tasks
-  - Lazy Content: 9 tasks
-  - Polish: 14 tasks
+**Total Tasks**: 175 tasks across 16 phases
+**MVP Scope**: Phases 1-5 (User Stories 1-3, P1) = 64 tasks = ~36% of total
+**Task Breakdown by User Story**:
+- US1 (Basic Accordion): 19 tasks
+- US2 (Keyboard Navigation): 18 tasks
+- US3 (Screen Reader): 15 tasks
+- US4 (Multi-Expand): 8 tasks
+- US5 (Allow All Closed): 8 tasks
+- US6 (Disabled Items): 15 tasks
+- US7 (Initial State): 5 tasks
+- US8 (Dynamic Items): 10 tasks
+- US9 (SSR): 5 tasks
+- US10 (Deep Linking): 18 tasks
 
-- **Parallel Opportunities**: 47 tasks marked [P] can run in parallel within their phases
-- **Independent Test Criteria**: Each user story has clear Storybook play function tests
-- **Suggested MVP Scope**: User Stories 1-3 (all P1) = 44 implementation tasks for fully accessible accordion
-- **Format Validation**: ✅ ALL tasks follow checklist format (checkbox, ID, labels, file paths)
+**Parallel Opportunities**: 61 tasks marked [P] can run in parallel (35% of total)
+**Independent Test Criteria**: Each user story has clear independent test criteria and can be validated separately
 
-**Implementation Path**: Setup (5) → Foundational (10) → US1 (20) → US2 (14) → US3 (10) = 59 tasks for production-ready MVP
+---
+
+## Notes
+
+- [P] tasks = different files, no dependencies, can run in parallel
+- [Story] label (e.g., [US1], [US2]) maps task to specific user story for traceability
+- Each user story should be independently completable and testable
+- Storybook tests are PRIMARY testing strategy per spec.md (write these FIRST with play functions)
+- E2E tests ONLY for History API (User Story 10 deep linking)
+- Verify Storybook tests fail before implementing features (test-driven development)
+- Commit after each task or logical group of tasks
+- Stop at any checkpoint to validate story independently
+- MVP = User Stories 1-3 (P1) = fully accessible accordion component
+- Foundation API parity (Phase 13) is cross-cutting and integrates with multiple stories
+- Lazy content (Phase 14) and advanced ARIA (Phase 15) are optional extensions
+- All 10 user stories delivered = complete feature per spec.md
