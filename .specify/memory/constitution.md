@@ -5,9 +5,9 @@ Version: 1.0.0 → 1.1.0
 Rationale: Added directive-vs-component decision tree guidance to Principle I
 
 Principles Modified:
-- I. Angular-Native Components — Added comprehensive directive-vs-component decision tree including 
-  rationale for preferring directives when Foundation CSS can be applied to host elements without 
-  component wrappers, examples of when to use each approach, and guidance to start with directives 
+- I. Angular-Native Components — Added comprehensive directive-vs-component decision tree including
+  rationale for preferring directives when Foundation CSS can be applied to host elements without
+  component wrappers, examples of when to use each approach, and guidance to start with directives
   and refactor to components only when template complexity demands it.
 
 Templates Status:
