@@ -112,7 +112,7 @@ This specification was created **retrospectively** to document the existing impl
 
 - Additional Storybook stories for niche scenarios
 - Performance benchmarks for large button lists
-- Additional responsive expanded breakpoint options (if Foundation adds more)
+- Additional responsive-expanded breakpoint options (if Foundation adds more)
 
 ## 📋 Specification Workflow
 

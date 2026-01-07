@@ -7,14 +7,14 @@
 
 ## Summary
 
-Create a self-contained, accessible Button component that applies Foundation for Sites CSS classes to native `<button>` and `<a>` elements without Foundation JavaScript dependencies. The component uses modern Angular patterns (standalone, OnPush, signals) and follows the WAI-ARIA button pattern for accessibility. Supports Foundation's full button API including size variants, color palette, fill styles, responsive expanded breakpoints, and soft-disabled state with tooltip support.
+Create a self-contained, accessible Button component that applies Foundation for Sites CSS classes to native `<button>` and `<a>` elements without Foundation JavaScript dependencies. The component uses modern Angular patterns (standalone, OnPush, signals) and follows the WAI-ARIA button pattern for accessibility. Supports Foundation's full button API including size variants, color palette, fill styles, responsive-expanded breakpoints, and soft-disabled state with tooltip support.
 
 **Key Technical Decisions**:
 
 - Component with attribute selector (not directive) for style loading via component metadata
 - Conditional button pattern for anchors based on `href` presence (WAI-ARIA compliance)
 - Reactive click listener attachment for soft-disabled state (zero overhead for non-disabled buttons)
-- Custom input transform for responsive expanded breakpoints
+- Custom input transform for responsive-expanded breakpoints
 - Reference-counted style loading via `NfsStyleLoader` service
 
 ## Technical Context
@@ -365,6 +365,8 @@ Before marking implementation complete, verify:
 - [x] AXE accessibility checks pass
 - [x] Component works in CSR and SSR contexts
 - [x] Documentation artifacts complete (this plan, research, data model, contracts, quickstart)
+
+**Note**: See [tasks.md](./tasks.md) for validation execution tracking and [VALIDATION_RESULTS.md](./VALIDATION_RESULTS.md) for recorded outcomes.
 
 ---
 

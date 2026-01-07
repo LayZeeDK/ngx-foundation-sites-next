@@ -128,7 +128,7 @@ This document consolidates research findings for implementing the Button compone
 
 ### 4. Responsive Expanded Breakpoints
 
-**Decision**: Support Foundation's full responsive expanded API via custom transform
+**Decision**: Support Foundation's full responsive-expanded API via custom transform
 
 - Accept boolean values via `booleanAttribute` transform
 - Accept breakpoint strings as-is (bypassing `booleanAttribute`)

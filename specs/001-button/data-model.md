@@ -83,8 +83,8 @@ export type NfsButtonColor = 'primary' | 'secondary' | 'success' | 'alert' | 'wa
 export type NfsButtonFill = 'solid' | 'hollow' | 'clear';
 
 /**
- * Responsive expanded breakpoint values.
- * Matches Foundation's responsive expanded class suffixes.
+ * Responsive-expanded breakpoint values.
+ * Matches Foundation's responsive-expanded class suffixes.
  */
 export type NfsButtonExpandedBreakpoint = 'small-only' | 'medium-only' | 'large-only' | 'medium' | 'large' | 'medium-down' | 'large-down';
 
