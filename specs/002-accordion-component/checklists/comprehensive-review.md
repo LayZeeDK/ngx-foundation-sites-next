@@ -224,44 +224,44 @@
 
 ### ARIA Role Requirements
 
-- [ ] CHK116 - Are all required ARIA roles specified with element mapping? [Accessibility, Spec §AR-005, AR-008, ARIA contract]
-- [ ] CHK117 - Is the optional heading role pattern fully specified? [Accessibility, Spec §AR-012, FR-016, ARIA contract]
-- [ ] CHK118 - Are role requirements specified for panel wrapper with region role? [Accessibility, Spec §AR-008, ARIA contract]
+- [x] CHK116 - Are all required ARIA roles specified with element mapping? [Accessibility, Spec §AR-005, AR-008, ARIA contract] — ✓ AR-005 (button role on title) + AR-008 (region role on panel) + contracts/accordion-aria.md lines 60-119 define all roles with element mappings
+- [x] CHK117 - Is the optional heading role pattern fully specified? [Accessibility, Spec §AR-012, FR-016, ARIA contract] — ✓ AR-012 specifies heading wrapper with aria-level + contracts/accordion-aria.md lines 70-106 detail optional heading pattern with titleHeadingLevel
+- [x] CHK118 - Are role requirements specified for panel wrapper with region role? [Accessibility, Spec §AR-008, ARIA contract] — ✓ AR-008 specifies role="region" for panel wrapper + contracts/accordion-aria.md lines 110-144 detail region requirements
 
 ### ARIA Attribute Requirements
 
-- [ ] CHK119 - Are aria-expanded requirements complete with true/false string values? [Accessibility, Spec §AR-006, ARIA contract]
-- [ ] CHK120 - Are aria-controls requirements complete with ID reference validation? [Accessibility, Spec §AR-007, FR-059, ARIA contract]
-- [ ] CHK121 - Are aria-labelledby requirements complete with ID reference validation? [Accessibility, Spec §AR-009, ARIA contract]
-- [ ] CHK122 - Are aria-disabled requirements complete for softDisabled=true mode? [Accessibility, Spec §AR-010, ARIA contract]
-- [ ] CHK123 - Are disabled attribute requirements complete for softDisabled=false mode? [Accessibility, Spec §AR-011, ARIA contract]
-- [ ] CHK124 - Are aria-level requirements complete for heading wrapper pattern? [Accessibility, Spec §AR-012, ARIA contract]
+- [x] CHK119 - Are aria-expanded requirements complete with true/false string values? [Accessibility, Spec §AR-006, ARIA contract] — ✓ AR-006 specifies aria-expanded with "true"/"false" string values + contracts/accordion-aria.md lines 62-63 + 91-93 define usage
+- [x] CHK120 - Are aria-controls requirements complete with ID reference validation? [Accessibility, Spec §AR-007, FR-059, ARIA contract] — ✓ AR-007 specifies aria-controls + FR-059 requires stable ID reference + contracts/accordion-aria.md lines 63, 93, 127-129 define ID relationship requirements
+- [x] CHK121 - Are aria-labelledby requirements complete with ID reference validation? [Accessibility, Spec §AR-009, ARIA contract] — ✓ AR-009 specifies aria-labelledby + contracts/accordion-aria.md lines 116-117, 136-137 define ID reference requirements
+- [x] CHK122 - Are aria-disabled requirements complete for softDisabled=true mode? [Accessibility, Spec §AR-010, ARIA contract] — ✓ AR-010 specifies aria-disabled="true" when softDisabled=true + contracts/accordion-aria.md lines 67, 84, 94 define conditional usage
+- [x] CHK123 - Are disabled attribute requirements complete for softDisabled=false mode? [Accessibility, Spec §AR-011, ARIA contract] — ✓ AR-011 specifies disabled attribute when softDisabled=false + contracts/accordion-aria.md lines 68 define conditional usage
+- [x] CHK124 - Are aria-level requirements complete for heading wrapper pattern? [Accessibility, Spec §AR-012, ARIA contract] — ✓ AR-012 specifies aria-level attribute when titleHeadingLevel set + contracts/accordion-aria.md lines 70-78, 99-106 define heading level requirements
 
 ### ARIA Relationship Stability
 
-- [ ] CHK125 - Are requirements specified to maintain aria-controls references when content removed from DOM? [Accessibility, Spec §FR-056 to FR-059]
-- [ ] CHK126 - Are requirements specified to maintain aria-labelledby references during dynamic updates? [Accessibility, Spec §FR-053]
-- [ ] CHK127 - Are requirements specified for unique ID generation across multiple instances? [Accessibility, Spec §FR-020, AR-013, Implementation Notes]
+- [x] CHK125 - Are requirements specified to maintain aria-controls references when content removed from DOM? [Accessibility, Spec §FR-056 to FR-059] — ✓ FR-058/FR-059 require panel wrapper to remain in DOM for stable aria-controls + FR-060 requires inert attribute + spec.md Implementation Notes lines 679-718 detail stable wrapper strategy
+- [x] CHK126 - Are requirements specified to maintain aria-labelledby references during dynamic updates? [Accessibility, Spec §FR-053] — ✓ FR-053 requires ARIA relationships maintained during dynamic add/remove + FR-054 specifies ARIA relationships must remain correctly linked
+- [x] CHK127 - Are requirements specified for unique ID generation across multiple instances? [Accessibility, Spec §FR-020, AR-013, Implementation Notes] — ✓ AR-013 requires unique IDs for ARIA relationships + contracts/accordion-aria.md lines 179-209 define ID generation strategy with static counter + spec.md Implementation Notes lines 720-730 detail collision prevention
 
 ### Keyboard Accessibility Completeness
 
-- [ ] CHK128 - Are all required keyboard interactions from ARIA Authoring Practices documented? [Accessibility, Spec §FR-037 to FR-045, AR-014 to AR-015]
-- [ ] CHK129 - Are keyboard navigation wraparound rules clearly specified? [Accessibility, Spec §FR-041]
-- [ ] CHK130 - Are disabled item keyboard skip rules specified? [Accessibility, Spec §FR-044, FR-048]
-- [ ] CHK131 - Are tab order requirements specified for nested interactive content? [Accessibility, Spec Edge Cases, Gap]
+- [x] CHK128 - Are all required keyboard interactions from ARIA Authoring Practices documented? [Accessibility, Spec §FR-037 to FR-045, AR-014 to AR-015] — ✓ FR-037 to FR-045 specify all keyboard interactions (Enter, Space, ArrowUp/Down, Home, End) + AR-015 to AR-018 specify keyboard accessibility requirements + contracts/accordion-aria.md lines 212-229 detail keyboard interaction table
+- [x] CHK129 - Are keyboard navigation wraparound rules clearly specified? [Accessibility, Spec §FR-041] — ✓ FR-041 specifies wraparound when wrap=true (first title ArrowUp → last title) + User Story 2 acceptance scenario 4 validates wraparound behavior
+- [x] CHK130 - Are disabled item keyboard skip rules specified? [Accessibility, Spec §FR-044, FR-048] — ✓ FR-044 requires keyboard navigation skip disabled items + FR-048 requires disabled items skipped during ArrowUp/Down navigation
+- [ ] CHK131 - Are tab order requirements specified for nested interactive content? [Accessibility, Spec Edge Cases, Gap] — ⚠️ GAP: spec.md Edge Cases lines 192-203 do not address nested interactive elements in title content (e.g., links/buttons within accordion-title); tab order behavior not specified
 
 ### Screen Reader Completeness
 
-- [ ] CHK132 - Are expected screen reader announcements documented for all state changes? [Accessibility, Spec §AR-024 to AR-027]
-- [ ] CHK133 - Are screen reader testing procedures documented with specific tools? [Accessibility, Spec §AR-004, Manual Testing Checklist]
-- [ ] CHK134 - Are live region requirements specified for dynamic state announcements? [Accessibility, Gap]
+- [x] CHK132 - Are expected screen reader announcements documented for all state changes? [Accessibility, Spec §AR-024 to AR-027] — ✓ AR-024 requires title text and button role announcement + AR-025 requires expansion state announcement + AR-026 requires relationship conveyance + AR-027 requires state change announcements
+- [x] CHK133 - Are screen reader testing procedures documented with specific tools? [Accessibility, Spec §AR-004, Manual Testing Checklist] — ✓ AR-004 specifies testing with NVDA, JAWS, VoiceOver + spec.md Manual Testing Checklist lines 471-476 document screen reader testing procedures
+- [ ] CHK134 - Are live region requirements specified for dynamic state announcements? [Accessibility, Gap] — ⚠️ MISSING: no aria-live or polite announcements specified for dynamic expansion state changes; AR-027 requires state change announcement but doesn't specify mechanism (implicit via aria-expanded or explicit via aria-live)
 
 ### Focus Management Completeness
 
-- [ ] CHK135 - Are focus indicator visibility requirements specified with WCAG contrast criteria? [Accessibility, Spec §AR-019]
+- [x] CHK135 - Are focus indicator visibility requirements specified with WCAG contrast criteria? [Accessibility, Spec §AR-019] — ✓ AR-019 requires focus indicators visible and meet WCAG contrast requirements
 - [x] CHK136 - Are focus persistence rules specified for expansion/collapse actions? [Accessibility, Spec §AR-022] — ✓ AR-022 specifies focus remains on title element when item expanded via keyboard
-- [ ] CHK137 - Are focus recovery rules specified for dynamic item removal? [Accessibility, Spec §FR-056]
-- [ ] CHK138 - Are focus trap prevention requirements specified? [Accessibility, Spec §AR-021]
+- [x] CHK137 - Are focus recovery rules specified for dynamic item removal? [Accessibility, Spec §FR-056] — ✓ FR-056 requires focus move to safe location (next item, previous item, or parent) when focused item removed
+- [x] CHK138 - Are focus trap prevention requirements specified? [Accessibility, Spec §AR-021] — ✓ AR-021 requires focus must not be lost or trapped within accordion
 
 ---
 
@@ -269,35 +269,35 @@
 
 ### Input Design Clarity
 
-- [ ] CHK139 - Are all inputs documented with TypeScript types in contracts? [API Clarity, Contracts accordion-api.ts]
-- [ ] CHK140 - Are default values explicitly documented for all inputs? [API Clarity, Contracts ACCORDION_DEFAULTS]
-- [ ] CHK141 - Are input validation rules documented (e.g., valid heading levels)? [API Clarity, Contracts type guards]
-- [ ] CHK142 - Are inputs using signal() function as required by constitution? [API Clarity, Spec §CA-002]
+- [x] CHK139 - Are all inputs documented with TypeScript types in contracts? [API Clarity, Contracts accordion-api.ts] — ✓ contracts/accordion-api.ts lines 54-133 define all inputs with InputSignal/ModelSignal types for NfsAccordion and NfsAccordionItem
+- [x] CHK140 - Are default values explicitly documented for all inputs? [API Clarity, Contracts ACCORDION_DEFAULTS] — ✓ contracts/accordion-api.ts lines 286-306 define ACCORDION_DEFAULTS and ACCORDION_ITEM_DEFAULTS with all default values
+- [ ] CHK141 - Are input validation rules documented (e.g., valid heading levels)? [API Clarity, Contracts type guards] — ⚠️ PARTIAL: contracts/accordion-api.ts lines 260-276 define isHeadingLevel type guard for 1-6 validation, but missing validation rules for invalid titleHeadingLevel (CHK110), negative deepLinkSmudge values (CHK111), and panelId uniqueness (CHK036/109)
+- [x] CHK142 - Are inputs using signal() function as required by constitution? [API Clarity, Spec §CA-002] — ✓ CA-002 requires inputs use input() signal function + contracts define InputSignal/ModelSignal types
 
 ### Output Design Clarity
 
-- [ ] CHK143 - Are output event payloads typed with interfaces? [API Clarity, Contracts AccordionItemChangeEvent]
-- [ ] CHK144 - Are output emission conditions clearly documented? [API Clarity, Spec §FR-022]
-- [ ] CHK145 - Are outputs using output() function as required by constitution? [API Clarity, Spec §CA-003]
+- [x] CHK143 - Are output event payloads typed with interfaces? [API Clarity, Contracts AccordionItemChangeEvent] — ✓ contracts/accordion-api.ts lines 38-43 define AccordionItemChangeEvent interface with itemId and expanded properties
+- [x] CHK144 - Are output emission conditions clearly documented? [API Clarity, Spec §FR-022] — ✓ FR-022 specifies accordion emits events when panel expanded/collapsed + contracts/accordion-api.ts lines 95-106 document down/up event emission conditions
+- [x] CHK145 - Are outputs using output() function as required by constitution? [API Clarity, Spec §CA-003] — ✓ CA-003 requires outputs use output() function + contracts define OutputEmitterRef types
 
 ### Method Design Clarity
 
-- [ ] CHK146 - Are public method signatures documented in API contracts? [API Clarity, Contracts NfsAccordionItemApi methods]
-- [ ] CHK147 - Are method behaviors with failure cases documented? [API Clarity, Data Model methods, Gap]
-- [ ] CHK148 - Is Foundation API parity clearly documented for each method? [API Clarity, Contracts FOUNDATION_API_MAPPING]
+- [x] CHK146 - Are public method signatures documented in API contracts? [API Clarity, Contracts NfsAccordionItemApi methods] — ✓ contracts/accordion-api.ts lines 135-178 define all public methods (down, up, toggle, focus, blur) with signatures and JSDoc
+- [ ] CHK147 - Are method behaviors with failure cases documented? [API Clarity, Data Model methods, Gap] — ⚠️ PARTIAL: method signatures include conditions (e.g., "if not disabled", "if allowed by rules") but specific failure behaviors not documented (e.g., what happens when toggle() called on disabled item, or up() called when allowAllClosed=false and last open item)
+- [x] CHK148 - Is Foundation API parity clearly documented for each method? [API Clarity, Contracts FOUNDATION_API_MAPPING] — ✓ contracts/accordion-api.ts lines 319-361 define FOUNDATION_API_MAPPING with method/event/option mappings to Foundation JS API
 
 ### DI Token Pattern Clarity
 
-- [ ] CHK149 - Is the DI token export requirement clearly documented? [API Clarity, Spec Implementation Notes, FR-007]
-- [ ] CHK150 - Is the optional injection pattern clearly documented? [API Clarity, Spec Implementation Notes]
-- [ ] CHK151 - Is the skipSelf requirement clearly explained with rationale? [API Clarity, Spec Implementation Notes]
-- [ ] CHK152 - Is the token naming convention documented (camelCase + "Token" suffix)? [API Clarity, Spec Implementation Notes]
+- [x] CHK149 - Is the DI token export requirement clearly documented? [API Clarity, Spec Implementation Notes, FR-007] — ✓ spec.md Implementation Notes lines 480-499 document exported nfsAccordionToken requirement + plan.md lines 33 confirm token export requirement
+- [x] CHK150 - Is the optional injection pattern clearly documented? [API Clarity, Spec Implementation Notes] — ✓ spec.md Implementation Notes lines 491-492 document optional injection with {optional: true, skipSelf: true}
+- [x] CHK151 - Is the skipSelf requirement clearly explained with rationale? [API Clarity, Spec Implementation Notes] — ✓ spec.md Implementation Notes lines 497-499 explain skipSelf required for content projection to work correctly (unlike Angular ARIA's non-exported required tokens)
+- [x] CHK152 - Is the token naming convention documented (camelCase + "Token" suffix)? [API Clarity, Spec Implementation Notes] — ✓ spec.md Implementation Notes line 485 shows nfsAccordionToken example + camelCase + "Token" suffix pattern followed
 
 ### Content Projection Clarity
 
-- [ ] CHK153 - Are eager content projection requirements clearly specified? [API Clarity, Spec §FR-024, FR-025]
-- [ ] CHK154 - Are lazy content directive requirements clearly specified? [API Clarity, Spec §FR-027, FR-028, Contracts]
-- [ ] CHK155 - Are both content patterns clearly documented in usage examples? [API Clarity, Spec Usage Examples]
+- [x] CHK153 - Are eager content projection requirements clearly specified? [API Clarity, Spec §FR-024, FR-025] — ✓ FR-024 requires eager content via ng-content + FR-025 requires eager content always rendered with item creation + Clarifications line 15 confirm both patterns supported
+- [x] CHK154 - Are lazy content directive requirements clearly specified? [API Clarity, Spec §FR-027, FR-028, Contracts] — ✓ FR-027 requires lazy content via ng-template[nfsAccordionContent] + FR-028 specifies content rendered on first expansion and kept in DOM + contracts/accordion-api.ts lines 184-196 define NfsAccordionContentApi
+- [x] CHK155 - Are both content patterns clearly documented in usage examples? [API Clarity, Spec Usage Examples] — ✓ spec.md Usage Examples lines 598-651 show eager content example + lines 620-651 show lazy content example with ng-template
 
 ---
 
@@ -305,22 +305,22 @@
 
 ### State Synchronization Consistency
 
-- [ ] CHK156 - Is state synchronization between accordion and items clearly specified? [Consistency, Data Model AccordionParent contract]
-- [ ] CHK157 - Is state synchronization between item and title clearly specified? [Consistency, Data Model AccordionItemParent contract]
-- [ ] CHK158 - Is the expanded model signal two-way binding contract consistent? [Consistency, Spec §FR-018, Data Model]
+- [x] CHK156 - Is state synchronization between accordion and items clearly specified? [Consistency, Data Model AccordionParent contract] — ✓ contracts/accordion-api.ts lines 208-228 define AccordionParent contract with registerItem, unregisterItem, notifyItemToggle methods + signals for state sharing
+- [x] CHK157 - Is state synchronization between item and title clearly specified? [Consistency, Data Model AccordionItemParent contract] — ✓ contracts/accordion-api.ts lines 236-251 define AccordionItemParent contract with expanded, disabled, panelId signals + toggle method
+- [x] CHK158 - Is the expanded model signal two-way binding contract consistent? [Consistency, Spec §FR-018, Data Model] — ✓ FR-018 specifies [(expanded)] two-way binding + contracts/accordion-api.ts line 130 defines expanded as ModelSignal<boolean>
 
 ### CSS Class Consistency
 
-- [ ] CHK159 - Are Foundation CSS class names consistently applied across all components? [Consistency, Spec §FR-029 to FR-035]
-- [ ] CHK160 - Are state classes (.is-active, .is-disabled) consistently documented? [Consistency, Spec §FR-033, FR-034, FR-035]
-- [ ] CHK161 - Are custom CSS constraints consistently documented? [Consistency, Spec §FR-036, Constitution]
+- [x] CHK159 - Are Foundation CSS class names consistently applied across all components? [Consistency, Spec §FR-029 to FR-035] — ✓ FR-029 (.accordion on container) + FR-030 (.accordion-item) + FR-031 (.accordion-title) + FR-032 (.accordion-content) all specify Foundation CSS classes
+- [x] CHK160 - Are state classes (.is-active, .is-disabled) consistently documented? [Consistency, Spec §FR-033, FR-034, FR-035] — ✓ FR-033 (.is-active on expanded items) + FR-034 + FR-035 (state class bindings) consistently specify Foundation state classes
+- [x] CHK161 - Are custom CSS constraints consistently documented? [Consistency, Spec §FR-036, Constitution] — ✓ FR-036 specifies custom CSS must be justified with comments + plan.md Constitution Check lines 42-45 confirm Foundation CSS-only integration with limited custom CSS
 
 ### Naming Consistency
 
-- [ ] CHK162 - Are component selector names consistent with nfs- prefix convention? [Consistency, Spec §FR-002, §CA-006]
-- [ ] CHK163 - Are input names consistent with Foundation data-attribute names? [Consistency, Spec §CA-007, Contracts options mapping]
-- [ ] CHK164 - Are output names consistent with Foundation event names? [Consistency, Spec §CA-010, Contracts events mapping]
-- [ ] CHK165 - Are method names consistent with Foundation JavaScript API? [Consistency, Spec §CA-009, Contracts methods mapping]
+- [x] CHK162 - Are component selector names consistent with nfs- prefix convention? [Consistency, Spec §FR-002, §CA-006] — ✓ FR-002 lists all selectors (nfs-accordion, nfs-accordion-item, nfs-accordion-title) + CA-006 confirms nfs- prefix requirement
+- [x] CHK163 - Are input names consistent with Foundation data-attribute names? [Consistency, Spec §CA-007, Contracts options mapping] — ✓ CA-007 specifies alignment with Foundation naming (multiExpand ↔ data-multi-expand) + contracts/accordion-api.ts lines 342-360 map all Foundation options to Angular inputs
+- [x] CHK164 - Are output names consistent with Foundation event names? [Consistency, Spec §CA-010, Contracts events mapping] — ✓ CA-010 requires Foundation event names (down, up) as Angular outputs + contracts/accordion-api.ts lines 334-340 map Foundation events (.zf.accordion suffix removed)
+- [x] CHK165 - Are method names consistent with Foundation JavaScript API? [Consistency, Spec §CA-009, Contracts methods mapping] — ✓ CA-009 requires Foundation method names (toggle, down, up) + contracts/accordion-api.ts lines 320-332 map all Foundation methods to Angular equivalents
 
 ---
 
@@ -328,24 +328,24 @@
 
 ### Specification Ambiguities
 
-- [ ] CHK166 - Is the relationship between accordion.disabled and item.disabled unambiguous? [Ambiguity, Spec §FR-016, FR-019]
-- [ ] CHK167 - Is the lazy content "keep in DOM after first expansion" rule unambiguous? [Ambiguity, Spec §FR-028]
-- [ ] CHK168 - Is the panel wrapper "always in DOM" vs content "conditionally rendered" distinction clear? [Ambiguity, Spec §FR-056, Implementation Notes]
-- [ ] CHK169 - Is the inert attribute purpose and application clear? [Ambiguity, Spec §FR-058]
+- [x] CHK166 - Is the relationship between accordion.disabled and item.disabled unambiguous? [Ambiguity, Spec §FR-016, FR-019] — ✓ FR-049 clarifies additive precedence (item disabled if EITHER global OR item-level is true) + Clarifications lines 20 confirm additive logic (though CHK028/046 note precedence documentation could be improved)
+- [x] CHK167 - Is the lazy content "keep in DOM after first expansion" rule unambiguous? [Ambiguity, Spec §FR-028] — ✓ FR-028 explicitly states "Content is rendered on first expansion and kept in DOM afterward (not re-created on subsequent toggles)"
+- [x] CHK168 - Is the panel wrapper "always in DOM" vs content "conditionally rendered" distinction clear? [Ambiguity, Spec §FR-056, Implementation Notes] — ✓ FR-058 requires content removed from DOM + FR-059 requires panel wrapper remains in DOM + spec.md Implementation Notes lines 675-718 provide detailed explanation with code example
+- [x] CHK169 - Is the inert attribute purpose and application clear? [Ambiguity, Spec §FR-058] — ✓ FR-060 specifies inert attribute prevents keyboard access to collapsed content + contracts/accordion-aria.md lines 121, 138 document inert attribute usage
 
 ### Potential Conflicts
 
-- [ ] CHK170 - Do multiExpand and allowAllClosed requirements have any conflicting edge cases? [Conflict, Spec §FR-010 to FR-013]
-- [ ] CHK171 - Do disabled and softDisabled requirements have any conflicting ARIA implications? [Conflict, Spec §FR-049, FR-050, AR-010, AR-011]
-- [ ] CHK172 - Do keyboard navigation wraparound and disabled item skip rules conflict? [Conflict, Spec §FR-041, FR-044]
-- [ ] CHK173 - Do deep linking and multiExpand requirements have any conflicting behaviors? [Conflict, Gap]
+- [x] CHK170 - Do multiExpand and allowAllClosed requirements have any conflicting edge cases? [Conflict, Spec §FR-010 to FR-013] — ✓ No conflict: FR-010 (multiExpand) and FR-012 (allowAllClosed) are orthogonal features; multiExpand=false + allowAllClosed=false means exactly one open, multiExpand=true ignores allowAllClosed constraint
+- [ ] CHK171 - Do disabled and softDisabled requirements have any conflicting ARIA implications? [Conflict, Spec §FR-049, FR-050, AR-010, AR-011] — ⚠️ POTENTIAL AMBIGUITY: FR-050 (softDisabled=true → aria-disabled, remains focusable) and FR-051 (softDisabled=false → disabled attribute, not focusable) are clear, but interaction with keyboard navigation skip rules (FR-048) may need clarification: should softDisabled items be skipped during ArrowUp/Down even though focusable via Tab?
+- [x] CHK172 - Do keyboard navigation wraparound and disabled item skip rules conflict? [Conflict, Spec §FR-041, FR-044] — ✓ No conflict: FR-041 (wraparound when wrap=true) and FR-044 (skip disabled items) work together; navigation wraps to next/previous enabled item
+- [ ] CHK173 - Do deep linking and multiExpand requirements have any conflicting behaviors? [Conflict, Gap] — ⚠️ GAP: when deepLink=true and multiExpand=false, if URL hash changes to a panel while another is open, should the previous panel close? Spec doesn't explicitly address this interaction (FR-066/067 describe deep linking, FR-010/011 describe multiExpand, but no explicit integration rules)
 
 ### Undefined Behaviors
 
-- [ ] CHK174 - Is behavior defined when expanding item via [(expanded)] binding conflicts with allowAllClosed=false? [Undefined, Gap]
-- [ ] CHK175 - Is behavior defined when panelId changes dynamically after initialization? [Undefined, Gap]
-- [ ] CHK176 - Is behavior defined when titleHeadingLevel changes dynamically? [Undefined, Gap]
-- [ ] CHK177 - Is behavior defined when deepLink hash references non-existent panelId? [Undefined, Gap]
+- [ ] CHK174 - Is behavior defined when expanding item via [(expanded)] binding conflicts with allowAllClosed=false? [Undefined, Gap] — ⚠️ GAP: if developer sets [(expanded)]="false" on last open item when allowAllClosed=false, should binding be rejected or should accordion open another item? FR-012/013 describe allowAllClosed behavior but not two-way binding edge cases
+- [ ] CHK175 - Is behavior defined when panelId changes dynamically after initialization? [Undefined, Gap] — ⚠️ GAP: if developer changes panelId input after item initialized, should ARIA IDs update? Deep link hash references update? FR-020 requires unique panelId but doesn't address dynamic changes (related to CHK036/109)
+- [ ] CHK176 - Is behavior defined when titleHeadingLevel changes dynamically? [Undefined, Gap] — ⚠️ GAP: if titleHeadingLevel changes from 2 to 3 or null dynamically, should component recreate heading wrappers? FR-016 describes heading level feature but not dynamic updates (related to CHK110)
+- [ ] CHK177 - Is behavior defined when deepLink hash references non-existent panelId? [Undefined, Gap] — ⚠️ GAP: if URL hash is #nonexistent-panel, should accordion silently ignore it or emit an error? FR-067 requires expansion when hash matches but doesn't specify mismatch behavior (related to CHK093)
 
 ---
 
@@ -353,27 +353,27 @@
 
 ### External Dependencies
 
-- [ ] CHK178 - Are Foundation for Sites CSS version requirements specified? [Dependency, Spec Dependencies]
-- [ ] CHK179 - Are Angular version requirements (v20+) clearly stated? [Dependency, Spec Dependencies]
-- [ ] CHK180 - Are @angular/aria or @angular/cdk dependency requirements specified? [Dependency, Spec Dependencies]
-- [ ] CHK181 - Are Storybook addon requirements documented? [Dependency, Spec Testing Strategy]
+- [x] CHK178 - Are Foundation for Sites CSS version requirements specified? [Dependency, Spec Dependencies] — ✓ spec.md Dependencies lines 822 requires Foundation for Sites CSS + Assumptions line 807 states Foundation CSS must be available
+- [x] CHK179 - Are Angular version requirements (v20+) clearly stated? [Dependency, Spec Dependencies] — ✓ spec.md Dependencies line 823 requires @angular/core v20+ + Assumptions line 808 confirms Angular v20+ requirement + plan.md line 12 specifies Angular 20+
+- [x] CHK180 - Are @angular/aria or @angular/cdk dependency requirements specified? [Dependency, Spec Dependencies] — ✓ spec.md Dependencies lines 825-826 specify @angular/aria (preferred) and @angular/cdk (fallback) + plan.md line 13 lists both as dependencies
+- [x] CHK181 - Are Storybook addon requirements documented? [Dependency, Spec Testing Strategy] — ✓ spec.md Testing Strategy line 449 specifies @storybook/addon-a11y integration for AXE checks + Assumptions line 814 confirms Storybook configured in project
 
 ### Platform Assumptions
 
-- [ ] CHK182 - Are browser support assumptions explicitly documented? [Assumption, Spec Assumptions]
-- [ ] CHK183 - Are SSR platform assumptions documented? [Assumption, Spec Assumptions]
-- [ ] CHK184 - Are screen reader platform assumptions documented? [Assumption, Spec Assumptions]
+- [x] CHK182 - Are browser support assumptions explicitly documented? [Assumption, Spec Assumptions] — ✓ spec.md Assumptions line 812 specifies modern evergreen browsers (Chrome, Firefox, Safari, Edge) + Browser and Platform Constraints line 838 specifies latest 2 versions
+- [x] CHK183 - Are SSR platform assumptions documented? [Assumption, Spec Assumptions] — ✓ spec.md Assumptions line 816 specifies Angular Universal + Browser and Platform Constraints line 839 confirms SSR compatibility requirement
+- [x] CHK184 - Are screen reader platform assumptions documented? [Assumption, Spec Assumptions] — ✓ spec.md Assumptions line 813 specifies Windows (NVDA, JAWS) and macOS (VoiceOver) + Accessibility Constraints line 845 confirms NVDA, JAWS, VoiceOver minimum support
 
 ### Development Assumptions
 
-- [ ] CHK185 - Are developer skill level assumptions documented? [Assumption, Spec Assumptions]
-- [ ] CHK186 - Are project configuration assumptions (Jasmine/Jest) documented? [Assumption, Spec Assumptions]
-- [ ] CHK187 - Are Foundation CSS integration assumptions documented? [Assumption, Spec Assumptions]
+- [x] CHK185 - Are developer skill level assumptions documented? [Assumption, Spec Assumptions] — ✓ spec.md Assumptions line 810 assumes developers familiar with Angular content projection and component composition patterns
+- [x] CHK186 - Are project configuration assumptions (Jasmine/Jest) documented? [Assumption, Spec Assumptions] — ✓ spec.md Assumptions line 815 confirms compatibility with both Jasmine and Jest + Testing Strategy line 460 specifies Jasmine/Jest based on project configuration
+- [x] CHK187 - Are Foundation CSS integration assumptions documented? [Assumption, Spec Assumptions] — ✓ spec.md Assumptions lines 807, 811 document Foundation CSS availability and primary styling mechanism assumptions
 
 ### Validation of Assumptions
 
-- [ ] CHK188 - Have critical assumptions been validated or marked as risks? [Validation, Gap]
-- [ ] CHK189 - Are fallback strategies defined if assumptions prove invalid? [Validation, Gap]
+- [ ] CHK188 - Have critical assumptions been validated or marked as risks? [Validation, Gap] — ⚠️ GAP: spec documents assumptions but doesn't indicate which are validated vs. unvalidated, or which pose risks if invalid (e.g., @angular/aria availability assumption from line 825 could be risk if package doesn't exist or lacks needed primitives)
+- [ ] CHK189 - Are fallback strategies defined if assumptions prove invalid? [Validation, Gap] — ⚠️ PARTIAL: spec.md Dependencies lines 825-826 define @angular/cdk as fallback if @angular/aria insufficient, but no fallback strategies for other assumptions (e.g., what if Foundation CSS not available, or Angular v20 features unavailable)
 
 ---
 
@@ -381,23 +381,23 @@
 
 ### Requirement Traceability
 
-- [ ] CHK190 - Can each functional requirement be traced to a user story or edge case? [Traceability, Cross-reference]
-- [ ] CHK191 - Can each accessibility requirement be traced to WCAG criteria? [Traceability, Spec §AR-001 to AR-027]
-- [ ] CHK192 - Can each success criterion be traced to a requirement? [Traceability, Spec Success Criteria]
-- [ ] CHK193 - Can each API contract element be traced to spec requirements? [Traceability, Contracts vs Spec]
+- [x] CHK190 - Can each functional requirement be traced to a user story or edge case? [Traceability, Cross-reference] — ✓ All FR-001 to FR-072 map to User Stories 1-10 (P1-P4) + Edge Cases section lines 192-203 cover additional scenarios not in stories
+- [x] CHK191 - Can each accessibility requirement be traced to WCAG criteria? [Traceability, Spec §AR-001 to AR-027] — ✓ AR-001 (AXE checks) + AR-002 (WCAG 2.1 AA) + AR-003 (color contrast) establish WCAG traceability + contracts/accordion-aria.md lines 7-11 reference WCAG 2.1 AA, ARIA 1.2, WAI-ARIA Authoring Practices
+- [x] CHK192 - Can each success criterion be traced to a requirement? [Traceability, Spec Success Criteria] — ✓ SC-001 (ARIA checks) → AR-001 + SC-002 (WCAG AA) → AR-002 to AR-027 + SC-003 (keyboard) → FR-037 to FR-045 + SC-004 (performance) → FR requirements + all other SC map to specific FR/AR requirements
+- [x] CHK193 - Can each API contract element be traced to spec requirements? [Traceability, Contracts vs Spec] — ✓ contracts/accordion-api.ts inputs map to FR requirements (multiExpand → FR-010, allowAllClosed → FR-012, etc.) + outputs map to FR-022 + methods map to CA-009 + FOUNDATION_API_MAPPING lines 319-361 provide explicit traceability
 
 ### Documentation Completeness
 
-- [ ] CHK194 - Are all required specification sections present per template? [Documentation, Spec structure]
-- [ ] CHK195 - Are all required contract files present (API, ARIA)? [Documentation, Contracts directory]
-- [ ] CHK196 - Are usage examples provided for all major features? [Documentation, Spec Usage Examples]
-- [ ] CHK197 - Is Foundation API parity mapping complete and accurate? [Documentation, Contracts FOUNDATION_API_MAPPING]
+- [x] CHK194 - Are all required specification sections present per template? [Documentation, Spec structure] — ✓ spec.md contains: Feature title, Clarifications, User Scenarios, Requirements (FR/AR/CA), Success Criteria, Goals/Non-Goals, Testing Strategy, Implementation Notes, Usage Examples, Assumptions, Dependencies, Out of Scope
+- [x] CHK195 - Are all required contract files present (API, ARIA)? [Documentation, Contracts directory] — ✓ contracts/ directory contains accordion-api.ts (TypeScript interfaces) and accordion-aria.md (ARIA requirements documentation)
+- [x] CHK196 - Are usage examples provided for all major features? [Documentation, Spec Usage Examples] — ✓ spec.md Usage Examples lines 554-673 cover: basic accordion, multi-expand, two-way binding, lazy content, disabled items, programmatic control
+- [x] CHK197 - Is Foundation API parity mapping complete and accurate? [Documentation, Contracts FOUNDATION_API_MAPPING] — ✓ contracts/accordion-api.ts lines 319-361 map all Foundation methods (toggle, down, up, destroy), events (down, up), and options (multiExpand, allowAllClosed, deepLink, etc.) with accurate Angular equivalents
 
 ### Documentation Consistency
 
-- [ ] CHK198 - Are requirement IDs consistently formatted (FR-XXX, AR-XXX, CA-XXX, SC-XXX)? [Documentation, Spec structure]
-- [ ] CHK199 - Are cross-references between documents accurate and up-to-date? [Documentation, Cross-reference validation]
-- [ ] CHK200 - Are code examples syntactically valid and consistent with requirements? [Documentation, Spec Usage Examples]
+- [x] CHK198 - Are requirement IDs consistently formatted (FR-XXX, AR-XXX, CA-XXX, SC-XXX)? [Documentation, Spec structure] — ✓ All requirements use consistent 3-letter prefix + hyphen + 3-digit number format (FR-001 to FR-072, AR-001 to AR-027, CA-001 to CA-011, SC-001 to SC-010)
+- [x] CHK199 - Are cross-references between documents accurate and up-to-date? [Documentation, Cross-reference validation] — ✓ plan.md lines 76-82 reference correct contract files + spec.md Implementation Notes reference correct FR/AR requirements + contracts reference spec sections accurately
+- [x] CHK200 - Are code examples syntactically valid and consistent with requirements? [Documentation, Spec Usage Examples] — ✓ spec.md Usage Examples lines 554-673 use correct TypeScript/Angular syntax + selector names match FR-002 + input/output names match CA-007/CA-010 + examples align with functional requirements
 
 ---
 
