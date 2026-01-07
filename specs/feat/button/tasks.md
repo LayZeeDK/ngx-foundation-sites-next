@@ -65,9 +65,9 @@ Each user story phase includes:
 
 ### Tasks
 
-- [ ] T001 Verify Foundation for Sites 6.9.0+ is installed in packages/ngx-foundation-sites/package.json
-- [ ] T002 [P] Confirm `$button-responsive-expanded: true` in Sass configuration files under packages/ngx-foundation-sites/src/lib/scss/
-- [ ] T003 [P] Validate pre-compiled button CSS exists at packages/ngx-foundation-sites/dist-css/nfs-button.css with responsive classes
+- [X] T001 Verify Foundation for Sites 6.9.0+ is installed in packages/ngx-foundation-sites/package.json
+- [X] T002 [P] Confirm `$button-responsive-expanded: true` in Sass configuration files under packages/ngx-foundation-sites/src/lib/scss/
+- [X] T003 [P] Validate pre-compiled button CSS exists at packages/ngx-foundation-sites/dist-css/nfs-button.css with responsive classes
 
 ---
 
@@ -83,14 +83,14 @@ Each user story phase includes:
 
 ### Tasks
 
-- [ ] T004 Verify NfsStyleLoader service exists at packages/ngx-foundation-sites/src/lib/core/nfs-style-loader.service.ts with load/unload methods
-- [ ] T005 [P] Validate button component exists at packages/ngx-foundation-sites/src/lib/button/button.ts with attribute selector
-- [ ] T006 [P] Verify button type exports (NfsButtonSize, NfsButtonColor, NfsButtonFill, NfsButtonExpanded, NfsButtonExpandedBreakpoint) are exported from packages/ngx-foundation-sites/src/lib/button/index.ts
-- [ ] T007 [P] Confirm button barrel export in packages/ngx-foundation-sites/src/lib/index.ts includes NfsButton component
-- [ ] T008 [P] Validate Storybook stories file exists at packages/ngx-foundation-sites/src/lib/button/button.stories.ts
-- [ ] T009 [P] Verify Storybook is runnable with `npm run storybook` and button stories are visible
-- [ ] T010 Run Storybook interaction tests for button with `nx test-storybook ngx-foundation-sites` to establish baseline
-- [ ] T011 Document baseline test results in specs/feat/button/VALIDATION_RESULTS.md
+- [X] T004 Verify NfsStyleLoader service exists at packages/ngx-foundation-sites/src/lib/core/nfs-style-loader.service.ts with load/unload methods
+- [X] T005 [P] Validate button component exists at packages/ngx-foundation-sites/src/lib/button/button.ts with attribute selector
+- [X] T006 [P] Verify button type exports (NfsButtonSize, NfsButtonColor, NfsButtonFill, NfsButtonExpanded, NfsButtonExpandedBreakpoint) are exported from packages/ngx-foundation-sites/src/lib/button/index.ts
+- [X] T007 [P] Confirm button barrel export in packages/ngx-foundation-sites/src/lib/index.ts includes NfsButton component
+- [X] T008 [P] Validate Storybook stories file exists at packages/ngx-foundation-sites/src/lib/button/button.stories.ts
+- [X] T009 [P] Verify Storybook is runnable with `npm run storybook` and button stories are visible
+- [X] T010 Run Storybook interaction tests for button with `nx test-storybook ngx-foundation-sites` to establish baseline
+- [X] T011 Document baseline test results in specs/feat/button/VALIDATION_RESULTS.md
 
 ---
 
@@ -108,12 +108,12 @@ Each user story phase includes:
 
 ### Tasks
 
-- [ ] T012 [P] [US1] Verify Default story in button.stories.ts tests Foundation `.button` and `.primary` classes are applied
-- [ ] T013 [P] [US1] Validate ColorVariants story renders all 5 color variants (primary, secondary, success, alert, warning) correctly
-- [ ] T014 [P] [US1] Add Storybook interaction test to ColorVariants story to verify each button has correct color class
-- [ ] T015 [US1] Test click event handler fires correctly by adding test to Default story with userEvent.click
-- [ ] T016 [US1] Verify ChangeDetectionStrategy.OnPush is set in button component metadata
-- [ ] T017 [US1] Document User Story 1 test results in specs/feat/button/VALIDATION_RESULTS.md with screenshots
+- [X] T012 [P] [US1] Verify Default story in button.stories.ts tests Foundation `.button` and `.primary` classes are applied
+- [X] T013 [P] [US1] Validate ColorVariants story renders all 5 color variants (primary, secondary, success, alert, warning) correctly
+- [X] T014 [P] [US1] Add Storybook interaction test to ColorVariants story to verify each button has correct color class
+- [X] T015 [US1] Test click event handler fires correctly by adding test to Default story with userEvent.click
+- [X] T016 [US1] Verify ChangeDetectionStrategy.OnPush is set in button component metadata
+- [X] T017 [US1] Document User Story 1 test results in specs/feat/button/VALIDATION_RESULTS.md with screenshots
 
 ---
 
@@ -131,12 +131,12 @@ Each user story phase includes:
 
 ### Tasks
 
-- [ ] T018 [P] [US2] Create AnchorWithHref story in button.stories.ts rendering `<a nfsButton href="/test">Link</a>`
-- [ ] T019 [P] [US2] Add interaction test to AnchorWithHref story verifying NO `role="button"` attribute (preserves link semantics)
-- [ ] T020 [P] [US2] Create AnchorWithoutHref story rendering `<a nfsButton>Button</a>` (no href)
-- [ ] T021 [P] [US2] Add interaction test to AnchorWithoutHref story verifying `role="button"` and `tabindex="0"` are present
-- [ ] T022 [US2] Add keyboard interaction test to AnchorWithoutHref story verifying Space key activates the anchor
-- [ ] T023 [US2] Document User Story 2 test results in specs/feat/button/VALIDATION_RESULTS.md
+- [X] T018 [P] [US2] Create AnchorWithHref story in button.stories.ts rendering `<a nfsButton href="/test">Link</a>`
+- [X] T019 [P] [US2] Add interaction test to AnchorWithHref story verifying NO `role="button"` attribute (preserves link semantics)
+- [X] T020 [P] [US2] Create AnchorWithoutHref story rendering `<a nfsButton>Button</a>` (no href)
+- [X] T021 [P] [US2] Add interaction test to AnchorWithoutHref story verifying `role="button"` and `tabindex="0"` are present
+- [X] T022 [US2] Add keyboard interaction test to AnchorWithoutHref story verifying Space key activates the anchor
+- [X] T023 [US2] Document User Story 2 test results in specs/feat/button/VALIDATION_RESULTS.md
 
 ---
 
@@ -156,11 +156,11 @@ Each user story phase includes:
 
 ### Tasks
 
-- [ ] T024 [P] [US3] Verify SizeVariants story exists in button.stories.ts rendering all 4 size variants
-- [ ] T025 [P] [US3] Add interaction test to SizeVariants story verifying `.tiny`, `.small`, `.large` classes are applied correctly
-- [ ] T026 [P] [US3] Create ExpandedVariants story rendering boolean expanded and all 7 responsive breakpoint variants
-- [ ] T027 [P] [US3] Add interaction test to ExpandedVariants story verifying `.expanded` class for boolean true
-- [ ] T028 [US3] Add interaction test to ExpandedVariants story verifying responsive classes (`.medium-expanded`, `.small-only-expanded`, etc.)
+- [X] T024 [P] [US3] Verify SizeVariants story exists in button.stories.ts rendering all 4 size variants
+- [X] T025 [P] [US3] Add interaction test to SizeVariants story verifying `.tiny`, `.small`, `.large` classes are applied correctly
+- [X] T026 [P] [US3] Create ExpandedVariants story rendering boolean expanded and all 7 responsive breakpoint variants
+- [X] T027 [P] [US3] Add interaction test to ExpandedVariants story verifying `.expanded` class for boolean true
+- [X] T028 [US3] Add interaction test to ExpandedVariants story verifying responsive classes (`.medium-expanded`, `.small-only-expanded`, etc.)
 
 ---
 
@@ -179,13 +179,13 @@ Each user story phase includes:
 
 ### Tasks
 
-- [ ] T029 [P] [US4] Create HardDisabled story rendering `<button nfsButton disabled>Disabled</button>`
-- [ ] T030 [P] [US4] Add interaction test to HardDisabled story verifying button is not in tab order (not focusable)
-- [ ] T031 [P] [US4] Create SoftDisabled story rendering `<button nfsButton [softDisabled]="true">Soft Disabled</button>`
-- [ ] T032 [P] [US4] Add interaction test to SoftDisabled story verifying button has `aria-disabled="true"` and remains focusable
-- [ ] T033 [P] [US4] Add interaction test to SoftDisabled story verifying click event is prevented
-- [ ] T034 [P] [US4] Create SoftDisabledAnchor story rendering `<a nfsButton [softDisabled]="true">Disabled Link</a>`
-- [ ] T035 [US4] Add interaction test to SoftDisabledAnchor story verifying `aria-disabled="true"` and `tabindex="-1"` are set
+- [X] T029 [P] [US4] Create HardDisabled story rendering `<button nfsButton disabled>Disabled</button>`
+- [X] T030 [P] [US4] Add interaction test to HardDisabled story verifying button is not in tab order (not focusable)
+- [X] T031 [P] [US4] Create SoftDisabled story rendering `<button nfsButton [softDisabled]="true">Soft Disabled</button>`
+- [X] T032 [P] [US4] Add interaction test to SoftDisabled story verifying button has `aria-disabled="true"` and remains focusable
+- [X] T033 [P] [US4] Add interaction test to SoftDisabled story verifying click event is prevented
+- [X] T034 [P] [US4] Create SoftDisabledAnchor story rendering `<a nfsButton [softDisabled]="true">Disabled Link</a>`
+- [X] T035 [US4] Add interaction test to SoftDisabledAnchor story verifying `aria-disabled="true"` and `tabindex="-1"` are set
 
 ---
 
@@ -203,10 +203,10 @@ Each user story phase includes:
 
 ### Tasks
 
-- [ ] T036 [P] [US5] Verify FillVariants story exists in button.stories.ts rendering solid, hollow, and clear variants
-- [ ] T037 [P] [US5] Add interaction test to FillVariants story verifying `.hollow` class is applied for hollow buttons
-- [ ] T038 [P] [US5] Add interaction test to FillVariants story verifying `.clear` class is applied for clear buttons
-- [ ] T039 [US5] Create CombinedVariants story showing all combinations of size, color, and fill to verify no conflicts
+- [X] T036 [P] [US5] Verify FillVariants story exists in button.stories.ts rendering solid, hollow, and clear variants
+- [X] T037 [P] [US5] Add interaction test to FillVariants story verifying `.hollow` class is applied for hollow buttons
+- [X] T038 [P] [US5] Add interaction test to FillVariants story verifying `.clear` class is applied for clear buttons
+- [X] T039 [US5] Create CombinedVariants story showing all combinations of size, color, and fill to verify no conflicts
 
 ---
 
@@ -225,11 +225,11 @@ Each user story phase includes:
 
 ### Tasks
 
-- [ ] T040 [P] [US6] Create KeyboardNavigation story rendering multiple buttons in sequence
-- [ ] T041 [P] [US6] Add interaction test to KeyboardNavigation story verifying Tab key moves focus between buttons
-- [ ] T042 [P] [US6] Add interaction test to KeyboardNavigation story verifying Enter key activates focused button
-- [ ] T043 [P] [US6] Add interaction test to KeyboardNavigation story verifying Space key activates focused button
-- [ ] T044 [US6] Add interaction test verifying Space key activates anchor button (no href) correctly
+- [X] T040 [P] [US6] Create KeyboardNavigation story rendering multiple buttons in sequence
+- [X] T041 [P] [US6] Add interaction test to KeyboardNavigation story verifying Tab key moves focus between buttons
+- [X] T042 [P] [US6] Add interaction test to KeyboardNavigation story verifying Enter key activates focused button
+- [X] T043 [P] [US6] Add interaction test to KeyboardNavigation story verifying Space key activates focused button
+- [X] T044 [US6] Add interaction test verifying Space key activates anchor button (no href) correctly
 
 ---
 
@@ -245,9 +245,9 @@ Each user story phase includes:
 
 ### Tasks
 
-- [ ] T045 Run full Storybook interaction test suite with `nx test-storybook ngx-foundation-sites` and verify 100% pass rate
-- [ ] T046 Validate all AXE accessibility checks pass in Storybook (check for violations in test output)
-- [ ] T047 Update specs/feat/button/VALIDATION_RESULTS.md with final results, pass/fail status for all requirements, and any gaps identified
+- [X] T045 Run full Storybook interaction test suite with `nx test-storybook ngx-foundation-sites` and verify 100% pass rate
+- [X] T046 Validate all AXE accessibility checks pass in Storybook (check for violations in test output)
+- [X] T047 Update specs/feat/button/VALIDATION_RESULTS.md with final results, pass/fail status for all requirements, and any gaps identified
 
 ---
 
@@ -311,32 +311,32 @@ graph TD
 
 ### From spec.md Success Criteria
 
-- [ ] **SC-001**: 1-line markup validated - `<button nfsButton>Text</button>` renders correctly
-- [ ] **SC-002**: 100% AXE accessibility checks pass in Storybook interaction tests
-- [ ] **SC-003**: Keyboard navigation (Tab/Enter/Space) works for all buttons
-- [ ] **SC-004**: Soft-disabled `<button>` elements remain focusable with `aria-disabled`
-- [ ] **SC-005**: Anchor buttons respond to Space key activation correctly
-- [ ] **SC-006**: All Foundation button CSS classes applied correctly based on inputs
-- [ ] **SC-007**: Responsive expanded classes applied at correct breakpoints
-- [ ] **SC-008**: Component bundle size <2KB gzipped (no Foundation JavaScript)
-- [ ] **SC-009**: Component works in CSR and SSR contexts (SSR validated via afterNextRender usage)
-- [ ] **SC-010**: Dynamic input changes trigger reactive updates (signal-based inputs)
+- [X] **SC-001**: 1-line markup validated - `<button nfsButton>Text</button>` renders correctly
+- [X] **SC-002**: 100% AXE accessibility checks pass in Storybook interaction tests
+- [X] **SC-003**: Keyboard navigation (Tab/Enter/Space) works for all buttons
+- [X] **SC-004**: Soft-disabled `<button>` elements remain focusable with `aria-disabled`
+- [X] **SC-005**: Anchor buttons respond to Space key activation correctly
+- [X] **SC-006**: All Foundation button CSS classes applied correctly based on inputs
+- [X] **SC-007**: Responsive expanded classes applied at correct breakpoints
+- [X] **SC-008**: Component bundle size <2KB gzipped (no Foundation JavaScript)
+- [X] **SC-009**: Component works in CSR and SSR contexts (SSR validated via afterNextRender usage)
+- [X] **SC-010**: Dynamic input changes trigger reactive updates (signal-based inputs)
 
 ### From plan.md Constitution Check
 
-- [ ] Component uses Angular APIs only (no Foundation JS)
-- [ ] Component names align with Foundation conventions (`NfsButton` → `.button`)
-- [ ] Injection tokens follow `Token` suffix (N/A for button)
-- [ ] Component passes AXE checks (verified via Storybook)
-- [ ] WCAG AA standards met (focus, contrast, ARIA)
-- [ ] Foundation CSS classes applied correctly
-- [ ] No custom CSS (pure Foundation styles)
-- [ ] Standalone component (no NgModules)
-- [ ] Signals for state management
-- [ ] `input()` functions instead of decorators
-- [ ] `ChangeDetectionStrategy.OnPush` set
-- [ ] Member visibility follows guidelines
-- [ ] Storybook interaction tests implemented
+- [X] Component uses Angular APIs only (no Foundation JS)
+- [X] Component names align with Foundation conventions (`NfsButton` → `.button`)
+- [X] Injection tokens follow `Token` suffix (N/A for button)
+- [X] Component passes AXE checks (verified via Storybook)
+- [X] WCAG AA standards met (focus, contrast, ARIA)
+- [X] Foundation CSS classes applied correctly
+- [X] No custom CSS (pure Foundation styles)
+- [X] Standalone component (no NgModules)
+- [X] Signals for state management
+- [X] `input()` functions instead of decorators
+- [X] `ChangeDetectionStrategy.OnPush` set
+- [X] Member visibility follows guidelines
+- [X] Storybook interaction tests implemented
 
 ---
 
@@ -446,7 +446,7 @@ Create `specs/feat/button/VALIDATION_RESULTS.md` with structure:
 
 ### User Story 1: Basic Button Usage
 - [x] T012: Default story verified
-- [ ] T013: ColorVariants story verified
+- [x] T013: ColorVariants story verified
 ...
 
 ## Requirements Coverage
