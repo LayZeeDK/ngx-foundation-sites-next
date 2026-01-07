@@ -48,6 +48,9 @@ description: 'Actionable task list for Accessible Accordion Component implementa
 - [ ] T014 [P] Add README.md in packages/ngx-foundation-sites/src/lib/accordion/README.md documenting Foundation API parity (toggle, down, up methods and events)
 - [ ] T015 Configure TypeScript strict mode compliance for all accordion files in tsconfig.lib.json
 - [ ] T015b Verify Foundation API parity matches contracts/accordion-api.ts FOUNDATION_API_MAPPING (toggle/down/up methods + down/up events)
+  - [ ] Success criteria: NfsAccordionItem exposes toggle(), down(), up()
+  - [ ] Success criteria: NfsAccordion exposes down/up outputs
+  - [ ] Success criteria: output payload matches AccordionItemChangeEvent { itemId, expanded }
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -136,6 +139,7 @@ description: 'Actionable task list for Accessible Accordion Component implementa
 - [ ] T051 [P] [US3] Implement ID generation strategy in NfsAccordion (static counter + instanceId)
 - [ ] T052 [P] [US3] Generate unique trigger IDs and panel IDs in NfsAccordionItem (triggerId, panelId computed signals)
 - [ ] T052b [US3] Verify auto-generated IDs are unique across multiple accordions rendered on the same page (no collisions)
+- [ ] T052c [US3] Verify nested accordions work independently (DI token skipSelf pattern; no state/ID interference between parent/child accordions)
 - [ ] T053 [US3] Add ARIA attributes to NfsAccordionTitle button (aria-expanded, aria-controls, id)
 - [ ] T054 [US3] Add ARIA attributes to panel wrapper in NfsAccordionItem (role="region", aria-labelledby, id)
 - [ ] T055 [US3] Implement inert attribute binding on panel wrapper when collapsed ([attr.inert]="expanded() ? null : ''")
