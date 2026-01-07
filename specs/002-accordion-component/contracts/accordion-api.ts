@@ -278,7 +278,7 @@ export function isAccordionParent(value: unknown): value is AccordionParent {
  */
 export const ACCORDION_DEFAULTS = {
   multiExpand: false,
-  allowAllClosed: true,
+  allowAllClosed: false,
   disabled: false,
   deepLink: false,
   deepLinkSmudge: false,

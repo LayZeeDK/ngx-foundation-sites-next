@@ -44,7 +44,7 @@
 ✅ **Passed**: Clear goals/non-goals section defines what is in scope (Foundation accordion features, accessibility, SSR) and what is explicitly out of scope (animations API, custom theming, lazy loading, persistence, etc.).
 
 ### No Clarifications Needed
-✅ **Passed**: The specification contains zero [NEEDS CLARIFICATION] markers. All requirements are concrete and actionable. Where choices existed, reasonable defaults were established (e.g., allowAllClosed defaults to true, multiExpand defaults to false, following Foundation conventions).
+✅ **Passed**: The specification contains zero [NEEDS CLARIFICATION] markers. All requirements are concrete and actionable. Where choices existed, reasonable defaults were established (e.g., allowAllClosed defaults to false, multiExpand defaults to false, following Foundation conventions).
 
 ## Summary
 

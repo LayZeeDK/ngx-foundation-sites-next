@@ -103,7 +103,7 @@ A developer configures an accordion where all panels can be closed simultaneousl
 
 1. **Given** an accordion with allowAllClosed="false" and item 1 open (only one open), **When** user clicks item 1's title, **Then** item 1 remains open
 2. **Given** an accordion with allowAllClosed="false" and items 1 and 2 open (multiExpand), **When** user closes item 1, **Then** item 1 closes and item 2 remains open
-3. **Given** an accordion with allowAllClosed="true" (default), **When** user closes the last open item, **Then** all items are collapsed
+3. **Given** an accordion with allowAllClosed="true", **When** user closes the last open item, **Then** all items are collapsed
 
 ---
 
@@ -223,12 +223,12 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 - **FR-010**: When multiExpand input is false (default), expanding a new item MUST automatically collapse the previously expanded item
 - **FR-011**: When multiExpand input is true, multiple items MUST be able to remain open simultaneously
 - **FR-012**: When allowAllClosed input is false, at least one item MUST remain expanded at all times
-- **FR-013**: When allowAllClosed input is true (default), all items MUST be able to be collapsed simultaneously
+- **FR-013**: When allowAllClosed input is true, all items MUST be able to be collapsed simultaneously
 
 #### Public API - Inputs
 
 - **FR-014**: `<nfs-accordion>` MUST accept a `multiExpand` signal input (boolean, default: false) to enable multi-expand mode
-- **FR-015**: `<nfs-accordion>` MUST accept an `allowAllClosed` signal input (boolean, default: true) to control if all items can be closed
+- **FR-015**: `<nfs-accordion>` MUST accept an `allowAllClosed` signal input (boolean, default: false) to control if all items can be closed
 - **FR-016**: `<nfs-accordion>` MUST accept an optional `id` input (string) for the root container element
 - **FR-017**: `<nfs-accordion-item>` MUST accept a `disabled` signal input (boolean, default: false) to disable individual items
 - **FR-018**: `<nfs-accordion-item>` MUST accept an optional `id` input (string) for the item container element
@@ -498,7 +498,7 @@ This allows:
 
 **Inputs**:
 - `multiExpand` (boolean, default: `false`) - Allow multiple panels to be expanded simultaneously (maps to Foundation's `data-multi-expand`)
-- `allowAllClosed` (boolean, default: `true`) - Allow all panels to be closed (maps to Foundation's `data-allow-all-closed`). **Default differs from Foundation**: Foundation defaults to requiring one panel open; we default to allowing all closed for better UX flexibility.
+- `allowAllClosed` (boolean, default: `false`) - Allow all panels to be closed (maps to Foundation's `data-allow-all-closed`)
 - `disabled` (boolean, default: `false`) - Disable all accordion items
 - `deepLink` (boolean, default: `false`) - Synchronize expanded panel with URL hash (maps to Foundation's `data-deep-link`)
 - `deepLinkSmudge` (boolean, default: `false`) - Auto-scroll to deep-linked panel (maps to Foundation's `data-deep-link-smudge`)
@@ -513,7 +513,7 @@ This allows:
 - `openAll(): void` - Expand all panels (only effective when `multiExpand=true`)
 - `closeAll(): void` - Collapse all panels (only effective when `allowAllClosed=true`)
 
-**Default Behavior Rationale**: Foundation defaults `allowAllClosed` to `false` (requiring one panel always open). We default to `true` (allow all closed) because: (1) it's more flexible for modern UX patterns, (2) most use cases don't require forcing a panel open, (3) users can explicitly set `[allowAllClosed]="false"` if needed for wizard-style flows. This improves developer experience while maintaining Foundation compatibility.
+**Default Behavior**: Matches Foundation for Sites — by default `allowAllClosed` is `false` (at least one pane must remain open). Set `[allowAllClosed]="true"` to allow all panes to be collapsed.
 
 #### NfsAccordionItem (Item Component)
 

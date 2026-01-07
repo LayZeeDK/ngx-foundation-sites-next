@@ -438,7 +438,7 @@ export class ExampleComponent {
 | Input | Type | Default | Description |
 |-------|------|---------|-------------|
 | `multiExpand` | `boolean` | `false` | Allow multiple panels open |
-| `allowAllClosed` | `boolean` | `true` | Allow all panels closed |
+| `allowAllClosed` | `boolean` | `false` | Allow all panels closed |
 | `disabled` | `boolean` | `false` | Disable all items |
 | `deepLink` | `boolean` | `false` | Sync with URL hash |
 | `deepLinkSmudge` | `boolean` | `false` | Auto-scroll to panel |

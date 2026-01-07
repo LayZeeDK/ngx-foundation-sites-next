@@ -17,7 +17,7 @@
 
 **Inputs** (via `input()` function):
 - `multiExpand`: `InputSignal<boolean>` - Allow multiple panels open (default: `false`)
-- `allowAllClosed`: `InputSignal<boolean>` - Allow all panels closed (default: `true`)
+- `allowAllClosed`: `InputSignal<boolean>` - Allow all panels closed (default: `false`)
 - `disabled`: `InputSignal<boolean>` - Disable all items (default: `false`)
 - `deepLink`: `InputSignal<boolean>` - Sync with URL hash (default: `false`)
 - `deepLinkSmudge`: `InputSignal<boolean>` - Auto-scroll to expanded item (default: `false`)
