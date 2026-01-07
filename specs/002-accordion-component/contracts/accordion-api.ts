@@ -124,10 +124,11 @@ export interface NfsAccordionItemApi {
   // ── Inputs ──────────────────────────────────────────────────────────────
 
   /**
-   * Unique identifier for this panel (required).
-   * Used for deep linking and ARIA relationships.
+   * Unique identifier for this panel (optional).
+   * If not provided, the implementation MUST auto-generate a stable id (e.g. `${accordionInstanceId}-panel-${index}`).
+   * Duplicate `panelId` values within the same accordion instance MUST be detected and handled per spec: the first-registered item is treated as canonical and a diagnostic must be reported via `ErrorHandler.handleError()`.
    */
-  readonly panelId: InputSignal<string>;
+  readonly panelId: InputSignal<string | undefined>;
 
   /**
    * Whether the panel is expanded.

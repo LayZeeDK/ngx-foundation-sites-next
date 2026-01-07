@@ -160,13 +160,13 @@ accordion.up.subscribe(({ itemId }) => console.log('closed', itemId));
 ## Rendered HTML Structure (expected)
 
 ```html
-<div class="accordion">
-  <div class="accordion-item is-active">
+<ul class="accordion">
+  <li class="accordion-item is-active">
     <button class="accordion-title" id="accordion-1-title-0" aria-expanded="true" aria-controls="accordion-1-panel-0">Section 1</button>
     <div id="accordion-1-panel-0" class="accordion-content" role="region" aria-labelledby="accordion-1-title-0">...</div>
-  </div>
+  </li>
   <!-- more items -->
-</div>
+</ul>
 ```
 
 ## CSS Custom Properties
