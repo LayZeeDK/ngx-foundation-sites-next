@@ -71,7 +71,7 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 - [ ] T019 [P] [US1] Create NfsAccordionItem component at packages/ngx-foundation-sites/src/lib/accordion/accordion-item.component.ts (standalone, OnPush, host class="accordion-item", selector: nfs-accordion-item)
 - [ ] T020 [P] [US1] Create NfsAccordionTitle component at packages/ngx-foundation-sites/src/lib/accordion/accordion-title.component.ts (standalone, OnPush, selector: nfs-accordion-title, renders as button)
 - [ ] T021 [US1] Implement NfsAccordion inputs using input() function: multiExpand (default: false), allowAllClosed (default: false)
-- [ ] T022 [US1] Implement NfsAccordionItem inputs: panelId (required string), expanded (model signal, default: false), disabled (default: false)
+- [ ] T022 [US1] Implement NfsAccordionItem inputs: panelId (optional string; system generates when absent), expanded (model signal, default: false), disabled (default: false)
 - [ ] T023 [US1] Implement state management in NfsAccordion: #openItemIds signal, registerItem(), unregisterItem(), notifyItemToggle()
 - [ ] T024 [US1] Implement single-expand logic: when multiExpand=false, expanding one item closes others
 - [ ] T025 [US1] Implement NfsAccordion provides nfsAccordionToken (useExisting pattern)
