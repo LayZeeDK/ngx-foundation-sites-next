@@ -266,6 +266,23 @@ These examples are guaranteed to work and will not break in minor versions:
 <button nfsButton (click)="onClick()" (focus)="onFocus()">Event Handling</button>
 ```
 
+## Traceability
+
+This section maps contract surfaces to feature spec requirement IDs (`specs/001-button/spec.md`).
+
+| API surface                                          | Spec requirement(s)                    |
+| ---------------------------------------------------- | -------------------------------------- |
+| Selector `button[nfsButton], a[nfsButton]`           | FR-002, CA-006                         |
+| Base class `.button`                                 | FR-001, FR-014                         |
+| `size` input + size classes                          | FR-003                                 |
+| `color` input + palette classes                      | FR-004                                 |
+| `fill` input + fill classes                          | FR-005                                 |
+| `expanded` input + expanded classes                  | FR-006, FR-007, FR-017, FR-019         |
+| `softDisabled` input + `.disabled` + `aria-disabled` | FR-008, FR-009, FR-013, AR-005, AR-006 |
+| Anchor semantics (role/tabindex)                     | FR-010, FR-011, FR-013, AR-004         |
+| Anchor Space/Enter activation                        | FR-012, AR-003                         |
+| Runtime style loading                                | FR-015, CA-009                         |
+
 ## Backwards Compatibility Guarantees
 
 ### Major Version (Breaking Changes Allowed)
