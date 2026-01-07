@@ -1,6 +1,6 @@
 ---
 description: Execute the implementation planning workflow using the plan template to generate design artifacts.
-handoffs: 
+handoffs:
   - label: Create Tasks
     agent: speckit.tasks
     prompt: Break the plan into tasks
@@ -17,6 +17,12 @@ $ARGUMENTS
 ```
 
 You **MUST** consider the user input before proceeding (if not empty).
+
+## Path grounding (CRITICAL)
+
+- Do **not** guess or "fix up" filesystem paths (e.g. avoid fallback paths like `/Users/...`).
+- Treat paths emitted by the `.specify` PowerShell scripts (`-Json` output) as the **only source of truth**; use them verbatim.
+- If a required path is missing/unclear, STOP and re-run the prerequisite script (or ask the user) instead of synthesizing a path.
 
 ## Outline
 
@@ -81,7 +87,7 @@ You **MUST** consider the user input before proceeding (if not empty).
    - Add only new technology from current plan
    - Preserve manual additions between markers
 
-**Output**: data-model.md, /contracts/*, quickstart.md, agent-specific file
+**Output**: data-model.md, /contracts/\*, quickstart.md, agent-specific file
 
 ## Key rules
 
