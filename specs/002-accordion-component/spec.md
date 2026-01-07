@@ -849,3 +849,49 @@ The following features are explicitly out of scope for the initial implementatio
 - **Analytics Integration**: Built-in event tracking for accordion interactions
 - **Right-to-Left (RTL) Support**: Specific RTL layout handling (may work by default with Foundation CSS)
 - **Touch Gestures**: Swipe to expand/collapse on mobile devices
+
+## Traceability
+
+### User Stories → Requirements
+
+| User Story                                   | Mapped Requirements                            |
+| -------------------------------------------- | ---------------------------------------------- |
+| US1 Basic Single Accordion Interaction       | FR-001, FR-008, FR-009, FR-010, FR-029..FR-035 |
+| US2 Keyboard Navigation and Focus Management | FR-037..FR-045, AR-015..AR-023                 |
+| US3 Screen Reader Compatibility              | FR-020, FR-021, FR-058..FR-061, AR-024..AR-027 |
+| US4 Multi-Expand Mode                        | FR-011, FR-014                                 |
+| US5 Allow All Closed Mode                    | FR-012                                         |
+| US6 Disabled Items                           | FR-046..FR-052                                 |
+| US7 Initial Open Item Configuration          | FR-018                                         |
+| US8 Dynamic Item Management                  | FR-053..FR-056                                 |
+| US9 SSR Compatibility                        | FR-062..FR-065                                 |
+| US10 URL Hash Deep Linking                   | FR-066..FR-074b                                |
+
+### Requirements → Implementation Artifacts
+
+| Requirement    | Implementation Artifacts                                                                                                              |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| FR-001..FR-007 | packages/ngx-foundation-sites/src/lib/accordion/\* (components, directives)                                                           |
+| FR-008..FR-013 | packages/ngx-foundation-sites/src/lib/accordion/accordion.component.ts and item components                                            |
+| FR-014..FR-016 | packages/ngx-foundation-sites/src/lib/accordion/\*.ts (inputs via input())                                                            |
+| FR-017..FR-021 | packages/ngx-foundation-sites/src/lib/accordion/contracts and specs/002-accordion-component/tasks.md                                  |
+| FR-029..FR-036 | packages/ngx-foundation-sites/dist-css/accordion.css (Sass output) and component host classes                                         |
+| AR-001..AR-027 | specs/002-accordion-component/ (this spec), Storybook stories, and Playwright/Storybook interaction tests in ngx-foundation-sites-e2e |
+| FR-062..FR-065 | SSR integration tests and Angular Universal demo in apps/consumer-test-app                                                            |
+
+### Requirements → Verification Artifacts
+
+| Requirement Set       | Verification Method                                                                        |
+| --------------------- | ------------------------------------------------------------------------------------------ |
+| Functional (FR-\*)    | Storybook interaction tests, manual QA, and E2E Playwright tests                           |
+| Accessibility (AR-\*) | AXE checks in Storybook play functions, manual screen reader testing (NVDA/JAWS/VoiceOver) |
+| Performance (PR-\*)   | Bundle size checks (`npm run build` + gzip), render/toggle timing in benchmarks            |
+| Security (SR-\*)      | Code review, dependency audits, and documentation warning about projected content          |
+
+### Related Documents & Links
+
+- API Design: packages/ngx-foundation-sites/ACCORDION_API_DESIGN.md
+- Implementation Plan: packages/ngx-foundation-sites/ACCORDION_API_IMPLEMENTATION_PLAN.md
+- Acceptance Tasks: specs/002-accordion-component/tasks.md
+- Storybook Stories: packages/ngx-foundation-sites/docs/accordion/
+- Dist CSS: packages/ngx-foundation-sites/dist-css/accordion.css
