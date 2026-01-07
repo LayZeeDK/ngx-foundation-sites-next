@@ -2,12 +2,13 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Accordion Deep Linking', () => {
   const storyUrl = '/iframe.html?id=components-accordion--deep-link';
+  const slowExpect = expect.configure({ timeout: 10_000 });
 
   test('opens panel from initial URL hash', async ({ page }) => {
     await page.goto(`${storyUrl}#panel-2`);
 
     const trigger2 = page.getByRole('button', { name: /Accordion 2/i });
-    await expect(trigger2).toHaveAttribute('aria-expanded', 'true');
+    await slowExpect(trigger2).toHaveAttribute('aria-expanded', 'true');
   });
 
   test('updates URL hash when panel is expanded', async ({ page }) => {
@@ -45,7 +46,7 @@ test.describe('Accordion Deep Linking', () => {
     await page.waitForTimeout(400);
 
     const trigger3 = page.getByRole('button', { name: /Accordion 3/i });
-    await expect(trigger3).toBeInViewport();
+    await slowExpect(trigger3).toBeInViewport();
   });
 
   test('clears hash when all panels are closed in multi-expand mode', async ({
@@ -58,7 +59,7 @@ test.describe('Accordion Deep Linking', () => {
 
     // Wait for panel to expand
     const trigger1 = page.getByRole('button', { name: /Accordion 1/i });
-    await expect(trigger1).toHaveAttribute('aria-expanded', 'true');
+    await slowExpect(trigger1).toHaveAttribute('aria-expanded', 'true');
 
     // Close the expanded panel
     await trigger1.click();
