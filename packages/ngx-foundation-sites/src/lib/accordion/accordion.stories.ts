@@ -945,14 +945,14 @@ export const EagerVsLazyContent: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // Get triggers
-    const trigger1 = canvas.getByRole('button', {
+    // Get triggers (wait for Storybook + runtime theming loader)
+    const trigger1 = await canvas.findByRole('button', {
       name: /Eager Content Example/i,
     });
-    const trigger2 = canvas.getByRole('button', {
+    const trigger2 = await canvas.findByRole('button', {
       name: /Lazy Content Example/i,
     });
-    const trigger3 = canvas.getByRole('button', {
+    const trigger3 = await canvas.findByRole('button', {
       name: /Mixed Content Example/i,
     });
 
