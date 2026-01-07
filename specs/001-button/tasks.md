@@ -93,7 +93,7 @@ Each user story phase includes:
 - [x] T008 [P] Validate Storybook stories file exists at packages/ngx-foundation-sites/src/lib/button/button.stories.ts
 - [x] T009 [P] Verify Storybook is runnable with `npm run storybook` and button stories are visible
 - [x] T010 Run Storybook interaction tests for button with `nx test-storybook ngx-foundation-sites` to establish baseline
-- [x] T011 Document baseline test results in specs/feat/button/VALIDATION_RESULTS.md
+- [x] T011 Document baseline test results in specs/001-button/VALIDATION_RESULTS.md
 
 ---
 
@@ -117,7 +117,7 @@ Each user story phase includes:
 - [x] T014 [P] [US1] Add Storybook interaction test to ColorVariants story to verify each button has correct color class
 - [x] T015 [US1] Test click event handler fires correctly by adding test to Default story with userEvent.click
 - [x] T016 [US1] Verify ChangeDetectionStrategy.OnPush is set in button component metadata
-- [x] T017 [US1] Document User Story 1 test results in specs/feat/button/VALIDATION_RESULTS.md with screenshots
+- [x] T017 [US1] Document User Story 1 test results in specs/001-button/VALIDATION_RESULTS.md with screenshots
 
 ---
 
@@ -141,7 +141,7 @@ Each user story phase includes:
 - [x] T020 [P] [US2] Create AnchorWithoutHref story rendering `<a nfsButton>Button</a>` (no href)
 - [x] T021 [P] [US2] Add interaction test to AnchorWithoutHref story verifying `role="button"` and `tabindex="0"` are present
 - [x] T022 [US2] Add keyboard interaction test to AnchorWithoutHref story verifying Space key activates the anchor
-- [x] T023 [US2] Document User Story 2 test results in specs/feat/button/VALIDATION_RESULTS.md
+- [x] T023 [US2] Document User Story 2 test results in specs/001-button/VALIDATION_RESULTS.md
 
 ---
 
@@ -257,7 +257,7 @@ Each user story phase includes:
 
 - [x] T045 Run full Storybook interaction test suite with `nx test-storybook ngx-foundation-sites` and verify 100% pass rate
 - [x] T046 Validate all AXE accessibility checks pass in Storybook (check for violations in test output)
-- [x] T047 Update specs/feat/button/VALIDATION_RESULTS.md with final results, pass/fail status for all requirements, and any gaps identified
+- [x] T047 Update specs/001-button/VALIDATION_RESULTS.md with final results, pass/fail status for all requirements, and any gaps identified
 
 ---
 
@@ -419,7 +419,7 @@ npm run ci
 ### Test File Locations
 
 - **Primary**: `packages/ngx-foundation-sites/src/lib/button/button.stories.ts`
-- **Validation Results**: `specs/feat/button/VALIDATION_RESULTS.md` (to be created)
+- **Validation Results**: `specs/001-button/VALIDATION_RESULTS.md`
 - **E2E**: `packages/ngx-foundation-sites-e2e/src/button.spec.ts` (if exists)
 
 ### Storybook Interaction Test Pattern
@@ -456,7 +456,7 @@ nx test-storybook ngx-foundation-sites
 
 ### Documentation Templates
 
-Create `specs/feat/button/VALIDATION_RESULTS.md` with structure:
+Create `specs/001-button/VALIDATION_RESULTS.md` with structure:
 
 ```markdown
 # Button Component Validation Results

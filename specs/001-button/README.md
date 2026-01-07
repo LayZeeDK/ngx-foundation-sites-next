@@ -6,7 +6,7 @@ This directory contains the complete specification for the **Accessible Button C
 
 ### Documents
 
-> **About `specs\\button` vs `specs\\feat\\button`**: `specs\\button` is the canonical feature specification + API reference. Speckit-generated planning artifacts (plan/tasks/checklists) live under `specs\\feat\\button`. This split is intentional so the spec remains stable while plans/tasks can be regenerated.
+> **Canonical location**: All Button spec/plan/tasks artifacts live in `specs\\001-button\\` (Spec Kit `###-feature-slug` convention).
 
 1. **[spec.md](./spec.md)** - Feature Specification
    - 6 prioritized user stories (P1-P3)
@@ -120,9 +120,9 @@ This specification follows the **Speckit workflow**:
 
 1. ✅ **Specify** (`/speckit.specify`) - Define WHAT users need (this document)
 2. ✅ **Clarify** (`/speckit.clarify`) - Captured edge-cases and scope boundaries
-3. ✅ **Plan** (`/speckit.plan`) - Plan artifacts in `specs/feat/button/`
-4. ✅ **Tasks** (`/speckit.tasks`) - Task breakdown in `specs/feat/button/tasks.md`
-5. ✅ **Checklist** (`/speckit.checklist`) - Requirements checklist in `specs/feat/button/checklists/requirements-quality.md`
+3. ✅ **Plan** (`/speckit.plan`) - Plan artifact: [plan.md](./plan.md)
+4. ✅ **Tasks** (`/speckit.tasks`) - Task breakdown: [tasks.md](./tasks.md)
+5. ✅ **Checklist** (`/speckit.checklist`) - Requirements checklist: [checklists/requirements-quality.md](./checklists/requirements-quality.md)
 6. ✅ **Analyze** (`/speckit.analyze`) - Cross-artifact consistency review (optional, non-destructive)
 7. ⏭️ **Implement** (`/speckit.implement`) - Optional (implementation already complete; use for future changes)
 
