@@ -16,7 +16,7 @@ These are dropdown-specific patterns and will be covered by a dedicated dropdown
 ## Component Selector
 
 ```typescript
-selector: 'button[nfsButton], a[nfsButton]'
+selector: 'button[nfsButton], a[nfsButton]';
 ```
 
 Use the `nfsButton` attribute on native `<button>` or `<a>` elements.
@@ -30,17 +30,17 @@ Use the `nfsButton` attribute on native `<button>` or `<a>` elements.
 
 Controls button size via Foundation CSS classes.
 
-| Value     | Foundation Class | Description          |
-| --------- | ---------------- | -------------------- |
-| `'tiny'`  | `.tiny`          | Extra small button   |
-| `'small'` | `.small`         | Small button         |
-| `'default'` | _(none)_       | Default button size  |
-| `'large'` | `.large`         | Large button         |
+| Value       | Foundation Class | Description         |
+| ----------- | ---------------- | ------------------- |
+| `'tiny'`    | `.tiny`          | Extra small button  |
+| `'small'`   | `.small`         | Small button        |
+| `'default'` | _(none)_         | Default button size |
+| `'large'`   | `.large`         | Large button        |
 
 **Examples**:
+
 ```html
-<button nfsButton size="tiny">Tiny Button</button>
-<button nfsButton size="large">Large Button</button>
+<button nfsButton size="tiny">Tiny Button</button> <button nfsButton size="large">Large Button</button>
 ```
 
 ---
@@ -61,9 +61,9 @@ Controls button color via Foundation palette classes.
 | `'warning'`   | `.warning`       | Warning/caution action  |
 
 **Examples**:
+
 ```html
-<button nfsButton color="success">Save</button>
-<button nfsButton color="alert">Delete</button>
+<button nfsButton color="success">Save</button> <button nfsButton color="alert">Delete</button>
 ```
 
 ---
@@ -75,16 +75,16 @@ Controls button color via Foundation palette classes.
 
 Controls button fill style via Foundation classes.
 
-| Value      | Foundation Class | Description                      |
-| ---------- | ---------------- | -------------------------------- |
-| `'solid'`  | _(none)_         | Filled background (default)      |
-| `'hollow'` | `.hollow`        | Outline/border only              |
-| `'clear'`  | `.clear`         | Text only, no background/border  |
+| Value      | Foundation Class | Description                     |
+| ---------- | ---------------- | ------------------------------- |
+| `'solid'`  | _(none)_         | Filled background (default)     |
+| `'hollow'` | `.hollow`        | Outline/border only             |
+| `'clear'`  | `.clear`         | Text only, no background/border |
 
 **Examples**:
+
 ```html
-<button nfsButton fill="hollow">Hollow Button</button>
-<button nfsButton fill="clear">Clear Button</button>
+<button nfsButton fill="hollow">Hollow Button</button> <button nfsButton fill="clear">Clear Button</button>
 ```
 
 ---
@@ -98,29 +98,31 @@ Controls full-width (expanded) behavior, optionally at specific breakpoints.
 
 #### Boolean Values
 
-| Value   | Foundation Class | Description            |
-| ------- | ---------------- | ---------------------- |
-| `false` | _(none)_         | Default width (auto)   |
-| `true`  | `.expanded`      | Always full-width      |
+| Value   | Foundation Class | Description          |
+| ------- | ---------------- | -------------------- |
+| `false` | _(none)_         | Default width (auto) |
+| `true`  | `.expanded`      | Always full-width    |
 
 #### Responsive Breakpoint Values
 
-| Value           | Foundation Class           | Behavior                                 |
-| --------------- | -------------------------- | ---------------------------------------- |
-| `'small-only'`  | `.small-only-expanded`     | Full-width only on small screens         |
-| `'medium-only'` | `.medium-only-expanded`    | Full-width only on medium screens        |
-| `'large-only'`  | `.large-only-expanded`     | Full-width only on large screens         |
-| `'medium'`      | `.medium-expanded`         | Full-width on medium and larger          |
-| `'large'`       | `.large-expanded`          | Full-width on large and larger           |
-| `'medium-down'` | `.medium-down-expanded`    | Full-width on medium and smaller         |
-| `'large-down'`  | `.large-down-expanded`     | Full-width on large and smaller          |
+| Value           | Foundation Class        | Behavior                          |
+| --------------- | ----------------------- | --------------------------------- |
+| `'small-only'`  | `.small-only-expanded`  | Full-width only on small screens  |
+| `'medium-only'` | `.medium-only-expanded` | Full-width only on medium screens |
+| `'large-only'`  | `.large-only-expanded`  | Full-width only on large screens  |
+| `'medium'`      | `.medium-expanded`      | Full-width on medium and larger   |
+| `'large'`       | `.large-expanded`       | Full-width on large and larger    |
+| `'medium-down'` | `.medium-down-expanded` | Full-width on medium and smaller  |
+| `'large-down'`  | `.large-down-expanded`  | Full-width on large and smaller   |
 
 **Foundation Breakpoints (default)**:
+
 - Small: 0px+ (mobile first)
 - Medium: 640px+
 - Large: 1024px+
 
 **Examples**:
+
 ```html
 <!-- Always expanded -->
 <button nfsButton [expanded]="true">Full Width Button</button>
@@ -143,6 +145,7 @@ Controls full-width (expanded) behavior, optionally at specific breakpoints.
 Controls soft-disabled state where button appears disabled but remains focusable.
 
 **Behavior**:
+
 - Applies Foundation `.disabled` class for visual styling
 - Adds `aria-disabled="true"` attribute
 - For `<a>` elements: sets `tabindex="-1"` to prevent keyboard focus
@@ -151,24 +154,23 @@ Controls soft-disabled state where button appears disabled but remains focusable
 
 **Comparison with Native `disabled`**:
 
-| Feature                  | Native `disabled`  | `softDisabled`     |
-| ------------------------ | ------------------ | ------------------ |
-| Visual styling           | ✅ Yes             | ✅ Yes             |
-| Focusable                | ❌ No              | ✅ Yes (buttons)   |
-| Click prevention         | ✅ Yes             | ✅ Yes             |
-| Screen reader accessible | ⚠️ Skipped        | ✅ Announced       |
-| Tooltip-friendly         | ❌ No              | ✅ Yes             |
-| Use case                 | Hard disable       | Tooltips on disabled |
+| Feature                  | Native `disabled` | `softDisabled`       |
+| ------------------------ | ----------------- | -------------------- |
+| Visual styling           | ✅ Yes            | ✅ Yes               |
+| Focusable                | ❌ No             | ✅ Yes (buttons)     |
+| Click prevention         | ✅ Yes            | ✅ Yes               |
+| Screen reader accessible | ⚠️ Skipped        | ✅ Announced         |
+| Tooltip-friendly         | ❌ No             | ✅ Yes               |
+| Use case                 | Hard disable      | Tooltips on disabled |
 
 **Examples**:
+
 ```html
 <!-- Hard disabled (not focusable) -->
 <button nfsButton disabled>Cannot Focus</button>
 
 <!-- Soft disabled (focusable, good for tooltips) -->
-<button nfsButton [softDisabled]="true">
-  Can Focus for Tooltip
-</button>
+<button nfsButton [softDisabled]="true">Can Focus for Tooltip</button>
 
 <!-- Attribute syntax -->
 <button nfsButton softDisabled>Soft Disabled</button>
@@ -181,8 +183,7 @@ Controls soft-disabled state where button appears disabled but remains focusable
 The component has **no custom outputs**. Use native DOM events:
 
 ```html
-<button nfsButton (click)="handleClick()">Click Me</button>
-<a nfsButton href="/page" (click)="handleNavigation($event)">Navigate</a>
+<button nfsButton (click)="handleClick()">Click Me</button> <a nfsButton href="/page" (click)="handleNavigation($event)">Navigate</a>
 ```
 
 ---
@@ -220,12 +221,7 @@ The component applies Foundation CSS classes based on input values:
 
 ```html
 <!-- Example with multiple inputs -->
-<button nfsButton 
-  size="large" 
-  color="success" 
-  fill="hollow" 
-  expanded>
-  
+<button nfsButton size="large" color="success" fill="hollow" expanded>
   <!-- Resulting classes: -->
   <!-- .button .large .success .hollow .expanded -->
 </button>
@@ -246,21 +242,21 @@ The component applies Foundation CSS classes based on input values:
 
 ### ARIA Attributes
 
-| Element Type | Attribute         | Applied When           | Purpose                      |
-| ------------ | ----------------- | ---------------------- | ---------------------------- |
-| `<a>` (no `href`) | `role="button"`    | When no `href`            | Button semantics for AT         |
-| `<a>` (no `href`) | `tabindex="0"`     | When no `href` (enabled)  | Make anchor keyboard focusable  |
-| Any               | `aria-disabled`     | `softDisabled="true"`    | Announce disabled state         |
-| `<a>`             | `tabindex="-1"`    | `softDisabled="true"`    | Prevent keyboard focus          |
+| Element Type      | Attribute       | Applied When             | Purpose                        |
+| ----------------- | --------------- | ------------------------ | ------------------------------ |
+| `<a>` (no `href`) | `role="button"` | When no `href`           | Button semantics for AT        |
+| `<a>` (no `href`) | `tabindex="0"`  | When no `href` (enabled) | Make anchor keyboard focusable |
+| Any               | `aria-disabled` | `softDisabled="true"`    | Announce disabled state        |
+| `<a>`             | `tabindex="-1"` | `softDisabled="true"`    | Prevent keyboard focus         |
 
 ### Keyboard Navigation
 
-| Key             | Element          | Behavior                           |
-| --------------- | ---------------- | ---------------------------------- |
-| Tab             | Both             | Move focus to/from button          |
-| Enter           | Both             | Activate button/link               |
-| Space           | `<button>`       | Activate button (native)           |
-| Space           | `<a>` (no `href`) | Activate (custom handling)          |
+| Key   | Element           | Behavior                   |
+| ----- | ----------------- | -------------------------- |
+| Tab   | Both              | Move focus to/from button  |
+| Enter | Both              | Activate button/link       |
+| Space | `<button>`        | Activate button (native)   |
+| Space | `<a>` (no `href`) | Activate (custom handling) |
 
 ### Focus Management
 
@@ -275,6 +271,7 @@ The component applies Foundation CSS classes based on input values:
 - Icon-only buttons: Developer MUST provide `aria-label`
 
 **Example**:
+
 ```html
 <button nfsButton aria-label="Close dialog">
   <span aria-hidden="true">&times;</span>
@@ -296,15 +293,13 @@ The component applies Foundation CSS classes based on input values:
 ### Links Styled as Buttons
 
 ```html
-<a nfsButton href="/dashboard">Go to Dashboard</a>
-<a nfsButton href="/settings" color="secondary">Settings</a>
+<a nfsButton href="/dashboard">Go to Dashboard</a> <a nfsButton href="/settings" color="secondary">Settings</a>
 ```
 
 ### Hollow and Clear Styles
 
 ```html
-<button nfsButton fill="hollow">Hollow Button</button>
-<button nfsButton fill="clear" color="warning">Clear Warning</button>
+<button nfsButton fill="hollow">Hollow Button</button> <button nfsButton fill="clear" color="warning">Clear Warning</button>
 ```
 
 ### Expanded (Full-Width) Buttons
@@ -325,9 +320,7 @@ The component applies Foundation CSS classes based on input values:
 <button nfsButton disabled>Cannot Focus</button>
 
 <!-- Soft disabled (focusable) -->
-<button nfsButton [softDisabled]="true" title="Action unavailable">
-  Soft Disabled with Tooltip
-</button>
+<button nfsButton [softDisabled]="true" title="Action unavailable">Soft Disabled with Tooltip</button>
 ```
 
 ### Form Integration
@@ -343,13 +336,7 @@ The component applies Foundation CSS classes based on input values:
 ### Combined Options
 
 ```html
-<button nfsButton 
-  size="large" 
-  color="warning" 
-  fill="hollow" 
-  [expanded]="true">
-  Large Hollow Warning Expanded
-</button>
+<button nfsButton size="large" color="warning" fill="hollow" [expanded]="true">Large Hollow Warning Expanded</button>
 ```
 
 ---
@@ -359,6 +346,7 @@ The component applies Foundation CSS classes based on input values:
 The component does NOT define custom CSS properties. All styling is provided by Foundation for Sites Sass variables configured in the consumer's `_nfs-settings.scss`:
 
 **Example Foundation Variables**:
+
 ```scss
 // In consumer's _nfs-settings.scss
 $button-background: $primary-color;
@@ -379,6 +367,7 @@ $button-palette: $foundation-palette;
 ## Foundation for Sites Reference
 
 This component implements Foundation for Sites Button:
+
 - **Documentation**: https://get.foundation/sites/docs/button.html
 - **CSS Classes**: `.button`, `.tiny`, `.small`, `.large`, `.expanded`, `.primary`, `.secondary`, `.success`, `.alert`, `.warning`, `.hollow`, `.clear`, `.disabled`
 - **Responsive Expanded**: `.small-only-expanded`, `.medium-only-expanded`, `.large-only-expanded`, `.medium-expanded`, `.large-expanded`, `.medium-down-expanded`, `.large-down-expanded`
@@ -408,14 +397,7 @@ type NfsButtonColor = 'primary' | 'secondary' | 'success' | 'alert' | 'warning';
 type NfsButtonFill = 'solid' | 'hollow' | 'clear';
 
 // Expanded breakpoints
-type NfsButtonExpandedBreakpoint = 
-  | 'small-only'
-  | 'medium-only'
-  | 'large-only'
-  | 'medium'
-  | 'large'
-  | 'medium-down'
-  | 'large-down';
+type NfsButtonExpandedBreakpoint = 'small-only' | 'medium-only' | 'large-only' | 'medium' | 'large' | 'medium-down' | 'large-down';
 
 // Expanded type (boolean or breakpoint)
 type NfsButtonExpanded = boolean | NfsButtonExpandedBreakpoint;
@@ -426,10 +408,12 @@ type NfsButtonExpanded = boolean | NfsButtonExpandedBreakpoint;
 ## Browser Support
 
 Supports all browsers supported by:
+
 - Angular 19+
 - Foundation for Sites 6.9+
 
 **Minimum versions**:
+
 - Chrome/Edge: Last 2 versions
 - Firefox: Last 2 versions
 - Safari: Last 2 versions

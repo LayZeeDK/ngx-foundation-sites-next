@@ -43,79 +43,84 @@ $button-palette: $foundation-palette;
 $button-opacity-disabled: 0.25;
 $button-background-hover-lightness: -20%;
 $button-hollow-hover-lightness: -50%;
-$button-transition: background-color 0.25s ease-out, color 0.25s ease-out;
+$button-transition:
+  background-color 0.25s ease-out,
+  color 0.25s ease-out;
 ```
 
 ## CSS Classes Contract
 
 ### Base Class (Required)
 
-| Class | Selector | Purpose | Styles Applied |
-|-------|----------|---------|----------------|
-| `.button` | Always | Foundation button base | Padding, font, transitions, cursor |
+| Class     | Selector | Purpose                | Styles Applied                     |
+| --------- | -------- | ---------------------- | ---------------------------------- |
+| `.button` | Always   | Foundation button base | Padding, font, transitions, cursor |
 
 **Contract**: Component MUST apply `.button` to all instances.
 
 ### Size Classes
 
-| Class | Selector | Foundation Variable | Purpose |
-|-------|----------|---------------------|---------|
-| `.tiny` | `size() === 'tiny'` | `$button-sizes.tiny` | Extra small button (0.6rem font) |
-| `.small` | `size() === 'small'` | `$button-sizes.small` | Small button (0.75rem font) |
-| (none) | `size() === 'default'` | `$button-sizes.default` | Default button (0.9rem font) |
-| `.large` | `size() === 'large'` | `$button-sizes.large` | Large button (1.25rem font) |
+| Class    | Selector               | Foundation Variable     | Purpose                          |
+| -------- | ---------------------- | ----------------------- | -------------------------------- |
+| `.tiny`  | `size() === 'tiny'`    | `$button-sizes.tiny`    | Extra small button (0.6rem font) |
+| `.small` | `size() === 'small'`   | `$button-sizes.small`   | Small button (0.75rem font)      |
+| (none)   | `size() === 'default'` | `$button-sizes.default` | Default button (0.9rem font)     |
+| `.large` | `size() === 'large'`   | `$button-sizes.large`   | Large button (1.25rem font)      |
 
 **Contract**: Component MUST apply size class when `size !== 'default'`.
 
 ### Color Classes (Palette)
 
-| Class | Selector | Foundation Variable | Purpose |
-|-------|----------|---------------------|---------|
-| `.primary` | `color() === 'primary'` | `$primary-color` | Primary brand color |
-| `.secondary` | `color() === 'secondary'` | `$secondary-color` | Secondary/neutral color |
-| `.success` | `color() === 'success'` | `$success-color` | Success/positive action |
-| `.alert` | `color() === 'alert'` | `$alert-color` | Destructive/error action |
-| `.warning` | `color() === 'warning'` | `$warning-color` | Warning/caution action |
+| Class        | Selector                  | Foundation Variable | Purpose                  |
+| ------------ | ------------------------- | ------------------- | ------------------------ |
+| `.primary`   | `color() === 'primary'`   | `$primary-color`    | Primary brand color      |
+| `.secondary` | `color() === 'secondary'` | `$secondary-color`  | Secondary/neutral color  |
+| `.success`   | `color() === 'success'`   | `$success-color`    | Success/positive action  |
+| `.alert`     | `color() === 'alert'`     | `$alert-color`      | Destructive/error action |
+| `.warning`   | `color() === 'warning'`   | `$warning-color`    | Warning/caution action   |
 
 **Contract**: Component MUST apply one color class (defaults to `.primary`).
 
 **Foundation Contract**: Each color class applies:
+
 - `background-color` from palette
 - `color` from `$button-color` or `$button-color-alt`
 - Hover state via `$button-background-hover-lightness`
 
 ### Fill Style Classes
 
-| Class | Selector | Foundation Variable | Purpose |
-|-------|----------|---------------------|---------|
-| (none) | `fill() === 'solid'` | N/A (default) | Filled background |
+| Class     | Selector              | Foundation Variable              | Purpose                             |
+| --------- | --------------------- | -------------------------------- | ----------------------------------- |
+| (none)    | `fill() === 'solid'`  | N/A (default)                    | Filled background                   |
 | `.hollow` | `fill() === 'hollow'` | `$button-hollow-hover-lightness` | Border only, transparent background |
-| `.clear` | `fill() === 'clear'` | N/A | Text only, no border |
+| `.clear`  | `fill() === 'clear'`  | N/A                              | Text only, no border                |
 
 **Contract**: Component MUST apply fill class when `fill !== 'solid'`.
 
-**Foundation Contract**: 
+**Foundation Contract**:
+
 - `.hollow` applies `border: 1px solid`, `background: transparent`
 - `.clear` applies `border: 0`, `background: transparent`
 
 ### Expanded Classes (Full-Width)
 
-| Class | Selector | Media Query | Purpose |
-|-------|----------|-------------|---------|
-| `.expanded` | `expanded() === true` | None (always) | Full width (100%) |
-| `.small-only-expanded` | `expanded() === 'small-only'` | `@media screen and (max-width: 39.9375em)` | Full width on small only |
-| `.medium-only-expanded` | `expanded() === 'medium-only'` | `@media screen and (min-width: 40em) and (max-width: 63.9375em)` | Full width on medium only |
-| `.large-only-expanded` | `expanded() === 'large-only'` | `@media screen and (min-width: 64em) and (max-width: 74.9375em)` | Full width on large only |
-| `.medium-expanded` | `expanded() === 'medium'` | `@media screen and (min-width: 40em)` | Full width on medium+ |
-| `.large-expanded` | `expanded() === 'large'` | `@media screen and (min-width: 64em)` | Full width on large+ |
-| `.medium-down-expanded` | `expanded() === 'medium-down'` | `@media screen and (max-width: 63.9375em)` | Full width on medium and smaller |
-| `.large-down-expanded` | `expanded() === 'large-down'` | `@media screen and (max-width: 74.9375em)` | Full width on large and smaller |
+| Class                   | Selector                       | Media Query                                                      | Purpose                          |
+| ----------------------- | ------------------------------ | ---------------------------------------------------------------- | -------------------------------- |
+| `.expanded`             | `expanded() === true`          | None (always)                                                    | Full width (100%)                |
+| `.small-only-expanded`  | `expanded() === 'small-only'`  | `@media screen and (max-width: 39.9375em)`                       | Full width on small only         |
+| `.medium-only-expanded` | `expanded() === 'medium-only'` | `@media screen and (min-width: 40em) and (max-width: 63.9375em)` | Full width on medium only        |
+| `.large-only-expanded`  | `expanded() === 'large-only'`  | `@media screen and (min-width: 64em) and (max-width: 74.9375em)` | Full width on large only         |
+| `.medium-expanded`      | `expanded() === 'medium'`      | `@media screen and (min-width: 40em)`                            | Full width on medium+            |
+| `.large-expanded`       | `expanded() === 'large'`       | `@media screen and (min-width: 64em)`                            | Full width on large+             |
+| `.medium-down-expanded` | `expanded() === 'medium-down'` | `@media screen and (max-width: 63.9375em)`                       | Full width on medium and smaller |
+| `.large-down-expanded`  | `expanded() === 'large-down'`  | `@media screen and (max-width: 74.9375em)`                       | Full width on large and smaller  |
 
 **Contract**: Component MUST apply expanded class when `expanded !== false`.
 
 **Foundation Contract**: Responsive expanded classes are ONLY generated when `$button-responsive-expanded: true`.
 
 **Breakpoint Contract** (Foundation defaults):
+
 ```scss
 $breakpoints: (
   small: 0,
@@ -130,8 +135,8 @@ $breakpoints: (
 
 ### State Classes
 
-| Class | Selector | Foundation Variable | Purpose |
-|-------|----------|---------------------|---------|
+| Class       | Selector         | Foundation Variable        | Purpose                       |
+| ----------- | ---------------- | -------------------------- | ----------------------------- |
 | `.disabled` | `softDisabled()` | `$button-opacity-disabled` | Disabled appearance (opacity) |
 
 **Contract**: Component MUST apply `.disabled` when `softDisabled === true`.
@@ -148,6 +153,7 @@ Foundation button styles have these specificity levels:
 4. **Combinations**: `.button.hollow.primary:hover` - Complex combinations
 
 **Contract**: Component does NOT add custom styles that override Foundation. Consumers may override via:
+
 - Higher specificity selectors
 - CSS custom properties (if Foundation supports them)
 - Sass variable overrides (compile-time)
@@ -166,7 +172,8 @@ afterNextRender(() => {
 });
 ```
 
-**Contract**: 
+**Contract**:
+
 - CSS file MUST be available at `/nfs-button.css` relative to app base URL
 - CSS MUST be pre-compiled from Foundation Sass with required configuration
 - Multiple button instances share one `<link>` tag (reference-counted)
@@ -194,6 +201,7 @@ The component expects styles generated by Foundation's button mixin:
 ```
 
 This mixin generates:
+
 - `.button` base styles
 - Size modifiers (`.tiny`, `.small`, `.large`)
 - Color modifiers from `$button-palette`
@@ -206,6 +214,7 @@ This mixin generates:
 ## Browser Compatibility
 
 Foundation button CSS targets:
+
 - Chrome/Edge: Last 2 versions
 - Firefox: Last 2 versions
 - Safari: Last 2 versions
@@ -216,6 +225,7 @@ Foundation button CSS targets:
 ## CSS Loading Performance
 
 **Contract**:
+
 - First button instance triggers CSS load (asynchronous)
 - Subsequent instances reuse loaded CSS (zero overhead)
 - CSS unloaded when last button instance destroyed
@@ -226,6 +236,7 @@ Foundation button CSS targets:
 ## CSS File Size
 
 Expected size for Foundation button CSS (gzipped):
+
 - **Minimal** (base only): ~2KB
 - **Full** (all colors, sizes, responsive): ~4-6KB
 
@@ -234,6 +245,7 @@ Expected size for Foundation button CSS (gzipped):
 ## Foundation CSS Updates
 
 **Breaking Change Policy**:
+
 - Component follows Foundation's CSS API (semver)
 - Foundation minor/patch updates: No component changes needed
 - Foundation major updates: May require component update if CSS API changes
@@ -244,6 +256,7 @@ Expected size for Foundation button CSS (gzipped):
 ## CSS Validation
 
 This contract is validated by:
+
 - E2E tests in consumer app verifying class application
 - Visual regression tests comparing to Foundation docs
 - AXE tests verifying Foundation's color contrast ratios

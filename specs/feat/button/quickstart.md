@@ -24,9 +24,7 @@ import { NfsButton } from 'ngx-foundation-sites/button';
   selector: 'app-root',
   standalone: true,
   imports: [NfsButton],
-  template: `
-    <button nfsButton>Click Me</button>
-  `
+  template: ` <button nfsButton>Click Me</button> `,
 })
 export class AppComponent {}
 ```
@@ -89,20 +87,14 @@ export class AppComponent {}
 <button nfsButton disabled>Cannot Submit</button>
 
 <!-- Soft disabled (focusable, supports tooltips) -->
-<button nfsButton [softDisabled]="!isFormValid" title="Complete form to enable">
-  Submit
-</button>
+<button nfsButton [softDisabled]="!isFormValid" title="Complete form to enable">Submit</button>
 ```
 
 ### 5. Event Handling
 
 ```typescript
 @Component({
-  template: `
-    <button nfsButton (click)="handleClick()">
-      Click Me
-    </button>
-  `
+  template: ` <button nfsButton (click)="handleClick()">Click Me</button> `,
 })
 export class MyComponent {
   handleClick() {
@@ -131,12 +123,7 @@ export class MyComponent {
 </button>
 
 <!-- Button with tooltip on disabled state -->
-<button 
-  nfsButton 
-  [softDisabled]="true" 
-  title="Action unavailable until form is complete">
-  Submit
-</button>
+<button nfsButton [softDisabled]="true" title="Action unavailable until form is complete">Submit</button>
 
 <!-- Link styled as button (correct semantics) -->
 <a nfsButton href="/settings" aria-label="Open settings page">
@@ -153,19 +140,13 @@ export class MyComponent {
 ```html
 <form (submit)="handleSubmit($event)">
   <!-- Primary submit button -->
-  <button nfsButton type="submit" color="success">
-    Save Changes
-  </button>
-  
+  <button nfsButton type="submit" color="success">Save Changes</button>
+
   <!-- Secondary cancel button -->
-  <button nfsButton type="button" color="secondary" fill="hollow" (click)="cancel()">
-    Cancel
-  </button>
-  
+  <button nfsButton type="button" color="secondary" fill="hollow" (click)="cancel()">Cancel</button>
+
   <!-- Destructive action -->
-  <button nfsButton type="button" color="alert" fill="clear" (click)="confirmDelete()">
-    Delete
-  </button>
+  <button nfsButton type="button" color="alert" fill="clear" (click)="confirmDelete()">Delete</button>
 </form>
 ```
 
@@ -174,13 +155,9 @@ export class MyComponent {
 ```html
 <div class="action-bar">
   <!-- Full-width on mobile, auto on larger screens -->
-  <button nfsButton expanded="small-only" color="primary">
-    Add to Cart
-  </button>
-  
-  <button nfsButton expanded="small-only" fill="hollow">
-    Save for Later
-  </button>
+  <button nfsButton expanded="small-only" color="primary">Add to Cart</button>
+
+  <button nfsButton expanded="small-only" fill="hollow">Save for Later</button>
 </div>
 ```
 
@@ -188,14 +165,10 @@ export class MyComponent {
 
 ```html
 <!-- Large primary CTA -->
-<a nfsButton href="/signup" size="large" color="success" expanded>
-  Get Started Free
-</a>
+<a nfsButton href="/signup" size="large" color="success" expanded> Get Started Free </a>
 
 <!-- Secondary CTA -->
-<a nfsButton href="/learn-more" size="large" fill="hollow" expanded>
-  Learn More
-</a>
+<a nfsButton href="/learn-more" size="large" fill="hollow" expanded> Learn More </a>
 ```
 
 ### Loading State
@@ -203,17 +176,14 @@ export class MyComponent {
 ```typescript
 @Component({
   template: `
-    <button 
-      nfsButton 
-      [softDisabled]="isLoading"
-      (click)="submitForm()">
+    <button nfsButton [softDisabled]="isLoading" (click)="submitForm()">
       {{ isLoading ? 'Saving...' : 'Save' }}
     </button>
-  `
+  `,
 })
 export class FormComponent {
   isLoading = false;
-  
+
   async submitForm() {
     this.isLoading = true;
     await this.api.save();
@@ -264,8 +234,7 @@ $button-palette: map-merge($foundation-palette, $custom-palette);
 Then use in templates:
 
 ```html
-<button nfsButton color="brand">Brand Color</button>
-<button nfsButton color="dark">Dark Color</button>
+<button nfsButton color="brand">Brand Color</button> <button nfsButton color="dark">Dark Color</button>
 ```
 
 ---
@@ -300,14 +269,10 @@ Then use in templates:
 
 ```html
 <!-- Wrong: will never fire -->
-<button nfsButton [softDisabled]="true" (click)="onClick()">
-  Click Me
-</button>
+<button nfsButton [softDisabled]="true" (click)="onClick()">Click Me</button>
 
 <!-- Right: conditionally disable -->
-<button nfsButton [softDisabled]="!isValid" (click)="onClick()">
-  Submit
-</button>
+<button nfsButton [softDisabled]="!isValid" (click)="onClick()">Submit</button>
 ```
 
 ---

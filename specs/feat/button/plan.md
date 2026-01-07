@@ -10,6 +10,7 @@
 Create a self-contained, accessible Button component that applies Foundation for Sites CSS classes to native `<button>` and `<a>` elements without Foundation JavaScript dependencies. The component uses modern Angular patterns (standalone, OnPush, signals) and follows the WAI-ARIA button pattern for accessibility. Supports Foundation's full button API including size variants, color palette, fill styles, responsive expanded breakpoints, and soft-disabled state with tooltip support.
 
 **Key Technical Decisions**:
+
 - Component with attribute selector (not directive) for style loading via component metadata
 - Conditional button pattern for anchors based on `href` presence (WAI-ARIA compliance)
 - Reactive click listener attachment for soft-disabled state (zero overhead for non-disabled buttons)
@@ -19,34 +20,39 @@ Create a self-contained, accessible Button component that applies Foundation for
 ## Technical Context
 
 **Language/Version**: Angular 21.0.6, TypeScript 5.9.2  
-**Primary Dependencies**: 
+**Primary Dependencies**:
+
 - `@angular/core` ~21.0.6 (signals, standalone, OnPush, modern APIs)
 - `foundation-sites` ~6.9.0 (CSS only, no JS)
 - `@angular/aria` ~21.0.5 (available, not needed for button)
 - `@angular/cdk` ~21.0.5 (available, not needed for button)
 
 **Storage**: N/A (no persistent state)  
-**Testing**: 
+**Testing**:
+
 - Vitest 4.0.9 (unit tests - minimal/none needed)
 - Storybook 10.1.10 (primary testing via interaction tests)
 - Playwright 1.36.0 (e2e for CSS validation in consumer app)
 
 **Target Platform**: Web browsers (Chrome, Firefox, Safari, Edge - last 2 versions)  
 **Project Type**: Nx monorepo library (`packages/ngx-foundation-sites`)  
-**Performance Goals**: 
+**Performance Goals**:
+
 - Component bundle size <2KB gzipped
 - Zero click listener overhead for non-soft-disabled buttons
 - OnPush change detection for minimal renders
 - Reference-counted style loading (load once, unload when last instance destroyed)
 
 **Constraints**:
+
 - NO Foundation JavaScript dependencies (CSS-only integration)
 - OUT OF SCOPE: `.dropdown` and `.arrow-only` button variants (dropdown-specific)
 - MUST ship library CSS with `$button-responsive-expanded: true` (responsive classes enabled)
 - MUST NOT apply `role="button"` to `<a href>` links (WAI-ARIA compliance)
 - MUST use Storybook interaction tests over unit tests (constitution mandate)
 
-**Scale/Scope**: 
+**Scale/Scope**:
+
 - Foundation-level primitive used across entire application
 - Single component file (~350 LOC based on existing implementation)
 - Multiple type exports (size, color, fill, expanded breakpoint)
@@ -60,7 +66,7 @@ _GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 - [x] Component implementation uses Angular APIs only (no Foundation JS)
 - [x] Component names align with Foundation for Sites conventions (`NfsButton` → `.button` CSS class)
-- [x] Input properties use camelCase equivalents of Foundation `data-*` attributes (N/A for button - no data-* attributes in Foundation button API)
+- [x] Input properties use camelCase equivalents of Foundation `data-*` attributes (N/A for button - no data-\* attributes in Foundation button API)
 - [x] Injection tokens follow `Token` suffix convention (N/A - button has no child components)
 - [x] API design doc created/updated using `foundation-api-design` skill (existing `BUTTON_API_DESIGN.md` in packages/ngx-foundation-sites)
 
@@ -145,7 +151,7 @@ apps/
 └── (N/A - no demo apps for button component)
 ```
 
-**Structure Decision**: 
+**Structure Decision**:
 
 The button component follows Nx monorepo conventions for a library component:
 
@@ -172,6 +178,7 @@ The button component follows Nx monorepo conventions for a library component:
    - Storybook provides interactive docs and testing
 
 **Key Files**:
+
 - Implementation: `packages/ngx-foundation-sites/src/lib/button/button.ts`
 - Tests: `packages/ngx-foundation-sites/src/lib/button/button.stories.ts`
 - Exports: `packages/ngx-foundation-sites/src/lib/button/index.ts`
@@ -226,7 +233,8 @@ All technical unknowns from Technical Context have been resolved:
 ## Phase 1: Design & Contracts (Complete)
 
 **Status**: ✅ Complete  
-**Artifacts**: 
+**Artifacts**:
+
 - [data-model.md](./data-model.md)
 - [contracts/component-api.md](./contracts/component-api.md)
 - [contracts/foundation-css.md](./contracts/foundation-css.md)
@@ -237,6 +245,7 @@ All technical unknowns from Technical Context have been resolved:
 **Type**: Presentational component (no persistent data model)
 
 **Component State** (ephemeral, signal-based):
+
 - `size`: Size variant (tiny, small, default, large)
 - `color`: Color palette (primary, secondary, success, alert, warning)
 - `fill`: Fill style (solid, hollow, clear)
@@ -244,6 +253,7 @@ All technical unknowns from Technical Context have been resolved:
 - `softDisabled`: Soft-disabled state (boolean)
 
 **Computed Properties**:
+
 - `isAnchor`: Whether host is `<a>` element
 - `hasHref`: Whether anchor has `href` attribute
 - `isButtonAnchor`: Whether anchor needs button pattern
@@ -254,12 +264,14 @@ See [data-model.md](./data-model.md) for complete state model, CSS class mapping
 ### API Contracts
 
 **Component API Contract** ([contracts/component-api.md](./contracts/component-api.md)):
+
 - 5 inputs (all signal-based)
 - 0 custom outputs (uses native events)
 - Host bindings for CSS classes and ARIA attributes
 - Semantic versioning guarantees
 
 **Foundation CSS Contract** ([contracts/foundation-css.md](./contracts/foundation-css.md)):
+
 - Foundation 6.9.0+ compatibility
 - Required Sass configuration (`$button-responsive-expanded: true`)
 - All Foundation button classes documented
@@ -270,6 +282,7 @@ See [data-model.md](./data-model.md) for complete state model, CSS class mapping
 **Artifact**: [quickstart.md](./quickstart.md)
 
 5-minute quick start with common patterns:
+
 - Basic usage
 - Size, color, and fill variants
 - Responsive expanded buttons
@@ -284,6 +297,7 @@ See [data-model.md](./data-model.md) for complete state model, CSS class mapping
 **Status**: ✅ Complete
 
 Agent context updated with:
+
 - Language: Angular 21.0.6, TypeScript 5.9.2
 - Framework: Foundation for Sites 6.9.0 (CSS only)
 - Database: N/A (no persistent state)
@@ -328,12 +342,12 @@ All success criteria from the feature specification:
 
 ## Risk Mitigation
 
-| Risk | Impact | Mitigation | Status |
-|------|--------|------------|--------|
-| Foundation CSS not loaded | Buttons render unstyled | `NfsStyleLoader` service with reference counting | ✅ Implemented |
-| Responsive expanded classes missing | Breakpoint-specific expanded doesn't work | Constitution requires `$button-responsive-expanded: true` | ✅ Configured |
-| Anchor button activation inconsistent | Space key doesn't work on anchors | Explicit Space key handler for anchors without href | ✅ Implemented |
-| Soft-disabled performance impact | Click listener overhead on every button | Reactive listener attachment (only when soft-disabled) | ✅ Optimized |
+| Risk                                  | Impact                                    | Mitigation                                                | Status         |
+| ------------------------------------- | ----------------------------------------- | --------------------------------------------------------- | -------------- |
+| Foundation CSS not loaded             | Buttons render unstyled                   | `NfsStyleLoader` service with reference counting          | ✅ Implemented |
+| Responsive expanded classes missing   | Breakpoint-specific expanded doesn't work | Constitution requires `$button-responsive-expanded: true` | ✅ Configured  |
+| Anchor button activation inconsistent | Space key doesn't work on anchors         | Explicit Space key handler for anchors without href       | ✅ Implemented |
+| Soft-disabled performance impact      | Click listener overhead on every button   | Reactive listener attachment (only when soft-disabled)    | ✅ Optimized   |
 
 ---
 

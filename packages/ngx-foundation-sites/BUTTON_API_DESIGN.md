@@ -51,13 +51,13 @@ Design an Angular directive API for Foundation Button that:
 
 ### WAI-ARIA Requirements
 
-| Element                | ARIA Attributes                         | Notes                                      |
-| ---------------------- | --------------------------------------- | ------------------------------------------ |
-| `<button>`                 | None required                             | Native button has implicit `role="button"` |
-| `<a nfsButton href>`       | None                                      | Keep native link semantics                  |
-| `<a nfsButton>` (no `href`)| `role="button"`, `tabindex="0"`         | Action anchors must follow button pattern   |
-| Soft-disabled `<a>`        | `aria-disabled="true"`, `tabindex="-1"` | Remove from tab order when soft-disabled    |
-| Icon-only button       | `aria-label`                            | Required for accessibility                 |
+| Element                     | ARIA Attributes                         | Notes                                      |
+| --------------------------- | --------------------------------------- | ------------------------------------------ |
+| `<button>`                  | None required                           | Native button has implicit `role="button"` |
+| `<a nfsButton href>`        | None                                    | Keep native link semantics                 |
+| `<a nfsButton>` (no `href`) | `role="button"`, `tabindex="0"`         | Action anchors must follow button pattern  |
+| Soft-disabled `<a>`         | `aria-disabled="true"`, `tabindex="-1"` | Remove from tab order when soft-disabled   |
+| Icon-only button            | `aria-label`                            | Required for accessibility                 |
 
 ### Angular Material Button Pattern
 
@@ -278,7 +278,7 @@ export class NfsButton {
 
 | Key         | Action                                                            |
 | ----------- | ----------------------------------------------------------------- |
-| `Enter`     | Activate (native for `<button>` and `<a>`)                         |
+| `Enter`     | Activate (native for `<button>` and `<a>`)                        |
 | `Space`     | Activate (native for `<button>`; handled for `<a role="button">`) |
 | `Tab`       | Move focus to next element                                        |
 | `Shift+Tab` | Move focus to previous element                                    |
@@ -348,7 +348,7 @@ packages/ngx-foundation-sites/src/lib/button/
 | Fill input             | `fill="solid\|hollow\|clear"`        | Maps to Foundation fill classes                                                         |
 | Expanded               | Boolean input                        | Maps to `.expanded` class                                                               |
 | Disabled               | Native + `softDisabled` input        | Native for hard disable, input for soft                                                 |
-| Link accessibility     | Role only for no-`href` anchors        | Keep `<a href>` as links; only no-`href` anchors get `role="button"`                   |
+| Link accessibility     | Role only for no-`href` anchors      | Keep `<a href>` as links; only no-`href` anchors get `role="button"`                    |
 | Toggle buttons         | Not included                         | Keep simple; separate component if needed                                               |
 | Config token           | Not included                         | Keep minimal for v1                                                                     |
 

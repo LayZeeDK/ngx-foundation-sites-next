@@ -33,6 +33,7 @@ Developers need to use native `<a>` elements styled as Foundation buttons.
 **Why this priority**: Styling links as buttons is common, but semantics must remain correct to avoid confusing screen reader users.
 
 **Independent Test**: Can be tested by rendering anchors both with and without `href`, verifying:
+
 - With `href`: role remains link, no `role="button"` is applied
 - Without `href`: `role="button"` + `tabindex="0"` are applied and Space activates
 

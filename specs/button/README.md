@@ -8,7 +8,6 @@ This directory contains the complete specification for the **Accessible Button C
 
 > **About `specs\\button` vs `specs\\feat\\button`**: `specs\\button` is the canonical feature specification + API reference. Speckit-generated planning artifacts (plan/tasks/checklists) live under `specs\\feat\\button`. This split is intentional so the spec remains stable while plans/tasks can be regenerated.
 
-
 1. **[spec.md](./spec.md)** - Feature Specification
    - 6 prioritized user stories (P1-P3)
    - 16 functional requirements
@@ -47,13 +46,13 @@ An Angular-native button component that applies Foundation for Sites CSS classes
 
 ### Supported Variants
 
-| Category | Options | Foundation Classes |
-| -------- | ------- | ------------------ |
-| **Size** | tiny, small, default, large | `.tiny`, `.small`, `.large` |
-| **Color** | primary, secondary, success, alert, warning | `.primary`, `.secondary`, `.success`, `.alert`, `.warning` |
-| **Fill** | solid, hollow, clear | _(none)_, `.hollow`, `.clear` |
-| **Expanded** | boolean or breakpoint strings | `.expanded`, `.medium-expanded`, etc. |
-| **State** | enabled, disabled, softDisabled | `.disabled` + `aria-disabled` |
+| Category     | Options                                     | Foundation Classes                                         |
+| ------------ | ------------------------------------------- | ---------------------------------------------------------- |
+| **Size**     | tiny, small, default, large                 | `.tiny`, `.small`, `.large`                                |
+| **Color**    | primary, secondary, success, alert, warning | `.primary`, `.secondary`, `.success`, `.alert`, `.warning` |
+| **Fill**     | solid, hollow, clear                        | _(none)_, `.hollow`, `.clear`                              |
+| **Expanded** | boolean or breakpoint strings               | `.expanded`, `.medium-expanded`, etc.                      |
+| **State**    | enabled, disabled, softDisabled             | `.disabled` + `aria-disabled`                              |
 
 ## 🏗️ Implementation Status
 
@@ -62,6 +61,7 @@ An Angular-native button component that applies Foundation for Sites CSS classes
 The component is **fully implemented** and available in `packages/ngx-foundation-sites/src/lib/button/button.ts`.
 
 **Evidence**:
+
 - Component code: [button.ts](../../packages/ngx-foundation-sites/src/lib/button/button.ts)
 - Storybook stories: [button.stories.ts](../../packages/ngx-foundation-sites/src/lib/button/button.stories.ts)
 - 15+ comprehensive Storybook stories with interaction tests
@@ -82,11 +82,13 @@ This specification was created **retrospectively** to document the existing impl
 ### For Consumers (Developers Using This Component)
 
 1. **Import the component**:
+
    ```typescript
    import { NfsButton } from '@ngx-foundation-sites/button';
    ```
 
 2. **Add to component imports**:
+
    ```typescript
    @Component({
      imports: [NfsButton],
@@ -95,9 +97,9 @@ This specification was created **retrospectively** to document the existing impl
    ```
 
 3. **Use in templates**:
+
    ```html
-   <button nfsButton>Click Me</button>
-   <a nfsButton href="/page">Navigate</a>
+   <button nfsButton>Click Me</button> <a nfsButton href="/page">Navigate</a>
    ```
 
 4. **Refer to**: [API_REFERENCE.md](./API_REFERENCE.md) for complete usage examples
@@ -107,6 +109,7 @@ This specification was created **retrospectively** to document the existing impl
 **The component is ready for production use.** No further implementation work is required.
 
 **Optional enhancements** could include:
+
 - Additional Storybook stories for niche scenarios
 - Performance benchmarks for large button lists
 - Additional responsive expanded breakpoint options (if Foundation adds more)

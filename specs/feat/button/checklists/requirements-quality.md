@@ -173,6 +173,7 @@
 
 **Total Items**: 117  
 **Category Breakdown**:
+
 - Requirement Completeness: 15 items
 - Requirement Clarity & Specificity: 11 items
 - Requirement Consistency: 9 items
@@ -189,6 +190,7 @@
 - Requirements Documentation Quality: 8 items
 
 **How to Use This Checklist**:
+
 1. Review each item against the source documents (spec.md, plan.md, contracts)
 2. Mark items as `[x]` when the requirement quality aspect is confirmed
 3. Note any gaps, ambiguities, or inconsistencies inline

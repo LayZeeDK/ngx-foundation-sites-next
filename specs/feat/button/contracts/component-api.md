@@ -18,7 +18,9 @@ This document defines the public API contract for the `NfsButton` component. Thi
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class NfsButton { /* ... */ }
+export class NfsButton {
+  /* ... */
+}
 ```
 
 ## Inputs
@@ -30,6 +32,7 @@ readonly size = input<'tiny' | 'small' | 'default' | 'large'>('default');
 ```
 
 **Contract**:
+
 - **Type**: `'tiny' | 'small' | 'default' | 'large'`
 - **Default**: `'default'`
 - **Mutability**: Can change at runtime
@@ -43,6 +46,7 @@ readonly color = input<'primary' | 'secondary' | 'success' | 'alert' | 'warning'
 ```
 
 **Contract**:
+
 - **Type**: `'primary' | 'secondary' | 'success' | 'alert' | 'warning'`
 - **Default**: `'primary'`
 - **Mutability**: Can change at runtime
@@ -56,6 +60,7 @@ readonly fill = input<'solid' | 'hollow' | 'clear'>('solid');
 ```
 
 **Contract**:
+
 - **Type**: `'solid' | 'hollow' | 'clear'`
 - **Default**: `'solid'`
 - **Mutability**: Can change at runtime
@@ -72,6 +77,7 @@ readonly expanded = input<boolean | NfsButtonExpandedBreakpoint, unknown>(
 ```
 
 **Contract**:
+
 - **Type**: `boolean | NfsButtonExpandedBreakpoint`
 - **Accepted Values**:
   - Boolean: `true`, `false`
@@ -80,7 +86,7 @@ readonly expanded = input<boolean | NfsButtonExpandedBreakpoint, unknown>(
 - **Transform**: Custom transform that accepts breakpoint strings or delegates to `booleanAttribute`
 - **Mutability**: Can change at runtime
 - **Side Effects**: Updates CSS class binding (`.expanded`, `.medium-expanded`, etc.)
-- **Breaking Change Policy**: 
+- **Breaking Change Policy**:
   - New breakpoint values may be added in minor versions if Foundation adds them
   - Existing breakpoint values will not be removed or renamed
   - Transform behavior is stable (breakpoint strings bypass boolean coercion)
@@ -92,11 +98,12 @@ readonly softDisabled = input(false, { transform: booleanAttribute });
 ```
 
 **Contract**:
+
 - **Type**: `boolean`
 - **Default**: `false`
 - **Transform**: `booleanAttribute` (Angular's standard boolean coercion)
 - **Mutability**: Can change at runtime
-- **Side Effects**: 
+- **Side Effects**:
   - Updates CSS class binding (`.disabled`)
   - Updates ARIA attribute (`aria-disabled`)
   - Updates `tabindex` for anchors
@@ -108,6 +115,7 @@ readonly softDisabled = input(false, { transform: booleanAttribute });
 **Contract**: The component exposes **no custom outputs**.
 
 **Native Events**: Consumers should use native DOM events:
+
 - `(click)` - Click event (prevented when `softDisabled === true`)
 - `(focus)` - Focus event
 - `(blur)` - Blur event
@@ -120,6 +128,7 @@ readonly softDisabled = input(false, { transform: booleanAttribute });
 ### CSS Classes
 
 **Always Applied**:
+
 - `.button` - Foundation base class
 
 **Conditionally Applied**:
@@ -149,22 +158,23 @@ readonly softDisabled = input(false, { transform: booleanAttribute });
 
 ### ARIA Attributes
 
-| Binding | Condition | Attribute | Value |
-|---------|-----------|-----------|-------|
-| `[attr.role]` | `isButtonAnchor` | `role` | `"button"` |
-| `[attr.tabindex]` | `anchorTabIndex !== null` | `tabindex` | `0` or `-1` |
-| `[attr.aria-disabled]` | `softDisabled()` | `aria-disabled` | `"true"` |
+| Binding                | Condition                 | Attribute       | Value       |
+| ---------------------- | ------------------------- | --------------- | ----------- |
+| `[attr.role]`          | `isButtonAnchor`          | `role`          | `"button"`  |
+| `[attr.tabindex]`      | `anchorTabIndex !== null` | `tabindex`      | `0` or `-1` |
+| `[attr.aria-disabled]` | `softDisabled()`          | `aria-disabled` | `"true"`    |
 
 **Breaking Change Policy**: ARIA attributes follow WAI-ARIA APG standards and are stable.
 
 ### Event Listeners
 
-| Binding | Condition | Event | Handler |
-|---------|-----------|-------|---------|
+| Binding           | Condition        | Event     | Handler                  |
+| ----------------- | ---------------- | --------- | ------------------------ |
 | `(keydown.space)` | `isButtonAnchor` | Space key | `handleSpaceKey($event)` |
 | `(keydown.enter)` | `isButtonAnchor` | Enter key | `handleEnterKey($event)` |
 
 **Additional Listeners** (not in host object):
+
 - Capture-phase click listener: Added/removed reactively via `afterRenderEffect` when `softDisabled` changes
 
 **Breaking Change Policy**: Event handling is stable per WAI-ARIA button pattern.
@@ -198,19 +208,15 @@ protected handleEnterKey(event: Event): void;
 export type NfsButtonSize = 'tiny' | 'small' | 'default' | 'large';
 export type NfsButtonColor = 'primary' | 'secondary' | 'success' | 'alert' | 'warning';
 export type NfsButtonFill = 'solid' | 'hollow' | 'clear';
-export type NfsButtonExpandedBreakpoint = 
-  | 'small-only' 
-  | 'medium-only' 
-  | 'large-only' 
-  | 'medium' 
-  | 'large' 
-  | 'medium-down' 
-  | 'large-down';
+export type NfsButtonExpandedBreakpoint = 'small-only' | 'medium-only' | 'large-only' | 'medium' | 'large' | 'medium-down' | 'large-down';
 export type NfsButtonExpanded = boolean | NfsButtonExpandedBreakpoint;
-export class NfsButton { /* ... */ }
+export class NfsButton {
+  /* ... */
+}
 ```
 
 **Breaking Change Policy**:
+
 - New type values may be added in minor versions
 - Existing type values will not be removed or renamed without a major version
 - Type names are stable
@@ -225,7 +231,8 @@ export class NfsButton { /* ... */ }
 #styleLoader.unload('button');
 ```
 
-**Contract**: 
+**Contract**:
+
 - Styles loaded in `afterNextRender()` (browser-only)
 - Styles unloaded in `DestroyRef.onDestroy()` (reference-counted)
 - CSS path is stable: `/nfs-button.css`
@@ -241,13 +248,7 @@ These examples are guaranteed to work and will not break in minor versions:
 <button nfsButton>Default Button</button>
 
 <!-- All input combinations -->
-<button nfsButton 
-  size="large" 
-  color="success" 
-  fill="hollow" 
-  [expanded]="true">
-  Combined Inputs
-</button>
+<button nfsButton size="large" color="success" fill="hollow" [expanded]="true">Combined Inputs</button>
 
 <!-- Responsive expanded (attribute syntax) -->
 <button nfsButton expanded="medium">Expanded on Medium+</button>
@@ -262,9 +263,7 @@ These examples are guaranteed to work and will not break in minor versions:
 <a nfsButton (click)="handleAction()">Action Button</a>
 
 <!-- Native events -->
-<button nfsButton (click)="onClick()" (focus)="onFocus()">
-  Event Handling
-</button>
+<button nfsButton (click)="onClick()" (focus)="onFocus()">Event Handling</button>
 ```
 
 ## Backwards Compatibility Guarantees
@@ -302,6 +301,7 @@ If a breaking change is required:
 ## Contract Validation
 
 This contract is validated by:
+
 - Storybook interaction tests (verify inputs, outputs, host bindings)
 - AXE accessibility tests (verify ARIA attributes)
 - E2E tests (verify Foundation CSS classes render correctly)
