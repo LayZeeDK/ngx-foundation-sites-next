@@ -14,6 +14,8 @@
 - Q: Should the component use **CDK-style pattern** (exported `nfsAccordionToken` + optional injection with `skipSelf`) or create a **custom DI token strategy** for parent-child communication? → A: CDK-style pattern with exported `nfsAccordionToken` + optional injection with `skipSelf`
 - Q: Should the component support **eager content projection only** (always rendered), **lazy content via ng-template only**, or **both patterns**? → A: Both (eager via ng-content, lazy via ng-template[nfsAccordionContent])
 - Q: When an accordion item is collapsed, should the content be **removed from DOM** (@if) or **kept in DOM with display:none** (CSS)? → A: Removed from DOM (@if conditional rendering)
+- Q: What is the acceptable response time for keyboard interactions in the accordion component? → A: <100ms for simple interactions (navigation, focus), <200ms for state-changing operations with 100 items
+- Q: What should developers do when rendering an accordion with zero items? → A: Leave it empty as specified
 
 ### Session 2026-01-22
 
