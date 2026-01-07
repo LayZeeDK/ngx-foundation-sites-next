@@ -98,6 +98,7 @@
       "options": {
         "port": 4400,
         "configDir": "packages/ngx-foundation-sites/.storybook",
+        "browserTarget": "ngx-foundation-sites:build-storybook",
         "compodoc": true,
         "compodocArgs": [
           "-c",
@@ -142,6 +143,7 @@
       "options": {
         "outputDir": "dist/storybook/ngx-foundation-sites",
         "configDir": "packages/ngx-foundation-sites/.storybook",
+        "browserTarget": "ngx-foundation-sites:build-storybook",
         "compodoc": true,
         "compodocArgs": [
           "-c",

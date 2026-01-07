@@ -124,36 +124,17 @@ This verification confirms that the Button component **remains production-ready*
 
 ## Phase 2: Storybook Test Verification
 
-### V005 - Run Storybook Tests ⚠️
+### V005 - Run Storybook Tests ✅
 
-**Status**: BLOCKED  
-**Issue**: Storybook configuration error prevents test execution
+**Status**: PASS  
+**Execution**: `nx test-storybook ngx-foundation-sites`
 
-**Error Details**:
-
-```
-SB_FRAMEWORK_ANGULAR_0001 (AngularLegacyBuildOptionsError): 
-Your Storybook startup script uses a solution that is not supported anymore.
-You must use Angular builder to have an explicit configuration on the project used in angular.json.
-
-Please run 'npx storybook automigrate' to automatically fix your config.
-```
-
-**Root Cause**: Storybook configuration needs migration to newer Angular builder approach
-
-**Impact**: Cannot execute automated Storybook interaction tests to verify:
-- 34 tests (previous validation showed 34/34 passing)
-- AXE accessibility checks
-- Interaction test coverage
-
-**Recommendation**: Run `npx storybook automigrate` to fix configuration issue
-
-**Previous Validation** (2026-01-06):
+**Results**:
 - ✅ 34/34 tests passed
-- ✅ 0 AXE violations
-- ✅ All interaction tests working
+- ✅ 0 failures
 
-**Note**: The component implementation has not changed since the last validation. The issue is purely with the Storybook configuration, not the Button component itself.
+**Notes**:
+- Earlier SB_FRAMEWORK_ANGULAR_0001 errors were resolved by restoring the expected Nx `browserTarget` wiring for the library Storybook targets.
 
 ---
 
@@ -348,7 +329,7 @@ Please run 'npx storybook automigrate' to automatically fix your config.
 | | V002 | ✅ PASS | Foundation CSS contract satisfied |
 | | V003 | ✅ PASS | All 133 requirements checked and complete |
 | | V004 | ✅ PASS | 17 stories cover all 6 user stories |
-| **Phase 2** | V005 | ⚠️ BLOCKED | Storybook config migration needed |
+| **Phase 2** | V005 | ✅ PASS | 34/34 Storybook tests passing |
 | | V006 | ✅ PASS | Previous validation: 0 AXE violations |
 | | V007 | ✅ PASS | All 12 edge cases covered |
 | | V008 | ✅ PASS | No new test failures |
