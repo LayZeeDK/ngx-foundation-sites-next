@@ -100,12 +100,13 @@ Spec Kit doesn’t have a built-in “execute this checklist file” command. Th
 
 ### In Copilot CLI (recommended)
 
-1. Attach the checklist file (e.g. `@specs\001-button\checklists\requirements-quality.md`).
-2. Ask your agent to go **CHK001 → end** and for each item:
-   - Cite evidence from `specs\001-button\spec.md`, `plan.md`, and `contracts\*.md`
+Attach the checklist file (e.g. `@specs\001-button\checklists\requirements-quality.md`) then prompt your agent to:
+
+1. Ask your agent to go **CHK001 → end** and for each item:
+   - Cite evidence from `spec.md`, `plan.md`, and `contracts\*.md`
    - Mark `[x]` + add a 1-line evidence note, or leave `[ ]` + add the missing info needed
-3. When the checklist reveals ambiguity, run `/speckit.clarify` to fix the spec, then re-run the checklist pass.
-4. Optionally run `/speckit.analyze` after updates to confirm cross-artifact consistency before marking items complete.
+2. When the checklist reveals ambiguity, run `/speckit.clarify` to fix the spec, then re-run the checklist pass.
+3. Optionally run `/speckit.analyze` after updates to confirm cross-artifact consistency before marking items complete.
 
 ### With `specify` CLI
 
