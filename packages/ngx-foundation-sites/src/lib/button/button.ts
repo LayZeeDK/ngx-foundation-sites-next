@@ -236,9 +236,9 @@ export class NfsButton {
       return false;
     }
 
-    const href = (this.#elementRef.nativeElement as HTMLAnchorElement).getAttribute(
-      'href',
-    );
+    const href = (
+      this.#elementRef.nativeElement as HTMLAnchorElement
+    ).getAttribute('href');
     return href !== null && href !== '';
   }
 
