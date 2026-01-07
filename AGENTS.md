@@ -23,7 +23,7 @@ You are an expert in TypeScript, Angular, and scalable web application developme
    - **Default values MUST match Foundation defaults**, unless doing so would conflict with accessibility requirements (in which case document the a11y reason)
    - Note: Sass boolean variables (e.g., `$accordion-plusminus`) are compile-time configuration, not Angular inputs
 6. **Token Naming**: Injection tokens should use camelCase with a `Token` suffix (e.g., `nfsAccordionToken`)
-7. **Foundation JavaScript API Parity**: Components MUST expose Angular equivalents for Foundation's JavaScript plugin methods and events (e.g., accordion's `toggle()`, `down()`/`up()` → Angular methods like `toggle()`/`open()`/`close()`; `down.zf.accordion`, `up.zf.accordion` → Angular outputs). This ensures seamless migration for developers moving from Foundation JS to Angular.
+7. **Foundation JavaScript API Parity**: Components MUST expose Angular equivalents for Foundation's JavaScript plugin methods and events using the same names where possible (e.g., accordion's `toggle()`, `down()`, `up()` methods and `down`/`up` events). If a name would clash on the same Angular class (input vs output vs method), keep the Foundation names across the component set but avoid the clash. Exceptions: `destroy()` is handled via Angular lifecycle / `DestroyRef`, and `init()` is handled by Angular auto-initialization.
 
 ### Styling Guidelines
 

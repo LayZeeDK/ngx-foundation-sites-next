@@ -237,9 +237,9 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 
 #### Public API - Outputs
 
-- **FR-021**: `<nfs-accordion>` MUST expose an `itemChange` output event when any item's expansion state changes, providing the item ID and new state
-- **FR-022**: `<nfs-accordion-item>` MUST expose output events `opened`, `closed`, `afterExpand`, and `afterCollapse`
-- **FR-023**: Output events MUST be emitted consistently with documented timing (state change vs post-render) and MUST NOT fire when an action is prevented (e.g., disabled item or cannot close last open item)
+- **FR-021**: `<nfs-accordion>` MUST expose `down` and `up` output events (Foundation parity), each providing the item ID and new expanded state
+- **FR-022**: Output events MUST NOT fire when an action is prevented (e.g., disabled item or cannot close last open item)
+- **FR-023**: Output payload MUST include `itemId` and `expanded` for consumers to react without querying DOM
 
 #### Content Projection
 
@@ -365,14 +365,15 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 - **CA-006**: Component selectors MUST follow the naming convention: `nfs-accordion`, `nfs-accordion-item`, `nfs-accordion-title`, `nfs-accordion-content`
 - **CA-007**: Component API MUST align with Foundation for Sites naming conventions (multiExpand maps to data-multi-expand, allowAllClosed maps to data-allow-all-closed)
 - **CA-008**: Before implementation, an API design document MUST be created using the `foundation-api-design` skill to document the complete component API, inputs, outputs, content projection, ARIA requirements, and usage examples
-- **CA-009**: **Foundation JavaScript API Parity (MANDATORY)**: NfsAccordion MUST expose Angular equivalents for all Foundation accordion JS methods: `toggle()`, `open()` (Foundation's `down`), `close()` (Foundation's `up`), `destroy()`
-- **CA-010**: **Foundation JavaScript Event Parity (MANDATORY)**: NfsAccordionItem MUST emit Angular output events equivalent to Foundation's `down.zf.accordion` (→ `opened` output) and `up.zf.accordion` (→ `closed` output)
+- **CA-009**: **Foundation JavaScript API Parity (MANDATORY)**: Expose Foundation method names as Angular methods where possible: `toggle()`, `down()`, `up()`
+- **CA-010**: **Foundation JavaScript Event Parity (MANDATORY)**: Expose Foundation event names (without the `.zf.*` namespace) as Angular outputs: `down`, `up`
+- **CA-011**: **Parity Exceptions (MANDATORY)**: `destroy()` is handled via Angular lifecycle / `DestroyRef` (no public method), and `init()` is handled by Angular auto-initialization (no public method)
 
 ### Key Entities _(Component Architecture)_
 
-- **NfsAccordionComponent**: Root container component (renders as `<ul class="accordion">`) that manages overall accordion state, tracks which items are open, enforces `multiExpand` and `allowAllClosed` rules, provides context to child items via exported `nfsAccordionToken`, handles keyboard navigation coordination, and implements deep linking features (`deepLink`, `deepLinkSmudge`, `updateHistory`). Exposes methods: `openAll()`, `closeAll()`.
+- **NfsAccordionComponent**: Root container component (renders as `<ul class="accordion">`) that manages overall accordion state, tracks which items are open, enforces `multiExpand` and `allowAllClosed` rules, provides context to child items via exported `nfsAccordionToken`, handles keyboard navigation coordination, and implements deep linking features (`deepLink`, `deepLinkSmudge`, `updateHistory`). Emits Foundation parity events via outputs: `down`, `up`.
 
-- **NfsAccordionItemComponent**: Individual accordion item (renders as `<li class="accordion-item">`) that manages its own expanded/collapsed state via `expanded` model signal, communicates with parent accordion via optional DI token injection (`inject(nfsAccordionToken, { optional: true, skipSelf: true })`), handles disabled state, coordinates title/content sub-components, and generates unique IDs for ARIA relationships. Accepts input `panelId` (required, string), `expanded` (model, boolean, default false), `disabled` (boolean, default false). Emits events: `opened`, `closed`, `afterExpand`, `afterCollapse`. Exposes methods: `open()`, `close()`, `toggle()`.
+- **NfsAccordionItemComponent**: Individual accordion item (renders as `<li class="accordion-item">`) that manages its own expanded/collapsed state via `expanded` model signal, communicates with parent accordion via optional DI token injection (`inject(nfsAccordionToken, { optional: true, skipSelf: true })`), handles disabled state, coordinates title/content sub-components, and generates unique IDs for ARIA relationships. Accepts input `panelId` (required, string), `expanded` (model, boolean, default false), `disabled` (boolean, default false). Exposes Foundation parity methods: `down()`, `up()`, `toggle()`.
 
 - **NfsAccordionTitleComponent**: Clickable trigger element (renders as `<button class="accordion-title">`, optionally wrapped in `<div role="heading" aria-level="N">` if `titleHeadingLevel` is set on parent accordion) that displays the title content, manages button role and ARIA attributes (`aria-expanded`, `aria-controls`, `aria-disabled`), handles click and keyboard events (Enter/Space to toggle), and projects title content via ng-content.
 
@@ -511,9 +512,9 @@ This allows:
 - `titleHeadingLevel` (1 | 2 | 3 | 4 | 5 | 6 | null, default: `null`) - Heading level for accordion titles. When set, wraps trigger buttons in `<div role="heading" aria-level="N">` for ARIA document outline (Angular extension, not in Foundation)
 - `softDisabled` (boolean, default: `true`) - When disabled, items remain focusable but not activatable for better accessibility (Angular extension, not in Foundation)
 
-**Methods**:
-- `openAll(): void` - Expand all panels (only effective when `multiExpand=true`)
-- `closeAll(): void` - Collapse all panels (only effective when `allowAllClosed=true`)
+**Outputs**:
+- `down` - Emitted when a panel is opened (Foundation parity: `down.zf.accordion`)
+- `up` - Emitted when a panel is closed (Foundation parity: `up.zf.accordion`)
 
 **Default Behavior**: Matches Foundation for Sites — by default `allowAllClosed` is `false` (at least one pane must remain open). Set `[allowAllClosed]="true"` to allow all panes to be collapsed.
 
@@ -527,16 +528,10 @@ This allows:
 - `expanded` (boolean model, default: `false`) - Whether the panel is expanded (supports two-way binding via `[(expanded)]`)
 - `disabled` (boolean, default: `false`) - Whether this item is disabled
 
-**Outputs**:
-- `opened` (void) - Emitted when the panel is opened
-- `closed` (void) - Emitted when the panel is closed
-- `afterExpand` (void) - Emitted after expand animation completes
-- `afterCollapse` (void) - Emitted after collapse animation completes
-
 **Methods**:
-- `open(): void` - Expand this panel
-- `close(): void` - Collapse this panel
-- `toggle(): void` - Toggle this panel
+- `down(): void` - Expand this panel (Foundation parity: `.down($target)`)
+- `up(): void` - Collapse this panel (Foundation parity: `.up($target)`)
+- `toggle(): void` - Toggle this panel (Foundation parity: `.toggle($target)`)
 
 #### NfsAccordionTitle (Trigger Component)
 
@@ -650,25 +645,20 @@ This allows:
 #### Programmatic Control
 
 ```typescript
-import { Component, viewChild, viewChildren } from '@angular/core';
+import { Component, viewChildren } from '@angular/core';
 
 @Component({
   /* ... */
 })
 export class MyComponent {
-  protected readonly accordion = viewChild(NfsAccordion);
   protected readonly items = viewChildren(NfsAccordionItem);
 
-  expandAll() {
-    this.accordion()?.openAll();
-  }
-
-  collapseAll() {
-    this.accordion()?.closeAll();
-  }
-
   expandFirst() {
-    this.items().at(0)?.open();
+    this.items().at(0)?.down();
+  }
+
+  collapseFirst() {
+    this.items().at(0)?.up();
   }
 }
 ```

@@ -12,11 +12,11 @@ This component provides **full API parity** with Foundation for Sites accordion 
 | Foundation API | Angular Equivalent | Component | Notes |
 |---------------|-------------------|-----------|-------|
 | `.toggle($target)` | `toggle()` | NfsAccordionItem | Toggle panel state |
-| `.down($target)` | `open()` | NfsAccordionItem | Open panel |
-| `.up($target)` | `close()` | NfsAccordionItem | Close panel |
-| `.destroy()` | `destroy()` | NfsAccordion | Cleanup (auto via ngOnDestroy) |
-| `down.zf.accordion` event | `(opened)` output | NfsAccordionItem | Panel opening event |
-| `up.zf.accordion` event | `(closed)` output | NfsAccordionItem | Panel closing event |
+| `.down($target)` | `down()` | NfsAccordionItem | Open panel |
+| `.up($target)` | `up()` | NfsAccordionItem | Close panel |
+| `.destroy()` | Angular lifecycle / `DestroyRef` | NfsAccordion | Cleanup (no public method) |
+| `down.zf.accordion` event | `(down)` output | NfsAccordion | Panel opening event |
+| `up.zf.accordion` event | `(up)` output | NfsAccordion | Panel closing event |
 
 **Rationale**: Ensures seamless migration for developers moving from Foundation JS to Angular implementation without learning new API patterns.
 
@@ -46,12 +46,10 @@ This component provides **full API parity** with Foundation for Sites accordion 
 - `id`: `InputSignal<string | undefined>` - Optional custom ID
 
 **Outputs** (via `output()` function):
-- `itemChange`: `OutputEmitterRef<{ itemId: string; expanded: boolean }>` - Emitted when any item state changes
+- `down`: `OutputEmitterRef<{ itemId: string; expanded: boolean }>` - Emitted when a panel opens (Foundation parity: `down.zf.accordion`)
+- `up`: `OutputEmitterRef<{ itemId: string; expanded: boolean }>` - Emitted when a panel closes (Foundation parity: `up.zf.accordion`)
 
 **Methods**:
-- `openAll(): void` - Expand all items (only if multiExpand=true) [Foundation equivalent: calling `.down()` on all items]
-- `closeAll(): void` - Collapse all items (only if allowAllClosed=true) [Foundation equivalent: calling `.up()` on all items]
-- `destroy(): void` - Destroy accordion instance, cleanup event listeners [Foundation API parity: equivalent to `.destroy()`]
 - `registerItem(item: NfsAccordionItem): void` - Called by items during initialization
 - `unregisterItem(item: NfsAccordionItem): void` - Called by items during destruction
 - `notifyItemToggle(itemId: string, expanded: boolean): void` - Called by items when toggled
@@ -89,15 +87,11 @@ IDLE → OPENING_ITEM → ITEM_OPEN
 - `expanded`: `ModelSignal<boolean>` - Initial/controlled expansion state (default: `false`)
 - `disabled`: `InputSignal<boolean>` - Disable this item (default: `false`)
 
-**Outputs**:
-- `opened`: `OutputEmitterRef<void>` - Emitted when panel opens [Foundation API parity: equivalent to `down.zf.accordion` event]
-- `closed`: `OutputEmitterRef<void>` - Emitted when panel closes [Foundation API parity: equivalent to `up.zf.accordion` event]
-- `afterExpand`: `OutputEmitterRef<void>` - Emitted after expand animation completes
-- `afterCollapse`: `OutputEmitterRef<void>` - Emitted after collapse animation completes
+**Outputs**: None (use `(down)` / `(up)` outputs on `<nfs-accordion>` for Foundation parity events)
 
 **Methods**:
-- `open(): void` - Expand this panel [Foundation API parity: equivalent to `.down($target)`]
-- `close(): void` - Collapse this panel [Foundation API parity: equivalent to `.up($target)`]
+- `down(): void` - Expand this panel [Foundation API parity: equivalent to `.down($target)`]
+- `up(): void` - Collapse this panel [Foundation API parity: equivalent to `.up($target)`]
 - `toggle(): void` - Toggle expansion state [Foundation API parity: equivalent to `.toggle($target)`]
 
 **Computed Signals**:
@@ -212,7 +206,7 @@ NfsAccordion (1)
    - shouldRenderContent → triggers @if content rendering
    - ariaExpanded → updates ARIA attribute
    - CSS class bindings → adds/removes .is-active
-10. NfsAccordionItem emits opened/closed event
+10. NfsAccordion emits `down`/`up` event
 ```
 
 ### Scenario: Keyboard Navigation (ArrowDown)
@@ -234,7 +228,7 @@ NfsAccordion (1)
 1. Page loads with URL hash #panel-2
 2. NfsAccordion (in afterRender) reads location.hash
 3. NfsAccordion finds item with panelId='panel-2'
-4. NfsAccordion calls item.open()
+4. NfsAccordion calls item.down()
 5. NfsAccordionItem expands and notifies parent
 6. If deepLinkSmudge=true:
    - Wait deepLinkSmudgeDelay ms

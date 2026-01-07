@@ -5,7 +5,7 @@
 
 ## Summary
 
-Build an accessible, Angular-native accordion component that provides Foundation for Sites visual design with full WCAG AA compliance. The component must achieve **API parity with Foundation's accordion JavaScript plugin**: all Foundation JS methods (`toggle`, `down`, `up`, `destroy`) and events (`down.zf.accordion`, `up.zf.accordion`) must be exposed as equivalent Angular methods and outputs. Implementation uses standalone components, signals, and Angular ARIA/CDK primitives without Foundation JavaScript dependencies.
+Build an accessible, Angular-native accordion component that provides Foundation for Sites visual design with full WCAG AA compliance. The component must achieve **API parity with Foundation's accordion JavaScript plugin**: all Foundation JS methods (`toggle`, `down`, `up`, `destroy`) and events (`down`, `up` — emitted by Foundation as `down.zf.accordion` / `up.zf.accordion`) must be exposed as equivalent Angular methods and outputs. Implementation uses standalone components, signals, and Angular ARIA/CDK primitives without Foundation JavaScript dependencies.
 
 ## Technical Context
 
@@ -30,7 +30,7 @@ _GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 - [x] Input properties use camelCase equivalents of Foundation `data-*` attributes
 - [x] Injection tokens follow `Token` suffix convention
 - [x] API design doc created/updated using `foundation-api-design` skill
-- [x] **Foundation JS API parity: Methods (`toggle`, `down`, `up`, `destroy`) and events (`down.zf.accordion`, `up.zf.accordion`) exposed as Angular methods and outputs**
+- [x] **Foundation JS API parity: Methods (`toggle`, `down`, `up`, `destroy`) and events (`down`, `up`) exposed as Angular methods and outputs (Foundation emits these as `down.zf.accordion` / `up.zf.accordion`)**
 
 **Accessibility First**: ✅
 
@@ -126,9 +126,10 @@ packages/ngx-foundation-sites/
 
 _No violations. All constitution principles satisfied._
 
-**Foundation API Parity Justification**: Foundation's accordion JavaScript plugin exposes public methods (`toggle`, `down`, `up`, `destroy`) and events (`down.zf.accordion`, `up.zf.accordion`). To ensure developers migrating from Foundation JS to ngx-foundation-sites have equivalent programmatic control, these must be exposed as:
+**Foundation API Parity Justification**: Foundation's accordion JavaScript plugin exposes public methods (`toggle`, `down`, `up`, `destroy`) and events (`down`, `up` — emitted by Foundation as `down.zf.accordion` / `up.zf.accordion`). To ensure developers migrating from Foundation JS to ngx-foundation-sites have equivalent programmatic control, these must be exposed as:
 
-- **Methods**: `NfsAccordionItem.toggle()`, `NfsAccordionItem.open()` (≈ Foundation's `down`), `NfsAccordionItem.close()` (≈ Foundation's `up`), `NfsAccordion.destroy()` (via Angular's component lifecycle)
-- **Events**: `NfsAccordionItem.opened` output (≈ `down.zf.accordion`), `NfsAccordionItem.closed` output (≈ `up.zf.accordion`)
+- **Methods**: `NfsAccordionItem.toggle()`, `NfsAccordionItem.down()` (≈ Foundation's `down`), `NfsAccordionItem.up()` (≈ Foundation's `up`)
+- **Events**: `NfsAccordion.down` output (≈ `down.zf.accordion`), `NfsAccordion.up` output (≈ `up.zf.accordion`)
+- **Exceptions**: `destroy()` is handled by Angular lifecycle / `DestroyRef` (no public method), and `init()` is auto-handled by Angular (no public method)
 
 This ensures **API parity** without introducing Foundation JavaScript dependency, maintaining Angular-native implementation while preserving developer familiarity.

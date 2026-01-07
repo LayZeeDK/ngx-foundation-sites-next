@@ -11,17 +11,17 @@
 
 **Foundation JavaScript API** (from https://get.foundation/sites/docs/accordion.html):
 - Methods: `toggle($target)`, `down($target)`, `up($target)`, `destroy()`
-- Events: `down.zf.accordion`, `up.zf.accordion`
+- Events: `down`, `up` (Foundation emits these as `down.zf.accordion` / `up.zf.accordion`)
 
 **Angular Equivalents**:
 | Foundation | Angular Equivalent | Component |
 |-----------|-------------------|-----------|
 | `.toggle($target)` | `toggle()` method | NfsAccordionItem |
-| `.down($target)` | `open()` method | NfsAccordionItem |
-| `.up($target)` | `close()` method | NfsAccordionItem |
-| `.destroy()` | `destroy()` method | NfsAccordion (auto via ngOnDestroy) |
-| `down.zf.accordion` event | `(opened)` output | NfsAccordionItem |
-| `up.zf.accordion` event | `(closed)` output | NfsAccordionItem |
+| `.down($target)` | `down()` method | NfsAccordionItem |
+| `.up($target)` | `up()` method | NfsAccordionItem |
+| `.destroy()` | Angular lifecycle / `DestroyRef` | NfsAccordion |
+| `down.zf.accordion` event | `(down)` output | NfsAccordion |
+| `up.zf.accordion` event | `(up)` output | NfsAccordion |
 
 **Rationale**: Ensures seamless migration path for developers moving from Foundation JavaScript to Angular implementation. Developers familiar with Foundation JS can immediately understand the Angular API without learning new patterns.
 

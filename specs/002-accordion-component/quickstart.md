@@ -12,11 +12,11 @@ This Angular accordion component provides **full API parity** with Foundation fo
 | Foundation JS | Angular Equivalent | Example |
 |--------------|-------------------|---------|
 | `$('#accordion').foundation('toggle', $('#panel'))` | `item.toggle()` | `this.items().at(0)?.toggle()` |
-| `$('#accordion').foundation('down', $('#panel'))` | `item.open()` | `this.items().at(0)?.open()` |
-| `$('#accordion').foundation('up', $('#panel'))` | `item.close()` | `this.items().at(0)?.close()` |
-| `$('#accordion').foundation('destroy')` | `accordion.destroy()` | Auto via `ngOnDestroy` |
-| `$('#accordion').on('down.zf.accordion', fn)` | `(opened)` output | `<nfs-accordion-item (opened)="onOpen()">` |
-| `$('#accordion').on('up.zf.accordion', fn)` | `(closed)` output | `<nfs-accordion-item (closed)="onClose()">` |
+| `$('#accordion').foundation('down', $('#panel'))` | `item.down()` | `this.items().at(0)?.down()` |
+| `$('#accordion').foundation('up', $('#panel'))` | `item.up()` | `this.items().at(0)?.up()` |
+| `$('#accordion').foundation('destroy')` | Angular lifecycle / `DestroyRef` | Auto cleanup |
+| `$('#accordion').on('down.zf.accordion', fn)` | `(down)` output | `<nfs-accordion (down)="onDown($event)">` |
+| `$('#accordion').on('up.zf.accordion', fn)` | `(up)` output | `<nfs-accordion (up)="onUp($event)">` |
 
 **See Example 9** below for programmatic control patterns.
 
@@ -424,19 +424,14 @@ import { NfsAccordion, NfsAccordionItem, NfsAccordionTitle } from 'ngx-foundatio
   `,
 })
 export class ExampleComponent {
-  protected readonly accordion = viewChild(NfsAccordion);
   protected readonly items = viewChildren(NfsAccordionItem);
 
-  expandAll() {
-    this.accordion()?.openAll();
-  }
-
-  collapseAll() {
-    this.accordion()?.closeAll();
-  }
-
   expandFirst() {
-    this.items().at(0)?.open();
+    this.items().at(0)?.down();
+  }
+
+  collapseFirst() {
+    this.items().at(0)?.up();
   }
 }
 ```
@@ -449,7 +444,7 @@ export class ExampleComponent {
 
 ### Example 10: Foundation API Parity - Event Handling
 
-**Goal**: Listen to accordion events (Foundation `down.zf.accordion` and `up.zf.accordion` equivalents).
+**Goal**: Listen to accordion events (Foundation `down` / `up` equivalents; Foundation emits these as `down.zf.accordion` / `up.zf.accordion`).
 
 **Component**:
 ```typescript
@@ -460,24 +455,18 @@ import { NfsAccordion, NfsAccordionItem, NfsAccordionTitle } from 'ngx-foundatio
   selector: 'app-example',
   imports: [NfsAccordion, NfsAccordionItem, NfsAccordionTitle],
   template: `
-    <nfs-accordion>
-      <nfs-accordion-item 
-        panelId="panel-1"
-        (opened)="onPanelOpened('panel-1')"
-        (closed)="onPanelClosed('panel-1')">
+    <nfs-accordion (down)="onDown($event)" (up)="onUp($event)">
+      <nfs-accordion-item panelId="panel-1">
         <nfs-accordion-title>Panel 1</nfs-accordion-title>
         <p>Content 1</p>
       </nfs-accordion-item>
 
-      <nfs-accordion-item 
-        panelId="panel-2"
-        (opened)="onPanelOpened('panel-2')"
-        (closed)="onPanelClosed('panel-2')">
+      <nfs-accordion-item panelId="panel-2">
         <nfs-accordion-title>Panel 2</nfs-accordion-title>
         <p>Content 2</p>
       </nfs-accordion-item>
     </nfs-accordion>
-    
+
     <p>Last event: {{ lastEvent }}</p>
   `,
 })
@@ -485,15 +474,15 @@ export class ExampleComponent {
   lastEvent = '';
   
   // Equivalent to Foundation's: $('#accordion').on('down.zf.accordion', ...)
-  onPanelOpened(panelId: string) {
-    this.lastEvent = `Panel ${panelId} opened`;
-    console.log('Panel opened:', panelId);
+  onDown(event: { itemId: string; expanded: boolean }) {
+    this.lastEvent = `Panel ${event.itemId} opened`;
+    console.log('Panel opened:', event.itemId);
   }
-  
+
   // Equivalent to Foundation's: $('#accordion').on('up.zf.accordion', ...)
-  onPanelClosed(panelId: string) {
-    this.lastEvent = `Panel ${panelId} closed`;
-    console.log('Panel closed:', panelId);
+  onUp(event: { itemId: string; expanded: boolean }) {
+    this.lastEvent = `Panel ${event.itemId} closed`;
+    console.log('Panel closed:', event.itemId);
   }
 }
 ```
@@ -510,7 +499,7 @@ $('#myAccordion').on('up.zf.accordion', function(e) {
 });
 
 // Angular (NEW):
-// Use (opened) and (closed) outputs on <nfs-accordion-item>
+// Use (down) and (up) outputs on <nfs-accordion>
 ```
 
 ---
@@ -537,15 +526,8 @@ $('#myAccordion').on('up.zf.accordion', function(e) {
 
 | Output | Type | Description |
 |--------|------|-------------|
-| `itemChange` | `{ itemId: string; expanded: boolean }` | Emitted when any item changes |
-
-### NfsAccordion Methods
-
-| Method | Description | Foundation Equivalent |
-|--------|-------------|-----------------------|
-| `openAll()` | Expand all panels (requires `multiExpand=true`) | Calling `.down()` on all items |
-| `closeAll()` | Collapse all panels (requires `allowAllClosed=true`) | Calling `.up()` on all items |
-| `destroy()` | Cleanup (automatic via `ngOnDestroy`) | `.destroy()` |
+| `down` | `{ itemId: string; expanded: boolean }` | Emitted when a panel opens |
+| `up` | `{ itemId: string; expanded: boolean }` | Emitted when a panel closes |
 
 ### NfsAccordionItem Inputs
 
@@ -555,21 +537,12 @@ $('#myAccordion').on('up.zf.accordion', function(e) {
 | `expanded` | `boolean` (model) | `false` | Expansion state (two-way binding) |
 | `disabled` | `boolean` | `false` | Disable this item |
 
-### NfsAccordionItem Outputs
-
-| Output | Type | Description | Foundation Equivalent |
-|--------|------|-------------|-----------------------|
-| `opened` | `void` | Emitted when panel opens | `down.zf.accordion` event |
-| `closed` | `void` | Emitted when panel closes | `up.zf.accordion` event |
-| `afterExpand` | `void` | Emitted after expand animation | N/A (Angular extension) |
-| `afterCollapse` | `void` | Emitted after collapse animation | N/A (Angular extension) |
-
 ### NfsAccordionItem Methods
 
 | Method | Description | Foundation Equivalent |
 |--------|-------------|-----------------------|
-| `open()` | Expand this panel | `.down($target)` |
-| `close()` | Collapse this panel | `.up($target)` |
+| `down()` | Expand this panel | `.down($target)` |
+| `up()` | Collapse this panel | `.up($target)` |
 | `toggle()` | Toggle expansion state | `.toggle($target)` |
 
 ---
