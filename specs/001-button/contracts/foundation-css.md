@@ -21,7 +21,7 @@ The component requires Foundation button styles to be compiled with specific con
 ```scss
 // In consumer's _nfs-settings.scss or equivalent
 
-// REQUIRED: Enable responsive expanded classes
+// REQUIRED: Enable responsive-expanded classes
 $button-responsive-expanded: true; // Default in ngx-foundation-sites
 
 // Standard Foundation button variables (configurable by consumer)
@@ -177,6 +177,7 @@ afterNextRender(() => {
 - CSS file MUST be available at `/nfs-button.css` relative to app base URL
 - CSS MUST be pre-compiled from Foundation Sass with required configuration
 - Multiple button instances share one `<link>` tag (reference-counted)
+- If CSS fails to load, component MUST remain functional (native semantics + events), MUST NOT throw, and MAY log a console warning (see spec.md FR-020)
 
 ### Option 2: Custom Theming (Advanced)
 
