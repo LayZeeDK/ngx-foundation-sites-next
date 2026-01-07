@@ -2,6 +2,7 @@
 
 **Feature Branch**: `feat/button`  
 **Created**: 2026-01-06  
+**Updated**: 2026-01-07  
 **Status**: Final  
 **Input**: User description: "Finalize the accessible, self-contained Button component in the current branch. An Angular-native Button component aligned with Foundation for Sites CSS-only approach. Must be accessible (WCAG AA, passes AXE). Self-contained: no dependency on Foundation JS; uses Foundation Sass styles/classes. Use modern Angular patterns: standalone (default), OnPush, input()/output(), signals; no HostBinding/HostListener."
 
@@ -150,7 +151,7 @@ Users navigating with keyboard need to access all buttons, activate them with En
 - **FR-017**: Component MUST use `booleanAttribute` transform for `softDisabled`, and a custom transform for `expanded` that accepts breakpoint strings and otherwise delegates to `booleanAttribute` (to support HTML attribute syntax).
 - **FR-018**: Component MUST NOT implement Foundation's `.dropdown` or `.arrow-only` button variants (these are dropdown-specific and out of scope for the base button component).
 - **FR-019**: Shipped library CSS MUST be compiled with `$button-responsive-expanded: true` so responsive-expanded selectors (e.g. `.small-only-expanded`, `.medium-expanded`, `.medium-down-expanded`, `.large-down-expanded`) exist at runtime.
-- **FR-020**: If runtime CSS cannot be loaded (e.g., missing `/nfs-button.css`), component MUST remain functional (native semantics + events), MUST NOT throw, and MAY log a warning.
+- **FR-020**: If runtime CSS cannot be loaded (e.g., missing `/nfs-button.css`), component MUST remain functional (native semantics + events), MUST NOT throw, and MAY log a warning (but MUST NOT spam logs on repeated renders).
 - **FR-021**: Inputs `size`, `color`, `fill`, and `expanded` MUST be composable; all applicable Foundation classes MUST be applied concurrently (no precedence conflicts).
 
 ### Accessibility Requirements (MANDATORY)
