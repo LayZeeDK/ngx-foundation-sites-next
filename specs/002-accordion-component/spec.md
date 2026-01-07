@@ -41,7 +41,7 @@ A developer adds an accordion component to display FAQ content. End users click 
 2. **Given** an accordion with item 2 expanded, **When** user clicks the title of item 3, **Then** item 3 expands and item 2 automatically collapses
 3. **Given** an accordion with item 1 expanded, **When** user clicks item 1's title again, **Then** item 1 collapses (all items closed)
 4. **Given** an accordion rendered, **When** page loads, **Then** correct Foundation CSS classes are applied (.accordion, .accordion-item, .accordion-title, .accordion-content)
-5. **Given** an expanded item, **When** rendered, **Then** the .is-active class is present on the accordion-item
+5. **Given** an expanded item, **When** rendered, **Then** Foundation state classes are correctly applied (see FR-033 for .is-active class requirement)
 
 ---
 
@@ -218,7 +218,7 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 
 #### Component Structure
 
-- **FR-001**: System MUST provide four standalone components: `<nfs-accordion>`, `<nfs-accordion-item>`, `<nfs-accordion-title>`, and `<nfs-accordion-content>`
+- **FR-001**: System MUST provide three standalone components (`<nfs-accordion>`, `<nfs-accordion-item>`, `<nfs-accordion-title>`) and one structural directive (`[nfsAccordionContent]`) per constitution principle: prefer directives over components when possible
 - **FR-002**: Component selectors MUST use the prefix "nfs-" (ngx-foundation-sites)
 - **FR-003**: `<nfs-accordion>` MUST act as the root container component
 - **FR-004**: `<nfs-accordion-item>` MUST represent individual collapsible items
@@ -257,7 +257,7 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 - **FR-025**: `<nfs-accordion-item>` MUST accept exactly one `<nfs-accordion-title>` and one of: (a) eager content via ng-content, or (b) lazy content via `ng-template[nfsAccordionContent]`
 - **FR-026**: `<nfs-accordion-title>` MUST accept arbitrary HTML content via content projection
 - **FR-027**: `<nfs-accordion-item>` MUST support lazy content loading via `ng-template[nfsAccordionContent]` directive (content rendered only when first expanded)
-- **FR-028**: When using lazy content, the template lifecycle MUST mirror @defer behavior as defined by the Angular Aria Accordion merge request standard (awaiting upstream release); implementation will align with @defer's content retention and destruction semantics rather than implementing a custom lifecycle strategy
+- **FR-028**: The structural directive content MUST use a lifecycle that mirrors @defer retention behavior: once rendered (on first expand), content stays in memory until item destroyed. This is the MVP fallback strategy; future Angular ARIA accordion patterns may inform lifecycle optimizations post-v1.0
 
 #### Styling and CSS Classes
 
@@ -325,6 +325,7 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 - **FR-072**: `deepLinkSmudgeOffset` input MUST specify the scroll offset in pixels (useful for sticky headers, default: 0)
 - **FR-073**: When deep linking encounters duplicate `panelId` values across multiple accordion instances on the same page, the system MUST expand the first matching panel only and report an error via `ErrorHandler.handleError()` to warn developers about the invalid configuration while maintaining graceful degradation
 - **FR-074**: When deep linking encounters runtime errors (malformed URL hash, invalid panel ID references, or other initialization failures), the component MUST report errors via `ErrorHandler.handleError()` but continue component initialization (graceful degradation) - the accordion remains functional even with broken deep links
+- **FR-074b**: `<nfs-accordion>` MUST inject Angular's `ErrorHandler` service for reporting deep linking errors (duplicate panel IDs) per `ErrorHandler.handleError()` API instead of direct console logging
 
 ### Accessibility Requirements (MANDATORY)
 
@@ -382,7 +383,7 @@ Note: AR-005 through AR-012 requirements are covered by corresponding FR require
 - **CA-006**: Component selectors MUST follow the naming convention: `nfs-accordion`, `nfs-accordion-item`, `nfs-accordion-title`, `nfs-accordion-content`
 - **CA-007**: Component API MUST align with Foundation for Sites naming conventions (multiExpand maps to data-multi-expand, allowAllClosed maps to data-allow-all-closed)
 - **CA-008**: Before implementation, an API design document MUST be created using the `foundation-api-design` skill to document the complete component API, inputs, outputs, content projection, ARIA requirements, and usage examples
-- **CA-009**: **Foundation JavaScript API Parity (MANDATORY)**: Expose Foundation method names as Angular methods where possible: `toggle()`, `down()`, `up()`
+- **CA-009**: **Foundation JavaScript API Parity (MANDATORY)**: `<nfs-accordion-item>` MUST expose Foundation method names as public Angular methods: `toggle()`, `down()`, `up()` (see FR-075)
 - **CA-010**: **Foundation JavaScript Event Parity (MANDATORY)**: Expose Foundation event names (without the `.zf.*` namespace) as Angular outputs: `down`, `up`
 - **CA-011**: **Parity Exceptions (MANDATORY)**: `destroy()` is handled via Angular lifecycle / `DestroyRef` (no public method), and `init()` is handled by Angular auto-initialization (no public method)
 
@@ -393,17 +394,17 @@ Note: AR-005 through AR-012 requirements are covered by corresponding FR require
 
 ### Key Entities _(Component Architecture)_
 
-- **NfsAccordionComponent**: Root container component (renders as `<ul class="accordion">`) that manages overall accordion state, tracks which items are open, enforces `multiExpand` and `allowAllClosed` rules, provides context to child items via exported `nfsAccordionToken`, handles keyboard navigation coordination, and implements deep linking features (`deepLink`, `deepLinkSmudge`, `updateHistory`). Emits Foundation parity events via outputs: `down`, `up`.
+- **NfsAccordion**: Root container component (selector: `<nfs-accordion>`, renders as `<ul class="accordion">`) that manages overall accordion state, tracks which items are open, enforces `multiExpand` and `allowAllClosed` rules, provides context to child items via exported `nfsAccordionToken`, handles keyboard navigation coordination, and implements deep linking features (`deepLink`, `deepLinkSmudge`, `updateHistory`). Emits Foundation parity events via outputs: `down`, `up`.
 
-- **NfsAccordionItemComponent**: Individual accordion item (renders as `<li class="accordion-item">`) that manages its own expanded/collapsed state via `expanded` model signal, communicates with parent accordion via optional DI token injection (`inject(nfsAccordionToken, { optional: true, skipSelf: true })`), handles disabled state, coordinates title/content sub-components, and generates unique IDs for ARIA relationships. Accepts input `panelId` (required, string), `expanded` (model, boolean, default false), `disabled` (boolean, default false). Exposes Foundation parity methods: `down()`, `up()`, `toggle()`.
+- **NfsAccordionItem**: Individual accordion item (selector: `<nfs-accordion-item>`, renders as `<li class="accordion-item">`) that manages its own expanded/collapsed state via `expanded` model signal, communicates with parent accordion via optional DI token injection (`inject(nfsAccordionToken, { optional: true, skipSelf: true })`), handles disabled state, coordinates title/content sub-components, and generates unique IDs for ARIA relationships. Accepts input `panelId` (required, string), `expanded` (model, boolean, default false), `disabled` (boolean, default false). Exposes Foundation parity methods: `down()`, `up()`, `toggle()`.
 
-- **NfsAccordionTitleComponent**: Clickable trigger element (renders as `<button class="accordion-title">`, optionally wrapped in `<div role="heading" aria-level="N">` if `titleHeadingLevel` is set on parent accordion) that displays the title content, manages button role and ARIA attributes (`aria-expanded`, `aria-controls`, `aria-disabled`), handles click and keyboard events (Enter/Space to toggle), and projects title content via ng-content.
+- **NfsAccordionTitle**: Clickable trigger element (selector: `<nfs-accordion-title>`, renders as `<button class="accordion-title">`, optionally wrapped in `<div role="heading" aria-level="N">` if `titleHeadingLevel` is set on parent accordion) that displays the title content, manages button role and ARIA attributes (`aria-expanded`, `aria-controls`, `aria-disabled`), handles click and keyboard events (Enter/Space to toggle), and projects title content via ng-content.
 
-- **NfsAccordionContentDirective**: Structural directive (`ng-template[nfsAccordionContent]`) for lazy content loading. Content lifecycle uses simple strategy: once rendered (on first expand), content stays in memory until item destroyed. This mirrors @defer's retention behavior. Angular Aria Accordion merge request (when released) may inform future lifecycle optimizations. Item always maintains a stable panel wrapper element with `role="region"` and `aria-labelledby` in the DOM, even when content is removed via @if, to ensure `aria-controls` references remain valid.
+- **NfsAccordionContentDirective**: Structural directive (selector: `[nfsAccordionContent]` on `ng-template`) for lazy content loading. Content lifecycle uses simple strategy: once rendered (on first expand), content stays in memory until item destroyed. This mirrors @defer's retention behavior. Angular Aria Accordion merge request (when released) may inform future lifecycle optimizations. Item always maintains a stable panel wrapper element with `role="region"` and `aria-labelledby` in the DOM, even when content is removed via @if, to ensure `aria-controls` references remain valid.
 
-- **AccordionContext (DI Token)**: Exported injection token (`export const nfsAccordionToken = new InjectionToken<NfsAccordionComponent>('nfsAccordionToken')`) providing access to parent accordion component. Enables decoupled parent-child communication without property binding. Used by items to register with parent and query settings like `multiExpand`, `allowAllClosed`, `wrap`, `titleHeadingLevel`, `softDisabled`. Pattern matches Angular Material/CDK (not Angular ARIA) to support content projection: token is exported, injection is optional with `skipSelf`, allowing items to work standalone when no parent exists.
+- **nfsAccordionToken (DI Token)**: Exported injection token (`export const nfsAccordionToken = new InjectionToken<NfsAccordionComponent>('nfsAccordionToken')`) providing access to parent accordion component. Enables decoupled parent-child communication without property binding. Used by items to register with parent and query settings like `multiExpand`, `allowAllClosed`, `wrap`, `titleHeadingLevel`, `softDisabled`. Uses CDK-style pattern per constitution: token is exported, injection is optional with `skipSelf`, allowing items to work standalone when no parent exists.
 
-**Rationale for DI Pattern**: Angular ARIA's accordion token is not exported and uses required injection, which breaks with content projection because content children use their declaration-site injector, not the render-site injector. The CDK-style pattern (exported token + optional injection) gracefully handles this by allowing items to function independently when a parent is not found in the DI chain.
+**Rationale for DI Pattern**: This follows the CDK pattern (exported token + optional injection) documented in constitution.md Section VIII. Angular's DI for content-projected elements follows the declaration-site injector, not the DOM tree, so this pattern enables graceful fallback when no parent is found in the DI chain.
 
 ## Success Criteria _(mandatory)_
 
