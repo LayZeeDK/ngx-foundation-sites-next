@@ -2,6 +2,211 @@
 
 ## Goal
 
+Provide an Angular-native, accessible implementation of Foundation for Sites' Accordion component that exposes Foundation-equivalent inputs, outputs, and methods, follows the project's directive-first design philosophy, and uses Foundation's CSS classes for styling (no Foundation JS).
+
+## Research Summary
+
+### Foundation Accordion Features
+
+| Feature | CSS/HTML | Notes |
+| ------- | ------- | ----- |
+| Container | `.accordion` | Top-level wrapper for accordion items |
+| Item | `.accordion-item` | Represents a single accordion panel and title |
+| Title | `.accordion-title` | Clickable control that toggles an item's panel |
+| Content | `.accordion-content` | Panel wrapper containing item content |
+| State classes | `.is-active`, `.is-open` | Used to reflect expanded state |
+
+### CSS Class → Angular Mapping
+
+| Foundation CSS Class | Angular Component/Directive | Rationale |
+| -------------------- | --------------------------- | --------- |
+| `.accordion` | `NfsAccordion` (component) | Container that manages items and shared config |
+| `.accordion-item` | `NfsAccordionItem` (component) | Per-item host, owns expanded state and IDs |
+| `.accordion-title` | `NfsAccordionTitle` (component) | Renders as a native `button` with proper ARIA |
+| `.accordion-content` | `NfsAccordionContent` (structural directive) | Lazy content rendering via `ng-template` |
+
+### WAI-ARIA Requirements
+
+| Element | ARIA Attributes |
+| ------- | --------------- |
+| Title button | `aria-expanded`, `aria-controls`, `aria-disabled` (if applicable) |
+| Panel wrapper | `role="region"`, `aria-labelledby` |
+| IDs | Unique `id` for title and panel to link `aria-controls`/`aria-labelledby` |
+
+## Proposed Component API
+
+### Component Hierarchy
+
+NfsAccordion
+├─ NfsAccordionItem[]
+   ├─ NfsAccordionTitle
+   └─ NfsAccordionContent (ng-template)
+
+### 1. NfsAccordion (Container)
+
+- Selector: `nfs-accordion`
+- Host class: `accordion`
+- ChangeDetection: `OnPush`
+
+Inputs (match Foundation `data-*` names in camelCase):
+- `multiExpand: InputSignal<boolean>` — Foundation `data-multi-expand` (default: `false`)
+- `allowAllClosed: InputSignal<boolean>` — Foundation `data-allow-all-closed` (default: `false`)
+- `deepLink: InputSignal<boolean>` — Foundation `data-deep-link` (default: `false`)
+- `deepLinkSmudge: InputSignal<boolean>` — Foundation option (default: `false`)
+- `deepLinkSmudgeDelay: InputSignal<number>` — (default: `300`)
+- `deepLinkSmudgeOffset: InputSignal<number>` — (default: `0`)
+- `updateHistory: InputSignal<boolean>` — control history updates (default: `false`)
+
+Outputs:
+- `down: OutputEmitterRef<{ itemId: string; expanded: true }>` — emitted when an item opens (Foundation parity)
+- `up: OutputEmitterRef<{ itemId: string; expanded: false }>` — emitted when an item closes
+
+Public methods:
+- `openAll?()` — optional utility when `multiExpand=true`
+- `closeAll?()` — optional utility
+
+DI Token:
+- Exported token `nfsAccordionToken` (InjectionToken<NfsAccordion>) — provide `useExisting: NfsAccordion` in component providers. Children inject with `{ optional: true, skipSelf: true }`.
+
+Behavior:
+- Manages item registration (`registerItem(item: NfsAccordionItem)`) and state notifications (`notifyItemToggle(itemId, expanded)`).
+- Enforces single-expand when `multiExpand=false` and prevents closing last item when `allowAllClosed=false`.
+
+### 2. NfsAccordionItem (Child)
+
+- Selector: `nfs-accordion-item`
+- Host class: `accordion-item`
+
+Inputs:
+- `panelId: string | undefined` — user-provided panel id; if not provided, generated as `${accordionInstanceId}-panel-${index}`
+- `expanded: ModelSignal<boolean>` — two-way model signal for expanded state (default: `false`)
+- `disabled: InputSignal<boolean>` — (default: `false`)
+
+Public methods (Foundation JS parity):
+- `down()` — expand the item (respects `disabled`)
+- `up()` — collapse the item (asks parent `canCloseItem()`)
+- `toggle()` — toggle expanded state
+
+Behavior:
+- Registers with parent `NfsAccordion` on init and unregisters on destroy.
+- Emits state changes via container `down`/`up` outputs through `notifyItemToggle`.
+- Applies `.is-active` class when expanded.
+
+### 3. NfsAccordionTitle
+
+- Selector: `nfs-accordion-title` (consumer can use via component or directive alternative)
+- Renders as `<button>` with `aria-expanded`, `aria-controls`, and `id` attributes.
+
+Behavior:
+- Clicking calls the associated `NfsAccordionItem.toggle()` method.
+- Handles keyboard activation (Enter/Space) and delegates focus management to `NfsAccordion`.
+
+### 4. NfsAccordionContent (Structural Directive)
+
+- Selector: `ng-template[nfsAccordionContent]`
+- Purpose: Lazy rendering of panel content. Stores `TemplateRef` and lets `NfsAccordionItem` render it when expanded or when `hasBeenExpanded()` is true.
+
+## Usage Examples
+
+Basic accordion (single expand):
+
+```html
+<nfs-accordion>
+  <nfs-accordion-item>
+    <nfs-accordion-title>Section 1</nfs-accordion-title>
+    <ng-template nfsAccordionContent>
+      <p>Content for section 1</p>
+    </ng-template>
+  </nfs-accordion-item>
+  <nfs-accordion-item>
+    <nfs-accordion-title>Section 2</nfs-accordion-title>
+    <ng-template nfsAccordionContent>
+      <p>Content for section 2</p>
+    </ng-template>
+  </nfs-accordion-item>
+</nfs-accordion>
+```
+
+Multi-expand with deep linking:
+
+```html
+<nfs-accordion [multiExpand]="true" [deepLink]="true" [updateHistory]="true">
+  <!-- items -->
+</nfs-accordion>
+```
+
+Programmatic control (Foundation parity):
+
+```ts
+// Inject or query the item instance
+item.down(); // opens
+item.up(); // closes
+item.toggle(); // toggles
+
+// Listen to container events
+accordion.down.subscribe(({ itemId }) => console.log('opened', itemId));
+accordion.up.subscribe(({ itemId }) => console.log('closed', itemId));
+```
+
+## Rendered HTML Structure (expected)
+
+```html
+<div class="accordion">
+  <div class="accordion-item is-active">
+    <button class="accordion-title" id="accordion-1-title-0" aria-expanded="true" aria-controls="accordion-1-panel-0">Section 1</button>
+    <div id="accordion-1-panel-0" class="accordion-content" role="region" aria-labelledby="accordion-1-title-0"> ... </div>
+  </div>
+  <!-- more items -->
+</div>
+```
+
+## CSS Custom Properties
+
+- Prefer Foundation Sass variables; expose minimal CSS custom properties only when necessary for runtime theming.
+
+## Keyboard Navigation
+
+| Key | Action |
+| --- | ------ |
+| Enter / Space | Toggle focused title |
+| ArrowDown | Move focus to next enabled title (wrap if configured) |
+| ArrowUp | Move focus to previous enabled title |
+| Home | Move focus to first title |
+| End | Move focus to last title |
+
+## Comparison with Foundation JS
+
+- Foundation JS exposes `.down($target)`, `.up($target)`, `.toggle($target)` and jQuery events `down.zf.accordion`, `up.zf.accordion`.
+- This design provides `down()`, `up()`, `toggle()` methods on `NfsAccordionItem` and container outputs `down`/`up` (payload: `{ itemId, expanded }`) to match behavior and naming.
+
+## Implementation Notes
+
+- Use `nfsAccordionToken` InjectionToken and `useExisting` provider pattern for DI between container and children.
+- Use `signal()`/`computed()` for state and `InputSignal`/`ModelSignal` for inputs and two-way expanded binding.
+- Use `@defer` or `ng-template[nfsAccordionContent]` for lazy content.
+- Ensure SSR safety: guard window/document usage with `isPlatformBrowser()`.
+- Use `inert` on collapsed panel wrappers and keep wrapper in DOM to preserve stable `aria-controls` references.
+
+## Files to Create
+
+- `src/lib/accordion/accordion.component.ts` — `NfsAccordion` container
+- `src/lib/accordion/accordion-item.component.ts` — `NfsAccordionItem`
+- `src/lib/accordion/accordion-title.component.ts` — `NfsAccordionTitle`
+- `src/lib/accordion/accordion-content.directive.ts` — `NfsAccordionContent`
+- `src/lib/accordion/accordion.token.ts` — exports `nfsAccordionToken`
+- `src/lib/accordion/id-generator.ts` — small helper for unique IDs
+- `src/lib/accordion/index.ts` — public exports
+- Storybook stories under `.storybook/stories/accordion/`
+
+## Design Decisions
+
+- Directive-first for `nfsAccordionContent` to allow consumers to place templates inline and prevent unnecessary wrapper components.
+- Keep Foundation CSS classes as the authoritative source for class names and state classes (`.is-active`).
+- Expose Foundation API names for parity; prefer Angular idiomatic patterns where unavoidable but document differences.
+# NfsAccordion API Design
+
+## Goal
+
 Design an Angular component API for Foundation Accordion that:
 
 - Uses **Foundation for Sites CSS** (no Foundation JavaScript)

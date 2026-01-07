@@ -24,6 +24,7 @@ import {
 import { NfsAccordionItemDef } from './accordion-item-def';
 import { AccordionDeepLinkService } from './accordion-deep-link.service';
 import { NfsStyleLoader } from '../core/nfs-style-loader.service';
+import { nfsAccordionToken } from './accordion.token';
 
 @Component({
   selector: 'nfs-accordion',
@@ -32,6 +33,7 @@ import { NfsStyleLoader } from '../core/nfs-style-loader.service';
   // For custom theming: compile Sass with bundleName: "nfs-accordion", inject: false
   encapsulation: ViewEncapsulation.None,
   host: {},
+  providers: [{ provide: nfsAccordionToken, useExisting: NfsAccordion }],
   imports: [AccordionGroup, AccordionTrigger, AccordionPanel, NgTemplateOutlet],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

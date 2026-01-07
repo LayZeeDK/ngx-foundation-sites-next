@@ -42,7 +42,7 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 - [ ] T008 [P] Create injection token file at packages/ngx-foundation-sites/src/lib/accordion/accordion.token.ts (exports nfsAccordionToken for DI)
 - [ ] T009 Install @angular/cdk if not present (for FocusMonitor, ListKeyManager, a11y utilities)
 - [ ] T010 [P] Create public API exports file at packages/ngx-foundation-sites/src/lib/accordion/index.ts
-- [ ] T011 Create API design document using `foundation-api-design` skill at packages/ngx-foundation-sites/src/lib/accordion/ACCORDION_API_DESIGN.md
+ - [x] T011 Create API design document using `foundation-api-design` skill at packages/ngx-foundation-sites/ACCORDION_API_DESIGN.md
 - [ ] T012 [P] Create README documentation template at packages/ngx-foundation-sites/src/lib/accordion/README.md
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
