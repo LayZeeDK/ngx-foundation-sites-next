@@ -7,13 +7,12 @@
 
 import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
 import { type Meta, type StoryObj } from '@storybook/angular';
-import {
-  runBenchmark,
-  formatBenchmarkResults,
-  exportBenchmarkJson,
-  compareBenchmarks,
-  type BenchmarkResult,
-} from './sass-benchmark';
+
+// NOTE: We deliberately avoid importing the benchmark implementation eagerly.
+// `test-storybook` loads every story just to verify it renders; the Sass benchmark
+// module is relatively heavy (WASM/compiler/codegen) and can slow down or flake CI.
+// Keep it lazy and only load it when a user explicitly clicks a benchmark action.
+import type { BenchmarkResult } from './sass-benchmark';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // Benchmark Component
@@ -309,6 +308,12 @@ class BenchmarkComponent {
     }
 
     try {
+      // Lazy-load the benchmark implementation to keep Storybook initial render fast
+      // and to avoid doing expensive work during `test-storybook` runs.
+      const { runBenchmark, formatBenchmarkResults } = await import(
+        './sass-benchmark'
+      );
+
       const results = await runBenchmark({
         iterations: this.iterations(),
         onProgress: (message, percent) => {
@@ -328,9 +333,12 @@ class BenchmarkComponent {
     }
   }
 
-  copyJson(): void {
+  async copyJson(): Promise<void> {
     const results = this.results();
     if (results) {
+      // Lazy import for the same reason as runBenchmark(): keep default story render
+      // cheap for CI and only load the benchmark utilities on demand.
+      const { exportBenchmarkJson } = await import('./sass-benchmark');
       navigator.clipboard.writeText(exportBenchmarkJson(results));
     }
   }
@@ -342,10 +350,13 @@ class BenchmarkComponent {
     }
   }
 
-  showComparison(): void {
+  async showComparison(): Promise<void> {
     const prev = this.previousResults();
     const curr = this.results();
     if (prev && curr) {
+      // Lazy import for the same reason as runBenchmark(): keep default story render
+      // cheap for CI and only load the benchmark utilities on demand.
+      const { compareBenchmarks } = await import('./sass-benchmark');
       const { summary } = compareBenchmarks(prev, curr);
       this.comparison.set(summary);
     }
@@ -359,6 +370,7 @@ class BenchmarkComponent {
 const meta: Meta<BenchmarkComponent> = {
   title: 'Dev Tools/Sass Benchmark',
   component: BenchmarkComponent,
+
   parameters: {
     // Disable theme panel for benchmark tool
     themePanelDisabled: true,
