@@ -47,6 +47,7 @@ description: 'Actionable task list for Accessible Accordion Component implementa
 - [ ] T013 Create base Storybook story in packages/ngx-foundation-sites/src/storybook/accordion/accordion.stories.ts with Foundation CSS imports
 - [ ] T014 [P] Add README.md in packages/ngx-foundation-sites/src/lib/accordion/README.md documenting Foundation API parity (toggle, down, up methods and events)
 - [ ] T015 Configure TypeScript strict mode compliance for all accordion files in tsconfig.lib.json
+- [ ] T015b Verify Foundation API parity matches contracts/accordion-api.ts FOUNDATION_API_MAPPING (toggle/down/up methods + down/up events)
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -79,9 +80,9 @@ description: 'Actionable task list for Accessible Accordion Component implementa
 - [ ] T027 [US1] Implement single-expand logic in NfsAccordion (when multiExpand=false, close others when one opens)
 - [ ] T028 [US1] Implement allowAllClosed enforcement in NfsAccordion (prevent closing last item when allowAllClosed=false)
 - [ ] T029 [US1] Implement Foundation API parity methods in NfsAccordionItem (down(), up(), toggle())
-- [ ] T030 [US1] Implement Foundation API parity outputs in NfsAccordion using output() function (down, up events with AccordionItemChangeEvent payload)
+- [ ] T030 [US1] Implement Foundation API parity outputs in NfsAccordion using output() function (down, up events with AccordionItemChangeEvent payload { itemId, expanded } per contracts/accordion-api.ts)
 - [ ] T031 [US1] Add CSS class bindings to NfsAccordionItem host ([class.is-active]="expanded()")
-- [ ] T032 [US1] Implement @if conditional rendering in NfsAccordionItem template (render content only when expanded, keep stable panel wrapper)
+- [ ] T032 [US1] Implement stable panel wrapper that stays in DOM, with @if conditional rendering inside it (render content only when expanded; wrapper remains stable for ARIA/SSR)
 - [ ] T033 [US1] Add ChangeDetectionStrategy.OnPush to all accordion components
 - [ ] T034 [US1] Add JSDoc comments documenting Foundation equivalents in all components
 
@@ -134,6 +135,7 @@ description: 'Actionable task list for Accessible Accordion Component implementa
 
 - [ ] T051 [P] [US3] Implement ID generation strategy in NfsAccordion (static counter + instanceId)
 - [ ] T052 [P] [US3] Generate unique trigger IDs and panel IDs in NfsAccordionItem (triggerId, panelId computed signals)
+- [ ] T052b [US3] Verify auto-generated IDs are unique across multiple accordions rendered on the same page (no collisions)
 - [ ] T053 [US3] Add ARIA attributes to NfsAccordionTitle button (aria-expanded, aria-controls, id)
 - [ ] T054 [US3] Add ARIA attributes to panel wrapper in NfsAccordionItem (role="region", aria-labelledby, id)
 - [ ] T055 [US3] Implement inert attribute binding on panel wrapper when collapsed ([attr.inert]="expanded() ? null : ''")
@@ -318,14 +320,14 @@ description: 'Actionable task list for Accessible Accordion Component implementa
 ### Tests for Lazy Content
 
 - [ ] T111 [P] Create Storybook play function for lazy content initialization in packages/ngx-foundation-sites/src/storybook/accordion/LazyContent.story.ts
-- [ ] T112 [P] Verify lazy content persists after first expansion (not destroyed on collapse)
+- [ ] T112 [P] Create Storybook play function to verify lazy content persists after first expansion (not destroyed on collapse)
 
 ### Implementation for Lazy Content
 
 - [ ] T113 [P] Implement NfsAccordionContentDirective in packages/ngx-foundation-sites/src/lib/accordion/accordion-content.directive.ts
 - [ ] T114 Implement templateRef property in NfsAccordionContentDirective (TemplateRef<void>)
 - [ ] T115 Register NfsAccordionContentDirective with parent NfsAccordionItem via DI
-- [ ] T116 Implement hasBeenExpanded tracking signal in NfsAccordionItem
+- [ ] T116 Implement hasBeenExpanded tracking signal in NfsAccordionItem so lazy content renders on first expansion and remains available on subsequent collapses (spec FR-027)
 - [ ] T117 Update NfsAccordionItem template to support both eager (ng-content) and lazy (ng-template) content
 - [ ] T118 Implement NgTemplateOutlet rendering in NfsAccordionItem for lazy content
 - [ ] T119 Document lazy content pattern in README.md
