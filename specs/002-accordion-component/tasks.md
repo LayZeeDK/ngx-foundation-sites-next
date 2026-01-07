@@ -41,6 +41,8 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 - [ ] T007 [P] Set up Foundation SCSS imports in packages/ngx-foundation-sites/src/lib/accordion/\_accordion-imports.scss
 - [ ] T008 [P] Create injection token file at packages/ngx-foundation-sites/src/lib/accordion/accordion.token.ts (exports nfsAccordionToken for DI)
 - [ ] T009 Install @angular/cdk if not present (for FocusMonitor, ListKeyManager, a11y utilities)
+- [ ] T009 Install @angular/cdk if not present (for FocusMonitor, ListKeyManager, a11y utilities)
+- [ ] T009a Verify @angular/cdk importability and required utilities (FocusMonitor, ListKeyManager). Confirm version matches workspace policy and that Storybook builds import the CDK without errors. (Blocking verification)
 - [ ] T010 [P] Create public API exports file at packages/ngx-foundation-sites/src/lib/accordion/index.ts
 - [x] T011 Create API design document using `foundation-api-design` skill at packages/ngx-foundation-sites/ACCORDION_API_DESIGN.md
 - [ ] T012 [P] Create README documentation template at packages/ngx-foundation-sites/src/lib/accordion/README.md
@@ -139,7 +141,7 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 - [ ] T055 [P] [US3] Implement ARIA attributes on NfsAccordionTitle button: aria-expanded (computed from item.expanded signal)
 - [ ] T056 [P] [US3] Implement ARIA attributes on NfsAccordionTitle button: aria-controls (references panel ID)
 - [ ] T057 [US3] Implement unique ID generation in NfsAccordion: static counter + instance ID (nfs-accordion-${counter++})
-- [ ] T057b [P] [US3] Implement ID auto-generation as an Angular injectable service (`NfsAccordionIdGenerator`) in packages/ngx-foundation-sites/src/lib/accordion/accordion-id-generator.service.ts (service providedIn: 'platform'). This service is internal implementation detail and SHOULD NOT be exported from the public barrel index.ts.
+- [ ] T057b [P] [US3] Implement ID auto-generation as an Angular injectable service (`NfsAccordionIdGeneratorService`) in packages/ngx-foundation-sites/src/lib/accordion/accordion-id-generator.service.ts (service providedIn: 'platform'). This service is internal implementation detail and SHOULD NOT be exported from the public barrel index.ts. Update all plan/tasks references to `accordion-id-generator.service.ts` and `NfsAccordionIdGeneratorService` (see T-AC-004).
 - [ ] T058 [US3] Generate title button ID: ${accordionInstanceId}-title-${itemIndex}
 - [ ] T059 [US3] Use user-provided panelId or generate: ${accordionInstanceId}-panel-${itemIndex}
 - [ ] T060 [P] [US3] Create panel wrapper element in NfsAccordionItem template with role="region"
@@ -493,6 +495,25 @@ Task T018: "Create NfsAccordion component"
 Task T019: "Create NfsAccordionItem component"
 Task T020: "Create NfsAccordionTitle component"
 ```
+
+## Additional Remediation Tasks (from cross-artifact analysis)
+
+- [ ] T-AC-001 [P?] Implement per-item toggle queue + 50ms debounce and input-source coalescing
+  - Location: packages/ngx-foundation-sites/src/lib/accordion/
+  - Description: Implement a per-item FIFO toggle queue that enqueues toggle requests arriving while an item is mid-transition. Coalesce identical toggle requests arriving within 50ms from the same input source. Add timing-sensitive integration tests (Storybook play + Vitest simulation).
+  - Blocking: YES (prevents race conditions in rapid UI interactions)
+
+- [ ] T-AC-002 [P?] Implement `announce` live-region opt-in with 100ms debounce + Storybook tests
+  - Location: packages/ngx-foundation-sites/src/lib/accordion/
+  - Description: Add `announce = input(false)` and render a visually-hidden live region with `aria-live="polite"` when enabled. Debounce announcements by 100ms. Add Storybook play tests asserting live region updates on expand/collapse and title updates.
+
+- [ ] T-AC-003 [P?] Input validators & tests for FR-110a
+  - Location: packages/ngx-foundation-sites/src/lib/accordion/
+  - Description: Implement input sanitizers/coercers and `ErrorHandler.handleError()` diagnostics per FR-110a. Add unit tests for invalid/edge inputs and ensure bound models reflect coerced values.
+
+- [ ] T-AC-004 [P?] Harmonize ID generator filename and task references
+  - Location: packages/ngx-foundation-sites/src/lib/accordion/accordion-id-generator.service.ts
+  - Description: Update plan/tasks/spec references to use canonical filename `accordion-id-generator.service.ts` and exported symbol `NfsAccordionIdGeneratorService`. Update any references in plan.md/spec.md/tasks.md.
 
 ---
 
