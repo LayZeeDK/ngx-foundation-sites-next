@@ -242,7 +242,7 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 - **FR-014**: `<nfs-accordion>` MUST accept a `multiExpand` signal input (boolean, default: false) to enable multi-expand mode
 - **FR-015**: `<nfs-accordion>` MUST accept an `allowAllClosed` signal input (boolean, default: false) to control if all items can be closed
 - **FR-016**: `<nfs-accordion>` MUST accept additional configuration signal inputs per `contracts/accordion-api.ts` (including `disabled`, `deepLink`, `deepLinkSmudge`, `deepLinkSmudgeDelay`, `deepLinkSmudgeOffset`, `updateHistory`, `wrap`, `titleHeadingLevel`, `softDisabled`, and optional `id`)
-- **FR-017**: `<nfs-accordion-item>` MUST accept a required `panelId` signal input (string) used for deep linking and ARIA relationships
+- **FR-017**: `<nfs-accordion-item>` MUST accept an optional `panelId` signal input (string) used for deep linking and ARIA relationships. When a consumer does not provide `panelId`, the system MUST auto-generate a stable, unique ID for the panel (see FR-020).
 - **FR-018**: `<nfs-accordion-item>` MUST expose an `expanded` model signal (boolean, default: false) that supports two-way binding via `[(expanded)]`
 - **FR-019**: `<nfs-accordion-item>` MUST accept a `disabled` signal input (boolean, default: false) to disable the item
 - **FR-020**: System MUST auto-generate unique IDs for title/content elements used by `aria-controls` / `aria-labelledby` relationships when not explicitly provided
