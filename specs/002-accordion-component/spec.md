@@ -143,7 +143,7 @@ A developer configures which accordion item(s) should be open when the component
 
 ### User Story 8 - Dynamic Item Management (Priority: P3)
 
-A developer uses *ngFor to render accordion items from a dynamic array. Items can be added, removed, or reordered without breaking keyboard navigation or ARIA relationships.
+A developer uses `@for` to render accordion items from a dynamic array. Items can be added, removed, or reordered without breaking keyboard navigation or ARIA relationships.
 
 **Why this priority**: Real-world apps use dynamic data. Critical for production use but can be validated after core functionality works.
 
@@ -151,7 +151,7 @@ A developer uses *ngFor to render accordion items from a dynamic array. Items ca
 
 **Acceptance Scenarios**:
 
-1. **Given** an accordion with 3 items rendered via *ngFor, **When** a new item is added to the array, **Then** the new item renders with correct IDs and keyboard navigation includes it
+1. **Given** an accordion with 3 items rendered via `@for`, **When** a new item is added to the array, **Then** the new item renders with correct IDs and keyboard navigation includes it
 2. **Given** an accordion with 4 items, **When** item 2 is removed from the array, **Then** remaining items maintain correct aria-controls/aria-labelledby IDs
 3. **Given** an accordion with items reordered, **When** keyboard navigation is used, **Then** focus moves in the new DOM order
 
@@ -283,7 +283,7 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 
 #### Dynamic Content
 
-- **FR-052**: Component MUST support dynamically added/removed accordion items (e.g., via *ngFor)
+- **FR-052**: Component MUST support dynamically added/removed accordion items (e.g., via `@for`)
 - **FR-053**: When items are added/removed, ARIA relationships (aria-controls, aria-labelledby) MUST remain correctly linked
 - **FR-054**: When items are added/removed, keyboard navigation MUST update to include/exclude items accordingly
 - **FR-055**: If a focused item is removed from the DOM, focus MUST move to a safe location (next item, previous item, or parent)
@@ -392,7 +392,7 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 - **SC-006**: Developers can implement a basic FAQ accordion with 5 items in under 10 lines of template code
 - **SC-007**: Component API documentation includes complete examples for all configuration options (multiExpand, allowAllClosed, disabled, initial state)
 - **SC-008**: All user stories P1-P3 pass acceptance tests in Storybook play functions
-- **SC-009**: Component supports dynamic item arrays of 100 items without performance degradation (tested via *ngFor with maximum supported item count)
+- **SC-009**: Component supports dynamic item arrays of 100 items without performance degradation (tested via `@for` with maximum supported item count)
 - **SC-010**: Focus management maintains correct state through 10 consecutive add/remove operations on dynamic items
 
 ## Goals and Non-Goals
@@ -648,21 +648,25 @@ This allows:
 #### Programmatic Control
 
 ```typescript
-@Component({...})
+import { Component, viewChild, viewChildren } from '@angular/core';
+
+@Component({
+  /* ... */
+})
 export class MyComponent {
-  @ViewChild(NfsAccordion) accordion!: NfsAccordion;
-  @ViewChildren(NfsAccordionItem) items!: QueryList<NfsAccordionItem>;
+  protected readonly accordion = viewChild(NfsAccordion);
+  protected readonly items = viewChildren(NfsAccordionItem);
 
   expandAll() {
-    this.accordion.openAll();
+    this.accordion()?.openAll();
   }
 
   collapseAll() {
-    this.accordion.closeAll();
+    this.accordion()?.closeAll();
   }
 
   expandFirst() {
-    this.items.first.open();
+    this.items().at(0)?.open();
   }
 }
 ```
@@ -730,9 +734,15 @@ Arrow key navigation should be handled at the accordion level (not individual it
 
 ```typescript
 // In NfsAccordionComponent
-@HostListener('keydown', ['$event'])
-handleKeydown(event: KeyboardEvent) {
-  if (event.target matches '.accordion-title') {
+@Component({
+  host: {
+    '(keydown)': 'handleKeydown($event)',
+  },
+})
+export class NfsAccordionComponent {
+  handleKeydown(event: KeyboardEvent) {
+    if (!(event.target as Element | null)?.closest('.accordion-title')) return;
+
     // Handle ArrowUp/Down/Home/End
     // Call focusItem(index) to move focus
   }
@@ -760,9 +770,13 @@ Use host bindings or `[class.is-active]` to apply Foundation classes:
 
 ```typescript
 // In NfsAccordionItemComponent
-@HostBinding('class.is-active')
-get isActive() {
-  return this.isOpen();
+@Component({
+  host: {
+    '[class.is-active]': 'isOpen()',
+  },
+})
+export class NfsAccordionItemComponent {
+  protected readonly isOpen = signal(false);
 }
 ```
 
@@ -771,9 +785,10 @@ get isActive() {
 Avoid direct `document` or `window` references during initialization. Use `afterRender` or `isPlatformBrowser`:
 
 ```typescript
-import { afterRender, isPlatformBrowser, PLATFORM_ID } from '@angular/core';
+import { afterRender, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
-private platformId = inject(PLATFORM_ID);
+private readonly platformId = inject(PLATFORM_ID);
 
 constructor() {
   if (isPlatformBrowser(this.platformId)) {
@@ -803,7 +818,7 @@ constructor() {
 
 - **Foundation for Sites CSS**: Required for `.accordion`, `.accordion-item`, `.accordion-title`, `.accordion-content`, `.is-active` classes
 - **@angular/core**: v20+ for standalone components, signals, and modern APIs
-- **@angular/common**: For common directives if needed (e.g., *ngFor in examples)
+- **@angular/common**: For common directives if needed (e.g., `NgTemplateOutlet` in examples)
 - **@angular/aria** (if available): Preferred for ARIA utilities and accessibility primitives
 - **@angular/cdk** (if @angular/aria insufficient): Fallback for accessibility utilities
 

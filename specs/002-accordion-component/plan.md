@@ -42,7 +42,7 @@ _GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 **Foundation CSS-Only Integration**: ✅
 
 - [x] Foundation CSS classes applied as Foundation expects (.accordion, .accordion-item, .accordion-title, .accordion-content, .is-active)
-- [x] Foundation state classes used via Angular class bindings (@HostBinding or [class.is-active])
+- [x] Foundation state classes used via Angular class bindings (decorator host object / [class.is-active])
 - [x] Custom CSS limited and justified with comments (only for accessibility or Angular-specific features)
 
 **Modern Angular APIs**: ✅

@@ -164,22 +164,42 @@ export class NfsAccordion {
 **Implementation**:
 ```typescript
 // accordion.component.ts
-@HostListener('keydown', ['$event'])
-handleKeydown(event: KeyboardEvent) {
-  if (!(event.target as Element)?.closest('.accordion-title')) return;
-  
-  switch (event.key) {
-    case 'ArrowDown': this.focusNextItem(); break;
-    case 'ArrowUp': this.focusPreviousItem(); break;
-    case 'Home': this.focusFirstItem(); break;
-    case 'End': this.focusLastItem(); break;
+@Component({
+  host: {
+    '(keydown)': 'handleKeydown($event)',
+  },
+})
+export class NfsAccordion {
+  handleKeydown(event: KeyboardEvent) {
+    if (!(event.target as Element | null)?.closest('.accordion-title')) return;
+
+    switch (event.key) {
+      case 'ArrowDown':
+        this.focusNextItem();
+        break;
+      case 'ArrowUp':
+        this.focusPreviousItem();
+        break;
+      case 'Home':
+        this.focusFirstItem();
+        break;
+      case 'End':
+        this.focusLastItem();
+        break;
+    }
   }
 }
 
 // accordion-item.component.ts
-@HostListener('click')
-onClick() {
-  if (!this.disabled()) this.toggle();
+@Component({
+  host: {
+    '(click)': 'onHostClick()',
+  },
+})
+export class NfsAccordionItem {
+  onHostClick() {
+    if (!this.disabled()) this.toggle();
+  }
 }
 ```
 
@@ -207,11 +227,12 @@ onClick() {
 
 **Implementation**:
 ```typescript
-import { afterRender, isPlatformBrowser, PLATFORM_ID } from '@angular/core';
+import { afterRender, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 export class NfsAccordion {
   readonly #platformId = inject(PLATFORM_ID);
-  
+
   constructor() {
     if (isPlatformBrowser(this.#platformId)) {
       afterRender(() => {
@@ -292,27 +313,27 @@ export class NfsAccordion {
 
 **Implementation**:
 ```typescript
-export class NfsAccordionItem {
-  expanded = model<boolean>(false);
-  disabled = input<boolean>(false);
-  
-  // Host bindings in component metadata
-  host = {
+@Component({
+  host: {
     'class': 'accordion-item',
     '[class.is-active]': 'expanded()',
     '[class.is-disabled]': 'disabled()',
     '[attr.aria-disabled]': 'disabled() || null',
-  }
+  },
+})
+export class NfsAccordionItem {
+  expanded = model<boolean>(false);
+  disabled = input<boolean>(false);
 }
 ```
 
 **Alternatives Considered**:
-- @HostBinding decorator: Deprecated in favor of host object
+- Decorator-based host bindings: Avoid; use the @Component `host` object instead
 - Template class bindings: Less efficient for host element
 - Manual class manipulation: Error-prone, not reactive
 
 **Implementation Notes**:
-- Use host object in @Component decorator (not @HostBinding)
+- Use the @Component `host` object for host bindings
 - Foundation classes: `.accordion`, `.accordion-item`, `.accordion-title`, `.accordion-content`, `.is-active`
 - Custom classes only when necessary (e.g., `.is-disabled` for visual feedback)
 
@@ -336,7 +357,7 @@ Storybook (Primary):
 - KeyboardNavigation.story.ts: Arrow keys, Home/End, Enter/Space
 - MultiExpand.story.ts: Multiple open panels
 - DisabledItems.story.ts: Disabled state, keyboard skip
-- DynamicContent.story.ts: Adding/removing items via *ngFor
+- DynamicContent.story.ts: Adding/removing items via @for
 - LazyContent.story.ts: ng-template[nfsAccordionContent]
 - ScreenReader.story.ts: ARIA attributes, @storybook/addon-a11y checks
 

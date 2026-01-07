@@ -51,7 +51,6 @@ import {
 
 @Component({
   selector: 'app-example',
-  standalone: true,
   imports: [NfsAccordion, NfsAccordionItem, NfsAccordionTitle],
   templateUrl: './example.component.html',
 })
@@ -174,7 +173,6 @@ import { NfsAccordion, NfsAccordionItem, NfsAccordionTitle } from 'ngx-foundatio
 
 @Component({
   selector: 'app-example',
-  standalone: true,
   imports: [NfsAccordion, NfsAccordionItem, NfsAccordionTitle],
   template: `
     <button (click)="toggleDetails()">Toggle Details</button>
@@ -249,7 +247,6 @@ import { ExpensiveComponent } from './expensive.component';
 
 @Component({
   selector: 'app-example',
-  standalone: true,
   imports: [NfsAccordion, NfsAccordionItem, NfsAccordionTitle, NfsAccordionContent, ExpensiveComponent],
   template: `
     <nfs-accordion>
@@ -331,7 +328,6 @@ interface FaqItem {
 
 @Component({
   selector: 'app-example',
-  standalone: true,
   imports: [NfsAccordion, NfsAccordionItem, NfsAccordionTitle],
   template: `
     <button (click)="addItem()">Add FAQ</button>
@@ -380,12 +376,11 @@ export class ExampleComponent {
 
 **Component**:
 ```typescript
-import { Component, ViewChild, ViewChildren, QueryList } from '@angular/core';
+import { Component, viewChild, viewChildren } from '@angular/core';
 import { NfsAccordion, NfsAccordionItem, NfsAccordionTitle } from 'ngx-foundation-sites';
 
 @Component({
   selector: 'app-example',
-  standalone: true,
   imports: [NfsAccordion, NfsAccordionItem, NfsAccordionTitle],
   template: `
     <div>
@@ -393,18 +388,18 @@ import { NfsAccordion, NfsAccordionItem, NfsAccordionTitle } from 'ngx-foundatio
       <button (click)="collapseAll()">Collapse All</button>
       <button (click)="expandFirst()">Expand First</button>
     </div>
-    
+
     <nfs-accordion [multiExpand]="true">
       <nfs-accordion-item panelId="item-1">
         <nfs-accordion-title>Item 1</nfs-accordion-title>
         <p>Content 1</p>
       </nfs-accordion-item>
-      
+
       <nfs-accordion-item panelId="item-2">
         <nfs-accordion-title>Item 2</nfs-accordion-title>
         <p>Content 2</p>
       </nfs-accordion-item>
-      
+
       <nfs-accordion-item panelId="item-3">
         <nfs-accordion-title>Item 3</nfs-accordion-title>
         <p>Content 3</p>
@@ -413,19 +408,19 @@ import { NfsAccordion, NfsAccordionItem, NfsAccordionTitle } from 'ngx-foundatio
   `,
 })
 export class ExampleComponent {
-  @ViewChild(NfsAccordion) accordion!: NfsAccordion;
-  @ViewChildren(NfsAccordionItem) items!: QueryList<NfsAccordionItem>;
-  
+  protected readonly accordion = viewChild(NfsAccordion);
+  protected readonly items = viewChildren(NfsAccordionItem);
+
   expandAll() {
-    this.accordion.openAll();
+    this.accordion()?.openAll();
   }
-  
+
   collapseAll() {
-    this.accordion.closeAll();
+    this.accordion()?.closeAll();
   }
-  
+
   expandFirst() {
-    this.items.first?.open();
+    this.items().at(0)?.open();
   }
 }
 ```
@@ -572,7 +567,7 @@ export class ExampleComponent {
 
 ## Next Steps
 
-1. **Explore Storybook**: Run `npm run storybook` to see interactive examples
+1. **Explore Storybook**: Run `npx nx storybook ngx-foundation-sites` to see interactive examples
 2. **Read ARIA Documentation**: See `contracts/accordion-aria.md` for accessibility details
 3. **Review API Contract**: See `contracts/accordion-api.ts` for full TypeScript interfaces
 4. **Check Implementation Plan**: See `plan.md` for technical architecture
