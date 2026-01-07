@@ -15,6 +15,12 @@
 - Q: Should the component support **eager content projection only** (always rendered), **lazy content via ng-template only**, or **both patterns**? → A: Both (eager via ng-content, lazy via ng-template[nfsAccordionContent])
 - Q: When an accordion item is collapsed, should the content be **removed from DOM** (@if) or **kept in DOM with display:none** (CSS)? → A: Removed from DOM (@if conditional rendering)
 
+### Session 2025-01-22
+
+- Q: When **both** `accordion.disabled="true"` (global) **and** `item.disabled="false"` (per-item) are set, which takes precedence? → A: Additive (item disabled if either global OR item-level is true)
+- Q: When keyboard navigation moves between accordion titles (ArrowUp/Down/Home/End), should focus transitions be animated? → A: Instant without animation (aligns with WAI-ARIA APG)
+- Q: When an accordion is rendered with **zero accordion items** (e.g., `@for` iterating over an empty array), what should the component display? → A: Render empty container with no visual indicator
+
 ## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Basic Single Accordion Interaction (Priority: P1)
@@ -191,7 +197,7 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 
 ### Edge Cases
 
-- **Empty accordion**: What happens when no accordion items are provided? (Should render empty container without errors)
+- **Empty accordion**: When no accordion items are provided (e.g., `@for` over empty array), the component renders the empty container (`<ul class="accordion"></ul>`) with no focusable elements or broken ARIA references, and no built-in "No items" message (see FR-057)
 - **Single item accordion**: Does keyboard navigation work correctly with only one item? (Home/End/Arrow keys should no-op or stay on single item)
 - **All items disabled**: Can the accordion be rendered with all items disabled? (Should render but have no interactive items)
 - **Nested accordions**: What happens if an accordion-item's content contains another accordion? (Should work independently with separate keyboard navigation contexts via DI token pattern)
@@ -277,40 +283,42 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 - **FR-046**: Disabled accordion items MUST NOT respond to click events
 - **FR-047**: Disabled accordion items MUST NOT respond to Enter/Space keyboard events
 - **FR-048**: Disabled accordion items MUST be skipped during keyboard navigation (ArrowUp/Down)
-- **FR-049**: When `softDisabled` is true (default), disabled items MUST remain focusable via Tab but not activatable (aria-disabled="true", no disabled attribute)
-- **FR-050**: When `softDisabled` is false, disabled items MUST be completely non-interactive (disabled attribute, not in tab order)
-- **FR-051**: Disabled items MUST have visual styling indicating they are not interactive
+- **FR-049**: An accordion item is considered disabled if **either** the global `accordion.disabled` input is true **OR** the item-level `item.disabled` input is true (additive precedence: disabled state cannot be overridden at item level when global disabled is true)
+- **FR-050**: When `softDisabled` is true (default), disabled items MUST remain focusable via Tab but not activatable (aria-disabled="true", no disabled attribute)
+- **FR-051**: When `softDisabled` is false, disabled items MUST be completely non-interactive (disabled attribute, not in tab order)
+- **FR-052**: Disabled items MUST have visual styling indicating they are not interactive
 
 #### Dynamic Content
 
-- **FR-052**: Component MUST support dynamically added/removed accordion items (e.g., via `@for`)
-- **FR-053**: When items are added/removed, ARIA relationships (aria-controls, aria-labelledby) MUST remain correctly linked
-- **FR-054**: When items are added/removed, keyboard navigation MUST update to include/exclude items accordingly
-- **FR-055**: If a focused item is removed from the DOM, focus MUST move to a safe location (next item, previous item, or parent)
+- **FR-053**: Component MUST support dynamically added/removed accordion items (e.g., via `@for`)
+- **FR-054**: When items are added/removed, ARIA relationships (aria-controls, aria-labelledby) MUST remain correctly linked
+- **FR-055**: When items are added/removed, keyboard navigation MUST update to include/exclude items accordingly
+- **FR-056**: If a focused item is removed from the DOM, focus MUST move to a safe location (next item, previous item, or parent)
+- **FR-057**: When an accordion is rendered with zero accordion items (e.g., `@for` iterating over an empty array), the component MUST render the accordion container element (`<ul class="accordion"></ul>`) without errors, with no focusable elements or broken ARIA references, and without displaying a built-in "No items" message (developers are responsible for conditional rendering or custom empty-state UX)
 
 #### Conditional Rendering and ARIA Stability
 
-- **FR-056**: When an accordion item is collapsed, its content panel MUST be removed from the DOM using @if conditional rendering (not CSS display:none)
-- **FR-057**: The panel content wrapper element with `role="region"` and `aria-labelledby` MUST remain in the DOM when collapsed to maintain stable `aria-controls` relationship
-- **FR-058**: When collapsed, the panel wrapper MUST have the `inert` attribute to prevent keyboard access to removed content
-- **FR-059**: The `aria-controls` attribute on the trigger MUST always reference a valid element ID, even when the content is removed from the DOM
+- **FR-058**: When an accordion item is collapsed, its content panel MUST be removed from the DOM using @if conditional rendering (not CSS display:none)
+- **FR-059**: The panel content wrapper element with `role="region"` and `aria-labelledby` MUST remain in the DOM when collapsed to maintain stable `aria-controls` relationship
+- **FR-060**: When collapsed, the panel wrapper MUST have the `inert` attribute to prevent keyboard access to removed content
+- **FR-061**: The `aria-controls` attribute on the trigger MUST always reference a valid element ID, even when the content is removed from the DOM
 
 #### SSR Compatibility
 
-- **FR-060**: Component MUST render without runtime errors in Angular Universal/SSR context
-- **FR-061**: Component MUST NOT reference browser-only APIs (window, document) during SSR initialization
-- **FR-062**: Component MUST use Angular's platform detection or afterRender hooks for browser-specific code
-- **FR-063**: Server-rendered HTML MUST include correct semantic structure and ARIA attributes before client hydration
+- **FR-062**: Component MUST render without runtime errors in Angular Universal/SSR context
+- **FR-063**: Component MUST NOT reference browser-only APIs (window, document) during SSR initialization
+- **FR-064**: Component MUST use Angular's platform detection or afterRender hooks for browser-specific code
+- **FR-065**: Server-rendered HTML MUST include correct semantic structure and ARIA attributes before client hydration
 
 #### Deep Linking (Foundation Feature Parity)
 
-- **FR-064**: When `deepLink` input is true, opening a panel MUST update the browser URL hash with the panel ID
-- **FR-065**: When `deepLink` is true and page loads with a hash matching a panel ID, that panel MUST automatically expand
-- **FR-066**: When `updateHistory` is true, panel changes MUST use `history.pushState()` (browser back button navigates between panels)
-- **FR-067**: When `updateHistory` is false (default), panel changes MUST use `history.replaceState()` (browser back button does not track panel changes)
-- **FR-068**: When `deepLinkSmudge` is true, after expanding a panel via hash, the page MUST scroll to ensure the panel is visible
-- **FR-069**: `deepLinkSmudgeDelay` input MUST specify the delay in milliseconds before scrolling (default: 300ms)
-- **FR-070**: `deepLinkSmudgeOffset` input MUST specify the scroll offset in pixels (useful for sticky headers, default: 0)
+- **FR-066**: When `deepLink` input is true, opening a panel MUST update the browser URL hash with the panel ID
+- **FR-067**: When `deepLink` is true and page loads with a hash matching a panel ID, that panel MUST automatically expand
+- **FR-068**: When `updateHistory` is true, panel changes MUST use `history.pushState()` (browser back button navigates between panels)
+- **FR-069**: When `updateHistory` is false (default), panel changes MUST use `history.replaceState()` (browser back button does not track panel changes)
+- **FR-070**: When `deepLinkSmudge` is true, after expanding a panel via hash, the page MUST scroll to ensure the panel is visible
+- **FR-071**: `deepLinkSmudgeDelay` input MUST specify the delay in milliseconds before scrolling (default: 300ms)
+- **FR-072**: `deepLinkSmudgeOffset` input MUST specify the scroll offset in pixels (useful for sticky headers, default: 0)
 
 ### Accessibility Requirements (MANDATORY)
 
@@ -347,13 +355,14 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 - **AR-020**: Focus MUST be managed correctly when items are dynamically added/removed
 - **AR-021**: Focus MUST NOT be lost or trapped within the accordion
 - **AR-022**: When an item is expanded via keyboard, focus MUST remain on the title element (not move to content)
+- **AR-023**: When keyboard navigation moves focus between accordion titles (ArrowUp/Down/Home/End), focus transitions MUST be instant without animation to provide immediate feedback and prevent motion-induced disorientation (aligns with WAI-ARIA APG accordion pattern and WCAG best practices)
 
 #### Screen Reader Support
 
-- **AR-023**: Screen readers MUST announce the accordion title text and button role
-- **AR-024**: Screen readers MUST announce the current expansion state (expanded/collapsed)
-- **AR-025**: Screen readers MUST convey the relationship between titles and content panels
-- **AR-026**: When an item expands/collapses, screen readers MUST announce the state change
+- **AR-024**: Screen readers MUST announce the accordion title text and button role
+- **AR-025**: Screen readers MUST announce the current expansion state (expanded/collapsed)
+- **AR-026**: Screen readers MUST convey the relationship between titles and content panels
+- **AR-027**: When an item expands/collapses, screen readers MUST announce the state change
 
 ### Component API Requirements
 
@@ -740,6 +749,8 @@ export class NfsAccordionComponent {
   }
 }
 ```
+
+**Focus Movement Animation**: Per AR-023, focus transitions during keyboard navigation (ArrowUp/Down/Home/End) must be instant without animation. Do not apply CSS transitions to `:focus` or `:focus-visible` states that would delay or animate focus indicator changes. This ensures immediate feedback for keyboard users and prevents motion-induced disorientation (WCAG best practice, WAI-ARIA APG alignment).
 
 ### State Management with Signals
 
