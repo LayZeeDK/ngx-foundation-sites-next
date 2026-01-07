@@ -216,6 +216,25 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 - **Focus management during removal**: What happens if the focused item is removed from the DOM? (Focus should move to a safe location, like the next item or parent accordion)
 - **ARIA in nested content**: What happens if accordion-content contains interactive elements (buttons, links)? (Should maintain proper tab order and not interfere with child element accessibility)
 
+#### FR-026a: Missing Title Handling
+
+- **FR-026a**: If a `<nfs-accordion-item>` is rendered without a matching `<nfs-accordion-title>`, the item MUST render but surface a non-fatal diagnostic via `ErrorHandler.handleError()` indicating the missing required child. In this case the item MUST still render its panel content (if any) but MUST not be keyboard focusable as a title/trigger (there is no trigger). This prevents inaccessible interactive holes while warning developers to fix markup.
+
+#### FR-089a: Rapid Toggle / Debounce Behavior
+
+- **FR-089a**: To avoid race conditions from rapid user interactions (clicks or programmatic toggles), the component MUST serialize expansion state changes per item and debounce consecutive toggle requests originating from the same input source by 50ms. Serialization semantics: if a toggle request arrives while the same item is mid-transition, queue the request and execute it after the current transition completes. Debounce semantics: multiple toggle requests within 50ms from the same source collapse to a single eventual request. This policy prevents event storms while ensuring user intent is respected.
+
+#### FR-038a: Explicit State Transitions
+
+- **FR-038a**: In addition to boolean `expanded`, the item MUST conceptually transition through explicit lifecycle states for implementation clarity: `COLLAPSED -> EXPANDING -> EXPANDED -> COLLAPSING -> COLLAPSED`. Implementations MAY represent these as internal enums or booleans plus transient flags, but must ensure that ARIA attributes reflect `aria-expanded` only when the target state is reached (`EXPANDED`), and that keyboard/interaction handlers consult the in-progress state to avoid conflicting operations.
+
+#### FR-110a: Input Validation — titleHeadingLevel and deepLinkSmudge
+
+- **FR-110a**: Input validation rules:
+  - `titleHeadingLevel` MUST accept only integers in the range 1..6. If an invalid value is provided, the component MUST call `ErrorHandler.handleError()` and fall back to `null` (no heading wrapper).
+  - `deepLinkSmudgeDelay` MUST be coerced to a non-negative integer; negative values MUST be treated as their absolute value and reported via `ErrorHandler.handleError()`.
+  - `deepLinkSmudgeOffset` MUST be coerced to an integer; non-numeric values MUST result in `0` with a diagnostic via `ErrorHandler.handleError()`.
+
 ## Requirements _(mandatory)_
 
 ### Functional Requirements
@@ -248,6 +267,20 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 - **FR-018**: `<nfs-accordion-item>` MUST expose an `expanded` model signal (boolean, default: false) that supports two-way binding via `[(expanded)]`
 - **FR-019**: `<nfs-accordion-item>` MUST accept a `disabled` signal input (boolean, default: false) to disable the item
 - **FR-020**: System MUST auto-generate unique IDs for title/content elements used by `aria-controls` / `aria-labelledby` relationships when not explicitly provided
+
+#### FR-020a: panelId Uniqueness Validation and Error Reporting
+
+- **FR-020a**: When a `<nfs-accordion-item>` registers its `panelId` (consumer-provided or auto-generated) the parent `<nfs-accordion>` MUST validate uniqueness of `panelId` values within the _same accordion instance_ at registration time and whenever the `panelId` changes at runtime. If duplicate `panelId` values are detected within the same accordion instance the component MUST: (a) expand the first matching panel only (deterministic by DOM/registration order), (b) NOT mutate or auto-suffix developer-provided `panelId` values, and (c) report a non-fatal configuration error via the injected `ErrorHandler.handleError()` including contextual metadata (accordion instance id if present, duplicate `panelId`, and conflicting item indexes). The component MUST continue initialization and degrade gracefully (no thrown exceptions that stop rendering). Duplicate `panelId` values that occur across multiple accordion instances on the same page are handled per FR-073 (expand first matching panel and report error via `ErrorHandler.handleError()`).
+
+- **Acceptance Test (unit)**: Render an accordion with two items that intentionally share the same `panelId`. On initialization: verify `ErrorHandler.handleError()` is invoked with an Error containing the duplicate `panelId`; verify only the first-registered item with that `panelId` is expanded (no additional panels expanded), and verify the component remains interactive for the other items.
+
+#### FR-020b: panelId Runtime Changes
+
+- **FR-020b**: If a consumer changes an item's `panelId` input after the item has been registered, the `<nfs-accordion-item>` MUST re-register the new `panelId` with the parent `<nfs-accordion>` as if the item unregistered and re-registered. The parent MUST validate uniqueness on re-registration and update all ARIA attributes (`id` on the panel wrapper, `aria-controls` on the trigger, and `aria-labelledby` on the panel) atomically. If the new `panelId` collides with another item in the same accordion instance the behavior defined in FR-020a applies (report via `ErrorHandler.handleError()` and treat the first-registered item as the canonical target). Changing a `panelId` MUST NOT implicitly toggle expansion state; developers should call the public API to change expansion if desired.
+
+#### FR-020c: panelId and deepLink interactions
+
+- **FR-020c**: When `deepLink` is enabled, changing a `panelId` does not by itself trigger deep-link expansion. Deep-link expansion only occurs in response to URL-hash changes or on initial page load. If a `panelId` change makes the item match the current hash, the component MUST NOT auto-expand that item unless the hash was changed (i.e., only respond to explicit hash events). This avoids surprising expansions during runtime ID changes.
 
 #### Public API - Outputs
 
@@ -294,6 +327,11 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 - **FR-049**: An accordion item is considered disabled if **either** the global `accordion.disabled` input is true **OR** the item-level `item.disabled` input is true (additive precedence: disabled state cannot be overridden at item level when global disabled is true)
 - **FR-050**: When `softDisabled` is true (default), disabled items MUST remain focusable via Tab but not activatable (aria-disabled="true", no disabled attribute)
 - **FR-051**: When `softDisabled` is false, disabled items MUST be completely non-interactive (disabled attribute, not in tab order)
+-
+
+#### FR-050a: SoftDisabled Navigation Semantics (clarification)
+
+- **FR-050a**: When an item is resolved as disabled and `softDisabled` is `true` (the default), the item MUST remain focusable via the Tab key (preserve native tab order) but MUST be skipped by programmatic arrow-key navigation (ArrowUp/ArrowDown/Home/End) and MUST NOT be activatable by Enter/Space or click. The title element MUST have `aria-disabled="true"` in this mode. When `softDisabled` is `false` (hard disabled), the item MUST be removed from the tab sequence (no tabindex / `disabled` attribute or equivalent) and skipped by both Tab and arrow-key navigation. This preserves predictable Tab behavior for keyboard users while keeping arrow navigation efficient by omitting soft-disabled items from the navigation sequence.
 - **FR-052**: Disabled items MUST have visual styling indicating they are not interactive
 
 #### Dynamic Content
@@ -306,10 +344,11 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 
 #### Conditional Rendering and ARIA Stability
 
-- **FR-058**: When an accordion item is collapsed, its content panel MUST be removed from the DOM using @if conditional rendering (not CSS display:none)
-- **FR-059**: The panel content wrapper element with `role="region"` and `aria-labelledby` MUST remain in the DOM when collapsed to maintain stable `aria-controls` relationship
-- **FR-060**: When collapsed, the panel wrapper MUST have the `inert` attribute to prevent keyboard access to removed content
-- **FR-061**: The `aria-controls` attribute on the trigger MUST always reference a valid element ID, even when the content is removed from the DOM
+- **FR-058**: The component MUST preserve ARIA stability: the panel content wrapper element with `role="region"` and `aria-labelledby` MUST remain in the DOM when collapsed and MUST continue to have a stable `id` so `aria-controls` references a valid element. Inner panel content (the heavy/interactive DOM) MAY be conditionally rendered using `@if` or `ng-template` for lazy loading; this ensures ARIA relationships remain stable while allowing lazy content removal for performance.
+
+- **FR-059**: When collapsed, the panel wrapper MUST have the `inert` attribute (or equivalent) to prevent keyboard access to the conditionally-removed inner content and to preserve focus/navigation semantics. Implementations MUST avoid relying on CSS-only hiding to meet ARIA stability requirements.
+
+- **FR-060**: The `aria-controls` attribute on the trigger MUST always reference a valid element ID, even when the inner panel content is not rendered. The panel wrapper's `id` MUST be maintained for this purpose.
 
 #### SSR Compatibility
 
@@ -318,10 +357,50 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 - **FR-064**: Component MUST use Angular's platform detection or afterRender hooks for browser-specific code
 - **FR-065**: Server-rendered HTML MUST include correct semantic structure and ARIA attributes before client hydration
 
+#### FR-062a: SSR Hydration Failure Fallback
+
+- **FR-062a**: If client-side hydration fails (for example due to an unexpected runtime exception during afterRender or an unavailable browser API), the component MUST fail gracefully: (a) report the issue via `ErrorHandler.handleError()` including contextual metadata, (b) leave the server-rendered HTML intact so the page remains usable, and (c) attempt a single non-blocking rehydrate pass during the next idle period. The component MUST NOT throw an uncaught exception that breaks the application shell.
+
 #### Deep Linking (Foundation Feature Parity)
 
 - **FR-066**: When `deepLink` input is true, opening a panel MUST update the browser URL hash with the panel ID
 - **FR-067**: When `deepLink` is true and page loads with a hash matching a panel ID, that panel MUST automatically expand
+
+#### FR-067b: Behavior When Deep Link Hash References Non-existent panelId
+
+- **FR-067b**: If the browser URL hash references a `panelId` that does not match any registered panel in the document, the accordion MUST NOT throw or stop initialization. Instead it MUST call the injected `ErrorHandler.handleError()` with a `DeepLinkNotFound` diagnostic (or Error instance containing the missing id and current URL) so developers are informed, and otherwise silently ignore the hash (no panel is expanded). The component MUST continue to initialize and remain interactive.
+
+#### FR-067c: deepLink Interaction With multiExpand / allowAllClosed
+
+- **FR-067c**: Deep-link-triggered expansions (initial page load or subsequent URL-hash changes) MUST follow the same expansion semantics as user-initiated actions. Concretely: when a deep link target is found and `multiExpand` is `false`, expanding the deep-linked panel MUST collapse any other expanded items (subject to `allowAllClosed` constraints). When `multiExpand` is `true`, the deep-linked panel MUST be expanded in addition to any currently expanded panels. Deep-link operations MUST use the component's normal expansion API (the same internal path used by click/keyboard) so outputs, history updates, and events are produced consistently.
+
+#### FR-106a: Concurrent Keyboard and Mouse Interaction Policy
+
+- **FR-106a**: The component MUST serialize user interactions at the accordion level to avoid conflicting state from concurrent keyboard and mouse events. If a keyboard navigation event and a mouse click target different items at near-simultaneous timestamps, the component MUST process events in chronological order and apply FR-089a serialization/debounce rules per item. Focus updates from keyboard navigation take precedence for focus placement, while click-driven toggles take precedence for expansion state when timestamps indicate the click occurred after the keyboard event.
+
+#### FR-113a: Interactive Elements in Title Content
+
+- **FR-113a**: If interactive elements (links/buttons/inputs) are projected into `<nfs-accordion-title>`, the component MUST ensure: (a) the primary trigger is still the host trigger element (the `button.accordion-title`) and inner interactive elements are regular focusable controls, (b) Enter/Space on the host trigger toggles the panel, and (c) tabbing into inner interactive elements works normally. If the consumer places a focusable element that semantically replaces the trigger (e.g., an `<a>` with click handler meant to toggle), the component MUST log a diagnostic via `ErrorHandler.handleError()` recommending using `nfs-accordion-title` content projection without replacing the host trigger.
+
+#### FR-114a: Empty Panel Content Guidance
+
+- **FR-114a**: Panels with empty or whitespace-only content must still render the panel wrapper with a valid `id` and `role="region"` and `aria-labelledby` attribute. Components SHOULD allow consumers to provide a developer-controlled empty-state slot to display placeholder content. If no placeholder is provided, the component MUST render an invisible placeholder comment (no visual output) and still maintain ARIA relationships.
+
+#### FR-115a: Dynamic Title Content Announcement
+
+- **FR-115a**: If a panel title's text content changes dynamically after initialization, the component MUST not auto-expand the panel. If `announce` is `true` (AR-027a), the component SHOULD publish a concise live-region update indicating the changed title (e.g., `Title changed to "<new title>"`) to aid screen-reader users. If `announce` is `false`, the component MUST at minimum update `aria-labelledby` references so screen readers can query the updated label when focused.
+
+#### FR-147a: Method Failure Semantics
+
+- **FR-147a**: Public methods (`toggle()`, `down()`, `up()`) MUST be idempotent and MUST not throw on invalid calls. Instead, when an action is invalid (e.g., `down()` called on a disabled item or `up()` called when `allowAllClosed=false` and item is last open), the method MUST return silently (no state change) and call `ErrorHandler.handleError()` with a diagnostic indicating the prevented action. Outputs/events (e.g., `down`, `up`) MUST NOT emit when an action is prevented.
+
+#### FR-174a: Two-way Binding and allowAllClosed Interaction
+
+- **FR-174a**: When `[(expanded)]` two-way binding attempts to close the last open item while `allowAllClosed` is `false`, the component MUST coerce the binding to preserve at least one open item: it MUST ignore the binding that would close the last item and call `ErrorHandler.handleError()` notifying the developer of the constraint. The two-way binding value should reflect the actual state (i.e., remain `true` in the model) after coercion.
+
+#### FR-176a: Dynamic Heading Level Updates
+
+- **FR-176a**: When `titleHeadingLevel` changes at runtime, the component MUST update heading wrappers for all items atomically: create new wrapper elements with the new `aria-level` and move trigger buttons into them. If the change would produce an invalid heading level, fallback rules defined in FR-110a apply (report error, fallback to null).
 - **FR-068**: When `updateHistory` is true, panel changes MUST use `history.pushState()` (browser back button navigates between panels)
 - **FR-069**: When `updateHistory` is false (default), panel changes MUST use `history.replaceState()` (browser back button does not track panel changes)
 - **FR-070**: When `deepLinkSmudge` is true, after expanding a panel via hash, the page MUST scroll to ensure the panel is visible
@@ -368,6 +447,10 @@ Note: AR-005 through AR-012 requirements are covered by corresponding FR require
 - **AR-025**: Screen readers MUST announce the current expansion state (expanded/collapsed)
 - **AR-026**: Screen readers MUST convey the relationship between titles and content panels
 - **AR-027**: When an item expands/collapses, screen readers MUST announce the state change
+
+#### AR-027a: Explicit Screen-Reader Announcement Strategy
+
+- **AR-027a**: The component MUST set `aria-expanded` on the title/trigger and provide `aria-controls` plus a `role="region"` on the panel; this is the primary, sufficient mechanism for communicating expansion state to screen readers per WAI-ARIA Authoring Practices. To handle platform inconsistencies, the component MUST also provide an optional, opt-in `announce` input (boolean, default: `false`). When `announce` is `true` the component MUST render a single visually-hidden polite live region (`aria-live="polite"`) and publish a concise announcement on expand/collapse (for example: `Section "<title text>" expanded`). The live-region feature MUST be opt-in (default off) to avoid duplicate or noisy announcements on platforms where `aria-expanded` is reliably announced. Implementers MUST ensure the live-region message is brief and debounced to avoid rapid repeated announcements during fast user interactions.
 
 ### Security Requirements
 

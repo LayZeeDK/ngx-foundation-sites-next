@@ -82,6 +82,80 @@ specs/002-accordion-component/
     └── accordion-aria.md      # ARIA requirements documentation
 ```
 
+## Implementation Notes (Clarifications)
+
+### FR-020a (panelId validation)
+
+- Maintain a registration registry in the accordion parent: `Map<string, NfsAccordionItemRef[]>` mapping `panelId` -> array of registered items (in registration order). On each item registration and on `panelId` changes, validate the array length. If length > 1 (duplicate within same accordion instance), call the injected `ErrorHandler.handleError()` with a structured Error (`new Error(`Duplicate panelId "${id}" in accordion ${accordionInstanceId || '<no-id>'}`)`) and proceed by using the first entry in the registry as the deep-link target. Do not auto-suffix or rename developer-provided `panelId` values.
+
+- Add unit tests that stub `ErrorHandler` to assert invocation and that verify deterministic expansion of the first-registered item.
+
+### FR-067b / FR-067c (deep link missing-targets and multiExpand interaction)
+
+- On initialization and on `hashchange` events: parse the current hash, lookup registered panel(s) via the parent registry (see FR-020a). If no registered panel found, call the injected `ErrorHandler.handleError()` with a `DeepLinkNotFound` diagnostic and return (no expansion). If a target exists, call the accordion's canonical expansion API (e.g., `accordion.expandById(panelId)`) so the existing `multiExpand` and `allowAllClosed` enforcement logic runs (this ensures deep-link expansion collapses other panels when `multiExpand=false`).
+
+- Add Playwright E2E tests that: (a) navigate to page with non-existent `#id` and assert that `ErrorHandler` received a diagnostic and no panels expanded; (b) navigate from `#idA` to `#idB` with `multiExpand=false` and assert collapse/expand behavior matches user interaction semantics.
+
+### FR-050a (softDisabled navigation semantics)
+
+- Keyboard navigation iterator should consult a resolved `isDisabled(item)` predicate which factors both accordion-level `disabled` and item-level `disabled` plus the `softDisabled` mode. Implement navigation filtering rules as:
+  - If `softDisabled === true`: keep item in tab order (don't change native tabindex), set `aria-disabled="true"`, and exclude it from arrow-key iteration (filter it out when computing next/previous indexes).
+  - If `softDisabled === false`: remove from tab order (no tabindex/`disabled` attribute) and exclude from both tab and arrow-key navigation.
+
+- Update unit tests to validate: (a) Tab focuses soft-disabled items, (b) Arrow navigation skips soft-disabled items, (c) activation on soft-disabled items is prevented, and (d) hard-disabled items are not reachable via Tab or Arrow.
+
+### AR-027a (announce live-region opt-in)
+
+- Provide an InputSignal `announce = input(false)` on `<nfs-accordion>` (or at `<nfs-accordion-item>` level as appropriate). When `announce` is `true`, render a single visually-hidden element with `aria-live="polite"` (e.g., `<div class="visually-hidden" aria-live="polite" aria-atomic="true">...</div>`). On expand/collapse, set the live region's textContent to a concise message (e.g., `Section "${titleText}" expanded`). Debounce updates by 100ms to prevent duplicate/rapid announcements during rapid toggles. Add unit and e2e tests that assert (when `announce=true`) the live region receives the expected message on expand/collapse, and that when `announce=false` no live region is present.
+
+### FR-026a (missing title handling)
+
+- If an item registers without a `nfs-accordion-title` child, the item should still register but mark itself as `noTrigger=true`. Do not include it in title-focused navigation lists. Call `ErrorHandler.handleError(new Error('Missing <nfs-accordion-title> in <nfs-accordion-item>'))` to surface diagnostics. Add unit tests that render an item without title and assert no focusable title exists and ErrorHandler was called.
+
+### FR-089a (rapid toggle serialization and debounce)
+
+- Implement a per-item toggle queue and an input-source debounce of 50ms. Internally represent pending requests as a small FIFO per item; if a toggle arrives during an in-progress transition, enqueue it; when the transition completes, dequeue and execute the next request. For UI-sourced toggles (click/keyboard), coalesce identical repeated toggles within 50ms to a single action. Add timing-sensitive integration tests to simulate rapid user clicks and assert final state is stable and no uncaught exceptions occur.
+
+### FR-038a (explicit state transitions)
+
+- Internally model item state as an enum: `State = 'COLLAPSED' | 'EXPANDING' | 'EXPANDED' | 'COLLAPSING'`. Expose only `expanded` boolean and events; ensure `aria-expanded` is set to `true` only when state === 'EXPANDED'. Guard concurrent operations by checking state (e.g., ignore `down()` calls if state === 'EXPANDING' and coalesce/queue per FR-089a rules).
+
+### FR-110a (input validation)
+
+- Implement a simple input sanitizer/validator helper at the parent level. For `titleHeadingLevel`, accept numbers 1..6; on invalid input call `ErrorHandler.handleError()` and set `titleHeadingLevel=null`. For `deepLinkSmudgeDelay` negative values, convert to absolute value and call `ErrorHandler.handleError()`; for `deepLinkSmudgeOffset` non-numeric values set `0` and call `ErrorHandler.handleError()`. Add unit tests to assert validator behavior.
+
+### FR-062a (SSR hydration fallback)
+
+- On client bootstrap, wrap hydration steps in a guarded try/catch and call `ErrorHandler.handleError()` on exceptions. Preserve server-rendered HTML and schedule a single rehydrate attempt using `requestIdleCallback`/`setTimeout(0)` guarded by `isPlatformBrowser()`.
+
+### FR-106a (concurrent interactions)
+
+- Implement event timestamp ordering at the accordion root: enqueue events as `{ ts: performance.now(), type, payload }` and process FIFO while allowing cross-item concurrency except where FR-089a serialization applies. Focus updates get priority for focus placement; expansion state resolves by event timestamp ordering.
+
+### FR-113a (interactive title content)
+
+- Keep the host trigger as the primary clickable element: render `button.accordion-title` as host and project consumer content inside. If projected content contains tabbable elements, ensure their tabIndex remains local and that keyboard activation of host still toggles. If detection of a focusable element that appears to replace the host trigger occurs, call `ErrorHandler.handleError()` with remediation guidance.
+
+### FR-114a (empty content placeholder)
+
+- Render a visually-hidden placeholder when panel inner content is empty and `announce` is `true` to aid screen readers. Provide an `emptyState` slot for consumers to project placeholder UI.
+
+### FR-115a (dynamic title announcements)
+
+- When `announce=true`, publish live-region messages for title changes using the same debounced live-region used for expand/collapse (AR-027a). Ensure messages are brief and rate-limited.
+
+### FR-147a (method failure semantics)
+
+- Implement `tryAction()` wrapper that checks preconditions and either executes action or calls `ErrorHandler.handleError()` and returns silently. Ensure public methods call `tryAction()` and that prevented actions do not emit output events.
+
+### FR-174a (binding coercion)
+
+- Implement binding coercion in the `expanded` model setter: if `allowAllClosed === false` and the change would close the last open item, ignore the setter and call `ErrorHandler.handleError()`; update bound value to reflect the coerced state so the consumer's model stays in sync.
+
+### FR-176a (heading level dynamics)
+
+- When `titleHeadingLevel` updates, perform DOM updates in a single microtask to replace wrappers and preserve focus by temporarily tracking focused item id and restoring focus to the correct button after swap.
+
 ### Source Code (repository root)
 
 ```text
