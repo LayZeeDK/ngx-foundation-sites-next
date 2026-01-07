@@ -10,6 +10,7 @@
 **Decision**: Component MUST provide Angular equivalents for all Foundation accordion JavaScript methods and events.
 
 **Foundation JavaScript API** (from https://get.foundation/sites/docs/accordion.html):
+
 - Methods: `toggle($target)`, `down($target)`, `up($target)`, `destroy()`
 - Events: `down`, `up` (Foundation emits these as `down.zf.accordion` / `up.zf.accordion`)
 
@@ -38,16 +39,19 @@
 **Decision**: Use **@angular/aria** as primary source, with **@angular/cdk** as fallback
 
 **Rationale**:
+
 - @angular/aria is specifically designed for WCAG compliance and ARIA patterns
 - Provides FocusMonitor, A11yModule, and ARIA utilities out of the box
 - CDK provides additional keyboard handling (ListKeyManager) if ARIA doesn't have what's needed
 - Constitution principle II mandates ARIA-first hierarchy
 
 **Alternatives Considered**:
+
 - Custom Angular only: Would require reimplementing tested accessibility patterns
 - CDK only: Less specialized for ARIA compliance compared to @angular/aria
 
 **Implementation Notes**:
+
 - Import `FocusMonitor` from `@angular/cdk/a11y` for focus management
 - Use `ListKeyManager` from `@angular/cdk/a11y` for arrow key navigation if needed
 - Reference Angular ARIA examples for accordion pattern structure
@@ -61,12 +65,14 @@
 **Decision**: Use **exported injection token with optional, skipSelf injection** (CDK pattern)
 
 **Rationale**:
+
 - Angular ARIA's accordion token is NOT exported and uses required injection
 - This breaks with content projection because content children use declaration-site injector
 - CDK pattern (exported token + optional injection) gracefully handles content projection
 - Aligns with spec clarification: "CDK-style pattern with exported `nfsAccordionToken`"
 
 **Pattern**:
+
 ```typescript
 // accordion.token.ts
 export const nfsAccordionToken = new InjectionToken<NfsAccordion>('nfsAccordionToken');
@@ -75,7 +81,7 @@ export const nfsAccordionToken = new InjectionToken<NfsAccordion>('nfsAccordionT
 @Component({
   providers: [{ provide: nfsAccordionToken, useExisting: NfsAccordion }],
 })
-export class NfsAccordion { }
+export class NfsAccordion {}
 
 // accordion-item.component.ts
 export class NfsAccordionItem {
@@ -84,11 +90,13 @@ export class NfsAccordionItem {
 ```
 
 **Alternatives Considered**:
+
 - Angular ARIA pattern: Doesn't work with content projection (items can't find parent)
 - Direct property binding: Would require explicit parent binding, losing composition benefits
 - ViewChild queries: Only work for direct children, not content-projected children
 
 **Implementation Notes**:
+
 - Token must be exported from public API
 - Injection must be optional to allow standalone item usage
 - skipSelf prevents item from finding itself if it also provides the token
@@ -102,20 +110,22 @@ export class NfsAccordionItem {
 **Decision**: Keep **panel wrapper in DOM always**, conditionally render **content inside** with @if
 
 **Rationale**:
+
 - ARIA requires `aria-controls` to reference a valid element ID at all times
 - Performance requires removing collapsed content from DOM
 - Solution: Stable wrapper element + conditional content rendering
 
 **Implementation**:
+
 ```typescript
 // In accordion-item.component.html
-<div 
-  class="accordion-content" 
-  [id]="panelId()" 
-  role="region" 
+<div
+  class="accordion-content"
+  [id]="panelId()"
+  role="region"
   [attr.aria-labelledby]="triggerId()"
   [attr.inert]="expanded() ? null : ''">
-  
+
   @if (lazyContent(); as lazy) {
     @if (expanded() || hasBeenExpanded()) {
       <ng-container [ngTemplateOutlet]="lazy.templateRef" />
@@ -129,11 +139,13 @@ export class NfsAccordionItem {
 ```
 
 **Alternatives Considered**:
+
 - CSS display:none: Keeps content in DOM, worse performance
 - Remove wrapper when collapsed: Breaks ARIA relationships, requires ID updates
 - Always render content: Poor performance with 100 items
 
 **Implementation Notes**:
+
 - Use `inert` attribute to prevent keyboard access to collapsed panel wrapper
 - Track `hasBeenExpanded()` signal for lazy content persistence
 - Foundation CSS `.accordion-content` class always present for styling
@@ -147,16 +159,18 @@ export class NfsAccordionItem {
 **Decision**: Use **static counter + instance ID** pattern
 
 **Rationale**:
+
 - ARIA relationships require unique IDs for aria-controls/aria-labelledby
 - Multiple accordions on same page must not have ID collisions
 - Counter ensures uniqueness without external dependencies
 
 **Implementation**:
+
 ```typescript
 export class NfsAccordion {
   static #counter = 0;
   readonly #instanceId = `nfs-accordion-${NfsAccordion.#counter++}`;
-  
+
   protected generateItemId(index: number): string {
     return `${this.#instanceId}-item-${index}`;
   }
@@ -164,11 +178,13 @@ export class NfsAccordion {
 ```
 
 **Alternatives Considered**:
+
 - UUID library: Unnecessary external dependency, overkill for this use case
 - timestamp-based: Risk of collision if multiple instances created simultaneously
 - User-provided IDs only: Requires boilerplate, prone to errors
 
 **Implementation Notes**:
+
 - Counter increments during class initialization
 - Instance ID used as prefix for all child IDs
 - Falls back to user-provided `id` input if specified
@@ -182,11 +198,13 @@ export class NfsAccordion {
 **Decision**: **Accordion level** handles arrow keys, **item level** handles Enter/Space
 
 **Rationale**:
+
 - Arrow key navigation requires awareness of all items and their order
 - Accordion component maintains focus management context
 - Individual items handle their own activation (Enter/Space) for encapsulation
 
 **Implementation**:
+
 ```typescript
 // accordion.component.ts
 @Component({
@@ -229,10 +247,12 @@ export class NfsAccordionItem {
 ```
 
 **Alternatives Considered**:
+
 - All keyboard handling in items: Requires items to query siblings, tight coupling
 - All keyboard handling in accordion: Loses encapsulation for item-level actions
 
 **Implementation Notes**:
+
 - Use CDK's ListKeyManager if arrow key logic becomes complex
 - Skip disabled items during navigation
 - Support wraparound navigation with `wrap` input
@@ -246,11 +266,13 @@ export class NfsAccordionItem {
 **Decision**: Use **isPlatformBrowser + afterRender** pattern
 
 **Rationale**:
+
 - Deep linking requires History API and location.hash (browser-only)
 - Angular Universal renders server-side without browser globals
 - Constitution requires SSR compatibility
 
 **Implementation**:
+
 ```typescript
 import { afterRender, inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
@@ -270,10 +292,12 @@ export class NfsAccordion {
 ```
 
 **Alternatives Considered**:
+
 - Always use browser APIs: Breaks SSR with runtime errors
 - Conditional imports: More complex, unnecessary for this use case
 
 **Implementation Notes**:
+
 - Check platform before accessing `window`, `document`, `history`
 - Use `afterRender` to ensure DOM is ready before URL hash operations
 - Server-rendered HTML includes correct semantic structure and ARIA attributes
@@ -287,17 +311,19 @@ export class NfsAccordion {
 **Decision**: Use **signal for item state**, **computed for derived values**
 
 **Rationale**:
+
 - Signals provide fine-grained reactivity
 - Computed signals automatically update when dependencies change
 - OnPush change detection works seamlessly with signals
 
 **Implementation**:
+
 ```typescript
 export class NfsAccordionItem {
-  expanded = model<boolean>(false);  // Two-way bindable
-  
+  expanded = model<boolean>(false); // Two-way bindable
+
   readonly accordion = inject(nfsAccordionToken, { optional: true, skipSelf: true });
-  
+
   // Computed: Should this item render content?
   readonly shouldRenderContent = computed(() => {
     return this.expanded() && !this.disabled();
@@ -306,7 +332,7 @@ export class NfsAccordionItem {
 
 export class NfsAccordion {
   #openItemIds = signal<string[]>([]);
-  
+
   // Computed: Check if all items are closed
   readonly allClosed = computed(() => {
     return this.#openItemIds().length === 0;
@@ -315,10 +341,12 @@ export class NfsAccordion {
 ```
 
 **Alternatives Considered**:
+
 - BehaviorSubject/Observable: More boilerplate, less integrated with Angular
 - Traditional properties: Requires manual change detection triggering
 
 **Implementation Notes**:
+
 - Use `model()` for two-way binding on `expanded` input
 - Use `computed()` for derived state (e.g., ARIA attributes)
 - Use `effect()` sparingly for side effects (e.g., emitting events)
@@ -332,15 +360,17 @@ export class NfsAccordion {
 **Decision**: Use **host bindings** for state classes
 
 **Rationale**:
+
 - Host bindings automatically update with signal changes
 - No manual class manipulation needed
 - Declarative and type-safe
 
 **Implementation**:
+
 ```typescript
 @Component({
   host: {
-    'class': 'accordion-item',
+    class: 'accordion-item',
     '[class.is-active]': 'expanded()',
     '[class.is-disabled]': 'disabled()',
     '[attr.aria-disabled]': 'disabled() || null',
@@ -353,11 +383,13 @@ export class NfsAccordionItem {
 ```
 
 **Alternatives Considered**:
+
 - Decorator-based host bindings: Avoid; use the @Component `host` object instead
 - Template class bindings: Less efficient for host element
 - Manual class manipulation: Error-prone, not reactive
 
 **Implementation Notes**:
+
 - Use the @Component `host` object for host bindings
 - Foundation classes: `.accordion`, `.accordion-item`, `.accordion-title`, `.accordion-content`, `.is-active`
 - Custom classes only when necessary (e.g., `.is-disabled` for visual feedback)
@@ -371,11 +403,13 @@ export class NfsAccordionItem {
 **Decision**: **Storybook for interactions**, **Vitest for logic**, **Playwright for deep linking**
 
 **Rationale**:
+
 - Storybook play functions test real user interactions in browser
 - Vitest unit tests for pure functions (ID generation, state logic)
 - Playwright E2E only for History API (URL hash manipulation)
 
 **Test Distribution**:
+
 ```text
 Storybook (Primary):
 - Basic.story.ts: Single-expand mode, clicking, state changes
@@ -396,10 +430,12 @@ Playwright E2E (Tertiary):
 ```
 
 **Alternatives Considered**:
+
 - Jest instead of Vitest: Vitest is faster and better integrated with Vite/Nx
 - No E2E tests: Deep linking requires real browser navigation testing
 
 **Implementation Notes**:
+
 - Use semantic locators in E2E: `getByRole('button')`, `getByText()`
 - Storybook tests run in CI via `test-storybook` target
 - All stories must include accessibility checks
@@ -408,17 +444,17 @@ Playwright E2E (Tertiary):
 
 ## Summary of Decisions
 
-| Topic | Decision | Key Benefit |
-|-------|----------|-------------|
-| ARIA Library | @angular/aria (primary) + @angular/cdk (fallback) | WCAG compliance + proven patterns |
-| DI Pattern | Exported token + optional injection | Content projection support |
-| Content Rendering | Stable wrapper + @if content | ARIA compliance + performance |
-| ID Generation | Static counter + instance ID | Collision-free across instances |
-| Keyboard Handling | Accordion (arrows) + Item (Enter/Space) | Proper encapsulation |
-| SSR Support | isPlatformBrowser + afterRender | Universal compatibility |
-| State Management | Signals + computed | Reactive, OnPush compatible |
-| CSS Classes | Host bindings | Declarative, reactive |
-| Testing Strategy | Storybook (primary) + Vitest + Playwright | Best tool for each scenario |
+| Topic             | Decision                                          | Key Benefit                       |
+| ----------------- | ------------------------------------------------- | --------------------------------- |
+| ARIA Library      | @angular/aria (primary) + @angular/cdk (fallback) | WCAG compliance + proven patterns |
+| DI Pattern        | Exported token + optional injection               | Content projection support        |
+| Content Rendering | Stable wrapper + @if content                      | ARIA compliance + performance     |
+| ID Generation     | Static counter + instance ID                      | Collision-free across instances   |
+| Keyboard Handling | Accordion (arrows) + Item (Enter/Space)           | Proper encapsulation              |
+| SSR Support       | isPlatformBrowser + afterRender                   | Universal compatibility           |
+| State Management  | Signals + computed                                | Reactive, OnPush compatible       |
+| CSS Classes       | Host bindings                                     | Declarative, reactive             |
+| Testing Strategy  | Storybook (primary) + Vitest + Playwright         | Best tool for each scenario       |
 
 ---
 
@@ -427,6 +463,7 @@ Playwright E2E (Tertiary):
 All technical unknowns resolved. Ready to proceed to Phase 1: Design & Contracts.
 
 **Next Steps**:
+
 1. Generate data-model.md with component entities and relationships
 2. Generate contracts/accordion-api.ts with TypeScript interfaces
 3. Generate contracts/accordion-aria.md with ARIA requirements

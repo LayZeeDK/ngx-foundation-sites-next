@@ -38,11 +38,11 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
 - [ ] T006 Create accordion directory structure at packages/ngx-foundation-sites/src/lib/accordion/
-- [ ] T007 [P] Set up Foundation SCSS imports in packages/ngx-foundation-sites/src/lib/accordion/_accordion-imports.scss
+- [ ] T007 [P] Set up Foundation SCSS imports in packages/ngx-foundation-sites/src/lib/accordion/\_accordion-imports.scss
 - [ ] T008 [P] Create injection token file at packages/ngx-foundation-sites/src/lib/accordion/accordion.token.ts (exports nfsAccordionToken for DI)
 - [ ] T009 Install @angular/cdk if not present (for FocusMonitor, ListKeyManager, a11y utilities)
 - [ ] T010 [P] Create public API exports file at packages/ngx-foundation-sites/src/lib/accordion/index.ts
- - [x] T011 Create API design document using `foundation-api-design` skill at packages/ngx-foundation-sites/ACCORDION_API_DESIGN.md
+- [x] T011 Create API design document using `foundation-api-design` skill at packages/ngx-foundation-sites/ACCORDION_API_DESIGN.md
 - [ ] T012 [P] Create README documentation template at packages/ngx-foundation-sites/src/lib/accordion/README.md
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
@@ -556,6 +556,7 @@ With multiple developers:
 **Total Tasks**: 175 tasks across 16 phases
 **MVP Scope**: Phases 1-5 (User Stories 1-3, P1) = 64 tasks = ~36% of total
 **Task Breakdown by User Story**:
+
 - US1 (Basic Accordion): 19 tasks
 - US2 (Keyboard Navigation): 18 tasks
 - US3 (Screen Reader): 15 tasks

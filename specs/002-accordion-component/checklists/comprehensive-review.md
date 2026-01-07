@@ -81,7 +81,7 @@
 
 - [x] CHK042 - Is Foundation JavaScript API mapping clearly documented with method equivalents? [Clarity, Contracts API FOUNDATION_API_MAPPING] — ✓ contracts/accordion-api.ts FOUNDATION_API_MAPPING lines 319-361 + plan lines 126-134 document all mappings
 - [x] CHK043 - Are Foundation event name mappings (down.zf.accordion → down output) clearly documented? [Clarity, Contracts API, Data Model] — ✓ FOUNDATION_API_MAPPING.events lines 335-340 + contracts lines 94-106 document event mappings
-- [x] CHK044 - Are Foundation data-attribute to Angular input mappings complete? [Clarity, Contracts API options mapping] — ✓ FOUNDATION_API_MAPPING.options lines 342-360 + CA-007 document all data-* mappings
+- [x] CHK044 - Are Foundation data-attribute to Angular input mappings complete? [Clarity, Contracts API options mapping] — ✓ FOUNDATION_API_MAPPING.options lines 342-360 + CA-007 document all data-\* mappings
 - [x] CHK045 - Are deviations from Foundation API (destroy, init) clearly justified? [Clarity, Spec §CA-011, Contracts API] — ✓ CA-011 + contracts lines 14-16, 331-332 + plan lines 133-134 justify Angular lifecycle handling
 
 ---
@@ -404,7 +404,7 @@
 ## Notes
 
 - **Traceability**: 200/200 items (100%) include spec section references, gap markers, or explicit traceability
-- **Focus Distribution**: 
+- **Focus Distribution**:
   - Accessibility: 39 items (CHK013-018, CHK096, CHK116-138)
   - API Clarity: 31 items (CHK034-045, CHK139-155)
   - Consistency: 24 items (CHK046-061, CHK156-165)

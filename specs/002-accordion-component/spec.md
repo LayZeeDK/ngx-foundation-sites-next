@@ -497,6 +497,7 @@ Note: AR-005 through AR-012 requirements are covered by corresponding FR require
 **Host Element**: Renders as `<ul class="accordion">`
 
 **Inputs**:
+
 - `multiExpand` (boolean, default: `false`) - Allow multiple panels to be expanded simultaneously (maps to Foundation's `data-multi-expand`)
 - `allowAllClosed` (boolean, default: `false`) - Allow all panels to be closed (maps to Foundation's `data-allow-all-closed`)
 - `disabled` (boolean, default: `false`) - Disable all accordion items
@@ -510,6 +511,7 @@ Note: AR-005 through AR-012 requirements are covered by corresponding FR require
 - `softDisabled` (boolean, default: `true`) - When disabled, items remain focusable but not activatable for better accessibility (Angular extension, not in Foundation)
 
 **Outputs**:
+
 - `down` - Emitted when a panel is opened (Foundation parity: `down.zf.accordion`)
 - `up` - Emitted when a panel is closed (Foundation parity: `up.zf.accordion`)
 
@@ -521,11 +523,13 @@ Note: AR-005 through AR-012 requirements are covered by corresponding FR require
 **Host Element**: Renders as `<li class="accordion-item">`
 
 **Inputs**:
+
 - `panelId` (string, required) - Unique identifier for this panel (used for deep linking and ARIA relationships)
 - `expanded` (boolean model, default: `false`) - Whether the panel is expanded (supports two-way binding via `[(expanded)]`)
 - `disabled` (boolean, default: `false`) - Whether this item is disabled
 
 **Methods**:
+
 - `down(): void` - Expand this panel (Foundation parity: `.down($target)`)
 - `up(): void` - Collapse this panel (Foundation parity: `.up($target)`)
 - `toggle(): void` - Toggle this panel (Foundation parity: `.toggle($target)`)
@@ -609,12 +613,7 @@ Note: AR-005 through AR-012 requirements are covered by corresponding FR require
 
 ```html
 <!-- URL: /page#settings will auto-expand the settings panel and scroll to it -->
-<nfs-accordion 
-  [deepLink]="true" 
-  [deepLinkSmudge]="true"
-  [deepLinkSmudgeDelay]="500"
-  [deepLinkSmudgeOffset]="80">
-  
+<nfs-accordion [deepLink]="true" [deepLinkSmudge]="true" [deepLinkSmudgeDelay]="500" [deepLinkSmudgeOffset]="80">
   <nfs-accordion-item panelId="profile">
     <nfs-accordion-title>Profile</nfs-accordion-title>
     <p>Profile settings...</p>
@@ -673,13 +672,13 @@ export class MyComponent {
 </nfs-accordion-title>
 
 <!-- Panel wrapper: ALWAYS in DOM for ARIA stability -->
-<div 
-  class="accordion-content" 
-  [id]="panelId()" 
-  role="region" 
+<div
+  class="accordion-content"
+  [id]="panelId()"
+  role="region"
   [attr.aria-labelledby]="triggerId()"
   [attr.inert]="expanded() ? null : ''">
-  
+
   <!-- Content: CONDITIONALLY rendered with @if -->
   @if (lazyContent(); as lazy) {
     @if (expanded() || hasBeenExpanded()) {
@@ -694,12 +693,14 @@ export class MyComponent {
 ```
 
 **Key Points**:
+
 1. The `<div class="accordion-content" role="region">` with the `panelId` is **always in the DOM**, ensuring `aria-controls` on the trigger button always references a valid element.
 2. The actual content inside the wrapper is **conditionally rendered** with `@if (expanded())`, removing it from the DOM when collapsed for performance.
 3. The `inert` attribute on the wrapper prevents keyboard navigation into an empty collapsed panel.
 4. For lazy content (`ng-template[nfsAccordionContent]`), the lifecycle mirrors @defer behavior as defined by the Angular Aria Accordion merge request (awaiting upstream release), aligning with @defer's content retention and destruction semantics rather than implementing a custom lifecycle strategy.
 
 **Benefits**:
+
 - ARIA compliant: `aria-controls` always references a valid ID
 - Performance optimized: Collapsed content removed from DOM
 - No layout thrashing: Stable wrapper element prevents reflow
