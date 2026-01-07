@@ -15,13 +15,13 @@
 - Q: Should the component support **eager content projection only** (always rendered), **lazy content via ng-template only**, or **both patterns**? → A: Both (eager via ng-content, lazy via ng-template[nfsAccordionContent])
 - Q: When an accordion item is collapsed, should the content be **removed from DOM** (@if) or **kept in DOM with display:none** (CSS)? → A: Removed from DOM (@if conditional rendering)
 
-### Session 2025-01-22
+### Session 2026-01-22
 
 - Q: When **both** `accordion.disabled="true"` (global) **and** `item.disabled="false"` (per-item) are set, which takes precedence? → A: Additive (item disabled if either global OR item-level is true)
 - Q: When keyboard navigation moves between accordion titles (ArrowUp/Down/Home/End), should focus transitions be animated? → A: Instant without animation (aligns with WAI-ARIA APG)
 - Q: When an accordion is rendered with **zero accordion items** (e.g., `@for` iterating over an empty array), what should the component display? → A: Render empty container with no visual indicator
 - Q: When deep linking encounters duplicate panel IDs across multiple accordion instances, should the system: (A) expand the first matching panel only, (B) expand all matching panels, (C) log a warning and expand the first match, or (D) log a warning and expand no panels? → A: Option D but pass an error to `ErrorHandler.handleError` instead of logging directly to console (expand first matching panel and report error via ErrorHandler)
-- Q: When lazy-loaded content (`ng-template[nfsAccordionContent]`) is collapsed after being expanded, should the lifecycle mirror @defer behavior (where the referenced Angular Aria Accordion merge request will define the standard)? → A: Mirror @defer which we will use when the referenced Angular Aria Accordion merge request is released
+- Q: When lazy-loaded content (`ng-template[nfsAccordionContent]`) is collapsed after being expanded, should the lifecycle mirror @defer behavior (where the referenced Angular Aria Accordion merge request will define the standard)? → A: Mirror @defer lifecycle (content rendered once and kept in memory until item destroyed). Angular Aria Accordion merge request will inform future optimizations, but MVP uses simple once-rendered-always-retained strategy.
 - Q: For an accordion with the maximum supported item count (100 items), what are the acceptable performance targets for (A) initial render time and (B) toggle responsiveness (expand/collapse a single item)? → A: 5s render, 200ms toggle
 - Q: When user-generated HTML is projected into accordion title or content via ng-content, how should the component handle potential XSS risks? → A: Option B - Treat all projected content as trusted (no built-in sanitization) and document that developers must sanitize externally before binding
 
@@ -208,7 +208,7 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 - **Rapid clicks**: What happens if user rapidly clicks multiple titles in succession? (Should handle state transitions cleanly without race conditions)
 - **Long content**: What happens when panel content is very long and causes scrolling? (Should scroll to reveal expanded content if needed)
 - **ID collisions**: What happens if multiple accordions exist on the same page? (Auto-generated IDs must be unique across all instances using a counter or UUID strategy; for deep linking, duplicate `panelId` values across multiple accordion instances will expand the first matching panel and report an error via `ErrorHandler.handleError()`)
-- **Programmatic control**: Can developers programmatically expand/collapse items via the component API? (Should provide methods or signal inputs for external control)
+- **Programmatic control**: Can developers programmatically expand/collapse items via the component API? (Should provide methods per FR-075: `toggle()`, `down()`, `up()` exposed on NfsAccordionItem)
 - **Focus management during removal**: What happens if the focused item is removed from the DOM? (Focus should move to a safe location, like the next item or parent accordion)
 - **ARIA in nested content**: What happens if accordion-content contains interactive elements (buttons, links)? (Should maintain proper tab order and not interfere with child element accessibility)
 
@@ -337,14 +337,8 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 
 #### ARIA Roles and Attributes
 
-- **AR-005**: Each `<nfs-accordion-title>` button element MUST have `role="button"`
-- **AR-006**: Each `<nfs-accordion-title>` button element MUST have `aria-expanded` attribute reflecting current state ("true" when open, "false" when closed)
-- **AR-007**: Each `<nfs-accordion-title>` button element MUST have `aria-controls` attribute pointing to the ID of its associated content panel wrapper
-- **AR-008**: Each panel content wrapper element MUST have `role="region"`
-- **AR-009**: Each panel content wrapper element MUST have `aria-labelledby` attribute pointing to the ID of its associated title button
-- **AR-010**: When `softDisabled` is true, disabled items MUST have `aria-disabled="true"` on the title element (no disabled attribute)
-- **AR-011**: When `softDisabled` is false, disabled items MUST have the `disabled` attribute on the title element
-- **AR-012**: When `titleHeadingLevel` is set (1-6), title buttons MUST be wrapped in a `<div role="heading" aria-level="N">` element for proper document outline
+Note: AR-005 through AR-012 requirements are covered by corresponding FR requirements (FR-044 through FR-051). The following requirements address unique accessibility concerns not duplicated elsewhere:
+
 - **AR-013**: Title button and panel wrapper elements MUST have unique IDs for proper ARIA relationships across multiple accordion instances on the same page
 - **AR-014**: The panel wrapper element MUST remain in the DOM when collapsed to ensure `aria-controls` always references a valid ID
 
@@ -392,6 +386,11 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 - **CA-010**: **Foundation JavaScript Event Parity (MANDATORY)**: Expose Foundation event names (without the `.zf.*` namespace) as Angular outputs: `down`, `up`
 - **CA-011**: **Parity Exceptions (MANDATORY)**: `destroy()` is handled via Angular lifecycle / `DestroyRef` (no public method), and `init()` is handled by Angular auto-initialization (no public method)
 
+#### Foundation JavaScript API Alignment
+
+- **FR-075**: `<nfs-accordion-item>` MUST expose Foundation-equivalent methods that mirror Foundation's JavaScript API: `toggle()` (toggles expand/collapse), `down()` (expands panel), `up()` (collapses panel)
+- **FR-076**: `<nfs-accordion>` MUST emit Foundation-equivalent events as Angular outputs: `down` (emitted when any panel opens, with payload containing the opened item reference), `up` (emitted when any panel closes, with payload containing the closed item reference)
+
 ### Key Entities _(Component Architecture)_
 
 - **NfsAccordionComponent**: Root container component (renders as `<ul class="accordion">`) that manages overall accordion state, tracks which items are open, enforces `multiExpand` and `allowAllClosed` rules, provides context to child items via exported `nfsAccordionToken`, handles keyboard navigation coordination, and implements deep linking features (`deepLink`, `deepLinkSmudge`, `updateHistory`). Emits Foundation parity events via outputs: `down`, `up`.
@@ -400,7 +399,7 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 
 - **NfsAccordionTitleComponent**: Clickable trigger element (renders as `<button class="accordion-title">`, optionally wrapped in `<div role="heading" aria-level="N">` if `titleHeadingLevel` is set on parent accordion) that displays the title content, manages button role and ARIA attributes (`aria-expanded`, `aria-controls`, `aria-disabled`), handles click and keyboard events (Enter/Space to toggle), and projects title content via ng-content.
 
-- **NfsAccordionContentDirective**: Structural directive (`ng-template[nfsAccordionContent]`) for lazy content loading. Content lifecycle mirrors @defer behavior as defined by the Angular Aria Accordion merge request (awaiting upstream release). The directive will align with @defer's content retention and destruction semantics rather than implementing a custom lifecycle strategy. Item always maintains a stable panel wrapper element with `role="region"` and `aria-labelledby` in the DOM, even when content is removed via @if, to ensure `aria-controls` references remain valid.
+- **NfsAccordionContentDirective**: Structural directive (`ng-template[nfsAccordionContent]`) for lazy content loading. Content lifecycle uses simple strategy: once rendered (on first expand), content stays in memory until item destroyed. This mirrors @defer's retention behavior. Angular Aria Accordion merge request (when released) may inform future lifecycle optimizations. Item always maintains a stable panel wrapper element with `role="region"` and `aria-labelledby` in the DOM, even when content is removed via @if, to ensure `aria-controls` references remain valid.
 
 - **AccordionContext (DI Token)**: Exported injection token (`export const nfsAccordionToken = new InjectionToken<NfsAccordionComponent>('nfsAccordionToken')`) providing access to parent accordion component. Enables decoupled parent-child communication without property binding. Used by items to register with parent and query settings like `multiExpand`, `allowAllClosed`, `wrap`, `titleHeadingLevel`, `softDisabled`. Pattern matches Angular Material/CDK (not Angular ARIA) to support content projection: token is exported, injection is optional with `skipSelf`, allowing items to work standalone when no parent exists.
 
@@ -489,33 +488,7 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 - Visual verification of Foundation CSS classes and styling
 - SSR rendering in a sample Angular Universal application
 
-## Implementation Notes
-
-### DI Token Pattern for Parent-Child Communication
-
-The accordion item components need to communicate with the parent accordion without direct property binding. Following the Angular CDK/Material pattern (not Angular ARIA), use an **exported, optional injection token**:
-
-```typescript
-// Injection token (EXPORTED - camelCase with "Token" suffix)
-export const nfsAccordionToken = new InjectionToken<NfsAccordionComponent>('nfsAccordionToken');
-
-// In NfsAccordionComponent
-providers: [{ provide: nfsAccordionToken, useExisting: NfsAccordionComponent }]
-
-// In NfsAccordionItemComponent (OPTIONAL injection with skipSelf)
-private accordion = inject(nfsAccordionToken, { optional: true, skipSelf: true });
-```
-
-This allows:
-- Items to work standalone when no parent accordion exists
-- Content projection to function correctly (unlike Angular ARIA's required injection which breaks with content projection)
-- Items to register with the parent and query settings like `multiExpand`, `allowAllClosed`, `wrap`, `titleHeadingLevel`, and `softDisabled` when a parent is present
-
-**Critical**: The token must be **exported** from the public API and injection must be **optional with skipSelf** to support content-projected children. This is how Angular Material/CDK accomplish content projection, unlike Angular ARIA which uses a non-exported, required token.
-
-**Why Angular ARIA's pattern doesn't work**: Angular ARIA's `ACCORDION_GROUP` token is not exported and uses required injection. With content projection, child components use their declaration-site injector (where they are declared in the user's template), not the render-site injector (where they are projected via ng-content). This means `NfsAccordionItem` declared in a user template cannot find `AccordionGroup` provided by `NfsAccordion` in the DI chain. The CDK pattern (exported token + optional injection) solves this by allowing items to function gracefully when no parent is found.
-
-### Complete Component API
+## Complete Component API
 
 #### NfsAccordion (Container Component)
 
