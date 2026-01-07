@@ -58,6 +58,28 @@ When building components, follow this priority order:
 2. **@angular/cdk** - Use CDK primitives when ARIA doesn't provide what's needed
 3. **Custom Angular** - Only as a last resort when neither ARIA nor CDK suffices
 
+### Component vs Directive Choice
+
+**Prefer directives over components when possible.** Use this decision tree:
+
+1. **Directive** - When the element:
+   - Adds behavior or styling to existing DOM elements
+   - Doesn't need a template or its own view
+   - Enhances content without wrapping it
+   - Can leverage Foundation CSS classes applied to host elements
+   - Examples: `[nfsAccordionContent]`, `[nfsButton]`, `[nfsTooltip]`, `[nfsDropdownToggle]`
+
+2. **Component** - When the element:
+   - Renders its own template and manages view logic
+   - Has complex internal structure (header, body, footer)
+   - Needs lifecycle hooks for DOM manipulation
+   - Requires content projection with multiple slots
+   - Examples: `<nfs-accordion>`, `<nfs-modal>`, `<nfs-tabs>`
+
+**Key principle**: Because Foundation component styles are loaded programmatically (not via component styleUrls), directives can apply Foundation CSS classes to host elements without needing a component wrapper. For example, a `[nfsButton]` directive can add `.button` classes to a consumer's `<button>` element directly, avoiding unnecessary component overhead.
+
+When in doubt, start with a directive and refactor to a component only if template complexity demands it.
+
 ### Content Projection and DI
 
 When building components that support content projection (e.g., `<nfs-accordion>` containing `<nfs-accordion-item>`), follow this pattern to avoid DI failures:
