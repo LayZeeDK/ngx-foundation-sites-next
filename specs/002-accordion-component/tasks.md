@@ -139,6 +139,7 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 - [ ] T055 [P] [US3] Implement ARIA attributes on NfsAccordionTitle button: aria-expanded (computed from item.expanded signal)
 - [ ] T056 [P] [US3] Implement ARIA attributes on NfsAccordionTitle button: aria-controls (references panel ID)
 - [ ] T057 [US3] Implement unique ID generation in NfsAccordion: static counter + instance ID (nfs-accordion-${counter++})
+- [ ] T057b [P] [US3] Implement ID auto-generation utility function with static counter in packages/ngx-foundation-sites/src/lib/accordion/id-generator.ts
 - [ ] T058 [US3] Generate title button ID: ${accordionInstanceId}-title-${itemIndex}
 - [ ] T059 [US3] Use user-provided panelId or generate: ${accordionInstanceId}-panel-${itemIndex}
 - [ ] T060 [P] [US3] Create panel wrapper element in NfsAccordionItem template with role="region"

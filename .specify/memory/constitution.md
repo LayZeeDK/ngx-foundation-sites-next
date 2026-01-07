@@ -1,24 +1,22 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version: 0.1.0 → 1.0.0
-Rationale: Initial constitution establishment for ngx-foundation-sites project
+Version: 1.0.0 → 1.1.0
+Rationale: Added directive-vs-component decision tree guidance to Principle I
 
-Principles Defined:
-- I. Angular-Native Components — New principle defining component implementation strategy
-- II. Accessibility First — New principle mandating WCAG AA compliance and ARIA patterns
-- III. Foundation CSS-Only Integration — New principle establishing CSS-only approach without Foundation JS
-- IV. Modern Angular APIs — New principle requiring signals, standalone components, and modern syntax
-- V. Component Testing Strategy — New principle defining Storybook-first testing approach
-- VI. Nx Monorepo Organization — New principle establishing library boundaries and module structure
+Principles Modified:
+- I. Angular-Native Components — Added comprehensive directive-vs-component decision tree including 
+  rationale for preferring directives when Foundation CSS can be applied to host elements without 
+  component wrappers, examples of when to use each approach, and guidance to start with directives 
+  and refactor to components only when template complexity demands it.
 
 Templates Status:
-✅ Updated: plan-template.md (Constitution Check section aligned with principles)
-✅ Updated: spec-template.md (Requirements section aligned with accessibility and testing principles)
-✅ Updated: tasks-template.md (Phase organization aligned with component development workflow)
+✅ Updated: plan-template.md (Constitution Check section includes directive-vs-component consideration)
+✅ Reviewed: spec-template.md (No changes needed - user story requirements already aligned)
+✅ Reviewed: tasks-template.md (No changes needed - implementation tasks already cover both directives and components)
 
 Follow-up Items:
-- None - All placeholders resolved
+- None - All placeholders resolved and templates consistent
 -->
 
 # ngx-foundation-sites Constitution
@@ -29,7 +27,27 @@ Follow-up Items:
 
 All components MUST be implemented as Angular-native solutions without Foundation JavaScript dependencies. Components apply Foundation's CSS classes directly (`.button`, `.menu`, `.accordion`) and implement interactivity using Angular primitives. Component names MUST align with Foundation for Sites component names and CSS class conventions. Input properties MUST use camelCase equivalents of Foundation's `data-*` attributes and document the Foundation equivalent in JSDoc comments. Injection tokens MUST use camelCase with a `Token` suffix (e.g., `nfsAccordionToken`). For new or changed Foundation component APIs, an API design document MUST be created/updated using the `foundation-api-design` skill (`.claude/skills/foundation-api-design/SKILL.md`).
 
-**Rationale**: This ensures components integrate seamlessly with Angular's change detection and lifecycle while maintaining Foundation's visual design system. CSS-only integration reduces bundle size and eliminates JavaScript framework conflicts.
+**Directive vs Component Decision Tree**:
+
+Prefer **directives** over components when possible. Because Foundation component styles are loaded programmatically (not via component `styleUrls`), directives can apply Foundation CSS classes to host elements without needing a component wrapper. This avoids unnecessary component overhead and DOM nesting.
+
+1. **Use a Directive** when:
+   - The element adds behavior or styling to existing DOM
+   - No custom template is required
+   - Enhancing content without wrapping it
+   - Foundation CSS classes can be applied to host elements
+   - **Examples**: `[nfsAccordionContent]`, `[nfsButton]`, `[nfsTooltip]`, `[nfsDropdownToggle]`
+
+2. **Use a Component** when:
+   - The element renders its own template
+   - Complex internal structure is needed
+   - Lifecycle hooks are required for DOM manipulation
+   - Content projection with multiple slots is needed
+   - **Examples**: `<nfs-accordion>`, `<nfs-modal>`, `<nfs-tabs>`
+
+**When in doubt, start with a directive** and refactor to a component only if template complexity demands it. For example, a `[nfsButton]` directive can add `.button` classes to a consumer's `<button>` element directly, avoiding the need for a `<nfs-button>` component wrapper.
+
+**Rationale**: This ensures components integrate seamlessly with Angular's change detection and lifecycle while maintaining Foundation's visual design system. CSS-only integration reduces bundle size and eliminates JavaScript framework conflicts. Preferring directives reduces unnecessary DOM wrappers and component overhead while still providing full Foundation styling capabilities.
 
 ### II. Accessibility First
 
@@ -156,4 +174,4 @@ Version numbering follows semantic versioning:
 - **MINOR**: New principle/section added or materially expanded guidance
 - **PATCH**: Clarifications, wording, typo fixes, non-semantic refinements
 
-**Version**: 1.0.0 | **Ratified**: 2026-01-06 | **Last Amended**: 2026-01-06
+**Version**: 1.1.0 | **Ratified**: 2026-01-06 | **Last Amended**: 2026-01-07

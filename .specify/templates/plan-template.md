@@ -37,6 +37,7 @@ _GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 - [ ] Component names align with Foundation for Sites conventions
 - [ ] Input properties use camelCase equivalents of Foundation `data-*` attributes
 - [ ] Injection tokens follow `Token` suffix convention
+- [ ] Directive-vs-component decision justified (prefer directives when no template needed; Foundation CSS can be applied to host)
 - [ ] API design doc created/updated using `foundation-api-design` skill (when introducing/changing component API)
 
 **Accessibility First**: ✅ / ⚠️
