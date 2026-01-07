@@ -336,24 +336,24 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 
 #### Keyboard Accessibility
 
-- **AR-012**: All interactive elements (accordion titles) MUST be keyboard accessible
-- **AR-013**: Tab key MUST follow natural DOM tab order
-- **AR-014**: Enter and Space keys MUST activate the focused accordion title
-- **AR-015**: Arrow keys (Up/Down), Home, and End MUST navigate between accordion titles per FR-036 to FR-043
+- **AR-015**: All interactive elements (accordion titles) MUST be keyboard accessible
+- **AR-016**: Tab key MUST follow natural DOM tab order
+- **AR-017**: Enter and Space keys MUST activate the focused accordion title
+- **AR-018**: Arrow keys (Up/Down), Home, and End MUST navigate between accordion titles per FR-036 to FR-043
 
 #### Focus Management
 
-- **AR-016**: Focus indicators MUST be visible and meet WCAG contrast requirements
-- **AR-017**: Focus MUST be managed correctly when items are dynamically added/removed
-- **AR-018**: Focus MUST NOT be lost or trapped within the accordion
-- **AR-019**: When an item is expanded via keyboard, focus MUST remain on the title element (not move to content)
+- **AR-019**: Focus indicators MUST be visible and meet WCAG contrast requirements
+- **AR-020**: Focus MUST be managed correctly when items are dynamically added/removed
+- **AR-021**: Focus MUST NOT be lost or trapped within the accordion
+- **AR-022**: When an item is expanded via keyboard, focus MUST remain on the title element (not move to content)
 
 #### Screen Reader Support
 
-- **AR-020**: Screen readers MUST announce the accordion title text and button role
-- **AR-021**: Screen readers MUST announce the current expansion state (expanded/collapsed)
-- **AR-022**: Screen readers MUST convey the relationship between titles and content panels
-- **AR-023**: When an item expands/collapses, screen readers MUST announce the state change
+- **AR-023**: Screen readers MUST announce the accordion title text and button role
+- **AR-024**: Screen readers MUST announce the current expansion state (expanded/collapsed)
+- **AR-025**: Screen readers MUST convey the relationship between titles and content panels
+- **AR-026**: When an item expands/collapses, screen readers MUST announce the state change
 
 ### Component API Requirements
 
