@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "build": "nx run-many --targets=build,build-storybook",
-    "ci": "npm run format:check && nx run-many --targets=lint,test,test-static-storybook,build,build-storybook,e2e,e2e-rtl",
+    "ci": "npm run format:check && nx run-many --targets=lint,test,build && nx run ngx-foundation-sites:test-static-storybook && nx run-many --targets=e2e,e2e-rtl",
     "e2e": "nx run-many --targets=e2e,e2e-rtl",
     "format": "nx format",
     "format:check": "nx format:check",
