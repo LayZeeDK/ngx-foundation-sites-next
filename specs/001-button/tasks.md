@@ -62,10 +62,10 @@ Since implementation is complete, this task list focuses on:
 
 ### Tasks
 
-- [ ] V001 [P] Review contracts/component-api.md against button.ts implementation - verify all inputs, host bindings, and transforms match
-- [ ] V002 [P] Review contracts/foundation-css.md against dist-css/nfs-button.css - verify all Foundation classes exist with correct Sass configuration
-- [ ] V003 [P] Cross-reference checklists/requirements-quality.md (117 items) against implementation - identify any new gaps
-- [ ] V004 Validate all 6 user stories from spec.md have corresponding Storybook stories with passing interaction tests
+- [X] V001 [P] Review contracts/component-api.md against button.ts implementation - verify all inputs, host bindings, and transforms match
+- [X] V002 [P] Review contracts/foundation-css.md against dist-css/nfs-button.css - verify all Foundation classes exist with correct Sass configuration
+- [X] V003 [P] Cross-reference checklists/requirements-quality.md (117 items) against implementation - identify any new gaps
+- [X] V004 Validate all 6 user stories from spec.md have corresponding Storybook stories with passing interaction tests
 
 **Completion Criteria**: No mismatches found between specs and implementation, or gaps documented for follow-up.
 
@@ -79,10 +79,10 @@ Since implementation is complete, this task list focuses on:
 
 ### Tasks
 
-- [ ] V005 Run `nx test-storybook ngx-foundation-sites` and capture full test output
-- [ ] V006 [P] Verify AXE accessibility checks report 0 violations across all 17+ button stories
-- [ ] V007 [P] Validate edge cases from spec.md are covered by existing tests (8 edge cases documented)
-- [ ] V008 Document any new test failures or accessibility violations in VALIDATION_RESULTS.md
+- [X] V005 Run `nx test-storybook ngx-foundation-sites` and capture full test output
+- [X] V006 [P] Verify AXE accessibility checks report 0 violations across all 17+ button stories
+- [X] V007 [P] Validate edge cases from spec.md are covered by existing tests (8 edge cases documented)
+- [X] V008 Document any new test failures or accessibility violations in VALIDATION_RESULTS.md
 
 **Completion Criteria**: All tests pass, 0 AXE violations, all edge cases covered.
 
@@ -96,9 +96,9 @@ Since implementation is complete, this task list focuses on:
 
 ### Tasks
 
-- [ ] V009 [P] Review API_REFERENCE.md - verify all examples work with current implementation
-- [ ] V010 [P] Review quickstart.md - test all code snippets execute correctly in Storybook
-- [ ] V011 Update VALIDATION_RESULTS.md with results from V001-V010 verification tasks
+- [X] V009 [P] Review API_REFERENCE.md - verify all examples work with current implementation
+- [X] V010 [P] Review quickstart.md - test all code snippets execute correctly in Storybook
+- [X] V011 Update VALIDATION_RESULTS.md with results from V001-V010 verification tasks
 
 **Completion Criteria**: All documentation accurate, all examples executable, validation results current.
 
@@ -112,7 +112,7 @@ Since implementation is complete, this task list focuses on:
 
 ### Task
 
-- [ ] V012 Review plan.md "Constitution Check" section - confirm all 6 principles still satisfied with current implementation
+- [X] V012 Review plan.md "Constitution Check" section - confirm all 6 principles still satisfied with current implementation
 
 **Completion Criteria**: All constitution principles satisfied, no compliance issues.
 
