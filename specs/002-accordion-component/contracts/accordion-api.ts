@@ -16,7 +16,7 @@
  * - `init()` → handled by Angular auto-initialization (not a public method)
  * 
  * Phase: 1 - Design & Contracts
- * Date: 2025-06-10
+ * Date: 2026-01-07
  * Updated: 2025-01-06 (Added Foundation API parity)
  */
 
