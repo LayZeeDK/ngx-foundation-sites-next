@@ -54,6 +54,41 @@ specs/
 - **checklists/**: quality gates (requirements quality, consistency checks). Treat as a review harness.
 - **VALIDATION_RESULTS.md**: evidence that the requirements were met (tests run, outcomes, gaps).
 
+## Using a Checklist File (e.g., `requirements-quality.md`)
+
+Spec Kit doesn’t have a built-in “execute this checklist file” command. The intended workflow is to use the checklist as a **review harness** and have your agent **update the checklist** with evidence.
+
+### In Copilot CLI (recommended)
+
+1. Attach the checklist file (e.g. `@specs\001-button\checklists\requirements-quality.md`).
+2. Ask your agent to go **CHK001 → end** and for each item:
+   - Cite evidence from `specs\001-button\spec.md`, `plan.md`, and `contracts\*.md`
+   - Mark `[x]` + add a 1-line evidence note, or leave `[ ]` + add the missing info needed
+3. When the checklist reveals ambiguity, run `/speckit.clarify` to fix the spec, then re-run the checklist pass.
+4. Optionally run `/speckit.analyze` after updates to confirm cross-artifact consistency before marking items complete.
+
+### With `specify` CLI
+
+There isn’t a “checklist runner” here either; use `specify` to keep feature context consistent, then do the same “update-the-checklist-with-evidence” pass via your agent.
+
+- Set the feature context (example):
+  - `SPECIFY_FEATURE=001-button`
+
+### What the checklist is (and isn’t)
+
+- `requirements-quality.md` evaluates the **documents** (`spec.md` / `plan.md` / `contracts/`), not implementation tasks.
+- `/speckit.analyze` helps validate **alignment** across artifacts (spec ↔ plan ↔ tasks).
+- Neither must block implementation unless you choose to enforce them as gates.
+
+Typical flow:
+
+1. `/speckit.plan`
+2. `/speckit.checklist` (generate)
+3. Fill the checklist with evidence; use `/speckit.clarify` if needed
+4. `/speckit.tasks`
+5. `/speckit.analyze` (catch cross-artifact drift)
+6. `/speckit.implement`
+
 ## What to Keep After Merge
 
 Recommended to keep the canonical `specs/###-feature-slug/` folder in `main` for traceability. If you want a leaner `main`, consider archiving (not deleting) planning-only artifacts like `research.md`, `data-model.md`, and `checklists/` once the feature is stable.
