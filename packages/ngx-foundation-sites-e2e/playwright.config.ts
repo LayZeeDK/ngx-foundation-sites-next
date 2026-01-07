@@ -1,6 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
-import { nxE2EPreset } from '@nx/playwright/preset';
 import { workspaceRoot } from '@nx/devkit';
+import { nxE2EPreset } from '@nx/playwright/preset';
 
 /**
  * E2E Test Configuration
@@ -20,13 +20,18 @@ export default defineConfig({
     {
       command: 'npx nx static-storybook ngx-foundation-sites',
       url: 'http://localhost:4400',
-      reuseExistingServer: !process.env['CI'],
+      // Reuse servers to avoid flakiness from port churn (start/stop races can cause
+      // transient ERR_CONNECTION_REFUSED during page.goto), especially when Nx runs
+      // multiple targets in one CI process.
+      reuseExistingServer: true,
       cwd: workspaceRoot,
     },
     {
       command: 'npx nx serve-static consumer-test-app',
       url: 'http://localhost:4200',
-      reuseExistingServer: !process.env['CI'],
+      // Same rationale as Storybook: prefer a stable long-lived server over
+      // repeatedly restarting between suites.
+      reuseExistingServer: true,
       cwd: workspaceRoot,
     },
   ],
