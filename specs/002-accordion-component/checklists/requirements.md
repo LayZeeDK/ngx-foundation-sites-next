@@ -2,7 +2,7 @@
 
 **Purpose**: Validate specification completeness and quality before proceeding to planning
 **Created**: 2025-06-10
-**Feature**: [001-accordion-component/spec.md](../spec.md)
+**Feature**: [002-accordion-component/spec.md](../spec.md)
 
 ## Content Quality
 

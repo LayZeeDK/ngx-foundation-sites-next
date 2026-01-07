@@ -1,9 +1,16 @@
 # Feature Specification: Accessible Accordion Component
 
-**Feature Branch**: `001-accordion-component`  
+**Feature Branch**: `002-accordion-component`  
 **Created**: 2025-06-10  
 **Status**: Draft  
 **Input**: Create a feature specification for an accessible, self-contained Accordion component and sub-components for the ngx-foundation-sites Angular component library
+
+## Clarifications
+
+### Session 2025-06-10
+
+- Q: What is the **maximum number of accordion items** the component should efficiently support without performance degradation (rendering, keyboard navigation, ARIA updates)? → A: 100 items
+- Q: How should accordion items **locate their parent accordion** component for state coordination? → A: Implicit query via DI token pattern
 
 ## User Scenarios & Testing _(mandatory)_
 
@@ -204,7 +211,7 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 - **FR-004**: `<nfs-accordion-item>` MUST represent individual collapsible items
 - **FR-005**: `<nfs-accordion-title>` MUST represent the clickable trigger/header for each item
 - **FR-006**: `<nfs-accordion-content>` MUST represent the expandable panel content for each item
-- **FR-007**: Parent-child relationships MUST be established via Angular DI using injection tokens (item finds parent accordion without direct property binding)
+- **FR-007**: Parent-child relationships MUST be established via Angular DI using injection tokens (item finds parent accordion without direct property binding through implicit DI query pattern)
 
 #### Expansion Behavior
 
@@ -354,7 +361,7 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 - **SC-006**: Developers can implement a basic FAQ accordion with 5 items in under 10 lines of template code
 - **SC-007**: Component API documentation includes complete examples for all configuration options (multiExpand, allowAllClosed, disabled, initial state)
 - **SC-008**: All user stories P1-P3 pass acceptance tests in Storybook play functions
-- **SC-009**: Component supports dynamic item arrays of 100+ items without performance degradation (tested via *ngFor)
+- **SC-009**: Component supports dynamic item arrays of 100 items without performance degradation (tested via *ngFor with maximum supported item count)
 - **SC-010**: Focus management maintains correct state through 10 consecutive add/remove operations on dynamic items
 
 ## Goals and Non-Goals
