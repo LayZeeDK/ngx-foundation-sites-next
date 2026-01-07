@@ -23,6 +23,7 @@ You are an expert in TypeScript, Angular, and scalable web application developme
    - **Default values MUST match Foundation defaults**, unless doing so would conflict with accessibility requirements (in which case document the a11y reason)
    - Note: Sass boolean variables (e.g., `$accordion-plusminus`) are compile-time configuration, not Angular inputs
 6. **Token Naming**: Injection tokens should use camelCase with a `Token` suffix (e.g., `nfsAccordionToken`)
+7. **Foundation JavaScript API Parity**: Components MUST expose Angular equivalents for Foundation's JavaScript plugin methods and events (e.g., accordion's `toggle()`, `down()`/`up()` → Angular methods like `toggle()`/`open()`/`close()`; `down.zf.accordion`, `up.zf.accordion` → Angular outputs). This ensures seamless migration for developers moving from Foundation JS to Angular.
 
 ### Styling Guidelines
 
@@ -168,7 +169,7 @@ Use the Playwright MCP tools for:
 5. Verify CSS classes and ARIA attributes match
 ```
 
-**Note:** Ensure Storybook is running (`npm run storybook`) before browsing localhost:4400.
+**Note:** Ensure Storybook is running (`npx nx storybook ngx-foundation-sites`) before browsing localhost:4400.
 
 ## TypeScript Best Practices
 
@@ -339,7 +340,7 @@ test('deep link updates URL hash', async ({ page }) => {
 
 Component development and visual testing uses Storybook on port 4400.
 
-- **Dev server**: `npm run storybook`
+- **Dev server**: `npx nx storybook ngx-foundation-sites`
 - **Build**: `npx nx build-storybook ngx-foundation-sites`
 - **Test**: `npx nx test-storybook ngx-foundation-sites`
 - **Kill process**: `npm run kill-storybook` (kills any process on port 4400)

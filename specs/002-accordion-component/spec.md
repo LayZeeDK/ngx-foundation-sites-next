@@ -229,17 +229,17 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 
 - **FR-014**: `<nfs-accordion>` MUST accept a `multiExpand` signal input (boolean, default: false) to enable multi-expand mode
 - **FR-015**: `<nfs-accordion>` MUST accept an `allowAllClosed` signal input (boolean, default: false) to control if all items can be closed
-- **FR-016**: `<nfs-accordion>` MUST accept an optional `id` input (string) for the root container element
-- **FR-017**: `<nfs-accordion-item>` MUST accept a `disabled` signal input (boolean, default: false) to disable individual items
-- **FR-018**: `<nfs-accordion-item>` MUST accept an optional `id` input (string) for the item container element
-- **FR-019**: `<nfs-accordion-item>` MUST accept an `isOpen` signal input (boolean, default: false) for controlled mode or initial state
-- **FR-020**: If no `id` is provided for accordion-item, title, or content, system MUST auto-generate unique IDs
+- **FR-016**: `<nfs-accordion>` MUST accept additional configuration signal inputs per `contracts/accordion-api.ts` (including `disabled`, `deepLink`, `deepLinkSmudge`, `deepLinkSmudgeDelay`, `deepLinkSmudgeOffset`, `updateHistory`, `wrap`, `titleHeadingLevel`, `softDisabled`, and optional `id`)
+- **FR-017**: `<nfs-accordion-item>` MUST accept a required `panelId` signal input (string) used for deep linking and ARIA relationships
+- **FR-018**: `<nfs-accordion-item>` MUST expose an `expanded` model signal (boolean, default: false) that supports two-way binding via `[(expanded)]`
+- **FR-019**: `<nfs-accordion-item>` MUST accept a `disabled` signal input (boolean, default: false) to disable the item
+- **FR-020**: System MUST auto-generate unique IDs for title/content elements used by `aria-controls` / `aria-labelledby` relationships when not explicitly provided
 
 #### Public API - Outputs
 
-- **FR-021**: `<nfs-accordion>` MUST emit an output event when any item's expansion state changes, providing the item index or ID and new state
-- **FR-022**: `<nfs-accordion-item>` MUST emit an `openChange` output event when the item's expansion state changes (EventEmitter<boolean>)
-- **FR-023**: Output events MUST be emitted after state changes are complete and DOM updates have occurred
+- **FR-021**: `<nfs-accordion>` MUST expose an `itemChange` output event when any item's expansion state changes, providing the item ID and new state
+- **FR-022**: `<nfs-accordion-item>` MUST expose output events `opened`, `closed`, `afterExpand`, and `afterCollapse`
+- **FR-023**: Output events MUST be emitted consistently with documented timing (state change vs post-render) and MUST NOT fire when an action is prevented (e.g., disabled item or cannot close last open item)
 
 #### Content Projection
 
@@ -365,6 +365,8 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 - **CA-006**: Component selectors MUST follow the naming convention: `nfs-accordion`, `nfs-accordion-item`, `nfs-accordion-title`, `nfs-accordion-content`
 - **CA-007**: Component API MUST align with Foundation for Sites naming conventions (multiExpand maps to data-multi-expand, allowAllClosed maps to data-allow-all-closed)
 - **CA-008**: Before implementation, an API design document MUST be created using the `foundation-api-design` skill to document the complete component API, inputs, outputs, content projection, ARIA requirements, and usage examples
+- **CA-009**: **Foundation JavaScript API Parity (MANDATORY)**: NfsAccordion MUST expose Angular equivalents for all Foundation accordion JS methods: `toggle()`, `open()` (Foundation's `down`), `close()` (Foundation's `up`), `destroy()`
+- **CA-010**: **Foundation JavaScript Event Parity (MANDATORY)**: NfsAccordionItem MUST emit Angular output events equivalent to Foundation's `down.zf.accordion` (→ `opened` output) and `up.zf.accordion` (→ `closed` output)
 
 ### Key Entities _(Component Architecture)_
 
@@ -755,13 +757,13 @@ Use signals to manage expansion state reactively:
 
 ```typescript
 // In NfsAccordionItemComponent
-isOpen = signal(false);
+expanded = model(false);
 
 // In NfsAccordionComponent
-openItems = signal<number[]>([]);
+openItemIds = signal<string[]>([]);
 
-// Computed to check if item should be open
-isItemOpen = computed(() => this.openItems().includes(this.itemIndex));
+// Computed to check if item should be expanded
+isItemExpanded = computed(() => this.openItemIds().includes(this.itemId));
 ```
 
 ### CSS Class Application
@@ -772,11 +774,11 @@ Use host bindings or `[class.is-active]` to apply Foundation classes:
 // In NfsAccordionItemComponent
 @Component({
   host: {
-    '[class.is-active]': 'isOpen()',
+    '[class.is-active]': 'expanded()',
   },
 })
 export class NfsAccordionItemComponent {
-  protected readonly isOpen = signal(false);
+  expanded = model(false);
 }
 ```
 

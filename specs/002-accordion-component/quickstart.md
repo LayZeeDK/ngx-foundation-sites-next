@@ -2,7 +2,23 @@
 
 **Phase**: 1 - Design & Contracts  
 **Date**: 2025-06-10  
+**Updated**: 2025-01-06 (Added Foundation API parity)  
 **Purpose**: Provide usage examples for developers
+
+## Foundation JavaScript API Parity
+
+This Angular accordion component provides **full API parity** with Foundation for Sites accordion JavaScript plugin. If you're migrating from Foundation JS, use this mapping:
+
+| Foundation JS | Angular Equivalent | Example |
+|--------------|-------------------|---------|
+| `$('#accordion').foundation('toggle', $('#panel'))` | `item.toggle()` | `this.items().at(0)?.toggle()` |
+| `$('#accordion').foundation('down', $('#panel'))` | `item.open()` | `this.items().at(0)?.open()` |
+| `$('#accordion').foundation('up', $('#panel'))` | `item.close()` | `this.items().at(0)?.close()` |
+| `$('#accordion').foundation('destroy')` | `accordion.destroy()` | Auto via `ngOnDestroy` |
+| `$('#accordion').on('down.zf.accordion', fn)` | `(opened)` output | `<nfs-accordion-item (opened)="onOpen()">` |
+| `$('#accordion').on('up.zf.accordion', fn)` | `(closed)` output | `<nfs-accordion-item (closed)="onClose()">` |
+
+**See Example 9** below for programmatic control patterns.
 
 ## Installation
 
@@ -431,6 +447,74 @@ export class ExampleComponent {
 
 ---
 
+### Example 10: Foundation API Parity - Event Handling
+
+**Goal**: Listen to accordion events (Foundation `down.zf.accordion` and `up.zf.accordion` equivalents).
+
+**Component**:
+```typescript
+import { Component } from '@angular/core';
+import { NfsAccordion, NfsAccordionItem, NfsAccordionTitle } from 'ngx-foundation-sites';
+
+@Component({
+  selector: 'app-example',
+  imports: [NfsAccordion, NfsAccordionItem, NfsAccordionTitle],
+  template: `
+    <nfs-accordion>
+      <nfs-accordion-item 
+        panelId="panel-1"
+        (opened)="onPanelOpened('panel-1')"
+        (closed)="onPanelClosed('panel-1')">
+        <nfs-accordion-title>Panel 1</nfs-accordion-title>
+        <p>Content 1</p>
+      </nfs-accordion-item>
+
+      <nfs-accordion-item 
+        panelId="panel-2"
+        (opened)="onPanelOpened('panel-2')"
+        (closed)="onPanelClosed('panel-2')">
+        <nfs-accordion-title>Panel 2</nfs-accordion-title>
+        <p>Content 2</p>
+      </nfs-accordion-item>
+    </nfs-accordion>
+    
+    <p>Last event: {{ lastEvent }}</p>
+  `,
+})
+export class ExampleComponent {
+  lastEvent = '';
+  
+  // Equivalent to Foundation's: $('#accordion').on('down.zf.accordion', ...)
+  onPanelOpened(panelId: string) {
+    this.lastEvent = `Panel ${panelId} opened`;
+    console.log('Panel opened:', panelId);
+  }
+  
+  // Equivalent to Foundation's: $('#accordion').on('up.zf.accordion', ...)
+  onPanelClosed(panelId: string) {
+    this.lastEvent = `Panel ${panelId} closed`;
+    console.log('Panel closed:', panelId);
+  }
+}
+```
+
+**Migration from Foundation JS**:
+```javascript
+// Foundation JS (OLD):
+$('#myAccordion').on('down.zf.accordion', function(e) {
+  console.log('Panel opened:', $(e.target).attr('id'));
+});
+
+$('#myAccordion').on('up.zf.accordion', function(e) {
+  console.log('Panel closed:', $(e.target).attr('id'));
+});
+
+// Angular (NEW):
+// Use (opened) and (closed) outputs on <nfs-accordion-item>
+```
+
+---
+
 ## API Reference Summary
 
 ### NfsAccordion Inputs
@@ -457,10 +541,11 @@ export class ExampleComponent {
 
 ### NfsAccordion Methods
 
-| Method | Description |
-|--------|-------------|
-| `openAll()` | Expand all panels (requires `multiExpand=true`) |
-| `closeAll()` | Collapse all panels (requires `allowAllClosed=true`) |
+| Method | Description | Foundation Equivalent |
+|--------|-------------|-----------------------|
+| `openAll()` | Expand all panels (requires `multiExpand=true`) | Calling `.down()` on all items |
+| `closeAll()` | Collapse all panels (requires `allowAllClosed=true`) | Calling `.up()` on all items |
+| `destroy()` | Cleanup (automatic via `ngOnDestroy`) | `.destroy()` |
 
 ### NfsAccordionItem Inputs
 
@@ -472,20 +557,20 @@ export class ExampleComponent {
 
 ### NfsAccordionItem Outputs
 
-| Output | Type | Description |
-|--------|------|-------------|
-| `opened` | `void` | Emitted when panel opens |
-| `closed` | `void` | Emitted when panel closes |
-| `afterExpand` | `void` | Emitted after expand animation |
-| `afterCollapse` | `void` | Emitted after collapse animation |
+| Output | Type | Description | Foundation Equivalent |
+|--------|------|-------------|-----------------------|
+| `opened` | `void` | Emitted when panel opens | `down.zf.accordion` event |
+| `closed` | `void` | Emitted when panel closes | `up.zf.accordion` event |
+| `afterExpand` | `void` | Emitted after expand animation | N/A (Angular extension) |
+| `afterCollapse` | `void` | Emitted after collapse animation | N/A (Angular extension) |
 
 ### NfsAccordionItem Methods
 
-| Method | Description |
-|--------|-------------|
-| `open()` | Expand this panel |
-| `close()` | Collapse this panel |
-| `toggle()` | Toggle expansion state |
+| Method | Description | Foundation Equivalent |
+|--------|-------------|-----------------------|
+| `open()` | Expand this panel | `.down($target)` |
+| `close()` | Collapse this panel | `.up($target)` |
+| `toggle()` | Toggle expansion state | `.toggle($target)` |
 
 ---
 

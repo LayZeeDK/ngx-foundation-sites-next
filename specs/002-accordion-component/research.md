@@ -2,7 +2,32 @@
 
 **Phase**: 0 - Outline & Research  
 **Date**: 2025-06-10  
+**Updated**: 2025-01-06 (Added Foundation API parity requirement)  
 **Purpose**: Resolve all technical unknowns before design phase
+
+## Foundation API Parity Requirement
+
+**Decision**: Component MUST provide Angular equivalents for all Foundation accordion JavaScript methods and events.
+
+**Foundation JavaScript API** (from https://get.foundation/sites/docs/accordion.html):
+- Methods: `toggle($target)`, `down($target)`, `up($target)`, `destroy()`
+- Events: `down.zf.accordion`, `up.zf.accordion`
+
+**Angular Equivalents**:
+| Foundation | Angular Equivalent | Component |
+|-----------|-------------------|-----------|
+| `.toggle($target)` | `toggle()` method | NfsAccordionItem |
+| `.down($target)` | `open()` method | NfsAccordionItem |
+| `.up($target)` | `close()` method | NfsAccordionItem |
+| `.destroy()` | `destroy()` method | NfsAccordion (auto via ngOnDestroy) |
+| `down.zf.accordion` event | `(opened)` output | NfsAccordionItem |
+| `up.zf.accordion` event | `(closed)` output | NfsAccordionItem |
+
+**Rationale**: Ensures seamless migration path for developers moving from Foundation JavaScript to Angular implementation. Developers familiar with Foundation JS can immediately understand the Angular API without learning new patterns.
+
+**Implementation Impact**: No additional complexity—methods and events already planned. This requirement simply formalizes the naming and ensures documentation explicitly maps Foundation API to Angular equivalents.
+
+---
 
 ## Research Questions
 

@@ -4,8 +4,15 @@
  * This file defines the public API interfaces for all accordion components.
  * It serves as the contract between implementation and consumers.
  * 
+ * **FOUNDATION API PARITY**: This API provides equivalent methods and events
+ * to Foundation for Sites accordion JavaScript plugin:
+ * - Foundation methods: toggle, down, up, destroy
+ * - Foundation events: down.zf.accordion, up.zf.accordion
+ * - Angular equivalents documented below
+ * 
  * Phase: 1 - Design & Contracts
  * Date: 2025-06-10
+ * Updated: 2025-01-06 (Added Foundation API parity)
  */
 
 import { Signal, WritableSignal, ModelSignal, OutputEmitterRef, InputSignal, TemplateRef } from '@angular/core';
@@ -87,14 +94,28 @@ export interface NfsAccordionApi {
   /**
    * Expand all panels.
    * Only effective when multiExpand=true, otherwise no-op.
+   * 
+   * @foundation Equivalent to calling `.down()` on all items
    */
   openAll(): void;
   
   /**
    * Collapse all panels.
    * Only effective when allowAllClosed=true, otherwise no-op.
+   * 
+   * @foundation Equivalent to calling `.up()` on all items
    */
   closeAll(): void;
+  
+  /**
+   * Destroy the accordion instance.
+   * Cleans up event listeners and unregisters all items.
+   * 
+   * @foundation API Parity: Equivalent to Foundation's `.destroy()` method.
+   * @note In Angular, this is typically handled automatically via `ngOnDestroy`,
+   * but can be called manually if needed.
+   */
+  destroy(): void;
 }
 
 // ============================================================================
@@ -125,10 +146,18 @@ export interface NfsAccordionItemApi {
   
   // ── Outputs ─────────────────────────────────────────────────────────────
   
-  /** Emitted immediately when the panel starts opening */
+  /** 
+   * Emitted immediately when the panel starts opening.
+   * 
+   * @foundation API Parity: Equivalent to Foundation's `down.zf.accordion` event.
+   */
   readonly opened: OutputEmitterRef<void>;
   
-  /** Emitted immediately when the panel starts closing */
+  /** 
+   * Emitted immediately when the panel starts closing.
+   * 
+   * @foundation API Parity: Equivalent to Foundation's `up.zf.accordion` event.
+   */
   readonly closed: OutputEmitterRef<void>;
   
   /** Emitted after expand animation completes (or immediately if no animation) */
@@ -139,13 +168,25 @@ export interface NfsAccordionItemApi {
   
   // ── Public Methods ──────────────────────────────────────────────────────
   
-  /** Expand this panel (if not disabled) */
+  /** 
+   * Expand this panel (if not disabled).
+   * 
+   * @foundation API Parity: Equivalent to Foundation's `.down($target)` method.
+   */
   open(): void;
   
-  /** Collapse this panel (if allowed by parent accordion rules) */
+  /** 
+   * Collapse this panel (if allowed by parent accordion rules).
+   * 
+   * @foundation API Parity: Equivalent to Foundation's `.up($target)` method.
+   */
   close(): void;
   
-  /** Toggle expansion state (expand if collapsed, collapse if expanded) */
+  /** 
+   * Toggle expansion state (expand if collapsed, collapse if expanded).
+   * 
+   * @foundation API Parity: Equivalent to Foundation's `.toggle($target)` method.
+   */
   toggle(): void;
 }
 
@@ -296,4 +337,59 @@ export const ACCORDION_DEFAULTS = {
 export const ACCORDION_ITEM_DEFAULTS = {
   expanded: false,
   disabled: false,
+} as const;
+
+// ============================================================================
+// Foundation for Sites API Parity
+// ============================================================================
+
+/**
+ * Mapping between Foundation for Sites accordion JavaScript API and Angular equivalents.
+ * 
+ * This ensures developers migrating from Foundation JS can find equivalent functionality.
+ * 
+ * @see https://get.foundation/sites/docs/accordion.html#javascript-reference
+ */
+export const FOUNDATION_API_MAPPING = {
+  methods: {
+    /** Foundation: `$('#accordion').foundation('toggle', $('#panel'))` */
+    toggle: 'NfsAccordionItem.toggle()',
+    
+    /** Foundation: `$('#accordion').foundation('down', $('#panel'))` */
+    down: 'NfsAccordionItem.open()',
+    
+    /** Foundation: `$('#accordion').foundation('up', $('#panel'))` */
+    up: 'NfsAccordionItem.close()',
+    
+    /** Foundation: `$('#accordion').foundation('destroy')` */
+    destroy: 'NfsAccordion.destroy() (or automatic via ngOnDestroy)',
+  },
+  
+  events: {
+    /** Foundation: `$('#accordion').on('down.zf.accordion', handler)` */
+    'down.zf.accordion': '(opened) output on NfsAccordionItem',
+    
+    /** Foundation: `$('#accordion').on('up.zf.accordion', handler)` */
+    'up.zf.accordion': '(closed) output on NfsAccordionItem',
+  },
+  
+  options: {
+    /** Foundation: `data-multi-expand="true"` */
+    multiExpand: '[multiExpand]="true" input on NfsAccordion',
+    
+    /** Foundation: `data-allow-all-closed="true"` */
+    allowAllClosed: '[allowAllClosed]="true" input on NfsAccordion',
+    
+    /** Foundation: `data-deep-link="true"` */
+    deepLink: '[deepLink]="true" input on NfsAccordion',
+    
+    /** Foundation: `data-deep-link-smudge="true"` */
+    deepLinkSmudge: '[deepLinkSmudge]="true" input on NfsAccordion',
+    
+    /** Foundation: `data-update-history="true"` */
+    updateHistory: '[updateHistory]="true" input on NfsAccordion',
+    
+    /** Foundation: `data-slide-speed="500"` */
+    slideSpeed: 'Handled by Foundation CSS transitions (not in Angular API)',
+  },
 } as const;

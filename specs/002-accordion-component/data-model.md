@@ -2,7 +2,23 @@
 
 **Phase**: 1 - Design & Contracts  
 **Date**: 2025-06-10  
+**Updated**: 2025-01-06 (Added Foundation API parity)  
 **Purpose**: Define entities, relationships, and state management
+
+## Foundation JavaScript API Parity
+
+This component provides **full API parity** with Foundation for Sites accordion JavaScript plugin:
+
+| Foundation API | Angular Equivalent | Component | Notes |
+|---------------|-------------------|-----------|-------|
+| `.toggle($target)` | `toggle()` | NfsAccordionItem | Toggle panel state |
+| `.down($target)` | `open()` | NfsAccordionItem | Open panel |
+| `.up($target)` | `close()` | NfsAccordionItem | Close panel |
+| `.destroy()` | `destroy()` | NfsAccordion | Cleanup (auto via ngOnDestroy) |
+| `down.zf.accordion` event | `(opened)` output | NfsAccordionItem | Panel opening event |
+| `up.zf.accordion` event | `(closed)` output | NfsAccordionItem | Panel closing event |
+
+**Rationale**: Ensures seamless migration for developers moving from Foundation JS to Angular implementation without learning new API patterns.
 
 ## Component Entities
 
@@ -33,8 +49,9 @@
 - `itemChange`: `OutputEmitterRef<{ itemId: string; expanded: boolean }>` - Emitted when any item state changes
 
 **Methods**:
-- `openAll(): void` - Expand all items (only if multiExpand=true)
-- `closeAll(): void` - Collapse all items (only if allowAllClosed=true)
+- `openAll(): void` - Expand all items (only if multiExpand=true) [Foundation equivalent: calling `.down()` on all items]
+- `closeAll(): void` - Collapse all items (only if allowAllClosed=true) [Foundation equivalent: calling `.up()` on all items]
+- `destroy(): void` - Destroy accordion instance, cleanup event listeners [Foundation API parity: equivalent to `.destroy()`]
 - `registerItem(item: NfsAccordionItem): void` - Called by items during initialization
 - `unregisterItem(item: NfsAccordionItem): void` - Called by items during destruction
 - `notifyItemToggle(itemId: string, expanded: boolean): void` - Called by items when toggled
@@ -73,15 +90,15 @@ IDLE → OPENING_ITEM → ITEM_OPEN
 - `disabled`: `InputSignal<boolean>` - Disable this item (default: `false`)
 
 **Outputs**:
-- `opened`: `OutputEmitterRef<void>` - Emitted when panel opens
-- `closed`: `OutputEmitterRef<void>` - Emitted when panel closes
+- `opened`: `OutputEmitterRef<void>` - Emitted when panel opens [Foundation API parity: equivalent to `down.zf.accordion` event]
+- `closed`: `OutputEmitterRef<void>` - Emitted when panel closes [Foundation API parity: equivalent to `up.zf.accordion` event]
 - `afterExpand`: `OutputEmitterRef<void>` - Emitted after expand animation completes
 - `afterCollapse`: `OutputEmitterRef<void>` - Emitted after collapse animation completes
 
 **Methods**:
-- `open(): void` - Expand this panel
-- `close(): void` - Collapse this panel
-- `toggle(): void` - Toggle expansion state
+- `open(): void` - Expand this panel [Foundation API parity: equivalent to `.down($target)`]
+- `close(): void` - Collapse this panel [Foundation API parity: equivalent to `.up($target)`]
+- `toggle(): void` - Toggle expansion state [Foundation API parity: equivalent to `.toggle($target)`]
 
 **Computed Signals**:
 - `shouldRenderContent`: `Signal<boolean>` - True if content should be in DOM
