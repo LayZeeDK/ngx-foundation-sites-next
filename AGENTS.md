@@ -20,6 +20,7 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 5. **Input Naming**: Component inputs should match Foundation's naming conventions:
    - Use Foundation's `data-*` attribute names in camelCase (e.g., `data-multi-expand` → `multiExpand`)
    - Document the Foundation equivalent in JSDoc comments
+   - **Default values MUST match Foundation defaults**, unless doing so would conflict with accessibility requirements (in which case document the a11y reason)
    - Note: Sass boolean variables (e.g., `$accordion-plusminus`) are compile-time configuration, not Angular inputs
 6. **Token Naming**: Injection tokens should use camelCase with a `Token` suffix (e.g., `nfsAccordionToken`)
 
