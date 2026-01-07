@@ -25,6 +25,46 @@ Start using slash commands with your AI agent:
 1. `/speckit.analyze` (optional) — Cross-artifact consistency and alignment report (after `/speckit.tasks`, before `/speckit.implement`)
 1. `/speckit.implement` — Execute all tasks and build the feature according to the plan
 
+## Using the `specify` CLI (PowerShell)
+
+In this repo, `specify` is primarily used to **manage the `.specify\` scaffolding** (templates/scripts) and to **check prerequisites**. Feature work is typically driven by the PowerShell scripts under `.specify\scripts\powershell\`.
+
+### Common commands
+
+```powershell
+# Verify prerequisites
+specify check
+
+# Scaffold/upgrade the .specify folder (use with care; may overwrite scaffold files)
+specify init --here --ai copilot --script ps --force
+```
+
+### Selecting the active feature
+
+The `.specify` scripts resolve the current feature from either:
+
+- Your **current git branch name**, or
+- `$env:SPECIFY_FEATURE` (explicit override)
+
+Example:
+
+```powershell
+$env:SPECIFY_FEATURE = '001-button'
+```
+
+### Feature workflow (repo scripts)
+
+```powershell
+# Create a new feature folder under specs\ and set SPECIFY_FEATURE for this session
+.\.specify\scripts\powershell\create-new-feature.ps1 "Button component" -ShortName "button"
+
+# Create/refresh plan.md for the current feature
+.\.specify\scripts\powershell\setup-plan.ps1
+
+# Update Copilot agent context from plan.md
+.\.specify\scripts\powershell\update-agent-context.ps1 -AgentType copilot
+```
+
 ## Specs Artifact Structure (Recommended)
 
 Use one canonical folder per feature using a stable ID/slug:
