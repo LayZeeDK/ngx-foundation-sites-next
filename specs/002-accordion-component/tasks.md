@@ -66,6 +66,7 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 - [ ] T015 [US1] Add play function to Basic story: click item 3 title, verify item 3 expands and item 2 collapses
 - [ ] T016 [US1] Add play function to Basic story: click expanded item 1 title, verify item 1 collapses
 - [ ] T017 [P] [US1] Add accessibility checks to Basic story using @storybook/addon-a11y
+- [ ] T183 [P] [US1] Add Storybook story variant to Basic story: render accordion with interactive elements inside title content (button, link), verify host trigger still toggles and nested elements are focusable in packages/ngx-foundation-sites/.storybook/stories/accordion/Basic.story.ts
 
 ### Implementation for User Story 1
 
@@ -83,6 +84,7 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 - [ ] T029 [US1] Implement .is-active class binding on NfsAccordionItem when expanded=true
 - [ ] T030 [US1] Add JSDoc comments documenting Foundation for Sites equivalents (data-multi-expand → multiExpand)
 - [ ] T031 [US1] Export all components from packages/ngx-foundation-sites/src/lib/accordion/index.ts
+- [ ] T184 [US1] Implement nested focusable detection in NfsAccordionTitle: detect if projected content contains focusable elements, if element appears to replace host trigger, call ErrorHandler.handleError() with guidance in packages/ngx-foundation-sites/src/lib/accordion/accordion-title.component.ts
 
 **Checkpoint**: User Story 1 should be fully functional - basic FAQ accordion works
 
@@ -104,6 +106,7 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 - [ ] T037 [US2] Add play function: simulate End, verify focus moves to last title
 - [ ] T038 [US2] Add play function: simulate Enter/Space on collapsed title, verify panel expands
 - [ ] T039 [P] [US2] Add accessibility checks for keyboard navigation and focus indicators
+- [ ] T181 [P] [US2] Add Storybook play test: simulate ArrowDown keyboard event and simultaneous click on different item within 10ms, verify events are serialized (FIFO by timestamp), final expansion state is stable in packages/ngx-foundation-sites/.storybook/stories/accordion/KeyboardNavigation.story.ts
 
 ### Implementation for User Story 2
 
@@ -117,6 +120,7 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 - [ ] T047 [US2] Implement focus() and blur() public methods on NfsAccordionTitle
 - [ ] T048 [US2] Add tabindex="0" to title buttons for keyboard accessibility
 - [ ] T049 [US2] Ensure focus indicators meet WCAG contrast requirements (verify with Foundation CSS)
+- [ ] T182 [US2] Implement event timestamp ordering in NfsAccordion: enqueue all UI events with `{ ts: performance.now(), type, eventTarget, payload }`, process event queue FIFO while allowing cross-item concurrency in packages/ngx-foundation-sites/src/lib/accordion/accordion.component.ts
 
 **Checkpoint**: Keyboard navigation fully functional - all interactions work without mouse
 
@@ -135,6 +139,11 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 - [ ] T052 [US3] Add assertions for role="region" on panel content wrappers
 - [ ] T053 [US3] Add assertions for unique auto-generated IDs (verify no collisions)
 - [ ] T054 [P] [US3] Run AXE checks with @storybook/addon-a11y to verify ARIA compliance
+- [ ] T176 [P] [US3] Add Storybook test: change panelId at runtime, verify item re-registers with parent and ARIA IDs update atomically in packages/ngx-foundation-sites/.storybook/stories/accordion/ScreenReader.story.ts
+- [ ] T177 [US3] Add Storybook test: change panelId while deepLink enabled, verify item does NOT auto-expand (deep link only responds to URL hash changes) in packages/ngx-foundation-sites/.storybook/stories/accordion/DeepLinking.story.ts
+- [ ] T185 [P] [US3] Add Storybook story variant to ScreenReader story: render accordion with empty panel content, verify panel wrapper maintains valid ARIA even with no inner content in packages/ngx-foundation-sites/.storybook/stories/accordion/ScreenReader.story.ts
+- [ ] T187 [P] [US3] Add Storybook play test to ScreenReader story: change accordion title text dynamically, verify live region announces change when announce=true in packages/ngx-foundation-sites/.storybook/stories/accordion/ScreenReader.story.ts
+- [ ] T199 [P] [US3] Add Storybook play test to ScreenReader story: verify live region receives expand/collapse announcements when announce=true, no live region when announce=false in packages/ngx-foundation-sites/.storybook/stories/accordion/ScreenReader.story.ts
 
 ### Implementation for User Story 3
 
@@ -149,6 +158,12 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 - [ ] T062 [US3] Ensure panel wrapper remains in DOM when collapsed (for stable aria-controls reference)
 - [ ] T063 [US3] Add inert attribute on panel wrapper when collapsed (prevent keyboard access)
 - [ ] T064 [US3] Implement @if conditional rendering for panel content (remove content from DOM when collapsed, keep wrapper)
+- [ ] T178 [US3] Implement panelId change handler in NfsAccordionItem: on panelId input change, unregister old ID from parent, re-register new ID, update all ARIA attributes atomically in packages/ngx-foundation-sites/src/lib/accordion/accordion-item.component.ts
+- [ ] T186 [US3] Implement empty-state handling in NfsAccordionItem: render visually-hidden placeholder when inner content is empty to ensure stable ARIA structure in packages/ngx-foundation-sites/src/lib/accordion/accordion-item.component.ts
+- [ ] T188 [US3] Implement title change detection in NfsAccordion: track NfsAccordionTitle content changes, publish to live region if announce=true, debounce by 100ms in packages/ngx-foundation-sites/src/lib/accordion/accordion.component.ts
+- [ ] T196 [P] [US3] Add `announce = input(false)` InputSignal to NfsAccordion component in packages/ngx-foundation-sites/src/lib/accordion/accordion.component.ts
+- [ ] T197 [P] [US3] Render visually-hidden live region element in NfsAccordion template with `aria-live="polite"` and `aria-atomic="true"` (shown only when announce=true) in packages/ngx-foundation-sites/src/lib/accordion/accordion.component.ts
+- [ ] T198 [US3] Implement live-region message publishing: on expand/collapse, set live region textContent to concise message, debounce updates by 100ms in packages/ngx-foundation-sites/src/lib/accordion/accordion.component.ts
 
 **Checkpoint**: Screen reader support complete - ARIA relationships valid, announces correctly
 
@@ -190,6 +205,8 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 - [ ] T074 [US5] Add play function: set allowAllClosed=false, open only item 1, click item 1, verify it remains open
 - [ ] T075 [US5] Add play function: set allowAllClosed=false with multiExpand, close all but one item, verify last item cannot close
 - [ ] T076 [US5] Add play function: set allowAllClosed=true, close last open item, verify all items collapsed
+- [ ] T190 [P] [US5] Add Storybook play test to AllowAllClosed story: programmatically call item.up() when allowAllClosed=false and item is the last open item, verify method returns silently and NO (up) event emitted in packages/ngx-foundation-sites/.storybook/stories/accordion/AllowAllClosed.story.ts
+- [ ] T192 [P] [US5] Add Storybook play test to AllowAllClosed story: set allowAllClosed=false, bind [(expanded)] on last open item, set model to false externally, verify binding coerces to true in packages/ngx-foundation-sites/.storybook/stories/accordion/AllowAllClosed.story.ts
 
 ### Implementation for User Story 5
 
@@ -197,6 +214,7 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 - [ ] T078 [US5] Implement canCloseItem() method in NfsAccordion: returns false if allowAllClosed=false and only one item open
 - [ ] T079 [US5] Update NfsAccordionItem.toggle() to check parent.canCloseItem() before collapsing
 - [ ] T080 [US5] Add computed signal canClose in NfsAccordionItem: calls parent.canCloseItem(this.panelId())
+- [ ] T193 [US5] Implement binding coercion in NfsAccordionItem.expanded: if allowAllClosed=false and change would close last open item, ignore setter and update model to actual state in packages/ngx-foundation-sites/src/lib/accordion/accordion-item.component.ts
 
 **Checkpoint**: Allow all closed mode works - can enforce "at least one open" rule
 
@@ -216,6 +234,7 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 - [ ] T084 [US6] Add play function: verify disabled item has aria-disabled="true"
 - [ ] T085 [US6] Add play function: ArrowDown from item 1, verify focus skips disabled item 2 to item 3
 - [ ] T086 [US6] Add play function: ArrowUp from item 3, verify focus skips disabled item 2 to item 1
+- [ ] T189 [P] [US6] Add Storybook play test to DisabledItems story: programmatically call item.down() on disabled item via viewChild, verify method returns immediately and NO (down) event emitted in packages/ngx-foundation-sites/.storybook/stories/accordion/DisabledItems.story.ts
 
 ### Implementation for User Story 6
 
@@ -228,6 +247,7 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 - [ ] T093 [US6] Update keyboard navigation to skip disabled items (ArrowUp/Down)
 - [ ] T094 [US6] Add .is-disabled CSS class to NfsAccordionItem when disabled
 - [ ] T095 [US6] Prevent toggle() in NfsAccordionItem if disabled=true (early return)
+- [ ] T191 [US6] Implement tryAction() guard method in NfsAccordionItem: wrap down(), up(), toggle() implementations with precondition checks; if precondition fails, call ErrorHandler.handleError() and return without emitting output events in packages/ngx-foundation-sites/src/lib/accordion/accordion-item.component.ts
 
 **Checkpoint**: Disabled items work - cannot be activated, keyboard navigation skips them
 
@@ -293,6 +313,8 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 - [ ] T113 [US9] Wrap browser-specific code (deep linking) in afterRender() callback
 - [ ] T114 [US9] Verify component renders semantic HTML with ARIA attributes during SSR (no client-only logic in template)
 - [ ] T115 [US9] Test SSR rendering in an Angular Universal sample application (manual verification)
+- [ ] T179 [P] [US9] Add Playwright E2E test: simulate hydration failure during afterRender(), verify component catches exception, reports via ErrorHandler.handleError(), leaves server-rendered HTML intact in packages/ngx-foundation-sites-e2e/src/accordion/accordion-ssr-hydration-fallback.spec.ts
+- [ ] T180 [US9] Implement hydration failure fallback in NfsAccordion: wrap all afterRender and browser-specific code in try/catch, call ErrorHandler.handleError() with metadata on exception in packages/ngx-foundation-sites/src/lib/accordion/accordion.component.ts
 
 **Checkpoint**: SSR works - component renders server-side and hydrates correctly
 
@@ -405,6 +427,7 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 
 - [ ] T160 [P] Add story variant to ScreenReader story: set titleHeadingLevel=2, verify heading wrappers present
 - [ ] T161 [P] Add story variant to KeyboardNavigation story: set wrap=true, verify ArrowDown on last wraps to first
+- [ ] T194 [P] [US15/Advanced] Add Storybook play test to ScreenReader story: change titleHeadingLevel at runtime, verify heading wrapper elements update and focus is preserved on same item in packages/ngx-foundation-sites/.storybook/stories/accordion/ScreenReader.story.ts
 
 ### Implementation for Advanced ARIA
 
@@ -412,6 +435,7 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 - [ ] T163 [P] Add wrap input to NfsAccordion (InputSignal<boolean>, default: false)
 - [ ] T164 Update NfsAccordionTitle template: @if (accordion.titleHeadingLevel()) { <div role="heading" [attr.aria-level]="accordion.titleHeadingLevel()"><button>...</button></div> } @else { <button>...</button> }
 - [ ] T165 Update keyboard navigation to support wrap: if wrap=true, ArrowDown on last wraps to first, ArrowUp on first wraps to last
+- [ ] T195 [US15/Advanced] Implement heading level dynamic updates in NfsAccordion: on titleHeadingLevel change, track focused item ID, update all heading wrappers in single microtask, restore focus in packages/ngx-foundation-sites/src/lib/accordion/accordion.component.ts
 
 **Checkpoint**: Advanced ARIA features work - heading levels and keyboard wraparound
 
@@ -576,7 +600,7 @@ With multiple developers:
 
 ## Summary
 
-**Total Tasks**: 175 tasks across 16 phases
+**Total Tasks**: 199 tasks across 16 phases
 **MVP Scope**: Phases 1-5 (User Stories 1-3, P1) = 64 tasks = ~36% of total
 **Task Breakdown by User Story**:
 
@@ -591,7 +615,7 @@ With multiple developers:
 - US9 (SSR): 5 tasks
 - US10 (Deep Linking): 18 tasks
 
-**Parallel Opportunities**: 61 tasks marked [P] can run in parallel (35% of total)
+**Parallel Opportunities**: 71 tasks marked [P] can run in parallel (36% of total)
 **Independent Test Criteria**: Each user story has clear independent test criteria and can be validated separately
 
 ---
