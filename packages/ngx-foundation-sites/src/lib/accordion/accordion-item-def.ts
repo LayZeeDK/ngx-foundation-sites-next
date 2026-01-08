@@ -6,9 +6,21 @@ import {
   signal,
   TemplateRef,
   ErrorHandler,
+  InjectionToken,
 } from '@angular/core';
 import type { NfsAccordionHeaderDef } from './accordion-header-def';
 import type { NfsAccordionContentDef } from './accordion-content';
+
+/**
+ * Injection token for time provider. Allows tests to control time.
+ */
+export const NFS_ACCORDION_TIME_PROVIDER = new InjectionToken<() => number>(
+  'NFS_ACCORDION_TIME_PROVIDER',
+  {
+    providedIn: 'root',
+    factory: () => Date.now,
+  },
+);
 
 /**
  * Template directive to define an accordion item.
@@ -69,6 +81,9 @@ export class NfsAccordionItemDef {
   /** Angular ErrorHandler for reporting prevented actions */
   readonly #errorHandler = inject(ErrorHandler);
 
+  /** Time provider for testable timestamp access */
+  readonly #timeProvider = inject(NFS_ACCORDION_TIME_PROVIDER);
+
   /**
    * Request a toggle for this item. UI-sourced toggles (source='ui') are
    * debounced/coalesced within a short window to avoid rapid identical toggles.
@@ -76,14 +91,15 @@ export class NfsAccordionItemDef {
    */
   requestToggle(source: 'ui' | 'program' = 'ui'): void {
     try {
-      const now = Date.now();
+      const now = this.#timeProvider();
 
       if (source === 'ui') {
         if (now - this.#lastUiToggleTs < this.#uiDebounceMs) {
           // Coalesce duplicate UI toggles within debounce window
-          this.#lastUiToggleTs = now;
+          // Don't update timestamp for coalesced toggles
           return;
         }
+        // Update timestamp only for actual toggles
         this.#lastUiToggleTs = now;
       }
 
