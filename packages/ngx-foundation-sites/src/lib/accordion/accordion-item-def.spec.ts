@@ -2,7 +2,10 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, provideZonelessChangeDetection } from '@angular/core';
 import { By } from '@angular/platform-browser';
-import { NfsAccordionItemDef, NFS_ACCORDION_TIME_PROVIDER } from './accordion-item-def';
+import {
+  NfsAccordionItemDef,
+  NFS_ACCORDION_TIME_PROVIDER,
+} from './accordion-item-def';
 import { NfsAccordion } from './accordion';
 
 @Component({
@@ -43,7 +46,9 @@ describe('NfsAccordionItemDef toggle queue', () => {
   });
 
   it('should coalesce rapid UI toggles and process queue without throwing', async () => {
-    const trigger = fixture.debugElement.query(By.css('button.accordion-title'));
+    const trigger = fixture.debugElement.query(
+      By.css('button.accordion-title'),
+    );
     expect(trigger).toBeTruthy();
 
     // Get the itemDef for direct testing

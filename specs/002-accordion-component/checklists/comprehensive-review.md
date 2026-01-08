@@ -235,7 +235,7 @@
 
 - [x] CHK085 - Are requirements defined for disabled item interaction attempts? [Exception Flow, Spec §FR-046 to FR-051, User Story 6] — ✓ User Story 6 + FR-046/047 define no response to click/keyboard when disabled
 - [x] CHK086 - Are requirements defined for attempting to close last item when allowAllClosed=false? [Exception Flow, Spec §FR-012, User Story 5] — ✓ User Story 5 + FR-012 + FR-022 "output events MUST NOT fire when action prevented"
-- [ ] CHK087 - Are requirements defined for invalid panelId collisions? [Exception Flow, Edge Cases] — ⚠️ Edge Cases line 200 mentions "ID collisions" but MISSING: explicit behavior definition
+- [x] CHK087 - Are requirements defined for invalid panelId collisions? [Exception Flow, Edge Cases] — ✓ FR-020a (panelId Uniqueness Validation) and FR-073 define error reporting and deterministic first-match expansion; Implementation Notes and spec updated to reference validation tests and runtime diagnostics
 - [x] CHK087 - Are requirements defined for invalid panelId collisions? [Exception Flow, Edge Cases] — ✓ FR-020a (panelId Uniqueness Validation) and FR-073 define error reporting and deterministic first-match expansion; plan.md Implementation Notes explain registry behavior
 - Evidence: spec.md FR-020a + FR-073 and plan.md Implementation Notes FR-020a
 - [x] CHK087 - Are requirements defined for invalid panelId collisions? [Exception Flow, Edge Cases] — ✓ FR-020a (panelId Uniqueness Validation) and FR-073 define error reporting and deterministic first-match expansion; plan.md Implementation Notes explain registry behavior
@@ -256,7 +256,7 @@
   - Evidence: spec.md FR-053 and contracts/accordion-aria.md Implementation Notes about maintaining relationships
 - [x] CHK092 - Are requirements defined for handling SSR hydration failures? [Recovery Flow, Gap] — ✓ FR-062a defines SSR hydration failure fallback: ErrorHandler report, preserve server markup, single rehydrate attempt
 - Evidence: spec.md FR-062a and plan.md FR-062a Implementation Notes describe guarded hydration and recovery behavior
-- [ ] CHK093 - Are requirements defined for recovering from invalid deep link hash? [Recovery Flow, Gap] — ⚠️ MISSING: behavior when deepLink hash references non-existent panelId
+- [x] CHK093 - Are requirements defined for recovering from invalid deep link hash? [Recovery Flow, Gap] — ✓ FR-067b defines DeepLinkNotFound reporting via `ErrorHandler.handleError()` and silent ignore of invalid hash (no exception); spec `Risks & Mitigations` adds Storybook/CI validation steps to confirm behavior
 - [x] CHK093 - Are requirements defined for recovering from invalid deep link hash? [Recovery Flow, Gap] — ✓ FR-067b defines DeepLinkNotFound reporting via ErrorHandler and silent ignore of invalid hash (no exception)
 - Evidence: spec.md FR-067b and plan.md Implementation Notes FR-067b describe calling `ErrorHandler.handleError()` and continuing initialization when hash target missing
 - Missing: Spec lacks explicit behavior for invalid hash (silent ignore vs ErrorHandler report). Suggest adding FR to define behavior (e.g., ignore + ErrorHandler.handleError())
@@ -485,8 +485,8 @@
 
 ### Validation of Assumptions
 
-- [ ] CHK188 - Have critical assumptions been validated or marked as risks? [Validation, Gap] — ⚠️ GAP: spec documents assumptions but doesn't indicate which are validated vs. unvalidated, or which pose risks if invalid (e.g., @angular/aria availability assumption from line 825 could be risk if package doesn't exist or lacks needed primitives)
-- [ ] CHK189 - Are fallback strategies defined if assumptions prove invalid? [Validation, Gap] — ⚠️ PARTIAL: spec.md Dependencies lines 825-826 define @angular/cdk as fallback if @angular/aria insufficient, but no fallback strategies for other assumptions (e.g., what if Foundation CSS not available, or Angular v20 features unavailable)
+- [x] CHK188 - Have critical assumptions been validated or marked as risks? [Validation, Gap] — ✓ `Risks & Mitigations` section added to `spec.md` identifying critical assumptions (Foundation CSS, Angular v20+, @angular/aria) and prescribing validation steps and CI checks
+- [x] CHK189 - Are fallback strategies defined if assumptions prove invalid? [Validation, Gap] — ✓ Spec updated with fallback strategies: `@angular/cdk` fallback for `@angular/aria`, optional minimal fallback stylesheet for missing Foundation CSS, and peerDependency enforcement for Angular v20+. Validation steps added to CI/Storybook as described in `Risks & Mitigations`
 
 ---
 
