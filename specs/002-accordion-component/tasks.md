@@ -609,13 +609,13 @@ With multiple developers:
 
 ## Summary
 
-**Total Tasks**: 201 tasks across 16 phases
-**MVP Scope**: Phases 1-5 (User Stories 1-3, P1) = 65 tasks = ~32% of total
+**Total Tasks**: 203 tasks across 16 phases
+**MVP Scope**: Phases 1-5 (User Stories 1-3, P1) = 66 tasks = ~33% of total
 **Task Breakdown by User Story**:
 
 - US1 (Basic Accordion): 19 tasks
 - US2 (Keyboard Navigation): 18 tasks
-- US3 (Screen Reader): 16 tasks (+1 for T057c panelId duplicate detection)
+- US3 (Screen Reader): 18 tasks (+1 for T057c panelId duplicate detection, +1 for T178b runtime re-registration test)
 - US4 (Multi-Expand): 8 tasks
 - US5 (Allow All Closed): 8 tasks
 - US6 (Disabled Items): 15 tasks
@@ -623,8 +623,9 @@ With multiple developers:
 - US8 (Dynamic Items): 10 tasks
 - US9 (SSR): 5 tasks
 - US10 (Deep Linking): 20 tasks (+2 for T117a/T117b ErrorHandler and multiExpand E2E tests)
+- Remediation: 5 tasks (T-AC-001 done, T-AC-001b new, T-AC-002, T-AC-003 done, T-AC-004 done)
 
-**Parallel Opportunities**: 71 tasks marked [P] can run in parallel (~35% of total)
+**Parallel Opportunities**: 73 tasks marked [P] can run in parallel (~36% of total)
 **Independent Test Criteria**: Each user story has clear independent test criteria and can be validated separately
 
 ---
