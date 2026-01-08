@@ -450,7 +450,7 @@ Note: AR-005 through AR-012 requirements are covered by corresponding FR require
 
 #### AR-027a: Explicit Screen-Reader Announcement Strategy
 
-- **AR-027a**: The component MUST set `aria-expanded` on the title/trigger and provide `aria-controls` plus a `role="region"` on the panel; this is the primary, sufficient mechanism for communicating expansion state to screen readers per WAI-ARIA Authoring Practices. To handle platform inconsistencies, the component MUST also provide an optional, opt-in `announce` input (boolean, default: `false`). When `announce` is `true` the component MUST render a single visually-hidden polite live region (`aria-live="polite"`) and publish a concise announcement on expand/collapse (for example: `Section "<title text>" expanded`). The live-region feature MUST be opt-in (default off) to avoid duplicate or noisy announcements on platforms where `aria-expanded` is reliably announced. Implementers MUST ensure the live-region message is brief and debounced to avoid rapid repeated announcements during fast user interactions.
+- **AR-027a**: The component MUST set `aria-expanded` on the title/trigger and provide `aria-controls` plus a `role="region"` on the panel; this is the primary, sufficient mechanism for communicating expansion state to screen readers per WAI-ARIA Authoring Practices. To handle platform inconsistencies, the component MUST also provide an optional, opt-in `announce` input (boolean, default: `false`). When `announce` is `true` the component MUST render a single visually-hidden polite live region (`aria-live="polite"`) and publish a concise announcement on expand/collapse (for example: `Section "<title text>" expanded`). The live-region feature MUST be opt-in (default off) to avoid duplicate or noisy announcements on platforms where `aria-expanded` is reliably announced. Implementers MUST ensure the live-region message is brief and debounced to avoid rapid repeated announcements during fast user interactions. **Title text extraction**: The `<title text>` for announcements MUST be extracted from the `NfsAccordionTitle` element's `textContent` property (trimmed), providing a consistent source regardless of projected content complexity.
 
 ### Security Requirements
 
@@ -483,7 +483,7 @@ Note: AR-005 through AR-012 requirements are covered by corresponding FR require
 
 - **NfsAccordion**: Root container component (selector: `<nfs-accordion>`, renders as `<ul class="accordion">`) that manages overall accordion state, tracks which items are open, enforces `multiExpand` and `allowAllClosed` rules, provides context to child items via exported `nfsAccordionToken`, handles keyboard navigation coordination, and implements deep linking features (`deepLink`, `deepLinkSmudge`, `updateHistory`). Emits Foundation parity events via outputs: `down`, `up`.
 
-- **NfsAccordionItem**: Individual accordion item (selector: `<nfs-accordion-item>`, renders as `<li class="accordion-item">`) that manages its own expanded/collapsed state via `expanded` model signal, communicates with parent accordion via optional DI token injection (`inject(nfsAccordionToken, { optional: true, skipSelf: true })`), handles disabled state, coordinates title/content sub-components, and generates unique IDs for ARIA relationships. Accepts input `panelId` (required, string), `expanded` (model, boolean, default false), `disabled` (boolean, default false). Exposes Foundation parity methods: `down()`, `up()`, `toggle()`.
+- **NfsAccordionItem**: Individual accordion item (selector: `<nfs-accordion-item>`, renders as `<li class="accordion-item">`) that manages its own expanded/collapsed state via `expanded` model signal, communicates with parent accordion via optional DI token injection (`inject(nfsAccordionToken, { optional: true, skipSelf: true })`), handles disabled state, coordinates title/content sub-components, and generates unique IDs for ARIA relationships. Accepts input `panelId` (optional, string; auto-generated if absent per FR-017), `expanded` (model, boolean, default false), `disabled` (boolean, default false). Exposes Foundation parity methods: `down()`, `up()`, `toggle()`.
 
 - **NfsAccordionTitle**: Clickable trigger element (selector: `<nfs-accordion-title>`, renders as `<button class="accordion-title">`, optionally wrapped in `<div role="heading" aria-level="N">` if `titleHeadingLevel` is set on parent accordion) that displays the title content, manages button role and ARIA attributes (`aria-expanded`, `aria-controls`, `aria-disabled`), handles click and keyboard events (Enter/Space to toggle), and projects title content via ng-content.
 
@@ -611,7 +611,7 @@ Note: AR-005 through AR-012 requirements are covered by corresponding FR require
 
 **Inputs**:
 
-- `panelId` (string, required) - Unique identifier for this panel (used for deep linking and ARIA relationships)
+- `panelId` (string, optional) - Unique identifier for this panel (used for deep linking and ARIA relationships). When not provided, the system auto-generates a stable, unique ID per FR-017/FR-020
 - `expanded` (boolean model, default: `false`) - Whether the panel is expanded (supports two-way binding via `[(expanded)]`)
 - `disabled` (boolean, default: `false`) - Whether this item is disabled
 
