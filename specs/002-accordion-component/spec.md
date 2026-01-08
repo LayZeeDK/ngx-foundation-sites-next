@@ -224,6 +224,13 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 
 - **FR-089a**: To avoid race conditions from rapid user interactions (clicks or programmatic toggles), the component MUST serialize expansion state changes per item and debounce consecutive toggle requests originating from the same input source by 50ms. Serialization semantics: if a toggle request arrives while the same item is mid-transition, queue the request and execute it after the current transition completes. Debounce semantics: multiple toggle requests within 50ms from the same source collapse to a single eventual request. This policy prevents event storms while ensuring user intent is respected.
 
+  **Input Source Definition**: An "input source" is identified by the event type that triggered the toggle request:
+  - `'click'`: Mouse click on title element
+  - `'keyboard'`: Enter/Space key on title element
+  - `'programmatic'`: Direct call to `toggle()`, `down()`, or `up()` methods
+
+  Debounce coalescing applies only within the same input source category. For example, rapid clicks coalesce together, but a click followed immediately by a programmatic call do NOT coalesce—both execute in order since they originate from different input sources.
+
 #### FR-038a: Explicit State Transitions
 
 - **FR-038a**: In addition to boolean `expanded`, the item MUST conceptually transition through explicit lifecycle states for implementation clarity: `COLLAPSED -> EXPANDING -> EXPANDED -> COLLAPSING -> COLLAPSED`. Implementations MAY represent these as internal enums or booleans plus transient flags, but must ensure that ARIA attributes reflect `aria-expanded` only when the target state is reached (`EXPANDED`), and that keyboard/interaction handlers consult the in-progress state to avoid conflicting operations.
@@ -384,7 +391,7 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 
 #### FR-114a: Empty Panel Content Guidance
 
-- **FR-114a**: Panels with empty or whitespace-only content must still render the panel wrapper with a valid `id` and `role="region"` and `aria-labelledby` attribute. Components SHOULD allow consumers to provide a developer-controlled empty-state slot to display placeholder content. If no placeholder is provided, the component MUST render an invisible placeholder comment (no visual output) and still maintain ARIA relationships.
+- **FR-114a**: Panels with empty or whitespace-only content must still render the panel wrapper with a valid `id` and `role="region"` and `aria-labelledby` attribute. Components SHOULD allow consumers to provide a developer-controlled empty-state via default `ng-content` projection within the item—consumers simply project their empty-state UI as panel content. The component does NOT provide a dedicated empty-state slot; empty-state handling is the consumer's responsibility through content projection (consistent with Angular's composition model). If no content is projected, the component MUST render an invisible placeholder comment (no visual output) and still maintain ARIA relationships.
 
 #### FR-115a: Dynamic Title Content Announcement
 
