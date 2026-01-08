@@ -25,6 +25,119 @@ Start using slash commands with your AI agent:
 1. `/speckit.analyze` (optional) — Cross-artifact consistency and alignment report (after `/speckit.tasks`, before `/speckit.implement`)
 1. `/speckit.implement` — Execute all tasks and build the feature according to the plan
 
+## Claude Code Model Selection
+
+Different Spec Kit commands benefit from different Claude models. Use this guide to optimize for quality, speed, and cost.
+
+### Model Characteristics
+
+| Model             | Context | Reasoning                 | Speed   | Cost        |
+| ----------------- | ------- | ------------------------- | ------- | ----------- |
+| **Opus 4.5**      | 200K    | Strongest                 | Slowest | Highest     |
+| **Sonnet 4.5**    | 200K    | Very good                 | Fast    | Medium      |
+| **Sonnet 4.5 1M** | 1M      | Very good                 | Fast    | Medium-High |
+| **Haiku**         | 200K    | Good for structured tasks | Fastest | Lowest      |
+
+### Recommended Models by Command
+
+| Command              | Model          | Rationale                                          |
+| -------------------- | -------------- | -------------------------------------------------- |
+| `/speckit.clarify`   | Sonnet         | Interactive; benefits from speed + good reasoning  |
+| `/speckit.specify`   | Sonnet or Opus | Simple specs → Sonnet; complex domains → Opus      |
+| `/speckit.plan`      | **Opus**       | Architectural decisions require deepest reasoning  |
+| `/speckit.tasks`     | Haiku          | Mostly mechanical breakdown from existing plan     |
+| `/speckit.checklist` | Sonnet         | Structured generation with moderate reasoning      |
+| `/speckit.analyze`   | **Opus**       | Cross-artifact consistency needs nuanced reasoning |
+| `/speckit.implement` | Mixed          | Simple tasks → Haiku; complex refactors → Opus     |
+
+> **When to use Sonnet 4.5 1M:** Choose over Sonnet 4.5 when context exceeds ~150K tokens. Choose over Opus when you need large context with good (not deepest) reasoning—it's faster and cheaper than Opus while handling 5× more context.
+
+### When to Use Each Model
+
+**Opus 4.5** — Best for "finding problems" and complex reasoning:
+
+- Detecting conflicts between spec and plan
+- Constitution alignment checking (needs nuance)
+- Ambiguity detection and architectural decisions
+- Critical projects where missing edge cases has significant consequences
+
+**Sonnet 4.5** — Best general-purpose model for most work:
+
+- Interactive workflows (`/speckit.clarify`) where speed matters
+- Well-defined specs with clear requirements
+- Iterative development with multiple quick passes
+- Balance of reasoning quality and response speed
+
+**Sonnet 4.5 1M** — Choose when context size is the limiting factor:
+
+- **Over Sonnet 4.5:** Combined artifacts exceed ~150K tokens
+- **Over Opus:** Need large context + good reasoning, but faster/cheaper than Opus
+- **Over Haiku:** Need large context for any task (Haiku caps at 200K)
+
+Ideal scenarios:
+
+- Large monorepos requiring many reference files loaded simultaneously
+- Cross-referencing multiple feature specs or extensive external docs
+- Long-running sessions where conversation history accumulates
+- Analyzing or refactoring large codebases in a single pass
+
+**Haiku** — Best for "following instructions" on structured tasks:
+
+- Generating task breakdowns from a solid plan
+- Simple file scaffolding during implementation
+- Boilerplate code generation
+- Quick formatting or restructuring of existing specs
+
+**Avoid Haiku for:** Analysis, ambiguity detection, and consistency checking—it tends to take things at face value rather than questioning assumptions.
+
+### Decision Flowchart
+
+```
+Is your total context > 150K tokens?
+  └─ Yes → Sonnet 4.5 1M (only model that fits)
+  └─ No ↓
+
+Will context grow large during the session? (long impl, many files)
+  └─ Yes → Sonnet 4.5 1M (prevents mid-session truncation)
+  └─ No ↓
+
+Does the task require finding problems or subtle reasoning?
+  └─ Yes → Opus 4.5 (analyze, plan, complex specify)
+  └─ No ↓
+
+Is the task mostly mechanical/structured?
+  └─ Yes → Haiku (tasks, simple implement)
+  └─ No → Sonnet 4.5 (clarify, checklist, moderate specify)
+```
+
+**Tip:** When in doubt between Sonnet 4.5 and Sonnet 4.5 1M, choose 1M for `/speckit.implement` sessions—implementation often loads many files and accumulates context quickly.
+
+### Switching Models Mid-Session
+
+You can change models during a session using the `/model` command:
+
+```bash
+/model sonnet      # Switch to Sonnet 4.5 (200K context)
+/model sonnet-1m   # Switch to Sonnet 4.5 1M (1M context)
+/model opus        # Switch to Opus 4.5 (200K context)
+/model haiku       # Switch to Haiku (200K context)
+```
+
+**Context behavior:** Conversation history is preserved and sent to the new model, but it will be **truncated** if it exceeds the new model's context window.
+
+| Switch Direction                              | Safety  | Notes                                       |
+| --------------------------------------------- | ------- | ------------------------------------------- |
+| Any → Sonnet 1M                               | ✅ Safe | Larger context always fits existing history |
+| Between 200K models (Opus ↔ Sonnet ↔ Haiku) | ✅ Safe | Same context size                           |
+| Sonnet 1M → Any 200K model                    | ⚠️ Risk | History truncated if > 200K tokens          |
+
+**Recommendations:**
+
+- **Start with your peak-context model** — If you'll need 1M later, start with it
+- **Only switch "upward"** — Switching to larger context (→ 1M) is always safe
+- **Avoid switching during `/speckit.implement`** — Implementation sessions accumulate context quickly
+- **Safe to switch after analysis** — Context is usually small after `/speckit.analyze`; switching Opus → Haiku for `/speckit.tasks` is fine
+
 ## Using the `specify` CLI (PowerShell)
 
 In this repo, `specify` is primarily used to **manage the `.specify\` scaffolding** (templates/scripts) and to **check prerequisites**. Feature work is typically driven by the PowerShell scripts under `.specify\scripts\powershell\`.
