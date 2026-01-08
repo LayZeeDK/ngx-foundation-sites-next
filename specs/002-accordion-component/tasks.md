@@ -159,6 +159,7 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 - [ ] T063 [US3] Add inert attribute on panel wrapper when collapsed (prevent keyboard access)
 - [ ] T064 [US3] Implement @if conditional rendering for panel content (remove content from DOM when collapsed, keep wrapper)
 - [ ] T178 [US3] Implement panelId change handler in NfsAccordionItem: on panelId input change, unregister old ID from parent, re-register new ID, update all ARIA attributes atomically in packages/ngx-foundation-sites/src/lib/accordion/accordion-item.component.ts
+- [ ] T178b [P] [US3] Add unit test for FR-020b panelId runtime changes: verify re-registration occurs on panelId change, ARIA attributes update atomically, duplicate detection triggers ErrorHandler.handleError(), expansion state unchanged in packages/ngx-foundation-sites/src/lib/accordion/accordion-item.component.spec.ts
 - [ ] T186 [US3] Implement empty-state handling in NfsAccordionItem: render visually-hidden placeholder when inner content is empty to ensure stable ARIA structure in packages/ngx-foundation-sites/src/lib/accordion/accordion-item.component.ts
 - [ ] T188 [US3] Implement title change detection in NfsAccordion: track NfsAccordionTitle content changes, publish to live region if announce=true, debounce by 100ms in packages/ngx-foundation-sites/src/lib/accordion/accordion.component.ts
 - [ ] T196 [P] [US3] Add `announce = input(false)` InputSignal to NfsAccordion component in packages/ngx-foundation-sites/src/lib/accordion/accordion.component.ts
@@ -529,6 +530,11 @@ Task T020: "Create NfsAccordionTitle component"
 - Description: Implement a per-item FIFO toggle queue that enqueues toggle requests arriving while an item is mid-transition. Coalesce identical toggle requests arriving within 50ms from the same input source. Add timing-sensitive integration tests (Storybook play + Vitest simulation).
 - Blocking: YES (prevents race conditions in rapid UI interactions)
 - Evidence: `accordion-item-def.ts` updated with `requestToggle()` queue/debounce; `accordion-item-def.spec.ts` simulates rapid toggles
+
+- [ ] T-AC-001b [P?] Add Storybook play test for FR-089a input source distinction
+  - Location: packages/ngx-foundation-sites/.storybook/stories/accordion/RapidToggle.story.ts
+  - Description: Verify that programmatic toggle (item.toggle()) does NOT coalesce with keyboard toggle (Enter key) within 50ms debounce window—both should execute in order since they originate from different input sources (programmatic vs keyboard). Add play function simulating: keyboard Enter on item, then immediate programmatic toggle() call within 10ms, verify both actions execute sequentially.
+  - Acceptance: Play test confirms two distinct state changes occur (not coalesced) when input sources differ.
 
 - [ ] T-AC-002 [P?] Implement `announce` live-region opt-in with 100ms debounce + Storybook tests
   - Location: packages/ngx-foundation-sites/src/lib/accordion/
