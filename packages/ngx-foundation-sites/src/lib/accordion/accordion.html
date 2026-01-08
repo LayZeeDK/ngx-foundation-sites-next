@@ -57,4 +57,9 @@
   </li>
   }
 </ul>
+} @if (announce()) {
+<!-- Visually-hidden polite live region for screen readers per AR-027a -->
+<div class="show-for-sr" aria-live="polite" aria-atomic="true">
+  {{ announceText() }}
+</div>
 }

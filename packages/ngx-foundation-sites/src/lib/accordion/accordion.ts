@@ -262,7 +262,15 @@ export class NfsAccordion implements AfterContentInit {
       clearTimeout(this.announceTimer);
     }
     this.announceTimer = setTimeout(() => {
-      // Use LiveAnnouncer instead of DOM live region
+      // Update the template live region (for spec compliance) and use LiveAnnouncer as fallback.
+      try {
+        // Update template-bound live region so a persistent visually-hidden element
+        // with aria-live="polite" is present when announce=true.
+        this.announceText.set(text);
+      } catch {
+        // ignore
+      }
+
       try {
         this.#liveAnnouncer.announce(text, 'polite');
       } catch {
