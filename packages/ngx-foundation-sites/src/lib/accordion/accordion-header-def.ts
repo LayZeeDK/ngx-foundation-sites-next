@@ -1,4 +1,4 @@
-import { Directive, inject, TemplateRef } from '@angular/core';
+import { Directive, inject, TemplateRef, input } from '@angular/core';
 import { NfsAccordionItemDef } from './accordion-item-def';
 
 /**
@@ -21,6 +21,8 @@ import { NfsAccordionItemDef } from './accordion-item-def';
 })
 export class NfsAccordionHeaderDef {
   readonly templateRef: TemplateRef<void> = inject(TemplateRef);
+  /** Optional explicit announce label for screen reader announcements */
+  readonly announceLabel = input<string | null>(null);
 
   constructor() {
     // Register with parent item (injected via ngTemplateOutletInjector)

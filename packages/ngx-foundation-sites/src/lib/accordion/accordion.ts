@@ -26,6 +26,7 @@ import { AccordionDeepLinkService } from './accordion-deep-link.service';
 import { NfsStyleLoader } from '../core/nfs-style-loader.service';
 import { nfsAccordionToken } from './accordion.token';
 import { ErrorHandler } from '@angular/core';
+import { LiveAnnouncer } from '@angular/cdk/a11y';
 import {
   sanitizeDeepLinkSmudgeDelay,
   sanitizeDeepLinkSmudgeOffset,
@@ -49,6 +50,7 @@ export class NfsAccordion implements AfterContentInit {
   readonly #deepLinkService = inject(AccordionDeepLinkService);
   readonly #destroyRef = inject(DestroyRef);
   readonly #styleLoader = inject(NfsStyleLoader);
+  readonly #liveAnnouncer = inject(LiveAnnouncer);
 
   /** Cache for item injectors to avoid creating new instances on each change detection */
   readonly #itemInjectorCache = new WeakMap<NfsAccordionItemDef, Injector>();
@@ -95,6 +97,12 @@ export class NfsAccordion implements AfterContentInit {
   /** Allow all panels to be closed. If false, at least one panel must remain open. */
   readonly allowAllClosed = input(false);
 
+  /** Optional live region announcements for screen readers (opt-in). */
+  readonly announce = input(false);
+
+  /** Internal announce text signal used by the live region (template-accessible). */
+  protected readonly announceText = signal('');
+
   /** Query all item template definitions from content */
   readonly itemDefs = contentChildren(NfsAccordionItemDef);
 
@@ -140,10 +148,17 @@ export class NfsAccordion implements AfterContentInit {
     afterNextRender(() => {
       this.#styleLoader.load('accordion', '/nfs-accordion.css');
     });
-
     // Unload styles when component is destroyed
     this.#destroyRef.onDestroy(() => {
       this.#styleLoader.unload('accordion');
+    });
+
+    // Clear any announce timers when component is destroyed
+    this.#destroyRef.onDestroy(() => {
+      if (this.announceTimer) {
+        clearTimeout(this.announceTimer);
+        this.announceTimer = null;
+      }
     });
 
     // Handle initial hash on first render
@@ -223,16 +238,87 @@ export class NfsAccordion implements AfterContentInit {
           }
         });
       }
+
+      // Live-region announcements (opt-in)
+      if (this.announce()) {
+        // Debounce announcements by 100ms to coalesce rapid changes
+        const expandedLabels = expandedItems
+          .map((i) => this.getAccessibleNameForItem(i) ?? i.panelId())
+          .join(', ');
+        // Schedule a debounced announce update using accessible names
+        this.scheduleAnnounce(
+          expandedLabels ? `${expandedLabels} opened` : `All panels collapsed`,
+        );
+      }
     });
   }
 
-  /**
-   * Initialize all item templates to trigger header/content registration.
-   *
-   * This runs BEFORE the template renders, ensuring headerDef is populated
-   * when the accordion structure needs to render the trigger button.
-   */
+  /** Timer handle for debounced announce updates (private runtime field) */
+  private announceTimer: ReturnType<typeof setTimeout> | null = null;
+
+  /** Schedule a debounced LiveAnnouncer announcement. */
+  protected scheduleAnnounce(text: string) {
+    if (this.announceTimer) {
+      clearTimeout(this.announceTimer);
+    }
+    this.announceTimer = setTimeout(() => {
+      // Use LiveAnnouncer instead of DOM live region
+      try {
+        this.#liveAnnouncer.announce(text, 'polite');
+      } catch {
+        // Swallow any errors to avoid breaking component runtime
+      }
+      this.announceTimer = null;
+    }, 100);
+  }
+
+  /** Resolve an accessible name for an item, preferring explicit announceLabel, then trigger accessible name. */
+  getAccessibleNameForItem(item: NfsAccordionItemDef): string | null {
+    // 1) If headerDef provided an explicit announce label, use it
+    const header = item.headerDef();
+    if (header?.announceLabel?.()) return header.announceLabel();
+
+    // 2) Prefer an accessible name on the trigger button: aria-label or aria-labelledby
+    if (typeof document === 'undefined') return null;
+
+    try {
+      const trigger = document.querySelector(
+        `[aria-controls="${item.panelId()}"]`,
+      );
+      if (!trigger) return null;
+
+      const el = trigger as HTMLElement;
+      const ariaLabel = el.getAttribute('aria-label');
+      if (ariaLabel) return ariaLabel.trim();
+
+      const labelledBy = el.getAttribute('aria-labelledby');
+      if (labelledBy) {
+        const ids = labelledBy.split(/\s+/).filter(Boolean);
+        const parts: string[] = [];
+        for (const id of ids) {
+          const ref = document.getElementById(id);
+          if (ref) parts.push(ref.textContent?.trim() ?? '');
+        }
+        const joined = parts.filter(Boolean).join(' ');
+        if (joined) return joined;
+      }
+
+      // 3) As last resort, use button textContent if small and safe
+      const txt = el.textContent?.trim() ?? '';
+      if (txt && txt.length < 200) return txt;
+    } catch {
+      // ignore DOM errors
+    }
+    return null;
+  }
+
+  // Timer cleanup handled via DestroyRef registrations in the constructor
+
   ngAfterContentInit(): void {
+    // Initialize all item templates to trigger header/content registration.
+    //
+    // This runs BEFORE the template renders, ensuring headerDef is populated
+    // when the accordion structure needs to render the trigger button.
     for (const item of this.itemDefs()) {
       const injector = Injector.create({
         providers: [{ provide: NfsAccordionItemDef, useValue: item }],

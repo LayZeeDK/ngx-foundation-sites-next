@@ -505,8 +505,9 @@ Task T020: "Create NfsAccordionTitle component"
 - Evidence: `accordion-item-def.ts` updated with `requestToggle()` queue/debounce; `accordion-item-def.spec.ts` simulates rapid toggles
 
 - [ ] T-AC-002 [P?] Implement `announce` live-region opt-in with 100ms debounce + Storybook tests
-  - Location: packages/ngx-foundation-sites/src/lib/accordion/
-  - Description: Add `announce = input(false)` and render a visually-hidden live region with `aria-live="polite"` when enabled. Debounce announcements by 100ms. Add Storybook play tests asserting live region updates on expand/collapse and title updates.
+- [x] T-AC-002 [P?] Implement `announce` live-region opt-in with 100ms debounce + Storybook tests
+- Location: packages/ngx-foundation-sites/src/lib/accordion/
+- Description: Add `announce = input(false)` and render a visually-hidden live region with `aria-live="polite"` when enabled. Debounce announcements by 100ms. Add Storybook play tests asserting live region updates on expand/collapse and title updates.
 
 - [x] T-AC-003 [P?] Input validators & tests for FR-110a
 - Location: packages/ngx-foundation-sites/src/lib/accordion/
