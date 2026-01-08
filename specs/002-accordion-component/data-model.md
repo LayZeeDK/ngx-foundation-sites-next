@@ -90,11 +90,11 @@ IDLE → OPENING_ITEM → ITEM_OPEN
 - `#triggerId`: `string` - Auto-generated ID for title button
 - `#panelId`: `string` - User-provided or auto-generated panel ID
 
-**Inputs**:
+**Inputs** (see spec.md FR-017 through FR-019 for requirements):
 
-- `panelId`: `InputSignal<string | undefined>` - Optional unique identifier for this panel (auto-generated if not provided per FR-017)
-- `expanded`: `ModelSignal<boolean>` - Initial/controlled expansion state (default: `false`)
-- `disabled`: `InputSignal<boolean>` - Disable this item (default: `false`)
+- `panelId`: `InputSignal<string | undefined>` - Optional unique identifier; auto-generated if absent (FR-017)
+- `expanded`: `ModelSignal<boolean>` - Two-way bindable expansion state, default: `false` (FR-018)
+- `disabled`: `InputSignal<boolean>` - Disable this item, default: `false` (FR-019)
 
 **Outputs**: None (use `(down)` / `(up)` outputs on `<nfs-accordion>` for Foundation parity events)
 

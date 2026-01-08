@@ -435,10 +435,12 @@ Note: AR-005 through AR-012 requirements are covered by corresponding FR require
 
 #### Keyboard Accessibility
 
-- **AR-015**: All interactive elements (accordion titles) MUST be keyboard accessible
-- **AR-016**: Tab key MUST follow natural DOM tab order
-- **AR-017**: Enter and Space keys MUST activate the focused accordion title
-- **AR-018**: Arrow keys (Up/Down), Home, and End MUST navigate between accordion titles per FR-036 to FR-043
+Note: AR-015 through AR-018 summarize accessibility implications of FR-037 through FR-045. See those requirements for implementation details.
+
+- **AR-015**: All interactive elements (accordion titles) MUST be keyboard accessible (see FR-037)
+- **AR-016**: Tab key MUST follow natural DOM tab order (see FR-037)
+- **AR-017**: Enter and Space keys MUST activate the focused accordion title (see FR-038)
+- **AR-018**: Arrow keys (Up/Down), Home, and End MUST navigate between accordion titles (see FR-039 through FR-044)
 
 #### Focus Management
 
@@ -474,7 +476,7 @@ Note: AR-005 through AR-012 requirements are covered by corresponding FR require
 - **CA-003**: Component outputs MUST use the `output()` function
 - **CA-004**: Component state MUST be managed using signals (computed, effect as appropriate)
 - **CA-005**: All components MUST use `ChangeDetectionStrategy.OnPush`
-- **CA-006**: Component selectors MUST follow the naming convention: `nfs-accordion`, `nfs-accordion-item`, `nfs-accordion-title`, `nfs-accordion-content`
+- **CA-006**: Component selectors MUST follow the naming convention defined in FR-001 through FR-006 (prefix `nfs-`, selectors align with Foundation CSS class names)
 - **CA-007**: Component API MUST align with Foundation for Sites naming conventions (multiExpand maps to data-multi-expand, allowAllClosed maps to data-allow-all-closed)
 - **CA-008**: Before implementation, an API design document MUST be created using the `foundation-api-design` skill to document the complete component API, inputs, outputs, content projection, ARIA requirements, and usage examples
 - **CA-009**: **Foundation JavaScript API Parity (MANDATORY)**: `<nfs-accordion-item>` MUST expose Foundation method names as public Angular methods: `toggle()`, `down()`, `up()` (see FR-075)
