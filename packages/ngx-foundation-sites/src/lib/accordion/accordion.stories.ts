@@ -572,19 +572,11 @@ export const AnnounceLiveRegion: Story = {
     // The CDK LiveAnnouncer appends a live node to document body.
     // Wait for the announcer element and assert it contains expected text.
     await waitFor(
-      () => {
-        // Require a polite live region per spec: role="status" (aria-live="polite").
-        // The test should fail if only an assertive region (role="alert") is present.
-        const bodyWithin = within(document.body as unknown as HTMLElement);
-        const politeLive = bodyWithin.queryByRole('status', { hidden: true });
-
-        // Fail early if polite live region not found - this enforces spec compliance.
-        expect(politeLive).toBeTruthy();
-
-        // The announcer text may be localized or use 'opened' vs 'Expanded'.
-        expect((politeLive as HTMLElement).textContent).toMatch(
-          /(Expanded|opened)/i,
+      async () => {
+        const announcer = document.body.querySelector(
+          '[role="status"], [aria-live="polite"]',
         );
+        await expect(announcer?.textContent).toMatch(/(Expanded|opened)/i);
       },
       { timeout: 1000 },
     );

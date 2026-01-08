@@ -100,9 +100,6 @@ export class NfsAccordion implements AfterContentInit {
   /** Optional live region announcements for screen readers (opt-in). */
   readonly announce = input(false);
 
-  /** Internal announce text signal used by the live region (template-accessible). */
-  protected readonly announceText = signal('');
-
   /** Query all item template definitions from content */
   readonly itemDefs = contentChildren(NfsAccordionItemDef);
 
@@ -153,13 +150,7 @@ export class NfsAccordion implements AfterContentInit {
       this.#styleLoader.unload('accordion');
     });
 
-    // Clear any announce timers when component is destroyed
-    this.#destroyRef.onDestroy(() => {
-      if (this.announceTimer) {
-        clearTimeout(this.announceTimer);
-        this.announceTimer = null;
-      }
-    });
+    // No-op here; announce timer handled by scheduleAnnounce
 
     // Handle initial hash on first render
     afterNextRender(() => {
@@ -254,6 +245,7 @@ export class NfsAccordion implements AfterContentInit {
   }
 
   /** Timer handle for debounced announce updates (private runtime field) */
+  /** Timer handle for debounced announce updates (private runtime field) */
   private announceTimer: ReturnType<typeof setTimeout> | null = null;
 
   /** Schedule a debounced LiveAnnouncer announcement. */
@@ -261,21 +253,10 @@ export class NfsAccordion implements AfterContentInit {
     if (this.announceTimer) {
       clearTimeout(this.announceTimer);
     }
-    this.announceTimer = setTimeout(() => {
-      // Update the template live region (for spec compliance) and use LiveAnnouncer as fallback.
-      try {
-        // Update template-bound live region so a persistent visually-hidden element
-        // with aria-live="polite" is present when announce=true.
-        this.announceText.set(text);
-      } catch {
-        // ignore
-      }
-
-      try {
-        this.#liveAnnouncer.announce(text, 'polite');
-      } catch {
-        // Swallow any errors to avoid breaking component runtime
-      }
+    this.announceTimer = setTimeout(async () => {
+      await this.#liveAnnouncer.announce(text, 'polite').catch(() => {
+        // swallow
+      });
       this.announceTimer = null;
     }, 100);
   }
