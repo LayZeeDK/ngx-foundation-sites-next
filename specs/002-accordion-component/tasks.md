@@ -313,7 +313,7 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 - [ ] T113 [US9] Wrap browser-specific code (deep linking) in afterRender() callback
 - [ ] T114 [US9] Verify component renders semantic HTML with ARIA attributes during SSR (no client-only logic in template)
 - [ ] T115 [US9] Test SSR rendering in an Angular Universal sample application (manual verification)
-- [ ] T179 [P] [US9] Add Playwright E2E test: simulate hydration failure during afterRender(), verify component catches exception, reports via ErrorHandler.handleError(), leaves server-rendered HTML intact in packages/ngx-foundation-sites-e2e/src/accordion/accordion-ssr-hydration-fallback.spec.ts
+- [ ] T179 [P] [US9] Add unit test: simulate hydration failure during afterRender() using Angular TestBed with platform mocking, verify component catches exception, reports via ErrorHandler.handleError(), leaves server-rendered HTML intact in packages/ngx-foundation-sites/src/lib/accordion/accordion.component.spec.ts (Note: per constitution V, Playwright reserved for browser-specific APIs only)
 - [ ] T180 [US9] Implement hydration failure fallback in NfsAccordion: wrap all afterRender and browser-specific code in try/catch, call ErrorHandler.handleError() with metadata on exception in packages/ngx-foundation-sites/src/lib/accordion/accordion.component.ts
 
 **Checkpoint**: SSR works - component renders server-side and hydrates correctly
@@ -456,7 +456,7 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 - [ ] T172 Update main library index.ts at packages/ngx-foundation-sites/src/index.ts to export accordion components
 - [ ] T173 [P] Create comprehensive Storybook docs page at packages/ngx-foundation-sites/.storybook/stories/accordion/Accordion.mdx with API reference and Foundation migration guide
 - [ ] T174 Run AXE accessibility checks on all Storybook stories, verify 100% pass rate
-- [ ] T175 [P] Add unit tests for edge cases (if requested): empty accordion, single item, all disabled, ID collision detection in packages/ngx-foundation-sites/src/lib/accordion/accordion.component.spec.ts
+- [ ] T175 [P] Add Storybook stories with play functions for edge cases: empty accordion, single item, all disabled, ID collision detection in packages/ngx-foundation-sites/.storybook/stories/accordion/EdgeCases.story.ts (Note: per constitution V, prefer Storybook interactive tests over unit tests; unit tests reserved for pure functions/services only)
 
 ---
 

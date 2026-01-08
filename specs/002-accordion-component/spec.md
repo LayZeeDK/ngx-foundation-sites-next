@@ -558,7 +558,7 @@ Note: AR-005 through AR-012 requirements are covered by corresponding FR require
   - Disabled item keyboard navigation skip logic
   - DI token injection and parent-child communication
   - Signal reactivity and state synchronization
-- **Framework**: Jasmine/Jest (based on project configuration) with Angular TestBed
+- **Framework**: Vitest with Angular TestBed (per project constitution)
 
 ### Tertiary Testing: Playwright E2E (Optional, for URL hash deep linking)
 
