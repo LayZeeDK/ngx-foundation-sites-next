@@ -25,6 +25,12 @@ import { NfsAccordionItemDef } from './accordion-item-def';
 import { AccordionDeepLinkService } from './accordion-deep-link.service';
 import { NfsStyleLoader } from '../core/nfs-style-loader.service';
 import { nfsAccordionToken } from './accordion.token';
+import { ErrorHandler } from '@angular/core';
+import {
+  sanitizeDeepLinkSmudgeDelay,
+  sanitizeDeepLinkSmudgeOffset,
+  sanitizeTitleHeadingLevel,
+} from './validators';
 
 @Component({
   selector: 'nfs-accordion',
@@ -75,6 +81,14 @@ export class NfsAccordion implements AfterContentInit {
   /** Scroll offset in pixels for sticky headers when deep linking */
   readonly deepLinkSmudgeOffset = input(0);
 
+  /** Optional heading level for title wrappers (1..6 or null) */
+  readonly titleHeadingLevel = input<number | null>(null);
+
+  /** Internal sanitized values for numeric inputs and heading level */
+  protected readonly deepLinkSmudgeDelayValue = signal(300);
+  protected readonly deepLinkSmudgeOffsetValue = signal(0);
+  protected readonly titleHeadingLevelValue = signal<number | null>(null);
+
   /** If true, adds to browser history; if false, replaces current entry */
   readonly updateHistory = input(false);
 
@@ -104,6 +118,24 @@ export class NfsAccordion implements AfterContentInit {
   #initialHashProcessed = false;
 
   constructor() {
+    // Sanitize numeric inputs and heading level according to FR-110a
+    const errorHandler = inject(ErrorHandler);
+    effect(() => {
+      const delayRaw = this.deepLinkSmudgeDelay();
+      const offsetRaw = this.deepLinkSmudgeOffset();
+      const headingRaw = this.titleHeadingLevel();
+
+      const delay = sanitizeDeepLinkSmudgeDelay(delayRaw, errorHandler);
+      const offset = sanitizeDeepLinkSmudgeOffset(offsetRaw, errorHandler);
+      const heading = sanitizeTitleHeadingLevel(headingRaw, errorHandler);
+
+      // Write sanitized values in a microtask to avoid interrupting effects
+      queueMicrotask(() => {
+        this.deepLinkSmudgeDelayValue.set(delay);
+        this.deepLinkSmudgeOffsetValue.set(offset);
+        this.titleHeadingLevelValue.set(heading);
+      });
+    });
     // Load component styles on first render (reference-counted)
     afterNextRender(() => {
       this.#styleLoader.load('accordion', '/nfs-accordion.css');
