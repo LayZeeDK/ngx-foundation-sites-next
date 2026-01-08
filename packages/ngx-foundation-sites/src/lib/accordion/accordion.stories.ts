@@ -573,7 +573,14 @@ export const AnnounceLiveRegion: Story = {
     // Wait for the announcer element and assert it contains expected text.
     await waitFor(
       () => {
-        const live = document.body.querySelector('.cdk-live-announcer-element');
+        // Prefer semantic query by role (status = polite, alert = assertive)
+        const bodyWithin = within(document.body as unknown as HTMLElement);
+        const liveByRole =
+          bodyWithin.queryByRole('status', { hidden: true }) ||
+          bodyWithin.queryByRole('alert', { hidden: true });
+
+        // Fallback to any element with aria-live if role isn't present
+        const live = liveByRole || document.body.querySelector('[aria-live]');
         expect(live).toBeTruthy();
         // The announcer text may be localized or use 'opened' vs 'Expanded'.
         // Accept either form to make the test resilient.
