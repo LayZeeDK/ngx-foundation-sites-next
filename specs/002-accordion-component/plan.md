@@ -189,18 +189,23 @@ packages/ngx-foundation-sites/
 │           ├── LazyContent.story.ts
 │           ├── DeepLinking.story.ts
 │           └── ScreenReader.story.ts
-│
-└── tests/
-    ├── unit/
-    │   └── accordion/
-    │       ├── accordion.component.spec.ts
-    │       └── accordion-item.component.spec.ts
-    └── e2e/
-        └── accordion/
-            └── accordion-deeplink.spec.ts   # Playwright E2E for History API
 ```
 
-**Structure Decision**: Nx monorepo with library in `packages/ngx-foundation-sites/`. Accordion component is a self-contained feature module within the library. Storybook stories colocated in `.storybook/stories/` for easy development. E2E tests only for browser-specific APIs (deep linking).
+**Unit Test Location** (Nx colocated convention):
+```text
+packages/ngx-foundation-sites/src/lib/accordion/
+├── accordion.component.spec.ts        # Colocated unit tests (Vitest)
+├── accordion-item.component.spec.ts
+└── validators.spec.ts
+```
+
+**E2E Test Location** (Playwright for browser-specific APIs only):
+```text
+packages/ngx-foundation-sites-e2e/src/accordion/
+└── accordion-deeplink.spec.ts         # Deep linking, History API tests
+```
+
+**Structure Decision**: Nx monorepo with library in `packages/ngx-foundation-sites/`. Accordion component is a self-contained feature module within the library. Unit tests are colocated with source files per Nx convention. Storybook stories colocated in `.storybook/stories/` for easy development. E2E tests only for browser-specific APIs (deep linking) in the separate e2e project.
 
 ## Complexity Tracking
 

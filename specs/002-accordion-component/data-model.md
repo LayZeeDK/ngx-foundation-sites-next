@@ -92,7 +92,7 @@ IDLE → OPENING_ITEM → ITEM_OPEN
 
 **Inputs**:
 
-- `panelId`: `InputSignal<string>` - Required unique identifier for this panel
+- `panelId`: `InputSignal<string | undefined>` - Optional unique identifier for this panel (auto-generated if not provided per FR-017)
 - `expanded`: `ModelSignal<boolean>` - Initial/controlled expansion state (default: `false`)
 - `disabled`: `InputSignal<boolean>` - Disable this item (default: `false`)
 
