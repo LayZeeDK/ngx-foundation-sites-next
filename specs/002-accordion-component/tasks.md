@@ -41,7 +41,6 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 - [ ] T007 [P] Set up Foundation SCSS imports in packages/ngx-foundation-sites/src/lib/accordion/\_accordion-imports.scss
 - [ ] T008 [P] Create injection token file at packages/ngx-foundation-sites/src/lib/accordion/accordion.token.ts (exports nfsAccordionToken for DI)
 - [ ] T009 Install @angular/cdk if not present (for FocusMonitor, ListKeyManager, a11y utilities)
-- [ ] T009 Install @angular/cdk if not present (for FocusMonitor, ListKeyManager, a11y utilities)
 - [ ] T009a Verify @angular/cdk importability and required utilities (FocusMonitor, ListKeyManager). Confirm version matches workspace policy and that Storybook builds import the CDK without errors. (Blocking verification)
 - [ ] T010 [P] Create public API exports file at packages/ngx-foundation-sites/src/lib/accordion/index.ts
 - [x] T011 Create API design document using `foundation-api-design` skill at packages/ngx-foundation-sites/ACCORDION_API_DESIGN.md
@@ -151,6 +150,7 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 - [ ] T056 [P] [US3] Implement ARIA attributes on NfsAccordionTitle button: aria-controls (references panel ID)
 - [ ] T057 [US3] Implement unique ID generation in NfsAccordion: static counter + instance ID (nfs-accordion-${counter++})
 - [ ] T057b [P] [US3] Implement ID auto-generation as an Angular injectable service (`NfsAccordionIdGeneratorService`) in packages/ngx-foundation-sites/src/lib/accordion/accordion-id-generator.service.ts (service providedIn: 'platform'). This service is internal implementation detail and SHOULD NOT be exported from the public barrel index.ts. Update all plan/tasks references to `accordion-id-generator.service.ts` and `NfsAccordionIdGeneratorService` (see T-AC-004).
+- [ ] T057c [US3] Implement panelId duplicate detection per FR-020a: maintain registration registry `Map<string, NfsAccordionItemRef[]>` in NfsAccordion, validate uniqueness on registerItem() and panelId changes, call ErrorHandler.handleError() with structured Error on duplicates, expand first-registered item only in packages/ngx-foundation-sites/src/lib/accordion/accordion.component.ts
 - [ ] T058 [US3] Generate title button ID: ${accordionInstanceId}-title-${itemIndex}
 - [ ] T059 [US3] Use user-provided panelId or generate: ${accordionInstanceId}-panel-${itemIndex}
 - [ ] T060 [P] [US3] Create panel wrapper element in NfsAccordionItem template with role="region"
@@ -206,7 +206,7 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 - [ ] T075 [US5] Add play function: set allowAllClosed=false with multiExpand, close all but one item, verify last item cannot close
 - [ ] T076 [US5] Add play function: set allowAllClosed=true, close last open item, verify all items collapsed
 - [ ] T190 [P] [US5] Add Storybook play test to AllowAllClosed story: programmatically call item.up() when allowAllClosed=false and item is the last open item, verify method returns silently and NO (up) event emitted in packages/ngx-foundation-sites/.storybook/stories/accordion/AllowAllClosed.story.ts
-- [ ] T192 [P] [US5] Add Storybook play test to AllowAllClosed story: set allowAllClosed=false, bind [(expanded)] on last open item, set model to false externally, verify binding coerces to true in packages/ngx-foundation-sites/.storybook/stories/accordion/AllowAllClosed.story.ts
+- [ ] T192 [P] [US5] Add Storybook play test to AllowAllClosed story: set allowAllClosed=false, bind [(expanded)] on last open item, set model to false externally, verify binding coerces to true AND ErrorHandler.handleError() called with coercion diagnostic (FR-174a) in packages/ngx-foundation-sites/.storybook/stories/accordion/AllowAllClosed.story.ts
 
 ### Implementation for User Story 5
 
@@ -332,6 +332,8 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 
 - [ ] T116 [P] [US10] Create E2E test at packages/ngx-foundation-sites-e2e/src/accordion/accordion-deeplink.spec.ts
 - [ ] T117 [US10] E2E test: navigate to /page#panel-2, verify accordion item 2 expands automatically
+- [ ] T117a [US10] E2E test: navigate to /page#nonexistent-id, verify ErrorHandler.handleError() called with DeepLinkNotFound diagnostic and no panels expand (FR-067b)
+- [ ] T117b [US10] E2E test: navigate from #panel-1 to #panel-2 with multiExpand=false, verify panel-1 collapses and panel-2 expands (FR-067c multiExpand interaction)
 - [ ] T118 [US10] E2E test: verify browser scrolls to expanded item with correct offset
 - [ ] T119 [US10] E2E test: change URL hash, verify new item expands
 
@@ -531,6 +533,7 @@ Task T020: "Create NfsAccordionTitle component"
 - [ ] T-AC-002 [P?] Implement `announce` live-region opt-in with 100ms debounce + Storybook tests
   - Location: packages/ngx-foundation-sites/src/lib/accordion/
   - Description: Add `announce = input(false)` and render a visually-hidden live region with `aria-live="polite"` when enabled. Debounce announcements by 100ms. Add Storybook play tests asserting live region updates on expand/collapse and title updates.
+  - **Implementation Tasks**: T196, T197, T198, T199 (complete these to resolve T-AC-002)
 
 - [x] T-AC-003 [P?] Input validators & tests for FR-110a
 - Location: packages/ngx-foundation-sites/src/lib/accordion/
@@ -600,22 +603,22 @@ With multiple developers:
 
 ## Summary
 
-**Total Tasks**: 199 tasks across 16 phases
-**MVP Scope**: Phases 1-5 (User Stories 1-3, P1) = 64 tasks = ~36% of total
+**Total Tasks**: 201 tasks across 16 phases
+**MVP Scope**: Phases 1-5 (User Stories 1-3, P1) = 65 tasks = ~32% of total
 **Task Breakdown by User Story**:
 
 - US1 (Basic Accordion): 19 tasks
 - US2 (Keyboard Navigation): 18 tasks
-- US3 (Screen Reader): 15 tasks
+- US3 (Screen Reader): 16 tasks (+1 for T057c panelId duplicate detection)
 - US4 (Multi-Expand): 8 tasks
 - US5 (Allow All Closed): 8 tasks
 - US6 (Disabled Items): 15 tasks
 - US7 (Initial State): 5 tasks
 - US8 (Dynamic Items): 10 tasks
 - US9 (SSR): 5 tasks
-- US10 (Deep Linking): 18 tasks
+- US10 (Deep Linking): 20 tasks (+2 for T117a/T117b ErrorHandler and multiExpand E2E tests)
 
-**Parallel Opportunities**: 71 tasks marked [P] can run in parallel (36% of total)
+**Parallel Opportunities**: 71 tasks marked [P] can run in parallel (~35% of total)
 **Independent Test Criteria**: Each user story has clear independent test criteria and can be validated separately
 
 ---
