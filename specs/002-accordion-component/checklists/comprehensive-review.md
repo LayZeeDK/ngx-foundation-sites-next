@@ -101,6 +101,7 @@
   - Evidence: spec.md FR-021..FR-023 and ACCORDION_API_DESIGN.md outputs section show `{ itemId, expanded }` payload
 - [x] CHK036 - Are input validation rules (e.g., panelId uniqueness) clearly stated? [Clarity, Data Model validation rules] — ✓ FR-020a defines runtime validation and ErrorHandler reporting for duplicate panelId within same accordion instance
   - Evidence: spec.md FR-020a (specs/002-accordion-component/spec.md#L271-L279) and plan.md Implementation Notes FR-020a (specs/002-accordion-component/plan.md#L87-L96); contracts/accordion-api.ts documents optional `panelId` (specs/002-accordion-component/contracts/accordion-api.ts#L56-L66)
+  - Tracked Task: T-AC-004 (specs/002-accordion-component/plan.md#L---) harmonizes ID-generator filename and task references (`accordion-id-generator.service.ts`)
 - [x] CHK037 - Is the distinction between signal inputs and model signals clear? [Clarity, Spec §FR-018, Contracts API] — ✓ FR-018 + contracts lines 130 distinguish ModelSignal for [(expanded)] vs InputSignal for other inputs
 
 ### Behavioral Specifications
@@ -243,6 +244,7 @@
   - Evidence: spec.md FR-026a and plan.md FR-026a Implementation Notes describe non-fatal diagnostic and focus exclusion
 - [x] CHK089 - Are requirements defined for rapid successive toggle attempts? [Exception Flow, Edge Cases] — ✓ FR-089a defines per-item serialization and 50ms debounce to avoid race conditions
   - Evidence: spec.md FR-089a and plan.md FR-089a Implementation Notes describe queueing and debounce rules
+  - Tracked Task: T-AC-001 (specs/002-accordion-component/plan.md#L---) implements per-item toggle queue + 50ms debounce and timing-sensitive tests
 
 ### (Deep link & ARIA clarifications)
 
@@ -299,6 +301,7 @@
   - Evidence: spec.md FR-020a, FR-020b, FR-020c; plan.md FR-020a Implementation Notes
 - [x] CHK110 - Are requirements defined for invalid titleHeadingLevel values? [Edge Case, Validation] — ✓ FR-110a defines validation: accept only integers 1..6, fallback to null and call ErrorHandler on invalid input
   - Evidence: spec.md FR-110a (specs/002-accordion-component/spec.md#L230-L236) and plan.md FR-110a Implementation Notes (specs/002-accordion-component/plan.md#L123-L130)
+  - Tracked Task: T-AC-003 (specs/002-accordion-component/plan.md#L---) implements input validators and unit tests for FR-110a
 - [x] CHK111 - Are requirements defined for negative or zero delay/offset values in deep linking? [Edge Case, Validation] — ✓ FR-110a requires coercion: negative `deepLinkSmudgeDelay` treated as absolute value and reported; non-numeric `deepLinkSmudgeOffset` coerced to 0 with diagnostic
   - Evidence: spec.md FR-110a (specs/002-accordion-component/spec.md#L230-L236)
 
@@ -356,6 +359,7 @@
 - [x] CHK133 - Are screen reader testing procedures documented with specific tools? [Accessibility, Spec §AR-004, Manual Testing Checklist] — ✓ AR-004 specifies testing with NVDA, JAWS, VoiceOver + spec.md Manual Testing Checklist lines 471-476 document screen reader testing procedures
 - [x] CHK134 - Are live region requirements specified for dynamic state announcements? [Accessibility, Gap] — ✓ AR-027a provides an opt-in `announce` input and live-region guidance (aria-live="polite") with debounce rules
   - Evidence: spec.md AR-027a (specs/002-accordion-component/spec.md#L451-L456) and plan.md AR-027a Implementation Notes (specs/002-accordion-component/plan.md#L107-L125)
+  - Tracked Task: T-AC-002 (specs/002-accordion-component/plan.md#L---) implements the `announce` live-region and Storybook play tests
 
 ### Focus Management Completeness
 

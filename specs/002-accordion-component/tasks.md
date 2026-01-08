@@ -498,20 +498,22 @@ Task T020: "Create NfsAccordionTitle component"
 
 ## Additional Remediation Tasks (from cross-artifact analysis)
 
-- [ ] T-AC-001 [P?] Implement per-item toggle queue + 50ms debounce and input-source coalescing
-  - Location: packages/ngx-foundation-sites/src/lib/accordion/
-  - Description: Implement a per-item FIFO toggle queue that enqueues toggle requests arriving while an item is mid-transition. Coalesce identical toggle requests arriving within 50ms from the same input source. Add timing-sensitive integration tests (Storybook play + Vitest simulation).
-  - Blocking: YES (prevents race conditions in rapid UI interactions)
+- [x] T-AC-001 [P?] Implement per-item toggle queue + 50ms debounce and input-source coalescing
+- Location: packages/ngx-foundation-sites/src/lib/accordion/
+- Description: Implement a per-item FIFO toggle queue that enqueues toggle requests arriving while an item is mid-transition. Coalesce identical toggle requests arriving within 50ms from the same input source. Add timing-sensitive integration tests (Storybook play + Vitest simulation).
+- Blocking: YES (prevents race conditions in rapid UI interactions)
+- Evidence: `accordion-item-def.ts` updated with `requestToggle()` queue/debounce; `accordion-item-def.spec.ts` simulates rapid toggles
 
 - [ ] T-AC-002 [P?] Implement `announce` live-region opt-in with 100ms debounce + Storybook tests
   - Location: packages/ngx-foundation-sites/src/lib/accordion/
   - Description: Add `announce = input(false)` and render a visually-hidden live region with `aria-live="polite"` when enabled. Debounce announcements by 100ms. Add Storybook play tests asserting live region updates on expand/collapse and title updates.
 
-- [ ] T-AC-003 [P?] Input validators & tests for FR-110a
-  - Location: packages/ngx-foundation-sites/src/lib/accordion/
-  - Description: Implement input sanitizers/coercers and `ErrorHandler.handleError()` diagnostics per FR-110a. Add unit tests for invalid/edge inputs and ensure bound models reflect coerced values.
+- [x] T-AC-003 [P?] Input validators & tests for FR-110a
+- Location: packages/ngx-foundation-sites/src/lib/accordion/
+- Description: Implement input sanitizers/coercers and `ErrorHandler.handleError()` diagnostics per FR-110a. Add unit tests for invalid/edge inputs and ensure bound models reflect coerced values.
+- Evidence: `validators.ts` added; `validators.spec.ts` covers edge cases; `accordion.ts` applies sanitization in constructor
 
-- [ ] T-AC-004 [P?] Harmonize ID generator filename and task references
+- [x] T-AC-004 [P?] Harmonize ID generator filename and task references
   - Location: packages/ngx-foundation-sites/src/lib/accordion/accordion-id-generator.service.ts
   - Description: Update plan/tasks/spec references to use canonical filename `accordion-id-generator.service.ts` and exported symbol `NfsAccordionIdGeneratorService`. Update any references in plan.md/spec.md/tasks.md.
 

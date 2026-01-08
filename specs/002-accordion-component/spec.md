@@ -246,7 +246,7 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 - **FR-003**: `<nfs-accordion>` MUST act as the root container component
 - **FR-004**: `<nfs-accordion-item>` MUST represent individual collapsible items
 - **FR-005**: `<nfs-accordion-title>` MUST represent the clickable trigger/header for each item
-- **FR-006**: `<nfs-accordion-content>` MUST represent the expandable panel content for each item
+- **FR-006**: `ng-template[nfsAccordionContent]` (structural directive) MUST represent the expandable panel content for each item. The project follows a directive-first approach: consumers should use `ng-template[nfsAccordionContent]` for lazy content. Examples that historically showed `<nfs-accordion-content>` are illustrative only and MUST be interpreted as the directive form.
 - **FR-007**: Parent-child relationships MUST be established via Angular DI using injection tokens (item finds parent accordion without direct property binding through implicit DI query pattern)
 
 #### Expansion Behavior
