@@ -44,6 +44,7 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 - [ ] T009a Verify @angular/cdk importability and required utilities (FocusMonitor, ListKeyManager). Confirm version matches workspace policy and that Storybook builds import the CDK without errors. (Blocking verification)
 - [ ] T010 [P] Create public API exports file at packages/ngx-foundation-sites/src/lib/accordion/index.ts
 - [x] T011 Create API design document using `foundation-api-design` skill at packages/ngx-foundation-sites/ACCORDION_API_DESIGN.md
+  - Verified: 2026-01-09 (file exists, 771 lines, covers Foundation CSS mapping, WAI-ARIA requirements, CDK-style DI patterns)
 - [ ] T012 [P] Create README documentation template at packages/ngx-foundation-sites/src/lib/accordion/README.md
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
