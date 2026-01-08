@@ -358,6 +358,42 @@ test('deep link updates URL hash', async ({ page }) => {
   - `Set-Location "<absolute-repo-path>"` with absolute paths — use relative paths or run directly
 - Run git commands directly (e.g., `git status`, `git diff`) without path specifiers.
 
+### PowerShell: NX_TUI
+
+- **Terminal-agnostic guidance:** Set the `NX_TUI` environment variable to `false` so `nx` runs don't render the interactive TUI. Choose the command for your shell:
+  - PowerShell (current session):
+
+    ```powershell
+    $env:NX_TUI = 'false'
+    ```
+
+  - PowerShell (persist for current user):
+
+    ```powershell
+    [Environment]::SetEnvironmentVariable('NX_TUI','false','User')
+    ```
+
+  - POSIX shells (bash, zsh) — current session:
+
+    ```bash
+    export NX_TUI=false
+    ```
+
+  - Windows CMD (current session):
+
+    ```cmd
+    set NX_TUI=false
+    ```
+
+  This setting affects the current shell and any child processes launched from it (unless persisted with the user-level command above).
+
+- **CI / pipelines:** Prefer configuring `NX_TUI` in your CI environment variables. Example for GitHub Actions:
+
+  ```yaml
+  env:
+    NX_TUI: 'false'
+  ```
+
 ## Storybook
 
 Component development and visual testing uses Storybook on port 4400.
