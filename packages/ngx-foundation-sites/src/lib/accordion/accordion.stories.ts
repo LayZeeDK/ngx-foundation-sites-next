@@ -573,18 +573,18 @@ export const AnnounceLiveRegion: Story = {
     // Wait for the announcer element and assert it contains expected text.
     await waitFor(
       () => {
-        // Prefer semantic query by role (status = polite, alert = assertive)
+        // Require a polite live region per spec: role="status" (aria-live="polite").
+        // The test should fail if only an assertive region (role="alert") is present.
         const bodyWithin = within(document.body as unknown as HTMLElement);
-        const liveByRole =
-          bodyWithin.queryByRole('status', { hidden: true }) ||
-          bodyWithin.queryByRole('alert', { hidden: true });
+        const politeLive = bodyWithin.queryByRole('status', { hidden: true });
 
-        // Fallback to any element with aria-live if role isn't present
-        const live = liveByRole || document.body.querySelector('[aria-live]');
-        expect(live).toBeTruthy();
+        // Fail early if polite live region not found - this enforces spec compliance.
+        expect(politeLive).toBeTruthy();
+
         // The announcer text may be localized or use 'opened' vs 'Expanded'.
-        // Accept either form to make the test resilient.
-        expect((live as HTMLElement).textContent).toMatch(/(Expanded|opened)/i);
+        expect((politeLive as HTMLElement).textContent).toMatch(
+          /(Expanded|opened)/i,
+        );
       },
       { timeout: 1000 },
     );
