@@ -978,5 +978,41 @@ The following features are explicitly out of scope for the initial implementatio
 - API Design: packages/ngx-foundation-sites/ACCORDION_API_DESIGN.md
 - Implementation Plan: packages/ngx-foundation-sites/ACCORDION_API_IMPLEMENTATION_PLAN.md
 - Acceptance Tasks: specs/002-accordion-component/tasks.md
+
+## Risks & Mitigations
+
+This section documents critical assumptions, associated risks if they are invalidated, and concrete mitigations or validation steps the implementation and CI should perform before/after merging changes.
+
+- **Risk: Foundation for Sites CSS not included in consumer app.**
+  - Impact: Component will render functionally (semantic markup and ARIA) but visual styling (layout, state classes) may be missing causing poor UX.
+  - Mitigation: Document the dependency clearly in README and package peerDependencies. At runtime the implementation SHOULD emit a non-fatal diagnostic via `ErrorHandler.handleError()` when it detects missing critical Foundation styles (detection described in Implementation Plan). Provide a minimal optional fallback stylesheet (`dist-css/accordion-fallback.css`) that consumers can opt into to preserve basic layout if they cannot include Foundation CSS immediately.
+  - Validation: CI Storybook snapshot + visual check; Storybook a11y job should run with and without Foundation CSS to ensure accessibility remains intact (unstyled but semantic).
+
+- **Risk: Consumer uses Angular < v20 (signals or standalone unavailable).**
+  - Impact: Component relies on signals, standalone components, and other v20+ APIs; older Angular runtimes will break.
+  - Mitigation: Declare `peerDependencies` requiring `@angular/core` v20+. Provide an upgrade guidance note in the README. For limited downstream compatibility, the project MAY provide a separate compatibility shim/package, but this is out-of-scope for MVP.
+  - Validation: Package.json peerDependency checks, CI lint step, and a lightweight compatibility unit test that verifies `input()`/`model()` usage surface as expected during build.
+
+- **Risk: `@angular/aria` not available or missing required primitives.**
+  - Impact: Some ARIA helper primitives used in implementation may be unavailable, requiring alternative approaches.
+  - Mitigation: Implementation MUST prefer `@angular/aria` when available. If unavailable or insufficient, the component MUST fall back to `@angular/cdk` utilities or internal ARIA helper functions (documented in Implementation Plan). The codebase will include runtime feature detection and call `ErrorHandler.handleError()` when falling back so consumers are informed in logs/telemetry.
+  - Validation: Add CI test that bootstraps a minimal Storybook story with `@angular/aria` removed to verify the fallback path works and AXE checks still pass.
+
+- **Risk: Storybook a11y integration or AXE configuration missing.**
+  - Impact: Automated accessibility verification won't run in CI and regressions may be missed.
+  - Mitigation: Add Storybook a11y addon to the repo's Storybook configuration and gate the merge with a CI job that runs Storybook play functions + AXE checks for the component stories.
+  - Validation: CI job that runs Storybook + AXE and fails on violations.
+
+### Validation Steps (short-term)
+
+- Add unit tests for ID generation and duplicate `panelId` detection (FR-020a/FR-020b).
+- Add Storybook play tests that exercise deep linking success and failure cases (FR-067, FR-067b) and ensure `ErrorHandler.handleError()` is invoked for invalid hashes.
+- Add CI job to run Storybook with `@storybook/addon-a11y` and AXE checks for the component stories.
+- Add a short runtime diagnostic that reports missing Foundation CSS via `ErrorHandler.handleError()` (non-fatal) so consumers are aware when the critical styling dependency is missing.
+
+### Notes
+
+- These mitigations are intentionally conservative: where runtime detection or fallback is possible we prefer graceful degradation and clear diagnostics rather than silent failures.
+- After merging, update `packages/ngx-foundation-sites/README.md` and the feature `tasks.md` to include concrete work items implementing the above validation steps.
 - Storybook Stories: packages/ngx-foundation-sites/docs/accordion/
 - Dist CSS: packages/ngx-foundation-sites/dist-css/accordion.css
