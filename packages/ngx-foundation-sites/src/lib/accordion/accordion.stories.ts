@@ -552,6 +552,38 @@ export const Accessibility: Story = {
   },
 };
 
+export const AnnounceLiveRegion: Story = {
+  args: {
+    announce: true,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const trigger1 = canvas.getByRole('button', { name: /Accordion 1/i });
+
+    // Expand panel 1
+    await userEvent.click(trigger1);
+
+    // Wait for aria-expanded
+    await waitFor(() =>
+      expect(trigger1).toHaveAttribute('aria-expanded', 'true'),
+    );
+
+    // The CDK LiveAnnouncer appends a live node to document body.
+    // Wait for the announcer element and assert it contains expected text.
+    await waitFor(
+      () => {
+        const live = document.body.querySelector('.cdk-live-announcer-element');
+        expect(live).toBeTruthy();
+        // The announcer text may be localized or use 'opened' vs 'Expanded'.
+        // Accept either form to make the test resilient.
+        expect((live as HTMLElement).textContent).toMatch(/(Expanded|opened)/i);
+      },
+      { timeout: 1000 },
+    );
+  },
+};
+
 /**
  * Tests focus management when accordion items are disabled.
  * Angular ARIA allows focus on disabled items (for screen reader announcement)
