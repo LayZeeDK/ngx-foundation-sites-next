@@ -116,6 +116,12 @@ specs/002-accordion-component/
 
 - Implement a per-item toggle queue and an input-source debounce of 50ms. Internally represent pending requests as a small FIFO per item; if a toggle arrives during an in-progress transition, enqueue it; when the transition completes, dequeue and execute the next request. For UI-sourced toggles (click/keyboard), coalesce identical repeated toggles within 50ms to a single action. Add timing-sensitive integration tests to simulate rapid user clicks and assert final state is stable and no uncaught exceptions occur.
 
+- **Input Source Definition**: An "input source" is identified by the event type that triggered the toggle request:
+  - `'click'`: Mouse click on title element
+  - `'keyboard'`: Enter/Space key on title element
+  - `'programmatic'`: Direct call to `toggle()`, `down()`, or `up()` methods
+  - Debounce coalescing applies only within the same input source category. For example, rapid clicks coalesce together, but a click followed immediately by a programmatic call do NOT coalesce (both execute in order).
+
 ### FR-038a (explicit state transitions)
 
 - Internally model item state as an enum: `State = 'COLLAPSED' | 'EXPANDING' | 'EXPANDED' | 'COLLAPSING'`. Expose only `expanded` boolean and events; ensure `aria-expanded` is set to `true` only when state === 'EXPANDED'. Guard concurrent operations by checking state (e.g., ignore `down()` calls if state === 'EXPANDING' and coalesce/queue per FR-089a rules).
