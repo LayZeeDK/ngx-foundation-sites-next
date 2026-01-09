@@ -80,7 +80,7 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 - [ ] T025 [US1] Implement NfsAccordion provides nfsAccordionToken (useExisting pattern)
 - [ ] T026 [US1] Implement NfsAccordionItem injects nfsAccordionToken (optional: true, skipSelf: true)
 - [ ] T027 [US1] Implement click handler in NfsAccordionTitle that calls parent item's toggle() method
-- [ ] T028 [US1] Add Foundation CSS classes: .accordion, .accordion-item, .accordion-title, .accordion-content
+- [ ] T028 [US1] Add Foundation CSS classes with explicit placement: `.accordion` on NfsAccordion host, `.accordion-item` on NfsAccordionItem host, `.accordion-title` on NfsAccordionTitle's `<button>` element (per FR-031), `.accordion-content` on NfsAccordionItem's panel wrapper
 - [ ] T029 [US1] Implement .is-active class binding on NfsAccordionItem when expanded=true
 - [ ] T030 [US1] Add JSDoc comments documenting Foundation for Sites equivalents (data-multi-expand → multiExpand)
 - [ ] T031 [US1] Export all components from packages/ngx-foundation-sites/src/lib/accordion/index.ts
