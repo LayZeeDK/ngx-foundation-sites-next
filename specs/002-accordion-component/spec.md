@@ -380,6 +380,8 @@ When `deepLink` is enabled, changing a `panelId` at runtime does NOT by itself t
 
 - **FR-059**: When collapsed, the panel wrapper MUST have the `inert` attribute (or equivalent) to prevent keyboard access to the conditionally-removed inner content and to preserve focus/navigation semantics. Implementations MUST avoid relying on CSS-only hiding to meet ARIA stability requirements.
 
+  **Browser Support**: The `inert` attribute is natively supported in Chrome 102+, Edge 102+, Safari 15.5+, and Firefox 112+ (covering all target browsers per "Browser and Platform Constraints"). For older browser versions, Angular's CDK `@angular/cdk/a11y` provides the `CdkTrapFocus` directive as a fallback, or developers can use the `inert` polyfill package if needed. This implementation targets modern evergreen browsers where native `inert` is available.
+
 - **FR-060**: The `aria-controls` attribute on the trigger MUST always reference a valid element ID, even when the inner panel content is not rendered. The panel wrapper's `id` MUST be maintained for this purpose.
 
 #### SSR Compatibility
@@ -932,8 +934,8 @@ constructor() {
 - **Foundation for Sites CSS**: Required for `.accordion`, `.accordion-item`, `.accordion-title`, `.accordion-content`, `.is-active` classes
 - **@angular/core**: v20+ for standalone components, signals, and modern APIs
 - **@angular/common**: For common directives if needed (e.g., `NgTemplateOutlet` in examples)
-- **@angular/aria** (if available): Preferred for ARIA utilities and accessibility primitives
-- **@angular/cdk** (if @angular/aria insufficient): Fallback for accessibility utilities
+- **@angular/aria**: Preferred for ARIA utilities and accessibility primitives
+- **@angular/cdk**: Required for accessibility utilities (FocusMonitor, ListKeyManager, a11y module)
 
 ### Technical Constraints
 
