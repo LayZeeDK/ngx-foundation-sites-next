@@ -72,7 +72,7 @@ Attach your artifacts (e.g. `@specs\###-feature\spec.md`, `@specs\###-feature\pl
 ~~~text
 # CROSS-ARTIFACT ANALYSIS BRIEF
 
-Analyze attached artifacts for implementation gaps. Follow steps sequentially.
+Analyze attached artifacts for implementation gaps. Complete ALL steps in a single continuous response (do not pause between steps).
 
 ## STEP 1: Extract Requirements (scan spec.md)
 
@@ -81,7 +81,7 @@ For each requirement found, record:
 - Mandatory: [YES if "MUST"/"shall"/FR-XXX, NO if "MAY"/"optional"]
 - Location: spec.md:[line]
 
-List 15-20 requirements. Stop before analyzing.
+List 15-20 requirements, then immediately proceed to Step 2.
 
 ## STEP 2: Check Implementation (one requirement at a time)
 
@@ -104,7 +104,7 @@ For EACH requirement:
    - ❌ Not found
    - 🔀 Delegated to [framework]
 
-Complete for ALL requirements before Step 3.
+Complete for ALL requirements, then immediately proceed to Step 3.
 
 ## STEP 3: Gap List (only ❌ or ⚠️ items)
 
@@ -122,7 +122,7 @@ Evidence:
 
 ```
 
-List max 10 gaps (highest priority first).
+List max 10 gaps (highest priority first), then immediately proceed to Step 4.
 
 ## STEP 4: Anti-False-Positive Check
 
@@ -133,7 +133,7 @@ For EACH gap, verify:
 - □ Checked contracts/ folder?
 - □ Checked test/story files?
 
-Any unchecked → mark "⚠️ LOW CONFIDENCE"
+Any unchecked → mark "⚠️ LOW CONFIDENCE", then proceed to FINAL OUTPUT.
 
 ## FORBIDDEN (never report as gaps):
 - ❌ "Animation hooks missing" when spec says "CSS-only"
@@ -173,7 +173,7 @@ Evidence:
 
 ```
 
-Do NOT propose fixes yet; just summarize with evidence.
+IMPORTANT: Complete Steps 1→2→3→4→FINAL OUTPUT in ONE continuous response. Do NOT pause between steps. Do NOT propose fixes yet; just summarize with evidence.
 ~~~
 
 2. **Sonnet 4.5 analyze (do the reasoning):**
