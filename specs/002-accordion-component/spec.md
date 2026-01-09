@@ -307,7 +307,7 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 
 - **FR-029**: `<nfs-accordion>` root element MUST have the CSS class `.accordion`
 - **FR-030**: `<nfs-accordion-item>` element MUST have the CSS class `.accordion-item`
-- **FR-031**: `<nfs-accordion-title>` button element MUST have the CSS class `.accordion-title`
+- **FR-031**: `<nfs-accordion-title>` button element MUST have the CSS class `.accordion-title`. Note: When `titleHeadingLevel` is set, the `<button>` is wrapped in a `<div role="heading">`, but `.accordion-title` MUST remain on the `<button>` element, not the wrapper—the wrapper is purely semantic for ARIA document outline.
 - **FR-032**: Panel content wrapper element MUST have the CSS class `.accordion-content`
 - **FR-033**: When an item is expanded, its `<nfs-accordion-item>` element MUST have the CSS class `.is-active` added
 - **FR-034**: When an item is collapsed, the `.is-active` class MUST be removed
