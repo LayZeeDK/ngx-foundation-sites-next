@@ -84,15 +84,15 @@ specs/002-accordion-component/
 
 ## Implementation Notes (Clarifications)
 
-### FR-020a (panelId validation)
+### FR-017a (panelId validation)
 
-- Maintain a registration registry in the accordion parent: `Map<string, NfsAccordionItem[]>` mapping `panelId` -> array of registered items (in registration order). Note: `NfsAccordionItem` is the concrete component class; no separate ref type is needed. On each item registration and on `panelId` changes, validate the array length. If length > 1 (duplicate within same accordion instance), call the injected `ErrorHandler.handleError()` with a structured Error (`new Error(`Duplicate panelId "${id}" in accordion ${accordionInstanceId || '<no-id>'}`)`) and proceed by using the first entry in the registry as the deep-link target. Do not auto-suffix or rename developer-provided `panelId` values.
+- Maintain a registration registry in the accordion parent: `Map<string, NfsAccordionItem[]>` mapping `panelId` -> array of registered items (in registration order). Note: `NfsAccordionItem` is the concrete component class; no separate ref type is needed. On each item registration and on `panelId` changes, validate the array length. If length > 1 (duplicate within same accordion instance), call the injected `ErrorHandler.handleError()` with a structured Error matching the format defined in FR-017a: `Duplicate panelId "${id}" detected in accordion ${accordionInstanceId || '<unnamed>'}. Conflicting items at indexes: [${indexes.join(', ')}]. Using first registered item.` Do not auto-suffix or rename developer-provided `panelId` values.
 
 - Add unit tests that stub `ErrorHandler` to assert invocation and that verify deterministic expansion of the first-registered item.
 
 ### FR-067b / FR-067c (deep link missing-targets and multiExpand interaction)
 
-- On initialization and on `hashchange` events: parse the current hash, lookup registered panel(s) via the parent registry (see FR-020a). If no registered panel found, call the injected `ErrorHandler.handleError()` with a `DeepLinkNotFound` diagnostic and return (no expansion). If a target exists, call the accordion's canonical expansion API (e.g., `accordion.expandById(panelId)`) so the existing `multiExpand` and `allowAllClosed` enforcement logic runs (this ensures deep-link expansion collapses other panels when `multiExpand=false`).
+- On initialization and on `hashchange` events: parse the current hash, lookup registered panel(s) via the parent registry (see FR-017a). If no registered panel found, call the injected `ErrorHandler.handleError()` with a `DeepLinkNotFound` diagnostic and return (no expansion). If a target exists, call the accordion's canonical expansion API (e.g., `accordion.expandById(panelId)`) so the existing `multiExpand` and `allowAllClosed` enforcement logic runs (this ensures deep-link expansion collapses other panels when `multiExpand=false`).
 
 - Add Playwright E2E tests that: (a) navigate to page with non-existent `#id` and assert that `ErrorHandler` received a diagnostic and no panels expanded; (b) navigate from `#idA` to `#idB` with `multiExpand=false` and assert collapse/expand behavior matches user interaction semantics.
 

@@ -53,7 +53,7 @@ A keyboard-only user navigates through accordion items using Tab, arrow keys, En
 
 **Why this priority**: Keyboard accessibility is legally required (WCAG AA) and blocks production use if missing. This is not optional functionality.
 
-**FR-017**: `<nfs-accordion-item>` MUST accept an optional `panelId` signal input (string) used for deep linking and ARIA relationships. When a consumer does not provide `panelId`, the system MUST auto-generate a stable, unique ID for the panel (see FR-020). This approach preserves developer ergonomics while allowing explicit IDs when deep linking across multiple accordions requires deterministic values.
+**FR-017**: `<nfs-accordion-item>` MUST accept an optional `panelId` signal input (string) used for deep linking and ARIA relationships. When a consumer does not provide `panelId`, the system MUST auto-generate a stable, unique ID for the panel (see FR-017a for validation). This approach preserves developer ergonomics while allowing explicit IDs when deep linking across multiple accordions requires deterministic values.
 
 **Independent Test**: Can be tested by rendering an accordion and using only keyboard (Tab to focus first title, ArrowDown/Up to move between titles, Enter/Space to toggle, Home/End to jump). Delivers complete keyboard accessibility.
 
@@ -272,24 +272,43 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 - **FR-014**: `<nfs-accordion>` MUST accept a `multiExpand` signal input (boolean, default: false) to enable multi-expand mode
 - **FR-015**: `<nfs-accordion>` MUST accept an `allowAllClosed` signal input (boolean, default: false) to control if all items can be closed
 - **FR-016**: `<nfs-accordion>` MUST accept additional configuration signal inputs per `contracts/accordion-api.ts` (including `disabled`, `deepLink`, `deepLinkSmudge`, `deepLinkSmudgeDelay`, `deepLinkSmudgeOffset`, `updateHistory`, `wrap`, `titleHeadingLevel`, `softDisabled`, and optional `id`)
-- **FR-017**: `<nfs-accordion-item>` MUST accept an optional `panelId` signal input (string) used for deep linking and ARIA relationships. When a consumer does not provide `panelId`, the system MUST auto-generate a stable, unique ID for the panel (see FR-020).
+- **FR-017**: `<nfs-accordion-item>` MUST accept an optional `panelId` signal input (string) used for deep linking and ARIA relationships. When a consumer does not provide `panelId`, the system MUST auto-generate a stable, unique ID using the ID generation service (see FR-017a for validation). The system MUST also auto-generate unique IDs for title/content elements used by `aria-controls` / `aria-labelledby` relationships when not explicitly provided.
+
+#### FR-017a: panelId Uniqueness Validation and Error Reporting
+
+When a `<nfs-accordion-item>` registers its `panelId` (consumer-provided or auto-generated), the parent `<nfs-accordion>` MUST validate uniqueness of `panelId` values within the _same accordion instance_ at registration time and whenever the `panelId` changes at runtime.
+
+**Duplicate Detection Behavior**: If duplicate `panelId` values are detected within the same accordion instance, the component MUST:
+- (a) Expand the first matching panel only (deterministic by DOM/registration order)
+- (b) NOT mutate or auto-suffix developer-provided `panelId` values
+- (c) Report a non-fatal configuration error via `ErrorHandler.handleError()` with the following message format:
+  ```
+  Duplicate panelId "${duplicateId}" detected in accordion ${accordionInstanceId || '<unnamed>'}. Conflicting items at indexes: [${indexes.join(', ')}]. Using first registered item.
+  ```
+- (d) Continue initialization and degrade gracefully (no thrown exceptions that stop rendering)
+
+**Cross-Accordion Duplicates**: Duplicate `panelId` values across multiple accordion instances on the same page are handled per FR-073 (expand first matching panel and report error via `ErrorHandler.handleError()`).
+
+**Acceptance Test (unit)**: Render an accordion with two items sharing the same `panelId`. Verify: (1) `ErrorHandler.handleError()` is invoked with an Error matching the message format above, (2) only the first-registered item is expanded, (3) component remains interactive for other items.
+
+#### FR-017b: panelId Runtime Changes
+
+If a consumer changes an item's `panelId` input after registration, the `<nfs-accordion-item>` MUST re-register the new `panelId` with the parent as if the item unregistered and re-registered. The parent MUST validate uniqueness on re-registration and update all ARIA attributes (`id` on panel wrapper, `aria-controls` on trigger, `aria-labelledby` on panel) atomically within a single change detection cycle.
+
+**Collision Handling**: If the new `panelId` collides with another item in the same accordion instance, apply FR-017a validation behavior (report via `ErrorHandler.handleError()` and treat first-registered item as canonical target).
+
+**State Preservation**: Changing a `panelId` MUST NOT implicitly toggle expansion state; developers should call the public API (`down()`, `up()`, `toggle()`) to change expansion if desired.
+
+#### FR-017c: panelId and Deep Link Interactions
+
+When `deepLink` is enabled, changing a `panelId` at runtime does NOT by itself trigger deep-link expansion. Deep-link expansion occurs ONLY in response to:
+- Initial page load with a URL hash matching a `panelId`
+- URL hash change events (user navigation or programmatic `location.hash` changes)
+
+**Behavioral Constraint**: If a `panelId` runtime change makes an item match the current URL hash, the component MUST NOT auto-expand that item unless the hash itself was changed (i.e., only respond to explicit hash events, not `panelId` mutations). This avoids surprising expansions during runtime ID changes.
+
 - **FR-018**: `<nfs-accordion-item>` MUST expose an `expanded` model signal (boolean, default: false) that supports two-way binding via `[(expanded)]`
 - **FR-019**: `<nfs-accordion-item>` MUST accept a `disabled` signal input (boolean, default: false) to disable the item
-- **FR-020**: System MUST auto-generate unique IDs for title/content elements used by `aria-controls` / `aria-labelledby` relationships when not explicitly provided
-
-#### FR-020a: panelId Uniqueness Validation and Error Reporting
-
-- **FR-020a**: When a `<nfs-accordion-item>` registers its `panelId` (consumer-provided or auto-generated) the parent `<nfs-accordion>` MUST validate uniqueness of `panelId` values within the _same accordion instance_ at registration time and whenever the `panelId` changes at runtime. If duplicate `panelId` values are detected within the same accordion instance the component MUST: (a) expand the first matching panel only (deterministic by DOM/registration order), (b) NOT mutate or auto-suffix developer-provided `panelId` values, and (c) report a non-fatal configuration error via the injected `ErrorHandler.handleError()` including contextual metadata (accordion instance id if present, duplicate `panelId`, and conflicting item indexes). The component MUST continue initialization and degrade gracefully (no thrown exceptions that stop rendering). Duplicate `panelId` values that occur across multiple accordion instances on the same page are handled per FR-073 (expand first matching panel and report error via `ErrorHandler.handleError()`).
-
-- **Acceptance Test (unit)**: Render an accordion with two items that intentionally share the same `panelId`. On initialization: verify `ErrorHandler.handleError()` is invoked with an Error containing the duplicate `panelId`; verify only the first-registered item with that `panelId` is expanded (no additional panels expanded), and verify the component remains interactive for the other items.
-
-#### FR-020b: panelId Runtime Changes
-
-- **FR-020b**: If a consumer changes an item's `panelId` input after the item has been registered, the `<nfs-accordion-item>` MUST re-register the new `panelId` with the parent `<nfs-accordion>` as if the item unregistered and re-registered. The parent MUST validate uniqueness on re-registration and update all ARIA attributes (`id` on the panel wrapper, `aria-controls` on the trigger, and `aria-labelledby` on the panel) atomically. If the new `panelId` collides with another item in the same accordion instance the behavior defined in FR-020a applies (report via `ErrorHandler.handleError()` and treat the first-registered item as the canonical target). Changing a `panelId` MUST NOT implicitly toggle expansion state; developers should call the public API to change expansion if desired.
-
-#### FR-020c: panelId and deepLink interactions
-
-- **FR-020c**: When `deepLink` is enabled, changing a `panelId` does not by itself trigger deep-link expansion. Deep-link expansion only occurs in response to URL-hash changes or on initial page load. If a `panelId` change makes the item match the current hash, the component MUST NOT auto-expand that item unless the hash was changed (i.e., only respond to explicit hash events). This avoids surprising expansions during runtime ID changes.
 
 #### Public API - Outputs
 
@@ -622,7 +641,7 @@ Note: AR-015 through AR-018 summarize accessibility implications of FR-037 throu
 
 **Inputs**:
 
-- `panelId` (string, optional) - Unique identifier for this panel (used for deep linking and ARIA relationships). When not provided, the system auto-generates a stable, unique ID per FR-017/FR-020
+- `panelId` (string, optional) - Unique identifier for this panel (used for deep linking and ARIA relationships). When not provided, the system auto-generates a stable, unique ID per FR-017
 - `expanded` (boolean model, default: `false`) - Whether the panel is expanded (supports two-way binding via `[(expanded)]`)
 - `disabled` (boolean, default: `false`) - Whether this item is disabled
 
@@ -954,7 +973,7 @@ The following features are explicitly out of scope for the initial implementatio
 | -------------------------------------------- | ---------------------------------------------- |
 | US1 Basic Single Accordion Interaction       | FR-001, FR-008, FR-009, FR-010, FR-029..FR-035 |
 | US2 Keyboard Navigation and Focus Management | FR-037..FR-045, AR-015..AR-023                 |
-| US3 Screen Reader Compatibility              | FR-020, FR-021, FR-058..FR-060, AR-024..AR-027 |
+| US3 Screen Reader Compatibility              | FR-017, FR-017a, FR-017b, FR-017c, FR-021, FR-058..FR-060, AR-024..AR-027 |
 | US4 Multi-Expand Mode                        | FR-011, FR-014                                 |
 | US5 Allow All Closed Mode                    | FR-012                                         |
 | US6 Disabled Items                           | FR-046..FR-052                                 |
