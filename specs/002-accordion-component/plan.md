@@ -231,10 +231,11 @@ The following tasks address top-priority specification gaps found during cross-a
   - Blocking: YES (race conditions observed in manual testing without this)
   - Status: DONE (implemented in accordion-item-def.ts)
 
-- T-AC-002: Implement `announce` live-region opt-in with 100ms debounce + Storybook tests
+- T-AC-002: _(meta-task)_ `announce` live-region opt-in — **resolved by T196-T199**
   - Description: Add `announce = input(false)` on `<nfs-accordion>` and render a visually-hidden live region with `aria-live="polite"` & `aria-atomic="true"` when enabled. Debounce announcements by 100ms. Add Storybook play tests asserting live region updates on expand/collapse and title changes.
   - Acceptance: Play tests confirm live region message on expand/collapse when `announce=true`, and no live region when `announce=false`.
   - Blocking: NO (accessibility enhancement but high priority)
+  - Status: Meta-task — implementation tracked via tasks.md T196-T199 (Phase 5, US3). No separate work item.
 
 - T-AC-003: Input validators & tests for FR-110a (titleHeadingLevel, deepLinkSmudgeDelay, deepLinkSmudgeOffset)
   - Description: Implement input sanitizers/coercers and `ErrorHandler.handleError()` diagnostics per FR-110a. Add unit tests for invalid/edge inputs and ensure bound models reflect coerced values.

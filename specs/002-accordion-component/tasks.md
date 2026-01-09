@@ -359,7 +359,7 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 - [ ] T130 [US10] Implement scroll to panel logic (if deepLinkSmudge=true): wait deepLinkSmudgeDelay, scroll with deepLinkSmudgeOffset
 - [ ] T131 [US10] Handle duplicate panel IDs: expand first matching panel, report error via ErrorHandler.handleError()
 - [ ] T132 [US10] Handle deep linking errors gracefully: report via ErrorHandler, continue component initialization
-- [ ] T133 [US10] Inject ErrorHandler service for error reporting per spec requirements
+- [ ] T133 [US10] Inject ErrorHandler service for error reporting per FR-074b (deep linking errors)
 
 **Checkpoint**: Deep linking works - URL hash opens corresponding panel
 
@@ -539,10 +539,10 @@ Task T020: "Create NfsAccordionTitle component"
   - Description: Verify that programmatic toggle (item.toggle()) does NOT coalesce with keyboard toggle (Enter key) within 50ms debounce window—both should execute in order since they originate from different input sources (programmatic vs keyboard). Add play function simulating: keyboard Enter on item, then immediate programmatic toggle() call within 10ms, verify both actions execute sequentially.
   - Acceptance: Play test confirms two distinct state changes occur (not coalesced) when input sources differ.
 
-- [ ] T-AC-002 [P?] Implement `announce` live-region opt-in with 100ms debounce + Storybook tests
+- [ ] T-AC-002 _(meta-task)_ `announce` live-region opt-in — **resolved by T196-T199**
   - Location: packages/ngx-foundation-sites/src/lib/accordion/
   - Description: Add `announce = input(false)` and render a visually-hidden live region with `aria-live="polite"` when enabled. Debounce announcements by 100ms. Add Storybook play tests asserting live region updates on expand/collapse and title updates.
-  - **Implementation Tasks**: Complete T196, T197, T198, T199 (Phase 5, US3) to resolve this remediation task
+  - **Status**: This remediation task is tracked via Phase 5 (US3) implementation tasks. No separate work item.
   - **Cross-Reference**: T196 (input signal), T197 (live region element), T198 (message publishing), T199 (Storybook test)
 
 - [x] T-AC-003 [P?] Input validators & tests for FR-110a
@@ -628,7 +628,7 @@ With multiple developers:
 - US9 (SSR): 7 tasks (includes T179, T180 for hydration fallback)
 - US10 (Deep Linking): 22 tasks (includes T117a, T117b for ErrorHandler and multiExpand E2E tests)
 - Advanced ARIA (Phase 15): 6 tasks (includes T194, T195 for heading level updates)
-- Remediation: 5 tasks (T-AC-001 done, T-AC-001b pending, T-AC-002 pending, T-AC-003 done, T-AC-004 done)
+- Remediation: 5 tasks (T-AC-001 done, T-AC-001b pending, T-AC-002 meta-task→T196-T199, T-AC-003 done, T-AC-004 done)
 
 **Parallel Opportunities**: 74 tasks marked [P] can run in parallel (~35% of total)
 **Independent Test Criteria**: Each user story has clear independent test criteria and can be validated separately
