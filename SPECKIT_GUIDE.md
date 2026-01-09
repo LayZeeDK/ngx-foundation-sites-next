@@ -39,33 +39,33 @@ Use one simple rule: **pick the model based on the job** (reasoning vs. speed vs
 
 ### Recommended models by Spec Kit command
 
-| Spec Kit command     | Claude Code | GitHub Copilot CLI | Notes |
-| -------------------- | ---------- | ----------------- | ----- |
-| `/speckit.specify`   | Sonnet 4.5 → Opus 4.5 if domain is complex | Sonnet 4.5 (or GPT-5.2) → Opus 4.5 if domain is complex | Capture nuance + requirements structure |
-| `/speckit.clarify`   | Sonnet 4.5 | Sonnet 4.5 (or GPT-5.2) | Fast iteration; ask the right questions |
-| `/speckit.plan`      | Opus 4.5 → **Sonnet 4.5 1M** if artifacts are huge | Opus 4.5 (or GPT-5.2) → **GPT-4.1 / Gemini 3 Pro** if artifacts are huge | For huge *code + session history* in GitHub Copilot, prefer **GPT-5.1-Codex-Max (compaction)** |
-| `/speckit.checklist` | Sonnet 4.5 | Sonnet 4.5 (or GPT-5.1) | Structured generation with moderate reasoning |
-| `/speckit.tasks`     | Haiku 4.5 for speed → Sonnet 4.5 if it keeps missing dependencies | Haiku 4.5 / GPT-5.1-Codex-Mini for speed → Sonnet 4.5 if it keeps missing dependencies | Mostly mechanical breakdown from plan |
-| `/speckit.analyze`   | Opus 4.5 → **Sonnet 4.5 1M** if artifacts are huge | Opus 4.5 (or GPT-5.2) → **GPT-4.1 / Gemini 3 Pro** if artifacts are huge | For huge *code + session history* in GitHub Copilot, prefer **GPT-5.1-Codex-Max (compaction)** |
-| `/speckit.implement` | Sonnet 4.5 (→ Opus 4.5 for risky refactors) | GPT-5.1-Codex → Codex-Max for hardest refactors; otherwise Sonnet 4.5 | Use code-specialized models for multi-file changes |
+| Spec Kit command     | Claude Code                                                       | GitHub Copilot CLI                                                                     | Notes                                                                                          |
+| -------------------- | ----------------------------------------------------------------- | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `/speckit.specify`   | Sonnet 4.5 → Opus 4.5 if domain is complex                        | Sonnet 4.5 (or GPT-5.2) → Opus 4.5 if domain is complex                                | Capture nuance + requirements structure                                                        |
+| `/speckit.clarify`   | Sonnet 4.5                                                        | Sonnet 4.5 (or GPT-5.2)                                                                | Fast iteration; ask the right questions                                                        |
+| `/speckit.plan`      | Opus 4.5 → **Sonnet 4.5 1M** if artifacts are huge                | Opus 4.5 (or GPT-5.2) → **GPT-4.1 / Gemini 3 Pro** if artifacts are huge               | For huge _code + session history_ in GitHub Copilot, prefer **GPT-5.1-Codex-Max (compaction)** |
+| `/speckit.checklist` | Sonnet 4.5                                                        | Sonnet 4.5 (or GPT-5.1)                                                                | Structured generation with moderate reasoning                                                  |
+| `/speckit.tasks`     | Haiku 4.5 for speed → Sonnet 4.5 if it keeps missing dependencies | Haiku 4.5 / GPT-5.1-Codex-Mini for speed → Sonnet 4.5 if it keeps missing dependencies | Mostly mechanical breakdown from plan                                                          |
+| `/speckit.analyze`   | Opus 4.5 → **Sonnet 4.5 1M** if artifacts are huge                | Opus 4.5 (or GPT-5.2) → **GPT-4.1 / Gemini 3 Pro** if artifacts are huge               | For huge _code + session history_ in GitHub Copilot, prefer **GPT-5.1-Codex-Max (compaction)** |
+| `/speckit.implement` | Sonnet 4.5 (→ Opus 4.5 for risky refactors)                       | GPT-5.1-Codex → Codex-Max for hardest refactors; otherwise Sonnet 4.5                  | Use code-specialized models for multi-file changes                                             |
 
 ### Budget-Conscious Approach
 
-| Spec Kit command     | Claude Code | GitHub Copilot CLI |
-| -------------------- | ---------- | ----------------- |
-| `/speckit.specify`   | Haiku 4.5 | Haiku 4.5 |
-| `/speckit.clarify`   | Haiku 4.5 | Haiku 4.5 |
-| `/speckit.plan`      | Sonnet 4.5 | Sonnet 4.5 |
-| `/speckit.checklist` | Haiku 4.5 | Haiku 4.5 |
-| `/speckit.tasks`     | Haiku 4.5 | Haiku 4.5 or GPT-5.1-Codex-Mini |
-| `/speckit.analyze`   | Sonnet 4.5 | GPT-4.1 (summarize) → Sonnet 4.5 |
+| Spec Kit command     | Claude Code                        | GitHub Copilot CLI                             |
+| -------------------- | ---------------------------------- | ---------------------------------------------- |
+| `/speckit.specify`   | Haiku 4.5                          | Haiku 4.5                                      |
+| `/speckit.clarify`   | Haiku 4.5                          | Haiku 4.5                                      |
+| `/speckit.plan`      | Sonnet 4.5                         | Sonnet 4.5                                     |
+| `/speckit.checklist` | Haiku 4.5                          | Haiku 4.5                                      |
+| `/speckit.tasks`     | Haiku 4.5                          | Haiku 4.5 or GPT-5.1-Codex-Mini                |
+| `/speckit.analyze`   | Sonnet 4.5                         | GPT-4.1 (summarize) → Sonnet 4.5               |
 | `/speckit.implement` | Haiku 4.5 → Sonnet 4.5 when needed | GPT-5.1-Codex-Mini → GPT-5.1-Codex when needed |
 
 > Trade-off: expect more iterations; upgrade to Sonnet/Opus (or Codex/Codex-Max) when you hit ambiguity or cross-cutting changes.
 
 **Example: GPT-4.1 (brief) → Sonnet 4.5 (`/speckit.analyze`)**
 
-1) **GPT-4.1 brief (read everything, compress hard):**
+1. **GPT-4.1 brief (read everything, compress hard):**
 
 Attach your artifacts (e.g. `@specs\###-feature\spec.md`, `@specs\###-feature\plan.md`, `@specs\###-feature\tasks.md`, plus any key code files) and prompt:
 
@@ -81,7 +81,7 @@ Output format:
 Do NOT propose fixes yet; just summarize and point to evidence.
 ```
 
-2) **Sonnet 4.5 analyze (do the reasoning):**
+2. **Sonnet 4.5 analyze (do the reasoning):**
 
 Attach the generated brief (and only the most critical excerpts, if needed) and run:
 
@@ -96,9 +96,14 @@ Deliver:
 - Call out any “false positives” from the brief and why they’re false
 ```
 
-**Example: Haiku 4.5 (execute) → Sonnet 4.5 (resolve blockers) (`/speckit.implement`)**
+**Example: Budget-Conscious Implementation (cheap model → capable model when needed) (`/speckit.implement`)**
 
-1) **Haiku 4.5 implement (cheap, mechanical execution):**
+Use a cheap model for mechanical execution, escalating to a more capable model only when hitting blockers:
+
+- **Claude Code:** Haiku 4.5 (0.33x) → Sonnet 4.5 (1x)
+- **GitHub Copilot CLI:** GPT-5.1-Codex-Mini (0.33x) → GPT-5.1-Codex (1x)
+
+1. **Step 1: Cheap model (mechanical execution)**
 
 Attach `@specs\###-feature\tasks.md` (and only the minimum needed code files) and prompt:
 
@@ -111,15 +116,15 @@ Rules:
 - If you need to change public APIs, stop and ask first.
 - After each group of changes, run the relevant Nx command (e.g. `npx nx test <project>` or `npx nx lint <project>`) and include the command + outcome.
 
-If you encounter ambiguity, missing info, or a failing test you can’t confidently fix, STOP and output:
+If you encounter ambiguity, missing info, or a failing test you can't confidently fix, STOP and output:
 - the exact blocker
 - the 1–2 files/lines involved
 - what decision is required
 ```
 
-2) **Sonnet 4.5 unblock (reason + then implement):**
+2. **Step 2: Capable model (unblock, reason, continue)**
 
-Switch to Sonnet 4.5, attach the Haiku blocker output + the relevant files, and prompt:
+Switch models, attach the blocker output + the relevant files, and prompt:
 
 ```text
 Continue `/speckit.implement` from the current state.
@@ -133,21 +138,20 @@ Finally: return to executing the remaining tasks in tasks.md.
 
 > Claude Code pricing is relative (Opus > Sonnet > Haiku). GitHub Copilot multipliers below are GitHub Copilot CLI “premium request” cost units.
 
-| Model | Available in | Context | GitHub Copilot cost | Use in Spec Kit |
-| ----- | ------------ | ------- | ------------------ | --------------- |
-| Sonnet 4.5 | Claude Code, GitHub Copilot CLI | 200K | 1x | Default for specify/clarify/checklist; also good for most Angular implementation |
-| Opus 4.5 | Claude Code, GitHub Copilot CLI | 200K | 3x | Plan/analyze when you need deep reasoning and edge-case detection |
-| Haiku 4.5 | Claude Code, GitHub Copilot CLI | 200K | 0.33x | Tasks + mechanical edits/boilerplate |
-| Sonnet 4.5 1M | Claude Code only | 1M | — | Huge artifacts/monorepos; **GitHub Copilot alternatives:** GPT-4.1 or Gemini 3 Pro |
-| GPT-5.2 | GitHub Copilot CLI | 400K | 1x | Strong plan/analyze alternative if you prefer GPT-style reasoning |
-| GPT-5.1-Codex | GitHub Copilot CLI | 400K | 1x | Best default for `/speckit.implement` in code-heavy sessions |
-| GPT-5.1-Codex-Max | GitHub Copilot CLI | 400K+ (compaction) | 1x | Hardest refactors + multi-hour sessions; compaction preserves key details as context grows |
-| GPT-5.1-Codex-Mini | GitHub Copilot CLI | 400K | 0.33x | Cheap/faster tasks + small implementation chores |
-| GPT-4.1 | GitHub Copilot CLI | 1M | 0x | Cheap long-context reading/summarization for input gathering; switch to Sonnet/Opus/GPT-5.2 for plan/analyze reasoning |
-| Gemini 3 Pro (Preview) | GitHub Copilot CLI | 1M | 1x | Long-context planning/reading; UI/styling-heavy iterations |
+| Model                  | Available in                    | Context            | GitHub Copilot cost | Use in Spec Kit                                                                                                        |
+| ---------------------- | ------------------------------- | ------------------ | ------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| Sonnet 4.5             | Claude Code, GitHub Copilot CLI | 200K               | 1x                  | Default for specify/clarify/checklist; also good for most Angular implementation                                       |
+| Opus 4.5               | Claude Code, GitHub Copilot CLI | 200K               | 3x                  | Plan/analyze when you need deep reasoning and edge-case detection                                                      |
+| Haiku 4.5              | Claude Code, GitHub Copilot CLI | 200K               | 0.33x               | Tasks + mechanical edits/boilerplate                                                                                   |
+| Sonnet 4.5 1M          | Claude Code only                | 1M                 | —                   | Huge artifacts/monorepos; **GitHub Copilot alternatives:** GPT-4.1 or Gemini 3 Pro                                     |
+| GPT-5.2                | GitHub Copilot CLI              | 400K               | 1x                  | Strong plan/analyze alternative if you prefer GPT-style reasoning                                                      |
+| GPT-5.1-Codex          | GitHub Copilot CLI              | 400K               | 1x                  | Best default for `/speckit.implement` in code-heavy sessions                                                           |
+| GPT-5.1-Codex-Max      | GitHub Copilot CLI              | 400K+ (compaction) | 1x                  | Hardest refactors + multi-hour sessions; compaction preserves key details as context grows                             |
+| GPT-5.1-Codex-Mini     | GitHub Copilot CLI              | 400K               | 0.33x               | Cheap/faster tasks + small implementation chores                                                                       |
+| GPT-4.1                | GitHub Copilot CLI              | 1M                 | 0x                  | Cheap long-context reading/summarization for input gathering; switch to Sonnet/Opus/GPT-5.2 for plan/analyze reasoning |
+| Gemini 3 Pro (Preview) | GitHub Copilot CLI              | 1M                 | 1x                  | Long-context planning/reading; UI/styling-heavy iterations                                                             |
 
 **Codex-Max compaction (400K+ effective context):** when context approaches capacity, Codex-Max compresses less relevant info while preserving critical details (current task, key code, recent context). Benefits: better for large projects / multi-hour sessions; tends to use ~30% fewer reasoning tokens than standard Codex. Trade-off: slightly slower due to compression overhead.
-
 
 ### Switching models
 
