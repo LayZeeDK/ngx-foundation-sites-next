@@ -110,7 +110,7 @@ specs/002-accordion-component/
 
 ### FR-026a (missing title handling)
 
-- If an item registers without a `nfs-accordion-title` child, the item should still register but mark itself as `noTrigger=true`. Do not include it in title-focused navigation lists. Call `ErrorHandler.handleError(new Error('Missing <nfs-accordion-title> in <nfs-accordion-item>'))` to surface diagnostics. Add unit tests that render an item without title and assert no focusable title exists and ErrorHandler was called.
+- If an item registers without a `nfs-accordion-title` child, the item should still register but mark itself as `noTrigger=true`. Do not include it in title-focused navigation lists. Call `ErrorHandler.handleError()` with an Error matching the format defined in FR-026a: `Missing required <nfs-accordion-title> in <nfs-accordion-item> at index ${itemIndex}. Item will render panel content but will not be keyboard accessible.` Add unit tests that render an item without title and assert no focusable title exists and ErrorHandler was called.
 
 ### FR-089a (rapid toggle serialization and debounce)
 

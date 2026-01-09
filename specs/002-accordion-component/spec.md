@@ -218,7 +218,11 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 
 #### FR-026a: Missing Title Handling
 
-- **FR-026a**: If a `<nfs-accordion-item>` is rendered without a matching `<nfs-accordion-title>`, the item MUST render but surface a non-fatal diagnostic via `ErrorHandler.handleError()` indicating the missing required child. In this case the item MUST still render its panel content (if any) but MUST not be keyboard focusable as a title/trigger (there is no trigger). This prevents inaccessible interactive holes while warning developers to fix markup.
+- **FR-026a**: If a `<nfs-accordion-item>` is rendered without a matching `<nfs-accordion-title>`, the item MUST render but surface a non-fatal diagnostic via `ErrorHandler.handleError()` with the following message format:
+  ```
+  Missing required <nfs-accordion-title> in <nfs-accordion-item> at index ${itemIndex}. Item will render panel content but will not be keyboard accessible.
+  ```
+  In this case the item MUST still render its panel content (if any) but MUST not be keyboard focusable as a title/trigger (there is no trigger). This prevents inaccessible interactive holes while warning developers to fix markup.
 
 #### FR-089a: Rapid Toggle / Debounce Behavior
 
