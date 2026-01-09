@@ -54,10 +54,10 @@ A keyboard-only user navigates through accordion items using Tab, arrow keys, En
 **Why this priority**: Keyboard accessibility is legally required (WCAG AA) and blocks production use if missing. This is not optional functionality.
 
 **FR-017**: `<nfs-accordion-item>` MUST accept an optional `panelId` signal input (string) used for deep linking and ARIA relationships. When a consumer does not provide `panelId`, the system MUST auto-generate a stable, unique ID for the panel (see FR-020). This approach preserves developer ergonomics while allowing explicit IDs when deep linking across multiple accordions requires deterministic values.
+
 **Independent Test**: Can be tested by rendering an accordion and using only keyboard (Tab to focus first title, ArrowDown/Up to move between titles, Enter/Space to toggle, Home/End to jump). Delivers complete keyboard accessibility.
 
-- **FR-006**: The expandable panel content MUST be provided either via eager content projection (ng-content) or via the structural directive `ng-template[nfsAccordionContent]`. Note: `nfsAccordionContent` is a structural directive (selector: `ng-template[nfsAccordionContent]`), not a standalone component.
-  **Acceptance Scenarios**:
+**Acceptance Scenarios**:
 
 1. **Given** an accordion rendered, **When** user presses Tab, **Then** focus moves to the first accordion title
 2. **Given** focus on a title, **When** user presses ArrowDown, **Then** focus moves to the next title
