@@ -1,9 +1,13 @@
 # Quickstart: Accordion Component
 
-**Phase**: 1 - Design & Contracts  
-**Date**: 2026-01-07  
-**Updated**: 2025-01-06 (Added Foundation API parity)  
+**Phase**: 1 - Design & Contracts
+**Date**: 2026-01-07
+**Updated**: 2026-01-09 (Corrected to reflect template-directive architecture)
 **Purpose**: Provide usage examples for developers
+
+## Architecture Note
+
+This accordion component uses **template-directive composition** with `ng-template[nfsAccordionItem]` rather than component wrappers. This design leverages `@angular/aria`'s accordion primitives for maximum accessibility compliance.
 
 ## Foundation JavaScript API Parity
 
@@ -17,6 +21,8 @@ This Angular accordion component provides **full API parity** with Foundation fo
 | `$('#accordion').foundation('destroy')`             | Angular lifecycle / `DestroyRef` | Auto cleanup                              |
 | `$('#accordion').on('down.zf.accordion', fn)`       | `(down)` output                  | `<nfs-accordion (down)="onDown($event)">` |
 | `$('#accordion').on('up.zf.accordion', fn)`         | `(up)` output                    | `<nfs-accordion (up)="onUp($event)">`     |
+
+**Note**: Method implementations (`down()`, `up()`, `toggle()`) are currently in development. Use `[(expanded)]` two-way binding for programmatic control in the meantime.
 
 **See Example 9** below for programmatic control patterns.
 
@@ -56,15 +62,20 @@ npm install ngx-foundation-sites foundation-sites
 
 ### 2. Import Components
 
-Import the accordion components in your component:
+Import the accordion directives in your component:
 
 ```typescript
 import { Component } from '@angular/core';
-import { NfsAccordion, NfsAccordionItem, NfsAccordionTitle } from 'ngx-foundation-sites';
+import {
+  NfsAccordion,
+  NfsAccordionItemDef,
+  NfsAccordionHeaderDef,
+  NfsAccordionContentDef
+} from 'ngx-foundation-sites/accordion';
 
 @Component({
   selector: 'app-example',
-  imports: [NfsAccordion, NfsAccordionItem, NfsAccordionTitle],
+  imports: [NfsAccordion, NfsAccordionItemDef, NfsAccordionHeaderDef, NfsAccordionContentDef],
   templateUrl: './example.component.html',
 })
 export class ExampleComponent {}
@@ -82,20 +93,20 @@ export class ExampleComponent {}
 
 ```html
 <nfs-accordion>
-  <nfs-accordion-item panelId="faq-1">
-    <nfs-accordion-title>What is Foundation for Sites?</nfs-accordion-title>
+  <ng-template nfsAccordionItem panelId="faq-1">
+    <ng-template nfsAccordionHeader>What is Foundation for Sites?</ng-template>
     <p>Foundation is a responsive front-end framework that makes it easy to design beautiful websites.</p>
-  </nfs-accordion-item>
+  </ng-template>
 
-  <nfs-accordion-item panelId="faq-2">
-    <nfs-accordion-title>How do I install Foundation?</nfs-accordion-title>
+  <ng-template nfsAccordionItem panelId="faq-2">
+    <ng-template nfsAccordionHeader>How do I install Foundation?</ng-template>
     <p>You can install Foundation via npm: <code>npm install foundation-sites</code></p>
-  </nfs-accordion-item>
+  </ng-template>
 
-  <nfs-accordion-item panelId="faq-3">
-    <nfs-accordion-title>Is Foundation accessible?</nfs-accordion-title>
+  <ng-template nfsAccordionItem panelId="faq-3">
+    <ng-template nfsAccordionHeader>Is Foundation accessible?</ng-template>
     <p>Yes! Foundation includes built-in accessibility features and follows WCAG 2.1 AA standards.</p>
-  </nfs-accordion-item>
+  </ng-template>
 </nfs-accordion>
 ```
 
@@ -104,6 +115,11 @@ export class ExampleComponent {}
 - Clicking a question expands it and collapses the previously opened question
 - All questions start collapsed
 - Keyboard navigation works: Tab to focus, Enter/Space to toggle, Arrow keys to navigate
+
+**Template Structure**:
+- Outer `ng-template[nfsAccordionItem]`: Defines the item
+- Inner `ng-template[nfsAccordionHeader]`: Defines the clickable header/title
+- Direct content: Eager-rendered panel content
 
 ---
 
@@ -114,21 +130,21 @@ export class ExampleComponent {}
 **Code**:
 
 ```html
-<nfs-accordion [multiExpand]="true">
-  <nfs-accordion-item panelId="feature-1">
-    <nfs-accordion-title>Responsive Grid</nfs-accordion-title>
+<nfs-accordion [multiExpandable]="true">
+  <ng-template nfsAccordionItem panelId="feature-1">
+    <ng-template nfsAccordionHeader>Responsive Grid</ng-template>
     <p>Foundation's grid system adapts to any screen size.</p>
-  </nfs-accordion-item>
+  </ng-template>
 
-  <nfs-accordion-item panelId="feature-2">
-    <nfs-accordion-title>Flexible Components</nfs-accordion-title>
+  <ng-template nfsAccordionItem panelId="feature-2">
+    <ng-template nfsAccordionHeader>Flexible Components</ng-template>
     <p>Mix and match components to build your perfect site.</p>
-  </nfs-accordion-item>
+  </ng-template>
 
-  <nfs-accordion-item panelId="feature-3">
-    <nfs-accordion-title>Accessibility First</nfs-accordion-title>
+  <ng-template nfsAccordionItem panelId="feature-3">
+    <ng-template nfsAccordionHeader>Accessibility First</ng-template>
     <p>Built-in ARIA support for screen readers and keyboard navigation.</p>
-  </nfs-accordion-item>
+  </ng-template>
 </nfs-accordion>
 ```
 
@@ -137,6 +153,8 @@ export class ExampleComponent {}
 - Multiple panels can be open at the same time
 - Clicking a panel toggles it without affecting other panels
 - Useful for comparison scenarios or settings panels
+
+**Note**: Input is `multiExpandable` (not `multiExpand` as shown in some docs).
 
 ---
 
@@ -147,28 +165,28 @@ export class ExampleComponent {}
 **Code**:
 
 ```html
-<nfs-accordion [allowAllClosed]="false" [multiExpand]="false">
-  <nfs-accordion-item panelId="step-1" [expanded]="true">
-    <nfs-accordion-title>Step 1: Personal Information</nfs-accordion-title>
+<nfs-accordion [allowAllClosed]="false" [multiExpandable]="false">
+  <ng-template nfsAccordionItem panelId="step-1" [expanded]="true">
+    <ng-template nfsAccordionHeader>Step 1: Personal Information</ng-template>
     <form>
       <label>Name: <input type="text" /></label>
       <label>Email: <input type="email" /></label>
     </form>
-  </nfs-accordion-item>
+  </ng-template>
 
-  <nfs-accordion-item panelId="step-2">
-    <nfs-accordion-title>Step 2: Preferences</nfs-accordion-title>
+  <ng-template nfsAccordionItem panelId="step-2">
+    <ng-template nfsAccordionHeader>Step 2: Preferences</ng-template>
     <form>
       <label><input type="checkbox" /> Newsletter</label>
       <label><input type="checkbox" /> Notifications</label>
     </form>
-  </nfs-accordion-item>
+  </ng-template>
 
-  <nfs-accordion-item panelId="step-3">
-    <nfs-accordion-title>Step 3: Review & Submit</nfs-accordion-title>
+  <ng-template nfsAccordionItem panelId="step-3">
+    <ng-template nfsAccordionHeader>Step 3: Review & Submit</ng-template>
     <p>Please review your information before submitting.</p>
     <button type="submit">Submit</button>
-  </nfs-accordion-item>
+  </ng-template>
 </nfs-accordion>
 ```
 
@@ -189,19 +207,19 @@ export class ExampleComponent {}
 
 ```typescript
 import { Component, signal } from '@angular/core';
-import { NfsAccordion, NfsAccordionItem, NfsAccordionTitle } from 'ngx-foundation-sites';
+import { NfsAccordion, NfsAccordionItemDef, NfsAccordionHeaderDef } from 'ngx-foundation-sites/accordion';
 
 @Component({
   selector: 'app-example',
-  imports: [NfsAccordion, NfsAccordionItem, NfsAccordionTitle],
+  imports: [NfsAccordion, NfsAccordionItemDef, NfsAccordionHeaderDef],
   template: `
     <button (click)="toggleDetails()">Toggle Details</button>
 
     <nfs-accordion>
-      <nfs-accordion-item panelId="details" [(expanded)]="detailsOpen">
-        <nfs-accordion-title>Details</nfs-accordion-title>
+      <ng-template nfsAccordionItem panelId="details" [(expanded)]="detailsOpen">
+        <ng-template nfsAccordionHeader>Details</ng-template>
         <p>This panel is controlled by the button above.</p>
-      </nfs-accordion-item>
+      </ng-template>
     </nfs-accordion>
 
     <p>Details panel is {{ detailsOpen() ? 'open' : 'closed' }}</p>
@@ -232,20 +250,20 @@ export class ExampleComponent {
 
 ```html
 <nfs-accordion>
-  <nfs-accordion-item panelId="free-feature">
-    <nfs-accordion-title>Free Feature</nfs-accordion-title>
+  <ng-template nfsAccordionItem panelId="free-feature">
+    <ng-template nfsAccordionHeader>Free Feature</ng-template>
     <p>This content is available to all users.</p>
-  </nfs-accordion-item>
+  </ng-template>
 
-  <nfs-accordion-item panelId="premium-feature" [disabled]="true">
-    <nfs-accordion-title>Premium Feature 🔒</nfs-accordion-title>
+  <ng-template nfsAccordionItem panelId="premium-feature" [disabled]="true">
+    <ng-template nfsAccordionHeader>Premium Feature 🔒</ng-template>
     <p>Upgrade to unlock this feature.</p>
-  </nfs-accordion-item>
+  </ng-template>
 
-  <nfs-accordion-item panelId="another-free">
-    <nfs-accordion-title>Another Free Feature</nfs-accordion-title>
+  <ng-template nfsAccordionItem panelId="another-free">
+    <ng-template nfsAccordionHeader>Another Free Feature</ng-template>
     <p>More free content here.</p>
-  </nfs-accordion-item>
+  </ng-template>
 </nfs-accordion>
 ```
 
@@ -266,26 +284,37 @@ export class ExampleComponent {
 
 ```typescript
 import { Component } from '@angular/core';
-import { NfsAccordion, NfsAccordionItem, NfsAccordionTitle, NfsAccordionContent } from 'ngx-foundation-sites';
+import {
+  NfsAccordion,
+  NfsAccordionItemDef,
+  NfsAccordionHeaderDef,
+  NfsAccordionContentDef
+} from 'ngx-foundation-sites/accordion';
 import { ExpensiveComponent } from './expensive.component';
 
 @Component({
   selector: 'app-example',
-  imports: [NfsAccordion, NfsAccordionItem, NfsAccordionTitle, NfsAccordionContent, ExpensiveComponent],
+  imports: [
+    NfsAccordion,
+    NfsAccordionItemDef,
+    NfsAccordionHeaderDef,
+    NfsAccordionContentDef,
+    ExpensiveComponent
+  ],
   template: `
     <nfs-accordion>
-      <nfs-accordion-item panelId="light">
-        <nfs-accordion-title>Lightweight Content</nfs-accordion-title>
-        <p>This content is always in the DOM.</p>
-      </nfs-accordion-item>
+      <ng-template nfsAccordionItem panelId="light">
+        <ng-template nfsAccordionHeader>Lightweight Content</ng-template>
+        <p>This content is always in the DOM (eager).</p>
+      </ng-template>
 
-      <nfs-accordion-item panelId="heavy">
-        <nfs-accordion-title>Heavy Content</nfs-accordion-title>
+      <ng-template nfsAccordionItem panelId="heavy">
+        <ng-template nfsAccordionHeader>Heavy Content</ng-template>
         <ng-template nfsAccordionContent>
           <!-- Only rendered when panel is first opened -->
           <app-expensive-component />
         </ng-template>
-      </nfs-accordion-item>
+      </ng-template>
     </nfs-accordion>
   `,
 })
@@ -294,8 +323,9 @@ export class ExampleComponent {}
 
 **Behavior**:
 
-- `ExpensiveComponent` not created until panel is opened
-- Content persists after first expansion (not destroyed on collapse)
+- Content inside `ng-template[nfsAccordionContent]` is **lazy** (not rendered until first expand)
+- Content outside `ng-template[nfsAccordionContent]` is **eager** (always in DOM)
+- Lazy content persists after first expansion (not destroyed on collapse)
 - Improves initial render performance for large accordions
 
 ---
@@ -307,21 +337,26 @@ export class ExampleComponent {}
 **Code**:
 
 ```html
-<nfs-accordion [deepLink]="true" [deepLinkSmudge]="true" [deepLinkSmudgeDelay]="500" [deepLinkSmudgeOffset]="80">
-  <nfs-accordion-item panelId="overview">
-    <nfs-accordion-title>Overview</nfs-accordion-title>
+<nfs-accordion
+  [deepLink]="true"
+  [deepLinkSmudge]="true"
+  [deepLinkSmudgeDelay]="500"
+  [deepLinkSmudgeOffset]="80">
+
+  <ng-template nfsAccordionItem panelId="overview">
+    <ng-template nfsAccordionHeader>Overview</ng-template>
     <p>General information about the product.</p>
-  </nfs-accordion-item>
+  </ng-template>
 
-  <nfs-accordion-item panelId="pricing">
-    <nfs-accordion-title>Pricing</nfs-accordion-title>
+  <ng-template nfsAccordionItem panelId="pricing">
+    <ng-template nfsAccordionHeader>Pricing</ng-template>
     <p>Detailed pricing information.</p>
-  </nfs-accordion-item>
+  </ng-template>
 
-  <nfs-accordion-item panelId="support">
-    <nfs-accordion-title>Support</nfs-accordion-title>
+  <ng-template nfsAccordionItem panelId="support">
+    <ng-template nfsAccordionHeader>Support</ng-template>
     <p>How to get help.</p>
-  </nfs-accordion-item>
+  </ng-template>
 </nfs-accordion>
 ```
 
@@ -341,7 +376,7 @@ export class ExampleComponent {}
 
 ```typescript
 import { Component, signal } from '@angular/core';
-import { NfsAccordion, NfsAccordionItem, NfsAccordionTitle } from 'ngx-foundation-sites';
+import { NfsAccordion, NfsAccordionItemDef, NfsAccordionHeaderDef } from 'ngx-foundation-sites/accordion';
 
 interface FaqItem {
   id: string;
@@ -351,17 +386,17 @@ interface FaqItem {
 
 @Component({
   selector: 'app-example',
-  imports: [NfsAccordion, NfsAccordionItem, NfsAccordionTitle],
+  imports: [NfsAccordion, NfsAccordionItemDef, NfsAccordionHeaderDef],
   template: `
     <button (click)="addItem()">Add FAQ</button>
     <button (click)="removeItem()">Remove Last FAQ</button>
 
     <nfs-accordion>
       @for (item of faqs(); track item.id) {
-        <nfs-accordion-item [panelId]="item.id">
-          <nfs-accordion-title>{{ item.question }}</nfs-accordion-title>
+        <ng-template nfsAccordionItem [panelId]="item.id">
+          <ng-template nfsAccordionHeader>{{ item.question }}</ng-template>
           <p>{{ item.answer }}</p>
-        </nfs-accordion-item>
+        </ng-template>
       }
     </nfs-accordion>
   `,
@@ -374,7 +409,11 @@ export class ExampleComponent {
 
   addItem() {
     const newId = `q${this.faqs().length + 1}`;
-    this.faqs.update((items) => [...items, { id: newId, question: 'New Question', answer: 'New Answer' }]);
+    this.faqs.update((items) => [...items, {
+      id: newId,
+      question: 'New Question',
+      answer: 'New Answer'
+    }]);
   }
 
   removeItem() {
@@ -391,88 +430,106 @@ export class ExampleComponent {
 
 ---
 
-### Example 9: Programmatic Control
+### Example 9: Programmatic Control (Work in Progress)
 
-**Goal**: Control accordion from component methods.
+**Goal**: Control accordion from component methods using Foundation API parity.
 
-**Component**:
+**Status**: The `down()`, `up()`, `toggle()` methods are **not yet implemented** on `NfsAccordionItemDef`. Use `[(expanded)]` two-way binding instead:
+
+**Current Workaround**:
 
 ```typescript
-import { Component, viewChild, viewChildren } from '@angular/core';
-import { NfsAccordion, NfsAccordionItem, NfsAccordionTitle } from 'ngx-foundation-sites';
+import { Component, contentChildren } from '@angular/core';
+import { NfsAccordion, NfsAccordionItemDef, NfsAccordionHeaderDef } from 'ngx-foundation-sites/accordion';
 
 @Component({
   selector: 'app-example',
-  imports: [NfsAccordion, NfsAccordionItem, NfsAccordionTitle],
+  imports: [NfsAccordion, NfsAccordionItemDef, NfsAccordionHeaderDef],
   template: `
     <div>
-      <button (click)="expandAll()">Expand All</button>
-      <button (click)="collapseAll()">Collapse All</button>
       <button (click)="expandFirst()">Expand First</button>
+      <button (click)="collapseFirst()">Collapse First</button>
     </div>
 
-    <nfs-accordion [multiExpand]="true">
-      <nfs-accordion-item panelId="item-1">
-        <nfs-accordion-title>Item 1</nfs-accordion-title>
+    <nfs-accordion [multiExpandable]="true">
+      <ng-template nfsAccordionItem panelId="item-1">
+        <ng-template nfsAccordionHeader>Item 1</ng-template>
         <p>Content 1</p>
-      </nfs-accordion-item>
+      </ng-template>
 
-      <nfs-accordion-item panelId="item-2">
-        <nfs-accordion-title>Item 2</nfs-accordion-title>
+      <ng-template nfsAccordionItem panelId="item-2">
+        <ng-template nfsAccordionHeader>Item 2</ng-template>
         <p>Content 2</p>
-      </nfs-accordion-item>
+      </ng-template>
 
-      <nfs-accordion-item panelId="item-3">
-        <nfs-accordion-title>Item 3</nfs-accordion-title>
+      <ng-template nfsAccordionItem panelId="item-3">
+        <ng-template nfsAccordionHeader>Item 3</ng-template>
         <p>Content 3</p>
-      </nfs-accordion-item>
+      </ng-template>
     </nfs-accordion>
   `,
 })
 export class ExampleComponent {
-  protected readonly items = viewChildren(NfsAccordionItem);
+  protected readonly items = contentChildren(NfsAccordionItemDef);
 
   expandFirst() {
-    this.items().at(0)?.down();
+    // TODO: Replace with this.items().at(0)?.down() when implemented
+    const item = this.items().at(0);
+    if (item) item.expanded.set(true);
   }
 
   collapseFirst() {
-    this.items().at(0)?.up();
+    // TODO: Replace with this.items().at(0)?.up() when implemented
+    const item = this.items().at(0);
+    if (item) item.expanded.set(false);
   }
 }
 ```
 
-**Behavior**:
+**Future API (when implemented)**:
 
-- Methods control accordion state externally
-- Useful for toolbar buttons, shortcuts, or automation
+```typescript
+expandFirst() {
+  this.items().at(0)?.down();   // Foundation parity: .down($target)
+}
+
+collapseFirst() {
+  this.items().at(0)?.up();     // Foundation parity: .up($target)
+}
+
+toggleFirst() {
+  this.items().at(0)?.toggle(); // Foundation parity: .toggle($target)
+}
+```
 
 ---
 
-### Example 10: Foundation API Parity - Event Handling
+### Example 10: Event Handling (Work in Progress)
 
-**Goal**: Listen to accordion events (Foundation `down` / `up` equivalents; Foundation emits these as `down.zf.accordion` / `up.zf.accordion`).
+**Goal**: Listen to accordion events (Foundation `down` / `up` equivalents).
 
-**Component**:
+**Status**: The `(down)` and `(up)` outputs are **not yet implemented** on `NfsAccordion`.
+
+**Future API (when implemented)**:
 
 ```typescript
 import { Component } from '@angular/core';
-import { NfsAccordion, NfsAccordionItem, NfsAccordionTitle } from 'ngx-foundation-sites';
+import { NfsAccordion, NfsAccordionItemDef, NfsAccordionHeaderDef } from 'ngx-foundation-sites/accordion';
 
 @Component({
   selector: 'app-example',
-  imports: [NfsAccordion, NfsAccordionItem, NfsAccordionTitle],
+  imports: [NfsAccordion, NfsAccordionItemDef, NfsAccordionHeaderDef],
   template: `
     <nfs-accordion (down)="onDown($event)" (up)="onUp($event)">
-      <nfs-accordion-item panelId="panel-1">
-        <nfs-accordion-title>Panel 1</nfs-accordion-title>
+      <ng-template nfsAccordionItem panelId="panel-1">
+        <ng-template nfsAccordionHeader>Panel 1</ng-template>
         <p>Content 1</p>
-      </nfs-accordion-item>
+      </ng-template>
 
-      <nfs-accordion-item panelId="panel-2">
-        <nfs-accordion-title>Panel 2</nfs-accordion-title>
+      <ng-template nfsAccordionItem panelId="panel-2">
+        <ng-template nfsAccordionHeader>Panel 2</ng-template>
         <p>Content 2</p>
-      </nfs-accordion-item>
+      </ng-template>
     </nfs-accordion>
 
     <p>Last event: {{ lastEvent }}</p>
@@ -482,13 +539,13 @@ export class ExampleComponent {
   lastEvent = '';
 
   // Equivalent to Foundation's: $('#accordion').on('down.zf.accordion', ...)
-  onDown(event: { itemId: string; expanded: boolean }) {
+  onDown(event: { itemId: string; expanded: true }) {
     this.lastEvent = `Panel ${event.itemId} opened`;
     console.log('Panel opened:', event.itemId);
   }
 
   // Equivalent to Foundation's: $('#accordion').on('up.zf.accordion', ...)
-  onUp(event: { itemId: string; expanded: boolean }) {
+  onUp(event: { itemId: string; expanded: false }) {
     this.lastEvent = `Panel ${event.itemId} closed`;
     console.log('Panel closed:', event.itemId);
   }
@@ -507,7 +564,7 @@ $('#myAccordion').on('up.zf.accordion', function (e) {
   console.log('Panel closed:', $(e.target).attr('id'));
 });
 
-// Angular (NEW):
+// Angular (NEW - when implemented):
 // Use (down) and (up) outputs on <nfs-accordion>
 ```
 
@@ -519,7 +576,7 @@ $('#myAccordion').on('up.zf.accordion', function (e) {
 
 | Input                  | Type          | Default | Description                   |
 | ---------------------- | ------------- | ------- | ----------------------------- |
-| `multiExpand`          | `boolean`     | `false` | Allow multiple panels open    |
+| `multiExpandable`      | `boolean`     | `false` | Allow multiple panels open    |
 | `allowAllClosed`       | `boolean`     | `false` | Allow all panels closed       |
 | `disabled`             | `boolean`     | `false` | Disable all items             |
 | `deepLink`             | `boolean`     | `false` | Sync with URL hash            |
@@ -528,17 +585,18 @@ $('#myAccordion').on('up.zf.accordion', function (e) {
 | `deepLinkSmudgeOffset` | `number`      | `0`     | Scroll offset (px)            |
 | `updateHistory`        | `boolean`     | `false` | Use pushState                 |
 | `wrap`                 | `boolean`     | `false` | Wrap arrow key navigation     |
-| `titleHeadingLevel`    | `1-6 \| null` | `null`  | Heading level for titles      |
 | `softDisabled`         | `boolean`     | `true`  | Keep disabled items focusable |
 
-### NfsAccordion Outputs
+**Note**: `titleHeadingLevel` is not yet implemented.
 
-| Output | Type                                    | Description                 |
-| ------ | --------------------------------------- | --------------------------- |
-| `down` | `{ itemId: string; expanded: boolean }` | Emitted when a panel opens  |
-| `up`   | `{ itemId: string; expanded: boolean }` | Emitted when a panel closes |
+### NfsAccordion Outputs (Not Yet Implemented)
 
-### NfsAccordionItem Inputs
+| Output | Type                                | Description                 |
+| ------ | ----------------------------------- | --------------------------- |
+| `down` | `{ itemId: string; expanded: true}` | Emitted when a panel opens  |
+| `up`   | `{ itemId: string; expanded: false}` | Emitted when a panel closes |
+
+### NfsAccordionItemDef Inputs
 
 | Input      | Type              | Default  | Description                       |
 | ---------- | ----------------- | -------- | --------------------------------- |
@@ -546,13 +604,15 @@ $('#myAccordion').on('up.zf.accordion', function (e) {
 | `expanded` | `boolean` (model) | `false`  | Expansion state (two-way binding) |
 | `disabled` | `boolean`         | `false`  | Disable this item                 |
 
-### NfsAccordionItem Methods
+### NfsAccordionItemDef Methods (Not Yet Implemented)
 
 | Method     | Description            | Foundation Equivalent |
 | ---------- | ---------------------- | --------------------- |
 | `down()`   | Expand this panel      | `.down($target)`      |
 | `up()`     | Collapse this panel    | `.up($target)`        |
 | `toggle()` | Toggle expansion state | `.toggle($target)`    |
+
+**Workaround**: Use `item.expanded.set(true)` / `item.expanded.set(false)` / `item.expanded.update(v => !v)` until methods are implemented.
 
 ---
 
@@ -561,70 +621,49 @@ $('#myAccordion').on('up.zf.accordion', function (e) {
 ### Pattern: Settings Panel
 
 ```html
-<nfs-accordion [multiExpand]="true">
-  <nfs-accordion-item panelId="general">
-    <nfs-accordion-title>General Settings</nfs-accordion-title>
+<nfs-accordion [multiExpandable]="true">
+  <ng-template nfsAccordionItem panelId="general">
+    <ng-template nfsAccordionHeader>General Settings</ng-template>
     <!-- Settings form -->
-  </nfs-accordion-item>
+  </ng-template>
 
-  <nfs-accordion-item panelId="notifications">
-    <nfs-accordion-title>Notifications</nfs-accordion-title>
+  <ng-template nfsAccordionItem panelId="notifications">
+    <ng-template nfsAccordionHeader>Notifications</ng-template>
     <!-- Notification preferences -->
-  </nfs-accordion-item>
+  </ng-template>
 
-  <nfs-accordion-item panelId="privacy">
-    <nfs-accordion-title>Privacy</nfs-accordion-title>
+  <ng-template nfsAccordionItem panelId="privacy">
+    <ng-template nfsAccordionHeader>Privacy</ng-template>
     <!-- Privacy controls -->
-  </nfs-accordion-item>
+  </ng-template>
 </nfs-accordion>
 ```
 
 ### Pattern: Product Details
 
 ```html
-<nfs-accordion [multiExpand]="true">
-  <nfs-accordion-item panelId="description" [expanded]="true">
-    <nfs-accordion-title>Description</nfs-accordion-title>
+<nfs-accordion [multiExpandable]="true">
+  <ng-template nfsAccordionItem panelId="description" [expanded]="true">
+    <ng-template nfsAccordionHeader>Description</ng-template>
     <p>{{ product.description }}</p>
-  </nfs-accordion-item>
+  </ng-template>
 
-  <nfs-accordion-item panelId="specs">
-    <nfs-accordion-title>Specifications</nfs-accordion-title>
+  <ng-template nfsAccordionItem panelId="specs">
+    <ng-template nfsAccordionHeader>Specifications</ng-template>
     <dl>
       <dt>Weight:</dt>
       <dd>{{ product.weight }}</dd>
       <dt>Dimensions:</dt>
       <dd>{{ product.dimensions }}</dd>
     </dl>
-  </nfs-accordion-item>
+  </ng-template>
 
-  <nfs-accordion-item panelId="reviews">
-    <nfs-accordion-title>Reviews ({{ product.reviewCount }})</nfs-accordion-title>
+  <ng-template nfsAccordionItem panelId="reviews">
+    <ng-template nfsAccordionHeader>Reviews ({{ product.reviewCount }})</ng-template>
     <ng-template nfsAccordionContent>
       <app-reviews [productId]="product.id" />
     </ng-template>
-  </nfs-accordion-item>
-</nfs-accordion>
-```
-
-### Pattern: Help Documentation
-
-```html
-<nfs-accordion [deepLink]="true" [deepLinkSmudge]="true" [titleHeadingLevel]="2">
-  <nfs-accordion-item panelId="getting-started">
-    <nfs-accordion-title>Getting Started</nfs-accordion-title>
-    <!-- Introduction content -->
-  </nfs-accordion-item>
-
-  <nfs-accordion-item panelId="installation">
-    <nfs-accordion-title>Installation</nfs-accordion-title>
-    <!-- Installation steps -->
-  </nfs-accordion-item>
-
-  <nfs-accordion-item panelId="troubleshooting">
-    <nfs-accordion-title>Troubleshooting</nfs-accordion-title>
-    <!-- Common issues -->
-  </nfs-accordion-item>
+  </ng-template>
 </nfs-accordion>
 ```
 
@@ -634,8 +673,7 @@ $('#myAccordion').on('up.zf.accordion', function (e) {
 
 1. **Explore Storybook**: Run `npx nx storybook ngx-foundation-sites` to see interactive examples
 2. **Read ARIA Documentation**: See `contracts/accordion-aria.md` for accessibility details
-3. **Review API Contract**: See `contracts/accordion-api.ts` for full TypeScript interfaces
-4. **Check Implementation Plan**: See `plan.md` for technical architecture
+3. **Check Implementation Plan**: See `plan.md` for technical architecture
 
 ---
 
@@ -646,7 +684,9 @@ $('#myAccordion').on('up.zf.accordion', function (e) {
 **Solution**: Ensure `panelId` is provided and unique:
 
 ```html
-<nfs-accordion-item panelId="unique-id"></nfs-accordion-item>
+<ng-template nfsAccordionItem panelId="unique-id">
+  <!-- content -->
+</ng-template>
 ```
 
 ### Issue: Keyboard navigation not working
@@ -660,6 +700,21 @@ $('#myAccordion').on('up.zf.accordion', function (e) {
 ### Issue: Deep linking not working
 
 **Solution**: Verify `deepLink` input is `true` and `panelId` matches URL hash (without `#`).
+
+### Issue: Methods `down()`, `up()`, `toggle()` not found
+
+**Solution**: These methods are not yet implemented. Use `[(expanded)]` two-way binding or direct signal manipulation:
+
+```typescript
+// Instead of: item.down()
+item.expanded.set(true);
+
+// Instead of: item.up()
+item.expanded.set(false);
+
+// Instead of: item.toggle()
+item.expanded.update(v => !v);
+```
 
 ---
 
