@@ -373,24 +373,24 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 
 ### Storybook Tests for Foundation API Parity
 
-- [ ] T134 [P] Create FoundationApiParity story at packages/ngx-foundation-sites/.storybook/stories/accordion/FoundationApiParity.story.ts
-- [ ] T135 Add play function: call item.down(), verify panel opens and (down) event emits
-- [ ] T136 Add play function: call item.up(), verify panel closes and (up) event emits
-- [ ] T137 Add play function: call item.toggle(), verify panel toggles
-- [ ] T138 Add play function: verify (down) event payload includes itemId and expanded=true
-- [ ] T139 Add play function: verify (up) event payload includes itemId and expanded=false
+- [ ] T134 [P] [API] Create FoundationApiParity story at packages/ngx-foundation-sites/.storybook/stories/accordion/FoundationApiParity.story.ts
+- [ ] T135 [API] Add play function: call item.down(), verify panel opens and (down) event emits
+- [ ] T136 [API] Add play function: call item.up(), verify panel closes and (up) event emits
+- [ ] T137 [API] Add play function: call item.toggle(), verify panel toggles
+- [ ] T138 [API] Add play function: verify (down) event payload includes itemId and expanded=true
+- [ ] T139 [API] Add play function: verify (up) event payload includes itemId and expanded=false
 
 ### Implementation for Foundation API Parity
 
-- [ ] T140 [P] Implement down() method on NfsAccordionItem: set expanded signal to true (if not disabled)
-- [ ] T141 [P] Implement up() method on NfsAccordionItem: set expanded signal to false (if canClose)
-- [ ] T142 [P] Implement toggle() method on NfsAccordionItem: flip expanded signal (if allowed)
-- [ ] T143 [P] Add down output to NfsAccordion (OutputEmitterRef<AccordionItemChangeEvent>)
-- [ ] T144 [P] Add up output to NfsAccordion (OutputEmitterRef<AccordionItemChangeEvent>)
-- [ ] T145 Emit down event in NfsAccordion.notifyItemToggle() when expanded=true
-- [ ] T146 Emit up event in NfsAccordion.notifyItemToggle() when expanded=false
-- [ ] T147 Add JSDoc comments documenting Foundation API equivalents: down() ≈ .down($target), up() ≈ .up($target), toggle() ≈ .toggle($target)
-- [ ] T148 Document (down) output ≈ Foundation's down.zf.accordion event, (up) output ≈ up.zf.accordion event
+- [ ] T140 [P] [API] Implement down() method on NfsAccordionItem: set expanded signal to true (if not disabled)
+- [ ] T141 [P] [API] Implement up() method on NfsAccordionItem: set expanded signal to false (if canClose)
+- [ ] T142 [P] [API] Implement toggle() method on NfsAccordionItem: flip expanded signal (if allowed)
+- [ ] T143 [P] [API] Add down output to NfsAccordion (OutputEmitterRef<AccordionItemChangeEvent>)
+- [ ] T144 [P] [API] Add up output to NfsAccordion (OutputEmitterRef<AccordionItemChangeEvent>)
+- [ ] T145 [API] Emit down event in NfsAccordion.notifyItemToggle() when expanded=true
+- [ ] T146 [API] Emit up event in NfsAccordion.notifyItemToggle() when expanded=false
+- [ ] T147 [API] Add JSDoc comments documenting Foundation API equivalents: down() ≈ .down($target), up() ≈ .up($target), toggle() ≈ .toggle($target)
+- [ ] T148 [API] Document (down) output ≈ Foundation's down.zf.accordion event, (up) output ≈ up.zf.accordion event
 
 **Checkpoint**: Foundation API parity complete - methods and events match Foundation JS behavior
 
@@ -613,23 +613,24 @@ With multiple developers:
 
 ## Summary
 
-**Total Tasks**: 204 tasks across 16 phases
-**MVP Scope**: Phases 1-5 (User Stories 1-3, P1) = 67 tasks = ~33% of total
+**Total Tasks**: 212 tasks across 16 phases
+**MVP Scope**: Phases 1-5 (User Stories 1-3, P1) = ~75 tasks = ~35% of total
 **Task Breakdown by User Story**:
 
-- US1 (Basic Accordion): 19 tasks
-- US2 (Keyboard Navigation): 19 tasks (+1 for T182b timestamp ordering unit test)
-- US3 (Screen Reader): 18 tasks (+1 for T057c panelId duplicate detection, +1 for T178b runtime re-registration test)
+- US1 (Basic Accordion): 21 tasks (includes T183, T184 for interactive title content)
+- US2 (Keyboard Navigation): 21 tasks (includes T181, T182, T182b for concurrent interaction handling)
+- US3 (Screen Reader): 30 tasks (includes T057c, T176-T178c, T185-T188, T196-T199 for ARIA, announce, panelId handling)
 - US4 (Multi-Expand): 8 tasks
-- US5 (Allow All Closed): 8 tasks
-- US6 (Disabled Items): 15 tasks
+- US5 (Allow All Closed): 10 tasks (includes T190, T192, T193 for method failure and binding coercion)
+- US6 (Disabled Items): 16 tasks (includes T189, T191 for method failure handling)
 - US7 (Initial State): 5 tasks
 - US8 (Dynamic Items): 10 tasks
-- US9 (SSR): 5 tasks
-- US10 (Deep Linking): 20 tasks (+2 for T117a/T117b ErrorHandler and multiExpand E2E tests)
-- Remediation: 5 tasks (T-AC-001 done, T-AC-001b new, T-AC-002, T-AC-003 done, T-AC-004 done)
+- US9 (SSR): 7 tasks (includes T179, T180 for hydration fallback)
+- US10 (Deep Linking): 22 tasks (includes T117a, T117b for ErrorHandler and multiExpand E2E tests)
+- Advanced ARIA (Phase 15): 6 tasks (includes T194, T195 for heading level updates)
+- Remediation: 5 tasks (T-AC-001 done, T-AC-001b pending, T-AC-002 pending, T-AC-003 done, T-AC-004 done)
 
-**Parallel Opportunities**: 74 tasks marked [P] can run in parallel (~36% of total)
+**Parallel Opportunities**: 74 tasks marked [P] can run in parallel (~35% of total)
 **Independent Test Criteria**: Each user story has clear independent test criteria and can be validated separately
 
 ---
@@ -638,6 +639,7 @@ With multiple developers:
 
 - [P] tasks = different files, no dependencies, can run in parallel
 - [Story] label (e.g., [US1], [US2]) maps task to specific user story for traceability
+- [API] label = Foundation API parity tasks (Phase 13) that are cross-cutting and don't belong to a single user story
 - Each user story should be independently completable and testable
 - Storybook tests are PRIMARY testing strategy per spec.md (write these FIRST with play functions)
 - E2E tests ONLY for History API (User Story 10 deep linking)
