@@ -69,7 +69,7 @@ Use one simple rule: **pick the model based on the job** (reasoning vs. speed vs
 
 Attach your artifacts (e.g. `@specs\###-feature\spec.md`, `@specs\###-feature\plan.md`, `@specs\###-feature\tasks.md`, plus any key code files) and prompt:
 
-```text
+~~~text
 # CROSS-ARTIFACT ANALYSIS BRIEF
 
 Analyze attached artifacts for implementation gaps. Follow steps sequentially.
@@ -174,7 +174,7 @@ Evidence:
 ```
 
 Do NOT propose fixes yet; just summarize with evidence.
-```
+~~~
 
 2. **Sonnet 4.5 analyze (do the reasoning):**
 
