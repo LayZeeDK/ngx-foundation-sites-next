@@ -299,6 +299,7 @@ NfsAccordion (1)
 **Visibility**: Internal implementation detail. **NOT exported** from public barrel (`index.ts`). Consumers use the `panelId` input or rely on auto-generation; they never interact with the service directly.
 
 **Implementation**:
+
 - Static counter: `#counter = 0`
 - Method: `generateId(prefix: string): string` returns `${prefix}-${this.#counter++}`
 
@@ -311,6 +312,7 @@ NfsAccordion (1)
 **Injection Pattern**: Each component that needs error reporting injects `ErrorHandler` using `inject(ErrorHandler)`.
 
 **Usage in Accordion Components**:
+
 - `NfsAccordion`: Reports duplicate `panelId` values (FR-017a), deep-link failures (FR-067b, FR-074), validation errors (FR-110a)
 - `NfsAccordionItem`: Reports missing `<nfs-accordion-title>` (FR-026a), method failure semantics (FR-147a), binding coercion (FR-174a)
 

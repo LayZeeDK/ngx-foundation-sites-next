@@ -296,6 +296,7 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 When a `<nfs-accordion-item>` registers its `panelId` (consumer-provided or auto-generated), the parent `<nfs-accordion>` MUST validate uniqueness of `panelId` values within the _same accordion instance_ at registration time and whenever the `panelId` changes at runtime.
 
 **Duplicate Detection Behavior**: If duplicate `panelId` values are detected within the same accordion instance, the component MUST:
+
 - (a) Expand the first matching panel only (deterministic by DOM/registration order)
 - (b) NOT mutate or auto-suffix developer-provided `panelId` values
 - (c) Report a non-fatal configuration error via `ErrorHandler.handleError()` with the following message format:
@@ -319,6 +320,7 @@ If a consumer changes an item's `panelId` input after registration, the `<nfs-ac
 #### FR-017c: panelId and Deep Link Interactions
 
 When `deepLink` is enabled, changing a `panelId` at runtime does NOT by itself trigger deep-link expansion. Deep-link expansion occurs ONLY in response to:
+
 - Initial page load with a URL hash matching a `panelId`
 - URL hash change events (user navigation or programmatic `location.hash` changes)
 
@@ -988,18 +990,18 @@ The following features are explicitly out of scope for the initial implementatio
 
 ### User Stories → Requirements
 
-| User Story                                   | Mapped Requirements                            |
-| -------------------------------------------- | ---------------------------------------------- |
-| US1 Basic Single Accordion Interaction       | FR-001, FR-008, FR-009, FR-010, FR-029..FR-035 |
-| US2 Keyboard Navigation and Focus Management | FR-037..FR-045, AR-015..AR-023                 |
+| User Story                                   | Mapped Requirements                                                       |
+| -------------------------------------------- | ------------------------------------------------------------------------- |
+| US1 Basic Single Accordion Interaction       | FR-001, FR-008, FR-009, FR-010, FR-029..FR-035                            |
+| US2 Keyboard Navigation and Focus Management | FR-037..FR-045, AR-015..AR-023                                            |
 | US3 Screen Reader Compatibility              | FR-017, FR-017a, FR-017b, FR-017c, FR-021, FR-058..FR-060, AR-024..AR-027 |
-| US4 Multi-Expand Mode                        | FR-011, FR-014                                 |
-| US5 Allow All Closed Mode                    | FR-012                                         |
-| US6 Disabled Items                           | FR-046..FR-052                                 |
-| US7 Initial Open Item Configuration          | FR-018                                         |
-| US8 Dynamic Item Management                  | FR-053..FR-056                                 |
-| US9 SSR Compatibility                        | FR-062..FR-065                                 |
-| US10 URL Hash Deep Linking                   | FR-066..FR-074b                                |
+| US4 Multi-Expand Mode                        | FR-011, FR-014                                                            |
+| US5 Allow All Closed Mode                    | FR-012                                                                    |
+| US6 Disabled Items                           | FR-046..FR-052                                                            |
+| US7 Initial Open Item Configuration          | FR-018                                                                    |
+| US8 Dynamic Item Management                  | FR-053..FR-056                                                            |
+| US9 SSR Compatibility                        | FR-062..FR-065                                                            |
+| US10 URL Hash Deep Linking                   | FR-066..FR-074b                                                           |
 
 ### Requirements → Implementation Artifacts
 
