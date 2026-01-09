@@ -70,15 +70,110 @@ Use one simple rule: **pick the model based on the job** (reasoning vs. speed vs
 Attach your artifacts (e.g. `@specs\###-feature\spec.md`, `@specs\###-feature\plan.md`, `@specs\###-feature\tasks.md`, plus any key code files) and prompt:
 
 ```text
-Read all attached artifacts and produce a compact “analysis brief” for cross-artifact consistency.
+# CROSS-ARTIFACT ANALYSIS BRIEF
 
-Output format:
-1) 10-bullet executive summary
-2) Requirements inventory (IDs if present) → where each is addressed (plan/tasks/code) or “missing”
-3) Top 10 suspected gaps/risks (with file/section pointers)
-4) Open questions / ambiguities to resolve
+Analyze attached artifacts for implementation gaps. Follow steps sequentially.
 
-Do NOT propose fixes yet; just summarize and point to evidence.
+## STEP 1: Extract Requirements (scan spec.md)
+
+For each requirement found, record:
+- REQ-[ID]: [description]
+- Mandatory: [YES if "MUST"/"shall"/FR-XXX, NO if "MAY"/"optional"]
+- Location: spec.md:[line]
+
+List 15-20 requirements. Stop before analyzing.
+
+## STEP 2: Check Implementation (one requirement at a time)
+
+For EACH requirement:
+
+1. Does spec say "opt-in", "CSS-only", or "handled by [framework]"?
+   - YES → Mark "Not a gap (intentional design)"
+   - NO → Continue
+
+2. Search code for [3-5 keywords from requirement]
+   - Found in: [file:line] or "NOT FOUND"
+
+3. If delegated to framework (e.g., @angular/aria):
+   - Spec says "prefer @angular/aria" → Mark "✅ Delegated (correct)"
+   - Spec silent on delegation → Mark "⚠️ Verify acceptable"
+
+4. Status:
+   - ✅ Fully implemented [file:line]
+   - ⚠️ Partially implemented (specify missing parts)
+   - ❌ Not found
+   - 🔀 Delegated to [framework]
+
+Complete for ALL requirements before Step 3.
+
+## STEP 3: Gap List (only ❌ or ⚠️ items)
+
+Format:
+```
+
+GAP-[N]: [REQ-ID] - [one sentence]
+Evidence:
+
+- Spec: [FR-XXX or line number with exact quote]
+- Search: [keywords used]
+- Files checked: [list]
+- Status: [not found / partially implemented + details]
+  Priority: [P0 if "MUST", P1 if "should", P2 otherwise]
+
+```
+
+List max 10 gaps (highest priority first).
+
+## STEP 4: Anti-False-Positive Check
+
+For EACH gap, verify:
+- □ Checked if spec says "CSS-only" / "opt-in" / "framework-handled"?
+- □ Searched for @angular/aria / @angular/cdk delegation?
+- □ Confirmed this is "MUST" (not "MAY")?
+- □ Checked contracts/ folder?
+- □ Checked test/story files?
+
+Any unchecked → mark "⚠️ LOW CONFIDENCE"
+
+## FORBIDDEN (never report as gaps):
+- ❌ "Animation hooks missing" when spec says "CSS-only"
+- ❌ "ARIA incomplete" when code uses @angular/aria directives
+- ❌ "Custom content partial" without citing missing specific slot
+- ❌ "Test coverage gaps" without citing spec-required test cases
+- ❌ "SSR not implemented" when afterNextRender() exists
+
+## FINAL OUTPUT
+
+### 1) Executive Summary (10 bullets)
+- Bullet 1: "X% complete based on Y/Z requirements implemented"
+- Bullets 2-10: P0/P1 gaps only
+
+### 2) Requirements Inventory
+[All requirements from Step 2 with status]
+
+### 3) Top 10 Gaps
+[Gaps from Step 3 with HIGH/MEDIUM confidence after Step 4]
+
+### 4) Open Questions
+Only questions where:
+- Searched spec.md for [keywords]
+- Answer not in [sections checked]
+
+EXAMPLE GOOD GAP:
+```
+
+GAP-3: REQ-API-002 - Foundation outputs missing
+Evidence:
+
+- Spec: FR-076 (L345) "MUST emit (down)/(up) events"
+- Search: "output", "emit", "down", "up"
+- Files: accordion.ts, accordion-item-def.ts
+- Status: No output() calls found
+  Priority: P0
+
+```
+
+Do NOT propose fixes yet; just summarize with evidence.
 ```
 
 2. **Sonnet 4.5 analyze (do the reasoning):**
