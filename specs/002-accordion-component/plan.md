@@ -249,3 +249,4 @@ The following tasks address top-priority specification gaps found during cross-a
   - Description: Choose canonical implementation filename `accordion-id-generator.service.ts` and update task references (T057/T057b) and documentation to reference that filename. Ensure the service export scope and DI provider location are documented.
   - Acceptance: All references in `plan.md`, `spec.md`, and `contracts/accordion-api.ts` point to `accordion-id-generator.service.ts` and a short Implementation Note documents provider scope.
   - Blocking: NO (documentation/task consistency)
+  - Status: DONE — T057b now documents export status: service is `providedIn: 'platform'` and intentionally NOT exported from public API (internal implementation detail).
