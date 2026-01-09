@@ -24,12 +24,17 @@ Build an accessible, Angular-native accordion component that provides Foundation
 2. Uses `@angular/aria`'s `AccordionGroup`, `AccordionTrigger`, `AccordionPanel` primitives
 3. Container component orchestrates template instantiation via `ViewContainerRef`
 
-**Known Implementation Gaps** (see spec.md for full list):
+**Known Implementation Gaps** (see spec.md and tasks.md for full analysis):
 
-- Input naming: `multiExpandable` (actual) vs `multiExpand` (spec)
-- Foundation API methods: `down()`, `up()`, `toggle()` not yet implemented on items
-- Foundation API outputs: `(down)` and `(up)` events not yet implemented on container
-- `titleHeadingLevel` input not yet implemented
+- **[P0 BLOCKING]** Input naming: `multiExpandable` (actual) vs `multiExpand` (spec) — Breaking API inconsistency
+- **[P0 BLOCKING]** Foundation API methods: `down()`, `up()`, `toggle()` not yet implemented on items (violates FR-075, CA-009)
+- **[P0 BLOCKING]** Foundation API outputs: `(down)` and `(up)` events not yet implemented on container (violates FR-076, CA-010)
+- **[P1]** `titleHeadingLevel` input not yet implemented (limits screen reader document outline navigation)
+
+**Not Gaps** (working as designed per spec):
+
+- Animation hooks are CSS-only (Goals/Non-Goals:575-577)
+- ARIA live regions are opt-in via `announce` input (AR-027a, default: false)
 
 **Rationale**: Template-directive composition provides better integration with `@angular/aria`'s injector patterns and avoids content projection DI issues documented in research phase.
 
