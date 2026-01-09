@@ -231,6 +231,8 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 
   Debounce coalescing applies only within the same input source category. For example, rapid clicks coalesce together, but a click followed immediately by a programmatic call do NOT coalesce—both execute in order since they originate from different input sources.
 
+  **Testing Tolerance**: For timing-sensitive tests validating the 50ms debounce, implementations SHOULD allow a ±10ms tolerance to account for JavaScript event loop timing variability. Tests SHOULD use mock timers (e.g., `vi.useFakeTimers()`) when precise timing assertions are required.
+
 #### FR-038a: Explicit State Transitions
 
 - **FR-038a**: In addition to boolean `expanded`, the item MUST conceptually transition through explicit lifecycle states for implementation clarity: `COLLAPSED -> EXPANDING -> EXPANDED -> COLLAPSING -> COLLAPSED`. Implementations MAY represent these as internal enums or booleans plus transient flags, but must ensure that ARIA attributes reflect `aria-expanded` only when the target state is reached (`EXPANDED`), and that keyboard/interaction handlers consult the in-progress state to avoid conflicting operations.
