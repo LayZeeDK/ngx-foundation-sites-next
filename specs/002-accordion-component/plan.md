@@ -7,6 +7,32 @@
 
 Build an accessible, Angular-native accordion component that provides Foundation for Sites visual design with full WCAG AA compliance. The component must achieve **API parity with Foundation's accordion JavaScript plugin**: all Foundation JS methods (`toggle`, `down`, `up`, `destroy`) and events (`down`, `up` — emitted by Foundation as `down.zf.accordion` / `up.zf.accordion`) must be exposed as equivalent Angular methods and outputs. Implementation uses standalone components, signals, and Angular ARIA/CDK primitives without Foundation JavaScript dependencies.
 
+## Implementation Architecture (Actual)
+
+⚠️ **UPDATE 2026-01-09**: The actual implementation diverged from the originally planned component-based architecture to use **template-directive composition**. This architectural choice leverages `@angular/aria`'s accordion primitives more effectively.
+
+**Implemented API**:
+
+- `<nfs-accordion>` - Container component (unchanged from plan)
+- `ng-template[nfsAccordionItem]` - Item template directive (replaces `<nfs-accordion-item>` component)
+- `ng-template[nfsAccordionHeader]` - Header template directive (replaces `<nfs-accordion-title>` component)
+- `ng-template[nfsAccordionContent]` - Lazy content directive (unchanged from plan)
+
+**Key Differences from Original Plan**:
+
+1. Items are defined via `ng-template[nfsAccordionItem]` directives, not component wrappers
+2. Uses `@angular/aria`'s `AccordionGroup`, `AccordionTrigger`, `AccordionPanel` primitives
+3. Container component orchestrates template instantiation via `ViewContainerRef`
+
+**Known Implementation Gaps** (see spec.md for full list):
+
+- Input naming: `multiExpandable` (actual) vs `multiExpand` (spec)
+- Foundation API methods: `down()`, `up()`, `toggle()` not yet implemented on items
+- Foundation API outputs: `(down)` and `(up)` events not yet implemented on container
+- `titleHeadingLevel` input not yet implemented
+
+**Rationale**: Template-directive composition provides better integration with `@angular/aria`'s injector patterns and avoids content projection DI issues documented in research phase.
+
 ## Technical Context
 
 **Language/Version**: TypeScript 5.7+ / Angular 20+  
