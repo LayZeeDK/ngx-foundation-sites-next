@@ -203,6 +203,19 @@ export interface NfsAccordionContentApi {
 }
 
 // ============================================================================
+// Design Decisions (intentional omissions)
+// ============================================================================
+
+/**
+ * **Empty-State Slot**: Intentionally NOT provided.
+ *
+ * Per FR-114a, empty panel content is handled via standard ng-content projection.
+ * Consumers project their own empty-state UI as panel content—no dedicated
+ * `emptyStateTemplate` input or named slot. This aligns with Angular's composition
+ * model where structural decisions belong to the consumer, not the component.
+ */
+
+// ============================================================================
 // Internal Contracts (not part of public API)
 // ============================================================================
 
