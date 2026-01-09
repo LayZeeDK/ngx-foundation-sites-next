@@ -86,7 +86,7 @@ specs/002-accordion-component/
 
 ### FR-020a (panelId validation)
 
-- Maintain a registration registry in the accordion parent: `Map<string, NfsAccordionItemRef[]>` mapping `panelId` -> array of registered items (in registration order). On each item registration and on `panelId` changes, validate the array length. If length > 1 (duplicate within same accordion instance), call the injected `ErrorHandler.handleError()` with a structured Error (`new Error(`Duplicate panelId "${id}" in accordion ${accordionInstanceId || '<no-id>'}`)`) and proceed by using the first entry in the registry as the deep-link target. Do not auto-suffix or rename developer-provided `panelId` values.
+- Maintain a registration registry in the accordion parent: `Map<string, NfsAccordionItem[]>` mapping `panelId` -> array of registered items (in registration order). Note: `NfsAccordionItem` is the concrete component class; no separate ref type is needed. On each item registration and on `panelId` changes, validate the array length. If length > 1 (duplicate within same accordion instance), call the injected `ErrorHandler.handleError()` with a structured Error (`new Error(`Duplicate panelId "${id}" in accordion ${accordionInstanceId || '<no-id>'}`)`) and proceed by using the first entry in the registry as the deep-link target. Do not auto-suffix or rename developer-provided `panelId` values.
 
 - Add unit tests that stub `ErrorHandler` to assert invocation and that verify deterministic expansion of the first-registered item.
 
