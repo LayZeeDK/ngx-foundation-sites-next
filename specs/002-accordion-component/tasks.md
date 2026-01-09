@@ -779,7 +779,7 @@ With multiple developers:
 4. **titleHeadingLevel** (Phase 15: T162-T164)
    - Status: NOT IMPLEMENTED
    - Impact: Limits screen reader document outline navigation
-   - Violates: FR-090-FR-095 (spec.md:675)
+   - Violates: FR-016, FR-110a, FR-176a (titleHeadingLevel feature)
    - Fix: Add input + heading wrapper logic (~45min)
 
 5. **ErrorHandler Diagnostics** (Multiple Phases)

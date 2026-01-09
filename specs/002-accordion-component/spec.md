@@ -655,7 +655,7 @@ Note: AR-015 through AR-018 summarize accessibility implications of FR-037 throu
 
 ### P1 - Important (Error Handling & A11y)
 
-4. **titleHeadingLevel input**: Not yet implemented, limits screen reader document outline navigation (violates FR-090-FR-095)
+4. **titleHeadingLevel input**: Not yet implemented, limits screen reader document outline navigation (violates FR-016, FR-110a, FR-176a)
 5. **ErrorHandler diagnostics**: Missing structured error reporting for:
    - FR-017a: Duplicate panelId detection
    - FR-026a: Missing title detection

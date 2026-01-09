@@ -34,7 +34,7 @@ Build an accessible, Angular-native accordion component that provides Foundation
 
 **P1 - IMPORTANT** (105 min):
 
-- `titleHeadingLevel` input not implemented (violates FR-090-FR-095)
+- `titleHeadingLevel` input not implemented (violates FR-016, FR-110a, FR-176a)
 - ErrorHandler diagnostics missing for FR-017a, FR-026a, FR-067b, FR-089a, FR-110a
 
 **P2 - POLISH** (110 min):
