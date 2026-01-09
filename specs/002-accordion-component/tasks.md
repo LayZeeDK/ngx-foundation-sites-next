@@ -540,7 +540,8 @@ Task T020: "Create NfsAccordionTitle component"
 - [ ] T-AC-002 [P?] Implement `announce` live-region opt-in with 100ms debounce + Storybook tests
   - Location: packages/ngx-foundation-sites/src/lib/accordion/
   - Description: Add `announce = input(false)` and render a visually-hidden live region with `aria-live="polite"` when enabled. Debounce announcements by 100ms. Add Storybook play tests asserting live region updates on expand/collapse and title updates.
-  - **Implementation Tasks**: T196, T197, T198, T199 (complete these to resolve T-AC-002)
+  - **Implementation Tasks**: Complete T196, T197, T198, T199 (Phase 5, US3) to resolve this remediation task
+  - **Cross-Reference**: T196 (input signal), T197 (live region element), T198 (message publishing), T199 (Storybook test)
 
 - [x] T-AC-003 [P?] Input validators & tests for FR-110a
 - Location: packages/ngx-foundation-sites/src/lib/accordion/
