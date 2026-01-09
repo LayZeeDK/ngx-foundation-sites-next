@@ -627,6 +627,33 @@ Note: AR-015 through AR-018 summarize accessibility implications of FR-037 throu
 - Visual verification of Foundation CSS classes and styling
 - SSR rendering in a sample Angular Universal application
 
+## Implementation Architecture Note
+
+⚠️ **IMPORTANT**: The current implementation uses **template-directive composition** (`ng-template[nfsAccordionItem]`, `ng-template[nfsAccordionHeader]`, `ng-template[nfsAccordionContent]`) instead of the component-based API documented below. This architectural choice leverages `@angular/aria`'s accordion primitives for maximum accessibility compliance.
+
+**Current Implementation API**:
+
+- `ng-template[nfsAccordionItem]` - Item template (directive on `ng-template`)
+- `ng-template[nfsAccordionHeader]` - Header template (directive on `ng-template`)
+- `ng-template[nfsAccordionContent]` - Lazy content template (directive on `ng-template`)
+
+**Documented Spec API** (below):
+
+- `<nfs-accordion-item>` - Item component
+- `<nfs-accordion-title>` - Title component
+- Content projection for panel content
+
+**Status**: The spec documents the originally planned component-based API. The implementation diverged to use template-directives for better @angular/aria integration. **Refer to `quickstart.md` for correct usage examples of the implemented API.**
+
+**Known Gaps in Current Implementation**:
+
+1. Input name: Implemented as `multiExpandable` (spec says `multiExpand`)
+2. Foundation API methods: `down()`, `up()`, `toggle()` not yet implemented on items
+3. Foundation API outputs: `(down)` and `(up)` events not yet implemented on container
+4. `titleHeadingLevel` input not yet implemented
+
+---
+
 ## Complete Component API
 
 #### NfsAccordion (Container Component)
