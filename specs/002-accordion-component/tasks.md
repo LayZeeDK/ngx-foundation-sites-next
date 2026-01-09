@@ -537,7 +537,7 @@ Task T020: "Create NfsAccordionTitle component"
 - [ ] T-AC-001b [P?] Add Storybook play test for FR-089a input source distinction
   - Location: packages/ngx-foundation-sites/.storybook/stories/accordion/RapidToggle.story.ts
   - Description: Verify that programmatic toggle (item.toggle()) does NOT coalesce with keyboard toggle (Enter key) within 50ms debounce window—both should execute in order since they originate from different input sources (programmatic vs keyboard). Add play function simulating: keyboard Enter on item, then immediate programmatic toggle() call within 10ms, verify both actions execute sequentially.
-  - Acceptance: Play test confirms two distinct state changes occur (not coalesced) when input sources differ.
+  - Acceptance: Play test confirms two distinct state changes occur (not coalesced) when input sources differ. Per FR-089a testing tolerance, timing assertions MUST allow ±10ms variance for JavaScript event loop variability; use mock timers (`vi.useFakeTimers()`) for precise timing validation.
 
 - [ ] T-AC-002 _(meta-task)_ `announce` live-region opt-in — **resolved by T196-T199**
   - Location: packages/ngx-foundation-sites/src/lib/accordion/
