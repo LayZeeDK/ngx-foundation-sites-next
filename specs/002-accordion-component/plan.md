@@ -26,15 +26,30 @@ Build an accessible, Angular-native accordion component that provides Foundation
 
 **Known Implementation Gaps** (see spec.md and tasks.md for full analysis):
 
-- **[P0 BLOCKING]** Input naming: `multiExpandable` (actual) vs `multiExpand` (spec) — Breaking API inconsistency
-- **[P0 BLOCKING]** Foundation API methods: `down()`, `up()`, `toggle()` not yet implemented on items (violates FR-075, CA-009)
-- **[P0 BLOCKING]** Foundation API outputs: `(down)` and `(up)` events not yet implemented on container (violates FR-076, CA-010)
-- **[P1]** `titleHeadingLevel` input not yet implemented (limits screen reader document outline navigation)
+**P0 - BLOCKING** (32 min):
+
+- Input naming: `multiExpandable` → should be `multiExpand` (violates FR-014, CA-007)
+- Foundation API methods: `down()`, `up()`, `toggle()` not on items (violates FR-075, CA-009)
+- Foundation API outputs: `(down)`, `(up)` events not on container (violates FR-076, CA-010)
+
+**P1 - IMPORTANT** (105 min):
+
+- `titleHeadingLevel` input not implemented (violates FR-090-FR-095)
+- ErrorHandler diagnostics missing for FR-017a, FR-026a, FR-067b, FR-089a, FR-110a
+
+**P2 - POLISH** (110 min):
+
+- Edge case test coverage incomplete (violates FR-057, T175)
+- SSR error handling missing try/catch (violates FR-062a)
+- Deep link error handling silent failures (violates FR-067b)
 
 **Not Gaps** (working as designed per spec):
 
 - Animation hooks are CSS-only (Goals/Non-Goals:575-577)
 - ARIA live regions are opt-in via `announce` input (AR-027a, default: false)
+- ARIA edge cases handled by @angular/aria primitives (AccordionTrigger/AccordionPanel)
+- Custom content projection enforced by template-directive architecture
+- Foundation CSS classes present via @angular/aria integration
 
 **Rationale**: Template-directive composition provides better integration with `@angular/aria`'s injector patterns and avoids content projection DI issues documented in research phase.
 

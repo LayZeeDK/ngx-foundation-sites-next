@@ -647,15 +647,35 @@ Note: AR-015 through AR-018 summarize accessibility implications of FR-037 throu
 
 **Known Gaps in Current Implementation**:
 
-1. **[P0 - BLOCKING]** Input name: Implemented as `multiExpandable` (spec says `multiExpand`) — Breaking API inconsistency, requires rename
-2. **[P0 - BLOCKING]** Foundation API methods: `down()`, `up()`, `toggle()` not yet implemented on items (violates FR-075, CA-009)
-3. **[P0 - BLOCKING]** Foundation API outputs: `(down)` and `(up)` events not yet implemented on container (violates FR-076, CA-010)
-4. **[P1]** `titleHeadingLevel` input not yet implemented (limits screen reader document outline navigation)
+### P0 - BLOCKING (Foundation API Parity)
+
+1. **Input naming**: Implemented as `multiExpandable` (spec says `multiExpand`) — Breaking API inconsistency, requires rename (violates FR-014, CA-007)
+2. **Foundation API methods**: `down()`, `up()`, `toggle()` not yet implemented on items (violates FR-075, CA-009)
+3. **Foundation API outputs**: `(down)` and `(up)` events not yet implemented on container (violates FR-076, CA-010)
+
+### P1 - Important (Error Handling & A11y)
+
+4. **titleHeadingLevel input**: Not yet implemented, limits screen reader document outline navigation (violates FR-090-FR-095)
+5. **ErrorHandler diagnostics**: Missing structured error reporting for:
+   - FR-017a: Duplicate panelId detection
+   - FR-026a: Missing title detection
+   - FR-067b: Deep link to non-existent panel
+   - FR-089a: Rapid toggle serialization errors
+   - FR-110a: Input validation edge cases
+
+### P2 - Polish (Test Coverage & Robustness)
+
+6. **Edge case test coverage**: Missing Storybook tests for negative scenarios (empty accordion, all disabled, ID collision, rapid toggle) — violates tasks.md:T175, FR-057
+7. **SSR error handling**: `afterNextRender` blocks lack try/catch for hydration failure reporting (violates FR-062a)
+8. **Deep link error handling**: Silent failure when URL hash references non-existent panel (violates FR-067b)
 
 **Not Gaps** (Working as Designed):
 
 - **Animation hooks**: Spec explicitly states animations are CSS-only (Goals and Non-Goals:575-577). Foundation CSS handles all transitions via Sass variables. No Angular animation API is required.
 - **ARIA live regions**: Intentionally opt-in via `announce` input (AR-027a, default: false) to avoid duplicate announcements on platforms where `aria-expanded` is sufficient. Base ARIA compliance does not require live regions.
+- **ARIA edge cases**: Implementation delegates to @angular/aria primitives (AccordionTrigger/AccordionPanel) which handle aria-controls, aria-expanded, aria-labelledby automatically per Angular framework standards.
+- **Custom content projection**: Template-directive architecture enforces one-header-one-body at compile time. Complex slotting scenarios are architecturally prevented.
+- **Foundation CSS class mapping**: All required classes (FR-029 through FR-035) present via @angular/aria integration.
 
 ---
 

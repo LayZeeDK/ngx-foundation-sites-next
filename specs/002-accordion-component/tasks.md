@@ -26,14 +26,44 @@ The following features are **not yet implemented** and must be added to achieve 
 
 1. **Foundation API Methods** (T140-T142): `down()`, `up()`, `toggle()` methods not implemented on `NfsAccordionItemDef`
    - Workaround: Use `item.expanded.set(true/false)` or `item.expanded.update(v => !v)`
+   - Fix estimate: ~10 minutes
 
-2. **Foundation API Outputs** (T138-T139): `(down)` and `(up)` events not implemented on `NfsAccordion`
+2. **Foundation API Outputs** (T143-T148): `(down)` and `(up)` events not implemented on `NfsAccordion`
    - These events are required for Foundation JS API parity
+   - Fix estimate: ~20 minutes
 
 3. **Input Naming** (T021): Implemented as `multiExpandable` (not `multiExpand` per spec)
    - This is a **breaking API inconsistency** that should be fixed
+   - Fix estimate: ~2 minutes (breaking change)
 
-4. **Heading Level** (T095-T096): `titleHeadingLevel` input not implemented
+### Implementation Gaps (P1 Priority)
+
+4. **Heading Level** (T162-T164): `titleHeadingLevel` input not implemented
+   - Fix estimate: ~45 minutes
+
+5. **ErrorHandler Diagnostics** (Multiple FRs): Missing structured error reporting
+   - FR-017a: Duplicate panelId detection (not implemented)
+   - FR-026a: Missing title detection (not implemented)
+   - FR-067b: Deep link to non-existent panel (not implemented)
+   - FR-089a: Rapid toggle serialization errors (not implemented)
+   - FR-110a: Input validation edge cases (partial via validators.ts)
+   - Fix estimate: ~60 minutes
+
+### Implementation Gaps (P2 Priority)
+
+6. **Edge Case Test Coverage** (T175): Missing Storybook tests for negative scenarios
+   - Empty accordion (FR-057)
+   - All items disabled
+   - ID collision detection
+   - Rapid toggle serialization
+   - Missing title scenario
+   - Fix estimate: ~90 minutes
+
+7. **SSR Error Handling** (FR-062a): `afterNextRender` blocks lack try/catch for hydration failure
+   - Fix estimate: ~15 minutes
+
+8. **Deep Link Error Handling** (FR-067b): Silent failure for non-existent panel IDs
+   - Fix estimate: ~5 minutes
 
 ### Status Interpretation
 
@@ -43,12 +73,26 @@ The following features are **not yet implemented** and must be added to achieve 
 - Deep linking tasks (T114-T128): **FULLY IMPLEMENTED** (despite brief claims)
 - Most functional requirements: **IMPLEMENTED** (expansion, keyboard, ARIA, deep linking)
 
-### Next Actions
+### Next Actions (Prioritized)
+
+**P0 - BLOCKING** (32 minutes total):
 
 1. Add `down()`, `up()`, `toggle()` methods to `NfsAccordionItemDef` (~10min)
 2. Add `(down)` and `(up)` outputs to `NfsAccordion` (~20min)
 3. Rename `multiExpandable` → `multiExpand` (~2min, breaking change)
-4. Add `titleHeadingLevel` input (~45min)
+
+**P1 - IMPORTANT** (105 minutes total):
+
+4. Add `titleHeadingLevel` input with heading wrapper logic (~45min)
+5. Implement ErrorHandler diagnostics for FR-017a, FR-026a, FR-067b, FR-089a, FR-110a (~60min)
+
+**P2 - POLISH** (110 minutes total):
+
+6. Add EdgeCases Storybook story with negative test scenarios (~90min)
+7. Add SSR error handling try/catch in `afterNextRender` blocks (~15min)
+8. Add deep link error handling for non-existent panels (~5min)
+
+**Total Fix Time**: P0 = 32min | P0+P1 = 137min | P0+P1+P2 = 247min (~4.1 hours)
 
 ---
 
@@ -706,6 +750,10 @@ With multiple developers:
 
 ## Cross-Artifact Analysis Summary (2026-01-09)
 
+**Analysis Date**: 2026-01-09
+**Briefs Analyzed**: 2 (GPT-4.1 initial + follow-up)
+**Methodology**: Direct artifact validation (spec.md, plan.md, tasks.md, contracts/, accordion.ts, accordion.stories.ts)
+
 ### Validated Implementation Gaps (P0 - Blocking)
 
 1. **Foundation API Methods** (Phase 13: T140-T142)
@@ -734,13 +782,59 @@ With multiple developers:
    - Violates: FR-090-FR-095 (spec.md:675)
    - Fix: Add input + heading wrapper logic (~45min)
 
+5. **ErrorHandler Diagnostics** (Multiple Phases)
+   - Status: PARTIAL (validators.ts exists for input coercion, but no ErrorHandler calls)
+   - Impact: Silent failures confuse developers; spec mandates structured error reporting
+   - Violates: FR-017a (duplicate panelId), FR-026a (missing title), FR-067b (bad deep link), FR-089a (rapid toggle), FR-110a (input validation)
+   - Fix: Inject ErrorHandler service, add diagnostic calls (~60min)
+
+### Validated Implementation Gaps (P2 - Polish)
+
+6. **Edge Case Test Coverage** (Phase 16: T175)
+   - Status: NOT IMPLEMENTED
+   - Impact: Negative cases untested; production bugs likely
+   - Violates: FR-057 (empty accordion), tasks.md EdgeCases story requirement
+   - Fix: Add EdgeCases story with play tests (~90min)
+
+7. **SSR Error Handling** (Phase 9: FR-062a)
+   - Status: PARTIAL (uses afterNextRender, but no error handling)
+   - Impact: SSR failures crash silently
+   - Violates: FR-062a (hydration error handling)
+   - Fix: Wrap afterNextRender in try/catch (~15min)
+
+8. **Deep Link Error Handling** (Phase 10: FR-067b)
+   - Status: NOT IMPLEMENTED
+   - Impact: Bad URL hashes fail silently
+   - Violates: FR-067b (non-existent panel error)
+   - Fix: Add ErrorHandler call in #handleInitialHash() (~5min)
+
 ### False Positives (Working as Designed)
 
 - **Animation hooks**: Spec explicitly states CSS-only (Goals/Non-Goals:575-577)
 - **ARIA live regions**: Intentionally opt-in via `announce` input (AR-027a)
-- **Deep linking**: FULLY IMPLEMENTED (contrary to brief claims)
+- **Deep linking**: FULLY IMPLEMENTED (contrary to first brief claims)
+- **ARIA edge cases**: Implementation delegates to @angular/aria primitives (AccordionTrigger/AccordionPanel) which handle aria-controls, aria-expanded, aria-labelledby automatically
+- **Custom content projection**: Template-directive architecture enforces one-header-one-body at compile time
+- **Foundation CSS class mapping**: All required classes (FR-029 through FR-035) present via @angular/aria integration
+
+### Brief Accuracy Assessment
+
+**First Brief (10 gaps claimed)**:
+
+- Real gaps identified: 3 P0 + 1 P1 = 4 real gaps
+- False positives: 2 (animation hooks, ARIA live regions)
+- Accuracy: ~40%
+
+**Second Brief (10 gaps claimed)**:
+
+- Real gaps identified: 3 P0 + 2 P1 + 3 P2 = 8 real gaps
+- False positives: 4 (ARIA edge cases, custom content, CSS mapping, SSR implementation)
+- Accuracy: ~60%
+
+**Combined Analysis**: 8 unique real gaps identified across P0/P1/P2 priorities
 
 ### Total Fix Estimate
 
-- P0 gaps: ~30 minutes
-- P0 + P1 gaps: ~75 minutes
+- P0 gaps: 32 minutes
+- P0 + P1 gaps: 137 minutes (~2.3 hours)
+- P0 + P1 + P2 gaps: 247 minutes (~4.1 hours)
