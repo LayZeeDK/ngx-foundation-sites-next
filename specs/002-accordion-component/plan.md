@@ -106,7 +106,7 @@ specs/002-accordion-component/
 
 ### AR-027a (announce live-region opt-in)
 
-- Provide an InputSignal `announce = input(false)` on `<nfs-accordion>` (or at `<nfs-accordion-item>` level as appropriate). When `announce` is `true`, render a single visually-hidden element with `aria-live="polite"` (e.g., `<div class="visually-hidden" aria-live="polite" aria-atomic="true">...</div>`). On expand/collapse, set the live region's textContent to a concise message (e.g., `Section "${titleText}" expanded`). Debounce updates by 100ms to prevent duplicate/rapid announcements during rapid toggles. Add unit and e2e tests that assert (when `announce=true`) the live region receives the expected message on expand/collapse, and that when `announce=false` no live region is present.
+- Provide an InputSignal `announce = input(false)` on `<nfs-accordion>` (or at `<nfs-accordion-item>` level as appropriate). When `announce` is `true`, render a single visually-hidden element with `aria-live="polite"` (e.g., `<div class="visually-hidden" aria-live="polite" aria-atomic="true">...</div>`). On expand/collapse, set the live region's textContent to a concise message (e.g., `Section "${titleText}" expanded`). Debounce updates by 100ms to prevent duplicate/rapid announcements during rapid toggles (source: spec.md AR-027a). Add unit and e2e tests that assert (when `announce=true`) the live region receives the expected message on expand/collapse, and that when `announce=false` no live region is present.
 
 ### FR-026a (missing title handling)
 
@@ -192,6 +192,7 @@ packages/ngx-foundation-sites/
 ```
 
 **Unit Test Location** (Nx colocated convention):
+
 ```text
 packages/ngx-foundation-sites/src/lib/accordion/
 ├── accordion.component.spec.ts        # Colocated unit tests (Vitest)
@@ -200,6 +201,7 @@ packages/ngx-foundation-sites/src/lib/accordion/
 ```
 
 **E2E Test Location** (Playwright for browser-specific APIs only):
+
 ```text
 packages/ngx-foundation-sites-e2e/src/accordion/
 └── accordion-deeplink.spec.ts         # Deep linking, History API tests
