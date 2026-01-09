@@ -7,6 +7,51 @@
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
 
+---
+
+## Implementation Status (2026-01-09)
+
+⚠️ **IMPORTANT**: The implementation diverged from the task plan below in the following ways:
+
+### Architecture Change
+
+**Planned**: Component-based (`<nfs-accordion-item>`, `<nfs-accordion-title>`)
+**Implemented**: Template-directive (`ng-template[nfsAccordionItem]`, `ng-template[nfsAccordionHeader]`)
+
+This change leverages `@angular/aria`'s accordion primitives more effectively. Tasks mentioning component creation (T018-T020) should be interpreted as directive creation.
+
+### Implementation Gaps (P0 Priority)
+
+The following features are **not yet implemented** and must be added to achieve spec compliance:
+
+1. **Foundation API Methods** (T140-T142): `down()`, `up()`, `toggle()` methods not implemented on `NfsAccordionItemDef`
+   - Workaround: Use `item.expanded.set(true/false)` or `item.expanded.update(v => !v)`
+
+2. **Foundation API Outputs** (T138-T139): `(down)` and `(up)` events not implemented on `NfsAccordion`
+   - These events are required for Foundation JS API parity
+
+3. **Input Naming** (T021): Implemented as `multiExpandable` (not `multiExpand` per spec)
+   - This is a **breaking API inconsistency** that should be fixed
+
+4. **Heading Level** (T095-T096): `titleHeadingLevel` input not implemented
+
+### Status Interpretation
+
+- Tasks referencing component creation (T018-T020): **Implemented as directives**
+- Tasks referencing methods (T140-T142): **NOT IMPLEMENTED**
+- Tasks referencing outputs (T138-T139): **NOT IMPLEMENTED**
+- Deep linking tasks (T114-T128): **FULLY IMPLEMENTED** (despite brief claims)
+- Most functional requirements: **IMPLEMENTED** (expansion, keyboard, ARIA, deep linking)
+
+### Next Actions
+
+1. Add `down()`, `up()`, `toggle()` methods to `NfsAccordionItemDef` (~10min)
+2. Add `(down)` and `(up)` outputs to `NfsAccordion` (~20min)
+3. Rename `multiExpandable` → `multiExpand` (~2min, breaking change)
+4. Add `titleHeadingLevel` input (~45min)
+
+---
+
 ## Format: `[ID] [P?] [Story] Description`
 
 - **[P]**: Can run in parallel (different files, no dependencies)

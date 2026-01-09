@@ -66,12 +66,7 @@ Import the accordion directives in your component:
 
 ```typescript
 import { Component } from '@angular/core';
-import {
-  NfsAccordion,
-  NfsAccordionItemDef,
-  NfsAccordionHeaderDef,
-  NfsAccordionContentDef
-} from 'ngx-foundation-sites/accordion';
+import { NfsAccordion, NfsAccordionItemDef, NfsAccordionHeaderDef, NfsAccordionContentDef } from 'ngx-foundation-sites/accordion';
 
 @Component({
   selector: 'app-example',
@@ -117,6 +112,7 @@ export class ExampleComponent {}
 - Keyboard navigation works: Tab to focus, Enter/Space to toggle, Arrow keys to navigate
 
 **Template Structure**:
+
 - Outer `ng-template[nfsAccordionItem]`: Defines the item
 - Inner `ng-template[nfsAccordionHeader]`: Defines the clickable header/title
 - Direct content: Eager-rendered panel content
@@ -284,23 +280,12 @@ export class ExampleComponent {
 
 ```typescript
 import { Component } from '@angular/core';
-import {
-  NfsAccordion,
-  NfsAccordionItemDef,
-  NfsAccordionHeaderDef,
-  NfsAccordionContentDef
-} from 'ngx-foundation-sites/accordion';
+import { NfsAccordion, NfsAccordionItemDef, NfsAccordionHeaderDef, NfsAccordionContentDef } from 'ngx-foundation-sites/accordion';
 import { ExpensiveComponent } from './expensive.component';
 
 @Component({
   selector: 'app-example',
-  imports: [
-    NfsAccordion,
-    NfsAccordionItemDef,
-    NfsAccordionHeaderDef,
-    NfsAccordionContentDef,
-    ExpensiveComponent
-  ],
+  imports: [NfsAccordion, NfsAccordionItemDef, NfsAccordionHeaderDef, NfsAccordionContentDef, ExpensiveComponent],
   template: `
     <nfs-accordion>
       <ng-template nfsAccordionItem panelId="light">
@@ -337,12 +322,7 @@ export class ExampleComponent {}
 **Code**:
 
 ```html
-<nfs-accordion
-  [deepLink]="true"
-  [deepLinkSmudge]="true"
-  [deepLinkSmudgeDelay]="500"
-  [deepLinkSmudgeOffset]="80">
-
+<nfs-accordion [deepLink]="true" [deepLinkSmudge]="true" [deepLinkSmudgeDelay]="500" [deepLinkSmudgeOffset]="80">
   <ng-template nfsAccordionItem panelId="overview">
     <ng-template nfsAccordionHeader>Overview</ng-template>
     <p>General information about the product.</p>
@@ -409,11 +389,14 @@ export class ExampleComponent {
 
   addItem() {
     const newId = `q${this.faqs().length + 1}`;
-    this.faqs.update((items) => [...items, {
-      id: newId,
-      question: 'New Question',
-      answer: 'New Answer'
-    }]);
+    this.faqs.update((items) => [
+      ...items,
+      {
+        id: newId,
+        question: 'New Question',
+        answer: 'New Answer',
+      },
+    ]);
   }
 
   removeItem() {
@@ -574,26 +557,26 @@ $('#myAccordion').on('up.zf.accordion', function (e) {
 
 ### NfsAccordion Inputs
 
-| Input                  | Type          | Default | Description                   |
-| ---------------------- | ------------- | ------- | ----------------------------- |
-| `multiExpandable`      | `boolean`     | `false` | Allow multiple panels open    |
-| `allowAllClosed`       | `boolean`     | `false` | Allow all panels closed       |
-| `disabled`             | `boolean`     | `false` | Disable all items             |
-| `deepLink`             | `boolean`     | `false` | Sync with URL hash            |
-| `deepLinkSmudge`       | `boolean`     | `false` | Auto-scroll to panel          |
-| `deepLinkSmudgeDelay`  | `number`      | `300`   | Scroll delay (ms)             |
-| `deepLinkSmudgeOffset` | `number`      | `0`     | Scroll offset (px)            |
-| `updateHistory`        | `boolean`     | `false` | Use pushState                 |
-| `wrap`                 | `boolean`     | `false` | Wrap arrow key navigation     |
-| `softDisabled`         | `boolean`     | `true`  | Keep disabled items focusable |
+| Input                  | Type      | Default | Description                   |
+| ---------------------- | --------- | ------- | ----------------------------- |
+| `multiExpandable`      | `boolean` | `false` | Allow multiple panels open    |
+| `allowAllClosed`       | `boolean` | `false` | Allow all panels closed       |
+| `disabled`             | `boolean` | `false` | Disable all items             |
+| `deepLink`             | `boolean` | `false` | Sync with URL hash            |
+| `deepLinkSmudge`       | `boolean` | `false` | Auto-scroll to panel          |
+| `deepLinkSmudgeDelay`  | `number`  | `300`   | Scroll delay (ms)             |
+| `deepLinkSmudgeOffset` | `number`  | `0`     | Scroll offset (px)            |
+| `updateHistory`        | `boolean` | `false` | Use pushState                 |
+| `wrap`                 | `boolean` | `false` | Wrap arrow key navigation     |
+| `softDisabled`         | `boolean` | `true`  | Keep disabled items focusable |
 
 **Note**: `titleHeadingLevel` is not yet implemented.
 
 ### NfsAccordion Outputs (Not Yet Implemented)
 
-| Output | Type                                | Description                 |
-| ------ | ----------------------------------- | --------------------------- |
-| `down` | `{ itemId: string; expanded: true}` | Emitted when a panel opens  |
+| Output | Type                                 | Description                 |
+| ------ | ------------------------------------ | --------------------------- |
+| `down` | `{ itemId: string; expanded: true}`  | Emitted when a panel opens  |
 | `up`   | `{ itemId: string; expanded: false}` | Emitted when a panel closes |
 
 ### NfsAccordionItemDef Inputs
@@ -713,7 +696,7 @@ item.expanded.set(true);
 item.expanded.set(false);
 
 // Instead of: item.toggle()
-item.expanded.update(v => !v);
+item.expanded.update((v) => !v);
 ```
 
 ---
