@@ -647,10 +647,15 @@ Note: AR-015 through AR-018 summarize accessibility implications of FR-037 throu
 
 **Known Gaps in Current Implementation**:
 
-1. Input name: Implemented as `multiExpandable` (spec says `multiExpand`)
-2. Foundation API methods: `down()`, `up()`, `toggle()` not yet implemented on items
-3. Foundation API outputs: `(down)` and `(up)` events not yet implemented on container
-4. `titleHeadingLevel` input not yet implemented
+1. **[P0 - BLOCKING]** Input name: Implemented as `multiExpandable` (spec says `multiExpand`) — Breaking API inconsistency, requires rename
+2. **[P0 - BLOCKING]** Foundation API methods: `down()`, `up()`, `toggle()` not yet implemented on items (violates FR-075, CA-009)
+3. **[P0 - BLOCKING]** Foundation API outputs: `(down)` and `(up)` events not yet implemented on container (violates FR-076, CA-010)
+4. **[P1]** `titleHeadingLevel` input not yet implemented (limits screen reader document outline navigation)
+
+**Not Gaps** (Working as Designed):
+
+- **Animation hooks**: Spec explicitly states animations are CSS-only (Goals and Non-Goals:575-577). Foundation CSS handles all transitions via Sass variables. No Angular animation API is required.
+- **ARIA live regions**: Intentionally opt-in via `announce` input (AR-027a, default: false) to avoid duplicate announcements on platforms where `aria-expanded` is sufficient. Base ARIA compliance does not require live regions.
 
 ---
 

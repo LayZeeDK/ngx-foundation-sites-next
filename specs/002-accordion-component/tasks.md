@@ -415,6 +415,8 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 
 **Goal**: Expose Foundation-equivalent methods and events per API parity requirement
 
+⚠️ **IMPLEMENTATION STATUS: NOT DONE** — Tasks T140-T148 are **NOT IMPLEMENTED**. This is a **P0 BLOCKING GAP** that violates FR-075, FR-076, CA-009, CA-010. Estimated fix time: 30 minutes.
+
 **Independent Test**: Use programmatic methods (down(), up(), toggle()) and listen to events ((down), (up)), verify they match Foundation behavior.
 
 ### Storybook Tests for Foundation API Parity
@@ -472,6 +474,8 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 ## Phase 15: Heading Level and Advanced ARIA (Optional Feature)
 
 **Goal**: Support titleHeadingLevel for ARIA document outline and wrap navigation
+
+⚠️ **IMPLEMENTATION STATUS: PARTIAL** — `wrap` input is **IMPLEMENTED** (accordion.ts:64), but `titleHeadingLevel` tasks (T162-T164, T195-T195a) are **NOT IMPLEMENTED**. This is a **P1 gap** limiting screen reader document outline navigation.
 
 **Independent Test**: Render accordion with titleHeadingLevel=3, verify buttons wrapped in <div role="heading" aria-level="3">. Test wrap=true for keyboard navigation wraparound.
 
@@ -697,3 +701,46 @@ With multiple developers:
 - Foundation API parity (Phase 13) is cross-cutting and integrates with multiple stories
 - Lazy content (Phase 14) and advanced ARIA (Phase 15) are optional extensions
 - All 10 user stories delivered = complete feature per spec.md
+
+---
+
+## Cross-Artifact Analysis Summary (2026-01-09)
+
+### Validated Implementation Gaps (P0 - Blocking)
+
+1. **Foundation API Methods** (Phase 13: T140-T142)
+   - Status: NOT IMPLEMENTED
+   - Impact: Breaks Foundation JS→Angular migration path
+   - Violates: FR-075, CA-009 (contracts/accordion-api.ts:143-163)
+   - Fix: Add `down()`, `up()`, `toggle()` methods to NfsAccordionItemDef (~10min)
+
+2. **Foundation API Outputs** (Phase 13: T143-T148)
+   - Status: NOT IMPLEMENTED
+   - Impact: No event notification when panels open/close
+   - Violates: FR-076, CA-010 (contracts/accordion-api.ts:98-112)
+   - Fix: Add `down` and `up` outputs to NfsAccordion (~20min)
+
+3. **Input Naming Inconsistency** (Phase 3: T021)
+   - Status: IMPLEMENTED AS `multiExpandable` (should be `multiExpand`)
+   - Impact: API surface doesn't match spec or Foundation convention
+   - Violates: FR-014 (spec.md:289), CA-007 (contracts/accordion-api.ts:63)
+   - Fix: Rename `multiExpandable` → `multiExpand` globally (~2min, BREAKING)
+
+### Validated Implementation Gaps (P1 - Important)
+
+4. **titleHeadingLevel** (Phase 15: T162-T164)
+   - Status: NOT IMPLEMENTED
+   - Impact: Limits screen reader document outline navigation
+   - Violates: FR-090-FR-095 (spec.md:675)
+   - Fix: Add input + heading wrapper logic (~45min)
+
+### False Positives (Working as Designed)
+
+- **Animation hooks**: Spec explicitly states CSS-only (Goals/Non-Goals:575-577)
+- **ARIA live regions**: Intentionally opt-in via `announce` input (AR-027a)
+- **Deep linking**: FULLY IMPLEMENTED (contrary to brief claims)
+
+### Total Fix Estimate
+
+- P0 gaps: ~30 minutes
+- P0 + P1 gaps: ~75 minutes
