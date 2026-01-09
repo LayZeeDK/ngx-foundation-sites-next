@@ -4,6 +4,9 @@
  * This file defines the public API interfaces for all accordion components.
  * It serves as the contract between implementation and consumers.
  *
+ * ⚠️ **IMPLEMENTATION STATUS**: This is a design contract. Some interfaces are not
+ * yet fully implemented. See spec.md "Known Gaps in Current Implementation" for status.
+ *
  * **FOUNDATION API PARITY**: This API provides equivalent methods and events
  * to Foundation for Sites accordion JavaScript plugin:
  * - Foundation methods: toggle, down, up, destroy
@@ -17,7 +20,7 @@
  *
  * Phase: 1 - Design & Contracts
  * Date: 2026-01-07
- * Updated: 2025-01-06 (Added Foundation API parity)
+ * Updated: 2026-01-09 (Added implementation status note)
  */
 
 import {
