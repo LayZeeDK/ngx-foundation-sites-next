@@ -954,7 +954,7 @@ The following features are explicitly out of scope for the initial implementatio
 | -------------------------------------------- | ---------------------------------------------- |
 | US1 Basic Single Accordion Interaction       | FR-001, FR-008, FR-009, FR-010, FR-029..FR-035 |
 | US2 Keyboard Navigation and Focus Management | FR-037..FR-045, AR-015..AR-023                 |
-| US3 Screen Reader Compatibility              | FR-020, FR-021, FR-058..FR-061, AR-024..AR-027 |
+| US3 Screen Reader Compatibility              | FR-020, FR-021, FR-058..FR-060, AR-024..AR-027 |
 | US4 Multi-Expand Mode                        | FR-011, FR-014                                 |
 | US5 Allow All Closed Mode                    | FR-012                                         |
 | US6 Disabled Items                           | FR-046..FR-052                                 |
