@@ -144,7 +144,7 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 - [ ] T177 [US3] Add Storybook test: change panelId while deepLink enabled, verify item does NOT auto-expand (deep link only responds to URL hash changes) in packages/ngx-foundation-sites/.storybook/stories/accordion/DeepLinking.story.ts (covers FR-020c: panelId/deepLink interaction)
 - [ ] T185 [P] [US3] Add Storybook story variant to ScreenReader story: render accordion with empty panel content, verify panel wrapper maintains valid ARIA even with no inner content in packages/ngx-foundation-sites/.storybook/stories/accordion/ScreenReader.story.ts
 - [ ] T187 [P] [US3] Add Storybook play test to ScreenReader story: change accordion title text dynamically, verify live region announces change when announce=true in packages/ngx-foundation-sites/.storybook/stories/accordion/ScreenReader.story.ts
-- [ ] T199 [P] [US3] Add Storybook play test to ScreenReader story: verify live region receives expand/collapse announcements when announce=true, no live region when announce=false in packages/ngx-foundation-sites/.storybook/stories/accordion/ScreenReader.story.ts
+- [ ] T199 [P] [US3] Add Storybook play test to ScreenReader story: verify live region receives expand/collapse announcements when announce=true, no live region when announce=false in packages/ngx-foundation-sites/.storybook/stories/accordion/ScreenReader.story.ts (covers AR-027a expand/collapse; see T187 for complementary title-change announcement coverage)
 
 ### Implementation for User Story 3
 
@@ -458,8 +458,8 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 - [ ] T171 [P] Security review: verify component treats projected content as trusted per SR-001 to SR-004
 - [ ] T172 Update main library index.ts at packages/ngx-foundation-sites/src/index.ts to export accordion components
 - [ ] T173 [P] Create comprehensive Storybook docs page at packages/ngx-foundation-sites/.storybook/stories/accordion/Accordion.mdx with API reference and Foundation migration guide
-- [ ] T174 Run AXE accessibility checks on all Storybook stories, verify 100% pass rate
-- [ ] T175 [P] Add Storybook stories with play functions for edge cases: empty accordion, single item, all disabled, ID collision detection in packages/ngx-foundation-sites/.storybook/stories/accordion/EdgeCases.story.ts (Note: per constitution V, prefer Storybook interactive tests over unit tests; unit tests reserved for pure functions/services only)
+- [ ] T174 Run AXE accessibility checks on all Storybook stories, verify 100% pass rate (includes AR-003 color contrast verification: 4.5:1 for normal text, 3:1 for large text)
+- [ ] T175 [P] Add Storybook stories with play functions for edge cases: empty accordion (FR-057: render empty container with no focusable elements or broken ARIA), single item, all disabled, ID collision detection in packages/ngx-foundation-sites/.storybook/stories/accordion/EdgeCases.story.ts (Note: per constitution V, prefer Storybook interactive tests over unit tests; unit tests reserved for pure functions/services only)
 
 ---
 
