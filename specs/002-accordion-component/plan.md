@@ -24,29 +24,28 @@ Build an accessible, Angular-native accordion component that provides Foundation
 2. Uses `@angular/aria`'s `AccordionGroup`, `AccordionTrigger`, `AccordionPanel` primitives
 3. Container component orchestrates template instantiation via `ViewContainerRef`
 
-**Known Implementation Gaps** (see spec.md and tasks.md for full analysis):
+**Known Implementation Gaps**: See **[GAPS_REMEDIATION.md](./GAPS_REMEDIATION.md)** for comprehensive tracking with evidence, fix estimates, and validation methodology.
 
 **P0 - BLOCKING** (32 min):
 
-- Input naming: `multiExpandable` → should be `multiExpand` (violates FR-014, CA-007)
-- Foundation API methods: `down()`, `up()`, `toggle()` not on items (violates FR-075, CA-009)
-- Foundation API outputs: `(down)`, `(up)` events not on container (violates FR-076, CA-010)
+- **GAP-3**: Input naming — `multiExpandable` → should be `multiExpand` (violates FR-014, CA-007)
+- **GAP-1**: Foundation API methods — `down()`, `up()`, `toggle()` not on items (violates FR-075, CA-009)
+- **GAP-2**: Foundation API outputs — `(down)`, `(up)` events not on container (violates FR-076, CA-010)
 
-**P1 - IMPORTANT** (105 min):
+**P1 - IMPORTANT** (135 min):
 
-- `titleHeadingLevel` input not implemented (violates FR-016, FR-110a, FR-176a)
-- ErrorHandler diagnostics missing for FR-017a, FR-026a, FR-067b, FR-089a, FR-110a
+- **GAP-4**: `titleHeadingLevel` input not implemented (violates FR-016, FR-110a, FR-176a)
+- **GAP-5**: ErrorHandler diagnostics missing for FR-017a, FR-026a, FR-067b, FR-089a, FR-110a (partial: validators.ts exists but no ErrorHandler calls)
+- **GAP-6**: Storybook tests for Foundation API missing (violates T134-T139 testing requirements)
 
-**P2 - POLISH** (110 min):
+**P2 - POLISH** (15 min):
 
-- Edge case test coverage incomplete (violates FR-057, T175)
-- SSR error handling missing try/catch (violates FR-062a)
-- Deep link error handling silent failures (violates FR-067b)
+- **GAP-8**: SSR error handling missing try/catch in `afterNextRender` blocks (violates FR-062a)
 
 **Not Gaps** (working as designed per spec):
 
 - Animation hooks are CSS-only (Goals/Non-Goals:575-577)
-- ARIA live regions are opt-in via `announce` input (AR-027a, default: false)
+- ARIA live regions are opt-in via `announce` input (AR-027a tracked as T196-T199)
 - ARIA edge cases handled by @angular/aria primitives (AccordionTrigger/AccordionPanel)
 - Custom content projection enforced by template-directive architecture
 - Foundation CSS classes present via @angular/aria integration

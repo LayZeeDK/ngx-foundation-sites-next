@@ -162,7 +162,7 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 - [ ] T018 [P] [US1] Create NfsAccordion component at packages/ngx-foundation-sites/src/lib/accordion/accordion.component.ts (standalone, OnPush, host class="accordion", selector: nfs-accordion)
 - [ ] T019 [P] [US1] Create NfsAccordionItem component at packages/ngx-foundation-sites/src/lib/accordion/accordion-item.component.ts (standalone, OnPush, host class="accordion-item", selector: nfs-accordion-item)
 - [ ] T020 [P] [US1] Create NfsAccordionTitle component at packages/ngx-foundation-sites/src/lib/accordion/accordion-title.component.ts (standalone, OnPush, selector: nfs-accordion-title, renders as button)
-- [ ] T021 [US1] Implement NfsAccordion inputs using input() function: multiExpand (default: false), allowAllClosed (default: false)
+- [ ] T021 [US1] Implement NfsAccordion inputs using input() function: multiExpand (default: false), allowAllClosed (default: false) ⚠️ **NAMING GAP**: Implemented as `multiExpandable` (should be `multiExpand` per FR-014, CA-007). BREAKING CHANGE required. See GAPS_REMEDIATION.md GAP-3.
 - [ ] T022 [US1] Implement NfsAccordionItem inputs: panelId (optional string; system generates when absent), expanded (model signal, default: false), disabled (default: false)
 - [ ] T023 [US1] Implement state management in NfsAccordion: #openItemIds signal, registerItem(), unregisterItem(), notifyItemToggle()
 - [ ] T024 [US1] Implement single-expand logic: when multiExpand=false, expanding one item closes others
