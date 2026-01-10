@@ -9,7 +9,7 @@
 
 ## Purpose
 
-This document tracks validated implementation gaps between the accordion specification (spec.md, plan.md, tasks.md, contracts/) and the actual implementation. It serves as the single source of truth for `/analyze-brief` to prevent re-flagging documented gaps.
+This document tracks validated implementation gaps between the accordion specification (spec.md, plan.md, tasks.md, contracts/) and the actual implementation. It serves as the single source of truth for gap analysis tools (`/analyze-brief-gpt-5-mini`, `/analyze-brief-gpt-4-1`) to prevent re-flagging documented gaps.
 
 ---
 
@@ -347,7 +347,7 @@ This analysis followed a 6-step validation workflow:
 
 ---
 
-## For `/analyze-brief` Tool
+## For Gap Analysis Tools (`/analyze-brief-gpt-5-mini` / `/analyze-brief-gpt-4-1`)
 
 **When validating future implementation**:
 

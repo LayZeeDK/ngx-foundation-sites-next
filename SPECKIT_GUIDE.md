@@ -72,7 +72,7 @@ Use one simple rule: **pick the model based on the job** (reasoning vs. speed vs
 | `/speckit.checklist` | Haiku 4.5                          | Haiku 4.5                                      | 0.33x        |
 | `/speckit.tasks`     | Haiku 4.5                          | **GPT-5 mini** (`/tasks-gpt-5-mini`) ⭐         | **0x** ✅     |
 | `/speckit.analyze`   | Sonnet 4.5                         | GPT-4.1 → Sonnet 4.5                           | 0x → 1x      |
-| `/analyze-brief`     | —                                  | **GPT-5 mini** (`/analyze-brief-gpt-5-mini`) ⭐ or GPT-4.1 | **0x** ✅     |
+| `/analyze-brief`     | —                                  | **GPT-5 mini** (`/analyze-brief-gpt-5-mini`) ⭐ or **GPT-4.1** (`/analyze-brief-gpt-4-1`) | **0x** ✅     |
 
 **GPT-5 mini advantages**:
 - ✅ **Zero cost** (0x multiplier)
@@ -123,7 +123,7 @@ Total: ~90K tokens ✅ SAFE (well within 180K limit)
 - ✅ Well-structured specs with clear FR-XXX requirements
 - ✅ Agent will prompt if too large (no manual decision needed)
 
-**When to use GPT-4.1** (standard `/analyze-brief`):
+**When to use `/analyze-brief-gpt-4-1`** (GPT-4.1 with 1M context):
 - ⚠️ Pre-check prompted you to switch (>180K tokens)
 - ⚠️ You know feature is huge (skip pre-check overhead)
 - ⚠️ Need guaranteed 1M context
@@ -161,7 +161,7 @@ gh copilot -m "gpt-5-mini" slash analyze-brief-gpt-5-mini @implementation-files
 **Option B: GPT-4.1** (large features, >180K tokens, **more context**):
 
 ```bash
-gh copilot -m "gpt-4.1" slash analyze-brief @implementation-files
+gh copilot -m "gpt-4.1" slash analyze-brief-gpt-4-1 @implementation-files
 ```
 
 **Both commands**:
@@ -185,7 +185,7 @@ gh copilot -m "gpt-4.1" slash analyze-brief @implementation-files
 - False positives removed
 - Summary statistics
 
-**Alternative (if slash commands unavailable)**: Manually copy instructions from `.github/agents/analyze-brief-gpt-5-mini.agent.md` or `.github/agents/analyze-brief.agent.md`
+**Alternative (if slash commands unavailable)**: Manually copy instructions from `.github/agents/analyze-brief-gpt-5-mini.agent.md` or `.github/agents/analyze-brief-gpt-4-1.agent.md`
 
 2. **Step 2: Sonnet 4.5 validation (create remediation docs):**
 
@@ -215,7 +215,7 @@ gh copilot slash analyze-gaps
 - GAPS_REMEDIATION.md (377 lines) + REMEDIATION_CHECKLIST.md (635 lines)
 - 182-minute fix estimate (P0=32min, P1=135min, P2=15min)
 
-**Success criteria**: Future `/analyze-brief` runs will NOT re-flag these gaps because they find:
+**Success criteria**: Future gap analysis runs (either `/analyze-brief-gpt-5-mini` or `/analyze-brief-gpt-4-1`) will NOT re-flag these gaps because they find:
 - "NOT IMPLEMENTED - TRACKED" markers in GAPS_REMEDIATION.md
 - Evidence chains (FR-XXX → Task ID → Contract → Implementation status)
 - False positives documented in "Not Gaps" section

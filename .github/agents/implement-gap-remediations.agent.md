@@ -476,7 +476,7 @@ Tell user:
 **Next Steps**:
 1. Review the changes: `git diff HEAD~[N]`
 2. Push to remote: `git push`
-3. Run `/analyze-brief` to verify no new gaps introduced
+3. Run `/analyze-brief-gpt-5-mini or /analyze-brief-gpt-4-1` to verify no new gaps introduced
 4. Create pull request if needed
 ```
 

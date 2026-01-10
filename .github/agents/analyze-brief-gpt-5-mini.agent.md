@@ -408,7 +408,7 @@ OUTPUT:
 Feature size: ${Math.round(total_tokens_estimate / 1000)}K tokens (limit: 180K)
 
 Options to proceed:
-1. Use GPT-4.1: gh copilot -m \"gpt-4.1\" slash analyze-brief @files
+1. Use GPT-4.1: gh copilot -m \"gpt-4.1\" slash analyze-brief-gpt-4-1 @files
 2. Reduce scope: Remove contracts or analyze fewer implementation files
 3. Split feature: Analyze components separately"
 

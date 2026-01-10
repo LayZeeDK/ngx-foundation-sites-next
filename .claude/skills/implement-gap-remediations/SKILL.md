@@ -397,7 +397,7 @@ Step 5/5: Add unit tests
 - ✅ CHANGELOG.md (breaking change documented)
 
 **Next Steps**:
-Run `/analyze-brief` to verify no new gaps were introduced.
+Run `/analyze-brief-gpt-5-mini or /analyze-brief-gpt-4-1` to verify no new gaps were introduced.
 ```
 
 ## Error Handling
@@ -503,7 +503,7 @@ After execution:
 
 ## Related Commands
 
-- `/analyze-brief` - Generates initial gap report (run before /analyze-gaps)
+- `/analyze-brief-gpt-5-mini or /analyze-brief-gpt-4-1` - Generates initial gap report (run before /analyze-gaps)
 - `/analyze-gaps` - Creates REMEDIATION_CHECKLIST.md (run before this command)
 - `/speckit.implement` - Alternative implementation command (less specialized)
 

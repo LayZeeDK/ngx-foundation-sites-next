@@ -66,6 +66,6 @@ After execution:
 
 ## Related Commands
 
-- `/analyze-brief` - Generates gap report
+- `/analyze-brief-gpt-5-mini or /analyze-brief-gpt-4-1` - Generates gap report
 - `/analyze-gaps` - Creates REMEDIATION_CHECKLIST.md
 - Run this command to execute fixes

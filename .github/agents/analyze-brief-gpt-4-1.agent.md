@@ -1,5 +1,5 @@
 ---
-description: Generate a structured implementation gap analysis for cross-artifact validation using a non-reasoning model (GPT-4.1 or Gemini 3 Pro).
+description: Generate a structured implementation gap analysis for large features (>180K tokens) using GPT-4.1's 1M context. For small-medium features (<180K tokens), use /analyze-brief-gpt-5-mini (2-3x faster). Optimized for GPT-4.1's non-reasoning, long-context capabilities.
 ---
 
 ## User Input

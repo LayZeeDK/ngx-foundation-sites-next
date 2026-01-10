@@ -25,9 +25,9 @@ gh copilot slash analyze-gaps
 
 ## When to Use
 
-- **After** running `/analyze-brief` (or manual gap analysis)
+- **After** running `/analyze-brief-gpt-5-mini or /analyze-brief-gpt-4-1` (or manual gap analysis)
 - **Before** implementing fixes (creates actionable checklists)
-- To prevent future `/analyze-brief` from re-flagging known gaps
+- To prevent future `/analyze-brief-gpt-5-mini or /analyze-brief-gpt-4-1` from re-flagging known gaps
 
 ## Example Output
 
@@ -48,6 +48,6 @@ Future analysis tools should:
 
 ## Related Commands
 
-- `/analyze-brief` - Generates initial gap report (run first)
+- `/analyze-brief-gpt-5-mini or /analyze-brief-gpt-4-1` - Generates initial gap report (run first)
 - `/speckit.implement` - Executes remediation checklist (run after)
 - `/speckit.analyze` - Pre-implementation consistency check (different purpose)

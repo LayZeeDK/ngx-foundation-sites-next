@@ -1,5 +1,5 @@
 ---
-description: Validates gap analysis reports from /analyze-brief and creates comprehensive remediation documentation. Prevents future analysis tools from re-flagging known gaps by establishing single source of truth tracking.
+description: Validates gap analysis reports from /analyze-brief-gpt-5-mini or /analyze-brief-gpt-4-1 and creates comprehensive remediation documentation. Prevents future analysis tools from re-flagging known gaps by establishing single source of truth tracking.
 ---
 
 ## User Input
@@ -13,13 +13,13 @@ You **MUST** consider the user input before proceeding (if not empty).
 ## Prerequisites
 
 Before running this agent:
-1. `gap-analysis-report.md` exists in repo root (from `/analyze-brief` or manual analysis)
+1. `gap-analysis-report.md` exists in repo root (from `/analyze-brief-gpt-5-mini or /analyze-brief-gpt-4-1` or manual analysis)
 2. Feature specs exist in `specs/<feature>/` (spec.md, plan.md, tasks.md)
 3. Implementation files exist for validation
 
 ## Goal
 
-Create remediation documentation that **prevents future `/analyze-brief` runs from re-flagging these gaps as new issues**. Establish a single source of truth for gap tracking.
+Create remediation documentation that **prevents future `/analyze-brief-gpt-5-mini or /analyze-brief-gpt-4-1` runs from re-flagging these gaps as new issues**. Establish a single source of truth for gap tracking.
 
 ## Validation Methodology
 
@@ -71,7 +71,7 @@ Create these documents in `specs/<feature>/`:
 
 ### 1. GAPS_REMEDIATION.md (Comprehensive Tracking)
 
-**Purpose**: Single source of truth for `/analyze-brief` to check before flagging gaps.
+**Purpose**: Single source of truth for `/analyze-brief-gpt-5-mini or /analyze-brief-gpt-4-1` to check before flagging gaps.
 
 **Required Sections**:
 - **Purpose**: Why this document exists
@@ -81,7 +81,7 @@ Create these documents in `specs/<feature>/`:
 - **False Positives**: Claimed gaps that are working as designed
 - **Remediation Roadmap**: Phased approach with time estimates
 - **Validation Methodology**: 6-step process used
-- **For `/analyze-brief` Tool**: Instructions for future analysis
+- **For `/analyze-brief-gpt-5-mini or /analyze-brief-gpt-4-1` Tool**: Instructions for future analysis
 
 **Per-Gap Structure**:
 ```markdown
@@ -205,7 +205,7 @@ git commit -m "docs(feature): add validated gap analysis with remediation tracke
 - Total fix time: P0=Xmin, P0+P1=Ymin, P0+P1+P2=Zmin
 
 Validation methodology: Cross-artifact analysis (spec vs contracts vs implementation)
-Purpose: Single source of truth for /analyze-brief
+Purpose: Single source of truth for /analyze-brief-gpt-5-mini or /analyze-brief-gpt-4-1
 
 Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
 ```
@@ -249,7 +249,7 @@ Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
 ls gap-analysis-report.md
 ```
 
-If not found, ask user to provide path or run `/analyze-brief` first.
+If not found, ask user to provide path or run `/analyze-brief-gpt-5-mini or /analyze-brief-gpt-4-1` first.
 
 ### 2. Identify Feature
 
@@ -351,7 +351,7 @@ I've validated the gap analysis report against source artifacts. Here's what I f
 
 ## Success Criteria
 
-Future `/analyze-brief` runs should:
+Future `/analyze-brief-gpt-5-mini or /analyze-brief-gpt-4-1` runs should:
 - ✅ Find "NOT IMPLEMENTED - TRACKED" markers instead of discovering "new" gaps
 - ✅ Reference GAPS_REMEDIATION.md for detailed tracking
 - ✅ Not re-flag false positives documented in "Not Gaps" section
