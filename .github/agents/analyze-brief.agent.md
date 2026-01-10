@@ -303,28 +303,24 @@ After completing Steps 0-5, you MUST execute STEP 6 (Output Procedure).
 
 Your response to the user is the text you write during Step 6.1 through 6.4. Nothing more, nothing less.
 
-## Optional Follow-up
-
-After reviewing the analysis output above, the user MAY optionally run `/speckit.analyze` with a reasoning model for additional validation:
-
-```
-/speckit.analyze
-
-Validate each claimed gap from the analysis above against the source artifacts.
-
-Deliver:
-- A prioritized list of real inconsistencies/gaps (with exact file + heading/line pointers)
-- For each gap: why it matters, and the smallest fix (spec vs plan vs tasks)
-- Call out any "false positives" from the brief and why they're false
-```
-
-## Context
-
-$ARGUMENTS
-
 ---
 
 # ⚠️ EXECUTION CHECKLIST BEFORE RESPONDING ⚠️
+
+**Your FIRST line of output to the user must be:**
+
+```
+## Validated Gaps
+```
+
+**Do NOT write:**
+- "Accordion implementation gap analysis complete."
+- "Key gaps found:"
+- Any summary or introduction
+
+**START your response with Step 6.1 immediately.**
+
+---
 
 Before writing your response, verify you have completed these steps:
 
@@ -367,3 +363,11 @@ Your response must start with `## Validated Gaps` and contain:
 3. Summary statistics
 
 If you have written anything that looks like a summary (bullet points without evidence), you have NOT followed Step 6 correctly. Go back and execute Step 6.1 through 6.5.
+
+---
+
+# 🛑 STOP READING. START WRITING YOUR RESPONSE NOW. 🛑
+
+Execute Step 6.1 through 6.5 immediately.
+
+Your first line of output must be: `## Validated Gaps`
