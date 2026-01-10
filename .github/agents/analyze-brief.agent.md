@@ -189,11 +189,19 @@ Confidence Level:
 
 **Only gaps scoring 6+ proceed to final output.**
 
-#### STEP 6: Copy This Template and Fill It In
+#### STEP 6: Write Report to Temporary File
 
-**INSTRUCTIONS**: Copy the template below EXACTLY. Replace every [placeholder] with your analysis results. Do NOT write a summary instead.
+**INSTRUCTIONS**: You will write the complete gap analysis report to a temporary markdown file. Use the template below EXACTLY. Replace every [placeholder] with your analysis results.
+
+**File path**: `gap-analysis-report.md` (temporary file in current directory)
+
+**Action**: Use the Write tool to create this file with the content below (with [placeholders] filled in).
 
 ---
+
+**Template for gap-analysis-report.md:**
+
+```markdown
 
 ## Validated Gaps
 
@@ -241,6 +249,15 @@ None - all identified gaps passed validation.
 ---
 
 **END OF REPORT. DO NOT ADD ANYTHING AFTER THIS LINE.**
+```
+
+---
+
+**After writing the file, tell the user:**
+
+"✅ Gap analysis complete. Report saved to `gap-analysis-report.md`
+
+Please review the validated gaps with full evidence, validation scores, and priority justifications."
 
 ---
 
@@ -266,37 +283,42 @@ None - all identified gaps passed validation.
 
 ## Output Requirements (CRITICAL)
 
-After completing Steps 0-5, go to STEP 6 and **COPY THE TEMPLATE**.
+After completing Steps 0-5, go to STEP 6 and **WRITE THE REPORT TO A FILE**.
 
-**STEP 6 is a fill-in-the-blanks template**. Do NOT write a summary. Copy the template and replace every [placeholder] with your data.
+**STEP 6 is a file-writing operation**. Use the Write tool to create `gap-analysis-report.md` with the template (all [placeholders] replaced with your data).
+
+Do NOT output the report content to the user directly - write it to the file first, then tell the user where to find it.
 
 ---
 
 # ⚠️ EXECUTION CHECKLIST BEFORE RESPONDING ⚠️
 
-**Your response to the user MUST be the filled-in template from STEP 6.**
+**Your workflow:**
+1. Complete Steps 0-5 (analysis)
+2. Use Write tool to create `gap-analysis-report.md` with the filled-in template
+3. Tell user: "✅ Gap analysis complete. Report saved to `gap-analysis-report.md`"
 
-**Do NOT write:**
-- ❌ "Accordion implementation gap analysis complete."
-- ❌ "10 validated gaps found:"
-- ❌ "Key gaps: rename multiExpandable, add methods"
-- ❌ Any bullet-point summary
+**Do NOT write a summary to the user.** Write the full report to the file, then just tell them where to find it.
 
-**DO write:**
-- ✅ Copy the entire template from STEP 6
-- ✅ Replace every [placeholder] with your data
-- ✅ Include ALL gaps (not just a list of titles)
-- ✅ Start with `## Validated Gaps` (first line)
-- ✅ End with `**END OF REPORT**` (last line)
+**Do NOT output:**
+- ❌ "Accordion implementation gap analysis complete. 10 validated gaps found..."
+- ❌ Bullet-point summary of gaps
+- ❌ Any text other than "Report saved to gap-analysis-report.md"
+
+**DO output:**
+- ✅ Use Write tool with file path `gap-analysis-report.md`
+- ✅ File content = template with ALL [placeholders] filled in
+- ✅ Then tell user where to find the report
 
 ---
 
 Checklist (verify before responding):
 
 - [ ] Completed Steps 0-5 (loaded files, extracted requirements, checked implementation, scored gaps)
-- [ ] Copied the STEP 6 template in full
-- [ ] Filled in ALL [placeholders] for EVERY gap scoring 6+
-- [ ] Did NOT write a summary instead of the template
+- [ ] Called Write tool to create `gap-analysis-report.md`
+- [ ] File contains the COMPLETE template with ALL [placeholders] filled in for EVERY gap
+- [ ] File contains ALL gaps (not just a list of titles)
+- [ ] Told user "Report saved to gap-analysis-report.md"
 
 ---
 
@@ -316,9 +338,9 @@ These are summaries. Step 6 requires writing the full structured report with evi
 
 ---
 
-## ✅ REQUIRED OUTPUT STRUCTURE
+## ✅ REQUIRED FILE STRUCTURE
 
-Your response must be the STEP 6 template with all [placeholders] filled in.
+The file `gap-analysis-report.md` must contain:
 
 **Required sections** (in this order):
 1. `## Validated Gaps` - with GAP-1, GAP-2, etc. sections (each with Evidence, Validation Score, Priority, Fix)
@@ -326,16 +348,17 @@ Your response must be the STEP 6 template with all [placeholders] filled in.
 3. `## Summary` - statistics with bullet points
 4. `**END OF REPORT**` - final line
 
-**If you wrote "10 validated gaps found" or any bullet list without Evidence sections, you did it WRONG.**
+**If the file contains "10 validated gaps found" or any bullet list without Evidence sections, you did it WRONG.**
 
-Go back to STEP 6 and copy the template.
+Go back to STEP 6, use Write tool, and put the full template in the file.
 
 ---
 
-# 🛑 STOP READING. START WRITING YOUR RESPONSE NOW. 🛑
+# 🛑 STOP READING. EXECUTE STEP 6 NOW. 🛑
 
-Go to STEP 6. Copy the template. Fill in every [placeholder].
+1. Go to STEP 6
+2. Use Write tool to create `gap-analysis-report.md`
+3. File content = template with ALL [placeholders] filled in
+4. Tell user: "✅ Gap analysis complete. Report saved to `gap-analysis-report.md`"
 
-Your first line of output must be: `## Validated Gaps`
-
-Your last line of output must be: `**END OF REPORT. DO NOT ADD ANYTHING AFTER THIS LINE.**`
+**Do NOT output the report content to the user. Write it to the file.**
