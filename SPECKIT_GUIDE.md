@@ -133,6 +133,87 @@ gh copilot slash analyze-gaps
 **Manual alternative** (if slash command unavailable):
 Copy instructions from `.github/agents/analyze-gaps.agent.md` and run manually
 
+3. **Sonnet 4.5 implement (execute gap fixes):**
+
+Use the new slash command to systematically implement gap fixes from REMEDIATION_CHECKLIST.md:
+
+**Claude Code**:
+```bash
+/implement-gap-remediations
+```
+
+**GitHub Copilot**:
+```bash
+gh copilot slash implement-gap-remediations
+```
+
+**What it does**:
+1. Reads REMEDIATION_CHECKLIST.md and GAPS_REMEDIATION.md
+2. Asks user for scope (P0 only / P0+P1 / P0+P1+P2 / specific gaps)
+3. Creates TODO list with TodoWrite (visible progress tracking)
+4. Executes each gap systematically:
+   - Applies exact code changes from checklist
+   - Runs tests after every modification
+   - Stops immediately on test failures
+   - Updates progress in real-time
+5. Verifies with full test suite (test + lint + build)
+6. Updates GAPS_REMEDIATION.md (status → ✅ FIXED)
+7. Updates REMEDIATION_CHECKLIST.md (completion notes)
+8. Updates CHANGELOG.md (if breaking changes)
+9. Creates git commits (one per priority level, conventional format)
+
+**Example workflow** (accordion P0 gaps):
+```
+User selects: P0 only (BLOCKING) - 32 min
+
+Agent executes:
+✅ GAP-3: Rename multiExpandable → multiExpand (2 min)
+  - Updates 4 files with exact replacements
+  - Runs tests ✅
+  - Documents breaking change in CHANGELOG.md
+
+✅ GAP-1: Add Foundation API methods (10 min)
+  - Adds down(), up(), toggle() to accordion-item-def.ts
+  - Adds JSDoc comments
+  - Adds unit tests ✅
+
+✅ GAP-2: Add Foundation API outputs (20 min)
+  - Adds (down), (up) outputs to accordion.component.ts
+  - Emits events in expansion effect
+  - Adds unit tests ✅
+
+Final verification:
+✅ All tests passing
+✅ Linting clean
+✅ Build successful
+
+Updates:
+✅ GAPS_REMEDIATION.md (3 gaps marked FIXED)
+✅ REMEDIATION_CHECKLIST.md (completion notes)
+✅ CHANGELOG.md (breaking change documented)
+
+Commits:
+✅ 1 commit: "fix(accordion): resolve P0 gaps - Foundation API parity"
+
+Result: 3 gaps fixed in 32 minutes (100% accuracy)
+```
+
+**Key features**:
+- **Test-gated**: Stops immediately if any test fails
+- **Progress tracking**: TodoWrite shows real-time progress
+- **Incremental commits**: One commit per priority level
+- **Breaking change handling**: Asks confirmation, updates CHANGELOG.md
+- **Verification rigorous**: Tests after every code change
+
+**Best for**:
+- P0/P1 gaps with exact code snippets in checklist
+- Non-breaking additions (GAP-1, GAP-2)
+- When speed + verification matter
+- Systematic implementation with progress visibility
+
+**Manual alternative** (if slash command unavailable):
+Copy instructions from `.github/agents/implement-gap-remediations.agent.md` and execute manually, or follow REMEDIATION_CHECKLIST.md step-by-step
+
 **Example: Budget-Conscious Implementation (cheap model → capable model when needed) (`/speckit.implement`)**
 
 Use a cheap model for mechanical execution, escalating to a more capable model only when hitting blockers:
