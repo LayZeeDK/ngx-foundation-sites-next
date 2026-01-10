@@ -28,6 +28,8 @@ Generate a high-accuracy implementation gap analysis by following a structured 6
 
 ## Execution Steps
 
+**IMPORTANT**: After completing all steps below, you MUST output the complete structured report to the user as specified in STEP 6. Do NOT output only a summary. The detailed gap analysis IS your response.
+
 ### 0. Initialize Analysis Context
 
 Run `./.specify/scripts/powershell/check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks` once from repo root and parse JSON for FEATURE_DIR and AVAILABLE_DOCS. Derive absolute paths:
@@ -187,32 +189,53 @@ Confidence Level:
 
 **Only gaps scoring 6+ proceed to final output.**
 
-#### STEP 6: Final Output
+#### STEP 6: Generate Complete Report and Output to User
 
-### Validated Gaps (passed Step 4 checks + scored 6+)
+**YOU MUST OUTPUT THE FOLLOWING SECTIONS TO THE USER IN YOUR RESPONSE:**
 
-[List only gaps that passed ALL Step 4 checks AND scored 6+ in validation rubric]
+---
 
-**For each gap, include:**
+## Validated Gaps
 
-- Gap title + one-sentence description
-- Evidence section (spec line, tasks reference, search results)
-- Validation score [X]/10
-- Priority justification
-- Smallest fix (1-2 sentences)
+[For EACH gap that passed Step 4 checks AND scored 6+, output in this format:]
 
-### False Positives Removed (failed Step 4 checks or scored <6)
+### GAP-[N]: [Title]
 
-[List gaps removed + which check failed or why score was too low]
+**Evidence:**
+- **Spec**: FR-XXX at spec.md:LINE with "exact quote from spec"
+- **Tasks**: T-XXX at tasks.md:LINE with "exact task description"
+- **Search**: Keywords [keyword1, keyword2, keyword3] searched in:
+  - File 1 (line X): [result]
+  - File 2 (line Y): [result]
+  - File 3: NOT FOUND
+- **Contracts**: [YES/NO - what was checked]
 
-### Summary
+**Validation Score**: [X]/10 (HIGH/MEDIUM confidence)
 
-- Total requirements scanned: [N]
-- Filtered in Step 0: [N documentation/manual test]
-- Gaps claimed: [N]
-- Gaps validated (score 6+): [N]
-- False positives removed: [N]
-- Accuracy: [validated gaps / claimed gaps] = [X]%
+**Priority**: P0/P1/P2 - [justification for priority level]
+
+**Fix**: [1-2 sentences describing the smallest code change needed]
+
+---
+
+## False Positives Removed
+
+[List each gap that failed validation, with reason:]
+
+- **GAP-[N]**: [Title] - Failed because: [which Step 4 check failed OR validation score < 6]
+
+---
+
+## Summary
+
+- **Total requirements scanned**: [N]
+- **Filtered in Step 0**: [N documentation/manual test requirements]
+- **Gaps initially identified**: [N]
+- **Gaps validated (score 6+)**: [N]
+- **False positives removed**: [N]
+- **Accuracy rate**: [validated gaps / initially identified gaps] = [X]%
+
+---
 
 ---
 
@@ -236,24 +259,27 @@ Confidence Level:
 
 ---
 
-## Output Requirements
+## Output Requirements (CRITICAL)
 
-**CRITICAL**: You MUST output the complete gap analysis in your response. Do NOT just provide a summary - output the full structured report as specified in STEP 6.
+### ❌ DO NOT DO THIS:
+- ❌ Do NOT output only a bullet-point summary like "Key gaps: rename multiExpandable, add methods"
+- ❌ Do NOT say "analysis complete" without showing the analysis
+- ❌ Do NOT save to a file or ask user to review elsewhere
+- ❌ Do NOT provide a condensed summary that omits evidence, validation scores, or priority justifications
 
-Your response MUST include:
+### ✅ YOU MUST DO THIS:
+- ✅ Output the COMPLETE structured report exactly as specified in STEP 6
+- ✅ Include ALL sections: "Validated Gaps", "False Positives Removed", "Summary"
+- ✅ For EACH validated gap, include:
+  - Gap title (GAP-N format)
+  - Complete evidence section (spec line, tasks reference, search results, contracts check)
+  - Validation score X/10 with confidence level
+  - Priority (P0/P1/P2) with justification
+  - Smallest fix (1-2 sentences)
+- ✅ Use markdown formatting (headers, bold, bullet lists) for readability
+- ✅ Output this directly in your response to the user - they need to read it immediately
 
-1. **Complete "Validated Gaps" section** with ALL details from STEP 6:
-   - Gap title + one-sentence description
-   - Evidence section (spec line, tasks reference, search results)
-   - Validation score [X]/10
-   - Priority justification
-   - Smallest fix (1-2 sentences)
-
-2. **"False Positives Removed" section** listing gaps that failed validation
-
-3. **"Summary" section** with statistics (requirements scanned, gaps found, accuracy)
-
-**Format**: Use markdown headers, bullet lists, and code blocks for readability. The user needs the full analysis output to review gaps immediately.
+**Why this matters**: The user invoked this command to SEE the detailed gap analysis, not to be told it exists. Your response IS the deliverable.
 
 ## Optional Follow-up
 
