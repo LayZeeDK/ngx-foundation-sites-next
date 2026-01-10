@@ -299,3 +299,53 @@ Deliver:
 ## Context
 
 $ARGUMENTS
+
+---
+
+# ⚠️ FINAL REMINDER BEFORE YOU RESPOND ⚠️
+
+**Your response to the user MUST be the complete gap analysis report, NOT a summary.**
+
+## What Your Response Should Look Like:
+
+```markdown
+## Validated Gaps
+
+### GAP-1: Input naming: multiExpandable → multiExpand
+
+**Evidence:**
+- **Spec**: FR-042 at spec.md:234 with "Input naming MUST match Foundation's data-* attribute names"
+- **Tasks**: T-196 at tasks.md:45 with "Rename multiExpandable input to multiExpand"
+- **Search**: Keywords [multiExpandable, multiExpand, input] searched in:
+  - accordion.ts (line 51): Found `readonly multiExpandable = input(false);`
+  - contracts/accordion-api.ts (line 66): Found `readonly multiExpand: InputSignal<boolean>`
+- **Contracts**: YES - accordion-api.ts line 66 shows contract expects multiExpand
+
+**Validation Score**: 10/10 (HIGH confidence)
+
+**Priority**: P0 - Breaking API change required for Foundation parity
+
+**Fix**: Rename the input signal from `multiExpandable` to `multiExpand` in accordion.ts line 51.
+
+---
+
+### GAP-2: [Next gap with same structure]
+
+...
+```
+
+## What Your Response Should NOT Look Like:
+
+```markdown
+❌ Accordion implementation gap analysis complete.
+   8 validated gaps found:
+     - 3 P0 (API parity: input naming, missing methods)
+     - 4 P1 (ARIA/diagnostics)
+   Ready for targeted fixes—let me know which gap(s) to address first.
+```
+
+**THIS IS A SUMMARY. DO NOT OUTPUT SUMMARIES. OUTPUT THE FULL REPORT.**
+
+---
+
+**NOW GENERATE YOUR RESPONSE WITH THE FULL STRUCTURED REPORT AS SHOWN IN THE EXAMPLE ABOVE.**
