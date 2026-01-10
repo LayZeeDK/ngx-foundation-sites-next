@@ -38,8 +38,84 @@ Run `./.specify/scripts/powershell/check-prerequisites.ps1 -Json -RequireTasks -
 - PLAN = FEATURE_DIR/plan.md
 - TASKS = FEATURE_DIR/tasks.md
 - CONTRACTS = FEATURE_DIR/contracts/ (if exists)
+- GAPS_REMEDIATION = FEATURE_DIR/GAPS_REMEDIATION.md (if exists)
+- REMEDIATION_CHECKLIST = FEATURE_DIR/REMEDIATION_CHECKLIST.md (if exists)
 
 Abort with an error message if spec.md, plan.md, or tasks.md are missing.
+
+### 0.5. Load Existing Remediation Documents (MANDATORY)
+
+**Purpose**: Check for existing gap tracking documents to avoid re-flagging known gaps.
+
+**Step 0.5.1**: Check if GAPS_REMEDIATION.md exists
+
+```bash
+# Check if file exists
+ls FEATURE_DIR/GAPS_REMEDIATION.md
+```
+
+- If **file exists**: Proceed to Step 0.5.2
+- If **file does NOT exist**: Skip to Step 1 (no known gaps to skip)
+
+**Step 0.5.2**: Load Known Gaps Registry
+
+If GAPS_REMEDIATION.md exists, extract all documented gaps and create a registry:
+
+```
+For each section starting with "### GAP-":
+1. Extract Gap ID: GAP-N (where N is a number)
+2. Extract Gap Title: The text after "GAP-N: "
+3. Extract Status: Line starting with "**Status**: "
+4. Extract Evidence keywords: Extract all keywords mentioned in "**Evidence**" section
+
+Create registry entry:
+{
+  id: "GAP-N",
+  title: "[extracted title]",
+  status: "[NOT IMPLEMENTED | PARTIAL | TRACKED AS T###]",
+  keywords: ["keyword1", "keyword2", "keyword3"]
+}
+```
+
+**Example extraction:**
+```markdown
+### GAP-1: Foundation API Methods Missing on Item
+
+**Status**: NOT IMPLEMENTED
+**Evidence**:
+- **Spec**: FR-075 at spec.md:530
+- **Tasks**: T140-T142 at tasks.md:477-479
+```
+
+**Registry entry:**
+```
+{
+  id: "GAP-1",
+  title: "Foundation API Methods Missing on Item",
+  status: "NOT IMPLEMENTED",
+  keywords: ["down()", "up()", "toggle()", "methods", "NfsAccordionItemDef"]
+}
+```
+
+**Step 0.5.3**: Create Known Gaps List
+
+Store all extracted gap IDs for quick lookup:
+```
+KNOWN_GAPS = ["GAP-1", "GAP-2", "GAP-3", ...]
+```
+
+**Step 0.5.4**: Output Confirmation
+
+Tell user how many known gaps were loaded:
+```
+✅ Loaded [N] known gaps from GAPS_REMEDIATION.md
+   Will skip these during analysis to avoid re-flagging.
+```
+
+If no remediation doc exists:
+```
+ℹ️  No GAPS_REMEDIATION.md found - this is a first-time analysis.
+```
 
 ### 1. Load Artifacts
 
@@ -130,6 +206,30 @@ If requirement mentions "lifecycle" / "@defer" / "retention":
 
 **CRITICAL EVIDENCE REQUIREMENT**: Each gap MUST have exact spec location + exact search results.
 
+**BEFORE adding each gap to the list, check against known gaps registry from Step 0.5:**
+
+```
+For each potential gap:
+
+1. Extract gap keywords from your search (e.g., "down()", "up()", "multiExpand")
+
+2. Check if it matches a known gap:
+
+   FOR EACH entry in KNOWN_GAPS registry:
+     IF (gap keywords match ≥50% of known gap keywords)
+     OR (gap title is ≥70% similar to known gap title):
+       → SKIP THIS GAP
+       → Add to "Skipped Known Gaps" section (see below)
+       → Do NOT add to new gaps list
+       → Continue to next potential gap
+
+3. If NO match found in KNOWN_GAPS:
+   → This is a NEW gap
+   → Add to new gaps list with full evidence (below)
+```
+
+**For NEW gaps (not in known gaps registry):**
+
 ```
 GAP-[N]: [REQ-ID] - [one sentence]
 Evidence:
@@ -143,7 +243,16 @@ Evidence:
 Fix: [1-2 sentence description of smallest fix]
 ```
 
-**Maximum 10 gaps** (highest priority first).
+**For KNOWN gaps (matched in registry):**
+
+Add to separate section:
+```
+SKIPPED: [known gap title]
+Reason: Already documented in GAPS_REMEDIATION.md as [GAP-ID]
+Status: [status from registry]
+```
+
+**Maximum 10 NEW gaps** (highest priority first).
 
 #### STEP 4: Anti-False-Positive Check (BLOCKING)
 
@@ -203,7 +312,22 @@ Confidence Level:
 
 ```markdown
 
-## Validated Gaps
+## Analysis Mode
+
+[If GAPS_REMEDIATION.md was found in Step 0.5:]
+**⚠️ INCREMENTAL ANALYSIS MODE**: Existing gap remediation document found. This analysis will only report NEW gaps not already tracked in `GAPS_REMEDIATION.md`.
+
+**Known gaps loaded**: [N] gaps from GAPS_REMEDIATION.md
+**Purpose**: Avoid re-flagging documented gaps that are already being tracked/fixed.
+
+[If no GAPS_REMEDIATION.md found:]
+**FIRST-TIME ANALYSIS MODE**: No existing gap remediation document found. This is a complete gap analysis.
+
+---
+
+## Validated Gaps (NEW)
+
+[If NEW gaps found:]
 
 ### GAP-1: [Write the gap title here]
 
@@ -223,7 +347,27 @@ Confidence Level:
 
 ---
 
-[Copy the gap structure above for GAP-2, GAP-3, etc. - one section per gap scoring 6+]
+[Copy the gap structure above for GAP-2, GAP-3, etc. - one section per NEW gap scoring 6+]
+
+[If NO new gaps found:]
+✅ **No new gaps detected.** All identified issues are already documented in GAPS_REMEDIATION.md.
+
+---
+
+## Skipped Known Gaps
+
+[If gaps were skipped because they matched KNOWN_GAPS registry:]
+
+The following gaps were detected but SKIPPED because they are already documented in `GAPS_REMEDIATION.md`:
+
+1. **[Gap title]** - Already tracked as GAP-[N] (Status: [status from registry])
+2. **[Gap title]** - Already tracked as GAP-[N] (Status: [status from registry])
+[etc.]
+
+**Reference**: See `GAPS_REMEDIATION.md` for details on these known gaps and their remediation status.
+
+[If no gaps were skipped:]
+None - all detected gaps are new.
 
 ---
 
@@ -241,10 +385,12 @@ None - all identified gaps passed validation.
 
 - **Total requirements scanned**: [number]
 - **Filtered in Step 0**: [number] documentation/manual test requirements
+- **Known gaps loaded** (Step 0.5): [number from GAPS_REMEDIATION.md OR 0 if no doc exists]
 - **Gaps initially identified**: [number]
-- **Gaps validated (score 6+)**: [number]
+- **Skipped known gaps**: [number matched in registry]
+- **NEW gaps validated (score 6+)**: [number]
 - **False positives removed**: [number]
-- **Accuracy rate**: [validated / identified] = [percentage]%
+- **Accuracy rate**: [validated / (identified - skipped)] = [percentage]%
 
 ---
 
@@ -255,7 +401,23 @@ None - all identified gaps passed validation.
 
 **After writing the file, tell the user:**
 
+[If GAPS_REMEDIATION.md existed (incremental mode):]
+"✅ Incremental gap analysis complete. Report saved to `gap-analysis-report.md`
+
+**Mode**: Incremental (loaded [N] known gaps from GAPS_REMEDIATION.md)
+**Result**: [X] NEW gaps found, [Y] known gaps skipped
+
+[If X > 0:]
+Please review the NEW gaps - existing gaps are already tracked in GAPS_REMEDIATION.md.
+
+[If X = 0:]
+✅ No new gaps detected! All identified issues are already documented in GAPS_REMEDIATION.md."
+
+[If no GAPS_REMEDIATION.md (first-time mode):]
 "✅ Gap analysis complete. Report saved to `gap-analysis-report.md`
+
+**Mode**: First-time analysis
+**Result**: [X] gaps validated
 
 Please review the validated gaps with full evidence, validation scores, and priority justifications."
 
@@ -294,11 +456,15 @@ Do NOT output the report content to the user directly - write it to the file fir
 # ⚠️ EXECUTION CHECKLIST BEFORE RESPONDING ⚠️
 
 **Your workflow:**
-1. Complete Steps 0-5 (analysis)
-2. Use Write tool to create `gap-analysis-report.md` with the filled-in template
-3. Tell user: "✅ Gap analysis complete. Report saved to `gap-analysis-report.md`"
+1. Complete Step 0 (Initialize - load paths)
+2. Complete Step 0.5 (Load existing GAPS_REMEDIATION.md if exists, create KNOWN_GAPS registry)
+3. Complete Steps 1-5 (Analysis - check each gap against KNOWN_GAPS registry in Step 3)
+4. Use Write tool to create `gap-analysis-report.md` with the filled-in template
+5. Tell user based on mode (incremental vs first-time) and results (new gaps vs no new gaps)
 
-**Do NOT write a summary to the user.** Write the full report to the file, then just tell them where to find it.
+**CRITICAL for Step 3**: Before adding each gap, check if it matches KNOWN_GAPS registry. If match found, add to "Skipped Known Gaps" section instead of "Validated Gaps (NEW)" section.
+
+**Do NOT write a summary to the user.** Write the full report to the file, then tell them the mode and counts.
 
 **Do NOT output:**
 - ❌ "Accordion implementation gap analysis complete. 10 validated gaps found..."
@@ -314,11 +480,16 @@ Do NOT output the report content to the user directly - write it to the file fir
 
 Checklist (verify before responding):
 
-- [ ] Completed Steps 0-5 (loaded files, extracted requirements, checked implementation, scored gaps)
+- [ ] Completed Step 0 (loaded artifact paths)
+- [ ] Completed Step 0.5 (checked for GAPS_REMEDIATION.md, created KNOWN_GAPS registry if exists)
+- [ ] Completed Steps 1-5 (extracted requirements, checked against KNOWN_GAPS, scored NEW gaps only)
+- [ ] Checked each gap in Step 3 against KNOWN_GAPS registry (skipped matches)
 - [ ] Called Write tool to create `gap-analysis-report.md`
-- [ ] File contains the COMPLETE template with ALL [placeholders] filled in for EVERY gap
-- [ ] File contains ALL gaps (not just a list of titles)
-- [ ] Told user "Report saved to gap-analysis-report.md"
+- [ ] File contains the COMPLETE template with ALL [placeholders] filled in
+- [ ] File has "Analysis Mode" section (INCREMENTAL or FIRST-TIME)
+- [ ] File has "Skipped Known Gaps" section (with list of matched gaps OR "None")
+- [ ] File has "Validated Gaps (NEW)" section (with NEW gaps only OR "No new gaps detected")
+- [ ] Told user correct mode (incremental vs first-time) and counts
 
 ---
 
