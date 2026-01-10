@@ -1,3 +1,0 @@
----
-agent: tasks-haiku
----

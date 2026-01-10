@@ -9,7 +9,7 @@ handoffs:
 ## Model Selection
 
 **Preferred Model**: Claude Haiku 4.5 (`claude-haiku-4.5`)  
-**Invoke with**: `gh copilot -m "claude-haiku-4.5" slash clarify-haiku`
+**Invoke with**: `gh copilot -m "claude-haiku-4.5" slash clarify-haiku-4-5`
 
 **Optimization Strategy**: Structured taxonomy scan, step-bounded reasoning, explicit question criteria  
 **Expected Performance**: 15-25 seconds for analysis + question generation, 0.33x cost vs Sonnet 4.5

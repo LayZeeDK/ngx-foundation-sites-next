@@ -14,7 +14,7 @@ handoffs:
 ## Model Selection
 
 **Preferred Model**: Claude Haiku 4.5 (`claude-haiku-4.5`)  
-**Invoke with**: `gh copilot -m "claude-haiku-4.5" slash tasks-haiku`
+**Invoke with**: `gh copilot -m "claude-haiku-4.5" slash tasks-haiku-4-5`
 
 **Optimization Strategy**: Mechanical transformations, pattern matching, structured output  
 **Expected Performance**: 10-20 seconds, 0.33x cost vs Sonnet 4.5
