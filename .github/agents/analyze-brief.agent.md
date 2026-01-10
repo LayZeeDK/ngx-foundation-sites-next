@@ -189,53 +189,89 @@ Confidence Level:
 
 **Only gaps scoring 6+ proceed to final output.**
 
-#### STEP 6: Generate Complete Report and Output to User
+#### STEP 6: Output Procedure (Follow Exactly)
 
-**YOU MUST OUTPUT THE FOLLOWING SECTIONS TO THE USER IN YOUR RESPONSE:**
+**DO NOT write any summary or introduction. Start immediately with Step 6.1.**
 
 ---
 
+**6.1 Write Section Header**
+
+Write this exact text to the user:
+
+```
 ## Validated Gaps
-
-[For EACH gap that passed Step 4 checks AND scored 6+, output in this format:]
-
-### GAP-[N]: [Title]
-
-**Evidence:**
-- **Spec**: FR-XXX at spec.md:LINE with "exact quote from spec"
-- **Tasks**: T-XXX at tasks.md:LINE with "exact task description"
-- **Search**: Keywords [keyword1, keyword2, keyword3] searched in:
-  - File 1 (line X): [result]
-  - File 2 (line Y): [result]
-  - File 3: NOT FOUND
-- **Contracts**: [YES/NO - what was checked]
-
-**Validation Score**: [X]/10 (HIGH/MEDIUM confidence)
-
-**Priority**: P0/P1/P2 - [justification for priority level]
-
-**Fix**: [1-2 sentences describing the smallest code change needed]
+```
 
 ---
 
+**6.2 For Each Gap That Scored 6+ (Iterate)**
+
+For gap number N (starting from 1), execute these sub-steps in order:
+
+1. Write: `### GAP-[N]: [gap title]`
+2. Write blank line
+3. Write: `**Evidence:**`
+4. Write: `- **Spec**: FR-XXX at spec.md:LINE with "exact quote"`
+5. Write: `- **Tasks**: T-XXX at tasks.md:LINE with "exact task description"`
+6. Write: `- **Search**: Keywords [keyword1, keyword2, keyword3] searched in:`
+7. For each file searched, write: `  - [filename] (line X): [result]`
+8. Write: `- **Contracts**: [YES/NO - what was checked]`
+9. Write blank line
+10. Write: `**Validation Score**: [X]/10 ([HIGH/MEDIUM] confidence)`
+11. Write blank line
+12. Write: `**Priority**: [P0/P1/P2] - [justification text]`
+13. Write blank line
+14. Write: `**Fix**: [1-2 sentence fix description]`
+15. Write blank line
+16. Write: `---`
+17. Write blank line
+
+Repeat for next gap.
+
+---
+
+**6.3 Write False Positives Section**
+
+Write this exact text:
+
+```
 ## False Positives Removed
+```
 
-[List each gap that failed validation, with reason:]
+For each gap that failed validation:
+1. Write: `- **GAP-[N]**: [Title] - Failed because: [reason]`
 
-- **GAP-[N]**: [Title] - Failed because: [which Step 4 check failed OR validation score < 6]
+If no false positives, write: `None - all identified gaps passed validation.`
+
+Write blank line, then: `---`
 
 ---
 
-## Summary
+**6.4 Write Summary Section**
 
+Write this exact text:
+
+```
+## Summary
+```
+
+Then write these lines (replace [N] with actual numbers):
+
+```
 - **Total requirements scanned**: [N]
 - **Filtered in Step 0**: [N documentation/manual test requirements]
 - **Gaps initially identified**: [N]
 - **Gaps validated (score 6+)**: [N]
 - **False positives removed**: [N]
-- **Accuracy rate**: [validated gaps / initially identified gaps] = [X]%
+- **Accuracy rate**: [validated / identified] = [X]%
+```
 
 ---
+
+**6.5 Stop**
+
+Do not write anything after the Summary section. Your response is complete.
 
 ---
 
@@ -261,25 +297,11 @@ Confidence Level:
 
 ## Output Requirements (CRITICAL)
 
-### ❌ DO NOT DO THIS:
-- ❌ Do NOT output only a bullet-point summary like "Key gaps: rename multiExpandable, add methods"
-- ❌ Do NOT say "analysis complete" without showing the analysis
-- ❌ Do NOT save to a file or ask user to review elsewhere
-- ❌ Do NOT provide a condensed summary that omits evidence, validation scores, or priority justifications
+After completing Steps 0-5, you MUST execute STEP 6 (Output Procedure).
 
-### ✅ YOU MUST DO THIS:
-- ✅ Output the COMPLETE structured report exactly as specified in STEP 6
-- ✅ Include ALL sections: "Validated Gaps", "False Positives Removed", "Summary"
-- ✅ For EACH validated gap, include:
-  - Gap title (GAP-N format)
-  - Complete evidence section (spec line, tasks reference, search results, contracts check)
-  - Validation score X/10 with confidence level
-  - Priority (P0/P1/P2) with justification
-  - Smallest fix (1-2 sentences)
-- ✅ Use markdown formatting (headers, bold, bullet lists) for readability
-- ✅ Output this directly in your response to the user - they need to read it immediately
+**STEP 6 is a series of WRITE actions**, not analysis. Do not skip any sub-step.
 
-**Why this matters**: The user invoked this command to SEE the detailed gap analysis, not to be told it exists. Your response IS the deliverable.
+Your response to the user is the text you write during Step 6.1 through 6.4. Nothing more, nothing less.
 
 ## Optional Follow-up
 
@@ -302,50 +324,46 @@ $ARGUMENTS
 
 ---
 
-# ⚠️ FINAL REMINDER BEFORE YOU RESPOND ⚠️
+# ⚠️ EXECUTION CHECKLIST BEFORE RESPONDING ⚠️
 
-**Your response to the user MUST be the complete gap analysis report, NOT a summary.**
+Before writing your response, verify you have completed these steps:
 
-## What Your Response Should Look Like:
-
-```markdown
-## Validated Gaps
-
-### GAP-1: Input naming: multiExpandable → multiExpand
-
-**Evidence:**
-- **Spec**: FR-042 at spec.md:234 with "Input naming MUST match Foundation's data-* attribute names"
-- **Tasks**: T-196 at tasks.md:45 with "Rename multiExpandable input to multiExpand"
-- **Search**: Keywords [multiExpandable, multiExpand, input] searched in:
-  - accordion.ts (line 51): Found `readonly multiExpandable = input(false);`
-  - contracts/accordion-api.ts (line 66): Found `readonly multiExpand: InputSignal<boolean>`
-- **Contracts**: YES - accordion-api.ts line 66 shows contract expects multiExpand
-
-**Validation Score**: 10/10 (HIGH confidence)
-
-**Priority**: P0 - Breaking API change required for Foundation parity
-
-**Fix**: Rename the input signal from `multiExpandable` to `multiExpand` in accordion.ts line 51.
+- [ ] Step 0: Loaded spec.md, plan.md, tasks.md, implementation files
+- [ ] Step 1: Extracted 15-20 CODE/TEST requirements
+- [ ] Step 2: Checked implementation for each requirement (intent check, framework delegation, code search)
+- [ ] Step 3: Created gap list with evidence
+- [ ] Step 4: Ran anti-false-positive checks on each gap
+- [ ] Step 5: Scored each gap (0-10 scale)
+- [ ] **Step 6.1**: Written `## Validated Gaps` header
+- [ ] **Step 6.2**: For each gap scoring 6+, written ALL 17 sub-steps (title, evidence, validation score, priority, fix, separator)
+- [ ] **Step 6.3**: Written `## False Positives Removed` section
+- [ ] **Step 6.4**: Written `## Summary` section with statistics
+- [ ] **Step 6.5**: Stopped (no summary text after Summary section)
 
 ---
 
-### GAP-2: [Next gap with same structure]
+## ❌ FORBIDDEN OUTPUT PATTERNS
 
-...
+Do NOT write these patterns:
+
+```
+❌ "Accordion implementation gap analysis complete."
+❌ "8 validated gaps found:"
+❌ "Key gaps: rename multiExpandable, add methods"
+❌ "Ready for targeted fixes—let me know which gap(s) to address first."
+❌ "- 3 P0 (API parity: input naming, missing methods)"
 ```
 
-## What Your Response Should NOT Look Like:
-
-```markdown
-❌ Accordion implementation gap analysis complete.
-   8 validated gaps found:
-     - 3 P0 (API parity: input naming, missing methods)
-     - 4 P1 (ARIA/diagnostics)
-   Ready for targeted fixes—let me know which gap(s) to address first.
-```
-
-**THIS IS A SUMMARY. DO NOT OUTPUT SUMMARIES. OUTPUT THE FULL REPORT.**
+These are summaries. Step 6 requires writing the full structured report with evidence for each gap.
 
 ---
 
-**NOW GENERATE YOUR RESPONSE WITH THE FULL STRUCTURED REPORT AS SHOWN IN THE EXAMPLE ABOVE.**
+## ✅ REQUIRED OUTPUT STRUCTURE
+
+Your response must start with `## Validated Gaps` and contain:
+
+1. For each validated gap: title, evidence (spec line, tasks, search results, contracts), validation score, priority, fix
+2. False positives section
+3. Summary statistics
+
+If you have written anything that looks like a summary (bullet points without evidence), you have NOT followed Step 6 correctly. Go back and execute Step 6.1 through 6.5.
