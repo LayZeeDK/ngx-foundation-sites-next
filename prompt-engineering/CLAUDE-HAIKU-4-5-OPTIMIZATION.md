@@ -138,7 +138,7 @@ Objectives:
 
 Constraints:
 - No greetings or sign-offs
-- No speculation on未知 factors
+- No speculation on unknown factors
 - Assume audience is senior developer
 ```
 
