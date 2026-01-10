@@ -6,9 +6,9 @@ This directory contains research-backed optimization strategies for AI models us
 
 ## 📚 Available Guides
 
-### [Claude 4.5 (Sonnet & Haiku) Optimization Guide](./CLAUDE-4-5-OPTIMIZATION.md)
+### [Claude 4.5 Sonnet Optimization Guide](./CLAUDE-4-5-OPTIMIZATION.md)
 
-**Models**: Claude Sonnet 4.5 (1M context) & Haiku 4.5 (500K context, 2x speed, 3x savings)
+**Model**: Claude Sonnet 4.5 (1M context)
 
 **10 Key Optimizations**:
 1. **Structured Prompting with XML** - `<role>`, `<task>`, `<constraints>`, `<output_format>`
@@ -18,15 +18,46 @@ This directory contains research-backed optimization strategies for AI models us
 5. **Context Management** - Token budget awareness, context editing (29% improvement)
 6. **Agentic Workflows** - Research → action → verify → repeat pattern
 7. **Tool Use Optimization** - Treat tool definitions like prompts
-8. **Haiku-Specific** - Short prompts, checklists, explicit constraints
-9. **Chain-of-Thought** - Prefilling, multishot examples
-10. **Memory & Sessions** - memory.md for continuity, /clear for fresh starts
+8. **Chain-of-Thought** - Prefilling, multishot examples
+9. **Memory & Sessions** - memory.md for continuity, /clear for fresh starts
+10. **Model Selection** - Right model for the task (Sonnet vs Haiku vs Opus)
 
-**Best for**:
-- Sonnet 4.5: Complex reasoning, code implementation, agentic workflows
-- Haiku 4.5: Fast iteration, 90% of Sonnet's performance at 3x cost savings
+**Best for**: Complex reasoning, code implementation, agentic workflows requiring deep analysis
 
 **Commands**: All SpecKit commands, Claude Code workflows
+
+---
+
+### [Claude Haiku 4.5 Optimization Guide](./CLAUDE-HAIKU-4-5-OPTIMIZATION.md)
+
+**Model**: Claude Haiku 4.5 (200K context, 2-3x speed, 66% cost savings vs Sonnet)
+
+**9 Key Optimizations**:
+1. **Explicit Structured Instructions** - Clear boundaries, specific formats, minimal ambiguity
+2. **Step-Bounded Reasoning** - 3-5 steps max, prevents runaway verbosity
+3. **Checklists Over Open-Ended** - Verifiable, repeatable, structured outputs
+4. **Role & Objective Specification** - System prompts with constraints and anti-goals
+5. **Context & Motivation** - Explain *why* constraints exist for better adherence
+6. **High-Quality Examples** - Aligned examples reproduce desired behavior
+7. **Meta-Prompting** - Iterative improvement through feedback loops
+8. **Structured Tagging** - XML/JSON for clear information hierarchy
+9. **Clear Evaluation Criteria** - Explicit success bar and anti-goals
+
+**Speed & Cost Optimizations**:
+- Multi-agent orchestration (parallel subtasks)
+- Optimized input length (send only relevant code)
+- Streamlined output (minimal viable responses)
+- Hybrid model approach (Haiku for bulk, Sonnet for complexity)
+- Context window management (lean context = lower cost)
+
+**Agentic Workflows**:
+- Sub-agent orchestration (central planner delegates to Haiku workers)
+- Tool calling optimization (clear definitions, context budget tracking)
+- Hybrid architectures (Sonnet planning, Haiku execution)
+
+**Best for**: Fast iteration, high-volume tasks, parallel agentic workflows, real-time applications
+
+**Commands**: Gap analysis, task generation, code reviews, customer support
 
 ---
 
@@ -79,10 +110,10 @@ IF total_tokens < 180K:
   - GPT-5 Mini: 10-20 sec, 0x cost, 85-95% quality
   - Haiku 4.5: 15-25 sec, 0.33x cost, 90% of Sonnet performance
 
-ELSE IF total_tokens < 500K:
+ELSE IF total_tokens < 200K:
   ✅ USE GPT-4.1 OR Haiku 4.5
   - GPT-4.1: 30-60 sec, 0x cost, 1M context
-  - Haiku 4.5: 20-35 sec, 0.33x cost, 500K context
+  - Haiku 4.5: 20-35 sec, 0.33x cost, 200K context limit
 
 ELSE IF total_tokens < 1M:
   ✅ USE GPT-4.1 OR Sonnet 4.5
@@ -155,7 +186,7 @@ ELSE:
 | Model | Time | Cost | Quality | Context Limit |
 |-------|------|------|---------|---------------|
 | **GPT-5 Mini** | ❌ Context overflow | — | — | 200K |
-| **Haiku 4.5** (optimized) | 30-50s | 0.33x | 90% of Sonnet | 500K |
+| **Haiku 4.5** | ❌ Context overflow | — | — | 200K |
 | **GPT-4.1** (optimized) | 45-90s | 0x | Good | 1M |
 | **GPT-4.1** (+ progressive disclosure) | 60-120s | 0x | Excellent | 1M |
 | **Sonnet 4.5** (1M context) | 30-60s | 1x | Best | 1M (beta) |
@@ -163,7 +194,6 @@ ELSE:
 **Winner for large features**:
 - Free option: GPT-4.1 (only free 1M context in Copilot)
 - Best performance: Sonnet 4.5 (extended thinking + 1M context)
-- Best value: Haiku 4.5 (90% performance at 0.33x cost for <500K)
 
 ---
 
