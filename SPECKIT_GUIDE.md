@@ -59,6 +59,42 @@ Use one simple rule: **pick the model based on the job** (reasoning vs. speed vs
 | `/speckit.checklist` | Haiku 4.5                          | Haiku 4.5                                      |
 | `/speckit.tasks`     | Haiku 4.5                          | Haiku 4.5 or GPT-5.1-Codex-Mini                |
 | `/speckit.analyze`   | Sonnet 4.5                         | GPT-4.1 (summarize) → Sonnet 4.5               |
+
+### Ultra-Budget Approach (Zero-Cost Where Possible)
+
+**New**: `/tasks-gpt-5-mini` command optimized for GPT-5 Mini's fast inference
+
+| Spec Kit command     | Claude Code                        | GitHub Copilot CLI                             | Cost Savings |
+| -------------------- | ---------------------------------- | ---------------------------------------------- | ------------ |
+| `/speckit.specify`   | Haiku 4.5                          | Haiku 4.5                                      | 0.33x        |
+| `/speckit.clarify`   | Haiku 4.5                          | Haiku 4.5                                      | 0.33x        |
+| `/speckit.plan`      | Sonnet 4.5                         | Sonnet 4.5                                     | 1x           |
+| `/speckit.checklist` | Haiku 4.5                          | Haiku 4.5                                      | 0.33x        |
+| `/speckit.tasks`     | Haiku 4.5                          | **GPT-5 mini** (`/tasks-gpt-5-mini`) ⭐         | **0x** ✅     |
+| `/speckit.analyze`   | Sonnet 4.5                         | GPT-4.1 → Sonnet 4.5                           | 0x → 1x      |
+| `/analyze-brief`     | —                                  | **GPT-5 mini** (small features) or GPT-4.1     | **0x** ✅     |
+
+**GPT-5 mini advantages**:
+- ✅ **Zero cost** (0x multiplier)
+- ✅ **Fast inference** (kernel fusion, tensor parallelism)
+- ✅ **200K context** (same as Haiku 4.5)
+- ✅ **Structured prompts** (CTCO framework, XML scaffolding)
+
+**GPT-5 mini limitations**:
+- ⚠️ **Reduced reasoning** vs full GPT-5 (good for mechanical tasks only)
+- ⚠️ **Higher sensitivity** to ambiguous prompts (needs explicit format specs)
+- ⚠️ **Quality trade-off** vs Haiku 4.5 (validate output carefully)
+
+**When to use `/tasks-gpt-5-mini`**:
+- Budget is critical (0x vs 0.33x)
+- Plan.md has clear, unambiguous action items
+- Tasks are mechanical pattern-based transformations
+- You can validate output (compare to Haiku 4.5 baseline)
+
+**When to use Haiku 4.5** (standard `/speckit.tasks`):
+- Quality > cost (proven workflow)
+- Plan.md has subtle dependencies
+- First time using SpecKit (less risky)
 | `/speckit.implement` | Haiku 4.5 → Sonnet 4.5 when needed | GPT-5.1-Codex-Mini → GPT-5.1-Codex when needed |
 
 > Trade-off: expect more iterations; upgrade to Sonnet/Opus (or Codex/Codex-Max) when you hit ambiguity or cross-cutting changes.
