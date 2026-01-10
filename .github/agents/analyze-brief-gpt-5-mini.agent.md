@@ -139,9 +139,12 @@ STEP 6: Write Report (XML-scaffolded output)
 
 ## Output (CTCO Step 4)
 
-### XML-Scaffolded Output Structure
+### Internal State (XML Scaffolding)
+
+**NOTE**: This XML structure is for YOUR INTERNAL STATE MANAGEMENT ONLY. It helps you track gaps during analysis. DO NOT write XML to the output file.
 
 ```xml
+<!-- Internal agent state - NOT written to file -->
 <gap_analysis>
   <analysis_mode>INCREMENTAL|FIRST_TIME</analysis_mode>
   <known_gaps_loaded>N</known_gaps_loaded>
@@ -154,12 +157,12 @@ STEP 6: Write Report (XML-scaffolded output)
       <validation_score>N</validation_score>
     </gap>
   </gap_registry>
-
-  <output_file>gap-analysis-report.md</output_file>
 </gap_analysis>
 ```
 
-### Report Template (Exact Format)
+### Output File Format (MARKDOWN - What Actually Gets Written)
+
+**CRITICAL**: The output file `gap-analysis-report.md` MUST be MARKDOWN format (not XML). Use the template below EXACTLY:
 
 ```markdown
 ## Analysis Mode
