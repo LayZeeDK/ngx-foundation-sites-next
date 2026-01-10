@@ -104,12 +104,86 @@ Attach the generated `gap-analysis-report.md` file (and only the most critical e
 ```text
 /speckit.analyze
 
-Use the attached gap-analysis-report.md as the primary input. Validate each claimed gap against the source artifacts.
+Use the attached gap-analysis-report.md as the primary input. Validate each claimed gap against source artifacts (spec.md, plan.md, tasks.md, contracts/).
+
+Your goal: Create remediation documentation that prevents future `/analyze-brief` runs from re-flagging these gaps as new issues.
+
+## Validation Methodology
+
+For each claimed gap:
+1. **Verify the gap exists**: Read spec.md for FR-XXX requirements, tasks.md for task IDs, contracts/ for API definitions
+2. **Search implementation**: Use Grep/Read to confirm "NOT FOUND" or "FOUND at line X"
+3. **Build evidence chain**: FR-XXX (spec.md:line) → Task ID (tasks.md:line) → Contract (contracts/:line) → Implementation status
+4. **Score confidence**: 0-10 scale based on evidence quality (10 = exact line numbers + contract verified, 6 = indirect references only)
+5. **Assess impact**: Why does this gap matter? (breaks constitutional requirement, limits accessibility, prevents migration, etc.)
+6. **Identify smallest fix**: Implementation code change, spec clarification, or task documentation update?
+
+## Deliverables
+
+Create these documents in `specs/<feature>/`:
+
+### 1. GAPS_REMEDIATION.md (comprehensive tracking)
+- **Purpose**: Single source of truth for `/analyze-brief` to check before flagging gaps
+- **Structure per gap**:
+  - Status: NOT IMPLEMENTED | PARTIAL | TRACKED AS T###
+  - Validation Score: N/10
+  - Evidence: Exact spec FR-XXX, task IDs, contract locations, implementation search results
+  - Impact: What breaks without this?
+  - Fix: Code snippet or spec update with exact file paths
+  - Estimated Time: X minutes
+  - Violates: List all FR-XXX, CA-XXX, AR-XXX requirements
+- **Include**: False positives section explaining why claimed gaps are actually working as designed
+- **Include**: Validation methodology notes for transparency
+
+### 2. REMEDIATION_CHECKLIST.md (implementation guide)
+- **Purpose**: Step-by-step developer checklist with exact code snippets
+- **Structure per gap**:
+  - Checkbox items for each implementation step
+  - Before/after code examples
+  - Unit test examples
+  - Verification criteria
+  - Post-remediation validation steps
+- **Include**: Breaking change documentation where applicable
+- **Include**: Total estimated time vs actual time tracking
+
+### 3. Update Existing Spec Artifacts
+- **spec.md**: Add section referencing GAPS_REMEDIATION.md with concise gap summary
+- **plan.md**: Update Known Implementation Gaps section to reference GAPS_REMEDIATION.md
+- **tasks.md**: Add inline warnings to specific tasks (e.g., T021 ⚠️ **NAMING GAP**: See GAPS_REMEDIATION.md GAP-3)
+- **Original gap-analysis-report.md**: Add "SUPERSEDED" notice at top pointing to GAPS_REMEDIATION.md
+
+## False Positive Analysis
+
+For each claimed gap that's NOT actually a gap:
+- **Explain why**: "Working as designed per spec.md:line X"
+- **Cite evidence**: Goals/Non-Goals section, constitutional requirements, architectural decisions
+- **Document in "Not Gaps" section**: Prevents re-flagging by future analysis
+
+## Commit Strategy
+
+Format commits in logical increments:
+1. `docs(feature): add validated gap analysis with remediation tracker` (GAPS_REMEDIATION.md)
+2. `docs(feature): add detailed remediation implementation checklist` (REMEDIATION_CHECKLIST.md)
+3. `docs(feature): update spec/plan/tasks with gap references` (spec.md, plan.md, tasks.md updates)
+4. `docs(feature): mark gap analysis report as superseded` (gap-analysis-report.md update)
+
+Use conventional commit format with Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>
+
+## Output Format
 
 Deliver:
-- A prioritized list of real inconsistencies/gaps (with exact file + heading/line pointers)
-- For each gap: why it matters, and the smallest fix (spec vs plan vs tasks)
-- Call out any "false positives" from the report and why they're false
+- ✅ **Validated Gaps** (P0/P1/P2 prioritized with evidence chains, exact file:line pointers, fix estimates)
+- ❌ **False Positives** (claimed gaps that are working as designed with citations)
+- 📋 **Two new documents** (GAPS_REMEDIATION.md + REMEDIATION_CHECKLIST.md)
+- 📝 **Updated spec artifacts** (spec.md, plan.md, tasks.md with cross-references)
+- 💾 **Git commits** (4 logical increments with conventional commit messages)
+
+## Success Criteria
+
+Future `/analyze-brief` runs should:
+- Find "NOT IMPLEMENTED - TRACKED" markers instead of discovering "new" gaps
+- Reference GAPS_REMEDIATION.md for detailed tracking
+- Not re-flag false positives documented in "Not Gaps" section
 ```
 
 **Example: Budget-Conscious Implementation (cheap model → capable model when needed) (`/speckit.implement`)**
