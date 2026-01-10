@@ -225,21 +225,205 @@ None - all identified gaps passed validation.
 
 # Execution Steps (Mechanical Procedures)
 
-## Step 0: Initialize Analysis Context
+## Step 0.0: Context Size Pre-Check (MANDATORY FIRST STEP)
+
+**Purpose**: Verify feature artifacts fit within GPT-5 Mini's 200K context limit (180K safe threshold). If too large, prompt user to switch to GPT-4.1 (1M context).
+
+### Step 0.0.1: Get Feature Paths
 
 ```bash
 # Run from repo root
 ./.specify/scripts/powershell/check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks
 ```
 
-Parse JSON, derive paths:
+Parse JSON for FEATURE_DIR. Derive paths:
+- SPEC = FEATURE_DIR/spec.md
+- PLAN = FEATURE_DIR/plan.md
+- TASKS = FEATURE_DIR/tasks.md
+- CONTRACTS = FEATURE_DIR/contracts/ (if exists)
+- IMPLEMENTATION_FILES = files from $ARGUMENTS (user-provided)
+
+### Step 0.0.2: Count Lines in Artifacts
+
+```bash
+# Count spec artifacts
+wc -l ${SPEC}
+wc -l ${PLAN}
+wc -l ${TASKS}
+
+# Count contracts (if exists)
+find ${CONTRACTS} -name "*.ts" -exec wc -l {} + 2>/dev/null || echo "0"
+
+# Count implementation files
+FOR EACH file in IMPLEMENTATION_FILES:
+  wc -l ${file}
+```
+
+**Record results**:
+```
+spec_lines = [result]
+plan_lines = [result]
+tasks_lines = [result]
+contracts_lines = [result]
+implementation_lines = [result]
+```
+
+### Step 0.0.3: Estimate Token Count
+
+Apply heuristic:
+
+```
+spec_tokens = spec_lines × 20
+plan_tokens = plan_lines × 20
+tasks_tokens = tasks_lines × 15
+contracts_tokens = contracts_lines × 25
+implementation_tokens = implementation_lines × 18
+
+total_tokens_estimate = spec_tokens + plan_tokens + tasks_tokens + contracts_tokens + implementation_tokens
+```
+
+**Token-per-line rationale**:
+- spec.md: ~20 tokens/line (prose-heavy with requirements)
+- plan.md: ~20 tokens/line (prose-heavy with architecture)
+- tasks.md: ~15 tokens/line (structured lists)
+- contracts/*.ts: ~25 tokens/line (TypeScript with JSDoc comments)
+- implementation *.ts: ~18 tokens/line (TypeScript code)
+
+### Step 0.0.4: Categorize Feature Size
+
+```
+IF total_tokens_estimate < 80000:
+  size_category = "Small"
+  status = "✅ SAFE"
+
+ELSE IF total_tokens_estimate < 150000:
+  size_category = "Medium"
+  status = "✅ SAFE"
+
+ELSE IF total_tokens_estimate <= 180000:
+  size_category = "Large (near limit)"
+  status = "⚠️ CAUTION"
+
+ELSE:  # > 180000
+  size_category = "Too Large"
+  status = "❌ EXCEEDS LIMIT"
+```
+
+### Step 0.0.5: Evaluate and Prompt
+
+**If status = "❌ EXCEEDS LIMIT"** (> 180K tokens):
+
+Use AskUserQuestion tool:
+
+```typescript
+AskUserQuestion({
+  questions: [{
+    question: `Feature artifacts estimated at ~${Math.round(total_tokens_estimate / 1000)}K tokens, exceeding GPT-5 Mini's safe limit (180K). How should I proceed?`,
+    header: "Context Limit",
+    multiSelect: false,
+    options: [
+      {
+        label: "Switch to GPT-4.1 (Recommended)",
+        description: `Use /analyze-brief with GPT-4.1 for full 1M context. Handles ${Math.round(total_tokens_estimate / 1000)}K tokens safely. Slower (30-60s) but complete analysis.`
+      },
+      {
+        label: "Continue with GPT-5 Mini anyway",
+        description: "Risk: May truncate artifacts mid-analysis or miss gaps. Only if estimate is wrong or you're analyzing a subset."
+      },
+      {
+        label: "Cancel and revise scope",
+        description: "Stop now. Options: analyze fewer files, split feature, or remove contracts from scope."
+      }
+    ]
+  }]
+})
+```
+
+**Handle user response**:
+
+**Option 1 (Switch to GPT-4.1)** ← Recommended:
+```
+STOP execution immediately
+OUTPUT:
+"Switching to GPT-4.1 for 1M context support.
+
+Please run:
+  gh copilot -m \"gpt-4.1\" slash analyze-brief <same-arguments>
+
+This will handle ${Math.round(total_tokens_estimate / 1000)}K tokens safely with GPT-4.1's 1M context window."
+
+EXIT (do NOT continue to Step 0)
+```
+
+**Option 2 (Continue anyway)**:
+```
+OUTPUT:
+"⚠️ **WARNING**: Continuing with GPT-5 Mini despite ${Math.round(total_tokens_estimate / 1000)}K token estimate.
+
+Risks:
+- Artifact truncation mid-analysis
+- Incomplete gap detection
+- Missing evidence for some gaps
+
+If analysis fails or seems incomplete, re-run with GPT-4.1."
+
+PROCEED to Step 0
+```
+
+**Option 3 (Cancel)**:
+```
+STOP execution immediately
+OUTPUT:
+"Analysis cancelled.
+
+Feature size: ${Math.round(total_tokens_estimate / 1000)}K tokens (limit: 180K)
+
+Options to proceed:
+1. Use GPT-4.1: gh copilot -m \"gpt-4.1\" slash analyze-brief @files
+2. Reduce scope: Remove contracts or analyze fewer implementation files
+3. Split feature: Analyze components separately"
+
+EXIT
+```
+
+**If status = "✅ SAFE" or "⚠️ CAUTION"** (≤ 180K tokens):
+
+```
+OUTPUT:
+"✅ Context size check passed
+
+Feature size: ${size_category} (~${Math.round(total_tokens_estimate / 1000)}K tokens)
+Safe threshold: 180K tokens
+Status: ${status}
+
+Breakdown:
+- spec.md: ~${Math.round(spec_tokens / 1000)}K tokens (${spec_lines} lines)
+- plan.md: ~${Math.round(plan_tokens / 1000)}K tokens (${plan_lines} lines)
+- tasks.md: ~${Math.round(tasks_tokens / 1000)}K tokens (${tasks_lines} lines)
+- contracts/: ~${Math.round(contracts_tokens / 1000)}K tokens (${contracts_lines} lines)
+- implementation: ~${Math.round(implementation_tokens / 1000)}K tokens (${implementation_lines} lines)
+
+Proceeding with GPT-5 Mini analysis..."
+
+PROCEED to Step 0
+```
+
+---
+
+## Step 0: Initialize Analysis Context
+
+(Only reached if Step 0.0 passed or user confirmed continuation)
+
+```bash
+# Paths already loaded in Step 0.0.1
+```
+
+Use paths from Step 0.0.1:
 - SPEC = FEATURE_DIR/spec.md
 - PLAN = FEATURE_DIR/plan.md
 - TASKS = FEATURE_DIR/tasks.md
 - CONTRACTS = FEATURE_DIR/contracts/ (if exists)
 - GAPS_REMEDIATION = FEATURE_DIR/GAPS_REMEDIATION.md (if exists)
-
-Abort if spec.md, plan.md, or tasks.md missing.
 
 ## Step 0.5: Load Known Gaps Registry (XML-Scaffolded)
 
@@ -744,25 +928,6 @@ Before responding, verify:
   <check>✓ Told user correct mode and counts</check>
   <check>✓ No prose beyond required format</check>
 </execution_checklist>
-```
-
----
-
-# Context Size Self-Check
-
-**BEFORE starting analysis**, estimate token count:
-
-```
-spec_md_tokens = (spec.md line count × 20)
-plan_md_tokens = (plan.md line count × 20)
-tasks_md_tokens = (tasks.md line count × 15)
-implementation_tokens = (implementation files total chars / 4)
-
-total_tokens = spec + plan + tasks + implementation
-
-IF total_tokens > 180000:
-  STOP
-  OUTPUT: "⚠️ Feature too large (~[total]K tokens). Use /analyze-brief with GPT-4.1 (1M context) instead."
 ```
 
 ---
