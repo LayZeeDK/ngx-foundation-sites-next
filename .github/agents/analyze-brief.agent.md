@@ -236,19 +236,33 @@ Confidence Level:
 
 ---
 
-## Next Actions
+## Output Requirements
 
-After generating the brief:
+**CRITICAL**: You MUST output the complete gap analysis in your response. Do NOT just provide a summary - output the full structured report as specified in STEP 6.
 
-1. Save it to a temporary location (do not write to repo)
-2. Instruct user to review the validated gaps (score 6+)
-3. Suggest running `/speckit.analyze` with a reasoning model to perform final validation
-4. Provide this prompt for the reasoning model:
+Your response MUST include:
+
+1. **Complete "Validated Gaps" section** with ALL details from STEP 6:
+   - Gap title + one-sentence description
+   - Evidence section (spec line, tasks reference, search results)
+   - Validation score [X]/10
+   - Priority justification
+   - Smallest fix (1-2 sentences)
+
+2. **"False Positives Removed" section** listing gaps that failed validation
+
+3. **"Summary" section** with statistics (requirements scanned, gaps found, accuracy)
+
+**Format**: Use markdown headers, bullet lists, and code blocks for readability. The user needs the full analysis output to review gaps immediately.
+
+## Optional Follow-up
+
+After reviewing the analysis output above, the user MAY optionally run `/speckit.analyze` with a reasoning model for additional validation:
 
 ```
 /speckit.analyze
 
-Use the attached GPT-4.1 analysis brief as the primary input. Validate each claimed gap against the source artifacts.
+Validate each claimed gap from the analysis above against the source artifacts.
 
 Deliver:
 - A prioritized list of real inconsistencies/gaps (with exact file + heading/line pointers)
