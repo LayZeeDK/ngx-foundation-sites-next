@@ -189,89 +189,58 @@ Confidence Level:
 
 **Only gaps scoring 6+ proceed to final output.**
 
-#### STEP 6: Output Procedure (Follow Exactly)
+#### STEP 6: Copy This Template and Fill It In
 
-**DO NOT write any summary or introduction. Start immediately with Step 6.1.**
+**INSTRUCTIONS**: Copy the template below EXACTLY. Replace every [placeholder] with your analysis results. Do NOT write a summary instead.
 
 ---
 
-**6.1 Write Section Header**
-
-Write this exact text to the user:
-
-```
 ## Validated Gaps
-```
+
+### GAP-1: [Write the gap title here]
+
+**Evidence:**
+- **Spec**: [FR-XXX] at spec.md:[line number] with "[exact quote from spec]"
+- **Tasks**: [T-XXX] at tasks.md:[line number] with "[exact task description]"
+- **Search**: Keywords [[keyword1, keyword2, keyword3]] searched in:
+  - [filename] (line [X]): [search result - "FOUND" or "NOT FOUND"]
+  - [filename2] (line [Y]): [search result]
+- **Contracts**: [YES - checked contracts/filename.ts line X / NO - no contracts folder]
+
+**Validation Score**: [X]/10 ([HIGH or MEDIUM] confidence)
+
+**Priority**: [P0 or P1 or P2] - [1 sentence justifying priority]
+
+**Fix**: [1-2 sentences describing smallest code change needed]
 
 ---
 
-**6.2 For Each Gap That Scored 6+ (Iterate)**
-
-For gap number N (starting from 1), execute these sub-steps in order:
-
-1. Write: `### GAP-[N]: [gap title]`
-2. Write blank line
-3. Write: `**Evidence:**`
-4. Write: `- **Spec**: FR-XXX at spec.md:LINE with "exact quote"`
-5. Write: `- **Tasks**: T-XXX at tasks.md:LINE with "exact task description"`
-6. Write: `- **Search**: Keywords [keyword1, keyword2, keyword3] searched in:`
-7. For each file searched, write: `  - [filename] (line X): [result]`
-8. Write: `- **Contracts**: [YES/NO - what was checked]`
-9. Write blank line
-10. Write: `**Validation Score**: [X]/10 ([HIGH/MEDIUM] confidence)`
-11. Write blank line
-12. Write: `**Priority**: [P0/P1/P2] - [justification text]`
-13. Write blank line
-14. Write: `**Fix**: [1-2 sentence fix description]`
-15. Write blank line
-16. Write: `---`
-17. Write blank line
-
-Repeat for next gap.
+[Copy the gap structure above for GAP-2, GAP-3, etc. - one section per gap scoring 6+]
 
 ---
 
-**6.3 Write False Positives Section**
-
-Write this exact text:
-
-```
 ## False Positives Removed
-```
 
-For each gap that failed validation:
-1. Write: `- **GAP-[N]**: [Title] - Failed because: [reason]`
+[If gaps failed validation, list them:]
+- **GAP-[N]**: [Title] - Failed because: [which Step 4 check failed]
 
-If no false positives, write: `None - all identified gaps passed validation.`
-
-Write blank line, then: `---`
+[If no false positives:]
+None - all identified gaps passed validation.
 
 ---
 
-**6.4 Write Summary Section**
-
-Write this exact text:
-
-```
 ## Summary
-```
 
-Then write these lines (replace [N] with actual numbers):
-
-```
-- **Total requirements scanned**: [N]
-- **Filtered in Step 0**: [N documentation/manual test requirements]
-- **Gaps initially identified**: [N]
-- **Gaps validated (score 6+)**: [N]
-- **False positives removed**: [N]
-- **Accuracy rate**: [validated / identified] = [X]%
-```
+- **Total requirements scanned**: [number]
+- **Filtered in Step 0**: [number] documentation/manual test requirements
+- **Gaps initially identified**: [number]
+- **Gaps validated (score 6+)**: [number]
+- **False positives removed**: [number]
+- **Accuracy rate**: [validated / identified] = [percentage]%
 
 ---
 
-**6.5 Stop**
-
-Do not write anything after the Summary section. Your response is complete.
+**END OF REPORT. DO NOT ADD ANYTHING AFTER THIS LINE.**
 
 ---
 
@@ -297,44 +266,37 @@ Do not write anything after the Summary section. Your response is complete.
 
 ## Output Requirements (CRITICAL)
 
-After completing Steps 0-5, you MUST execute STEP 6 (Output Procedure).
+After completing Steps 0-5, go to STEP 6 and **COPY THE TEMPLATE**.
 
-**STEP 6 is a series of WRITE actions**, not analysis. Do not skip any sub-step.
-
-Your response to the user is the text you write during Step 6.1 through 6.4. Nothing more, nothing less.
+**STEP 6 is a fill-in-the-blanks template**. Do NOT write a summary. Copy the template and replace every [placeholder] with your data.
 
 ---
 
 # ⚠️ EXECUTION CHECKLIST BEFORE RESPONDING ⚠️
 
-**Your FIRST line of output to the user must be:**
-
-```
-## Validated Gaps
-```
+**Your response to the user MUST be the filled-in template from STEP 6.**
 
 **Do NOT write:**
-- "Accordion implementation gap analysis complete."
-- "Key gaps found:"
-- Any summary or introduction
+- ❌ "Accordion implementation gap analysis complete."
+- ❌ "10 validated gaps found:"
+- ❌ "Key gaps: rename multiExpandable, add methods"
+- ❌ Any bullet-point summary
 
-**START your response with Step 6.1 immediately.**
+**DO write:**
+- ✅ Copy the entire template from STEP 6
+- ✅ Replace every [placeholder] with your data
+- ✅ Include ALL gaps (not just a list of titles)
+- ✅ Start with `## Validated Gaps` (first line)
+- ✅ End with `**END OF REPORT**` (last line)
 
 ---
 
-Before writing your response, verify you have completed these steps:
+Checklist (verify before responding):
 
-- [ ] Step 0: Loaded spec.md, plan.md, tasks.md, implementation files
-- [ ] Step 1: Extracted 15-20 CODE/TEST requirements
-- [ ] Step 2: Checked implementation for each requirement (intent check, framework delegation, code search)
-- [ ] Step 3: Created gap list with evidence
-- [ ] Step 4: Ran anti-false-positive checks on each gap
-- [ ] Step 5: Scored each gap (0-10 scale)
-- [ ] **Step 6.1**: Written `## Validated Gaps` header
-- [ ] **Step 6.2**: For each gap scoring 6+, written ALL 17 sub-steps (title, evidence, validation score, priority, fix, separator)
-- [ ] **Step 6.3**: Written `## False Positives Removed` section
-- [ ] **Step 6.4**: Written `## Summary` section with statistics
-- [ ] **Step 6.5**: Stopped (no summary text after Summary section)
+- [ ] Completed Steps 0-5 (loaded files, extracted requirements, checked implementation, scored gaps)
+- [ ] Copied the STEP 6 template in full
+- [ ] Filled in ALL [placeholders] for EVERY gap scoring 6+
+- [ ] Did NOT write a summary instead of the template
 
 ---
 
@@ -356,18 +318,24 @@ These are summaries. Step 6 requires writing the full structured report with evi
 
 ## ✅ REQUIRED OUTPUT STRUCTURE
 
-Your response must start with `## Validated Gaps` and contain:
+Your response must be the STEP 6 template with all [placeholders] filled in.
 
-1. For each validated gap: title, evidence (spec line, tasks, search results, contracts), validation score, priority, fix
-2. False positives section
-3. Summary statistics
+**Required sections** (in this order):
+1. `## Validated Gaps` - with GAP-1, GAP-2, etc. sections (each with Evidence, Validation Score, Priority, Fix)
+2. `## False Positives Removed` - list of removed gaps or "None"
+3. `## Summary` - statistics with bullet points
+4. `**END OF REPORT**` - final line
 
-If you have written anything that looks like a summary (bullet points without evidence), you have NOT followed Step 6 correctly. Go back and execute Step 6.1 through 6.5.
+**If you wrote "10 validated gaps found" or any bullet list without Evidence sections, you did it WRONG.**
+
+Go back to STEP 6 and copy the template.
 
 ---
 
 # 🛑 STOP READING. START WRITING YOUR RESPONSE NOW. 🛑
 
-Execute Step 6.1 through 6.5 immediately.
+Go to STEP 6. Copy the template. Fill in every [placeholder].
 
 Your first line of output must be: `## Validated Gaps`
+
+Your last line of output must be: `**END OF REPORT. DO NOT ADD ANYTHING AFTER THIS LINE.**`
