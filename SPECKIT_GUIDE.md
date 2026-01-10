@@ -87,22 +87,29 @@ This:
 - Follows structured 6-step validation workflow
 - Scores each gap on evidence quality (0-10 scale)
 - Removes false positives via blocking validation checks
+- Writes complete report to `gap-analysis-report.md` (bypasses GPT-4.1's summarization behavior)
+
+**Output**: Agent writes structured report to `gap-analysis-report.md` with:
+- Validated gaps (each with evidence, validation score, priority, fix)
+- False positives removed
+- Summary statistics
+- Methodology notes
 
 **Alternative (if `/analyze-brief` unavailable)**: Manually copy the instructions from `.github/agents/analyze-brief.agent.md` and attach spec/plan/tasks/implementation files.
 
 2. **Sonnet 4.5 analyze (do the reasoning):**
 
-Attach the generated brief (and only the most critical excerpts, if needed) and run:
+Attach the generated `gap-analysis-report.md` file (and only the most critical excerpts, if needed) and run:
 
 ```text
 /speckit.analyze
 
-Use the attached GPT-4.1 analysis brief as the primary input. Validate each claimed gap against the source artifacts.
+Use the attached gap-analysis-report.md as the primary input. Validate each claimed gap against the source artifacts.
 
 Deliver:
 - A prioritized list of real inconsistencies/gaps (with exact file + heading/line pointers)
 - For each gap: why it matters, and the smallest fix (spec vs plan vs tasks)
-- Call out any “false positives” from the brief and why they’re false
+- Call out any "false positives" from the report and why they're false
 ```
 
 **Example: Budget-Conscious Implementation (cheap model → capable model when needed) (`/speckit.implement`)**
