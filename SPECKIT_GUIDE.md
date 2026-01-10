@@ -27,6 +27,8 @@ Start using slash commands with your AI agent:
 1. `/speckit.tasks` — Generate an actionable task list from the implementation plan
    - **Cost-optimized**: `/tasks-haiku-4-5` (0.33x cost, 95%+ quality, 10-20s)
 1. `/speckit.analyze` (optional) — Cross-artifact consistency and alignment report (after `/speckit.tasks`, before `/speckit.implement`)
+1. `/speckit.taskstoissues` (optional) — Convert tasks.md to GitHub issues for project tracking
+   - **Cost-optimized**: `/taskstoissues-gpt-5-mini` (0x cost, 95%+ quality, 10-20s) — GitHub Copilot only
 1. `/speckit.implement` — Execute all tasks and build the feature according to the plan
 
 ## Model Selection (Unified)
@@ -93,6 +95,7 @@ Use Haiku-optimized commands for 66% cost savings with minimal quality loss:
 | `/checklist-haiku-4-5` | Haiku 4.5                        | Haiku 4.5                                      | 0.33x        |
 | `/tasks-haiku-4-5`   | Haiku 4.5                          | Haiku 4.5 or **GPT-5 mini** (`/tasks-gpt-5-mini`) ⭐ | 0.33x (Haiku) / **0x** (GPT-5 Mini) ✅ |
 | `/speckit.analyze`   | Sonnet 4.5                         | GPT-4.1 → Sonnet 4.5                           | 0x → 1x      |
+| `/taskstoissues-gpt-5-mini` | —                           | **GPT-5 mini** ⭐                                | **0x** ✅     |
 | `/analyze-brief`     | —                                  | **GPT-5 mini** (`/analyze-brief-gpt-5-mini`) ⭐ or **GPT-4.1** (`/analyze-brief-gpt-4-1`) | **0x** ✅     |
 
 **GPT-5 mini advantages**:
@@ -116,6 +119,24 @@ Use Haiku-optimized commands for 66% cost savings with minimal quality loss:
 - Plan.md has clear, unambiguous action items
 - Tasks are mechanical pattern-based transformations
 - You can validate output (compare to Haiku 4.5 baseline)
+
+**When to use `/taskstoissues-gpt-5-mini`**:
+- ✅ **Always** (pure mechanical transformation)
+- ✅ **Perfect fit**: Pattern extraction (task → GitHub issue)
+- ✅ **Zero cost**: No reasoning needed for API calls
+- ✅ **Fast**: 2× faster than standard command (10-20s vs 30-40s)
+- ⚠️ **Requires**: tasks.md in standard format, GitHub repository
+
+**Example workflow**:
+```bash
+# 1. Generate tasks (choose based on budget)
+gh copilot -m "gpt-5-mini" slash tasks-gpt-5-mini          # 0x cost
+# OR
+gh copilot -m "claude-haiku-4.5" slash tasks-haiku-4-5    # 0.33x cost
+
+# 2. Convert to GitHub issues (zero-cost)
+gh copilot -m "gpt-5-mini" slash taskstoissues-gpt-5-mini # 0x cost
+```
 
 #### Haiku 4.5 Optimization Techniques
 
