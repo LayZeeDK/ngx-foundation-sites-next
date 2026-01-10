@@ -533,3 +533,187 @@ Go back to STEP 6, use Write tool, and put the full template in the file.
 4. Tell user: "✅ Gap analysis complete. Report saved to `gap-analysis-report.md`"
 
 **Do NOT output the report content to the user. Write it to the file.**
+
+---
+
+# GPT-4.1 Specific Optimizations (1M Context, Non-Reasoning)
+
+## Optimization 1: Sandwich Method (Instructions at Beginning AND End)
+
+**Research**: [GPT-4.1 Prompting Guide](https://cookbook.openai.com/examples/gpt4-1_prompting_guide) - "sandwich method works best for long context"
+
+**What this means**:
+- ✅ Instructions at **beginning** (already present above)
+- ✅ Instructions at **END** (critical reminder below)
+
+### 🔁 END-OF-PROMPT INSTRUCTION SUMMARY (Sandwich Method)
+
+**CRITICAL REMINDER**: You are GPT-4.1 analyzing implementation gaps. Your task:
+
+1. **Execute Steps 0-6 mechanically** (no creative interpretation)
+2. **Use Write tool** to create `gap-analysis-report.md` with COMPLETE template
+3. **Include ALL gap sections** with Evidence, Validation Score, Priority, Fix
+4. **Do NOT summarize** - write full structured report to file
+5. **Tell user**: Mode (incremental/first-time) and counts only
+
+**Literal instruction following**: GPT-4.1 does EXACTLY what instructions say. Do NOT:
+- ❌ Infer user intent beyond explicit instructions
+- ❌ Add helpful explanations not requested
+- ❌ Summarize when instructions say "write complete report"
+- ❌ Output report content to user (write to file only)
+
+**Required output**:
+```
+✅ [Incremental/First-time] gap analysis complete. Report saved to gap-analysis-report.md
+Mode: [mode]
+Result: [counts]
+```
+
+**File must contain**:
+- Analysis Mode section
+- Validated Gaps (NEW) section with FULL evidence for each gap
+- Skipped Known Gaps section
+- False Positives Removed section
+- Summary section with accurate counts
+
+**Go to STEP 6 now and write the file.**
+
+---
+
+## Optimization 2: Long-Context Performance (1M Token Handling)
+
+**Research**: [GPT-4.1 Technical Analysis](https://trickle.so/blog/inside-gpt-4-1-technical-analysis) - "GPT-4.1 retrieves accurately at all positions up to 1M"
+
+**Optimization for 1M context**:
+
+### Progressive Disclosure Strategy
+
+When loading large features (>500K tokens):
+
+```
+STEP 1: Load minimal sections first
+- spec.md: Load only "Functional Requirements" section (not examples/prose)
+- plan.md: Load only "Phases" and "Architecture" (skip detailed notes)
+- tasks.md: Load only task IDs and descriptions (skip checkpoints)
+
+STEP 2: Search implementation
+- Use Grep tool for keyword search (don't load entire files)
+- Only Read full files when grep finds matches
+
+STEP 3: Load contracts on-demand
+- Only load contracts when gap validation requires them
+- Use Glob to find, Read specific contracts only
+```
+
+**Why this works**:
+- ✅ GPT-4.1 handles 1M tokens well, but chunking improves performance
+- ✅ Progressive loading keeps working memory focused
+- ✅ On-demand reading reduces total context
+
+### Long-Context Retrieval Best Practices
+
+**Research**: GPT-4.1 "consistently retrieves information accurately at all positions"
+
+**How to leverage**:
+
+1. **Place critical instructions at BOTH ends** (sandwich method ← applied above)
+2. **Use markdown headers** for section navigation (`## Step 0`, `## Step 1`, etc.)
+3. **Reference by heading** when instructions span long distance ("See Step 2.3 above")
+4. **Repeat key constraints** in each step (don't assume GPT-4.1 remembers from earlier)
+
+**Example**:
+```markdown
+## STEP 3: Gap List
+
+**REMINDER from Step 0.5**: Check against KNOWN_GAPS registry before adding each gap.
+
+FOR EACH potential gap:
+  Check KNOWN_GAPS (loaded in Step 0.5)
+  IF match found: SKIP
+  ELSE: Add to gap list
+```
+
+---
+
+## Optimization 3: Literal Instruction Following
+
+**Research**: [PromptHub GPT-4.1 Guide](https://www.prompthub.us/blog/the-complete-guide-to-gpt-4-1-models-performance-pricing-and-prompting-tips) - "GPT-4.1 won't follow implicit rules—it does exactly what you tell it"
+
+**Critical for GPT-4.1**:
+
+### Explicit Commands (Not Implicit)
+
+```
+❌ Implicit: "Identify gaps intelligently"
+✅ Explicit: "FOR EACH requirement: EXTRACT keywords → SEARCH files → IF NOT FOUND: add to gap list"
+
+❌ Implicit: "Handle errors gracefully"
+✅ Explicit: "IF spec.md not found: STOP, OUTPUT 'spec.md not found', EXIT"
+
+❌ Implicit: "Write a good report"
+✅ Explicit: "Use Write tool, file path = gap-analysis-report.md, content = template with ALL [placeholders] filled"
+```
+
+### No Inference Assumptions
+
+**GPT-4.1 does NOT**:
+- ❌ Infer what "good quality" means → Specify validation score ≥ 6/10
+- ❌ Guess which gaps to prioritize → Specify "P0 first, then P1, then P2"
+- ❌ Assume structured output → Provide exact template with [placeholders]
+
+**All instructions MUST be explicit.**
+
+---
+
+## Optimization 4: Structured Formatting for Long Context
+
+**Research**: [GPT-4.1 Guide](https://www.godofprompt.ai/blog/gpt-4-1-prompting-guide) - "Use markdown titles, backticks, XML tags"
+
+**Already applied** (no changes needed):
+- ✅ Markdown headers for major sections (`## Step 0`, `### 2.1`, etc.)
+- ✅ Backtick blocks for code/commands
+- ✅ Numbered/bulleted lists for procedures
+- ✅ XML examples for structured data (gap registry)
+
+**Why this works**:
+- GPT-4.1 navigates long context using structural markers
+- Headers enable "jump to section" retrieval
+- Consistent formatting improves accuracy
+
+---
+
+# 🔁 FINAL EXECUTION REMINDER (End of Sandwich)
+
+**You are GPT-4.1 with 1M context. Execute this workflow EXACTLY:**
+
+```
+□ Step 0: Load paths
+□ Step 0.5: Load KNOWN_GAPS registry (if exists)
+□ Step 1: Extract requirements from spec.md (filter docs/manual tests)
+□ Step 2: Check implementation (keyword search, mark ✅/⚠️/❌/🔀/🚫)
+□ Step 3: Build gap list (check KNOWN_GAPS, skip matches, build NEW gaps)
+□ Step 4: Anti-false-positive validation (7-point checklist per gap)
+□ Step 5: Validation scoring (arithmetic 0-10, keep only ≥6)
+□ Step 6: Write gap-analysis-report.md (Use Write tool with COMPLETE template)
+```
+
+**Critical constraints**:
+- Maximum 10 NEW gaps (skip known gaps)
+- Each gap MUST have FR-XXX + T-XXX + file search + score ≥6
+- Write FULL report to file (not summary)
+- Tell user: mode + counts (not report content)
+
+**Literal following**:
+- Do EXACTLY what each step says
+- Do NOT add helpful extras
+- Do NOT infer unstated requirements
+- Do NOT summarize unless explicitly instructed
+
+**Output**:
+```
+✅ [Mode] gap analysis complete. Report saved to gap-analysis-report.md
+Mode: [INCREMENTAL or FIRST-TIME]
+Result: [counts]
+```
+
+**Execute STEP 6 now. Use Write tool. Write complete report.**
