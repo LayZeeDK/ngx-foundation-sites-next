@@ -248,28 +248,54 @@ Parse JSON for FEATURE_DIR. Derive paths:
 
 ### Step 0.0.2: Count Lines in Artifacts
 
-```bash
-# Count spec artifacts
-wc -l ${SPEC}
-wc -l ${PLAN}
-wc -l ${TASKS}
+**Platform-agnostic approach**: Use Read tool to count lines (works on Windows PowerShell, Linux, macOS)
 
-# Count contracts (if exists)
-find ${CONTRACTS} -name "*.ts" -exec wc -l {} + 2>/dev/null || echo "0"
+```
+# Read spec artifacts and count lines
+Read(SPEC) → count newlines → spec_lines
+Read(PLAN) → count newlines → plan_lines
+Read(TASKS) → count newlines → tasks_lines
 
-# Count implementation files
+# Read contracts (if directory exists)
+IF CONTRACTS directory exists:
+  Glob(CONTRACTS + "/**/*.ts") → get contract file list
+  FOR EACH contract file:
+    Read(contract_file) → count newlines → add to contracts_lines
+ELSE:
+  contracts_lines = 0
+
+# Read implementation files (from $ARGUMENTS)
 FOR EACH file in IMPLEMENTATION_FILES:
-  wc -l ${file}
+  Read(file) → count newlines → add to implementation_lines
+```
+
+**Line counting procedure** (mechanical):
+```
+FOR EACH file to analyze:
+  file_content = Read(file_path)
+  line_count = count_newline_characters(file_content)
+
+  # Alternative if Read tool provides line numbers:
+  # Read returns format "   1→line1\n   2→line2\n   3→line3"
+  # Extract highest line number from last line
+  last_line_number = extract_number_from_last_line(file_content)
+  line_count = last_line_number
 ```
 
 **Record results**:
 ```
-spec_lines = [result]
-plan_lines = [result]
-tasks_lines = [result]
-contracts_lines = [result]
-implementation_lines = [result]
+spec_lines = [counted from Read tool]
+plan_lines = [counted from Read tool]
+tasks_lines = [counted from Read tool]
+contracts_lines = [total from all contract files OR 0]
+implementation_lines = [total from all implementation files]
 ```
+
+**Why this works**:
+- ✅ **Platform-agnostic**: Read tool works on Windows, Linux, macOS
+- ✅ **No shell required**: Uses agent's built-in file reading capabilities
+- ✅ **More accurate**: Reads actual file content instead of relying on shell utilities
+- ✅ **Handles edge cases**: Works even if wc/find commands unavailable
 
 ### Step 0.0.3: Estimate Token Count
 
