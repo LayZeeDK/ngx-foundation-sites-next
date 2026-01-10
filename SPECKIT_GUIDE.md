@@ -96,15 +96,37 @@ Use one simple rule: **pick the model based on the job** (reasoning vs. speed vs
 - Plan.md has subtle dependencies
 - First time using SpecKit (less risky)
 
+**Automatic Context Size Check** (Step 0.0):
+
+Before analysis starts, the command estimates total tokens:
+```
+Estimate = (spec lines × 20) + (plan lines × 20) + (tasks lines × 15)
+         + (contracts lines × 25) + (implementation lines × 18)
+
+Example (accordion component):
+- spec.md: 679 lines × 20 = ~13.6K tokens
+- plan.md: 380 lines × 20 = ~7.6K tokens
+- tasks.md: 841 lines × 15 = ~12.6K tokens
+- contracts/: 450 lines × 25 = ~11.3K tokens
+- implementation: 2500 lines × 18 = ~45K tokens
+Total: ~90K tokens ✅ SAFE (well within 180K limit)
+```
+
+**If >180K tokens**, prompts user with options:
+1. **Switch to GPT-4.1** (Recommended) - Automatically provides command
+2. **Continue anyway** - Warns about truncation risk
+3. **Cancel and revise scope** - Suggests reducing files
+
 **When to use `/analyze-brief-gpt-5-mini`**:
-- ✅ Feature artifacts < 180K tokens (~small-medium features)
-- ✅ Speed matters (fast iteration, 10-20 sec vs 30-60 sec)
+- ✅ Just run it! Pre-check handles size automatically
+- ✅ Speed matters (10-20 sec vs 30-60 sec)
 - ✅ Well-structured specs with clear FR-XXX requirements
+- ✅ Agent will prompt if too large (no manual decision needed)
 
 **When to use GPT-4.1** (standard `/analyze-brief`):
-- ⚠️ Feature artifacts > 180K tokens (~large features)
-- ⚠️ Need 1M context for huge codebases
-- ⚠️ Complex multi-file features with many dependencies
+- ⚠️ Pre-check prompted you to switch (>180K tokens)
+- ⚠️ You know feature is huge (skip pre-check overhead)
+- ⚠️ Need guaranteed 1M context
 
 #### GPT-5 Mini Optimizations Applied
 
@@ -154,7 +176,8 @@ gh copilot -m "gpt-4.1" slash analyze-brief @implementation-files
 - ⚡ **2-3x faster** (10-20 sec vs 30-60 sec) - kernel fusion, tensor parallelism
 - ✅ **Better structured output** - CTCO framework, XML scaffolding
 - ✅ **Same cost** (both 0x)
-- ⚠️ **Context limit**: 200K vs 1M (use GPT-4.1 for large features)
+- ✅ **Automatic size check** - Estimates tokens, prompts switch to GPT-4.1 if >180K
+- ⚠️ **Context limit**: 200K vs 1M (but pre-check handles this automatically)
 
 **Output**: Agent writes structured report to `gap-analysis-report.md` with:
 - Validated gaps (each with evidence, validation score, priority, fix)
