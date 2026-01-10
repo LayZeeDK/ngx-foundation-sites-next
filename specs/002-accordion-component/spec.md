@@ -645,37 +645,33 @@ Note: AR-015 through AR-018 summarize accessibility implications of FR-037 throu
 
 **Status**: The spec documents the originally planned component-based API. The implementation diverged to use template-directives for better @angular/aria integration. **Refer to `quickstart.md` for correct usage examples of the implemented API.**
 
-**Known Gaps in Current Implementation**:
+**Known Gaps in Current Implementation**: See **[GAPS_REMEDIATION.md](./GAPS_REMEDIATION.md)** for comprehensive tracking with validation evidence, exact fix locations, and time estimates.
 
-### P0 - BLOCKING (Foundation API Parity)
+### P0 - BLOCKING (Foundation API Parity) - 32 min
 
-1. **Input naming**: Implemented as `multiExpandable` (spec says `multiExpand`) — Breaking API inconsistency, requires rename (violates FR-014, CA-007)
-2. **Foundation API methods**: `down()`, `up()`, `toggle()` not yet implemented on items (violates FR-075, CA-009)
-3. **Foundation API outputs**: `(down)` and `(up)` events not yet implemented on container (violates FR-076, CA-010)
+1. **GAP-3**: Input naming — `multiExpandable` → should be `multiExpand` (violates FR-014, CA-007) — 2 min, BREAKING CHANGE
+2. **GAP-1**: Foundation API methods — `down()`, `up()`, `toggle()` not on items (violates FR-075, CA-009) — 10 min
+3. **GAP-2**: Foundation API outputs — `(down)`, `(up)` events not on container (violates FR-076, CA-010) — 20 min
 
-### P1 - Important (Error Handling & A11y)
+### P1 - Important (Error Handling & A11y) - 135 min
 
-4. **titleHeadingLevel input**: Not yet implemented, limits screen reader document outline navigation (violates FR-016, FR-110a, FR-176a)
-5. **ErrorHandler diagnostics**: Missing structured error reporting for:
-   - FR-017a: Duplicate panelId detection
-   - FR-026a: Missing title detection
-   - FR-067b: Deep link to non-existent panel
-   - FR-089a: Rapid toggle serialization errors
-   - FR-110a: Input validation edge cases
+4. **GAP-4**: `titleHeadingLevel` input not implemented (violates FR-016, FR-110a, FR-176a) — 30 min
+5. **GAP-5**: ErrorHandler diagnostics missing (violates FR-017a, FR-026a, FR-067b, FR-089a, FR-110a; partial: validators.ts exists but no ErrorHandler calls) — 60 min
+6. **GAP-6**: Storybook tests for Foundation API missing (violates T134-T139 testing requirements) — 45 min
 
-### P2 - Polish (Test Coverage & Robustness)
+### P2 - Polish (Robustness) - 15 min
 
-6. **Edge case test coverage**: Missing Storybook tests for negative scenarios (empty accordion, all disabled, ID collision, rapid toggle) — violates tasks.md:T175, FR-057
-7. **SSR error handling**: `afterNextRender` blocks lack try/catch for hydration failure reporting (violates FR-062a)
-8. **Deep link error handling**: Silent failure when URL hash references non-existent panel (violates FR-067b)
+7. **GAP-8**: SSR error handling — `afterNextRender` blocks lack try/catch (violates FR-062a) — 15 min
 
 **Not Gaps** (Working as Designed):
 
 - **Animation hooks**: Spec explicitly states animations are CSS-only (Goals and Non-Goals:575-577). Foundation CSS handles all transitions via Sass variables. No Angular animation API is required.
-- **ARIA live regions**: Intentionally opt-in via `announce` input (AR-027a, default: false) to avoid duplicate announcements on platforms where `aria-expanded` is sufficient. Base ARIA compliance does not require live regions.
+- **ARIA live regions**: Intentionally opt-in via `announce` input (AR-027a tracked as T196-T199, default: false) to avoid duplicate announcements on platforms where `aria-expanded` is sufficient. Base ARIA compliance does not require live regions.
 - **ARIA edge cases**: Implementation delegates to @angular/aria primitives (AccordionTrigger/AccordionPanel) which handle aria-controls, aria-expanded, aria-labelledby automatically per Angular framework standards.
 - **Custom content projection**: Template-directive architecture enforces one-header-one-body at compile time. Complex slotting scenarios are architecturally prevented.
 - **Foundation CSS class mapping**: All required classes (FR-029 through FR-035) present via @angular/aria integration.
+
+**Total Remediation Estimate**: P0=32min | P0+P1=167min | P0+P1+P2=182min (~3 hours)
 
 ---
 
