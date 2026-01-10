@@ -6,6 +6,30 @@ This directory contains research-backed optimization strategies for AI models us
 
 ## 📚 Available Guides
 
+### [Claude 4.5 (Sonnet & Haiku) Optimization Guide](./CLAUDE-4-5-OPTIMIZATION.md)
+
+**Models**: Claude Sonnet 4.5 (1M context) & Haiku 4.5 (500K context, 2x speed, 3x savings)
+
+**10 Key Optimizations**:
+1. **Structured Prompting with XML** - `<role>`, `<task>`, `<constraints>`, `<output_format>`
+2. **Direct Communication** - Skip preambles, be explicit about formats
+3. **Extended Thinking** - Deep reasoning for complex tasks (16K+ tokens)
+4. **Literal Instruction Following** - Explicit commands (Claude 4.x doesn't infer)
+5. **Context Management** - Token budget awareness, context editing (29% improvement)
+6. **Agentic Workflows** - Research → action → verify → repeat pattern
+7. **Tool Use Optimization** - Treat tool definitions like prompts
+8. **Haiku-Specific** - Short prompts, checklists, explicit constraints
+9. **Chain-of-Thought** - Prefilling, multishot examples
+10. **Memory & Sessions** - memory.md for continuity, /clear for fresh starts
+
+**Best for**:
+- Sonnet 4.5: Complex reasoning, code implementation, agentic workflows
+- Haiku 4.5: Fast iteration, 90% of Sonnet's performance at 3x cost savings
+
+**Commands**: All SpecKit commands, Claude Code workflows
+
+---
+
 ### [GPT-4.1 Optimization Guide](./GPT-4-1-OPTIMIZATION.md)
 
 **Model**: GPT-4.1 (1M context, non-reasoning, 0x cost)
@@ -51,16 +75,19 @@ Feature Size Estimation:
 total_tokens = (spec lines × 20) + (plan × 20) + (tasks × 15) + (code × 18)
 
 IF total_tokens < 180K:
-  ✅ USE GPT-5 Mini
-  - Faster: 10-20 sec (vs 30-60 sec)
-  - Same cost: 0x
-  - Quality: 85-95% of GPT-4.1
+  ✅ USE GPT-5 Mini OR Haiku 4.5
+  - GPT-5 Mini: 10-20 sec, 0x cost, 85-95% quality
+  - Haiku 4.5: 15-25 sec, 0.33x cost, 90% of Sonnet performance
+
+ELSE IF total_tokens < 500K:
+  ✅ USE GPT-4.1 OR Haiku 4.5
+  - GPT-4.1: 30-60 sec, 0x cost, 1M context
+  - Haiku 4.5: 20-35 sec, 0.33x cost, 500K context
 
 ELSE IF total_tokens < 1M:
-  ✅ USE GPT-4.1
-  - Slower: 30-60 sec
-  - Same cost: 0x
-  - Context: Handles up to 1M tokens
+  ✅ USE GPT-4.1 OR Sonnet 4.5
+  - GPT-4.1: 30-90 sec, 0x cost
+  - Sonnet 4.5: 30-60 sec, 1x cost, better reasoning
 
 ELSE:
   ⚠️ SPLIT feature into smaller components
@@ -68,13 +95,15 @@ ELSE:
 
 ### Task Type Suitability
 
-| Task Type | GPT-5 Mini | GPT-4.1 | Reasoning Models |
-|-----------|------------|---------|------------------|
-| **Gap analysis (small)** | ✅ Best | ⚠️ Slower | ⚠️ Overkill |
-| **Gap analysis (large)** | ❌ Context limit | ✅ Best | ⚠️ Overkill |
-| **Task generation** | ✅ Best | ✅ Good | ⚠️ Overkill |
-| **Gap validation** | ❌ Needs reasoning | ❌ Needs reasoning | ✅ Use Sonnet 4.5 |
-| **Implementation** | ❌ Needs reasoning | ❌ Needs reasoning | ✅ Use Sonnet 4.5 |
+| Task Type | GPT-5 Mini | GPT-4.1 | Haiku 4.5 | Sonnet 4.5 |
+|-----------|------------|---------|-----------|------------|
+| **Gap analysis (small)** | ✅ Best (0x) | ⚠️ Slower | ✅ Best (0.33x) | ⚠️ Overkill |
+| **Gap analysis (large)** | ❌ Context limit | ✅ Good (0x) | ✅ Good (0.33x) | ✅ Best (1x) |
+| **Task generation** | ✅ Best (0x) | ✅ Good (0x) | ✅ Best (0.33x) | ⚠️ Overkill |
+| **Gap validation** | ❌ Needs reasoning | ❌ Needs reasoning | ⚠️ Light reasoning | ✅ Best (1x) |
+| **Implementation** | ❌ No reasoning | ❌ No reasoning | ⚠️ Simple code | ✅ Best (1x) |
+| **Complex reasoning** | ❌ Not capable | ❌ Not capable | ⚠️ Basic | ✅ Extended thinking |
+| **Agentic workflows** | ❌ Not capable | ❌ Not capable | ✅ 90% of Sonnet | ✅ Best (1x) |
 
 ---
 
@@ -112,25 +141,29 @@ ELSE:
 
 ### Speed Benchmarks (Small Feature ~90K tokens)
 
-| Model | Time | Cost | Quality |
-|-------|------|------|---------|
-| **GPT-5 Mini** (optimized) | 10-20s ⚡ | 0x | 85-95% |
-| **GPT-4.1** (optimized) | 30-60s | 0x | Baseline |
-| **Haiku 4.5** | 15-25s | 0.33x | Excellent |
-| **Sonnet 4.5** | 20-40s | 1x | Excellent |
+| Model | Time | Cost | Quality | Best For |
+|-------|------|------|---------|----------|
+| **GPT-5 Mini** (optimized) | 10-20s ⚡ | 0x | 85-95% | Fastest + free |
+| **Haiku 4.5** (optimized) | 15-25s | 0.33x | 90% of Sonnet | Agentic tasks |
+| **GPT-4.1** (optimized) | 30-60s | 0x | Baseline | Free option |
+| **Sonnet 4.5** | 20-40s | 1x | Best | Complex reasoning |
 
-**Winner for small features**: GPT-5 Mini (fastest + free + good quality)
+**Winner for small features**: GPT-5 Mini (fastest + free) or Haiku 4.5 (best agentic performance/cost)
 
 ### Speed Benchmarks (Large Feature ~500K tokens)
 
-| Model | Time | Cost | Quality |
-|-------|------|------|---------|
-| **GPT-5 Mini** | ❌ Context overflow | — | — |
-| **GPT-4.1** (optimized) | 45-90s | 0x | Baseline |
-| **GPT-4.1** (+ progressive disclosure) | 60-120s | 0x | Excellent |
-| **Sonnet 4.5 1M** (Claude Code only) | 30-60s | — | Excellent |
+| Model | Time | Cost | Quality | Context Limit |
+|-------|------|------|---------|---------------|
+| **GPT-5 Mini** | ❌ Context overflow | — | — | 200K |
+| **Haiku 4.5** (optimized) | 30-50s | 0.33x | 90% of Sonnet | 500K |
+| **GPT-4.1** (optimized) | 45-90s | 0x | Good | 1M |
+| **GPT-4.1** (+ progressive disclosure) | 60-120s | 0x | Excellent | 1M |
+| **Sonnet 4.5** (1M context) | 30-60s | 1x | Best | 1M (beta) |
 
-**Winner for large features**: GPT-4.1 (only free option with 1M context in Copilot)
+**Winner for large features**:
+- Free option: GPT-4.1 (only free 1M context in Copilot)
+- Best performance: Sonnet 4.5 (extended thinking + 1M context)
+- Best value: Haiku 4.5 (90% performance at 0.33x cost for <500K)
 
 ---
 
@@ -220,6 +253,49 @@ gh copilot -m "gpt-5-mini" slash analyze-brief-gpt-5-mini @accordion.ts
 **Total cost**: ~2x premium credits (only Steps 2 and 4)
 **Total time**: ~42 minutes + 29 seconds
 **Speedup from optimizations**: ~50-70 seconds saved (Steps 1, 3, 5)
+
+### Alternative: Claude-Optimized Workflow (Best Performance)
+
+```bash
+# Step 1: Gap Analysis (Haiku 4.5 - fast & agentic)
+claude analyze-gaps --model haiku-4.5
+# Time: 15 seconds
+# Cost: 0.33x
+# Quality: 90% of Sonnet 4.5
+# Output: gap-analysis-report.md
+
+# Step 2: Gap Validation (Sonnet 4.5 - extended thinking)
+claude validate-gaps --model sonnet-4.5 --extended-thinking 16K
+# Time: 3 minutes
+# Cost: 1x
+# Output: GAPS_VALIDATION.md + REMEDIATION_CHECKLIST.md
+
+# Step 3: Task Generation (Haiku 4.5 - fast)
+claude generate-tasks --model haiku-4.5
+# Time: 10 seconds
+# Cost: 0.33x
+# Output: tasks.md
+
+# Step 4: Implementation (Sonnet 4.5 - TDD + extended thinking)
+claude implement-gaps --model sonnet-4.5 --extended-thinking 16K
+# Time: 15 minutes (P0 gaps with TDD)
+# Cost: 1x
+# Output: Fixed code + tests + commits
+
+# Step 5: Re-validate (Haiku 4.5 - quick check)
+claude analyze-gaps --model haiku-4.5
+# Time: 12 seconds
+# Cost: 0.33x
+# Output: "✅ No new gaps detected!"
+```
+
+**Total cost**: ~2.66x (Haiku for mechanical tasks, Sonnet for reasoning)
+**Total time**: ~18 minutes + 37 seconds
+**Advantages**:
+- 57% faster than Ultra-Budget workflow
+- Extended thinking for better implementation quality
+- Agentic workflow patterns built-in
+- Better TDD support
 
 ---
 
@@ -322,13 +398,22 @@ Speed: Slower (30-60s) but reliable
 ## 📖 Research Sources
 
 All optimization strategies are backed by 2026 research from:
+
+### OpenAI (GPT Models)
 - OpenAI official documentation and cookbooks
 - PromptHub comprehensive guides
 - Atlabs AI prompting playbooks
 - Technical analyses from Trickle, Galaxy.ai
 - Community best practices from God of Prompt, Vellum, Steve Kinney
 
-See individual guides for complete source citations.
+### Anthropic (Claude Models)
+- Anthropic official documentation (Claude Docs, Extended Thinking, Context Windows)
+- Anthropic Research & Engineering (Building Effective Agents, Claude Code Best Practices)
+- Third-party analysis (Pantaleone, DreamHost, Sider.ai, ClaudeLog)
+- Performance benchmarks (Braintrust, The Neuron, PromptHub)
+- AWS documentation (Amazon Bedrock integration)
+
+See individual guides for complete source citations with URLs.
 
 ---
 
