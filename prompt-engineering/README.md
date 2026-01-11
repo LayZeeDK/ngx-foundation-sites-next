@@ -90,6 +90,30 @@ This directory contains research-backed optimization strategies for AI models us
 
 ---
 
+### [GPT-5.1-Codex Implementation Optimization Guide](./GPT-5.1-CODEX-IMPLEMENTATION-OPTIMIZATION.md)
+
+**Model**: GPT-5.1-Codex (400K context, adaptive reasoning)
+
+**7 Key Optimizations**:
+
+1. **Remove Guidance Rather Than Add It** - Trained for agentic coding, remove prescriptive steps
+2. **Adaptive Reasoning** - No steering needed (model adjusts automatically)
+3. **Bias Toward Action & Persistence** - Carry tasks to full completion end-to-end
+4. **Engineering Quality Standards** - Correctness, clarity, reliability (no shortcuts)
+5. **Tool Usage Optimization** - rg over grep, specialized tools over bash
+6. **Progressive Disclosure** - For features >400K tokens (no compaction in regular Codex)
+7. **Reasoning Effort** - Medium default (high for complex), no xhigh (Max-only)
+
+**Best for**: GitHub Copilot implementation workflows with 400K context
+
+**Commands**: `/implement-gpt-5-1-codex` (GitHub Copilot)
+
+**Max-Only Features**: Compaction, xHigh reasoning, 30% token efficiency, 24+ hour operation
+
+**Related**: [GPT-5.1-Codex-Mini Optimization](./GPT-5.1-CODEX-MINI-OPTIMIZATION.md)
+
+---
+
 ### [GPT-4.1 Optimization Guide](./GPT-4-1-OPTIMIZATION.md)
 
 **Model**: GPT-4.1 (1M context, non-reasoning, 0x cost)

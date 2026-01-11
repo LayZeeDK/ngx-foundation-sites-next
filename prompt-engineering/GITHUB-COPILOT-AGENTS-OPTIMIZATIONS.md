@@ -202,6 +202,7 @@ Add user authentication to dashboard component
    ```
 
 3. **File Directions**
+
    ```markdown
    Files to modify:
 
@@ -640,6 +641,7 @@ steps:
    ```
 
 5. **Ignored Custom Instructions**
+
    ```markdown
    # Bad
 
@@ -687,6 +689,7 @@ steps:
    ```
 
 5. **Enforced Standards**
+
    ```markdown
    # Good
 
