@@ -26,6 +26,7 @@ import { NfsAccordionItemDef } from './accordion-item-def';
  */
 @Directive({
   selector: 'ng-template[nfsAccordionContent]',
+  exportAs: 'nfsAccordionContent',
 })
 export class NfsAccordionContentDef {
   readonly templateRef: TemplateRef<void> = inject(TemplateRef);

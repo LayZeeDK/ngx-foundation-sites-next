@@ -95,6 +95,7 @@ function expandedTransform(value: unknown): NfsButtonExpanded {
   // The `nfsButton` attribute follows the `nfs` prefix convention.
   // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'button[nfsButton], a[nfsButton]',
+  exportAs: 'nfsButton',
   template: '<ng-content />',
   // Styles auto-loaded via NfsStyleLoader at runtime from /nfs/button.css
   // For custom theming: compile Sass with inject:false to same path

@@ -41,6 +41,7 @@ export interface NfsAccordionPanelEvent {
 
 @Component({
   selector: 'nfs-accordion',
+  exportAs: 'nfsAccordion',
   templateUrl: './accordion.html',
   // Styles auto-loaded via NfsStyleLoader at runtime from /nfs-accordion.css
   // For custom theming: compile Sass with bundleName: "nfs-accordion", inject: false
