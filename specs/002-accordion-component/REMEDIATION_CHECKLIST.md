@@ -15,6 +15,7 @@ This checklist provides exact implementation steps for each gap. Check off items
 **BREAKING CHANGE** - Document in changelog
 
 - [ ] **Step 1**: Update `accordion.component.ts` line 51
+
   ```typescript
   // FROM:
   readonly multiExpandable = input(false);
@@ -24,6 +25,7 @@ This checklist provides exact implementation steps for each gap. Check off items
   ```
 
 - [ ] **Step 2**: Update `accordion.component.html` line 12
+
   ```html
   <!-- FROM: -->
   [multiExpandable]="multiExpandable()"
@@ -41,6 +43,7 @@ This checklist provides exact implementation steps for each gap. Check off items
   - Replace with `multiExpand`
 
 - [ ] **Step 5**: Run tests to verify
+
   ```bash
   npm run test -- accordion
   ```
@@ -48,6 +51,7 @@ This checklist provides exact implementation steps for each gap. Check off items
 - [ ] **Step 6**: Update CHANGELOG.md with breaking change notice
   ```markdown
   ### BREAKING CHANGES
+
   - **accordion**: Renamed input `multiExpandable` → `multiExpand` for Foundation naming alignment (FR-014)
     - Migration: Replace `[multiExpandable]` with `[multiExpand]` in all accordion usages
   ```
@@ -61,6 +65,7 @@ This checklist provides exact implementation steps for each gap. Check off items
 **Files**: `packages/ngx-foundation-sites/src/lib/accordion/accordion-item-def.ts`
 
 - [ ] **Step 1**: Add `down()` method
+
   ```typescript
   /**
    * Expands this accordion panel (Foundation API: .down($target))
@@ -74,6 +79,7 @@ This checklist provides exact implementation steps for each gap. Check off items
   ```
 
 - [ ] **Step 2**: Add `up()` method
+
   ```typescript
   /**
    * Collapses this accordion panel (Foundation API: .up($target))
@@ -87,6 +93,7 @@ This checklist provides exact implementation steps for each gap. Check off items
   ```
 
 - [ ] **Step 3**: Add `toggle()` method
+
   ```typescript
   /**
    * Toggles this accordion panel's expansion state (Foundation API: .toggle($target))
@@ -104,6 +111,7 @@ This checklist provides exact implementation steps for each gap. Check off items
   - Update JSDoc to document public methods
 
 - [ ] **Step 5**: Add unit tests
+
   ```typescript
   it('should expand panel when down() is called', () => {
     const item = /* ... */;
@@ -120,6 +128,7 @@ This checklist provides exact implementation steps for each gap. Check off items
   ```
 
 **Verification**:
+
 - Methods are callable on `NfsAccordionItemDef` instance
 - Unit tests pass
 - Disabled state prevents activation
@@ -131,11 +140,13 @@ This checklist provides exact implementation steps for each gap. Check off items
 **Files**: `packages/ngx-foundation-sites/src/lib/accordion/accordion.component.ts`
 
 - [ ] **Step 1**: Import `output` function (if not already imported)
+
   ```typescript
   import { output } from '@angular/core';
   ```
 
 - [ ] **Step 2**: Define output type (or use existing)
+
   ```typescript
   export interface AccordionItemChangeEvent {
     itemId: string;
@@ -144,6 +155,7 @@ This checklist provides exact implementation steps for each gap. Check off items
   ```
 
 - [ ] **Step 3**: Add `down` output
+
   ```typescript
   /**
    * Emitted when any accordion panel opens (Foundation API: down.zf.accordion)
@@ -153,6 +165,7 @@ This checklist provides exact implementation steps for each gap. Check off items
   ```
 
 - [ ] **Step 4**: Add `up` output
+
   ```typescript
   /**
    * Emitted when any accordion panel closes (Foundation API: up.zf.accordion)
@@ -165,6 +178,7 @@ This checklist provides exact implementation steps for each gap. Check off items
   - Locate the effect that tracks `expandedPanelId` changes
 
 - [ ] **Step 6**: Emit `down` event when panel opens
+
   ```typescript
   if (expandedPanelId && expandedPanelId !== this.#lastExpandedPanelId) {
     this.down.emit({ itemId: expandedPanelId, expanded: true });
@@ -173,6 +187,7 @@ This checklist provides exact implementation steps for each gap. Check off items
   ```
 
 - [ ] **Step 7**: Emit `up` event when panel closes
+
   ```typescript
   if (previouslyExpanded && !currentlyExpanded) {
     this.up.emit({ itemId: previousPanelId, expanded: false });
@@ -180,6 +195,7 @@ This checklist provides exact implementation steps for each gap. Check off items
   ```
 
 - [ ] **Step 8**: Add unit tests
+
   ```typescript
   it('should emit down event when panel opens', () => {
     const accordion = /* ... */;
@@ -193,6 +209,7 @@ This checklist provides exact implementation steps for each gap. Check off items
   ```
 
 - [ ] **Step 9**: Verify outputs don't emit when action is prevented (FR-022)
+
   ```typescript
   it('should not emit down event when item is disabled', () => {
     const item = /* ... */;
@@ -207,6 +224,7 @@ This checklist provides exact implementation steps for each gap. Check off items
   ```
 
 **Verification**:
+
 - `(down)` output emits when panels open
 - `(up)` output emits when panels close
 - Events include correct payload
@@ -221,6 +239,7 @@ This checklist provides exact implementation steps for each gap. Check off items
 **Files**: `accordion.component.ts`, `accordion.component.html`
 
 - [ ] **Step 1**: Add input to component
+
   ```typescript
   /**
    * Heading level for accordion titles (1-6). When set, wraps trigger buttons in
@@ -231,17 +250,18 @@ This checklist provides exact implementation steps for each gap. Check off items
   ```
 
 - [ ] **Step 2**: Update template with conditional wrapper
+
   ```html
   @if (titleHeadingLevel(); as level) {
-    <div role="heading" [attr.aria-level]="level">
-      <button class="accordion-title" ...>
-        <!-- button content -->
-      </button>
-    </div>
-  } @else {
+  <div role="heading" [attr.aria-level]="level">
     <button class="accordion-title" ...>
       <!-- button content -->
     </button>
+  </div>
+  } @else {
+  <button class="accordion-title" ...>
+    <!-- button content -->
+  </button>
   }
   ```
 
@@ -249,6 +269,7 @@ This checklist provides exact implementation steps for each gap. Check off items
   - Verify class is on `<button>`, not on wrapper `<div>`
 
 - [ ] **Step 4**: Add input validation (FR-110a)
+
   ```typescript
   constructor() {
     effect(() => {
@@ -269,6 +290,7 @@ This checklist provides exact implementation steps for each gap. Check off items
   - Update all heading wrappers atomically
 
 - [ ] **Step 6**: Add unit tests
+
   ```typescript
   it('should wrap button in heading when titleHeadingLevel is set', () => {
     accordion.titleHeadingLevel.set(3);
@@ -288,6 +310,7 @@ This checklist provides exact implementation steps for each gap. Check off items
   - Verify screen reader announces heading
 
 **Verification**:
+
 - Heading wrapper appears when input is set
 - `aria-level` matches input value
 - `.accordion-title` remains on button element
@@ -303,16 +326,19 @@ This checklist provides exact implementation steps for each gap. Check off items
 #### 5.1: FR-017a - Duplicate panelId Detection
 
 - [ ] **Step 1**: Inject ErrorHandler
+
   ```typescript
   readonly #errorHandler = inject(ErrorHandler);
   ```
 
 - [ ] **Step 2**: Add panelId registry
+
   ```typescript
   #panelRegistry = new Map<string, NfsAccordionItemDef[]>();
   ```
 
 - [ ] **Step 3**: Validate on registration
+
   ```typescript
   registerItem(item: NfsAccordionItemDef): void {
     const panelId = item.panelId();
@@ -352,6 +378,7 @@ This checklist provides exact implementation steps for each gap. Check off items
 #### 5.3: FR-067b - Deep Link Error Handling
 
 - [ ] **Step 5**: Wrap deep link initialization
+
   ```typescript
   #handleInitialHash(): void {
     const hash = this.#location.hash().substring(1); // Remove '#'
@@ -381,13 +408,12 @@ This checklist provides exact implementation steps for each gap. Check off items
 #### 5.5: FR-110a - Input Validation (Partial - validators.ts exists)
 
 - [ ] **Step 7**: Add ErrorHandler calls to existing validators
+
   ```typescript
   // In validators.ts coercion functions
   export function coerceDeepLinkSmudgeDelay(value: number): number {
     if (value < 0) {
-      inject(ErrorHandler).handleError(
-        new Error(`deepLinkSmudgeDelay must be non-negative. Converting ${value} to ${Math.abs(value)}.`)
-      );
+      inject(ErrorHandler).handleError(new Error(`deepLinkSmudgeDelay must be non-negative. Converting ${value} to ${Math.abs(value)}.`));
       return Math.abs(value);
     }
     return value;
@@ -395,19 +421,23 @@ This checklist provides exact implementation steps for each gap. Check off items
   ```
 
 - [ ] **Step 8**: Add unit tests for each diagnostic
+
   ```typescript
   it('should call ErrorHandler on duplicate panelId', () => {
     const errorSpy = spyOn(errorHandler, 'handleError');
     accordion.registerItem(item1); // panelId: 'panel-1'
     accordion.registerItem(item2); // panelId: 'panel-1' (duplicate)
 
-    expect(errorSpy).toHaveBeenCalledWith(jasmine.objectContaining({
-      message: jasmine.stringContaining('Duplicate panelId "panel-1"')
-    }));
+    expect(errorSpy).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        message: jasmine.stringContaining('Duplicate panelId "panel-1"'),
+      }),
+    );
   });
   ```
 
 **Verification**:
+
 - All 5 validation points report errors via ErrorHandler
 - Error messages match spec format
 - Unit tests verify ErrorHandler invocation
@@ -420,6 +450,7 @@ This checklist provides exact implementation steps for each gap. Check off items
 **Files**: `packages/ngx-foundation-sites/.storybook/stories/accordion/FoundationApiParity.story.ts`
 
 - [ ] **Step 1**: Create new story file
+
   ```typescript
   import type { Meta, StoryObj } from '@storybook/angular';
   import { userEvent, within, expect, waitFor } from '@storybook/test';
@@ -432,6 +463,7 @@ This checklist provides exact implementation steps for each gap. Check off items
   ```
 
 - [ ] **Step 2**: Create story with item refs
+
   ```typescript
   export const MethodTests: Story = {
     render: (args) => ({
@@ -477,6 +509,7 @@ This checklist provides exact implementation steps for each gap. Check off items
   ```
 
 - [ ] **Step 3**: Create story for event testing (T138-T139)
+
   ```typescript
   export const EventTests: Story = {
     render: (args) => ({
@@ -526,6 +559,7 @@ This checklist provides exact implementation steps for each gap. Check off items
   ```
 
 **Verification**:
+
 - Methods work correctly in Storybook environment
 - Events emit with correct payloads
 - Play functions pass without errors
@@ -545,6 +579,7 @@ This checklist provides exact implementation steps for each gap. Check off items
   - Line ~124: Third block
 
 - [ ] **Step 2**: Wrap each block in try/catch
+
   ```typescript
   afterNextRender(() => {
     try {
@@ -556,6 +591,7 @@ This checklist provides exact implementation steps for each gap. Check off items
   ```
 
 - [ ] **Step 3**: Add contextual error messages
+
   ```typescript
   catch (error) {
     this.#errorHandler.handleError(
@@ -567,6 +603,7 @@ This checklist provides exact implementation steps for each gap. Check off items
   ```
 
 - [ ] **Step 4**: Test SSR hydration failure scenario
+
   ```typescript
   it('should handle hydration errors gracefully', () => {
     const errorSpy = spyOn(errorHandler, 'handleError');
@@ -581,6 +618,7 @@ This checklist provides exact implementation steps for each gap. Check off items
   ```
 
 **Verification**:
+
 - All `afterNextRender` blocks have error handling
 - Errors are reported with context
 - Component remains usable after hydration failure
@@ -593,21 +631,25 @@ This checklist provides exact implementation steps for each gap. Check off items
 After completing all checklists:
 
 - [ ] **Run full test suite**
+
   ```bash
   npm run test
   ```
 
 - [ ] **Run linting**
+
   ```bash
   npm run lint
   ```
 
 - [ ] **Build library**
+
   ```bash
   npm run build
   ```
 
 - [ ] **Run Storybook tests**
+
   ```bash
   npm run test-storybook
   ```
