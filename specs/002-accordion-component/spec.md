@@ -645,7 +645,7 @@ Note: AR-015 through AR-018 summarize accessibility implications of FR-037 throu
 
 **Status**: The spec documents the originally planned component-based API. The implementation diverged to use template-directives for better @angular/aria integration. **Refer to `quickstart.md` for correct usage examples of the implemented API.**
 
-**Known Gaps in Current Implementation**: See **[GAPS_REMEDIATION.md](./GAPS_REMEDIATION.md)** for comprehensive tracking with validation evidence, exact fix locations, and time estimates.
+**Known Gaps in Current Implementation**: See **[GAPS_REMEDIATION.md](./GAPS_REMEDIATION.md)** for comprehensive tracking with validation evidence, exact fix locations, and time estimates. _(Last validated: 2026-01-11 via GPT-4.1 incremental analysis - 0 new gaps found)_
 
 ### P0 - BLOCKING (Foundation API Parity) - 32 min
 
