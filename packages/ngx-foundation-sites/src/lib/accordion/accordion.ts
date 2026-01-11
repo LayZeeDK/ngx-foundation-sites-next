@@ -6,6 +6,7 @@ import {
   contentChildren,
   DestroyRef,
   effect,
+  ErrorHandler,
   inject,
   Injector,
   input,
@@ -55,6 +56,7 @@ export class NfsAccordion implements AfterContentInit {
   readonly #deepLinkService = inject(AccordionDeepLinkService);
   readonly #destroyRef = inject(DestroyRef);
   readonly #styleLoader = inject(NfsStyleLoader);
+  readonly #errorHandler = inject(ErrorHandler);
 
   /** Cache for item injectors to avoid creating new instances on each change detection */
   readonly #itemInjectorCache = new WeakMap<NfsAccordionItemDef, Injector>();
@@ -137,6 +139,9 @@ export class NfsAccordion implements AfterContentInit {
 
   /** Track previous expansion states for emitting down/up events */
   #previousExpandedStates = new Map<string, boolean>();
+
+  /** Registry for detecting duplicate panelIds (FR-017a) */
+  #panelIdRegistry = new Map<string, number[]>();
 
   constructor() {
     // Load component styles on first render (reference-counted)
@@ -269,7 +274,10 @@ export class NfsAccordion implements AfterContentInit {
    * when the accordion structure needs to render the trigger button.
    */
   ngAfterContentInit(): void {
-    for (const item of this.itemDefs()) {
+    const items = this.itemDefs();
+
+    for (let index = 0; index < items.length; index++) {
+      const item = items[index];
       const injector = Injector.create({
         providers: [{ provide: NfsAccordionItemDef, useValue: item }],
         parent: this.#injector,
@@ -286,7 +294,35 @@ export class NfsAccordion implements AfterContentInit {
       );
       view.detectChanges(); // Ensure directive constructors run
       view.destroy(); // Safe to destroy - directive instances & templateRefs remain valid
+
+      // FR-017a: Detect duplicate panelIds
+      const panelId = item.panelId();
+      const existingIndexes = this.#panelIdRegistry.get(panelId) ?? [];
+      existingIndexes.push(index);
+      this.#panelIdRegistry.set(panelId, existingIndexes);
+
+      if (existingIndexes.length > 1) {
+        this.#errorHandler.handleError(
+          new Error(
+            `NfsAccordion: Duplicate panelId "${panelId}" detected. ` +
+              `Conflicting items at indexes: [${existingIndexes.join(', ')}]. ` +
+              `Using first registered item. Ensure each panelId is unique.`,
+          ),
+        );
+      }
+
+      // FR-026a: Detect missing header template
+      // Note: headerDef is populated during view.detectChanges() above
+      if (!item.headerDef()) {
+        this.#errorHandler.handleError(
+          new Error(
+            `NfsAccordion: Missing <ng-template nfsAccordionHeader> in accordion item at index ${index} ` +
+              `(panelId: "${panelId}"). Item will render but may not be keyboard accessible.`,
+          ),
+        );
+      }
     }
+
     this.initialized.set(true);
   }
 
@@ -344,6 +380,14 @@ export class NfsAccordion implements AfterContentInit {
           this.deepLinkSmudgeOffset(),
         );
       }
+    } else {
+      // FR-067b: Report deep link target not found
+      this.#errorHandler.handleError(
+        new Error(
+          `NfsAccordion: Deep link target not found. Panel with id "${hashPanelId}" ` +
+            `does not exist. Available panels: [${items.map((i) => i.panelId()).join(', ')}].`,
+        ),
+      );
     }
   }
 

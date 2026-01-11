@@ -1,5 +1,6 @@
 import {
   Component,
+  ErrorHandler,
   provideZonelessChangeDetection,
   signal,
   viewChild,
@@ -1213,6 +1214,185 @@ describe('NfsAccordion', () => {
           panels[index].getAttribute('id'),
         );
       });
+    });
+  });
+
+  describe('ErrorHandler diagnostics', () => {
+    it('should call ErrorHandler on duplicate panelId (FR-017a)', async () => {
+      // Create a test host with duplicate panelIds
+      @Component({
+        template: `
+          <nfs-accordion>
+            <ng-template nfsAccordionItem panelId="duplicate-id">
+              <ng-template nfsAccordionHeader>Item 1</ng-template>
+              <ng-template nfsAccordionContent>Content 1</ng-template>
+            </ng-template>
+            <ng-template nfsAccordionItem panelId="duplicate-id">
+              <ng-template nfsAccordionHeader>Item 2</ng-template>
+              <ng-template nfsAccordionContent>Content 2</ng-template>
+            </ng-template>
+          </nfs-accordion>
+        `,
+        imports: [
+          NfsAccordion,
+          NfsAccordionItemDef,
+          NfsAccordionHeaderDef,
+          NfsAccordionContentDef,
+        ],
+      })
+      class DuplicatePanelIdHost {}
+
+      const errorSpy = vi.fn();
+      const mockErrorHandler = { handleError: errorSpy };
+
+      vi.clearAllMocks();
+      TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [DuplicatePanelIdHost],
+        providers: [
+          provideZonelessChangeDetection(),
+          { provide: AccordionDeepLinkService, useValue: mockDeepLinkService },
+          { provide: ErrorHandler, useValue: mockErrorHandler },
+        ],
+      }).compileComponents();
+
+      const dupFixture = TestBed.createComponent(DuplicatePanelIdHost);
+      dupFixture.detectChanges();
+
+      expect(errorSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: expect.stringContaining('Duplicate panelId "duplicate-id"'),
+        }),
+      );
+
+      dupFixture.destroy();
+    });
+
+    it('should call ErrorHandler on missing header (FR-026a)', async () => {
+      // Create a test host with missing header
+      @Component({
+        template: `
+          <nfs-accordion>
+            <ng-template nfsAccordionItem panelId="no-header">
+              <!-- Missing nfsAccordionHeader -->
+              <ng-template nfsAccordionContent>Content only</ng-template>
+            </ng-template>
+          </nfs-accordion>
+        `,
+        imports: [
+          NfsAccordion,
+          NfsAccordionItemDef,
+          NfsAccordionHeaderDef,
+          NfsAccordionContentDef,
+        ],
+      })
+      class MissingHeaderHost {}
+
+      const errorSpy = vi.fn();
+      const mockErrorHandler = { handleError: errorSpy };
+
+      vi.clearAllMocks();
+      TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [MissingHeaderHost],
+        providers: [
+          provideZonelessChangeDetection(),
+          { provide: AccordionDeepLinkService, useValue: mockDeepLinkService },
+          { provide: ErrorHandler, useValue: mockErrorHandler },
+        ],
+      }).compileComponents();
+
+      const missingFixture = TestBed.createComponent(MissingHeaderHost);
+      missingFixture.detectChanges();
+
+      expect(errorSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: expect.stringContaining(
+            'Missing <ng-template nfsAccordionHeader>',
+          ),
+        }),
+      );
+
+      missingFixture.destroy();
+    });
+
+    it('should call ErrorHandler when deep link target not found (FR-067b)', async () => {
+      const errorSpy = vi.fn();
+      const mockErrorHandler = { handleError: errorSpy };
+      const deepLinkMock = {
+        getHashPanelId: vi.fn().mockReturnValue('non-existent-panel'),
+        updateHash: vi.fn(),
+        clearHash: vi.fn(),
+        scrollToPanel: vi.fn(),
+        onHashChange: vi.fn().mockReturnValue(() => undefined),
+      };
+
+      vi.clearAllMocks();
+      TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [TestHostComponent],
+        providers: [
+          provideZonelessChangeDetection(),
+          { provide: AccordionDeepLinkService, useValue: deepLinkMock },
+          { provide: ErrorHandler, useValue: mockErrorHandler },
+        ],
+      }).compileComponents();
+
+      const deepLinkFixture = TestBed.createComponent(TestHostComponent);
+      deepLinkFixture.componentInstance.deepLink.set(true);
+      deepLinkFixture.detectChanges();
+      await deepLinkFixture.whenStable();
+
+      expect(errorSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: expect.stringContaining('Deep link target not found'),
+        }),
+      );
+      expect(errorSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: expect.stringContaining('non-existent-panel'),
+        }),
+      );
+
+      deepLinkFixture.destroy();
+    });
+
+    it('should include available panel IDs in deep link error message', async () => {
+      const errorSpy = vi.fn();
+      const mockErrorHandler = { handleError: errorSpy };
+      const deepLinkMock = {
+        getHashPanelId: vi.fn().mockReturnValue('unknown-panel'),
+        updateHash: vi.fn(),
+        clearHash: vi.fn(),
+        scrollToPanel: vi.fn(),
+        onHashChange: vi.fn().mockReturnValue(() => undefined),
+      };
+
+      vi.clearAllMocks();
+      TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [TestHostComponent],
+        providers: [
+          provideZonelessChangeDetection(),
+          { provide: AccordionDeepLinkService, useValue: deepLinkMock },
+          { provide: ErrorHandler, useValue: mockErrorHandler },
+        ],
+      }).compileComponents();
+
+      const dlFixture = TestBed.createComponent(TestHostComponent);
+      dlFixture.componentInstance.deepLink.set(true);
+      dlFixture.detectChanges();
+      await dlFixture.whenStable();
+
+      expect(errorSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: expect.stringContaining(
+            'Available panels: [panel-1, panel-2, panel-3]',
+          ),
+        }),
+      );
+
+      dlFixture.destroy();
     });
   });
 });
