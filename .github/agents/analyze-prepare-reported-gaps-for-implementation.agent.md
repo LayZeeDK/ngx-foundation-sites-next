@@ -291,8 +291,8 @@ test -f gap-analysis-report.md && echo "✓ Prerequisite found" || echo "✗ MIS
    ▶ Next Steps:
 
    1. Run ONE of these commands to generate the prerequisite file:
-      • /analyze-brief-gpt-5-mini (faster, uses GPT-4o-mini)
-      • /analyze-brief-gpt-4-1 (slower, more thorough)
+      • /analyze-report-gaps-gpt-5-mini (faster, uses GPT-4o-mini)
+      • /analyze-report-gaps-gpt-4-1 (slower, more thorough)
 
    2. After the report is generated, re-run: /analyze-prepare-reported-gaps-for-implementation
 

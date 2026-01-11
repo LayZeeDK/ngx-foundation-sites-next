@@ -587,7 +587,7 @@ EXIT (do NOT continue to Step 1)
 
 IF total_tokens > 180000:
 STOP execution immediately
-OUTPUT: "Feature too large (~[total]K tokens). Use /analyze-brief-gpt-4-1 with GPT-4.1 (1M context)."
+OUTPUT: "Feature too large (~[total]K tokens). Use /analyze-report-gaps-gpt-4-1 with GPT-4.1 (1M context)."
 EXIT
 
 ```
@@ -685,11 +685,11 @@ DO NOT write XML to the output file.
 
 ---
 
-## Real-World Application: `/analyze-brief-gpt-5-mini`
+## Real-World Application: `/analyze-report-gaps-gpt-5-mini`
 
 ### Applied Optimizations
 
-Our implementation in `.github/agents/analyze-brief-gpt-5-mini.agent.md` applies all 7 optimizations:
+Our implementation in `.github/agents/analyze-report-gaps-gpt-5-mini.agent.md` applies all 7 optimizations:
 
 #### 1. CTCO Framework ✅
 
@@ -925,7 +925,7 @@ Transformation 5: ORDER by dependencies (infrastructure → components → tests
    - Output: tasks.md with T### IDs
    - Process: Mechanical transformations
 
-2. **Gap analysis** (`/analyze-brief-gpt-5-mini`)
+2. **Gap analysis** (`/analyze-report-gaps-gpt-5-mini`)
    - Input: spec.md + implementation files (<180K)
    - Output: gap-analysis-report.md
    - Process: Keyword search + pattern matching
@@ -1017,9 +1017,9 @@ diff tasks-haiku.md tasks-gpt5mini.md
 
 ## Example Implementations
 
-### 1. Gap Analysis: `/analyze-brief-gpt-5-mini`
+### 1. Gap Analysis: `/analyze-report-gaps-gpt-5-mini`
 
-**Location**: `.github/agents/analyze-brief-gpt-5-mini.agent.md`
+**Location**: `.github/agents/analyze-report-gaps-gpt-5-mini.agent.md`
 
 **Optimizations applied**:
 

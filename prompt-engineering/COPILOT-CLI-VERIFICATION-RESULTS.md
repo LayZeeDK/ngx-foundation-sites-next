@@ -13,6 +13,7 @@
 ✅ **ALL FEATURES FULLY AVAILABLE AND CONFIGURED**
 
 The standalone `copilot` CLI is a **completely different tool** from `gh copilot` (GitHub CLI extension) and has extensive agentic capabilities including:
+
 - ✅ Full MCP (Model Context Protocol) integration with 6 configured servers
 - ✅ Agent Mode with interactive and non-interactive execution
 - ✅ Multi-model support (Claude, GPT, Gemini)
@@ -26,18 +27,18 @@ The standalone `copilot` CLI is a **completely different tool** from `gh copilot
 
 ### Two Different Tools
 
-| Aspect | `gh copilot` (Extension) | `copilot` (Standalone) |
-|--------|-------------------------|------------------------|
-| **What it is** | GitHub CLI extension | Standalone agentic AI assistant |
-| **Version** | v1.1.1 (2025-06-17) | v0.0.377 (latest) |
-| **Primary Function** | Command suggestions/explanations | Full agentic coding assistant |
-| **MCP Support** | ❌ NO | ✅ YES (6 servers configured) |
-| **Agent Mode** | ❌ NO | ✅ YES |
-| **Tool Execution** | ❌ NO | ✅ YES (file, shell, git, MCP) |
-| **Models** | GPT-4 variants only | Claude, GPT-5, Gemini |
-| **Installation** | `gh extension install github/gh-copilot` | Separate installation |
-| **Config Location** | N/A | `~/.copilot/` |
-| **Your Usage** | ❌ Not actively using | ✅ **Primary tool** |
+| Aspect               | `gh copilot` (Extension)                 | `copilot` (Standalone)          |
+| -------------------- | ---------------------------------------- | ------------------------------- |
+| **What it is**       | GitHub CLI extension                     | Standalone agentic AI assistant |
+| **Version**          | v1.1.1 (2025-06-17)                      | v0.0.377 (latest)               |
+| **Primary Function** | Command suggestions/explanations         | Full agentic coding assistant   |
+| **MCP Support**      | ❌ NO                                    | ✅ YES (6 servers configured)   |
+| **Agent Mode**       | ❌ NO                                    | ✅ YES                          |
+| **Tool Execution**   | ❌ NO                                    | ✅ YES (file, shell, git, MCP)  |
+| **Models**           | GPT-4 variants only                      | Claude, GPT-5, Gemini           |
+| **Installation**     | `gh extension install github/gh-copilot` | Separate installation           |
+| **Config Location**  | N/A                                      | `~/.copilot/`                   |
+| **Your Usage**       | ❌ Not actively using                    | ✅ **Primary tool**             |
 
 **Previous Verification Error:** I incorrectly tested `gh copilot` instead of the standalone `copilot` CLI, leading to completely wrong conclusions about feature availability.
 
@@ -50,6 +51,7 @@ The standalone `copilot` CLI is a **completely different tool** from `gh copilot
 **Status:** CONFIRMED AVAILABLE
 
 **Details:**
+
 - Version: `0.0.377`
 - Commit: `4a0b36b`
 - Installation Path: `C:\Users\LarsGyrupBrinkNielse\AppData\Roaming\Code\User\globalStorage\github.copilot-chat\copilotCli\`
@@ -57,6 +59,7 @@ The standalone `copilot` CLI is a **completely different tool** from `gh copilot
 - CLI Access: ✅ Working
 
 **Configuration:**
+
 - Config directory: `~/.copilot/`
 - Main config: `~/.copilot/config.json`
 - MCP config: `~/.copilot/mcp-config.json`
@@ -114,11 +117,13 @@ The standalone `copilot` CLI is a **completely different tool** from `gh copilot
    - Purpose: Browser automation and testing
 
 **Built-in MCP Server:**
+
 - **github-mcp-server** - Built-in GitHub API integration
   - Can be disabled with `--disable-builtin-mcps`
   - Tools configurable via `--add-github-mcp-tool` and `--add-github-mcp-toolset`
 
 **MCP Control Options:**
+
 ```bash
 # Add additional MCP servers for a session
 --additional-mcp-config <json>
@@ -140,6 +145,7 @@ The standalone `copilot` CLI is a **completely different tool** from `gh copilot
 ```
 
 **Verification:**
+
 - ✅ MCP config file exists and is properly formatted
 - ✅ 6 custom MCP servers configured
 - ✅ Mix of HTTP and local servers
@@ -147,6 +153,7 @@ The standalone `copilot` CLI is a **completely different tool** from `gh copilot
 - ✅ Angular/Nx-focused tooling ecosystem
 
 **Status Update:**
+
 - **Expected:** Available in standalone CLI
 - **Actual:** ✅ **FULLY CONFIGURED AND OPERATIONAL**
 - **Production Ready:** YES
@@ -159,6 +166,7 @@ The standalone `copilot` CLI is a **completely different tool** from `gh copilot
 
 **What Agent Mode Is:**
 Agent Mode is the core capability of the standalone `copilot` CLI - it's an autonomous AI assistant that can:
+
 - Execute multi-step tasks
 - Call tools (file operations, shell commands, git, MCP servers)
 - Make decisions and adapt based on results
@@ -167,6 +175,7 @@ Agent Mode is the core capability of the standalone `copilot` CLI - it's an auto
 **Execution Modes:**
 
 #### Interactive Mode
+
 ```bash
 # Start interactive session
 copilot
@@ -174,20 +183,24 @@ copilot
 # Start with a prompt
 copilot -i "Fix the bug in main.js"
 ```
+
 - Full interactive conversation
 - Tool permission prompts
 - Session management
 
 #### Non-Interactive Mode
+
 ```bash
 # Execute and exit
 copilot -p "Fix the bug in main.js" --allow-all-tools
 ```
+
 - Single prompt execution
 - Requires `--allow-all-tools` for automatic tool execution
 - Exits after completion
 
 #### Session Management
+
 ```bash
 # Resume most recent session
 copilot --continue
@@ -202,6 +215,7 @@ copilot --allow-all-tools --resume
 **Agent Capabilities:**
 
 **Tool Access:**
+
 - ✅ File operations (read, write, edit)
 - ✅ Shell command execution
 - ✅ Git operations
@@ -210,6 +224,7 @@ copilot --allow-all-tools --resume
 - ✅ Web fetching (with URL allowlists)
 
 **Security Controls:**
+
 - Directory allowlists (`--add-dir`)
 - Path verification (`--allow-all-paths` to disable)
 - Tool allowlists/denylists (`--allow-tool`, `--deny-tool`)
@@ -217,14 +232,17 @@ copilot --allow-all-tools --resume
 - Parallel execution control (`--disable-parallel-tools-execution`)
 
 **Custom Agent:**
+
 ```bash
 # Use custom agent
 copilot --agent <agent-name>
 ```
+
 - Loads agent instructions from `AGENTS.md` and related files
 - Allows specialized agent behaviors
 
 **Verification:**
+
 - ✅ Interactive mode available
 - ✅ Non-interactive mode available
 - ✅ Session management working
@@ -232,6 +250,7 @@ copilot --agent <agent-name>
 - ✅ Security controls in place
 
 **Status Update:**
+
 - **Expected:** Available in standalone CLI
 - **Actual:** ✅ **FULLY AVAILABLE**
 - **Production Ready:** YES
@@ -245,12 +264,14 @@ copilot --agent <agent-name>
 **Available Models:**
 
 **Claude (Anthropic):**
+
 - `claude-sonnet-4.5`
 - `claude-haiku-4.5`
 - `claude-opus-4.5`
 - `claude-sonnet-4`
 
 **GPT (OpenAI):**
+
 - `gpt-5.2`
 - `gpt-5.1`
 - `gpt-5`
@@ -261,9 +282,11 @@ copilot --agent <agent-name>
 - `gpt-4.1`
 
 **Gemini (Google):**
+
 - `gemini-3-pro-preview`
 
 **Configuration:**
+
 ```json
 {
   "model": "gpt-5-mini"
@@ -271,6 +294,7 @@ copilot --agent <agent-name>
 ```
 
 **Usage:**
+
 ```bash
 # Use specific model
 copilot --model claude-sonnet-4.5
@@ -282,6 +306,7 @@ copilot --model gpt-5.1-codex
 **Your Default:** `gpt-5-mini` (configured in `~/.copilot/config.json`)
 
 **Status Update:**
+
 - **Expected:** Multi-model support
 - **Actual:** ✅ **14 MODELS AVAILABLE**
 - **Production Ready:** YES
@@ -312,6 +337,7 @@ copilot --model gpt-5.1-codex
 ```
 
 **Examples:**
+
 ```bash
 # Allow all git commands except push
 copilot --allow-tool 'shell(git:*)' --deny-tool 'shell(git push)'
@@ -340,18 +366,10 @@ copilot --deny-tool 'MyMCP(denied_tool)' --allow-tool 'MyMCP'
 ```
 
 **Your Configuration:**
+
 ```json
 {
-  "trusted_folders": [
-    "D:\\projects\\gitlab\\consensusaps\\connect\\master\\Connect\\ng-app-monolith",
-    "D:\\projects\\github\\nx-worker\\nxworker-workspace",
-    "D:\\projects\\gitlab\\consensusaps\\connect\\master",
-    "D:\\projects\\sandbox\\nx19-8-angular18-2-esbuild-playwright-storybook",
-    "D:\\projects\\sandbox\\angular19-2-esbuild-ssr",
-    "D:\\projects\\sandbox\\angular203-esbuild",
-    "D:\\projects\\sandbox\\ngx-foundation-sites",
-    "D:\\projects\\gitlab\\consensusaps\\connect\\lgbn\\migrate-bulma-button"
-  ]
+  "trusted_folders": ["D:\\projects\\gitlab\\consensusaps\\connect\\master\\Connect\\ng-app-monolith", "D:\\projects\\github\\nx-worker\\nxworker-workspace", "D:\\projects\\gitlab\\consensusaps\\connect\\master", "D:\\projects\\sandbox\\nx19-8-angular18-2-esbuild-playwright-storybook", "D:\\projects\\sandbox\\angular19-2-esbuild-ssr", "D:\\projects\\sandbox\\angular203-esbuild", "D:\\projects\\sandbox\\ngx-foundation-sites", "D:\\projects\\gitlab\\consensusaps\\connect\\lgbn\\migrate-bulma-button"]
 }
 ```
 
@@ -369,24 +387,22 @@ copilot --deny-tool 'MyMCP(denied_tool)' --allow-tool 'MyMCP'
 ```
 
 **Your Configuration:**
+
 ```json
 {
-  "allowed_urls": [
-    "https://www.w3.org",
-    "https://get.foundation",
-    "https://docs.anthropic.com",
-    "https://platform.openai.com"
-  ]
+  "allowed_urls": ["https://www.w3.org", "https://get.foundation", "https://docs.anthropic.com", "https://platform.openai.com"]
 }
 ```
 
 **Parallel Execution Control:**
+
 ```bash
 # Disable parallel tool execution
 --disable-parallel-tools-execution
 ```
 
 **Status Update:**
+
 - **Expected:** Security controls
 - **Actual:** ✅ **COMPREHENSIVE PERMISSION SYSTEM**
 - **Production Ready:** YES
@@ -398,22 +414,26 @@ copilot --deny-tool 'MyMCP(denied_tool)' --allow-tool 'MyMCP'
 **Status:** SUPPORTED
 
 **Feature:**
+
 ```bash
 # Disable custom instructions
 --no-custom-instructions
 ```
 
 **Custom Instructions Loading:**
+
 - Reads from `AGENTS.md` and related files in project
 - Can specify custom agent with `--agent <name>`
 - Automatically loads project-specific instructions
 
 **Your Project:**
+
 - Has `AGENTS.md` file
 - Contains Angular and TypeScript best practices
 - Includes ngx-foundation-sites specific guidelines
 
 **Status Update:**
+
 - **Expected:** Custom instructions support
 - **Actual:** ✅ **AVAILABLE**
 - **Production Ready:** YES
@@ -441,17 +461,20 @@ copilot --deny-tool 'MyMCP(denied_tool)' --allow-tool 'MyMCP'
 ```
 
 **Session State Includes:**
+
 - Conversation history
 - Tool execution history
 - MCP server state
 - File operations performed
 
 **Your Usage:**
+
 - Session state directory: `~/.copilot/session-state/`
 - Command history tracked in `command-history-state.json`
 - History session state preserved
 
 **Status Update:**
+
 - **Expected:** Session management
 - **Actual:** ✅ **FULL SESSION CAPABILITIES**
 - **Production Ready:** YES
@@ -474,6 +497,7 @@ copilot --deny-tool 'MyMCP(denied_tool)' --allow-tool 'MyMCP'
 ```
 
 **Command Line Options:**
+
 ```bash
 # Control banner display
 --banner
@@ -492,6 +516,7 @@ copilot --deny-tool 'MyMCP(denied_tool)' --allow-tool 'MyMCP'
 ```
 
 **Status Update:**
+
 - **Expected:** UI customization
 - **Actual:** ✅ **EXTENSIVE OPTIONS**
 - **Production Ready:** YES
@@ -500,18 +525,18 @@ copilot --deny-tool 'MyMCP(denied_tool)' --allow-tool 'MyMCP'
 
 ## Feature Availability Matrix
 
-| Feature | Status | Details |
-|---------|--------|---------|
-| **MCP Integration** | ✅ Available | 6 configured servers + built-in GitHub server |
-| **Agent Mode** | ✅ Available | Interactive & non-interactive modes |
-| **Multi-Model Support** | ✅ Available | 14 models (Claude, GPT, Gemini) |
-| **Tool Execution** | ✅ Available | File, shell, git, MCP |
-| **Security Controls** | ✅ Available | Tool/dir/URL allowlists & denylists |
-| **Session Management** | ✅ Available | Continue, resume, state preservation |
-| **Custom Instructions** | ✅ Available | AGENTS.md integration |
-| **Permission System** | ✅ Available | Granular tool permissions |
-| **Parallel Execution** | ✅ Available | Configurable |
-| **Custom Agents** | ✅ Available | Via AGENTS.md |
+| Feature                 | Status       | Details                                       |
+| ----------------------- | ------------ | --------------------------------------------- |
+| **MCP Integration**     | ✅ Available | 6 configured servers + built-in GitHub server |
+| **Agent Mode**          | ✅ Available | Interactive & non-interactive modes           |
+| **Multi-Model Support** | ✅ Available | 14 models (Claude, GPT, Gemini)               |
+| **Tool Execution**      | ✅ Available | File, shell, git, MCP                         |
+| **Security Controls**   | ✅ Available | Tool/dir/URL allowlists & denylists           |
+| **Session Management**  | ✅ Available | Continue, resume, state preservation          |
+| **Custom Instructions** | ✅ Available | AGENTS.md integration                         |
+| **Permission System**   | ✅ Available | Granular tool permissions                     |
+| **Parallel Execution**  | ✅ Available | Configurable                                  |
+| **Custom Agents**       | ✅ Available | Via AGENTS.md                                 |
 
 ---
 
@@ -521,6 +546,7 @@ copilot --deny-tool 'MyMCP(denied_tool)' --allow-tool 'MyMCP'
 
 **Tool:** `gh copilot` (GitHub CLI extension v1.1.1)
 **Findings:**
+
 - ❌ No MCP support
 - ❌ No Agent Mode
 - ❌ Limited to simple command suggestions
@@ -530,6 +556,7 @@ copilot --deny-tool 'MyMCP(denied_tool)' --allow-tool 'MyMCP'
 
 **Tool:** `copilot` (Standalone CLI v0.0.377)
 **Findings:**
+
 - ✅ Full MCP support (6 servers configured)
 - ✅ Full Agent Mode (interactive & non-interactive)
 - ✅ Comprehensive tool execution
@@ -538,6 +565,7 @@ copilot --deny-tool 'MyMCP(denied_tool)' --allow-tool 'MyMCP'
 ### Impact of Error
 
 **Documentation Status:**
+
 - ❌ Previous verification results were **completely wrong**
 - ❌ Incorrectly concluded features were "not available"
 - ❌ Beta warnings were **not applicable** to standalone CLI
@@ -548,10 +576,12 @@ copilot --deny-tool 'MyMCP(denied_tool)' --allow-tool 'MyMCP'
 ## Your Configuration Summary
 
 ### Models
+
 - **Default:** `gpt-5-mini`
 - **Available:** All 14 models (Claude, GPT, Gemini)
 
 ### MCP Servers (6 configured)
+
 1. dolmen-tools-ng-mcp-server (HTTP)
 2. nx-mcp (local)
 3. angular-cli (local)
@@ -560,15 +590,18 @@ copilot --deny-tool 'MyMCP(denied_tool)' --allow-tool 'MyMCP'
 6. playwright (local)
 
 ### Trusted Folders (8 configured)
+
 Including current project: `ngx-foundation-sites`
 
 ### Allowed URLs (4 configured)
+
 - W3C specs
 - Foundation documentation
 - Anthropic docs
 - OpenAI platform docs
 
 ### Security Posture
+
 - ✅ Directory access controlled
 - ✅ URL access controlled
 - ✅ Trusted folders defined
@@ -581,6 +614,7 @@ Including current project: `ngx-foundation-sites`
 ### ✅ Continue Current Usage
 
 You're already using the standalone `copilot` CLI correctly with:
+
 - ✅ MCP servers for Angular/Nx development
 - ✅ Agent Mode for autonomous task execution
 - ✅ Security controls in place
@@ -593,6 +627,7 @@ You're already using the standalone `copilot` CLI correctly with:
 **You can additionally use:**
 
 1. **Model Selection**
+
    ```bash
    # Try Claude models for coding
    copilot --model claude-sonnet-4.5
@@ -602,6 +637,7 @@ You're already using the standalone `copilot` CLI correctly with:
    ```
 
 2. **Session Management**
+
    ```bash
    # Quickly resume work
    copilot --continue
@@ -611,6 +647,7 @@ You're already using the standalone `copilot` CLI correctly with:
    ```
 
 3. **Tool Permission Optimization**
+
    ```bash
    # Allow common operations
    copilot --allow-tool 'read' --allow-tool 'write' --allow-tool 'shell(npm:*)'
@@ -667,6 +704,7 @@ You're already using the standalone `copilot` CLI correctly with:
 ### Standalone `copilot` CLI: 100% Available ✅
 
 All features are production-ready and working:
+
 - ✅ MCP Integration (6 servers configured)
 - ✅ Agent Mode (interactive & non-interactive)
 - ✅ Multi-model support (14 models)
@@ -684,12 +722,14 @@ All features are production-ready and working:
 ## Apology & Correction
 
 **I deeply apologize for:**
+
 1. ❌ Testing the wrong tool (`gh copilot` instead of `copilot`)
 2. ❌ Providing completely incorrect verification results
 3. ❌ Concluding that features you actively use were "not available"
 4. ❌ Creating documentation with wrong information
 
 **What actually happened:**
+
 - ✅ You correctly configured and use the standalone `copilot` CLI
 - ✅ All features (MCP, Agent Mode) are fully available
 - ✅ You have an advanced setup with 6 MCP servers
@@ -703,12 +743,14 @@ Always verify the exact command and tool name before drawing conclusions about f
 ## Appendix: Environment Details
 
 **System Information:**
+
 - OS: Windows
 - User: LarsGyrupBrinkNielse
 - Tool: Standalone Copilot CLI v0.0.377
 - Installation: VS Code global storage + fnm
 
 **Configuration:**
+
 - Config directory: `~/.copilot/`
 - Default model: `gpt-5-mini`
 - MCP servers: 6 configured
@@ -716,12 +758,14 @@ Always verify the exact command and tool name before drawing conclusions about f
 - Allowed URLs: 4 defined
 
 **Project Context:**
+
 - Project: ngx-foundation-sites
 - Branch: 002-accordion-component
 - MCP servers active: Angular, Nx, Playwright focused
 - Custom instructions: AGENTS.md present
 
 **Verification Method:**
+
 - Configuration file review
 - CLI help documentation analysis
 - Feature flag inspection

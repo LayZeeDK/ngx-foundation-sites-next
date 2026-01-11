@@ -18,36 +18,39 @@ These are **completely different tools** with vastly different capabilities.
 
 ## Feature Comparison Matrix
 
-| Feature | `gh copilot` | `copilot` |
-|---------|-------------|-----------|
-| **Full Name** | GitHub Copilot for GitHub CLI | GitHub Copilot CLI (Standalone) |
-| **Installation** | `gh extension install github/gh-copilot` | Separate installation |
-| **Version** | v1.1.1 (2025-06-17) | v0.0.377 (latest) |
-| **Primary Purpose** | Command suggestions/explanations | Full agentic coding assistant |
-| **MCP Support** | ❌ NO | ✅ YES |
-| **Agent Mode** | ❌ NO | ✅ YES |
-| **Multi-Model** | ❌ NO (GPT-4 only) | ✅ YES (Claude, GPT, Gemini) |
-| **Tool Execution** | ❌ NO | ✅ YES (file, shell, git, MCP) |
-| **Interactive Mode** | ❌ NO | ✅ YES |
-| **Session Management** | ❌ NO | ✅ YES |
-| **Custom Instructions** | ❌ NO | ✅ YES (AGENTS.md) |
-| **Config File** | ❌ None | ✅ ~/.copilot/ |
-| **Security Controls** | ❌ Minimal | ✅ Comprehensive |
-| **Use Case** | Quick command help | Full development workflows |
+| Feature                 | `gh copilot`                             | `copilot`                       |
+| ----------------------- | ---------------------------------------- | ------------------------------- |
+| **Full Name**           | GitHub Copilot for GitHub CLI            | GitHub Copilot CLI (Standalone) |
+| **Installation**        | `gh extension install github/gh-copilot` | Separate installation           |
+| **Version**             | v1.1.1 (2025-06-17)                      | v0.0.377 (latest)               |
+| **Primary Purpose**     | Command suggestions/explanations         | Full agentic coding assistant   |
+| **MCP Support**         | ❌ NO                                    | ✅ YES                          |
+| **Agent Mode**          | ❌ NO                                    | ✅ YES                          |
+| **Multi-Model**         | ❌ NO (GPT-4 only)                       | ✅ YES (Claude, GPT, Gemini)    |
+| **Tool Execution**      | ❌ NO                                    | ✅ YES (file, shell, git, MCP)  |
+| **Interactive Mode**    | ❌ NO                                    | ✅ YES                          |
+| **Session Management**  | ❌ NO                                    | ✅ YES                          |
+| **Custom Instructions** | ❌ NO                                    | ✅ YES (AGENTS.md)              |
+| **Config File**         | ❌ None                                  | ✅ ~/.copilot/                  |
+| **Security Controls**   | ❌ Minimal                               | ✅ Comprehensive                |
+| **Use Case**            | Quick command help                       | Full development workflows      |
 
 ---
 
 ## Tool 1: `gh copilot` (GitHub CLI Extension)
 
 ### What It Is
+
 A simple GitHub CLI extension that provides command suggestions and explanations.
 
 ### Installation
+
 ```bash
 gh extension install github/gh-copilot
 ```
 
 ### Available Commands
+
 ```bash
 gh copilot suggest   # Suggest shell commands
 gh copilot explain   # Explain commands
@@ -56,6 +59,7 @@ gh copilot alias     # Generate shell aliases
 ```
 
 ### Example Usage
+
 ```bash
 # Get command suggestion
 $ gh copilot suggest "git command to undo last commit"
@@ -67,6 +71,7 @@ Explanation: Runs Ubuntu container interactively with bash shell...
 ```
 
 ### Limitations
+
 - ❌ No MCP server support
 - ❌ No autonomous agent capabilities
 - ❌ No file operations
@@ -76,6 +81,7 @@ Explanation: Runs Ubuntu container interactively with bash shell...
 - ❌ Limited model selection
 
 ### When to Use
+
 - Quick command suggestions
 - Command explanations
 - Simple one-off queries
@@ -86,19 +92,24 @@ Explanation: Runs Ubuntu container interactively with bash shell...
 ## Tool 2: `copilot` (Standalone CLI)
 
 ### What It Is
+
 A full-featured agentic AI coding assistant that can autonomously perform multi-step development tasks.
 
 ### Installation
+
 Separate installation (via VS Code extension or standalone installer)
 
 ### Check Version
+
 ```bash
 copilot --version
 # Output: 0.0.377
 ```
 
 ### Available Models
+
 **14 models to choose from:**
+
 - Claude: Sonnet 4.5, Haiku 4.5, Opus 4.5, Sonnet 4
 - GPT: 5.2, 5.1, 5, 5.1-codex-max, 5.1-codex, 5.1-codex-mini, 5-mini, 4.1
 - Gemini: 3 Pro Preview
@@ -106,6 +117,7 @@ copilot --version
 ### Core Capabilities
 
 #### 1. Agent Mode (Interactive & Non-Interactive)
+
 ```bash
 # Start interactive session
 copilot
@@ -121,6 +133,7 @@ copilot --resume
 ```
 
 #### 2. MCP (Model Context Protocol) Integration
+
 ```bash
 # Configure MCP servers in ~/.copilot/mcp-config.json
 {
@@ -145,7 +158,9 @@ copilot --enable-all-github-mcp-tools
 ```
 
 #### 3. Tool Execution
+
 The agent can:
+
 - ✅ Read files
 - ✅ Write files
 - ✅ Execute shell commands
@@ -154,6 +169,7 @@ The agent can:
 - ✅ Fetch from URLs
 
 #### 4. Security Controls
+
 ```bash
 # Allow specific directories
 copilot --add-dir ~/projects
@@ -171,6 +187,7 @@ copilot --deny-url malicious-site.com
 ```
 
 #### 5. Model Selection
+
 ```bash
 # Use Claude Sonnet 4.5
 copilot --model claude-sonnet-4.5
@@ -183,6 +200,7 @@ copilot --model gemini-3-pro-preview
 ```
 
 #### 6. Custom Instructions
+
 ```bash
 # Loads from AGENTS.md in project
 copilot
@@ -195,6 +213,7 @@ copilot --no-custom-instructions
 ```
 
 ### Configuration Files
+
 ```
 ~/.copilot/
 ├── config.json              # Main configuration
@@ -205,25 +224,21 @@ copilot --no-custom-instructions
 ```
 
 ### Example config.json
+
 ```json
 {
   "model": "gpt-5-mini",
   "banner": "never",
   "render_markdown": true,
-  "trusted_folders": [
-    "/path/to/project1",
-    "/path/to/project2"
-  ],
-  "allowed_urls": [
-    "https://docs.anthropic.com",
-    "https://platform.openai.com"
-  ]
+  "trusted_folders": ["/path/to/project1", "/path/to/project2"],
+  "allowed_urls": ["https://docs.anthropic.com", "https://platform.openai.com"]
 }
 ```
 
 ### Example Workflows
 
 #### Workflow 1: Fix a Bug
+
 ```bash
 $ copilot -i "Fix the authentication bug in login.ts"
 
@@ -238,6 +253,7 @@ $ copilot -i "Fix the authentication bug in login.ts"
 ```
 
 #### Workflow 2: Multi-File Refactoring
+
 ```bash
 $ copilot --allow-all-tools -p "Refactor user service to use async/await"
 
@@ -251,6 +267,7 @@ $ copilot --allow-all-tools -p "Refactor user service to use async/await"
 ```
 
 #### Workflow 3: Use MCP Server Tools
+
 ```bash
 $ copilot -i "Use the Angular CLI to generate a new component called UserProfile"
 
@@ -261,6 +278,7 @@ $ copilot -i "Use the Angular CLI to generate a new component called UserProfile
 ```
 
 ### When to Use
+
 - ✅ Multi-step development tasks
 - ✅ Autonomous code refactoring
 - ✅ Complex debugging workflows
@@ -273,6 +291,7 @@ $ copilot -i "Use the Angular CLI to generate a new component called UserProfile
 ## Which Tool Should You Use?
 
 ### Use `gh copilot` Extension If:
+
 - You need quick command suggestions
 - You want command explanations
 - You already use GitHub CLI
@@ -280,6 +299,7 @@ $ copilot -i "Use the Angular CLI to generate a new component called UserProfile
 - Simple one-off queries
 
 ### Use `copilot` Standalone CLI If:
+
 - ✅ **You need autonomous agent capabilities** (RECOMMENDED)
 - ✅ **You want MCP server integration** (RECOMMENDED)
 - ✅ **You have custom instructions (AGENTS.md)** (RECOMMENDED)
@@ -293,18 +313,23 @@ $ copilot -i "Use the Angular CLI to generate a new component called UserProfile
 ## Verification Error Explanation
 
 ### What Happened
+
 In the initial verification, I tested **`gh copilot`** (GitHub CLI extension) instead of **`copilot`** (standalone CLI).
 
 This led to completely incorrect conclusions:
+
 - ❌ Incorrectly concluded MCP was "not available"
 - ❌ Incorrectly concluded Agent Mode was "not available"
 - ❌ Incorrectly marked features as "beta" when they're production-ready in standalone CLI
 
 ### Why the Confusion
+
 Both tools can be referred to as "GitHub Copilot CLI" in documentation, leading to ambiguity about which tool is being discussed.
 
 ### Corrected Understanding
+
 The user was correctly using the **standalone `copilot` CLI** (v0.0.377) with:
+
 - ✅ 6 configured MCP servers
 - ✅ Full Agent Mode capabilities
 - ✅ Multi-model support
@@ -359,6 +384,7 @@ config.json  mcp-config.json  session-state/  logs/
 If you're currently using `gh copilot` and want the full features of the standalone `copilot` CLI:
 
 ### Step 1: Check if Already Installed
+
 ```bash
 copilot --version
 ```
@@ -366,7 +392,9 @@ copilot --version
 If not installed, install from VS Code or standalone installer.
 
 ### Step 2: Configure MCP Servers
+
 Create `~/.copilot/mcp-config.json`:
+
 ```json
 {
   "mcpServers": {
@@ -381,7 +409,9 @@ Create `~/.copilot/mcp-config.json`:
 ```
 
 ### Step 3: Configure Settings
+
 Create `~/.copilot/config.json`:
+
 ```json
 {
   "model": "gpt-5-mini",
@@ -391,6 +421,7 @@ Create `~/.copilot/config.json`:
 ```
 
 ### Step 4: Start Using
+
 ```bash
 # Instead of: gh copilot suggest "command"
 # Use: copilot -i "suggest a command to..."
@@ -403,21 +434,23 @@ Create `~/.copilot/config.json`:
 
 ## Summary
 
-| Aspect | `gh copilot` | `copilot` |
-|--------|-------------|-----------|
-| **Complexity** | Simple | Advanced |
-| **Setup** | Easy | Requires configuration |
-| **Features** | Limited | Comprehensive |
-| **Use Case** | Quick help | Full development |
-| **MCP** | ❌ NO | ✅ YES |
-| **Agent Mode** | ❌ NO | ✅ YES |
-| **Recommended For** | Beginners | Power users |
+| Aspect              | `gh copilot` | `copilot`              |
+| ------------------- | ------------ | ---------------------- |
+| **Complexity**      | Simple       | Advanced               |
+| **Setup**           | Easy         | Requires configuration |
+| **Features**        | Limited      | Comprehensive          |
+| **Use Case**        | Quick help   | Full development       |
+| **MCP**             | ❌ NO        | ✅ YES                 |
+| **Agent Mode**      | ❌ NO        | ✅ YES                 |
+| **Recommended For** | Beginners    | Power users            |
 
 **Bottom Line:**
+
 - Use `gh copilot` for simple command suggestions
 - Use `copilot` (standalone) for serious development work with MCP, Agent Mode, and multi-model support
 
 **Your Current Setup:**
+
 - ✅ Using `copilot` standalone CLI (correct choice for your needs)
 - ✅ 6 MCP servers configured
 - ✅ Full Agent Mode capabilities

@@ -89,16 +89,16 @@ Use Haiku-optimized commands for 66% cost savings with minimal quality loss:
 
 **Haiku-optimized commands** for Claude Code + GitHub Copilot, **GPT-5 Mini commands** for GitHub Copilot only:
 
-| Spec Kit command            | Claude Code | GitHub Copilot CLI                                                                        | Cost Savings                           |
-| --------------------------- | ----------- | ----------------------------------------------------------------------------------------- | -------------------------------------- |
-| `/specify-haiku-4-5`        | Haiku 4.5   | Haiku 4.5                                                                                 | 0.33x                                  |
-| `/clarify-haiku-4-5`        | Haiku 4.5   | Haiku 4.5                                                                                 | 0.33x                                  |
-| `/speckit.plan`             | Sonnet 4.5  | Sonnet 4.5                                                                                | 1x                                     |
-| `/checklist-haiku-4-5`      | Haiku 4.5   | Haiku 4.5                                                                                 | 0.33x                                  |
-| `/tasks-haiku-4-5`          | Haiku 4.5   | Haiku 4.5 or **GPT-5 mini** (`/tasks-gpt-5-mini`) ⭐                                      | 0.33x (Haiku) / **0x** (GPT-5 Mini) ✅ |
-| `/speckit.analyze`          | Sonnet 4.5  | GPT-4.1 → Sonnet 4.5                                                                      | 0x → 1x                                |
-| `/taskstoissues-gpt-5-mini` | —           | **GPT-5 mini** ⭐                                                                         | **0x** ✅                              |
-| `/analyze-brief`            | —           | **GPT-5 mini** (`/analyze-brief-gpt-5-mini`) ⭐ or **GPT-4.1** (`/analyze-brief-gpt-4-1`) | **0x** ✅                              |
+| Spec Kit command            | Claude Code | GitHub Copilot CLI                                                                                    | Cost Savings                           |
+| --------------------------- | ----------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------- |
+| `/specify-haiku-4-5`        | Haiku 4.5   | Haiku 4.5                                                                                             | 0.33x                                  |
+| `/clarify-haiku-4-5`        | Haiku 4.5   | Haiku 4.5                                                                                             | 0.33x                                  |
+| `/speckit.plan`             | Sonnet 4.5  | Sonnet 4.5                                                                                            | 1x                                     |
+| `/checklist-haiku-4-5`      | Haiku 4.5   | Haiku 4.5                                                                                             | 0.33x                                  |
+| `/tasks-haiku-4-5`          | Haiku 4.5   | Haiku 4.5 or **GPT-5 mini** (`/tasks-gpt-5-mini`) ⭐                                                  | 0.33x (Haiku) / **0x** (GPT-5 Mini) ✅ |
+| `/speckit.analyze`          | Sonnet 4.5  | GPT-4.1 → Sonnet 4.5                                                                                  | 0x → 1x                                |
+| `/taskstoissues-gpt-5-mini` | —           | **GPT-5 mini** ⭐                                                                                     | **0x** ✅                              |
+| `/analyze-report-gaps`      | —           | **GPT-5 mini** (`/analyze-report-gaps-gpt-5-mini`) ⭐ or **GPT-4.1** (`/analyze-report-gaps-gpt-4-1`) | **0x** ✅                              |
 
 **GPT-5 mini advantages**:
 
@@ -234,14 +234,14 @@ Total: ~90K tokens ✅ SAFE (well within 180K limit)
 2. **Continue anyway** - Warns about truncation risk
 3. **Cancel and revise scope** - Suggests reducing files
 
-**When to use `/analyze-brief-gpt-5-mini`**:
+**When to use `/analyze-report-gaps-gpt-5-mini`**:
 
 - ✅ Just run it! Pre-check handles size automatically
 - ✅ Speed matters (10-20 sec vs 30-60 sec)
 - ✅ Well-structured specs with clear FR-XXX requirements
 - ✅ Agent will prompt if too large (no manual decision needed)
 
-**When to use `/analyze-brief-gpt-4-1`** (GPT-4.1 with 1M context):
+**When to use `/analyze-report-gaps-gpt-4-1`** (GPT-4.1 with 1M context):
 
 - ⚠️ Pre-check prompted you to switch (>180K tokens)
 - ⚠️ You know feature is huge (skip pre-check overhead)
@@ -249,7 +249,7 @@ Total: ~90K tokens ✅ SAFE (well within 180K limit)
 
 #### GPT-5 Mini Optimizations Applied
 
-Both `/tasks-gpt-5-mini` and `/analyze-brief-gpt-5-mini` use **7 optimization techniques** based on 2026 OpenAI best practices:
+Both `/tasks-gpt-5-mini` and `/analyze-report-gaps-gpt-5-mini` use **7 optimization techniques** based on 2026 OpenAI best practices:
 
 1. **CTCO Framework** - Context → Task → Constraints → Output (eliminates ambiguity)
 2. **reasoning_effort: minimal** - Pattern matching, no deep reasoning loops
@@ -274,13 +274,13 @@ Both `/tasks-gpt-5-mini` and `/analyze-brief-gpt-5-mini` use **7 optimization te
 **Option A: GPT-5 Mini** (small-medium features, <180K tokens, **faster**):
 
 ```bash
-gh copilot -m "gpt-5-mini" slash analyze-brief-gpt-5-mini @implementation-files
+gh copilot -m "gpt-5-mini" slash analyze-report-gaps-gpt-5-mini @implementation-files
 ```
 
 **Option B: GPT-4.1** (large features, >180K tokens, **more context**):
 
 ```bash
-gh copilot -m "gpt-4.1" slash analyze-brief-gpt-4-1 @implementation-files
+gh copilot -m "gpt-4.1" slash analyze-report-gaps-gpt-4-1 @implementation-files
 ```
 
 **Both commands**:
@@ -307,7 +307,7 @@ gh copilot -m "gpt-4.1" slash analyze-brief-gpt-4-1 @implementation-files
 - False positives removed
 - Summary statistics
 
-**Alternative (if slash commands unavailable)**: Manually copy instructions from `.github/agents/analyze-brief-gpt-5-mini.agent.md` or `.github/agents/analyze-brief-gpt-4-1.agent.md`
+**Alternative (if slash commands unavailable)**: Manually copy instructions from `.github/agents/analyze-report-gaps-gpt-5-mini.agent.md` or `.github/agents/analyze-report-gaps-gpt-4-1.agent.md`
 
 2. **Step 2: Sonnet 4.5 validation (create remediation docs):**
 
@@ -341,7 +341,7 @@ gh copilot slash analyze-gaps
 - GAPS_REMEDIATION.md (377 lines) + REMEDIATION_CHECKLIST.md (635 lines)
 - 182-minute fix estimate (P0=32min, P1=135min, P2=15min)
 
-**Success criteria**: Future gap analysis runs (either `/analyze-brief-gpt-5-mini` or `/analyze-brief-gpt-4-1`) will NOT re-flag these gaps because they find:
+**Success criteria**: Future gap analysis runs (either `/analyze-report-gaps-gpt-5-mini` or `/analyze-report-gaps-gpt-4-1`) will NOT re-flag these gaps because they find:
 
 - "NOT IMPLEMENTED - TRACKED" markers in GAPS_REMEDIATION.md
 - Evidence chains (FR-XXX → Task ID → Contract → Implementation status)

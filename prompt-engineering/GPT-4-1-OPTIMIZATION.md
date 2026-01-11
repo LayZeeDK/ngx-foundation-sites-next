@@ -477,11 +477,11 @@ ELSE: FIX issues and re-check
 
 ---
 
-## Real-World Application: `/analyze-brief-gpt-4-1`
+## Real-World Application: `/analyze-report-gaps-gpt-4-1`
 
 ### Applied Optimizations
 
-Our implementation in `.github/agents/analyze-brief-gpt-4-1.agent.md` applies all 5 optimizations:
+Our implementation in `.github/agents/analyze-report-gaps-gpt-4-1.agent.md` applies all 5 optimizations:
 
 #### 1. Sandwich Method ✅
 
@@ -758,7 +758,7 @@ Before deploying a GPT-4.1 prompt:
 
 ## Example Implementation
 
-**See**: `.github/agents/analyze-brief-gpt-4-1.agent.md` for complete implementation using all 5 optimizations.
+**See**: `.github/agents/analyze-report-gaps-gpt-4-1.agent.md` for complete implementation using all 5 optimizations.
 
 **Key features**:
 

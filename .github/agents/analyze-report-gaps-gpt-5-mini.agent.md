@@ -1,5 +1,5 @@
 ---
-description: Generate implementation gap analysis optimized for GPT-5 Mini's fast inference with minimal reasoning. Use for small-to-medium features (<200K tokens). For large features, use /analyze-brief with GPT-4.1 (1M context).
+description: Generate implementation gap analysis optimized for GPT-5 Mini's fast inference with minimal reasoning. Use for small-to-medium features (<200K tokens). For large features, use /analyze-report-gaps with GPT-4.1 (1M context).
 model_config:
   reasoning_effort: minimal
   verbosity: concise
@@ -49,9 +49,9 @@ Large feature: Same + 10+ implementation files = ~200K+ tokens ⚠️
 
 ```
 IF total_tokens < 180K:
-  USE /analyze-brief-gpt-5-mini (this command) ✅ Fast + free
+  USE /analyze-report-gaps-gpt-5-mini (this command) ✅ Fast + free
 ELSE:
-  USE /analyze-brief with GPT-4.1 ⚠️ Slower but handles 1M
+  USE /analyze-report-gaps with GPT-4.1 ⚠️ Slower but handles 1M
 ```
 
 ## Path Grounding (CRITICAL)
@@ -369,7 +369,7 @@ AskUserQuestion({
       options: [
         {
           label: 'Switch to GPT-4.1 (Recommended)',
-          description: `Use /analyze-brief with GPT-4.1 for full 1M context. Handles ${Math.round(total_tokens_estimate / 1000)}K tokens safely. Slower (30-60s) but complete analysis.`,
+          description: `Use /analyze-report-gaps with GPT-4.1 for full 1M context. Handles ${Math.round(total_tokens_estimate / 1000)}K tokens safely. Slower (30-60s) but complete analysis.`,
         },
         {
           label: 'Continue with GPT-5 Mini anyway',
@@ -395,7 +395,7 @@ OUTPUT:
 "Switching to GPT-4.1 for 1M context support.
 
 Please run:
-  gh copilot -m \"gpt-4.1\" slash analyze-brief <same-arguments>
+  gh copilot -m \"gpt-4.1\" slash analyze-report-gaps <same-arguments>
 
 This will handle ${Math.round(total_tokens_estimate / 1000)}K tokens safely with GPT-4.1's 1M context window."
 
@@ -428,7 +428,7 @@ OUTPUT:
 Feature size: ${Math.round(total_tokens_estimate / 1000)}K tokens (limit: 180K)
 
 Options to proceed:
-1. Use GPT-4.1: gh copilot -m \"gpt-4.1\" slash analyze-brief-gpt-4-1 @files
+1. Use GPT-4.1: gh copilot -m \"gpt-4.1\" slash analyze-report-gaps-gpt-4-1 @files
 2. Reduce scope: Remove contracts or analyze fewer implementation files
 3. Split feature: Analyze components separately"
 
@@ -841,7 +841,7 @@ CONTENT: Report template with ALL [placeholders] filled
 
 ## 1. Minimal Reasoning Effort
 
-**Standard /analyze-brief**: Relies on implicit reasoning
+**Standard /analyze-report-gaps**: Relies on implicit reasoning
 **GPT-5 Mini optimized**: Explicit mechanical procedures
 
 ```
@@ -851,7 +851,7 @@ CONTENT: Report template with ALL [placeholders] filled
 
 ## 2. CTCO Framework
 
-**Standard /analyze-brief**: Linear steps
+**Standard /analyze-report-gaps**: Linear steps
 **GPT-5 Mini optimized**: Structured CTCO sections
 
 ```
@@ -863,7 +863,7 @@ CONTENT: Report template with ALL [placeholders] filled
 
 ## 3. XML Scaffolding for State
 
-**Standard /analyze-brief**: Markdown-only
+**Standard /analyze-report-gaps**: Markdown-only
 **GPT-5 Mini optimized**: XML state maintenance
 
 ```xml
@@ -878,7 +878,7 @@ CONTENT: Report template with ALL [placeholders] filled
 
 ## 4. Explicit Verbosity Limits
 
-**Standard /analyze-brief**: No prose limits
+**Standard /analyze-report-gaps**: No prose limits
 **GPT-5 Mini optimized**: Strict word counts
 
 ```
@@ -892,7 +892,7 @@ No additional prose
 
 ## 5. Mechanical Matching Procedures
 
-**Standard /analyze-brief**: "Check if gap matches known gap"
+**Standard /analyze-report-gaps**: "Check if gap matches known gap"
 **GPT-5 Mini optimized**: Arithmetic matching
 
 ```
@@ -905,7 +905,7 @@ IF overlap_pct >= 50 OR similarity >= 70:
 
 ## 6. Validation Arithmetic
 
-**Standard /analyze-brief**: Qualitative scoring
+**Standard /analyze-report-gaps**: Qualitative scoring
 **GPT-5 Mini optimized**: Arithmetic scoring
 
 ```
@@ -921,7 +921,7 @@ TOTAL: N/10
 
 ## 7. Explicit Error Conditions
 
-**Standard /analyze-brief**: "Handle errors gracefully"
+**Standard /analyze-report-gaps**: "Handle errors gracefully"
 **GPT-5 Mini optimized**: Explicit STOP conditions
 
 ```
@@ -931,7 +931,7 @@ IF spec.md not found:
 
 IF context exceeds 180K tokens:
   STOP
-  OUTPUT: "Feature too large (>180K tokens). Use /analyze-brief with GPT-4.1 (1M context)."
+  OUTPUT: "Feature too large (>180K tokens). Use /analyze-report-gaps with GPT-4.1 (1M context)."
 ```
 
 ---
@@ -940,14 +940,14 @@ IF context exceeds 180K tokens:
 
 ## GPT-5 Mini vs GPT-4.1
 
-| Aspect                 | GPT-5 Mini (this command)   | GPT-4.1 (/analyze-brief) |
-| ---------------------- | --------------------------- | ------------------------ |
-| **Cost**               | 0x (free)                   | 0x (free)                |
-| **Speed**              | ⚡ **Fast** (kernel fusion) | Slower                   |
-| **Context**            | 200K (~180K safe)           | 1M                       |
-| **Reasoning**          | Minimal                     | Non-reasoning            |
-| **Structured prompts** | ✅ Excellent                | Good                     |
-| **Best for**           | Small-medium features       | Large features           |
+| Aspect                 | GPT-5 Mini (this command)   | GPT-4.1 (/analyze-report-gaps) |
+| ---------------------- | --------------------------- | ------------------------------ |
+| **Cost**               | 0x (free)                   | 0x (free)                      |
+| **Speed**              | ⚡ **Fast** (kernel fusion) | Slower                         |
+| **Context**            | 200K (~180K safe)           | 1M                             |
+| **Reasoning**          | Minimal                     | Non-reasoning                  |
+| **Structured prompts** | ✅ Excellent                | Good                           |
+| **Best for**           | Small-medium features       | Large features                 |
 
 **Use GPT-5 Mini** when:
 
@@ -1045,7 +1045,7 @@ Output is successful when:
 **Input**:
 
 ```bash
-gh copilot -m "gpt-5-mini" slash analyze-brief-gpt-5-mini @accordion.ts @accordion.html
+gh copilot -m "gpt-5-mini" slash analyze-report-gaps-gpt-5-mini @accordion.ts @accordion.html
 ```
 
 **Process** (internal, not shown to user):
@@ -1088,7 +1088,7 @@ gh copilot -m "gpt-5-mini" slash analyze-brief-gpt-5-mini @accordion.ts @accordi
 - Quality: 85-95% of GPT-4.1
 - Cost: 0x (free)
 
-**GPT-4.1 (standard /analyze-brief)**:
+**GPT-4.1 (standard /analyze-report-gaps)**:
 
 - Inference time: ~30-60 seconds (slower)
 - Context limit: 1M tokens

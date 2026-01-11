@@ -351,7 +351,7 @@ Standard workflow - no special handling
 - `/implement-sonnet-4-5` - Sonnet 4.5 optimization (Claude Code & GitHub Copilot)
 - `/implement-opus-4-5` - Opus 4.5 optimization (state-of-the-art coding)
 - `/implement-reported-gaps` - Gap remediation specialized
-- `/analyze-brief-gpt-5-mini` or `/analyze-brief-gpt-4-1` - Verify no gaps after implementation
+- `/analyze-report-gaps-gpt-5-mini` or `/analyze-report-gaps-gpt-4-1` - Verify no gaps after implementation
 
 ---
 
