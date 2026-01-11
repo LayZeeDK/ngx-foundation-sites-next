@@ -267,21 +267,65 @@ Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
 
 ## Execution Steps
 
-### 1. Locate Gap Analysis Report
+### STEP 0: MANDATORY PREREQUISITE CHECK ⛔
+
+**CRITICAL**: You MUST perform this check BEFORE proceeding with any other steps. Failure to enforce this check will result in incorrect repo-wide analysis instead of feature-specific remediation.
 
 ```bash
 # Check if gap-analysis-report.md exists in repo root
-ls gap-analysis-report.md
+test -f gap-analysis-report.md && echo "✓ Prerequisite found" || echo "✗ MISSING PREREQUISITE"
 ```
 
-If not found, ask user to provide path or run `/analyze-brief-gpt-5-mini or /analyze-brief-gpt-4-1` first.
+**If the file does NOT exist:**
 
-### 2. Identify Feature
+1. **STOP immediately** - Do NOT proceed to any other steps
+2. **Exit with this error message:**
+
+   ```
+   ❌ PREREQUISITE MISSING: gap-analysis-report.md not found in repo root
+
+   The /analyze-gaps command requires a gap analysis report as input to determine
+   which feature to analyze. Without this file, I cannot identify the target feature
+   and will incorrectly perform a repository-wide analysis.
+
+   ▶ Next Steps:
+
+   1. Run ONE of these commands to generate the prerequisite file:
+      • /analyze-brief-gpt-5-mini (faster, uses GPT-4o-mini)
+      • /analyze-brief-gpt-4-1 (slower, more thorough)
+
+   2. After the report is generated, re-run: /analyze-gaps
+
+   If you've already created a gap analysis manually, ensure it's named
+   'gap-analysis-report.md' and located in the repository root.
+   ```
+
+3. **Do NOT default to analyzing the entire repository**
+4. **Do NOT guess which feature to analyze**
+5. **Do NOT create REMEDIATION_CHECKLIST.md at the repo root**
+
+**Only proceed if:** `gap-analysis-report.md` exists and is readable.
+
+---
+
+### 1. Identify Feature from Gap Report
+
+**Prerequisite:** STEP 0 passed - `gap-analysis-report.md` exists.
 
 Read `gap-analysis-report.md` to determine which feature is being analyzed.
 Typical format: "**Component**: NfsAccordion" or similar.
 
-### 3. Load Source Artifacts
+**Extract:**
+- Feature name (e.g., "accordion", "button")
+- Feature directory path (e.g., `specs/002-accordion-component/`)
+
+**Validation:**
+- Confirm the feature directory exists: `test -d specs/<feature-id>/`
+- If missing, exit with error: "Feature directory not found for: [feature]"
+
+### 2. Load Source Artifacts
+
+**Target:** `specs/<feature>/` directory identified in Step 1.
 
 Read in this order (progressive disclosure):
 
@@ -290,9 +334,11 @@ Read in this order (progressive disclosure):
 - `specs/<feature>/contracts/*.ts` (API definitions, if present)
 - Implementation files (only sections needed for validation)
 
-### 4. Validate Each Claimed Gap
+### 3. Validate Each Claimed Gap
 
-For each gap in `gap-analysis-report.md`:
+**Source:** Gaps claimed in `gap-analysis-report.md` (loaded in STEP 0).
+
+For each gap in the report:
 
 1. **Extract claim**: What is missing? (e.g., "down() method not implemented")
 2. **Find requirement**: Search spec.md for FR-XXX reference
@@ -303,7 +349,7 @@ For each gap in `gap-analysis-report.md`:
 7. **Assess impact**: Why does this matter?
 8. **Determine fix**: Code snippet or documentation update?
 
-### 5. Identify False Positives
+### 4. Identify False Positives
 
 For each claimed gap that validation disproves:
 
@@ -311,24 +357,30 @@ For each claimed gap that validation disproves:
 - Document in "False Positives" section
 - Explain why analysis tool incorrectly flagged it
 
-### 6. Create GAPS_REMEDIATION.md
+### 5. Create GAPS_REMEDIATION.md
+
+**Location:** `specs/<feature>/GAPS_REMEDIATION.md` (NOT repo root).
 
 Use Write tool to create comprehensive tracking document with all validated gaps.
 
-### 7. Create REMEDIATION_CHECKLIST.md
+### 6. Create REMEDIATION_CHECKLIST.md
+
+**Location:** `specs/<feature>/REMEDIATION_CHECKLIST.md` (NOT repo root).
 
 Use Write tool to create step-by-step implementation guide.
 
-### 8. Update Spec Artifacts
+### 7. Update Spec Artifacts
+
+**Location:** All updates in `specs/<feature>/` directory.
 
 Use Edit tool to update:
 
 - spec.md (add Known Gaps section)
 - plan.md (update Known Implementation Gaps)
 - tasks.md (add inline warnings to affected tasks)
-- gap-analysis-report.md (add superseded notice)
+- gap-analysis-report.md in repo root (add superseded notice)
 
-### 9. Commit in 4 Increments
+### 8. Commit in 4 Increments
 
 Use Bash tool to create commits with exact messages above.
 
@@ -397,11 +449,14 @@ Future `/analyze-brief-gpt-5-mini or /analyze-brief-gpt-4-1` runs should:
 
 ## Operating Constraints
 
+- **MANDATORY prerequisite check**: MUST check for `gap-analysis-report.md` in STEP 0 and EXIT if missing
+- **Feature-specific scope**: NEVER analyze entire repository; always target `specs/<feature>/` directory
 - **Documentation only**: Do NOT modify implementation code
 - **Evidence-based**: Every gap must have FR → Task → Contract → Implementation chain
 - **Validation scores**: Use 0-10 scale, reject gaps with score < 6
 - **False positive rigorous**: Require spec citations to disprove claimed gaps
 - **Commit discipline**: Exactly 4 commits with conventional format
+- **Output location**: All remediation files go in `specs/<feature>/`, NEVER in repo root
 
 ## Best Practices for Claude Sonnet 4.5
 
@@ -416,6 +471,9 @@ Future `/analyze-brief-gpt-5-mini or /analyze-brief-gpt-4-1` runs should:
 
 ### Don'ts ❌
 
+- **Don't skip STEP 0**: NEVER proceed without checking for `gap-analysis-report.md`
+- **Don't default to repo-wide analysis**: If prerequisite is missing, EXIT immediately
+- **Don't create files at repo root**: All remediation files go in `specs/<feature>/`
 - **Don't skip validation**: Never copy gaps without verifying
 - **Don't guess**: Mark low scores or reject if unsure
 - **Don't modify implementation**: Only create documentation
