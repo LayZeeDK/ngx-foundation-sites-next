@@ -1,9 +1,9 @@
 # Accordion Implementation Gaps - Remediation Tracker
 
-**Last Validated**: 2026-01-11
+**Last Validated**: 2026-01-12
 **Validation Method**: Cross-artifact analysis (spec.md vs implementation vs contracts) + GPT-4.1 incremental analysis
 **Source**: gap-analysis-report.md (2026-01-11)
-**Status**: Remediation in progress
+**Status**: P0 and P1 remediation complete (6/7 gaps fixed)
 
 ---
 
@@ -131,11 +131,11 @@ readonly up = output<AccordionItemChangeEvent>();
 
 **Fix**: Global rename in 4 files using replace-all:
 
-| File | Search | Replace |
-|------|--------|---------|
-| accordion.ts | `multiExpandable` | `multiExpand` |
-| accordion.html | `multiExpandable` | `multiExpand` |
-| accordion.spec.ts | `multiExpandable` | `multiExpand` |
+| File                 | Search            | Replace       |
+| -------------------- | ----------------- | ------------- |
+| accordion.ts         | `multiExpandable` | `multiExpand` |
+| accordion.html       | `multiExpandable` | `multiExpand` |
+| accordion.spec.ts    | `multiExpandable` | `multiExpand` |
 | accordion.stories.ts | `multiExpandable` | `multiExpand` |
 
 **Estimated Time**: 2 minutes
@@ -148,7 +148,7 @@ readonly up = output<AccordionItemChangeEvent>();
 
 ### GAP-4: titleHeadingLevel Input Not Implemented
 
-**Status**: NOT IMPLEMENTED
+**Status**: ✅ FIXED (2026-01-12) - Commit 642bf71
 **Validation Score**: 9/10
 **Evidence**:
 
@@ -187,7 +187,7 @@ readonly titleHeadingLevel = input<1 | 2 | 3 | 4 | 5 | 6 | null>(null);
 
 ### GAP-5: ErrorHandler Diagnostics Missing
 
-**Status**: PARTIAL (validators.ts exists for input coercion per T-AC-003, but ErrorHandler calls missing)
+**Status**: ✅ FIXED (2026-01-12) - Commit 30c871d
 **Validation Score**: 7/10
 **Evidence**:
 
@@ -235,7 +235,7 @@ if (!matchingItem && hashPanelId) {
 
 ### GAP-6: Storybook Tests for Foundation API Missing
 
-**Status**: NOT IMPLEMENTED
+**Status**: ✅ FIXED (2026-01-12) - Commit 9e61016
 **Validation Score**: 8/10
 **Evidence**:
 
@@ -276,13 +276,13 @@ export const ProgrammaticControl: Story = {
     // Test toggle() method
     // item.toggle();
     // await waitFor(() => expect(panel).toHaveAttribute('data-expanded', 'true'));
-  }
+  },
 };
 
 export const OutputEvents: Story = {
   play: async ({ canvasElement, args }) => {
     // Verify (down) and (up) outputs emit with correct payloads
-  }
+  },
 };
 ```
 
@@ -420,11 +420,11 @@ Execute in this order to minimize breaking changes:
 
 ## Total Fix Estimate
 
-| Priority | Gap Count | Time |
-|----------|-----------|------|
-| P0 (Blocking) | 3 | 32 min |
-| P0 + P1 | 6 | 167 min (~2.8 hours) |
-| P0 + P1 + P2 | 7 | 182 min (~3 hours) |
+| Priority      | Gap Count | Time                 |
+| ------------- | --------- | -------------------- |
+| P0 (Blocking) | 3         | 32 min               |
+| P0 + P1       | 6         | 167 min (~2.8 hours) |
+| P0 + P1 + P2  | 7         | 182 min (~3 hours)   |
 
 ---
 
@@ -465,19 +465,19 @@ This analysis followed a 6-step validation workflow:
 
 **Known Gap Keywords Registry**:
 
-| Gap ID | Keywords |
-|--------|----------|
-| GAP-1 | `down()`, `up()`, `toggle()`, methods, NfsAccordionItemDef |
-| GAP-2 | `down`, `up`, outputs, events, NfsAccordion |
-| GAP-3 | `multiExpandable`, `multiExpand`, naming, input |
-| GAP-4 | `titleHeadingLevel`, heading, ARIA, level |
-| GAP-5 | `ErrorHandler`, `handleError`, diagnostics, validation |
-| GAP-6 | `FoundationApiParity`, story, Storybook, tests |
-| GAP-8 | `afterNextRender`, try/catch, SSR, hydration |
+| Gap ID | Keywords                                                   |
+| ------ | ---------------------------------------------------------- |
+| GAP-1  | `down()`, `up()`, `toggle()`, methods, NfsAccordionItemDef |
+| GAP-2  | `down`, `up`, outputs, events, NfsAccordion                |
+| GAP-3  | `multiExpandable`, `multiExpand`, naming, input            |
+| GAP-4  | `titleHeadingLevel`, heading, ARIA, level                  |
+| GAP-5  | `ErrorHandler`, `handleError`, diagnostics, validation     |
+| GAP-6  | `FoundationApiParity`, story, Storybook, tests             |
+| GAP-8  | `afterNextRender`, try/catch, SSR, hydration               |
 
-**Last Validation**: 2026-01-11
+**Last Validation**: 2026-01-12
 **Validation Source**: GPT-4.1 incremental analysis (100% match rate with known gaps)
-**Next Validation**: After P0 remediation (GAP-1, GAP-2, GAP-3)
+**Next Validation**: After P2 remediation (GAP-8)
 
 ---
 
