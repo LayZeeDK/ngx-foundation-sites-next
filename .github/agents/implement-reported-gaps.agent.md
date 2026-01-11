@@ -25,25 +25,67 @@ Execute gap fixes from REMEDIATION_CHECKLIST.md systematically, verify each fix 
 
 ## Execution Steps
 
-### Step 0: Initialize and Scope
+### STEP 0: MANDATORY PREREQUISITE CHECK ⛔
 
-#### 0.1: Locate Checklist
+**CRITICAL**: You MUST perform this check BEFORE proceeding with any other steps. Failure to enforce this check will result in attempting to modify code without a validated implementation plan.
 
 ```bash
-# Find REMEDIATION_CHECKLIST.md
-ls specs/*/REMEDIATION_CHECKLIST.md
+# Check if REMEDIATION_CHECKLIST.md exists in any feature directory
+find specs -name "REMEDIATION_CHECKLIST.md" -type f 2>/dev/null | head -1 | grep -q . && echo "✓ Prerequisite found" || echo "✗ MISSING PREREQUISITE"
 ```
 
-If not found, tell user: "REMEDIATION_CHECKLIST.md not found. Run `/analyze-prepare-reported-gaps-for-implementation` first."
+**If the file does NOT exist:**
 
-#### 0.2: Read Documents
+1. **STOP immediately** - Do NOT proceed to any other steps
+2. **Exit with this error message:**
+
+   ```
+   ❌ PREREQUISITE MISSING: REMEDIATION_CHECKLIST.md not found in specs/
+
+   The /implement-reported-gaps command requires a remediation checklist to know
+   which gaps to fix and how to fix them. Without this file, I cannot safely
+   modify your code.
+
+   ▶ Next Steps:
+
+   1. Run the prerequisite commands in order:
+      a. /analyze-report-gaps-gpt-5-mini (or gpt-4-1) - generates gap report
+      b. /analyze-prepare-reported-gaps-for-implementation - creates checklist
+
+   2. After the checklist is created, re-run: /implement-reported-gaps
+
+   The checklist should be located at: specs/<feature>/REMEDIATION_CHECKLIST.md
+   ```
+
+3. **Do NOT guess which gaps to implement**
+4. **Do NOT modify any code files**
+5. **Do NOT create commits**
+6. **Do NOT ask user for scope** (can't implement without knowing what to fix)
+
+**Only proceed if:** `REMEDIATION_CHECKLIST.md` exists and is readable.
+
+---
+
+### Step 1: Initialize and Scope
+
+**Prerequisite:** STEP 0 passed - `REMEDIATION_CHECKLIST.md` exists.
+
+#### 1.1: Locate Checklist
+
+```bash
+# Find REMEDIATION_CHECKLIST.md (already verified to exist in STEP 0)
+CHECKLIST_PATH=$(find specs -name "REMEDIATION_CHECKLIST.md" -type f 2>/dev/null | head -1)
+echo "Found checklist at: $CHECKLIST_PATH"
+```
+
+#### 1.2: Read Documents
 
 Load:
 
 - `REMEDIATION_CHECKLIST.md` (get gaps, priorities, steps, estimated times)
 - `GAPS_REMEDIATION.md` (get statuses, evidence, fix snippets)
 
-#### 0.3: Ask User for Scope
+#### 1.3: Ask User for Scope
 
 Use AskUserQuestion tool:
 
@@ -92,7 +134,7 @@ AskUserQuestion({
 });
 ```
 
-### Step 1: Create Implementation Plan
+### Step 2: Create Implementation Plan
 
 Use TodoWrite to create visible progress tracker:
 
@@ -125,11 +167,11 @@ Starting gap remediation implementation...
 I'll update the TODO list as I progress.
 ```
 
-### Step 2: Execute Each Gap Systematically
+### Step 3: Execute Each Gap Systematically
 
 For each gap in selected scope (in order from checklist):
 
-#### 2.1: Mark Gap In Progress
+#### 3.1: Mark Gap In Progress
 
 ```typescript
 TodoWrite({
@@ -141,7 +183,7 @@ TodoWrite({
 });
 ```
 
-#### 2.2: Read Gap Checklist Section
+#### 3.2: Read Gap Checklist Section
 
 Use Read tool to load the specific gap section from REMEDIATION_CHECKLIST.md.
 
@@ -156,7 +198,7 @@ Example for GAP-3:
       // ... code snippet
 ```
 
-#### 2.3: Execute Each Step
+#### 3.3: Execute Each Step
 
 For each checklist step:
 
@@ -210,7 +252,7 @@ Step [X]/[Y]: [Step description]
 ✅ Tests passing
 ```
 
-#### 2.4: Mark Gap Complete
+#### 3.4: Mark Gap Complete
 
 After all steps for a gap are done:
 
@@ -230,11 +272,11 @@ Tell user:
 ✅ GAP-N complete (actual: [X] min, estimated: [Y] min)
 ```
 
-### Step 3: Post-Implementation Verification
+### Step 4: Post-Implementation Verification
 
 After all selected gaps are implemented:
 
-#### 3.1: Run Full Test Suite
+#### 4.1: Run Full Test Suite
 
 ```typescript
 TodoWrite({
@@ -260,10 +302,10 @@ npm run build
 If any failures:
 
 - **STOP and fix**
-- Do NOT proceed to Step 4
+- Do NOT proceed to Step 5
 - Re-run all verification commands
 
-#### 3.2: Mark Verification Complete
+#### 4.2: Mark Verification Complete
 
 ```typescript
 TodoWrite({
@@ -275,9 +317,9 @@ TodoWrite({
 });
 ```
 
-### Step 4: Update Tracking Documents
+### Step 5: Update Tracking Documents
 
-#### 4.1: Update GAPS_REMEDIATION.md
+#### 5.1: Update GAPS_REMEDIATION.md
 
 For each completed gap:
 
@@ -291,7 +333,7 @@ Edit({
 
 **Pattern matching**: Search for exact "### GAP-N:" heading, then find "**Status**:" line below it.
 
-#### 4.2: Update REMEDIATION_CHECKLIST.md
+#### 5.2: Update REMEDIATION_CHECKLIST.md
 
 Add completion metadata:
 
@@ -303,7 +345,7 @@ Edit({
 });
 ```
 
-#### 4.3: Update CHANGELOG.md (if breaking changes)
+#### 5.3: Update CHANGELOG.md (if breaking changes)
 
 If any gap is marked **BREAKING CHANGE**:
 
@@ -327,7 +369,7 @@ ${existingContent}
 });
 ```
 
-### Step 5: Commit Changes
+### Step 6: Commit Changes
 
 Create **one commit per priority level** with conventional format.
 
@@ -445,7 +487,7 @@ Time: [actual] minutes (estimated: 15 minutes)
 Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
 ```
 
-### Step 6: Final Summary
+### Step 7: Final Summary
 
 ```typescript
 TodoWrite({
@@ -550,6 +592,8 @@ Tell user:
 
 ## Operating Constraints
 
+- **MANDATORY prerequisite check**: MUST check for REMEDIATION_CHECKLIST.md in STEP 0 and EXIT if missing
+- **No guessing**: NEVER implement gaps without a validated checklist
 - **Write-heavy**: This agent modifies implementation files extensively
 - **Test-gated**: Cannot proceed if tests fail
 - **Progressive**: Execute gaps in order (P0 → P1 → P2)
