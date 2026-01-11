@@ -481,7 +481,7 @@ Fix: Opus missed this edge case, adjusting...
 - `/speckit.implement` - Standard (not optimized)
 - `/implement-sonnet-4-5` - Sonnet 4.5 optimized (faster, cheaper, good for daily work)
 - `/implement-gpt-5-1-codex` - GPT-5.1-Codex optimized (400K context)
-- `/analyze-brief-gpt-5-mini` - Verify no gaps after implementation
+- `/analyze-report-gaps-gpt-5-mini` - Verify no gaps after implementation
 
 ---
 
