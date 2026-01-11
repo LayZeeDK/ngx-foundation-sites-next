@@ -213,11 +213,109 @@ Generate three files with exact structure.
 
 ## Execution Steps
 
+### Step 0.0: Context Size Pre-Check (MANDATORY)
+
+**CTCO for Size Check**:
+
+**Context**: Need to estimate if feature fits in GPT-5 Mini's 200K context
+**Task**: Calculate estimated token count before loading
+**Constraints**: Use file line counts × token-per-line multipliers
+**Output**: Proceed with GPT-5 Mini OR warn to use GPT-4.1
+
+#### Estimation Formula
+
+```
+# Get file sizes (line counts)
+tasks_lines = count_lines(FEATURE_DIR + "/tasks.md")
+spec_lines = count_lines(FEATURE_DIR + "/spec.md")  # if exists
+plan_lines = count_lines(FEATURE_DIR + "/plan.md")  # if exists
+
+# Apply multipliers (tokens per line averages)
+tasks_tokens = tasks_lines × 15  # tasks.md typically 15 tokens/line
+spec_tokens = spec_lines × 20     # spec.md typically 20 tokens/line
+plan_tokens = plan_lines × 20     # plan.md typically 20 tokens/line
+
+# Calculate total
+estimated_tokens = tasks_tokens + spec_tokens + plan_tokens + 20000  # +20K buffer for instructions
+
+# Convert to K
+estimated_k = estimated_tokens / 1000
+```
+
+#### Decision Logic
+
+```
+IF estimated_tokens > 180000:
+  STOP
+  OUTPUT: """
+⚠️ Context Size Warning
+
+**Estimated tokens**: ~[estimated_k]K tokens
+**GPT-5 Mini limit**: 200K tokens (safe threshold: 180K)
+
+**This feature may exceed GPT-5 Mini's context capacity.**
+
+**Recommended**: Use GPT-4.1 (1M context) instead:
+
+  gh copilot -m "gpt-4.1" slash tasks-for-gpt-5-mini-gpt-4-1
+
+**Options**:
+1. Switch to GPT-4.1 (Recommended) - 1M context, same 0× cost
+2. Continue with GPT-5 Mini anyway (may fail or truncate)
+3. Cancel and reduce artifact sizes
+
+**Choice**: [Wait for user input]
+"""
+  WAIT for user to choose option 1, 2, or 3
+
+  IF user chooses option 1:
+    EXIT with message: "Run: gh copilot -m \"gpt-4.1\" slash tasks-for-gpt-5-mini-gpt-4-1"
+  ELSE IF user chooses option 3:
+    EXIT with message: "Reduce tasks.md, spec.md, or plan.md size, then retry"
+  # If option 2, continue to Step 0
+
+ELSE:
+  OUTPUT: "✅ Context size check: ~[estimated_k]K tokens (within 180K threshold)"
+  CONTINUE to Step 0
+```
+
+#### File Size Examples
+
+**Small feature** (~30K tokens):
+- tasks.md: 100 lines × 15 = 1.5K tokens
+- spec.md: 200 lines × 20 = 4K tokens
+- plan.md: 150 lines × 20 = 3K tokens
+- Buffer: 20K tokens
+- **Total**: ~28.5K ✅ SAFE
+
+**Medium feature** (~120K tokens):
+- tasks.md: 500 lines × 15 = 7.5K tokens
+- spec.md: 800 lines × 20 = 16K tokens
+- plan.md: 600 lines × 20 = 12K tokens
+- Buffer: 20K tokens
+- **Total**: ~55.5K ✅ SAFE
+
+**Large feature** (~250K tokens):
+- tasks.md: 1500 lines × 15 = 22.5K tokens
+- spec.md: 2000 lines × 20 = 40K tokens
+- plan.md: 1200 lines × 20 = 24K tokens
+- Buffer: 20K tokens
+- **Total**: ~106.5K ✅ SAFE
+
+**Very large feature** (~400K tokens):
+- tasks.md: 3000 lines × 15 = 45K tokens
+- spec.md: 3500 lines × 20 = 70K tokens
+- plan.md: 2500 lines × 20 = 50K tokens
+- Buffer: 20K tokens
+- **Total**: ~185K ⚠️ **EXCEEDS THRESHOLD → Use GPT-4.1**
+
+---
+
 ### Step 0: Initialize
 
 **CTCO for Initialization**:
 
-**Context**: Feature directory with tasks.md
+**Context**: Feature directory with tasks.md (context size verified)
 **Task**: Load tasks.md and optional context files
 **Constraints**: Use paths from JSON output only
 **Output**: Confirm files loaded
