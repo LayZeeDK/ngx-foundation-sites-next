@@ -78,16 +78,19 @@ Create registry entry:
 ```
 
 **Example extraction:**
+
 ```markdown
 ### GAP-1: Foundation API Methods Missing on Item
 
 **Status**: NOT IMPLEMENTED
 **Evidence**:
+
 - **Spec**: FR-075 at spec.md:530
 - **Tasks**: T140-T142 at tasks.md:477-479
 ```
 
 **Registry entry:**
+
 ```
 {
   id: "GAP-1",
@@ -100,6 +103,7 @@ Create registry entry:
 **Step 0.5.3**: Create Known Gaps List
 
 Store all extracted gap IDs for quick lookup:
+
 ```
 KNOWN_GAPS = ["GAP-1", "GAP-2", "GAP-3", ...]
 ```
@@ -107,12 +111,14 @@ KNOWN_GAPS = ["GAP-1", "GAP-2", "GAP-3", ...]
 **Step 0.5.4**: Output Confirmation
 
 Tell user how many known gaps were loaded:
+
 ```
 ✅ Loaded [N] known gaps from GAPS_REMEDIATION.md
    Will skip these during analysis to avoid re-flagging.
 ```
 
 If no remediation doc exists:
+
 ```
 ℹ️  No GAPS_REMEDIATION.md found - this is a first-time analysis.
 ```
@@ -246,6 +252,7 @@ Fix: [1-2 sentence description of smallest fix]
 **For KNOWN gaps (matched in registry):**
 
 Add to separate section:
+
 ```
 SKIPPED: [known gap title]
 Reason: Already documented in GAPS_REMEDIATION.md as [GAP-ID]
@@ -311,7 +318,6 @@ Confidence Level:
 **Template for gap-analysis-report.md:**
 
 ```markdown
-
 ## Analysis Mode
 
 [If GAPS_REMEDIATION.md was found in Step 0.5:]
@@ -332,6 +338,7 @@ Confidence Level:
 ### GAP-1: [Write the gap title here]
 
 **Evidence:**
+
 - **Spec**: [FR-XXX] at spec.md:[line number] with "[exact quote from spec]"
 - **Tasks**: [T-XXX] at tasks.md:[line number] with "[exact task description]"
 - **Search**: Keywords [[keyword1, keyword2, keyword3]] searched in:
@@ -362,7 +369,7 @@ The following gaps were detected but SKIPPED because they are already documented
 
 1. **[Gap title]** - Already tracked as GAP-[N] (Status: [status from registry])
 2. **[Gap title]** - Already tracked as GAP-[N] (Status: [status from registry])
-[etc.]
+   [etc.]
 
 **Reference**: See `GAPS_REMEDIATION.md` for details on these known gaps and their remediation status.
 
@@ -374,6 +381,7 @@ None - all detected gaps are new.
 ## False Positives Removed
 
 [If gaps failed validation, list them:]
+
 - **GAP-[N]**: [Title] - Failed because: [which Step 4 check failed]
 
 [If no false positives:]
@@ -456,6 +464,7 @@ Do NOT output the report content to the user directly - write it to the file fir
 # ⚠️ EXECUTION CHECKLIST BEFORE RESPONDING ⚠️
 
 **Your workflow:**
+
 1. Complete Step 0 (Initialize - load paths)
 2. Complete Step 0.5 (Load existing GAPS_REMEDIATION.md if exists, create KNOWN_GAPS registry)
 3. Complete Steps 1-5 (Analysis - check each gap against KNOWN_GAPS registry in Step 3)
@@ -467,11 +476,13 @@ Do NOT output the report content to the user directly - write it to the file fir
 **Do NOT write a summary to the user.** Write the full report to the file, then tell them the mode and counts.
 
 **Do NOT output:**
+
 - ❌ "Accordion implementation gap analysis complete. 10 validated gaps found..."
 - ❌ Bullet-point summary of gaps
 - ❌ Any text other than "Report saved to gap-analysis-report.md"
 
 **DO output:**
+
 - ✅ Use Write tool with file path `gap-analysis-report.md`
 - ✅ File content = template with ALL [placeholders] filled in
 - ✅ Then tell user where to find the report
@@ -514,6 +525,7 @@ These are summaries. Step 6 requires writing the full structured report with evi
 The file `gap-analysis-report.md` must contain:
 
 **Required sections** (in this order):
+
 1. `## Validated Gaps` - with GAP-1, GAP-2, etc. sections (each with Evidence, Validation Score, Priority, Fix)
 2. `## False Positives Removed` - list of removed gaps or "None"
 3. `## Summary` - statistics with bullet points
@@ -543,6 +555,7 @@ Go back to STEP 6, use Write tool, and put the full template in the file.
 **Research**: [GPT-4.1 Prompting Guide](https://cookbook.openai.com/examples/gpt4-1_prompting_guide) - "sandwich method works best for long context"
 
 **What this means**:
+
 - ✅ Instructions at **beginning** (already present above)
 - ✅ Instructions at **END** (critical reminder below)
 
@@ -557,12 +570,14 @@ Go back to STEP 6, use Write tool, and put the full template in the file.
 5. **Tell user**: Mode (incremental/first-time) and counts only
 
 **Literal instruction following**: GPT-4.1 does EXACTLY what instructions say. Do NOT:
+
 - ❌ Infer user intent beyond explicit instructions
 - ❌ Add helpful explanations not requested
 - ❌ Summarize when instructions say "write complete report"
 - ❌ Output report content to user (write to file only)
 
 **Required output**:
+
 ```
 ✅ [Incremental/First-time] gap analysis complete. Report saved to gap-analysis-report.md
 Mode: [mode]
@@ -570,6 +585,7 @@ Result: [counts]
 ```
 
 **File must contain**:
+
 - Analysis Mode section
 - Validated Gaps (NEW) section with FULL evidence for each gap
 - Skipped Known Gaps section
@@ -606,6 +622,7 @@ STEP 3: Load contracts on-demand
 ```
 
 **Why this works**:
+
 - ✅ GPT-4.1 handles 1M tokens well, but chunking improves performance
 - ✅ Progressive loading keeps working memory focused
 - ✅ On-demand reading reduces total context
@@ -622,15 +639,16 @@ STEP 3: Load contracts on-demand
 4. **Repeat key constraints** in each step (don't assume GPT-4.1 remembers from earlier)
 
 **Example**:
+
 ```markdown
 ## STEP 3: Gap List
 
 **REMINDER from Step 0.5**: Check against KNOWN_GAPS registry before adding each gap.
 
 FOR EACH potential gap:
-  Check KNOWN_GAPS (loaded in Step 0.5)
-  IF match found: SKIP
-  ELSE: Add to gap list
+Check KNOWN_GAPS (loaded in Step 0.5)
+IF match found: SKIP
+ELSE: Add to gap list
 ```
 
 ---
@@ -657,6 +675,7 @@ FOR EACH potential gap:
 ### No Inference Assumptions
 
 **GPT-4.1 does NOT**:
+
 - ❌ Infer what "good quality" means → Specify validation score ≥ 6/10
 - ❌ Guess which gaps to prioritize → Specify "P0 first, then P1, then P2"
 - ❌ Assume structured output → Provide exact template with [placeholders]
@@ -670,12 +689,14 @@ FOR EACH potential gap:
 **Research**: [GPT-4.1 Guide](https://www.godofprompt.ai/blog/gpt-4-1-prompting-guide) - "Use markdown titles, backticks, XML tags"
 
 **Already applied** (no changes needed):
+
 - ✅ Markdown headers for major sections (`## Step 0`, `### 2.1`, etc.)
 - ✅ Backtick blocks for code/commands
 - ✅ Numbered/bulleted lists for procedures
 - ✅ XML examples for structured data (gap registry)
 
 **Why this works**:
+
 - GPT-4.1 navigates long context using structural markers
 - Headers enable "jump to section" retrieval
 - Consistent formatting improves accuracy
@@ -698,18 +719,21 @@ FOR EACH potential gap:
 ```
 
 **Critical constraints**:
+
 - Maximum 10 NEW gaps (skip known gaps)
 - Each gap MUST have FR-XXX + T-XXX + file search + score ≥6
 - Write FULL report to file (not summary)
 - Tell user: mode + counts (not report content)
 
 **Literal following**:
+
 - Do EXACTLY what each step says
 - Do NOT add helpful extras
 - Do NOT infer unstated requirements
 - Do NOT summarize unless explicitly instructed
 
 **Output**:
+
 ```
 ✅ [Mode] gap analysis complete. Report saved to gap-analysis-report.md
 Mode: [INCREMENTAL or FIRST-TIME]

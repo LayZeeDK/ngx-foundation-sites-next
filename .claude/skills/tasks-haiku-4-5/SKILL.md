@@ -26,12 +26,13 @@ handoffs:
 Generate actionable, dependency-ordered tasks.md from design artifacts (plan.md, spec.md, data-model.md, contracts/).
 
 **Task Type**: Mechanical pattern-based transformation (perfect for Haiku)
+
 - Extract phases from plan.md
 - Convert implementation bullets to tasks
 - Map tasks to user stories
 - Detect parallelization opportunities
 - Order by dependencies
-</goal>
+  </goal>
 
 ## User Input
 
@@ -44,12 +45,13 @@ You **MUST** consider the user input before proceeding (if not empty).
 ## Path Grounding (CRITICAL)
 
 <path_rules>
+
 - Do **not** guess or "fix up" filesystem paths
 - Treat paths from PowerShell scripts (`-Json` output) as **only source of truth**
 - Use paths verbatim
 - If required path missing/unclear, STOP and re-run prerequisite script
 - All file paths must be absolute
-</path_rules>
+  </path_rules>
 
 ---
 
@@ -66,10 +68,12 @@ pwsh ./.specify/scripts/powershell/check-prerequisites.ps1 -Json
 ```
 
 **Parse JSON output for**:
+
 - `FEATURE_DIR`: Absolute path to feature directory
 - `AVAILABLE_DOCS`: List of existing files
 
 **Derive paths**:
+
 - `SPEC` = FEATURE_DIR/spec.md (REQUIRED)
 - `PLAN` = FEATURE_DIR/plan.md (REQUIRED)
 - `DATA_MODEL` = FEATURE_DIR/data-model.md (OPTIONAL)
@@ -77,6 +81,7 @@ pwsh ./.specify/scripts/powershell/check-prerequisites.ps1 -Json
 - `OUTPUT` = FEATURE_DIR/tasks.md
 
 **PowerShell String Escaping**:
+
 - For single quotes: `'I'\''m Groot'` or `"I'm Groot"`
 
 ---
@@ -112,7 +117,7 @@ Load documents in this order:
 
 6. **quickstart.md** (OPTIONAL):
    - Test scenarios
-</context_loading>
+     </context_loading>
 
 ---
 
@@ -122,6 +127,7 @@ Load documents in this order:
 Apply these pattern-based transformations in order:
 
 **Transformation 1: Extract Phases from plan.md**
+
 ```
 FOR EACH "## Phase N:" heading in plan.md:
   CREATE task group header in tasks.md
@@ -129,6 +135,7 @@ FOR EACH "## Phase N:" heading in plan.md:
 ```
 
 **Transformation 2: Convert Implementation Bullets to Tasks**
+
 ```
 FOR EACH bullet point in plan.md implementation section:
   IF bullet describes concrete action (has verb + object):
@@ -140,6 +147,7 @@ FOR EACH bullet point in plan.md implementation section:
 ```
 
 **Transformation 3: Map Tasks to User Stories**
+
 ```
 READ spec.md user stories section
 FOR EACH task:
@@ -149,6 +157,7 @@ FOR EACH task:
 ```
 
 **Transformation 4: Order Tasks by Dependencies**
+
 ```
 ORDER tasks within each phase:
   1. Infrastructure (tokens, types, base components)
@@ -161,6 +170,7 @@ ORDER tasks within each phase:
 ```
 
 **Transformation 5: Detect Parallel Opportunities**
+
 ```
 FOR EACH task:
   IF operates on different files than dependencies:
@@ -168,6 +178,7 @@ FOR EACH task:
     AND no sequential dependency:
       MARK with [P]
 ```
+
 </transformation_sequence>
 
 ---
@@ -178,6 +189,7 @@ FOR EACH task:
 Use `.specify/templates/tasks-template.md` as structure template.
 
 **Structure**:
+
 1. **Header**: Feature name, prerequisites, test strategy
 2. **Phase 1**: Setup (project initialization)
 3. **Phase 2**: Foundational (blocking prerequisites)
@@ -186,7 +198,7 @@ Use `.specify/templates/tasks-template.md` as structure template.
 6. **Dependencies Section**: Story completion order
 7. **Parallel Execution**: Examples per story
 8. **Summary**: Task counts, parallel opportunities
-</output_structure>
+   </output_structure>
 
 <task_format_rules>
 **CRITICAL**: Every task MUST follow this exact format:
@@ -207,6 +219,7 @@ Use `.specify/templates/tasks-template.md` as structure template.
 5. **Description**: Clear action + exact file path
 
 **Examples**:
+
 - ✅ `- [ ] T001 Create project structure per implementation plan`
 - ✅ `- [ ] T005 [P] Implement auth middleware in src/middleware/auth.py`
 - ✅ `- [ ] T012 [P] [US1] Create User model in src/models/user.py`
@@ -215,18 +228,20 @@ Use `.specify/templates/tasks-template.md` as structure template.
 - ❌ `T001 [US1] Create model` (missing checkbox, path)
 - ❌ `- [ ] [US1] Create User model` (missing Task ID)
 - ❌ `- [ ] T001 [US1] Create model` (missing file path)
-</task_format_rules>
+  </task_format_rules>
 
 <phase_organization>
 **Phase Structure**:
 
 **Phase 1: Setup** (NO story labels)
+
 - Project initialization
 - Directory structure
 - Configuration files
 - Shared infrastructure
 
 **Phase 2: Foundational** (NO story labels)
+
 - Blocking prerequisites for ALL user stories
 - Base classes/interfaces
 - Shared utilities
@@ -234,6 +249,7 @@ Use `.specify/templates/tasks-template.md` as structure template.
 - ⚠️ Mark as **CRITICAL**: No user story work can begin until complete
 
 **Phase 3+: User Stories** (MUST have story labels)
+
 - One phase per user story
 - In priority order (P1, P2, P3...)
 - Within each story:
@@ -245,11 +261,12 @@ Use `.specify/templates/tasks-template.md` as structure template.
 - Each phase = complete, independently testable increment
 
 **Final Phase: Polish** (NO story labels)
+
 - Cross-cutting concerns
 - Documentation
 - Performance optimization
 - Accessibility improvements
-</phase_organization>
+  </phase_organization>
 
 ---
 
@@ -267,7 +284,7 @@ Before writing tasks.md, verify:
 - [ ] Blocking phases marked with ⚠️ CRITICAL
 - [ ] Each phase has checkpoint criteria
 - [ ] Summary counts are accurate
-</validation_checklist>
+      </validation_checklist>
 
 ---
 
@@ -299,10 +316,11 @@ Write tasks.md to `FEATURE_DIR/tasks.md`.
 ✅ All tasks follow checklist format (checkbox, ID, labels, file paths)
 
 **Next Steps**:
+
 - Review tasks.md for accuracy
 - Run `/speckit.analyze` for consistency check
 - Begin implementation with `/speckit.implement`
-</output_format>
+  </output_format>
 
 ---
 
@@ -312,6 +330,7 @@ Write tasks.md to `FEATURE_DIR/tasks.md`.
 These rules guide the pattern-based task generation:
 
 **From User Stories (spec.md)** - PRIMARY ORGANIZATION:
+
 - Each user story (P1, P2, P3...) gets its own phase
 - Map all related components to their story:
   - Models needed for that story
@@ -320,21 +339,25 @@ These rules guide the pattern-based task generation:
   - Tests (if requested) specific to that story
 - Mark story dependencies (most should be independent)
 
-**From Contracts (contracts/*.ts)**:
+**From Contracts (contracts/\*.ts)**:
+
 - Map each contract/endpoint → user story it serves
 - If tests requested: Contract test task [P] before implementation
 
 **From Data Model (data-model.md)**:
+
 - Map each entity → user story(ies) that need it
 - If entity serves multiple stories: Put in earliest story or Setup phase
 - Relationships → service layer tasks in appropriate story phase
 
 **From Setup/Infrastructure**:
+
 - Shared infrastructure → Setup phase (Phase 1)
 - Foundational/blocking → Foundational phase (Phase 2)
 - Story-specific setup → within that story's phase
 
 **Parallelization Detection**:
+
 - Mark [P] when:
   - Different files
   - No shared state
@@ -343,7 +366,7 @@ These rules guide the pattern-based task generation:
   - Same file edits
   - Parent → child relationship
   - State depends on previous task
-</transformation_details>
+    </transformation_details>
 
 ---
 
@@ -351,20 +374,23 @@ These rules guide the pattern-based task generation:
 
 <test_strategy>
 **Only generate test tasks if**:
+
 - Explicitly requested in feature specification, OR
 - User requests TDD approach, OR
 - User input ($ARGUMENTS) mentions testing
 
 **If tests NOT requested**:
+
 - Focus on implementation tasks only
 - Skip test task generation
 - Note in output: "Tests: Not requested for this feature"
 
 **If tests ARE requested**:
+
 - Add test tasks in appropriate phase
 - Tests come AFTER implementation in same phase
 - Mark test tasks with [P] if they can run in parallel
-</test_strategy>
+  </test_strategy>
 
 ---
 
@@ -382,12 +408,14 @@ This command is optimized for Haiku 4.5's strengths:
 7. **XML-Style Structure**: Clear transformation sequence
 
 **Performance Expectations**:
+
 - **Speed**: 10-20 seconds (vs 20-40s with Sonnet)
 - **Cost**: 0.33x vs Sonnet 4.5
 - **Quality**: 95%+ of Sonnet for this mechanical task
 - **Best for**: Converting structured design docs to task lists
 
 **Why Haiku Excels Here**:
+
 - Task generation is pattern-matching (Haiku's strength)
 - Clear rules with no interpretation needed
 - Structured input → structured output
@@ -395,10 +423,11 @@ This command is optimized for Haiku 4.5's strengths:
 - High volume of similar operations (FOR EACH loops)
 
 **Comparison to Sonnet**:
+
 - Haiku: Faster, cheaper, excellent for mechanical conversion
 - Sonnet: Slightly better at detecting implicit dependencies
 - For this use case: Haiku is recommended (cost/speed benefit > marginal quality difference)
-</optimization_strategy>
+  </optimization_strategy>
 
 ---
 
@@ -409,6 +438,7 @@ $ARGUMENTS
 ```
 
 Use to adjust:
+
 - Test strategy (TDD vs implementation-first)
 - Specific file naming conventions
 - Technology-specific task ordering

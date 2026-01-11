@@ -29,6 +29,7 @@ Execute gap fixes from REMEDIATION_CHECKLIST.md systematically, verify each fix,
 ### Step 0: Initialize
 
 1. **Locate checklist**:
+
    ```bash
    ls specs/*/REMEDIATION_CHECKLIST.md
    ```
@@ -72,11 +73,13 @@ Create TODO list with TodoWrite:
 For each gap in selected scope:
 
 #### 2.1: Mark In Progress
+
 ```
 TodoWrite: Mark current gap as in_progress
 ```
 
 #### 2.2: Read Checklist Steps
+
 Load gap section from REMEDIATION_CHECKLIST.md
 
 #### 2.3: Execute Steps Sequentially
@@ -84,6 +87,7 @@ Load gap section from REMEDIATION_CHECKLIST.md
 For each step in the checklist:
 
 **File edits:**
+
 ```typescript
 // Use Edit tool for exact before/after replacements
 // Example: GAP-3 Step 1
@@ -95,6 +99,7 @@ Edit(
 ```
 
 **Code additions:**
+
 ```typescript
 // Use Read to understand context, then Edit to add
 // Example: GAP-1 Step 1 - Add down() method
@@ -118,6 +123,7 @@ Edit(
 ```
 
 **Verification commands:**
+
 ```bash
 # Run after each step that modifies code
 npm run test -- accordion
@@ -127,6 +133,7 @@ npm run lint
 #### 2.4: Verify Step Completion
 
 After each step:
+
 1. **Read modified file** to confirm change applied
 2. **Run verification command** from checklist
 3. **Check test output** - if failed, fix before continuing
@@ -157,6 +164,7 @@ npm run test-storybook
 ```
 
 If any failures:
+
 - Fix issues
 - Re-run verification
 - Do NOT proceed to Step 4
@@ -257,12 +265,14 @@ Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
 ### Breaking Changes (GAP-3)
 
 **Before implementing:**
+
 1. Ask user to confirm breaking change
 2. Ensure CHANGELOG.md is updated
 3. Document migration path
 4. Consider deprecation period
 
 **Implementation:**
+
 1. Do global search/replace across all files
 2. Update tests, stories, documentation
 3. Verify with `grep -r "multiExpandable"` returns nothing
@@ -270,6 +280,7 @@ Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
 ### Test Failures
 
 **If tests fail during verification:**
+
 1. **Stop immediately** - do NOT continue to next gap
 2. **Read test output** to understand failure
 3. **Fix the issue** - adjust implementation
@@ -279,6 +290,7 @@ Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
 ### ErrorHandler Diagnostics (GAP-5)
 
 **Complex implementation requires:**
+
 1. Inject ErrorHandler in constructor
 2. Add registry/tracking structures
 3. Implement validation at multiple points
@@ -292,25 +304,25 @@ Use **TodoWrite** throughout:
 ```typescript
 // At start
 TodoWrite([
-  { content: "Setup verification", status: "pending", activeForm: "Setting up verification" },
-  { content: "Implement GAP-3", status: "pending", activeForm: "Implementing GAP-3" },
-  { content: "Implement GAP-1", status: "pending", activeForm: "Implementing GAP-1" },
+  { content: 'Setup verification', status: 'pending', activeForm: 'Setting up verification' },
+  { content: 'Implement GAP-3', status: 'pending', activeForm: 'Implementing GAP-3' },
+  { content: 'Implement GAP-1', status: 'pending', activeForm: 'Implementing GAP-1' },
   // ...
-])
+]);
 
 // When starting a gap
 TodoWrite([
-  { content: "Setup verification", status: "completed", activeForm: "Setting up verification" },
-  { content: "Implement GAP-3", status: "in_progress", activeForm: "Implementing GAP-3" },
-  { content: "Implement GAP-1", status: "pending", activeForm: "Implementing GAP-1" },
-])
+  { content: 'Setup verification', status: 'completed', activeForm: 'Setting up verification' },
+  { content: 'Implement GAP-3', status: 'in_progress', activeForm: 'Implementing GAP-3' },
+  { content: 'Implement GAP-1', status: 'pending', activeForm: 'Implementing GAP-1' },
+]);
 
 // After completing a gap
 TodoWrite([
-  { content: "Setup verification", status: "completed", activeForm: "Setting up verification" },
-  { content: "Implement GAP-3", status: "completed", activeForm: "Implementing GAP-3" },
-  { content: "Implement GAP-1", status: "in_progress", activeForm: "Implementing GAP-1" },
-])
+  { content: 'Setup verification', status: 'completed', activeForm: 'Setting up verification' },
+  { content: 'Implement GAP-3', status: 'completed', activeForm: 'Implementing GAP-3' },
+  { content: 'Implement GAP-1', status: 'in_progress', activeForm: 'Implementing GAP-1' },
+]);
 ```
 
 ## Output Format
@@ -326,6 +338,7 @@ Starting gap remediation implementation...
 ✅ User selected: P0 gaps only (32 min estimated)
 
 📋 Implementation Plan:
+
 1. GAP-3: Rename multiExpandable → multiExpand (2 min, BREAKING)
 2. GAP-1: Add Foundation API methods (10 min)
 3. GAP-2: Add Foundation API outputs (20 min)
@@ -384,6 +397,7 @@ Step 5/5: Add unit tests
 🎉 Implementation Complete!
 
 **Summary**:
+
 - Gaps fixed: 3 (GAP-1, GAP-2, GAP-3)
 - Priority: P0 (BLOCKING)
 - Estimated time: 32 minutes
@@ -392,6 +406,7 @@ Step 5/5: Add unit tests
 - Commits: 1 (P0 fixes)
 
 **Updated Documents**:
+
 - ✅ GAPS_REMEDIATION.md (3 gaps marked as FIXED)
 - ✅ REMEDIATION_CHECKLIST.md (completion notes added)
 - ✅ CHANGELOG.md (breaking change documented)

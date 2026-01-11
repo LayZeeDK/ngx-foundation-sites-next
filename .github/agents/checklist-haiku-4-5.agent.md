@@ -18,15 +18,17 @@ description: Generate a custom checklist for the current feature based on user r
 Checklists are UNIT TESTS FOR REQUIREMENTS WRITING - they validate the quality, clarity, and completeness of requirements documentation.
 
 NOT for verification/testing:
+
 - ❌ "Verify the button clicks correctly" (implementation test)
 - ❌ "Test error handling works" (code test)
 - ❌ "Confirm API returns 200" (behavior test)
 
 FOR requirements quality validation:
+
 - ✅ "Are visual hierarchy requirements defined for all card types?" (completeness)
 - ✅ "Is 'prominent display' quantified with specific sizing/positioning?" (clarity)
 - ✅ "Are hover state requirements consistent across all interactive elements?" (consistency)
-</principle>
+  </principle>
 
 ---
 
@@ -43,12 +45,13 @@ You **MUST** consider the user input before proceeding (if not empty).
 ## Path Grounding (CRITICAL)
 
 <path_rules>
+
 - Do **not** guess or "fix up" filesystem paths
 - Treat paths from PowerShell scripts (`-Json` output) as **only source of truth**
 - Use paths verbatim
 - If required path is missing/unclear, STOP and re-run prerequisite script
 - All file paths must be absolute
-</path_rules>
+  </path_rules>
 
 ---
 
@@ -65,10 +68,12 @@ pwsh ./.specify/scripts/powershell/check-prerequisites.ps1 -Json
 ```
 
 **Parse JSON output for**:
+
 - `FEATURE_DIR`: Absolute path to feature directory
 - `AVAILABLE_DOCS`: List of existing files (spec.md, plan.md, tasks.md)
 
 **PowerShell String Escaping**:
+
 - For single quotes in args like "I'm Groot", use: `'I'\''m Groot'`
 - Or use double quotes: `"I'm Groot"`
 
@@ -86,6 +91,7 @@ pwsh ./.specify/scripts/powershell/check-prerequisites.ps1 -Json
 </constraints>
 
 <question_generation_algorithm>
+
 1. Extract signals from user input:
    - Domain keywords (auth, latency, UX, API)
    - Risk indicators ("critical", "must", "compliance")
@@ -111,14 +117,16 @@ pwsh ./.specify/scripts/powershell/check-prerequisites.ps1 -Json
    - **Audience framing**: "Will this be used by the author only or peers during PR review?"
    - **Boundary exclusion**: "Should we explicitly exclude performance tuning items this round?"
    - **Scenario class gap**: "No recovery flows detected—are rollback/partial failure paths in scope?"
-</question_generation_algorithm>
+     </question_generation_algorithm>
 
 **Question Format**:
+
 - If presenting options, use compact table: Option | Candidate | Why It Matters
 - Limit to A-E options maximum
 - Omit table if free-form answer is clearer
 
 **Defaults if interaction impossible**:
+
 - Depth: Standard
 - Audience: Reviewer (PR) if code-related; Author otherwise
 - Focus: Top 2 relevance clusters
@@ -136,7 +144,7 @@ Combine $ARGUMENTS + clarifying answers to determine:
 - **Explicit must-have items**: Any specific checks mentioned by user
 - **Focus selections**: Map to category scaffolding
 - **Inferred context**: From spec/plan/tasks (do NOT hallucinate)
-</consolidation>
+  </consolidation>
 
 ---
 
@@ -151,10 +159,11 @@ Efficient, targeted loading - NOT full-file dumping:
 4. If source docs are large (>500 lines), generate interim summaries instead of embedding raw text
 
 Read from FEATURE_DIR:
+
 - **spec.md**: Feature requirements and scope (prioritize FR/NFR sections)
 - **plan.md** (if exists): Technical details, dependencies
 - **tasks.md** (if exists): Implementation tasks
-</context_loading_strategy>
+  </context_loading_strategy>
 
 ---
 
@@ -164,6 +173,7 @@ Read from FEATURE_DIR:
 Create `FEATURE_DIR/checklists/` directory if it doesn't exist.
 
 **Filename format**: `[domain].md`
+
 - Use short, descriptive domain name based on theme
 - Examples: `ux.md`, `api.md`, `security.md`, `performance.md`
 - If file exists, append to existing file
@@ -176,12 +186,13 @@ Create `FEATURE_DIR/checklists/` directory if it doesn't exist.
 Test the REQUIREMENTS, NOT the implementation.
 
 Every checklist item MUST evaluate the REQUIREMENTS THEMSELVES for:
+
 - **Completeness**: Are all necessary requirements present?
 - **Clarity**: Are requirements unambiguous and specific?
 - **Consistency**: Do requirements align with each other?
 - **Measurability**: Can requirements be objectively verified?
 - **Coverage**: Are all scenarios/edge cases addressed?
-</core_principle>
+  </core_principle>
 
 <checklist_quality_dimensions>
 Group items by requirement quality categories:
@@ -195,7 +206,7 @@ Group items by requirement quality categories:
 7. **Non-Functional Requirements** - Performance, Security, Accessibility specified?
 8. **Dependencies & Assumptions** - Are they documented and validated?
 9. **Ambiguities & Conflicts** - What needs clarification?
-</checklist_quality_dimensions>
+   </checklist_quality_dimensions>
 
 <item_structure>
 Each checklist item MUST follow this pattern:
@@ -203,6 +214,7 @@ Each checklist item MUST follow this pattern:
 **Format**: "Are [requirement aspect] defined/specified/documented for [scenario]? [Quality Dimension, Spec Reference]"
 
 **Components**:
+
 - Question format asking about requirement quality
 - Focus on what's WRITTEN (or not written) in the spec/plan
 - Quality dimension tag in brackets: [Completeness], [Clarity], [Consistency], [Coverage], [Measurability]
@@ -215,31 +227,37 @@ Each checklist item MUST follow this pattern:
 ✅ **CORRECT** - Testing requirements quality:
 
 **Completeness**:
+
 - "Are error handling requirements defined for all API failure modes? [Gap]"
 - "Are accessibility requirements specified for all interactive elements? [Completeness]"
 - "Are mobile breakpoint requirements defined for responsive layouts? [Gap]"
 
 **Clarity**:
+
 - "Is 'fast loading' quantified with specific timing thresholds? [Clarity, Spec §NFR-2]"
 - "Are 'related episodes' selection criteria explicitly defined? [Clarity, Spec §FR-5]"
 - "Is 'prominent' defined with measurable visual properties? [Ambiguity, Spec §FR-4]"
 
 **Consistency**:
+
 - "Do navigation requirements align across all pages? [Consistency, Spec §FR-10]"
 - "Are card component requirements consistent between landing and detail pages? [Consistency]"
 
 **Coverage**:
+
 - "Are requirements defined for zero-state scenarios (no episodes)? [Coverage, Edge Case]"
 - "Are concurrent user interaction scenarios addressed? [Coverage, Gap]"
 - "Are requirements specified for partial data loading failures? [Coverage, Exception Flow]"
 
 **Measurability**:
+
 - "Are visual hierarchy requirements measurable/testable? [Acceptance Criteria, Spec §FR-1]"
 - "Can 'balanced visual weight' be objectively verified? [Measurability, Spec §FR-2]"
 
 ---
 
 ❌ **PROHIBITED** - Testing implementation:
+
 - "Verify landing page displays 3 episode cards" ← tests implementation
 - "Test hover states work on desktop" ← tests code
 - "Confirm logo click navigates home" ← tests behavior
@@ -247,10 +265,11 @@ Each checklist item MUST follow this pattern:
 - References to code execution, user actions, system behavior
 - "Displays correctly", "works properly", "functions as expected"
 - "Click", "navigate", "render", "load", "execute"
-</item_examples>
+  </item_examples>
 
 <scenario_coverage>
 Check if requirements exist for these scenario classes:
+
 - Primary scenarios (happy path)
 - Alternate flows
 - Exception/Error cases
@@ -258,17 +277,19 @@ Check if requirements exist for these scenario classes:
 - Non-Functional requirements (performance, security, accessibility)
 
 For each scenario class:
+
 - Ask: "Are [scenario type] requirements complete, clear, and consistent?"
 - If missing: "Are [scenario type] requirements intentionally excluded or missing? [Gap]"
 - Include resilience/rollback when state mutation occurs: "Are rollback requirements defined for migration failures? [Gap]"
-</scenario_coverage>
+  </scenario_coverage>
 
 <content_consolidation>
 If raw candidate items > 40:
+
 - Prioritize by risk/impact
 - Merge near-duplicates checking the same requirement aspect
 - If >5 low-impact edge cases, create one consolidated item: "Are edge cases X, Y, Z addressed in requirements? [Coverage]"
-</content_consolidation>
+  </content_consolidation>
 
 ---
 
@@ -301,6 +322,7 @@ Follow template from `.specify/templates/checklist-template.md`:
 ```
 
 **If template unavailable**, use:
+
 - H1 title
 - Purpose/created meta lines
 - `##` category sections
@@ -324,16 +346,18 @@ Output in this exact structure:
 4. **Must-Have Items**: [List any user-specified items incorporated, or "None specified"]
 
 **📋 Reminder**: Each `/checklist-haiku-4-5` command creates a new file using short, descriptive names. This allows:
+
 - Multiple checklists of different types (e.g., `ux.md`, `test.md`, `security.md`)
 - Simple, memorable filenames indicating purpose
 - Easy navigation in `checklists/` folder
 
 **Next Steps**:
+
 - Review checklist for completeness
 - Run additional `/checklist-haiku-4-5` for different domains if needed
 - Use checklist to validate requirements quality
 - Clean up obsolete checklists when done
-</output_format>
+  </output_format>
 
 ---
 
@@ -351,11 +375,12 @@ This command is optimized for Claude Haiku 4.5's strengths:
 7. **Validation Built-In**: ≥80% traceability requirement ensures quality
 
 **Performance Expectations**:
+
 - **Speed**: 10-15 seconds (vs 20-30s with Sonnet 4.5)
 - **Cost**: 0.33x vs Sonnet 4.5 (66% cheaper)
 - **Quality**: 90-95% of Sonnet output for this mechanical, bounded task
 - **Best for**: Generating structured checklists from requirements docs
-</optimization_strategy>
+  </optimization_strategy>
 
 ---
 
@@ -428,10 +453,10 @@ Sample items:
 
 **Key Differences**:
 
-| Wrong Approach | Correct Approach |
-|----------------|------------------|
+| Wrong Approach                      | Correct Approach                            |
+| ----------------------------------- | ------------------------------------------- |
 | Tests if the system works correctly | Tests if requirements are written correctly |
-| Verification of behavior | Validation of requirement quality |
-| "Does it do X?" | "Is X clearly specified?" |
-| Implementation test | Requirements test |
-| QA checklist | Requirements quality checklist |
+| Verification of behavior            | Validation of requirement quality           |
+| "Does it do X?"                     | "Is X clearly specified?"                   |
+| Implementation test                 | Requirements test                           |
+| QA checklist                        | Requirements quality checklist              |

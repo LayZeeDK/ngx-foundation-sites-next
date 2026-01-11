@@ -17,15 +17,17 @@ model_override: claude-haiku-4.5
 Checklists are UNIT TESTS FOR REQUIREMENTS WRITING - they validate the quality, clarity, and completeness of requirements documentation.
 
 NOT for verification/testing:
+
 - ❌ "Verify the button clicks correctly" (implementation test)
 - ❌ "Test error handling works" (code test)
 - ❌ "Confirm API returns 200" (behavior test)
 
 FOR requirements quality validation:
+
 - ✅ "Are visual hierarchy requirements defined for all card types?" (completeness)
 - ✅ "Is 'prominent display' quantified with specific sizing/positioning?" (clarity)
 - ✅ "Are hover state requirements consistent across all interactive elements?" (consistency)
-</principle>
+  </principle>
 
 ## User Input
 
@@ -46,10 +48,12 @@ pwsh ./.specify/scripts/powershell/check-prerequisites.ps1 -Json
 ```
 
 Parse JSON for:
+
 - `FEATURE_DIR` (absolute path)
 - `AVAILABLE_DOCS` (list of existing files)
 
 **Path Rules**:
+
 - Use absolute paths only
 - Do NOT synthesize or guess paths
 - If path missing, STOP and re-run prerequisite script
@@ -65,15 +69,17 @@ Parse JSON for:
 </constraints>
 
 <question_archetypes>
+
 1. **Scope refinement**: "Should this include integration touchpoints or stay limited to local module?"
 2. **Risk prioritization**: "Which risk areas should receive mandatory gating checks?"
 3. **Depth calibration**: "Is this a pre-commit sanity list or formal release gate?"
 4. **Audience framing**: "Will this be used by author only or peers during PR review?"
 5. **Boundary exclusion**: "Should we explicitly exclude performance tuning items?"
 6. **Scenario gap**: "Are rollback/partial failure paths in scope?"
-</question_archetypes>
+   </question_archetypes>
 
 **Defaults if interaction impossible**:
+
 - Depth: Standard
 - Audience: Reviewer (PR) if code-related; Author otherwise
 - Focus: Top 2 relevance clusters from user input
@@ -89,10 +95,11 @@ Efficient, targeted loading - NOT full-file dumping:
 4. If docs are large (>500 lines), generate interim summaries
 
 Read from FEATURE_DIR:
+
 - spec.md: Requirements and scope (prioritize FR/NFR sections)
 - plan.md (if exists): Technical details, dependencies
 - tasks.md (if exists): Implementation tasks
-</context_loading_strategy>
+  </context_loading_strategy>
 
 ### Step 4: Generate Checklist
 
@@ -100,6 +107,7 @@ Read from FEATURE_DIR:
 Create `FEATURE_DIR/checklists/` directory if needed.
 
 Filename format: `[domain].md`
+
 - Use short, descriptive domain name (e.g., `ux.md`, `api.md`, `security.md`)
 - If file exists, append to it
 - Each run creates NEW file (never overwrites)
@@ -119,7 +127,7 @@ Group items by these requirement quality categories:
 7. **Non-Functional Requirements** - Performance, Security, Accessibility specified?
 8. **Dependencies & Assumptions** - Are they documented and validated?
 9. **Ambiguities & Conflicts** - What needs clarification?
-</checklist_quality_dimensions>
+   </checklist_quality_dimensions>
 
 <item_structure>
 Each checklist item MUST follow this pattern:
@@ -127,6 +135,7 @@ Each checklist item MUST follow this pattern:
 **Format**: "Are [requirement aspect] defined/specified/documented for [scenario]? [Quality Dimension, Spec Reference]"
 
 **Components**:
+
 - Question format about requirement quality
 - Focus on what's WRITTEN (or missing) in spec/plan
 - Quality dimension tag: [Completeness], [Clarity], [Consistency], [Coverage], [Measurability]
@@ -139,31 +148,38 @@ Each checklist item MUST follow this pattern:
 ✅ CORRECT - Testing requirements quality:
 
 Completeness:
+
 - "Are error handling requirements defined for all API failure modes? [Gap]"
 - "Are accessibility requirements specified for all interactive elements? [Completeness]"
 
 Clarity:
+
 - "Is 'fast loading' quantified with specific timing thresholds? [Clarity, Spec §NFR-2]"
 - "Are 'related episodes' selection criteria explicitly defined? [Clarity, Spec §FR-5]"
 
 Consistency:
+
 - "Do navigation requirements align across all pages? [Consistency, Spec §FR-10]"
 
 Coverage:
+
 - "Are requirements defined for zero-state scenarios? [Coverage, Edge Case]"
 
 Measurability:
+
 - "Can visual hierarchy requirements be objectively verified? [Measurability, Spec §FR-1]"
 
 ❌ PROHIBITED - Testing implementation:
+
 - "Verify landing page displays 3 episode cards"
 - "Test hover states work on desktop"
 - "Confirm logo click navigates home"
 - Any item starting with "Verify", "Test", "Confirm", "Check" + implementation behavior
-</item_examples>
+  </item_examples>
 
 <scenario_coverage>
 Check if requirements exist for:
+
 - Primary scenarios
 - Alternate flows
 - Exception/Error cases
@@ -171,16 +187,18 @@ Check if requirements exist for:
 - Non-Functional requirements (performance, security, a11y)
 
 For each scenario class:
+
 - Ask: "Are [scenario type] requirements complete, clear, and consistent?"
 - If missing: "Are [scenario type] requirements intentionally excluded or missing? [Gap]"
-</scenario_coverage>
+  </scenario_coverage>
 
 <content_consolidation>
 If candidate items > 40:
+
 - Prioritize by risk/impact
 - Merge near-duplicates checking same requirement aspect
 - If >5 low-impact edge cases, consolidate into one item
-</content_consolidation>
+  </content_consolidation>
 
 ### Step 5: Structure Output
 
@@ -225,10 +243,11 @@ Output in this exact structure:
 5. **Reminder**: Each `/checklist-haiku-4-5` run creates a new file
 
 **Next Steps**:
+
 - Review checklist for completeness
 - Run additional checklists for different domains if needed
 - Use checklist to validate requirements quality
-</output_format>
+  </output_format>
 
 ## Optimization Notes for Haiku 4.5
 
@@ -244,25 +263,30 @@ This command is optimized for Haiku 4.5's strengths:
 7. **Validation Built-In**: ≥80% traceability requirement
 
 **Expected Performance**:
+
 - Speed: 10-15 seconds (vs 20-30s with Sonnet)
 - Cost: 0.33x vs Sonnet 4.5
 - Quality: 90-95% of Sonnet output for this mechanical task
-</optimization_strategy>
+  </optimization_strategy>
 
 ## Example Checklist Types
 
 **UX Requirements Quality**: `ux.md`
+
 - Focus: Visual design, interaction patterns, accessibility requirements
 - Items check if requirements are complete, clear, measurable
 
 **API Requirements Quality**: `api.md`
+
 - Focus: Endpoints, contracts, error handling, versioning
 - Items check if API specifications are unambiguous and testable
 
 **Performance Requirements Quality**: `performance.md`
+
 - Focus: Timing, throughput, resource usage requirements
 - Items check if performance requirements are quantified and measurable
 
 **Security Requirements Quality**: `security.md`
+
 - Focus: Authentication, authorization, data protection requirements
 - Items check if security requirements align with threat model

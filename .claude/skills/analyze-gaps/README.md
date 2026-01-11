@@ -32,6 +32,7 @@ gh copilot slash analyze-gaps
 ## Example Output
 
 From accordion gap analysis:
+
 - **7 validated gaps** (3 P0, 3 P1, 1 P2) with evidence scores 6-10/10
 - **4 false positives** correctly identified
 - **GAPS_REMEDIATION.md** (377 lines) with evidence chains
@@ -42,6 +43,7 @@ From accordion gap analysis:
 ## Success Criteria
 
 Future analysis tools should:
+
 - Find "NOT IMPLEMENTED - TRACKED" markers
 - Not re-flag false positives
 - Reference GAPS_REMEDIATION.md for details

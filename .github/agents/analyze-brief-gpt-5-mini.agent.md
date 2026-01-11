@@ -38,6 +38,7 @@ This agent optimizes for GPT-5 Mini using 2026 best practices:
 **GPT-4.1 context**: 1M tokens
 
 **Feature size estimate**:
+
 ```
 Small feature: spec.md + plan.md + tasks.md + 3-5 implementation files = ~50-100K tokens
 Medium feature: Same + 5-10 implementation files = ~100-180K tokens
@@ -45,6 +46,7 @@ Large feature: Same + 10+ implementation files = ~200K+ tokens ⚠️
 ```
 
 **Decision rule**:
+
 ```
 IF total_tokens < 180K:
   USE /analyze-brief-gpt-5-mini (this command) ✅ Fast + free
@@ -66,10 +68,11 @@ ELSE:
 ## Context (CTCO Step 1)
 
 **Input artifacts**:
+
 - specs/<feature>/spec.md (requirements, user stories)
 - specs/<feature>/plan.md (architecture, notes)
 - specs/<feature>/tasks.md (task tracking)
-- specs/<feature>/contracts/*.ts (API definitions, optional)
+- specs/<feature>/contracts/\*.ts (API definitions, optional)
 - specs/<feature>/GAPS_REMEDIATION.md (known gaps, optional)
 - Implementation files provided by user
 
@@ -103,10 +106,12 @@ STEP 6: Write Report (XML-scaffolded output)
 **Gap ID format**: `GAP-N` (sequential: GAP-1, GAP-2, GAP-3)
 
 **Gap structure** (exact template):
+
 ```markdown
 ### GAP-N: [Title in 5-8 words]
 
 **Evidence:**
+
 - **Spec**: FR-XXX at spec.md:LINE with "quote"
 - **Tasks**: T-XXX at tasks.md:LINE with "quote"
 - **Search**: Keywords [list] in [files]
@@ -121,6 +126,7 @@ STEP 6: Write Report (XML-scaffolded output)
 ### Verbosity Constraints
 
 **Maximum prose per gap**:
+
 - Title: 5-8 words
 - Priority justification: 1 sentence (≤20 words)
 - Fix description: 1-2 sentences (≤40 words)
@@ -130,6 +136,7 @@ STEP 6: Write Report (XML-scaffolded output)
 ### Validation Constraints
 
 **Each gap MUST have**:
+
 - Exact spec.md line number with FR-XXX quote
 - Exact tasks.md task ID (T-XXX)
 - Complete file search list with keywords
@@ -179,7 +186,9 @@ STEP 6: Write Report (XML-scaffolded output)
 ## Validated Gaps (NEW)
 
 [IF new gaps found:]
+
 ### GAP-1: [Title]
+
 [Use exact gap structure from Constraints section]
 
 [IF no new gaps:]
@@ -190,6 +199,7 @@ STEP 6: Write Report (XML-scaffolded output)
 ## Skipped Known Gaps
 
 [List gaps matched in Step 0.5 registry]
+
 1. **[Title]** - Already tracked as GAP-N (Status: [status])
 
 OR
@@ -240,6 +250,7 @@ None - all identified gaps passed validation.
 ```
 
 Parse JSON for FEATURE_DIR. Derive paths:
+
 - SPEC = FEATURE_DIR/spec.md
 - PLAN = FEATURE_DIR/plan.md
 - TASKS = FEATURE_DIR/tasks.md
@@ -270,6 +281,7 @@ FOR EACH file in IMPLEMENTATION_FILES:
 ```
 
 **Line counting procedure** (mechanical):
+
 ```
 FOR EACH file to analyze:
   file_content = Read(file_path)
@@ -283,6 +295,7 @@ FOR EACH file to analyze:
 ```
 
 **Record results**:
+
 ```
 spec_lines = [counted from Read tool]
 plan_lines = [counted from Read tool]
@@ -292,6 +305,7 @@ implementation_lines = [total from all implementation files]
 ```
 
 **Why this works**:
+
 - ✅ **Platform-agnostic**: Read tool works on Windows, Linux, macOS
 - ✅ **No shell required**: Uses agent's built-in file reading capabilities
 - ✅ **More accurate**: Reads actual file content instead of relying on shell utilities
@@ -312,11 +326,12 @@ total_tokens_estimate = spec_tokens + plan_tokens + tasks_tokens + contracts_tok
 ```
 
 **Token-per-line rationale**:
+
 - spec.md: ~20 tokens/line (prose-heavy with requirements)
 - plan.md: ~20 tokens/line (prose-heavy with architecture)
 - tasks.md: ~15 tokens/line (structured lists)
-- contracts/*.ts: ~25 tokens/line (TypeScript with JSDoc comments)
-- implementation *.ts: ~18 tokens/line (TypeScript code)
+- contracts/\*.ts: ~25 tokens/line (TypeScript with JSDoc comments)
+- implementation \*.ts: ~18 tokens/line (TypeScript code)
 
 ### Step 0.0.4: Categorize Feature Size
 
@@ -346,31 +361,34 @@ Use AskUserQuestion tool:
 
 ```typescript
 AskUserQuestion({
-  questions: [{
-    question: `Feature artifacts estimated at ~${Math.round(total_tokens_estimate / 1000)}K tokens, exceeding GPT-5 Mini's safe limit (180K). How should I proceed?`,
-    header: "Context Limit",
-    multiSelect: false,
-    options: [
-      {
-        label: "Switch to GPT-4.1 (Recommended)",
-        description: `Use /analyze-brief with GPT-4.1 for full 1M context. Handles ${Math.round(total_tokens_estimate / 1000)}K tokens safely. Slower (30-60s) but complete analysis.`
-      },
-      {
-        label: "Continue with GPT-5 Mini anyway",
-        description: "Risk: May truncate artifacts mid-analysis or miss gaps. Only if estimate is wrong or you're analyzing a subset."
-      },
-      {
-        label: "Cancel and revise scope",
-        description: "Stop now. Options: analyze fewer files, split feature, or remove contracts from scope."
-      }
-    ]
-  }]
-})
+  questions: [
+    {
+      question: `Feature artifacts estimated at ~${Math.round(total_tokens_estimate / 1000)}K tokens, exceeding GPT-5 Mini's safe limit (180K). How should I proceed?`,
+      header: 'Context Limit',
+      multiSelect: false,
+      options: [
+        {
+          label: 'Switch to GPT-4.1 (Recommended)',
+          description: `Use /analyze-brief with GPT-4.1 for full 1M context. Handles ${Math.round(total_tokens_estimate / 1000)}K tokens safely. Slower (30-60s) but complete analysis.`,
+        },
+        {
+          label: 'Continue with GPT-5 Mini anyway',
+          description: "Risk: May truncate artifacts mid-analysis or miss gaps. Only if estimate is wrong or you're analyzing a subset.",
+        },
+        {
+          label: 'Cancel and revise scope',
+          description: 'Stop now. Options: analyze fewer files, split feature, or remove contracts from scope.',
+        },
+      ],
+    },
+  ],
+});
 ```
 
 **Handle user response**:
 
 **Option 1 (Switch to GPT-4.1)** ← Recommended:
+
 ```
 STOP execution immediately
 OUTPUT:
@@ -385,6 +403,7 @@ EXIT (do NOT continue to Step 0)
 ```
 
 **Option 2 (Continue anyway)**:
+
 ```
 OUTPUT:
 "⚠️ **WARNING**: Continuing with GPT-5 Mini despite ${Math.round(total_tokens_estimate / 1000)}K token estimate.
@@ -400,6 +419,7 @@ PROCEED to Step 0
 ```
 
 **Option 3 (Cancel)**:
+
 ```
 STOP execution immediately
 OUTPUT:
@@ -448,6 +468,7 @@ PROCEED to Step 0
 ```
 
 Use paths from Step 0.0.1:
+
 - SPEC = FEATURE_DIR/spec.md
 - PLAN = FEATURE_DIR/plan.md
 - TASKS = FEATURE_DIR/tasks.md
@@ -552,6 +573,7 @@ ELSE:
 ```
 
 **Procedure**:
+
 ```
 FOR EACH requirement in spec.md:
   FOR EACH rule in filtering_rules:
@@ -918,21 +940,23 @@ IF context exceeds 180K tokens:
 
 ## GPT-5 Mini vs GPT-4.1
 
-| Aspect | GPT-5 Mini (this command) | GPT-4.1 (/analyze-brief) |
-|--------|---------------------------|--------------------------|
-| **Cost** | 0x (free) | 0x (free) |
-| **Speed** | ⚡ **Fast** (kernel fusion) | Slower |
-| **Context** | 200K (~180K safe) | 1M |
-| **Reasoning** | Minimal | Non-reasoning |
-| **Structured prompts** | ✅ Excellent | Good |
-| **Best for** | Small-medium features | Large features |
+| Aspect                 | GPT-5 Mini (this command)   | GPT-4.1 (/analyze-brief) |
+| ---------------------- | --------------------------- | ------------------------ |
+| **Cost**               | 0x (free)                   | 0x (free)                |
+| **Speed**              | ⚡ **Fast** (kernel fusion) | Slower                   |
+| **Context**            | 200K (~180K safe)           | 1M                       |
+| **Reasoning**          | Minimal                     | Non-reasoning            |
+| **Structured prompts** | ✅ Excellent                | Good                     |
+| **Best for**           | Small-medium features       | Large features           |
 
 **Use GPT-5 Mini** when:
+
 - ✅ Feature artifacts < 180K tokens
 - ✅ Speed matters (fast iteration)
 - ✅ You have well-structured specs
 
 **Use GPT-4.1** when:
+
 - ⚠️ Feature artifacts > 180K tokens
 - ⚠️ Need 1M context for huge codebases
 - ⚠️ Complex multi-file features
@@ -964,6 +988,7 @@ Before responding, verify:
 # Forbidden Patterns (Prevent Hallucinations)
 
 **NEVER report as gaps**:
+
 - ❌ "Animation hooks missing" when spec says "CSS-only"
 - ❌ "ARIA live region missing" when spec says "opt-in via announce input"
 - ❌ "Performance test missing" when spec says "tested via @for"
@@ -979,6 +1004,7 @@ Before responding, verify:
 **MUST use Write tool** to create `gap-analysis-report.md`
 
 **File MUST contain** (in order):
+
 1. Analysis Mode section (INCREMENTAL or FIRST-TIME)
 2. Validated Gaps (NEW) section (with all gaps OR "No new gaps detected")
 3. Skipped Known Gaps section (with list OR "None")
@@ -987,11 +1013,13 @@ Before responding, verify:
 6. "**END OF REPORT**" final line
 
 **Do NOT**:
+
 - ❌ Output report content to user directly
 - ❌ Summarize gaps in bullet points
 - ❌ Add prose beyond required format
 
 **DO**:
+
 - ✅ Write complete report to file
 - ✅ Tell user mode and counts only
 
@@ -1015,11 +1043,13 @@ Output is successful when:
 # Example Execution
 
 **Input**:
+
 ```bash
 gh copilot -m "gpt-5-mini" slash analyze-brief-gpt-5-mini @accordion.ts @accordion.html
 ```
 
 **Process** (internal, not shown to user):
+
 ```xml
 <execution_trace>
   <step0>Loaded paths from check-prerequisites.ps1</step0>
@@ -1039,6 +1069,7 @@ gh copilot -m "gpt-5-mini" slash analyze-brief-gpt-5-mini @accordion.ts @accordi
 ```
 
 **Output** (to user):
+
 ```
 ✅ Incremental gap analysis complete. Report saved to gap-analysis-report.md
 
@@ -1051,12 +1082,14 @@ gh copilot -m "gpt-5-mini" slash analyze-brief-gpt-5-mini @accordion.ts @accordi
 # Performance Characteristics
 
 **GPT-5 Mini (this command)**:
+
 - Inference time: ~10-20 seconds (fast)
 - Context limit: 200K tokens (~180K safe)
 - Quality: 85-95% of GPT-4.1
 - Cost: 0x (free)
 
 **GPT-4.1 (standard /analyze-brief)**:
+
 - Inference time: ~30-60 seconds (slower)
 - Context limit: 1M tokens
 - Quality: Baseline

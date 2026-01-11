@@ -36,12 +36,13 @@ You **MUST** consider the user input before proceeding (if not empty).
 ## Path Grounding (CRITICAL)
 
 <path_rules>
+
 - Do **not** guess or "fix up" filesystem paths
 - Treat paths from PowerShell scripts (`-Json` output) as **only source of truth**
 - Use paths verbatim
 - If required path missing/unclear, STOP and re-run prerequisite script
 - All file paths must be absolute
-</path_rules>
+  </path_rules>
 
 ---
 
@@ -58,15 +59,18 @@ pwsh ./.specify/scripts/powershell/check-prerequisites.ps1 -Json -PathsOnly
 ```
 
 **Parse JSON output for**:
+
 - `FEATURE_DIR`: Absolute path to feature directory
 - `FEATURE_SPEC`: Absolute path to spec.md file
 - (Optional) `IMPL_PLAN`, `TASKS`: For future chained flows
 
 **Error Handling**:
+
 - If JSON parsing fails: Abort and instruct user to run `/speckit.specify` first
 - If spec file missing: Cannot proceed, instruct user to create spec first
 
 **PowerShell String Escaping**:
+
 - For single quotes in args like "I'm Groot", use: `'I'\''m Groot'`
 - Or use double quotes: `"I'm Groot"`
 
@@ -131,21 +135,21 @@ Perform structured scan using this taxonomy. For each category, mark status: Cle
    - Acceptance criteria testability
    - Measurable Definition of Done indicators
 
-10. **Misc / Placeholders**
-    - TODO markers / unresolved decisions
-    - Ambiguous adjectives ("robust", "intuitive") lacking quantification
-</coverage_taxonomy>
+10. **Misc / Placeholders** - TODO markers / unresolved decisions - Ambiguous adjectives ("robust", "intuitive") lacking quantification
+    </coverage_taxonomy>
 
 <prioritization_rules>
 For each category with Partial or Missing status:
+
 - Add candidate question opportunity ONLY IF:
   - Clarification would materially change implementation OR validation strategy
   - Information is NOT better deferred to planning phase
 
 Calculate priority: Impact × Uncertainty
+
 - Impact: How much does this affect architecture/data model/tests/UX/ops/compliance?
 - Uncertainty: How ambiguous or missing is this information?
-</prioritization_rules>
+  </prioritization_rules>
 
 **Output**: Internal coverage map with priorities (do not display unless no questions generated).
 
@@ -157,6 +161,7 @@ Calculate priority: Impact × Uncertainty
 Generate prioritized queue of clarification questions (maximum 5 total).
 
 **Hard Constraints**:
+
 - Maximum 10 questions total across entire session
 - Each question answerable with EITHER:
   - Multiple-choice (2-5 distinct, mutually exclusive options), OR
@@ -171,6 +176,7 @@ Generate prioritized queue of clarification questions (maximum 5 total).
   - Compliance validation
 
 **Exclusion Criteria**:
+
 - Already answered in spec
 - Trivial stylistic preferences
 - Plan-level execution details (unless blocking correctness)
@@ -178,23 +184,26 @@ Generate prioritized queue of clarification questions (maximum 5 total).
 - Would not prevent misaligned acceptance tests
 
 **Balance Requirement**:
+
 - Cover highest impact unresolved categories first
 - Avoid asking two low-impact questions when high-impact area (e.g., security) unresolved
 - If >5 categories unresolved, select top 5 by (Impact × Uncertainty)
-</question_constraints>
+  </question_constraints>
 
 <question_format_rules>
 For each question, determine best format:
 
 **Multiple-Choice** (when discrete options exist):
+
 - 2-5 mutually exclusive options
 - Each option should be viable and distinct
 - Include "Short" option for free-form answer if appropriate
 
 **Short Answer** (when no meaningful discrete options):
+
 - Constrain to ≤5 words
 - Provide suggested answer based on best practices
-</question_format_rules>
+  </question_format_rules>
 
 **Output**: Internal queue of 0-5 questions (do not display all at once).
 
@@ -214,17 +223,19 @@ Present EXACTLY ONE question at a time.
    - Alignment with explicit project goals/constraints in spec
 
 2. **Present recommendation prominently**:
+
    ```
    **Recommended:** Option [X] - <reasoning in 1-2 sentences>
    ```
 
 3. **Render options table**:
+
    ```markdown
-   | Option | Description |
-   |--------|-------------|
-   | A      | <Option A description> |
-   | B      | <Option B description> |
-   | C      | <Option C description> |
+   | Option | Description                               |
+   | ------ | ----------------------------------------- |
+   | A      | <Option A description>                    |
+   | B      | <Option B description>                    |
+   | C      | <Option C description>                    |
    | Short  | Provide different short answer (≤5 words) |
    ```
 
@@ -236,6 +247,7 @@ Present EXACTLY ONE question at a time.
 **For Short-Answer Questions**:
 
 1. **Provide suggested answer**:
+
    ```
    **Suggested:** <your proposed answer> - <brief reasoning>
    ```
@@ -246,12 +258,14 @@ Present EXACTLY ONE question at a time.
    ```
 
 **After User Answers**:
+
 - If "yes", "recommended", or "suggested" → Use your stated recommendation/suggestion
 - Otherwise → Validate answer maps to option OR fits ≤5 word constraint
 - If ambiguous → Ask quick disambiguation (does NOT count as new question)
 - Once satisfactory → Record in working memory, move to next question
 
 **Termination Conditions**:
+
 - All critical ambiguities resolved (remaining queue becomes unnecessary), OR
 - User signals completion ("done", "good", "no more"), OR
 - 5 questions asked
@@ -261,9 +275,10 @@ Present EXACTLY ONE question at a time.
 
 <no_questions_case>
 If no valid questions exist at start:
+
 - Report: "No critical ambiguities detected worth formal clarification."
 - Suggest proceeding to `/speckit.plan`
-</no_questions_case>
+  </no_questions_case>
 
 ---
 
@@ -273,12 +288,15 @@ If no valid questions exist at start:
 After each accepted answer, immediately update spec file.
 
 **First Answer in Session**:
+
 1. Ensure `## Clarifications` section exists
    - Create it after highest-level overview section if missing
 2. Create `### Session YYYY-MM-DD` subheading for today if missing
 
 **For Each Answer**:
+
 1. Append bullet to Clarifications session:
+
    ```markdown
    - Q: <question> → A: <final answer>
    ```
@@ -299,7 +317,7 @@ After each accepted answer, immediately update spec file.
    - Don't reorder unrelated sections
    - Keep heading hierarchy intact
    - Keep clarifications minimal and testable
-</incremental_integration>
+     </incremental_integration>
 
 ---
 
@@ -315,7 +333,7 @@ After EACH write plus final pass, verify:
 - [ ] Markdown structure valid
 - [ ] Only allowed new headings: `## Clarifications`, `### Session YYYY-MM-DD`
 - [ ] Terminology consistency: same canonical term used across all updated sections
-</validation_checklist>
+      </validation_checklist>
 
 ---
 
@@ -331,10 +349,10 @@ After questioning loop ends or early termination:
 3. **Sections Touched**: [List section names]
 4. **Coverage Summary**:
 
-   | Category | Status | Notes |
-   |----------|--------|-------|
+   | Category     | Status                                    | Notes        |
+   | ------------ | ----------------------------------------- | ------------ |
    | [Category 1] | Resolved / Deferred / Clear / Outstanding | [Brief note] |
-   | [Category 2] | ... | ... |
+   | [Category 2] | ...                                       | ...          |
 
    **Status Definitions**:
    - **Resolved**: Was Partial/Missing, now addressed
@@ -347,15 +365,17 @@ After questioning loop ends or early termination:
    - If all Clear/Resolved: "Proceed to `/speckit.plan`"
 
 **Next Steps**:
+
 - Review updated spec for accuracy
 - Run `/speckit.plan` to create technical plan
-</output_format>
+  </output_format>
 
 ---
 
 ## Behavior Rules
 
 <behavior_constraints>
+
 - If no meaningful ambiguities found: Report "No critical ambiguities detected" and suggest proceeding
 - If spec file missing: Instruct user to run `/speckit.specify` first
 - Never exceed 5 total asked questions (clarification retries don't count as new)
@@ -363,7 +383,7 @@ After questioning loop ends or early termination:
 - Respect user early termination signals ("stop", "done", "proceed")
 - If no questions asked due to full coverage: Output compact coverage summary, suggest advancing
 - If quota reached with unresolved high-impact categories: Flag them under Deferred with rationale
-</behavior_constraints>
+  </behavior_constraints>
 
 ---
 
@@ -381,21 +401,24 @@ This command is optimized for Haiku 4.5's strengths:
 7. **Prioritization Formula**: Impact × Uncertainty (mechanical calculation)
 
 **Performance Expectations**:
+
 - **Analysis Speed**: 15-25 seconds (vs 30-45s with Sonnet)
 - **Cost**: 0.33x vs Sonnet 4.5
 - **Quality**: 85-90% of Sonnet for ambiguity detection
 - **Best for**: Structured gap identification with predefined taxonomy
 
 **Limitations vs Sonnet**:
+
 - May miss subtle conceptual ambiguities requiring deep reasoning
 - Better at detecting missing sections than inferring implicit assumptions
 - Recommendations based on common patterns, not deep architectural analysis
 
 **When to Use Sonnet Instead**:
+
 - Complex architectural decisions requiring multi-step reasoning
 - Novel/unusual project types without established patterns
 - Deep synthesis across multiple interconnected ambiguities
-</optimization_strategy>
+  </optimization_strategy>
 
 ---
 
@@ -406,6 +429,7 @@ $ARGUMENTS
 ```
 
 Use user input to adjust:
+
 - Which taxonomy categories to prioritize
 - What counts as "high impact" for this specific feature
 - Domain-specific best practices to apply

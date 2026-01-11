@@ -39,6 +39,7 @@ This agent is optimized for GPT-5 Mini using 2026 best practices:
 ## Context (CTCO Step 1)
 
 **Input artifacts**:
+
 - `specs/<feature>/spec.md` (requirements, user stories, success criteria)
 - `specs/<feature>/plan.md` (phases, architecture, implementation notes)
 - `specs/<feature>/data-model.md` (if exists)
@@ -104,11 +105,13 @@ ORDER tasks within each phase:
 **Task ID format**: `T###` (3-digit zero-padded: T001, T023, T145)
 
 **Task line format**:
+
 ```
 - [ ] T### [P?] [Story?] Description with file path
 ```
 
 **Examples**:
+
 ```
 - [ ] T001 Create directory at packages/lib/feature/
 - [ ] T002 [P] [US1] Add types.ts with FeatureState interface
@@ -118,10 +121,12 @@ ORDER tasks within each phase:
 ### File Path Constraints
 
 **MUST include exact file paths** in task descriptions:
+
 - ✅ `Create component at packages/lib/feature/feature.component.ts`
 - ❌ `Create component` (too vague)
 
 **Path format**:
+
 - Relative to repo root
 - Use forward slashes
 - Include file extension
@@ -129,6 +134,7 @@ ORDER tasks within each phase:
 ### Dependency Constraints
 
 **Task ordering rules**:
+
 1. Parent components BEFORE child components
 2. Tokens/types BEFORE components that use them
 3. Components BEFORE integration
@@ -140,11 +146,13 @@ ORDER tasks within each phase:
 ### Parallelization Constraints
 
 **Mark [P] when**:
+
 - Different files
 - No shared state
 - No sequential dependency
 
 **Do NOT mark [P] when**:
+
 - Same file edits
 - Parent → child relationship
 - State depends on previous task
@@ -239,10 +247,12 @@ Before returning output, verify:
 ```
 
 Parse JSON for:
+
 - `FEATURE_DIR` (feature directory path)
 - `AVAILABLE_DOCS` (which docs exist)
 
 Derive paths:
+
 - SPEC = FEATURE_DIR/spec.md
 - PLAN = FEATURE_DIR/plan.md
 - OUTPUT = FEATURE_DIR/tasks.md
@@ -323,6 +333,7 @@ TELL user: "✅ tasks.md generated with [N] tasks across [M] phases"
 ## Example Transformation
 
 **Input (plan.md)**:
+
 ```markdown
 ## Phase 1: Setup
 
@@ -337,6 +348,7 @@ TELL user: "✅ tasks.md generated with [N] tasks across [M] phases"
 ```
 
 **Output (tasks.md)**:
+
 ```markdown
 ## Phase 1: Setup
 
@@ -390,24 +402,28 @@ TELL user: "✅ tasks.md generated with [N] tasks across [M] phases"
 ## Error Handling
 
 ### If plan.md not found:
+
 ```
 STOP
 TELL user: "plan.md not found. Run `/speckit.plan` first."
 ```
 
 ### If ambiguous file paths:
+
 ```
 STOP
 TELL user: "Ambiguous file path in plan.md at line [N]. Please clarify exact path."
 ```
 
 ### If circular dependencies detected:
+
 ```
 STOP
 TELL user: "Circular dependency detected: [Task A] → [Task B] → [Task A]. Please revise plan.md."
 ```
 
 ### If validation fails:
+
 ```
 FIX the specific validation issue
 RE-RUN validation
@@ -431,20 +447,22 @@ Output is successful when:
 
 **Using GPT-5 Mini vs Haiku 4.5**:
 
-| Aspect | GPT-5 Mini (0x) | Haiku 4.5 (0.33x) |
-|--------|-----------------|-------------------|
-| Cost | Free | 0.33x premium |
-| Speed | Faster | Fast |
-| Reasoning | Minimal | Low |
-| Context | 200K | 200K |
-| Quality | Good for structured tasks | Excellent |
+| Aspect    | GPT-5 Mini (0x)           | Haiku 4.5 (0.33x) |
+| --------- | ------------------------- | ----------------- |
+| Cost      | Free                      | 0.33x premium     |
+| Speed     | Faster                    | Fast              |
+| Reasoning | Minimal                   | Low               |
+| Context   | 200K                      | 200K              |
+| Quality   | Good for structured tasks | Excellent         |
 
 **When to use GPT-5 Mini** (this command):
+
 - Budget is critical (0x vs 0.33x)
 - Plan.md is well-structured with clear actions
 - Tasks are mechanical transformations
 
 **When to use Haiku 4.5** (standard /speckit.tasks):
+
 - Quality is more important than cost
 - Plan.md has ambiguous descriptions
 - Need better dependency detection

@@ -25,11 +25,12 @@ handoffs:
 Transform natural language feature description into structured specification document.
 
 **Task Type**: Synthesis + pattern matching (good fit for Haiku with optimization)
+
 - Extract key concepts (actors, actions, data, constraints)
 - Make informed guesses for gaps (based on industry standards)
 - Fill template sections with coherent narratives
 - Validate against quality checklist
-</goal>
+  </goal>
 
 ## User Input
 
@@ -44,12 +45,13 @@ $ARGUMENTS
 ## Path Grounding (CRITICAL)
 
 <path_rules>
+
 - Do **not** guess or "fix up" filesystem paths
 - Treat paths from PowerShell scripts (`-Json` output) as **only source of truth**
 - Use paths verbatim
 - If required path missing/unclear, STOP and re-run prerequisite script
 - All file paths must be absolute
-</path_rules>
+  </path_rules>
 
 ---
 
@@ -61,22 +63,25 @@ $ARGUMENTS
 Analyze the feature description and create a concise branch name (2-4 words):
 
 **Rules**:
+
 - Use action-noun format when possible (e.g., "add-user-auth", "fix-payment-bug")
 - Preserve technical terms and acronyms (OAuth2, API, JWT, etc.)
 - Keep lowercase with hyphens
 - Must be descriptive enough to understand at a glance
 
 **Examples**:
+
 - "I want to add user authentication" → "user-auth"
 - "Implement OAuth2 integration for the API" → "oauth2-api-integration"
 - "Create a dashboard for analytics" → "analytics-dashboard"
 - "Fix payment processing timeout bug" → "fix-payment-timeout"
 
 **Process**:
+
 1. Extract 2-4 most meaningful keywords from description
 2. Combine with hyphens in action-noun order
 3. Simplify but preserve technical specificity
-</short_name_generation>
+   </short_name_generation>
 
 ---
 
@@ -86,6 +91,7 @@ Analyze the feature description and create a concise branch name (2-4 words):
 **Process**:
 
 1. **Fetch latest remote branches**:
+
    ```bash
    git fetch --all --prune
    ```
@@ -107,14 +113,16 @@ Analyze the feature description and create a concise branch name (2-4 words):
    ```
 
 **CRITICAL**:
+
 - Check ALL three sources (remote, local, specs dirs)
 - Only match exact short-name pattern
 - Run script ONCE per feature
 - Parse JSON output for BRANCH_NAME and SPEC_FILE paths
 - For single quotes: Use `'I'\''m Groot'` or `"I'm Groot"`
-</branch_checking>
+  </branch_checking>
 
 **PowerShell String Escaping**:
+
 - Single quotes in args: `'I'\''m Groot'` or `"I'm Groot"`
 
 ---
@@ -135,6 +143,7 @@ Load `.specify/templates/spec-template.md` to understand required sections.
 **This is where Haiku's synthesis capability is critical.**
 
 **Step 4.1: Parse Feature Description**
+
 ```
 IF description is empty:
   ERROR "No feature description provided"
@@ -147,6 +156,7 @@ EXTRACT from description:
 ```
 
 **Step 4.2: Apply Informed Guesses for Gaps**
+
 ```
 FOR EACH unclear aspect:
   IF has reasonable industry standard default:
@@ -162,6 +172,7 @@ FOR EACH unclear aspect:
 ```
 
 **Prioritization for [NEEDS CLARIFICATION]**:
+
 1. Scope (what's included/excluded)
 2. Security/Privacy (data protection, authentication)
 3. User Experience (flows, interactions)
@@ -172,34 +183,39 @@ FOR EACH unclear aspect:
 Use step-bounded reasoning (3-5 steps per section):
 
 **For Feature Overview**:
+
 1. Extract core purpose from description
 2. Identify primary user benefit
 3. Synthesize 2-3 sentence summary
 
 **For User Scenarios**:
+
 1. Identify primary actor from description
 2. List sequential actions in user flow
 3. Define happy path first, then alternates
-IF no clear flow can be determined:
-  ERROR "Cannot determine user scenarios from description"
+   IF no clear flow can be determined:
+   ERROR "Cannot determine user scenarios from description"
 
 **For Functional Requirements**:
+
 1. Extract must-have capabilities from description
 2. Each requirement = testable statement
 3. Use "The system shall..." format
 4. Apply reasonable defaults for unspecified details
 
 **For Success Criteria**:
+
 1. Define measurable outcomes (quantitative)
 2. Define qualitative measures (satisfaction, completion)
 3. Each criterion must be verifiable
 4. NO implementation details (technology-agnostic)
 
 **For Key Entities** (if data involved):
+
 1. Identify nouns from description (User, Order, Product...)
 2. List core attributes per entity
 3. Note relationships between entities
-</extraction_synthesis_process>
+   </extraction_synthesis_process>
 
 ---
 
@@ -209,21 +225,24 @@ IF no clear flow can be determined:
 Write spec.md to SPEC_FILE using template structure:
 
 **Preserve**:
+
 - Section order from template
 - Heading hierarchy
 - Placeholder format
 
 **Fill with**:
+
 - Concrete details from feature description
 - Synthesized narratives (user scenarios, requirements)
 - Informed guesses (documented in Assumptions)
 - [NEEDS CLARIFICATION: ...] markers (max 3)
 
 **Avoid**:
+
 - Implementation details (languages, frameworks, APIs)
 - Technical jargon (write for non-technical stakeholders)
 - Ambiguous requirements (each must be testable)
-</specification_writing>
+  </specification_writing>
 
 ---
 
@@ -276,6 +295,7 @@ Generate `FEATURE_DIR/checklists/requirements.md`:
 **Step 6.2: Run Validation Check**
 
 Review spec against each checklist item:
+
 ```
 FOR EACH checklist_item:
   EVALUATE against spec content
@@ -286,10 +306,12 @@ FOR EACH checklist_item:
 **Step 6.3: Handle Validation Results**
 
 **Case A: All items pass**
+
 - Mark checklist complete
 - Proceed to Step 7
 
 **Case B: Items fail (excluding [NEEDS CLARIFICATION])**
+
 1. List failing items and specific issues
 2. Update spec to address each issue
 3. Re-run validation (max 3 iterations)
@@ -312,11 +334,11 @@ FOR EACH checklist_item:
 
 **Suggested Answers**:
 
-| Option | Answer | Implications |
-|--------|--------|--------------|
-| A | [First suggestion] | [Impact on feature] |
-| B | [Second suggestion] | [Impact on feature] |
-| C | [Third suggestion] | [Impact on feature] |
+| Option | Answer                  | Implications                  |
+| ------ | ----------------------- | ----------------------------- |
+| A      | [First suggestion]      | [Impact on feature]           |
+| B      | [Second suggestion]     | [Impact on feature]           |
+| C      | [Third suggestion]      | [Impact on feature]           |
 | Custom | Provide your own answer | [How to provide custom input] |
 
 **Your choice**: _[Wait for user response]_
@@ -382,12 +404,14 @@ This command is optimized for Haiku 4.5's strengths:
 7. **Maximum 3 Clarifications**: Prevents over-questioning, forces synthesis
 
 **Performance Expectations**:
+
 - **Speed**: 15-25 seconds
 - **Cost**: 0.33x vs Sonnet 4.5
 - **Quality**: 85-90% of Sonnet for specification synthesis
 - **Best for**: Typical feature descriptions requiring some inference
 
 **Why Haiku Works Here**:
+
 - Has reasoning capability (unlike GPT-4.1/GPT-5 Mini)
 - Can synthesize coherent narratives (not just pattern matching)
 - Follows templates well
@@ -395,16 +419,18 @@ This command is optimized for Haiku 4.5's strengths:
 - Strong validation/checklist execution
 
 **Limitations vs Sonnet**:
+
 - May need more explicit guidance for novel architectures
 - Slightly weaker at detecting implicit requirements
 - Better with templates than freeform synthesis
 - Less creative in user scenario generation
 
 **When to Use Sonnet Instead**:
+
 - Highly novel features without similar examples
 - Complex multi-system features requiring deep synthesis
 - When specification quality is more critical than speed/cost
-</optimization_strategy>
+  </optimization_strategy>
 
 ---
 
@@ -415,6 +441,7 @@ $ARGUMENTS
 ```
 
 Use feature description to:
+
 - Identify domain-specific patterns
 - Apply industry standard defaults
 - Infer reasonable assumptions

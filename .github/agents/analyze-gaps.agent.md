@@ -13,6 +13,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 ## Prerequisites
 
 Before running this agent:
+
 1. `gap-analysis-report.md` exists in repo root (from `/analyze-brief-gpt-5-mini or /analyze-brief-gpt-4-1` or manual analysis)
 2. Feature specs exist in `specs/<feature>/` (spec.md, plan.md, tasks.md)
 3. Implementation files exist for validation
@@ -26,24 +27,29 @@ Create remediation documentation that **prevents future `/analyze-brief-gpt-5-mi
 For each claimed gap in `gap-analysis-report.md`:
 
 ### Step 1: Verify the Gap Exists
+
 - **Read spec.md** for FR-XXX, CA-XXX, AR-XXX requirements
 - **Read tasks.md** for task IDs (T###)
 - **Read contracts/** (if present) for API definitions
 - **Confirm** requirement exists and is NOT marked as optional/stretch goal
 
 ### Step 2: Search Implementation
+
 - **Use Grep tool** to search implementation files with exact keywords
 - **Document results**: "FOUND at line X" or "NOT FOUND"
 - **Search multiple files** to confirm absence
 - Example: Searching for `down()` method → search for `down()`, `down(`, `method down`
 
 ### Step 3: Build Evidence Chain
+
 Create full traceability:
+
 ```
 FR-075 (spec.md:530) → T140 (tasks.md:477) → NfsAccordionItemApi (contracts/accordion-api.ts:146) → NOT FOUND in accordion-item-def.ts:1-58
 ```
 
 ### Step 4: Score Confidence (0-10 scale)
+
 - **10/10**: Exact line numbers + contract verified + comprehensive search
 - **9/10**: Exact line numbers + contract verified
 - **8/10**: Task IDs + grep confirmed
@@ -52,7 +58,9 @@ FR-075 (spec.md:530) → T140 (tasks.md:477) → NfsAccordionItemApi (contracts/
 - **0-5/10**: Insufficient evidence (reject as low-quality)
 
 ### Step 5: Assess Impact
+
 Why does this gap matter?
+
 - Breaks constitutional requirement (CA-XXX)
 - Violates accessibility standard (WCAG, ARIA)
 - Prevents Foundation JS migration
@@ -60,7 +68,9 @@ Why does this gap matter?
 - Limits feature functionality
 
 ### Step 6: Identify Smallest Fix
+
 Three options:
+
 1. **Implementation fix**: Add missing code (provide snippet)
 2. **Spec clarification**: Requirement is optional/out-of-scope (update spec.md)
 3. **Task documentation**: Already implemented differently (update tasks.md with ⚠️ note)
@@ -74,6 +84,7 @@ Create these documents in `specs/<feature>/`:
 **Purpose**: Single source of truth for `/analyze-brief-gpt-5-mini or /analyze-brief-gpt-4-1` to check before flagging gaps.
 
 **Required Sections**:
+
 - **Purpose**: Why this document exists
 - **P0 - BLOCKING**: Critical gaps with evidence chains
 - **P1 - IMPORTANT**: Important gaps with evidence chains
@@ -84,12 +95,14 @@ Create these documents in `specs/<feature>/`:
 - **For `/analyze-brief-gpt-5-mini or /analyze-brief-gpt-4-1` Tool**: Instructions for future analysis
 
 **Per-Gap Structure**:
-```markdown
+
+````markdown
 ### GAP-N: [Descriptive Title]
 
 **Status**: NOT IMPLEMENTED | PARTIAL | TRACKED AS T###
 **Validation Score**: N/10
 **Evidence**:
+
 - **Spec**: FR-XXX at spec.md:line — "[requirement quote]"
 - **Tasks**: T### at tasks.md:line
 - **Contract**: Interface at contracts/file.ts:line
@@ -98,13 +111,16 @@ Create these documents in `specs/<feature>/`:
 **Impact**: [What breaks without this fix]
 
 **Fix**:
+
 ```typescript
 // Exact code snippet with file path
 ```
+````
 
 **Estimated Time**: X minutes
 **Violates**: FR-XXX, CA-XXX, AR-XXX
-```
+
+````
 
 ### 2. REMEDIATION_CHECKLIST.md (Implementation Guide)
 
@@ -123,12 +139,13 @@ Create these documents in `specs/<feature>/`:
 
   // TO:
   [fixed code]
-  ```
+````
 
 - [ ] **Step 2**: [Next action]
-  [Instructions]
+      [Instructions]
 
 - [ ] **Step 3**: Add unit tests
+
   ```typescript
   it('should...', () => {
     // Test code
@@ -141,7 +158,8 @@ Create these documents in `specs/<feature>/`:
   ```
 
 **Verification**: [How to confirm fix worked]
-```
+
+````
 
 **Include**:
 - Post-Remediation Validation section
@@ -155,16 +173,18 @@ Create these documents in `specs/<feature>/`:
 
 ### P0 - BLOCKING (X min)
 1. **GAP-N**: [Brief description] (violates FR-XXX) — X min
-```
+````
 
 **plan.md** - Update Known Implementation Gaps section with same structure.
 
 **tasks.md** - Add inline warnings:
+
 ```markdown
 - [ ] T021 Implement inputs ⚠️ **NAMING GAP**: See GAPS_REMEDIATION.md GAP-3.
 ```
 
 **gap-analysis-report.md** - Add superseded notice at top:
+
 ```markdown
 **⚠️ SUPERSEDED**: This analysis has been validated and consolidated into **[specs/<feature>/GAPS_REMEDIATION.md]** for ongoing tracking.
 ```
@@ -186,6 +206,7 @@ For each claimed gap that's NOT actually a gap:
 3. **Add to "Not Gaps" section** in GAPS_REMEDIATION.md
 
 **Common False Positives**:
+
 - Features in Non-Goals (e.g., animation hooks when spec says "CSS-only")
 - Optional features marked as "stretch" in spec
 - Features delegated to framework primitives (@angular/aria)
@@ -196,6 +217,7 @@ For each claimed gap that's NOT actually a gap:
 Create **exactly 4 commits** in this order:
 
 ### Commit 1: Core Tracking Document
+
 ```bash
 git commit -m "docs(feature): add validated gap analysis with remediation tracker
 
@@ -211,6 +233,7 @@ Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
 ```
 
 ### Commit 2: Implementation Guide
+
 ```bash
 git commit -m "docs(feature): add detailed remediation implementation checklist
 
@@ -221,6 +244,7 @@ Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
 ```
 
 ### Commit 3: Cross-References
+
 ```bash
 git commit -m "docs(feature): update spec/plan/tasks with gap references
 
@@ -232,6 +256,7 @@ Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
 ```
 
 ### Commit 4: Supersede Report
+
 ```bash
 git commit -m "docs(feature): mark gap analysis report as superseded
 
@@ -259,6 +284,7 @@ Typical format: "**Component**: NfsAccordion" or similar.
 ### 3. Load Source Artifacts
 
 Read in this order (progressive disclosure):
+
 - `specs/<feature>/spec.md` (requirements)
 - `specs/<feature>/tasks.md` (task tracking)
 - `specs/<feature>/contracts/*.ts` (API definitions, if present)
@@ -280,6 +306,7 @@ For each gap in `gap-analysis-report.md`:
 ### 5. Identify False Positives
 
 For each claimed gap that validation disproves:
+
 - Find spec citation proving it's working as designed
 - Document in "False Positives" section
 - Explain why analysis tool incorrectly flagged it
@@ -295,6 +322,7 @@ Use Write tool to create step-by-step implementation guide.
 ### 8. Update Spec Artifacts
 
 Use Edit tool to update:
+
 - spec.md (add Known Gaps section)
 - plan.md (update Known Implementation Gaps)
 - tasks.md (add inline warnings to affected tasks)
@@ -309,19 +337,23 @@ Use Bash tool to create commits with exact messages above.
 Deliver in this order:
 
 ### Part 1: Conversational Summary
+
 ```markdown
 I've validated the gap analysis report against source artifacts. Here's what I found:
 
 ## ✅ Validated Gaps (N real gaps)
 
 **P0 - BLOCKING (X min)**:
+
 - GAP-1: [Title] (Validation: 10/10, violates FR-XXX)
 - GAP-2: [Title] (Validation: 9/10, violates CA-XXX)
 
 **P1 - IMPORTANT (X min)**:
+
 - GAP-3: [Title] (Validation: 8/10)
 
 **P2 - POLISH (X min)**:
+
 - GAP-4: [Title] (Validation: 7/10)
 
 ## ❌ False Positives (N claimed gaps that are working as designed)
@@ -330,6 +362,7 @@ I've validated the gap analysis report against source artifacts. Here's what I f
 2. **ARIA live regions**: Opt-in via `announce` input (tracked as T196-T199)
 
 ## 📊 Summary
+
 - Total claimed gaps: X
 - Real gaps: N (validation score 7-10/10)
 - False positives: M
@@ -337,21 +370,25 @@ I've validated the gap analysis report against source artifacts. Here's what I f
 ```
 
 ### Part 2: Create Documents
+
 - Create GAPS_REMEDIATION.md
 - Create REMEDIATION_CHECKLIST.md
 
 ### Part 3: Update Artifacts
+
 - Update spec.md
 - Update plan.md
 - Update tasks.md
 - Update gap-analysis-report.md
 
 ### Part 4: Commit
+
 - 4 commits with conventional format
 
 ## Success Criteria
 
 Future `/analyze-brief-gpt-5-mini or /analyze-brief-gpt-4-1` runs should:
+
 - ✅ Find "NOT IMPLEMENTED - TRACKED" markers instead of discovering "new" gaps
 - ✅ Reference GAPS_REMEDIATION.md for detailed tracking
 - ✅ Not re-flag false positives documented in "Not Gaps" section
@@ -369,6 +406,7 @@ Future `/analyze-brief-gpt-5-mini or /analyze-brief-gpt-4-1` runs should:
 ## Best Practices for Claude Sonnet 4.5
 
 ### Do's ✅
+
 - **Progressive disclosure**: Read artifacts incrementally
 - **Grep extensively**: Search multiple files to confirm "NOT FOUND"
 - **Be skeptical**: Validate every claim; 30-40% may be false positives
@@ -377,6 +415,7 @@ Future `/analyze-brief-gpt-5-mini or /analyze-brief-gpt-4-1` runs should:
 - **Score confidently**: Distinguish high-quality (9-10) from uncertain (6-7)
 
 ### Don'ts ❌
+
 - **Don't skip validation**: Never copy gaps without verifying
 - **Don't guess**: Mark low scores or reject if unsure
 - **Don't modify implementation**: Only create documentation
@@ -386,11 +425,13 @@ Future `/analyze-brief-gpt-5-mini or /analyze-brief-gpt-4-1` runs should:
 ## Example Session
 
 **Input**:
+
 ```text
 /analyze-gaps
 ```
 
 **Expected Output**:
+
 1. Validation summary: 7 real gaps (3 P0, 3 P1, 1 P2) + 4 false positives
 2. GAPS_REMEDIATION.md created (377 lines)
 3. REMEDIATION_CHECKLIST.md created (635 lines)

@@ -20,6 +20,7 @@ This document tracks validated implementation gaps between the accordion specifi
 **Status**: NOT IMPLEMENTED
 **Validation Score**: 10/10
 **Evidence**:
+
 - **Spec**: FR-075 at spec.md:530 — "MUST expose Foundation-equivalent methods: `toggle()`, `down()`, `up()`"
 - **Tasks**: T140-T142 at tasks.md:477-479
 - **Contract**: `NfsAccordionItemApi` interface at contracts/accordion-api.ts:146-166 defines all three methods
@@ -28,6 +29,7 @@ This document tracks validated implementation gaps between the accordion specifi
 **Impact**: Breaks Foundation JavaScript→Angular migration path. Developers cannot use programmatic control.
 
 **Fix**:
+
 ```typescript
 // In packages/ngx-foundation-sites/src/lib/accordion/accordion-item-def.ts
 down(): void {
@@ -59,6 +61,7 @@ toggle(): void {
 **Status**: NOT IMPLEMENTED
 **Validation Score**: 10/10
 **Evidence**:
+
 - **Spec**: FR-076 at spec.md:531 — "MUST emit Foundation-equivalent events: `down`, `up`"
 - **Tasks**: T143-T148 at tasks.md:480-483
 - **Contract**: `NfsAccordionApi` interface at contracts/accordion-api.ts:98-116 defines both outputs
@@ -67,6 +70,7 @@ toggle(): void {
 **Impact**: Consumers cannot react to panel state changes. Essential for analytics and state management integration.
 
 **Fix**:
+
 ```typescript
 // In packages/ngx-foundation-sites/src/lib/accordion/accordion.component.ts
 import { output } from '@angular/core';
@@ -87,6 +91,7 @@ readonly up = output<{ itemId: string; expanded: false }>();
 **Status**: IMPLEMENTED AS `multiExpandable` (should be `multiExpand`)
 **Validation Score**: 10/10
 **Evidence**:
+
 - **Spec**: FR-014 at spec.md:289 — "MUST accept a `multiExpand` signal input"
 - **Tasks**: T021 at tasks.md:774 with note "Rename `multiExpandable` → `multiExpand` globally (~2min, BREAKING)"
 - **Contract**: `NfsAccordionApi` interface at contracts/accordion-api.ts:66 — "readonly multiExpand: InputSignal<boolean>;"
@@ -98,10 +103,11 @@ readonly up = output<{ itemId: string; expanded: false }>();
 **Impact**: Breaking API inconsistency. Violates Foundation naming alignment (CA-007). API surface doesn't match specification or contracts.
 
 **Fix**: Global rename in 4 files:
+
 1. packages/ngx-foundation-sites/src/lib/accordion/accordion.component.ts line 51
 2. packages/ngx-foundation-sites/src/lib/accordion/accordion.component.html line 12
 3. packages/ngx-foundation-sites/src/lib/accordion/accordion.component.spec.ts (all occurrences)
-4. packages/ngx-foundation-sites/.storybook/stories/accordion/*.stories.ts (if present)
+4. packages/ngx-foundation-sites/.storybook/stories/accordion/\*.stories.ts (if present)
 
 **Estimated Time**: 2 minutes
 **Violates**: FR-014, CA-007
@@ -116,6 +122,7 @@ readonly up = output<{ itemId: string; expanded: false }>();
 **Status**: NOT IMPLEMENTED
 **Validation Score**: 9/10
 **Evidence**:
+
 - **Spec**: FR-016 at spec.md:291 — Lists `titleHeadingLevel` among required inputs
 - **Tasks**: T162-T164 at tasks.md:779 with "Status: NOT IMPLEMENTED"
 - **Contract**: `NfsAccordionApi` interface at contracts/accordion-api.ts:93 — "readonly titleHeadingLevel: InputSignal<AccordionHeadingLevel | null>;"
@@ -125,6 +132,7 @@ readonly up = output<{ itemId: string; expanded: false }>();
 **Impact**: Screen reader users cannot navigate accordion using heading shortcuts (H key). Limits WCAG 1.3.1 compliance.
 
 **Fix**:
+
 ```typescript
 // In accordion.component.ts
 readonly titleHeadingLevel = input<1 | 2 | 3 | 4 | 5 | 6 | null>(null);
@@ -149,6 +157,7 @@ readonly titleHeadingLevel = input<1 | 2 | 3 | 4 | 5 | 6 | null>(null);
 **Status**: PARTIAL (validators.ts exists for input coercion per T-AC-003, but ErrorHandler calls missing)
 **Validation Score**: 7/10
 **Evidence**:
+
 - **Spec**: Multiple requirements — FR-017a (duplicate panelId), FR-026a (missing title), FR-067b (deep link errors), FR-089a (rapid toggle), FR-110a (input validation)
 - **Tasks**: References at tasks.md (T165-T171, indirect)
 - **Plan**: Implementation notes at plan.md:133-176 describe structured error reporting
@@ -157,6 +166,7 @@ readonly titleHeadingLevel = input<1 | 2 | 3 | 4 | 5 | 6 | null>(null);
 **Impact**: Silent failures for duplicate IDs, missing titles, invalid inputs, and deep link errors. Makes debugging difficult.
 
 **Fix**: Inject ErrorHandler and add diagnostic calls at 5 validation points:
+
 ```typescript
 // In accordion.component.ts
 readonly #errorHandler = inject(ErrorHandler);
@@ -170,6 +180,7 @@ if (duplicateDetected) {
 ```
 
 **Validation Points**:
+
 1. FR-017a: Duplicate panelId detection
 2. FR-026a: Missing <nfs-accordion-title> detection
 3. FR-067b: Deep link to non-existent panel
@@ -188,6 +199,7 @@ if (duplicateDetected) {
 **Status**: NOT IMPLEMENTED
 **Validation Score**: 8/10
 **Evidence**:
+
 - **Spec**: FR-075, FR-076 at spec.md:530-531
 - **Tasks**: T134-T139 at tasks.md:468-473 describe FoundationApiParity story requirement
 - **Implementation**:
@@ -198,6 +210,7 @@ if (duplicateDetected) {
 **Impact**: No test coverage for Foundation API methods. Breaking changes could be introduced without detection.
 
 **Fix**: Create new Storybook story:
+
 ```typescript
 // In packages/ngx-foundation-sites/.storybook/stories/accordion/FoundationApiParity.story.ts
 export const FoundationApiParity: Story = {
@@ -233,6 +246,7 @@ export const FoundationApiParity: Story = {
 **Status**: TRACKED AS T196-T199 (Phase 5, US3)
 **Validation Score**: 7/10 (references plan.md not spec.md directly)
 **Evidence**:
+
 - **Plan**: AR-027a at plan.md:155 describes `announce` input requirement
 - **Tasks**: T196-T199 at tasks.md:258-260 track implementation
 - **Tasks Note**: Line 637-641 explicitly states "T-AC-002 _(meta-task)_ — resolved by T196-T199"
@@ -248,6 +262,7 @@ export const FoundationApiParity: Story = {
 **Status**: PARTIAL (uses afterNextRender, but no try/catch)
 **Validation Score**: 6/10
 **Evidence**:
+
 - **Spec**: FR-062a at plan.md:179-180 — "wrap hydration steps in guarded try/catch"
 - **Implementation**: Search in accordion.ts found three unguarded `afterNextRender` blocks:
   - Line 108: Style loader call (unguarded)
@@ -257,6 +272,7 @@ export const FoundationApiParity: Story = {
 **Impact**: SSR hydration failures crash silently. Rare but catastrophic when they occur.
 
 **Fix**: Wrap each `afterNextRender` block:
+
 ```typescript
 afterNextRender(() => {
   try {
@@ -338,6 +354,7 @@ This analysis followed a 6-step validation workflow:
 6. **STEP 5**: Validation Rubric (scored each gap 0-10 based on evidence quality)
 
 **Evidence Quality**: All validated gaps include:
+
 - ✅ Exact spec.md line numbers with FR-XXX references
 - ✅ Exact tasks.md task IDs or plan.md references
 - ✅ Complete list of files searched with keywords

@@ -45,40 +45,42 @@ Use one simple rule: **pick the model based on the job** (reasoning vs. speed vs
 
 ### Recommended models by Spec Kit command
 
-| Spec Kit command     | Claude Code                                                       | GitHub Copilot CLI                                                                     | Notes                                                                                          |
-| -------------------- | ----------------------------------------------------------------- | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| `/speckit.specify`   | Sonnet 4.5 → Opus 4.5 if domain is complex                        | Sonnet 4.5 (or GPT-5.2) → Opus 4.5 if domain is complex                                | Capture nuance + requirements structure                                                        |
-| `/specify-haiku-4-5` | **Haiku 4.5** (0.33x cost, 15-25s)                                | **Haiku 4.5** (0.33x cost, 15-25s)                                                     | 85-90% quality; good for straightforward features                                              |
-| `/speckit.clarify`   | Sonnet 4.5                                                        | Sonnet 4.5 (or GPT-5.2)                                                                | Fast iteration; ask the right questions                                                        |
-| `/clarify-haiku-4-5` | **Haiku 4.5** (0.33x cost, 15-25s)                                | **Haiku 4.5** (0.33x cost, 15-25s)                                                     | 85-90% quality; 10-category taxonomy scan                                                      |
-| `/speckit.plan`      | Opus 4.5 → **Sonnet 4.5 1M** if artifacts are huge                | Opus 4.5 (or GPT-5.2) → **GPT-4.1 / Gemini 3 Pro** if artifacts are huge               | For huge _code + session history_ in GitHub Copilot, prefer **GPT-5.1-Codex-Max (compaction)** |
-| `/speckit.checklist` | Sonnet 4.5                                                        | Sonnet 4.5 (or GPT-5.1)                                                                | Structured generation with moderate reasoning                                                  |
-| `/checklist-haiku-4-5` | **Haiku 4.5** (0.33x cost, 10-15s)                              | **Haiku 4.5** (0.33x cost, 10-15s)                                                     | 90-95% quality; mechanical validation                                                          |
-| `/speckit.tasks`     | Haiku 4.5 for speed → Sonnet 4.5 if it keeps missing dependencies | Haiku 4.5 / GPT-5.1-Codex-Mini for speed → Sonnet 4.5 if it keeps missing dependencies | Mostly mechanical breakdown from plan                                                          |
-| `/tasks-haiku-4-5`   | **Haiku 4.5** (0.33x cost, 10-20s)                                | **Haiku 4.5** (0.33x cost, 10-20s)                                                     | 95%+ quality; perfect for pattern-based task generation                                        |
-| `/speckit.analyze`   | Opus 4.5 → **Sonnet 4.5 1M** if artifacts are huge                | Opus 4.5 (or GPT-5.2) → **GPT-4.1 / Gemini 3 Pro** if artifacts are huge               | For huge _code + session history_ in GitHub Copilot, prefer **GPT-5.1-Codex-Max (compaction)** |
-| `/speckit.implement` | Sonnet 4.5 (→ Opus 4.5 for risky refactors)                       | GPT-5.1-Codex → Codex-Max for hardest refactors; otherwise Sonnet 4.5                  | Use code-specialized models for multi-file changes                                             |
+| Spec Kit command       | Claude Code                                                       | GitHub Copilot CLI                                                                     | Notes                                                                                          |
+| ---------------------- | ----------------------------------------------------------------- | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `/speckit.specify`     | Sonnet 4.5 → Opus 4.5 if domain is complex                        | Sonnet 4.5 (or GPT-5.2) → Opus 4.5 if domain is complex                                | Capture nuance + requirements structure                                                        |
+| `/specify-haiku-4-5`   | **Haiku 4.5** (0.33x cost, 15-25s)                                | **Haiku 4.5** (0.33x cost, 15-25s)                                                     | 85-90% quality; good for straightforward features                                              |
+| `/speckit.clarify`     | Sonnet 4.5                                                        | Sonnet 4.5 (or GPT-5.2)                                                                | Fast iteration; ask the right questions                                                        |
+| `/clarify-haiku-4-5`   | **Haiku 4.5** (0.33x cost, 15-25s)                                | **Haiku 4.5** (0.33x cost, 15-25s)                                                     | 85-90% quality; 10-category taxonomy scan                                                      |
+| `/speckit.plan`        | Opus 4.5 → **Sonnet 4.5 1M** if artifacts are huge                | Opus 4.5 (or GPT-5.2) → **GPT-4.1 / Gemini 3 Pro** if artifacts are huge               | For huge _code + session history_ in GitHub Copilot, prefer **GPT-5.1-Codex-Max (compaction)** |
+| `/speckit.checklist`   | Sonnet 4.5                                                        | Sonnet 4.5 (or GPT-5.1)                                                                | Structured generation with moderate reasoning                                                  |
+| `/checklist-haiku-4-5` | **Haiku 4.5** (0.33x cost, 10-15s)                                | **Haiku 4.5** (0.33x cost, 10-15s)                                                     | 90-95% quality; mechanical validation                                                          |
+| `/speckit.tasks`       | Haiku 4.5 for speed → Sonnet 4.5 if it keeps missing dependencies | Haiku 4.5 / GPT-5.1-Codex-Mini for speed → Sonnet 4.5 if it keeps missing dependencies | Mostly mechanical breakdown from plan                                                          |
+| `/tasks-haiku-4-5`     | **Haiku 4.5** (0.33x cost, 10-20s)                                | **Haiku 4.5** (0.33x cost, 10-20s)                                                     | 95%+ quality; perfect for pattern-based task generation                                        |
+| `/speckit.analyze`     | Opus 4.5 → **Sonnet 4.5 1M** if artifacts are huge                | Opus 4.5 (or GPT-5.2) → **GPT-4.1 / Gemini 3 Pro** if artifacts are huge               | For huge _code + session history_ in GitHub Copilot, prefer **GPT-5.1-Codex-Max (compaction)** |
+| `/speckit.implement`   | Sonnet 4.5 (→ Opus 4.5 for risky refactors)                       | GPT-5.1-Codex → Codex-Max for hardest refactors; otherwise Sonnet 4.5                  | Use code-specialized models for multi-file changes                                             |
 
 ### Budget-Conscious Approach
 
 Use Haiku-optimized commands for 66% cost savings with minimal quality loss:
 
-| Spec Kit command     | Claude Code                        | GitHub Copilot CLI                             | Quality vs Standard |
-| -------------------- | ---------------------------------- | ---------------------------------------------- | ------------------- |
-| `/specify-haiku-4-5` | Haiku 4.5                          | Haiku 4.5                                      | 85-90%              |
-| `/clarify-haiku-4-5` | Haiku 4.5                          | Haiku 4.5                                      | 85-90%              |
-| `/speckit.plan`      | Sonnet 4.5                         | Sonnet 4.5                                     | 100% (needs reasoning) |
-| `/checklist-haiku-4-5` | Haiku 4.5                        | Haiku 4.5                                      | 90-95%              |
-| `/tasks-haiku-4-5`   | Haiku 4.5                          | Haiku 4.5 or GPT-5.1-Codex-Mini                | 95%+                |
-| `/speckit.analyze`   | Sonnet 4.5                         | GPT-4.1 (summarize) → Sonnet 4.5               | 100% (needs reasoning) |
+| Spec Kit command       | Claude Code | GitHub Copilot CLI               | Quality vs Standard    |
+| ---------------------- | ----------- | -------------------------------- | ---------------------- |
+| `/specify-haiku-4-5`   | Haiku 4.5   | Haiku 4.5                        | 85-90%                 |
+| `/clarify-haiku-4-5`   | Haiku 4.5   | Haiku 4.5                        | 85-90%                 |
+| `/speckit.plan`        | Sonnet 4.5  | Sonnet 4.5                       | 100% (needs reasoning) |
+| `/checklist-haiku-4-5` | Haiku 4.5   | Haiku 4.5                        | 90-95%                 |
+| `/tasks-haiku-4-5`     | Haiku 4.5   | Haiku 4.5 or GPT-5.1-Codex-Mini  | 95%+                   |
+| `/speckit.analyze`     | Sonnet 4.5  | GPT-4.1 (summarize) → Sonnet 4.5 | 100% (needs reasoning) |
 
 **When to use Haiku-optimized commands:**
+
 - ✅ **Mechanical tasks** (checklist, tasks) — 95%+ quality, 3× faster
 - ✅ **Structured pattern matching** (clarify taxonomy scan) — 85-90% quality
 - ✅ **Straightforward features** (specify simple components) — 85-90% quality
 - ✅ **Budget is a priority** — 0.33x cost vs Sonnet
 
 **When to stick with standard commands:**
+
 - ⚠️ **Complex reasoning** (plan, analyze) — Needs Sonnet/Opus
 - ⚠️ **Domain complexity** (medical, financial) — Use Opus for specify
 - ⚠️ **First-time workflows** — Standard commands have proven track record
@@ -87,40 +89,45 @@ Use Haiku-optimized commands for 66% cost savings with minimal quality loss:
 
 **Haiku-optimized commands** for Claude Code + GitHub Copilot, **GPT-5 Mini commands** for GitHub Copilot only:
 
-| Spec Kit command     | Claude Code                        | GitHub Copilot CLI                             | Cost Savings |
-| -------------------- | ---------------------------------- | ---------------------------------------------- | ------------ |
-| `/specify-haiku-4-5` | Haiku 4.5                          | Haiku 4.5                                      | 0.33x        |
-| `/clarify-haiku-4-5` | Haiku 4.5                          | Haiku 4.5                                      | 0.33x        |
-| `/speckit.plan`      | Sonnet 4.5                         | Sonnet 4.5                                     | 1x           |
-| `/checklist-haiku-4-5` | Haiku 4.5                        | Haiku 4.5                                      | 0.33x        |
-| `/tasks-haiku-4-5`   | Haiku 4.5                          | Haiku 4.5 or **GPT-5 mini** (`/tasks-gpt-5-mini`) ⭐ | 0.33x (Haiku) / **0x** (GPT-5 Mini) ✅ |
-| `/speckit.analyze`   | Sonnet 4.5                         | GPT-4.1 → Sonnet 4.5                           | 0x → 1x      |
-| `/taskstoissues-gpt-5-mini` | —                           | **GPT-5 mini** ⭐                                | **0x** ✅     |
-| `/analyze-brief`     | —                                  | **GPT-5 mini** (`/analyze-brief-gpt-5-mini`) ⭐ or **GPT-4.1** (`/analyze-brief-gpt-4-1`) | **0x** ✅     |
+| Spec Kit command            | Claude Code | GitHub Copilot CLI                                                                        | Cost Savings                           |
+| --------------------------- | ----------- | ----------------------------------------------------------------------------------------- | -------------------------------------- |
+| `/specify-haiku-4-5`        | Haiku 4.5   | Haiku 4.5                                                                                 | 0.33x                                  |
+| `/clarify-haiku-4-5`        | Haiku 4.5   | Haiku 4.5                                                                                 | 0.33x                                  |
+| `/speckit.plan`             | Sonnet 4.5  | Sonnet 4.5                                                                                | 1x                                     |
+| `/checklist-haiku-4-5`      | Haiku 4.5   | Haiku 4.5                                                                                 | 0.33x                                  |
+| `/tasks-haiku-4-5`          | Haiku 4.5   | Haiku 4.5 or **GPT-5 mini** (`/tasks-gpt-5-mini`) ⭐                                      | 0.33x (Haiku) / **0x** (GPT-5 Mini) ✅ |
+| `/speckit.analyze`          | Sonnet 4.5  | GPT-4.1 → Sonnet 4.5                                                                      | 0x → 1x                                |
+| `/taskstoissues-gpt-5-mini` | —           | **GPT-5 mini** ⭐                                                                         | **0x** ✅                              |
+| `/analyze-brief`            | —           | **GPT-5 mini** (`/analyze-brief-gpt-5-mini`) ⭐ or **GPT-4.1** (`/analyze-brief-gpt-4-1`) | **0x** ✅                              |
 
 **GPT-5 mini advantages**:
+
 - ✅ **Zero cost** (0x multiplier)
 - ✅ **Fast inference** (kernel fusion, tensor parallelism)
 - ✅ **200K context** (same as Haiku 4.5)
 - ✅ **Structured prompts** (CTCO framework, XML scaffolding)
 
 **GPT-5 mini limitations**:
+
 - ⚠️ **Reduced reasoning** vs full GPT-5 (good for mechanical tasks only)
 - ⚠️ **Higher sensitivity** to ambiguous prompts (needs explicit format specs)
 - ⚠️ **Quality trade-off** vs Haiku 4.5 (validate output carefully)
 
 **When to use `/tasks-haiku-4-5`** (vs `/tasks-gpt-5-mini`):
+
 - Quality > cost (0.33x vs 0x, but better reasoning)
 - Plan.md has subtle dependencies
 - First time using SpecKit (less risky)
 
 **When to use `/tasks-gpt-5-mini`**:
+
 - Budget is critical (0x vs 0.33x)
 - Plan.md has clear, unambiguous action items
 - Tasks are mechanical pattern-based transformations
 - You can validate output (compare to Haiku 4.5 baseline)
 
 **When to use `/taskstoissues-gpt-5-mini`**:
+
 - ✅ **Always** (pure mechanical transformation)
 - ✅ **Perfect fit**: Pattern extraction (task → GitHub issue)
 - ✅ **Zero cost**: No reasoning needed for API calls
@@ -128,6 +135,7 @@ Use Haiku-optimized commands for 66% cost savings with minimal quality loss:
 - ⚠️ **Requires**: tasks.md in standard format, GitHub repository
 
 **Example workflow**:
+
 ```bash
 # 1. Generate tasks (choose based on budget)
 gh copilot -m "gpt-5-mini" slash tasks-gpt-5-mini          # 0x cost
@@ -153,11 +161,13 @@ All four Haiku-optimized commands (`/specify-haiku-4-5`, `/clarify-haiku-4-5`, `
 9. **Formula-Based Prioritization** - Explicit scoring/ranking rules
 
 **Performance benchmarks** (vs Sonnet 4.5):
+
 - **Speed**: 2-3× faster (10-25s vs 30-60s)
 - **Cost**: 0.33× ($1/$5 per 1M tokens vs $3/$15)
 - **Quality**: 85-95% (depending on task complexity)
 
 **Best fit tasks** for Haiku 4.5:
+
 - ✅ **Perfect**: Mechanical transformations (tasks), structured validation (checklist)
 - ✅ **Good**: Pattern detection (clarify), template filling (specify simple features)
 - ⚠️ **Avoid**: Deep reasoning (plan), synthesis-heavy analysis (analyze gaps)
@@ -166,14 +176,15 @@ See [`prompt-engineering/CLAUDE-HAIKU-4-5-OPTIMIZATION.md`](prompt-engineering/C
 
 #### Command Comparison: Standard vs Haiku-Optimized
 
-| Task | Standard Command | Haiku-Optimized | When to Use Haiku | Usage Example |
-|------|------------------|-----------------|-------------------|---------------|
-| **Specify** | `/speckit.specify` (Sonnet) | `/specify-haiku-4-5` (Haiku) | Simple features, clear scope | **Claude Code**: `/specify-haiku-4-5`<br>**GitHub Copilot**: `gh copilot -m "claude-haiku-4.5" slash specify-haiku-4-5` |
-| **Clarify** | `/speckit.clarify` (Sonnet) | `/clarify-haiku-4-5` (Haiku) | Structured gap detection | **Claude Code**: `/clarify-haiku-4-5`<br>**GitHub Copilot**: `gh copilot -m "claude-haiku-4.5" slash clarify-haiku-4-5` |
-| **Checklist** | `/speckit.checklist` (Sonnet) | `/checklist-haiku-4-5` (Haiku) | Always (mechanical validation) | **Claude Code**: `/checklist-haiku-4-5`<br>**GitHub Copilot**: `gh copilot -m "claude-haiku-4.5" slash checklist-haiku-4-5` |
-| **Tasks** | `/speckit.tasks` (Haiku/Sonnet) | `/tasks-haiku-4-5` (Haiku) | Always (pattern-based breakdown) | **Claude Code**: `/tasks-haiku-4-5`<br>**GitHub Copilot**: `gh copilot -m "claude-haiku-4.5" slash tasks-haiku-4-5` |
+| Task          | Standard Command                | Haiku-Optimized                | When to Use Haiku                | Usage Example                                                                                                               |
+| ------------- | ------------------------------- | ------------------------------ | -------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| **Specify**   | `/speckit.specify` (Sonnet)     | `/specify-haiku-4-5` (Haiku)   | Simple features, clear scope     | **Claude Code**: `/specify-haiku-4-5`<br>**GitHub Copilot**: `gh copilot -m "claude-haiku-4.5" slash specify-haiku-4-5`     |
+| **Clarify**   | `/speckit.clarify` (Sonnet)     | `/clarify-haiku-4-5` (Haiku)   | Structured gap detection         | **Claude Code**: `/clarify-haiku-4-5`<br>**GitHub Copilot**: `gh copilot -m "claude-haiku-4.5" slash clarify-haiku-4-5`     |
+| **Checklist** | `/speckit.checklist` (Sonnet)   | `/checklist-haiku-4-5` (Haiku) | Always (mechanical validation)   | **Claude Code**: `/checklist-haiku-4-5`<br>**GitHub Copilot**: `gh copilot -m "claude-haiku-4.5" slash checklist-haiku-4-5` |
+| **Tasks**     | `/speckit.tasks` (Haiku/Sonnet) | `/tasks-haiku-4-5` (Haiku)     | Always (pattern-based breakdown) | **Claude Code**: `/tasks-haiku-4-5`<br>**GitHub Copilot**: `gh copilot -m "claude-haiku-4.5" slash tasks-haiku-4-5`         |
 
 **Example workflow with Haiku commands**:
+
 ```bash
 # 1. Create spec (Haiku if feature is straightforward)
 /specify-haiku-4-5  # 15-25s, 0.33x cost, 85-90% quality
@@ -195,6 +206,7 @@ See [`prompt-engineering/CLAUDE-HAIKU-4-5-OPTIMIZATION.md`](prompt-engineering/C
 ```
 
 **Cost savings example** (typical feature):
+
 - Standard workflow: 5 commands × $0.03 = **$0.15**
 - Haiku-optimized: 4 Haiku ($0.01 each) + 2 Sonnet ($0.03 each) = **$0.10** (33% savings)
 - Quality impact: Minimal (85-95% on mechanical tasks)
@@ -202,6 +214,7 @@ See [`prompt-engineering/CLAUDE-HAIKU-4-5-OPTIMIZATION.md`](prompt-engineering/C
 **Automatic Context Size Check** (Step 0.0):
 
 Before analysis starts, the command estimates total tokens:
+
 ```
 Estimate = (spec lines × 20) + (plan lines × 20) + (tasks lines × 15)
          + (contracts lines × 25) + (implementation lines × 18)
@@ -216,17 +229,20 @@ Total: ~90K tokens ✅ SAFE (well within 180K limit)
 ```
 
 **If >180K tokens**, prompts user with options:
+
 1. **Switch to GPT-4.1** (Recommended) - Automatically provides command
 2. **Continue anyway** - Warns about truncation risk
 3. **Cancel and revise scope** - Suggests reducing files
 
 **When to use `/analyze-brief-gpt-5-mini`**:
+
 - ✅ Just run it! Pre-check handles size automatically
 - ✅ Speed matters (10-20 sec vs 30-60 sec)
 - ✅ Well-structured specs with clear FR-XXX requirements
 - ✅ Agent will prompt if too large (no manual decision needed)
 
 **When to use `/analyze-brief-gpt-4-1`** (GPT-4.1 with 1M context):
+
 - ⚠️ Pre-check prompted you to switch (>180K tokens)
 - ⚠️ You know feature is huge (skip pre-check overhead)
 - ⚠️ Need guaranteed 1M context
@@ -268,6 +284,7 @@ gh copilot -m "gpt-4.1" slash analyze-brief-gpt-4-1 @implementation-files
 ```
 
 **Both commands**:
+
 - Auto-include current feature's spec.md, plan.md, tasks.md from `specs/` directory
 - Follow structured 6-step validation workflow
 - Score each gap on evidence quality (0-10 scale)
@@ -276,6 +293,7 @@ gh copilot -m "gpt-4.1" slash analyze-brief-gpt-4-1 @implementation-files
 - Write complete report to `gap-analysis-report.md`
 
 **GPT-5 Mini advantages** (vs GPT-4.1):
+
 - ⚡ **2-3x faster** (10-20 sec vs 30-60 sec) - kernel fusion, tensor parallelism
 - ✅ **Better structured output** - CTCO framework, XML scaffolding
 - ✅ **Same cost** (both 0x)
@@ -283,6 +301,7 @@ gh copilot -m "gpt-4.1" slash analyze-brief-gpt-4-1 @implementation-files
 - ⚠️ **Context limit**: 200K vs 1M (but pre-check handles this automatically)
 
 **Output**: Agent writes structured report to `gap-analysis-report.md` with:
+
 - Validated gaps (each with evidence, validation score, priority, fix)
 - Skipped known gaps (if GAPS_REMEDIATION.md exists)
 - False positives removed
@@ -295,16 +314,19 @@ gh copilot -m "gpt-4.1" slash analyze-brief-gpt-4-1 @implementation-files
 Use `/analyze-gaps` to validate gaps and create remediation documentation:
 
 **Claude Code**:
+
 ```bash
 /analyze-gaps
 ```
 
 **GitHub Copilot**:
+
 ```bash
 gh copilot slash analyze-gaps
 ```
 
 **What it does**:
+
 1. Validates each claimed gap with 6-step methodology
 2. Scores confidence (0-10) based on evidence quality
 3. Creates `GAPS_REMEDIATION.md` (comprehensive tracking with evidence chains)
@@ -313,12 +335,14 @@ gh copilot slash analyze-gaps
 6. Creates 4 git commits with conventional format
 
 **Example output** (from accordion):
+
 - 7 validated gaps (3 P0, 3 P1, 1 P2) with scores 6-10/10
 - 4 false positives correctly identified
 - GAPS_REMEDIATION.md (377 lines) + REMEDIATION_CHECKLIST.md (635 lines)
 - 182-minute fix estimate (P0=32min, P1=135min, P2=15min)
 
 **Success criteria**: Future gap analysis runs (either `/analyze-brief-gpt-5-mini` or `/analyze-brief-gpt-4-1`) will NOT re-flag these gaps because they find:
+
 - "NOT IMPLEMENTED - TRACKED" markers in GAPS_REMEDIATION.md
 - Evidence chains (FR-XXX → Task ID → Contract → Implementation status)
 - False positives documented in "Not Gaps" section
@@ -331,16 +355,19 @@ Copy instructions from `.github/agents/analyze-gaps.agent.md` and run manually
 Use `/implement-gap-remediations` to systematically implement gap fixes from REMEDIATION_CHECKLIST.md:
 
 **Claude Code**:
+
 ```bash
 /implement-gap-remediations
 ```
 
 **GitHub Copilot**:
+
 ```bash
 gh copilot slash implement-gap-remediations
 ```
 
 **What it does**:
+
 1. Reads REMEDIATION_CHECKLIST.md and GAPS_REMEDIATION.md
 2. Asks user for scope (P0 only / P0+P1 / P0+P1+P2 / specific gaps)
 3. Creates TODO list with TodoWrite (visible progress tracking)
@@ -356,6 +383,7 @@ gh copilot slash implement-gap-remediations
 9. Creates git commits (one per priority level, conventional format)
 
 **Example workflow** (accordion P0 gaps):
+
 ```
 User selects: P0 only (BLOCKING) - 32 min
 
@@ -392,6 +420,7 @@ Result: 3 gaps fixed in 32 minutes (100% accuracy)
 ```
 
 **Key features**:
+
 - **Test-gated**: Stops immediately if any test fails
 - **Progress tracking**: TodoWrite shows real-time progress
 - **Incremental commits**: One commit per priority level
@@ -399,6 +428,7 @@ Result: 3 gaps fixed in 32 minutes (100% accuracy)
 - **Verification rigorous**: Tests after every code change
 
 **Best for**:
+
 - P0/P1 gaps with exact code snippets in checklist
 - Non-breaking additions (GAP-1, GAP-2)
 - When speed + verification matter
@@ -453,7 +483,7 @@ Finally: return to executing the remaining tasks in tasks.md.
 | ---------------------- | ------------------------------- | ------------------ | ------------------- | ---------------------------------------------------------------------------------------------------------------------- |
 | Sonnet 4.5             | Claude Code, GitHub Copilot CLI | 200K               | 1x                  | Default for specify/clarify/checklist; also good for most Angular implementation                                       |
 | Opus 4.5               | Claude Code, GitHub Copilot CLI | 200K               | 3x                  | Plan/analyze when you need deep reasoning and edge-case detection                                                      |
-| Sonnet 4                | Claude Code, GitHub Copilot CLI | 200K               | 1x                  | Previous generation Sonnet; use 4.5 unless specific compatibility needed                                               |
+| Sonnet 4               | Claude Code, GitHub Copilot CLI | 200K               | 1x                  | Previous generation Sonnet; use 4.5 unless specific compatibility needed                                               |
 | Haiku 4.5              | Claude Code, GitHub Copilot CLI | 200K               | 0.33x               | Tasks + mechanical edits/boilerplate                                                                                   |
 | Sonnet 4.5 1M          | Claude Code only                | 1M                 | —                   | Huge artifacts/monorepos; **GitHub Copilot alternatives:** GPT-4.1 or Gemini 3 Pro                                     |
 | GPT-5.2                | GitHub Copilot CLI              | 400K               | 1x                  | Strong plan/analyze alternative if you prefer GPT-style reasoning                                                      |

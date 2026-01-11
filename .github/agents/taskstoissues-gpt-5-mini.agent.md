@@ -59,10 +59,10 @@ Convert `tasks.md` to GitHub issues by applying these mechanical transformations
   RUN: git config --get remote.origin.url
   PARSE: Extract owner/repo from URL
   ASSERT: URL contains "github.com"
-  
+
   IF NOT github.com:
     STOP with error: "Repository is not hosted on GitHub"
-  
+
   STORE: owner = "<extracted_owner>"
   STORE: repo = "<extracted_repo>"
 </safety_check>
@@ -76,7 +76,7 @@ Convert `tasks.md` to GitHub issues by applying these mechanical transformations
   PARSE: Extract FEATURE_DIR from JSON
   READ: {FEATURE_DIR}/tasks.md
   READ: {FEATURE_DIR}/spec.md (for feature_name extraction)
-  
+
   FOR EACH task line in tasks.md:
     EXTRACT task_id using pattern: `- \[ \] (T\d{3})`
     EXTRACT parallel_marker using pattern: `\[P\]` (boolean)
@@ -84,7 +84,7 @@ Convert `tasks.md` to GitHub issues by applying these mechanical transformations
     EXTRACT description using pattern: text after markers until newline
     EXTRACT phase from nearest `## Phase N:` heading above
     EXTRACT dependencies using pattern: "depends on (T\d{3})"
-    
+
   STORE: tasks_array = [{task_id, description, phase, parallel, story, deps}]
   STORE: feature_name from spec.md (first heading)
 </task_extraction>
@@ -95,23 +95,23 @@ Convert `tasks.md` to GitHub issues by applying these mechanical transformations
 ```xml
 <issue_transformation>
   FOR EACH task in tasks_array:
-    
+
     # Title (max 80 chars)
     title = "[{task.task_id}] {task.description first 60 chars}"
-    
+
     # Body (structured markdown)
     body = """
     **Task**: {task.description}
-    
+
     **Phase**: {task.phase}
     {IF task.story: "**User Story**: {task.story}"}
     {IF task.deps: "**Dependencies**: Blocked by {task.deps}"}
     {IF task.parallel: "**Parallelizable**: Yes"}
-    
+
     ---
     _Auto-generated from tasks.md by /taskstoissues-gpt-5-mini_
     """
-    
+
     # Labels (structured array)
     labels = [
       "task",
@@ -119,10 +119,10 @@ Convert `tasks.md` to GitHub issues by applying these mechanical transformations
       {IF task.parallel: "parallel"},
       {IF task.story: "user-story"}
     ]
-    
+
     # Milestone
     milestone = "{feature_name}"
-    
+
   STORE: issues_array = [{title, body, labels, milestone, task_id}]
 </issue_transformation>
 ```
@@ -133,7 +133,7 @@ Convert `tasks.md` to GitHub issues by applying these mechanical transformations
 <issue_creation>
   INITIALIZE: created_count = 0
   INITIALIZE: failed_tasks = []
-  
+
   FOR EACH issue_data in issues_array:
     TRY:
       CALL: github-mcp-server/issue_write
@@ -143,11 +143,11 @@ Convert `tasks.md` to GitHub issues by applying these mechanical transformations
         body = {issue_data.body}
         labels = {issue_data.labels}
         milestone = {issue_data.milestone}
-      
+
       STORE: issue_number from response
       INCREMENT: created_count
       OUTPUT: "✅ Created issue #{issue_number} for {issue_data.task_id}"
-      
+
     CATCH error:
       APPEND: failed_tasks += {issue_data.task_id, error}
       OUTPUT: "❌ Failed {issue_data.task_id}: {error}"
@@ -161,7 +161,7 @@ Convert `tasks.md` to GitHub issues by applying these mechanical transformations
   FOR EACH task in tasks_array WHERE task.deps exists:
     FIND: blocker_issue_number for task.deps
     FIND: blocked_issue_number for task.task_id
-    
+
     IF both issues exist:
       ADD COMMENT to blocked_issue_number:
         "🔗 Blocked by #{blocker_issue_number} (task {task.deps})"
@@ -173,14 +173,14 @@ Convert `tasks.md` to GitHub issues by applying these mechanical transformations
 ```xml
 <validation>
   ASSERT: created_count === tasks_array.length
-  
+
   IF validation fails:
     OUTPUT: "⚠️ Validation Failed"
     OUTPUT: "Expected: {tasks_array.length} issues"
     OUTPUT: "Created: {created_count} issues"
     OUTPUT: "Failed tasks: {failed_tasks}"
     EXIT with error
-  
+
   IF validation passes:
     OUTPUT: "✅ Validation Passed"
     OUTPUT: "Created {created_count} GitHub issues"
@@ -193,12 +193,14 @@ Convert `tasks.md` to GitHub issues by applying these mechanical transformations
 
 **Task ID pattern**: `T\d{3}` (exactly 3 digits: T001, T023, T145)
 
-**Phase pattern**: 
+**Phase pattern**:
+
 ```
 ## Phase N: <phase_name>
 ```
 
 **Dependency pattern**:
+
 ```
 depends on T###
 ```
@@ -210,11 +212,13 @@ depends on T###
 ### Issue Format Constraints
 
 **Title format**:
+
 - Prefix: `[T###]` (task ID in brackets)
 - Max length: 80 characters
 - Truncate description at 60 chars if needed
 
 **Body format** (structured markdown):
+
 ```markdown
 **Task**: {full description}
 
@@ -224,10 +228,12 @@ depends on T###
 **Parallelizable**: Yes (if [P] marker present)
 
 ---
+
 _Auto-generated from tasks.md by /taskstoissues-gpt-5-mini_
 ```
 
 **Labels** (array of strings):
+
 - Always: `"task"`
 - Always: `"phase-{N}"` (extract number from phase heading)
 - Conditional: `"parallel"` (if [P] marker)
@@ -238,16 +244,19 @@ _Auto-generated from tasks.md by /taskstoissues-gpt-5-mini_
 ### Safety Constraints
 
 **Repository validation**:
+
 1. Git remote MUST contain "github.com"
 2. Owner/repo MUST match remote URL
 3. NEVER create issues in wrong repository
 
 **Error handling**:
+
 - If any task fails, record in failed_tasks array
 - Continue processing remaining tasks
 - Report all failures at end
 
 **Validation rules**:
+
 - Issue count MUST equal task count
 - All task IDs MUST be extracted correctly
 - All phases MUST be mapped
@@ -255,12 +264,14 @@ _Auto-generated from tasks.md by /taskstoissues-gpt-5-mini_
 ### Output Constraints
 
 **Success output**:
+
 ```
 ✅ Created 23 GitHub issues for feature: Accordion Component
 ✅ All tasks converted successfully
 ```
 
 **Failure output**:
+
 ```
 ⚠️ Created 20/23 issues
 ❌ Failed tasks: T005, T012, T019
@@ -268,6 +279,7 @@ Errors: [error details]
 ```
 
 **No verbose explanations** - output only:
+
 - Issue creation status (✅/❌)
 - Issue number mapping
 - Validation results
@@ -287,17 +299,19 @@ Errors: [error details]
 
 ## Created Issues
 
-| Task ID | Issue # | Title | Labels |
-|---------|---------|-------|--------|
-| T001 | #456 | [T001] Create directory structure | task, phase-1 |
-| T002 | #457 | [T002] [P] Add types.ts | task, phase-1, parallel, user-story |
+| Task ID | Issue # | Title                             | Labels                              |
+| ------- | ------- | --------------------------------- | ----------------------------------- |
+| T001    | #456    | [T001] Create directory structure | task, phase-1                       |
+| T002    | #457    | [T002] [P] Add types.ts           | task, phase-1, parallel, user-story |
 
 {IF failed_tasks not empty:
+
 ## Failed Issues
 
-| Task ID | Error |
-|---------|-------|
-| T005 | Rate limit exceeded |
+| Task ID | Error               |
+| ------- | ------------------- |
+| T005    | Rate limit exceeded |
+
 }
 
 ## Validation
@@ -351,13 +365,13 @@ After execution, verify:
 
 ### Mechanical Transformation (No Reasoning)
 
-| Aspect | Complexity | GPT-5 Mini Capability |
-|--------|------------|----------------------|
-| **Pattern extraction** | Low (regex-like) | ✅ Excellent |
-| **Field mapping** | Low (1:1 mapping) | ✅ Excellent |
-| **API calls** | Low (structured) | ✅ Excellent |
-| **Validation** | Low (arithmetic) | ✅ Excellent |
-| **Reasoning** | None | ✅ Not needed |
+| Aspect                 | Complexity        | GPT-5 Mini Capability |
+| ---------------------- | ----------------- | --------------------- |
+| **Pattern extraction** | Low (regex-like)  | ✅ Excellent          |
+| **Field mapping**      | Low (1:1 mapping) | ✅ Excellent          |
+| **API calls**          | Low (structured)  | ✅ Excellent          |
+| **Validation**         | Low (arithmetic)  | ✅ Excellent          |
+| **Reasoning**          | None              | ✅ Not needed         |
 
 ### No Synthesis Required
 
@@ -374,30 +388,32 @@ After execution, verify:
 
 ## Performance Expectations
 
-| Metric | Value | Notes |
-|--------|-------|-------|
-| **Speed** | 10-20s | GitHub API latency dominates |
-| **Cost** | **0x** | GPT-5 Mini is free |
-| **Quality** | 95%+ | Pure pattern extraction |
-| **Failure modes** | API rate limits, network errors | Not model-related |
+| Metric            | Value                           | Notes                        |
+| ----------------- | ------------------------------- | ---------------------------- |
+| **Speed**         | 10-20s                          | GitHub API latency dominates |
+| **Cost**          | **0x**                          | GPT-5 Mini is free           |
+| **Quality**       | 95%+                            | Pure pattern extraction      |
+| **Failure modes** | API rate limits, network errors | Not model-related            |
 
 ## Comparison to Standard `/speckit.taskstoissues`
 
-| Aspect | Standard (Sonnet) | GPT-5 Mini |
-|--------|-------------------|------------|
-| **Speed** | 30-40s | 10-20s (2× faster) |
-| **Cost** | 1x | **0x** (free) |
-| **Quality** | 98% | 95% |
+| Aspect        | Standard (Sonnet)         | GPT-5 Mini                |
+| ------------- | ------------------------- | ------------------------- |
+| **Speed**     | 30-40s                    | 10-20s (2× faster)        |
+| **Cost**      | 1x                        | **0x** (free)             |
+| **Quality**   | 98%                       | 95%                       |
 | **Reasoning** | Handles edge cases better | Follows patterns strictly |
-| **Best for** | Complex task formats | Standard task formats |
+| **Best for**  | Complex task formats      | Standard task formats     |
 
 **When to use GPT-5 Mini variant**:
+
 - ✅ Budget is critical (0x cost)
 - ✅ tasks.md follows standard format
 - ✅ Speed matters (2× faster)
 - ✅ No custom task patterns
 
 **When to use standard command**:
+
 - ⚠️ Complex task descriptions with ambiguity
 - ⚠️ Non-standard task format
 - ⚠️ First-time use (safer)
