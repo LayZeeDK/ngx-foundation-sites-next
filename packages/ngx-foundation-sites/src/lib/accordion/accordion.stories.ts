@@ -106,7 +106,7 @@ export const Default: Story = {
 };
 
 export const MultiExpand: Story = {
-  args: { multiExpandable: true },
+  args: { multiExpand: true },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -277,7 +277,7 @@ export const DeepLink: Story = {
  */
 export const MultiExpandDeepLink: Story = {
   args: {
-    multiExpandable: true,
+    multiExpand: true,
     deepLink: true,
     deepLinkSmudge: true,
     updateHistory: true,
@@ -628,7 +628,7 @@ export const SoftDisabled: Story = {
  */
 export const ExpandCollapseAll: Story = {
   args: {
-    multiExpandable: true, // Required for expandAll to work
+    multiExpand: true, // Required for expandAll to work
     allowAllClosed: true,
   },
   render: (args) => ({

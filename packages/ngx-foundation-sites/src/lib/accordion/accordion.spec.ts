@@ -19,7 +19,7 @@ import { AccordionDeepLinkService } from './accordion-deep-link.service';
   template: `
     <nfs-accordion
       #accordion
-      [multiExpandable]="multiExpandable()"
+      [multiExpand]="multiExpand()"
       [disabled]="disabled()"
       [softDisabled]="softDisabled()"
       [wrap]="wrap()"
@@ -69,7 +69,7 @@ class TestHostComponent {
   /** Reference to the accordion component for testing programmatic methods */
   readonly accordion = viewChild.required(NfsAccordion);
 
-  multiExpandable = signal(false);
+  multiExpand = signal(false);
   disabled = signal(false);
   softDisabled = signal(true);
   wrap = signal(false);
@@ -203,9 +203,9 @@ describe('NfsAccordion', () => {
     });
   });
 
-  describe('single expand mode (multiExpandable=false)', () => {
+  describe('single expand mode (multiExpand=false)', () => {
     beforeEach(() => {
-      host.multiExpandable.set(false);
+      host.multiExpand.set(false);
       fixture.detectChanges();
     });
 
@@ -239,9 +239,9 @@ describe('NfsAccordion', () => {
     });
   });
 
-  describe('multi-expand mode (multiExpandable=true)', () => {
+  describe('multi-expand mode (multiExpand=true)', () => {
     beforeEach(() => {
-      host.multiExpandable.set(true);
+      host.multiExpand.set(true);
       fixture.detectChanges();
     });
 
@@ -337,7 +337,7 @@ describe('NfsAccordion', () => {
     });
 
     it('should support multiple initially expanded panels in multi-expand mode', () => {
-      host.multiExpandable.set(true);
+      host.multiExpand.set(true);
       host.item1Expanded.set(true);
       host.item2Expanded.set(true);
       fixture.detectChanges();
@@ -520,7 +520,7 @@ describe('NfsAccordion', () => {
     it('should clear hash when all panels closed and allowAllClosed=true', async () => {
       host.deepLink.set(true);
       host.allowAllClosed.set(true);
-      host.multiExpandable.set(true);
+      host.multiExpand.set(true);
       host.item1Expanded.set(true);
       fixture.detectChanges();
       await fixture.whenStable();
@@ -752,7 +752,7 @@ describe('NfsAccordion', () => {
 
   describe('expandAll and collapseAll', () => {
     it('should expand all panels when expandAll() is called in multi-expand mode', async () => {
-      host.multiExpandable.set(true);
+      host.multiExpand.set(true);
       host.allowAllClosed.set(true);
       fixture.detectChanges();
 
@@ -773,7 +773,7 @@ describe('NfsAccordion', () => {
     });
 
     it('should collapse all panels when collapseAll() is called', async () => {
-      host.multiExpandable.set(true);
+      host.multiExpand.set(true);
       host.allowAllClosed.set(true);
       host.item1Expanded.set(true);
       host.item2Expanded.set(true);
@@ -796,8 +796,8 @@ describe('NfsAccordion', () => {
       expect(isExpanded(2)).toBe(false);
     });
 
-    it('should not expand all when multiExpandable=false', async () => {
-      host.multiExpandable.set(false);
+    it('should not expand all when multiExpand=false', async () => {
+      host.multiExpand.set(false);
       fixture.detectChanges();
 
       // expandAll should not work in single-expand mode
@@ -813,7 +813,7 @@ describe('NfsAccordion', () => {
     });
 
     it('should respect allowAllClosed when collapseAll() is called', async () => {
-      host.multiExpandable.set(true);
+      host.multiExpand.set(true);
       host.allowAllClosed.set(false);
       host.item1Expanded.set(true);
       host.item2Expanded.set(true);

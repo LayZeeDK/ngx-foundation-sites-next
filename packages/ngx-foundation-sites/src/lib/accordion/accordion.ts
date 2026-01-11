@@ -48,7 +48,7 @@ export class NfsAccordion implements AfterContentInit {
   readonly #itemInjectorCache = new WeakMap<NfsAccordionItemDef, Injector>();
 
   /** Allow multiple panels to be expanded simultaneously */
-  readonly multiExpandable = input(false);
+  readonly multiExpand = input(false);
 
   /** Disable all accordion interactions */
   readonly disabled = input(false);
@@ -243,7 +243,7 @@ export class NfsAccordion implements AfterContentInit {
 
   /**
    * Expands all accordion panels.
-   * Only works when `multiExpandable` is true.
+   * Only works when `multiExpand` is true.
    */
   expandAll(): void {
     this.accordionGroup()?.expandAll();
