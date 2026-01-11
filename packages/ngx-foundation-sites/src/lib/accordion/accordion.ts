@@ -146,8 +146,20 @@ export class NfsAccordion implements AfterContentInit {
 
   constructor() {
     // Load component styles on first render (reference-counted)
+    // FR-062a: Guarded with try/catch for SSR hydration error handling
     afterNextRender(() => {
-      this.#styleLoader.load('accordion', '/nfs-accordion.css');
+      try {
+        this.#styleLoader.load('accordion', '/nfs-accordion.css');
+      } catch (error) {
+        this.#errorHandler.handleError(
+          new Error(
+            `NfsAccordion: Hydration failed during style loading. ` +
+              `This may occur during SSR hydration mismatch. ` +
+              `Original error: ${error instanceof Error ? error.message : String(error)}`,
+            { cause: error },
+          ),
+        );
+      }
     });
 
     // Unload styles when component is destroyed
@@ -156,12 +168,26 @@ export class NfsAccordion implements AfterContentInit {
     });
 
     // Handle initial hash on first render
+    // FR-062a: Guarded with try/catch for SSR hydration error handling
     afterNextRender(() => {
-      if (this.deepLink()) {
-        this.#handleInitialHash();
-        this.#setupHashChangeListener();
+      try {
+        if (this.deepLink()) {
+          this.#handleInitialHash();
+          this.#setupHashChangeListener();
+        }
+        this.#initialHashProcessed = true;
+      } catch (error) {
+        // Mark as processed even on error to prevent stale state
+        this.#initialHashProcessed = true;
+        this.#errorHandler.handleError(
+          new Error(
+            `NfsAccordion: Hydration failed during deep link initialization. ` +
+              `This may occur during SSR hydration mismatch. ` +
+              `Original error: ${error instanceof Error ? error.message : String(error)}`,
+            { cause: error },
+          ),
+        );
       }
-      this.#initialHashProcessed = true;
     });
 
     // Track expansion changes for deep linking and allowAllClosed enforcement
