@@ -53,6 +53,36 @@ This directory contains research-backed optimization strategies for AI models us
 
 ---
 
+### [Claude Opus 4.5 Implementation Optimization Guide](./CLAUDE-OPUS-4-5-IMPLEMENTATION-OPTIMIZATION.md)
+
+**Model**: Claude Opus 4.5 (200K / 1M context, effort parameter, hybrid reasoning)
+
+**10 Key Optimizations**:
+
+1. **Effort Parameter** (Opus-only) - Medium default (76% token savings, matches Sonnet best)
+2. **Extended Thinking Budgets** - 16K-64K for complex tasks (up to 64K supported)
+3. **System Prompt Calibration** - Normal language (Opus more sensitive than previous)
+4. **"Think" Word Avoidance** - Use "evaluate", "consider" when extended thinking disabled
+5. **Parallel Tool Use** - Load files simultaneously (10-20x speedup)
+6. **First-Try Correctness** - Trust expert coding, proactive edge case handling
+7. **Vision for UI** - Screenshot comparison, crop tool for detail
+8. **Structured XML** - Same as Sonnet 4.5
+9. **Literal Instructions** - Same as Sonnet 4.5
+10. **Minimal Implementation** - OUT OF SCOPE list
+
+**Best for**: Complex reasoning, first-try correctness critical, deep debugging, state-of-the-art coding
+
+**Performance**: 80.9% SWE-bench (vs Sonnet 4.5's 77.2%), 76% fewer tokens at medium effort
+
+**Commands**: `/implement-opus-4-5` (Claude Code & GitHub Copilot)
+
+**When to Use**: Complex implementations, production code, deep debugging, intricate logic
+**When to Use Sonnet Instead**: Daily work, speed > quality, cost-sensitive
+
+**Related**: Based on [Claude 4.5 Optimization Guide](./CLAUDE-4-5-OPTIMIZATION.md) + Opus-specific features
+
+---
+
 ### [Claude Haiku 4.5 Optimization Guide](./CLAUDE-HAIKU-4-5-OPTIMIZATION.md)
 
 **Model**: Claude Haiku 4.5 (200K context for GitHub Copilot Business & Claude Code Team)
