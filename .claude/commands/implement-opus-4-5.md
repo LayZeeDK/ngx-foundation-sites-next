@@ -123,17 +123,49 @@ IF `FEATURE_DIR/checklists/` exists:
 
 ### Step 2.2: Project Setup Verification
 
-**Detection & Creation**:
+**Detection & Creation Logic**:
 
-- git repo? → .gitignore
-- Dockerfile? → .dockerignore
-- eslint.config.\*? → verify ignores
-- package.json? → .npmignore (if publishing)
+- Check if repository is git repo (create/verify .gitignore if so):
 
-**Patterns** (from plan.md):
+  ```bash
+  git rev-parse --git-dir 2>/dev/null
+  ```
 
-- Node.js/TypeScript: `node_modules/`, `dist/`, `*.log`, `.env*`
-- Universal: `.DS_Store`, `*.tmp`, `.vscode/`
+- Check if Dockerfile\* exists or Docker in plan.md → create/verify .dockerignore
+- Check if .eslintrc\* exists → create/verify .eslintignore
+- Check if eslint.config.\* exists → ensure the config's `ignores` entries cover required patterns
+- Check if .prettierrc\* exists → create/verify .prettierignore
+- Check if .npmrc or package.json exists → create/verify .npmignore (if publishing)
+- Check if terraform files (\*.tf) exist → create/verify .terraformignore
+- Check if .helmignore needed (helm charts present) → create/verify .helmignore
+
+**If ignore file already exists**: Verify it contains essential patterns, append missing critical patterns only
+**If ignore file missing**: Create with full pattern set for detected technology
+
+**Common Patterns by Technology** (from plan.md tech stack):
+
+- **Node.js/JavaScript/TypeScript**: `node_modules/`, `dist/`, `build/`, `*.log`, `.env*`
+- **Python**: `__pycache__/`, `*.pyc`, `.venv/`, `venv/`, `dist/`, `*.egg-info/`
+- **Java**: `target/`, `*.class`, `*.jar`, `.gradle/`, `build/`
+- **C#/.NET**: `bin/`, `obj/`, `*.user`, `*.suo`, `packages/`
+- **Go**: `*.exe`, `*.test`, `vendor/`, `*.out`
+- **Ruby**: `.bundle/`, `log/`, `tmp/`, `*.gem`, `vendor/bundle/`
+- **PHP**: `vendor/`, `*.log`, `*.cache`, `*.env`
+- **Rust**: `target/`, `debug/`, `release/`, `*.rs.bk`, `*.rlib`, `*.prof*`, `.idea/`, `*.log`, `.env*`
+- **Kotlin**: `build/`, `out/`, `.gradle/`, `.idea/`, `*.class`, `*.jar`, `*.iml`, `*.log`, `.env*`
+- **C++**: `build/`, `bin/`, `obj/`, `out/`, `*.o`, `*.so`, `*.a`, `*.exe`, `*.dll`, `.idea/`, `*.log`, `.env*`
+- **C**: `build/`, `bin/`, `obj/`, `out/`, `*.o`, `*.a`, `*.so`, `*.exe`, `Makefile`, `config.log`, `.idea/`, `*.log`, `.env*`
+- **Swift**: `.build/`, `DerivedData/`, `*.swiftpm/`, `Packages/`
+- **R**: `.Rproj.user/`, `.Rhistory`, `.RData`, `.Ruserdata`, `*.Rproj`, `packrat/`, `renv/`
+- **Universal**: `.DS_Store`, `Thumbs.db`, `*.tmp`, `*.swp`, `.vscode/`, `.idea/`
+
+**Tool-Specific Patterns**:
+
+- **Docker**: `node_modules/`, `.git/`, `Dockerfile*`, `.dockerignore`, `*.log*`, `.env*`, `coverage/`
+- **ESLint**: `node_modules/`, `dist/`, `build/`, `coverage/`, `*.min.js`
+- **Prettier**: `node_modules/`, `dist/`, `build/`, `coverage/`, `package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`
+- **Terraform**: `.terraform/`, `*.tfstate*`, `*.tfvars`, `.terraform.lock.hcl`
+- **Kubernetes/k8s**: `*.secret.yaml`, `secrets/`, `.kube/`, `kubeconfig*`, `*.key`, `*.crt`
 
 ### Step 2.3: Create TODO List
 
