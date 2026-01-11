@@ -289,7 +289,7 @@ Create `haiku-suitable-tasks.md` with:
 ## Next Steps
 
 1. Review this analysis for accuracy
-2. Run `gh copilot -m "claude-haiku-4.5" slash implement-haiku-4-5` to execute Haiku-suitable tasks
+2. Run `gh copilot -m "claude-haiku-4.5" slash implement-tasks-for-haiku-4-5` to execute Haiku-suitable tasks
 3. Use standard implementation for remaining Sonnet-recommended tasks
 4. Compare actual vs estimated performance
 ```
@@ -609,7 +609,7 @@ Straightforward method addition following existing patterns in the same file. Ha
 ## Next Steps
 
 1. **Review this analysis** - validate task classifications
-2. **Run Haiku execution**: `gh copilot -m "claude-haiku-4.5" slash implement-haiku-4-5`
+2. **Run Haiku execution**: `gh copilot -m "claude-haiku-4.5" slash implement-tasks-for-haiku-4-5`
 3. **Monitor execution** - track time, cost, quality
 4. **Compare results** - refine future classifications
 5. **Update optimization guide** - contribute learnings back
@@ -642,7 +642,7 @@ Straightforward method addition following existing patterns in the same file. Ha
 - **Cost**: $[amount] saved (66% on Haiku tasks)
 
 **Recommended Next Step**:
-Run `gh copilot -m "claude-haiku-4.5" slash implement-haiku-4-5` to execute the [number] Haiku-suitable tasks.
+Run `gh copilot -m "claude-haiku-4.5" slash implement-tasks-for-haiku-4-5` to execute the [number] Haiku-suitable tasks.
 
 **Alternative**:
 Review haiku-task-analysis.md for detailed reasoning, then proceed.
@@ -673,7 +673,7 @@ This analysis command itself should use **Sonnet 4.5**, not Haiku, because:
 ## Related Commands
 
 - Standard task generation (run before this command)
-- `implement-haiku-4-5` - Executes Haiku-suitable tasks (run after this command)
+- `implement-tasks-for-haiku-4-5` - Executes Haiku-suitable tasks (run after this command)
 - Standard implementation - Alternative for Sonnet-based full implementation
 
 ## Notes

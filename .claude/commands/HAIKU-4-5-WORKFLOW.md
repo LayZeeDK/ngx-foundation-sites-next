@@ -44,7 +44,7 @@ The Haiku 4.5 workflow adds intelligent task classification and execution optimi
                  ┌─────────────────────────────────────┐
                  │                                     │
                  ↓                                     ↓
-         /implement-haiku-4-5              /speckit.implement
+         /implement-tasks-for-haiku-4-5              /speckit.implement
          (Haiku 4.5)                       (Sonnet 4.5)
          ↓                                 ↓
          HIGH/MEDIUM tasks                 LOW suitability tasks
@@ -100,7 +100,7 @@ The Haiku 4.5 workflow adds intelligent task classification and execution optimi
 
 ---
 
-### `/implement-haiku-4-5`
+### `/implement-tasks-for-haiku-4-5`
 
 **Purpose**: Execute Haiku-suitable tasks with Haiku 4.5 optimizations.
 
@@ -162,7 +162,7 @@ The Haiku 4.5 workflow adds intelligent task classification and execution optimi
 **Step 3**: Execute Haiku tasks
 
 ```bash
-/implement-haiku-4-5
+/implement-tasks-for-haiku-4-5
 ```
 
 **Performance**:
@@ -347,7 +347,7 @@ Check `haiku-task-analysis.md` for:
 
 ```bash
 # Haiku tasks first (fast, parallel where possible)
-/implement-haiku-4-5
+/implement-tasks-for-haiku-4-5
 
 # Then Sonnet for complex tasks
 /speckit.implement

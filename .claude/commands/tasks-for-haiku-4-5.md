@@ -289,7 +289,7 @@ Create `haiku-suitable-tasks.md` with:
 ## Next Steps
 
 1. Review this analysis for accuracy
-2. Run `/implement-haiku-4-5` to execute Haiku-suitable tasks
+2. Run `/implement-tasks-for-haiku-4-5` to execute Haiku-suitable tasks
 3. Use `/speckit.implement` for remaining Sonnet-recommended tasks
 4. Compare actual vs estimated performance
 ```
@@ -597,7 +597,7 @@ Straightforward method addition following existing patterns in the same file. Ha
 ## Next Steps
 
 1. **Review this analysis** - validate task classifications
-2. **Run `/implement-haiku-4-5`** - execute Haiku-suitable tasks
+2. **Run `/implement-tasks-for-haiku-4-5`** - execute Haiku-suitable tasks
 3. **Monitor execution** - track time, cost, quality
 4. **Compare results** - refine future classifications
 5. **Update optimization guide** - contribute learnings back
@@ -631,7 +631,7 @@ Straightforward method addition following existing patterns in the same file. Ha
 - **Cost**: $[amount] saved (66% on Haiku tasks)
 
 **Recommended Next Step**:
-Run `/implement-haiku-4-5` to execute the [number] Haiku-suitable tasks.
+Run `/implement-tasks-for-haiku-4-5` to execute the [number] Haiku-suitable tasks.
 
 **Alternative**:
 Review haiku-task-analysis.md for detailed reasoning, then proceed.
@@ -662,7 +662,7 @@ This analysis command itself should use **Sonnet 4.5**, not Haiku, because:
 ## Related Commands
 
 - `/speckit.tasks` - Generates original tasks.md (run before this command)
-- `/implement-haiku-4-5` - Executes Haiku-suitable tasks (run after this command)
+- `/implement-tasks-for-haiku-4-5` - Executes Haiku-suitable tasks (run after this command)
 - `/speckit.implement` - Alternative full implementation (Sonnet-based)
 
 ## Notes

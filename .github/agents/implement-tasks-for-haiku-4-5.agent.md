@@ -1,9 +1,16 @@
 ---
 description: Execute Haiku-suitable tasks with Claude Haiku 4.5 optimizations. Fast, cost-effective implementation for focused, bounded tasks.
-model_override: claude-haiku-4.5
 ---
 
-# Haiku-Optimized Task Implementation
+## Model Selection
+
+**Preferred Model**: Claude Haiku 4.5 (`claude-haiku-4.5`)
+**Invoke with**: `gh copilot -m "claude-haiku-4.5" slash implement-tasks-for-haiku-4-5`
+
+**Optimization Strategy**: Concise prompts, step-bounded reasoning, pattern-based execution
+**Expected Performance**: 2-5× faster than Sonnet, 66% cost savings
+
+---
 
 ## Model Configuration
 
@@ -77,7 +84,7 @@ pwsh ./.specify/scripts/powershell/check-prerequisites.ps1 -Json -RequireTasks -
 ```
 ❌ Error: haiku-suitable-tasks.md not found
 
-Run `/tasks-for-haiku-4-5` first to identify Haiku-suitable tasks.
+Run `gh copilot -m "claude-sonnet-4.5" slash tasks-for-haiku-4-5` first to identify Haiku-suitable tasks.
 
 STOP execution.
 ```
@@ -115,21 +122,26 @@ Wait for user confirmation before continuing.
 
 <planning>
 
-**Generate TODO list with TodoWrite**:
+**Report execution plan**:
 
-```typescript
-TodoWrite([
-  { content: 'Verify test environment', status: 'pending', activeForm: 'Verifying test environment' },
-  { content: 'T001: [Brief description]', status: 'pending', activeForm: 'Implementing T001' },
-  { content: 'T002: [Brief description]', status: 'pending', activeForm: 'Implementing T002' },
-  // ... for all HIGH and MEDIUM tasks
-  { content: 'Run full verification suite', status: 'pending', activeForm: 'Running verification' },
-  { content: 'Update tracking documents', status: 'pending', activeForm: 'Updating tracking' },
-  { content: 'Create git commit', status: 'pending', activeForm: 'Creating commit' },
-]);
-```
+```markdown
+## Execution Plan
 
-**Execution order**:
+**HIGH Suitability Tasks**: [number] tasks
+
+- Estimated time: [X] minutes
+- Pattern distribution: [counts by pattern]
+
+**MEDIUM Suitability Tasks**: [number] tasks
+
+- Estimated time: [Y] minutes (with extended thinking)
+- Pattern distribution: [counts by pattern]
+
+**Total Estimated Time**: [X + Y] minutes
+**Estimated Speedup vs Sonnet**: [Z]×
+**Estimated Cost Savings**: $[amount] (66%)
+
+**Execution Order**:
 
 1. Verify test environment (setup)
 2. Execute HIGH suitability tasks (parallel where possible)
@@ -137,6 +149,7 @@ TodoWrite([
 4. Verify all changes
 5. Update tracking
 6. Commit
+```
 
 </planning>
 
@@ -447,26 +460,6 @@ npm run lint
 
 <progress_tracking>
 
-**Update TodoWrite after each task**:
-
-```typescript
-// Starting task
-TodoWrite([
-  { content: 'Verify test environment', status: 'completed', activeForm: '...' },
-  { content: 'T001: Add down() method', status: 'in_progress', activeForm: 'Implementing T001' },
-  { content: 'T002: Add up() method', status: 'pending', activeForm: 'Implementing T002' },
-  // ...
-]);
-
-// Completed task
-TodoWrite([
-  { content: 'Verify test environment', status: 'completed', activeForm: '...' },
-  { content: 'T001: Add down() method', status: 'completed', activeForm: 'Implementing T001' },
-  { content: 'T002: Add up() method', status: 'in_progress', activeForm: 'Implementing T002' },
-  // ...
-]);
-```
-
 **Provide conversational updates**:
 
 ```markdown
@@ -736,10 +729,11 @@ npm run test -- [component-name]
 
 - haiku-suitable-tasks.md (tasks marked [X], performance metrics added)
 - tasks.md (completed tasks marked [X])
-  ✅ **Git commit created** (conventional format with performance metrics)
-  ✅ **TodoWrite reflects completion** (all items checked)
+
+✅ **Git commit created** (conventional format with performance metrics)
 
 **Quality Verification**:
+
 ✅ **Pattern adherence**: All code follows existing patterns exactly
 ✅ **Type safety**: TypeScript compilation succeeds
 ✅ **Test coverage**: All new code has tests (if requested)
@@ -825,7 +819,7 @@ npm run test -- [component-name]
 **Remaining Tasks** (Sonnet recommended):
 
 - [x] tasks with LOW suitability (estimated [Y] min with Sonnet)
-- Run `/speckit.implement` for these tasks
+- Use standard implementation for these tasks
 
 **Optional**:
 
@@ -879,7 +873,6 @@ npm run test -- [component-name]
 
 **6. Track Progress Clearly**:
 
-- Update TodoWrite after each task
 - Provide conversational updates
 - Show time per task for performance tracking
 
@@ -903,7 +896,7 @@ npm run test -- [component-name]
 
 <anti_patterns>
 
-**Don't use `/implement-haiku-4-5` for**:
+**Don't use this command for**:
 
 ❌ **Architectural decisions**:
 
@@ -929,7 +922,7 @@ npm run test -- [component-name]
 - Codebase-wide changes
 - Complex dependency analysis
 
-**For these, use**: `/speckit.implement` (Sonnet 4.5 with extended thinking)
+**For these, use**: Standard Sonnet 4.5 implementation
 
 </anti_patterns>
 
@@ -937,9 +930,9 @@ npm run test -- [component-name]
 
 ## Related Commands
 
-- `/tasks-for-haiku-4-5` - Identifies Haiku-suitable tasks (run BEFORE this command)
-- `/speckit.implement` - Full implementation command (Sonnet-based, for complex tasks)
-- `/implement-gap-remediations` - Specialized gap remediation (Sonnet-based)
+- `tasks-for-haiku-4-5` - Identifies Haiku-suitable tasks (run BEFORE this command)
+- Standard implementation - Full implementation command (Sonnet-based, for complex tasks)
+- Gap remediation - Specialized gap remediation (Sonnet-based)
 
 ---
 

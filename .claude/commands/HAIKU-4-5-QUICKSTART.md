@@ -39,7 +39,7 @@
 ### 3. Execute Haiku Tasks (Fast & Cheap)
 
 ```bash
-/implement-haiku-4-5
+/implement-tasks-for-haiku-4-5
 ```
 
 **Execution**:
