@@ -17,7 +17,7 @@ This document tracks validated implementation gaps between the accordion specifi
 
 ### GAP-1: Foundation API Methods Missing on Item
 
-**Status**: NOT IMPLEMENTED
+**Status**: ✅ FIXED (2026-01-11) - Commit 25481a2
 **Validation Score**: 10/10
 **Evidence**:
 
@@ -71,7 +71,7 @@ toggle(): void {
 
 ### GAP-2: Foundation API Outputs Missing on Container
 
-**Status**: NOT IMPLEMENTED
+**Status**: ✅ FIXED (2026-01-11) - Commit f8b7e07
 **Validation Score**: 10/10
 **Evidence**:
 
@@ -114,7 +114,7 @@ readonly up = output<AccordionItemChangeEvent>();
 
 ### GAP-3: Input Naming Inconsistency (multiExpandable vs multiExpand)
 
-**Status**: IMPLEMENTED AS `multiExpandable` (should be `multiExpand`)
+**Status**: ✅ FIXED (2026-01-11) - Commit 45903e6
 **Validation Score**: 10/10
 **Evidence**:
 
