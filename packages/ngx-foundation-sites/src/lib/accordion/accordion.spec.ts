@@ -832,6 +832,92 @@ describe('NfsAccordion', () => {
     });
   });
 
+  describe('Foundation API methods (down, up, toggle)', () => {
+    function getItemDefs(): NfsAccordionItemDef[] {
+      return [...host.accordion().itemDefs()];
+    }
+
+    it('should expand panel when down() is called', async () => {
+      const items = getItemDefs();
+      expect(isExpanded(0)).toBe(false);
+
+      items[0].down();
+      await fixture.whenStable();
+      fixture.detectChanges();
+
+      expect(isExpanded(0)).toBe(true);
+    });
+
+    it('should collapse panel when up() is called', async () => {
+      host.item1Expanded.set(true);
+      fixture.detectChanges();
+      expect(isExpanded(0)).toBe(true);
+
+      const items = getItemDefs();
+      items[0].up();
+      await fixture.whenStable();
+      fixture.detectChanges();
+
+      expect(isExpanded(0)).toBe(false);
+    });
+
+    it('should toggle panel expansion with toggle()', async () => {
+      const items = getItemDefs();
+      expect(isExpanded(0)).toBe(false);
+
+      // Toggle to expand
+      items[0].toggle();
+      await fixture.whenStable();
+      fixture.detectChanges();
+      expect(isExpanded(0)).toBe(true);
+
+      // Toggle to collapse
+      items[0].toggle();
+      await fixture.whenStable();
+      fixture.detectChanges();
+      expect(isExpanded(0)).toBe(false);
+    });
+
+    it('should not expand when down() is called on disabled item', async () => {
+      host.item1Disabled.set(true);
+      fixture.detectChanges();
+
+      const items = getItemDefs();
+      items[0].down();
+      await fixture.whenStable();
+      fixture.detectChanges();
+
+      expect(isExpanded(0)).toBe(false);
+    });
+
+    it('should not collapse when up() is called on disabled item', async () => {
+      host.item1Expanded.set(true);
+      host.item1Disabled.set(true);
+      fixture.detectChanges();
+      expect(isExpanded(0)).toBe(true);
+
+      const items = getItemDefs();
+      items[0].up();
+      await fixture.whenStable();
+      fixture.detectChanges();
+
+      // Should remain expanded since item is disabled
+      expect(isExpanded(0)).toBe(true);
+    });
+
+    it('should not toggle when toggle() is called on disabled item', async () => {
+      host.item1Disabled.set(true);
+      fixture.detectChanges();
+
+      const items = getItemDefs();
+      items[0].toggle();
+      await fixture.whenStable();
+      fixture.detectChanges();
+
+      expect(isExpanded(0)).toBe(false);
+    });
+  });
+
   describe('edge cases', () => {
     it('should render empty accordion without error', async () => {
       // Create a separate test host with no items

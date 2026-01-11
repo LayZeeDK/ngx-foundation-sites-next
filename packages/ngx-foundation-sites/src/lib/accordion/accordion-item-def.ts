@@ -55,4 +55,34 @@ export class NfsAccordionItemDef {
    * The lazy content registers itself via constructor injection.
    */
   readonly lazyContentDef = signal<NfsAccordionContentDef | null>(null);
+
+  /**
+   * Expands this accordion panel.
+   * @foundation API Parity: Equivalent to Foundation's `.down($target)` method.
+   */
+  down(): void {
+    if (!this.disabled()) {
+      this.expanded.set(true);
+    }
+  }
+
+  /**
+   * Collapses this accordion panel.
+   * @foundation API Parity: Equivalent to Foundation's `.up($target)` method.
+   */
+  up(): void {
+    if (!this.disabled()) {
+      this.expanded.set(false);
+    }
+  }
+
+  /**
+   * Toggles this accordion panel's expansion state.
+   * @foundation API Parity: Equivalent to Foundation's `.toggle($target)` method.
+   */
+  toggle(): void {
+    if (!this.disabled()) {
+      this.expanded.update((v) => !v);
+    }
+  }
 }
