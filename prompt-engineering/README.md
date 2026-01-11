@@ -144,6 +144,45 @@ This directory contains research-backed optimization strategies for AI models us
 
 ---
 
+### [GPT-5.1-Codex-Max Implementation Optimization Guide](./GPT-5.1-CODEX-MAX-IMPLEMENTATION-OPTIMIZATION.md)
+
+**Model**: GPT-5.1-Codex-Max (400K base context, compaction for multi-window, xhigh reasoning)
+
+**8 Key Optimizations** (3 Max-specific + 5 shared with regular Codex):
+
+**Max-Only Features**:
+
+1. **Context Compaction** - Automatic multi-window for >400K tokens (millions supported, 24+ hour autonomy)
+2. **xHigh Reasoning Effort** - Extra high mode for critical/legacy/security code (5-10x latency, maximum quality)
+3. **30% Token Efficiency** - Better performance with 30% fewer thinking tokens than regular Codex
+
+**Shared with Regular Codex**:
+
+4. **Remove Guidance** - Trust agentic training, minimal prompts
+5. **Adaptive Reasoning** - Auto-adjusts depth, no steering
+6. **Bias Toward Action** - Persist to full completion
+7. **Engineering Quality** - Correctness, clarity, reliability (no shortcuts)
+8. **Tool Optimization** - rg over grep, specialized tools
+
+**Best for**: Features >400K tokens, multi-hour autonomous work, critical/security code requiring xHigh
+
+**Performance**: 30% more token-efficient, automatic compaction for unlimited tokens, 24+ hour operation
+
+**Commands**: `/implement-gpt-5-1-codex-max` (GitHub Copilot)
+
+**When to Use Max vs. Regular Codex**:
+
+- **Max**: >400K tokens (compaction), critical code (xHigh), project-scale refactors, multi-hour autonomy
+- **Regular**: <400K tokens, cost-sensitive, simple-moderate complexity
+
+**Compaction**: Automatic at ~400K, transparent, preserves task progress/objectives, prunes verbose history
+
+**External State**: CRITICAL - mark tasks [X] immediately, commit every 3-5 tasks (survives compaction)
+
+**Related**: Extends [GPT-5.1-Codex Guide](./GPT-5.1-CODEX-IMPLEMENTATION-OPTIMIZATION.md) with Max-only features
+
+---
+
 ### [GPT-4.1 Optimization Guide](./GPT-4-1-OPTIMIZATION.md)
 
 **Model**: GPT-4.1 (1M context, non-reasoning, 0x cost)
@@ -158,7 +197,7 @@ This directory contains research-backed optimization strategies for AI models us
 
 **Best for**: Large features (>180K tokens) requiring long-context analysis
 
-**Commands**: `/analyze-brief-gpt-4-1`
+**Commands**: `/analyze-report-gaps-gpt-4-1`
 
 ---
 
@@ -178,7 +217,7 @@ This directory contains research-backed optimization strategies for AI models us
 
 **Best for**: Small-medium features (<180K tokens) requiring fast analysis
 
-**Commands**: `/analyze-brief-gpt-5-mini`, `/tasks-gpt-5-mini`
+**Commands**: `/analyze-report-gaps-gpt-5-mini`, `/tasks-gpt-5-mini`
 
 ---
 
@@ -349,7 +388,7 @@ ELSE:
 
 ```bash
 # Step 1: Gap Analysis (GPT-5 Mini - small feature)
-gh copilot -m "gpt-5-mini" slash analyze-brief-gpt-5-mini @accordion.ts
+gh copilot -m "gpt-5-mini" slash analyze-report-gaps-gpt-5-mini @accordion.ts
 # Time: 12 seconds
 # Cost: 0x
 # Quality: 90% of GPT-4.1
@@ -374,7 +413,7 @@ gh copilot -m "sonnet-4.5" slash implement-gap-remediations
 # Output: Fixed code + commits
 
 # Step 5: Re-validate (GPT-5 Mini)
-gh copilot -m "gpt-5-mini" slash analyze-brief-gpt-5-mini @accordion.ts
+gh copilot -m "gpt-5-mini" slash analyze-report-gaps-gpt-5-mini @accordion.ts
 # Time: 10 seconds
 # Cost: 0x
 # Output: "✅ No new gaps detected!"
