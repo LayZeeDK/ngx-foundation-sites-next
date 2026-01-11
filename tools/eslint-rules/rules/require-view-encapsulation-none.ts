@@ -4,21 +4,18 @@
  * This rule ensures all Angular components in the library use ViewEncapsulation.None
  * to reduce bundle size and simplify CSS selectors.
  *
- * Based on angular-eslint selector patterns:
- * https://github.com/angular-eslint/angular-eslint/blob/main/packages/utils/src/eslint-plugin/selectors.ts
+ * Uses @angular-eslint/utils for Angular-specific AST utilities.
  */
 
 import { ESLintUtils, TSESTree } from '@typescript-eslint/utils';
+import { ASTUtils, Selectors } from '@angular-eslint/utils';
 
-// NOTE: The rule will be available in ESLint configs as "@nx/workspace-require-view-encapsulation-none"
+// NOTE: The rule will be available in ESLint configs as "@nfs/require-view-encapsulation-none"
 export const RULE_NAME = 'require-view-encapsulation-none';
 
-// AST selector pattern for @Component decorator on a class declaration
-// Inspired by @angular-eslint/utils COMPONENT_CLASS_DECORATOR
-const COMPONENT_CLASS_DECORATOR =
-  'ClassDeclaration > Decorator[expression.callee.name="Component"]';
+type MessageIds = 'missingEncapsulation' | 'wrongEncapsulation';
 
-export const rule = ESLintUtils.RuleCreator(() => __filename)({
+export const rule = ESLintUtils.RuleCreator(() => __filename)<[], MessageIds>({
   name: RULE_NAME,
   meta: {
     type: 'problem',
@@ -37,23 +34,22 @@ export const rule = ESLintUtils.RuleCreator(() => __filename)({
   defaultOptions: [],
   create(context) {
     return {
-      [COMPONENT_CLASS_DECORATOR](node: TSESTree.Decorator) {
-        // Get the decorator's arguments (the object passed to @Component)
-        const expression = node.expression;
-        if (expression.type !== 'CallExpression') return;
+      [Selectors.COMPONENT_CLASS_DECORATOR](node: TSESTree.Decorator) {
+        // Get the decorator argument using angular-eslint utility
+        // Returns undefined if there's no object argument (e.g., @Component(someVariable))
+        const decoratorArg = ASTUtils.getDecoratorArgument(node);
+        if (!decoratorArg) {
+          // Can't validate non-object arguments - skip
+          return;
+        }
 
-        const decoratorArg = expression.arguments[0];
-        if (!decoratorArg || decoratorArg.type !== 'ObjectExpression') return;
-
-        // Find encapsulation property in the decorator object
-        const encapsulationProp = decoratorArg.properties.find(
-          (prop): prop is TSESTree.Property =>
-            prop.type === 'Property' &&
-            prop.key.type === 'Identifier' &&
-            prop.key.name === 'encapsulation',
+        // Use angular-eslint utility to extract the encapsulation property value
+        const encapsulationValue = ASTUtils.getDecoratorPropertyValue(
+          node,
+          'encapsulation',
         );
 
-        if (!encapsulationProp) {
+        if (!encapsulationValue) {
           // No encapsulation property - report missing
           context.report({
             node,
@@ -63,25 +59,29 @@ export const rule = ESLintUtils.RuleCreator(() => __filename)({
         }
 
         // Check if it's ViewEncapsulation.None
-        const value = encapsulationProp.value;
         if (
-          value.type === 'MemberExpression' &&
-          value.object.type === 'Identifier' &&
-          value.object.name === 'ViewEncapsulation' &&
-          value.property.type === 'Identifier'
+          encapsulationValue.type === 'MemberExpression' &&
+          encapsulationValue.object.type === 'Identifier' &&
+          encapsulationValue.object.name === 'ViewEncapsulation' &&
+          encapsulationValue.property.type === 'Identifier'
         ) {
-          if (value.property.name !== 'None') {
+          if (encapsulationValue.property.name !== 'None') {
+            // Find the encapsulation property node for better error location
+            const encapsulationProp = ASTUtils.getDecoratorProperty(
+              node,
+              'encapsulation',
+            );
             context.report({
-              node: encapsulationProp,
+              node: encapsulationProp ?? node,
               messageId: 'wrongEncapsulation',
-              data: { actual: value.property.name },
+              data: { actual: encapsulationValue.property.name },
             });
           }
           // ViewEncapsulation.None is correct - no report
         } else {
           // Some other value (not ViewEncapsulation.X pattern)
           context.report({
-            node: encapsulationProp,
+            node,
             messageId: 'missingEncapsulation',
           });
         }

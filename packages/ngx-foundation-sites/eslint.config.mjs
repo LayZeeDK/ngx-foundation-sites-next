@@ -48,6 +48,8 @@ export default [
     rules: {
       // Enforce ViewEncapsulation.None for all library components
       '@nfs/require-view-encapsulation-none': 'error',
+      // Enforce exportAs for template reference access
+      '@nfs/require-export-as': 'error',
     },
   },
   {

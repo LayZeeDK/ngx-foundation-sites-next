@@ -1,6 +1,12 @@
 import { RuleTester } from '@typescript-eslint/rule-tester';
 import type { RuleTesterConfig } from '@typescript-eslint/rule-tester';
+import { afterAll, describe, it } from 'vitest';
 import { rule, RULE_NAME } from './require-view-encapsulation-none';
+
+// Configure RuleTester to use vitest lifecycle hooks
+RuleTester.afterAll = afterAll;
+RuleTester.describe = describe;
+RuleTester.it = it;
 
 const ruleTester = new RuleTester({
   languageOptions: {
