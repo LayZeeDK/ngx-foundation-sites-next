@@ -633,8 +633,8 @@ After execution:
 ## Notes
 
 - This command is **Sonnet 4.5 optimized** - uses parallel tool calls, extended thinking, error-first TDD
-- Designed for **200K context** (standard) - use progressive disclosure for larger features
-- **1M context available** for Tier 4 organizations (premium pricing)
+- **Context windows**: 200K only (GitHub Copilot does NOT support 1M context)
+- For features >200K: MUST use progressive disclosure (chunk into phases) - 1M context not available
 - Uses **TodoWrite for progress tracking** (visible to user)
 - **Stops on test failures** - ensures quality at each step
 - **Commits incrementally** - logical commit boundaries for clean history

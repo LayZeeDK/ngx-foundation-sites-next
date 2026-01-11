@@ -1,6 +1,6 @@
 # Claude Sonnet 4.5 Implementation Optimization Guide
 
-**Model**: Claude Sonnet 4.5 (200K / 1M context, extended thinking, implementation-optimized)
+**Model**: Claude Sonnet 4.5 (200K context, extended thinking, implementation-optimized)
 
 **Purpose**: Optimize `/implement-sonnet-4-5` command for systematic code implementation with Claude Sonnet 4.5's strengths
 
@@ -27,12 +27,23 @@
 
 ### Context Window Strategy
 
-| Context Window  | Availability | Best For                        | Implementation Strategy                                |
-| --------------- | ------------ | ------------------------------- | ------------------------------------------------------ |
-| **200K tokens** | All users    | Single component implementation | Load spec, plan, tasks, target files only              |
-| **1M tokens**   | Tier 4 orgs  | Multi-component refactoring     | Load full feature context including related components |
+**Context Availability by Platform**:
 
-**Pricing Note**: 1M context requests use premium rates (2x input, 1.5x output) when exceeding 200K
+| Platform           | 200K Context | 1M Context       | Recommendation                                |
+| ------------------ | ------------ | ---------------- | --------------------------------------------- |
+| **Claude Code**    | ✅ Available | ✅ **Available** | Use 1M for large features (>200K tokens)      |
+| **GitHub Copilot** | ✅ Available | ❌ Not Available | Use progressive disclosure for large features |
+
+**For Claude Code Users**:
+
+- **<200K tokens**: Use 200K context (standard)
+- **200K-1M tokens**: Use 1M context (available, premium pricing: 2x input, 1.5x output)
+- **>1M tokens**: Use progressive disclosure (chunk into phases)
+
+**For GitHub Copilot Users**:
+
+- **<200K tokens**: Use 200K context (standard)
+- **>200K tokens**: Use progressive disclosure (REQUIRED - 1M not available)
 
 **Source**: [Context windows - Claude Docs](https://docs.claude.com/en/docs/build-with-claude/context-windows)
 
@@ -735,7 +746,7 @@ Coverage: 95% (meets requirement)
 
 Closes: #123
 
-Co-Authored-By: Claude Sonnet 4.5 (1M context) <noreply@anthropic.com>"
+Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
 ```
 
 **Report to user**:
@@ -781,11 +792,16 @@ total_tokens =
   (implementation files × 18)
 ````
 
-IF total > 200K: Use 1M context OR progressive disclosure
+IF total > 200K:
 
-## Progressive Disclosure Strategy
+- **Claude Code**: Use 1M context OR progressive disclosure
+- **GitHub Copilot**: Use progressive disclosure (REQUIRED - 1M not available)
 
-### Approach 1: Feature Chunking (Recommended for 200K context)
+## Progressive Disclosure Strategy (For Features >200K Tokens)
+
+### Approach 1: Progressive Disclosure (GitHub Copilot OR Claude Code)
+
+**When to use**: GitHub Copilot (required), or Claude Code when managing costs
 
 Split implementation into phases:
 
@@ -809,7 +825,11 @@ Split implementation into phases:
 
 **Commit after each phase** to track progress
 
-### Approach 2: 1M Context (If available)
+### Approach 2: 1M Context (Claude Code Only)
+
+**When to use**: Claude Code users with features 200K-1M tokens
+
+**Availability**: ✅ Available in Claude Code, ❌ Not available in GitHub Copilot
 
 Load everything at once:
 
@@ -818,7 +838,9 @@ Load everything at once:
 - All test files
 - Full context for reasoning
 
-**Trade-off**: Higher cost (2x input) but faster (no context switching)
+**Trade-off**: Higher cost (2x input, 1.5x output) but faster (no context switching)
+
+**Pricing**: Premium rates apply when exceeding 200K tokens
 
 </progressive_disclosure_implementation>
 
@@ -911,13 +933,13 @@ No extended thinking
 
 ## Model Selection Matrix for Implementation
 
-| Feature Characteristics          | Recommended Model                     | Rationale                   |
-| -------------------------------- | ------------------------------------- | --------------------------- |
-| **Small feature (<200K tokens)** | Sonnet 4.5 (200K)                     | Standard context sufficient |
-| **Large feature (200K-500K)**    | Sonnet 4.5 (1M) OR Progressive        | 1M if available, else chunk |
-| **Complex logic + small**        | Sonnet 4.5 (200K + extended thinking) | Reasoning > context size    |
-| **Simple implementation**        | Haiku 4.5                             | 90% performance, 3x cheaper |
-| **Refactoring multi-component**  | Sonnet 4.5 (1M)                       | Need full codebase context  |
+| Feature Characteristics          | Claude Code                           | GitHub Copilot                        |
+| -------------------------------- | ------------------------------------- | ------------------------------------- |
+| **Small feature (<200K tokens)** | Sonnet 4.5 (200K)                     | Sonnet 4.5 (200K)                     |
+| **Large feature (200K-500K)**    | Sonnet 4.5 (1M)                       | Sonnet 4.5 (200K + progressive)       |
+| **Complex logic + small**        | Sonnet 4.5 (200K + extended thinking) | Sonnet 4.5 (200K + extended thinking) |
+| **Simple implementation**        | Haiku 4.5 (90% performance, cheaper)  | Haiku 4.5 (90% performance, cheaper)  |
+| **Refactoring multi-component**  | Sonnet 4.5 (1M)                       | Sonnet 4.5 (200K + progressive)       |
 
 ---
 
@@ -939,9 +961,9 @@ After optimization, expect:
 
 **Cost**:
 
-- 200K context: Standard pricing
-- 1M context: 2x input, 1.5x output (only when needed)
-- Extended thinking: Included in usage
+- 200K context: Standard pricing (both platforms)
+- 1M context: 2x input, 1.5x output premium pricing (Claude Code only)
+- Extended thinking: Included in usage (both platforms)
 
 ---
 

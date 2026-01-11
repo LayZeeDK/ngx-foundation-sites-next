@@ -633,8 +633,8 @@ After execution:
 ## Notes
 
 - This command is **Sonnet 4.5 optimized** - uses parallel tool calls, extended thinking, error-first TDD
-- Designed for **200K context** (standard) - use progressive disclosure for larger features
-- **1M context available** for Tier 4 organizations (premium pricing)
+- **Context windows**: 200K (standard) or 1M (available in Claude Code, premium pricing: 2x input/1.5x output)
+- For features >200K: Use 1M context or progressive disclosure (chunk into phases)
 - Uses **TodoWrite for progress tracking** (visible to user)
 - **Stops on test failures** - ensures quality at each step
 - **Commits incrementally** - logical commit boundaries for clean history
