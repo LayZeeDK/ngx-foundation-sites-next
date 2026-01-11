@@ -918,6 +918,89 @@ describe('NfsAccordion', () => {
     });
   });
 
+  describe('Foundation API outputs (down, up)', () => {
+    it('should emit down event when panel is expanded via click', async () => {
+      const downSpy = vi.fn();
+      host.accordion().down.subscribe(downSpy);
+
+      await clickTrigger(0);
+
+      // Wait for microtask to process
+      await fixture.whenStable();
+
+      expect(downSpy).toHaveBeenCalledWith({
+        itemId: 'panel-1',
+        expanded: true,
+      });
+    });
+
+    it('should emit up event when panel is collapsed via click', async () => {
+      host.item1Expanded.set(true);
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const upSpy = vi.fn();
+      host.accordion().up.subscribe(upSpy);
+
+      await clickTrigger(0);
+      await fixture.whenStable();
+
+      expect(upSpy).toHaveBeenCalledWith({
+        itemId: 'panel-1',
+        expanded: false,
+      });
+    });
+
+    it('should emit down event when panel is expanded via down() method', async () => {
+      const downSpy = vi.fn();
+      host.accordion().down.subscribe(downSpy);
+
+      const items = [...host.accordion().itemDefs()];
+      items[0].down();
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      expect(downSpy).toHaveBeenCalledWith({
+        itemId: 'panel-1',
+        expanded: true,
+      });
+    });
+
+    it('should emit up event when panel is collapsed via up() method', async () => {
+      host.item1Expanded.set(true);
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const upSpy = vi.fn();
+      host.accordion().up.subscribe(upSpy);
+
+      const items = [...host.accordion().itemDefs()];
+      items[0].up();
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      expect(upSpy).toHaveBeenCalledWith({
+        itemId: 'panel-1',
+        expanded: false,
+      });
+    });
+
+    it('should not emit events when action is prevented (disabled)', async () => {
+      host.item1Disabled.set(true);
+      fixture.detectChanges();
+
+      const downSpy = vi.fn();
+      host.accordion().down.subscribe(downSpy);
+
+      const items = [...host.accordion().itemDefs()];
+      items[0].down(); // Should be ignored due to disabled state
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      expect(downSpy).not.toHaveBeenCalled();
+    });
+  });
+
   describe('edge cases', () => {
     it('should render empty accordion without error', async () => {
       // Create a separate test host with no items

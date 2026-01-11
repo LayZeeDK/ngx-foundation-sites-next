@@ -9,6 +9,7 @@ import {
   inject,
   Injector,
   input,
+  output,
   signal,
   untracked,
   ViewContainerRef,
@@ -25,6 +26,17 @@ import { NfsAccordionItemDef } from './accordion-item-def';
 import { AccordionDeepLinkService } from './accordion-deep-link.service';
 import { NfsStyleLoader } from '../core/nfs-style-loader.service';
 import { nfsAccordionToken } from './accordion.token';
+
+/**
+ * Event payload emitted when an accordion panel opens or closes.
+ * @foundation API Parity: Equivalent to Foundation's down.zf.accordion and up.zf.accordion events.
+ */
+export interface NfsAccordionPanelEvent {
+  /** The panelId of the affected accordion item */
+  itemId: string;
+  /** Whether the panel is now expanded (true) or collapsed (false) */
+  expanded: boolean;
+}
 
 @Component({
   selector: 'nfs-accordion',
@@ -81,6 +93,18 @@ export class NfsAccordion implements AfterContentInit {
   /** Allow all panels to be closed. If false, at least one panel must remain open. */
   readonly allowAllClosed = input(false);
 
+  /**
+   * Emitted when a panel is expanded.
+   * @foundation API Parity: Equivalent to Foundation's `down.zf.accordion` event.
+   */
+  readonly down = output<NfsAccordionPanelEvent>();
+
+  /**
+   * Emitted when a panel is collapsed.
+   * @foundation API Parity: Equivalent to Foundation's `up.zf.accordion` event.
+   */
+  readonly up = output<NfsAccordionPanelEvent>();
+
   /** Query all item template definitions from content */
   readonly itemDefs = contentChildren(NfsAccordionItemDef);
 
@@ -102,6 +126,9 @@ export class NfsAccordion implements AfterContentInit {
 
   /** Flag to prevent hash clearing until after initial hash is processed */
   #initialHashProcessed = false;
+
+  /** Track previous expansion states for emitting down/up events */
+  #previousExpandedStates = new Map<string, boolean>();
 
   constructor() {
     // Load component styles on first render (reference-counted)
@@ -190,6 +217,36 @@ export class NfsAccordion implements AfterContentInit {
             this.#deepLinkService.clearHash(this.updateHistory());
           }
         });
+      }
+    });
+
+    // Track expansion changes and emit down/up events
+    effect(() => {
+      const items = this.itemDefs();
+      if (items.length === 0) return;
+
+      // Build current expansion state map and detect changes
+      for (const item of items) {
+        const panelId = item.panelId();
+        const currentExpanded = item.expanded();
+        const previousExpanded = this.#previousExpandedStates.get(panelId);
+
+        // Only emit events for actual changes (not initial state)
+        if (previousExpanded !== undefined && previousExpanded !== currentExpanded) {
+          // Use untracked + queueMicrotask to emit outside reactive context
+          untracked(() => {
+            queueMicrotask(() => {
+              if (currentExpanded) {
+                this.down.emit({ itemId: panelId, expanded: true });
+              } else {
+                this.up.emit({ itemId: panelId, expanded: false });
+              }
+            });
+          });
+        }
+
+        // Update tracking state
+        this.#previousExpandedStates.set(panelId, currentExpanded);
       }
     });
   }

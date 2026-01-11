@@ -1,4 +1,5 @@
 export { NfsAccordion } from './accordion';
+export type { NfsAccordionPanelEvent } from './accordion';
 export { NfsAccordionItemDef } from './accordion-item-def';
 export { NfsAccordionHeaderDef } from './accordion-header-def';
 export { NfsAccordionContentDef } from './accordion-content';
