@@ -30,6 +30,12 @@ const meta: Meta<NfsAccordion> = {
     deepLinkSmudgeDelay: {
       control: { type: 'number', min: 0, max: 1000 },
     },
+    titleHeadingLevel: {
+      control: { type: 'select' },
+      options: [null, 1, 2, 3, 4, 5, 6],
+      description:
+        'Heading level for accordion titles (1-6, or null for no heading)',
+    },
   },
   render: (args) => ({
     props: args,
@@ -1024,5 +1030,90 @@ export const EagerVsLazyContent: Story = {
     // Eager content should be visible
     const eagerContent = canvas.getByText(/This paragraph is eager content/i);
     expect(eagerContent).toBeVisible();
+  },
+};
+
+/**
+ * Demonstrates the `titleHeadingLevel` input for ARIA document outline navigation.
+ *
+ * When set (1-6), accordion titles are wrapped in `<div role="heading" aria-level="N">`.
+ * This allows screen reader users to navigate accordion titles using heading shortcuts (H key).
+ *
+ * Note: The `.accordion-title` class remains on the `<button>` element per FR-031,
+ * ensuring Foundation's styling applies correctly.
+ */
+export const TitleHeadingLevel: Story = {
+  args: {
+    titleHeadingLevel: 2,
+    allowAllClosed: true,
+  },
+  render: (args) => ({
+    props: args,
+    template: `
+      <nfs-accordion ${argsToLiteralTemplate(args)}>
+        <ng-template nfsAccordionItem panelId="panel-1">
+          <ng-template nfsAccordionHeader>Section 1 (H2)</ng-template>
+          <ng-template nfsAccordionContent>
+            <p>Content for section 1. Screen readers will announce this as a heading level 2.</p>
+          </ng-template>
+        </ng-template>
+        <ng-template nfsAccordionItem panelId="panel-2">
+          <ng-template nfsAccordionHeader>Section 2 (H2)</ng-template>
+          <ng-template nfsAccordionContent>
+            <p>Content for section 2. Users can navigate here using the H key.</p>
+          </ng-template>
+        </ng-template>
+        <ng-template nfsAccordionItem panelId="panel-3">
+          <ng-template nfsAccordionHeader>Section 3 (H2)</ng-template>
+          <ng-template nfsAccordionContent>
+            <p>Content for section 3.</p>
+          </ng-template>
+        </ng-template>
+      </nfs-accordion>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 1. VERIFY HEADING WRAPPER STRUCTURE
+    // ═══════════════════════════════════════════════════════════════════════
+
+    // Each trigger should be wrapped in a heading
+    const headings = canvasElement.querySelectorAll('[role="heading"]');
+    expect(headings).toHaveLength(3);
+
+    // All headings should have aria-level="2"
+    headings.forEach((heading) => {
+      expect(heading.getAttribute('aria-level')).toBe('2');
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 2. VERIFY .accordion-title IS ON BUTTON (not wrapper)
+    // ═══════════════════════════════════════════════════════════════════════
+
+    const buttons = canvasElement.querySelectorAll('button.accordion-title');
+    expect(buttons).toHaveLength(3);
+
+    // Wrapper div should NOT have .accordion-title
+    headings.forEach((heading) => {
+      expect(heading.classList.contains('accordion-title')).toBe(false);
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 3. VERIFY FUNCTIONALITY PRESERVED
+    // ═══════════════════════════════════════════════════════════════════════
+
+    const trigger1 = canvas.getByRole('button', { name: /Section 1/i });
+
+    // Click should still expand/collapse
+    await userEvent.click(trigger1);
+    await waitFor(() => {
+      expect(trigger1).toHaveAttribute('aria-expanded', 'true');
+    });
+
+    // Verify content is visible
+    const content = canvas.getByText(/Screen readers will announce/i);
+    expect(content).toBeVisible();
   },
 };

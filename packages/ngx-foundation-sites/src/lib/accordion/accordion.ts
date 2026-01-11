@@ -94,6 +94,14 @@ export class NfsAccordion implements AfterContentInit {
   readonly allowAllClosed = input(false);
 
   /**
+   * Heading level for accordion titles (1-6).
+   * When set, wraps trigger buttons in `<div role="heading" aria-level="N">`
+   * for ARIA document outline navigation.
+   * @default null (no heading wrapper)
+   */
+  readonly titleHeadingLevel = input<1 | 2 | 3 | 4 | 5 | 6 | null>(null);
+
+  /**
    * Emitted when a panel is expanded.
    * @foundation API Parity: Equivalent to Foundation's `down.zf.accordion` event.
    */
@@ -232,7 +240,10 @@ export class NfsAccordion implements AfterContentInit {
         const previousExpanded = this.#previousExpandedStates.get(panelId);
 
         // Only emit events for actual changes (not initial state)
-        if (previousExpanded !== undefined && previousExpanded !== currentExpanded) {
+        if (
+          previousExpanded !== undefined &&
+          previousExpanded !== currentExpanded
+        ) {
           // Use untracked + queueMicrotask to emit outside reactive context
           untracked(() => {
             queueMicrotask(() => {

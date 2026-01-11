@@ -28,6 +28,7 @@ import { AccordionDeepLinkService } from './accordion-deep-link.service';
       [deepLinkSmudgeDelay]="deepLinkSmudgeDelay()"
       [updateHistory]="updateHistory()"
       [allowAllClosed]="allowAllClosed()"
+      [titleHeadingLevel]="titleHeadingLevel()"
     >
       <ng-template
         nfsAccordionItem
@@ -78,6 +79,7 @@ class TestHostComponent {
   deepLinkSmudgeDelay = signal(300);
   updateHistory = signal(false);
   allowAllClosed = signal(true);
+  titleHeadingLevel = signal<1 | 2 | 3 | 4 | 5 | 6 | null>(null);
 
   item1Disabled = signal(false);
   item1Expanded = signal(false);
@@ -1103,6 +1105,114 @@ describe('NfsAccordion', () => {
       ).length;
       expect(expandedCount).toBe(1);
       expect(isExpanded(2)).toBe(true);
+    });
+  });
+
+  describe('titleHeadingLevel', () => {
+    function getHeadingWrappers(): HTMLDivElement[] {
+      return Array.from(
+        fixture.nativeElement.querySelectorAll('[role="heading"]'),
+      );
+    }
+
+    it('should not render heading wrapper when titleHeadingLevel is null', () => {
+      host.titleHeadingLevel.set(null);
+      fixture.detectChanges();
+
+      const wrappers = getHeadingWrappers();
+      expect(wrappers).toHaveLength(0);
+    });
+
+    it('should wrap button in heading when titleHeadingLevel is set', () => {
+      host.titleHeadingLevel.set(3);
+      fixture.detectChanges();
+
+      const wrappers = getHeadingWrappers();
+      expect(wrappers).toHaveLength(3); // One wrapper per accordion item
+
+      // Each wrapper should have correct aria-level
+      wrappers.forEach((wrapper) => {
+        expect(wrapper.getAttribute('aria-level')).toBe('3');
+      });
+    });
+
+    it('should keep .accordion-title on button element (not wrapper)', () => {
+      host.titleHeadingLevel.set(2);
+      fixture.detectChanges();
+
+      const wrappers = getHeadingWrappers();
+      const triggers = getTriggers();
+
+      // Button should have .accordion-title class
+      triggers.forEach((trigger) => {
+        expect(trigger.classList.contains('accordion-title')).toBe(true);
+      });
+
+      // Wrapper should NOT have .accordion-title class
+      wrappers.forEach((wrapper) => {
+        expect(wrapper.classList.contains('accordion-title')).toBe(false);
+      });
+    });
+
+    it('should support all valid heading levels (1-6)', () => {
+      const levels = [1, 2, 3, 4, 5, 6] as const;
+
+      for (const level of levels) {
+        host.titleHeadingLevel.set(level);
+        fixture.detectChanges();
+
+        const wrappers = getHeadingWrappers();
+        expect(wrappers[0].getAttribute('aria-level')).toBe(String(level));
+      }
+    });
+
+    it('should update heading wrappers when level changes at runtime', () => {
+      // Start with level 2
+      host.titleHeadingLevel.set(2);
+      fixture.detectChanges();
+
+      let wrappers = getHeadingWrappers();
+      expect(wrappers[0].getAttribute('aria-level')).toBe('2');
+
+      // Change to level 4
+      host.titleHeadingLevel.set(4);
+      fixture.detectChanges();
+
+      wrappers = getHeadingWrappers();
+      expect(wrappers[0].getAttribute('aria-level')).toBe('4');
+
+      // Remove wrapper by setting to null
+      host.titleHeadingLevel.set(null);
+      fixture.detectChanges();
+
+      wrappers = getHeadingWrappers();
+      expect(wrappers).toHaveLength(0);
+    });
+
+    it('should preserve button functionality when wrapped in heading', async () => {
+      host.titleHeadingLevel.set(3);
+      fixture.detectChanges();
+
+      // Button should still expand/collapse the panel
+      expect(isExpanded(0)).toBe(false);
+
+      await clickTrigger(0);
+
+      expect(isExpanded(0)).toBe(true);
+    });
+
+    it('should maintain aria-controls relationship when wrapped', () => {
+      host.titleHeadingLevel.set(2);
+      fixture.detectChanges();
+
+      const triggers = getTriggers();
+      const panels = getPanels();
+
+      triggers.forEach((trigger, index) => {
+        expect(trigger.getAttribute('aria-controls')).toBe(
+          panels[index].getAttribute('id'),
+        );
+      });
     });
   });
 });
