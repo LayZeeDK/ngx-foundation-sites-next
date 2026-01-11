@@ -6,10 +6,12 @@ description: Analyze tasks.md and identify tasks suitable for GPT-5 Mini impleme
 
 **Recommended Model**: Claude Sonnet 4.5 or GPT-5.1-Codex-Mini
 **Invoke with**:
+
 - Claude Sonnet: `gh copilot -m "claude-sonnet-4.5" slash tasks-for-gpt-5-mini`
 - GPT-5.1-Codex-Mini: `gh copilot -m "gpt-5.1-codex-mini" slash tasks-for-gpt-5-mini`
 
 **Why these models?**
+
 - **Sonnet 4.5**: Deep reasoning for accurate classification, proven track record
 - **GPT-5.1-Codex-Mini**: Adaptive reasoning + code-focused, cheaper than Sonnet
 
@@ -128,11 +130,13 @@ For each task in tasks.md, evaluate suitability using these four dimensions:
 Can the task be described with explicit Context→Task→Constraints→Output?
 
 **Examples:**
+
 - **10 points**: "Add method down() to file.ts at line 45 following pattern from up() at line 38"
 - **5 points**: "Add down() method" (file mentioned, but no pattern reference)
 - **0 points**: "Improve the component" (vague, no structure)
 
 **Scoring criteria:**
+
 - Has explicit file path? +3
 - Has pattern/template reference? +3
 - Has exact line number or insertion point? +2
@@ -143,11 +147,13 @@ Can the task be described with explicit Context→Task→Constraints→Output?
 Can implementation be broken into FOR EACH loops / arithmetic operations?
 
 **Examples:**
+
 - **10 points**: "Rename multiExpandable → multiExpand (find-replace across 5 files)"
 - **5 points**: "Add conditional check before method call"
 - **0 points**: "Design optimal state management approach"
 
 **Scoring criteria:**
+
 - Implementation is find-replace? +4
 - Implementation follows exact pattern? +3
 - Steps are sequential with no branches? +2
@@ -158,11 +164,13 @@ Can implementation be broken into FOR EACH loops / arithmetic operations?
 Are success criteria unambiguous with exact templates?
 
 **Examples:**
-- **10 points**: "Use JSDoc format: /** @param {type} name - desc */"
+
+- **10 points**: "Use JSDoc format: /\*_ @param {type} name - desc _/"
 - **5 points**: "Add JSDoc comment"
 - **0 points**: "Document the method"
 
 **Scoring criteria:**
+
 - Has exact template or example? +4
 - Success criteria are measurable? +3
 - Output format specified? +2
@@ -173,11 +181,13 @@ Are success criteria unambiguous with exact templates?
 No cross-file coordination or implicit dependencies?
 
 **Examples:**
+
 - **10 points**: Fully independent - Single file, no shared state, marked [P]
 - **5 points**: Sequential but clear - Depends on previous task completing
 - **0 points**: Complex dependencies - Requires coordinating 3+ files with implicit state
 
 **Scoring criteria:**
+
 - Single file edit? +4
 - No shared state? +3
 - Marked [P] (parallel)? +2
@@ -191,6 +201,7 @@ suitability_percentage = (total_score / 40) * 100
 ```
 
 **Classification:**
+
 - **HIGH** (≥75%): Perfect for GPT-5 Mini - fast, reliable, zero-cost
 - **MEDIUM** (50-74%): Use Haiku 4.5 instead (better reasoning, worth 0.33×)
 - **LOW** (<50%): Use Sonnet 4.5 (needs deep reasoning)
@@ -200,36 +211,43 @@ suitability_percentage = (total_score / 40) * 100
 Automatically classify tasks by pattern to aid scoring:
 
 **Pattern A: Find-Replace Operations** (typically HIGH - 90-100%)
+
 - Keywords: "rename", "replace X with Y", "update all instances"
 - GPT-5 Mini strength: Mechanical transformation
 - Context needed: Exact search/replace strings
 
 **Pattern B: Add Method with Template** (typically HIGH - 85-95%)
+
 - Keywords: "add method", "following pattern from", "similar to"
 - GPT-5 Mini strength: Pattern copying
 - Context needed: Existing method as template, line number
 
 **Pattern C: Simple Test Addition** (typically HIGH - 80-90%)
+
 - Keywords: "add test for", "test that X returns Y"
 - GPT-5 Mini strength: Template filling
 - Context needed: Test file pattern, expect() format
 
 **Pattern D: Documentation Update** (typically HIGH - 85-95%)
+
 - Keywords: "update docs", "add example", "document API"
 - GPT-5 Mini strength: Structured prose generation
 - Context needed: Documentation format, section structure
 
 **Pattern E: Conditional Logic Addition** (typically MEDIUM - 60-70%)
+
 - Keywords: "add check for", "validate before"
 - GPT-5 Mini limitation: Simple conditions only
 - Context needed: Exact condition logic, no inference
 
 **Pattern F: Multi-step Refactoring** (typically LOW - 30-45%)
+
 - Keywords: "refactor", "extract to", "reorganize"
 - GPT-5 Mini limitation: Lacks reasoning for structure
 - Recommendation: Use Haiku 4.5 or Sonnet 4.5
 
 **Pattern G: Design/Architecture** (typically LOW - 10-30%)
+
 - Keywords: "design", "choose approach", "decide on"
 - GPT-5 Mini limitation: Cannot make architectural decisions
 - Recommendation: Use Sonnet 4.5 or Opus 4.5
@@ -238,7 +256,7 @@ Automatically classify tasks by pattern to aid scoring:
 
 Create file with structure:
 
-```markdown
+````markdown
 # GPT-5 Mini Suitable Tasks: [Feature Name]
 
 **Generated**: [Date]
@@ -255,6 +273,7 @@ Create file with structure:
 - **Sonnet Recommended (LOW)**: [number] ([percentage]%)
 
 **Estimated Savings**:
+
 - **Cost**: $0 for [number] HIGH tasks (vs $[amount] with Haiku)
 - **Time**: ~[X]× faster than manual implementation
 
@@ -294,10 +313,13 @@ Create file with structure:
 ## Next Steps
 
 Run implementation command:
+
 ```bash
 gh copilot -m "gpt-5-mini" slash implement-tasks-for-gpt-5-mini
 ```
-```
+````
+
+````
 
 ### Step 5: Generate gpt5mini-implementation-context.md
 
@@ -376,7 +398,7 @@ Create file with CTCO templates for each task type:
 ## Success Criteria (Per Task Type)
 
 [List verification criteria for each task type]
-```
+````
 
 ### Step 6: Generate gpt5mini-task-analysis.md
 
@@ -411,6 +433,7 @@ Create detailed analysis report:
 **Files**: [list]
 
 **Scores**:
+
 - CTCO Clarity: 10/10 ([reasoning])
 - Mechanical Procedure: 10/10 ([reasoning])
 - Format Explicitness: 9/10 ([reasoning])
@@ -420,10 +443,12 @@ Create detailed analysis report:
 [Explain why this task is suitable for GPT-5 Mini, referencing its strengths and limitations]
 
 **GPT-5 Mini Optimization**:
+
 - [Specific optimization 1]
 - [Specific optimization 2]
 
 **Estimated Time**:
+
 - Sonnet 4.5: [X] minutes
 - GPT-5 Mini: [Y] minutes ([Z]× faster, 0× cost)
 
@@ -435,23 +460,25 @@ Create detailed analysis report:
 
 ## Pattern Distribution
 
-| Pattern Type          | Count | Avg Suitability | GPT-5 Mini? |
-|-----------------------|-------|-----------------|-------------|
-| Find-Replace          | [N]   | [%]             | [✅/⚠️/❌]   |
-| Add Method (pattern)  | [N]   | [%]             | [✅/⚠️/❌]   |
-| [etc.]                | [N]   | [%]             | [✅/⚠️/❌]   |
+| Pattern Type         | Count | Avg Suitability | GPT-5 Mini? |
+| -------------------- | ----- | --------------- | ----------- |
+| Find-Replace         | [N]   | [%]             | [✅/⚠️/❌]  |
+| Add Method (pattern) | [N]   | [%]             | [✅/⚠️/❌]  |
+| [etc.]               | [N]   | [%]             | [✅/⚠️/❌]  |
 
 ---
 
 ## Cost-Benefit Analysis
 
 ### Option 1: All-Sonnet (Baseline)
+
 - Total tasks: [N]
 - Estimated time: [X] minutes
 - Estimated cost: $[Y]
 - Quality: 100% (gold standard)
 
 ### Option 2: Optimized (GPT-5 Mini + Haiku + Sonnet)
+
 - GPT-5 Mini: [A] tasks, [B] min, $0
 - Haiku 4.5: [C] tasks, [D] min, $[E]
 - Sonnet 4.5: [F] tasks, [G] min, $[H]
@@ -509,6 +536,7 @@ Run: gh copilot -m "gpt-5-mini" slash implement-tasks-for-gpt-5-mini
 ## Error Handling
 
 ### If tasks.md not found:
+
 ```
 STOP execution
 OUTPUT: "tasks.md not found. Run /speckit.tasks or /tasks-gpt-5-mini first."
@@ -516,6 +544,7 @@ EXIT
 ```
 
 ### If context exceeds 200K:
+
 ```
 IF estimated_tokens > 180000:
   WARN: "Feature may exceed GPT-5 Mini's 200K context limit"
@@ -523,6 +552,7 @@ IF estimated_tokens > 180000:
 ```
 
 ### If all tasks score LOW:
+
 ```
 IF all_tasks_below_50_percent:
   OUTPUT: "No tasks suitable for GPT-5 Mini (all require reasoning)"
@@ -550,6 +580,7 @@ Output is successful when:
 ### For Claude Sonnet 4.5
 
 When running with Sonnet 4.5:
+
 - Leverage extended thinking for borderline cases (70-80% range)
 - Use XML tags for structured reasoning if helpful
 - Focus on precision over speed (classification quality matters)
@@ -557,6 +588,7 @@ When running with Sonnet 4.5:
 ### For GPT-5.1-Codex-Mini
 
 When running with GPT-5.1-Codex-Mini:
+
 - Leverage adaptive reasoning (automatically adjusts depth)
 - Use code-specific understanding for better task assessment
 - Consider file structure and dependencies in classification

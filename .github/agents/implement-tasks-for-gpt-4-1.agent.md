@@ -56,16 +56,19 @@ Execute GPT-4.1-suitable tasks from gpt41-suitable-tasks.md using literal proced
 ### Critical Constraints
 
 **Literal instruction following** (GPT-4.1 requirement):
+
 - Do EXACTLY what each STEP says (no implicit inference)
 - Do NOT adapt or improve (follow instructions literally)
 - Do NOT touch files not explicitly listed
 - Do NOT skip any steps
 
 **Sandwich method** (GPT-4.1 requirement):
+
 - These instructions are repeated at the END of this prompt
 - Follow the END instructions to execute the workflow
 
 **Precision target** (GPT-4.1 strength):
+
 - Only modify files explicitly listed in task
 - Only change lines/sections specified
 - Target: 2% unnecessary edits (GPT-4.1's strength)
@@ -77,6 +80,7 @@ Execute GPT-4.1-suitable tasks from gpt41-suitable-tasks.md using literal proced
 <optimization_context>
 
 **GPT-4.1 Characteristics**:
+
 - 1M token context (can hold 50+ files simultaneously)
 - Non-reasoning model (CANNOT adapt, improvise, or infer)
 - Literal instruction following (49% benchmark—follows procedures exactly)
@@ -84,6 +88,7 @@ Execute GPT-4.1-suitable tasks from gpt41-suitable-tasks.md using literal proced
 - 54.6% SWE-bench Verified (acceptable for literal-only tasks)
 
 **Optimizations Applied**:
+
 1. **Sandwich Method** (CRITICAL) - Every task has instructions at BEGINNING and END
 2. **Literal Procedures** - STEP 1, 2, 3... with exact actions (no interpretation)
 3. **Explicit Boundaries** - "Touch ONLY these files, do NOT modify these files"
@@ -92,6 +97,7 @@ Execute GPT-4.1-suitable tasks from gpt41-suitable-tasks.md using literal proced
 6. **Immediate Verification** - TypeScript compilation after each task
 
 **GPT-4.1 Can Do**:
+
 - ✅ Large-scale find-replace (50+ files)
 - ✅ Literal line-by-line edits
 - ✅ Cross-file consistency with exact templates
@@ -99,6 +105,7 @@ Execute GPT-4.1-suitable tasks from gpt41-suitable-tasks.md using literal proced
 - ✅ Batch operations with explicit procedures
 
 **GPT-4.1 Cannot Do**:
+
 - ❌ Pattern adaptation (needs reasoning)
 - ❌ Creative problem-solving
 - ❌ Implicit dependency resolution
@@ -124,6 +131,7 @@ pwsh ./.specify/scripts/powershell/check-prerequisites.ps1 -Json -RequireTasks -
 ```
 
 **Parse JSON**:
+
 ```
 FEATURE_DIR = json.FEATURE_DIR
 ```
@@ -131,11 +139,13 @@ FEATURE_DIR = json.FEATURE_DIR
 **Load files** (EXACTLY these, no others):
 
 1. **gpt41-suitable-tasks.md** (REQUIRED):
+
    ```
    Read(FEATURE_DIR + "/gpt41-suitable-tasks.md")
    ```
 
 2. **gpt41-implementation-context.md** (REQUIRED):
+
    ```
    Read(FEATURE_DIR + "/gpt41-implementation-context.md")
    ```
@@ -149,6 +159,7 @@ FEATURE_DIR = json.FEATURE_DIR
    ```
 
 **Error Condition**:
+
 ```
 IF gpt41-suitable-tasks.md NOT FOUND:
   STOP
@@ -187,6 +198,7 @@ FOR EACH task in gpt41-suitable-tasks.md:
 ```
 
 **Output**:
+
 ```
 Tasks: [task_count] total
 - HIGH (≥75%): [high_count]
@@ -195,6 +207,7 @@ Tasks: [task_count] total
 ```
 
 **Error Condition**:
+
 ```
 IF low_count > 0:
   STOP
@@ -226,10 +239,12 @@ FOR EACH task in gpt41-suitable-tasks.md:
 ```
 
 **Output**:
+
 ```markdown
 ## Execution Plan
 
 **HIGH Tasks**: [high_count]
+
 - Estimated time: [high_time] minutes
 - Patterns: [pattern_counts]
 
@@ -262,6 +277,7 @@ Execute tasks sequentially (NOT parallel) to maintain precision.
 Execute EXACTLY these steps for repository-wide find-replace:
 
 **STEP 1**: Extract parameters from task
+
 ```
 file_list = extract_file_list(task.description)  # Exact list
 old_string = extract_old_string(task.description)  # Exact string
@@ -269,6 +285,7 @@ new_string = extract_new_string(task.description)  # Exact string
 ```
 
 **STEP 2**: Process each file
+
 ```
 total_replacements = 0
 
@@ -293,16 +310,19 @@ FOR EACH file in file_list:
 ```
 
 **STEP 3**: Verify TypeScript compilation
+
 ```bash
 npx tsc --noEmit --project packages/ngx-foundation-sites/tsconfig.lib.json
 ```
 
 **STEP 4**: Report completion
+
 ```
 OUTPUT: "✅ Repository-wide replace complete: [total_replacements] total replacements across [file_count] files"
 ```
 
 **Verification Checklist**:
+
 ```
 □ All files in list processed?
 □ Exact strings replaced (not partial)?
@@ -312,6 +332,7 @@ OUTPUT: "✅ Repository-wide replace complete: [total_replacements] total replac
 ```
 
 **Error Condition**:
+
 ```
 IF TypeScript compilation fails:
   STOP
@@ -332,12 +353,14 @@ Execute STEP 1-4 EXACTLY for repository-wide find-replace. Verify TypeScript com
 Execute EXACTLY these steps for large file literal edits:
 
 **STEP 1**: Load large file
+
 ```
 large_file = extract_file_path(task.description)
 Read(large_file)
 ```
 
 **STEP 2**: Extract edit instructions from task
+
 ```
 edits = []
 
@@ -351,6 +374,7 @@ FOR EACH "STEP X:" in task.literal_procedure:
 ```
 
 **STEP 3**: Apply edits sequentially (in reverse order to preserve line numbers)
+
 ```
 edits_sorted = sort(edits, key=line_number, reverse=true)
 
@@ -375,16 +399,19 @@ FOR EACH edit in edits_sorted:
 ```
 
 **STEP 4**: Verify TypeScript compilation
+
 ```bash
 npx tsc --noEmit --project packages/ngx-foundation-sites/tsconfig.lib.json
 ```
 
 **STEP 5**: Report completion
+
 ```
 OUTPUT: "✅ Large file edit complete: [edit_count] edits applied to [large_file]"
 ```
 
 **Verification Checklist**:
+
 ```
 □ All edits from task applied?
 □ Line numbers were exact?
@@ -394,6 +421,7 @@ OUTPUT: "✅ Large file edit complete: [edit_count] edits applied to [large_file
 ```
 
 **Error Condition**:
+
 ```
 IF TypeScript compilation fails:
   STOP
@@ -414,6 +442,7 @@ Execute STEP 1-5 EXACTLY for large file edits. Apply edits in reverse order (pre
 Execute EXACTLY these steps for cross-file consistency updates:
 
 **STEP 1**: Load interface definition
+
 ```
 interface_file = extract_interface_file(task.description)
 Read(interface_file)
@@ -424,6 +453,7 @@ new_structure = extract_new_structure(task.description)  # From task literal pro
 ```
 
 **STEP 2**: Load all implementation files
+
 ```
 implementation_files = extract_implementation_files(task.description)  # Exact list
 
@@ -432,6 +462,7 @@ FOR EACH impl_file in implementation_files:
 ```
 
 **STEP 3**: Update interface file (if modified)
+
 ```
 IF task includes interface update:
   Edit(
@@ -443,6 +474,7 @@ IF task includes interface update:
 ```
 
 **STEP 4**: Update each implementation file
+
 ```
 updated_count = 0
 
@@ -467,11 +499,13 @@ FOR EACH impl_file in implementation_files:
 ```
 
 **STEP 5**: Verify TypeScript compilation across all files
+
 ```bash
 npx tsc --noEmit --project packages/ngx-foundation-sites/tsconfig.lib.json
 ```
 
 **STEP 6**: Verify consistency mechanically
+
 ```
 # Check no orphaned references
 FOR EACH impl_file in implementation_files:
@@ -483,11 +517,13 @@ FOR EACH impl_file in implementation_files:
 ```
 
 **STEP 7**: Report completion
+
 ```
 OUTPUT: "✅ Cross-file consistency update complete: Interface + [updated_count] implementations"
 ```
 
 **Verification Checklist**:
+
 ```
 □ Interface updated (if required)?
 □ All implementation files updated?
@@ -497,6 +533,7 @@ OUTPUT: "✅ Cross-file consistency update complete: Interface + [updated_count]
 ```
 
 **Error Condition**:
+
 ```
 IF orphaned references found:
   STOP
@@ -517,12 +554,14 @@ Execute STEP 1-7 EXACTLY for cross-file updates. Verify consistency mechanically
 Execute EXACTLY these steps for multi-file batch transformations:
 
 **STEP 1**: Extract file list and transformation
+
 ```
 file_list = extract_file_list(task.description)  # Exact list (e.g., 25 files)
 transformation_steps = extract_transformation_steps(task.description)  # STEP 1, 2, 3...
 ```
 
 **STEP 2**: Apply transformation to each file
+
 ```
 processed_count = 0
 
@@ -551,11 +590,13 @@ FOR EACH file in file_list:
 ```
 
 **STEP 3**: Verify TypeScript compilation
+
 ```bash
 npx tsc --noEmit --project packages/ngx-foundation-sites/tsconfig.lib.json
 ```
 
 **STEP 4**: Verify count matches
+
 ```
 IF processed_count != length(file_list):
   ERROR: "❌ File count mismatch: processed [processed_count], expected [file_list_length]"
@@ -563,11 +604,13 @@ IF processed_count != length(file_list):
 ```
 
 **STEP 5**: Report completion
+
 ```
 OUTPUT: "✅ Multi-file transform complete: [processed_count] files processed"
 ```
 
 **Verification Checklist**:
+
 ```
 □ All [N] files in list processed?
 □ Transformation applied to each file?
@@ -605,6 +648,7 @@ npm run build
 ```
 
 **Tracking**:
+
 ```
 verification = {
   "typescript": false,
@@ -624,6 +668,7 @@ FOR EACH step in [typescript, tests, lint, build]:
 ```
 
 **Success Output**:
+
 ```markdown
 ## Verification Complete ✅
 
@@ -670,6 +715,7 @@ OUTPUT: """
 ```
 
 **Warning Condition**:
+
 ```
 IF precision_rate > 2:
   WARN: "⚠️ Precision warning: [precision_rate]% unnecessary edits (target: <2%)\n\nReview modified files: git diff --name-only"
@@ -698,28 +744,33 @@ Generate final summary with all metrics.
 **Quality**: 100% (all verifications passed)
 
 **Pattern Distribution**:
+
 - Repository-Wide: [count]
 - Large File Edit: [count]
 - Cross-File Consistency: [count]
 - Multi-File Transform: [count]
 
 **Precision Metrics**:
+
 - Files specified: [N]
 - Files modified: [M]
 - Unnecessary edits: [M-N] ([precision_rate]%)
 - Target: <2% ✅/❌
 
 **Verification Results**:
+
 - ✅ TypeScript compilation
 - ✅ All tests passing
 - ✅ Linting clean
 - ✅ Build successful
 
 **Context Usage**:
+
 - Largest task: ~[X]K tokens
 - Total context peak: ~[Y]K / 1000K tokens
 
 **Next Steps**:
+
 1. Review changes: git diff
 2. Commit changes: git add . && git commit -m "..."
 3. Push to remote (if ready)
@@ -772,6 +823,7 @@ Apply patterns from gpt41-implementation-context.md. Use sandwich method for eac
 ## Error Handling
 
 ### Error 1: gpt41-suitable-tasks.md Not Found
+
 ```
 IF file NOT FOUND:
   STOP
@@ -780,6 +832,7 @@ IF file NOT FOUND:
 ```
 
 ### Error 2: LOW Suitability Tasks Found
+
 ```
 IF low_tasks > 0:
   STOP
@@ -788,6 +841,7 @@ IF low_tasks > 0:
 ```
 
 ### Error 3: TypeScript Compilation Fails
+
 ```
 IF compilation fails:
   STOP
@@ -796,12 +850,14 @@ IF compilation fails:
 ```
 
 ### Error 4: Precision Target Exceeded
+
 ```
 IF precision_rate > 5:
   WARN: "⚠️ Precision exceeded 5% ([precision_rate]%)\n\nTarget: <2%\n\nReview: git diff --name-only\n\nMay indicate incorrect file modifications"
 ```
 
 ### Error 5: Context Overflow
+
 ```
 IF task_context > 900000:
   WARN: "⚠️ Task context: ~[X]K tokens (near 1M limit)\n\nMay need to split task or use progressive disclosure"
@@ -846,6 +902,7 @@ IF task_context > 900000:
 ### Trade-offs vs Other Models
 
 **GPT-4.1** (this command):
+
 - Context: 1M tokens (handles 50+ files)
 - Cost: 0× (free)
 - Speed: 30-60s per task (slower)
@@ -854,6 +911,7 @@ IF task_context > 900000:
 - Best for: Large literal tasks
 
 **GPT-5 Mini** (/implement-tasks-for-gpt-5-mini):
+
 - Context: 200K tokens (limited)
 - Cost: 0× (free)
 - Speed: 10-20s per task (faster)
@@ -861,6 +919,7 @@ IF task_context > 900000:
 - Best for: Small mechanical tasks
 
 **Haiku 4.5** (/implement-tasks-for-haiku-4-5):
+
 - Context: 200K tokens
 - Cost: 0.33× (cheap)
 - Speed: 20-40s per task

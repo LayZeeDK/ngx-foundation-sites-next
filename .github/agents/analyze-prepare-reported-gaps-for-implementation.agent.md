@@ -316,10 +316,12 @@ Read `gap-analysis-report.md` to determine which feature is being analyzed.
 Typical format: "**Component**: NfsAccordion" or similar.
 
 **Extract:**
+
 - Feature name (e.g., "accordion", "button")
 - Feature directory path (e.g., `specs/002-accordion-component/`)
 
 **Validation:**
+
 - Confirm the feature directory exists: `test -d specs/<feature-id>/`
 - If missing, exit with error: "Feature directory not found for: [feature]"
 

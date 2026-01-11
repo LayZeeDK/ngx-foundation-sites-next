@@ -21,15 +21,17 @@ Analyze tasks.md and identify tasks suitable for GPT-5 Mini implementation based
 - Format explicitness requirements
 
 Create optimized artifacts:
+
 - gpt5mini-suitable-tasks.md (filtered task list with CTCO templates)
 - gpt5mini-implementation-context.md (focused context for GPT-5 Mini)
 - gpt5mini-task-analysis.md (detailed suitability report)
-</goal>
+  </goal>
 
 ## GPT-5 Mini Characteristics
 
 <model_profile>
 **GPT-5 Mini Strengths:**
+
 - Zero cost (0×) in GitHub Copilot
 - 2-3× faster inference than GPT-4.1
 - 200K context window
@@ -38,6 +40,7 @@ Create optimized artifacts:
 - 85-95% quality on mechanical tasks
 
 **GPT-5 Mini Limitations:**
+
 - Cannot handle deep reasoning or creative decisions
 - High sensitivity to ambiguous prompts
 - Needs explicit format specifications
@@ -45,6 +48,7 @@ Create optimized artifacts:
 - 200K context limit (vs GPT-4.1's 1M or Sonnet's 1M)
 
 **Optimal Task Characteristics:**
+
 - ✅ CTCO-compatible (Context→Task→Constraints→Output structure)
 - ✅ Mechanical procedures (FOR EACH loops, arithmetic scoring)
 - ✅ Pattern-based implementations (follow existing code)
@@ -56,13 +60,14 @@ Create optimized artifacts:
 - ✅ Template filling
 
 **Unsuitable Task Characteristics:**
+
 - ❌ Architectural decisions or design trade-offs
 - ❌ Multi-file refactoring with implicit dependencies
 - ❌ Complex synthesis across multiple documents
 - ❌ Creative problem-solving
 - ❌ Ambiguous requirements needing clarification
 - ❌ Tasks requiring >200K context
-</model_profile>
+  </model_profile>
 
 ---
 
@@ -75,10 +80,12 @@ pwsh ./.specify/scripts/powershell/check-prerequisites.ps1 -Json -RequireTasks -
 ```
 
 **Parse JSON output for:**
+
 - `FEATURE_DIR` - Absolute path to feature directory
 - `AVAILABLE_DOCS` - List of existing files
 
 **Derive paths:**
+
 - `TASKS` = FEATURE_DIR/tasks.md (REQUIRED)
 - `SPEC` = FEATURE_DIR/spec.md (OPTIONAL - for context)
 - `PLAN` = FEATURE_DIR/plan.md (OPTIONAL - for file structure)
@@ -114,6 +121,7 @@ Load in this order:
 For each task in tasks.md, score 0-10 on these dimensions:
 
 #### Dimension 1: CTCO Clarity (0-10)
+
 Can the task be described with explicit Context→Task→Constraints→Output?
 
 - **10**: Perfect CTCO fit - "Add method down() to file.ts at line 45 following pattern from up() at line 38"
@@ -121,12 +129,14 @@ Can the task be described with explicit Context→Task→Constraints→Output?
 - **0**: No CTCO - "Improve the component" (vague, no structure)
 
 **Scoring criteria:**
+
 - Has explicit file path? +3
 - Has pattern/template reference? +3
 - Has exact line number or insertion point? +2
 - Has success criteria? +2
 
 #### Dimension 2: Mechanical Procedure (0-10)
+
 Can implementation be broken into FOR EACH loops / arithmetic operations?
 
 - **10**: Pure mechanical - "Rename multiExpandable → multiExpand (find-replace across 5 files)"
@@ -134,25 +144,29 @@ Can implementation be broken into FOR EACH loops / arithmetic operations?
 - **0**: Creative reasoning - "Design optimal state management approach"
 
 **Scoring criteria:**
+
 - Implementation is find-replace? +4
 - Implementation follows exact pattern? +3
 - Steps are sequential with no branches? +2
 - No judgment calls needed? +1
 
 #### Dimension 3: Format Explicitness (0-10)
+
 Are success criteria unambiguous with exact templates?
 
-- **10**: Exact template - "Use JSDoc format: /** @param {type} name - desc */"
+- **10**: Exact template - "Use JSDoc format: /\*_ @param {type} name - desc _/"
 - **5**: Format mentioned - "Add JSDoc comment"
 - **0**: Format unclear - "Document the method"
 
 **Scoring criteria:**
+
 - Has exact template or example? +4
 - Success criteria are measurable? +3
 - Output format specified? +2
 - Validation is straightforward? +1
 
 #### Dimension 4: Independence (0-10)
+
 No cross-file coordination or implicit dependencies?
 
 - **10**: Fully independent - Single file, no shared state, marked [P]
@@ -160,6 +174,7 @@ No cross-file coordination or implicit dependencies?
 - **0**: Complex dependencies - Requires coordinating 3+ files with implicit state
 
 **Scoring criteria:**
+
 - Single file edit? +4
 - No shared state? +3
 - Marked [P] (parallel)? +2
@@ -173,6 +188,7 @@ suitability_percentage = (total_score / 40) * 100
 ```
 
 **Classification:**
+
 - **HIGH** (≥75%): Perfect for GPT-5 Mini - fast, reliable, zero-cost
 - **MEDIUM** (50-74%): Use Haiku 4.5 instead (better reasoning, worth 0.33×)
 - **LOW** (<50%): Use Sonnet 4.5 (needs deep reasoning)
@@ -184,36 +200,43 @@ Automatically classify tasks by pattern:
 <task_patterns>
 
 **Pattern A: Find-Replace Operations** (HIGH - typically 90-100%)
+
 - Keywords: "rename", "replace X with Y", "update all instances"
 - GPT-5 Mini strength: Mechanical transformation
 - Context needed: Exact search/replace strings
 
 **Pattern B: Add Method with Template** (HIGH - typically 85-95%)
+
 - Keywords: "add method", "following pattern from", "similar to"
 - GPT-5 Mini strength: Pattern copying
 - Context needed: Existing method as template, line number
 
 **Pattern C: Simple Test Addition** (HIGH - typically 80-90%)
+
 - Keywords: "add test for", "test that X returns Y"
 - GPT-5 Mini strength: Template filling
 - Context needed: Test file pattern, expect() format
 
 **Pattern D: Documentation Update** (HIGH - typically 85-95%)
+
 - Keywords: "update docs", "add example", "document API"
 - GPT-5 Mini strength: Structured prose generation
 - Context needed: Documentation format, section structure
 
 **Pattern E: Conditional Logic Addition** (MEDIUM - typically 60-70%)
+
 - Keywords: "add check for", "validate before"
 - GPT-5 Mini limitation: Simple conditions only
 - Context needed: Exact condition logic, no inference
 
 **Pattern F: Multi-step Refactoring** (LOW - typically 30-45%)
+
 - Keywords: "refactor", "extract to", "reorganize"
 - GPT-5 Mini limitation: Lacks reasoning for structure
 - Recommendation: Use Haiku 4.5 or Sonnet 4.5
 
 **Pattern G: Design/Architecture** (LOW - typically 10-30%)
+
 - Keywords: "design", "choose approach", "decide on"
 - GPT-5 Mini limitation: Cannot make architectural decisions
 - Recommendation: Use Sonnet 4.5 or Opus 4.5
@@ -238,7 +261,7 @@ Create three output files:
 
 <output_template_1>
 
-```markdown
+````markdown
 # GPT-5 Mini Suitable Tasks: [Feature Name]
 
 **Generated**: [Date]
@@ -257,6 +280,7 @@ Create three output files:
 - **Sonnet Recommended (LOW)**: [number] ([percentage]%)
 
 **Estimated Savings**:
+
 - **Cost**: $0 for [number] HIGH tasks (vs $[amount] with Haiku)
 - **Time**: ~[X]× faster than manual implementation
 
@@ -302,6 +326,7 @@ Create three output files:
 3. **Sonnet 4.5 for Complex**: Hand off [N] LOW tasks (1× cost, expert reasoning)
 
 **Expected Performance**:
+
 - Total time: ~[X] minutes (vs [Y] minutes with all-Sonnet)
 - Total cost: $0 for HIGH + $[amount] for MEDIUM/LOW
 - Quality: 90-95% match with Sonnet on suitable tasks
@@ -311,6 +336,7 @@ Create three output files:
 ## Next Steps
 
 Run implementation command:
+
 ```bash
 # Claude Code
 /implement-tasks-for-gpt-5-mini
@@ -318,7 +344,9 @@ Run implementation command:
 # GitHub Copilot
 gh copilot -m "gpt-5-mini" slash implement-tasks-for-gpt-5-mini
 ```
-```
+````
+
+````
 </output_template_1>
 
 ### Artifact 2: gpt5mini-implementation-context.md
@@ -411,7 +439,7 @@ methodName(): ReturnType {
   if (this.disabled()) return; // Check disabled state
   this.state.set(value); // Update state
 }
-```
+````
 
 ### Pattern: Storybook Test
 
@@ -442,23 +470,27 @@ export const StoryName: Story = {
 ## Success Criteria (Per Task Type)
 
 **Add Method**:
+
 - [ ] Method added with correct signature
 - [ ] JSDoc comment follows format
 - [ ] TypeScript compilation succeeds
 - [ ] Method exported if needed
 
 **Add Test**:
+
 - [ ] Test added to correct story
 - [ ] Test uses userEvent for interactions
 - [ ] Test uses expect() for assertions
 - [ ] Test passes in Storybook
 
 **Find-Replace**:
+
 - [ ] All occurrences replaced
 - [ ] Case sensitivity preserved
 - [ ] No partial matches replaced
 - [ ] TypeScript compilation succeeds
-```
+
+````
 </output_template_2>
 
 ### Artifact 3: gpt5mini-task-analysis.md
@@ -594,7 +626,8 @@ This is a perfect GPT-5 Mini task. Find-replace operations are purely mechanical
 2. **Run GPT-5 Mini execution**: `/implement-tasks-for-gpt-5-mini`
 3. **Monitor execution** - track time, cost, quality
 4. **Compare results** - refine future classifications
-```
+````
+
 </output_template_3>
 
 ---
@@ -606,12 +639,14 @@ This is a perfect GPT-5 Mini task. Find-replace operations are purely mechanical
 **Budget**: 4K-8K tokens (moderate reasoning)
 
 **When to use extended thinking:**
+
 1. Analyzing ambiguous task descriptions
 2. Determining pattern fit for edge cases
 3. Assessing implicit dependencies
 4. Justifying classification borderline cases (70-80% range)
 
 **Prompt snippet:**
+
 ```xml
 <thinking budget="6K">
 For ambiguous tasks, use extended thinking to:
@@ -633,12 +668,14 @@ For ambiguous tasks, use extended thinking to:
 **CRITICAL**: Do **not** guess or "fix up" filesystem paths.
 
 **Rules**:
+
 1. Treat paths from PowerShell scripts (`-Json` output) as **only source of truth**
 2. Use paths verbatim (no normalization, no assumptions)
 3. If required path missing/unclear, STOP and re-run prerequisite script
 4. Never construct paths manually (always use script output)
 
 **Example**:
+
 ```bash
 # Run prerequisite
 pwsh ./.specify/scripts/powershell/check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks
@@ -660,6 +697,7 @@ TASKS = D:/projects/repo/specs/002-accordion/tasks.md  # From FEATURE_DIR + "tas
 ## Error Handling
 
 ### If tasks.md not found:
+
 ```
 STOP execution
 OUTPUT: "tasks.md not found. Run /speckit.tasks first."
@@ -667,6 +705,7 @@ EXIT
 ```
 
 ### If context exceeds 200K:
+
 ```
 IF estimated_tokens > 180000:
   WARN: "Feature may exceed GPT-5 Mini's 200K context limit"
@@ -674,6 +713,7 @@ IF estimated_tokens > 180000:
 ```
 
 ### If all tasks score LOW:
+
 ```
 IF all_tasks_below_50_percent:
   OUTPUT: "No tasks suitable for GPT-5 Mini (all require reasoning)"

@@ -45,6 +45,7 @@ This agent is optimized for GPT-5 Mini using 2026 best practices:
 7. **Pattern-Based Execution**: Copy existing code, don't invent
 
 **GPT-5 Mini Can Do**:
+
 - ✅ Find-replace operations
 - ✅ Copy method patterns
 - ✅ Follow exact templates
@@ -52,6 +53,7 @@ This agent is optimized for GPT-5 Mini using 2026 best practices:
 - ✅ Simple conditional checks
 
 **GPT-5 Mini Cannot Do**:
+
 - ❌ Architectural decisions
 - ❌ Creative problem-solving
 - ❌ Implicit dependency resolution
@@ -97,6 +99,7 @@ pwsh ./.specify/scripts/powershell/check-prerequisites.ps1 -Json -RequireTasks -
 ```
 
 **Parse JSON output for:**
+
 - `FEATURE_DIR`: Absolute path to feature directory
 
 **Load required files**:
@@ -218,10 +221,12 @@ FOR EACH phase in gpt5mini-suitable-tasks.md:
 ## Execution Plan
 
 **HIGH Suitability Tasks**: [high_count] tasks
+
 - Estimated time: [high_time] minutes
 - Pattern distribution: [pattern_counts for HIGH]
 
 **MEDIUM Suitability Tasks**: [medium_count] tasks
+
 - Estimated time: [medium_time] minutes
 - Pattern distribution: [pattern_counts for MEDIUM]
 
@@ -229,6 +234,7 @@ FOR EACH phase in gpt5mini-suitable-tasks.md:
 **Cost**: $0 (free with GPT-5 Mini)
 
 **Execution Order**:
+
 1. Verify test environment
 2. Execute HIGH tasks (parallel where [P] marker present)
 3. Execute MEDIUM tasks (if any)
@@ -265,10 +271,11 @@ FOR EACH task in execution_order:
 **Context**: Files [file_list] need renaming from [old_string] to [new_string]
 **Task**: Execute find-replace with exact string matching
 **Constraints**:
+
 - Preserve case sensitivity
 - Only exact matches (not partial strings)
 - Update imports/exports if needed
-**Output**: Updated files with all occurrences replaced
+  **Output**: Updated files with all occurrences replaced
 
 **Mechanical Procedure**:
 
@@ -328,11 +335,12 @@ EXIT
 **Context**: File [file] has method [existing_method] at line [line] as pattern
 **Task**: Create method [new_method] following same pattern
 **Constraints**:
+
 - Same signature structure (params, return type)
 - Same JSDoc format
 - Similar implementation (adapt behavior)
 - Insert at line [target_line]
-**Output**: File with new method added
+  **Output**: File with new method added
 
 **Mechanical Procedure**:
 
@@ -395,11 +403,12 @@ npx tsc --noEmit --project packages/ngx-foundation-sites/tsconfig.lib.json
 **Context**: Test file [file] has existing test pattern
 **Task**: Add test for [functionality] following pattern
 **Constraints**:
+
 - Follow existing play function structure
 - Use userEvent for interactions
 - Use expect() for assertions
 - Test must pass
-**Output**: Updated test file with new test case
+  **Output**: Updated test file with new test case
 
 **Mechanical Procedure**:
 
@@ -461,11 +470,12 @@ npx nx test-storybook ngx-foundation-sites
 **Context**: Documentation file [file] needs update in section [section]
 **Task**: Add content [content] following format
 **Constraints**:
+
 - Follow existing markdown structure
 - Use same heading levels
 - Include code examples with correct syntax
 - Update table of contents if exists
-**Output**: Updated documentation file
+  **Output**: Updated documentation file
 
 **Mechanical Procedure**:
 

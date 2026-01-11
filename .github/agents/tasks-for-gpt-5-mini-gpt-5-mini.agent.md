@@ -22,12 +22,14 @@ model_config:
 This command uses GPT-5 Mini to classify tasks for GPT-5 Mini execution.
 
 **Why This Works**:
+
 - Classification is **mechanical** (arithmetic + IF-THEN logic)
 - No creative decisions needed (keyword matching)
 - Pattern detection is rule-based (not inference)
 - Scoring is arithmetic (count features, calculate percentage)
 
 **Optimizations Applied**:
+
 1. **CTCO Framework**: Every step structured as Context→Task→Constraints→Output
 2. **Arithmetic Scoring**: All scores calculated with explicit rules
 3. **Keyword Matching**: Pattern detection uses exact keyword lists
@@ -63,6 +65,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 Analyze tasks.md and identify tasks suitable for GPT-5 Mini using mechanical scoring.
 
 Create artifacts:
+
 - gpt5mini-suitable-tasks.md (filtered task list with CTCO templates)
 - gpt5mini-implementation-context.md (focused context)
 - gpt5mini-task-analysis.md (detailed scoring report)
@@ -72,13 +75,14 @@ Create artifacts:
 ## Context (CTCO Step 1)
 
 **Input artifacts**:
+
 - specs/<feature>/tasks.md (REQUIRED - task list to analyze)
 - specs/<feature>/spec.md (OPTIONAL - for user story context)
 - specs/<feature>/plan.md (OPTIONAL - for file structure)
 
 **Your role**: Mechanical task classifier (arithmetic scoring, keyword matching)
 
-**Output destination**: specs/<feature>/gpt5mini-*.md files
+**Output destination**: specs/<feature>/gpt5mini-\*.md files
 
 ---
 
@@ -87,6 +91,7 @@ Create artifacts:
 Classify each task in tasks.md using mechanical 4-dimension scoring:
 
 ### Dimension 1: CTCO Clarity (0-10)
+
 ```
 score = 0
 IF task.description contains file path pattern: score += 3
@@ -97,6 +102,7 @@ RETURN score
 ```
 
 ### Dimension 2: Mechanical Procedure (0-10)
+
 ```
 score = 0
 IF task.description contains "rename" OR "replace": score += 4
@@ -107,6 +113,7 @@ RETURN score
 ```
 
 ### Dimension 3: Format Explicitness (0-10)
+
 ```
 score = 0
 IF task.description contains exact template: score += 4
@@ -117,6 +124,7 @@ RETURN score
 ```
 
 ### Dimension 4: Independence (0-10)
+
 ```
 score = 0
 IF task is single file edit: score += 4
@@ -127,6 +135,7 @@ RETURN score
 ```
 
 ### Calculate Suitability
+
 ```
 total_score = dimension1 + dimension2 + dimension3 + dimension4
 suitability_percentage = (total_score / 40) * 100
@@ -140,6 +149,7 @@ ELSE:
 ```
 
 ### Detect Pattern (Keyword Matching)
+
 ```
 IF task.description contains ["rename", "replace", "update all"]:
   pattern = "Find-Replace"
@@ -166,11 +176,13 @@ ELSE:
 ### Scoring Constraints
 
 **All scoring is arithmetic** (no judgment calls):
+
 - Each dimension has explicit point rules
 - All calculations use addition and multiplication only
 - No subjective assessment allowed
 
 **Keyword lists are exact**:
+
 ```
 file_path_patterns = ["at line", ".ts", ".component.ts", "packages/"]
 pattern_keywords = ["following", "pattern from", "similar to", "like"]
@@ -180,6 +192,7 @@ single_action_indicators = ["add", "rename", "update", "create", "delete"]
 ```
 
 **Classification thresholds are fixed**:
+
 - HIGH: ≥75% (30/40 points or more)
 - MEDIUM: 50-74% (20-29 points)
 - LOW: <50% (0-19 points)
@@ -187,10 +200,12 @@ single_action_indicators = ["add", "rename", "update", "create", "delete"]
 ### Output Format Constraints
 
 **File paths**:
+
 - Absolute paths from FEATURE_DIR
 - No path construction or guessing
 
 **Task format**:
+
 ```
 - [ ] T### [Pattern: Type] Description
   - **Suitability Score**: X% (Dim1: Y/10, Dim2: Y/10, Dim3: Y/10, Dim4: Y/10)
@@ -199,6 +214,7 @@ single_action_indicators = ["add", "rename", "update", "create", "delete"]
 ```
 
 **Section order**:
+
 1. HIGH suitability tasks (≥75%)
 2. MEDIUM suitability tasks (50-74%)
 3. Excluded tasks (LOW <50%)
@@ -282,6 +298,7 @@ ELSE:
 #### File Size Examples
 
 **Small feature** (~30K tokens):
+
 - tasks.md: 100 lines × 15 = 1.5K tokens
 - spec.md: 200 lines × 20 = 4K tokens
 - plan.md: 150 lines × 20 = 3K tokens
@@ -289,6 +306,7 @@ ELSE:
 - **Total**: ~28.5K ✅ SAFE
 
 **Medium feature** (~120K tokens):
+
 - tasks.md: 500 lines × 15 = 7.5K tokens
 - spec.md: 800 lines × 20 = 16K tokens
 - plan.md: 600 lines × 20 = 12K tokens
@@ -296,6 +314,7 @@ ELSE:
 - **Total**: ~55.5K ✅ SAFE
 
 **Large feature** (~250K tokens):
+
 - tasks.md: 1500 lines × 15 = 22.5K tokens
 - spec.md: 2000 lines × 20 = 40K tokens
 - plan.md: 1200 lines × 20 = 24K tokens
@@ -303,6 +322,7 @@ ELSE:
 - **Total**: ~106.5K ✅ SAFE
 
 **Very large feature** (~400K tokens):
+
 - tasks.md: 3000 lines × 15 = 45K tokens
 - spec.md: 3500 lines × 20 = 70K tokens
 - plan.md: 2500 lines × 20 = 50K tokens
@@ -325,6 +345,7 @@ pwsh ./.specify/scripts/powershell/check-prerequisites.ps1 -Json -RequireTasks -
 ```
 
 **Parse JSON**:
+
 ```
 FEATURE_DIR = json.FEATURE_DIR
 TASKS_FILE = FEATURE_DIR + "/tasks.md"
@@ -333,6 +354,7 @@ PLAN_FILE = FEATURE_DIR + "/plan.md"
 ```
 
 **Load files**:
+
 ```
 Read(TASKS_FILE)  # REQUIRED
 
@@ -344,6 +366,7 @@ IF PLAN_FILE exists:
 ```
 
 **Error Condition**:
+
 ```
 IF TASKS_FILE NOT FOUND:
   STOP
@@ -381,6 +404,7 @@ FOR EACH line in tasks.md:
 ```
 
 **Validation**:
+
 ```
 IF task_list is empty:
   STOP
@@ -485,6 +509,7 @@ FOR EACH task in task_list:
 ```
 
 **Template Generation Rules**:
+
 ```
 IF task.pattern == "Find-Replace":
   context = "Files [files] need renaming from [old] to [new]"
@@ -760,6 +785,7 @@ gh copilot -m "gpt-5-mini" slash implement-tasks-for-gpt-5-mini
 ## Helper Functions (Mechanical)
 
 ### contains_any(text, keyword_list)
+
 ```
 FOR EACH keyword in keyword_list:
   IF keyword in text.lower():
@@ -768,6 +794,7 @@ RETURN false
 ```
 
 ### extract_task_id(line)
+
 ```
 # Pattern: "- [ ] T###"
 matches = regex_find(line, r"T\d{3}")
@@ -778,6 +805,7 @@ ELSE:
 ```
 
 ### extract_markers(line)
+
 ```
 markers = []
 IF "[P]" in line:
@@ -788,6 +816,7 @@ RETURN markers
 ```
 
 ### count_files_mentioned(description)
+
 ```
 file_extensions = [".ts", ".html", ".scss", ".spec.ts", ".stories.ts"]
 count = 0
@@ -797,6 +826,7 @@ RETURN count
 ```
 
 ### detect_pattern(description)
+
 ```
 desc_lower = description.lower()
 
@@ -819,6 +849,7 @@ ELSE:
 ```
 
 ### format_task_entry(task)
+
 ```
 entry = f"""
 - [ ] {task.id} [Pattern: {task.pattern}] {task.description}
@@ -835,6 +866,7 @@ RETURN entry
 ## Error Handling
 
 ### Error 1: tasks.md Not Found
+
 ```
 IF TASKS_FILE NOT FOUND:
   STOP
@@ -843,6 +875,7 @@ IF TASKS_FILE NOT FOUND:
 ```
 
 ### Error 2: No Tasks Parsed
+
 ```
 IF task_list is empty:
   STOP
@@ -851,6 +884,7 @@ IF task_list is empty:
 ```
 
 ### Error 3: File Write Failed
+
 ```
 IF file_write_failed:
   STOP
@@ -859,6 +893,7 @@ IF file_write_failed:
 ```
 
 ### Error 4: Invalid Task Format
+
 ```
 IF task.id == "UNKNOWN":
   WARN: "⚠️ Warning: Task without ID found: [line]\n\nSkipping this task."
@@ -898,18 +933,21 @@ IF task.id == "UNKNOWN":
 **Quality**: 85-90% accuracy on mechanical classification
 
 **Trade-off vs Sonnet 4.5**:
+
 - ✅ **Faster**: 10-20 seconds vs 2-5 minutes
 - ✅ **Free**: $0 vs ~$0.03 per classification
 - ⚠️ **Less nuanced**: Cannot explain subtle trade-offs
 - ⚠️ **Rule-based**: Cannot handle edge cases requiring judgment
 
 **When to Use GPT-5 Mini Classification**:
+
 - ✅ Budget is critical (0× vs 1× cost)
 - ✅ Tasks have clear patterns (keyword-based)
 - ✅ Speed matters (10-20s vs 2-5min)
 - ⚠️ Accept 85-90% accuracy (vs Sonnet's 95%+)
 
 **When to Use Sonnet Classification**:
+
 - ⚠️ Need explanations for borderline cases
 - ⚠️ Tasks have subtle ambiguity requiring reasoning
 - ⚠️ Quality is more important than cost/speed

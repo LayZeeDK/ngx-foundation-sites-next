@@ -49,6 +49,7 @@ This checklist provides exact implementation steps for each gap. Check off items
   ```
 
 - [ ] **Step 6**: Update CHANGELOG.md with breaking change notice
+
   ```markdown
   ### BREAKING CHANGES
 

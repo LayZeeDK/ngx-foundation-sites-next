@@ -6,10 +6,12 @@ description: Analyze tasks.md and identify tasks suitable for GPT-4.1 implementa
 
 **Recommended Model**: Claude Sonnet 4.5 or GPT-5.1-Codex-Mini
 **Invoke with**:
+
 - Claude Sonnet: `gh copilot -m "claude-sonnet-4.5" slash tasks-for-gpt-4-1`
 - GPT-5.1-Codex-Mini: `gh copilot -m "gpt-5.1-codex-mini" slash tasks-for-gpt-4-1`
 
 **Why these models?**
+
 - **Sonnet 4.5**: Deep reasoning for context size estimation, proven classification quality
 - **GPT-5.1-Codex-Mini**: Adaptive reasoning, code-focused, 400K context for analyzing large task lists
 
@@ -29,12 +31,14 @@ description: Analyze tasks.md and identify tasks suitable for GPT-4.1 implementa
 ## Goal
 
 Analyze tasks.md and identify tasks suitable for GPT-4.1 implementation based on:
+
 - Large context requirements (>200K tokens)
 - Purely literal/mechanical procedures (no reasoning benefit)
 - Cross-file consistency needs
 - Precision requirements (minimal unnecessary changes)
 
 Create optimized artifacts:
+
 - gpt41-suitable-tasks.md (filtered task list with literal procedures)
 - gpt41-implementation-context.md (sandwich method templates for GPT-4.1)
 - gpt41-task-analysis.md (detailed suitability report with SWE-bench context)
@@ -44,6 +48,7 @@ Create optimized artifacts:
 ## GPT-4.1 Characteristics
 
 **GPT-4.1 Strengths:**
+
 - 1M token context window in GitHub Copilot (5× larger than GPT-5 Mini's 200K)
 - Zero cost (0× multiplier in GitHub Copilot)
 - Literal instruction following (49% benchmark vs GPT-4o's 29%)
@@ -52,6 +57,7 @@ Create optimized artifacts:
 - 54.6% SWE-bench Verified (proven implementation capability)
 
 **GPT-4.1 Limitations:**
+
 - Non-reasoning model (cannot make creative decisions or adaptations)
 - Lower SWE-bench than GPT-5 Mini (54.6% vs 69-70%) due to lack of reasoning
 - Slower than GPT-5 Mini (30-60s vs 10-20s)
@@ -59,6 +65,7 @@ Create optimized artifacts:
 - Needs extremely literal instructions (no inference)
 
 **GPT-4.1 Sweet Spot:**
+
 - ✅ Large-context literal tasks (200K-900K tokens)
 - ✅ Repository-wide mechanical transformations (50+ files)
 - ✅ Cross-file consistency with exact procedures
@@ -67,6 +74,7 @@ Create optimized artifacts:
 - ✅ Precision-critical tasks (only touch specified files)
 
 **NOT Suitable for GPT-4.1:**
+
 - ❌ Tasks needing ANY reasoning (use GPT-5 Mini—better SWE-bench: 69-70% vs 54.6%)
 - ❌ Small tasks <200K context (use GPT-5 Mini—faster and better quality)
 - ❌ Pattern adaptation (needs minimal reasoning)
@@ -88,10 +96,12 @@ pwsh ./.specify/scripts/powershell/check-prerequisites.ps1 -Json -RequireTasks -
 ```
 
 Parse JSON for:
+
 - `FEATURE_DIR` - Absolute path to feature directory
 - `AVAILABLE_DOCS` - List of existing files
 
 Derive paths:
+
 - TASKS = FEATURE_DIR/tasks.md (REQUIRED)
 - SPEC = FEATURE_DIR/spec.md (OPTIONAL)
 - PLAN = FEATURE_DIR/plan.md (OPTIONAL)
@@ -115,11 +125,13 @@ For each task, evaluate:
 Does this task require >200K tokens of context?
 
 **Scoring criteria:**
+
 - Task involves file >3K lines? +4
 - Task involves 10+ files simultaneously? +3
 - Task needs to see all files at once? +3
 
 **Examples:**
+
 - **10 points**: Refactor 5K-line component OR update 15 files for consistency
 - **5 points**: Edit 2K-line file OR update 5 files
 - **0 points**: Edit 500-line file OR single small file update
@@ -131,11 +143,13 @@ Does this task require >200K tokens of context?
 Is the task 100% literal with NO reasoning benefit?
 
 **Scoring criteria:**
+
 - Task has STEP 1, 2, 3... format? +4
 - Every step specifies exact action (no "intelligently")? +3
 - Task requires zero interpretation or adaptation? +3
 
 **Examples:**
+
 - **10 points**: "STEP 1: Go to line 145. STEP 2: Insert [exact code]. STEP 3: Update line 289..."
 - **5 points**: "Add method following pattern" (needs minimal reasoning to adapt)
 - **0 points**: "Refactor to improve performance" (needs reasoning)
@@ -147,11 +161,13 @@ Is the task 100% literal with NO reasoning benefit?
 Does task require coordinating changes across multiple files?
 
 **Scoring criteria:**
+
 - Updates interface + all implementations? +4
 - Maintains consistency across 5+ files? +3
 - Has explicit mechanical consistency checks? +3
 
 **Examples:**
+
 - **10 points**: "Update interface + all 12 usages across 5 files with exact template, verify consistency"
 - **5 points**: "Update component and its test file"
 - **0 points**: "Update single file"
@@ -161,11 +177,13 @@ Does task require coordinating changes across multiple files?
 Does task require minimal unnecessary changes (GPT-4.1's 2% strength)?
 
 **Scoring criteria:**
+
 - Specifies exact files only (no exploration)? +3
 - Has explicit boundaries ("do NOT modify X")? +3
 - Requires only changed lines (not full rewrites)? +4
 
 **Examples:**
+
 - **10 points**: "Update ONLY files A, B, C. Do NOT modify D, E. Change only lines matching exact pattern."
 - **5 points**: "Update component (may need to touch related files)"
 - **0 points**: "Improve the codebase" (vague scope)
@@ -219,35 +237,41 @@ ELSE IF task_context > 900000:
 Automatically classify by pattern:
 
 **Pattern A: Repository-Wide Find-Replace** (HIGH - typically 90-100%)
+
 - Keywords: "repository-wide", "all files", "50+ files", "batch update"
 - Context: 400K-800K tokens
 - GPT-4.1 advantage: Can hold all files, ensure global consistency
 - Example: "Rename oldName → newName across 75 files"
 
 **Pattern B: Large File Literal Edit** (HIGH - typically 85-95%)
+
 - Keywords: "at line X", "insert at line Y", ">3K lines", "5K lines"
 - Context: 200K-400K tokens
 - GPT-4.1 advantage: Can hold entire large file
 - Example: "Edit 5K-line component with exact steps at lines 145, 289, 567..."
 
 **Pattern C: Cross-File Consistency Update** (HIGH - typically 85-95%)
+
 - Keywords: "update interface + implementations", "maintain consistency", "verify across files"
 - Context: 300K-600K tokens
 - GPT-4.1 advantage: See all related files simultaneously
 - Example: "Update interface + 15 implementations, verify mechanical consistency"
 
 **Pattern D: Multi-File Mechanical Transform** (HIGH - typically 80-90%)
+
 - Keywords: "apply to all", "batch transform", "20+ files"
 - Context: 250K-500K tokens
 - GPT-4.1 advantage: Batch processing with global view
 - Example: "Convert 25 components to inject() pattern with exact steps"
 
 **Pattern E: Small/Medium Tasks** (LOW - use GPT-5 Mini)
+
 - Context: <200K tokens
 - Better model: GPT-5 Mini (faster, 69-70% SWE-bench)
 - Example: Most standard implementation tasks
 
 **Pattern F: Tasks Needing Adaptation** (LOW - use GPT-5 Mini or Haiku)
+
 - Needs minimal or light reasoning
 - Better model: GPT-5 Mini (69-70% SWE-bench) or Haiku (73.3%)
 - Example: "Add method following pattern" (requires adaptation)
@@ -255,6 +279,7 @@ Automatically classify by pattern:
 ### Step 5: Generate gpt41-suitable-tasks.md
 
 Create file with:
+
 - Task list filtered for HIGH suitability (≥75%)
 - Literal procedure templates
 - Context size estimates
@@ -263,6 +288,7 @@ Create file with:
 ### Step 6: Generate gpt41-implementation-context.md
 
 Create file with:
+
 - Sandwich method templates (instructions at BEGINNING and END)
 - Literal procedures (STEP 1, 2, 3... format)
 - Exact file lists (no wildcards)
@@ -271,6 +297,7 @@ Create file with:
 ### Step 7: Generate gpt41-task-analysis.md
 
 Create file with:
+
 - Detailed scoring for all tasks
 - Context size analysis
 - SWE-bench comparison context (GPT-4.1: 54.6%, GPT-5 Mini: 69-70%, Haiku: 73.3%)
@@ -279,6 +306,7 @@ Create file with:
 ### Step 8: Report Completion
 
 Output summary with:
+
 - Task counts (HIGH/MEDIUM/LOW)
 - Context size distribution
 - Model recommendations
@@ -289,6 +317,7 @@ Output summary with:
 ## Error Handling
 
 ### If tasks.md not found:
+
 ```
 STOP
 OUTPUT: "❌ Error: tasks.md not found. Run /speckit.tasks first."
@@ -296,6 +325,7 @@ EXIT
 ```
 
 ### If all tasks <200K context:
+
 ```
 IF all_tasks_fit_in_200k:
   OUTPUT: "✅ All tasks fit in GPT-5 Mini's 200K context (better SWE-bench: 69-70%)\n\nNo tasks require GPT-4.1's 1M context.\n\nRecommend: Use /tasks-for-gpt-5-mini instead."
@@ -303,6 +333,7 @@ IF all_tasks_fit_in_200k:
 ```
 
 ### If task context >900K:
+
 ```
 IF task_context > 900000:
   WARN: "⚠️ Task [id] may exceed GPT-4.1's 1M context\n\nEstimated: [X]K tokens\n\nSuggest: Split or use progressive disclosure"
@@ -330,6 +361,7 @@ Classification is successful when:
 ### For Claude Sonnet 4.5
 
 When running with Sonnet 4.5:
+
 - Use extended thinking (8K-16K) for context size estimation
 - Analyze whether tasks truly need >200K context (critical decision)
 - Assess if literal-only is sufficient (vs benefits from minimal reasoning)
@@ -338,6 +370,7 @@ When running with Sonnet 4.5:
 ### For GPT-5.1-Codex-Mini
 
 When running with GPT-5.1-Codex-Mini:
+
 - Leverage 400K context to analyze large task lists
 - Use adaptive reasoning for context size estimation
 - Code-focused understanding for file size assessment
@@ -346,11 +379,13 @@ When running with GPT-5.1-Codex-Mini:
 ### Critical Decision: GPT-4.1 vs GPT-5 Mini
 
 **Use GPT-4.1 ONLY when**:
+
 1. Task requires >200K tokens (exceeds GPT-5 Mini limit) ✅
 2. Task is purely literal (no reasoning benefit) ✅
 3. Accept lower SWE-bench (54.6% vs 69-70%) as trade-off ✅
 
 **Otherwise, recommend GPT-5 Mini**:
+
 - Faster (10-20s vs 30-60s)
 - Better SWE-bench (69-70% vs 54.6%)
 - Minimal reasoning helps with adaptation

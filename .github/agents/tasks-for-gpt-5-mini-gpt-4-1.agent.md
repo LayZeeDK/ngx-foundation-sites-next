@@ -19,6 +19,7 @@ description: Analyze large task lists for GPT-5 Mini suitability using GPT-4.1's
 This command uses GPT-4.1's 1M context for large-scale task classification.
 
 **GPT-4.1 Characteristics**:
+
 - 1M token context (5× larger than GPT-5 Mini)
 - Non-reasoning model (similar to GPT-5 Mini's minimal reasoning)
 - Literal instruction following (does EXACTLY what you say)
@@ -26,6 +27,7 @@ This command uses GPT-4.1's 1M context for large-scale task classification.
 - 49% instruction-following benchmark (vs GPT-4o's 29%)
 
 **Optimizations Applied**:
+
 1. **Sandwich Method** (CRITICAL) - Instructions at BEGINNING and END
 2. **Literal Instructions** - Extremely explicit (no inference)
 3. **Mechanical Procedures** - Arithmetic scoring, keyword matching
@@ -66,6 +68,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 Analyze tasks.md and identify tasks suitable for GPT-5 Mini using mechanical scoring.
 
 Create artifacts:
+
 - gpt5mini-suitable-tasks.md (filtered task list with CTCO templates)
 - gpt5mini-implementation-context.md (focused context)
 - gpt5mini-task-analysis.md (detailed scoring report)
@@ -85,12 +88,14 @@ Create artifacts:
 ### Critical Constraints
 
 **Literal instruction following** (GPT-4.1 requirement):
+
 - Do EXACTLY what each step says (no implicit inference)
 - All scoring is arithmetic (no judgment calls)
 - All pattern detection is keyword matching (exact lists)
 - All classification uses fixed thresholds (HIGH ≥75%, MEDIUM 50-74%, LOW <50%)
 
 **Sandwich method** (GPT-4.1 requirement):
+
 - These instructions are repeated at the END of this prompt
 - Follow the END instructions to execute the workflow
 
@@ -103,12 +108,12 @@ Create artifacts:
 - specs/<feature>/tasks.md (REQUIRED - may be very large)
 - specs/<feature>/spec.md (OPTIONAL - for user story context)
 - specs/<feature>/plan.md (OPTIONAL - for file structure)
-- specs/<feature>/contracts/*.ts (OPTIONAL - for pattern analysis)
+- specs/<feature>/contracts/\*.ts (OPTIONAL - for pattern analysis)
 - Implementation files (OPTIONAL - for actual code pattern detection)
 
 **Your role**: Mechanical task classifier (arithmetic scoring, keyword matching)
 
-**Output destination**: specs/<feature>/gpt5mini-*.md files
+**Output destination**: specs/<feature>/gpt5mini-\*.md files
 
 **Context advantage**: With 1M context, can analyze tasks PLUS implementation code for richer pattern detection
 
@@ -220,12 +225,14 @@ ELSE:
 ### Literal Instruction Constraints (GPT-4.1 Specific)
 
 **GPT-4.1 follows instructions LITERALLY**:
+
 - Do EXACTLY what each step says
 - Do NOT infer implicit requirements
 - Do NOT skip any steps
 - Do NOT summarize outputs (write complete files)
 
 **Example**:
+
 - Instruction: "Write complete report to file"
 - GPT-4.1 interpretation: Write full structured report (not summary)
 - ❌ WRONG: "Here's a summary of the report..."
@@ -234,6 +241,7 @@ ELSE:
 ### Scoring Constraints (Mechanical Only)
 
 **All scoring is arithmetic** (no judgment):
+
 - Each dimension has explicit point rules
 - All calculations use addition only
 - No subjective assessment allowed
@@ -276,6 +284,7 @@ pwsh ./.specify/scripts/powershell/check-prerequisites.ps1 -Json -RequireTasks -
 ```
 
 **Parse JSON**:
+
 ```
 FEATURE_DIR = json.FEATURE_DIR
 TASKS_FILE = FEATURE_DIR + "/tasks.md"
@@ -284,6 +293,7 @@ PLAN_FILE = FEATURE_DIR + "/plan.md"
 ```
 
 **Load files** (GPT-4.1 can handle large context):
+
 ```
 Read(TASKS_FILE)  # REQUIRED (may be 50-100K tokens)
 
@@ -299,6 +309,7 @@ IF implementation files exist AND total_context < 900K:
 ```
 
 **Error condition**:
+
 ```
 IF TASKS_FILE NOT FOUND:
   STOP
@@ -470,6 +481,7 @@ Write all files using Write tool, validate, then report completion summary.
 ## Helper Functions (Mechanical)
 
 ### contains_any(text, keyword_list)
+
 ```
 FOR EACH keyword in keyword_list:
   IF keyword in text.lower():
@@ -478,6 +490,7 @@ RETURN false
 ```
 
 ### extract_task_id(line)
+
 ```
 matches = regex_find(line, r"T\d{3}")
 IF matches:
@@ -487,6 +500,7 @@ ELSE:
 ```
 
 ### count_files_mentioned(description)
+
 ```
 file_extensions = [".ts", ".html", ".scss", ".spec.ts", ".stories.ts"]
 count = 0
@@ -496,6 +510,7 @@ RETURN count
 ```
 
 ### estimate_time(pattern)
+
 ```
 time_estimates = {
   "Find-Replace": "2-5",
@@ -514,6 +529,7 @@ RETURN time_estimates.get(pattern, "5-10")
 ## Error Handling
 
 ### Error 1: tasks.md Not Found
+
 ```
 IF TASKS_FILE NOT FOUND:
   STOP
@@ -522,6 +538,7 @@ IF TASKS_FILE NOT FOUND:
 ```
 
 ### Error 2: Context Exceeds 1M
+
 ```
 IF estimated_tokens > 950000:
   STOP
@@ -530,6 +547,7 @@ IF estimated_tokens > 950000:
 ```
 
 ### Error 3: File Write Failed
+
 ```
 IF file_write_failed:
   STOP
@@ -538,6 +556,7 @@ IF file_write_failed:
 ```
 
 ### Error 4: Validation Failed
+
 ```
 IF validation_failed:
   STOP
@@ -552,6 +571,7 @@ IF validation_failed:
 ### Why GPT-4.1 for This Task
 
 **Advantages over GPT-5 Mini**:
+
 1. ✅ **5× larger context** - 1M vs 200K tokens
 2. ✅ **Can include implementation code** - Better pattern detection
 3. ✅ **Handles massive task lists** - 500+ tasks with full context
@@ -559,17 +579,20 @@ IF validation_failed:
 5. ✅ **Better instruction following** - 49% benchmark vs baseline
 
 **Trade-offs**:
+
 - ⚠️ **Slower** - 30-60s vs GPT-5 Mini's 10-20s
 - ⚠️ **More complex** - Sandwich method required
 - ⚠️ **Needs literal instructions** - Less forgiving than GPT-5 Mini
 
 **When to Use GPT-4.1** (vs GPT-5 Mini):
+
 - Task list >180K tokens (exceeds GPT-5 Mini limit)
 - Want to include implementation code for better patterns
 - Large monorepo with 500+ tasks
 - Can accept 30-60s execution time
 
 **When to Use GPT-5 Mini** (default):
+
 - Task list <180K tokens (90% of cases)
 - Want fastest classification (10-20s)
 - Don't need implementation code context
@@ -578,11 +601,13 @@ IF validation_failed:
 ### Sandwich Method Rationale
 
 **Research Finding**:
+
 > "For long contexts, the best results come from placing instructions both before and after the provided content."
 
 **Source**: [GPT-4.1 Prompting Guide | OpenAI Cookbook](https://cookbook.openai.com/examples/gpt4-1_prompting_guide)
 
 **Why it works**:
+
 - GPT-4.1 processes 1M tokens from different positions
 - Instructions at both ends ensure accessibility
 - End instructions provide final execution reminder
@@ -591,11 +616,13 @@ IF validation_failed:
 ### Literal Instruction Following
 
 **Research Finding**:
+
 > "GPT-4.1 won't follow implicit rules anymore—it does exactly what you tell it to do, no more, no less."
 
 **Source**: [PromptHub GPT-4.1 Guide](https://www.prompthub.us/blog/the-complete-guide-to-gpt-4-1-models-performance-pricing-and-prompting-tips)
 
 **Implementation**:
+
 - All instructions are explicit (no inference)
 - "Write complete file" not "write file"
 - "Use Write tool" not "create output"

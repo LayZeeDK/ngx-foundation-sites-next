@@ -29,6 +29,30 @@ This directory contains research-backed optimization strategies for AI models us
 
 ---
 
+### [Claude Sonnet 4.5 Implementation Optimization Guide](./CLAUDE-SONNET-4-5-IMPLEMENTATION-OPTIMIZATION.md)
+
+**Model**: Claude Sonnet 4.5 (200K / 1M context, implementation-optimized)
+
+**7 Implementation-Specific Optimizations**:
+
+1. **Phase-Based Implementation** - Research → Setup → Implement → Verify → Complete with thinking breaks
+2. **Parallel Tool Use** - Load multiple files simultaneously (10-20x speedup for context)
+3. **Minimal Implementation** - OUT OF SCOPE list prevents over-engineering
+4. **State Tracking** - Mark tasks [X] immediately in tasks.md + TodoWrite
+5. **Error-First TDD** - Write test → get error → fix ONLY that error → repeat (0% error rate)
+6. **Extended Thinking for Complex Logic** - 16K+ budgets for state management, error handling, accessibility
+7. **Structured XML** - Multi-phase workflow with clear role, constraints, success criteria
+
+**Best for**: Systematic implementation of tasks.md with TDD, state tracking, and quality verification
+
+**Commands**: `/implement-sonnet-4-5` (Claude Code & GitHub Copilot)
+
+**Performance**: 37% faster than standard implementation with better code quality
+
+**Related**: Based on [Claude 4.5 Optimization Guide](./CLAUDE-4-5-OPTIMIZATION.md) with implementation-specific patterns
+
+---
+
 ### [Claude Haiku 4.5 Optimization Guide](./CLAUDE-HAIKU-4-5-OPTIMIZATION.md)
 
 **Model**: Claude Haiku 4.5 (200K context for GitHub Copilot Business & Claude Code Team)
