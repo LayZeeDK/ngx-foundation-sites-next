@@ -61,3 +61,6 @@ __screenshots__/
 
 # Compodoc generated documentation
 **/documentation.json
+
+# Claude Code temporary files
+**/tmpclaude-*
