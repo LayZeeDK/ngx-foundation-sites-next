@@ -1,5 +1,5 @@
 ---
-name: analyze-gaps
+name: analyze-prepare-reported-gaps-for-implementation
 description: Validates gap analysis reports from /analyze-report-gaps-gpt-5-mini or /analyze-report-gaps-gpt-4-1 and creates comprehensive remediation documentation. Prevents future analysis tools from re-flagging known gaps by establishing single source of truth tracking. Use after /analyze-report-gaps-gpt-5-mini or /analyze-report-gaps-gpt-4-1 generates gap-analysis-report.md.
 ---
 

@@ -1,5 +1,5 @@
 ---
-name: implement-gap-remediations
+name: implement-reported-gaps
 description: Executes gap fixes from REMEDIATION_CHECKLIST.md with systematic verification and progress tracking. Use after /analyze-prepare-reported-gaps-for-implementation creates the remediation checklist. Optimized for Sonnet 4.5's implementation capabilities.
 ---
 
