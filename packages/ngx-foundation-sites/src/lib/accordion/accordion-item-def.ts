@@ -30,6 +30,7 @@ import type { NfsAccordionContentDef } from './accordion-content';
  */
 @Directive({
   selector: 'ng-template[nfsAccordionItem]',
+  exportAs: 'nfsAccordionItem',
 })
 export class NfsAccordionItemDef {
   /** Unique identifier for the panel, used for ARIA relationships */

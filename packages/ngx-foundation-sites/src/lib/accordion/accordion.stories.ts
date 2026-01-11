@@ -1050,26 +1050,28 @@ export const TitleHeadingLevel: Story = {
   render: (args) => ({
     props: args,
     template: `
-      <nfs-accordion ${argsToLiteralTemplate(args)}>
-        <ng-template nfsAccordionItem panelId="panel-1">
-          <ng-template nfsAccordionHeader>Section 1 (H2)</ng-template>
-          <ng-template nfsAccordionContent>
-            <p>Content for section 1. Screen readers will announce this as a heading level 2.</p>
+      <main>
+        <nfs-accordion ${argsToLiteralTemplate(args)}>
+          <ng-template nfsAccordionItem panelId="panel-1">
+            <ng-template nfsAccordionHeader>Section 1 (H2)</ng-template>
+            <ng-template nfsAccordionContent>
+              <p>Content for section 1. Screen readers will announce this as a heading level 2.</p>
+            </ng-template>
           </ng-template>
-        </ng-template>
-        <ng-template nfsAccordionItem panelId="panel-2">
-          <ng-template nfsAccordionHeader>Section 2 (H2)</ng-template>
-          <ng-template nfsAccordionContent>
-            <p>Content for section 2. Users can navigate here using the H key.</p>
+          <ng-template nfsAccordionItem panelId="panel-2">
+            <ng-template nfsAccordionHeader>Section 2 (H2)</ng-template>
+            <ng-template nfsAccordionContent>
+              <p>Content for section 2. Users can navigate here using the H key.</p>
+            </ng-template>
           </ng-template>
-        </ng-template>
-        <ng-template nfsAccordionItem panelId="panel-3">
-          <ng-template nfsAccordionHeader>Section 3 (H2)</ng-template>
-          <ng-template nfsAccordionContent>
-            <p>Content for section 3.</p>
+          <ng-template nfsAccordionItem panelId="panel-3">
+            <ng-template nfsAccordionHeader>Section 3 (H2)</ng-template>
+            <ng-template nfsAccordionContent>
+              <p>Content for section 3.</p>
+            </ng-template>
           </ng-template>
-        </ng-template>
-      </nfs-accordion>
+        </nfs-accordion>
+      </main>
     `,
   }),
   play: async ({ canvasElement }) => {
@@ -1115,5 +1117,257 @@ export const TitleHeadingLevel: Story = {
     // Verify content is visible
     const content = canvas.getByText(/Screen readers will announce/i);
     expect(content).toBeVisible();
+  },
+};
+
+/**
+ * Tests Foundation API method parity: down(), up(), toggle()
+ *
+ * Foundation for Sites provides JavaScript methods to programmatically control
+ * accordion panels. This story tests the Angular equivalents exposed on NfsAccordionItemDef:
+ *
+ * - `item.down()` → Expands the panel (equivalent to Foundation's `.down($target)`)
+ * - `item.up()` → Collapses the panel (equivalent to Foundation's `.up($target)`)
+ * - `item.toggle()` → Toggles expansion state (equivalent to Foundation's `.toggle($target)`)
+ *
+ * @see https://get.foundation/sites/docs/accordion.html#javascript-reference
+ */
+export const FoundationApiMethods: Story = {
+  args: {
+    multiExpand: true,
+    allowAllClosed: true,
+  },
+  render: (args) => ({
+    props: {
+      ...args,
+      // Reference to items for programmatic control - placed OUTSIDE panels
+      // so buttons are always accessible
+      onDown: (item: NfsAccordionItemDef) => {
+        item.down();
+      },
+      onUp: (item: NfsAccordionItemDef) => {
+        item.up();
+      },
+      onToggle: (item: NfsAccordionItemDef) => {
+        item.toggle();
+      },
+    },
+    template: `
+      <main>
+        <p class="text-secondary margin-bottom-1">Foundation API Methods: down(), up(), toggle()</p>
+
+        <!-- Control buttons placed OUTSIDE panels so they're always accessible for testing -->
+        <div class="margin-bottom-1 callout secondary" data-testid="controls">
+          <strong>Panel 1 controls:</strong>
+          <button type="button" class="button primary small margin-left-1" (click)="onDown(item1)" data-testid="down-btn-1">down()</button>
+          <button type="button" class="button secondary small margin-left-1" (click)="onUp(item1)" data-testid="up-btn-1">up()</button>
+          <button type="button" class="button hollow small margin-left-1" (click)="onToggle(item1)" data-testid="toggle-btn-1">toggle()</button>
+          <br class="margin-bottom-1">
+          <strong>Panel 2 controls:</strong>
+          <button type="button" class="button primary small margin-left-1" (click)="onDown(item2)" data-testid="down-btn-2">down()</button>
+          <button type="button" class="button secondary small margin-left-1" (click)="onUp(item2)" data-testid="up-btn-2">up()</button>
+          <button type="button" class="button hollow small margin-left-1" (click)="onToggle(item2)" data-testid="toggle-btn-2">toggle()</button>
+        </div>
+
+        <nfs-accordion ${argsToLiteralTemplate(args)}>
+          <ng-template nfsAccordionItem #item1="nfsAccordionItem" panelId="api-panel-1">
+            <ng-template nfsAccordionHeader>Panel 1</ng-template>
+            <ng-template nfsAccordionContent>
+              <p>This panel can be controlled via the buttons above using down(), up(), or toggle().</p>
+            </ng-template>
+          </ng-template>
+          <ng-template nfsAccordionItem #item2="nfsAccordionItem" panelId="api-panel-2">
+            <ng-template nfsAccordionHeader>Panel 2</ng-template>
+            <ng-template nfsAccordionContent>
+              <p>Content for panel 2.</p>
+            </ng-template>
+          </ng-template>
+        </nfs-accordion>
+      </main>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const trigger1 = canvas.getByRole('button', { name: /^Panel 1$/i });
+    const trigger2 = canvas.getByRole('button', { name: /^Panel 2$/i });
+
+    // Initially both panels are collapsed
+    expect(trigger1).toHaveAttribute('aria-expanded', 'false');
+    expect(trigger2).toHaveAttribute('aria-expanded', 'false');
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 1. TEST down() METHOD - expands panel
+    // ═══════════════════════════════════════════════════════════════════════
+
+    const downBtn1 = canvas.getByTestId('down-btn-1');
+    await userEvent.click(downBtn1);
+    await waitFor(() => {
+      expect(trigger1).toHaveAttribute('aria-expanded', 'true');
+    });
+
+    // Verify down() works on panel 2
+    const downBtn2 = canvas.getByTestId('down-btn-2');
+    await userEvent.click(downBtn2);
+    await waitFor(() => {
+      expect(trigger2).toHaveAttribute('aria-expanded', 'true');
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 2. TEST up() METHOD - collapses panel
+    // ═══════════════════════════════════════════════════════════════════════
+
+    const upBtn2 = canvas.getByTestId('up-btn-2');
+    await userEvent.click(upBtn2);
+    await waitFor(() => {
+      expect(trigger2).toHaveAttribute('aria-expanded', 'false');
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 3. TEST toggle() METHOD - toggles expansion state
+    // ═══════════════════════════════════════════════════════════════════════
+
+    const toggleBtn2 = canvas.getByTestId('toggle-btn-2');
+
+    // Toggle should expand (was false)
+    await userEvent.click(toggleBtn2);
+    await waitFor(() => {
+      expect(trigger2).toHaveAttribute('aria-expanded', 'true');
+    });
+
+    // Toggle again should collapse (was true)
+    await userEvent.click(toggleBtn2);
+    await waitFor(() => {
+      expect(trigger2).toHaveAttribute('aria-expanded', 'false');
+    });
+  },
+};
+
+/**
+ * Tests Foundation API output events: (down) and (up)
+ *
+ * Foundation emits events when panels open or close:
+ * - `down.zf.accordion` → Emitted when a panel opens
+ * - `up.zf.accordion` → Emitted when a panel closes
+ *
+ * The Angular equivalent uses output events:
+ * - `(down)="handler($event)"` → Emitted with `{ itemId: string, expanded: true }`
+ * - `(up)="handler($event)"` → Emitted with `{ itemId: string, expanded: false }`
+ *
+ * @see https://get.foundation/sites/docs/accordion.html#events
+ */
+export const FoundationApiEvents: Story = {
+  args: {
+    allowAllClosed: true,
+  },
+  render: (args) => ({
+    props: {
+      ...args,
+      events: [] as Array<{ type: string; itemId: string; time: string }>,
+      onDown: function (
+        this: { events: Array<{ type: string; itemId: string; time: string }> },
+        event: { itemId: string; expanded: boolean },
+      ) {
+        this.events.unshift({
+          type: '⬇️ down',
+          itemId: event.itemId,
+          time: new Date().toLocaleTimeString(),
+        });
+      },
+      onUp: function (
+        this: { events: Array<{ type: string; itemId: string; time: string }> },
+        event: { itemId: string; expanded: boolean },
+      ) {
+        this.events.unshift({
+          type: '⬆️ up',
+          itemId: event.itemId,
+          time: new Date().toLocaleTimeString(),
+        });
+      },
+    },
+    template: `
+      <main>
+        <div class="margin-bottom-1">
+          <h4>Event Log</h4>
+          <div class="callout secondary" style="max-height: 120px; overflow-y: auto;" data-testid="event-log">
+            @if (events.length === 0) {
+              <p class="text-secondary">Click accordion panels to see (down) and (up) events...</p>
+            } @else {
+              @for (event of events; track $index) {
+                <p class="margin-0"><code>{{ event.type }}</code> - itemId: "{{ event.itemId }}" at {{ event.time }}</p>
+              }
+            }
+          </div>
+        </div>
+        <nfs-accordion ${argsToLiteralTemplate(args)}
+          (down)="onDown($event)"
+          (up)="onUp($event)"
+        >
+          <ng-template nfsAccordionItem panelId="events-panel-1">
+            <ng-template nfsAccordionHeader>Panel 1</ng-template>
+            <ng-template nfsAccordionContent>
+              <p>Click this panel's header to see (down) event when opening.</p>
+              <p>Click another panel to see (up) event when this closes.</p>
+            </ng-template>
+          </ng-template>
+          <ng-template nfsAccordionItem panelId="events-panel-2">
+            <ng-template nfsAccordionHeader>Panel 2</ng-template>
+            <ng-template nfsAccordionContent>
+              <p>Content for panel 2.</p>
+            </ng-template>
+          </ng-template>
+          <ng-template nfsAccordionItem panelId="events-panel-3">
+            <ng-template nfsAccordionHeader>Panel 3</ng-template>
+            <ng-template nfsAccordionContent>
+              <p>Content for panel 3.</p>
+            </ng-template>
+          </ng-template>
+        </nfs-accordion>
+      </main>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const trigger1 = canvas.getByRole('button', { name: /Panel 1/i });
+    const trigger2 = canvas.getByRole('button', { name: /Panel 2/i });
+    const eventLog = canvas.getByTestId('event-log');
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 1. TEST (down) EVENT (T138)
+    // ═══════════════════════════════════════════════════════════════════════
+
+    // Click panel 1 to open it
+    await userEvent.click(trigger1);
+    await waitFor(() => {
+      expect(trigger1).toHaveAttribute('aria-expanded', 'true');
+    });
+
+    // Verify down event was logged
+    await waitFor(() => {
+      expect(eventLog.textContent).toContain('down');
+      expect(eventLog.textContent).toContain('events-panel-1');
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 2. TEST (up) EVENT (T139)
+    // ═══════════════════════════════════════════════════════════════════════
+
+    // Click panel 2 - should close panel 1 and open panel 2
+    await userEvent.click(trigger2);
+    await waitFor(() => {
+      expect(trigger1).toHaveAttribute('aria-expanded', 'false');
+      expect(trigger2).toHaveAttribute('aria-expanded', 'true');
+    });
+
+    // Verify up event was logged for panel 1
+    await waitFor(() => {
+      expect(eventLog.textContent).toContain('up');
+      // Panel 1 should have been closed
+      const upEvents =
+        eventLog.textContent?.includes('up') &&
+        eventLog.textContent?.includes('events-panel-1');
+      expect(upEvents).toBe(true);
+    });
   },
 };
