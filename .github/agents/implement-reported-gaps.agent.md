@@ -1,5 +1,5 @@
 ---
-description: Executes gap fixes from REMEDIATION_CHECKLIST.md with systematic verification and progress tracking. Use after /analyze-gaps creates the remediation checklist. Optimized for Sonnet 4.5's implementation capabilities.
+description: Executes gap fixes from REMEDIATION_CHECKLIST.md with systematic verification and progress tracking. Use after /analyze-prepare-reported-gaps-for-implementation creates the remediation checklist. Optimized for Sonnet 4.5's implementation capabilities.
 ---
 
 ## User Input
@@ -34,7 +34,7 @@ Execute gap fixes from REMEDIATION_CHECKLIST.md systematically, verify each fix 
 ls specs/*/REMEDIATION_CHECKLIST.md
 ```
 
-If not found, tell user: "REMEDIATION_CHECKLIST.md not found. Run `/analyze-gaps` first."
+If not found, tell user: "REMEDIATION_CHECKLIST.md not found. Run `/analyze-prepare-reported-gaps-for-implementation` first."
 
 #### 0.2: Read Documents
 

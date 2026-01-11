@@ -1,6 +1,6 @@
 ---
 name: implement-gap-remediations
-description: Executes gap fixes from REMEDIATION_CHECKLIST.md with systematic verification and progress tracking. Use after /analyze-gaps creates the remediation checklist. Optimized for Sonnet 4.5's implementation capabilities.
+description: Executes gap fixes from REMEDIATION_CHECKLIST.md with systematic verification and progress tracking. Use after /analyze-prepare-reported-gaps-for-implementation creates the remediation checklist. Optimized for Sonnet 4.5's implementation capabilities.
 ---
 
 # Gap Remediation Implementation Executor
@@ -9,7 +9,7 @@ Systematically executes gap fixes from REMEDIATION_CHECKLIST.md with verificatio
 
 ## When to Use This Skill
 
-- **After** `/analyze-gaps` creates REMEDIATION_CHECKLIST.md
+- **After** `/analyze-prepare-reported-gaps-for-implementation` creates REMEDIATION_CHECKLIST.md
 - When ready to implement P0/P1/P2 gap fixes
 - For systematic, verified implementation with progress tracking
 
@@ -497,7 +497,7 @@ After execution:
 
 ```bash
 # In Claude Code CLI
-/implement-gap-remediations
+/implement-reported-gaps
 
 # Skill prompts:
 "Which gaps should I implement?"
@@ -518,8 +518,8 @@ After execution:
 
 ## Related Commands
 
-- `/analyze-brief-gpt-5-mini or /analyze-brief-gpt-4-1` - Generates initial gap report (run before /analyze-gaps)
-- `/analyze-gaps` - Creates REMEDIATION_CHECKLIST.md (run before this command)
+- `/analyze-brief-gpt-5-mini or /analyze-brief-gpt-4-1` - Generates initial gap report (run before /analyze-prepare-reported-gaps-for-implementation)
+- `/analyze-prepare-reported-gaps-for-implementation` - Creates REMEDIATION_CHECKLIST.md (run before this command)
 - `/speckit.implement` - Alternative implementation command (less specialized)
 
 ## Notes

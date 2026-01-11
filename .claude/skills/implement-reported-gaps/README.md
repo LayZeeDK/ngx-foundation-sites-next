@@ -6,7 +6,7 @@ Systematically executes gap fixes from REMEDIATION_CHECKLIST.md.
 
 ```bash
 # In Claude Code CLI
-/implement-gap-remediations
+/implement-reported-gaps
 ```
 
 ```bash
@@ -24,7 +24,7 @@ gh copilot slash implement-gap-remediations
 
 ## When to Use
 
-- **After** running `/analyze-gaps` (creates checklist)
+- **After** running `/analyze-prepare-reported-gaps-for-implementation` (creates checklist)
 - When ready to implement gap fixes
 - For systematic, verified implementation
 
@@ -67,5 +67,5 @@ After execution:
 ## Related Commands
 
 - `/analyze-brief-gpt-5-mini or /analyze-brief-gpt-4-1` - Generates gap report
-- `/analyze-gaps` - Creates REMEDIATION_CHECKLIST.md
+- `/analyze-prepare-reported-gaps-for-implementation` - Creates REMEDIATION_CHECKLIST.md
 - Run this command to execute fixes

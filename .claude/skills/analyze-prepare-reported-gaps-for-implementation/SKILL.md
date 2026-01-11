@@ -1,6 +1,6 @@
 ---
 name: analyze-gaps
-description: Validates gap analysis reports from /analyze-brief-gpt-5-mini or /analyze-brief-gpt-4-1 and creates comprehensive remediation documentation. Prevents future analysis tools from re-flagging known gaps by establishing single source of truth tracking. Use after /analyze-brief-gpt-5-mini or /analyze-brief-gpt-4-1 generates gap-analysis-report.md.
+description: Validates gap analysis reports from /analyze-report-gaps-gpt-5-mini or /analyze-report-gaps-gpt-4-1 and creates comprehensive remediation documentation. Prevents future analysis tools from re-flagging known gaps by establishing single source of truth tracking. Use after /analyze-report-gaps-gpt-5-mini or /analyze-report-gaps-gpt-4-1 generates gap-analysis-report.md.
 ---
 
 # Gap Analysis Validation & Remediation Documentation
@@ -9,7 +9,7 @@ Validates gap analysis reports and creates remediation tracking documents that p
 
 ## When to Use This Skill
 
-- **After** running `/analyze-brief-gpt-5-mini or /analyze-brief-gpt-4-1` (or equivalent manual analysis)
+- **After** running `/analyze-report-gaps-gpt-5-mini or /analyze-report-gaps-gpt-4-1` (or equivalent manual analysis)
 - When `gap-analysis-report.md` exists in repo root
 - **Before** implementing gap fixes (creates actionable checklists)
 - To establish single source of truth for gap tracking
@@ -23,7 +23,7 @@ Validates gap analysis reports and creates remediation tracking documents that p
 
 ## Goal
 
-Create remediation documentation that prevents future `/analyze-brief-gpt-5-mini or /analyze-brief-gpt-4-1` runs from re-flagging these gaps as new issues.
+Create remediation documentation that prevents future `/analyze-report-gaps-gpt-5-mini or /analyze-report-gaps-gpt-4-1` runs from re-flagging these gaps as new issues.
 
 ## Validation Methodology
 
@@ -84,7 +84,7 @@ Create these documents in `specs/<feature>/`:
 
 ### 1. GAPS_REMEDIATION.md
 
-**Purpose**: Single source of truth for `/analyze-brief-gpt-5-mini or /analyze-brief-gpt-4-1` to check before flagging gaps.
+**Purpose**: Single source of truth for `/analyze-report-gaps-gpt-5-mini or /analyze-report-gaps-gpt-4-1` to check before flagging gaps.
 
 **Structure**:
 
@@ -147,7 +147,7 @@ Create these documents in `specs/<feature>/`:
 
 [6-step process used]
 
-## For `/analyze-brief-gpt-5-mini or /analyze-brief-gpt-4-1` Tool
+## For `/analyze-report-gaps-gpt-5-mini or /analyze-report-gaps-gpt-4-1` Tool
 
 **When validating future implementation**:
 
@@ -278,7 +278,7 @@ git commit -m "docs(feature): add validated gap analysis with remediation tracke
 - Total fix time: P0=Xmin, P0+P1=Ymin, P0+P1+P2=Zmin
 
 Validation methodology: 6-step cross-artifact analysis
-Purpose: Single source of truth for /analyze-brief-gpt-5-mini or /analyze-brief-gpt-4-1
+Purpose: Single source of truth for /analyze-report-gaps-gpt-5-mini or /analyze-report-gaps-gpt-4-1
 
 Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
 
@@ -344,7 +344,7 @@ Deliver in this order:
 
 ## Success Criteria
 
-Future `/analyze-brief-gpt-5-mini or /analyze-brief-gpt-4-1` runs should:
+Future `/analyze-report-gaps-gpt-5-mini or /analyze-report-gaps-gpt-4-1` runs should:
 
 - ✅ Find "NOT IMPLEMENTED - TRACKED" markers instead of discovering "new" gaps
 - ✅ Reference GAPS_REMEDIATION.md for detailed tracking
@@ -355,7 +355,7 @@ Future `/analyze-brief-gpt-5-mini or /analyze-brief-gpt-4-1` runs should:
 ## Example Usage
 
 ```text
-/analyze-gaps
+/analyze-prepare-reported-gaps-for-implementation
 
 [Attach gap-analysis-report.md if needed, or skill will auto-locate it]
 ```
@@ -391,7 +391,7 @@ Total time: ~10-15 minutes for analysis + documentation
 
 ## Related Commands
 
-- `/analyze-brief-gpt-5-mini or /analyze-brief-gpt-4-1` - Generates initial gap-analysis-report.md (run this first)
+- `/analyze-report-gaps-gpt-5-mini or /analyze-report-gaps-gpt-4-1` - Generates initial gap-analysis-report.md (run this first)
 - `/speckit.implement` - Executes remediation checklist (run after this skill)
 - `/speckit.analyze` - Pre-implementation consistency check (different purpose)
 
