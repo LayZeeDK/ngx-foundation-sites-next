@@ -14,9 +14,12 @@
 4. [Speed Optimization](#speed-optimization)
 5. [Cost Reduction](#cost-reduction)
 6. [Agentic Workflows](#agentic-workflows)
-7. [Limitations & Tradeoffs](#limitations--tradeoffs)
-8. [Best Practices for Spec Kit Commands](#best-practices-for-spec-kit-commands)
-9. [References](#references)
+7. [Extended Thinking Configuration](#extended-thinking-configuration)
+8. [Structured Outputs with JSON Schema](#structured-outputs-with-json-schema)
+9. [RAG & Batch Processing Optimization](#rag--batch-processing-optimization)
+10. [Limitations & Tradeoffs](#limitations--tradeoffs)
+11. [Best Practices for Spec Kit Commands](#best-practices-for-spec-kit-commands)
+12. [References](#references)
 
 ---
 
@@ -30,10 +33,21 @@ Claude Haiku 4.5 is Anthropic's fastest and most cost-efficient model in the Cla
 - **Real-time applications**: Customer support, code completions, rapid analysis
 
 **Key Stats**:
-- Context window: 200,000 tokens
+
+- Context window: **200,000 tokens** (API/GitHub Copilot/Claude Code standard)
+- Maximum output: 64,000 tokens
 - Latency: Sub-200ms for smaller prompts, ~3.6s average full responses
-- Coding accuracy: ~73% on SWE-bench (vs Sonnet's ~77%)
-- Performance: Near-frontier capabilities at 1/3 the cost
+- Coding accuracy: 73.3% on SWE-bench Verified (vs Sonnet's 77.2%)
+- Performance: 90% of Sonnet 4.5's agentic performance at 1/3 the cost
+- Speed: 2-5x faster than Sonnet 4.5
+
+**Context Window Availability**:
+
+- **GitHub Copilot Business**: 200K tokens (standard)
+- **Claude Code Team**: 200K tokens (standard)
+- **API**: 200K tokens (standard for all API users)
+- **Claude.ai Enterprise**: 500K tokens (web interface only, not available via API)
+- **1M context**: Only available for Sonnet 4 and 4.5 (beta, NOT Haiku)
 
 ---
 
@@ -42,6 +56,7 @@ Claude Haiku 4.5 is Anthropic's fastest and most cost-efficient model in the Cla
 ### 1. Haiku Excels at Focused, Bounded Tasks
 
 Haiku 4.5 is designed for **speed and efficiency**, not extended reasoning. Structure prompts to:
+
 - Have clear, single objectives
 - Use step-bounded reasoning (3-5 steps max)
 - Avoid open-ended exploration tasks
@@ -50,6 +65,7 @@ Haiku 4.5 is designed for **speed and efficiency**, not extended reasoning. Stru
 ### 2. Conciseness is Critical
 
 Every unnecessary token increases cost and latency:
+
 - Use explicit, minimal instructions
 - Avoid verbose explanations or flowery language
 - Specify exact output format upfront
@@ -58,6 +74,7 @@ Every unnecessary token increases cost and latency:
 ### 3. Leverage Structural Patterns
 
 Haiku was trained on structured prompts:
+
 - XML tags (`<task>`, `<context>`, `<output>`)
 - JSON for complex data
 - Checklists and labeled sections
@@ -72,6 +89,7 @@ Haiku was trained on structured prompts:
 **❌ Vague**: "Summarize this report"
 
 **✅ Specific**:
+
 ```
 Summarize for a product manager audience.
 Format: 5 bullet points, max 120 words total
@@ -88,6 +106,7 @@ Exclude: technical implementation details
 ### 2. Step-Bounded Reasoning
 
 **Pattern**:
+
 ```
 Analyze the code issue using exactly 3 steps:
 1. Identify the root cause
@@ -108,6 +127,7 @@ Keep each step to 1-2 sentences.
 **❌ Open-ended**: "Review this code"
 
 **✅ Checklist**:
+
 ```
 Code review checklist:
 - [ ] Correctness: Logic errors? (Pass/Fail + reason)
@@ -127,6 +147,7 @@ Format: JSON with pass/fail and 1-sentence justification per item.
 ### 4. Role and Objective Specification
 
 **System Prompt Pattern**:
+
 ```
 You are a concise technical assistant specializing in code analysis.
 
@@ -151,6 +172,7 @@ Constraints:
 ### 5. Context and Motivation
 
 **Pattern**:
+
 ```
 Because the output will be read aloud by a screen reader:
 - Avoid ellipses and special characters
@@ -158,7 +180,7 @@ Because the output will be read aloud by a screen reader:
 - Use "to" instead of "2", "for" instead of "4"
 ```
 
-**Why**: Explaining *why* a constraint exists helps Haiku adhere strictly to standards and handle edge cases reliably.
+**Why**: Explaining _why_ a constraint exists helps Haiku adhere strictly to standards and handle edge cases reliably.
 
 **Reference**: [Claude Docs - Prompting Best Practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-4-best-practices)
 
@@ -167,6 +189,7 @@ Because the output will be read aloud by a screen reader:
 ### 6. High-Quality Examples
 
 **Pattern**:
+
 ```
 Example input: "User reported login fails after password reset"
 Example output: {"severity": "high", "component": "auth", "action": "check_token_expiry"}
@@ -186,6 +209,7 @@ Now process: "Search returns no results for special characters"
 ### 7. Meta-Prompting for Iterative Improvement
 
 **Workflow**:
+
 1. Deploy initial prompt
 2. Collect outputs and evaluate (LLM-as-judge or human review)
 3. Analyze failures: "Why incorrect? What's missing?"
@@ -193,6 +217,7 @@ Now process: "Search returns no results for special characters"
 5. Repeat cycle
 
 **Example Meta-Prompt**:
+
 ```
 Analyze these 10 outputs from Haiku 4.5:
 [outputs here]
@@ -214,6 +239,7 @@ Output: List of prompt revisions to test next.
 ### 8. Structured Tagging
 
 **Pattern**:
+
 ```xml
 <task>
   Generate unit tests for the validateEmail function
@@ -245,6 +271,7 @@ Output: List of prompt revisions to test next.
 ### 9. Clear Evaluation Criteria
 
 **Pattern**:
+
 ```
 Success criteria:
 - Output is valid JSON (fails if malformed)
@@ -291,6 +318,7 @@ Results aggregated by planner
 ### 2. Low Latency API Integration
 
 **Best Practices**:
+
 - Use streaming responses for real-time feedback
 - Minimize round-trip delays with single-call patterns
 - Leverage Haiku's TPU-optimized backend
@@ -304,6 +332,7 @@ Results aggregated by planner
 ### 3. Optimized Input Length
 
 **Strategy**:
+
 - Send only the delta or relevant code section, not entire files
 - Use targeted prompts focusing on specific functions/modules
 - Avoid unnecessary context
@@ -320,11 +349,13 @@ Results aggregated by planner
 ### 4. Streamlined Output
 
 **Strategy**:
+
 - Request minimal viable output
 - Use structured formats (JSON, bullet points) over prose
 - Avoid "explain your reasoning" unless necessary
 
 **Example**:
+
 ```
 Return only the fixed code block.
 Do NOT include:
@@ -348,6 +379,7 @@ Request Router:
 ```
 
 **Decision Criteria**:
+
 - Haiku: Short responses, structured data, routine tasks
 - Sonnet: Multi-step reasoning, long-form content, critical accuracy
 
@@ -361,10 +393,10 @@ Request Router:
 
 ### 1. Pricing Model
 
-| Model | Input (per 1M tokens) | Output (per 1M tokens) | Cost vs Sonnet |
-|-------|----------------------|------------------------|----------------|
-| Haiku 4.5 | $1 | $5 | 66% cheaper |
-| Sonnet 4.5 | $3 | $15 | Baseline |
+| Model      | Input (per 1M tokens) | Output (per 1M tokens) | Cost vs Sonnet |
+| ---------- | --------------------- | ---------------------- | -------------- |
+| Haiku 4.5  | $1                    | $5                     | 66% cheaper    |
+| Sonnet 4.5 | $3                    | $15                    | Baseline       |
 
 **Strategy**: Default to Haiku, upgrade to Sonnet only when necessary.
 
@@ -373,11 +405,13 @@ Request Router:
 ### 2. Context Window Management
 
 **Strategy**:
+
 - Use only as much context as required per operation
 - Don't auto-include entire conversation history
 - Trim irrelevant historical turns
 
 **Example**:
+
 ```
 ❌ 50,000 tokens (full conversation history)
 ✅ 2,000 tokens (current task context only)
@@ -396,12 +430,9 @@ Savings: 96% reduction in input tokens
 **Strategy**: Submit multiple independent requests simultaneously.
 
 **Example**:
+
 ```javascript
-const results = await Promise.all([
-  analyzeFile('component-a.ts'),
-  analyzeFile('component-b.ts'),
-  analyzeFile('component-c.ts'),
-]);
+const results = await Promise.all([analyzeFile('component-a.ts'), analyzeFile('component-b.ts'), analyzeFile('component-c.ts')]);
 ```
 
 **Why**: Maximizes throughput and minimizes idle time. Haiku's parallelization strengths shine here.
@@ -413,6 +444,7 @@ const results = await Promise.all([
 ### 4. Automated Token Usage Monitoring
 
 **Tools**:
+
 - Claude API token usage headers
 - Vertex AI/Bedrock budget alerts
 - Custom dashboards tracking input/output ratios
@@ -426,6 +458,7 @@ const results = await Promise.all([
 ### 5. Drop-in Replacement for Legacy Workflows
 
 **Migration Path**:
+
 1. Identify Sonnet 4 or Haiku 3.5 calls in codebase
 2. Replace endpoint with Haiku 4.5
 3. Optimize prompts for token economy (see techniques above)
@@ -443,6 +476,7 @@ const results = await Promise.all([
 ### 1. Purpose-Built for Sub-Agent Orchestration
 
 **Architecture**:
+
 ```
 Planner Agent (Sonnet/Opus):
   - Task decomposition
@@ -466,18 +500,20 @@ Worker Agents (Haiku 4.5):
 **Best Practices**:
 
 #### Define Tools Clearly
+
 ```json
 {
   "name": "run_test",
   "description": "Execute test suite for given file path",
   "parameters": {
-    "file_path": {"type": "string", "required": true},
-    "test_pattern": {"type": "string", "required": false}
+    "file_path": { "type": "string", "required": true },
+    "test_pattern": { "type": "string", "required": false }
   }
 }
 ```
 
 #### Manage Context Budget
+
 ```
 After each tool call:
 1. Check remaining context tokens
@@ -486,6 +522,7 @@ After each tool call:
 ```
 
 #### Enable Extended Thinking (Optional)
+
 ```
 For complex multi-step tool workflows:
 - Allow "thinking output" between tool calls
@@ -502,6 +539,7 @@ For complex multi-step tool workflows:
 **Strategies**:
 
 #### Automatic Retry Logic
+
 ```javascript
 async function callHaikuAgent(prompt, maxRetries = 3) {
   for (let i = 0; i < maxRetries; i++) {
@@ -516,6 +554,7 @@ async function callHaikuAgent(prompt, maxRetries = 3) {
 ```
 
 #### Output Validation
+
 ```
 After each agent response:
 1. Validate JSON schema (if structured output)
@@ -531,13 +570,14 @@ After each agent response:
 
 **Optimal Pattern**:
 
-| Role | Model | Rationale |
-|------|-------|-----------|
-| Global planning | Sonnet 4.5/Opus | Complex reasoning, strategy |
-| Task execution | Haiku 4.5 (parallel) | Speed, cost, throughput |
-| Quality assurance | Sonnet 4.5 | Final validation, synthesis |
+| Role              | Model                | Rationale                   |
+| ----------------- | -------------------- | --------------------------- |
+| Global planning   | Sonnet 4.5/Opus      | Complex reasoning, strategy |
+| Task execution    | Haiku 4.5 (parallel) | Speed, cost, throughput     |
+| Quality assurance | Sonnet 4.5           | Final validation, synthesis |
 
 **Example Use Cases**:
+
 - CI/CD: Haiku runs linters/tests in parallel, Sonnet synthesizes final report
 - Code review: Haiku checks style/security per file, Sonnet evaluates architecture
 - Customer service: Haiku handles routing/FAQs, Sonnet handles escalations
@@ -551,15 +591,18 @@ After each agent response:
 **Best Practices**:
 
 #### Human-in-the-Loop for High-Impact Actions
+
 - Require approval before: deployments, data deletion, external API calls with side effects
 - Use Haiku for analysis/recommendation, human for final decision
 
 #### Automated Test Sets
+
 - Maintain regression test suite for agent behaviors
 - Run tests after prompt changes or model updates
 - Monitor output quality metrics (accuracy, latency, cost)
 
 #### ASL-2 Classification
+
 - Haiku 4.5 is rated ASL-2 (AI Safety Level 2)
 - Suitable for enterprise deployment with standard safeguards
 - Lower risk than more powerful models
@@ -568,25 +611,369 @@ After each agent response:
 
 ---
 
+## Extended Thinking Configuration
+
+**Haiku 4.5 is the first Haiku model to support extended thinking**, bringing advanced reasoning capabilities with configurable thinking budgets.
+
+### Budget Configuration
+
+**API Parameters**:
+
+```python
+response = anthropic.messages.create(
+    model="claude-haiku-4.5-20251001",
+    max_tokens=4096,
+    thinking={
+        "type": "enabled",
+        "budget_tokens": 2048  # Start at minimum (1024), adjust up
+    },
+    messages=[...]
+)
+```
+
+**Budget Guidelines**:
+
+- **Minimum**: 1,024 tokens (always start here)
+- **Medium reasoning**: 2,048-4,096 tokens (gap validation, edge cases)
+- **Complex reasoning**: 8,192+ tokens (multi-step logic, deep analysis)
+- **Cost**: Thinking tokens billed as output ($5/M)
+
+**Key Points**:
+
+- Budget is a target, not a strict limit (actual usage may vary)
+- Increase incrementally (1K-2K at a time) to find optimal range
+- For Haiku, thinking budget of 4K adds ~$0.02 per request
+
+**Reference**: [Extended thinking - Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/claude-messages-extended-thinking.html)
+
+---
+
+### Interleaved Thinking
+
+⚠️ **BETA FEATURE - DO NOT USE IN PRODUCTION**
+
+This feature is currently in beta and should not be used in Spec Kit commands until generally available.
+
+**Enable thinking between tool calls** for sophisticated multi-step workflows:
+
+```python
+response = anthropic.messages.create(
+    model="claude-haiku-4.5-20251001",
+    max_tokens=4096,
+    thinking={
+        "type": "enabled",
+        "budget_tokens": 4096
+    },
+    headers={
+        "anthropic-beta": "interleaved-thinking-2025-05-14"  # Enable beta feature
+    },
+    messages=[...]
+)
+```
+
+**Benefits**:
+
+- Model thinks after receiving tool results
+- Makes more sophisticated decisions between tool calls
+- Budget_tokens can exceed max_tokens (total across all thinking blocks)
+- Improves multi-step agentic workflows
+
+**Reference**: [Extended thinking - Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/claude-messages-extended-thinking.html)
+
+---
+
+### When to Use Extended Thinking
+
+| Task Type        | Extended Thinking? | Budget | Rationale                  |
+| ---------------- | ------------------ | ------ | -------------------------- |
+| Template filling | ❌ No              | N/A    | Pure substitution          |
+| Keyword search   | ❌ No              | N/A    | Pattern matching only      |
+| Task generation  | ⚠️ Optional        | 1K-2K  | Simple transformations     |
+| Gap detection    | ✅ Yes             | 2K-4K  | Edge case handling         |
+| Gap validation   | ✅ Yes             | 4K-8K  | Reasoning about duplicates |
+| Code review      | ✅ Yes             | 4K-8K  | Multi-file context         |
+| Complex logic    | ⚠️ Use Sonnet      | —      | Haiku may struggle         |
+
+---
+
+## Structured Outputs with JSON Schema
+
+⚠️ **BETA FEATURE - DO NOT USE IN PRODUCTION**
+
+**Public beta feature enabled for Haiku 4.5 on December 4, 2025**. This feature is currently in beta and should not be used in Spec Kit commands until generally available.
+
+Structured outputs eliminate schema-related parsing errors and ensure responses conform to exact schemas.
+
+### API Configuration
+
+```python
+import anthropic
+
+# Define JSON schema
+gap_schema = {
+    "type": "object",
+    "properties": {
+        "gaps": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "id": {"type": "string", "pattern": "^GAP-[0-9]+$"},
+                    "title": {"type": "string", "maxLength": 50},
+                    "fr_requirement": {"type": "string", "pattern": "^FR-[0-9]+$"},
+                    "validation_score": {"type": "integer", "minimum": 6, "maximum": 10},
+                    "priority": {"type": "string", "enum": ["P0", "P1", "P2"]}
+                },
+                "required": ["id", "title", "fr_requirement", "validation_score"]
+            }
+        }
+    },
+    "required": ["gaps"]
+}
+
+# API call with structured output
+client = anthropic.Anthropic()
+response = client.messages.create(
+    model="claude-haiku-4.5-20251001",
+    max_tokens=4096,
+    headers={
+        "anthropic-beta": "structured-outputs-2025-11-13"  # Enable beta feature
+    },
+    messages=[{"role": "user", "content": "Analyze accordion for gaps"}],
+    response_format={
+        "type": "json_schema",
+        "json_schema": {
+            "name": "gap_analysis",
+            "strict": True,
+            "schema": gap_schema
+        }
+    }
+)
+
+# Response guaranteed to match schema
+gaps = response.content[0].json_object
+```
+
+### Benefits
+
+- ✅ **Zero parsing errors** - Output always valid JSON
+- ✅ **Type safety** - Validated at API level
+- ✅ **No post-processing** - Direct deserialization
+- ✅ **Tool call reliability** - Eliminates malformed parameters
+- ✅ **Clear contracts** - Schema defines expectations
+
+### Use Cases for Spec Kit
+
+1. **Data extraction** - Extract FR-XXX requirements with guaranteed format
+2. **Tool calling** - Ensure tool parameters match expected schema
+3. **Batch processing** - Consistent output format across thousands of requests
+4. **Multi-agent orchestration** - Reliable message passing between agents
+
+**References**:
+
+- [Structured outputs - Claude Docs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs)
+- [Structured outputs announcement - Claude Blog](https://claude.com/blog/structured-outputs-on-the-claude-developer-platform)
+
+---
+
+## RAG & Batch Processing Optimization
+
+### Prompt Caching Strategy
+
+**Cost breakdown** (per million tokens):
+
+- Cache write: $1.25 (one-time)
+- Cache read: $0.10 (90% savings vs full input)
+- Haiku base: $1 input / $5 output
+
+**Example**: 100 queries against 50K knowledge base
+
+**Without caching**:
+
+```
+Input: 100 × 50K = 5M × $1 = $5.00
+Output: 100 × 500 = 50K × $5 = $0.25
+Total: $5.25
+```
+
+**With caching**:
+
+```
+Cache write (once): 50K × $1.25 = $0.06
+Cache reads: 100 × 50K × $0.10 = $0.50
+Output: 100 × 500 × $5 = $0.25
+Total: $0.81 (85% savings!)
+```
+
+### Implementation Pattern
+
+```python
+import anthropic
+
+client = anthropic.Anthropic()
+knowledge_base = load_documents("docs/")  # 50K tokens
+
+# Cache structure
+system_prompt = [
+    {
+        "type": "text",
+        "text": "You are a documentation assistant."
+    },
+    {
+        "type": "text",
+        "text": knowledge_base,
+        "cache_control": {"type": "ephemeral"}  # Cache this section
+    }
+]
+
+# Multiple queries reuse cache
+for query in queries:
+    response = client.messages.create(
+        model="claude-haiku-4.5-20251001",
+        max_tokens=1024,
+        system=system_prompt,  # Reuses cached KB
+        messages=[{"role": "user", "content": query}]
+    )
+```
+
+**Key strategies**:
+
+- Cache knowledge base documents independently
+- Place cached content at prompt's beginning
+- Cache breakpoints separate different cacheable sections
+- Cache stays warm for ~15 minutes (Anthropic's cache TTL)
+
+**References**:
+
+- [Introducing Contextual Retrieval - Anthropic](https://www.anthropic.com/news/contextual-retrieval)
+- [Prompt caching - Claude Docs](https://docs.claude.com/en/docs/build-with-claude/prompt-caching)
+
+---
+
+### Batch API for Async Workloads
+
+**Cost savings**: 50% discount on output tokens ($5/M → $2.50/M)
+
+```python
+# Create batch job
+batch = client.batches.create(
+    requests=[
+        {
+            "custom_id": f"req-{i}",
+            "params": {
+                "model": "claude-haiku-4.5-20251001",
+                "max_tokens": 1024,
+                "messages": [{"role": "user", "content": queries[i]}]
+            }
+        }
+        for i in range(1000)  # 1000 queries
+    ]
+)
+
+# Poll for completion (async)
+while batch.status != "ended":
+    await asyncio.sleep(60)
+    batch = client.batches.retrieve(batch.id)
+
+# Process results
+results = client.batches.results(batch.id)
+```
+
+**Cost comparison** (1000 queries, 500 token output each):
+
+| Method            | Input | Output          | Total |
+| ----------------- | ----- | --------------- | ----- |
+| **Sync**          | $1.00 | $2.50           | $3.50 |
+| **Batch**         | $1.00 | $1.25 (50% off) | $2.25 |
+| **Batch + Cache** | $0.10 | $1.25           | $1.35 |
+
+**Savings**: 61% with batch + caching combined
+
+---
+
+### Hybrid Retrieval for RAG
+
+**Pattern**: BM25 (keyword matching) + embeddings (semantic search) + reranking
+
+```markdown
+Query: "How do I configure accordion?"
+
+Step 1: Hybrid Retrieval
+├── BM25: Find docs with "configure", "accordion"
+├── Embeddings: Find semantically similar docs
+└── Merge: Top 20 chunks
+
+Step 2: Reranking
+└── Filter 20 → 5 best chunks (less context = faster)
+
+Step 3: Generate with Haiku
+└── Use cached context + 5 chunks
+└── Sub-second latency
+```
+
+**Why hybrid**:
+
+- BM25 catches exact term matches ("accordion", "configure")
+- Embeddings catch conceptual matches ("set up tabs component")
+- Reranking reduces context (5 chunks vs 20) = faster + cheaper
+
+**Reference**: [Claude Haiku 4.5 Deep Dive - Caylent](https://caylent.com/blog/claude-haiku-4-5-deep-dive-cost-capabilities-and-the-multi-agent-opportunity)
+
+---
+
+### Contextual Retrieval
+
+**Add context to each chunk** during preprocessing (one-time cost with Sonnet):
+
+```python
+def add_context_to_chunk(chunk, document):
+    response = client.messages.create(
+        model="claude-sonnet-4.5-20250929",  # Use Sonnet for preprocessing
+        messages=[{
+            "role": "user",
+            "content": f"""
+Document: {document}
+
+Chunk: {chunk}
+
+Task: Write 1-2 sentences explaining this chunk's role in the document.
+"""
+        }]
+    )
+    return f"{response.content[0].text}\n\n{chunk}"
+
+# Now retrieval is more accurate
+```
+
+**Why**: Chunks with context improve retrieval accuracy by 15-20% (Anthropic research).
+
+**Reference**: [Introducing Contextual Retrieval - Anthropic](https://www.anthropic.com/news/contextual-retrieval)
+
+---
+
 ## Limitations & Tradeoffs
 
 ### Haiku 4.5 vs Sonnet 4.5 Comparison
 
-| Feature | Haiku 4.5 | Sonnet 4.5 |
-|---------|-----------|------------|
-| **Speed** | 2-3× faster (sub-200ms TTFT) | Slower, more thorough |
-| **Cost** | $1/$5 per 1M tokens | $3/$15 per 1M tokens |
-| **Coding accuracy** | ~73% (SWE-bench) | ~77% (SWE-bench) |
-| **Reasoning depth** | High for size (~55-58%) | Highest (~65-70%) |
-| **Context window** | 200K tokens | 200K-1M tokens (premium) |
-| **Error recovery** | Strong for simple/parallel tasks | Superior for complex multi-step |
-| **Best for** | Fast, cheap, frequent tasks | Deep analysis, critical accuracy |
+| Feature                 | Haiku 4.5                               | Sonnet 4.5                       |
+| ----------------------- | --------------------------------------- | -------------------------------- |
+| **Speed**               | 2-5× faster (sub-200ms TTFT)            | Slower, more thorough            |
+| **Cost**                | $1/$5 per 1M tokens                     | $3/$15 per 1M tokens             |
+| **Coding accuracy**     | 73.3% (SWE-bench Verified)              | 77.2% (SWE-bench Verified)       |
+| **Agentic performance** | 90% of Sonnet                           | 100% baseline                    |
+| **Context window**      | 200K tokens (500K Claude.ai Enterprise) | 200K-1M tokens (1M in beta)      |
+| **Max output**          | 64K tokens                              | 64K tokens                       |
+| **Extended thinking**   | ✅ Supported (min 1K budget)            | ✅ Supported                     |
+| **Structured outputs**  | ✅ Supported (Dec 2025)                 | ✅ Supported                     |
+| **Error recovery**      | Strong for simple/parallel tasks        | Superior for complex multi-step  |
+| **Best for**            | Fast, cheap, frequent tasks             | Deep analysis, critical accuracy |
 
 ---
 
 ### When to Choose Haiku 4.5
 
 ✅ **Use Haiku when**:
+
 - Cost and speed are primary concerns
 - Tasks are well-defined and bounded
 - High volume, repetitive workflows
@@ -595,6 +982,7 @@ After each agent response:
 - Output is structured and verifiable
 
 ❌ **Avoid Haiku when**:
+
 - Deep, multi-step reasoning required on every task
 - Errors are costly (rework negates cost savings)
 - Complex synthesis across many documents
@@ -606,6 +994,7 @@ After each agent response:
 ### When to Choose Sonnet 4.5
 
 ✅ **Use Sonnet when**:
+
 - Accuracy and depth are critical
 - Complex architectural analysis
 - Multi-file code changes with dependencies
@@ -622,16 +1011,19 @@ After each agent response:
 ### Performance Benchmarks
 
 **Coding (SWE-bench Verified)**:
+
 - Haiku 4.5: 73%
 - Sonnet 4.5: 77%
 - Delta: ~4-5% accuracy difference
 
 **Speed**:
+
 - Haiku 4.5: 0.5s time-to-first-token, ~3.6s average completion
 - Sonnet 4.5: ~1.5s TTFT, ~10s average completion
 - Delta: 2-3× speed improvement with Haiku
 
 **Cost**:
+
 - Haiku 4.5: 66% cheaper than Sonnet
 - Break-even: Haiku needs <1.5× more retries to remain cost-effective
 
@@ -644,6 +1036,7 @@ After each agent response:
 ### 1. Command Design Patterns
 
 #### Single-Purpose Commands
+
 ```
 ✅ Good: `/analyze-gaps` - Does one thing well
 ❌ Bad: `/analyze-and-fix-everything` - Too broad
@@ -654,6 +1047,7 @@ After each agent response:
 ---
 
 #### Bounded Output
+
 ```
 Command: /summarize-spec
 
@@ -668,6 +1062,7 @@ Format: `- [Section]: Description`
 ---
 
 #### Checklist-Based Validation
+
 ```
 Command: /validate-plan
 
@@ -713,6 +1108,7 @@ Failure = [Anti-goals, things to avoid]
 ### 3. Error Handling
 
 #### Graceful Degradation
+
 ```
 If context is incomplete:
 1. Identify missing information explicitly
@@ -722,6 +1118,7 @@ If context is incomplete:
 ```
 
 #### Validation Layer
+
 ```javascript
 function validateHaikuOutput(output, schema) {
   const validation = validateJSON(output, schema);
@@ -738,6 +1135,7 @@ function validateHaikuOutput(output, schema) {
 ### 4. Testing Strategy
 
 #### Regression Test Suite
+
 ```typescript
 describe('Haiku 4.5 Commands', () => {
   it('/analyze-gaps returns valid JSON', async () => {
@@ -756,6 +1154,7 @@ describe('Haiku 4.5 Commands', () => {
 ```
 
 #### Quality Metrics
+
 - Accuracy: % of correct outputs on test set
 - Latency: P50, P95, P99 response times
 - Cost: Average tokens per invocation
@@ -775,15 +1174,18 @@ Each Spec Kit command using Haiku should document:
 **Typical cost**: ~$0.02 per invocation
 
 ### Prompt Strategy
+
 - Uses step-bounded reasoning (3 steps)
 - Structured XML input format
 - JSON output with schema validation
 
 ### Known Limitations
+
 - May miss edge cases requiring deep reasoning (escalate to Sonnet)
 - Optimal for files <1000 lines (context limit)
 
 ### Quality Metrics
+
 - Accuracy: 94% on regression test suite (n=500)
 - P95 latency: 1.8s
 - Average retry rate: 3%
@@ -797,14 +1199,17 @@ Each Spec Kit command using Haiku should document:
 
 1. **Structure prompts explicitly**: Use XML, JSON, checklists
 2. **Bound reasoning**: 3-5 steps maximum
-3. **Specify output format**: Exact schema, length, structure
-4. **Provide context/motivation**: Explain *why* constraints exist
+3. **Specify output format**: Exact schema, length, structure (use JSON schema for guaranteed validity)
+4. **Provide context/motivation**: Explain _why_ constraints exist
 5. **Use high-quality examples**: Aligned with desired behavior
 6. **Optimize for speed**: Concise inputs, parallel execution, minimal outputs
 7. **Monitor costs**: Track token usage, set budget alerts
 8. **Hybrid architecture**: Haiku for bulk, Sonnet for complexity
 9. **Validate outputs**: Schema checks, retry with feedback
 10. **Test systematically**: Regression suite, quality metrics
+11. **Use extended thinking** for complex tasks: Start with 2K-4K budget, adjust up
+12. **Enable prompt caching** for repeated context: 90% cost savings on cache hits
+13. **Use batch API** for async workloads: 50% discount on output tokens
 
 ### ❌ Avoid This
 
@@ -816,16 +1221,28 @@ Each Spec Kit command using Haiku should document:
 6. **Ignoring limitations**: Forcing Haiku into Sonnet-level tasks
 7. **No validation**: Assuming outputs are always correct
 8. **Static prompts**: Never iterating based on failure analysis
+9. **Ignoring prompt caching**: Sending repeated context without caching (wastes 90% cost savings)
+10. **Not using batch API**: Processing async workloads synchronously (misses 50% discount)
+11. **Skipping extended thinking**: Using default mode for complex reasoning tasks
+12. **Using beta features in production**: Structured outputs, interleaved thinking (wait for GA)
 
 ---
 
 ## References
 
 ### Official Documentation
+
 - [Anthropic - Introducing Claude Haiku 4.5](https://www.anthropic.com/news/claude-haiku-4-5)
 - [Claude Docs - Prompting Best Practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-4-best-practices)
+- [Extended thinking - Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/claude-messages-extended-thinking.html)
+- [Building with extended thinking - Claude Docs](https://platform.claude.com/docs/en/build-with-claude/extended-thinking)
+- [Structured outputs - Claude Docs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs)
+- [Structured outputs announcement - Claude Blog](https://claude.com/blog/structured-outputs-on-the-claude-developer-platform)
+- [Prompt caching - Claude Docs](https://docs.claude.com/en/docs/build-with-claude/prompt-caching)
+- [Introducing Contextual Retrieval - Anthropic](https://www.anthropic.com/news/contextual-retrieval)
 
 ### Prompt Engineering
+
 - [Sider AI - Prompt Strategies for Haiku 4.5](https://sider.ai/blog/ai-tools/prompt-strategies-that-work-best-with-claude-haiku-4_5)
 - [12Factor.me - Claude 4.5 Best Practices](https://12factor.me/prompt-engineering/best-practice)
 - [DreamHost - Claude Prompt Techniques That Work](https://www.dreamhost.com/blog/claude-prompt-engineering/)
@@ -834,6 +1251,7 @@ Each Spec Kit command using Haiku should document:
 - [Arize - Prompt Learning with Claude](https://arize.com/blog/claude-md-best-practices-learned-from-optimizing-claude-code-with-prompt-learning/)
 
 ### Performance & Optimization
+
 - [Sider AI - Haiku vs Sonnet Strategy](https://sider.ai/blog/ai-tools/claude-haiku-4_5-explained-pricing-performance-and-strategic-power)
 - [AI Tool Curator - Haiku 4.5 Performance Guide](https://www.aitoolcurator.com/blog/claude-haiku-4-5/)
 - [SmartScope - Haiku 4.5 Practical Guide](https://smartscope.blog/en/blog/claude-haiku-4-5-complete-guide/)
@@ -841,6 +1259,7 @@ Each Spec Kit command using Haiku should document:
 - [Josh Berkowitz - Speed & Savings Analysis](https://joshuaberkowitz.us/blog/news-1/unlocking-speed-smarts-and-savings-claude-haiku-4-5-raises-the-bar-for-small-ai-models-1474)
 
 ### Agentic Workflows
+
 - [Comet API - Agentic Coding with Haiku 4.5](https://www.cometapi.com/en/agentic-coding-with-claude-haiku-4-5/)
 - [Caylent - Multi-Agent Deep Dive](https://caylent.com/blog/claude-haiku-4-5-deep-dive-cost-capabilities-and-the-multi-agent-opportunity)
 - [Spartner - Why Haiku 4.5 Matters](https://spartner.software/nieuws/claude-4-5-haiku-why-this-model-matters)
@@ -851,6 +1270,7 @@ Each Spec Kit command using Haiku should document:
 - [DTP Tips - Haiku 4.5 Introduction](https://dtptips.com/introducing-claude-haiku-4-5-speed-efficiency-intelligence-combined/)
 
 ### Comparisons & Benchmarks
+
 - [Mash Blog - Haiku vs Sonnet Production Tradeoffs](https://mashblog.com/posts/haiku-sonnet)
 - [Creole Studios - Haiku vs Sonnet Detailed Comparison](https://www.creolestudios.com/claude-haiku-4-5-vs-sonnet-4-5-comparison/)
 - [Galaxy.ai - Haiku vs Sonnet Comparative Analysis](https://blog.galaxy.ai/compare/claude-haiku-4-5-vs-claude-sonnet-4-5)
@@ -860,10 +1280,11 @@ Each Spec Kit command using Haiku should document:
 - [Banono.ai - Detailed Analysis for 2025](https://banono.ai/posts/claude-haiku-4-5-vs-claude-sonnet-4-5)
 
 ### Technical Guides
+
 - [Geeky Gadgets - AI Efficiency Redefining Business](https://www.geeky-gadgets.com/claude-haiku-4-5-ai-model/)
 
 ---
 
-**Last Updated**: 2026-01-10  
-**Version**: 1.0.0  
+**Last Updated**: 2026-01-11
+**Version**: 1.1.0 - Added Extended Thinking, Structured Outputs, and RAG optimization sections
 **Maintainer**: Spec Kit Team

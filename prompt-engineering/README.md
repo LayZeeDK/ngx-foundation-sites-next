@@ -11,6 +11,7 @@ This directory contains research-backed optimization strategies for AI models us
 **Model**: Claude Sonnet 4.5 (1M context)
 
 **10 Key Optimizations**:
+
 1. **Structured Prompting with XML** - `<role>`, `<task>`, `<constraints>`, `<output_format>`
 2. **Direct Communication** - Skip preambles, be explicit about formats
 3. **Extended Thinking** - Deep reasoning for complex tasks (16K+ tokens)
@@ -30,34 +31,38 @@ This directory contains research-backed optimization strategies for AI models us
 
 ### [Claude Haiku 4.5 Optimization Guide](./CLAUDE-HAIKU-4-5-OPTIMIZATION.md)
 
-**Model**: Claude Haiku 4.5 (200K context, 2-3x speed, 66% cost savings vs Sonnet)
+**Model**: Claude Haiku 4.5 (200K context for GitHub Copilot Business & Claude Code Team)
 
-**9 Key Optimizations**:
-1. **Explicit Structured Instructions** - Clear boundaries, specific formats, minimal ambiguity
-2. **Step-Bounded Reasoning** - 3-5 steps max, prevents runaway verbosity
-3. **Checklists Over Open-Ended** - Verifiable, repeatable, structured outputs
-4. **Role & Objective Specification** - System prompts with constraints and anti-goals
-5. **Context & Motivation** - Explain *why* constraints exist for better adherence
-6. **High-Quality Examples** - Aligned examples reproduce desired behavior
-7. **Meta-Prompting** - Iterative improvement through feedback loops
-8. **Structured Tagging** - XML/JSON for clear information hierarchy
-9. **Clear Evaluation Criteria** - Explicit success bar and anti-goals
+**Context Window**: 200K tokens (standard), 64K max output
 
-**Speed & Cost Optimizations**:
-- Multi-agent orchestration (parallel subtasks)
-- Optimized input length (send only relevant code)
-- Streamlined output (minimal viable responses)
-- Hybrid model approach (Haiku for bulk, Sonnet for complexity)
-- Context window management (lean context = lower cost)
+**Related**: [Command Optimization Recommendations](./HAIKU-4-5-COMMAND-OPTIMIZATION-RECOMMENDATIONS.md) - Applying optimizations to Spec Kit commands
 
-**Agentic Workflows**:
-- Sub-agent orchestration (central planner delegates to Haiku workers)
-- Tool calling optimization (clear definitions, context budget tracking)
-- Hybrid architectures (Sonnet planning, Haiku execution)
+### [Haiku 4.5 Command Optimization Recommendations](./HAIKU-4-5-COMMAND-OPTIMIZATION-RECOMMENDATIONS.md)
 
-**Best for**: Fast iteration, high-volume tasks, parallel agentic workflows, real-time applications
+**Analysis of**: `tasks-haiku-4-5`, `clarify-haiku-4-5`, `specify-haiku-4-5`, `checklist-haiku-4-5`
 
-**Commands**: Gap analysis, task generation, code reviews, customer support
+**Key Recommendations**:
+
+- ✅ **Extended thinking** for tasks-haiku-4-5 (2K budget) - Better dependency detection
+- ✅ **Extended thinking** for clarify-haiku-4-5 (4K budget) - Better ambiguity detection
+- ⚠️ **Monitor** specify-haiku-4-5 - Implement only if quality issues observed
+- 🚫 **Skip beta features** - Structured outputs, interleaved thinking (wait for GA)
+- 🚫 **Not applicable** - Prompt caching, batch API, RAG (wrong use case)
+
+**Cost impact**: +$0.01-$0.02 per command with extended thinking
+
+**9 Core Optimizations** (in full guide):
+
+1. Explicit structured instructions | 2. Step-bounded reasoning | 3. Checklists | 4. Role specification
+2. Context & motivation | 6. High-quality examples | 7. Meta-prompting | 8. XML tagging | 9. Clear evaluation
+
+**Additional Sections** (in full guide):
+
+- Extended thinking configuration (2K-8K budgets)
+- Structured outputs with JSON schema (⚠️ beta - do not use)
+- RAG & batch processing optimization (prompt caching, hybrid retrieval)
+- Multi-agent orchestration patterns
+- Cost reduction strategies
 
 ---
 
@@ -66,6 +71,7 @@ This directory contains research-backed optimization strategies for AI models us
 **Model**: GPT-4.1 (1M context, non-reasoning, 0x cost)
 
 **5 Key Optimizations**:
+
 1. **Sandwich Method** - Instructions at beginning AND end (critical for 1M context)
 2. **Literal Instruction Following** - Extremely explicit commands (no inference)
 3. **Progressive Disclosure** - Load in chunks for >500K features
@@ -83,6 +89,7 @@ This directory contains research-backed optimization strategies for AI models us
 **Model**: GPT-5 Mini (200K context, minimal reasoning, 0x cost)
 
 **7 Key Optimizations**:
+
 1. **CTCO Framework** - Context → Task → Constraints → Output
 2. **reasoning_effort: minimal** - Fast inference with kernel fusion
 3. **Verbosity Controls** - Strict word limits (≤8, ≤20, ≤40)
@@ -126,15 +133,15 @@ ELSE:
 
 ### Task Type Suitability
 
-| Task Type | GPT-5 Mini | GPT-4.1 | Haiku 4.5 | Sonnet 4.5 |
-|-----------|------------|---------|-----------|------------|
-| **Gap analysis (small)** | ✅ Best (0x) | ⚠️ Slower | ✅ Best (0.33x) | ⚠️ Overkill |
-| **Gap analysis (large)** | ❌ Context limit | ✅ Good (0x) | ✅ Good (0.33x) | ✅ Best (1x) |
-| **Task generation** | ✅ Best (0x) | ✅ Good (0x) | ✅ Best (0.33x) | ⚠️ Overkill |
-| **Gap validation** | ❌ Needs reasoning | ❌ Needs reasoning | ⚠️ Light reasoning | ✅ Best (1x) |
-| **Implementation** | ❌ No reasoning | ❌ No reasoning | ⚠️ Simple code | ✅ Best (1x) |
-| **Complex reasoning** | ❌ Not capable | ❌ Not capable | ⚠️ Basic | ✅ Extended thinking |
-| **Agentic workflows** | ❌ Not capable | ❌ Not capable | ✅ 90% of Sonnet | ✅ Best (1x) |
+| Task Type                | GPT-5 Mini         | GPT-4.1            | Haiku 4.5          | Sonnet 4.5           |
+| ------------------------ | ------------------ | ------------------ | ------------------ | -------------------- |
+| **Gap analysis (small)** | ✅ Best (0x)       | ⚠️ Slower          | ✅ Best (0.33x)    | ⚠️ Overkill          |
+| **Gap analysis (large)** | ❌ Context limit   | ✅ Good (0x)       | ✅ Good (0.33x)    | ✅ Best (1x)         |
+| **Task generation**      | ✅ Best (0x)       | ✅ Good (0x)       | ✅ Best (0.33x)    | ⚠️ Overkill          |
+| **Gap validation**       | ❌ Needs reasoning | ❌ Needs reasoning | ⚠️ Light reasoning | ✅ Best (1x)         |
+| **Implementation**       | ❌ No reasoning    | ❌ No reasoning    | ⚠️ Simple code     | ✅ Best (1x)         |
+| **Complex reasoning**    | ❌ Not capable     | ❌ Not capable     | ⚠️ Basic           | ✅ Extended thinking |
+| **Agentic workflows**    | ❌ Not capable     | ❌ Not capable     | ✅ 90% of Sonnet   | ✅ Best (1x)         |
 
 ---
 
@@ -143,27 +150,34 @@ ELSE:
 ### GPT-4.1 Research (2026)
 
 **Key Finding**: "Sandwich method (instructions at beginning AND end) works best for long context"
+
 - [GPT-4.1 Prompting Guide | OpenAI Cookbook](https://cookbook.openai.com/examples/gpt4-1_prompting_guide)
 - [The Complete Guide to GPT-4.1 - PromptHub](https://www.prompthub.us/blog/the-complete-guide-to-gpt-4-1-models-performance-pricing-and-prompting-tips)
 
 **Key Finding**: "GPT-4.1 follows instructions literally—does exactly what you tell it"
+
 - [GPT-4.1 Prompting Guide - God of Prompt](https://www.godofprompt.ai/blog/gpt-4-1-prompting-guide)
 
 **Key Finding**: "Retrieves accurately at all positions up to 1M tokens, but performance can taper off—use progressive disclosure"
+
 - [Inside GPT-4.1: Technical Analysis - Trickle](https://trickle.so/blog/inside-gpt-4-1-technical-analysis)
 
 ### GPT-5 Mini Research (2026)
 
 **Key Finding**: "Fast inference via kernel fusion, tensor parallelism; prefers shorter internal thinking loops"
+
 - [GPT-5 mini API - CometAPI](https://www.cometapi.com/gpt-5-mini-api/)
 
 **Key Finding**: "Use CTCO Framework, explicitly define Reasoning Effort, use Scope Discipline to prevent verbosity drift"
+
 - [GPT-5.2 Prompting Guide - Atlabs AI](https://www.atlabs.ai/blog/gpt-5.2-prompting-guide-the-2026-playbook-for-developers-agents)
 
 **Key Finding**: "Reduced deep-reasoning capacity vs full GPT-5; higher sensitivity to ambiguous prompts"
+
 - [GPT-5 mini Model Card - PromptHub](https://www.prompthub.us/models/gpt-5-mini)
 
 **Key Finding**: "85-95% of GPT-5 on general benchmarks with substantially improved latency/price"
+
 - [GPT-5 Mini vs Grok Code Fast 1 - Galaxy.ai](https://blog.galaxy.ai/compare/gpt-5-mini-vs-grok-code-fast-1)
 
 ---
@@ -172,26 +186,27 @@ ELSE:
 
 ### Speed Benchmarks (Small Feature ~90K tokens)
 
-| Model | Time | Cost | Quality | Best For |
-|-------|------|------|---------|----------|
-| **GPT-5 Mini** (optimized) | 10-20s ⚡ | 0x | 85-95% | Fastest + free |
-| **Haiku 4.5** (optimized) | 15-25s | 0.33x | 90% of Sonnet | Agentic tasks |
-| **GPT-4.1** (optimized) | 30-60s | 0x | Baseline | Free option |
-| **Sonnet 4.5** | 20-40s | 1x | Best | Complex reasoning |
+| Model                      | Time      | Cost  | Quality       | Best For          |
+| -------------------------- | --------- | ----- | ------------- | ----------------- |
+| **GPT-5 Mini** (optimized) | 10-20s ⚡ | 0x    | 85-95%        | Fastest + free    |
+| **Haiku 4.5** (optimized)  | 15-25s    | 0.33x | 90% of Sonnet | Agentic tasks     |
+| **GPT-4.1** (optimized)    | 30-60s    | 0x    | Baseline      | Free option       |
+| **Sonnet 4.5**             | 20-40s    | 1x    | Best          | Complex reasoning |
 
 **Winner for small features**: GPT-5 Mini (fastest + free) or Haiku 4.5 (best agentic performance/cost)
 
 ### Speed Benchmarks (Large Feature ~500K tokens)
 
-| Model | Time | Cost | Quality | Context Limit |
-|-------|------|------|---------|---------------|
-| **GPT-5 Mini** | ❌ Context overflow | — | — | 200K |
-| **Haiku 4.5** | ❌ Context overflow | — | — | 200K |
-| **GPT-4.1** (optimized) | 45-90s | 0x | Good | 1M |
-| **GPT-4.1** (+ progressive disclosure) | 60-120s | 0x | Excellent | 1M |
-| **Sonnet 4.5** (1M context) | 30-60s | 1x | Best | 1M (beta) |
+| Model                                  | Time                | Cost | Quality   | Context Limit |
+| -------------------------------------- | ------------------- | ---- | --------- | ------------- |
+| **GPT-5 Mini**                         | ❌ Context overflow | —    | —         | 200K          |
+| **Haiku 4.5**                          | ❌ Context overflow | —    | —         | 200K          |
+| **GPT-4.1** (optimized)                | 45-90s              | 0x   | Good      | 1M            |
+| **GPT-4.1** (+ progressive disclosure) | 60-120s             | 0x   | Excellent | 1M            |
+| **Sonnet 4.5** (1M context)            | 30-60s              | 1x   | Best      | 1M (beta)     |
 
 **Winner for large features**:
+
 - Free option: GPT-4.1 (only free 1M context in Copilot)
 - Best performance: Sonnet 4.5 (extended thinking + 1M context)
 
@@ -202,11 +217,13 @@ ELSE:
 ### Principle 1: Match Model Strengths
 
 **GPT-5 Mini strengths**:
+
 - Fast inference (kernel fusion)
 - Structured prompts (CTCO, XML)
 - Pattern matching (mechanical procedures)
 
 **GPT-4.1 strengths**:
+
 - 1M context (long documents)
 - Position-independent retrieval (sandwich method)
 - Literal following (explicit instructions)
@@ -216,26 +233,31 @@ ELSE:
 ### Principle 2: Explicit > Implicit
 
 **Both models are non-reasoning**, so:
+
 - ✅ Explicit: "FOR EACH item: IF condition: action"
 - ❌ Implicit: "Process items appropriately"
 
 **GPT-4.1 is MORE literal** than GPT-5 Mini:
+
 - GPT-5 Mini: Can infer basic structure from CTCO
 - GPT-4.1: Needs sandwich + exact templates + repeated constraints
 
 ### Principle 3: Structure Prevents Hallucinations
 
 **Without structure**:
+
 - GPT-5 Mini: May produce inconsistent format
 - GPT-4.1: May miss instructions in 1M context
 
 **With structure**:
+
 - GPT-5 Mini: CTCO + XML → consistent output
 - GPT-4.1: Sandwich + headers → reliable retrieval
 
 ### Principle 4: Validate, Don't Trust
 
 **Both models can hallucinate**, so:
+
 - ✅ Add validation checklists
 - ✅ Specify exact error conditions
 - ✅ Test output against baseline
@@ -322,6 +344,7 @@ claude analyze-gaps --model haiku-4.5
 **Total cost**: ~2.66x (Haiku for mechanical tasks, Sonnet for reasoning)
 **Total time**: ~18 minutes + 37 seconds
 **Advantages**:
+
 - 57% faster than Ultra-Budget workflow
 - Extended thinking for better implementation quality
 - Agentic workflow patterns built-in
@@ -334,6 +357,7 @@ claude analyze-gaps --model haiku-4.5
 ### Before Optimization (Standard Prompts)
 
 **GPT-5 Mini** (without optimizations):
+
 ```
 Prompt: "Generate tasks from the plan"
 Result: Inconsistent task IDs, missing paths, ambiguous descriptions
@@ -342,6 +366,7 @@ Speed: Fast but requires manual fixes
 ```
 
 **GPT-4.1** (without optimizations):
+
 ```
 Prompt: "Analyze gaps" (instructions at beginning only)
 Result: May summarize instead of full report, miss instructions at end of 1M context
@@ -352,6 +377,7 @@ Speed: Slow (30-60s)
 ### After Optimization (This Guide)
 
 **GPT-5 Mini** (with 7 optimizations):
+
 ```
 Prompt: CTCO + XML + mechanical + validation + verbosity limits
 Result: Consistent T### IDs, exact paths, clear dependencies
@@ -360,6 +386,7 @@ Speed: Fast (10-20s) AND high quality
 ```
 
 **GPT-4.1** (with 5 optimizations):
+
 ```
 Prompt: Sandwich + literal + progressive + structured + validation
 Result: Complete structured report with all evidence
@@ -379,6 +406,7 @@ Speed: Slower (30-60s) but reliable
 **Focus**: Fast inference with structured prompts
 
 **Best practices**:
+
 1. CTCO framework (eliminate ambiguity)
 2. reasoning_effort: minimal (leverage speed)
 3. Mechanical procedures (no creative decisions)
@@ -394,6 +422,7 @@ Speed: Slower (30-60s) but reliable
 **Focus**: 1M long-context handling with literal following
 
 **Best practices**:
+
 1. Sandwich method (instructions at both ends)
 2. Literal instructions (no implicit rules)
 3. Progressive disclosure (chunk >500K features)
@@ -406,14 +435,14 @@ Speed: Slower (30-60s) but reliable
 
 ### When to Use Each
 
-| Scenario | Model | Rationale |
-|----------|-------|-----------|
-| **Small feature (<80K)** | GPT-5 Mini ⭐ | Fastest (10-20s), same quality |
-| **Medium feature (80-150K)** | GPT-5 Mini ⭐ | Fast (10-20s), good quality |
-| **Large feature (150-180K)** | GPT-5 Mini ⚠️ | Near limit, may be slower |
-| **Large feature (180K-500K)** | GPT-4.1 ✅ | 1M context needed |
-| **Very large (500K-1M)** | GPT-4.1 + progressive ✅ | Chunking improves performance |
-| **Huge (>1M)** | Split into components | Neither model can handle |
+| Scenario                      | Model                    | Rationale                      |
+| ----------------------------- | ------------------------ | ------------------------------ |
+| **Small feature (<80K)**      | GPT-5 Mini ⭐            | Fastest (10-20s), same quality |
+| **Medium feature (80-150K)**  | GPT-5 Mini ⭐            | Fast (10-20s), good quality    |
+| **Large feature (150-180K)**  | GPT-5 Mini ⚠️            | Near limit, may be slower      |
+| **Large feature (180K-500K)** | GPT-4.1 ✅               | 1M context needed              |
+| **Very large (500K-1M)**      | GPT-4.1 + progressive ✅ | Chunking improves performance  |
+| **Huge (>1M)**                | Split into components    | Neither model can handle       |
 
 ---
 
@@ -430,6 +459,7 @@ Speed: Slower (30-60s) but reliable
 All optimization strategies are backed by 2026 research from:
 
 ### OpenAI (GPT Models)
+
 - OpenAI official documentation and cookbooks
 - PromptHub comprehensive guides
 - Atlabs AI prompting playbooks
@@ -437,6 +467,7 @@ All optimization strategies are backed by 2026 research from:
 - Community best practices from God of Prompt, Vellum, Steve Kinney
 
 ### Anthropic (Claude Models)
+
 - Anthropic official documentation (Claude Docs, Extended Thinking, Context Windows)
 - Anthropic Research & Engineering (Building Effective Agents, Claude Code Best Practices)
 - Third-party analysis (Pantaleone, DreamHost, Sider.ai, ClaudeLog)

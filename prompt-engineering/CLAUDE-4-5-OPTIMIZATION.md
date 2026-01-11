@@ -1,14 +1,17 @@
 # Claude 4.5 (Sonnet & Haiku) Prompt Optimization Guide
 
 **Models**:
+
 - Claude Sonnet 4.5 (1M context, extended thinking, agentic workflows)
 - Claude Haiku 4.5 (500K context, 2x speed, 3x cost savings vs Sonnet)
 
 **Cost**:
+
 - Sonnet 4.5: 1x baseline
 - Haiku 4.5: 0.33x (3x cheaper)
 
 **Use cases**:
+
 - Sonnet 4.5: Complex reasoning, code implementation, multi-step agentic workflows
 - Haiku 4.5: Fast iteration, high-volume workloads, 90% of Sonnet's agentic performance
 
@@ -26,6 +29,7 @@
 6. **Precise instruction following** - Claude 4.x trained to follow instructions literally, not inferentially
 
 **Sources**:
+
 - [Context windows - Claude Docs](https://docs.claude.com/en/docs/build-with-claude/context-windows)
 - [Introducing Claude Sonnet 4.5](https://www.anthropic.com/news/claude-sonnet-4-5)
 
@@ -39,6 +43,7 @@
 6. **Short, specific prompts** - Optimized for concise, explicit instructions
 
 **Sources**:
+
 - [Prompt Strategies That Work Best with Claude Haiku 4.5](https://sider.ai/blog/ai-tools/prompt-strategies-that-work-best-with-claude-haiku-4_5)
 - [ClaudeLog - Agent Engineering](https://claudelog.com/mechanics/agent-engineering/)
 
@@ -51,15 +56,18 @@
 **Use XML tags to structure prompts** with clear sections and boundaries.
 
 **Research Finding**:
+
 > "Claude 4.x models have been trained on structured prompts and know how to parse them. XML works great, as does JSON or other labeled prompting."
 
 **Sources**:
+
 - [The Claude Sonnet 4.5 Prompting Playbook](https://www.pantaleone.net/blog/post/claude-sonnet-4-5-system-prompt-analysis)
 - [Claude AI Prompting Techniques](https://www.datastudios.org/post/claude-ai-prompting-techniques-structure-examples-and-best-practices)
 
 ### Why It Works
 
 Claude 4.x models are explicitly trained to recognize and parse structured formats:
+
 - ✅ **Clear boundaries** - `<task>`, `<rules>`, `<examples>` create explicit sections
 - ✅ **Hierarchical organization** - Nested tags for complex instructions
 - ✅ **Improved parsing** - Model reliably extracts information from tagged sections
@@ -105,11 +113,13 @@ IMPLEMENTED - No gap
 </examples>
 
 <output_format>
+
 ## Validated Gaps (NEW)
 
 ### GAP-N: Title (5-8 words)
 
 **Evidence:**
+
 - **Spec**: FR-XXX at spec.md:line
 - **Implementation**: NOT FOUND in [files searched]
 - **Validation Score**: N/10
@@ -153,6 +163,7 @@ Title: ≤8 words | Priority: ≤20 words | Fix: ≤40 words | Min score: 6/10
 **Be direct and skip preambles** - Claude 4.x is optimized for efficiency.
 
 **Research Finding**:
+
 > "Be direct and skip the preamble—the model is optimized for efficiency. Ask explicitly for formats you want (bullets, tables, code blocks). Add complexity to your prompts when you want detailed responses."
 
 **Source**: [We Tested 25 Popular Claude Prompt Techniques](https://www.dreamhost.com/blog/claude-prompt-engineering/)
@@ -160,6 +171,7 @@ Title: ≤8 words | Priority: ≤20 words | Fix: ≤40 words | Min score: 6/10
 ### Why It Works
 
 Claude 4.x models don't benefit from polite preambles or pleasantries:
+
 - ✅ **Faster inference** - Less text to process means faster responses
 - ✅ **Clearer intent** - Direct commands eliminate ambiguity
 - ✅ **Explicit formats** - State exactly what format you want
@@ -185,6 +197,7 @@ Analyze accordion component for implementation gaps.
 **Format**: Use structured sections (Evidence, Priority, Fix)
 
 Execute 6-step workflow:
+
 1. Load FR-XXX requirements
 2. Search implementation files
 3. Score validation (0-10)
@@ -202,18 +215,13 @@ Execute 6-step workflow:
 ✅ "Output results as a markdown table with columns: ID, Title, Priority, Score"
 
 ❌ "Explain the gaps"
-✅ "For each gap, use this format:
-    ### GAP-N: Title
-    **Evidence:** [3 bullet points]
-    **Priority:** P0/P1/P2
-    **Fix:** [1-2 sentences]"
+✅ "For each gap, use this format: ### GAP-N: Title
+**Evidence:** [3 bullet points]
+**Priority:** P0/P1/P2
+**Fix:** [1-2 sentences]"
 
 ❌ "Make it detailed"
-✅ "Add complexity: For each gap, include:
-    - Exact line numbers from spec
-    - All files searched
-    - Keyword matches found/not found
-    - Constitutional requirement violated"
+✅ "Add complexity: For each gap, include: - Exact line numbers from spec - All files searched - Keyword matches found/not found - Constitutional requirement violated"
 ```
 
 ---
@@ -225,9 +233,11 @@ Execute 6-step workflow:
 **Use extended thinking mode** for complex reasoning, coding, and multi-step tasks.
 
 **Research Finding**:
+
 > "Anthropic's Claude 4 announcement showed substantial performance gains with extended thinking enabled, with scores improving significantly on the AIME 2025 math competition. Effectiveness rating: 10/10 for complex reasoning, 3/10 for simple queries."
 
 **Sources**:
+
 - [Extended thinking tips - Claude Docs](https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/extended-thinking-tips)
 - [Claude's extended thinking](https://www.anthropic.com/news/visible-extended-thinking)
 - [We Tested 25 Popular Claude Prompt Techniques](https://www.dreamhost.com/blog/claude-prompt-engineering/)
@@ -235,6 +245,7 @@ Execute 6-step workflow:
 ### Why It Works
 
 Extended thinking allows Claude to:
+
 - ✅ **Reason before responding** - Shows internal thought process
 - ✅ **Handle complexity** - Breaks down multi-step problems systematically
 - ✅ **Improve accuracy** - Catches errors through deliberate reasoning
@@ -253,6 +264,7 @@ thinking_budget:
 ```
 
 **Budget guidelines**:
+
 - Start at **1024 tokens** (minimum) and increase incrementally
 - Use **16K+ tokens** for complex tasks (coding, multi-step reasoning)
 - **Higher budgets** enable comprehensive reasoning with diminishing returns
@@ -273,6 +285,7 @@ thinking_budget:
 ```
 
 **Research Finding**:
+
 > "Claude often performs better with high level instructions to just think deeply about a task rather than step-by-step prescriptive guidance. The model's creativity in approaching problems may exceed a human's ability to prescribe the optimal thinking process."
 
 **Source**: [Extended thinking tips - Claude Docs](https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/extended-thinking-tips)
@@ -311,30 +324,33 @@ Now apply this thinking pattern to analyze the actual component...
 
 ### When to Use Extended Thinking
 
-| Task Type | Extended Thinking | Rationale |
-|-----------|-------------------|-----------|
-| **Gap validation** | ✅ **Yes (16K budget)** | Requires reasoning about gaps, edge cases |
-| **Code implementation** | ✅ **Yes (16K+ budget)** | Complex logic, error handling, architecture |
-| **Multi-step workflows** | ✅ **Yes (8K-16K budget)** | Sequential tool use with reflection |
-| **Gap detection** | ⚠️ **Optional (4K budget)** | Mostly pattern matching, some reasoning |
-| **Task generation** | ❌ **No** | Mechanical transformation, no reasoning |
-| **Template filling** | ❌ **No** | Simple substitution |
+| Task Type                | Extended Thinking           | Rationale                                   |
+| ------------------------ | --------------------------- | ------------------------------------------- |
+| **Gap validation**       | ✅ **Yes (16K budget)**     | Requires reasoning about gaps, edge cases   |
+| **Code implementation**  | ✅ **Yes (16K+ budget)**    | Complex logic, error handling, architecture |
+| **Multi-step workflows** | ✅ **Yes (8K-16K budget)**  | Sequential tool use with reflection         |
+| **Gap detection**        | ⚠️ **Optional (4K budget)** | Mostly pattern matching, some reasoning     |
+| **Task generation**      | ❌ **No**                   | Mechanical transformation, no reasoning     |
+| **Template filling**     | ❌ **No**                   | Simple substitution                         |
 
 ### Best Practices
 
 **DO**:
+
 - ✅ Use English for thinking (performs best in English)
 - ✅ Start with larger budgets (16K+) for complex tasks, adjust based on results
 - ✅ Provide high-level goals rather than step-by-step instructions
 - ✅ Use for coding, math, physics, and complex tool use
 
 **DON'T**:
+
 - ❌ Pass Claude's extended thinking back in user text block (degrades performance)
 - ❌ Prefill extended thinking (explicitly not allowed)
 - ❌ Manually change output text following thinking block (causes model confusion)
 - ❌ Use for simple pattern-matching tasks
 
 **Sources**:
+
 - [Extended thinking tips - Claude Docs](https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/extended-thinking-tips)
 - [Building with extended thinking - Claude Docs](https://platform.claude.com/docs/en/build-with-claude/extended-thinking)
 
@@ -347,15 +363,18 @@ Now apply this thinking pattern to analyze the actual component...
 **Be extremely explicit** - Claude 4.x follows instructions literally.
 
 **Research Finding**:
+
 > "Claude 4.x models have been trained for more precise instruction following than previous generations of Claude models. Earlier versions would infer your intent and expand on vague requests, but Claude 4.x takes you literally and does exactly what you ask for, nothing more."
 
 **Sources**:
+
 - [Prompting best practices - Claude Docs](https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/claude-4-best-practices)
 - [The Claude Sonnet 4.5 Prompting Playbook](https://www.pantaleone.net/blog/post/claude-sonnet-4-5-system-prompt-analysis)
 
 ### Why It Works
 
 Claude 4.x is trained to follow instructions precisely:
+
 - ✅ **No inference** - Won't guess what you "probably meant"
 - ✅ **Exact execution** - Does exactly what you specify
 - ✅ **Clear constraints** - Respects stated boundaries strictly
@@ -377,12 +396,14 @@ Claude 4.x is trained to follow instructions precisely:
 "Analyze accordion.component.ts for implementation gaps relative to spec.md.
 
 **Specific focus**:
+
 1. Check if all FR-XXX requirements from spec.md are implemented
 2. Verify Foundation API methods exist (up(), down(), toggle())
 3. Confirm Foundation events are emitted ((up), (down) outputs)
 4. Validate ARIA attributes from @angular/aria directives
 
 **Out of scope**:
+
 - Code quality issues
 - Performance optimization
 - Style/formatting
@@ -397,9 +418,11 @@ Claude 4.x is trained to follow instructions precisely:
 
 ```markdown
 <good_gap_example>
+
 ### GAP-1: Foundation API Methods Missing
 
 **Evidence:**
+
 - **Spec**: FR-042 at spec.md:178 - "Component MUST expose up(), down(), toggle()"
 - **Implementation**:
   - Searched: accordion-item.component.ts (lines 1-245)
@@ -414,6 +437,7 @@ Claude 4.x is trained to follow instructions precisely:
 </good_gap_example>
 
 <bad_gap_example>
+
 ### GAP-1: Missing methods
 
 **Evidence**: Some methods are missing
@@ -427,6 +451,7 @@ Use the "good_gap_example" format. Do NOT use the "bad_gap_example" format.
 ```
 
 **Research Finding**:
+
 > "Be careful with examples: Claude 4.x models pay close attention to details and examples as part of their precise instruction following capabilities. Ensure that your examples align with the behaviors you want to encourage and minimize behaviors you want to avoid."
 
 **Source**: [Prompting best practices - Claude Docs](https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/claude-4-best-practices)
@@ -444,6 +469,7 @@ Use the "good_gap_example" format. Do NOT use the "bad_gap_example" format.
 ```
 
 **Research Finding**:
+
 > "Providing context or motivation behind your instructions, such as explaining to Claude why such behavior is important, can help Claude 4.x models better understand your goals and deliver more targeted responses."
 
 **Source**: [Prompting best practices - Claude Docs](https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/claude-4-best-practices)
@@ -457,23 +483,26 @@ Use the "good_gap_example" format. Do NOT use the "bad_gap_example" format.
 **Leverage Claude 4.5's context awareness** and use context editing techniques.
 
 **Research Finding**:
+
 > "Claude 4.5 models feature context awareness, explicitly informing the model about its remaining context so it can take maximum advantage of the available tokens. This enables these models to track their remaining context window ('token budget') throughout a conversation."
 
 **Sources**:
+
 - [Context windows - Claude Docs](https://docs.claude.com/en/docs/build-with-claude/context-windows)
 - [Claude Sonnet 4.5: Context Window Expansion](https://www.datastudios.org/post/claude-sonnet-4-5-context-window-expansion-caching-and-tool-use-upgrades)
 
 ### Context Sizes
 
-| Model | Context Window | Availability |
-|-------|---------------|--------------|
-| **Sonnet 4.5** | 1M tokens | Beta (tier 4 orgs, custom rate limits) |
-| **Sonnet 4.5** | 500K tokens | Enterprise plans |
-| **Haiku 4.5** | 500K tokens | Generally available |
+| Model          | Context Window | Availability                           |
+| -------------- | -------------- | -------------------------------------- |
+| **Sonnet 4.5** | 1M tokens      | Beta (tier 4 orgs, custom rate limits) |
+| **Sonnet 4.5** | 500K tokens    | Enterprise plans                       |
+| **Haiku 4.5**  | 500K tokens    | Generally available                    |
 
 ### Context Editing
 
 **Research Finding**:
+
 > "Context editing automatically clears stale tool calls and results from within the context window when approaching token limits, removing stale content while preserving the conversation flow. Context editing alone delivered a 29% improvement in agent performance, and in a 100-turn web search evaluation, it enabled agents to complete workflows while reducing token consumption by 84%."
 
 **Source**: [Managing context on the Claude Developer Platform](https://www.anthropic.com/news/context-management)
@@ -488,7 +517,7 @@ Use the "good_gap_example" format. Do NOT use the "bad_gap_example" format.
 // Estimate tokens before sending
 const estimate = await anthropic.count_tokens({
   messages: messages,
-  system: system_prompt
+  system: system_prompt,
 });
 
 if (estimate.input_tokens > 450000) {
@@ -505,9 +534,11 @@ For features >500K tokens, load content in chunks:
 
 ```markdown
 <progressive_disclosure>
+
 ## Step 1: Load Core Artifacts (First Pass)
 
 Load in this order:
+
 1. spec.md (requirements) - ~50K tokens
 2. plan.md (architecture) - ~30K tokens
 3. CONSTITUTION.md (rules) - ~10K tokens
@@ -518,6 +549,7 @@ Load in this order:
 ## Step 2: Load Implementation (Second Pass)
 
 Load only files mentioned in spec/plan:
+
 - accordion.component.ts
 - accordion-item.directive.ts
 - accordion.types.ts
@@ -527,15 +559,17 @@ Load only files mentioned in spec/plan:
 ## Step 3: Deep Dive (Third Pass)
 
 Load related files only if gaps detected:
-- Tests (*.spec.ts)
-- Stories (*.stories.ts)
-- Styles (*.scss)
+
+- Tests (\*.spec.ts)
+- Stories (\*.stories.ts)
+- Styles (\*.scss)
 
 **Incremental**: +80K tokens (~235K total)
 </progressive_disclosure>
 ```
 
 **When to use progressive disclosure**:
+
 - ✅ Features >500K tokens
 - ✅ Complex codebases with many files
 - ✅ Multi-phase analysis workflows
@@ -549,9 +583,11 @@ Load related files only if gaps detected:
 **Design prompts for agentic workflows** using Claude Code's feedback loop pattern.
 
 **Research Finding**:
+
 > "Agents often operate in a specific feedback loop: gather context → take action → verify work → repeat. This foundational pattern underpins most agentic applications."
 
 **Sources**:
+
 - [Building effective agents - Anthropic](https://www.anthropic.com/research/building-effective-agents)
 - [Optimizing Agentic Coding: How to use Claude Code](https://research.aimultiple.com/agentic-coding/)
 
@@ -559,9 +595,11 @@ Load related files only if gaps detected:
 
 ```markdown
 <agentic_workflow>
+
 ## Phase 1: Gather Context (Research-First)
 
 Before taking action:
+
 1. Read spec.md to understand requirements
 2. Read plan.md to understand architecture
 3. Glob for existing implementation files
@@ -572,6 +610,7 @@ Before taking action:
 ## Phase 2: Take Action
 
 Execute the task with full context:
+
 1. Analyze gaps between spec and implementation
 2. Generate structured gap report
 3. Write to gap-analysis-report.md
@@ -579,6 +618,7 @@ Execute the task with full context:
 ## Phase 3: Verify Work
 
 Self-validate before completing:
+
 1. Check all gaps have FR-XXX references
 2. Verify validation scores ≥6/10
 3. Confirm no known gaps duplicated
@@ -606,20 +646,24 @@ If verification fails:
 You are a gap analysis agent. Execute this workflow:
 
 ## 1. Research Phase
+
 - Read spec.md for FR-XXX requirements
 - Read implementation files
 - Load CONSTITUTION.md for rules
 
 ## 2. Analysis Phase
+
 - For each FR-XXX: Search implementation
 - Score validation quality (0-10)
 - Identify gaps (score <6 or NOT FOUND)
 
 ## 3. Report Phase
+
 - Generate gap-analysis-report.md
 - Use structured format (Evidence, Priority, Fix)
 
 ## 4. Validation Phase
+
 - All gaps have FR-XXX? ✓
 - All scores ≥6/10? ✓
 - No duplicates? ✓
@@ -628,6 +672,7 @@ You are a gap analysis agent. Execute this workflow:
 **Usage**: Type `/analyze-gaps` in Claude Code to invoke.
 
 **Research Finding**:
+
 > "For repeated workflows—debugging loops, log analysis, etc.—store prompt templates in Markdown files within the .claude/commands folder, which become available through the slash commands menu and can be checked into git."
 
 **Source**: [Claude Code: Best practices for agentic coding](https://www.anthropic.com/engineering/claude-code-best-practices)
@@ -638,11 +683,13 @@ You are a gap analysis agent. Execute this workflow:
 
 ```markdown
 <tdd_workflow>
+
 ## Step 1: Define Expected Behavior
 
 Based on FR-042: "Component MUST expose toggle() method"
 
 Expected:
+
 - toggle() method exists on component class
 - Calling toggle() flips expanded state
 - Respects disabled state (no-op if disabled)
@@ -651,6 +698,7 @@ Expected:
 
 Ask Claude to write tests first:
 "Write Storybook interaction tests for accordion toggle() method. Expected behavior:
+
 1. toggle() flips expanded from false→true
 2. toggle() flips expanded from true→false
 3. toggle() is no-op when disabled=true
@@ -676,6 +724,7 @@ Use Storybook play functions with userEvent and expect() assertions."
 **Give tool definitions the same prompt engineering attention** as main prompts.
 
 **Research Finding**:
+
 > "Start with simple prompts, optimize them with comprehensive evaluation, and add multi-step agentic systems only when simpler solutions fall short. Tool definitions and specifications should be given just as much prompt engineering attention as your overall prompts."
 
 **Source**: [Building effective agents - Anthropic](https://www.anthropic.com/research/building-effective-agents)
@@ -756,14 +805,16 @@ No results for up(). This is a gap. But let me verify down() as well before conc
 <tool_call>search_files(pattern="down()", path="packages/accordion/")</tool_call>
 
 **Conclusion**:
+
 - toggle() ✓ FOUND (line 145)
 - up() ✗ NOT FOUND
 - down() ✗ NOT FOUND
-Gap: Missing up() and down() methods (P0)
-</tool_use_with_thinking>
+  Gap: Missing up() and down() methods (P0)
+  </tool_use_with_thinking>
 ```
 
 **Research Finding**:
+
 > "Claude 4.x models offer thinking capabilities that can be especially helpful for tasks involving reflection after tool use or complex multi-step reasoning, and you can guide its initial or interleaved thinking for better results."
 
 **Source**: [Prompting best practices - Claude Docs](https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/claude-4-best-practices)
@@ -777,6 +828,7 @@ Gap: Missing up() and down() methods (P0)
 **Use Haiku 4.5 for speed-critical workflows** with optimized prompting.
 
 **Research Finding**:
+
 > "Claude Haiku 4.5 (released October 2025) has transformed agent engineering economics by delivering 90% of Sonnet 4.5's agentic coding performance at 2x the speed and 3x cost savings. It's engineered for speed, low latency, and cost efficiency—ideal for rapid iteration, high-volume workloads, and tight feedback loops."
 
 **Source**: [ClaudeLog - Agent Engineering](https://claudelog.com/mechanics/agent-engineering/)
@@ -795,6 +847,7 @@ Gap: Missing up() and down() methods (P0)
 **Input**: spec.md, accordion.component.ts
 **Output**: Gap report (Evidence, Priority, Fix)
 **Format**:
+
 - Gap title: ≤8 words
 - Evidence: Spec line + search results
 - Priority: P0/P1/P2 + ≤20 word justification
@@ -804,6 +857,7 @@ Execute 6-step workflow from PROCEDURE.md."
 ```
 
 **Research Finding**:
+
 > "Short, specific prompts with explicit roles, constraints, and structured outputs work best. Use checklists, step limits, and JSON schemas to boost accuracy and consistency."
 
 **Source**: [Prompt Strategies That Work Best with Claude Haiku 4.5](https://sider.ai/blog/ai-tools/prompt-strategies-that-work-best-with-claude-haiku-4_5)
@@ -818,11 +872,12 @@ Find unimplemented FR-XXX requirements from spec.md
 </objective>
 
 <success_criteria>
+
 - All gaps have FR-XXX reference
 - Validation score ≥6/10 per gap
 - No known gap duplicates
 - Output: structured markdown
-</success_criteria>
+  </success_criteria>
 
 <constraints>
 - Concise titles (≤8 words)
@@ -833,6 +888,7 @@ Find unimplemented FR-XXX requirements from spec.md
 ```
 
 **Research Finding**:
+
 > "Specify audience, format, length, and must-have elements with crisp constraints that Haiku 4.5 thrives on. Keep roles and objectives explicit in the system-style setup to guide decoding, reduce drift, and improve repeatability across calls."
 
 **Source**: [Prompt Strategies That Work Best with Claude Haiku 4.5](https://sider.ai/blog/ai-tools/prompt-strategies-that-work-best-with-claude-haiku-4_5)
@@ -841,9 +897,11 @@ Find unimplemented FR-XXX requirements from spec.md
 
 ```markdown
 <task_checklist>
+
 ## Gap Analysis Checklist
 
 For each requirement in spec.md:
+
 - [ ] Extract FR-XXX ID and description
 - [ ] Extract keywords (method names, ARIA attributes, events)
 - [ ] Search implementation files for keywords
@@ -854,12 +912,13 @@ For each requirement in spec.md:
 - [ ] Check against KNOWN_GAPS registry
 - [ ] If duplicate: Skip (already tracked)
 - [ ] If new: Add to report with structure
-</task_checklist>
+      </task_checklist>
 
 Use this checklist for every requirement.
 ```
 
 **Research Finding**:
+
 > "Checklists compress complex tasks into reliable, verifiable subtasks."
 
 **Source**: [Prompt Strategies That Work Best with Claude Haiku 4.5](https://sider.ai/blog/ai-tools/prompt-strategies-that-work-best-with-claude-haiku-4_5)
@@ -873,6 +932,7 @@ Use this checklist for every requirement.
 **Use prefilling to guide Claude's reasoning** before it generates output.
 
 **Research Finding**:
+
 > "The prompt improver adds a dedicated section for Claude to think through problems systematically before responding to improve accuracy and reliability."
 
 **Source**: [Use our prompt improver to optimize your prompts - Claude Docs](https://console.anthropic.com/docs/en/build-with-claude/prompt-engineering/prompt-improver)
@@ -922,13 +982,15 @@ Step 1: Define search criteria
 - Expected signature: Public method, no parameters or optional parameters
 
 Step 2: Search implementation
+
 - Search path: packages/accordion/
 - Pattern: "toggle()"
 
 Step 3: Evaluate results
+
 - If found: Verify it's public, check signature
 - If not found: This is a gap
-</thinking>
+  </thinking>
 
 <action>
 Search files for "toggle()" in packages/accordion/
@@ -948,6 +1010,7 @@ Now apply this thinking pattern to all FR-XXX requirements...
 ```
 
 **Research Finding**:
+
 > "Adding examples to prompts is one of the most effective ways to improve model response quality, and you can now manage examples in a structured format directly in the Workbench."
 
 **Source**: [Prompting best practices - Claude Docs](https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/claude-4-best-practices)
@@ -961,9 +1024,11 @@ Now apply this thinking pattern to all FR-XXX requirements...
 **Use memory.md for project continuity** and `/clear` for fresh starts.
 
 **Research Finding**:
+
 > "A dedicated memory.md document captures the current state of the project, functioning as a continuity layer, especially when development is distributed across multiple working sessions. Fresh sessions using /clear reduced prompt-drift and prevented context contamination from earlier tasks."
 
 **Sources**:
+
 - [Claude Code: Best practices for agentic coding](https://www.anthropic.com/engineering/claude-code-best-practices)
 - [How Anthropic teams use Claude Code](https://www.anthropic.com/news/how-anthropic-teams-use-claude-code)
 
@@ -986,15 +1051,18 @@ Now apply this thinking pattern to all FR-XXX requirements...
 **What we're building**: Angular accordion component with Foundation for Sites styling
 
 **Recent decisions**:
+
 - Use @angular/aria for ARIA attributes (decided 2026-01-08)
 - Directives over components where possible (CA-003)
 - Foundation CSS classes applied to host (no custom styling unless necessary)
 
 **Known issues**:
+
 - SSR compatibility needs testing (flagged in GAP-8)
 - Keyboard navigation uses deprecated patterns (GAP-5, deferred to P2)
 
 **Files modified this session**:
+
 - accordion-item.component.ts (added toggle(), up(), down())
 - accordion-item.component.spec.ts (added method tests)
 - accordion-item.stories.ts (added interaction tests)
@@ -1013,18 +1081,21 @@ Now apply this thinking pattern to all FR-XXX requirements...
 
 ```markdown
 ✅ Use /clear for:
+
 - Starting a new feature (avoid context contamination)
 - After completing a major phase (fresh start)
 - When Claude seems confused or references old context
 - Before running /analyze-gaps (clean slate)
 
 ❌ Don't use /clear for:
+
 - In the middle of implementing a feature
 - When you need context from previous steps
 - During debugging (context is helpful)
 ```
 
 **Research Finding**:
+
 > "Fresh sessions using /clear reduced prompt-drift and prevented context contamination from earlier tasks."
 
 **Source**: [Claude Code: Best practices for agentic coding](https://www.anthropic.com/engineering/claude-code-best-practices)
@@ -1035,27 +1106,27 @@ Now apply this thinking pattern to all FR-XXX requirements...
 
 ### When to Use Sonnet 4.5
 
-| Use Case | Why Sonnet | Budget |
-|----------|-----------|---------|
-| **Gap validation** | Requires reasoning about edge cases | Extended thinking (16K) |
-| **Code implementation** | Complex logic, error handling | Extended thinking (16K+) |
+| Use Case                    | Why Sonnet                           | Budget                     |
+| --------------------------- | ------------------------------------ | -------------------------- |
+| **Gap validation**          | Requires reasoning about edge cases  | Extended thinking (16K)    |
+| **Code implementation**     | Complex logic, error handling        | Extended thinking (16K+)   |
 | **Architectural decisions** | Weighing trade-offs, design patterns | Extended thinking (8K-16K) |
-| **Multi-file refactoring** | Understanding dependencies, impacts | Standard |
-| **Complex debugging** | Root cause analysis, reproduction | Extended thinking (8K) |
-| **Long-context analysis** | Features >500K tokens (1M context) | Standard |
+| **Multi-file refactoring**  | Understanding dependencies, impacts  | Standard                   |
+| **Complex debugging**       | Root cause analysis, reproduction    | Extended thinking (8K)     |
+| **Long-context analysis**   | Features >500K tokens (1M context)   | Standard                   |
 
 **Cost**: 1x baseline
 
 ### When to Use Haiku 4.5
 
-| Use Case | Why Haiku | Optimization |
-|----------|-----------|--------------|
-| **Gap detection** | 90% of Sonnet's performance, 3x cheaper | Short prompts, checklists |
-| **Task generation** | Mechanical transformation | Explicit format, constraints |
-| **Rapid iteration** | 2x faster for feedback loops | Concise, terse prompts |
-| **High-volume workflows** | Cost efficiency at scale | Batch processing |
-| **Template filling** | Pattern matching, substitution | Explicit templates |
-| **Medium-context** | Features <500K tokens | Standard prompts |
+| Use Case                  | Why Haiku                               | Optimization                 |
+| ------------------------- | --------------------------------------- | ---------------------------- |
+| **Gap detection**         | 90% of Sonnet's performance, 3x cheaper | Short prompts, checklists    |
+| **Task generation**       | Mechanical transformation               | Explicit format, constraints |
+| **Rapid iteration**       | 2x faster for feedback loops            | Concise, terse prompts       |
+| **High-volume workflows** | Cost efficiency at scale                | Batch processing             |
+| **Template filling**      | Pattern matching, substitution          | Explicit templates           |
+| **Medium-context**        | Features <500K tokens                   | Standard prompts             |
 
 **Cost**: 0.33x (3x cheaper than Sonnet)
 
@@ -1103,9 +1174,11 @@ Title: ≤8 words | Priority: ≤20 words | Fix: ≤40 words | Min score: 6/10
 </constraints>
 
 <output_format>
+
 ### GAP-N: Title
 
 **Evidence:**
+
 - **Spec**: FR-XXX at spec.md:line
 - **Implementation**: NOT FOUND in [files]
 - **Validation Score**: N/10
@@ -1135,6 +1208,7 @@ You are a gap validation specialist with deep reasoning capabilities.
 Validate gaps in gap-analysis-report.md against KNOWN_GAPS registry.
 
 **Validation criteria**:
+
 1. Gap has validation score ≥6/10
 2. Gap is not duplicate of known gap
 3. Gap has constitutional requirement violated
@@ -1175,37 +1249,43 @@ You are an expert Angular developer implementing component fixes using TDD.
 </role>
 
 <agentic_workflow>
+
 ## Phase 1: Research (Gather Context)
+
 1. Read GAPS_REMEDIATION.md for gap details
 2. Read component implementation files
 3. Read Foundation for Sites docs for expected behavior
 4. Read CONSTITUTION.md for project rules
 
 ## Phase 2: Test First (TDD)
+
 1. Write Storybook interaction tests for expected behavior
 2. Run tests - verify they fail
 3. Document expected vs actual behavior
 
 ## Phase 3: Implement
+
 1. Add/modify code to make tests pass
 2. Follow Angular best practices (signals, ChangeDetectionStrategy.OnPush)
 3. Apply Foundation CSS classes (no custom styling)
 4. Use @angular/aria for accessibility
 
 ## Phase 4: Verify
+
 1. Run tests - verify they pass
 2. Run linter - fix issues
 3. Run build - ensure no errors
 4. Take screenshot for visual verification
-</agentic_workflow>
+   </agentic_workflow>
 
 <extended_thinking>
 Think deeply about:
+
 - Edge cases (disabled state, SSR, animations)
 - Accessibility implications
 - Performance considerations
 - Foundation API parity
-</extended_thinking>
+  </extended_thinking>
 
 Execute TDD workflow for GAP-N from REMEDIATION_CHECKLIST.md.
 ```
