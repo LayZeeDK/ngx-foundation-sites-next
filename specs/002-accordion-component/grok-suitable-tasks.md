@@ -157,13 +157,13 @@
 - [x] T054 [P] [US3] [Pattern: Test Writing] AXE compliance checks
   - **Score**: 90% | **Time**: 3 min
 
-- [ ] T176 [P] [US3] [Pattern: Test Writing] panelId runtime change test
+- [x] T176 [P] [US3] [Pattern: Test Writing] panelId runtime change test
   - **Score**: 80% | **Time**: 5 min
 
-- [ ] T185 [P] [US3] [Pattern: Test Writing] Empty panel content test
+- [x] T185 [P] [US3] [Pattern: Test Writing] Empty panel content test
   - **Score**: 82% | **Time**: 3 min
 
-- [ ] T187 [P] [US3] [Pattern: Test Writing] Dynamic title text test
+- [x] T187 [P] [US3] [Pattern: Test Writing] Dynamic title text test
   - **Score**: 80% | **Time**: 5 min
 
 ### Add Method - HIGH 85%+

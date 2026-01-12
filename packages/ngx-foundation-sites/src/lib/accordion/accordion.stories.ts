@@ -695,6 +695,156 @@ export const ScreenReader: Story = {
 };
 
 /**
+ * Screen reader testing with empty panel content.
+ * Verifies ARIA structure remains valid even with no content.
+ */
+export const ScreenReaderEmptyContent: Story = {
+  args: {
+    allowAllClosed: true,
+  },
+  render: (args) => ({
+    props: args,
+    template: `
+      <nfs-accordion ${argsToLiteralTemplate(args)}>
+        <ng-template nfsAccordionItem panelId="panel-1">
+          <ng-template nfsAccordionHeader>Accordion 1</ng-template>
+          <ng-template nfsAccordionContent>
+            <!-- Empty content -->
+          </ng-template>
+        </ng-template>
+        <ng-template nfsAccordionItem panelId="panel-2">
+          <ng-template nfsAccordionHeader>Accordion 2</ng-template>
+          <ng-template nfsAccordionContent>
+            <p>Panel 2 content.</p>
+          </ng-template>
+        </ng-template>
+      </nfs-accordion>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Get triggers
+    const trigger1 = canvas.getByRole('button', { name: /Accordion 1/i });
+    const trigger2 = canvas.getByRole('button', { name: /Accordion 2/i });
+
+    // Verify ARIA attributes for empty content panel
+    expect(trigger1).toHaveAttribute('aria-expanded', 'false');
+    expect(trigger1).toHaveAttribute('aria-controls', 'panel-1');
+
+    const panel1 = canvasElement.querySelector('#panel-1');
+    expect(panel1).toBeTruthy();
+    expect(panel1).toHaveAttribute('role', 'region');
+
+    // Verify normal panel still works
+    expect(trigger2).toHaveAttribute('aria-expanded', 'false');
+    expect(trigger2).toHaveAttribute('aria-controls', 'panel-2');
+
+    const panel2 = canvasElement.querySelector('#panel-2');
+    expect(panel2).toBeTruthy();
+    expect(panel2).toHaveAttribute('role', 'region');
+  },
+};
+
+/**
+ * Screen reader testing with announcements enabled.
+ * Verifies live region announcements for expand/collapse actions.
+ */
+export const ScreenReaderAnnounce: Story = {
+  args: {
+    allowAllClosed: true,
+    announce: true,
+  },
+  render: (args) => ({
+    props: args,
+    template: `
+      <nfs-accordion ${argsToLiteralTemplate(args)}>
+        <ng-template nfsAccordionItem panelId="panel-1">
+          <ng-template nfsAccordionHeader>Accordion 1</ng-template>
+          <ng-template nfsAccordionContent>
+            <p>Panel 1 content.</p>
+          </ng-template>
+        </ng-template>
+        <ng-template nfsAccordionItem panelId="panel-2">
+          <ng-template nfsAccordionHeader>Accordion 2</ng-template>
+          <ng-template nfsAccordionContent>
+            <p>Panel 2 content.</p>
+          </ng-template>
+        </ng-template>
+      </nfs-accordion>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Get triggers
+    const trigger1 = canvas.getByRole('button', { name: /Accordion 1/i });
+
+    // Verify live region exists when announce=true
+    const liveRegion = canvasElement.querySelector('[aria-live="polite"]');
+    expect(liveRegion).toBeTruthy();
+
+    // Expand panel and verify announcement
+    await userEvent.click(trigger1);
+    await waitFor(async () => {
+      await expect(trigger1).toHaveAttribute('aria-expanded', 'true');
+    });
+
+    // Live region should contain announcement text
+    await waitFor(async () => {
+      const announcement = liveRegion?.textContent?.trim();
+      expect(announcement).toBe('Panel panel-1 expanded');
+    });
+  },
+};
+
+/**
+ * Screen reader testing with unique panel IDs.
+ * Verifies ARIA attributes use correct unique IDs.
+ */
+export const ScreenReaderUniqueIds: Story = {
+  args: {
+    allowAllClosed: true,
+  },
+  render: (args) => ({
+    props: args,
+    template: `
+      <nfs-accordion ${argsToLiteralTemplate(args)}>
+        <ng-template nfsAccordionItem panelId="unique-panel-1">
+          <ng-template nfsAccordionHeader>Panel One</ng-template>
+          <ng-template nfsAccordionContent>
+            <p>Content one.</p>
+          </ng-template>
+        </ng-template>
+        <ng-template nfsAccordionItem panelId="unique-panel-2">
+          <ng-template nfsAccordionHeader>Panel Two</ng-template>
+          <ng-template nfsAccordionContent>
+            <p>Content two.</p>
+          </ng-template>
+        </ng-template>
+      </nfs-accordion>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Get triggers
+    const trigger1 = canvas.getByRole('button', { name: /Panel One/i });
+    const trigger2 = canvas.getByRole('button', { name: /Panel Two/i });
+
+    // Verify unique panel IDs
+    expect(trigger1).toHaveAttribute('aria-controls', 'unique-panel-1');
+    expect(trigger2).toHaveAttribute('aria-controls', 'unique-panel-2');
+
+    const panel1 = canvasElement.querySelector('#unique-panel-1');
+    const panel2 = canvasElement.querySelector('#unique-panel-2');
+    expect(panel1).toBeTruthy();
+    expect(panel2).toBeTruthy();
+    expect(panel1).not.toBe(panel2); // Different elements
+  },
+};
+
+/**
  * Tests focus management when accordion items are disabled.
  * Angular ARIA allows focus on disabled items (for screen reader announcement)
  * but prevents their activation via click, Enter, or Space.
