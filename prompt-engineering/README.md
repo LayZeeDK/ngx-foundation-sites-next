@@ -29,6 +29,48 @@ This directory contains research-backed optimization strategies for AI models us
 
 ---
 
+---
+
+## GitHub Copilot Customization Files
+
+### [GitHub Prompt Files Guide (`*.prompt.md`)](./GITHUB-PROMPT-MD-FILES.md)
+
+**Purpose:** Comprehensive documentation for reusable prompt templates
+
+**Covers:**
+- Complete YAML frontmatter reference (`name`, `description`, `agent`, `model`, `tools`)
+- Variable syntax (`${input:}`, `${workspaceFolder}`, `${selection}`)
+- File and tool references
+- Storage locations and invocation methods
+- Complete examples (code explanation, component generator, review checklist)
+
+### [GitHub Custom Agents Guide (`*.agent.md`)](./GITHUB-AGENT-MD-FILES.md)
+
+**Purpose:** Comprehensive documentation for custom agent personas
+
+**Covers:**
+- Complete YAML frontmatter reference (`name`, `description`, `tools`, `target`, `mcp-servers`)
+- MCP server integration and configuration
+- Six essential areas from GitHub's 2,500+ repository analysis
+- Agent archetypes (`@docs-agent`, `@test-agent`, `@security-agent`, etc.)
+- Complete examples (Angular component agent, full-stack feature agent)
+
+### [GitHub Copilot File Comparison](./GITHUB-COPILOT-FILE-COMPARISON.md)
+
+**Purpose:** Side-by-side comparison of all customization file types
+
+**Covers:**
+- Quick reference matrix (all file types at a glance)
+- Activation behavior comparison
+- Frontmatter capabilities comparison
+- Platform availability matrix
+- When to use each file type
+- Combination patterns and workflows
+- Decision flowchart
+- Common mistakes and migration guide
+
+---
+
 ### [Claude Sonnet 4.5 Implementation Optimization Guide](./CLAUDE-SONNET-4-5-IMPLEMENTATION-OPTIMIZATION.md)
 
 **Model**: Claude Sonnet 4.5 (200K / 1M context, implementation-optimized)
