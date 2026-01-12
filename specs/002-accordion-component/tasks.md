@@ -185,11 +185,11 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 
 ### Storybook Tests for User Story 3
 
-- [ ] T050 [P] [US3] Create ScreenReader story at packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
-- [ ] T051 [US3] Add assertions for ARIA attributes: aria-expanded, aria-controls, aria-labelledby on all items
-- [ ] T052 [US3] Add assertions for role="region" on panel content wrappers
-- [ ] T053 [US3] Add assertions for unique auto-generated IDs (verify no collisions)
-- [ ] T054 [P] [US3] Run AXE checks with @storybook/addon-a11y to verify ARIA compliance
+- [x] T050 [P] [US3] Create ScreenReader story at packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
+- [x] T051 [US3] Add assertions for ARIA attributes: aria-expanded, aria-controls, aria-labelledby on all items
+- [x] T052 [US3] Add assertions for role="region" on panel content wrappers
+- [x] T053 [US3] Add assertions for unique auto-generated IDs (verify no collisions)
+- [x] T054 [P] [US3] Run AXE checks with @storybook/addon-a11y to verify ARIA compliance
 - [ ] T176 [P] [US3] Add Storybook test: change panelId at runtime, verify item re-registers with parent and ARIA IDs update atomically in packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
 - [ ] T177 [US3] Add Storybook test: change panelId while deepLink enabled, verify item does NOT auto-expand (deep link only responds to URL hash changes) in packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts (covers FR-017c: panelId/deepLink interaction)
 - [ ] T185 [P] [US3] Add Storybook story variant to ScreenReader story: render accordion with empty panel content, verify panel wrapper maintains valid ARIA even with no inner content in packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
@@ -198,15 +198,15 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 
 ### Implementation for User Story 3
 
-- [ ] T055 [P] [US3] Implement ARIA attributes on NfsAccordionTitle button: aria-expanded (computed from item.expanded signal)
-- [ ] T056 [P] [US3] Implement ARIA attributes on NfsAccordionTitle button: aria-controls (references panel ID)
+- [x] T055 [P] [US3] Implement ARIA attributes on NfsAccordionTitle button: aria-expanded (computed from item.expanded signal)
+- [x] T056 [P] [US3] Implement ARIA attributes on NfsAccordionTitle button: aria-controls (references panel ID)
 - [ ] T057 [US3] Implement unique ID generation in NfsAccordion: static counter + instance ID (nfs-accordion-${counter++})
 - [ ] T057b [P] [US3] Implement ID auto-generation as an Angular injectable service (`NfsAccordionIdGeneratorService`) in packages/ngx-foundation-sites/src/lib/accordion/accordion-id-generator.service.ts (service providedIn: 'platform'). **Intentionally internal**: This service SHOULD NOT be exported from public barrel index.ts because ID generation is an implementation detail—consumers use `panelId` input or rely on auto-generation, never the service directly. See T-AC-004 for naming harmonization.
 - [ ] T057c [US3] Implement panelId duplicate detection per FR-017a: maintain registration registry `Map<string, NfsAccordionItem[]>` in NfsAccordion, validate uniqueness on registerItem() and panelId changes, call ErrorHandler.handleError() with structured Error on duplicates, expand first-registered item only in packages/ngx-foundation-sites/src/lib/accordion/accordion.component.ts
 - [ ] T058 [US3] Generate title button ID: ${accordionInstanceId}-title-${itemIndex}
 - [ ] T059 [US3] Use user-provided panelId or generate: ${accordionInstanceId}-panel-${itemIndex}
-- [ ] T060 [P] [US3] Create panel wrapper element in NfsAccordionItem template with role="region"
-- [ ] T061 [P] [US3] Add aria-labelledby on panel wrapper referencing title button ID
+- [x] T060 [P] [US3] Create panel wrapper element in NfsAccordionItem template with role="region"
+- [x] T061 [P] [US3] Add aria-labelledby on panel wrapper referencing title button ID
 - [ ] T062 [US3] Ensure panel wrapper remains in DOM when collapsed (for stable aria-controls reference)
 - [ ] T063 [US3] Add inert attribute on panel wrapper when collapsed (prevent keyboard access)
 - [ ] T064 [US3] Implement @if conditional rendering for panel content (remove content from DOM when collapsed, keep wrapper)
@@ -216,8 +216,8 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 - [ ] T186 [US3] Implement empty-state handling in NfsAccordionItem: when no content is projected, render an invisible placeholder comment (no visual output) to ensure stable ARIA structure; empty-state UI is consumer's responsibility via content projection per FR-114a in packages/ngx-foundation-sites/src/lib/accordion/accordion-item.component.ts
 - [ ] T188 [US3] Implement title change detection in NfsAccordion: track NfsAccordionTitle content changes, publish to live region if announce=true, debounce by 100ms in packages/ngx-foundation-sites/src/lib/accordion/accordion.component.ts
 - [ ] T188a [P] [US3] Add title text extraction helper method per AR-027a: implement `extractTitleText(titleComponent: NfsAccordionTitle): string` that returns `titleComponent.elementRef.nativeElement.textContent.trim()` to handle complex projected content (icons, badges, nested elements) by collapsing to readable text in packages/ngx-foundation-sites/src/lib/accordion/accordion.component.ts
-- [ ] T196 [P] [US3] Add `announce = input(false)` InputSignal to NfsAccordion component in packages/ngx-foundation-sites/src/lib/accordion/accordion.component.ts
-- [ ] T197 [P] [US3] Render visually-hidden live region element in NfsAccordion template with `aria-live="polite"` and `aria-atomic="true"` (shown only when announce=true) in packages/ngx-foundation-sites/src/lib/accordion/accordion.component.ts
+- [x] T196 [P] [US3] Add `announce = input(false)` InputSignal to NfsAccordion component in packages/ngx-foundation-sites/src/lib/accordion/accordion.component.ts
+- [x] T197 [P] [US3] Render visually-hidden live region element in NfsAccordion template with `aria-live="polite"` and `aria-atomic="true"` (shown only when announce=true) in packages/ngx-foundation-sites/src/lib/accordion/accordion.component.ts
 - [ ] T198 [US3] Implement live-region message publishing: on expand/collapse, set live region textContent to concise message, debounce updates by 100ms in packages/ngx-foundation-sites/src/lib/accordion/accordion.component.ts
 
 **Checkpoint**: Screen reader support complete - ARIA relationships valid, announces correctly
