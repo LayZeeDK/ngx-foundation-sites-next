@@ -296,7 +296,9 @@ import { Component, ChangeDetectionStrategy, input, output } from '@angular/core
 @Component({
 selector: 'nfs-{{kebab-case-name}}',
 template: \`
+
 <!-- Component template -->
+
 \`,
 changeDetection: ChangeDetectionStrategy.OnPush
 })
