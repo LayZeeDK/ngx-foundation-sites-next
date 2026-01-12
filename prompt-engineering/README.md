@@ -201,6 +201,33 @@ This directory contains research-backed optimization strategies for AI models us
 
 ---
 
+### [Grok Code Fast 1 Optimization Guide](./GROK-CODE-FAST-1-OPTIMIZATION.md)
+
+**Model**: grok-code-fast-1 (256K context, agentic reasoning)
+
+**10 Key Optimizations**:
+
+1. **Native Tool-Calling** - Use function calling, not XML (model designed for it)
+2. **Detailed System Prompts** - Task, expectations, edge cases upfront
+3. **Setup + Tools + Example Pattern** - 3-part prompt structure
+4. **Preserve Prompt History for Caching** - 90%+ cache hit rates, 10x cheaper
+5. **Agentic Over One-Shot** - Iterative tool-calling, not single-turn Q&A
+6. **Rapid Iteration Strategy** - Quick attempts, refine (4x faster, 1/10th cost)
+7. **XML/Markdown Context Structuring** - Section markers for 256K context
+8. **Access Reasoning Traces** - Streaming mode for `reasoning_content`
+9. **Plan-First Execution** - Prevent over-editing with 3-item plans
+10. **Scope and File Boundaries** - Explicit paths, negative constraints
+
+**Best for**: Agentic coding (bug fixes, scaffolding, tests), high-volume grunt work, iterative workflows
+
+**Performance**: 70.8% SWE-bench, 92 tokens/sec, 4x faster at 1/10th cost
+
+**Commands**: Available in GitHub Copilot, Cursor, Cline, Windsurf (model picker)
+
+**Related**: [GPT-5 Mini Guide](./GPT-5-MINI-OPTIMIZATION.md) (alternative for non-agentic tasks)
+
+---
+
 ### [GPT-5 Mini Optimization Guide](./GPT-5-MINI-OPTIMIZATION.md)
 
 **Model**: GPT-5 Mini (200K context, minimal reasoning, 0x cost)
@@ -230,14 +257,16 @@ Feature Size Estimation:
 total_tokens = (spec lines × 20) + (plan × 20) + (tasks × 15) + (code × 18)
 
 IF total_tokens < 180K:
-  ✅ USE GPT-5 Mini OR Haiku 4.5
-  - GPT-5 Mini: 10-20 sec, 0x cost, 85-95% quality
+  ✅ USE GPT-5 Mini OR Haiku 4.5 OR Grok Code Fast 1
+  - GPT-5 Mini: 10-20 sec, 0x cost, 85-95% quality (non-agentic)
   - Haiku 4.5: 15-25 sec, 0.33x cost, 90% of Sonnet performance
+  - Grok Code Fast 1: 5-15 sec, low cost, 70.8% SWE-bench (agentic tasks)
 
-ELSE IF total_tokens < 200K:
-  ✅ USE GPT-4.1 OR Haiku 4.5
+ELSE IF total_tokens < 256K:
+  ✅ USE GPT-4.1 OR Haiku 4.5 OR Grok Code Fast 1
   - GPT-4.1: 30-60 sec, 0x cost, 1M context
   - Haiku 4.5: 20-35 sec, 0.33x cost, 200K context limit
+  - Grok Code Fast 1: 10-25 sec, low cost, 256K context (agentic)
 
 ELSE IF total_tokens < 1M:
   ✅ USE GPT-4.1 OR Sonnet 4.5
@@ -248,17 +277,34 @@ ELSE:
   ⚠️ SPLIT feature into smaller components
 ```
 
+### Task Type Quick Guide
+
+```
+IF task is iterative bug fix/scaffolding/tests:
+   ✅ USE Grok Code Fast 1 (fastest agentic, lowest cost)
+
+ELSE IF task is mechanical transformation (no reasoning):
+   ✅ USE GPT-5 Mini (0x cost) OR Haiku 4.5 (0.33x)
+
+ELSE IF task needs extended thinking:
+   ✅ USE Sonnet 4.5 OR Opus 4.5
+
+ELSE IF context > 256K:
+   ✅ USE GPT-4.1 (1M context, 0x cost)
+```
+
 ### Task Type Suitability
 
-| Task Type                | GPT-5 Mini         | GPT-4.1            | Haiku 4.5          | Sonnet 4.5           |
-| ------------------------ | ------------------ | ------------------ | ------------------ | -------------------- |
-| **Gap analysis (small)** | ✅ Best (0x)       | ⚠️ Slower          | ✅ Best (0.33x)    | ⚠️ Overkill          |
-| **Gap analysis (large)** | ❌ Context limit   | ✅ Good (0x)       | ✅ Good (0.33x)    | ✅ Best (1x)         |
-| **Task generation**      | ✅ Best (0x)       | ✅ Good (0x)       | ✅ Best (0.33x)    | ⚠️ Overkill          |
-| **Gap validation**       | ❌ Needs reasoning | ❌ Needs reasoning | ⚠️ Light reasoning | ✅ Best (1x)         |
-| **Implementation**       | ❌ No reasoning    | ❌ No reasoning    | ⚠️ Simple code     | ✅ Best (1x)         |
-| **Complex reasoning**    | ❌ Not capable     | ❌ Not capable     | ⚠️ Basic           | ✅ Extended thinking |
-| **Agentic workflows**    | ❌ Not capable     | ❌ Not capable     | ✅ 90% of Sonnet   | ✅ Best (1x)         |
+| Task Type                | GPT-5 Mini         | GPT-4.1            | Haiku 4.5          | Grok Code Fast 1      | Sonnet 4.5           |
+| ------------------------ | ------------------ | ------------------ | ------------------ | --------------------- | -------------------- |
+| **Gap analysis (small)** | ✅ Best (0x)       | ⚠️ Slower          | ✅ Best (0.33x)    | ✅ Good (low cost)    | ⚠️ Overkill          |
+| **Gap analysis (large)** | ❌ Context limit   | ✅ Good (0x)       | ✅ Good (0.33x)    | ✅ Good (256K)        | ✅ Best (1x)         |
+| **Task generation**      | ✅ Best (0x)       | ✅ Good (0x)       | ✅ Best (0.33x)    | ✅ Good               | ⚠️ Overkill          |
+| **Gap validation**       | ❌ Needs reasoning | ❌ Needs reasoning | ⚠️ Light reasoning | ⚠️ Light reasoning    | ✅ Best (1x)         |
+| **Implementation**       | ❌ No reasoning    | ❌ No reasoning    | ⚠️ Simple code     | ✅ Agentic (fast)     | ✅ Best (1x)         |
+| **Complex reasoning**    | ❌ Not capable     | ❌ Not capable     | ⚠️ Basic           | ⚠️ Basic              | ✅ Extended thinking |
+| **Agentic workflows**    | ❌ Not capable     | ❌ Not capable     | ✅ 90% of Sonnet   | ✅ **Best** (4x fast) | ✅ Good (1x)         |
+| **Bug fixes/scaffolds**  | ❌ No reasoning    | ❌ No reasoning    | ✅ Good            | ✅ **Best** (cheap)   | ⚠️ Overkill          |
 
 ---
 
@@ -303,14 +349,18 @@ ELSE:
 
 ### Speed Benchmarks (Small Feature ~90K tokens)
 
-| Model                      | Time      | Cost  | Quality       | Best For          |
-| -------------------------- | --------- | ----- | ------------- | ----------------- |
-| **GPT-5 Mini** (optimized) | 10-20s ⚡ | 0x    | 85-95%        | Fastest + free    |
-| **Haiku 4.5** (optimized)  | 15-25s    | 0.33x | 90% of Sonnet | Agentic tasks     |
-| **GPT-4.1** (optimized)    | 30-60s    | 0x    | Baseline      | Free option       |
-| **Sonnet 4.5**             | 20-40s    | 1x    | Best          | Complex reasoning |
+| Model                      | Time     | Cost  | Quality       | Best For             |
+| -------------------------- | -------- | ----- | ------------- | -------------------- |
+| **Grok Code Fast 1**       | 5-15s ⚡ | ~0.1x | 70.8% SWE     | Agentic (bug fixes)  |
+| **GPT-5 Mini** (optimized) | 10-20s   | 0x    | 85-95%        | Non-agentic + free   |
+| **Haiku 4.5** (optimized)  | 15-25s   | 0.33x | 90% of Sonnet | General agentic      |
+| **GPT-4.1** (optimized)    | 30-60s   | 0x    | Baseline      | Large context + free |
+| **Sonnet 4.5**             | 20-40s   | 1x    | Best          | Complex reasoning    |
 
-**Winner for small features**: GPT-5 Mini (fastest + free) or Haiku 4.5 (best agentic performance/cost)
+**Winner for small features**:
+
+- **Agentic tasks (bug fixes, scaffolds)**: Grok Code Fast 1 (4x faster, 1/10th cost)
+- **Non-agentic (transformations)**: GPT-5 Mini (free) or Haiku 4.5 (better quality)
 
 ### Speed Benchmarks (Large Feature ~500K tokens)
 
