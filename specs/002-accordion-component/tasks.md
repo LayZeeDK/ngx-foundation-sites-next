@@ -112,11 +112,11 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 
 **Purpose**: Project initialization and basic accordion structure
 
-- [ ] T001 Verify Nx library structure exists at packages/ngx-foundation-sites/
-- [ ] T002 Verify ng-packagr configuration for library publishing in packages/ngx-foundation-sites/ng-package.json
-- [ ] T003 [P] Verify component selector prefix is `nfs-` in packages/ngx-foundation-sites/project.json
-- [ ] T004 [P] Verify ESLint and Prettier configuration in .eslintrc.json and .prettierrc
-- [ ] T005 [P] Verify Storybook is configured at packages/ngx-foundation-sites/.storybook/
+- [x] T001 Verify Nx library structure exists at packages/ngx-foundation-sites/
+- [x] T002 Verify ng-packagr configuration for library publishing in packages/ngx-foundation-sites/ng-package.json
+- [x] T003 [P] Verify component selector prefix is `nfs-` in packages/ngx-foundation-sites/project.json
+- [x] T004 [P] Verify ESLint and Prettier configuration in .eslintrc.json and .prettierrc
+- [x] T005 [P] Verify Storybook is configured at packages/ngx-foundation-sites/.storybook/
 
 ---
 

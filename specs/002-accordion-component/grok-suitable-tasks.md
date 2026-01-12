@@ -16,6 +16,7 @@
 - **Sonnet-Recommended (LOW <50%)**: 65 (31%)
 
 **Estimated Performance**:
+
 - **Speed**: 4× faster than other agentic models
 - **Cost**: 0x in GitHub Copilot (free!)
 - **Quality**: 70.8% SWE-bench (90%+ for suitable tasks)
@@ -36,19 +37,19 @@
 
 **All 5 tasks are Grok-suitable verification tasks**
 
-- [ ] T001 [Pattern: Verification] Verify Nx library structure exists at packages/ngx-foundation-sites/
+- [x] T001 [Pattern: Verification] Verify Nx library structure exists at packages/ngx-foundation-sites/
   - **Score**: 95% | **Time**: 1 min | **Strategy**: ls directory → confirm structure
 
-- [ ] T002 [Pattern: Verification] Verify ng-packagr config in packages/ngx-foundation-sites/ng-package.json
+- [x] T002 [Pattern: Verification] Verify ng-packagr config in packages/ngx-foundation-sites/ng-package.json
   - **Score**: 95% | **Time**: 1 min | **Strategy**: Read file → verify fields
 
-- [ ] T003 [P] [Pattern: Verification] Verify component selector prefix is `nfs-`
+- [x] T003 [P] [Pattern: Verification] Verify component selector prefix is `nfs-`
   - **Score**: 95% | **Time**: 1 min | **Strategy**: Read project.json → check prefix
 
-- [ ] T004 [P] [Pattern: Verification] Verify ESLint and Prettier configuration
+- [x] T004 [P] [Pattern: Verification] Verify ESLint and Prettier configuration
   - **Score**: 95% | **Time**: 1 min | **Strategy**: Check files exist
 
-- [ ] T005 [P] [Pattern: Verification] Verify Storybook is configured
+- [x] T005 [P] [Pattern: Verification] Verify Storybook is configured
   - **Score**: 95% | **Time**: 1 min | **Strategy**: Check .storybook/ directory
 
 ---
@@ -124,7 +125,7 @@
   - **Score**: 88% | **Time**: 2 min | **Strategy**: [class.is-active]="expanded()"
 
 - [ ] T030 [US1] [Pattern: Update Docs] Add JSDoc comments for Foundation equivalents
-  - **Score**: 90% | **Time**: 5 min | **Strategy**: Document data-* mapping
+  - **Score**: 90% | **Time**: 5 min | **Strategy**: Document data-\* mapping
 
 - [ ] T031 [US1] [Pattern: Scaffolding] Export components from index.ts
   - **Score**: 92% | **Time**: 2 min | **Strategy**: Add export statements
@@ -525,6 +526,7 @@
 ## Quick Reference: File Paths
 
 **Component Files**:
+
 - `packages/ngx-foundation-sites/src/lib/accordion/accordion.component.ts`
 - `packages/ngx-foundation-sites/src/lib/accordion/accordion-item.component.ts`
 - `packages/ngx-foundation-sites/src/lib/accordion/accordion-title.component.ts`
@@ -533,6 +535,7 @@
 - `packages/ngx-foundation-sites/src/lib/accordion/index.ts`
 
 **Story Files**:
+
 - `packages/ngx-foundation-sites/.storybook/stories/accordion/Basic.story.ts`
 - `packages/ngx-foundation-sites/.storybook/stories/accordion/KeyboardNavigation.story.ts`
 - `packages/ngx-foundation-sites/.storybook/stories/accordion/ScreenReader.story.ts`
@@ -547,9 +550,11 @@
 - `packages/ngx-foundation-sites/.storybook/stories/accordion/Accordion.mdx`
 
 **E2E Test Files**:
+
 - `packages/ngx-foundation-sites-e2e/src/accordion/accordion-deeplink.spec.ts`
 
 **Documentation**:
+
 - `packages/ngx-foundation-sites/src/lib/accordion/README.md`
 - `specs/002-accordion-component/quickstart.md`
 
