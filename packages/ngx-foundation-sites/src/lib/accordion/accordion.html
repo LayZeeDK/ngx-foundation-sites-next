@@ -81,3 +81,10 @@
   }
 </ul>
 }
+
+<!-- Live region for screen reader announcements when announce is enabled -->
+@if (announce()) {
+<div aria-live="polite" aria-atomic="true" class="sr-only">
+  {{ announcement() }}
+</div>
+}

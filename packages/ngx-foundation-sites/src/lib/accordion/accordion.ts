@@ -97,6 +97,13 @@ export class NfsAccordion implements AfterContentInit {
   readonly allowAllClosed = input(false);
 
   /**
+   * Whether to announce panel expansions/collapses to screen readers.
+   * When true, adds a live region that announces state changes.
+   * @default false
+   */
+  readonly announce = input(false);
+
+  /**
    * Heading level for accordion titles (1-6).
    * When set, wraps trigger buttons in `<div role="heading" aria-level="N">`
    * for ARIA document outline navigation.
@@ -124,6 +131,12 @@ export class NfsAccordion implements AfterContentInit {
    * Protected for template access.
    */
   protected readonly initialized = signal(false);
+
+  /**
+   * Live region announcement text for screen readers.
+   * Protected for template access.
+   */
+  protected readonly announcement = signal('');
 
   /**
    * Reference to the AccordionGroup directive for programmatic control.
@@ -283,6 +296,12 @@ export class NfsAccordion implements AfterContentInit {
                 this.down.emit({ itemId: panelId, expanded: true });
               } else {
                 this.up.emit({ itemId: panelId, expanded: false });
+              }
+
+              // Update live region announcement for screen readers
+              if (this.announce()) {
+                const action = currentExpanded ? 'expanded' : 'collapsed';
+                this.announcement.set(`Panel ${panelId} ${action}`);
               }
             });
           });

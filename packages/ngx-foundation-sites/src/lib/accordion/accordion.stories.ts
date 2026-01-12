@@ -615,6 +615,70 @@ export const Accessibility: Story = {
 };
 
 /**
+ * Screen reader testing story.
+ * Verifies ARIA attributes and screen reader compatibility.
+ */
+export const ScreenReader: Story = {
+  args: {
+    allowAllClosed: true,
+  },
+  render: (args) => ({
+    props: args,
+    template: `
+      <nfs-accordion ${argsToLiteralTemplate(args)}>
+        <ng-template nfsAccordionItem panelId="panel-1">
+          <ng-template nfsAccordionHeader>Accordion 1</ng-template>
+          <ng-template nfsAccordionContent>
+            <p>Panel 1 content. Lorem ipsum dolor sit amet.</p>
+          </ng-template>
+        </ng-template>
+        <ng-template nfsAccordionItem panelId="panel-2">
+          <ng-template nfsAccordionHeader>Accordion 2</ng-template>
+          <ng-template nfsAccordionContent>
+            <p>Panel 2 content. Suspendisse eu ligula.</p>
+          </ng-template>
+        </ng-template>
+        <ng-template nfsAccordionItem panelId="panel-3">
+          <ng-template nfsAccordionHeader>Accordion 3</ng-template>
+          <ng-template nfsAccordionContent>
+            <p>Panel 3 content. Nullam sed est.</p>
+          </ng-template>
+        </ng-template>
+      </nfs-accordion>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Get all accordion triggers
+    const trigger1 = canvas.getByRole('button', { name: /Accordion 1/i });
+    const trigger2 = canvas.getByRole('button', { name: /Accordion 2/i });
+    const trigger3 = canvas.getByRole('button', { name: /Accordion 3/i });
+
+    // ARIA attribute assertions (T051-T053)
+    // Verify aria-expanded binding
+    expect(trigger1).toHaveAttribute('aria-expanded', 'false');
+    expect(trigger2).toHaveAttribute('aria-expanded', 'false');
+    expect(trigger3).toHaveAttribute('aria-expanded', 'false');
+
+    // Verify aria-controls binding
+    expect(trigger1).toHaveAttribute('aria-controls', 'panel-1');
+    expect(trigger2).toHaveAttribute('aria-controls', 'panel-2');
+    expect(trigger3).toHaveAttribute('aria-controls', 'panel-3');
+
+    // Verify panels exist with correct IDs
+    const panel1 = canvasElement.querySelector('#panel-1');
+    const panel2 = canvasElement.querySelector('#panel-2');
+    const panel3 = canvasElement.querySelector('#panel-3');
+    expect(panel1).toBeTruthy();
+    expect(panel2).toBeTruthy();
+    expect(panel3).toBeTruthy();
+
+    // AXE compliance checks are enabled globally in Storybook
+  },
+};
+
+/**
  * Tests focus management when accordion items are disabled.
  * Angular ARIA allows focus on disabled items (for screen reader announcement)
  * but prevents their activation via click, Enter, or Space.

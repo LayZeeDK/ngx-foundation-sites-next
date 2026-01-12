@@ -147,14 +147,14 @@
 
 ### Test Writing - HIGH 85%+
 
-- [ ] T050 [P] [US3] [Pattern: Test Writing] Add ScreenReader story to accordion.stories.ts
+- [x] T050 [P] [US3] [Pattern: Test Writing] Add ScreenReader story to accordion.stories.ts
   - **Score**: 95% | **Time**: 5 min
 
-- [ ] T051-T053 [US3] [Pattern: Test Writing] ARIA attribute assertions
+- [x] T051-T053 [US3] [Pattern: Test Writing] ARIA attribute assertions
   - **Score**: 88% each | **Time**: 2 min each
   - **Strategy**: expect(element).toHaveAttribute('aria-expanded', 'true')
 
-- [ ] T054 [P] [US3] [Pattern: Test Writing] AXE compliance checks
+- [x] T054 [P] [US3] [Pattern: Test Writing] AXE compliance checks
   - **Score**: 90% | **Time**: 3 min
 
 - [ ] T176 [P] [US3] [Pattern: Test Writing] panelId runtime change test
@@ -168,22 +168,22 @@
 
 ### Add Method - HIGH 85%+
 
-- [ ] T055 [P] [US3] [Pattern: Add Method] aria-expanded binding
+- [x] T055 [P] [US3] [Pattern: Add Method] aria-expanded binding
   - **Score**: 85% | **Time**: 2 min | [attr.aria-expanded]="expanded()"
 
-- [ ] T056 [P] [US3] [Pattern: Add Method] aria-controls binding
+- [x] T056 [P] [US3] [Pattern: Add Method] aria-controls binding
   - **Score**: 85% | **Time**: 2 min | [attr.aria-controls]="panelId()"
 
-- [ ] T060 [P] [US3] [Pattern: Scaffolding] Create panel wrapper with role="region"
+- [x] T060 [P] [US3] [Pattern: Scaffolding] Create panel wrapper with role="region"
   - **Score**: 82% | **Time**: 3 min
 
-- [ ] T061 [P] [US3] [Pattern: Add Method] aria-labelledby binding
+- [x] T061 [P] [US3] [Pattern: Add Method] aria-labelledby binding
   - **Score**: 85% | **Time**: 2 min
 
-- [ ] T196 [P] [US3] [Pattern: Add Method] Add `announce = input(false)`
+- [x] T196 [P] [US3] [Pattern: Add Method] Add `announce = input(false)`
   - **Score**: 88% | **Time**: 2 min
 
-- [ ] T197 [P] [US3] [Pattern: Scaffolding] Render live region element
+- [x] T197 [P] [US3] [Pattern: Scaffolding] Render live region element
   - **Score**: 85% | **Time**: 5 min
 
 ---
