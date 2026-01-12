@@ -58,25 +58,25 @@
 
 **7/8 tasks Grok-suitable (T011 already complete)**
 
-- [ ] T006 [Pattern: Scaffolding] Create accordion directory structure
+- [x] T006 [Pattern: Scaffolding] Create accordion directory structure
   - **Score**: 90% | **Time**: 1 min | **Strategy**: mkdir → verify
 
-- [ ] T007 [P] [Pattern: Scaffolding] Set up Foundation SCSS imports
+- [x] T007 [P] [Pattern: Scaffolding] Set up Foundation SCSS imports
   - **Score**: 85% | **Time**: 3 min | **Strategy**: Create file → add imports
 
-- [ ] T008 [P] [Pattern: Scaffolding] Create injection token file (nfsAccordionToken)
+- [x] T008 [P] [Pattern: Scaffolding] Create injection token file (nfsAccordionToken)
   - **Score**: 85% | **Time**: 3 min | **Strategy**: Copy CDK pattern → customize
 
-- [ ] T009 [Pattern: Verification] Install @angular/cdk if not present
+- [x] T009 [Pattern: Verification] Install @angular/cdk if not present
   - **Score**: 80% | **Time**: 2 min | **Strategy**: Check package.json → npm install if needed
 
-- [ ] T009a [Pattern: Verification] Verify @angular/cdk importability
+- [x] T009a [Pattern: Verification] Verify @angular/cdk importability
   - **Score**: 85% | **Time**: 2 min | **Strategy**: Create test import → build
 
-- [ ] T010 [P] [Pattern: Scaffolding] Create public API exports file (index.ts)
+- [x] T010 [P] [Pattern: Scaffolding] Create public API exports file (index.ts)
   - **Score**: 90% | **Time**: 2 min | **Strategy**: Create barrel file
 
-- [ ] T012 [P] [Pattern: Scaffolding] Create README documentation template
+- [x] T012 [P] [Pattern: Scaffolding] Create README documentation template
   - **Score**: 80% | **Time**: 5 min | **Strategy**: Use existing component READMEs as pattern
 
 ---

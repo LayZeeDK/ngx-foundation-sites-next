@@ -3,6 +3,7 @@
 **Purpose**: Provide minimal, focused context for Grok Code Fast 1 task execution
 
 **Key Grok Optimizations**:
+
 - Use native tool-calling (not XML)
 - Short prompts, rapid iteration
 - Explicit file paths and scope
@@ -80,18 +81,18 @@ import { AccordionGroup } from '@angular/aria';
   selector: 'nfs-accordion',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    'class': 'accordion',
+    class: 'accordion',
   },
   template: `...`,
 })
 export class NfsAccordion {
   // Signal inputs (use this pattern)
-  readonly multiExpandable = input(false);  // TODO: Rename to multiExpand
+  readonly multiExpandable = input(false); // TODO: Rename to multiExpand
   readonly allowAllClosed = input(false);
   readonly disabled = input(false);
-  readonly wrap = input(false);             // Already implemented
+  readonly wrap = input(false); // Already implemented
   readonly deepLink = input(false);
-  readonly announce = input(false);         // TODO: Add if missing
+  readonly announce = input(false); // TODO: Add if missing
 
   // Model signals
   readonly #openItemIds = signal<string[]>([]);
@@ -282,6 +283,7 @@ host: {
 **All file paths from Grok-suitable tasks:**
 
 ### Component Implementation
+
 - `packages/ngx-foundation-sites/src/lib/accordion/accordion.component.ts`
 - `packages/ngx-foundation-sites/src/lib/accordion/accordion-item.component.ts`
 - `packages/ngx-foundation-sites/src/lib/accordion/accordion-title.component.ts`
@@ -292,9 +294,11 @@ host: {
 - `packages/ngx-foundation-sites/src/lib/accordion/index.ts`
 
 ### Styles
+
 - `packages/ngx-foundation-sites/src/lib/accordion/_accordion-imports.scss`
 
 ### Stories
+
 - `packages/ngx-foundation-sites/.storybook/stories/accordion/Basic.story.ts`
 - `packages/ngx-foundation-sites/.storybook/stories/accordion/KeyboardNavigation.story.ts`
 - `packages/ngx-foundation-sites/.storybook/stories/accordion/ScreenReader.story.ts`
@@ -309,13 +313,16 @@ host: {
 - `packages/ngx-foundation-sites/.storybook/stories/accordion/Accordion.mdx`
 
 ### E2E Tests
+
 - `packages/ngx-foundation-sites-e2e/src/accordion/accordion-deeplink.spec.ts`
 
 ### Documentation
+
 - `packages/ngx-foundation-sites/src/lib/accordion/README.md`
 - `specs/002-accordion-component/quickstart.md`
 
 ### Config
+
 - `packages/ngx-foundation-sites/ng-package.json`
 - `packages/ngx-foundation-sites/project.json`
 
@@ -324,29 +331,34 @@ host: {
 ## Success Criteria (Per Task Type)
 
 ### Verification Task
+
 - [ ] Target file/directory exists
 - [ ] Expected content/structure present
 - [ ] No changes made (verification only)
 
 ### Add Input Signal
+
 - [ ] Signal added with correct type and default
 - [ ] JSDoc comment with Foundation equivalent
 - [ ] TypeScript compilation succeeds
 - [ ] Exported from public API if needed
 
 ### Add Method
+
 - [ ] Method added with correct signature
 - [ ] JSDoc comment with Foundation equivalent
 - [ ] Precondition checks (disabled, canClose)
 - [ ] TypeScript compilation succeeds
 
 ### Add Output
+
 - [ ] Output added with OutputEmitterRef
 - [ ] Event type interface defined
 - [ ] Emit call in appropriate handler
 - [ ] TypeScript compilation succeeds
 
 ### Add Storybook Story
+
 - [ ] Story file created with correct path
 - [ ] Meta and default export defined
 - [ ] At least one story exported
@@ -354,12 +366,14 @@ host: {
 - [ ] Story renders without errors
 
 ### Add Play Function
+
 - [ ] Uses canvas.getByRole() for element selection
 - [ ] Uses userEvent for interactions
 - [ ] Uses expect() for assertions
 - [ ] Tests pass in Storybook
 
 ### Rename/Update
+
 - [ ] All occurrences found via grep
 - [ ] All occurrences updated
 - [ ] TypeScript compilation succeeds
@@ -387,14 +401,14 @@ host: {
 
 **Required classes per FR-029 to FR-035:**
 
-| Element | CSS Class | Applied To |
-|---------|-----------|------------|
-| Container | `.accordion` | `<nfs-accordion>` host |
-| Item wrapper | `.accordion-item` | Item container |
-| Title button | `.accordion-title` | `<button>` in title |
-| Content panel | `.accordion-content` | Panel wrapper |
-| Expanded state | `.is-active` | Item when expanded |
-| Disabled state | `.is-disabled` | Item when disabled |
+| Element        | CSS Class            | Applied To             |
+| -------------- | -------------------- | ---------------------- |
+| Container      | `.accordion`         | `<nfs-accordion>` host |
+| Item wrapper   | `.accordion-item`    | Item container         |
+| Title button   | `.accordion-title`   | `<button>` in title    |
+| Content panel  | `.accordion-content` | Panel wrapper          |
+| Expanded state | `.is-active`         | Item when expanded     |
+| Disabled state | `.is-disabled`       | Item when disabled     |
 
 ---
 
@@ -402,21 +416,22 @@ host: {
 
 **Required per accordion-aria.md:**
 
-| Element | Attribute | Value |
-|---------|-----------|-------|
-| Title button | `role` | `button` (implicit on `<button>`) |
-| Title button | `aria-expanded` | `true` / `false` |
-| Title button | `aria-controls` | Panel ID |
-| Title button | `aria-disabled` | `true` (when disabled) |
-| Content panel | `role` | `region` |
-| Content panel | `aria-labelledby` | Title button ID |
-| Content panel | `inert` | Present when collapsed |
+| Element       | Attribute         | Value                             |
+| ------------- | ----------------- | --------------------------------- |
+| Title button  | `role`            | `button` (implicit on `<button>`) |
+| Title button  | `aria-expanded`   | `true` / `false`                  |
+| Title button  | `aria-controls`   | Panel ID                          |
+| Title button  | `aria-disabled`   | `true` (when disabled)            |
+| Content panel | `role`            | `region`                          |
+| Content panel | `aria-labelledby` | Title button ID                   |
+| Content panel | `inert`           | Present when collapsed            |
 
 ---
 
 ## Commands Reference
 
 **Build and verify:**
+
 ```bash
 npx nx build ngx-foundation-sites
 npx nx lint ngx-foundation-sites
@@ -424,17 +439,20 @@ npx nx test ngx-foundation-sites
 ```
 
 **Run Storybook:**
+
 ```bash
 npx nx storybook ngx-foundation-sites
 # Access at http://localhost:4400
 ```
 
 **Run E2E tests:**
+
 ```bash
 npx nx e2e ngx-foundation-sites-e2e
 ```
 
 **Format code:**
+
 ```bash
 npm run format
 ```
@@ -444,13 +462,17 @@ npm run format
 ## Quick Prompts for Grok
 
 **Add method:**
+
 > Add `down()` method to NfsAccordionItemDef in `packages/ngx-foundation-sites/src/lib/accordion/accordion-item-def.ts` that sets `expanded` to `true` if not disabled. Add JSDoc documenting it as Foundation equivalent of `.down($target)`.
 
 **Add input:**
+
 > Add `announce = input(false)` to NfsAccordion in `packages/ngx-foundation-sites/src/lib/accordion/accordion.component.ts`. Add JSDoc documenting it controls live region announcements.
 
 **Add story:**
+
 > Create `MultiExpand.story.ts` at `packages/ngx-foundation-sites/.storybook/stories/accordion/MultiExpand.story.ts` following the pattern in `Basic.story.ts`. Add play function that expands two items and verifies both remain open.
 
 **Rename:**
+
 > Rename `multiExpandable` to `multiExpand` in all files under `packages/ngx-foundation-sites/`. This is a breaking change per FR-014.

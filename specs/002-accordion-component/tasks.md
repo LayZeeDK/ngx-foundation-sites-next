@@ -126,15 +126,15 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T006 Create accordion directory structure at packages/ngx-foundation-sites/src/lib/accordion/
-- [ ] T007 [P] Set up Foundation SCSS imports in packages/ngx-foundation-sites/src/lib/accordion/\_accordion-imports.scss
-- [ ] T008 [P] Create injection token file at packages/ngx-foundation-sites/src/lib/accordion/accordion.token.ts (exports nfsAccordionToken for DI)
-- [ ] T009 Install @angular/cdk if not present (for FocusMonitor, ListKeyManager, a11y utilities)
-- [ ] T009a Verify @angular/cdk importability and required utilities (FocusMonitor, ListKeyManager). Confirm version matches workspace policy and that Storybook builds import the CDK without errors. (Blocking verification)
-- [ ] T010 [P] Create public API exports file at packages/ngx-foundation-sites/src/lib/accordion/index.ts
+- [x] T006 Create accordion directory structure at packages/ngx-foundation-sites/src/lib/accordion/
+- [x] T007 [P] Set up Foundation SCSS imports in packages/ngx-foundation-sites/src/lib/accordion/\_accordion-imports.scss
+- [x] T008 [P] Create injection token file at packages/ngx-foundation-sites/src/lib/accordion/accordion.token.ts (exports nfsAccordionToken for DI)
+- [x] T009 Install @angular/cdk if not present (for FocusMonitor, ListKeyManager, a11y utilities)
+- [x] T009a Verify @angular/cdk importability and required utilities (FocusMonitor, ListKeyManager). Confirm version matches workspace policy and that Storybook builds import the CDK without errors. (Blocking verification)
+- [x] T010 [P] Create public API exports file at packages/ngx-foundation-sites/src/lib/accordion/index.ts
 - [x] T011 Create API design document using `foundation-api-design` skill at packages/ngx-foundation-sites/ACCORDION_API_DESIGN.md
   - Verified: 2026-01-09 (file exists, 771 lines, covers Foundation CSS mapping, WAI-ARIA requirements, CDK-style DI patterns)
-- [ ] T012 [P] Create README documentation template at packages/ngx-foundation-sites/src/lib/accordion/README.md
+- [x] T012 [P] Create README documentation template at packages/ngx-foundation-sites/src/lib/accordion/README.md
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
