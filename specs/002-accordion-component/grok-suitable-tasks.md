@@ -85,20 +85,20 @@
 
 ### Test Writing Tasks - HIGH 90%+
 
-- [ ] T013 [P] [US1] [Pattern: Test Writing] Create Basic.story.ts with 3 FAQ items
+- [x] T013 [P] [US1] [Pattern: Test Writing] Create Basic.story.ts with 3 FAQ items
   - **Score**: 95% | **Time**: 5 min | **Strategy**: Copy existing story → customize
   - **File**: packages/ngx-foundation-sites/.storybook/stories/accordion/Basic.story.ts
 
-- [ ] T014 [US1] [Pattern: Test Writing] Add play function: click item 2 → verify expands
+- [x] T014 [US1] [Pattern: Test Writing] Add play function: click item 2 → verify expands
   - **Score**: 90% | **Time**: 3 min | **Strategy**: Add play function with userEvent.click
 
-- [ ] T015 [US1] [Pattern: Test Writing] Add play function: click item 3 → verify item 2 collapses
+- [x] T015 [US1] [Pattern: Test Writing] Add play function: click item 3 → verify item 2 collapses
   - **Score**: 90% | **Time**: 3 min | **Strategy**: Extend T014 play function
 
-- [ ] T016 [US1] [Pattern: Test Writing] Add play function: click expanded item 1 → verify collapses
+- [x] T016 [US1] [Pattern: Test Writing] Add play function: click expanded item 1 → verify collapses
   - **Score**: 90% | **Time**: 3 min | **Strategy**: Add collapse assertion
 
-- [ ] T017 [P] [US1] [Pattern: Test Writing] Add accessibility checks using @storybook/addon-a11y
+- [x] T017 [P] [US1] [Pattern: Test Writing] Add accessibility checks using @storybook/addon-a11y
   - **Score**: 92% | **Time**: 2 min | **Strategy**: Add a11y checks to story
 
 ### Component Scaffolding - HIGH 85%
@@ -124,7 +124,7 @@
 - [x] T029 [US1] [Pattern: Add Method] Implement .is-active class binding
   - **Score**: 88% | **Time**: 2 min | **Strategy**: [class.is-active]="expanded()"
 
-- [ ] T030 [US1] [Pattern: Update Docs] Add JSDoc comments for Foundation equivalents
+- [x] T030 [US1] [Pattern: Update Docs] Add JSDoc comments for Foundation equivalents
   - **Score**: 90% | **Time**: 5 min | **Strategy**: Document data-\* mapping
 
 - [x] T031 [US1] [Pattern: Scaffolding] Export components from index.ts
