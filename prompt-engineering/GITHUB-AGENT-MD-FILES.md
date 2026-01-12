@@ -12,19 +12,19 @@ Custom agents are **specialized versions of Copilot coding agent** that you can 
 
 ### Key Characteristics
 
-| Aspect | Description |
-|--------|-------------|
-| **Extension** | `.agent.md` (or `.md` in agents folder) |
-| **Location** | `.github/agents/` (repo), `agents/` (org/enterprise) |
-| **Activation** | Agent selection dropdown or `@agent-name` mention |
+| Aspect           | Description                                                  |
+| ---------------- | ------------------------------------------------------------ |
+| **Extension**    | `.agent.md` (or `.md` in agents folder)                      |
+| **Location**     | `.github/agents/` (repo), `agents/` (org/enterprise)         |
+| **Activation**   | Agent selection dropdown or `@agent-name` mention            |
 | **Availability** | VS Code, GitHub.com, JetBrains*, Eclipse*, Xcode* (*preview) |
 
 ### Custom Agents vs AGENTS.md
 
-| File | Purpose | Scope |
-|------|---------|-------|
-| `*.agent.md` | Define specialized agent personas | Per-agent instructions |
-| `AGENTS.md` | Repository-wide agent instructions | All agents in repo |
+| File         | Purpose                            | Scope                  |
+| ------------ | ---------------------------------- | ---------------------- |
+| `*.agent.md` | Define specialized agent personas  | Per-agent instructions |
+| `AGENTS.md`  | Repository-wide agent instructions | All agents in repo     |
 
 Both can coexist. `AGENTS.md` provides baseline instructions; `*.agent.md` creates specialized personas.
 
@@ -38,7 +38,7 @@ Agent profiles consist of YAML frontmatter and Markdown body:
 ---
 name: test-specialist
 description: Focuses on test coverage and quality assurance
-tools: ["read", "edit", "search", "execute"]
+tools: ['read', 'edit', 'search', 'execute']
 target: vscode
 ---
 
@@ -63,6 +63,7 @@ You are a testing specialist focused on code quality and comprehensive test cove
 ## Boundaries
 
 🚫 **Never:**
+
 - Modify production source code
 - Skip tests to meet deadlines
 - Ignore accessibility requirements
@@ -74,58 +75,62 @@ You are a testing specialist focused on code quality and comprehensive test cove
 
 ### All Available Properties
 
-| Property | Type | Required | Default | Description |
-|----------|------|----------|---------|-------------|
-| `name` | string | No | filename | Display identifier for the agent |
-| `description` | string | **Yes** | - | Purpose and capabilities summary |
-| `tools` | list/string | No | all tools | Available tools; omit for full access |
-| `target` | string | No | both | Environment: `vscode`, `github-copilot`, or both |
-| `infer` | boolean | No | `true` | Enable automatic agent selection |
-| `model` | string | No | - | AI model (VS Code/JetBrains/Eclipse/Xcode only) |
-| `mcp-servers` | object | No | - | MCP server configs (org/enterprise only) |
-| `metadata` | object | No | - | Custom annotations (name-value pairs) |
+| Property      | Type        | Required | Default   | Description                                      |
+| ------------- | ----------- | -------- | --------- | ------------------------------------------------ |
+| `name`        | string      | No       | filename  | Display identifier for the agent                 |
+| `description` | string      | **Yes**  | -         | Purpose and capabilities summary                 |
+| `tools`       | list/string | No       | all tools | Available tools; omit for full access            |
+| `target`      | string      | No       | both      | Environment: `vscode`, `github-copilot`, or both |
+| `infer`       | boolean     | No       | `true`    | Enable automatic agent selection                 |
+| `model`       | string      | No       | -         | AI model (VS Code/JetBrains/Eclipse/Xcode only)  |
+| `mcp-servers` | object      | No       | -         | MCP server configs (org/enterprise only)         |
+| `metadata`    | object      | No       | -         | Custom annotations (name-value pairs)            |
 
 ### Tools Configuration
 
 Tools control what capabilities the agent has access to.
 
 **Enable all tools:**
+
 ```yaml
 # Omit tools property entirely, OR:
-tools: ["*"]
+tools: ['*']
 ```
 
 **Specific tools only:**
+
 ```yaml
-tools: ["read", "edit", "search"]
+tools: ['read', 'edit', 'search']
 ```
 
 **Include MCP tools:**
+
 ```yaml
-tools: ["read", "edit", "custom-mcp/tool-name"]
+tools: ['read', 'edit', 'custom-mcp/tool-name']
 ```
 
 **No tools (conversation only):**
+
 ```yaml
 tools: []
 ```
 
 ### Available Tool Aliases
 
-| Alias | Compatible Names | Purpose |
-|-------|------------------|---------|
-| `execute` | shell, Bash, powershell | Command execution |
-| `read` | Read, NotebookRead | File content access |
-| `edit` | Edit, MultiEdit, Write | File modifications |
-| `search` | Grep, Glob | File/text searching |
-| `agent` | custom-agent, Task | Agent invocation |
+| Alias     | Compatible Names        | Purpose             |
+| --------- | ----------------------- | ------------------- |
+| `execute` | shell, Bash, powershell | Command execution   |
+| `read`    | Read, NotebookRead      | File content access |
+| `edit`    | Edit, MultiEdit, Write  | File modifications  |
+| `search`  | Grep, Glob              | File/text searching |
+| `agent`   | custom-agent, Task      | Agent invocation    |
 
 ### Out-of-the-Box MCP Servers
 
-| Server | Capabilities | Scope |
-|--------|--------------|-------|
-| `github` | Read-only repository tools | Repository-scoped |
-| `playwright` | Testing tools | localhost only |
+| Server       | Capabilities               | Scope             |
+| ------------ | -------------------------- | ----------------- |
+| `github`     | Read-only repository tools | Repository-scoped |
+| `playwright` | Testing tools              | localhost only    |
 
 ### Target Environments
 
@@ -149,6 +154,7 @@ target: github-copilot
 MCP (Model Context Protocol) allows agents to use tools from local and remote servers.
 
 **⚠️ Limitations:**
+
 - Repository-level agents **cannot** configure MCP directly
 - MCP configuration requires **organization or enterprise** level
 - Repository agents can use MCP tools from repo settings
@@ -159,13 +165,13 @@ MCP (Model Context Protocol) allows agents to use tools from local and remote se
 ---
 name: data-analyst
 description: Agent with database access
-tools: ["read", "search", "db-server/query"]
+tools: ['read', 'search', 'db-server/query']
 mcp-servers:
   db-server:
     type: local
     command: npx
-    args: ["@company/db-mcp-server"]
-    tools: ["*"]
+    args: ['@company/db-mcp-server']
+    tools: ['*']
     env:
       DB_HOST: $COPILOT_MCP_DB_HOST
       DB_PASSWORD: ${{ secrets.COPILOT_MCP_DB_PASSWORD }}
@@ -174,11 +180,11 @@ mcp-servers:
 
 ### MCP Server Types
 
-| Type | Description | Example |
-|------|-------------|---------|
-| `local` | Local command execution | `npx @company/mcp-server` |
-| `http` | HTTP endpoint | `http://localhost:3000/mcp` |
-| `sse` | Server-Sent Events | `https://api.example.com/sse` |
+| Type    | Description             | Example                       |
+| ------- | ----------------------- | ----------------------------- |
+| `local` | Local command execution | `npx @company/mcp-server`     |
+| `http`  | HTTP endpoint           | `http://localhost:3000/mcp`   |
+| `sse`   | Server-Sent Events      | `https://api.example.com/sse` |
 
 ### Environment Variable Syntax
 
@@ -265,14 +271,17 @@ The Markdown content below YAML frontmatter defines agent behavior.
 ## Guidelines
 
 ### Code Style
+
 - [Coding conventions]
 - [Framework-specific rules]
 
 ### Testing
+
 - [Testing requirements]
 - [Coverage expectations]
 
 ### Documentation
+
 - [Documentation standards]
 
 ## Commands
@@ -280,20 +289,23 @@ The Markdown content below YAML frontmatter defines agent behavior.
 Common commands this agent uses:
 
 \`\`\`bash
-npm test           # Run unit tests
-npm run lint       # Check code style
-npm run build      # Build project
+npm test # Run unit tests
+npm run lint # Check code style
+npm run build # Build project
 \`\`\`
 
 ## Boundaries
 
 ✅ **Always:**
+
 - [Required behaviors]
 
 ⚠️ **Ask First:**
+
 - [Behaviors requiring approval]
 
 🚫 **Never:**
+
 - [Prohibited actions]
 ```
 
@@ -311,18 +323,22 @@ Place executable tools early with flags and options:
 ## Commands
 
 \`\`\`bash
+
 # Testing
-npm test                  # Run all tests
-npm test -- --coverage    # With coverage report
-npm run test:watch        # Watch mode
+
+npm test # Run all tests
+npm test -- --coverage # With coverage report
+npm run test:watch # Watch mode
 
 # Building
-npm run build             # Production build
-npm run build:dev         # Development build
+
+npm run build # Production build
+npm run build:dev # Development build
 
 # Linting
-npm run lint              # Check style
-npm run lint:fix          # Auto-fix issues
+
+npm run lint # Check style
+npm run lint:fix # Auto-fix issues
 \`\`\`
 ```
 
@@ -334,24 +350,26 @@ Show how tests should be structured:
 ## Testing Guidelines
 
 ### Unit Tests
+
 - Use Jest with TypeScript
-- Colocate tests with source files (*.spec.ts)
+- Colocate tests with source files (\*.spec.ts)
 - Mock external dependencies
 
 ### Pattern
 
 \`\`\`typescript
 describe('ComponentName', () => {
-  it('should handle primary use case', () => {
-    // Arrange
-    const input = createTestInput();
+it('should handle primary use case', () => {
+// Arrange
+const input = createTestInput();
 
     // Act
     const result = component.method(input);
 
     // Assert
     expect(result).toMatchExpected();
-  });
+
+});
 });
 \`\`\`
 ```
@@ -365,16 +383,16 @@ Map directories with descriptions:
 
 \`\`\`
 src/
-├── components/     # Reusable UI components
-├── services/       # Business logic services
-├── utils/          # Pure utility functions
-├── types/          # TypeScript type definitions
-└── hooks/          # Custom React hooks
+├── components/ # Reusable UI components
+├── services/ # Business logic services
+├── utils/ # Pure utility functions
+├── types/ # TypeScript type definitions
+└── hooks/ # Custom React hooks
 
 tests/
-├── unit/           # Unit tests (Jest)
-├── integration/    # Integration tests
-└── e2e/            # End-to-end tests (Playwright)
+├── unit/ # Unit tests (Jest)
+├── integration/ # Integration tests
+└── e2e/ # End-to-end tests (Playwright)
 \`\`\`
 ```
 
@@ -390,11 +408,11 @@ Provide real code examples (not just descriptions):
 \`\`\`typescript
 // ✅ Use signals for state
 const count = signal(0);
-const doubled = computed(() => count() * 2);
+const doubled = computed(() => count() \* 2);
 
 // ✅ Use OnPush change detection
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush
+changeDetection: ChangeDetectionStrategy.OnPush
 })
 \`\`\`
 
@@ -405,7 +423,7 @@ const doubled = computed(() => count() * 2);
 private count$ = new BehaviorSubject(0);
 
 // ❌ Avoid default change detection
-@Component({})  // Missing OnPush
+@Component({}) // Missing OnPush
 \`\`\`
 ```
 
@@ -417,15 +435,17 @@ Clarify commit conventions and branch strategies:
 ## Git Workflow
 
 ### Commit Messages
+
 - Format: \`type(scope): description\`
 - Types: feat, fix, docs, style, refactor, test, chore
 - Example: \`feat(accordion): add keyboard navigation\`
 
 ### Branches
+
 - \`main\` - Production-ready code
 - \`develop\` - Integration branch
-- \`feature/*\` - New features
-- \`fix/*\` - Bug fixes
+- \`feature/\*\` - New features
+- \`fix/\*\` - Bug fixes
 ```
 
 ### 6. Boundaries
@@ -436,16 +456,19 @@ Define what agents should never touch:
 ## Boundaries
 
 ### ✅ Always Do (Safe Actions)
+
 - Write tests for new code
 - Follow existing patterns
 - Update related documentation
 
 ### ⚠️ Ask First (Requires Approval)
+
 - Modify shared utilities
 - Change public API signatures
 - Update configuration files
 
 ### 🚫 Never Do (Prohibited)
+
 - Commit secrets or credentials
 - Modify .env files
 - Delete test files
@@ -810,12 +833,15 @@ Before completing:
 ### ✅ Do
 
 1. **Be Specific Over Vague**
+
    ```markdown
    # Good
+
    You are a test engineer who writes Jest tests for React components,
    follows AAA pattern, and never modifies source code.
 
    # Bad
+
    You are a helpful coding assistant.
    ```
 
@@ -832,11 +858,14 @@ Before completing:
    - 🚫 Never do
 
 5. **Include Tech Stack Specifics**
+
    ```markdown
    # Good
+
    React 18 with TypeScript, Vite, TailwindCSS
 
    # Bad
+
    React project
    ```
 
@@ -902,11 +931,11 @@ Repository Root
 
 ### With Prompt Files
 
-| Aspect | `.agent.md` | `.prompt.md` |
-|--------|-------------|--------------|
-| **Activation** | Agent selection | `/command` |
-| **Scope** | Persistent persona | Single task |
-| **Reuse** | Always available | On-demand |
+| Aspect         | `.agent.md`        | `.prompt.md` |
+| -------------- | ------------------ | ------------ |
+| **Activation** | Agent selection    | `/command`   |
+| **Scope**      | Persistent persona | Single task  |
+| **Reuse**      | Always available   | On-demand    |
 
 Use agents for **who** does the work; use prompts for **what** to do.
 

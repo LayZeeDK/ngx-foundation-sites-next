@@ -12,16 +12,17 @@ Prompt files are **reusable prompt templates** stored as `*.prompt.md` files tha
 
 ### Key Characteristics
 
-| Aspect | Description |
-|--------|-------------|
-| **Extension** | `.prompt.md` |
-| **Location** | `.github/prompts/` (workspace) or VS Code profile (user) |
-| **Activation** | On-demand via `/promptName` in chat |
-| **Availability** | VS Code, Visual Studio, JetBrains IDEs (public preview) |
+| Aspect           | Description                                              |
+| ---------------- | -------------------------------------------------------- |
+| **Extension**    | `.prompt.md`                                             |
+| **Location**     | `.github/prompts/` (workspace) or VS Code profile (user) |
+| **Activation**   | On-demand via `/promptName` in chat                      |
+| **Availability** | VS Code, Visual Studio, JetBrains IDEs (public preview)  |
 
 ### When to Use Prompt Files
 
 ✅ **Use for:**
+
 - Task-specific reusable prompts
 - Code generation templates
 - Review checklists
@@ -29,6 +30,7 @@ Prompt files are **reusable prompt templates** stored as `*.prompt.md` files tha
 - Controlled, limited-scope tasks
 
 ❌ **Don't use for:**
+
 - Project-wide conventions (use `copilot-instructions.md`)
 - Always-on context (use custom instructions)
 - Agent personas (use `.agent.md`)
@@ -45,20 +47,24 @@ Prompt files consist of three components:
 name: prompt-name
 description: What this prompt does
 agent: agent
-tools: ["read", "edit"]
+tools: ['read', 'edit']
 model: GPT-4o
 ---
 
 # Markdown Body (the actual prompt)
+
 You are a code reviewer specializing in Angular...
 
 ## Task
+
 Analyze the provided code for:
+
 1. Performance issues
 2. Accessibility gaps
 3. Best practice violations
 
 ## Input
+
 Code to review: ${input:code:Paste your code here}
 ```
 
@@ -68,23 +74,23 @@ Code to review: ${input:code:Paste your code here}
 
 ### All Available Properties
 
-| Property | Type | Required | Default | Description |
-|----------|------|----------|---------|-------------|
-| `name` | string | No | filename | Identifier used after `/` in chat |
-| `description` | string | **Yes** | - | Brief explanation of prompt purpose |
-| `agent` | string | No | - | Execution agent: `ask`, `edit`, `agent`, or custom agent |
-| `model` | string | No | current model | AI model to use (e.g., `GPT-4o`, `GPT-5 mini`) |
-| `tools` | list | No | all tools | Available tools (e.g., `["read", "edit", "search"]`) |
-| `argument-hint` | string | No | - | Hint text shown in chat input field |
+| Property        | Type   | Required | Default       | Description                                              |
+| --------------- | ------ | -------- | ------------- | -------------------------------------------------------- |
+| `name`          | string | No       | filename      | Identifier used after `/` in chat                        |
+| `description`   | string | **Yes**  | -             | Brief explanation of prompt purpose                      |
+| `agent`         | string | No       | -             | Execution agent: `ask`, `edit`, `agent`, or custom agent |
+| `model`         | string | No       | current model | AI model to use (e.g., `GPT-4o`, `GPT-5 mini`)           |
+| `tools`         | list   | No       | all tools     | Available tools (e.g., `["read", "edit", "search"]`)     |
+| `argument-hint` | string | No       | -             | Hint text shown in chat input field                      |
 
 ### Agent Types
 
-| Value | Behavior |
-|-------|----------|
-| `ask` | Question-answering mode, read-only |
-| `edit` | Can make file edits |
-| `agent` | Full agent mode with autonomous actions |
-| `@agent-name` | Use a specific custom agent |
+| Value         | Behavior                                |
+| ------------- | --------------------------------------- |
+| `ask`         | Question-answering mode, read-only      |
+| `edit`        | Can make file edits                     |
+| `agent`       | Full agent mode with autonomous actions |
+| `@agent-name` | Use a specific custom agent             |
 
 ### Tool Configuration
 
@@ -109,15 +115,15 @@ tools: []
 
 **Available Tool Aliases:**
 
-| Alias | Description |
-|-------|-------------|
-| `read` | Read file contents |
-| `edit` | Modify file contents |
-| `search` | Search files/text (Grep, Glob) |
-| `execute` | Run shell commands |
-| `agent` | Invoke other agents |
-| `githubRepo` | GitHub repository tools |
-| `search/codebase` | Codebase search |
+| Alias             | Description                    |
+| ----------------- | ------------------------------ |
+| `read`            | Read file contents             |
+| `edit`            | Modify file contents           |
+| `search`          | Search files/text (Grep, Glob) |
+| `execute`         | Run shell commands             |
+| `agent`           | Invoke other agents            |
+| `githubRepo`      | GitHub repository tools        |
+| `search/codebase` | Codebase search                |
 
 ---
 
@@ -131,12 +137,15 @@ Prompt users for input when the prompt runs:
 
 ```markdown
 # Basic input
+
 ${input:variableName}
 
 # Input with placeholder hint
+
 ${input:variableName:Placeholder text for user}
 
 # Examples
+
 ${input:code:Paste your code here}
 ${input:audience:Who is this explanation for?}
 ${input:componentName:Name of the component to create}
@@ -148,7 +157,7 @@ Reference workspace paths:
 
 ```markdown
 ${workspaceFolder}           # Full workspace path
-${workspaceFolderBasename}   # Workspace folder name only
+${workspaceFolderBasename} # Workspace folder name only
 ```
 
 ### Selection Variables
@@ -157,7 +166,7 @@ Reference current editor selection:
 
 ```markdown
 ${selection}      # Currently selected text
-${selectedText}   # Alias for ${selection}
+${selectedText} # Alias for ${selection}
 ```
 
 ### File Context Variables
@@ -166,7 +175,7 @@ Reference current file:
 
 ```markdown
 ${file}                    # Full file path
-${fileBasename}            # Filename with extension
+${fileBasename} # Filename with extension
 ${fileDirname}             # Directory containing file
 ${fileBasenameNoExtension} # Filename without extension
 ```
@@ -179,12 +188,15 @@ Reference other files in your prompt using Markdown links:
 
 ```markdown
 # Reference instruction files
+
 Follow the guidelines in [coding standards](../instructions/coding.instructions.md)
 
 # Reference code files
+
 Use the pattern from [example component](../../src/components/Example.tsx)
 
 # Reference with relative paths
+
 See [API documentation](../docs/api.md) for details
 ```
 
@@ -240,7 +252,7 @@ Use clear, simple language and avoid unnecessary jargon.
 name: new-angular-component
 description: Generate Angular component with signals and OnPush
 agent: agent
-tools: ["read", "edit", "search"]
+tools: ['read', 'edit', 'search']
 model: GPT-4o
 ---
 
@@ -282,18 +294,18 @@ Use this pattern:
 import { Component, ChangeDetectionStrategy, input, output } from '@angular/core';
 
 @Component({
-  selector: 'nfs-{{kebab-case-name}}',
-  template: \`
-    <!-- Component template -->
-  \`,
-  changeDetection: ChangeDetectionStrategy.OnPush
+selector: 'nfs-{{kebab-case-name}}',
+template: \`
+<!-- Component template -->
+\`,
+changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class {{PascalCaseName}}Component {
-  // Inputs as signals
-  label = input.required<string>();
+// Inputs as signals
+label = input.required<string>();
 
-  // Outputs
-  clicked = output<void>();
+// Outputs
+clicked = output<void>();
 }
 \`\`\`
 ```
@@ -305,7 +317,7 @@ export class {{PascalCaseName}}Component {
 name: review-angular
 description: Review Angular component for best practices
 agent: ask
-tools: ["read", "search"]
+tools: ['read', 'search']
 ---
 
 # Angular Component Review
@@ -358,7 +370,7 @@ For each issue found:
 name: implement-feature
 description: Complete feature implementation workflow
 agent: agent
-tools: ["read", "edit", "search", "execute"]
+tools: ['read', 'edit', 'search', 'execute']
 ---
 
 # Feature Implementation Workflow
@@ -430,11 +442,7 @@ Configure additional prompt folders in VS Code settings:
 
 ```json
 {
-  "chat.promptFilesLocations": [
-    ".github/prompts",
-    "team-prompts",
-    "/shared/company-prompts"
-  ]
+  "chat.promptFilesLocations": [".github/prompts", "team-prompts", "/shared/company-prompts"]
 }
 ```
 
@@ -490,35 +498,42 @@ When a prompt file specifies tools, this precedence applies:
 ### ✅ Do
 
 1. **Use descriptive names**
+
    ```yaml
    name: angular-component-review  # Good
    name: review                     # Too generic
    ```
 
 2. **Provide clear descriptions**
+
    ```yaml
    description: Review Angular component for performance, accessibility, and best practices
    ```
 
 3. **Include input validation hints**
+
    ```markdown
    ${input:name:PascalCase component name, e.g., UserProfile}
    ```
 
 4. **Structure output expectations**
+
    ```markdown
    ## Output Format
+
    - Summary (2-3 sentences)
    - Issues found (bulleted list)
    - Recommendations (numbered list)
    ```
 
 5. **Reference related files**
+
    ```markdown
    Follow conventions from [AGENTS.md](../AGENTS.md)
    ```
 
 6. **Specify appropriate tools**
+
    ```yaml
    # Read-only review
    tools: ["read", "search"]
@@ -530,33 +545,44 @@ When a prompt file specifies tools, this precedence applies:
 ### ❌ Avoid
 
 1. **Vague prompts**
+
    ```markdown
    # Bad
+
    Review the code
 
    # Good
+
    Review the Angular component for:
+
    - Change detection strategy (should be OnPush)
    - Signal usage (prefer over RxJS)
    - Accessibility compliance
    ```
 
 2. **Hardcoded paths**
+
    ```markdown
    # Bad
+
    Check C:\Users\me\project\src\app.ts
 
    # Good
+
    Check the selected file
    ```
 
 3. **Missing output structure**
+
    ```markdown
    # Bad
+
    Give me feedback
 
    # Good
+
    Provide feedback in this format:
+
    - Issue: [description]
    - Severity: [high/medium/low]
    - Fix: [code example]
@@ -591,8 +617,8 @@ Reference agents in prompt frontmatter:
 ---
 name: security-review
 description: Security-focused code review
-agent: "@security-agent"  # Uses custom agent
-tools: ["read", "search"]
+agent: '@security-agent' # Uses custom agent
+tools: ['read', 'search']
 ---
 ```
 
@@ -608,12 +634,12 @@ tools: ["read", "search"]
 
 ### Common Issues
 
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Prompt not appearing | Wrong location | Move to `.github/prompts/` |
-| Tools not working | Tool not available | Check tool name spelling |
-| Variables empty | Wrong syntax | Use `${input:name:hint}` format |
-| Model errors | Model not available | Remove `model` or use available model |
+| Issue                | Cause               | Solution                              |
+| -------------------- | ------------------- | ------------------------------------- |
+| Prompt not appearing | Wrong location      | Move to `.github/prompts/`            |
+| Tools not working    | Tool not available  | Check tool name spelling              |
+| Variables empty      | Wrong syntax        | Use `${input:name:hint}` format       |
+| Model errors         | Model not available | Remove `model` or use available model |
 
 ---
 

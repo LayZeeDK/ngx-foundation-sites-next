@@ -38,6 +38,7 @@ This directory contains research-backed optimization strategies for AI models us
 **Purpose:** Comprehensive documentation for reusable prompt templates
 
 **Covers:**
+
 - Complete YAML frontmatter reference (`name`, `description`, `agent`, `model`, `tools`)
 - Variable syntax (`${input:}`, `${workspaceFolder}`, `${selection}`)
 - File and tool references
@@ -49,6 +50,7 @@ This directory contains research-backed optimization strategies for AI models us
 **Purpose:** Comprehensive documentation for custom agent personas
 
 **Covers:**
+
 - Complete YAML frontmatter reference (`name`, `description`, `tools`, `target`, `mcp-servers`)
 - MCP server integration and configuration
 - Six essential areas from GitHub's 2,500+ repository analysis
@@ -60,6 +62,7 @@ This directory contains research-backed optimization strategies for AI models us
 **Purpose:** Side-by-side comparison of all customization file types
 
 **Covers:**
+
 - Quick reference matrix (all file types at a glance)
 - Activation behavior comparison
 - Frontmatter capabilities comparison
