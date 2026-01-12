@@ -68,6 +68,31 @@ export default meta;
 type Story = StoryObj<NfsAccordion>;
 
 export const Default: Story = {
+  render: (args) => ({
+    props: args,
+    template: `
+      <nfs-accordion ${argsToLiteralTemplate(args)}>
+        <ng-template nfsAccordionItem panelId="panel-1">
+          <ng-template nfsAccordionHeader>Accordion 1</ng-template>
+          <ng-template nfsAccordionContent>
+            <p>Panel 1 content.</p>
+          </ng-template>
+        </ng-template>
+        <ng-template nfsAccordionItem panelId="panel-2">
+          <ng-template nfsAccordionHeader>Accordion 2</ng-template>
+          <ng-template nfsAccordionContent>
+            <p>Panel 2 content.</p>
+          </ng-template>
+        </ng-template>
+        <ng-template nfsAccordionItem panelId="panel-3">
+          <ng-template nfsAccordionHeader>Accordion 3</ng-template>
+          <ng-template nfsAccordionContent>
+            <p>Panel 3 content.</p>
+          </ng-template>
+        </ng-template>
+      </nfs-accordion>
+    `,
+  }),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
