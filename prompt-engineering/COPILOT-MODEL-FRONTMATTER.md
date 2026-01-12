@@ -52,6 +52,24 @@ The `copilot` CLI supports these models (as of v0.0.377):
 | `gpt-4.1`              | GPT-4.1 (1M context, non-reasoning, 0× cost) |
 | `gemini-3-pro-preview` | Gemini 3 Pro Preview                         |
 
+### Models NOT Supported by `copilot` CLI
+
+The following models are available in **VS Code GitHub Copilot Chat** but **NOT** in the standalone `copilot` CLI:
+
+| Model              | VS Code Copilot Chat | `copilot` CLI | Notes                                 |
+| ------------------ | -------------------- | ------------- | ------------------------------------- |
+| `grok-code-fast-1` | ✅ 0× cost           | ❌ Not found  | xAI model - VS Code model picker only |
+
+**Important**: If you specify `model: grok-code-fast-1` in frontmatter:
+
+- VS Code may show "unknown model" (check your model picker for the exact name)
+- `copilot` CLI will ignore it and use the default model
+
+For Grok Code Fast 1 workflows:
+
+1. Use VS Code GitHub Copilot Chat with the model picker
+2. Or use the `copilot` CLI with a fallback model and switch models manually
+
 ## How Model Selection Works
 
 ### Priority Order

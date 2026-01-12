@@ -1,7 +1,7 @@
 ---
 description: Execute Grok-suitable tasks with Grok Code Fast 1 optimizations. Fast, agentic implementation with iterative refinement.
 agent: implement-tasks-for-grok-code-fast-1.grok-code-fast-1
-model: grok-code-fast-1
+# model: grok-code-fast-1  # NOTE: Not supported by copilot CLI - use VS Code model picker
 ---
 
 ## User Input
@@ -11,6 +11,22 @@ $ARGUMENTS
 ```
 
 You **MUST** consider the user input before proceeding (if not empty).
+
+---
+
+## Model Selection
+
+**Target Model**: Grok Code Fast 1 (xAI)
+
+**⚠️ Important**: Grok Code Fast 1 is NOT supported by the `copilot` CLI.
+
+**How to use**:
+
+1. **VS Code GitHub Copilot Chat**: Select "Grok Code Fast 1" from the model picker, then run this prompt
+2. **Fallback**: Use `copilot` CLI with GPT-5 Mini (similar fast/free characteristics):
+   ```bash
+   copilot -m "gpt-5-mini" slash implement-tasks-for-grok-code-fast-1
+   ```
 
 ---
 

@@ -1,6 +1,6 @@
 ---
 description: Execute Grok-suitable tasks with Grok Code Fast 1 optimizations. Fast, agentic implementation with iterative refinement.
-model: grok-code-fast-1
+# model: grok-code-fast-1  # NOTE: Not supported by copilot CLI - use VS Code model picker
 ---
 
 # Task Implementation Agent (Grok Code Fast 1)
