@@ -205,7 +205,7 @@ accordion.up.subscribe(({ itemId }) => console.log('closed', itemId));
 - `src/lib/accordion/accordion.token.ts` — exports `nfsAccordionToken`
 - `src/lib/accordion/id-generator.ts` — small helper for unique IDs
 - `src/lib/accordion/index.ts` — public exports
-- Storybook stories under `.storybook/stories/accordion/`
+- Storybook stories colocated in `src/lib/accordion/`
 
 ## Design Decisions
 

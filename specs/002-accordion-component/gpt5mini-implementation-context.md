@@ -122,7 +122,7 @@ Output: [Test passes when...]
 Context: Test basic accordion expansion behavior
 Task: Add play function to verify item expansion on click
 Code:
-  File: packages/ngx-foundation-sites/.storybook/stories/accordion/Basic.story.ts
+  File: packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
   Test type: Storybook play function
   Scenario:
     Given: Accordion with 3 items (all collapsed)
@@ -334,24 +334,12 @@ packages/ngx-foundation-sites/src/lib/accordion/
 └── README.md                       # Component documentation
 ```
 
-### Test Files
+### Test Files (Colocated with Components)
 
 ```
 packages/ngx-foundation-sites/
-├── .storybook/stories/accordion/
-│   ├── Basic.story.ts
-│   ├── KeyboardNavigation.story.ts
-│   ├── ScreenReader.story.ts
-│   ├── MultiExpand.story.ts
-│   ├── AllowAllClosed.story.ts
-│   ├── DisabledItems.story.ts
-│   ├── DynamicContent.story.ts
-│   ├── DeepLinking.story.ts
-│   ├── LazyContent.story.ts
-│   ├── FoundationApiParity.story.ts
-│   ├── EdgeCases.story.ts
-│   └── Accordion.mdx
 └── src/lib/accordion/
+    ├── accordion.stories.ts           # All Storybook stories
     ├── accordion.component.spec.ts
     └── accordion-item.component.spec.ts
 ```

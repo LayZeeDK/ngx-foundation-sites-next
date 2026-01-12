@@ -586,12 +586,12 @@ Note: AR-015 through AR-018 summarize accessibility implications of FR-037 throu
 
 - **Rationale**: Storybook with play functions provides visual regression testing, interaction testing, and accessibility testing in one tool
 - **Coverage**: All user stories (P1-P4) will have corresponding Storybook stories with play functions that automate acceptance scenarios
-- **Example Stories**:
-  - `Basic.story.ts`: Single-expand mode with 3 items (User Story 1)
-  - `KeyboardNavigation.story.ts`: Arrow keys, Home/End, Enter/Space (User Story 2)
-  - `MultiExpand.story.ts`: Multiple items open simultaneously (User Story 4)
-  - `DisabledItems.story.ts`: Disabled item interactions and keyboard skip (User Story 6)
-  - `DynamicContent.story.ts`: Adding/removing items via array mutation (User Story 8)
+- **Stories File**: `accordion.stories.ts` (colocated with component)
+  - `Default`: Single-expand mode with 3 items (User Story 1)
+  - `KeyboardNavigation`: Arrow keys, Home/End, Enter/Space (User Story 2)
+  - `MultiExpand`: Multiple items open simultaneously (User Story 4)
+  - `DisabledItems`: Disabled item interactions and keyboard skip (User Story 6)
+  - `DynamicContent`: Adding/removing items via array mutation (User Story 8)
 - **Play Function Actions**:
   - Simulate clicks on titles
   - Simulate keyboard events (ArrowDown, Enter, Space, etc.)

@@ -411,14 +411,14 @@ export class NfsAccordionItem {
 **Test Distribution**:
 
 ```text
-Storybook (Primary):
-- Basic.story.ts: Single-expand mode, clicking, state changes
-- KeyboardNavigation.story.ts: Arrow keys, Home/End, Enter/Space
-- MultiExpand.story.ts: Multiple open panels
-- DisabledItems.story.ts: Disabled state, keyboard skip
-- DynamicContent.story.ts: Adding/removing items via @for
-- LazyContent.story.ts: ng-template[nfsAccordionContent]
-- ScreenReader.story.ts: ARIA attributes, @storybook/addon-a11y checks
+Storybook (Primary) - accordion.stories.ts:
+- Default: Single-expand mode, clicking, state changes
+- KeyboardNavigation: Arrow keys, Home/End, Enter/Space
+- MultiExpand: Multiple open panels
+- DisabledItems: Disabled state, keyboard skip
+- DynamicContent: Adding/removing items via @for
+- LazyContent: ng-template[nfsAccordionContent]
+- ScreenReader: ARIA attributes, @storybook/addon-a11y checks
 
 Vitest (Secondary):
 - accordion.component.spec.ts: State management logic

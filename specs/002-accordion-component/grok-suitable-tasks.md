@@ -85,9 +85,9 @@
 
 ### Test Writing Tasks - HIGH 90%+
 
-- [x] T013 [P] [US1] [Pattern: Test Writing] Create Basic.story.ts with 3 FAQ items
-  - **Score**: 95% | **Time**: 5 min | **Strategy**: Copy existing story → customize
-  - **File**: packages/ngx-foundation-sites/.storybook/stories/accordion/Basic.story.ts
+- [x] T013 [P] [US1] [Pattern: Test Writing] Add Default story to accordion.stories.ts with 3 FAQ items
+  - **Score**: 95% | **Time**: 5 min | **Strategy**: Add story export to existing file
+  - **File**: packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
 
 - [x] T014 [US1] [Pattern: Test Writing] Add play function: click item 2 → verify expands
   - **Score**: 90% | **Time**: 3 min | **Strategy**: Add play function with userEvent.click
@@ -134,7 +134,7 @@
 
 ## Phase 4: US2 Keyboard - HIGH Tasks (6/14)
 
-- [ ] T032 [P] [US2] [Pattern: Test Writing] Create KeyboardNavigation.story.ts
+- [ ] T032 [P] [US2] [Pattern: Test Writing] Add KeyboardNavigation story to accordion.stories.ts
   - **Score**: 95% | **Time**: 5 min
 
 - [ ] T033-T037 [US2] [Pattern: Test Writing] Play functions for Tab, ArrowDown, ArrowUp, Home, End
@@ -147,7 +147,7 @@
 
 ### Test Writing - HIGH 85%+
 
-- [ ] T050 [P] [US3] [Pattern: Test Writing] Create ScreenReader.story.ts
+- [ ] T050 [P] [US3] [Pattern: Test Writing] Add ScreenReader story to accordion.stories.ts
   - **Score**: 95% | **Time**: 5 min
 
 - [ ] T051-T053 [US3] [Pattern: Test Writing] ARIA attribute assertions
@@ -190,7 +190,7 @@
 
 ## Phase 6: US4 Multi-Expand - HIGH Tasks (6/8)
 
-- [ ] T065 [P] [US4] [Pattern: Test Writing] Create MultiExpand.story.ts
+- [ ] T065 [P] [US4] [Pattern: Test Writing] Add MultiExpand story to accordion.stories.ts
   - **Score**: 95% | **Time**: 5 min
 
 - [ ] T066-T068 [US4] [Pattern: Test Writing] Play functions for multi-expand scenarios
@@ -206,7 +206,7 @@
 
 ## Phase 7: US5 Allow All Closed - HIGH Tasks (5/9)
 
-- [ ] T073 [P] [US5] [Pattern: Test Writing] Create AllowAllClosed.story.ts
+- [ ] T073 [P] [US5] [Pattern: Test Writing] Add AllowAllClosed story to accordion.stories.ts
   - **Score**: 95% | **Time**: 5 min
 
 - [ ] T074-T076 [US5] [Pattern: Test Writing] Play functions
@@ -222,7 +222,7 @@
 
 ## Phase 8: US6 Disabled Items - HIGH Tasks (8/15)
 
-- [ ] T081 [P] [US6] [Pattern: Test Writing] Create DisabledItems.story.ts
+- [ ] T081 [P] [US6] [Pattern: Test Writing] Add DisabledItems story to accordion.stories.ts
   - **Score**: 95% | **Time**: 5 min
 
 - [ ] T082-T086 [US6] [Pattern: Test Writing] Play functions for disabled scenarios
@@ -266,7 +266,7 @@
 
 ## Phase 10: US8 Dynamic Items - HIGH Tasks (5/10)
 
-- [ ] T101 [P] [US8] [Pattern: Test Writing] Create DynamicContent.story.ts
+- [ ] T101 [P] [US8] [Pattern: Test Writing] Add DynamicContent story to accordion.stories.ts
   - **Score**: 95% | **Time**: 5 min
 
 - [ ] T102-T104 [US8] [Pattern: Test Writing] Play functions for dynamic scenarios
@@ -307,7 +307,7 @@
 - [ ] T117-T119 [US10] [Pattern: Test Writing] E2E tests for hash navigation
   - **Score**: 85% each | **Time**: 5 min each
 
-- [ ] T120 [P] [US10] [Pattern: Test Writing] Create DeepLinking.story.ts
+- [ ] T120 [P] [US10] [Pattern: Test Writing] Add DeepLinking story to accordion.stories.ts
   - **Score**: 95% | **Time**: 5 min
 
 - [ ] T121 [US10] [Pattern: Test Writing] Story with hash simulation
@@ -327,7 +327,7 @@
 
 ### Test Writing - HIGH 85%+
 
-- [ ] T134 [P] [API] [Pattern: Test Writing] Create FoundationApiParity.story.ts
+- [ ] T134 [P] [API] [Pattern: Test Writing] Add FoundationApiParity story to accordion.stories.ts
   - **Score**: 95% | **Time**: 5 min
 
 - [ ] T135-T139 [API] [Pattern: Test Writing] Play functions for methods/events
@@ -345,7 +345,7 @@
 
 ## Phase 14: Lazy Content - HIGH Tasks (7/11)
 
-- [ ] T149 [P] [Pattern: Test Writing] Create LazyContent.story.ts
+- [ ] T149 [P] [Pattern: Test Writing] Add LazyContent story to accordion.stories.ts
   - **Score**: 95% | **Time**: 5 min
 
 - [ ] T150-T152 [Pattern: Test Writing] Play functions
@@ -401,9 +401,9 @@
   - **Score**: 92% | **Time**: 3 min
   - **File**: packages/ngx-foundation-sites/src/index.ts
 
-- [ ] T173 [P] [Pattern: Update Docs] Create Storybook docs page
+- [ ] T173 [P] [Pattern: Update Docs] Update accordion README with API reference
   - **Score**: 85% | **Time**: 20 min
-  - **File**: packages/ngx-foundation-sites/.storybook/stories/accordion/Accordion.mdx
+  - **File**: packages/ngx-foundation-sites/src/lib/accordion/README.md
 
 - [ ] T174 [Pattern: Verification] Run AXE accessibility checks
   - **Score**: 78% | **Time**: 15 min
@@ -534,20 +534,9 @@
 - `packages/ngx-foundation-sites/src/lib/accordion/accordion.token.ts`
 - `packages/ngx-foundation-sites/src/lib/accordion/index.ts`
 
-**Story Files**:
+**Story File** (colocated with component):
 
-- `packages/ngx-foundation-sites/.storybook/stories/accordion/Basic.story.ts`
-- `packages/ngx-foundation-sites/.storybook/stories/accordion/KeyboardNavigation.story.ts`
-- `packages/ngx-foundation-sites/.storybook/stories/accordion/ScreenReader.story.ts`
-- `packages/ngx-foundation-sites/.storybook/stories/accordion/MultiExpand.story.ts`
-- `packages/ngx-foundation-sites/.storybook/stories/accordion/AllowAllClosed.story.ts`
-- `packages/ngx-foundation-sites/.storybook/stories/accordion/DisabledItems.story.ts`
-- `packages/ngx-foundation-sites/.storybook/stories/accordion/DynamicContent.story.ts`
-- `packages/ngx-foundation-sites/.storybook/stories/accordion/DeepLinking.story.ts`
-- `packages/ngx-foundation-sites/.storybook/stories/accordion/LazyContent.story.ts`
-- `packages/ngx-foundation-sites/.storybook/stories/accordion/FoundationApiParity.story.ts`
-- `packages/ngx-foundation-sites/.storybook/stories/accordion/EdgeCases.story.ts`
-- `packages/ngx-foundation-sites/.storybook/stories/accordion/Accordion.mdx`
+- `packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts`
 
 **E2E Test Files**:
 

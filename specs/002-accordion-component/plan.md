@@ -219,21 +219,9 @@ packages/ngx-foundation-sites/
 │           ├── accordion-title.component.ts # NfsAccordionTitle
 │           ├── accordion-content.directive.ts # NfsAccordionContent
 │           ├── accordion.token.ts           # nfsAccordionToken (DI)
+│           ├── accordion.stories.ts         # Storybook stories (colocated)
 │           ├── index.ts                     # Public API exports
 │           └── README.md                    # Component documentation
-│
-├── .storybook/
-│   └── stories/
-│       └── accordion/
-│           ├── accordion.stories.ts         # Storybook stories
-│           ├── Basic.story.ts
-│           ├── KeyboardNavigation.story.ts
-│           ├── MultiExpand.story.ts
-│           ├── DisabledItems.story.ts
-│           ├── DynamicContent.story.ts
-│           ├── LazyContent.story.ts
-│           ├── DeepLinking.story.ts
-│           └── ScreenReader.story.ts
 ```
 
 **Unit Test Location** (Nx colocated convention):

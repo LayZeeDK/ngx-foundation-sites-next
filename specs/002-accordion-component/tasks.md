@@ -64,7 +64,7 @@ This change leverages `@angular/aria`'s accordion primitives more effectively. T
 
 ## Path Conventions
 
-This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Component implementation is in `packages/ngx-foundation-sites/src/lib/accordion/`. Storybook stories are in `packages/ngx-foundation-sites/.storybook/stories/accordion/`.
+This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Component implementation is in `packages/ngx-foundation-sites/src/lib/accordion/`. Storybook stories are colocated in `packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts`.
 
 ---
 
@@ -148,7 +148,7 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 
 ### Storybook Tests for User Story 2
 
-- [ ] T032 [P] [US2] Create KeyboardNavigation story at packages/ngx-foundation-sites/.storybook/stories/accordion/KeyboardNavigation.story.ts
+- [ ] T032 [P] [US2] Create KeyboardNavigation story at packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
 - [ ] T033 [US2] Add play function: simulate Tab, verify focus on first title
 - [ ] T034 [US2] Add play function: simulate ArrowDown, verify focus moves to next title
 - [ ] T035 [US2] Add play function: simulate ArrowUp, verify focus moves to previous title (with wraparound from first to last)
@@ -156,7 +156,7 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 - [ ] T037 [US2] Add play function: simulate End, verify focus moves to last title
 - [ ] T038 [US2] Add play function: simulate Enter/Space on collapsed title, verify panel expands
 - [ ] T039 [P] [US2] Add accessibility checks for keyboard navigation and focus indicators
-- [ ] T181 [P] [US2] Add Storybook play test: simulate ArrowDown keyboard event and simultaneous click on different item within 10ms, verify events are serialized (FIFO by timestamp), final expansion state is stable in packages/ngx-foundation-sites/.storybook/stories/accordion/KeyboardNavigation.story.ts
+- [ ] T181 [P] [US2] Add Storybook play test: simulate ArrowDown keyboard event and simultaneous click on different item within 10ms, verify events are serialized (FIFO by timestamp), final expansion state is stable in packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
 
 ### Implementation for User Story 2
 
@@ -185,16 +185,16 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 
 ### Storybook Tests for User Story 3
 
-- [ ] T050 [P] [US3] Create ScreenReader story at packages/ngx-foundation-sites/.storybook/stories/accordion/ScreenReader.story.ts
+- [ ] T050 [P] [US3] Create ScreenReader story at packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
 - [ ] T051 [US3] Add assertions for ARIA attributes: aria-expanded, aria-controls, aria-labelledby on all items
 - [ ] T052 [US3] Add assertions for role="region" on panel content wrappers
 - [ ] T053 [US3] Add assertions for unique auto-generated IDs (verify no collisions)
 - [ ] T054 [P] [US3] Run AXE checks with @storybook/addon-a11y to verify ARIA compliance
-- [ ] T176 [P] [US3] Add Storybook test: change panelId at runtime, verify item re-registers with parent and ARIA IDs update atomically in packages/ngx-foundation-sites/.storybook/stories/accordion/ScreenReader.story.ts
-- [ ] T177 [US3] Add Storybook test: change panelId while deepLink enabled, verify item does NOT auto-expand (deep link only responds to URL hash changes) in packages/ngx-foundation-sites/.storybook/stories/accordion/DeepLinking.story.ts (covers FR-017c: panelId/deepLink interaction)
-- [ ] T185 [P] [US3] Add Storybook story variant to ScreenReader story: render accordion with empty panel content, verify panel wrapper maintains valid ARIA even with no inner content in packages/ngx-foundation-sites/.storybook/stories/accordion/ScreenReader.story.ts
-- [ ] T187 [P] [US3] Add Storybook play test to ScreenReader story: change accordion title text dynamically, verify live region announces change when announce=true in packages/ngx-foundation-sites/.storybook/stories/accordion/ScreenReader.story.ts
-- [ ] T199 [P] [US3] Add Storybook play test to ScreenReader story: verify live region receives expand/collapse announcements when announce=true, no live region when announce=false in packages/ngx-foundation-sites/.storybook/stories/accordion/ScreenReader.story.ts (covers AR-027a expand/collapse; see T187 for complementary title-change announcement coverage)
+- [ ] T176 [P] [US3] Add Storybook test: change panelId at runtime, verify item re-registers with parent and ARIA IDs update atomically in packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
+- [ ] T177 [US3] Add Storybook test: change panelId while deepLink enabled, verify item does NOT auto-expand (deep link only responds to URL hash changes) in packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts (covers FR-017c: panelId/deepLink interaction)
+- [ ] T185 [P] [US3] Add Storybook story variant to ScreenReader story: render accordion with empty panel content, verify panel wrapper maintains valid ARIA even with no inner content in packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
+- [ ] T187 [P] [US3] Add Storybook play test to ScreenReader story: change accordion title text dynamically, verify live region announces change when announce=true in packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
+- [ ] T199 [P] [US3] Add Storybook play test to ScreenReader story: verify live region receives expand/collapse announcements when announce=true, no live region when announce=false in packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts (covers AR-027a expand/collapse; see T187 for complementary title-change announcement coverage)
 
 ### Implementation for User Story 3
 
@@ -232,7 +232,7 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 
 ### Storybook Tests for User Story 4
 
-- [ ] T065 [P] [US4] Create MultiExpand story at packages/ngx-foundation-sites/.storybook/stories/accordion/MultiExpand.story.ts
+- [ ] T065 [P] [US4] Create MultiExpand story at packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
 - [ ] T066 [US4] Add play function: expand item 1, verify item 1 opens
 - [ ] T067 [US4] Add play function: expand item 2, verify both item 1 and item 2 remain open
 - [ ] T068 [US4] Add play function: collapse item 1, verify item 1 closes and item 2 remains open
@@ -256,12 +256,12 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 
 ### Storybook Tests for User Story 5
 
-- [ ] T073 [P] [US5] Create AllowAllClosed story at packages/ngx-foundation-sites/.storybook/stories/accordion/AllowAllClosed.story.ts
+- [ ] T073 [P] [US5] Create AllowAllClosed story at packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
 - [ ] T074 [US5] Add play function: set allowAllClosed=false, open only item 1, click item 1, verify it remains open
 - [ ] T075 [US5] Add play function: set allowAllClosed=false with multiExpand, close all but one item, verify last item cannot close
 - [ ] T076 [US5] Add play function: set allowAllClosed=true, close last open item, verify all items collapsed
-- [ ] T190 [P] [US5] Add Storybook play test to AllowAllClosed story: programmatically call item.up() when allowAllClosed=false and item is the last open item, verify method returns silently and NO (up) event emitted in packages/ngx-foundation-sites/.storybook/stories/accordion/AllowAllClosed.story.ts
-- [ ] T192 [P] [US5] Add Storybook play test to AllowAllClosed story: set allowAllClosed=false, bind [(expanded)] on last open item, set model to false externally, verify binding coerces to true AND ErrorHandler.handleError() called with coercion diagnostic (FR-174a) in packages/ngx-foundation-sites/.storybook/stories/accordion/AllowAllClosed.story.ts
+- [ ] T190 [P] [US5] Add Storybook play test to AllowAllClosed story: programmatically call item.up() when allowAllClosed=false and item is the last open item, verify method returns silently and NO (up) event emitted in packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
+- [ ] T192 [P] [US5] Add Storybook play test to AllowAllClosed story: set allowAllClosed=false, bind [(expanded)] on last open item, set model to false externally, verify binding coerces to true AND ErrorHandler.handleError() called with coercion diagnostic (FR-174a) in packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
 
 ### Implementation for User Story 5
 
@@ -283,13 +283,13 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 
 ### Storybook Tests for User Story 6
 
-- [ ] T081 [P] [US6] Create DisabledItems story at packages/ngx-foundation-sites/.storybook/stories/accordion/DisabledItems.story.ts
+- [ ] T081 [P] [US6] Create DisabledItems story at packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
 - [ ] T082 [US6] Add play function: click disabled item title, verify it does not expand
 - [ ] T083 [US6] Add play function: press Enter on disabled item, verify it does not expand
 - [ ] T084 [US6] Add play function: verify disabled item has aria-disabled="true"
 - [ ] T085 [US6] Add play function: ArrowDown from item 1, verify focus skips disabled item 2 to item 3
 - [ ] T086 [US6] Add play function: ArrowUp from item 3, verify focus skips disabled item 2 to item 1
-- [ ] T189 [P] [US6] Add Storybook play test to DisabledItems story: programmatically call item.down() on disabled item via viewChild, verify method returns immediately and NO (down) event emitted in packages/ngx-foundation-sites/.storybook/stories/accordion/DisabledItems.story.ts
+- [ ] T189 [P] [US6] Add Storybook play test to DisabledItems story: programmatically call item.down() on disabled item via viewChild, verify method returns immediately and NO (down) event emitted in packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
 
 ### Implementation for User Story 6
 
@@ -337,7 +337,7 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 
 ### Storybook Tests for User Story 8
 
-- [ ] T101 [P] [US8] Create DynamicContent story at packages/ngx-foundation-sites/.storybook/stories/accordion/DynamicContent.story.ts
+- [ ] T101 [P] [US8] Create DynamicContent story at packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
 - [ ] T102 [US8] Add play function: add new item to array, verify it renders with correct ARIA IDs
 - [ ] T103 [US8] Add play function: remove item 2, verify remaining items maintain correct aria-controls/aria-labelledby
 - [ ] T104 [US8] Add play function: reorder items, verify keyboard navigation follows new DOM order
@@ -394,7 +394,7 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 
 ### Storybook Tests for User Story 10
 
-- [ ] T120 [P] [US10] Create DeepLinking story at packages/ngx-foundation-sites/.storybook/stories/accordion/DeepLinking.story.ts
+- [ ] T120 [P] [US10] Create DeepLinking story at packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
 - [ ] T121 [US10] Add story with deepLink=true, simulate hash change, verify item opens
 
 ### Implementation for User Story 10
@@ -426,7 +426,7 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 
 ### Storybook Tests for Foundation API Parity
 
-- [ ] T134 [P] [API] Create FoundationApiParity story at packages/ngx-foundation-sites/.storybook/stories/accordion/FoundationApiParity.story.ts
+- [ ] T134 [P] [API] Create FoundationApiParity story at packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
 - [ ] T135 [API] Add play function: call item.down(), verify panel opens and (down) event emits
 - [ ] T136 [API] Add play function: call item.up(), verify panel closes and (up) event emits
 - [ ] T137 [API] Add play function: call item.toggle(), verify panel toggles
@@ -457,7 +457,7 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 
 ### Storybook Tests for Lazy Content
 
-- [ ] T149 [P] Create LazyContent story at packages/ngx-foundation-sites/.storybook/stories/accordion/LazyContent.story.ts
+- [ ] T149 [P] Create LazyContent story at packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
 - [ ] T150 Add play function: verify lazy content template is not rendered initially
 - [ ] T151 Add play function: expand item with lazy content, verify template renders
 - [ ] T152 Add play function: collapse item, verify content persists in memory (mirrors @defer behavior)
@@ -488,7 +488,7 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 
 - [ ] T160 [P] Add story variant to ScreenReader story: set titleHeadingLevel=2, verify heading wrappers present
 - [ ] T161 [P] Add story variant to KeyboardNavigation story: set wrap=true, verify ArrowDown on last wraps to first
-- [ ] T194 [P] [US15/Advanced] Add Storybook play test to ScreenReader story: change titleHeadingLevel at runtime, verify heading wrapper elements update and focus is preserved on same item in packages/ngx-foundation-sites/.storybook/stories/accordion/ScreenReader.story.ts
+- [ ] T194 [P] [US15/Advanced] Add Storybook play test to ScreenReader story: change titleHeadingLevel at runtime, verify heading wrapper elements update and focus is preserved on same item in packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
 
 ### Implementation for Advanced ARIA
 
@@ -514,9 +514,9 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 - [ ] T170 [P] Performance testing: verify accordion with 100 items renders within 5 seconds, toggle within 200ms
 - [ ] T171 [P] Security review: verify component treats projected content as trusted per SR-001 to SR-004
 - [ ] T172 Update main library index.ts at packages/ngx-foundation-sites/src/index.ts to export accordion components
-- [ ] T173 [P] Create comprehensive Storybook docs page at packages/ngx-foundation-sites/.storybook/stories/accordion/Accordion.mdx with API reference and Foundation migration guide
+- [ ] T173 [P] Update accordion README.md at packages/ngx-foundation-sites/src/lib/accordion/README.md with API reference and Foundation migration guide
 - [ ] T174 Run AXE accessibility checks on all Storybook stories, verify 100% pass rate (includes AR-003 color contrast verification: 4.5:1 for normal text, 3:1 for large text)
-- [ ] T175 [P] Add Storybook stories with play functions for edge cases: empty accordion (FR-057: render empty container with no focusable elements or broken ARIA), single item, all disabled, ID collision detection in packages/ngx-foundation-sites/.storybook/stories/accordion/EdgeCases.story.ts (Note: per constitution V, prefer Storybook interactive tests over unit tests; unit tests reserved for pure functions/services only)
+- [ ] T175 [P] Add Storybook stories with play functions for edge cases: empty accordion (FR-057: render empty container with no focusable elements or broken ARIA), single item, all disabled, ID collision detection in packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts (Note: per constitution V, prefer Storybook interactive tests over unit tests; unit tests reserved for pure functions/services only)
 
 ---
 
@@ -591,7 +591,7 @@ Task T020: "Create NfsAccordionTitle component"
 - Evidence: `accordion-item-def.ts` updated with `requestToggle()` queue/debounce; `accordion-item-def.spec.ts` simulates rapid toggles
 
 - [ ] T-AC-001b [P?] Add Storybook play test for FR-089a input source distinction
-  - Location: packages/ngx-foundation-sites/.storybook/stories/accordion/RapidToggle.story.ts
+  - Location: packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
   - Description: Verify that programmatic toggle (item.toggle()) does NOT coalesce with keyboard toggle (Enter key) within 50ms debounce window—both should execute in order since they originate from different input sources (programmatic vs keyboard). Add play function simulating: keyboard Enter on item, then immediate programmatic toggle() call within 10ms, verify both actions execute sequentially.
   - Acceptance: Play test confirms two distinct state changes occur (not coalesced) when input sources differ. Per FR-089a testing tolerance, timing assertions MUST allow ±10ms variance for JavaScript event loop variability; use mock timers (`vi.useFakeTimers()`) for precise timing validation.
 

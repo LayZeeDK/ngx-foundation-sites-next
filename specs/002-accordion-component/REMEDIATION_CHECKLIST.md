@@ -449,19 +449,15 @@ This checklist provides exact implementation steps for each gap. Check off items
 
 ### ✅ Checklist: GAP-6 - Create Storybook Tests for Foundation API (45 min)
 
-**Files**: `packages/ngx-foundation-sites/.storybook/stories/accordion/FoundationApiParity.story.ts`
+**Files**: `packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts`
 
-- [ ] **Step 1**: Create new story file
+- [ ] **Step 1**: Add FoundationApiParity story to existing stories file
 
   ```typescript
-  import type { Meta, StoryObj } from '@storybook/angular';
-  import { userEvent, within, expect, waitFor } from '@storybook/test';
-
-  const meta: Meta = {
-    title: 'Components/Accordion/Foundation API Parity',
-    // ...
+  // Add to accordion.stories.ts
+  export const FoundationApiParity: Story = {
+    // Story configuration
   };
-  export default meta;
   ```
 
 - [ ] **Step 2**: Create story with item refs

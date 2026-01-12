@@ -26,26 +26,12 @@ packages/ngx-foundation-sites/
 │   │       ├── accordion-content.directive.ts # Lazy content
 │   │       ├── accordion.token.ts          # DI token
 │   │       ├── accordion-id-generator.service.ts
+│   │       ├── accordion.stories.ts        # Storybook stories (colocated)
 │   │       ├── validators.ts               # Input validation
 │   │       ├── _accordion-imports.scss     # Foundation SCSS
 │   │       ├── index.ts                    # Public API exports
 │   │       └── README.md                   # Component docs
 │   └── index.ts                            # Library barrel
-├── .storybook/
-│   └── stories/
-│       └── accordion/
-│           ├── Basic.story.ts
-│           ├── KeyboardNavigation.story.ts
-│           ├── ScreenReader.story.ts
-│           ├── MultiExpand.story.ts
-│           ├── AllowAllClosed.story.ts
-│           ├── DisabledItems.story.ts
-│           ├── DynamicContent.story.ts
-│           ├── DeepLinking.story.ts
-│           ├── LazyContent.story.ts
-│           ├── FoundationApiParity.story.ts
-│           ├── EdgeCases.story.ts
-│           └── Accordion.mdx
 └── ng-package.json                         # ng-packagr config
 
 packages/ngx-foundation-sites-e2e/
@@ -297,20 +283,9 @@ host: {
 
 - `packages/ngx-foundation-sites/src/lib/accordion/_accordion-imports.scss`
 
-### Stories
+### Stories (Colocated with Component)
 
-- `packages/ngx-foundation-sites/.storybook/stories/accordion/Basic.story.ts`
-- `packages/ngx-foundation-sites/.storybook/stories/accordion/KeyboardNavigation.story.ts`
-- `packages/ngx-foundation-sites/.storybook/stories/accordion/ScreenReader.story.ts`
-- `packages/ngx-foundation-sites/.storybook/stories/accordion/MultiExpand.story.ts`
-- `packages/ngx-foundation-sites/.storybook/stories/accordion/AllowAllClosed.story.ts`
-- `packages/ngx-foundation-sites/.storybook/stories/accordion/DisabledItems.story.ts`
-- `packages/ngx-foundation-sites/.storybook/stories/accordion/DynamicContent.story.ts`
-- `packages/ngx-foundation-sites/.storybook/stories/accordion/DeepLinking.story.ts`
-- `packages/ngx-foundation-sites/.storybook/stories/accordion/LazyContent.story.ts`
-- `packages/ngx-foundation-sites/.storybook/stories/accordion/FoundationApiParity.story.ts`
-- `packages/ngx-foundation-sites/.storybook/stories/accordion/EdgeCases.story.ts`
-- `packages/ngx-foundation-sites/.storybook/stories/accordion/Accordion.mdx`
+- `packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts`
 
 ### E2E Tests
 
@@ -471,7 +446,7 @@ npm run format
 
 **Add story:**
 
-> Create `MultiExpand.story.ts` at `packages/ngx-foundation-sites/.storybook/stories/accordion/MultiExpand.story.ts` following the pattern in `Basic.story.ts`. Add play function that expands two items and verifies both remain open.
+> Add a `MultiExpand` story export to `packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts`. Add play function that expands two items and verifies both remain open.
 
 **Rename:**
 
