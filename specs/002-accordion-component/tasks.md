@@ -190,10 +190,10 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 - [x] T052 [US3] Add assertions for role="region" on panel content wrappers
 - [x] T053 [US3] Add assertions for unique auto-generated IDs (verify no collisions)
 - [x] T054 [P] [US3] Run AXE checks with @storybook/addon-a11y to verify ARIA compliance
-- [ ] T176 [P] [US3] Add Storybook test: change panelId at runtime, verify item re-registers with parent and ARIA IDs update atomically in packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
+- [x] T176 [P] [US3] Add Storybook test: change panelId at runtime, verify item re-registers with parent and ARIA IDs update atomically in packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
 - [ ] T177 [US3] Add Storybook test: change panelId while deepLink enabled, verify item does NOT auto-expand (deep link only responds to URL hash changes) in packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts (covers FR-017c: panelId/deepLink interaction)
-- [ ] T185 [P] [US3] Add Storybook story variant to ScreenReader story: render accordion with empty panel content, verify panel wrapper maintains valid ARIA even with no inner content in packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
-- [ ] T187 [P] [US3] Add Storybook play test to ScreenReader story: change accordion title text dynamically, verify live region announces change when announce=true in packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
+- [x] T185 [P] [US3] Add Storybook story variant to ScreenReader story: render accordion with empty panel content, verify panel wrapper maintains valid ARIA even with no inner content in packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
+- [x] T187 [P] [US3] Add Storybook play test to ScreenReader story: change accordion title text dynamically, verify live region announces change when announce=true in packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
 - [ ] T199 [P] [US3] Add Storybook play test to ScreenReader story: verify live region receives expand/collapse announcements when announce=true, no live region when announce=false in packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts (covers AR-027a expand/collapse; see T187 for complementary title-change announcement coverage)
 
 ### Implementation for User Story 3
