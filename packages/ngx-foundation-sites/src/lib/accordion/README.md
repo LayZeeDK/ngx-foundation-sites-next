@@ -28,7 +28,7 @@ import { NfsAccordion } from 'ngx-foundation-sites/accordion';
         </nfs-accordion-content>
       </nfs-accordion-item>
     </nfs-accordion>
-  `
+  `,
 })
 export class MyComponent {}
 ```
@@ -40,12 +40,14 @@ export class MyComponent {}
 **Selector**: `nfs-accordion`
 
 **Inputs**:
+
 - `multiExpand: boolean` - Allow multiple panels to be open simultaneously (default: false)
 - `allowAllClosed: boolean` - Allow all panels to be closed (default: false)
 - `deepLink: boolean` - Enable URL hash-based navigation (default: false)
 - `announce: boolean` - Enable screen reader announcements (default: false)
 
 **Outputs**:
+
 - `down: EventEmitter<NfsAccordionPanelEvent>` - Emitted when a panel opens
 - `up: EventEmitter<NfsAccordionPanelEvent>` - Emitted when a panel closes
 
@@ -54,6 +56,7 @@ export class MyComponent {}
 **Selector**: `nfs-accordion-item`
 
 **Inputs**:
+
 - `expanded: boolean | undefined` - Control panel expansion state
 - `disabled: boolean` - Disable the accordion item (default: false)
 - `panelId: string` - Unique identifier for the panel (auto-generated if not provided)
@@ -81,6 +84,7 @@ Lazy-loaded content directive. Content is only rendered when the panel is first 
 ## Foundation Integration
 
 This component uses Foundation's accordion CSS classes:
+
 - `.accordion` - Container element
 - `.accordion-item` - Individual item wrapper
 - `.accordion-title` - Clickable title button
@@ -90,6 +94,7 @@ This component uses Foundation's accordion CSS classes:
 ## Examples
 
 See the Storybook stories for comprehensive examples:
+
 - Basic accordion
 - Multi-expand behavior
 - Keyboard navigation
