@@ -103,31 +103,31 @@
 
 ### Component Scaffolding - HIGH 85%
 
-- [ ] T018 [P] [US1] [Pattern: Scaffolding] Create NfsAccordion component
+- [x] T018 [P] [US1] [Pattern: Scaffolding] Create NfsAccordion component
   - **Score**: 85% | **Time**: 10 min | **Strategy**: Follow Angular standalone pattern
   - **File**: packages/ngx-foundation-sites/src/lib/accordion/accordion.component.ts
 
-- [ ] T019 [P] [US1] [Pattern: Scaffolding] Create NfsAccordionItem component
+- [x] T019 [P] [US1] [Pattern: Scaffolding] Create NfsAccordionItem component
   - **Score**: 85% | **Time**: 10 min | **Strategy**: Follow existing component pattern
   - **File**: packages/ngx-foundation-sites/src/lib/accordion/accordion-item.component.ts
 
-- [ ] T020 [P] [US1] [Pattern: Scaffolding] Create NfsAccordionTitle component
+- [x] T020 [P] [US1] [Pattern: Scaffolding] Create NfsAccordionTitle component
   - **Score**: 85% | **Time**: 10 min | **Strategy**: Render as button
   - **File**: packages/ngx-foundation-sites/src/lib/accordion/accordion-title.component.ts
 
 ### CSS and Documentation - HIGH 85%+
 
-- [ ] T028 [US1] [Pattern: Add Method] Add Foundation CSS classes
+- [x] T028 [US1] [Pattern: Add Method] Add Foundation CSS classes
   - **Score**: 85% | **Time**: 5 min | **Strategy**: Add class bindings per FR-029-035
   - Classes: `.accordion`, `.accordion-item`, `.accordion-title`, `.accordion-content`
 
-- [ ] T029 [US1] [Pattern: Add Method] Implement .is-active class binding
+- [x] T029 [US1] [Pattern: Add Method] Implement .is-active class binding
   - **Score**: 88% | **Time**: 2 min | **Strategy**: [class.is-active]="expanded()"
 
 - [ ] T030 [US1] [Pattern: Update Docs] Add JSDoc comments for Foundation equivalents
   - **Score**: 90% | **Time**: 5 min | **Strategy**: Document data-\* mapping
 
-- [ ] T031 [US1] [Pattern: Scaffolding] Export components from index.ts
+- [x] T031 [US1] [Pattern: Scaffolding] Export components from index.ts
   - **Score**: 92% | **Time**: 2 min | **Strategy**: Add export statements
 
 ---

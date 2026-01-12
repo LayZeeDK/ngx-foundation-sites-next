@@ -1,7 +1,5 @@
-export { NfsAccordion } from './accordion';
-export type { NfsAccordionPanelEvent } from './accordion';
-export { NfsAccordionItemDef } from './accordion-item-def';
-export { NfsAccordionHeaderDef } from './accordion-header-def';
-export { NfsAccordionContentDef } from './accordion-content';
-export { AccordionDeepLinkService } from './accordion-deep-link.service';
+export { NfsAccordion } from './accordion.component';
+export type { NfsAccordionPanelEvent } from './accordion.component';
+export { NfsAccordionItem } from './accordion-item.component';
+export { NfsAccordionTitle } from './accordion-title.component';
 export { nfsAccordionToken } from './accordion.token';
