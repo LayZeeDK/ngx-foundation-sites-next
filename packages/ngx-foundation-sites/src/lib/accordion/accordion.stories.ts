@@ -143,15 +143,31 @@ export const MultiExpand: Story = {
 
     const trigger1 = canvas.getByRole('button', { name: /Accordion 1/i });
     const trigger2 = canvas.getByRole('button', { name: /Accordion 2/i });
+    const trigger3 = canvas.getByRole('button', { name: /Accordion 3/i });
 
-    // Open both panels
+    // Open first panel
     await userEvent.click(trigger1);
-    await userEvent.click(trigger2);
+    await expect(trigger1).toHaveAttribute('aria-expanded', 'true');
+    await expect(trigger2).toHaveAttribute('aria-expanded', 'false');
+    await expect(trigger3).toHaveAttribute('aria-expanded', 'false');
 
-    await waitFor(async () => {
-      await expect(trigger1).toHaveAttribute('aria-expanded', 'true');
-      await expect(trigger2).toHaveAttribute('aria-expanded', 'true');
-    });
+    // Open second panel (multi-expand allows multiple open)
+    await userEvent.click(trigger2);
+    await expect(trigger1).toHaveAttribute('aria-expanded', 'true');
+    await expect(trigger2).toHaveAttribute('aria-expanded', 'true');
+    await expect(trigger3).toHaveAttribute('aria-expanded', 'false');
+
+    // Open third panel
+    await userEvent.click(trigger3);
+    await expect(trigger1).toHaveAttribute('aria-expanded', 'true');
+    await expect(trigger2).toHaveAttribute('aria-expanded', 'true');
+    await expect(trigger3).toHaveAttribute('aria-expanded', 'true');
+
+    // Close first panel (others should stay open)
+    await userEvent.click(trigger1);
+    await expect(trigger1).toHaveAttribute('aria-expanded', 'false');
+    await expect(trigger2).toHaveAttribute('aria-expanded', 'true');
+    await expect(trigger3).toHaveAttribute('aria-expanded', 'true');
   },
 };
 

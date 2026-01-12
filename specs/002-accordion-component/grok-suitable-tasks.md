@@ -190,16 +190,16 @@
 
 ## Phase 6: US4 Multi-Expand - HIGH Tasks (6/8)
 
-- [ ] T065 [P] [US4] [Pattern: Test Writing] Add MultiExpand story to accordion.stories.ts
+- [x] T065 [P] [US4] [Pattern: Test Writing] Add MultiExpand story to accordion.stories.ts
   - **Score**: 95% | **Time**: 5 min
 
-- [ ] T066-T068 [US4] [Pattern: Test Writing] Play functions for multi-expand scenarios
+- [x] T066-T068 [US4] [Pattern: Test Writing] Play functions for multi-expand scenarios
   - **Score**: 88% each | **Time**: 2 min each
 
-- [ ] T070 [US4] [Pattern: Add Method] Add multiExpand input
+- [x] T070 [US4] [Pattern: Add Method] Add multiExpand input
   - **Score**: 85% | **Time**: 3 min
 
-- [ ] T071 [US4] [Pattern: Add Method] Update #openItemIds signal for array
+- [OBSOLETE] T071 [US4] [Pattern: Add Method] Update #openItemIds signal for array - OBSOLETE: multi-expand handled by @angular/aria AccordionGroup
   - **Score**: 75% | **Time**: 5 min
 
 ---

@@ -232,16 +232,16 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 
 ### Storybook Tests for User Story 4
 
-- [ ] T065 [P] [US4] Create MultiExpand story at packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
-- [ ] T066 [US4] Add play function: expand item 1, verify item 1 opens
-- [ ] T067 [US4] Add play function: expand item 2, verify both item 1 and item 2 remain open
-- [ ] T068 [US4] Add play function: collapse item 1, verify item 1 closes and item 2 remains open
+- [x] T065 [P] [US4] Create MultiExpand story at packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
+- [x] T066 [US4] Add play function: expand item 1, verify item 1 opens
+- [x] T067 [US4] Add play function: expand item 2, verify both item 1 and item 2 remain open
+- [x] T068 [US4] Add play function: collapse item 1, verify item 1 closes and item 2 remains open
 
 ### Implementation for User Story 4
 
 - [ ] T069 [US4] Implement multiExpand logic in NfsAccordion.notifyItemToggle(): if multiExpand=true, do not close other items
-- [ ] T070 [US4] Add multiExpand input to NfsAccordion (InputSignal<boolean>, default: false)
-- [ ] T071 [US4] Update #openItemIds signal to support array of multiple open items
+- [x] T070 [US4] Add multiExpand input to NfsAccordion (InputSignal<boolean>, default: false)
+- [OBSOLETE] T071 [US4] Update #openItemIds signal to support array of multiple open items - OBSOLETE: multi-expand handled by @angular/aria AccordionGroup
 - [ ] T072 [US4] Update state management to track multiple open items when multiExpand=true
 
 **Checkpoint**: Multi-expand mode works - multiple panels can be open simultaneously
