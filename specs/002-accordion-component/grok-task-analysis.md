@@ -580,21 +580,13 @@
 
 ---
 
-## Priority Order for P0 Gaps
+## Priority Order for P0 Gaps - ✅ RESOLVED
 
-**P0 BLOCKING gaps should be fixed first** (32 minutes estimated):
+**Status**: All P0 BLOCKING gaps have been resolved as of 2026-01-12.
 
-1. **GAP-3 (T021)**: Rename `multiExpandable` → `multiExpand` - **Grok suitable (70%)**
-   - Simple find-replace across files
-   - Breaking change requires careful coordination
-
-2. **GAP-1 (T140-T142)**: Add `down()`, `up()`, `toggle()` methods - **Grok suitable (82%)**
-   - Pattern exists in spec
-   - Add methods to NfsAccordionItemDef
-
-3. **GAP-2 (T143-T148)**: Add `(down)`, `(up)` outputs - **Grok suitable (75%)**
-   - Add OutputEmitterRef to NfsAccordion
-   - Wire up in notifyItemToggle
+1. ~~**GAP-3 (T021)**~~: `multiExpandable` → `multiExpand` - ✅ **DONE**
+2. ~~**GAP-1 (T140-T142)**~~: `down()`, `up()`, `toggle()` methods - ✅ **DONE**
+3. ~~**GAP-2 (T143-T148)**~~: `(down)`, `(up)` outputs - ✅ **DONE**
 
 ---
 

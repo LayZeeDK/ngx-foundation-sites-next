@@ -22,46 +22,13 @@
 
 ---
 
-## P0 BLOCKING Tasks (Fix First!)
+## P0 BLOCKING Tasks - ✅ RESOLVED
 
-**Total P0 Time**: ~32 minutes
+**Status**: All P0 gaps have been resolved as of 2026-01-12.
 
-### GAP-3: Input Naming (T021) - HIGH 70%
-
-- [ ] T021 [US1] [Pattern: Rename] Rename `multiExpandable` → `multiExpand` (BREAKING)
-  - **Suitability Score**: 70% (Agentic: 8/10, Scope: 7/10, Complexity: 7/10, Pattern: 6/10)
-  - **Estimated Time (Grok)**: 3-5 minutes
-  - **Iteration Strategy**: grep for occurrences → rename → verify build → update docs
-  - **Files**: accordion.ts, stories, tests, docs
-
-### GAP-1: Foundation API Methods (T140-T142) - HIGH 82%
-
-- [ ] T140 [P] [API] [Pattern: Add Method] Implement `down()` method on NfsAccordionItemDef
-  - **Suitability Score**: 82% (Agentic: 8/10, Scope: 9/10, Complexity: 8/10, Pattern: 8/10)
-  - **Estimated Time (Grok)**: 2-3 minutes
-  - **Iteration Strategy**: Read existing item → add method → verify TypeScript
-
-- [ ] T141 [P] [API] [Pattern: Add Method] Implement `up()` method on NfsAccordionItemDef
-  - **Suitability Score**: 82% (Agentic: 8/10, Scope: 9/10, Complexity: 8/10, Pattern: 8/10)
-  - **Estimated Time (Grok)**: 2-3 minutes
-  - **Iteration Strategy**: Copy down() pattern → modify for collapse
-
-- [ ] T142 [P] [API] [Pattern: Add Method] Implement `toggle()` method on NfsAccordionItemDef
-  - **Suitability Score**: 82% (Agentic: 8/10, Scope: 9/10, Complexity: 8/10, Pattern: 8/10)
-  - **Estimated Time (Grok)**: 2-3 minutes
-  - **Iteration Strategy**: Call down() or up() based on state
-
-### GAP-2: Foundation API Outputs (T143-T144) - HIGH 85%
-
-- [ ] T143 [P] [API] [Pattern: Add Method] Add `down` output to NfsAccordion
-  - **Suitability Score**: 85% (Agentic: 9/10, Scope: 9/10, Complexity: 8/10, Pattern: 8/10)
-  - **Estimated Time (Grok)**: 2-3 minutes
-  - **Iteration Strategy**: Add OutputEmitterRef → type event interface
-
-- [ ] T144 [P] [API] [Pattern: Add Method] Add `up` output to NfsAccordion
-  - **Suitability Score**: 85% (Agentic: 9/10, Scope: 9/10, Complexity: 8/10, Pattern: 8/10)
-  - **Estimated Time (Grok)**: 1-2 minutes
-  - **Iteration Strategy**: Copy down output pattern
+- [x] ~~T021~~ - `multiExpandable` renamed to `multiExpand` ✅
+- [x] ~~T140-T142~~ - `down()`, `up()`, `toggle()` methods implemented ✅
+- [x] ~~T143-T144~~ - `(down)`, `(up)` outputs implemented ✅
 
 ---
 
