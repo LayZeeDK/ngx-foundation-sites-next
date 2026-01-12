@@ -222,7 +222,7 @@ This directory contains research-backed optimization strategies for AI models us
 
 **Performance**: 70.8% SWE-bench, 92 tokens/sec, 4x faster; **0x cost in GitHub Copilot (VS Code)**
 
-**Commands**: Available in GitHub Copilot, Cursor, Cline, Windsurf (model picker)
+**Commands**: `/tasks-for-grok-code-fast-1` (Claude Code & GitHub Copilot), model picker in VS Code
 
 **Related**: [GPT-5 Mini Guide](./GPT-5-MINI-OPTIMIZATION.md) (alternative for non-agentic tasks)
 
