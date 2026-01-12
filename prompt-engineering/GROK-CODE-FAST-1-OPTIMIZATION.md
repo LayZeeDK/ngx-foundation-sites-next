@@ -1,7 +1,8 @@
 # Grok Code Fast 1 Prompt Optimization Guide
 
 **Model**: grok-code-fast-1 (256K context, agentic reasoning)
-**Cost**: Free in GitHub Copilot, Cursor, Cline, Windsurf (limited time); $0.20/1M input, $1.50/1M output, $0.02/1M cached
+**Cost**: 0x in GitHub Copilot (VS Code); API: $0.20/1M input, $1.50/1M output, $0.02/1M cached
+**Availability**: GitHub Copilot (VS Code, not CLI yet), Cursor, Cline, Windsurf, Roo Code, Kilo Code
 **Use case**: Agentic coding workflows, iterative bug fixes, scaffolding, test writing
 
 ---
@@ -779,13 +780,17 @@ Test: [pytest function name]
 
 ### Cost Analysis
 
-| Token Type       | Cost per 1M |
-| ---------------- | ----------- |
-| Input (uncached) | $0.20       |
-| Input (cached)   | $0.02       |
-| Output           | $1.50       |
+| Environment                  | Cost              |
+| ---------------------------- | ----------------- |
+| **GitHub Copilot (VS Code)** | **0x (free)**     |
+| **GitHub Copilot CLI**       | Not available yet |
+| xAI API - Input (uncached)   | $0.20 / 1M        |
+| xAI API - Input (cached)     | $0.02 / 1M        |
+| xAI API - Output             | $1.50 / 1M        |
 
-**Comparison**:
+**In GitHub Copilot**: Free with your existing subscription - same 0x cost as GPT-5 Mini!
+
+**Via API**:
 
 - **84% cheaper than GPT-5 High** ($1.50 vs ~$9.50 output)
 - **93% cheaper than Claude Sonnet 4** ($1.50 vs ~$21 output)
@@ -827,11 +832,14 @@ Test: [pytest function name]
 
 ## Integration Guides
 
-### GitHub Copilot
+### GitHub Copilot (VS Code) - 0x Cost
 
 1. Ensure Grok Code Fast 1 is enabled (Admin policy for Business/Enterprise)
 2. Select from model picker (Chat, Agent, Edit modes)
 3. Available in VS Code, Visual Studio, JetBrains, Xcode, Eclipse
+4. **Not available in GitHub Copilot CLI yet**
+
+**Cost**: Free (0x) with your GitHub Copilot subscription
 
 ### Cursor
 

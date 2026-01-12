@@ -220,7 +220,7 @@ This directory contains research-backed optimization strategies for AI models us
 
 **Best for**: Agentic coding (bug fixes, scaffolding, tests), high-volume grunt work, iterative workflows
 
-**Performance**: 70.8% SWE-bench, 92 tokens/sec, 4x faster at 1/10th cost
+**Performance**: 70.8% SWE-bench, 92 tokens/sec, 4x faster; **0x cost in GitHub Copilot (VS Code)**
 
 **Commands**: Available in GitHub Copilot, Cursor, Cline, Windsurf (model picker)
 
@@ -351,7 +351,7 @@ ELSE IF context > 256K:
 
 | Model                      | Time     | Cost  | Quality       | Best For             |
 | -------------------------- | -------- | ----- | ------------- | -------------------- |
-| **Grok Code Fast 1**       | 5-15s ⚡ | ~0.1x | 70.8% SWE     | Agentic (bug fixes)  |
+| **Grok Code Fast 1**       | 5-15s ⚡ | 0x    | 70.8% SWE     | Agentic (bug fixes)  |
 | **GPT-5 Mini** (optimized) | 10-20s   | 0x    | 85-95%        | Non-agentic + free   |
 | **Haiku 4.5** (optimized)  | 15-25s   | 0.33x | 90% of Sonnet | General agentic      |
 | **GPT-4.1** (optimized)    | 30-60s   | 0x    | Baseline      | Large context + free |
