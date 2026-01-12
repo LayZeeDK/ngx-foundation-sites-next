@@ -1,32 +1,6 @@
 ---
 description: Identify underspecified areas in the current feature spec by asking up to 5 highly targeted clarification questions. Optimized for Claude Haiku 4.5's speed and pattern-matching capabilities.
-handoffs:
-  - label: Build Technical Plan
-    agent: speckit.plan
-    prompt: Create a plan for the spec. I am building with...
----
-
-## Model Selection
-
-**Preferred Model**: Claude Haiku 4.5 (`claude-haiku-4.5`)  
-**Invoke with**: `gh copilot -m "claude-haiku-4.5" slash clarify-haiku-4-5`
-
-**Optimization Strategy**: Structured taxonomy scan, step-bounded reasoning, explicit question criteria  
-**Expected Performance**: 15-25 seconds for analysis + question generation, 0.33x cost vs Sonnet 4.5
-
----
-
-## Goal
-
-<goal>
-Detect and reduce ambiguity or missing decision points in the active feature specification.
-Record clarifications directly in the spec file through interactive Q&A.
-
-**Timing**: This clarification workflow is expected to run (and be completed) BEFORE invoking `/speckit.plan`.
-
-**Warning**: If user explicitly states they are skipping clarification (e.g., exploratory spike), you may proceed, but must warn that downstream rework risk increases.
-</goal>
-
+agent: clarify.haiku-4-5
 ---
 
 ## User Input
@@ -39,15 +13,32 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 ---
 
-## Path Grounding (CRITICAL)
+## Model Selection
 
-<path_rules>
+**Preferred Model**: Claude Haiku 4.5 (`claude-haiku-4.5`)
+**Invoke with**: `copilot -m "claude-haiku-4.5" slash clarify-haiku-4-5`
+
+**Optimization Strategy**: Structured taxonomy scan, step-bounded reasoning, explicit question criteria
+**Expected Performance**: 15-25 seconds for analysis + question generation, 0.33x cost vs Sonnet 4.5
+
+---
+
+## Goal
+
+Detect and reduce ambiguity or missing decision points in the active feature specification. Record clarifications directly in the spec file through interactive Q&A.
+
+**Timing**: This clarification workflow is expected to run (and be completed) BEFORE invoking `/speckit.plan`.
+
+**Warning**: If user explicitly states they are skipping clarification (e.g., exploratory spike), you may proceed, but must warn that downstream rework risk increases.
+
+---
+
+## Path Grounding (CRITICAL)
 
 - Do **not** guess or "fix up" filesystem paths (e.g. avoid fallback paths like `/Users/...`)
 - Treat paths emitted by the `.specify` PowerShell scripts (`-Json` output) as the **only source of truth**; use them verbatim
 - If a required path is missing/unclear, STOP and re-run the prerequisite script (or ask the user) instead of synthesizing a path
 - All file paths must be absolute
-  </path_rules>
 
 ---
 
@@ -55,9 +46,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 ### Step 1: Setup & Path Discovery
 
-<task>
 Run prerequisite check from repository root to get absolute paths.
-</task>
 
 ```powershell
 pwsh ./.specify/scripts/powershell/check-prerequisites.ps1 -Json -PathsOnly
@@ -83,20 +72,11 @@ pwsh ./.specify/scripts/powershell/check-prerequisites.ps1 -Json -PathsOnly
 
 ### Step 2: Load Spec & Perform Coverage Scan
 
-<context_loading>
 Load the current spec file from FEATURE_SPEC path.
 
 **Loading Strategy**: Full read required for this task (cannot use progressive disclosure for ambiguity detection).
-</context_loading>
 
-<coverage_taxonomy>
-Perform structured ambiguity & coverage scan using this taxonomy.
-
-For each category, mark status: **Clear** / **Partial** / **Missing**
-
-Produce an internal coverage map used for prioritization (do not output raw map unless no questions will be asked).
-
-**Taxonomy Categories** (in priority order):
+**Coverage Taxonomy** - For each category, mark status: **Clear** / **Partial** / **Missing**:
 
 **1. Functional Scope & Behavior**
 
@@ -157,9 +137,9 @@ Produce an internal coverage map used for prioritization (do not output raw map 
 
 - TODO markers / unresolved decisions
 - Ambiguous adjectives ("robust", "intuitive") lacking quantification
-  </coverage_taxonomy>
 
-<candidate_question_generation>
+**Candidate Question Generation**:
+
 For each category with **Partial** or **Missing** status, add a candidate question opportunity **UNLESS**:
 
 - Clarification would NOT materially change implementation or validation strategy
@@ -169,16 +149,12 @@ For each category with **Partial** or **Missing** status, add a candidate questi
 
 - **Impact**: How much does this affect architecture, data modeling, task decomposition, test design, UX behavior, operational readiness, or compliance validation?
 - **Uncertainty**: How ambiguous or missing is this information?
-  </candidate_question_generation>
 
 ---
 
 ### Step 3: Generate Prioritized Question Queue (Maximum 5)
 
-<question_constraints>
 Generate (internally) a prioritized queue of candidate clarification questions (maximum 5). **Do NOT output them all at once.**
-
-**Apply these constraints**:
 
 **Hard Limits**:
 
@@ -186,6 +162,7 @@ Generate (internally) a prioritized queue of candidate clarification questions (
 - Maximum of 5 questions in initial queue
 
 **Question Format Requirements**:
+
 Each question must be answerable with EITHER:
 
 - **Multiple-choice**: 2–5 distinct, mutually exclusive options, OR
@@ -210,13 +187,11 @@ Each question must be answerable with EITHER:
 - If more than 5 categories remain unresolved, select the top 5 by (Impact × Uncertainty) heuristic
 
 **Output**: Internal queue only (do not display).
-</question_constraints>
 
 ---
 
 ### Step 4: Sequential Questioning Loop (Interactive)
 
-<questioning_process>
 Present **EXACTLY ONE question at a time**.
 
 **For Multiple-Choice Questions**:
@@ -277,20 +252,18 @@ Present **EXACTLY ONE question at a time**.
 - You reach 5 asked questions
 
 **Never reveal future queued questions in advance.**
-</questioning_process>
 
-<no_questions_case>
+**No Questions Case**:
+
 If no valid questions exist at start:
 
 - Immediately report: **"No critical ambiguities detected worth formal clarification."**
 - Suggest proceeding to `/speckit.plan`
-  </no_questions_case>
 
 ---
 
 ### Step 5: Integration After EACH Accepted Answer (Incremental Update)
 
-<incremental_integration_approach>
 Maintain in-memory representation of the spec (loaded once at start) plus the raw file contents.
 
 **For the First Integrated Answer in This Session**:
@@ -325,13 +298,11 @@ Maintain in-memory representation of the spec (loaded once at start) plus the ra
    - Do not reorder unrelated sections
    - Keep heading hierarchy intact
    - Keep each inserted clarification minimal and testable (avoid narrative drift)
-     </incremental_integration_approach>
 
 ---
 
 ### Step 6: Validation (Performed After EACH Write + Final Pass)
 
-<validation_checklist>
 After EACH write plus final pass, verify:
 
 - [ ] Clarifications session contains exactly one bullet per accepted answer (no duplicates)
@@ -340,7 +311,6 @@ After EACH write plus final pass, verify:
 - [ ] No contradictory earlier statement remains (scan for now-invalid alternative choices removed)
 - [ ] Markdown structure valid; only allowed new headings: `## Clarifications`, `### Session YYYY-MM-DD`
 - [ ] Terminology consistency: same canonical term used across all updated sections
-      </validation_checklist>
 
 ---
 
@@ -352,7 +322,6 @@ Write the updated spec back to `FEATURE_SPEC`.
 
 ### Step 8: Report Completion
 
-<completion_report>
 After questioning loop ends or early termination:
 
 **📋 Clarification Summary**
@@ -380,13 +349,10 @@ After questioning loop ends or early termination:
    - If all Clear/Resolved: "Proceed to `/speckit.plan`"
 
 6. **Suggested Next Command**: [e.g., `/speckit.plan` or another `/speckit.clarify` session]
-   </completion_report>
 
 ---
 
 ## Behavior Rules
-
-<behavior_constraints>
 
 - If no meaningful ambiguities found (or all potential questions would be low-impact): Respond "No critical ambiguities detected worth formal clarification." and suggest proceeding
 - If spec file missing: Instruct user to run `/speckit.specify` first (do not create a new spec here)
@@ -395,13 +361,11 @@ After questioning loop ends or early termination:
 - Respect user early termination signals ("stop", "done", "proceed")
 - If no questions asked due to full coverage: Output a compact coverage summary (all categories Clear) then suggest advancing
 - If quota reached with unresolved high-impact categories remaining: Explicitly flag them under Deferred with rationale
-  </behavior_constraints>
 
 ---
 
 ## Optimization Notes for Haiku 4.5
 
-<optimization_strategy>
 This command is optimized for Claude Haiku 4.5's strengths:
 
 1. **Structured Taxonomy**: Explicit 10-category checklist for systematic, mechanical scan
@@ -432,7 +396,6 @@ This command is optimized for Claude Haiku 4.5's strengths:
 - Novel/unusual project types without common patterns
 - Deep synthesis across multiple interconnected ambiguities
 - When missing nuances could have high downstream cost
-  </optimization_strategy>
 
 ---
 

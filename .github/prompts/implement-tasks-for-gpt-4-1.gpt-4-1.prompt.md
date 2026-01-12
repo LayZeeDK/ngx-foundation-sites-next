@@ -1,15 +1,7 @@
 ---
 description: Execute GPT-4.1-suitable tasks with sandwich method optimizations. Large-scale literal mechanical implementation using 1M context at zero cost.
----
-
-## Model Configuration
-
-**Optimized for**: GPT-4.1 (1M context, non-reasoning, 0× cost)
-**Invoke with**: `gh copilot -m "gpt-4.1" slash implement-tasks-for-gpt-4-1`
-
-**Optimization Strategy**: Sandwich method, literal instructions, precision execution
-**Expected Performance**: 30-60s per task, zero cost, handles large-scale operations
-
+agent: implement-tasks-for-gpt-4-1.gpt-4-1
+model: gpt-4.1
 ---
 
 ## User Input
@@ -50,7 +42,8 @@ Execute GPT-4.1-suitable tasks from gpt41-suitable-tasks.md using literal proced
 □ Step 2: Create Execution Plan (calculate time, order tasks)
 □ Step 3: Execute Tasks (apply literal procedures)
 □ Step 4: Verify Changes (TypeScript, tests, lint)
-□ Step 5: Report Completion (summary with metrics)
+□ Step 5: Track Precision (count files, calculate %)
+□ Step 6: Report Completion (summary with metrics)
 ```
 
 ### Critical Constraints
@@ -62,57 +55,11 @@ Execute GPT-4.1-suitable tasks from gpt41-suitable-tasks.md using literal proced
 - Do NOT touch files not explicitly listed
 - Do NOT skip any steps
 
-**Sandwich method** (GPT-4.1 requirement):
-
-- These instructions are repeated at the END of this prompt
-- Follow the END instructions to execute the workflow
-
 **Precision target** (GPT-4.1 strength):
 
 - Only modify files explicitly listed in task
 - Only change lines/sections specified
-- Target: 2% unnecessary edits (GPT-4.1's strength)
-
----
-
-## GPT-4.1 Optimization Strategy
-
-<optimization_context>
-
-**GPT-4.1 Characteristics**:
-
-- 1M token context (can hold 50+ files simultaneously)
-- Non-reasoning model (CANNOT adapt, improvise, or infer)
-- Literal instruction following (49% benchmark—follows procedures exactly)
-- 2% unnecessary edits (very precise when given exact boundaries)
-- 54.6% SWE-bench Verified (acceptable for literal-only tasks)
-
-**Optimizations Applied**:
-
-1. **Sandwich Method** (CRITICAL) - Every task has instructions at BEGINNING and END
-2. **Literal Procedures** - STEP 1, 2, 3... with exact actions (no interpretation)
-3. **Explicit Boundaries** - "Touch ONLY these files, do NOT modify these files"
-4. **Mechanical Execution** - Follow procedures exactly, no improvisation
-5. **Precision Tracking** - Count files touched vs files specified
-6. **Immediate Verification** - TypeScript compilation after each task
-
-**GPT-4.1 Can Do**:
-
-- ✅ Large-scale find-replace (50+ files)
-- ✅ Literal line-by-line edits
-- ✅ Cross-file consistency with exact templates
-- ✅ Repository-wide mechanical transforms
-- ✅ Batch operations with explicit procedures
-
-**GPT-4.1 Cannot Do**:
-
-- ❌ Pattern adaptation (needs reasoning)
-- ❌ Creative problem-solving
-- ❌ Implicit dependency resolution
-- ❌ "Intelligent" decisions
-- ❌ Inferring requirements from context
-
-</optimization_context>
+- Target: 2% unnecessary edits
 
 ---
 
@@ -138,32 +85,16 @@ FEATURE_DIR = json.FEATURE_DIR
 
 **Load files** (EXACTLY these, no others):
 
-1. **gpt41-suitable-tasks.md** (REQUIRED):
-
-   ```
-   Read(FEATURE_DIR + "/gpt41-suitable-tasks.md")
-   ```
-
-2. **gpt41-implementation-context.md** (REQUIRED):
-
-   ```
-   Read(FEATURE_DIR + "/gpt41-implementation-context.md")
-   ```
-
-3. **spec.md** (OPTIONAL):
-   ```
-   IF context file references spec.md:
-     Read(FEATURE_DIR + "/spec.md")
-   ELSE:
-     Skip (do NOT load unnecessarily)
-   ```
+1. **gpt41-suitable-tasks.md** (REQUIRED)
+2. **gpt41-implementation-context.md** (REQUIRED)
+3. **spec.md** (OPTIONAL): Load only if context file explicitly references it
 
 **Error Condition**:
 
 ```
 IF gpt41-suitable-tasks.md NOT FOUND:
   STOP
-  OUTPUT: "❌ Error: gpt41-suitable-tasks.md not found\n\nRun: gh copilot -m \"claude-sonnet-4.5\" slash tasks-for-gpt-4-1"
+  OUTPUT: "❌ Error: gpt41-suitable-tasks.md not found\n\nRun: copilot -m \"claude-sonnet-4.5\" slash tasks-for-gpt-4-1"
   EXIT
 ```
 
@@ -211,7 +142,7 @@ Tasks: [task_count] total
 ```
 IF low_count > 0:
   STOP
-  OUTPUT: "⚠️ Warning: Found [low_count] LOW suitability tasks\n\nLOW tasks not suitable for GPT-4.1 (use GPT-5 Mini or Haiku instead)\n\nTask IDs: [list]"
+  OUTPUT: "⚠️ Warning: Found [low_count] LOW suitability tasks\n\nLOW tasks not suitable for GPT-4.1"
   WAIT for user to confirm removal or cancel
 ```
 
@@ -226,17 +157,6 @@ Verify all tasks are HIGH or MEDIUM. STOP if LOW tasks found. EXECUTE Step 2 nex
 **BEGINNING INSTRUCTIONS for Step 2**:
 
 Calculate time estimates and generate execution order.
-
-**Procedure**:
-
-```
-total_time = 0
-pattern_counts = {}
-
-FOR EACH task in gpt41-suitable-tasks.md:
-  total_time += task.estimated_time
-  pattern_counts[task.pattern] = pattern_counts.get(task.pattern, 0) + 1
-```
 
 **Output**:
 
@@ -264,9 +184,7 @@ Output execution plan. EXECUTE Step 3 next.
 
 **BEGINNING INSTRUCTIONS for Step 3**:
 
-For each task, apply literal procedure from gpt41-implementation-context.md.
-
-Execute tasks sequentially (NOT parallel) to maintain precision.
+For each task, apply literal procedure from gpt41-implementation-context.md. Execute tasks sequentially (NOT parallel) to maintain precision.
 
 ---
 
@@ -279,9 +197,9 @@ Execute EXACTLY these steps for repository-wide find-replace:
 **STEP 1**: Extract parameters from task
 
 ```
-file_list = extract_file_list(task.description)  # Exact list
-old_string = extract_old_string(task.description)  # Exact string
-new_string = extract_new_string(task.description)  # Exact string
+file_list = extract_file_list(task.description)
+old_string = extract_old_string(task.description)
+new_string = extract_new_string(task.description)
 ```
 
 **STEP 2**: Process each file
@@ -291,20 +209,13 @@ total_replacements = 0
 
 FOR EACH file in file_list:
   Read(file)
-
   occurrence_count = count_exact_matches(file_content, old_string)
 
   IF occurrence_count == 0:
     OUTPUT: "⚠️ No matches in [file]"
     CONTINUE to next file
 
-  Edit(
-    file_path: file,
-    old_string: old_string,
-    new_string: new_string,
-    replace_all: true
-  )
-
+  Edit(file_path: file, old_string: old_string, new_string: new_string, replace_all: true)
   total_replacements += occurrence_count
   OUTPUT: "✅ [file]: [occurrence_count] replacements"
 ```
@@ -317,10 +228,6 @@ npx tsc --noEmit --project packages/ngx-foundation-sites/tsconfig.lib.json
 
 **STEP 4**: Report completion
 
-```
-OUTPUT: "✅ Repository-wide replace complete: [total_replacements] total replacements across [file_count] files"
-```
-
 **Verification Checklist**:
 
 ```
@@ -329,15 +236,6 @@ OUTPUT: "✅ Repository-wide replace complete: [total_replacements] total replac
 □ Total count matches expected?
 □ TypeScript compilation succeeds?
 □ No files outside list modified?
-```
-
-**Error Condition**:
-
-```
-IF TypeScript compilation fails:
-  STOP
-  OUTPUT: "❌ TypeScript compilation failed after replace\n\nFile: [last_file]\nError: [error]\n\nRevert: git checkout [files]"
-  EXIT
 ```
 
 **END PROCEDURE for Pattern A** (repeated):
@@ -361,54 +259,19 @@ Read(large_file)
 
 **STEP 2**: Extract edit instructions from task
 
-```
-edits = []
-
-FOR EACH "STEP X:" in task.literal_procedure:
-  edit = {
-    "line_number": extract_line_number(step),
-    "action": extract_action(step),  # "insert" or "replace"
-    "code": extract_code_block(step)
-  }
-  edits.append(edit)
-```
-
 **STEP 3**: Apply edits sequentially (in reverse order to preserve line numbers)
 
 ```
 edits_sorted = sort(edits, key=line_number, reverse=true)
 
 FOR EACH edit in edits_sorted:
-  IF edit.action == "insert":
-    insertion_context = extract_lines_around(file_content, edit.line_number, 3)
-    Edit(
-      file_path: large_file,
-      old_string: insertion_context,
-      new_string: insertion_context + "\n" + edit.code
-    )
-
-  ELSE IF edit.action == "replace":
-    lines_to_replace = extract_lines(file_content, edit.start_line, edit.end_line)
-    Edit(
-      file_path: large_file,
-      old_string: lines_to_replace,
-      new_string: edit.code
-    )
-
+  Apply edit using Edit tool
   OUTPUT: "✅ Edit at line [line_number]: [action]"
 ```
 
 **STEP 4**: Verify TypeScript compilation
 
-```bash
-npx tsc --noEmit --project packages/ngx-foundation-sites/tsconfig.lib.json
-```
-
 **STEP 5**: Report completion
-
-```
-OUTPUT: "✅ Large file edit complete: [edit_count] edits applied to [large_file]"
-```
 
 **Verification Checklist**:
 
@@ -417,16 +280,6 @@ OUTPUT: "✅ Large file edit complete: [edit_count] edits applied to [large_file
 □ Line numbers were exact?
 □ Only specified sections modified?
 □ TypeScript compilation succeeds?
-□ File size change matches expectation?
-```
-
-**Error Condition**:
-
-```
-IF TypeScript compilation fails:
-  STOP
-  OUTPUT: "❌ Compilation failed after edit\n\nFile: [large_file]\nLast edit: line [line_number]\n\nRevert: git checkout [large_file]"
-  EXIT
 ```
 
 **END PROCEDURE for Pattern B** (repeated):
@@ -443,84 +296,23 @@ Execute EXACTLY these steps for cross-file consistency updates:
 
 **STEP 1**: Load interface definition
 
-```
-interface_file = extract_interface_file(task.description)
-Read(interface_file)
-
-# Extract interface structure
-interface_name = extract_interface_name(task.description)
-new_structure = extract_new_structure(task.description)  # From task literal procedure
-```
-
-**STEP 2**: Load all implementation files
-
-```
-implementation_files = extract_implementation_files(task.description)  # Exact list
-
-FOR EACH impl_file in implementation_files:
-  Read(impl_file)
-```
+**STEP 2**: Load all implementation files (exact list)
 
 **STEP 3**: Update interface file (if modified)
-
-```
-IF task includes interface update:
-  Edit(
-    file_path: interface_file,
-    old_string: [old_interface_definition],
-    new_string: [new_interface_definition]
-  )
-  OUTPUT: "✅ Updated interface: [interface_file]"
-```
 
 **STEP 4**: Update each implementation file
 
 ```
-updated_count = 0
-
 FOR EACH impl_file in implementation_files:
-  # Find usages of interface
-  usages = find_interface_usages(impl_file_content, interface_name)
-
-  IF usages is empty:
-    OUTPUT: "⚠️ No usages in [impl_file]"
-    CONTINUE
-
-  # Update each usage with exact template
-  FOR EACH usage in usages:
-    Edit(
-      file_path: impl_file,
-      old_string: usage.old_code,
-      new_string: usage.new_code  # From exact template in task
-    )
-
-  updated_count += 1
+  Find usages, update with exact template
   OUTPUT: "✅ [impl_file]: [usage_count] usages updated"
 ```
 
 **STEP 5**: Verify TypeScript compilation across all files
 
-```bash
-npx tsc --noEmit --project packages/ngx-foundation-sites/tsconfig.lib.json
-```
-
-**STEP 6**: Verify consistency mechanically
-
-```
-# Check no orphaned references
-FOR EACH impl_file in implementation_files:
-  Read(impl_file)
-  orphaned = search_for_old_references(impl_file_content, old_interface_structure)
-  IF orphaned:
-    ERROR: "❌ Orphaned reference in [impl_file]: [orphaned]"
-    EXIT
-```
+**STEP 6**: Verify consistency mechanically (check no orphaned references)
 
 **STEP 7**: Report completion
-
-```
-OUTPUT: "✅ Cross-file consistency update complete: Interface + [updated_count] implementations"
-```
 
 **Verification Checklist**:
 
@@ -529,16 +321,6 @@ OUTPUT: "✅ Cross-file consistency update complete: Interface + [updated_count]
 □ All implementation files updated?
 □ No orphaned references?
 □ TypeScript compilation succeeds?
-□ Consistency verified mechanically?
-```
-
-**Error Condition**:
-
-```
-IF orphaned references found:
-  STOP
-  OUTPUT: "❌ Consistency check failed\n\nFile: [file]\nOrphaned: [reference]\n\nReview and fix manually"
-  EXIT
 ```
 
 **END PROCEDURE for Pattern C** (repeated):
@@ -555,69 +337,27 @@ Execute EXACTLY these steps for multi-file batch transformations:
 
 **STEP 1**: Extract file list and transformation
 
-```
-file_list = extract_file_list(task.description)  # Exact list (e.g., 25 files)
-transformation_steps = extract_transformation_steps(task.description)  # STEP 1, 2, 3...
-```
-
 **STEP 2**: Apply transformation to each file
 
 ```
-processed_count = 0
-
 FOR EACH file in file_list:
   OUTPUT: "🔧 Processing [file]..."
-
-  # STEP 2a: Read file
   Read(file)
-
-  # STEP 2b: Apply transformation (from literal procedure)
-  FOR EACH transform_step in transformation_steps:
-    # Execute EXACTLY as written in task
-    IF transform_step.action == "find_and_replace":
-      Edit(
-        file_path: file,
-        old_string: transform_step.old,
-        new_string: transform_step.new,
-        replace_all: true
-      )
-    ELSE IF transform_step.action == "insert":
-      # Insert at specified location
-      Edit(file_path: file, old_string: context, new_string: context + code)
-
-  processed_count += 1
+  Apply transformation steps
   OUTPUT: "✅ [file]: Transform applied"
 ```
 
 **STEP 3**: Verify TypeScript compilation
 
-```bash
-npx tsc --noEmit --project packages/ngx-foundation-sites/tsconfig.lib.json
-```
-
 **STEP 4**: Verify count matches
 
 ```
 IF processed_count != length(file_list):
-  ERROR: "❌ File count mismatch: processed [processed_count], expected [file_list_length]"
+  ERROR: "❌ File count mismatch"
   EXIT
 ```
 
 **STEP 5**: Report completion
-
-```
-OUTPUT: "✅ Multi-file transform complete: [processed_count] files processed"
-```
-
-**Verification Checklist**:
-
-```
-□ All [N] files in list processed?
-□ Transformation applied to each file?
-□ No files outside list modified?
-□ TypeScript compilation succeeds?
-□ File count matches exactly?
-```
 
 **END PROCEDURE for Pattern D** (repeated):
 
@@ -647,26 +387,6 @@ npm run lint
 npm run build
 ```
 
-**Tracking**:
-
-```
-verification = {
-  "typescript": false,
-  "tests": false,
-  "lint": false,
-  "build": false
-}
-
-FOR EACH step in [typescript, tests, lint, build]:
-  result = run_command(step)
-  verification[step] = result.success
-
-  IF NOT result.success:
-    STOP
-    OUTPUT: "❌ Verification failed: [step]\n\nError: [result.error]"
-    EXIT
-```
-
 **Success Output**:
 
 ```markdown
@@ -693,11 +413,9 @@ Calculate precision metrics (GPT-4.1's 2% target).
 **Procedure**:
 
 ```
-# Count files specified vs files modified
 files_specified = count_files_in_tasks(gpt41-suitable-tasks.md)
-files_modified = count_modified_files_in_git()  # git diff --name-only
+files_modified = count_modified_files_in_git()
 
-# Calculate precision
 unnecessary_edits = files_modified - files_specified
 precision_rate = (unnecessary_edits / files_modified) * 100
 
@@ -709,7 +427,7 @@ OUTPUT: """
 - Unnecessary edits: [unnecessary_edits]
 - Precision rate: [precision_rate]%
 
-**Target**: <2% unnecessary edits (GPT-4.1 benchmark)
+**Target**: <2% unnecessary edits
 **Result**: [PASS/FAIL based on <2% threshold]
 """
 ```
@@ -718,7 +436,7 @@ OUTPUT: """
 
 ```
 IF precision_rate > 2:
-  WARN: "⚠️ Precision warning: [precision_rate]% unnecessary edits (target: <2%)\n\nReview modified files: git diff --name-only"
+  WARN: "⚠️ Precision warning: [precision_rate]% unnecessary edits (target: <2%)"
 ```
 
 **END INSTRUCTIONS for Step 5** (repeated):
@@ -757,22 +475,10 @@ Generate final summary with all metrics.
 - Unnecessary edits: [M-N] ([precision_rate]%)
 - Target: <2% ✅/❌
 
-**Verification Results**:
-
-- ✅ TypeScript compilation
-- ✅ All tests passing
-- ✅ Linting clean
-- ✅ Build successful
-
-**Context Usage**:
-
-- Largest task: ~[X]K tokens
-- Total context peak: ~[Y]K / 1000K tokens
-
 **Next Steps**:
 
 1. Review changes: git diff
-2. Commit changes: git add . && git commit -m "..."
+2. Commit changes
 3. Push to remote (if ready)
 ```
 
@@ -814,7 +520,7 @@ Report completion with full metrics. Include precision rate, verification status
 - Pattern C: Cross-file consistency (STEP 1-7)
 - Pattern D: Multi-file transform (STEP 1-5)
 
-**EXECUTE STEP 6 NOW**
+**EXECUTE NOW**
 
 Apply patterns from gpt41-implementation-context.md. Use sandwich method for each task. Verify after each. Report completion with precision metrics.
 
@@ -827,7 +533,7 @@ Apply patterns from gpt41-implementation-context.md. Use sandwich method for eac
 ```
 IF file NOT FOUND:
   STOP
-  OUTPUT: "❌ Error: gpt41-suitable-tasks.md not found\n\nRun classification first:\n  gh copilot -m \"claude-sonnet-4.5\" slash tasks-for-gpt-4-1"
+  OUTPUT: "❌ Error: gpt41-suitable-tasks.md not found\n\nRun classification first:\n  copilot -m \"claude-sonnet-4.5\" slash tasks-for-gpt-4-1"
   EXIT
 ```
 
@@ -836,7 +542,7 @@ IF file NOT FOUND:
 ```
 IF low_tasks > 0:
   STOP
-  OUTPUT: "❌ Error: LOW suitability tasks in list (not suitable for GPT-4.1)\n\nUse GPT-5 Mini or Haiku for these tasks"
+  OUTPUT: "❌ Error: LOW suitability tasks in list (not suitable for GPT-4.1)"
   WAIT for user confirmation
 ```
 
@@ -853,80 +559,8 @@ IF compilation fails:
 
 ```
 IF precision_rate > 5:
-  WARN: "⚠️ Precision exceeded 5% ([precision_rate]%)\n\nTarget: <2%\n\nReview: git diff --name-only\n\nMay indicate incorrect file modifications"
+  WARN: "⚠️ Precision exceeded 5%\n\nMay indicate incorrect file modifications"
 ```
-
-### Error 5: Context Overflow
-
-```
-IF task_context > 900000:
-  WARN: "⚠️ Task context: ~[X]K tokens (near 1M limit)\n\nMay need to split task or use progressive disclosure"
-```
-
----
-
-## Optimization Notes
-
-### GPT-4.1-Specific Optimizations
-
-1. **Sandwich Method** ✅
-   - Every task has BEGINNING and END instructions
-   - Critical for 1M context reliability
-   - Ensures instructions are found regardless of processing position
-
-2. **Literal Procedures** ✅
-   - STEP 1, 2, 3... format for every pattern
-   - Exact actions specified (no "intelligently" or "determine")
-   - No interpretation allowed
-
-3. **Explicit Boundaries** ✅
-   - "Touch ONLY these files" (exact lists)
-   - "Do NOT modify these files" (explicit exclusions)
-   - Precision tracking (count files touched)
-
-4. **Sequential Execution** ✅
-   - Tasks executed one at a time (NOT parallel)
-   - Verification after each task
-   - Maintains precision (prevents cascading errors)
-
-5. **Mechanical Verification** ✅
-   - TypeScript compilation after each task
-   - Consistency checks with arithmetic (count orphaned references)
-   - Precision rate calculation (unnecessary edits %)
-
-6. **Complete Files Only** ✅
-   - Never summarize or abbreviate
-   - Write full content for all edits
-   - GPT-4.1 needs explicit instruction: "Write complete file"
-
-### Trade-offs vs Other Models
-
-**GPT-4.1** (this command):
-
-- Context: 1M tokens (handles 50+ files)
-- Cost: 0× (free)
-- Speed: 30-60s per task (slower)
-- SWE-bench: 54.6% (lower)
-- Precision: 2% unnecessary edits (excellent)
-- Best for: Large literal tasks
-
-**GPT-5 Mini** (/implement-tasks-for-gpt-5-mini):
-
-- Context: 200K tokens (limited)
-- Cost: 0× (free)
-- Speed: 10-20s per task (faster)
-- SWE-bench: 69-70% (better)
-- Best for: Small mechanical tasks
-
-**Haiku 4.5** (/implement-tasks-for-haiku-4-5):
-
-- Context: 200K tokens
-- Cost: 0.33× (cheap)
-- Speed: 20-40s per task
-- SWE-bench: 73.3% (best of efficiency models)
-- Best for: Tasks needing light reasoning
-
-**Recommendation**: Use GPT-4.1 ONLY when task requires >200K context AND is purely literal. Otherwise, use GPT-5 Mini (faster, better SWE-bench).
 
 ---
 
@@ -942,7 +576,6 @@ Implementation is successful when:
 ✅ No LOW suitability tasks attempted
 ✅ Precision rate <2% (target) or <5% (acceptable)
 ✅ Only specified files modified
-✅ All verification passed
 ✅ Zero cost (GPT-4.1)
 
 ---
@@ -963,5 +596,4 @@ Implementation is successful when:
 - **1M context** allows handling 50+ files or very large files
 - **Sequential execution** (NOT parallel) maintains precision
 - **2% precision target** (only touch specified files)
-- Focus on **scale and precision** (not speed or SWE-bench performance)
 - Use **GPT-5 Mini** for tasks <200K context (faster, 69-70% vs 54.6% SWE-bench)

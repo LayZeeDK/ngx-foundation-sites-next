@@ -1,38 +1,6 @@
 ---
 description: Create or update the feature specification from a natural language feature description. Optimized for Claude Haiku 4.5's synthesis and pattern-matching capabilities.
-handoffs:
-  - label: Build Technical Plan
-    agent: speckit.plan
-    prompt: Create a plan for the spec. I am building with...
-  - label: Clarify Spec Requirements
-    agent: speckit.clarify
-    prompt: Clarify specification requirements
-    send: true
----
-
-## Model Selection
-
-**Preferred Model**: Claude Haiku 4.5 (`claude-haiku-4.5`)  
-**Invoke with**: `gh copilot -m "claude-haiku-4.5" slash specify-haiku-4-5`
-
-**Optimization Strategy**: Synthesis + pattern matching, structured template filling, step-bounded reasoning  
-**Expected Performance**: 15-25 seconds, 0.33x cost vs Sonnet 4.5
-
----
-
-## Goal
-
-<goal>
-Transform natural language feature description into structured specification document.
-
-**Task Type**: Synthesis + pattern matching (good fit for Haiku with optimization)
-
-- Extract key concepts (actors, actions, data, constraints)
-- Make informed guesses for gaps (based on industry standards)
-- Fill template sections with coherent narratives
-- Validate against quality checklist
-  </goal>
-
+agent: specify.haiku-4-5
 ---
 
 ## User Input
@@ -45,15 +13,35 @@ $ARGUMENTS
 
 ---
 
-## Path Grounding (CRITICAL)
+## Model Selection
 
-<path_rules>
+**Preferred Model**: Claude Haiku 4.5 (`claude-haiku-4.5`)
+**Invoke with**: `copilot -m "claude-haiku-4.5" slash specify-haiku-4-5`
+
+**Optimization Strategy**: Synthesis + pattern matching, structured template filling, step-bounded reasoning
+**Expected Performance**: 15-25 seconds, 0.33x cost vs Sonnet 4.5
+
+---
+
+## Goal
+
+Transform natural language feature description into structured specification document.
+
+**Task Type**: Synthesis + pattern matching (good fit for Haiku with optimization)
+
+- Extract key concepts (actors, actions, data, constraints)
+- Make informed guesses for gaps (based on industry standards)
+- Fill template sections with coherent narratives
+- Validate against quality checklist
+
+---
+
+## Path Grounding (CRITICAL)
 
 - Do **not** guess or "fix up" filesystem paths (e.g. avoid fallback paths like `/Users/...`)
 - Treat paths emitted by the `.specify` PowerShell scripts (`-Json` output) as the **only source of truth**; use them verbatim
 - If a required path is missing/unclear, STOP and re-run the prerequisite script (or ask the user) instead of synthesizing a path
 - All file paths must be absolute
-  </path_rules>
 
 ---
 
@@ -61,7 +49,6 @@ $ARGUMENTS
 
 ### Step 1: Generate Concise Short Name (2-4 Words)
 
-<short_name_generation>
 Analyze the feature description and extract the most meaningful keywords to create a concise branch name:
 
 **Rules**:
@@ -85,13 +72,11 @@ Analyze the feature description and extract the most meaningful keywords to crea
 2. Extract 2-4 most meaningful keywords
 3. Combine with hyphens in action-noun order
 4. Simplify while preserving technical specificity
-   </short_name_generation>
 
 ---
 
 ### Step 2: Check for Existing Branches Before Creating New One
 
-<branch_checking>
 **Process**:
 
 **a. First, fetch all remote branches to ensure latest information**:
@@ -139,15 +124,12 @@ pwsh ./.specify/scripts/powershell/create-new-feature.ps1 -Json -Number N+1 -Sho
 - The JSON is provided in the terminal as output - always refer to it to get the actual content you're looking for
 - The JSON output will contain BRANCH_NAME and SPEC_FILE paths
 - For single quotes in args like "I'm Groot", use escape syntax: `'I'\''m Groot'` (or double-quote if possible: `"I'm Groot"`)
-  </branch_checking>
 
 ---
 
 ### Step 3: Load Specification Template
 
-<task>
 Load `.specify/templates/spec-template.md` to understand required sections.
-</task>
 
 **Purpose**: Understand section structure, headings, and expected content format before filling.
 
@@ -155,7 +137,6 @@ Load `.specify/templates/spec-template.md` to understand required sections.
 
 ### Step 4: Follow Execution Flow for Specification Synthesis
 
-<execution_flow>
 This step requires **synthesis + reasoning** (Haiku 4.5's strength over GPT-5 Mini/GPT-4.1).
 
 **Step 4.1: Parse User Description from Input**
@@ -233,13 +214,11 @@ FOR EACH criterion:
 **Step 4.7: Return**
 
 SUCCESS (spec ready for planning)
-</execution_flow>
 
 ---
 
 ### Step 5: Write the Specification to SPEC_FILE
 
-<specification_writing>
 Write the specification to SPEC_FILE using the template structure.
 
 **Replace placeholders** with concrete details derived from the feature description (arguments) while **preserving**:
@@ -255,13 +234,11 @@ Write the specification to SPEC_FILE using the template structure.
 - **Write for non-technical stakeholders**
 - **Each requirement must be testable**
 - **Use [NEEDS CLARIFICATION: ...]** markers sparingly (max 3 total)
-  </specification_writing>
 
 ---
 
 ### Step 6: Specification Quality Validation
 
-<validation_process>
 After writing the initial spec, validate it against quality criteria.
 
 **Step 6.a: Create Spec Quality Checklist**
@@ -372,13 +349,11 @@ Review the spec against each checklist item:
 **Step 6.d: Update Checklist**
 
 After each validation iteration, update the checklist file with current pass/fail status.
-</validation_process>
 
 ---
 
 ### Step 7: Report Completion
 
-<completion_report>
 Report completion with:
 
 **✅ Feature Specification Created**
@@ -403,13 +378,11 @@ Report completion with:
    - If validation issues remain: "Review checklist at [path] and update spec"
 
 **Note**: The script created and checked out the new branch automatically.
-</completion_report>
 
 ---
 
 ## Optimization Notes for Haiku 4.5
 
-<optimization_strategy>
 This command is optimized for Claude Haiku 4.5's strengths:
 
 1. **Synthesis + Pattern Matching**: Extract concepts AND synthesize coherent narratives
@@ -451,7 +424,6 @@ This command is optimized for Claude Haiku 4.5's strengths:
 - When specification quality is more critical than speed/cost (e.g., regulatory features)
 - Features with many interconnected implicit requirements
 - When 15% quality improvement justifies 3x cost increase
-  </optimization_strategy>
 
 ---
 

@@ -11,7 +11,7 @@ Validates gap analysis reports and creates remediation documentation.
 
 ```bash
 # In GitHub Copilot CLI
-gh copilot slash analyze-gaps
+copilot slash analyze-gaps
 ```
 
 ## What It Does

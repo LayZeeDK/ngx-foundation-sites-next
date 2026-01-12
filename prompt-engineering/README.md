@@ -483,32 +483,32 @@ ELSE IF context > 256K:
 
 ```bash
 # Step 1: Gap Analysis (GPT-5 Mini - small feature)
-gh copilot -m "gpt-5-mini" slash analyze-report-gaps-gpt-5-mini @accordion.ts
+copilot -m "gpt-5-mini" slash analyze-report-gaps-gpt-5-mini @accordion.ts
 # Time: 12 seconds
 # Cost: 0x
 # Quality: 90% of GPT-4.1
 # Output: gap-analysis-report.md
 
 # Step 2: Gap Validation (Sonnet 4.5 - requires reasoning)
-gh copilot -m "sonnet-4.5" slash analyze-gaps
+copilot -m "sonnet-4.5" slash analyze-gaps
 # Time: 10 minutes
 # Cost: 1x
 # Output: GAPS_REMEDIATION.md + REMEDIATION_CHECKLIST.md
 
 # Step 3: Task Generation (GPT-5 Mini)
-gh copilot -m "gpt-5-mini" slash tasks-gpt-5-mini
+copilot -m "gpt-5-mini" slash tasks-gpt-5-mini
 # Time: 7 seconds
 # Cost: 0x
 # Output: tasks.md
 
 # Step 4: Implementation (Sonnet 4.5 - requires reasoning)
-gh copilot -m "sonnet-4.5" slash implement-gap-remediations
+copilot -m "sonnet-4.5" slash implement-reported-gaps
 # Time: 32 minutes (P0 gaps)
 # Cost: 1x
 # Output: Fixed code + commits
 
 # Step 5: Re-validate (GPT-5 Mini)
-gh copilot -m "gpt-5-mini" slash analyze-report-gaps-gpt-5-mini @accordion.ts
+copilot -m "gpt-5-mini" slash analyze-report-gaps-gpt-5-mini @accordion.ts
 # Time: 10 seconds
 # Cost: 0x
 # Output: "✅ No new gaps detected!"

@@ -126,7 +126,7 @@ thinking={
 - ✅ When user requests TDD (test dependencies are subtle)
 - ❌ Simple linear features (overhead not justified)
 
-**Implementation location**: Add to model configuration in `.github/agents/tasks-haiku-4-5.agent.md`
+**Implementation location**: Add to model configuration in `.github/agents/tasks.haiku-4-5.agent.md`
 
 ---
 
@@ -153,7 +153,7 @@ thinking={
 - ✅ Features with security/compliance requirements
 - ❌ Simple CRUD features (pattern matching sufficient)
 
-**Implementation location**: Add to model configuration in `.github/agents/clarify-haiku-4-5.agent.md`
+**Implementation location**: Add to model configuration in `.github/agents/clarify.haiku-4-5.agent.md`
 
 ---
 

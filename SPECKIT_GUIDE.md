@@ -138,12 +138,12 @@ Use Haiku-optimized commands for 66% cost savings with minimal quality loss:
 
 ```bash
 # 1. Generate tasks (choose based on budget)
-gh copilot -m "gpt-5-mini" slash tasks-gpt-5-mini          # 0x cost
+copilot -m "gpt-5-mini" slash tasks-gpt-5-mini          # 0x cost
 # OR
-gh copilot -m "claude-haiku-4.5" slash tasks-haiku-4-5    # 0.33x cost
+copilot -m "claude-haiku-4.5" slash tasks-haiku-4-5    # 0.33x cost
 
 # 2. Convert to GitHub issues (zero-cost)
-gh copilot -m "gpt-5-mini" slash taskstoissues-gpt-5-mini # 0x cost
+copilot -m "gpt-5-mini" slash taskstoissues-gpt-5-mini # 0x cost
 ```
 
 #### Haiku 4.5 Optimization Techniques
@@ -176,12 +176,12 @@ See [`prompt-engineering/CLAUDE-HAIKU-4-5-OPTIMIZATION.md`](prompt-engineering/C
 
 #### Command Comparison: Standard vs Haiku-Optimized
 
-| Task          | Standard Command                | Haiku-Optimized                | When to Use Haiku                | Usage Example                                                                                                               |
-| ------------- | ------------------------------- | ------------------------------ | -------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| **Specify**   | `/speckit.specify` (Sonnet)     | `/specify-haiku-4-5` (Haiku)   | Simple features, clear scope     | **Claude Code**: `/specify-haiku-4-5`<br>**GitHub Copilot**: `gh copilot -m "claude-haiku-4.5" slash specify-haiku-4-5`     |
-| **Clarify**   | `/speckit.clarify` (Sonnet)     | `/clarify-haiku-4-5` (Haiku)   | Structured gap detection         | **Claude Code**: `/clarify-haiku-4-5`<br>**GitHub Copilot**: `gh copilot -m "claude-haiku-4.5" slash clarify-haiku-4-5`     |
-| **Checklist** | `/speckit.checklist` (Sonnet)   | `/checklist-haiku-4-5` (Haiku) | Always (mechanical validation)   | **Claude Code**: `/checklist-haiku-4-5`<br>**GitHub Copilot**: `gh copilot -m "claude-haiku-4.5" slash checklist-haiku-4-5` |
-| **Tasks**     | `/speckit.tasks` (Haiku/Sonnet) | `/tasks-haiku-4-5` (Haiku)     | Always (pattern-based breakdown) | **Claude Code**: `/tasks-haiku-4-5`<br>**GitHub Copilot**: `gh copilot -m "claude-haiku-4.5" slash tasks-haiku-4-5`         |
+| Task          | Standard Command                | Haiku-Optimized                | When to Use Haiku                | Usage Example                                                                                                            |
+| ------------- | ------------------------------- | ------------------------------ | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| **Specify**   | `/speckit.specify` (Sonnet)     | `/specify-haiku-4-5` (Haiku)   | Simple features, clear scope     | **Claude Code**: `/specify-haiku-4-5`<br>**GitHub Copilot**: `copilot -m "claude-haiku-4.5" slash specify-haiku-4-5`     |
+| **Clarify**   | `/speckit.clarify` (Sonnet)     | `/clarify-haiku-4-5` (Haiku)   | Structured gap detection         | **Claude Code**: `/clarify-haiku-4-5`<br>**GitHub Copilot**: `copilot -m "claude-haiku-4.5" slash clarify-haiku-4-5`     |
+| **Checklist** | `/speckit.checklist` (Sonnet)   | `/checklist-haiku-4-5` (Haiku) | Always (mechanical validation)   | **Claude Code**: `/checklist-haiku-4-5`<br>**GitHub Copilot**: `copilot -m "claude-haiku-4.5" slash checklist-haiku-4-5` |
+| **Tasks**     | `/speckit.tasks` (Haiku/Sonnet) | `/tasks-haiku-4-5` (Haiku)     | Always (pattern-based breakdown) | **Claude Code**: `/tasks-haiku-4-5`<br>**GitHub Copilot**: `copilot -m "claude-haiku-4.5" slash tasks-haiku-4-5`         |
 
 **Example workflow with Haiku commands**:
 
@@ -274,13 +274,13 @@ Both `/tasks-gpt-5-mini` and `/analyze-report-gaps-gpt-5-mini` use **7 optimizat
 **Option A: GPT-5 Mini** (small-medium features, <180K tokens, **faster**):
 
 ```bash
-gh copilot -m "gpt-5-mini" slash analyze-report-gaps-gpt-5-mini @implementation-files
+copilot -m "gpt-5-mini" slash analyze-report-gaps-gpt-5-mini @implementation-files
 ```
 
 **Option B: GPT-4.1** (large features, >180K tokens, **more context**):
 
 ```bash
-gh copilot -m "gpt-4.1" slash analyze-report-gaps-gpt-4-1 @implementation-files
+copilot -m "gpt-4.1" slash analyze-report-gaps-gpt-4-1 @implementation-files
 ```
 
 **Both commands**:
@@ -307,7 +307,7 @@ gh copilot -m "gpt-4.1" slash analyze-report-gaps-gpt-4-1 @implementation-files
 - False positives removed
 - Summary statistics
 
-**Alternative (if slash commands unavailable)**: Manually copy instructions from `.github/agents/analyze-report-gaps-gpt-5-mini.agent.md` or `.github/agents/analyze-report-gaps-gpt-4-1.agent.md`
+**Alternative (if slash commands unavailable)**: Manually copy instructions from `.github/agents/analyze-report-gaps.gpt-5-mini.agent.md` or `.github/agents/analyze-report-gaps.gpt-4-1.agent.md`
 
 2. **Step 2: Sonnet 4.5 validation (create remediation docs):**
 
@@ -322,7 +322,7 @@ Use `/analyze-gaps` to validate gaps and create remediation documentation:
 **GitHub Copilot**:
 
 ```bash
-gh copilot slash analyze-gaps
+copilot slash analyze-gaps
 ```
 
 **What it does**:
@@ -352,18 +352,18 @@ Copy instructions from `.github/agents/analyze-gaps.agent.md` and run manually
 
 3. **Step 3: Sonnet 4.5 implementation (execute gap fixes):**
 
-Use `/implement-gap-remediations` to systematically implement gap fixes from REMEDIATION_CHECKLIST.md:
+Use `/implement-reported-gaps` to systematically implement gap fixes from REMEDIATION_CHECKLIST.md:
 
 **Claude Code**:
 
 ```bash
-/implement-gap-remediations
+/implement-reported-gaps
 ```
 
 **GitHub Copilot**:
 
 ```bash
-gh copilot slash implement-gap-remediations
+copilot slash implement-reported-gaps
 ```
 
 **What it does**:
@@ -435,7 +435,7 @@ Result: 3 gaps fixed in 32 minutes (100% accuracy)
 - Systematic implementation with progress visibility
 
 **Manual alternative** (if slash command unavailable):
-Copy instructions from `.github/agents/implement-gap-remediations.agent.md` and execute manually, or follow REMEDIATION_CHECKLIST.md step-by-step
+Copy instructions from `.github/agents/implement-reported-gaps.agent.md` and execute manually, or follow REMEDIATION_CHECKLIST.md step-by-step
 
 **Example: Budget-Conscious Implementation (cheap model → capable model when needed) (`/speckit.implement`)**
 

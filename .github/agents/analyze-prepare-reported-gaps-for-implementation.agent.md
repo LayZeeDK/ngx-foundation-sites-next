@@ -1,5 +1,5 @@
 ---
-description: Validates gap analysis reports from /analyze-report-gaps-gpt-5-mini or /analyze-report-gaps-gpt-4-1 and creates comprehensive remediation documentation. Prevents future analysis tools from re-flagging known gaps by establishing single source of truth tracking. Use after /analyze-report-gaps-* generates gap-analysis-report.md.
+description: Validates gap analysis reports from /analyze-report-gaps.gpt-5-mini or /analyze-report-gaps.gpt-4-1 and creates comprehensive remediation documentation. Prevents future analysis tools from re-flagging known gaps by establishing single source of truth tracking. Use after /analyze-report-gaps-* generates gap-analysis-report.md.
 ---
 
 ## User Input
@@ -14,13 +14,13 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 Before running this agent:
 
-1. `gap-analysis-report.md` exists in repo root (from `/analyze-report-gaps-gpt-5-mini or /analyze-report-gaps-gpt-4-1` or manual analysis)
+1. `gap-analysis-report.md` exists in repo root (from `/analyze-report-gaps.gpt-5-mini or /analyze-report-gaps.gpt-4-1` or manual analysis)
 2. Feature specs exist in `specs/<feature>/` (spec.md, plan.md, tasks.md)
 3. Implementation files exist for validation
 
 ## Goal
 
-Create remediation documentation that **prevents future `/analyze-report-gaps-gpt-5-mini or /analyze-report-gaps-gpt-4-1` runs from re-flagging these gaps as new issues**. Establish a single source of truth for gap tracking.
+Create remediation documentation that **prevents future `/analyze-report-gaps.gpt-5-mini or /analyze-report-gaps.gpt-4-1` runs from re-flagging these gaps as new issues**. Establish a single source of truth for gap tracking.
 
 ## Validation Methodology
 
@@ -81,7 +81,7 @@ Create these documents in `specs/<feature>/`:
 
 ### 1. GAPS_REMEDIATION.md (Comprehensive Tracking)
 
-**Purpose**: Single source of truth for `/analyze-report-gaps-gpt-5-mini or /analyze-report-gaps-gpt-4-1` to check before flagging gaps.
+**Purpose**: Single source of truth for `/analyze-report-gaps.gpt-5-mini or /analyze-report-gaps.gpt-4-1` to check before flagging gaps.
 
 **Required Sections**:
 
@@ -92,7 +92,7 @@ Create these documents in `specs/<feature>/`:
 - **False Positives**: Claimed gaps that are working as designed
 - **Remediation Roadmap**: Phased approach with time estimates
 - **Validation Methodology**: 6-step process used
-- **For `/analyze-report-gaps-gpt-5-mini or /analyze-report-gaps-gpt-4-1` Tool**: Instructions for future analysis
+- **For `/analyze-report-gaps.gpt-5-mini or /analyze-report-gaps.gpt-4-1` Tool**: Instructions for future analysis
 
 **Per-Gap Structure**:
 
@@ -227,7 +227,7 @@ git commit -m "docs(feature): add validated gap analysis with remediation tracke
 - Total fix time: P0=Xmin, P0+P1=Ymin, P0+P1+P2=Zmin
 
 Validation methodology: Cross-artifact analysis (spec vs contracts vs implementation)
-Purpose: Single source of truth for /analyze-report-gaps-gpt-5-mini or /analyze-report-gaps-gpt-4-1
+Purpose: Single source of truth for /analyze-report-gaps.gpt-5-mini or /analyze-report-gaps.gpt-4-1
 
 Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
 ```
@@ -291,8 +291,8 @@ test -f gap-analysis-report.md && echo "✓ Prerequisite found" || echo "✗ MIS
    ▶ Next Steps:
 
    1. Run ONE of these commands to generate the prerequisite file:
-      • /analyze-report-gaps-gpt-5-mini (faster, uses GPT-4o-mini)
-      • /analyze-report-gaps-gpt-4-1 (slower, more thorough)
+      • /analyze-report-gaps.gpt-5-mini (faster, uses GPT-4o-mini)
+      • /analyze-report-gaps.gpt-4-1 (slower, more thorough)
 
    2. After the report is generated, re-run: /analyze-prepare-reported-gaps-for-implementation
 
@@ -441,7 +441,7 @@ I've validated the gap analysis report against source artifacts. Here's what I f
 
 ## Success Criteria
 
-Future `/analyze-report-gaps-gpt-5-mini or /analyze-report-gaps-gpt-4-1` runs should:
+Future `/analyze-report-gaps.gpt-5-mini or /analyze-report-gaps.gpt-4-1` runs should:
 
 - ✅ Find "NOT IMPLEMENTED - TRACKED" markers instead of discovering "new" gaps
 - ✅ Reference GAPS_REMEDIATION.md for detailed tracking

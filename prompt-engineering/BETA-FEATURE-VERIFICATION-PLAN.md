@@ -211,13 +211,10 @@ claude
 
 ```bash
 # Check if CLI is installed
-gh copilot --version
-
-# If not installed:
-gh extension install github/gh-copilot
+copilot --version
 
 # Authenticate
-gh auth status
+copilot auth status
 ```
 
 **✅ Success Criteria:**
@@ -428,17 +425,17 @@ gh auth status
 
    ```bash
    # Try to use custom command
-   gh copilot suggest "use /test-command"
+   copilot suggest "use /test-command"
 
    # Or in chat mode
-   gh copilot chat
+   copilot chat
    # Then type: /test-command
    ```
 
 3. **Check available commands:**
 
    ```bash
-   gh copilot --help
+   copilot --help
    # Look for custom command listing
    ```
 

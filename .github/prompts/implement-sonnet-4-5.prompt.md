@@ -518,7 +518,7 @@ EOF
 **Next Steps**:
 
 - Create PR for review
-- Run `/analyze-report-gaps-gpt-5-mini` or `/analyze-report-gaps-gpt-4-1` to verify no new gaps introduced
+- Run `/analyze-report-gaps.gpt-5-mini` or `/analyze-report-gaps.gpt-4-1` to verify no new gaps introduced
 ```
 
 </phase_5_completion>
@@ -643,7 +643,7 @@ After execution:
 - `/speckit.implement` - Standard implementation command (not Sonnet-optimized)
 - `/implement-reported-gaps` - Specialized for gap remediation
 - `/implement-tasks-for-haiku-4-5` - Haiku 4.5 optimization (simpler tasks)
-- `/analyze-report-gaps-gpt-5-mini` or `/analyze-report-gaps-gpt-4-1` - Verify no new gaps after implementation
+- `/analyze-report-gaps.gpt-5-mini` or `/analyze-report-gaps.gpt-4-1` - Verify no new gaps after implementation
 
 ---
 

@@ -145,10 +145,10 @@ All documented features in optimization guides are **generally available** and p
 **Available Commands:**
 
 ```bash
-gh copilot suggest   # Command suggestions
-gh copilot explain   # Command explanations
-gh copilot config    # Configuration
-gh copilot alias     # Shell aliases
+copilot suggest   # Command suggestions
+copilot explain   # Command explanations
+copilot config    # Configuration
+copilot alias     # Shell aliases
 ```
 
 **Tested On:**
@@ -456,8 +456,8 @@ See: `GITHUB-COPILOT-AGENTS-OPTIMIZATIONS.md` (marked with beta warning)
 
 **Start With:**
 
-- `gh copilot suggest` for CLI commands
-- `gh copilot explain` for understanding
+- `copilot suggest` for CLI commands
+- `copilot explain` for understanding
 - Test VS Code slash commands
 
 ---
@@ -583,8 +583,8 @@ All optimization guides are **accurate and current**:
 
 ```bash
 # CLI:
-gh copilot suggest "command description"
-gh copilot explain "command to explain"
+copilot suggest "command description"
+copilot explain "command to explain"
 
 # VS Code (test these):
 # In Copilot Chat: /explain, /tests, /optimize

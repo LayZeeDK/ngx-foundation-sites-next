@@ -1,16 +1,8 @@
 ---
 description: Convert existing tasks.md into actionable GitHub issues. Optimized for GPT-5 Mini's fast pattern matching with zero-cost execution.
-model_config:
-  reasoning_effort: minimal
-  verbosity: concise
-tools: ['github/github-mcp-server/issue_write']
+agent: taskstoissues.gpt-5-mini
+model: gpt-5-mini
 ---
-
-## Model Configuration
-
-**Optimized for**: GPT-5 Mini (0x cost, fast inference)
-**reasoning_effort**: `minimal` (pattern extraction and API calls, no reasoning)
-**verbosity**: `concise` (structured output only, no prose)
 
 ## User Input
 
@@ -20,16 +12,15 @@ $ARGUMENTS
 
 You **MUST** consider the user input before proceeding (if not empty).
 
-## GPT-5 Mini Optimization Strategy
+---
 
-This agent is optimized for GPT-5 Mini using 2026 best practices:
+## Model Configuration
 
-1. **Structured CTCO Framework**: Context → Task → Constraints → Output
-2. **Explicit pattern extraction**: No ambiguity in task parsing
-3. **Minimal reasoning effort**: Task-to-issue conversion is mechanical
-4. **Verbosity controls**: Output only issue creation status, no explanations
-5. **XML scaffolding**: Structured state for predictable parsing
-6. **Validation checklist**: Arithmetic checks (issue_count === task_count)
+**Optimized for**: GPT-5 Mini (0x cost, fast inference)
+**reasoning_effort**: `minimal` (pattern extraction and API calls, no reasoning)
+**verbosity**: `concise` (structured output only, no prose)
+
+---
 
 ## Path Grounding (CRITICAL)
 
@@ -37,6 +28,8 @@ This agent is optimized for GPT-5 Mini using 2026 best practices:
 - Treat paths emitted by `.specify` PowerShell scripts as **only source of truth**
 - If a required path is missing/unclear, STOP and re-run prerequisite script
 - For single quotes in args like "I'm Groot", use: `'I'\''m Groot'` or `"I'm Groot"`
+
+---
 
 ## Context (CTCO Step 1)
 
@@ -47,6 +40,8 @@ This agent is optimized for GPT-5 Mini using 2026 best practices:
 **Your role**: Mechanical task-to-issue converter (pattern extraction + API calls)
 
 **Safety**: ONLY create issues in repository matching Git remote URL
+
+---
 
 ## Task (CTCO Step 2)
 
@@ -187,6 +182,8 @@ Convert `tasks.md` to GitHub issues by applying these mechanical transformations
 </validation>
 ```
 
+---
+
 ## Constraints (CTCO Step 3)
 
 ### Pattern Extraction Constraints
@@ -285,6 +282,8 @@ Errors: [error details]
 - Validation results
 - Error details (if failures)
 
+---
+
 ## Output Format (CTCO Step 4)
 
 ### Execution Report
@@ -324,6 +323,8 @@ Errors: [error details]
 ✅ **Success**: All tasks converted to GitHub issues
 ```
 
+---
+
 ## Pre-Execution Checklist
 
 Before starting, verify:
@@ -333,6 +334,8 @@ Before starting, verify:
 - [ ] GitHub MCP server has write permissions
 - [ ] Feature name extracted from spec.md
 - [ ] No duplicate issues exist (check manually or prompt user)
+
+---
 
 ## Error Handling
 
@@ -350,6 +353,8 @@ Before starting, verify:
 3. **Milestone not found**: Create issues without milestone
 4. **Dependency linking failure**: Create issues, skip linking
 
+---
+
 ## Validation Checklist
 
 After execution, verify:
@@ -360,6 +365,8 @@ After execution, verify:
 - [ ] All issues have correct milestone
 - [ ] Dependencies documented in issue comments
 - [ ] No failed_tasks OR failed_tasks documented in report
+
+---
 
 ## Why This Works for GPT-5 Mini
 
@@ -386,6 +393,8 @@ After execution, verify:
 - ✅ All patterns extracted (regex validation)
 - ✅ API calls succeed (status codes)
 
+---
+
 ## Performance Expectations
 
 | Metric            | Value                           | Notes                        |
@@ -394,6 +403,8 @@ After execution, verify:
 | **Cost**          | **0x**                          | GPT-5 Mini is free           |
 | **Quality**       | 95%+                            | Pure pattern extraction      |
 | **Failure modes** | API rate limits, network errors | Not model-related            |
+
+---
 
 ## Comparison to Standard `/speckit.taskstoissues`
 
@@ -417,6 +428,8 @@ After execution, verify:
 - ⚠️ Complex task descriptions with ambiguity
 - ⚠️ Non-standard task format
 - ⚠️ First-time use (safer)
+
+---
 
 ## Context
 

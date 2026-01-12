@@ -417,9 +417,9 @@ Create three output files with GPT-4.1-specific optimizations.
 ## Next Steps
 
 1. Review this analysis
-2. Run GPT-4.1 execution: `gh copilot -m "gpt-4.1" slash implement-tasks-for-gpt-4-1` (to be created)
-3. Use GPT-5 Mini for small tasks: `gh copilot -m "gpt-5-mini" slash implement-tasks-for-gpt-5-mini`
-4. Use Haiku for large tasks needing reasoning: `gh copilot -m "claude-haiku-4.5" slash implement-tasks-for-haiku-4-5`
+2. Run GPT-4.1 execution: `copilot -m "gpt-4.1" slash implement-tasks-for-gpt-4-1` (to be created)
+3. Use GPT-5 Mini for small tasks: `copilot -m "gpt-5-mini" slash implement-tasks-for-gpt-5-mini`
+4. Use Haiku for large tasks needing reasoning: `copilot -m "claude-haiku-4.5" slash implement-tasks-for-haiku-4-5`
 ````
 
 </output_template_1>

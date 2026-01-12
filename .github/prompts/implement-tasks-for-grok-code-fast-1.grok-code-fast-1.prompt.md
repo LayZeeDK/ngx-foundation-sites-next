@@ -1,41 +1,7 @@
 ---
 description: Execute Grok-suitable tasks with Grok Code Fast 1 optimizations. Fast, agentic implementation with iterative refinement.
----
-
-## Setup
-
-Repository: ngx-foundation-sites (Angular component library)
-Goal: Execute Grok-suitable tasks from grok-suitable-tasks.md with agentic, iterative workflows
-
-## Model Selection
-
-**Model**: Grok Code Fast 1 (`grok-code-fast-1`)
-**Context**: 256K tokens
-**Cost**: 0x in GitHub Copilot (VS Code)
-**Invoke with**: `copilot -m "grok-code-fast-1" slash implement-tasks-for-grok-code-fast-1`
-
-## Tools Available
-
-- Read files from codebase
-- Edit files with precise changes
-- Run shell commands (build, test, lint)
-- Search codebase with grep patterns
-
-## Constraints
-
-- Follow existing code patterns exactly
-- Verify TypeScript compilation after each edit
-- Run tests frequently (iterations are cheap)
-- Mark tasks [X] in tasks.md immediately after completion
-- Commit changes at phase boundaries
-
-## Edge Cases
-
-- If grok-suitable-tasks.md missing: STOP, run `/tasks-for-grok-code-fast-1` first
-- If compilation fails: iterate quickly (search error → fix → verify)
-- If test fails: analyze → patch → re-run (cheap with Grok's speed)
-- If task seems too complex: flag for Claude Sonnet 4.5 review
-
+agent: implement-tasks-for-grok-code-fast-1.grok-code-fast-1
+model: grok-code-fast-1
 ---
 
 ## User Input
@@ -57,9 +23,18 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 ---
 
+## Goal
+
+Execute Grok-suitable tasks from grok-suitable-tasks.md with agentic, iterative workflows.
+
+**Focus**: Fast, iterative execution with rapid refinement
+**Strategy**: Agentic cycles, native tool-calling, quick iteration
+
+---
+
 ## Grok Optimization Principles
 
-Apply these research-backed techniques throughout execution:
+Apply these throughout execution:
 
 ### 1. Rapid Iteration Over Perfect Prompts
 
@@ -67,7 +42,7 @@ Fire fast, refine quickly. 30 seconds × 3 iterations beats 5 minutes × 1 attem
 
 ### 2. Agentic Cycles
 
-Use search → read → edit → test → refine loops. Each cycle is cheap (4x speed, 0x cost).
+Use search → read → edit → test → refine loops. Each cycle is cheap (4× speed, 0× cost).
 
 ### 3. Native Tool-Calling
 
@@ -126,19 +101,6 @@ STOP execution.
 4. **plan.md** (if exists): Tech stack, architecture, file structure
 5. **spec.md** (if exists): Requirements reference
 
-#### Step 0.4: Check Checklists (if checklists/ directory exists)
-
-Scan `FEATURE_DIR/checklists/` for incomplete items:
-
-```
-| Checklist   | Total | Complete | Incomplete | Status |
-|-------------|-------|----------|------------|--------|
-| ux.md       | 12    | 12       | 0          | ✓ PASS |
-| test.md     | 8     | 5        | 3          | ✗ FAIL |
-```
-
-**If any incomplete**: Ask user whether to proceed or wait.
-
 ---
 
 ### Phase 1: Task Scope Verification
@@ -160,7 +122,6 @@ From grok-suitable-tasks.md, count:
 
 These tasks should use Claude Sonnet 4.5:
 - T015 (35%): Design state management approach
-- T022 (40%): Integrate ErrorHandler across components
 
 Options:
 1. Skip these tasks (recommended)
@@ -178,7 +139,7 @@ Choice?
 **HIGH Suitability Tasks**: [X] tasks (~[Y] minutes)
 **MEDIUM Suitability Tasks**: [Z] tasks (~[W] minutes)
 **Estimated Total**: [T] minutes (4× faster than other models)
-**Cost**: $0 (0x in GitHub Copilot)
+**Cost**: $0 (0× in GitHub Copilot)
 
 **Execution Order**:
 
@@ -191,40 +152,7 @@ Choice?
 
 ---
 
-### Phase 2: Project Setup Verification
-
-#### Step 2.1: Verify Ignore Files
-
-Check and create/update ignore files based on detected technology:
-
-**Detection Logic:**
-
-- Git repo? → verify `.gitignore`
-- ESLint config? → verify `.eslintignore` or `ignores` in flat config
-- Prettier config? → verify `.prettierignore`
-
-**Angular/TypeScript Patterns:**
-
-```
-node_modules/
-dist/
-build/
-*.log
-.env*
-coverage/
-.angular/
-```
-
-#### Step 2.2: Verify Build Environment
-
-```bash
-# Quick verification (iterate if fails)
-npm run build --dry-run 2>/dev/null || npm run build
-```
-
----
-
-### Phase 3: Execute Tasks (Agentic Patterns)
+### Phase 2: Execute Tasks (Agentic Patterns)
 
 For each task in grok-suitable-tasks.md, apply the matching agentic pattern.
 
@@ -239,27 +167,21 @@ For each task in grok-suitable-tasks.md, apply the matching agentic pattern.
 
 **Cycle 1 - Locate:**
 
-```
 1. Search for bug keywords in target files
 2. Read surrounding context (20-30 lines)
 3. Identify exact line(s) to fix
-```
 
 **Cycle 2 - Patch:**
 
-```
 1. Apply minimal fix
-2. Run: npx tsc --noEmit --project [tsconfig]
+2. Run: `npx tsc --noEmit --project [tsconfig]`
 3. If error: read error, adjust, repeat
-```
 
 **Cycle 3 - Verify:**
 
-```
 1. Run relevant tests
 2. If fail: analyze, adjust, repeat
 3. If pass: mark complete, move on
-```
 
 **Success Criteria:**
 
@@ -277,19 +199,15 @@ For each task in grok-suitable-tasks.md, apply the matching agentic pattern.
 
 **Cycle 1 - Find Pattern:**
 
-```
 1. Search for similar methods in same class
 2. Copy JSDoc and signature style
 3. Identify insertion point (before closing brace)
-```
 
 **Cycle 2 - Implement:**
 
-```
 1. Generate method following pattern exactly
 2. Insert using Edit tool
 3. Verify compilation
-```
 
 **Method Template:**
 
@@ -319,11 +237,9 @@ methodName(params): ReturnType {
 
 **Cycle 1 - Generate Test:**
 
-```
 1. Read existing play functions in stories
 2. Generate new test following exact pattern
 3. Insert in story file
-```
 
 **Test Template:**
 
@@ -368,20 +284,16 @@ nx test-storybook ngx-foundation-sites --story="[StoryName]"
 
 **Cycle 1 - Find All:**
 
-```
 1. Grep in .ts files
 2. Grep in .html files
 3. Grep in .spec.ts and .stories.ts files
-```
 
 **Cycle 2 - Replace:**
 
-```
 1. Replace in implementation files first
 2. Replace in templates
 3. Replace in tests/stories
 4. Verify grep returns empty
-```
 
 **Cycle 3 - Verify:**
 
@@ -405,11 +317,9 @@ npm run build && npm run test && npm run lint
 
 **Cycle 1 - Update:**
 
-```
 1. Read existing doc structure
 2. Apply updates following style
 3. Verify markdown formatting
-```
 
 **Success Criteria:**
 
@@ -429,21 +339,18 @@ npm run build && npm run test && npm run lint
 
 **Cycle 1 - Plan:**
 
-```
 1. Analyze code to refactor
 2. List 3-5 specific steps
 3. Identify dependencies
-```
 
 **Cycles 2-N - Execute:**
 
-```
 For each step:
+
 1. Apply change
 2. Verify compilation immediately
 3. If fails: fix before continuing
 4. Proceed to next step
-```
 
 **Final Cycle - Full Verification:**
 
@@ -460,9 +367,9 @@ npm run build && npm run test && npm run lint
 
 ---
 
-### Phase 4: Progress Tracking
+### Phase 3: Progress Tracking
 
-#### Step 4.1: Report After Each Task
+#### Step 3.1: Report After Each Task
 
 ```markdown
 ✅ T001 complete (2 min, 3 iterations) - Fixed keyboard navigation
@@ -474,7 +381,7 @@ npm run build && npm run test && npm run lint
 🔧 Starting T002: Add down() method...
 ```
 
-#### Step 4.2: Update Task Files Immediately
+#### Step 3.2: Update Task Files Immediately
 
 **Mark in grok-suitable-tasks.md:**
 
@@ -490,7 +397,7 @@ npm run build && npm run test && npm run lint
 
 **Do not batch** - mark immediately after each task completes.
 
-#### Step 4.3: Track Iteration Metrics
+#### Step 3.3: Track Iteration Metrics
 
 | Task | Pattern    | Iterations | Time | Notes               |
 | ---- | ---------- | ---------- | ---- | ------------------- |
@@ -500,9 +407,9 @@ npm run build && npm run test && npm run lint
 
 ---
 
-### Phase 5: Post-Implementation Verification
+### Phase 4: Post-Implementation Verification
 
-#### Step 5.1: Full Verification Suite
+#### Step 4.1: Full Verification Suite
 
 ```bash
 # 1. TypeScript compilation
@@ -518,7 +425,7 @@ npm run test
 nx test-storybook ngx-foundation-sites
 ```
 
-#### Step 5.2: Handle Failures with Iteration
+#### Step 4.2: Handle Failures with Iteration
 
 **If any failures:**
 
@@ -529,9 +436,9 @@ nx test-storybook ngx-foundation-sites
 5. Repeat until passing
 6. Re-run full suite
 
-**Grok advantage**: Each iteration costs almost nothing (4x speed, 0x cost).
+**Grok advantage**: Each iteration costs almost nothing (4× speed, 0× cost).
 
-#### Step 5.3: Verify Task Completion
+#### Step 4.3: Verify Task Completion
 
 - [ ] All HIGH suitability tasks executed
 - [ ] All MEDIUM suitability tasks executed
@@ -542,15 +449,15 @@ nx test-storybook ngx-foundation-sites
 
 ---
 
-### Phase 6: Git Commit
+### Phase 5: Git Commit
 
-#### Step 6.1: Stage Changes
+#### Step 5.1: Stage Changes
 
 ```bash
 git add [all-changed-files]
 ```
 
-#### Step 6.2: Create Commit
+#### Step 5.2: Create Commit
 
 ```bash
 git commit -m "feat([component]): implement [X] Grok-optimized tasks
@@ -559,21 +466,17 @@ Implemented using Grok Code Fast 1 for agentic, iterative tasks:
 
 **Bug Fixes**: [Y] tasks
 - T001: Fix keyboard navigation
-- T002: Fix focus management
 
 **Method Additions**: [Z] tasks
 - T010: Add down() method
-- T011: Add up() method
-- T012: Add toggle() method
 
 **Test Additions**: [W] tasks
 - T020: Add keyboard test
-- T021: Add toggle test
 
 **Performance**:
 - Time: [X] minutes (4× faster)
 - Iterations: [Y] total (avg [Z] per task)
-- Cost: $0 (0x in GitHub Copilot)
+- Cost: $0 (0× in GitHub Copilot)
 - Quality: All tests passing
 
 Co-Authored-By: Grok Code Fast 1 <noreply@x.ai>"
@@ -581,7 +484,7 @@ Co-Authored-By: Grok Code Fast 1 <noreply@x.ai>"
 
 ---
 
-### Phase 7: Completion Report
+### Phase 6: Completion Report
 
 ```markdown
 🎉 Grok Implementation Complete!
@@ -597,7 +500,7 @@ Co-Authored-By: Grok Code Fast 1 <noreply@x.ai>"
 | ------------- | --------- | --------------- |
 | Time          | [X] min   | 4× faster       |
 | Iterations    | [Y] total | avg [Z]/task    |
-| Cost          | $0        | 0x (free!)      |
+| Cost          | $0        | 0× (free!)      |
 | Tests Passing | 100%      | No regressions  |
 
 ## Iteration Analysis
@@ -607,8 +510,6 @@ Co-Authored-By: Grok Code Fast 1 <noreply@x.ai>"
 | Bug Fix    | [X]   | 3         | 2 min    |
 | Add Method | [Y]   | 2         | 1 min    |
 | Add Test   | [Z]   | 2         | 1.5 min  |
-| Rename     | [W]   | 2         | 1 min    |
-| Refactor   | [V]   | 5         | 5 min    |
 
 ## Quality
 
@@ -623,11 +524,6 @@ Co-Authored-By: Grok Code Fast 1 <noreply@x.ai>"
 **Remaining (Sonnet recommended)**:
 
 - [x] LOW suitability tasks need Claude Sonnet 4.5
-
-**Verification**:
-
-- All changes committed: ✅
-- Branch ready for PR: ✅
 ```
 
 ---
@@ -697,7 +593,7 @@ Choice?
 **Expected Performance:**
 
 - **Speed**: 4× faster than other agentic models
-- **Cost**: $0 in GitHub Copilot (0x)
+- **Cost**: $0 in GitHub Copilot (0×)
 - **Quality**: 90%+ of Sonnet for suitable tasks
 - **Best for**: Bug fixes, scaffolding, test writing, iterative tasks
 

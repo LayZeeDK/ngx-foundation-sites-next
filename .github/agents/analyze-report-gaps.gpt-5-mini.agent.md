@@ -1,9 +1,6 @@
 ---
 description: Generate implementation gap analysis optimized for GPT-5 Mini's fast inference with minimal reasoning. Use for small-to-medium features (<200K tokens). For large features, use /analyze-report-gaps with GPT-4.1 (1M context).
-model_config:
-  reasoning_effort: minimal
-  verbosity: concise
-  max_tokens: 16000
+model: gpt-5-mini
 ---
 
 ## Model Configuration
@@ -49,7 +46,7 @@ Large feature: Same + 10+ implementation files = ~200K+ tokens ⚠️
 
 ```
 IF total_tokens < 180K:
-  USE /analyze-report-gaps-gpt-5-mini (this command) ✅ Fast + free
+  USE /analyze-report-gaps.gpt-5-mini (this command) ✅ Fast + free
 ELSE:
   USE /analyze-report-gaps with GPT-4.1 ⚠️ Slower but handles 1M
 ```
@@ -395,7 +392,7 @@ OUTPUT:
 "Switching to GPT-4.1 for 1M context support.
 
 Please run:
-  gh copilot -m \"gpt-4.1\" slash analyze-report-gaps <same-arguments>
+  copilot -m \"gpt-4.1\" slash analyze-report-gaps <same-arguments>
 
 This will handle ${Math.round(total_tokens_estimate / 1000)}K tokens safely with GPT-4.1's 1M context window."
 
@@ -428,7 +425,7 @@ OUTPUT:
 Feature size: ${Math.round(total_tokens_estimate / 1000)}K tokens (limit: 180K)
 
 Options to proceed:
-1. Use GPT-4.1: gh copilot -m \"gpt-4.1\" slash analyze-report-gaps-gpt-4-1 @files
+1. Use GPT-4.1: copilot -m \"gpt-4.1\" slash analyze-report-gaps.gpt-4-1 @files
 2. Reduce scope: Remove contracts or analyze fewer implementation files
 3. Split feature: Analyze components separately"
 
@@ -1045,7 +1042,7 @@ Output is successful when:
 **Input**:
 
 ```bash
-gh copilot -m "gpt-5-mini" slash analyze-report-gaps-gpt-5-mini @accordion.ts @accordion.html
+copilot -m "gpt-5-mini" slash analyze-report-gaps.gpt-5-mini @accordion.ts @accordion.html
 ```
 
 **Process** (internal, not shown to user):

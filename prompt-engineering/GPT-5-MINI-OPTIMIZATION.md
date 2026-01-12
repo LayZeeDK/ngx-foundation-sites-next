@@ -689,7 +689,7 @@ DO NOT write XML to the output file.
 
 ### Applied Optimizations
 
-Our implementation in `.github/agents/analyze-report-gaps-gpt-5-mini.agent.md` applies all 7 optimizations:
+Our implementation in `.github/agents/analyze-report-gaps.gpt-5-mini.agent.md` applies all 7 optimizations:
 
 #### 1. CTCO Framework ✅
 
@@ -767,7 +767,7 @@ STOP, prompt user to switch to GPT-4.1
 
 ### Applied Optimizations
 
-Our implementation in `.github/agents/tasks-gpt-5-mini.agent.md`:
+Our implementation in `.github/agents/tasks.gpt-5-mini.agent.md`:
 
 #### CTCO Framework ✅
 
@@ -985,10 +985,10 @@ Before deploying a GPT-5 Mini prompt:
 
 ```bash
 # Generate with Haiku 4.5 (baseline)
-gh copilot -m "haiku-4.5" slash tasks
+copilot -m "haiku-4.5" slash tasks
 
 # Generate with GPT-5 Mini (optimized)
-gh copilot -m "gpt-5-mini" slash tasks-gpt-5-mini
+copilot -m "gpt-5-mini" slash tasks-gpt-5-mini
 
 # Compare outputs
 diff tasks-haiku.md tasks-gpt5mini.md
@@ -1019,7 +1019,7 @@ diff tasks-haiku.md tasks-gpt5mini.md
 
 ### 1. Gap Analysis: `/analyze-report-gaps-gpt-5-mini`
 
-**Location**: `.github/agents/analyze-report-gaps-gpt-5-mini.agent.md`
+**Location**: `.github/agents/analyze-report-gaps.gpt-5-mini.agent.md`
 
 **Optimizations applied**:
 
@@ -1039,7 +1039,7 @@ diff tasks-haiku.md tasks-gpt5mini.md
 
 ### 2. Task Generation: `/tasks-gpt-5-mini`
 
-**Location**: `.github/agents/tasks-gpt-5-mini.agent.md`
+**Location**: `.github/agents/tasks.gpt-5-mini.agent.md`
 
 **Optimizations applied**:
 

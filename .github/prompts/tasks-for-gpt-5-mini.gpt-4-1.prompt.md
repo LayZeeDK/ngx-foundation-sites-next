@@ -1,11 +1,13 @@
 ---
 description: Analyze large task lists for GPT-5 Mini suitability using GPT-4.1's 1M context. Handles features >180K tokens with sandwich method optimization.
+agent: tasks-for-gpt-5-mini.gpt-4-1
+model: gpt-4.1
 ---
 
 ## Model Configuration
 
 **Optimized for**: GPT-4.1 (1M context, non-reasoning, 0× cost)
-**Invoke with**: `gh copilot -m "gpt-4.1" slash tasks-for-gpt-5-mini-gpt-4-1`
+**Invoke with**: `copilot -m "gpt-4.1" slash tasks-for-gpt-5-mini-gpt-4-1`
 
 **Why GPT-4.1**: Large features (>180K tokens) that exceed GPT-5 Mini's 200K context limit
 **Expected Performance**: 30-60 seconds, zero cost, richer analysis with code context
@@ -13,8 +15,6 @@ description: Analyze large task lists for GPT-5 Mini suitability using GPT-4.1's
 ---
 
 ## GPT-4.1 Optimization Strategy
-
-<optimization_context>
 
 This command uses GPT-4.1's 1M context for large-scale task classification.
 
@@ -35,8 +35,6 @@ This command uses GPT-4.1's 1M context for large-scale task classification.
 5. **Validation Checklists** - Self-correction before output
 
 **Source**: [GPT-4.1 Prompting Guide | OpenAI Cookbook](https://cookbook.openai.com/examples/gpt4-1_prompting_guide)
-
-</optimization_context>
 
 ---
 
@@ -73,7 +71,7 @@ Create artifacts:
 - gpt5mini-implementation-context.md (focused context)
 - gpt5mini-task-analysis.md (detailed scoring report)
 
-### Execution Checklist (6 Steps)
+### Execution Checklist (7 Steps)
 
 ```
 □ Step 0: Initialize (load tasks.md + optional context)
@@ -436,7 +434,7 @@ OUTPUT: """
 **Context Used**: [total_tokens]K / 1000K tokens
 
 **Next Step**:
-gh copilot -m "gpt-5-mini" slash implement-tasks-for-gpt-5-mini
+copilot -m "gpt-5-mini" slash implement-tasks-for-gpt-5-mini
 """
 ```
 
@@ -612,37 +610,6 @@ IF validation_failed:
 - Instructions at both ends ensure accessibility
 - End instructions provide final execution reminder
 - Critical for reliability with large contexts
-
-### Literal Instruction Following
-
-**Research Finding**:
-
-> "GPT-4.1 won't follow implicit rules anymore—it does exactly what you tell it to do, no more, no less."
-
-**Source**: [PromptHub GPT-4.1 Guide](https://www.prompthub.us/blog/the-complete-guide-to-gpt-4-1-models-performance-pricing-and-prompting-tips)
-
-**Implementation**:
-
-- All instructions are explicit (no inference)
-- "Write complete file" not "write file"
-- "Use Write tool" not "create output"
-- Repeated constraints at beginning and end
-
----
-
-## Success Criteria
-
-Classification is successful when:
-
-✅ All 7 steps executed in order
-✅ All tasks scored on 4 dimensions
-✅ All scores calculated arithmetically
-✅ All patterns detected by keywords
-✅ Three COMPLETE files written (not summaries)
-✅ File validation passed (exists + size > 1000 bytes)
-✅ Completion summary provided
-✅ Context used <1M tokens
-✅ Zero cost (GPT-4.1)
 
 ---
 

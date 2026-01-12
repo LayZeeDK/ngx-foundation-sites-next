@@ -1,15 +1,8 @@
 ---
 description: Generate actionable, dependency-ordered tasks.md from plan.md. Optimized for GPT-5 Mini's fast inference with structured prompts and minimal reasoning effort.
-model_config:
-  reasoning_effort: minimal
-  verbosity: concise
+agent: tasks.gpt-5-mini
+model: gpt-5-mini
 ---
-
-## Model Configuration
-
-**Optimized for**: GPT-5 Mini (0x cost, fast inference)
-**reasoning_effort**: `minimal` (pattern-based task generation, no deep reasoning)
-**verbosity**: `concise` (structured output only, no prose)
 
 ## User Input
 
@@ -19,15 +12,15 @@ $ARGUMENTS
 
 You **MUST** consider the user input before proceeding (if not empty).
 
-## GPT-5 Mini Optimization Strategy
+---
 
-This agent is optimized for GPT-5 Mini using 2026 best practices:
+## Model Configuration
 
-1. **Structured CTCO Framework**: Context → Task → Constraints → Output
-2. **Explicit format specifications**: No ambiguity in output format
-3. **Minimal reasoning effort**: Task generation is mechanical pattern-based work
-4. **Verbosity controls**: Output only required task list, no explanations
-5. **XML scaffolding**: Structured state for predictable parsing
+**Optimized for**: GPT-5 Mini (0x cost, fast inference)
+**reasoning_effort**: `minimal` (pattern-based task generation, no deep reasoning)
+**verbosity**: `concise` (structured output only, no prose)
+
+---
 
 ## Path Grounding (CRITICAL)
 
@@ -35,6 +28,8 @@ This agent is optimized for GPT-5 Mini using 2026 best practices:
 - Treat paths emitted by `.specify` PowerShell scripts as **only source of truth**
 - If a required path is missing/unclear, STOP and re-run prerequisite script
 - For single quotes in args like "I'm Groot", use: `'I'\''m Groot'` or `"I'm Groot"`
+
+---
 
 ## Context (CTCO Step 1)
 
@@ -48,6 +43,8 @@ This agent is optimized for GPT-5 Mini using 2026 best practices:
 **Current state**: Plan approved, tasks not yet generated
 
 **Your role**: Mechanical task generator (pattern-based, no creative decisions)
+
+---
 
 ## Task (CTCO Step 2)
 
@@ -97,6 +94,8 @@ ORDER tasks within each phase:
   4. Tests (after implementation)
   5. Documentation (last)
 ```
+
+---
 
 ## Constraints (CTCO Step 3)
 
@@ -156,6 +155,8 @@ ORDER tasks within each phase:
 - Same file edits
 - Parent → child relationship
 - State depends on previous task
+
+---
 
 ## Output (CTCO Step 4)
 
@@ -236,6 +237,8 @@ Before returning output, verify:
   <check>✓ Summary counts are accurate</check>
 </validation_checklist>
 ```
+
+---
 
 ## Execution Steps (Mechanical Procedure)
 
@@ -330,6 +333,8 @@ WRITE output to FEATURE_DIR/tasks.md
 TELL user: "✅ tasks.md generated with [N] tasks across [M] phases"
 ```
 
+---
+
 ## Example Transformation
 
 **Input (plan.md)**:
@@ -372,6 +377,8 @@ TELL user: "✅ tasks.md generated with [N] tasks across [M] phases"
 **Checkpoint**: Feature functional - tests passing
 ```
 
+---
+
 ## GPT-5 Mini Specific Optimizations
 
 ### 1. No Deep Reasoning
@@ -398,6 +405,8 @@ TELL user: "✅ tasks.md generated with [N] tasks across [M] phases"
 
 **Why**: Prevent hallucinations on mechanical tasks
 **Implementation**: 8-point validation checklist before output
+
+---
 
 ## Error Handling
 
@@ -430,6 +439,8 @@ RE-RUN validation
 CONTINUE only when all checks pass
 ```
 
+---
+
 ## Success Criteria
 
 Output is successful when:
@@ -442,6 +453,8 @@ Output is successful when:
 ✅ Summary counts match actual tasks
 ✅ Output validates against checklist
 ✅ No ambiguous descriptions
+
+---
 
 ## Optimization Trade-offs
 
@@ -461,11 +474,13 @@ Output is successful when:
 - Plan.md is well-structured with clear actions
 - Tasks are mechanical transformations
 
-**When to use Haiku 4.5** (standard /speckit.tasks):
+**When to use Haiku 4.5** (standard /tasks-haiku-4-5):
 
 - Quality is more important than cost
 - Plan.md has ambiguous descriptions
 - Need better dependency detection
+
+---
 
 ## Context
 

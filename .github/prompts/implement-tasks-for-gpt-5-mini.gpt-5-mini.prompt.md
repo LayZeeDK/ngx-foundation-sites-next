@@ -1,24 +1,8 @@
 ---
 description: Execute GPT-5 Mini-suitable tasks with CTCO framework optimizations. Zero-cost implementation for mechanical, pattern-based tasks.
+agent: implement-tasks-for-gpt-5-mini.gpt-5-mini
+model: gpt-5-mini
 ---
-
-## Model Selection
-
-**Preferred Model**: GPT-5 Mini (`gpt-5-mini`)
-**Invoke with**: `gh copilot -m "gpt-5-mini" slash implement-tasks-for-gpt-5-mini`
-
-**Optimization Strategy**: CTCO framework, mechanical procedures, explicit formats, minimal reasoning
-**Expected Performance**: 2-3× faster than Sonnet, zero cost (0×)
-
----
-
-## Model Configuration
-
-**Model**: GPT-5 Mini
-**Context**: 200K tokens
-**Reasoning**: Minimal (pattern matching, no deep reasoning)
-**Cost**: 0× (free in GitHub Copilot)
-**Optimization**: CTCO framework, mechanical procedures, validation checklists
 
 ## User Input
 
@@ -27,39 +11,6 @@ $ARGUMENTS
 ```
 
 You **MUST** consider the user input before proceeding (if not empty).
-
----
-
-## GPT-5 Mini Optimization Strategy
-
-<optimization_context>
-
-This agent is optimized for GPT-5 Mini using 2026 best practices:
-
-1. **CTCO Framework**: Every task structured as Context → Task → Constraints → Output
-2. **Mechanical Procedures**: No "intelligently" or "determine"—only explicit FOR EACH loops
-3. **Verbosity Controls**: Output only required information, no explanatory prose
-4. **Explicit Formats**: Exact templates, word limits, validation criteria
-5. **Validation Checklists**: Self-correction before proceeding
-6. **Error Conditions**: Explicit IF-THEN with STOP/EXIT
-7. **Pattern-Based Execution**: Copy existing code, don't invent
-
-**GPT-5 Mini Can Do**:
-
-- ✅ Find-replace operations
-- ✅ Copy method patterns
-- ✅ Follow exact templates
-- ✅ Mechanical transformations
-- ✅ Simple conditional checks
-
-**GPT-5 Mini Cannot Do**:
-
-- ❌ Architectural decisions
-- ❌ Creative problem-solving
-- ❌ Implicit dependency resolution
-- ❌ Multi-file coordination requiring reasoning
-
-</optimization_context>
 
 ---
 
@@ -104,28 +55,17 @@ pwsh ./.specify/scripts/powershell/check-prerequisites.ps1 -Json -RequireTasks -
 
 **Load required files**:
 
-1. **gpt5mini-suitable-tasks.md** (REQUIRED):
-   - Task list filtered for GPT-5 Mini
-   - CTCO templates for each task
-   - Suitability scores
-
-2. **gpt5mini-implementation-context.md** (REQUIRED):
-   - Code patterns (exact templates)
-   - File paths (complete list)
-   - Success criteria (verification checklist)
-
-3. **spec.md** (OPTIONAL):
-   - Load ONLY if context file explicitly references it
-
-4. **plan.md** (OPTIONAL):
-   - Load ONLY if needed for file structure navigation
+1. **gpt5mini-suitable-tasks.md** (REQUIRED): Task list filtered for GPT-5 Mini, CTCO templates, suitability scores
+2. **gpt5mini-implementation-context.md** (REQUIRED): Code patterns (exact templates), file paths, success criteria
+3. **spec.md** (OPTIONAL): Load ONLY if context file explicitly references it
+4. **plan.md** (OPTIONAL): Load ONLY if needed for file structure navigation
 
 **Error Condition**:
 
 ```
 IF gpt5mini-suitable-tasks.md NOT FOUND:
   STOP execution
-  OUTPUT: "❌ Error: gpt5mini-suitable-tasks.md not found\n\nRun: gh copilot -m \"claude-sonnet-4.5\" slash tasks-for-gpt-5-mini\n\nThis will identify tasks suitable for GPT-5 Mini."
+  OUTPUT: "❌ Error: gpt5mini-suitable-tasks.md not found\n\nRun: copilot -m \"claude-sonnet-4.5\" slash tasks-for-gpt-5-mini"
   EXIT
 ```
 
@@ -174,7 +114,7 @@ FOR EACH task in gpt5mini-suitable-tasks.md:
 ```
 IF low_count > 0:
   STOP execution
-  OUTPUT: "⚠️ Warning: Found [low_count] LOW suitability tasks\n\nThese tasks require reasoning (not suitable for GPT-5 Mini):\n[list task IDs]\n\nRemove these tasks or use Sonnet 4.5 instead."
+  OUTPUT: "⚠️ Warning: Found [low_count] LOW suitability tasks\n\nThese tasks require reasoning (not suitable for GPT-5 Mini)"
   WAIT for user to confirm removal or cancel
 ```
 
@@ -189,33 +129,7 @@ IF low_count > 0:
 **Constraints**: Use provided time estimates, order by dependencies
 **Output**: Execution plan with time breakdown and order
 
-#### Calculate Estimates
-
-```
-total_time = 0
-pattern_counts = {}
-
-FOR EACH task in gpt5mini-suitable-tasks.md:
-  total_time += task.estimated_time
-  pattern = extract_pattern(task.description)
-  pattern_counts[pattern] = pattern_counts.get(pattern, 0) + 1
-```
-
-#### Generate Execution Order
-
-```
-execution_order = []
-
-FOR EACH phase in gpt5mini-suitable-tasks.md:
-  FOR EACH task in phase.tasks:
-    IF task.marker == "[P]":
-      task.can_parallel = true
-    ELSE:
-      task.can_parallel = false
-    execution_order.append(task)
-```
-
-**Output Plan**:
+#### Generate Plan
 
 ```markdown
 ## Execution Plan
@@ -266,16 +180,12 @@ FOR EACH task in execution_order:
 
 #### Pattern A: Find-Replace Operation
 
-**CTCO Template** (from gpt5mini-implementation-context.md):
+**CTCO Template**:
 
 **Context**: Files [file_list] need renaming from [old_string] to [new_string]
 **Task**: Execute find-replace with exact string matching
-**Constraints**:
-
-- Preserve case sensitivity
-- Only exact matches (not partial strings)
-- Update imports/exports if needed
-  **Output**: Updated files with all occurrences replaced
+**Constraints**: Preserve case sensitivity, only exact matches, update imports/exports if needed
+**Output**: Updated files with all occurrences replaced
 
 **Mechanical Procedure**:
 
@@ -289,16 +199,10 @@ FOR EACH file in file_list:
   occurrence_count = count_exact_matches(file_content, old_string)
 
   IF occurrence_count == 0:
-    OUTPUT: "⚠️ Warning: No occurrences of '[old_string]' found in [file]"
+    OUTPUT: "⚠️ Warning: No occurrences found in [file]"
     CONTINUE to next file
 
-  Edit(
-    file_path: file,
-    old_string: old_string,
-    new_string: new_string,
-    replace_all: true
-  )
-
+  Edit(file_path: file, old_string: old_string, new_string: new_string, replace_all: true)
   OUTPUT: "✅ Replaced [occurrence_count] occurrences in [file]"
 ```
 
@@ -318,29 +222,16 @@ FOR EACH file in file_list:
 npx tsc --noEmit --project packages/ngx-foundation-sites/tsconfig.lib.json
 ```
 
-**If verification fails**:
-
-```
-STOP execution
-OUTPUT: "❌ TypeScript compilation failed after find-replace\n\nFile: [file]\nError: [error_message]\n\nRevert changes and investigate."
-EXIT
-```
-
 ---
 
 #### Pattern B: Add Method with Template
 
-**CTCO Template** (from gpt5mini-implementation-context.md):
+**CTCO Template**:
 
 **Context**: File [file] has method [existing_method] at line [line] as pattern
 **Task**: Create method [new_method] following same pattern
-**Constraints**:
-
-- Same signature structure (params, return type)
-- Same JSDoc format
-- Similar implementation (adapt behavior)
-- Insert at line [target_line]
-  **Output**: File with new method added
+**Constraints**: Same signature structure, same JSDoc format, similar implementation
+**Output**: File with new method added
 
 **Mechanical Procedure**:
 
@@ -348,34 +239,23 @@ EXIT
 file = extract_file(task.description)
 existing_method = extract_existing_method(task.description)
 new_method = extract_new_method(task.description)
-target_line = extract_target_line(task.description)
 
 # Step 1: Load file
 Read(file)
 
-# Step 2: Find existing method (exact line reference)
-existing_method_start = find_line(file_content, target_line - 10)
-existing_method_code = extract_method_at_line(file_content, existing_method, target_line - 10)
+# Step 2: Find existing method pattern
+existing_method_code = extract_method_by_name(file_content, existing_method)
 
-# Step 3: Copy pattern
-new_method_code = existing_method_code
-# Replace method name
-new_method_code = replace(new_method_code, existing_method, new_method)
-# Adapt behavior (as specified in task)
-behavior_change = extract_behavior_change(task.description)
-new_method_code = apply_behavior_change(new_method_code, behavior_change)
+# Step 3: Copy pattern, replace method name
+new_method_code = copy_and_adapt(existing_method_code, new_method)
 
 # Step 4: Find insertion point
-insertion_context = extract_context_around_line(file_content, target_line)
+insertion_context = find_insertion_point(file_content)
 
 # Step 5: Insert using Edit
-Edit(
-  file_path: file,
-  old_string: insertion_context,
-  new_string: insertion_context + "\n\n" + new_method_code
-)
+Edit(file_path: file, old_string: insertion_context, new_string: insertion_context + "\n\n" + new_method_code)
 
-OUTPUT: "✅ Added [new_method]() at line [target_line]"
+OUTPUT: "✅ Added [new_method]()"
 ```
 
 **Verification Checklist**:
@@ -388,27 +268,16 @@ OUTPUT: "✅ Added [new_method]() at line [target_line]"
 □ Method exported if needed?
 ```
 
-**Verification Command**:
-
-```bash
-npx tsc --noEmit --project packages/ngx-foundation-sites/tsconfig.lib.json
-```
-
 ---
 
 #### Pattern C: Add Test
 
-**CTCO Template** (from gpt5mini-implementation-context.md):
+**CTCO Template**:
 
 **Context**: Test file [file] has existing test pattern
 **Task**: Add test for [functionality] following pattern
-**Constraints**:
-
-- Follow existing play function structure
-- Use userEvent for interactions
-- Use expect() for assertions
-- Test must pass
-  **Output**: Updated test file with new test case
+**Constraints**: Follow existing play function structure, use userEvent, use expect()
+**Output**: Updated test file with new test case
 
 **Mechanical Procedure**:
 
@@ -424,23 +293,13 @@ Read(test_file)
 existing_test_code = extract_test_by_name(file_content, existing_test)
 
 # Step 3: Copy test structure
-new_test_code = existing_test_code
-# Replace test name
-new_test_name = generate_test_name(functionality)
-new_test_code = replace(new_test_code, existing_test, new_test_name)
-# Replace test actions (from task description)
-test_actions = extract_test_actions(task.description)
-new_test_code = replace_test_actions(new_test_code, test_actions)
+new_test_code = copy_and_adapt(existing_test_code, functionality)
 
-# Step 4: Find insertion point (after existing test)
+# Step 4: Find insertion point
 insertion_point = find_test_insertion_point(file_content, existing_test)
 
 # Step 5: Insert using Edit
-Edit(
-  file_path: test_file,
-  old_string: insertion_point,
-  new_string: insertion_point + "\n\n" + new_test_code
-)
+Edit(file_path: test_file, old_string: insertion_point, new_string: insertion_point + "\n\n" + new_test_code)
 
 OUTPUT: "✅ Added test: [new_test_name]"
 ```
@@ -465,17 +324,12 @@ npx nx test-storybook ngx-foundation-sites
 
 #### Pattern D: Update Documentation
 
-**CTCO Template** (from gpt5mini-implementation-context.md):
+**CTCO Template**:
 
 **Context**: Documentation file [file] needs update in section [section]
 **Task**: Add content [content] following format
-**Constraints**:
-
-- Follow existing markdown structure
-- Use same heading levels
-- Include code examples with correct syntax
-- Update table of contents if exists
-  **Output**: Updated documentation file
+**Constraints**: Follow existing markdown structure, use same heading levels
+**Output**: Updated documentation file
 
 **Mechanical Procedure**:
 
@@ -494,15 +348,10 @@ section_line = find_heading(file_content, section)
 insertion_point = find_section_end(file_content, section_line)
 
 # Step 4: Format content (preserve existing format)
-existing_format = extract_format(file_content, section)
 formatted_content = apply_format(content, existing_format)
 
 # Step 5: Insert using Edit
-Edit(
-  file_path: doc_file,
-  old_string: insertion_point,
-  new_string: insertion_point + "\n\n" + formatted_content
-)
+Edit(file_path: doc_file, old_string: insertion_point, new_string: insertion_point + "\n\n" + formatted_content)
 
 OUTPUT: "✅ Updated [section] in [doc_file]"
 ```
@@ -514,14 +363,6 @@ OUTPUT: "✅ Updated [section] in [doc_file]"
 □ Markdown formatting correct?
 □ Code examples have syntax highlighting?
 □ Table of contents updated (if exists)?
-□ Links are valid?
-```
-
-**Verification Command**:
-
-```bash
-# Check markdown formatting
-npx markdownlint [doc_file]
 ```
 
 ---
@@ -554,20 +395,11 @@ npm run build
 **Verification Tracking**:
 
 ```
-verification_results = {
-  "typescript": false,
-  "tests": false,
-  "lint": false,
-  "build": false
-}
-
 FOR EACH verification_step:
   result = run_command(verification_step)
-  verification_results[step_name] = result.success
-
   IF NOT result.success:
     STOP execution
-    OUTPUT: "❌ Verification failed: [step_name]\n\nError: [result.error]\n\nReview changes and fix issues."
+    OUTPUT: "❌ Verification failed: [step_name]\n\nError: [result.error]"
     EXIT
 ```
 
@@ -597,12 +429,7 @@ All tasks implemented successfully with zero failures.
 
 #### Generate Summary
 
-```
-completed_tasks = count_completed_tasks()
-total_time = calculate_total_time()
-patterns_used = count_patterns_used()
-
-OUTPUT: """
+```markdown
 ## Implementation Complete ✅
 
 **Tasks Executed**: [completed_tasks]
@@ -611,22 +438,24 @@ OUTPUT: """
 **Quality**: 100% (all verifications passed)
 
 **Pattern Distribution**:
+
 - Find-Replace: [count]
 - Add Method: [count]
 - Add Test: [count]
 - Update Docs: [count]
 
 **Verification Results**:
+
 - ✅ TypeScript compilation
 - ✅ All tests passing
 - ✅ Linting clean
 - ✅ Build successful
 
 **Next Steps**:
+
 1. Review changes manually (optional)
 2. Create git commit
 3. Run full CI pipeline
-"""
 ```
 
 ---
@@ -638,7 +467,7 @@ OUTPUT: """
 ```
 IF task.description does NOT contain explicit file path:
   STOP execution
-  OUTPUT: "❌ Error: Task [task_id] has ambiguous description\n\nDescription: [task.description]\n\nMissing: Explicit file path\n\nFix: Update gpt5mini-suitable-tasks.md with exact file path"
+  OUTPUT: "❌ Error: Task [task_id] has ambiguous description\n\nMissing: Explicit file path"
   EXIT
 ```
 
@@ -647,7 +476,7 @@ IF task.description does NOT contain explicit file path:
 ```
 IF task.pattern NOT IN gpt5mini-implementation-context.md:
   STOP execution
-  OUTPUT: "❌ Error: Pattern template '[task.pattern]' not found\n\nTask: [task_id]\nPattern: [task.pattern]\n\nFix: Add pattern template to gpt5mini-implementation-context.md"
+  OUTPUT: "❌ Error: Pattern template '[task.pattern]' not found"
   EXIT
 ```
 
@@ -656,52 +485,9 @@ IF task.pattern NOT IN gpt5mini-implementation-context.md:
 ```
 IF verification_command fails:
   STOP execution
-  OUTPUT: "❌ Verification failed: [command]\n\nTask: [task_id]\nError: [error_message]\n\nAction: Revert changes and investigate\n\nCommand to revert: git checkout [files]"
+  OUTPUT: "❌ Verification failed: [command]\n\nAction: Revert changes and investigate"
   EXIT
 ```
-
-### Error Condition 4: File Not Found
-
-```
-IF file_to_edit NOT FOUND:
-  STOP execution
-  OUTPUT: "❌ Error: File not found: [file_path]\n\nTask: [task_id]\n\nCheck: File path is correct in gpt5mini-suitable-tasks.md"
-  EXIT
-```
-
----
-
-## Optimization Notes
-
-### GPT-5 Mini-Specific Optimizations Applied
-
-1. **CTCO Framework** ✅
-   - Every task structured as Context → Task → Constraints → Output
-   - No ambiguous instructions
-
-2. **Mechanical Procedures** ✅
-   - All logic is FOR EACH loops or IF-THEN conditions
-   - No "intelligently" or "determine" instructions
-
-3. **Verbosity Controls** ✅
-   - Output only required information (no prose)
-   - Status updates are concise
-
-4. **Explicit Formats** ✅
-   - Exact templates provided in context file
-   - All patterns have step-by-step instructions
-
-5. **Validation Checklists** ✅
-   - Every pattern has verification checklist
-   - Self-correction before proceeding
-
-6. **Error Conditions** ✅
-   - All errors have explicit IF-THEN with STOP/EXIT
-   - Clear error messages with actions
-
-7. **Pattern-Based Execution** ✅
-   - No creative decisions
-   - Copy existing code patterns exactly
 
 ---
 
@@ -717,7 +503,6 @@ Implementation is successful when:
 ✅ Build successful
 ✅ No LOW suitability tasks attempted
 ✅ All changes verified
-✅ Execution time within estimates
 ✅ Zero cost (GPT-5 Mini)
 
 ---
@@ -725,7 +510,6 @@ Implementation is successful when:
 ## Related Commands
 
 - `/tasks-for-gpt-5-mini` - Identify GPT-5 Mini-suitable tasks (run before this command)
-- `/speckit.implement` - Standard implementation (alternative for complex tasks)
 - `/implement-tasks-for-haiku-4-5` - Alternative: Haiku 4.5 implementation (0.33× cost)
 
 ---

@@ -11,7 +11,7 @@ Systematically executes gap fixes from REMEDIATION_CHECKLIST.md.
 
 ```bash
 # In GitHub Copilot CLI
-gh copilot slash implement-gap-remediations
+copilot slash implement-reported-gaps
 ```
 
 ## What It Does

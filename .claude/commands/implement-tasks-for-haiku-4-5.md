@@ -939,7 +939,7 @@ npm run test -- [component-name]
 
 - `/tasks-for-haiku-4-5` - Identifies Haiku-suitable tasks (run BEFORE this command)
 - `/speckit.implement` - Full implementation command (Sonnet-based, for complex tasks)
-- `/implement-gap-remediations` - Specialized gap remediation (Sonnet-based)
+- `/implement-reported-gaps` - Specialized gap remediation (Sonnet-based)
 
 ---
 

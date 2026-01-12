@@ -342,7 +342,7 @@ Run implementation command:
 /implement-tasks-for-gpt-5-mini
 
 # GitHub Copilot
-gh copilot -m "gpt-5-mini" slash implement-tasks-for-gpt-5-mini
+copilot -m "gpt-5-mini" slash implement-tasks-for-gpt-5-mini
 ```
 ````
 

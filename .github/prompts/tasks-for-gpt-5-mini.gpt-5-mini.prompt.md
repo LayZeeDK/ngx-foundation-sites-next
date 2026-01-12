@@ -1,8 +1,7 @@
 ---
 description: Analyze tasks.md and identify tasks suitable for GPT-5 Mini implementation using GPT-5 Mini's minimal reasoning. Zero-cost classification with mechanical scoring.
-model_config:
-  reasoning_effort: minimal
-  verbosity: concise
+agent: tasks-for-gpt-5-mini.gpt-5-mini
+model: gpt-5-mini
 ---
 
 ## Model Configuration
@@ -11,33 +10,7 @@ model_config:
 **reasoning_effort**: `minimal` (pattern matching, arithmetic scoring, no deep reasoning)
 **verbosity**: `concise` (structured output only, no prose)
 
-**Invoke with**: `gh copilot -m "gpt-5-mini" slash tasks-for-gpt-5-mini-gpt-5-mini`
-
----
-
-## GPT-5 Mini Self-Classification Strategy
-
-<meta_optimization>
-
-This command uses GPT-5 Mini to classify tasks for GPT-5 Mini execution.
-
-**Why This Works**:
-
-- Classification is **mechanical** (arithmetic + IF-THEN logic)
-- No creative decisions needed (keyword matching)
-- Pattern detection is rule-based (not inference)
-- Scoring is arithmetic (count features, calculate percentage)
-
-**Optimizations Applied**:
-
-1. **CTCO Framework**: Every step structured as Context→Task→Constraints→Output
-2. **Arithmetic Scoring**: All scores calculated with explicit rules
-3. **Keyword Matching**: Pattern detection uses exact keyword lists
-4. **Mechanical Procedures**: FOR EACH loops, no "intelligently" or "determine"
-5. **Validation Checklists**: Self-correction before output
-6. **Explicit Errors**: All failures have IF-THEN with STOP/EXIT
-
-</meta_optimization>
+**Invoke with**: `copilot -m "gpt-5-mini" slash tasks-for-gpt-5-mini-gpt-5-mini`
 
 ---
 
@@ -273,7 +246,7 @@ IF estimated_tokens > 180000:
 
 **Recommended**: Use GPT-4.1 (1M context) instead:
 
-  gh copilot -m "gpt-4.1" slash tasks-for-gpt-5-mini-gpt-4-1
+  copilot -m "gpt-4.1" slash tasks-for-gpt-5-mini-gpt-4-1
 
 **Options**:
 1. Switch to GPT-4.1 (Recommended) - 1M context, same 0× cost
@@ -285,7 +258,7 @@ IF estimated_tokens > 180000:
   WAIT for user to choose option 1, 2, or 3
 
   IF user chooses option 1:
-    EXIT with message: "Run: gh copilot -m \"gpt-4.1\" slash tasks-for-gpt-5-mini-gpt-4-1"
+    EXIT with message: "Run: copilot -m \"gpt-4.1\" slash tasks-for-gpt-5-mini-gpt-4-1"
   ELSE IF user chooses option 3:
     EXIT with message: "Reduce tasks.md, spec.md, or plan.md size, then retry"
   # If option 2, continue to Step 0
@@ -294,42 +267,6 @@ ELSE:
   OUTPUT: "✅ Context size check: ~[estimated_k]K tokens (within 180K threshold)"
   CONTINUE to Step 0
 ```
-
-#### File Size Examples
-
-**Small feature** (~30K tokens):
-
-- tasks.md: 100 lines × 15 = 1.5K tokens
-- spec.md: 200 lines × 20 = 4K tokens
-- plan.md: 150 lines × 20 = 3K tokens
-- Buffer: 20K tokens
-- **Total**: ~28.5K ✅ SAFE
-
-**Medium feature** (~120K tokens):
-
-- tasks.md: 500 lines × 15 = 7.5K tokens
-- spec.md: 800 lines × 20 = 16K tokens
-- plan.md: 600 lines × 20 = 12K tokens
-- Buffer: 20K tokens
-- **Total**: ~55.5K ✅ SAFE
-
-**Large feature** (~250K tokens):
-
-- tasks.md: 1500 lines × 15 = 22.5K tokens
-- spec.md: 2000 lines × 20 = 40K tokens
-- plan.md: 1200 lines × 20 = 24K tokens
-- Buffer: 20K tokens
-- **Total**: ~106.5K ✅ SAFE
-
-**Very large feature** (~400K tokens):
-
-- tasks.md: 3000 lines × 15 = 45K tokens
-- spec.md: 3500 lines × 20 = 70K tokens
-- plan.md: 2500 lines × 20 = 50K tokens
-- Buffer: 20K tokens
-- **Total**: ~185K ⚠️ **EXCEEDS THRESHOLD → Use GPT-4.1**
-
----
 
 ### Step 0: Initialize
 
@@ -374,8 +311,6 @@ IF TASKS_FILE NOT FOUND:
   EXIT
 ```
 
----
-
 ### Step 1: Parse Tasks
 
 **CTCO for Parsing**:
@@ -411,8 +346,6 @@ IF task_list is empty:
   OUTPUT: "❌ Error: No tasks found in tasks.md"
   EXIT
 ```
-
----
 
 ### Step 2: Score All Tasks (Mechanical)
 
@@ -490,8 +423,6 @@ FOR EACH task in task_list:
   task.pattern = detect_pattern(task.description)
 ```
 
----
-
 ### Step 3: Generate CTCO Templates
 
 **CTCO for Template Generation**:
@@ -525,8 +456,6 @@ ELSE IF task.pattern == "Add Method":
 
 [Similar rules for other patterns...]
 ```
-
----
 
 ### Step 4: Generate Output Files
 
@@ -715,8 +644,6 @@ All scores calculated mechanically:
 Write(output_file_3, content)
 ```
 
----
-
 ### Step 5: Validation
 
 **CTCO for Validation**:
@@ -747,8 +674,6 @@ ELSE:
   EXIT
 ```
 
----
-
 ### Step 6: Report Completion
 
 **CTCO for Completion**:
@@ -776,7 +701,7 @@ OUTPUT: """
 **Cost Savings**: $0 for [high_count] HIGH tasks
 
 **Next Step**:
-gh copilot -m "gpt-5-mini" slash implement-tasks-for-gpt-5-mini
+copilot -m "gpt-5-mini" slash implement-tasks-for-gpt-5-mini
 """
 ```
 
@@ -839,8 +764,6 @@ ELSE IF contains_any(desc_lower, ["add test", "test that"]):
 ELSE IF contains_any(desc_lower, ["update docs", "document"]):
   RETURN "Update Docs"
 ELSE IF contains_any(desc_lower, ["add check", "validate"]):
-  RETURN "Conditional Logic"
-ELSE IF contains_any(desc_lower, ["refactor", "extract", "reorganize"]):
   RETURN "Refactor"
 ELSE IF contains_any(desc_lower, ["design", "choose", "decide"]):
   RETURN "Architecture"
@@ -906,28 +829,6 @@ IF task.id == "UNKNOWN":
 
 ### GPT-5 Mini Self-Classification
 
-**Why GPT-5 Mini Can Do This**:
-
-1. **Arithmetic Scoring** ✅
-   - All scores are addition: `score = 0; IF condition: score += N`
-   - No subjective judgment required
-
-2. **Keyword Matching** ✅
-   - Pattern detection uses exact keyword lists
-   - Simple string matching (no inference)
-
-3. **Mechanical Procedures** ✅
-   - All logic is FOR EACH loops
-   - All decisions are IF-THEN conditions
-
-4. **CTCO Framework** ✅
-   - Every step has explicit structure
-   - No ambiguous instructions
-
-5. **Validation Checklists** ✅
-   - Self-correction uses mechanical checks
-   - All validations are boolean conditions
-
 **Cost**: $0 (GPT-5 Mini is free in GitHub Copilot)
 **Speed**: 2-3× faster than Sonnet 4.5
 **Quality**: 85-90% accuracy on mechanical classification
@@ -974,6 +875,7 @@ Classification is successful when:
 
 - `/speckit.tasks` or `/tasks-gpt-5-mini` - Generate tasks.md (run before this)
 - `/tasks-for-gpt-5-mini` - Alternative: Sonnet 4.5 classification (1× cost, 95%+ quality)
+- `/tasks-for-gpt-5-mini-gpt-4-1` - Alternative: GPT-4.1 for large features (>180K tokens)
 - `/implement-tasks-for-gpt-5-mini` - Execute GPT-5 Mini-suitable tasks (run after this)
 
 ---
