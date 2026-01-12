@@ -134,10 +134,10 @@
 
 ## Phase 4: US2 Keyboard - HIGH Tasks (6/14)
 
-- [ ] T032 [P] [US2] [Pattern: Test Writing] Add KeyboardNavigation story to accordion.stories.ts
+- [x] T032 [P] [US2] [Pattern: Test Writing] Add KeyboardNavigation story to accordion.stories.ts
   - **Score**: 95% | **Time**: 5 min
 
-- [ ] T033-T037 [US2] [Pattern: Test Writing] Play functions for Tab, ArrowDown, ArrowUp, Home, End
+- [x] T033-T037 [US2] [Pattern: Test Writing] Play functions for Tab, ArrowDown, ArrowUp, Home, End
   - **Score**: 88% each | **Time**: 2 min each | **Total**: 10 min
   - **Strategy**: Use userEvent.keyboard for key simulation
 

@@ -83,10 +83,10 @@ export const Default: Story = {
     if (accordionContent) {
       // Wait for runtime Sass compiler to apply transition styles
       await waitFor(
-        () => {
+        async () => {
           const style = getComputedStyle(accordionContent);
           // transitionDuration may be "0.25s, 0.25s, 0.25s" for multiple properties
-          expect(style.transitionDuration).toContain('0.25s');
+          await expect(style.transitionDuration).toContain('0.25s');
         },
         { timeout: 5000 },
       );
@@ -96,17 +96,17 @@ export const Default: Story = {
     const trigger1 = canvas.getByRole('button', { name: /Accordion 1/i });
     await userEvent.click(trigger1);
 
-    await waitFor(() => {
-      expect(trigger1).toHaveAttribute('aria-expanded', 'true');
+    await waitFor(async () => {
+      await expect(trigger1).toHaveAttribute('aria-expanded', 'true');
     });
 
     // Click second accordion - first should close (single expand mode)
     const trigger2 = canvas.getByRole('button', { name: /Accordion 2/i });
     await userEvent.click(trigger2);
 
-    await waitFor(() => {
-      expect(trigger1).toHaveAttribute('aria-expanded', 'false');
-      expect(trigger2).toHaveAttribute('aria-expanded', 'true');
+    await waitFor(async () => {
+      await expect(trigger1).toHaveAttribute('aria-expanded', 'false');
+      await expect(trigger2).toHaveAttribute('aria-expanded', 'true');
     });
   },
 };
@@ -123,9 +123,9 @@ export const MultiExpand: Story = {
     await userEvent.click(trigger1);
     await userEvent.click(trigger2);
 
-    await waitFor(() => {
-      expect(trigger1).toHaveAttribute('aria-expanded', 'true');
-      expect(trigger2).toHaveAttribute('aria-expanded', 'true');
+    await waitFor(async () => {
+      await expect(trigger1).toHaveAttribute('aria-expanded', 'true');
+      await expect(trigger2).toHaveAttribute('aria-expanded', 'true');
     });
   },
 };
@@ -174,9 +174,9 @@ export const Disabled: Story = {
     await userEvent.click(trigger2);
 
     // Verify they remain collapsed after click attempts
-    await waitFor(() => {
-      expect(trigger1).toHaveAttribute('aria-expanded', 'false');
-      expect(trigger2).toHaveAttribute('aria-expanded', 'false');
+    await waitFor(async () => {
+      await expect(trigger1).toHaveAttribute('aria-expanded', 'false');
+      await expect(trigger2).toHaveAttribute('aria-expanded', 'false');
     });
   },
 };
@@ -208,8 +208,8 @@ export const InitiallyExpanded: Story = {
     const trigger2 = canvas.getByRole('button', { name: /Initially Closed/i });
 
     // First panel should start expanded (use waitFor for async rendering)
-    await waitFor(() => {
-      expect(trigger1).toHaveAttribute('aria-expanded', 'true');
+    await waitFor(async () => {
+      await expect(trigger1).toHaveAttribute('aria-expanded', 'true');
     });
 
     // Second panel should start collapsed
@@ -225,20 +225,51 @@ export const KeyboardNavigation: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
+    // Get all triggers
     const trigger1 = canvas.getByRole('button', { name: /Accordion 1/i });
-    trigger1.focus();
+    const trigger2 = canvas.getByRole('button', { name: /Accordion 2/i });
+    const trigger3 = canvas.getByRole('button', { name: /Accordion 3/i });
 
-    // Press Enter to open
-    await userEvent.keyboard('{Enter}');
-    await waitFor(() => {
-      expect(trigger1).toHaveAttribute('aria-expanded', 'true');
+    // T033: Tab to focus first title
+    trigger1.focus();
+    await waitFor(async () => {
+      await expect(document.activeElement).toBe(trigger1);
     });
 
-    // Press ArrowDown to move to next
+    // T034: ArrowDown to move to next title
     await userEvent.keyboard('{ArrowDown}');
-    const trigger2 = canvas.getByRole('button', { name: /Accordion 2/i });
-    await waitFor(() => {
-      expect(document.activeElement).toBe(trigger2);
+    await waitFor(async () => {
+      await expect(document.activeElement).toBe(trigger2);
+    });
+
+    // T035: ArrowUp to move to previous title
+    await userEvent.keyboard('{ArrowUp}');
+    await waitFor(async () => {
+      await expect(document.activeElement).toBe(trigger1);
+    });
+
+    // T036: Home to move to first title
+    await userEvent.keyboard('{Home}');
+    await waitFor(async () => {
+      await expect(document.activeElement).toBe(trigger1);
+    });
+
+    // T037: End to move to last title
+    await userEvent.keyboard('{End}');
+    await waitFor(async () => {
+      await expect(document.activeElement).toBe(trigger3);
+    });
+
+    // Test Enter to expand
+    await userEvent.keyboard('{Enter}');
+    await waitFor(async () => {
+      await expect(trigger3).toHaveAttribute('aria-expanded', 'true');
+    });
+
+    // Test Space to collapse (alternative to Enter)
+    await userEvent.keyboard(' ');
+    await waitFor(async () => {
+      await expect(trigger3).toHaveAttribute('aria-expanded', 'false');
     });
   },
 };
@@ -256,8 +287,8 @@ export const DeepLink: Story = {
     const trigger1 = canvas.getByRole('button', { name: /Accordion 1/i });
     await userEvent.click(trigger1);
 
-    await waitFor(() => {
-      expect(trigger1).toHaveAttribute('aria-expanded', 'true');
+    await waitFor(async () => {
+      await expect(trigger1).toHaveAttribute('aria-expanded', 'true');
     });
 
     // Verify URL hash was updated (in iframe context, this may differ)
@@ -268,10 +299,10 @@ export const DeepLink: Story = {
     const trigger2 = canvas.getByRole('button', { name: /Accordion 2/i });
     await userEvent.click(trigger2);
 
-    await waitFor(() => {
-      expect(trigger2).toHaveAttribute('aria-expanded', 'true');
+    await waitFor(async () => {
+      await expect(trigger2).toHaveAttribute('aria-expanded', 'true');
       // In single-expand mode, first panel should close
-      expect(trigger1).toHaveAttribute('aria-expanded', 'false');
+      await expect(trigger1).toHaveAttribute('aria-expanded', 'false');
     });
   },
 };
@@ -350,24 +381,24 @@ export const RequireOneOpen: Story = {
     const trigger2 = canvas.getByRole('button', { name: /Panel 2/i });
 
     // First panel should be auto-opened since allowAllClosed=false
-    await waitFor(() => {
-      expect(trigger1).toHaveAttribute('aria-expanded', 'true');
+    await waitFor(async () => {
+      await expect(trigger1).toHaveAttribute('aria-expanded', 'true');
     });
 
     // Click panel 2 - panel 1 should close, panel 2 should open
     await userEvent.click(trigger2);
 
-    await waitFor(() => {
-      expect(trigger1).toHaveAttribute('aria-expanded', 'false');
-      expect(trigger2).toHaveAttribute('aria-expanded', 'true');
+    await waitFor(async () => {
+      await expect(trigger1).toHaveAttribute('aria-expanded', 'false');
+      await expect(trigger2).toHaveAttribute('aria-expanded', 'true');
     });
 
     // Try to close panel 2 by clicking it again - should stay open
     await userEvent.click(trigger2);
 
     // Panel 2 should remain open (can't close the last panel)
-    await waitFor(() => {
-      expect(trigger2).toHaveAttribute('aria-expanded', 'true');
+    await waitFor(async () => {
+      await expect(trigger2).toHaveAttribute('aria-expanded', 'true');
     });
   },
 };
@@ -478,15 +509,15 @@ export const Accessibility: Story = {
 
     // Expand panel 1 and verify aria-expanded updates
     await userEvent.click(trigger1);
-    await waitFor(() => {
-      expect(trigger1).toHaveAttribute('aria-expanded', 'true');
+    await waitFor(async () => {
+      await expect(trigger1).toHaveAttribute('aria-expanded', 'true');
     });
 
     // Expand panel 2 - should close panel 1 (single expand mode)
     await userEvent.click(trigger2);
-    await waitFor(() => {
-      expect(trigger1).toHaveAttribute('aria-expanded', 'false');
-      expect(trigger2).toHaveAttribute('aria-expanded', 'true');
+    await waitFor(async () => {
+      await expect(trigger1).toHaveAttribute('aria-expanded', 'false');
+      await expect(trigger2).toHaveAttribute('aria-expanded', 'true');
     });
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -506,20 +537,20 @@ export const Accessibility: Story = {
 
     // ArrowDown should move focus to next trigger
     await userEvent.keyboard('{ArrowDown}');
-    await waitFor(() => {
-      expect(document.activeElement).toBe(trigger2);
+    await waitFor(async () => {
+      await expect(document.activeElement).toBe(trigger2);
     });
 
     // ArrowDown again to trigger 3
     await userEvent.keyboard('{ArrowDown}');
-    await waitFor(() => {
-      expect(document.activeElement).toBe(trigger3);
+    await waitFor(async () => {
+      await expect(document.activeElement).toBe(trigger3);
     });
 
     // ArrowUp should move focus back to trigger 2
     await userEvent.keyboard('{ArrowUp}');
-    await waitFor(() => {
-      expect(document.activeElement).toBe(trigger2);
+    await waitFor(async () => {
+      await expect(document.activeElement).toBe(trigger2);
     });
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -529,15 +560,15 @@ export const Accessibility: Story = {
     // Focus on trigger3 and activate with Enter
     trigger3.focus();
     await userEvent.keyboard('{Enter}');
-    await waitFor(() => {
-      expect(trigger3).toHaveAttribute('aria-expanded', 'true');
-      expect(trigger2).toHaveAttribute('aria-expanded', 'false');
+    await waitFor(async () => {
+      await expect(trigger3).toHaveAttribute('aria-expanded', 'true');
+      await expect(trigger2).toHaveAttribute('aria-expanded', 'false');
     });
 
     // Activate with Space to toggle
     await userEvent.keyboard(' ');
-    await waitFor(() => {
-      expect(trigger3).toHaveAttribute('aria-expanded', 'false');
+    await waitFor(async () => {
+      await expect(trigger3).toHaveAttribute('aria-expanded', 'false');
     });
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -546,14 +577,14 @@ export const Accessibility: Story = {
 
     // Home should move focus to first trigger
     await userEvent.keyboard('{Home}');
-    await waitFor(() => {
-      expect(document.activeElement).toBe(trigger1);
+    await waitFor(async () => {
+      await expect(document.activeElement).toBe(trigger1);
     });
 
     // End should move focus to last trigger
     await userEvent.keyboard('{End}');
-    await waitFor(() => {
-      expect(document.activeElement).toBe(trigger3);
+    await waitFor(async () => {
+      await expect(document.activeElement).toBe(trigger3);
     });
   },
 };
@@ -615,15 +646,15 @@ export const SoftDisabled: Story = {
     // With softDisabled=false, ArrowDown should SKIP the disabled trigger
     // and move directly to the third trigger
     await userEvent.keyboard('{ArrowDown}');
-    await waitFor(() => {
+    await waitFor(async () => {
       // Focus should skip trigger2 and go directly to trigger3
-      expect(document.activeElement).toBe(trigger3);
+      await expect(document.activeElement).toBe(trigger3);
     });
 
     // ArrowUp should also skip the disabled trigger
     await userEvent.keyboard('{ArrowUp}');
-    await waitFor(() => {
-      expect(document.activeElement).toBe(trigger1);
+    await waitFor(async () => {
+      await expect(document.activeElement).toBe(trigger1);
     });
   },
 };
@@ -701,19 +732,19 @@ export const ExpandCollapseAll: Story = {
     // Click Expand All button
     await userEvent.click(expandAllBtn);
 
-    await waitFor(() => {
-      expect(trigger1).toHaveAttribute('aria-expanded', 'true');
-      expect(trigger2).toHaveAttribute('aria-expanded', 'true');
-      expect(trigger3).toHaveAttribute('aria-expanded', 'true');
+    await waitFor(async () => {
+      await expect(trigger1).toHaveAttribute('aria-expanded', 'true');
+      await expect(trigger2).toHaveAttribute('aria-expanded', 'true');
+      await expect(trigger3).toHaveAttribute('aria-expanded', 'true');
     });
 
     // Click Collapse All button
     await userEvent.click(collapseAllBtn);
 
-    await waitFor(() => {
-      expect(trigger1).toHaveAttribute('aria-expanded', 'false');
-      expect(trigger2).toHaveAttribute('aria-expanded', 'false');
-      expect(trigger3).toHaveAttribute('aria-expanded', 'false');
+    await waitFor(async () => {
+      await expect(trigger1).toHaveAttribute('aria-expanded', 'false');
+      await expect(trigger2).toHaveAttribute('aria-expanded', 'false');
+      await expect(trigger3).toHaveAttribute('aria-expanded', 'false');
     });
   },
 };
@@ -768,32 +799,32 @@ export const FocusManagementWithDisabled: Story = {
     // ArrowDown moves focus to disabled trigger (Angular ARIA allows focus on disabled items
     // for screen reader announcement, but prevents activation)
     await userEvent.keyboard('{ArrowDown}');
-    await waitFor(() => {
-      expect(document.activeElement).toBe(trigger2);
+    await waitFor(async () => {
+      await expect(document.activeElement).toBe(trigger2);
     });
 
     // ArrowDown again moves to third trigger
     await userEvent.keyboard('{ArrowDown}');
-    await waitFor(() => {
-      expect(document.activeElement).toBe(trigger3);
+    await waitFor(async () => {
+      await expect(document.activeElement).toBe(trigger3);
     });
 
     // ArrowUp moves back to disabled trigger
     await userEvent.keyboard('{ArrowUp}');
-    await waitFor(() => {
-      expect(document.activeElement).toBe(trigger2);
+    await waitFor(async () => {
+      await expect(document.activeElement).toBe(trigger2);
     });
 
     // Clicking disabled trigger should not expand it
     await userEvent.click(trigger2);
-    await waitFor(() => {
-      expect(trigger2).toHaveAttribute('aria-expanded', 'false');
+    await waitFor(async () => {
+      await expect(trigger2).toHaveAttribute('aria-expanded', 'false');
     });
 
     // Pressing Enter on disabled trigger should not expand it
     await userEvent.keyboard('{Enter}');
-    await waitFor(() => {
-      expect(trigger2).toHaveAttribute('aria-expanded', 'false');
+    await waitFor(async () => {
+      await expect(trigger2).toHaveAttribute('aria-expanded', 'false');
     });
   },
 };
@@ -881,28 +912,28 @@ export const RightToLeft: Story = {
 
     // ArrowDown should move to next trigger (forward navigation)
     await userEvent.keyboard('{ArrowDown}');
-    await waitFor(() => {
-      expect(document.activeElement).toBe(trigger2);
+    await waitFor(async () => {
+      await expect(document.activeElement).toBe(trigger2);
     });
 
     // ArrowDown again to move to third trigger
     await userEvent.keyboard('{ArrowDown}');
-    await waitFor(() => {
-      expect(document.activeElement).toBe(trigger3);
+    await waitFor(async () => {
+      await expect(document.activeElement).toBe(trigger3);
     });
 
     // ArrowUp should move back to second trigger
     await userEvent.keyboard('{ArrowUp}');
-    await waitFor(() => {
-      expect(document.activeElement).toBe(trigger2);
+    await waitFor(async () => {
+      await expect(document.activeElement).toBe(trigger2);
     });
 
     // ═══════════════════════════════════════════════════════════════════════
     // 3. ACTIVATION (Enter key should expand panel)
     // ═══════════════════════════════════════════════════════════════════════
     await userEvent.keyboard('{Enter}');
-    await waitFor(() => {
-      expect(trigger2).toHaveAttribute('aria-expanded', 'true');
+    await waitFor(async () => {
+      await expect(trigger2).toHaveAttribute('aria-expanded', 'true');
     });
 
     // Verify content is visible
@@ -991,8 +1022,8 @@ export const EagerVsLazyContent: Story = {
     // ═══════════════════════════════════════════════════════════════════════
 
     await userEvent.click(trigger2);
-    await waitFor(() => {
-      expect(trigger2).toHaveAttribute('aria-expanded', 'true');
+    await waitFor(async () => {
+      await expect(trigger2).toHaveAttribute('aria-expanded', 'true');
     });
 
     // Now lazy content from panel 2 should be visible
@@ -1004,10 +1035,10 @@ export const EagerVsLazyContent: Story = {
     // ═══════════════════════════════════════════════════════════════════════
 
     await userEvent.click(trigger3);
-    await waitFor(() => {
-      expect(trigger3).toHaveAttribute('aria-expanded', 'true');
+    await waitFor(async () => {
+      await expect(trigger3).toHaveAttribute('aria-expanded', 'true');
       // Panel 2 should close (single expand mode)
-      expect(trigger2).toHaveAttribute('aria-expanded', 'false');
+      await expect(trigger2).toHaveAttribute('aria-expanded', 'false');
     });
 
     // Panel 3's eager content should be visible
@@ -1023,8 +1054,8 @@ export const EagerVsLazyContent: Story = {
     // ═══════════════════════════════════════════════════════════════════════
 
     await userEvent.click(trigger1);
-    await waitFor(() => {
-      expect(trigger1).toHaveAttribute('aria-expanded', 'true');
+    await waitFor(async () => {
+      await expect(trigger1).toHaveAttribute('aria-expanded', 'true');
     });
 
     // Eager content should be visible
@@ -1110,8 +1141,8 @@ export const TitleHeadingLevel: Story = {
 
     // Click should still expand/collapse
     await userEvent.click(trigger1);
-    await waitFor(() => {
-      expect(trigger1).toHaveAttribute('aria-expanded', 'true');
+    await waitFor(async () => {
+      await expect(trigger1).toHaveAttribute('aria-expanded', 'true');
     });
 
     // Verify content is visible
@@ -1202,15 +1233,15 @@ export const FoundationApiMethods: Story = {
 
     const downBtn1 = canvas.getByTestId('down-btn-1');
     await userEvent.click(downBtn1);
-    await waitFor(() => {
-      expect(trigger1).toHaveAttribute('aria-expanded', 'true');
+    await waitFor(async () => {
+      await expect(trigger1).toHaveAttribute('aria-expanded', 'true');
     });
 
     // Verify down() works on panel 2
     const downBtn2 = canvas.getByTestId('down-btn-2');
     await userEvent.click(downBtn2);
-    await waitFor(() => {
-      expect(trigger2).toHaveAttribute('aria-expanded', 'true');
+    await waitFor(async () => {
+      await expect(trigger2).toHaveAttribute('aria-expanded', 'true');
     });
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -1219,8 +1250,8 @@ export const FoundationApiMethods: Story = {
 
     const upBtn2 = canvas.getByTestId('up-btn-2');
     await userEvent.click(upBtn2);
-    await waitFor(() => {
-      expect(trigger2).toHaveAttribute('aria-expanded', 'false');
+    await waitFor(async () => {
+      await expect(trigger2).toHaveAttribute('aria-expanded', 'false');
     });
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -1231,14 +1262,14 @@ export const FoundationApiMethods: Story = {
 
     // Toggle should expand (was false)
     await userEvent.click(toggleBtn2);
-    await waitFor(() => {
-      expect(trigger2).toHaveAttribute('aria-expanded', 'true');
+    await waitFor(async () => {
+      await expect(trigger2).toHaveAttribute('aria-expanded', 'true');
     });
 
     // Toggle again should collapse (was true)
     await userEvent.click(toggleBtn2);
-    await waitFor(() => {
-      expect(trigger2).toHaveAttribute('aria-expanded', 'false');
+    await waitFor(async () => {
+      await expect(trigger2).toHaveAttribute('aria-expanded', 'false');
     });
   },
 };
@@ -1339,14 +1370,14 @@ export const FoundationApiEvents: Story = {
 
     // Click panel 1 to open it
     await userEvent.click(trigger1);
-    await waitFor(() => {
-      expect(trigger1).toHaveAttribute('aria-expanded', 'true');
+    await waitFor(async () => {
+      await expect(trigger1).toHaveAttribute('aria-expanded', 'true');
     });
 
     // Verify down event was logged
-    await waitFor(() => {
-      expect(eventLog.textContent).toContain('down');
-      expect(eventLog.textContent).toContain('events-panel-1');
+    await waitFor(async () => {
+      await expect(eventLog.textContent).toContain('down');
+      await expect(eventLog.textContent).toContain('events-panel-1');
     });
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -1355,19 +1386,19 @@ export const FoundationApiEvents: Story = {
 
     // Click panel 2 - should close panel 1 and open panel 2
     await userEvent.click(trigger2);
-    await waitFor(() => {
-      expect(trigger1).toHaveAttribute('aria-expanded', 'false');
-      expect(trigger2).toHaveAttribute('aria-expanded', 'true');
+    await waitFor(async () => {
+      await expect(trigger1).toHaveAttribute('aria-expanded', 'false');
+      await expect(trigger2).toHaveAttribute('aria-expanded', 'true');
     });
 
     // Verify up event was logged for panel 1
-    await waitFor(() => {
-      expect(eventLog.textContent).toContain('up');
+    await waitFor(async () => {
+      await expect(eventLog.textContent).toContain('up');
       // Panel 1 should have been closed
       const upEvents =
         eventLog.textContent?.includes('up') &&
         eventLog.textContent?.includes('events-panel-1');
-      expect(upEvents).toBe(true);
+      await expect(upEvents).toBe(true);
     });
   },
 };

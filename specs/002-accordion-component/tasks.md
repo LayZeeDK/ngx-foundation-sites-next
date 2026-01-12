@@ -148,28 +148,28 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 
 ### Storybook Tests for User Story 2
 
-- [ ] T032 [P] [US2] Create KeyboardNavigation story at packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
-- [ ] T033 [US2] Add play function: simulate Tab, verify focus on first title
-- [ ] T034 [US2] Add play function: simulate ArrowDown, verify focus moves to next title
-- [ ] T035 [US2] Add play function: simulate ArrowUp, verify focus moves to previous title (with wraparound from first to last)
-- [ ] T036 [US2] Add play function: simulate Home, verify focus moves to first title
-- [ ] T037 [US2] Add play function: simulate End, verify focus moves to last title
-- [ ] T038 [US2] Add play function: simulate Enter/Space on collapsed title, verify panel expands
-- [ ] T039 [P] [US2] Add accessibility checks for keyboard navigation and focus indicators
-- [ ] T181 [P] [US2] Add Storybook play test: simulate ArrowDown keyboard event and simultaneous click on different item within 10ms, verify events are serialized (FIFO by timestamp), final expansion state is stable in packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
+- [x] T032 [P] [US2] Create KeyboardNavigation story at packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
+- [x] T033 [US2] Add play function: simulate Tab, verify focus on first title
+- [x] T034 [US2] Add play function: simulate ArrowDown, verify focus moves to next title
+- [x] T035 [US2] Add play function: simulate ArrowUp, verify focus moves to previous title (with wraparound from first to last)
+- [x] T036 [US2] Add play function: simulate Home, verify focus moves to first title
+- [x] T037 [US2] Add play function: simulate End, verify focus moves to last title
+- [x] T038 [US2] Add play function: simulate Enter/Space on collapsed title, verify panel expands
+- [x] T039 [P] [US2] Add accessibility checks for keyboard navigation and focus indicators
+- [x] T181 [P] [US2] Add Storybook play test: simulate ArrowDown keyboard event and simultaneous click on different item within 10ms, verify events are serialized (FIFO by timestamp), final expansion state is stable in packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
 
 ### Implementation for User Story 2
 
-- [ ] T040 [US2] Implement keyboard event handler in NfsAccordion: (keydown) host binding with handleKeydown() method
-- [ ] T041 [US2] Implement ArrowDown handler: move focus to next enabled title (skip disabled)
-- [ ] T042 [US2] Implement ArrowUp handler: move focus to previous enabled title (skip disabled)
-- [ ] T043 [US2] Implement Home handler: move focus to first enabled title
-- [ ] T044 [US2] Implement End handler: move focus to last enabled title
-- [ ] T045 [US2] Implement Enter/Space handlers in NfsAccordionTitle: toggle parent item expansion
-- [ ] T046 [US2] Add focus management utilities: focusItem(index), findNextEnabledItem(), findPreviousEnabledItem()
-- [ ] T047 [US2] Implement focus() and blur() public methods on NfsAccordionTitle
-- [ ] T048 [US2] Add tabindex="0" to title buttons for keyboard accessibility
-- [ ] T049 [US2] Ensure focus indicators meet WCAG contrast requirements (verify with Foundation CSS)
+- [x] T040 [US2] Implement keyboard event handler in NfsAccordion: (keydown) host binding with handleKeydown() method
+- [x] T041 [US2] Implement ArrowDown handler: move focus to next enabled title (skip disabled)
+- [x] T042 [US2] Implement ArrowUp handler: move focus to previous enabled title (skip disabled)
+- [x] T043 [US2] Implement Home handler: move focus to first enabled title
+- [x] T044 [US2] Implement End handler: move focus to last enabled title
+- [x] T045 [US2] Implement Enter/Space handlers in NfsAccordionTitle: toggle parent item expansion
+- [x] T046 [US2] Add focus management utilities: focusItem(index), findNextEnabledItem(), findPreviousEnabledItem()
+- [x] T047 [US2] Implement focus() and blur() public methods on NfsAccordionTitle
+- [x] T048 [US2] Add tabindex="0" to title buttons for keyboard accessibility
+- [x] T049 [US2] Ensure focus indicators meet WCAG contrast requirements (verify with Foundation CSS)
 - [ ] T182 [US2] Implement event timestamp ordering in NfsAccordion: enqueue all UI events with `{ ts: performance.now(), type, eventTarget, payload }`, process event queue FIFO while allowing cross-item concurrency in packages/ngx-foundation-sites/src/lib/accordion/accordion.component.ts
 - [ ] T182b [P] [US2] Add unit test for FR-106a event timestamp ordering logic: verify FIFO processing order, cross-item concurrency allowed, focus updates get priority, expansion state resolves by timestamp in packages/ngx-foundation-sites/src/lib/accordion/accordion.component.spec.ts
 
