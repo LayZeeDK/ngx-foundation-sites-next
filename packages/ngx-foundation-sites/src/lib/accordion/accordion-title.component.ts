@@ -3,7 +3,6 @@ import {
   Component,
   ViewEncapsulation,
   inject,
-  HostListener,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NfsAccordionItem } from './accordion-item.component';
@@ -40,6 +39,8 @@ import { NfsAccordionItem } from './accordion-item.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: 'accordion-title',
+    '(click)': 'onClick()',
+    '(keydown)': 'onKeyDown($event)',
   },
 })
 export class NfsAccordionTitle {
@@ -52,7 +53,6 @@ export class NfsAccordionTitle {
   /**
    * Handle click events to toggle the accordion item.
    */
-  @HostListener('click')
   onClick(): void {
     this.parentItem?.onTitleClick();
   }
@@ -60,7 +60,6 @@ export class NfsAccordionTitle {
   /**
    * Handle keyboard events for accessibility.
    */
-  @HostListener('keydown', ['$event'])
   onKeyDown(event: KeyboardEvent): void {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
