@@ -666,6 +666,61 @@ Speed: Slower (30-60s) but reliable
 
 ---
 
+## 📋 Source Attribution Standards
+
+All optimization guides MUST follow these standards for claims:
+
+### ✅ Acceptable Sources (Priority Order)
+
+1. **Official vendor documentation** (Anthropic, OpenAI, xAI, Google)
+   - Model cards, API docs, official announcements
+   - Citation format: `[Feature Name - Official Docs](https://official-url)`
+
+2. **Published benchmarks** (Hugging Face, Papers with Code)
+   - Public leaderboards with reproducible methodology
+   - Citation format: `[Benchmark Name Leaderboard](https://benchmark-url)`
+
+3. **Peer-reviewed research** (arXiv, ACL, NeurIPS)
+   - Academic papers with reproducible experiments
+   - Citation format: `[Paper Title - Authors, Year](https://arxiv-url)`
+
+### ⚠️ Community Sources (Require Caveats)
+
+4. **Technical blogs** (InfoWorld, TechCrunch, community analyses)
+   - Must be labeled as "third-party analysis"
+   - Citation format: `[Article Title](url) (third-party analysis)`
+
+5. **Internal benchmarks** (vendor-specific harnesses)
+   - Must note methodology differences
+   - Citation format: `[Metric] (vendor internal benchmark, methodology may differ)`
+
+### ❌ Unacceptable
+
+- Marketing claims without evidence
+- Subjective superlatives ("best", "fastest") without benchmarks
+- Uncited statistics
+- Claims from deleted/unavailable sources
+
+### BETA Feature Handling
+
+Features marked as BETA must include:
+
+```markdown
+⚠️ **BETA**: This feature is experimental and may change. Not recommended for production use.
+```
+
+### Verification Checklist
+
+Before adding claims to optimization guides:
+
+- ☑ Claim has official vendor source OR benchmark source
+- ☑ Link to source is accessible and stable
+- ☑ Marketing language is replaced with technical specifications
+- ☑ BETA features are clearly marked
+- ☑ Third-party sources are labeled as such
+
+---
+
 ## 📖 Research Sources
 
 All optimization strategies are backed by 2026 research from:
