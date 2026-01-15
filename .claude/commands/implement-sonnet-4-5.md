@@ -20,12 +20,23 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 1. **Parallel Context Loading** - Load multiple files simultaneously (10-20x speedup)
 2. **Extended Thinking** - Use 16K budget for complex tasks, none for mechanical
-3. **Error-First TDD** - Write tests, run to get error, fix ONLY that error, repeat
-4. **Minimal Implementation** - OUT OF SCOPE list prevents over-engineering
-5. **State Tracking** - Mark tasks [X] immediately after completion
-6. **Phase-Based Workflow** - Research → Setup → Implement → Verify → Complete
+3. **1M Context Window** - Available in Claude Code for large features (verified 2026-01-15)
+   - Use for features >200K tokens (spec + plan + tasks + implementation files)
+   - Premium pricing: 2x input / 1.5x output tokens
+   - Eliminates progressive disclosure for most features
+4. **Error-First TDD** - Write tests, run to get error, fix ONLY that error, repeat
+5. **Minimal Implementation** - OUT OF SCOPE list prevents over-engineering
+6. **State Tracking** - Mark tasks [X] immediately after completion
+7. **Phase-Based Workflow** - Research → Setup → Implement → Verify → Complete
 
-**Reference**: See `prompt-engineering/CLAUDE-SONNET-4-5-IMPLEMENTATION-OPTIMIZATION.md` for detailed optimization strategies
+**References**:
+
+- **Optimization Guide**: `prompt-engineering/CLAUDE-SONNET-4-5-IMPLEMENTATION-OPTIMIZATION.md` - Detailed strategies
+- **Beta Features** (verified 2026-01-15): `prompt-engineering/README.md#beta-feature-availability`
+  - ✅ **Extended Thinking** (1K-64K budgets) - Used in phases 1, 3, 4 (lines 40, 219, 406)
+  - ✅ **1M Context Window** - Available for large features (optimization #3)
+  - ✅ **Structured Outputs** - Available but not yet implemented in this command
+  - ❌ **Effort Parameter** - Requires API key (unavailable for subscription-only users)
 
 ## Path Grounding (CRITICAL)
 
@@ -663,8 +674,8 @@ After execution:
 ## Notes
 
 - This command is **Sonnet 4.5 optimized** - uses parallel tool calls, extended thinking, error-first TDD
-- **Context windows**: 200K (standard) or 1M (available in Claude Code, premium pricing: 2x input/1.5x output)
-- For features >200K: Use 1M context or progressive disclosure (chunk into phases)
+- **Context windows**: 200K (standard) or 1M (see optimization #3 above)
+- For features >200K: See "1M Context Window" in Key Optimizations
 - Uses **TodoWrite for progress tracking** (visible to user)
 - **Stops on test failures** - ensures quality at each step
 - **Commits incrementally** - logical commit boundaries for clean history
