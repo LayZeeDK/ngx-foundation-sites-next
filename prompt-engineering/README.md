@@ -756,7 +756,7 @@ Based on verification testing (2026-01-15):
 
 ### CLI Testing Commands (Claude Code)
 
-**⚠️ Note**: These commands are for **Claude Code CLI** only. GitHub Copilot CLI (`gh copilot`) may use different syntax.
+**⚠️ Note**: These commands are for **Claude Code CLI** only. GitHub Copilot CLI (`copilot`) may use different syntax.
 
 ```bash
 # Test Structured Outputs (✅ Works in Claude Code)
@@ -769,7 +769,7 @@ claude --print --model opus --betas effort-2025-11-24 "Your prompt"
 # Error: "Custom betas are only available for API key users"
 ```
 
-**GitHub Copilot users**: Check `gh copilot --help` for equivalent commands. Feature availability and syntax may differ.
+**GitHub Copilot users**: Check `copilot --help` for equivalent commands. Feature availability and syntax may differ.
 
 ### Detailed Verification Results
 

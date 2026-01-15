@@ -257,8 +257,8 @@ To verify GitHub Copilot feature availability:
    - Test with large files (>200K tokens)
    - Check model selection options
 
-2. **Test with GitHub Copilot CLI** (`gh copilot`)
-   - Check available flags with `gh copilot --help`
+2. **Test with GitHub Copilot CLI** (`copilot`)
+   - Check available flags with `copilot --help`
    - Look for equivalent of `--json-schema` or `--betas`
    - Test different model selections
 
