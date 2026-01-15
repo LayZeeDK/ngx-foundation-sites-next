@@ -39,6 +39,35 @@ export interface NfsAccordionPanelEvent {
   expanded: boolean;
 }
 
+/**
+ * Accessible accordion component that wraps Angular ARIA's accordion primitives.
+ *
+ * ## FR-106a: Concurrent Interaction Handling
+ *
+ * This component delegates event processing to @angular/aria's `AccordionTrigger`
+ * and `AccordionPanel` directives, which handle keyboard/mouse interactions with
+ * signal-based state management in zoneless Angular.
+ *
+ * **Event Processing in Zoneless Mode:**
+ * - **Browser Event Queue**: Events arrive in chronological order and are processed
+ *   sequentially by the JavaScript event loop (FIFO by nature in single-threaded JS)
+ * - **@angular/aria**: Tested primitives handle keyboard navigation (ArrowDown/Up)
+ *   and click interactions with signal-based state updates that trigger change detection
+ * - **Signal Reactivity**: State changes via `[(expanded)]` model signal automatically
+ *   notify Angular's change detection scheduler without Zone.js dependency
+ *
+ * **Testing Strategy**: The ConcurrentKeyboardAndClick Storybook test validates
+ * correct behavior for simultaneous keyboard + click interactions. All tests run
+ * in zoneless mode via `provideZonelessChangeDetection()`.
+ *
+ * **Note**: This component does NOT implement explicit timestamp-based event queuing
+ * (T182). Browser event loop ordering + @angular/aria signal handling provide
+ * sufficient serialization for FR-106a requirements. If race conditions are observed,
+ * T182 can be implemented as an enhancement.
+ *
+ * @see ConcurrentKeyboardAndClick story in accordion.stories.ts
+ * @see phase-9-zoneless-config.md for zoneless Angular configuration
+ */
 @Component({
   selector: 'nfs-accordion',
   exportAs: 'nfsAccordion',

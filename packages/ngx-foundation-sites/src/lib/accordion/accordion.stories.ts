@@ -315,6 +315,74 @@ export const KeyboardNavigation: Story = {
   },
 };
 
+/**
+ * T181: Concurrent Keyboard and Mouse Interaction Test (FR-106a)
+ *
+ * Tests that when keyboard navigation (ArrowDown) and mouse click occur
+ * within milliseconds of each other targeting different items, the component
+ * handles both events without race conditions.
+ *
+ * Expected behavior per FR-106a:
+ * - Events processed in FIFO order by timestamp
+ * - Focus follows keyboard event (ArrowDown moves focus to item 2)
+ * - Expansion follows most recent event (click on item 3 expands it)
+ * - Final state is stable and predictable
+ */
+export const ConcurrentKeyboardAndClick: Story = {
+  args: { multiExpand: false },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const trigger1 = canvas.getByRole('button', { name: /Accordion 1/i });
+    const trigger2 = canvas.getByRole('button', { name: /Accordion 2/i });
+    const trigger3 = canvas.getByRole('button', { name: /Accordion 3/i });
+
+    // Expand item 1 first
+    await userEvent.click(trigger1);
+    await waitFor(async () => {
+      await expect(trigger1).toHaveAttribute('aria-expanded', 'true');
+    });
+
+    // Focus on trigger 1
+    trigger1.focus();
+    await waitFor(async () => {
+      await expect(document.activeElement).toBe(trigger1);
+    });
+
+    // Simulate concurrent interactions:
+    // 1. Keyboard ArrowDown (should move focus to trigger 2)
+    // 2. Immediate click on trigger 3 (within ~10ms)
+    //
+    // Note: We use keyboard + click API (not raw dispatchEvent) to test
+    // the behavior through the actual interaction paths users would trigger.
+    const keyboardPromise = userEvent.keyboard('{ArrowDown}');
+    const clickPromise = userEvent.click(trigger3);
+
+    // Wait for both interactions to complete
+    await Promise.all([keyboardPromise, clickPromise]);
+
+    // Give time for async state updates to settle
+    await waitFor(
+      async () => {
+        // FR-106a: Focus should follow keyboard navigation (ArrowDown moved from 1 to 2)
+        await expect(document.activeElement).toBe(trigger2);
+
+        // FR-106a: Expansion should follow click event (trigger 3 was clicked)
+        // In single-expand mode, only trigger 3 should be expanded
+        await expect(trigger1).toHaveAttribute('aria-expanded', 'false');
+        await expect(trigger2).toHaveAttribute('aria-expanded', 'false');
+        await expect(trigger3).toHaveAttribute('aria-expanded', 'true');
+      },
+      { timeout: 3000 },
+    );
+
+    // Additional verification: State is stable (no further changes)
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    await expect(document.activeElement).toBe(trigger2);
+    await expect(trigger3).toHaveAttribute('aria-expanded', 'true');
+  },
+};
+
 export const DeepLink: Story = {
   args: {
     deepLink: true,

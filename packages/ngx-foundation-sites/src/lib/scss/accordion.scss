@@ -28,9 +28,11 @@
 // - util/util: All utilities (rem-calc, breakpoint, etc.)
 // - global: Global settings ($white, $primary-color, $global-left, etc.)
 // - components/accordion: Only the accordion component
+// - components/visibility: Visibility utility classes (sr-only, etc.)
 @import 'foundation-sites/scss/util/util';
 @import 'foundation-sites/scss/global';
 @import 'foundation-sites/scss/components/accordion';
+@import 'foundation-sites/scss/components/visibility';
 
 // Include Foundation accordion styles
 @include foundation-accordion;
