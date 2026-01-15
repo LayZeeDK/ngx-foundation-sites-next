@@ -721,6 +721,43 @@ Before adding claims to optimization guides:
 
 ---
 
+## 🧪 Beta Feature Availability in Claude Code
+
+Based on verification testing (2026-01-15):
+
+| Feature | Status | Notes |
+|---------|--------|-------|
+| **Extended Thinking** | ✅ Available | Configurable budgets (1K-64K tokens), works with all Claude 4.5 models |
+| **1M Context Window** | ✅ Available | Available for Sonnet 4.5 (previously beta for tier 4, now accessible) |
+| **Structured Outputs** | ✅ Available | Use `--json-schema` flag in CLI, works with all models (beta feature - use cautiously) |
+| **Effort Parameter** | ❌ Unavailable | Opus 4.5 only, requires API key setup (not available with subscription-only access) |
+
+### Testing Methodology
+
+- **Extended Thinking**: Verified via direct usage in Claude Code conversation
+- **1M Context**: Confirmed available for Sonnet 4.5 model
+- **Structured Outputs**: Tested via CLI with `--json-schema` flag, successfully validated JSON output
+- **Effort Parameter**: Attempted via `--betas effort-2025-11-24` flag - requires API key (unavailable for subscription-only users)
+
+### CLI Testing Commands
+
+```bash
+# Test Structured Outputs (✅ Works)
+claude --print --model haiku --output-format json \
+  --json-schema '{"type":"object","properties":{"name":{"type":"string"}},"required":["name"]}' \
+  "Your prompt here"
+
+# Test Effort Parameter (❌ Requires API key)
+claude --print --model opus --betas effort-2025-11-24 "Your prompt"
+# Error: "Custom betas are only available for API key users"
+```
+
+### Verification Script
+
+Run `npx tsx scripts/verify-beta-features.ts` for detailed testing instructions and code examples for manual API testing.
+
+---
+
 ## 📖 Research Sources
 
 All optimization strategies are backed by 2026 research from:
