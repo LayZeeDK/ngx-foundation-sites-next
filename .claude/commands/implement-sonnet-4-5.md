@@ -161,50 +161,19 @@ IF `FEATURE_DIR/checklists/` exists:
 
 ### Step 2.2: Project Setup Verification
 
-**Detection & Creation Logic**:
+**Reference**: See `shared/ignore-patterns.md` for complete detection logic and technology-specific patterns.
 
-- Check if repository is git repo (create/verify .gitignore if so):
+**Quick Reference** (detection triggers):
 
-  ```bash
-  git rev-parse --git-dir 2>/dev/null
-  ```
+- Git repo detected → verify/create `.gitignore`
+- Dockerfile found → verify/create `.dockerignore`
+- ESLint config found → verify/create `.eslintignore` or update `ignores`
+- Prettier config found → verify/create `.prettierignore`
+- Package publishing → verify/create `.npmignore`
+- Terraform files → verify/create `.terraformignore`
+- Helm charts → verify/create `.helmignore`
 
-- Check if Dockerfile\* exists or Docker in plan.md → create/verify .dockerignore
-- Check if .eslintrc\* exists → create/verify .eslintignore
-- Check if eslint.config.\* exists → ensure the config's `ignores` entries cover required patterns
-- Check if .prettierrc\* exists → create/verify .prettierignore
-- Check if .npmrc or package.json exists → create/verify .npmignore (if publishing)
-- Check if terraform files (\*.tf) exist → create/verify .terraformignore
-- Check if helm charts present (Chart.yaml) → create/verify .helmignore
-
-**If ignore file already exists**: Verify it contains essential patterns, append missing critical patterns only
-
-**If ignore file missing**: Create with full pattern set for detected technology (see Common Patterns below)
-
-**Common Patterns by Technology** (from plan.md tech stack):
-
-- **Node.js/JavaScript/TypeScript**: `node_modules/`, `dist/`, `build/`, `*.log`, `.env*`
-- **Python**: `__pycache__/`, `*.pyc`, `.venv/`, `venv/`, `dist/`, `*.egg-info/`
-- **Java**: `target/`, `*.class`, `*.jar`, `.gradle/`, `build/`
-- **C#/.NET**: `bin/`, `obj/`, `*.user`, `*.suo`, `packages/`
-- **Go**: `*.exe`, `*.test`, `vendor/`, `*.out`
-- **Ruby**: `.bundle/`, `log/`, `tmp/`, `*.gem`, `vendor/bundle/`
-- **PHP**: `vendor/`, `*.log`, `*.cache`, `*.env`
-- **Rust**: `target/`, `debug/`, `release/`, `*.rs.bk`, `*.rlib`, `*.prof*`, `.idea/`, `*.log`, `.env*`
-- **Kotlin**: `build/`, `out/`, `.gradle/`, `.idea/`, `*.class`, `*.jar`, `*.iml`, `*.log`, `.env*`
-- **C++**: `build/`, `bin/`, `obj/`, `out/`, `*.o`, `*.so`, `*.a`, `*.exe`, `*.dll`, `.idea/`, `*.log`, `.env*`
-- **C**: `build/`, `bin/`, `obj/`, `out/`, `*.o`, `*.a`, `*.so`, `*.exe`, `Makefile`, `config.log`, `.idea/`, `*.log`, `.env*`
-- **Swift**: `.build/`, `DerivedData/`, `*.swiftpm/`, `Packages/`
-- **R**: `.Rproj.user/`, `.Rhistory`, `.RData`, `.Ruserdata`, `*.Rproj`, `packrat/`, `renv/`
-- **Universal**: `.DS_Store`, `Thumbs.db`, `*.tmp`, `*.swp`, `.vscode/`, `.idea/`
-
-**Tool-Specific Patterns**:
-
-- **Docker**: `node_modules/`, `.git/`, `Dockerfile*`, `.dockerignore`, `*.log*`, `.env*`, `coverage/`
-- **ESLint**: `node_modules/`, `dist/`, `build/`, `coverage/`, `*.min.js`
-- **Prettier**: `node_modules/`, `dist/`, `build/`, `coverage/`, `package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`
-- **Terraform**: `.terraform/`, `*.tfstate*`, `*.tfvars`, `.terraform.lock.hcl`
-- **Kubernetes/k8s**: `*.secret.yaml`, `secrets/`, `.kube/`, `kubeconfig*`, `*.key`, `*.crt`
+Apply patterns from `shared/ignore-patterns.md` based on detected technology stack.
 
 ### Step 2.3: Create TODO List
 
@@ -250,116 +219,24 @@ TodoWrite([
 
 ### Step 3.0: Parse Task Structure with Structured Outputs (Beta)
 
-**Use structured outputs for reliable task extraction** (beta feature with fallback):
+**Reference**: See `shared/task-parsing-schema.md` for complete JSON schema and parsing instructions.
 
-<task_parsing_with_structured_outputs>
+**Sonnet-Specific Application**:
 
-#### Primary Method: Structured JSON Parsing
+- Use structured outputs (beta) for reliable task extraction
+- Automatically falls back to text-based parsing if unavailable
+- Use parsed complexity to determine extended thinking budget
 
-**JSON Schema** (validates task structure):
+**Quick Reference**:
 
-```json
-{
-  "type": "object",
-  "properties": {
-    "phases": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "enum": ["Setup", "Foundational", "Tests", "Core Implementation", "Integration", "Polish", "Verification", "Documentation"]
-          },
-          "tasks": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "id": { "type": "string", "pattern": "^T\\d{3}[a-z]?$" },
-                "description": { "type": "string" },
-                "filePaths": { "type": "array", "items": { "type": "string" }, "default": [] },
-                "isParallel": { "type": "boolean", "default": false },
-                "dependencies": { "type": "array", "items": { "type": "string" }, "default": [] },
-                "complexity": { "type": "string", "enum": ["simple", "moderate", "complex"], "default": "moderate" },
-                "status": { "type": "string", "enum": ["pending", "completed"], "default": "pending" }
-              },
-              "required": ["id", "description"]
-            }
-          }
-        },
-        "required": ["name", "tasks"]
-      }
-    }
-  },
-  "required": ["phases"]
-}
-```
+| Parsed Complexity  | Sonnet 4.5 Action            |
+| ------------------ | ---------------------------- |
+| `"simple"`         | No extended thinking         |
+| `"moderate"`       | 4K-8K extended thinking      |
+| `"complex"`        | 16K+ extended thinking       |
+| `isParallel: true` | Batch with other `[P]` tasks |
 
-**Parsing Instructions**:
-
-When reading tasks.md, extract tasks into the validated JSON structure above. For each task:
-
-1. **Extract task ID**: Look for pattern `T001`, `T002a`, etc. (required)
-2. **Extract description**: The text after the task ID (required)
-3. **Detect parallel marker**: If line contains `[P]`, set `isParallel: true`
-4. **Extract file paths**: Look for paths like `packages/...` or `src/...` in description (optional)
-5. **Detect dependencies**: Look for "depends on T00X", "after T00X", or "Blocking" (optional)
-6. **Extract status**: `[x]` = `completed`, `[ ]` = `pending`
-7. **Infer complexity**:
-   - "simple" - Single file, <10 lines, verification tasks
-   - "moderate" - Multiple files OR tests OR 10-50 lines
-   - "complex" - State management, accessibility, error handling, >50 lines
-8. **Group by phase**: Setup → Foundational → Tests → Core → Integration → Polish
-
-**Expected Result**: Validated JSON with all tasks structured and ready for iteration
-
-#### Fallback Method: Text-Based Parsing
-
-⚠️ **If structured outputs fail** (beta feature unavailable or error):
-
-Fall back to text-based parsing:
-
-1. Read tasks.md sequentially
-2. Parse phase headers (`## Phase N: Name`)
-3. Extract task lines (`- [ ] T00X [P?] Description`)
-4. Manually extract IDs, descriptions, markers
-5. Build task array in memory
-
-**Fallback preserves all current behavior** - no functionality loss if beta feature unavailable.
-
-</task_parsing_with_structured_outputs>
-
-#### Benefits of Structured Parsing
-
-| Benefit           | Description                                          |
-| ----------------- | ---------------------------------------------------- |
-| **Reliability** ✅ | Guaranteed schema validation, no markdown edge cases |
-| **Performance** ⚡ | Single-pass extraction vs multi-read parsing         |
-| **Type Safety** 🔒 | Pattern validation for task IDs (T001, T002a)        |
-| **Maintainable** 🔧 | Schema documents expected task structure             |
-
-#### Usage in Implementation Loop
-
-After parsing, iterate through `phases → tasks`:
-
-```typescript
-for (const phase of parsedTasks.phases) {
-  // Phase: Setup, Tests, Core Implementation, etc.
-  for (const task of phase.tasks) {
-    if (task.status === 'completed') continue;  // Skip completed tasks
-
-    // Use structured data for smart decisions
-    if (task.isParallel) { /* can batch with other [P] tasks */ }
-    if (task.dependencies.length > 0) { /* verify deps completed first */ }
-    if (task.complexity === 'complex') { /* use extended thinking */ }
-
-    // Implement task...
-  }
-}
-```
-
-**⚠️ Beta Feature Note**: Structured outputs is a beta feature (verified 2026-01-15). If unavailable, the command automatically falls back to text-based parsing with no loss of functionality.
+**⚠️ Beta Feature Note**: Structured outputs verified 2026-01-15. Falls back to text parsing automatically.
 
 ### Implementation Loop (FOR EACH Task in tasks.md)
 
@@ -589,7 +466,9 @@ Ensure ALL tasks are marked [X] in tasks.md.
 
 ### Step 5.2: Create Git Commit(s)
 
-**Conventional commit format**:
+**Reference**: See `shared/commit-templates.md` for complete commit message templates.
+
+**Conventional commit format** (Sonnet 4.5 co-author):
 
 ```bash
 git add [relevant files]
@@ -689,50 +568,27 @@ Moving to T1.3: ARIA attributes integration...
 
 ## Error Handling
 
-### Compilation Errors
+**Reference**: See `shared/error-handling.md` for complete error response patterns.
 
-```
-❌ Compilation failed after implementing T1.2
+### Sonnet-Specific Error Handling
 
-Error: Type 'boolean' is not assignable to type 'string'
-Location: accordion.component.ts:51
+**Error-First TDD Approach**: When errors occur during TDD cycle:
 
-Fix: Adjusting type annotation...
-✅ Fixed - recompiling
-✅ Compilation successful
-```
+1. **Read the EXACT error** - Don't assume, read the actual message
+2. **Fix ONLY that error** - Minimal fix, don't over-engineer
+3. **Re-run test** - Get next error or confirmation of success
+4. **Repeat** - Continue until all tests pass
 
-**Action**: Fix immediately, don't continue to next task
+### Quick Reference
 
-### Test Failures
+| Error Type            | Action                                             |
+| --------------------- | -------------------------------------------------- |
+| Compilation           | Fix immediately, don't continue to next task       |
+| Test Failure          | Debug and fix before marking task complete         |
+| Linting               | Fix all issues before proceeding to commit         |
+| Parallel Task Failure | Continue with successful tasks, report failed ones |
 
-```
-❌ Tests failed: 2 failing after T1.3
-
-Failure 1: Expected aria-expanded="true" but got aria-expanded="false"
-Location: accordion.spec.ts:45
-
-Fix: Signal not updating correctly, adjusting toggle() logic...
-✅ Fixed - rerunning tests
-✅ All tests passing (18/18)
-```
-
-**Action**: Debug and fix before marking task complete
-
-### Verification Failures
-
-```
-❌ Linting failed: 3 errors
-
-Error: Prefer using @if instead of *ngIf
-Location: accordion.component.html:12
-
-Fix: Replacing *ngIf with @if control flow...
-✅ Fixed - relinting
-✅ Linting clean
-```
-
-**Action**: Fix all linting issues before proceeding to commit
+See `shared/error-handling.md` for detailed response templates and recovery procedures.
 
 ---
 
@@ -788,5 +644,14 @@ After execution:
 ---
 
 **Reference Documentation**: `prompt-engineering/CLAUDE-SONNET-4-5-IMPLEMENTATION-OPTIMIZATION.md`
+
+**Shared Resources** (generic procedures):
+
+- `shared/task-parsing-schema.md` - JSON schema for task extraction
+- `shared/verification-workflow.md` - Standard test/lint/build steps
+- `shared/ignore-patterns.md` - Technology-specific ignore patterns
+- `shared/commit-templates.md` - Conventional commit formats
+- `shared/error-handling.md` - Error response patterns
+- `shared/DESIGN-PRINCIPLES.md` - How shared resources work with model-specific optimizations
 
 **Optimization Source**: Research-backed strategies from Anthropic, InfoWorld, Composio, Surge AI (2026)

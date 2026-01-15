@@ -148,6 +148,10 @@ TodoWrite([
 
 For each task, apply the appropriate pattern-based execution template.
 
+**Reference**: Extended pattern documentation available in `shared/implementation-patterns/`.
+
+**Haiku-Specific**: Patterns below are optimized for Haiku's step-bounded reasoning (3-5 steps max). Use shared patterns only if task requires more detail.
+
 </execution_rules>
 
 #### Pattern A: Add Method/Property
@@ -487,6 +491,8 @@ TodoWrite([
 
 <verification>
 
+**Reference**: See `shared/verification-workflow.md` for detailed verification procedures.
+
 **After all tasks complete, run full verification suite**:
 
 ```bash
@@ -567,7 +573,9 @@ Edit(
 
 <commit_strategy>
 
-**Commit grouping**:
+**Reference**: See `shared/commit-templates.md` for complete commit message templates.
+
+**Commit grouping** (Haiku-optimized):
 
 - **Option 1**: One commit per task category (recommended for Haiku)
   - Commit 1: Method additions (T001-T005)
@@ -616,6 +624,10 @@ Co-Authored-By: Claude Haiku 4.5 <noreply@anthropic.com>"
 ## Error Handling
 
 <error_handling>
+
+**Reference**: See `shared/error-handling.md` for detailed error response patterns.
+
+**Haiku-Specific**: Use 3-step bounded analysis for all errors - no open-ended debugging.
 
 ### Compilation Errors
 
@@ -958,3 +970,15 @@ npm run test -- [component-name]
 - **Cost**: 66% cheaper ($1/$5 vs $3/$15 per 1M tokens)
 - **Quality**: 90-95% of Sonnet for focused, pattern-based tasks
 - **Best ROI**: Features with high proportion of mechanical tasks (renames, additions, tests, docs)
+
+---
+
+**Shared Resources** (generic procedures):
+
+- `shared/implementation-patterns/` - Extended pattern documentation (Patterns A-E)
+- `shared/verification-workflow.md` - Standard test/lint/build steps
+- `shared/commit-templates.md` - Conventional commit formats
+- `shared/error-handling.md` - Error response patterns
+- `shared/DESIGN-PRINCIPLES.md` - How shared resources work with model-specific optimizations
+
+**Note**: Inline patterns above are Haiku-optimized (step-bounded). Use shared patterns only when more detail needed.

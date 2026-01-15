@@ -74,20 +74,23 @@ Read('CONSTITUTION.md');
 
 ### Step 1.2b: Parse Tasks Structure
 
-**Extract from tasks.md**:
+**Reference**: See `shared/task-parsing-schema.md` for complete JSON schema and parsing instructions.
 
-- Task phases: Setup, Tests, Core, Integration, Polish
-- Task dependencies: Sequential vs parallel execution rules
-- Task details: ID, description, file paths, parallel markers [P]
-- Execution flow: Order and dependency requirements
+**Opus-Specific Application**:
 
-**Parsing Logic**:
+- Use parsed complexity to determine effort level (Medium vs High)
+- Use parsed complexity to determine extended thinking budget
+- Leverage superior logical planning for dependency analysis
 
-1. Identify phase headers (## Phase 1: Setup, ## Phase 2: Tests, etc.)
-2. Extract task IDs and descriptions from each phase
-3. Detect parallel markers [P] for concurrent execution
-4. Map file paths to tasks for dependency analysis
-5. Build execution sequence respecting dependencies
+**Quick Reference**:
+
+| Parsed Complexity      | Opus 4.5 Action                          |
+| ---------------------- | ---------------------------------------- |
+| `"simple"`             | Medium effort, no extended thinking      |
+| `"moderate"`           | Medium effort, 8K-16K extended thinking  |
+| `"complex"`            | Medium effort, 16K-32K extended thinking |
+| Task marked "critical" | High effort, 32K-64K extended thinking   |
+| `isParallel: true`     | Batch with other `[P]` tasks             |
 
 ### Step 1.3: Extended Thinking - Architecture Understanding
 
@@ -140,49 +143,19 @@ IF `FEATURE_DIR/checklists/` exists:
 
 ### Step 2.2: Project Setup Verification
 
-**Detection & Creation Logic**:
+**Reference**: See `shared/ignore-patterns.md` for complete detection logic and technology-specific patterns.
 
-- Check if repository is git repo (create/verify .gitignore if so):
+**Quick Reference** (detection triggers):
 
-  ```bash
-  git rev-parse --git-dir 2>/dev/null
-  ```
+- Git repo detected → verify/create `.gitignore`
+- Dockerfile found → verify/create `.dockerignore`
+- ESLint config found → verify/create `.eslintignore` or update `ignores`
+- Prettier config found → verify/create `.prettierignore`
+- Package publishing → verify/create `.npmignore`
+- Terraform files → verify/create `.terraformignore`
+- Helm charts → verify/create `.helmignore`
 
-- Check if Dockerfile\* exists or Docker in plan.md → create/verify .dockerignore
-- Check if .eslintrc\* exists → create/verify .eslintignore
-- Check if eslint.config.\* exists → ensure the config's `ignores` entries cover required patterns
-- Check if .prettierrc\* exists → create/verify .prettierignore
-- Check if .npmrc or package.json exists → create/verify .npmignore (if publishing)
-- Check if terraform files (\*.tf) exist → create/verify .terraformignore
-- Check if .helmignore needed (helm charts present) → create/verify .helmignore
-
-**If ignore file already exists**: Verify it contains essential patterns, append missing critical patterns only
-**If ignore file missing**: Create with full pattern set for detected technology
-
-**Common Patterns by Technology** (from plan.md tech stack):
-
-- **Node.js/JavaScript/TypeScript**: `node_modules/`, `dist/`, `build/`, `*.log`, `.env*`
-- **Python**: `__pycache__/`, `*.pyc`, `.venv/`, `venv/`, `dist/`, `*.egg-info/`
-- **Java**: `target/`, `*.class`, `*.jar`, `.gradle/`, `build/`
-- **C#/.NET**: `bin/`, `obj/`, `*.user`, `*.suo`, `packages/`
-- **Go**: `*.exe`, `*.test`, `vendor/`, `*.out`
-- **Ruby**: `.bundle/`, `log/`, `tmp/`, `*.gem`, `vendor/bundle/`
-- **PHP**: `vendor/`, `*.log`, `*.cache`, `*.env`
-- **Rust**: `target/`, `debug/`, `release/`, `*.rs.bk`, `*.rlib`, `*.prof*`, `.idea/`, `*.log`, `.env*`
-- **Kotlin**: `build/`, `out/`, `.gradle/`, `.idea/`, `*.class`, `*.jar`, `*.iml`, `*.log`, `.env*`
-- **C++**: `build/`, `bin/`, `obj/`, `out/`, `*.o`, `*.so`, `*.a`, `*.exe`, `*.dll`, `.idea/`, `*.log`, `.env*`
-- **C**: `build/`, `bin/`, `obj/`, `out/`, `*.o`, `*.a`, `*.so`, `*.exe`, `Makefile`, `config.log`, `.idea/`, `*.log`, `.env*`
-- **Swift**: `.build/`, `DerivedData/`, `*.swiftpm/`, `Packages/`
-- **R**: `.Rproj.user/`, `.Rhistory`, `.RData`, `.Ruserdata`, `*.Rproj`, `packrat/`, `renv/`
-- **Universal**: `.DS_Store`, `Thumbs.db`, `*.tmp`, `*.swp`, `.vscode/`, `.idea/`
-
-**Tool-Specific Patterns**:
-
-- **Docker**: `node_modules/`, `.git/`, `Dockerfile*`, `.dockerignore`, `*.log*`, `.env*`, `coverage/`
-- **ESLint**: `node_modules/`, `dist/`, `build/`, `coverage/`, `*.min.js`
-- **Prettier**: `node_modules/`, `dist/`, `build/`, `coverage/`, `package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`
-- **Terraform**: `.terraform/`, `*.tfstate*`, `*.tfvars`, `.terraform.lock.hcl`
-- **Kubernetes/k8s**: `*.secret.yaml`, `secrets/`, `.kube/`, `kubeconfig*`, `*.key`, `*.crt`
+Apply patterns from `shared/ignore-patterns.md` based on detected technology stack.
 
 ### Step 2.3: Create TODO List
 
@@ -379,6 +352,10 @@ Ensure ALL tasks marked [X]
 
 ### Step 5.2: Create Git Commit
 
+**Reference**: See `shared/commit-templates.md` for complete commit message templates.
+
+**Conventional commit format** (Opus 4.5 co-author):
+
 ```bash
 git add [files]
 
@@ -455,32 +432,27 @@ Moving to T1.3...
 
 ## Error Handling
 
-**Opus 4.5 has higher first-try success**, but errors can still occur:
+**Reference**: See `shared/error-handling.md` for complete error response patterns.
 
-### Compilation Errors
+### Opus-Specific Error Handling
 
-```
-❌ Compilation failed
+**First-Try Correctness Approach**: Opus 4.5 has higher first-try success, but errors can still occur:
 
-Error: Type 'boolean' not assignable to 'string'
-Location: accordion.ts:51
+1. **Implement complete solution** - Handle edge cases proactively
+2. **Run tests to verify** - Trust but verify
+3. **If failure occurs** - Fix issues, re-run (lower iteration count expected)
 
-Fix: Adjusting type...
-✅ Fixed - recompiling
-```
+### Quick Reference
 
-### Test Failures
+| Error Type    | Opus 4.5 Action                                                |
+| ------------- | -------------------------------------------------------------- |
+| Compilation   | Fix immediately - Opus's superior logical planning helps debug |
+| Test Failure  | Edge case missed - adjust implementation                       |
+| Parallel Task | Continue successful tasks, report failed                       |
 
-```
-❌ Tests failed: 1 failing
+**Note**: Opus's failure rate is lower than Sonnet, but still test everything.
 
-Failure: Expected aria-expanded="true" but got "false"
-
-Fix: Opus missed this edge case, adjusting...
-✅ Fixed - all passing
-```
-
-**Note**: Opus's failure rate is lower than Sonnet, but still test everything
+See `shared/error-handling.md` for detailed response templates.
 
 ---
 
@@ -546,5 +518,14 @@ Fix: Opus missed this edge case, adjusting...
 ---
 
 **Reference Documentation**: `prompt-engineering/CLAUDE-OPUS-4-5-IMPLEMENTATION-OPTIMIZATION.md`
+
+**Shared Resources** (generic procedures):
+
+- `shared/task-parsing-schema.md` - JSON schema for task extraction
+- `shared/verification-workflow.md` - Standard test/lint/build steps
+- `shared/ignore-patterns.md` - Technology-specific ignore patterns
+- `shared/commit-templates.md` - Conventional commit formats
+- `shared/error-handling.md` - Error response patterns
+- `shared/DESIGN-PRINCIPLES.md` - How shared resources work with model-specific optimizations
 
 **Optimization Source**: Anthropic docs (Effort, Extended Thinking, Prompting), performance analysis (DataStudios, Cosmic, DataCamp) (2026)
