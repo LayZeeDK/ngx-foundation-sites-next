@@ -34,13 +34,15 @@
 
 | Platform           | 200K Context | 1M Context       | Recommendation                                |
 | ------------------ | ------------ | ---------------- | --------------------------------------------- |
-| **Claude Code**    | ✅ Available | ✅ **Available** | Use 1M for large features (>200K tokens)      |
+| **Claude Code**    | ✅ Available | ❌ **Not Available** | Opus limited to 200K (use Sonnet for 1M)      |
 | **GitHub Copilot** | ✅ Available | ❌ Not Available | Use progressive disclosure for large features |
+
+**⚠️ IMPORTANT**: Opus 4.5 is limited to **200K context only**. The 1M context window is exclusive to Sonnet 4.5.
 
 **For Claude Code Users**:
 
-- **<200K tokens**: Use 200K context (standard)
-- **200K-1M tokens**: Use 1M context (available, premium pricing: 2x input, 1.5x output)
+- **<200K tokens**: Use 200K context with Opus (standard)
+- **200K-1M tokens**: ❌ Switch to Sonnet 4.5 (Opus cannot handle this, 1M is Sonnet-only)
 - **>1M tokens**: Use progressive disclosure (chunk into phases)
 
 **For GitHub Copilot Users**:
@@ -50,7 +52,9 @@
 
 **Pricing**: $5/M input, $25/M output (67% cheaper than previous Opus pricing)
 
-**Source**: [Claude Opus 4.5 - OpenRouter](https://openrouter.ai/anthropic/claude-opus-4.5)
+**Sources**:
+- [Introducing Claude Opus 4.5 - Anthropic](https://www.anthropic.com/news/claude-opus-4-5) - 200K context
+- [1M Context for Sonnet - Anthropic](https://www.anthropic.com/news/1m-context) - 1M is Sonnet-exclusive
 
 ---
 
@@ -584,7 +588,7 @@ export class NfsAccordion {
 | **Daily development**          | Sonnet 4.5          | Faster, cheaper, 77.2% SWE-bench          |
 | **Simple tasks**               | Haiku 4.5           | 90% of Sonnet, 3x cheaper, 2x faster      |
 | **Cost-sensitive**             | Sonnet 4.5 / Haiku  | Opus is premium ($5/$25 vs $3/$15)        |
-| **Large context (>200K)**      | Opus/Sonnet (1M)    | Both support 1M in Claude Code            |
+| **Large context (>200K)**      | Sonnet 4.5 (1M only) | ⚠️ Opus limited to 200K, use Sonnet for 1M |
 
 **Recommendation**:
 

@@ -100,7 +100,7 @@ This directory contains research-backed optimization strategies for AI models us
 
 ### [Claude Opus 4.5 Implementation Optimization Guide](./CLAUDE-OPUS-4-5-IMPLEMENTATION-OPTIMIZATION.md)
 
-**Model**: Claude Opus 4.5 (200K / 1M context, effort parameter, hybrid reasoning)
+**Model**: Claude Opus 4.5 (200K context only, effort parameter, hybrid reasoning)
 
 **10 Key Optimizations**:
 
@@ -121,8 +121,8 @@ This directory contains research-backed optimization strategies for AI models us
 
 **Commands**: `/implement-opus-4-5` (Claude Code & GitHub Copilot)
 
-**When to Use**: Complex implementations, production code, deep debugging, intricate logic
-**When to Use Sonnet Instead**: Daily work, speed > quality, cost-sensitive
+**When to Use**: Complex implementations, production code, deep debugging, intricate logic (within 200K context)
+**When to Use Sonnet Instead**: Daily work, speed > quality, cost-sensitive, **large features >200K tokens** (Sonnet has 1M context)
 
 **Related**: Based on [Claude 4.5 Optimization Guide](./CLAUDE-4-5-OPTIMIZATION.md) + Opus-specific features
 
