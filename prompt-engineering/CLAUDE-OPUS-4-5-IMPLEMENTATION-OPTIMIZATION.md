@@ -225,13 +225,24 @@ Opus 4.5's increased sensitivity means:
 
 ---
 
-### Optimization 4: "Think" Word Avoidance
+### Optimization 4: Word Choice for Extended Thinking Modes
 
-**Research Finding**:
+**Practical Observation**:
 
-> "When extended thinking is disabled, Claude Opus 4.5 is particularly sensitive to the word 'think' and its variants, and Anthropic recommends replacing 'think' with alternative words that convey similar meaning, such as 'consider,' 'believe,' and 'evaluate.'"
+When extended thinking is disabled, using alternative wording to "think" can improve response quality. Consider using words like "evaluate," "consider," or "analyze" instead of "think" and its variants.
 
-**Source**: [Prompting best practices - Claude Docs](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-4-best-practices)
+**Research Context**:
+
+Extended thinking is optional in Opus 4.5 and can impact performance differently based on task type:
+- For pattern matching and simple tasks, extended thinking may hurt performance
+- For complex reasoning, extended thinking enables deeper analysis
+- Opus 4.5 is a strong reasoner even without extended thinking enabled
+
+**Sources**:
+- [How to use thinking mode in claude 4.5 - CometAPI](https://www.cometapi.com/how-to-use-thinking-mode-in-claude-4-5/)
+- [Thinking mode in Claude 4.5 - Medium](https://medium.com/@mkteam/thinking-mode-in-claude-4-5-all-you-need-to-know-353235942182)
+
+**Note**: This is based on practical experience and community observations, not official Anthropic documentation.
 
 #### Implementation Pattern
 
@@ -250,7 +261,7 @@ Think deeply about edge cases before implementing.
 
 ## When Extended Thinking is DISABLED
 
-**❌ Avoid "think" variants**:
+**⚠️ Consider alternative wording** (based on practical observations):
 
 ```markdown
 Think about the architecture...
@@ -715,9 +726,14 @@ After optimization, expect:
 - [Introducing Claude Opus 4.5](https://www.anthropic.com/news/claude-opus-4-5) - Model announcement, capabilities
 - [Claude Opus 4.5](https://www.anthropic.com/claude/opus) - Product page
 - [What's new in Claude 4.5 - Claude Docs](https://platform.claude.com/docs/en/about-claude/models/whats-new-claude-4-5) - Feature overview
-- [Prompting best practices - Claude Docs](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-4-best-practices) - System prompt sensitivity, "think" word
+- [Prompting best practices - Claude Docs](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-4-best-practices) - System prompt sensitivity
 - [Effort - Claude Docs](https://platform.claude.com/docs/en/build-with-claude/effort) - Effort parameter (beta)
 - [Building with extended thinking - Claude Docs](https://platform.claude.com/docs/en/build-with-claude/extended-thinking) - Thinking budgets
+
+### Extended Thinking & Word Choice
+
+- [How to use thinking mode in claude 4.5 - CometAPI](https://www.cometapi.com/how-to-use-thinking-mode-in-claude-4-5/) - Extended thinking guidance, practical patterns
+- [Thinking mode in Claude 4.5 - Medium](https://medium.com/@mkteam/thinking-mode-in-claude-4-5-all-you-need-to-know-353235942182) - Extended thinking control, when to avoid
 
 ### Performance Analysis
 

@@ -72,6 +72,23 @@ Read('CONSTITUTION.md');
 
 **Speedup**: ~10-20x faster than sequential
 
+### Step 1.2b: Parse Tasks Structure
+
+**Extract from tasks.md**:
+
+- Task phases: Setup, Tests, Core, Integration, Polish
+- Task dependencies: Sequential vs parallel execution rules
+- Task details: ID, description, file paths, parallel markers [P]
+- Execution flow: Order and dependency requirements
+
+**Parsing Logic**:
+
+1. Identify phase headers (## Phase 1: Setup, ## Phase 2: Tests, etc.)
+2. Extract task IDs and descriptions from each phase
+3. Detect parallel markers [P] for concurrent execution
+4. Map file paths to tasks for dependency analysis
+5. Build execution sequence respecting dependencies
+
 ### Step 1.3: Extended Thinking - Architecture Understanding
 
 **Use extended thinking** (8K budget):
@@ -88,7 +105,7 @@ Evaluate deeply:
 After evaluating, summarize understanding.
 </extended_thinking_prompt>
 
-**Note**: Use "evaluate" not "think" (Opus 4.5 word sensitivity)
+**Note**: Prefer "evaluate" over "think" when extended thinking is disabled (based on practical observations with Opus 4.5)
 
 **Output to user**:
 
@@ -284,6 +301,35 @@ npm run test -- [test-file]
 - Mark task [X] in tasks.md immediately
 - Update TodoWrite
 - Continue to next task
+
+#### Step 3.4: Parallel Task Error Handling
+
+**For tasks marked [P] (parallel execution)**:
+
+**Error handling strategy**:
+
+1. **Run parallel tasks simultaneously** - Multiple tasks execute in same phase
+2. **IF one task fails**:
+   - ✅ Continue with successful parallel tasks
+   - ❌ Do NOT halt entire phase
+   - 📋 Report failed task with error context
+3. **After parallel batch completes**:
+   - Summarize successful tasks (marked [X])
+   - List failed tasks with failure reasons
+   - Suggest fixes or next steps
+4. **Sequential tasks**: Failure still halts execution (unchanged)
+
+**Example**:
+
+```
+Phase 2: Tests (3 parallel tasks)
+✅ T2.1: Unit tests - PASSED
+❌ T2.2: Integration tests - FAILED (import error)
+✅ T2.3: E2E tests - PASSED
+
+Status: 2/3 complete, proceeding to Phase 3
+Deferred: T2.2 needs import path fix
+```
 
 </phase_3_implementation>
 
