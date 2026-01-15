@@ -512,9 +512,11 @@ After thinking, implement the diagnostic system.
 ### Optimization 7: Structured XML for Multi-Phase Implementation
 
 **Research Finding**:
-> "Claude 4.x models have been trained on structured prompts and know how to parse them. XML works great."
+> "Claude 4.x models respond well to structured prompts and effectively parse XML delimiters. XML works great, as do JSON and other labeled formats."
 
-**Source**: [The Claude Sonnet 4.5 Prompting Playbook](https://www.pantaleone.net/blog/post/claude-sonnet-4-5-system-prompt-analysis)
+**Source**: [Claude 4 Best Practices - Official Docs](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-4-best-practices) (recommends "Use XML format indicators")
+
+> **Note**: The original claim from [The Claude Sonnet 4.5 Prompting Playbook](https://www.pantaleone.net/blog/post/claude-sonnet-4-5-system-prompt-analysis) stated Claude was "trained on" structured prompts. However, Anthropic's official documentation only confirms Claude is "trained for more precise instruction following" and recommends XML as an effective technique—not that it was specifically trained on XML data.
 
 #### Implementation Pattern
 
