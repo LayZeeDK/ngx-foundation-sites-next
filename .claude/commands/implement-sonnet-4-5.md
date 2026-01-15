@@ -37,7 +37,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 ## Phase 1: Deep Context Gathering (Research-First)
 
-<phase_1_context>
+<phase name="context_gathering" extended_thinking="8K">
 
 ### Step 1.1: Run Prerequisites Check
 
@@ -113,13 +113,13 @@ After thinking, summarize your understanding for the user.
 Ready to proceed with implementation.
 ```
 
-</phase_1_context>
+</phase>
 
 ---
 
 ## Phase 2: Setup Verification (Systematic)
 
-<phase_2_setup>
+<phase name="setup_verification" extended_thinking="false">
 
 ### Step 2.1: Check Checklists Status
 
@@ -159,9 +159,12 @@ IF `FEATURE_DIR/checklists/` exists:
   ```
 
 - Check if Dockerfile\* exists or Docker in plan.md → create/verify .dockerignore
-- Check if .eslintrc\* or eslint.config.\* exists → create/verify .eslintignore or config ignores
+- Check if .eslintrc\* exists → create/verify .eslintignore
+- Check if eslint.config.\* exists → ensure the config's `ignores` entries cover required patterns
 - Check if .prettierrc\* exists → create/verify .prettierignore
 - Check if .npmrc or package.json exists → create/verify .npmignore (if publishing)
+- Check if terraform files (\*.tf) exist → create/verify .terraformignore
+- Check if helm charts present (Chart.yaml) → create/verify .helmignore
 
 **If ignore file already exists**: Verify it contains essential patterns, append missing critical patterns only
 
@@ -207,13 +210,13 @@ TodoWrite([
 ]);
 ```
 
-</phase_2_setup>
+</phase>
 
 ---
 
 ## Phase 3: Implementation (Error-First TDD)
 
-<phase_3_implementation>
+<phase name="implementation" extended_thinking="16K">
 
 ### Implementation Constraints (CRITICAL - Prevents Over-Engineering)
 
@@ -233,6 +236,15 @@ TodoWrite([
 - ✅ Error handling specified in spec.md
 - ✅ Accessibility requirements from spec.md
 - ✅ Type safety for changed code
+
+### Step 3.0: Parse Task Structure from tasks.md
+
+Before starting the implementation loop, extract and understand:
+
+- **Task phases**: Setup, Tests, Core, Integration, Polish
+- **Task dependencies**: Sequential vs parallel execution rules
+- **Task details**: ID, description, file paths, parallel markers [P]
+- **Execution flow**: Order and dependency requirements
 
 ### Implementation Loop (FOR EACH Task in tasks.md)
 
@@ -382,15 +394,16 @@ Repeat Steps 3.1-3.4 for each task in tasks.md, in order.
 
 - Sequential tasks: Complete in order
 - Parallel tasks `[P]`: Can implement simultaneously
+  - **Error handling**: Continue with successful parallel tasks, report failed ones separately
 - File-based coordination: Tasks touching same files must be sequential
 
-</phase_3_implementation>
+</phase>
 
 ---
 
 ## Phase 4: Integration Verification
 
-<phase_4_verification>
+<phase name="verification" extended_thinking="8K">
 
 ### Step 4.1: Run Full Test Suite
 
@@ -447,13 +460,13 @@ After thinking, report any concerns or confirm readiness for completion.
 Ready for completion phase.
 ```
 
-</phase_4_verification>
+</phase>
 
 ---
 
 ## Phase 5: Completion & Documentation
 
-<phase_5_completion>
+<phase name="completion" extended_thinking="false">
 
 ### Step 5.1: Final tasks.md Update
 
@@ -521,7 +534,7 @@ EOF
 - Run `/analyze-report-gaps-gpt-5-mini` or `/analyze-report-gaps-gpt-4-1` to verify no new gaps introduced
 ```
 
-</phase_5_completion>
+</phase>
 
 ---
 
