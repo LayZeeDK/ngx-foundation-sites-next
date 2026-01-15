@@ -668,6 +668,7 @@ After execution:
 - Uses **TodoWrite for progress tracking** (visible to user)
 - **Stops on test failures** - ensures quality at each step
 - **Commits incrementally** - logical commit boundaries for clean history
+- **Prerequisites**: This command requires a complete task breakdown in tasks.md. If tasks are incomplete or missing, run `/speckit.tasks` first to regenerate the task list.
 
 ---
 
