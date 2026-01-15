@@ -17,9 +17,9 @@
 5. **Zero cost** - Free in GitHub Copilot (0x multiplier)
 6. **Higher sensitivity to ambiguous prompts** - Needs explicit format specifications
 
-**Performance**: Typically **85-95% of GPT-5** on general benchmarks with **substantially improved latency/price**.
+**Performance**: Typically **85-95% of GPT-5** on general benchmarks with **substantially improved latency/price** (third-party analysis, not officially published by OpenAI).
 
-**Source**: [GPT-5 mini Model Card - PromptHub](https://www.prompthub.us/models/gpt-5-mini)
+**Source**: [GPT-5 mini Model Card - PromptHub](https://www.prompthub.us/models/gpt-5-mini) (third-party analysis)
 
 ---
 

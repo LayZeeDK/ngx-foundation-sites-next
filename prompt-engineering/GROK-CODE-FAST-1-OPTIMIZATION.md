@@ -14,10 +14,9 @@
 1. **Agentic coding specialist** - Built from scratch for iterative, tool-using workflows
 2. **256K context window** - Handles large repositories and long files coherently
 3. **92 tokens/second throughput** - Up to 4x faster than competing agentic models
-4. **Mixture-of-Experts architecture** - 314B parameters with specialized expert routing
-5. **Native tool-calling** - First-party support; designed with tool-calling in mind
-6. **Exposed reasoning traces** - Visible via `chunk.choices[0].delta.reasoning_content` (streaming only)
-7. **90%+ cache hit rates** - Dramatic cost/latency reduction in multi-turn workflows
+4. **Native tool-calling** - First-party support; designed with tool-calling in mind
+5. **Exposed reasoning traces** - Visible via `chunk.choices[0].delta.reasoning_content` (streaming only)
+6. **90%+ cache hit rates** - Dramatic cost/latency reduction in multi-turn workflows
 
 **Performance**: **70.8% on SWE-Bench Verified** using xAI's internal harness. Delivers **4x speed at 1/10th cost** of other leading agentic models.
 

@@ -16,8 +16,8 @@
 
 1. **State-of-the-Art Coding** - 80.9% on SWE-bench Verified (vs Sonnet 4.5's 77.2%)
 2. **Hybrid Reasoning Model** - Pushes frontier for coding, agents, computer use
-3. **Effort Parameter** - Unique to Opus 4.5: control token usage (low/medium/high)
-4. **Token Efficiency** - 76% fewer output tokens at medium effort (matches Sonnet best performance)
+3. **Effort Parameter (BETA)** - Unique to Opus 4.5: control token usage (low/medium/high)
+4. **Token Efficiency** - 76% fewer output tokens at medium effort (matches Sonnet best performance) ⚠️ **BETA FEATURE**
 5. **Extended Thinking** - Up to 64K token budgets for deep reasoning
 6. **Long-Horizon Excellence** - Best for complex, multi-step autonomous tasks
 7. **Strongest Tool Use** - One of the best tool-using models available
@@ -112,6 +112,17 @@
 ````
 
 **Note**: Beta features should be used cautiously - verify availability before relying on effort parameter
+
+## ⚠️ BETA Feature Stability Warning
+
+The **effort parameter** is currently in BETA (as of 2026-01-15). This means:
+
+- API may change without notice
+- Parameter may be removed or redesigned
+- Performance characteristics may shift
+- Not recommended for production-critical workflows
+
+**Recommendation**: Test thoroughly before depending on effort-based optimizations.
 
 </effort_parameter_strategy>
 

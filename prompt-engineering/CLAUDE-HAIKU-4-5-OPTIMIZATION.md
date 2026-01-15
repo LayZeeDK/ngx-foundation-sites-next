@@ -73,12 +73,14 @@ Every unnecessary token increases cost and latency:
 
 ### 3. Leverage Structural Patterns
 
-Haiku was trained on structured prompts:
+Claude 4.x models excel with structured prompts:
 
 - XML tags (`<task>`, `<context>`, `<output>`)
 - JSON for complex data
 - Checklists and labeled sections
 - Clear role definitions in system prompts
+
+> **Note**: Anthropic's official documentation confirms Claude is "trained for more precise instruction following" and recommends XML as an effective technique, rather than stating it was specifically trained on XML data.
 
 ---
 

@@ -16,7 +16,7 @@
 2. **State-of-the-Art Code Editing** - 0% error rate on internal benchmarks (vs 9% on Sonnet 4)
 3. **Enhanced Tool Use** - Parallel tool calls, speculative searches, multi-file context building
 4. **Context Awareness** - Explicitly tracks token budget and optimizes usage
-5. **Agentic Excellence** - #1 on SWE-bench Verified for real-world software tasks
+5. **Agentic Excellence** - 77.2% on SWE-bench Verified for real-world software tasks
 6. **Extended Thinking** - Deep reasoning for architecture, error handling, edge cases
 
 **Sources**:

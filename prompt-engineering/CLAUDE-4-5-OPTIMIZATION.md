@@ -24,7 +24,7 @@
 1. **1M context window** - Currently in beta for tier 4 organizations (500K for Enterprise)
 2. **Context awareness** - Explicitly tracks remaining token budget during conversations
 3. **Extended thinking** - Deep reasoning capabilities with configurable thinking budgets (1K-32K+ tokens)
-4. **Agentic excellence** - "World's best coding model" with 30+ hour focus capability
+4. **Agentic excellence** - State-of-the-art on SWE-bench Verified (77.2%) with extended focus observed for more than 30 hours on complex, multi-step tasks
 5. **Tool use optimization** - Enhanced tool calling with context editing features
 6. **Precise instruction following** - Claude 4.x trained to follow instructions literally, not inferentially
 
@@ -1421,7 +1421,7 @@ Last session you determined GAP-1 was valid. Continue with GAP-2.
 
 ### Model Comparisons & Performance
 
-- [Everything to Know About Claude Sonnet 4.5](https://www.theneuron.ai/explainer-articles/everything-to-know-about-claude-sonnet-4-5-the-worlds-best-coding-model-that-can-focus-for-30-hours-straight) - "World's best coding model", 30+ hour focus
+- [Introducing Claude Sonnet 4.5](https://www.anthropic.com/news/claude-sonnet-4-5) - Extended focus (30+ hours), state-of-the-art coding performance
 - [Claude Sonnet 4.5 analysis - Braintrust](https://www.braintrust.dev/blog/claude-sonnet-4-5-aspirational-evals) - Performance data: 12.6% avg improvement, 29.6% score improvement
 - [Fifty Claude Sonnet 4.5 Prompts That Actually Pull Their Weight](https://sider.ai/blog/ai-tools/fifty-claude-sonnet-4_5-prompts-that-actually-pull-their-weight) - Real-world prompt examples
 - [PromptHub Blog: Everything You Need to Know about Claude 4.5](https://www.prompthub.us/blog/everything-you-need-to-know-about-claude-4-5) - Comprehensive overview
