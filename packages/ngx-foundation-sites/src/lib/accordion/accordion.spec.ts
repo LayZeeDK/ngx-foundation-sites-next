@@ -1279,12 +1279,7 @@ describe('NfsAccordion', () => {
             </ng-template>
           </nfs-accordion>
         `,
-        imports: [
-          NfsAccordion,
-          NfsAccordionItemDef,
-          NfsAccordionHeaderDef,
-          NfsAccordionContentDef,
-        ],
+        imports: [NfsAccordion, NfsAccordionItemDef, NfsAccordionContentDef],
       })
       class MissingHeaderHost {}
 
@@ -1407,7 +1402,6 @@ describe('NfsAccordion', () => {
 
       const buttons = getTriggers();
       const button1 = buttons[0];
-      const button2 = buttons[1];
       const button3 = buttons[2];
 
       // Expand item 1 initially
@@ -1499,7 +1493,8 @@ describe('NfsAccordion', () => {
       fixture.detectChanges();
       await fixture.whenStable();
 
-      const buttons = fixture.nativeElement.querySelectorAll('.accordion-title');
+      const buttons =
+        fixture.nativeElement.querySelectorAll('.accordion-title');
       const button1 = buttons[0] as HTMLButtonElement;
       const button3 = buttons[2] as HTMLButtonElement;
 
