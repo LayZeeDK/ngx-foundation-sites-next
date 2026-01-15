@@ -35,7 +35,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 - **Beta Features** (verified 2026-01-15): `prompt-engineering/README.md#beta-feature-availability`
   - ✅ **Extended Thinking** (1K-64K budgets) - Used in phases 1, 3, 4 (lines 40, 219, 406)
   - ✅ **1M Context Window** - Available for large features (optimization #3)
-  - ✅ **Structured Outputs** - Available but not yet implemented in this command
+  - ✅ **Structured Outputs** - Used for task parsing in Step 3.0 with fallback
   - ❌ **Effort Parameter** - Requires API key (unavailable for subscription-only users)
 
 ## Path Grounding (CRITICAL)
@@ -248,14 +248,118 @@ TodoWrite([
 - ✅ Accessibility requirements from spec.md
 - ✅ Type safety for changed code
 
-### Step 3.0: Parse Task Structure from tasks.md
+### Step 3.0: Parse Task Structure with Structured Outputs (Beta)
 
-Before starting the implementation loop, extract and understand:
+**Use structured outputs for reliable task extraction** (beta feature with fallback):
 
-- **Task phases**: Setup, Tests, Core, Integration, Polish
-- **Task dependencies**: Sequential vs parallel execution rules
-- **Task details**: ID, description, file paths, parallel markers [P]
-- **Execution flow**: Order and dependency requirements
+<task_parsing_with_structured_outputs>
+
+#### Primary Method: Structured JSON Parsing
+
+**JSON Schema** (validates task structure):
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "phases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "enum": ["Setup", "Foundational", "Tests", "Core Implementation", "Integration", "Polish", "Verification", "Documentation"]
+          },
+          "tasks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string", "pattern": "^T\\d{3}[a-z]?$" },
+                "description": { "type": "string" },
+                "filePaths": { "type": "array", "items": { "type": "string" }, "default": [] },
+                "isParallel": { "type": "boolean", "default": false },
+                "dependencies": { "type": "array", "items": { "type": "string" }, "default": [] },
+                "complexity": { "type": "string", "enum": ["simple", "moderate", "complex"], "default": "moderate" },
+                "status": { "type": "string", "enum": ["pending", "completed"], "default": "pending" }
+              },
+              "required": ["id", "description"]
+            }
+          }
+        },
+        "required": ["name", "tasks"]
+      }
+    }
+  },
+  "required": ["phases"]
+}
+```
+
+**Parsing Instructions**:
+
+When reading tasks.md, extract tasks into the validated JSON structure above. For each task:
+
+1. **Extract task ID**: Look for pattern `T001`, `T002a`, etc. (required)
+2. **Extract description**: The text after the task ID (required)
+3. **Detect parallel marker**: If line contains `[P]`, set `isParallel: true`
+4. **Extract file paths**: Look for paths like `packages/...` or `src/...` in description (optional)
+5. **Detect dependencies**: Look for "depends on T00X", "after T00X", or "Blocking" (optional)
+6. **Extract status**: `[x]` = `completed`, `[ ]` = `pending`
+7. **Infer complexity**:
+   - "simple" - Single file, <10 lines, verification tasks
+   - "moderate" - Multiple files OR tests OR 10-50 lines
+   - "complex" - State management, accessibility, error handling, >50 lines
+8. **Group by phase**: Setup → Foundational → Tests → Core → Integration → Polish
+
+**Expected Result**: Validated JSON with all tasks structured and ready for iteration
+
+#### Fallback Method: Text-Based Parsing
+
+⚠️ **If structured outputs fail** (beta feature unavailable or error):
+
+Fall back to text-based parsing:
+
+1. Read tasks.md sequentially
+2. Parse phase headers (`## Phase N: Name`)
+3. Extract task lines (`- [ ] T00X [P?] Description`)
+4. Manually extract IDs, descriptions, markers
+5. Build task array in memory
+
+**Fallback preserves all current behavior** - no functionality loss if beta feature unavailable.
+
+</task_parsing_with_structured_outputs>
+
+#### Benefits of Structured Parsing
+
+| Benefit           | Description                                          |
+| ----------------- | ---------------------------------------------------- |
+| **Reliability** ✅ | Guaranteed schema validation, no markdown edge cases |
+| **Performance** ⚡ | Single-pass extraction vs multi-read parsing         |
+| **Type Safety** 🔒 | Pattern validation for task IDs (T001, T002a)        |
+| **Maintainable** 🔧 | Schema documents expected task structure             |
+
+#### Usage in Implementation Loop
+
+After parsing, iterate through `phases → tasks`:
+
+```typescript
+for (const phase of parsedTasks.phases) {
+  // Phase: Setup, Tests, Core Implementation, etc.
+  for (const task of phase.tasks) {
+    if (task.status === 'completed') continue;  // Skip completed tasks
+
+    // Use structured data for smart decisions
+    if (task.isParallel) { /* can batch with other [P] tasks */ }
+    if (task.dependencies.length > 0) { /* verify deps completed first */ }
+    if (task.complexity === 'complex') { /* use extended thinking */ }
+
+    // Implement task...
+  }
+}
+```
+
+**⚠️ Beta Feature Note**: Structured outputs is a beta feature (verified 2026-01-15). If unavailable, the command automatically falls back to text-based parsing with no loss of functionality.
 
 ### Implementation Loop (FOR EACH Task in tasks.md)
 
