@@ -191,6 +191,18 @@ export class NfsAccordion implements AfterContentInit {
   /** Registry for detecting duplicate panelIds (FR-017a) */
   #panelIdRegistry = new Map<string, number[]>();
 
+  /** Debounce timer for live region announcements (T198) */
+  #announcementDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+
+  /** Pending announcement to be published after debounce */
+  #pendingAnnouncement: string | null = null;
+
+  /** Track previous title text for detecting changes (T188) */
+  #previousTitleTexts = new Map<string, string>();
+
+  /** Title change debounce timers per item (T188) */
+  #titleChangeDebounceTimers = new Map<string, ReturnType<typeof setTimeout>>();
+
   constructor() {
     // Load component styles on first render (reference-counted)
     // FR-062a: Guarded with try/catch for SSR hydration error handling
@@ -332,10 +344,11 @@ export class NfsAccordion implements AfterContentInit {
                 this.up.emit({ itemId: panelId, expanded: false });
               }
 
-              // Update live region announcement for screen readers
+              // Update live region announcement for screen readers (T198: debounced by 100ms)
               if (this.announce()) {
                 const action = currentExpanded ? 'expanded' : 'collapsed';
-                this.announcement.set(`Panel ${panelId} ${action}`);
+                this.#pendingAnnouncement = `Panel ${panelId} ${action}`;
+                this.#scheduleAnnouncement();
               }
             });
           });
@@ -343,6 +356,49 @@ export class NfsAccordion implements AfterContentInit {
 
         // Update tracking state
         this.#previousExpandedStates.set(panelId, currentExpanded);
+      }
+    });
+
+    // T188: Monitor title content changes and announce to live region
+    effect(() => {
+      if (!this.announce() || !this.initialized()) return;
+
+      const items = this.itemDefs();
+      for (const item of items) {
+        const panelId = item.panelId();
+        const headerDef = item.headerDef();
+
+        // Try to extract current title text (best effort)
+        if (headerDef?.templateRef) {
+          // Use untracked to avoid creating reactive dependency
+          untracked(() => {
+            queueMicrotask(() => {
+              try {
+                // Look for rendered button element with matching panelId
+                const buttonElement = document.querySelector(
+                  `button[data-panelid="${panelId}"]`,
+                ) as HTMLElement | null;
+
+                if (buttonElement) {
+                  const currentText = buttonElement.textContent?.trim() ?? '';
+                  const previousText = this.#previousTitleTexts.get(panelId);
+
+                  // Announce change if text differs from previous
+                  if (previousText !== undefined && previousText !== currentText) {
+                    this.#scheduleTitleChangeAnnouncement(
+                      panelId,
+                      currentText,
+                    );
+                  }
+
+                  this.#previousTitleTexts.set(panelId, currentText);
+                }
+              } catch {
+                // Silently ignore if button element not found
+              }
+            });
+          });
+        }
       }
     });
   }
@@ -507,6 +563,41 @@ export class NfsAccordion implements AfterContentInit {
   }
 
   /**
+   * Validate and register a panelId, detecting duplicates (T057c, FR-017a).
+   * Called when items are added or panelId changes at runtime.
+   * @param panelId The panelId to validate
+   * @param itemIndex The index of the item in the accordion
+   * @returns true if panelId is valid (not a duplicate), false if duplicate
+   * @public
+   */
+  validatePanelId(panelId: string, itemIndex: number): boolean {
+    const existingIndexes = this.#panelIdRegistry.get(panelId) ?? [];
+
+    // If panelId already exists and item is from a different index, it's a duplicate
+    if (existingIndexes.length > 0 && !existingIndexes.includes(itemIndex)) {
+      existingIndexes.push(itemIndex);
+      this.#panelIdRegistry.set(panelId, existingIndexes);
+
+      // Report duplicate error
+      this.#errorHandler.handleError(
+        new Error(
+          `NfsAccordion: Duplicate panelId "${panelId}" detected. ` +
+            `Conflicting items at indexes: [${existingIndexes.join(', ')}]. ` +
+            `Using first registered item. Ensure each panelId is unique.`,
+        ),
+      );
+      return false;
+    }
+
+    // Register new panelId if not already there
+    if (existingIndexes.length === 0) {
+      this.#panelIdRegistry.set(panelId, [itemIndex]);
+    }
+
+    return true;
+  }
+
+  /**
    * Extracts plain text content from an accordion title.
    * Handles complex projected content (icons, nested elements) by using textContent.
    * @param titleComponent The NfsAccordionTitle component to extract text from
@@ -514,5 +605,50 @@ export class NfsAccordion implements AfterContentInit {
    */
   protected extractTitleText(titleComponent: { elementRef?: { nativeElement?: { textContent?: string } } }): string {
     return titleComponent.elementRef?.nativeElement?.textContent?.trim() ?? '';
+  }
+
+  /**
+   * Schedule debounced announcement publication to live region (T198).
+   * Debounces announcements by 100ms to coalesce rapid expand/collapse events.
+   * @private
+   */
+  #scheduleAnnouncement(): void {
+    // Clear existing timer to reset debounce
+    if (this.#announcementDebounceTimer !== null) {
+      clearTimeout(this.#announcementDebounceTimer);
+    }
+
+    // Schedule new announcement after 100ms
+    this.#announcementDebounceTimer = setTimeout(() => {
+      if (this.#pendingAnnouncement) {
+        this.announcement.set(this.#pendingAnnouncement);
+        this.#pendingAnnouncement = null;
+      }
+      this.#announcementDebounceTimer = null;
+    }, 100);
+  }
+
+  /**
+   * Schedule debounced announcement for title content changes (T188).
+   * Debounces by 100ms to coalesce rapid title updates.
+   * @param panelId The ID of the panel whose title changed
+   * @param newTitle The new title text
+   * @private
+   */
+  #scheduleTitleChangeAnnouncement(panelId: string, newTitle: string): void {
+    // Clear existing timer for this panel to reset debounce
+    const existingTimer = this.#titleChangeDebounceTimers.get(panelId);
+    if (existingTimer !== undefined) {
+      clearTimeout(existingTimer);
+    }
+
+    // Schedule new announcement after 100ms
+    const timer = setTimeout(() => {
+      this.#pendingAnnouncement = `Title changed: ${newTitle}`;
+      this.#scheduleAnnouncement();
+      this.#titleChangeDebounceTimers.delete(panelId);
+    }, 100);
+
+    this.#titleChangeDebounceTimers.set(panelId, timer);
   }
 }

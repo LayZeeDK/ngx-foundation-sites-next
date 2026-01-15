@@ -6,6 +6,8 @@ import {
   signal,
   TemplateRef,
   computed,
+  effect,
+  Injector,
 } from '@angular/core';
 import type { NfsAccordionHeaderDef } from './accordion-header-def';
 import type { NfsAccordionContentDef } from './accordion-content';
@@ -69,6 +71,29 @@ export class NfsAccordionItemDef {
    * Used for empty-state handling per FR-114a.
    */
   readonly hasContent = signal(true);
+
+  /** Track previous panelId for detecting changes (T178) */
+  #previousPanelId: string | null = null;
+
+  constructor() {
+    // T178: Track panelId changes and notify parent accordion for validation
+    effect(() => {
+      const currentPanelId = this.panelId();
+
+      // Validate panelId if it changes (not on initial setup)
+      if (this.#previousPanelId !== null && this.#previousPanelId !== currentPanelId) {
+        // Notify accordion of the change (used by T057c validation)
+        const items = this.#accordion?.itemDefs?.() ?? [];
+        const itemIndex = items.indexOf(this);
+        if (itemIndex >= 0 && this.#accordion) {
+          this.#accordion.validatePanelId(currentPanelId, itemIndex);
+        }
+      }
+
+      // Update tracking state
+      this.#previousPanelId = currentPanelId;
+    });
+  }
 
   /**
    * Generated title button ID for ARIA relationships.

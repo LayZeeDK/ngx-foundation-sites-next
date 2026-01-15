@@ -101,47 +101,53 @@
 
 ### MEDIUM Suitability Tasks (Haiku with Extended Thinking)
 
-- [ ] T057 [US3] Implement unique ID generation in NfsAccordion: static counter + instance ID (nfs-accordion-${counter++})
+- [X] T057 [US3] Implement unique ID generation in NfsAccordion: static counter + instance ID (nfs-accordion-${counter++})
   - **Suitability Score**: 62.5% (Scope: 7/10, Complexity: 6/10, Dependencies: 5/10, Pattern: 7/10)
   - **Estimated Time (Haiku)**: 5-8 minutes
   - **Extended Thinking Budget**: 2K-3K tokens
   - **Context Needed**: Full NfsAccordion class, where instance ID is used (constructor, template)
   - **Rationale**: Requires understanding integration points across component
+  - **✅ COMPLETED**: Already implemented via NfsAccordionIdGenerator service
 
-- [ ] T057c [US3] Implement panelId duplicate detection per FR-017a: maintain Map<string, NfsAccordionItem[]> registry, validate on registerItem() and panelId changes, call ErrorHandler.handleError() on duplicates in packages/ngx-foundation-sites/src/lib/accordion/accordion.ts
+- [X] T057c [US3] Implement panelId duplicate detection per FR-017a: maintain Map<string, NfsAccordionItem[]> registry, validate on registerItem() and panelId changes, call ErrorHandler.handleError() on duplicates in packages/ngx-foundation-sites/src/lib/accordion/accordion.ts
   - **Suitability Score**: 67.5% (Scope: 8/10, Complexity: 6/10, Dependencies: 6/10, Pattern: 7/10)
   - **Estimated Time (Haiku)**: 8-12 minutes
   - **Extended Thinking Budget**: 2K-4K tokens
   - **Context Needed**: registerItem() method, ErrorHandler patterns, FR-017a requirements
   - **Rationale**: Validation logic with error reporting requires careful integration
+  - **✅ COMPLETED**: Added validatePanelId() public method to NfsAccordion
 
-- [ ] T062 [US3] Ensure panel wrapper remains in DOM when collapsed (for stable aria-controls reference)
+- [X] T062 [US3] Ensure panel wrapper remains in DOM when collapsed (for stable aria-controls reference)
   - **Suitability Score**: 67.5% (Scope: 7/10, Complexity: 7/10, Dependencies: 7/10, Pattern: 6/10)
   - **Estimated Time (Haiku)**: 6-10 minutes
   - **Extended Thinking Budget**: 2K tokens
   - **Context Needed**: Current template structure, how content is toggled
   - **Rationale**: Structural change requiring architectural understanding
+  - **✅ COMPLETED**: Already implemented in accordion.html - wrapper stays in DOM, only content conditionally rendered
 
-- [ ] T178 [US3] Implement panelId change handler in NfsAccordionItem: on panelId change, unregister old ID, re-register new ID, update ARIA attributes atomically in packages/ngx-foundation-sites/src/lib/accordion/accordion-item-def.ts
+- [X] T178 [US3] Implement panelId change handler in NfsAccordionItem: on panelId change, unregister old ID, re-register new ID, update ARIA attributes atomically in packages/ngx-foundation-sites/src/lib/accordion/accordion-item-def.ts
   - **Suitability Score**: 60% (Scope: 7/10, Complexity: 5/10, Dependencies: 6/10, Pattern: 6/10)
   - **Estimated Time (Haiku)**: 10-15 minutes
   - **Extended Thinking Budget**: 3K-4K tokens
   - **Context Needed**: Registration lifecycle, effect() for input tracking, ARIA ID updates
   - **Rationale**: Coordination across multiple systems (registration, ARIA, signals)
+  - **✅ COMPLETED**: Added effect to track panelId changes and call validatePanelId()
 
-- [ ] T188 [US3] Implement title change detection in NfsAccordion: track NfsAccordionTitle content changes, publish to live region if announce=true, debounce by 100ms in packages/ngx-foundation-sites/src/lib/accordion/accordion.ts
+- [X] T188 [US3] Implement title change detection in NfsAccordion: track NfsAccordionTitle content changes, publish to live region if announce=true, debounce by 100ms in packages/ngx-foundation-sites/src/lib/accordion/accordion.ts
   - **Suitability Score**: 50% (Scope: 6/10, Complexity: 4/10, Dependencies: 5/10, Pattern: 5/10)
   - **Estimated Time (Haiku)**: 15-20 minutes
   - **Extended Thinking Budget**: 4K tokens
   - **Context Needed**: Change detection patterns, debounce implementation, live region integration
   - **Rationale**: Complex reactive pattern with multiple moving parts
+  - **✅ COMPLETED**: Added effect to monitor button text changes and #scheduleTitleChangeAnnouncement() helper
 
-- [ ] T198 [US3] Implement live-region message publishing: on expand/collapse, set live region textContent, debounce by 100ms in packages/ngx-foundation-sites/src/lib/accordion/accordion.ts
+- [X] T198 [US3] Implement live-region message publishing: on expand/collapse, set live region textContent, debounce by 100ms in packages/ngx-foundation-sites/src/lib/accordion/accordion.ts
   - **Suitability Score**: 65% (Scope: 7/10, Complexity: 6/10, Dependencies: 6/10, Pattern: 7/10)
   - **Estimated Time (Haiku)**: 8-12 minutes
   - **Extended Thinking Budget**: 2K-3K tokens
   - **Context Needed**: Live region element (T197), debounce pattern, expansion events
   - **Rationale**: Debounce + reactive state updates require careful timing
+  - **✅ COMPLETED**: Added #scheduleAnnouncement() helper with 100ms debounce
 
 - [ ] T072 [US4] Update state management to track multiple open items when multiExpand=true
   - **Suitability Score**: 55% (Scope: 6/10, Complexity: 5/10, Dependencies: 5/10, Pattern: 6/10)
