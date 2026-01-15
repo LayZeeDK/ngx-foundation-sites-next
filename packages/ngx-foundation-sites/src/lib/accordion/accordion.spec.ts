@@ -1395,4 +1395,137 @@ describe('NfsAccordion', () => {
       dlFixture.destroy();
     });
   });
+
+  describe('FR-106a: concurrent keyboard and mouse interactions', () => {
+    it('should handle simultaneous keyboard navigation and activation without race conditions', async () => {
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const accordion = fixture.componentInstance.accordion();
+      if (!accordion) throw new Error('Accordion not found');
+      const items = accordion.itemDefs();
+
+      const buttons = getTriggers();
+      const button1 = buttons[0];
+      const button2 = buttons[1];
+      const button3 = buttons[2];
+
+      // Expand item 1 initially
+      await clickTrigger(0);
+      expect(items[0].expanded()).toBe(true);
+      expect(button1.getAttribute('aria-expanded')).toBe('true');
+
+      // Focus button 1
+      button1.focus();
+      expect(document.activeElement).toBe(button1);
+
+      // Simulate concurrent interactions:
+      // 1. Keyboard ArrowDown event (should move focus to button 2)
+      // 2. Immediate Enter on button 3 (should expand item 3)
+      const arrowDownEvent = new KeyboardEvent('keydown', {
+        key: 'ArrowDown',
+        bubbles: true,
+      });
+      button1.dispatchEvent(arrowDownEvent);
+
+      // Activate button 3 immediately (simulate near-simultaneous interaction)
+      // Use Enter key to match how clickTrigger works
+      button3.focus();
+      button3.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          key: 'Enter',
+          code: 'Enter',
+          bubbles: true,
+        }),
+      );
+
+      // Process both events
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      // FR-106a Verification:
+      // - Expansion should follow activation event (button 3 was activated)
+      // - In single-expand mode, only item 3 should be expanded
+      expect(items[0].expanded()).toBe(false);
+      expect(items[1].expanded()).toBe(false);
+      expect(items[2].expanded()).toBe(true);
+      expect(button3.getAttribute('aria-expanded')).toBe('true');
+
+      // Verify state stability (no further changes after 100ms)
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      fixture.detectChanges();
+      expect(items[2].expanded()).toBe(true);
+    });
+
+    it('should process rapid successive activations in order', async () => {
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const accordion = fixture.componentInstance.accordion();
+      if (!accordion) throw new Error('Accordion not found');
+      const items = accordion.itemDefs();
+
+      // Activate all three buttons in rapid succession (without await)
+      const triggers = getTriggers();
+      triggers[0].focus();
+      triggers[0].dispatchEvent(
+        new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }),
+      );
+      triggers[1].focus();
+      triggers[1].dispatchEvent(
+        new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }),
+      );
+      triggers[2].focus();
+      triggers[2].dispatchEvent(
+        new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }),
+      );
+
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      // In single-expand mode, last activation wins
+      expect(items[0].expanded()).toBe(false);
+      expect(items[1].expanded()).toBe(false);
+      expect(items[2].expanded()).toBe(true);
+      expect(triggers[2].getAttribute('aria-expanded')).toBe('true');
+
+      // Verify no race condition - state should be stable
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      fixture.detectChanges();
+      expect(items[2].expanded()).toBe(true);
+    });
+
+    it('should handle concurrent keyboard events without dropping focus updates', async () => {
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const buttons = fixture.nativeElement.querySelectorAll('.accordion-title');
+      const button1 = buttons[0] as HTMLButtonElement;
+      const button3 = buttons[2] as HTMLButtonElement;
+
+      // Focus button 1
+      button1.focus();
+      expect(document.activeElement).toBe(button1);
+
+      // Fire multiple keyboard events in rapid succession
+      const events = [
+        new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }),
+        new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }),
+      ];
+
+      events.forEach((event) => {
+        (document.activeElement as HTMLElement).dispatchEvent(event);
+      });
+
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      // Focus should end up at button 3 (two ArrowDowns: 1 → 2 → 3)
+      expect(document.activeElement).toBe(button3);
+
+      // Verify stability
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      expect(document.activeElement).toBe(button3);
+    });
+  });
 });
