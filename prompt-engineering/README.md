@@ -729,21 +729,21 @@ Based on verification testing (2026-01-15):
 
 ### Claude Code CLI
 
-| Feature | Status | Notes |
-|---------|--------|-------|
-| **Extended Thinking** | ✅ Available | Configurable budgets (1K-64K tokens), works with all Claude 4.5 models |
-| **1M Context Window** | ✅ Available | Available for Sonnet 4.5 (previously beta for tier 4, now accessible) |
-| **Structured Outputs** | ✅ Available | Use `--json-schema` flag in CLI, works with all models (beta feature - use cautiously) |
-| **Effort Parameter** | ❌ Unavailable | Opus 4.5 only, requires API key setup (not available with subscription-only access) |
+| Feature                | Status         | Notes                                                                                  |
+| ---------------------- | -------------- | -------------------------------------------------------------------------------------- |
+| **Extended Thinking**  | ✅ Available   | Configurable budgets (1K-64K tokens), works with all Claude 4.5 models                 |
+| **1M Context Window**  | ✅ Available   | Available for Sonnet 4.5 (previously beta for tier 4, now accessible)                  |
+| **Structured Outputs** | ✅ Available   | Use `--json-schema` flag in CLI, works with all models (beta feature - use cautiously) |
+| **Effort Parameter**   | ❌ Unavailable | Opus 4.5 only, requires API key setup (not available with subscription-only access)    |
 
 ### GitHub Copilot (VS Code & CLI)
 
-| Feature | Status | Notes |
-|---------|--------|-------|
-| **Extended Thinking** | ❓ Unverified | Not tested - may require different syntax or model selection |
-| **1M Context Window** | ❓ Unverified | Not tested - GitHub Copilot may have different context limits |
-| **Structured Outputs** | ❓ Unverified | Not tested - CLI syntax may differ from Claude Code |
-| **Effort Parameter** | ❓ Unverified | Not tested - likely unavailable or requires different API access |
+| Feature                | Status        | Notes                                                            |
+| ---------------------- | ------------- | ---------------------------------------------------------------- |
+| **Extended Thinking**  | ❓ Unverified | Not tested - may require different syntax or model selection     |
+| **1M Context Window**  | ❓ Unverified | Not tested - GitHub Copilot may have different context limits    |
+| **Structured Outputs** | ❓ Unverified | Not tested - CLI syntax may differ from Claude Code              |
+| **Effort Parameter**   | ❓ Unverified | Not tested - likely unavailable or requires different API access |
 
 **Note**: GitHub Copilot feature availability not verified due to premium request limits at time of testing. The `/implement-*` commands in this repository may reference these features but compatibility with GitHub Copilot is not guaranteed.
 
@@ -774,6 +774,7 @@ claude --print --model opus --betas effort-2025-11-24 "Your prompt"
 ### Detailed Verification Results
 
 See [`scripts/VERIFICATION_RESULTS.md`](../scripts/VERIFICATION_RESULTS.md) for:
+
 - Complete test procedures and results
 - Code examples for manual API testing
 - GitHub Copilot compatibility considerations

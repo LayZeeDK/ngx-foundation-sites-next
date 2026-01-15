@@ -13,6 +13,7 @@
 Replace text-based task parsing with structured JSON parsing using the `--json-schema` beta feature for improved reliability and validation.
 
 **Changes**:
+
 1. Replace Step 3.0 with structured parsing approach (lines 240-248)
 2. Add JSON schema for task validation
 3. Include fallback for beta feature stability
@@ -33,8 +34,8 @@ Replace text-based task parsing with structured JSON parsing using the `--json-s
 **Execute in SINGLE message** (parallel tool use):
 
 ```typescript
-Read('.claude/commands/implement-sonnet-4-5.md', offset=240, limit=60);  // Current Step 3.0
-Read('.claude/commands/implement-sonnet-4-5.md', offset=28, limit=10);   // References section
+Read('.claude/commands/implement-sonnet-4-5.md', (offset = 240), (limit = 60)); // Current Step 3.0
+Read('.claude/commands/implement-sonnet-4-5.md', (offset = 28), (limit = 10)); // References section
 ```
 
 ### Step 1.2: Load Sample Tasks File
@@ -191,7 +192,7 @@ After thinking, finalize the JSON schema structure.
 **For embedding in command file** (minified):
 
 ```json
-{"type":"object","properties":{"phases":{"type":"array","items":{"type":"object","properties":{"name":{"type":"string","enum":["Setup","Tests","Core Implementation","Integration","Polish","Verification","Documentation"]},"tasks":{"type":"array","items":{"type":"object","properties":{"id":{"type":"string","pattern":"^T\\\\d{3}[a-z]?$"},"description":{"type":"string"},"filePaths":{"type":"array","items":{"type":"string"},"default":[]},"isParallel":{"type":"boolean","default":false},"dependencies":{"type":"array","items":{"type":"string","pattern":"^T\\\\d{3}[a-z]?$"},"default":[]},"complexity":{"type":"string","enum":["simple","moderate","complex"],"default":"moderate"}},"required":["id","description"],"additionalProperties":false},"minItems":1}},"required":["name","tasks"],"additionalProperties":false},"minItems":1}},"required":["phases"],"additionalProperties":false}
+{ "type": "object", "properties": { "phases": { "type": "array", "items": { "type": "object", "properties": { "name": { "type": "string", "enum": ["Setup", "Tests", "Core Implementation", "Integration", "Polish", "Verification", "Documentation"] }, "tasks": { "type": "array", "items": { "type": "object", "properties": { "id": { "type": "string", "pattern": "^T\\\\d{3}[a-z]?$" }, "description": { "type": "string" }, "filePaths": { "type": "array", "items": { "type": "string" }, "default": [] }, "isParallel": { "type": "boolean", "default": false }, "dependencies": { "type": "array", "items": { "type": "string", "pattern": "^T\\\\d{3}[a-z]?$" }, "default": [] }, "complexity": { "type": "string", "enum": ["simple", "moderate", "complex"], "default": "moderate" } }, "required": ["id", "description"], "additionalProperties": false }, "minItems": 1 } }, "required": ["name", "tasks"], "additionalProperties": false }, "minItems": 1 } }, "required": ["phases"], "additionalProperties": false }
 ```
 
 **Duration**: 2-3 minutes
@@ -206,7 +207,7 @@ After thinking, finalize the JSON schema structure.
 
 **New section text**:
 
-```markdown
+````markdown
 ### Step 3.0: Parse Task Structure with Structured Outputs (Beta)
 
 **Use structured outputs for reliable task extraction** (beta feature with fallback):
@@ -253,6 +254,7 @@ After thinking, finalize the JSON schema structure.
   "required": ["phases"]
 }
 ```
+````
 
 **Parsing Instructions**:
 
@@ -290,16 +292,19 @@ Fall back to text-based parsing:
 #### Benefits of Structured Parsing
 
 **Reliability** ✅:
+
 - Guaranteed schema validation
 - No parsing errors from markdown formatting variations
 - Type-safe task ID pattern validation
 
 **Performance** ⚡:
+
 - Single-pass extraction (no multi-read parsing)
 - Validated JSON ready for iteration
 - Reduces error rate in task parsing
 
 **Maintainability** 🔧:
+
 - Schema documents expected task structure
 - Easier to extend with new task properties
 - Clear contract between tasks.md and implementation
@@ -316,15 +321,22 @@ for (const phase of parsedTasks.phases) {
     console.log(`Task ${task.id}: ${task.description}`);
 
     // Use structured data
-    if (task.isParallel) { /* handle parallel */ }
-    if (task.dependencies.length > 0) { /* check deps */ }
-    if (task.complexity === 'complex') { /* use extended thinking */ }
+    if (task.isParallel) {
+      /* handle parallel */
+    }
+    if (task.dependencies.length > 0) {
+      /* check deps */
+    }
+    if (task.complexity === 'complex') {
+      /* use extended thinking */
+    }
 
     // Implement task...
   }
 }
 ```
-```
+
+````
 
 ### Step 3.2: Execute Replacement
 
@@ -336,7 +348,7 @@ Edit(
   old_string: '### Step 3.0: Parse Task Structure from tasks.md\n\nBefore starting the implementation loop, extract and understand:\n\n- **Task phases**: Setup, Tests, Core, Integration, Polish\n- **Task dependencies**: Sequential vs parallel execution rules\n- **Task details**: ID, description, file paths, parallel markers [P]\n- **Execution flow**: Order and dependency requirements',
   new_string: '<INSERT NEW SECTION FROM STEP 3.1 HERE>'
 );
-```
+````
 
 **Note**: The actual edit will use the complete markdown text designed in Step 3.1
 
@@ -351,19 +363,21 @@ Edit(
 ### Step 4.1: Read Current References
 
 ```typescript
-Read('.claude/commands/implement-sonnet-4-5.md', offset=28, limit=12);
+Read('.claude/commands/implement-sonnet-4-5.md', (offset = 28), (limit = 12));
 ```
 
 ### Step 4.2: Update Structured Outputs Line
 
 **Current**:
+
 ```markdown
-  - ✅ **Structured Outputs** - Available but not yet implemented in this command
+- ✅ **Structured Outputs** - Available but not yet implemented in this command
 ```
 
 **New**:
+
 ```markdown
-  - ✅ **Structured Outputs** - Used for task parsing in Step 3.0 (lines 240+) with fallback
+- ✅ **Structured Outputs** - Used for task parsing in Step 3.0 (lines 240+) with fallback
 ```
 
 **Use Edit tool**:
@@ -391,8 +405,8 @@ Edit(
 **Execute in SINGLE message**:
 
 ```typescript
-Read('.claude/commands/implement-sonnet-4-5.md', offset=240, limit=120);  // New Step 3.0 (much longer)
-Read('.claude/commands/implement-sonnet-4-5.md', offset=28, limit=12);     // Updated references
+Read('.claude/commands/implement-sonnet-4-5.md', (offset = 240), (limit = 120)); // New Step 3.0 (much longer)
+Read('.claude/commands/implement-sonnet-4-5.md', (offset = 28), (limit = 12)); // Updated references
 ```
 
 ### Step 5.2: Extended Thinking - Validate Changes
@@ -572,6 +586,7 @@ claude --print --model sonnet \
 ## Success Criteria
 
 **Command improvements**:
+
 1. ✅ Step 3.0 uses structured outputs with JSON schema
 2. ✅ Schema validates task structure (IDs, phases, dependencies)
 3. ✅ Fallback documented and preserves current behavior
@@ -579,12 +594,14 @@ claude --print --model sonnet \
 5. ✅ References updated to reflect structured outputs usage
 
 **Reliability gains**:
+
 - ✅ Guaranteed task ID pattern validation
 - ✅ Phase name validation
 - ✅ Dependency validation (must reference valid task IDs)
 - ✅ Single-pass parsing (no multi-read loops)
 
 **No regressions**:
+
 - ✅ Fallback to text-based parsing if beta unavailable
 - ✅ No breaking changes to command flow
 - ✅ All existing features preserved
@@ -611,6 +628,7 @@ git revert HEAD
 ⚠️ **TEMPORARY**: Structured outputs disabled due to issues. Using text-based parsing.
 
 Before starting the implementation loop, extract and understand:
+
 - **Task phases**: Setup, Tests, Core, Integration, Polish
 - **Task dependencies**: Sequential vs parallel execution rules
 - **Task details**: ID, description, file paths, parallel markers [P]
@@ -623,15 +641,15 @@ Before starting the implementation loop, extract and understand:
 
 ## Time Estimates
 
-| Phase | Duration | Cumulative |
-|-------|----------|------------|
-| **Phase 1: Context Gathering** | 3-4 min | 3-4 min |
-| **Phase 2: Schema Design** | 2-3 min | 5-7 min |
-| **Phase 3: Implementation** | 3-4 min | 8-11 min |
-| **Phase 4: Update References** | 1 min | 9-12 min |
-| **Phase 5: Verification** | 4-5 min | 13-17 min |
-| **Phase 6: Commit** | 3-4 min | 16-21 min |
-| **Phase 7: Testing (optional)** | 3-5 min | 19-26 min |
+| Phase                           | Duration | Cumulative |
+| ------------------------------- | -------- | ---------- |
+| **Phase 1: Context Gathering**  | 3-4 min  | 3-4 min    |
+| **Phase 2: Schema Design**      | 2-3 min  | 5-7 min    |
+| **Phase 3: Implementation**     | 3-4 min  | 8-11 min   |
+| **Phase 4: Update References**  | 1 min    | 9-12 min   |
+| **Phase 5: Verification**       | 4-5 min  | 13-17 min  |
+| **Phase 6: Commit**             | 3-4 min  | 16-21 min  |
+| **Phase 7: Testing (optional)** | 3-5 min  | 19-26 min  |
 
 **Total**: 16-21 minutes (19-26 with optional testing)
 
@@ -640,10 +658,12 @@ Before starting the implementation loop, extract and understand:
 ## Sonnet 4.5 Optimizations Applied
 
 ✅ **Parallel Tool Use**
+
 - Phase 1: Load command sections + sample tasks.md simultaneously
 - Phase 5: Verify both modified sections simultaneously
 
 ✅ **Extended Thinking**
+
 - Phase 1: 8K budget for schema design (complex task)
 - Phase 5: 4K budget for validation (moderate complexity)
 - Not used in mechanical phases (2, 3, 4, 6)
@@ -663,6 +683,7 @@ Before starting the implementation loop, extract and understand:
 **Risk Level**: Low
 
 **Mitigations**:
+
 1. ✅ **Fallback to current behavior** - If beta feature unavailable
 2. ✅ **No breaking changes** - Text-based parsing still documented
 3. ✅ **Schema validation** - Extended thinking validates correctness
@@ -670,6 +691,7 @@ Before starting the implementation loop, extract and understand:
 5. ✅ **Easy rollback** - Single commit to revert
 
 **Beta Feature Stability**:
+
 - ✅ Verified available as of 2026-01-15
 - ⚠️ May change (beta status)
 - ✅ Fallback ensures no disruption if removed
@@ -681,6 +703,7 @@ Before starting the implementation loop, extract and understand:
 **Before implementing, consider**:
 
 **Pros**:
+
 - ✅ Significantly improves parsing reliability
 - ✅ Validates task structure automatically
 - ✅ Single-pass extraction (performance)
@@ -688,11 +711,13 @@ Before starting the implementation loop, extract and understand:
 - ✅ Fallback preserves current behavior
 
 **Cons**:
+
 - ⚠️ Beta feature may change
 - ⚠️ Adds complexity to Step 3.0
 - ⚠️ Requires schema maintenance if task format evolves
 
 **Recommendation**:
+
 - **Implement if**: Task parsing errors are common, or task format is complex
 - **Defer if**: Current text-based parsing works well, or prefer to wait for beta→GA
 

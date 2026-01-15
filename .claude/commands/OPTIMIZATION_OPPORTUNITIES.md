@@ -27,10 +27,12 @@
 ### Current Implementation (Line 240-248)
 
 **Text-based parsing**:
+
 ```markdown
 ### Step 3.0: Parse Task Structure from tasks.md
 
 Before starting the implementation loop, extract and understand:
+
 - **Task phases**: Setup, Tests, Core, Integration, Polish
 - **Task dependencies**: Sequential vs parallel execution rules
 - **Task details**: ID, description, file paths, parallel markers [P]
@@ -99,15 +101,18 @@ claude --print --json-schema taskSchema "Extract all tasks from tasks.md"
 **Recommended change**: Lines 240-248
 
 **Current**:
+
 ```markdown
 ### Step 3.0: Parse Task Structure from tasks.md
 
 Before starting the implementation loop, extract and understand:
+
 - **Task phases**: ...
 ```
 
 **Enhanced**:
-```markdown
+
+````markdown
 ### Step 3.0: Parse Task Structure with Structured Outputs
 
 Use structured outputs for reliable task extraction:
@@ -115,6 +120,7 @@ Use structured outputs for reliable task extraction:
 <task_parsing_with_structured_outputs>
 
 **JSON Schema** (for --json-schema flag):
+
 ```json
 {
   "type": "object",
@@ -147,6 +153,7 @@ Use structured outputs for reliable task extraction:
   "required": ["phases"]
 }
 ```
+````
 
 **Prompt**:
 "Parse tasks.md into JSON. Extract all phases, tasks, IDs, descriptions, file paths, parallel markers [P], and dependencies."
@@ -156,7 +163,8 @@ Use structured outputs for reliable task extraction:
 **Fallback**: If structured output fails, fall back to text-based parsing
 
 </task_parsing_with_structured_outputs>
-```
+
+````
 
 ### Beta Feature Caveat
 
@@ -171,7 +179,7 @@ try {
   console.warn('Structured outputs unavailable, using text parsing');
   const tasks = parseTasksTextBased(tasksContent);
 }
-```
+````
 
 ---
 
@@ -180,6 +188,7 @@ try {
 ### Current Implementation (Line 666-667)
 
 **Buried in notes section**:
+
 ```markdown
 - **Context windows**: 200K (standard) or 1M (available in Claude Code, premium pricing: 2x input/1.5x output)
 - For features >200K: Use 1M context or progressive disclosure (chunk into phases)
@@ -228,6 +237,7 @@ try {
 
 ```markdown
 **Reference**:
+
 - Optimization strategies: `prompt-engineering/CLAUDE-SONNET-4-5-IMPLEMENTATION-OPTIMIZATION.md`
 - Beta features (verified): `prompt-engineering/README.md#beta-feature-availability`
   - ✅ Extended thinking (1K-64K budgets) - Used throughout this command
@@ -263,17 +273,20 @@ try {
 ### For Structured Outputs
 
 **Pros**:
+
 - ✅ Verified available in Claude Code
 - ✅ More reliable than text parsing
 - ✅ Type-safe task extraction
 - ✅ Single-pass parsing (performance)
 
 **Cons**:
+
 - ⚠️ Beta feature (may change)
 - ⚠️ Adds complexity (schema + fallback)
 - ⚠️ Requires testing across different tasks.md formats
 
 **Recommendation**:
+
 - Add as **optional enhancement** with fallback
 - Start with simple schema, expand if successful
 - Monitor beta feature stability
@@ -281,15 +294,18 @@ try {
 ### For 1M Context Promotion
 
 **Pros**:
+
 - ✅ Verified available in Claude Code
 - ✅ No longer beta/restricted
 - ✅ Major capability worth highlighting
 - ✅ Zero implementation risk (just documentation)
 
 **Cons**:
+
 - ⚠️ Premium pricing (users should be aware)
 
 **Recommendation**:
+
 - **Implement immediately** - just documentation change
 - Makes command capabilities clearer
 
@@ -297,13 +313,14 @@ try {
 
 ## Summary
 
-| Optimization | Status | Priority | Effort | Risk |
-|--------------|--------|----------|--------|------|
-| **Promote 1M context** | ✅ Available | High | 5 min | None |
-| **Document beta features** | ✅ Available | High | 2 min | None |
-| **Structured task parsing** | ✅ Available (beta) | Medium | 20 min | Low (has fallback) |
+| Optimization                | Status              | Priority | Effort | Risk               |
+| --------------------------- | ------------------- | -------- | ------ | ------------------ |
+| **Promote 1M context**      | ✅ Available        | High     | 5 min  | None               |
+| **Document beta features**  | ✅ Available        | High     | 2 min  | None               |
+| **Structured task parsing** | ✅ Available (beta) | Medium   | 20 min | Low (has fallback) |
 
 **Recommended Actions**:
+
 1. ✅ Promote 1M context to key optimizations (immediate)
 2. ✅ Add beta feature reference section (immediate)
 3. ⚠️ Consider structured outputs as future enhancement (optional)

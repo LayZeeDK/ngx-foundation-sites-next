@@ -12,6 +12,7 @@
 Implement 2 high-priority optimizations to make beta feature capabilities more visible in the `/implement-sonnet-4-5` command.
 
 **Changes**:
+
 1. Promote 1M context window from notes to key optimizations
 2. Add beta feature reference section with verification links
 
@@ -26,9 +27,9 @@ Implement 2 high-priority optimizations to make beta feature capabilities more v
 **Execute in SINGLE message** (parallel tool use):
 
 ```typescript
-Read('.claude/commands/implement-sonnet-4-5.md', offset=19, limit=15);  // Key optimizations section
-Read('.claude/commands/implement-sonnet-4-5.md', offset=28, limit=5);   // Reference section
-Read('.claude/commands/implement-sonnet-4-5.md', offset=665, limit=5);  // Notes section with 1M context
+Read('.claude/commands/implement-sonnet-4-5.md', (offset = 19), (limit = 15)); // Key optimizations section
+Read('.claude/commands/implement-sonnet-4-5.md', (offset = 28), (limit = 5)); // Reference section
+Read('.claude/commands/implement-sonnet-4-5.md', (offset = 665), (limit = 5)); // Notes section with 1M context
 ```
 
 **Expected Result**: 3 sections loaded simultaneously in ~2 seconds
@@ -45,6 +46,7 @@ Read('.claude/commands/implement-sonnet-4-5.md', offset=665, limit=5);  // Notes
 **Line**: 19-26
 
 **Current**:
+
 ```markdown
 **Key Optimizations Applied**:
 
@@ -57,6 +59,7 @@ Read('.claude/commands/implement-sonnet-4-5.md', offset=665, limit=5);  // Notes
 ```
 
 **New**:
+
 ```markdown
 **Key Optimizations Applied**:
 
@@ -73,6 +76,7 @@ Read('.claude/commands/implement-sonnet-4-5.md', offset=665, limit=5);  // Notes
 ```
 
 **Use Edit tool**:
+
 ```typescript
 Edit(
   file_path: '.claude/commands/implement-sonnet-4-5.md',
@@ -87,18 +91,21 @@ Edit(
 **Line**: 666-667
 
 **Current**:
+
 ```markdown
 - **Context windows**: 200K (standard) or 1M (available in Claude Code, premium pricing: 2x input/1.5x output)
 - For features >200K: Use 1M context or progressive disclosure (chunk into phases)
 ```
 
 **New**:
+
 ```markdown
 - **Context windows**: 200K (standard) or 1M (see optimization #3 above)
 - For features >200K: See "1M Context Window" in Key Optimizations
 ```
 
 **Use Edit tool**:
+
 ```typescript
 Edit(
   file_path: '.claude/commands/implement-sonnet-4-5.md',
@@ -119,11 +126,13 @@ Edit(
 **Line**: 28
 
 **Current**:
+
 ```markdown
 **Reference**: See `prompt-engineering/CLAUDE-SONNET-4-5-IMPLEMENTATION-OPTIMIZATION.md` for detailed optimization strategies
 ```
 
 **New**:
+
 ```markdown
 **References**:
 
@@ -136,6 +145,7 @@ Edit(
 ```
 
 **Use Edit tool**:
+
 ```typescript
 Edit(
   file_path: '.claude/commands/implement-sonnet-4-5.md',
@@ -155,9 +165,9 @@ Edit(
 **Execute in SINGLE message** (parallel tool use):
 
 ```typescript
-Read('.claude/commands/implement-sonnet-4-5.md', offset=19, limit=20);  // Verify key optimizations
-Read('.claude/commands/implement-sonnet-4-5.md', offset=28, limit=12);  // Verify references
-Read('.claude/commands/implement-sonnet-4-5.md', offset=665, limit=5);  // Verify notes update
+Read('.claude/commands/implement-sonnet-4-5.md', (offset = 19), (limit = 20)); // Verify key optimizations
+Read('.claude/commands/implement-sonnet-4-5.md', (offset = 28), (limit = 12)); // Verify references
+Read('.claude/commands/implement-sonnet-4-5.md', (offset = 665), (limit = 5)); // Verify notes update
 ```
 
 ### Step 4.2: Verification Checklist
@@ -225,12 +235,14 @@ EOF
 ## Success Criteria
 
 **Command now clearly shows**:
+
 1. ✅ 1M context window as key optimization (#3)
 2. ✅ Beta feature availability with verification links
 3. ✅ Which features are actively used in the command
 4. ✅ Notes section doesn't duplicate information
 
 **File structure**:
+
 - Key optimizations: 7 items (was 6)
 - References: 2 sections (was 1)
 - Notes: References optimization #3 (no duplication)
@@ -268,13 +280,13 @@ After implementing these high-priority changes:
 
 ## Time Estimates
 
-| Phase | Duration | Cumulative |
-|-------|----------|------------|
-| **Phase 1: Read** | 30 sec | 0:30 |
-| **Phase 2: Edit Optimization 1** | 2 min | 2:30 |
-| **Phase 3: Edit Optimization 2** | 1 min | 3:30 |
-| **Phase 4: Verification** | 2 min | 5:30 |
-| **Phase 5: Commit** | 1 min | 6:30 |
+| Phase                            | Duration | Cumulative |
+| -------------------------------- | -------- | ---------- |
+| **Phase 1: Read**                | 30 sec   | 0:30       |
+| **Phase 2: Edit Optimization 1** | 2 min    | 2:30       |
+| **Phase 3: Edit Optimization 2** | 1 min    | 3:30       |
+| **Phase 4: Verification**        | 2 min    | 5:30       |
+| **Phase 5: Commit**              | 1 min    | 6:30       |
 
 **Total**: ~7 minutes (as estimated)
 
@@ -283,6 +295,7 @@ After implementing these high-priority changes:
 ## Sonnet 4.5 Optimizations Applied
 
 ✅ **Parallel Tool Use**
+
 - Phase 1: Load 3 sections simultaneously
 - Phase 4: Verify 3 sections simultaneously
 

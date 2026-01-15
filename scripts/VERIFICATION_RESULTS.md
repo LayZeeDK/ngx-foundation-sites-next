@@ -10,12 +10,12 @@
 
 ## Summary
 
-| Feature | Status | Verified By | Notes |
-|---------|--------|-------------|-------|
-| **Extended Thinking** | ✅ Available | Direct usage test | Successfully demonstrated with extended thinking enabled |
-| **1M Context Window** | ✅ Available | User confirmation | Available for Sonnet 4.5 (no longer tier 4 restricted) |
-| **Structured Outputs** | ✅ Available | CLI `--json-schema` flag | Successfully tested, returns validated JSON in `structured_output` field |
-| **Effort Parameter** | ❌ Unavailable | CLI `--betas` flag test | Requires API key setup (not available with subscription-only) |
+| Feature                | Status         | Verified By              | Notes                                                                    |
+| ---------------------- | -------------- | ------------------------ | ------------------------------------------------------------------------ |
+| **Extended Thinking**  | ✅ Available   | Direct usage test        | Successfully demonstrated with extended thinking enabled                 |
+| **1M Context Window**  | ✅ Available   | User confirmation        | Available for Sonnet 4.5 (no longer tier 4 restricted)                   |
+| **Structured Outputs** | ✅ Available   | CLI `--json-schema` flag | Successfully tested, returns validated JSON in `structured_output` field |
+| **Effort Parameter**   | ❌ Unavailable | CLI `--betas` flag test  | Requires API key setup (not available with subscription-only)            |
 
 ---
 
@@ -28,6 +28,7 @@
 **Result**: Claude Code successfully enabled extended thinking when requested
 
 **Evidence**:
+
 - Prompt: "Explain quantum computing with extended thinking enabled"
 - Response included extended thinking content
 - Feature works as documented in prompt-engineering guides
@@ -43,6 +44,7 @@
 **Result**: 1M context window is available for Sonnet 4.5
 
 **Documentation Reference**:
+
 - File: `prompt-engineering/CLAUDE-4-5-OPTIMIZATION.md`, line 24
 - Previous status: "Currently in beta for tier 4 organizations"
 - Current status: Available (no longer restricted)
@@ -58,16 +60,19 @@
 **Limitation**: Requires API key setup, not available with subscription-only access
 
 **Test Command Attempted**:
+
 ```bash
 claude --print --model opus --betas effort-2025-11-24 "Your prompt"
 ```
 
 **Error Received**:
+
 ```
 Warning: Custom betas are only available for API key users. Ignoring provided betas.
 ```
 
 **Test Procedure** (for users with API access):
+
 ```typescript
 import Anthropic from '@anthropic-ai/sdk';
 
@@ -80,21 +85,21 @@ const message = await anthropic.messages.create({
   max_tokens: 1024,
   anthropic_beta: 'effort-2025-11-24',
   effort: 'medium',
-  messages: [
-    { role: 'user', content: 'Explain TypeScript generics' }
-  ],
+  messages: [{ role: 'user', content: 'Explain TypeScript generics' }],
 });
 
 console.log(message);
 ```
 
 **Documentation Reference**:
+
 - File: `prompt-engineering/CLAUDE-OPUS-4-5-IMPLEMENTATION-OPTIMIZATION.md`
 - Beta header required: `anthropic_beta: "effort-2025-11-24"`
 - Controls token usage: low/medium/high
 - 76% token reduction at medium effort
 
 **Availability**: Beta feature, requires:
+
 1. Opus 4.5 model access
 2. Beta header in API request
 3. May require beta program enrollment
@@ -110,6 +115,7 @@ console.log(message);
 **Result**: Successfully validated JSON output via CLI
 
 **Test Command**:
+
 ```bash
 claude --print --model haiku --output-format json \
   --json-schema '{"type":"object","properties":{"language":{"type":"string"},"features":{"type":"array","items":{"type":"string"}}},"required":["language","features"]}' \
@@ -117,22 +123,20 @@ claude --print --model haiku --output-format json \
 ```
 
 **Successful Response Structure**:
+
 ```json
 {
   "type": "result",
   "subtype": "success",
   "structured_output": {
     "language": "TypeScript",
-    "features": [
-      "Static Type Checking - ...",
-      "Advanced Type System - ...",
-      "Modern JavaScript Features - ..."
-    ]
+    "features": ["Static Type Checking - ...", "Advanced Type System - ...", "Modern JavaScript Features - ..."]
   }
 }
 ```
 
 **Test Procedure** (for users with API access):
+
 ```typescript
 import Anthropic from '@anthropic-ai/sdk';
 
@@ -152,21 +156,20 @@ const message = await anthropic.messages.create({
         type: 'object',
         properties: {
           name: { type: 'string' },
-          age: { type: 'number' }
+          age: { type: 'number' },
         },
-        required: ['name', 'age']
-      }
-    }
+        required: ['name', 'age'],
+      },
+    },
   },
-  messages: [
-    { role: 'user', content: 'User: John Doe, Age: 30' }
-  ],
+  messages: [{ role: 'user', content: 'User: John Doe, Age: 30' }],
 });
 
 console.log(message);
 ```
 
 **Documentation Reference**:
+
 - File: `prompt-engineering/CLAUDE-HAIKU-4-5-OPTIMIZATION.md`, lines 1239-1240
 - Provides JSON schema validation
 - Beta feature
@@ -242,6 +245,7 @@ If you have direct Anthropic API access:
 ### Commands Referencing These Features
 
 Several commands in this repository reference beta features:
+
 - `/implement-sonnet-4-5` - References extended thinking
 - `/implement-opus-4-5` - References effort parameter
 - `/tasks-haiku-4-5` - May reference context window features
@@ -282,6 +286,7 @@ To verify GitHub Copilot feature availability:
 ### Re-verify Periodically
 
 Beta features may transition to general availability:
+
 - Re-run verification quarterly
 - Update documentation when features change status
 - Monitor Anthropic's official announcements
