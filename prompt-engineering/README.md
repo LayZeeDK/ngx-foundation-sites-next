@@ -723,7 +723,11 @@ Before adding claims to optimization guides:
 
 ## 🧪 Beta Feature Availability in Claude Code
 
+**⚠️ IMPORTANT**: These results are specific to **Claude Code CLI**. GitHub Copilot Chat (VS Code) and GitHub Copilot CLI may have different feature availability. See notes below.
+
 Based on verification testing (2026-01-15):
+
+### Claude Code CLI
 
 | Feature | Status | Notes |
 |---------|--------|-------|
@@ -732,6 +736,17 @@ Based on verification testing (2026-01-15):
 | **Structured Outputs** | ✅ Available | Use `--json-schema` flag in CLI, works with all models (beta feature - use cautiously) |
 | **Effort Parameter** | ❌ Unavailable | Opus 4.5 only, requires API key setup (not available with subscription-only access) |
 
+### GitHub Copilot (VS Code & CLI)
+
+| Feature | Status | Notes |
+|---------|--------|-------|
+| **Extended Thinking** | ❓ Unverified | Not tested - may require different syntax or model selection |
+| **1M Context Window** | ❓ Unverified | Not tested - GitHub Copilot may have different context limits |
+| **Structured Outputs** | ❓ Unverified | Not tested - CLI syntax may differ from Claude Code |
+| **Effort Parameter** | ❓ Unverified | Not tested - likely unavailable or requires different API access |
+
+**Note**: GitHub Copilot feature availability not verified due to premium request limits at time of testing. The `/implement-*` commands in this repository may reference these features but compatibility with GitHub Copilot is not guaranteed.
+
 ### Testing Methodology
 
 - **Extended Thinking**: Verified via direct usage in Claude Code conversation
@@ -739,22 +754,30 @@ Based on verification testing (2026-01-15):
 - **Structured Outputs**: Tested via CLI with `--json-schema` flag, successfully validated JSON output
 - **Effort Parameter**: Attempted via `--betas effort-2025-11-24` flag - requires API key (unavailable for subscription-only users)
 
-### CLI Testing Commands
+### CLI Testing Commands (Claude Code)
+
+**⚠️ Note**: These commands are for **Claude Code CLI** only. GitHub Copilot CLI (`gh copilot`) may use different syntax.
 
 ```bash
-# Test Structured Outputs (✅ Works)
+# Test Structured Outputs (✅ Works in Claude Code)
 claude --print --model haiku --output-format json \
   --json-schema '{"type":"object","properties":{"name":{"type":"string"}},"required":["name"]}' \
   "Your prompt here"
 
-# Test Effort Parameter (❌ Requires API key)
+# Test Effort Parameter (❌ Requires API key in Claude Code)
 claude --print --model opus --betas effort-2025-11-24 "Your prompt"
 # Error: "Custom betas are only available for API key users"
 ```
 
-### Verification Script
+**GitHub Copilot users**: Check `gh copilot --help` for equivalent commands. Feature availability and syntax may differ.
 
-Run `npx tsx scripts/verify-beta-features.ts` for detailed testing instructions and code examples for manual API testing.
+### Detailed Verification Results
+
+See [`scripts/VERIFICATION_RESULTS.md`](../scripts/VERIFICATION_RESULTS.md) for:
+- Complete test procedures and results
+- Code examples for manual API testing
+- GitHub Copilot compatibility considerations
+- Recommendations for different access tiers
 
 ---
 

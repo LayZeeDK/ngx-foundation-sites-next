@@ -4,6 +4,8 @@
 **Environment**: Claude Code CLI
 **Model**: Claude Sonnet 4.5
 
+**⚠️ IMPORTANT**: These results are specific to **Claude Code CLI**. GitHub Copilot Chat (VS Code) and GitHub Copilot CLI have not been tested and may have different feature availability or require different syntax.
+
 ---
 
 ## Summary
@@ -213,6 +215,59 @@ If you have direct Anthropic API access:
    - Beta feature - test thoroughly
    - More reliable than prompt-based JSON
    - Good for well-defined data extraction tasks
+
+---
+
+## GitHub Copilot Considerations
+
+### Unverified Feature Availability
+
+**These verification results are specific to Claude Code CLI**. GitHub Copilot (both VS Code extension and CLI) has **not been tested** and may have:
+
+1. **Different feature availability**
+   - Extended thinking may require different model selection
+   - Context window limits may differ
+   - Beta features may not be available
+
+2. **Different syntax requirements**
+   - CLI flags may differ (e.g., `--json-schema` may not exist)
+   - API parameter names may differ
+   - Model names may differ (e.g., `gpt-5-1-codex` vs `claude-sonnet-4.5`)
+
+3. **Different access requirements**
+   - GitHub Copilot premium/business tier requirements may differ
+   - API key setup may be different
+   - Beta feature enrollment may require different steps
+
+### Commands Referencing These Features
+
+Several commands in this repository reference beta features:
+- `/implement-sonnet-4-5` - References extended thinking
+- `/implement-opus-4-5` - References effort parameter
+- `/tasks-haiku-4-5` - May reference context window features
+
+**Compatibility Note**: These commands were designed for Claude Code and may need adaptation for GitHub Copilot. Test thoroughly in your environment before relying on beta features.
+
+### Verification Needed
+
+To verify GitHub Copilot feature availability:
+
+1. **Test with GitHub Copilot Chat** (VS Code)
+   - Try requesting extended thinking in chat
+   - Test with large files (>200K tokens)
+   - Check model selection options
+
+2. **Test with GitHub Copilot CLI** (`gh copilot`)
+   - Check available flags with `gh copilot --help`
+   - Look for equivalent of `--json-schema` or `--betas`
+   - Test different model selections
+
+3. **Check GitHub Copilot documentation**
+   - Visit https://docs.github.com/copilot
+   - Review model capabilities and limits
+   - Check for beta program information
+
+**Status**: Not verified due to premium request limits at time of testing (2026-01-15).
 
 ---
 
