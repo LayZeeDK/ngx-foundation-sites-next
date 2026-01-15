@@ -25,6 +25,7 @@ import {
 } from '@angular/aria/accordion';
 import { NfsAccordionItemDef } from './accordion-item-def';
 import { AccordionDeepLinkService } from './accordion-deep-link.service';
+import { NfsAccordionIdGenerator } from './accordion-id-generator.service';
 import { NfsStyleLoader } from '../core/nfs-style-loader.service';
 import { nfsAccordionToken } from './accordion.token';
 
@@ -87,9 +88,13 @@ export class NfsAccordion implements AfterContentInit {
   readonly #destroyRef = inject(DestroyRef);
   readonly #styleLoader = inject(NfsStyleLoader);
   readonly #errorHandler = inject(ErrorHandler);
+  readonly #idGenerator = inject(NfsAccordionIdGenerator);
 
   /** Cache for item injectors to avoid creating new instances on each change detection */
   readonly #itemInjectorCache = new WeakMap<NfsAccordionItemDef, Injector>();
+
+  /** Unique instance ID for this accordion (e.g., 'nfs-accordion-1') */
+  readonly #instanceId = signal(this.#idGenerator.nextAccordionInstanceId());
 
   /** Allow multiple panels to be expanded simultaneously */
   readonly multiExpand = input(false);
@@ -489,5 +494,25 @@ export class NfsAccordion implements AfterContentInit {
     });
 
     this.#destroyRef.onDestroy(cleanup);
+  }
+
+  /**
+   * Get the unique instance ID for this accordion.
+   * Used for generating stable IDs for panels and titles.
+   * @returns The accordion instance ID (e.g., 'nfs-accordion-1')
+   * @public
+   */
+  getInstanceId(): string {
+    return this.#instanceId();
+  }
+
+  /**
+   * Extracts plain text content from an accordion title.
+   * Handles complex projected content (icons, nested elements) by using textContent.
+   * @param titleComponent The NfsAccordionTitle component to extract text from
+   * @returns The trimmed text content of the title
+   */
+  protected extractTitleText(titleComponent: { elementRef?: { nativeElement?: { textContent?: string } } }): string {
+    return titleComponent.elementRef?.nativeElement?.textContent?.trim() ?? '';
   }
 }

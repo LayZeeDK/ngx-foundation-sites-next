@@ -5,9 +5,11 @@ import {
   model,
   signal,
   TemplateRef,
+  computed,
 } from '@angular/core';
 import type { NfsAccordionHeaderDef } from './accordion-header-def';
 import type { NfsAccordionContentDef } from './accordion-content';
+import { nfsAccordionToken } from './accordion.token';
 
 /**
  * Template directive to define an accordion item.
@@ -33,6 +35,11 @@ import type { NfsAccordionContentDef } from './accordion-content';
   exportAs: 'nfsAccordionItem',
 })
 export class NfsAccordionItemDef {
+  readonly #accordion = inject(nfsAccordionToken, {
+    optional: true,
+    skipSelf: true,
+  });
+
   /** Unique identifier for the panel, used for ARIA relationships */
   readonly panelId = input.required<string>();
 
@@ -56,6 +63,25 @@ export class NfsAccordionItemDef {
    * The lazy content registers itself via constructor injection.
    */
   readonly lazyContentDef = signal<NfsAccordionContentDef | null>(null);
+
+  /**
+   * Track whether this item has any projected content.
+   * Used for empty-state handling per FR-114a.
+   */
+  readonly hasContent = signal(true);
+
+  /**
+   * Generated title button ID for ARIA relationships.
+   * Format: ${instanceId}-title-${itemIndex}
+   * Computed based on accordion instance and item position.
+   */
+  readonly titleId = computed(() => {
+    // Get accordion instance ID if available
+    const accordionInstanceId = this.#accordion?.getInstanceId?.() ?? 'unknown';
+    // Compute a deterministic suffix from panelId to ensure stability
+    const panelIdSuffix = this.panelId().replace(/[^a-z0-9-]/gi, '');
+    return `${accordionInstanceId}-title-${panelIdSuffix}`;
+  });
 
   /**
    * Expands this accordion panel.

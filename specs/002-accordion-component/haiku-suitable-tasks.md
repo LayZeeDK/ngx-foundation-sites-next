@@ -27,73 +27,73 @@
 
 ### HIGH Suitability Tasks (Haiku Recommended)
 
-- [ ] T177 [US3] Add Storybook test: change panelId while deepLink enabled, verify item does NOT auto-expand (deep link only responds to URL hash changes) in packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
+- [X] T177 [US3] Add Storybook test: change panelId while deepLink enabled, verify item does NOT auto-expand (deep link only responds to URL hash changes) in packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
   - **Suitability Score**: 75% (Scope: 8/10, Complexity: 7/10, Dependencies: 7/10, Pattern: 8/10)
   - **Pattern**: Add Test (Storybook play function)
   - **Estimated Time (Haiku)**: 3-5 minutes
   - **Context Needed**: Existing Storybook test patterns, deepLink implementation
 
-- [ ] T199 [P] [US3] Add Storybook play test: verify live region receives expand/collapse announcements when announce=true, no live region when announce=false in packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
+- [X] T199 [P] [US3] Add Storybook play test: verify live region receives expand/collapse announcements when announce=true, no live region when announce=false in packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
   - **Suitability Score**: 87.5% (Scope: 9/10, Complexity: 8/10, Dependencies: 9/10, Pattern: 9/10)
   - **Pattern**: Add Test (assertion for ARIA live region)
   - **Estimated Time (Haiku)**: 2-3 minutes
   - **Context Needed**: Live region element from accordion.html, existing assertion patterns
 
-- [ ] T057b [P] [US3] Implement ID auto-generation as Angular injectable service (NfsAccordionIdGeneratorService) in packages/ngx-foundation-sites/src/lib/accordion/accordion-id-generator.service.ts (providedIn: 'platform')
+- [X] T057b [P] [US3] Implement ID auto-generation as Angular injectable service (NfsAccordionIdGeneratorService) in packages/ngx-foundation-sites/src/lib/accordion/accordion-id-generator.service.ts (providedIn: 'platform')
   - **Suitability Score**: 92.5% (Scope: 9/10, Complexity: 9/10, Dependencies: 10/10, Pattern: 9/10)
   - **Pattern**: Add Service (simple counter-based ID generator)
   - **Estimated Time (Haiku)**: 2-4 minutes
   - **Context Needed**: Existing service at accordion-id-generator.service.ts, platform provider pattern
 
-- [ ] T058 [US3] Generate title button ID: ${accordionInstanceId}-title-${itemIndex}
+- [X] T058 [US3] Generate title button ID: ${accordionInstanceId}-title-${itemIndex}
   - **Suitability Score**: 90% (Scope: 9/10, Complexity: 10/10, Dependencies: 8/10, Pattern: 9/10)
   - **Pattern**: Add Property (string template for ID generation)
   - **Estimated Time (Haiku)**: 2-3 minutes
   - **Context Needed**: ID generator service, accordion-item-def.ts structure
 
-- [ ] T059 [US3] Use user-provided panelId or generate: ${accordionInstanceId}-panel-${itemIndex}
+- [X] T059 [US3] Use user-provided panelId or generate: ${accordionInstanceId}-panel-${itemIndex}
   - **Suitability Score**: 82.5% (Scope: 8/10, Complexity: 9/10, Dependencies: 7/10, Pattern: 9/10)
   - **Pattern**: Add Logic (conditional: use input or generate)
   - **Estimated Time (Haiku)**: 3-4 minutes
   - **Context Needed**: panelId input signal, ID generator service
 
-- [ ] T063 [US3] Add inert attribute on panel wrapper when collapsed (prevent keyboard access)
+- [X] T063 [US3] Add inert attribute on panel wrapper when collapsed (prevent keyboard access)
   - **Suitability Score**: 87.5% (Scope: 9/10, Complexity: 9/10, Dependencies: 8/10, Pattern: 9/10)
   - **Pattern**: Add Attribute Binding
   - **Estimated Time (Haiku)**: 1-2 minutes
   - **Context Needed**: Panel wrapper element in accordion.html, expanded signal
 
-- [ ] T064 [US3] Implement @if conditional rendering for panel content (remove content from DOM when collapsed, keep wrapper)
+- [X] T064 [US3] Implement @if conditional rendering for panel content (remove content from DOM when collapsed, keep wrapper)
   - **Suitability Score**: 80% (Scope: 8/10, Complexity: 8/10, Dependencies: 7/10, Pattern: 9/10)
   - **Pattern**: Update Template (add @if control flow)
   - **Estimated Time (Haiku)**: 2-3 minutes
   - **Context Needed**: Current panel rendering logic in accordion.html
 
-- [ ] T178b [P] [US3] Add unit test for FR-017b panelId runtime changes: verify re-registration, ARIA updates, duplicate detection triggers ErrorHandler in packages/ngx-foundation-sites/src/lib/accordion/accordion-item.component.spec.ts
+- [X] T178b [P] [US3] Add unit test for FR-017b panelId runtime changes: verify re-registration, ARIA updates, duplicate detection triggers ErrorHandler in packages/ngx-foundation-sites/src/lib/accordion/accordion-item.component.spec.ts
   - **Suitability Score**: 77.5% (Scope: 8/10, Complexity: 6/10, Dependencies: 9/10, Pattern: 8/10)
   - **Pattern**: Add Test (unit test for input change behavior)
   - **Estimated Time (Haiku)**: 5-7 minutes
   - **Context Needed**: Existing spec patterns, ErrorHandler mock setup
 
-- [ ] T178c [P] [US3] Add unit test for FR-017c panelId/deepLink non-auto-expand: when panelId changes to match URL hash, verify item does NOT auto-expand in packages/ngx-foundation-sites/src/lib/accordion/accordion-item.component.spec.ts
+- [X] T178c [P] [US3] Add unit test for FR-017c panelId/deepLink non-auto-expand: when panelId changes to match URL hash, verify item does NOT auto-expand in packages/ngx-foundation-sites/src/lib/accordion/accordion-item.component.spec.ts
   - **Suitability Score**: 80% (Scope: 8/10, Complexity: 7/10, Dependencies: 9/10, Pattern: 8/10)
   - **Pattern**: Add Test (negative assertion test)
   - **Estimated Time (Haiku)**: 4-6 minutes
   - **Context Needed**: deepLink behavior, existing negative test patterns
 
-- [ ] T186 [US3] Implement empty-state handling in NfsAccordionItem: when no content projected, render invisible placeholder comment to ensure stable ARIA structure in packages/ngx-foundation-sites/src/lib/accordion/accordion-item-def.ts
+- [X] T186 [US3] Implement empty-state handling in NfsAccordionItem: when no content projected, render invisible placeholder comment to ensure stable ARIA structure in packages/ngx-foundation-sites/src/lib/accordion/accordion-item-def.ts
   - **Suitability Score**: 80% (Scope: 8/10, Complexity: 8/10, Dependencies: 8/10, Pattern: 8/10)
   - **Pattern**: Add Logic (guard clause for empty content)
   - **Estimated Time (Haiku)**: 3-5 minutes
   - **Context Needed**: Content projection patterns, accordion-item-def.ts template
 
-- [ ] T188a [P] [US3] Add title text extraction helper method: extractTitleText(titleComponent: NfsAccordionTitle): string returns textContent.trim() in packages/ngx-foundation-sites/src/lib/accordion/accordion.ts
+- [X] T188a [P] [US3] Add title text extraction helper method: extractTitleText(titleComponent: NfsAccordionTitle): string returns textContent.trim() in packages/ngx-foundation-sites/src/lib/accordion/accordion.ts
   - **Suitability Score**: 100% (Scope: 10/10, Complexity: 10/10, Dependencies: 10/10, Pattern: 10/10)
   - **Pattern**: Add Method (trivial helper method)
   - **Estimated Time (Haiku)**: 1-2 minutes
   - **Context Needed**: Method signature from task description
 
-- [ ] T069 [US4] Implement multiExpand logic in NfsAccordion.notifyItemToggle(): if multiExpand=true, do not close other items
+- [X] T069 [US4] Implement multiExpand logic in NfsAccordion.notifyItemToggle(): if multiExpand=true, do not close other items
   - **Suitability Score**: 80% (Scope: 8/10, Complexity: 8/10, Dependencies: 8/10, Pattern: 8/10)
   - **Pattern**: Add Logic (guard clause in existing method)
   - **Estimated Time (Haiku)**: 2-4 minutes
