@@ -285,7 +285,7 @@ export class NfsAccordion implements AfterContentInit {
           queueMicrotask(() => {
             panelToOpen.expanded.set(true);
           });
-          // FR-174a: Notify developer of binding coercion
+          // FR-174a: Notify developer of binding coercion via ErrorHandler
           this.#errorHandler.handleError(
             new Error(
               `NfsAccordion: Two-way binding coercion - prevented closing last open panel ` +
