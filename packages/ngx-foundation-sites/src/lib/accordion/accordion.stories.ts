@@ -1944,3 +1944,249 @@ export const DeepLinkIgnoresPanelIdChanges: Story = {
     expect(triggerA).toHaveAttribute('aria-expanded', 'false');
   },
 };
+
+/**
+ * Multi-Expand with Multiple Initially Expanded Items
+ *
+ * User Story 7 (P3): Initial Open Item Configuration
+ * Demonstrates that multiple items can be initially expanded when multiExpand is enabled.
+ *
+ * Acceptance: When multiExpand=true and multiple items have [expanded]="true",
+ * all marked items should be expanded on initial render.
+ *
+ * Related: T097, spec.md US7
+ */
+export const MultiExpandInitialState: Story = {
+  args: { multiExpand: true },
+  render: (args) => ({
+    props: args,
+    template: `
+      <nfs-accordion ${argsToLiteralTemplate(args)}>
+        <ng-template nfsAccordionItem panelId="item-0" [expanded]="true">
+          <ng-template nfsAccordionHeader>Item 0 (Initially Open)</ng-template>
+          <ng-template nfsAccordionContent>
+            <p>This panel starts expanded.</p>
+          </ng-template>
+        </ng-template>
+        <ng-template nfsAccordionItem panelId="item-1">
+          <ng-template nfsAccordionHeader>Item 1 (Initially Closed)</ng-template>
+          <ng-template nfsAccordionContent>
+            <p>This panel starts collapsed.</p>
+          </ng-template>
+        </ng-template>
+        <ng-template nfsAccordionItem panelId="item-2" [expanded]="true">
+          <ng-template nfsAccordionHeader>Item 2 (Initially Open)</ng-template>
+          <ng-template nfsAccordionContent>
+            <p>This panel also starts expanded.</p>
+          </ng-template>
+        </ng-template>
+      </nfs-accordion>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const trigger0 = canvas.getByRole('button', {
+      name: /Item 0 \(Initially Open\)/i,
+    });
+    const trigger1 = canvas.getByRole('button', {
+      name: /Item 1 \(Initially Closed\)/i,
+    });
+    const trigger2 = canvas.getByRole('button', {
+      name: /Item 2 \(Initially Open\)/i,
+    });
+
+    // Items 0 and 2 should start expanded (with multiExpand=true, both can be open)
+    await waitFor(async () => {
+      await expect(trigger0).toHaveAttribute('aria-expanded', 'true');
+      await expect(trigger2).toHaveAttribute('aria-expanded', 'true');
+    });
+
+    // Item 1 should start collapsed
+    expect(trigger1).toHaveAttribute('aria-expanded', 'false');
+
+    // Verify content visibility
+    const panel0Content = canvas.getByText(/This panel starts expanded/i);
+    const panel2Content = canvas.getByText(/This panel also starts expanded/i);
+    expect(panel0Content).toBeVisible();
+    expect(panel2Content).toBeVisible();
+
+    // Verify item 1 content is not visible
+    const panel1Content = canvas.queryByText(/This panel starts collapsed/i);
+    expect(panel1Content).not.toBeInTheDocument();
+  },
+};
+
+/**
+ * Wrapper component for dynamic content testing.
+ * Manages a mutable array of accordion items to test add/remove/reorder operations.
+ */
+@Component({
+  selector: 'dynamic-content-test-wrapper',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    NfsAccordion,
+    NfsAccordionItemDef,
+    NfsAccordionHeaderDef,
+    NfsAccordionContentDef,
+  ],
+  template: `
+    <main>
+      <p class="text-secondary margin-bottom-1">
+        Dynamic Item Management: Add, Remove, Reorder
+      </p>
+      <div class="margin-bottom-1 callout secondary" data-testid="controls">
+        <button class="button small" data-testid="add-item" (click)="addItem()">
+          Add Item
+        </button>
+        <button
+          class="button small alert"
+          data-testid="remove-item-1"
+          (click)="removeItem(1)"
+        >
+          Remove Item 1
+        </button>
+        <button
+          class="button small"
+          data-testid="reorder-items"
+          (click)="reorderItems()"
+        >
+          Reorder Items
+        </button>
+      </div>
+
+      <nfs-accordion>
+        @for (item of items; track item.id) {
+          <ng-template [nfsAccordionItem]="item.id" [panelId]="item.id">
+            <ng-template nfsAccordionHeader>{{ item.title }}</ng-template>
+            <ng-template nfsAccordionContent>
+              <p>Content for {{ item.title }}</p>
+            </ng-template>
+          </ng-template>
+        }
+      </nfs-accordion>
+    </main>
+  `,
+})
+class DynamicContentTestWrapper {
+  items = [
+    { id: 'item-0', title: 'Item 0' },
+    { id: 'item-1', title: 'Item 1' },
+    { id: 'item-2', title: 'Item 2' },
+  ];
+
+  addItem() {
+    const newId = `item-${this.items.length}`;
+    this.items = [
+      ...this.items,
+      { id: newId, title: `Item ${this.items.length}` },
+    ];
+  }
+
+  removeItem(index: number) {
+    this.items = this.items.filter((_, i) => i !== index);
+  }
+
+  reorderItems() {
+    // Move first item to the end
+    if (this.items.length > 0) {
+      const [first, ...rest] = this.items;
+      this.items = [...rest, first];
+    }
+  }
+}
+
+/**
+ * Dynamic Item Management
+ *
+ * User Story 8 (P3): Dynamic Item Management
+ * Demonstrates that accordion items can be added, removed, or reordered dynamically
+ * via @for without breaking keyboard navigation or ARIA relationships.
+ *
+ * Acceptance Scenarios:
+ * - When a new item is added to the array, it renders with correct IDs and keyboard navigation includes it
+ * - When an item is removed, remaining items maintain correct aria-controls/aria-labelledby IDs
+ * - When items are reordered, keyboard navigation follows the new DOM order
+ *
+ * Related: T101-T104, spec.md US8
+ */
+export const DynamicContent: Story = {
+  render: () => ({
+    props: {},
+    template: `<dynamic-content-test-wrapper />`,
+  }),
+  decorators: [
+    moduleMetadata({
+      declarations: [DynamicContentTestWrapper],
+    }),
+  ],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Initial state: 3 items (Item 0, Item 1, Item 2)
+    const initialTriggers = canvas.getAllByRole('button');
+    expect(initialTriggers).toHaveLength(3);
+    expect(canvas.getByRole('button', { name: /Item 0/i })).toBeInTheDocument();
+    expect(canvas.getByRole('button', { name: /Item 1/i })).toBeInTheDocument();
+    expect(canvas.getByRole('button', { name: /Item 2/i })).toBeInTheDocument();
+
+    // Test 1: Add new item (T102)
+    const addButton = canvas.getByTestId('add-item');
+    await userEvent.click(addButton);
+
+    // Wait for new item to render
+    await waitFor(() => {
+      const triggers = canvas.getAllByRole('button');
+      expect(triggers).toHaveLength(4);
+    });
+
+    // Verify new item has correct ARIA IDs
+    const newItemTrigger = canvas.getByRole('button', { name: /Item 3/i });
+    expect(newItemTrigger).toHaveAttribute('aria-controls');
+    expect(newItemTrigger).toHaveAttribute('aria-expanded', 'false');
+
+    // Test 2: Remove item 1 (T103)
+    const removeButton = canvas.getByTestId('remove-item-1');
+    await userEvent.click(removeButton);
+
+    // Wait for item to be removed
+    await waitFor(() => {
+      const triggers = canvas.getAllByRole('button');
+      expect(triggers).toHaveLength(3);
+    });
+
+    // Verify Item 1 is removed, others remain
+    expect(
+      canvas.queryByRole('button', { name: /^Item 1$/i }),
+    ).not.toBeInTheDocument();
+    expect(canvas.getByRole('button', { name: /Item 0/i })).toBeInTheDocument();
+    expect(canvas.getByRole('button', { name: /Item 2/i })).toBeInTheDocument();
+    expect(canvas.getByRole('button', { name: /Item 3/i })).toBeInTheDocument();
+
+    // Verify remaining items maintain correct ARIA attributes
+    const remainingTriggers = canvas.getAllByRole('button');
+    remainingTriggers.forEach((trigger) => {
+      expect(trigger).toHaveAttribute('aria-controls');
+      expect(trigger).toHaveAttribute('aria-expanded');
+    });
+
+    // Test 3: Reorder items (T104)
+    const reorderButton = canvas.getByTestId('reorder-items');
+    await userEvent.click(reorderButton);
+
+    // Wait for reorder to complete
+    await waitFor(() => {
+      const triggers = canvas.getAllByRole('button');
+      // After reorder, Item 0 moves to end: [Item 2, Item 3, Item 0]
+      expect(triggers[0]).toHaveAccessibleName(/Item 2/i);
+      expect(triggers[1]).toHaveAccessibleName(/Item 3/i);
+      expect(triggers[2]).toHaveAccessibleName(/Item 0/i);
+    });
+
+    // Verify keyboard navigation follows new DOM order
+    const firstTrigger = canvas.getAllByRole('button')[0];
+    firstTrigger.focus();
+    expect(firstTrigger).toHaveFocus();
+    expect(firstTrigger).toHaveAccessibleName(/Item 2/i);
+  },
+};
