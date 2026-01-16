@@ -154,6 +154,26 @@ When writing Storybook stories, **prefer Foundation Prototype utility classes ov
 
 **Always use the Playwright MCP server** (not WebFetch) when you need to browse websites visually. Playwright provides accurate rendering, interactive capabilities, and screenshots that are essential for component development.
 
+#### Playwright as WebFetch Fallback
+
+**When WebFetch fails** (403 Forbidden, paywall, JavaScript-required content), use Playwright MCP as a fallback:
+
+1. **403 Forbidden** — Many sites block automated requests. Use `browser_navigate` instead.
+2. **Paywalled content** — Medium, news sites may show previews. Use `browser_snapshot` to capture visible content.
+3. **JavaScript-rendered content** — SPAs won't work with WebFetch. Playwright renders the full page.
+
+```
+WebFetch fails with 403
+  ↓
+MCPSearch → select:mcp__playwright__browser_navigate
+  ↓
+browser_navigate to URL
+  ↓
+browser_snapshot to extract content
+  ↓
+browser_close when done
+```
+
 #### When to Use Playwright
 
 Use the Playwright MCP tools for:
