@@ -97,6 +97,7 @@
       ],
       "options": {
         "port": 4400,
+        "open": false,
         "configDir": "packages/ngx-foundation-sites/.storybook",
         "browserTarget": "ngx-foundation-sites:build-storybook",
         "compodoc": true,
