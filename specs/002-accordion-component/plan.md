@@ -20,11 +20,33 @@ Build an accessible, Angular-native accordion component that provides Foundation
 
 **Key Differences from Original Plan**:
 
-1. Items are defined via `ng-template[nfsAccordionItem]` directives using template-directive composition pattern
+1. Items are defined via `ng-template[nfsAccordionItem]` directives using **template-directive composition** pattern
 2. Uses `@angular/aria`'s `AccordionGroup`, `AccordionTrigger`, `AccordionPanel` primitives
 3. Container component orchestrates template instantiation via `ViewContainerRef`
 
-**Known Implementation Gaps**: See **[GAPS_REMEDIATION.md](./GAPS_REMEDIATION.md)** for comprehensive tracking with evidence, fix estimates, and validation methodology. _(Last validated: 2026-01-11 via GPT-4.1 incremental analysis - 0 new gaps found)_
+### Architecture Decision Record: Template-Directive Composition
+
+**Decision**: Use template-directive composition (`ng-template[nfsAccordionItem]`) instead of component wrappers (`<nfs-accordion-item>`)
+
+**Context**: The original plan specified a component-based architecture with `<nfs-accordion>`, `<nfs-accordion-item>`, and `<nfs-accordion-title>` components. During implementation, we identified that this approach would require significant custom ARIA handling and state management complexity.
+
+**Rationale**:
+
+1. **@angular/aria Integration**: Template-directive composition allows direct use of Angular ARIA's `AccordionGroup`, `AccordionTrigger`, and `AccordionPanel` primitives, which provide battle-tested WCAG AA compliance out of the box
+2. **Constitution Compliance**: Aligns with project constitution principle "Always use @angular/aria building blocks first" (Implementation Hierarchy, priority 1)
+3. **Reduced Custom ARIA**: Eliminates need for manual `aria-expanded`, `aria-controls`, `aria-labelledby` management - the framework handles it
+4. **Simpler State Management**: Signal-based state coordination via `@angular/aria` primitives is more robust than custom DI token patterns
+5. **Performance**: `ViewContainerRef` template instantiation is more efficient than nested component trees for 100-item accordions
+
+**Consequences**:
+
+- **API Divergence**: Consumer-facing API differs from spec.md's documented component-based API (addressed via quickstart.md examples)
+- **DX Trade-off**: Template syntax is slightly more verbose than component composition, but gains significant accessibility and maintainability benefits
+- **Testing Strategy**: Storybook tests cover template-directive API; spec.md remains as architectural reference
+
+**Implementation Scope**: All user stories (US1-US10) implemented via template-directive composition. No migration to component-based API planned.
+
+**Known Implementation Gaps**: See **[GAPS_REMEDIATION.md](./GAPS_REMEDIATION.md)** for comprehensive tracking with evidence, fix estimates, and validation methodology. _(Last validated: 2026-01-16 via automated gap implementation)_
 
 **P0 - BLOCKING** (32 min):
 

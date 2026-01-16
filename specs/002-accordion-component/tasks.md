@@ -280,8 +280,8 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 - [x] T078 [US5] Implement canCloseItem() method in NfsAccordion: returns false if allowAllClosed=false and only one item open — **DONE**: Implemented via effect in accordion.ts:252-320 (re-opens last panel if closed)
 - [x] T079 [US5] Update NfsAccordionItem.toggle() to check parent.canCloseItem() before collapsing — **DONE**: Enforcement handled at accordion level via effect
 - [x] T080 [US5] Add computed signal canClose in NfsAccordionItem: calls parent.canCloseItem(this.panelId()) — **DONE**: Behavior delegated to accordion effect; item-level computed not needed with current architecture
-- [ ] T193 [US5] Implement binding coercion in NfsAccordionItem.expanded: if allowAllClosed=false and change would close last open item, ignore setter and update model to actual state in packages/ngx-foundation-sites/src/lib/accordion/accordion-item.component.ts
-  - **Status**: PARTIAL - Coercion logic exists in accordion.ts:268-290 (re-opens last panel), but missing ErrorHandler.handleError() call required by FR-174a to notify developers of constraint violation
+- [x] T193 [US5] Implement binding coercion in NfsAccordionItem.expanded: if allowAllClosed=false and change would close last open item, ignore setter and update model to actual state in packages/ngx-foundation-sites/src/lib/accordion/accordion-item.component.ts
+  - **Status**: COMPLETE - Coercion logic with ErrorHandler.handleError() call implemented in accordion.ts:268-296 (re-opens last panel and notifies developer per FR-174a)
 
 **Checkpoint**: Allow all closed mode works - can enforce "at least one open" rule
 
@@ -612,6 +612,7 @@ Task T020: "Create NfsAccordionTitle component"
 - [x] T-AC-001 [P?] Implement per-item toggle queue + 50ms debounce and input-source coalescing
 - Location: packages/ngx-foundation-sites/src/lib/accordion/
 - Description: Implement a per-item FIFO toggle queue that enqueues toggle requests arriving while an item is mid-transition. Coalesce identical toggle requests arriving within 50ms from the same input source. Add timing-sensitive integration tests (Storybook play + Vitest simulation).
+- Related Phase: Phase 3 (US1), Phase 4 (US2) - Extends basic interaction and keyboard navigation with race condition handling
 - Blocking: YES (prevents race conditions in rapid UI interactions)
 - Evidence: `accordion-item-def.ts` updated with `requestToggle()` queue/debounce; `accordion-item-def.spec.ts` simulates rapid toggles
 
@@ -629,11 +630,13 @@ Task T020: "Create NfsAccordionTitle component"
 - [x] T-AC-003 [P?] Input validators & tests for FR-110a
 - Location: packages/ngx-foundation-sites/src/lib/accordion/
 - Description: Implement input sanitizers/coercers and `ErrorHandler.handleError()` diagnostics per FR-110a. Add unit tests for invalid/edge inputs and ensure bound models reflect coerced values.
+- Related Phase: Phase 15 (Advanced ARIA) - Extends titleHeadingLevel input validation; Phase 16 (Polish) - Input validation cross-cutting concern
 - Evidence: `validators.ts` added; `validators.spec.ts` covers edge cases; `accordion.ts` applies sanitization in constructor
 
 - [x] T-AC-004 [P?] Harmonize ID generator filename and task references
   - Location: packages/ngx-foundation-sites/src/lib/accordion/accordion-id-generator.service.ts
   - Description: Update plan/tasks/spec references to use canonical filename `accordion-id-generator.service.ts` and exported symbol `NfsAccordionIdGeneratorService`. Update any references in plan.md/spec.md/tasks.md.
+  - Related Phase: Phase 5 (US3) - Extends T057b ID generation service implementation with naming consistency
 
 ---
 

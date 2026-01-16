@@ -285,6 +285,14 @@ export class NfsAccordion implements AfterContentInit {
           queueMicrotask(() => {
             panelToOpen.expanded.set(true);
           });
+          // FR-174a: Notify developer of binding coercion
+          this.#errorHandler.handleError(
+            new Error(
+              `NfsAccordion: Two-way binding coercion - prevented closing last open panel ` +
+                `(panelId: "${panelToOpen.panelId()}") because allowAllClosed=false. ` +
+                `The [(expanded)] model will reflect the actual state (true).`,
+            ),
+          );
           return;
         }
       }

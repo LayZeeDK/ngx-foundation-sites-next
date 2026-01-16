@@ -701,6 +701,16 @@ item.expanded.update((v) => !v);
 
 ---
 
+## See Also
+
+- **Specification**: [spec.md](./spec.md) - Complete functional and accessibility requirements
+- **Implementation Plan**: [plan.md](./plan.md) - Architectural decisions and phased implementation
+- **Tasks**: [tasks.md](./tasks.md) - Detailed implementation task breakdown
+- **Gap Tracking**: [GAPS_REMEDIATION.md](./GAPS_REMEDIATION.md) - Canonical remediation tracker per plan.md:27
+- **API Design**: [ACCORDION_API_DESIGN.md](../../packages/ngx-foundation-sites/ACCORDION_API_DESIGN.md) - Component API reference
+
+---
+
 ## Support
 
 - **Documentation**: [ngx-foundation-sites docs](link)

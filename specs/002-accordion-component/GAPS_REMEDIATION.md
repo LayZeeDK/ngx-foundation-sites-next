@@ -1,23 +1,25 @@
 # Accordion Implementation Gaps - Remediation Tracker
 
-**Last Validated**: 2026-01-12
-**Validation Method**: Cross-artifact analysis (spec.md vs implementation vs contracts) + GPT-4.1 incremental analysis
-**Source**: gap-analysis-report.md (2026-01-11)
+**Last Validated**: 2026-01-16
+**Validation Method**: Cross-artifact analysis (spec.md vs implementation vs contracts) + automated gap implementation
+**Source**: gap-analysis-report.md (2026-01-16)
 **Status**: P0, P1, and P2 remediation complete (7/7 gaps fixed)
 
 ---
 
 ## Remediation Tracking Approach
 
-**This document is the CANONICAL remediation tracker** for the accordion component.
+**This document is the CANONICAL remediation tracker** for the accordion component per plan.md:27.
 
 ### File Relationships
 
-| File                                                   | Purpose                                | Authority | Update Frequency         |
-| ------------------------------------------------------ | -------------------------------------- | --------- | ------------------------ |
-| **GAPS_REMEDIATION.md** (this file)                    | Validate and track gap status          | CANONICAL | After gap fixes verified |
-| [REMEDIATION_CHECKLIST.md](./REMEDIATION_CHECKLIST.md) | Implementation guidance for developers | Secondary | When new gaps discovered |
-| [gap-analysis-report.md](./gap-analysis-report.md)     | Cross-artifact consistency analysis    | Reference | Per analysis tool runs   |
+| File                                               | Purpose                             | Authority | Update Frequency         |
+| -------------------------------------------------- | ----------------------------------- | --------- | ------------------------ |
+| **GAPS_REMEDIATION.md** (this file)                | Validate and track gap status       | CANONICAL | After gap fixes verified |
+| [gap-analysis-report.md](./gap-analysis-report.md) | Cross-artifact consistency analysis | Reference | Per analysis tool runs   |
+| [checklists/](./checklists/)                       | Review checklists for validation    | Reference | As needed                |
+
+**Note**: Finding-specific remediation files (e.g., `E01-REMEDIATION.md`) are deleted after implementation to avoid confusion. All gap tracking consolidated in this file.
 
 **When to use each document:**
 
