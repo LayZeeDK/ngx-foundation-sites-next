@@ -384,11 +384,11 @@ export class NfsAccordion implements AfterContentInit {
                   const previousText = this.#previousTitleTexts.get(panelId);
 
                   // Announce change if text differs from previous
-                  if (previousText !== undefined && previousText !== currentText) {
-                    this.#scheduleTitleChangeAnnouncement(
-                      panelId,
-                      currentText,
-                    );
+                  if (
+                    previousText !== undefined &&
+                    previousText !== currentText
+                  ) {
+                    this.#scheduleTitleChangeAnnouncement(panelId, currentText);
                   }
 
                   this.#previousTitleTexts.set(panelId, currentText);
@@ -603,7 +603,9 @@ export class NfsAccordion implements AfterContentInit {
    * @param titleComponent The NfsAccordionTitle component to extract text from
    * @returns The trimmed text content of the title
    */
-  protected extractTitleText(titleComponent: { elementRef?: { nativeElement?: { textContent?: string } } }): string {
+  protected extractTitleText(titleComponent: {
+    elementRef?: { nativeElement?: { textContent?: string } };
+  }): string {
     return titleComponent.elementRef?.nativeElement?.textContent?.trim() ?? '';
   }
 

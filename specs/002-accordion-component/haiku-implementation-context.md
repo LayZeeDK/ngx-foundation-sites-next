@@ -83,7 +83,7 @@ export class ServiceName {
 
 ```html
 @if (condition()) {
-  <!-- rendered when true -->
+<!-- rendered when true -->
 }
 ```
 
@@ -176,14 +176,14 @@ method(): void {
 ```html
 <div class="accordion" cdkAccordionGroup [multiExpand]="multiExpand()">
   @for (item of items(); track item.panelId()) {
-    <div class="accordion-item" [class.is-active]="item.expanded()">
-      <button cdkAccordionTrigger [disabled]="disabled() || item.disabled()">
-        <!-- Title content -->
-      </button>
-      <div class="accordion-content" cdkAccordionPanel>
-        <!-- Panel content -->
-      </div>
+  <div class="accordion-item" [class.is-active]="item.expanded()">
+    <button cdkAccordionTrigger [disabled]="disabled() || item.disabled()">
+      <!-- Title content -->
+    </button>
+    <div class="accordion-content" cdkAccordionPanel>
+      <!-- Panel content -->
     </div>
+  </div>
   }
 </div>
 ```
@@ -199,8 +199,8 @@ method(): void {
 ```typescript
 this.#errorHandler.handleError(
   new Error('[NfsAccordion] Diagnostic message with context', {
-    cause: originalError // optional
-  })
+    cause: originalError, // optional
+  }),
 );
 ```
 

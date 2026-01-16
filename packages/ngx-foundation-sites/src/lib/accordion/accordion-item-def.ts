@@ -81,7 +81,10 @@ export class NfsAccordionItemDef {
       const currentPanelId = this.panelId();
 
       // Validate panelId if it changes (not on initial setup)
-      if (this.#previousPanelId !== null && this.#previousPanelId !== currentPanelId) {
+      if (
+        this.#previousPanelId !== null &&
+        this.#previousPanelId !== currentPanelId
+      ) {
         // Notify accordion of the change (used by T057c validation)
         const items = this.#accordion?.itemDefs?.() ?? [];
         const itemIndex = items.indexOf(this);
