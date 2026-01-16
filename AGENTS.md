@@ -390,6 +390,7 @@ Get-ChildItem -Path "D:\projects\sandbox\repo\specs\002-accordion-component"
 ```
 
 **Best practices:**
+
 - Use relative paths whenever possible (reduces cross-platform issues)
 - Verify file vs directory paths before operations (some operations fail on directories)
 - When using absolute Windows paths in shell commands, prefer Git Bash format (`/d/...`) or PowerShell

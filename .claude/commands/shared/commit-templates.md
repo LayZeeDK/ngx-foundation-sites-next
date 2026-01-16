@@ -92,6 +92,7 @@ EOF
 ```
 
 **Type Selection**:
+
 - P0 gaps → `fix([component])`
 - P1 gaps → `feat([component])` or `refactor([component])`
 - P2 gaps → `chore([component])` or `style([component])`

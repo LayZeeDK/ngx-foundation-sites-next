@@ -155,6 +155,7 @@ Read("specs/002-accordion-component") → Error: EISDIR
 Glob(pattern: "*.md", path: "specs/002-accordion-component")
 Read("specs/002-accordion-component/spec.md")
 ```
+
 </path_validation>
 
 <context_loading>
@@ -193,10 +194,11 @@ Load only the minimal necessary context from each artifact using the Read tool:
 - Quality gates
 
 **Loading sequence**:
+
 1. Parse JSON output from prerequisite script to get absolute file paths
 2. Use Read tool with absolute paths (e.g., `Read("D:\...\spec.md")`)
 3. Extract only the sections listed above (do not load full files into context)
-  </context_loading>
+   </context_loading>
 
 ---
 

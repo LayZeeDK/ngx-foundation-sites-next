@@ -66,6 +66,7 @@ npm run test
 **CRITICAL**: If tests fail after commit, the commit likely broke something.
 
 **IF failures**:
+
 - Fix the issue immediately
 - Create a follow-up commit: `fix([component]): resolve post-commit verification failure for GAP-[N]`
 - Re-run verification
@@ -78,6 +79,7 @@ npm run lint
 ```
 
 **IF errors**:
+
 - Fix linting issues immediately
 - Create a follow-up commit with fixes
 - Re-run lint
@@ -90,6 +92,7 @@ npm run build
 ```
 
 **IF build fails**:
+
 - Fix compilation errors immediately
 - Create a follow-up commit with fixes
 - Re-run build
@@ -98,6 +101,7 @@ npm run build
 ### Step 4: Run E2E Tests (if gap requires it)
 
 Run E2E tests if the gap affects:
+
 - Deep linking (History API integration)
 - Keyboard navigation
 - Responsive behaviors
@@ -108,6 +112,7 @@ npm run e2e -- [component-name]
 ```
 
 **IF failures**:
+
 - Fix E2E issues immediately
 - Create a follow-up commit with fixes
 - Re-run E2E tests
@@ -122,6 +127,7 @@ npx nx test-storybook ngx-foundation-sites --story="[Component]--*"
 ```
 
 **IF violations**:
+
 - Fix accessibility issues immediately
 - Create a follow-up commit with fixes
 - Re-run accessibility tests

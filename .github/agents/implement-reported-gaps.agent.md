@@ -60,6 +60,7 @@ Create **one commit per gap** (or logical grouping of related gaps):
 - P2 gaps → `chore(component): resolve GAP-N - [description]` or `style(component)`
 
 **Post-commit verification**:
+
 - After each commit, re-run full test suite (test/lint/build)
 - If verification fails, STOP and fix before proceeding to next gap
 - Run E2E tests if gap affects web-native APIs

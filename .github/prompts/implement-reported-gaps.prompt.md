@@ -240,6 +240,7 @@ npm run build
 ```
 
 **If any verification fails**:
+
 1. STOP immediately
 2. Fix the issue
 3. Create a follow-up commit: `fix([component]): resolve post-commit verification failure for GAP-[N]`
@@ -249,6 +250,7 @@ npm run build
 **D. E2E Verification (if applicable)**
 
 If the gap affects features requiring web-native APIs:
+
 - Deep linking (History API)
 - Keyboard navigation
 - Responsive behaviors
@@ -276,6 +278,7 @@ Tell user:
 
 **Commit**: [commit hash]
 **Verification**:
+
 - ✅ Tests passing ([X]/[X])
 - ✅ Linting clean
 - ✅ Build successful
@@ -348,6 +351,7 @@ git log --oneline --since="30 minutes ago"
 ```
 
 Expected commits:
+
 - [N] gap remediation commits (one per gap)
 - [M] follow-up fix commits (if any post-commit verification failures occurred)
 
@@ -359,7 +363,7 @@ Tell user:
 - GAP-1: [commit hash] - [description]
 - GAP-2: [commit hash] - [description]
 - GAP-3: [commit hash] - [description]
-...
+  ...
 
 Total commits: [N]
 All commits verified and passing.
@@ -435,6 +439,7 @@ AskUserQuestion({
 If user selects "Yes, revalidate":
 
 1. Run gap analysis:
+
    ```bash
    /analyze-report-gaps-haiku-4-5
    ```
@@ -446,18 +451,22 @@ If user selects "Yes, revalidate":
    - Identify gaps that still exist (still in report)
 
 3. Report results:
+
    ```markdown
    📊 **Gap Revalidation Results**:
 
    **Fixed Gaps** (no longer appear):
+
    - GAP-1: Foundation API methods
    - GAP-2: Foundation API outputs
    - GAP-3: Input naming inconsistency
 
    **Remaining Gaps** (still exist):
+
    - None
 
    **New Gaps** (introduced by fixes):
+
    - None
 
    ✅ All gaps successfully remediated!
