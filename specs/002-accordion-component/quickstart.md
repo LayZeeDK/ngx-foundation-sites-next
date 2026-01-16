@@ -9,6 +9,12 @@
 
 This accordion component uses **template-directive composition** with `ng-template[nfsAccordionItem]` rather than component wrappers. This design leverages `@angular/aria`'s accordion primitives for maximum accessibility compliance.
 
+## Glossary
+
+**template-directive composition**: Architecture pattern where consumers define accordion items using `ng-template` with structural directives (`nfsAccordionItem`, `nfsAccordionHeader`, `nfsAccordionContent`) instead of component selectors. This enables direct integration with `@angular/aria`'s accordion primitives and provides superior accessibility without custom ARIA management.
+
+**component-based API**: Traditional architecture where accordion structure is defined using component selectors (e.g., `<nfs-accordion-item>`, `<nfs-accordion-title>`, `<nfs-accordion-content>`). This project uses template-directive composition instead for tighter `@angular/aria` integration.
+
 ## Foundation JavaScript API Parity
 
 This Angular accordion component provides **full API parity** with Foundation for Sites accordion JavaScript plugin. If you're migrating from Foundation JS, use this mapping:
@@ -188,10 +194,12 @@ export class ExampleComponent {}
 
 **Behavior**:
 
-- Step 1 is open initially
+- Step 1 is open initially (via `[expanded]="true"`)
 - Clicking the open step does nothing (it stays open)
 - Opening a different step closes the current step
 - Useful for guided workflows where context must always be visible
+
+**Note**: This example demonstrates **initial state configuration** (US7). Use `[expanded]="true"` on any item to have it open on first render. This replaces Foundation's `initialOpenIndex` option with a more flexible per-item binding approach
 
 ---
 

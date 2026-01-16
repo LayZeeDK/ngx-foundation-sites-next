@@ -9,7 +9,7 @@ Build an accessible, Angular-native accordion component that provides Foundation
 
 ## Implementation Architecture (Actual)
 
-⚠️ **UPDATE 2026-01-09**: The actual implementation diverged from the originally planned component-based architecture to use **template-directive composition**. This architectural choice leverages `@angular/aria`'s accordion primitives more effectively.
+⚠️ **UPDATE 2026-01-09**: The actual implementation diverged from the originally planned component-based architecture to use **template-directive composition**. This architectural choice leverages `@angular/aria`'s accordion primitives more effectively. (See [quickstart.md Glossary](./quickstart.md#glossary) for definitions and architectural comparison.)
 
 **Implemented API**:
 
@@ -236,15 +236,24 @@ packages/ngx-foundation-sites/
 ├── src/
 │   └── lib/
 │       └── accordion/
-│           ├── accordion.component.ts       # NfsAccordion (container)
-│           ├── accordion-item.component.ts  # NfsAccordionItem
-│           ├── accordion-title.component.ts # NfsAccordionTitle
-│           ├── accordion-content.directive.ts # NfsAccordionContent
-│           ├── accordion.token.ts           # nfsAccordionToken (DI)
-│           ├── accordion.stories.ts         # Storybook stories (colocated)
-│           ├── index.ts                     # Public API exports
-│           └── README.md                    # Component documentation
+│           ├── accordion.component.ts                # NfsAccordion (container)
+│           ├── accordion-item.component.ts           # NfsAccordionItem
+│           ├── accordion-title.component.ts          # NfsAccordionTitle
+│           ├── accordion-content.ts                  # NfsAccordionContent directive
+│           ├── accordion-header-def.ts               # Template definition directive
+│           ├── accordion-item-def.ts                 # Item template definition directive
+│           ├── accordion.token.ts                    # nfsAccordionToken (DI)
+│           ├── accordion-deep-link.service.ts        # Deep linking service
+│           ├── accordion-deep-link.service.spec.ts   # Deep linking service tests
+│           ├── accordion-id-generator.service.ts     # ID generation service
+│           ├── accordion-id-generator.service.spec.ts # ID generator tests
+│           ├── accordion.ts                          # Re-exports and interfaces
+│           ├── accordion.spec.ts                     # Component tests
+│           ├── accordion.stories.ts                  # Storybook stories (colocated)
+│           └── index.ts                              # Public API exports
 ```
+
+Note: Template-directive files use `-def` suffix per project conventions. The `.directive.ts` suffix is not used in this implementation.
 
 **Unit Test Location** (Nx colocated convention):
 
@@ -276,33 +285,4 @@ _No violations. All constitution principles satisfied._
 
 This ensures **API parity** (FR-075, FR-076) without introducing Foundation JavaScript dependency, maintaining Angular-native implementation while preserving developer familiarity.
 
-## Tasks (additional remediation items)
-
-The following tasks address top-priority specification gaps found during cross-artifact analysis and are blocking for a robust implementation.
-
-- T-AC-001: Implement per-item toggle queue + 50ms debounce and input-source coalescing
-  - Description: Add a per-item FIFO toggle queue with a 50ms debounce for UI-sourced actions. Coalesce identical repeated toggles within 50ms. Ensure queueing preserves deterministic final state and add timing-sensitive integration tests (Storybook play + Vitest simulation).
-  - Acceptance: Unit + integration tests simulate rapid clicks (10x within 200ms) and assert stable final state and no unhandled rejections.
-  - Blocking: YES (race conditions observed in manual testing without this)
-  - Status: DONE (implemented in accordion-item-def.ts)
-
-- T-AC-002: _(meta-task)_ `announce` live-region opt-in — **resolved by T196-T199**
-  - Description: Add `announce = input(false)` on `<nfs-accordion>` and render a visually-hidden live region with `aria-live="polite"` & `aria-atomic="true"` when enabled. Debounce announcements by 100ms. Add Storybook play tests asserting live region updates on expand/collapse and title changes.
-  - Acceptance: Play tests confirm live region message on expand/collapse when `announce=true`, and no live region when `announce=false`.
-  - Blocking: NO (accessibility enhancement but high priority)
-  - Status: Meta-task — implementation tracked via tasks.md T196-T199 (Phase 5, US3). No separate work item.
-
-- T-AC-003: Input validators & tests for FR-110a (titleHeadingLevel, deepLinkSmudgeDelay, deepLinkSmudgeOffset)
-  - Description: Implement input sanitizers/coercers and `ErrorHandler.handleError()` diagnostics per FR-110a. Add unit tests for invalid/edge inputs and ensure bound models reflect coerced values.
-  - Acceptance: Unit tests assert `ErrorHandler` called on invalid inputs and final internal values match coercion rules.
-  - Blocking: NO (important for robustness)
-
-  - Status: DONE (validators.ts + validators.spec.ts present and wired into accordion)
-
-  - Evidence: `validators.ts` added and wired; `validators.spec.ts` added; `accordion.ts` applies sanitizers on construction.
-
-- T-AC-004: Harmonize ID generator filename and task references
-  - Description: Choose canonical implementation filename `accordion-id-generator.service.ts` and update task references (T057/T057b) and documentation to reference that filename. Ensure the service export scope and DI provider location are documented.
-  - Acceptance: All references in `plan.md`, `spec.md`, and `contracts/accordion-api.ts` point to `accordion-id-generator.service.ts` and a short Implementation Note documents provider scope.
-  - Blocking: NO (documentation/task consistency)
-  - Status: DONE — T057b now documents export status: service is `providedIn: 'platform'` and intentionally NOT exported from public API (internal implementation detail).
+See tasks.md for remediation task tracking (T-AC-001 through T-AC-004).

@@ -158,13 +158,50 @@ A developer configures which accordion item(s) should be open when the component
 
 **Why this priority**: Useful for deep linking, default content visibility, or guided experiences. Nice-to-have for better UX but not blocking.
 
-**Independent Test**: Can be tested by rendering an accordion with initialOpenIndex="1", verifying item at index 1 is expanded on load. Delivers controlled initial state.
+**Independent Test**: Can be tested by rendering an accordion with `[expanded]="true"` on a specific item, verifying that item is expanded on load. Delivers controlled initial state.
+
+**Implementation Pattern**: Initial expansion state is controlled via the `[expanded]="true"` input binding on individual `nfsAccordionItem` directives. There is no separate `initialOpenIndex` input on the accordion component.
+
+**Code Example**:
+
+```html
+<!-- Single item initially expanded -->
+<nfs-accordion>
+  <ng-template nfsAccordionItem panelId="item-0">
+    <ng-template nfsAccordionHeader>Item 0</ng-template>
+    <p>Content 0</p>
+  </ng-template>
+
+  <ng-template nfsAccordionItem panelId="item-1" [expanded]="true">
+    <ng-template nfsAccordionHeader>Item 1 (Initially Open)</ng-template>
+    <p>Content 1</p>
+  </ng-template>
+</nfs-accordion>
+
+<!-- Multiple items initially expanded (requires multiExpandable) -->
+<nfs-accordion [multiExpandable]="true">
+  <ng-template nfsAccordionItem panelId="item-0" [expanded]="true">
+    <ng-template nfsAccordionHeader>Item 0 (Initially Open)</ng-template>
+    <p>Content 0</p>
+  </ng-template>
+
+  <ng-template nfsAccordionItem panelId="item-1">
+    <ng-template nfsAccordionHeader>Item 1</ng-template>
+    <p>Content 1</p>
+  </ng-template>
+
+  <ng-template nfsAccordionItem panelId="item-2" [expanded]="true">
+    <ng-template nfsAccordionHeader>Item 2 (Initially Open)</ng-template>
+    <p>Content 2</p>
+  </ng-template>
+</nfs-accordion>
+```
 
 **Acceptance Scenarios**:
 
-1. **Given** an accordion with initialOpenIndex="1", **When** component renders, **Then** item at index 1 is expanded
-2. **Given** an accordion with multiExpand and initialOpenIndexes="[0, 2]", **When** component renders, **Then** items at indexes 0 and 2 are expanded
-3. **Given** an accordion with no initialOpenIndex, **When** component renders, **Then** all items are collapsed
+1. **Given** an accordion item with `[expanded]="true"`, **When** component renders, **Then** that item is expanded
+2. **Given** an accordion with `multiExpandable` and multiple items with `[expanded]="true"`, **When** component renders, **Then** all marked items are expanded
+3. **Given** accordion items with no `expanded` binding, **When** component renders, **Then** all items are collapsed (default behavior)
 
 ---
 
@@ -260,6 +297,8 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
   - `titleHeadingLevel` MUST accept only integers in the range 1..6. If an invalid value is provided, the component MUST call `ErrorHandler.handleError()` and fall back to `null` (no heading wrapper).
   - `deepLinkSmudgeDelay` MUST be coerced to a non-negative integer; negative values MUST be treated as their absolute value and reported via `ErrorHandler.handleError()`.
   - `deepLinkSmudgeOffset` MUST be coerced to an integer; non-numeric values MUST result in `0` with a diagnostic via `ErrorHandler.handleError()`.
+
+  Invalid inputs are NON-FATAL: call ErrorHandler.handleError() with a diagnostic and use fallback values (titleHeadingLevel→null, deepLinkSmudgeDelay→absolute value, deepLinkSmudgeOffset→0). Component continues to initialize without throwing.
 
 ## Requirements _(mandatory)_
 
@@ -629,21 +668,21 @@ Note: AR-015 through AR-018 summarize accessibility implications of FR-037 throu
 
 ## Implementation Architecture Note
 
-⚠️ **IMPORTANT**: The current implementation uses **template-directive composition** (`ng-template[nfsAccordionItem]`, `ng-template[nfsAccordionHeader]`, `ng-template[nfsAccordionContent]`) instead of the component-based API documented below. This architectural choice leverages `@angular/aria`'s accordion primitives for maximum accessibility compliance.
+⚠️ **IMPORTANT**: This specification documents the **originally planned component-based API**. The actual implementation uses **template-directive composition** (`ng-template` directives) instead. This architectural decision was made to leverage `@angular/aria`'s accordion primitives for maximum accessibility compliance (see plan.md Architecture Decision Record for rationale).
 
-**Current Implementation API**:
+**For actual usage examples**, refer to `quickstart.md` in this feature directory.
+
+**Implemented API** (template-directive composition):
 
 - `ng-template[nfsAccordionItem]` - Item template (directive on `ng-template`)
 - `ng-template[nfsAccordionHeader]` - Header template (directive on `ng-template`)
 - `ng-template[nfsAccordionContent]` - Lazy content template (directive on `ng-template`)
 
-**Documented Spec API** (below):
+**Originally Planned API** (documented below for reference):
 
 - `<nfs-accordion-item>` - Item component
 - `<nfs-accordion-title>` - Title component
 - Content projection for panel content
-
-**Status**: The spec documents the originally planned component-based API. The implementation diverged to use template-directives for better @angular/aria integration. **Refer to `quickstart.md` for correct usage examples of the implemented API.**
 
 **Known Gaps in Current Implementation**: See **[GAPS_REMEDIATION.md](./GAPS_REMEDIATION.md)** for comprehensive tracking with validation evidence, exact fix locations, and time estimates. _(Last validated: 2026-01-11 via GPT-4.1 incremental analysis - 0 new gaps found)_
 
@@ -676,6 +715,8 @@ Note: AR-015 through AR-018 summarize accessibility implications of FR-037 throu
 ---
 
 ## Complete Component API
+
+**NOTE**: This API documentation represents the originally planned architecture. The current implementation uses template-directive composition (ng-template directives) instead. Refer to quickstart.md for actual implemented API and usage examples.
 
 #### NfsAccordion (Container Component)
 
@@ -735,6 +776,8 @@ Note: AR-015 through AR-018 summarize accessibility implications of FR-037 throu
 **No public inputs/outputs** - Automatically registers with parent item via DI.
 
 ### Usage Examples
+
+**NOTE**: The following examples illustrate the originally planned component-based API. For actual usage examples of the implemented template-directive composition API, refer to quickstart.md.
 
 #### Basic Accordion
 
