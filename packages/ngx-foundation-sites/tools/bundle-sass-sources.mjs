@@ -112,6 +112,10 @@ const FILES_TO_BUNDLE = {
     FOUNDATION_SCSS,
     'components/_button.scss',
   ),
+  'foundation-sites/scss/components/visibility': resolve(
+    FOUNDATION_SCSS,
+    'components/_visibility.scss',
+  ),
 };
 
 /**
