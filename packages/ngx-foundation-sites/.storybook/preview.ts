@@ -5,6 +5,7 @@ import { addons } from 'storybook/preview-api';
 import docJson from '../documentation.json';
 import { cleanCompodocJson } from '../src/lib/util-storybook/clean-compodoc-json';
 import { provideNfsStorybookStyleLoader } from '../src/storybook/nfs-storybook-style-loader';
+import { provideStorybookErrorHandler } from '../src/storybook/storybook-error-handler';
 import {
   applyThemeState,
   initializeRuntimeTheming,
@@ -74,9 +75,29 @@ const preview: Preview = {
     [THEME_STATE_KEY]: getDefaultThemeState(),
   },
   decorators: [
-    // Provide NfsStorybookStyleLoader to disable precompiled stylesheets when runtime theming is active
+    // Clear URL hash before each story to prevent deep link cross-contamination
+    // This prevents errors like "Deep link target not found" when navigating between
+    // stories that use different panelIds with deepLink=true
+    (story) => {
+      if (window.location.hash) {
+        // Use replaceState to clear hash without adding to history
+        window.history.replaceState(
+          null,
+          '',
+          window.location.pathname + window.location.search,
+        );
+      }
+      return story();
+    },
+    // Provide Storybook-specific services:
+    // - NfsStorybookStyleLoader: disables precompiled stylesheets when runtime theming is active
+    // - StorybookErrorHandler: logs ErrorHandler messages as warnings (not errors) to avoid
+    //   test-runner failures while preserving developer guidance
     applicationConfig({
-      providers: [provideNfsStorybookStyleLoader()],
+      providers: [
+        provideNfsStorybookStyleLoader(),
+        provideStorybookErrorHandler(),
+      ],
     }),
     // Apply theme state from addon panel, synced with direction toolbar
     (story, context) => {
