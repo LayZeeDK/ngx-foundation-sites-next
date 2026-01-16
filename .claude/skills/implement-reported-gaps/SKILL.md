@@ -1,7 +1,7 @@
 ---
 name: implement-reported-gaps
-description: Execute gap fixes from gap-analysis-report.md with automatic model selection based on finding complexity. Optimized for Haiku 4.5 orchestration with intelligent routing to haiku/sonnet/opus workers. Includes two-phase execution for documentation and code implementation.
-model_override: claude-haiku-4.5
+description: Execute gap fixes from gap-analysis-report.md with automatic model selection based on finding complexity. Optimized for Sonnet 4.5 orchestration with extended thinking, parallel context loading, and intelligent routing to haiku/sonnet/opus workers. Includes two-phase execution for documentation and code implementation.
+model_override: claude-sonnet-4-5
 handoffs:
   - label: Re-analyze Gaps
     agent: analyze-report-gaps-haiku-4-5
@@ -10,7 +10,7 @@ handoffs:
 
 # Gap Implementation Orchestrator
 
-Execute gap fixes from `gap-analysis-report.md` with automatic model selection based on finding complexity. This skill implements a **smart dispatcher pattern** optimized for Haiku 4.5 with **two-phase execution**:
+Execute gap fixes from `gap-analysis-report.md` with automatic model selection based on finding complexity. This skill implements a **smart dispatcher pattern** optimized for Sonnet 4.5 with **two-phase execution**:
 
 1. **Phase 1**: Documentation resolution (spec.md, plan.md, tasks.md)
 2. **Phase 2**: Code implementation (when findings require source code changes)
@@ -19,16 +19,17 @@ Execute gap fixes from `gap-analysis-report.md` with automatic model selection b
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│               /implement-reported-gaps (Haiku 4.5)              │
+│               /implement-reported-gaps (Sonnet 4.5)             │
 │                      Orchestrator Skill                         │
+│           Extended Thinking + Parallel Context Loading          │
 │                                                                 │
-│  1. Read gap-analysis-report.md (auto-detect from git branch)   │
+│  1. Read context in parallel (gap-report + spec + tasks)        │
 │  2. Parse findings table → extract ID, Severity, Category       │
-│  3. Score each finding → assign target model                    │
-│  3.5. Detect code implementation requirements                   │
+│  3. Classify with extended thinking → assign target model       │
+│  3.5. Detect code implementation + complexity scoring           │
 │  4. Generate model-optimized prompts for each finding           │
-│  5. Spawn Task agents (Phase 1: docs, Phase 2: code)            │
-│  6. Track progress, validate completion                         │
+│  5. Spawn Task agents (dependency-aware batching)               │
+│  6. Track progress with adaptive retry reasoning                │
 └──────────────────────────┬──────────────────────────────────────┘
                            │
          ┌─────────────────┼─────────────────┐
@@ -55,44 +56,62 @@ Parse gap analysis findings, classify by complexity, detect code implementation 
 
 ## Execution Steps
 
-<critical>
-Execute EXACTLY these 9 steps in order. Do NOT skip steps. Do NOT add extra steps.
-</critical>
+<sonnet_optimization>
+This skill is optimized for Sonnet 4.5's capabilities:
 
-### Step 1: Auto-Detect Feature Directory
+- **Parallel tool use**: Load multiple files in single tool batch (5-20x faster)
+- **Extended thinking**: Use 4K-8K budgets for nuanced classification decisions
+- **Reasoning-enhanced batching**: Analyze file dependencies before spawning tasks
+- **Adaptive retry**: Diagnose failures before deciding retry strategy
+  </sonnet_optimization>
+
+### Step 1: Auto-Detect Feature Directory and Load Context
 
 <task>
-Locate gap-analysis-report.md using git branch name.
+Locate feature directory and load all context files in parallel.
 </task>
 
-<action_steps>
+<phase name="setup" parallel_tools="true">
+Execute these operations in parallel:
 
-1. Run: `git branch --show-current`
-2. Parse branch name to extract feature (format: `NNN-feature-name`)
-3. Construct path: `specs/{feature}/gap-analysis-report.md`
-4. If file not found, check `specs/*/gap-analysis-report.md` for matches
-   </action_steps>
+1. Run: `git branch --show-current` to get feature name
+2. Once FEATURE_DIR is known, load these files SIMULTANEOUSLY:
+   - `{FEATURE_DIR}/gap-analysis-report.md` (primary input)
+   - `{FEATURE_DIR}/spec.md` (for requirement cross-references)
+   - `{FEATURE_DIR}/tasks.md` (for existing task status)
+
+**Why parallel**: Sonnet 4.5 can process multiple Read tool calls in one batch,
+reducing context loading time from 3 sequential calls to 1 parallel batch.
+</phase>
 
 <output_format>
 FEATURE_DIR: specs/{feature}
 REPORT_PATH: specs/{feature}/gap-analysis-report.md
+Context loaded: gap-analysis-report.md, spec.md, tasks.md
 </output_format>
 
-### Step 2: Read and Parse Gap Report
+### Step 2: Parse Gap Report with Context Awareness
 
 <task>
-Read gap-analysis-report.md and extract the Findings table.
+Parse findings table with awareness of spec requirements and existing tasks.
 </task>
 
-<action_steps>
+<action_steps extended_thinking="4K">
 
-1. Read file at REPORT_PATH
-2. Find table starting with `| ID  | Category`
-3. FOR EACH row in table:
+1. Find table starting with `| ID  | Category` in gap-analysis-report.md
+2. FOR EACH row in table:
    - Extract: ID, Category, Severity, Location(s), Summary, Recommendation
-   - Store as structured finding object
-4. Count findings by severity: HIGH, MEDIUM, LOW
-   </action_steps>
+   - Cross-reference Location with spec.md to understand requirement context
+   - Check tasks.md to see if related tasks already exist
+   - Store as structured finding object with enriched context
+3. Count findings by severity: HIGH, MEDIUM, LOW
+
+**Extended thinking**: Use this budget to identify:
+
+- Findings that reference the same spec requirements
+- Findings that might conflict if resolved in parallel
+- Findings where spec context changes the apparent complexity
+  </action_steps>
 
 <output_format>
 Parsed N findings:
@@ -100,25 +119,50 @@ Parsed N findings:
 - HIGH: X findings (IDs: ...)
 - MEDIUM: Y findings (IDs: ...)
 - LOW: Z findings (IDs: ...)
+
+Context enrichment:
+
+- Findings referencing same spec section: [groups]
+- Potential conflicts detected: [if any]
   </output_format>
 
-### Step 3: Classify Findings → Target Model
+### Step 3: Classify Findings → Target Model (with Extended Thinking)
 
 <task>
-Apply classification formula to assign target model for each finding.
+Apply classification with reasoning to assign optimal target model for each finding.
 </task>
 
-<classification_rules>
+<classification_strategy extended_thinking="4K">
 FOR EACH finding:
-IF severity == "LOW":
-model = "haiku"
-ELSE IF severity == "MEDIUM" AND category IN ["Inconsistency"]:
-model = "haiku"
-ELSE IF severity == "MEDIUM":
-model = "sonnet"
-ELSE IF severity == "HIGH":
-model = "opus"
-</classification_rules>
+
+**Base severity rules**:
+
+- IF severity == "LOW": base_model = "haiku"
+- ELSE IF severity == "MEDIUM" AND category IN ["Inconsistency"]: base_model = "haiku"
+- ELSE IF severity == "MEDIUM": base_model = "sonnet"
+- ELSE IF severity == "HIGH": base_model = "opus"
+
+**Complexity scoring** (use extended thinking to evaluate):
+Calculate complexity_score (0-10) based on:
+
+- Cross-file impact mentioned in Recommendation? → +2 points
+- Requires understanding Angular patterns? → +2 points
+- Involves error handling strategy? → +1 point
+- Requires new class/interface design? → +3 points
+- Multiple locations mentioned? → +1 point
+- Recommendation is vague/underspecified? → +2 points
+
+**Model adjustment**:
+
+- IF base_model == "haiku" AND complexity_score >= 4: upgrade to "sonnet"
+- IF base_model == "sonnet" AND complexity_score >= 7: upgrade to "opus"
+- IF base_model == "opus" AND complexity_score <= 3: consider "sonnet" (cost savings)
+
+**Document reasoning** for non-obvious classifications:
+
+- Why was model upgraded/downgraded?
+- What complexity factors influenced the decision?
+  </classification_strategy>
 
 <output_format>
 Classification results:
@@ -126,18 +170,27 @@ Classification results:
 - haiku tasks: [IDs] (N findings)
 - sonnet tasks: [IDs] (N findings)
 - opus tasks: [IDs] (N findings)
+
+Classification reasoning (for non-obvious decisions):
+
+- {ID}: Upgraded from {base} to {final} because {reason}
   </output_format>
 
-### Step 3.5: Detect Code Implementation Requirements
+### Step 3.5: Detect Code Implementation Requirements (with Complexity Scoring)
 
 <task>
 Determine which findings require source code changes vs documentation-only changes.
-For code changes, determine if Haiku can safely handle them (mechanical insertion) or if upgrade to Sonnet is needed.
+For code changes, assess complexity to determine optimal model routing.
 </task>
 
-<critical>
-This step is ESSENTIAL to avoid creating remediation documents when code changes are needed.
-</critical>
+<sonnet_advantage>
+Sonnet 4.5 can reason about code complexity better than mechanical pattern matching.
+Use extended thinking (4K) to evaluate:
+
+- Is the code change truly mechanical, or does it require understanding context?
+- Will this change affect other files that aren't mentioned?
+- Does the recommendation assume knowledge that needs to be discovered?
+  </sonnet_advantage>
 
 <detection_rules>
 FOR EACH finding:
@@ -197,6 +250,12 @@ Code implementation detection:
 - Requires code changes: [IDs] (N findings) → Phase 2
   - Haiku-safe (mechanical): [IDs] (N findings) → haiku
   - Requires reasoning: [IDs] (N findings) → sonnet/opus (upgraded if needed)
+
+Complexity reasoning (for code changes):
+
+- {ID}: complexity_score={N}, model={final} because {reason}
+  - Example: "E01: complexity_score=3, model=haiku because exact code provided in recommendation"
+  - Example: "E02: complexity_score=6, model=sonnet because requires understanding Angular DI patterns"
     </output_format>
 
 ### Step 4: Create TodoWrite Tracking
@@ -795,9 +854,37 @@ REPLACE placeholders:
 - {FEATURE_DIR} = from Step 1
   </code_implementation_template_opus>
 
-#### Spawning Task Agents
+#### Spawning Task Agents (Dependency-Aware Batching)
 
 <task_spawning>
+
+<sonnet_batching_strategy extended_thinking="4K">
+**Before spawning, analyze file dependencies**:
+
+1. Group findings by target file (extract from Location field)
+2. Identify findings that modify the SAME file → must be sequential
+3. Identify findings that modify DIFFERENT files → can be parallel
+4. Maximum 10 concurrent Tasks per batch
+
+**Batching logic**:
+
+```
+file_groups = group_findings_by_target_file(findings)
+parallel_batch = []
+sequential_queue = []
+
+FOR EACH file, findings_for_file IN file_groups:
+  IF len(findings_for_file) == 1:
+    parallel_batch.append(findings_for_file[0])  # Safe to parallelize
+  ELSE:
+    sequential_queue.extend(findings_for_file)   # Must be sequential (same file)
+
+# Spawn parallel batch (up to 10)
+# Then process sequential queue one at a time
+```
+
+</sonnet_batching_strategy>
+
 FOR Phase 1 (Documentation):
 
 1. Select template based on target model
@@ -808,12 +895,11 @@ FOR Phase 1 (Documentation):
    - prompt: "{filled_template}"
    - run_in_background: true (for task isolation)
 
-**Parallelism handling**:
-IF haiku findings count > 10:
-Spawn in batches of 10
-Wait for batch completion before next batch
-ELSE:
-Spawn all independent haiku Tasks in PARALLEL
+**Dependency-aware parallelism**:
+
+- Findings targeting DIFFERENT files → spawn in parallel (up to 10 concurrent)
+- Findings targeting SAME file → spawn sequentially (avoid edit conflicts)
+- If parallel batch > 10: split into sub-batches of 10
 
 Wait for Phase 1 to complete before Phase 2.
 
@@ -836,13 +922,11 @@ FOR Phase 2 (Code Implementation):
    - prompt: "{filled_code_template}"
    - run_in_background: true (for task isolation)
 
-**Parallelism handling**:
-IF Haiku code findings count > 10:
-Spawn in batches of 10
-ELSE:
-Spawn Haiku code Tasks in PARALLEL (independent mechanical insertions)
+**Dependency-aware parallelism** (same logic as Phase 1):
 
-Spawn Sonnet/Opus code Tasks SEQUENTIALLY to avoid conflicts.
+- Code findings targeting DIFFERENT files → parallel (Haiku mechanical insertions)
+- Code findings targeting SAME file → sequential (avoid conflicts)
+- Sonnet/Opus code Tasks typically sequential due to complexity
 
 **Task isolation**: Using `run_in_background: true` prevents cascading failures
 where one Task error terminates all running Tasks.
@@ -960,25 +1044,39 @@ IF all resolved:
 
 <error_handling>
 
-### Retry Pattern for Transient Failures
+### Adaptive Retry with Reasoning (Sonnet Enhancement)
+
+<adaptive_retry extended_thinking="2K">
+Sonnet 4.5 can reason about failures before deciding retry strategy.
 
 FOR EACH spawned Task:
 IF Task fails:
 
-1. Log error with task ID, finding ID, and reason
-2. Check if retryable:
-   - 429 (rate limit) → YES, retry
-   - Timeout → YES, retry once
-   - 400 (bad request) → NO, log and continue
-   - Other errors → NO, log and continue
-3. IF retryable:
-   - Wait: 2^attempt \* 1000ms (max 32s)
-   - Add jitter: ±25% randomness
-   - Retry up to 3 times
-4. IF max retries exceeded:
-   - Mark task as failed
-   - Report error to summary
-   - Continue with remaining Tasks
+1. **Analyze failure** (use extended thinking):
+   - What type of error occurred? (rate limit, timeout, bad request, other)
+   - What was the task complexity? (LOW/MEDIUM/HIGH)
+   - Is this a pattern? (multiple failures on same file/model?)
+   - What's the likely root cause?
+
+2. **Decide retry strategy based on analysis**:
+
+   | Error Type        | Task Complexity | Strategy                                |
+   | ----------------- | --------------- | --------------------------------------- |
+   | 429 (rate limit)  | LOW             | Wait + retry (standard backoff)         |
+   | 429 (rate limit)  | HIGH            | Consider model upgrade instead of retry |
+   | Timeout           | Simple task     | Retry with same timeout                 |
+   | Timeout           | Complex task    | Increase timeout, don't just retry      |
+   | 400 (bad request) | Any             | Diagnose cause - may need prompt fix    |
+   | 3+ failures       | Same file       | Escalate (likely file format issue)     |
+   | 3+ failures       | Same model      | Consider model upgrade                  |
+
+3. **Execute strategy**:
+   - IF retrying: Wait 2^attempt \* 1000ms (max 32s) + jitter (±25%)
+   - IF upgrading model: Regenerate prompt for new model, spawn new Task
+   - IF escalating: Log diagnostic info, mark for manual review
+
+4. **Max retries**: 3 per task (across all strategies)
+   </adaptive_retry>
 
 ### Graceful Degradation
 
@@ -986,9 +1084,10 @@ IF Task fails:
 IF Task repeatedly fails on specified model:
 
 1. Primary: Try with specified model
-2. Fallback 1: If rate limited, wait and retry
-3. Fallback 2: For haiku failures, consider upgrade to sonnet
-4. Final: Report failure with diagnostic info
+2. Fallback 1: If rate limited, wait with exponential backoff
+3. Fallback 2: For haiku failures on complex tasks, upgrade to sonnet
+4. Fallback 3: For sonnet failures on very complex tasks, consider opus
+5. Final: Report failure with diagnostic reasoning (why each strategy failed)
    </fallback_strategy>
 
 ### Background Task Output Collection
@@ -1000,12 +1099,12 @@ FOR EACH spawned Task:
   result = TaskOutput({
     task_id: task.id,
     block: true,      // Wait for completion
-    timeout: 120000   // 2 minute timeout
+    timeout: 120000   // 2 minute timeout (adjust for complex tasks)
   })
   IF result.status == "success":
     Mark finding as resolved
   ELSE:
-    Apply retry pattern
+    Apply adaptive retry with reasoning
 ```
 
 </error_handling>
@@ -1105,40 +1204,68 @@ Haiku can handle code changes when ALL conditions are met:
 
 ## Cost Estimation
 
-| Phase     | Model  | Cost/Finding | Overhead | Typical Count | Subtotal       |
-| --------- | ------ | ------------ | -------- | ------------- | -------------- |
-| Docs      | haiku  | $0.01-0.02   | +$0.01   | 3-4           | $0.06-0.12     |
-| Docs      | sonnet | $0.05-0.10   | +$0.02   | 1-2           | $0.07-0.24     |
-| Docs      | opus   | $0.50-1.00   | +$0.10   | 1             | $0.60-1.10     |
-| Code      | haiku  | $0.02-0.03   | +$0.01   | 1-2           | $0.03-0.08     |
-| Code      | sonnet | $0.08-0.15   | +$0.02   | 1-2           | $0.10-0.34     |
-| Code      | opus   | $0.75-1.50   | +$0.10   | 0-1           | $0.00-1.60     |
-| **TOTAL** |        |              |          | ~9            | **$0.86-3.48** |
+### Orchestrator Cost (Sonnet 4.5)
+
+| Component              | Cost           | Notes                                         |
+| ---------------------- | -------------- | --------------------------------------------- |
+| Context loading        | $0.01-0.02     | Parallel reads (gap-report, spec, tasks)      |
+| Classification         | $0.02-0.03     | Extended thinking (4K) for complexity scoring |
+| Task spawning          | $0.02-0.03     | Dependency analysis, prompt generation        |
+| **Orchestrator Total** | **$0.05-0.08** | ~$0.03-0.05 more than Haiku orchestrator      |
+
+### Spawned Task Costs
+
+| Phase             | Model  | Cost/Finding | Overhead | Typical Count | Subtotal       |
+| ----------------- | ------ | ------------ | -------- | ------------- | -------------- |
+| Docs              | haiku  | $0.01-0.02   | +$0.01   | 3-4           | $0.06-0.12     |
+| Docs              | sonnet | $0.05-0.10   | +$0.02   | 1-2           | $0.07-0.24     |
+| Docs              | opus   | $0.50-1.00   | +$0.10   | 1             | $0.60-1.10     |
+| Code              | haiku  | $0.02-0.03   | +$0.01   | 1-2           | $0.03-0.08     |
+| Code              | sonnet | $0.08-0.15   | +$0.02   | 1-2           | $0.10-0.34     |
+| Code              | opus   | $0.75-1.50   | +$0.10   | 0-1           | $0.00-1.60     |
+| **Spawned Total** |        |              |          | ~9            | **$0.86-3.48** |
+
+### Total Cost Summary
+
+| Component     | Cost Range     | % of Total |
+| ------------- | -------------- | ---------- |
+| Orchestrator  | $0.05-0.08     | ~2-3%      |
+| Spawned Tasks | $0.86-3.48     | ~97-98%    |
+| **Total**     | **$0.91-3.56** |            |
 
 **Note**: Each Task spawns with ~20K token overhead (~$0.01-0.10 depending on model).
-The "Overhead" column accounts for this per-Task context initialization cost.
 
-Compare: All findings on Opus = ~$4.50-9.00
+**Comparison**:
+
+- All findings on Opus = ~$4.50-9.00 (4-5x more expensive)
+- Haiku orchestrator = ~$0.02-0.03 (saves ~$0.03-0.05, but MCP incompatible)
 
 **Cost savings from Haiku code tasks**: ~$0.05-0.12 per finding (vs Sonnet upgrade)
 
-## Why Haiku for Orchestration
+## Why Sonnet for Orchestration
 
-| Aspect            | Why Haiku Works                      |
-| ----------------- | ------------------------------------ |
-| Parsing           | Reading markdown table is mechanical |
-| Classification    | Scoring formula is explicit IF/ELSE  |
-| Code detection    | Pattern matching on file extensions  |
-| Template filling  | Mechanical substitution              |
-| Task spawning     | Structured tool calls                |
-| Progress tracking | Checklist updates                    |
+| Aspect                  | Sonnet Advantage                                                 |
+| ----------------------- | ---------------------------------------------------------------- |
+| **MCP Support**         | Full Tool Search compatibility (Haiku fails with tool_reference) |
+| **Parallel Tools**      | 5-20x faster context loading via parallel Read/Glob calls        |
+| **Extended Thinking**   | 4K-8K budgets for nuanced classification decisions               |
+| **Complexity Scoring**  | Reasons about task complexity, not just pattern matching         |
+| **Dependency Analysis** | Understands file dependencies for smarter batching               |
+| **Adaptive Retry**      | Diagnoses failures before deciding retry strategy                |
+| **Better Prompts**      | Generates richer, context-aware prompts for spawned tasks        |
 
-The orchestrator does NOT need deep reasoning - it's a **dispatcher** that:
+The orchestrator benefits from Sonnet's reasoning capabilities:
 
-1. Parses structured input
-2. Applies explicit rules
-3. Detects code vs documentation needs
-4. Generates structured output (Task calls)
+1. **Parallel context loading**: Read gap-report + spec + tasks in one batch
+2. **Nuanced classification**: Complexity scoring beyond IF/ELSE rules
+3. **Dependency-aware batching**: Same-file findings spawn sequentially
+4. **Adaptive error handling**: Reasons about failures before retry
+
+**Cost impact**: ~$0.03-0.05 more per run (~1-3% of total), but:
+
+- Eliminates MCP Tool Search failures (#14863)
+- Faster execution via parallel tool use
+- Better classification reduces rework
 
 ## Example Usage
 

@@ -1,6 +1,6 @@
 # Gap Implementation Orchestrator
 
-Execute gap fixes from `gap-analysis-report.md` with automatic model selection and **two-phase execution**.
+Execute gap fixes from `gap-analysis-report.md` with automatic model selection, **two-phase execution**, and **Sonnet 4.5 orchestration**.
 
 ## Quick Start
 
@@ -12,10 +12,10 @@ Execute gap fixes from `gap-analysis-report.md` with automatic model selection a
 ## What It Does
 
 1. **Auto-detects** feature directory from git branch
-2. **Reads** gap-analysis-report.md and parses findings table
-3. **Classifies** findings by complexity → assigns target model
+2. **Parallel loads** gap-analysis-report.md, spec.md, and tasks.md (Sonnet optimization)
+3. **Classifies** findings using extended thinking for complexity scoring
 4. **Detects** which findings require code changes vs documentation-only
-5. **Phase 1**: Spawns Tasks for documentation fixes (spec.md, plan.md, tasks.md)
+5. **Phase 1**: Spawns Tasks for documentation fixes (dependency-aware batching)
 6. **Phase 2**: Spawns Tasks for code implementation (TypeScript, Angular files)
 7. **Tracks** progress via TodoWrite with phase indicators
 8. **Reports** completion with cost metrics
@@ -24,10 +24,13 @@ Execute gap fixes from `gap-analysis-report.md` with automatic model selection a
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
-│              /implement-reported-gaps (Haiku 4.5)              │
+│              /implement-reported-gaps (Sonnet 4.5)             │
 │                     Orchestrator Skill                         │
 │                                                                │
-│  Step 3.5: Detect code vs docs + Haiku-safe code criteria      │
+│  • Parallel context loading (5-20x faster)                     │
+│  • Extended thinking (4K) for classification                   │
+│  • Dependency-aware batching for task spawning                 │
+│  • Adaptive retry with failure diagnosis                       │
 └──────────────────────────┬─────────────────────────────────────┘
                            │
          ┌─────────────────┼─────────────────┐
@@ -87,21 +90,35 @@ Haiku can handle code changes when **ALL** conditions are met:
 
 ## Cost Efficiency
 
-| Phase     | Model  | Cost/Finding | Overhead | Typical Count | Subtotal       |
-| --------- | ------ | ------------ | -------- | ------------- | -------------- |
-| Docs      | haiku  | $0.01-0.02   | +$0.01   | 3-4           | $0.06-0.12     |
-| Docs      | sonnet | $0.05-0.10   | +$0.02   | 1-2           | $0.07-0.24     |
-| Docs      | opus   | $0.50-1.00   | +$0.10   | 1             | $0.60-1.10     |
-| Code      | haiku  | $0.02-0.03   | +$0.01   | 1-2           | $0.03-0.08     |
-| Code      | sonnet | $0.08-0.15   | +$0.02   | 1-2           | $0.10-0.34     |
-| Code      | opus   | $0.75-1.50   | +$0.10   | 0-1           | $0.00-1.60     |
-| **TOTAL** |        |              |          | ~9            | **$0.86-3.48** |
+### Orchestrator Cost (Sonnet 4.5)
 
-Compare: All findings on Opus = ~$4.50-9.00
+| Component              | Cost           |
+| ---------------------- | -------------- |
+| Parallel context load  | $0.01-0.02     |
+| Classification (4K ET) | $0.02-0.03     |
+| Task spawning          | $0.02-0.03     |
+| **Orchestrator Total** | **$0.05-0.08** |
+
+### Spawned Task Costs
+
+| Phase             | Model  | Cost/Finding | Overhead | Typical Count | Subtotal       |
+| ----------------- | ------ | ------------ | -------- | ------------- | -------------- |
+| Docs              | haiku  | $0.01-0.02   | +$0.01   | 3-4           | $0.06-0.12     |
+| Docs              | sonnet | $0.05-0.10   | +$0.02   | 1-2           | $0.07-0.24     |
+| Docs              | opus   | $0.50-1.00   | +$0.10   | 1             | $0.60-1.10     |
+| Code              | haiku  | $0.02-0.03   | +$0.01   | 1-2           | $0.03-0.08     |
+| Code              | sonnet | $0.08-0.15   | +$0.02   | 1-2           | $0.10-0.34     |
+| Code              | opus   | $0.75-1.50   | +$0.10   | 0-1           | $0.00-1.60     |
+| **Spawned Total** |        |              |          | ~9            | **$0.86-3.48** |
+
+### Total: $0.91-3.56
+
+**Comparison**:
+
+- All findings on Opus = ~$4.50-9.00 (4-5x more expensive)
+- Haiku orchestrator = ~$0.02-0.03 (saves ~$0.03-0.05, but MCP incompatible)
 
 **Note**: Each Task spawns with ~20K token overhead. The "Overhead" column accounts for this.
-
-**Haiku code savings**: ~$0.05-0.12 per mechanical insertion vs Sonnet
 
 ## Example Output
 
@@ -126,17 +143,23 @@ Compare: All findings on Opus = ~$4.50-9.00
 - Savings: 81%
 ```
 
-## Why Haiku for Orchestration
+## Why Sonnet for Orchestration
 
-The orchestrator performs **mechanical operations**:
+The orchestrator benefits from **Sonnet 4.5's capabilities**:
 
-1. **Parse**: Extract structured data from markdown table
-2. **Classify**: Apply IF/ELSE rules (deterministic)
-3. **Detect**: Pattern match file extensions and keywords
-4. **Fill templates**: Mechanical substitution
-5. **Spawn Tasks**: Structured tool calls
+| Aspect                  | Sonnet Advantage                                                 |
+| ----------------------- | ---------------------------------------------------------------- |
+| **MCP Support**         | Full Tool Search compatibility (Haiku fails with tool_reference) |
+| **Parallel Tools**      | 5-20x faster context loading via parallel Read/Glob calls        |
+| **Extended Thinking**   | 4K budgets for nuanced classification decisions                  |
+| **Dependency Analysis** | Understands file dependencies for smarter batching               |
+| **Adaptive Retry**      | Diagnoses failures before deciding retry strategy                |
 
-This is exactly what Haiku 4.5 excels at—fast, cheap, reliable.
+**Cost impact**: ~$0.03-0.05 more per run (~1-3% of total), but:
+
+- Eliminates MCP Tool Search failures ([#14863](https://github.com/anthropics/claude-code/issues/14863))
+- Faster execution via parallel tool use
+- Better classification reduces rework
 
 ## Key Improvement: No More Remediation Documents
 
@@ -173,11 +196,11 @@ Tasks spawn with `run_in_background: true` for isolation:
 
 ## Known Issues
 
-| Issue                                                                                           | Impact                           | Workaround                                   |
+| Issue                                                                                           | Impact                           | Status/Workaround                            |
 | ----------------------------------------------------------------------------------------------- | -------------------------------- | -------------------------------------------- |
 | **Model param ignored** ([#12063](https://github.com/anthropics/claude-code/issues/12063))      | Cost savings may not materialize | Monitor logs; use custom subagents if needed |
-| **Haiku MCP tool_reference** ([#14863](https://github.com/anthropics/claude-code/issues/14863)) | Haiku fails with many MCP tools  | Pre-load tools or upgrade to Sonnet          |
-| **Cascading failures** ([#6594](https://github.com/anthropics/claude-code/issues/6594))         | One failure kills all Tasks      | Mitigated with `run_in_background: true`     |
+| **Haiku MCP tool_reference** ([#14863](https://github.com/anthropics/claude-code/issues/14863)) | Haiku fails with many MCP tools  | ✅ **Resolved**: Sonnet orchestrator         |
+| **Cascading failures** ([#6594](https://github.com/anthropics/claude-code/issues/6594))         | One failure kills all Tasks      | ✅ **Mitigated**: `run_in_background: true`  |
 
 See [CLAUDE-CODE-MCP-SEARCH.md](../../../prompt-engineering/CLAUDE-CODE-MCP-SEARCH.md) for MCP Tool Search details.
 
