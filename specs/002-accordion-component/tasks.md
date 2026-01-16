@@ -343,9 +343,10 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
   - **Status**: Demonstrated in `InitiallyExpanded` story (line 225-263)
   - **Note**: Story demonstrates single-expand mode with panel-1 (`[expanded]="true"`) starting expanded
   - **Play function**: Verifies `aria-expanded="true"` on initial render and content visibility
-- [ ] T097 [P] [US7] Add story variant to MultiExpand story: set expanded=true on items at indexes 0 and 2, verify both open on render
-  - **Gap**: No variant of `MultiExpand` story demonstrates multiple items expanded initially
-  - **Next action**: Add story variant showing `multiExpand=true` with multiple items using `[expanded]="true"`
+- [x] T097 [P] [US7] Add story variant to MultiExpand story: set expanded=true on items at indexes 0 and 2, verify both open on render
+  - **Status**: Implemented as `MultiExpandInitialState` story (added 2026-01-17)
+  - **Note**: Story demonstrates `multiExpand=true` with items 0 and 2 initially expanded via `[expanded]="true"`
+  - **Play function**: Verifies both marked items start expanded while unmarked item remains collapsed
 
 ### Implementation for User Story 7
 
@@ -374,10 +375,18 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 
 ### Storybook Tests for User Story 8
 
-- [ ] T101 [P] [US8] Create DynamicContent story at packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
-- [ ] T102 [US8] Add play function: add new item to array, verify it renders with correct ARIA IDs
-- [ ] T103 [US8] Add play function: remove item 2, verify remaining items maintain correct aria-controls/aria-labelledby
-- [ ] T104 [US8] Add play function: reorder items, verify keyboard navigation follows new DOM order
+- [x] T101 [P] [US8] Create DynamicContent story at packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
+  - **Status**: Implemented as `DynamicContent` story with `DynamicContentTestWrapper` component (added 2026-01-17)
+  - **Note**: Story includes interactive controls for add/remove/reorder operations on dynamic accordion items
+- [x] T102 [US8] Add play function: add new item to array, verify it renders with correct ARIA IDs
+  - **Status**: Implemented in `DynamicContent` story play function
+  - **Test**: Clicks "Add Item" button, verifies new Item 3 renders with aria-controls and aria-expanded attributes
+- [x] T103 [US8] Add play function: remove item 2, verify remaining items maintain correct aria-controls/aria-labelledby
+  - **Status**: Implemented in `DynamicContent` story play function
+  - **Test**: Clicks "Remove Item 1" button, verifies Item 1 removed and remaining items (0, 2, 3) maintain ARIA attributes
+- [x] T104 [US8] Add play function: reorder items, verify keyboard navigation follows new DOM order
+  - **Status**: Implemented in `DynamicContent` story play function
+  - **Test**: Clicks "Reorder Items" button (moves first item to end), verifies DOM order changes and keyboard focus follows new order
 
 ### Implementation for User Story 8
 
