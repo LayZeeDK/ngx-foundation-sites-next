@@ -121,6 +121,13 @@ pwsh ./.specify/scripts/powershell/check-prerequisites.ps1 -Json -RequireTasks -
 - If any REQUIRED file missing: ABORT with message instructing user to run missing prerequisite command
 - Do NOT proceed with partial artifacts
 
+**Path Handling (CRITICAL)**:
+
+- Use paths from JSON output EXACTLY as provided (absolute paths)
+- Do NOT validate paths with bash `ls` commands (cross-platform issues)
+- Use `Glob` tool to verify paths if needed (e.g., `Glob(pattern: "*", path: FEATURE_DIR)`)
+- Prefer relative paths where possible (e.g., `specs/002-accordion-component/spec.md`)
+
 **PowerShell String Escaping**:
 
 - For single quotes in args: `'I'\''m Groot'` or `"I'm Groot"`
@@ -129,8 +136,29 @@ pwsh ./.specify/scripts/powershell/check-prerequisites.ps1 -Json -RequireTasks -
 
 ### Step 2: Load Artifacts (Progressive Disclosure)
 
+<critical>
+**TOOL USAGE REQUIREMENTS**:
+- NEVER use `Read` tool on directory paths (it will fail with EISDIR error)
+- ALWAYS use `Glob` tool to list directory contents or verify paths
+- NEVER use bash `ls` commands with absolute Windows paths (quoting issues)
+- Use relative paths when possible (repo root is the working directory)
+</critical>
+
+<path_validation>
+Before reading files, validate that paths point to files, not directories:
+
+```
+# ❌ WRONG - Read fails on directories
+Read("specs/002-accordion-component") → Error: EISDIR
+
+# ✅ CORRECT - List files first, then read
+Glob(pattern: "*.md", path: "specs/002-accordion-component")
+Read("specs/002-accordion-component/spec.md")
+```
+</path_validation>
+
 <context_loading>
-Load only the minimal necessary context from each artifact:
+Load only the minimal necessary context from each artifact using the Read tool:
 
 **From spec.md** (extract these sections):
 
@@ -163,6 +191,11 @@ Load only the minimal necessary context from each artifact:
 - Principle names
 - MUST/SHOULD/MAY normative statements
 - Quality gates
+
+**Loading sequence**:
+1. Parse JSON output from prerequisite script to get absolute file paths
+2. Use Read tool with absolute paths (e.g., `Read("D:\...\spec.md")`)
+3. Extract only the sections listed above (do not load full files into context)
   </context_loading>
 
 ---
@@ -696,6 +729,14 @@ This command is optimized for Haiku 4.5's strengths:
 - **LIMIT findings to 50** (aggregate overflow in summary)
 - If zero issues found: Output success report with coverage statistics
 - If artifacts missing: ABORT with clear instructions
+
+**Tool Usage Constraints**:
+
+- **NEVER use Read tool on directories** — use Glob to list directory contents
+- **NEVER use bash ls/find/grep** — use Glob/Grep tools instead
+- **NEVER use bash with Windows absolute paths** — use relative paths or Glob tool
+- **ALWAYS validate path types** before calling Read (directories fail with EISDIR)
+- **PREFER relative paths** over absolute paths when working in repo
   </behavior_constraints>
 
 ---
