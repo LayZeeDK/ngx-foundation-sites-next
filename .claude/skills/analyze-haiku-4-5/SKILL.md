@@ -79,11 +79,23 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 ## Execution Steps
 
-### Step 1: Setup & Path Discovery
+### Step 1: Setup & Path Discovery (AUTO-DETECT)
 
 <task>
-Run prerequisite check from repository root to get absolute paths.
+**IMMEDIATELY** run the prerequisite check. Do NOT ask the user which feature to analyze.
+The script auto-detects the feature from the current git branch.
 </task>
+
+<critical>
+**NO USER CONFIRMATION REQUIRED**: Execute this command as your FIRST action.
+The script uses `git rev-parse --abbrev-ref HEAD` to detect the branch (e.g., `002-accordion-component`)
+and derives the feature directory automatically (`specs/002-accordion-component/`).
+</critical>
+
+<evaluation_criteria>
+**Success**: Script executes, JSON output parsed, FEATURE_DIR extracted
+**Failure**: Asking "Which feature?" or "What should I analyze?" BEFORE running the script
+</evaluation_criteria>
 
 ```powershell
 pwsh ./.specify/scripts/powershell/check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks
@@ -687,6 +699,7 @@ This command is optimized for Haiku 4.5's strengths:
 
 <behavior_constraints>
 
+- **NEVER ask the user which feature to analyze** — run the prerequisite script FIRST; it auto-detects from git branch
 - **NEVER modify files** (strictly read-only analysis)
 - **NEVER hallucinate missing sections** (report accurately if absent)
 - **ALWAYS prioritize constitution violations** (these are CRITICAL)
