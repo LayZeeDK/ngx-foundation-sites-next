@@ -27,7 +27,17 @@ Phase 7-8 task checkboxes updated to reflect actual implementation status.
 **Planned**: Component-based (`<nfs-accordion-item>`, `<nfs-accordion-title>`)
 **Implemented**: Template-directive composition (`ng-template[nfsAccordionItem]`, `ng-template[nfsAccordionHeader]`)
 
-This template-directive composition pattern leverages `@angular/aria`'s accordion primitives more effectively. Tasks mentioning component creation (T018-T020) should be interpreted as directive creation.
+This template-directive composition pattern leverages `@angular/aria`'s accordion primitives more effectively.
+
+**⚠️ IMPORTANT CLARIFICATION FOR TASK READERS**:
+
+When reading tasks below, **tasks mentioning "component creation" (T018-T020, etc.) refer to DIRECTIVE creation, not component creation**. For example:
+
+- **T018** "Create NfsAccordion component" → Implements the `<nfs-accordion>` component (still a component)
+- **T019** "Create NfsAccordionItem" → Implements the `ng-template[nfsAccordionItem]` directive (directive, not component)
+- **T020** "Create NfsAccordionTitle" → Implements the `ng-template[nfsAccordionHeader]` directive (directive, not component)
+
+The terminology in the tasks uses the PLANNED API names for familiarity, but refer to the IMPLEMENTED directives. See spec.md section ["⚠️ IMPORTANT: Implemented API vs Documented API"](./spec.md#-important-implemented-api-vs-documented-api) and [`quickstart.md`](./quickstart.md) for the actual implementations.
 
 ### Resolved Items (formerly P0 Priority)
 
