@@ -132,6 +132,7 @@ Classification results:
 
 <task>
 Determine which findings require source code changes vs documentation-only changes.
+For code changes, determine if Haiku can safely handle them (mechanical insertion) or if upgrade to Sonnet is needed.
 </task>
 
 <critical>
@@ -141,6 +142,7 @@ This step is ESSENTIAL to avoid creating remediation documents when code changes
 <detection_rules>
 FOR EACH finding:
 requiresCodeImplementation = FALSE
+isHaikuSafeCodeChange = FALSE
 
 // Check Location for source code files
 IF Location CONTAINS any of [".ts:", ".js:", ".tsx:", ".jsx:", ".scss:", ".css:", ".html:"]:
@@ -159,12 +161,43 @@ IF category == "CoverageGap" AND Recommendation mentions specific code locations
 requiresCodeImplementation = TRUE
 </detection_rules>
 
+<haiku_safe_code_criteria>
+IF requiresCodeImplementation == TRUE AND model == "haiku":
+// Check if Haiku can safely handle this code change
+isHaikuSafeCodeChange = TRUE IF ALL of these conditions are met:
+
+1. **Remediation doc exists** with exact code to insert:
+   - Check for {FEATURE_DIR}/{ID}-REMEDIATION.md file
+   - OR Recommendation contains verbatim code block (`typescript...`)
+
+2. **Single-file change**:
+   - Location references exactly ONE source file
+   - No cross-file coordination needed
+
+3. **Single-location change**:
+   - Location specifies a single line number or small range (≤10 lines)
+   - Not "multiple locations" or "throughout the file"
+
+4. **Additive only**:
+   - Recommendation uses words: "add", "insert", "include"
+   - NOT modifying existing logic: "change", "modify", "replace", "refactor"
+
+5. **No new imports needed** OR import explicitly specified:
+   - Code uses only existing dependencies
+   - OR Recommendation explicitly states the import to add
+
+IF any condition is NOT met:
+isHaikuSafeCodeChange = FALSE → upgrade to Sonnet
+</haiku_safe_code_criteria>
+
 <output_format>
 Code implementation detection:
 
 - Documentation-only: [IDs] (N findings) → Phase 1
 - Requires code changes: [IDs] (N findings) → Phase 2
-  </output_format>
+  - Haiku-safe (mechanical): [IDs] (N findings) → haiku
+  - Requires reasoning: [IDs] (N findings) → sonnet/opus (upgraded if needed)
+    </output_format>
 
 ### Step 4: Create TodoWrite Tracking
 
@@ -441,10 +474,85 @@ FOR EACH finding with requiresCodeImplementation=TRUE, generate code-aware promp
 - Include lint/type-check verification
 </critical>
 
+#### Code Implementation Prompt Template (Haiku - Mechanical Insertions)
+
+<code_implementation_template_haiku>
+FOR findings with requiresCodeImplementation=TRUE AND isHaikuSafeCodeChange=TRUE, use Haiku with this template:
+
+**Haiku 4.5 Code Optimizations Applied:**
+
+- XML tags for explicit structure boundaries
+- Step-bounded actions (exactly 4 steps)
+- Exact code provided (no generation needed)
+- Verification checklist
+- Anti-goals to prevent scope creep
+
+```xml
+<role>
+You are a code insertion assistant. Your task is to insert exact code at a specific location.
+Output: File edits only. No explanations.
+</role>
+
+<task>
+Insert code for finding {ID}: {Summary}
+</task>
+
+<source_file>
+Path: {file_path}
+Location: line {line_number}
+</source_file>
+
+<exact_code_to_insert>
+{exact_code}
+</exact_code_to_insert>
+
+<action_steps>
+Execute EXACTLY these steps:
+1. Read {file_path} lines {line_number - 5} to {line_number + 10} to see context
+2. Identify the exact insertion point matching the code block in context
+3. Use Edit tool with:
+   - old_string: the existing code block where insertion goes
+   - new_string: existing code + inserted code (preserve indentation)
+4. Verify edit succeeded (no error returned)
+</action_steps>
+
+<constraints>
+- Insert ONLY the exact code provided above
+- Do NOT modify any other code
+- Do NOT add comments beyond what's in the exact code
+- Do NOT change indentation of surrounding code
+- Maximum 1 Edit operation
+</constraints>
+
+<success_criteria>
+- [ ] Edit tool returned success
+- [ ] Code inserted at correct location
+- [ ] Surrounding code unchanged
+- [ ] Indentation matches context
+</success_criteria>
+
+<anti_goals>
+- Do NOT explain what you're doing
+- Do NOT ask for confirmation
+- Do NOT suggest improvements
+- Do NOT create remediation documents
+- Do NOT add error handling beyond the exact code
+</anti_goals>
+```
+
+REPLACE placeholders:
+
+- {ID} = finding ID from table column 1
+- {Summary} = finding Summary from table column 5
+- {file_path} = source file path from Location
+- {line_number} = line number from Location
+- {exact_code} = verbatim code from remediation doc or Recommendation code block
+  </code_implementation_template_haiku>
+
 #### Code Implementation Prompt Template (Sonnet - Code Changes)
 
 <code_implementation_template_sonnet>
-FOR findings with requiresCodeImplementation=TRUE AND model IN ["haiku", "sonnet"], use Sonnet with this template:
+FOR findings with requiresCodeImplementation=TRUE AND (model IN ["sonnet"] OR (model == "haiku" AND isHaikuSafeCodeChange=FALSE)), use Sonnet with this template:
 
 **Sonnet 4.5 Optimizations Applied:**
 
@@ -704,15 +812,24 @@ Wait for Phase 1 to complete before Phase 2.
 
 FOR Phase 2 (Code Implementation):
 
-1. Select code implementation template based on model
-2. For haiku-classified findings requiring code: use Sonnet (upgrade for safety)
-3. Fill template with finding data
+1. Select code implementation template based on model AND isHaikuSafeCodeChange:
+
+   | Original Model | isHaikuSafeCodeChange | Use Template | Spawn Model |
+   | -------------- | --------------------- | ------------ | ----------- |
+   | haiku          | TRUE                  | Haiku Code   | haiku       |
+   | haiku          | FALSE                 | Sonnet Code  | sonnet      |
+   | sonnet         | -                     | Sonnet Code  | sonnet      |
+   | opus           | -                     | Opus Code    | opus        |
+
+2. Fill template with finding data
+3. For Haiku code tasks: extract exact_code from remediation doc or Recommendation
 4. Spawn Task with:
    - subagent_type: "general-purpose"
-   - model: "sonnet" or "opus" (never haiku for code)
+   - model: determined from table above
    - prompt: "{filled_code_template}"
 
-Spawn code Tasks SEQUENTIALLY to avoid conflicts.
+Spawn Haiku code Tasks in PARALLEL (independent mechanical insertions).
+Spawn Sonnet/Opus code Tasks SEQUENTIALLY to avoid conflicts.
 </task_spawning>
 
 ### Step 6: Track Progress
@@ -811,15 +928,27 @@ IF all resolved:
 
 ## Classification Reference
 
-| Severity | Category           | Target Model | Code Impl? | Rationale                        |
-| -------- | ------------------ | ------------ | ---------- | -------------------------------- |
-| LOW      | Any                | haiku        | → sonnet   | Mechanical work, pattern-based   |
-| MEDIUM   | Inconsistency      | haiku        | → sonnet   | Search/replace, cross-reference  |
-| MEDIUM   | CoverageGap        | sonnet       | sonnet     | Requires implementation decision |
-| MEDIUM   | Underspecification | sonnet       | sonnet     | Requires context synthesis       |
-| HIGH     | Any                | opus         | opus       | Requires judgment, deep analysis |
+| Severity | Category           | Target Model | Code Model (if needed)      | Rationale                        |
+| -------- | ------------------ | ------------ | --------------------------- | -------------------------------- |
+| LOW      | Any                | haiku        | haiku (if safe) OR → sonnet | Mechanical work, pattern-based   |
+| MEDIUM   | Inconsistency      | haiku        | haiku (if safe) OR → sonnet | Search/replace, cross-reference  |
+| MEDIUM   | CoverageGap        | sonnet       | sonnet                      | Requires implementation decision |
+| MEDIUM   | Underspecification | sonnet       | sonnet                      | Requires context synthesis       |
+| HIGH     | Any                | opus         | opus                        | Requires judgment, deep analysis |
 
-**Note**: Haiku-classified findings that require code changes are upgraded to Sonnet for safety.
+### Haiku-Safe Code Change Criteria
+
+Haiku can handle code changes when ALL conditions are met:
+
+| Criterion               | Requirement                                     | Example                                            |
+| ----------------------- | ----------------------------------------------- | -------------------------------------------------- |
+| **Exact code provided** | Remediation doc or code block in Recommendation | `this.#errorHandler.handleError(...)`              |
+| **Single file**         | Location references ONE source file             | `accordion.ts:283` ✅, `accordion.ts + item.ts` ❌ |
+| **Single location**     | One line/small range (≤10 lines)                | `line 283-288` ✅, `multiple locations` ❌         |
+| **Additive only**       | Insert/add code, not modify logic               | `add call` ✅, `change behavior` ❌                |
+| **No new imports**      | OR import explicitly specified                  | Uses existing `#errorHandler` ✅                   |
+
+**If ANY criterion fails**: Upgrade haiku → sonnet for safety.
 
 ## Cost Estimation
 
@@ -828,11 +957,14 @@ IF all resolved:
 | Docs      | haiku  | $0.01-0.02   | 3-4           | $0.03-0.08     |
 | Docs      | sonnet | $0.05-0.10   | 1-2           | $0.05-0.20     |
 | Docs      | opus   | $0.50-1.00   | 1             | $0.50-1.00     |
+| Code      | haiku  | $0.02-0.03   | 1-2           | $0.02-0.06     |
 | Code      | sonnet | $0.08-0.15   | 1-2           | $0.08-0.30     |
 | Code      | opus   | $0.75-1.50   | 0-1           | $0.00-1.50     |
-| **TOTAL** |        |              | ~9            | **$0.66-3.08** |
+| **TOTAL** |        |              | ~9            | **$0.63-3.14** |
 
 Compare: All findings on Opus = ~$4.50-9.00
+
+**Cost savings from Haiku code tasks**: ~$0.05-0.12 per finding (vs Sonnet upgrade)
 
 ## Why Haiku for Orchestration
 

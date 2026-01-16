@@ -27,7 +27,7 @@ Execute gap fixes from `gap-analysis-report.md` with automatic model selection a
 │              /implement-reported-gaps (Haiku 4.5)              │
 │                     Orchestrator Skill                         │
 │                                                                │
-│  Step 3.5: Detect code vs documentation needs                  │
+│  Step 3.5: Detect code vs docs + Haiku-safe code criteria      │
 └──────────────────────────┬─────────────────────────────────────┘
                            │
          ┌─────────────────┼─────────────────┐
@@ -37,8 +37,11 @@ Execute gap fixes from `gap-analysis-report.md` with automatic model selection a
          │                 │                 │
          └─────────────────┼─────────────────┘
                            ▼
-                    Phase 2: Code
-                    Task(sonnet/opus)
+   ┌───────────────────────┼───────────────────────┐
+   ▼                       ▼                       ▼
+Phase 2: Code         Phase 2: Code         Phase 2: Code
+Task(haiku)           Task(sonnet)          Task(opus)
+(mechanical only)     (reasoning needed)    (complex judgment)
 ```
 
 ## Two-Phase Execution
@@ -46,9 +49,9 @@ Execute gap fixes from `gap-analysis-report.md` with automatic model selection a
 | Phase | Purpose                  | File Types                 | Models Used         |
 | ----- | ------------------------ | -------------------------- | ------------------- |
 | 1     | Documentation resolution | spec.md, plan.md, tasks.md | haiku, sonnet, opus |
-| 2     | Code implementation      | .ts, .html, .scss          | sonnet, opus only   |
+| 2     | Code implementation      | .ts, .html, .scss          | haiku, sonnet, opus |
 
-**Key**: Haiku-classified findings requiring code changes are **upgraded to Sonnet** for safety.
+**Key**: Haiku handles code ONLY for mechanical insertions (exact code provided, single location, additive only).
 
 ## Code Detection Rules
 
@@ -60,13 +63,27 @@ A finding requires code implementation if:
 
 ## Classification Matrix
 
-| Severity | Category           | Docs Model | Code Model | Rationale                 |
-| -------- | ------------------ | ---------- | ---------- | ------------------------- |
-| LOW      | Any                | haiku      | → sonnet   | Mechanical, pattern-based |
-| MEDIUM   | Inconsistency      | haiku      | → sonnet   | Cross-reference updates   |
-| MEDIUM   | CoverageGap        | sonnet     | sonnet     | Implementation decision   |
-| MEDIUM   | Underspecification | sonnet     | sonnet     | Context synthesis         |
-| HIGH     | Any                | opus       | opus       | Deep analysis, judgment   |
+| Severity | Category           | Docs Model | Code Model                  | Rationale                 |
+| -------- | ------------------ | ---------- | --------------------------- | ------------------------- |
+| LOW      | Any                | haiku      | haiku (if safe) OR → sonnet | Mechanical, pattern-based |
+| MEDIUM   | Inconsistency      | haiku      | haiku (if safe) OR → sonnet | Cross-reference updates   |
+| MEDIUM   | CoverageGap        | sonnet     | sonnet                      | Implementation decision   |
+| MEDIUM   | Underspecification | sonnet     | sonnet                      | Context synthesis         |
+| HIGH     | Any                | opus       | opus                        | Deep analysis, judgment   |
+
+### Haiku-Safe Code Criteria
+
+Haiku can handle code changes when **ALL** conditions are met:
+
+| Criterion           | Requirement                                     | Example                               |
+| ------------------- | ----------------------------------------------- | ------------------------------------- |
+| **Exact code**      | Remediation doc or code block in Recommendation | `this.#errorHandler.handleError(...)` |
+| **Single file**     | Location references ONE source file             | `accordion.ts:283` ✅                 |
+| **Single location** | One line or small range (≤10 lines)             | `line 283-288` ✅                     |
+| **Additive only**   | Insert/add code, not modify existing logic      | `add call` ✅, `change behavior` ❌   |
+| **No new imports**  | OR import explicitly specified                  | Uses existing `#errorHandler` ✅      |
+
+**If ANY criterion fails**: haiku → sonnet (upgrade for safety)
 
 ## Cost Efficiency
 
@@ -75,11 +92,14 @@ A finding requires code implementation if:
 | Docs      | haiku  | $0.01-0.02   | 3-4           | $0.03-0.08     |
 | Docs      | sonnet | $0.05-0.10   | 1-2           | $0.05-0.20     |
 | Docs      | opus   | $0.50-1.00   | 1             | $0.50-1.00     |
+| Code      | haiku  | $0.02-0.03   | 1-2           | $0.02-0.06     |
 | Code      | sonnet | $0.08-0.15   | 1-2           | $0.08-0.30     |
 | Code      | opus   | $0.75-1.50   | 0-1           | $0.00-1.50     |
-| **TOTAL** |        |              | ~9            | **$0.66-3.08** |
+| **TOTAL** |        |              | ~9            | **$0.63-3.14** |
 
 Compare: All findings on Opus = ~$4.50-9.00
+
+**Haiku code savings**: ~$0.05-0.12 per mechanical insertion vs Sonnet
 
 ## Example Output
 
