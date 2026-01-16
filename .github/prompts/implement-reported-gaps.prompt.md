@@ -189,9 +189,101 @@ Step [X]/[Y]: [Step description]
 ✅ Tests passing
 ```
 
-#### 3.4: Mark Gap Complete
+#### 3.4: Commit Gap and Verify
 
-After all steps for a gap are done, update TodoWrite to `completed`.
+After all steps for a gap are done:
+
+**A. Update TodoWrite**
+
+Mark gap as `completed` in TodoWrite.
+
+**B. Create Commit**
+
+Create a commit for this gap using conventional format:
+
+```bash
+# Determine commit type based on priority
+# P0 → fix, P1 → feat/refactor, P2 → chore/style
+
+git add [files modified in this gap]
+
+git commit -m "$(cat <<'EOF'
+[type]([component]): resolve GAP-[N] - [brief description]
+
+Implement GAP-[N] from REMEDIATION_CHECKLIST.md:
+- [Step 1 description]
+- [Step 2 description]
+
+Verification:
+- ✅ Tests passing ([X]/[X])
+- ✅ Linting clean
+- ✅ Build successful
+
+Violates: [FR-XXX], [CA-XXX]
+Priority: [P0/P1/P2]
+Estimated: [X] minutes
+
+Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>
+EOF
+)"
+```
+
+**C. Post-Commit Verification**
+
+**CRITICAL**: Re-run full verification to ensure commit didn't break anything.
+
+```bash
+# Run all verification checks
+npm run test
+npm run lint
+npm run build
+```
+
+**If any verification fails**:
+1. STOP immediately
+2. Fix the issue
+3. Create a follow-up commit: `fix([component]): resolve post-commit verification failure for GAP-[N]`
+4. Re-run verification
+5. Only proceed when all checks pass
+
+**D. E2E Verification (if applicable)**
+
+If the gap affects features requiring web-native APIs:
+- Deep linking (History API)
+- Keyboard navigation
+- Responsive behaviors
+
+Run E2E tests:
+
+```bash
+npm run e2e -- [component-name]
+```
+
+**E. Accessibility Verification**
+
+Run Storybook accessibility tests:
+
+```bash
+npx nx test-storybook ngx-foundation-sites --story="[Component]--*"
+```
+
+**F. Progress Update**
+
+Tell user:
+
+```markdown
+✅ GAP-[N] complete and committed!
+
+**Commit**: [commit hash]
+**Verification**:
+- ✅ Tests passing ([X]/[X])
+- ✅ Linting clean
+- ✅ Build successful
+- ✅ E2E passing (if applicable)
+- ✅ Accessibility clean
+
+Proceeding to next gap...
+```
 
 ---
 
@@ -246,43 +338,31 @@ If any gap is marked **BREAKING CHANGE**, update CHANGELOG.md with migration ins
 
 ---
 
-### Step 6: Commit Changes
+### Step 6: Verify All Commits
 
-Create **one commit per priority level** with conventional format.
-
-**For P0:**
+All gaps have been committed individually in Step 3.4. Verify commit history:
 
 ```bash
-git commit -m "fix([component]): resolve P0 gaps - [description]
-
-Implement P0 gap remediations from REMEDIATION_CHECKLIST.md:
-
-- GAP-X: [description]
-- GAP-Y: [description]
-
-BREAKING CHANGES (if any):
-- [description with migration path]
-
-Verification:
-- ✅ All tests passing
-- ✅ Linting clean
-- ✅ Build successful
-
-Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
+# Show commits created in this session
+git log --oneline --since="30 minutes ago"
 ```
 
-**For P1:**
+Expected commits:
+- [N] gap remediation commits (one per gap)
+- [M] follow-up fix commits (if any post-commit verification failures occurred)
 
-```bash
-git commit -m "feat([component]): resolve P1 gaps - [description]
-..."
-```
+Tell user:
 
-**For P2:**
+```markdown
+📋 **Commit Summary**:
 
-```bash
-git commit -m "chore([component]): resolve P2 gaps - [description]
-..."
+- GAP-1: [commit hash] - [description]
+- GAP-2: [commit hash] - [description]
+- GAP-3: [commit hash] - [description]
+...
+
+Total commits: [N]
+All commits verified and passing.
 ```
 
 ---
@@ -308,6 +388,8 @@ Tell user:
 - ✅ All tests passing
 - ✅ Linting clean
 - ✅ Build successful
+- ✅ E2E passing (if applicable)
+- ✅ Accessibility clean
 
 **Updated Documents**:
 
@@ -317,14 +399,69 @@ Tell user:
 
 **Git Commits**:
 
-- [N] commits created with conventional format
+- [N] commits created (one per gap)
+- All commits verified with full test suite
 
 **Next Steps**:
 
-1. Review the changes: `git diff HEAD~[N]`
-2. Push to remote: `git push`
-3. Create pull request if needed
+1. Review the changes: `git log --oneline --since="30 minutes ago"`
+2. Optional: Run gap revalidation to confirm fixes
+3. Push to remote: `git push`
+4. Create pull request if needed
 ```
+
+---
+
+### Step 8: Optional Gap Revalidation
+
+Ask user if they want to revalidate gaps:
+
+```typescript
+AskUserQuestion({
+  questions: [
+    {
+      question: 'Run gap analysis to confirm all fixes? (recommended for complex features)',
+      header: 'Revalidation',
+      multiSelect: false,
+      options: [
+        { label: 'Yes, revalidate', description: 'Run gap analysis to confirm fixes' },
+        { label: 'No, skip', description: 'Manual verification is sufficient' },
+      ],
+    },
+  ],
+});
+```
+
+If user selects "Yes, revalidate":
+
+1. Run gap analysis:
+   ```bash
+   /analyze-report-gaps-haiku-4-5
+   ```
+
+2. Compare new report with original:
+   - Read original: `specs/[feature]/gap-analysis-report.md.backup`
+   - Read new: `specs/[feature]/gap-analysis-report.md`
+   - Identify gaps that are now fixed (no longer in report)
+   - Identify gaps that still exist (still in report)
+
+3. Report results:
+   ```markdown
+   📊 **Gap Revalidation Results**:
+
+   **Fixed Gaps** (no longer appear):
+   - GAP-1: Foundation API methods
+   - GAP-2: Foundation API outputs
+   - GAP-3: Input naming inconsistency
+
+   **Remaining Gaps** (still exist):
+   - None
+
+   **New Gaps** (introduced by fixes):
+   - None
+
+   ✅ All gaps successfully remediated!
+   ```
 
 ---
 
@@ -382,10 +519,13 @@ After execution:
 ✅ **All tests passing** (npm run test)
 ✅ **Linting clean** (npm run lint)
 ✅ **Build successful** (npm run build)
+✅ **E2E tests passing** (if applicable)
+✅ **Accessibility clean** (Storybook tests passing)
 ✅ **GAPS_REMEDIATION.md updated** (status → ✅ FIXED)
 ✅ **REMEDIATION_CHECKLIST.md updated** (completion notes)
 ✅ **CHANGELOG.md updated** (if breaking changes)
-✅ **Git commits created** (conventional format, co-authored)
+✅ **Git commits created** (one per gap, conventional format, co-authored)
+✅ **Post-commit verification passing** (all commits verified)
 ✅ **TodoWrite shows completion** (all items completed status)
 
 ---

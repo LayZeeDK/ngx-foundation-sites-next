@@ -62,6 +62,67 @@ EOF
 )"
 ```
 
+## Per-Gap Remediation Commit
+
+Use this template when implementing individual gaps from REMEDIATION_CHECKLIST.md:
+
+```bash
+git commit -m "$(cat <<'EOF'
+[type]([component]): resolve GAP-[N] - [brief description]
+
+Implement GAP-[N] from REMEDIATION_CHECKLIST.md:
+- [Step 1 description]
+- [Step 2 description]
+- [Step 3 description]
+
+Verification:
+- ✅ Tests passing ([X]/[X])
+- ✅ Linting clean
+- ✅ Build successful
+- ✅ E2E passing (if applicable)
+- ✅ Accessibility clean (if applicable)
+
+Violates: [FR-XXX], [CA-XXX]
+Priority: [P0/P1/P2]
+Estimated: [X] minutes
+
+Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>
+EOF
+)"
+```
+
+**Type Selection**:
+- P0 gaps → `fix([component])`
+- P1 gaps → `feat([component])` or `refactor([component])`
+- P2 gaps → `chore([component])` or `style([component])`
+
+**Example**:
+
+```bash
+git commit -m "$(cat <<'EOF'
+fix(accordion): resolve GAP-1 - add Foundation API methods
+
+Implement GAP-1 from REMEDIATION_CHECKLIST.md:
+- Add toggle() method to NfsAccordionItemDef
+- Add down() method to NfsAccordionItemDef
+- Add up() method to NfsAccordionItemDef
+
+Verification:
+- ✅ Tests passing (12/12)
+- ✅ Linting clean
+- ✅ Build successful
+
+Violates: FR-075, CA-009
+Priority: P0
+Estimated: 10 minutes
+
+Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>
+EOF
+)"
+```
+
+---
+
 ## Priority-Based Commits
 
 ### P0 (BLOCKING) Commit

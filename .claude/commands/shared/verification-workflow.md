@@ -53,6 +53,98 @@ npx nx test-storybook ngx-foundation-sites
 - Verify component renders correctly
 - Fix accessibility violations
 
+## Post-Commit Verification
+
+Run immediately after each gap commit to ensure commit didn't break anything:
+
+### Step 1: Re-run Full Test Suite
+
+```bash
+npm run test
+```
+
+**CRITICAL**: If tests fail after commit, the commit likely broke something.
+
+**IF failures**:
+- Fix the issue immediately
+- Create a follow-up commit: `fix([component]): resolve post-commit verification failure for GAP-[N]`
+- Re-run verification
+- Only proceed when all tests pass
+
+### Step 2: Re-run Linter
+
+```bash
+npm run lint
+```
+
+**IF errors**:
+- Fix linting issues immediately
+- Create a follow-up commit with fixes
+- Re-run lint
+- Only proceed when linting is clean
+
+### Step 3: Re-run Build
+
+```bash
+npm run build
+```
+
+**IF build fails**:
+- Fix compilation errors immediately
+- Create a follow-up commit with fixes
+- Re-run build
+- Only proceed when build succeeds
+
+### Step 4: Run E2E Tests (if gap requires it)
+
+Run E2E tests if the gap affects:
+- Deep linking (History API integration)
+- Keyboard navigation
+- Responsive behaviors
+- Browser-specific features
+
+```bash
+npm run e2e -- [component-name]
+```
+
+**IF failures**:
+- Fix E2E issues immediately
+- Create a follow-up commit with fixes
+- Re-run E2E tests
+- Only proceed when E2E tests pass
+
+### Step 5: Run Accessibility Tests
+
+Run Storybook accessibility tests:
+
+```bash
+npx nx test-storybook ngx-foundation-sites --story="[Component]--*"
+```
+
+**IF violations**:
+- Fix accessibility issues immediately
+- Create a follow-up commit with fixes
+- Re-run accessibility tests
+- Only proceed when accessibility is clean
+
+### Post-Commit Verification Checkpoint
+
+After post-commit verification:
+
+```markdown
+✅ Post-commit verification complete!
+
+- Tests: [X] passing (no regressions)
+- Linting: ✅ Clean
+- Build: ✅ Successful
+- E2E: ✅ Passing (if applicable)
+- Accessibility: ✅ No violations
+
+Safe to proceed to next gap.
+```
+
+---
+
 ## Per-Task Verification
 
 Run after each individual task (not just at end):
@@ -139,5 +231,7 @@ All of the following must be true before marking verification complete:
 ✅ Linting clean (npm run lint)
 ✅ Build successful (npm run build)
 ✅ Storybook tests passing (if applicable)
+✅ E2E tests passing (if applicable)
 ✅ No TypeScript compilation errors
 ✅ No accessibility violations
+✅ Post-commit verification passing (for gap remediation workflows)
