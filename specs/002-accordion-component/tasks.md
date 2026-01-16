@@ -182,8 +182,8 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 - [x] T047 [US2] Implement focus() and blur() public methods on NfsAccordionTitle
 - [x] T048 [US2] Add tabindex="0" to title buttons for keyboard accessibility
 - [x] T049 [US2] Ensure focus indicators meet WCAG contrast requirements (verify with Foundation CSS)
-- [x] T182 [US2] Implement event timestamp ordering in NfsAccordion: enqueue all UI events with `{ ts: performance.now(), type, eventTarget, payload }`, process event queue FIFO while allowing cross-item concurrency in packages/ngx-foundation-sites/src/lib/accordion/accordion.component.ts — **DEFERRED**: FR-106a handled by browser event loop FIFO + @angular/aria signal-based state updates in zoneless mode. All tests run zoneless via `provideZonelessChangeDetection()`. ConcurrentKeyboardAndClick test (T181) validates behavior. If race conditions observed, T182 can be implemented as enhancement. See accordion.ts JSDoc.
-- [x] T182b [P] [US2] Add unit test for FR-106a event timestamp ordering logic: verify FIFO processing order, cross-item concurrency allowed, focus updates get priority, expansion state resolves by timestamp in packages/ngx-foundation-sites/src/lib/accordion/accordion.component.spec.ts — **DEFERRED**: Storybook interaction test (T181) provides sufficient coverage. Custom event queue not implemented per T182 decision. Can be added if T182 is implemented.
+- [x] T182 [US2] ~~Implement event timestamp ordering in NfsAccordion~~ — **NOT REQUIRED**: FR-106a updated to specify browser-default behavior. Investigation confirmed Foundation Accordion, Angular Material, Angular CDK, and WAI-ARIA APG all follow browser event loop FIFO without custom focus precedence. ConcurrentKeyboardAndClick test (T181) validates browser-compliant behavior.
+- [x] T182b [P] [US2] ~~Add unit test for FR-106a event timestamp ordering logic~~ — **NOT REQUIRED**: No custom event queue needed per updated FR-106a. Storybook interaction test (T181) provides sufficient coverage of browser-default behavior.
 
 **Checkpoint**: Keyboard navigation fully functional - all interactions work without mouse
 

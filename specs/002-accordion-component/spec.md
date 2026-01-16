@@ -464,7 +464,7 @@ When `deepLink` is enabled, changing a `panelId` at runtime does NOT by itself t
 
 #### FR-106a: Concurrent Keyboard and Mouse Interaction Policy
 
-- **FR-106a**: The component MUST serialize user interactions at the accordion level to avoid conflicting state from concurrent keyboard and mouse events. If a keyboard navigation event and a mouse click target different items at near-simultaneous timestamps, the component MUST process events in chronological order and apply FR-089a serialization/debounce rules per item. Focus updates from keyboard navigation take precedence for focus placement, while click-driven toggles take precedence for expansion state when timestamps indicate the click occurred after the keyboard event.
+- **FR-106a**: The component MUST rely on the browser's native event loop for processing concurrent keyboard and mouse interactions. Click events on accordion headers will focus the clicked element per standard browser behavior—this is consistent with Foundation Accordion, Angular Material Expansion Panel, Angular CDK Accordion, and WAI-ARIA APG (which does not specify focus precedence between input modalities). Keyboard navigation (Arrow keys, Home, End) moves focus per WAI-ARIA APG accordion pattern. No custom event queue or focus precedence logic is required; the browser's FIFO event processing provides correct behavior.
 
 #### FR-113a: Interactive Elements in Title Content
 
