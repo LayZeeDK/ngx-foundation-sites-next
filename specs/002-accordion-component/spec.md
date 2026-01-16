@@ -40,6 +40,46 @@ This specification uses the following standardized terms:
 
 **Terminology Note**: Throughout this document, "title button," "title element," and "trigger" are used interchangeably to refer to the same component. Context determines which term is more natural (e.g., "keyboard focus moves to the title button" vs. "the trigger toggles the panel").
 
+---
+
+## ⚠️ IMPORTANT: Implemented API vs Documented API
+
+**READ THIS FIRST**: This specification documents the **originally planned component-based API**. The actual implementation uses **template-directive composition** (`ng-template` directives) instead.
+
+### Why the Architecture Changed
+
+The implementation chose template-directive composition to leverage `@angular/aria`'s accordion primitives more effectively. This architectural decision:
+
+- Aligns with project Constitution Principle I (prefer `@angular/aria` building blocks first)
+- Reduces custom ARIA handling complexity
+- Improves accessibility compliance
+- See plan.md [Architecture Decision Record](./plan.md#architecture-decision-record-template-directive-composition) for full rationale
+
+### For Actual Usage Examples: Read `quickstart.md`
+
+**⚠️ DO NOT follow the Usage Examples in this spec (section "Complete Component API" starting at line 717). They show the originally planned component-based API, not the implemented API.**
+
+**✅ INSTEAD, refer to [`quickstart.md`](./quickstart.md) in this feature directory for authoritative, working examples of the actual template-directive composition API.**
+
+### API Comparison
+
+| Aspect             | Originally Planned                | Actually Implemented                                |
+| ------------------ | --------------------------------- | --------------------------------------------------- |
+| **Item Container** | `<nfs-accordion-item>` component  | `ng-template[nfsAccordionItem]` directive           |
+| **Item Header**    | `<nfs-accordion-title>` component | `ng-template[nfsAccordionHeader]` directive         |
+| **Item Content**   | ng-content projection             | `ng-template[nfsAccordionContent]` directive (lazy) |
+| **ARIA Handling**  | Custom implementation             | Delegated to `@angular/aria` primitives             |
+
+### Content Projection Strategy
+
+- **Eager content**: Use default ng-content projection within accordion item template
+- **Lazy content**: Use `ng-template[nfsAccordionContent]` directive for performance optimization
+- **Panel wrapper**: Always rendered in DOM for ARIA stability (even when collapsed)
+
+See quickstart.md for code examples: [Basic Usage](./quickstart.md#basic-accordion), [Lazy Content](./quickstart.md#lazy-content-loading), [Multi-Expand](./quickstart.md#multi-expand-mode).
+
+---
+
 ## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Basic Single Accordion Interaction (Priority: P1)
@@ -668,23 +708,13 @@ Note: AR-015 through AR-018 summarize accessibility implications of FR-037 throu
 
 ## Implementation Architecture Note
 
-⚠️ **IMPORTANT**: This specification documents the **originally planned component-based API**. The actual implementation uses **template-directive composition** (`ng-template` directives) instead. This architectural decision was made to leverage `@angular/aria`'s accordion primitives for maximum accessibility compliance (see plan.md Architecture Decision Record for rationale).
+**⚠️ REFERENCE**: For a comprehensive explanation of the architectural shift from component-based to template-directive composition, see the section ["⚠️ IMPORTANT: Implemented API vs Documented API"](#-important-implemented-api-vs-documented-api) at the beginning of this specification (after Terminology).
 
-**For actual usage examples**, refer to `quickstart.md` in this feature directory.
+**For actual, working usage examples**, refer to [`quickstart.md`](./quickstart.md) in this feature directory.
 
-**Implemented API** (template-directive composition):
+**Reference Only**: The component API documentation below (section "Complete Component API") reflects the originally planned architecture and is provided for architectural reference only. The implementation uses template-directive composition instead.
 
-- `ng-template[nfsAccordionItem]` - Item template (directive on `ng-template`)
-- `ng-template[nfsAccordionHeader]` - Header template (directive on `ng-template`)
-- `ng-template[nfsAccordionContent]` - Lazy content template (directive on `ng-template`)
-
-**Originally Planned API** (documented below for reference):
-
-- `<nfs-accordion-item>` - Item component
-- `<nfs-accordion-title>` - Title component
-- Content projection for panel content
-
-**Known Gaps in Current Implementation**: See **[GAPS_REMEDIATION.md](./GAPS_REMEDIATION.md)** for comprehensive tracking with validation evidence, exact fix locations, and time estimates. _(Last validated: 2026-01-11 via GPT-4.1 incremental analysis - 0 new gaps found)_
+**Known Gaps in Current Implementation**: See **[GAPS_REMEDIATION.md](./GAPS_REMEDIATION.md)** for comprehensive tracking with validation evidence, exact fix locations, and time estimates. _(Last validated: 2026-01-16 via automated gap analysis - all P0/P1 gaps resolved)_
 
 ### P0 - BLOCKING (Foundation API Parity) - 32 min
 
@@ -716,7 +746,11 @@ Note: AR-015 through AR-018 summarize accessibility implications of FR-037 throu
 
 ## Complete Component API
 
-**NOTE**: This API documentation represents the originally planned architecture. The current implementation uses template-directive composition (ng-template directives) instead. Refer to quickstart.md for actual implemented API and usage examples.
+> **⚠️ REFERENCE ONLY**: This API documentation represents the **originally planned component-based architecture**. The current implementation uses **template-directive composition** instead.
+>
+> **✅ For actual usage examples**, refer to [`quickstart.md`](./quickstart.md) — that document shows the real, implemented API.
+>
+> **Why the difference?** The architectural shift was made to better leverage `@angular/aria` primitives and improve accessibility compliance. See ["⚠️ IMPORTANT: Implemented API vs Documented API"](#-important-implemented-api-vs-documented-api) for full details.
 
 #### NfsAccordion (Container Component)
 
