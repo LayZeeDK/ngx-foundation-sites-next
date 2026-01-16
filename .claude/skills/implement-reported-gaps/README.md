@@ -1,6 +1,6 @@
-# Implement Gap Remediations Skill
+# Gap Implementation Orchestrator
 
-Systematically executes gap fixes from REMEDIATION_CHECKLIST.md.
+Execute gap fixes from `gap-analysis-report.md` with automatic model selection based on finding complexity.
 
 ## Quick Start
 
@@ -9,63 +9,105 @@ Systematically executes gap fixes from REMEDIATION_CHECKLIST.md.
 /implement-reported-gaps
 ```
 
-```bash
-# In GitHub Copilot CLI
-copilot slash implement-reported-gaps
-```
-
 ## What It Does
 
-1. **Reads** REMEDIATION_CHECKLIST.md and GAPS_REMEDIATION.md
-2. **Asks** user for scope (P0/P1/P2/specific gaps)
-3. **Executes** each gap systematically with test verification
-4. **Updates** tracking documents (status → ✅ FIXED)
-5. **Commits** changes with conventional format
+1. **Auto-detects** feature directory from git branch
+2. **Reads** gap-analysis-report.md and parses findings table
+3. **Classifies** findings by complexity → assigns target model
+4. **Spawns** Task agents with model-optimized prompts
+5. **Tracks** progress via TodoWrite
+6. **Reports** completion with cost metrics
+
+## Architecture
+
+```
+┌────────────────────────────────────────────────────────────────┐
+│              /implement-reported-gaps (Haiku 4.5)              │
+│                     Orchestrator Skill                         │
+└──────────────────────────┬─────────────────────────────────────┘
+                           │
+         ┌─────────────────┼─────────────────┐
+         ▼                 ▼                 ▼
+   Task(haiku)       Task(sonnet)       Task(opus)
+   LOW findings      MEDIUM findings    HIGH findings
+```
+
+## Classification Matrix
+
+| Severity | Category           | Target Model | Work Type                 |
+| -------- | ------------------ | ------------ | ------------------------- |
+| LOW      | Any                | haiku        | Mechanical, pattern-based |
+| MEDIUM   | Inconsistency      | haiku        | Cross-reference updates   |
+| MEDIUM   | CoverageGap        | sonnet       | Implementation decision   |
+| MEDIUM   | Underspecification | sonnet       | Context synthesis         |
+| HIGH     | Any                | opus         | Deep analysis, judgment   |
+
+## Cost Efficiency
+
+| Model     | Cost/Finding | Typical Count | Subtotal       |
+| --------- | ------------ | ------------- | -------------- |
+| haiku     | $0.01-0.02   | 4-5           | $0.04-0.10     |
+| sonnet    | $0.05-0.10   | 2-3           | $0.10-0.30     |
+| opus      | $0.50-1.00   | 1-2           | $0.50-2.00     |
+| **TOTAL** |              | ~9            | **$0.66-2.43** |
+
+Compare: All findings on Opus = ~$4.50-9.00
 
 ## When to Use
 
-- **After** running `/analyze-prepare-reported-gaps-for-implementation` (creates checklist)
+- **After** `/analyze-report-gaps-haiku-4-5` generates gap-analysis-report.md
 - When ready to implement gap fixes
-- For systematic, verified implementation
+- For cost-efficient execution with automatic model routing
 
 ## Example Output
 
-From accordion P0 gaps (32 min):
-
 ```
-📋 Implementation Plan:
-- Scope: P0 only (BLOCKING)
-- Gaps: 3 (GAP-1, GAP-2, GAP-3)
-- Estimated: 32 minutes
+## Gap Implementation Complete
 
-✅ GAP-3 complete (2 min) - multiExpandable renamed
-✅ GAP-1 complete (10 min) - methods added
-✅ GAP-2 complete (20 min) - outputs added
+**Feature**: 002-accordion-component
+**Report**: specs/002-accordion-component/gap-analysis-report.md
 
-🎉 Implementation complete!
-- Tests: ✅ passing
-- Commits: 1 (P0 fixes)
-- Status: 3 gaps marked FIXED
+### Execution Summary
+
+| Model  | Findings | Resolved | Failed |
+|--------|----------|----------|--------|
+| haiku  | 4        | 4        | 0      |
+| sonnet | 3        | 3        | 0      |
+| opus   | 2        | 2        | 0      |
+| TOTAL  | 9        | 9        | 0      |
+
+### Cost Efficiency
+- Estimated cost: $1.20
+- All-opus comparison: $6.75
+- Savings: 82%
 ```
 
-## Key Features
+## Why Haiku for Orchestration
 
-- **Test-gated**: Stops on test failures
-- **Progress tracking**: TodoWrite shows real-time progress
-- **Incremental commits**: One per priority level
-- **Breaking changes**: Confirms with user, updates CHANGELOG.md
+The orchestrator performs **mechanical template-filling**, not creative reasoning:
+
+1. **Parse**: Extract structured data from markdown table
+2. **Classify**: Apply IF/ELSE rules (deterministic)
+3. **Fill templates**: Mechanical substitution
+4. **Spawn Tasks**: Structured tool calls
+
+This is exactly what Haiku 4.5 excels at—fast, cheap, reliable.
+
+## Related Commands
+
+| Command                          | Purpose                         |
+| -------------------------------- | ------------------------------- |
+| `/analyze-report-gaps-haiku-4-5` | Generate gap-analysis-report.md |
+| `/analyze-haiku-4-5`             | Terminal-only analysis          |
+| `/speckit.analyze`               | Sonnet-based analysis           |
+| **`/implement-reported-gaps`**   | Execute fixes (this command)    |
 
 ## Success Criteria
 
 After execution:
 
-✅ All selected gaps implemented
-✅ Tests passing
-✅ Tracking docs updated
-✅ Git commits created
-
-## Related Commands
-
-- `/analyze-report-gaps-gpt-5-mini or /analyze-report-gaps-gpt-4-1` - Generates gap report
-- `/analyze-prepare-reported-gaps-for-implementation` - Creates REMEDIATION_CHECKLIST.md
-- Run this command to execute fixes
+✅ All findings classified with correct target model
+✅ All Tasks spawned with model-optimized prompts
+✅ Progress tracked via TodoWrite
+✅ Completion validated with success/failure counts
+✅ Summary generated with cost metrics

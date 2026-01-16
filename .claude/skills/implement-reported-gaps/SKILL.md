@@ -1,497 +1,525 @@
 ---
 name: implement-reported-gaps
-description: Executes gap fixes from REMEDIATION_CHECKLIST.md with systematic verification and progress tracking. Use after /analyze-prepare-reported-gaps-for-implementation creates the remediation checklist. Optimized for Sonnet 4.5's implementation capabilities.
+description: Execute gap fixes from gap-analysis-report.md with automatic model selection based on finding complexity. Optimized for Haiku 4.5 orchestration with intelligent routing to haiku/sonnet/opus workers.
+model_override: claude-haiku-4.5
+handoffs:
+  - label: Re-analyze Gaps
+    agent: analyze-report-gaps-haiku-4-5
+    prompt: Run gap analysis again to verify fixes
 ---
 
-# Gap Remediation Implementation Executor
+# Gap Implementation Orchestrator
 
-Systematically executes gap fixes from REMEDIATION_CHECKLIST.md with verification and tracking.
+Execute gap fixes from `gap-analysis-report.md` with automatic model selection based on finding complexity. This skill implements a **smart dispatcher pattern** optimized for Haiku 4.5.
 
-## When to Use This Skill
+## Architecture
 
-- **After** `/analyze-prepare-reported-gaps-for-implementation` creates REMEDIATION_CHECKLIST.md
-- When ready to implement P0/P1/P2 gap fixes
-- For systematic, verified implementation with progress tracking
+```
+┌─────────────────────────────────────────────────────────────────┐
+│               /implement-reported-gaps (Haiku 4.5)              │
+│                      Orchestrator Skill                         │
+│                                                                 │
+│  1. Read gap-analysis-report.md (auto-detect from git branch)   │
+│  2. Parse findings table → extract ID, Severity, Category       │
+│  3. Score each finding → assign target model                    │
+│  4. Generate model-optimized prompts for each finding           │
+│  5. Spawn Task agents with model parameter                      │
+│  6. Track progress, validate completion                         │
+└──────────────────────────┬──────────────────────────────────────┘
+                           │
+         ┌─────────────────┼─────────────────┐
+         ▼                 ▼                 ▼
+┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐
+│ Task(haiku)     │ │ Task(sonnet)    │ │ Task(opus)      │
+│ LOW findings    │ │ MEDIUM findings │ │ HIGH findings   │
+│ Mechanical work │ │ Standard impl   │ │ Judgment calls  │
+└─────────────────┘ └─────────────────┘ └─────────────────┘
+```
 
-## Prerequisites
+## When to Use
 
-1. `REMEDIATION_CHECKLIST.md` exists in `specs/<feature>/`
-2. `GAPS_REMEDIATION.md` exists in `specs/<feature>/` (for status updates)
-3. Implementation files exist and are accessible
-4. Tests can be run locally
+- **After** `/analyze-report-gaps-haiku-4-5` generates `gap-analysis-report.md`
+- When ready to implement gap fixes across spec/plan/tasks files
+- For cost-efficient execution with automatic model routing
 
 ## Goal
 
-Execute gap fixes from REMEDIATION_CHECKLIST.md systematically, verify each fix, update tracking documents, and commit in logical increments.
+Parse gap analysis findings, classify by complexity, spawn model-optimized Task agents, track progress, and validate completion.
 
-## Workflow
+---
 
-### Step 0: Initialize
+## Execution Steps
 
-1. **Locate checklist**:
+<critical>
+Execute EXACTLY these 8 steps in order. Do NOT skip steps. Do NOT add extra steps.
+</critical>
 
-   ```bash
-   ls specs/*/REMEDIATION_CHECKLIST.md
-   ```
+### Step 1: Auto-Detect Feature Directory
 
-2. **Read REMEDIATION_CHECKLIST.md** to understand:
-   - Total gaps to fix
-   - Priority breakdown (P0/P1/P2)
-   - Estimated time per gap
-   - Verification requirements
+<task>
+Locate gap-analysis-report.md using git branch name.
+</task>
 
-3. **Read GAPS_REMEDIATION.md** to get:
-   - Gap statuses (NOT IMPLEMENTED vs PARTIAL vs TRACKED AS)
-   - Evidence locations
-   - Fix code snippets
+<action_steps>
 
-4. **Ask user for scope**:
-   ```
-   Which gaps should I implement?
-   1. All P0 (BLOCKING) - 32 min
-   2. P0 + P1 (IMPORTANT) - 167 min
-   3. P0 + P1 + P2 (POLISH) - 182 min
-   4. Specific gaps (e.g., GAP-1, GAP-3)
-   ```
+1. Run: `git branch --show-current`
+2. Parse branch name to extract feature (format: `NNN-feature-name`)
+3. Construct path: `specs/{feature}/gap-analysis-report.md`
+4. If file not found, check `specs/*/gap-analysis-report.md` for matches
+   </action_steps>
 
-### Step 1: Plan Execution
+<output_format>
+FEATURE_DIR: specs/{feature}
+REPORT_PATH: specs/{feature}/gap-analysis-report.md
+</output_format>
 
-Create TODO list with TodoWrite:
+### Step 2: Read and Parse Gap Report
+
+<task>
+Read gap-analysis-report.md and extract the Findings table.
+</task>
+
+<action_steps>
+
+1. Read file at REPORT_PATH
+2. Find table starting with `| ID  | Category`
+3. FOR EACH row in table:
+   - Extract: ID, Category, Severity, Location(s), Summary, Recommendation
+   - Store as structured finding object
+4. Count findings by severity: HIGH, MEDIUM, LOW
+   </action_steps>
+
+<output_format>
+Parsed N findings:
+
+- HIGH: X findings (IDs: ...)
+- MEDIUM: Y findings (IDs: ...)
+- LOW: Z findings (IDs: ...)
+  </output_format>
+
+### Step 3: Classify Findings → Target Model
+
+<task>
+Apply classification formula to assign target model for each finding.
+</task>
+
+<classification_rules>
+FOR EACH finding:
+IF severity == "LOW":
+model = "haiku"
+ELSE IF severity == "MEDIUM" AND category IN ["Inconsistency"]:
+model = "haiku"
+ELSE IF severity == "MEDIUM":
+model = "sonnet"
+ELSE IF severity == "HIGH":
+model = "opus"
+</classification_rules>
+
+<output_format>
+Classification results:
+
+- haiku tasks: [IDs] (N findings)
+- sonnet tasks: [IDs] (N findings)
+- opus tasks: [IDs] (N findings)
+  </output_format>
+
+### Step 4: Create TodoWrite Tracking
+
+<task>
+Create TODO list with one item per finding.
+</task>
+
+<action_steps>
+
+1. Call TodoWrite with all findings as pending tasks
+2. Include finding ID and target model in each task
+3. Format: "{ID}: {Summary (truncated)} [{model}]"
+   </action_steps>
+
+### Step 5: Generate Prompts and Spawn Tasks
+
+<task>
+FOR EACH finding, generate model-optimized prompt and spawn Task agent.
+</task>
+
+<critical>
+- Spawn PARALLEL Tasks for independent findings targeting the same model
+- Use SEQUENTIAL Tasks when findings have dependencies
+- Include exact file paths and line numbers from finding Location(s)
+</critical>
+
+#### Haiku Prompt Template (LOW/Mechanical)
+
+<haiku_template>
+FOR findings targeting model="haiku", use this exact template:
+
+```xml
+<role>
+You are an implementation assistant resolving specification gaps.
+Output: Exact file edits only. No explanations.
+</role>
+
+<task>
+Resolve finding {ID}: {Summary}
+</task>
+
+<context>
+File: {Location}
+Category: {Category}
+Feature directory: {FEATURE_DIR}
+</context>
+
+<action_steps>
+Execute exactly these steps:
+1. Read {file_path} at line {line_number}
+2. Identify the exact text to change based on recommendation
+3. Use Edit tool with old_string/new_string
+4. Verify edit succeeded (no error returned)
+</action_steps>
+
+<recommendation>
+{Recommendation}
+</recommendation>
+
+<constraints>
+- Maximum 3 file edits
+- Use Edit tool (NOT Write tool)
+- Do NOT modify unrelated sections
+- Do NOT add explanatory comments to code
+</constraints>
+
+<success_criteria>
+- [ ] Edit tool returned success
+- [ ] Change at correct location
+- [ ] No unrelated changes
+</success_criteria>
+
+<anti_goals>
+- Do NOT explain what you're doing
+- Do NOT ask for confirmation
+- Do NOT suggest additional improvements
+</anti_goals>
+```
+
+REPLACE placeholders:
+
+- {ID} = finding ID from table column 1
+- {Summary} = finding Summary from table column 5
+- {Location} = finding Location from table column 4
+- {Category} = finding Category from table column 2
+- {Recommendation} = finding Recommendation from table column 6
+- {FEATURE_DIR} = from Step 1
+- {file_path} = extract file path from Location (format: file.md:line)
+- {line_number} = extract line number from Location
+  </haiku_template>
+
+#### Sonnet Prompt Template (MEDIUM/Standard)
+
+<sonnet_template>
+FOR findings targeting model="sonnet", use this exact template:
 
 ```markdown
-- [ ] Setup: Verify test environment
-- [ ] GAP-3: Rename multiExpandable → multiExpand (2 min) - P0
-- [ ] GAP-1: Add Foundation API methods (10 min) - P0
-- [ ] GAP-2: Add Foundation API outputs (20 min) - P0
-- [ ] Verify: Run full test suite
-- [ ] Update: Mark gaps as FIXED in GAPS_REMEDIATION.md
-- [ ] Commit: P0 fixes with conventional format
+<role>
+You are an implementation agent executing systematic gap resolution.
+</role>
+
+<implementation_phases>
+
+<phase name="context">
+Read these files in parallel to understand the problem:
+- {Location} (finding location)
+- Related files mentioned in recommendation
+
+Think about:
+
+- What's the root cause of this finding?
+- What's the minimal fix?
+- What could go wrong?
+  </phase>
+
+<phase name="implementation">
+## Finding: {ID} - {Summary}
+
+**Severity**: {Severity}
+**Category**: {Category}
+**Location**: {Location}
+**Feature directory**: {FEATURE_DIR}
+
+### Recommendation
+
+{Recommendation}
+
+### Implementation Approach
+
+1. **Read current state** at {Location}
+2. **Implement minimal fix** per recommendation
+3. **Verify immediately** - read file to confirm change applied
+
+### Out of Scope
+
+- Refactoring beyond the fix
+- Additional features
+- Unrelated improvements
+- Documentation beyond what's specified
+  </phase>
+
+<phase name="verification">
+After implementation:
+- [ ] Fix addresses the finding
+- [ ] No unintended side effects
+- [ ] Related files updated if cross-referenced
+</phase>
+
+</implementation_phases>
+
+<constraints>
+- Implement ONLY what's needed for this finding
+- Do NOT add error handling beyond what's specified
+- Do NOT refactor adjacent code
+</constraints>
 ```
 
-### Step 2: Execute Each Gap (Systematic Approach)
-
-For each gap in selected scope:
-
-#### 2.1: Mark In Progress
-
-```
-TodoWrite: Mark current gap as in_progress
-```
-
-#### 2.2: Read Checklist Steps
-
-Load gap section from REMEDIATION_CHECKLIST.md
-
-#### 2.3: Execute Steps Sequentially
-
-For each step in the checklist:
-
-**File edits:**
-
-```typescript
-// Use Edit tool for exact before/after replacements
-// Example: GAP-3 Step 1
-Edit(
-  file_path: "packages/ngx-foundation-sites/src/lib/accordion/accordion.component.ts",
-  old_string: "readonly multiExpandable = input(false);",
-  new_string: "readonly multiExpand = input(false);"
-)
-```
-
-**Code additions:**
-
-```typescript
-// Use Read to understand context, then Edit to add
-// Example: GAP-1 Step 1 - Add down() method
-Read("packages/ngx-foundation-sites/src/lib/accordion/accordion-item-def.ts")
-// Find insertion point (end of class)
-Edit(
-  file_path: "...",
-  old_string: "}", // Last closing brace
-  new_string: `
-  /**
-   * Expands this accordion panel (Foundation API: .down($target))
-   * @public
-   */
-  down(): void {
-    if (!this.disabled()) {
-      this.expanded.set(true);
-    }
-  }
-}`
-)
-```
-
-**Verification commands:**
-
-```bash
-# Run after each step that modifies code
-npm run test -- accordion
-npm run lint
-```
-
-#### 2.4: Verify Step Completion
-
-After each step:
-
-1. **Read modified file** to confirm change applied
-2. **Run verification command** from checklist
-3. **Check test output** - if failed, fix before continuing
-4. **Update TODO** - Check off completed step
-
-#### 2.5: Mark Gap Complete
-
-```
-TodoWrite: Mark gap as completed
-```
-
-### Step 3: Post-Implementation Verification
-
-After all gaps in scope are complete:
-
-```bash
-# Full test suite
-npm run test
-
-# Linting
-npm run lint
-
-# Build
-npm run build
-
-# Storybook tests (if applicable)
-npm run test-storybook
-```
-
-If any failures:
-
-- Fix issues
-- Re-run verification
-- Do NOT proceed to Step 4
-
-### Step 4: Update Tracking Documents
-
-#### 4.1: Update GAPS_REMEDIATION.md
-
-For each completed gap:
-
-```typescript
-Edit(
-  file_path: "specs/<feature>/GAPS_REMEDIATION.md",
-  old_string: "**Status**: NOT IMPLEMENTED",
-  new_string: "**Status**: ✅ FIXED (2026-01-10)"
-)
-```
-
-#### 4.2: Update REMEDIATION_CHECKLIST.md
-
-Add completion notes:
-
-```typescript
-Edit(
-  file_path: "specs/<feature>/REMEDIATION_CHECKLIST.md",
-  old_string: "**Total Estimated Time**: 182 minutes (~3 hours)\n**Actual Time**: _(fill in after completion)_",
-  new_string: "**Total Estimated Time**: 182 minutes (~3 hours)\n**Actual Time**: [calculated actual time] minutes\n\n**Completion Date**: 2026-01-10\n**Gaps Fixed**: GAP-1, GAP-2, GAP-3"
-)
-```
-
-### Step 5: Commit Changes
-
-Create **one commit per priority level** (or per gap for P0):
-
-#### For P0 (BLOCKING) - Breaking Change Example:
-
-```bash
-git add packages/ngx-foundation-sites/src/lib/accordion/
-
-git commit -m "fix(accordion): resolve P0 gaps - Foundation API parity
-
-Implement P0 gap remediations from REMEDIATION_CHECKLIST.md:
-
-- GAP-3: Rename multiExpandable → multiExpand (BREAKING CHANGE)
-  - Update accordion.component.ts, .html, .spec.ts, .stories.ts
-  - API now matches Foundation naming (FR-014, CA-007)
-
-- GAP-1: Add Foundation API methods (down, up, toggle)
-  - Implement in accordion-item-def.ts
-  - Enables programmatic control per FR-075, CA-009
-
-- GAP-2: Add Foundation API outputs ((down), (up))
-  - Implement in accordion.component.ts
-  - Enables event notification per FR-076, CA-010
-
-BREAKING CHANGES:
-- **accordion**: Renamed input \`multiExpandable\` → \`multiExpand\`
-  - Migration: Replace [multiExpandable] with [multiExpand] in templates
-
-Fixes: GAP-1, GAP-2, GAP-3
-Time: 32 minutes (estimated: 32 minutes)
-Status: Updated in GAPS_REMEDIATION.md
-
-Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
-```
-
-#### For P1 (IMPORTANT):
-
-```bash
-git commit -m "feat(accordion): resolve P1 gaps - accessibility and diagnostics
-
-Implement P1 gap remediations:
-
-- GAP-4: Add titleHeadingLevel input (30 min)
-  - Enables ARIA document outline navigation
-  - Fixes WCAG 1.3.1 compliance
-
-- GAP-5: Add ErrorHandler diagnostics (60 min)
-  - FR-017a: Duplicate panelId detection
-  - FR-026a: Missing title detection
-  - FR-067b: Deep link error handling
-  - FR-089a: Rapid toggle errors
-  - FR-110a: Input validation
-
-- GAP-6: Add Foundation API Storybook tests (45 min)
-  - FoundationApiParity story with play functions
-  - Tests down(), up(), toggle() methods
-  - Tests (down), (up) event payloads
-
-Fixes: GAP-4, GAP-5, GAP-6
-Time: 135 minutes (estimated: 135 minutes)
-
-Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
-```
-
-## Special Handling
-
-### Breaking Changes (GAP-3)
-
-**Before implementing:**
-
-1. Ask user to confirm breaking change
-2. Ensure CHANGELOG.md is updated
-3. Document migration path
-4. Consider deprecation period
-
-**Implementation:**
-
-1. Do global search/replace across all files
-2. Update tests, stories, documentation
-3. Verify with `grep -r "multiExpandable"` returns nothing
-
-### Test Failures
-
-**If tests fail during verification:**
-
-1. **Stop immediately** - do NOT continue to next gap
-2. **Read test output** to understand failure
-3. **Fix the issue** - adjust implementation
-4. **Re-run tests** - must pass before proceeding
-5. **Update TODO** - mark step as completed only after passing
-
-### ErrorHandler Diagnostics (GAP-5)
-
-**Complex implementation requires:**
-
-1. Inject ErrorHandler in constructor
-2. Add registry/tracking structures
-3. Implement validation at multiple points
-4. Add unit tests for each validation
-5. Verify error messages match spec format
-
-## Progress Tracking
-
-Use **TodoWrite** throughout:
-
-```typescript
-// At start
-TodoWrite([
-  { content: 'Setup verification', status: 'pending', activeForm: 'Setting up verification' },
-  { content: 'Implement GAP-3', status: 'pending', activeForm: 'Implementing GAP-3' },
-  { content: 'Implement GAP-1', status: 'pending', activeForm: 'Implementing GAP-1' },
-  // ...
-]);
-
-// When starting a gap
-TodoWrite([
-  { content: 'Setup verification', status: 'completed', activeForm: 'Setting up verification' },
-  { content: 'Implement GAP-3', status: 'in_progress', activeForm: 'Implementing GAP-3' },
-  { content: 'Implement GAP-1', status: 'pending', activeForm: 'Implementing GAP-1' },
-]);
-
-// After completing a gap
-TodoWrite([
-  { content: 'Setup verification', status: 'completed', activeForm: 'Setting up verification' },
-  { content: 'Implement GAP-3', status: 'completed', activeForm: 'Implementing GAP-3' },
-  { content: 'Implement GAP-1', status: 'in_progress', activeForm: 'Implementing GAP-1' },
-]);
-```
-
-## Output Format
-
-### Conversational Updates
-
-Provide progress updates as you work:
+REPLACE placeholders:
+
+- {ID} = finding ID from table column 1
+- {Summary} = finding Summary from table column 5
+- {Severity} = finding Severity from table column 3
+- {Category} = finding Category from table column 2
+- {Location} = finding Location from table column 4
+- {Recommendation} = finding Recommendation from table column 6
+- {FEATURE_DIR} = from Step 1
+  </sonnet_template>
+
+#### Opus Prompt Template (HIGH/Judgment)
+
+<opus_template>
+FOR findings targeting model="opus", use this exact template:
 
 ```markdown
-Starting gap remediation implementation...
+<role>
+You are an expert implementation agent with deep reasoning capabilities.
+Use medium effort for token efficiency.
+</role>
 
-✅ Loaded REMEDIATION_CHECKLIST.md - 7 gaps total (3 P0, 3 P1, 1 P2)
-✅ User selected: P0 gaps only (32 min estimated)
+<finding id="{ID}" severity="HIGH" category="{Category}">
 
-📋 Implementation Plan:
+## Problem Statement
 
-1. GAP-3: Rename multiExpandable → multiExpand (2 min, BREAKING)
-2. GAP-1: Add Foundation API methods (10 min)
-3. GAP-2: Add Foundation API outputs (20 min)
+{Summary}
+
+## Location(s)
+
+{Location}
+
+## Feature Directory
+
+{FEATURE_DIR}
+
+## Recommendation
+
+{Recommendation}
+
+</finding>
+
+<implementation_strategy>
+
+## Phase 1: Deep Analysis
+
+Consider these questions:
+
+- What's the root cause of this finding?
+- What are the possible resolution approaches?
+- What are the tradeoffs of each approach?
+- What could go wrong with each approach?
+
+Evaluate the impact on:
+
+- Other components in the codebase
+- Existing tests and behavior
+- Future maintenance
+
+## Phase 2: Resolution
+
+Based on your analysis:
+
+1. Choose the best resolution approach
+2. Implement the solution
+3. Document your decision rationale if non-obvious
+
+## Phase 3: Verification
+
+After implementation:
+
+- Verify the finding is resolved
+- Check for unintended side effects
+- Update related files for consistency
+
+</implementation_strategy>
+
+<deliverables>
+- Resolution implemented
+- Decision rationale (if significant choice)
+- Related files updated
+</deliverables>
+
+<guidance>
+Trust your expert judgment.
+Implement complete solution, then verify once.
+If the finding involves documentation consistency, ensure all cross-references are updated.
+</guidance>
+```
+
+REPLACE placeholders:
+
+- {ID} = finding ID from table column 1
+- {Summary} = finding Summary from table column 5
+- {Category} = finding Category from table column 2
+- {Location} = finding Location from table column 4
+- {Recommendation} = finding Recommendation from table column 6
+- {FEATURE_DIR} = from Step 1
+  </opus_template>
+
+#### Spawning Task Agents
+
+<task_spawning>
+FOR EACH finding:
+
+1. Select template based on target model
+2. Fill template with finding data
+3. Spawn Task with:
+   - subagent_type: "general-purpose"
+   - model: "{target_model}" (haiku, sonnet, or opus)
+   - prompt: "{filled_template}"
+
+Spawn independent haiku Tasks in PARALLEL (same message, multiple Task tool calls).
+Spawn sonnet/opus Tasks after haiku Tasks complete if there are dependencies.
+</task_spawning>
+
+### Step 6: Track Progress
+
+<task>
+Update TodoWrite as each Task completes.
+</task>
+
+<action_steps>
+
+1. When Task returns success:
+   - Mark corresponding finding as completed in TodoWrite
+   - Note the model used and outcome
+2. When Task returns failure:
+   - Keep finding as in_progress
+   - Note the error for reporting
+3. Continue until all Tasks complete
+   </action_steps>
+
+### Step 7: Validate Completion
+
+<task>
+Verify all spawned Tasks completed successfully.
+</task>
+
+<action_steps>
+
+1. Count completed vs failed Tasks
+2. FOR EACH failed Task:
+   - Log finding ID and error
+   - Include in failure report
+3. Calculate success rate
+   </action_steps>
+
+<output_format>
+Completion status:
+
+- Total findings: N
+- Resolved: X (list IDs)
+- Failed: Y (list IDs with reasons)
+- Success rate: Z%
+  </output_format>
+
+### Step 8: Summary Report
+
+<task>
+Generate final summary with metrics and recommendations.
+</task>
+
+<output_format>
+
+## Gap Implementation Complete
+
+**Feature**: {feature_name}
+**Report**: {REPORT_PATH}
+
+### Execution Summary
+
+| Model  | Findings | Resolved | Failed |
+| ------ | -------- | -------- | ------ |
+| haiku  | N        | X        | Y      |
+| sonnet | N        | X        | Y      |
+| opus   | N        | X        | Y      |
+| TOTAL  | N        | X        | Y      |
+
+### Resolved Findings
+
+- {ID}: {Summary} ✅
+
+### Failed Findings (if any)
+
+- {ID}: {Summary} - {error_reason}
+
+### Cost Efficiency
+
+- Estimated cost: $X.XX
+- All-opus comparison: $Y.YY
+- Savings: Z%
+
+### Next Steps
+
+IF all resolved:
+
+- Run `/analyze-report-gaps-haiku-4-5` to verify no regressions
+  ELSE:
+- Review failed findings manually
+- Re-run skill or address failures individually
+  </output_format>
 
 ---
 
-🔧 Starting GAP-3: Rename multiExpandable → multiExpand
+## Classification Reference
 
-Step 1/6: Update accordion.component.ts line 51
-✅ Changed `multiExpandable` → `multiExpand`
+| Severity | Category           | Target Model | Rationale                        |
+| -------- | ------------------ | ------------ | -------------------------------- |
+| LOW      | Any                | haiku        | Mechanical work, pattern-based   |
+| MEDIUM   | Inconsistency      | haiku        | Search/replace, cross-reference  |
+| MEDIUM   | CoverageGap        | sonnet       | Requires implementation decision |
+| MEDIUM   | Underspecification | sonnet       | Requires context synthesis       |
+| HIGH     | Any                | opus         | Requires judgment, deep analysis |
 
-Step 2/6: Update accordion.component.html line 12
-✅ Updated template binding
+## Cost Estimation
 
-Step 3/6: Update accordion.component.spec.ts
-✅ Replaced all 8 occurrences
+| Model     | Cost/Finding | Typical Count | Subtotal       |
+| --------- | ------------ | ------------- | -------------- |
+| haiku     | $0.01-0.02   | 4-5           | $0.04-0.10     |
+| sonnet    | $0.05-0.10   | 2-3           | $0.10-0.30     |
+| opus      | $0.50-1.00   | 1-2           | $0.50-2.00     |
+| **TOTAL** |              | ~9            | **$0.66-2.43** |
 
-Step 4/6: Update accordion.stories.ts
-✅ Updated story controls
+Compare: All findings on Opus = ~$4.50-9.00
 
-Step 5/6: Run tests
-✅ All tests passing
+## Why Haiku for Orchestration
 
-Step 6/6: Update CHANGELOG.md
-✅ Added breaking change notice
+| Aspect            | Why Haiku Works                      |
+| ----------------- | ------------------------------------ |
+| Parsing           | Reading markdown table is mechanical |
+| Classification    | Scoring formula is explicit IF/ELSE  |
+| Template filling  | Mechanical substitution              |
+| Task spawning     | Structured tool calls                |
+| Progress tracking | Checklist updates                    |
 
-✅ GAP-3 complete (actual: 2 min)
+The orchestrator does NOT need deep reasoning - it's a **dispatcher** that:
 
----
-
-🔧 Starting GAP-1: Add Foundation API methods
-
-Step 1/5: Add down() method
-✅ Method added to accordion-item-def.ts
-
-Step 2/5: Add up() method
-✅ Method added
-
-Step 3/5: Add toggle() method
-✅ Method added
-
-Step 4/5: Export methods in index.ts
-✅ Public API updated
-
-Step 5/5: Add unit tests
-✅ 3 tests added and passing
-
-✅ GAP-1 complete (actual: 10 min)
-
----
-
-[Continue for GAP-2...]
-
----
-
-🎉 Implementation Complete!
-
-**Summary**:
-
-- Gaps fixed: 3 (GAP-1, GAP-2, GAP-3)
-- Priority: P0 (BLOCKING)
-- Estimated time: 32 minutes
-- Actual time: 32 minutes
-- Tests: ✅ All passing
-- Commits: 1 (P0 fixes)
-
-**Updated Documents**:
-
-- ✅ GAPS_REMEDIATION.md (3 gaps marked as FIXED)
-- ✅ REMEDIATION_CHECKLIST.md (completion notes added)
-- ✅ CHANGELOG.md (breaking change documented)
-
-**Next Steps**:
-Run `/analyze-report-gaps-gpt-5-mini or /analyze-report-gaps-gpt-4-1` to verify no new gaps were introduced.
-```
-
-## Error Handling
-
-### Compilation Errors
-
-```
-❌ Compilation failed after Step 2
-
-Error: Type 'boolean' is not assignable to type 'string'
-Location: accordion.component.ts:51
-
-Fix: Reverting Step 2 and adjusting type...
-✅ Fixed - rerunning tests
-```
-
-### Test Failures
-
-```
-❌ Tests failed: 2 failing
-
-Failure 1: Expected 'multiExpand' but got 'multiExpandable'
-Location: accordion.spec.ts:45
-
-Fix: Found missed occurrence in test setup...
-✅ Fixed - all tests passing
-```
-
-### Verification Failures
-
-```
-❌ Verification failed: grep found 'multiExpandable'
-
-Location: accordion.stories.ts:128 (in comment)
-
-Fix: Updated comment reference...
-✅ Verification passing
-```
-
-## Best Practices
-
-### For Claude Sonnet 4.5
-
-1. **Read before editing**: Always Read files to understand context
-2. **Exact replacements**: Use exact old_string from checklist
-3. **Verify immediately**: Run tests after each code change
-4. **Track progress**: Update TodoWrite after each step
-5. **Commit incrementally**: One commit per priority level
-6. **Handle failures gracefully**: Stop and fix before continuing
-
-### Code Quality
-
-1. **Preserve formatting**: Match existing code style
-2. **Keep JSDoc**: Include all documentation from checklist
-3. **Test coverage**: Add unit tests per checklist requirements
-4. **Type safety**: Ensure TypeScript compilation succeeds
-5. **Breaking changes**: Always document in CHANGELOG.md
-
-### Verification Rigor
-
-1. **Run tests after every change**
-2. **Read test output** - don't assume success
-3. **Verify grep commands** - ensure old patterns gone
-4. **Check build** - compilation must succeed
-5. **Review diffs** - confirm changes match intent
-
-## Success Criteria
-
-After execution:
-
-✅ **All selected gaps implemented** with exact code from checklist
-✅ **All tests passing** (npm run test)
-✅ **Linting clean** (npm run lint)
-✅ **Build successful** (npm run build)
-✅ **GAPS_REMEDIATION.md updated** (status → FIXED)
-✅ **REMEDIATION_CHECKLIST.md updated** (completion notes)
-✅ **CHANGELOG.md updated** (if breaking changes)
-✅ **Git commits created** (conventional format)
-✅ **TodoWrite reflects completion** (all items checked)
+1. Parses structured input
+2. Applies explicit rules
+3. Generates structured output (Task calls)
 
 ## Example Usage
 
@@ -499,33 +527,25 @@ After execution:
 # In Claude Code CLI
 /implement-reported-gaps
 
-# Skill prompts:
-"Which gaps should I implement?"
-> 1. All P0 (BLOCKING) - 32 min
-
-# Skill executes:
-# - Reads REMEDIATION_CHECKLIST.md
-# - Creates TODO list
-# - Implements GAP-3, GAP-1, GAP-2
-# - Runs tests after each
-# - Updates tracking documents
-# - Creates git commit
-# - Reports completion
-
-# Output:
-"🎉 Implementation complete! 3 P0 gaps fixed in 32 minutes."
+# Auto-detects from git branch: 002-accordion-component
+# Reads: specs/002-accordion-component/gap-analysis-report.md
+# Classifies 9 findings → 4 haiku, 3 sonnet, 2 opus
+# Spawns Tasks with model-optimized prompts
+# Reports completion with cost metrics
 ```
 
 ## Related Commands
 
-- `/analyze-report-gaps-gpt-5-mini or /analyze-report-gaps-gpt-4-1` - Generates initial gap report (run before /analyze-prepare-reported-gaps-for-implementation)
-- `/analyze-prepare-reported-gaps-for-implementation` - Creates REMEDIATION_CHECKLIST.md (run before this command)
-- `/speckit.implement` - Alternative implementation command (less specialized)
+- `/analyze-report-gaps-haiku-4-5` - Generates gap-analysis-report.md (run first)
+- `/analyze-haiku-4-5` - Terminal-only analysis (no file output)
+- `/speckit.analyze` - Sonnet-based analysis
 
-## Notes
+## Success Criteria
 
-- This skill is **write-heavy** - modifies implementation files extensively
-- Designed for **Sonnet 4.5's precise editing** + verification capabilities
-- Uses **TodoWrite for progress tracking** (visible to user)
-- **Stops on test failures** - ensures quality at each step
-- **Commits incrementally** - one per priority level for clean history
+After execution:
+
+✅ **All findings classified** with correct target model
+✅ **All Tasks spawned** with model-optimized prompts
+✅ **Progress tracked** via TodoWrite
+✅ **Completion validated** with success/failure counts
+✅ **Summary generated** with cost metrics
