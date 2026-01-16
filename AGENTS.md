@@ -367,6 +367,33 @@ test('deep link updates URL hash', async ({ page }) => {
 - Linting: ESLint (flat config)
 - Formatting: Prettier (single quotes) - `npm run format` to fix, `npm run format:check` to verify
 
+## Cross-Platform File Operations
+
+**Prefer relative paths over absolute paths** to avoid cross-platform issues. The repository root is the assumed working directory unless a `cd` command was used.
+
+### Windows Path Handling in Shell Commands
+
+**Windows absolute paths in bash/git-bash require special handling:**
+
+```bash
+# ❌ WRONG - Malformed quotes, backslashes can cause issues
+ls -la "D:\projects\sandbox\repo\"
+
+# ✅ OPTION 1 - Use relative paths (preferred)
+ls -la specs/002-accordion-component
+
+# ✅ OPTION 2 - Use Git Bash path format (forward slashes, /drive-letter/)
+ls -la /d/projects/sandbox/repo/specs/002-accordion-component
+
+# ✅ OPTION 3 - Use PowerShell instead of bash for Windows-specific operations
+Get-ChildItem -Path "D:\projects\sandbox\repo\specs\002-accordion-component"
+```
+
+**Best practices:**
+- Use relative paths whenever possible (reduces cross-platform issues)
+- Verify file vs directory paths before operations (some operations fail on directories)
+- When using absolute Windows paths in shell commands, prefer Git Bash format (`/d/...`) or PowerShell
+
 ## Shell & Git
 
 - Assume the shell is already in the repository root unless a `cd` command was previously used in the session.
