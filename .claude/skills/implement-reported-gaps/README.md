@@ -87,17 +87,19 @@ Haiku can handle code changes when **ALL** conditions are met:
 
 ## Cost Efficiency
 
-| Phase     | Model  | Cost/Finding | Typical Count | Subtotal       |
-| --------- | ------ | ------------ | ------------- | -------------- |
-| Docs      | haiku  | $0.01-0.02   | 3-4           | $0.03-0.08     |
-| Docs      | sonnet | $0.05-0.10   | 1-2           | $0.05-0.20     |
-| Docs      | opus   | $0.50-1.00   | 1             | $0.50-1.00     |
-| Code      | haiku  | $0.02-0.03   | 1-2           | $0.02-0.06     |
-| Code      | sonnet | $0.08-0.15   | 1-2           | $0.08-0.30     |
-| Code      | opus   | $0.75-1.50   | 0-1           | $0.00-1.50     |
-| **TOTAL** |        |              | ~9            | **$0.63-3.14** |
+| Phase     | Model  | Cost/Finding | Overhead | Typical Count | Subtotal       |
+| --------- | ------ | ------------ | -------- | ------------- | -------------- |
+| Docs      | haiku  | $0.01-0.02   | +$0.01   | 3-4           | $0.06-0.12     |
+| Docs      | sonnet | $0.05-0.10   | +$0.02   | 1-2           | $0.07-0.24     |
+| Docs      | opus   | $0.50-1.00   | +$0.10   | 1             | $0.60-1.10     |
+| Code      | haiku  | $0.02-0.03   | +$0.01   | 1-2           | $0.03-0.08     |
+| Code      | sonnet | $0.08-0.15   | +$0.02   | 1-2           | $0.10-0.34     |
+| Code      | opus   | $0.75-1.50   | +$0.10   | 0-1           | $0.00-1.60     |
+| **TOTAL** |        |              |          | ~9            | **$0.86-3.48** |
 
 Compare: All findings on Opus = ~$4.50-9.00
+
+**Note**: Each Task spawns with ~20K token overhead. The "Overhead" column accounts for this.
 
 **Haiku code savings**: ~$0.05-0.12 per mechanical insertion vs Sonnet
 
@@ -147,6 +149,37 @@ Previous behavior created `*-REMEDIATION.md` files for findings requiring code c
 | E01-REMEDIATION.md created      | Code change made directly          |
 | Manual follow-up required       | Automatic implementation           |
 | Finding marked "resolved" early | Finding resolved when code changes |
+
+## Task Isolation & Error Handling
+
+### Task Isolation
+
+Tasks spawn with `run_in_background: true` for isolation:
+
+- One Task failure doesn't terminate other running Tasks
+- Results collected via TaskOutput tool after spawning
+
+### Parallelism Limits
+
+- **Maximum concurrent Tasks**: 10
+- Findings are batched into groups of 10 when count exceeds limit
+- Each batch completes before next batch spawns
+
+### Error Handling
+
+- **Retry pattern**: 429 errors retry with exponential backoff (max 3 attempts)
+- **Graceful degradation**: Haiku failures may upgrade to Sonnet
+- **Reporting**: Failed findings listed in summary with diagnostic info
+
+## Known Issues
+
+| Issue                                                                                           | Impact                           | Workaround                                   |
+| ----------------------------------------------------------------------------------------------- | -------------------------------- | -------------------------------------------- |
+| **Model param ignored** ([#12063](https://github.com/anthropics/claude-code/issues/12063))      | Cost savings may not materialize | Monitor logs; use custom subagents if needed |
+| **Haiku MCP tool_reference** ([#14863](https://github.com/anthropics/claude-code/issues/14863)) | Haiku fails with many MCP tools  | Pre-load tools or upgrade to Sonnet          |
+| **Cascading failures** ([#6594](https://github.com/anthropics/claude-code/issues/6594))         | One failure kills all Tasks      | Mitigated with `run_in_background: true`     |
+
+See [CLAUDE-CODE-MCP-SEARCH.md](../../../prompt-engineering/CLAUDE-CODE-MCP-SEARCH.md) for MCP Tool Search details.
 
 ## Related Commands
 

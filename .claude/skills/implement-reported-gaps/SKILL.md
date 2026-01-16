@@ -806,8 +806,15 @@ FOR Phase 1 (Documentation):
    - subagent_type: "general-purpose"
    - model: "{target_model}" (haiku, sonnet, or opus)
    - prompt: "{filled_template}"
+   - run_in_background: true (for task isolation)
 
-Spawn independent haiku Tasks in PARALLEL.
+**Parallelism handling**:
+IF haiku findings count > 10:
+Spawn in batches of 10
+Wait for batch completion before next batch
+ELSE:
+Spawn all independent haiku Tasks in PARALLEL
+
 Wait for Phase 1 to complete before Phase 2.
 
 FOR Phase 2 (Code Implementation):
@@ -827,26 +834,49 @@ FOR Phase 2 (Code Implementation):
    - subagent_type: "general-purpose"
    - model: determined from table above
    - prompt: "{filled_code_template}"
+   - run_in_background: true (for task isolation)
 
-Spawn Haiku code Tasks in PARALLEL (independent mechanical insertions).
+**Parallelism handling**:
+IF Haiku code findings count > 10:
+Spawn in batches of 10
+ELSE:
+Spawn Haiku code Tasks in PARALLEL (independent mechanical insertions)
+
 Spawn Sonnet/Opus code Tasks SEQUENTIALLY to avoid conflicts.
+
+**Task isolation**: Using `run_in_background: true` prevents cascading failures
+where one Task error terminates all running Tasks.
 </task_spawning>
 
 ### Step 6: Track Progress
 
 <task>
-Update TodoWrite as each Task completes.
+Collect results from background Tasks and update TodoWrite.
 </task>
 
 <action_steps>
 
-1. When Task returns success:
+1. Since Tasks use `run_in_background: true`, collect results using TaskOutput:
+
+   ```
+   FOR EACH spawned Task:
+     result = TaskOutput({
+       task_id: task.id,
+       block: true,      // Wait for completion
+       timeout: 120000   // 2 minute timeout per task
+     })
+   ```
+
+2. When Task returns success:
    - Mark corresponding finding as completed in TodoWrite
    - Note the model used, phase, and outcome
-2. When Task returns failure:
+
+3. When Task returns failure:
    - Keep finding as in_progress
+   - Apply retry pattern from Error Handling section
    - Note the error for reporting
-3. Continue until all Tasks complete
+
+4. Continue until all Tasks complete or max retries exceeded
    </action_steps>
 
 ### Step 7: Validate Completion
@@ -926,6 +956,129 @@ IF all resolved:
 
 ---
 
+## Error Handling
+
+<error_handling>
+
+### Retry Pattern for Transient Failures
+
+FOR EACH spawned Task:
+IF Task fails:
+
+1. Log error with task ID, finding ID, and reason
+2. Check if retryable:
+   - 429 (rate limit) → YES, retry
+   - Timeout → YES, retry once
+   - 400 (bad request) → NO, log and continue
+   - Other errors → NO, log and continue
+3. IF retryable:
+   - Wait: 2^attempt \* 1000ms (max 32s)
+   - Add jitter: ±25% randomness
+   - Retry up to 3 times
+4. IF max retries exceeded:
+   - Mark task as failed
+   - Report error to summary
+   - Continue with remaining Tasks
+
+### Graceful Degradation
+
+<fallback_strategy>
+IF Task repeatedly fails on specified model:
+
+1. Primary: Try with specified model
+2. Fallback 1: If rate limited, wait and retry
+3. Fallback 2: For haiku failures, consider upgrade to sonnet
+4. Final: Report failure with diagnostic info
+   </fallback_strategy>
+
+### Background Task Output Collection
+
+Since Tasks use `run_in_background: true`, collect results using TaskOutput:
+
+```
+FOR EACH spawned Task:
+  result = TaskOutput({
+    task_id: task.id,
+    block: true,      // Wait for completion
+    timeout: 120000   // 2 minute timeout
+  })
+  IF result.status == "success":
+    Mark finding as resolved
+  ELSE:
+    Apply retry pattern
+```
+
+</error_handling>
+
+---
+
+## Known Issues and Workarounds
+
+<known_issues>
+
+### Issue: Model Parameter May Be Ignored (GitHub #12063)
+
+**Problem**: Task tool's `model` parameter may be ignored, defaulting to the parent model regardless of specification.
+
+**Impact**: Cost savings from model routing may not materialize if all Tasks run on the parent model.
+
+**Workaround**:
+
+- Monitor actual model usage via logs/metrics
+- If cost savings aren't materializing, verify model selection
+- Consider using custom subagents with explicit model configuration in `.claude/agents/`
+
+**Reference**: [GitHub Issue #12063](https://github.com/anthropics/claude-code/issues/12063)
+
+### Issue: Haiku MCP Tool Reference Error (GitHub #14863)
+
+**Problem**: Haiku subagents fail with "tool_reference blocks not supported" when the parent has many MCP tools configured and MCP Tool Search is active.
+
+**Cause**: MCP Tool Search returns `tool_reference` blocks that Haiku cannot process correctly.
+
+**Workarounds**:
+
+1. **Pre-load MCP tools before spawning Haiku Tasks**:
+
+   ```
+   Before spawning Haiku Task:
+   1. Call MCPSearch to discover needed tools
+   2. Ensure tools are loaded into context
+   3. Spawn Haiku Task (tools now available without tool_reference)
+   ```
+
+2. **Upgrade to Sonnet for MCP-dependent operations**:
+
+   ```
+   IF finding requires MCP tools AND model == "haiku":
+     Upgrade to sonnet for safety
+   ```
+
+3. **Use project-specific MCP configuration**:
+   - Create `.mcp.json` with minimal servers for the project
+   - Disable unused MCP servers
+
+**Reference**: [GitHub Issue #14863](https://github.com/anthropics/claude-code/issues/14863)
+**Documentation**: See [CLAUDE-CODE-MCP-SEARCH.md](../../../prompt-engineering/CLAUDE-CODE-MCP-SEARCH.md) for details
+
+### Issue: Cascading Failures (GitHub #6594)
+
+**Problem**: In some versions, one Task failure can terminate all running Tasks.
+
+**Mitigation**: This skill uses `run_in_background: true` for all spawned Tasks, which provides isolation. Each Task runs independently and one failure doesn't affect others.
+
+**Reference**: [GitHub Issue #6594](https://github.com/anthropics/claude-code/issues/6594)
+
+### Issue: 10 Task Parallelism Cap
+
+**Problem**: Claude Code limits concurrent Tasks to 10. Additional Tasks queue.
+
+**Mitigation**: This skill batches findings into groups of 10 when count exceeds the limit.
+
+</known_issues>
+
+---
+
 ## Classification Reference
 
 | Severity | Category           | Target Model | Code Model (if needed)      | Rationale                        |
@@ -952,15 +1105,18 @@ Haiku can handle code changes when ALL conditions are met:
 
 ## Cost Estimation
 
-| Phase     | Model  | Cost/Finding | Typical Count | Subtotal       |
-| --------- | ------ | ------------ | ------------- | -------------- |
-| Docs      | haiku  | $0.01-0.02   | 3-4           | $0.03-0.08     |
-| Docs      | sonnet | $0.05-0.10   | 1-2           | $0.05-0.20     |
-| Docs      | opus   | $0.50-1.00   | 1             | $0.50-1.00     |
-| Code      | haiku  | $0.02-0.03   | 1-2           | $0.02-0.06     |
-| Code      | sonnet | $0.08-0.15   | 1-2           | $0.08-0.30     |
-| Code      | opus   | $0.75-1.50   | 0-1           | $0.00-1.50     |
-| **TOTAL** |        |              | ~9            | **$0.63-3.14** |
+| Phase     | Model  | Cost/Finding | Overhead | Typical Count | Subtotal       |
+| --------- | ------ | ------------ | -------- | ------------- | -------------- |
+| Docs      | haiku  | $0.01-0.02   | +$0.01   | 3-4           | $0.06-0.12     |
+| Docs      | sonnet | $0.05-0.10   | +$0.02   | 1-2           | $0.07-0.24     |
+| Docs      | opus   | $0.50-1.00   | +$0.10   | 1             | $0.60-1.10     |
+| Code      | haiku  | $0.02-0.03   | +$0.01   | 1-2           | $0.03-0.08     |
+| Code      | sonnet | $0.08-0.15   | +$0.02   | 1-2           | $0.10-0.34     |
+| Code      | opus   | $0.75-1.50   | +$0.10   | 0-1           | $0.00-1.60     |
+| **TOTAL** |        |              |          | ~9            | **$0.86-3.48** |
+
+**Note**: Each Task spawns with ~20K token overhead (~$0.01-0.10 depending on model).
+The "Overhead" column accounts for this per-Task context initialization cost.
 
 Compare: All findings on Opus = ~$4.50-9.00
 
