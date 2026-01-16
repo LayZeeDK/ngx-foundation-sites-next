@@ -27,6 +27,7 @@ The accordion correctly re-opens a panel to maintain the "at least one open" con
 > When `[(expanded)]` two-way binding attempts to close the last open item while `allowAllClosed` is `false`, the component MUST coerce the binding to preserve at least one open item: it MUST ignore the binding that would close the last item **and call `ErrorHandler.handleError()` notifying the developer of the constraint**. The two-way binding value should reflect the actual state (i.e., remain `true` in the model) after coercion.
 
 **Key Requirements**:
+
 - ✅ Preserve at least one open item (coerce binding)
 - ❌ Call `ErrorHandler.handleError()` with diagnostic
 - ✅ Two-way binding reflects actual state (model stays `true`)
@@ -40,19 +41,9 @@ The accordion correctly re-opens a panel to maintain the "at least one open" con
 
 ```typescript
 // Handle allowAllClosed enforcement (skip if accordion is disabled)
-if (
-  !this.allowAllClosed() &&
-  !this.disabled() &&
-  expandedItems.length === 0
-) {
+if (!this.allowAllClosed() && !this.disabled() && expandedItems.length === 0) {
   // Re-open the last expanded panel, or the first non-disabled panel
-  const panelToOpen = this.#lastExpandedPanelId
-    ? items.find(
-        (item) =>
-          item.panelId() === this.#lastExpandedPanelId &&
-          !item.disabled(),
-      )
-    : items.find((item) => !item.disabled());
+  const panelToOpen = this.#lastExpandedPanelId ? items.find((item) => item.panelId() === this.#lastExpandedPanelId && !item.disabled()) : items.find((item) => !item.disabled());
 
   if (panelToOpen) {
     // Use queueMicrotask to write signal outside effect context
@@ -65,12 +56,14 @@ if (
 ```
 
 **What's Working**:
+
 - Detects when all panels are closed despite `allowAllClosed=false`
 - Re-opens the last expanded panel (or first non-disabled panel)
 - Uses `queueMicrotask` to avoid signal write-during-effect errors
 - Two-way binding automatically reflects actual state via Angular's model signal
 
 **What's Missing**:
+
 - No `ErrorHandler.handleError()` call to inform developers why their binding was coerced
 - Silent behavior makes debugging difficult for library consumers
 
@@ -83,6 +76,7 @@ if (
 **Location**: `accordion.ts:283-288`
 
 **Before**:
+
 ```typescript
 if (panelToOpen) {
   // Use queueMicrotask to write signal outside effect context
@@ -94,6 +88,7 @@ if (panelToOpen) {
 ```
 
 **After**:
+
 ```typescript
 if (panelToOpen) {
   // Use queueMicrotask to write signal outside effect context
@@ -101,13 +96,7 @@ if (panelToOpen) {
     panelToOpen.expanded.set(true);
 
     // FR-174a: Notify developer of binding coercion
-    this.#errorHandler.handleError(
-      new Error(
-        `NfsAccordion: Two-way binding coercion - prevented closing last open panel ` +
-        `(panelId: "${panelToOpen.panelId()}") because allowAllClosed=false. ` +
-        `The [(expanded)] model will reflect the actual state (true).`
-      )
-    );
+    this.#errorHandler.handleError(new Error(`NfsAccordion: Two-way binding coercion - prevented closing last open panel ` + `(panelId: "${panelToOpen.panelId()}") because allowAllClosed=false. ` + `The [(expanded)] model will reflect the actual state (true).`));
   });
   return;
 }
@@ -118,12 +107,14 @@ if (panelToOpen) {
 **File**: `specs/002-accordion-component/tasks.md`
 
 **Current Status**:
+
 ```markdown
 - [ ] T193 [US5] Implement binding coercion in NfsAccordionItem.expanded: ...
   - **Status**: PARTIAL - Coercion logic exists in accordion.ts:268-290 (re-opens last panel), but missing ErrorHandler.handleError() call required by FR-174a to notify developers of constraint violation
 ```
 
 **After Completion**:
+
 ```markdown
 - [x] T193 [US5] Implement binding coercion in NfsAccordionItem.expanded: ...
   - **Status**: COMPLETE - Coercion logic in accordion.ts:268-290 + ErrorHandler diagnostic (FR-174a)
@@ -152,9 +143,9 @@ if (panelToOpen) {
 
 ```markdown
 - [ ] T192 [P] [US5] Add Storybook play test to AllowAllClosed story:
-  set allowAllClosed=false, bind [(expanded)] on last open item,
-  set model to false externally, verify binding coerces to true
-  AND ErrorHandler.handleError() called with coercion diagnostic (FR-174a)
+      set allowAllClosed=false, bind [(expanded)] on last open item,
+      set model to false externally, verify binding coerces to true
+      AND ErrorHandler.handleError() called with coercion diagnostic (FR-174a)
 ```
 
 **Note**: T192 provides the acceptance test for T193. After implementing the ErrorHandler call, create this Storybook test to verify the behavior.
@@ -168,6 +159,7 @@ if (panelToOpen) {
 **Breaking Change**: No (adds diagnostic, doesn't change behavior)
 
 **Developer Experience Impact**:
+
 - **Before**: Silent coercion confuses developers ("Why isn't my binding working?")
 - **After**: Clear error message explains constraint and actual state
 

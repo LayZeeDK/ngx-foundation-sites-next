@@ -7,6 +7,26 @@
 
 ---
 
+## Remediation Tracking Approach
+
+**This document is the CANONICAL remediation tracker** for the accordion component.
+
+### File Relationships
+
+| File                                                   | Purpose                                | Authority | Update Frequency         |
+| ------------------------------------------------------ | -------------------------------------- | --------- | ------------------------ |
+| **GAPS_REMEDIATION.md** (this file)                    | Validate and track gap status          | CANONICAL | After gap fixes verified |
+| [REMEDIATION_CHECKLIST.md](./REMEDIATION_CHECKLIST.md) | Implementation guidance for developers | Secondary | When new gaps discovered |
+| [gap-analysis-report.md](./gap-analysis-report.md)     | Cross-artifact consistency analysis    | Reference | Per analysis tool runs   |
+
+**When to use each document:**
+
+- **Developers**: Start with REMEDIATION_CHECKLIST.md for step-by-step implementation steps
+- **Gap Analysis Tools**: Reference GAPS_REMEDIATION.md to check validated gaps before flagging new ones
+- **Project Leads**: Check this document for remediation status and roadmap
+
+---
+
 ## Purpose
 
 This document tracks validated implementation gaps between the accordion specification (spec.md, plan.md, tasks.md, contracts/) and the actual implementation. It serves as the single source of truth for gap analysis tools (`/analyze-report-gaps-gpt-5-mini`, `/analyze-report-gaps-gpt-4-1`) to prevent re-flagging documented gaps.

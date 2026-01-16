@@ -20,7 +20,7 @@ Build an accessible, Angular-native accordion component that provides Foundation
 
 **Key Differences from Original Plan**:
 
-1. Items are defined via `ng-template[nfsAccordionItem]` directives, not component wrappers
+1. Items are defined via `ng-template[nfsAccordionItem]` directives using template-directive composition pattern
 2. Uses `@angular/aria`'s `AccordionGroup`, `AccordionTrigger`, `AccordionPanel` primitives
 3. Container component orchestrates template instantiation via `ViewContainerRef`
 
@@ -246,13 +246,13 @@ packages/ngx-foundation-sites-e2e/src/accordion/
 
 _No violations. All constitution principles satisfied._
 
-**Foundation API Parity Justification**: Foundation's accordion JavaScript plugin exposes public methods (`toggle`, `down`, `up`, `destroy`) and events (`down`, `up` — emitted by Foundation as `down.zf.accordion` / `up.zf.accordion`). To ensure developers migrating from Foundation JS to ngx-foundation-sites have equivalent programmatic control, these must be exposed as:
+**Foundation API Parity Justification** (per CA-009, CA-010, FR-075, FR-076): Foundation's accordion JavaScript plugin exposes public methods (`toggle`, `down`, `up`, `destroy`) and events (`down`, `up` — emitted by Foundation as `down.zf.accordion` / `up.zf.accordion`). To ensure developers migrating from Foundation JS to ngx-foundation-sites have equivalent programmatic control, these must be exposed as:
 
-- **Methods**: `NfsAccordionItem.toggle()`, `NfsAccordionItem.down()` (≈ Foundation's `down`), `NfsAccordionItem.up()` (≈ Foundation's `up`)
-- **Events**: `NfsAccordion.down` output (≈ `down.zf.accordion`), `NfsAccordion.up` output (≈ `up.zf.accordion`)
-- **Exceptions**: `destroy()` is handled by Angular lifecycle / `DestroyRef` (no public method), and `init()` is auto-handled by Angular (no public method)
+- **Methods** (CA-009): `NfsAccordionItem.toggle()`, `NfsAccordionItem.down()` (≈ Foundation's `down`), `NfsAccordionItem.up()` (≈ Foundation's `up`)
+- **Events** (CA-010): `NfsAccordion.down` output (≈ `down.zf.accordion`), `NfsAccordion.up` output (≈ `up.zf.accordion`)
+- **Exceptions** (CA-011): `destroy()` is handled by Angular lifecycle / `DestroyRef` (no public method), and `init()` is auto-handled by Angular (no public method)
 
-This ensures **API parity** without introducing Foundation JavaScript dependency, maintaining Angular-native implementation while preserving developer familiarity.
+This ensures **API parity** (FR-075, FR-076) without introducing Foundation JavaScript dependency, maintaining Angular-native implementation while preserving developer familiarity.
 
 ## Tasks (additional remediation items)
 
