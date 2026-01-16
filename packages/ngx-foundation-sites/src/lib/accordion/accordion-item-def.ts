@@ -7,7 +7,6 @@ import {
   TemplateRef,
   computed,
   effect,
-  Injector,
 } from '@angular/core';
 import type { NfsAccordionHeaderDef } from './accordion-header-def';
 import type { NfsAccordionContentDef } from './accordion-content';
