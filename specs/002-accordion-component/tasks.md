@@ -11,14 +11,14 @@
 
 ## Implementation Status (2026-01-12)
 
-✅ **ALL GAPS RESOLVED**: Implementation is complete and matches spec requirements.
+✅ **MVP IMPLEMENTATION COMPLETE**: User Stories 1-4 (P1/P2 priority) fully implemented. US5-US6 deferred post-MVP.
 
-### Architecture Change
+### Template-Directive Composition Architecture
 
 **Planned**: Component-based (`<nfs-accordion-item>`, `<nfs-accordion-title>`)
-**Implemented**: Template-directive (`ng-template[nfsAccordionItem]`, `ng-template[nfsAccordionHeader]`)
+**Implemented**: Template-directive composition (`ng-template[nfsAccordionItem]`, `ng-template[nfsAccordionHeader]`)
 
-This change leverages `@angular/aria`'s accordion primitives more effectively. Tasks mentioning component creation (T018-T020) should be interpreted as directive creation.
+This template-directive composition pattern leverages `@angular/aria`'s accordion primitives more effectively. Tasks mentioning component creation (T018-T020) should be interpreted as directive creation.
 
 ### Resolved Items (formerly P0 Priority)
 
@@ -52,7 +52,9 @@ This change leverages `@angular/aria`'s accordion primitives more effectively. T
 - Tasks referencing methods (T140-T142): **IMPLEMENTED** ✅
 - Tasks referencing outputs (T138-T139): **IMPLEMENTED** ✅
 - Deep linking tasks (T114-T128): **FULLY IMPLEMENTED** ✅
-- All functional requirements: **IMPLEMENTED** ✅
+- All functional requirements (US1-US4): **IMPLEMENTED** ✅
+- US5 (Allow All Closed, Phase 7): **DEFERRED** — Tasks T072-T193 unchecked (post-MVP)
+- US6 (Disabled Items, Phase 8): **DEFERRED** — Tasks T081-T191 unchecked (post-MVP)
 
 ---
 
@@ -270,6 +272,7 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 - [ ] T079 [US5] Update NfsAccordionItem.toggle() to check parent.canCloseItem() before collapsing
 - [ ] T080 [US5] Add computed signal canClose in NfsAccordionItem: calls parent.canCloseItem(this.panelId())
 - [ ] T193 [US5] Implement binding coercion in NfsAccordionItem.expanded: if allowAllClosed=false and change would close last open item, ignore setter and update model to actual state in packages/ngx-foundation-sites/src/lib/accordion/accordion-item.component.ts
+  - **Status**: PARTIAL - Coercion logic exists in accordion.ts:268-290 (re-opens last panel), but missing ErrorHandler.handleError() call required by FR-174a to notify developers of constraint violation
 
 **Checkpoint**: Allow all closed mode works - can enforce "at least one open" rule
 
@@ -583,6 +586,18 @@ Task T020: "Create NfsAccordionTitle component"
 ```
 
 ## Additional Remediation Tasks (from cross-artifact analysis)
+
+**Naming Scheme**: Tasks prefixed with `T-AC-###` are "Additional Cross-Cutting" remediation items discovered during cross-artifact consistency analysis (spec.md, plan.md, tasks.md). These tasks address issues that span multiple architectural layers or user stories and do not map to a single Phase.
+
+**Discovery Context**: T-AC tasks are identified by comparing implementation artifacts to specification requirements. They typically address:
+- Edge cases or robustness improvements not captured in original functional requirements
+- Input validation and error handling across component boundaries
+- Timing-sensitive behavior (race conditions, debouncing)
+- Naming/consistency harmonization across files and references
+
+**Relationship to Phase Tasks**: T-AC tasks are SUPPLEMENTARY to Phase tasks. They represent additional work discovered during implementation, not replacements for Phase task phases. When an T-AC task is resolved by existing Phase tasks, a cross-reference is provided (see T-AC-002).
+
+---
 
 - [x] T-AC-001 [P?] Implement per-item toggle queue + 50ms debounce and input-source coalescing
 - Location: packages/ngx-foundation-sites/src/lib/accordion/
