@@ -1,6 +1,6 @@
 ---
 name: implement-reported-gaps
-description: Execute gap fixes from gap-analysis-report.md with automatic model selection based on finding complexity. Optimized for Haiku 4.5 orchestration with intelligent routing to haiku/sonnet/opus workers.
+description: Execute gap fixes from gap-analysis-report.md with automatic model selection based on finding complexity. Optimized for Haiku 4.5 orchestration with intelligent routing to haiku/sonnet/opus workers. Includes two-phase execution for documentation and code implementation.
 model_override: claude-haiku-4.5
 handoffs:
   - label: Re-analyze Gaps
@@ -10,7 +10,10 @@ handoffs:
 
 # Gap Implementation Orchestrator
 
-Execute gap fixes from `gap-analysis-report.md` with automatic model selection based on finding complexity. This skill implements a **smart dispatcher pattern** optimized for Haiku 4.5.
+Execute gap fixes from `gap-analysis-report.md` with automatic model selection based on finding complexity. This skill implements a **smart dispatcher pattern** optimized for Haiku 4.5 with **two-phase execution**:
+
+1. **Phase 1**: Documentation resolution (spec.md, plan.md, tasks.md)
+2. **Phase 2**: Code implementation (when findings require source code changes)
 
 ## Architecture
 
@@ -22,8 +25,9 @@ Execute gap fixes from `gap-analysis-report.md` with automatic model selection b
 │  1. Read gap-analysis-report.md (auto-detect from git branch)   │
 │  2. Parse findings table → extract ID, Severity, Category       │
 │  3. Score each finding → assign target model                    │
+│  3.5. Detect code implementation requirements                   │
 │  4. Generate model-optimized prompts for each finding           │
-│  5. Spawn Task agents with model parameter                      │
+│  5. Spawn Task agents (Phase 1: docs, Phase 2: code)            │
 │  6. Track progress, validate completion                         │
 └──────────────────────────┬──────────────────────────────────────┘
                            │
@@ -33,25 +37,26 @@ Execute gap fixes from `gap-analysis-report.md` with automatic model selection b
 │ Task(haiku)     │ │ Task(sonnet)    │ │ Task(opus)      │
 │ LOW findings    │ │ MEDIUM findings │ │ HIGH findings   │
 │ Mechanical work │ │ Standard impl   │ │ Judgment calls  │
+│ + Code impl     │ │ + Code impl     │ │ + Code impl     │
 └─────────────────┘ └─────────────────┘ └─────────────────┘
 ```
 
 ## When to Use
 
 - **After** `/analyze-report-gaps-haiku-4-5` generates `gap-analysis-report.md`
-- When ready to implement gap fixes across spec/plan/tasks files
+- When ready to implement gap fixes across spec/plan/tasks files AND source code
 - For cost-efficient execution with automatic model routing
 
 ## Goal
 
-Parse gap analysis findings, classify by complexity, spawn model-optimized Task agents, track progress, and validate completion.
+Parse gap analysis findings, classify by complexity, detect code implementation needs, spawn model-optimized Task agents in two phases, track progress, and validate completion.
 
 ---
 
 ## Execution Steps
 
 <critical>
-Execute EXACTLY these 8 steps in order. Do NOT skip steps. Do NOT add extra steps.
+Execute EXACTLY these 9 steps in order. Do NOT skip steps. Do NOT add extra steps.
 </critical>
 
 ### Step 1: Auto-Detect Feature Directory
@@ -123,35 +128,74 @@ Classification results:
 - opus tasks: [IDs] (N findings)
   </output_format>
 
+### Step 3.5: Detect Code Implementation Requirements
+
+<task>
+Determine which findings require source code changes vs documentation-only changes.
+</task>
+
+<critical>
+This step is ESSENTIAL to avoid creating remediation documents when code changes are needed.
+</critical>
+
+<detection_rules>
+FOR EACH finding:
+requiresCodeImplementation = FALSE
+
+// Check Location for source code files
+IF Location CONTAINS any of [".ts:", ".js:", ".tsx:", ".jsx:", ".scss:", ".css:", ".html:"]:
+AND Location does NOT contain ["spec.md", "plan.md", "tasks.md", "README", "CHANGELOG"]:
+requiresCodeImplementation = TRUE
+
+// Check Recommendation for implementation keywords
+IF Recommendation CONTAINS any of:
+["implement", "add method", "add function", "add property", "add call",
+"modify code", "fix code", "update code", "change implementation",
+"ErrorHandler", "handleError", "inject", "add import"]:
+requiresCodeImplementation = TRUE
+
+// Check Category for implementation indicators
+IF category == "CoverageGap" AND Recommendation mentions specific code locations:
+requiresCodeImplementation = TRUE
+</detection_rules>
+
+<output_format>
+Code implementation detection:
+
+- Documentation-only: [IDs] (N findings) → Phase 1
+- Requires code changes: [IDs] (N findings) → Phase 2
+  </output_format>
+
 ### Step 4: Create TodoWrite Tracking
 
 <task>
-Create TODO list with one item per finding.
+Create TODO list with one item per finding, indicating phase.
 </task>
 
 <action_steps>
 
 1. Call TodoWrite with all findings as pending tasks
-2. Include finding ID and target model in each task
-3. Format: "{ID}: {Summary (truncated)} [{model}]"
+2. Include finding ID, target model, and phase in each task
+3. Format: "{ID}: {Summary (truncated)} [{model}] [Phase {1|2}]"
    </action_steps>
 
-### Step 5: Generate Prompts and Spawn Tasks
+### Step 5: Generate Prompts and Spawn Tasks (Phase 1: Documentation)
 
 <task>
-FOR EACH finding, generate model-optimized prompt and spawn Task agent.
+FOR EACH documentation-only finding, generate model-optimized prompt and spawn Task agent.
 </task>
 
 <critical>
 - Spawn PARALLEL Tasks for independent findings targeting the same model
 - Use SEQUENTIAL Tasks when findings have dependencies
 - Include exact file paths and line numbers from finding Location(s)
+- Do NOT create remediation documents for documentation-only findings
 </critical>
 
-#### Haiku Prompt Template (LOW/Mechanical)
+#### Haiku Prompt Template (LOW/Mechanical - Documentation)
 
 <haiku_template>
-FOR findings targeting model="haiku", use this exact template:
+FOR findings targeting model="haiku" AND requiresCodeImplementation=FALSE, use this template:
 
 ```xml
 <role>
@@ -186,6 +230,7 @@ Execute exactly these steps:
 - Use Edit tool (NOT Write tool)
 - Do NOT modify unrelated sections
 - Do NOT add explanatory comments to code
+- Do NOT create remediation documents
 </constraints>
 
 <success_criteria>
@@ -198,6 +243,7 @@ Execute exactly these steps:
 - Do NOT explain what you're doing
 - Do NOT ask for confirmation
 - Do NOT suggest additional improvements
+- Do NOT create *-REMEDIATION.md files
 </anti_goals>
 ```
 
@@ -213,10 +259,10 @@ REPLACE placeholders:
 - {line_number} = extract line number from Location
   </haiku_template>
 
-#### Sonnet Prompt Template (MEDIUM/Standard)
+#### Sonnet Prompt Template (MEDIUM/Standard - Documentation)
 
 <sonnet_template>
-FOR findings targeting model="sonnet", use this exact template:
+FOR findings targeting model="sonnet" AND requiresCodeImplementation=FALSE, use this template:
 
 ```markdown
 <role>
@@ -261,6 +307,7 @@ Think about:
 - Additional features
 - Unrelated improvements
 - Documentation beyond what's specified
+- Creating remediation documents
   </phase>
 
 <phase name="verification">
@@ -276,6 +323,7 @@ After implementation:
 - Implement ONLY what's needed for this finding
 - Do NOT add error handling beyond what's specified
 - Do NOT refactor adjacent code
+- Do NOT create *-REMEDIATION.md files
 </constraints>
 ```
 
@@ -290,10 +338,10 @@ REPLACE placeholders:
 - {FEATURE_DIR} = from Step 1
   </sonnet_template>
 
-#### Opus Prompt Template (HIGH/Judgment)
+#### Opus Prompt Template (HIGH/Judgment - Documentation)
 
 <opus_template>
-FOR findings targeting model="opus", use this exact template:
+FOR findings targeting model="opus" AND requiresCodeImplementation=FALSE, use this template:
 
 ```markdown
 <role>
@@ -366,6 +414,7 @@ After implementation:
 Trust your expert judgment.
 Implement complete solution, then verify once.
 If the finding involves documentation consistency, ensure all cross-references are updated.
+Do NOT create remediation documents - implement the fix directly.
 </guidance>
 ```
 
@@ -379,10 +428,269 @@ REPLACE placeholders:
 - {FEATURE_DIR} = from Step 1
   </opus_template>
 
+### Step 5.5: Generate Prompts and Spawn Tasks (Phase 2: Code Implementation)
+
+<task>
+FOR EACH finding with requiresCodeImplementation=TRUE, generate code-aware prompt and spawn Task agent.
+</task>
+
+<critical>
+- Phase 2 runs AFTER Phase 1 completes
+- Code implementation Tasks use specialized prompts with verification steps
+- Always use Sonnet or Opus for code changes (never Haiku for production code)
+- Include lint/type-check verification
+</critical>
+
+#### Code Implementation Prompt Template (Sonnet - Code Changes)
+
+<code_implementation_template_sonnet>
+FOR findings with requiresCodeImplementation=TRUE AND model IN ["haiku", "sonnet"], use Sonnet with this template:
+
+**Sonnet 4.5 Optimizations Applied:**
+
+- Phase-based implementation with thinking checkpoints
+- Parallel file loading (10-20x faster context building)
+- Extended thinking budget (8K-16K for complex code)
+- Error-first TDD approach
+- Explicit OUT OF SCOPE constraints (prevents scope creep)
+
+```markdown
+<role>
+You are an implementation agent executing systematic code changes.
+Extended thinking budget: 8K tokens for context, 16K for complex logic.
+</role>
+
+<finding id="{ID}" severity="{Severity}" category="{Category}">
+
+## Problem Statement
+
+{Summary}
+
+## Source Code Location(s)
+
+{Location}
+
+## Feature Directory
+
+{FEATURE_DIR}
+
+## Required Change
+
+{Recommendation}
+
+</finding>
+
+<implementation_phases>
+
+<phase name="context" parallel_tools="true" extended_thinking="8K">
+## Phase 1: Context Loading (PARALLEL)
+
+Read these files SIMULTANEOUSLY in a single message:
+
+- The source file(s) mentioned in Location
+- {FEATURE_DIR}/spec.md (search for requirement ID if mentioned)
+- Related test files (_.spec.ts, _.stories.ts)
+
+After reading, think about:
+
+- What's the root cause of this gap?
+- What's the minimal code change needed?
+- What could go wrong?
+  </phase>
+
+<phase name="implementation" extended_thinking="16K">
+## Phase 2: Implementation (Error-First TDD)
+
+1. **Write test first** (if behavior change):
+   - Add test case in spec.ts or Storybook play function
+   - Test should fail initially (expected)
+
+2. **Implement minimal fix**:
+   - Use Edit tool with precise old_string/new_string
+   - Include necessary imports
+   - Follow existing code patterns
+
+3. **Run test immediately**:
+   - Verify test passes
+   - If fails, fix before continuing
+     </phase>
+
+<phase name="verification" extended_thinking="none">
+## Phase 3: Verification
+
+1. Read modified file to confirm change applied
+2. Check TypeScript compilation: `npx tsc --noEmit {file_path}`
+3. Verify the change addresses the finding
+   </phase>
+
+</implementation_phases>
+
+<constraints>
+**IN SCOPE** (implement ONLY these):
+- Exact change from Recommendation
+- Tests if behavior changes
+- JSDoc for public API additions
+- Necessary imports
+
+**OUT OF SCOPE** (do NOT implement):
+
+- Refactoring surrounding code
+- Performance optimizations
+- Additional error handling beyond spec
+- Documentation beyond JSDoc
+- Creating remediation documents
+  </constraints>
+
+<success_criteria>
+
+- [ ] Test written (if behavior change)
+- [ ] Code change at correct location
+- [ ] Test passes
+- [ ] No TypeScript errors
+- [ ] Change addresses finding
+      </success_criteria>
+
+<anti_goals>
+
+- Do NOT create \*-REMEDIATION.md files
+- Do NOT ask for confirmation
+- Do NOT suggest additional improvements
+- Do NOT modify unrelated code
+- Do NOT batch tasks - implement this finding only
+  </anti_goals>
+```
+
+REPLACE placeholders:
+
+- {ID} = finding ID from table column 1
+- {Summary} = finding Summary from table column 5
+- {Severity} = finding Severity from table column 3
+- {Category} = finding Category from table column 2
+- {Location} = finding Location from table column 4
+- {Recommendation} = finding Recommendation from table column 6
+- {FEATURE_DIR} = from Step 1
+- {file_path} = extract file path from Location
+  </code_implementation_template_sonnet>
+
+#### Code Implementation Prompt Template (Opus - Complex Code Changes)
+
+<code_implementation_template_opus>
+FOR findings with requiresCodeImplementation=TRUE AND model="opus", use this template:
+
+**Opus 4.5 Optimizations Applied:**
+
+- Medium effort parameter (76% fewer tokens, matches Sonnet best performance)
+- Calibrated language (no "MUST"/"CRITICAL" - Opus is sensitive to aggressive prompts)
+- "Consider/Evaluate/Analyze" word choice (not "think" when possible)
+- First-try correctness approach (trust expert judgment, less iteration)
+- Extended thinking budget (16K-32K for complex code reasoning)
+- Vision capability mention for UI-related findings
+
+```markdown
+<role>
+You are an expert code implementation agent with deep reasoning capabilities.
+Use medium effort for optimal token efficiency.
+Extended thinking budget: 16K-32K tokens for complex analysis.
+</role>
+
+<finding id="{ID}" severity="HIGH" category="{Category}">
+
+## Problem Statement
+
+{Summary}
+
+## Source Code Location(s)
+
+{Location}
+
+## Feature Directory
+
+{FEATURE_DIR}
+
+## Required Change
+
+{Recommendation}
+
+</finding>
+
+<implementation_strategy>
+
+## Phase 1: Deep Code Analysis (Extended Thinking: 16K)
+
+Read source files in parallel, then evaluate:
+
+- What is the current behavior at this location?
+- What should the behavior be after the fix?
+- What's the minimal code change to achieve this?
+- Are there edge cases to handle proactively?
+- Could this change affect existing functionality?
+
+Assess the impact on:
+
+- Related components in the codebase
+- Existing tests and behavior
+- Future maintenance
+
+## Phase 2: First-Try Implementation
+
+Leverage your expert coding capabilities:
+
+1. Implement the complete solution (high first-try correctness)
+2. Use Edit tool with precise old_string/new_string
+3. Include necessary imports if required
+4. Add JSDoc comments for public API additions
+5. Handle edge cases proactively (Opus strength)
+
+Note: Opus 4.5 has higher first-try success rate than other models.
+Implement the full solution, then verify once.
+
+## Phase 3: Verification
+
+After implementation:
+
+1. Read the modified file to confirm correctness
+2. Verify change addresses the finding requirement
+3. Check existing patterns are preserved
+4. If UI-related: consider taking screenshot to compare before/after
+
+</implementation_strategy>
+
+<constraints>
+Implement only what's needed for this finding.
+Preserve existing code architecture and patterns.
+Follow the project's TypeScript/Angular conventions.
+Do not create remediation documents - implement directly.
+</constraints>
+
+<deliverables>
+- Code change implemented correctly
+- Verification that change addresses finding
+- Edge cases handled (leverage Opus's proactive handling)
+</deliverables>
+
+<guidance>
+Trust your expert judgment for implementation details.
+Opus 4.5 has state-of-the-art coding capability (80.9% SWE-bench).
+Implement the complete solution on first try, then verify once.
+Make the change directly - do not create documentation files.
+If the change requires multiple edits, make them all in sequence.
+</guidance>
+```
+
+REPLACE placeholders:
+
+- {ID} = finding ID from table column 1
+- {Summary} = finding Summary from table column 5
+- {Category} = finding Category from table column 2
+- {Location} = finding Location from table column 4
+- {Recommendation} = finding Recommendation from table column 6
+- {FEATURE_DIR} = from Step 1
+  </code_implementation_template_opus>
+
 #### Spawning Task Agents
 
 <task_spawning>
-FOR EACH finding:
+FOR Phase 1 (Documentation):
 
 1. Select template based on target model
 2. Fill template with finding data
@@ -391,8 +699,20 @@ FOR EACH finding:
    - model: "{target_model}" (haiku, sonnet, or opus)
    - prompt: "{filled_template}"
 
-Spawn independent haiku Tasks in PARALLEL (same message, multiple Task tool calls).
-Spawn sonnet/opus Tasks after haiku Tasks complete if there are dependencies.
+Spawn independent haiku Tasks in PARALLEL.
+Wait for Phase 1 to complete before Phase 2.
+
+FOR Phase 2 (Code Implementation):
+
+1. Select code implementation template based on model
+2. For haiku-classified findings requiring code: use Sonnet (upgrade for safety)
+3. Fill template with finding data
+4. Spawn Task with:
+   - subagent_type: "general-purpose"
+   - model: "sonnet" or "opus" (never haiku for code)
+   - prompt: "{filled_code_template}"
+
+Spawn code Tasks SEQUENTIALLY to avoid conflicts.
 </task_spawning>
 
 ### Step 6: Track Progress
@@ -405,7 +725,7 @@ Update TodoWrite as each Task completes.
 
 1. When Task returns success:
    - Mark corresponding finding as completed in TodoWrite
-   - Note the model used and outcome
+   - Note the model used, phase, and outcome
 2. When Task returns failure:
    - Keep finding as in_progress
    - Note the error for reporting
@@ -420,16 +740,18 @@ Verify all spawned Tasks completed successfully.
 
 <action_steps>
 
-1. Count completed vs failed Tasks
+1. Count completed vs failed Tasks by phase
 2. FOR EACH failed Task:
-   - Log finding ID and error
+   - Log finding ID, phase, and error
    - Include in failure report
-3. Calculate success rate
+3. Calculate success rate per phase and overall
    </action_steps>
 
 <output_format>
 Completion status:
 
+- Phase 1 (Documentation): X/Y resolved
+- Phase 2 (Code): X/Y resolved
 - Total findings: N
 - Resolved: X (list IDs)
 - Failed: Y (list IDs with reasons)
@@ -451,20 +773,22 @@ Generate final summary with metrics and recommendations.
 
 ### Execution Summary
 
-| Model  | Findings | Resolved | Failed |
-| ------ | -------- | -------- | ------ |
-| haiku  | N        | X        | Y      |
-| sonnet | N        | X        | Y      |
-| opus   | N        | X        | Y      |
-| TOTAL  | N        | X        | Y      |
+| Phase | Model  | Findings | Resolved | Failed |
+| ----- | ------ | -------- | -------- | ------ |
+| Docs  | haiku  | N        | X        | Y      |
+| Docs  | sonnet | N        | X        | Y      |
+| Docs  | opus   | N        | X        | Y      |
+| Code  | sonnet | N        | X        | Y      |
+| Code  | opus   | N        | X        | Y      |
+| TOTAL |        | N        | X        | Y      |
 
 ### Resolved Findings
 
-- {ID}: {Summary} ✅
+- {ID}: {Summary} ✅ [Phase {1|2}]
 
 ### Failed Findings (if any)
 
-- {ID}: {Summary} - {error_reason}
+- {ID}: {Summary} - {error_reason} [Phase {1|2}]
 
 ### Cost Efficiency
 
@@ -477,6 +801,7 @@ Generate final summary with metrics and recommendations.
 IF all resolved:
 
 - Run `/analyze-report-gaps-haiku-4-5` to verify no regressions
+- Run `npm run lint` and `npm run test` to verify code changes
   ELSE:
 - Review failed findings manually
 - Re-run skill or address failures individually
@@ -486,22 +811,26 @@ IF all resolved:
 
 ## Classification Reference
 
-| Severity | Category           | Target Model | Rationale                        |
-| -------- | ------------------ | ------------ | -------------------------------- |
-| LOW      | Any                | haiku        | Mechanical work, pattern-based   |
-| MEDIUM   | Inconsistency      | haiku        | Search/replace, cross-reference  |
-| MEDIUM   | CoverageGap        | sonnet       | Requires implementation decision |
-| MEDIUM   | Underspecification | sonnet       | Requires context synthesis       |
-| HIGH     | Any                | opus         | Requires judgment, deep analysis |
+| Severity | Category           | Target Model | Code Impl? | Rationale                        |
+| -------- | ------------------ | ------------ | ---------- | -------------------------------- |
+| LOW      | Any                | haiku        | → sonnet   | Mechanical work, pattern-based   |
+| MEDIUM   | Inconsistency      | haiku        | → sonnet   | Search/replace, cross-reference  |
+| MEDIUM   | CoverageGap        | sonnet       | sonnet     | Requires implementation decision |
+| MEDIUM   | Underspecification | sonnet       | sonnet     | Requires context synthesis       |
+| HIGH     | Any                | opus         | opus       | Requires judgment, deep analysis |
+
+**Note**: Haiku-classified findings that require code changes are upgraded to Sonnet for safety.
 
 ## Cost Estimation
 
-| Model     | Cost/Finding | Typical Count | Subtotal       |
-| --------- | ------------ | ------------- | -------------- |
-| haiku     | $0.01-0.02   | 4-5           | $0.04-0.10     |
-| sonnet    | $0.05-0.10   | 2-3           | $0.10-0.30     |
-| opus      | $0.50-1.00   | 1-2           | $0.50-2.00     |
-| **TOTAL** |              | ~9            | **$0.66-2.43** |
+| Phase     | Model  | Cost/Finding | Typical Count | Subtotal       |
+| --------- | ------ | ------------ | ------------- | -------------- |
+| Docs      | haiku  | $0.01-0.02   | 3-4           | $0.03-0.08     |
+| Docs      | sonnet | $0.05-0.10   | 1-2           | $0.05-0.20     |
+| Docs      | opus   | $0.50-1.00   | 1             | $0.50-1.00     |
+| Code      | sonnet | $0.08-0.15   | 1-2           | $0.08-0.30     |
+| Code      | opus   | $0.75-1.50   | 0-1           | $0.00-1.50     |
+| **TOTAL** |        |              | ~9            | **$0.66-3.08** |
 
 Compare: All findings on Opus = ~$4.50-9.00
 
@@ -511,6 +840,7 @@ Compare: All findings on Opus = ~$4.50-9.00
 | ----------------- | ------------------------------------ |
 | Parsing           | Reading markdown table is mechanical |
 | Classification    | Scoring formula is explicit IF/ELSE  |
+| Code detection    | Pattern matching on file extensions  |
 | Template filling  | Mechanical substitution              |
 | Task spawning     | Structured tool calls                |
 | Progress tracking | Checklist updates                    |
@@ -519,7 +849,8 @@ The orchestrator does NOT need deep reasoning - it's a **dispatcher** that:
 
 1. Parses structured input
 2. Applies explicit rules
-3. Generates structured output (Task calls)
+3. Detects code vs documentation needs
+4. Generates structured output (Task calls)
 
 ## Example Usage
 
@@ -530,7 +861,9 @@ The orchestrator does NOT need deep reasoning - it's a **dispatcher** that:
 # Auto-detects from git branch: 002-accordion-component
 # Reads: specs/002-accordion-component/gap-analysis-report.md
 # Classifies 9 findings → 4 haiku, 3 sonnet, 2 opus
-# Spawns Tasks with model-optimized prompts
+# Detects 2 findings require code changes
+# Phase 1: Spawns Tasks for 7 documentation findings
+# Phase 2: Spawns Tasks for 2 code implementation findings
 # Reports completion with cost metrics
 ```
 
@@ -545,7 +878,10 @@ The orchestrator does NOT need deep reasoning - it's a **dispatcher** that:
 After execution:
 
 ✅ **All findings classified** with correct target model
-✅ **All Tasks spawned** with model-optimized prompts
-✅ **Progress tracked** via TodoWrite
-✅ **Completion validated** with success/failure counts
+✅ **Code implementation needs detected** accurately
+✅ **Phase 1 Tasks spawned** for documentation fixes
+✅ **Phase 2 Tasks spawned** for code changes (with model upgrade for safety)
+✅ **Progress tracked** via TodoWrite with phase indicators
+✅ **Completion validated** with success/failure counts per phase
 ✅ **Summary generated** with cost metrics
+✅ **No remediation documents created** - all fixes implemented directly
