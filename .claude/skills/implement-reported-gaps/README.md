@@ -20,6 +20,24 @@ Execute gap fixes from `gap-analysis-report.md` with automatic model selection, 
 7. **Tracks** progress via TodoWrite with phase indicators
 8. **Reports** completion with cost metrics
 
+## ⚠️ Critical: Orchestrator Pattern
+
+**This skill is a DISPATCHER, not an IMPLEMENTER.**
+
+The orchestrator (Sonnet 4.5) must:
+
+- ✅ **Spawn Task agents** for each finding
+- ✅ **Route to optimal model** (haiku for mechanical, sonnet for reasoning, opus for judgment)
+- ✅ **Track and collect results** via TaskOutput
+
+The orchestrator must NOT:
+
+- ❌ Use Edit/Write tools to fix findings directly
+- ❌ "Shortcut" by implementing fixes itself
+- ❌ Skip Task spawning because "it's faster"
+
+**Why this matters**: Haiku costs ~10x less than Sonnet. A 5-finding run using proper routing costs ~$0.15; doing it all in Sonnet costs ~$1.50.
+
 ## Architecture
 
 ```

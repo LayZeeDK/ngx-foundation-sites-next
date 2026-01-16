@@ -54,6 +54,45 @@ Parse gap analysis findings, classify by complexity, detect code implementation 
 
 ---
 
+## Critical Constraints
+
+<critical_constraints>
+**YOU ARE AN ORCHESTRATOR, NOT AN IMPLEMENTER**
+
+This skill follows the **smart dispatcher pattern**. Your role is to:
+
+1. **Parse** - Read and understand the findings
+2. **Classify** - Assign each finding to the optimal model (haiku/sonnet/opus)
+3. **Spawn** - Create Task agents to do the actual work
+4. **Track** - Monitor progress and collect results
+
+**PROHIBITED ACTIONS** (DO NOT DO THESE):
+
+- ❌ DO NOT use Edit/Write tools to fix findings yourself
+- ❌ DO NOT implement code changes directly
+- ❌ DO NOT update documentation files directly
+- ❌ DO NOT "shortcut" by doing the work yourself because it seems faster
+
+**REQUIRED ACTIONS** (YOU MUST DO THESE):
+
+- ✅ MUST spawn Task agents using the Task tool for each finding
+- ✅ MUST use the provided templates for spawned task prompts
+- ✅ MUST specify the `model` parameter (haiku/sonnet/opus) for each Task
+- ✅ MUST use `run_in_background: true` for task isolation
+- ✅ MUST collect results using TaskOutput after spawning
+
+**WHY THIS MATTERS**:
+
+- **Cost efficiency**: Haiku costs ~10x less than Sonnet for mechanical fixes
+- **Parallelism**: Multiple Tasks can run simultaneously
+- **Auditability**: Each fix is isolated and traceable
+- **Architecture**: This is a multi-model orchestration pattern, not a monolithic implementation
+
+If you find yourself reaching for Edit/Write tools to fix a finding, STOP. Go back to Step 5 and spawn a Task instead.
+</critical_constraints>
+
+---
+
 ## Execution Steps
 
 <sonnet_optimization>
@@ -966,16 +1005,35 @@ Collect results from background Tasks and update TodoWrite.
 ### Step 7: Validate Completion
 
 <task>
-Verify all spawned Tasks completed successfully.
+Verify all spawned Tasks completed successfully and that the orchestrator pattern was followed.
 </task>
+
+<self_check>
+**BEFORE proceeding, verify you followed the orchestrator pattern**:
+
+1. Did you spawn Task agents for each finding? (Check your message history for Task tool calls)
+2. Did each Task have a `model` parameter? (haiku, sonnet, or opus)
+3. Did you use the provided templates for spawned task prompts?
+4. Did you collect results using TaskOutput?
+
+**IF you used Edit/Write tools to fix findings directly**:
+⚠️ You violated the orchestrator pattern. The fixes may be correct, but you:
+
+- Lost cost optimization (Haiku is ~10x cheaper for mechanical fixes)
+- Lost parallelism benefits
+- Didn't follow the skill architecture
+
+Consider re-running with proper Task spawning for future executions.
+</self_check>
 
 <action_steps>
 
-1. Count completed vs failed Tasks by phase
-2. FOR EACH failed Task:
+1. Count spawned Tasks vs direct implementations (should be 100% Tasks)
+2. Count completed vs failed Tasks by phase
+3. FOR EACH failed Task:
    - Log finding ID, phase, and error
    - Include in failure report
-3. Calculate success rate per phase and overall
+4. Calculate success rate per phase and overall
    </action_steps>
 
 <output_format>
