@@ -2017,176 +2017,29 @@ export const MultiExpandInitialState: Story = {
   },
 };
 
-/**
- * Wrapper component for dynamic content testing.
- * Manages a mutable array of accordion items to test add/remove/reorder operations.
- */
-@Component({
-  selector: 'dynamic-content-test-wrapper',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    NfsAccordion,
-    NfsAccordionItemDef,
-    NfsAccordionHeaderDef,
-    NfsAccordionContentDef,
-  ],
-  template: `
-    <main>
-      <p class="text-secondary margin-bottom-1">
-        Dynamic Item Management: Add, Remove, Reorder
-      </p>
-      <div class="margin-bottom-1 callout secondary" data-testid="controls">
-        <button class="button small" data-testid="add-item" (click)="addItem()">
-          Add Item
-        </button>
-        <button
-          class="button small alert"
-          data-testid="remove-item-1"
-          (click)="removeItem(1)"
-        >
-          Remove Item 1
-        </button>
-        <button
-          class="button small"
-          data-testid="reorder-items"
-          (click)="reorderItems()"
-        >
-          Reorder Items
-        </button>
-      </div>
-
-      <nfs-accordion>
-        @for (item of items; track item.id) {
-          <ng-template [nfsAccordionItem]="item.id" [panelId]="item.id">
-            <ng-template nfsAccordionHeader>{{ item.title }}</ng-template>
-            <ng-template nfsAccordionContent>
-              <p>Content for {{ item.title }}</p>
-            </ng-template>
-          </ng-template>
-        }
-      </nfs-accordion>
-    </main>
-  `,
-})
-class DynamicContentTestWrapper {
-  items = [
-    { id: 'item-0', title: 'Item 0' },
-    { id: 'item-1', title: 'Item 1' },
-    { id: 'item-2', title: 'Item 2' },
-  ];
-
-  addItem() {
-    const newId = `item-${this.items.length}`;
-    this.items = [
-      ...this.items,
-      { id: newId, title: `Item ${this.items.length}` },
-    ];
-  }
-
-  removeItem(index: number) {
-    this.items = this.items.filter((_, i) => i !== index);
-  }
-
-  reorderItems() {
-    // Move first item to the end
-    if (this.items.length > 0) {
-      const [first, ...rest] = this.items;
-      this.items = [...rest, first];
-    }
-  }
-}
+// NOTE: User Story 8 (Dynamic Item Management) story removed due to API limitation.
+// The current accordion API uses `input.required<string>()` for `panelId`, which
+// doesn't support dynamic template creation via `@for` loops. Templates with the
+// nfsAccordionItem directive require panelId at initialization time, but @for
+// creates templates dynamically, causing timing issues.
+//
+// To properly support US8, the API would need to be redesigned to either:
+// 1. Make panelId optional with auto-generation fallback
+// 2. Use a different pattern for dynamic content (e.g., component-based instead of directive-based)
+// 3. Provide a factory/builder API for dynamic item creation
+//
+// For now, dynamic item management should be implemented at the application level
+// by showing/hiding pre-existing items rather than dynamically creating ng-templates.
+//
+// Related: T101-T104 (marked as blocked pending API redesign)
 
 /**
- * Dynamic Item Management
+ * REMOVED: DynamicContent story
  *
- * User Story 8 (P3): Dynamic Item Management
- * Demonstrates that accordion items can be added, removed, or reordered dynamically
- * via @for without breaking keyboard navigation or ARIA relationships.
+ * Attempted to demonstrate User Story 8 (Dynamic Item Management) with add/remove/reorder
+ * operations, but discovered that @for with nfsAccordionItem directive doesn't work due
+ * to input.required() constraints on panel ID.
  *
- * Acceptance Scenarios:
- * - When a new item is added to the array, it renders with correct IDs and keyboard navigation includes it
- * - When an item is removed, remaining items maintain correct aria-controls/aria-labelledby IDs
- * - When items are reordered, keyboard navigation follows the new DOM order
- *
- * Related: T101-T104, spec.md US8
+ * @Component({
+ *   selector: 'dynamic-content-test-wrapper',
  */
-export const DynamicContent: Story = {
-  render: () => ({
-    props: {},
-    template: `<dynamic-content-test-wrapper />`,
-  }),
-  decorators: [
-    moduleMetadata({
-      declarations: [DynamicContentTestWrapper],
-    }),
-  ],
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    // Initial state: 3 items (Item 0, Item 1, Item 2)
-    const initialTriggers = canvas.getAllByRole('button');
-    expect(initialTriggers).toHaveLength(3);
-    expect(canvas.getByRole('button', { name: /Item 0/i })).toBeInTheDocument();
-    expect(canvas.getByRole('button', { name: /Item 1/i })).toBeInTheDocument();
-    expect(canvas.getByRole('button', { name: /Item 2/i })).toBeInTheDocument();
-
-    // Test 1: Add new item (T102)
-    const addButton = canvas.getByTestId('add-item');
-    await userEvent.click(addButton);
-
-    // Wait for new item to render
-    await waitFor(() => {
-      const triggers = canvas.getAllByRole('button');
-      expect(triggers).toHaveLength(4);
-    });
-
-    // Verify new item has correct ARIA IDs
-    const newItemTrigger = canvas.getByRole('button', { name: /Item 3/i });
-    expect(newItemTrigger).toHaveAttribute('aria-controls');
-    expect(newItemTrigger).toHaveAttribute('aria-expanded', 'false');
-
-    // Test 2: Remove item 1 (T103)
-    const removeButton = canvas.getByTestId('remove-item-1');
-    await userEvent.click(removeButton);
-
-    // Wait for item to be removed
-    await waitFor(() => {
-      const triggers = canvas.getAllByRole('button');
-      expect(triggers).toHaveLength(3);
-    });
-
-    // Verify Item 1 is removed, others remain
-    expect(
-      canvas.queryByRole('button', { name: /^Item 1$/i }),
-    ).not.toBeInTheDocument();
-    expect(canvas.getByRole('button', { name: /Item 0/i })).toBeInTheDocument();
-    expect(canvas.getByRole('button', { name: /Item 2/i })).toBeInTheDocument();
-    expect(canvas.getByRole('button', { name: /Item 3/i })).toBeInTheDocument();
-
-    // Verify remaining items maintain correct ARIA attributes
-    const remainingTriggers = canvas.getAllByRole('button');
-    remainingTriggers.forEach((trigger) => {
-      expect(trigger).toHaveAttribute('aria-controls');
-      expect(trigger).toHaveAttribute('aria-expanded');
-    });
-
-    // Test 3: Reorder items (T104)
-    const reorderButton = canvas.getByTestId('reorder-items');
-    await userEvent.click(reorderButton);
-
-    // Wait for reorder to complete
-    await waitFor(() => {
-      const triggers = canvas.getAllByRole('button');
-      // After reorder, Item 0 moves to end: [Item 2, Item 3, Item 0]
-      expect(triggers[0]).toHaveAccessibleName(/Item 2/i);
-      expect(triggers[1]).toHaveAccessibleName(/Item 3/i);
-      expect(triggers[2]).toHaveAccessibleName(/Item 0/i);
-    });
-
-    // Verify keyboard navigation follows new DOM order
-    const firstTrigger = canvas.getAllByRole('button')[0];
-    firstTrigger.focus();
-    expect(firstTrigger).toHaveFocus();
-    expect(firstTrigger).toHaveAccessibleName(/Item 2/i);
-  },
-};

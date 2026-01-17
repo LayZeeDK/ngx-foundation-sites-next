@@ -375,29 +375,44 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 
 ### Storybook Tests for User Story 8
 
-- [x] T101 [P] [US8] Create DynamicContent story at packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
-  - **Status**: Implemented as `DynamicContent` story with `DynamicContentTestWrapper` component (added 2026-01-17)
-  - **Note**: Story includes interactive controls for add/remove/reorder operations on dynamic accordion items
-- [x] T102 [US8] Add play function: add new item to array, verify it renders with correct ARIA IDs
-  - **Status**: Implemented in `DynamicContent` story play function
-  - **Test**: Clicks "Add Item" button, verifies new Item 3 renders with aria-controls and aria-expanded attributes
-- [x] T103 [US8] Add play function: remove item 2, verify remaining items maintain correct aria-controls/aria-labelledby
-  - **Status**: Implemented in `DynamicContent` story play function
-  - **Test**: Clicks "Remove Item 1" button, verifies Item 1 removed and remaining items (0, 2, 3) maintain ARIA attributes
-- [x] T104 [US8] Add play function: reorder items, verify keyboard navigation follows new DOM order
-  - **Status**: Implemented in `DynamicContent` story play function
-  - **Test**: Clicks "Reorder Items" button (moves first item to end), verifies DOM order changes and keyboard focus follows new order
+- [ ] T101 [P] [US8] Create DynamicContent story at packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
+  - **Status**: BLOCKED - API limitation discovered during implementation (2026-01-17)
+  - **Issue**: Current accordion API uses `input.required<string>()` for `panelId`, which doesn't support dynamic template creation via `@for` loops
+  - **Root Cause**: Templates with `nfsAccordionItem` directive require `panelId` at initialization time, but `@for` creates templates dynamically, causing NG0950 error ("Input is required but no value is available yet")
+  - **Resolution**: Requires API redesign to support dynamic content (see Implementation tasks below)
+- [ ] T102 [US8] Add play function: add new item to array, verify it renders with correct ARIA IDs
+  - **Status**: BLOCKED by T101
+- [ ] T103 [US8] Add play function: remove item 2, verify remaining items maintain correct aria-controls/aria-labelledby
+  - **Status**: BLOCKED by T101
+- [ ] T104 [US8] Add play function: reorder items, verify keyboard navigation follows new DOM order
+  - **Status**: BLOCKED by T101
 
 ### Implementation for User Story 8
 
-- [ ] T105 [US8] Verify registerItem() and unregisterItem() handle dynamic items correctly in NfsAccordion
-- [ ] T106 [US8] Implement ngOnInit in NfsAccordionItem: call parent.registerItem(this)
-- [ ] T107 [US8] Implement ngOnDestroy in NfsAccordionItem: call parent.unregisterItem(this)
-- [ ] T108 [US8] Add focus management for removed items: if focused item is removed, move focus to safe location (next/previous item)
-- [ ] T109 [US8] Verify ID generation remains unique after add/remove operations
-- [ ] T110 [US8] Add example to quickstart.md showing @for with dynamic array
+**⚠️ API LIMITATION DISCOVERED (2026-01-17)**:
 
-**Checkpoint**: Dynamic content works - items can be added/removed without breaking navigation or ARIA
+The current accordion API uses `input.required<string>()` for `panelId`, which prevents dynamic template creation via `@for` loops. To properly support US8, one of the following API changes is needed:
+
+1. **Make panelId optional** with auto-generation fallback: `readonly panelId = input<string>()` instead of `input.required<string>()`
+2. **Use component-based approach** instead of directive-based for dynamic scenarios
+3. **Provide factory/builder API** for creating accordion items programmatically
+
+Until API is redesigned, dynamic item management should be implemented at the application level by showing/hiding pre-existing items rather than dynamically creating ng-templates.
+
+- [ ] T105 [US8] Verify registerItem() and unregisterItem() handle dynamic items correctly in NfsAccordion
+  - **Status**: BLOCKED - Requires API redesign
+- [ ] T106 [US8] Implement ngOnInit in NfsAccordionItem: call parent.registerItem(this)
+  - **Status**: BLOCKED - Requires API redesign
+- [ ] T107 [US8] Implement ngOnDestroy in NfsAccordionItem: call parent.unregisterItem(this)
+  - **Status**: BLOCKED - Requires API redesign
+- [ ] T108 [US8] Add focus management for removed items: if focused item is removed, move focus to safe location (next/previous item)
+  - **Status**: BLOCKED - Requires API redesign
+- [ ] T109 [US8] Verify ID generation remains unique after add/remove operations
+  - **Status**: BLOCKED - Requires API redesign
+- [ ] T110 [US8] Add example to quickstart.md showing @for with dynamic array
+  - **Status**: BLOCKED - Current API doesn't support @for with nfsAccordionItem directive
+
+**Checkpoint**: Dynamic content API redesign needed - current implementation blocks US8
 
 ---
 
