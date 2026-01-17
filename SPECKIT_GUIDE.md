@@ -31,6 +31,88 @@ Start using slash commands with your AI agent:
    - **Cost-optimized**: `/taskstoissues-gpt-5-mini` (0x cost, 95%+ quality, 10-20s) — GitHub Copilot only
 1. `/speckit.implement` — Execute all tasks and build the feature according to the plan
 
+## Updating Existing Specs (Important)
+
+### `/speckit.specify` Creates NEW Features Only
+
+**`/speckit.specify` is designed for creating NEW feature specifications**, not updating existing ones. When you run it with a change description, it will:
+
+1. Create a **new** `specs/###-feature-slug/` folder
+2. Create a **new** git branch
+3. Generate **fresh** artifacts from scratch
+
+❌ **Wrong**: Using `/speckit.specify` to update FR-106a in an existing spec
+✅ **Correct**: Manually edit `specs/###-feature/spec.md` using your editor or agent
+
+### How to Update Existing Specs
+
+| Change Type                         | Recommended Approach                 |
+| ----------------------------------- | ------------------------------------ |
+| **Fix wording/clarify requirement** | Manual edit with Edit tool           |
+| **Remove a requirement**            | Manual edit, then `/speckit.analyze` |
+| **Simplify a requirement**          | Manual edit, then `/speckit.analyze` |
+| **Add new requirement**             | `/speckit.clarify` OR manual edit    |
+| **Major scope change**              | Consider new feature spec            |
+
+### After Updating a Spec
+
+When you manually edit `spec.md`, downstream artifacts may become stale:
+
+```
+spec.md  ←── You edited this
+   ↓
+plan.md  ←── May reference old requirements
+   ↓
+tasks.md ←── May have tasks for removed requirements
+```
+
+**Recommended workflow after spec edits:**
+
+1. **Run `/speckit.analyze`** — Detects inconsistencies between artifacts
+2. **Review the gap report** — Identify what needs updating
+3. **Choose your fix approach:**
+   - **Minor changes**: Manual edits to plan.md/tasks.md
+   - **Major changes**: Regenerate with `/speckit.plan` → `/speckit.tasks`
+
+### Iterative Workflow (Non-Linear)
+
+Spec Kit is **iterative**, not strictly linear. You CAN go "backwards" when gaps are discovered:
+
+```
+/speckit.specify → /speckit.clarify → /speckit.plan → /speckit.tasks → /speckit.implement
+       ↑                 ↑                  ↑                ↑
+       └─────────────────┴──────────────────┴────────────────┘
+                    (Return when gaps found)
+```
+
+**Key insight**: `/speckit.analyze` is your safety net—it detects when artifacts are out of sync regardless of which direction you're working.
+
+### When to Use Each Command for Updates
+
+| Command            | Creates New? | Updates Existing? | Best For                       |
+| ------------------ | ------------ | ----------------- | ------------------------------ |
+| `/speckit.specify` | ✅ Yes       | ❌ No             | New features only              |
+| `/speckit.clarify` | ❌ No        | ✅ Yes            | Asking questions, filling gaps |
+| `/speckit.plan`    | ❌ No        | ✅ Regenerates    | New architecture needed        |
+| `/speckit.tasks`   | ❌ No        | ✅ Regenerates    | New tasks needed               |
+| `/speckit.analyze` | ❌ No        | ❌ No (read-only) | Detecting inconsistencies      |
+| Manual edit        | ❌ No        | ✅ Yes            | Known, localized changes       |
+
+### Example: Updating a Requirement (FR-106a)
+
+This session demonstrated updating FR-106a (concurrent keyboard/mouse interaction) from "keyboard focus precedence required" to "browser-default behavior":
+
+```bash
+# ❌ WRONG - Creates new feature folder + branch
+/speckit.specify "Update FR-106a to browser-default behavior"
+
+# ✅ CORRECT - Edit existing spec directly
+# 1. Manually edit specs/002-accordion-component/spec.md
+# 2. Update related tasks in tasks.md
+# 3. Update story JSDoc in accordion.stories.ts
+# 4. Run /speckit.analyze to verify consistency
+```
+
 ## Model Selection (Unified)
 
 Use one simple rule: **pick the model based on the job** (reasoning vs. speed vs. long context vs. code-heavy), not based on which product you’re in.
