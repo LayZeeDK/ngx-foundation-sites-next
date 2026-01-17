@@ -113,6 +113,424 @@ This session demonstrated updating FR-106a (concurrent keyboard/mouse interactio
 # 4. Run /speckit.analyze to verify consistency
 ```
 
+## Handling API Redesigns and Technical Constraints
+
+When implementation or testing reveals API design constraints, technical debt, or requirements that conflict with discovered limitations, use Spec Kit commands to systematically address them.
+
+### When API Constraints Surface
+
+API design issues typically emerge through:
+
+1. **Test-driven discovery** — Automated tests reveal timing constraints, typing issues, or runtime errors
+2. **Integration testing** — Components don't compose as expected
+3. **Accessibility auditing** — ARIA requirements conflict with planned API shape
+4. **Performance profiling** — Initial design creates bottlenecks
+5. **Developer feedback** — API is too complex, verbose, or error-prone
+
+### Decision Tree: How to Respond
+
+When you discover an API constraint that blocks a user story or requirement:
+
+```
+┌─ Does the constraint affect multiple features/components?
+│
+├─ YES → Breaking change required
+│   ├─ High impact (public API) → Use full redesign workflow (below)
+│   └─ Low impact (internal API) → Manual fix + /speckit.analyze
+│
+└─ NO → Single feature affected
+    ├─ Can you work around it? → Document workaround, mark as technical debt
+    ├─ Does it block P0/P1 requirements? → Redesign workflow (below)
+    └─ Does it only affect P2/P3? → Defer to future iteration (add to tasks.md as BLOCKED)
+```
+
+### Full Redesign Workflow (Breaking Changes)
+
+Use this workflow when API constraints require breaking changes or major architectural shifts:
+
+#### Step 1: Clarify Design Questions
+
+Use `/clarify` to identify and document design questions raised by the constraint.
+
+**Example scenario**: Template-based component API using `input.required<string>()` prevents dynamic content creation with `@for` loops.
+
+**Run**:
+
+```bash
+/clarify-haiku-4-5
+```
+
+**What to tell the agent**:
+
+```text
+We discovered an API design constraint during testing:
+
+[Describe the constraint with code example]
+
+Current API:
+[Show failing code]
+
+Questions to clarify:
+1. Should we make the input optional with auto-generation?
+2. Should we switch to a different architectural pattern?
+3. Should we provide a factory/builder API?
+4. What's the migration strategy for existing consumers?
+```
+
+**Expected outcome**: The agent asks 3-5 targeted clarification questions. You answer them, and `/clarify` updates `spec.md` with your decisions encoded as new or modified requirements.
+
+#### Step 2: Update Specification
+
+Use `/specify-haiku-4-5` (for new features) OR manual edits (for existing features) to update requirements.
+
+**For existing features** (recommended):
+
+1. Manually edit `specs/###-feature/spec.md` to reflect the new API design
+2. Add a new functional requirement (e.g., FR-107: "API MUST support dynamic item creation")
+3. Update affected user stories with new acceptance criteria
+4. Add migration notes if breaking changes are introduced
+
+**For new features** (creates new spec folder):
+
+```bash
+/specify-haiku-4-5
+```
+
+Then describe the redesigned API requirements.
+
+**Example edit** (`spec.md`):
+
+```markdown
+### FR-107: Dynamic Item Creation Support
+
+**Priority**: P1 (HIGH)
+**Complexity**: Medium
+**Story**: As a developer, I want to dynamically add/remove items at runtime using `@for` loops, so that I can build data-driven UIs.
+
+**Rationale**: Current API uses `input.required<string>()` which requires values at template instantiation time. This conflicts with dynamic template creation via `@for`.
+
+**Acceptance Criteria**:
+
+- AC107.1: `panelId` input MUST be optional with auto-generation fallback
+- AC107.2: Auto-generated IDs MUST be stable across re-renders
+- AC107.3: API MUST work with `@for`, `@if`, and `ngTemplateOutlet`
+
+**Migration**:
+
+- BREAKING: `panelId` changes from `input.required<string>()` to `input<string>()`
+- Existing consumers: No changes needed (explicit IDs still work)
+```
+
+#### Step 3: Create Implementation Plan
+
+Use `/speckit.plan` to create or regenerate the implementation plan reflecting the redesigned API.
+
+**Run**:
+
+```bash
+/speckit.plan
+```
+
+**What to tell the agent**:
+
+```text
+Update plan.md to address the new FR-107 requirement:
+
+1. Analyze the API redesign impact on existing components
+2. Design the auto-ID generation strategy
+3. Plan migration steps for breaking changes
+4. Update architecture diagrams if needed
+5. Add testing strategy for dynamic scenarios
+```
+
+**Expected outcome**: `plan.md` updated with:
+
+- Architecture section describing the new API pattern
+- Implementation approach for auto-ID generation
+- Breaking change analysis
+- Migration strategy
+- Testing approach
+
+#### Step 4: Generate Tasks
+
+Use `/tasks-haiku-4-5` to regenerate the task list incorporating the API redesign work.
+
+**Run**:
+
+```bash
+/tasks-haiku-4-5
+```
+
+**Expected outcome**: `tasks.md` updated with:
+
+- New tasks for API redesign (e.g., T150-T155: "Implement optional panelId with auto-generation")
+- Updated tasks that reference the changed API
+- Tasks marked as BLOCKED if they depend on the redesign
+- Migration tasks if breaking changes require them
+
+#### Step 5: Verify Consistency
+
+Use `/speckit.analyze` (or `/analyze-report-gaps-haiku-4-5`) to verify all artifacts are aligned.
+
+**Run**:
+
+```bash
+/analyze-report-gaps-haiku-4-5
+```
+
+**Expected outcome**: Gap analysis report showing:
+
+- Specification coverage of the new requirement (FR-107)
+- Plan addresses the technical constraint
+- Tasks exist for all implementation steps
+- No orphaned references to the old API
+
+#### Step 6: Implement Changes
+
+Use `/speckit.implement` to execute the redesigned API.
+
+**Run**:
+
+```bash
+/speckit.implement
+```
+
+**What to tell the agent**:
+
+```text
+Implement the API redesign tasks in order:
+
+1. Execute tasks T150-T155 (API redesign)
+2. Run tests after each change (stop on failure)
+3. Update affected stories and examples
+4. Run full test suite before marking complete
+```
+
+**Expected outcome**:
+
+- API redesign implemented
+- Tests passing
+- Examples/stories updated
+- Migration guide written (if breaking changes)
+
+### Non-Breaking Workaround Workflow
+
+When the constraint can be worked around without breaking changes, use this lighter workflow:
+
+#### Option A: Document Limitation + Provide Workaround
+
+1. **Update spec.md** — Add a "Known Limitations" section to the affected user story:
+
+   ```markdown
+   ### US8: Dynamic Item Management
+
+   **Known Limitations**:
+
+   - Current API does not support `@for` loops due to `input.required<string>()` constraint
+   - **Workaround**: Manage items at application level by showing/hiding pre-existing templates
+   - **Future**: FR-107 will address this in v2.0
+   ```
+
+2. **Update tasks.md** — Mark affected tasks as BLOCKED with workaround instructions:
+
+   ```markdown
+   #### T101: Add Dynamic Content Story [BLOCKED]
+
+   **Status**: BLOCKED (API limitation)
+   **Reason**: `input.required<string>()` prevents dynamic template creation
+   **Workaround**: Use visibility toggling instead of dynamic creation
+   **Tracked**: FR-107 in roadmap
+   ```
+
+3. **Update stories** — Add comment blocks explaining the limitation:
+
+   ```typescript
+   // NOTE: Dynamic item management story removed due to API limitation.
+   // The current API uses input.required<string>() which doesn't support
+   // dynamic template creation via @for loops.
+   //
+   // Workaround: Implement at application level by toggling visibility
+   // of pre-existing items instead of dynamically creating templates.
+   //
+   // Tracked: FR-107 for v2.0 API redesign
+   ```
+
+4. **Run `/speckit.analyze`** — Verify documentation consistency
+
+#### Option B: Defer to Technical Debt Backlog
+
+1. **Create a technical debt item** in `tasks.md`:
+
+   ```markdown
+   ### Technical Debt
+
+   #### TD-001: Redesign API for Dynamic Content Support [DEFERRED]
+
+   **Priority**: P2
+   **Estimated Effort**: 4 hours
+   **Reason Deferred**: Workaround sufficient for current use cases
+   **Trigger**: When ≥3 consumers request dynamic item management
+
+   **Implementation Notes**:
+
+   - Change `panelId` to `input<string>()` with auto-generation
+   - Add migration guide for breaking change
+   - Update all examples and tests
+   ```
+
+2. **Mark affected user stories** with `[PARTIAL]` status:
+
+   ```markdown
+   ### US8: Dynamic Item Management [PARTIAL]
+
+   **Implemented**: Manual item management via pre-defined templates
+   **Not Implemented**: Dynamic template creation with @for (see TD-001)
+   ```
+
+3. **Update gap-analysis-report.md** if one exists:
+
+   ```markdown
+   ## Known Limitations (Accepted Technical Debt)
+
+   ### L01: Dynamic Template Creation Not Supported
+
+   **Severity**: LOW
+   **Status**: ACCEPTED (workaround documented)
+   **User Story**: US8 (partial implementation)
+   **Tracking**: TD-001 in tasks.md
+
+   **Description**: API design prevents `@for`-based dynamic item creation.
+
+   **Workaround**: Application-level visibility toggling of pre-existing items.
+   ```
+
+### When to Use Each Approach
+
+| Scenario                           | Approach                         | Why                                      |
+| ---------------------------------- | -------------------------------- | ---------------------------------------- |
+| **Blocks P0/P1 requirements**      | Full redesign workflow           | Core functionality must work             |
+| **Affects multiple features**      | Full redesign workflow           | Technical debt compounds across codebase |
+| **Public API breaking change**     | Full redesign workflow           | Requires versioning + migration strategy |
+| **Blocks only P2/P3 requirements** | Document limitation + workaround | Can defer to future iteration            |
+| **Affects single feature**         | Document limitation + workaround | Minimal impact, workaround sufficient    |
+| **Complex refactor required**      | Defer to technical debt backlog  | Needs dedicated planning cycle           |
+
+### Migration Strategies for Breaking Changes
+
+When API redesigns require breaking changes, include these elements in your plan:
+
+#### 1. Semantic Versioning
+
+- **Major version bump** (e.g., v1.2.3 → v2.0.0) for breaking changes
+- **Deprecation period** for removals (1-2 minor versions)
+- **Changelog** documenting BREAKING CHANGE
+
+**Example CHANGELOG.md entry**:
+
+```markdown
+## [2.0.0] - 2026-01-20
+
+### BREAKING CHANGES
+
+- **accordion**: `panelId` input changed from required to optional
+  - **Migration**: No code changes needed if you were passing explicit IDs
+  - **Benefit**: Enables dynamic template creation with @for loops
+  - **Before**: `<ng-template nfsAccordionItem panelId="item-1">`
+  - **After**: `<ng-template nfsAccordionItem panelId="item-1">` (same, but panelId now optional)
+```
+
+#### 2. Deprecation Warnings
+
+For removals, add deprecation warnings in the current version:
+
+```typescript
+/**
+ * @deprecated Use `multiExpand` instead. Will be removed in v3.0.
+ */
+readonly multiExpandable = input<boolean>(false);
+```
+
+#### 3. Codemods / Migration Scripts
+
+For complex migrations, provide automated transformation scripts:
+
+```typescript
+// migration/v1-to-v2.ts
+export function migrateAccordionAPI(code: string): string {
+  return code.replace(/multiExpandable=/g, 'multiExpand=').replace(/\[multiExpandable\]=/g, '[multiExpand]=');
+}
+```
+
+#### 4. Migration Guide
+
+Include step-by-step instructions in `specs/###-feature/MIGRATION.md`:
+
+```markdown
+# Migration Guide: Accordion v1 → v2
+
+## Breaking Changes
+
+### 1. `multiExpandable` → `multiExpand`
+
+**Change**: Input renamed for Foundation naming consistency.
+
+**Before**:
+\`\`\`html
+<nfs-accordion [multiExpandable]="true">
+\`\`\`
+
+**After**:
+\`\`\`html
+<nfs-accordion [multiExpand]="true">
+\`\`\`
+
+**Automated Migration**:
+\`\`\`bash
+find . -name "\*.html" -exec sed -i 's/multiExpandable/multiExpand/g' {} +
+\`\`\`
+```
+
+### Example: Real-World API Constraint Resolution
+
+This example shows how the accordion component's `input.required<string>()` constraint was handled:
+
+**Discovery**: Test-driven discovery during Storybook story implementation (User Story 8: Dynamic Item Management)
+
+**Constraint**: `@for` loops create templates dynamically, but `input.required<string>()` requires values at instantiation time → NG0950 error
+
+**Chosen Approach**: Document limitation + workaround (deferred redesign)
+
+**Reasoning**:
+
+- Only affected P3 feature (Dynamic Item Management)
+- Workaround available (visibility toggling)
+- Breaking change would impact all consumers
+- No other features blocked by constraint
+
+**Actions Taken**:
+
+1. Removed failing `DynamicContent` story
+2. Added comment block explaining limitation and workaround
+3. Marked tasks T101-T110 as BLOCKED in tasks.md
+4. Documented three possible redesign approaches
+5. Ran `/analyze-report-gaps-haiku-4-5` to verify consistency
+6. All tests passing (46/46) with limitation documented
+
+**Future Path**: When ≥3 consumers request dynamic item management, run full redesign workflow with FR-107.
+
+### Summary: Command Usage for API Redesigns
+
+| Phase               | Command                             | Purpose                                             |
+| ------------------- | ----------------------------------- | --------------------------------------------------- |
+| **Discovery**       | Test execution, `/speckit.analyze`  | Identify constraint through testing or gap analysis |
+| **Clarification**   | `/clarify-haiku-4-5`                | Ask design questions, document decisions            |
+| **Specification**   | Manual edit OR `/specify-haiku-4-5` | Update requirements with redesigned API             |
+| **Planning**        | `/speckit.plan`                     | Create implementation strategy for redesign         |
+| **Task Generation** | `/tasks-haiku-4-5`                  | Generate actionable tasks for API changes           |
+| **Verification**    | `/analyze-report-gaps-haiku-4-5`    | Verify artifact consistency before implementing     |
+| **Implementation**  | `/speckit.implement`                | Execute redesign tasks systematically               |
+| **Validation**      | Test execution, `/speckit.analyze`  | Verify redesign resolves original constraint        |
+
 ## Model Selection (Unified)
 
 Use one simple rule: **pick the model based on the job** (reasoning vs. speed vs. long context vs. code-heavy), not based on which product you’re in.
