@@ -59,26 +59,19 @@
       [id]="item.panelId()"
       [attr.inert]="!item.expanded() ? '' : null"
     >
-      <!--
-        Wrapper is always present for CSS Grid animation.
-        Item template renders eager content + comment nodes for nested ng-templates.
-        Lazy content is rendered separately via @defer.
-      -->
-      @if (item.expanded()) {
-      <div class="accordion-content-inner">
-        <!-- Render item template (eager content + invisible ng-template comments) -->
-        <ng-container
-          [ngTemplateOutlet]="item.templateRef"
-          [ngTemplateOutletInjector]="getItemInjector(item)"
-        />
-
-        <!-- Render lazy content when expanded -->
-        @if (item.lazyContentDef(); as lazyDef) { @defer (when item.expanded())
-        {
-        <ng-container [ngTemplateOutlet]="lazyDef.templateRef" />
-        } }
-      </div>
-      }
+      <!-- No [preserveContent] binding - defaults to false -->
+      <ng-template ngAccordionContent>
+        <div
+          class="accordion-content-inner"
+          animate.enter="nfs-accordion-enter"
+          animate.leave="nfs-accordion-leave"
+        >
+          <ng-container
+            [ngTemplateOutlet]="item.templateRef"
+            [ngTemplateOutletInjector]="getItemInjector(item)"
+          />
+        </div>
+      </ng-template>
     </div>
   </li>
   }

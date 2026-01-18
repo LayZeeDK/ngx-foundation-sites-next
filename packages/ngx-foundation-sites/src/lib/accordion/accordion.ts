@@ -22,6 +22,7 @@ import {
   AccordionGroup,
   AccordionTrigger,
   AccordionPanel,
+  AccordionContent,
 } from '@angular/aria/accordion';
 import { NfsAccordionItemDef } from './accordion-item-def';
 import { AccordionDeepLinkService } from './accordion-deep-link.service';
@@ -78,7 +79,13 @@ export interface NfsAccordionPanelEvent {
   encapsulation: ViewEncapsulation.None,
   host: {},
   providers: [{ provide: nfsAccordionToken, useExisting: NfsAccordion }],
-  imports: [AccordionGroup, AccordionTrigger, AccordionPanel, NgTemplateOutlet],
+  imports: [
+    AccordionGroup,
+    AccordionTrigger,
+    AccordionPanel,
+    AccordionContent,
+    NgTemplateOutlet,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NfsAccordion implements AfterContentInit {
