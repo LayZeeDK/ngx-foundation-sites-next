@@ -284,20 +284,23 @@ toggle(): void {
 
 ---
 
-### Phase 3: Architectural Decision (BLOCKED)
+### Phase 3: Architectural Decision (UNBLOCKED)
 
-**Waiting on:** https://github.com/angular/components/pull/32591
+**Update (January 2026):** PR [#32591](https://github.com/angular/components/pull/32591) merged January 2, 2026. Angular ARIA now exports required symbols.
 
-This PR resolves the Angular ARIA DI issue that prevents content-projected elements from finding their parent accordion group. Once merged and released, we can evaluate:
+The template-directive architecture is working successfully with Angular ARIA's `AccordionContent` directive and
+`preserveContent` support. Phase 3 architectural decision can proceed if needed, but the current approach meets all requirements.
 
-1. Does Angular ARIA work with content projection out of the box?
-2. Is the template-based API acceptable to library consumers?
-3. What is the migration cost vs. benefit?
+**Evaluation:**
 
-**Options after PR merges:**
+1. ✅ Angular ARIA works with the current template-based approach
+2. ✅ Template-based API is functional and meets accessibility requirements
+3. ⚠️ Migration cost vs. benefit needs assessment if component-based API is desired
 
-- **Option A:** Keep template-based approach (current)
-- **Option B:** Migrate to component-based content projection (matches API design)
+**Options:**
+
+- **Option A:** Keep template-based approach (current, proven stable)
+- **Option B:** Migrate to component-based content projection (requires US8 resolution for dynamic items)
 
 ---
 

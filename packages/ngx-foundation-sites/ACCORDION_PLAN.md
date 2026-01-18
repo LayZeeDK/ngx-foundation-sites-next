@@ -26,7 +26,7 @@ This plan implements the Foundation for Sites Accordion component using Angular 
 | [Phase 7](./docs/accordion/phase-7-feature-parity.md)        | Feature Parity & Theming              | ✅       | Complete Foundation parity, Sass variable theming        |
 | [Phase 8](./docs/accordion/phase-8-private-fields.md)        | JS-Native Private Fields              | ✅       | Migrate to `#` private fields                            |
 | [Phase 9](./docs/accordion/phase-9-zoneless-config.md)       | Zoneless Angular Configuration        | ✅       | Configure zoneless change detection                      |
-| [Phase 10](./docs/accordion/phase-10-native-animations.md)   | Native Animations                     | Pending  | Restore `ngAccordionContent` with animations             |
+| [Phase 10](./docs/accordion/phase-10-native-animations.md)   | Native Animations                     | ✅       | Restore `ngAccordionContent` with animations             |
 | [Phase 11](./docs/accordion/phase-11-styles-architecture.md) | Styles Architecture                   | ✅       | Separate global and component-scoped styles              |
 | [Phase 12](./docs/accordion/phase-12-template-api.md)        | Template-Based API                    | ✅       | Template directives replacing structural directives      |
 
@@ -81,7 +81,7 @@ This plan implements the Foundation for Sites Accordion component using Angular 
 8. **Phase 7** - Feature Parity & Theming Enhancements ✅
 9. **Phase 8** - JS-Native Private Fields Migration ✅
 10. **Phase 9** - Zoneless Angular Configuration ✅
-11. **Phase 10** - Native Animations — Pending (blocked by Angular ARIA PR)
+11. **Phase 10** - Native Animations ✅
 12. **Phase 11** - Styles Architecture Refactoring ✅
 13. **Phase 12** - Template-Based API ✅
 

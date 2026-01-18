@@ -107,16 +107,19 @@ Update template:
 <ul ngAccordionGroup ... [softDisabled]="softDisabled()"></ul>
 ```
 
-### 7.3.2 Add `preserveContent` Input to `NfsAccordionItem` — NOT IMPLEMENTED
+### 7.3.2 Add `preserveContent` Input to `NfsAccordionItem` — ✅ UNBLOCKED
 
-**Discovery:** During implementation, TypeScript compilation revealed that `preserveContent` is inherited from `DeferredContentAware`, which is an **internal class** not exported from `@angular/aria/accordion`. Attempting to bind to this property results in:
+**Discovery:** During implementation, TypeScript compilation revealed that `preserveContent` is inherited from `DeferredContentAware`, which was an **internal class** not exported from `@angular/aria/accordion`. This resulted in:
 
 ```
 NG3004: Unable to import symbol DeferredContentAware.
 The symbol is not exported from @angular/aria/accordion
 ```
 
-**Decision:** This feature cannot be exposed as it's not part of Angular ARIA's public API. The default behavior (content preserved after first expansion) is maintained.
+**Update (January 2026):** PR #32591 merged, exposing `DeferredContentAware` from Angular ARIA's public API.
+The accordion now uses Angular ARIA's `AccordionContent` directive with `preserveContent=false` (default) for proper
+content removal and animation lifecycle. Content is removed from the DOM when panels collapse, and `animate.enter`/`animate.leave`
+animations trigger on every expand/collapse cycle.
 
 ### 7.3.3 Expose `expandAll()` and `collapseAll()` Methods ✅
 

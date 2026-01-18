@@ -1,6 +1,9 @@
-# Phase 10: Revert to `ngAccordionContent` + Native Animations (Pending)
+# Phase 10: Revert to `ngAccordionContent` + Native Animations (✅ Completed)
 
-> **Status:** Blocked — Waiting for [angular/components#32591](https://github.com/angular/components/pull/32591) to be merged.
+> **Status:** ✅ Completed (January 2026)
+>
+> PR [angular/components#32591](https://github.com/angular/components/pull/32591) merged January 2, 2026.
+> Available in @angular/aria 21.0.6+. Implemented with AccordionContent directive and preserveContent=false (default).
 
 **Goal:** Restore the original implementation using Angular ARIA's `AccordionContent` directive with `animate.enter`/`animate.leave` for smoother animations.
 
