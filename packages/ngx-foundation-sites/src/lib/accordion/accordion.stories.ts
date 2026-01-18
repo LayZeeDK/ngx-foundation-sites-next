@@ -1,9 +1,13 @@
-import { ChangeDetectionStrategy, Component, viewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  viewChild,
+  ViewEncapsulation,
+} from '@angular/core';
 import { moduleMetadata, type Meta, type StoryObj } from '@storybook/angular';
 import { argsToLiteralTemplate } from '../util-storybook/args-to-literal-template';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 import { NfsAccordion } from './accordion';
-import { NfsAccordionContentDef } from './accordion-content';
 import { NfsAccordionHeaderDef } from './accordion-header-def';
 import { NfsAccordionItemDef } from './accordion-item-def';
 
@@ -12,14 +16,11 @@ import { NfsAccordionItemDef } from './accordion-item-def';
  * Using a proper component ensures template references work correctly in Storybook.
  */
 @Component({
-  selector: 'api-methods-test-wrapper',
+  selector: 'nfs-api-methods-test-wrapper',
+  exportAs: 'nfsApiMethodsTestWrapper',
+  encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    NfsAccordion,
-    NfsAccordionItemDef,
-    NfsAccordionHeaderDef,
-    NfsAccordionContentDef,
-  ],
+  imports: [NfsAccordion, NfsAccordionItemDef, NfsAccordionHeaderDef],
   template: `
     <main>
       <p class="text-secondary margin-bottom-1">
@@ -81,18 +82,16 @@ import { NfsAccordionItemDef } from './accordion-item-def';
       <nfs-accordion [multiExpand]="true" [allowAllClosed]="true">
         <ng-template nfsAccordionItem panelId="api-panel-1">
           <ng-template nfsAccordionHeader>Panel 1</ng-template>
-          <ng-template nfsAccordionContent>
-            <p>
-              This panel can be controlled via the buttons above using down(),
-              up(), or toggle().
-            </p>
-          </ng-template>
+
+          <p>
+            This panel can be controlled via the buttons above using down(),
+            up(), or toggle().
+          </p>
         </ng-template>
         <ng-template nfsAccordionItem panelId="api-panel-2">
           <ng-template nfsAccordionHeader>Panel 2</ng-template>
-          <ng-template nfsAccordionContent>
-            <p>Content for panel 2.</p>
-          </ng-template>
+
+          <p>Content for panel 2.</p>
         </ng-template>
       </nfs-accordion>
     </main>
@@ -123,15 +122,10 @@ const meta: Meta<NfsAccordion> = {
   subcomponents: [
     // NfsAccordionItemDef,
     // NfsAccordionHeaderDef,
-    // NfsAccordionContentDef,
   ],
   decorators: [
     moduleMetadata({
-      imports: [
-        NfsAccordionItemDef,
-        NfsAccordionHeaderDef,
-        NfsAccordionContentDef,
-      ],
+      imports: [NfsAccordionItemDef, NfsAccordionHeaderDef],
     }),
   ],
   tags: ['autodocs'],
@@ -154,21 +148,18 @@ const meta: Meta<NfsAccordion> = {
       <nfs-accordion ${argsToLiteralTemplate(args)}>
         <ng-template nfsAccordionItem panelId="panel-1">
           <ng-template nfsAccordionHeader>Accordion 1</ng-template>
-          <ng-template nfsAccordionContent>
+          
             <p>Panel 1 content. Lorem ipsum dolor sit amet.</p>
-          </ng-template>
         </ng-template>
         <ng-template nfsAccordionItem panelId="panel-2">
           <ng-template nfsAccordionHeader>Accordion 2</ng-template>
-          <ng-template nfsAccordionContent>
+          
             <p>Panel 2 content. Suspendisse eu ligula.</p>
-          </ng-template>
         </ng-template>
         <ng-template nfsAccordionItem panelId="panel-3">
           <ng-template nfsAccordionHeader>Accordion 3</ng-template>
-          <ng-template nfsAccordionContent>
+          
             <p>Panel 3 content. Nullam sed est.</p>
-          </ng-template>
         </ng-template>
       </nfs-accordion>
     `,
@@ -185,21 +176,18 @@ export const Default: Story = {
       <nfs-accordion ${argsToLiteralTemplate(args)}>
         <ng-template nfsAccordionItem panelId="panel-1">
           <ng-template nfsAccordionHeader>Accordion 1</ng-template>
-          <ng-template nfsAccordionContent>
+          
             <p>Panel 1 content.</p>
-          </ng-template>
         </ng-template>
         <ng-template nfsAccordionItem panelId="panel-2">
           <ng-template nfsAccordionHeader>Accordion 2</ng-template>
-          <ng-template nfsAccordionContent>
+          
             <p>Panel 2 content.</p>
-          </ng-template>
         </ng-template>
         <ng-template nfsAccordionItem panelId="panel-3">
           <ng-template nfsAccordionHeader>Accordion 3</ng-template>
-          <ng-template nfsAccordionContent>
+          
             <p>Panel 3 content.</p>
-          </ng-template>
         </ng-template>
       </nfs-accordion>
     `,
@@ -290,15 +278,13 @@ export const Disabled: Story = {
       <nfs-accordion [disabled]="${disabled}" ${argsToLiteralTemplate(args)}>
         <ng-template nfsAccordionItem panelId="panel-1" [disabled]="true">
           <ng-template nfsAccordionHeader>Disabled Accordion</ng-template>
-          <ng-template nfsAccordionContent>
+          
             <p>This panel cannot be opened.</p>
-          </ng-template>
         </ng-template>
         <ng-template nfsAccordionItem panelId="panel-2">
           <ng-template nfsAccordionHeader>Also Disabled (via group)</ng-template>
-          <ng-template nfsAccordionContent>
+          
             <p>This panel cannot be opened either.</p>
-          </ng-template>
         </ng-template>
       </nfs-accordion>
     `,
@@ -340,15 +326,13 @@ export const InitiallyExpanded: Story = {
       <nfs-accordion ${argsToLiteralTemplate(args)}>
         <ng-template nfsAccordionItem panelId="panel-1" [expanded]="true">
           <ng-template nfsAccordionHeader>Initially Open</ng-template>
-          <ng-template nfsAccordionContent>
+          
             <p>This panel starts expanded.</p>
-          </ng-template>
         </ng-template>
         <ng-template nfsAccordionItem panelId="panel-2">
           <ng-template nfsAccordionHeader>Initially Closed</ng-template>
-          <ng-template nfsAccordionContent>
+          
             <p>This panel starts collapsed.</p>
-          </ng-template>
         </ng-template>
       </nfs-accordion>
     `,
@@ -584,21 +568,18 @@ export const RequireOneOpen: Story = {
       <nfs-accordion ${argsToLiteralTemplate(args)}>
         <ng-template nfsAccordionItem panelId="panel-1">
           <ng-template nfsAccordionHeader>Panel 1</ng-template>
-          <ng-template nfsAccordionContent>
+          
             <p>Panel 1 content.</p>
-          </ng-template>
         </ng-template>
         <ng-template nfsAccordionItem panelId="panel-2">
           <ng-template nfsAccordionHeader>Panel 2</ng-template>
-          <ng-template nfsAccordionContent>
+          
             <p>Panel 2 content.</p>
-          </ng-template>
         </ng-template>
         <ng-template nfsAccordionItem panelId="panel-3">
           <ng-template nfsAccordionHeader>Panel 3</ng-template>
-          <ng-template nfsAccordionContent>
+          
             <p>Panel 3 content.</p>
-          </ng-template>
         </ng-template>
       </nfs-accordion>
     `,
@@ -647,21 +628,18 @@ export const Accessibility: Story = {
       <nfs-accordion ${argsToLiteralTemplate(args)}>
         <ng-template nfsAccordionItem panelId="panel-1">
           <ng-template nfsAccordionHeader>Accordion 1</ng-template>
-          <ng-template nfsAccordionContent>
+          
             <p>Panel 1 content. Lorem ipsum dolor sit amet.</p>
-          </ng-template>
         </ng-template>
         <ng-template nfsAccordionItem panelId="panel-2">
           <ng-template nfsAccordionHeader>Accordion 2</ng-template>
-          <ng-template nfsAccordionContent>
+          
             <p>Panel 2 content. Suspendisse eu ligula.</p>
-          </ng-template>
         </ng-template>
         <ng-template nfsAccordionItem panelId="panel-3">
           <ng-template nfsAccordionHeader>Accordion 3</ng-template>
-          <ng-template nfsAccordionContent>
+          
             <p>Panel 3 content. Nullam sed est.</p>
-          </ng-template>
         </ng-template>
       </nfs-accordion>
     `,
@@ -832,21 +810,18 @@ export const ScreenReader: Story = {
       <nfs-accordion ${argsToLiteralTemplate(args)}>
         <ng-template nfsAccordionItem panelId="panel-1">
           <ng-template nfsAccordionHeader>Accordion 1</ng-template>
-          <ng-template nfsAccordionContent>
+          
             <p>Panel 1 content. Lorem ipsum dolor sit amet.</p>
-          </ng-template>
         </ng-template>
         <ng-template nfsAccordionItem panelId="panel-2">
           <ng-template nfsAccordionHeader>Accordion 2</ng-template>
-          <ng-template nfsAccordionContent>
+          
             <p>Panel 2 content. Suspendisse eu ligula.</p>
-          </ng-template>
         </ng-template>
         <ng-template nfsAccordionItem panelId="panel-3">
           <ng-template nfsAccordionHeader>Accordion 3</ng-template>
-          <ng-template nfsAccordionContent>
+          
             <p>Panel 3 content. Nullam sed est.</p>
-          </ng-template>
         </ng-template>
       </nfs-accordion>
     `,
@@ -896,15 +871,13 @@ export const ScreenReaderEmptyContent: Story = {
       <nfs-accordion ${argsToLiteralTemplate(args)}>
         <ng-template nfsAccordionItem panelId="panel-1">
           <ng-template nfsAccordionHeader>Accordion 1</ng-template>
-          <ng-template nfsAccordionContent>
+          
             <!-- Empty content -->
-          </ng-template>
         </ng-template>
         <ng-template nfsAccordionItem panelId="panel-2">
           <ng-template nfsAccordionHeader>Accordion 2</ng-template>
-          <ng-template nfsAccordionContent>
+          
             <p>Panel 2 content.</p>
-          </ng-template>
         </ng-template>
       </nfs-accordion>
     `,
@@ -949,15 +922,13 @@ export const ScreenReaderAnnounce: Story = {
       <nfs-accordion ${argsToLiteralTemplate(args)}>
         <ng-template nfsAccordionItem panelId="panel-1">
           <ng-template nfsAccordionHeader>Accordion 1</ng-template>
-          <ng-template nfsAccordionContent>
+          
             <p>Panel 1 content.</p>
-          </ng-template>
         </ng-template>
         <ng-template nfsAccordionItem panelId="panel-2">
           <ng-template nfsAccordionHeader>Accordion 2</ng-template>
-          <ng-template nfsAccordionContent>
+          
             <p>Panel 2 content.</p>
-          </ng-template>
         </ng-template>
       </nfs-accordion>
     `,
@@ -1000,15 +971,13 @@ export const ScreenReaderUniqueIds: Story = {
       <nfs-accordion ${argsToLiteralTemplate(args)}>
         <ng-template nfsAccordionItem panelId="unique-panel-1">
           <ng-template nfsAccordionHeader>Panel One</ng-template>
-          <ng-template nfsAccordionContent>
+          
             <p>Content one.</p>
-          </ng-template>
         </ng-template>
         <ng-template nfsAccordionItem panelId="unique-panel-2">
           <ng-template nfsAccordionHeader>Panel Two</ng-template>
-          <ng-template nfsAccordionContent>
+          
             <p>Content two.</p>
-          </ng-template>
         </ng-template>
       </nfs-accordion>
     `,
@@ -1053,21 +1022,18 @@ export const SoftDisabled: Story = {
       <nfs-accordion ${argsToLiteralTemplate(args)}>
         <ng-template nfsAccordionItem panelId="panel-1">
           <ng-template nfsAccordionHeader>Enabled 1</ng-template>
-          <ng-template nfsAccordionContent>
+          
             <p>Panel 1 content.</p>
-          </ng-template>
         </ng-template>
         <ng-template nfsAccordionItem panelId="panel-2" [disabled]="true">
           <ng-template nfsAccordionHeader>Disabled (skipped)</ng-template>
-          <ng-template nfsAccordionContent>
+          
             <p>Panel 2 content (disabled).</p>
-          </ng-template>
         </ng-template>
         <ng-template nfsAccordionItem panelId="panel-3">
           <ng-template nfsAccordionHeader>Enabled 2</ng-template>
-          <ng-template nfsAccordionContent>
+          
             <p>Panel 3 content.</p>
-          </ng-template>
         </ng-template>
       </nfs-accordion>
     `,
@@ -1136,19 +1102,19 @@ export const ExpandCollapseAll: Story = {
         >
           <ng-template nfsAccordionItem panelId="panel-1">
             <ng-template nfsAccordionHeader>Panel 1</ng-template>
-            <ng-template nfsAccordionContent>
+            
               <p>Content for panel 1.</p>
             </ng-template>
           </ng-template>
           <ng-template nfsAccordionItem panelId="panel-2">
             <ng-template nfsAccordionHeader>Panel 2</ng-template>
-            <ng-template nfsAccordionContent>
+            
               <p>Content for panel 2.</p>
             </ng-template>
           </ng-template>
           <ng-template nfsAccordionItem panelId="panel-3">
             <ng-template nfsAccordionHeader>Panel 3</ng-template>
-            <ng-template nfsAccordionContent>
+            
               <p>Content for panel 3.</p>
             </ng-template>
           </ng-template>
@@ -1202,21 +1168,18 @@ export const FocusManagementWithDisabled: Story = {
       <nfs-accordion ${argsToLiteralTemplate(args)}>
         <ng-template nfsAccordionItem panelId="panel-1">
           <ng-template nfsAccordionHeader>Enabled 1</ng-template>
-          <ng-template nfsAccordionContent>
+          
             <p>Panel 1 content.</p>
-          </ng-template>
         </ng-template>
         <ng-template nfsAccordionItem panelId="panel-2" [disabled]="true">
           <ng-template nfsAccordionHeader>Disabled</ng-template>
-          <ng-template nfsAccordionContent>
+          
             <p>Panel 2 content (disabled).</p>
-          </ng-template>
         </ng-template>
         <ng-template nfsAccordionItem panelId="panel-3">
           <ng-template nfsAccordionHeader>Enabled 2</ng-template>
-          <ng-template nfsAccordionContent>
+          
             <p>Panel 3 content.</p>
-          </ng-template>
         </ng-template>
       </nfs-accordion>
     `,
@@ -1300,19 +1263,19 @@ export const RightToLeft: Story = {
         <nfs-accordion ${argsToLiteralTemplate(args)}>
           <ng-template nfsAccordionItem panelId="panel-1">
             <ng-template nfsAccordionHeader>العنصر الأول</ng-template>
-            <ng-template nfsAccordionContent>
+            
               <p>محتوى اللوحة الأولى. هذا نص تجريبي.</p>
             </ng-template>
           </ng-template>
           <ng-template nfsAccordionItem panelId="panel-2">
             <ng-template nfsAccordionHeader>العنصر الثاني</ng-template>
-            <ng-template nfsAccordionContent>
+            
               <p>محتوى اللوحة الثانية.</p>
             </ng-template>
           </ng-template>
           <ng-template nfsAccordionItem panelId="panel-3">
             <ng-template nfsAccordionHeader>العنصر الثالث</ng-template>
-            <ng-template nfsAccordionContent>
+            
               <p>محتوى اللوحة الثالثة.</p>
             </ng-template>
           </ng-template>
@@ -1405,19 +1368,17 @@ export const EagerVsLazyContent: Story = {
         </ng-template>
         <ng-template nfsAccordionItem panelId="panel-2">
           <ng-template nfsAccordionHeader>Lazy Content Example</ng-template>
-          <ng-template nfsAccordionContent>
+          
             <!-- This content renders only when panel is expanded -->
             <p class="text-primary">This paragraph is lazy content - rendered when expanded!</p>
-          </ng-template>
         </ng-template>
         <ng-template nfsAccordionItem panelId="panel-3">
           <ng-template nfsAccordionHeader>Mixed Content Example</ng-template>
           <!-- Eager content -->
           <p class="text-success">Eager: Always visible in DOM</p>
-          <ng-template nfsAccordionContent>
+          
             <!-- Lazy content -->
             <p class="text-primary">Lazy: Only visible when expanded</p>
-          </ng-template>
         </ng-template>
       </nfs-accordion>
     `,
@@ -1525,19 +1486,19 @@ export const TitleHeadingLevel: Story = {
         <nfs-accordion ${argsToLiteralTemplate(args)}>
           <ng-template nfsAccordionItem panelId="panel-1">
             <ng-template nfsAccordionHeader>Section 1 (H2)</ng-template>
-            <ng-template nfsAccordionContent>
+            
               <p>Content for section 1. Screen readers will announce this as a heading level 2.</p>
             </ng-template>
           </ng-template>
           <ng-template nfsAccordionItem panelId="panel-2">
             <ng-template nfsAccordionHeader>Section 2 (H2)</ng-template>
-            <ng-template nfsAccordionContent>
+            
               <p>Content for section 2. Users can navigate here using the H key.</p>
             </ng-template>
           </ng-template>
           <ng-template nfsAccordionItem panelId="panel-3">
             <ng-template nfsAccordionHeader>Section 3 (H2)</ng-template>
-            <ng-template nfsAccordionContent>
+            
               <p>Content for section 3.</p>
             </ng-template>
           </ng-template>
@@ -1737,20 +1698,20 @@ export const FoundationApiEvents: Story = {
         >
           <ng-template nfsAccordionItem panelId="events-panel-1">
             <ng-template nfsAccordionHeader>Panel 1</ng-template>
-            <ng-template nfsAccordionContent>
+            
               <p>Click this panel's header to see (down) event when opening.</p>
               <p>Click another panel to see (up) event when this closes.</p>
             </ng-template>
           </ng-template>
           <ng-template nfsAccordionItem panelId="events-panel-2">
             <ng-template nfsAccordionHeader>Panel 2</ng-template>
-            <ng-template nfsAccordionContent>
+            
               <p>Content for panel 2.</p>
             </ng-template>
           </ng-template>
           <ng-template nfsAccordionItem panelId="events-panel-3">
             <ng-template nfsAccordionHeader>Panel 3</ng-template>
-            <ng-template nfsAccordionContent>
+            
               <p>Content for panel 3.</p>
             </ng-template>
           </ng-template>
@@ -1816,15 +1777,13 @@ export const LiveRegionAnnouncements: Story = {
       <nfs-accordion ${argsToLiteralTemplate(args)}>
         <ng-template nfsAccordionItem panelId="panel-1">
           <ng-template nfsAccordionHeader>Section 1</ng-template>
-          <ng-template nfsAccordionContent>
+          
             <p>Content for section 1.</p>
-          </ng-template>
         </ng-template>
         <ng-template nfsAccordionItem panelId="panel-2">
           <ng-template nfsAccordionHeader>Section 2</ng-template>
-          <ng-template nfsAccordionContent>
+          
             <p>Content for section 2.</p>
-          </ng-template>
         </ng-template>
       </nfs-accordion>
     `,
@@ -1907,15 +1866,13 @@ export const DeepLinkIgnoresPanelIdChanges: Story = {
       <nfs-accordion ${argsToLiteralTemplate(args)}>
         <ng-template nfsAccordionItem panelId="section-a">
           <ng-template nfsAccordionHeader>Section A</ng-template>
-          <ng-template nfsAccordionContent>
+          
             <p>Content for section A.</p>
-          </ng-template>
         </ng-template>
         <ng-template nfsAccordionItem panelId="section-b">
           <ng-template nfsAccordionHeader>Section B</ng-template>
-          <ng-template nfsAccordionContent>
+          
             <p>Content for section B.</p>
-          </ng-template>
         </ng-template>
       </nfs-accordion>
     `,
@@ -1964,21 +1921,18 @@ export const MultiExpandInitialState: Story = {
       <nfs-accordion ${argsToLiteralTemplate(args)}>
         <ng-template nfsAccordionItem panelId="item-0" [expanded]="true">
           <ng-template nfsAccordionHeader>Item 0 (Initially Open)</ng-template>
-          <ng-template nfsAccordionContent>
+          
             <p>This panel starts expanded.</p>
-          </ng-template>
         </ng-template>
         <ng-template nfsAccordionItem panelId="item-1">
           <ng-template nfsAccordionHeader>Item 1 (Initially Closed)</ng-template>
-          <ng-template nfsAccordionContent>
+          
             <p>This panel starts collapsed.</p>
-          </ng-template>
         </ng-template>
         <ng-template nfsAccordionItem panelId="item-2" [expanded]="true">
           <ng-template nfsAccordionHeader>Item 2 (Initially Open)</ng-template>
-          <ng-template nfsAccordionContent>
+          
             <p>This panel also starts expanded.</p>
-          </ng-template>
         </ng-template>
       </nfs-accordion>
     `,

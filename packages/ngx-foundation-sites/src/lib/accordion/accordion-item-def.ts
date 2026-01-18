@@ -9,7 +9,6 @@ import {
   effect,
 } from '@angular/core';
 import type { NfsAccordionHeaderDef } from './accordion-header-def';
-import type { NfsAccordionContentDef } from './accordion-content';
 import { nfsAccordionToken } from './accordion.token';
 
 /**
@@ -17,16 +16,20 @@ import { nfsAccordionToken } from './accordion.token';
  *
  * The item's content is divided into:
  * - **Header**: Marked with `nfsAccordionHeader` (required)
- * - **Eager content**: Direct DOM content inside the template (renders immediately)
- * - **Lazy content**: Marked with `nfsAccordionContent` (optional, rendered when expanded)
+ * - **Content**: Direct DOM content inside the template (deferred when panel expands)
+ *
+ * For ultra-lazy loading (e.g., heavy components that should only load once),
+ * use Angular's `@defer` within your content template.
  *
  * @example
  * ```html
  * <nfs-accordion>
  *   <ng-template nfsAccordionItem panelId="panel-1" [(expanded)]="isOpen">
  *     <ng-template nfsAccordionHeader>Title</ng-template>
- *     <p>Eager content - renders immediately</p>
- *     <ng-template nfsAccordionContent>Lazy content - renders when expanded</ng-template>
+ *     <p>Content - deferred until panel expands</p>
+ *     @defer (on interaction) {
+ *       <app-heavy-component />
+ *     }
  *   </ng-template>
  * </nfs-accordion>
  * ```
@@ -58,12 +61,6 @@ export class NfsAccordionItemDef {
    * The header registers itself via constructor injection.
    */
   readonly headerDef = signal<NfsAccordionHeaderDef | null>(null);
-
-  /**
-   * Populated by child NfsAccordionContentDef during template instantiation.
-   * The lazy content registers itself via constructor injection.
-   */
-  readonly lazyContentDef = signal<NfsAccordionContentDef | null>(null);
 
   /**
    * Track whether this item has any projected content.

@@ -10,7 +10,6 @@ import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { NfsAccordion } from './accordion';
 import { NfsAccordionItemDef } from './accordion-item-def';
 import { NfsAccordionHeaderDef } from './accordion-header-def';
-import { NfsAccordionContentDef } from './accordion-content';
 import { AccordionDeepLinkService } from './accordion-deep-link.service';
 
 /**
@@ -38,7 +37,7 @@ import { AccordionDeepLinkService } from './accordion-deep-link.service';
         [expanded]="item1Expanded()"
       >
         <ng-template nfsAccordionHeader>Item 1 Title</ng-template>
-        <ng-template nfsAccordionContent>Item 1 Content</ng-template>
+        Item 1 Content
       </ng-template>
       <ng-template
         nfsAccordionItem
@@ -47,7 +46,7 @@ import { AccordionDeepLinkService } from './accordion-deep-link.service';
         [expanded]="item2Expanded()"
       >
         <ng-template nfsAccordionHeader>Item 2 Title</ng-template>
-        <ng-template nfsAccordionContent>Item 2 Content</ng-template>
+        Item 2 Content
       </ng-template>
       <ng-template
         nfsAccordionItem
@@ -56,16 +55,11 @@ import { AccordionDeepLinkService } from './accordion-deep-link.service';
         [expanded]="item3Expanded()"
       >
         <ng-template nfsAccordionHeader>Item 3 Title</ng-template>
-        <ng-template nfsAccordionContent>Item 3 Content</ng-template>
+        Item 3 Content
       </ng-template>
     </nfs-accordion>
   `,
-  imports: [
-    NfsAccordion,
-    NfsAccordionItemDef,
-    NfsAccordionHeaderDef,
-    NfsAccordionContentDef,
-  ],
+  imports: [NfsAccordion, NfsAccordionItemDef, NfsAccordionHeaderDef],
 })
 class TestHostComponent {
   /** Reference to the accordion component for testing programmatic methods */
@@ -1225,20 +1219,15 @@ describe('NfsAccordion', () => {
           <nfs-accordion>
             <ng-template nfsAccordionItem panelId="duplicate-id">
               <ng-template nfsAccordionHeader>Item 1</ng-template>
-              <ng-template nfsAccordionContent>Content 1</ng-template>
+              Content 1
             </ng-template>
             <ng-template nfsAccordionItem panelId="duplicate-id">
               <ng-template nfsAccordionHeader>Item 2</ng-template>
-              <ng-template nfsAccordionContent>Content 2</ng-template>
+              Content 2
             </ng-template>
           </nfs-accordion>
         `,
-        imports: [
-          NfsAccordion,
-          NfsAccordionItemDef,
-          NfsAccordionHeaderDef,
-          NfsAccordionContentDef,
-        ],
+        imports: [NfsAccordion, NfsAccordionItemDef, NfsAccordionHeaderDef],
       })
       class DuplicatePanelIdHost {}
 
@@ -1275,11 +1264,11 @@ describe('NfsAccordion', () => {
           <nfs-accordion>
             <ng-template nfsAccordionItem panelId="no-header">
               <!-- Missing nfsAccordionHeader -->
-              <ng-template nfsAccordionContent>Content only</ng-template>
+              Content only
             </ng-template>
           </nfs-accordion>
         `,
-        imports: [NfsAccordion, NfsAccordionItemDef, NfsAccordionContentDef],
+        imports: [NfsAccordion, NfsAccordionItemDef],
       })
       class MissingHeaderHost {}
 

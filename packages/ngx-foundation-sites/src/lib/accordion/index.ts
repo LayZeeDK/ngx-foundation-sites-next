@@ -4,5 +4,4 @@ export { NfsAccordionItem } from './accordion-item.component';
 export { NfsAccordionTitle } from './accordion-title.component';
 export { NfsAccordionItemDef } from './accordion-item-def';
 export { NfsAccordionHeaderDef } from './accordion-header-def';
-export { NfsAccordionContentDef } from './accordion-content';
 export { nfsAccordionToken } from './accordion.token';

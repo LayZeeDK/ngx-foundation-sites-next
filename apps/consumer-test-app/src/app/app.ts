@@ -3,7 +3,6 @@ import {
   NfsAccordion,
   NfsAccordionItemDef,
   NfsAccordionHeaderDef,
-  NfsAccordionContentDef,
   NfsButton,
 } from 'ngx-foundation-sites';
 
@@ -25,7 +24,6 @@ import {
     NfsAccordion,
     NfsAccordionItemDef,
     NfsAccordionHeaderDef,
-    NfsAccordionContentDef,
     NfsButton,
   ],
   templateUrl: './app.html',
