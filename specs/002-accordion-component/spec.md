@@ -391,6 +391,17 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
   ```
   In this case the item MUST still render its panel content (if any) but MUST not be keyboard focusable as a title/trigger (there is no trigger). This prevents inaccessible interactive holes while warning developers to fix markup.
 
+  **DOM Structure for Missing Title Scenario**:
+  - The `<nfs-accordion-item>` element MUST render with the `.accordion-item` class (per FR-030)
+  - The item MUST NOT render any focusable trigger element (no `<button>`, no `role="button"`, no `tabindex`)
+  - The panel content region MUST render directly within the `<nfs-accordion-item>` without a wrapper
+  - The panel content MUST NOT have `role="region"` or `aria-labelledby` attributes (no trigger exists to provide a label)
+  - The item MUST be excluded from keyboard navigation sequences (Home/End/Arrow keys skip it per FR-055–FR-061)
+  - The item MUST NOT appear in the accordion's internal items array used for keyboard navigation
+  - If the item has a `panelId` input, it MUST be ignored (no deep linking without a title)
+
+  This specification ensures the markup degrades gracefully: content remains visible but the item is not treated as an interactive accordion panel.
+
 #### FR-089a: Rapid Toggle / Debounce Behavior
 
 - **FR-089a**: To avoid race conditions from rapid user interactions (clicks or programmatic toggles), the component MUST serialize expansion state changes per item and debounce consecutive toggle requests originating from the same input source by 50ms. Serialization semantics: if a toggle request arrives while the same item is mid-transition, queue the request and execute it after the current transition completes. Debounce semantics: multiple toggle requests within 50ms from the same source collapse to a single eventual request. This policy prevents event storms while ensuring user intent is respected.
@@ -407,6 +418,8 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 #### FR-038a: Explicit State Transitions
 
 - **FR-038a**: In addition to boolean `expanded`, the item MUST conceptually transition through explicit lifecycle states for implementation clarity: `COLLAPSED -> EXPANDING -> EXPANDED -> COLLAPSING -> COLLAPSED`. Implementations MAY represent these as internal enums or booleans plus transient flags, but must ensure that ARIA attributes reflect `aria-expanded` only when the target state is reached (`EXPANDED`), and that keyboard/interaction handlers consult the in-progress state to avoid conflicting operations.
+
+  **Visibility Clarification (addressing U-03)**: The state machine MUST remain an internal implementation detail and MUST NOT be exposed in the component's public API. The component MUST expose only the boolean `expanded` signal representing the final state. This decision aligns with Foundation for Sites' JavaScript API (which exposes only boolean state, not intermediate transitions), follows Angular's principle of minimal surface area, and prevents consumers from coupling to internal animation/timing details that may change across versions. Implementations MAY use transient states internally (via private fields or computed signals) to coordinate animations and prevent race conditions, but these states MUST NOT be exported or documented as public API.
 
 #### FR-110a: Input Validation — titleHeadingLevel and deepLinkSmudge
 
@@ -740,7 +753,7 @@ Note: AR-015 through AR-018 summarize accessibility implications of FR-037 throu
 
 #### Foundation JavaScript API Alignment
 
-- **FR-075**: `<nfs-accordion-item>` MUST expose Foundation-equivalent methods that mirror Foundation's JavaScript API: `toggle()` (toggles expand/collapse), `down()` (expands panel), `up()` (collapses panel)
+- **FR-075**: `<nfs-accordion-item>` MUST expose Foundation-equivalent methods that mirror Foundation's JavaScript API: `toggle(): void` (toggles expand/collapse), `down(): void` (expands panel), `up(): void` (collapses panel). All methods return `void` and are idempotent per FR-147a (silently no-op on invalid calls rather than throwing errors).
 - **FR-076**: `<nfs-accordion>` MUST emit Foundation-equivalent events as Angular outputs: `down` (emitted when any panel opens, with payload containing the opened item reference), `up` (emitted when any panel closes, with payload containing the closed item reference)
 
 ### Key Entities _(Component Architecture)_
