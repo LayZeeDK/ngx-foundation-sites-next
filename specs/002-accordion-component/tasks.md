@@ -574,6 +574,9 @@ Until API is redesigned, dynamic item management should be implemented at the ap
 - [ ] T169 Run quickstart.md validation: manually test all examples in quickstart.md
 - [ ] T170 [P] Performance testing: verify accordion with 100 items renders within 5 seconds, toggle within 200ms
 - [ ] T171 [P] Security review: verify component treats projected content as trusted per SR-001 to SR-004
+- [ ] T171a [P] Create Storybook story "UnsanitizedContent" that renders dangerous HTML (e.g., `<img src=x onerror="console.log('XSS')">`). Verify: (1) no sanitization warning appears in console, (2) `onerror` handler is NOT executed (component treats as trusted but browser CSP blocks execution), (3) innerHTML is accessible if developer needs it for legitimate use in packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
+- [ ] T171b Add security section to README.md (packages/ngx-foundation-sites/src/lib/accordion/README.md): "⚠️ **Security**: This component does NOT sanitize projected content. Developers MUST sanitize user-generated HTML before binding to component inputs using Angular's `DomSanitizer` service or server-side sanitization."
+- [ ] T171c [P] Add unit test (accordion.component.spec.ts) verifying `DomSanitizer` is never injected or used in component code in packages/ngx-foundation-sites/src/lib/accordion/accordion.component.spec.ts
 - [ ] T172 Update main library index.ts at packages/ngx-foundation-sites/src/index.ts to export accordion components
 - [ ] T173 [P] Update accordion README.md at packages/ngx-foundation-sites/src/lib/accordion/README.md with API reference and Foundation migration guide
 - [ ] T174 Run AXE accessibility checks on all Storybook stories, verify 100% pass rate (includes AR-003 color contrast verification: 4.5:1 for normal text, 3:1 for large text)
@@ -669,6 +672,16 @@ Task T020: "Create NfsAccordionTitle component"
   - Location: packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
   - Description: Verify that programmatic toggle (item.toggle()) does NOT coalesce with keyboard toggle (Enter key) within 50ms debounce window—both should execute in order since they originate from different input sources (programmatic vs keyboard). Add play function simulating: keyboard Enter on item, then immediate programmatic toggle() call within 10ms, verify both actions execute sequentially.
   - Acceptance: Play test confirms two distinct state changes occur (not coalesced) when input sources differ. Per FR-089a testing tolerance, timing assertions MUST allow ±10ms variance for JavaScript event loop variability; use mock timers (`vi.useFakeTimers()`) for precise timing validation.
+
+- [ ] T-AC-001c [P?] Add Storybook/Vitest test for FR-089a Queue FIFO
+  - Location: packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts or accordion.spec.ts
+  - Description: Toggle A while transitioning, then immediately toggle B, verify A completes first then B executes. Final state reflects both toggles in order. Use `vi.useFakeTimers()` for deterministic timing.
+  - Acceptance: Test confirms FIFO ordering: first toggle request completes, then queued request executes; no race condition between concurrent toggle requests.
+
+- [ ] T-AC-001d [P?] Add Storybook/Vitest test for FR-089a Debounce Coalescence
+  - Location: packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts or accordion.spec.ts
+  - Description: Trigger 3 toggles within 30ms on same item, verify only 1 final action executes. Use `vi.useFakeTimers()` and `vi.advanceTimersByTime()` for reliable timing. Add timing assertion with ±10ms tolerance per FR-089a line 328.
+  - Acceptance: Test confirms identical toggles from same input source coalesce into single action; timing variance stays within ±10ms tolerance.
 
 - [ ] T-AC-002 _(meta-task)_ `announce` live-region opt-in — **resolved by T196-T199**
   - Location: packages/ngx-foundation-sites/src/lib/accordion/

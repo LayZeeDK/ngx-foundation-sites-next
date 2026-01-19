@@ -40,6 +40,15 @@ This specification uses the following standardized terms:
 
 **Terminology Note**: Throughout this document, "title button," "title element," and "trigger" are used interchangeably to refer to the same component. Context determines which term is more natural (e.g., "keyboard focus moves to the title button" vs. "the trigger toggles the panel").
 
+### Naming Convention for Directive Classes
+
+All internal directive classes use the `-Def` suffix to avoid naming collisions with Foundation class names.
+- **Selector** (HTML/template): `[nfsAccordionItem]` (kebab-case, lowercase)
+- **Class Name** (TypeScript import): `NfsAccordionItemDef` (PascalCase with `-Def` suffix)
+- **Usage**: `import { NfsAccordionItemDef } from '...'` then apply `ng-template[nfsAccordionItem]` (selector, not class name)
+- **Pattern Applied To**: NfsAccordionItemDef, NfsAccordionHeaderDef, NfsAccordionContentDef
+- **Why**: Prevents naming conflicts if Foundation (or other libraries) introduce classes like `NfsAccordionItem`
+
 ---
 
 ## ⚠️ IMPORTANT: Implemented API vs Documented API
@@ -63,12 +72,17 @@ The implementation chose template-directive composition to leverage `@angular/ar
 
 ### API Comparison
 
-| Aspect             | Originally Planned                | Actually Implemented                                |
-| ------------------ | --------------------------------- | --------------------------------------------------- |
-| **Item Container** | `<nfs-accordion-item>` component  | `ng-template[nfsAccordionItem]` directive           |
-| **Item Header**    | `<nfs-accordion-title>` component | `ng-template[nfsAccordionHeader]` directive         |
-| **Item Content**   | ng-content projection             | `ng-template[nfsAccordionContent]` directive (lazy) |
-| **ARIA Handling**  | Custom implementation             | Delegated to `@angular/aria` primitives             |
+| Aspect                  | Originally Planned                              | Actually Implemented                                                                  |
+| ----------------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------- |
+| **Item Container**      | `<nfs-accordion-item>` component                | `ng-template[nfsAccordionItem]` directive                                             |
+| **Item Header**         | `<nfs-accordion-title>` component               | `ng-template[nfsAccordionHeader]` directive                                           |
+| **Item Content**        | ng-content projection                           | `ng-template[nfsAccordionContent]` directive (lazy)                                   |
+| **ARIA Handling**       | Custom implementation                           | Delegated to `@angular/aria` primitives                                               |
+| **Outputs/Events**      | `(down)`, `(up)` on `<nfs-accordion>`           | Same: `(down)`, `(up)` outputs (see [Example 10](./quickstart.md#example-10-event-handling-work-in-progress)) |
+| **Methods**             | `down()`, `up()`, `toggle()` on item component  | Same methods on `NfsAccordionItemDef` (see [Example 9](./quickstart.md#example-9-programmatic-control-work-in-progress)) |
+| **Selector Syntax**     | `<nfs-accordion-item panelId="...">`            | `<ng-template nfsAccordionItem panelId="...">`                                        |
+| **Imports**             | `NfsAccordionItem`, `NfsAccordionTitle`         | `NfsAccordionItemDef`, `NfsAccordionHeaderDef`, `NfsAccordionContentDef` (see [Import Components](./quickstart.md#2-import-components)) |
+| **DI Pattern**          | `nfsAccordionToken` for parent-child lookup     | Same: exported `nfsAccordionToken` + optional injection with `skipSelf` (CDK pattern) |
 
 ### Content Projection Strategy
 
@@ -218,8 +232,8 @@ A developer configures which accordion item(s) should be open when the component
   </ng-template>
 </nfs-accordion>
 
-<!-- Multiple items initially expanded (requires multiExpandable) -->
-<nfs-accordion [multiExpandable]="true">
+<!-- Multiple items initially expanded (requires multiExpand) -->
+<nfs-accordion [multiExpand]="true">
   <ng-template nfsAccordionItem panelId="item-0" [expanded]="true">
     <ng-template nfsAccordionHeader>Item 0 (Initially Open)</ng-template>
     <p>Content 0</p>
@@ -240,7 +254,7 @@ A developer configures which accordion item(s) should be open when the component
 **Acceptance Scenarios**:
 
 1. **Given** an accordion item with `[expanded]="true"`, **When** component renders, **Then** that item is expanded
-2. **Given** an accordion with `multiExpandable` and multiple items with `[expanded]="true"`, **When** component renders, **Then** all marked items are expanded
+2. **Given** an accordion with `multiExpand` and multiple items with `[expanded]="true"`, **When** component renders, **Then** all marked items are expanded
 3. **Given** accordion items with no `expanded` binding, **When** component renders, **Then** all items are collapsed (default behavior)
 
 ---
@@ -346,11 +360,11 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 
 #### Component Structure
 
-- **FR-001**: System MUST provide three standalone components (`<nfs-accordion>`, `<nfs-accordion-item>`, `<nfs-accordion-title>`) and one structural directive (`[nfsAccordionContent]`) per constitution principle: prefer directives over components when possible
+- **FR-001**: System MUST provide one standalone component (`<nfs-accordion>` container) and three structural directives (`ng-template[nfsAccordionItem]`, `ng-template[nfsAccordionHeader]`, `ng-template[nfsAccordionContent]`) using template-directive composition with @angular/aria primitives. See Terminology section for definitions and quickstart.md for usage examples. This architecture follows the constitution principle of preferring directives over components for maximum accessibility compliance
 - **FR-002**: Component selectors MUST use the prefix "nfs-" (ngx-foundation-sites)
 - **FR-003**: `<nfs-accordion>` MUST act as the root container component
-- **FR-004**: `<nfs-accordion-item>` MUST represent individual collapsible items
-- **FR-005**: `<nfs-accordion-title>` MUST represent the clickable trigger/header for each item
+- **FR-004**: `ng-template[nfsAccordionItem]` (structural directive) MUST represent individual collapsible items
+- **FR-005**: `ng-template[nfsAccordionHeader]` (structural directive) MUST represent the clickable trigger/header for each item
 - **FR-006**: `ng-template[nfsAccordionContent]` (structural directive) MUST represent the expandable panel content for each item. The project follows a directive-first approach: consumers should use `ng-template[nfsAccordionContent]` for lazy content. Examples that historically showed `<nfs-accordion-content>` are illustrative only and MUST be interpreted as the directive form.
 - **FR-007**: Parent-child relationships MUST be established via Angular DI using injection tokens (item finds parent accordion without direct property binding through implicit DI query pattern)
 
@@ -366,6 +380,9 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 #### Public API - Inputs
 
 - **FR-014**: `<nfs-accordion>` MUST accept a `multiExpand` signal input (boolean, default: false) to enable multi-expand mode
+
+  **Naming Note**: This component uses `multiExpand` (not `multiExpandable`) to align with Foundation's `data-multi-expand` attribute naming convention. This follows the project constitution principle of matching Foundation's naming patterns.
+
 - **FR-015**: `<nfs-accordion>` MUST accept an `allowAllClosed` signal input (boolean, default: false) to control if all items can be closed
 - **FR-016**: `<nfs-accordion>` MUST accept additional configuration signal inputs per `contracts/accordion-api.ts` (including `disabled`, `deepLink`, `deepLinkSmudge`, `deepLinkSmudgeDelay`, `deepLinkSmudgeOffset`, `updateHistory`, `wrap`, `titleHeadingLevel`, `softDisabled`, and optional `id`)
 - **FR-017**: `<nfs-accordion-item>` MUST accept an optional `panelId` signal input (string) used for deep linking and ARIA relationships. When a consumer does not provide `panelId`, the system MUST auto-generate a stable, unique ID using the ID generation service (see FR-017a for validation). The system MUST also auto-generate unique IDs for title/content elements used by `aria-controls` / `aria-labelledby` relationships when not explicitly provided.
@@ -391,6 +408,24 @@ When a `<nfs-accordion-item>` registers its `panelId` (consumer-provided or auto
 #### FR-017b: panelId Runtime Changes
 
 If a consumer changes an item's `panelId` input after registration, the `<nfs-accordion-item>` MUST re-register the new `panelId` with the parent as if the item unregistered and re-registered. The parent MUST validate uniqueness on re-registration and update all ARIA attributes (`id` on panel wrapper, `aria-controls` on trigger, `aria-labelledby` on panel) atomically within a single change detection cycle.
+
+**Implementation Phases**: The runtime `panelId` change MUST be executed in the following atomic phases:
+
+1. **Phase 1 (Unregister)**: Remove the old `panelId` from the parent accordion's registry (internal Map/Set tracking registered items).
+
+2. **Phase 2 (Update DOM)**: Within a single change detection cycle (triggered via `ChangeDetectorRef.markForCheck()`), update all related DOM attributes:
+   - Update `id` attribute on the panel wrapper element
+   - Update `aria-controls` attribute on the trigger button (references new panel `id`)
+   - Update `aria-labelledby` attribute on the panel wrapper (references trigger `id`, if applicable)
+
+3. **Phase 3 (Re-register)**: Add the new `panelId` to the parent accordion's registry.
+
+4. **Phase 4 (Validate)**: Check for duplicate `panelId` in the registry. If a collision is detected:
+   - Roll back registration (remove new `panelId` from registry, restore old `panelId`)
+   - Invoke `ErrorHandler.handleError()` with an Error describing the collision
+   - Treat the first-registered item with the colliding `panelId` as canonical
+
+**Atomicity Guarantee**: All Phase 2 DOM updates MUST occur within a single change detection cycle to prevent intermediate states where ARIA references are broken (e.g., `aria-controls` pointing to a non-existent `id`).
 
 **Collision Handling**: If the new `panelId` collides with another item in the same accordion instance, apply FR-017a validation behavior (report via `ErrorHandler.handleError()` and treat first-registered item as canonical target).
 
@@ -505,6 +540,18 @@ When `deepLink` is enabled, changing a `panelId` at runtime does NOT by itself t
 #### FR-106a: Concurrent Keyboard and Mouse Interaction Policy
 
 - **FR-106a**: The component MUST rely on the browser's native event loop for processing concurrent keyboard and mouse interactions. Click events on accordion headers will focus the clicked element per standard browser behavior—this is consistent with Foundation Accordion, Angular Material Expansion Panel, Angular CDK Accordion, and WAI-ARIA APG (which does not specify focus precedence between input modalities). Keyboard navigation (Arrow keys, Home, End) moves focus per WAI-ARIA APG accordion pattern. No custom event queue or focus precedence logic is required; the browser's FIFO event processing provides correct behavior.
+
+  **Failure Scenario Handling**:
+
+  1. **Click + Keyboard Simultaneous Input**: If a mouse click and keyboard event (e.g., Enter/Space) occur within the same event loop tick (e.g., user presses Enter while clicking), the browser's native event loop determines processing order (typically FIFO). The component MUST NOT introduce additional ordering logic. Both events will trigger their respective handlers, and FR-089a's debounce serialization (50ms ±10ms tolerance) will coalesce consecutive toggle requests from the same input source.
+
+  2. **Programmatic + User Concurrent Actions**: If a programmatic method call (e.g., `toggle()`, `down()`, `up()`) occurs while a user interaction (click/keyboard) is in-flight or queued, both requests MUST be enqueued per FR-089a's serialization semantics. Since programmatic calls and user interactions are different input sources per FR-089a, they do NOT debounce together—both execute in FIFO order. Example: A click at T=0ms followed by `toggle()` at T=5ms will execute both operations sequentially (click processes first, programmatic call executes after the click's transition completes or debounce window expires).
+
+  3. **Rapid Key Repeats (Keyboard Auto-Repeat)**: If a user holds down Enter/Space causing the browser's `KeyboardEvent` auto-repeat, the component MUST treat each repeat event as a separate keyboard input subject to FR-089a's 50ms debounce. The browser's native repeat rate (typically 30-50ms intervals) will trigger multiple events, but FR-089a's debounce coalescing for the 'keyboard' input source will collapse rapid repeats into a single toggle operation. The component MUST NOT suppress key repeat via `event.repeat` filtering—allow browser defaults.
+
+  4. **Focus Loss on Item Removal**: If a focused accordion item is removed from the DOM (e.g., via `@for` list mutation) while a concurrent keyboard navigation command (Arrow keys, Home, End) is processing, focus MUST move per FR-056 (next item, previous item, or parent container). The keyboard navigation handler MUST check if the target item still exists in the DOM before applying focus. If the target was removed, fall back to the next available item in navigation order. This prevents focus loss to `<body>` and maintains keyboard accessibility.
+
+  **Testing Strategy**: Use Storybook play functions with mock timers (`vi.useFakeTimers()`) to validate debounce timing per FR-089a's ±10ms tolerance. Test scenarios 1-4 above to verify browser event loop ordering, serialization queue behavior, key repeat handling, and focus restoration on DOM mutations.
 
 #### FR-113a: Interactive Elements in Title Content
 

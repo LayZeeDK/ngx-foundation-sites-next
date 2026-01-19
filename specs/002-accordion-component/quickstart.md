@@ -132,7 +132,7 @@ export class ExampleComponent {}
 **Code**:
 
 ```html
-<nfs-accordion [multiExpandable]="true">
+<nfs-accordion [multiExpand]="true">
   <ng-template nfsAccordionItem panelId="feature-1">
     <ng-template nfsAccordionHeader>Responsive Grid</ng-template>
     <p>Foundation's grid system adapts to any screen size.</p>
@@ -156,8 +156,6 @@ export class ExampleComponent {}
 - Clicking a panel toggles it without affecting other panels
 - Useful for comparison scenarios or settings panels
 
-**Note**: Input is `multiExpandable` (not `multiExpand` as shown in some docs).
-
 ---
 
 ### Example 3: Always One Open
@@ -167,7 +165,7 @@ export class ExampleComponent {}
 **Code**:
 
 ```html
-<nfs-accordion [allowAllClosed]="false" [multiExpandable]="false">
+<nfs-accordion [allowAllClosed]="false" [multiExpand]="false">
   <ng-template nfsAccordionItem panelId="step-1" [expanded]="true">
     <ng-template nfsAccordionHeader>Step 1: Personal Information</ng-template>
     <form>
@@ -442,7 +440,7 @@ import { NfsAccordion, NfsAccordionItemDef, NfsAccordionHeaderDef } from 'ngx-fo
       <button (click)="collapseFirst()">Collapse First</button>
     </div>
 
-    <nfs-accordion [multiExpandable]="true">
+    <nfs-accordion [multiExpand]="true">
       <ng-template nfsAccordionItem panelId="item-1">
         <ng-template nfsAccordionHeader>Item 1</ng-template>
         <p>Content 1</p>
@@ -567,7 +565,7 @@ $('#myAccordion').on('up.zf.accordion', function (e) {
 
 | Input                  | Type      | Default | Description                   |
 | ---------------------- | --------- | ------- | ----------------------------- |
-| `multiExpandable`      | `boolean` | `false` | Allow multiple panels open    |
+| `multiExpand`          | `boolean` | `false` | Allow multiple panels open    |
 | `allowAllClosed`       | `boolean` | `false` | Allow all panels closed       |
 | `disabled`             | `boolean` | `false` | Disable all items             |
 | `deepLink`             | `boolean` | `false` | Sync with URL hash            |
@@ -612,7 +610,7 @@ $('#myAccordion').on('up.zf.accordion', function (e) {
 ### Pattern: Settings Panel
 
 ```html
-<nfs-accordion [multiExpandable]="true">
+<nfs-accordion [multiExpand]="true">
   <ng-template nfsAccordionItem panelId="general">
     <ng-template nfsAccordionHeader>General Settings</ng-template>
     <!-- Settings form -->
@@ -633,7 +631,7 @@ $('#myAccordion').on('up.zf.accordion', function (e) {
 ### Pattern: Product Details
 
 ```html
-<nfs-accordion [multiExpandable]="true">
+<nfs-accordion [multiExpand]="true">
   <ng-template nfsAccordionItem panelId="description" [expanded]="true">
     <ng-template nfsAccordionHeader>Description</ng-template>
     <p>{{ product.description }}</p>
