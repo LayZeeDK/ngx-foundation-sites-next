@@ -106,19 +106,34 @@ pwsh ./.specify/scripts/powershell/check-prerequisites.ps1 -Json -RequireTasks -
 **Parse JSON output for**:
 
 - `FEATURE_DIR`: Absolute path to feature directory
-- `AVAILABLE_DOCS`: List of existing files
+- (Ignore `AVAILABLE_DOCS` - it has known bugs and may not list all files)
 
-**Derive absolute paths**:
+**Verify required files exist**:
 
-- `SPEC` = FEATURE_DIR/spec.md (REQUIRED)
-- `PLAN` = FEATURE_DIR/plan.md (REQUIRED)
-- `TASKS` = FEATURE_DIR/tasks.md (REQUIRED)
-- `CONSTITUTION` = .specify/memory/constitution.md (REQUIRED)
+Use Glob to check for each required file (DO NOT trust AVAILABLE_DOCS from script):
+
+```
+# Check for spec.md
+Glob(pattern: "spec.md", path: FEATURE_DIR)
+# Check for plan.md
+Glob(pattern: "plan.md", path: FEATURE_DIR)
+# Check for tasks.md
+Glob(pattern: "tasks.md", path: FEATURE_DIR)
+```
+
+**Derive absolute paths** (after verification):
+
+- `SPEC` = FEATURE_DIR/spec.md (verified via Glob)
+- `PLAN` = FEATURE_DIR/plan.md (verified via Glob)
+- `TASKS` = FEATURE_DIR/tasks.md (verified via Glob)
+- `CONSTITUTION` = .specify/memory/constitution.md (project-level, always exists)
 - `OUTPUT` = FEATURE_DIR/gap-analysis-report.md (WILL BE CREATED)
 
 **Error Handling**:
 
-- If any REQUIRED file missing: ABORT with message instructing user to run missing prerequisite command
+- If Glob returns empty for spec.md: ABORT with "Run `/speckit.specify` to create specification"
+- If Glob returns empty for plan.md: ABORT with "Run `/speckit.plan` to create implementation plan"
+- If Glob returns empty for tasks.md: ABORT with "Run `/speckit.tasks` to generate task breakdown"
 - Do NOT proceed with partial artifacts
 
 **Path Handling (CRITICAL)**:
