@@ -217,6 +217,7 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 - [x] T185 [P] [US3] Add Storybook story variant to ScreenReader story: render accordion with empty panel content, verify panel wrapper maintains valid ARIA even with no inner content in packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
 - [x] T187 [P] [US3] Add Storybook play test to ScreenReader story: change accordion title text dynamically, verify live region announces change when announce=true in packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
 - [x] T199 [P] [US3] Add Storybook play test to ScreenReader story: verify live region receives expand/collapse announcements when announce=true, no live region when announce=false in packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts (covers AR-027a expand/collapse; see T187 for complementary title-change announcement coverage)
+  - **Acceptance**: Test criteria must verify: (1) When announce=true, after clicking accordion title to toggle expand/collapse state, assert live region element exists and textContent includes either "expanded" or "collapsed" within 100ms of toggle; (2) When announce=false, after clicking accordion title, assert live region element does not exist or is not in the DOM; (3) Live region must maintain aria-live="polite" and aria-atomic="true" attributes for reliable screen reader announcement
 
 ### Implementation for User Story 3
 
@@ -312,7 +313,7 @@ This is an Nx monorepo with library at `packages/ngx-foundation-sites/`. Compone
 - [x] T084 [US6] Add play function: verify disabled item has aria-disabled="true" — **DONE**: `Disabled` story (accordion.stories.ts:205-207), `FocusManagementWithDisabled` (accordion.stories.ts:1111-1116)
 - [x] T085 [US6] Add play function: ArrowDown from item 1, verify focus skips disabled item 2 to item 3 — **DONE**: `SoftDisabled` story (accordion.stories.ts:969-976)
 - [x] T086 [US6] Add play function: ArrowUp from item 3, verify focus skips disabled item 2 to item 1 — **DONE**: `SoftDisabled` story (accordion.stories.ts:977-984)
-- [x] T189 [P] [US6] Add Storybook play test to DisabledItems story: programmatically call item.down() on disabled item via viewChild, verify method returns immediately, NO (down) event emitted, and ErrorHandler.handleError() called with diagnostic indicating prevented action (FR-147a) in packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts — **Covered by unit tests** (accordion.spec.ts:884-924, 991-1002). Unit tests provide sufficient coverage per implementation choice.
+- [x] T189 [P] [US6] Add Storybook play test to DisabledItems story: programmatically call item.down() on disabled item via viewChild, verify method returns immediately, NO (down) event emitted, and ErrorHandler.handleError() called with diagnostic indicating prevented action (FR-147a). Diagnostic message format example: `{ type: 'PreventedAction', context: { reason: 'disabled', itemId: 'panel-2', action: 'down' } }` in packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts — **Covered by unit tests** (accordion.spec.ts:884-924, 991-1002). Unit tests provide sufficient coverage per implementation choice.
 
 ### Implementation for User Story 6
 
@@ -430,6 +431,12 @@ Until API is redesigned, dynamic item management should be implemented at the ap
 - [ ] T114 [US9] Verify component renders semantic HTML with ARIA attributes during SSR (no client-only logic in template)
 - [ ] T115 [US9] Test SSR rendering in an Angular Universal sample application (manual verification)
 - [ ] T179 [P] [US9] Add unit test: simulate hydration failure during afterRender() using Angular TestBed with platform mocking, verify component catches exception, reports via ErrorHandler.handleError(), leaves server-rendered HTML intact in packages/ngx-foundation-sites/src/lib/accordion/accordion.component.spec.ts (Note: per constitution V, Playwright reserved for browser-specific APIs only). **Testing strategy exception**: Unit test (not Storybook) is appropriate here because Storybook's jsdom environment cannot simulate real Angular Universal hydration failure scenarios; this is an acceptable exception to the Storybook-primary strategy documented in constitution V.
+  - **Acceptance Criteria** (per FR-062a):
+    1. Simulate hydration failure by mocking afterNextRender to throw an exception
+    2. Verify component's try/catch block catches the exception
+    3. Verify ErrorHandler.handleError() is called with contextual metadata (error type, component context)
+    4. Verify server-rendered HTML structure remains intact (no DOM corruption)
+    5. Verify component does NOT throw an uncaught exception that would break the application shell
 - [ ] T180 [US9] Implement hydration failure fallback in NfsAccordion: wrap all afterRender and browser-specific code in try/catch, call ErrorHandler.handleError() with metadata on exception in packages/ngx-foundation-sites/src/lib/accordion/accordion.component.ts
 
 **Checkpoint**: SSR works - component renders server-side and hydrates correctly
@@ -572,11 +579,24 @@ Until API is redesigned, dynamic item management should be implemented at the ap
 - [ ] T167 [P] Verify all JSDoc comments are complete and accurate across all components
 - [ ] T168 [P] Review code for member visibility patterns: use # for private, protected for template-accessible, public for API
 - [ ] T169 Run quickstart.md validation: manually test all examples in quickstart.md
-- [ ] T170 [P] Performance testing: verify accordion with 100 items renders within 5 seconds, toggle within 200ms
-- [ ] T171 [P] Security review: verify component treats projected content as trusted per SR-001 to SR-004
-- [ ] T171a [P] Create Storybook story "UnsanitizedContent" that renders dangerous HTML (e.g., `<img src=x onerror="console.log('XSS')">`). Verify: (1) no sanitization warning appears in console, (2) `onerror` handler is NOT executed (component treats as trusted but browser CSP blocks execution), (3) innerHTML is accessible if developer needs it for legitimate use in packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
-- [ ] T171b Add security section to README.md (packages/ngx-foundation-sites/src/lib/accordion/README.md): "⚠️ **Security**: This component does NOT sanitize projected content. Developers MUST sanitize user-generated HTML before binding to component inputs using Angular's `DomSanitizer` service or server-side sanitization."
-- [ ] T171c [P] Add unit test (accordion.component.spec.ts) verifying `DomSanitizer` is never injected or used in component code in packages/ngx-foundation-sites/src/lib/accordion/accordion.component.spec.ts
+- [ ] T170 [P] Performance testing: Use Vitest + Playwright benchmark. (1) Render accordion with 100 items, measure time to first paint, assert <5s. (2) Toggle single item, measure time to DOM update (expand/collapse), assert <200ms. Use `performance.now()` for timing in packages/ngx-foundation-sites/src/lib/accordion/accordion.component.spec.ts
+- [ ] T171 [P] Security review: verify component treats projected content as trusted per SR-001 to SR-005
+- [ ] T171a [P] Create Storybook story "SecurityUnsanitizedContent" that explicitly tests XSS protection boundaries in packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
+  - **Test Case 1: No XSS via projected content** — Render accordion with malicious HTML in title: `<img src=x onerror="window.__xss_executed = true">`. Assert `window.__xss_executed` is undefined after render (browser CSP blocks inline event handlers).
+  - **Test Case 2: No unwanted sanitization** — Render accordion with legitimate HTML entities in content: `&lt;code&gt;` and `&amp;`. Assert innerHTML contains literal angle brackets and ampersands (component does not sanitize).
+  - **Test Case 3: DomSanitizer usage example** — Add story description showing how developers should sanitize user-generated content before projection: `this.sanitized = this.sanitizer.sanitize(SecurityContext.HTML, userInput)`.
+  - **Acceptance Criteria**: (1) No XSS execution occurs (CSP enforced), (2) no console warnings about sanitization, (3) legitimate HTML entities pass through unchanged, (4) story docs include DomSanitizer warning.
+- [ ] T171b Add security section to README.md (packages/ngx-foundation-sites/src/lib/accordion/README.md) documenting XSS risk and mitigation strategy
+  - **Content Requirements**:
+    - "⚠️ **Security**: This component does NOT sanitize projected content. All content projected via `ng-content`, `ng-template[nfsAccordionHeader]`, or `ng-template[nfsAccordionContent]` is treated as trusted (SR-001, SR-002)."
+    - "Developers MUST sanitize user-generated HTML BEFORE binding to component inputs using Angular's `DomSanitizer` service or server-side sanitization (SR-004)."
+    - Include code example: `constructor(private sanitizer: DomSanitizer) { this.safeHtml = this.sanitizer.sanitize(SecurityContext.HTML, userInput); }`
+    - Reference Angular Material's security model: "This follows Angular Material's pattern where structural components don't sanitize content; developers sanitize at the data source (SR-005)."
+  - **Acceptance Criteria**: README includes all four content requirements above with concrete code example.
+- [ ] T171c [P] Add unit test in accordion.component.spec.ts verifying no DomSanitizer usage in component implementation (SR-002, SR-003) in packages/ngx-foundation-sites/src/lib/accordion/accordion.component.spec.ts
+  - **Test Case**: Import `DomSanitizer` and `NfsAccordion` component. Use reflection to verify `DomSanitizer` is not present in component's constructor parameters or injected dependencies.
+  - **Assertion**: `expect(() => { const fixture = TestBed.createComponent(NfsAccordion); }).not.toThrow()` AND verify no `DomSanitizer` in component's injector tree.
+  - **Acceptance Criteria**: Test confirms component never injects or uses `DomSanitizer` internally, enforcing SR-002.
 - [ ] T172 Update main library index.ts at packages/ngx-foundation-sites/src/index.ts to export accordion components
 - [ ] T173 [P] Update accordion README.md at packages/ngx-foundation-sites/src/lib/accordion/README.md with API reference and Foundation migration guide
 - [ ] T174 Run AXE accessibility checks on all Storybook stories, verify 100% pass rate (includes AR-003 color contrast verification: 4.5:1 for normal text, 3:1 for large text)
