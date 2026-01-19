@@ -196,9 +196,90 @@ Load only the minimal necessary context from each artifact using the Read tool:
 **Loading sequence**:
 
 1. Parse JSON output from prerequisite script to get absolute file paths
-2. Use Read tool with absolute paths (e.g., `Read("D:\...\spec.md")`)
-3. Extract only the sections listed above (do not load full files into context)
-   </context_loading>
+2. **CRITICAL**: Use Read tool with chunked reading for large files:
+   - **First, attempt full file read**: `Read(file_path)` without offset/limit
+   - **If Read fails with token limit error** (>25K tokens): Use chunked reading strategy below
+   - **NEVER fall back to Grep for headers only** — this misses content like clarifications
+3. Extract sections listed above from loaded content (do not load irrelevant sections)
+
+**Chunked Reading Strategy** (use when file exceeds 25K token limit):
+
+```
+# Step 1: Determine file size
+Use Bash: wc -l <file_path>  # Get line count
+
+# Step 2: Calculate chunks
+total_lines = result from wc -l
+chunk_size = 700 lines  # ~5K tokens per chunk, safe margin
+num_chunks = ceiling(total_lines / chunk_size)
+
+# Step 3: Read in chunks
+FOR chunk_num IN range(0, num_chunks):
+  offset = chunk_num * chunk_size
+  Read(file_path, offset=offset, limit=chunk_size)
+  EXTRACT relevant sections from this chunk
+  ACCUMULATE into semantic models
+```
+
+**Example (spec.md with 1,324 lines)**:
+
+```
+Chunk 1: Read(spec.md, offset=0, limit=700)      # Lines 1-700
+Chunk 2: Read(spec.md, offset=700, limit=700)    # Lines 700-1400 (covers all)
+```
+
+**Validation**:
+- After loading, verify you extracted CONTENT not just STRUCTURE
+- Check: Did you find clarification blocks added via /speckit.clarify?
+- Check: Did you capture requirement details (not just FR-XXX headers)?
+- If you only have headers/IDs but not content → YOU FAILED, retry with chunks
+
+</context_loading>
+
+---
+
+### Step 2b: Content Loading Validation (MANDATORY)
+
+<critical>
+**BEFORE proceeding to Step 3, verify you loaded CONTENT not just STRUCTURE.**
+
+This validation step prevents the common failure mode of reading headers only via Grep.
+</critical>
+
+<validation_checklist>
+**For spec.md**:
+- [ ] Did you extract requirement DESCRIPTIONS (not just FR-XXX identifiers)?
+- [ ] Did you capture clarification blocks (if any exist)?
+- [ ] Can you quote a specific requirement's imperative phrase?
+
+**For plan.md**:
+- [ ] Did you extract implementation notes (not just section headers)?
+- [ ] Can you describe a specific architectural decision?
+
+**For tasks.md**:
+- [ ] Did you extract task DESCRIPTIONS (not just T### identifiers)?
+- [ ] Can you quote a specific task's file path and action?
+
+**For constitution.md**:
+- [ ] Did you extract principle STATEMENTS (not just principle names)?
+- [ ] Can you quote a specific MUST/SHOULD/MAY normative statement?
+
+**If you answered "NO" to any question above**:
+1. STOP immediately
+2. Re-read the affected file using chunked reading (Step 2 strategy)
+3. Validate again before proceeding
+
+**Common Failure Pattern to Avoid**:
+```
+❌ WRONG: Using Grep(pattern: "^#{1,3}\s+") to read headers only
+✅ CORRECT: Using Read(file, offset, limit) to read content in chunks
+```
+</validation_checklist>
+
+<evaluation_criteria>
+**Success**: You can quote specific content (requirements, tasks, principles) verbatim
+**Failure**: You only have identifiers/headers but not the content under them
+</evaluation_criteria>
 
 ---
 
@@ -713,6 +794,29 @@ This command is optimized for Haiku 4.5's strengths:
 - For routine analysis: Haiku with extended thinking is optimal
 - Escalate to Sonnet: >500K tokens, complex constitution reasoning
 
+**Context Window Management (CRITICAL IMPROVEMENT - 2026-01-19)**:
+
+This skill was updated to prevent a common failure mode where large files (>25K tokens) triggered a false optimization: reading headers via Grep instead of content via chunked Read.
+
+**Problem Identified**:
+- spec.md files often exceed Read tool's 25K token limit
+- Previous behavior: Fall back to Grep(pattern: "^#{1,3}\s+") for structure
+- **Failure**: Misses all content under headers (clarifications, requirement details, etc.)
+- **Impact**: Analysis flags resolved issues as "CRITICAL" because clarifications were invisible
+
+**Solution Implemented**:
+- Step 2: Explicit chunked reading strategy (700-line chunks = ~5K tokens each)
+- Step 2b: Mandatory content validation checklist before Step 3
+- Validation: "Can you quote specific content?" test catches header-only reads
+
+**Per Haiku 4.5 Best Practices** (prompt-engineering/CLAUDE-HAIKU-4-5-OPTIMIZATION.md):
+- "Context Window Management: Use only as much context as required per operation"
+- "Optimized Input Length: Send only relevant sections, not entire files"
+- **Correct interpretation**: "Minimal context" = relevant sections via chunks, NOT structure via headers
+
+**Cost Impact**: Negligible (~0.5-1K additional input tokens for chunked reads vs Grep)
+**Quality Impact**: HIGH — Prevents false positives on already-resolved issues
+
 </optimization_strategy>
 
 ---
@@ -739,6 +843,8 @@ This command is optimized for Haiku 4.5's strengths:
 - **NEVER use bash with Windows absolute paths** — use relative paths or Glob tool
 - **ALWAYS validate path types** before calling Read (directories fail with EISDIR)
 - **PREFER relative paths** over absolute paths when working in repo
+- **NEVER use Grep for loading artifact content** — Grep(pattern: "^#") reads structure only, missing content like clarifications added via /speckit.clarify. Use Read with chunked strategy (Step 2) instead.
+- **ALWAYS use chunked Read when file exceeds 25K tokens** — fallback to Grep headers is a CRITICAL FAILURE MODE
   </behavior_constraints>
 
 ---
