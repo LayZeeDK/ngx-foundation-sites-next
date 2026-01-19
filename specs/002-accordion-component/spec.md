@@ -490,6 +490,8 @@ If a consumer changes an item's `panelId` input after registration, the `<nfs-ac
 
 **Atomicity Guarantee**: All Phase 2 DOM updates MUST occur within a single change detection cycle to prevent intermediate states where ARIA references are broken (e.g., `aria-controls` pointing to a non-existent `id`).
 
+**OnPush Interaction**: Components using `ChangeDetectionStrategy.OnPush` (the required default per project constitution) MUST trigger atomic ARIA ID updates when `panelId` changes by calling `ChangeDetectorRef.markForCheck()` in the signal input's `effect()` or computed callback. This ensures Phase 2 DOM updates execute in the current change detection cycle without scheduling a deferred update. Signal inputs automatically schedule change detection, but `markForCheck()` guarantees the current component's template bindings reflect the new `panelId` within the same tick, preserving atomicity while maintaining OnPush performance (change detection remains targeted to affected components, not the entire tree).
+
 **Collision Handling**: If the new `panelId` collides with another item in the same accordion instance, apply FR-017a validation behavior (report via `ErrorHandler.handleError()` and treat first-registered item as canonical target).
 
 **State Preservation**: Changing a `panelId` MUST NOT implicitly toggle expansion state; developers should call the public API (`down()`, `up()`, `toggle()`) to change expansion if desired.
@@ -632,6 +634,27 @@ When `deepLink` is enabled, changing a `panelId` at runtime does NOT by itself t
 #### FR-147a: Method Failure Semantics
 
 - **FR-147a**: Public methods (`toggle()`, `down()`, `up()`) MUST be idempotent and MUST not throw on invalid calls. Instead, when an action is invalid (e.g., `down()` called on a disabled item or `up()` called when `allowAllClosed=false` and item is last open), the method MUST return silently (no state change) and call `ErrorHandler.handleError()` with a diagnostic indicating the prevented action. Outputs/events (e.g., `down`, `up`) MUST NOT emit when an action is prevented.
+
+#### FR-147b: tryAction() Guard Pattern (Implementation Specification)
+
+- **FR-147b**: All three public state-changing methods (`down()`, `up()`, `toggle()`) on `NfsAccordionItemDef` MUST use an internal `tryAction()` guard pattern to enforce precondition checking.
+  - **Methods using tryAction()**: `down()`, `up()`, `toggle()`
+  - **Return Type**: All three methods MUST return `void` (no return value, no error object)
+  - **Preconditions Checked**:
+    1. Item is not disabled (check `disabled` input)
+    2. Item is not soft-disabled (check `softDisabled` signal per FR-050a)
+    3. For `down()`: Item is not already expanded (if already expanded, no-op)
+    4. For `up()`: Allowed by accordion constraints (check `allowAllClosed` per FR-174a)
+    5. For `toggle()`: Verify state machine is not in transition (state is 'COLLAPSED' or 'EXPANDED', not 'EXPANDING' or 'COLLAPSING' per FR-038a)
+  - **On Precondition Failure**:
+    - Do NOT execute the requested state change
+    - Call `ErrorHandler.handleError()` with a diagnostic message (e.g., "Cannot down() disabled item: itemId=item-2")
+    - Return `void` (method completes silently without emitting state change events)
+  - **On Precondition Success**:
+    - Execute the requested state change
+    - Apply queuing/debouncing rules per FR-089a if applicable
+    - Emit corresponding output event (`down`, `up`, or both for `toggle()` depending on final state)
+  - **Event Suppression**: When `tryAction()` prevents an action, the corresponding output event MUST NOT be emitted. This ensures that consumers who listen to `(down)` or `(up)` events never receive spurious events for failed attempts.
 
 #### FR-174a: Two-way Binding and allowAllClosed Interaction
 
