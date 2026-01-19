@@ -51,18 +51,30 @@ All internal directive classes use the `-Def` suffix to avoid naming collisions 
 
 ---
 
+## Implementation Architecture
+
+**Architectural Approach**: The implementation uses **template-directive composition** (`ng-template[nfsAccordionItem]`, `ng-template[nfsAccordionHeader]`) instead of the originally planned component-based API (`<nfs-accordion-item>`, `<nfs-accordion-title>`).
+
+**Key Decision Rationale**:
+
+- **@angular/aria Integration**: Directly leverages Angular ARIA's `AccordionGroup`, `AccordionTrigger`, and `AccordionPanel` primitives for WCAG AA compliance
+- **Reduced Custom ARIA**: Eliminates manual management of `aria-expanded`, `aria-controls`, and `aria-labelledby` attributes
+- **Constitution Alignment**: Follows project constitution's Implementation Hierarchy (prefer `@angular/aria` building blocks first)
+- **Performance**: `ViewContainerRef` template instantiation is more efficient than nested component trees for large accordions (100 items)
+
+**For detailed analysis**, see [plan.md Architecture Decision Record](./plan.md#architecture-decision-record-template-directive-composition) (lines 27-47), which documents the context, consequences, and trade-offs of this architectural choice.
+
+**For working examples**, refer to [quickstart.md](./quickstart.md) for the actual implemented API.
+
+---
+
 ## ⚠️ IMPORTANT: Implemented API vs Documented API
 
 **READ THIS FIRST**: This specification documents the **originally planned component-based API**. The actual implementation uses **template-directive composition** (`ng-template` directives) instead.
 
 ### Why the Architecture Changed
 
-The implementation chose template-directive composition to leverage `@angular/aria`'s accordion primitives more effectively. This architectural decision:
-
-- Aligns with project Constitution Principle I (prefer `@angular/aria` building blocks first)
-- Reduces custom ARIA handling complexity
-- Improves accessibility compliance
-- See plan.md [Architecture Decision Record](./plan.md#architecture-decision-record-template-directive-composition) for full rationale
+The implementation chose template-directive composition to leverage `@angular/aria`'s accordion primitives more effectively. See the [Implementation Architecture](#implementation-architecture) section above for key rationale and a link to the detailed ADR in plan.md.
 
 ### For Actual Usage Examples: Read `quickstart.md`
 
