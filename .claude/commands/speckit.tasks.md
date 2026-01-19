@@ -29,22 +29,6 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 1. **Setup**: Run `.specify/scripts/powershell/check-prerequisites.ps1 -Json` from repo root and parse FEATURE_DIR and AVAILABLE_DOCS list. All paths must be absolute. For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
 
-1a. **Check for existing tasks.md**: Before proceeding, check if `{FEATURE_DIR}/tasks.md` exists and contains implementation progress indicators:
-   - Read the file if it exists
-   - Detect progress markers: `[x]` completed checkboxes, "DONE", "IMPLEMENTED", "✅", verification dates (e.g., "2026-01-16"), status sections like "Implementation Status"
-   - If progress detected: **STOP and use AskUserQuestion tool** with these options:
-     ```
-     Question: "Existing tasks.md contains implementation progress tracking. Regenerating will discard all completion checkboxes, status notes, and verification dates. How would you like to proceed?"
-     Options:
-     1. "Cancel - Keep existing tasks.md" (abort command)
-     2. "Manual merge - Show me what would change" (read-only diff preview)
-     3. "Force regenerate - Discard all progress" (continue with generation)
-     ```
-   - If option 1 selected: Exit with message "Preserved existing tasks.md. To update manually, edit the file directly."
-   - If option 2 selected: Generate new tasks in memory, display diff, then exit with preservation message
-   - If option 3 selected: Proceed with generation (create backup note in commit message)
-   - If no progress detected OR file doesn't exist: Proceed without prompting
-
 2. **Load design documents**: Read from FEATURE_DIR:
    - **Required**: plan.md (tech stack, libraries, structure), spec.md (user stories with priorities)
    - **Optional**: data-model.md (entities), contracts/ (API endpoints), research.md (decisions), quickstart.md (test scenarios)

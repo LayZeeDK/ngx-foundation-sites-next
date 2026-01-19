@@ -28,22 +28,6 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 1. **Setup**: Run `.specify/scripts/powershell/setup-plan.ps1 -Json` from repo root and parse JSON for FEATURE_SPEC, IMPL_PLAN, SPECS_DIR, BRANCH. For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
 
-1a. **Check for existing plan.md**: Before proceeding with template filling, check if IMPL_PLAN contains implementation-specific content:
-   - Read the existing plan.md if it was copied from template
-   - Detect implementation markers: "Implementation Gaps", "GAP-", "UPDATE 2026-", "P0 - BLOCKING", "P1 - IMPORTANT", "Implementation Status", references to GAPS_REMEDIATION.md, completion dates, verification notes
-   - If implementation content detected: **STOP and use AskUserQuestion tool** with these options:
-     ```
-     Question: "Existing plan.md contains implementation progress tracking (gap analysis, status updates, clarifications). Regenerating will discard this valuable tracking data. How would you like to proceed?"
-     Options:
-     1. "Cancel - Keep existing plan.md" (abort command)
-     2. "Update only - Preserve implementation sections" (merge mode: update Technical Context and Constitution Check, preserve gaps/clarifications/ADR updates)
-     3. "Force regenerate - Discard all progress" (continue with full template generation)
-     ```
-   - If option 1 selected: Exit with message "Preserved existing plan.md. To update manually, edit Technical Context and Constitution Check sections directly."
-   - If option 2 selected: Merge mode - update only template sections (Technical Context, Constitution Check evidence), preserve all implementation sections
-   - If option 3 selected: Proceed with full generation (create backup note in commit message)
-   - If no implementation content detected OR file is fresh template: Proceed without prompting
-
 2. **Load context**: Read FEATURE_SPEC and `.specify/memory/constitution.md`. Load IMPL_PLAN template (already copied).
 
 3. **Execute plan workflow**: Follow the structure in IMPL_PLAN template to:
