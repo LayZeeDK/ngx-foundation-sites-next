@@ -196,43 +196,83 @@ Load only the minimal necessary context from each artifact using the Read tool:
 **Loading sequence**:
 
 1. Parse JSON output from prerequisite script to get absolute file paths
-2. **CRITICAL**: Use Read tool with chunked reading for large files:
+2. **CRITICAL**: Use semantic section reading for large files (>25K tokens):
    - **First, attempt full file read**: `Read(file_path)` without offset/limit
-   - **If Read fails with token limit error** (>25K tokens): Use chunked reading strategy below
+   - **If Read fails with token limit error**: Use semantic section strategy below
    - **NEVER fall back to Grep for headers only** — this misses content like clarifications
-3. Extract sections listed above from loaded content (do not load irrelevant sections)
+3. Extract sections listed above from loaded content
 
-**Chunked Reading Strategy** (use when file exceeds 25K token limit):
+**Semantic Section Reading Strategy** (use when file exceeds 25K token limit):
+
+Based on research-backed best practices from [CLAUDE-LARGE-FILE-CHUNKING-STRATEGIES.md](../../../prompt-engineering/CLAUDE-LARGE-FILE-CHUNKING-STRATEGIES.md).
 
 ```
-# Step 1: Determine file size
-Use Bash: wc -l <file_path>  # Get line count
+# Step 1: Discover section boundaries
+Grep(
+  pattern: "^#{1,3}\s+",
+  path: file_path,
+  output_mode: "content",
+  -n: true  # Include line numbers
+)
 
-# Step 2: Calculate chunks
-total_lines = result from wc -l
-chunk_size = 700 lines  # ~5K tokens per chunk, safe margin
-num_chunks = ceiling(total_lines / chunk_size)
+# Output example:
+# 118:### User Story 1 - Basic Accordion
+# 439:## Requirements (mandatory)
+# 706:### Accessibility Requirements
 
-# Step 3: Read in chunks
-FOR chunk_num IN range(0, num_chunks):
-  offset = chunk_num * chunk_size
-  Read(file_path, offset=offset, limit=chunk_size)
-  EXTRACT relevant sections from this chunk
+# Step 2: Parse section ranges
+FOR EACH header line in grep_output:
+  EXTRACT line_number, header_text
+  CALCULATE section_start = line_number
+  CALCULATE section_end = next_header_line_number - 1 (or EOF)
+  STORE sections_map[header_text] = {start, end, lines: end - start}
+
+# Step 3: Read relevant sections only
+FOR EACH section IN sections_map WHERE section is relevant:
+  Read(
+    file_path,
+    offset=section.start,
+    limit=section.lines
+  )
+  EXTRACT requirements/entities from content
   ACCUMULATE into semantic models
+
+# Step 4: Skip irrelevant sections
+# Example: Skip "Goals and Non-Goals" section if only analyzing requirements
 ```
 
 **Example (spec.md with 1,324 lines)**:
 
+**Semantic sections identified**:
 ```
-Chunk 1: Read(spec.md, offset=0, limit=700)      # Lines 1-700
-Chunk 2: Read(spec.md, offset=700, limit=700)    # Lines 700-1400 (covers all)
+Section 1: "User Scenarios & Testing" (lines 118-438, 320 lines)
+Section 2: "Requirements (mandatory)" (lines 439-705, 266 lines)
+Section 3: "Accessibility Requirements" (lines 706-749, 43 lines)
+Section 4: "Component API Requirements" (lines 758-976, 218 lines)
+Section 5: "Success Criteria" (lines 791-805, 14 lines)
 ```
+
+**Reads executed** (only relevant sections):
+```
+Read(spec.md, offset=118, limit=320)   # User Stories section
+Read(spec.md, offset=439, limit=266)   # Requirements section
+Read(spec.md, offset=706, limit=43)    # Accessibility section
+Read(spec.md, offset=758, limit=218)   # API Requirements section
+```
+
+**Benefits**:
+- ✅ Semantic boundaries: Never split mid-requirement
+- ✅ No overlap needed: Natural section boundaries prevent context loss
+- ✅ Efficient: Skip irrelevant sections (e.g., prose, examples)
+- ✅ Aligned with Anthropic guidance: Semantic chunking over arbitrary splits
+
+**Cost**: ~5 Read calls for typical spec, same total tokens as fixed chunking
 
 **Validation**:
 - After loading, verify you extracted CONTENT not just STRUCTURE
 - Check: Did you find clarification blocks added via /speckit.clarify?
 - Check: Did you capture requirement details (not just FR-XXX headers)?
-- If you only have headers/IDs but not content → YOU FAILED, retry with chunks
+- If you only have headers/IDs but not content → YOU FAILED, retry
 
 </context_loading>
 
@@ -796,26 +836,36 @@ This command is optimized for Haiku 4.5's strengths:
 
 **Context Window Management (CRITICAL IMPROVEMENT - 2026-01-19)**:
 
-This skill was updated to prevent a common failure mode where large files (>25K tokens) triggered a false optimization: reading headers via Grep instead of content via chunked Read.
+This skill was updated to use **semantic section reading** based on Anthropic's official guidance, preventing false positives from header-only reads.
 
-**Problem Identified**:
+**Problem Identified** (Production Incident 2026-01-19):
 - spec.md files often exceed Read tool's 25K token limit
 - Previous behavior: Fall back to Grep(pattern: "^#{1,3}\s+") for structure
 - **Failure**: Misses all content under headers (clarifications, requirement details, etc.)
-- **Impact**: Analysis flags resolved issues as "CRITICAL" because clarifications were invisible
+- **Impact**: Analysis flagged resolved issues as "CRITICAL" (e.g., C01 ID stability already clarified via `/speckit.clarify`)
 
-**Solution Implemented**:
-- Step 2: Explicit chunked reading strategy (700-line chunks = ~5K tokens each)
-- Step 2b: Mandatory content validation checklist before Step 3
-- Validation: "Can you quote specific content?" test catches header-only reads
+**Solution Implemented** (Research-Backed):
+- **Step 2**: Semantic section reading (Anthropic's recommended approach)
+  - Grep for boundaries: Get header line numbers
+  - Read by section: User Stories, Requirements, Acceptance Criteria
+  - Variable chunk size: 200-800 lines per section (natural boundaries)
+- **Step 2b**: Mandatory content validation checklist before Step 3
+- **Validation**: "Can you quote specific content?" test catches header-only reads
 
-**Per Haiku 4.5 Best Practices** (prompt-engineering/CLAUDE-HAIKU-4-5-OPTIMIZATION.md):
+**Per Anthropic's Official Guidance** ([Introducing Contextual Retrieval](https://www.anthropic.com/news/contextual-retrieval)):
+- **Recommended**: "Semantic chunking" (by meaning/section) over fixed-size chunks
+- **Chunk size**: "Usually no more than a few hundred tokens" for RAG
+- **Philosophy**: "Experiment with your use case" for optimal boundaries
+- **Key insight**: Semantic boundaries prevent context loss at chunk edges
+
+**Alignment with Haiku 4.5 Best Practices** (prompt-engineering/CLAUDE-HAIKU-4-5-OPTIMIZATION.md):
 - "Context Window Management: Use only as much context as required per operation"
 - "Optimized Input Length: Send only relevant sections, not entire files"
-- **Correct interpretation**: "Minimal context" = relevant sections via chunks, NOT structure via headers
+- **Correct interpretation**: "Minimal context" = relevant sections, NOT structure-only
 
-**Cost Impact**: Negligible (~0.5-1K additional input tokens for chunked reads vs Grep)
-**Quality Impact**: HIGH — Prevents false positives on already-resolved issues
+**Cost Impact**: Negligible (same total tokens, distributed across 5 sections vs 2 fixed chunks)
+**Quality Impact**: HIGH — Semantic boundaries prevent mid-requirement splits, capture all clarifications
+**Documentation**: See [CLAUDE-LARGE-FILE-CHUNKING-STRATEGIES.md](../../../prompt-engineering/CLAUDE-LARGE-FILE-CHUNKING-STRATEGIES.md) for full research
 
 </optimization_strategy>
 
