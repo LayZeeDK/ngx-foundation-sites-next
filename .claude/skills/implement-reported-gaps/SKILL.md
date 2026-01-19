@@ -350,6 +350,7 @@ Execute exactly these steps:
 2. Identify the exact text to change based on recommendation
 3. Use Edit tool with old_string/new_string
 4. Verify edit succeeded (no error returned)
+5. Delete this task's backup file: find {FEATURE_DIR} -name "spec.md.backup-*" -type f -mmin -5 -delete
 </action_steps>
 
 <recommendation>
@@ -368,6 +369,7 @@ Execute exactly these steps:
 - [ ] Edit tool returned success
 - [ ] Change at correct location
 - [ ] No unrelated changes
+- [ ] Backup files deleted (spec.md.backup-*)
 </success_criteria>
 
 <anti_goals>
@@ -431,6 +433,7 @@ Think about:
 1. **Read current state** at {Location}
 2. **Implement minimal fix** per recommendation
 3. **Verify immediately** - read file to confirm change applied
+4. **Clean up backups** - delete spec.md.backup-* files created by this task
 
 ### Out of Scope
 
@@ -446,6 +449,7 @@ After implementation:
 - [ ] Fix addresses the finding
 - [ ] No unintended side effects
 - [ ] Related files updated if cross-referenced
+- [ ] Backup files deleted: find {FEATURE_DIR} -name "spec.md.backup-*" -type f -mmin -5 -delete
 </phase>
 
 </implementation_phases>
@@ -532,6 +536,7 @@ After implementation:
 - Verify the finding is resolved
 - Check for unintended side effects
 - Update related files for consistency
+- Clean up backup files: find {FEATURE_DIR} -name "spec.md.backup-*" -type f -delete
 
 </implementation_strategy>
 
@@ -612,6 +617,7 @@ Execute EXACTLY these steps:
    - old_string: the existing code block where insertion goes
    - new_string: existing code + inserted code (preserve indentation)
 4. Verify edit succeeded (no error returned)
+5. Delete this task's backup file: find {FEATURE_DIR} -name "spec.md.backup-*" -type f -mmin -5 -delete
 </action_steps>
 
 <constraints>
@@ -627,6 +633,7 @@ Execute EXACTLY these steps:
 - [ ] Code inserted at correct location
 - [ ] Surrounding code unchanged
 - [ ] Indentation matches context
+- [ ] Backup files deleted (spec.md.backup-*)
 </success_criteria>
 
 <anti_goals>
@@ -727,6 +734,7 @@ After reading, think about:
 1. Read modified file to confirm change applied
 2. Check TypeScript compilation: `npx tsc --noEmit {file_path}`
 3. Verify the change addresses the finding
+4. Clean up backup files: find {FEATURE_DIR} -name "spec.md.backup-*" -type f -mmin -5 -delete
    </phase>
 
 </implementation_phases>
@@ -754,6 +762,7 @@ After reading, think about:
 - [ ] Test passes
 - [ ] No TypeScript errors
 - [ ] Change addresses finding
+- [ ] Backup files deleted (spec.md.backup-*)
       </success_criteria>
 
 <anti_goals>
@@ -858,6 +867,7 @@ After implementation:
 2. Verify change addresses the finding requirement
 3. Check existing patterns are preserved
 4. If UI-related: consider taking screenshot to compare before/after
+5. Clean up backup files: find {FEATURE_DIR} -name "spec.md.backup-*" -type f -mmin -5 -delete
 
 </implementation_strategy>
 
@@ -872,6 +882,7 @@ Do not create remediation documents - implement directly.
 - Code change implemented correctly
 - Verification that change addresses finding
 - Edge cases handled (leverage Opus's proactive handling)
+- Backup files deleted (spec.md.backup-*)
 </deliverables>
 
 <guidance>
