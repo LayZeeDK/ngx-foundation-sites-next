@@ -43,6 +43,7 @@ This specification uses the following standardized terms:
 ### Naming Convention for Directive Classes
 
 All internal directive classes use the `-Def` suffix to avoid naming collisions with Foundation class names.
+
 - **Selector** (HTML/template): `[nfsAccordionItem]` (kebab-case, lowercase)
 - **Class Name** (TypeScript import): `NfsAccordionItemDef` (PascalCase with `-Def` suffix)
 - **Usage**: `import { NfsAccordionItemDef } from '...'` then apply `ng-template[nfsAccordionItem]` (selector, not class name)
@@ -84,17 +85,17 @@ The implementation chose template-directive composition to leverage `@angular/ar
 
 ### API Comparison
 
-| Aspect                  | Originally Planned                              | Actually Implemented                                                                  |
-| ----------------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------- |
-| **Item Container**      | `<nfs-accordion-item>` component                | `ng-template[nfsAccordionItem]` directive                                             |
-| **Item Header**         | `<nfs-accordion-title>` component               | `ng-template[nfsAccordionHeader]` directive                                           |
-| **Item Content**        | ng-content projection                           | `ng-template[nfsAccordionContent]` directive (lazy)                                   |
-| **ARIA Handling**       | Custom implementation                           | Delegated to `@angular/aria` primitives                                               |
-| **Outputs/Events**      | `(down)`, `(up)` on `<nfs-accordion>`           | Same: `(down)`, `(up)` outputs (see [Example 10](./quickstart.md#example-10-event-handling-work-in-progress)) |
-| **Methods**             | `down()`, `up()`, `toggle()` on item component  | Same methods on `NfsAccordionItemDef` (see [Example 9](./quickstart.md#example-9-programmatic-control-work-in-progress)) |
-| **Selector Syntax**     | `<nfs-accordion-item panelId="...">`            | `<ng-template nfsAccordionItem panelId="...">`                                        |
-| **Imports**             | `NfsAccordionItem`, `NfsAccordionTitle`         | `NfsAccordionItemDef`, `NfsAccordionHeaderDef`, `NfsAccordionContentDef` (see [Import Components](./quickstart.md#2-import-components)) |
-| **DI Pattern**          | `nfsAccordionToken` for parent-child lookup     | Same: exported `nfsAccordionToken` + optional injection with `skipSelf` (CDK pattern) |
+| Aspect              | Originally Planned                             | Actually Implemented                                                                                                                    |
+| ------------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| **Item Container**  | `<nfs-accordion-item>` component               | `ng-template[nfsAccordionItem]` directive                                                                                               |
+| **Item Header**     | `<nfs-accordion-title>` component              | `ng-template[nfsAccordionHeader]` directive                                                                                             |
+| **Item Content**    | ng-content projection                          | `ng-template[nfsAccordionContent]` directive (lazy)                                                                                     |
+| **ARIA Handling**   | Custom implementation                          | Delegated to `@angular/aria` primitives                                                                                                 |
+| **Outputs/Events**  | `(down)`, `(up)` on `<nfs-accordion>`          | Same: `(down)`, `(up)` outputs (see [Example 10](./quickstart.md#example-10-event-handling-work-in-progress))                           |
+| **Methods**         | `down()`, `up()`, `toggle()` on item component | Same methods on `NfsAccordionItemDef` (see [Example 9](./quickstart.md#example-9-programmatic-control-work-in-progress))                |
+| **Selector Syntax** | `<nfs-accordion-item panelId="...">`           | `<ng-template nfsAccordionItem panelId="...">`                                                                                          |
+| **Imports**         | `NfsAccordionItem`, `NfsAccordionTitle`        | `NfsAccordionItemDef`, `NfsAccordionHeaderDef`, `NfsAccordionContentDef` (see [Import Components](./quickstart.md#2-import-components)) |
+| **DI Pattern**      | `nfsAccordionToken` for parent-child lookup    | Same: exported `nfsAccordionToken` + optional injection with `skipSelf` (CDK pattern)                                                   |
 
 ### Content Projection Strategy
 
@@ -279,11 +280,61 @@ A developer uses `@for` to render accordion items from a dynamic array. Items ca
 
 **Independent Test**: Can be tested by rendering an accordion with 3 items, adding a new item, removing an item, and verifying keyboard navigation and IDs update correctly. Delivers dynamic content support.
 
+**⚠️ CURRENT STATUS**: **BLOCKED** - API limitation discovered during implementation (2026-01-17)
+
+**API Limitation**: The current accordion API uses `input.required<string>()` for `panelId`, which prevents dynamic template creation via `@for` loops. Angular's template initialization requires all required inputs to be available at template creation time, but `@for` creates templates dynamically from an array, causing NG0950 error ("Input is required but no value is available yet").
+
+**Recovery Options**:
+
+1. **Option A: Make panelId optional** (Recommended for MVP+)
+   - Change `panelId` from `input.required<string>()` to `input<string>()`
+   - Add auto-generation fallback when `panelId` is not provided
+   - **Pros**: Minimal API change, maintains directive-based architecture, enables `@for` usage
+   - **Cons**: Requires auto-generated IDs to be stable across re-renders (implementation complexity)
+   - **Impact**: Non-breaking change (existing code with explicit `panelId` continues working)
+
+2. **Option B: Defer US8 to post-MVP**
+   - Document current limitation in public API documentation
+   - Recommend workaround: pre-create all possible items, show/hide via `*ngIf` instead of `@for`
+   - **Pros**: No API redesign needed, allows MVP delivery without delay
+   - **Cons**: Limits dynamic content scenarios, less ergonomic developer experience
+   - **Impact**: Feature deferred but not permanently blocked
+
+3. **Option C: Hybrid component-directive API**
+   - Add `<nfs-accordion-item>` component for dynamic scenarios alongside `ng-template[nfsAccordionItem]` directive
+   - Component variant uses optional `panelId` input with auto-generation
+   - **Pros**: Supports both static (directive) and dynamic (component) usage patterns
+   - **Cons**: Two APIs to maintain, larger bundle size, documentation complexity
+   - **Impact**: API expansion (additive change, not breaking)
+
+**Recommended Path Forward**: **Option B** (defer to post-MVP) for immediate delivery, then implement **Option A** in a follow-up release once core functionality is validated and stable.
+
+**Workaround Pattern** (until API redesign):
+
+```html
+<!-- Instead of @for, use show/hide pattern -->
+<nfs-accordion>
+  <ng-template nfsAccordionItem panelId="item-0" *ngIf="items[0]">
+    <ng-template nfsAccordionHeader>{{ items[0].title }}</ng-template>
+    <p>{{ items[0].content }}</p>
+  </ng-template>
+
+  <ng-template nfsAccordionItem panelId="item-1" *ngIf="items[1]">
+    <ng-template nfsAccordionHeader>{{ items[1].title }}</ng-template>
+    <p>{{ items[1].content }}</p>
+  </ng-template>
+
+  <!-- Pre-create up to max expected items -->
+</nfs-accordion>
+```
+
 **Acceptance Scenarios**:
 
 1. **Given** an accordion with 3 items rendered via `@for`, **When** a new item is added to the array, **Then** the new item renders with correct IDs and keyboard navigation includes it
 2. **Given** an accordion with 4 items, **When** item 2 is removed from the array, **Then** remaining items maintain correct aria-controls/aria-labelledby IDs
 3. **Given** an accordion with items reordered, **When** keyboard navigation is used, **Then** focus moves in the new DOM order
+
+**Note**: All acceptance scenarios are currently blocked pending API redesign decision.
 
 ---
 
@@ -554,16 +605,17 @@ When `deepLink` is enabled, changing a `panelId` at runtime does NOT by itself t
 - **FR-106a**: The component MUST rely on the browser's native event loop for processing concurrent keyboard and mouse interactions. Click events on accordion headers will focus the clicked element per standard browser behavior—this is consistent with Foundation Accordion, Angular Material Expansion Panel, Angular CDK Accordion, and WAI-ARIA APG (which does not specify focus precedence between input modalities). Keyboard navigation (Arrow keys, Home, End) moves focus per WAI-ARIA APG accordion pattern. No custom event queue or focus precedence logic is required; the browser's FIFO event processing provides correct behavior.
 
   **Failure Scenario Handling**:
-
   1. **Click + Keyboard Simultaneous Input**: If a mouse click and keyboard event (e.g., Enter/Space) occur within the same event loop tick (e.g., user presses Enter while clicking), the browser's native event loop determines processing order (typically FIFO). The component MUST NOT introduce additional ordering logic. Both events will trigger their respective handlers, and FR-089a's debounce serialization (50ms ±10ms tolerance) will coalesce consecutive toggle requests from the same input source.
 
   2. **Programmatic + User Concurrent Actions**: If a programmatic method call (e.g., `toggle()`, `down()`, `up()`) occurs while a user interaction (click/keyboard) is in-flight or queued, both requests MUST be enqueued per FR-089a's serialization semantics. Since programmatic calls and user interactions are different input sources per FR-089a, they do NOT debounce together—both execute in FIFO order. Example: A click at T=0ms followed by `toggle()` at T=5ms will execute both operations sequentially (click processes first, programmatic call executes after the click's transition completes or debounce window expires).
 
   3. **Rapid Key Repeats (Keyboard Auto-Repeat)**: If a user holds down Enter/Space causing the browser's `KeyboardEvent` auto-repeat, the component MUST treat each repeat event as a separate keyboard input subject to FR-089a's 50ms debounce. The browser's native repeat rate (typically 30-50ms intervals) will trigger multiple events, but FR-089a's debounce coalescing for the 'keyboard' input source will collapse rapid repeats into a single toggle operation. The component MUST NOT suppress key repeat via `event.repeat` filtering—allow browser defaults.
 
-  4. **Focus Loss on Item Removal**: If a focused accordion item is removed from the DOM (e.g., via `@for` list mutation) while a concurrent keyboard navigation command (Arrow keys, Home, End) is processing, focus MUST move per FR-056 (next item, previous item, or parent container). The keyboard navigation handler MUST check if the target item still exists in the DOM before applying focus. If the target was removed, fall back to the next available item in navigation order. This prevents focus loss to `<body>` and maintains keyboard accessibility.
+  4. **Rapid Double-Clicks (Mouse Input)**: If a user double-clicks an accordion header rapidly (e.g., two clicks within 100ms), the component MUST treat each click as a separate mouse input subject to FR-089a's 50ms debounce. The first click will trigger a toggle operation, and the second click within the debounce window will be coalesced (no additional toggle). If the second click occurs after the debounce window expires (>50ms), it will trigger a second toggle operation, returning the panel to its original state. The component MUST NOT prevent native `dblclick` events or introduce custom double-click detection—rely on browser defaults and FR-089a's debounce serialization.
 
-  **Testing Strategy**: Use Storybook play functions with mock timers (`vi.useFakeTimers()`) to validate debounce timing per FR-089a's ±10ms tolerance. Test scenarios 1-4 above to verify browser event loop ordering, serialization queue behavior, key repeat handling, and focus restoration on DOM mutations.
+  5. **Focus Loss on Item Removal**: If a focused accordion item is removed from the DOM (e.g., via `@for` list mutation) while a concurrent keyboard navigation command (Arrow keys, Home, End) is processing, focus MUST move per FR-056 (next item, previous item, or parent container). The keyboard navigation handler MUST check if the target item still exists in the DOM before applying focus. If the target was removed, fall back to the next available item in navigation order. This prevents focus loss to `<body>` and maintains keyboard accessibility.
+
+  **Testing Strategy**: Use Storybook play functions with mock timers (`vi.useFakeTimers()`) to validate debounce timing per FR-089a's ±10ms tolerance. Test scenarios 1-5 above to verify browser event loop ordering, serialization queue behavior, key repeat handling, rapid double-click debouncing, and focus restoration on DOM mutations.
 
 #### FR-113a: Interactive Elements in Title Content
 
