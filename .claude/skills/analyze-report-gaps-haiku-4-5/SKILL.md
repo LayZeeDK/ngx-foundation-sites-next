@@ -103,31 +103,31 @@ and derives the feature directory automatically (`specs/002-accordion-component/
 pwsh ./.specify/scripts/powershell/check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks
 ```
 
-**Parse JSON output for**:
+**Validate JSON output contains:**
 
-- `FEATURE_DIR`: Absolute path to feature directory
-- (Ignore `AVAILABLE_DOCS` - it has known bugs and may not list all files)
+- `FEATURE_DIR`: Must be defined and non-empty (absolute path to feature directory)
+- `AVAILABLE_DOCS`: Must be defined (confirms prerequisite script executed successfully)
 
-**Verify required files exist**:
+**Derive absolute paths by concatenation:**
 
-Use Glob to check for each required file (DO NOT trust AVAILABLE_DOCS from script):
+- `SPEC` = FEATURE_DIR + "/spec.md"
+- `PLAN` = FEATURE_DIR + "/plan.md"
+- `TASKS` = FEATURE_DIR + "/tasks.md"
+- `CONSTITUTION` = ".specify/memory/constitution.md" (project-level, repo root)
+- `OUTPUT` = FEATURE_DIR + "/gap-analysis-report.md" (WILL BE CREATED)
+
+**Verify each derived path exists using Glob:**
 
 ```
-# Check for spec.md
+# Verify spec.md exists
 Glob(pattern: "spec.md", path: FEATURE_DIR)
-# Check for plan.md
+
+# Verify plan.md exists
 Glob(pattern: "plan.md", path: FEATURE_DIR)
-# Check for tasks.md
+
+# Verify tasks.md exists
 Glob(pattern: "tasks.md", path: FEATURE_DIR)
 ```
-
-**Derive absolute paths** (after verification):
-
-- `SPEC` = FEATURE_DIR/spec.md (verified via Glob)
-- `PLAN` = FEATURE_DIR/plan.md (verified via Glob)
-- `TASKS` = FEATURE_DIR/tasks.md (verified via Glob)
-- `CONSTITUTION` = .specify/memory/constitution.md (project-level, always exists)
-- `OUTPUT` = FEATURE_DIR/gap-analysis-report.md (WILL BE CREATED)
 
 **Error Handling**:
 

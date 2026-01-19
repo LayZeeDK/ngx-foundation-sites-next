@@ -79,18 +79,34 @@ and derives the feature directory automatically (`specs/002-accordion-component/
 pwsh ./.specify/scripts/powershell/check-prerequisites.ps1 -Json
 ```
 
-**Parse JSON output for**:
+**Validate JSON output contains:**
 
-- `FEATURE_DIR`: Absolute path to feature directory
-- `AVAILABLE_DOCS`: List of existing files
+- `FEATURE_DIR`: Must be defined and non-empty (absolute path to feature directory)
+- `AVAILABLE_DOCS`: Must be defined (confirms prerequisite script executed successfully)
 
-**Derive paths**:
+**Derive absolute paths by concatenation:**
 
-- `SPEC` = FEATURE_DIR/spec.md (REQUIRED)
-- `PLAN` = FEATURE_DIR/plan.md (REQUIRED)
-- `DATA_MODEL` = FEATURE_DIR/data-model.md (OPTIONAL)
-- `CONTRACTS` = FEATURE_DIR/contracts/ (OPTIONAL)
-- `OUTPUT` = FEATURE_DIR/tasks.md
+- `SPEC` = FEATURE_DIR + "/spec.md" (REQUIRED)
+- `PLAN` = FEATURE_DIR + "/plan.md" (REQUIRED)
+- `DATA_MODEL` = FEATURE_DIR + "/data-model.md" (OPTIONAL)
+- `CONTRACTS` = FEATURE_DIR + "/contracts/" (OPTIONAL)
+- `OUTPUT` = FEATURE_DIR + "/tasks.md"
+
+**Verify required files exist using Glob:**
+
+```
+# Verify spec.md exists
+Glob(pattern: "spec.md", path: FEATURE_DIR)
+
+# Verify plan.md exists
+Glob(pattern: "plan.md", path: FEATURE_DIR)
+```
+
+**Error Handling:**
+
+- If Glob returns empty for spec.md: ABORT with "Run `/speckit.specify` to create specification"
+- If Glob returns empty for plan.md: ABORT with "Run `/speckit.plan` to create implementation plan"
+- Do NOT proceed with partial artifacts
 
 **PowerShell String Escaping**:
 

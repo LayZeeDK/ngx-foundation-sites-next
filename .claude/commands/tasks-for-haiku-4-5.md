@@ -71,19 +71,31 @@ Run prerequisite check from repository root:
 pwsh ./.specify/scripts/powershell/check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks
 ```
 
-**Parse JSON output for:**
+**Validate JSON output contains:**
 
-- `FEATURE_DIR`: Absolute path to feature directory
-- `AVAILABLE_DOCS`: List of existing files
+- `FEATURE_DIR`: Must be defined and non-empty (absolute path to feature directory)
+- `AVAILABLE_DOCS`: Must be defined (confirms prerequisite script executed successfully)
 
-**Derive paths:**
+**Derive absolute paths by concatenation:**
 
-- `TASKS` = FEATURE_DIR/tasks.md (REQUIRED)
-- `SPEC` = FEATURE_DIR/spec.md (OPTIONAL - for context)
-- `PLAN` = FEATURE_DIR/plan.md (OPTIONAL - for file structure)
-- `OUTPUT_TASKS` = FEATURE_DIR/haiku-suitable-tasks.md
-- `OUTPUT_CONTEXT` = FEATURE_DIR/haiku-implementation-context.md
-- `OUTPUT_ANALYSIS` = FEATURE_DIR/haiku-task-analysis.md
+- `TASKS` = FEATURE_DIR + "/tasks.md" (REQUIRED)
+- `SPEC` = FEATURE_DIR + "/spec.md" (OPTIONAL - for context)
+- `PLAN` = FEATURE_DIR + "/plan.md" (OPTIONAL - for file structure)
+- `OUTPUT_TASKS` = FEATURE_DIR + "/haiku-suitable-tasks.md"
+- `OUTPUT_CONTEXT` = FEATURE_DIR + "/haiku-implementation-context.md"
+- `OUTPUT_ANALYSIS` = FEATURE_DIR + "/haiku-task-analysis.md"
+
+**Verify required files exist using Glob:**
+
+```
+# Verify tasks.md exists
+Glob(pattern: "tasks.md", path: FEATURE_DIR)
+```
+
+**Error Handling:**
+
+- If Glob returns empty for tasks.md: ABORT with "Run `/speckit.tasks` to generate task breakdown"
+- Do NOT proceed without tasks.md
 
 ### Step 2: Load Context Documents
 
