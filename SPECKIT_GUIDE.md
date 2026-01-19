@@ -44,6 +44,74 @@ Start using slash commands with your AI agent:
 ❌ **Wrong**: Using `/speckit.specify` to update FR-106a in an existing spec
 ✅ **Correct**: Manually edit `specs/###-feature/spec.md` using your editor or agent
 
+### ⚠️ `/speckit.plan` and `/speckit.tasks` Overwrite Implementation Progress
+
+**CRITICAL LIMITATION**: `/speckit.plan` and `/speckit.tasks` assume **greenfield scenarios** and will **overwrite existing implementation tracking** without warning.
+
+#### What You'll Lose When Re-running These Commands
+
+**`/speckit.plan` overwrites:**
+- ✅ Gap tracking sections ("P0 - BLOCKING", "P1 - IMPORTANT", etc.)
+- ✅ Implementation status updates ("UPDATE 2026-01-09", verification dates)
+- ✅ Implementation clarifications (FR-017a, FR-067b, etc.)
+- ✅ References to GAPS_REMEDIATION.md
+- ✅ Architecture Decision Record updates
+
+**`/speckit.tasks` overwrites:**
+- ✅ Completion checkboxes (`[x]` → `[ ]`)
+- ✅ "DONE" and "IMPLEMENTED ✅" status markers
+- ✅ Verification dates ("Verified: 2026-01-16")
+- ✅ Code location references ("accordion.ts:131")
+- ✅ Implementation Status sections
+
+#### When This Matters
+
+These commands are **safe** for:
+- ✅ Initial planning (before implementation starts)
+- ✅ Fresh features with no implementation progress
+
+These commands are **destructive** for:
+- ❌ Active implementations with tracked progress
+- ❌ Features with gap analysis completed
+- ❌ Projects with completion tracking in tasks.md
+
+#### What to Do Instead
+
+| Scenario | Recommended Approach |
+|----------|---------------------|
+| **Minor spec changes** | Manual edit spec.md → manual update plan.md/tasks.md |
+| **Add new requirement** | `/speckit.clarify` OR manual edit → manual update tasks.md |
+| **Tech stack changed** | Manual update Technical Context section in plan.md |
+| **Architecture changed** | Consider creating new feature spec OR manual plan.md rewrite |
+| **Tasks need reordering** | Manual edit tasks.md (preserve completion tracking) |
+| **Major scope change** | Create new feature spec with `/speckit.specify` |
+
+#### Safe Workflow for Active Implementations
+
+1. **Before making changes**: Create backup branch
+   ```bash
+   git checkout -b backup-plan-$(date +%Y%m%d)
+   git add specs/###-feature/plan.md specs/###-feature/tasks.md
+   git commit -m "backup: planning artifacts before manual updates"
+   git checkout your-feature-branch
+   ```
+
+2. **Make manual edits** to spec.md, plan.md, or tasks.md
+
+3. **Verify consistency** with `/speckit.analyze`
+
+4. **If you accidentally overwrote progress**:
+   ```bash
+   git checkout backup-plan-* -- specs/###-feature/plan.md
+   git checkout backup-plan-* -- specs/###-feature/tasks.md
+   ```
+
+#### Why This Limitation Exists
+
+SpecKit planning commands treat artifacts as **immutable templates** rather than **living documents**. They regenerate from scratch using templates in `.specify/templates/`, which doesn't preserve mid-implementation state.
+
+**Future improvement**: Commands should detect existing implementation progress and offer merge/update modes instead of full regeneration. Until then, **use manual edits for active implementations**.
+
 ### How to Update Existing Specs
 
 | Change Type                         | Recommended Approach                 |
@@ -93,10 +161,12 @@ Spec Kit is **iterative**, not strictly linear. You CAN go "backwards" when gaps
 | ------------------ | ------------ | ----------------- | ------------------------------ |
 | `/speckit.specify` | ✅ Yes       | ❌ No             | New features only              |
 | `/speckit.clarify` | ❌ No        | ✅ Yes            | Asking questions, filling gaps |
-| `/speckit.plan`    | ❌ No        | ✅ Regenerates    | New architecture needed        |
-| `/speckit.tasks`   | ❌ No        | ✅ Regenerates    | New tasks needed               |
+| `/speckit.plan`    | ❌ No        | ⚠️ Overwrites (see warning below)    | New architecture needed        |
+| `/speckit.tasks`   | ❌ No        | ⚠️ Overwrites (see warning below)    | New tasks needed               |
 | `/speckit.analyze` | ❌ No        | ❌ No (read-only) | Detecting inconsistencies      |
 | Manual edit        | ❌ No        | ✅ Yes            | Known, localized changes       |
+
+**⚠️ Warning**: `/speckit.plan` and `/speckit.tasks` overwrite implementation progress (gap tracking, completion checkboxes, status notes). See [Implementation Progress Warning](#️-speckitplan-and-speckittasks-overwrite-implementation-progress) for details.
 
 ### Example: Updating a Requirement (FR-106a)
 
