@@ -105,13 +105,33 @@ Write-Host "   (Prompt text truncated in display above)" -ForegroundColor Gray
 Write-Host ""
 
 try {
-    # Execute without redirect first, capture output differently
-    # PowerShell redirect operators can interfere with argument parsing
-    $output = & claude @claudeArgs 2>&1
-    $exitCode = $LASTEXITCODE
+    # Execute with timeout (gap analysis can take 30-60 seconds)
+    Write-Host "⏱️  Starting with 2-minute timeout..." -ForegroundColor Cyan
 
-    # Write output to file
-    $output | Out-File -FilePath $outputFile -Encoding UTF8
+    # Use job for timeout control
+    $job = Start-Job -ScriptBlock {
+        param($args)
+        & claude @args 2>&1
+    } -ArgumentList (,$claudeArgs)
+
+    # Wait for completion with timeout (120 seconds)
+    $completed = Wait-Job -Job $job -Timeout 120
+
+    if ($completed) {
+        $output = Receive-Job -Job $job
+        $exitCode = 0
+
+        # Write output to file
+        $output | Out-File -FilePath $outputFile -Encoding UTF8
+
+        Write-Host "✅ Completed within timeout" -ForegroundColor Green
+    } else {
+        Write-Host "⏱️  Timeout exceeded (2 minutes)" -ForegroundColor Yellow
+        Stop-Job -Job $job
+        $exitCode = 124  # Timeout exit code
+    }
+
+    Remove-Job -Job $job -Force
 }
 catch {
     Write-Host "❌ Exception during CLI invocation: $_" -ForegroundColor Red
