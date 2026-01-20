@@ -21,15 +21,14 @@ This directory contains **project-specific** optimization strategies and verific
 
 ## What's In This Directory
 
-This directory contains **project-specific** verification results and optimization recommendations that are not generalizable to other projects:
+This directory contains **project-specific** optimization recommendations that are not generalizable to other projects:
 
 | File | Purpose |
 |------|---------|
 | [HAIKU-4-5-COMMAND-OPTIMIZATION-RECOMMENDATIONS.md](./HAIKU-4-5-COMMAND-OPTIMIZATION-RECOMMENDATIONS.md) | SpecKit command-specific Haiku optimization |
-| [GITHUB-COPILOT-VERIFICATION-RESULTS.md](./GITHUB-COPILOT-VERIFICATION-RESULTS.md) | Project-specific GitHub Copilot verification results |
-| [COPILOT-CLI-VERIFICATION-RESULTS.md](./COPILOT-CLI-VERIFICATION-RESULTS.md) | Project-specific Copilot CLI verification results |
-| [BETA-FEATURES-AVAILABILITY-OVERVIEW.md](./BETA-FEATURES-AVAILABILITY-OVERVIEW.md) | GitHub Copilot beta feature tracking |
-| [BETA-FEATURE-VERIFICATION-PLAN.md](./BETA-FEATURE-VERIFICATION-PLAN.md) | GitHub Copilot verification methodology |
+
+> **📘 Looking for GitHub Copilot feature availability?**
+> See [`../github-copilot-prompt-engineering/FEATURES-AND-AVAILABILITY.md`](../github-copilot-prompt-engineering/FEATURES-AND-AVAILABILITY.md)
 
 ---
 
@@ -65,41 +64,14 @@ This directory contains **project-specific** verification results and optimizati
 
 ---
 
-## 🔬 Verification Results
+## 🔬 Feature Availability (Moved)
 
-> **📘 Claude Code feature verification** has moved to [`../claude-prompt-engineering/FEATURES-AND-AVAILABILITY.md`](../claude-prompt-engineering/FEATURES-AND-AVAILABILITY.md)
+Feature availability documentation has been consolidated:
 
-### [GitHub Copilot Verification Results](./GITHUB-COPILOT-VERIFICATION-RESULTS.md)
-
-Project-specific verification of GitHub Copilot features including:
-- Agent mode capabilities
-- Model availability and switching
-- Custom instructions effectiveness
-
-### [Copilot CLI Verification Results](./COPILOT-CLI-VERIFICATION-RESULTS.md)
-
-Project-specific verification of GitHub Copilot CLI (`gh copilot`) including:
-- Command availability
-- Model selection options
-- Context passing limitations
-
----
-
-## 🧪 Beta Feature Tracking
-
-> **📘 Claude Code feature availability** has moved to [`../claude-prompt-engineering/FEATURES-AND-AVAILABILITY.md`](../claude-prompt-engineering/FEATURES-AND-AVAILABILITY.md)
-
-### [Beta Features Availability Overview](./BETA-FEATURES-AVAILABILITY-OVERVIEW.md)
-
-GitHub Copilot beta feature tracking:
-- GitHub Copilot (VS Code)
-- GitHub Copilot CLI
-
-### [Beta Feature Verification Plan](./BETA-FEATURE-VERIFICATION-PLAN.md)
-
-GitHub Copilot verification methodology:
-- Testing procedures
-- Documentation standards
+| Tool | Documentation |
+|------|---------------|
+| **Claude Code** | [`../claude-prompt-engineering/FEATURES-AND-AVAILABILITY.md`](../claude-prompt-engineering/FEATURES-AND-AVAILABILITY.md) |
+| **GitHub Copilot** | [`../github-copilot-prompt-engineering/FEATURES-AND-AVAILABILITY.md`](../github-copilot-prompt-engineering/FEATURES-AND-AVAILABILITY.md) |
 
 ---
 

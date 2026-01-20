@@ -23,6 +23,7 @@ This directory contains comprehensive documentation for optimizing GitHub Copilo
 
 | Document | Description | When to Use |
 |----------|-------------|-------------|
+| [FEATURES-AND-AVAILABILITY.md](./FEATURES-AND-AVAILABILITY.md) | Feature reference with CLI/VS Code availability | Checking feature status, model availability |
 | [FILE-TYPE-COMPARISON.md](./FILE-TYPE-COMPARISON.md) | Compare all customization file types | Choosing between `.instructions.md`, `.prompt.md`, `.agent.md` |
 | [COMMANDS-AND-CUSTOM-INSTRUCTIONS.md](./COMMANDS-AND-CUSTOM-INSTRUCTIONS.md) | Slash commands and custom instructions | Setting up project-wide conventions |
 | [PROMPT-FILES-GUIDE.md](./PROMPT-FILES-GUIDE.md) | Complete `.prompt.md` file reference | Creating reusable task-specific prompts |
@@ -89,8 +90,9 @@ What's your primary need?
 
 Start here if you're new to GitHub Copilot customization:
 
-1. **[FILE-TYPE-COMPARISON.md](./FILE-TYPE-COMPARISON.md)** — Understand all the customization options
-2. **[COMMANDS-AND-CUSTOM-INSTRUCTIONS.md](./COMMANDS-AND-CUSTOM-INSTRUCTIONS.md)** — Set up basic project conventions
+1. **[FEATURES-AND-AVAILABILITY.md](./FEATURES-AND-AVAILABILITY.md)** — Know what features are available (CLI vs VS Code)
+2. **[FILE-TYPE-COMPARISON.md](./FILE-TYPE-COMPARISON.md)** — Understand all the customization options
+3. **[COMMANDS-AND-CUSTOM-INSTRUCTIONS.md](./COMMANDS-AND-CUSTOM-INSTRUCTIONS.md)** — Set up basic project conventions
 
 ### Intermediate
 
