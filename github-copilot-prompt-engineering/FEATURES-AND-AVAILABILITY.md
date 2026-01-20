@@ -13,7 +13,7 @@
 |---------|-----|---------|--------|
 | MCP Integration | ✅ | ✅ | **GA** |
 | Agent Mode | ✅ | ✅ | **GA** |
-| Multi-Model (18) | ✅ (14) | ✅ (18) | **GA** |
+| Multi-Model | ✅ (13) | ✅ (18) | **GA** |
 | Custom Agents | ✅ | ✅ | **GA** |
 | Skills | ✅ | Experimental | **GA in CLI** |
 | Custom Instructions | ✅ | ✅ | **GA** |
@@ -24,7 +24,7 @@
 
 ---
 
-## Available Models (18 in VS Code)
+## Available Models (13 CLI, 18 VS Code)
 
 ### Free Models (0x Cost)
 
@@ -139,7 +139,7 @@ copilot -p "Fix the bug" --allow-all-tools  # Execute and exit
 
 **Status**: ✅ **GA**
 
-Switch between models based on task requirements (14 in CLI, 18 in VS Code).
+Switch between models based on task requirements (13 in CLI, 18 in VS Code).
 
 **Selection Methods**:
 ```bash
@@ -384,7 +384,7 @@ copilot
 | **Skills** | ✅ GA | Experimental |
 | **Session Resume** | ✅ GA | N/A |
 | **Context Management** | ✅ GA | N/A |
-| **Model Selection** | ✅ GA (14 models) | ✅ GA (18 models) |
+| **Model Selection** | ✅ GA (13 models) | ✅ GA (18 models) |
 | **Custom Instructions** | ✅ GA (AGENTS.md) | ✅ GA (.github/) |
 | **Slash Commands** | Via `/command` | ✅ GA |
 | **GUI/Panel** | N/A | ✅ |
