@@ -103,32 +103,22 @@ and derives the feature directory automatically (`specs/002-accordion-component/
 pwsh ./.specify/scripts/powershell/check-prerequisites.ps1 -Json -PathsOnly -RequireTasks -IncludeTasks
 ```
 
-**Validate JSON output contains:**
+**Parse JSON output and assign variables:**
 
-- `FEATURE_DIR`: Must be defined and non-empty (absolute path to feature directory)
-- `FEATURE_SPEC`: Resolved absolute path to spec.md
-- `IMPL_PLAN`: Resolved absolute path to plan.md
-- `TASKS`: Resolved absolute path to tasks.md
+```
+SPEC = json.FEATURE_SPEC
+PLAN = json.IMPL_PLAN
+TASKS = json.TASKS
+CONSTITUTION = ".specify/memory/constitution.md"
+OUTPUT = json.FEATURE_DIR + "/gap-analysis-report.md"  # New file to create
+```
 
-**Extract absolute paths from JSON:**
+**Path validation**: Prerequisite script validates existence. Proceed to Step 2 on success.
 
-- `SPEC` = FEATURE_SPEC (from JSON output)
-- `PLAN` = IMPL_PLAN (from JSON output)
-- `TASKS` = TASKS (from JSON output)
-- `CONSTITUTION` = ".specify/memory/constitution.md" (project-level, repo root)
-- `OUTPUT` = FEATURE_DIR + "/gap-analysis-report.md" (new file to be created)
-
-**Verify resolved paths exist:**
-
-The prerequisite script with `-PathsOnly` already validates that these files exist before returning their paths. If the script succeeds, you can proceed directly to loading the artifacts.
-
-**Error Handling**:
-
-- If prerequisite script fails: It will output clear error messages about missing files
-- If spec.md missing: ABORT with "Run `/speckit.specify` to create specification"
-- If plan.md missing: ABORT with "Run `/speckit.plan` to create implementation plan"
-- If tasks.md missing: ABORT with "Run `/speckit.tasks` to generate task breakdown"
-- Do NOT proceed with partial artifacts
+**Error handling**: If script fails with missing file error, ABORT with command to create it:
+- spec.md → Run `/speckit.specify`
+- plan.md → Run `/speckit.plan`
+- tasks.md → Run `/speckit.tasks`
 
 **Path Handling (CRITICAL)**:
 

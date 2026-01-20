@@ -63,16 +63,20 @@ pwsh ./.specify/scripts/powershell/check-prerequisites.ps1 -Json -PathsOnly
 pwsh ./.specify/scripts/powershell/check-prerequisites.ps1 -Json
 ```
 
-Parse first JSON output (-PathsOnly) for:
+**Parse both JSON outputs:**
 
-- `FEATURE_DIR` (absolute path to feature directory)
-- `FEATURE_SPEC` (resolved path to spec.md)
-- `IMPL_PLAN` (resolved path to plan.md, if exists)
-- `TASKS` (resolved path to tasks.md, if exists)
+From -PathsOnly:
+```
+FEATURE_DIR = json1.FEATURE_DIR
+FEATURE_SPEC = json1.FEATURE_SPEC
+IMPL_PLAN = json1.IMPL_PLAN (if present)
+TASKS = json1.TASKS (if present)
+```
 
-Parse second JSON output (-Json) for:
-
-- `AVAILABLE_DOCS` (list of existing optional files)
+From -Json:
+```
+AVAILABLE_DOCS = json2.AVAILABLE_DOCS
+```
 
 **Path Rules**:
 
@@ -116,13 +120,11 @@ Efficient, targeted loading - NOT full-file dumping:
 3. Progressive disclosure: add more only if gaps detected
 4. If docs are large (>500 lines), generate interim summaries
 
-Load artifacts using resolved paths:
+**Load artifacts using resolved paths:**
 
-- FEATURE_SPEC: Requirements and scope (prioritize FR/NFR sections)
-- IMPL_PLAN (if in AVAILABLE_DOCS): Technical details, dependencies
-- TASKS (if in AVAILABLE_DOCS): Implementation tasks
-
-Use the absolute paths from the -PathsOnly output for core artifacts.
+- FEATURE_SPEC: Requirements (FR/NFR sections)
+- IMPL_PLAN: Technical details (if present)
+- TASKS: Implementation tasks (if present)
   </context_loading_strategy>
 
 ### Step 4: Generate Checklist

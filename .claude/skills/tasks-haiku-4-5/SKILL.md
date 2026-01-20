@@ -83,39 +83,28 @@ pwsh ./.specify/scripts/powershell/check-prerequisites.ps1 -Json -PathsOnly
 pwsh ./.specify/scripts/powershell/check-prerequisites.ps1 -Json
 ```
 
-**Validate first JSON output (-PathsOnly) contains:**
-
-- `FEATURE_DIR`: Must be defined and non-empty (absolute path to feature directory)
-- `FEATURE_SPEC`: Resolved absolute path to spec.md
-- `IMPL_PLAN`: Resolved absolute path to plan.md
-
-**Validate second JSON output (-Json) contains:**
-
-- `AVAILABLE_DOCS`: List of existing optional files
-
-**Extract paths:**
+**Parse both JSON outputs and assign variables:**
 
 Core artifacts (from -PathsOnly):
-- `SPEC` = FEATURE_SPEC (from JSON output)
-- `PLAN` = IMPL_PLAN (from JSON output)
-- `OUTPUT` = FEATURE_DIR + "/tasks.md" (new file to be created)
+```
+SPEC = json1.FEATURE_SPEC
+PLAN = json1.IMPL_PLAN
+OUTPUT = json1.FEATURE_DIR + "/tasks.md"
+```
 
-Optional docs (check AVAILABLE_DOCS, then concatenate if present):
-- `DATA_MODEL` = FEATURE_DIR + "/data-model.md" (OPTIONAL - if "data-model.md" in AVAILABLE_DOCS)
-- `CONTRACTS` = FEATURE_DIR + "/contracts/" (OPTIONAL - if "contracts/" in AVAILABLE_DOCS)
+Optional docs (from -Json AVAILABLE_DOCS):
+```
+IF "data-model.md" in json2.AVAILABLE_DOCS:
+  DATA_MODEL = json1.FEATURE_DIR + "/data-model.md"
+IF "contracts/" in json2.AVAILABLE_DOCS:
+  CONTRACTS = json1.FEATURE_DIR + "/contracts/"
+```
 
-**Verify resolved paths exist:**
+**Path validation**: Prerequisite script validates core files. Proceed to Step 2 on success.
 
-The prerequisite script with `-PathsOnly` already validates that required files exist before returning their paths. If the script succeeds, you can proceed directly to loading the artifacts.
-
-For optional docs, only load if they appear in AVAILABLE_DOCS array from the `-Json` call.
-
-**Error Handling:**
-
-- If prerequisite script fails: It will output clear error messages about missing files
-- If spec.md missing: ABORT with "Run `/speckit.specify` to create specification"
-- If plan.md missing: ABORT with "Run `/speckit.plan` to create implementation plan"
-- Do NOT proceed with partial required artifacts
+**Error handling**: If script fails with missing file error, ABORT with command:
+- spec.md → Run `/speckit.specify`
+- plan.md → Run `/speckit.plan`
 
 **PowerShell String Escaping**:
 
