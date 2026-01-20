@@ -140,9 +140,24 @@ FEATURE_SPEC=$(echo $PATHS_JSON | jq -r '.FEATURE_SPEC')
 IMPL_PLAN=$(echo $PATHS_JSON | jq -r '.IMPL_PLAN')
 TASKS=$(echo $PATHS_JSON | jq -r '.TASKS')
 
-# Set report path
-REPORT_PATH="${FEATURE_DIR}/gap-analysis-report.md"
+# Detect report format (JSON or Markdown)
+if [ -f "${FEATURE_DIR}/gap-analysis-report.json" ]; then
+  REPORT_PATH="${FEATURE_DIR}/gap-analysis-report.json"
+  REPORT_FORMAT="json"
+elif [ -f "${FEATURE_DIR}/gap-analysis-report.md" ]; then
+  REPORT_PATH="${FEATURE_DIR}/gap-analysis-report.md"
+  REPORT_FORMAT="markdown"
+else
+  echo "❌ Error: No gap-analysis-report file found"
+  echo "Run /analyze-report-gaps-haiku-4-5 first"
+  exit 1
+fi
 ```
+
+**Report Format Detection**:
+- Checks for JSON format first (preferred when available)
+- Falls back to Markdown format for backward compatibility
+- Both formats contain identical data, just different structure
 
 **Why use check-prerequisites.ps1**:
 - ✅ Centralized logic (same as other skills use)
@@ -171,13 +186,16 @@ fi
 
 **Step 1.3: Parallel Context Loading (Conditional)**
 
+**Note**: REPORT_PATH from Step 1.1 points to either `.json` or `.md` file based on availability.
+Format-specific parsing happens in Step 2.1.
+
 **IF USE_CHUNKING == false** (spec.md ≤ 25K tokens):
 
 Load all files SIMULTANEOUSLY in a single message:
 
 ```typescript
 // All files in one parallel batch (using paths from prerequisite script)
-Read(`${REPORT_PATH}`)
+Read(`${REPORT_PATH}`)  // Auto-detects .json or .md from Step 1.1
 Read(`${FEATURE_SPEC}`)
 Read(`${TASKS}`)
 ```
@@ -221,11 +239,14 @@ sections = [
 
 **Phase C: Identify Relevant Sections (Extended Thinking: 4K)**
 
-Read gap-analysis-report.md first to see which requirements are violated:
+Read gap analysis report first to see which requirements are violated:
 
-Read(`${REPORT_PATH}`)  // Use path from Step 1.1
+Read(`${REPORT_PATH}`)  // Auto-detects .json or .md from Step 1.1
 
-Parse "Violates" column from findings table to extract requirement IDs:
+**IF JSON format**: Parse findings array directly for requirement references
+**IF Markdown format**: Parse "Violates" column from findings table
+
+Extract requirement IDs to determine needed sections:
 - FR-XXX → Read "Requirements" section
 - CA-XXX → Read "Component API" section
 - AR-XXX → Read "Accessibility" section
@@ -240,7 +261,7 @@ Example (gaps violate FR-017, FR-050, CA-003):
 ```typescript
 // Load in parallel: gap-report + tasks + relevant spec sections
 // (using paths from prerequisite script)
-Read(`${REPORT_PATH}`)
+Read(`${REPORT_PATH}`)  // Either .json or .md, parsed in Step 2.1
 Read(`${TASKS}`)
 Read(`${FEATURE_SPEC}`, offset: 439, limit: 266)  // Requirements section
 Read(`${FEATURE_SPEC}`, offset: 758, limit: 217)  // Component API section
@@ -277,11 +298,12 @@ content = Read(file_path, offset: start_line, limit: line_count)
 
 <output_format>
 FEATURE_DIR: specs/{feature}
-REPORT_PATH: specs/{feature}/gap-analysis-report.md
+REPORT_PATH: specs/{feature}/gap-analysis-report.{json|md}
+REPORT_FORMAT: {json|markdown}
 SPEC_SIZE: {lines} lines (~{tokens} tokens)
 CHUNKING_USED: {true|false}
 Context loaded:
-- gap-analysis-report.md (full)
+- gap-analysis-report.{json|md} (full)
 - tasks.md (full)
 - spec.md ({section names if chunked, "full" if not})
 </output_format>
@@ -306,12 +328,43 @@ Use extended thinking to:
 
 <action_steps extended_thinking="4K">
 
-**Step 2.1: Extract Findings Table**
+**Step 2.1: Extract Findings (Format-Aware)**
 
+**IF REPORT_FORMAT == "json"** (structured outputs):
+
+```typescript
+// Parse JSON report structure
+const gapReport = JSON.parse(Read(REPORT_PATH));
+
+FOR EACH finding in gapReport.findings:
+  EXTRACT:
+    - id: finding.id
+    - category: finding.category
+    - severity: finding.severity
+    - locations: finding.locations (array)
+    - summary: finding.summary
+    - recommendation: finding.recommendation
+```
+
+**Benefits of JSON parsing**:
+- ✅ Zero parsing ambiguity (no markdown table parsing)
+- ✅ Type-validated by schema (severity enums, ID patterns)
+- ✅ Structured access to arrays (locations, task_ids)
+- ✅ Faster parsing (direct object access vs regex)
+
+**IF REPORT_FORMAT == "markdown"** (fallback):
+
+```markdown
 1. Find table starting with `| ID  | Category` in gap-analysis-report.md
 2. FOR EACH row in table:
    - Extract: ID, Category, Severity, Location(s), Summary, Recommendation
-   - Parse "Violates" column to extract requirement IDs (FR-XXX, CA-XXX, etc.)
+   - Parse Location(s) column for file:line references
+```
+
+**Backward Compatibility**:
+- Both formats contain identical data
+- Markdown remains fully supported
+- JSON is preferred when available from `/analyze-report-gaps-haiku-4-5`
 
 **Step 2.2: Cross-Reference with Loaded Spec Sections**
 
