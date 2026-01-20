@@ -654,12 +654,24 @@ response = anthropic.messages.create(
 
 ### Interleaved Thinking
 
-⚠️ **BETA FEATURE - DO NOT USE IN PRODUCTION**
+**Availability by environment:**
 
-This feature is currently in beta and should not be used in production workflows until generally available.
+| Environment | Status | Configuration |
+|-------------|--------|---------------|
+| Claude Code CLI | ✅ **GA** (enabled by default) | No configuration needed |
+| Messages API | ⚠️ Beta | Requires `interleaved-thinking-2025-05-14` header |
 
-**Enable thinking between tool calls** for sophisticated multi-step workflows:
+**Enable thinking between tool calls** for sophisticated multi-step workflows.
 
+**In Claude Code CLI** (no configuration needed):
+```
+∴ Thinking…                    ← Initial reasoning
+● Tool calls execute
+∴ Thinking…                    ← Interleaved thinking (automatic)
+● Final response
+```
+
+**In Messages API** (requires beta header):
 ```python
 response = anthropic.messages.create(
     model="claude-haiku-4.5-20251001",
@@ -669,7 +681,7 @@ response = anthropic.messages.create(
         "budget_tokens": 4096
     },
     headers={
-        "anthropic-beta": "interleaved-thinking-2025-05-14"  # Enable beta feature
+        "anthropic-beta": "interleaved-thinking-2025-05-14"  # Required for API
     },
     messages=[...]
 )
@@ -682,7 +694,9 @@ response = anthropic.messages.create(
 - Budget_tokens can exceed max_tokens (total across all thinking blocks)
 - Improves multi-step agentic workflows
 
-**Reference**: [Extended thinking - Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/claude-messages-extended-thinking.html)
+**To disable in CLI** (if needed): Add `DISABLE_INTERLEAVED_THINKING` to system prompt.
+
+**Reference**: [Extended thinking - Claude Docs](https://platform.claude.com/docs/en/build-with-claude/extended-thinking)
 
 ---
 
@@ -1066,7 +1080,7 @@ Task: Write 1-2 sentences explaining this chunk's role in the document.
 9. **Ignoring prompt caching**: Sending repeated context without caching (wastes 90% cost savings)
 10. **Not using batch API**: Processing async workloads synchronously (misses 50% discount)
 11. **Skipping extended thinking**: Using default mode for complex reasoning tasks
-12. **Using beta features in production**: Structured outputs, interleaved thinking (wait for GA)
+12. **Using beta features in production**: Structured outputs (use with fallback); interleaved thinking is GA in CLI
 
 ---
 
