@@ -90,6 +90,23 @@ Build an accessible, Angular-native accordion component that provides Foundation
 **Constraints**: WCAG AA compliance mandatory, no Foundation JavaScript dependencies, ViewEncapsulation.None with runtime CSS loading, **Foundation JS API parity required**
 **Scale/Scope**: Single-feature component library contribution (accordion + 3 structural directives), Storybook stories with interactive tests, E2E tests for History API integration
 
+## Gap Analysis & Remediation
+
+**Tracking Document**: [GAPS_REMEDIATION.md](./GAPS_REMEDIATION.md)
+
+**Status**: Comprehensive gap analysis complete with evidence mapping, fix estimates, validation methodology, and automated remediation tracking.
+
+**Scope**: All identified implementation gaps are categorized by priority (P0-P2) and mapped to corresponding specification findings (FR-*, CA-*, AR-*). The GAPS_REMEDIATION.md artifact provides:
+
+- **P0 - BLOCKING** (32 min): Input naming corrections, Foundation API methods, Foundation API events
+- **P1 - IMPORTANT** (135 min): Heading level input, ErrorHandler diagnostics, Foundation API Storybook tests
+- **P2 - POLISH** (15 min): SSR error handling
+- **Not Gaps**: Design-compliant behaviors (animation CSS-only, live regions opt-in, @angular/aria ARIA edge cases)
+
+**Validation**: Last validated 2026-01-16 via automated gap implementation. Referenced framework findings are cross-linked to specification requirements and tracked in parallel in `tasks.md`.
+
+---
+
 ## Constitution Check
 
 _GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._

@@ -115,6 +115,45 @@ See quickstart.md for code examples: [Basic Usage](./quickstart.md#basic-accordi
 
 ## User Scenarios & Testing _(mandatory)_
 
+### MVP Scope Definition
+
+This section explicitly defines the scope boundary between MVP and post-MVP functionality to guide implementation prioritization and delivery decisions.
+
+#### MVP (Minimum Viable Product) — User Stories 1-6
+
+| User Story | Priority | Status | Description |
+|------------|----------|--------|-------------|
+| US1 | P1 | **COMPLETE** | Basic Single Accordion Interaction |
+| US2 | P1 | **COMPLETE** | Keyboard Navigation and Focus Management |
+| US3 | P1 | **COMPLETE** | Screen Reader Compatibility |
+| US4 | P2 | **COMPLETE** | Multi-Expand Mode |
+| US5 | P2 | **COMPLETE** | Allow All Closed Mode |
+| US6 | P2 | **COMPLETE** | Disabled Items |
+
+**MVP Rationale**: US1-US3 (P1) represent the absolute minimum for WCAG AA compliance and basic usability. US4-US6 (P2) are included in MVP because they:
+- Require minimal additional implementation effort (building on US1-US3 infrastructure)
+- Are commonly expected features in production accordion components
+- Are fully implemented and tested as of 2026-01-16
+
+#### Post-MVP — User Stories 7-10
+
+| User Story | Priority | Status | Description |
+|------------|----------|--------|-------------|
+| US7 | P3 | Implemented | Initial Open Item Configuration |
+| US8 | P3 | **BLOCKED** | Dynamic Item Management (requires API redesign) |
+| US9 | P3 | Not Started | SSR Compatibility |
+| US10 | P4 | Not Started | URL Hash Deep Linking |
+
+**Post-MVP Rationale**:
+- **US7**: Implemented via `[expanded]="true"` binding; no additional work needed
+- **US8**: Blocked by API limitation (see [US8 section](#user-story-8---dynamic-item-management-priority-p3) for recovery options)
+- **US9**: Requires Angular Universal testing infrastructure
+- **US10**: Advanced feature that can be added without impacting core functionality
+
+**Scope Boundary Decision**: The MVP/post-MVP split at US6 was chosen because US1-US6 collectively deliver a fully accessible, interactive accordion with common configuration options. US7-US10 add enhancement capabilities (dynamic content, SSR, deep linking) that can be validated independently after core functionality is stable.
+
+---
+
 ### User Story 1 - Basic Single Accordion Interaction (Priority: P1)
 
 A developer adds an accordion component to display FAQ content. End users click on question titles to reveal/hide answers. Only one answer is visible at a time (default behavior).
@@ -402,13 +441,13 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
   **DOM Structure for Missing Title Scenario**:
   - The `<nfs-accordion-item>` element MUST render with the `.accordion-item` class (per FR-030)
   - The item MUST NOT render any focusable trigger element (no `<button>`, no `role="button"`, no `tabindex`)
-  - The panel content region MUST render directly within the `<nfs-accordion-item>` without a wrapper
+  - The panel content region MUST render directly within the `<nfs-accordion-item>` without a wrapper (NOTE: this differs from FR-058's panel wrapper requirement, which applies only when a title exists; without a title, there is no `aria-labelledby` source, so the `role="region"` wrapper is omitted)
   - The panel content MUST NOT have `role="region"` or `aria-labelledby` attributes (no trigger exists to provide a label)
   - The item MUST be excluded from keyboard navigation sequences (Home/End/Arrow keys skip it per FR-055–FR-061)
   - The item MUST NOT appear in the accordion's internal items array used for keyboard navigation
   - If the item has a `panelId` input, it MUST be ignored (no deep linking without a title)
 
-  This specification ensures the markup degrades gracefully: content remains visible but the item is not treated as an interactive accordion panel.
+  This specification ensures the markup degrades gracefully: content remains visible but the item is not treated as an interactive accordion panel. This missing-title scenario is exceptional and distinct from the normal case where both FR-026a and FR-058 coexist (title present → FR-058 wrapper applies; title completely absent → FR-026a no-wrapper applies).
 
 #### FR-089a: Rapid Toggle / Debounce Behavior
 
@@ -423,11 +462,15 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 
   **Testing Tolerance**: For timing-sensitive tests validating the 50ms debounce, implementations SHOULD allow a ±10ms tolerance to account for JavaScript event loop timing variability. Tests SHOULD use mock timers (e.g., `vi.useFakeTimers()`) when precise timing assertions are required.
 
+  **Implementation Status**: Core debounce/queue logic is implemented (T-AC-001 complete). Comprehensive test coverage for all three debounce scenarios (Input Source Distinction [T-AC-001b], FIFO Queue [T-AC-001c], Debounce Coalescence [T-AC-001d]) is defined in tasks.md but implementation is pending.
+
 #### FR-038a: Explicit State Transitions
 
 - **FR-038a**: In addition to boolean `expanded`, the item MUST conceptually transition through explicit lifecycle states for implementation clarity: `COLLAPSED -> EXPANDING -> EXPANDED -> COLLAPSING -> COLLAPSED`. Implementations MAY represent these as internal enums or booleans plus transient flags, but must ensure that ARIA attributes reflect `aria-expanded` only when the target state is reached (`EXPANDED`), and that keyboard/interaction handlers consult the in-progress state to avoid conflicting operations.
 
   **Visibility Clarification (addressing U-03)**: The state machine MUST remain an internal implementation detail and MUST NOT be exposed in the component's public API. The component MUST expose only the boolean `expanded` signal representing the final state. This decision aligns with Foundation for Sites' JavaScript API (which exposes only boolean state, not intermediate transitions), follows Angular's principle of minimal surface area, and prevents consumers from coupling to internal animation/timing details that may change across versions. Implementations MAY use transient states internally (via private fields or computed signals) to coordinate animations and prevent race conditions, but these states MUST NOT be exported or documented as public API.
+
+  **Transient State Observability (addressing U-02)**: While transient states (EXPANDING, COLLAPSING) are internal implementation details not guaranteed by the public API contract, they MAY be observable via Angular DevTools or debugging mechanisms. Consumers MUST NOT depend on these observable internal states, as their representation, timing, or existence may change across versions without notice. The only contractual state is the boolean `expanded` signal.
 
 #### FR-110a: Input Validation — titleHeadingLevel and deepLinkSmudge
 
@@ -621,6 +664,8 @@ When `panelId` is auto-generated (consumer does not provide explicit value), the
 #### FR-062a: SSR Hydration Failure Fallback
 
 - **FR-062a**: If client-side hydration fails (for example due to an unexpected runtime exception during afterRender or an unavailable browser API), the component MUST fail gracefully: (a) report the issue via `ErrorHandler.handleError()` including contextual metadata, (b) leave the server-rendered HTML intact so the page remains usable, and (c) attempt a single non-blocking rehydrate pass during the next idle period. The component MUST NOT throw an uncaught exception that breaks the application shell.
+
+**Priority clarification**: Full SSR support (US9, Phase 11) is P3 and deferred post-MVP. However, SSR hydration error handling (this requirement FR-062a) is MVP-complete per constitution principle of robust error handling. Core error handling implementation ensures the component degrades gracefully in SSR contexts even though comprehensive SSR testing is P3.
 
 #### Deep Linking (Foundation Feature Parity)
 

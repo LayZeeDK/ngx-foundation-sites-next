@@ -1,9 +1,9 @@
 # Accordion Implementation Gaps - Remediation Tracker
 
-**Last Validated**: 2026-01-16
+**Last Validated**: 2026-01-20
 **Validation Method**: Cross-artifact analysis (spec.md vs implementation vs contracts) + automated gap implementation
-**Source**: gap-analysis-report.md (2026-01-16)
-**Status**: P0, P1, and P2 remediation complete (7/7 gaps fixed)
+**Source**: gap-analysis-report.md (2026-01-20)
+**Status**: P0, P1, and P2 remediation complete (7/7 gaps fixed); 1 P3 deferred (GAP-9: US8 API limitation)
 
 ---
 
@@ -374,6 +374,34 @@ afterNextRender(() => {
 
 ---
 
+## P3 - DEFERRED (Post-MVP) 📋
+
+### GAP-9: US8 Dynamic Item Management - API Limitation
+
+**Status**: DEFERRED (POST-MVP) - Decision 2026-01-17
+**Validation Score**: 10/10 (documented limitation, not implementation error)
+**Evidence**:
+
+- **Spec**: US8 at spec.md:281-345 — Documents API limitation and recovery options
+- **Tasks**: Phase 10 (T101-T110) at tasks.md:371-417 — All tasks marked BLOCKED
+- **Root Cause**: `panelId` uses `input.required<string>()` which prevents `@for` template loops (NG0950 error: "Input is required but no value is available yet")
+
+**Impact**: Dynamic item management via `@for` loops not supported in MVP. Workaround available: use show/hide pattern with `*ngIf` instead of `@for`.
+
+**Recovery Options** (from spec.md):
+
+1. **Option A (Recommended for post-MVP)**: Make `panelId` optional with auto-generation fallback
+2. **Option B (Current)**: Defer to post-MVP, document workaround pattern
+3. **Option C**: Hybrid component-directive API for dynamic scenarios
+
+**Recommended Path**: Option B (defer) for immediate delivery, then Option A in follow-up release.
+
+**Workaround Pattern**: See spec.md US8 (lines 320-337) for show/hide pattern using `*ngIf` with pre-created item slots.
+
+**Action**: No immediate remediation. Track as post-MVP enhancement.
+
+---
+
 ## False Positives (Working as Designed) ✅
 
 The following were detected by gap analysis but are **NOT GAPS**:
@@ -442,11 +470,12 @@ Execute in this order to minimize breaking changes:
 
 ## Total Fix Estimate
 
-| Priority      | Gap Count | Time                 |
-| ------------- | --------- | -------------------- |
-| P0 (Blocking) | 3         | 32 min               |
-| P0 + P1       | 6         | 167 min (~2.8 hours) |
-| P0 + P1 + P2  | 7         | 182 min (~3 hours)   |
+| Priority               | Gap Count | Time                 | Status   |
+| ---------------------- | --------- | -------------------- | -------- |
+| P0 (Blocking)          | 3         | 32 min               | ✅ FIXED |
+| P0 + P1                | 6         | 167 min (~2.8 hours) | ✅ FIXED |
+| P0 + P1 + P2           | 7         | 182 min (~3 hours)   | ✅ FIXED |
+| P3 (Deferred/Post-MVP) | 1         | TBD (API redesign)   | DEFERRED |
 
 ---
 
@@ -496,10 +525,11 @@ This analysis followed a 6-step validation workflow:
 | GAP-5  | `ErrorHandler`, `handleError`, diagnostics, validation     |
 | GAP-6  | `FoundationApiParity`, story, Storybook, tests             |
 | GAP-8  | `afterNextRender`, try/catch, SSR, hydration               |
+| GAP-9  | `US8`, `@for`, `panelId`, dynamic, `input.required`, NG0950 |
 
-**Last Validation**: 2026-01-12
-**Validation Source**: GPT-4.1 incremental analysis (100% match rate with known gaps)
-**Next Validation**: After P2 remediation (GAP-8)
+**Last Validation**: 2026-01-20
+**Validation Source**: Cross-artifact consistency analysis (gap-analysis-report.md finding C01)
+**Next Validation**: After post-MVP planning cycle (GAP-9 resolution)
 
 ---
 
