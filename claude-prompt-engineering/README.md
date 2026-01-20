@@ -21,6 +21,7 @@ This directory contains standalone documents covering Claude Code optimization s
 
 | Document | Description | When to Use |
 |----------|-------------|-------------|
+| [FEATURES-AND-AVAILABILITY.md](./FEATURES-AND-AVAILABILITY.md) | Feature reference with GA/beta status | Checking feature availability, verification |
 | [COMMANDS-AND-CONTEXT.md](./COMMANDS-AND-CONTEXT.md) | Slash commands, context management, CLAUDE.md | Setting up projects, optimizing context usage |
 | [SKILLS-ARCHITECTURE.md](./SKILLS-ARCHITECTURE.md) | Skills vs commands, design patterns, namespacing | Building custom skills, workflow automation |
 | [TASK-SPAWNING-GUIDE.md](./TASK-SPAWNING-GUIDE.md) | Task tool, model selection, parallel execution | Multi-agent workflows, parallel processing |
@@ -59,21 +60,22 @@ This directory contains standalone documents covering Claude Code optimization s
 
 ### Beginner: Getting Started
 
-1. **[COMMANDS-AND-CONTEXT.md](./COMMANDS-AND-CONTEXT.md)** - Understand slash commands, shell commands, CLAUDE.md
-2. **[MODEL-OPTIMIZATION-HAIKU.md](./MODEL-OPTIMIZATION-HAIKU.md)** - Learn Haiku patterns (simplest model)
+1. **[FEATURES-AND-AVAILABILITY.md](./FEATURES-AND-AVAILABILITY.md)** - Know what features are available (GA vs beta)
+2. **[COMMANDS-AND-CONTEXT.md](./COMMANDS-AND-CONTEXT.md)** - Understand slash commands, shell commands, CLAUDE.md
+3. **[MODEL-OPTIMIZATION-HAIKU.md](./MODEL-OPTIMIZATION-HAIKU.md)** - Learn Haiku patterns (simplest model)
 
 ### Intermediate: Building Skills
 
-3. **[SKILLS-ARCHITECTURE.md](./SKILLS-ARCHITECTURE.md)** - Design custom skills and workflows
-4. **[MCP-TOOL-SEARCH.md](./MCP-TOOL-SEARCH.md)** - Optimize MCP tool usage
-5. **[MODEL-OPTIMIZATION-SONNET.md](./MODEL-OPTIMIZATION-SONNET.md)** - Master Sonnet for daily development
+4. **[SKILLS-ARCHITECTURE.md](./SKILLS-ARCHITECTURE.md)** - Design custom skills and workflows
+5. **[MCP-TOOL-SEARCH.md](./MCP-TOOL-SEARCH.md)** - Optimize MCP tool usage
+6. **[MODEL-OPTIMIZATION-SONNET.md](./MODEL-OPTIMIZATION-SONNET.md)** - Master Sonnet for daily development
 
 ### Advanced: Multi-Agent & Complex Tasks
 
-6. **[TASK-SPAWNING-GUIDE.md](./TASK-SPAWNING-GUIDE.md)** - Orchestrate parallel worker agents
-7. **[LARGE-FILE-CHUNKING.md](./LARGE-FILE-CHUNKING.md)** - Handle large documents efficiently
-8. **[SKILL-CREATION-CHECKLIST.md](./SKILL-CREATION-CHECKLIST.md)** - Build production-ready skills
-9. **[MODEL-OPTIMIZATION-OPUS.md](./MODEL-OPTIMIZATION-OPUS.md)** - Leverage Opus for complex tasks
+7. **[TASK-SPAWNING-GUIDE.md](./TASK-SPAWNING-GUIDE.md)** - Orchestrate parallel worker agents
+8. **[LARGE-FILE-CHUNKING.md](./LARGE-FILE-CHUNKING.md)** - Handle large documents efficiently
+9. **[SKILL-CREATION-CHECKLIST.md](./SKILL-CREATION-CHECKLIST.md)** - Build production-ready skills
+10. **[MODEL-OPTIMIZATION-OPUS.md](./MODEL-OPTIMIZATION-OPUS.md)** - Leverage Opus for complex tasks
 
 ---
 
