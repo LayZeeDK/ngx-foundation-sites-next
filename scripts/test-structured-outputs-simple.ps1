@@ -81,8 +81,8 @@ if (Test-Path "$featureDir/gap-analysis-cli-output.json") {
 Write-Host ""
 
 Write-Host "🚀 Executing (this will block until complete)..." -ForegroundColor Cyan
-Write-Host "   ⚠️  Expected: 20-60 seconds"
-Write-Host "   ⚠️  If >2 minutes: Press Ctrl+C to cancel"
+Write-Host "   ⚠️  Expected: 3-5 minutes (skill documentation shows 20-35s, but actual is ~3min)"
+Write-Host "   ⚠️  Press Ctrl+C to cancel if needed"
 Write-Host ""
 
 # Start stopwatch

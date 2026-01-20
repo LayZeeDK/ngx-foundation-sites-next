@@ -213,14 +213,23 @@ try {
             Write-Host "   ⏱️  Elapsed: $elapsed seconds..." -ForegroundColor Gray
             $lastUpdate = $elapsed
 
-            # Warn at 2 minutes
+            # Progress milestones
+            if ($elapsed -eq 60) {
+                Write-Host "   📌 1 minute..." -ForegroundColor Cyan
+            }
             if ($elapsed -eq 120) {
-                Write-Host "   ⚠️  2 minutes elapsed - still running..." -ForegroundColor Yellow
+                Write-Host "   📌 2 minutes..." -ForegroundColor Cyan
+            }
+            if ($elapsed -eq 180) {
+                Write-Host "   📌 3 minutes (around expected completion time)..." -ForegroundColor Cyan
+            }
+            if ($elapsed -eq 240) {
+                Write-Host "   ⚠️  4 minutes (slower than typical)..." -ForegroundColor Yellow
             }
 
-            # Force kill at 3 minutes
-            if ($elapsed -ge 180) {
-                Write-Host "   🛑 3 minutes exceeded - stopping runspace" -ForegroundColor Red
+            # Force kill at 5 minutes
+            if ($elapsed -ge 300) {
+                Write-Host "   🛑 5 minutes exceeded - stopping runspace" -ForegroundColor Red
                 $powershell.Stop()
                 break
             }

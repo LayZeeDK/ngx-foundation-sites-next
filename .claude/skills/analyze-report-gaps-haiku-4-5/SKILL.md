@@ -19,7 +19,8 @@ handoffs:
 **Extended Thinking**: Enabled (4K budget) for semantic analysis and edge case detection
 **Structured Outputs**: Schema documented (requires CLI `--json-schema` invocation, not currently used)
 **Current Output**: Markdown (`gap-analysis-report.md`)
-**Expected Performance**: 20-35 seconds, ~$0.04-0.05 per analysis (base + thinking)
+**Expected Performance**: 20-35 seconds (documented), **~3 minutes actual** (verified 2026-01-21)
+**Cost**: ~$0.04-0.05 per analysis (base + thinking)
 
 <extended_thinking_config>
 **Budget**: 4,096 tokens

@@ -32,6 +32,15 @@ Orchestrator (Sonnet) → Bash subprocess → claude CLI --json-schema → Haiku
 - **Use this**: When you want JSON output from gap analysis for reliable machine parsing
 - **Use standard skill**: When markdown output is sufficient (human review only)
 
+## Performance Note
+
+**Actual execution time**: ~3 minutes (181 seconds) as of 2026-01-21
+**Documented expectation**: 20-35 seconds (needs investigation)
+
+**Why slower**: Possibly semantic section reading overhead, extended thinking, or large spec.md processing.
+
+**Implication**: Orchestrator needs 5-minute timeout for reliable completion.
+
 ## Execution Steps
 
 ### Step 1: Detect Feature Directory
