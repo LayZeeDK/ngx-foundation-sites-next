@@ -110,22 +110,141 @@ AVAILABLE_DOCS = json2.AVAILABLE_DOCS
 - Audience: Reviewer (PR) if code-related; Author otherwise
 - Focus: Top 2 relevance clusters from user input
 
-### Step 3: Load Feature Context
+### Step 3: Load Feature Context (with Semantic Chunking)
 
 <context_loading_strategy>
-Efficient, targeted loading - NOT full-file dumping:
+Load artifacts using semantic section chunking for files > 1,250 lines (~25K tokens).
 
-1. Load ONLY sections relevant to active focus areas
-2. Summarize long sections into concise bullets
-3. Progressive disclosure: add more only if gaps detected
-4. If docs are large (>500 lines), generate interim summaries
+**Strategy**: Use full read for small files, semantic section reading for large files.
+
+Based on research-backed best practices from [CLAUDE-LARGE-FILE-CHUNKING-STRATEGIES.md](../../../prompt-engineering/CLAUDE-LARGE-FILE-CHUNKING-STRATEGIES.md).
 
 **Load artifacts using resolved paths:**
 
-- FEATURE_SPEC: Requirements (FR/NFR sections)
-- IMPL_PLAN: Technical details (if present)
-- TASKS: Implementation tasks (if present)
+**FEATURE_SPEC** (semantic chunking if > 1,250 lines):
+
+```
+# Step 1: Discover section boundaries (if file is large)
+Grep(
+  pattern: "^#{1,3}\\s+",
+  path: FEATURE_SPEC,
+  output_mode: "content",
+  -n: true  # Include line numbers
+)
+
+# Step 2: Parse section ranges and identify relevant sections based on focus areas
+# Map focus areas to spec sections:
+# - UX/UI focus → "User Interface Requirements", "Interaction Patterns", "Visual Design"
+# - API focus → "API Requirements", "Endpoints", "Data Contracts"
+# - Security focus → "Security Requirements", "Authentication", "Authorization"
+# - Performance focus → "Non-Functional Requirements", "Performance", "Scalability"
+# - ALL focus → "Functional Requirements", "User Stories", "Acceptance Criteria"
+
+sections_needed = identify_sections_for_focus_areas(user_focus_areas)
+
+# Step 3: Read only relevant sections
+FOR EACH section IN sections_needed:
+  IF section exists in sections_map:
+    Read(FEATURE_SPEC, offset=section.start, limit=section.lines)
+    EXTRACT requirements (FR-XXX, NFR-XXX)
+    EXTRACT user stories
+    EXTRACT acceptance criteria
+    ACCUMULATE into requirements inventory
+
+# Step 4: Skip irrelevant sections
+# Example: If focus is "API", skip "Visual Design", "Interaction Patterns"
+# Example: If focus is "UX", skip "Database Schema", "Infrastructure"
+```
+
+**IMPL_PLAN** (if present) - Semantic chunking if > 1,250 lines:
+
+```
+sections_needed = [
+  "Technical Details",
+  "Architecture",
+  "Technology Stack",
+  "Implementation Approach"
+]
+
+FOR EACH section IN sections_needed:
+  Read(IMPL_PLAN, offset=section.start, limit=section.lines)
+  EXTRACT technical constraints
+  EXTRACT design decisions
+```
+
+**TASKS** (if present) - Full read (typically structured/small):
+
+```
+Read(TASKS)  # Tasks files are typically well-structured and <500 lines
+EXTRACT task descriptions for traceability
+```
+
+**Why semantic chunking works for checklist generation**:
+
+Checklist generation is **focus-area driven** and **section-aligned**:
+- ✅ **UX checklist**: Only needs UI/Interaction/Visual Design sections
+- ✅ **API checklist**: Only needs API/Endpoints/Contracts sections
+- ✅ **Security checklist**: Only needs Security/Auth/Privacy sections
+- ✅ **Performance checklist**: Only needs NFR/Performance sections
+
+**Key insight**: User specifies focus area → Load ONLY relevant sections. No need to load entire spec.md.
+
+**Benefits**:
+- ✅ Focus-driven loading (only sections matching user's intent)
+- ✅ Skip irrelevant sections (significantly reduces tokens)
+- ✅ Same checklist quality as full read (generation is section-local)
+- ✅ Better token distribution for multiple focus areas
+
+**Cost Impact**: Significant savings when spec.md is large and focus is narrow (e.g., only UX → skip API, Security, Performance sections)
   </context_loading_strategy>
+
+### Step 3b: Content Loading Validation (MANDATORY)
+
+<critical>
+**BEFORE proceeding to Step 4 (Generate Checklist), verify you loaded CONTENT not just STRUCTURE.**
+
+This validation prevents the common failure mode of reading headers only via Grep.
+</critical>
+
+<validation_checklist>
+**For FEATURE_SPEC**:
+- [ ] Can you quote a specific requirement from the loaded sections (FR-XXX with full description)?
+- [ ] Can you identify specific user stories or acceptance criteria?
+- [ ] Can you name specific requirement aspects that need quality checks (e.g., "visual hierarchy", "error handling")?
+- [ ] Did you capture the actual requirement text (not just "FR-001 exists")?
+
+**For IMPL_PLAN** (if present):
+- [ ] Can you identify specific technology choices or design decisions?
+- [ ] Can you quote technical constraints that might affect requirements?
+
+**Focus area validation**:
+- [ ] If focus is "UX": Can you quote UI/interaction/visual requirements?
+- [ ] If focus is "API": Can you quote endpoint/contract requirements?
+- [ ] If focus is "Security": Can you quote authentication/authorization requirements?
+- [ ] If focus is "Performance": Can you quote timing/throughput requirements?
+
+**If you answered "NO" to any question above**:
+1. STOP immediately
+2. Re-read the affected sections using Read(file, offset, limit)
+3. Validate again before proceeding to Step 4
+
+**Common Failure Pattern to Avoid**:
+```
+❌ WRONG: Using Grep(pattern: "^#{1,3}\\s+") to read headers only
+         → You get: "## Functional Requirements" but NOT the FR-XXX requirement text
+         → Result: Generic checklist items with no traceability
+✅ CORRECT: Using Read(file, offset, limit) after Grep identifies boundaries
+         → You get: "FR-001: User can upload files up to 10MB" (full requirement)
+         → Result: Specific checklist items like "Is file size limit quantified? [Clarity, FR-001]"
+```
+</validation_checklist>
+
+<evaluation_criteria>
+**Success**: You can quote specific requirements with their full descriptions and generate traceable checklist items
+**Failure**: You only have section titles but not requirement content; checklist items lack specific references
+</evaluation_criteria>
+
+---
 
 ### Step 4: Generate Checklist
 
@@ -293,6 +412,36 @@ This command is optimized for Haiku 4.5's strengths:
 - Speed: 10-15 seconds (vs 20-30s with Sonnet)
 - Cost: 0.33x vs Sonnet 4.5
 - Quality: 90-95% of Sonnet output for this mechanical task
+
+**Context Window Management**:
+
+This skill uses **semantic section reading** based on Anthropic's official guidance, preventing false positives from header-only reads.
+
+**Why semantic chunking works for checklist generation**:
+- Checklist generation is **focus-area driven** (user specifies UX, API, Security, etc.)
+- Each focus area maps to specific spec sections (UX → UI/Interaction/Visual sections)
+- Checklist items are generated **per requirement** within the focus area
+- No cross-section reasoning required (UX checklist doesn't need Security requirements)
+
+**Focus-Driven Token Optimization**:
+- **Narrow focus** (e.g., "UX only"): Load 20-30% of spec.md (skip API, Security, Backend sections)
+- **Multiple focus areas** (e.g., "UX + API"): Load 40-60% of spec.md (skip unrelated sections)
+- **Comprehensive checklist**: Load all requirement sections (skip Background, Goals, Historical Context)
+
+**Alignment with Haiku 4.5 Best Practices** (prompt-engineering/CLAUDE-HAIKU-4-5-OPTIMIZATION.md):
+- "Context Window Management: Use only as much context as required per operation"
+- "Optimized Input Length: Send only relevant sections, not entire files"
+- **Correct interpretation**: "Minimal context" = focus-relevant sections WITH content, NOT structure-only
+- Checklist generation is **mechanical extraction** from requirements → Benefits from targeted section reading
+
+**Traceability Impact**:
+- Semantic chunking enables specific traceability (e.g., "[Clarity, FR-001]")
+- Header-only reads produce vague references (e.g., "[Completeness, Requirements section]")
+- ≥80% traceability requirement achievable ONLY with content capture
+
+**Cost Impact**: Significant savings when focus is narrow (e.g., UX-only checklist on 1,400-line spec → 70% token reduction)
+**Quality Impact**: HIGH — Content loading enables specific, traceable checklist items instead of generic placeholders
+**Documentation**: See [CLAUDE-LARGE-FILE-CHUNKING-STRATEGIES.md](../../../prompt-engineering/CLAUDE-LARGE-FILE-CHUNKING-STRATEGIES.md) for full research
   </optimization_strategy>
 
 ## Example Checklist Types
