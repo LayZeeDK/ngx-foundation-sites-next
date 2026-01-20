@@ -206,6 +206,32 @@ else
 fi
 ```
 
+**Cross-Platform Note**:
+
+The Bash syntax above works in Git Bash on Windows. For native PowerShell, use:
+
+```powershell
+$schema = '...'  # Same minified schema
+$outputFile = "$FEATURE_DIR/gap-analysis-cli-output.json"
+
+& claude --print `
+  --model haiku `
+  --output-format json `
+  --json-schema $schema `
+  --permission-mode bypassPermissions `
+  --tools "default" `
+  "/analyze-report-gaps-haiku-4-5" `
+  *> $outputFile
+
+if ($LASTEXITCODE -eq 0) {
+  Write-Host "✅ CLI invocation succeeded"
+  $CLI_SUCCESS = $true
+} else {
+  Write-Host "❌ CLI invocation failed"
+  $CLI_SUCCESS = $false
+}
+```
+
 **Expected output format** (if successful):
 
 ```json
