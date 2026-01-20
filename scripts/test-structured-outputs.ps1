@@ -167,22 +167,48 @@ Write-Host "   (Prompt text truncated in display above)" -ForegroundColor Gray
 Write-Host ""
 
 try {
-    # Execute with manual timeout monitoring
-    Write-Host "⏱️  Starting (manual timeout monitoring: 2 minutes)..." -ForegroundColor Cyan
+    # Execute with progress monitoring
+    Write-Host "⏱️  Starting gap analysis..." -ForegroundColor Cyan
     Write-Host "🔍 Debug: Executing command (args count: $($claudeArgs.Count))" -ForegroundColor Yellow
-    Write-Host "⚠️  Note: Press Ctrl+C if it runs longer than 2 minutes" -ForegroundColor Yellow
+    Write-Host "⚠️  Note: Press Ctrl+C to cancel if it takes too long" -ForegroundColor Yellow
     Write-Host ""
 
     # Start timer for monitoring
     $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 
-    # Execute directly - Start-Process doesn't work with npm scripts
-    # The & operator works with any command type (exe, bat, ps1, npm scripts)
-    $output = & claude @claudeArgs 2>&1
-    $exitCode = $LASTEXITCODE
+    # Create a job for the actual execution so we can monitor progress
+    $job = Start-Job -ScriptBlock {
+        param($args)
+        # Need to use cmd /c to invoke npm scripts from job context
+        $argString = $args -join ' '
+        cmd /c "claude $argString" 2>&1
+    } -ArgumentList (,$claudeArgs)
+
+    # Monitor progress with status updates
+    $lastUpdate = 0
+    while ($job.State -eq 'Running') {
+        Start-Sleep -Milliseconds 500
+        $elapsed = [math]::Round($stopwatch.Elapsed.TotalSeconds, 0)
+
+        # Update every 5 seconds
+        if ($elapsed -ge ($lastUpdate + 5)) {
+            Write-Host "   ⏱️  Elapsed: $elapsed seconds..." -ForegroundColor Gray
+            $lastUpdate = $elapsed
+
+            # Warn at 2 minutes
+            if ($elapsed -eq 120) {
+                Write-Host "   ⚠️  2 minutes elapsed - consider cancelling (Ctrl+C)" -ForegroundColor Yellow
+            }
+        }
+    }
 
     $stopwatch.Stop()
     $elapsedSeconds = [math]::Round($stopwatch.Elapsed.TotalSeconds, 1)
+
+    # Get results
+    $output = Receive-Job -Job $job
+    $exitCode = if ($job.State -eq 'Completed') { 0 } else { 1 }
+    Remove-Job -Job $job -Force
 
     # Write output to file
     $output | Out-File -FilePath $outputFile -Encoding UTF8
@@ -190,7 +216,7 @@ try {
     if ($exitCode -eq 0) {
         Write-Host "✅ Completed successfully in $elapsedSeconds seconds" -ForegroundColor Green
     } else {
-        Write-Host "❌ Command failed with exit code: $exitCode (after $elapsedSeconds seconds)" -ForegroundColor Red
+        Write-Host "❌ Command failed (after $elapsedSeconds seconds)" -ForegroundColor Red
     }
 }
 catch {
