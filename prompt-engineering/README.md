@@ -1,33 +1,14 @@
 # Prompt Engineering Documentation
 
-This directory contains research-backed optimization strategies for AI models used in the SpecKit workflow.
+This directory contains **project-specific** optimization strategies and verification results for AI models used in the SpecKit workflow.
 
----
-
-## 📚 Available Guides
-
-### [Claude 4.5 Sonnet Optimization Guide](./CLAUDE-4-5-OPTIMIZATION.md)
-
-**Model**: Claude Sonnet 4.5 (1M context)
-
-**10 Key Optimizations**:
-
-1. **Structured Prompting with XML** - `<role>`, `<task>`, `<constraints>`, `<output_format>`
-2. **Direct Communication** - Skip preambles, be explicit about formats
-3. **Extended Thinking** - Deep reasoning for complex tasks (16K+ tokens)
-4. **Literal Instruction Following** - Explicit commands (Claude 4.x doesn't infer)
-5. **Context Management** - Token budget awareness, context editing (29% improvement)
-6. **Agentic Workflows** - Research → action → verify → repeat pattern
-7. **Tool Use Optimization** - Treat tool definitions like prompts
-8. **Chain-of-Thought** - Prefilling, multishot examples
-9. **Memory & Sessions** - memory.md for continuity, /clear for fresh starts
-10. **Model Selection** - Right model for the task (Sonnet vs Haiku vs Opus)
-
-**Best for**: Complex reasoning, code implementation, agentic workflows requiring deep analysis
-
-**Commands**: All SpecKit commands, Claude Code workflows
-
----
+> **📘 Looking for Claude Code documentation?**
+> See [`../claude-prompt-engineering/`](../claude-prompt-engineering/) for generic, reusable Claude Code guides covering:
+> - Model optimization (Haiku, Sonnet, Opus)
+> - Skills architecture and design patterns
+> - Task spawning and parallel execution
+> - MCP tool search and lazy loading
+> - Large file chunking strategies
 
 ---
 
@@ -72,69 +53,7 @@ This directory contains research-backed optimization strategies for AI models us
 - Decision flowchart
 - Common mistakes and migration guide
 
----
-
-### [Claude Sonnet 4.5 Implementation Optimization Guide](./CLAUDE-SONNET-4-5-IMPLEMENTATION-OPTIMIZATION.md)
-
-**Model**: Claude Sonnet 4.5 (200K / 1M context, implementation-optimized)
-
-**7 Implementation-Specific Optimizations**:
-
-1. **Phase-Based Implementation** - Research → Setup → Implement → Verify → Complete with thinking breaks
-2. **Parallel Tool Use** - Load multiple files simultaneously (10-20x speedup for context)
-3. **Minimal Implementation** - OUT OF SCOPE list prevents over-engineering
-4. **State Tracking** - Mark tasks [X] immediately in tasks.md + TodoWrite
-5. **Error-First TDD** - Write test → get error → fix ONLY that error → repeat (0% error rate)
-6. **Extended Thinking for Complex Logic** - 16K+ budgets for state management, error handling, accessibility
-7. **Structured XML** - Multi-phase workflow with clear role, constraints, success criteria
-
-**Best for**: Systematic implementation of tasks.md with TDD, state tracking, and quality verification
-
-**Commands**: `/implement-sonnet-4-5` (Claude Code & GitHub Copilot)
-
-**Performance**: 37% faster than standard implementation with better code quality
-
-**Related**: Based on [Claude 4.5 Optimization Guide](./CLAUDE-4-5-OPTIMIZATION.md) with implementation-specific patterns
-
----
-
-### [Claude Opus 4.5 Implementation Optimization Guide](./CLAUDE-OPUS-4-5-IMPLEMENTATION-OPTIMIZATION.md)
-
-**Model**: Claude Opus 4.5 (200K context only, effort parameter, hybrid reasoning)
-
-**10 Key Optimizations**:
-
-1. **Effort Parameter** (Opus-only) - Medium default (76% token savings, matches Sonnet best)
-2. **Extended Thinking Budgets** - 16K-64K for complex tasks (up to 64K supported)
-3. **System Prompt Calibration** - Normal language (Opus more sensitive than previous)
-4. **"Think" Word Avoidance** - Use "evaluate", "consider" when extended thinking disabled
-5. **Parallel Tool Use** - Load files simultaneously (10-20x speedup)
-6. **First-Try Correctness** - Trust expert coding, proactive edge case handling
-7. **Vision for UI** - Screenshot comparison, crop tool for detail
-8. **Structured XML** - Same as Sonnet 4.5
-9. **Literal Instructions** - Same as Sonnet 4.5
-10. **Minimal Implementation** - OUT OF SCOPE list
-
-**Best for**: Complex reasoning, first-try correctness critical, deep debugging, state-of-the-art coding
-
-**Performance**: 80.9% SWE-bench (vs Sonnet 4.5's 77.2%), 76% fewer tokens at medium effort
-
-**Commands**: `/implement-opus-4-5` (Claude Code & GitHub Copilot)
-
-**When to Use**: Complex implementations, production code, deep debugging, intricate logic (within 200K context)
-**When to Use Sonnet Instead**: Daily work, speed > quality, cost-sensitive, **large features >200K tokens** (Sonnet has 1M context)
-
-**Related**: Based on [Claude 4.5 Optimization Guide](./CLAUDE-4-5-OPTIMIZATION.md) + Opus-specific features
-
----
-
-### [Claude Haiku 4.5 Optimization Guide](./CLAUDE-HAIKU-4-5-OPTIMIZATION.md)
-
-**Model**: Claude Haiku 4.5 (200K context for GitHub Copilot Business & Claude Code Team)
-
-**Context Window**: 200K tokens (standard), 64K max output
-
-**Related**: [Command Optimization Recommendations](./HAIKU-4-5-COMMAND-OPTIMIZATION-RECOMMENDATIONS.md) - Applying optimizations to Spec Kit commands
+## 📚 Project-Specific Claude Documentation
 
 ### [Haiku 4.5 Command Optimization Recommendations](./HAIKU-4-5-COMMAND-OPTIMIZATION-RECOMMENDATIONS.md)
 
@@ -660,6 +579,7 @@ Speed: Slower (30-60s) but reliable
 
 ## 🔗 Related Documentation
 
+- [claude-prompt-engineering/](../claude-prompt-engineering/) - **Generic Claude Code guides** (model optimization, skills, task spawning, chunking)
 - [SPECKIT_GUIDE.md](../SPECKIT_GUIDE.md) - Complete SpecKit workflow with model recommendations
 - [.github/agents/](../.github/agents/) - Agent implementations using these optimizations
 - [.claude/skills/](../.claude/skills/) - Claude Code skill implementations
