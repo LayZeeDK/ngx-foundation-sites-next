@@ -298,6 +298,13 @@ NfsAccordion (1)
 
 **Visibility**: Internal implementation detail. **NOT exported** from public barrel (`index.ts`). Consumers use the `panelId` input or rely on auto-generation; they never interact with the service directly.
 
+**Service Contract (FR-017d Guarantees)**:
+
+This service provides **basic ID uniqueness** (no ID collisions across the application). It does NOT handle FR-017d stability guarantees (IDs stable across DOM reordering, no reuse after destruction). Those guarantees are the responsibility of `NfsAccordion`:
+
+- **Service responsibility**: Generate unique sequential IDs via monotonic counter (`nfs-accordion-${counter++}`)
+- **Accordion responsibility**: Track item-to-ID associations using `Map<itemInstance, string>` to ensure stability across reordering and prevent ID reuse after item destruction (per FR-017d requirements in spec.md lines 527-537)
+
 **Implementation**:
 
 - Static counter: `#counter = 0`
