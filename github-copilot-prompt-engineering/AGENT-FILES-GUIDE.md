@@ -1,6 +1,6 @@
 # GitHub Copilot Custom Agents (`*.agent.md`)
 
-**Last Updated:** 2026-01-12
+**Last Updated:** 2026-01-20
 
 This document provides comprehensive documentation for GitHub Copilot's `*.agent.md` custom agent files, including structure, YAML frontmatter options, MCP integration, and best practices based on analysis of 2,500+ repositories.
 
@@ -62,8 +62,7 @@ You are a testing specialist focused on code quality and comprehensive test cove
 
 ## Boundaries
 
-🚫 **Never:**
-
+**Never:**
 - Modify production source code
 - Skip tests to meet deadlines
 - Ignore accessibility requirements
@@ -153,7 +152,7 @@ target: github-copilot
 
 MCP (Model Context Protocol) allows agents to use tools from local and remote servers.
 
-**⚠️ Limitations:**
+**Limitations:**
 
 - Repository-level agents **cannot** configure MCP directly
 - MCP configuration requires **organization or enterprise** level
@@ -198,7 +197,7 @@ env:
   # Environment variable with $ prefix
   VAR2: $COPILOT_MCP_VALUE
 
-  # Curly brace format (Claude Code style)
+  # Curly brace format
   VAR3: ${COPILOT_MCP_VALUE}
 
   # GitHub Actions secrets
@@ -271,41 +270,35 @@ The Markdown content below YAML frontmatter defines agent behavior.
 ## Guidelines
 
 ### Code Style
-
 - [Coding conventions]
 - [Framework-specific rules]
 
 ### Testing
-
 - [Testing requirements]
 - [Coverage expectations]
 
 ### Documentation
-
 - [Documentation standards]
 
 ## Commands
 
 Common commands this agent uses:
 
-\`\`\`bash
-npm test # Run unit tests
-npm run lint # Check code style
-npm run build # Build project
-\`\`\`
+```bash
+npm test        # Run unit tests
+npm run lint    # Check code style
+npm run build   # Build project
+```
 
 ## Boundaries
 
-✅ **Always:**
-
+**Always:**
 - [Required behaviors]
 
-⚠️ **Ask First:**
-
+**Ask First:**
 - [Behaviors requiring approval]
 
-🚫 **Never:**
-
+**Never:**
 - [Prohibited actions]
 ```
 
@@ -322,24 +315,20 @@ Place executable tools early with flags and options:
 ```markdown
 ## Commands
 
-\`\`\`bash
-
+```bash
 # Testing
-
-npm test # Run all tests
-npm test -- --coverage # With coverage report
-npm run test:watch # Watch mode
+npm test              # Run all tests
+npm test -- --coverage  # With coverage report
+npm run test:watch    # Watch mode
 
 # Building
-
-npm run build # Production build
-npm run build:dev # Development build
+npm run build         # Production build
+npm run build:dev     # Development build
 
 # Linting
-
-npm run lint # Check style
-npm run lint:fix # Auto-fix issues
-\`\`\`
+npm run lint          # Check style
+npm run lint:fix      # Auto-fix issues
+```
 ```
 
 ### 2. Testing Practices
@@ -350,28 +339,26 @@ Show how tests should be structured:
 ## Testing Guidelines
 
 ### Unit Tests
-
 - Use Jest with TypeScript
-- Colocate tests with source files (\*.spec.ts)
+- Colocate tests with source files (*.spec.ts)
 - Mock external dependencies
 
 ### Pattern
 
-\`\`\`typescript
+```typescript
 describe('ComponentName', () => {
-it('should handle primary use case', () => {
-// Arrange
-const input = createTestInput();
+  it('should handle primary use case', () => {
+    // Arrange
+    const input = createTestInput();
 
     // Act
     const result = component.method(input);
 
     // Assert
     expect(result).toMatchExpected();
-
+  });
 });
-});
-\`\`\`
+```
 ```
 
 ### 3. Project Structure
@@ -381,19 +368,19 @@ Map directories with descriptions:
 ```markdown
 ## Project Structure
 
-\`\`\`
+```
 src/
-├── components/ # Reusable UI components
-├── services/ # Business logic services
-├── utils/ # Pure utility functions
-├── types/ # TypeScript type definitions
-└── hooks/ # Custom React hooks
+├── components/   # Reusable UI components
+├── services/     # Business logic services
+├── utils/        # Pure utility functions
+├── types/        # TypeScript type definitions
+└── hooks/        # Custom React hooks
 
 tests/
-├── unit/ # Unit tests (Jest)
-├── integration/ # Integration tests
-└── e2e/ # End-to-end tests (Playwright)
-\`\`\`
+├── unit/         # Unit tests (Jest)
+├── integration/  # Integration tests
+└── e2e/          # End-to-end tests (Playwright)
+```
 ```
 
 ### 4. Code Style
@@ -405,26 +392,24 @@ Provide real code examples (not just descriptions):
 
 ### Good Example
 
-\`\`\`typescript
-// ✅ Use signals for state
-const count = signal(0);
-const doubled = computed(() => count() \* 2);
-
-// ✅ Use OnPush change detection
-@Component({
-changeDetection: ChangeDetectionStrategy.OnPush
-})
-\`\`\`
+```typescript
+// Use functional components
+function UserProfile({ user }: Props) {
+  const [isEditing, setIsEditing] = useState(false);
+  return <div>{user.name}</div>;
+}
+```
 
 ### Bad Example
 
-\`\`\`typescript
-// ❌ Avoid RxJS for simple state
-private count$ = new BehaviorSubject(0);
-
-// ❌ Avoid default change detection
-@Component({}) // Missing OnPush
-\`\`\`
+```typescript
+// Avoid class components
+class UserProfile extends Component {
+  render() {
+    return <div>{this.props.user.name}</div>;
+  }
+}
+```
 ```
 
 ### 5. Git Workflow
@@ -435,17 +420,15 @@ Clarify commit conventions and branch strategies:
 ## Git Workflow
 
 ### Commit Messages
-
-- Format: \`type(scope): description\`
+- Format: `type(scope): description`
 - Types: feat, fix, docs, style, refactor, test, chore
-- Example: \`feat(accordion): add keyboard navigation\`
+- Example: `feat(auth): add OAuth2 login flow`
 
 ### Branches
-
-- \`main\` - Production-ready code
-- \`develop\` - Integration branch
-- \`feature/\*\` - New features
-- \`fix/\*\` - Bug fixes
+- `main` - Production-ready code
+- `develop` - Integration branch
+- `feature/*` - New features
+- `fix/*` - Bug fixes
 ```
 
 ### 6. Boundaries
@@ -455,20 +438,17 @@ Define what agents should never touch:
 ```markdown
 ## Boundaries
 
-### ✅ Always Do (Safe Actions)
-
+### Always Do (Safe Actions)
 - Write tests for new code
 - Follow existing patterns
 - Update related documentation
 
-### ⚠️ Ask First (Requires Approval)
-
+### Ask First (Requires Approval)
 - Modify shared utilities
 - Change public API signatures
 - Update configuration files
 
-### 🚫 Never Do (Prohibited)
-
+### Never Do (Prohibited)
 - Commit secrets or credentials
 - Modify .env files
 - Delete test files
@@ -511,8 +491,8 @@ You specialize in technical writing and API documentation.
 
 ## Boundaries
 
-🚫 **Never** modify source code logic
-✅ **Always** verify code examples compile
+**Never** modify source code logic
+**Always** verify code examples compile
 ```
 
 ### @test-agent
@@ -544,9 +524,9 @@ You specialize in comprehensive test coverage.
 
 ## Boundaries
 
-🚫 **Never** modify production source code
-🚫 **Never** delete existing tests
-✅ **Always** run tests after writing them
+**Never** modify production source code
+**Never** delete existing tests
+**Always** run tests after writing them
 ```
 
 ### @security-agent
@@ -580,9 +560,9 @@ You specialize in identifying security vulnerabilities.
 
 ## Boundaries
 
-🚫 **Never** modify code directly
-✅ **Always** report severity levels
-✅ **Always** provide remediation steps
+**Never** modify code directly
+**Always** report severity levels
+**Always** provide remediation steps
 ```
 
 ### @lint-agent
@@ -607,241 +587,40 @@ You specialize in code quality and consistency.
 
 ## Commands
 
-\`\`\`bash
+```bash
 npm run lint          # Check issues
 npm run lint:fix      # Auto-fix
 npm run format        # Format code
 npm run format:check  # Verify formatting
-\`\`\`
+```
 
 ## Boundaries
 
-✅ **Safe to auto-fix:**
+**Safe to auto-fix:**
 - Whitespace issues
 - Import ordering
 - Trailing commas
 - Quote styles
 
-⚠️ **Ask first:**
+**Ask first:**
 - Changing variable names
 - Restructuring code
-```
-
-### @api-agent
-
-```yaml
----
-name: api-agent
-description: Builds and modifies API endpoints
-tools: ["read", "edit", "search"]
----
-
-# API Agent
-
-You specialize in REST/GraphQL API development.
-
-## Responsibilities
-
-1. Create new API endpoints
-2. Update existing routes
-3. Implement request validation
-4. Handle error responses
-
-## Guidelines
-
-- Follow REST conventions
-- Validate all inputs
-- Return consistent error formats
-- Document with OpenAPI
-
-## Boundaries
-
-⚠️ **Ask before:**
-- Changing database schemas
-- Modifying authentication
-- Changing response formats
-
-✅ **Safe to modify:**
-- Add new endpoints
-- Update validation logic
-- Improve error messages
-```
-
----
-
-## Complete Examples
-
-### Example 1: Angular Component Agent
-
-```yaml
----
-name: angular-component-agent
-description: Creates Angular components following project conventions
-tools: ["read", "edit", "search"]
-target: vscode
----
-
-# Angular Component Agent
-
-You are an Angular expert specializing in creating accessible, performant components.
-
-## Project Context
-
-This is **ngx-foundation-sites**, an Angular component library for Foundation for Sites.
-
-## Component Creation Checklist
-
-1. ✅ Use standalone components (no NgModules)
-2. ✅ Use signals for state (`signal()`, `computed()`)
-3. ✅ Set `changeDetection: ChangeDetectionStrategy.OnPush`
-4. ✅ Use `inject()` for dependency injection
-5. ✅ Prefix selectors with `nfs-` (components) or `nfs` (directives)
-6. ✅ Apply Foundation CSS classes directly
-
-## File Structure
-
-\`\`\`
-packages/ngx-foundation-sites/src/lib/[component]/
-├── [component].component.ts
-├── [component].component.spec.ts
-├── [component].stories.ts
-└── index.ts (barrel export)
-\`\`\`
-
-## Code Pattern
-
-\`\`\`typescript
-import {
-  Component,
-  ChangeDetectionStrategy,
-  input,
-  output,
-  computed
-} from '@angular/core';
-
-@Component({
-  selector: 'nfs-example',
-  template: \`
-    <button
-      class="button"
-      [class.primary]="variant() === 'primary'"
-      (click)="handleClick()"
-    >
-      {{ label() }}
-    </button>
-  \`,
-  changeDetection: ChangeDetectionStrategy.OnPush
-})
-export class ExampleComponent {
-  // Required inputs
-  label = input.required<string>();
-
-  // Optional inputs with defaults
-  variant = input<'primary' | 'secondary'>('primary');
-
-  // Outputs
-  clicked = output<void>();
-
-  // Computed values
-  protected cssClass = computed(() =>
-    \`button \${this.variant()}\`
-  );
-
-  protected handleClick(): void {
-    this.clicked.emit();
-  }
-}
-\`\`\`
-
-## Boundaries
-
-🚫 **Never:**
-- Use NgModules
-- Use `@Input()` / `@Output()` decorators
-- Use `@HostBinding` / `@HostListener`
-- Use default change detection
-- Add Foundation JavaScript dependencies
-```
-
-### Example 2: Full-Stack Feature Agent
-
-```yaml
----
-name: feature-agent
-description: Implements full-stack features end-to-end
-tools: ["read", "edit", "search", "execute"]
----
-
-# Feature Implementation Agent
-
-You implement features across the full stack: frontend, backend, and tests.
-
-## Workflow
-
-### Phase 1: Research
-1. Search codebase for similar patterns
-2. Identify all files needing changes
-3. Review existing tests
-
-### Phase 2: Backend
-1. Create/update API endpoints
-2. Add input validation
-3. Implement business logic
-4. Write API tests
-
-### Phase 3: Frontend
-1. Create/update components
-2. Add state management
-3. Implement UI interactions
-4. Handle error states
-
-### Phase 4: Testing
-1. Unit tests for functions
-2. Integration tests for API
-3. E2E tests for user flows
-
-### Phase 5: Documentation
-1. JSDoc for public APIs
-2. README updates
-3. CHANGELOG entry
-
-## Quality Gates
-
-Before completing:
-- [ ] All tests pass
-- [ ] Linting passes
-- [ ] Types check
-- [ ] Coverage maintained
-
-## Boundaries
-
-⚠️ **Ask before:**
-- Database migrations
-- Breaking API changes
-- New dependencies
-
-🚫 **Never:**
-- Skip tests
-- Hardcode secrets
-- Ignore errors
 ```
 
 ---
 
 ## Best Practices
 
-### ✅ Do
+### Do
 
 1. **Be Specific Over Vague**
 
    ```markdown
    # Good
-
    You are a test engineer who writes Jest tests for React components,
    follows AAA pattern, and never modifies source code.
 
    # Bad
-
    You are a helpful coding assistant.
    ```
 
@@ -853,19 +632,17 @@ Before completing:
    - One code snippet > three paragraphs
 
 4. **Establish Three-Tier Boundaries**
-   - ✅ Always do
-   - ⚠️ Ask first
-   - 🚫 Never do
+   - Always do
+   - Ask first
+   - Never do
 
 5. **Include Tech Stack Specifics**
 
    ```markdown
    # Good
-
    React 18 with TypeScript, Vite, TailwindCSS
 
    # Bad
-
    React project
    ```
 
@@ -874,7 +651,7 @@ Before completing:
    - Add detail when agent makes mistakes
    - Don't over-engineer upfront
 
-### ❌ Avoid
+### Avoid
 
 1. **Generic Descriptions**
    - "Helpful assistant" tells the agent nothing useful
@@ -945,7 +722,7 @@ Use agents for **who** does the work; use prompts for **what** to do.
 .github/
 ├── copilot-instructions.md     # Always-active conventions
 ├── instructions/
-│   └── angular.instructions.md # Path-specific rules
+│   └── react.instructions.md   # Path-specific rules
 └── agents/
     └── test-agent.agent.md     # Specialized persona
 ```

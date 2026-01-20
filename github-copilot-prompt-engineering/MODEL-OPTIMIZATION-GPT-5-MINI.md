@@ -1,12 +1,19 @@
 # GPT-5 Mini Prompt Optimization Guide
 
-**Model**: GPT-5 Mini (200K context, minimal reasoning)
-**Cost**: 0x (free in GitHub Copilot)
-**Use case**: Small-medium features (<180K tokens) requiring fast inference
+**Last Updated:** 2026-01-20
+
+This document provides optimization strategies for GPT-5 Mini, a fast inference model optimized for pattern matching and structured output.
 
 ---
 
 ## Model Characteristics
+
+| Attribute | Value |
+|-----------|-------|
+| **Context Window** | 200,000 tokens |
+| **Reasoning** | Minimal (pattern matching only) |
+| **Cost** | 0x (free in GitHub Copilot) |
+| **Best For** | Small-medium features (<180K tokens) requiring fast inference |
 
 ### Key Capabilities
 
@@ -14,12 +21,26 @@
 2. **200K context window** - Same as Haiku 4.5 and Sonnet 4.5
 3. **Minimal reasoning capacity** - Optimized for pattern matching, not deep reasoning
 4. **Structured prompt excellence** - Excels at following explicit formats (CTCO, XML)
-5. **Zero cost** - Free in GitHub Copilot (0x multiplier)
-6. **Higher sensitivity to ambiguous prompts** - Needs explicit format specifications
+5. **Higher sensitivity to ambiguous prompts** - Needs explicit format specifications
 
-**Performance**: Typically **85-95% of GPT-5** on general benchmarks with **substantially improved latency/price** (third-party analysis, not officially published by OpenAI).
+**Performance**: Typically **85-95% of GPT-5** on general benchmarks with **substantially improved latency/price**.
 
-**Source**: [GPT-5 mini Model Card - PromptHub](https://www.prompthub.us/models/gpt-5-mini) (third-party analysis)
+**Source**: [GPT-5 mini Model Card - PromptHub](https://www.prompthub.us/models/gpt-5-mini)
+
+---
+
+## Quick Reference
+
+| Optimization | Description | Priority |
+|-------------|-------------|----------|
+| [CTCO Framework](#optimization-1-ctco-framework-context--task--constraints--output) | Structure prompts in 4 sections | Critical |
+| [Reasoning Effort](#optimization-2-reasoning_effort-minimal) | Set to `minimal` for pattern tasks | Critical |
+| [Verbosity Controls](#optimization-3-verbosity-controls-concise-mode) | Explicit length constraints | High |
+| [XML Scaffolding](#optimization-4-xml-scaffolding-for-state-maintenance) | Maintain structured state | High |
+| [Mechanical Procedures](#optimization-5-mechanical-procedures-no-creative-decisions) | Convert logic to FOR EACH loops | Critical |
+| [Validation Checklists](#optimization-6-explicit-validation-checklists) | Self-correction before output | High |
+| [Error Conditions](#optimization-7-explicit-error-conditions) | Define exact STOP conditions | Medium |
+| [XML Examples](#optimization-8-xml-scaffolding-examples-not-output) | Internal state, markdown output | Medium |
 
 ---
 
@@ -34,8 +55,6 @@
 > "To maximize performance, use the CTCO Framework (Context → Task → Constraints → Output), explicitly define Reasoning Effort, and use Scope Discipline to prevent verbosity drift."
 
 **Source**: [GPT-5.2 Prompting Guide: The 2026 Playbook - Atlabs AI](https://www.atlabs.ai/blog/gpt-5.2-prompting-guide-the-2026-playbook-for-developers-agents)
-
-**Additional Source**: [GPT-5 prompting guide | OpenAI Cookbook](https://cookbook.openai.com/examples/gpt-5/gpt-5_prompting_guide)
 
 ### Why It Works
 
@@ -57,9 +76,8 @@ GPT-5 Mini's higher sensitivity to ambiguous prompts means it **needs clear stru
 ## Context (CTCO Step 1)
 
 **Input artifacts**:
-
-- specs/<feature>/plan.md (architecture, phases)
-- specs/<feature>/spec.md (requirements)
+- docs/feature/plan.md (architecture, phases)
+- docs/feature/spec.md (requirements)
 
 **Current state**: Plan approved, tasks not generated
 
@@ -74,21 +92,15 @@ GPT-5 Mini's higher sensitivity to ambiguous prompts means it **needs clear stru
 Generate tasks.md by applying these mechanical transformations:
 
 ### Transformation 1: Extract Phases
-```
 
 FOR EACH "## Phase N:" heading in plan.md:
-CREATE task group header in tasks.md
-
-```
+  CREATE task group header in tasks.md
 
 ### Transformation 2: Convert Bullets to Tasks
-```
 
 FOR EACH bullet point in plan.md:
-IF bullet has verb + object:
-GENERATE task with T### ID
-
-```
+  IF bullet has verb + object:
+    GENERATE task with T### ID
 
 [Additional transformations...]
 
@@ -101,19 +113,13 @@ GENERATE task with T### ID
 **Task ID format**: `T###` (3-digit zero-padded: T001, T023, T145)
 
 **Task line format**:
-```
 
 - [ ] T### [P?] [Story?] Description with file path
 
-```
-
 **Examples**:
-```
 
 - [ ] T001 Create directory at packages/lib/feature/
 - [ ] T002 [P] [US1] Add types.ts with FeatureState interface
-
-````
 
 ### Validation Constraints
 
@@ -131,7 +137,7 @@ GENERATE task with T### ID
 ```xml
 <tasks_output>
   <format>markdown</format>
-  <file_path>specs/<feature>/tasks.md</file_path>
+  <file_path>docs/feature/tasks.md</file_path>
 
   <content>
 # Tasks: Feature Name
@@ -140,30 +146,15 @@ GENERATE task with T### ID
 - [ ] T001 Task description with file path
   </content>
 </tasks_output>
-````
+```
 
 ### Validation Checklist
 
-```
 □ All tasks have T### IDs?
 □ All tasks have file paths?
 □ [P] markers accurate?
 □ Task order follows dependencies?
 ```
-
-````
-
-### CTCO Example: Task Generation
-
-**Context**: "You have plan.md with 5 phases and 40 action items."
-
-**Task**: "Generate tasks.md by applying 5 mechanical transformations."
-
-**Constraints**: "Task format: `- [ ] T### [P?] Description with path`. Max 200 tasks."
-
-**Output**: "Write to specs/feature/tasks.md using exact markdown structure."
-
-**Result**: GPT-5 Mini generates consistent, well-formatted tasks.md without ambiguity.
 
 ---
 
@@ -174,17 +165,19 @@ GENERATE task with T### ID
 **Set reasoning_effort parameter to `minimal`** for pattern-based tasks.
 
 **Research Finding**:
+
 > "Practical speedups come from kernel fusion, tensor parallelism tuned for a smaller graph, and an inference runtime that prefers shorter internal 'thinking' loops unless the developer requests deeper reasoning."
 
 **Source**: [GPT-5 mini API - CometAPI](https://www.cometapi.com/gpt-5-mini-api/)
 
-**Model Configuration**:
+### Model Configuration
+
 ```yaml
 model_config:
   reasoning_effort: minimal  # Pattern matching only
   verbosity: concise         # Structured output, no prose
   max_tokens: 16000          # Sufficient for structured output
-````
+```
 
 ### Why It Works
 
@@ -194,27 +187,14 @@ GPT-5 Mini's architecture is optimized for **fast inference with minimal interna
 - ✅ **Tensor parallelism** - Parallel processing on smaller model
 - ✅ **Shorter thinking loops** - Minimal reasoning = faster execution
 
-**When to use `minimal`**:
+### When to Use Each Level
 
-- ✅ Pattern matching (extract phases from plan.md)
-- ✅ Template filling (generate task IDs)
-- ✅ Keyword search (find "down()" in implementation)
-- ✅ Arithmetic validation (score = 0; IF condition: score += 2)
-
-**When NOT to use `minimal`**:
-
-- ❌ Creative writing (requires reasoning)
-- ❌ Problem-solving (requires deep thought)
-- ❌ Ambiguity resolution (requires inference)
-
-### Reasoning Effort Levels
-
-| Level       | Use Case                           | GPT-5 Mini Suitable?             |
-| ----------- | ---------------------------------- | -------------------------------- |
-| **minimal** | Pattern matching, template filling | ✅ **Perfect fit**               |
-| **low**     | Simple logic, basic decisions      | ✅ Acceptable                    |
-| **medium**  | Standard reasoning tasks           | ⚠️ Not recommended               |
-| **high**    | Complex problem-solving            | ❌ Use GPT-5.2 or Sonnet instead |
+| Level | Use Case | GPT-5 Mini Suitable? |
+|-------|----------|---------------------|
+| **minimal** | Pattern matching, template filling | ✅ **Perfect fit** |
+| **low** | Simple logic, basic decisions | ✅ Acceptable |
+| **medium** | Standard reasoning tasks | ⚠️ Not recommended |
+| **high** | Complex problem-solving | ❌ Use GPT-5.2 or Sonnet instead |
 
 **Source**: [How to write effective prompts for GPT-5 - Vellum](https://www.vellum.ai/blog/gpt-5-prompting-guide)
 
@@ -247,8 +227,7 @@ GPT-5 models (including Mini) are prone to verbosity drift without explicit cons
 ```markdown
 ### Verbosity Constraints
 
-**Maximum prose per gap**:
-
+**Maximum prose per item**:
 - Title: 5-8 words MAX
 - Priority justification: 1 sentence (≤20 words)
 - Fix description: 1-2 sentences (≤40 words)
@@ -258,35 +237,26 @@ GPT-5 models (including Mini) are prone to verbosity drift without explicit cons
 
 #### Examples with Limits
 
-**Gap title**:
+**Item title**:
 
 ```
-❌ BAD (21 words): "This is a critical implementation gap where the Foundation API methods including down, up, and toggle are not implemented on the item component"
-✅ GOOD (6 words): "Foundation API Methods Missing on Item"
+❌ BAD (21 words): "This is a critical implementation issue where the API methods including submit, cancel, and reset are not implemented on the form component"
+✅ GOOD (6 words): "API Methods Missing on Form"
 ```
 
 **Priority justification**:
 
 ```
-❌ BAD (35 words): "This gap is critical because it violates the constitutional requirement for Foundation API parity and prevents developers from using programmatic control which is essential for migration"
-✅ GOOD (15 words): "Breaks Foundation API parity (CA-009), prevents programmatic control for jQuery migration."
+❌ BAD (35 words): "This issue is critical because it violates the architectural requirement for API parity and prevents developers from using programmatic control which is essential for migration"
+✅ GOOD (15 words): "Breaks API parity requirement, prevents programmatic control for library migration."
 ```
 
 **Fix description**:
 
 ```
-❌ BAD (60 words): "The smallest fix would be to add three public methods to the NfsAccordionItemDef class including down() which sets expanded to true, up() which sets expanded to false, and toggle() which flips the expanded state, and all three should check the disabled state before executing"
-✅ GOOD (25 words): "Add three methods to NfsAccordionItemDef: down() sets expanded=true, up() sets expanded=false, toggle() flips state. Check disabled before executing."
+❌ BAD (60 words): "The smallest fix would be to add three public methods to the FormComponent class including submit() which triggers validation, cancel() which resets the form, and reset() which clears all fields, and all three should check the disabled state before executing"
+✅ GOOD (25 words): "Add three methods to FormComponent: submit() triggers validation, cancel() resets form, reset() clears fields. Check disabled before executing."
 ```
-
-#### Use `verbosity: concise` Setting
-
-```yaml
-model_config:
-  verbosity: concise # Structured output only, minimal prose
-```
-
-**Effect**: GPT-5 Mini outputs only required structured content, no extra prose.
 
 ---
 
@@ -319,24 +289,24 @@ GPT-5 Mini has minimal reasoning capacity, so **explicit state structures** help
 ```xml
 <!-- GPT-5 Mini's working memory during execution -->
 
-<known_gaps_registry>
-  <gap id="GAP-1">
-    <title>Foundation API Methods Missing</title>
-    <keywords>["down()", "up()", "toggle()"]</keywords>
+<known_items_registry>
+  <item id="ITEM-1">
+    <title>API Methods Missing</title>
+    <keywords>["submit()", "cancel()", "reset()"]</keywords>
     <status>NOT_IMPLEMENTED</status>
-  </gap>
-  <gap id="GAP-2">
-    <title>Foundation API Outputs Missing</title>
-    <keywords>["(down)", "(up)", "events"]</keywords>
+  </item>
+  <item id="ITEM-2">
+    <title>API Events Missing</title>
+    <keywords>["(submit)", "(cancel)", "events"]</keywords>
     <status>NOT_IMPLEMENTED</status>
-  </gap>
-</known_gaps_registry>
+  </item>
+</known_items_registry>
 
 <current_analysis>
   <step>3</step>
-  <requirement_being_checked>FR-075</requirement_being_checked>
-  <keywords_extracted>["down()", "up()", "toggle()"]</keywords_extracted>
-  <matching_known_gap>GAP-1</matching_known_gap>
+  <requirement_being_checked>REQ-075</requirement_being_checked>
+  <keywords_extracted>["submit()", "cancel()", "reset()"]</keywords_extracted>
+  <matching_known_item>ITEM-1</matching_known_item>
   <action>SKIP</action>
 </current_analysis>
 ```
@@ -344,44 +314,16 @@ GPT-5 Mini has minimal reasoning capacity, so **explicit state structures** help
 #### Output File (Markdown)
 
 ```markdown
-## Validated Gaps (NEW)
+## Validated Items (NEW)
 
-### GAP-8: SSR Error Handling Missing
+### ITEM-8: SSR Error Handling Missing
 
 **Evidence:**
-
-- **Spec**: FR-062a at plan.md:179
+- **Spec**: REQ-062a at plan.md:179
 - **Validation Score**: 8/10
 
 [Pure markdown - no XML]
 ```
-
-### Use Case: Gap Registry
-
-**Without XML scaffolding**:
-
-```
-GPT-5 Mini: "Check if this gap matches known gaps"
-[Might compare incorrectly or miss matches]
-[Inconsistent matching behavior]
-```
-
-**With XML scaffolding**:
-
-```xml
-<known_gaps_matching>
-  <procedure>
-FOR EACH potential_gap:
-  gap_keywords = ["down()", "up()"]
-
-  FOR EACH known_gap in registry:
-    keyword_overlap = COUNT(intersection(gap_keywords, known_gap.keywords))
-    IF overlap >= 50%: SKIP potential_gap
-  </procedure>
-</known_gaps_matching>
-```
-
-**Result**: Consistent, predictable matching every time.
 
 ---
 
@@ -428,54 +370,44 @@ But GPT-5 Mini CAN handle:
 
 ```markdown
 ### Transformation 1: Extract Phases
-```
 
 FOR EACH line in plan.md:
-IF line starts with "## Phase":
-EXTRACT phase_number and phase_name
-CREATE phase header in tasks.md
-
-```
+  IF line starts with "## Phase":
+    EXTRACT phase_number and phase_name
+    CREATE phase header in tasks.md
 
 ### Transformation 2: Detect Parallelization
-```
 
 FOR EACH task:
-current_file = extract_file_path(task.description)
-previous_file = extract_file_path(previous_task.description)
+  current_file = extract_file_path(task.description)
+  previous_file = extract_file_path(previous_task.description)
 
-IF current_file != previous_file:
-task.parallel = true
-ADD [P] marker
-ELSE:
-task.parallel = false
-
-```
+  IF current_file != previous_file:
+    task.parallel = true
+    ADD [P] marker
+  ELSE:
+    task.parallel = false
 
 ### Transformation 3: Calculate Validation Score
-```
 
 score = 0
-IF has exact spec.md line with FR-XXX: score += 2
+IF has exact spec.md line with REQ-XXX: score += 2
 IF has exact tasks.md task ID (T-XXX): score += 2
 IF lists ALL files searched: score += 2
 IF shows "FOUND" or "NOT FOUND": score += 1
 IF checked contracts/: score += 1
 
 TOTAL: score / 10
-
-```
-
 ```
 
 ### Mechanical vs Creative Comparison
 
-| Task                | Creative Approach                       | Mechanical Approach                    |
-| ------------------- | --------------------------------------- | -------------------------------------- |
+| Task | Creative Approach | Mechanical Approach |
+|------|-------------------|---------------------|
 | **Parallelization** | "Determine which tasks are independent" | `IF file_A != file_B: parallel = true` |
-| **Validation**      | "Assess evidence quality"               | `score = 0; IF has_X: score += 2`      |
-| **Matching**        | "Check if gap is similar to known gap"  | `IF overlap >= 50%: match = true`      |
-| **Filtering**       | "Identify documentation requirements"   | `IF contains "MUST document": EXCLUDE` |
+| **Validation** | "Assess evidence quality" | `score = 0; IF has_X: score += 2` |
+| **Matching** | "Check if item is similar to known item" | `IF overlap >= 50%: match = true` |
+| **Filtering** | "Identify documentation requirements" | `IF contains "MUST document": EXCLUDE` |
 
 **GPT-5 Mini works well** when all logic is procedural/arithmetic.
 
@@ -509,7 +441,6 @@ GPT-5 Mini's reduced reasoning means it can make mistakes without noticing. **Ch
 ### Step 7: Validate Output
 
 Before writing to file, verify ALL checkboxes:
-```
 
 □ All tasks have sequential T### IDs (T001, T002, T003...)?
 □ All tasks have exact file paths in description?
@@ -519,8 +450,6 @@ Before writing to file, verify ALL checkboxes:
 □ Each phase has checkpoint criteria?
 □ Summary counts are accurate (counted manually)?
 □ No ambiguous descriptions (all have verb + object + path)?
-
-```
 
 IF all checked: PROCEED to Step 8 (write file)
 ELSE: FIX issues and re-run validation
@@ -537,11 +466,11 @@ Checklist:
 ❌ Missing [P] or [Story] marker
 RESULT: INVALID
 
-Fixed: "- [ ] T042 [US2] Implement keyboard handler in accordion.component.ts at line 145"
+Fixed: "- [ ] T042 [US2] Implement keyboard handler in form.component.ts at line 145"
 
 Checklist:
 ✅ Has T### ID (T042)
-✅ Has file path (accordion.component.ts)
+✅ Has file path (form.component.ts)
 ✅ Has [Story] marker (US2)
 RESULT: VALID
 ```
@@ -574,34 +503,24 @@ GPT-5 Mini doesn't handle ambiguity well. **Explicit error conditions** tell it 
 ## Error Handling
 
 ### If plan.md not found:
-```
 
 STOP execution immediately
-OUTPUT: "plan.md not found. Run /speckit.plan first."
+OUTPUT: "plan.md not found. Run planning workflow first."
 EXIT (do NOT continue to Step 1)
 
-```
-
 ### If context exceeds limit:
-```
 
 IF total_tokens > 180000:
-STOP execution immediately
-OUTPUT: "Feature too large (~[total]K tokens). Use /analyze-report-gaps-gpt-4-1 with GPT-4.1 (1M context)."
-EXIT
-
-```
+  STOP execution immediately
+  OUTPUT: "Feature too large (~[total]K tokens). Use GPT-4.1 (1M context)."
+  EXIT
 
 ### If ambiguous file path:
-```
 
 IF file_path does NOT match pattern "packages/.+\.(ts|html|scss)":
-STOP execution immediately
-OUTPUT: "Ambiguous file path '[path]' in plan.md at line [N]. Please specify exact path."
-EXIT
-
-```
-
+  STOP execution immediately
+  OUTPUT: "Ambiguous file path '[path]' in plan.md at line [N]. Please specify exact path."
+  EXIT
 ```
 
 ### Context Size Pre-Check Example
@@ -610,20 +529,18 @@ EXIT
 ## Step 0.0: Context Size Pre-Check (MANDATORY)
 
 ### Step 0.0.3: Estimate Token Count
-
 [... calculation ...]
 
 ### Step 0.0.4: Evaluate
-```
 
 IF total_tokens_estimate > 180000:
-STOP
-Use AskUserQuestion to prompt:
-"Feature too large (~[X]K tokens). Switch to GPT-4.1?"
-Options: 1. Switch to GPT-4.1 (Recommended) → EXIT with switch command 2. Continue anyway → WARN and proceed 3. Cancel → EXIT with suggestions
-
-```
-
+  STOP
+  Use AskUserQuestion to prompt:
+    "Feature too large (~[X]K tokens). Switch to GPT-4.1?"
+    Options:
+      1. Switch to GPT-4.1 (Recommended) → EXIT with switch command
+      2. Continue anyway → WARN and proceed
+      3. Cancel → EXIT with suggestions
 ```
 
 **Benefit**: User gets clear guidance, GPT-5 Mini doesn't try to "figure it out".
@@ -640,7 +557,7 @@ Options: 1. Switch to GPT-4.1 (Recommended) → EXIT with switch command 2. Cont
 
 ### Implementation Pattern
 
-````markdown
+```markdown
 ## Output (CTCO Step 4)
 
 ### Internal State (XML Scaffolding)
@@ -650,150 +567,36 @@ DO NOT write XML to the output file.
 
 ```xml
 <!-- Internal agent state - NOT written to file -->
-<gap_analysis>
+<analysis>
   <analysis_mode>INCREMENTAL</analysis_mode>
-  <known_gaps_loaded>7</known_gaps_loaded>
+  <known_items_loaded>7</known_items_loaded>
 
-  <gap_registry>
-    <gap id="GAP-1">
-      <keywords>["down()", "up()"]</keywords>
-    </gap>
-  </gap_registry>
-</gap_analysis>
+  <item_registry>
+    <item id="ITEM-1">
+      <keywords>["submit()", "cancel()"]</keywords>
+    </item>
+  </item_registry>
+</analysis>
 ```
-````
 
 ### Output File Format (MARKDOWN - What Actually Gets Written)
 
 **CRITICAL**: The output file MUST be MARKDOWN format (not XML).
 
 ```markdown
-## Validated Gaps (NEW)
+## Validated Items (NEW)
 
-### GAP-1: Title
+### ITEM-1: Title
 
 **Evidence:**
 [Pure markdown - no XML]
 ```
-
-````
+```
 
 **Why separate internal/output**:
 - ✅ **Internal XML** helps Mini track state during FOR EACH loops
 - ✅ **Output markdown** is what downstream tools expect
 - ✅ **Clear separation** prevents confusion
-
----
-
-## Real-World Application: `/analyze-report-gaps-gpt-5-mini`
-
-### Applied Optimizations
-
-Our implementation in `.github/agents/analyze-report-gaps.gpt-5-mini.agent.md` applies all 7 optimizations:
-
-#### 1. CTCO Framework ✅
-
-```markdown
-## Context (CTCO Step 1)
-**Input artifacts**: spec.md, plan.md, tasks.md
-**Your role**: Mechanical gap detector
-**Context limit**: 200K tokens
-
-## Task (CTCO Step 2)
-Execute mechanical 6-step workflow
-
-## Constraints (CTCO Step 3)
-**Gap format**: Exact template
-**Validation**: score ≥ 6/10
-
-## Output (CTCO Step 4)
-<gap_analysis>...</gap_analysis>
-````
-
-#### 2. reasoning_effort: minimal ✅
-
-```yaml
-model_config:
-  reasoning_effort: minimal
-  verbosity: concise
-```
-
-#### 3. Verbosity Controls ✅
-
-```markdown
-**Maximum prose**:
-
-- Title: 5-8 words
-- Priority: ≤20 words
-- Fix: ≤40 words
-  **No additional prose**
-```
-
-#### 4. Mechanical Procedures ✅
-
-```markdown
-FOR EACH requirement:
-EXTRACT keywords → SEARCH files → IF NOT FOUND: add to gap
-```
-
-#### 5. Validation Checklist ✅
-
-```markdown
-□ All gaps have FR-XXX?
-□ All gaps scored ≥ 6/10?
-□ Checked KNOWN_GAPS registry?
-```
-
-#### 6. Explicit Error Conditions ✅
-
-```markdown
-IF total_tokens > 180K:
-STOP, prompt user to switch to GPT-4.1
-```
-
-#### 7. XML Scaffolding ✅
-
-```xml
-<known_gaps_registry>
-  <gap id="GAP-N">
-    <keywords>[list]</keywords>
-  </gap>
-</known_gaps_registry>
-```
-
----
-
-## Real-World Application: `/tasks-gpt-5-mini`
-
-### Applied Optimizations
-
-Our implementation in `.github/agents/tasks.gpt-5-mini.agent.md`:
-
-#### CTCO Framework ✅
-
-- **Context**: plan.md with phases
-- **Task**: Apply 5 mechanical transformations
-- **Constraints**: Task format `T### [P?] [Story?] description`
-- **Output**: tasks.md with exact structure
-
-#### Mechanical Transformations ✅
-
-```markdown
-Transformation 1: FOR EACH "## Phase" heading → CREATE phase header
-Transformation 2: FOR EACH bullet with verb → GENERATE task
-Transformation 3: FOR EACH task → ADD [USN] if matches user story
-Transformation 4: FOR EACH task → IF different file: ADD [P]
-Transformation 5: ORDER by dependencies (infrastructure → components → tests)
-```
-
-#### Validation Checklist ✅
-
-```markdown
-□ All tasks have T### IDs?
-□ All tasks have file paths?
-□ [P] markers accurate?
-□ Task order follows dependencies?
-```
 
 ---
 
@@ -810,9 +613,9 @@ Transformation 5: ORDER by dependencies (infrastructure → components → tests
 
 **Real-world timing**:
 
-- Gap analysis (small feature): 10-20 seconds
+- Analysis (small feature): 10-20 seconds
 - Task generation: 5-10 seconds
-- vs GPT-4.1: 30-60 seconds for gap analysis
+- vs GPT-4.1: 30-60 seconds for analysis
 
 ### Quality vs Speed Trade-off
 
@@ -823,7 +626,7 @@ Transformation 5: ORDER by dependencies (infrastructure → components → tests
 **When quality is acceptable**:
 
 - ✅ Mechanical transformations (task generation)
-- ✅ Pattern matching (gap detection)
+- ✅ Pattern matching (detection tasks)
 - ✅ Template filling (structured output)
 - ✅ Keyword search (requirement validation)
 
@@ -846,8 +649,8 @@ Transformation 5: ORDER by dependencies (infrastructure → components → tests
 ### ❌ Pitfall 2: No Verbosity Limits
 
 ```markdown
-❌ BAD: "Describe the gap" (unlimited prose)
-✅ GOOD: "Gap title (5-8 words), fix description (≤40 words), no prose"
+❌ BAD: "Describe the issue" (unlimited prose)
+✅ GOOD: "Issue title (5-8 words), fix description (≤40 words), no prose"
 ```
 
 ### ❌ Pitfall 3: Assuming Deep Reasoning
@@ -867,7 +670,7 @@ Transformation 5: ORDER by dependencies (infrastructure → components → tests
 ### ❌ Pitfall 5: XML in Output Files
 
 ```markdown
-❌ BAD: Write <gap><title>Title</title></gap> to gap-analysis-report.md
+❌ BAD: Write <item><title>Title</title></item> to report.md
 ✅ GOOD: Use XML internally, write markdown to file
 ```
 
@@ -875,17 +678,17 @@ Transformation 5: ORDER by dependencies (infrastructure → components → tests
 
 ## Optimization Comparison: GPT-5 Mini vs GPT-4.1
 
-| Optimization               | GPT-5 Mini        | GPT-4.1          | Rationale                   |
-| -------------------------- | ----------------- | ---------------- | --------------------------- |
-| **CTCO Framework**         | ✅ **Required**   | ✅ Helpful       | Mini needs more structure   |
-| **reasoning_effort**       | ✅ `minimal`      | N/A              | Mini has this parameter     |
-| **Verbosity controls**     | ✅ **Critical**   | ✅ Helpful       | Mini more prone to drift    |
-| **XML scaffolding**        | ✅ **Required**   | ✅ Examples only | Mini needs explicit state   |
-| **Mechanical procedures**  | ✅ **Required**   | ✅ Helpful       | Mini can't reason           |
-| **Validation checklists**  | ✅ **Required**   | ✅ Helpful       | Mini needs self-correction  |
-| **Explicit errors**        | ✅ **Required**   | ✅ Helpful       | Mini can't infer gracefully |
-| **Sandwich method**        | ❌ Not needed     | ✅ **Required**  | 200K vs 1M context          |
-| **Progressive disclosure** | ❌ Not applicable | ✅ For >500K     | Context limit difference    |
+| Optimization | GPT-5 Mini | GPT-4.1 | Rationale |
+|-------------|------------|---------|-----------|
+| **CTCO Framework** | ✅ **Required** | ✅ Helpful | Mini needs more structure |
+| **reasoning_effort** | ✅ `minimal` | N/A | Mini has this parameter |
+| **Verbosity controls** | ✅ **Critical** | ✅ Helpful | Mini more prone to drift |
+| **XML scaffolding** | ✅ **Required** | ✅ Examples only | Mini needs explicit state |
+| **Mechanical procedures** | ✅ **Required** | ✅ Helpful | Mini can't reason |
+| **Validation checklists** | ✅ **Required** | ✅ Helpful | Mini needs self-correction |
+| **Explicit errors** | ✅ **Required** | ✅ Helpful | Mini can't infer gracefully |
+| **Sandwich method** | ❌ Not needed | ✅ **Required** | 200K vs 1M context |
+| **Progressive disclosure** | ❌ Not applicable | ✅ For >500K | Context limit difference |
 
 **Key insight**: GPT-5 Mini needs **MORE structure** (CTCO, XML) but **LESS long-context handling** (no sandwich, no progressive disclosure) than GPT-4.1.
 
@@ -920,14 +723,14 @@ Transformation 5: ORDER by dependencies (infrastructure → components → tests
 
 ### ✅ Excellent For
 
-1. **Task generation** (`/tasks-gpt-5-mini`)
+1. **Task generation**
    - Input: Structured plan.md
    - Output: tasks.md with T### IDs
    - Process: Mechanical transformations
 
-2. **Gap analysis** (`/analyze-report-gaps-gpt-5-mini`)
+2. **Analysis tasks**
    - Input: spec.md + implementation files (<180K)
-   - Output: gap-analysis-report.md
+   - Output: analysis-report.md
    - Process: Keyword search + pattern matching
 
 3. **Template filling**
@@ -985,75 +788,16 @@ Before deploying a GPT-5 Mini prompt:
 
 ```bash
 # Generate with Haiku 4.5 (baseline)
-copilot -m "haiku-4.5" slash tasks
+copilot -m "haiku-4.5" /tasks
 
 # Generate with GPT-5 Mini (optimized)
-copilot -m "gpt-5-mini" slash tasks-gpt-5-mini
+copilot -m "gpt-5-mini" /tasks-gpt-5-mini
 
 # Compare outputs
 diff tasks-haiku.md tasks-gpt5mini.md
 ```
 
 **Acceptance criteria**: 85-95% similarity to Haiku 4.5 output.
-
----
-
-## Research Sources
-
-**Primary Sources** (2026):
-
-- [GPT-5 mini Model Card - PromptHub](https://www.prompthub.us/models/gpt-5-mini) - Model specifications, performance characteristics
-- [GPT-5 mini API - CometAPI](https://www.cometapi.com/gpt-5-mini-api/) - Fast inference, kernel fusion, reasoning_effort parameter
-- [GPT-5.2 Prompting Guide: The 2026 Playbook - Atlabs AI](https://www.atlabs.ai/blog/gpt-5.2-prompting-guide-the-2026-playbook-for-developers-agents) - CTCO framework, XML scaffolding, verbosity controls
-- [GPT-5 prompting guide | OpenAI Cookbook](https://cookbook.openai.com/examples/gpt-5/gpt-5_prompting_guide) - Structured prompting best practices
-- [How to write effective prompts for GPT-5 - Vellum](https://www.vellum.ai/blog/gpt-5-prompting-guide) - 18 tips including verbosity, reasoning effort
-- [GPT-5 Mini vs Grok Code Fast 1 - Galaxy.ai](https://blog.galaxy.ai/compare/gpt-5-mini-vs-grok-code-fast-1) - Comparative analysis, limitations
-
-**OpenAI Official**:
-
-- [GPT-5 Prompt Migration and Improvement | OpenAI Cookbook](https://cookbook.openai.com/examples/gpt-5/prompt-optimization-cookbook) - Prompt optimizer tool, migration guide
-
----
-
-## Example Implementations
-
-### 1. Gap Analysis: `/analyze-report-gaps-gpt-5-mini`
-
-**Location**: `.github/agents/analyze-report-gaps.gpt-5-mini.agent.md`
-
-**Optimizations applied**:
-
-- CTCO framework (4 sections)
-- reasoning_effort: minimal
-- Verbosity: title ≤8 words, fix ≤40 words
-- XML scaffolding for gap registry
-- Mechanical keyword search
-- 8-point validation checklist
-- Context size pre-check (180K threshold)
-
-**Performance**:
-
-- Speed: 10-20 seconds (2-3x faster than GPT-4.1)
-- Quality: 85-95% of GPT-4.1
-- Cost: 0x
-
-### 2. Task Generation: `/tasks-gpt-5-mini`
-
-**Location**: `.github/agents/tasks.gpt-5-mini.agent.md`
-
-**Optimizations applied**:
-
-- CTCO framework
-- 5 mechanical transformations (extract phases, convert bullets, etc.)
-- XML scaffolding for task output
-- Validation checklist (8 points)
-- Explicit error conditions
-
-**Performance**:
-
-- Speed: 5-10 seconds
-- Quality: 85-95% of Haiku 4.5
-- Cost: 0x (vs Haiku's 0.33x)
 
 ---
 
@@ -1078,6 +822,22 @@ diff tasks-haiku.md tasks-gpt5mini.md
 
 ---
 
-**Last Updated**: 2026-01-10
-**Applies to**: GPT-5 mini, GPT-5 nano (fast inference variants)
-**Context Limit**: 200K tokens (safe threshold: 180K)
+## Research Sources
+
+**Primary Sources**:
+
+- [GPT-5 mini Model Card - PromptHub](https://www.prompthub.us/models/gpt-5-mini) - Model specifications, performance characteristics
+- [GPT-5 mini API - CometAPI](https://www.cometapi.com/gpt-5-mini-api/) - Fast inference, kernel fusion, reasoning_effort parameter
+- [GPT-5.2 Prompting Guide: The 2026 Playbook - Atlabs AI](https://www.atlabs.ai/blog/gpt-5.2-prompting-guide-the-2026-playbook-for-developers-agents) - CTCO framework, XML scaffolding, verbosity controls
+- [GPT-5 prompting guide | OpenAI Cookbook](https://cookbook.openai.com/examples/gpt-5/gpt-5_prompting_guide) - Structured prompting best practices
+- [How to write effective prompts for GPT-5 - Vellum](https://www.vellum.ai/blog/gpt-5-prompting-guide) - 18 tips including verbosity, reasoning effort
+- [GPT-5 Mini vs Grok Code Fast 1 - Galaxy.ai](https://blog.galaxy.ai/compare/gpt-5-mini-vs-grok-code-fast-1) - Comparative analysis, limitations
+- [GPT-5 Prompt Migration and Improvement | OpenAI Cookbook](https://cookbook.openai.com/examples/gpt-5/prompt-optimization-cookbook) - Prompt optimizer tool, migration guide
+
+---
+
+## Related Documents
+
+- [MODEL-OPTIMIZATION-GPT-4-1.md](./MODEL-OPTIMIZATION-GPT-4-1.md) - For large features (>180K tokens)
+- [MODEL-OPTIMIZATION-GPT-5-1-CODEX.md](./MODEL-OPTIMIZATION-GPT-5-1-CODEX.md) - For code implementation tasks
+- [MODEL-FRONTMATTER.md](./MODEL-FRONTMATTER.md) - How to specify models in agent/prompt files

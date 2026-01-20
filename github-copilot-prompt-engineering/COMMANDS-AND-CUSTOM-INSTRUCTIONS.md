@@ -1,8 +1,8 @@
-# GitHub Copilot Commands Optimizations
+# GitHub Copilot Commands and Custom Instructions
 
-**Last Updated:** 2026-01-11
+**Last Updated:** 2026-01-20
 
-This document provides optimization strategies for GitHub Copilot slash commands and custom commands, including built-in commands, custom prompt files, and integration patterns.
+This document provides optimization strategies for GitHub Copilot slash commands and custom instructions, including built-in commands, custom prompt files, and integration patterns.
 
 ---
 
@@ -32,7 +32,6 @@ GitHub Copilot includes several powerful built-in commands:
 **Purpose:** Analyzes code and proposes optimizations
 
 **Use Cases:**
-
 - Performance improvements
 - Reducing lines of code
 - Algorithmic efficiency
@@ -65,7 +64,6 @@ const findUser = (users: User[], id: number) => users.find((u) => u.id === id);
 **Purpose:** Creates unit tests for selected code
 
 **Use Cases:**
-
 - Generate test boilerplate
 - Cover edge cases
 - Achieve coverage goals
@@ -105,7 +103,6 @@ describe('calculateDiscount', () => {
 **Purpose:** Automatically suggests corrections for errors
 
 **Use Cases:**
-
 - Typo correction
 - Type errors
 - Logic bugs
@@ -133,7 +130,6 @@ function getUserName(user: User): string {
 **Purpose:** Provides detailed code explanations
 
 **Use Cases:**
-
 - Understanding unfamiliar code
 - Onboarding documentation
 - Code review context
@@ -168,7 +164,6 @@ const memoize = <T extends (...args: any[]) => any>(fn: T): T => {
 **Purpose:** Generates documentation for code
 
 **Use Cases:**
-
 - API documentation
 - JSDoc comments
 - README sections
@@ -227,17 +222,17 @@ description: Review component for best practices
 
 # Component Review Prompt
 
-Analyze the selected Angular component for:
+Analyze the selected component for:
 
 1. **Code Quality**
-   - Follows Angular style guide
-   - Uses appropriate lifecycle hooks
-   - Proper dependency injection
+   - Follows project style guide
+   - Uses appropriate patterns
+   - Proper error handling
 
 2. **Performance**
-   - Change detection strategy
-   - OnPush compatibility
-   - Unnecessary re-renders
+   - Efficient algorithms
+   - Unnecessary re-renders avoided
+   - Memory leaks prevented
 
 3. **Accessibility**
    - ARIA attributes present
@@ -265,50 +260,42 @@ Provide specific recommendations with code examples.
 **Example:**
 
 ```markdown
-# Copilot Instructions for ngx-foundation-sites
+# Copilot Instructions for MyProject
 
 ## Project Overview
-
-Angular component library implementing Foundation for Sites design system.
+React component library implementing a design system.
 
 ## Code Conventions
 
 ### Components
-
-- Use standalone components (no NgModules)
-- Prefix: `nfs-` for components, `nfs` for directives
-- Change detection: OnPush
-- Use signals for state management
+- Use functional components with hooks
+- Use TypeScript strict mode
+- Prefer composition over inheritance
 
 ### Testing
-
-- Write Storybook stories with play functions (preferred)
-- Use Playwright for e2e tests
-- Vitest for unit tests (rare)
+- Write Jest tests alongside implementation
+- Use React Testing Library for component tests
+- Achieve minimum 80% coverage
 
 ### Accessibility
-
-- Follow @angular/aria patterns
-- Use @angular/cdk when ARIA insufficient
-- All components must pass AXE checks
+- Follow WCAG 2.1 AA guidelines
+- Include ARIA attributes where needed
+- Support keyboard navigation
 
 ### Styling
-
-- Use Foundation CSS classes directly
-- Avoid custom CSS unless necessary
-- Document any custom styles with comments
+- Use CSS Modules or styled-components
+- Follow BEM naming convention
+- Document any custom styles
 
 ## File Structure
-
-- Components: `packages/ngx-foundation-sites/src/lib/[component]/`
-- Tests: `*.spec.ts` for unit, `*.e2e.ts` for Playwright
-- Stories: `*.stories.ts` in same directory as component
+- Components: `src/components/[component]/`
+- Tests: `*.test.tsx` in same directory as component
+- Stories: `*.stories.tsx` in same directory as component
 
 ## Common Commands
-
-- `npx nx test ngx-foundation-sites` - Run tests
-- `npx nx storybook ngx-foundation-sites` - Start Storybook
-- `npm run format` - Format code
+- `npm test` - Run tests
+- `npm run storybook` - Start Storybook
+- `npm run lint` - Check code style
 ```
 
 **Activation:** Enable in VS Code via `Tools > Options > GitHub Copilot > Custom Instructions`
@@ -332,7 +319,6 @@ Angular component library implementing Foundation for Sites design system.
 ```
 
 **Usage:**
-
 - Type `/` in Copilot Chat
 - See custom commands in autocomplete list
 - Select command to invoke
@@ -357,26 +343,22 @@ description: Context-aware code review
 
 # Smart Review Command
 
-## If file is \*.component.ts:
-
-- Check Angular component best practices
+## If file is *.component.ts:
+- Check component best practices
 - Verify change detection strategy
 - Review template bindings
 
-## If file is \*.service.ts:
-
+## If file is *.service.ts:
 - Check dependency injection patterns
 - Verify singleton vs scoped providers
 - Review error handling
 
-## If file is \*.spec.ts:
-
+## If file is *.spec.ts:
 - Check test coverage completeness
 - Verify mock usage
 - Review assertion quality
 
-## If file is \*.stories.ts:
-
+## If file is *.stories.ts:
 - Check story variants coverage
 - Verify play function interactions
 - Review accessibility tests
@@ -401,31 +383,26 @@ description: Complete feature implementation checklist
 Execute these steps in order:
 
 ## Step 1: Implementation
-
 - [ ] Feature code complete
 - [ ] Follows project conventions
 - [ ] No TypeScript errors
 
 ## Step 2: Testing
-
 - [ ] Unit tests written and passing
-- [ ] Storybook story with interactions
+- [ ] Story with interactions
 - [ ] E2E test if needed
 
 ## Step 3: Documentation
-
 - [ ] JSDoc comments added
 - [ ] README updated if needed
 - [ ] CHANGELOG entry added
 
 ## Step 4: Code Quality
-
 - [ ] Run linter: `npm run lint`
 - [ ] Run formatter: `npm run format`
 - [ ] Run type check: `tsc --noEmit`
 
 ## Step 5: Review
-
 - [ ] Self-review changes
 - [ ] Check for console.logs
 - [ ] Verify no dead code
@@ -443,75 +420,66 @@ Report completion status for each step.
 
 ````markdown
 ---
-name: new-directive
-description: Generate Angular directive with boilerplate
+name: new-component
+description: Generate component with boilerplate
 ---
 
-# Directive Generator
+# Component Generator
 
-Create a new Angular directive with the following structure:
+Create a new component with the following structure:
 
-## 1. Directive File
+## 1. Component File
 
 ```typescript
-import { Directive, input, HostBinding } from '@angular/core';
+import { useState } from 'react';
 
-@Directive({
-  selector: '[nfs{{DirectiveName}}]'
-})
-export class Nfs{{DirectiveName}}Directive {
-  // Inputs
-  variant = input<'primary' | 'secondary'>('primary');
+interface {{ComponentName}}Props {
+  // Props here
+}
 
-  // Host bindings
-  @HostBinding('class') get hostClasses(): string {
-    return `nfs-{{kebab-name}} nfs-{{kebab-name}}--${this.variant()}`;
-  }
+export function {{ComponentName}}({ ...props }: {{ComponentName}}Props) {
+  return (
+    <div className="{{kebab-name}}">
+      {/* Component content */}
+    </div>
+  );
 }
 ```
-````
 
 ## 2. Test File
 
 ```typescript
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Component } from '@angular/core';
-import { Nfs{{DirectiveName}}Directive } from './{{kebab-name}}.directive';
+import { render, screen } from '@testing-library/react';
+import { {{ComponentName}} } from './{{ComponentName}}';
 
-@Component({
-  template: `<div [nfs{{DirectiveName}}]="variant"></div>`
-})
-class TestComponent {
-  variant = 'primary';
-}
-
-describe('Nfs{{DirectiveName}}Directive', () => {
-  // Test implementation
+describe('{{ComponentName}}', () => {
+  it('renders correctly', () => {
+    render(<{{ComponentName}} />);
+    // Add assertions
+  });
 });
 ```
 
 ## 3. Story File
 
 ```typescript
-import type { Meta, StoryObj } from '@storybook/angular';
-import { Nfs{{DirectiveName}}Directive } from './{{kebab-name}}.directive';
+import type { Meta, StoryObj } from '@storybook/react';
+import { {{ComponentName}} } from './{{ComponentName}}';
 
-const meta: Meta<Nfs{{DirectiveName}}Directive> = {
-  title: 'Directives/{{DirectiveName}}',
-  component: Nfs{{DirectiveName}}Directive,
+const meta: Meta<typeof {{ComponentName}}> = {
+  title: 'Components/{{ComponentName}}',
+  component: {{ComponentName}},
 };
 
 export default meta;
 ```
 
 ## Variables to populate:
-
-- `{{DirectiveName}}` - PascalCase name
+- `{{ComponentName}}` - PascalCase name
 - `{{kebab-name}}` - kebab-case name
 - `{{description}}` - Brief description
 
 Ask user for these values before generating.
-
 ````
 
 **Optimization:** Consistent code generation reduces boilerplate errors.
@@ -522,18 +490,18 @@ Ask user for these values before generating.
 
 ### Copilot CLI
 
-**⚠️ LIMITATION - NOT YET AVAILABLE**
+**LIMITATION - NOT YET AVAILABLE**
 
 As of January 2026, the GitHub Copilot CLI **only supports built-in commands**.
 
-- ✅ Built-in: `/optimize`, `/tests`, `/fix`, `/explain`, `/doc`
-- ❌ Custom: `.github/prompts/*.prompt.md` files **not recognized** in CLI
+- Built-in: `/optimize`, `/tests`, `/fix`, `/explain`, `/doc`
+- Custom: `.github/prompts/*.prompt.md` files **not recognized** in CLI
 
-**Feature Request:** [Issue #618](https://github.com/github/copilot-cli/issues/618) tracks support for custom commands in CLI
+**Feature Request:** Track GitHub issues for support for custom commands in CLI
 
 **Workaround:** Use VS Code extension for custom commands, or copy prompt content into CLI manually
 
-**Status:** Under active development; **do not rely on this feature** until officially released. Check GitHub Changelog for updates.
+**Status:** Under active development; check GitHub Changelog for updates.
 
 ---
 
@@ -557,17 +525,17 @@ Custom commands work best when combined with custom instructions:
 
 ```markdown
 # Custom Instructions (always active)
-- Use signals for state management
-- Prefer standalone components
-- Follow Foundation CSS classes
+- Use TypeScript strict mode
+- Prefer functional components
+- Follow design system patterns
 
 # Custom Command /new-component (invoked explicitly)
 Generate component using:
 1. Custom instructions above (automatically applied)
 2. Component template structure
-3. Foundation CSS integration
-4. Storybook story with interactions
-````
+3. Design system integration
+4. Story with interactions
+```
 
 **Optimization:** Instructions provide context; commands provide action. Together they create consistent, project-specific output.
 
@@ -617,30 +585,27 @@ After each step, wait for user approval before proceeding.
 
 ## Best Practices
 
-### ✅ Do
+### Do
 
 1. **Name Commands Clearly**
 
    ```
-   ✅ /component-review
-   ✅ /api-security-audit
-   ❌ /cr
-   ❌ /check
+   Good: /component-review
+   Good: /api-security-audit
+   Bad:  /cr
+   Bad:  /check
    ```
 
 2. **Provide Context in Prompts**
 
    ```markdown
    # Good
-
-   Review this Angular component for:
-
+   Review this component for:
    - Change detection strategy (should be OnPush)
-   - Signal usage (prefer signals over RxJS for local state)
+   - State management (prefer signals)
    - Accessibility (must pass AXE checks)
 
    # Bad
-
    Review this component
    ```
 
@@ -650,17 +615,14 @@ After each step, wait for user approval before proceeding.
    Provide output in this format:
 
    ## Issues Found
-
    - [Issue 1 with severity]
    - [Issue 2 with severity]
 
    ## Recommendations
-
    1. [Recommendation with code example]
    2. [Recommendation with code example]
 
    ## Summary
-
    [Overall assessment]
    ```
 
@@ -669,16 +631,10 @@ After each step, wait for user approval before proceeding.
    ```markdown
    Generate component following this pattern:
 
-   \`\`\`typescript
-   @Component({
-   selector: 'nfs-example',
-   template: '<button>{{label()}}</button>',
-   changeDetection: ChangeDetectionStrategy.OnPush
-   })
-   export class ExampleComponent {
-   label = input.required<string>();
+   ```typescript
+   export function ExampleComponent({ label }: Props) {
+     return <button>{label}</button>;
    }
-   \`\`\`
    ```
 
 5. **Version Your Commands**
@@ -686,11 +642,11 @@ After each step, wait for user approval before proceeding.
    ---
    name: component-review
    version: 2.1.0
-   updated: 2026-01-11
+   updated: 2026-01-20
    ---
    ```
 
-### ❌ Avoid
+### Avoid
 
 1. **Vague Command Names**
    - `/do-stuff`, `/fix-it`, `/check`
@@ -701,19 +657,18 @@ After each step, wait for user approval before proceeding.
 3. **Hardcoded Paths**
 
    ```markdown
-   ❌ Check file at C:\Users\me\project\src\app.ts
-   ✅ Check the selected file
+   Bad:  Check file at C:\Users\me\project\src\app.ts
+   Good: Check the selected file
    ```
 
 4. **Assuming Context**
 
    ```markdown
-   ❌ Review for best practices
-   ✅ Review for Angular best practices including:
-
-   - OnPush change detection
-   - Signal-based state
-   - ARIA compliance
+   Bad:  Review for best practices
+   Good: Review for React best practices including:
+         - Functional components
+         - Hooks usage
+         - Accessibility
    ```
 
 5. **No Output Structure**
@@ -749,45 +704,6 @@ After each step, wait for user approval before proceeding.
 (repeat)
 ```
 
-**Example Tracking:**
-
-```markdown
-## Command Performance Report
-
-### /component-review
-
-- **Invocations:** 127 (last 30 days)
-- **Satisfaction:** 4.2/5.0
-- **Time Saved:** ~15 min per review × 127 = 31.75 hours
-- **Common Issues:**
-  - Sometimes misses accessibility checks (v2.1.0 addressed)
-  - Doesn't check for Foundation CSS class usage (v2.2.0 will add)
-
-### Planned Improvements
-
-- [ ] Add Foundation CSS class verification
-- [ ] Include performance benchmarking suggestions
-- [ ] Check for proper signal usage patterns
-```
-
----
-
-## Community Resources
-
-### Custom Command Collections
-
-1. **GitHub Community Discussions**
-   - [Custom slash commands for Copilot Chat](https://github.com/orgs/community/discussions/74564)
-   - Share and discover community-contributed commands
-
-2. **Microsoft Learn Documentation**
-   - [Mastering Slash Commands](https://devblogs.microsoft.com/visualstudio/mastering-slash-commands-with-github-copilot-in-visual-studio/)
-   - Official best practices and examples
-
-3. **GitHub Copilot Extensions**
-   - Third-party extensions with additional commands
-   - Check VS Code Marketplace for Copilot command packs
-
 ---
 
 ## Future Developments
@@ -815,4 +731,3 @@ After each step, wait for user approval before proceeding.
 - [Quickstart: Use GitHub Copilot Slash Commands - Microsoft Learn](https://learn.microsoft.com/en-us/sql/tools/visual-studio-code-extensions/github-copilot/slash-commands)
 - [Customize chat responses - Visual Studio](https://learn.microsoft.com/en-us/visualstudio/ide/copilot-chat-context)
 - [GitHub Copilot: Unlocking Power with Slash Commands](https://medium.com/@sachin.kondana/github-copilot-unlocking-power-with-slash-commands-participants-1c106315335d)
-- [Feature Request: Support custom slash commands from .github/prompts directory](https://github.com/github/copilot-cli/issues/618)

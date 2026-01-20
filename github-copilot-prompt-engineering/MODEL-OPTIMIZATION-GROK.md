@@ -1,13 +1,20 @@
 # Grok Code Fast 1 Prompt Optimization Guide
 
-**Model**: grok-code-fast-1 (256K context, agentic reasoning)
-**Cost**: 0x in GitHub Copilot (VS Code); API: $0.20/1M input, $1.50/1M output, $0.02/1M cached
-**Availability**: GitHub Copilot (VS Code, not CLI yet), Cursor, Cline, Windsurf, Roo Code, Kilo Code
-**Use case**: Agentic coding workflows, iterative bug fixes, scaffolding, test writing
+**Last Updated:** 2026-01-20
+
+This document provides optimization strategies for Grok Code Fast 1, xAI's agentic coding model optimized for iterative tool-using workflows.
 
 ---
 
 ## Model Characteristics
+
+| Attribute | Value |
+|-----------|-------|
+| **Context Window** | 256,000 tokens |
+| **Throughput** | ~92 tokens/second (4x faster than competing models) |
+| **Cache Hit Rate** | 90%+ with consistent conversation structure |
+| **Cost** | 0x in GitHub Copilot (VS Code only, not CLI yet) |
+| **Best For** | Agentic coding workflows, iterative bug fixes, scaffolding |
 
 ### Key Capabilities
 
@@ -15,12 +22,29 @@
 2. **256K context window** - Handles large repositories and long files coherently
 3. **92 tokens/second throughput** - Up to 4x faster than competing agentic models
 4. **Native tool-calling** - First-party support; designed with tool-calling in mind
-5. **Exposed reasoning traces** - Visible via `chunk.choices[0].delta.reasoning_content` (streaming only)
+5. **Exposed reasoning traces** - Visible via streaming mode
 6. **90%+ cache hit rates** - Dramatic cost/latency reduction in multi-turn workflows
 
 **Performance**: **70.8% on SWE-Bench Verified** using xAI's internal harness. Delivers **4x speed at 1/10th cost** of other leading agentic models.
 
 **Source**: [Grok Code Fast 1 | xAI](https://x.ai/news/grok-code-fast-1)
+
+---
+
+## Quick Reference
+
+| Optimization | Description | Priority |
+|-------------|-------------|----------|
+| [Native Tool-Calling](#optimization-1-native-tool-calling-not-xml) | Use SDK functions, not XML | Critical |
+| [Detailed System Prompts](#optimization-2-detailed-system-prompts) | Thorough task description | Critical |
+| [Setup + Tools + Example](#optimization-3-setup--tools--example-pattern) | Three-part prompt structure | High |
+| [Preserve Prompt History](#optimization-4-preserve-prompt-history-for-caching) | Maximize cache hits | High |
+| [Agentic Over One-Shot](#optimization-5-agentic-over-one-shot) | Use for iterative tasks | High |
+| [Rapid Iteration](#optimization-6-rapid-iteration-strategy) | Quick attempts, refine | Medium |
+| [Context Structuring](#optimization-7-xmlmarkdown-context-structuring) | XML/Markdown for clarity | Medium |
+| [Reasoning Traces](#optimization-8-access-reasoning-traces) | Use streaming mode | Medium |
+| [Plan-First Execution](#optimization-9-plan-first-execution) | Prevent over-editing | Medium |
+| [Scope Boundaries](#optimization-10-scope-and-file-boundaries) | Explicit file paths | High |
 
 ---
 
@@ -39,14 +63,11 @@
 ### Why It Works
 
 grok-code-fast-1 was built with native tool-calling as the primary integration method:
-
 - **Trained on function calling** - The model architecture expects native tool calls
 - **XML hurts performance** - Forces the model off its optimization path
 - **Better structured outputs** - Native calls produce cleaner tool invocations
 
 ### Implementation Pattern
-
-#### Use OpenAI-Compatible SDK
 
 ```python
 from openai import OpenAI
@@ -81,16 +102,14 @@ response = client.chat.completions.create(
 )
 ```
 
-#### Tool Choice Modes
+### Tool Choice Modes
 
-| Mode                                                | Behavior                                   |
-| --------------------------------------------------- | ------------------------------------------ |
-| `"auto"` (default)                                  | Model decides whether to call tools        |
-| `"required"`                                        | Force tool calls (may cause hallucination) |
-| `{"type": "function", "function": {"name": "..."}}` | Force specific function                    |
-| `"none"`                                            | Disable tool calling                       |
-
-**Parallel tool calling** is enabled by default. Disable with `parallel_function_calling: "false"` if needed.
+| Mode | Behavior |
+|------|----------|
+| `"auto"` (default) | Model decides whether to call tools |
+| `"required"` | Force tool calls (may cause hallucination) |
+| `{"type": "function", "function": {"name": "..."}}` | Force specific function |
+| `"none"` | Disable tool calling |
 
 ---
 
@@ -109,55 +128,39 @@ response = client.chat.completions.create(
 ### Why It Works
 
 grok-code-fast-1's speed allows for richer context without latency penalties:
-
 - **Detail prevents ambiguity** - Explicit expectations reduce hallucination
 - **Edge cases are handled** - Model knows what to watch for
 - **Constraints focus behavior** - Prevents over-editing or under-delivering
 
 ### Implementation Pattern
 
-#### System Prompt Template
-
 ```markdown
-You are a senior Python engineer working on [PROJECT_NAME].
+You are a senior TypeScript engineer working on [PROJECT_NAME].
 
 ## Your capabilities:
-
 - Read files using the `read_file` tool
 - Edit files using the `edit_file` tool
 - Run tests using the `run_tests` tool
 - Search codebase using the `grep` tool
 
 ## Task requirements:
-
 [Specific task description with concrete deliverables]
 
 ## Constraints:
-
 - Produce minimal patches (unified diff format)
 - Include tests for any new functionality
 - Follow existing code style (see .editorconfig)
 
 ## Edge cases to handle:
-
 - Empty input arrays should return []
 - Invalid paths should raise FileNotFoundError
 - Network timeouts should retry 3 times
 
 ## Output format:
-
 - Patch: unified diff
 - Rationale: 1-2 sentences
 - Tests: pytest function names
 ```
-
-#### Start with Role Definition
-
-```markdown
-"You are a senior Python engineer. You will produce a minimal patch, tests, and a short rationale."
-```
-
-**Clear role + deliverables** sets expectations immediately.
 
 ---
 
@@ -176,23 +179,18 @@ You are a senior Python engineer working on [PROJECT_NAME].
 ### Why It Works
 
 grok-code-fast-1's speed makes short, iterative prompts efficient:
-
 - **Short scaffold** - Minimal overhead per interaction
 - **Tool enumeration** - Model knows available actions
 - **Example steers format** - One exemplar is enough to guide output
 
 ### Implementation Pattern
 
-#### Three-Part Prompt
-
 ````markdown
 ## Setup
-
-Repository: ngx-foundation-sites (Angular component library)
-Goal: Fix accordion keyboard navigation bug
+Repository: my-project (TypeScript library)
+Goal: Fix form keyboard navigation bug
 
 ## Tools Available
-
 - `read_file(path)` - Read file contents
 - `edit_file(path, changes)` - Apply changes to file
 - `run_tests(pattern)` - Run matching tests
@@ -201,33 +199,15 @@ Goal: Fix accordion keyboard navigation bug
 ## Expected Output Format
 
 ```diff
---- a/src/accordion/accordion.component.ts
-+++ b/src/accordion/accordion.component.ts
+--- a/src/form/form.component.ts
++++ b/src/form/form.component.ts
 @@ -145,7 +145,7 @@
 -    if (event.key === 'Enter') {
 +    if (event.key === 'Enter' || event.key === ' ') {
 ```
-````
 
-Rationale: Space key should also toggle accordion per WCAG 2.1
-Test: test_accordion_keyboard_space
-
-````
-
-#### Bug Fix Template
-
-```markdown
-## Setup
-Bug: [Brief description of the issue]
-Context: [File or area affected]
-
-## Constraints
-- Minimal patch (unified diff)
-- One-line rationale
-- pytest function for verification
-
-## Example Fix
-[Show similar fix pattern]
+Rationale: Space key should also toggle form per WCAG 2.1
+Test: test_form_keyboard_space
 ````
 
 ---
@@ -247,7 +227,6 @@ Context: [File or area affected]
 ### Why It Works
 
 xAI achieves **90%+ cache hit rates** with launch partners:
-
 - **Cached input tokens cost $0.02/1M** (vs $0.20/1M uncached)
 - **Faster inference** - Cached context doesn't need reprocessing
 - **Agentic workflows benefit most** - Sequential tool calls share prefix
@@ -284,11 +263,9 @@ messages = rebuild_conversation(new_context)
 
 ```markdown
 # GOOD: Reference files by path (loaded via tools)
-
 Reference @errors.ts to add proper error handling to @sql.ts
 
 # BAD: Embedding entire file contents in prompts
-
 Here is the content of errors.ts: [5000 lines...]
 ```
 
@@ -309,31 +286,28 @@ Here is the content of errors.ts: [5000 lines...]
 ### Why It Works
 
 grok-code-fast-1's architecture is optimized for iterative tool-calling:
-
 - **Interleaved reasoning** - Thinks while calling tools
 - **Speed advantage** - Rapid iteration costs less time/money
 - **Cache benefits** - Consistent context improves with each step
 
 ### Model Selection Guide
 
-| Task Type                 | Best Model        | Rationale                        |
-| ------------------------- | ----------------- | -------------------------------- |
-| **Agentic coding**        | grok-code-fast-1  | Designed for iterative tool use  |
-| **One-shot Q&A**          | Grok 4            | Better for single-turn reasoning |
-| **Complex reasoning**     | Claude Sonnet 4.5 | Extended thinking capability     |
-| **Large context (>256K)** | GPT-4.1           | 1M context window                |
+| Task Type | Best Model | Rationale |
+|-----------|------------|-----------|
+| **Agentic coding** | grok-code-fast-1 | Designed for iterative tool use |
+| **One-shot Q&A** | Grok 4 | Better for single-turn reasoning |
+| **Complex reasoning** | Claude Sonnet 4.5 | Extended thinking capability |
+| **Large context (>256K)** | GPT-4.1 | 1M context window |
 
 ### Agentic Task Examples
 
 **grok-code-fast-1 excels at**:
-
 - Bug fixes with search → read → edit → test cycles
 - Scaffolding new features with iterative tool calls
 - Test writing with incremental coverage checking
 - Documentation updates after code changes
 
 **Better for Grok 4 / Claude / GPT-5**:
-
 - Architecture planning (one-shot design)
 - Deep algorithmic reasoning
 - Multi-file refactors requiring global view
@@ -355,52 +329,27 @@ grok-code-fast-1's architecture is optimized for iterative tool-calling:
 ### Why It Works
 
 Traditional prompting advice (spend 20 minutes crafting perfect prompt) doesn't apply:
-
 - **4x speed** - Iterations complete in seconds
 - **1/10th cost** - Many attempts still cheaper than one Sonnet call
 - **Learning from failures** - Refine based on actual output
 
 ### Implementation Pattern
 
-#### Iteration Workflow
-
 ```markdown
 ## Attempt 1 (10 seconds)
-
 Prompt: "Fix the authentication bug"
 Result: Fixed wrong bug, broke tests
 
 ## Attempt 2 (10 seconds)
-
 Prompt: "Fix the JWT validation bug in auth.ts line 45, don't touch the session code"
 Result: Good fix, but missing error handling
 
 ## Attempt 3 (10 seconds)
-
 Prompt: "Add try/catch around the JWT validation at auth.ts:45, return 401 on failure"
 Result: Clean implementation
 ```
 
 **Total: 30 seconds, $0.003** vs crafting one perfect prompt for 5 minutes.
-
-#### Refinement Patterns
-
-```markdown
-# After initial failure, add specificity:
-
-"The async approach blocks the main thread; use a separate threadloop to avoid blocking the event loop"
-
-# After over-editing, add constraints:
-
-"Only modify the handleKeydown function, don't touch the rest of the component"
-
-# After format issues, provide example:
-
-"Output the fix as a unified diff like:
---- a/file.ts
-+++ b/file.ts
-@@ -10,3 +10,3 @@"
-```
 
 ---
 
@@ -419,7 +368,6 @@ Result: Clean implementation
 ### Why It Works
 
 The 256K context window handles large inputs, but structure aids parsing:
-
 - **Section markers** help the model navigate
 - **Labeled content** reduces ambiguity
 - **Consistent format** improves extraction accuracy
@@ -430,8 +378,8 @@ The 256K context window handles large inputs, but structure aids parsing:
 
 ```xml
 <repository_context>
-  <name>ngx-foundation-sites</name>
-  <tech_stack>Angular 20, TypeScript, Foundation CSS</tech_stack>
+  <name>my-project</name>
+  <tech_stack>Angular, TypeScript, Foundation CSS</tech_stack>
   <conventions>
     - Use signals for state management
     - Prefer directives over components
@@ -440,10 +388,10 @@ The 256K context window handles large inputs, but structure aids parsing:
 </repository_context>
 
 <current_task>
-  <goal>Fix accordion keyboard navigation</goal>
+  <goal>Fix form keyboard navigation</goal>
   <affected_files>
-    - packages/ngx-foundation-sites/src/accordion/accordion.component.ts
-    - packages/ngx-foundation-sites/src/accordion/accordion-item.directive.ts
+    - packages/lib/src/form/form.component.ts
+    - packages/lib/src/form/form-item.directive.ts
   </affected_files>
 </current_task>
 
@@ -457,22 +405,18 @@ The 256K context window handles large inputs, but structure aids parsing:
 
 ```markdown
 ## Repository Context
-
-- **Name**: ngx-foundation-sites
-- **Stack**: Angular 20, TypeScript, Foundation CSS
+- **Name**: my-project
+- **Stack**: Angular, TypeScript, Foundation CSS
 - **Conventions**: Signals, directives over components, Foundation CSS classes
 
 ## Current Task
-
-**Goal**: Fix accordion keyboard navigation
+**Goal**: Fix form keyboard navigation
 
 **Affected Files**:
-
-- `packages/.../accordion.component.ts`
-- `packages/.../accordion-item.directive.ts`
+- `packages/lib/src/form/form.component.ts`
+- `packages/lib/src/form/form-item.directive.ts`
 
 ## Constraints
-
 - MUST follow WCAG 2.1 keyboard navigation
 - MUST NOT break existing click handlers
 ```
@@ -494,7 +438,6 @@ The 256K context window handles large inputs, but structure aids parsing:
 ### Why It Works
 
 Visible reasoning provides better steerability:
-
 - **Debug failures** - See why the model made decisions
 - **Guide next iteration** - Refine based on reasoning
 - **Validate correctness** - Check the logic, not just output
@@ -526,8 +469,6 @@ print("Reasoning:", "".join(reasoning))
 print("Output:", "".join(content))
 ```
 
-**Note**: Function calls in streaming mode are returned whole in a single chunk, not streamed across chunks.
-
 ---
 
 ## Optimization 9: Plan-First Execution
@@ -545,7 +486,6 @@ print("Output:", "".join(content))
 ### Why It Works
 
 grok-code-fast-1 is "zealous and iterative" - without constraints it can over-edit:
-
 - **Plan validates scope** - Confirm before executing
 - **Short plans (3 items max)** - Keeps focus narrow
 - **Execution is bounded** - Follow the approved plan
@@ -558,7 +498,6 @@ grok-code-fast-1 is "zealous and iterative" - without constraints it can over-ed
 ## Request
 
 Before making changes, provide a 3-item plan:
-
 1. What files will be modified?
 2. What specific changes will be made?
 3. What will NOT be changed?
@@ -570,13 +509,11 @@ Do not write any code yet.
 
 ```markdown
 ## Approved Plan
-
 1. Modify `auth.ts` to add JWT validation
 2. Add `try/catch` around line 45
 3. Leave session handling untouched
 
 ## Instruction
-
 Execute the plan above. Do not deviate.
 ```
 
@@ -597,7 +534,6 @@ Execute the plan above. Do not deviate.
 ### Why It Works
 
 Clear boundaries prevent scope creep:
-
 - **File paths** - Tell it exactly where to work
 - **Function names** - Narrow to specific code sections
 - **Negative constraints** - Explicitly state what NOT to touch
@@ -608,11 +544,9 @@ Clear boundaries prevent scope creep:
 
 ```markdown
 ## Task
-
-Fix the `handleKeydown` function in `accordion.component.ts`
+Fix the `handleKeydown` function in `form.component.ts`
 
 ## Scope
-
 - ONLY modify lines 140-165
 - ONLY the handleKeydown function
 - DO NOT touch: constructor, ngOnInit, ngOnDestroy
@@ -626,7 +560,6 @@ Reference @errors.ts to add proper error handling to @sql.ts
 ```
 
 Using `@filename` notation:
-
 - Keeps file content out of prompt (cache-friendly)
 - Tools can load files dynamically
 - Clearer than embedded content
@@ -635,134 +568,14 @@ Using `@filename` notation:
 
 ```markdown
 # BAD: No boundaries
-
 "Fix the keyboard handling"
 
 # BAD: Too broad
-
-"Improve the accordion component"
+"Improve the form component"
 
 # BAD: Implicit scope
-
 "Make error handling better"
 ```
-
----
-
-## Output Optimization Patterns
-
-### Constrain Output Formats
-
-````markdown
-## Output Constraints
-
-- Patch format: unified diff only
-- Rationale: one sentence (max 20 words)
-- Test name: pytest function name only
-
-## Example Output
-
-```diff
---- a/auth.ts
-+++ b/auth.ts
-@@ -45,3 +45,5 @@
-+try {
-   validateJWT(token);
-+} catch (e) { return 401; }
-```
-````
-
-Rationale: Wrap JWT validation to handle malformed tokens.
-Test: test_jwt_validation_error_handling
-
-````
-
-### Request Rollback Capability
-
-```markdown
-## Deliverables
-- Primary patch (unified diff)
-- Undo patch (to revert if needed)
-- CI job YAML for verification
-````
-
-### Confidence Scores in Structured Output
-
-```markdown
-## Output Schema
-
-{
-"fix": "diff content",
-"confidence": 0.85,
-"risks": ["May affect performance", "Needs integration testing"]
-}
-```
-
----
-
-## Real-World Application: Bug Fix Workflow
-
-### Applied Optimizations
-
-This workflow demonstrates all 10 optimizations in practice:
-
-#### System Prompt (Optimization 2, 7)
-
-```markdown
-You are a senior TypeScript engineer fixing bugs in ngx-foundation-sites.
-
-<capabilities>
-- read_file(path): Read file contents
-- edit_file(path, diff): Apply changes
-- run_tests(pattern): Execute tests
-- grep(query): Search codebase
-</capabilities>
-
-<constraints>
-- Minimal patches only (no refactoring)
-- Must pass existing tests
-- Follow Angular signals patterns
-</constraints>
-```
-
-#### User Prompt (Optimization 3, 10)
-
-````markdown
-## Setup
-
-Bug: Accordion doesn't respond to Space key (WCAG violation)
-File: packages/ngx-foundation-sites/src/accordion/accordion.component.ts
-
-## Scope
-
-- ONLY modify handleKeydown function (lines 140-165)
-- DO NOT touch click handlers
-
-## Expected Output
-
-```diff
---- a/accordion.component.ts
-+++ b/accordion.component.ts
-@@ -145,1 +145,1 @@
--if (event.key === 'Enter')
-+if (event.key === 'Enter' || event.key === ' ')
-```
-````
-
-Rationale: [one sentence]
-Test: [pytest function name]
-
-````
-
-#### Iteration (Optimization 6)
-
-```markdown
-# After first attempt
-"Good fix, but also prevent default on Space to stop page scroll"
-
-# After second attempt
-"Perfect. Now run the existing keyboard tests to verify."
-````
 
 ---
 
@@ -770,38 +583,30 @@ Test: [pytest function name]
 
 ### Speed Benchmarks
 
-| Metric             | Value                                   |
-| ------------------ | --------------------------------------- |
-| **Throughput**     | ~92 tokens/second                       |
-| **Context window** | 256K tokens                             |
-| **Cache hit rate** | 90%+ (with launch partners)             |
+| Metric | Value |
+|--------|-------|
+| **Throughput** | ~92 tokens/second |
+| **Context window** | 256K tokens |
+| **Cache hit rate** | 90%+ (with launch partners) |
 | **Relative speed** | 4x faster than competing agentic models |
 
 ### Cost Analysis
 
-| Environment                  | Cost              |
-| ---------------------------- | ----------------- |
-| **GitHub Copilot (VS Code)** | **0x (free)**     |
-| **GitHub Copilot CLI**       | Not available yet |
-| xAI API - Input (uncached)   | $0.20 / 1M        |
-| xAI API - Input (cached)     | $0.02 / 1M        |
-| xAI API - Output             | $1.50 / 1M        |
-
-**In GitHub Copilot**: Free with your existing subscription - same 0x cost as GPT-5 Mini!
-
-**Via API**:
-
-- **84% cheaper than GPT-5 High** ($1.50 vs ~$9.50 output)
-- **93% cheaper than Claude Sonnet 4** ($1.50 vs ~$21 output)
-- **Cached inputs are 10x cheaper** than uncached
+| Environment | Cost |
+|-------------|------|
+| **GitHub Copilot (VS Code)** | **0x (free)** |
+| **GitHub Copilot CLI** | Not available yet |
+| xAI API - Input (uncached) | $0.20 / 1M |
+| xAI API - Input (cached) | $0.02 / 1M |
+| xAI API - Output | $1.50 / 1M |
 
 ### Quality Benchmarks
 
-| Benchmark              | Score         |
-| ---------------------- | ------------- |
-| **SWE-Bench Verified** | 70.8%         |
-| vs Claude Sonnet 4     | -1.9% (72.7%) |
-| vs GPT-5               | -4.1% (74.9%) |
+| Benchmark | Score |
+|-----------|-------|
+| **SWE-Bench Verified** | 70.8% |
+| vs Claude Sonnet 4 | -1.9% (72.7%) |
+| vs GPT-5 | -4.1% (74.9%) |
 
 **Trade-off**: Slightly lower quality, dramatically lower cost and latency.
 
@@ -809,7 +614,7 @@ Test: [pytest function name]
 
 ## When to Use Grok Code Fast 1
 
-### Excellent For
+### ✅ Excellent For
 
 1. **Routine bug fixes** - Quick search → read → edit → test cycles
 2. **Scaffolding** - Generate boilerplate with iterative refinement
@@ -817,15 +622,103 @@ Test: [pytest function name]
 4. **Documentation updates** - Sync docs after code changes
 5. **High-volume grunt work** - Tasks that need speed over perfection
 
-### Better Alternatives
+### ❌ Better Alternatives
 
-| Task                  | Use Instead       | Reason                  |
-| --------------------- | ----------------- | ----------------------- |
-| Deep algorithms       | Claude Opus 4.5   | Extended thinking       |
-| Multi-file refactors  | Claude Sonnet 4.5 | Better global reasoning |
-| Architecture planning | Grok 4            | One-shot design         |
-| >256K context         | GPT-4.1           | 1M context window       |
-| Production-critical   | Claude Opus 4.5   | First-try correctness   |
+| Task | Use Instead | Reason |
+|------|-------------|--------|
+| Deep algorithms | Claude Opus 4.5 | Extended thinking |
+| Multi-file refactors | Claude Sonnet 4.5 | Better global reasoning |
+| Architecture planning | Grok 4 | One-shot design |
+| >256K context | GPT-4.1 | 1M context window |
+| Production-critical | Claude Opus 4.5 | First-try correctness |
+
+---
+
+## Common Pitfalls to Avoid
+
+### ❌ Pitfall 1: XML Tool Outputs
+
+```markdown
+BAD: Using XML for tool calls
+<function_call><name>read_file</name><args>{"path": "src/auth.ts"}</args></function_call>
+
+GOOD: Native function calling via SDK
+tools=[{"type": "function", "function": {...}}]
+```
+
+### ❌ Pitfall 2: Breaking Cache with Context Changes
+
+```markdown
+BAD: Inserting new messages mid-conversation
+BAD: Modifying system prompt between calls
+BAD: Embedding file contents instead of using tools
+
+GOOD: Consistent conversation structure
+GOOD: Reference files via @filename notation
+GOOD: Let tools load file contents dynamically
+```
+
+### ❌ Pitfall 3: One-Shot Queries
+
+```markdown
+BAD: Using grok-code-fast-1 for single-turn Q&A
+"Explain how authentication works in this codebase"
+
+GOOD: Using grok-code-fast-1 for iterative tasks
+"Find the auth code, trace the JWT flow, and fix the validation bug"
+```
+
+### ❌ Pitfall 4: No Scope Boundaries
+
+```markdown
+BAD: "Improve the error handling"
+GOOD: "Add try/catch to validateJWT in auth.ts lines 45-50, return 401 on failure"
+```
+
+### ❌ Pitfall 5: Over-Engineering Prompts
+
+```markdown
+BAD: Spending 20 minutes crafting the perfect prompt
+GOOD: Quick attempt → refine based on output → iterate
+
+Total time: 30 seconds for 3 iterations
+Total cost: $0.003
+```
+
+---
+
+## Quick Reference Card
+
+### Grok Code Fast 1 Optimization Checklist
+
+```
+✅ Native tool-calling (not XML)
+✅ Detailed system prompt (task, expectations, edge cases)
+✅ Setup + Tools + Example structure
+✅ Consistent conversation (preserve cache)
+✅ Agentic workflows (not one-shot)
+✅ Rapid iteration (quick attempts, refine)
+✅ XML/Markdown context structuring
+✅ Streaming for reasoning traces
+✅ Plan-first for multi-file changes
+✅ Explicit scope and file boundaries
+```
+
+### Model Selection Quick Guide
+
+```
+IF task is iterative bug fix/scaffolding/tests:
+   USE grok-code-fast-1 (fast + cheap)
+
+ELSE IF task needs deep reasoning:
+   USE Claude Sonnet 4.5 (extended thinking)
+
+ELSE IF task is one-shot Q&A:
+   USE Grok 4 (better single-turn)
+
+ELSE IF context > 256K:
+   USE GPT-4.1 (1M context)
+```
 
 ---
 
@@ -839,22 +732,6 @@ Test: [pytest function name]
 4. **Not available in GitHub Copilot CLI yet**
 
 **Cost**: Free (0x) with your GitHub Copilot subscription
-
-### Cursor
-
-```
-Settings → Models → API Configuration
-- API Key: [xAI API key]
-- Override OpenAI Base URL: https://api.x.ai/v1
-- Model: grok-code-fast-1
-```
-
-### Cline (VS Code)
-
-1. Install from VS Code marketplace
-2. Click "Use your own API key"
-3. Save xAI API key
-4. Settings → API Configuration → Select `grok-code-fast-1`
 
 ### Direct API
 
@@ -876,119 +753,27 @@ response = client.chat.completions.create(
 
 ---
 
-## Common Pitfalls to Avoid
-
-### Pitfall 1: XML Tool Outputs
-
-```markdown
-BAD: Using XML for tool calls
-<function_call><name>read_file</name><args>{"path": "src/auth.ts"}</args></function_call>
-
-GOOD: Native function calling via SDK
-tools=[{"type": "function", "function": {...}}]
-```
-
-### Pitfall 2: Breaking Cache with Context Changes
-
-```markdown
-BAD: Inserting new messages mid-conversation
-BAD: Modifying system prompt between calls
-BAD: Embedding file contents instead of using tools
-
-GOOD: Consistent conversation structure
-GOOD: Reference files via @filename notation
-GOOD: Let tools load file contents dynamically
-```
-
-### Pitfall 3: One-Shot Queries
-
-```markdown
-BAD: Using grok-code-fast-1 for single-turn Q&A
-"Explain how authentication works in this codebase"
-
-GOOD: Using grok-code-fast-1 for iterative tasks
-"Find the auth code, trace the JWT flow, and fix the validation bug"
-```
-
-### Pitfall 4: No Scope Boundaries
-
-```markdown
-BAD: "Improve the error handling"
-GOOD: "Add try/catch to validateJWT in auth.ts lines 45-50, return 401 on failure"
-```
-
-### Pitfall 5: Over-Engineering Prompts
-
-```markdown
-BAD: Spending 20 minutes crafting the perfect prompt
-GOOD: Quick attempt → refine based on output → iterate
-
-# Total time: 30 seconds for 3 iterations
-
-# Total cost: $0.003
-```
-
----
-
-## Quick Reference Card
-
-### Grok Code Fast 1 Optimization Checklist
-
-```
- Native tool-calling (not XML)
- Detailed system prompt (task, expectations, edge cases)
- Setup + Tools + Example structure
- Consistent conversation (preserve cache)
- Agentic workflows (not one-shot)
- Rapid iteration (quick attempts, refine)
- XML/Markdown context structuring
- Streaming for reasoning traces
- Plan-first for multi-file changes
- Explicit scope and file boundaries
-```
-
-### Model Selection Quick Guide
-
-```
-IF task is iterative bug fix/scaffolding/tests:
-   USE grok-code-fast-1 (fast + cheap)
-
-ELSE IF task needs deep reasoning:
-   USE Claude Sonnet 4.5 (extended thinking)
-
-ELSE IF task is one-shot Q&A:
-   USE Grok 4 (better single-turn)
-
-ELSE IF context > 256K:
-   USE GPT-4.1 (1M context)
-```
-
----
-
 ## Research Sources
 
-**Primary Sources** (2025):
-
+**Primary Sources**:
 - [Grok Code Fast 1 | xAI](https://x.ai/news/grok-code-fast-1) - Official announcement, architecture, benchmarks
 - [Prompt Engineering for Grok Code Fast 1 | xAI](https://docs.x.ai/docs/guides/grok-code-prompt-engineering) - Official prompt engineering guide
 - [Function Calling | xAI](https://docs.x.ai/docs/guides/function-calling) - Native tool-calling documentation
 - [Grok Code Fast 1 - OpenRouter](https://openrouter.ai/x-ai/grok-code-fast-1) - API specifications, parameters
 
 **Third-Party Analysis**:
-
 - [Grok-code-fast-1 Prompt Guide - CometAPI](https://www.cometapi.com/grok-code-fast-1-prompt-guide/) - Comprehensive prompt patterns
 - [xAI's Prompt Engineering Guide - PromptLayer](https://blog.promptlayer.com/xais-prompt-engineering-guide-for-grok-code-fast-1/) - Best practices summary
-- [Grok Code Fast 1 Coding Evaluation - 16x Engineer](https://eval.16x.engineer/blog/grok-code-fast-1-coding-evaluation-results) - Real-world performance analysis
+- [Grok Code Fast 1 Coding Evaluation - 16x Engineer](https://eval.16x.engineer/blog/grok-code-fast-1-coding-evaluation-results) - Real-world performance
 
 **Comparative Analysis**:
-
 - [Grok Code Fast 1 vs Claude Sonnet 4 - Galaxy.ai](https://blog.galaxy.ai/compare/claude-sonnet-4-vs-grok-code-fast-1) - Model comparison
 - [Grok Code Fast 1 vs GPT-5 Mini - Galaxy.ai](https://blog.galaxy.ai/compare/gpt-5-mini-vs-grok-code-fast-1) - Cost/performance trade-offs
-- [The Rise of Grok Code Fast 1 - CodeGPT](https://www.codegpt.co/blog/grok-code-fast-1-market-dominance) - Market adoption analysis
 
 ---
 
-**Last Updated**: 2026-01-12
-**Applies to**: grok-code-fast-1
-**Context Limit**: 256K tokens
-**Launch Partners**: GitHub Copilot, Cursor, Cline, Windsurf, Roo Code, Kilo Code, opencode
+## Related Documents
+
+- [MODEL-OPTIMIZATION-GPT-5-MINI.md](./MODEL-OPTIMIZATION-GPT-5-MINI.md) - Alternative fast model
+- [MODEL-OPTIMIZATION-GPT-4-1.md](./MODEL-OPTIMIZATION-GPT-4-1.md) - For larger context (1M)
+- [MODEL-FRONTMATTER.md](./MODEL-FRONTMATTER.md) - How to specify models in agent/prompt files

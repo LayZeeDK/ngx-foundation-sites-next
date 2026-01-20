@@ -1,6 +1,6 @@
 # GitHub Copilot Prompt Files (`*.prompt.md`)
 
-**Last Updated:** 2026-01-12
+**Last Updated:** 2026-01-20
 
 This document provides comprehensive documentation for GitHub Copilot's `*.prompt.md` reusable prompt files, including structure, YAML frontmatter options, variables, and best practices.
 
@@ -21,7 +21,7 @@ Prompt files are **reusable prompt templates** stored as `*.prompt.md` files tha
 
 ### When to Use Prompt Files
 
-✅ **Use for:**
+**Use for:**
 
 - Task-specific reusable prompts
 - Code generation templates
@@ -29,7 +29,7 @@ Prompt files are **reusable prompt templates** stored as `*.prompt.md` files tha
 - Scaffolding workflows
 - Controlled, limited-scope tasks
 
-❌ **Don't use for:**
+**Don't use for:**
 
 - Project-wide conventions (use `copilot-instructions.md`)
 - Always-on context (use custom instructions)
@@ -53,7 +53,7 @@ model: GPT-4o
 
 # Markdown Body (the actual prompt)
 
-You are a code reviewer specializing in Angular...
+You are a code reviewer specializing in React...
 
 ## Task
 
@@ -137,15 +137,12 @@ Prompt users for input when the prompt runs:
 
 ```markdown
 # Basic input
-
 ${input:variableName}
 
 # Input with placeholder hint
-
 ${input:variableName:Placeholder text for user}
 
 # Examples
-
 ${input:code:Paste your code here}
 ${input:audience:Who is this explanation for?}
 ${input:componentName:Name of the component to create}
@@ -156,8 +153,8 @@ ${input:componentName:Name of the component to create}
 Reference workspace paths:
 
 ```markdown
-${workspaceFolder}           # Full workspace path
-${workspaceFolderBasename} # Workspace folder name only
+${workspaceFolder}            # Full workspace path
+${workspaceFolderBasename}    # Workspace folder name only
 ```
 
 ### Selection Variables
@@ -166,7 +163,7 @@ Reference current editor selection:
 
 ```markdown
 ${selection}      # Currently selected text
-${selectedText} # Alias for ${selection}
+${selectedText}   # Alias for ${selection}
 ```
 
 ### File Context Variables
@@ -174,10 +171,10 @@ ${selectedText} # Alias for ${selection}
 Reference current file:
 
 ```markdown
-${file}                    # Full file path
-${fileBasename} # Filename with extension
-${fileDirname}             # Directory containing file
-${fileBasenameNoExtension} # Filename without extension
+${file}                       # Full file path
+${fileBasename}               # Filename with extension
+${fileDirname}                # Directory containing file
+${fileBasenameNoExtension}    # Filename without extension
 ```
 
 ---
@@ -188,15 +185,12 @@ Reference other files in your prompt using Markdown links:
 
 ```markdown
 # Reference instruction files
-
 Follow the guidelines in [coding standards](../instructions/coding.instructions.md)
 
 # Reference code files
-
 Use the pattern from [example component](../../src/components/Example.tsx)
 
 # Reference with relative paths
-
 See [API documentation](../docs/api.md) for details
 ```
 
@@ -249,24 +243,23 @@ Use clear, simple language and avoid unnecessary jargon.
 
 ```markdown
 ---
-name: new-angular-component
-description: Generate Angular component with signals and OnPush
+name: new-component
+description: Generate component with tests
 agent: agent
 tools: ['read', 'edit', 'search']
 model: GPT-4o
 ---
 
-# Angular Component Generator
+# Component Generator
 
-Generate a new Angular component following project conventions.
+Generate a new component following project conventions.
 
 ## Conventions
 
-- Use standalone components (no NgModules)
-- Use signals for state management
-- Set `changeDetection: ChangeDetectionStrategy.OnPush`
-- Prefix selectors with `nfs-`
-- Use inline templates for small components
+- Use functional components
+- Use TypeScript
+- Include proper type definitions
+- Follow project structure
 
 ## Input
 
@@ -274,95 +267,66 @@ Generate a new Angular component following project conventions.
 
 **Description:** ${input:description:What does this component do?}
 
-**Inputs:** ${input:inputs:List of input properties (comma-separated)}
-
-**Outputs:** ${input:outputs:List of output events (comma-separated)}
+**Inputs:** ${input:inputs:List of props (comma-separated)}
 
 ## Output Files
 
-Generate these files in `${workspaceFolder}/packages/ngx-foundation-sites/src/lib/${input:name}/`:
+Generate these files in `${workspaceFolder}/src/components/${input:name}/`:
 
-1. `${input:name}.component.ts` - Component with signals
-2. `${input:name}.component.spec.ts` - Unit tests
-3. `${input:name}.stories.ts` - Storybook story
-
-## Template
-
-Use this pattern:
-
-\`\`\`typescript
-import { Component, ChangeDetectionStrategy, input, output } from '@angular/core';
-
-@Component({
-selector: 'nfs-{{kebab-case-name}}',
-template: \`
-
-<!-- Component template -->
-
-\`,
-changeDetection: ChangeDetectionStrategy.OnPush
-})
-export class {{PascalCaseName}}Component {
-// Inputs as signals
-label = input.required<string>();
-
-// Outputs
-clicked = output<void>();
-}
-\`\`\`
+1. `${input:name}.tsx` - Component file
+2. `${input:name}.test.tsx` - Unit tests
+3. `index.ts` - Barrel export
 ```
 
 ### Example 3: Code Review Checklist
 
 ```markdown
 ---
-name: review-angular
-description: Review Angular component for best practices
+name: code-review
+description: Review code for best practices
 agent: ask
 tools: ['read', 'search']
 ---
 
-# Angular Component Review
+# Code Review Checklist
 
-Review the selected Angular component for the following criteria:
+Review the selected code for the following criteria:
 
 ## 1. Code Quality
 
-- [ ] Follows Angular style guide
-- [ ] Uses appropriate lifecycle hooks
-- [ ] Proper dependency injection with `inject()`
-- [ ] No use of `@HostBinding` or `@HostListener` (use `host` object)
+- [ ] Follows project style guide
+- [ ] Uses appropriate patterns
+- [ ] Proper error handling
+- [ ] No code duplication
 
 ## 2. Performance
 
-- [ ] Change detection is `OnPush`
-- [ ] Uses signals instead of RxJS for local state
-- [ ] No unnecessary re-renders
-- [ ] Uses `computed()` for derived state
+- [ ] Efficient algorithms
+- [ ] No memory leaks
+- [ ] Optimized renders (if UI)
 
 ## 3. Accessibility
 
 - [ ] ARIA attributes present where needed
 - [ ] Keyboard navigation supported
 - [ ] Semantic HTML elements used
-- [ ] Color contrast sufficient
 
 ## 4. Testing
 
-- [ ] Storybook story exists with play function
+- [ ] Unit tests exist
 - [ ] Edge cases covered
-- [ ] Accessibility tested with AXE
+- [ ] Error scenarios tested
 
 ## Output Format
 
 For each issue found:
 
-\`\`\`
+```
 **Issue:** [Description]
 **Severity:** [Critical/Major/Minor]
 **Location:** [file:line]
 **Recommendation:** [How to fix]
-\`\`\`
+```
 ```
 
 ### Example 4: Multi-Step Workflow
@@ -389,15 +353,15 @@ Execute these steps in order for implementing a new feature.
 
 ## Step 2: Implement
 
-1. Create/modify component files
+1. Create/modify source files
 2. Follow project conventions from [AGENTS.md](../AGENTS.md)
-3. Use signals for state management
+3. Use consistent patterns
 
 ## Step 3: Test
 
-1. Create Storybook story with play function
+1. Create unit tests
 2. Add interaction tests for user flows
-3. Run `npx nx test ngx-foundation-sites`
+3. Run test suite: `npm test`
 
 ## Step 4: Verify
 
@@ -497,19 +461,19 @@ When a prompt file specifies tools, this precedence applies:
 
 ## Best Practices
 
-### ✅ Do
+### Do
 
 1. **Use descriptive names**
 
    ```yaml
-   name: angular-component-review  # Good
+   name: react-component-review    # Good
    name: review                     # Too generic
    ```
 
 2. **Provide clear descriptions**
 
    ```yaml
-   description: Review Angular component for performance, accessibility, and best practices
+   description: Review React component for performance, accessibility, and best practices
    ```
 
 3. **Include input validation hints**
@@ -544,33 +508,28 @@ When a prompt file specifies tools, this precedence applies:
    tools: ["read", "edit", "search"]
    ```
 
-### ❌ Avoid
+### Avoid
 
 1. **Vague prompts**
 
    ```markdown
    # Bad
-
    Review the code
 
    # Good
-
-   Review the Angular component for:
-
-   - Change detection strategy (should be OnPush)
-   - Signal usage (prefer over RxJS)
+   Review the React component for:
+   - Performance optimization
    - Accessibility compliance
+   - Best practices adherence
    ```
 
 2. **Hardcoded paths**
 
    ```markdown
    # Bad
-
    Check C:\Users\me\project\src\app.ts
 
    # Good
-
    Check the selected file
    ```
 
@@ -578,13 +537,10 @@ When a prompt file specifies tools, this precedence applies:
 
    ```markdown
    # Bad
-
    Give me feedback
 
    # Good
-
    Provide feedback in this format:
-
    - Issue: [description]
    - Severity: [high/medium/low]
    - Fix: [code example]
@@ -602,11 +558,11 @@ When a prompt file specifies tools, this precedence applies:
 
 ```
 .github/
-├── copilot-instructions.md    # Always-active conventions
+├── copilot-instructions.md       # Always-active conventions
 ├── instructions/
-│   └── angular.instructions.md  # Path-specific rules
+│   └── react.instructions.md     # Path-specific rules
 └── prompts/
-    └── new-component.prompt.md  # On-demand workflow
+    └── new-component.prompt.md   # On-demand workflow
 ```
 
 Prompt files automatically receive context from active instructions.
@@ -619,7 +575,7 @@ Reference agents in prompt frontmatter:
 ---
 name: security-review
 description: Security-focused code review
-agent: '@security-agent' # Uses custom agent
+agent: '@security-agent'    # Uses custom agent
 tools: ['read', 'search']
 ---
 ```

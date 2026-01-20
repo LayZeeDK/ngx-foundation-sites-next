@@ -1,12 +1,19 @@
 # GPT-4.1 Prompt Optimization Guide
 
-**Model**: GPT-4.1 (1M context, non-reasoning)
-**Cost**: 0x (free in GitHub Copilot)
-**Use case**: Large features (>180K tokens) requiring long-context analysis
+**Last Updated:** 2026-01-20
+
+This document provides optimization strategies for GPT-4.1, OpenAI's 1M context window model optimized for long-context work.
 
 ---
 
 ## Model Characteristics
+
+| Attribute | Value |
+|-----------|-------|
+| **Context Window** | 1,000,000 tokens |
+| **Reasoning** | Non-reasoning (procedural) |
+| **Cost** | 0x (free in GitHub Copilot), 85% cheaper than GPT-4o via API |
+| **Best For** | Large features (>180K tokens) requiring long-context analysis |
 
 ### Key Capabilities
 
@@ -14,9 +21,20 @@
 2. **Accurate retrieval at all positions** - Consistently finds information throughout 1M context
 3. **Literal instruction following** - Does EXACTLY what instructions say (no implicit inference)
 4. **Non-reasoning model** - Optimized for following procedures, not creative problem-solving
-5. **85% cheaper than GPT-4o** - Cost-effective for long-context work
 
 **Source**: [Introducing GPT-4.1 in the API | OpenAI](https://openai.com/index/gpt-4-1/)
+
+---
+
+## Quick Reference
+
+| Optimization | Description | Priority |
+|-------------|-------------|----------|
+| [Sandwich Method](#optimization-1-sandwich-method-critical-for-long-context) | Instructions at beginning AND end | Critical |
+| [Literal Instructions](#optimization-2-literal-instruction-following) | Be extremely explicit | Critical |
+| [Progressive Disclosure](#optimization-3-progressive-disclosure-for-very-large-features) | Load artifacts progressively | High |
+| [Structured Formatting](#optimization-4-structured-formatting-for-long-context-navigation) | Use markdown headers for navigation | High |
+| [Explicit Validation](#optimization-5-explicit-validation-and-error-handling) | Define exact error conditions | Medium |
 
 ---
 
@@ -33,8 +51,6 @@
 > "If you can only place instructions in one location, placing them at the end performs better than the beginning."
 
 **Source**: [GPT-4.1 Prompting Guide | OpenAI Cookbook](https://cookbook.openai.com/examples/gpt4-1_prompting_guide)
-
-**Additional Source**: [The Complete Guide to GPT-4.1 - PromptHub](https://www.prompthub.us/blog/the-complete-guide-to-gpt-4-1-models-performance-pricing-and-prompting-tips)
 
 ### Why It Works
 
@@ -56,24 +72,20 @@ GPT-4.1 processes 1M tokens but may start "reading" from different positions. In
 ## Execution Steps
 
 ### Step 0: Initialize
-
 [Detailed instructions]
 
 ### Step 1: Load Artifacts
-
 [Detailed instructions]
 
 ### Step 2-5: Analysis Steps
-
 [Detailed instructions - may be 500+ lines]
 
 ### Step 6: Output
-
 [Detailed instructions]
 
 ---
 
-[MIDDLE: Large artifacts - spec.md, plan.md, tasks.md, code files]
+[MIDDLE: Large artifacts - documents, code files]
 [This section can be 500K-900K tokens]
 
 ---
@@ -83,7 +95,6 @@ GPT-4.1 processes 1M tokens but may start "reading" from different positions. In
 # 🔁 FINAL EXECUTION REMINDER (Sandwich Method)
 
 **You are GPT-4.1 with 1M context. Execute this workflow EXACTLY:**
-```
 
 □ Step 0: Initialize
 □ Step 1: Load artifacts
@@ -93,8 +104,6 @@ GPT-4.1 processes 1M tokens but may start "reading" from different positions. In
 □ Step 5: Write file
 □ Step 6: Report to user
 
-```
-
 **Critical constraints** (repeated from beginning):
 - [Key constraint 1]
 - [Key constraint 2]
@@ -103,18 +112,18 @@ GPT-4.1 processes 1M tokens but may start "reading" from different positions. In
 **Execute Step 6 now.**
 ```
 
-### Example: Gap Analysis Command
+### Example: Analysis Workflow
 
 **Beginning**:
 
 ```markdown
 ## Goal
 
-Generate gap analysis by following 6-step mechanical workflow.
+Generate analysis report by following 6-step mechanical workflow.
 
 ## Step 6: Write Report
 
-Use Write tool to create gap-analysis-report.md with COMPLETE template.
+Use Write tool to create analysis-report.md with COMPLETE template.
 Do NOT summarize - write full structured report.
 ```
 
@@ -124,7 +133,7 @@ Do NOT summarize - write full structured report.
 # 🔁 FINAL EXECUTION REMINDER
 
 Execute Steps 0-6 EXACTLY:
-□ Step 6: Write gap-analysis-report.md (Use Write tool with COMPLETE template)
+□ Step 6: Write analysis-report.md (Use Write tool with COMPLETE template)
 
 **Critical**: Write FULL report to file (not summary)
 
@@ -147,8 +156,6 @@ Execute Steps 0-6 EXACTLY:
 
 **Source**: [The Complete Guide to GPT-4.1 - PromptHub](https://www.prompthub.us/blog/the-complete-guide-to-gpt-4-1-models-performance-pricing-and-prompting-tips)
 
-**Additional Source**: [GPT-4.1 Prompting Guide - God of Prompt](https://www.godofprompt.ai/blog/gpt-4-1-prompting-guide)
-
 ### Why It Works
 
 GPT-4.1 is trained to follow instructions more closely and more literally than predecessors (GPT-4, GPT-4o), which liberally inferred intent from prompts.
@@ -164,7 +171,7 @@ GPT-4.1 is trained to follow instructions more closely and more literally than p
 #### ❌ Implicit Instructions (Don't Use)
 
 ```markdown
-- "Identify gaps intelligently"
+- "Identify issues intelligently"
 - "Handle errors gracefully"
 - "Write a good report"
 - "Analyze thoroughly"
@@ -176,47 +183,22 @@ GPT-4.1 is trained to follow instructions more closely and more literally than p
 #### ✅ Explicit Instructions (Use These)
 
 ```markdown
-- "FOR EACH requirement: EXTRACT keywords → SEARCH files → IF NOT FOUND: add to gap list"
-- "IF spec.md not found: STOP, OUTPUT 'spec.md not found', EXIT"
-- "Use Write tool, file path = gap-analysis-report.md, content = template with ALL [placeholders] filled"
-- "Search in this order: 1. Component TS files, 2. Templates, 3. Stories, 4. Tests"
+- "FOR EACH requirement: EXTRACT keywords → SEARCH files → IF NOT FOUND: add to list"
+- "IF config.md not found: STOP, OUTPUT 'config.md not found', EXIT"
+- "Use Write tool, file path = analysis-report.md, content = template with ALL [placeholders] filled"
+- "Search in this order: 1. Source files, 2. Templates, 3. Tests"
 - "Apply validation score: score = 0; IF has_spec_line: score += 2; IF has_task_id: score += 2"
 ```
 
 ### Explicit Command Patterns
 
-| Pattern            | Explicit Version                                                        |
-| ------------------ | ----------------------------------------------------------------------- |
-| **Conditionals**   | `IF condition: action ELSE: alternative_action`                         |
-| **Loops**          | `FOR EACH item in list: action1 → action2 → action3`                    |
-| **Validation**     | `CHECK all boxes: □ Check1 □ Check2 IF all checked: PROCEED ELSE: STOP` |
-| **Output format**  | Provide exact template with `[placeholders]` to fill                    |
-| **Error handling** | `IF error_X: STOP, OUTPUT "message", EXIT`                              |
-
-### Example: Gap Detection
-
-**Implicit (will fail)**:
-
-```markdown
-Find gaps in the implementation compared to the spec.
-```
-
-**Explicit (works well)**:
-
-```markdown
-FOR EACH requirement in spec.md:
-
-1. EXTRACT 3-5 keywords from requirement text
-2. SEARCH in order:
-   a. Component TS files
-   b. Template files
-   c. Test files
-3. RECORD result:
-   - "FOUND at file.ts:line:column"
-   - "NOT FOUND after searching [file list]"
-4. IF "NOT FOUND": add to gap list
-5. IF "FOUND": skip to next requirement
-```
+| Pattern | Explicit Version |
+|---------|------------------|
+| **Conditionals** | `IF condition: action ELSE: alternative_action` |
+| **Loops** | `FOR EACH item in list: action1 → action2 → action3` |
+| **Validation** | `CHECK all boxes: □ Check1 □ Check2 IF all checked: PROCEED ELSE: STOP` |
+| **Output format** | Provide exact template with `[placeholders]` to fill |
+| **Error handling** | `IF error_X: STOP, OUTPUT "message", EXIT` |
 
 ---
 
@@ -248,24 +230,20 @@ Even though GPT-4.1's 1M context is powerful:
 ### STEP 1: Load Minimal Sections First
 
 **spec.md**:
-
 - Load: "Functional Requirements" section only
 - Skip: Examples, detailed prose, success criteria
 
 **plan.md**:
-
 - Load: "Phases" and "Architecture" sections only
 - Skip: Detailed implementation notes, checkpoints
 
 **tasks.md**:
-
 - Load: Task IDs and descriptions only
 - Skip: Checkpoint criteria, notes
 
 ### STEP 2: Search Implementation (Use Grep First)
 
 **Before loading full files**:
-
 - Use Grep tool for keyword search
 - Get file list with matches
 - Only Read full files when grep finds matches
@@ -274,11 +252,10 @@ Even though GPT-4.1's 1M context is powerful:
 
 ### STEP 3: Load Contracts On-Demand
 
-**When gap validation requires contract verification**:
-
+**When validation requires contract verification**:
 - Use Glob to find contract files
 - Read specific contracts only (not all at once)
-- Verify interface definitions for gap evidence
+- Verify interface definitions for evidence
 
 **Why**: Contracts can be large (TypeScript with JSDoc) - load only when needed
 ```
@@ -289,23 +266,19 @@ Even though GPT-4.1's 1M context is powerful:
 # Feature with 800K tokens total
 
 STEP 1: Load requirements (100K)
-
 - spec.md Functional Requirements section
 - plan.md Phases section
 - tasks.md Task IDs only
 
-STEP 2: Search for "down() method" keyword (0K - just grep)
-
-- Grep: accordion-item-def.ts, accordion.component.ts
+STEP 2: Search for "submit()" keyword (0K - just grep)
+- Grep: form-handler.ts, form.component.ts
 - Result: NOT FOUND in both
 
 STEP 3: Load contract for verification (50K)
+- Read: contracts/form-api.ts
+- Verify: Interface defines submit() method
 
-- Read: contracts/accordion-api.ts
-- Verify: Interface defines down() method
-
-STEP 4: Build gap evidence (already have all needed info)
-
+STEP 4: Build evidence (already have all needed info)
 - Don't load full implementation files (not needed)
 
 Total loaded: 150K tokens (instead of 800K)
@@ -340,55 +313,42 @@ GPT-4.1 uses structural markers for "jump to section" retrieval in long context:
 
 ```markdown
 # Level 1: Major Sections
-
 ## Level 2: Steps (## Step 0, ## Step 1)
-
 ### Level 3: Sub-steps (### 2.1, ### 2.2)
-
 #### Level 4: Procedures (#### 2.1.1, #### 2.1.2)
 ```
 
 **Benefits**:
-
 - GPT-4.1 can reference "See Step 2.3 above" and jump directly
 - Hierarchical structure creates logical tree
 - Headers act as bookmarks in 1M context
 
 #### Code/Command Wrapping
 
-````markdown
-**Inline code**: Use `backticks` for keywords like `down()`, `FR-075`, `T140`
+```markdown
+**Inline code**: Use `backticks` for keywords like `submit()`, `REQ-075`, `T140`
 
 **Code blocks**: Use triple backticks for multi-line
 
 ```typescript
 // Example code
-function down(): void {
-  this.expanded.set(true);
+function submit(): void {
+  this.submitted.set(true);
 }
 ```
-````
-
-**Commands**:
-
-```bash
-npm run test
-git commit -m "message"
 ```
-
-````
 
 #### XML for Structured Data
 
 ```xml
-<!-- For gap registry or structured state -->
-<gap_registry>
-  <gap id="GAP-1">
+<!-- For registry or structured state -->
+<registry>
+  <item id="ITEM-1">
     <title>Title</title>
-    <status>NOT_IMPLEMENTED</status>
-  </gap>
-</gap_registry>
-````
+    <status>PENDING</status>
+  </item>
+</registry>
+```
 
 **Use XML when**: Representing structured data, multi-level hierarchies, or state machines.
 
@@ -397,14 +357,14 @@ git commit -m "message"
 **Repeat key information** across long distances:
 
 ```markdown
-## STEP 3: Build Gap List
+## STEP 3: Build List
 
-**REMINDER from Step 0.5**: Check against KNOWN_GAPS registry before adding each gap.
+**REMINDER from Step 0.5**: Check against KNOWN_ITEMS registry before adding each item.
 
-FOR EACH potential gap:
-Check KNOWN_GAPS (loaded in Step 0.5 above)
-IF match found: SKIP
-ELSE: Add to gap list
+FOR EACH potential item:
+  Check KNOWN_ITEMS (loaded in Step 0.5 above)
+  IF match found: SKIP
+  ELSE: Add to list
 ```
 
 **Why**: Don't assume GPT-4.1 "remembers" constraints from 500K tokens ago - repeat them.
@@ -425,35 +385,25 @@ ELSE: Add to gap list
 ## Error Handling
 
 ### If artifact not found:
-```
 
-IF spec.md not found:
-STOP execution immediately
-OUTPUT: "spec.md not found. Run /speckit.specify first."
-EXIT (do NOT continue to next step)
-
-```
+IF config.md not found:
+  STOP execution immediately
+  OUTPUT: "config.md not found. Run setup first."
+  EXIT (do NOT continue to next step)
 
 ### If context overflow:
-```
 
 IF total_tokens > 1000000:
-STOP execution immediately
-OUTPUT: "Feature too large (>1M tokens). Split into smaller components."
-EXIT
-
-```
+  STOP execution immediately
+  OUTPUT: "Feature too large (>1M tokens). Split into smaller components."
+  EXIT
 
 ### If validation fails:
-```
 
 IF validation_score < 6:
-REMOVE gap from final list
-ADD to false_positives section
-CONTINUE to next gap
-
-```
-
+  REMOVE item from final list
+  ADD to false_positives section
+  CONTINUE to next item
 ```
 
 #### Validation Checklists
@@ -464,9 +414,9 @@ CONTINUE to next gap
 Before proceeding to Step 6, verify ALL checkboxes:
 
 - [ ] Completed Steps 0-5
-- [ ] All gaps have FR-XXX references
-- [ ] All gaps have validation scores ≥ 6/10
-- [ ] Checked against KNOWN_GAPS registry
+- [ ] All items have REQ-XXX references
+- [ ] All items have validation scores ≥ 6/10
+- [ ] Checked against KNOWN_ITEMS registry
 - [ ] False positives removed
 
 IF all checked: PROCEED to Step 6
@@ -477,110 +427,16 @@ ELSE: FIX issues and re-check
 
 ---
 
-## Real-World Application: `/analyze-report-gaps-gpt-4-1`
-
-### Applied Optimizations
-
-Our implementation in `.github/agents/analyze-report-gaps.gpt-4-1.agent.md` applies all 5 optimizations:
-
-#### 1. Sandwich Method ✅
-
-**Beginning** (400 lines):
-
-```markdown
-## Goal
-
-Generate gap analysis following 6-step workflow...
-
-## Execution Steps
-
-### Step 0: Initialize...
-
-[Detailed steps]
-```
-
-**End** (sandwich):
-
-```markdown
-# 🔁 FINAL EXECUTION REMINDER (Sandwich Method)
-
-**Execute this workflow EXACTLY:**
-□ Step 0-6 checklist
-**Execute STEP 6 now. Use Write tool. Write complete report.**
-```
-
-#### 2. Literal Following ✅
-
-**Explicit commands throughout**:
-
-```markdown
-✅ "FOR EACH requirement: EXTRACT keywords → SEARCH files → IF NOT FOUND: add to gap list"
-✅ "IF spec.md not found: STOP, OUTPUT 'spec.md not found', EXIT"
-✅ "Use Write tool, file path = gap-analysis-report.md, content = template with ALL [placeholders] filled"
-```
-
-**Warnings added**:
-
-```markdown
-**GPT-4.1 does NOT**:
-
-- ❌ Infer what "good quality" means
-- ❌ Guess which gaps to prioritize
-- ❌ Assume structured output format
-
-**All instructions MUST be explicit.**
-```
-
-#### 3. Progressive Disclosure ✅
-
-```markdown
-When loading large features (>500K tokens):
-
-STEP 1: Load minimal sections
-
-- spec.md: Only "Functional Requirements"
-- plan.md: Only "Phases" and "Architecture"
-
-STEP 2: Search with Grep first
-
-- Don't load full files until grep confirms matches
-
-STEP 3: Load contracts on-demand
-
-- Only when gap validation requires them
-```
-
-#### 4. Structured Formatting ✅
-
-- Markdown headers: `## Step 0`, `### 2.1`, `#### 2.1.1`
-- Backtick blocks for code/commands
-- Numbered/bulleted lists for procedures
-- XML examples for structured data
-
-#### 5. Explicit Validation ✅
-
-```markdown
-Checklist (verify before responding):
-
-- [ ] Completed Step 0 (loaded paths)
-- [ ] Completed Step 0.5 (loaded KNOWN_GAPS registry)
-- [ ] Completed Steps 1-5 (gap analysis)
-- [ ] Used Write tool to create report
-- [ ] File has ALL required sections
-```
-
----
-
 ## Performance Characteristics
 
 ### Speed vs Context Trade-offs
 
-| Feature Size         | Recommended Approach             | Performance   |
-| -------------------- | -------------------------------- | ------------- |
-| **<180K tokens**     | Use GPT-5 Mini                   | 10-20 sec ⚡  |
-| **180K-500K tokens** | GPT-4.1 (standard)               | 30-60 sec     |
-| **500K-900K tokens** | GPT-4.1 + progressive disclosure | 45-90 sec     |
-| **>900K tokens**     | Split into chunks                | Multiple runs |
+| Feature Size | Recommended Approach | Performance |
+|-------------|---------------------|-------------|
+| **<180K tokens** | Use GPT-5 Mini | 10-20 sec ⚡ |
+| **180K-500K tokens** | GPT-4.1 (standard) | 30-60 sec |
+| **500K-900K tokens** | GPT-4.1 + progressive disclosure | 45-90 sec |
+| **>900K tokens** | Split into chunks | Multiple runs |
 
 ### Long-Context Retrieval Performance
 
@@ -591,7 +447,6 @@ Checklist (verify before responding):
 **Source**: [Inside GPT-4.1: Technical Analysis - Trickle](https://trickle.so/blog/inside-gpt-4-1-technical-analysis)
 
 **Practical implications**:
-
 - ✅ Can place important info at beginning, middle, or end
 - ✅ Sandwich method works because retrieval is position-independent
 - ✅ Can reference "See Step 2.3 above" from Step 6 reliably
@@ -604,21 +459,21 @@ Checklist (verify before responding):
 
 ```markdown
 ❌ BAD: "Analyze the code and find issues"
-✅ GOOD: "FOR EACH requirement: SEARCH implementation files using keywords → IF NOT FOUND: add to gap list"
+✅ GOOD: "FOR EACH requirement: SEARCH implementation files using keywords → IF NOT FOUND: add to list"
 ```
 
 ### ❌ Pitfall 2: Assuming Inference
 
 ```markdown
 ❌ BAD: "Write a comprehensive report"
-✅ GOOD: "Use Write tool. File: gap-analysis-report.md. Content: [exact template]. Include ALL gaps with Evidence sections."
+✅ GOOD: "Use Write tool. File: analysis-report.md. Content: [exact template]. Include ALL items with Evidence sections."
 ```
 
 ### ❌ Pitfall 3: Vague Error Handling
 
 ```markdown
 ❌ BAD: "Handle errors appropriately"
-✅ GOOD: "IF file not found: STOP, OUTPUT 'File X not found', EXIT. IF validation fails: REMOVE gap, ADD to false_positives."
+✅ GOOD: "IF file not found: STOP, OUTPUT 'File X not found', EXIT. IF validation fails: REMOVE item, ADD to false_positives."
 ```
 
 ### ❌ Pitfall 4: No End Instructions (Long Context)
@@ -666,14 +521,14 @@ Checklist (verify before responding):
 
 ## Comparison: GPT-4.1 vs Other Models
 
-| Aspect                | GPT-4.1          | GPT-5 Mini          | Sonnet 4.5        |
-| --------------------- | ---------------- | ------------------- | ----------------- |
-| **Context**           | 1M               | 200K                | 200K              |
-| **Reasoning**         | None             | Minimal             | High              |
-| **Instruction style** | **Very literal** | Literal             | Inference-capable |
-| **Optimization**      | Sandwich method  | CTCO + XML          | Natural language  |
-| **Best for**          | Large features   | Fast small features | Complex reasoning |
-| **Cost (Copilot)**    | 0x               | 0x                  | 1x                |
+| Aspect | GPT-4.1 | GPT-5 Mini | Sonnet 4.5 |
+|--------|---------|------------|------------|
+| **Context** | 1M | 200K | 200K |
+| **Reasoning** | None | Minimal | High |
+| **Instruction style** | **Very literal** | Literal | Inference-capable |
+| **Optimization** | Sandwich method | CTCO + XML | Natural language |
+| **Best for** | Large features | Fast small features | Complex reasoning |
+| **Cost (Copilot)** | 0x | 0x | 1x |
 
 ---
 
@@ -687,7 +542,7 @@ GPT-4.1 agents typically have:
 - ✅ **Write**: Write file contents
 - ✅ **Glob**: Find files by pattern
 - ✅ **Grep**: Search file contents
-- ❌ **Bash**: No direct shell access (unlike Claude Code)
+- ❌ **Bash**: No direct shell access
 - ✅ **AskUserQuestion**: Prompt user with options
 
 **Implication**: All operations must use these tools (no shell commands).
@@ -700,7 +555,7 @@ GPT-4.1 agents typically have:
 1. Load artifacts (Read tool - progressive disclosure)
 2. Filter requirements (rule-based exclusions)
 3. Search implementation (Grep before Read)
-4. Validate gaps (arithmetic scoring, checklists)
+4. Validate items (arithmetic scoring, checklists)
 5. Output report (Write tool with exact template)
 ```
 
@@ -724,19 +579,16 @@ Before deploying a GPT-4.1 prompt:
 ### Test Cases
 
 **Test 1: Literal Following**
-
 - Prompt: "Write output"
 - Expected: GPT-4.1 asks "What format?" (too vague)
 - Fixed: "Use Write tool, file: output.md, content: [template]"
 
 **Test 2: Long Context**
-
 - Prompt: [Instructions at beginning only, 800K context]
 - Expected: May miss instructions at end
 - Fixed: Add sandwich reminder at end
 
 **Test 3: Error Handling**
-
 - Prompt: "Handle missing files"
 - Expected: GPT-4.1 might skip or guess
 - Fixed: "IF file not found: STOP, OUTPUT 'error', EXIT"
@@ -745,7 +597,7 @@ Before deploying a GPT-4.1 prompt:
 
 ## Research Sources
 
-**Primary Sources** (2026):
+**Primary Sources**:
 
 - [GPT-4.1 Prompting Guide | OpenAI Cookbook](https://cookbook.openai.com/examples/gpt4-1_prompting_guide) - Sandwich method, literal following
 - [The Complete Guide to GPT-4.1 - PromptHub](https://www.prompthub.us/blog/the-complete-guide-to-gpt-4-1-models-performance-pricing-and-prompting-tips) - Comprehensive optimization strategies
@@ -756,20 +608,8 @@ Before deploying a GPT-4.1 prompt:
 
 ---
 
-## Example Implementation
+## Related Documents
 
-**See**: `.github/agents/analyze-report-gaps.gpt-4-1.agent.md` for complete implementation using all 5 optimizations.
-
-**Key features**:
-
-- 700+ line prompt with sandwich method
-- Explicit 6-step mechanical workflow
-- Progressive disclosure strategy for >500K features
-- Markdown headers for navigation
-- Literal instruction warnings throughout
-- End-of-prompt checklist with 🔁 reminder
-
----
-
-**Last Updated**: 2026-01-10
-**Applies to**: GPT-4.1, GPT-4.1 mini, GPT-4.1 nano (all 1M context variants)
+- [MODEL-OPTIMIZATION-GPT-5-MINI.md](./MODEL-OPTIMIZATION-GPT-5-MINI.md) - For smaller features (<180K tokens)
+- [MODEL-OPTIMIZATION-GPT-5-1-CODEX.md](./MODEL-OPTIMIZATION-GPT-5-1-CODEX.md) - For code implementation tasks
+- [MODEL-FRONTMATTER.md](./MODEL-FRONTMATTER.md) - How to specify models in agent/prompt files

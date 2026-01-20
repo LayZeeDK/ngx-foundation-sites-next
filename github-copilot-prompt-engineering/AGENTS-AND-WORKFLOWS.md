@@ -1,8 +1,8 @@
-# GitHub Copilot Agents Optimizations
+# GitHub Copilot Agents and Workflows
 
-**Last Updated:** 2026-01-11
+**Last Updated:** 2026-01-20
 
-This document provides optimization strategies for GitHub Copilot's Agent Mode, including the WRAP methodology, MCP integration, and performance improvements from 2025-2026.
+This document provides optimization strategies for GitHub Copilot's Agent Mode, including the WRAP methodology, MCP integration, and performance improvements.
 
 ---
 
@@ -14,9 +14,9 @@ GitHub has transformed Copilot into a fully agentic development partner with:
 
 - **Agent Mode** - Autonomous multi-file editing and task execution
 - **MCP (Model Context Protocol) Support** - Extensible tool integration
-- **Multi-Model Support** - Claude, GPT, and other models available
+- **Multi-Model Support** - Claude, GPT, Grok, and other models available
 
-**⚠️ BETA FEATURE:** Agent Mode with MCP support is currently being rolled out to Visual Studio Code users as of late 2025. This feature is **not yet generally available** and may have limited functionality. Wait for general availability announcement before production use.
+**Note:** Agent Mode with MCP support is being rolled out to Visual Studio Code users. Check feature availability for your subscription tier.
 
 ### Core Capabilities
 
@@ -69,29 +69,24 @@ GitHub engineers developed **WRAP** for maximizing Copilot coding agent effectiv
 # Good Issue Example
 
 ## Title
-
 Add user authentication to dashboard component
 
 ## Context
-
 - Dashboard currently has no auth check
 - Users should be redirected to /login if not authenticated
 - Auth token stored in localStorage under 'auth_token' key
 
 ## Acceptance Criteria
-
 - [ ] Add auth check to DashboardComponent.onInit()
 - [ ] Redirect to /login if token missing or invalid
 - [ ] Display loading spinner during auth check
 - [ ] Add unit tests for auth logic
 
 ## Files to Change
-
 - src/app/dashboard/dashboard.component.ts
 - src/app/dashboard/dashboard.component.spec.ts
 
 ## Technical Notes
-
 - Use existing AuthService.validateToken() method
 - Follow error handling pattern from ProfileComponent
 ```
@@ -127,26 +122,22 @@ Add user authentication to dashboard component
 # Copilot Instructions for MyProject
 
 ## Code Style
-
 - Use functional components with hooks
 - Prefer composition over inheritance
 - Maximum function length: 50 lines
 
 ## Testing
-
 - Write tests alongside implementation
 - Minimum 80% coverage for new code
 - Use Jest for unit tests, Playwright for e2e
 
 ## Naming Conventions
-
 - Components: PascalCase
 - Functions: camelCase
 - Constants: SCREAMING_SNAKE_CASE
 - Files: kebab-case.ts
 
 ## Architecture
-
 - Feature-based folder structure
 - Barrel exports (index.ts) for public API
 - No circular dependencies
@@ -160,14 +151,14 @@ Add user authentication to dashboard component
 
 | Complexity     | Task Type                  | Agent Suitability   |
 | -------------- | -------------------------- | ------------------- |
-| **Low**        | Bug fixes                  | ✅ Excellent        |
-| **Low**        | UI tweaks                  | ✅ Excellent        |
-| **Low-Medium** | Test coverage improvements | ✅ Excellent        |
-| **Low-Medium** | Documentation updates      | ✅ Excellent        |
-| **Medium**     | Technical debt cleanup     | ✅ Good             |
-| **Medium**     | New feature (well-scoped)  | ✅ Good             |
-| **High**       | Architectural changes      | ⚠️ Use with caution |
-| **High**       | Complex algorithms         | ⚠️ Use with caution |
+| **Low**        | Bug fixes                  | Excellent           |
+| **Low**        | UI tweaks                  | Excellent           |
+| **Low-Medium** | Test coverage improvements | Excellent           |
+| **Low-Medium** | Documentation updates      | Excellent           |
+| **Medium**     | Technical debt cleanup     | Good                |
+| **Medium**     | New feature (well-scoped)  | Good                |
+| **High**       | Architectural changes      | Use with caution    |
+| **High**       | Complex algorithms         | Use with caution    |
 
 **Start Simple:**
 
@@ -183,11 +174,9 @@ Add user authentication to dashboard component
 
    ```markdown
    # Clear
-
    Add a 'Delete Account' button to user settings that prompts for confirmation
 
    # Unclear
-
    Improve user settings
    ```
 
@@ -205,7 +194,6 @@ Add user authentication to dashboard component
 
    ```markdown
    Files to modify:
-
    - src/settings/UserSettings.tsx (add button)
    - src/settings/DeleteAccountModal.tsx (create new)
    - src/api/userApi.ts (add deleteAccount method)
@@ -219,7 +207,7 @@ Add user authentication to dashboard component
 
 ### Extending Agent Capabilities
 
-**⚠️ BETA FEATURE:** MCP integration is currently in preview. Do not use in production until generally available.
+**Note:** MCP integration may be in preview for some features. Check your subscription tier for availability.
 
 **Model Context Protocol (MCP)** allows Copilot coding agent to use tools from local and remote servers.
 
@@ -277,7 +265,6 @@ Add user authentication to dashboard component
 Add user dashboard with real-time data from /api/users endpoint
 
 Agent can:
-
 1. Use api-client MCP tool to fetch schema
 2. Generate TypeScript types from schema
 3. Create component with correct types
@@ -306,10 +293,10 @@ GitHub implements security guardrails for Copilot agents:
 **Example:**
 
 ```typescript
-// ❌ Agent will refuse to generate:
+// Agent will refuse to generate:
 const apiKey = 'sk-1234567890abcdef'; // Hardcoded secret
 
-// ✅ Agent will suggest instead:
+// Agent will suggest instead:
 const apiKey = process.env.API_KEY;
 ```
 
@@ -347,7 +334,6 @@ const apiKey = process.env.API_KEY;
 # High-Risk Action Detected
 
 Agent wants to:
-
 - Modify authentication logic in src/auth/authenticate.ts
 - Change security middleware in src/middleware/security.ts
 
@@ -373,7 +359,6 @@ Reason: Changes to security-critical code
    Fix null pointer error in UserProfile.tsx line 45
 
    Steps to reproduce:
-
    1. Navigate to /profile
    2. Click "Edit Profile" without logging in
    3. Error occurs
@@ -395,7 +380,6 @@ Reason: Changes to security-critical code
    Add unit tests for UserService.updateProfile() method
 
    Test cases:
-
    - Valid update succeeds
    - Invalid email format throws error
    - Network error handled gracefully
@@ -407,7 +391,6 @@ Reason: Changes to security-critical code
    Update API docs for /api/users endpoint
 
    Changes:
-
    - Add new 'role' field to response schema
    - Document new 403 error for insufficient permissions
    ```
@@ -459,7 +442,6 @@ Issue #3: Fix typo in Settings.tsx
 Issue: Fix typos in multiple components
 
 Files:
-
 - UserProfile.tsx line 45: "sucess" → "success"
 - Dashboard.tsx line 120: "recieve" → "receive"
 - Settings.tsx line 89: "occured" → "occurred"
@@ -491,15 +473,13 @@ Files:
 # Iteration 1 Review
 
 Good:
-
-- ✅ Core functionality works
-- ✅ Tests pass
+- Core functionality works
+- Tests pass
 
 Issues:
-
-- ❌ Missing error handling for network failures
-- ❌ Accessibility: button needs aria-label
-- ❌ Performance: unnecessary re-renders
+- Missing error handling for network failures
+- Accessibility: button needs aria-label
+- Performance: unnecessary re-renders
 
 Please address these issues in iteration 2.
 ```
@@ -532,7 +512,6 @@ Please address these issues in iteration 2.
 | Agent Adoption        | 78%      | ↑ 5%       |
 
 ## Top Task Types
-
 1. Bug fixes (45%)
 2. Test coverage (28%)
 3. Documentation (15%)
@@ -543,19 +522,13 @@ Please address these issues in iteration 2.
 
 ---
 
-## Agent Skills (New Feature)
+## Agent Skills
 
 ### What Are Agent Skills?
 
-**⚠️ BETA FEATURE - DO NOT USE IN PRODUCTION**
-
 **Announcement:** GitHub Copilot now supports Agent Skills (December 2025).
 
-**Status:** Agent Skills feature is in **early preview** and not recommended for production use. Wait for general availability announcement.
-
 **Definition:** Reusable, configurable workflows that agents can invoke automatically or on demand.
-
-**Similar to:** Claude Code Skills, but integrated into GitHub Copilot's agent system.
 
 ### Use Cases
 
@@ -574,9 +547,7 @@ Please address these issues in iteration 2.
    - Run test suites
    - Generate documentation
 
-### Configuration (Early Preview)
-
-**⚠️ DO NOT USE - FEATURE IN PREVIEW**
+### Configuration
 
 ```yaml
 # .github/copilot-skills/component-generator.yml
@@ -598,19 +569,18 @@ steps:
     file: src/components/index.ts
 ```
 
-**Note:** Agent Skills feature is in active development and **not production-ready**. Check GitHub Changelog for general availability announcement before using.
+**Note:** Check GitHub Changelog for general availability status of Agent Skills.
 
 ---
 
 ## Common Anti-Patterns
 
-### ❌ Avoid
+### Avoid
 
 1. **Vague Issues**
 
    ```markdown
    # Bad
-
    Make the app better
    ```
 
@@ -618,7 +588,6 @@ steps:
 
    ```markdown
    # Bad
-
    Fix the bug in the login page
    (Which bug? What's the expected behavior?)
    ```
@@ -627,7 +596,6 @@ steps:
 
    ```markdown
    # Bad
-
    Rewrite entire authentication system to use OAuth2 with multiple providers
    ```
 
@@ -635,7 +603,6 @@ steps:
 
    ```markdown
    # Bad
-
    Add search feature
    (Where? What should it search? What format?)
    ```
@@ -644,17 +611,15 @@ steps:
 
    ```markdown
    # Bad
-
    (Agent generates code in style inconsistent with .github/copilot-instructions.md)
    ```
 
-### ✅ Prefer
+### Prefer
 
 1. **Specific Issues**
 
    ```markdown
    # Good
-
    Add email validation to registration form with error message display
    ```
 
@@ -662,7 +627,6 @@ steps:
 
    ```markdown
    # Good
-
    Fix bug: login form submits even when password field is empty
    Expected: Disable submit button when fields are invalid
    Location: src/auth/LoginForm.tsx line 78
@@ -672,7 +636,6 @@ steps:
 
    ```markdown
    # Good
-
    Add Google OAuth provider to existing authentication system
    (Builds on existing code, clear scope)
    ```
@@ -681,7 +644,6 @@ steps:
 
    ```markdown
    # Good
-
    - [ ] Search box in navigation bar
    - [ ] Searches product names and descriptions
    - [ ] Shows results in dropdown with max 5 items
@@ -692,7 +654,6 @@ steps:
 
    ```markdown
    # Good
-
    (Custom instructions in place, agent follows automatically)
    ```
 

@@ -1,6 +1,6 @@
 # GitHub Copilot Customization Files Comparison
 
-**Last Updated:** 2026-01-12
+**Last Updated:** 2026-01-20
 
 This document provides a comprehensive comparison of all GitHub Copilot customization file types, including when to use each, their differences, and how they work together.
 
@@ -34,39 +34,39 @@ This document provides a comprehensive comparison of all GitHub Copilot customiz
 
 | Property                | `.prompt.md`  | `.agent.md`         | `.instructions.md` |
 | ----------------------- | ------------- | ------------------- | ------------------ |
-| `name`                  | ✅            | ✅                  | ❌                 |
-| `description`           | ✅ (required) | ✅ (required)       | ✅ (optional)      |
-| `agent`                 | ✅            | ❌                  | ❌                 |
-| `model`                 | ✅            | ✅                  | ❌                 |
-| `tools`                 | ✅            | ✅                  | ❌                 |
-| `target`                | ❌            | ✅                  | ❌                 |
-| `mcp-servers`           | ❌            | ✅ (org/enterprise) | ❌                 |
-| `applyTo`               | ❌            | ❌                  | ✅ (glob pattern)  |
-| `infer`                 | ❌            | ✅                  | ❌                 |
-| Variables (`${input:}`) | ✅            | ❌                  | ❌                 |
+| `name`                  | Yes           | Yes                 | No                 |
+| `description`           | Yes (required)| Yes (required)      | Yes (optional)     |
+| `agent`                 | Yes           | No                  | No                 |
+| `model`                 | Yes           | Yes                 | No                 |
+| `tools`                 | Yes           | Yes                 | No                 |
+| `target`                | No            | Yes                 | No                 |
+| `mcp-servers`           | No            | Yes (org/enterprise)| No                 |
+| `applyTo`               | No            | No                  | Yes (glob pattern) |
+| `infer`                 | No            | Yes                 | No                 |
+| Variables (`${input:}`) | Yes           | No                  | No                 |
 
 ### Content Capabilities
 
 | Feature             | `.prompt.md`            | `.agent.md`  | `.instructions.md` | `AGENTS.md` |
 | ------------------- | ----------------------- | ------------ | ------------------ | ----------- |
 | Max content size    | ~unlimited              | 30,000 chars | ~unlimited         | ~unlimited  |
-| File references     | ✅ Markdown links       | ✅           | ✅                 | ✅          |
-| Tool references     | ✅ `#tool:name`         | ❌           | ❌                 | ❌          |
-| Input variables     | ✅ `${input:}`          | ❌           | ❌                 | ❌          |
-| Workspace variables | ✅ `${workspaceFolder}` | ❌           | ❌                 | ❌          |
-| Code examples       | ✅                      | ✅           | ✅                 | ✅          |
+| File references     | Yes (Markdown links)    | Yes          | Yes                | Yes         |
+| Tool references     | Yes (`#tool:name`)      | No           | No                 | No          |
+| Input variables     | Yes (`${input:}`)       | No           | No                 | No          |
+| Workspace variables | Yes (`${workspaceFolder}`) | No        | No                 | No          |
+| Code examples       | Yes                     | Yes          | Yes                | Yes         |
 
 ### Platform Availability
 
 | File Type           | VS Code | Visual Studio | JetBrains | Eclipse | Xcode | GitHub.com |
 | ------------------- | ------- | ------------- | --------- | ------- | ----- | ---------- |
-| Custom Instructions | ✅      | ✅            | ✅        | ✅      | ✅    | ✅         |
-| Path Instructions   | ✅      | ✅            | ✅        | ❌      | ❌    | ❌         |
-| Prompt Files        | ✅      | ✅            | ✅        | ❌      | ❌    | ❌         |
-| Custom Agents       | ✅      | ❌            | ✅\*      | ✅\*    | ✅\*  | ✅         |
-| AGENTS.md           | ✅      | ❌            | ❌        | ❌      | ❌    | ✅         |
+| Custom Instructions | Yes     | Yes           | Yes       | Yes     | Yes   | Yes        |
+| Path Instructions   | Yes     | Yes           | Yes       | No      | No    | No         |
+| Prompt Files        | Yes     | Yes           | Yes       | No      | No    | No         |
+| Custom Agents       | Yes     | No            | Yes*      | Yes*    | Yes*  | Yes        |
+| AGENTS.md           | Yes     | No            | No        | No      | No    | Yes        |
 
-\*Public preview
+*Public preview
 
 ---
 
@@ -80,33 +80,27 @@ This document provides a comprehensive comparison of all GitHub Copilot customiz
 # .github/copilot-instructions.md
 
 ## Project Overview
-
-This is an Angular component library using Foundation for Sites CSS.
+This is a React component library using TypeScript.
 
 ## Coding Standards
-
-- Use standalone components
-- Use signals for state
-- Set OnPush change detection
-- Prefix selectors with `nfs-`
+- Use functional components with hooks
+- Use TypeScript strict mode
+- Prefer composition over inheritance
 
 ## Testing
-
-- Write Storybook stories with play functions
-- Use Playwright for e2e tests
+- Write Jest tests alongside implementation
+- Use React Testing Library for component tests
 ```
 
 **Best when:**
-
-- ✅ Information applies to every request
-- ✅ Conventions should never be forgotten
-- ✅ Architecture decisions need to be known
+- Information applies to every request
+- Conventions should never be forgotten
+- Architecture decisions need to be known
 
 **Avoid when:**
-
-- ❌ Information is task-specific
-- ❌ Instructions are optional
-- ❌ Content varies by context
+- Information is task-specific
+- Instructions are optional
+- Content varies by context
 
 ---
 
@@ -117,26 +111,24 @@ This is an Angular component library using Foundation for Sites CSS.
 ```yaml
 # .github/instructions/components.instructions.md
 ---
-applyTo: 'src/lib/**/*.component.ts'
-description: Angular component conventions
+applyTo: 'src/components/**/*.tsx'
+description: React component conventions
 ---
-## Component Rules
 
-- Always use OnPush change detection
-- Use signals, not RxJS for local state
-- Inline templates for <20 lines
+## Component Rules
+- Always use functional components
+- Use custom hooks for shared logic
+- Keep components under 200 lines
 ```
 
 **Best when:**
-
-- ✅ Rules only apply to specific file types
-- ✅ Different conventions for different areas
-- ✅ Want automatic context without manual selection
+- Rules only apply to specific file types
+- Different conventions for different areas
+- Want automatic context without manual selection
 
 **Avoid when:**
-
-- ❌ Rules apply everywhere
-- ❌ Rules should be optional
+- Rules apply everywhere
+- Rules should be optional
 
 ---
 
@@ -148,16 +140,17 @@ description: Angular component conventions
 # .github/prompts/new-component.prompt.md
 ---
 name: new-component
-description: Generate Angular component with tests
+description: Generate React component with tests
 agent: agent
 tools: ['read', 'edit', 'search']
 ---
+
 # Generate Component
 
-Create a new Angular component with:
-  - Component file with signals
-  - Unit test file
-  - Storybook story
+Create a new React component with:
+- Component file with TypeScript
+- Unit test file
+- Storybook story
 
 ## Input
 Name: ${input:name:PascalCase component name}
@@ -165,17 +158,15 @@ Description: ${input:desc:What does it do?}
 ```
 
 **Best when:**
-
-- ✅ Task is repeatable but not automatic
-- ✅ Need dynamic inputs from user
-- ✅ Want specific tool access
-- ✅ Task has clear start/end
+- Task is repeatable but not automatic
+- Need dynamic inputs from user
+- Want specific tool access
+- Task has clear start/end
 
 **Avoid when:**
-
-- ❌ Information applies always (use instructions)
-- ❌ Need persistent persona (use agent)
-- ❌ Task is one-time
+- Information applies always (use instructions)
+- Need persistent persona (use agent)
+- Task is one-time
 
 ---
 
@@ -201,22 +192,20 @@ You are a testing specialist. You write comprehensive tests but NEVER modify sou
 3. Ensure coverage targets
 
 ## Boundaries
-🚫 Never modify production code
-✅ Always run tests after writing
+- Never modify production code
+- Always run tests after writing
 ```
 
 **Best when:**
-
-- ✅ Need specialized expertise
-- ✅ Want role-specific boundaries
-- ✅ Task requires persistent context
-- ✅ Creating "team members" with distinct skills
+- Need specialized expertise
+- Want role-specific boundaries
+- Task requires persistent context
+- Creating "team members" with distinct skills
 
 **Avoid when:**
-
-- ❌ Task is one-off (use prompt)
-- ❌ No special constraints needed
-- ❌ Same instructions for all tasks
+- Task is one-off (use prompt)
+- No special constraints needed
+- Same instructions for all tasks
 
 ---
 
@@ -228,31 +217,26 @@ You are a testing specialist. You write comprehensive tests but NEVER modify sou
 # AGENTS.md
 
 ## Project Context
-
-Angular component library for Foundation CSS
+React component library for design system
 
 ## Build Commands
-
-npm run build # Production build
-npm run test # Run tests
-npm run lint # Check code style
+npm run build    # Production build
+npm run test     # Run tests
+npm run lint     # Check code style
 
 ## Directory Structure
-
-src/lib/ # Component source
-src/stories/ # Storybook stories
+src/components/  # Component source
+src/stories/     # Storybook stories
 ```
 
 **Best when:**
-
-- ✅ Context applies to all agent work
-- ✅ Commands and structure rarely change
-- ✅ Want baseline for all specialized agents
+- Context applies to all agent work
+- Commands and structure rarely change
+- Want baseline for all specialized agents
 
 **Avoid when:**
-
-- ❌ Using only Copilot Chat (not agents)
-- ❌ Instructions vary by task type
+- Using only Copilot Chat (not agents)
+- Instructions vary by task type
 
 ---
 
@@ -273,7 +257,6 @@ src/stories/ # Storybook stories
 ```
 
 **Flow:**
-
 1. Global instructions → Always included
 2. Path instructions → Added when matching files
 3. Agent persona → Added when agent selected
@@ -290,7 +273,6 @@ src/stories/ # Storybook stories
 ```
 
 **Usage:**
-
 - Select `@docs-agent` for documentation tasks
 - Select `@test-agent` for testing tasks
 - Each has distinct boundaries and focus
@@ -339,12 +321,12 @@ Prompts (specific tasks)
 
 ```yaml
 ---
-name: string # Command name (/name)
-description: string # REQUIRED - what it does
-agent: string # ask | edit | agent | @agent-name
-model: string # GPT-4o, GPT-5 mini, etc.
-tools: list # ["read", "edit", "search"]
-argument-hint: string # Hint in chat input
+name: string           # Command name (/name)
+description: string    # REQUIRED - what it does
+agent: string          # ask | edit | agent | @agent-name
+model: string          # GPT-4o, GPT-5 mini, etc.
+tools: list            # ["read", "edit", "search"]
+argument-hint: string  # Hint in chat input
 ---
 ```
 
@@ -352,14 +334,14 @@ argument-hint: string # Hint in chat input
 
 ```yaml
 ---
-name: string # Display name
-description: string # REQUIRED - capabilities
-tools: list | string # ["read", "edit"] or "*"
-target: string # vscode | github-copilot
-infer: boolean # Auto-select agent (default: true)
-model: string # Model preference (IDE only)
-mcp-servers: object # MCP config (org/enterprise only)
-metadata: object # Custom annotations
+name: string           # Display name
+description: string    # REQUIRED - capabilities
+tools: list | string   # ["read", "edit"] or "*"
+target: string         # vscode | github-copilot
+infer: boolean         # Auto-select agent (default: true)
+model: string          # Model preference (IDE only)
+mcp-servers: object    # MCP config (org/enterprise only)
+metadata: object       # Custom annotations
 ---
 ```
 
@@ -367,8 +349,8 @@ metadata: object # Custom annotations
 
 ```yaml
 ---
-applyTo: string # REQUIRED - glob pattern
-description: string # What these instructions do
+applyTo: string        # REQUIRED - glob pattern
+description: string    # What these instructions do
 ---
 ```
 
@@ -394,51 +376,46 @@ Is this information that should ALWAYS be included?
 
 ## Common Mistakes
 
-### ❌ Using Prompts for Always-On Context
+### Using Prompts for Always-On Context
 
 ```markdown
 # Bad: Creating a prompt for coding standards
-
 # User has to remember to invoke /coding-standards every time
 ```
 
 **Fix:** Put always-needed context in `copilot-instructions.md`
 
-### ❌ Using Instructions for Optional Tasks
+### Using Instructions for Optional Tasks
 
 ```markdown
 # Bad: Full test generation template in instructions
-
 # Clutters every request with test boilerplate
 ```
 
 **Fix:** Create `/generate-tests.prompt.md` for on-demand use
 
-### ❌ Single Overloaded Agent
+### Single Overloaded Agent
 
 ```markdown
 # Bad: One agent that does documentation, testing, AND security
-
 # Conflicting responsibilities, unclear boundaries
 ```
 
 **Fix:** Create specialized agents (`@docs-agent`, `@test-agent`, `@security-agent`)
 
-### ❌ Missing Boundaries in Agents
+### Missing Boundaries in Agents
 
 ```markdown
 # Bad: Agent with no boundaries
-
 # Might modify files it shouldn't
 ```
 
-**Fix:** Always include ✅/⚠️/🚫 boundaries section
+**Fix:** Always include boundaries section with what agent CAN and CANNOT do
 
-### ❌ Duplicating Context
+### Duplicating Context
 
 ```markdown
 # Bad: Same coding standards in instructions AND agents AND prompts
-
 # Maintenance nightmare, inconsistency risk
 ```
 
@@ -456,11 +433,8 @@ Is this information that should ALWAYS be included?
 # copilot-instructions.md
 
 ## Project info...
-
 ## Coding standards...
-
 ## Testing template... (used occasionally)
-
 ## Security checklist... (used for reviews)
 ```
 
@@ -468,11 +442,11 @@ Is this information that should ALWAYS be included?
 
 ```
 .github/
-├── copilot-instructions.md     # Only always-needed info
+├── copilot-instructions.md        # Only always-needed info
 ├── prompts/
 │   └── security-review.prompt.md  # On-demand checklist
 └── agents/
-    └── test-agent.agent.md     # Testing persona
+    └── test-agent.agent.md        # Testing persona
 ```
 
 ---

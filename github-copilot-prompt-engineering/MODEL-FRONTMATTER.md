@@ -1,36 +1,39 @@
-# GitHub Copilot CLI Model Frontmatter Support
+# GitHub Copilot Model Frontmatter Support
 
-## Verification Results
+**Last Updated:** 2026-01-20
 
-**Date**: 2026-01-12
-**CLI Version**: 0.0.377
+This document explains how to specify AI models in GitHub Copilot prompt and agent files using YAML frontmatter.
+
+---
 
 ## Summary
 
-✅ **`model` frontmatter IS supported** by the GitHub Copilot CLI (`copilot`).
+The `model` frontmatter property **IS supported** by GitHub Copilot in both prompt files (`*.prompt.md`) and agent files (`*.agent.md`).
+
+---
 
 ## Supported Frontmatter Fields
 
-Based on testing and CLI help documentation:
-
-### Agent Files (\*.agent.md)
+### Agent Files (*.agent.md)
 
 ```yaml
 ---
 description: Brief description of what this agent does
-model: gpt-5-mini # Optional - specifies which model runs this agent
+model: gpt-5-mini    # Optional - specifies which model runs this agent
 ---
 ```
 
-### Prompt Files (\*.prompt.md)
+### Prompt Files (*.prompt.md)
 
 ```yaml
 ---
 description: Brief description of this prompt workflow
-agent: agent-name # References agent file (without extension)
-model: gpt-5-mini # Optional - specifies which model runs this prompt
+agent: agent-name    # References agent file (without extension)
+model: gpt-5-mini    # Optional - specifies which model runs this prompt
 ---
 ```
+
+---
 
 ## Available Models
 
@@ -58,7 +61,7 @@ The following models are available in **VS Code GitHub Copilot Chat** but **NOT*
 
 | Model              | VS Code Copilot Chat | `copilot` CLI | Notes                                 |
 | ------------------ | -------------------- | ------------- | ------------------------------------- |
-| `grok-code-fast-1` | ✅ 0× cost           | ❌ Not found  | xAI model - VS Code model picker only |
+| `grok-code-fast-1` | Yes (0× cost)        | Not found     | xAI model - VS Code model picker only |
 
 **Important**: If you specify `model: grok-code-fast-1` in frontmatter:
 
@@ -69,6 +72,8 @@ For Grok Code Fast 1 workflows:
 
 1. Use VS Code GitHub Copilot Chat with the model picker
 2. Or use the `copilot` CLI with a fallback model and switch models manually
+
+---
 
 ## How Model Selection Works
 
@@ -94,9 +99,11 @@ copilot -p "Respond with the model name" --agent _test-model-frontmatter --allow
 # Result showed: "Usage by model: gpt-5-mini"
 ```
 
+---
+
 ## File Naming Convention
 
-For agents/prompts that are run BY a specific model, use a model infix in the filename:
+For agents/prompts that are **run BY** a specific model, use a model infix in the filename:
 
 ```
 <command-name>.<model-id>.<type>.md
@@ -104,15 +111,17 @@ For agents/prompts that are run BY a specific model, use a model infix in the fi
 Examples:
 - checklist.haiku-4-5.agent.md        (run by Claude Haiku 4.5)
 - tasks.gpt-5-mini.prompt.md          (run by GPT-5 Mini)
-- implement-tasks-for-gpt-4-1.gpt-4-1.agent.md  (run by GPT-4.1)
+- implement-tasks.gpt-4-1.agent.md    (run by GPT-4.1)
 ```
 
-For agents/prompts that CREATE tasks FOR specific models (but are run by Sonnet), no model infix:
+For agents/prompts that **CREATE tasks FOR** specific models (but are run by another model), no model infix:
 
 ```
 tasks-for-haiku-4-5.agent.md         (run by Sonnet, creates tasks FOR Haiku)
 tasks-for-gpt-5-mini.prompt.md       (run by Sonnet, creates tasks FOR GPT-5 Mini)
 ```
+
+---
 
 ## Important Notes
 
@@ -120,6 +129,8 @@ tasks-for-gpt-5-mini.prompt.md       (run by Sonnet, creates tasks FOR GPT-5 Min
 2. **Model ID format**: Use hyphenated lowercase (e.g., `gpt-5-mini`, not `GPT-5 Mini`)
 3. **Frontmatter is optional**: If not specified, uses default model
 4. **`--model` flag overrides**: Command-line flag takes precedence over frontmatter
+
+---
 
 ## Related Configuration
 
@@ -131,3 +142,77 @@ copilot help config
 ```
 
 Can be changed during session with `/model` command.
+
+---
+
+## Examples
+
+### Agent with Specific Model
+
+```yaml
+# .github/agents/fast-analysis.agent.md
+---
+name: fast-analysis
+description: Quick code analysis using a fast model
+model: gpt-5-mini
+tools: ["read", "search"]
+---
+
+# Fast Analysis Agent
+
+You perform quick code analysis tasks with minimal latency.
+```
+
+### Prompt with Specific Model
+
+```yaml
+# .github/prompts/detailed-review.prompt.md
+---
+name: detailed-review
+description: Thorough code review using advanced reasoning
+model: claude-opus-4.5
+agent: ask
+tools: ["read", "search"]
+---
+
+# Detailed Code Review
+
+Perform a comprehensive code review with deep analysis.
+```
+
+### Prompt with Agent Reference
+
+```yaml
+# .github/prompts/secure-review.prompt.md
+---
+name: secure-review
+description: Security-focused review using security agent
+agent: "@security-agent"
+model: gpt-5.1-codex
+---
+
+# Security Review
+
+Run security analysis using the @security-agent persona.
+```
+
+---
+
+## Model Selection Guidelines
+
+| Use Case                | Recommended Model     | Reason                          |
+| ----------------------- | --------------------- | ------------------------------- |
+| Quick analysis          | `gpt-5-mini`          | Fast, zero cost                 |
+| Standard implementation | `gpt-5.1-codex`       | Good balance of speed/quality   |
+| Complex reasoning       | `claude-opus-4.5`     | Extended thinking capability    |
+| Large context (>200K)   | `gpt-4.1`             | 1M context window               |
+| Rapid iteration         | `grok-code-fast-1`*   | 4x faster (VS Code only)        |
+
+*VS Code model picker only, not available in CLI
+
+---
+
+## Sources
+
+- [GitHub Copilot Model Documentation](https://docs.github.com/copilot)
+- [Copilot CLI Help](https://docs.github.com/copilot/using-github-copilot/using-github-copilot-in-the-command-line)
