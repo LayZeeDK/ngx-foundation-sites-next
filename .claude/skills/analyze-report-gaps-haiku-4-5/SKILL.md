@@ -84,6 +84,23 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 ### Step 1: Setup & Path Discovery (AUTO-DETECT)
 
+<debug_mode>
+**Debug Output**: If $DEBUG_ANALYSIS is set, write progress to debug file:
+
+```bash
+if [ ! -z "$DEBUG_ANALYSIS" ]; then
+  DEBUG_FILE="${FEATURE_DIR}/gap-analysis-debug.log"
+  echo "$(date): Starting gap analysis" >> "$DEBUG_FILE"
+fi
+```
+
+Use throughout execution to log:
+- Step completion timestamps
+- File read operations (paths, line counts)
+- Detection pass results (finding counts by category)
+- Write operation success/failure
+</debug_mode>
+
 <task>
 **IMMEDIATELY** run the prerequisite check. Do NOT ask the user which feature to analyze.
 The script auto-detects the feature from the current git branch.
@@ -115,6 +132,17 @@ OUTPUT = json.FEATURE_DIR + "/gap-analysis-report.md"  # New file to create
 ```
 
 **Path validation**: Prerequisite script validates existence. Proceed to Step 2 on success.
+
+**Debug checkpoint** (if $DEBUG_ANALYSIS set):
+```bash
+if [ ! -z "$DEBUG_ANALYSIS" ]; then
+  echo "$(date): Step 1 complete - Paths detected" >> "$DEBUG_FILE"
+  echo "  SPEC: $SPEC" >> "$DEBUG_FILE"
+  echo "  PLAN: $PLAN" >> "$DEBUG_FILE"
+  echo "  TASKS: $TASKS" >> "$DEBUG_FILE"
+  echo "  OUTPUT: $OUTPUT" >> "$DEBUG_FILE"
+fi
+```
 
 **Error handling**: If script fails with missing file error, ABORT with command to create it:
 - spec.md → Run `/speckit.specify`
@@ -668,6 +696,16 @@ FOR EACH finding in findings[] (sorted by category, then location):
 **THIS STEP IS MANDATORY**: You MUST use the Write tool to create the gap analysis report file.
 Do NOT output the report to terminal only. The file output IS the primary deliverable.
 </critical>
+
+**Debug checkpoint** (if $DEBUG_ANALYSIS set):
+```bash
+if [ ! -z "$DEBUG_ANALYSIS" ]; then
+  echo "$(date): Steps 1-6 complete - Writing report" >> "$DEBUG_FILE"
+  echo "  Total findings: $FINDINGS_COUNT" >> "$DEBUG_FILE"
+  echo "  Critical: $CRITICAL_COUNT" >> "$DEBUG_FILE"
+  echo "  Output path: $OUTPUT" >> "$DEBUG_FILE"
+fi
+```
 
 <structured_outputs_approach>
 **Current Output**: Markdown (always)

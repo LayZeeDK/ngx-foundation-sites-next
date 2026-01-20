@@ -145,19 +145,56 @@ Embed the complete JSON schema for gap analysis output:
 
 ### Step 3: Invoke Claude CLI with --json-schema (Primary Path)
 
-**Use Bash tool** to call `claude` CLI with structured outputs:
+**Approach**: Try Task tool first (better isolation), fall back to Bash tool
+
+**Option A: Task Tool (Preferred)**
+
+Use Task tool with Bash subagent for better resource isolation:
+
+```typescript
+Task({
+  description: 'Run gap analysis with JSON schema',
+  prompt: `Execute this bash command to generate structured JSON gap analysis:
+
+SCHEMA='${MINIFIED_SCHEMA}'
+FEATURE_DIR='${FEATURE_DIR}'
+
+claude --print \\
+  --model haiku \\
+  --output-format json \\
+  --json-schema "$SCHEMA" \\
+  --permission-mode bypassPermissions \\
+  --tools "default" \\
+  "/analyze-report-gaps-haiku-4-5" \\
+  > "\${FEATURE_DIR}/gap-analysis-cli-output.json" 2>&1
+
+echo "Exit code: $?"
+`,
+  subagent_type: 'Bash',
+  run_in_background: true
+})
+```
+
+Wait for task completion, check exit code.
+
+**Option B: Bash Tool (Fallback)**
+
+If Task tool approach fails or is unavailable, use direct Bash tool:
 
 ```bash
 # Minified schema (from Step 2)
 SCHEMA='{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"feature_name":{"type":"string"},"analysis_date":{"type":"string","format":"date"},"analyst":{"type":"string","const":"Claude Haiku 4.5"},"method":{"type":"string","const":"6-pass cross-artifact consistency analysis"},"findings":{"type":"array","maxItems":50,"items":{"type":"object","properties":{"id":{"type":"string","pattern":"^[DAUCGI]\\d{2}$"},"category":{"type":"string","enum":["Duplication","Ambiguity","Underspecification","ConstitutionAlignment","CoverageGap","Inconsistency"]},"severity":{"type":"string","enum":["CRITICAL","HIGH","MEDIUM","LOW"]},"locations":{"type":"array","items":{"type":"string"}},"summary":{"type":"string"},"recommendation":{"type":"string"}},"required":["id","category","severity","locations","summary","recommendation"]}},"coverage_summary":{"type":"array","items":{"type":"object","properties":{"requirement_key":{"type":"string"},"has_task":{"type":"boolean"},"task_ids":{"type":"array","items":{"type":"string"}},"notes":{"type":"string"}},"required":["requirement_key","has_task","task_ids"]}},"constitution_issues":{"type":"array","items":{"type":"object","properties":{"principle":{"type":"string"},"violation":{"type":"string"},"location":{"type":"string"}},"required":["principle","violation","location"]}},"unmapped_tasks":{"type":"array","items":{"type":"object","properties":{"task_id":{"type":"string"},"description":{"type":"string"}},"required":["task_id","description"]}},"metrics":{"type":"object","properties":{"total_requirements":{"type":"integer","minimum":0},"total_tasks":{"type":"integer","minimum":0},"coverage_percentage":{"type":"number","minimum":0,"maximum":100},"ambiguity_count":{"type":"integer","minimum":0},"duplication_count":{"type":"integer","minimum":0},"critical_issues":{"type":"integer","minimum":0}},"required":["total_requirements","total_tasks","coverage_percentage","critical_issues"]},"next_actions":{"type":"array","items":{"type":"string"}}},"required":["feature_name","analysis_date","analyst","method","findings","metrics"]}'
 
 # Invoke skill via CLI with structured outputs
+# CRITICAL: Add permission flags to allow nested session tool access
 claude --print \
   --model haiku \
   --output-format json \
   --json-schema "$SCHEMA" \
+  --permission-mode bypassPermissions \
+  --tools "default" \
   "/analyze-report-gaps-haiku-4-5" \
-  > "${FEATURE_DIR}/gap-analysis-cli-output.json"
+  > "${FEATURE_DIR}/gap-analysis-cli-output.json" 2>&1
 
 # Check exit code
 if [ $? -eq 0 ]; then
