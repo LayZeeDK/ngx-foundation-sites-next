@@ -90,9 +90,10 @@ $env:DEBUG_ANALYSIS = "1"
 
 Write-Host "🚀 Invoking Claude CLI with structured outputs..." -ForegroundColor Cyan
 Write-Host "   Model: Haiku 4.5"
-Write-Host "   Flags: --print --output-format json --json-schema (file) --permission-mode"
+Write-Host "   Flags: --print --output-format json --json-schema (file)"
+Write-Host "   Permissions: --dangerously-skip-permissions"
+Write-Host "   Allowed dirs: $featureDir, .specify"
 Write-Host "   Schema: Using temp file (avoids shell arg length limits)"
-Write-Host "   Note: --tools flag removed (breaks positional arg parsing)"
 Write-Host ""
 
 $outputFile = "$featureDir/gap-analysis-cli-output.json"
@@ -129,12 +130,15 @@ $outputFile = "$featureDir/gap-analysis-cli-output.json"
 # Use PowerShell splatting to avoid backtick continuation issues
 # NOTE: --tools flag causes errors with --print (breaks positional arg parsing)
 # Use schema FILE instead of inline to avoid shell argument length limits
+# Use --dangerously-skip-permissions (Test 8 proved this works)
+# Add current directory to allowed paths (skill needs to read specs/, .specify/)
 $claudeArgs = @(
     '--print'
     '--model', 'haiku'
     '--output-format', 'json'
     '--json-schema', $schemaFile  # Use file path instead of inline JSON
-    '--permission-mode', 'bypassPermissions'
+    '--dangerously-skip-permissions'  # Skip ALL permission prompts
+    '--add-dir', '.'  # Allow access to entire repo (includes specs/, .specify/)
     $analysisPrompt  # Prompt as final positional argument
 )
 
