@@ -570,7 +570,32 @@ Execute exactly these steps:
 3. Use Edit tool with old_string/new_string
 4. Verify edit succeeded (no error returned)
 5. Delete this task's backup file: find {FEATURE_DIR} -name "spec.md.backup-*" -type f -mmin -5 -delete
+6. Create git commit with conventional format
 </action_steps>
+
+<git_commit>
+After successful edit:
+
+```bash
+git add {file_path} && git commit -m "$(cat <<'EOF'
+docs({component}): resolve {ID} - {brief_summary}
+
+Fix: {Summary}
+
+Category: {Category}
+Severity: {Severity}
+Location: {file_path}:{line_number}
+
+Co-Authored-By: Claude Haiku 4.5 <noreply@anthropic.com>
+EOF
+)"
+```
+
+Placeholders:
+- {component} = extract from feature directory (e.g., "accordion" from "002-accordion-component")
+- {brief_summary} = first 3-5 words of Summary
+- All other placeholders from context above
+</git_commit>
 
 <recommendation>
 {Recommendation}
@@ -589,6 +614,7 @@ Execute exactly these steps:
 - [ ] Change at correct location
 - [ ] No unrelated changes
 - [ ] Backup files deleted (spec.md.backup-*)
+- [ ] Git commit created with conventional format
 </success_criteria>
 
 <anti_goals>
@@ -596,6 +622,7 @@ Execute exactly these steps:
 - Do NOT ask for confirmation
 - Do NOT suggest additional improvements
 - Do NOT create *-REMEDIATION.md files
+- Do NOT write verbose commit messages (keep brief per Haiku optimization)
 </anti_goals>
 ```
 
@@ -671,6 +698,39 @@ After implementation:
 - [ ] Backup files deleted: find {FEATURE_DIR} -name "spec.md.backup-*" -type f -mmin -5 -delete
 </phase>
 
+<phase name="commit">
+Create git commit after verification passes:
+
+```bash
+git add {modified_files} && git commit -m "$(cat <<'EOF'
+docs({component}): resolve {ID} - {Summary}
+
+Category: {Category}
+Severity: {Severity}
+Location: {Location}
+
+Changes:
+- {brief description of what was changed}
+
+Verification:
+- ✅ Fix addresses finding
+- ✅ No unintended side effects
+- ✅ Related files updated
+- ✅ Backup files deleted
+
+Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>
+EOF
+)"
+```
+
+Commit message guidelines:
+- Use conventional commit format (docs/feat/fix based on finding type)
+- Keep summary line under 72 characters
+- Include finding ID for traceability
+- List modified files in verification section if multiple
+- Extract component name from feature directory (e.g., "accordion" from "002-accordion-component")
+</phase>
+
 </implementation_phases>
 
 <constraints>
@@ -678,6 +738,7 @@ After implementation:
 - Do NOT add error handling beyond what's specified
 - Do NOT refactor adjacent code
 - Do NOT create *-REMEDIATION.md files
+- Create git commit after verification passes
 </constraints>
 ```
 
@@ -757,19 +818,52 @@ After implementation:
 - Update related files for consistency
 - Clean up backup files: find {FEATURE_DIR} -name "spec.md.backup-*" -type f -delete
 
+## Phase 4: Create Commit
+
+After verification passes, create a git commit:
+
+```bash
+git add {modified_files} && git commit -m "$(cat <<'EOF'
+docs({component}): resolve {ID} - {Summary}
+
+Category: {Category} | Severity: {Severity}
+Location: {Location}
+
+Resolution approach:
+{brief description of what was changed and why}
+
+Verification:
+- ✅ Finding resolved
+- ✅ No side effects
+- ✅ Related files updated
+- ✅ Backup files deleted
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+EOF
+)"
+```
+
+Commit message approach:
+- Use conventional commit format
+- Include your decision rationale in the body (leverages Opus's expert judgment)
+- Keep the approach description concise (2-3 sentences max)
+- Extract component name from feature directory
+
 </implementation_strategy>
 
 <deliverables>
 - Resolution implemented
 - Decision rationale (if significant choice)
 - Related files updated
+- Git commit created
 </deliverables>
 
 <guidance>
-Trust your expert judgment.
-Implement complete solution, then verify once.
+Trust your expert judgment for both implementation and commit message.
+Implement complete solution, then verify once, then commit.
 If the finding involves documentation consistency, ensure all cross-references are updated.
 Do NOT create remediation documents - implement the fix directly.
+The commit message should reflect your analysis from Phase 1.
 </guidance>
 ```
 
@@ -837,7 +931,28 @@ Execute EXACTLY these steps:
    - new_string: existing code + inserted code (preserve indentation)
 4. Verify edit succeeded (no error returned)
 5. Delete this task's backup file: find {FEATURE_DIR} -name "spec.md.backup-*" -type f -mmin -5 -delete
+6. Create git commit
 </action_steps>
+
+<git_commit>
+After successful insertion:
+
+```bash
+git add {file_path} && git commit -m "$(cat <<'EOF'
+feat({component}): resolve {ID} - code insertion
+
+Insert: {brief description of code inserted}
+
+Category: {Category}
+Location: {file_path}:{line_number}
+
+Co-Authored-By: Claude Haiku 4.5 <noreply@anthropic.com>
+EOF
+)"
+```
+
+Format: Compact, no verification checklist (Haiku optimization)
+</git_commit>
 
 <constraints>
 - Insert ONLY the exact code provided above
@@ -845,6 +960,7 @@ Execute EXACTLY these steps:
 - Do NOT add comments beyond what's in the exact code
 - Do NOT change indentation of surrounding code
 - Maximum 1 Edit operation
+- Create git commit after edit
 </constraints>
 
 <success_criteria>
@@ -853,6 +969,7 @@ Execute EXACTLY these steps:
 - [ ] Surrounding code unchanged
 - [ ] Indentation matches context
 - [ ] Backup files deleted (spec.md.backup-*)
+- [ ] Git commit created
 </success_criteria>
 
 <anti_goals>
@@ -861,6 +978,7 @@ Execute EXACTLY these steps:
 - Do NOT suggest improvements
 - Do NOT create remediation documents
 - Do NOT add error handling beyond the exact code
+- Do NOT write verbose commit messages
 </anti_goals>
 ```
 
@@ -956,6 +1074,39 @@ After reading, think about:
 4. Clean up backup files: find {FEATURE_DIR} -name "spec.md.backup-*" -type f -mmin -5 -delete
    </phase>
 
+<phase name="commit" extended_thinking="none">
+## Phase 4: Create Git Commit
+
+After verification passes:
+
+```bash
+git add {file_path} {test_file_if_added} && git commit -m "$(cat <<'EOF'
+feat({component}): resolve {ID} - {Summary}
+
+Code change: {brief description of what was implemented}
+
+Category: {Category} | Severity: {Severity}
+Location: {file_path}:{line_number}
+
+Verification:
+- ✅ Code change applied
+- ✅ TypeScript compiles
+- ✅ Tests passing
+- ✅ Finding addressed
+
+Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>
+EOF
+)"
+```
+
+Commit message guidelines:
+- Use "feat" for new functionality, "fix" for bug fixes
+- Keep summary under 72 characters
+- Include finding ID for traceability
+- List test files if added
+- Extract component from feature directory
+</phase>
+
 </implementation_phases>
 
 <constraints>
@@ -964,6 +1115,7 @@ After reading, think about:
 - Tests if behavior changes
 - JSDoc for public API additions
 - Necessary imports
+- Git commit after verification
 
 **OUT OF SCOPE** (do NOT implement):
 
@@ -982,6 +1134,7 @@ After reading, think about:
 - [ ] No TypeScript errors
 - [ ] Change addresses finding
 - [ ] Backup files deleted (spec.md.backup-*)
+- [ ] Git commit created
       </success_criteria>
 
 <anti_goals>
@@ -1088,6 +1241,40 @@ After implementation:
 4. If UI-related: consider taking screenshot to compare before/after
 5. Clean up backup files: find {FEATURE_DIR} -name "spec.md.backup-*" -type f -mmin -5 -delete
 
+## Phase 4: Create Commit
+
+After verification passes, create a git commit:
+
+```bash
+git add {modified_files} && git commit -m "$(cat <<'EOF'
+feat({component}): resolve {ID} - {Summary}
+
+Implementation approach:
+{brief description of what was implemented and key decisions made}
+
+Category: {Category} | Severity: {Severity}
+Location: {Location}
+
+Edge cases handled:
+- {list any edge cases proactively addressed}
+
+Verification:
+- ✅ Code change verified
+- ✅ Finding addressed
+- ✅ Patterns preserved
+- ✅ Backup files deleted
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+EOF
+)"
+```
+
+Commit message guidelines:
+- Include your decision rationale from Phase 1 analysis
+- Document edge cases you handled proactively (Opus strength)
+- Use conventional commit format
+- Extract component from feature directory
+
 </implementation_strategy>
 
 <constraints>
@@ -1095,6 +1282,7 @@ Implement only what's needed for this finding.
 Preserve existing code architecture and patterns.
 Follow the project's TypeScript/Angular conventions.
 Do not create remediation documents - implement directly.
+Create git commit after verification passes.
 </constraints>
 
 <deliverables>
@@ -1102,14 +1290,16 @@ Do not create remediation documents - implement directly.
 - Verification that change addresses finding
 - Edge cases handled (leverage Opus's proactive handling)
 - Backup files deleted (spec.md.backup-*)
+- Git commit created with expert rationale
 </deliverables>
 
 <guidance>
-Trust your expert judgment for implementation details.
+Trust your expert judgment for implementation details AND commit messages.
 Opus 4.5 has state-of-the-art coding capability (80.9% SWE-bench).
-Implement the complete solution on first try, then verify once.
+Implement the complete solution on first try, then verify once, then commit.
 Make the change directly - do not create documentation files.
 If the change requires multiple edits, make them all in sequence.
+The commit message should capture your reasoning from Phase 1.
 </guidance>
 ```
 
