@@ -167,26 +167,33 @@ Write-Host "   (Prompt text truncated in display above)" -ForegroundColor Gray
 Write-Host ""
 
 try {
-    # Execute with progress monitoring
+    # Execute with progress monitoring using runspace (better than jobs for argument passing)
     Write-Host "⏱️  Starting gap analysis..." -ForegroundColor Cyan
     Write-Host "🔍 Debug: Executing command (args count: $($claudeArgs.Count))" -ForegroundColor Yellow
-    Write-Host "⚠️  Note: Press Ctrl+C to cancel if it takes too long" -ForegroundColor Yellow
     Write-Host ""
 
-    # Start timer for monitoring
+    # Start timer
     $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 
-    # Create a job for the actual execution so we can monitor progress
-    $job = Start-Job -ScriptBlock {
-        param($args)
-        # Need to use cmd /c to invoke npm scripts from job context
-        $argString = $args -join ' '
-        cmd /c "claude $argString" 2>&1
-    } -ArgumentList (,$claudeArgs)
+    # Create runspace for async execution with progress monitoring
+    $runspace = [runspacefactory]::CreateRunspace()
+    $runspace.Open()
 
-    # Monitor progress with status updates
+    $powershell = [powershell]::Create()
+    $powershell.Runspace = $runspace
+
+    # Add script to execute
+    $null = $powershell.AddScript({
+        param($claudeArgs)
+        & claude @claudeArgs 2>&1
+    }).AddArgument($claudeArgs)
+
+    # Start async
+    $asyncResult = $powershell.BeginInvoke()
+
+    # Monitor progress
     $lastUpdate = 0
-    while ($job.State -eq 'Running') {
+    while (-not $asyncResult.IsCompleted) {
         Start-Sleep -Milliseconds 500
         $elapsed = [math]::Round($stopwatch.Elapsed.TotalSeconds, 0)
 
@@ -197,7 +204,14 @@ try {
 
             # Warn at 2 minutes
             if ($elapsed -eq 120) {
-                Write-Host "   ⚠️  2 minutes elapsed - consider cancelling (Ctrl+C)" -ForegroundColor Yellow
+                Write-Host "   ⚠️  2 minutes elapsed - still running..." -ForegroundColor Yellow
+            }
+
+            # Force kill at 3 minutes
+            if ($elapsed -ge 180) {
+                Write-Host "   🛑 3 minutes exceeded - stopping runspace" -ForegroundColor Red
+                $powershell.Stop()
+                break
             }
         }
     }
@@ -206,9 +220,12 @@ try {
     $elapsedSeconds = [math]::Round($stopwatch.Elapsed.TotalSeconds, 1)
 
     # Get results
-    $output = Receive-Job -Job $job
-    $exitCode = if ($job.State -eq 'Completed') { 0 } else { 1 }
-    Remove-Job -Job $job -Force
+    $output = $powershell.EndInvoke($asyncResult)
+    $exitCode = if ($powershell.HadErrors) { 1 } else { 0 }
+
+    # Cleanup
+    $powershell.Dispose()
+    $runspace.Close()
 
     # Write output to file
     $output | Out-File -FilePath $outputFile -Encoding UTF8
