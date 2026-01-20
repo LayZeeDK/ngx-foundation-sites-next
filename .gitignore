@@ -48,6 +48,10 @@ NUL
 .cursor/rules/nx-rules.mdc
 .github/instructions/nx.instructions.md
 
+# Gap analysis test outputs
+specs/**/gap-analysis-cli-output.json
+specs/**/gap-analysis-debug.log
+
 .angular
 .claude/settings.local.json
 .playwright-mcp
