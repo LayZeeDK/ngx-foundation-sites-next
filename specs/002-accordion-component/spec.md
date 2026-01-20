@@ -288,6 +288,8 @@ A developer uses `@for` to render accordion items from a dynamic array. Items ca
 
 **⚠️ CURRENT STATUS**: **BLOCKED** - API limitation discovered during implementation (2026-01-17)
 
+**Status: POST-MVP** — Requires API redesign (make panelId optional with auto-generation)
+
 **API Limitation**: The current accordion API uses `input.required<string>()` for `panelId`, which prevents dynamic template creation via `@for` loops. Angular's template initialization requires all required inputs to be available at template creation time, but `@for` creates templates dynamically from an array, causing NG0950 error ("Input is required but no value is available yet").
 
 **Recovery Options**:
@@ -442,7 +444,7 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 
 #### Component Structure
 
-- **FR-001**: System MUST provide one standalone component (`<nfs-accordion>` container) and three structural directives (`ng-template[nfsAccordionItem]`, `ng-template[nfsAccordionHeader]`, `ng-template[nfsAccordionContent]`) using template-directive composition with @angular/aria primitives. See Terminology section for definitions and quickstart.md for usage examples. This architecture follows the constitution principle of preferring directives over components for maximum accessibility compliance
+- **FR-001**: System MUST provide one standalone component (`<nfs-accordion>` container) and three structural directives (`ng-template[nfsAccordionItem]`, `ng-template[nfsAccordionHeader]`, `ng-template[nfsAccordionContent]`) using template-directive composition with @angular/aria primitives. See Terminology section for definitions and quickstart.md for usage examples. This architecture follows the constitution principle of preferring directives over components for maximum accessibility compliance. For the complete architectural rationale (ARIA integration, performance benefits, state management simplification), see Architecture Decision Record in plan.md lines 27-47
 - **FR-002**: Component selectors MUST use the prefix "nfs-" (ngx-foundation-sites)
 - **FR-003**: `<nfs-accordion>` MUST act as the root container component
 - **FR-004**: `ng-template[nfsAccordionItem]` (structural directive) MUST represent individual collapsible items
