@@ -8,6 +8,8 @@
 
 Structured outputs with JSON Schema guarantee that Claude's responses match a predefined structure, eliminating parsing errors and enabling reliable machine-readable output. This beta feature is particularly valuable when command outputs are consumed by other commands.
 
+**Important**: In Claude Code CLI, structured outputs require **CLI-level invocation** with the `--json-schema` flag. Skills and commands cannot detect or enable this feature at runtime—they are either invoked with the flag or default to text/markdown output.
+
 ## When to Use
 
 Use structured outputs when:
@@ -47,13 +49,41 @@ ELSE:
 
 ## Claude Commands/Skills Using Structured Outputs
 
-### 1. analyze-report-gaps-haiku-4-5
+### 0. analyze-report-gaps (Orchestrator) ⭐
+
+**File**: `.claude/skills/analyze-report-gaps/SKILL.md`
+
+**Status**: ✅ Implemented - **Recommended way to get JSON output**
+
+**Use Case**: Orchestrator that wraps `analyze-report-gaps-haiku-4-5` with CLI `--json-schema` invocation
+
+**How it works**:
+1. Spawns `claude --json-schema` subprocess via Bash
+2. Invokes the base analysis skill with structured outputs enabled
+3. Extracts `structured_output` field from CLI response
+4. Writes to `gap-analysis-report.json`
+5. Falls back to markdown if CLI invocation fails
+
+**Why this exists**: Skills cannot enable `--json-schema` at runtime (CLI-level feature). This orchestrator solves that limitation by wrapping the skill in a CLI call.
+
+**Invocation**:
+```
+/analyze-report-gaps
+```
+
+**Output**:
+- **Primary**: `gap-analysis-report.json` (structured, schema-validated)
+- **Fallback**: `gap-analysis-report.md` (markdown, always works)
+
+---
+
+### 1. analyze-report-gaps-haiku-4-5 (Base Skill)
 
 **File**: `.claude/skills/analyze-report-gaps-haiku-4-5/SKILL.md`
 
-**Status**: ✅ Implemented with fallback
+**Status**: ✅ JSON schema documented, markdown output by default
 
-**Use Case**: Gap analysis report output
+**Use Case**: Gap analysis report output (markdown)
 
 **Benefits**:
 - Reliable findings table extraction for `/implement-reported-gaps`
@@ -220,23 +250,116 @@ Before deploying structured outputs to a command:
 | **Sonnet 4.5**  | ⭐⭐ Medium                | Classification, routing decisions       |
 | **Opus 4.5**    | ⭐ Low                    | Expert coding (excels at text parsing)  |
 
+## Orchestrator Pattern (Recommended)
+
+### Problem: Skills Can't Enable --json-schema at Runtime
+
+Skills and commands in Claude Code sessions cannot toggle `--json-schema` dynamically. This is a CLI-level flag that must be set when invoking `claude` from the command line.
+
+**Example (doesn't work from within skill)**:
+```typescript
+// ❌ Skills cannot do this internally
+IF structured_outputs_available:
+  OUTPUT JSON
+ELSE:
+  OUTPUT markdown
+```
+
+### Solution: Orchestrator Wrapper
+
+Create an orchestrator skill that spawns a `claude CLI` subprocess with `--json-schema`:
+
+```bash
+# Inside orchestrator skill (using Bash tool)
+claude --print \
+  --model haiku \
+  --output-format json \
+  --json-schema "$SCHEMA" \
+  "/base-skill-name" \
+  > output.json
+```
+
+**Architecture**:
+```
+User invokes /orchestrator-skill
+  ↓
+Orchestrator (Sonnet) spawns Bash task
+  ↓
+Bash calls: claude --json-schema "/base-skill"
+  ↓
+CLI invokes base skill with structured outputs enabled
+  ↓
+Returns: {"structured_output": {...}}
+  ↓
+Orchestrator extracts structured_output → writes to .json file
+  ↓
+Fallback: If CLI fails, invoke base skill directly (markdown)
+```
+
+### Example: analyze-report-gaps
+
+See `.claude/skills/analyze-report-gaps/` for full implementation.
+
+**Key components**:
+1. **Bash subprocess**: Calls `claude --json-schema`
+2. **Schema embedding**: Minified JSON schema in skill file
+3. **Output extraction**: Parse `structured_output` field from CLI response
+4. **Fallback logic**: Invoke base skill via Skill tool if CLI fails
+5. **Validation**: Check JSON structure matches schema
+
+**Benefits**:
+- ✅ Base skill unchanged (backward compatible)
+- ✅ Graceful fallback (markdown always works)
+- ✅ Transparent to consumers (both formats supported)
+- ✅ Testable (can verify both paths)
+
+---
+
 ## Migration Guide
 
-### Adding Structured Outputs to Existing Commands
+### Option A: Orchestrator Pattern (Recommended)
 
-**Step 1**: Define JSON schema for output structure
+**Use when**: You want JSON output without modifying the base skill
 
-**Step 2**: Update command to detect feature availability
+**Steps**:
+1. Create orchestrator skill directory: `.claude/skills/{name}-with-structured-outputs/`
+2. Embed JSON schema (minified) in skill file
+3. Add Bash invocation: `claude --json-schema ... "/base-skill"`
+4. Parse CLI response, extract `structured_output` field
+5. Write to `output.json`
+6. Add fallback: Invoke base skill via Skill tool if CLI fails
 
-**Step 3**: Implement JSON output path
+**See**: `.claude/skills/analyze-report-gaps/` for reference
 
-**Step 4**: Maintain markdown fallback (mandatory)
+---
 
-**Step 5**: Update consuming commands to parse both formats
+### Option B: Direct CLI Invocation (External)
 
-**Step 6**: Test both paths thoroughly
+**Use when**: Invoking from scripts, not Claude Code sessions
 
-**Step 7**: Document beta status in skill file
+**Steps**:
+1. Define JSON schema for output
+2. Call `claude` CLI with `--json-schema` flag
+3. Parse response, extract `structured_output` field
+
+**Example**:
+```bash
+claude --print --model haiku \
+  --output-format json \
+  --json-schema '{"type":"object",...}' \
+  "/skill-name"
+```
+
+---
+
+### Option C: Modify Base Skill (Not Recommended)
+
+**Use when**: You control all invocations and can guarantee CLI usage
+
+**Steps**:
+1. Add JSON schema to skill documentation
+2. Update skill to output JSON structure (without validation)
+3. Document that `--json-schema` is required for validation
 
 ### Example: Converting a Command
 
