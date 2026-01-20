@@ -54,16 +54,26 @@ $schemaContent | Out-File -FilePath $schemaFile -Encoding UTF8
 Write-Host "📋 Schema: $schemaFile"
 Write-Host ""
 
-# Natural language prompt for skill auto-invocation
-$prompt = @"
-Perform a cross-artifact consistency analysis for the accordion component feature.
+# Read the skill file and use it as the prompt!
+$skillFile = ".claude/skills/analyze-report-gaps-haiku-4-5/SKILL.md"
 
-Analyze gaps and inconsistencies across spec.md, plan.md, and tasks.md using 6-pass detection.
+if (-not (Test-Path $skillFile)) {
+    Write-Host "❌ Skill file not found: $skillFile" -ForegroundColor Red
+    exit 1
+}
 
-Output as JSON with: feature_name, analysis_date, findings array, metrics.
-"@
+Write-Host "📖 Loading skill file: $skillFile" -ForegroundColor Cyan
+$skillContent = Get-Content $skillFile -Raw
 
-Write-Host "📝 Prompt: $($prompt.Substring(0, 100))..." -ForegroundColor Gray
+Write-Host "   Size: $($skillContent.Length) characters" -ForegroundColor Gray
+Write-Host "   Lines: $((Get-Content $skillFile).Count)" -ForegroundColor Gray
+Write-Host ""
+
+# Use the full skill content as the prompt
+$prompt = $skillContent
+
+Write-Host "📝 Prompt: Using full SKILL.md contents" -ForegroundColor Cyan
+Write-Host "   First 100 chars: $($prompt.Substring(0, 100))..." -ForegroundColor Gray
 Write-Host ""
 
 # Output file
