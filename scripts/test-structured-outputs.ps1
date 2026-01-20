@@ -163,44 +163,30 @@ Write-Host "   (Prompt text truncated in display above)" -ForegroundColor Gray
 Write-Host ""
 
 try {
-    # Execute with timeout (gap analysis can take 30-60 seconds)
-    Write-Host "⏱️  Starting with 2-minute timeout..." -ForegroundColor Cyan
+    # Execute with manual timeout monitoring
+    Write-Host "⏱️  Starting (manual timeout monitoring: 2 minutes)..." -ForegroundColor Cyan
     Write-Host "🔍 Debug: Executing command (args count: $($claudeArgs.Count))" -ForegroundColor Yellow
+    Write-Host "⚠️  Note: Press Ctrl+C if it runs longer than 2 minutes" -ForegroundColor Yellow
+    Write-Host ""
 
-    # Use Start-Process with timeout for proper process control
-    $processArgs = $claudeArgs -join ' '
+    # Start timer for monitoring
+    $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 
-    $process = Start-Process -FilePath "claude" `
-        -ArgumentList $claudeArgs `
-        -NoNewWindow `
-        -PassThru `
-        -RedirectStandardOutput $outputFile `
-        -RedirectStandardError "$outputFile.err" `
-        -Wait:$false
+    # Execute directly - Start-Process doesn't work with npm scripts
+    # The & operator works with any command type (exe, bat, ps1, npm scripts)
+    $output = & claude @claudeArgs 2>&1
+    $exitCode = $LASTEXITCODE
 
-    # Wait for process with timeout (120 seconds)
-    $timeoutMs = 120000
-    $completed = $process.WaitForExit($timeoutMs)
+    $stopwatch.Stop()
+    $elapsedSeconds = [math]::Round($stopwatch.Elapsed.TotalSeconds, 1)
 
-    if ($completed) {
-        $exitCode = $process.ExitCode
-        Write-Host "✅ Completed within timeout (exit code: $exitCode)" -ForegroundColor Green
+    # Write output to file
+    $output | Out-File -FilePath $outputFile -Encoding UTF8
 
-        # Merge stderr into output if it exists
-        if (Test-Path "$outputFile.err") {
-            $errContent = Get-Content "$outputFile.err" -Raw
-            if ($errContent.Trim()) {
-                Add-Content -Path $outputFile -Value "`n--- STDERR ---`n$errContent"
-            }
-            Remove-Item "$outputFile.err" -Force
-        }
+    if ($exitCode -eq 0) {
+        Write-Host "✅ Completed successfully in $elapsedSeconds seconds" -ForegroundColor Green
     } else {
-        Write-Host "⏱️  Timeout exceeded (2 minutes) - Killing process" -ForegroundColor Red
-        $process.Kill()
-        $exitCode = 124  # Timeout exit code
-
-        Write-Host "❌ Process killed due to timeout" -ForegroundColor Red
-        exit $exitCode
+        Write-Host "❌ Command failed with exit code: $exitCode (after $elapsedSeconds seconds)" -ForegroundColor Red
     }
 }
 catch {
