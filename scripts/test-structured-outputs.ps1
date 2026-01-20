@@ -165,25 +165,42 @@ Write-Host ""
 try {
     # Execute with timeout (gap analysis can take 30-60 seconds)
     Write-Host "⏱️  Starting with 2-minute timeout..." -ForegroundColor Cyan
-
-    # Don't use jobs - they complicate argument passing
-    # Use simple execution with manual timeout via process management
-
-    # Build command string for debugging
-    $commandString = "claude " + ($claudeArgs -join " ")
     Write-Host "🔍 Debug: Executing command (args count: $($claudeArgs.Count))" -ForegroundColor Yellow
 
-    # Execute directly without job wrapper (jobs break splatting)
-    $output = & claude @claudeArgs 2>&1
-    $exitCode = $LASTEXITCODE
+    # Use Start-Process with timeout for proper process control
+    $processArgs = $claudeArgs -join ' '
 
-    # Write output to file
-    $output | Out-File -FilePath $outputFile -Encoding UTF8
+    $process = Start-Process -FilePath "claude" `
+        -ArgumentList $claudeArgs `
+        -NoNewWindow `
+        -PassThru `
+        -RedirectStandardOutput $outputFile `
+        -RedirectStandardError "$outputFile.err" `
+        -Wait:$false
 
-    if ($exitCode -eq 0) {
-        Write-Host "✅ Completed successfully" -ForegroundColor Green
+    # Wait for process with timeout (120 seconds)
+    $timeoutMs = 120000
+    $completed = $process.WaitForExit($timeoutMs)
+
+    if ($completed) {
+        $exitCode = $process.ExitCode
+        Write-Host "✅ Completed within timeout (exit code: $exitCode)" -ForegroundColor Green
+
+        # Merge stderr into output if it exists
+        if (Test-Path "$outputFile.err") {
+            $errContent = Get-Content "$outputFile.err" -Raw
+            if ($errContent.Trim()) {
+                Add-Content -Path $outputFile -Value "`n--- STDERR ---`n$errContent"
+            }
+            Remove-Item "$outputFile.err" -Force
+        }
     } else {
-        Write-Host "❌ Command failed with exit code: $exitCode" -ForegroundColor Red
+        Write-Host "⏱️  Timeout exceeded (2 minutes) - Killing process" -ForegroundColor Red
+        $process.Kill()
+        $exitCode = 124  # Timeout exit code
+
+        Write-Host "❌ Process killed due to timeout" -ForegroundColor Red
+        exit $exitCode
     }
 }
 catch {
