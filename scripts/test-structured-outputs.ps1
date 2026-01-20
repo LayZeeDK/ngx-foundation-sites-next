@@ -69,18 +69,24 @@ Write-Host ""
 $outputFile = "$featureDir/gap-analysis-cli-output.json"
 
 # Invoke with permission flags
-# Note: PowerShell doesn't need escaped quotes for $schema like Bash does
-# IMPORTANT: Wrap the prompt in quotes and pass as a single argument
-try {
-    & claude --print `
-        --model haiku `
-        --output-format json `
-        --json-schema $schema `
-        --permission-mode bypassPermissions `
-        --tools "default" `
-        "$analysisPrompt" `
-        *> $outputFile
+# Use PowerShell splatting to avoid backtick continuation issues
+$claudeArgs = @(
+    '--print'
+    '--model', 'haiku'
+    '--output-format', 'json'
+    '--json-schema', $schema
+    '--permission-mode', 'bypassPermissions'
+    '--tools', 'default'
+    $analysisPrompt  # Prompt as final positional argument
+)
 
+Write-Host "🔍 Debug: Prompt length: $($analysisPrompt.Length) characters" -ForegroundColor Yellow
+Write-Host "🔍 Debug: First 100 chars: $($analysisPrompt.Substring(0, [Math]::Min(100, $analysisPrompt.Length)))..." -ForegroundColor Yellow
+Write-Host ""
+
+try {
+    # Use splatting to pass arguments
+    & claude @claudeArgs *> $outputFile
     $exitCode = $LASTEXITCODE
 }
 catch {
