@@ -33,8 +33,8 @@ $env:DEBUG_ANALYSIS = "1"
 
 Write-Host "🚀 Invoking Claude CLI with structured outputs..." -ForegroundColor Cyan
 Write-Host "   Model: Haiku 4.5"
-Write-Host "   Flags: --print --output-format json --json-schema"
-Write-Host "   Note: Permission/tools flags removed (cause errors with --print)"
+Write-Host "   Flags: --print --output-format json --json-schema --permission-mode"
+Write-Host "   Note: --tools flag removed (breaks positional arg parsing)"
 Write-Host ""
 
 $outputFile = "$featureDir/gap-analysis-cli-output.json"
