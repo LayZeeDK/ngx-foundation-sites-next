@@ -621,18 +621,182 @@ FOR EACH finding in findings[] (sorted by category, then location):
 ### Step 7: Write Analysis Report to File (MANDATORY)
 
 <critical>
-**THIS STEP IS MANDATORY**: You MUST use the Write tool to create the gap-analysis-report.md file.
+**THIS STEP IS MANDATORY**: You MUST use the Write tool to create the gap analysis report file.
 Do NOT output the report to terminal only. The file output IS the primary deliverable.
 </critical>
 
+<structured_outputs_approach>
+**Approach**: Try Structured Outputs (Beta), Fallback to Markdown
+
+This step uses a two-tier strategy for maximum reliability:
+
+1. **Tier 1 (Preferred)**: Structured outputs with JSON schema
+2. **Tier 2 (Fallback)**: Markdown template (always works)
+
+**Why Structured Outputs Fit Haiku**:
+- ✅ Mechanical transformation (gap data → JSON structure)
+- ✅ No creative decisions (schema is explicit)
+- ✅ Enhances reliability (eliminates markdown parsing errors in `/implement-reported-gaps`)
+- ✅ Maintains step-bounded reasoning
+
+**JSON Schema for Gap Report**:
+
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "feature_name": {
+      "type": "string",
+      "description": "Name of the feature being analyzed"
+    },
+    "analysis_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of analysis (YYYY-MM-DD)"
+    },
+    "analyst": {
+      "type": "string",
+      "const": "Claude Haiku 4.5"
+    },
+    "method": {
+      "type": "string",
+      "const": "6-pass cross-artifact consistency analysis"
+    },
+    "findings": {
+      "type": "array",
+      "maxItems": 50,
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[DAUCGI]\\d{2}$",
+            "description": "Finding ID (category prefix + sequence)"
+          },
+          "category": {
+            "type": "string",
+            "enum": ["Duplication", "Ambiguity", "Underspecification", "ConstitutionAlignment", "CoverageGap", "Inconsistency"]
+          },
+          "severity": {
+            "type": "string",
+            "enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW"]
+          },
+          "locations": {
+            "type": "array",
+            "items": {"type": "string"},
+            "description": "File:line locations"
+          },
+          "summary": {
+            "type": "string",
+            "description": "Brief summary of the finding"
+          },
+          "recommendation": {
+            "type": "string",
+            "description": "Actionable fix recommendation"
+          }
+        },
+        "required": ["id", "category", "severity", "locations", "summary", "recommendation"]
+      }
+    },
+    "coverage_summary": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "requirement_key": {"type": "string"},
+          "has_task": {"type": "boolean"},
+          "task_ids": {
+            "type": "array",
+            "items": {"type": "string"}
+          },
+          "notes": {"type": "string"}
+        },
+        "required": ["requirement_key", "has_task", "task_ids"]
+      }
+    },
+    "constitution_issues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "principle": {"type": "string"},
+          "violation": {"type": "string"},
+          "location": {"type": "string"}
+        },
+        "required": ["principle", "violation", "location"]
+      }
+    },
+    "unmapped_tasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "task_id": {"type": "string"},
+          "description": {"type": "string"}
+        },
+        "required": ["task_id", "description"]
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "properties": {
+        "total_requirements": {"type": "integer", "minimum": 0},
+        "total_tasks": {"type": "integer", "minimum": 0},
+        "coverage_percentage": {"type": "number", "minimum": 0, "maximum": 100},
+        "ambiguity_count": {"type": "integer", "minimum": 0},
+        "duplication_count": {"type": "integer", "minimum": 0},
+        "critical_issues": {"type": "integer", "minimum": 0}
+      },
+      "required": ["total_requirements", "total_tasks", "coverage_percentage", "critical_issues"]
+    },
+    "next_actions": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Recommended next steps based on severity"
+    }
+  },
+  "required": ["feature_name", "analysis_date", "analyst", "method", "findings", "metrics"]
+}
+```
+
+**Output Strategy**:
+
+```
+IF structured outputs available (beta feature):
+  GENERATE gap_report as JSON object matching schema
+  WRITE to [FEATURE_DIR]/gap-analysis-report.json
+  FILE_PATH = gap-analysis-report.json
+
+ELSE (fallback to markdown):
+  GENERATE gap_report as markdown using template below
+  WRITE to [FEATURE_DIR]/gap-analysis-report.md
+  FILE_PATH = gap-analysis-report.md
+```
+
+**Benefits of JSON Format**:
+- Reliable parsing by `/implement-reported-gaps` (no markdown table parsing)
+- Type validation (severity enums, ID patterns)
+- Structured access to findings, metrics, recommendations
+- Zero parsing ambiguity
+
+**Benefits of Markdown Fallback**:
+- Always works (no beta feature dependency)
+- Human-readable for review
+- Compatible with existing workflows
+</structured_outputs_approach>
+
 <task>
-Use the Write tool to create `gap-analysis-report.md` in FEATURE_DIR with ALL sections below.
+Use the Write tool to create gap analysis report file in FEATURE_DIR.
+Use JSON format if structured outputs available, otherwise use markdown template.
 </task>
 
 <evaluation_criteria>
-**Success**: File `gap-analysis-report.md` created in FEATURE_DIR using Write tool
+**Success**: File created (`gap-analysis-report.json` OR `gap-analysis-report.md`) in FEATURE_DIR using Write tool
 **Failure**: Outputting report to terminal without creating file
 </evaluation_criteria>
+
+**Markdown Template (Fallback)**:
 
 **File path**: `[FEATURE_DIR]/gap-analysis-report.md`
 
