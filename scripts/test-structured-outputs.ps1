@@ -82,12 +82,17 @@ $claudeArgs = @(
 
 Write-Host "🔍 Debug: Prompt length: $($analysisPrompt.Length) characters" -ForegroundColor Yellow
 Write-Host "🔍 Debug: First 100 chars: $($analysisPrompt.Substring(0, [Math]::Min(100, $analysisPrompt.Length)))..." -ForegroundColor Yellow
+Write-Host "🔍 Debug: Args count: $($claudeArgs.Count)" -ForegroundColor Yellow
 Write-Host ""
 
 try {
-    # Use splatting to pass arguments
-    & claude @claudeArgs *> $outputFile
+    # Execute without redirect first, capture output differently
+    # PowerShell redirect operators can interfere with argument parsing
+    $output = & claude @claudeArgs 2>&1
     $exitCode = $LASTEXITCODE
+
+    # Write output to file
+    $output | Out-File -FilePath $outputFile -Encoding UTF8
 }
 catch {
     Write-Host "❌ Exception during CLI invocation: $_" -ForegroundColor Red
