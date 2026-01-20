@@ -123,43 +123,141 @@ CONSTITUTION = ".specify/memory/constitution.md"
 
 ---
 
-### Step 2: Load Artifacts (Progressive Disclosure)
+### Step 2: Load Artifacts (with Semantic Chunking)
 
 <context_loading>
-Load only the minimal necessary context from each artifact:
+Load artifacts using semantic section chunking for files > 1,250 lines (~25K tokens).
 
-**From spec.md** (extract these sections):
+**Strategy**: Use full read for small files, semantic section reading for large files.
 
-- Overview/Context
-- Functional Requirements (FR-XXX identifiers)
-- Non-Functional Requirements (NFR-XXX identifiers)
-- User Stories (US-XXX identifiers)
-- Edge Cases (if present)
-- Acceptance Criteria
+Based on research-backed best practices from [CLAUDE-LARGE-FILE-CHUNKING-STRATEGIES.md](../../../prompt-engineering/CLAUDE-LARGE-FILE-CHUNKING-STRATEGIES.md).
 
-**From plan.md** (extract these sections):
+**From spec.md** (semantic chunking if > 1,250 lines):
 
-- Architecture/stack choices
-- Data Model references
-- Phase definitions
-- Technical constraints
-- Implementation approach
+```
+# Step 1: Discover section boundaries (if file is large)
+Grep(
+  pattern: "^#{1,3}\\s+",
+  path: SPEC,
+  output_mode: "content",
+  -n: true  # Include line numbers
+)
 
-**From tasks.md** (extract these elements):
+# Step 2: Parse section ranges and identify relevant sections
+sections_needed = [
+  "Overview", "Context",
+  "Functional Requirements", "Requirements (mandatory)",
+  "Non-Functional Requirements",
+  "User Stories",
+  "Edge Cases",
+  "Acceptance Criteria"
+]
 
-- Task IDs (T###)
-- Descriptions
-- Phase grouping
-- Parallel markers [P]
-- Referenced file paths
-- Story labels [US#]
+# Step 3: Read only relevant sections
+FOR EACH section IN sections_needed:
+  IF section exists in sections_map:
+    Read(SPEC, offset=section.start, limit=section.lines)
+    EXTRACT FR-XXX, NFR-XXX, US-XXX identifiers
+    ACCUMULATE into semantic models
 
-**From constitution** (extract these elements):
+# Step 4: Skip irrelevant sections
+# Example: Skip "Background", "Historical Context" (not needed for detection passes)
+```
 
-- Principle names
-- MUST/SHOULD/MAY normative statements
-- Quality gates
+**From plan.md** (semantic chunking if > 1,250 lines):
+
+```
+sections_needed = [
+  "Architecture", "Technology Stack",
+  "Data Model",
+  "Phase", "Implementation Phases",
+  "Technical Constraints",
+  "Implementation Approach"
+]
+
+FOR EACH section IN sections_needed:
+  Read relevant section content
+  EXTRACT architecture decisions, phase definitions
+```
+
+**From tasks.md** (full read - typically structured/small):
+
+```
+Read(TASKS)  # Tasks files are typically well-structured and <500 lines
+EXTRACT: Task IDs (T###), descriptions, phase grouping, [P] markers, file paths, [US#] labels
+```
+
+**From constitution** (full read - reference file):
+
+```
+Read(CONSTITUTION)  # Constitution is authoritative reference, typically <300 lines
+EXTRACT: Principle names, MUST/SHOULD/MAY statements, quality gates
+```
+
+**Why semantic chunking works for analysis**:
+
+The 6 detection passes are **section-aligned**:
+- ✅ **Pass A (Duplication)**: Scans requirements only → Read "Requirements" section
+- ✅ **Pass B (Ambiguity)**: Scans requirements + edge cases → Read specific sections
+- ✅ **Pass C (Underspecification)**: Scans user stories + acceptance criteria → Read specific sections
+- ✅ **Pass D (Constitution)**: Cross-references constitution with requirements → Read relevant sections
+- ✅ **Pass E (Coverage)**: Maps tasks to requirements → Already have task IDs, read requirement sections
+- ✅ **Pass F (Inconsistency)**: Compares terminology across sections → Can compare section-by-section
+
+**Key insight**: Detection passes are **local** to sections, not cross-document. Each pass operates on specific content types (requirements, user stories, tasks).
+
+**Benefits**:
+- ✅ Natural semantic boundaries (requirement blocks, user story blocks)
+- ✅ Skip irrelevant sections (Background, Historical Context)
+- ✅ Same detection quality as full read (passes are section-independent)
+- ✅ Better token distribution for extended thinking budget
+
+**Cost Impact**: Negligible (same total tokens when all sections needed, cheaper when skipping non-essential sections)
   </context_loading>
+
+### Step 2b: Content Loading Validation (MANDATORY)
+
+<critical>
+**BEFORE proceeding to Step 3 (Build Semantic Models), verify you loaded CONTENT not just STRUCTURE.**
+
+This validation prevents the common failure mode of reading headers only via Grep.
+</critical>
+
+<validation_checklist>
+**For spec.md**:
+- [ ] Can you quote a specific requirement from "Functional Requirements" section (FR-XXX with description)?
+- [ ] Can you list user stories with their acceptance criteria (US-XXX)?
+- [ ] Did you capture NFR identifiers AND their measurable criteria?
+- [ ] Can you identify vague terms ("fast", "scalable") in actual requirement text?
+
+**For plan.md**:
+- [ ] Can you name specific technology choices (framework, database, etc.)?
+- [ ] Can you list phase names and their objectives?
+- [ ] Did you capture data model entities with their attributes?
+
+**For tasks.md**:
+- [ ] Can you list task IDs (T###) with their full descriptions (not just "Task 1")?
+- [ ] Can you identify which tasks have [P] parallel markers?
+- [ ] Can you see [US#] story mappings?
+
+**If you answered "NO" to any question above**:
+1. STOP immediately
+2. Re-read the affected sections using Read(file, offset, limit)
+3. Validate again before proceeding to Step 3
+
+**Common Failure Pattern to Avoid**:
+```
+❌ WRONG: Using Grep(pattern: "^#{1,3}\\s+") to read headers only
+         → You get: "## Functional Requirements" but NOT the FR-XXX items
+✅ CORRECT: Using Read(file, offset, limit) after Grep identifies boundaries
+         → You get: "FR-001: User can upload files up to 10MB" (full content)
+```
+</validation_checklist>
+
+<evaluation_criteria>
+**Success**: You can quote specific requirements, user stories, tasks with their full content
+**Failure**: You only have section titles but not the requirement/story/task details
+</evaluation_criteria>
 
 ---
 
@@ -689,6 +787,30 @@ This command is optimized for Haiku 4.5's strengths:
 - Sonnet: Better at detecting implicit architectural conflicts
 - For routine analysis: Haiku with extended thinking is optimal
 - Escalate to Sonnet: >500K tokens, complex constitution reasoning
+
+**Context Window Management**:
+
+This skill uses **semantic section reading** based on Anthropic's official guidance, preventing false positives from header-only reads.
+
+**Why semantic chunking works for analysis**:
+- The 6 detection passes are **section-aligned** by design
+- Each pass operates on specific content types (requirements, user stories, tasks)
+- Cross-artifact correlation is **pairwise** (spec↔tasks, plan↔spec) not full-graph
+- Ambiguity detection is **local** to requirement text (e.g., vague terms in FR-XXX descriptions)
+
+**Alignment with Haiku 4.5 Best Practices** (prompt-engineering/CLAUDE-HAIKU-4-5-OPTIMIZATION.md):
+- "Context Window Management: Use only as much context as required per operation"
+- "Optimized Input Length: Send only relevant sections, not entire files"
+- **Correct interpretation**: "Minimal context" = relevant sections WITH content, NOT structure-only
+
+**Extended Thinking Budget Optimization**:
+- 4K budget is for **semantic reasoning** (near-duplicate detection, constitution alignment)
+- NOT for loading all file content into memory
+- Semantic chunking preserves 4K budget for actual analysis, not file parsing
+
+**Cost Impact**: Negligible (same total tokens when all sections needed, cheaper when skipping Background/Goals)
+**Quality Impact**: HIGH — Semantic boundaries prevent mid-section splits, ensure complete requirement capture
+**Documentation**: See [CLAUDE-LARGE-FILE-CHUNKING-STRATEGIES.md](../../../prompt-engineering/CLAUDE-LARGE-FILE-CHUNKING-STRATEGIES.md) for full research
 
 </optimization_strategy>
 

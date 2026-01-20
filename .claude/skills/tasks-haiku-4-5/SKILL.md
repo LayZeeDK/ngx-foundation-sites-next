@@ -112,38 +112,144 @@ IF "contracts/" in json2.AVAILABLE_DOCS:
 
 ---
 
-### Step 2: Load Design Documents
+### Step 2: Load Design Documents (with Semantic Chunking)
 
 <context_loading>
+Load documents using semantic section chunking for files > 1,250 lines (~25K tokens).
+
+**Strategy**: Use full read for small files, semantic section reading for large files.
+
+Based on research-backed best practices from [CLAUDE-LARGE-FILE-CHUNKING-STRATEGIES.md](../../../prompt-engineering/CLAUDE-LARGE-FILE-CHUNKING-STRATEGIES.md).
+
 Load documents in this order:
 
-1. **plan.md** (REQUIRED):
-   - Tech stack
-   - Libraries
-   - Project structure
-   - Phase definitions
-   - Implementation bullets
+**1. plan.md** (REQUIRED) - Semantic chunking if > 1,250 lines:
 
-2. **spec.md** (REQUIRED):
-   - User stories with priorities (P1, P2, P3...)
-   - Success criteria
-   - Feature scope
+```
+# If large file, discover section boundaries first
+Grep(pattern: "^#{1,3}\\s+", path: PLAN, output_mode: "content", -n: true)
 
-3. **data-model.md** (OPTIONAL):
-   - Entities
-   - Attributes
-   - Relationships
+# Read relevant sections for task generation
+sections_needed = [
+  "Technology Stack", "Tech Stack",
+  "Project Structure",
+  "Phase", "Implementation Phases",
+  "Implementation", "Implementation Approach"
+]
 
-4. **contracts/** (OPTIONAL):
-   - API endpoints
-   - Request/response schemas
+FOR EACH section IN sections_needed:
+  Read(PLAN, offset=section.start, limit=section.lines)
+  EXTRACT: Tech stack, libraries, phase definitions, implementation bullets
+```
 
-5. **research.md** (OPTIONAL):
-   - Design decisions for setup tasks
+**2. spec.md** (REQUIRED) - Semantic chunking if > 1,250 lines:
 
-6. **quickstart.md** (OPTIONAL):
-   - Test scenarios
-     </context_loading>
+```
+# Read relevant sections for task mapping
+sections_needed = [
+  "User Stories",
+  "Success Criteria", "Acceptance Criteria",
+  "Scope", "Feature Scope",
+  "Requirements (mandatory)"
+]
+
+FOR EACH section IN sections_needed:
+  Read(SPEC, offset=section.start, limit=section.lines)
+  EXTRACT: User stories with priorities (P1, P2, P3...), success criteria
+```
+
+**3. data-model.md** (OPTIONAL) - Full read (typically small):
+
+```
+Read(DATA_MODEL)
+EXTRACT: Entities, attributes, relationships
+```
+
+**4. contracts/** (OPTIONAL) - Read individual files:
+
+```
+FOR EACH contract_file IN contracts/:
+  Read(contract_file)
+  EXTRACT: API endpoints, request/response schemas
+```
+
+**5. research.md** (OPTIONAL) - Full read (typically small):
+
+```
+Read(RESEARCH)
+EXTRACT: Design decisions for setup tasks
+```
+
+**6. quickstart.md** (OPTIONAL) - Full read (typically small):
+
+```
+Read(QUICKSTART)
+EXTRACT: Test scenarios
+```
+
+**Why semantic chunking works for task generation**:
+
+The mechanical transformations (Step 3) are **section-aligned**:
+- ✅ **Transformation 1 (Extract Phases)**: Reads "Phase N:" headers and purpose → Section-local
+- ✅ **Transformation 2 (Convert Bullets to Tasks)**: Reads implementation bullets → Section-local
+- ✅ **Transformation 3 (Map to Stories)**: Reads user stories from spec.md → Section-local
+- ✅ **Transformation 4 (Order by Dependencies)**: Uses extracted task list, not file content
+- ✅ **Transformation 5 (Detect Parallel)**: Uses task metadata, not file content
+
+**Key insight**: Task generation is **extractive**, not **generative**. Each transformation extracts from specific sections, then operates on extracted data structures.
+
+**Benefits**:
+- ✅ Natural semantic boundaries (phase blocks, user story blocks)
+- ✅ Skip irrelevant sections (Background, Goals, Historical Context)
+- ✅ Same transformation quality as full read (operations are section-independent)
+- ✅ Better token distribution for multiple files (plan.md + spec.md + optional docs)
+
+**Cost Impact**: Negligible (same total tokens when all sections needed, cheaper when skipping non-essential sections)
+</context_loading>
+
+### Step 2b: Content Loading Validation (MANDATORY)
+
+<critical>
+**BEFORE proceeding to Step 3 (Mechanical Transformations), verify you loaded CONTENT not just STRUCTURE.**
+
+This validation prevents the common failure mode of reading headers only via Grep.
+</critical>
+
+<validation_checklist>
+**For plan.md**:
+- [ ] Can you list specific technology choices (frameworks, libraries, databases)?
+- [ ] Can you quote at least one implementation bullet with its full description?
+- [ ] Can you identify phase names AND their objectives/purposes?
+- [ ] Did you capture project structure details (directories, files)?
+
+**For spec.md**:
+- [ ] Can you list user stories with their priorities (P1, P2, P3...)?
+- [ ] Can you quote specific success criteria or acceptance criteria?
+- [ ] Can you identify the feature scope boundaries (in-scope vs out-of-scope)?
+- [ ] Did you capture user story descriptions (the "As a... I want... So that..." content)?
+
+**For optional docs** (if present):
+- [ ] data-model.md: Can you list entities with their attributes (not just entity names)?
+- [ ] contracts/: Can you describe endpoint schemas (request/response structure)?
+
+**If you answered "NO" to any question above**:
+1. STOP immediately
+2. Re-read the affected sections using Read(file, offset, limit)
+3. Validate again before proceeding to Step 3
+
+**Common Failure Pattern to Avoid**:
+```
+❌ WRONG: Using Grep(pattern: "^#{1,3}\\s+") to read headers only
+         → You get: "## Phase 1: Setup" but NOT the implementation bullets
+✅ CORRECT: Using Read(file, offset, limit) after Grep identifies boundaries
+         → You get: "## Phase 1: Setup" PLUS "- Create project structure..."
+```
+</validation_checklist>
+
+<evaluation_criteria>
+**Success**: You can quote specific implementation bullets, user stories, phase objectives with full details
+**Failure**: You only have section titles but not the implementation bullets, user story details, or phase objectives
+</evaluation_criteria>
 
 ---
 
@@ -453,6 +559,34 @@ This command is optimized for Haiku 4.5's strengths:
 - Haiku: Faster, cheaper, excellent for mechanical conversion
 - Sonnet: Slightly better at detecting implicit dependencies
 - For this use case: Haiku is recommended (cost/speed benefit > marginal quality difference)
+
+**Context Window Management**:
+
+This skill uses **semantic section reading** based on Anthropic's official guidance, preventing false positives from header-only reads.
+
+**Why semantic chunking works for task generation**:
+- The 5 mechanical transformations are **extractive** and **section-aligned**
+- Transformation 1 (Extract Phases): Reads phase headers + objectives → Section-local
+- Transformation 2 (Convert Bullets): Reads implementation bullets → Section-local
+- Transformation 3 (Map to Stories): Reads user stories from spec.md → Section-local
+- Transformations 4-5 (Order/Detect Parallel): Operate on extracted task list, not file content
+- No cross-section reasoning required for extraction
+
+**Alignment with Haiku 4.5 Best Practices** (prompt-engineering/CLAUDE-HAIKU-4-5-OPTIMIZATION.md):
+- "Context Window Management: Use only as much context as required per operation"
+- "Optimized Input Length: Send only relevant sections, not entire files"
+- **Correct interpretation**: "Minimal context" = relevant sections WITH content, NOT structure-only
+- Task generation is **mechanical extraction** → Benefits from focused section reading
+
+**Multi-File Optimization**:
+- Task generation loads 2 required files (plan.md + spec.md) + optional docs
+- Semantic chunking prevents hitting context limits when both files are large
+- Skip irrelevant sections (Background, Historical Context) → More headroom for optional docs
+- Better token distribution: Load only implementation-relevant sections from each file
+
+**Cost Impact**: Negligible for small files; significant savings when both plan.md and spec.md exceed 1,250 lines
+**Quality Impact**: HIGH — Semantic boundaries ensure complete extraction of phases, bullets, user stories
+**Documentation**: See [CLAUDE-LARGE-FILE-CHUNKING-STRATEGIES.md](../../../prompt-engineering/CLAUDE-LARGE-FILE-CHUNKING-STRATEGIES.md) for full research
   </optimization_strategy>
 
 ---
