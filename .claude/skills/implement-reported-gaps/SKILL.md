@@ -131,8 +131,8 @@ When spec.md exceeds 25K tokens (~1,250 lines), read by semantic sections:
 Use the existing prerequisite check script (same as other Claude skills):
 
 ```bash
-# Get feature paths using centralized script (from repo root)
-PATHS_JSON=$(powershell -NoProfile -ExecutionPolicy Bypass -File .specify/scripts/powershell/check-prerequisites.ps1 -PathsOnly -Json)
+# Get feature paths using centralized script (shell-agnostic)
+PATHS_JSON=$(.specify/scripts/powershell/check-prerequisites.ps1 -PathsOnly -Json)
 
 # Extract paths from JSON
 FEATURE_DIR=$(echo $PATHS_JSON | jq -r '.FEATURE_DIR')
@@ -144,13 +144,12 @@ TASKS=$(echo $PATHS_JSON | jq -r '.TASKS')
 REPORT_PATH="${FEATURE_DIR}/gap-analysis-report.md"
 ```
 
-**Path Note**: Script is at `.specify/scripts/powershell/check-prerequisites.ps1` (from repo root, not from `.claude/skills/`)
-
 **Why use check-prerequisites.ps1**:
 - ✅ Centralized logic (same as other skills use)
 - ✅ Handles edge cases (no git, branch name formats)
 - ✅ Consistent with `/speckit.*` commands
 - ✅ Uses Get-FeaturePathsEnv from common.ps1
+- ✅ Shell-agnostic (works via shebang: `#!/usr/bin/env pwsh`)
 
 **Step 1.2: Estimate spec.md Size (Prevent Read Failures)**
 
