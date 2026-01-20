@@ -13,7 +13,7 @@
 |---------|-----|---------|--------|
 | MCP Integration | ✅ | ✅ | **GA** |
 | Agent Mode | ✅ | ✅ | **GA** |
-| Multi-Model (14) | ✅ | ✅ | **GA** |
+| Multi-Model (18) | ✅ (14) | ✅ (18) | **GA** |
 | Custom Agents | ✅ | ✅ | **GA** |
 | Skills | ✅ | Experimental | **GA in CLI** |
 | Custom Instructions | ✅ | ✅ | **GA** |
@@ -24,46 +24,53 @@
 
 ---
 
-## Available Models
+## Available Models (18 in VS Code)
 
-### CLI Models (14 Total)
+### Free Models (0x Cost)
 
-These models are available in both the standalone `copilot` CLI and VS Code.
+| Model | Context | CLI | Best For |
+|-------|---------|-----|----------|
+| **GPT-4.1** | 1M | ✅ | Large features requiring long-context analysis |
+| **GPT-4o** | 128K | ❌ | General-purpose, multimodal tasks |
+| **GPT-5 Mini** | 200K | ✅ | Fast analysis, cost-effective tasks |
+| **Grok Code Fast 1** | 256K | ❌ | Rapid agentic iteration, routine bug fixes |
 
-#### Free Models (0x Cost)
+### Low Cost Models (0.33x)
 
-| Model | Context | Best For |
-|-------|---------|----------|
-| **gpt-4.1** | 1M | Large features requiring long-context analysis |
-| **gpt-5-mini** | 200K | Fast analysis, cost-effective tasks |
+| Model | Context | CLI | Best For |
+|-------|---------|-----|----------|
+| **Claude Haiku 4.5** | 200K | ✅ | Quick analysis, fast responses |
+| **Gemini 3 Flash** (Preview) | 200K | ❌ | Fast Gemini tasks |
+| **GPT-5.1-Codex-Mini** (Preview) | 200K | ✅ | Quick code fixes |
 
-#### Premium Models
+### Standard Models (1x)
 
-| Model | Type | Context | Best For |
-|-------|------|---------|----------|
-| gpt-5 | General | 200K | General-purpose tasks |
-| gpt-5.1 | General | 200K | General-purpose tasks |
-| gpt-5.2 | General | 200K | Latest general model |
-| gpt-5.1-codex-mini | Coding | 200K | Quick code fixes |
-| gpt-5.1-codex | Coding | 400K | Standard implementation |
-| gpt-5.1-codex-max | Coding | 400K+ | Multi-file, long-horizon tasks |
-| gpt-5.2-codex | Coding | 400K | Latest codex model |
-| claude-haiku-4.5 | Fast | 200K | Quick analysis, cost-effective |
-| claude-sonnet-4 | Balanced | 200K | Complex reasoning |
-| claude-sonnet-4.5 | Balanced | 200K | Latest balanced model |
-| claude-opus-4.5 | Capable | 200K | Most capable, extended thinking |
-| gemini-3-pro-preview | Preview | 200K | Preview access |
+| Model | Context | CLI | Best For |
+|-------|---------|-----|----------|
+| **Claude Sonnet 4.5** | 200K | ✅ | Complex reasoning, balanced |
+| **Gemini 2.5 Pro** | 200K | ❌ | General Gemini tasks |
+| **Gemini 3 Pro** (Preview) | 200K | ✅ | Preview Gemini features |
+| **GPT-5** | 200K | ✅ | General-purpose tasks |
+| **GPT-5-Codex** (Preview) | 400K | ❌ | Coding preview |
+| **GPT-5.1** | 200K | ✅ | General-purpose tasks |
+| **GPT-5.1-Codex** | 400K | ✅ | Standard implementation |
+| **GPT-5.1-Codex-Max** | 400K+ | ✅ | Multi-file, long-horizon tasks |
+| **GPT-5.2** | 200K | ✅ | Latest general model |
+| **GPT-5.2-Codex** | 400K | ✅ | Latest codex model |
 
-### VS Code-Only Models
+### Premium Models (3x)
 
-These models are available in VS Code but **not in the CLI**.
+| Model | Context | CLI | Best For |
+|-------|---------|-----|----------|
+| **Claude Opus 4.5** | 200K | ✅ | Most capable, extended thinking |
 
-| Model | Context | Cost | Best For |
-|-------|---------|------|----------|
-| **GPT-4o** | 128K | **0x (free)** | General-purpose, multimodal tasks |
-| **Grok Code Fast 1** | 256K | **0x (free)** | Rapid agentic iteration, routine bug fixes |
+### Model Guides
 
-See [MODEL-OPTIMIZATION-GROK.md](./MODEL-OPTIMIZATION-GROK.md) for Grok-specific optimization techniques.
+- [MODEL-OPTIMIZATION-GPT-4-1.md](./MODEL-OPTIMIZATION-GPT-4-1.md) — GPT-4.1 (1M context, free)
+- [MODEL-OPTIMIZATION-GPT-5-MINI.md](./MODEL-OPTIMIZATION-GPT-5-MINI.md) — GPT-5 Mini (free)
+- [MODEL-OPTIMIZATION-GPT-5-1-CODEX.md](./MODEL-OPTIMIZATION-GPT-5-1-CODEX.md) — GPT-5.1-Codex family
+- [MODEL-OPTIMIZATION-GPT-5-1-CODEX-MAX.md](./MODEL-OPTIMIZATION-GPT-5-1-CODEX-MAX.md) — Codex-Max for long-horizon tasks
+- [MODEL-OPTIMIZATION-GROK.md](./MODEL-OPTIMIZATION-GROK.md) — Grok Code Fast 1 (VS Code only)
 
 ---
 
@@ -132,7 +139,7 @@ copilot -p "Fix the bug" --allow-all-tools  # Execute and exit
 
 **Status**: ✅ **GA**
 
-Switch between 14 models based on task requirements.
+Switch between models based on task requirements (14 in CLI, 18 in VS Code).
 
 **Selection Methods**:
 ```bash
@@ -377,7 +384,7 @@ copilot
 | **Skills** | ✅ GA | Experimental |
 | **Session Resume** | ✅ GA | N/A |
 | **Context Management** | ✅ GA | N/A |
-| **Model Selection** | ✅ GA (14 models) | ✅ GA |
+| **Model Selection** | ✅ GA (14 models) | ✅ GA (18 models) |
 | **Custom Instructions** | ✅ GA (AGENTS.md) | ✅ GA (.github/) |
 | **Slash Commands** | Via `/command` | ✅ GA |
 | **GUI/Panel** | N/A | ✅ |
