@@ -90,7 +90,8 @@ $env:DEBUG_ANALYSIS = "1"
 
 Write-Host "🚀 Invoking Claude CLI with structured outputs..." -ForegroundColor Cyan
 Write-Host "   Model: Haiku 4.5"
-Write-Host "   Flags: --print --output-format json --json-schema --permission-mode"
+Write-Host "   Flags: --print --output-format json --json-schema (file) --permission-mode"
+Write-Host "   Schema: Using temp file (avoids shell arg length limits)"
 Write-Host "   Note: --tools flag removed (breaks positional arg parsing)"
 Write-Host ""
 
