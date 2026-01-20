@@ -88,13 +88,118 @@ pwsh ./.specify/scripts/powershell/check-prerequisites.ps1 -Json -PathsOnly
 
 ---
 
-### Step 2: Load Spec & Perform Coverage Scan
+### Step 2: Load Spec & Perform Coverage Scan (with Semantic Chunking)
 
 <context_loading>
 Load the current spec file from FEATURE_SPEC path.
 
-**Strategy**: Full read required (cannot use progressive disclosure for ambiguity detection).
+**Strategy**: Semantic section chunking when file exceeds 25K tokens (~1,250 lines).
+
+**Full file read** (if spec.md ≤ 1,250 lines):
+```
+Read(FEATURE_SPEC)
+```
+
+**Semantic section reading** (if spec.md > 1,250 lines):
+
+Based on research-backed best practices from [CLAUDE-LARGE-FILE-CHUNKING-STRATEGIES.md](../../../prompt-engineering/CLAUDE-LARGE-FILE-CHUNKING-STRATEGIES.md).
+
+```
+# Step 1: Discover section boundaries
+Grep(
+  pattern: "^#{1,3}\\s+",
+  path: FEATURE_SPEC,
+  output_mode: "content",
+  -n: true  # Include line numbers
+)
+
+# Output example:
+# 118:### User Story 1 - Basic Accordion
+# 439:## Requirements (mandatory)
+# 706:### Accessibility Requirements
+
+# Step 2: Parse section ranges
+FOR EACH header line in grep_output:
+  EXTRACT line_number, header_text
+  CALCULATE section_start = line_number
+  CALCULATE section_end = next_header_line_number - 1 (or EOF)
+  STORE sections_map[header_text] = {start, end, lines: end - start}
+
+# Step 3: Read relevant sections for taxonomy scan
+# Map taxonomy categories to spec sections:
+# - Functional Scope & Behavior → "Requirements (mandatory)", "User Stories"
+# - Domain & Data Model → "Key Entities", "Data Model"
+# - Interaction & UX Flow → "User Scenarios", "Interaction Patterns"
+# - Non-Functional Quality → "Non-Functional Requirements"
+# - Edge Cases & Failure Handling → "Edge Cases", "Error Handling"
+
+FOR EACH section IN sections_map WHERE section is relevant to taxonomy:
+  Read(
+    FEATURE_SPEC,
+    offset=section.start,
+    limit=section.lines
+  )
+  EXTRACT taxonomy elements from content
+  ACCUMULATE into coverage map
+
+# Step 4: Skip irrelevant sections
+# Example: Skip "Background", "Goals and Non-Goals" (not needed for taxonomy scan)
+```
+
+**Why semantic chunking works for ambiguity detection**:
+
+The taxonomy scan (Step 2) evaluates each category independently:
+- ✅ "Functional Scope" scan: Can be applied to Requirements section only
+- ✅ "Domain & Data Model" scan: Can be applied to Entities section only
+- ✅ "Edge Cases" scan: Can be applied to Edge Cases section only
+
+**Key insight**: The 10-category taxonomy is **section-aligned** by design. Each taxonomy category maps to 1-2 spec sections. No cross-section reasoning required.
+
+**Benefits**:
+- ✅ Semantic boundaries align with taxonomy categories
+- ✅ No overlap needed (natural section boundaries)
+- ✅ Skip irrelevant sections (Background, Goals reduce token usage)
+- ✅ Same scan quality as full read (taxonomy is section-independent)
+- ✅ Aligned with Anthropic guidance on semantic chunking
+
+**Cost Impact**: Negligible (same total tokens, better distribution)
 </context_loading>
+
+### Step 2b: Content Loading Validation (MANDATORY)
+
+<critical>
+**BEFORE proceeding to Step 3 (Coverage Taxonomy), verify you loaded CONTENT not just STRUCTURE.**
+
+This validation prevents the common failure mode of reading headers only via Grep.
+</critical>
+
+<validation_checklist>
+**For spec.md**:
+- [ ] Did you extract section CONTENT (not just section headings)?
+- [ ] Can you quote a specific requirement from "Requirements (mandatory)" section?
+- [ ] Can you list user roles/personas from the loaded content?
+- [ ] Did you capture any edge cases mentioned in the spec?
+
+**If you answered "NO" to any question above**:
+1. STOP immediately
+2. Re-read the affected sections using Read(file, offset, limit)
+3. Validate again before proceeding to Step 3
+
+**Common Failure Pattern to Avoid**:
+```
+❌ WRONG: Using Grep(pattern: "^#{1,3}\\s+") to read headers only
+         → You get: "## Requirements (mandatory)" but NOT the FR-XXX descriptions
+✅ CORRECT: Using Read(file, offset, limit) after Grep identifies boundaries
+         → You get: Full FR-XXX requirement descriptions
+```
+</validation_checklist>
+
+<evaluation_criteria>
+**Success**: You can quote specific requirements, user scenarios, edge cases from spec
+**Failure**: You only have section titles but not the content under them
+</evaluation_criteria>
+
+---
 
 <coverage_taxonomy>
 Perform structured scan using this taxonomy. For each category, mark status: Clear / Partial / Missing.
@@ -431,6 +536,25 @@ This command is optimized for Haiku 4.5's strengths:
 - Complex architectural decisions requiring multi-step reasoning
 - Novel/unusual project types without established patterns
 - Deep synthesis across multiple interconnected ambiguities
+
+**Context Window Management**:
+
+This skill uses **semantic section reading** based on Anthropic's official guidance, preventing false positives from header-only reads.
+
+**Why semantic chunking works for clarification**:
+- The 10-category taxonomy is **section-aligned** by design
+- Each category maps to 1-2 spec sections (no cross-section dependencies)
+- Ambiguity detection is **local** to each section (e.g., vague terms in Requirements section)
+- Question generation is **independent** per category
+
+**Alignment with Haiku 4.5 Best Practices** (prompt-engineering/CLAUDE-HAIKU-4-5-OPTIMIZATION.md):
+- "Context Window Management: Use only as much context as required per operation"
+- "Optimized Input Length: Send only relevant sections, not entire files"
+- **Correct interpretation**: "Minimal context" = relevant sections WITH content, NOT structure-only
+
+**Cost Impact**: Negligible (same total tokens when all sections needed, cheaper when skipping Background/Goals)
+**Quality Impact**: HIGH — Semantic boundaries prevent mid-section splits, capture all requirements
+**Documentation**: See [CLAUDE-LARGE-FILE-CHUNKING-STRATEGIES.md](../../../prompt-engineering/CLAUDE-LARGE-FILE-CHUNKING-STRATEGIES.md) for full research
   </optimization_strategy>
 
 ---
