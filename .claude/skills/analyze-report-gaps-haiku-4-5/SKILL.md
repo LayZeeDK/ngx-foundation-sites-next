@@ -17,7 +17,8 @@ handoffs:
 **Model**: Claude Haiku 4.5
 **Optimization Strategy**: Step-bounded detection passes, mechanical cross-reference mapping, structured severity assignment
 **Extended Thinking**: Enabled (4K budget) for semantic analysis and edge case detection
-**Structured Outputs**: Enabled with JSON Schema (beta) with text fallback
+**Structured Outputs**: Schema documented (requires CLI `--json-schema` invocation, not currently used)
+**Current Output**: Markdown (`gap-analysis-report.md`)
 **Expected Performance**: 20-35 seconds, ~$0.04-0.05 per analysis (base + thinking)
 
 <extended_thinking_config>
@@ -226,7 +227,39 @@ FOR EACH header line in grep_output:
   CALCULATE section_end = next_header_line_number - 1 (or EOF)
   STORE sections_map[header_text] = {start, end, lines: end - start}
 
-# Step 3: Read relevant sections only
+# Step 2.5: Output section discovery to user (TRANSPARENCY REQUIREMENT)
+MUST output to user in this format:
+
+📋 Discovered {N} sections in spec.md:
+  1. "{Section Name}" (lines {start}-{end}, {line_count} lines)
+  2. "{Section Name}" (lines {start}-{end}, {line_count} lines)
+  ...
+
+📖 Loading relevant sections for analysis:
+  ✓ {Section Name} - {reason why relevant}
+  ✓ {Section Name} - {reason why relevant}
+
+⏭️  Skipping sections:
+  • {Section Name} - {reason why skipped}
+
+# Step 3: Determine section relevance (with reasoning)
+
+**Relevant sections** (must load for analysis):
+- User Stories / User Scenarios - Contains US-XXX identifiers
+- Requirements (mandatory/functional) - Contains FR-XXX identifiers
+- Non-Functional Requirements - Contains NFR-XXX identifiers
+- Accessibility Requirements - Contains AR-XXX identifiers
+- Component API / API Requirements - Contains CA-XXX identifiers
+- Acceptance Criteria / Success Criteria - Validates requirements
+- Edge Cases - Validates underspecification detection
+
+**Irrelevant sections** (safe to skip):
+- Overview / Background / Context - Prose only, no requirements
+- Goals and Non-Goals - Meta discussion, not implementation specs
+- Examples / Code Samples - Illustrative only
+- References / External Links - Supporting material only
+
+# Step 4: Read relevant sections only
 FOR EACH section IN sections_map WHERE section is relevant:
   Read(
     file_path,
@@ -235,28 +268,39 @@ FOR EACH section IN sections_map WHERE section is relevant:
   )
   EXTRACT requirements/entities from content
   ACCUMULATE into semantic models
-
-# Step 4: Skip irrelevant sections
-# Example: Skip "Goals and Non-Goals" section if only analyzing requirements
 ```
 
 **Example (spec.md with 1,324 lines)**:
 
-**Semantic sections identified**:
+**User-facing output** (transparency requirement):
 ```
-Section 1: "User Scenarios & Testing" (lines 118-438, 320 lines)
-Section 2: "Requirements (mandatory)" (lines 439-705, 266 lines)
-Section 3: "Accessibility Requirements" (lines 706-749, 43 lines)
-Section 4: "Component API Requirements" (lines 758-976, 218 lines)
-Section 5: "Success Criteria" (lines 791-805, 14 lines)
+📋 Discovered 7 sections in spec.md:
+  1. "Overview" (lines 1-117, 117 lines)
+  2. "User Scenarios & Testing" (lines 118-438, 320 lines)
+  3. "Requirements (mandatory)" (lines 439-705, 266 lines)
+  4. "Accessibility Requirements" (lines 706-749, 43 lines)
+  5. "Component API Requirements" (lines 758-976, 218 lines)
+  6. "Success Criteria" (lines 791-805, 14 lines)
+  7. "References" (lines 977-1324, 347 lines)
+
+📖 Loading relevant sections for analysis:
+  ✓ User Scenarios & Testing - Contains US-XXX user stories
+  ✓ Requirements (mandatory) - Contains FR-XXX functional requirements
+  ✓ Accessibility Requirements - Contains AR-XXX accessibility requirements
+  ✓ Component API Requirements - Contains CA-XXX API contracts
+
+⏭️  Skipping sections:
+  • Overview - Background prose only
+  • Success Criteria - Already covered in Requirements acceptance criteria
+  • References - External links, no requirements
 ```
 
 **Reads executed** (only relevant sections):
 ```
-Read(spec.md, offset=118, limit=320)   # User Stories section
-Read(spec.md, offset=439, limit=266)   # Requirements section
-Read(spec.md, offset=706, limit=43)    # Accessibility section
-Read(spec.md, offset=758, limit=218)   # API Requirements section
+Read(spec.md, offset=118, limit=320)   # User Scenarios & Testing
+Read(spec.md, offset=439, limit=266)   # Requirements (mandatory)
+Read(spec.md, offset=706, limit=43)    # Accessibility Requirements
+Read(spec.md, offset=758, limit=218)   # Component API Requirements
 ```
 
 **Benefits**:
@@ -626,14 +670,22 @@ Do NOT output the report to terminal only. The file output IS the primary delive
 </critical>
 
 <structured_outputs_approach>
-**Approach**: Try Structured Outputs (Beta), Fallback to Markdown
+**Current Output**: Markdown (always)
 
-This step uses a two-tier strategy for maximum reliability:
+**Future Enhancement**: Structured outputs with JSON schema (requires CLI invocation)
 
-1. **Tier 1 (Preferred)**: Structured outputs with JSON schema
-2. **Tier 2 (Fallback)**: Markdown template (always works)
+**Why Markdown for Now**:
+- Structured outputs require CLI-level invocation (not skill-level configuration)
+- Cannot be detected or enabled at runtime by the skill
+- Requires: `claude --print --output-format json --json-schema '...' "invoke skill"`
+- Skills cannot toggle this feature dynamically
 
-**Why Structured Outputs Fit Haiku**:
+**JSON Schema (Reference for Future CLI Invocation)**:
+
+When invoking this skill with `--json-schema`, use the schema below.
+This is **aspirational** for future usage, not current behavior.
+
+**Why Structured Outputs Would Fit Haiku** (when available):
 - ✅ Mechanical transformation (gap data → JSON structure)
 - ✅ No creative decisions (schema is explicit)
 - ✅ Enhances reliability (eliminates markdown parsing errors in `/implement-reported-gaps`)
@@ -760,43 +812,44 @@ This step uses a two-tier strategy for maximum reliability:
 }
 ```
 
-**Output Strategy**:
+**Current Output Strategy** (CLI default invocation):
 
 ```
-IF structured outputs available (beta feature):
-  GENERATE gap_report as JSON object matching schema
-  WRITE to [FEATURE_DIR]/gap-analysis-report.json
-  FILE_PATH = gap-analysis-report.json
-
-ELSE (fallback to markdown):
+ALWAYS:
   GENERATE gap_report as markdown using template below
   WRITE to [FEATURE_DIR]/gap-analysis-report.md
   FILE_PATH = gap-analysis-report.md
 ```
 
-**Benefits of JSON Format**:
-- Reliable parsing by `/implement-reported-gaps` (no markdown table parsing)
-- Type validation (severity enums, ID patterns)
-- Structured access to findings, metrics, recommendations
-- Zero parsing ambiguity
+**Future CLI Invocation with --json-schema** (not currently used):
 
-**Benefits of Markdown Fallback**:
-- Always works (no beta feature dependency)
-- Human-readable for review
-- Compatible with existing workflows
+If skill is invoked via:
+```bash
+claude --print --output-format json \
+  --json-schema '{schema from above}' \
+  "/analyze-report-gaps-haiku-4-5"
+```
+
+Then output would be JSON conforming to schema above.
+
+**Why Markdown Now, JSON Later**:
+- ✅ **Markdown**: Works reliably today, human-readable, compatible with existing workflows
+- ⏳ **JSON**: Requires CLI invocation changes, not yet integrated into skill workflow
+- 📋 **Schema ready**: When CLI integration happens, schema is documented above
+
 </structured_outputs_approach>
 
 <task>
-Use the Write tool to create gap analysis report file in FEATURE_DIR.
-Use JSON format if structured outputs available, otherwise use markdown template.
+Use the Write tool to create gap-analysis-report.md in FEATURE_DIR.
+Format: Markdown (following template below).
 </task>
 
 <evaluation_criteria>
-**Success**: File created (`gap-analysis-report.json` OR `gap-analysis-report.md`) in FEATURE_DIR using Write tool
+**Success**: File `gap-analysis-report.md` created in FEATURE_DIR using Write tool
 **Failure**: Outputting report to terminal without creating file
 </evaluation_criteria>
 
-**Markdown Template (Fallback)**:
+**Markdown Template**:
 
 **File path**: `[FEATURE_DIR]/gap-analysis-report.md`
 
@@ -1046,6 +1099,7 @@ This skill was updated to use **semantic section reading** based on Anthropic's 
 - **ALWAYS prioritize constitution violations** (these are CRITICAL)
 - **ALWAYS use stable IDs** (deterministic on rerun)
 - **LIMIT findings to 50** (aggregate overflow in summary)
+- **ALWAYS output section discovery when using semantic chunking** — transparency requirement (Step 2.5)
 - If zero issues found: Output success report with coverage statistics
 - If artifacts missing: ABORT with clear instructions
 
