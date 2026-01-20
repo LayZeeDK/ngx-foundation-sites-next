@@ -83,6 +83,25 @@ $claudeArgs = @(
 Write-Host "🔍 Debug: Prompt length: $($analysisPrompt.Length) characters" -ForegroundColor Yellow
 Write-Host "🔍 Debug: First 100 chars: $($analysisPrompt.Substring(0, [Math]::Min(100, $analysisPrompt.Length)))..." -ForegroundColor Yellow
 Write-Host "🔍 Debug: Args count: $($claudeArgs.Count)" -ForegroundColor Yellow
+Write-Host "🔍 Debug: Last arg (prompt): '$($claudeArgs[-1].Substring(0, 50))...'" -ForegroundColor Yellow
+Write-Host ""
+
+# First, test if basic invocation works with a simple prompt
+Write-Host "🧪 Testing basic CLI invocation with simple prompt..." -ForegroundColor Cyan
+$testOutput = & claude --print --model haiku "Say hello" 2>&1
+if ($LASTEXITCODE -eq 0) {
+    Write-Host "✅ Basic invocation works!" -ForegroundColor Green
+} else {
+    Write-Host "❌ Basic invocation failed! Error: $testOutput" -ForegroundColor Red
+    Write-Host "   This suggests a problem with Claude CLI itself" -ForegroundColor Red
+    exit 1
+}
+Write-Host ""
+
+# Show what command we're about to run
+Write-Host "🔍 Command that will be executed:" -ForegroundColor Yellow
+Write-Host "   claude $($claudeArgs -join ' ')" -ForegroundColor Gray
+Write-Host "   (Prompt text truncated in display above)" -ForegroundColor Gray
 Write-Host ""
 
 try {
