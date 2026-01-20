@@ -1,6 +1,6 @@
-# Beta Features Availability Overview
+# GitHub Copilot Beta Features Availability
 
-**Last Updated:** 2026-01-11
+**Last Updated:** 2026-01-20
 **Verification Date:** 2026-01-11
 **Next Review:** 2026-04-11 (Quarterly)
 
@@ -8,122 +8,16 @@
 
 ## Executive Summary
 
-This document provides a comprehensive overview of beta features across Claude Code and GitHub Copilot, their current availability status, and recommendations for usage.
+This document tracks GitHub Copilot beta features, their current availability status, and recommendations for usage.
+
+> **📘 Looking for Claude Code feature availability?**
+> See [`../claude-prompt-engineering/FEATURES-AND-AVAILABILITY.md`](../claude-prompt-engineering/FEATURES-AND-AVAILABILITY.md)
 
 ### Quick Status
 
-| Tool               | Production-Ready Features    | Beta Features  | Unavailable                |
-| ------------------ | ---------------------------- | -------------- | -------------------------- |
-| **Claude Code**    | ✅ Skills, Commands, Context | None           | None                       |
-| **GitHub Copilot** | ✅ CLI Basic, VS Code Basic  | None Confirmed | ⚠️ Agent Mode, MCP, Skills |
-
----
-
-## Claude Code Features
-
-### ✅ Fully Available (Production Ready)
-
-#### 1. Skills (Agent Skills)
-
-**Status:** ✅ **AVAILABLE - PRODUCTION READY**
-
-**Verification Results:**
-
-- ✅ Skills directory recognized (`.claude/skills/`)
-- ✅ Skill files can be created and loaded
-- ✅ Skills accessible via Skill tool
-- ✅ Custom workflows fully operational
-
-**Tested On:**
-
-- Version: Claude Code 2.1.4
-- Date: 2026-01-11
-- Method: Direct skill invocation
-
-**Current Usage:**
-This project has **7 active production skills**:
-
-- analyze-prepare-reported-gaps-for-implementation
-- checklist-haiku-4-5
-- clarify-haiku-4-5
-- foundation-api-design
-- implement-reported-gaps
-- specify-haiku-4-5
-- tasks-haiku-4-5
-
-**Documentation:**
-See: `CLAUDE-CODE-SKILLS-OPTIMIZATIONS.md`
-
-**Recommendation:** ✅ **USE NOW** - Fully stable and production-ready
-
----
-
-#### 2. Custom Commands
-
-**Status:** ✅ **AVAILABLE - PRODUCTION READY**
-
-**Verification Results:**
-
-- ✅ Commands directory recognized (`.claude/commands/`)
-- ✅ Command files (.md) can be created
-- ✅ Commands accessible via slash syntax (`/command`)
-- ✅ Multiple commands operational
-
-**Tested On:**
-
-- Version: Claude Code 2.1.4
-- Date: 2026-01-11
-- Method: File system validation
-
-**Current Usage:**
-This project has **16+ active production commands**:
-
-- Haiku 4.5 workflow commands
-- Sonnet 4.5 implementation
-- SpecKit workflow suite
-- Task classification commands
-
-**Documentation:**
-See: `CLAUDE-CODE-COMMAND-OPTIMIZATIONS.md`
-
-**Recommendation:** ✅ **USE NOW** - Fully stable and production-ready
-
----
-
-#### 3. Context Management
-
-**Status:** ✅ **AVAILABLE - PRODUCTION READY**
-
-**Expected Features:**
-
-- `/context` - Check token usage
-- `/compact` - Run context compaction
-- `/help` - View all commands
-
-**Verification Results:**
-
-- ✅ Infrastructure confirmed (Skills/Commands working)
-- ✅ Standard Claude Code feature
-- ✅ Version 2.1.4 includes all core features
-
-**Tested On:**
-
-- Version: Claude Code 2.1.4
-- Date: 2026-01-11
-- Method: Infrastructure validation
-
-**Documentation:**
-See: `CLAUDE-CODE-COMMAND-OPTIMIZATIONS.md`
-
-**Recommendation:** ✅ **USE NOW** - Standard feature, production-ready
-
----
-
-### ⚠️ Beta Features: NONE
-
-**No beta features detected or documented for Claude Code.**
-
-All documented features in optimization guides are **generally available** and production-ready.
+| Tool               | Production-Ready Features   | Beta Features  | Unavailable                |
+| ------------------ | --------------------------- | -------------- | -------------------------- |
+| **GitHub Copilot** | ✅ CLI Basic, VS Code Basic | None Confirmed | ⚠️ Agent Mode, MCP, Skills |
 
 ---
 

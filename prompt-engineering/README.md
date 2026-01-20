@@ -25,12 +25,11 @@ This directory contains **project-specific** verification results and optimizati
 
 | File | Purpose |
 |------|---------|
-| [CLAUDE-CODE-VERIFICATION-RESULTS.md](./CLAUDE-CODE-VERIFICATION-RESULTS.md) | Project-specific Claude Code verification results |
+| [HAIKU-4-5-COMMAND-OPTIMIZATION-RECOMMENDATIONS.md](./HAIKU-4-5-COMMAND-OPTIMIZATION-RECOMMENDATIONS.md) | SpecKit command-specific Haiku optimization |
 | [GITHUB-COPILOT-VERIFICATION-RESULTS.md](./GITHUB-COPILOT-VERIFICATION-RESULTS.md) | Project-specific GitHub Copilot verification results |
 | [COPILOT-CLI-VERIFICATION-RESULTS.md](./COPILOT-CLI-VERIFICATION-RESULTS.md) | Project-specific Copilot CLI verification results |
-| [HAIKU-4-5-COMMAND-OPTIMIZATION-RECOMMENDATIONS.md](./HAIKU-4-5-COMMAND-OPTIMIZATION-RECOMMENDATIONS.md) | SpecKit command-specific Haiku optimization |
-| [BETA-FEATURES-AVAILABILITY-OVERVIEW.md](./BETA-FEATURES-AVAILABILITY-OVERVIEW.md) | Cross-platform beta feature tracking |
-| [BETA-FEATURE-VERIFICATION-PLAN.md](./BETA-FEATURE-VERIFICATION-PLAN.md) | Verification methodology for beta features |
+| [BETA-FEATURES-AVAILABILITY-OVERVIEW.md](./BETA-FEATURES-AVAILABILITY-OVERVIEW.md) | GitHub Copilot beta feature tracking |
+| [BETA-FEATURE-VERIFICATION-PLAN.md](./BETA-FEATURE-VERIFICATION-PLAN.md) | GitHub Copilot verification methodology |
 
 ---
 
@@ -45,7 +44,8 @@ This directory contains **project-specific** verification results and optimizati
 - ✅ **Extended thinking** for tasks-haiku-4-5 (2K budget) - Better dependency detection
 - ✅ **Extended thinking** for clarify-haiku-4-5 (4K budget) - Better ambiguity detection
 - ⚠️ **Monitor** specify-haiku-4-5 - Implement only if quality issues observed
-- 🚫 **Skip beta features** - Structured outputs, interleaved thinking (wait for GA)
+- ✅ **Interleaved thinking** - GA in CLI (enabled by default)
+- ⚠️ **Structured outputs** - Use with fallback (beta)
 - 🚫 **Not applicable** - Prompt caching, batch API, RAG (wrong use case)
 
 **Cost impact**: +$0.01-$0.02 per command with extended thinking
@@ -67,13 +67,7 @@ This directory contains **project-specific** verification results and optimizati
 
 ## 🔬 Verification Results
 
-### [Claude Code Verification Results](./CLAUDE-CODE-VERIFICATION-RESULTS.md)
-
-Project-specific verification of Claude Code features including:
-- Extended thinking budget testing
-- 1M context window validation
-- Structured outputs testing
-- Effort parameter availability
+> **📘 Claude Code feature verification** has moved to [`../claude-prompt-engineering/FEATURES-AND-AVAILABILITY.md`](../claude-prompt-engineering/FEATURES-AND-AVAILABILITY.md)
 
 ### [GitHub Copilot Verification Results](./GITHUB-COPILOT-VERIFICATION-RESULTS.md)
 
@@ -93,19 +87,19 @@ Project-specific verification of GitHub Copilot CLI (`gh copilot`) including:
 
 ## 🧪 Beta Feature Tracking
 
+> **📘 Claude Code feature availability** has moved to [`../claude-prompt-engineering/FEATURES-AND-AVAILABILITY.md`](../claude-prompt-engineering/FEATURES-AND-AVAILABILITY.md)
+
 ### [Beta Features Availability Overview](./BETA-FEATURES-AVAILABILITY-OVERVIEW.md)
 
-Cross-platform tracking of beta features across:
-- Claude Code CLI
+GitHub Copilot beta feature tracking:
 - GitHub Copilot (VS Code)
 - GitHub Copilot CLI
 
 ### [Beta Feature Verification Plan](./BETA-FEATURE-VERIFICATION-PLAN.md)
 
-Methodology for verifying beta feature availability:
+GitHub Copilot verification methodology:
 - Testing procedures
 - Documentation standards
-- Compatibility matrices
 
 ---
 

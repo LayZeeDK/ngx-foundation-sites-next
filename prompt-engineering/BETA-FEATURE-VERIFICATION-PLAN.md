@@ -1,189 +1,30 @@
-# Beta Feature Verification Plan
+# GitHub Copilot Feature Verification Plan
 
 **Created:** 2026-01-11
-**Purpose:** Verify availability of Claude Code and GitHub Copilot beta features
+**Updated:** 2026-01-20
+**Purpose:** Verify availability of GitHub Copilot beta features
 
 ---
 
 ## Overview
 
-This plan provides step-by-step instructions to verify which features marked as beta in the optimization guides are currently available in your environment.
+This plan provides step-by-step instructions to verify which GitHub Copilot features are currently available in your environment.
+
+> **📘 Looking for Claude Code feature verification?**
+> See [`../claude-prompt-engineering/FEATURES-AND-AVAILABILITY.md`](../claude-prompt-engineering/FEATURES-AND-AVAILABILITY.md)
 
 ### Features to Verify
 
-| Tool               | Feature                        | Expected Status        |
-| ------------------ | ------------------------------ | ---------------------- |
-| **Claude Code**    | Skills (formerly Agent Skills) | ✅ Generally Available |
-| **Claude Code**    | Custom Commands                | ✅ Generally Available |
-| **GitHub Copilot** | Agent Mode with MCP            | ⚠️ Beta (Rolling out)  |
-| **GitHub Copilot** | MCP Integration                | ⚠️ Preview             |
-| **GitHub Copilot** | Agent Skills                   | ⚠️ Early Preview       |
-| **GitHub Copilot** | CLI Custom Commands            | ❌ Not Yet Available   |
+| Tool               | Feature             | Expected Status       |
+| ------------------ | ------------------- | --------------------- |
+| **GitHub Copilot** | Agent Mode with MCP | ⚠️ Beta (Rolling out) |
+| **GitHub Copilot** | MCP Integration     | ⚠️ Preview            |
+| **GitHub Copilot** | Agent Skills        | ⚠️ Early Preview      |
+| **GitHub Copilot** | CLI Custom Commands | ❌ Not Yet Available  |
 
 ---
 
-## Part 1: Claude Code Verification
-
-### 1.1 Check Claude Code Installation
-
-**Objective:** Verify Claude Code is installed and check version
-
-**Steps:**
-
-```bash
-# Check if Claude Code is installed
-claude --version
-
-# Check installation location
-where claude  # Windows
-which claude  # macOS/Linux
-
-# View help to see available commands
-claude --help
-```
-
-**Expected Output:**
-
-- Version number (e.g., `claude-code v2.x.x`)
-- List of available CLI flags
-
-**✅ Success Criteria:** Version displays correctly
-
-**❌ If Failed:**
-
-- Install from: https://code.claude.com/docs/en/installation
-- Or: `npm install -g @anthropic/claude-code`
-
----
-
-### 1.2 Verify Skills Support
-
-**Objective:** Confirm Claude Code Skills (custom workflows) are available
-
-**Test Steps:**
-
-1. **Check for skills directory:**
-
-   ```bash
-   # Project-level skills
-   ls .claude/skills/
-
-   # Global skills
-   ls ~/.claude/skills/
-   ```
-
-2. **Create a test skill:**
-
-   ```bash
-   # Create test skill directory
-   mkdir -p .claude/skills/test-skill
-
-   # Create skill file
-   cat > .claude/skills/test-skill/skill.md << 'EOF'
-   ---
-   name: test-skill
-   description: Test skill for verification
-   ---
-
-   # Test Skill
-
-   This is a test skill to verify Skills are working.
-
-   When invoked, respond with: "✅ Skills are working correctly!"
-   EOF
-   ```
-
-3. **Test the skill in Claude Code:**
-
-   ```bash
-   # Start Claude Code session
-   claude
-
-   # In the session, try to invoke the skill
-   /test-skill
-   ```
-
-**Expected Output:**
-
-- Skill appears in autocomplete when typing `/`
-- Skill executes and responds with confirmation message
-
-**✅ Success Criteria:** Skill can be created, discovered, and invoked
-
-**❌ If Failed:** Skills may not be supported in your version. Update Claude Code.
-
----
-
-### 1.3 Verify Custom Commands Support
-
-**Objective:** Confirm custom slash commands work
-
-**Test Steps:**
-
-1. **Create a test command:**
-
-   ```bash
-   # Create commands directory
-   mkdir -p .claude/commands/
-
-   # Create test command
-   cat > .claude/commands/test-command.md << 'EOF'
-   # Test Command
-
-   This is a test command to verify custom commands are working.
-
-   Respond with: "✅ Custom commands are working correctly!"
-   EOF
-   ```
-
-2. **Test the command:**
-
-   ```bash
-   # Start Claude Code session
-   claude
-
-   # Try the command
-   /test-command
-   ```
-
-**Expected Output:**
-
-- Command appears in autocomplete
-- Command executes and responds appropriately
-
-**✅ Success Criteria:** Custom command works as expected
-
-**❌ If Failed:** Check file location and format. Restart Claude Code session.
-
----
-
-### 1.4 Verify Context Management Features
-
-**Objective:** Test context optimization commands
-
-**Test Commands:**
-
-```bash
-# Start Claude Code
-claude
-
-# In session, test these commands:
-/context      # Check current context usage
-/compact      # Run context compaction
-/help         # View all available commands
-```
-
-**Expected Output:**
-
-- `/context` shows token usage stats
-- `/compact` reduces context size
-- `/help` shows full command list including custom commands
-
-**✅ Success Criteria:** All commands execute without errors
-
----
-
-## Part 2: GitHub Copilot Verification
+## GitHub Copilot Verification
 
 ### 2.1 Check GitHub Copilot Installation
 

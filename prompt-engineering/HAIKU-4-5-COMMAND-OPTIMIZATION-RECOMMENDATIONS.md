@@ -4,6 +4,10 @@
 **Date**: 2026-01-11
 **Status**: Recommendations for production use
 
+> **📘 Feature Availability Reference**
+> For current Claude Code feature availability (interleaved thinking, structured outputs, effort parameter),
+> see [`../claude-prompt-engineering/FEATURES-AND-AVAILABILITY.md`](../claude-prompt-engineering/FEATURES-AND-AVAILABILITY.md)
+
 ---
 
 ## Executive Summary
