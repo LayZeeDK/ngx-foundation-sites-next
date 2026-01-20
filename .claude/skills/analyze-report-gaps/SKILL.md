@@ -163,6 +163,7 @@ claude --print \\
   --model haiku \\
   --output-format json \\
   --json-schema "$SCHEMA" \\
+  --permission-mode bypassPermissions \\
   "Perform cross-artifact consistency analysis for the current feature..." \\
   > "\${FEATURE_DIR}/gap-analysis-cli-output.json" 2>&1
 
@@ -216,6 +217,7 @@ $outputFile = "$FEATURE_DIR/gap-analysis-cli-output.json"
   --model haiku `
   --output-format json `
   --json-schema $schema `
+  --permission-mode bypassPermissions `
   "Perform cross-artifact consistency analysis for the current feature..." `
   *> $outputFile
 

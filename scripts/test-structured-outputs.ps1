@@ -69,12 +69,14 @@ $outputFile = "$featureDir/gap-analysis-cli-output.json"
 
 # Invoke with permission flags
 # Use PowerShell splatting to avoid backtick continuation issues
-# NOTE: Removed --permission-mode and --tools flags - they cause errors with --print
+# NOTE: --tools flag causes errors with --print (breaks positional arg parsing)
+# --permission-mode is OK and may help skip prompts in nested sessions
 $claudeArgs = @(
     '--print'
     '--model', 'haiku'
     '--output-format', 'json'
     '--json-schema', $schema
+    '--permission-mode', 'bypassPermissions'  # OK: Helps skip permission prompts
     $analysisPrompt  # Prompt as final positional argument
 )
 
