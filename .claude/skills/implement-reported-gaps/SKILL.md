@@ -104,53 +104,264 @@ This skill is optimized for Sonnet 4.5's capabilities:
 - **Adaptive retry**: Diagnose failures before deciding retry strategy
   </sonnet_optimization>
 
-### Step 1: Auto-Detect Feature Directory and Load Context
+### Step 1: Auto-Detect Feature Directory and Load Context (with Semantic Chunking)
 
 <task>
-Locate feature directory and load all context files in parallel.
+Locate feature directory and load all context files in parallel, using semantic section chunking for large files.
 </task>
 
-<phase name="setup" parallel_tools="true">
-Execute these operations in parallel:
+<sonnet_optimization>
+**Parallel Tool Use Optimization** (10-20x faster):
+Sonnet 4.5 can load multiple files simultaneously in a single message. Use this for:
+- Multiple independent files (gap-analysis-report.md, tasks.md, plan.md)
+- Multiple spec.md sections (when chunking is needed)
 
-1. Run: `git branch --show-current` to get feature name
-2. Once FEATURE_DIR is known, load these files SIMULTANEOUSLY:
-   - `{FEATURE_DIR}/gap-analysis-report.md` (primary input)
-   - `{FEATURE_DIR}/spec.md` (for requirement cross-references)
-   - `{FEATURE_DIR}/tasks.md` (for existing task status)
+**Semantic Section Chunking** (prevents Read tool failures):
+When spec.md exceeds 25K tokens (~1,250 lines), read by semantic sections:
+- Use Grep to find section boundaries (headers with line numbers)
+- Read ONLY sections referenced by gap findings
+- Skip irrelevant sections (Background, Non-Goals, etc.)
+- Aligns with Anthropic's "few hundred tokens per chunk" guidance
+</sonnet_optimization>
 
-**Why parallel**: Sonnet 4.5 can process multiple Read tool calls in one batch,
-reducing context loading time from 3 sequential calls to 1 parallel batch.
+<phase name="setup" parallel_tools="true" extended_thinking="4K">
+
+**Step 1.1: Get Feature Paths (Using Centralized Script)**
+
+Use the existing prerequisite check script (same as other Claude skills):
+
+```bash
+# Get feature paths using centralized script
+PATHS_JSON=$(.specify/scripts/powershell/check-prerequisites.ps1 -PathsOnly -Json)
+
+# Extract paths from JSON
+FEATURE_DIR=$(echo $PATHS_JSON | jq -r '.FEATURE_DIR')
+FEATURE_SPEC=$(echo $PATHS_JSON | jq -r '.FEATURE_SPEC')
+IMPL_PLAN=$(echo $PATHS_JSON | jq -r '.IMPL_PLAN')
+TASKS=$(echo $PATHS_JSON | jq -r '.TASKS')
+
+# Set report path
+REPORT_PATH="${FEATURE_DIR}/gap-analysis-report.md"
+```
+
+**Why use check-prerequisites.ps1**:
+- ✅ Centralized logic (same as other skills use)
+- ✅ Handles edge cases (no git, branch name formats)
+- ✅ Consistent with `/speckit.*` commands
+- ✅ Uses Get-FeaturePathsEnv from common.ps1
+
+**Step 1.2: Estimate spec.md Size (Prevent Read Failures)**
+
+```bash
+# Use FEATURE_SPEC path from prerequisite script
+SPEC_LINES=$(wc -l < "${FEATURE_SPEC}")
+ESTIMATED_TOKENS=$((SPEC_LINES * 20))
+
+if [ $ESTIMATED_TOKENS -gt 25000 ]; then
+  echo "⚠️ spec.md estimated at ${ESTIMATED_TOKENS} tokens (exceeds 25K limit)"
+  echo "→ Will use semantic section chunking"
+  USE_CHUNKING=true
+else
+  echo "✅ spec.md estimated at ${ESTIMATED_TOKENS} tokens (within limit)"
+  echo "→ Can read full file"
+  USE_CHUNKING=false
+fi
+```
+
+**Step 1.3: Parallel Context Loading (Conditional)**
+
+**IF USE_CHUNKING == false** (spec.md ≤ 25K tokens):
+
+Load all files SIMULTANEOUSLY in a single message:
+
+```typescript
+// All files in one parallel batch (using paths from prerequisite script)
+Read(`${REPORT_PATH}`)
+Read(`${FEATURE_SPEC}`)
+Read(`${TASKS}`)
+```
+
+**Speedup**: 3x faster than sequential reads
+
+**IF USE_CHUNKING == true** (spec.md > 25K tokens):
+
+Use **semantic section chunking** for spec.md:
+
+```markdown
+**Phase A: Discover Section Boundaries**
+
+Use Grep to find headers with line numbers:
+
+Grep(
+  pattern: "^#{1,3}\s+",
+  path: `${FEATURE_SPEC}`,  // Use path from prerequisite script
+  output_mode: "content",
+  -n: true
+)
+
+Expected output (example):
+118:### User Story 1 - Basic Accordion
+439:## Requirements (mandatory)
+706:### Accessibility Requirements
+758:## Component API
+976:## Testing Strategy
+
+**Phase B: Parse Section Ranges**
+
+Calculate section start/end lines:
+
+sections = [
+  {"name": "User Stories", "start": 118, "end": 438, "lines": 320},
+  {"name": "Requirements", "start": 439, "end": 705, "lines": 266},
+  {"name": "Accessibility", "start": 706, "end": 757, "lines": 51},
+  {"name": "Component API", "start": 758, "end": 975, "lines": 217},
+  {"name": "Testing", "start": 976, "end": EOF, "lines": remaining}
+]
+
+**Phase C: Identify Relevant Sections (Extended Thinking: 4K)**
+
+Read gap-analysis-report.md first to see which requirements are violated:
+
+Read(`${REPORT_PATH}`)  // Use path from Step 1.1
+
+Parse "Violates" column from findings table to extract requirement IDs:
+- FR-XXX → Read "Requirements" section
+- CA-XXX → Read "Component API" section
+- AR-XXX → Read "Accessibility" section
+- US-XXX → Read "User Stories" section
+
+**Phase D: Load Relevant Sections in Parallel**
+
+Only read sections that contain violated requirements:
+
+Example (gaps violate FR-017, FR-050, CA-003):
+
+```typescript
+// Load in parallel: gap-report + tasks + relevant spec sections
+// (using paths from prerequisite script)
+Read(`${REPORT_PATH}`)
+Read(`${TASKS}`)
+Read(`${FEATURE_SPEC}`, offset: 439, limit: 266)  // Requirements section
+Read(`${FEATURE_SPEC}`, offset: 758, limit: 217)  // Component API section
+```
+
+**Speedup**: 4x faster than sequential, skips 60-70% of irrelevant spec content
+
+**Benefits of Semantic Chunking**:
+- ✅ Never splits FR-XXX requirement mid-description
+- ✅ No overlap needed (natural section boundaries)
+- ✅ Skip irrelevant sections (Background, Goals/Non-Goals)
+- ✅ Same cost as full read when all sections needed
+- ✅ Prevents Read tool 25K token limit errors
+
+**Critical Anti-Pattern** ❌:
+
+```typescript
+// NEVER use Grep for content loading - only for boundaries
+Grep(pattern: "^#{1,3}\s+", output_mode: "content")
+// Result: Only section titles, NO requirement descriptions
+```
+
+**Correct Pattern** ✅:
+
+```typescript
+// Step 1: Grep for boundaries (line numbers)
+boundaries = Grep(pattern: "^#{1,3}\s+", -n: true)
+
+// Step 2: Read for content (section body)
+content = Read(file_path, offset: start_line, limit: line_count)
+```
+
 </phase>
 
 <output_format>
 FEATURE_DIR: specs/{feature}
 REPORT_PATH: specs/{feature}/gap-analysis-report.md
-Context loaded: gap-analysis-report.md, spec.md, tasks.md
+SPEC_SIZE: {lines} lines (~{tokens} tokens)
+CHUNKING_USED: {true|false}
+Context loaded:
+- gap-analysis-report.md (full)
+- tasks.md (full)
+- spec.md ({section names if chunked, "full" if not})
 </output_format>
 
-### Step 2: Parse Gap Report with Context Awareness
+### Step 2: Parse Gap Report with Context Awareness (Semantic Section Enrichment)
 
 <task>
-Parse findings table with awareness of spec requirements and existing tasks.
+Parse findings table with awareness of spec requirements and existing tasks. Cross-reference with spec sections loaded in Step 1.
 </task>
 
+<sonnet_optimization>
+**Extended Thinking for Context Synthesis** (4K budget):
+
+Use extended thinking to:
+1. Map findings to spec sections already loaded in Step 1
+2. Identify findings referencing the SAME spec requirement (can batch)
+3. Detect potential conflicts if resolved in parallel (must sequence)
+4. Adjust complexity scoring based on spec context
+
+**Why extended thinking here**: Sonnet 4.5's reasoning helps identify non-obvious dependencies that naive pattern matching would miss.
+</sonnet_optimization>
+
 <action_steps extended_thinking="4K">
+
+**Step 2.1: Extract Findings Table**
 
 1. Find table starting with `| ID  | Category` in gap-analysis-report.md
 2. FOR EACH row in table:
    - Extract: ID, Category, Severity, Location(s), Summary, Recommendation
-   - Cross-reference Location with spec.md to understand requirement context
-   - Check tasks.md to see if related tasks already exist
-   - Store as structured finding object with enriched context
+   - Parse "Violates" column to extract requirement IDs (FR-XXX, CA-XXX, etc.)
+
+**Step 2.2: Cross-Reference with Loaded Spec Sections**
+
+FOR EACH finding:
+
+1. **Match to spec sections** (from Step 1 chunking):
+   - IF finding violates FR-XXX: lookup in "Requirements" section
+   - IF finding violates CA-XXX: lookup in "Component API" section
+   - IF finding violates AR-XXX: lookup in "Accessibility" section
+   - IF finding violates US-XXX: lookup in "User Stories" section
+
+2. **Enrich with spec context**:
+   - Read the full requirement description from spec section
+   - Understand the intent behind the requirement
+   - Note any clarifications (e.g., FR-017a, FR-017b substeps)
+
+3. **Check tasks.md for related work**:
+   - Search for task IDs mentioning same FR-XXX
+   - Identify if fix requires updating existing task
+   - Note completion status of related tasks
+
+4. **Store as enriched finding object**:
+   ```typescript
+   {
+     id, category, severity, location, summary, recommendation,
+     violates: ["FR-017a", "CA-003"],
+     specContext: {
+       "FR-017a": "Full requirement description from spec...",
+       "CA-003": "Full API contract description from spec..."
+     },
+     relatedTasks: ["T1.1", "T2.3"],
+     section: "Requirements"  // From chunking in Step 1
+   }
+   ```
+
+**Step 2.3: Count and Group**
+
 3. Count findings by severity: HIGH, MEDIUM, LOW
+4. Group by spec section: Requirements, API, Accessibility, etc.
 
-**Extended thinking**: Use this budget to identify:
+**Extended thinking checkpoint**: Use 4K budget to identify:
 
-- Findings that reference the same spec requirements
-- Findings that might conflict if resolved in parallel
-- Findings where spec context changes the apparent complexity
-  </action_steps>
+- **Dependency groups**: Findings referencing the same spec requirements (can batch efficiently)
+- **Conflict detection**: Findings that might conflict if resolved in parallel (must sequence)
+- **Complexity adjustment**: Findings where spec context reveals higher/lower complexity than apparent
+- **Missing sections**: Did we load all needed spec sections? (If not, read more in Step 1.5)
+
+**Example reasoning**:
+"Finding E02 and E05 both reference FR-017a (ID stability contract). E02 fixes the requirement text, E05 adds validation code. These must be executed sequentially (E02 first) to avoid conflicts. Also, FR-017a's clarification reveals this is more complex than the 'Inconsistency' category suggests → upgrade E05 from haiku to sonnet."
+
+</action_steps>
 
 <output_format>
 Parsed N findings:
@@ -161,8 +372,15 @@ Parsed N findings:
 
 Context enrichment:
 
-- Findings referencing same spec section: [groups]
+- Findings grouped by spec section:
+  - Requirements: [IDs]
+  - Component API: [IDs]
+  - Accessibility: [IDs]
+- Findings referencing same requirement:
+  - FR-017a: [IDs] (must sequence)
+  - CA-003: [IDs] (can parallelize)
 - Potential conflicts detected: [if any]
+- Complexity adjustments based on spec context: [if any]
   </output_format>
 
 ### Step 3: Classify Findings → Target Model (with Extended Thinking)
