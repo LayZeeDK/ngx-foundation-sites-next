@@ -24,16 +24,20 @@
 
 ---
 
-## Available Models (14 Total)
+## Available Models
 
-### Free Models (0x Cost)
+### CLI Models (14 Total)
+
+These models are available in both the standalone `copilot` CLI and VS Code.
+
+#### Free Models (0x Cost)
 
 | Model | Context | Best For |
 |-------|---------|----------|
 | **gpt-4.1** | 1M | Large features requiring long-context analysis |
 | **gpt-5-mini** | 200K | Fast analysis, cost-effective tasks |
 
-### Premium Models
+#### Premium Models
 
 | Model | Type | Context | Best For |
 |-------|------|---------|----------|
@@ -49,6 +53,16 @@
 | claude-sonnet-4.5 | Balanced | 200K | Latest balanced model |
 | claude-opus-4.5 | Capable | 200K | Most capable, extended thinking |
 | gemini-3-pro-preview | Preview | 200K | Preview access |
+
+### VS Code-Only Models
+
+These models are available in VS Code but **not in the CLI**.
+
+| Model | Context | Cost | Best For |
+|-------|---------|------|----------|
+| **Grok Code Fast 1** | 256K | **0x (free)** | Rapid agentic iteration, routine bug fixes |
+
+See [MODEL-OPTIMIZATION-GROK.md](./MODEL-OPTIMIZATION-GROK.md) for Grok-specific optimization techniques.
 
 ---
 

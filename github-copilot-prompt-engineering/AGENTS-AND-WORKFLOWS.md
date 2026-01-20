@@ -207,9 +207,7 @@ Add user authentication to dashboard component
 
 ### Extending Agent Capabilities
 
-**Note:** MCP integration may be in preview for some features. Check your subscription tier for availability.
-
-**Model Context Protocol (MCP)** allows Copilot coding agent to use tools from local and remote servers.
+**Model Context Protocol (MCP)** allows Copilot coding agent to use tools from local and remote servers. MCP is generally available in both the standalone `copilot` CLI and VS Code.
 
 ### Use Cases
 
