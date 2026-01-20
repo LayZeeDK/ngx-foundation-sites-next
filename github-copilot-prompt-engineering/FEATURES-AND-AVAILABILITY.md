@@ -15,7 +15,7 @@
 | Agent Mode | ✅ | ✅ | **GA** |
 | Multi-Model (14) | ✅ | ✅ | **GA** |
 | Custom Agents | ✅ | ✅ | **GA** |
-| Skills | ✅ | Early Preview | **GA in CLI** |
+| Skills | ✅ | Experimental | **GA in CLI** |
 | Custom Instructions | ✅ | ✅ | **GA** |
 | Session Management | ✅ | N/A | **GA** |
 | Context Management | ✅ | N/A | **GA** |
@@ -288,11 +288,17 @@ All commands available in interactive mode:
 | **Prompt Files** | `.github/prompts/*.prompt.md` | Reusable task prompts |
 | **Custom Agents** | `.github/agents/*.agent.md` | Specialized AI personas |
 
-### Beta/Preview Features
+### Experimental Features
 
-| Feature | Status | Expected GA | Notes |
-|---------|--------|-------------|-------|
-| **Agent Skills** | Early Preview | Q2-Q3 2026 | Limited access |
+| Feature | Status | How to Enable | Notes |
+|---------|--------|---------------|-------|
+| **Agent Skills** | Experimental | VS Code Settings → `Chat: Use Agent Skills` | [Announced Dec 2025](https://github.blog/changelog/2025-12-18-github-copilot-now-supports-agent-skills/) |
+
+**How to Enable Agent Skills**:
+1. VS Code Settings (Ctrl+,)
+2. Search: "Chat: Use Agent Skills"
+3. Enable the experimental setting
+4. Available in VS Code stable (not just Insiders)
 
 **How to Check Feature Access**:
 1. VS Code Settings → Search "Copilot"
@@ -353,7 +359,7 @@ copilot
 |------------|---------------|---------|
 | **Agent Mode** | ✅ GA | ✅ GA |
 | **MCP Integration** | ✅ GA | ✅ GA |
-| **Skills** | ✅ GA | Early Preview |
+| **Skills** | ✅ GA | Experimental |
 | **Session Resume** | ✅ GA | N/A |
 | **Context Management** | ✅ GA | N/A |
 | **Model Selection** | ✅ GA (14 models) | ✅ GA |
