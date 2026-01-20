@@ -56,13 +56,23 @@ and derives the feature directory automatically (`specs/002-accordion-component/
 </evaluation_criteria>
 
 ```bash
+# Get resolved core artifact paths
+pwsh ./.specify/scripts/powershell/check-prerequisites.ps1 -Json -PathsOnly
+
+# Get available optional docs
 pwsh ./.specify/scripts/powershell/check-prerequisites.ps1 -Json
 ```
 
-Parse JSON for:
+Parse first JSON output (-PathsOnly) for:
 
-- `FEATURE_DIR` (absolute path)
-- `AVAILABLE_DOCS` (list of existing files)
+- `FEATURE_DIR` (absolute path to feature directory)
+- `FEATURE_SPEC` (resolved path to spec.md)
+- `IMPL_PLAN` (resolved path to plan.md, if exists)
+- `TASKS` (resolved path to tasks.md, if exists)
+
+Parse second JSON output (-Json) for:
+
+- `AVAILABLE_DOCS` (list of existing optional files)
 
 **Path Rules**:
 
@@ -106,11 +116,13 @@ Efficient, targeted loading - NOT full-file dumping:
 3. Progressive disclosure: add more only if gaps detected
 4. If docs are large (>500 lines), generate interim summaries
 
-Read from FEATURE_DIR:
+Load artifacts using resolved paths:
 
-- spec.md: Requirements and scope (prioritize FR/NFR sections)
-- plan.md (if exists): Technical details, dependencies
-- tasks.md (if exists): Implementation tasks
+- FEATURE_SPEC: Requirements and scope (prioritize FR/NFR sections)
+- IMPL_PLAN (if in AVAILABLE_DOCS): Technical details, dependencies
+- TASKS (if in AVAILABLE_DOCS): Implementation tasks
+
+Use the absolute paths from the -PathsOnly output for core artifacts.
   </context_loading_strategy>
 
 ### Step 4: Generate Checklist

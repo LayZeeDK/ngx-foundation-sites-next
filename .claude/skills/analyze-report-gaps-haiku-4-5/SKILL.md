@@ -100,40 +100,34 @@ and derives the feature directory automatically (`specs/002-accordion-component/
 </evaluation_criteria>
 
 ```powershell
-pwsh ./.specify/scripts/powershell/check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks
+pwsh ./.specify/scripts/powershell/check-prerequisites.ps1 -Json -PathsOnly -RequireTasks -IncludeTasks
 ```
 
 **Validate JSON output contains:**
 
 - `FEATURE_DIR`: Must be defined and non-empty (absolute path to feature directory)
-- `AVAILABLE_DOCS`: Must be defined (confirms prerequisite script executed successfully)
+- `FEATURE_SPEC`: Resolved absolute path to spec.md
+- `IMPL_PLAN`: Resolved absolute path to plan.md
+- `TASKS`: Resolved absolute path to tasks.md
 
-**Derive absolute paths by concatenation:**
+**Extract absolute paths from JSON:**
 
-- `SPEC` = FEATURE_DIR + "/spec.md"
-- `PLAN` = FEATURE_DIR + "/plan.md"
-- `TASKS` = FEATURE_DIR + "/tasks.md"
+- `SPEC` = FEATURE_SPEC (from JSON output)
+- `PLAN` = IMPL_PLAN (from JSON output)
+- `TASKS` = TASKS (from JSON output)
 - `CONSTITUTION` = ".specify/memory/constitution.md" (project-level, repo root)
-- `OUTPUT` = FEATURE_DIR + "/gap-analysis-report.md" (WILL BE CREATED)
+- `OUTPUT` = FEATURE_DIR + "/gap-analysis-report.md" (new file to be created)
 
-**Verify each derived path exists using Glob:**
+**Verify resolved paths exist:**
 
-```
-# Verify spec.md exists
-Glob(pattern: "spec.md", path: FEATURE_DIR)
-
-# Verify plan.md exists
-Glob(pattern: "plan.md", path: FEATURE_DIR)
-
-# Verify tasks.md exists
-Glob(pattern: "tasks.md", path: FEATURE_DIR)
-```
+The prerequisite script with `-PathsOnly` already validates that these files exist before returning their paths. If the script succeeds, you can proceed directly to loading the artifacts.
 
 **Error Handling**:
 
-- If Glob returns empty for spec.md: ABORT with "Run `/speckit.specify` to create specification"
-- If Glob returns empty for plan.md: ABORT with "Run `/speckit.plan` to create implementation plan"
-- If Glob returns empty for tasks.md: ABORT with "Run `/speckit.tasks` to generate task breakdown"
+- If prerequisite script fails: It will output clear error messages about missing files
+- If spec.md missing: ABORT with "Run `/speckit.specify` to create specification"
+- If plan.md missing: ABORT with "Run `/speckit.plan` to create implementation plan"
+- If tasks.md missing: ABORT with "Run `/speckit.tasks` to generate task breakdown"
 - Do NOT proceed with partial artifacts
 
 **Path Handling (CRITICAL)**:

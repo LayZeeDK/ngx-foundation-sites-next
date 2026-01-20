@@ -76,37 +76,46 @@ and derives the feature directory automatically (`specs/002-accordion-component/
 </evaluation_criteria>
 
 ```powershell
+# Get resolved core artifact paths
+pwsh ./.specify/scripts/powershell/check-prerequisites.ps1 -Json -PathsOnly
+
+# Get available optional docs
 pwsh ./.specify/scripts/powershell/check-prerequisites.ps1 -Json
 ```
 
-**Validate JSON output contains:**
+**Validate first JSON output (-PathsOnly) contains:**
 
 - `FEATURE_DIR`: Must be defined and non-empty (absolute path to feature directory)
-- `AVAILABLE_DOCS`: Must be defined (confirms prerequisite script executed successfully)
+- `FEATURE_SPEC`: Resolved absolute path to spec.md
+- `IMPL_PLAN`: Resolved absolute path to plan.md
 
-**Derive absolute paths by concatenation:**
+**Validate second JSON output (-Json) contains:**
 
-- `SPEC` = FEATURE_DIR + "/spec.md" (REQUIRED)
-- `PLAN` = FEATURE_DIR + "/plan.md" (REQUIRED)
-- `DATA_MODEL` = FEATURE_DIR + "/data-model.md" (OPTIONAL)
-- `CONTRACTS` = FEATURE_DIR + "/contracts/" (OPTIONAL)
-- `OUTPUT` = FEATURE_DIR + "/tasks.md"
+- `AVAILABLE_DOCS`: List of existing optional files
 
-**Verify required files exist using Glob:**
+**Extract paths:**
 
-```
-# Verify spec.md exists
-Glob(pattern: "spec.md", path: FEATURE_DIR)
+Core artifacts (from -PathsOnly):
+- `SPEC` = FEATURE_SPEC (from JSON output)
+- `PLAN` = IMPL_PLAN (from JSON output)
+- `OUTPUT` = FEATURE_DIR + "/tasks.md" (new file to be created)
 
-# Verify plan.md exists
-Glob(pattern: "plan.md", path: FEATURE_DIR)
-```
+Optional docs (check AVAILABLE_DOCS, then concatenate if present):
+- `DATA_MODEL` = FEATURE_DIR + "/data-model.md" (OPTIONAL - if "data-model.md" in AVAILABLE_DOCS)
+- `CONTRACTS` = FEATURE_DIR + "/contracts/" (OPTIONAL - if "contracts/" in AVAILABLE_DOCS)
+
+**Verify resolved paths exist:**
+
+The prerequisite script with `-PathsOnly` already validates that required files exist before returning their paths. If the script succeeds, you can proceed directly to loading the artifacts.
+
+For optional docs, only load if they appear in AVAILABLE_DOCS array from the `-Json` call.
 
 **Error Handling:**
 
-- If Glob returns empty for spec.md: ABORT with "Run `/speckit.specify` to create specification"
-- If Glob returns empty for plan.md: ABORT with "Run `/speckit.plan` to create implementation plan"
-- Do NOT proceed with partial artifacts
+- If prerequisite script fails: It will output clear error messages about missing files
+- If spec.md missing: ABORT with "Run `/speckit.specify` to create specification"
+- If plan.md missing: ABORT with "Run `/speckit.plan` to create implementation plan"
+- Do NOT proceed with partial required artifacts
 
 **PowerShell String Escaping**:
 
