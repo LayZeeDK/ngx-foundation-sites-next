@@ -69,6 +69,17 @@ Write-Host ""
 # Output file
 $outputFile = "$featureDir/gap-analysis-test-output.json"
 
+# Clean up old output files first
+if (Test-Path $outputFile) {
+    Remove-Item $outputFile -Force
+    Write-Host "🧹 Cleaned up old output file" -ForegroundColor Yellow
+}
+if (Test-Path "$featureDir/gap-analysis-cli-output.json") {
+    Remove-Item "$featureDir/gap-analysis-cli-output.json" -Force
+    Write-Host "🧹 Cleaned up old CLI output file" -ForegroundColor Yellow
+}
+Write-Host ""
+
 Write-Host "🚀 Executing (this will block until complete)..." -ForegroundColor Cyan
 Write-Host "   ⚠️  Expected: 20-60 seconds"
 Write-Host "   ⚠️  If >2 minutes: Press Ctrl+C to cancel"

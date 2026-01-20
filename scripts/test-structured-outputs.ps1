@@ -98,6 +98,17 @@ Write-Host ""
 
 $outputFile = "$featureDir/gap-analysis-cli-output.json"
 
+# Clean up old output files before starting
+if (Test-Path $outputFile) {
+    Remove-Item $outputFile -Force
+    Write-Host "🧹 Cleaned up old output file" -ForegroundColor Yellow
+}
+if (Test-Path "$featureDir/gap-analysis-test-output.json") {
+    Remove-Item "$featureDir/gap-analysis-test-output.json" -Force
+    Write-Host "🧹 Cleaned up old test output file" -ForegroundColor Yellow
+}
+Write-Host ""
+
 # Build a natural language prompt that should trigger skill auto-invocation
 # Skill description: "Cross-artifact consistency analysis with file output (Haiku 4.5)"
 $analysisPrompt = @"
