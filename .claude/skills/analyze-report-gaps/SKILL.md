@@ -163,9 +163,7 @@ claude --print \\
   --model haiku \\
   --output-format json \\
   --json-schema "$SCHEMA" \\
-  --permission-mode bypassPermissions \\
-  --tools "default" \\
-  "/analyze-report-gaps-haiku-4-5" \\
+  "Perform cross-artifact consistency analysis for the current feature..." \\
   > "\${FEATURE_DIR}/gap-analysis-cli-output.json" 2>&1
 
 echo "Exit code: $?"
@@ -218,9 +216,7 @@ $outputFile = "$FEATURE_DIR/gap-analysis-cli-output.json"
   --model haiku `
   --output-format json `
   --json-schema $schema `
-  --permission-mode bypassPermissions `
-  --tools "default" `
-  "/analyze-report-gaps-haiku-4-5" `
+  "Perform cross-artifact consistency analysis for the current feature..." `
   *> $outputFile
 
 if ($LASTEXITCODE -eq 0) {

@@ -33,9 +33,8 @@ $env:DEBUG_ANALYSIS = "1"
 
 Write-Host "🚀 Invoking Claude CLI with structured outputs..." -ForegroundColor Cyan
 Write-Host "   Model: Haiku 4.5"
-Write-Host "   Permission mode: bypassPermissions"
-Write-Host "   Tools: default (all enabled)"
-Write-Host "   Debug: Enabled (check gap-analysis-debug.log)"
+Write-Host "   Flags: --print --output-format json --json-schema"
+Write-Host "   Note: Permission/tools flags removed (cause errors with --print)"
 Write-Host ""
 
 $outputFile = "$featureDir/gap-analysis-cli-output.json"
@@ -70,13 +69,12 @@ $outputFile = "$featureDir/gap-analysis-cli-output.json"
 
 # Invoke with permission flags
 # Use PowerShell splatting to avoid backtick continuation issues
+# NOTE: Removed --permission-mode and --tools flags - they cause errors with --print
 $claudeArgs = @(
     '--print'
     '--model', 'haiku'
     '--output-format', 'json'
     '--json-schema', $schema
-    '--permission-mode', 'bypassPermissions'
-    '--tools', 'default'
     $analysisPrompt  # Prompt as final positional argument
 )
 
