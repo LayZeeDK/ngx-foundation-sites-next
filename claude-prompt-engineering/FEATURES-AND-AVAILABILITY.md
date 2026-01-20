@@ -15,7 +15,7 @@
 | Context Management | **GA** | Production Ready |
 | Extended Thinking | **GA** | Production Ready |
 | Structured Outputs | **Beta** | `--json-schema` flag works (use with fallback) |
-| Interleaved Thinking | **N/A** | API only (requires beta header) |
+| Interleaved Thinking | **GA** | Enabled by default in CLI |
 | Effort Parameter | **N/A** | API key users only (not subscription) |
 
 ---
@@ -26,7 +26,7 @@
 |---------|------------|-------------|
 | Extended Thinking | Available | Works in conversation mode |
 | Structured Outputs | Available | `--json-schema` returns `structured_output` field |
-| Interleaved Thinking | Not Available | [API docs](https://platform.claude.com/docs/en/build-with-claude/extended-thinking) - requires beta header |
+| Interleaved Thinking | Available | Enabled by default; thinking blocks appear between tool calls |
 | Effort Parameter | Not Available | "Custom betas are only available for API key users" |
 
 **Verified by local CLI testing:**
@@ -215,22 +215,50 @@ Then: Retry without --json-schema, parse response manually
 
 ---
 
-## Not Available in CLI
+## Available in CLI (Auto-Enabled)
 
-### Interleaved Thinking
+### Interleaved Thinking (VERIFIED WORKING)
 
-**Status**: Messages API only - [Extended Thinking Docs](https://platform.claude.com/docs/en/build-with-claude/extended-thinking)
+**Status**: GA in CLI - Enabled by default (verified 2026-01-20)
 
-Interleaved thinking enables thinking between tool calls for agentic workflows.
+Interleaved thinking enables Claude to reason between tool calls, improving quality for multi-step agentic workflows.
 
-**Requirements:**
+**How it works in CLI:**
 
-- Direct API access
-- Beta header: `anthropic-beta: interleaved-thinking-2025-05-14`
+```
+∴ Thinking…                    ← Initial reasoning
+  "I need to read these files..."
 
-**Recommendation**: Skip (not applicable to CLI usage)
+● Read(file1.json)             ← Tool execution
+● Read(file2.md)
+
+∴ Thinking…                    ← INTERLEAVED thinking (after tool results)
+  "Now comparing the results..."
+  [detailed analysis]
+
+● Final response               ← Output
+```
+
+**Key benefits:**
+
+- Reason about tool results before deciding next steps
+- Chain multiple tool calls with reasoning in between
+- Make nuanced decisions based on intermediate results
+
+**API vs CLI difference:**
+
+| Environment | Status | Configuration |
+|-------------|--------|---------------|
+| Claude Code CLI | Enabled by default | No configuration needed |
+| Messages API | Beta | Requires `interleaved-thinking-2025-05-14` header |
+
+**To disable** (if needed): Add `DISABLE_INTERLEAVED_THINKING` to your system prompt.
+
+**Reference**: [Extended Thinking Docs](https://platform.claude.com/docs/en/build-with-claude/extended-thinking)
 
 ---
+
+## Not Available in CLI
 
 ### Effort Parameter (VERIFIED NOT WORKING)
 
