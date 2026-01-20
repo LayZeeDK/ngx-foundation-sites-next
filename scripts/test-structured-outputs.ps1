@@ -40,6 +40,34 @@ Write-Host ""
 
 $outputFile = "$featureDir/gap-analysis-cli-output.json"
 
+# Build a natural language prompt that should trigger skill auto-invocation
+# Skill description: "Cross-artifact consistency analysis with file output (Haiku 4.5)"
+$analysisPrompt = @"
+Perform a cross-artifact consistency analysis for the feature in branch '$branch'.
+
+Analyze gaps and inconsistencies across spec.md, plan.md, and tasks.md using the 6-pass detection methodology:
+- Duplication Detection
+- Ambiguity Detection
+- Underspecification Detection
+- Constitution Alignment
+- Coverage Gap Detection
+- Inconsistency Detection
+
+Output the analysis as JSON matching the provided schema with:
+- feature_name
+- analysis_date
+- findings array (with id, category, severity, locations, summary, recommendation)
+- coverage_summary
+- metrics (total_requirements, total_tasks, coverage_percentage, critical_issues)
+
+The feature directory is: $featureDir
+"@
+
+Write-Host "📝 Using natural language prompt to trigger skill auto-invocation"
+Write-Host ""
+
+$outputFile = "$featureDir/gap-analysis-cli-output.json"
+
 # Invoke with permission flags
 # Note: PowerShell doesn't need escaped quotes for $schema like Bash does
 try {
@@ -49,7 +77,7 @@ try {
         --json-schema $schema `
         --permission-mode bypassPermissions `
         --tools "default" `
-        "/analyze-report-gaps-haiku-4-5" `
+        $analysisPrompt `
         *> $outputFile
 
     $exitCode = $LASTEXITCODE
