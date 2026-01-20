@@ -45,7 +45,13 @@ Prefer **directives** over components when possible. Because Foundation componen
    - Content projection with multiple slots is needed
    - **Examples**: `<nfs-accordion>`, `<nfs-modal>`, `<nfs-tabs>`
 
-**When in doubt, start with a directive** and refactor to a component only if template complexity demands it. For example, a `[nfsButton]` directive can add `.button` classes to a consumer's `<button>` element directly, avoiding the need for a `<nfs-button>` component wrapper.
+3. **Use Template-Directive Composition** when:
+   - Integrating with `@angular/aria` primitives that require template references
+   - The container component needs to orchestrate template instantiation
+   - `@angular/aria` directives (e.g., `AccordionTrigger`, `AccordionPanel`) operate on projected templates
+   - **Examples**: `ng-template[nfsAccordionItem]`, `ng-template[nfsAccordionHeader]` used with `@angular/aria`'s accordion primitives
+
+**When in doubt, start with a directive** and refactor to a component only if template complexity demands it. For example, a `[nfsButton]` directive can add `.button` classes to a consumer's `<button>` element directly, avoiding the need for a `<nfs-button>` component wrapper. When using `@angular/aria` primitives that operate on templates (such as accordion, tabs, or menu components), template-directive composition provides better integration with Angular's ARIA building blocks.
 
 **Rationale**: This ensures components integrate seamlessly with Angular's change detection and lifecycle while maintaining Foundation's visual design system. CSS-only integration reduces bundle size and eliminates JavaScript framework conflicts. Preferring directives reduces unnecessary DOM wrappers and component overhead while still providing full Foundation styling capabilities.
 
