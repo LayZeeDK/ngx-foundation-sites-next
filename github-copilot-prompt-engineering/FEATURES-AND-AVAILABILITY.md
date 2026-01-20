@@ -60,6 +60,7 @@ These models are available in VS Code but **not in the CLI**.
 
 | Model | Context | Cost | Best For |
 |-------|---------|------|----------|
+| **GPT-4o** | 128K | **0x (free)** | General-purpose, multimodal tasks |
 | **Grok Code Fast 1** | 256K | **0x (free)** | Rapid agentic iteration, routine bug fixes |
 
 See [MODEL-OPTIMIZATION-GROK.md](./MODEL-OPTIMIZATION-GROK.md) for Grok-specific optimization techniques.
