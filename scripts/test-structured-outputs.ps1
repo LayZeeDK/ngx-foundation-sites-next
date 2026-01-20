@@ -70,6 +70,7 @@ $outputFile = "$featureDir/gap-analysis-cli-output.json"
 
 # Invoke with permission flags
 # Note: PowerShell doesn't need escaped quotes for $schema like Bash does
+# IMPORTANT: Wrap the prompt in quotes and pass as a single argument
 try {
     & claude --print `
         --model haiku `
@@ -77,7 +78,7 @@ try {
         --json-schema $schema `
         --permission-mode bypassPermissions `
         --tools "default" `
-        $analysisPrompt `
+        "$analysisPrompt" `
         *> $outputFile
 
     $exitCode = $LASTEXITCODE
