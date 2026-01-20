@@ -395,15 +395,20 @@ Haiku 4.5 pricing: $1 input / $5 output per million tokens
 
 - `checklist-haiku-4-5` - Extended thinking NOT enabled (current state is optimal for pattern matching task)
 
-### 🚫 Skip
+### ✅ Available (Use with Care)
 
-- Beta features (Structured Outputs, Interleaved Thinking) - wait for GA
+- **Interleaved Thinking** - GA in CLI (enabled by default, no action needed)
+- **Structured Outputs** - Beta, use with fallback pattern (see [FEATURES-AND-AVAILABILITY.md](../claude-prompt-engineering/FEATURES-AND-AVAILABILITY.md))
+
+### 🚫 Skip (Not Applicable)
+
 - Prompt caching (not applicable to use case)
 - Batch API (not applicable to use case)
 - RAG optimizations (not applicable to use case)
+- Effort parameter (API key users only, not subscription)
 
 ---
 
-**Last Updated**: 2026-01-11
+**Last Updated**: 2026-01-20
 **Reviewed Commands**: tasks-haiku-4-5, clarify-haiku-4-5, specify-haiku-4-5, checklist-haiku-4-5
 **Maintainer**: Spec Kit Team
