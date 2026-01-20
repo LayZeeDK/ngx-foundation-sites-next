@@ -28,7 +28,7 @@ This comprehensive cross-artifact analysis examined the accordion component feat
 | --- | -------- | -------- | ----------- | ------- | -------------- |
 | D01 | Duplication | LOW | spec.md:FR-037 vs FR-039/FR-040 | Keyboard navigation requirements overlap (Tab order defined in multiple FRs) | Consolidate related FRs with cross-references; acceptable for documentation clarity |
 | A01 | Ambiguity | HIGH | spec.md:AR-019, AR-023 | "Visible focus indicators" and "instant without animation" lack measurable criteria | Add WCAG 2.4.7 reference (minimum 3:1 contrast) and timing constraint (e.g., "<50ms transition") |
-| A02 | Ambiguity | HIGH | spec.md:FR-106a, FR-089a | Event processing semantics reference both browser-native FIFO and 50ms debounce; interaction unclear | Add timeline example clarifying debounce window reset, FIFO ordering, and event coalescing rules |
+| A02 | Ambiguity | ~~HIGH~~ RESOLVED | spec.md:FR-106a, FR-089a | ~~Event processing semantics reference both browser-native FIFO and 50ms debounce; interaction unclear~~ **RESOLVED**: Timeline Example added to FR-089a with 5 scenarios (same-source coalescing, cross-source FIFO, window reset, cross-item independence, browser FIFO integration); cross-reference added to FR-106a | ✅ Resolved 2026-01-20 |
 | U01 | Underspecification | MEDIUM | spec.md:FR-022 | Output events "MUST NOT fire when action prevented" but preventable actions not enumerated | Add explicit list: (1) disabled item, (2) canCloseItem constraint, (3) soft-disabled item, (4) state machine in-flight |
 | U02 | Underspecification | MEDIUM | spec.md:FR-056, AR-020 | "Focus moves to safe location" when item removed but fallback strategy undefined | Define priority order: (1) next item, (2) previous item, (3) parent container; specify DOM vs navigation order |
 | U03 | Underspecification | MEDIUM | spec.md:FR-110a | Input validation fallback for invalid titleHeadingLevel unspecified | Verify intention: coerce to null OR reject with error? Plan.md line 220 suggests null; add to spec.md |
@@ -80,7 +80,7 @@ This comprehensive cross-artifact analysis examined the accordion component feat
 - **Total Requirements (spec.md)**: 93 (64 FR + 8 AR + 5 SR + 11 CA + 5 clarifications)
 - **Total Implementation Tasks (tasks.md)**: 219 (212 standard T### + 7 remediation T-AC)
 - **Requirements → Tasks Coverage**: 96% (89/93 explicitly mapped)
-- **Ambiguity Findings**: 2 (both HIGH priority; measurable criteria needed)
+- **Ambiguity Findings**: 2 (1 HIGH remaining [A01]; 1 RESOLVED [A02 - timeline example added])
 - **Underspecification Findings**: 6 (MEDIUM priority; edge case handling)
 - **Duplication Findings**: 1 (LOW priority; acceptable documentation redundancy)
 - **Inconsistency Findings**: 2 (LOW priority; architecture naming)
@@ -99,11 +99,10 @@ This comprehensive cross-artifact analysis examined the accordion component feat
 
 ### BEFORE P3/P4 Planning (Post-MVP)
 
-1. **[A02 Clarification - MEDIUM Effort (20 min)]**
+1. ~~**[A02 Clarification - MEDIUM Effort (20 min)]**~~ ✅ **RESOLVED 2026-01-20**
    - **Location**: spec.md FR-089a, FR-106a
    - **Issue**: Event processing semantics unclear (browser FIFO vs 50ms debounce interaction)
-   - **Action**: Add explicit timeline example showing debounce window behavior and FIFO ordering within/across windows
-   - **Blocking**: No (clarification only; implementation guidance already present in plan.md:204-212)
+   - **Resolution**: Added comprehensive **Timeline Example** section to FR-089a with 5 scenarios demonstrating same-source coalescing, cross-source FIFO ordering, debounce window reset behavior, cross-item independence, and browser FIFO integration with FR-089a debounce. Added cross-reference from FR-106a back to this timeline example.
 
 2. **[U03 Verification - LOW Effort (5 min)]**
    - **Location**: spec.md FR-110a

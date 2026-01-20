@@ -292,7 +292,7 @@
 - [x] CHK105 - Are requirements defined for rapid successive clicks on multiple titles? [Edge Case, Spec Edge Cases] — ✓ Edge Cases line 198 specifies "handle state transitions cleanly without race conditions"
 - [x] CHK106 - Are requirements defined for concurrent keyboard and mouse interactions? [Edge Case, Gap] — ✓ FR-106a defines serialization and timestamp ordering for concurrent keyboard/mouse interactions with FR-089a rules applied
 - Evidence: spec.md FR-106a and plan.md FR-106a Implementation Notes describe event timestamp ordering and focus/expansion precedence rules
-- [x] CHK107 - Are requirements defined for focus management during animations? [Edge Case, Gap] — ✓ AR-023 (new) specifies keyboard focus transitions must be instant without animation; Implementation Notes line 752+ clarifies no CSS transitions on focus indicators during keyboard navigation (resolved via Session 2025-01-22 Q2)
+- [x] CHK107 - Are requirements defined for focus management during animations? [Edge Case, Gap] — ✓ AR-023 specifies keyboard focus transitions must complete in <50ms per WCAG 2.3.3; Implementation Notes line 752+ clarifies no CSS transitions on focus indicators during keyboard navigation (resolved via Session 2025-01-22 Q2)
 
 ### Data Edge Cases
 
@@ -363,7 +363,7 @@
 
 ### Focus Management Completeness
 
-- [x] CHK135 - Are focus indicator visibility requirements specified with WCAG contrast criteria? [Accessibility, Spec §AR-019] — ✓ AR-019 requires focus indicators visible and meet WCAG contrast requirements
+- [x] CHK135 - Are focus indicator visibility requirements specified with WCAG contrast criteria? [Accessibility, Spec §AR-019] — ✓ AR-019 requires focus indicators visible per WCAG 2.4.7 (Focus Visible) with minimum 3:1 contrast ratio per WCAG 2.4.11 (Focus Appearance)
 - [x] CHK136 - Are focus persistence rules specified for expansion/collapse actions? [Accessibility, Spec §AR-022] — ✓ AR-022 specifies focus remains on title element when item expanded via keyboard
 - [x] CHK137 - Are focus recovery rules specified for dynamic item removal? [Accessibility, Spec §FR-056] — ✓ FR-056 requires focus move to safe location (next item, previous item, or parent) when focused item removed
 - [x] CHK138 - Are focus trap prevention requirements specified? [Accessibility, Spec §AR-021] — ✓ AR-021 requires focus must not be lost or trapped within accordion

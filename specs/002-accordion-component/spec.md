@@ -327,7 +327,7 @@ A developer uses `@for` to render accordion items from a dynamic array. Items ca
 
 **⚠️ CURRENT STATUS**: **BLOCKED** - API limitation discovered during implementation (2026-01-17)
 
-**Status: POST-MVP** — Requires API redesign (make panelId optional with auto-generation)
+**Status: POST-MVP** — Requires API redesign (make panelId optional with auto-generation). See plan.md GAP-9 for recovery options.
 
 **API Limitation**: The current accordion API uses `input.required<string>()` for `panelId`, which prevents dynamic template creation via `@for` loops. Angular's template initialization requires all required inputs to be available at template creation time, but `@for` creates templates dynamically from an array, causing NG0950 error ("Input is required but no value is available yet").
 
@@ -464,6 +464,73 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 
   **Implementation Status**: Core debounce/queue logic is implemented (T-AC-001 complete). Comprehensive test coverage for all three debounce scenarios (Input Source Distinction [T-AC-001b], FIFO Queue [T-AC-001c], Debounce Coalescence [T-AC-001d]) is defined in tasks.md but implementation is pending.
 
+  **Timeline Example (FR-089a + FR-106a Interaction)**: The following example clarifies how the 50ms debounce window, FIFO ordering, and event coalescing interact:
+
+  ```
+  Timeline (T = milliseconds from first event)
+  ═══════════════════════════════════════════════════════════════════════════════════
+
+  Scenario A: Same input source - coalescing applies
+  ─────────────────────────────────────────────────────────────────────────────────
+  T=0ms    [CLICK]  User clicks Item-1 header → toggle() queued, debounce window opens
+  T=15ms   [CLICK]  User clicks Item-1 header → COALESCED (same source, within 50ms)
+  T=30ms   [CLICK]  User clicks Item-1 header → COALESCED (same source, within 50ms)
+  T=50ms   [EXEC]   Debounce window expires → single toggle() executes
+
+  Result: Item-1 toggles exactly once (expanded→collapsed or collapsed→expanded)
+
+
+  Scenario B: Different input sources - no coalescing, FIFO ordering
+  ─────────────────────────────────────────────────────────────────────────────────
+  T=0ms    [CLICK]  User clicks Item-1 header → toggle() queued (source: 'click')
+  T=10ms   [PROG]   Code calls item1.toggle() → queued separately (source: 'programmatic')
+  T=50ms   [EXEC]   Click debounce expires → first toggle() executes (Item-1 expands)
+  T=60ms   [EXEC]   Programmatic debounce expires → second toggle() executes (Item-1 collapses)
+
+  Result: Item-1 toggles twice in FIFO order (collapsed→expanded→collapsed)
+
+
+  Scenario C: Debounce window reset on new event within window
+  ─────────────────────────────────────────────────────────────────────────────────
+  T=0ms    [CLICK]  User clicks Item-1 header → debounce window [0-50ms]
+  T=40ms   [CLICK]  User clicks Item-1 header → COALESCED, window RESETS to [40-90ms]
+  T=80ms   [CLICK]  User clicks Item-1 header → COALESCED, window RESETS to [80-130ms]
+  T=130ms  [EXEC]   Debounce window expires → single toggle() executes
+
+  Result: Continuous rapid clicking extends the debounce window; toggle executes
+          only after 50ms of no new clicks from the same source
+
+
+  Scenario D: Cross-item operations with FIFO serialization
+  ─────────────────────────────────────────────────────────────────────────────────
+  T=0ms    [CLICK]  User clicks Item-1 header → Item-1 toggle queued
+  T=5ms    [KEY]    User presses Enter on Item-2 → Item-2 toggle queued (different item)
+  T=50ms   [EXEC]   Item-1 toggle executes (cross-item operations are independent)
+  T=55ms   [EXEC]   Item-2 toggle executes
+
+  Result: Both items toggle (different items have independent debounce windows)
+
+
+  Scenario E: Browser event loop FIFO with FR-089a debounce (FR-106a integration)
+  ─────────────────────────────────────────────────────────────────────────────────
+  T=0ms    [LOOP]   Browser event loop receives: click@Item-1, keydown@Item-1 (near-simultaneous)
+  T=0ms    [CLICK]  Click handler fires first (browser FIFO) → toggle queued (source: 'click')
+  T=0ms    [KEY]    Keydown handler fires second (browser FIFO) → toggle queued (source: 'keyboard')
+  T=50ms   [EXEC]   Click debounce expires → first toggle() executes
+  T=50ms   [EXEC]   Keyboard debounce expires → second toggle() executes
+
+  Result: Two toggles execute because 'click' and 'keyboard' are different sources.
+          Browser's native FIFO ordering determines which handler fires first;
+          FR-089a's per-source debounce prevents coalescing across input modalities.
+  ```
+
+  **Key Rules Summary**:
+  1. **Coalescing**: Events from the SAME input source within 50ms coalesce into one action
+  2. **No Cross-Source Coalescing**: Events from DIFFERENT input sources (click, keyboard, programmatic) execute independently in FIFO order
+  3. **Window Reset**: Each new event within the debounce window resets the 50ms timer
+  4. **Cross-Item Independence**: Different accordion items have independent debounce windows
+  5. **Browser FIFO**: FR-106a delegates event ordering to browser's native event loop; FR-089a applies debounce AFTER browser delivers events to handlers
+
 #### FR-038a: Explicit State Transitions
 
 - **FR-038a**: In addition to boolean `expanded`, the item MUST conceptually transition through explicit lifecycle states for implementation clarity: `COLLAPSED -> EXPANDING -> EXPANDED -> COLLAPSING -> COLLAPSED`. Implementations MAY represent these as internal enums or booleans plus transient flags, but must ensure that ARIA attributes reflect `aria-expanded` only when the target state is reached (`EXPANDED`), and that keyboard/interaction handlers consult the in-progress state to avoid conflicting operations.
@@ -475,7 +542,7 @@ A user visits a URL with a hash (e.g., #faq-question-3), and the accordion autom
 #### FR-110a: Input Validation — titleHeadingLevel and deepLinkSmudge
 
 - **FR-110a**: Input validation rules:
-  - `titleHeadingLevel` MUST accept only integers in the range 1..6. If an invalid value is provided, the component MUST call `ErrorHandler.handleError()` and fall back to `null` (no heading wrapper).
+  - `titleHeadingLevel` MUST accept only integers in the range 1..6. If an invalid value is provided (including non-integer, out-of-range, or undefined), the component MUST call `ErrorHandler.handleError()` with a diagnostic message and coerce to `null` (no heading wrapper). The fallback value `null` disables heading wrapper rendering and is the same as the default.
   - `deepLinkSmudgeDelay` MUST be coerced to a non-negative integer; negative values MUST be treated as their absolute value and reported via `ErrorHandler.handleError()`.
   - `deepLinkSmudgeOffset` MUST be coerced to an integer; non-numeric values MUST result in `0` with a diagnostic via `ErrorHandler.handleError()`.
 
@@ -520,7 +587,7 @@ When a `<nfs-accordion-item>` registers its `panelId` (consumer-provided or auto
 
 **Duplicate Detection Behavior**: If duplicate `panelId` values are detected within the same accordion instance, the component MUST:
 
-- (a) Expand the first matching panel only (deterministic by DOM/registration order)
+- (a) Expand the first matching panel only by registration order (deterministic). Implementation: `duplicates[0].down()`
 - (b) NOT mutate or auto-suffix developer-provided `panelId` values
 - (c) Report a non-fatal configuration error via `ErrorHandler.handleError()` with the following message format:
   ```
@@ -577,7 +644,7 @@ When `panelId` is auto-generated (consumer does not provide explicit value), the
 
 2. **No Reuse After Destruction**: Auto-generated IDs MUST be globally unique per accordion instance for the entire component's lifetime. When an item with an auto-generated `panelId` is destroyed (removed from the accordion), that ID MUST NOT be reused for any future item, even if a new item is added later. The ID counter for auto-generation MUST only increment; it never resets or cycles.
 
-3. **Implementation Strategy**: The accordion MUST track auto-generated IDs using a persistent counter (e.g., `nextGeneratedIdIndex: number`) and a `Map<itemInstance, string>` to associate each item with its generated ID. This ensures stability across array mutations while preventing ID reuse after destruction.
+3. **Implementation Strategy**: The accordion MUST track auto-generated IDs using a persistent counter (e.g., `nextGeneratedIdIndex: number`) and a `Map<itemInstance, string>` to associate each item with its generated ID. This ensures stability across array mutations while preventing ID reuse after destruction. The `NfsAccordionIdGeneratorService` is an internal implementation detail and is intentionally not exported from the public API; it exists solely to support the accordion's auto-generation mechanism.
 
 **Implication for Dynamic Lists**: When rendering accordion items via `@for items` with auto-generated `panelId` values, developers do not need to provide explicit `trackBy` functions or explicit `panelId` values to maintain stable deep links. The auto-generation mechanism automatically provides stable IDs per item regardless of array order changes.
 
@@ -587,7 +654,7 @@ When `panelId` is auto-generated (consumer does not provide explicit value), the
 #### Public API - Outputs
 
 - **FR-021**: `<nfs-accordion>` MUST expose `down` and `up` output events (Foundation parity), each providing the item ID and new expanded state
-- **FR-022**: Output events MUST NOT fire when an action is prevented (e.g., disabled item or cannot close last open item)
+- **FR-022**: Output events MUST NOT fire when an action is prevented. Actions are prevented in these cases: (1) item is disabled (global `accordion.disabled` or item-level `item.disabled` is true), (2) closing would violate `allowAllClosed` constraint (cannot close last open item when `allowAllClosed` is false), (3) item is soft-disabled (`softDisabled` is true and item is disabled but focusable), (4) state machine transition is in-flight (debounce window or animation in progress per FR-089a)
 - **FR-023**: Output payload MUST include `itemId` and `expanded` for consumers to react without querying DOM
 
 #### Content Projection
@@ -611,14 +678,14 @@ When `panelId` is auto-generated (consumer does not provide explicit value), the
 
 #### Keyboard Interactions
 
-- **FR-037**: Pressing Tab MUST move focus to the next focusable element in the natural tab order
+- **FR-037**: Pressing Tab MUST move focus to the next focusable element in the natural tab order (see also FR-050, FR-050a for soft/hard disabled tab behavior)
 - **FR-038**: When focused on an accordion title, pressing Enter or Space MUST toggle the item's expansion state
-- **FR-039**: When focused on an accordion title, pressing ArrowDown MUST move focus to the next enabled accordion title
-- **FR-040**: When focused on an accordion title, pressing ArrowUp MUST move focus to the previous enabled accordion title
-- **FR-041**: Arrow key navigation MUST wrap when `wrap` input is true (ArrowDown on last item moves to first; ArrowUp on first item moves to last)
-- **FR-042**: When focused on an accordion title, pressing Home MUST move focus to the first enabled accordion title
-- **FR-043**: When focused on an accordion title, pressing End MUST move focus to the last enabled accordion title
-- **FR-044**: Disabled items MUST be skipped during arrow key navigation
+- **FR-039**: When focused on an accordion title, pressing ArrowDown MUST move focus to the next enabled accordion title (see also FR-037, FR-041, FR-044)
+- **FR-040**: When focused on an accordion title, pressing ArrowUp MUST move focus to the previous enabled accordion title (see also FR-037, FR-041, FR-044)
+- **FR-041**: Arrow key navigation MUST wrap when `wrap` input is true (ArrowDown on last item moves to first; ArrowUp on first item moves to last) (see also FR-039, FR-040)
+- **FR-042**: When focused on an accordion title, pressing Home MUST move focus to the first enabled accordion title (see also FR-039, FR-040, FR-044)
+- **FR-043**: When focused on an accordion title, pressing End MUST move focus to the last enabled accordion title (see also FR-039, FR-040, FR-044)
+- **FR-044**: Disabled items MUST be skipped during arrow key navigation (see also FR-050, FR-050a, FR-048)
 - **FR-045**: Keyboard interactions MUST only affect the title/trigger elements, not the content panels
 
 #### Disabled State
@@ -641,7 +708,7 @@ When `panelId` is auto-generated (consumer does not provide explicit value), the
 - **FR-053**: Component MUST support dynamically added/removed accordion items (e.g., via `@for`)
 - **FR-054**: When items are added/removed, ARIA relationships (aria-controls, aria-labelledby) MUST remain correctly linked
 - **FR-055**: When items are added/removed, keyboard navigation MUST update to include/exclude items accordingly
-- **FR-056**: If a focused item is removed from the DOM, focus MUST move to a safe location (next item, previous item, or parent)
+- **FR-056**: If a focused item is removed from the DOM, focus MUST move to a safe location following this priority order: (1) next item in navigation order, (2) previous item in navigation order, (3) parent accordion container element. Navigation order follows the rendered DOM order (top to bottom), not visual or logical grouping.
 - **FR-057**: When an accordion is rendered with zero accordion items (e.g., `@for` iterating over an empty array), the component MUST render the accordion container element (`<ul class="accordion"></ul>`) without errors, with no focusable elements or broken ARIA references, and without displaying a built-in "No items" message (developers are responsible for conditional rendering or custom empty-state UX)
 
 #### Conditional Rendering and ARIA Stability
@@ -696,6 +763,8 @@ When `panelId` is auto-generated (consumer does not provide explicit value), the
   5. **Focus Loss on Item Removal**: If a focused accordion item is removed from the DOM (e.g., via `@for` list mutation) while a concurrent keyboard navigation command (Arrow keys, Home, End) is processing, focus MUST move per FR-056 (next item, previous item, or parent container). The keyboard navigation handler MUST check if the target item still exists in the DOM before applying focus. If the target was removed, fall back to the next available item in navigation order. This prevents focus loss to `<body>` and maintains keyboard accessibility.
 
   **Testing Strategy**: Use Storybook play functions with mock timers (`vi.useFakeTimers()`) to validate debounce timing per FR-089a's ±10ms tolerance. Test scenarios 1-5 above to verify browser event loop ordering, serialization queue behavior, key repeat handling, rapid double-click debouncing, and focus restoration on DOM mutations.
+
+  **Cross-Reference**: See FR-089a's **Timeline Example** section for detailed timing diagrams showing how browser FIFO ordering interacts with FR-089a's 50ms debounce coalescing across different input sources (click, keyboard, programmatic).
 
 #### FR-113a: Interactive Elements in Title Content
 
@@ -777,11 +846,11 @@ Note: AR-015 through AR-018 summarize accessibility implications of FR-037 throu
 
 #### Focus Management
 
-- **AR-019**: Focus indicators MUST be visible and meet WCAG contrast requirements
-- **AR-020**: Focus MUST be managed correctly when items are dynamically added/removed
+- **AR-019**: Focus indicators MUST be visible per WCAG 2.4.7 (Focus Visible) and MUST have a minimum 3:1 contrast ratio against adjacent colors per WCAG 2.4.11 (Focus Appearance)
+- **AR-020**: Focus MUST be managed correctly when items are dynamically added/removed. When a focused item is removed, follow the fallback strategy defined in FR-056: prioritize the next item in DOM order, then the previous item, then the parent container. When items are added, existing focus MUST remain stable unless the focused element is removed.
 - **AR-021**: Focus MUST NOT be lost or trapped within the accordion
 - **AR-022**: When an item is expanded via keyboard, focus MUST remain on the title element (not move to content)
-- **AR-023**: When keyboard navigation moves focus between accordion titles (ArrowUp/Down/Home/End), focus transitions MUST be instant without animation to provide immediate feedback and prevent motion-induced disorientation (aligns with WAI-ARIA APG accordion pattern and WCAG best practices)
+- **AR-023**: When keyboard navigation moves focus between accordion titles (ArrowUp/Down/Home/End), focus transitions MUST complete in less than 50ms (perceived as instant) to provide immediate feedback and prevent motion-induced disorientation per WCAG 2.3.3 (Animation from Interactions) and WAI-ARIA APG accordion pattern
 
 #### Screen Reader Support
 
@@ -1214,7 +1283,7 @@ export class NfsAccordionComponent {
 }
 ```
 
-**Focus Movement Animation**: Per AR-023, focus transitions during keyboard navigation (ArrowUp/Down/Home/End) must be instant without animation. Do not apply CSS transitions to `:focus` or `:focus-visible` states that would delay or animate focus indicator changes. This ensures immediate feedback for keyboard users and prevents motion-induced disorientation (WCAG best practice, WAI-ARIA APG alignment).
+**Focus Movement Animation**: Per AR-023, focus transitions during keyboard navigation (ArrowUp/Down/Home/End) must complete in less than 50ms. Do not apply CSS transitions to `:focus` or `:focus-visible` states that would delay or animate focus indicator changes beyond this threshold. This ensures immediate feedback for keyboard users and prevents motion-induced disorientation per WCAG 2.3.3 (Animation from Interactions) and WAI-ARIA APG alignment.
 
 ### State Management with Signals
 

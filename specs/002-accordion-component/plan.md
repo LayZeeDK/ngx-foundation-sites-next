@@ -46,7 +46,7 @@ Build an accessible, Angular-native accordion component that provides Foundation
 
 **Implementation Scope**: All user stories (US1-US10) implemented via template-directive composition. No migration to component-based API planned.
 
-**Known Implementation Gaps**: See **[GAPS_REMEDIATION.md](./GAPS_REMEDIATION.md)** for comprehensive tracking with evidence, fix estimates, and validation methodology. _(Last validated: 2026-01-16 via automated gap implementation)_
+**Known Implementation Gaps**: See **[GAPS_REMEDIATION.md](./GAPS_REMEDIATION.md)** for comprehensive tracking with evidence, fix estimates, and validation methodology. File is maintained in this directory and updated after each gap remediation cycle (automated via `/implement-reported-gaps` skill). _(Last validated: 2026-01-16 via automated gap implementation; refreshed after each PR merge to main)_
 
 **P0 - BLOCKING** (32 min):
 
@@ -104,6 +104,8 @@ Build an accessible, Angular-native accordion component that provides Foundation
 - **Not Gaps**: Design-compliant behaviors (animation CSS-only, live regions opt-in, @angular/aria ARIA edge cases)
 
 **Validation**: Last validated 2026-01-16 via automated gap implementation. Referenced framework findings are cross-linked to specification requirements and tracked in parallel in `tasks.md`.
+
+**File Location & Refresh Mechanism**: GAPS_REMEDIATION.md is stored in this directory (`specs/002-accordion-component/`) alongside spec.md and tasks.md. The file is automatically updated and refreshed after each gap remediation cycle completes. When fixes are implemented via the `/implement-reported-gaps` skill, the document is re-validated and status markers updated to reflect completed work. Gap fixes flow back to spec.md and tasks.md through the skill's cross-artifact synchronization logic.
 
 ---
 
