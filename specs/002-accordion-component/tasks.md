@@ -687,6 +687,7 @@ Task T020: "Create NfsAccordionTitle component"
 - Related Phase: Phase 3 (US1), Phase 4 (US2) - Extends basic interaction and keyboard navigation with race condition handling
 - Blocking: YES (prevents race conditions in rapid UI interactions)
 - Evidence: `accordion-item-def.ts` updated with `requestToggle()` queue/debounce; `accordion-item-def.spec.ts` simulates rapid toggles
+- **Note**: Core implementation complete. Tasks T-AC-001b-d below provide comprehensive test coverage for all FR-089a debounce scenarios (currently pending).
 
 - [ ] T-AC-001b [P?] Add Storybook play test for FR-089a input source distinction
   - Location: packages/ngx-foundation-sites/src/lib/accordion/accordion.stories.ts
@@ -740,17 +741,22 @@ Developer C: User Story 3 (Screen reader ARIA)
 
 ## Implementation Strategy
 
-### MVP First (User Stories 1-3 Only)
+### MVP (User Stories 1-6)
+
+> **Scope Reference**: See [spec.md MVP Scope Definition](./spec.md#mvp-scope-definition) for authoritative scope boundaries and rationale.
 
 1. Complete Phase 1: Setup
 2. Complete Phase 2: Foundational (CRITICAL - blocks all stories)
 3. Complete Phase 3: User Story 1 (basic accordion)
 4. Complete Phase 4: User Story 2 (keyboard navigation)
 5. Complete Phase 5: User Story 3 (screen reader ARIA)
-6. **STOP and VALIDATE**: Test all three P1 stories together - this is a complete, production-ready accessible accordion
-7. Deploy/demo if ready
+6. **CHECKPOINT**: P1 stories complete - fully accessible accordion
+7. Complete Phase 6: User Story 4 (multi-expand)
+8. Complete Phase 7: User Story 5 (allow all closed)
+9. Complete Phase 8: User Story 6 (disabled items)
+10. **MVP COMPLETE**: Validate all P1/P2 stories together
 
-**Rationale**: User Stories 1-3 are all P1 (WCAG AA required) and form the minimum viable accessible accordion. This is the smallest shippable increment.
+**Rationale**: US1-US3 (P1) are WCAG AA required. US4-US6 (P2) build on this foundation with minimal effort and deliver commonly expected production features. See spec.md for full rationale.
 
 ### Incremental Delivery
 
@@ -779,8 +785,8 @@ With multiple developers:
 
 ## Summary
 
-**Total Tasks**: 212 tasks across 16 phases
-**MVP+ Scope**: Phases 1-8 (User Stories 1-6, P1/P2) = ~130 tasks = ~61% of total
+**Total Tasks**: 219 tasks across 16 phases (212 standard T### tasks + 7 remediation T-AC tasks)
+**MVP+ Scope**: Phases 1-8 (User Stories 1-6, P1/P2) = ~130 tasks = ~59% of total
 **Task Breakdown by User Story**:
 
 - US1 (Basic Accordion): 21 tasks — **COMPLETE** ✅
@@ -794,7 +800,7 @@ With multiple developers:
 - US9 (SSR): 7 tasks (includes T179, T180 for hydration fallback)
 - US10 (Deep Linking): 22 tasks (includes T117a, T117b for ErrorHandler and multiExpand E2E tests)
 - Advanced ARIA (Phase 15): 6 tasks (includes T194, T195 for heading level updates)
-- Remediation: 5 tasks (T-AC-001 done, T-AC-001b pending, T-AC-002 meta-task→T196-T199, T-AC-003 done, T-AC-004 done)
+- Remediation: 7 tasks (T-AC-001 done, T-AC-001b pending, T-AC-001c pending, T-AC-001d pending, T-AC-002 meta-task→T196-T199, T-AC-003 done, T-AC-004 done)
 
 **Parallel Opportunities**: 74 tasks marked [P] can run in parallel (~35% of total)
 **Independent Test Criteria**: Each user story has clear independent test criteria and can be validated separately
@@ -812,8 +818,9 @@ With multiple developers:
 - Verify Storybook tests fail before implementing features (test-driven development)
 - Commit after each task or logical group of tasks
 - Stop at any checkpoint to validate story independently
-- MVP = User Stories 1-3 (P1) = fully accessible accordion component
-- MVP+ = User Stories 1-6 (P1/P2) = fully accessible accordion with multi-expand, allow-all-closed, and disabled item support
+- **MVP Scope**: See [spec.md MVP Scope Definition](./spec.md#mvp-scope-definition) for authoritative scope boundaries
+- MVP = User Stories 1-6 (P1/P2) = fully accessible accordion with multi-expand, allow-all-closed, and disabled item support
+- Post-MVP = User Stories 7-10 (P3/P4) = dynamic content, SSR, deep linking enhancements
 - Foundation API parity (Phase 13) is cross-cutting and integrates with multiple stories
 - Lazy content (Phase 14) and advanced ARIA (Phase 15) are optional extensions
 - All 10 user stories delivered = complete feature per spec.md

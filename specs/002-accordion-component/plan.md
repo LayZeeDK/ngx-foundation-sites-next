@@ -64,6 +64,10 @@ Build an accessible, Angular-native accordion component that provides Foundation
 
 - **GAP-8**: SSR error handling missing try/catch in `afterNextRender` blocks (violates FR-062a)
 
+**P3 - DEFERRED (Post-MVP)**:
+
+- **GAP-9**: US8 Dynamic Item Management blocked by API limitation — `panelId` uses `input.required<string>()` which prevents `@for` template loops (NG0950 error). **Recommended path**: Option B (defer to post-MVP), then Option A (make `panelId` optional with auto-generation) in follow-up release. See spec.md US8 (lines 281-345) for recovery options and workaround pattern. _(Status: POST-MVP per spec.md decision 2026-01-17)_
+
 **Not Gaps** (working as designed per spec):
 
 - Animation hooks are CSS-only (Goals/Non-Goals:575-577)
@@ -82,7 +86,7 @@ Build an accessible, Angular-native accordion component that provides Foundation
 **Testing**: Vitest 4.0.9 with @analogjs/vitest-angular, Playwright 1.36.0 (E2E), Storybook 10.1.10 with test-runner and axe-playwright
 **Target Platform**: Modern browsers (Chromium-based tested), SSR-ready (@angular/platform-server available)
 **Project Type**: Nx monorepo (v22.3.1) with Angular library package (`packages/ngx-foundation-sites/`)
-**Performance Goals**: 100 accordion items max, 5s initial render, 200ms toggle responsiveness, <100ms keyboard navigation
+**Performance Goals**: 100 accordion items max (edge case), 5s initial render (100-item scenario), 200ms toggle responsiveness (100-item scenario), <100ms keyboard navigation (typical counts)
 **Constraints**: WCAG AA compliance mandatory, no Foundation JavaScript dependencies, ViewEncapsulation.None with runtime CSS loading, **Foundation JS API parity required**
 **Scale/Scope**: Single-feature component library contribution (accordion + 3 structural directives), Storybook stories with interactive tests, E2E tests for History API integration
 
@@ -286,4 +290,4 @@ _No violations. All constitution principles satisfied._
 
 This ensures **API parity** (FR-075, FR-076) without introducing Foundation JavaScript dependency, maintaining Angular-native implementation while preserving developer familiarity.
 
-See tasks.md for remediation task tracking (T-AC-001 through T-AC-004).
+See tasks.md for task breakdown: 219 total tasks (212 standard T### tasks + 7 remediation T-AC tasks) across 16 implementation phases.
