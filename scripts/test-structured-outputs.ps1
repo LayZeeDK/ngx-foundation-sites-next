@@ -22,10 +22,67 @@ Write-Host "✅ Feature detected: $branch" -ForegroundColor Green
 Write-Host "📁 Feature directory: $featureDir"
 Write-Host ""
 
-# Minified JSON schema (from .claude/skills/analyze-report-gaps/SKILL.md)
-$schema = '{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"feature_name":{"type":"string"},"analysis_date":{"type":"string","format":"date"},"analyst":{"type":"string","const":"Claude Haiku 4.5"},"method":{"type":"string","const":"6-pass cross-artifact consistency analysis"},"findings":{"type":"array","maxItems":50,"items":{"type":"object","properties":{"id":{"type":"string","pattern":"^[DAUCGI]\\d{2}$"},"category":{"type":"string","enum":["Duplication","Ambiguity","Underspecification","ConstitutionAlignment","CoverageGap","Inconsistency"]},"severity":{"type":"string","enum":["CRITICAL","HIGH","MEDIUM","LOW"]},"locations":{"type":"array","items":{"type":"string"}},"summary":{"type":"string"},"recommendation":{"type":"string"}},"required":["id","category","severity","locations","summary","recommendation"]}},"coverage_summary":{"type":"array","items":{"type":"object","properties":{"requirement_key":{"type":"string"},"has_task":{"type":"boolean"},"task_ids":{"type":"array","items":{"type":"string"}},"notes":{"type":"string"}},"required":["requirement_key","has_task","task_ids"]}},"constitution_issues":{"type":"array","items":{"type":"object","properties":{"principle":{"type":"string"},"violation":{"type":"string"},"location":{"type":"string"}},"required":["principle","violation","location"]}},"unmapped_tasks":{"type":"array","items":{"type":"object","properties":{"task_id":{"type":"string"},"description":{"type":"string"}},"required":["task_id","description"]}},"metrics":{"type":"object","properties":{"total_requirements":{"type":"integer","minimum":0},"total_tasks":{"type":"integer","minimum":0},"coverage_percentage":{"type":"number","minimum":0,"maximum":100},"ambiguity_count":{"type":"integer","minimum":0},"duplication_count":{"type":"integer","minimum":0},"critical_issues":{"type":"integer","minimum":0}},"required":["total_requirements","total_tasks","coverage_percentage","critical_issues"]},"next_actions":{"type":"array","items":{"type":"string"}}},"required":["feature_name","analysis_date","analyst","method","findings","metrics"]}'
+# JSON schema (from .claude/skills/analyze-report-gaps/SKILL.md)
+# Save to temp file to avoid shell argument length issues
+$schemaFile = "$env:TEMP/gap-analysis-schema.json"
+$schemaContent = @"
+{
+  "`$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "feature_name": {"type": "string"},
+    "analysis_date": {"type": "string", "format": "date"},
+    "analyst": {"type": "string", "const": "Claude Haiku 4.5"},
+    "method": {"type": "string", "const": "6-pass cross-artifact consistency analysis"},
+    "findings": {
+      "type": "array",
+      "maxItems": 50,
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "string", "pattern": "^[DAUCGI]\\d{2}`$"},
+          "category": {"type": "string", "enum": ["Duplication", "Ambiguity", "Underspecification", "ConstitutionAlignment", "CoverageGap", "Inconsistency"]},
+          "severity": {"type": "string", "enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW"]},
+          "locations": {"type": "array", "items": {"type": "string"}},
+          "summary": {"type": "string"},
+          "recommendation": {"type": "string"}
+        },
+        "required": ["id", "category", "severity", "locations", "summary", "recommendation"]
+      }
+    },
+    "coverage_summary": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "requirement_key": {"type": "string"},
+          "has_task": {"type": "boolean"},
+          "task_ids": {"type": "array", "items": {"type": "string"}},
+          "notes": {"type": "string"}
+        },
+        "required": ["requirement_key", "has_task", "task_ids"]
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "properties": {
+        "total_requirements": {"type": "integer", "minimum": 0},
+        "total_tasks": {"type": "integer", "minimum": 0},
+        "coverage_percentage": {"type": "number", "minimum": 0, "maximum": 100},
+        "critical_issues": {"type": "integer", "minimum": 0}
+      },
+      "required": ["total_requirements", "total_tasks", "coverage_percentage", "critical_issues"]
+    }
+  },
+  "required": ["feature_name", "analysis_date", "analyst", "method", "findings", "metrics"]
+}
+"@
 
-Write-Host "📋 Schema loaded ($($schema.Length) bytes)"
+# Write schema to temp file
+$schemaContent | Out-File -FilePath $schemaFile -Encoding UTF8
+
+Write-Host "📋 Schema saved to: $schemaFile"
+Write-Host "   Size: $((Get-Item $schemaFile).Length) bytes"
 Write-Host ""
 
 # Enable debug output in nested session
@@ -70,13 +127,13 @@ $outputFile = "$featureDir/gap-analysis-cli-output.json"
 # Invoke with permission flags
 # Use PowerShell splatting to avoid backtick continuation issues
 # NOTE: --tools flag causes errors with --print (breaks positional arg parsing)
-# --permission-mode is OK and may help skip prompts in nested sessions
+# Use schema FILE instead of inline to avoid shell argument length limits
 $claudeArgs = @(
     '--print'
     '--model', 'haiku'
     '--output-format', 'json'
-    '--json-schema', $schema
-    '--permission-mode', 'bypassPermissions'  # OK: Helps skip permission prompts
+    '--json-schema', $schemaFile  # Use file path instead of inline JSON
+    '--permission-mode', 'bypassPermissions'
     $analysisPrompt  # Prompt as final positional argument
 )
 
@@ -108,30 +165,25 @@ try {
     # Execute with timeout (gap analysis can take 30-60 seconds)
     Write-Host "⏱️  Starting with 2-minute timeout..." -ForegroundColor Cyan
 
-    # Use job for timeout control
-    $job = Start-Job -ScriptBlock {
-        param($args)
-        & claude @args 2>&1
-    } -ArgumentList (,$claudeArgs)
+    # Don't use jobs - they complicate argument passing
+    # Use simple execution with manual timeout via process management
 
-    # Wait for completion with timeout (120 seconds)
-    $completed = Wait-Job -Job $job -Timeout 120
+    # Build command string for debugging
+    $commandString = "claude " + ($claudeArgs -join " ")
+    Write-Host "🔍 Debug: Executing command (args count: $($claudeArgs.Count))" -ForegroundColor Yellow
 
-    if ($completed) {
-        $output = Receive-Job -Job $job
-        $exitCode = 0
+    # Execute directly without job wrapper (jobs break splatting)
+    $output = & claude @claudeArgs 2>&1
+    $exitCode = $LASTEXITCODE
 
-        # Write output to file
-        $output | Out-File -FilePath $outputFile -Encoding UTF8
+    # Write output to file
+    $output | Out-File -FilePath $outputFile -Encoding UTF8
 
-        Write-Host "✅ Completed within timeout" -ForegroundColor Green
+    if ($exitCode -eq 0) {
+        Write-Host "✅ Completed successfully" -ForegroundColor Green
     } else {
-        Write-Host "⏱️  Timeout exceeded (2 minutes)" -ForegroundColor Yellow
-        Stop-Job -Job $job
-        $exitCode = 124  # Timeout exit code
+        Write-Host "❌ Command failed with exit code: $exitCode" -ForegroundColor Red
     }
-
-    Remove-Job -Job $job -Force
 }
 catch {
     Write-Host "❌ Exception during CLI invocation: $_" -ForegroundColor Red
@@ -149,16 +201,23 @@ if ($exitCode -eq 0) {
         Write-Host "   Size: $fileSize bytes"
         Write-Host ""
 
-        # Extract structured_output field
-        if (Get-Command jq -ErrorAction SilentlyContinue) {
-            Write-Host "🔍 Extracting structured_output field..."
+        # Extract structured_output field using PowerShell (no jq needed!)
+        Write-Host "🔍 Extracting structured_output field (PowerShell native)..." -ForegroundColor Cyan
+
+        try {
+            $jsonContent = Get-Content $outputFile -Raw | ConvertFrom-Json
             $reportFile = "$featureDir/gap-analysis-report.json"
 
-            & jq '.structured_output' $outputFile > $reportFile
+            # Check if structured_output field exists
+            if ($jsonContent.PSObject.Properties.Name -contains 'structured_output') {
+                $structuredOutput = $jsonContent.structured_output
 
-            if ($LASTEXITCODE -eq 0) {
-                $findingsCount = & jq '.findings | length' $reportFile
-                $criticalCount = & jq '[.findings[] | select(.severity == "CRITICAL")] | length' $reportFile
+                # Write to report file
+                $structuredOutput | ConvertTo-Json -Depth 10 | Out-File -FilePath $reportFile -Encoding UTF8
+
+                # Get metrics
+                $findingsCount = $structuredOutput.findings.Count
+                $criticalCount = ($structuredOutput.findings | Where-Object { $_.severity -eq "CRITICAL" }).Count
 
                 Write-Host "✅ Structured output extracted: $reportFile" -ForegroundColor Green
                 Write-Host ""
@@ -167,22 +226,34 @@ if ($exitCode -eq 0) {
                 Write-Host "   Critical issues: $criticalCount"
                 Write-Host ""
 
-                # Cleanup temp file
+                # Cleanup temp files
                 Remove-Item $outputFile -Force
+                Remove-Item $schemaFile -Force
 
                 Write-Host "🎉 Success! Structured outputs working correctly." -ForegroundColor Green
+            } else {
+                Write-Host "⚠️  No structured_output field found in response" -ForegroundColor Yellow
+                Write-Host "   Available fields: $($jsonContent.PSObject.Properties.Name -join ', ')" -ForegroundColor Yellow
+                Write-Host ""
+
+                # Show what we got instead
+                if ($jsonContent.PSObject.Properties.Name -contains 'result') {
+                    Write-Host "📄 Response result (first 300 chars):" -ForegroundColor Cyan
+                    $resultText = $jsonContent.result
+                    Write-Host $resultText.Substring(0, [Math]::Min(300, $resultText.Length))
+                    Write-Host ""
+                    Write-Host "⚠️  Structured outputs weren't activated. Check:" -ForegroundColor Yellow
+                    Write-Host "   1. Is --json-schema flag working?" -ForegroundColor Yellow
+                    Write-Host "   2. Did skill auto-invocation happen?" -ForegroundColor Yellow
+                    Write-Host "   3. Is the natural language prompt close enough to skill description?" -ForegroundColor Yellow
+                }
             }
-            else {
-                Write-Host "❌ Failed to extract structured_output field" -ForegroundColor Red
-                Write-Host "   Raw output: $outputFile"
-                exit 1
-            }
-        }
-        else {
-            Write-Host "⚠️  jq not found - cannot extract structured_output field" -ForegroundColor Yellow
-            Write-Host "   Raw output: $outputFile"
-            Write-Host "   Install jq to complete extraction"
-            Write-Host "   Download from: https://jqlang.github.io/jq/download/"
+        } catch {
+            Write-Host "❌ Failed to parse JSON output: $_" -ForegroundColor Red
+            Write-Host ""
+            Write-Host "📄 Raw file content:" -ForegroundColor Yellow
+            Get-Content $outputFile
+            exit 1
         }
     }
     else {
