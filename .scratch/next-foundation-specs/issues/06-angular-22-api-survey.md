@@ -31,12 +31,12 @@ Gist (all cited in the findings file; source tags in `packages/**` are the autho
 - Deprecated: the whole `@angular/animations` package and its providers (20.2, "Intent to remove in v23"); `ChangeDetectionStrategy.Default` (use `Eager`; OnPush is the default in 22); `Router.getCurrentNavigation()` (use the `currentNavigation` signal); `Router.isActive` (use the `isActive()` function); `withFetch` (fetch is the default backend, `withXhr` opts out); `TestBed.flushEffects` (use `tick()`); `*ngIf`/`*ngFor`/`*ngSwitch`; `@HostBinding`/`@HostListener` are backwards-compat only.
 - Zoneless is the default since v21 and OnPush the default component strategy in v22; a library component that hosts user components via `ViewContainerRef.createComponent` may need `Eager`, plain content projection does not.
 - SSR/hydration rules for DOM-touching directives: no DOM mutation outside render callbacks, `ngSkipHydration` only on component hosts, no `isPlatformBrowser` template branches, prefer platform-specific providers, `Renderer2` cannot mutate DOM on the server, `REQUEST`/`RESPONSE_INIT` tokens in core.
-- Signal Forms is the Abide replacement: schema rules (`required/min/max/minLength/maxLength/pattern/validate/validateTree/validateHttp/validateStandardSchema`, `disabled/hidden/readonly/debounce`), `FormField`/`FormRoot` directives, `FormValueControl`/`FormCheckboxControl` for custom controls, `transformedValue`, `focusBoundControl`; native constraint attributes are mirrored (except `pattern`) but native validity is not used.
+- Signal Forms is stable in v22 and a candidate Abide replacement: schema rules (`required/min/max/minLength/maxLength/pattern/validate/validateTree/validateHttp/validateStandardSchema`, `disabled/hidden/readonly/debounce`), `FormField`/`FormRoot` directives, `FormValueControl`/`FormCheckboxControl` for custom controls, `transformedValue`, `focusBoundControl`; native constraint attributes are mirrored (except `pattern`) but native validity is not used. The replacement decision itself was made in [ADR 0006, Abide is replaced by Signal Forms plus directives that bind Foundation's error markup to field state](../adr/0006-signal-forms-replaces-abide.md).
 - caniuse table captured (220 features, 22 down to 14) and embedded; it marks `debounced` and `resourceFromSnapshots` stable where the source says experimental.
 
 Surprises:
 
-- TypeScript 7 is not supported: `compiler-cli/src/typescript_support.ts` pins `>=6.0.0 <6.1.0`; roadmap says tsgo support is being prototyped. `map.md` targets typescript 7.0.2. OPEN FOR HUMAN: drop the TS target to 6.0.x or accept `disableTypeScriptVersionCheck`.
+- TypeScript 7 is not supported: `compiler-cli/src/typescript_support.ts` pins `>=6.0.0 <6.1.0`; roadmap says tsgo support is being prototyped. `map.md` targets typescript 7.0.2. OPEN FOR HUMAN: drop the TS target to 6.0.x or accept `disableTypeScriptVersionCheck`. Closed: see the resolution note below.
 - `@Service()` exists and the v22 docs use it everywhere; `@Injectable` stays for constructor DI and advanced providers.
 - `DOCUMENT` moved to `@angular/core`; `@angular/common` keeps a compatibility re-export.
 - The `angular-developer` skill's `signal-forms.md` disagrees with the clone on `when` (not required-only), `null` in models (allowed), validator return (`null` fine), and `submit()` shape (`{action}` / `FormRoot`); its `linked-signal.md` misses the `set` option. Clone wins.
@@ -47,5 +47,7 @@ Open questions not settled from sources:
 
 - `validateAsync` (documented in the skill) was not verified in the clone guides; specs should cite `validateHttp` or check the API reference before using it.
 - Whether Nx 23's Vitest executor exposes the Angular builder's `providersFile`/`animationsEnabled` conveniences is a tooling-ticket question.
+
+Resolution note, 2026-09-25: the orchestrator settled these targets from sources, not by human confirmation. TypeScript 6.0.x, because Angular 22.2's `compiler-cli` accepts only `>=6.0.0 <6.1.0` (this ticket's findings file, "Version compatibility and TypeScript 7"). Vitest 4.1.x, because `@nx/vitest` 23.2.1 and `@storybook/addon-vitest` 10.6 accept only Vitest 3 or 4. [Tooling baseline: Nx 23.2, Angular 22.2, Storybook 10.6, Vitest browser mode](../issues/12-tooling-baseline.md) owns both pins.
 
 Findings: ../research/angular-22-api-survey.md

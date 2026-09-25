@@ -5,6 +5,14 @@ Date: 2026-09-25
 Clone surveyed: `d:/projects/github/angular/angular` at release branch 22.2.x, `package.json` version 22.2.0. Components clone `d:/projects/github/angular/components` version 22.2.0.
 Paths below are relative to the Angular clone unless prefixed. `adev/...` is the angular.dev source; `packages/...` is framework source, where a JSDoc `@publicApi <ver>`, `@developerPreview <ver>`, `@experimental <ver>` or `@deprecated <ver>` tag is the authoritative stability label.
 
+Corrected 2026-09-25 after [Audit 0001: research wave](../audits/0001-research-wave.md), findings H4, M8, M11: see Corrections.
+
+## Corrections
+
+- H4: "Version compatibility and TypeScript 7" and "Testing: Vitest builder and browser mode" stated a stale TypeScript 7.0.2 / Vitest 5.0.2 target and left it open. The target is TypeScript 6.0.x and Vitest 4.1.x, pinned by [Tooling baseline: Nx 23.2, Angular 22.2, Storybook 10.6, Vitest browser mode](../issues/12-tooling-baseline.md). Both sentences are fixed below.
+- M8: the same "Testing: Vitest builder and browser mode" relevance note also named the wrong Nx executor; fixed against the tooling research. "`@defer` and incremental hydration" stated incremental hydration needs an explicit feature flag; fixed against [Angular 22.2 @defer, SSR, prerendering, hydration, and event replay](../issues/38-angular-rendering-modes.md) section 0.
+- M11: "Queries" and "Host bindings and host directives" stated composition choices as settled; both are reworded as candidates, owned by [Building-blocks map and cross-cutting architecture decisions](../issues/14-building-blocks-map.md).
+
 ## How to read stability labels
 
 From `adev/src/content/reference/releases.md`:
@@ -54,7 +62,7 @@ Deprecations that matter to a component library:
 - TypeScript 7 (the Go port, tsgo) is NOT supported by 22.2. `adev/src/content/reference/roadmap.md:62-64`: "We're in the process of prototyping and exploring what this support would look like." No `tsgo`, `native-preview`, or `7.0` string appears anywhere in `package.json`, `compiler-cli`, or `adev/src/content`.
 - Browser baseline for v22: "widely available" Baseline as of 2026-05-07 (`versions.md`, Browser support table). This is what decides whether native `popover`, CSS anchor positioning, `@starting-style`, `calc-size()` and scroll-snap are in bounds for the specs.
 
-OPEN FOR HUMAN: `map.md` targets TypeScript 7.0.2. Angular 22.2.0 rejects it at compile time. Either the map's TypeScript target drops to 6.0.x, or the new repo must set `disableTypeScriptVersionCheck` and accept an unsupported configuration.
+Resolved: the target is TypeScript 6.0.x, not 7.0.2. Angular 22.2.0's `compiler-cli` accepts only `>=6.0.0 <6.1.0` and rejects 7.0.2 at compile time; [Tooling baseline: Nx 23.2, Angular 22.2, Storybook 10.6, Vitest browser mode](../issues/12-tooling-baseline.md) pins `~6.0.3` from this fact and the peer ranges of `@angular/build` and `@angular/compiler-cli`.
 
 ## Signals: `signal`, `computed`, `untracked`
 
@@ -181,7 +189,7 @@ subItem = contentChild(SUB_ITEM_TOKEN);                      // any ProviderToke
 
 Queries never pierce component boundaries. Decorator queries remain supported. Results become available as signals; `ngAfterContentInit`/`ngAfterViewInit` are only needed for decorator queries.
 
-Relevance: Accordion, Tabs, Orbit, DropdownMenu, Drilldown are parent directives that enumerate child directives via `contentChildren(..., {descendants: true})` and index them for keyboard navigation. Pair with the token-based DI pattern for projected children.
+Relevance: one option is for Accordion, Tabs, Orbit, DropdownMenu, Drilldown parent directives to enumerate child directives via `contentChildren(..., {descendants: true})` and index them for keyboard navigation, paired with the token-based DI pattern for projected children. `@angular/aria` deliberately avoids `contentChildren` for item discovery: it "has an issue where it will return a successively smaller list each time that the menu is open and closed" (`di-and-composition-patterns.md` section 3c, `src/aria/menu/menu.ts:120-129`), and registers items into a parent-owned sorted collection instead. [Building-blocks map and cross-cutting architecture decisions](../issues/14-building-blocks-map.md) owns which mechanism the specs use.
 
 ## Render hooks: `afterNextRender`, `afterEveryRender`
 
@@ -228,7 +236,7 @@ Host directives (`adev/src/content/guide/directives/directive-composition-api.md
 
 Constraints: applied statically; host directive selectors are ignored; host directives run constructor, `ngOnInit` and host bindings before the host; the host's providers win over host-directive providers; a component and its host directives can inject each other. New in this branch (lines 170-266): de-duplication. A template selector match beats a `hostDirectives` match ("a host directive match represents `Partial<YourDirective>`"); the same directive reached twice through `hostDirectives` is merged into one instance (diamond problem solved); conflicting aliases raise NG8024.
 
-Relevance: this is the composition primitive for the building-blocks map. Foundation's shared Triggers (`data-open`, `data-close`, `data-toggle`), Keyboard and Nest utilities become host directives that Reveal, OffCanvas, Dropdown, Toggler share, and de-duplication means a `TriggerRef`-style shared behaviour is safe to declare in several plugins.
+Relevance: this is a composition primitive candidate for the building-blocks map. One option is for Foundation's shared Triggers (`data-open`, `data-close`, `data-toggle`), Keyboard and Nest utilities to become host directives that Reveal, OffCanvas, Dropdown, Toggler share, where de-duplication would let a `TriggerRef`-style shared behaviour be declared safely in several plugins. [Building-blocks map and cross-cutting architecture decisions](../issues/14-building-blocks-map.md) owns which composition mechanism the specs use.
 
 ## `@defer` and incremental hydration
 
@@ -240,7 +248,7 @@ Sketch (`adev/src/content/guide/templates/defer.md`):
 @defer (on viewport({trigger: el, rootMargin: '100px', threshold: 0.5}); prefetch on idle(500)) {
   <heavy-cmp />
 } @placeholder (minimum 500ms) { ... } @loading (after 100ms; minimum 1s) { ... } @error { ... }
-@defer (hydrate on viewport) { ... }     <!-- incremental hydration, needs provideClientHydration(withIncrementalHydration()) -->
+@defer (hydrate on viewport) { ... }     <!-- incremental hydration, on by default with plain provideClientHydration() in 22.x -->
 ```
 
 Triggers: `idle` (optional timeout), `viewport` (options object new here), `interaction`, `hover`, `immediate`, `timer`, `when`; multiple `on` triggers are OR-ed. `provideIdleServiceWith(CustomIdleService)` customises idle. Only standalone dependencies are deferred; dependencies referenced outside the block or in view queries are eager; barrel imports defeat chunk splitting (lines 385-412). SSR renders the placeholder unless `hydrate` triggers are used. Testing: `TestBed.configureTestingModule({deferBlockBehavior: DeferBlockBehavior.Manual})` and `fixture.getDeferBlocks()`. Accessibility note: wrap in `aria-live` when the swap should be announced (lines 426-447).
@@ -312,7 +320,7 @@ Custom controls: implement `FormValueControl<T>` with `value = model<T>()`, or `
 
 Native validation: Signal Forms does not use constraint validation; `required`, `min`, `max`, `minLength`, `maxLength` are mirrored to native attributes for accessibility, `pattern` is not; do not style with `:invalid` (`validation.md:55-67`). Model structural layer must be plain objects/arrays; `undefined` removes a field; `null` is allowed for optional leaves (`models.md:43-147`).
 
-Relevance: Abide's replacement. Foundation's `data-abide` markup (`.is-invalid-input`, `.form-error.is-visible`, `data-live-validate`, `data-validate-on-blur`) maps to class bindings on `touched() && invalid()`, `debounce(path, 'blur')`, and the `FormField` directive; Abide's custom validators (`equalTo`, patterns like `alpha`, `url`, `card`) become `validate()` wrappers or a companion `schema()` exported next to the directive. A Foundation-styled control that implements `FormValueControl` works in Signal Forms and legacy forms alike.
+Relevance: a candidate Abide replacement (the decision is [ADR 0006](../adr/0006-signal-forms-replaces-abide.md)). Foundation's `data-abide` markup (`.is-invalid-input`, `.form-error.is-visible`, `data-live-validate`, `data-validate-on-blur`) maps to class bindings on `touched() && invalid()`, `debounce(path, 'blur')`, and the `FormField` directive; Abide's custom validators (`equalTo`, patterns like `alpha`, `url`, `card`) become `validate()` wrappers or a companion `schema()` exported next to the directive. A Foundation-styled control that implements `FormValueControl` works in Signal Forms and legacy forms alike.
 
 Disagreements between `references/signal-forms.md` (skill) and the clone:
 
@@ -409,7 +417,7 @@ Stability: Vitest is the default and stable unit-test runner since v21 (roadmap 
 
 From `adev/src/content/guide/testing/overview.md`: builder `@angular/build:unit-test`; options `include`, `exclude`, `setupFiles`, `providersFile` (default export of providers), `coverage`, `browsers`, `runnerConfig` (custom `vitest-base.config.ts`, CLI overrides `test.projects` and `test.include`). Node + `jsdom` (or `happy-dom`) by default; browser mode via `npm i -D @vitest/browser-playwright playwright` and `browsers: ['chromium']` or `--browsers=chromiumHeadless`; `CI=true` forces headless single run. `zone.js/plugins/vitest-patch` restores `fakeAsync`/`flush` but Vitest fake timers are recommended (`migrating-to-vitest.md:226-232`). TestBed: `TestBed.tick()` (flushEffects deprecated), `animationsEnabled`, `deferBlockBehavior`, `inferTagName`, `TestBed.getLastFixture` (caniuse S 22), `await fixture.whenStable()` for zoneless.
 
-Relevance: map.md pins vitest 5.0.2 and `@vitest/browser-playwright`. In an Nx workspace the `@nx/vite:test` executor rather than `@angular/build:unit-test` runs Vitest, so the `angular.json` options above become `vitest.config.mts` settings; the Angular-specific parts that carry over are `TestBed` zoneless behaviour, `animationsEnabled`, and component harnesses (`@angular/cdk/testing`, `@angular/aria/*/testing`, `references/angular-aria.md` section 9).
+Relevance: the pinned target is Vitest 4.1.x and `@vitest/browser-playwright`, per [Tooling baseline: Nx 23.2, Angular 22.2, Storybook 10.6, Vitest browser mode](../issues/12-tooling-baseline.md) (Vitest 5.0.2 is refused by `@nx/vitest` 23.2.1 and `@storybook/addon-vitest` 10.6). In an Nx workspace, the Nx Angular library generator's publishable-library path writes `@nx/angular:unit-test`, a thin wrapper over `@angular/build`'s unit-test builder; there is no `vitest.config.ts` on this path, so the target options above are the configuration surface, not a `vitest.config.mts` file. The Angular-specific parts that carry over are `TestBed` zoneless behaviour, `animationsEnabled`, and component harnesses (`@angular/cdk/testing`, `@angular/aria/*/testing`, `references/angular-aria.md` section 9).
 
 ## `@angular/aria` (context only; per-pattern tickets cover the API)
 
