@@ -1,0 +1,40 @@
+.box {
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 1px solid #999;
+}
+
+.nfs-fade-in {
+  animation: nfs-fade-in 400ms ease;
+}
+
+/* The suppression rule for .nfs-fade-in-gated lives in src/styles.css (global,
+   unencapsulated) -- an emulated-encapsulation component stylesheet can't
+   write `html.nfs-hydrating ...` because Angular only stamps the
+   [_ngcontent-*] attribute on elements the component renders, never on
+   ancestors like <html> outside any component; that selector silently never
+   matches from here (first prototype run found this the hard way: the gate
+   had no effect because of this attribute-selector encapsulation, not
+   because of anything hydration-related). */
+.nfs-fade-in-gated {
+  animation: nfs-fade-in 400ms ease;
+}
+
+.nfs-fade-in-gated-read {
+  animation: nfs-fade-in 400ms ease;
+}
+
+.nfs-fade-in-gated-delayed {
+  animation: nfs-fade-in 400ms ease;
+}
+
+@keyframes nfs-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

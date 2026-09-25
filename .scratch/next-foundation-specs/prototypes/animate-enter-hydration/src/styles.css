@@ -1,0 +1,21 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* CSS-gate suppression under test (prototype 52 / P11): the keyframe on
+   .nfs-fade-in-gated is disabled while <html> carries .nfs-hydrating, which
+   index.html sets synchronously and the root component removes in its first
+   afterNextRender. Must live in a global stylesheet, not a component
+   stylesheet: emulated view encapsulation only stamps the [_ngcontent-*]
+   attribute on elements the component renders, never on <html>. */
+html.nfs-hydrating .nfs-fade-in-gated {
+  animation: none !important;
+}
+
+/* Read-phase variant: see app.ts. */
+html.nfs-hydrating-read .nfs-fade-in-gated-read {
+  animation: none !important;
+}
+
+/* Delayed (700ms) variant: see app.ts. */
+html.nfs-hydrating-delayed .nfs-fade-in-gated-delayed {
+  animation: none !important;
+}
