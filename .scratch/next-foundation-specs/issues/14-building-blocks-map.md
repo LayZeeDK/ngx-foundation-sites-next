@@ -1,7 +1,7 @@
 # 14. Building-blocks map and cross-cutting architecture decisions
 
 Type: grilling
-Status: open
+Status: resolved
 Blocked by: 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12, 13
 Labels: wayfinder:grilling
 Map: ../map.md
@@ -29,3 +29,150 @@ Decide, and record each as a glossary term in `CONTEXT.md` or an ADR in `adr/` w
 12. **Sass and theming**: in or out of scope for the specs.
 
 Run `/grill-with-docs` against the research files under `research/` as the primary sources, playing both sides. Write `building-blocks.md` as the deliverable: a table of plugin, directive-or-component, rung, primitives, ARIA pattern, platform features, open risks. Write `CONTEXT.md` (glossary only, using the domain-modeling CONTEXT format) and `adr/NNNN-<slug>.md` files for decisions that meet the ADR bar. Mark anything you could not settle from sources as OPEN FOR HUMAN.
+
+## Answer
+
+Resolved 2026-09-25 (AFK, both sides of the grilling played against the sources). Three coordinator messages arrived mid-ticket and are folded in: the rendering-modes rule (decision 13, rebuilt on `research/angular-rendering-modes.md` once ticket 38 resolved), the Testing rule (decision 10: four named layers, browser-level stack left to ticket 41), and the ticket 38 headlines (which changed the Accordion and Tabs content mechanism, the id rule, hover-open listeners, and key-handler ordering).
+
+### Files written
+
+- `building-blocks.md`: Part 1 cross-cutting decisions (1.1 to 1.14, including 1.11 Rendering modes), Part 2 the 22-row matrix as two tables (structure; mechanics with a rendering-mode column), Part 3 shared utilities, Part 4 fog as tickets.
+- `CONTEXT.md`: glossary only, domain-modeling CONTEXT format, 33 terms with `_Avoid_` lists.
+- `adr/0001-directive-first-with-named-exceptions.md`
+- `adr/0002-in-place-measured-positioning-for-anchored-panes.md`
+- `adr/0003-animation-mechanics.md`
+- `adr/0004-menus-use-disclosure-navigation.md`
+- `adr/0005-breakpoint-source-of-truth.md`
+- `adr/0006-signal-forms-replaces-abide.md`
+- `adr/0007-reveal-on-native-dialog.md`
+- `adr/0008-rendering-modes-contract.md`
+
+### Decision log
+
+Format: question; answer; source. Research files are cited by name under `research/`; guide files are under `d:/projects/github/angular/angular/adev/src/content/guide/`.
+
+Decision 1, directive or component:
+
+1. Q: Does the repo skill's "container = component" table survive the user's directive preference? A: No. Directive on the consumer's Foundation markup is the default; only the skill's "one directive or component per structural CSS class" rule survives, with state classes as host bindings. Source: map Standing preferences; `foundation-api-design/SKILL.md` Naming Conventions; `angular-aria-inventory.md` 1.4 (nothing in Aria renders markup); `angular-material-reference.md` 1 (Aria's accordion is all directives).
+2. Q: Which plugins still need a component, given Foundation generates DOM in Reveal, Tooltip, Drilldown, OffCanvas, Sticky, AccordionMenu, Orbit? A: Three cases: ResponsiveAccordionTabs (two markup trees with different heading versus tab semantics, `aria-apg-patterns.md` ResponsiveAccordionTabs), wrapper components for `.accordion-content` and `.tabs-panel` (one inner element for the grid height animation, `angular-material-reference.md` 1 Animation), and the Tooltip tip (never consumer-authored, `foundation-inventory-positioned.md` Tooltip 2). Reveal's overlay becomes `::backdrop`; off-canvas overlay, drilldown back button, sticky container and submenu toggle become one consumer-written element each; parent-link clones and HTML-string options are dropped. Scenario probed: a consumer who omits the off-canvas overlay gets `contentOverlay: false` semantics for free, which matches Foundation's option. Recorded in ADR 0001.
+3. Q: Can a directive add a sibling element (off-canvas overlay) through `ViewContainerRef` without breaking hydration? A: Yes if created deterministically in the constructor on both platforms, but it was not chosen: a consumer-written element is simpler, optional by omission, and keeps the markup contract. Source: `hydration.md` Direct DOM Manipulation (Angular-managed views are fine, native `appendChild` is not).
+4. Q: Spec shape? A: `/to-spec` top-level sections in order; the foundation-api-design tables become ten numbered subsections of Implementation Decisions plus the Testing Decisions list and Further Notes items, as written in `building-blocks.md` 1.14. Source: `to-spec/SKILL.md` template; `foundation-api-design/SKILL.md` Step 3.
+
+Decision 2, implementation level:
+
+5. Q: Where does each plugin stop? A: Platform: Reveal (`<dialog>`), Slider (`<input type="range">`), Sticky (`position: sticky` plus IO), SmoothScroll, Magellan, Equalizer, Interchange, Orbit (scroll snap, with Aria tabs for bullets), Button, Toggler (`hidden`), ResponsiveToggle. Aria: Accordion, Tabs, ResponsiveAccordionTabs (both), Orbit bullets. Custom Angular with platform pieces: Abide (Signal Forms), AccordionMenu, Drilldown, DropdownMenu, ResponsiveMenu, Dropdown pane, Tooltip, OffCanvas. CDK is used only for `MediaMatcher`, `_IdGenerator`, `Directionality`, `InteractivityChecker`, `FocusTrap` (OffCanvas modal), `hasModifierKey`. Source: `web-platform-features.md` Plugin table; `angular-aria-inventory.md` 10; `angular-cdk-inventory.md` Cross-cutting notes.
+6. Q: Why not CDK Overlay for Dropdown and Tooltip when it already renders as a native popover? A: It moves the pane out of Foundation's `position: absolute` flow, positions against the viewport (needs scroll strategies), puts content in a portal template, and is not server-renderable in place. Foundation's pane scrolls with its offset parent with no JavaScript. Source: `angular-cdk-inventory.md` overlay; `foundation-inventory-positioned.md` Shared positioning model. ADR 0002; prototype P3 keeps CDK as the fallback.
+7. Q: Why not CDK Dialog for Reveal? A: It does not use `<dialog>`, defaults `aria-modal` off, hides siblings with `aria-hidden`, and its overlay is browser-only; native `<dialog>` is in target and gives focus containment, top layer, Escape, `::backdrop`. Source: `angular-cdk-inventory.md` dialog; `web-platform-features.md` 1. ADR 0007; prototype P1.
+8. Q: Why not `<details>` for Accordion? A: `name` grouping misses the target by one Chrome version, `::details-content` and `interpolate-size` are out, and `<summary>` cannot be a button inside a heading as the APG wants. Source: `web-platform-features.md` 4; `aria-apg-patterns.md` Accordion.
+9. Q: Why not `@angular/aria/menu` or `/tree` for the menus? A: Roles the APG rejects for site navigation; tree markup shape breaks nested `ul`; Drilldown fits neither. Source: `aria-apg-patterns.md` AccordionMenu, DropdownMenu, Drilldown; `angular-aria-inventory.md` 6.4, 8. ADR 0004.
+10. Q: Should the Slider keep Foundation's custom `.slider-handle` ARIA slider? A: No; native range gives keyboard, ARIA, form association, and avoids the APG touch caution; Foundation ships `foundation-range-input` Sass for exactly this. Double and vertical go through two inputs and a rotate transform pending prototype P4. Source: `foundation-inventory-forms-media.md` Slider Sass; `aria-apg-patterns.md` Slider; `angular-material-reference.md` 7.
+11. Q: Orbit on scroll snap, given the user's animate.enter/leave rule? A: Scroll snap is a native CSS transition of scroll position and needs no Motion classes; the animate.enter/leave form with `nfs-slide-*` keyframes is the fallback if prototype P5 fails. Source: `web-platform-features.md` 9; `aria-apg-patterns.md` Orbit.
+12. Q: Browser-target application: progressive enhancement onto out-of-target features? A: Not in the first specs; one code path each; every spec lists the feature it would adopt when the target moves. Source: map Browser support; `web-platform-features.md` Feature summary.
+
+Decision 3, naming:
+
+13. Q: `Nfs` prefix or the v20 bare names? A: `Nfs` prefix, because the library imports Aria's bare `Tabs`, `Tab`, `Menu`, `Option` classes. Selector `nfs`/`nfs-` per AGENTS.md. Source: `naming-conventions.md` Avoid Namespace Collisions; `di-and-composition-patterns.md` 8 selector conventions.
+14. Q: `NfsDropdown` or `NfsDropdownPane`? A: `NfsDropdownPane`: `.dropdown` alone is Button's arrow class and `.dropdown.menu` is DropdownMenu. Source: `docs/pages/button.md` Dropdown Arrows; `foundation-inventory-menus.md` 3.2.
+15. Q: Drilldown, OffCanvas casing? A: `NfsDrilldown` (`.drilldown`, class `Drilldown`); `NfsOffCanvas`, selector `nfsOffCanvas`, files `off-canvas/` (Foundation's own hyphenation). Source: `foundation-utilities-conventions.md` 1.1 hyphenate.
+16. Q: Token naming, repo rule or Aria's? A: Repo rule `nfsXxxToken`, `nfsXxxDefaultsToken`; recorded as a deliberate departure from `MAT_`/bare SCREAMING. Source: AGENTS.md Design Philosophy 6; `di-and-composition-patterns.md` 1 naming.
+17. Q: Files and entry points? A: v20 suffix-less kebab files, one folder and secondary entry point per plugin (needed for per-plugin `@defer`). Source: `naming-conventions.md`; `templates/defer.md` Which dependencies are deferred.
+
+Decision 4, inputs and outputs:
+
+18. Q: Which options become `model()`? A: State Foundation exposes as both a method and an event: `expanded`, `open`, `selected`, `value`, `active`; `stuck` stays computed. Source: `angular-22-api-survey.md` input/model/output; `di-and-composition-patterns.md` 8.
+19. Q: Output naming given Foundation's mixed tense and timing? A: `xChange` from the model plus past-tense completion outputs (`opened`/`closed`) emitted after the animation; no start events; veto through a predicate input. Foundation's `open.zf.reveal` (synchronous) and `opened.zf.offCanvas` (fires at transition start) are not copied. Source: `foundation-inventory-disclosure.md` Common versus different; `foundation-inventory-menus.md` 6.4; `angular-material-reference.md` 0.1, 3.
+20. Q: Which options are dropped as jQuery-only? A: The list in `building-blocks.md` 1.4 (HTML strings, class-name options, timing options CSS owns, `parentLink`, `resetOnClose`, `appendTo`, `data-toggle-focus`, and so on). Scenario probed: `data-slide-speed="500"` becomes a CSS transition duration the consumer sets in Sass, matching Foundation's own note that `moveTime` must follow `$slider-transition`. Source: the four inventories' "Behaviour that only jQuery makes easy" sections.
+21. Q: Global defaults? A: One optional Shape B defaults token per plugin, no `provideNfs*()` function. Source: `di-and-composition-patterns.md` 5.
+22. Q: Deep-link smudge options? A: `deepLink` and `updateHistory` kept; smudge becomes `scrollIntoView` plus consumer `scroll-margin-top`; delay dropped. Source: `web-platform-features.md` 9; `foundation-inventory-disclosure.md` Deep-link trio.
+
+Decision 5, state and reactivity:
+
+23. Q: When is a service warranted? A: Only for cross-instance state: the Breakpoint service and the Light dismiss registry; everything else is directive state plus DI links. Source: `angular-22-api-survey.md` Dependency injection (`@Service()`); `foundation-utilities-conventions.md` 10 closeme candidates.
+24. Q: DOM access rules? A: Host bindings for classes and attributes; `afterRenderEffect` phases or native observers created in `afterNextRender` for layout; `Renderer2`/`nativeElement` only for what bindings cannot express; never `ngAfterViewChecked`, never at construction. Source: `angular-22-api-survey.md` effect and afterRenderEffect, Hydration and SSR constraints.
+25. Q: Ids? A: Consumer id wins; CDK `_IdGenerator` otherwise. Server and client ids differ (random per-process infix, module-global counter across requests), which is safe only because every reference to a generated id is itself a host binding rewritten at hydration; hash deep links and Magellan targets require consumer ids. Source: `di-and-composition-patterns.md` 9; `angular-aria-inventory.md` 1.4; `angular-rendering-modes.md` 1, 7 rule 8.
+26. Q: Ordered children by query or registration? A: Registration into a parent-owned sorted collection (Aria's shape) because `contentChildren` shrinks across open/close and misses `@for`/`@defer`/projected children. Source: `di-and-composition-patterns.md` 3c.
+
+Decision 6, animation:
+
+27. Q: How do Motion UI class names become the CSS side when `motion-ui` is not a dependency? A: The library ships `nfs-*` keyframe classes under the Motion UI names for every default; consumer class names pass through to `animate.enter`/`animate.leave` and must be keyframe animations; Motion UI's transition classes need a two-frame protocol `animate.enter` does not perform and `@starting-style` (out of target) would replace, so their support is prototype P6. Source: `foundation-utilities-conventions.md` 4.1; `web-platform-features.md` 6; `angular-22-api-survey.md` Animations.
+28. Q: Height animation within the target? A: Grid `0fr -> 1fr` on a wrapper with `@supports` fallback; `interpolate-size` is Chromium-only; `max-height` needs measurement per open. Source: `web-platform-features.md` 5; `angular-material-reference.md` 1 Animation; `angular-animations.md` Animating Auto Height.
+29. Q: Completion detection without JavaScript timing? A: `transitionend`/`animationend` filtered by target plus a duration-plus-100 ms fallback, Material's mechanic; reduced motion resolves synchronously. Source: `angular-material-reference.md` 0.2.
+30. Q: `prefers-reduced-motion`? A: 1 ms durations in `_nfs-motion.scss` so completion events still fire; `reducedMotion()` signal for Orbit autoplay and smooth scroll; `nfsAnimationsToken` for global disable and tests. Source: `web-platform-features.md` 18; `di-and-composition-patterns.md` 5 `_animationsDisabled()`.
+31. Q: Reveal exit animation on `<dialog>` without `allow-discrete`? A: `.is-closing` class, wait `animationend`, then `close()`. Source: `web-platform-features.md` 1 Known gaps. ADR 0003.
+
+Decision 6b, browser target: applied throughout; the in/out table is `building-blocks.md` 1.2. Source: `web-platform-features.md` Feature summary; map browser table.
+
+Decision 7, breakpoints:
+
+32. Q: Source of truth: Sass handshake, CSS custom properties, TS token, or generated? A: TS token (`nfsBreakpointsToken`) because SSR has no computed style; CSS custom properties as a dev-mode drift check; the `meta.foundation-mq` trick dropped. Source: `foundation-utilities-conventions.md` 3, 10; `angular-cdk-inventory.md` layout (MediaMatcher noop stub). ADR 0005.
+33. Q: CDK `BreakpointObserver` or own service? A: Own `NfsMediaQuery` over `MediaMatcher`, signals, Foundation's API names; Material's `Breakpoints` constants never appear. Source: `angular-material-reference.md` 11.
+34. Q: Server value? A: `serverBreakpoint: 'small'` (Foundation is mobile-first), configurable per request from client hints; each gated spec states its post-hydration swap. Scenario probed: a desktop user gets the drilldown ResponsiveMenu markup from the server, then the dropdown mode after hydration; roles are identical under the disclosure pattern so only classes and keys change. Source: `ssr.md` Setting providers on the server; ADR 0004.
+35. Q: Container queries as breakpoint mechanism? A: No for options (viewport semantics documented by Foundation); yes inside library CSS for internal sizing. Source: `web-platform-features.md` 11 Known gaps.
+36. Q: Rule-string syntax kept? A: Yes as the `rules` input, plus an object form; one shared parser. Source: `foundation-inventory-menus.md` 4.2; `foundation-inventory-disclosure.md` ResponsiveAccordionTabs.
+
+Decision 8, triggers:
+
+37. Q: Directives, template references, or Invoker Commands? A: Directives (`nfsOpen`, `nfsClose`, `nfsToggle`) taking template references to an Openable, with the no-value form resolving the nearest Openable through DI (Foundation's bubbling `data-close`); Invoker Commands and `popovertarget` are out of target. Source: `foundation-utilities-conventions.md` 2.2; `web-platform-features.md` 20; `angular-material-reference.md` 3 (`[mat-dialog-close]` shape).
+38. Q: What ARIA does a trigger set? A: Per the target's `triggerRole` hint: `aria-expanded` plus `aria-controls` for disclosures, `aria-haspopup="dialog"` plus `aria-controls` for Reveal, nothing extra for plain commands; never `aria-haspopup="true"`. Source: `aria-apg-patterns.md` Dropdown delta, Reveal opener note.
+39. Q: `data-toggle-focus`, `data-closable`, `closeme`? A: Dropped, `@if` with `animate.leave`, Light dismiss registry. Source: `foundation-inventory-disclosure.md` Triggers utility.
+
+Decision 9, accessibility baseline: the list in `building-blocks.md` 1.10. Q: `aria-hidden` or `inert` for collapsed content? A: `inert` when the element stays in the DOM, `hidden`/`@if` when gone, `aria-hidden` never for hiding. Source: `angular-aria-inventory.md` 2.1; `aria-apg-patterns.md` Accordion delta, OffCanvas. Q: axe gate scope? A: WCAG 2.2 AA via `runOnly`, `a11y.test = 'error'`. Source: `tooling-baseline.md` Accessibility checks in CI.
+
+Decision 10, testing seams: Q: Which layers does every spec name, given the map's Testing rule? A: Story play function (CSR interaction, ARIA, axe); browser-level test (logic, DI, host bindings, animation completion, defer states, replay-safe handlers) with its stack decided by ticket 41, not by this ticket; node-level Vitest (pure logic plus the per-spec SSR smoke through `renderApplication`, isolated because `ngServerMode` stays set); Playwright e2e (History, breakpoints, reload, and rendering modes on a prerendered fixture app: no NG05xx, JavaScript-disabled first paint, pre-hydration click replay, hydrate triggers). DOM-first assertions, no custom harnesses. Source: map Testing rule; `tooling-baseline.md` Recommended test pyramid; `angular-rendering-modes.md` 6; `angular-material-reference.md` 0.6.
+
+Decision 11, shared utilities: Q: Which Foundation utilities earn a spec? A: Four: Breakpoint service, Triggers, Anchored pane (positioner plus Light dismiss), Nested menu. Motion, Keyboard, Box, Touch, Timer, ImageLoader, lifecycle, ids do not. Source: `foundation-utilities-conventions.md` 9 dependency table and 10 candidates.
+
+Decision 12, Sass and theming: Q: In or out? A: Required Foundation mixins and documented custom CSS are in every spec; runtime theming as a contract is out; `--nfs-*` properties only as implementation channels; packaging is a repo-setup ticket. Source: AGENTS.md Styling Guidelines; `foundation-api-design/SKILL.md` Input Names; map Not yet specified.
+
+Decision 13, rendering modes (added mid-ticket; rebuilt on `research/angular-rendering-modes.md`, cited `R38` below, after ticket 38 resolved):
+
+40. Q: Are hydration and event replay opt-in for consumers? A: No. In 22.x a plain `provideClientHydration()` enables incremental hydration and therefore event replay; `RenderMode.Client` routes skip hydration. The library assumes CSR, SSR plus hydration, and prerender plus hydration in one app. Source: R38 0, 1.
+41. Q: What does a directive render on the server? A: First-paint state from host bindings on signal state only; no platform branching. Source: R38 7 rule 1; `hydration.md` Consistent rendering.
+42. Q: Is an open accordion panel visible in server HTML? A: Not by Foundation CSS (it never shows `.accordion-content`; its JS wrote inline display) and not with Aria's `ngAccordionContent`/`ngTabContent` (views created in `afterRenderEffect`). So the wrapper component binds the shown state and panel content is projected by default; Aria's template content is an opt-in client-only lazy mode. Scenario probed: a crawler or no-JS user sees the FAQ answer that is open by default. Source: R38 5, 7 rule 2.
+43. Q: What happens when server and client disagree on a class or ARIA value? A: No error (only node type and tag are compared); a flash until the first client pass. Structural differences do fail. So breakpoint-gated class changes are acceptable and stated; structural swaps are limited to ResponsiveAccordionTabs. Source: R38 2 Structure rules, Control flow.
+44. Q: What must wait for hydration? A: Node creation and moves, `innerHTML`, `Renderer2` writes at construction, DOM writes in `effect()` (effects run on the server), observers, `matchMedia`, geometry, `focus()`, `scrollIntoView()`, `history`/`location`, timers. Timers start in render callbacks and outside the zone so zone-based consumers stabilise and replay promptly. Source: R38 1, 2, 7 rules 3-5.
+45. Q: Which events replay and what must handlers do? A: Only template and `host` listeners on elements for the listed native types; not `mouseenter`/`pointerenter`, `scroll`, custom events, outputs, code-added or `document:`/`window:` listeners. `preventDefault()` throws on replay and skips the rest of the handler. Decision: `click`/`keydown` host listeners as primary activation, state change before `preventDefault()`, hover-open on non-replayed `pointerenter`, replayed `focusin` re-checks live focus, replayed swipes and drags ignored, Light dismiss stays document-level (correctly not replayed). Source: R38 4.
+46. Q: Can a directive opt out with `ngSkipHydration`? A: No, it is component-host-only (NG0504 on other nodes); the library never uses it nor Shadow DOM. Source: R38 2 Things that silently turn hydration off.
+47. Q: `@defer` and hydrate blocks? A: Library templates contain no `@defer`; each plugin is its own entry point; a widget's container and items and a trigger with its target share one hydration boundary because children register only when constructed; `hydrate never` leaves only server HTML and native behaviour, stated per spec. Source: R38 3, 5, 7 rules 7 and 11.
+48. Q: Ids and deep links? A: Generated ids differ across platforms; deep links need consumer ids and apply after hydration. Source: R38 7 rule 8.
+49. Q: Does `animate.enter` replay on hydration? A: Unknown (no guard in source, untested). Persistent elements use State classes until prototype P11 settles it. Source: R38 3, 7 Open points.
+50. Q: How does a handler detect a replayed event? A: Not settled: the only signal is `eventPhase === 101`, exported from an entry point documented as not public. OPEN FOR HUMAN 3. Source: R38 4, 7 Open points.
+51. Q: How are rendering modes tested? A: SSR smoke in the node-level layer (`renderApplication`, isolated `ngServerMode`), replay-safe handlers in the browser-level layer with a synthetic replayed event, and a prerendered fixture app driven by Playwright for hydration errors, no-JS first paint, and pre-hydration clicks. Runner fit is ticket T3. Source: R38 6.
+
+### OPEN FOR HUMAN
+
+1. Magellan `aria-current` token for in-page sections: `true` (applied by default) or `location`. Source: `aria-apg-patterns.md` Magellan.
+2. Whether Tooltip may attach to non-interactive text (Foundation's focusable `span`); the default here requires an interactive host. Source: `aria-apg-patterns.md` Tooltip delta.
+3. How a handler recognises a replayed event: the literal `event.eventPhase === 101`, an import of `EventPhase` from `@angular/core/primitives/event-dispatch` (documented as not public), or keeping `preventDefault()` last everywhere and accepting the error Angular logs on replay (the default written here). Source: `angular-rendering-modes.md` 4, 7.
+
+Everything else was settled from sources; the genuinely two-sided design questions are prototype tickets below rather than human questions.
+
+## Tickets to create
+
+Prototype tickets (Type: prototype; the question is the acceptance test):
+
+- P1. Reveal on native `<dialog>` under Foundation Sass. Do `dialog.reveal` with `foundation-reveal` plus a `::backdrop` rule carrying `.reveal-overlay` reproduce the size classes, full-screen-below-medium, `overlay: false` via `show()`, nested modals, backdrop-click close, and an exit keyframe before `close()`? Blocks Reveal; informs OffCanvas.
+- P2. `@angular/aria` Accordion and Tabs under Foundation markup. Can host-directive wrappers satisfy Aria's `input.required` link inputs while panel content is projected (not Aria's `ng-template` content, which is empty in server HTML), keeping `.accordion-title` as a button in a heading, `.tabs-title > a[aria-selected]`, `.is-active` on list items, and the grid height animation, and what does a replayed arrow key do given Aria calls `preventDefault()` after its handler? If not, is the fallback custom ARIA and keys over CDK accordion state? Blocks Accordion, Tabs, ResponsiveAccordionTabs, Orbit bullets.
+- P3. Anchored pane: measured Positionable port versus CDK overlay. Does an in-place positioner in `afterRenderEffect` with `ResizeObserver` match Foundation's 12 placements, body-box bound, RTL, and scrolling ancestors for `.dropdown-pane` and `.tooltip` without CDK? Blocks Dropdown, Tooltip, Anchored pane spec.
+- P4. Foundation-styled `<input type="range">` Slider. Can `foundation-range-input` plus a fill gradient and two overlapped inputs deliver single, double, vertical, disabled, and non-linear sliders that pass axe, or do double and vertical need a custom ARIA slider? Blocks Slider.
+- P5. Scroll-snap Orbit. Does a mandatory x scroll-snap container with IO-driven active slide, Aria tab bullets, `scrollTo` autoplay, reduced-motion pause, and a rotation control reproduce Foundation Orbit without Motion UI, and what CSS replaces the JS-measured container height so slides paint from the server? Blocks Orbit.
+- P6. `animate.enter`/`animate.leave` with Motion UI transition classes. Do Motion UI's two-frame transition classes animate under `animate.enter`, does the callback form rescue them, or are the library's `nfs-*` keyframe classes the only supported form? Blocks the Motion class sections of Reveal, Toggler, ResponsiveToggle, Tooltip, Orbit fallback.
+- P7. CSS `position: sticky` plus IO sentinels for Sticky. Which of anchor ranges outside the containing block, `stickTo: 'bottom'`, em margins, and an `overflow: hidden` off-canvas wrapper can be honoured, and which become documented limits? Blocks Sticky.
+- P8. Signal Forms on Abide markup. Can `FORM_FIELD` self-injection drive Foundation's error classes and ARIA under the `validateOn` policy, and do the 17 patterns port as schema helpers under the `v` regex flag? Blocks Abide.
+- P9. Nested menu family with breakpoint mode switching. Can one item and submenu directive family emit `is-<mode>-submenu*` classes from a mode signal with three root behaviours coexisting as host directives, constant disclosure roles, per-mode keys, and focus continuity across a swap? Blocks AccordionMenu, Drilldown, DropdownMenu, ResponsiveMenu, Nested menu spec.
+- P10. ResponsiveAccordionTabs as one component. Does a component rendering either directive set from `ng-template` panels keep state and focus across a swap and hydrate cleanly when the server rendered the other mode? Blocks ResponsiveAccordionTabs; depends on P2.
+- P11. `animate.enter` at hydration. When a server-rendered element carrying `animate.enter` (directly or inside a `@defer (hydrate on ...)` block) hydrates, does its enter animation play, and can a directive suppress it without internal flags? Blocks any spec that wants `animate.enter` on an element present in server HTML.
+
+Shared-utility spec tickets (Type: spec, same shape as plugin specs):
+
+- S1. Breakpoint service (`NfsMediaQuery`, `nfsBreakpointsToken`, rule-string parser, `reducedMotion()`, the server answer, and the client-hint `useFactory` recipe reading `REQUEST`).
+- S2. Triggers (`nfsOpen`, `nfsClose`, `nfsToggle`, `nfsOpenableToken`).
+- S3. Anchored pane (positioner service plus Light dismiss registry). Depends on P3.
+- S4. Nested menu (`nfsMenuItem`, `nfsSubmenu`, `nfsSubmenuToggle`, `nfsMenuModeToken`). Depends on P9.
+
+Other tickets:
+
+- T1. Sass packaging for the new repo. How are `_nfs-<plugin>.scss` and `_nfs-motion.scss` shipped next to the consumer's Foundation Sass, is `foundation-sites` a peer dependency, and how are `--nfs-breakpoint-*` properties emitted from `$breakpoints`?
+- T2. Storybook conventions for the new repo. Story id scheme, `a11y.test = 'error'` with WCAG 2.2 AA, Prototype utility classes in demos, `nfsAnimationsToken` in `preview.ts`, and how story ids are shared with the browser-level and e2e layers (aligned with ticket 41).
+- T3. Rendering-mode test seam. Does `renderApplication` run in the node-level Vitest layer with `ngServerMode` isolated per file, and what is the prerendered SSR fixture app for Playwright (Nx Angular app with `@angular/ssr` prerender, event-dispatch contract inlined, main bundle delayed for pre-hydration clicks)?
+- T4. Opt-in `role="menu"` variants (DropdownMenu as APG Menubar, Drilldown as vertical Menu) for command menus. Is a second, opt-in role set wanted, and would it host `@angular/aria/menu` under the same Foundation markup? Not needed for the 22 specs.
