@@ -40,7 +40,19 @@ Specs target these versions, not the Angular 21 toolchain in this repo.
 - Signals for state, `model()` for two-way state, `linkedSignal` for derived-but-writable, OnPush, zoneless-safe, SSR-safe.
 - Accessibility: the matching WAI-ARIA APG pattern, WCAG AA, axe-clean.
 - Animation (user decision): every JavaScript-driven animation in a Foundation plugin (Motion UI `animateIn`/`animateOut`, jQuery `slideDown`/`slideUp`, Orbit slide transitions, Reveal fades, Drilldown height animation) is converted to Angular `animate.enter` / `animate.leave` bindings plus native CSS animations and transitions. No `@angular/animations`, no JavaScript-timed animation. Specs say which CSS classes and keyframes each state change uses and how `prefers-reduced-motion` is honoured.
-- Browser support (user decision): the target follows Angular 22, that is the Baseline "widely available" browser set on 2026-05-07: https://web-platform-dx.github.io/supported-browsers/?widelyAvailableOnDate=2026-05-07&includeDownstream=false. A platform feature counts as available only if it was Baseline widely available on that date; anything newer needs a fallback or is not used. Within that target, every spec considers the relevant modern JavaScript, web, browser, HTML, and CSS APIs for its directive or component.
+- Browser support (user decision): the target follows Angular 22, that is the Baseline "widely available" browser set on 2026-05-07: https://web-platform-dx.github.io/supported-browsers/?widelyAvailableOnDate=2026-05-07&includeDownstream=false. A platform feature counts as available only if it was Baseline widely available on that date; anything newer needs a fallback or is not used. Within that target, every spec considers the relevant modern JavaScript, web, browser, HTML, and CSS APIs for its directive or component. The core browser set for Angular 22, as given by the user:
+
+  | Browser | Version | Release date |
+  | --- | --- | --- |
+  | Chrome | 119 | 2023-10-31 |
+  | Chrome for Android | 119 | 2023-10-31 |
+  | Edge | 119 | 2023-11-02 |
+  | Firefox | 119 | 2023-10-24 |
+  | Firefox for Android | 119 | 2023-10-24 |
+  | Safari | 17 | 2023-09-18 |
+  | Safari for iOS | 17 | 2023-09-18 |
+
+  A feature is usable without a fallback only if every browser in this table supports it from the listed version.
 - Testing: Storybook play functions first, Vitest browser mode for logic, Playwright e2e for web-native APIs.
 
 ### Design criteria for every directive or component
