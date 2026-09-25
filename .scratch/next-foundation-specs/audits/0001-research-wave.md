@@ -301,3 +301,4 @@ Orchestrator, second session, 2026-09-25:
 
 - L1 (positioned half) and L9 fixed in the commit "repair the positioned inventory's tooltip citation and wording": `_tooltip.scss:145` is now `:63`, and the Magellan `reflow()` bullet no longer uses the banned word.
 - L1 (Aria half) and L3 (Aria half) fixed in the commit "repair the Aria inventory's tree citation and date label": the forced `multiExpandable` is cited at `private/tree/tree.ts:373`, and 2026-06-03 is labelled the 22.0.0 release date.
+- M7 (rendering-modes file) and L7 (rendering-modes half) fixed in the commit "name the rendering-modes ticket and label the old Storybook observation": the header links the ticket by name, and the installed `@storybook/angular` 10.1.10 observation is labelled the old repo's stack, not the target.

@@ -1,12 +1,14 @@
 # Angular 22.2 rendering modes for DOM-touching directives
 
-Ticket: [38](../issues/38-angular-rendering-modes.md). Sources are the local clones at release branch 22.2.x unless a URL is given:
+Ticket: [Angular 22.2 @defer, SSR, prerendering, hydration, and event replay](../issues/38-angular-rendering-modes.md). Sources are the local clones at release branch 22.2.x unless a URL is given:
 
 - `NG/` = `d:/projects/github/angular/angular` (22.2.0)
 - `NGC/` = `d:/projects/github/angular/components` (22.2.0)
 - `FS/` = `d:/projects/github/foundation/foundation-sites` (6.9.0)
 
 Line numbers are for those checkouts. "Source reading" marks a claim derived from reading code that no test in the clone exercises; those claims are candidates for a prototype before a spec depends on them.
+
+Corrected 2026-09-25 after [Audit 0001: research wave](../audits/0001-research-wave.md), findings M7, L7: linked the ticket by name instead of a bare number and labeled the installed Storybook observation as the old repo's stack, not the target.
 
 This file extends, and does not repeat, `angular-22-api-survey.md` (sections "Render hooks", "`effect` and `afterRenderEffect`", "`@defer` and incremental hydration", "Hydration and SSR constraints for DOM-touching directives"), the SSR notes in `angular-cdk-inventory.md` (every module guards with `Platform.isBrowser`; `MediaMatcher` falls back to a noop stub on the server), and `angular-material-reference.md` section 0.3 (Material's `Platform.isBrowser` guards, `afterNextRender` for measurement, `<mat-tab>` rendering its host `hidden` on the server).
 
@@ -176,7 +178,7 @@ What each seam can cover:
 
 | Seam | Covers | Cannot cover |
 | --- | --- | --- |
-| Storybook play functions (CSR in the preview iframe) | Interactions, ARIA, axe, `@defer` with client triggers, `animate.enter`/`leave` | Server HTML, hydration, event replay, hydrate triggers. The installed `@storybook/angular` 10.1.10 calls `bootstrapApplication` with no hydration provider (`node_modules/@storybook/angular/dist/_browser-chunks/chunk-6CHBWP5J.js`); `@storybook/angular-vite` 10.6 is not installed here, so its equivalent is unverified. |
+| Storybook play functions (CSR in the preview iframe) | Interactions, ARIA, axe, `@defer` with client triggers, `animate.enter`/`leave` | Server HTML, hydration, event replay, hydrate triggers. The installed `@storybook/angular` 10.1.10 (old repo, not the target stack: the target is Storybook 10.6 with `@storybook/angular-vite`) calls `bootstrapApplication` with no hydration provider (`node_modules/@storybook/angular/dist/_browser-chunks/chunk-6CHBWP5J.js`); its `@storybook/angular-vite` 10.6 equivalent is unverified here. |
 | Vitest browser mode with TestBed | `DeferBlockBehavior.Manual` states; replay-safe handlers: dispatch a real event whose `eventPhase` is redefined to 101 and whose `preventDefault` is redefined to throw (mirror `event_dispatcher.ts:121-138`), then assert state changed and nothing reached `ErrorHandler`; render-callback ordering | Real server rendering, jsaction annotation, hydration matching |
 | SSR smoke (Node) | `renderApplication` over a fixture component: no throw, `whenStable()` resolves (no hanging timers), server HTML contains the expected classes, `aria-*`, `hidden`, and open-panel content; `jsaction` present on the elements expected to replay | Layout, focus, real events |
 | Playwright e2e on a prerendered fixture app | Hydration without NG05xx errors and `componentsSkippedHydration === 0` (dev build, as in the Components e2e); first paint with `javaScriptEnabled: false` (screenshot plus axe on the server HTML); event replay by delaying the main bundle with `page.route` and clicking before hydration; hydrate triggers (`viewport`, `interaction`, `hover`) | Unit-level branches |
