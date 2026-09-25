@@ -104,6 +104,8 @@ Subagents edit only their own ticket file and the output files that ticket names
 
 <!-- one line per closed ticket: gist, then the link that holds the detail -->
 
+- [Foundation plugin inventory A: Accordion, Tabs, ResponsiveAccordionTabs, Toggler, Reveal](issues/01-foundation-inventory-disclosure.md) — full option, event, method, keyboard, and utility inventory of the disclosure family; event names and timing differ across it, and ResponsiveAccordionTabs, Toggler, and Reveal each carry a source bug or doc mismatch the specs must not copy. Findings: [research/foundation-inventory-disclosure.md](research/foundation-inventory-disclosure.md).
+
 ## Not yet specified
 
 - **Prototype tickets.** Several design questions will likely need a runnable artifact before a spec can commit: native `popover` plus CSS anchor positioning under Foundation's `.dropdown-pane` and `.tooltip` CSS; Signal Forms as the Abide replacement; CSS-only `position: sticky` versus a Sticky directive; scroll-snap for Orbit; a Foundation-styled `<input type="range">` for Slider; `animate.enter`/`animate.leave` with Motion UI classes; `@angular/aria` Accordion and Tabs under Foundation markup. These graduate to `prototype` tickets when a component ticket cannot settle the question from sources.
