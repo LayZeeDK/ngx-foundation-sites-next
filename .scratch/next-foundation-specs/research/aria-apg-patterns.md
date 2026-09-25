@@ -3,6 +3,8 @@
 Ticket: `../issues/10-aria-apg-patterns.md`
 Date: 2026-09-25
 
+Corrected 2026-09-25 after [Audit 0001: research wave](../audits/0001-research-wave.md), finding M9: two Foundation element facts corrected.
+
 ## Sources and how to read the citations
 
 | Short name | What | Where |
@@ -165,7 +167,7 @@ When to prefer Disclosure instead: an FAQ list of independent show/hide items wi
 
 Foundation markup: `ul.vertical.menu.accordion-menu[data-accordion-menu] > li > a + ul.menu.vertical.nested` (`FND/docs/pages/accordion-menu.md`); `data-submenu-toggle="true"` adds a separate toggle so the parent `a` stays a real link.
 
-What Foundation emits today: Nest gives the root `role="menubar"`, every `a` `role="menuitem"`, every `li` `role="none"` and every nested `ul` `role="menubar"` (`FND/js/foundation.util.nest.js:5-8,37`); accordionMenu then overrides nested `ul` to `role="group"` with `aria-labelledby` and `aria-hidden`, gives the parent `a` `aria-controls` and `aria-expanded`, and sets `aria-multiselectable` on the root (`FND/js/foundation.accordionMenu.js:54-83`). Result: `menubar > none > menuitem[aria-expanded] + group`, which is neither the menu pattern (submenus must be `menu`) nor the tree pattern (items must be `treeitem` inside `tree`). `aria-multiselectable` is not supported on `menubar`.
+What Foundation emits today: Nest gives the root `role="menubar"`, every `a` `role="menuitem"`, every `li` `role="none"` and every nested `ul` `role="menubar"` (`FND/js/foundation.util.nest.js:5-8,37`); accordionMenu then overrides nested `ul` to `role="group"` with `aria-labelledby` and `aria-hidden`, gives the parent `li` `aria-controls` and `aria-expanded` (`FND/js/foundation.accordionMenu.js:74-78`), and sets `aria-multiselectable` on the root (`FND/js/foundation.accordionMenu.js:53-55`). Result: `menubar > none[aria-controls][aria-expanded] > menuitem + group`, which is neither the menu pattern (submenus must be `menu`) nor the tree pattern (items must be `treeitem` inside `tree`). `aria-multiselectable` is not supported on `menubar`.
 
 Pattern: Disclosure Navigation Menu, `APG/patterns/disclosure/disclosure-pattern.html`, examples `APG/patterns/disclosure/examples/disclosure-navigation.html` and, for `data-submenu-toggle="true"`, `APG/patterns/disclosure/examples/disclosure-navigation-hybrid.html` (top-level link plus a separate disclosure button). The APG's own caution, printed at the top of both the menubar and treeview navigation examples: "it does not use the WAI-ARIA menu role ... because it does not provide the complex functionality that assistive technologies expect in a widget that has the menu role. Typical site navigation does not need all the keyboard interactions specified by the menu and menubar pattern" (`APG/patterns/disclosure/examples/disclosure-navigation.html`, "Important"); "Correct implementation of the `tree` role requires implementation of complex functionality that is not needed for typical site navigation that is styled to look like a tree with expandable sections" (`APG/patterns/treeview/examples/treeview-navigation.html`, "Caution!").
 
@@ -302,7 +304,7 @@ Keyboard (modal mode): see Reveal. Keyboard (non-modal mode): the disclosure tab
 
 ## Orbit
 
-Foundation markup: `div.orbit[role=region][aria-label][data-orbit] > div.orbit-wrapper > (div.orbit-controls > button.orbit-previous + button.orbit-next) + ul.orbit-container > li.orbit-slide > figure.orbit-figure > img + figcaption`, then `nav.orbit-bullets > button[data-slide]` with `span.show-for-sr` labels and a `[data-slide-active-label]` "Current Slide" span (`FND/docs/pages/orbit.md`). Defaults: `autoPlay: true`, `timerDelay: 5000`, `pauseOnHover: true`, `infiniteWrap: true`, `accessible: true` (makes `.orbit-wrapper` focusable with `tabindex="0"` and binds `Left`/`Right` arrows) (`FND/js/foundation.orbit.js:38-47,93-97,474-509`). The active slide receives `aria-live="polite"` whenever it is shown, including during auto-rotation (`FND/js/foundation.orbit.js:348,363`). There is no stop/start control and no pause on keyboard focus (only `mouseenter`).
+Foundation markup: `div.orbit[role=region][aria-label][data-orbit] > div.orbit-wrapper > (div.orbit-controls > button.orbit-previous + button.orbit-next) + ul.orbit-container > li.orbit-slide > figure.orbit-figure > img + figcaption`, then `nav.orbit-bullets > button[data-slide]` with `span.show-for-sr` labels and a `[data-slide-active-label]` "Current Slide" span (`FND/docs/pages/orbit.md`). Defaults: `autoPlay: true`, `timerDelay: 5000`, `pauseOnHover: true`, `infiniteWrap: true`, `accessible: true` (makes `.orbit-container` focusable with `tabindex="0"` and binds `Left`/`Right` arrows) (`FND/js/foundation.orbit.js:38-47,59,95-97,474-509`). The active slide receives `aria-live="polite"` whenever it is shown, including during auto-rotation (`FND/js/foundation.orbit.js:348,363`). There is no stop/start control and no pause on keyboard focus (only `mouseenter`).
 
 Pattern: Carousel, `APG/patterns/carousel/carousel-pattern.html`. Examples: `APG/patterns/carousel/examples/carousel-1-prev-next.html` (basic) and `APG/patterns/carousel/examples/carousel-2-tablist.html` (tabbed; recommended because "Because each slide selector button adds an element to the page tab sequence, [the grouped] style is the least friendly for keyboard users").
 
@@ -328,7 +330,7 @@ Keyboard:
 | `Enter` / `Space` on a button | Button pattern. "Activating the rotation control, next slide, and previous slide do not move focus, so users may easily repetitively activate them." |
 | `Left` / `Right` / `Home` / `End` on a tab (tabbed style only) | Tabs pattern, automatic activation: move focus and show that slide. |
 
-Foundation delta: add the rotation control (first in tab order), pause on `focusin`, turn `aria-live` off while rotating, add `aria-roledescription` on container and slides, name the slides, replace `nav.orbit-bullets` with `tablist` (or `group` + `aria-disabled`), drop the focusable `.orbit-wrapper` (a focusable element with no widget role and arrow-key handling is outside every APG pattern; the tablist gives arrow navigation legitimately), hide inactive slides with `hidden`, and honour reduced motion.
+Foundation delta: add the rotation control (first in tab order), pause on `focusin`, turn `aria-live` off while rotating, add `aria-roledescription` on container and slides, name the slides, replace `nav.orbit-bullets` with `tablist` (or `group` + `aria-disabled`), drop the focusable `.orbit-container` (a focusable element with no widget role and arrow-key handling is outside every APG pattern; the tablist gives arrow navigation legitimately), hide inactive slides with `hidden`, and honour reduced motion.
 
 ## ResponsiveAccordionTabs
 
