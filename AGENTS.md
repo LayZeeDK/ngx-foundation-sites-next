@@ -334,6 +334,14 @@ test('deep link updates URL hash', async ({ page }) => {
   - `Set-Location "<absolute-repo-path>"` with absolute paths — use relative paths or run directly
 - Run git commands directly (e.g., `git status`, `git diff`) without path specifiers.
 
+### Commits
+
+Write every commit as an atomic, bisect-safe Conventional Commit:
+
+- **Atomic** — one logical change per commit, carrying its own tests and docs; split unrelated changes into separate commits.
+- **Bisect-safe** — the workspace builds, lints, and passes tests at every commit (see Verification); order a series so each commit's dependencies land first.
+- **Conventional** — `type(scope): subject`, scoped to the component or tool area (`feat(button)`, `fix(storybook)`, `docs(agents)`); the body gives the why.
+
 ## Storybook
 
 Component development and visual testing uses Storybook on port 4400.
