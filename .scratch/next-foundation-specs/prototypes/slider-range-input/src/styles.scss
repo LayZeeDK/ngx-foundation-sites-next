@@ -1,0 +1,34 @@
+// PROTOTYPE -- Foundation 6.9 Sass compiled through Angular's Sass pipeline.
+@import 'foundation-sites/scss/foundation';
+@import 'nfs-slider';
+
+@include foundation-global-styles;
+@include foundation-forms;
+@include foundation-slider;
+// Not part of `foundation-everything`: the native range styles are opt-in.
+@include foundation-range-input;
+@include foundation-prototype-spacing;
+@include nfs-slider;
+
+body {
+  padding: 1rem;
+}
+
+.case {
+  margin-bottom: 2rem;
+  max-width: 30rem;
+}
+
+// Variant A: the mixin alone on a bare input, fill as a track gradient.
+// The stop sits at the thumb centre: T/2 + (100% - T) * fraction.
+$nfs-fill-stop: calc(#{$slider-handle-width * 0.5} + (100% - #{$slider-handle-width}) * var(--nfs-slider-fill, 0));
+
+input[type='range'].nfs-gradient {
+  &::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, $slider-fill-background $nfs-fill-stop, $slider-background $nfs-fill-stop);
+  }
+
+  &::-moz-range-track {
+    background: linear-gradient(to right, $slider-fill-background $nfs-fill-stop, $slider-background $nfs-fill-stop);
+  }
+}

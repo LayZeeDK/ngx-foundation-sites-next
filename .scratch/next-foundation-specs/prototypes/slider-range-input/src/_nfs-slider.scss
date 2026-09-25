@@ -1,0 +1,156 @@
+// PROTOTYPE -- documented custom CSS the Slider needs on top of Foundation's
+// `foundation-slider` (container, fill, .disabled, .vertical) and
+// `foundation-range-input` (thumb via vendor pseudo-elements). Every rule says why.
+
+@mixin nfs-slider {
+  .slider {
+    // Length of the track along its axis and the thumb size along that axis,
+    // used to map a value to the same pixel the native thumb centre sits on.
+    --nfs-slider-length: 100%;
+    --nfs-slider-thumb: #{$slider-handle-width};
+  }
+
+  // Foundation's `.slider.vertical` is 0.5rem x 12.5rem; the rotated inputs need
+  // its height as a length, which only a size container exposes (`cqh`).
+  .slider.vertical {
+    container-type: size;
+    --nfs-slider-length: 100cqh;
+  }
+
+  // The native input lies over Foundation's `.slider` track; its own track is
+  // transparent so the container stays the one visible track.
+  .slider > input[type='range'] {
+    position: absolute;
+    top: 50%;
+    inset-inline-start: 0;
+    width: calc(
+      (var(--nfs-slider-length) - var(--nfs-slider-thumb)) * var(--nfs-slider-span, 1) +
+        var(--nfs-slider-thumb)
+    );
+    // The UA paints a white input box; it would hide the track and cut through
+    // the sibling input's thumb. Foundation's mixin sets no input background.
+    background: transparent;
+    // axe (target-size) measures the input box, which Foundation leaves at the
+    // track height (0.5rem); two overlapped inputs then have 0px spacing. 24px
+    // is the WCAG 2.5.8 minimum. The thumb itself stays $slider-handle-*.
+    height: 24px;
+    margin: 0;
+    transform: translateY(-50%);
+    // Above Foundation's `.slider-fill`, which follows the first input in the markup.
+    z-index: 1;
+
+    &::-webkit-slider-runnable-track {
+      background: transparent;
+    }
+
+    &::-moz-range-track {
+      background: transparent;
+    }
+
+    // Two overlapped inputs: the inputs ignore the pointer (set by the
+    // directive), the thumbs take it, so each thumb stays grabbable.
+    &::-webkit-slider-thumb {
+      pointer-events: auto;
+    }
+
+    &::-moz-range-thumb {
+      pointer-events: auto;
+      // `foundation-range-input` resets neither Gecko's default thumb border nor,
+      // when $slider-radius is 0 (the default), its rounded corners; without this
+      // the Firefox thumb is a bordered pill while Chromium and WebKit draw a square.
+      border: 0;
+      border-radius: $slider-radius;
+    }
+
+    // `foundation-range-input` sets `:focus { outline: 0 }` and nothing else:
+    // without this rule a focused thumb is invisible (WCAG 2.4.7).
+    &:focus-visible::-webkit-slider-thumb {
+      outline: 2px solid $black;
+      outline-offset: 2px;
+    }
+
+    &:focus-visible::-moz-range-thumb {
+      outline: 2px solid $black;
+      outline-offset: 2px;
+    }
+
+    // Foundation fades both `.slider.disabled` and `input[disabled]`; applied
+    // together the thumb would be at 0.25 x 0.25 opacity.
+    &[disabled] {
+      opacity: 1;
+    }
+
+    // Soft-disabled (aria-disabled, focusable): the pointer must not move it.
+    &[aria-disabled='true'] {
+      pointer-events: none;
+
+      // Separate rules: one selector list mixing -webkit- and -moz- pseudo-elements
+      // is invalid in every engine and is dropped whole.
+      &::-webkit-slider-thumb {
+        pointer-events: none;
+      }
+
+      &::-moz-range-thumb {
+        pointer-events: none;
+      }
+    }
+  }
+
+  // Second input of the range form: anchored at the far end so its dependent
+  // `min` maps to the start thumb's pixel.
+  .slider > input[type='range'] ~ input[type='range'] {
+    inset-inline-start: auto;
+    inset-inline-end: 0;
+  }
+
+  // Foundation's `.slider-fill` with the extent from the directive's fractions:
+  // from the outer edge of the low thumb to the outer edge of the high thumb
+  // (the thumbs cover both ends), so a single slider's fill starts at 0 like Foundation's.
+  // Foundation's fill transition (`$slider-transition`) would lag behind the
+  // native thumb, which never animates, so it is switched off.
+  .slider > .slider-fill {
+    inset-inline-start: calc((var(--nfs-slider-length) - var(--nfs-slider-thumb)) * var(--nfs-slider-lo, 0));
+    // Foundation writes `left: 0`; in RTL that is the inline end and must go.
+    inset-inline-end: auto;
+    width: calc(
+      (var(--nfs-slider-length) - var(--nfs-slider-thumb)) *
+        (var(--nfs-slider-hi, 0) - var(--nfs-slider-lo, 0)) + var(--nfs-slider-thumb)
+    );
+    transition: none;
+    // The fill is decoration: a press on it belongs to the track (clickSelect),
+    // and axe must not count it as covering the thumbs (target-size).
+    pointer-events: none;
+  }
+
+  // Vertical: Foundation flips the container with `scale(1, -1)`, so `top` is
+  // the physical bottom. Each input is rotated a quarter turn about its
+  // anchored end; its thumb then moves along the container's height.
+  // `direction: ltr` because an RTL range input puts its minimum at the far
+  // end, which after the rotation would put the minimum at the top.
+  .slider.vertical > input[type='range'] {
+    direction: ltr;
+    top: 0;
+    right: auto;
+    left: 50%;
+    transform-origin: 0 50%;
+    transform: translateY(-50%) rotate(90deg);
+  }
+
+  .slider.vertical > input[type='range'] ~ input[type='range'] {
+    top: 100%;
+    right: 50%;
+    left: auto;
+    transform-origin: 100% 50%;
+  }
+
+  .slider.vertical > .slider-fill {
+    inset-inline-start: auto;
+    left: 0;
+    top: calc((var(--nfs-slider-length) - var(--nfs-slider-thumb)) * var(--nfs-slider-lo, 0));
+    width: $slider-width-vertical;
+    height: calc(
+      (var(--nfs-slider-length) - var(--nfs-slider-thumb)) *
+        (var(--nfs-slider-hi, 0) - var(--nfs-slider-lo, 0)) + var(--nfs-slider-thumb)
+    );
+  }
+}

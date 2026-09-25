@@ -1,0 +1,14 @@
+<input id="single" type="range" nfssliderhandle="" min="0" max="200" step="1" value="50" style="--nfs-slider-span: 1;" jsaction="input:;keydown:;">
+<input id="double-min" type="range" nfssliderhandle="" min="0" max="75" step="1" value="25" style="--nfs-slider-span: 0.75; pointer-events: none;" jsaction="input:;keydown:;">
+<input id="double-max" type="range" nfssliderhandle="" min="25" max="100" step="1" value="75" style="--nfs-slider-span: 0.75; pointer-events: none;" jsaction="input:;keydown:;">
+<input id="vertical" type="range" nfssliderhandle="" min="0" max="200" step="1" value="25" aria-orientation="vertical" style="--nfs-slider-span: 1;" jsaction="input:;keydown:;">
+<input id="vd-min" type="range" nfssliderhandle="" min="0" max="60" step="1" value="20" aria-orientation="vertical" style="--nfs-slider-span: 0.6; pointer-events: none;" jsaction="input:;keydown:;">
+<input id="vd-max" type="range" nfssliderhandle="" min="20" max="100" step="1" value="60" aria-orientation="vertical" style="--nfs-slider-span: 0.8; pointer-events: none;" jsaction="input:;keydown:;">
+<input id="disabled-soft" type="range" nfssliderhandle="" min="0" max="100" step="1" value="40" aria-disabled="true" style="--nfs-slider-span: 1;" jsaction="input:;keydown:;">
+<input id="disabled-native" type="range" nfssliderhandle="" disabled="" min="0" max="100" step="1" value="40" style="--nfs-slider-span: 1;" jsaction="input:;keydown:;">
+<input id="stepped" type="range" nfssliderhandle="" min="0" max="100" step="5" value="50" aria-valuetext="50 percent" style="--nfs-slider-span: 1;" jsaction="input:;keydown:;">
+<input id="log" type="range" nfssliderhandle="" min="0" max="1000" step="any" value="309.01699437494744" aria-valuetext="50" style="--nfs-slider-span: 1;" jsaction="input:;keydown:;">
+<input id="pow" type="range" nfssliderhandle="" min="0" max="1000" step="any" value="682.6061944859853" aria-valuetext="50" style="--nfs-slider-span: 1;" jsaction="input:;keydown:;">
+<input id="rtl-min" type="range" nfssliderhandle="" min="0" max="75" step="1" value="25" style="--nfs-slider-span: 0.75; pointer-events: none;" jsaction="input:;keydown:;">
+<input id="rtl-max" type="range" nfssliderhandle="" min="25" max="100" step="1" value="75" style="--nfs-slider-span: 0.75; pointer-events: none;" jsaction="input:;keydown:;">
+<input id="bare" type="range" class="nfs-gradient" style="--nfs-slider-fill: 0.3;" value="30" jsaction="input:;">

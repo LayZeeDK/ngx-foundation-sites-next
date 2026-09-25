@@ -1,0 +1,8 @@
+bare settle=false run 0: 0.3->0.9 = 90 (want 90), back = 30 (want 30)
+bare settle=false run 1: 0.3->0.9 = 90 (want 90), back = 30 (want 30)
+bare settle=false run 2: 0.3->0.9 = 90 (want 90), back = 30 (want 30)
+bare settle=false run 3: 0.3->0.9 = 90 (want 90), back = 30 (want 30)
+bare settle=true run 0: 0.3->0.9 = 90 (want 90), back = 30 (want 30)
+bare settle=true run 1: 0.3->0.9 = 90 (want 90), back = 30 (want 30)
+bare settle=true run 2: 0.3->0.9 = 90 (want 90), back = 30 (want 30)
+bare settle=true run 3: 0.3->0.9 = 90 (want 90), back = 30 (want 30)

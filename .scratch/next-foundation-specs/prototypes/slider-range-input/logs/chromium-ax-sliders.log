@@ -1,0 +1,135 @@
+chromium | PageDown from 200 (range 0-200, step 1) = 180
+chromium | vertical orientation in AX tree = horizontal
+chromium | attachment ax-sliders.json [
+  {
+    "name": "Bare input, mixin only, gradient fill",
+    "value": 30,
+    "min": 0,
+    "max": 100,
+    "orientation": "horizontal",
+    "valuetext": "30",
+    "focusable": true
+  },
+  {
+    "name": "Single (0 to 200)",
+    "value": 50,
+    "min": 0,
+    "max": 200,
+    "orientation": "horizontal",
+    "valuetext": "50",
+    "focusable": true
+  },
+  {
+    "name": "Minimum",
+    "value": 25,
+    "min": 0,
+    "max": 75,
+    "orientation": "horizontal",
+    "valuetext": "25",
+    "focusable": true
+  },
+  {
+    "name": "Maximum",
+    "value": 75,
+    "min": 25,
+    "max": 100,
+    "orientation": "horizontal",
+    "valuetext": "75",
+    "focusable": true
+  },
+  {
+    "name": "Vertical (0 to 200)",
+    "value": 25,
+    "min": 0,
+    "max": 200,
+    "orientation": "horizontal",
+    "valuetext": "25",
+    "focusable": true
+  },
+  {
+    "name": "Low",
+    "value": 20,
+    "min": 0,
+    "max": 60,
+    "orientation": "horizontal",
+    "valuetext": "20",
+    "focusable": true
+  },
+  {
+    "name": "High",
+    "value": 60,
+    "min": 20,
+    "max": 100,
+    "orientation": "horizontal",
+    "valuetext": "60",
+    "focusable": true
+  },
+  {
+    "name": "Disabled (aria-disabled, focusable)",
+    "value": 40,
+    "min": 0,
+    "max": 100,
+    "orientation": "horizontal",
+    "valuetext": "40",
+    "disabled": true,
+    "focusable": true
+  },
+  {
+    "name": "Disabled (native disabled)",
+    "value": 40,
+    "min": 0,
+    "max": 100,
+    "orientation": "horizontal",
+    "valuetext": "40",
+    "disabled": true
+  },
+  {
+    "name": "Stepped (step 5)",
+    "value": 50,
+    "min": 0,
+    "max": 100,
+    "orientation": "horizontal",
+    "valuetext": "50",
+    "focusable": true
+  },
+  {
+    "name": "Non-linear log (base 5)",
+    "value": 309.0169982910156,
+    "min": 0,
+    "max": 1000,
+    "orientation": "horizontal",
+    "valuetext": "309.016994374947",
+    "focusable": true
+  },
+  {
+    "name": "Non-linear pow (base 5)",
+    "value": 682.606201171875,
+    "min": 0,
+    "max": 1000,
+    "orientation": "horizontal",
+    "valuetext": "682.606194485985",
+    "focusable": true
+  },
+  {
+    "name": "Minimum",
+    "value": 25,
+    "min": 0,
+    "max": 75,
+    "orientation": "horizontal",
+    "valuetext": "25",
+    "focusable": true
+  },
+  {
+    "name": "Maximum",
+    "value": 75,
+    "min": 25,
+    "max": 100,
+    "orientation": "horizontal",
+    "valuetext": "75",
+    "focusable": true
+  }
+]
+firefox | PageDown from 200 (range 0-200, step 1) = 180
+firefox | skip = CDP only
+webkit | PageDown from 200 (range 0-200, step 1) = 180
+webkit | skip = CDP only
