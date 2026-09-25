@@ -112,7 +112,7 @@ Online: https://angular.dev, https://material.angular.dev, https://get.foundatio
 - Spec tickets (grilling plus to-spec) and the consistency review: Opus 5.5, strong design reasoning at lower spend than Fable.
 - Research inventories of local sources and straightforward prototypes: Sonnet 5. The first research wave ran on Fable before this rule existed.
 - Prototypes that must settle a contested design question: Opus 5.5.
-- From the second working session (2026-09-25) the account has no Fable credit, so the orchestrator and every ticket that would take Fable 5.1 run on Opus 5.5.
+- Second working session (2026-09-25): the orchestrator runs on Opus 5.5. Fable credit was out at the start of the session and is available again after the usage reset, so Fable 5.1 is used again where a ticket makes cross-cutting calls or where it is clearly the better fit for a spec; the commit body says why whenever a ticket runs on Fable.
 
 ### Audits (user instruction)
 
