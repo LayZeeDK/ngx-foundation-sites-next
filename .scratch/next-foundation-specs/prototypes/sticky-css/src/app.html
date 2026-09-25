@@ -1,0 +1,148 @@
+<header style="padding: 1rem; background: #222; color: #fff;">
+  <h1 style="margin: 0; font-size: 1.1rem;">Sticky CSS prototype (ticket 48)</h1>
+  <p style="margin: 0.25rem 0 0; font-size: 0.85rem;">
+    Each section below is one Foundation Sticky behaviour. Scroll to see
+    <code>.is-stuck</code> / <code>.is-at-top</code> / <code>.is-at-bottom</code> /
+    <code>.is-anchored</code> toggle on the highlighted box.
+  </p>
+</header>
+
+<!-- Case: basic top stick, default marginTop (1em) -->
+<div class="filler" style="height: 400px" data-testid="spacer-before-basic-top">before case-basic-top (400px)</div>
+<div nfsStickyContainer data-testid="basic-top-container">
+  <div
+    nfsSticky
+    data-testid="basic-top"
+    style="height: 60px; background: #cfe8ff"
+    (stuck)="log('basic-top', 'stuck', $event)"
+    (unstuck)="log('basic-top', 'unstuck', $event)"
+  >
+    case-basic-top: stickTo top, marginTop default (1em)
+  </div>
+  <div class="filler" style="height: 900px">container filler keeps the range open (900px)</div>
+</div>
+<div class="filler" style="height: 400px" data-testid="spacer-after-basic-top">after case-basic-top (400px)</div>
+
+<!-- Case: stickTo bottom -->
+<div class="filler" style="height: 400px">before case-stick-bottom (400px)</div>
+<div nfsStickyContainer data-testid="stick-bottom-container">
+  <div class="filler" style="height: 900px">container filler before the element (900px)</div>
+  <div
+    nfsSticky
+    stickTo="bottom"
+    [marginBottom]="1"
+    data-testid="stick-bottom"
+    style="height: 60px; background: #ffe6cf"
+    (stuck)="log('stick-bottom', 'stuck', $event)"
+    (unstuck)="log('stick-bottom', 'unstuck', $event)"
+  >
+    case-stick-bottom: stickTo bottom, marginBottom 1em
+  </div>
+</div>
+<div class="filler" style="height: 400px">after case-stick-bottom (400px)</div>
+
+<!-- Case: em-based marginTop/marginBottom -->
+<div class="filler" style="height: 400px">before case-margin-em (400px)</div>
+<div nfsStickyContainer data-testid="margin-em-container">
+  <div
+    nfsSticky
+    [marginTop]="3"
+    data-testid="margin-em"
+    style="height: 60px; background: #d8ffd0"
+    (stuck)="log('margin-em', 'stuck', $event)"
+    (unstuck)="log('margin-em', 'unstuck', $event)"
+  >
+    case-margin-em: marginTop 3em (should offset 48px at 16px base font)
+  </div>
+  <div class="filler" style="height: 900px">container filler (900px)</div>
+</div>
+<div class="filler" style="height: 400px">after case-margin-em (400px)</div>
+
+<!-- Case: stickyOn breakpoint gate -->
+<div class="filler" style="height: 400px">before case-stickyon-gate (400px)</div>
+<div nfsStickyContainer data-testid="stickyon-gate-container">
+  <div
+    nfsSticky
+    stickyOn="large"
+    data-testid="stickyon-gate"
+    style="height: 60px; background: #f0d0ff"
+    (stuck)="log('stickyon-gate', 'stuck', $event)"
+    (unstuck)="log('stickyon-gate', 'unstuck', $event)"
+  >
+    case-stickyon-gate: stickyOn "large" (1024px) - static below, sticky at/above
+  </div>
+  <div class="filler" style="height: 900px">container filler (900px)</div>
+</div>
+<div class="filler" style="height: 400px">after case-stickyon-gate (400px)</div>
+
+<!-- Case: overflow: hidden ancestor (Foundation's .off-canvas-wrapper) -->
+<div class="filler" style="height: 400px">before case-overflow-hidden (400px)</div>
+<div
+  data-testid="overflow-hidden-wrapper"
+  class="off-canvas-wrapper"
+  style="overflow: hidden; height: 300px; border: 2px solid #900;"
+>
+  <div nfsStickyContainer data-testid="overflow-hidden-container">
+    <div nfsSticky data-testid="overflow-hidden" style="height: 60px; background: #ffd0d0">
+      case-overflow-hidden: same directive, wrapped in an overflow:hidden ancestor
+    </div>
+    <div class="filler" style="height: 500px">
+      container filler (500px) - clipped by the wrapper's fixed 300px height and
+      overflow:hidden; nothing scrolls this box, so this filler is permanently
+      invisible, matching the real-world off-canvas-wrapper failure mode.
+    </div>
+  </div>
+</div>
+<div class="filler" style="height: 400px">after case-overflow-hidden (400px)</div>
+
+<!-- Case: topAnchor/btmAnchor sized to match the containing block (works) -->
+<div class="filler" style="height: 400px">before case-anchor-container-match (400px)</div>
+<p id="anchor-match-start" data-testid="anchor-match-start">anchor-match-start marker</p>
+<div nfsStickyContainer data-testid="anchor-match-container">
+  <div
+    nfsSticky
+    topAnchor="anchor-match-start"
+    btmAnchor="anchor-match-end"
+    data-testid="anchor-match"
+    style="height: 60px; background: #cfe8ff"
+  >
+    case-anchor-container-match: container sized to span the named anchor range
+  </div>
+  <div class="filler" style="height: 700px">container filler sized to match the anchor range (700px)</div>
+</div>
+<p id="anchor-match-end" data-testid="anchor-match-end">anchor-match-end marker</p>
+<div class="filler" style="height: 400px">after case-anchor-container-match (400px)</div>
+
+<!-- Case: topAnchor/btmAnchor pointing OUTSIDE the containing block (documented limit) -->
+<div class="filler" style="height: 400px">before case-anchor-outside (400px)</div>
+<p id="anchor-outside-far-start" data-testid="anchor-outside-far-start">
+  anchor-outside-far-start: 2000px away from the sticky element's own container, referenced by topAnchor
+  but never read by the directive - proves the browser ignores it.
+</p>
+<div nfsStickyContainer data-testid="anchor-outside-container" style="height: 150px">
+  <div
+    nfsSticky
+    topAnchor="anchor-outside-far-start"
+    btmAnchor="anchor-outside-far-end"
+    data-testid="anchor-outside"
+    style="height: 60px; background: #ffe6cf"
+  >
+    case-anchor-outside: container is only 150px, anchors point far away
+  </div>
+</div>
+<div class="filler" style="height: 2000px">
+  2000px of filler between the small container above and the far anchors below - the JS plugin would
+  keep case-anchor-outside stuck through all of this; native CSS unsticks it after ~90px because that is
+  where its own 150px container ends.
+</div>
+<p id="anchor-outside-far-end" data-testid="anchor-outside-far-end">anchor-outside-far-end marker</p>
+<div class="filler" style="height: 400px">after case-anchor-outside (400px)</div>
+
+<footer style="padding: 1rem; background: #eee;">
+  <h2 style="font-size: 1rem;">Event log (stuck/unstuck outputs)</h2>
+  <ul data-testid="event-log">
+    @for (entry of eventLog(); track $index) {
+      <li>{{ entry }}</li>
+    }
+  </ul>
+</footer>
