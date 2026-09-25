@@ -8,7 +8,7 @@ Map: ../map.md
 
 ## Question
 
-Given all thirteen research findings, what is the cross-cutting design every plugin spec inherits, and which primitive does each of the 21 plugins build on?
+Given all thirteen research findings, what is the cross-cutting design every plugin spec inherits, and which primitive does each of the 21 plugins, plus the CSS-only Button component the user added to the destination, build on? The matrix has 22 rows. For Button, read Foundation's `docs/pages/button.md` and `scss/components/_button.scss` directly, since no research ticket inventoried it.
 
 Every directive or component must be the best combination of: Foundation for Sites SCSS; Foundation's component features; the ARIA APG pattern; WHATWG HTML and HTML5+ platform features; WAI-ARIA; Angular Aria; Angular CDK; Angular Material-equivalent accessibility for the similar Material component; Angular Material-equivalent component API (inputs, outputs, public properties and methods, content and view projection); and the modern DI patterns from the DI research (lightweight injection tokens, host-scoped providers, host directives, parent tokens, default-options tokens). The building-blocks map must show, per plugin, how each of these sources contributes.
 

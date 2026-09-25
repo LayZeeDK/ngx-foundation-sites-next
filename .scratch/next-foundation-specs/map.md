@@ -10,6 +10,8 @@ One published spec (via `/to-spec`) for every JavaScript plugin in Foundation fo
 
 The 21 plugins (from `node_modules/foundation-sites/js/foundation.*.js`): Abide, Accordion, AccordionMenu, Drilldown, Dropdown, DropdownMenu, Equalizer, Interchange, Magellan, OffCanvas, Orbit, ResponsiveAccordionTabs, ResponsiveMenu, ResponsiveToggle, Reveal, Slider, SmoothScroll, Sticky, Tabs, Toggler, Tooltip.
 
+Plus one CSS-only component the user added to the destination: Button. That makes 22 specs. No spec assumes the Button or Accordion directives and components that exist in this repo today; every spec is designed from scratch on the research in this effort.
+
 ## Notes
 
 ### Domain
@@ -103,7 +105,8 @@ Subagents edit only their own ticket file and the output files that ticket names
 
 ## Out of scope
 
-- CSS-only Foundation components with no JavaScript plugin (Button, Button Group, Callout, Card, Badge, Label, Table, Grid, Top Bar markup, Menu markup, and so on). The destination covers the 21 JavaScript plugins only; CSS-only components need no Angular counterpart beyond markup.
+- CSS-only Foundation components with no JavaScript plugin other than Button (Button Group, Callout, Card, Badge, Label, Table, Grid, Top Bar markup, Menu markup, and so on). The destination covers the 21 JavaScript plugins plus Button; other CSS-only components need no Angular counterpart beyond markup.
+- This repo's existing Angular implementations (Button, Accordion, core, util-storybook). The specs are designed from scratch; the code here is neither a source nor a constraint.
 - Implementing the specs. The new repo builds from them; this map stops at the specs and the building-blocks map.
 - Foundation's jQuery plugin API surface (`$(el).foundation()`, `Foundation.Plugin` registration) and the Motion UI library as a dependency.
 - The current repo's Sass optimisation, runtime theming, bundle, and stylesheet plans under `packages/ngx-foundation-sites/*_PLAN.md`. They describe this repo, not the next one.
