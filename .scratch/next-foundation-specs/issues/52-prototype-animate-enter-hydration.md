@@ -10,7 +10,7 @@ Map: ../map.md
 
 When a server-rendered element carrying `animate.enter` (directly, or inside a `@defer (hydrate on ...)` block) hydrates, does its enter animation play, and can a directive suppress it without internal Angular flags? The rendering-modes research found no guard in the source and no test covering it.
 
-Read first: `building-blocks.md` (the matrix row and the open risk this prototype settles), `adr/*.md`, `research/angular-rendering-modes.md`, `research/angular-22-api-survey.md`.
+Read first: `building-blocks.md` (1.6 rules 2 and 7, 1.11 decision 10, and the Table B cells that cite this prototype; it has no matrix row of its own), `adr/*.md`, `research/angular-rendering-modes.md`, `research/angular-22-api-survey.md`.
 
 ## How to work it
 
