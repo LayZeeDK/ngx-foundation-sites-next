@@ -300,3 +300,4 @@ Orchestrator, second session, 2026-09-25:
 - Research-file repairs (H1 to H3, H4 and M8 in the survey, H5, H6 in the web platform file, M9 to M11, L1 to L3, L7, L9) run as one repair agent per file; each lands as its own commit, recorded below.
 
 - L1 (positioned half) and L9 fixed in the commit "repair the positioned inventory's tooltip citation and wording": `_tooltip.scss:145` is now `:63`, and the Magellan `reflow()` bullet no longer uses the banned word.
+- L1 (Aria half) and L3 (Aria half) fixed in the commit "repair the Aria inventory's tree citation and date label": the forced `multiExpandable` is cited at `private/tree/tree.ts:373`, and 2026-06-03 is labelled the 22.0.0 release date.

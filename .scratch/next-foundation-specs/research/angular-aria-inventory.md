@@ -7,6 +7,8 @@ Sources: local clone `d:/projects/github/angular/components` (branch 22.2.x, HEA
 under `d:/projects/github/angular/angular/adev/src/content/guide/aria/*.md`. Paths below are
 relative to those two roots unless written in full. npm registry checked for dist-tags only.
 
+Corrected 2026-09-25 after [Audit 0001: research wave](../audits/0001-research-wave.md), findings L1, L3: fixed the `tree.ts` line citation for the forced `multiExpandable` setting and labeled the Aria stability date as a release date.
+
 ## 1. Package shape and stability
 
 ### 1.1 Entry points
@@ -45,8 +47,8 @@ prerelease was 21.0.0-next.8.
 - No `@developerPreview` or `@experimental` JSDoc tag remains anywhere under `src/aria`
   outside spec files (`rg -n -i 'developer preview|experimental|@developerPreview' src/aria`
   returns only an unrelated `selectionStabled` signal in the grid behavior).
-- `CHANGELOG.md` 22.0.0 (2026-06-03), section "multiple": "remove developer preview tag from
-  aria (#33232)". So every entry point is stable as of 22.0.0.
+- `CHANGELOG.md` 22.0.0 (release date 2026-06-03), section "multiple": "remove developer
+  preview tag from aria (#33232)". So every entry point is stable as of 22.0.0.
 - `CHANGELOG.md` 22.0.0 Breaking Changes, section "aria": the legacy combobox and autocomplete
   were removed and `SimpleCombobox` was promoted to `Combobox`; all `simple-combobox` selectors
   and tokens renamed to `combobox` (`SIMPLE_COMBOBOX_POPUP` -> `COMBOBOX_POPUP`).
@@ -625,7 +627,7 @@ Foundation match: AccordionMenu (`ul.vertical.menu.accordion-menu` with nested `
 Treeview and gives arrow-key expand/collapse, `aria-expanded` on parents and `aria-current`
 on the active link. Differences to record: Aria expands and collapses only via the item's
 `expanded` model or arrow keys, there is no separate toggle button (`data-submenu-toggle`);
-`multiExpandable` is forced true on the tree (private tree.ts:618), so Foundation's
+`multiExpandable` is forced true on the tree (private tree.ts:373), so Foundation's
 `multiOpen=false` (close siblings) needs consumer logic; nested items must be wrapped in
 `ng-template ngTreeItemGroup` and each item needs `[parent]`, so the Foundation nested-`ul`
 markup cannot be used verbatim without a wrapping directive. Drilldown is not a tree either
