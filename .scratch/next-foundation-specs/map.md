@@ -109,6 +109,10 @@ Online: https://angular.dev, https://material.angular.dev, https://get.foundatio
 - Research inventories of local sources and straightforward prototypes: Sonnet 5. The first research wave ran on Fable before this rule existed.
 - Prototypes that must settle a contested design question: Opus 5.5.
 
+### Audits (user instruction)
+
+After every wave (research, building blocks, each spec wave, testing chain, final), the orchestrator spawns an audit subagent that reviews the map, the tickets, and every other document under the effort directory for compliance with the `/wayfinder`, `/domain-modeling`, `/grill-with-docs` (and `/grilling`), `/research`, `/to-spec`, and `/mattpocock-skills:prototype` skills. Findings go to `audits/NNNN-<scope>.md` (ranked, each with file, rule, evidence, fix) and are committed; the orchestrator applies the fixes or turns them into tickets, and records what it did at the end of the audit file.
+
 ### Concurrency rules
 
 Subagents edit only their own ticket file and the output files that ticket names. Only the orchestrating session appends to Decisions-so-far, edits other tickets, and commits. Commits stage specific files by name.
