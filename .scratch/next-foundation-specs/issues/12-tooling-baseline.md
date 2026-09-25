@@ -1,4 +1,4 @@
-# 12. Tooling baseline: Nx 23.2, Angular 22.2, Storybook 10.6, Vitest 5 browser mode
+# 12. Tooling baseline: Nx 23.2, Angular 22.2, Storybook 10.6, Vitest browser mode
 
 Type: research
 Status: resolved

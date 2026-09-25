@@ -279,3 +279,14 @@ Research (`/research`), with citation spot checks (at least ten per file; all pa
 ## Resolution log
 
 (For the orchestrator: record here which findings were fixed, turned into tickets, or rejected, with the commit that did it.)
+
+Orchestrator, 2026-09-25:
+
+- M4 fixed in commit 60fd449 (graduate the building-blocks fog into tickets): the four live-ticket fog patches were removed and the prototype patch graduated into tickets.
+- M1, M2 fixed in the commit "apply mechanical fixes from the research-wave audit": every component spec ticket now reads the rendering-modes research and the prototype answers first, its rendering item names the full rendering-modes contract, and its testing item names the four test layers.
+- H6, M12 handled in the same commit by a guard paragraph in every component spec ticket: take option names from the inventories and Foundation source, not the ticket; out-of-target platform features only as a named future upgrade or behind a fallback. The per-ticket option lists were not rewritten.
+- M3: the browser testing stack decision now waits on the building-blocks ticket (commit 60fd449). The building-blocks ticket had already resolved; the rendering-modes findings reached it before it finished and its answer records them. The building-blocks wave audit must confirm this.
+- M5, M6, M7 fixed on the map in the same commit: the DI criterion is reworded, the new locations and the prototype capture override are listed, bare ticket numbers on the map are replaced by linked names, and the tooling ticket is retitled "... Vitest browser mode" with matching link text. Bare numbers inside the consistency review and testing stack tickets were not all replaced.
+- H4: the orchestrator changed the map's versions (TypeScript 6.0.x, Vitest 4.1.x) on the facts in the Angular API survey (compiler-cli pins TypeScript to 6.0.x) and the tooling baseline (Nx 23.2.1 and addon-vitest 10.6 refuse Vitest 5). Still pending: a correction note in the API survey ticket's answer and in research/angular-22-api-survey.md.
+- Pending for the next session, one repair agent per research file: H1, H2, H3 (re-derive the line citations), H5 (correct the Foundation facts in the Material reference against the inventories), M8 (correction notes in the API survey), M9, M10 (Foundation and platform facts in the APG and CDK files), M11 (turn stated decisions into options or cite the ticket that decided them), L1 to L10.
+
