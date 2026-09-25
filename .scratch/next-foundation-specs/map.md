@@ -26,7 +26,7 @@ Foundation for Sites 6.9 ships Sass plus jQuery plugins. The next library keeps 
 | nx, @nx/angular | 23.2.1 |
 | storybook, @storybook/angular | 10.6.0 |
 | vitest, @vitest/browser-playwright | 5.0.2 |
-| typescript | 7.0.2 |
+| typescript | 6.0.x (Angular 22.2 pins `>=6.0.0 <6.1.0`; 7.0.2 is published but unsupported, per the Angular API survey) |
 | foundation-sites | 6.9.0 |
 
 Specs target these versions, not the Angular 21 toolchain in this repo.
@@ -120,6 +120,7 @@ Subagents edit only their own ticket file and the output files that ticket names
 - [@angular/aria 22.2 inventory](issues/07-angular-aria-inventory.md) — eight stable headless patterns (accordion, tabs, listbox, combobox, menu, toolbar, tree, grid) with exact inputs, host ARIA, and keyboard tables; Accordion and Tabs fit Foundation directly, AccordionMenu maps to the tree in navigation mode, DropdownMenu only fits menubar with role=menu semantics the Aria guide warns against for site navigation, and no Aria pattern exists for the other fifteen plugins. Findings: [research/angular-aria-inventory.md](research/angular-aria-inventory.md).
 - [Foundation plugin inventory D: Abide, Slider, Orbit, Equalizer, Interchange](issues/04-foundation-inventory-forms-media.md) — full inventories; Abide validates on change with 17 named patterns and a class-plus-aria error contract, Slider sets the APG slider ARIA itself and debounces `changed` by 500 ms, Orbit's ARIA is only `aria-live` on the active slide, Equalizer writes inline heights from resize and mutate triggers, Interchange's named queries are `landscape`, `portrait`, `retina` plus the Sass breakpoints; Triggers only snapshot resize targets once at load. Findings: [research/foundation-inventory-forms-media.md](research/foundation-inventory-forms-media.md).
 - [Foundation plugin inventory C: Dropdown, Tooltip, Positionable, Sticky, Magellan, SmoothScroll](issues/03-foundation-inventory-positioned.md) — the shared Positionable and Box model (4 positions x 3 alignments, RTL-aware auto-resolution, offset formulas, overlap-area collision, body-box bound) plus per-plugin inventories; Dropdown's Enter and Space key handling is dead code, Tooltip has no Escape handling and defaults to `top`, Magellan marks the link rather than the list item, and Sticky is a JavaScript emulation of `position: sticky` with anchors and a breakpoint gate. Findings: [research/foundation-inventory-positioned.md](research/foundation-inventory-positioned.md).
+- [Modern Angular 22.2 API survey](issues/06-angular-22-api-survey.md) — every API family with its source stability tag: signals, linkedSignal with `set`, resources, signal inputs and models, host directives with diamond-merge rules, `animate.enter`/`animate.leave` (public since 20.2), Signal Forms and `@angular/aria` stable in v22, route resources developer preview in 22.2, OnPush the default in v22, zoneless since v21, Vitest builder stable; Angular 22.2 pins TypeScript to 6.0.x, so the map's version table now says 6.0.x. Includes the full angular.courses/caniuse table. Findings: [research/angular-22-api-survey.md](research/angular-22-api-survey.md).
 
 ## Not yet specified
 
