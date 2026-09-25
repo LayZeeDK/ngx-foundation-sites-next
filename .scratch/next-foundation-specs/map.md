@@ -39,6 +39,8 @@ Specs target these versions, not the Angular 21 toolchain in this repo.
 - Input names come from Foundation `data-*` options in camelCase. Outputs mirror Foundation event names (`open.zf.reveal` becomes `opened` or similar; the spec decides and records the rule from the building-blocks ticket).
 - Signals for state, `model()` for two-way state, `linkedSignal` for derived-but-writable, OnPush, zoneless-safe, SSR-safe.
 - Accessibility: the matching WAI-ARIA APG pattern, WCAG AA, axe-clean.
+- Animation (user decision): every JavaScript-driven animation in a Foundation plugin (Motion UI `animateIn`/`animateOut`, jQuery `slideDown`/`slideUp`, Orbit slide transitions, Reveal fades, Drilldown height animation) is converted to Angular `animate.enter` / `animate.leave` bindings plus native CSS animations and transitions. No `@angular/animations`, no JavaScript-timed animation. Specs say which CSS classes and keyframes each state change uses and how `prefers-reduced-motion` is honoured.
+- Browser support (user decision): the target follows Angular 22, that is the Baseline "widely available" browser set on 2026-05-07: https://web-platform-dx.github.io/supported-browsers/?widelyAvailableOnDate=2026-05-07&includeDownstream=false. A platform feature counts as available only if it was Baseline widely available on that date; anything newer needs a fallback or is not used. Within that target, every spec considers the relevant modern JavaScript, web, browser, HTML, and CSS APIs for its directive or component.
 - Testing: Storybook play functions first, Vitest browser mode for logic, Playwright e2e for web-native APIs.
 
 ### Design criteria for every directive or component
@@ -86,6 +88,13 @@ Online: https://angular.dev, https://material.angular.dev, https://get.foundatio
 - `building-blocks.md`: the plugin-to-primitive map produced by the building-blocks ticket.
 - `CONTEXT.md` and `adr/`: the glossary and decision records for the next library, kept here rather than at the repo root because they describe the new repo.
 - `specs/<slug>.md`: one published spec per plugin.
+
+### Model per ticket (user instruction: pick the best of Opus 5.5, Fable 5.1, Sonnet 5 per subagent)
+
+- Building-blocks decision ticket: Fable 5.1, the one ticket where every cross-cutting call is made.
+- Spec tickets (grilling plus to-spec) and the consistency review: Opus 5.5, strong design reasoning at lower spend than Fable.
+- Research inventories of local sources and straightforward prototypes: Sonnet 5. The first research wave ran on Fable before this rule existed.
+- Prototypes that must settle a contested design question: Opus 5.5.
 
 ### Concurrency rules
 

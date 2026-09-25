@@ -1,7 +1,7 @@
 # 11. Native web platform features that can replace Foundation JavaScript
 
 Type: research
-Status: open
+Status: claimed
 Blocked by: none
 Labels: wayfinder:research
 Map: ../map.md
@@ -14,6 +14,8 @@ Cover: `<dialog>` (modal, `closedby`, `requestClose`, top layer, `::backdrop`); 
 
 Sources: the WHATWG HTML standard at https://html.spec.whatwg.org/multipage/ (fetch the specific section pages via markdown.new), CSS specs at https://drafts.csswg.org/, MDN pages for Baseline status (https://developer.mozilla.org/en-US/docs/Web/...), and https://web.dev/baseline. Fetch fallback chain: markdown.new (POST JSON `{"url": "<target_url>", "method": "auto", "retain_images": true}` to `https://markdown.new/`), then WebFetch, then `node D:/projects/github/LayZeeDK/lz-cybernetics-ai-plugins/tools/url-to-markdown/url-to-markdown.mjs <url> --output <path>`, then playwright-cli.
 
+Browser support target (added by the user while this ticket was in progress): the library follows Angular 22's browser support, which is the Baseline "widely available" set on 2026-05-07 (https://web-platform-dx.github.io/supported-browsers/?widelyAvailableOnDate=2026-05-07&includeDownstream=false). For every feature, state whether it was Baseline widely available on 2026-05-07 (that is, newly available on or before roughly 2023-11-07), so later tickets can tell at a glance what is usable without a fallback.
+
 ## Deliverable
 
-`research/web-platform-features.md`: one section per feature with what it does, its Baseline status and date, known gaps, and the Foundation plugins it could serve (name them). End with a table: plugin, platform features that apply, and whether the platform alone plausibly covers the plugin. Cite URLs. Plain ASCII.
+`research/web-platform-features.md`: one section per feature with what it does, its Baseline status and date, whether it meets the 2026-05-07 widely-available target, known gaps, and the Foundation plugins it could serve (name them). End with a table: plugin, platform features that apply, and whether the platform alone plausibly covers the plugin. Cite URLs. Plain ASCII.
