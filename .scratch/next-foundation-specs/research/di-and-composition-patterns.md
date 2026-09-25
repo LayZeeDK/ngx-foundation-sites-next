@@ -5,6 +5,10 @@ Sources: `d:/projects/github/angular/angular` (22.2.0, `adev/src/content/guide/*
 
 Reading order suggestion: sections 2 and 3 carry the rules every spec's "DI shape" paragraph will cite; section 9 is the catalogue.
 
+Corrected 2026-09-25 after [Audit 0001: research wave](../audits/0001-research-wave.md),
+findings L1, L2: corrected three drifted line citations and settled the Material
+signal-input count.
+
 ## 1. Lightweight injection tokens
 
 ### The guide's pattern
@@ -53,7 +57,7 @@ A second motive in Material is breaking circular imports between parent and chil
 
 - `src/material/expansion/accordion-base.ts:39-43`: `MAT_ACCORDION = new InjectionToken<MatAccordionBase>('MAT_ACCORDION')`, "Used primarily to avoid circular imports between `MatAccordion` and `MatExpansionPanel`." `MatAccordionBase` is an interface extending `CdkAccordion`.
 - `src/material/expansion/expansion-panel-base.ts:21-25`: `MAT_EXPANSION_PANEL = new InjectionToken<MatExpansionPanelBase>`.
-- `src/material/tabs/tab.ts:25-29`: `MAT_TAB_GROUP = new InjectionToken<any>('MAT_TAB_GROUP')`, "Used to provide a tab group to a tab without causing a circular dependency."
+- `src/material/tabs/tab.ts:37`: `MAT_TAB_GROUP = new InjectionToken<any>('MAT_TAB_GROUP')`, "Used to provide a tab group to a tab without causing a circular dependency."
 - `src/material/tabs/tab-label.ts:19-23`: `MAT_TAB = new InjectionToken<any>('MAT_TAB')`.
 - `src/material/menu/menu-panel.ts:19` plus the `MatMenuPanel<T>` interface: the token's type is a documented interface so `matMenuTriggerFor` accepts custom panels.
 
@@ -64,7 +68,7 @@ The abstract-class form from the guide does exist in the repo where the token al
 Provider shape used by every parent in all three packages:
 
 ```ts
-providers: [{provide: ACCORDION_GROUP, useExisting: AccordionGroup}]   // src/aria/accordion/accordion-group.ts:62
+providers: [{provide: ACCORDION_GROUP, useExisting: AccordionGroup}]   // src/aria/accordion/accordion-group.ts:69
 providers: [{provide: CDK_ACCORDION, useExisting: CdkAccordion}]       // src/cdk/accordion/accordion.ts:35
 providers: [{provide: MAT_TAB_GROUP, useExisting: MatTabGroup}]        // src/material/tabs/tab-group.ts:76-80
 ```
@@ -369,10 +373,10 @@ Imperative verbs, unprefixed, on the directive the consumer holds a reference to
 
 ### Inputs and two-way state
 
-- Aria is 100 percent signal inputs (100 `input(`/`input.required(`, zero `@Input`); Material is 15 `input(` against 492 `@Input` (only `button-base.ts` and `timepicker/*` migrated), and 3 `output(` against 91 `@Output`. Aria is therefore the reference for signal-era API shape; Material is the reference for naming and method vocabulary.
+- Aria is 100 percent signal inputs (100 `input(`/`input.required(`, zero `@Input`); Material has 32 `input(`/`input<`/`input.required` sites and 1 `model()` site against 492 `@Input` (only `button-base.ts`, `slider*.ts`, `stepper.ts` and `timepicker/*` migrated), and 3 `output(`/`output<` sites against 91 `@Output`. Counted with `rg -o --glob '!*.spec.ts' --glob '!**/testing/**' -e 'input\(' -e 'input<' -e 'input\.required' src/material | wc -l` (32; same command with `model\(`/`model<` gives 1, with `output\(`/`output<` gives 3, with `@Input\(` gives 492), run from the components clone root. Aria is therefore the reference for signal-era API shape; Material is the reference for naming and method vocabulary.
 - `model()` for two-way state: Aria `AccordionTrigger.expanded`, `TabList.selectedTab = model<string | undefined>()`, `Listbox.value = model<V[]>([])`, `MenuBar.value`, `Tree.value`, `TreeItem.expanded`, `GridCell.selected`, `Combobox.expanded` and `value`, `MenuItem.searchTerm`, `DeferredContentAware.preserveContent`; Material `MatTimepickerInput.value = model<D | null>(null)`.
 - `linkedSignal` bridges a `model` to internal state that can diverge: `TabList._selectedTabPattern = linkedSignal(() => this.findTab(this.selectedTab())?._pattern)` with an `afterRenderEffect({write})` syncing back to `selectedTab` (`tab-list.ts:111-118, 145-152`).
-- Boolean inputs always take `{transform: booleanAttribute}`; link inputs are `input.required<T>()`; ids default from the CDK generator: `id = input(inject(_IdGenerator).getId('ng-tab-', true))` (`tab.ts:55`); `tabindex` is `input(undefined, {alias: 'tabindex', transform: tabIndexTransform})` (`listbox.ts:125-128`).
+- Boolean inputs always take `{transform: booleanAttribute}`; link inputs are `input.required<T>()`; ids default from the CDK generator: `id = input(inject(_IdGenerator).getId('ng-tab-', true))` (`tab.ts:62`); `tabindex` is `input(undefined, {alias: 'tabindex', transform: tabIndexTransform})` (`listbox.ts:125-128`).
 - Cross-directive internals are `_underscored` public fields (`_pattern`, `_collection`, `_register`), private-to-file members use TypeScript `private readonly`, and cross-package internals use Angular's double-theta (U+0275 U+0275) private-export prefix.
 - Selector conventions: Aria attribute selectors `[ngTabs]`, `ng-template[ngTabContent]`; Material `mat-tab-group`, `[matMenuTriggerFor]`; Aria class names are unprefixed (`Tabs`, `Menu`), Material's carry `Mat`.
 
@@ -380,7 +384,7 @@ Imperative verbs, unprefixed, on the directive the consumer holds a reference to
 
 | Pattern | When to use | Example path |
 | --- | --- | --- |
-| `InjectionToken<Parent>` in a `*-tokens.ts` file with `import type`, parent `providers: [{provide: TOKEN, useExisting: Parent}]` | Every parent that children reach by DI; avoids retaining the parent class and circular imports | `src/aria/accordion/accordion-tokens.ts`, `accordion-group.ts:62`; `src/cdk/accordion/accordion.ts:22-35` |
+| `InjectionToken<Parent>` in a `*-tokens.ts` file with `import type`, parent `providers: [{provide: TOKEN, useExisting: Parent}]` | Every parent that children reach by DI; avoids retaining the parent class and circular imports | `src/aria/accordion/accordion-tokens.ts`, `accordion-group.ts:69`; `src/cdk/accordion/accordion.ts:22-35` |
 | Abstract class as token with `useExisting` | Token that consumers implement (contract, not just handle) | `src/material/form-field/form-field-control.ts:16`; guide `di/lightweight-injection-tokens.md` |
 | Child `inject(TOKEN)` required, or `{optional: true}` with a dev-mode violation report | Required parent (Aria triggers, tabs, options) vs standalone-capable child (Aria `MenuItem`, Material `MatTab`) | `src/aria/accordion/accordion-trigger.ts:66`; `src/aria/menu/menu-item.ts:77, 96-105` |
 | `inject(TOKEN, {optional: true, skipSelf: true})` plus `providers: [{provide: TOKEN, useValue: undefined}]` on the child | Parent of the same kind, and nested instances must not register with a grandparent | `src/cdk/accordion/accordion-item.ts:25-33`; `src/material/expansion/expansion-panel.ts:74-80, 139` |
@@ -407,4 +411,4 @@ Imperative verbs, unprefixed, on the directive the consumer holds a reference to
 | Dev-mode structural validation: `reportViolations` in `afterRenderEffect({read})`, `_assertInitialized()` throws | Tell consumers about wrong markup or too-early calls without shipping checks to prod | `src/aria/accordion/accordion-panel.ts:83-98`; `src/google-maps/google-map/google-map.ts:504-511` |
 | `model()` for two-way state, `linkedSignal` for derived-but-writable, `computed` for read-only derived, `output()` past-tense | Signal-era API shape (Aria) | `src/aria/tabs/tab-list.ts:109-118`; `src/aria/accordion/accordion-trigger.ts:85` |
 | `open()/close()/toggle()`, `expandAll()/collapseAll()`, `xChange` companions, `afterX` post-animation outputs | Material-equivalent method and output vocabulary | `src/cdk/accordion/accordion-item.ts:158-178`; `src/material/sidenav/drawer.ts:311-338, 536-559` |
-| `id = input(inject(_IdGenerator).getId('prefix-', true))` | Stable, overridable ids for ARIA relationships | `src/aria/tabs/tab.ts:55`; `src/cdk/a11y/id-generator.ts:22-31` |
+| `id = input(inject(_IdGenerator).getId('prefix-', true))` | Stable, overridable ids for ARIA relationships | `src/aria/tabs/tab.ts:62`; `src/cdk/a11y/id-generator.ts:22-31` |

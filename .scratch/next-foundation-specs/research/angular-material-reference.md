@@ -5,6 +5,11 @@ Date: 2026-09-25
 Scope: API shape only. Material's styling, MDC classes, ripples, theming and
 M2/M3 colour inputs are out of scope for a CSS-contract library.
 
+Corrected 2026-09-25 after [Audit 0001: research wave](../audits/0001-research-wave.md),
+findings H5, L1, L2, M11: fixed five wrong Foundation facts (Reveal, OffCanvas,
+Dropdown, Tooltip events and CSS), reworded two stated decisions as candidates,
+corrected two drifted line citations, and settled the Material signal-input count.
+
 Path legend (all under the local clone `d:/projects/github/angular/components`,
 branch `22.2.x`, `package.json` version `22.2.0`):
 
@@ -23,9 +28,13 @@ without re-checking each package.
 
 ### 0.1 Decorator inputs still dominate Material; signals dominate Aria
 
-- `M/` has 492 `@Input(` and 91 `@Output(` sites versus 32 `input()`/`model()`
-  and 3 `output()` sites (`rg -o` counts, spec and testing dirs excluded).
-  The only `model()` in Material is `M/timepicker/timepicker-input.ts:122`.
+- `M/` has 492 `@Input(` and 91 `@Output(` sites versus 32 `input()`/`input<`/
+  `input.required` sites, 1 `model()` site, and 3 `output()`/`output<` sites.
+  Counted with `rg -o --glob '!*.spec.ts' --glob '!**/testing/**' -e
+  'input\(' -e 'input<' -e 'input\.required' src/material | wc -l` (32), the
+  same command with `model\(`/`model<` (1), the same with `output\(`/
+  `output<` (3), and `-e '@Input\('` (492), each run from the components
+  clone root. The only `model()` in Material is `M/timepicker/timepicker-input.ts:122`.
 - `ARIA/` has 122 `input()`/`model()` sites and zero `@Input(`.
 - Consequence: Material is the reference for input NAMES, DEFAULTS and
   OUTPUT SEMANTICS; Aria is the reference for the signal SHAPE
@@ -193,8 +202,9 @@ Header keyboard navigation uses `FocusKeyManager(...).withWrap().withHomeAndEnd(
 
 ### Directive or component
 
-- `mat-accordion` is a DIRECTIVE (`M/expansion/accordion.ts:23`): it owns no
-  markup, only a host class, `multi`, and the key manager.
+- `mat-accordion` is a DIRECTIVE (`M/expansion/accordion.ts:32-48`, the
+  `@Directive` decorator and class declaration; line 23 is only an import):
+  it owns no markup, only a host class, `multi`, and the key manager.
 - `mat-expansion-panel` and `mat-expansion-panel-header` are COMPONENTS with
   `ViewEncapsulation.None` because they own structure: the panel renders the
   `role="region"` body wrapper and the `inert` toggle; the header renders the
@@ -582,9 +592,16 @@ Because the dialog lives outside the fixture, tests use
 
 - The ref surface: `close(result)`, `afterOpened()`, `beforeClosed()`,
   `afterClosed()`, `backdropClick()`, `keydownEvents()`, `getState()`. For a
-  declarative Foundation Reveal these become outputs `opened`, `closed`,
-  `beforeClosed` plus a two-way `open = model(false)`; Foundation's
-  `closeme.zf.reveal`/`closed.zf.reveal` pair maps to `beforeClosed`/`closed`.
+  declarative Foundation Reveal these become outputs `opened`, `closed`
+  plus a two-way `open = model(false)`; Foundation's `open.zf.reveal`
+  (fired synchronously at the end of `open()`, `foundation.reveal.js:323-327`)
+  maps to `opened`, and `closed.zf.reveal` (fired after the close
+  animation/hide completes, `:434-458`) maps to `closed`
+  (`research/foundation-inventory-disclosure.md` Reveal events table).
+  Foundation has no event that maps to `beforeClosed`: `closeme.zf.reveal`
+  fires just before THIS reveal OPENS, telling every other open reveal to
+  close first when `!options.multipleOpened` (`:265-272`), and is
+  unrelated to this reveal's own close lifecycle.
 - `closePredicate(result, config, instance)` as the hook for "block closing
   while dirty", instead of overloading `disableClose`.
 - `autoFocus` union type (`'dialog' | 'first-tabbable' | 'first-heading' |
@@ -612,8 +629,10 @@ Because the dialog lives outside the fixture, tests use
   Foundation's `.tiny .small .large .full` classes carry sizing.
 - MDC-specific animation classes and the `--mat-dialog-transition-duration`
   timer; Foundation Reveal animates with Motion UI classes
-  (`data-animation-in/out`), so `animate.enter`/`animate.leave` with those
-  class names is the fitting mechanism.
+  (`data-animation-in/out`). `animate.enter`/`animate.leave` with those
+  class names is a candidate mechanism; the animation mechanism owner is
+  [ADR 0003: animation mechanics](../adr/0003-animation-mechanics.md), not
+  this reference.
 - Bottom sheet's single-instance rule and `Breakpoints.Medium/Large/XLarge`
   class toggling (`bottom-sheet-container.ts:74-92`).
 
@@ -701,10 +720,16 @@ Keyframes `mat-mdc-tooltip-show` (150 ms) / `mat-mdc-tooltip-hide` (75 ms),
 
 ### API patterns that do not fit a CSS-contract library
 
-- Overlay-rendered bubble via `CDK/overlay`. Foundation's `.tooltip` CSS is
-  positioned relative to the trigger and already carries `.top .bottom .left
-  .right` and the `.has-tip` trigger class. Native `popover` + CSS anchor
-  positioning (map "Not yet specified") keeps the Foundation CSS contract
+- Overlay-rendered bubble via `CDK/overlay`. Foundation's tooltip plugin
+  appends the generated `.tooltip` element to `document.body`
+  (`foundation.tooltip.js:49-57`) and positions it with the inherited
+  `$element.offset(...)` call from Positionable
+  (`foundation.positionable.js:118-152`, invoked via `tooltip.js:122-123`),
+  NOT with CSS relative to the trigger. `.top .bottom .left .right`/
+  `align-*` are position classes the plugin swaps onto the generated tip
+  to drive the pip-placement CSS (`scss/components/_tooltip.scss:161-231`);
+  `.has-tip` is the trigger class. Native `popover` + CSS anchor positioning
+  (map "Not yet specified") keeps the same document-level placement
   without an overlay container; `CDK/overlay` is the fallback rung.
 - `tooltipClass` as a map/Set input; a plain `class` string aligned with
   Foundation `data-template-classes` is enough.
@@ -845,9 +870,19 @@ path of submenus) and `MatMenuItemHarness` (`isDisabled`, `getText`,
   and re-emit from the trigger only if the spec needs it.
 - `xPosition`/`yPosition` logical values (`before/after`, `above/below`).
   Foundation's `data-position` (`top|bottom|left|right`) and
-  `data-alignment` (`left|right|center`) are the CSS-contract equivalents
-  (`.dropdown-pane.top.left` and so on), so the directive's inputs should
-  carry Foundation's values and compute the class.
+  `data-alignment` (`left|right|center`) feed `_getDefaultPosition()`
+  (`foundation.dropdown.js:89-97`, reading the legacy `.top/.right/.bottom/
+  .left` classes on the pane) and are swapped onto the pane as
+  `has-position-*`/`has-alignment-*` (`:118-120`), but NEITHER set of
+  classes has a Sass rule on `.dropdown-pane` (verified in
+  `scss/components/_dropdown.scss`; `research/foundation-inventory-positioned.md`
+  Dropdown section): positioning is applied entirely through the inherited
+  `$element.offset(...)` call, not through a CSS contract keyed on these
+  classes. There is no `.dropdown-pane.top.left`-style equivalent to carry
+  over; the directive's inputs should carry Foundation's `data-position`/
+  `data-alignment` values only to drive the same offset computation (or an
+  equivalent CSS anchor-positioning rule this library authors), not to
+  select an existing Sass rule.
 - `hasBackdrop: boolean | null` where null means "use the default"; menus
   default to a transparent backdrop, which is what gives click-outside close.
 - `restoreFocus` (default true) on the trigger.
@@ -959,9 +994,16 @@ disabled both subjects fire synchronously.
 ### API patterns worth borrowing
 
 - `opened` as the single two-way state (`model(false)`), with `opened`,
-  `closed`, `openedStart`, `closedStart` as derived void outputs. Foundation
-  `open.zf.offCanvas`/`opened.zf.offCanvas`/`close.zf.offCanvas`/
-  `closed.zf.offCanvas` map one-to-one onto start/end pairs.
+  `closed`, `openedStart`, `closedStart` as derived void outputs. There is
+  no `open.zf.offCanvas`; Foundation's real event set is
+  `opened.zf.offCanvas` (fires at the START of the open transition,
+  despite the past-tense name), `openedEnd.zf.offCanvas` (`transitionend`
+  after open), `close.zf.offCanvas` (start of `close()`), and
+  `closed.zf.offCanvas` (`transitionend` after close)
+  (`research/foundation-inventory-menus.md` 6.4). These map onto the
+  start/end pairs as `openedStart` <- `opened.zf.offCanvas`, `opened` <-
+  `openedEnd.zf.offCanvas`, `closedStart` <- `close.zf.offCanvas`, and
+  `closed` <- `closed.zf.offCanvas`.
 - `open()`/`close()`/`toggle()` returning a promise resolved after the
   transition ends, with the focus origin passed through (`openedVia`).
 - `mode: 'over' | 'push' | 'side'` and `position: 'start' | 'end'`
@@ -969,8 +1011,15 @@ disabled both subjects fire synchronously.
   and `data-transition="push|overlap"`; the directive should carry
   Foundation's values but the same semantics (side = Foundation's
   `.is-open` with `.off-canvas-content` margin in "reveal on large" mode).
-- `disableClose` covering both Escape and backdrop
-  (Foundation `data-close-on-click`, `data-close-on-esc` become two inputs).
+- `disableClose` covering both Escape and backdrop. Foundation only has
+  `closeOnClick` (`data-close-on-click`) as an option; OffCanvas has no
+  `closeOnEsc` option (`OffCanvas.defaults`: closeOnClick, contentOverlay,
+  contentId, nested, contentScroll, transitionTime, transition, forceTo,
+  isRevealed, revealOn, inCanvasOn, autoFocus, revealClass, trapFocus).
+  Escape closing is unconditional (`Keyboard.register('OffCanvas',
+  {ESCAPE: 'close'})`), so a Foundation-faithful `disableClose` input would
+  only gate the click/backdrop half; disabling Escape has no Foundation
+  precedent and would be an addition.
 - Focus trap only in over/push, `autoFocus` union type, `inert` on the
   content while open (Foundation `data-content-overlay`,
   `data-trap-focus`, `data-auto-focus` already name these).
@@ -1301,11 +1350,14 @@ inside components for layout side effects only:
 
 ### API patterns that do not fit a CSS-contract library
 
-- Material's `Breakpoints` values. A Foundation `MediaQuery` service must
-  read Foundation's named breakpoints (from the `meta.foundation-mq` CSS
-  custom property or a provided map), expose `is('medium')`, `atLeast`,
-  `upTo`, `only`, `current`, and emit `changed.zf.mediaquery`-style changes
-  as a signal. Nothing in Material does this.
+- Material's `Breakpoints` values. A Foundation-equivalent breakpoint
+  service is a candidate need here: something exposing `is('medium')`,
+  `atLeast`, `upTo`, `only`, `current` as a signal, since nothing in
+  Material does this. The breakpoint source of truth and the mechanism
+  (a token mirroring Foundation's Sass map, read through a signal service
+  over CDK `MediaMatcher`) are [ADR 0005: breakpoint source of
+  truth](../adr/0005-breakpoint-source-of-truth.md)'s decision to own, not
+  this reference's.
 - Component-internal class toggling from breakpoints (bottom sheet, snack
   bar): the Foundation Sass already emits `.show-for-medium`,
   `.hide-for-large` and so on, so class toggling in TypeScript duplicates
