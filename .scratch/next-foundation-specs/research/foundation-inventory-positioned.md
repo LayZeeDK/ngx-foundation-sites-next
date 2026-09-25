@@ -11,6 +11,8 @@ Conventions used in this file:
 
 Sections: Shared positioning model (Positionable + Box), Dropdown, Tooltip, Sticky, Magellan, SmoothScroll, Cross-cutting utilities.
 
+Corrected 2026-09-25 after [Audit 0001: research wave](../audits/0001-research-wave.md), findings L1, L9: fixed the `_tooltip.scss` line citation for `position: absolute` and removed a banned word from the Magellan `reflow()` bullet.
+
 ---
 
 ## Shared positioning model: Positionable and Box
@@ -75,7 +77,7 @@ Alignment axis, for `left` / `right` positions:
 
 Note the sign asymmetry: `hOffset` / `vOffset` push the element *away* from the anchor on the position axis, but on the alignment axis they push toward the alignment's opposite edge (`right` alignment subtracts, `center` adds). The source comment at positionable.js:104-109 records an unresolved TODO about whether offsets should apply at all when centering.
 
-The result is applied with jQuery's `$element.offset({top, left})` (positionable.js:127, 146, 152), which converts document coordinates into `top`/`left` relative to the element's offset parent. This only works because the CSS gives the element `position: absolute` (`scss/components/_dropdown.scss:43`, `scss/components/_tooltip.scss:145`).
+The result is applied with jQuery's `$element.offset({top, left})` (positionable.js:127, 146, 152), which converts document coordinates into `top`/`left` relative to the element's offset parent. This only works because the CSS gives the element `position: absolute` (`scss/components/_dropdown.scss:43`, `scss/components/_tooltip.scss:63`).
 
 ### Collision test: `Box.OverlapArea(element, parent, lrOnly, tbOnly, ignoreBottom)` (box.js:22-54)
 
@@ -683,7 +685,7 @@ Listened for:
 
 - `calcPoints()` (js:60-75): recompute `winHeight`, `docHeight`, and `points[]` (one activation point per target, `round(offset().top - threshold)`).
 - `scrollToLoc(loc)` (js:121-135): set `_inTransition`, delegate to `SmoothScroll.scrollToLoc(loc, {animationEasing, animationDuration, threshold, offset}, cb)`; `_inTransition` suppresses `_updateActive` until the animation completes (js:153).
-- `reflow()` (js:141-144): `calcPoints` + `_updateActive`; wired to `resizeme`.
+- `reflow()` (js:141-144): `calcPoints` + `_updateActive`; bound to `resizeme`.
 - `destroy()` -> `_destroy()` (js:218-229): unbind, remove active class, attempt to strip the hash (`window.location.hash.replace(hash, '')` is a no-op string call; the hash is not actually changed), unbind `hashchange` and onLoad.
 
 `foundation.d.ts:208-212`: `calcPoints(): void; scrollToLoc(location: string): void; reflow(): void`.
