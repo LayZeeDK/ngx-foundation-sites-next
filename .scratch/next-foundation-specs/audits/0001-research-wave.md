@@ -290,3 +290,12 @@ Orchestrator, 2026-09-25:
 - H4: the orchestrator changed the map's versions (TypeScript 6.0.x, Vitest 4.1.x) on the facts in the Angular API survey (compiler-cli pins TypeScript to 6.0.x) and the tooling baseline (Nx 23.2.1 and addon-vitest 10.6 refuse Vitest 5). Still pending: a correction note in the API survey ticket's answer and in research/angular-22-api-survey.md.
 - Pending for the next session, one repair agent per research file: H1, H2, H3 (re-derive the line citations), H5 (correct the Foundation facts in the Material reference against the inventories), M8 (correction notes in the API survey), M9, M10 (Foundation and platform facts in the APG and CDK files), M11 (turn stated decisions into options or cite the ticket that decided them), L1 to L10.
 
+Orchestrator, second session, 2026-09-25:
+
+- L8 fixed in commit 2a18a22 (use ASCII dashes on the map).
+- L4, L10, and the map part of H4 fixed in the commit "apply the orchestrator's research-wave audit fixes": every Decisions-so-far gist is one sentence, the API survey gist points to the tooling ticket for the pins, and the version table's reasons are replaced by a link to the tooling ticket.
+- L5 fixed in the same commit: the consistency review is retyped `grilling` (AFK per the map's override), because it decides where a spec's choice beats the building-blocks map.
+- M7 residue fixed in the same commit: the testing stack ticket's "(ticket 38)" is now a linked name; the consistency review ticket already carried none.
+- L6 needs no change (the audit said so).
+- Research-file repairs (H1 to H3, H4 and M8 in the survey, H5, H6 in the web platform file, M9 to M11, L1 to L3, L7, L9) run as one repair agent per file; each lands as its own commit, recorded below.
+

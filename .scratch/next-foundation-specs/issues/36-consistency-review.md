@@ -1,9 +1,9 @@
 # 36. Consistency review and bundle index
 
-Type: task
+Type: grilling
 Status: open
 Blocked by: 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 37, 41, 53, 54, 55, 56, 57, 58, 59
-Labels: wayfinder:task
+Labels: wayfinder:grilling
 Map: ../map.md
 
 ## Question

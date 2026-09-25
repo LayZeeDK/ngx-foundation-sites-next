@@ -14,7 +14,7 @@ Decide, with `/grill-with-docs` self-grilling against `research/tooling-baseline
 
 1. The layers: story play functions (Storybook with `@storybook/addon-vitest`), browser-level tests (Playwright CT, Vitest Browser, or both with a rule for which goes where), node-level Vitest for server-side rendering and pure logic, Playwright e2e for web-native APIs and the static Storybook build. Name the Nx target and command per layer.
 2. CSF reuse rules: which stories are the single source for interaction tests, when a Playwright CT test may mount a story versus a bare host component, and what must never be duplicated between layers.
-3. What each layer asserts (DOM and ARIA state, never instance fields), how axe runs in each, and how SSR, hydration, and event replay (ticket 38) are tested at which layer.
+3. What each layer asserts (DOM and ARIA state, never instance fields), how axe runs in each, and how SSR, hydration, and event replay (per [Angular 22.2 @defer, SSR, prerendering, hydration, and event replay](38-angular-rendering-modes.md)) are tested at which layer.
 4. If no Playwright CT solution worked: record that, keep Vitest Browser, and state what would have to change upstream for the decision to be revisited.
 
 Write the decision as an ADR under `adr/` (it is hard to reverse, surprising without context, and a real trade-off) and update the testing-seams section of `building-blocks.md` to match. The consistency review ticket then aligns every spec's Testing Decisions with this ticket. Mark anything unsettled as `OPEN FOR HUMAN`.
