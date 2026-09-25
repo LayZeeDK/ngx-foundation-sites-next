@@ -1,0 +1,21 @@
+{
+  "name": "spike-jscutlery",
+  "private": true,
+  
+  "devDependencies": {
+    "@angular/common": "22.2.0",
+    "@angular/compiler": "22.2.0",
+    "@angular/core": "22.2.0",
+    "@angular/platform-browser": "22.2.0",
+    "@angular/platform-browser-dynamic": "22.2.0",
+    "@jscutlery/playwright-ct-angular": "0.10.10",
+    "@jscutlery/swc-angular": "0.22.0",
+    "@jscutlery/swc-angular-plugin": "0.22.0",
+    "@swc/core": "1.15.47",
+    "rxjs": "7.8.2",
+    "tslib": "2.8.1",
+    "typescript": "6.0.3",
+    "unplugin-swc": "2.0.0",
+    "zone.js": "0.16.2"
+  }
+}

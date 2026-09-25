@@ -1,0 +1,12 @@
+/* PROTOTYPE: the plain CSS class contract the directive toggles */
+.nfs-disclosure {
+  background: #1779ba;
+  color: #fefefe;
+  border: 0;
+  padding: 0.5rem 1rem;
+}
+
+.nfs-disclosure.is-active {
+  background: #14679e;
+  outline: 2px solid #0a0a0a;
+}
