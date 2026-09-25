@@ -10,7 +10,7 @@ One published spec (via `/to-spec`) for every JavaScript plugin in Foundation fo
 
 The 21 plugins (from `node_modules/foundation-sites/js/foundation.*.js`): Abide, Accordion, AccordionMenu, Drilldown, Dropdown, DropdownMenu, Equalizer, Interchange, Magellan, OffCanvas, Orbit, ResponsiveAccordionTabs, ResponsiveMenu, ResponsiveToggle, Reveal, Slider, SmoothScroll, Sticky, Tabs, Toggler, Tooltip.
 
-Plus one CSS-only component the user added to the destination: Button. That makes 22 specs. No spec assumes the Button or Accordion directives and components that exist in this repo today; every spec is designed from scratch on the research in this effort.
+Plus one CSS-only component the user added to the destination: Button. That makes 22 component specs. The building-blocks decision added four shared-utility specs that the component specs depend on (Breakpoint service, Triggers, Anchored pane, Nested menu), so the destination is 26 specs. No spec assumes the Button or Accordion directives and components that exist in this repo today; every spec is designed from scratch on the research in this effort.
 
 ## Notes
 
@@ -140,11 +140,8 @@ Subagents edit only their own ticket file and the output files that ticket names
 
 ## Not yet specified
 
-- **Prototype tickets.** Several design questions will likely need a runnable artifact before a spec can commit: native `popover` plus CSS anchor positioning under Foundation's `.dropdown-pane` and `.tooltip` CSS; Signal Forms as the Abide replacement; CSS-only `position: sticky` versus a Sticky directive; scroll-snap for Orbit; a Foundation-styled `<input type="range">` for Slider; `animate.enter`/`animate.leave` with Motion UI classes; `@angular/aria` Accordion and Tabs under Foundation markup. These graduate to `prototype` tickets when a component ticket cannot settle the question from sources.
-- **Shared utilities.** Whether Foundation's Triggers (`data-open`, `data-close`, `data-toggle`), MediaQuery, Motion UI, Keyboard, Nest, Box, Touch, Timer, and ImageLoader utilities earn their own directive or service specs or fold into the plugin specs that use them. Sharp after the utilities research and the building-blocks ticket.
-- **Sass and theming pipeline for the new repo.** How Foundation's Sass is consumed, whether runtime theming via custom properties is part of the component contract. May be ruled out of scope by the building-blocks ticket.
-- **Storybook conventions for the new repo.** Story structure, Foundation Prototype utility classes in demos, the a11y addon, and how play functions and Vitest browser mode share tests. Sharp after the tooling research.
-- **Deprecated or jQuery-specific plugin behaviour.** Which Foundation behaviours (Interchange HTML partial loading, Abide live validation on input, Orbit auto-play) carry over and which are dropped. Decided plugin by plugin.
+- **Further prototypes surfaced by spec tickets.** A spec ticket that cannot settle a question from sources writes it under `## Prototype needed` in its answer; the orchestrator graduates each into a prototype ticket that blocks the spec's re-run. None are known yet beyond the charted prototypes.
+- **Hand-off packaging for the new repo.** How the finished bundle (specs, building blocks, glossary, ADRs, research, prototypes) moves into the new repository and what, if anything, is rewritten on the way. Sharp once the consistency review has an index to hand over.
 
 ## Out of scope
 
@@ -154,3 +151,5 @@ Subagents edit only their own ticket file and the output files that ticket names
 - Foundation's jQuery plugin API surface (`$(el).foundation()`, `Foundation.Plugin` registration) and the Motion UI library as a dependency.
 - The current repo's Sass optimisation, runtime theming, bundle, and stylesheet plans under `packages/ngx-foundation-sites/*_PLAN.md`. They describe this repo, not the next one.
 - Spec Kit artifacts (`.specify/`, `specs/001-button`). The user ruled Spec Kit out; specs here follow `/to-spec`.
+- Opt-in `role="menu"` variants (DropdownMenu as an APG menubar, Drilldown as a vertical menu) for command menus. The [building-blocks decision](issues/14-building-blocks-map.md) put every menu on disclosure navigation and found no spec in the destination that needs a second role set.
+- Runtime theming through custom properties as a component contract. The [building-blocks decision](issues/14-building-blocks-map.md) kept Foundation mixins and documented custom CSS in scope and ruled runtime theming out.
