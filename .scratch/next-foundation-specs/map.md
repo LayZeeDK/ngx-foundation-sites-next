@@ -35,7 +35,7 @@ Specs target these versions, not the Angular 21 toolchain in this repo. Why Type
 
 - Directive over component wherever the Foundation markup already carries the element. Component only when the plugin owns structure the consumer should not hand-write.
 - Implementation order: native platform feature, then `@angular/aria`, then `@angular/cdk`, then custom Angular. Each spec must say which rung it stopped at and why.
-- Foundation CSS classes and state classes (`.is-active`, `.is-open`, and so on) are the styling contract. Custom CSS only when documented as unavoidable.
+- Foundation CSS classes and state classes (`.is-active`, `.is-open`, and so on) are the styling contract. The library reuses Foundation for Sites' SCSS (its mixins, partials, settings, and classes) and never re-implements styles Foundation already has; custom CSS only for what Foundation cannot express, as the smallest rule, documented with its reason (user decision, restated 2026-09-26).
 - Input names come from Foundation `data-*` options in camelCase. Outputs mirror Foundation event names (`open.zf.reveal` becomes `opened` or similar; the spec decides and records the rule from the building-blocks ticket).
 - Signals for state, `model()` for two-way state, `linkedSignal` for derived-but-writable, OnPush, zoneless-safe, SSR-safe.
 - Accessibility: the matching WAI-ARIA APG pattern, WCAG AA, axe-clean.
