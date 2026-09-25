@@ -1,7 +1,7 @@
 # 38. Angular 22.2 @defer, SSR, prerendering, hydration, and event replay for DOM-touching directives
 
 Type: research
-Status: open
+Status: resolved
 Blocked by: none
 Labels: wayfinder:research
 Map: ../map.md
@@ -25,3 +25,30 @@ Sources: the local Angular clone at `d:/projects/github/angular/angular` (branch
 ## Deliverable
 
 `research/angular-rendering-modes.md`: one section per item above with exact API names and rules, each cited to a file path or URL, and the per-directive checklist from item 7 as a table the spec tickets can copy. Plain ASCII.
+
+## Answer
+
+Gist (the rules specs build on):
+
+- 22.x change: `provideClientHydration()` turns incremental hydration on by default (`withIncrementalHydration()` is deprecated, `withNoIncrementalHydration()` opts out), and incremental hydration includes `withEventReplay()`. So event replay is on for every SSR consumer. This corrects the API survey.
+- On the server, constructors, inputs, `computed`, `linkedSignal`, `effect` and every `host` binding run; `afterNextRender`, `afterEveryRender`, `afterRenderEffect`, `animate.enter`/`leave` and `@defer` triggers do not. There is no layout, no `IntersectionObserver`/`ResizeObserver`/`matchMedia`. First-paint state must come from host bindings on signal state; everything measured, focused, scrolled or timed goes in render callbacks, with timers outside the zone (hydration cleanup and event replay both wait for `whenStable()`).
+- Hydration checks only node type and tag name. Class, attribute and style differences are rewritten silently at hydration (with a visible flash); structure differences (moved or inserted nodes, `innerHTML`) break it. `ngSkipHydration` is only valid on component hosts, so directives have no escape hatch. Shadow DOM encapsulation and uncovered i18n force a component to skip hydration, which also drops its event replay.
+- Event replay covers only template and `host` listeners on elements, only the listed native types: `click`, `keydown`, `focusin`, `mouseover`, `pointer*` (not `pointerenter`/`pointerleave`), `input`, `change`, `submit`, plus capture `focus`, `blur`, `toggle`. No `mouseenter`/`mouseleave`, `scroll`, custom events, outputs, `Renderer2.listen` listeners, or `document:`/`window:`/`body:` targets. Replay happens after stability, with `eventPhase === 101`. Calling `preventDefault()` during replay throws, and the rest of that handler is skipped. Handlers must change state first and skip `preventDefault()` on replay.
+- Incremental hydration: any replayable listener inside a dehydrated block hydrates that block and its ancestors, top-down, then replays. Until then no class inside it exists, so a parent outside cannot see its items. One widget (container plus items, trigger plus target) belongs in one hydration boundary. `hydrate on interaction`/`hover` take no parameters; `hydrate never` blocks never replay.
+- `@defer` belongs in consumer templates, not library templates. It keeps parent DI working across the boundary, and `<ng-content>` inside it defers no code.
+
+Surprises:
+
+- Aria's `DeferredContent` (`ngAccordionContent`, `ngTabContent`) creates panel views in `afterRenderEffect`, so an open Aria panel is empty in server HTML.
+- Foundation's `.accordion-content` has no CSS rule that shows it, so an accordion open at first paint needs a library binding.
+- CDK `_IdGenerator` with `randomize` makes server and client IDs differ.
+- Inside a dehydrated block, JSAction calls `preventDefault()` on anchor clicks before dispatch (from reading the source), so the native hash jump does not happen.
+
+Open questions:
+
+- Whether `animate.enter` replays on server-rendered nodes at hydration. The source has no guard and no test covers it, so it needs a prototype.
+- OPEN FOR HUMAN: how handlers detect replay, given that `EventPhase` lives in an entry point documented as internal.
+- Whether the new repo adds a prerendered SSR fixture app with Playwright as a fourth test seam. Storybook and TestBed are client-only, and it is unverified whether `renderApplication` runs under `@angular/build:unit-test`.
+- Whether Aria-based Accordion and Tabs accept client-only panel content.
+
+Findings: ../research/angular-rendering-modes.md
