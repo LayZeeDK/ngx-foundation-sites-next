@@ -1,12 +1,43 @@
 {
   "enabledPlugins": {
-    "nx@nx-claude-plugins": true
+    "nx@nx-claude-plugins": true,
+    "angular-developer@angular-skills": true,
+    "angular-new-app@angular-skills": true
   },
   "extraKnownMarketplaces": {
     "nx-claude-plugins": {
       "source": {
         "source": "github",
         "repo": "nrwl/nx-ai-agents-config"
+      }
+    },
+    "angular-skills": {
+      "source": {
+        "source": "settings",
+        "name": "angular-skills",
+        "plugins": [
+          {
+            "name": "angular-developer",
+            "source": {
+              "source": "git-subdir",
+              "url": "angular/skills",
+              "path": "angular-developer"
+            },
+            "description": "Angular's official angular-developer skill from angular/skills"
+          },
+          {
+            "name": "angular-new-app",
+            "source": {
+              "source": "git-subdir",
+              "url": "angular/skills",
+              "path": "angular-new-app"
+            },
+            "description": "Angular's official angular-new-app skill from angular/skills"
+          }
+        ],
+        "owner": {
+          "name": "Angular"
+        }
       }
     }
   },
