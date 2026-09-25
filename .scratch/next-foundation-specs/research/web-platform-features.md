@@ -3,6 +3,8 @@
 Ticket: `../issues/11-web-platform-features.md`
 Researched: 2026-09-25. Every Baseline label and date below was read on that day from the URL cited next to it.
 
+Corrected 2026-09-25 after [Audit 0001: research wave](../audits/0001-research-wave.md), finding H6: Foundation option names corrected against each plugin's defaults.
+
 ## How to read this file
 
 ### Baseline labels
@@ -208,7 +210,7 @@ Known gaps.
 - Without `@starting-style`, entry animations need the classic two-frame dance (apply the start class, force a reflow or `requestAnimationFrame`, then apply the end class), which is what Foundation's Motion UI `animateIn` already does.
 - `transition-behavior` on `display` is the part that "varies" in MDN's banner; check `transitionable_display` in BCD before relying on it in Safari 17.4.
 
-Foundation plugins it could serve. Reveal (`data-animation-in`, `data-animation-out`), Dropdown, DropdownMenu, Tooltip (fade), OffCanvas (`data-transition`), Toggler (`data-animate`), Orbit (`data-animate-in-*`), Accordion (Motion UI slide). Every animated open/close in the library. For the target set the Motion UI class toggle path stays; `@starting-style` is a progressive enhancement.
+Foundation plugins it could serve. Reveal (`data-animation-in`, `data-animation-out`), Dropdown, DropdownMenu, Tooltip (fade), OffCanvas (`data-transition`), Toggler (`data-animate`), Orbit (`data-anim-in-from-right`, `data-anim-out-to-right`, `data-anim-in-from-left`, `data-anim-out-to-left`), Accordion (Motion UI slide). Every animated open/close in the library. For the target set the Motion UI class toggle path stays; `@starting-style` is a progressive enhancement.
 
 ## 7. Scroll-driven animations
 
@@ -272,7 +274,7 @@ Known gaps.
 - Programmatic `scrollTo` inside a `scroll-snap-type: mandatory` container snaps to the nearest position after the scroll, which is desired for Orbit but can fight a "scroll to arbitrary offset" use.
 - `scroll-behavior: smooth` on `html` changes `window.scrollTo` and anchor navigation globally; apply it to the specific container, and wrap in `@media (prefers-reduced-motion: no-preference)`.
 
-Foundation plugins it could serve. Orbit (snap container replaces slide translation, `scrollIntoView` for bullets and arrows, IntersectionObserver for active slide, `prefers-reduced-motion` for autoplay), SmoothScroll (`scroll-behavior` plus `scrollIntoView` and `scroll-margin` replace `data-offset`, `data-animation-duration` and `data-animation-easing`), Magellan (`scrollIntoView` for link clicks, `scroll-margin` for `data-offset`, `data-bar-offset`), Tabs and Drilldown no.
+Foundation plugins it could serve. Orbit (snap container replaces slide translation, `scrollIntoView` for bullets and arrows, IntersectionObserver for active slide, `prefers-reduced-motion` for autoplay), SmoothScroll (`scroll-behavior` plus `scrollIntoView` and `scroll-margin` replace `data-offset`, `data-animation-duration` and `data-animation-easing`), Magellan (`scrollIntoView` for link clicks, `scroll-margin` for `data-offset`; Magellan has no `barOffset` option, only `offset`), Tabs and Drilldown no.
 
 ## 10. IntersectionObserver and ResizeObserver
 
@@ -367,7 +369,7 @@ Meets 2026-05-07 target. `type=range` and `appearance: none`: yes. Vertical via 
 
 Known gaps.
 
-- No multi-thumb: the `multiple` attribute does not apply to range ("the following input attributes do not apply to the input range: ... `multiple`", MDN; the spec's attribute table lists `multiple` for email and file only). Foundation Slider's `data-double` (two handles, `.slider-handle` x2, one fill) needs two overlapping `<input type="range">` elements with `pointer-events` juggling, or a custom ARIA slider. `@angular/aria` has no slider (see research/angular-aria-inventory.md); Angular Material's `MatSlider` implements range mode with two native inputs, which is the reference design.
+- No multi-thumb: the `multiple` attribute does not apply to range ("the following input attributes do not apply to the input range: ... `multiple`", MDN; the spec's attribute table lists `multiple` for email and file only). Foundation Slider's `doubleSided` (`data-double-sided`; two handles, `.slider-handle` x2, one fill) needs two overlapping `<input type="range">` elements with `pointer-events` juggling, or a custom ARIA slider. `@angular/aria` has no slider (see research/angular-aria-inventory.md); Angular Material's `MatSlider` implements range mode with two native inputs, which is the reference design.
 - The fill (Foundation `.slider-fill`) is a pseudo-element only in Gecko (`::-moz-range-progress`); Chromium and WebKit need a gradient background on the track computed from the value, which is a `style` binding per `input` event.
 - Foundation's slider CSS targets `.slider`, `.slider-handle` (a `<span role=slider>`) and `.slider-fill`; none of it applies to a native range. A native-range Slider keeps the `.slider` container class and must rewrite the handle and fill styles against the vendor pseudo-elements. That is documented custom CSS, not a Foundation class contract.
 - `data-vertical` on the target set needs `transform: rotate(-90deg)` or the custom ARIA slider; `writing-mode` is the clean path once the target moves.
@@ -454,7 +456,7 @@ Meets 2026-05-07 target. Yes.
 
 Known gaps. Desktop browsers ignore it. Only meaningful on touch keyboards. `type="number"` already implies a numeric keyboard but rejects non-numeric input and has spinner semantics; `inputmode="decimal"` on `type="text"` with a `pattern` is the recommended combination for things like card numbers.
 
-Foundation plugins it could serve. Abide (card, cvv, number, phone patterns), Slider (`data-binding` text input as `inputmode="decimal"`).
+Foundation plugins it could serve. Abide (card, cvv, number patterns; Abide has no phone pattern), Slider (`data-binding` text input as `inputmode="decimal"`).
 
 ## 20. Invoker Commands API: `command`, `commandfor`
 
@@ -509,7 +511,7 @@ Foundation plugins it could serve. OffCanvas (push and reveal modes), Drilldown 
 | ResponsiveMenu | Container queries, `matchMedia`, `:has()` | Style switching: yes. Plugin swap (dropdown vs drilldown vs accordion): script. | Partial: container queries in; `:has()` out |
 | ResponsiveToggle | `matchMedia`, container queries, `inert`, `popover="manual"`, `CloseWatcher` | Show/hide of the toggled bar: `hidden` attribute and a click handler; animation via Motion UI. | Partial: `inert`, container queries in; popover, `CloseWatcher` out |
 | Reveal | `<dialog>` modal and non-modal, `::backdrop`, `closedby`, `requestClose()`, `inert` (implicit), `@starting-style`, `transition-behavior`, `overlay`, `command="show-modal"`, View Transitions | Yes: `<dialog>` covers open/close, Esc, focus trap, backdrop and stacking. Click-outside and animations need a few lines on the target set. | Partial: `<dialog>`, `::backdrop`, `:modal`, `inert` in; `closedby`, `requestClose()`, animation at-rules, commands out |
-| Slider | `<input type="range">`, `appearance: none`, `list`/`datalist`, `inputmode`, `writing-mode` vertical, `::slider-*` | Single handle: yes with vendor pseudo-element styling. Double handle (`data-double`): no, two natives or custom ARIA slider. Vertical: rotate or custom. | Partial: `type=range`, `appearance` in; `writing-mode` vertical (Chrome 124 / Firefox 120 / Safari 17.4), `::slider-*` out |
+| Slider | `<input type="range">`, `appearance: none`, `list`/`datalist`, `inputmode`, `writing-mode` vertical, `::slider-*` | Single handle: yes with vendor pseudo-element styling. Double handle (`doubleSided`/`data-double-sided`): no, two natives or custom ARIA slider. Vertical: rotate or custom. | Partial: `type=range`, `appearance` in; `writing-mode` vertical (Chrome 124 / Firefox 120 / Safari 17.4), `::slider-*` out |
 | SmoothScroll | `scroll-behavior`, `scrollIntoView()`, `scroll-margin`, `prefers-reduced-motion` | Yes outright; `data-offset` becomes `scroll-margin-top`, duration and easing are not controllable (browser-defined). | Yes |
 | Sticky | `position: sticky`, `IntersectionObserver`, container queries, scroll-state queries | Sticking: yes. `.is-stuck` / `.is-at-top` / `.is-at-bottom` classes and `data-top-anchor` / `data-btm-anchor` ranges: thin directive with `IntersectionObserver`. | Yes (`position: sticky`, `IntersectionObserver` in; scroll-state queries out) |
 | Tabs | `:has()`, `scrollIntoView()`, View Transitions, `hidden` | No native tabs; `@angular/aria` Tabs is the building block. Platform only assists (deep-link scroll, panel switch animation). | Yes for what applies (`scrollIntoView`); `:has()`, View Transitions out |
