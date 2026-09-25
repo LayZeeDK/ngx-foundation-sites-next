@@ -5,6 +5,8 @@ Sources: Foundation for Sites 6.9.0 local clone (`package.json` version 6.9.0).
 `FS` below means `d:/projects/github/foundation/foundation-sites`. Line numbers
 refer to the files as checked out on 2026-09-25.
 
+Corrected 2026-09-25 after [Audit 0001: research wave](../audits/0001-research-wave.md), finding H2: utility-file line citations re-derived per file.
+
 Conventions shared by all five plugins (from `FS/js/foundation.core.plugin.js`
 and `FS/js/foundation.core.js`):
 
@@ -18,8 +20,8 @@ and `FS/js/foundation.core.js`):
   `foundation.core.js:161-165`; `parseValue` (`:323-328`) turns `true`/`false`
   and numeric strings into booleans and numbers.
 - Every plugin fires `init.zf.<plugin>` on construction
-  (`foundation.core.plugin.js:279`) and `destroyed.zf.<plugin>` on `destroy()`
-  (`:290`). The plugin name is the hyphenated class name, so Abide fires
+  (`foundation.core.plugin.js:19`) and `destroyed.zf.<plugin>` on `destroy()`
+  (`:30`). The plugin name is the hyphenated class name, so Abide fires
   `init.zf.abide`, Slider `init.zf.slider`, and so on.
 - Generated ids come from `GetYoDigits(6, ns)` (`foundation.core.utils.js:20-28`)
   and look like `k3f9x2-slider`.
@@ -169,7 +171,7 @@ Fired (all carry the jQuery element as the first extra argument):
 | `valid.zf.abide` / `invalid.zf.abide` | the input | end of `validateInput` | `abide.js:497-498`, `:526` |
 | `formvalid.zf.abide` / `forminvalid.zf.abide` | the form | end of `validateForm` | `:580` |
 | `formreset.zf.abide` | the form | end of `resetForm` | `:740` |
-| `init.zf.abide`, `destroyed.zf.abide` | the form | plugin lifecycle | `core.plugin.js:279`, `:290` |
+| `init.zf.abide`, `destroyed.zf.abide` | the form | plugin lifecycle | `core.plugin.js:19`, `:30` |
 
 Listened for (`abide.js:54-96`):
 
@@ -367,7 +369,7 @@ Listened for (`slider.js:456-557`):
 | `mousedown.zf.slider` | handle (when `draggable`) | add `is-dragging`, bind `mousemove.zf.slider`/`mouseup.zf.slider` on `body` |
 | `selectstart.zf.slider touchmove.zf.slider` | handle | `preventDefault` |
 | `keydown.zf.slider` | handle | `Keyboard.handleKey(e, 'Slider', ...)` |
-| `finished.zf.animate` | container | from `Move` (`foundation.util.motion.js:226`, `:238`) |
+| `finished.zf.animate` | container | from `Move` (`foundation.util.motion.js:27`, `:39`) |
 
 ### Public methods
 
@@ -415,10 +417,10 @@ to put `aria-labelledby`/`aria-describedby` on the `.slider` container
 
 `slider.js:1-10`: Keyboard (`handleKey`, `register`), Motion (`Move`: rAF loop
 that re-applies the css function each frame for `moveTime` then fires
-`finished.zf.animate`, `foundation.util.motion.js:221-242`), core utils
+`finished.zf.animate`, `foundation.util.motion.js:22-43`), core utils
 (`GetYoDigits`, `rtl`), Touch (`Touch.init($)` then `this.handles.addTouch()`,
 which re-dispatches `touchstart/move/end` as synthetic `mousedown/move/up`,
-`foundation.util.touch.js:203-241`), Triggers (`Triggers.init($)` is called at
+`foundation.util.touch.js:118-154`), Triggers (`Triggers.init($)` is called at
 `:36` but no trigger event is used by the plugin).
 
 ### Sass configuration that shapes behaviour
@@ -517,7 +519,7 @@ State the JS toggles:
 | slide | `aria-live="polite"` on the active slide after it animates in; removed from the leaving slide | `:348`, `:355`, `:362-363` |
 | slide | `data-slide="<index>"` | `:147` |
 | slide | inline `display: none` for every non-active, non-animating slide; `display: block` on the entering slide | `:149-152`, `:348` |
-| slide | Motion UI classes during transition: `<anim class>`, `mui-enter`/`mui-leave`, `mui-enter-active`/`mui-leave-active`; removed on `transitionend` | `foundation.util.motion.js:208-209`, `:253-298` |
+| slide | Motion UI classes during transition: `<anim class>`, `mui-enter`/`mui-leave`, `mui-enter-active`/`mui-leave-active`; removed on `transitionend` | `foundation.util.motion.js:9-10`, `:54-99` |
 | `.orbit-container` | inline `height` = tallest slide, measured after images load | `orbit.js:142-161` |
 | `.orbit-container` | `tabindex="0"` when `accessible` | `:95-97` |
 | `.orbit` root | `id` (generated `<6>-orbit` if missing) and `data-resize="<id>"` | `:64-69` |
@@ -622,7 +624,7 @@ container and the keydown bindings (`:95-97`, `:242-259`).
 ImageLoader (`onImagesLoaded` before the first height measurement, `:79-83`),
 Touch (`Touch.init($)`, `:34`; swipe events come from `$.spotSwipe`, horizontal
 only, `moveThreshold: 75` px within `timeThreshold: 200` ms,
-`foundation.util.touch.js:118-144`, `:167-175`), core utils (`GetYoDigits`).
+`foundation.util.touch.js:32-58`, `:86-87`), core utils (`GetYoDigits`).
 `resizeme.zf.trigger` needs the Triggers global listeners, which Orbit does not
 initialise itself (`Triggers.init` is not imported). Motion UI is an external
 package (`motion-ui ^2.0.5`, `FS/package.json`) that provides the transition
@@ -652,12 +654,12 @@ read by Orbit before restarting after a slide change (`orbit.js:356`, `:364`).
 
 - Motion UI transitions driven by class juggling with two `requestAnimationFrame`
   ticks, a forced reflow, and a one-shot `transitionend`
-  (`foundation.util.motion.js:253-298`).
+  (`foundation.util.motion.js:54-99`).
 - `$.spotSwipe` synthetic `swipeleft`/`swiperight` events.
 - `.hide()`/`.show()` inline display management for slides.
 - Physically detaching and re-appending the "Current Slide" span between
   bullets (`orbit.js:409-412`).
-- `onImagesLoaded` re-creating `Image` objects to detect load (`foundation.util.imageLoader.js:52-84`).
+- `onImagesLoaded` re-creating `Image` objects to detect load (`foundation.util.imageLoader.js:8-40`).
 - `_destroy()` hiding the element.
 - Height measurement via `getBoundingClientRect` of every slide, re-run on the
   debounced global resize.
@@ -935,7 +937,7 @@ do not affect Interchange.
 - The Timer util (Orbit) is a pausable `setTimeout` with remaining-time
   bookkeeping (`foundation.util.timer.js`).
 - ImageLoader (Orbit, Equalizer) waits for `complete && naturalWidth` or a new
-  `Image` load/error (`foundation.util.imageLoader.js:52-84`); errors count as
+  `Image` load/error (`foundation.util.imageLoader.js:8-40`); errors count as
   loaded.
 - Motion UI classes (`slide-in-*`, `slide-out-*`, `fade-in`, `fade-out`) and the
   `mui-enter`/`mui-leave` mechanics are the only animation contract Orbit has;
