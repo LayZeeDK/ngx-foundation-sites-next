@@ -343,6 +343,16 @@ Component development and visual testing uses Storybook on port 4400.
 - **Test**: `npx nx test-storybook ngx-foundation-sites`
 - **Kill process**: `npm run kill-storybook` (kills any process on port 4400)
 
+## Agent skills
+
+### Issue tracker
+
+Issues are tracked as local Markdown files under `.scratch/<feature-slug>/`. See `docs/agents/issue-tracker.md`.
+
+### Domain docs
+
+Single-context: one `CONTEXT.md` + `docs/adr/` at the repo root. See `docs/agents/domain.md`.
+
 <!-- nx configuration start-->
 <!-- Leave the start & end comments to automatically receive updates. -->
 
