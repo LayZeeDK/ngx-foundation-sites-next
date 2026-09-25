@@ -9,7 +9,9 @@ during this session, so Nx facts come from the `@nx/*` 23.2.1 tarballs
 (generator schemas, plugin source, pinned versions) and nx.dev pages fetched
 directly.
 
-Headline: the map's target row cannot ship as written. TypeScript 7.0.2 is
+Corrected 2026-09-25 after [Audit 0001: research wave](../audits/0001-research-wave.md), findings M11, L7: decisions reworded as findings; builder schema checked against the 22.2.0 tarball.
+
+Headline: the map's charting-draft target row could not ship as written (the map now pins the versions below). TypeScript 7.0.2 is
 rejected by Angular 22.2's peer range and has no JS compiler API, and Vitest
 5.0.2 is rejected by both `@nx/vitest` 23.2.1 and `@storybook/addon-vitest`
 10.6.0. The versions that fit together today are TypeScript 6.0.x, Vitest
@@ -160,8 +162,10 @@ Sources: `d:/projects/github/angular/angular/adev/src/content/guide/testing/over
 and `migrating-to-vitest.md` (release branch 22.2.x, version 22.2.0);
 `d:/projects/github/angular/angular-cli/packages/angular/build/src/builders/unit-test/`
 (`schema.json`, `runners/vitest/browser-provider.ts`,
-`runners/dependency-checker.ts`; that clone is at 22.0.x, the npm 22.2.0
-package carries the same option set).
+`runners/dependency-checker.ts`; that clone is at 22.0.x). Verified against the
+published tarball: `npm pack @angular/build@22.2.0`, extracted to
+`package/src/builders/unit-test/schema.json`. The option set is the same
+except for one addition, `splitting` (listed below).
 
 Builder: `@angular/build:unit-test`, `runner` defaults to `vitest`
 (`karma` is the other value). Options from `schema.json`:
@@ -171,6 +175,11 @@ Builder: `@angular/build:unit-test`, `runner` defaults to `vitest`
   `exclude`, `filter` (regex on test names), `watch` (TTY default), `debug`,
   `ui`, `isolate` (default false "to align with the Karma/Jasmine
   experience"), `quiet`, `listTests`.
+- `splitting` (Vitest-only, default true): enables code splitting between test
+  files to avoid live-ESM-binding issues in Node; new since the 22.0.x clone,
+  and the 22.2.0 schema marks it `x-deprecated`: "No longer needed with
+  Vitest 5" -- a small forward-compatibility signal for this document's
+  Vitest 4.1 versus 5 pin.
 - `browsers: string[]`, `browserViewport: "WxH"`, `headless`. Browser names
   ending in `Headless` run headless; `CI=1` forces headless
   (`applyHeadlessConfiguration`). The provider is discovered by resolving
@@ -264,11 +273,14 @@ Sources: storybook.js.org `docs/get-started/frameworks/angular` (titled
   `storybookAngularVitest({})` next to `storybookTest()` into the generated
   `vitest.config.ts`.
 
-Decision for the specs: the new repo uses `@storybook/angular-vite`. It is the
-only Angular framework that runs play functions, `addon-a11y` and coverage in
-CI through Vitest, and it is what Storybook itself steers Angular 21+ projects
-to. Its "preview" status is the one risk; the fallback is `@storybook/angular`
-plus `@storybook/test-runner` 0.24.5, which still peers on Storybook 10.
+Finding: `@storybook/angular-vite` is the only Angular framework that runs
+play functions, `addon-a11y` and coverage in CI through Vitest, and it is what
+Storybook itself steers Angular 21+ projects to. Its "preview" status is the
+one risk this research surfaces; the fallback is `@storybook/angular` plus
+`@storybook/test-runner` 0.24.5, which still peers on Storybook 10. The map's
+Testing preference (`../map.md`, "Testing (user decision)") is the owner of
+the choice to use `@storybook/angular-vite`; this research supplies the
+evidence behind it.
 
 Nx and `@storybook/angular-vite` (from the `@nx/storybook@23.2.1` and
 `@nx/angular@23.2.1` tarballs):
@@ -411,9 +423,10 @@ diverges.
 - Nx 23.2.1 declares no TypeScript peer. Vitest compiles TS through Vite's
   transformer and does not need the TypeScript package at test time.
 
-Verdict: the new repo pins `typescript ~6.0.3` and revisits TS 7 when
-`@angular/compiler-cli` widens its peer range. The map's "typescript 7.0.2"
-target row should be corrected.
+One consequence: `typescript ~6.0.3` is the only version that fits
+`@angular/compiler-cli`'s and `@angular/build`'s peer range (`>=6.0 <6.1`)
+today, and TS 7 becomes usable only once `@angular/compiler-cli` widens that
+range. The map's charting draft targeted TypeScript 7.0.2; its version table now pins 6.0.x on this evidence.
 
 ## Vitest 5
 
@@ -430,9 +443,10 @@ target row should be corrected.
 - `@analogjs/vitest-angular@2.7.5` and `@analogjs/vite-plugin-angular@2.7.5`
   already accept Vitest 5 and Vite 8.
 
-Verdict: Vitest 4.1.x until Storybook 11 ships and Nx widens `@nx/vitest`.
-The specs' Testing Decisions should say "Vitest browser mode" without a major,
-and this document carries the pin.
+The evidence points to Vitest 4.1.x until Storybook 11 ships and Nx widens
+`@nx/vitest`; this document carries that pin. One consequence: a spec's
+Testing Decisions section can say "Vitest browser mode" without naming a
+major version.
 
 ## `@analogjs/vitest-angular` versus the first-party builder
 
@@ -459,9 +473,10 @@ Sources: `@analogjs/vitest-angular@2.7.5` tarball (`README.md`,
   own Vite pipeline, so the Analog plugin is in the tree regardless; only the
   test builder choice is open.
 
-Verdict: `@angular/build:unit-test` (via `@nx/angular:unit-test`) for the
-library's own specs; Analog's builder is the fallback if a spec needs a Vite
-plugin the CLI builder's `runnerConfig` cannot load.
+One consequence: `@angular/build:unit-test` (via `@nx/angular:unit-test`) is
+the fitting choice for the library's own specs, with Analog's builder as the
+fallback if a spec needs a Vite plugin the CLI builder's `runnerConfig` cannot
+load.
 
 ## Open incompatibilities and gaps
 
