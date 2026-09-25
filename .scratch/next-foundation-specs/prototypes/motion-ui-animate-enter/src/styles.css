@@ -1,0 +1,129 @@
+/* Prototype-only global styles for issue 47: animate.enter/animate.leave with
+   Motion UI transition classes. Nothing here restyles anything Foundation for
+   Sites already styles; this app has no foundation-sites dependency because
+   the question is about Angular's animation instruction, not Foundation's
+   visual contract (matching the precedent set by prototype 52). */
+
+body {
+  font-family: system-ui, sans-serif;
+  margin: 1rem;
+}
+
+section {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.box {
+  display: inline-block;
+  width: 140px;
+  height: 60px;
+  line-height: 60px;
+  text-align: center;
+  background: #cde;
+  margin: 0.25rem;
+}
+
+/* ---- nfs-* keyframe classes: the library's only shipped animation CSS,
+   under Foundation's Motion UI names, prefixed nfs- (building-blocks.md
+   1.6 rule 4). Six required by the ticket; durations are prototype values,
+   not a spec decision. ---- */
+
+@keyframes nfs-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes nfs-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes nfs-slide-in-down {
+  from { transform: translateY(-100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes nfs-slide-out-up {
+  from { transform: translateY(0); opacity: 1; }
+  to { transform: translateY(-100%); opacity: 0; }
+}
+
+@keyframes nfs-hinge-in-from-top {
+  from { transform: rotateX(-90deg); transform-origin: top; opacity: 0; }
+  to { transform: rotateX(0deg); opacity: 1; }
+}
+
+@keyframes nfs-spin-out {
+  from { transform: rotate(0deg); opacity: 1; }
+  to { transform: rotate(90deg); opacity: 0; }
+}
+
+.nfs-fade-in { animation: nfs-fade-in 500ms both; }
+.nfs-fade-out { animation: nfs-fade-out 500ms both; }
+.nfs-slide-in-down { animation: nfs-slide-in-down 500ms both; }
+.nfs-slide-out-up { animation: nfs-slide-out-up 500ms both; }
+.nfs-hinge-in-from-top { animation: nfs-hinge-in-from-top 500ms both; }
+.nfs-spin-out { animation: nfs-spin-out 500ms both; }
+
+/* Persistent element, State class (building-blocks.md 1.6 rule 1): the same
+   nfs-fade-in keyframe played through a bound class instead of animate.enter. */
+.state-box.is-open {
+  animation: nfs-fade-in 500ms both;
+}
+
+/* Simulates "a stylesheet that dropped the animation" (1.6 rule 1's fallback
+   timer case): a directive cannot know this happened ahead of time. */
+.state-box.no-anim.is-open {
+  animation: none !important;
+}
+
+/* Reduced motion (1.6 rule 5): every library animation collapses to 1ms so
+   animationend/transitionend still fire and completion stays synchronous. */
+@media (prefers-reduced-motion: reduce) {
+  .nfs-fade-in,
+  .nfs-fade-out,
+  .nfs-slide-in-down,
+  .nfs-slide-out-up,
+  .nfs-hinge-in-from-top,
+  .nfs-spin-out,
+  .state-box.is-open {
+    animation-duration: 1ms !important;
+    transition-duration: 1ms !important;
+  }
+}
+
+/* ---- Case 4: consumer-supplied Motion UI transition classes (not shipped by
+   the library; copied here only to test them under animate.enter). ---- */
+
+/* Copied verbatim from node_modules/motion-ui/dist/motion-ui.css lines 1-11
+   (D:/projects/github/LayZeeDK/ngx-foundation-sites-next/node_modules/motion-ui),
+   Motion UI's real two-class transition protocol. animate.enter only ever adds
+   the class name a consumer writes ("slide-in-down"); it never adds the
+   companion "mui-enter"/"mui-enter-active" classes Motion UI's own runtime
+   would have added, so this compound selector can never match. */
+.slide-in-down.mui-enter {
+  transition-duration: 500ms;
+  transition-timing-function: linear;
+  transform: translateY(-100%);
+  transition-property: transform, opacity;
+  backface-visibility: hidden;
+}
+
+.slide-in-down.mui-enter.mui-enter-active {
+  transform: translateY(0);
+}
+
+/* A single-class stand-in for what a "fixed" one-class transition would look
+   like, isolating the second, more fundamental reason: even with no
+   mui-enter/mui-enter-active split, animate.enter adds this class to the
+   element in the same operation that inserts it into the DOM, so there is no
+   prior rendered frame for the browser to transition from (enter-and-leave.md
+   line 28: pair transitions with @starting-style for a newly inserted node,
+   which is out of the Angular 22 browser target, building-blocks.md 1.2). */
+.solo-slide-in-down {
+  transition: transform 400ms linear;
+  transform: translateY(0);
+}

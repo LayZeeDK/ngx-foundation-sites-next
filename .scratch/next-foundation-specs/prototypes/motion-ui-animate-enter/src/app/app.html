@@ -1,0 +1,79 @@
+<h1>Prototype: animate.enter/animate.leave with Motion UI transition classes</h1>
+
+<section data-testid="section-insert-remove">
+  <h2>Case 1: animate.enter / animate.leave on inserted and removed elements</h2>
+
+  <button type="button" (click)="toggle('fade')">Toggle fade box</button>
+  @if (showFadeBox()) {
+    <div class="box" data-testid="fade-box" animate.enter="nfs-fade-in" animate.leave="nfs-fade-out">
+      nfs-fade-in / nfs-fade-out
+    </div>
+  }
+
+  <button type="button" (click)="toggle('slide')">Toggle slide box</button>
+  @if (showSlideBox()) {
+    <div class="box" data-testid="slide-box" animate.enter="nfs-slide-in-down" animate.leave="nfs-slide-out-up">
+      nfs-slide-in-down / nfs-slide-out-up
+    </div>
+  }
+
+  <button type="button" (click)="toggle('hingeSpin')">Toggle hinge/spin box</button>
+  @if (showHingeSpinBox()) {
+    <div
+      class="box"
+      data-testid="hinge-spin-box"
+      animate.enter="nfs-hinge-in-from-top"
+      animate.leave="nfs-spin-out"
+    >
+      nfs-hinge-in-from-top / nfs-spin-out
+    </div>
+  }
+</section>
+
+<section data-testid="section-state-class">
+  <h2>Case 2: persistent element, bound State class, animationend plus fallback timer</h2>
+
+  <button type="button" (click)="normalStateBox.open()">Open normal state box</button>
+  <button type="button" (click)="normalStateBox.reset()">Reset</button>
+  <div
+    class="box state-box"
+    data-testid="normal-state-box"
+    [class.is-open]="normalStateBox.isOpen()"
+    [attr.data-completion-via]="normalStateBox.completion()?.via ?? ''"
+    [attr.data-completion-at-ms]="normalStateBox.completion()?.atMs ?? ''"
+    (animationend)="normalStateBox.onAnimationEnd($event, $event.currentTarget)"
+  >
+    normal (animationend wins)
+  </div>
+
+  <button type="button" (click)="brokenStateBox.open()">Open broken-stylesheet state box</button>
+  <button type="button" (click)="brokenStateBox.reset()">Reset</button>
+  <div
+    class="box state-box no-anim"
+    data-testid="broken-state-box"
+    [class.is-open]="brokenStateBox.isOpen()"
+    [attr.data-completion-via]="brokenStateBox.completion()?.via ?? ''"
+    [attr.data-completion-at-ms]="brokenStateBox.completion()?.atMs ?? ''"
+    (animationend)="brokenStateBox.onAnimationEnd($event, $event.currentTarget)"
+  >
+    broken stylesheet (fallback timer wins, "no-anim" forces animation: none)
+  </div>
+</section>
+
+<section data-testid="section-motion-ui-classes">
+  <h2>Case 4: consumer-supplied Motion UI transition classes under animate.enter</h2>
+
+  <button type="button" (click)="toggleMotionUiClassBox()">Toggle real Motion UI class box</button>
+  @if (showMotionUiClassBox()) {
+    <div class="box" data-testid="motion-ui-class-box" animate.enter="slide-in-down">
+      animate.enter="slide-in-down" (Motion UI's own class, mui-enter never added)
+    </div>
+  }
+
+  <button type="button" (click)="toggleSoloTransitionBox()">Toggle solo transition box</button>
+  @if (showSoloTransitionBox()) {
+    <div class="box" data-testid="solo-transition-box" animate.enter="solo-slide-in-down">
+      animate.enter="solo-slide-in-down" (single-class transition, no @starting-style)
+    </div>
+  }
+</section>
