@@ -418,7 +418,7 @@ export class InvoiceActions {
 </button>
 
 <!-- Close button: Foundation markup plus a Trigger, no nfsButton -->
-<div class="callout">
+<div class="callout" nfsToggler animate="nfs-fade-in nfs-fade-out" id="notice">
   <p>Invoice sent.</p>
   <button class="close-button" type="button" aria-label="Dismiss notice" nfsClose>
     <span aria-hidden="true">&times;</span>
@@ -432,7 +432,7 @@ export class InvoiceActions {
 </div>
 ```
 
-The Close Button example assumes the Triggers utility spec's `nfsClose` resolves the nearest Openable; how a callout becomes dismissible is that spec's decision.
+The callout is itself an `nfsToggler` in visibility mode, the [Spec: Triggers (shared utility)](../issues/54-spec-triggers.md)'s in-place `data-closable` replacement, so the bare `nfsClose` has a Nearest Openable to close.
 
 ### Platform features to adopt when the browser target moves
 

@@ -37,7 +37,7 @@ Resolved 2026-09-25 (AFK, both sides of the grilling played against the sources)
 ### Files written
 
 - `building-blocks.md`: Part 1 cross-cutting decisions (1.1 to 1.14, including 1.11 Rendering modes), Part 2 the 22-row matrix as two tables (structure; mechanics with a rendering-mode column), Part 3 shared utilities (with Table C after audit 0002), Part 4 the graduated tickets and OPEN FOR HUMAN.
-- `CONTEXT.md`: glossary only, domain-modeling CONTEXT format, 34 terms with `_Avoid_` lists (31 as first written; audit 0002 finding M15 dropped Parent token as a general DI concept, the [Spec: Button](37-spec-button.md) added Variant class and CSS-only component, and [Sass packaging for the new library](57-sass-packaging.md) added Export mixin, Library mixin, and Breakpoint properties).
+- `CONTEXT.md`: glossary only, domain-modeling CONTEXT format, terms with `_Avoid_` lists (31 as first written, with later specs adding theirs; audit 0002 finding M15 dropped Parent token as a general DI concept, the [Spec: Button](37-spec-button.md) added Variant class and CSS-only component, and [Sass packaging for the new library](57-sass-packaging.md) added Export mixin, Library mixin, and Breakpoint properties).
 - `adr/0001-directive-first-with-named-exceptions.md`
 - `adr/0002-in-place-measured-positioning-for-anchored-panes.md`
 - `adr/0003-animation-mechanics.md`

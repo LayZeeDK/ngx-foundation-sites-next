@@ -46,6 +46,18 @@ _Avoid_: media query list, screen sizes, `Breakpoints` (the CDK constants)
 A Foundation rule string such as `drilldown medium-dropdown` or `accordion medium-tabs` that assigns a mode per breakpoint.
 _Avoid_: responsive config, mode map, query string
 
+**Zero breakpoint**:
+The breakpoint of the Breakpoint map whose minimum width is 0 (`small` in Foundation's defaults); a Breakpoint rule mode written without a breakpoint applies from it, and it is the default Server breakpoint.
+_Avoid_: base breakpoint, mobile breakpoint, default breakpoint
+
+**Breakpoint query**:
+An Option value that names a breakpoint with an optional `up`, `only`, or `down` modifier (`medium`, `large only`, `medium down`), as in Tooltip `showOn` or Sticky `stickyOn`; distinct from a Breakpoint rule, which assigns modes.
+_Avoid_: media query (for this), breakpoint string, size
+
+**Named query**:
+A media query addressed by a name that is not a breakpoint (`landscape`, `portrait`, `retina`, or the consumer's own), used in Interchange rules.
+_Avoid_: special query (Foundation's code name), custom breakpoint
+
 **Export mixin**:
 A Foundation Sass mixin that prints one component's CSS (`foundation-accordion`, `foundation-reveal`), included by the consumer and compiled from the consumer's settings.
 _Avoid_: Foundation styles, component mixin
@@ -75,6 +87,14 @@ _Avoid_: anchor (Foundation's word), opener, invoker, toggler (which is the Togg
 **Openable**:
 Anything a Trigger can open, close, or toggle and whose open state (`isOpen`) it can read: Reveal, OffCanvas, Dropdown pane, Toggler, ResponsiveToggle, Tooltip.
 _Avoid_: target, controllee, panel (in the generic sense), disclosure (when meaning the contract)
+
+**Nearest Openable**:
+The closest Openable that encloses a Trigger in the template where the Trigger is declared, which a Trigger written without a target acts on; the replacement for Foundation's bubbling empty `data-close`.
+_Avoid_: parent Openable, ancestor target, bubbling target
+
+**Trigger role**:
+What an Openable declares its Triggers to be (disclosure, dialog opener, toggle button, or plain command), which decides the ARIA each Trigger renders.
+_Avoid_: trigger type, ARIA mode, popup type
 
 **Light dismiss**:
 Closing an Anchored pane or an open submenu on an outside pointer press, on Escape, or when a sibling of the same kind opens; the replacement for Foundation's `closeme.zf.*` broadcast and body click handlers.
@@ -112,8 +132,12 @@ _Avoid_: config token, options token, global options, `MAT_*_DEFAULT_OPTIONS`
 A past-tense output (`opened`, `closed`, Sticky's `stuck`, whose state signal is `isStuck`) emitted once a state change is committed and its animation has finished; the replacement for Foundation's `*.zf.*` events.
 _Avoid_: event (bare), callback, hook, start event
 
+**Breakpoint service**:
+The shared piece that answers which breakpoint of the Breakpoint map the viewport is at, and whether the user asked for reduced motion; the replacement for Foundation's MediaQuery utility.
+_Avoid_: MediaQuery (Foundation's name), breakpoint observer, media service
+
 **Server breakpoint**:
-The breakpoint the library assumes while rendering on the server or prerendering (`small` by default), so server HTML is deterministic.
+The breakpoint the library assumes while rendering on the server or prerendering, and on the client until its first render completes (the Zero breakpoint by default), so server HTML is deterministic and hydrates unchanged.
 _Avoid_: SSR default, fallback breakpoint, mobile default
 
 **Rendering modes**:
