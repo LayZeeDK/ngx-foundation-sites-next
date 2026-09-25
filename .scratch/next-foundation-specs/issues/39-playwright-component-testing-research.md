@@ -1,7 +1,7 @@
 # 39. Playwright component testing options for Angular 22.2
 
 Type: research
-Status: claimed
+Status: resolved
 Blocked by: none
 Labels: wayfinder:research
 Map: ../map.md
@@ -25,3 +25,22 @@ Sources: npm registry metadata (`npm view <pkg> version time peerDependencies`),
 ## Deliverable
 
 `research/playwright-component-testing.md`: one section per item with cited facts, a comparison table (package, version, Angular ceiling, Playwright peer, mounting model, CSF reuse path, maintenance, verdict), and a recommended list of candidates for the prototype ticket in order of likelihood to work, each with the exact commands and files the prototype should create. Plain ASCII.
+
+## Answer
+
+- Playwright 1.62 (2026-07-24) replaced experimental CT with a stable built-in `mount(storyId, props?)` fixture in `@playwright/test`: it does `page.goto(baseURL)`, calls a project-owned `window.mount({ story, props })`, and returns `page.locator('#root')` with `update(props)` and `unmount()`. Nothing framework-specific ships; the gallery page is yours.
+- PR microsoft/playwright#42168 (2026-08-07) deleted `@playwright/experimental-ct-core` and the `'@playwright/test'.babelPlugins` hook. ct-core ends at 1.62.1; `@playwright/test` is 1.63.0 (2026-09-04), which no longer has the hook.
+- `@sand4rt/experimental-ct-angular` 1.61.1 (2026-07-06): exact ct-core 1.61.1, Angular peer `^20.3.11`, uses the removed hook and deprecated `platform-browser-dynamic/testing`. Dead end on 1.63.
+- `@jscutlery/playwright-ct-angular` 0.10.10 (2026-02-12): exact Playwright 1.47.1, Angular `<22`, SWC compile, same hook. Not viable.
+- `@playwright-labs/selectors-angular` 1.1.1: selector engine and matchers over `window.ng` (dev builds only), exact peer `@playwright/test 1.57.0`. Not a mount; optional complement.
+- Angular CT upstream: #39010 "Not planned."; the maintainers tell users to have a coding agent write the gallery (#41996).
+- `@storybook/angular-vite` 10.6.0 exports `setProjectAnnotations` but not `composeStory`/`composeStories`; `storybook/preview-api`'s `composeStory` plus `.run({ canvasElement })` works with it and is exactly what addon-vitest does.
+- The Storybook iframe can be the gallery: `__STORYBOOK_ADDONS_CHANNEL__.emit('setCurrentStory', ...)` renders a story, `storyRendered`/`storyMissing`/`storyErrored` report the outcome, and `iframe.html?embed=true` turns off play-function autoplay.
+- Candidate order for ticket 40: (1) built-in `mount` with the Storybook iframe as gallery (CSF reuse, no second pipeline); (2) Angular-native Vite gallery with `*.story.ts` (no CSF reuse, most direct); (3) portable-stories Vite gallery via `composeStory` (CSF reuse, reproduces the framework's Vite setup, `update()` remounts).
+- For ticket 41: Playwright CT cannot replace the Angular-builder Vitest browser specs (no TestBed, DI overrides, CDK harness environment, or instance access from Node); it can take over story-level browser tests from the e2e layer.
+
+Surprises: the experimental CT packages were removed mid-2026; the `babelPlugins` hook both adapters need is gone in 1.63; core `composeStories` ignores `globalProjectAnnotations` (it passes `{}` as default config); the selectors-angular README's `enableDebugTools` production workaround does not publish `ng.getComponent` in Angular 22.2.
+
+Open questions: whether `updateStoryArgs` re-emits `storyRendered` and keeps Angular component state in a manager-less iframe; how the first `mount(id, props)` applies args; whether `window.ng` exists in `build-storybook` output; axe in the Playwright layer (`@axe-core/playwright`) not researched; story id grammar and `Stories` type generation.
+
+Findings: ../research/playwright-component-testing.md
