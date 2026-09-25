@@ -2,7 +2,7 @@
 
 Type: grilling
 Status: open
-Blocked by: 14, 38
+Blocked by: 14, 38, 57
 Labels: wayfinder:grilling
 Map: ../map.md
 
@@ -30,4 +30,4 @@ Utility-specific questions:
 - The rule-string parser shared by ResponsiveMenu, ResponsiveAccordionTabs, ResponsiveToggle `hideFor`, Tooltip `showOn`, Sticky `stickyOn`, OffCanvas `revealOn` and `inCanvasOn`, and Interchange named queries (`landscape`, `portrait`, `retina`).
 - `reducedMotion()` as a signal.
 - The server answer (the building-blocks decision says `small`) and the client-hint `useFactory` recipe reading `REQUEST`.
-- How the Sass `$breakpoints` map and the token stay in sync, coordinated with the Sass packaging ticket.
+- The `nfsBreakpointsToken` shape and the dev-mode drift check against the `--nfs-breakpoint-*` properties the Sass packaging decision emits.

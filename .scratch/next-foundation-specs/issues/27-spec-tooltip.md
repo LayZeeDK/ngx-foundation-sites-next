@@ -2,7 +2,7 @@
 
 Type: grilling
 Status: open
-Blocked by: 14, 26, 38, 47, 52, 53, 55
+Blocked by: 14, 38, 47, 53, 55
 Labels: wayfinder:grilling
 Map: ../map.md
 
@@ -28,7 +28,7 @@ Run `/grill-with-docs` (self-grilling, both sides) over these questions, then pu
 Plugin-specific questions:
 
 - Triggers (hover, focus, click), `showOn` breakpoints, `disableForTouch`, `touchCloseText`, `position` / `alignment`, `templateClasses`, `tooltipClass`, `triggerClass`, `allowHtml`, `tooltipHeight` / `tooltipWidth`, `fadeInDuration` / `fadeOutDuration`, `hoverDelay`, `clickOpen`.
-- Reuse the Dropdown positioning decision (popover `hint` plus anchor positioning, or CDK Overlay); say what differs for tooltips.
+- Map Tooltip's options onto the Anchored pane utility and state what differs for tooltips.
 - APG tooltip: `role=tooltip`, `aria-describedby`, Escape dismiss, no interactive content; the `title` attribute handling Foundation does.
 - Material's tooltip as the API reference (`matTooltip` string input, positions, delays).
 

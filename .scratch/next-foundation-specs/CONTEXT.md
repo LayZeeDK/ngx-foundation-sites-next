@@ -1,6 +1,6 @@
 # ngx-foundation-sites (next)
 
-An Angular directive library that keeps Foundation for Sites 6.9's Sass and CSS class contract and replaces every Foundation JavaScript plugin with Angular directives (components only where Foundation generated structure). This glossary is the shared language for the building-blocks map, the ADRs, and the 22 specs.
+An Angular directive library that keeps Foundation for Sites 6.9's Sass and CSS class contract and replaces every Foundation JavaScript plugin with Angular directives (components only where Foundation generated structure). This glossary is the shared language for the building-blocks map, the ADRs, and the 26 specs.
 
 ## Language
 
@@ -10,32 +10,40 @@ An Angular directive library that keeps Foundation for Sites 6.9's Sass and CSS 
 One of Foundation 6.9's 21 JavaScript behaviours (Accordion, Reveal, Orbit, and so on), identified by its `data-<plugin>` attribute, that the library replaces.
 _Avoid_: widget, module, component (for the Foundation thing)
 
+**CSS-only component**:
+A Foundation component that ships Sass and classes but no Plugin, such as Button, Button Group, Close Button, or Callout.
+_Avoid_: static component, plain component, pure-CSS widget
+
 **Structural class**:
-A Foundation CSS class that names an element of a plugin's markup (`.accordion-item`, `.dropdown-pane`, `.orbit-slide`) and therefore gets its own directive or component.
+A Foundation CSS class that names an element of a Plugin's or a CSS-only component's markup (`.accordion-item`, `.dropdown-pane`, `.orbit-slide`, `.button`).
 _Avoid_: layout class, block class, container class
 
 **State class**:
-A Foundation CSS class that expresses runtime state on an element (`.is-active`, `.is-open`, `.is-stuck`, `.is-closing`, `.js-dropdown-active`), bound by a directive as a host class binding, never a directive of its own.
+A Foundation CSS class that expresses runtime state on an element (`.is-active`, `.is-open`, `.is-stuck`, `.is-closing`, `.js-dropdown-active`), as opposed to a Structural class.
 _Avoid_: modifier, flag class, status class
 
+**Variant class**:
+A Foundation CSS class that selects a static look for a Structural class (`.small`, `.alert`, `.hollow`, `.expanded`, `.dropdown` on `.button`), as distinct from a State class, which expresses runtime state.
+_Avoid_: modifier, appearance class, style class
+
 **Option**:
-A Foundation `data-*` configuration attribute, exposed by the library as an `input()` under the same name in camelCase.
+A Plugin's `data-*` configuration attribute in Foundation, and its counterpart in the library.
 _Avoid_: setting, config, parameter, data attribute (when meaning the input)
 
 **Dropped option**:
-An Option that exists only because of jQuery or HTML-string injection and has no counterpart in the library; listed per spec.
+An Option that exists only because of jQuery or HTML-string injection and has no counterpart in the library.
 _Avoid_: unsupported option, removed feature, legacy option
 
 **Motion class**:
-A CSS class name passed to an animation input (`animationIn`, `animate`, `animInFromRight`) and applied through `animate.enter`/`animate.leave` or a State class; the library ships `nfs-*` keyframe classes under Foundation's Motion UI names.
+A CSS animation class name given to a Plugin's animation Option (`animationIn`, `animate`, `animInFromRight`), either one of Foundation's Motion UI names or the consumer's own.
 _Avoid_: Motion UI transition, mui class, animation name
 
 **Breakpoint map**:
-Foundation's named viewport breakpoints (`small`, `medium`, `large`, `xlarge`, `xxlarge`) with their minimum widths, held in `nfsBreakpointsToken` and mirrored by the consumer's Sass `$breakpoints`.
+Foundation's named viewport breakpoints (`small`, `medium`, `large`, `xlarge`, `xxlarge`) with their minimum widths, one set shared by the library and the consumer's Sass `$breakpoints`.
 _Avoid_: media query list, screen sizes, `Breakpoints` (the CDK constants)
 
 **Breakpoint rule**:
-A Foundation rule string such as `drilldown medium-dropdown` or `accordion medium-tabs` that assigns a mode per breakpoint, parsed by the shared parser.
+A Foundation rule string such as `drilldown medium-dropdown` or `accordion medium-tabs` that assigns a mode per breakpoint.
 _Avoid_: responsive config, mode map, query string
 
 ### Angular side
@@ -45,67 +53,63 @@ The rule that a Plugin becomes attribute directives on the markup the consumer w
 _Avoid_: headless, unstyled, wrapper-less
 
 **Wrapper component**:
-An attribute-selector component (`[nfsAccordionContent]`, `[nfsTabsPanel]`) that keeps the Foundation class on the consumer's element and renders one inner element around `<ng-content>` so CSS can animate height or defer content.
+A component on a consumer-written Foundation element (`[nfsAccordionContent]`) that adds one inner element around the projected content because the element's CSS needs it.
 _Avoid_: panel component, content component, shell
 
 **Implementation level**:
-Which of native platform, `@angular/aria`, `@angular/cdk`, or custom Angular a spec stops at, in that order, with the reason and the fallback.
-_Avoid_: tier, layer, strategy, stack
+Which of native platform, `@angular/aria`, `@angular/cdk`, or custom Angular a Plugin is built on, taken in that order.
+_Avoid_: tier, layer, strategy, stack, rung
 
 **Browser target**:
 The Baseline widely-available browser set on 2026-05-07 (Chrome, Edge, Firefox 119; Safari 17) that decides whether a platform feature may be used without a fallback.
 _Avoid_: browserslist, support matrix, compat target
 
 **Trigger**:
-A `<button>` (or link) carrying `nfsOpen`, `nfsClose`, or `nfsToggle` that acts on an Openable; the replacement for Foundation's `data-open`/`data-close`/`data-toggle`.
+An element that opens, closes, or toggles an Openable; the replacement for Foundation's `data-open`/`data-close`/`data-toggle`.
 _Avoid_: anchor (Foundation's word), opener, invoker, toggler (which is the Toggler plugin)
 
 **Openable**:
-A directive that provides `nfsOpenableToken` (`open()`, `close()`, `toggle()`, an `open` signal, an id, and a trigger-role hint) so Triggers can act on it: Reveal, OffCanvas, Dropdown pane, Toggler, ResponsiveToggle, Tooltip.
+Anything a Trigger can open, close, or toggle and whose open state (`isOpen`) it can read: Reveal, OffCanvas, Dropdown pane, Toggler, ResponsiveToggle, Tooltip.
 _Avoid_: target, controllee, panel (in the generic sense), disclosure (when meaning the contract)
 
 **Light dismiss**:
-Closing an Anchored pane on an outside pointer press, on Escape, or when a sibling of the same kind opens; the replacement for Foundation's `closeme.zf.*` broadcast and body click handlers.
+Closing an Anchored pane or an open submenu on an outside pointer press, on Escape, or when a sibling of the same kind opens; the replacement for Foundation's `closeme.zf.*` broadcast and body click handlers.
 _Avoid_: click-outside, closeme, auto-close, backdrop click (which is Reveal's)
 
 **Anchored pane**:
-An element positioned against a trigger in place (`position: absolute` in Foundation's flow) by the shared positioner: the Dropdown pane and the Tooltip tip.
+An element placed against its Trigger inside the page flow rather than in an overlay: the Dropdown pane and the Tooltip tip.
 _Avoid_: overlay, popover, popup, floating element, connected overlay
 
 **Positioner**:
-The shared service that ports Foundation's Positionable and Box placement formulas (position, alignment, offsets, 12-candidate collision search) onto `getBoundingClientRect` measurements taken in `afterRenderEffect`.
+The shared piece that places an Anchored pane against its Trigger using Foundation's placement rules.
 _Avoid_: position strategy, tether, floating-ui, overlay position
 
 **Nested menu**:
-The shared directive family (`nfsMenuItem`, `nfsSubmenu`, `nfsSubmenuToggle`) applied to Foundation's nested `ul.menu` markup that emits the `is-<mode>-submenu*` classes for the active mode; the replacement for Foundation's Nest utility.
+The shared behaviour behind every menu Plugin's nested `ul.menu` markup, varied by Menu mode; the replacement for Foundation's Nest utility.
 _Avoid_: Nest, feathered menu, submenu tree, menu tree
 
 **Menu mode**:
-Which nested-menu behaviour is active on a root `ul`: `accordion`, `drilldown`, or `dropdown`; fixed by the root directive or switched per breakpoint by ResponsiveMenu.
+Which nested-menu behaviour a menu root has: `accordion`, `drilldown`, or `dropdown`; ResponsiveMenu switches it per breakpoint.
 _Avoid_: menu type, plugin type, variant, strategy
 
 **Disclosure navigation**:
-The APG pattern every menu Plugin implements by default: native lists, `<button aria-expanded aria-controls>` parents (or link plus button in the hybrid form), `aria-current="page"`, no `menu`, `menubar`, `menuitem`, or `tree` roles.
+The APG navigation pattern built from native lists, buttons that show and hide submenus, and `aria-current`, with no menu or tree roles; every menu Plugin implements it.
 _Avoid_: menubar, ARIA menu, navigation tree, mega menu
 
 **Lazy content**:
-Content inside an `ng-template` (Aria's `DeferredContent`) that renders only while its panel, tab, or slide is shown; distinct from a consumer's `@defer` block, which loads code.
+Panel, tab, or slide content that renders only while it is shown; distinct from a consumer's `@defer` block, which loads code.
 _Avoid_: deferred content (ambiguous with `@defer`), lazy panel, on-demand content
 
 **Defaults token**:
-The one optional `InjectionToken` per Plugin (`nfsRevealDefaultsToken`) whose all-optional object seeds input defaults; the replacement for `Foundation.X.defaults`.
+The per-Plugin set of application-wide defaults for its Options; the replacement for `Foundation.X.defaults`.
 _Avoid_: config token, options token, global options, `MAT_*_DEFAULT_OPTIONS`
 
-**Parent token**:
-The lightweight `InjectionToken` (`nfsAccordionToken`) a container provides with `useExisting` so projected children can find it without retaining the class.
-_Avoid_: parent injector, context token, container class injection
-
 **Completion output**:
-A past-tense `output()` (`opened`, `closed`, `stuck`) emitted once a state change is committed and its enter or leave animation has finished; the replacement for Foundation's `*.zf.*` events.
+A past-tense output (`opened`, `closed`, Sticky's `stuck`, whose state signal is `isStuck`) emitted once a state change is committed and its animation has finished; the replacement for Foundation's `*.zf.*` events.
 _Avoid_: event (bare), callback, hook, start event
 
 **Server breakpoint**:
-The Breakpoint map entry (`small` by default) that the Breakpoint service reports while rendering on the server or at prerender time, so server HTML is deterministic.
+The breakpoint the library assumes while rendering on the server or prerendering (`small` by default), so server HTML is deterministic.
 _Avoid_: SSR default, fallback breakpoint, mobile default
 
 **Rendering modes**:
@@ -113,21 +117,21 @@ The set every directive must support and every spec must describe: client render
 _Avoid_: SSR support (as the whole set), hydration mode, universal
 
 **Dehydrated state**:
-What a directive's server HTML looks like before hydration or inside an unhydrated block: Foundation classes, State classes, ARIA, `inert`, and `hidden` from host bindings, with no JavaScript behaviour yet.
-_Avoid_: static render, first paint, placeholder (which is `@placeholder`)
+What a directive looks like as server HTML before hydration or inside an unhydrated block: Foundation classes, State classes, ARIA, `inert`, and `hidden`, with no JavaScript behaviour yet.
+_Avoid_: static render, placeholder (which is `@placeholder`)
 
 **Hydration boundary**:
-The region that hydrates as one unit: the whole page under full hydration, or one `@defer (hydrate on ...)` block; a widget's container and items, and a Trigger and its Openable, must sit inside the same one.
+The unit a widget and its Triggers must share: the whole page under full hydration, or one `@defer (hydrate on ...)` block.
 _Avoid_: defer boundary, island, hydration zone
 
 **Replayed event**:
-A native event the user fired before hydration that Angular queues and re-dispatches to a template or host listener once the boundary hydrates; its `preventDefault()` throws.
+A user event fired before hydration that reaches a library handler late, once its Hydration boundary hydrates; the reason every library handler changes state before it calls `preventDefault()`.
 _Avoid_: queued click, pre-hydration event, captured event
 
 **Browser-level test**:
-The test layer that runs directive and service logic in a real browser outside Storybook; its stack (Vitest Browser or Playwright component tests) is decided by ticket 41.
+The test layer that runs directive logic in a real browser outside Storybook.
 _Avoid_: unit test (for this layer), component test, Vitest Browser (as the layer name)
 
 **Story id**:
-The Storybook identifier (`<plugin>--<story>`) that a spec's play functions and Playwright e2e point at, and browser-level tests reuse if their stack mounts CSF stories.
+This library's story naming scheme, `<plugin>--<story>`, by which a spec's play functions, browser-level tests, and Playwright e2e address the same story.
 _Avoid_: story name, test id, scenario

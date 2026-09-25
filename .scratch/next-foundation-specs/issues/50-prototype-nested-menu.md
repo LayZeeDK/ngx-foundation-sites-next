@@ -8,7 +8,13 @@ Map: ../map.md
 
 ## Question
 
-Can one item and submenu directive family emit the `is-<mode>-submenu*` classes from a mode signal, with the accordion, drilldown, and dropdown root behaviours coexisting as host directives, constant disclosure navigation roles, per-mode keyboard handling, and focus continuity when a breakpoint swaps the mode? What must the Drilldown mode render (wrapper, back button) and what does the server render for each mode?
+Three sub-questions, worked in this order:
+
+1. Can one item and submenu directive family emit the `is-<mode>-submenu*` classes from a mode signal, with the accordion, drilldown, and dropdown root behaviours coexisting as host directives on one `ul` and only one active, constant disclosure navigation roles, and per-mode keyboard handling? This sub-question decides the verdict. Include the accordion-mode height animation, which is documented custom CSS because Foundation's `foundation-accordion-menu` Sass has no height rule (its JavaScript used `slideDown`): a grid on the parent `li` (`nfsMenuItem`, rows `auto 0fr` to `auto 1fr`) with the submenu `ul` as the clipped row (`min-height: 0; overflow: hidden`), since a grid on the multi-child `ul.menu.nested` would size only its first row (`building-blocks.md` 1.6 rule 3).
+2. What must the Drilldown mode render (wrapper, back button) and measure, and what does the server render for each mode?
+3. Does focus stay on the equivalent control when a breakpoint swaps the mode?
+
+A session that runs out of room records the unanswered sub-questions under "what the prototype does not prove" rather than guessing.
 
 Read first: `building-blocks.md` (the matrix row and the open risk this prototype settles), `adr/*.md`, `research/foundation-inventory-menus.md`, `research/aria-apg-patterns.md`, `research/di-and-composition-patterns.md`, `research/angular-rendering-modes.md`.
 

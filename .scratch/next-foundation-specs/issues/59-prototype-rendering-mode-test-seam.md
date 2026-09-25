@@ -8,9 +8,14 @@ Map: ../map.md
 
 ## Question
 
-Does `renderApplication` run inside the node-level Vitest layer of an Nx 23.2 Angular 22.2 library (with `ngServerMode` isolated per test file), so each spec can have a server-render smoke test; and what does the prerendered SSR fixture app for Playwright look like (an Nx Angular app with `@angular/ssr` prerendering, the event-dispatch contract inlined, and the main bundle delayed so pre-hydration clicks and event replay can be asserted)? Prove both with one class-toggling directive.
+Two sub-questions, worked in this order, both proved with one class-toggling directive:
 
-Read first: `building-blocks.md` (the matrix row and the open risk this prototype settles), `adr/*.md`, `research/angular-rendering-modes.md`, `research/tooling-baseline.md`, `research/playwright-component-testing.md`.
+1. Does `renderApplication` run inside the node-level Vitest layer of an Nx 23.2 Angular 22.2 library (with `ngServerMode` isolated per test file), so each spec can have a server-render smoke test? This sub-question decides the verdict.
+2. What does the prerendered SSR fixture app for Playwright look like (an Nx Angular app with `@angular/ssr` prerendering, the event-dispatch contract inlined, and the main bundle delayed so pre-hydration clicks and event replay can be asserted)?
+
+A session that runs out of room after the first sub-question records the second under "what the prototype does not prove" rather than guessing.
+
+Read first: `building-blocks.md` (1.12 and 1.11 decision 5; this prototype has no matrix row of its own), `adr/*.md`, `research/angular-rendering-modes.md`, `research/tooling-baseline.md`, `research/playwright-component-testing.md`.
 
 ## How to work it
 

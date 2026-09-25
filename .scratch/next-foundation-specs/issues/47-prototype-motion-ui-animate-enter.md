@@ -8,9 +8,9 @@ Map: ../map.md
 
 ## Question
 
-Do Motion UI's two-frame transition classes (`.mui-enter` with `.mui-enter-active`, and the named transitions such as `slide-in-down`) animate under `animate.enter` and `animate.leave`, does the function form of those bindings rescue them, or are the library's own `nfs-*` keyframe classes the only supported form? Cover reduced motion and the persistent-element path that waits for `transitionend` or `animationend`.
+Confirm that the library's `nfs-*` keyframe classes animate under `animate.enter` and `animate.leave` (inserted elements) and under a bound State class (persistent elements, completion on `animationend`/`transitionend` plus the duration-plus-100 ms fallback timer), with `prefers-reduced-motion` shortening them to 1 ms, in Chromium, Firefox, and WebKit. Motion UI transition classes are out (`enter-and-leave.md:28`); any route that sequences classes from script is recorded OPEN FOR HUMAN, not adopted.
 
-Read first: `building-blocks.md` (the matrix row and the open risk this prototype settles), `adr/*.md`, `research/foundation-utilities-conventions.md`, `research/angular-22-api-survey.md`, `research/angular-material-reference.md`.
+Read first: `building-blocks.md` (1.6 rules 1, 4, and 5, and ADR 0003; this prototype has no matrix row of its own), `adr/*.md`, `research/foundation-utilities-conventions.md`, `research/angular-22-api-survey.md`, `research/angular-material-reference.md`.
 
 ## How to work it
 

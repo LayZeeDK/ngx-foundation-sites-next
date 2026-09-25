@@ -2,7 +2,7 @@
 
 Type: grilling
 Status: open
-Blocked by: 14, 38, 47, 52, 53, 54
+Blocked by: 14, 38, 47, 53, 54
 Labels: wayfinder:grilling
 Map: ../map.md
 
@@ -28,7 +28,7 @@ Run `/grill-with-docs` (self-grilling, both sides) over these questions, then pu
 Plugin-specific questions:
 
 - `data-responsive-toggle`, `hideFor`, `animate`: a title bar that toggles a target below a breakpoint.
-- Whether this is a Toggler variant with a breakpoint input or its own directive; how the target's hidden state is set (`hidden` attribute, class, `popover`).
+- Whether this is a Toggler variant with a breakpoint input or its own directive; how the target's hidden state is set (`hidden` attribute, class, `popover`). The building-blocks map now sets it with Foundation's own visibility classes (`.hide-for-<hideFor>` on the title bar, `.show-for-<hideFor>` on the closed menu, following Foundation's "Preventing FOUC" pattern) plus the `.is-open` State class, adds a custom rule only for a breakpoint outside `$breakpoint-classes`, and never uses `hidden` (Table A and Table B ResponsiveToggle, 1.11 decision 8); confirm it or reopen it with a stated reason.
 - ARIA: button with `aria-expanded` and `aria-controls`; what happens at the breakpoint boundary.
 
 Two guards from the research-wave audit (`audits/0001-research-wave.md`, findings H6 and M12):

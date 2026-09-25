@@ -26,7 +26,7 @@ Use the glossary's vocabulary. Add glossary terms to `CONTEXT.md` and ADRs to `a
 
 Utility-specific questions:
 
-- `nfsOpen`, `nfsClose`, `nfsToggle` directives and the `nfsOpenableToken` contract that Reveal, OffCanvas, Dropdown, Toggler, and ResponsiveToggle provide.
-- Target resolution: element ids (Foundation's space-separated id lists) versus template references versus DI, and what each costs under hydration and event replay.
+- `nfsOpen`, `nfsClose`, `nfsToggle` directives and the `nfsOpenableToken` contract (`open()`, `close()`, `toggle()`, and the `isOpen` state whose change output is `isOpenChange`; `building-blocks.md` 1.3 names boolean state `isX` where the verb would collide with a method) that Reveal, OffCanvas, Dropdown, Toggler, ResponsiveToggle, and Tooltip provide.
+- Target resolution: element ids (Foundation's space-separated id lists) versus template references versus DI, and what each costs under hydration and event replay. `building-blocks.md` 1.8 chose template references plus nearest-Openable DI; reopen only with a stated reason.
 - `aria-expanded` and `aria-controls` on triggers, focus return, and `data-closable` with its animation.
 - Invoker Commands and `popovertarget` are outside the browser target; name the future upgrade path.

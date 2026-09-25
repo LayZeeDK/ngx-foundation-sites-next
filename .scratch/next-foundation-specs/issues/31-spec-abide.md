@@ -30,6 +30,7 @@ Plugin-specific questions:
 - The validator set (`required`, patterns such as `email`, `url`, `number`, `date`, `color`, `equalTo`, `data-validator`, `data-abide-ignore`), `liveValidate`, `validateOnBlur`, `validateOn`, `formErrorSelector`, `labelErrorClass`, `inputErrorClass`, `formErrorClass`, `a11yAttributes`, `a11yErrorLevel`, `validateOnFormChange`, and the `.form-error.is-visible` markup.
 - Signal Forms versus Reactive Forms as the model; Constraint Validation API (`:user-invalid`, `setCustomValidity`) as the platform rung; whether the directive is a bridge that maps any Angular form control's status to Foundation's error classes.
 - How Foundation's pattern names map to Angular or platform validators, and which are dropped.
+- Do Foundation's 17 named patterns compile and behave under the `v` regex flag (check each with a Node script; record any that need rewriting)?
 - Error message association: `aria-describedby`, `aria-invalid`, live announcement.
 
 Two guards from the research-wave audit (`audits/0001-research-wave.md`, findings H6 and M12):

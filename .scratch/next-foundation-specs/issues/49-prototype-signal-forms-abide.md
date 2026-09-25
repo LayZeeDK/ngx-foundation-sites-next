@@ -8,7 +8,7 @@ Map: ../map.md
 
 ## Question
 
-Can a directive that injects the Signal Forms field (`FORM_FIELD` self-injection) drive Foundation's error contract (`.is-invalid-input`, `.is-invalid-label`, `.form-error.is-visible`, `aria-invalid`, `aria-describedby`) under Abide's validate-on policy (change by default, `liveValidate`, `validateOnBlur`), and do Abide's 17 named patterns, `equalTo`, and custom validators port as schema helpers under the `v` regex flag? Check the angular-developer skill's Signal Forms reference against the clone, since the API survey found disagreements.
+Can a directive that injects the Signal Forms field (`FORM_FIELD` self-injection) drive Foundation's error contract (`.is-invalid-input`, `.is-invalid-label`, `.form-error.is-visible`, `aria-invalid`, `aria-describedby`) under Abide's validate-on policy (change by default, `liveValidate`, `validateOnBlur`)? Whether the 17 named patterns compile and behave under the `v` regex flag is not part of this prototype; the [Spec: Abide](31-spec-abide.md) checks it with a Node script. Check the angular-developer skill's Signal Forms reference against the clone, since the API survey found disagreements.
 
 Read first: `building-blocks.md` (the matrix row and the open risk this prototype settles), `adr/*.md`, `research/foundation-inventory-forms-media.md`, `research/angular-22-api-survey.md`, `research/web-platform-features.md`, `research/aria-apg-patterns.md`.
 

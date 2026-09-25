@@ -15,4 +15,4 @@ Abide is a validation engine with 17 named patterns, custom validators, `equalTo
 
 - No `valid.zf.abide`-style outputs; consumers read field state signals.
 - The spec must state which Abide options map to the policy and which are dropped (`a11yAttributes` is always on, `patterns`/`validators` maps become schema helpers).
-- Prototype P8 verifies the self-injection binding and the pattern port under the `v` regex flag.
+- The [Prototype: Signal Forms on Abide markup](../issues/49-prototype-signal-forms-abide.md) verifies the self-injection binding under the error-state policy; the [Spec: Abide](../issues/31-spec-abide.md) checks that the 17 patterns compile and behave under the `v` regex flag.
