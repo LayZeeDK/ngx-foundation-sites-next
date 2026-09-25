@@ -1,5 +1,7 @@
 # Foundation plugin inventory B: menus and off-canvas
 
+Corrected 2026-09-25 after [Audit 0001: research wave](../audits/0001-research-wave.md), finding H1: line citations re-derived per file.
+
 Ticket: `../issues/02-foundation-inventory-menus.md`
 Foundation version inspected: 6.9.0 (`FS/package.json` `"version": "6.9.0"`).
 
@@ -87,8 +89,8 @@ docs (L165-182) instead recommend hand-writing `is-dropdown-submenu-parent` to a
 
 - Every plugin builds `this.options = $.extend({}, Defaults, this.$element.data(), options)`
   (`foundation.accordionMenu.js` L25, `foundation.drilldown.js` L26,
-  `foundation.dropdownMenu.js` L30, `foundation.responsiveToggle.js` L178 (file 2 in the
-  concatenated read; standalone line 25), `foundation.offcanvas.js` L29). jQuery `.data()`
+  `foundation.dropdownMenu.js` L30, `foundation.responsiveToggle.js` L25,
+  `foundation.offcanvas.js` L29). jQuery `.data()`
   camelCases every `data-*` attribute, so `data-multi-open="false"` becomes `multiOpen: false`,
   `data-hide-for="large"` becomes `hideFor: 'large'`, and so on. jQuery also converts `"true"`,
   `"false"`, numbers and JSON.
@@ -140,17 +142,17 @@ Event namespace note: the `init`/`destroyed` events use the hyphenated name
   `_watcher` (L282-294) listens to `resize.zf.trigger` on window and fires
   `changed.zf.mediaquery` with `[newSize, oldSize]` when the named breakpoint changes.
 - Triggers (`FS/js/foundation.util.triggers.js`): document-level delegated click handlers for
-  `[data-open]`, `[data-close]`, `[data-toggle]` (L270-286). `[data-open="id"]` calls
+  `[data-open]`, `[data-close]`, `[data-toggle]` (L71-87). `[data-open="id"]` calls
   `triggerHandler('open.zf.trigger', [el])` on `#id` (no bubbling); `[data-close="id"]` uses
   `trigger('close.zf.trigger', [el])` (bubbles); a `[data-close]` with an empty value triggers
-  `close.zf.trigger` on itself so it bubbles up to the nearest listening ancestor (L214-248).
+  `close.zf.trigger` on itself so it bubbles up to the nearest listening ancestor (L15-19, L33-40).
   `[data-toggle]` with a value uses `triggerHandler('toggle.zf.trigger')`; empty value bubbles.
   A MutationObserver on `[data-resize], [data-scroll], [data-mutate]` elements fires
   `mutateme.zf.trigger` on the closest `[data-mutate]` for `childList` changes and inline
-  `style` attribute changes (L380-421). Triggers are installed once on window load (L443-457).
+  `style` attribute changes (L181-222). Triggers are installed once on window load (L244-258).
 - Motion (`FS/js/foundation.util.motion.js`): `animateIn/animateOut(el, cssClass, cb)` add
   `mui-enter`/`mui-leave` plus `-active` classes across two animation frames, `show()`/`hide()`
-  the element, and call `cb` on `transitionend` (L349-436). Motion UI class names are consumer
+  the element, and call `cb` on `transitionend` (L54-100). Motion UI class names are consumer
   supplied strings.
 - Box (`FS/js/foundation.util.box.js`): `ImNotTouchingYou(el, parent, lrOnly, tbOnly,
   ignoreBottom)` returns true when `OverlapArea === 0` (L18-20); with `parent` null it
@@ -349,22 +351,22 @@ Structure the plugin creates or requires:
 | --- | --- | --- | --- |
 | wrapper `div.is-drilldown` (from `wrapper` option) around the root `ul`, unless the parent already has `.is-drilldown` | inline `min-height` (tallest menu) and `max-width` (root width); `animate-height` class when `animateHeight` | inline `height` when `autoHeight` | L122-130, L505-527 |
 | root `ul` | class `drilldown` (when `autoApplyClass`), `aria-multiselectable="false"`, `data-mutate="<data-drilldown value or random id>"` | | L49-55, L64 |
-| parent `li.is-drilldown-submenu-parent` | `aria-expanded="false"` (Nest) | `aria-expanded` | nest.js L30, L369, L384, L454, L485 |
+| parent `li.is-drilldown-submenu-parent` | `aria-expanded="false"` (Nest) | `aria-expanded` | nest.js L30; L369, L384, L454, L485 |
 | parent `a` | `href` REMOVED (saved as jQuery data `savedHref`), `tabindex="0"` | | L90 |
 | submenu `ul.is-drilldown-submenu` | `role="group"` (overrides Nest `menubar`), `aria-hidden="true"`, class `invisible`; class `drilldown-submenu-cover-previous` when `!autoHeight` | classes `is-active`, `visible`, `invisible`, `is-closing`; `aria-hidden` | L57, L91-96, L117-120, L368, L383, L460-463, L484-491 |
 | back button `<li class="js-drilldown-back"><a tabindex="0">Back</a></li>` prepended (`backButtonPosition: 'top'`) or appended (`'bottom'`) to each submenu unless one already exists | | | L99-115, L575 |
 | parentLink clone | `<li data-is-parent-link class="is-submenu-parent-item is-submenu-item is-drilldown-submenu-item" role="none">` wrapping a clone of the parent `a`, prepended to the submenu | | L87-89 |
 
 CSS that gives those classes meaning (`_drilldown.scss`): `.is-drilldown` is
-`position: relative; overflow: hidden` (L248-250), `.animate-height` transitions `height 0.5s`
-(L256-258). `.drilldown .is-drilldown-submenu` is `position: absolute; top: 0; left: 100%;
-z-index: -1; width: 100%; transition: $drilldown-transition` (L269-277); `.is-active` gives
-`z-index: 1; display: block; transform: translateX(-100%)` (L279-283); `.is-closing` slides it
-back out (L285-287). `.drilldown-submenu-cover-previous { min-height: 100% }` (L299-301).
+`position: relative; overflow: hidden` (L74-76), `.animate-height` transitions `height 0.5s`
+(L82-84). `.drilldown .is-drilldown-submenu` is `position: absolute; top: 0; left: 100%;
+z-index: -1; width: 100%; transition: $drilldown-transition` (L95-103); `.is-active` gives
+`z-index: 1; display: block; transform: translateX(-100%)` (L105-109); `.is-closing` slides it
+back out (L111-113). `.drilldown-submenu-cover-previous { min-height: 100% }` (L125-127).
 `.invisible` / `.visible` are Foundation visibility utilities
 (`FS/scss/components/_visibility.scss` L69-74, `visibility: hidden|visible`); the plugin uses
 them so a hidden parent menu drops out of the tab order (comment L458-459).
-`.js-drilldown-back > a::before` draws the back arrow when `$drilldown-arrows` (L306-311).
+`.js-drilldown-back > a::before` draws the back arrow when `$drilldown-arrows` (L132-137).
 
 ### 2.3 Options
 
@@ -456,19 +458,19 @@ while a submenu is open (L460).
 
 Keyboard, Nest, Box (`GetDimensions`), `GetYoDigits` and `transitionend` from core.utils
 (L2-6). Triggers indirectly: it sets `data-mutate` and listens for `mutateme.zf.trigger`
-(L64, L181), which the Triggers MutationObserver emits (triggers.js L380-421), and
+(L64, L181), which the Triggers MutationObserver emits (triggers.js L181-222), and
 ResponsiveToggle fires manually (see 5.4). jQuery `animate` for `scrollTop`. No MediaQuery,
 Motion, Touch. Used by ResponsiveMenu.
 
 ### 2.8 Sass configuration that shapes behaviour
 
-`$drilldown-transition: transform 0.15s linear` (`_drilldown.scss` L185) is the slide the
+`$drilldown-transition: transform 0.15s linear` (`_drilldown.scss` L11) is the slide the
 JS waits for with `transitionend`; if a theme sets it to `none`, `transitionend` never fires
 and `_hide`'s cleanup / `closed` event / keyboard focus moves never run (the `transitionend()`
 helper only polyfills when the browser lacks transition support, core.utils L42-65).
-`.is-drilldown.animate-height { transition: height 0.5s }` (L256-258) is hard-coded.
-`$drilldown-arrows: true` (L189) adds the parent and back arrows. `$drilldown-nested-margin: 0`
-(L197) means `.nested` indentation is turned off inside drilldowns by default.
+`.is-drilldown.animate-height { transition: height 0.5s }` (L82-84) is hard-coded.
+`$drilldown-arrows: true` (L15) adds the parent and back arrows. `$drilldown-nested-margin: 0`
+(L23) means `.nested` indentation is turned off inside drilldowns by default.
 
 ### 2.9 Behaviour that only jQuery makes easy
 
@@ -531,15 +533,15 @@ What the plugin adds or toggles:
 | submenu `ul` | | class `js-dropdown-active` (CSS `display: block`) | L308, L358 |
 
 CSS: `.is-dropdown-submenu` is `position: absolute; top: 0; left: 100%; z-index: 1; display:
-none; min-width: $dropdownmenu-min-width; border; background` (`_dropdown-menu.scss` L555-566);
-`.js-dropdown-active { display: block }` (L589-591). `.dropdown.menu .no-js & ul { display:
-none }` hides submenus without JS (L479-481). Horizontal direction puts top-level submenus at
-`top: 100%` with `left: 0` (`opens-right`) or `right: 0` (`opens-left`) (L396-413); vertical
-puts them at `top: 0` beside the item (L428-453). `.is-dropdown-submenu-parent.opens-inner >
-.is-dropdown-submenu { top: 100%; left: auto }` (L533-542) is the fallback when neither side
-fits. `.dropdown.menu > li.is-active > a` is the active-item style (L474-477). Arrows on
+none; min-width: $dropdownmenu-min-width; border; background` (`_dropdown-menu.scss` L241-251);
+`.js-dropdown-active { display: block }` (L275-277). `.dropdown.menu .no-js & ul { display:
+none }` hides submenus without JS (L165-167). Horizontal direction puts top-level submenus at
+`top: 100%` with `left: 0` (`opens-right`) or `right: 0` (`opens-left`) (L84-98); vertical
+puts them at `top: 0` beside the item (L115-133). `.is-dropdown-submenu-parent.opens-inner >
+.is-dropdown-submenu { top: 100%; left: auto }` (L219-228) is the fallback when neither side
+fits. `.dropdown.menu > li.is-active > a` is the active-item style (L160-163). Arrows on
 `> li.is-dropdown-submenu-parent > a::after` (down) and `.opens-left/right > a::after`
-(left/right) when `$dropdownmenu-arrows` (L380-394, L414-426).
+(left/right) when `$dropdownmenu-arrows` (L100-112, L66-80).
 
 ### 3.3 Options
 
@@ -626,10 +628,10 @@ Triggers, Timer, ImageLoader. Used by ResponsiveMenu. The top-bar `.top-bar-righ
 
 ### 3.8 Sass configuration that shapes behaviour
 
-`$dropdownmenu-arrows: true` (`_dropdown-menu.scss` L325) gates every arrow rule and the extra
-right padding on parent links (L415-418). `$dropdownmenu-min-width: 200px` (L341) sizes
+`$dropdownmenu-arrows: true` (`_dropdown-menu.scss` L11) gates every arrow rule and the extra
+right padding on parent links (L100-104). `$dropdownmenu-min-width: 200px` (L27) sizes
 submenus, which feeds the collision check. `.dropdown.menu.[bp]-horizontal` /
-`.[bp]-vertical` (L491-503) let the direction change per breakpoint, and the JS reads the
+`.[bp]-vertical` (L177-189) let the direction change per breakpoint, and the JS reads the
 resulting computed style (`_isVertical`) rather than a class, so keyboard mapping follows CSS.
 Submenu open/close has no CSS transition; `display` toggles instantly.
 
@@ -752,7 +754,7 @@ something when Triggers' MutationObserver is installed.
 The breakpoint names come from the Sass `$breakpoints` map via `meta.foundation-mq`
 (0.6). The consumer pairs the JS rule with the Menu orientation classes
 `.[bp]-horizontal`/`.[bp]-vertical` (`_menu.scss` L407-416) and the Dropdown direction classes
-(`_dropdown-menu.scss` L491-503); nothing in Sass reads `data-responsive-menu`.
+(`_dropdown-menu.scss` L177-189); nothing in Sass reads `data-responsive-menu`.
 
 ### 4.9 Behaviour that only jQuery makes easy
 
@@ -798,48 +800,48 @@ Docs example (`responsive-navigation.md` L396-424):
 Animated variant (L442-463): `<button class="menu-icon" type="button" data-toggle></button>`
 (empty value allowed) and `data-animate="hinge-in-from-top spin-out"` on the TARGET element.
 
-Syntax: `data-responsive-toggle="<id of target>"` on the bar (L192); the toggler(s) are
+Syntax: `data-responsive-toggle="<id of target>"` on the bar (L39); the toggler(s) are
 `[data-toggle]` descendants of the bar whose value equals the target id or is empty
-(L198-201). "You don't even need to use Menu! Any element will work." (docs L381). If the id
+(L45-48). "You don't even need to use Menu! Any element will work." (docs L381). If the id
 is missing the plugin logs `console.error('Your tab bar needs an ID of a Menu as the value of
-data-tab-bar.')` (L194, stale attribute name).
+data-tab-bar.')` (L41, stale attribute name).
 
 What the plugin does to the DOM: jQuery `.show()` / `.hide()` on the bar and on the target
-(inline `display`), depending on breakpoint (L233-245); `toggle(0)` or Motion classes on the
-target when the toggler is clicked (L252-277). No classes or ARIA are added; the toggler gets
+(inline `display`), depending on breakpoint (L80-92); `toggle(0)` or Motion classes on the
+target when the toggler is clicked (L99-124). No classes or ARIA are added; the toggler gets
 no `aria-expanded`/`aria-controls`. The FOUC section (docs L468-506) tells consumers to add
 `.no-js` CSS themselves.
 
 ### 5.3 Options
 
-`ResponsiveToggle.defaults` L287-303, merged from the bar's `data()` (L178) and THEN from the
-target element's `data()` (L202), so `data-hide-for` / `data-animate` may sit on either
+`ResponsiveToggle.defaults` L134-150, merged from the bar's `data()` (L25) and THEN from the
+target element's `data()` (L49), so `data-hide-for` / `data-animate` may sit on either
 element (the docs put `data-animate` on the target).
 
 | Option (`data-*`) | Type | Default | Meaning (source) |
 | --- | --- | --- | --- |
-| `hideFor` (`data-hide-for`) | string (breakpoint) | `'medium'` | Breakpoint at and above which the bar is hidden and the target always shown (L235-244, L294). |
-| `animate` (`data-animate`) | `false` or string `"<inClass> <outClass>"` | `false` | Motion UI classes for in and out; second token optional (L205-210, L302). |
+| `hideFor` (`data-hide-for`) | string (breakpoint) | `'medium'` | Breakpoint at and above which the bar is hidden and the target always shown (L80-92, L141). |
+| `animate` (`data-animate`) | `false` or string `"<inClass> <outClass>"` | `false` | Motion UI classes for in and out; second token optional (L51-57, L149). |
 
 ### 5.4 Events
 
 Fired: `init.zf.responsive-toggle`, `destroyed.zf.responsive-toggle` (base class);
-`toggled.zf.responsiveToggle` on the bar after every toggle (L261, L268, L274). It also fires
+`toggled.zf.responsiveToggle` on the bar after every toggle (L108, L114, L121). It also fires
 `mutateme.zf.trigger` on every `[data-mutate]` inside the target after showing it
-(`triggerHandler` in the animated path L262, `trigger` in the plain path L273), which is how a
+(`triggerHandler` in the animated path L109, `trigger` in the plain path L120), which is how a
 Drilldown inside a just-revealed top bar re-measures its height (2.4).
 
-Listened for: `changed.zf.mediaquery` on window -> `_update` (L223);
-`click.zf.responsiveToggle` on the toggler(s) -> `toggleMenu` (L225).
+Listened for: `changed.zf.mediaquery` on window -> `_update` (L70);
+`click.zf.responsiveToggle` on the toggler(s) -> `toggleMenu` (L72).
 
 ### 5.5 Public methods
 
 | Method | Behaviour | Line |
 | --- | --- | --- |
-| `toggleMenu()` | only below `hideFor`: with `animate`, `Motion.animateIn/animateOut` the target (choosing by `:hidden`); otherwise `toggle(0)`; fire `toggled` | L252-277 |
-| `destroy()` | unbind bar, toggler and window listeners | L279-284 |
+| `toggleMenu()` | only below `hideFor`: with `animate`, `Motion.animateIn/animateOut` the target (choosing by `:hidden`); otherwise `toggle(0)`; fire `toggled` | L99-124 |
+| `destroy()` | unbind bar, toggler and window listeners | L126-131 |
 
-`_update()` (L233-245) is the breakpoint switch: below `hideFor` show bar / hide target; at or
+`_update()` (L80-92) is the breakpoint switch: below `hideFor` show bar / hide target; at or
 above hide bar / show target.
 
 ### 5.6 Keyboard and ARIA behaviour
@@ -850,7 +852,7 @@ native keyboard activation). No `aria-expanded`, `aria-controls`, or focus manag
 ### 5.7 Dependencies
 
 MediaQuery (`_init`, `atLeast`, `changed.zf.mediaquery`), Motion (`animateIn/animateOut`)
-(L3-4). Does not use Triggers for `data-toggle` (it binds its own click, L225), but does emit
+(L3-4). Does not use Triggers for `data-toggle` (it binds its own click, L72), but does emit
 `mutateme.zf.trigger`. No Keyboard, Nest, Box, Touch.
 
 ### 5.8 Sass configuration that shapes behaviour
@@ -863,11 +865,11 @@ Visibility switching is inline `display` from JS, not a class.
 
 ### 5.9 Behaviour that only jQuery makes easy
 
-- `show()`/`hide()`/`toggle(0)` inline display switching (L236-243, L272). The Angular
+- `show()`/`hide()`/`toggle(0)` inline display switching (L82-91, L119). The Angular
   equivalent is a breakpoint signal plus `hidden`, or CSS `show-for-*`/`hide-for-*` classes with
   no JS at all for the breakpoint part.
-- Motion UI in/out class animation via `Motion` (L260-268).
-- Reading options from two elements (bar then target, L178, L202).
+- Motion UI in/out class animation via `Motion` (L107-116).
+- Reading options from two elements (bar then target, L25, L49).
 
 ---
 
@@ -1067,7 +1069,7 @@ plugins; no code coupling.
    DropdownMenu marks the parent `li.is-active` and the submenu `ul.js-dropdown-active`;
    OffCanvas marks the panel `is-open`/`is-closed` and the content `is-open-<pos>`. The Menu
    docs' `li.is-active` "current page" style (`_menu.scss` L477) collides with DropdownMenu's
-   use of the same class on the open parent (`_dropdown-menu.scss` L474-477 restyles it).
+   use of the same class on the open parent (`_dropdown-menu.scss` L160-163 restyles it).
 2. ARIA coverage: AccordionMenu and Drilldown expose expanded/hidden state; DropdownMenu
    exposes only `aria-haspopup`. All three put `role="menubar"` on a `ul` and `menuitem` on
    links, and `aria-expanded` on `role="none"` `li`s, which does not match the APG menubar
