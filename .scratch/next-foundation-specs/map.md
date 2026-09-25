@@ -69,11 +69,11 @@ Each Angular directive or component (one plugin may yield several related ones) 
 
 ### Spec shape
 
-Every spec is a `/to-spec` spec: the to-spec template's top-level sections, with the API-design material from the repo skill `.claude/skills/foundation-api-design/SKILL.md` (CSS class mapping, hierarchy, API per directive, ARIA and keyboard tables, rendered HTML, Material comparison, usage examples, design decisions) placed as subsections inside Implementation Decisions and Further Notes. The `angular-developer` skill (`/angular-developer:angular-developer`) supplies the modern Angular API guidance. Spec Kit (`.specify/`, `specs/001-button`) is not used by this effort.
+Every spec is a `/to-spec` spec: the to-spec template's top-level sections, with the API-design material from the repo skill `.claude/skills/foundation-api-design/SKILL.md` (CSS class mapping, hierarchy, API per directive, ARIA and keyboard tables, rendered HTML, Material comparison, usage examples, design decisions) placed as subsections inside Implementation Decisions and Further Notes (placement per `building-blocks.md` 1.14: the Material comparison sits under Implementation Decisions, the design decisions table under Further Notes). The `angular-developer` skill (`/angular-developer:angular-developer`) supplies the modern Angular API guidance. Spec Kit (`.specify/`, `specs/001-button`) is not used by this effort. The to-spec `ready-for-agent` label does not apply here: a spec file under `specs/` is published when its ticket is resolved and committed, and the consistency review is the gate before hand-off.
 
 ### AFK override
 
-The user has ruled this whole map AFK: no human in the loop. Grilling and prototype tickets, which the wayfinder skill defines as HITL, are worked by an agent that plays both sides of the interview against primary sources, records every question it asked itself and the answer it settled on, and flags any decision it could not settle from sources as `OPEN FOR HUMAN` in the ticket answer rather than guessing. Prototypes may be high fidelity: a worktree of this repo, or a synthetic Nx workspace under `D:/tmp/`.
+The user has ruled this whole map AFK: no human in the loop. Grilling and prototype tickets, which the wayfinder skill defines as HITL, are worked by an agent that plays both sides of the interview against primary sources, records every question it asked itself and the answer it settled on, and flags any decision it could not settle from sources as `OPEN FOR HUMAN` in the ticket answer rather than guessing. Prototypes may be high fidelity: a worktree of this repo, or a synthetic Nx workspace under `D:/tmp/`. Prototypes here are technical spikes in a real workspace; they replace the prototype skill's single-file logic demo and variant switcher, and keep its rules on stating the question, throwaway code, and capture.
 
 ### Skills each session consults
 
@@ -112,7 +112,7 @@ Online: https://angular.dev, https://material.angular.dev, https://get.foundatio
 - Spec tickets (grilling plus to-spec) and the consistency review: Opus 5.5, strong design reasoning at lower spend than Fable.
 - Research inventories of local sources and straightforward prototypes: Sonnet 5. The first research wave ran on Fable before this rule existed.
 - Prototypes that must settle a contested design question: Opus 5.5.
-- Second working session (2026-09-25): the orchestrator runs on Opus 5.5. Fable credit was out at the start of the session and is available again after the usage reset, so Fable 5.1 is used again where a ticket makes cross-cutting calls or where it is clearly the better fit for a spec; the commit body says why whenever a ticket runs on Fable.
+- Second working session (2026-09-25 to 2026-09-26): the orchestrator started on Opus 5.5 and switched to Fable 5.1 after the usage reset. Fable credit was out at the start of the session and is available again since the reset, so Fable 5.1 is used where a ticket makes cross-cutting calls or where it is clearly the better fit for a spec; the commit body says why whenever a ticket runs on Fable.
 
 ### Audits (user instruction)
 
@@ -133,6 +133,7 @@ The Destination above is how this map meets it: every component's spec exists un
 - Subagent prompts: paste the user's URL fetch fallback chain and the banned-word list into every prompt that reads the web or writes prose; tell the subagent to edit only its own ticket and deliverables and never to commit.
 - Local clones: use and create clones under `d:/projects/github/<owner>/<repo>/`; check out the release branch or tag for the target version range in every `angular/*` clone (currently `22.2.x`).
 - Tracker: this map uses the local-markdown tracker in `docs/agents/issue-tracker.md`. Frontier = open tickets whose `Blocked by` tickets are all `resolved`; lowest number first.
+- Prototypes surfaced by specs: a spec ticket that cannot settle a question from sources writes it under `## Prototype needed` in its answer; the orchestrator graduates each into a prototype ticket that blocks a re-run of that spec, and records the graduation on the map.
 
 ### Concurrency rules
 
@@ -161,8 +162,7 @@ Subagents edit only their own ticket file and the output files that ticket names
 
 ## Not yet specified
 
-- **Further prototypes surfaced by spec tickets.** A spec ticket that cannot settle a question from sources writes it under `## Prototype needed` in its answer; the orchestrator graduates each into a prototype ticket that blocks the spec's re-run. None are known yet beyond the charted prototypes.
-- **Hand-off packaging for the new repo.** How the finished bundle (specs, building blocks, glossary, ADRs, research, prototypes) moves into the new repository and what, if anything, is rewritten on the way. Sharp once the consistency review has an index to hand over.
+- Nothing at the moment. Prototype questions that spec tickets surface are graduated into tickets as they appear (Orchestration rules), and the hand-off of the bundle is out of scope (below).
 
 ## Out of scope
 
@@ -174,3 +174,4 @@ Subagents edit only their own ticket file and the output files that ticket names
 - Spec Kit artifacts (`.specify/`, `specs/001-button`). The user ruled Spec Kit out; specs here follow `/to-spec`.
 - Opt-in `role="menu"` variants (DropdownMenu as an APG menubar, Drilldown as a vertical menu) for command menus. The [building-blocks decision](issues/14-building-blocks-map.md) put every menu on disclosure navigation and found no spec in the destination that needs a second role set.
 - Runtime theming through custom properties as a component contract. The [building-blocks decision](issues/14-building-blocks-map.md) kept Foundation mixins and documented custom CSS in scope and ruled runtime theming out.
+- Moving the finished bundle into the new repository. The destination ends at a reviewed bundle with its index (`README.md` from the [Consistency review and bundle index](issues/36-consistency-review.md)); the move, and any rewriting on the way, is the new repository's first task.
