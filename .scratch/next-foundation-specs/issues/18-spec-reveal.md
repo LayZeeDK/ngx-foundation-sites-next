@@ -38,3 +38,9 @@ Two guards from the research-wave audit (`audits/0001-research-wave.md`, finding
 - Platform features outside the map's browser target (see `research/web-platform-features.md`; for example `popover`, CSS anchor positioning, `<details name>`, `interpolate-size`, `@starting-style`, `:has()`, invoker commands) may appear only as a named future upgrade or behind a stated fallback, as the building-blocks decision already ruled.
 
 Use the glossary's vocabulary. Add glossary terms to `CONTEXT.md` and ADRs to `adr/` only when the domain-modeling bar is met. The ticket answer holds the decision log (each question and the answer chosen, with its source); the spec holds the synthesis.
+
+## Note from the research repairs (2026-09-25)
+
+Audit 0001 finding H5 corrected the Foundation facts in `research/angular-material-reference.md` that this ticket reads. Take these as given:
+
+- `closeme.zf.reveal` is not a close-lifecycle event: it fires just before this reveal opens so other open reveals close (`foundation.reveal.js:265-272`). The lifecycle events are `open.zf.reveal` (end of `open()`) and `closed.zf.reveal` (after the close animation). No Foundation event backs a Material-style `beforeClosed` output; if the spec wants one, it is synthesized at the start of the directive's own `close()` and the spec says so.

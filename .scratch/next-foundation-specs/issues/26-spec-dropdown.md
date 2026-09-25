@@ -38,3 +38,9 @@ Two guards from the research-wave audit (`audits/0001-research-wave.md`, finding
 - Platform features outside the map's browser target (see `research/web-platform-features.md`; for example `popover`, CSS anchor positioning, `<details name>`, `interpolate-size`, `@starting-style`, `:has()`, invoker commands) may appear only as a named future upgrade or behind a stated fallback, as the building-blocks decision already ruled.
 
 Use the glossary's vocabulary. Add glossary terms to `CONTEXT.md` and ADRs to `adr/` only when the domain-modeling bar is met. The ticket answer holds the decision log (each question and the answer chosen, with its source); the spec holds the synthesis.
+
+## Note from the research repairs (2026-09-25)
+
+Audit 0001 finding H5 corrected the Foundation facts in `research/angular-material-reference.md` that this ticket reads. Take these as given:
+
+- `data-position` and `data-alignment` have no CSS side: the legacy `.top/.right/.bottom/.left` classes and the `has-position-*`/`has-alignment-*` classes carry no Sass rule on `.dropdown-pane` (`scss/components/_dropdown.scss`). Foundation positions the pane entirely through inline offsets from Positionable. Do not design the API around a position class; follow ADR 0002 and the Anchored pane spec.
