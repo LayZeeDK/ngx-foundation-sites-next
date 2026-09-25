@@ -1,0 +1,23 @@
+---
+status: accepted
+---
+
+# Library Sass is imported after the consumer's Foundation and reuses its settings, mixins, and functions
+
+The library reuses Foundation for Sites' Sass and never re-implements it (user rule; AGENTS.md Styling Guidelines). Foundation 6.9's Sass is `@import`-based: the consumer imports its settings, then `foundation`, and the export mixins read those settings as globals (`scss/foundation.scss`, `docs/pages/sass.md`). A Sass module loaded with `@use` cannot see those globals, and a module that `@use`s Foundation gets a second copy running with Foundation's defaults (both checked by compiling fixtures with Dart Sass 1.104.1, the version `@angular/build` 22.2.0 pins). We therefore decided that `ngx-foundation-sites` ships `_index.scss` at the package root, reached through a `sass` condition on the `.` export (Angular Material's and CDK's shape) and copied by ng-packagr `assets`. The consumer `@import`s it after Foundation. It defines global mixins, emits nothing on import, and never imports Foundation itself; a guard fails the compile when Foundation was not imported first. The mixins are `nfs-<plugin>` for each plugin with documented custom CSS, `nfs-motion` for the `nfs-*` keyframe Motion classes and their reduced-motion override, and `nfs-breakpoint-properties`, which writes `--nfs-breakpoint-<name>` px values on `:root` from the consumer's own `$breakpoints` using Foundation's `-zf-bp-to-em`. They read the consumer's Foundation settings, call Foundation's mixins and functions (`breakpoint()`, `-zf-bp-to-em`), and emit only the rules Foundation cannot provide. No library component or directive carries `styles`. `foundation-sites` is a required peer dependency at `^6.9.0`.
+
+## Considered options
+
+- A `@use` module whose mixins receive Foundation values as arguments (`nfs.breakpoint-properties($breakpoints)`, `nfs.reveal($reveal-overlay-background: ...)`): this ticket's first draft, rejected. The module cannot call `breakpoint()` or `-zf-bp-to-em`, so it would re-implement them; its parameter defaults would copy Foundation's setting values; and consumers would have to pass every customised setting by hand, which breaks the reuse rule.
+- The library `@use`s Foundation: rejected. It creates a second Foundation running with default settings (not the consumer's), evaluates Foundation again on every compile, and prints Foundation's banner a second time.
+- Component `styles` for the wrapper components' rules: rejected. They are compiled at library build time, where the consumer's settings do not exist, and most library CSS sits on directive hosts, which cannot carry styles.
+- A prebuilt CSS file and an `nfs-everything` mixin: left out of the first release. Every Angular CLI app already compiles Sass, and Foundation's docs list includes one by one.
+- `foundation-sites` as an optional peer, or no peer: rejected. The library's Sass calls Foundation's functions and reads its settings at compile time.
+
+## Consequences
+
+- Consumers write `@import 'ngx-foundation-sites';` after their Foundation `@import`s and one `@include nfs-<plugin>;` after each matching `foundation-<component>` include. Their Foundation settings reach the library with no extra arguments.
+- The library's public Sass shares Foundation's global namespace, `@import` deprecation, and eventual migration: public members are prefixed `nfs-` (Foundation uses `foundation-`), and internal helpers `-nfs-` (Foundation uses `-zf-`). A consumer who loads Foundation through `@use` is not supported, because Foundation does not document that path.
+- `nfs-breakpoint-properties` depends on Foundation's private `-zf-bp-to-em` so its values match Foundation's media queries by construction. The peer range and a node-level Sass compile test guard that dependency.
+- Installing the peer also installs Foundation's own required peers (`jquery`, `motion-ui`, `what-input`) under npm 7 and later. The library never imports or bundles them.
+- When Dart Sass 3.0 removes `@import`, Foundation 6.9 and the library stop compiling together. When Foundation moves to modules, the library moves to `@use` of the same Foundation module URLs. Sass loads each module once per compilation, so the library would then share the consumer's configured Foundation.

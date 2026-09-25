@@ -46,6 +46,10 @@ _Avoid_: media query list, screen sizes, `Breakpoints` (the CDK constants)
 A Foundation rule string such as `drilldown medium-dropdown` or `accordion medium-tabs` that assigns a mode per breakpoint.
 _Avoid_: responsive config, mode map, query string
 
+**Export mixin**:
+A Foundation Sass mixin that prints one component's CSS (`foundation-accordion`, `foundation-reveal`), included by the consumer and compiled from the consumer's settings.
+_Avoid_: Foundation styles, component mixin
+
 ### Angular side
 
 **Directive-first**:
@@ -135,3 +139,11 @@ _Avoid_: unit test (for this layer), component test, Vitest Browser (as the laye
 **Story id**:
 This library's story naming scheme, `<plugin>--<story>`, by which a spec's play functions, browser-level tests, and Playwright e2e address the same story.
 _Avoid_: story name, test id, scenario
+
+**Library mixin**:
+A mixin of the library's Sass (`nfs-accordion`, `nfs-motion`) that prints only the documented custom CSS Foundation cannot provide, reusing the consumer's Foundation settings and mixins in the same compile; included after the matching Export mixin.
+_Avoid_: `_nfs-<plugin>.scss`, custom stylesheet, theme mixin
+
+**Breakpoint properties**:
+The `--nfs-breakpoint-<name>` custom properties on `:root`, in px, that mirror the Sass `$breakpoints` the consumer compiles Foundation with, and that the Breakpoint service's drift check compares with the Breakpoint map.
+_Avoid_: breakpoint variables, CSS breakpoints, breakpoint tokens
