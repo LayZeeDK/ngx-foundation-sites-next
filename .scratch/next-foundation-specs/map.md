@@ -6,7 +6,7 @@ Created: 2026-09-25
 
 ## Destination
 
-One published spec (via `/to-spec`) for every JavaScript plugin in Foundation for Sites 6.9, each describing the Angular directive (preferred) or component that replaces it in the next, from-scratch ngx-foundation-sites repo, plus a building-blocks map that records which Angular, CDK, Aria, or native platform primitive each plugin is built on. The map is done when all 21 plugin specs exist under `specs/`, the building-blocks map agrees with them, and the consistency review has passed.
+One published spec (via `/to-spec`) for every JavaScript plugin in Foundation for Sites 6.9, each describing the Angular directive (preferred) or component that replaces it in the next, from-scratch ngx-foundation-sites repo, plus a building-blocks map that records which Angular, CDK, Aria, or native platform primitive each plugin is built on. The map is done when all plugin specs exist under `specs/`, the building-blocks map agrees with them, a working Playwright component test solution has been identified (or its absence proven and recorded), the browser testing stack has been decided, and the consistency review has passed.
 
 The 21 plugins (from `node_modules/foundation-sites/js/foundation.*.js`): Abide, Accordion, AccordionMenu, Drilldown, Dropdown, DropdownMenu, Equalizer, Interchange, Magellan, OffCanvas, Orbit, ResponsiveAccordionTabs, ResponsiveMenu, ResponsiveToggle, Reveal, Slider, SmoothScroll, Sticky, Tabs, Toggler, Tooltip.
 
@@ -54,7 +54,7 @@ Specs target these versions, not the Angular 21 toolchain in this repo.
   | Safari for iOS | 17 | 2023-09-18 |
 
   A feature is usable without a fallback only if every browser in this table supports it from the listed version.
-- Testing: Storybook play functions first, Vitest browser mode for logic, Playwright e2e for web-native APIs.
+- Testing (user decision): unit tests run on Vitest (node, for server-side rendering and pure logic) and Vitest Browser (browser-level); Playwright runs e2e; Storybook uses `@storybook/angular-vite` with Vitest interactions and interaction tests (play functions). The map must identify a working Playwright component test solution for Angular 22.2, evaluating at least `@playwright-labs/selectors-angular`, `@jscutlery/playwright-ct-angular`, `@sand4rt/experimental-ct-angular`, and Playwright's framework-agnostic component testing approach (https://playwright.dev/docs/test-components), ideally mounting and reusing CSF stories between Storybook and Playwright component tests. If a working solution is found, ticket 41 decides whether Playwright component tests replace Vitest Browser for browser-level testing. Until then, every spec's Testing Decisions names its seams as: story play function, browser-level test (stack per ticket 41), node-level Vitest, Playwright e2e; the consistency review aligns them with the final decision.
 
 ### Design criteria for every directive or component
 
