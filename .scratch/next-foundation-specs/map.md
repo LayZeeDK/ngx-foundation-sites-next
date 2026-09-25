@@ -105,6 +105,7 @@ Subagents edit only their own ticket file and the output files that ticket names
 <!-- one line per closed ticket: gist, then the link that holds the detail -->
 
 - [Foundation plugin inventory A: Accordion, Tabs, ResponsiveAccordionTabs, Toggler, Reveal](issues/01-foundation-inventory-disclosure.md) — full option, event, method, keyboard, and utility inventory of the disclosure family; event names and timing differ across it, and ResponsiveAccordionTabs, Toggler, and Reveal each carry a source bug or doc mismatch the specs must not copy. Findings: [research/foundation-inventory-disclosure.md](research/foundation-inventory-disclosure.md).
+- [@angular/aria 22.2 inventory](issues/07-angular-aria-inventory.md) — eight stable headless patterns (accordion, tabs, listbox, combobox, menu, toolbar, tree, grid) with exact inputs, host ARIA, and keyboard tables; Accordion and Tabs fit Foundation directly, AccordionMenu maps to the tree in navigation mode, DropdownMenu only fits menubar with role=menu semantics the Aria guide warns against for site navigation, and no Aria pattern exists for the other fifteen plugins. Findings: [research/angular-aria-inventory.md](research/angular-aria-inventory.md).
 
 ## Not yet specified
 
