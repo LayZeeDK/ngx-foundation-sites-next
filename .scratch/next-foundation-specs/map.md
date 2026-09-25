@@ -77,7 +77,7 @@ The user has ruled this whole map AFK: no human in the loop. Grilling and protot
 
 ### Skills each session consults
 
-`/research`, `/grill-with-docs` (which runs `/grilling` with `/domain-modeling`), `/to-spec`, `/mattpocock-skills:prototype`, `/playwright-cli` (for https://www.angular.courses/caniuse), and the `angular-cli` MCP `search_documentation` tool with `version: 22`.
+`/wayfinder` (this map's process), `/research`, `/grill-with-docs` (which runs `/grilling` with `/domain-modeling`), `/to-spec`, `/mattpocock-skills:prototype`, `/angular-developer:angular-developer` (modern Angular guidance; the API survey lists where its references disagree with the 22.2 source), the repo skill `.claude/skills/foundation-api-design/SKILL.md` (API design document shape), `/playwright-cli` (for https://www.angular.courses/caniuse and for driving prototypes), and the `angular-cli` MCP `search_documentation` tool with `version: 22`. For Angular docs contents, prefer the local clone, then web search and markdown.new, then playwright-cli.
 
 ### Sources
 
@@ -116,6 +116,22 @@ Online: https://angular.dev, https://material.angular.dev, https://get.foundatio
 ### Audits (user instruction)
 
 After every wave (research, building blocks, each spec wave, testing chain, final), the orchestrator spawns an audit subagent that reviews the map, the tickets, and every other document under the effort directory for compliance with the `/wayfinder`, `/domain-modeling`, `/grill-with-docs` (and `/grilling`), `/research`, `/to-spec`, and `/mattpocock-skills:prototype` skills. Findings go to `audits/NNNN-<scope>.md` (ranked, each with file, rule, evidence, fix) and are committed; the orchestrator applies the fixes or turns them into tickets, and records what it did at the end of the audit file.
+
+### Goal condition (set by the user)
+
+"Your goal is achieved when the map and tickets contain decisions to produce specs for an (or multiple related) Angular directive(s)/component(s) for each component in Foundation for Sites based on research, best practices, references, prototypes, the /angular-developer:angular-developer skill, the /foundation-api-design skill (or an improved/extended spec like what it described), and modern Angular APIs."
+
+The Destination above is how this map meets it: every component's spec exists under `specs/`, backed by resolved research, prototype, and grilling tickets.
+
+### Orchestration rules (user instructions)
+
+- Autonomy: the whole map runs AFK with parallel subagents. The orchestrator never asks the user to decide; it decides from sources, records `OPEN FOR HUMAN` where sources cannot settle a point, and keeps going.
+- Commits: every change under `.scratch/` is committed as it lands, as an atomic, bisect-safe Conventional Commit (`docs(wayfinder): ...`) with a body that gives the why. Stage files by name, commit with `git commit -F <file>`, confirm the subject with `git log --oneline -1`. One resolved ticket is one commit: the ticket, its deliverables, and its Decisions-so-far line together.
+- Waiting: wait for subagent completion notifications. Never poll with shell sleep loops.
+- Spend limits: when a subagent stops on a usage or spend limit, resume that same agent with SendMessage after the reset instead of starting a fresh one, so its context is kept.
+- Subagent prompts: paste the user's URL fetch fallback chain and the banned-word list into every prompt that reads the web or writes prose; tell the subagent to edit only its own ticket and deliverables and never to commit.
+- Local clones: use and create clones under `d:/projects/github/<owner>/<repo>/`; check out the release branch or tag for the target version range in every `angular/*` clone (currently `22.2.x`).
+- Tracker: this map uses the local-markdown tracker in `docs/agents/issue-tracker.md`. Frontier = open tickets whose `Blocked by` tickets are all `resolved`; lowest number first.
 
 ### Concurrency rules
 
