@@ -224,6 +224,7 @@ Level: custom Angular service over CDK `MediaMatcher`, per ADR 0005. The platfor
 - `MediaMatcher.matchMedia(query)` for every query, because it adds the empty `@media` style rule that makes WebKit and Blink fire `change` reliably, honours `CSP_NONCE`, and is the documented seam to fake in tests. On the server `MediaMatcher` returns a stub whose `matches` is `false` (except for `''` and `'all'`, which it reports `true`) and which has `addListener` but no `addEventListener`; the service never reaches that stub, because it calls `MediaMatcher` only inside a render callback, and render callbacks do not run on the server (`afterNextRender` returns a no-op when `ngServerMode` is set).
 - One `MediaQueryList` per breakpoint query and one for `(prefers-reduced-motion: reduce)`, each with `addEventListener('change', ...)` (not the deprecated `addListener` CDK's observer still uses). A `change` on any breakpoint query recomputes `current` as the largest matching breakpoint; queries are nested min-width ranges, so this equals Foundation's `atLeast` on each query.
 - Going live: the constructor registers `afterNextRender({earlyRead})` without a view (so it runs after the next application render). The `earlyRead` callback creates the lists, sets `current`, `reducedMotion`, and every `matches()` signal requested so far, attaches the listeners, and runs the development-mode drift check. Signals set there mark the views that read them, and `ApplicationRef` re-runs change detection before it returns (its synchronisation loop runs after-render hooks at the end of each pass and loops while views are dirty), so the live values reach the DOM in the same tick, before the browser paints.
+- No lazy loading: `injectAsync` is not used, because the service is needed at the first render callback of every breakpoint-gated directive and by the handoff itself, so it loads eagerly with the first directive that injects it; `afterEveryRender` is not used either, because the service reacts to `MediaQueryList` `change` events, not to renders (audit 0004, M6).
 - Server breakpoint handoff: the constructor reads `TransferState` key `nfsServerBreakpoint` with the token's `serverBreakpoint` (or the Zero breakpoint) as the default, uses the result as the initial `current`, and writes it back. On the server that serialises the per-request choice into the page's `ng-state` script, which `provideServerRendering()` already emits; on the client `TransferState` reads that script at first injection. The write is symmetric and needs no platform check; on the client it is never serialised. A transferred name the client's map lacks warns in development and falls back to the client token.
 - Zoneless: every update is a signal write; zoneless change detection is scheduled by template-read signal updates (Angular's zoneless guide). No `NgZone.run` (CDK's observer needs it only because it emits through RxJS and patched `addListener`). In a zone-based app the same writes schedule change detection, and zone.js also runs the `change` callback in the Angular zone.
 - Cleanup: `DestroyRef.onDestroy` removes every listener when the application (or a `TestBed` environment) is destroyed.
@@ -489,7 +490,10 @@ export class NfsResponsiveMenu {
   readonly #mq = inject(NfsMediaQuery);
   readonly rules = input.required<string | NfsBreakpointRules<(typeof menuModes)[number]>>();
   readonly #parsed = computed(() => parseNfsBreakpointRules(this.rules(), menuModes, this.#mq.breakpoints));
-  readonly mode = computed(() => this.#mq.resolve(this.#parsed()));
+  readonly #live = signal(false); // set in the first render callback (Responsive Menu spec, ADR 0035)
+  readonly mode = computed(() =>
+    this.#live() ? this.#mq.resolve(this.#parsed()) : this.#mq.resolve(this.#parsed(), this.#mq.serverBreakpoint),
+  );
 }
 
 export class NfsOrbit {
