@@ -29,3 +29,7 @@ Utility-specific questions:
 - `nfsMenuItem`, `nfsSubmenu`, `nfsSubmenuToggle`, and `nfsMenuModeToken`, per the nested menu prototype's verdict.
 - The disclosure navigation roles and attributes that stay constant across modes, the per-mode keyboard tables, and `aria-current` for the current page.
 - How a breakpoint swaps the mode through the breakpoint service, and what state survives.
+
+## WCAG 2.2 AA guard (user decision, 2026-09-26)
+
+Every directive and component complies with WCAG 2.2 AA; see the map's Accessibility preference and [ADR 0022](../adr/0022-wcag-2-2-aa-enforcement.md). The spec carries a criteria subsection under Implementation Decisions naming the 2.2 AA criteria this plugin touches (at least 1.4.3, 1.4.11, 2.4.7, 2.4.11, 2.5.8, 4.1.2, and, for overlays and hover content, 1.4.13) and how each is met, as requirements, never recommendations. Where a Foundation default fails a criterion, the spec states the Sass settings the consumer must set or the smallest custom rule the `nfs-<plugin>` mixin adds, with the reason. The story axe gate runs with the WCAG 2.2 AA tags, and the decision log records each criterion addressed.
