@@ -323,7 +323,7 @@ Story ids follow `interchange--<story>`: `interchange--picture` (no directive), 
 
 ### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`)
 
-Every story runs axe with `parameters.a11y.test = 'error'` against WCAG 2.2 AA. Play functions assert relationships that hold at any iframe width (viewport widths are Playwright's job): the expected rule is computed in the play function from `window.matchMedia` on Foundation's query strings.
+Stack: `@storybook/angular-vite` 10.6 with `@storybook/addon-vitest` on Vitest 4.1 browser mode, Playwright Chromium headless; inferred `test-storybook`: `npx nx test-storybook <lib>`. Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test = 'error'` and `parameters.a11y.options.runOnly = {type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice']}` in the Storybook preview configuration, the WCAG 2.2 AA rule set and the enforcing gate (ADR 0018). CSR only; the single home of interaction tests. Play functions assert relationships that hold at any iframe width (viewport widths are Playwright's job): the expected rule is computed in the play function from `window.matchMedia` on Foundation's query strings.
 
 - `interchange--picture`: the `<img>` has a non-empty `alt`; `img.currentSrc` ends with the file of the first `<source>` whose `media` matches, or the `src` when none does.
 - `interchange--optimized-image`: an `img[ngSrc]` with `sizes` renders `srcset`, `loading="lazy"`, and a `sizes` value starting with `auto, `.
@@ -337,7 +337,9 @@ Every story runs axe with `parameters.a11y.test = 'error'` against WCAG 2.2 AA. 
 - `interchange--template-deferred`: the desktop template's content sits in `@defer (on immediate)`; at the story's width the expected content (or its placeholder, then content) appears; axe passes on both states.
 - `interchange--template-focus`: a button with the story's `toggle` control switches the rules from breakpoint to raw queries so the other template is selected while a link inside the current view has focus; afterwards focus is on the first link of the new view.
 
-### 2. Browser-level test (stack per the [browser testing stack decision](../issues/41-browser-testing-stack-decision.md); stack-neutral)
+### 2. Browser-level test (Vitest browser mode, `npx nx test <lib>`)
+
+Vitest browser mode under the Angular unit-test builder (`npx nx test <lib>`, Chromium headless): TestBed specs in `<name>.spec.ts` next to the directive, over a bare test host component, zoneless with `await fixture.whenStable()`, asserting DOM and ARIA state; no story is mounted here and no axe runs here.
 
 A fake `MediaMatcher` provided in the test's environment injector returns controllable `MediaQueryList` objects.
 
@@ -354,12 +356,14 @@ A fake `MediaMatcher` provided in the test's environment injector returns contro
 
 ### 3. Node-level Vitest
 
+Runs under `npx nx test <lib>` in `<name>.ssr.spec.ts` through the shared `renderServer()` helper; `npx nx test-node <lib>` only if the server path depends on the DOM adapter.
+
 - Pure logic (table-driven): `parseNfsInterchangeRules` on Foundation's docs examples, whitespace variants (`[a.jpg,small]`, extra spaces), a query list with commas (the `retina` string, `print, (min-width: 40em)`), a path with parentheses, an empty string, a missing bracket, and a segment without a comma (warn and skip); the query classifier (breakpoint name, named key, raw query, unknown word); the CSS `url()` escaper.
-- SSR smoke: `renderApplication` over a fixture with a background element, a template outlet, a `<picture>`, and a rule list that only has `landscape`/`portrait`. Assert `whenStable()` resolves; the background host carries `background-image: url("hero-small.jpg")`; the outlet rendered the `small` template's text and not the `large` one's; the orientation-only element has no inline `background-image`; no Interchange host carries `jsaction`; the `<picture>` is serialised unchanged; with a server provider `{map, serverBreakpoint: 'large'}` the background and template are the `large` ones; a `MediaMatcher` spy records no call. Runs in its own file or process because `provideServerRendering()` leaves `ngServerMode` set; whether under `@angular/build:unit-test` or a separate Vitest project is the [Prototype: Rendering-mode test seam](../issues/59-prototype-rendering-mode-test-seam.md).
+- SSR smoke: `renderApplication` over a fixture with a background element, a template outlet, a `<picture>`, and a rule list that only has `landscape`/`portrait`. Assert `whenStable()` resolves; the background host carries `background-image: url("hero-small.jpg")`; the outlet rendered the `small` template's text and not the `large` one's; the orientation-only element has no inline `background-image`; no Interchange host carries `jsaction`; the `<picture>` is serialised unchanged; with a server provider `{map, serverBreakpoint: 'large'}` the background and template are the `large` ones; a `MediaMatcher` spy records no call.
 
-### 4. Playwright e2e
+### 4. Playwright e2e (`npx nx e2e <lib>-e2e` against the static Storybook build; `npx nx e2e <fixture-app>-e2e` against the prerendered fixture app)
 
-Against the static Storybook build, in Chromium, Firefox, and WebKit:
+Against the static Storybook build, on the named stories through `mount(storyId, props)` over `iframe.html?embed=true` (which turns off play-function autoplay, so Playwright owns the interaction), in Chromium, Firefox, and WebKit; a state no play function reaches is checked with `@axe-core/playwright` on the same six tags:
 
 - `page.setViewportSize` at 639, 640, 1023, and 1024 px on `interchange--background`, `interchange--template`, and `interchange--picture`: the background, the rendered template, and `img.currentSrc` change exactly at Foundation's thresholds, and resizing back without a reload restores them.
 - Orientation: a 800 x 600 viewport then 600 x 800 on `interchange--named-queries` flips the landscape and portrait images.
@@ -368,7 +372,7 @@ Against the static Storybook build, in Chromium, Firefox, and WebKit:
 
 Against the prerendered fixture app (the harness from the [Prototype: Rendering-mode test seam](../issues/59-prototype-rendering-mode-test-seam.md)):
 
-- JavaScript disabled at 1300 px: the `<picture>` shows the large file (`currentSrc`), the background and the template show the Server breakpoint's (`small`) choice; screenshot plus axe.
+- JavaScript disabled at 1300 px: the `<picture>` shows the large file (`currentSrc`), the background and the template show the Server breakpoint's (`small`) choice; screenshot plus axe (`@axe-core/playwright` on the same six tags).
 - Hydration at 1300 px: the background becomes the large file and the outlet the full template; no NG05xx in the console; `ngDevMode.componentsSkippedHydration === 0`. The fixture's `replaced` handlers record the DOM at emission (as in the browser-level ordering item): each fires once, with the large rule, and sees the large view with its `@if` content and the large background; the same on the fixture's client-rendered route, where the swap also lands at or before the first Paint Timing entry.
 - Focus before hydration at 1300 px, main bundle held: a link inside the server-rendered `small` template has keyboard focus; after hydration, focus is on the first link of the `large` view.
 - Network: at 1300 px the page requests only the large `<picture>` file, and requests both background files (documenting the accepted double fetch; a change in either count surfaces here); at 360 px each background file is requested once.

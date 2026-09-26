@@ -150,3 +150,12 @@ Side finding (low impact, no spec change): the "CSR double-construction" of the 
 Proposed building-blocks changes from this re-run are in the answer of the [Re-run: Interchange spec, the `replaced` timing and the outlet's focus rule](67-rerun-interchange-replaced-timing.md) (a 1.5 bullet, and the exception it needs in the 1.5 `effect` bullet).
 
 Triage: nothing left open. The mechanism is HIGH impact (other specs inherit it) and now HIGH confidence (running code in three engines, six runs of each outlet case and two of each background case, three write paths, both modes), so it is decided, not OPEN FOR HUMAN.
+
+### Amendment, 2026-09-26
+
+The audit fixer skipped `specs/interchange.md` while the re-run above was editing it; with the re-run committed, the mechanical rewrite of the [Decide the browser testing stack: Playwright component tests, Vitest Browser, or both](41-browser-testing-stack-decision.md) answer ("Wording for every spec's Testing Decisions") is now applied to the four Testing Decisions layers. No case was added, removed, or changed.
+
+1. Layer 1 opens with the stack and command (`@storybook/angular-vite` 10.6 with `@storybook/addon-vitest`, `npx nx test-storybook <lib>`) and names the six axe tags (`wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`, `best-practice`) as the enforcing gate.
+2. Layer 2's heading becomes "Browser-level test (Vitest browser mode, `npx nx test <lib>`)" in place of the stack-neutral heading, and the section opens with the decision's verbatim sentence.
+3. Layer 3 opens with "Runs under `npx nx test <lib>` in `<name>.ssr.spec.ts` through the shared `renderServer()` helper; `npx nx test-node <lib>` only if the server path depends on the DOM adapter", which replaces the SSR smoke's superseded "own file or process" sentence.
+4. Layer 4's heading gains the two commands (the static Storybook build and the prerendered fixture app); the Storybook half opens stories through `mount(storyId, props)` over `iframe.html?embed=true`, and axe in layer 4 runs `@axe-core/playwright` on the same six tags.
