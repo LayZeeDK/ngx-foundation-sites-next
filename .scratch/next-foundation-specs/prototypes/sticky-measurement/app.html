@@ -1,0 +1,197 @@
+<header style="padding: 1rem; background: #222; color: #fff;">
+  <h1 style="margin: 0; font-size: 1.1rem;">Sticky measurement prototype (ticket 63)</h1>
+  <p style="margin: 0.25rem 0 0; font-size: 0.85rem;">
+    Six sections, one per case in the ticket. Case 6 (defer/hydration) is at the bottom.
+  </p>
+</header>
+
+<!-- Case 1: layout-neutral sentinels in flex, grid, and padded containers -->
+<section data-testid="case1">
+  <h2 style="padding: 0 1rem;">Case 1: layout-neutral sentinels</h2>
+
+  <div
+    nfsStickyContainer
+    data-testid="case1-flex"
+    style="display: flex; flex-direction: column; height: 300px; overflow: auto; border: 1px solid #999;"
+  >
+    <div nfsSticky stickyOn="all" data-testid="case1-flex-sticky" style="height: 40px; background: #cfe8ff; flex: none;">
+      case1 flex sticky
+    </div>
+    <div class="filler" style="height: 900px; flex: none;">flex filler (900px)</div>
+  </div>
+
+  <div
+    nfsStickyContainer
+    data-testid="case1-grid"
+    style="display: grid; grid-template-rows: auto 900px; height: 300px; overflow: auto; border: 1px solid #999;"
+  >
+    <div nfsSticky stickyOn="all" data-testid="case1-grid-sticky" style="height: 40px; background: #d8ffd0;">
+      case1 grid sticky
+    </div>
+    <div class="filler">grid filler (900px)</div>
+  </div>
+
+  <div nfsStickyContainer data-testid="case1-padded" style="padding: 20px; height: 300px; overflow: auto; border: 1px solid #999;">
+    <div nfsSticky stickyOn="all" data-testid="case1-padded-sticky" style="height: 40px; background: #f0d0ff;">
+      case1 padded sticky
+    </div>
+    <div class="filler" style="height: 900px;">padded filler (900px)</div>
+  </div>
+</section>
+
+<!-- Case 2: real wheel and keyboard scrolling against pinned geometry -->
+<section data-testid="case2" nfsStickyContainer style="position: relative;">
+  <h2 style="padding: 0 1rem;">Case 2: real wheel and keyboard scrolling</h2>
+  <nav
+    nfsSticky
+    stickyOn="all"
+    data-testid="case2-sticky"
+    style="height: 50px; background: #cde; display: flex; align-items: center; padding: 0 1rem;"
+    (stuck)="log('case2', 'stuck', $event)"
+    (unstuck)="log('case2', 'unstuck', $event)"
+  >
+    case2 navigation (scroll the whole page: wheel, Page Down, End, arrows)
+  </nav>
+  <div class="filler" style="height: 3000px;">case2 filler (3000px) -- scroll the page over this</div>
+</section>
+
+<!-- Case 3: overflow auto / hidden / clip wrappers -->
+<section data-testid="case3">
+  <h2 style="padding: 0 1rem;">Case 3: overflow auto, hidden, and clip wrappers</h2>
+
+  <div data-testid="case3-auto-wrapper" style="overflow: auto; height: 250px; border: 2px solid #069;">
+    <div nfsStickyContainer data-testid="case3-auto-container">
+      <div class="filler" style="height: 60px;">panel filler above (60px) -- room to scroll before the line</div>
+      <div
+        nfsSticky
+        stickyOn="all"
+        data-testid="case3-auto-sticky"
+        style="height: 40px; background: #cfe8ff;"
+        (stuck)="log('case3-auto', 'stuck', $event)"
+        (unstuck)="log('case3-auto', 'unstuck', $event)"
+      >
+        case3 overflow:auto panel -- scroll THIS panel
+      </div>
+      <div class="filler" style="height: 700px;">panel filler (700px)</div>
+    </div>
+  </div>
+
+  <div data-testid="case3-hidden-wrapper" style="overflow: hidden; height: 250px; border: 2px solid #900;">
+    <div nfsStickyContainer data-testid="case3-hidden-container">
+      <div class="filler" style="height: 60px;">panel filler above (60px)</div>
+      <div
+        nfsSticky
+        stickyOn="all"
+        data-testid="case3-hidden-sticky"
+        style="height: 40px; background: #ffd0d0;"
+        (stuck)="log('case3-hidden', 'stuck', $event)"
+        (unstuck)="log('case3-hidden', 'unstuck', $event)"
+      >
+        case3 overflow:hidden wrapper -- nothing scrolls this box, so this must never stick
+      </div>
+      <div class="filler" style="height: 700px;">clipped, unreachable filler (700px)</div>
+    </div>
+  </div>
+
+  <!-- OffCanvas-style: overflow: clip on the wrapper is the documented fix; the wrapper itself
+       does not become a scroll container, so the window stays the real one. -->
+  <div data-testid="case3-clip-wrapper" class="off-canvas-wrapper" style="overflow: clip;">
+    <div nfsStickyContainer data-testid="case3-clip-container">
+      <div
+        nfsSticky
+        stickyOn="all"
+        data-testid="case3-clip-sticky"
+        style="height: 40px; background: #d8ffd0;"
+        (stuck)="log('case3-clip', 'stuck', $event)"
+        (unstuck)="log('case3-clip', 'unstuck', $event)"
+      >
+        case3 overflow:clip wrapper -- scroll the PAGE, this should stick against the window
+      </div>
+      <div class="filler" style="height: 700px;">page filler (700px)</div>
+    </div>
+  </div>
+</section>
+
+<!-- Case 4: the CSS stickyOn gate vs an independent JS matchMedia computation -->
+<section data-testid="case4" style="height: 200px; overflow: auto; border: 1px solid #999;">
+  <h2 style="padding: 0 1rem;">Case 4: CSS stickyOn gate vs matchMedia</h2>
+  <div nfsStickyContainer data-testid="case4-medium-container">
+    <div nfsSticky stickyOn="medium" data-testid="case4-medium" style="height: 30px; background: #cfe8ff;">stickyOn=medium</div>
+    <div class="filler" style="height: 400px;">filler</div>
+  </div>
+  <div nfsStickyContainer data-testid="case4-large-only-container">
+    <div nfsSticky stickyOn="large only" data-testid="case4-large-only" style="height: 30px; background: #ffe6cf;">stickyOn=large only</div>
+    <div class="filler" style="height: 400px;">filler</div>
+  </div>
+  <div nfsStickyContainer data-testid="case4-medium-down-container">
+    <div nfsSticky stickyOn="medium down" data-testid="case4-medium-down" style="height: 30px; background: #f0d0ff;">stickyOn=medium down</div>
+    <div class="filler" style="height: 400px;">filler</div>
+  </div>
+</section>
+
+<!-- Case 5: consumer scroll-padding-top must not shift the sticky line -->
+<section data-testid="case5">
+  <h2 style="padding: 0 1rem;">Case 5: scroll-padding-top</h2>
+  <div data-testid="case5-plain-wrapper" style="overflow: auto; height: 300px; border: 1px solid #999;">
+    <div nfsStickyContainer data-testid="case5-plain-container">
+      <div class="filler" style="height: 60px;">panel filler above (60px)</div>
+      <div
+        nfsSticky
+        stickyOn="all"
+        data-testid="case5-plain-sticky"
+        style="height: 40px; background: #cfe8ff;"
+        (stuck)="log('case5-plain', 'stuck', $event)"
+      >
+        case5 no scroll-padding
+      </div>
+      <div class="filler" style="height: 700px;">filler (700px)</div>
+    </div>
+  </div>
+  <div data-testid="case5-padded-wrapper" style="overflow: auto; height: 300px; border: 1px solid #999; scroll-padding-top: 3rem;">
+    <div nfsStickyContainer data-testid="case5-padded-container">
+      <div class="filler" style="height: 60px;">panel filler above (60px)</div>
+      <div
+        nfsSticky
+        stickyOn="all"
+        data-testid="case5-padded-sticky"
+        style="height: 40px; background: #d8ffd0;"
+        (stuck)="log('case5-padded', 'stuck', $event)"
+      >
+        case5 scroll-padding-top: 3rem
+      </div>
+      <div class="filler" style="height: 700px;">filler (700px)</div>
+    </div>
+  </div>
+</section>
+
+<!-- Case 6: prerendered route, sticky next to a @defer (hydrate on viewport) sibling -->
+<section data-testid="case6" nfsStickyContainer style="position: relative;">
+  <h2 style="padding: 0 1rem;">Case 6: sticky next to a deferred, hydrate-on-viewport sibling</h2>
+  <nav
+    nfsSticky
+    stickyOn="all"
+    data-testid="case6-sticky"
+    style="height: 50px; background: #cde; display: flex; align-items: center; padding: 0 1rem;"
+    (stuck)="log('case6', 'stuck', $event)"
+    (unstuck)="log('case6', 'unstuck', $event)"
+  >
+    case6 sticky nav (sticks before the deferred sibling below ever hydrates)
+  </nav>
+  <div class="filler" style="height: 1200px;">case6 filler (1200px) so the range is reachable before the deferred block scrolls into view</div>
+  @defer (hydrate on viewport) {
+    <div data-testid="case6-defer-block" style="height: 400px; background: #eee;">
+      case6 deferred block, hydrate on viewport
+    </div>
+  } @placeholder {
+    <div data-testid="case6-defer-placeholder" style="height: 400px; background: #ccc;">case6 placeholder</div>
+  }
+</section>
+
+<footer style="padding: 1rem; background: #eee;">
+  <h2 style="font-size: 1rem;">Event log (stuck/unstuck outputs)</h2>
+  <ul data-testid="event-log">
+    @for (entry of eventLog(); track $index) {
+      <li>{{ entry }}</li>
+    }
+  </ul>
+</footer>
