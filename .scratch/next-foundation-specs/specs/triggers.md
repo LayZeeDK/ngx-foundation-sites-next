@@ -238,6 +238,21 @@ APG patterns: Disclosure (disclosure role), Dialog (Modal) and non-modal dialog 
 
 Focus: the Trigger moves no focus. Focus moves into a dialog or panel and back to the opener on close by the Openable, which received the opener through `open(trigger)`. When a bare `nfsClose` closes the Openable that contains it, focus returns to the Trigger that opened it, not to the close button.
 
+### WCAG 2.2 AA
+
+The target is WCAG 2.2 level AA (user rule; ADR 0022). Each criterion below is a requirement with the layer that tests it; none is advice. A Trigger adds no CSS and no Foundation class (D16), so criteria about the host's look are met by the host's own contract (the Button spec, Foundation's Close Button and Title Bar markup), and criteria about what opens are met by the Openable; the table says which.
+
+| Criterion | Requirement and how it is met | Foundation default | Test |
+| --- | --- | --- | --- |
+| 4.1.2 Name, Role, Value | Every Trigger exposes the state of what it controls, per Trigger role, in the server HTML and after every change: `disclosure` renders `aria-expanded` and `aria-controls` on `nfsOpen` and `nfsToggle`; `dialog` adds `aria-haspopup="dialog"`; `toggle-button` renders `aria-pressed` on `nfsToggle` only, and the consumer keeps the accessible name constant; `none` and every `nfsClose` render nothing. `aria-haspopup="true"` is never rendered, because WAI-ARIA reads it as `menu` and no Openable is a menu. A multi-target `nfsToggle` reports one aggregate `aria-expanded`, which is true because the targets move together (D11). `aria-controls` always names an element that exists, because every Openable has an `id` (consumer-supplied or generated). A `disabledInteractive` host keeps its `aria-disabled="true"` from `nfsButton`, and the Trigger ignores its clicks (D14). The Trigger adds no name; names come from content or the consumer's `aria-label`/`aria-labelledby` | Fails: Dropdown stamps `aria-haspopup="true"`; Toggler stops updating `aria-expanded` on multi-id triggers; `data-close` triggers get `aria-expanded`; Reveal stamps `tabindex="0"` | axe (`aria-allowed-attr`, `aria-valid-attr-value`, `button-name`) in every story; play functions of `triggers--open-close-toggle`, `triggers--dialog-role`, `triggers--toggle-button-role`, and `triggers--multiple-targets`; browser-level ARIA table driven by data; SSR smoke |
+| 2.5.8 Target Size (Minimum) | Every Trigger host is at least 24 by 24 CSS px or meets the spacing exception. The Trigger cannot know its host's styling, so the requirement is inherited from the host's contract: an `nfsButton` or `.button` host through the Button spec's `.button { min-width: 24px; min-height: 24px; }` floor in the `nfs-button` mixin; a `.close-button` through the spacing exception of its corner position, with the consumer's `min-width: 24px` where a layout breaks it (the Button and Toggler specs); the title-bar `.menu-icon` through the 24 by 24 px hit area of the `nfs-responsive-toggle` mixin. A plain `<button>` under Foundation's global reset (`padding: 0`, `border: 0`, `line-height: 1`) is only as tall as its font size, 16 px by default, so a plain-button Trigger is styled to 24 px by the consumer or is an `nfsButton`; the Rendered HTML examples show bare `<button type="button">` hosts only to place the ARIA | Fails for a bare `<button>` host (16 px tall) unless the spacing exception holds; passes for `.button` hosts at Foundation's default sizes | axe `target-size` in every story; every Triggers story puts its Triggers on `nfsButton`, `.close-button`, or `.menu-icon` hosts, so the gate proves the inherited floor; each Openable spec's stories cover their own Trigger markup |
+| 2.4.7 Focus Visible | Every Trigger host shows the browser's focus indicator; the Trigger removes no outline and adds no style. Foundation's global `button` reset, `.button`, and `.close-button` remove the outline only under what-input's `[data-whatinput='mouse']` (`disable-mouse-outline`), which the library never loads | Passes, checked in Foundation's global styles and the button and close button partials | e2e: a screenshot comparison before and after Tab to a Trigger in `triggers--open-close-toggle` shows a focus indicator in three engines |
+| 2.1.1 Keyboard | Every Trigger is operable from the keyboard through native activation: Enter and Space on a `<button>`, Enter on an `<a href>`; the Trigger adds no key handling and needs none. Hosts that cannot be operated from the keyboard (a `div`, an `<a>` without `href` or with `#`) get dev-mode check 3 | Fails: Foundation's docs use `<a data-toggle>` without `href`, which is neither focusable nor activatable from the keyboard | Play functions with `userEvent.keyboard` on `triggers--open-close-toggle`; browser-level dev-mode check cases; e2e real key presses in three engines |
+| 1.4.13 Content on Hover or Focus | Where a Trigger's Openable shows content on hover or focus (a Dropdown pane with `hover`, a Tooltip), that content is dismissible without moving the pointer or focus (Escape), hoverable, and persistent until dismissed; the Openable owns all three through the Anchored pane utility's hover intent and Light dismiss and its own Escape handling, and its spec tests them. A Trigger opens only on `click`, which is not hover or focus content. The `data-toggle-focus` replacement, `(focus)`/`(blur)` bindings to `open()`/`close()`, must also bind `(keydown.escape)` to `close()`; the documented recipe does | Fails: `data-toggle-focus` closes only on blur, with no Escape | `triggers--focus-replacement`: Escape hides the hint while focus stays on the field; hover content is tested in the Dropdown pane and Tooltip specs |
+| 2.4.3 Focus Order | Closing an Openable returns focus to the element that opened it: every Trigger passes its host to `open(trigger)` and `toggle(trigger)`, and every Openable returns focus to that element on close, else to the element focused before opening (a requirement every Openable spec inherits, Consumers table). The argument is needed because a mouse click does not focus a button in WebKit, so the element focused before opening is not always the opener. A bare `nfsClose` inside the Openable never becomes the return target. When a close button disappears with its content (the `data-closable` replacements), the consumer moves focus to a logical next element | Partly: Reveal refocuses the anchor focused at open and OffCanvas its `$lastTrigger` (Foundation contract table); the utility itself passes the trigger but returns no focus | Browser-level contract calls: `open` and `toggle` receive the host element, including on a replay-shaped click; each Openable spec asserts where focus lands, in stories and in e2e across three engines |
+
+The axe gate in every story runs the WCAG 2.2 AA rule set (tags `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`, plus `best-practice`) with `parameters.a11y.test = 'error'` (ADR 0018). Triggers need no Sass setting and no library rule of their own.
+
 ### Rendered HTML
 
 Consumer markup and the resulting DOM. Server HTML carries `jsaction="click:;"` on every Trigger (Angular's event-replay annotation for the host listener); the hydrated DOM does not, because Angular removes the attribute after hydration. Everything else is identical on the server and after hydration, except generated ids, which differ between the two and are rewritten at hydration because `aria-controls` is itself a host binding.
@@ -270,7 +285,7 @@ Consumer markup and the resulting DOM. Server HTML carries `jsaction="click:;"` 
 <button type="button" aria-pressed="false">Dark theme</button>
 
 <!-- Bare toggle inside a ResponsiveToggle title bar; the id is the menu's -->
-<div class="title-bar" nfsResponsiveToggle [menu]="mainMenu" hideFor="medium">
+<div class="title-bar" [nfsResponsiveToggle]="mainMenu" hideFor="medium">
   <button class="menu-icon" type="button" nfsToggle aria-labelledby="bar-title"></button>
   <div class="title-bar-title" id="bar-title">Menu</div>
 </div>
@@ -285,7 +300,7 @@ Consumer markup and the resulting DOM. Server HTML carries `jsaction="click:;"` 
 <a href="/pricing">Pricing</a>
 ```
 
-The ResponsiveToggle inputs in the fourth example are sketches owned by its spec; the Trigger part is what this spec fixes.
+The ResponsiveToggle markup in the fourth example follows the [Spec: Responsive Toggle](../issues/24-spec-responsive-toggle.md) (`[nfsResponsiveToggle]="mainMenu"` with `#mainMenu="nfsResponsiveToggleMenu"` on the menu); the Trigger part is what this spec fixes.
 
 ### Animation
 
@@ -298,7 +313,7 @@ Per ADR 0008 and the rendering-modes research, section 7 rules 1 to 11:
 - Server-side rendering and first paint: the four ARIA attributes are host bindings on signals the Openable already has on the server (its `isOpen` model, its `id`, its `triggerRole`), so the server HTML is the final ARIA (rule 1). Nothing in a Trigger depends on the platform, a breakpoint, or a measurement.
 - Before hydration: a Trigger touches no DOM outside host bindings, reads no `window`, and starts nothing (rules 3 to 5). The registration `effect` runs on the server as well and writes only into the Openable's in-memory set; the dev checks never run on the server.
 - Full hydration: host binding values equal the server's (apart from generated ids, rewritten at hydration), so hydration changes nothing and there is no structure to mismatch (rule 10).
-- Event replay: the `click` host listener gives the host `jsaction="click:;"`. A click before hydration does the native default (nothing for a `type="button"` button), is queued, and after hydration is replayed: the handler reads the Openable resolved at construction or in the first render, both of which exist before replay, and calls `open`, `close`, or `toggle`. `showModal()` and `focus()`, which Openables call, need no user activation, so a replayed open works. The handler never calls `preventDefault()`, so replay cannot throw in it, and the open question of how a handler recognises a replayed event does not affect Triggers.
+- Event replay: the `click` host listener gives the host `jsaction="click:;"`. A click before hydration does the native default (nothing for a `type="button"` button), is queued, and after hydration is replayed: the handler reads the Openable resolved at construction or in the first render, both of which exist before replay, and calls `open`, `close`, or `toggle`. `showModal()` and `focus()`, which Openables call, need no user activation, so a replayed open works. The handler never calls `preventDefault()`, so replay cannot throw in it. Replay handling is decided for the whole library: state first, `preventDefault()` last, the error Angular logs on a replayed `preventDefault()` accepted, decided under the triage rule in the [Building-blocks map and cross-cutting architecture decisions](../issues/14-building-blocks-map.md); a Trigger meets it by construction, because it changes state and never calls `preventDefault()` at all.
 - Links: a Trigger on `<a href>` inside a still-dehydrated block has a `jsaction` attribute, so Angular's dispatcher cancels the native navigation of a click, hydrates the block, and replays the Trigger. With `routerLink` the replayed RouterLink handler navigates; a plain `href` does not navigate. Links that must navigate natively in deferred regions therefore stay out of dehydrated blocks (Button spec, ADR 0011). In practice this needs a dehydrated block nested inside an open Openable, because an Openable is closed until its own boundary hydrates.
 - Hydration boundary: a Trigger and its Openable belong to one hydration boundary. Template-reference scoping enforces half of the rule: a `@defer` block is its own view, so a reference declared inside it is not visible outside, and a Trigger outside cannot name an Openable inside. A Trigger inside a block may name an Openable outside it; its click hydrates the block and every dehydrated ancestor top-down before replay, so it works. The Nearest Openable is always the same or an enclosing boundary.
 - `@defer`: library templates contain no `@defer`; the Triggers are their own entry point, so a consumer can defer them with the widget. Inside a dehydrated block a Trigger is its server HTML; a click hydrates the block and replays. Inside `@defer (hydrate never)` nothing is annotated, so a Trigger there is an inert button (a link still navigates); its Openable stays in its server state. Plain `@defer` without hydrate triggers renders the Triggers on the client, where they resolve targets like any other client render.
@@ -312,7 +327,7 @@ Story ids follow `triggers--<story>`: `triggers--open-close-toggle`, `triggers--
 
 ### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`)
 
-Every story runs axe with `parameters.a11y.test = 'error'` against WCAG 2.2 AA.
+Run by `npx nx test-storybook <lib>`. Every story runs axe with `parameters.a11y.test = 'error'` and the WCAG 2.2 AA rule set (tags `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`, plus `best-practice`, which include `target-size`, `button-name`, and the ARIA attribute rules). Every story's Triggers sit on `nfsButton`, `.close-button`, or `.menu-icon` hosts (2.5.8).
 
 - `triggers--open-close-toggle`: three buttons on one test Openable in the disclosure role; each click shows or hides it; `aria-expanded` follows on the open and toggle buttons, `aria-controls` equals the target id, and the close button carries neither; Enter and Space on the focused toggle button work through `userEvent.keyboard`.
 - `triggers--nearest-openable`: a bare `nfsClose` and a bare `nfsToggle` inside the Openable close it; a bare `nfsClose` with no Openable around it does nothing.
@@ -323,9 +338,11 @@ Every story runs axe with `parameters.a11y.test = 'error'` against WCAG 2.2 AA.
 - `triggers--close-result`: `[nfsCloseResult]="'saved'"` reaches the test Openable's `close` and is shown in the story.
 - `triggers--with-nfs-button`: `nfsButton` plus `nfsToggle` renders `.button`, `type="button"`, and the Trigger ARIA; with `disabledInteractive` and `disabled`, a click leaves the Openable unchanged.
 - `triggers--link-trigger`: a same-page `href="#details"` link with `nfsClose` closes the Openable and the URL hash changes.
-- `triggers--focus-replacement`: an input with `(focus)`/`(blur)` bindings shows a hint on focus and hides it on blur, whatever the hint's starting state.
+- `triggers--focus-replacement`: an input with `(focus)`/`(blur)` bindings shows a hint on focus and hides it on blur, whatever the hint's starting state; Escape hides it while focus stays on the input (1.4.13).
 
-### 2. Browser-level test (stack per the [browser testing stack decision](../issues/41-browser-testing-stack-decision.md); stack-neutral)
+### 2. Browser-level test (Vitest browser mode, `npx nx test <lib>`)
+
+Vitest browser mode under the Angular unit-test builder (`npx nx test <lib>`, Chromium headless): TestBed specs in `<name>.spec.ts` next to the directive, over a bare test host component, zoneless with `await fixture.whenStable()`, asserting DOM and ARIA state; no story is mounted here and no axe runs here.
 
 - Resolution: the bare form resolves the Nearest Openable; `skipSelf` ignores a test Openable on the Trigger's own element and resolves the enclosing one; a bound `null` and `undefined` resolve nothing and render no ARIA; switching a bound reference at runtime moves `aria-controls` and the registration.
 - ARIA derivation, driven by data: every directive against every Trigger role, open and closed, single target and array, asserting the four attributes against the ARIA table; mixed roles in an array use the first target's role and warn.
@@ -338,18 +355,19 @@ Every story runs axe with `parameters.a11y.test = 'error'` against WCAG 2.2 AA.
 
 ### 3. Node-level Vitest
 
-- SSR smoke: `renderApplication` over a fixture component with test Openables in each Trigger role, one open and one closed, a multi-target Trigger, a bare `nfsClose` inside an Openable, and a bound `null`. Assert `whenStable()` resolves; the server HTML carries every attribute from the Rendered HTML section; each Trigger host carries `jsaction="click:;"`; the `nfsClose` hosts carry no ARIA from the Trigger. Runs in its own file or process because `provideServerRendering()` leaves `ngServerMode` set; whether under `@angular/build:unit-test` or a separate Vitest project is the [Prototype: Rendering-mode test seam](../issues/59-prototype-rendering-mode-test-seam.md).
+- SSR smoke: `renderApplication` over a fixture component with test Openables in each Trigger role, one open and one closed, a multi-target Trigger, a bare `nfsClose` inside an Openable, and a bound `null`. Assert `whenStable()` resolves; the server HTML carries every attribute from the Rendered HTML section; each Trigger host carries `jsaction="click:;"`; the `nfsClose` hosts carry no ARIA from the Trigger. Runs under `npx nx test <lib>` in `<name>.ssr.spec.ts` through the shared `renderServer()` helper; `npx nx test-node <lib>` only if the server path depends on the DOM adapter.
 - Pure logic: the ARIA derivation (directive kind, Trigger role, `isOpen`, ids to the four attribute values) is a pure function; a table-driven test covers it.
 
-### 4. Playwright e2e
+### 4. Playwright e2e (`npx nx e2e <lib>-e2e` against the static Storybook build; `npx nx e2e <fixture-app>-e2e` against the prerendered fixture app)
 
 Against the static Storybook build:
 
 - Real key presses in Chromium, Firefox, and WebKit on `triggers--open-close-toggle`: Enter and Space activate the toggle button in all three engines; Tab reaches every Trigger.
+- Focus visible (2.4.7): a screenshot comparison before and after Tab to a Trigger on `triggers--open-close-toggle` shows a focus indicator in three engines.
 
 Against the prerendered fixture app (the harness from the rendering-mode test seam prototype):
 
-- JavaScript disabled: screenshot plus axe on the server HTML; the Triggers carry their ARIA.
+- JavaScript disabled: screenshot plus axe (`@axe-core/playwright` with `withTags` on `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`, and `best-practice`) on the server HTML; the Triggers carry their ARIA.
 - Hydration: no NG05xx in the console and `ngDevMode.componentsSkippedHydration === 0`.
 - Pre-hydration click with the main bundle delayed: a Trigger clicked before hydration opens its test Openable exactly once after hydration, and no error is logged.
 - Dehydrated block: a Trigger and its Openable inside `@defer (hydrate when hydrateNow())` with the signal held `false`; clicking the Trigger hydrates the block and opens the Openable.
@@ -455,14 +473,14 @@ The Reveal's `(closed)` payload and the Toggler's `toggler` input are sketches o
 </div>
 
 <!-- ResponsiveToggle: a bare nfsToggle in the title bar; no reference needed -->
-<div class="title-bar" nfsResponsiveToggle [menu]="mainMenu" hideFor="medium">
+<div class="title-bar" [nfsResponsiveToggle]="mainMenu" hideFor="medium">
   <button class="menu-icon" type="button" nfsToggle aria-labelledby="bar-title"></button>
   <div class="title-bar-title" id="bar-title">Menu</div>
 </div>
 <nav nfsResponsiveToggleMenu #mainMenu="nfsResponsiveToggleMenu" id="main-menu">...</nav>
 
 <!-- Tooltip: a separate info button toggles it; the tooltip's own host is not a Trigger -->
-<abbr nfsTooltip #hint="nfsTooltip" tabindex="0" title="HyperText Markup Language">HTML</abbr>
+<a href="/glossary/html" nfsTooltip #hint="nfsTooltip" title="HyperText Markup Language">HTML</a>
 <button type="button" [nfsToggle]="hint" aria-label="Explain HTML">?</button>
 
 <!-- data-toggle-focus replacement -->
@@ -490,7 +508,7 @@ The Reveal's `(closed)` payload and the Toggler's `toggler` input are sketches o
 </div>
 ```
 
-In both `data-closable` replacements the focused close button disappears with the callout, so the consumer moves focus to a logical next element in `dismiss()` or on the Toggler's `closed` output, as the APG's focus-persistence practice asks. The Tooltip example keeps the Tooltip spec's open question about non-interactive hosts open; `tabindex="0"` stands for whatever that spec decides.
+In both `data-closable` replacements the focused close button disappears with the callout, so the consumer moves focus to a logical next element in `dismiss()` or on the Toggler's `closed` output, as the APG's focus-persistence practice asks. The Tooltip example puts the tooltip on an interactive host, a link: tooltips go on interactive hosts only (a native button, link, or form control, with a development-mode warning otherwise), decided under the triage rule in the [Building-blocks map and cross-cutting architecture decisions](../issues/14-building-blocks-map.md) and inherited by the [Spec: Tooltip](../issues/27-spec-tooltip.md).
 
 A wrapper component that owns its Reveal and lets consumers close it from projected content:
 
