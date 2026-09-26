@@ -162,3 +162,22 @@ _Avoid_: active branch, breadcrumb, trail
 ### Amendment, 2026-09-26
 
 Applied by the orchestrator from the [Spec: Accordion Menu](20-spec-accordion-menu.md) answer, which assumed all three: (1) under `nfsAnimationsToken` disabled the item binds `transition: none` on the animated element, as the Accordion spec does, so `data-nfs-shown` never releases the clip while a row still grows; (2) the Hybrid item's arrow gets a compile-time 3:1 check against `$accordionmenu-submenu-toggle-background`, not gated on the mode's arrow boolean, and every contrast check compares the unrounded ratio, as the Button spec's WCAG revision does, because Foundation's `color-contrast()` rounds to one decimal; (3) `open()` does not open closed ancestors, matching Foundation's `down()`.
+
+### Amendment, 2026-09-26 (Dropdown Menu and Drilldown Menu)
+
+Folded into `specs/nested-menu.md` from the proposed changes in two resolved answers; both published specs already assumed them.
+
+From the [Spec: Dropdown Menu](21-spec-dropdown-menu.md):
+
+1. The dropdown key table's open and close keys (Forward and Back on a vertical top level and inside submenus) follow the Base side, defined where the root decides it (the side a dropdown submenu opens toward before the collision check moves it); Next and Previous along a horizontal top level keep the reading direction; a collision flip does not change the keys. The `nested-menu--rtl` story, the browser-level alignment case, and the node-level key table test cover it; a "Foundation behaviour changed or dropped" line records the delta. Decision 19.
+2. Vertical detection also accepts a first top-level item with computed `display: block` (Foundation's `$global-flexbox: false` build), in the key table lead, the primitives list, and a browser-level case. Decision 20.
+3. `nfs-dropdown-menu` also checks the Hybrid toggle's `$accordionmenu-arrow-color` against the dropdown backgrounds when `$accordionmenu-submenu-toggle-background` is `null`, in the Sass checks paragraph, the 1.4.11 row, and the Sass compile test. Decision 25.
+4. The WCAG table gains a 1.4.10 row for dropdown mode (`$dropdownmenu-min-width: min(200px, 45vw)`, compile-time `@warn`), the 1.4.3 row names the Top Bar pair (3.76:1 on Foundation's default bar), and the line under the table now says that no Foundation default fails in accordion or drilldown mode, that dropdown mode fails 1.4.10 (submenu width at 320 CSS px) and 1.4.3 inside a Top Bar, and that the library's Storybook carries the Dropdown Menu spec's two settings overrides. Decisions 23 and 24.
+
+From the [Spec: Drilldown Menu](22-spec-drilldown-menu.md), in the Drilldown Menu spec's wording:
+
+5. `NfsSubmenu.element`, read-only `HTMLUListElement`, the submenu's host. Decision 27.
+6. "The back button" is any control inside `li.js-drilldown-back`; the drilldown table's first-control rule reads "the level's first control that is not inside the back item". Decision 14.
+7. Sass rule 12 adds `.is-drilldown.animate-height`, and the Animation subsection's reduced-motion bullet says so. Decision 28.
+8. New Sass rule 13 in `nfs-drilldown`: `outline-offset: -2px` on `:focus-visible` links and buttons inside `.is-drilldown`; the 2.4.7 row now says no edge of a ring is clipped, `autoHeight` included; "What breaks without the include" and the Sass compile test mention it. Decision 38.
+9. The ResponsiveMenu usage example's `NfsDrilldown` host directive exposes `autoHeight`, `animateHeight`, `closeOnClick`, `scrollTop`, `scrollTopElement`, and `scrollTopOffset`, with the outputs `opened` and `closed`. Decisions 16 to 18 and 25.
