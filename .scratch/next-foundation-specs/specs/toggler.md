@@ -395,7 +395,7 @@ Against the prerendered fixture app (the harness from the rendering-mode test se
 - `data-toggle-focus` and `data-closable` as directives (Triggers spec decisions D9, D10); this spec documents the replacements.
 - Height or slide-down animation of in-flow content through a wrapper (the Accordion's grid technique): Foundation's Toggler animates with Motion classes only, and Toggler has no wrapper element.
 - Motion UI transition classes and the `motion-ui` package (ADR 0003).
-- A Trigger-role override input for class mode (OPEN FOR HUMAN in the ticket answer).
+- A Trigger-role override input for class mode. Decided at triage (2026-09-26; impact not HIGH because adding an input later breaks no one, confidence HIGH from the APG choosing the pattern by what the control does): class mode always renders `aria-pressed`, and content that shows or hides belongs in visibility mode.
 - Animation in class mode, and Completion outputs for it.
 - `mutateme.zf.trigger` and any re-measure broadcast.
 - Escape handling, outside-click closing, and Light dismiss: a Toggler is a disclosure, not an Anchored pane.

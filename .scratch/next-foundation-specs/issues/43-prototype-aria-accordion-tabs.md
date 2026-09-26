@@ -99,3 +99,14 @@ Tabs needed no custom CSS: Foundation's `.tabs-panel.is-active` and `.tabs-title
 
 1. Aria's dev-mode check warns on every panel whose content is projected rather than placed in `ngAccordionContent`/`ngTabContent` (case 17: two `console.warn` lines per panel in development builds). The library cannot silence it; neither a directive nor a wrapper component can supply the content child Aria queries. Should the library accept and document the warnings, or should an issue be filed in angular/components asking that projected content be allowed without the template directive? Filing in that repository needs the user's confirmation.
 2. Building-blocks Part 4 item 3 stands, now observed. Every replayed Aria-handled key logs ``ERROR Error: `preventDefault` called during event replay.`` from Aria's own `KeyboardEventManager`, not from a library handler, so "`preventDefault()` last" in library code does not prevent it. The choices are: (a) accept the log (state is correct, and nesting is fixed by the case 25 guard); (b) drop replayed keys by stopping propagation at the trigger when `event.eventPhase === 101`, which needs the internal constant and loses the user's key; (c) ask angular/components to skip `preventDefault()` during replay in its event manager (filing needs the user's confirmation).
+
+### Triage (auto-trap quadrant), 2026-09-26
+
+Rule: [map](../map.md), Orchestration rules, "Triage of human-only items". Only HIGH impact with NOT-HIGH confidence stays OPEN FOR HUMAN; upstream filings and assistive-technology checks stay human-only by kind.
+
+1. Aria's dev-mode warnings for projected panel content: accept and document (applied), or ask angular/components to allow projected content without the template directive.
+   - Impact: not HIGH. Development builds only (silent in production, case 17); no API and no markup depends on it.
+   - Confidence: HIGH. Measured in the prototype; no directive or wrapper component can supply the content child Aria queries; projected content is required by ADR 0008 so open panels are in server HTML. The [Spec: Tabs](16-spec-tabs.md) triage reached the same rating.
+   - Outcome: DECIDED: accept and document the warnings. Filing the issue in angular/components stays HUMAN-ONLY BY KIND (upstream filing).
+2. Replayed Aria-handled keys log ``preventDefault` called during event replay``: same question as item 3 of [Building-blocks map and cross-cutting architecture decisions](14-building-blocks-map.md), triaged there once. Outcome: DECIDED, option (a): accept the log, with the case 25 replay guard for nested groups; option (b) is not used (internal constant, and it drops the user's key).
+   - Option (c), asking angular/components to skip `preventDefault()` during replay in its `KeyboardEventManager`. Outcome: HUMAN-ONLY BY KIND: upstream filing under the user's identity. It is the only route that removes the log for Aria-hosted keys.

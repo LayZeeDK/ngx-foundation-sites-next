@@ -82,3 +82,16 @@ The consistency review replaces each spec's heading `### 2. Browser-level test (
 - `map.md` Decisions so far: one line for this ticket.
 
 Decision record: [adr/0018-browser-testing-stack.md](../adr/0018-browser-testing-stack.md) (the orchestrator numbers it). Building blocks: [building-blocks.md](../building-blocks.md) 1.12 rewritten to name the stack, target, command, and files per layer. Research note: `research/angular-rendering-modes.md` section 6, dated 2026-09-26.
+
+### Triage (auto-trap quadrant), 2026-09-26
+
+Rule: [map](../map.md), Orchestration rules, "Triage of human-only items". Only HIGH impact with NOT-HIGH confidence stays OPEN FOR HUMAN; upstream filings and assistive-technology checks stay human-only by kind. Both items were carried from [Prototype: Playwright component tests mounting CSF stories from @storybook/angular-vite](40-playwright-component-testing-prototype.md) and are triaged here, once.
+
+1. May the new repository depend on Storybook preview internals in `.storybook/playwright-gallery.ts`?
+   - Impact: not HIGH. Test infrastructure, not library API: the dependence is confined to one file plus the `previewHead` stub, layer 4 specs are written against Story ids and locators, and the fallback (`page.goto` on the public `/iframe.html?id=<story-id>&viewMode=story` URL) is one mechanical rewrite of the `mount` calls (decision 15).
+   - Confidence: HIGH. The prototype ran 23 of 23 tests in three engines; Playwright's `mount` is public API since 1.62 (`research/playwright-component-testing.md` section 4); Playwright closed a blessed Angular gallery as "Not planned" (microsoft/playwright#39010), so a project-owned gallery is the durable route.
+   - Outcome: DECIDED: adopt the gallery as decided in entry 15, confined to that file. Asking Storybook for a public "render story by id and report the outcome" API stays HUMAN-ONLY BY KIND (upstream request in a third-party repository).
+2. Linux CI and macOS Safari runs of layer 4.
+   - Impact: not HIGH. No spec and no decision depends on the outcome (decision 16); layer 4 is the only three-engine layer.
+   - Confidence: HIGH that nothing here needs a person's decision: it is an environment the new repository's first CI run supplies (`mcr.microsoft.com/playwright:v1.63.0-noble` or `npx playwright install --with-deps`).
+   - Outcome: DECIDED: verified by the new repository's first CI run; not a human question.

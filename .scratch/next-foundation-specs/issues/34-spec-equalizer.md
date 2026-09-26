@@ -114,3 +114,12 @@ _Avoid_: watch, equalized item, equalizer child
 4. Table B, Equalizer, "Open risks": replace with "Resolved by the [Spec: Equalizer](issues/34-spec-equalizer.md): CSS first; the directive is kept for the float-grid and non-grid residue (shipping it at all is OPEN FOR HUMAN)". Reason: decision 8.
 5. Part 3, "Explicitly no spec of their own", ImageLoader bullet: append "on elements whose size is not pinned by an inline `height`; Equalizer writes `min-height` and leaves the tallest element natural for this reason". Reason: decision 14; the unqualified statement is false for Foundation's `height` writes.
 6. 1.9, parent-handle bullet: after the `CdkAccordionItem` sentence add "(Equalizer needs no `undefined` provider: a nested container providing its own token already shadows the outer one)". Reason: decision 11.
+
+### Triage (auto-trap quadrant), 2026-09-26
+
+Rule: [map](../map.md), Orchestration rules, "Triage of human-only items". Only HIGH impact with NOT-HIGH confidence stays OPEN FOR HUMAN; upstream filings and assistive-technology checks stay human-only by kind.
+
+1. Ship the `[nfsEqualizer]`/`[nfsEqualizerWatch]` pair in the first release (applied), or publish Equalizer as CSS guidance only.
+   - Impact: HIGH. Shipping creates a public API (two directives, a token, a defaults token, an output) that is hard to withdraw once consumers use it.
+   - Confidence: HIGH. The user's own Destination and goal condition ask for a directive or component that replaces every Foundation plugin (map, Destination and Goal condition); decisions 5 to 7 establish a real residue that CSS cannot reach without restructuring (Foundation 6.9's float grid, non-grid lists, boxes at unrelated depths; FS `docs/pages/equalizer.md:100-123`); the pair is small, optional, and led by the CSS recipes in the docs and stories, so the default is deliberated, not bare.
+   - Outcome: DECIDED: ship the optional directive pair in the first release, with the docs and stories leading with CSS.

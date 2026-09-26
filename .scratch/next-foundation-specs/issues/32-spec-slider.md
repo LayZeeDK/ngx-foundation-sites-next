@@ -157,3 +157,19 @@ _Avoid_: percentage, pctOfBar, offset
 - [Sass packaging for the new library](57-sass-packaging.md) and ADR 0012 consequences (or the future bundle README): state that `foundation-range-input` is not in `foundation-everything` and a consumer using the Slider includes it explicitly (P45 decision 2; decision 40); and that `nfs-slider` stops the compile with Foundation's default slider colours until `$slider-fill-background` (or `$slider-background`) reaches 3:1 (decision 45).
 - CONTEXT.md: the two glossary terms above, in a "Slider" subsection or under "Foundation side" after **Structural class**.
 - Map, Decisions so far: one line for this ticket.
+
+### Triage (auto-trap quadrant), 2026-09-26
+
+Rule: [map](../map.md), Orchestration rules, "Triage of human-only items". Only HIGH impact with NOT-HIGH confidence stays OPEN FOR HUMAN; upstream filings and assistive-technology checks stay human-only by kind. The two items below came from [Prototype: Foundation-styled `<input type="range">` Slider](45-prototype-slider-range-input.md) (its items 1 and 2) and are triaged here, once.
+
+1. Vertical orientation: native rotated inputs with `aria-orientation="vertical"` (applied), which Chromium exposes as horizontal, or a custom `role="slider"` handle for the vertical form only.
+   - Impact: HIGH. The applied default freezes the consumer markup of the vertical form (`input[type=range][nfsSliderHandle]` inside `.slider.vertical`); moving the vertical form to a custom `role="slider"` handle later changes that markup for every consumer and adds a second implementation path to shipped code (the spec's own fallback line puts the APG vertical example at 256 lines).
+   - Confidence: NOT HIGH. The default is carried from the prototype, whose answer says sources cannot settle how much the misreported orientation matters to assistive-technology users. It knowingly ships a state the browser misreports: the APG slider pattern includes `aria-orientation`, and the standing accessibility preference (WCAG 2.2 AA and the matching APG pattern, map Notes) leaves no room for a known deviation unless a person judges it harmless; 4.1.2 can be read as requiring the orientation to be programmatically determinable. The keys work identically in both orientations, which is the prototype's reason for not counting it as a failure.
+   - Outcome: STAYS OPEN FOR HUMAN. Competing options: (a) native rotated inputs with `aria-orientation="vertical"` until `writing-mode` vertical form controls are in the browser target (applied); (b) a custom `role="slider"` handle for the vertical form only, native inputs for horizontal. What would raise confidence: a screen-reader check of the vertical native range in Chromium (NVDA and JAWS with Chrome and Edge, TalkBack), which is itself human-only.
+2. Announcement of `aria-valuetext` on native range inputs (applied: bound from `displayWith`, and always on non-linear handles; the DOM attribute is asserted, the announcement is not).
+   - Impact: HIGH for non-linear handles, whose value is announced only through it; the binding itself is ARIA-in-HTML conformant.
+   - Confidence: HIGH for the binding (ARIA in HTML allows `aria-valuetext` on a range input; the APG slider pattern uses it when the number is not user friendly); the announcement cannot be checked from sources or CDP.
+   - Outcome: HUMAN-ONLY BY KIND: assistive-technology check (NVDA with Chrome and Firefox, VoiceOver on macOS and iOS, TalkBack). The binding stands as specified until that check reports a problem.
+3. Inherited: how a handler recognises a replayed event (decision 35). Triaged once in [Building-blocks map and cross-cutting architecture decisions](14-building-blocks-map.md) item 3: DECIDED, state first and `preventDefault()` last, accepting the logged error.
+
+The prototype's items 3 (thumb size) and 4 (fill contrast) were already closed by decisions 43 to 45 and are recorded as DECIDED in the prototype ticket's triage.

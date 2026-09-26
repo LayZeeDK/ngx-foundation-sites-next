@@ -51,3 +51,12 @@ Open questions not settled from sources:
 Resolution note, 2026-09-25: the orchestrator settled these targets from sources, not by human confirmation. TypeScript 6.0.x, because Angular 22.2's `compiler-cli` accepts only `>=6.0.0 <6.1.0` (this ticket's findings file, "Version compatibility and TypeScript 7"). Vitest 4.1.x, because `@nx/vitest` 23.2.1 and `@storybook/addon-vitest` 10.6 accept only Vitest 3 or 4. [Tooling baseline: Nx 23.2, Angular 22.2, Storybook 10.6, Vitest browser mode](../issues/12-tooling-baseline.md) owns both pins.
 
 Findings: ../research/angular-22-api-survey.md
+
+### Triage (auto-trap quadrant), 2026-09-26
+
+Rule: [map](../map.md), Orchestration rules, "Triage of human-only items". Only HIGH impact with NOT-HIGH confidence stays OPEN FOR HUMAN; upstream filings and assistive-technology checks stay human-only by kind.
+
+1. TypeScript target: 6.0.x, or 7 with `disableTypeScriptVersionCheck`.
+   - Impact: HIGH. The toolchain pin is inherited by every prototype and by the new repository's workspace.
+   - Confidence: HIGH. `compiler-cli/src/typescript_support.ts` in the 22.2.x clone accepts only `>=6.0.0 <6.1.0`, so 7 is unsupported by the compiler itself; the resolution note above already closed the item from that source, and [Tooling baseline: Nx 23.2, Angular 22.2, Storybook 10.6, Vitest browser mode](12-tooling-baseline.md) owns the pin.
+   - Outcome: DECIDED: TypeScript 6.0.x (already closed by the resolution note; recorded here for the triage pass).

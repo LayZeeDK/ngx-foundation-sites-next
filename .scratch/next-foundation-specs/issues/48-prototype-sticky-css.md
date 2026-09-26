@@ -118,3 +118,16 @@ cases pass in all 3 engines.
   choice is an API-shape call for the spec ticket, not a technical one this prototype can settle.
 
 Orchestrator, 2026-09-26: the two OPEN FOR HUMAN items above are API-shape questions the [Spec: Sticky](28-spec-sticky.md) can settle from the building-blocks rules (1.4 keeps Foundation options that describe behaviour and drops jQuery-only ones; dev-mode warnings follow the pattern in 1.5 and 1.9). They pass to that spec's decision log rather than to the human; the spec records them as OPEN FOR HUMAN only if its sources cannot settle them.
+
+### Triage (auto-trap quadrant), 2026-09-26
+
+Rule: [map](../map.md), Orchestration rules, "Triage of human-only items". Both items passed to [Spec: Sticky](28-spec-sticky.md), which settled them from the building-blocks rules and left nothing open; the ratings are recorded here.
+
+1. Development-mode warning for an `overflow: hidden` ancestor, or documentation only.
+   - Impact: not HIGH. Development-only code; no API.
+   - Confidence: HIGH. The scroll-container walk is needed for correct classes anyway and runs once per instance; the warning suggests `overflow: clip`, which is in the browser target ([Spec: Sticky](28-spec-sticky.md) decision 17).
+   - Outcome: DECIDED: the walk plus a development-mode warning.
+2. `anchor`, `topAnchor`, `btmAnchor`: no-op inputs or dropped options.
+   - Impact: HIGH. It decides the public input list.
+   - Confidence: HIGH. Building-blocks 1.4 turns an option into an input only when the library carries its behaviour, and this prototype showed anchors outside the containing block cannot be honoured by `position: sticky` ([Spec: Sticky](28-spec-sticky.md) decision 8; ADR 0019).
+   - Outcome: DECIDED: dropped options, with a development warning for leftover `data-*anchor` attributes.

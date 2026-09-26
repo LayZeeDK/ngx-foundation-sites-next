@@ -112,3 +112,16 @@ Prototype capture: [prototypes/animate-enter-hydration/](../prototypes/animate-e
 Runnable workspace: `D:/tmp/nfs-proto-animate-enter-hydration/app` (kept; not committed).
 
 Orchestrator, 2026-09-26: both items above are settled by decisions the map already holds, so they are closed here rather than left for the human. (1) The finding stays in this prototype; the documents that cited the prototype now link this ticket by name, and the rendering-modes research keeps its source reading with this prototype as its verification. (2) No spec adopts the suppression pattern: ADR 0003 and building-blocks 1.6 rule 7 keep State classes for every persistent animated element, and this prototype's verdict is the reason they must.
+
+### Triage (auto-trap quadrant), 2026-09-26
+
+Rule: [map](../map.md), Orchestration rules, "Triage of human-only items". Both items were settled by the orchestrator note above; the ratings are recorded here.
+
+1. Fold the rAF cleanup mechanism into the research file and ADR prose, or link this README.
+   - Impact: not HIGH. Documentation placement only.
+   - Confidence: HIGH. One copy of the finding, linked from the documents that cite it.
+   - Outcome: DECIDED: link this README; the rendering-modes research keeps its source reading with this prototype as verification.
+2. Whether any spec adopts the signal-gated or delayed-CSS-gate suppression pattern.
+   - Impact: not HIGH. No spec uses it, so nothing ships that would need unwinding.
+   - Confidence: HIGH. ADR 0003, building-blocks 1.6 rule 7, and 1.11 decision 10 keep State classes for every persistent animated element, and this prototype's verdict (the enter animation plays at hydration) is the reason; [Spec: Toggler](17-spec-toggler.md) decision 17 and [Spec: Responsive Toggle](24-spec-responsive-toggle.md) follow it.
+   - Outcome: DECIDED: no spec adopts the suppression pattern.

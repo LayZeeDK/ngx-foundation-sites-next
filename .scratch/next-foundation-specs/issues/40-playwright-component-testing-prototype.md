@@ -109,3 +109,11 @@ Environment notes: every Playwright browser build in use (Chromium 1243, Firefox
 2. Linux CI and macOS WebKit behaviour of candidate 1 could not be tested on this machine.
 
 Inputs for other tickets (no new ticket needed): for [Decide the browser testing stack: Playwright component tests, Vitest Browser, or both](41-browser-testing-stack-decision.md), all three paths now run the same CSF stories, with the timings above, and both the Vitest Browser spec and Playwright can reuse the play function and the addon-a11y result; for [Storybook conventions for the new library](58-storybook-conventions.md), `embed=true` is the switch between "Playwright owns the interaction" and "the story's play function runs", `parameters.a11y.test: 'error'` also gates Playwright through `storyFinished`, and the library `package.json`'s `"sideEffects": false` also applies to files under `.storybook/`.
+
+### Triage (auto-trap quadrant), 2026-09-26
+
+Rule: [map](../map.md), Orchestration rules, "Triage of human-only items". Only HIGH impact with NOT-HIGH confidence stays OPEN FOR HUMAN; upstream filings and assistive-technology checks stay human-only by kind.
+
+1. Dependence on Storybook preview internals in the gallery: carried into [Decide the browser testing stack: Playwright component tests, Vitest Browser, or both](41-browser-testing-stack-decision.md) (its OPEN FOR HUMAN 1) and triaged there, once: DECIDED, the gallery is adopted; asking Storybook for a public API stays HUMAN-ONLY BY KIND there.
+   - Bug reports against `@playwright-labs/selectors-angular` (the `parseAttributeSelector` error) and `@jscutlery/playwright-ct-angular` (NG0950 under SWC). Outcome: HUMAN-ONLY BY KIND: upstream filing in third-party repositories under the user's identity. Nothing in the effort depends on them; the chosen solution uses none of the three community packages.
+2. Linux CI and macOS WebKit behaviour: carried into the same ticket (its OPEN FOR HUMAN 2) and triaged there: DECIDED, verified by the new repository's first CI run; no spec depends on it.

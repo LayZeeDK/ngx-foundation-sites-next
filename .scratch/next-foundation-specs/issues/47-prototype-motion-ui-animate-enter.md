@@ -151,3 +151,16 @@ Prototype capture: [prototypes/motion-ui-animate-enter/](../prototypes/motion-ui
 Runnable workspace: `D:/tmp/nfs-proto-motion-ui-animate-enter/app` (kept; not committed).
 
 Orchestrator, 2026-09-26: both OPEN FOR HUMAN items above are settled without the human. (1) The cleanup-timing finding stays in this prototype and the [Prototype: `animate.enter` at hydration](52-prototype-animate-enter-hydration.md) README, cross-linked; the rendering-modes research keeps its source reading with the two prototypes as verification. (2) A dev-mode warning for a recognised Motion UI transition class name is a design choice for the specs that own an `animationIn`/`animationOut`-style input (Reveal, Toggler, ResponsiveToggle, Tooltip, Orbit); each records it in its decision log, with the default that the library warns once in dev mode and applies the class unchanged.
+
+### Triage (auto-trap quadrant), 2026-09-26
+
+Rule: [map](../map.md), Orchestration rules, "Triage of human-only items". Both items were settled by the orchestrator note above; the ratings are recorded here.
+
+1. Where Case 4b's cleanup-timing finding is documented.
+   - Impact: not HIGH. Documentation placement only.
+   - Confidence: HIGH. Cross-linking the two prototype READMEs keeps one copy of the finding, as the orchestrator note decided.
+   - Outcome: DECIDED: the finding stays in this prototype and the [Prototype: `animate.enter` at hydration](52-prototype-animate-enter-hydration.md) README, cross-linked.
+2. Whether `animationIn`/`animationOut`-style inputs warn in development mode on a recognised Motion UI transition class name.
+   - Impact: not HIGH. A development-mode warning; no API, and it can be added or dropped later without a consumer change.
+   - Confidence: HIGH. Motion UI transition classes never animate under `animate.enter` (this prototype's verdict; ADR 0003), so a silent no-op hides a consumer mistake; the building-blocks development-warning pattern (1.5, 1.9) covers it.
+   - Outcome: DECIDED: warn once in development mode and apply the class unchanged; each spec with such an input records it.

@@ -36,3 +36,12 @@ Sources: `d:/projects/github/w3c/aria-practices/content/patterns/<pattern>/<patt
 - Feed and Toolbar map to nothing; Button, Link and Landmarks serve as building blocks only.
 
 Findings: ../research/aria-apg-patterns.md
+
+### Triage (auto-trap quadrant), 2026-09-26
+
+Both OPEN FOR HUMAN items in this answer were carried into [Building-blocks map and cross-cutting architecture decisions](14-building-blocks-map.md) (its OPEN FOR HUMAN items 1 and 2) and are triaged there, once:
+
+1. Magellan's `aria-current` token (`true` or `location`): DECIDED there, `true`.
+2. Tooltip on non-interactive text (a `span` made focusable with `tabindex`): DECIDED there, interactive hosts only.
+
+The [Spec: Magellan](30-spec-magellan.md) and [Spec: Tooltip](27-spec-tooltip.md) tickets were not yet resolved at triage time; they inherit these decisions.

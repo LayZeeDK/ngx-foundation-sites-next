@@ -146,3 +146,12 @@ _Avoid_: toggle-class mode, CSS mode, active mode
 - `specs/triggers.md` Usage examples, the `data-toggle-focus` replacement: add `hidden` to the `#formHint` Toggler (so the hint starts hidden under this spec's initial-state rule) and `(keydown.escape)="formHint.close()"` on the input (WCAG 1.4.13, decision 40). The `nfsToggler toggler="compact"` example already matches class mode.
 - CONTEXT.md: the two glossary terms above.
 - Map, Decisions so far: one line for this ticket.
+
+### Triage (auto-trap quadrant), 2026-09-26
+
+Rule: [map](../map.md), Orchestration rules, "Triage of human-only items". Only HIGH impact with NOT-HIGH confidence stays OPEN FOR HUMAN; upstream filings and assistive-technology checks stay human-only by kind.
+
+1. A Trigger-role override for class mode (a `triggerRole` input, `'toggle-button' | 'disclosure'`, on `NfsClassToggler`).
+   - Impact: not HIGH. The default ships no input; adding one later is additive and breaks no consumer. The `triggerRole` union itself is unchanged either way (both values already exist in the Triggers contract).
+   - Confidence: HIGH. The APG picks the pattern by what the control does (decision 13; `research/aria-apg-patterns.md` Toggler: `aria-expanded` is wrong when nothing is expanded), visibility mode already covers every class that shows or hides content, and development check 5 flags Foundation's visibility classes used in class mode.
+   - Outcome: DECIDED: no role override; class mode always renders `aria-pressed`, and content that shows or hides belongs in visibility mode. An input can be added later if a consumer case appears.

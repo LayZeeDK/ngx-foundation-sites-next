@@ -116,3 +116,16 @@ For [Spec: Slider](32-spec-slider.md):
 4. Colour contrast of Foundation's defaults: fill `$medium-gray` #cacaca against track `$light-gray` #e6e6e6 is about 1.3:1, and the track against white about 1.25:1; the thumb (`$primary-color` #1779ba) against white is about 4.7:1. Material's slider docs ask for 3:1 between the active and inactive track. These are consumer Sass settings: should the Slider spec require a 3:1 fill or only recommend it?
 
 No new prototype ticket is needed. Items 1 to 3 each need a person with assistive technology or a design call; the orchestrator can track them wherever it collects HITL follow-ups.
+
+### Triage (auto-trap quadrant), 2026-09-26
+
+Rule: [map](../map.md), Orchestration rules, "Triage of human-only items". Items 1 and 2 were carried into [Spec: Slider](32-spec-slider.md) (its OPEN FOR HUMAN 1 and 2) and are triaged there, once: item 1 (vertical orientation) STAYS OPEN FOR HUMAN as a trap-quadrant item, and item 2 (`aria-valuetext` announcement) is HUMAN-ONLY BY KIND (assistive-technology check).
+
+3. Thumb size and WCAG 2.5.8.
+   - Impact: not HIGH. A Sass rule in the `nfs-slider` Library mixin; no API.
+   - Confidence: HIGH. WCAG 2.2 AA is a user requirement for every directive (map Notes), so a docs recommendation was never an option; the spec's decision 43 sizes each thumb `max(24px, $slider-handle-width)` by `max(24px, $slider-handle-height)`.
+   - Outcome: DECIDED: a 24 by 24 CSS px minimum thumb in the Library mixin (already closed by [Spec: Slider](32-spec-slider.md) decision 43).
+4. Contrast of Foundation's default fill.
+   - Impact: not HIGH. Consumer Sass settings plus a compile-time check; no API.
+   - Confidence: HIGH. Same user requirement (WCAG 2.2 AA 1.4.11); the ratios are computed with Foundation's own `color-contrast()` (FS `scss/util/_color.scss`).
+   - Outcome: DECIDED: 3:1 fill and thumb colours required, checked at compile time with `@error` (already closed by [Spec: Slider](32-spec-slider.md) decisions 44 and 45).

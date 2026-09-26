@@ -159,3 +159,16 @@ That case is now marked `knownFoundationDiff`.
 ### New tickets
 
 None required. The Dropdown Menu collision check can be tested inside the [Prototype: Nested menu directive family with breakpoint mode switching](50-prototype-nested-menu.md) if that ticket wants it.
+
+### Triage (auto-trap quadrant), 2026-09-26
+
+Rule: [map](../map.md), Orchestration rules, "Triage of human-only items". Both items were carried into [Spec: Anchored pane (shared utility)](55-spec-anchored-pane.md), whose own triage section rates them; this entry records the same outcome here so the prototype does not read as open.
+
+1. Body-box collision bound or the viewport.
+   - Impact: not HIGH. One function (`bodyBounds()`, a one-line switch); no API depends on it.
+   - Confidence: HIGH. ADR 0002 requires matching Foundation 6.9, and the prototype measured both the short-body and tall-body cases against Foundation.
+   - Outcome: DECIDED: Foundation's body box.
+2. Tooltip tip inside a positioned `overflow: auto`/`hidden` container: accept the clip, or host the tip in the top layer.
+   - Impact: not HIGH. The tip is an internal component the Tooltip directive creates; where it lives is not public API and can move later (for example to native `popover` once it is in the browser target) without a consumer change.
+   - Confidence: HIGH. The default follows ADR 0002 (in place, no CDK Overlay), ADR 0008 (no moving nodes to `body`), and building-blocks 1.1 case 3; the only top-layer route in target, CDK Overlay inline popover, needs two custom CSS rules the prototype measured as required.
+   - Outcome: DECIDED: accept and document the clip; the Tooltip spec states it.

@@ -149,3 +149,12 @@ None. The Visibility-class first paint is already ADR 0008's consequence; the pe
 - [Spec: Triggers (shared utility)](54-spec-triggers.md) and `specs/triggers.md`, Rendered HTML fourth example: `<div class="title-bar" nfsResponsiveToggle [menu]="mainMenu" hideFor="medium">` -> `<div class="title-bar" [nfsResponsiveToggle]="mainMenu" hideFor="medium">`, and `#mainMenu="nfsResponsiveToggleMenu"` on the menu element if the example shows it. Reason: decision 9.
 - CONTEXT.md: the **Visibility class** term under "Foundation side", after **Variant class**.
 - Map, Decisions so far: one line for this ticket.
+
+### Triage (auto-trap quadrant), 2026-09-26
+
+Rule: [map](../map.md), Orchestration rules, "Triage of human-only items". Only HIGH impact with NOT-HIGH confidence stays OPEN FOR HUMAN; upstream filings and assistive-technology checks stay human-only by kind.
+
+1. State at a breakpoint crossing: `isOpen` persists (applied) or the menu closes as Foundation's did.
+   - Impact: not HIGH. Runtime behaviour of one directive with no API attached; no other spec inherits it, and a later switch to closing on a crossing would be a small change inside the directive with no consumer markup change.
+   - Confidence: HIGH. Foundation's reset is a side effect of rewriting inline `display` on every breakpoint change, even between two breakpoints below `hideFor` (FS `_update`), not a documented feature; writing the model from a breakpoint change needs an `effect` that propagates state, which building-blocks 1.5 and Angular's effect guide rule out; the menu looks the same at and above `hideFor` in either state, and keeping the state keeps focus from being dropped (decision 18).
+   - Outcome: DECIDED: `isOpen` persists across breakpoint crossings; nothing is written on a crossing.

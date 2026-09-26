@@ -36,3 +36,12 @@ Sources: `d:/projects/github/angular/components/src/cdk/**` and `d:/projects/git
 - Not done: https://material.angular.dev/cdk/categories is a client-rendered app; markdown.new returned only the shell. The local `*.md` docs are the same content, so no browser fetch was attempted.
 
 Findings: ../research/angular-cdk-inventory.md
+
+### Triage (auto-trap quadrant), 2026-09-26
+
+Rule: [map](../map.md), Orchestration rules, "Triage of human-only items". Only HIGH impact with NOT-HIGH confidence stays OPEN FOR HUMAN; upstream filings and assistive-technology checks stay human-only by kind.
+
+1. DropdownMenu as an ARIA menubar (CDK or Aria menu) or as APG disclosure navigation.
+   - Impact: HIGH. It fixes the role set of every menu plugin and the Nested menu family.
+   - Confidence: HIGH. The APG clone settles it in three places (disclosure-navigation example, menubar-navigation caution, treeview-navigation caution; [WAI-ARIA APG patterns mapped to Foundation plugins](10-aria-apg-patterns.md)), and ADR 0004 records the decision; opt-in `role="menu"` variants are out of scope on the map.
+   - Outcome: DECIDED: disclosure navigation for every menu (ADR 0004). No item is left open in this ticket.
