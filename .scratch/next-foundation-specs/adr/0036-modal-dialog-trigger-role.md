@@ -1,0 +1,22 @@
+---
+status: accepted
+---
+
+# A modal Reveal's Triggers render no `aria-expanded`: the `modal-dialog` Trigger role
+
+The Trigger role union is part of the public `NfsOpenable` interface (ADR 0013), and the [Spec: Triggers (shared utility)](../issues/54-spec-triggers.md) left open whether a modal dialog's opener renders `aria-expanded` (building-blocks Part 4, OPEN FOR HUMAN item 1). We decided, through the panel in [Decide: `aria-expanded` on a modal dialog's opener](../issues/72-decide-aria-expanded-on-modal-opener.md), that the union gains a fifth value, `modal-dialog`, whose Triggers render `aria-haspopup="dialog"` and `aria-controls` and no `aria-expanded`, and that an Openable reports it only when the platform makes every Trigger outside it inert for as long as it is open, which today is a Reveal with `overlay: true` (a `<dialog>` shown with `showModal()`); a Reveal with `overlay: false`, a Dropdown pane with `role="dialog"` (trapped or not), and an Off-canvas panel in Modal mode keep `dialog` with `aria-expanded`. Why: while a `showModal()` dialog is open its opener leaves the accessibility tree in Chromium and Firefox and no expanded-state change reaches the platform, so the only value assistive technology could ever meet under one `dialog` role is "collapsed", and an open-by-default Reveal's server HTML would carry `aria-expanded="true"` next to a closed dialog; HTML-AAM maps no expanded state for `command="show-modal"`, the APG's modal dialog openers carry none, and Foundation's Reveal never rendered one (`research/decision-aria-expanded-modal-opener.md`). Off-canvas Modal mode does not qualify because its `inert` covers only `.off-canvas-content`: a Trigger outside it stays exposed with a true `expanded` state while the panel is open, and without `aria-expanded` Firefox would infer a false "collapsed" from `aria-haspopup` alone (ADR 0030 records the partial inertness).
+
+## Considered options
+
+- One `dialog` role rendering `aria-expanded` on every dialog opener (the previous default): rejected. The state is a constant on a modal Reveal's opener, its "true" value is exposed only in open-by-default server HTML where it is false, the modal story would assert an attribute no assistive technology receives, and the Invoker Commands upgrade path (`commandfor` with `show-modal`) lands on a platform mapping with no expanded state. Radix, React Aria, Ariakit, Zag, and Material's datepicker toggle render it, but from a generic trigger that does not read modality, and the datepicker's calendar leaves its toggle reachable.
+- An optional modality member on `NfsOpenable` read only when the role is `dialog`: rejected. Two members would encode one ARIA shape, against the Triggers spec's rule of one role value per shape, and a wrapper that forgets to forward the member compiles and silently renders the non-modal output (compile probe in the decision ticket).
+- `modal-dialog` for Off-canvas Modal mode as well: rejected by measurement (above). Reopened if the Off-canvas spec makes everything outside the panel inert.
+- Dropping `aria-controls` from modal openers too, as HTML-AAM and the Open UI explainer do: not adopted. Foundation's Reveal stamps it, it keeps the 1.3.1 relationship, and no harm is measured; it stays a one-row change if evidence appears.
+- A plain opener (the existing `none` role, or dropping `aria-haspopup="dialog"`): rejected. The popup hint is supported in current screen readers, user story 13 promises it, and `none` would merge a modal opener with Tooltip's meaning.
+
+## Consequences
+
+- `NfsTriggerRole = 'disclosure' | 'dialog' | 'modal-dialog' | 'toggle-button' | 'none'`; Reveal's `triggerRole` is `computed` from `overlay`, an input, so the server value is final. Every consumer Openable that opens a `<dialog>` with `showModal()` reports `modal-dialog`; a wrapper around a Reveal delegates `triggerRole` to it (the Triggers spec's wrapper example does so).
+- Deciding now is the cheap direction: adding the value after release would break every exhaustive `switch` over the union, while a later reversal keeps `modal-dialog` as a deprecated alias rendered like `dialog` and breaks nobody.
+- A modal Reveal's story and SSR smoke assert the absence of `aria-expanded`; the non-modal story asserts it flips. An Openable that misreports a modal `<dialog>` as `dialog` renders the previous default's output, which conforms to WCAG 2.2 AA.
+- The Off-canvas spec keeps `dialog` in Modal mode and says why; the decision's rule reassigns it if its inertness ever covers the whole page.
