@@ -204,6 +204,18 @@ _Avoid_: split button, submenu toggle item, parent link
 The chain of open submenus from a menu root down to the innermost open one; Drilldown and DropdownMenu keep at most one per level, and a Menu mode swap keeps the one that holds focus.
 _Avoid_: active branch, breadcrumb, trail
 
+**Drilldown level**:
+One list of a Drilldown, the root list or a submenu, shown alone in the Drilldown wrapper while it is the innermost open list.
+_Avoid_: panel, pane, screen, page, current menu
+
+**Drilldown wrapper**:
+The consumer-written element around a Drilldown's root list that clips the Drilldown levels and carries their measured height; the replacement for Foundation's generated `div.is-drilldown`.
+_Avoid_: wrapper component (which adds an element inside a component), container, viewport
+
+**Base side**:
+The side, left or right, toward which a dropdown-mode submenu opens before the collision check moves it; set by `alignment`, Foundation's `align-right`, a `.top-bar-right` ancestor, and the reading direction.
+_Avoid_: alignment (the Option), default side, opening direction
+
 **Tab group**:
 The element that encloses one tab list and all of its panels, which the library requires as their common ancestor because Foundation writes the tab strip and the content box as siblings.
 _Avoid_: tabs container, tabs wrapper, tab set (for the element)

@@ -16,3 +16,4 @@ ADR 0014 has the Breakpoint service report the Server breakpoint until its first
 - A client-created instance renders twice in its first tick; the first result is never painted (prototype case 4).
 - ADR 0014's second considered option gains a note that its rejection covers a general helper, not a component whose first-render swap removes focused nodes.
 - The Breakpoint service spec's consumer rule "a swap at the first render never moves focus" is replaced by "the first-render swap moves focus like any other swap", because server-rendered controls can hold focus before hydration (prototype case 15).
+- [ADR 0035](0035-responsive-menu-swap-commit.md) revises the second considered option above: a class-swapping consumer's focus does not survive a first-render change on its own either, so ResponsiveMenu also starts every instance from the Server breakpoint's mode, with the Nested menu root's render callback committing the swap.

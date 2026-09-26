@@ -204,6 +204,8 @@ The APG has no drilldown or "stacked panels" pattern. Two defensible mappings:
 
 Correction (2026-09-26, from the [Prototype: Nested menu directive family with breakpoint mode switching](../issues/50-prototype-nested-menu.md) row 9, carried by the [Spec: Nested menu (shared utility)](../issues/56-spec-nested-menu.md)): option 1's "ancestor levels are hidden with `hidden`" cannot work, because the open level is a descendant of every ancestor level, so `hidden` or `inert` on an ancestor hides or disables the open level too (`focus()` on the open level does nothing inside an `inert` root). Hidden ancestor levels, the root included, use Foundation's `invisible` class (`visibility: hidden`, which the open level overrides with Foundation's `visible` class), and only closed submenus get `inert`. The reading-order goal of option 1 still holds: `visibility: hidden` removes the ancestor levels from the accessibility tree.
 
+Correction (2026-09-26, from the [Spec: Drilldown Menu](../issues/22-spec-drilldown-menu.md)): option 1's back control is a native `<button type="button">`, not a link (it does not navigate); it carries the visible "Back" label plus a screen-reader-only suffix naming the level it returns to, and no `aria-expanded`/`aria-controls` of its own, because the toggle it closes carries that state.
+
 Foundation's bindings (`Enter`/`Space` open, `Right` next, `Left` previous, `Up`/`Down`, `Escape` close; `FND/js/foundation.drilldown.js:31-39`) are the menu pattern's set, but Foundation's roles are wrong for it (submenus are `group` not `menu`, no roving `tabindex`, `aria-expanded` on the wrong element).
 
 ## Dropdown (`.dropdown-pane`)

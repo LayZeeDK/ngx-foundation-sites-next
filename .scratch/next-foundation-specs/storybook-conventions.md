@@ -114,6 +114,15 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
   // color-contrast (1.4.3) and non-text contrast (1.4.11): Foundation's alert button fill is 4.498:1,
   // hollow and clear success 1.799:1 and warning 1.842:1. Spec: Button, button--colors and button--fills.
   $button-palette: map-merge($foundation-palette, ('alert': #bf3f2c, 'success': #177a3d, 'warning': #8a5a00));
+
+  // color-contrast (1.4.3): Foundation's default Top Bar puts $anchor-color links at 3.76:1.
+  // Spec: Dropdown Menu, dropdown-menu--top-bar; also required by Magellan and Responsive Toggle
+  // stories that show a Top Bar.
+  $topbar-background: $white;
+
+  // 1.4.10 Reflow: Foundation's 200px minimum does not fit every side at 320 CSS px.
+  // Spec: Dropdown Menu, dropdown-menu--fixture.
+  $dropdownmenu-min-width: min(200px, 45vw);
   ```
 
   An override is a consumer-side setting, never an exception to the Accessibility gate. The overrides come after Foundation's settings file and before `foundation`, so Foundation's `!default` component variables pick them up and they can refer to settings such as `$primary-color`.
