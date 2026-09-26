@@ -1,0 +1,2 @@
+  171 passed (4.4m) -- full run, all three projects
+  3 passed (34.5s) -- follow-up run of 'long tooltip overflows the scroller' (chromium, firefox, webkit)

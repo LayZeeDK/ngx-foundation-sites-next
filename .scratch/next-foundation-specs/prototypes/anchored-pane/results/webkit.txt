@@ -1,0 +1,223 @@
+12 placements: dropdown bottom-center [expect bottom-center]
+   F: bottom-center (-101.08,47.86) e=0.01
+   P: bottom-center (-101.06,47.86) e=0.01 =F
+   C: bottom-center (-101.08,47.86) e=0.01 =F
+12 placements: dropdown bottom-left [expect bottom-left]
+   F: bottom-left (11,47.86) e=0
+   P: bottom-left (11,47.86) e=0 =F
+   C: bottom-left (11,47.86) e=0 =F
+12 placements: dropdown bottom-right [expect bottom-right]
+   F: bottom-right (-235.14,47.86) e=0
+   P: bottom-right (-235.14,47.86) e=0 =F
+   C: bottom-right (-235.14,47.86) e=0 =F
+12 placements: dropdown left-bottom [expect left-bottom]
+   F: left-bottom (-311,-24.14) e=0
+   P: left-bottom (-311,-24.14) e=0 =F
+   C: left-bottom (-311,-24.14) e=0 =F
+12 placements: dropdown left-center [expect left-center]
+   F: left-center (-311,-1.58) e=0.01
+   P: left-center (-311,-1.56) e=0.01 =F
+   C: left-center (-311,-1.58) e=0.01 =F
+12 placements: dropdown left-top [expect left-top]
+   F: left-top (-311,7) e=0
+   P: left-top (-311,7) e=0 =F
+   C: left-top (-311,7) e=0 =F
+12 placements: dropdown right-bottom [expect right-bottom]
+   F: right-bottom (86.86,-24.14) e=0
+   P: right-bottom (86.86,-24.14) e=0 =F
+   C: right-bottom (86.86,-24.14) e=0 =F
+12 placements: dropdown right-center [expect right-center]
+   F: right-center (86.86,-1.58) e=0.01
+   P: right-center (86.86,-1.56) e=0.01 =F
+   C: right-center (86.86,-1.58) e=0.01 =F
+12 placements: dropdown right-top [expect right-top]
+   F: right-top (86.86,7) e=0
+   P: right-top (86.86,7) e=0 =F
+   C: right-top (86.86,7) e=0 =F
+12 placements: dropdown top-center [expect top-center]
+   F: top-center (-101.08,-65) e=0.01
+   P: top-center (-101.06,-65) e=0.01 =F
+   C: top-center (-101.08,-65) e=0.01 =F
+12 placements: dropdown top-left [expect top-left]
+   F: top-left (11,-65) e=0
+   P: top-left (11,-65) e=0 =F
+   C: top-left (11,-65) e=0 =F
+12 placements: dropdown top-right [expect top-right]
+   F: top-right (-235.14,-65) e=0
+   P: top-right (-235.14,-65) e=0 =F
+   C: top-right (-235.14,-65) e=0 =F
+12 placements: tooltip bottom-center [expect bottom-center]
+   F: bottom-center (11.75,61.86) e=0
+   P: bottom-center (11.75,61.86) e=0 =F
+   C: bottom-center (11.75,61.86) e=0 =F
+12 placements: tooltip bottom-left [expect bottom-left]
+   F: bottom-left (11,61.86) e=0
+   P: bottom-left (11,61.86) e=0 =F
+   C: bottom-left (11,61.86) e=0 =F
+12 placements: tooltip bottom-right [expect bottom-right]
+   F: bottom-right (-9.5,61.86) e=0
+   P: bottom-right (-9.5,61.86) e=0 =F
+   C: bottom-right (-9.5,61.86) e=0 =F
+12 placements: tooltip left-bottom [expect left-bottom]
+   F: left-bottom (-101.09,-9.33) e=0
+   P: left-bottom (-101.09,-9.33) e=0 =F
+   C: left-bottom (-101.09,223.39) e=213.53 !=F BOTTOM-CLIPPED
+12 placements: tooltip left-center [expect left-center]
+   F: left-center (-101.09,5.83) e=0.01
+   P: left-center (-101.09,5.84) e=0.01 =F
+   C: left-center (-101.09,5.83) e=0.01 =F
+12 placements: tooltip left-top [expect left-top]
+   F: left-top (-101.09,7) e=0
+   P: left-top (-101.09,7) e=0 =F
+   C: left-top (-101.09,7) e=0 =F
+12 placements: tooltip right-bottom [expect right-bottom]
+   F: right-bottom (102.59,-9.33) e=0
+   P: right-bottom (102.59,-9.33) e=0 =F
+   C: right-bottom (102.59,223.39) e=213.53 !=F BOTTOM-CLIPPED
+12 placements: tooltip right-center [expect right-center]
+   F: right-center (102.59,5.83) e=0.01
+   P: right-center (102.59,5.84) e=0.01 =F
+   C: right-center (102.59,5.83) e=0.01 =F
+12 placements: tooltip right-top [expect right-top]
+   F: right-top (102.59,7) e=0
+   P: right-top (102.59,7) e=0 =F
+   C: right-top (102.59,7) e=0 =F
+12 placements: tooltip top-center [expect top-center]
+   F: top-center (11.75,-64.19) e=0
+   P: top-center (11.75,-64.19) e=0 =F
+   C: top-center (11.75,209.39) e=254.39 !=F BOTTOM-CLIPPED
+12 placements: tooltip top-left [expect top-left]
+   F: top-left (11,-64.19) e=0
+   P: top-left (11,-64.19) e=0 =F
+   C: top-left (11,209.39) e=254.39 !=F BOTTOM-CLIPPED
+12 placements: tooltip top-right [expect top-right]
+   F: top-right (-9.5,-64.19) e=0
+   P: top-right (-9.5,-64.19) e=0 =F
+   C: top-right (-9.5,209.39) e=254.39 !=F BOTTOM-CLIPPED
+body box: short body (400px), tooltip bottom past the body but inside the viewport
+   F: left-top (-90.09,0) e=0
+   P: left-top (-90.09,0) e=0 =F
+   C: bottom-center (0.75,54.86) e=0 !=F
+body box: tall body, tooltip bottom past the viewport but inside the body
+   F: bottom-center (0.75,54.86) e=0 BOTTOM-CLIPPED
+   P: bottom-center (0.75,54.86) e=0 =F BOTTOM-CLIPPED
+   C: left-top (-90.09,0) e=0 !=F
+CDK tip override: tooltip default near left edge
+   F: top-left (0,-153.13) e=0
+   P: top-left (0,-153.13) e=0 =F
+   C: top-left (0,-57.19) e=0 !=F
+CDK tip override: tooltip left-bottom [expect left-bottom]
+   F: left-bottom (-90.09,-2.33) e=0
+   P: left-bottom (-90.09,-2.33) e=0 =F
+   C: left-bottom (-90.09,-2.33) e=0 =F
+CDK tip override: tooltip top-center [expect top-center]
+   F: top-center (0.75,-57.19) e=0
+   P: top-center (0.75,-57.19) e=0 =F
+   C: top-center (0.75,-57.19) e=0 =F
+computed styles: {"portPane":{"position":"absolute","display":"block","maxWidth":"none","width":"300px","zIndex":"10","pointerEvents":"auto"},"cdkPane":{"position":"absolute","display":"block","maxWidth":"100%","width":"300px","zIndex":"10","pointerEvents":"auto"},"portTip":{"position":"absolute","display":"block","maxWidth":"160px","width":"160px","zIndex":"1200","pointerEvents":"auto"},"cdkTip":{"position":"absolute","display":"flex","maxWidth":"100%","width":"672.9375px","zIndex":"1200","pointerEvents":"auto"}}
+fallback: dropdown default near bottom edge (allowBottomOverlap) [expect bottom-left]
+   F: bottom-left (0,40.86) e=0 BOTTOM-CLIPPED
+   P: bottom-left (0,40.86) e=0 =F BOTTOM-CLIPPED
+   C: top-left (0,-58) e=0 !=F BOTTOM-CLIPPED
+fallback: dropdown default near right edge [expect bottom-right]
+   F: bottom-right (-224.14,40.86) e=0
+   P: bottom-right (-224.14,40.86) e=0 =F
+   C: bottom-right (-224.14,40.86) e=0 =F
+fallback: dropdown pos=left near left edge [expect right-top]
+   F: right-top (75.86,0) e=0
+   P: right-top (75.86,0) e=0 =F
+   C: right-top (75.86,0) e=0 =F
+fallback: dropdown pos=top near top edge [expect bottom-left]
+   F: bottom-left (0,40.86) e=0
+   P: bottom-left (0,40.86) e=0 =F
+   C: bottom-left (0,40.86) e=0 =F
+fallback: tooltip default near left edge
+   F: top-left (0,-153.13) e=0
+   P: top-left (0,-153.13) e=0 =F
+   C: top-left (0,416.39) e=454.39 !=F BOTTOM-CLIPPED
+fallback: tooltip default near top edge [expect bottom-left]
+   F: bottom-left (0,54.86) e=0
+   P: bottom-left (0,54.86) e=0 =F
+   C: bottom-left (0,54.86) e=0 =F
+fallback: tooltip pos=left near left edge
+   F: right-top (91.59,0) e=0
+   P: right-top (91.59,0) e=0 =F
+   C: right-top (91.59,0) e=0 =F
+fallback: tooltip pos=right near right edge
+   F: top-left (0,-76.38) e=19.19
+   P: top-left (0,-57.19) e=0 !=F
+   C: top-left (0,416.39) e=454.39 !=F BOTTOM-CLIPPED
+hydrated page: {"paneStyleBeforeOpen":{"display":"none","visibility":"hidden"},"tipsBeforeShow":0,"describedbyMatchesTip":true,"tipsAfterClose":1}
+nothing fits: dropdown in a 300x300 viewport
+   F: bottom-left (0,40.86) e=0
+   P: bottom-left (0,40.86) e=0 =F
+   C: bottom-left (0,40.86) e=0 =F
+relative ancestor: dropdown bottom-left
+   F: bottom-left (11,47.86) e=0
+   P: bottom-left (11,47.86) e=0 =F
+   C: bottom-left (11,47.86) e=0 =F
+relative ancestor: tooltip default
+   F: top-center (0.75,-57.19) e=0
+   P: top-center (0.75,-57.19) e=0 =F
+   C: top-center (0.75,393.39) e=431.39 !=F BOTTOM-CLIPPED
+reopen: dropdown pos=right after a nothing-fits open, then widened
+   F: left-top (-300,0) e=0 BOTTOM-CLIPPED reopen:right-bottom (75.86,-17.14) e=0
+   P: left-top (-300,0) e=0 =F BOTTOM-CLIPPED reopen:top-right (-224.14,-58) e=0
+   C: left-top (-300,0) e=0 =F BOTTOM-CLIPPED reopen:top-right (-224.14,-58) e=0
+reopen: tooltip pos=right near right edge (shrink-to-fit tip)
+   F: top-left (0,-76.38) e=19.19 reopen:top-left (0,-76.38) e=19.19
+   P: top-left (0,-57.19) e=0 !=F reopen:top-left (0,-57.19) e=0
+   C: top-left (0,416.39) e=454.39 !=F BOTTOM-CLIPPED reopen:top-left (0,416.39) e=454.39
+resize: dropdown on a centred trigger, 1280 -> 900 wide
+   F: bottom-left (0,40.86) e=0 resize:bottom-left (0,40.86) e=0
+   P: bottom-left (0,40.86) e=0 =F resize:bottom-left (0,40.86) e=0
+   C: bottom-left (0,40.86) e=0 =F resize:bottom-left (0,40.86) e=0
+resize: tooltip on a centred trigger, 1280 -> 900 wide
+   F: top-center (0.75,-57.19) e=0 resize:top-center (0.75,-57.19) e=0
+   P: top-center (0.75,-57.19) e=0 =F resize:top-center (0.75,-57.19) e=0
+   C: top-center (0.75,416.39) e=454.39 !=F BOTTOM-CLIPPED resize:top-center (0.75,416.39) e=454.39
+RTL: dropdown auto alignment [expect bottom-right]
+   F: bottom-right (-224.14,40.86) e=0
+   P: bottom-right (-224.14,40.86) e=0 =F
+   C: bottom-right (-224.14,40.86) e=0 =F
+RTL: dropdown explicit left-top stays physical [expect left-top]
+   F: left-top (-300,0) e=0
+   P: left-top (-300,0) e=0 =F
+   C: left-top (-300,0) e=0 =F
+RTL: tooltip explicit right stays physical [expect right-center]
+   F: right-center (91.59,-1.17) e=0.01
+   P: right-center (91.59,-1.16) e=0.01 =F
+   C: right-center (91.59,-1.17) e=0.01 =F
+scrolling ancestor (positioned): dropdown, trigger partly scrolled out
+   F: bottom-left (0,40.86) e=0 scroll:follows(40.86)
+   P: bottom-left (0,40.86) e=0 =F scroll:follows(40.86)
+   C: bottom-left (0,40.86) e=0 =F scroll:follows(40.86)
+scrolling ancestor (positioned): long tooltip overflows the scroller
+   F: bottom-left (0,54.86) e=0
+   P: bottom-left (0,54.86) e=0 =F BOTTOM-CLIPPED
+   C: bottom-left (0,54.86) e=0 =F
+scrolling ancestor (positioned): tall dropdown overflows the scroller
+   F: bottom-left (0,40.86) e=0 BOTTOM-CLIPPED
+   P: bottom-left (0,40.86) e=0 =F BOTTOM-CLIPPED
+   C: bottom-left (0,40.86) e=0 =F
+scrolling ancestor (positioned): tooltip, trigger partly scrolled out
+   F: bottom-center (0.75,54.86) e=0 scroll:detached(84.86)
+   P: bottom-center (0.75,54.86) e=0 =F scroll:follows(54.86)
+   C: bottom-center (0.75,54.86) e=0 =F scroll:follows(54.86)
+scrolling ancestor (static, no cdkScrollable): dropdown, trigger partly scrolled out
+   F: bottom-left (0,40.86) e=0 scroll:detached(70.86)
+   P: bottom-left (0,40.86) e=0 =F scroll:detached(70.86)
+   C: bottom-left (0,40.86) e=0 =F scroll:detached(70.86)
+scrolling ancestor (static) with followScroll: dropdown re-placed on scroll
+   F: bottom-left (0,40.86) e=0 scroll:detached(70.86)
+   P: bottom-left (0,40.86) e=0 =F scroll:follows(40.86)
+   C: bottom-left (0,40.86) e=0 =F scroll:detached(70.86)
+scrolling ancestor (static): dropdown, trigger partly scrolled out
+   F: bottom-left (0,40.86) e=0 scroll:detached(70.86)
+   P: bottom-left (0,40.86) e=0 =F scroll:detached(70.86)
+   C: bottom-left (0,40.86) e=0 =F scroll:follows(40.86)
+scrolling ancestor (static): tall dropdown overflows the scroller
+   F: bottom-left (0,40.86) e=0
+   P: bottom-left (0,40.86) e=0 =F
+   C: bottom-left (0,40.86) e=0 =F
+server HTML: {"paneInServerHtml":true,"paneOpenInServerHtml":false,"ariaControlsTargetsPane":true,"tipInServerHtml":false,"describedbyInServerHtml":false,"cdkPaneInServerHtml":false}

@@ -1,0 +1,97 @@
+<!doctype html>
+<!-- PROTOTYPE -- Foundation 6.9's own JavaScript on the same fixture DOM as /fixture (reference run). -->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Foundation 6.9 reference</title>
+    <link rel="stylesheet" href="/ref/css/foundation.css" />
+    <style>
+      /* Same fixture layout rules as src/styles.scss (not library CSS). */
+      .fx-trigger { display: block; width: max-content; margin: 0 auto 0 0; }
+      .fx-relative { position: relative; left: 37px; top: 23px; }
+      .fx-scroller { overflow: auto; width: 420px; height: 200px; }
+      .fx-scroller.fx-positioned { position: relative; }
+      .fx-scroller-inner { height: 900px; padding-top: 250px; }
+      .fx-center { margin: 0 auto; }
+    </style>
+  </head>
+  <body>
+    <script src="/ref/jquery.js"></script>
+    <script src="/ref/js/foundation.js"></script>
+    <script>
+      const q = new URLSearchParams(location.search);
+      const get = (k, d) => q.get(k) ?? d;
+      const kind = get('kind', 'dropdown');
+      const pos = get('pos', 'auto');
+      const align = get('align', 'auto');
+      const ctx = get('ctx', 'none');
+      const text =
+        get('text', 'short') === 'long'
+          ? 'A much longer anchored pane text that wraps over several lines to make the pane taller and wider than the default.'
+          : 'Pane text';
+
+      if (get('dir', 'ltr') === 'rtl') {
+        document.documentElement.dir = 'rtl'; // Foundation's Rtl() reads html[dir]
+      }
+
+      const stage = document.createElement('div');
+      stage.className = 'fx-stage';
+      stage.style.height = get('stageH', '2000') + 'px';
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'button fx-trigger';
+      btn.textContent = 'Trigger';
+      if (get('center', '0') === '1') btn.classList.add('fx-center');
+      else btn.style.marginLeft = get('x', '500') + 'px';
+      const opts = {};
+
+      if (pos !== 'auto') opts['data-position'] = pos;
+      if (align !== 'auto') opts['data-alignment'] = align;
+      opts['data-v-offset'] = get('v', '0');
+      opts['data-h-offset'] = get('h', '0');
+      let pane = null;
+
+      if (kind === 'dropdown') {
+        btn.setAttribute('data-toggle', 'pane');
+        pane = document.createElement('div');
+        pane.className = 'dropdown-pane';
+        pane.id = 'pane';
+        pane.setAttribute('data-dropdown', '');
+        pane.textContent = text;
+        for (const [k, v] of Object.entries(opts)) pane.setAttribute(k, v);
+      } else {
+        btn.setAttribute('data-tooltip', '');
+        btn.title = text;
+        for (const [k, v] of Object.entries(opts)) btn.setAttribute(k, v);
+      }
+
+      let host;
+      const y = get('y', '300') + 'px';
+
+      if (ctx === 'relative') {
+        host = document.createElement('div');
+        host.className = 'fx-relative';
+        host.style.paddingTop = y;
+        stage.append(host);
+      } else if (ctx === 'scroll' || ctx === 'scroll-static' || ctx === 'scroll-plain') {
+        const scroller = document.createElement('div');
+        scroller.className = 'fx-scroller' + (ctx === 'scroll' ? ' fx-positioned' : '');
+        scroller.style.marginTop = y;
+        host = document.createElement('div');
+        host.className = 'fx-scroller-inner';
+        scroller.append(host);
+        stage.append(scroller);
+      } else {
+        host = document.createElement('div');
+        host.style.paddingTop = y;
+        stage.append(host);
+      }
+
+      host.append(btn);
+      if (pane) host.append(pane);
+      document.body.append(stage);
+      $(document).foundation();
+      window.__fxReady = true;
+    </script>
+  </body>
+</html>

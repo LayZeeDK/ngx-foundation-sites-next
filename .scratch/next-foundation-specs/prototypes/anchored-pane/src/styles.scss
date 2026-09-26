@@ -1,0 +1,43 @@
+// PROTOTYPE -- anchored pane. Foundation 6.9 Sass, @import form (ADR 0012).
+// The library adds no CSS for the pane or the tip: every rule for them below is Foundation's.
+@import 'foundation-sites/scss/foundation';
+
+@include foundation-global-styles;
+@include foundation-button;
+@include foundation-dropdown;
+@include foundation-tooltip;
+
+// CDK variant only (cdkfix=1), not used by the port: Foundation's `.tooltip { top: calc(100% + pip) }`
+// wins over the `bottom` inline style CDK writes for every overlayY: 'bottom' position (the
+// top-* and *-bottom placements), so a CDK-hosted tip needs this override.
+.cdk-overlay-pane.tooltip.fx-cdk-tip-fix {
+  top: auto;
+}
+
+// ---- Fixture layout only (not library CSS): places the trigger at exact coordinates. ----
+// The same rules are inlined in public/foundation-ref.html so both pages share the geometry.
+.fx-trigger {
+  display: block; // block + margin-left places it at x in LTR and RTL alike
+  width: max-content;
+  margin: 0 auto 0 0;
+}
+.fx-relative {
+  position: relative;
+  left: 37px;
+  top: 23px;
+}
+.fx-scroller {
+  overflow: auto;
+  width: 420px;
+  height: 200px;
+}
+.fx-scroller.fx-positioned {
+  position: relative;
+}
+.fx-scroller-inner {
+  height: 900px;
+  padding-top: 250px;
+}
+.fx-center {
+  margin: 0 auto;
+}
