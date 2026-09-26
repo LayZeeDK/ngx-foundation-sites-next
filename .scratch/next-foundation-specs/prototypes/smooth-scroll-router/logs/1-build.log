@@ -1,0 +1,33 @@
+> Building...
+[OK] Building...
+Browser bundles     
+Initial chunk files  | Names            |  Raw size
+chunk-ERMNDRD3.js    | -                |   1.00 MB | 
+main.js              | main             | 538.66 kB | 
+styles.css           | styles           | 157 bytes | 
+
+                     | Initial total    |   1.54 MB
+
+Lazy chunk files     | Names            |  Raw size
+chunk-FVTJCWBX.js    | smooth-scroll    | 179 bytes | 
+
+
+Server bundles      
+Initial chunk files  | Names            |  Raw size
+server.mjs           | server           |   2.30 MB | 
+main.server.mjs      | main.server      |   1.14 MB | 
+chunk-HSU4F6YZ.mjs   | -                | 998.42 kB | 
+polyfills.server.mjs | polyfills.server | 498.15 kB | 
+chunk-2LWKHUQ2.mjs   | -                |   3.33 kB | 
+chunk-LEH5XX4U.mjs   | -                |   2.06 kB | 
+
+Lazy chunk files     | Names            |  Raw size
+chunk-DQ2C7DI7.mjs   | xhr2             |  40.13 kB | 
+chunk-UXKTHKEQ.mjs   | xhr2             |  40.04 kB | 
+chunk-GGYVX54R.mjs   | smooth-scroll    | 196 bytes | 
+
+Prerendered 2 static routes.
+Application bundle generation complete. [6.825 seconds] - 2026-09-26T11:58:48.838Z
+
+Output location: D:\tmp\smooth-scroll-router\dist\smooth-scroll-router
+

@@ -1,0 +1,78 @@
+<header class="filler" data-testid="top">
+  <h1>Page A</h1>
+  <p>Top of the page. <a routerLink="/page-b" data-testid="to-page-b">Go to Page B</a></p>
+</header>
+
+<!-- Case 1: native in-page jump, no directive at all. Tested with ?restoration= and ?mixin=.
+     Two link forms: "safe" (full path + fragment, the spec's base-href-safe recipe) is the
+     one the case matters for; "bare" (a literal "#frag" href) demonstrates the <base href="/">
+     hazard the Smooth Scroll spec's Problem Statement calls out -- on this non-root route it
+     resolves against the base and is a cross-document navigation, not a same-document jump. -->
+<nav aria-label="Case 1 native menu" data-testid="case1-nav">
+  <ul class="menu">
+    <li><a [href]="path + '#c1-target'" data-testid="case1-link-safe">Case 1 target (safe href)</a></li>
+    <li><a href="#c1-target" data-testid="case1-link-bare">Case 1 target (bare href, base-href hazard)</a></li>
+  </ul>
+</nav>
+
+<section class="filler" data-testid="case1-filler-before"></section>
+
+<section id="c1-target" class="filler" data-testid="case1-target">
+  <h2>Case 1 target</h2>
+</section>
+
+<section class="filler" data-testid="case1-filler-after"></section>
+
+<!-- Case 2: dehydrated @defer (hydrate on interaction), container host and link host.
+     Base-href-safe hrefs so the click is a same-document jump, not the base-href hazard. -->
+@defer (hydrate on interaction) {
+  <div nfsSmoothScroll data-testid="case2-container">
+    <a [href]="path + '#c2-container-target'" data-testid="case2-container-link">Case 2 container-host link</a>
+  </div>
+} @placeholder {
+  <div data-testid="case2-container-placeholder">Case 2 container placeholder</div>
+}
+
+<section class="filler" data-testid="case2-container-filler-before"></section>
+
+<section id="c2-container-target" class="filler" data-testid="case2-container-target">
+  <h2>Case 2 container-host target</h2>
+</section>
+
+<section class="filler" data-testid="case2-container-filler-after"></section>
+
+@defer (hydrate on interaction) {
+  <a [href]="path + '#c2-link-target'" nfsSmoothScroll data-testid="case2-link-link">Case 2 link-host link</a>
+} @placeholder {
+  <div data-testid="case2-link-placeholder">Case 2 link placeholder</div>
+}
+
+<section class="filler" data-testid="case2-link-filler-before"></section>
+
+<section id="c2-link-target" class="filler" data-testid="case2-link-target">
+  <h2>Case 2 link-host target</h2>
+</section>
+
+<section class="filler" data-testid="case2-link-filler-after"></section>
+
+<!-- Case 3: Magellan-lite deep linking. ?historyMode=push selects pushState (updateHistory);
+     the default is replaceState (deepLinking). Base-href-safe hrefs, same reason as case 2. -->
+<nav aria-label="Case 3 Magellan-lite menu" nfsMagellanLite [updateHistory]="updateHistory" data-testid="case3-nav">
+  <ul class="menu">
+    <li><a [href]="path + '#m-s1'" data-testid="case3-link-1">Section 1</a></li>
+    <li><a [href]="path + '#m-s2'" data-testid="case3-link-2">Section 2</a></li>
+    <li><a [href]="path + '#m-s3'" data-testid="case3-link-3">Section 3</a></li>
+  </ul>
+</nav>
+
+<section id="m-s1" class="filler" data-testid="case3-s1">
+  <h2>Magellan section 1</h2>
+</section>
+
+<section id="m-s2" class="filler" data-testid="case3-s2">
+  <h2>Magellan section 2</h2>
+</section>
+
+<section id="m-s3" class="filler" data-testid="case3-s3">
+  <h2>Magellan section 3</h2>
+</section>

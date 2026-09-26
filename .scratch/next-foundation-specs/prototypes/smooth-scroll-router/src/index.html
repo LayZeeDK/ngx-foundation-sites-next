@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>SmoothScrollRouter</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <script>
+    // Case 1's "with the mixin" variant: ?mixin=1 adds the class the nfs-smooth-scroll
+    // mixin would emit as `html.nfs-smooth-scroll-mixin { scroll-behavior: smooth; }`, gated
+    // by prefers-reduced-motion in the real spec. This blocking, synchronous script runs
+    // before layout, so a native fragment jump that happens before hydration still sees it.
+    if (new URLSearchParams(location.search).get('mixin') === '1') {
+      document.documentElement.classList.add('nfs-smooth-scroll-mixin');
+    }
+  </script>
+</head>
+<body>
+  <app-root></app-root>
+</body>
+</html>
