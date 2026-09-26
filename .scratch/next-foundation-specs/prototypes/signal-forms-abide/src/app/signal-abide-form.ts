@@ -57,7 +57,7 @@ import { NfsAbide, NfsAbideInput, nfsEqualTo } from './abide/abide';
       <!-- Optional pattern field whose error sits elsewhere (data-form-error-for). -->
       <div>
         <label [for]="key() + '-zip'">Postal code (4 digits, optional)</label>
-        <input [id]="key() + '-zip'" type="text" inputmode="numeric" nfsAbideInput [formField]="f.zip" />
+        <input [id]="key() + '-zip'" type="text" inputmode="numeric" placeholder="1234" nfsAbideInput [formField]="f.zip" />
       </div>
 
       <!-- Checkbox: Abide validates it on click (change). -->

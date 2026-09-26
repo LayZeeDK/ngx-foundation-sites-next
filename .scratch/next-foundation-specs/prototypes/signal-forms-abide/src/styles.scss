@@ -2,6 +2,23 @@
 // (.is-invalid-input, .is-invalid-label, .form-error.is-visible) comes from
 // foundation-forms (scss/forms/_error.scss); the form-level alert is .callout.alert
 // hidden with the native `hidden` attribute.
+
+// WCAG 2.2 AA fixes, as the consumer's Foundation settings (declared before the import;
+// Foundation's settings are !default). Foundation's defaults fail:
+// - 1.4.3: $input-error-color and $form-label-color-invalid default to get-color(alert)
+//   #cc4b37 on #fefefe = 4.49:1 (.form-error is 12px bold, labels 14px normal; need 4.5:1).
+// - 1.4.3: $input-background-invalid (#cc4b37) is also the invalid ::placeholder colour, on
+//   mix(#cc4b37, #fefefe, 10%) = #f9ecea background: 3.93:1.
+// - 1.4.11: $input-border 1px solid $medium-gray (#cacaca) on #fefefe = 1.63:1.
+// - 1.4.3: $input-placeholder-color $medium-gray (#cacaca) on #fefefe = 1.63:1.
+// #bf3f2c: 5.25:1 on #fefefe, 4.56:1 on its own 10% tint. #8a8a8a ($dark-gray): 3.42:1.
+// #737373: 4.70:1.
+$input-error-color: #bf3f2c;
+$form-label-color-invalid: #bf3f2c;
+$input-background-invalid: #bf3f2c;
+$input-border: 1px solid #8a8a8a;
+$input-placeholder-color: #737373;
+
 @import 'foundation-sites/scss/foundation';
 
 @include foundation-global-styles;

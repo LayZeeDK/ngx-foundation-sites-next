@@ -117,6 +117,6 @@ test('submit before hydration is a native GET submission: page reloads, nothing 
   const f2 = page.getByRole('form', { name: 'Default policy (validateOn fieldChange)' });
   await expect(f2.getByLabel('Email')).toHaveValue('');
   await expect(f2.getByLabel('Email')).not.toHaveClass(INVALID);
-  await expect(f2.getByRole('alert')).toHaveCount(0); // still hidden: the submit did not replay
+  await expect(f2.locator('[data-abide-error]')).toBeHidden(); // the submit did not replay
   expect(errors).toEqual([]);
 });

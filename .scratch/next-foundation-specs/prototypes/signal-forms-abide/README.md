@@ -15,7 +15,7 @@ The decisive files of a plain Angular CLI 22.2.0 application created with `npx @
 - `src/app/reactive-abide-form.ts` -- the same directives under Reactive Forms (`updateOn: 'blur'`).
 - `src/app/app.ts` -- four Signal Forms instances (default policy, `liveValidate`, `validateOnBlur`, default with the prototype fixes off) and the Reactive fixture.
 - `src/app/skill-check.ts` -- compile-only checks of the angular-developer skill's Signal Forms claims against 22.2.0.
-- `src/styles.scss` -- Foundation's Sass only (`foundation-global-styles`, `-typography`, `-forms`, `-button`, `-callout`). **No custom CSS was added.**
+- `src/styles.scss` -- Foundation's Sass only (`foundation-global-styles`, `-typography`, `-forms`, `-button`, `-callout`). Five Foundation settings are declared before the import to reach WCAG 2.2 AA contrast: `$input-error-color`, `$form-label-color-invalid`, `$input-background-invalid` (all `#bf3f2c`), `$input-placeholder-color: #737373`, `$input-border: 1px solid #8a8a8a`. **No custom CSS was added.**
 - `e2e/abide.spec.ts`, `e2e/ssr.spec.ts`, `playwright.config.ts` -- the tests (Chromium, Firefox, WebKit).
 - `src/app/app.routes.server.ts` -- `RenderMode.Server` for every route; `package.json` -- the exact dependency set.
 
@@ -33,7 +33,15 @@ npx tsc --noEmit -p tsconfig.app.json          # includes skill-check.ts
 
 ## Verdict
 
-**Yes.** `[nfsAbideInput]` reading `FORM_FIELD` by same-element self-injection drives every part of Foundation's error contract from Signal Forms field state, and the same directive reads `NgControl` as a courtesy so the classes also work under Reactive Forms. 42 of 42 tests pass in Chromium, Firefox, and WebKit (and 84 of 84 with `--repeat-each=2`). Server HTML is the pristine form with no error classes. axe finds nothing on the invalid state except Foundation's default alert colour (4.49:1). `input`, `change`, and `blur` (with `focusout`) replay after hydration.
+**Yes.** `[nfsAbideInput]` reading `FORM_FIELD` by same-element self-injection drives every part of Foundation's error contract from Signal Forms field state, and the same directive reads `NgControl` as a courtesy so the classes also work under Reactive Forms. 45 of 45 tests pass in Chromium, Firefox, and WebKit (and 90 of 90 with `--repeat-each=2`). Server HTML is the pristine form with no error classes. `input`, `change`, and `blur` (with `focusout`) replay after hydration.
+
+**WCAG 2.2 AA** on the invalid state: axe with the tags `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa` (nothing disabled) finds no violations, and a dedicated test asserts 3.3.1, 3.3.3, 3.3.7, 4.1.3, 1.4.3, and 1.4.11. That result depends on these fixes:
+
+- **Contrast.** Foundation's defaults fail 1.4.3: `.form-error` and `.is-invalid-label` at 4.49:1, the invalid placeholder at 3.93:1, and the placeholder at 1.63:1. They also fail 1.4.11: the input border is 1.63:1. The five settings above raise these to 5.25, 5.25, 4.55, 4.70, and 3.42:1. The invalid border already passes 1.4.11 at the defaults.
+- **Status messages (4.1.3).** Field errors appear without taking focus, so the directive adds `role="alert"` to each `.form-error` that has none. Abide's `a11yAttributes` does the same.
+- **Redundant entry (3.3.7).** It fails for input entered before hydration unless the rescue below is on, and it fails for a submit before hydration. That second case is OPEN FOR HUMAN.
+
+The full table is in the ticket's `## Answer`.
 
 Four things the brief did not anticipate:
 

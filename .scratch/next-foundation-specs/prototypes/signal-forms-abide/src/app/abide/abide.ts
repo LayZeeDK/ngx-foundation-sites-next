@@ -280,6 +280,11 @@ export class NfsAbideInput {
         if (!e.id) {
           renderer.setAttribute(e, 'id', `nfs-abide-error-${nextErrorId++}`);
         }
+        // WCAG 4.1.3: an error that appears without taking focus is a status message.
+        // Abide's a11yAttributes does the same (role="alert" on every .form-error lacking one).
+        if (!e.hasAttribute('role')) {
+          renderer.setAttribute(e, 'role', 'alert');
+        }
       }
       this.#errors.set([...errors]);
 

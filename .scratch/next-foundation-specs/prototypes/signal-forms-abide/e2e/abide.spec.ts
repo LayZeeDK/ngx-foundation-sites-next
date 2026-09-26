@@ -42,7 +42,7 @@ function fields(form: Locator) {
     zipError: form.getByText('Use four digits.'),
     agree: form.getByLabel('I agree'),
     agreeError: form.getByText('You must agree.'),
-    alert: form.getByRole('alert'),
+    alert: form.locator('[data-abide-error]'),
     submit: form.getByRole('button', { name: 'Submit' }),
     result: form.locator('output'),
   };
@@ -155,17 +155,14 @@ test.describe('default policy (validateOn fieldChange)', () => {
     await expect(f.zip).not.toHaveClass(INVALID);
     await expect(f.result).toHaveText('');
 
-    const tags = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice'];
-    const axe = await new AxeBuilder({ page }).withTags(tags).disableRules(['color-contrast']).analyze();
-    expect(axe.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target).join(', ')}`)).toEqual([]);
-    // Color contrast is Foundation's default $alert-color, not the directives: recorded, not asserted.
-    const contrast = await new AxeBuilder({ page }).withRules(['color-contrast']).analyze();
-    test.info().annotations.push({
-      type: 'color-contrast',
-      description: JSON.stringify(
-        contrast.violations.flatMap((v) => v.nodes.map((n) => `${n.target}: ${n.any[0]?.message}`)),
-      ),
-    });
+    // WCAG 2.2 AA rule set, nothing disabled. With Foundation's default colours this reported
+    // color-contrast 4.49:1 (#cc4b37 on #fefefe); styles.scss fixes it with Foundation settings.
+    const axe = await new AxeBuilder({ page })
+      .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'])
+      .analyze();
+    expect(
+      axe.violations.map((v) => `${v.id}: ${v.nodes.map((n) => `${n.target} ${n.any[0]?.message ?? ''}`).join(', ')}`),
+    ).toEqual([]);
 
     // Fix everything: alert hides once the form is valid, submission runs.
     await f.email.fill('larsbrinknielsen@gmail.com');
@@ -180,6 +177,84 @@ test.describe('default policy (validateOn fieldChange)', () => {
     await expect(f.alert).toBeHidden();
     await f.submit.click();
     await expect(f.result).toContainText('submitted');
+  });
+
+  test('WCAG 2.2 AA: 3.3.1, 3.3.3, 3.3.7, 4.1.3, 1.4.3, 1.4.11 on the invalid state', async ({ page }) => {
+    await ready(page);
+    const form = page.getByRole('form', { name: 'Default policy (validateOn fieldChange)' });
+    const f = fields(form);
+    await f.password.fill('secret');
+    await f.password.blur();
+    await f.confirm.fill('other');
+    await f.confirm.blur();
+    await f.zip.fill('12');
+    await f.zip.blur();
+    await f.submit.click();
+
+    // 3.3.1: every field in error is flagged (aria-invalid) and described in text by the
+    // visible error it references.
+    for (const [input, error] of [
+      [f.email, f.emailError],
+      [f.confirm, f.confirmEqual],
+      [f.zip, f.zipError],
+      [f.agree, f.agreeError],
+    ] as const) {
+      await expect(input).toHaveAttribute('aria-invalid', 'true');
+      await expect(error).toBeVisible();
+      await expect(input).toHaveAccessibleDescription(new RegExp((await error.textContent())!.trim()));
+    }
+    // 3.3.3: the message follows the failed rule (equalTo, not required) and says how to fix it.
+    await expect(f.confirmRequired).toBeHidden();
+    await expect(f.confirm).toHaveAccessibleDescription('Passwords do not match.');
+    // 3.3.7: an invalid submit keeps every entry (the password confirmation re-entry is the
+    // Understanding document's security exception).
+    await expect(f.password).toHaveValue('secret');
+    await expect(f.zip).toHaveValue('12');
+    // 4.1.3: errors appear without taking focus, so they are status messages: role="alert"
+    // on the form-level region and on each field error.
+    await expect(f.alert).toHaveAttribute('role', 'alert');
+    for (const error of [f.emailError, f.confirmEqual, f.zipError, f.agreeError]) {
+      await expect(error).toHaveAttribute('role', 'alert');
+    }
+
+    // 1.4.3 / 1.4.11 from computed styles (axe does not read ::placeholder or borders).
+    await page.locator('h1').click(); // nothing focused: Foundation drops invalid styles on :focus
+    await page.waitForTimeout(600); // Foundation's input border-color transition (0.25s)
+    const c = await page.evaluate(() => {
+      const rgb = (s: string) => s.match(/[\d.]+/g)!.slice(0, 3).map(Number);
+      const lum = (s: string) => {
+        const [r, g, b] = rgb(s).map((v) => {
+          v /= 255;
+          return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+        });
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+      };
+      const ratio = (a: string, b: string) => {
+        const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p);
+        return Math.floor(((x + 0.05) / (y + 0.05)) * 100) / 100; // floor: 4.497 must fail 4.5
+      };
+      const q = (sel: string) => document.querySelector(sel)!;
+      const cs = (sel: string, pseudo?: string) => getComputedStyle(q(sel), pseudo);
+      const page = getComputedStyle(document.body).backgroundColor;
+      const zip = cs('#change-zip');
+      return {
+        formErrorText: ratio(cs('[data-form-error-for="change-zip"]').color, page),
+        invalidLabelText: ratio(cs('label[for="change-zip"]').color, page),
+        invalidBorderVsPage: ratio(zip.borderTopColor, page),
+        invalidBorderVsInside: ratio(zip.borderTopColor, zip.backgroundColor),
+        placeholder: ratio(cs('#live-zip', '::placeholder').color, page),
+        placeholderOnInvalidBg: ratio(cs('#change-zip', '::placeholder').color, zip.backgroundColor),
+        defaultBorderVsPage: ratio(cs('#live-zip').borderTopColor, page),
+      };
+    });
+    test.info().annotations.push({ type: 'contrast', description: JSON.stringify(c) });
+    expect(c.formErrorText).toBeGreaterThanOrEqual(4.5);
+    expect(c.invalidLabelText).toBeGreaterThanOrEqual(4.5);
+    expect(c.invalidBorderVsPage).toBeGreaterThanOrEqual(3);
+    expect(c.invalidBorderVsInside).toBeGreaterThanOrEqual(3);
+    expect(c.placeholder).toBeGreaterThanOrEqual(4.5);
+    expect(c.placeholderOnInvalidBg).toBeGreaterThanOrEqual(4.5);
+    expect(c.defaultBorderVsPage).toBeGreaterThanOrEqual(3);
   });
 
   for (const [name, flushed] of [
@@ -247,7 +322,7 @@ test('Reactive Forms: same classes through the NgControl courtesy', async ({ pag
   await form.getByRole('button', { name: 'Submit' }).click();
   await expect(name).toHaveClass(INVALID);
   await expect(form.locator('label').filter({ hasText: /^\s*Name/ })).toHaveClass(INVALID_LABEL);
-  await expect(form.getByRole('alert')).toBeVisible();
+  await expect(form.locator('[data-abide-error]')).toBeVisible();
   await email.fill('larsbrinknielsen@gmail.com');
   await email.blur();
   await expect(email).not.toHaveClass(INVALID);
