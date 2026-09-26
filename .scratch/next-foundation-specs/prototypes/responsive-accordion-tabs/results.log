@@ -1,0 +1,171 @@
+# Production build, npx playwright test (chromium, firefox, webkit), 2026-09-26
+FINDING /: ng-server-context=ssr; accordion titles=3
+FINDING /prerendered: ng-server-context=ssg; accordion titles=3
+PASS 1 [chromium]  tests\responsive-accordion-tabs.spec.ts:22:7  server output  server and prerendered HTML render the Server breakpoint mode (accordion) (193ms)
+FINDING /: swaps=["accordion->tabs at +0.50ms"]; frames before live: accordion (2); first frame after live: tabs at +38.9ms; accordion frames after live: 0
+PASS 2 [chromium]  tests\responsive-accordion-tabs.spec.ts:41:9  hydration at 1300 px (server rendered accordion, client resolves tabs)  /: swaps to tabs in the first render callback, no painted accordion frame after going live (721ms)
+FINDING /instance: swaps=["accordion->tabs at +0.30ms"]; frames before live: accordion (2); first frame after live: tabs at +35.0ms; accordion frames after live: 0
+PASS 3 [chromium]  tests\responsive-accordion-tabs.spec.ts:41:9  hydration at 1300 px (server rendered accordion, client resolves tabs)  /instance: swaps to tabs in the first render callback, no painted accordion frame after going live (666ms)
+FINDING /prerendered: swaps=["accordion->tabs at +0.40ms"]; frames before live: accordion (3); first frame after live: tabs at +45.3ms; accordion frames after live: 0
+PASS 4 [chromium]  tests\responsive-accordion-tabs.spec.ts:41:9  hydration at 1300 px (server rendered accordion, client resolves tabs)  /prerendered: swaps to tabs in the first render callback, no painted accordion frame after going live (693ms)
+FINDING /client: swaps=["accordion->tabs at +0.50ms"]; frames before live: absent,none (3); first frame after live: tabs at +40.9ms; accordion frames after live: 0
+PASS 5 [chromium]  tests\responsive-accordion-tabs.spec.ts:41:9  hydration at 1300 px (server rendered accordion, client resolves tabs)  /client: swaps to tabs in the first render callback, no painted accordion frame after going live (673ms)
+FINDING axe tabs mode (hydrated, 1300 px): no violations
+FINDING tabs->accordion: focus=button[role=button] "Specs"
+FINDING axe accordion mode after swap from tabs (500 px): no violations
+FINDING accordion->tabs: focus=a[role=tab] "Reviews"
+FINDING axe tabs mode after swap from accordion (1300 px): no violations
+FINDING tab tabindex after swap and ArrowLeft: -1,0,-1
+FINDING swap log: [{"t":143.89999999850988,"from":"accordion","to":"tabs","restore":null},{"t":1033.800000000745,"from":"tabs","to":"accordion","restore":"specs"},{"t":1047.5999999977648,"from":"accordion","to":"accordion","restore":"specs","refocused":"Specs"},{"t":1584.0999999977648,"from":"accordion","to":"tabs","restore":"reviews"},{"t":1593.3999999985099,"from":"tabs","to":"tabs","restore":"reviews","refocused":"Reviews"}]
+PASS 6 [chromium]  tests\responsive-accordion-tabs.spec.ts:83:7  resize across medium in both directions  selected state and focus survive, focus lands on the equivalent control, keys work after the swap (2.2s)
+FINDING axe accordion mode (hydrated, 500 px, all collapsed): no violations
+FINDING nothing expanded, Reviews title focused -> tabs: selected=Overview, focus=a[role=tab] "Reviews"
+PASS 7 [chromium]  tests\responsive-accordion-tabs.spec.ts:127:7  resize across medium in both directions  accordion with nothing expanded -> tabs shows the first panel; focus on the focused title equivalent (1.1s)
+PASS 8 [chromium]  tests\responsive-accordion-tabs.spec.ts:142:7  resize across medium in both directions  focus outside the widget is not moved by a swap (521ms)
+FINDING focus in Overview panel link, tabs->accordion: focus=button[role=button] "Overview"
+FINDING input value in Specs panel after accordion->tabs swap: ""; focus=a[role=tab] "Specs"
+PASS 9 [chromium]  tests\responsive-accordion-tabs.spec.ts:155:7  resize across medium in both directions  focus inside panel content, and consumer state inside panels, across a swap (514ms)
+FINDING / pre-hydration focus on "Specs" title -> after hydration focus=a[role=tab] "Specs"; swaps=[{"t":212,"from":"accordion","to":"tabs","restore":"specs"},{"t":233,"from":"tabs","to":"tabs","restore":"specs","refocused":"Specs"}]
+PASS 10 [chromium]  tests\responsive-accordion-tabs.spec.ts:178:9  focus before hydration (main bundle held back)  /: focus on a server-rendered accordion title moves to the equivalent tab at hydration (390ms)
+FINDING /instance pre-hydration focus on "Specs" title -> after hydration focus=a[role=tab] "Specs"; swaps=[{"t":211.10000000149012,"from":"accordion","to":"tabs","restore":"specs"},{"t":236.89999999850988,"from":"tabs","to":"tabs","restore":"specs","refocused":"Specs"}]
+PASS 11 [chromium]  tests\responsive-accordion-tabs.spec.ts:178:9  focus before hydration (main bundle held back)  /instance: focus on a server-rendered accordion title moves to the equivalent tab at hydration (398ms)
+FINDING pre-hydration click on "Specs" at 1300px: mode=tabs; selected= breakpoint=xlarge; errors=[]
+PASS 12 [chromium]  tests\responsive-accordion-tabs.spec.ts:197:9  focus before hydration (main bundle held back)  a pre-hydration click on the "Specs" title at 1300px (885ms)
+FINDING pre-hydration click on "Specs" at 500px: mode=accordion; selected=specs breakpoint=small; errors=[]
+PASS 13 [chromium]  tests\responsive-accordion-tabs.spec.ts:197:9  focus before hydration (main bundle held back)  a pre-hydration click on the "Specs" title at 500px (850ms)
+FINDING pre-hydration ArrowDown on "Overview" at 1300px: focus=a[role=tab] "Overview"; errors=[]
+PASS 14 [chromium]  tests\responsive-accordion-tabs.spec.ts:213:7  focus before hydration (main bundle held back)  a pre-hydration ArrowDown on a title the swap removes (809ms)
+FINDING /deferred: swaps=[]; console=[]
+FINDING axe /deferred tabs after incremental hydration: no violations
+PASS 15 [chromium]  tests\responsive-accordion-tabs.spec.ts:231:9  incremental hydration: @defer (hydrate on viewport)  /deferred: block below the fold hydrates into tabs when scrolled into view (1.6s)
+FINDING /deferred: focus on dehydrated "Specs" title -> after block hydration focus=body; swaps=[]; errors=[]
+PASS 16 [chromium]  tests\responsive-accordion-tabs.spec.ts:256:9  incremental hydration: @defer (hydrate on viewport)  /deferred: focus on a dehydrated accordion title, block hydrates on focusin (976ms)
+FINDING /deferred-instance: swaps=[{"t":563.6000000014901,"from":"accordion","to":"tabs","restore":null}]; console=[]
+FINDING axe /deferred-instance tabs after incremental hydration: no violations
+PASS 17 [chromium]  tests\responsive-accordion-tabs.spec.ts:231:9  incremental hydration: @defer (hydrate on viewport)  /deferred-instance: block below the fold hydrates into tabs when scrolled into view (1.8s)
+FINDING /deferred-instance: focus on dehydrated "Specs" title -> after block hydration focus=a[role=tab] "Specs"; swaps=[{"t":552.6999999992549,"from":"accordion","to":"tabs","restore":"specs"},{"t":574.8000000007451,"from":"tabs","to":"tabs","restore":"specs","refocused":"Specs"}]; errors=[]
+PASS 18 [chromium]  tests\responsive-accordion-tabs.spec.ts:256:9  incremental hydration: @defer (hydrate on viewport)  /deferred-instance: focus on a dehydrated accordion title, block hydrates on focusin (1.0s)
+FINDING /: ng-server-context=ssr; accordion titles=3
+FINDING /prerendered: ng-server-context=ssg; accordion titles=3
+PASS 19 [firefox]  tests\responsive-accordion-tabs.spec.ts:22:7  server output  server and prerendered HTML render the Server breakpoint mode (accordion) (53ms)
+FINDING /: swaps=["accordion->tabs at +0.00ms"]; frames before live: accordion (8); first frame after live: tabs at +43.0ms; accordion frames after live: 0
+PASS 20 [firefox]  tests\responsive-accordion-tabs.spec.ts:41:9  hydration at 1300 px (server rendered accordion, client resolves tabs)  /: swaps to tabs in the first render callback, no painted accordion frame after going live (3.1s)
+FINDING /instance: swaps=["accordion->tabs at +0.00ms"]; frames before live: accordion (5); first frame after live: tabs at +31.0ms; accordion frames after live: 0
+PASS 21 [firefox]  tests\responsive-accordion-tabs.spec.ts:41:9  hydration at 1300 px (server rendered accordion, client resolves tabs)  /instance: swaps to tabs in the first render callback, no painted accordion frame after going live (1.1s)
+FINDING /prerendered: swaps=["accordion->tabs at +1.00ms"]; frames before live: accordion (6); first frame after live: tabs at +50.0ms; accordion frames after live: 0
+PASS 22 [firefox]  tests\responsive-accordion-tabs.spec.ts:41:9  hydration at 1300 px (server rendered accordion, client resolves tabs)  /prerendered: swaps to tabs in the first render callback, no painted accordion frame after going live (1.2s)
+FINDING /client: swaps=["accordion->tabs at +1.00ms"]; frames before live: absent,none (6); first frame after live: tabs at +40.0ms; accordion frames after live: 0
+PASS 23 [firefox]  tests\responsive-accordion-tabs.spec.ts:41:9  hydration at 1300 px (server rendered accordion, client resolves tabs)  /client: swaps to tabs in the first render callback, no painted accordion frame after going live (1.1s)
+FINDING axe tabs mode (hydrated, 1300 px): no violations
+FINDING tabs->accordion: focus=button[role=button] "Specs"
+FINDING axe accordion mode after swap from tabs (500 px): no violations
+FINDING accordion->tabs: focus=a[role=tab] "Reviews"
+FINDING axe tabs mode after swap from accordion (1300 px): no violations
+FINDING tab tabindex after swap and ArrowLeft: -1,0,-1
+FINDING swap log: [{"t":198,"from":"accordion","to":"tabs","restore":null},{"t":1775,"from":"tabs","to":"accordion","restore":"specs"},{"t":1795,"from":"accordion","to":"accordion","restore":"specs","refocused":"Specs"},{"t":3123,"from":"accordion","to":"tabs","restore":"reviews"},{"t":3135,"from":"tabs","to":"tabs","restore":"reviews","refocused":"Reviews"}]
+PASS 24 [firefox]  tests\responsive-accordion-tabs.spec.ts:83:7  resize across medium in both directions  selected state and focus survive, focus lands on the equivalent control, keys work after the swap (4.6s)
+FINDING axe accordion mode (hydrated, 500 px, all collapsed): no violations
+FINDING nothing expanded, Reviews title focused -> tabs: selected=Overview, focus=a[role=tab] "Reviews"
+PASS 25 [firefox]  tests\responsive-accordion-tabs.spec.ts:127:7  resize across medium in both directions  accordion with nothing expanded -> tabs shows the first panel; focus on the focused title equivalent (1.8s)
+PASS 26 [firefox]  tests\responsive-accordion-tabs.spec.ts:142:7  resize across medium in both directions  focus outside the widget is not moved by a swap (957ms)
+FINDING focus in Overview panel link, tabs->accordion: focus=button[role=button] "Overview"
+FINDING input value in Specs panel after accordion->tabs swap: ""; focus=a[role=tab] "Specs"
+PASS 27 [firefox]  tests\responsive-accordion-tabs.spec.ts:155:7  resize across medium in both directions  focus inside panel content, and consumer state inside panels, across a swap (1.0s)
+FINDING / pre-hydration focus on "Specs" title -> after hydration focus=a[role=tab] "Specs"; swaps=[{"t":279,"from":"accordion","to":"tabs","restore":"specs"},{"t":300,"from":"tabs","to":"tabs","restore":"specs","refocused":"Specs"}]
+PASS 28 [firefox]  tests\responsive-accordion-tabs.spec.ts:178:9  focus before hydration (main bundle held back)  /: focus on a server-rendered accordion title moves to the equivalent tab at hydration (727ms)
+FINDING /instance pre-hydration focus on "Specs" title -> after hydration focus=a[role=tab] "Specs"; swaps=[{"t":295,"from":"accordion","to":"tabs","restore":"specs"},{"t":318,"from":"tabs","to":"tabs","restore":"specs","refocused":"Specs"}]
+PASS 29 [firefox]  tests\responsive-accordion-tabs.spec.ts:178:9  focus before hydration (main bundle held back)  /instance: focus on a server-rendered accordion title moves to the equivalent tab at hydration (1.8s)
+FINDING pre-hydration click on "Specs" at 1300px: mode=tabs; selected= breakpoint=xlarge; errors=[]
+PASS 30 [firefox]  tests\responsive-accordion-tabs.spec.ts:197:9  focus before hydration (main bundle held back)  a pre-hydration click on the "Specs" title at 1300px (1.2s)
+FINDING pre-hydration click on "Specs" at 500px: mode=accordion; selected=specs breakpoint=small; errors=[]
+PASS 31 [firefox]  tests\responsive-accordion-tabs.spec.ts:197:9  focus before hydration (main bundle held back)  a pre-hydration click on the "Specs" title at 500px (1.1s)
+FINDING pre-hydration ArrowDown on "Overview" at 1300px: focus=a[role=tab] "Overview"; errors=[]
+PASS 32 [firefox]  tests\responsive-accordion-tabs.spec.ts:213:7  focus before hydration (main bundle held back)  a pre-hydration ArrowDown on a title the swap removes (1.1s)
+FINDING /deferred: swaps=[]; console=[]
+FINDING axe /deferred tabs after incremental hydration: no violations
+PASS 33 [firefox]  tests\responsive-accordion-tabs.spec.ts:231:9  incremental hydration: @defer (hydrate on viewport)  /deferred: block below the fold hydrates into tabs when scrolled into view (2.2s)
+FINDING /deferred: focus on dehydrated "Specs" title -> after block hydration focus=body; swaps=[]; errors=[]
+PASS 34 [firefox]  tests\responsive-accordion-tabs.spec.ts:256:9  incremental hydration: @defer (hydrate on viewport)  /deferred: focus on a dehydrated accordion title, block hydrates on focusin (1.3s)
+FINDING /deferred-instance: swaps=[{"t":669,"from":"accordion","to":"tabs","restore":null}]; console=[]
+FINDING axe /deferred-instance tabs after incremental hydration: no violations
+PASS 35 [firefox]  tests\responsive-accordion-tabs.spec.ts:231:9  incremental hydration: @defer (hydrate on viewport)  /deferred-instance: block below the fold hydrates into tabs when scrolled into view (2.5s)
+FINDING /deferred-instance: focus on dehydrated "Specs" title -> after block hydration focus=a[role=tab] "Specs"; swaps=[{"t":593,"from":"accordion","to":"tabs","restore":"specs"},{"t":623,"from":"tabs","to":"tabs","restore":"specs","refocused":"Specs"}]; errors=[]
+PASS 36 [firefox]  tests\responsive-accordion-tabs.spec.ts:256:9  incremental hydration: @defer (hydrate on viewport)  /deferred-instance: focus on a dehydrated accordion title, block hydrates on focusin (1.3s)
+FINDING /: ng-server-context=ssr; accordion titles=3
+FINDING /prerendered: ng-server-context=ssg; accordion titles=3
+PASS 37 [webkit]  tests\responsive-accordion-tabs.spec.ts:22:7  server output  server and prerendered HTML render the Server breakpoint mode (accordion) (63ms)
+FINDING /: swaps=["accordion->tabs at +1.00ms"]; frames before live: accordion (1); first frame after live: tabs at +55.0ms; accordion frames after live: 0
+PASS 38 [webkit]  tests\responsive-accordion-tabs.spec.ts:41:9  hydration at 1300 px (server rendered accordion, client resolves tabs)  /: swaps to tabs in the first render callback, no painted accordion frame after going live (964ms)
+FINDING /instance: swaps=["accordion->tabs at +1.00ms"]; frames before live: accordion (1); first frame after live: tabs at +53.0ms; accordion frames after live: 0
+PASS 39 [webkit]  tests\responsive-accordion-tabs.spec.ts:41:9  hydration at 1300 px (server rendered accordion, client resolves tabs)  /instance: swaps to tabs in the first render callback, no painted accordion frame after going live (856ms)
+FINDING /prerendered: swaps=["accordion->tabs at +1.00ms"]; frames before live: accordion (1); first frame after live: tabs at +58.0ms; accordion frames after live: 0
+PASS 40 [webkit]  tests\responsive-accordion-tabs.spec.ts:41:9  hydration at 1300 px (server rendered accordion, client resolves tabs)  /prerendered: swaps to tabs in the first render callback, no painted accordion frame after going live (951ms)
+FINDING /client: swaps=["accordion->tabs at +2.00ms"]; frames before live: absent (1); first frame after live: tabs at +59.0ms; accordion frames after live: 0
+PASS 41 [webkit]  tests\responsive-accordion-tabs.spec.ts:41:9  hydration at 1300 px (server rendered accordion, client resolves tabs)  /client: swaps to tabs in the first render callback, no painted accordion frame after going live (998ms)
+FINDING axe tabs mode (hydrated, 1300 px): no violations
+FINDING tabs->accordion: focus=button[role=button] "Specs"
+FINDING axe accordion mode after swap from tabs (500 px): no violations
+FINDING accordion->tabs: focus=a[role=tab] "Reviews"
+FINDING axe tabs mode after swap from accordion (1300 px): no violations
+FINDING tab tabindex after swap and ArrowLeft: -1,0,-1
+FINDING swap log: [{"t":291,"from":"accordion","to":"tabs","restore":null},{"t":1809,"from":"tabs","to":"accordion","restore":"specs"},{"t":1847,"from":"accordion","to":"accordion","restore":"specs","refocused":"Specs"},{"t":2979,"from":"accordion","to":"tabs","restore":"reviews"},{"t":3022,"from":"tabs","to":"tabs","restore":"reviews","refocused":"Reviews"}]
+PASS 42 [webkit]  tests\responsive-accordion-tabs.spec.ts:83:7  resize across medium in both directions  selected state and focus survive, focus lands on the equivalent control, keys work after the swap (4.9s)
+FINDING axe accordion mode (hydrated, 500 px, all collapsed): no violations
+FINDING nothing expanded, Reviews title focused -> tabs: selected=Overview, focus=a[role=tab] "Reviews"
+PASS 43 [webkit]  tests\responsive-accordion-tabs.spec.ts:127:7  resize across medium in both directions  accordion with nothing expanded -> tabs shows the first panel; focus on the focused title equivalent (1.7s)
+PASS 44 [webkit]  tests\responsive-accordion-tabs.spec.ts:142:7  resize across medium in both directions  focus outside the widget is not moved by a swap (820ms)
+FINDING focus in Overview panel link, tabs->accordion: focus=button[role=button] "Overview"
+FINDING input value in Specs panel after accordion->tabs swap: ""; focus=a[role=tab] "Specs"
+PASS 45 [webkit]  tests\responsive-accordion-tabs.spec.ts:155:7  resize across medium in both directions  focus inside panel content, and consumer state inside panels, across a swap (992ms)
+FINDING / pre-hydration focus on "Specs" title -> after hydration focus=a[role=tab] "Specs"; swaps=[{"t":397,"from":"accordion","to":"tabs","restore":"specs"},{"t":434,"from":"tabs","to":"tabs","restore":"specs","refocused":"Specs"}]
+PASS 46 [webkit]  tests\responsive-accordion-tabs.spec.ts:178:9  focus before hydration (main bundle held back)  /: focus on a server-rendered accordion title moves to the equivalent tab at hydration (808ms)
+FINDING /instance pre-hydration focus on "Specs" title -> after hydration focus=a[role=tab] "Specs"; swaps=[{"t":350,"from":"accordion","to":"tabs","restore":"specs"},{"t":391,"from":"tabs","to":"tabs","restore":"specs","refocused":"Specs"}]
+PASS 47 [webkit]  tests\responsive-accordion-tabs.spec.ts:178:9  focus before hydration (main bundle held back)  /instance: focus on a server-rendered accordion title moves to the equivalent tab at hydration (997ms)
+FINDING pre-hydration click on "Specs" at 1300px: mode=tabs; selected= breakpoint=xlarge; errors=[]
+PASS 48 [webkit]  tests\responsive-accordion-tabs.spec.ts:197:9  focus before hydration (main bundle held back)  a pre-hydration click on the "Specs" title at 1300px (1.4s)
+FINDING pre-hydration click on "Specs" at 500px: mode=accordion; selected=specs breakpoint=small; errors=[]
+PASS 49 [webkit]  tests\responsive-accordion-tabs.spec.ts:197:9  focus before hydration (main bundle held back)  a pre-hydration click on the "Specs" title at 500px (1.2s)
+FINDING pre-hydration ArrowDown on "Overview" at 1300px: focus=a[role=tab] "Overview"; errors=[]
+PASS 50 [webkit]  tests\responsive-accordion-tabs.spec.ts:213:7  focus before hydration (main bundle held back)  a pre-hydration ArrowDown on a title the swap removes (1.4s)
+FINDING /deferred: swaps=[]; console=[]
+FINDING axe /deferred tabs after incremental hydration: no violations
+PASS 51 [webkit]  tests\responsive-accordion-tabs.spec.ts:231:9  incremental hydration: @defer (hydrate on viewport)  /deferred: block below the fold hydrates into tabs when scrolled into view (2.5s)
+FINDING /deferred: focus on dehydrated "Specs" title -> after block hydration focus=body; swaps=[]; errors=[]
+PASS 52 [webkit]  tests\responsive-accordion-tabs.spec.ts:256:9  incremental hydration: @defer (hydrate on viewport)  /deferred: focus on a dehydrated accordion title, block hydrates on focusin (1.9s)
+FINDING /deferred-instance: swaps=[{"t":794,"from":"accordion","to":"tabs","restore":null}]; console=[]
+FINDING axe /deferred-instance tabs after incremental hydration: no violations
+PASS 53 [webkit]  tests\responsive-accordion-tabs.spec.ts:231:9  incremental hydration: @defer (hydrate on viewport)  /deferred-instance: block below the fold hydrates into tabs when scrolled into view (2.4s)
+FINDING /deferred-instance: focus on dehydrated "Specs" title -> after block hydration focus=a[role=tab] "Specs"; swaps=[{"t":665,"from":"accordion","to":"tabs","restore":"specs"},{"t":699,"from":"tabs","to":"tabs","restore":"specs","refocused":"Specs"}]; errors=[]
+PASS 54 [webkit]  tests\responsive-accordion-tabs.spec.ts:256:9  incremental hydration: @defer (hydrate on viewport)  /deferred-instance: focus on a dehydrated accordion title, block hydrates on focusin (1.8s)
+  54 passed (1.2m)
+
+# Development build, NFS_DEV=1 npx playwright test -g 'hydration at 1300|incremental'
+FINDING / dev stats: {"hydratedComponents":7,"hydratedNodes":62,"componentsSkippedHydration":0}
+FINDING /instance dev stats: {"hydratedComponents":7,"hydratedNodes":62,"componentsSkippedHydration":0}
+FINDING /prerendered dev stats: {"hydratedComponents":7,"hydratedNodes":62,"componentsSkippedHydration":0}
+FINDING /client dev stats: {"hydratedComponents":0,"hydratedNodes":0,"componentsSkippedHydration":0}
+FINDING /deferred dev stats: {"hydratedComponents":4,"componentsSkippedHydration":0}
+FINDING /deferred-instance dev stats: {"hydratedComponents":7,"componentsSkippedHydration":0}
+FINDING / dev stats: {"hydratedComponents":7,"hydratedNodes":62,"componentsSkippedHydration":0}
+FINDING /instance dev stats: {"hydratedComponents":7,"hydratedNodes":62,"componentsSkippedHydration":0}
+FINDING /prerendered dev stats: {"hydratedComponents":7,"hydratedNodes":62,"componentsSkippedHydration":0}
+FINDING /client dev stats: {"hydratedComponents":0,"hydratedNodes":0,"componentsSkippedHydration":0}
+FINDING /deferred dev stats: {"hydratedComponents":4,"componentsSkippedHydration":0}
+FINDING /deferred-instance dev stats: {"hydratedComponents":7,"componentsSkippedHydration":0}
+FINDING / dev stats: {"hydratedComponents":7,"hydratedNodes":62,"componentsSkippedHydration":0}
+FINDING /instance dev stats: {"hydratedComponents":7,"hydratedNodes":62,"componentsSkippedHydration":0}
+FINDING /prerendered dev stats: {"hydratedComponents":7,"hydratedNodes":62,"componentsSkippedHydration":0}
+FINDING /client dev stats: {"hydratedComponents":0,"hydratedNodes":0,"componentsSkippedHydration":0}
+FINDING /deferred dev stats: {"hydratedComponents":4,"componentsSkippedHydration":0}
+FINDING /deferred-instance dev stats: {"hydratedComponents":7,"componentsSkippedHydration":0}
+  24 passed (2.5m)
+      6 Angular hydrated 2 component(s) and 20 node(s), 0 component(s) were skipped. 1 defer block(s) were configured to use incremental hydration. Learn more at https://v22.angular.dev/guide/hydration.
+      9 Angular hydrated 7 component(s) and 62 node(s), 0 component(s) were skipped. 0 defer block(s) were configured to use incremental hydration. Learn more at https://v22.angular.dev/guide/hydration.
+Development console per page load (every engine): one 'Violations found on element' plus 'ngAccordionPanel must have an ngAccordionContent to render.' warning pair per accordion panel, and 'ngTabPanel must have an ngTabContent structural directive to render.' per tab panel; no NG05xx; no errors.
+
+# Earlier Chromium run, same build but WITHOUT the two Foundation settings in src/styles.scss (Foundation defaults)
+FINDING axe tabs mode (hydrated, 1300 px): color-contrast (serious): #ng-tab-a99244-0 -- Element has insufficient color contrast of 3.75 (foreground color: #1779ba, background color: #e6e6e6, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+FINDING axe accordion mode after swap from tabs (500 px): color-contrast (serious): #ng-accordion-trigger-a99244-4 (the focused title) -- insufficient color contrast of 3.75 (foreground color: #1779ba, background color: #e6e6e6)
+FINDING axe tabs mode after swap from accordion (1300 px): color-contrast (serious): #ng-tab-a99244-5 -- insufficient color contrast of 3.75 (#1779ba on #e6e6e6)
+FINDING axe accordion mode (hydrated, 500 px, all collapsed, nothing focused): no violations
+FINDING axe /deferred and /deferred-instance tabs after incremental hydration: color-contrast (serious) on the selected tab, 3.75

@@ -1,0 +1,20 @@
+// PROTOTYPE (throwaway). Foundation first (its @import API), then the library's
+// custom-rule mixin, per ADR 0012.
+@import 'foundation-sites/scss/foundation';
+
+// WCAG 2.2 AA 1.4.3 (axe color-contrast): Foundation's defaults put $primary-color
+// (#1779ba) on $light-gray (#e6e6e6) at 3.76:1 on the selected tab and on a focused
+// or hovered accordion title. Consumer settings, no library CSS: darken the two text
+// colours by 15 % lightness (compiles to #14679e, 4.86:1 on #e6e6e6). Set after the import and
+// before the component mixins so they read the consumer's own palette.
+$tab-active-color: scale-color($primary-color, $lightness: -15%);
+$accordion-item-color: scale-color($primary-color, $lightness: -15%);
+
+@include foundation-global-styles;
+@include foundation-xy-grid-classes;
+@include foundation-typography;
+@include foundation-accordion;
+@include foundation-tabs;
+
+@import 'nfs-accordion';
+@include nfs-accordion;
