@@ -1,0 +1,24 @@
+// PROTOTYPE -- Foundation 6.9 Sass in the @import form (ADR 0012), then the library mixin under test.
+@import 'foundation-sites/scss/foundation';
+@import 'nfs-reveal';
+
+@include foundation-global-styles;
+@include foundation-close-button;
+@include foundation-reveal;
+@include nfs-reveal;
+@include nfs-motion-transform-subset;
+
+// ---- Fixture only (not library CSS) ----
+body {
+  padding: 1rem;
+}
+
+.filler {
+  height: 3000px;
+  border-left: 4px dashed $medium-gray;
+}
+
+// Content of a chosen height inside a dialog.
+.fx-block {
+  background: $light-gray;
+}

@@ -1,0 +1,66 @@
+// PROTOTYPE -- the `nfs-reveal` Library mixin exactly as the Reveal spec writes it (specs/reveal.md,
+// "Sass and custom CSS", rules 1 to 7). Only rules 4 and 7 are under test here; rules 1, 2, 3, 5, 6
+// were settled by the Reveal dialog prototype and are copied unchanged so the dialog is styled as the
+// library would style it.
+
+@mixin nfs-reveal {
+  .reveal[open] {
+    // 1. Foundation's `reveal-modal-base` prints `display: none`; a dialog is shown by `open`.
+    display: block;
+    // 2. The top layer computes Foundation's `position: relative` to `absolute`.
+    position: fixed;
+    // 3. Foundation's `auto` insets centre in-flow boxes only.
+    inset-inline: 0;
+    // 4. A tall dialog scrolls itself and must end inside the viewport; Foundation's tall-modal
+    //    offset `min(100px, 10vh)` (or a numeric vOffset) mirrored at the bottom.
+    max-height: calc(100% - 2 * var(--nfs-reveal-top, min(100px, 10%)));
+    // 5. The user-agent `color: CanvasText` on `dialog`.
+    color: inherit;
+  }
+
+  // 6. `reveal-overlay` cannot be included (it prints `display: none`).
+  .reveal::backdrop {
+    background-color: $reveal-overlay-background;
+  }
+
+  // 7. Foundation's JavaScript `'auto'` placement, `(viewport height - outer height) / 4`, in CSS:
+  //    `top: 25%` of the viewport minus 25% of the dialog's own height. Numeric vOffset/hOffset arrive
+  //    through the three custom properties the directive binds on the host.
+  @include breakpoint(medium) {
+    .reveal[open]:not(.full) {
+      top: var(--nfs-reveal-top, 25%);
+      translate: 0 var(--nfs-reveal-shift, -25%);
+      margin-left: var(--nfs-reveal-left, auto);
+    }
+  }
+}
+
+// Case 5 only: keyframe Motion classes that animate `transform`, under Motion UI's names prefixed
+// `nfs-` (building-blocks 1.6 rule 4), with Motion UI's own start and end transforms. Fill mode
+// `both`, as the spec says for `nfs-motion`.
+@mixin nfs-motion-transform-subset($duration: 500ms) {
+  @keyframes nfs-slide-in-down {
+    from { transform: translateY(-100%); }
+    to { transform: translateY(0); }
+  }
+
+  @keyframes nfs-spin-in {
+    from { transform: rotate(-0.75turn); opacity: 0; }
+    to { transform: rotate(0); opacity: 1; }
+  }
+
+  @keyframes nfs-hinge-in-from-top {
+    from { transform: perspective(2000px) rotateX(-90deg); transform-origin: top; opacity: 0; }
+    to { transform: perspective(2000px) rotate(0deg); transform-origin: top; opacity: 1; }
+  }
+
+  @keyframes nfs-scale-in-up {
+    from { transform: scale(0.5); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  .nfs-slide-in-down { animation: nfs-slide-in-down $duration linear both; }
+  .nfs-spin-in { animation: nfs-spin-in $duration linear both; }
+  .nfs-hinge-in-from-top { animation: nfs-hinge-in-from-top $duration linear both; }
+  .nfs-scale-in-up { animation: nfs-scale-in-up $duration linear both; }
+}
