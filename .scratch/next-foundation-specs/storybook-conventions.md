@@ -101,7 +101,7 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
 @include nfs-accordion;
 // ... one @include nfs-<plugin> per plugin that has a Library mixin, after foundation-everything,
 // with the arguments its spec names (for example @include nfs-responsive-toggle(xlarge xxlarge);).
-// @include nfs-smooth-scroll; // Smooth Scroll: smooth native jumps on html; play functions scroll with behavior: 'instant'
+@include nfs-smooth-scroll; // Smooth Scroll: smooth native jumps on html; play functions scroll with behavior: 'instant'
 ```
 
 - Foundation's settings file is imported, not copied: stories then show Foundation 6.9's defaults exactly, and every deviation is visible in one short file. The settings file's own first line, `@import 'util/util'`, needs `node_modules/foundation-sites/scss` on the Sass load path, as Foundation's docs tell every consumer; `main.ts` adds it in `viteFinal` (`css.preprocessorOptions.scss.loadPaths`). Whether `@storybook/addon-vitest`'s run picks up that `viteFinal` the same way `storybook build` does is proved by the first story of the new repository; if it does not, the same path goes into `storybookAngularVitest({stylePreprocessorOptions: {includePaths: [...]}})`, which the framework's options plugin turns into Sass load paths (`@storybook/angular-vite` `dist/preset.js:1294-1310`).
@@ -140,7 +140,7 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
   $input-border: 1px solid $dark-gray;
 
   // Non-text contrast (1.4.11) and 1.4.3 over images: nfs-orbit stops the compile on Foundation's bullets
-  // (about 1.6:1) and caption band (about 3.9:1). Spec: Orbit, every orbit--* story.
+  // (1.6:1) and caption band (3.7:1). Spec: Orbit, every orbit--* story.
   $orbit-bullet-background: $dark-gray;
   $orbit-bullet-background-active: $black;
   $orbit-caption-background: rgba($black, 0.6);

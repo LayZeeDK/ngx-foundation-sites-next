@@ -26,7 +26,7 @@ Case 1 passes in full, in all three engines, headless and headed. Case 2 passes 
 - `e2e/helpers.ts`, `e2e/keyboard.spec.ts`, `e2e/scrollbar.spec.ts` -- case 1, run against the production build (port 4650): keyboard scrolling and focus containment, the finding that Page Down/Up/End/Home also scroll the page, the inward focus ring, and the headed-only scrollbar check (its own Playwright projects, `headless: false`).
 - `e2e-hydration/helpers.ts`, `e2e-hydration/hydration.spec.ts`, `e2e-hydration/defer.spec.ts` -- case 2, run against the development build (port 4651, so `ngDevMode` stays a real object): the inert gate, the bullet tabindex handover, instant alignment, pre-hydration scroll adoption, and the `@defer (hydrate on viewport)` case.
 - `playwright.config.ts` -- switches `testDir` and projects by `BASE_URL` (4650 vs 4651); the production config adds three headed-only projects (`chromium-headed`, `firefox-headed`, `webkit-headed`) scoped to `scrollbar.spec.ts` via `testMatch`.
-- `results/*.jsonl` -- the numbers each test recorded, one line per case and project.
+- `results/*.jsonl` -- the numbers each test recorded, one line per case and project. Case 2 results were not written to `results/`; the ticket's results table is the record (noted 2026-09-26, audit 0005 L1).
 
 ## How to run
 

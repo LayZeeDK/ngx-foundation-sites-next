@@ -88,7 +88,7 @@ Per the map's "Triage of human-only items" rule. Impact HIGH means later specs i
 
 ### OPEN FOR HUMAN
 
-None from this ticket. The gallery's dependence on Storybook preview internals stays OPEN FOR HUMAN in the [browser testing stack decision](41-browser-testing-stack-decision.md); the conventions keep its fallback one mechanical rewrite away.
+None from this ticket. The gallery's dependence on Storybook preview internals stays OPEN FOR HUMAN in the [Decide the browser testing stack: Playwright component tests, Vitest Browser, or both](41-browser-testing-stack-decision.md); the conventions keep its fallback one mechanical rewrite away.
 
 ### Proposed glossary changes for `CONTEXT.md` (orchestrator applies)
 
@@ -105,3 +105,11 @@ None from this ticket. The gallery's dependence on Storybook preview internals s
 - `building-blocks.md` 1.10 (orchestrator's request during this ticket, outside this ticket's edit scope): a first bullet stating WCAG 2.2 AA as a requirement with the criteria subsection, the Sass settings or smallest `nfs-<plugin>` rule for failing Foundation defaults (1.4.3, 1.4.11, 2.5.8, 2.4.11 so far), the six axe tags, the story gate as the enforcing check, and the compile-time `color-contrast()` check where axe has no rule (ADR 0022); and the gate bullet rewritten to name `runOnly` with `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`, `best-practice` instead of "widened to WCAG 2.2 AA", and "opt out" replaced by "the Anti-pattern story exception in the Storybook conventions".
 - Consistency review checks: specs that list five tags without `best-practice` (`specs/sticky.md`, `specs/smooth-scroll.md`, `specs/toggler.md`) follow `preview.ts`'s six; every spec's Story ids derive from PascalCase export names (all current ones do); `anchored-pane--fixture` could be renamed (for example `anchored-pane--geometry`) so "fixture" stays reserved for the Fixture app, and it takes `!autodocs`; every spec's Sass overrides for failing defaults appear in `_settings-overrides.scss` form.
 - `map.md` Decisions so far: one line for this ticket.
+
+### Amendment, 2026-09-26 (audit 0005)
+
+From [audit 0005](../audits/0005-final-bundle.md), findings L2, L7, and L9; `storybook-conventions.md` was edited to match.
+
+1. `preview.scss` block (L9): `@include nfs-smooth-scroll;` is written as a required line instead of a commented one, because section 7 says the preview includes it and the Smooth Scroll and Sticky specs rely on it; a preview copied from the block now compiles with it. The audit offered two fixes (uncomment the line, or say under the block that the commented `@include` lines are required); the first is applied.
+2. Orbit overrides comment (L7): Foundation's caption band is 3.7:1 (it said about 3.9:1), computed unrounded from Foundation's palette.
+3. Link text (L2): the browser testing stack ticket is linked by its exact title in this ticket's answer.

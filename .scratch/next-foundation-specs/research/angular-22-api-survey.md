@@ -10,7 +10,7 @@ Corrected 2026-09-25 after [Audit 0001: research wave](../audits/0001-research-w
 ## Corrections
 
 - H4: "Version compatibility and TypeScript 7" and "Testing: Vitest builder and browser mode" stated a stale TypeScript 7.0.2 / Vitest 5.0.2 target and left it open. The target is TypeScript 6.0.x and Vitest 4.1.x, pinned by [Tooling baseline: Nx 23.2, Angular 22.2, Storybook 10.6, Vitest browser mode](../issues/12-tooling-baseline.md). Both sentences are fixed below.
-- M8: the same "Testing: Vitest builder and browser mode" relevance note also named the wrong Nx executor; fixed against the tooling research. "`@defer` and incremental hydration" stated incremental hydration needs an explicit feature flag; fixed against [Angular 22.2 @defer, SSR, prerendering, hydration, and event replay](../issues/38-angular-rendering-modes.md) section 0.
+- M8: the same "Testing: Vitest builder and browser mode" relevance note also named the wrong Nx executor; fixed against the tooling research. "`@defer` and incremental hydration" stated incremental hydration needs an explicit feature flag; fixed against [Angular 22.2 @defer, SSR, prerendering, hydration, and event replay for DOM-touching directives](../issues/38-angular-rendering-modes.md) section 0.
 - M11: "Queries" and "Host bindings and host directives" stated composition choices as settled; both are reworded as candidates, owned by [Building-blocks map and cross-cutting architecture decisions](../issues/14-building-blocks-map.md).
 
 ## How to read stability labels

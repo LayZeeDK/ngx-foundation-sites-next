@@ -448,3 +448,11 @@ Recorded by the orchestrator on 2026-09-26. Every finding is fixed except the tw
 | L9 | Fixed | `aff6fd9` |
 | L10 | Fixed. Reveal's close-glyph pairs are `@error`; the dialog-edge pair stays `@warn` because building-blocks 1.10 requires `@error` only for pairs that carry state. Audit 0003's log has a dated addendum | `aff6fd9`, `a2cfa8a`, `d17749f` |
 | Unrecorded departures 1 to 8 | Closed with H1, H2, M2, M4, and, for 6 to 8, by the consistency review's sweep (Off-canvas registration effects, the Tooltip tip's `hidden`, Dropdown under `reducedMotion`), which the review must confirm | as above |
+
+### Addendum, 2026-09-26 (audit 0005, L1)
+
+[Audit 0005](0005-final-bundle.md) checked this log row by row: 20 rows hold and 3 hold only in part, so the opening sentence "Every finding is fixed except the two parts handed to the consistency review" does not hold for M8, L1, and L7. The rows above are not rewritten; this addendum names the gaps and what closed them.
+
+- M8, partly: the fix corrected row 3d, row 3a, the README verdict, and the Magellan spec, but the verdict paragraph of the [Prototype: Smooth Scroll under Router scroll restoration and replay](../issues/62-prototype-smooth-scroll-router-restoration.md) still said that under `'disabled'` the browser's own restoration gets it right. Corrected on 2026-09-26: the browser's own restoration decides, engine-dependently (exact for `#m-s2` in Chromium, about 1600 px off in Firefox and WebKit, row 3d).
+- L1, partly: the [Spec: Accordion](../issues/15-spec-accordion.md) ticket's decision 25 keeps its two prototype sources as bare numbers, which the consistency review's amendment explains instead of rewriting (a decision log is a record); the comment the fix added to the Sticky measurement capture's `styles.scss` names the Sass packaging ticket by its number and stays as captured, because audit 0005's fixes edit no prototype capture file other than a README; audit 0003's own log lines are unchanged, as the convention of not rewriting a log requires.
+- L7, partly: the Orbit keyboard capture's `results/*.jsonl` hold case 1 only. Its README now says that case 2 results were not written to `results/` and that the ticket's results table is the record (2026-09-26).

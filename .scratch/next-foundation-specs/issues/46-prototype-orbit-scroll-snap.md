@@ -154,3 +154,7 @@ Rule: [map](../map.md), Orchestration rules, "Triage of human-only items". Only 
    - Outcome: STAYS OPEN FOR HUMAN. Competing options: (a) accept and document the drift; (b) reset Aria's active item through `_pattern` (internal); (c) a library `tabindex` host binding keyed on the selected tab (untested for drift); (d) wait for an upstream Aria fix. Filing the issue in angular/components is HUMAN-ONLY BY KIND (upstream filing).
 2. The visible horizontal scrollbar: handed to [Spec: Orbit](33-spec-orbit.md) by the orchestrator note above; not rated here.
 3. The `infiniteWrap` rewind: handed to [Spec: Orbit](33-spec-orbit.md) by the orchestrator note above; not rated here.
+
+### Amendment, 2026-09-26 (audit 0005)
+
+From [audit 0005](../audits/0005-final-bundle.md), finding L5. Item 1 of the Triage above ("STAYS OPEN FOR HUMAN") was later decided: the [Spec: Orbit](33-spec-orbit.md) triage accepted and documented the roving tab-stop drift (its decision 29 and D13), and the [Consistency review and bundle index](36-consistency-review.md), Triage 4, applied the same ruling to Tabs and Responsive Accordion Tabs, whose specs document it as a known deviation. Only the upstream request for a public way to move `TabList`'s active item stays human-only (an upstream filing, in the bundle's open list). The entry above is kept as the record of the triage at the time.

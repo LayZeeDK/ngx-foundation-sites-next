@@ -71,7 +71,7 @@ Facts the prototype settled (open questions of the research ticket):
 - `build-storybook` output runs Angular in production mode: `window.ng` holds a single key, Angular's private JIT compiler facade (named `compilerFacade` with the U+0275 private-API prefix), and no `getComponent`.
 - `@axe-core/playwright` 4.13.0 peers `playwright-core >= 1.0.0` and works on 1.63.0 and 1.61.1.
 - Story ids are Storybook ids (`disclosure--default`). The typed `Stories` registry was not generated.
-- Portable stories do work under `@storybook/angular-vite` 10.6 in the Angular unit-test builder, which [the tooling baseline](12-tooling-baseline.md) left unverified, with three workarounds: define `globalThis.STORYBOOK_ANGULAR_OPTIONS`, declare `*.css` modules for TypeScript 6, and cast the core `composeStory` types.
+- Portable stories do work under `@storybook/angular-vite` 10.6 in the Angular unit-test builder, which the [Tooling baseline: Nx 23.2, Angular 22.2, Storybook 10.6, Vitest browser mode](12-tooling-baseline.md) left unverified, with three workarounds: define `globalThis.STORYBOOK_ANGULAR_OPTIONS`, declare `*.css` modules for TypeScript 6, and cast the core `composeStory` types.
 - Correction to the research: `@playwright/experimental-ct-core` 1.61.1 depends on `vite ^6.4.1` (installed 6.4.3), not `^8.1.0`.
 
 ### Failures with exact error text

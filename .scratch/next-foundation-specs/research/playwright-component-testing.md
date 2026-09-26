@@ -443,8 +443,9 @@ Storybook build using `/iframe.html?id=<story-id>&viewMode=story`. A Playwright
 point (`mount(id, props)`, `update`, `unmount`) plus args control, so it can
 absorb story-level browser tests without adding a build. It cannot replace
 layer 2, because TestBed, DI overrides, harnesses and direct signal access
-have no equivalent from Node. Ticket 41 decides; these are the facts it will
-weigh.
+have no equivalent from Node. The
+[Decide the browser testing stack: Playwright component tests, Vitest Browser, or both](../issues/41-browser-testing-stack-decision.md)
+ticket decides; these are the facts it will weigh.
 
 ## 7. Local examples
 
