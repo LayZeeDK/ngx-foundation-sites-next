@@ -1,0 +1,514 @@
+# Spec: Equalizer
+
+Ticket: [Spec: Equalizer](../issues/34-spec-equalizer.md). Targets Angular 22.2, Nx 23.2, Storybook 10.6 with `@storybook/angular-vite`, Vitest 4.1.x, TypeScript 6.0.x, and Foundation for Sites 6.9.0 Sass. Decided upstream in ADR 0001 (Directive-first), ADR 0005 and ADR 0014 (Breakpoint service), ADR 0008 (Rendering-modes contract), and ADR 0012 (Sass packaging); the decision log with sources is in the ticket answer.
+
+## Problem Statement
+
+A developer building on Foundation for Sites wants a row of boxes (callouts, cards, panels) to share one height, so their borders and backgrounds line up. Foundation's Equalizer Plugin does it with jQuery: it marks a container with `data-equalizer`, marks the boxes with `data-equalizer-watch`, reads every box's `offsetHeight`, and writes the tallest value back as an inline `height`, again on every debounced window resize, on every child-list or `style` mutation inside the container, and once after the images inside it load.
+
+That design has four problems in an Angular library that must render on the server:
+
+- It is JavaScript for a layout job. The Plugin predates flexbox and CSS grid; Foundation's own XY grid is a flex row whose cells already stretch to one height (`align-items: stretch`), and CSS grid with `grid-auto-rows: 1fr` or `subgrid` covers the cases flexbox cannot. CSS equalizes before the first paint, on the server-rendered HTML, with JavaScript off, inside `@defer (hydrate never)` blocks, and whenever content changes, with no measurement at all.
+- A fixed inline `height` clips or overflows content that grows afterwards: text enlarged by the user (WCAG 1.4.4, 1.4.12), a web font that loads late, an image that loads after the pass. Foundation hides the problem behind a 250 ms resize debounce and a MutationObserver that catches only DOM and `style` changes.
+- Nothing measured exists on the server. Every JavaScript height is written after hydration, so the page shifts at hydration.
+- Its coordination is jQuery-shaped: string names to separate nested groups (`data-equalizer="foo"` and `data-equalizer-watch="foo"`), bubbled `postequalized` events so an outer group re-measures after an inner one, and `data-resize`/`data-mutate` attributes that feed a global Triggers listener.
+
+What remains after CSS is a small residue: boxes that are not items of one flex line or grid and whose markup the developer cannot restructure (Foundation's legacy float grid, inline-block lists, content from a CMS, boxes at unrelated depths), and the wish to keep Foundation's flex-based XY grid while making every wrapped row the same height.
+
+## Solution
+
+The spec answers in two parts, CSS first.
+
+1. CSS guidance, with no directive: for boxes inside XY grid cells, Foundation's own classes do it (the cell gets `.flex-container.flex-dir-column`, the box gets `.flex-child-grow`), and each wrapped row equalizes separately, which is Foundation's `equalizeByRow`. For one height across every row, or across a stacked column, the developer's own CSS uses CSS grid with `grid-auto-rows: 1fr`; for aligning parts of cards across a row, `grid-template-rows: subgrid`. Every feature is in the Browser target, renders equal heights on the server, and needs no library code. The usage examples start here, and the stories test it.
+2. An optional pair of directives for the residue: `nfsEqualizer` on the container and `nfsEqualizerWatch` on each box. The watches register with the nearest equalizer through DI (no names). The container observes the boxes and itself with one `ResizeObserver`, and on each signal runs one pass in an `afterRenderEffect`: clear the inline `min-height` it wrote, measure, then give every box except the tallest of its row `min-height` equal to that tallest height. The tallest box keeps its natural height, so any growth or shrinkage anywhere changes an observed size and triggers the next pass; images that load, fonts that swap, text that is enlarged, and panels that open are all caught without an image loader or a MutationObserver. `equalizeOn`, `equalizeOnStack`, and `equalizeByRow` keep Foundation's meaning; `equalizeOn` goes through the Breakpoint service. One output, `equalized`, reports the row heights applied.
+
+What earns the directive its place, stated plainly: not Foundation parity. A developer on the XY grid should not use it; the stories and the docs say so. It exists because Foundation 6.9 still ships markup that CSS cannot equalize without restructuring (the float grid, non-grid lists) and because a drop-in counterpart of `data-equalizer` lets such pages move to Angular without a layout rewrite. Whether that residue justifies shipping the directive in the first release is recorded OPEN FOR HUMAN in the ticket; the default is to ship it, small and optional.
+
+## User Stories
+
+1. As an application developer, I want the docs to tell me first how to equalize boxes with Foundation's CSS classes, so that I write no JavaScript for a layout job.
+2. As an application developer, I want callouts inside XY grid cells to share one height with `.flex-container.flex-dir-column` on the cell and `.flex-child-grow` on the callout, so that I use only classes Foundation already ships.
+3. As an application developer, I want each wrapped row of a block grid (`small-up-1 medium-up-2 large-up-4`) to equalize on its own with CSS, so that I get Foundation's `equalizeByRow` without a directive.
+4. As an application developer, I want every row of a wrapping gallery to share one height through `grid-auto-rows: 1fr`, so that the non-by-row case also needs no JavaScript.
+5. As an application developer, I want card dividers and sections to line up across a row of cards through `subgrid`, so that nested equalization needs no nested Plugin.
+6. As an application developer, I want the CSS answer to stack naturally below my breakpoint because the XY grid cells go full width, so that I get `equalizeOn="medium"` for free.
+7. As a user on a slow connection, I want equal heights in the server-rendered HTML, so that the page does not jump when JavaScript arrives.
+8. As a user with JavaScript disabled, I want equal heights anyway, so that the layout is right without scripts.
+9. As an application developer maintaining pages on Foundation's float grid, I want `nfsEqualizer` and `nfsEqualizerWatch` as a drop-in for `data-equalizer` and `data-equalizer-watch`, so that I can move to Angular without rewriting the layout.
+10. As an application developer, I want watches to find their equalizer through DI, so that I never invent group names.
+11. As an application developer, I want an inner `nfsEqualizer` to take its own watches away from the outer one automatically, so that nested groups need no `foo`/`bar` names.
+12. As an application developer, I want one element to be both a watch of the outer group and the container of an inner group, as in Foundation's nesting example, so that Foundation's docs markup keeps working.
+13. As an application developer, I want the outer group to re-equalize after an inner group changes its boxes, without events between them, so that nesting just works.
+14. As an application developer, I want `equalizeOn` to accept Foundation's Breakpoint queries (`medium`, `medium up`, `large only`, `medium down`), so that the directive switches itself on and off like Foundation's.
+15. As an application developer, I want the directive to clear the heights it wrote when `equalizeOn` stops matching, so that stacked layouts show natural heights.
+16. As an application developer, I want heights cleared when every box sits on its own row, unless I set `equalizeOnStack`, so that stacked mobile layouts are not padded.
+17. As an application developer, I want `equalizeOnStack` to keep boxes equal even when stacked, so that I can have Foundation's "equalize on stack" panels.
+18. As an application developer, I want `equalizeByRow` to equalize each visual row separately, so that a wrapping gallery does not take the height of its single tallest item.
+19. As an application developer, I want rows detected by position rather than by DOM order, so that reordered or projected items are grouped correctly.
+20. As a user who enlarges text, I want boxes to grow with their content instead of clipping it, so that no text overlaps or disappears.
+21. As an application developer, I want images that load after the first pass to re-equalize the group, so that I need no image loader.
+22. As an application developer, I want content that grows or shrinks after load (async data, an opened accordion, a swapped font) to re-equalize the group, so that the heights never go stale.
+23. As an application developer, I want a group inside a hidden tab or toggled panel to equalize when it is shown, so that I do not have to notify it.
+24. As an application developer, I want watches added or removed by `@for`, `@if`, or a nested `@defer` block to join or leave the group, so that dynamic lists work.
+25. As an application developer, I want an `equalized` output with the row heights, so that I can react to the final layout and tell an applied state from a cleared one.
+26. As an application developer, I want `equalize()` on the directive reference, so that I can force a pass after a layout change the observers cannot see (reordering items of equal size).
+27. As an application developer, I want application-wide defaults for the three Options through a Defaults token, so that I set them once like `Foundation.Equalizer.defaults`.
+28. As an application developer, I want `hostDirectives: [NfsEqualizerWatch]` to work on my own card component, so that the component is a watch wherever it is used.
+29. As an application developer, I want a development-mode warning when a watch has no equalizer, so that I notice a watch declared outside the equalizer's template.
+30. As an application developer, I want the directive to write no styles on the server and nothing before hydration, so that hydration never reports a mismatch.
+31. As an application developer, I want no event listeners from the directive, so that it adds no `jsaction` and nothing to replay.
+32. As an application developer, I want no `ResizeObserver loop` errors in my console or in my ErrorHandler, so that the directive does not raise noise in monitored applications.
+33. As an application developer, I want one measurement layout per pass, so that the directive costs less than Foundation's interleaved reads and writes.
+34. As an application developer of a zoneless application, I want the directive to need no zone, so that it works with zoneless change detection.
+35. As an application developer, I want the directive in its own entry point, so that a `@defer` block can split it.
+36. As a screen reader user, I want the reading order untouched, so that equalizing never changes what I hear.
+37. As a user who prefers reduced motion, I want height changes applied instantly without animation, so that nothing moves on its own.
+38. As a library maintainer, I want the CSS recipes tested in stories next to the directive, so that the recommended path cannot regress unnoticed.
+39. As a library maintainer, I want the row-planning logic as a pure function, so that it is tested in node without a browser.
+40. As a library maintainer, I want viewport and hydration behaviour asserted in Playwright, so that breakpoint switching and the hydration shift are tested where they happen.
+41. As a user who zooms to 400 percent, I want equalized boxes to reflow into one column at 320 CSS px without sideways scrolling or clipped text, so that the page meets WCAG 2.2 AA 1.4.10.
+42. As a user who applies my own text-spacing styles, I want every box to keep all its text visible, so that the page meets WCAG 2.2 AA 1.4.12.
+
+## Implementation Decisions
+
+### Foundation contract
+
+From the Plugin source, `Equalizer.defaults`, its docs page, and the forms-and-media inventory (Equalizer section). Equalizer has no Sass partial and no CSS class of its own.
+
+| Foundation | Behaviour | Library counterpart |
+| --- | --- | --- |
+| `data-equalizer[="name"]` on the container | Marks the group; the value names it for nesting | `nfsEqualizer`; the name is dropped (DI scopes groups) |
+| `data-equalizer-watch[="name"]` on descendants | Watched elements: those with the matching value, or every `[data-equalizer-watch]` descendant if none match | `nfsEqualizerWatch`; registers with the nearest equalizer; value dropped |
+| `equalizeOnStack` (boolean, default `false`) | When the first two watched elements have different `getBoundingClientRect().top`, heights go back to `auto` | `equalizeOnStack` input, same default; "stacked" means every row holds one watched element (order-independent; see Deltas) |
+| `equalizeByRow` (boolean, default `false`) | Groups by `offset().top` (consecutive runs in DOM order) and equalizes per row; one-element rows get `auto` | `equalizeByRow` input, same default; rows grouped by rounded top, in any DOM order |
+| `equalizeOn` (string, default `''`) | `MediaQuery.is(equalizeOn)`; below it listeners are unbound and heights reset | `equalizeOn` input, same default, through `NfsMediaQuery.is()`, which answers `true` for `''` |
+| Inline `height: <max>px` on watched elements | Tallest `offsetHeight` written to every watched element | Inline `min-height` on every watched element except the tallest of its row (see Deltas) |
+| `data-resize`, `data-mutate` on the container | Hooks for the Triggers utility's global resize and mutation listeners | Dropped: one `ResizeObserver` |
+| `resizeme.zf.trigger` (window resize, 250 ms debounce) | Re-equalize | `ResizeObserver` on the watched elements and the container |
+| `mutateme.zf.trigger` (child-list or `style` mutation in the subtree; also fired by Tabs, Toggler, ResponsiveToggle after showing content) | Re-equalize | `ResizeObserver`: a mutation that changes no observed size needs no pass; showing hidden content changes sizes |
+| `onImagesLoaded` before the first pass | Waits for images | Dropped: an image that changes a box's size triggers the observer |
+| `changed.zf.mediaquery` | Re-checks `equalizeOn` | Reactive read of `NfsMediaQuery.is()` inside the render effect |
+| `preequalized.zf.equalizer`, `postequalized.zf.equalizer` | Around every pass | `equalized` output with the row heights, emitted when they change; no "pre" event |
+| `preequalizedrow.zf.equalizer`, `postequalizedrow.zf.equalizer` | Around each row in by-row mode | Dropped; the row heights are the `equalized` payload |
+| `postequalized` bubbled from a nested group | Outer group re-measures after the inner one | Automatic: the inner group's writes change an outer watched element's size |
+| `getHeights`, `getHeightsByRow`, `applyHeight`, `applyHeightByRow` (public) | Measure and apply | Dropped; `equalize()` requests a pass |
+| `_destroy()` | Unbinds and resets heights to `auto` | The observer disconnects on destroy; a directive's element is destroyed with it, so nothing needs resetting |
+| `init.zf.equalizer`, `destroyed.zf.equalizer` | Lifecycle | None (Angular lifecycle) |
+| `Equalizer.defaults.x = ...` | Global defaults | `nfsEqualizerDefaultsToken` |
+
+Dropped options: the `data-equalizer` and `data-equalizer-watch` values (group names), `data-options`. Nothing else: all three `defaults` keys map.
+
+Deltas from Foundation, each deliberate:
+
+- `min-height`, not `height`, and the tallest box untouched. A fixed `height` clips or overflows content that grows after the pass and hides that growth from a `ResizeObserver`, because the box size no longer changes; `min-height` lets content grow, and leaving the row's tallest element at its natural height lets its shrinkage show up too. Cost: a percentage `height` inside a watched element no longer resolves (a `min-height` does not make the height definite); a flex column inside the box (`.flex-container.flex-dir-column` with `.flex-child-grow`) replaces it.
+- "Stacked" means every row holds exactly one watched element. Foundation compares only the first two in DOM order, so a wide first item on its own row switched off a whole gallery; registration order is not DOM order under `@for` reorders and projection, and this definition needs no order.
+- Rows are grouped by `getBoundingClientRect().top` rounded to whole CSS pixels, in any order. Foundation starts a new row whenever the next element in DOM order has a different top, so an item placed out of DOM order split a row, and a sub-pixel difference at browser zoom did too.
+- Heights are measured with `offsetHeight` (Foundation's measure: layout box, ignores transforms, integer px) after one batched reset, not with one interleaved write and read per element. Like Foundation, the written value assumes `box-sizing: border-box`, which Foundation's global styles set on every element.
+
+### CSS class to Angular mapping
+
+Equalizer has no Structural class and no State class. The CSS answer reuses Foundation classes from other components.
+
+| Foundation class or markup | Angular | Rationale |
+| --- | --- | --- |
+| `.grid-x` with `.cell` (flex row, `flex-flow: row wrap`, stretch by default) | Plain markup | The cells already share one height per line |
+| `.flex-container`, `.flex-dir-column`, `.flex-child-grow` (flex helpers) on cell and box | Plain markup | Makes the box fill its stretched cell; Foundation's flexbox utilities |
+| `.small-up-*`, `.medium-up-*`, `.large-up-*` (block grid) | Plain markup | Wrapped lines stretch separately: the by-row case |
+| `.card` (`display: flex; flex-direction: column; flex-grow: 1` under `$global-flexbox`) | Plain markup | A card in a `.flex-container` cell fills it with no extra class |
+| `data-equalizer` on a container | `NfsEqualizer`, `[nfsEqualizer]` | The Plugin has no Structural class, so the class is named after the Plugin (building-blocks 1.3) |
+| `data-equalizer-watch` on a descendant | `NfsEqualizerWatch`, `[nfsEqualizerWatch]` | Plugin name plus Foundation's attribute suffix |
+| Legacy `.row` and `.column`/`.columns` (float grid, `foundation-grid`) | Plain markup plus the two directives | The residue: floats never stretch |
+
+### Hierarchy and DI shape
+
+```
+[nfsEqualizer]                         NfsEqualizer: provides nfsEqualizerToken (useExisting)
+  |-- [nfsEqualizerWatch]              NfsEqualizerWatch: inject(nfsEqualizerToken, {optional, skipSelf})
+  |-- [nfsEqualizerWatch][nfsEqualizer] one element: a watch of the outer group and the inner container
+  |     |-- [nfsEqualizerWatch]        registers with the inner group (nearest provider)
+  |     '-- [nfsEqualizerWatch]
+  '-- [nfsEqualizerWatch]
+```
+
+- Parent handle: `nfsEqualizerToken`, an `InjectionToken<NfsEqualizer>` declared with a type-only import of the class (building-blocks 1.9). `NfsEqualizer` provides it with `useExisting`.
+- Watches inject it with `{optional: true, skipSelf: true}` and register their host element at construction (no inputs to wait for), unregistering through `DestroyRef`. `skipSelf` starts at the parent element injector, so a watch on the same element as an inner `nfsEqualizer` joins the outer group, which is Foundation's nesting example.
+- Nested groups: an inner `nfsEqualizer` provides the token itself, and that provider is what keeps its watches out of the outer group. Nothing re-provides the token as `undefined`. The `CdkAccordionItem` pattern that building-blocks 1.9 names solves a different problem (an item that is not itself a container), and here an `undefined` provider on the watch would collide with the inner equalizer's provider on the element both share.
+- A watch with no equalizer warns once in development mode ("nfsEqualizerWatch found no nfsEqualizer among the element injectors of its template") and does nothing. DI follows the declaration site: an equalizer inside a child component's own template does not see watches projected into it; the equalizer goes on an element of the template that declares the watches, or on the projecting component's host.
+- Registration: parent-owned, into a signal holding the registered elements. The set is unordered, because nothing in the algorithm depends on order; no DOM-order sort and no MutationObserver are needed (building-blocks 1.9's sorted-collection rule applies to ordered children only).
+- `hostDirectives: [NfsEqualizerWatch]` on a consumer component makes its host a watch; the directive has no inputs to expose.
+- Defaults token: `nfsEqualizerDefaultsToken`, `InjectionToken<NfsEqualizerDefaults>` with an all-optional `{equalizeOn?, equalizeOnStack?, equalizeByRow?}`, read with `inject(..., {optional: true})` to seed the input defaults (building-blocks 1.4, Material shape B). Nearest provider wins.
+- Service: `NfsMediaQuery` for `is(equalizeOn)`, exactly as the Breakpoint service spec defines it.
+- Entry point: `ngx-foundation-sites/equalizer`, importing the Breakpoint service's entry point.
+
+### API
+
+#### `NfsEqualizer`
+
+Selector `[nfsEqualizer]`; `exportAs: 'nfsEqualizer'`; standalone; no template.
+
+```ts
+class NfsEqualizer {
+  readonly equalizeOn: InputSignal<string>;                               // default '' (always on)
+  readonly equalizeOnStack: InputSignalWithTransform<boolean, unknown>;   // default false
+  readonly equalizeByRow: InputSignalWithTransform<boolean, unknown>;     // default false
+  readonly equalized: OutputRef<readonly number[]>;
+  equalize(): void;
+  register(element: HTMLElement): void;   // called by NfsEqualizerWatch
+  unregister(element: HTMLElement): void; // called by NfsEqualizerWatch
+}
+```
+
+| Input | Type and transform | Default | Foundation equivalent | Delta |
+| --- | --- | --- | --- | --- |
+| `equalizeOn` | `string`, a Breakpoint query (`'medium'`, `'medium up'`, `'large only'`, `'medium down'`, `''`) | `''`, or the Defaults token's value | `data-equalize-on` | None in meaning; an unknown name warns in development and answers `false` (the Breakpoint service's rule) instead of throwing |
+| `equalizeOnStack` | `boolean`, `booleanAttribute` | `false` | `data-equalize-on-stack` | "Stacked" is every row holding one watched element, not "the first two differ" |
+| `equalizeByRow` | `boolean`, `booleanAttribute` | `false` | `data-equalize-by-row` | Rows grouped by rounded top in any order |
+
+- Models: none. The directive owns no two-way state; the heights are a result of layout.
+- Output `equalized: readonly number[]`: the equal height of each equalized row in px, top to bottom; one entry when `equalizeByRow` is off; an empty array when the directive holds no heights (gate off, stacked, fewer than two watched elements, nothing taller than 0). Emitted after a pass whose result differs from the previous one, never on a pass that changes nothing. It is a Completion output in the glossary's sense: the heights are written when it fires. Replaces `preequalized` and `postequalized`.
+- `equalize()`: requests a pass (the pass runs in the next render, not synchronously). For layout changes that change no observed size: reordering watched elements of equal size in by-row mode, or moving the container between two parents of the same width.
+- `register`/`unregister`: public because the watch calls them through the token; documented as internal to the pair. Consumers use `nfsEqualizerWatch` or `hostDirectives`.
+- No host bindings, no host listeners, no classes, no attributes.
+
+#### `NfsEqualizerWatch`
+
+Selector `[nfsEqualizerWatch]`; no inputs, outputs, methods, or host bindings; no `exportAs`. It registers its host element with the nearest `NfsEqualizer` and unregisters on destroy.
+
+#### Style ownership
+
+The equalizer owns the inline `min-height` of every registered element: each pass removes the value it wrote before measuring. A consumer who wants a minimum height sets it in a stylesheet (the pass measures after it, so the equal height is never below it); an inline `min-height` binding on a watched element is not supported and the docs say so.
+
+#### The pass
+
+One `afterRenderEffect` on the container, `mixedReadWrite` phase, client only. It tracks a private version signal, the registered elements, the three inputs, and `mq.is(equalizeOn())`.
+
+1. Sync observations: while the gate is on, the `ResizeObserver` (created on the first pass) observes the container and every registered element with `{box: 'border-box'}`; while it is off, it observes nothing.
+2. Gate off, or fewer than two registered elements: remove every `min-height` the directive wrote, record the empty result, stop. No layout read.
+3. Container last observed with a zero size (it or an ancestor is `display: none`): stop and keep the current heights. Showing the container changes its size, which runs the next pass.
+4. Reset: remove the directive's `min-height` from every registered element.
+5. Measure, one forced layout: each element's `offsetHeight` and its `getBoundingClientRect().top` rounded to whole pixels.
+6. Plan (a pure function over `{top, height}` boxes and the two booleans): group boxes into rows by rounded top. By row: every row with two or more elements gets its maximum as target; the first element at that maximum gets no value, the others get the target. Otherwise: if `equalizeOnStack` is off and every row has one element, nothing is written; else the global maximum is the target for every element but the first tallest. A target of 0 writes nothing.
+7. Apply with `Renderer2.setStyle(el, 'min-height', '<n>px')`.
+8. If the row targets differ from the last result, emit `equalized` inside `untracked()`, so a consumer handler's signal reads never become dependencies of the effect.
+
+The `ResizeObserver` callback writes nothing to the DOM: it records whether the container's entry reports a zero size and increments the version signal. The signal write schedules a render (an `afterRenderEffect` dependency notifies Angular's scheduler in zoneless and zone-based applications alike), and the pass runs there.
+
+Why the writes are deferred: a `ResizeObserver` callback that resizes observed elements at or above the shallowest depth it was just told about makes the browser fire "ResizeObserver loop completed with undelivered notifications" as an `ErrorEvent` on `window`, and `provideBrowserGlobalErrorListeners()`, which Angular's application template includes, forwards window errors to the `ErrorHandler`. The cost is that a content change after load is painted unequal for at most one frame before the pass runs; Foundation's debounce showed it for 250 ms.
+
+Convergence: a pass that changes heights makes the observer report once more, and the next pass measures the same natural heights, writes the same values, and emits nothing; the one after that does not happen, because no observed size changed. The first pass runs right after the first render, before the observer's initial report, so a client-rendered page is equal at its first paint; the initial report then runs one confirming pass. Nested groups converge the same way: an inner group's writes change an outer watched element's size, which runs the outer pass.
+
+Why `mixedReadWrite`: the algorithm must write (reset), read (measure), and write (apply) in one pass. Splitting it across the `write` and `read` phases would need a second render to apply the result, and the page would paint the reset heights in between. One forced layout per pass is the price; Foundation forced one per watched element.
+
+### Implementation level and primitives
+
+Level, for the recommended path: native platform, CSS only. Flexbox stretch (Baseline widely available since 2018), CSS grid (since 2020), and `subgrid` (widely available since 2026-03-15; Chrome, Edge 117, Firefox 71, Safari 16, all at or below the Browser target) are in target without a fallback. The flex helpers and XY grid are Foundation's own classes, compiled from the consumer's settings.
+
+Level, for the directive: native platform plus a thin custom Angular layer. `ResizeObserver` (widely available since 2023-01-28) replaces the Triggers utility's resize and mutation listeners and the image loader. `@angular/aria` has no layout pattern. `@angular/cdk` has nothing public that fits: `ContentObserver` and `cdkObserveContent` are a MutationObserver, which reports DOM changes that change no size and misses size changes that come from CSS, fonts, and images; the CDK's `SharedResizeObserver` lives in the private `@angular/cdk/observers/private` entry point and is not public API. The Breakpoint service (`NfsMediaQuery` over CDK `MediaMatcher`) is the only library dependency.
+
+Primitives: `afterRenderEffect` (`mixedReadWrite`), `ResizeObserver` created on the effect's first run (a render callback, so never on the server), `Renderer2.setStyle`/`removeStyle` for the one value a host binding cannot express (building-blocks 1.5), `untracked`, `DestroyRef` (disconnect), `NfsMediaQuery.is()`, `inject` with `skipSelf` and `optional`.
+
+Fallback: none needed. If a target browser misbehaved with element observation, the documented answer is the CSS path, which this spec already recommends first; the directive would not grow a second code path.
+
+### Comparison with Angular Material
+
+None. Angular Material has no equal-height component or directive, and the Material reference research has no entry for one. Material's own card grids rely on CSS layout, which is this spec's first recommendation. The only CDK-adjacent piece is the private shared resize observer used by Material's form field, not borrowed (above).
+
+### ARIA and keyboard
+
+No APG pattern, role, state, property, key handling, focus management, or live region: Equalizer is layout only. Keyboard table: none.
+
+Both the CSS answer and the directive must comply with WCAG 2.2 AA. These criteria apply and are requirements, each with the mechanism that meets it and the test that proves it:
+
+| Criterion (WCAG 2.2 AA) | Requirement | CSS answer | Directive | Test |
+| --- | --- | --- | --- | --- |
+| 1.4.4 Resize Text | At 200 percent text size or zoom no content is clipped or overlapped | No height is ever fixed: flex stretch, `grid-auto-rows: 1fr`, and `subgrid` size tracks from content, so rows grow with enlarged text | `min-height`, never `height`: a box always grows past the equal height; the growth changes an observed size and the next pass re-equalizes | Playwright: root font size 200 percent and browser zoom 200 percent, no watched box overflows (`scrollHeight <= clientHeight + 1`) |
+| 1.4.10 Reflow | At 320 CSS px width (400 percent zoom of 1280 px) no two-dimensional scrolling and no clipped content | XY grid cells go full width below `medium` and stack at natural height; the grid recipes are single-column at the Zero breakpoint and add columns only inside `breakpoint(medium)` and up (a fixed multi-column grid at every width would fail) | Below its `equalizeOn` breakpoint, or when every box sits on its own row with `equalizeOnStack` off, it writes nothing; with `equalizeOnStack` on it writes only `min-height`, which cannot clip and cannot cause horizontal scrolling | Playwright at a 320 px viewport: no horizontal scroll on the document, no overflowing box, in every story |
+| 1.4.12 Text Spacing | With line height 1.5, paragraph spacing 2, letter spacing 0.12, word spacing 0.16 no content is lost | Same as 1.4.4: content-sized tracks | Same as 1.4.4: `min-height` plus a re-equalizing pass | Playwright injects the text-spacing stylesheet and asserts no overflow |
+| 1.3.2 Meaningful Sequence | Reading order equals the visual order that carries meaning | The recipes rely on source-order auto placement; the docs forbid `order`, `grid-auto-flow: dense`, and explicit placement that reorders cards | Never reorders or moves nodes; writes one inline style | Story play functions assert the DOM order of the watched boxes is unchanged after each pass |
+| 2.4.3 Focus Order | Focus order follows the meaningful sequence | Follows from 1.3.2 | Follows from 1.3.2; no `tabindex` | Covered by the 1.3.2 check |
+
+Foundation's own Equalizer fails 1.4.4 and 1.4.12 by construction (a fixed inline `height` clips content that grows after the pass until the next debounced resize or mutation) and that is the reason for D5. Foundation's Sass defaults pass as used here: the XY grid stacks below `medium`, and callouts and cards have no fixed heights; no setting or custom rule is needed. The story gate is axe through `@storybook/addon-a11y` with `parameters.a11y.test = 'error'` and `runOnly` set to the WCAG 2.2 AA tag set (`wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`); axe cannot detect clipping or reflow, so 1.4.4, 1.4.10, and 1.4.12 are proved by the Playwright cases above.
+
+### Rendered HTML
+
+The directive adds no attribute, class, or listener to either element. Server HTML is the consumer's markup; hydrated DOM differs only by inline `min-height`.
+
+```html
+<!-- CSS answer (no directive): server HTML and hydrated DOM are identical, and already equal -->
+<div class="grid-x grid-margin-x">
+  <div class="cell medium-4 flex-container flex-dir-column">
+    <div class="callout flex-child-grow">...</div>
+  </div>
+  <div class="cell medium-4 flex-container flex-dir-column">
+    <div class="callout flex-child-grow">...</div>
+  </div>
+</div>
+
+<!-- Directive on the legacy float grid: consumer markup -->
+<div class="row" nfsEqualizer equalizeOn="medium">
+  <div class="medium-6 columns"><div class="callout" nfsEqualizerWatch>short</div></div>
+  <div class="medium-6 columns"><div class="callout" nfsEqualizerWatch>long ...</div></div>
+</div>
+
+<!-- Server HTML (and hydrated DOM below medium or while stacked): natural heights -->
+<div class="row">
+  <div class="medium-6 columns"><div class="callout">short</div></div>
+  <div class="medium-6 columns"><div class="callout">long ...</div></div>
+</div>
+
+<!-- Hydrated DOM at medium and up: the tallest keeps its natural height -->
+<div class="row">
+  <div class="medium-6 columns"><div class="callout" style="min-height: 212px;">short</div></div>
+  <div class="medium-6 columns"><div class="callout">long ...</div></div>
+</div>
+```
+
+No `jsaction` appears on either element, because neither directive declares a listener. No `data-resize` or `data-mutate` attribute is written.
+
+### Animation
+
+None. Height changes are applied instantly: no State class, no Motion class, no `animate.enter`/`animate.leave`, no transition awaited, so ADR 0003 has nothing to govern and `prefers-reduced-motion` needs no rule. A consumer transition on `min-height` is not supported, because the pass measures after an instant reset.
+
+### Rendering modes
+
+Per ADR 0008 and the rendering-modes research, section 7 rules 1 to 11:
+
+- Server-side rendering and first paint: the directives render nothing on the server; watches register into an in-memory set, the render effect never runs, and no inline style reaches the server HTML (rule 3). The CSS answer is equal at first paint; the directive's boxes are at natural heights.
+- Before hydration: no `ResizeObserver`, no measurement, no style write; the observer and every DOM access live in the render effect (rules 3 to 5). No timer is started.
+- Full hydration: hydration claims the consumer's nodes unchanged, because the directives bind nothing; the first render effect pass then writes `min-height`, which is a layout shift at hydration wherever the boxes differ. The docs state it and point at the CSS answer, which has no shift. The pass reads `NfsMediaQuery.is(equalizeOn)` in the `mixedReadWrite` phase of the first pass, after the service went live in its `earlyRead` callback, so it sees the live breakpoint (ADR 0014); the Server breakpoint never reaches a height decision.
+- Incremental hydration: the container and its watches belong to one Hydration boundary (1.11 decision 6); while that boundary is dehydrated the boxes keep natural heights. A watch inside a nested `@defer` block within the container joins the group when its block renders or hydrates, because registration runs at construction and triggers a pass, so a partial boundary degrades to "equalized a little later", never to an error.
+- `hydrate never`: the directive never runs; boxes keep natural heights forever. The CSS answer works there, which is one more reason it comes first (1.11 decision 7 names natural heights as Equalizer's residue).
+- Plain `@defer`: client-created content; the first pass runs before its first paint.
+- Event replay: no template or host listeners, so no `jsaction`, nothing queued, nothing replayed; the open question of detecting a replayed event does not affect Equalizer.
+- Prerendering: identical to server rendering; no request token is read (rule 11).
+- Zoneless: every update is a signal write or a render callback; no `NgZone`.
+
+### Sass and custom CSS
+
+No library CSS, no `nfs-equalizer` mixin. The directive writes only inline `min-height`; the CSS answer uses only Foundation classes plus the consumer's own grid rules. The Sass subsection under Further Notes gives the details.
+
+## Testing Decisions
+
+A good test asserts what a user sees: rendered box heights (`getBoundingClientRect().height` equal within 1 px), which element carries an inline `min-height`, the server HTML, the `equalized` payloads, and the console, never the directives' private fields. There is no prior art in the new repository; the patterns are the building-blocks testing rule, Angular's `renderApplication`-based SSR tests, the rendering-mode test seam prototype, and the Angular Components universal-app e2e.
+
+Story ids follow `equalizer--<story>`. CSS answer, no directive: `equalizer--css-flex-cells`, `equalizer--css-block-grid-rows`, `equalizer--css-grid-equal-rows`, `equalizer--css-subgrid-card-sections`. Directive: `equalizer--docs-markup`, `equalizer--float-grid`, `equalizer--by-row`, `equalizer--on-stack`, `equalizer--nested`, `equalizer--dynamic-content`, `equalizer--hidden-then-shown`. Stories use `small-*` cell classes (never a breakpoint-dependent layout), because the Storybook test runner's viewport is narrow; breakpoint behaviour is Playwright's. The Storybook stylesheet includes `foundation-flex-classes` and, for `equalizer--float-grid`, `foundation-grid` next to the XY grid (their class names do not overlap).
+
+### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`)
+
+Every story runs axe with `parameters.a11y.test = 'error'` and `runOnly` set to the WCAG 2.2 AA tag set (`wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`), and every directive story asserts that the DOM order of its watched boxes is unchanged after each pass (WCAG 1.3.2).
+
+- `equalizer--css-flex-cells`, `equalizer--css-block-grid-rows`: no directive in the story; the callouts of each line are equal; in the block grid, lines have different heights; appending text to one callout keeps its line equal after the next frame.
+- `equalizer--css-grid-equal-rows`: every item of every row equal; `equalizer--css-subgrid-card-sections`: each card's section tops align across the row.
+- `equalizer--docs-markup` (Foundation's docs example, ported, `equalizeOn` empty): the watched callouts are equal; exactly one has no inline `min-height`; the story's docs text points at the CSS alternative.
+- `equalizer--float-grid`: equal heights on `.row`/`.columns` markup, where the CSS answer does not apply.
+- `equalizer--by-row`: rows equal within themselves and different from each other; a one-item row has no inline `min-height`; the story shows the last `equalized` payload with one entry per multi-item row.
+- `equalizer--on-stack`: a single-column stack with `equalizeOnStack` has equal boxes; toggling the input off clears every inline `min-height` and shows `[]`.
+- `equalizer--nested`: Foundation's nesting markup with one element carrying both directives; the inner callouts are equal, the outer panels are equal, and the outer panel containing the inner group is the one that decides the outer height when its inner boxes grow.
+- `equalizer--dynamic-content`: buttons that append and remove text in the tallest box (heights follow up and down), add and remove a watched box through `@for`, and load an image from a data URI after the first pass; heights are equal after each action.
+- `equalizer--hidden-then-shown`: the group sits in a Toggler target (or a plain `[hidden]` binding until Toggler exists); showing it yields equal heights without any notification.
+
+### 2. Browser-level test (stack per the [browser testing stack decision](../issues/41-browser-testing-stack-decision.md); stack-neutral)
+
+- Pass results: fixtures with known box heights assert the inline `min-height` of each element, the untouched tallest, and the `equalized` payload, in both modes, including ties, a zero-height group, and a single watched element.
+- Stacked rule: a column layout clears heights with `equalizeOnStack` off and equalizes with it on; a wide first item alone on its row followed by a row of three still equalizes (the order-independent delta).
+- Rows out of DOM order: a CSS `order` that moves the last item to the first row groups it with that row (a planner fixture only; the docs forbid reordering, WCAG 1.3.2).
+- Gate: a fake `MediaMatcher` (the Breakpoint service's test seam) switching across `medium` clears and restores heights, and the observer observes nothing while the gate is off.
+- Emission: a pass that changes nothing emits nothing; clearing emits `[]` once; a consumer handler that reads a signal does not make the effect re-run when that signal changes.
+- Registration: watches from `@for`, `@if`, and a nested `@defer` block join and leave; removing the tallest re-equalizes to the next one; `hostDirectives: [NfsEqualizerWatch]` on a test component registers it.
+- Nesting and DI: a watch on an inner container's element joins the outer group; inner watches join only the inner group; a watch outside any equalizer warns once.
+- Observer hygiene: over a sequence of content changes and container resizes, no `error` event reaches `window` and nothing reaches `ErrorHandler`; each change settles within two passes; destroying the equalizer disconnects the observer (later size changes run nothing).
+- Hidden container: with the container `display: none`, passes keep the current heights; showing it re-equalizes.
+- `equalize()`: after swapping two equal-size items between rows in by-row mode, heights are stale until `equalize()` and correct after the next render.
+- Defaults token: a provided `nfsEqualizerDefaultsToken` seeds all three inputs; an explicit input wins.
+- Zoneless: the suite runs with zoneless change detection and `fixture.whenStable()`; no test needs `NgZone`.
+
+### 3. Node-level Vitest
+
+- SSR smoke: `renderApplication` over a fixture with an equalizer, three watches, a nested group on a shared element, and a CSS-answer grid, built with `provideServerRendering()` inside the bootstrap callback as the rendering-mode test seam prototype established, under the library's unit-test target. Assert `whenStable()` resolves; no element carries a `style` attribute with `min-height`; neither directive's host carries `jsaction`; no `data-resize` or `data-mutate` attribute exists.
+- Pure logic: the planner (boxes of `{top, height}` plus `equalizeByRow` and `equalizeOnStack` to per-box `min-height` or none, plus row targets) is table-tested: one row, several rows, single-item rows, ties, zeros, sub-pixel tops, stacked columns, out-of-order input.
+
+### 4. Playwright e2e
+
+Against the static Storybook build, in Chromium, Firefox, and WebKit:
+
+- Viewport breakpoints on a story variant with `equalizeOn="medium"` and `medium-*` cells: at 400 px no inline `min-height`; resizing to 800 px equalizes; back to 400 px clears. The same resize on `equalizer--css-flex-cells` keeps CSS heights equal at 800 px with no script.
+- By-row regrouping: `equalizer--by-row` resized across `medium-up-2` and `large-up-4` layouts regroups rows and keeps each equal.
+- WCAG 1.4.4: on every directive story and every CSS story, at root font size 200 percent and again at a 640 px viewport (how a 1280 px window lays out at 200 percent zoom), no box has content overflowing it (`scrollHeight <= clientHeight + 1`), and the directive's boxes are equal again after the next pass.
+- WCAG 1.4.10: every story at a 320 px viewport: `document.documentElement.scrollWidth <= 320`, no overflowing box, and the directive with `equalizeOn="medium"` writes no `min-height`.
+- WCAG 1.4.12: the text-spacing stylesheet (line height 1.5, paragraph spacing 2 em, letter spacing 0.12 em, word spacing 0.16 em) injected into every story leaves no overflowing box.
+- Console: no `ResizeObserver loop` message during any of the above.
+
+Against the prerendered fixture app (the harness from the rendering-mode test seam prototype):
+
+- JavaScript disabled: screenshot plus axe; the CSS-answer grid is equal; the directive's boxes are natural.
+- Hydration: no NG05xx in the console and `ngDevMode.componentsSkippedHydration === 0`; after hydration the directive's boxes are equal.
+- Dehydrated block: an equalizer inside `@defer (hydrate when hydrateNow())` with the signal held `false` keeps natural heights; releasing the signal equalizes them.
+- `@defer (hydrate never)`: the directive's boxes stay natural and the CSS-answer grid inside the same block is equal.
+
+## Out of Scope
+
+- Library CSS for equal heights (no `nfs-equalizer` mixin, no utility classes). The CSS answer is Foundation's classes plus the consumer's own grid rules.
+- Equalizing widths, or any dimension other than height in the horizontal writing mode.
+- Content-box elements: the written value assumes Foundation's global `box-sizing: border-box`.
+- Transitions on the equalized height.
+- Group names and a reference input on `nfsEqualizerWatch` for a watch that should skip its nearest equalizer; no Foundation example needs it (it can follow the Triggers pattern of a typed reference if one appears).
+- Masonry layouts, which are a different problem (items packed without rows).
+- Runtime theming through custom properties (building-blocks 1.13).
+
+## Further Notes
+
+### Design decisions
+
+| # | Decision | Rationale | Rejected alternative |
+| --- | --- | --- | --- |
+| D1 | CSS guidance first: XY grid cells with Foundation's flex helpers, `grid-auto-rows: 1fr`, `subgrid` | Equal at first paint, on the server, without JavaScript, in `hydrate never`, and on every content change; all in the Browser target; uses Foundation's classes | Directive as the primary answer (Foundation parity): a hydration shift and a measurement loop for a layout job |
+| D2 | Keep an optional directive pair for the residue | Float grid and non-grid markup cannot be equalized by CSS without restructuring; a drop-in `data-equalizer` counterpart lets such pages move over | CSS guidance only, no directive (OPEN FOR HUMAN in the ticket; the lazier choice) |
+| D3 | `[nfsEqualizer]` on the container, `[nfsEqualizerWatch]` on each box, parent-owned registration through `nfsEqualizerToken` with `skipSelf` | Directive-first (ADR 0001); DI replaces names; `skipSelf` makes Foundation's shared-element nesting work | `contentChildren` queries (miss projected and `@defer` watches); a watch-less directive that queries `[nfsEqualizerWatch]` in the DOM (not declaration-scoped) |
+| D4 | No token re-provided as `undefined` | The inner equalizer's own provider already shadows the outer one; an `undefined` provider on the watch would collide with it on the shared element | The `CdkAccordionItem` pattern named in building-blocks 1.9 |
+| D5 | Inline `min-height`, tallest element of each row untouched | Content can grow at 200 percent zoom, under user text spacing, and at 320 px reflow (WCAG 2.2 AA 1.4.4, 1.4.12, 1.4.10 as requirements); growth and shrinkage both change an observed size, so one `ResizeObserver` catches images, fonts, text, and panels | Foundation's `height` (clips content, hides growth from the observer, needs a MutationObserver and an image loader) |
+| D6 | One `ResizeObserver` on the watched elements and the container; no MutationObserver, no image loader | Size changes are what matter; the container catches re-wrapping of fixed-width items | Porting `resizeme`, `mutateme`, and `onImagesLoaded`; CDK `ContentObserver` |
+| D7 | Observer callback only bumps a signal; the pass runs in `afterRenderEffect` `mixedReadWrite` | Writing inside the callback raises the loop `ErrorEvent`, which Angular forwards to `ErrorHandler`; one forced layout per pass; no painted reset | Writes in the callback; `write` then `read` across two renders (paints the reset) |
+| D8 | "Stacked" is every row holding one element; rows grouped by rounded top in any order | Order-independent, so no DOM-order sort; matches Foundation on every layout its docs show | Foundation's first-two check and consecutive grouping |
+| D9 | `equalizeOn` through `NfsMediaQuery.is()`, viewport semantics | Foundation documents breakpoint names as viewport breakpoints (ADR 0005; audit 0002 L4) | Container queries for the gate |
+| D10 | `equalized: readonly number[]`, emitted on change | Tells applied from cleared and gives the per-row heights; no noise from confirming passes | `preequalized`/`postequalized` pair; per-row events; a `void` output |
+| D11 | `equalize()` as the only method | Covers the one change no observer sees (equal-size reorders) | Foundation's four public measuring methods |
+| D12 | Defaults token `nfsEqualizerDefaultsToken` | Building-blocks 1.4: one per Plugin with `defaults` | No token |
+| D13 | No listeners, no host bindings, no styles on the server | Hydration-clean by construction; nothing to replay | Host `[style.min-height]` bindings from the container (a binding cannot be reset and measured inside one pass) |
+| D14 | No library CSS | Foundation's classes and the consumer's grid rules cover the CSS answer; the directive writes one inline value | An `nfs-equalizer` mixin shipping `grid-auto-rows: 1fr` utilities (would re-implement layout Foundation leaves to the consumer) |
+
+### Usage examples
+
+CSS first. Boxes inside XY grid cells, equal per line, natural when stacked below `medium` (Foundation's `equalizeOn="medium"` with `equalizeOnStack` off), using only Foundation classes:
+
+```html
+<div class="grid-x grid-margin-x">
+  <div class="cell medium-4 flex-container flex-dir-column">
+    <div class="callout flex-child-grow"><img src="square.jpg" alt="..." width="400" height="400"></div>
+  </div>
+  <div class="cell medium-4 flex-container flex-dir-column">
+    <div class="callout flex-child-grow"><p>Pellentesque habitant morbi tristique senectus.</p></div>
+  </div>
+  <div class="cell medium-4 flex-container flex-dir-column">
+    <div class="callout flex-child-grow"><img src="rectangle.jpg" alt="..." width="400" height="250"></div>
+  </div>
+</div>
+
+<!-- Cards need only the cell class: .card already grows in a flex container -->
+<div class="grid-x grid-margin-x small-up-1 medium-up-2 large-up-4">
+  <div class="cell flex-container"><div class="card">...</div></div>
+  <div class="cell flex-container"><div class="card">...</div></div>
+</div>
+```
+
+The block grid above is Foundation's by-row case: each wrapped line stretches on its own. One height for every row, or for a stacked column (`equalizeOnStack`), is the consumer's own CSS grid rule, written with Foundation's `breakpoint()` mixin:
+
+```scss
+.equal-rows {
+  display: grid;
+  gap: map-get($grid-margin-gutters, small);
+  grid-auto-rows: 1fr;
+
+  @include breakpoint(medium) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include breakpoint(large) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+// Card parts aligned across a row (Foundation's nested equalizer example).
+// Single column at the Zero breakpoint so 320 px reflow never scrolls sideways (WCAG 1.4.10).
+.card-row {
+  display: grid;
+  gap: map-get($grid-margin-gutters, small);
+
+  @include breakpoint(medium) {
+    grid-template-columns: repeat(3, 1fr);
+
+    > .card {
+      display: grid; // replaces Foundation's flex column on this card
+      grid-row: span 3;
+      grid-template-rows: subgrid;
+    }
+  }
+}
+```
+
+Both recipes keep source-order auto placement: no `order`, no `grid-auto-flow: dense`, no explicit placement that reorders cards (WCAG 1.3.2).
+
+The directive, for markup CSS cannot reach. Foundation's float grid, gated at `medium`:
+
+```ts
+@Component({
+  selector: 'app-legacy-panels',
+  imports: [NfsEqualizer, NfsEqualizerWatch],
+  template: `
+    <div class="row" nfsEqualizer equalizeOn="medium" (equalized)="heights.set($event)">
+      @for (panel of panels(); track panel.id) {
+        <div class="medium-4 columns">
+          <div class="callout" nfsEqualizerWatch>{{ panel.body }}</div>
+        </div>
+      }
+    </div>
+  `,
+})
+export class LegacyPanels {
+  readonly panels = input.required<readonly Panel[]>();
+  protected readonly heights = signal<readonly number[]>([]);
+}
+```
+
+Foundation's nesting example, with DI instead of names; the element in the first column is a watch of the outer group and the container of the inner one:
+
+```html
+<div class="row" nfsEqualizer equalizeOn="medium">
+  <div class="medium-4 columns">
+    <div class="callout" nfsEqualizerWatch nfsEqualizer equalizeOnStack>
+      <h3>Parent panel</h3>
+      <div class="callout" nfsEqualizerWatch>...</div>
+      <div class="callout" nfsEqualizerWatch>...</div>
+    </div>
+  </div>
+  <div class="medium-4 columns"><div class="callout" nfsEqualizerWatch>...</div></div>
+  <div class="medium-4 columns"><div class="callout" nfsEqualizerWatch>...</div></div>
+</div>
+```
+
+A component that is always a watch, and application-wide defaults:
+
+```ts
+@Component({
+  selector: 'app-product-tile',
+  hostDirectives: [NfsEqualizerWatch],
+  host: { class: 'callout' },
+  template: `<ng-content />`,
+})
+export class ProductTile {}
+
+export const appConfig: ApplicationConfig = {
+  providers: [{ provide: nfsEqualizerDefaultsToken, useValue: { equalizeOn: 'medium' } }],
+};
+```
+
+### Sass
+
+The consumer compiles Foundation's Sass from its own settings; the library imports no Foundation code and copies no Foundation rule. The directive relies on no Foundation export mixin. The CSS answer relies on Foundation's `foundation-xy-grid-classes` (cells, block grid), `foundation-flex-classes` (`.flex-container`, `.flex-dir-column`, `.flex-child-grow`), and the components being equalized (`foundation-callout`, `foundation-card`); the float-grid residue relies on `foundation-grid`. No library CSS; there is no `nfs-equalizer` mixin. (1) Rules emitted: none. (2) Settings reused: none by the library; the consumer's grid recipes use Foundation's `breakpoint()` mixin and `$grid-margin-gutters`. (3) Custom properties: none; the directive writes inline `min-height`, not a `--nfs-equalizer-*` property. (4) Motion classes: none, and no reduced-motion override is needed. (5) What breaks without an include: nothing library-side; without `foundation-flex-classes` the CSS answer's helper classes do nothing and the boxes keep natural heights. `equalizeOn` reads `nfsBreakpointsToken`, whose CSS mirror is `nfs-breakpoint-properties`.
+
+### Platform features to adopt when the browser target moves
+
+- None is needed: flexbox stretch, CSS grid, `subgrid`, and `ResizeObserver` are already in target. The upgrade path is subtraction: once a consumer's markup is on the XY grid or CSS grid, the directive is removed from it.
+- `Element.checkVisibility()` (Safari 17.4, out of target) could replace the zero-size container check; the check reads the observer's entry today and costs nothing, so there is no reason to switch.
+
+### Foundation behaviour changed or dropped (jQuery-only)
+
+- Group names on `data-equalizer` and `data-equalizer-watch`: replaced by DI scoping (D3, D4).
+- `data-resize`, `data-mutate`, the 250 ms debounced window resize, and the `mutateme` MutationObserver on `childList` and `style`: replaced by one `ResizeObserver` (D6). Tabs, Toggler, and ResponsiveToggle no longer need to fire `mutateme` after showing content.
+- `onImagesLoaded` before the first pass: dropped; image loads change sizes (D5, D6).
+- Inline `height`: now `min-height`, with the tallest element untouched (D5).
+- Nested coordination through bubbled `postequalized` events: automatic through observed sizes.
+- Row grouping by consecutive `offset().top` in DOM order and the first-two stacked check: grouping by rounded top and the every-row-single rule (D8).
+- `preequalized`, `preequalizedrow`, `postequalizedrow`: dropped; `postequalized` becomes `equalized` with the row heights (D10).
+- `getHeights`, `getHeightsByRow`, `applyHeight`, `applyHeightByRow`: dropped; `equalize()` remains (D11).
+- `_destroy()` resetting heights to `auto`: unnecessary, because a directive's element is destroyed with it.
+- The `.foundation-mq` handshake behind `equalizeOn`: replaced by the Breakpoint service (ADR 0005).
