@@ -177,6 +177,10 @@ _Avoid_: pause button, play button, autoplay toggle
 - [Sass packaging for the new library](57-sass-packaging.md) consumer docs (or the bundle README): `nfs-orbit` stops the compile with Foundation's default Orbit colours until `$orbit-bullet-background`, `$orbit-bullet-background-active`, and `$orbit-caption-background` pass (decisions 37 to 39).
 - Map, Decisions so far: one line for this ticket.
 
+### Reopened and re-run, 2026-09-26
+
+Reopened by the [Prototype: Orbit keyboard scrolling and hydration details](65-prototype-orbit-keyboard-hydration.md): ADR 0025's live `inert` gate loses to Aria `TabPanel`'s own binding in server HTML, and the published focus handoff cannot run synchronously in the `IntersectionObserver` callback (the target slide is still `inert` at that point). Worked and resolved by the [Re-run: Orbit spec, the slide's ARIA contract and the focus handoff](70-rerun-orbit-slide-contract-and-focus-handoff.md), whose mechanism [ADR 0034](../adr/0034-orbit-slide-contract.md) now records; ADR 0025's own decision (slides `inert` only once live) stands.
+
 ### Re-run, 2026-09-26
 
 Worked by the [Re-run: Orbit spec, the slide's ARIA contract and the focus handoff](70-rerun-orbit-slide-contract-and-focus-handoff.md), AFK, self-grilling both sides, on what the [Prototype: Orbit keyboard scrolling and hydration details](65-prototype-orbit-keyboard-hydration.md) (P65) handed back. The spec is revised in place. Both `## Prototype needed` questions above are answered by P65. Extra sources: NG `packages/core/src/render3/instructions/attribute.ts` (the attribute binding instruction) and `packages/core/src/render3/bindings.ts` (`bindingUpdated`), `packages/core/src/authoring/model/model_signal.ts`, `packages/core/src/render3/instructions/write_to_directive_input.ts`, `adev/src/content/guide/directives/directive-composition-api.md` ("Directive execution order"); NGC `src/aria/tabs/tab-panel.ts`, `tab.ts`, `tabs.ts`, `tab-list.ts`, `src/aria/private/tabs/tabs.ts`, `src/aria/private/behaviors/list-focus/list-focus.ts`, `src/aria/private/utils/violations.ts`.

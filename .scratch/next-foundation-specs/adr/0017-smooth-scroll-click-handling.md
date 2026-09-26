@@ -10,7 +10,7 @@ Building-blocks 1.11 decision 5 and ADR 0011 say a directive on `<a>` elements d
 
 - Listener-free: documentation plus the `nfs-smooth-scroll` mixin and a Router configuration. Kept as the documented recipe; rejected as the design because of the three gaps above.
 - Foundation's JavaScript offset (`offset().top - threshold / 2 - offset`) as inputs: rejected; it exists only after hydration, reaches only the viewport, and diverges from native jumps.
-- Writing the fragment with `replaceState` or `pushState`: rejected for now (Foundation never changed the URL, and a history write without the Router's `history.state` confuses its restoration); left OPEN FOR HUMAN in the ticket.
+- Writing the fragment with `replaceState` or `pushState`: rejected for now (Foundation never changed the URL, and a history write without the Router's `history.state` confuses its restoration); decided at triage: the URL stays unchanged; Magellan owns URL writing through `deepLinking`.
 
 ## Consequences
 

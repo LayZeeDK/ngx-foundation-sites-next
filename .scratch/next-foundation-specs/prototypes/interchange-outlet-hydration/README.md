@@ -252,7 +252,7 @@ a desired outcome.
 
 ## OPEN FOR HUMAN
 
-None beyond the single HIGH-impact/NOT-HIGH-confidence item under Triage above (the `replaced`-ordering
+Settled: see the [Re-run: Interchange spec, the `replaced` timing and the outlet's focus rule](../../issues/67-rerun-interchange-replaced-timing.md), which decided the mechanism (the rendered-rule handoff), verified in code in three engines. As this ticket left it: none beyond the single HIGH-impact/NOT-HIGH-confidence item under Triage above (the `replaced`-ordering
 fix's mechanism), which the ticket's own stated consequence already routes to reopening
 [Spec: Interchange](../../issues/35-spec-interchange.md), not to a fresh ad hoc human question.
 

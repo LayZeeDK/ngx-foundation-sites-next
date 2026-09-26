@@ -26,15 +26,15 @@ Sources: P52 = the [Prototype: `animate.enter` at hydration](52-prototype-animat
 
 Built as a plain Angular CLI 22.2.0 application (`npx @angular/cli@22.2.0 new app --style=css
 --ssr=false --routing=false`), not the Nx workspace this ticket's "How to work it" describes,
-following the same override prototype 52 (P52) recorded for the same reason: the question needs no Nx
+following the same override P52 recorded for the same reason: the question needs no Nx
 scaffolding, and a bare CLI app is the smallest runnable thing that exercises `animate.enter`/
-`animate.leave`. It has no `foundation-sites` Sass dependency, matching prototype 52's own choice,
+`animate.leave`. It has no `foundation-sites` Sass dependency, matching P52's own choice,
 because the question is about Angular's animation instruction against generic CSS, not Foundation's
 visual contract. The generator resolved `@angular/core` to `^22.2.0` and TypeScript to `~6.0.2`,
 matching the map's pins exactly; Vitest defaulted to `^5.0.0` (unused, no unit tests were needed)
 and was pinned back to `^4.1.5` for the record. Cross-browser coverage used `@playwright/test`
 1.63.0 projects (chromium, firefox, webkit, each plain and with `reducedMotion: 'reduce'`) rather
-than `/playwright-cli`, again matching prototype 52's override, because the question needed an
+than `/playwright-cli`, again matching P52's override, because the question needed an
 automated matrix rather than interactive driving.
 
 **Verdict:** the `nfs-*` keyframe classes animate correctly under every mechanic the map's specs
@@ -47,7 +47,7 @@ fallback timer when it does not; `prefers-reduced-motion: reduce` collapses the 
 animates under `animate.enter`, confirmed for two independent, compounding reasons rather than one:
 Motion UI's real CSS needs a `mui-enter`/`mui-enter-active` companion class that `animate.enter`
 never adds (so the compound selector never matches, and Angular's own cleanup strips the unmatched
-class before the next frame, the same `runEnterAnimation` mechanism prototype 52 found), and even a
+class before the next frame, the same `runEnterAnimation` mechanism P52 found), and even a
 hypothetical single-class transition with no companion-class requirement still never animates,
 because a newly inserted element has no prior rendered frame to transition from, which is exactly
 what `@starting-style` supplies and `@starting-style` is outside the Angular 22 browser target
@@ -87,18 +87,18 @@ mechanism never failed to complete in any run, including every rerun after the f
 ### What this prototype does not prove
 
 - The `(animate.enter)`/`(animate.leave)` function-callback form; only the class-list form was
-  tested, matching how the map's specs plan to use it and matching prototype 52's own scope.
+  tested, matching how the map's specs plan to use it and matching P52's own scope.
 - How long Case 4b's unanimated-but-matched class stays attached beyond the 600ms this prototype
   waited, or whether `MAX_ANIMATION_TIMEOUT`'s 4-second default applies to `animate.enter` the way
   it explicitly does to `(animate.leave)`'s callback form.
-- Zoneless change detection specifically; this app used zone.js (the CLI default). Render-callback
-  and animation-queue timing is documented as zone-independent (prototype 52), not verified directly
-  here either.
+- Zoneless only (the Angular CLI 22.2 default; `zoneless.md:14`); no zone.js consumer was tried.
+  Render-callback and animation-queue timing is documented as zone-independent (P52), not verified
+  directly here either.
 - Any Motion UI transition class other than `slide-in-down`; the two-class-protocol mechanism
   applies identically to the other twelve names in `research/foundation-utilities-conventions.md`
   4.1's table, but only one was built and tested.
 - Generalization of the exact timing split (Case 4a stripped almost immediately, Case 4b left
-  attached) to a different machine; the mechanism is architectural (prototype 52), not
+  attached) to a different machine; the mechanism is architectural (P52), not
   timing-tuned, so it should generalize, but only this one shared Windows arm64 machine was used.
 
 ### Decision handed to the blocked spec tickets
@@ -146,7 +146,7 @@ no `foundation-sites` dependency.
 
 - Whether Case 4b's finding (a class with a genuine but non-running `transition-property` is left
   attached by Angular's cleanup, unlike Case 4a's unmatched-selector class, stripped almost
-  immediately) belongs in `research/angular-rendering-modes.md` alongside prototype 52's own
+  immediately) belongs in `research/angular-rendering-modes.md` alongside P52's own
   mechanism finding, or stays as a cross-link between the two prototypes' READMEs.
 - Whether any spec's `animationIn`/`animationOut`-style input should validate at dev time that a
   consumer-supplied class name is a keyframe animation and warn on a recognized Motion UI transition

@@ -1,0 +1,407 @@
+
+Running 186 tests using 1 worker
+
+  [OK]    1 [chromium] > e2e\interchange-outlet.spec.ts:11:9 > case 1: server HTML carries the Server breakpoint template > /ssr server HTML contains the small rule's template, not the large one's (177ms)
+  [OK]    2 [chromium] > e2e\interchange-outlet.spec.ts:11:9 > case 1: server HTML carries the Server breakpoint template > /prerendered server HTML contains the small rule's template, not the large one's (12ms)
+  [OK]    3 [chromium] > e2e\interchange-outlet.spec.ts:30:9 > case 2: hydration claims the view with no NG05xx, then swaps to the live template > /ssr hydrates cleanly and swaps to the large rule's template (464ms)
+  [OK]    4 [chromium] > e2e\interchange-outlet.spec.ts:30:9 > case 2: hydration claims the view with no NG05xx, then swaps to the live template > /prerendered hydrates cleanly and swaps to the large rule's template (324ms)
+  [OK]    5 [chromium] > e2e\interchange-outlet.spec.ts:50:9 > case 1 and 2, ngDoCheck fallback: same server HTML and hydration guarantees > /ssr-fallback server HTML carries the small template, hydrates cleanly, and (re-run finding) never swaps (1.3s)
+  [OK]    6 [chromium] > e2e\interchange-outlet.spec.ts:50:9 > case 1 and 2, ngDoCheck fallback: same server HTML and hydration guarantees > /prerendered-fallback server HTML carries the small template, hydrates cleanly, and (re-run finding) never swaps (1.3s)
+  [OK]    7 [chromium] > e2e\interchange-outlet.spec.ts:83:7 > case 3: the swap lands in the same tick as the Breakpoint handoff on /csr > /csr never paints the small rule template; the swap to large lands at or before first paint (317ms)
+  [OK]    8 [chromium] > e2e\interchange-outlet.spec.ts:143:9 > case 3b: @defer (hydrate on viewport) hydrates into the live template after scrolling > /ssr: scrolling the deferred block into view hydrates it into the large rule's template (399ms)
+  [OK]    9 [chromium] > e2e\interchange-outlet.spec.ts:143:9 > case 3b: @defer (hydrate on viewport) hydrates into the live template after scrolling > /prerendered: scrolling the deferred block into view hydrates it into the large rule's template (418ms)
+  [OK]   10 [chromium] > e2e\interchange-outlet.spec.ts:167:9 > case 3c: replaced emits after each render, ending with the selected content > /csr: the replaced-log ends with 'large' (5.3s)
+  [OK]   11 [chromium] > e2e\interchange-outlet.spec.ts:167:9 > case 3c: replaced emits after each render, ending with the selected content > /ssr: the replaced-log ends with 'large' (307ms)
+  [OK]   12 [chromium] > e2e\interchange-outlet.spec.ts:167:9 > case 3c: replaced emits after each render, ending with the selected content > /prerendered: the replaced-log ends with 'large' (296ms)
+[rerun-67] chromium /csr dom ["replaced-dom-check:large:shown"]
+[rerun-67] chromium /csr inner ["replaced-inner-check:large:shown"]
+[rerun-67] chromium /csr replaced-log "large"
+[rerun-67] chromium /csr timeline {"marks":[["mq-live-after-set",163.5],["outlet-swap:large",166.6],["replaced:large",167.7]],"paint":[["first-paint",180],["first-contentful-paint",180]]}
+  [OK]   13 [chromium] > e2e\rerun-67.spec.ts:37:9 > re-run: replaced fires only after the DOM shows the rule (first-render handoff) > /csr: every replaced emission sees its rule's view, including the update pass (325ms)
+[rerun-67] chromium /ssr dom ["replaced-dom-check:large:shown"]
+[rerun-67] chromium /ssr inner ["replaced-inner-check:large:shown"]
+[rerun-67] chromium /ssr replaced-log "large"
+[rerun-67] chromium /ssr timeline {"marks":[["mq-live-after-set",171.4],["outlet-swap:large",176.2],["replaced:large",177.9]],"paint":[["first-paint",40],["first-contentful-paint",40]]}
+  [OK]   14 [chromium] > e2e\rerun-67.spec.ts:37:9 > re-run: replaced fires only after the DOM shows the rule (first-render handoff) > /ssr: every replaced emission sees its rule's view, including the update pass (338ms)
+[rerun-67] chromium /prerendered dom ["replaced-dom-check:large:shown"]
+[rerun-67] chromium /prerendered inner ["replaced-inner-check:large:shown"]
+[rerun-67] chromium /prerendered replaced-log "large"
+[rerun-67] chromium /prerendered timeline {"marks":[["mq-live-after-set",169.7],["outlet-swap:large",172.8],["replaced:large",173.9]],"paint":[["first-paint",40],["first-contentful-paint",40]]}
+  [OK]   15 [chromium] > e2e\rerun-67.spec.ts:37:9 > re-run: replaced fires only after the DOM shows the rule (first-render handoff) > /prerendered: every replaced emission sees its rule's view, including the update pass (340ms)
+[rerun-67] chromium /csr-fallback labels ["page-ctor","mq-ctor","outlet-docheck-swap:small","mq-live-before-set","mq-live-after-set"]
+  [OK]   16 [chromium] > e2e\rerun-67.spec.ts:73:9 > re-run finding: the ngDoCheck fallback never swaps once replaced stops firing early > /csr-fallback: the Server breakpoint's view stays, nothing is emitted (1.3s)
+[rerun-67] chromium /ssr-fallback labels ["page-ctor","mq-ctor","outlet-docheck-swap:small","mq-live-before-set","mq-live-after-set"]
+  [OK]   17 [chromium] > e2e\rerun-67.spec.ts:73:9 > re-run finding: the ngDoCheck fallback never swaps once replaced stops firing early > /ssr-fallback: the Server breakpoint's view stays, nothing is emitted (1.3s)
+[rerun-67] chromium /prerendered-fallback labels ["page-ctor","mq-ctor","outlet-docheck-swap:small","mq-live-before-set","mq-live-after-set"]
+  [OK]   18 [chromium] > e2e\rerun-67.spec.ts:73:9 > re-run finding: the ngDoCheck fallback never swaps once replaced stops firing early > /prerendered-fallback: the Server breakpoint's view stays, nothing is emitted (1.3s)
+[rerun-67] chromium /ssr defer dom ["replaced-dom-check:large:shown","replaced-dom-check:defer-large:shown"]
+  [OK]   19 [chromium] > e2e\rerun-67.spec.ts:90:9 > re-run: @defer (hydrate on viewport) block > /ssr: the deferred outlet's replaced sees its view (356ms)
+[rerun-67] chromium /prerendered defer dom ["replaced-dom-check:large:shown","replaced-dom-check:defer-large:shown"]
+  [OK]   20 [chromium] > e2e\rerun-67.spec.ts:90:9 > re-run: @defer (hydrate on viewport) block > /prerendered: the deferred outlet's replaced sees its view (366ms)
+[rerun-67] chromium /csr bg ["bg-check:naive:large:NOT-SHOWN","bg-check:handoff:large:shown"]
+  [OK]   21 [chromium] > e2e\rerun-67.spec.ts:109:9 > re-run: background mode (host style binding), handoff vs naive > /csr: record what background replaced sees (265ms)
+[rerun-67] chromium /ssr bg ["bg-check:naive:large:NOT-SHOWN","bg-check:handoff:large:shown"]
+  [OK]   22 [chromium] > e2e\rerun-67.spec.ts:109:9 > re-run: background mode (host style binding), handoff vs naive > /ssr: record what background replaced sees (307ms)
+[rerun-67] chromium /prerendered bg ["bg-check:naive:large:NOT-SHOWN","bg-check:handoff:large:shown"]
+  [OK]   23 [chromium] > e2e\rerun-67.spec.ts:109:9 > re-run: background mode (host style binding), handoff vs naive > /prerendered: record what background replaced sees (310ms)
+[rerun-67] chromium /csr-candidate dom ["replaced-dom-check:large:shown"]
+[rerun-67] chromium /csr-candidate inner ["replaced-inner-check:large:NOT-SHOWN"]
+  [OK]   24 [chromium] > e2e\rerun-67.spec.ts:137:9 > re-run: candidate fix (swap and emit in one render callback), measured > /csr-candidate: record what replaced sees (330ms)
+[rerun-67] chromium /ssr-candidate dom ["replaced-dom-check:large:shown"]
+[rerun-67] chromium /ssr-candidate inner ["replaced-inner-check:large:NOT-SHOWN"]
+  [OK]   25 [chromium] > e2e\rerun-67.spec.ts:137:9 > re-run: candidate fix (swap and emit in one render callback), measured > /ssr-candidate: record what replaced sees (296ms)
+[rerun-67] chromium /csr-candidate-detect dom ["replaced-dom-check:large:shown"]
+[rerun-67] chromium /csr-candidate-detect inner ["replaced-inner-check:large:shown"]
+  [OK]   26 [chromium] > e2e\rerun-67.spec.ts:137:9 > re-run: candidate fix (swap and emit in one render callback), measured > /csr-candidate-detect: record what replaced sees (322ms)
+[rerun-67] chromium /csr fromRenderCallback=true small {"smallDom":["replaced-dom-check:small:shown"],"smallInner":["replaced-inner-check:small:shown"],"smallFocus":["replaced-focus:small:small-link"],"activeAfter":"small-link"}
+[rerun-67] chromium /csr fromRenderCallback=true labels ["page-ctor","mq-ctor","outlet-ctor:1","outlet-swap:small","mq-live-before-set","mq-live-after-set","bg-check:naive:large:NOT-SHOWN","outlet-swap:large","replaced:large","replaced-dom-check:large:shown","replaced-inner-check:large:shown","replaced-focus:large:BODY","bg-check:handoff:large:shown","outlet-ctor:2","outlet-swap:large","replaced:large","replaced-dom-check:defer-large:shown","replaced-inner-check:defer-large:shown","replaced-focus:defer-large:BODY","bg-check:naive:small:NOT-SHOWN","outlet-swap:small","outlet-swap:small","replaced:small","replaced-dom-check:small:shown","replaced-inner-check:small:shown","replaced-focus:small:small-link","bg-check:handoff:small:shown","replaced:small","replaced-dom-check:defer-small:shown","replaced-inner-check:defer-small:shown","replaced-focus:defer-small:small-link"]
+  [OK]   27 [chromium] > e2e\rerun-67.spec.ts:171:9 > re-run: a later swap with focus inside the removed view > /csr: swap to small from a render callback (371ms)
+[rerun-67] chromium /csr fromRenderCallback=false small {"smallDom":["replaced-dom-check:small:shown"],"smallInner":["replaced-inner-check:small:shown"],"smallFocus":["replaced-focus:small:small-link"],"activeAfter":"small-link"}
+[rerun-67] chromium /csr fromRenderCallback=false labels ["page-ctor","mq-ctor","outlet-ctor:1","outlet-swap:small","mq-live-before-set","mq-live-after-set","bg-check:naive:large:NOT-SHOWN","outlet-swap:large","replaced:large","replaced-dom-check:large:shown","replaced-inner-check:large:shown","replaced-focus:large:BODY","bg-check:handoff:large:shown","outlet-ctor:2","outlet-swap:large","replaced:large","replaced-dom-check:defer-large:shown","replaced-inner-check:defer-large:shown","replaced-focus:defer-large:BODY","outlet-swap:small","outlet-swap:small","replaced:small","replaced-dom-check:small:shown","replaced-inner-check:small:shown","replaced-focus:small:small-link","bg-check:handoff:small:shown","bg-check:naive:small:shown","replaced:small","replaced-dom-check:defer-small:shown","replaced-inner-check:defer-small:shown","replaced-focus:defer-small:small-link"]
+  [OK]   28 [chromium] > e2e\rerun-67.spec.ts:171:9 > re-run: a later swap with focus inside the removed view > /csr: swap to small from a plain signal write (366ms)
+[rerun-67] chromium /ssr fromRenderCallback=true small {"smallDom":["replaced-dom-check:small:shown"],"smallInner":["replaced-inner-check:small:shown"],"smallFocus":["replaced-focus:small:small-link"],"activeAfter":"small-link"}
+[rerun-67] chromium /ssr fromRenderCallback=true labels ["page-ctor","mq-ctor","outlet-ctor:1","outlet-swap:small","mq-live-before-set","mq-live-after-set","bg-check:naive:large:NOT-SHOWN","outlet-swap:large","replaced:large","replaced-dom-check:large:shown","replaced-inner-check:large:shown","replaced-focus:large:BODY","bg-check:handoff:large:shown","bg-check:naive:small:NOT-SHOWN","outlet-swap:small","replaced:small","replaced-dom-check:small:shown","replaced-inner-check:small:shown","replaced-focus:small:small-link","bg-check:handoff:small:shown"]
+  [OK]   29 [chromium] > e2e\rerun-67.spec.ts:171:9 > re-run: a later swap with focus inside the removed view > /ssr: swap to small from a render callback (352ms)
+[rerun-67] chromium /csr-candidate fromRenderCallback=true small {"smallDom":["replaced-dom-check:small:shown"],"smallInner":["replaced-inner-check:small:NOT-SHOWN"],"smallFocus":["replaced-focus:small:BODY"],"activeAfter":"BODY"}
+[rerun-67] chromium /csr-candidate fromRenderCallback=true labels ["page-ctor","mq-ctor","outlet-swap-candidate:effect:small","mq-live-before-set","mq-live-after-set","outlet-swap-candidate:callback:large","replaced-candidate:large","replaced-dom-check:large:shown","replaced-inner-check:large:NOT-SHOWN","replaced-focus:large:BODY","outlet-swap-candidate:callback:small","replaced-candidate:small","replaced-dom-check:small:shown","replaced-inner-check:small:NOT-SHOWN","replaced-focus:small:BODY"]
+  [OK]   30 [chromium] > e2e\rerun-67.spec.ts:171:9 > re-run: a later swap with focus inside the removed view > /csr-candidate: swap to small from a render callback (406ms)
+[rerun-67] chromium /csr-candidate-detect fromRenderCallback=true small {"smallDom":["replaced-dom-check:small:shown"],"smallInner":["replaced-inner-check:small:shown"],"smallFocus":["replaced-focus:small:small-link"],"activeAfter":"small-link"}
+[rerun-67] chromium /csr-candidate-detect fromRenderCallback=true labels ["page-ctor","mq-ctor","outlet-swap-candidate:effect:small","mq-live-before-set","mq-live-after-set","outlet-swap-candidate:callback:large","replaced-candidate:large","replaced-dom-check:large:shown","replaced-inner-check:large:shown","replaced-focus:large:BODY","outlet-swap-candidate:callback:small","replaced-candidate:small","replaced-dom-check:small:shown","replaced-inner-check:small:shown","replaced-focus:small:small-link"]
+  [OK]   31 [chromium] > e2e\rerun-67.spec.ts:171:9 > re-run: a later swap with focus inside the removed view > /csr-candidate-detect: swap to small from a render callback (495ms)
+  [OK]   32 [chromium] > e2e\interchange-outlet.spec.ts:11:9 > case 1: server HTML carries the Server breakpoint template > /ssr server HTML contains the small rule's template, not the large one's (34ms)
+  [OK]   33 [chromium] > e2e\interchange-outlet.spec.ts:11:9 > case 1: server HTML carries the Server breakpoint template > /prerendered server HTML contains the small rule's template, not the large one's (9ms)
+  [OK]   34 [chromium] > e2e\interchange-outlet.spec.ts:30:9 > case 2: hydration claims the view with no NG05xx, then swaps to the live template > /ssr hydrates cleanly and swaps to the large rule's template (361ms)
+  [OK]   35 [chromium] > e2e\interchange-outlet.spec.ts:30:9 > case 2: hydration claims the view with no NG05xx, then swaps to the live template > /prerendered hydrates cleanly and swaps to the large rule's template (373ms)
+  [OK]   36 [chromium] > e2e\interchange-outlet.spec.ts:50:9 > case 1 and 2, ngDoCheck fallback: same server HTML and hydration guarantees > /ssr-fallback server HTML carries the small template, hydrates cleanly, and (re-run finding) never swaps (1.4s)
+  [OK]   37 [chromium] > e2e\interchange-outlet.spec.ts:50:9 > case 1 and 2, ngDoCheck fallback: same server HTML and hydration guarantees > /prerendered-fallback server HTML carries the small template, hydrates cleanly, and (re-run finding) never swaps (1.3s)
+  [OK]   38 [chromium] > e2e\interchange-outlet.spec.ts:83:7 > case 3: the swap lands in the same tick as the Breakpoint handoff on /csr > /csr never paints the small rule template; the swap to large lands at or before first paint (372ms)
+  [OK]   39 [chromium] > e2e\interchange-outlet.spec.ts:143:9 > case 3b: @defer (hydrate on viewport) hydrates into the live template after scrolling > /ssr: scrolling the deferred block into view hydrates it into the large rule's template (438ms)
+  [OK]   40 [chromium] > e2e\interchange-outlet.spec.ts:143:9 > case 3b: @defer (hydrate on viewport) hydrates into the live template after scrolling > /prerendered: scrolling the deferred block into view hydrates it into the large rule's template (389ms)
+  [OK]   41 [chromium] > e2e\interchange-outlet.spec.ts:167:9 > case 3c: replaced emits after each render, ending with the selected content > /csr: the replaced-log ends with 'large' (5.3s)
+  [OK]   42 [chromium] > e2e\interchange-outlet.spec.ts:167:9 > case 3c: replaced emits after each render, ending with the selected content > /ssr: the replaced-log ends with 'large' (284ms)
+  [OK]   43 [chromium] > e2e\interchange-outlet.spec.ts:167:9 > case 3c: replaced emits after each render, ending with the selected content > /prerendered: the replaced-log ends with 'large' (286ms)
+[rerun-67] chromium /csr dom ["replaced-dom-check:large:shown"]
+[rerun-67] chromium /csr inner ["replaced-inner-check:large:shown"]
+[rerun-67] chromium /csr replaced-log "large"
+[rerun-67] chromium /csr timeline {"marks":[["mq-live-after-set",162.1],["outlet-swap:large",164.9],["replaced:large",166]],"paint":[["first-paint",180],["first-contentful-paint",180]]}
+  [OK]   44 [chromium] > e2e\rerun-67.spec.ts:37:9 > re-run: replaced fires only after the DOM shows the rule (first-render handoff) > /csr: every replaced emission sees its rule's view, including the update pass (326ms)
+[rerun-67] chromium /ssr dom ["replaced-dom-check:large:shown"]
+[rerun-67] chromium /ssr inner ["replaced-inner-check:large:shown"]
+[rerun-67] chromium /ssr replaced-log "large"
+[rerun-67] chromium /ssr timeline {"marks":[["mq-live-after-set",161.5],["outlet-swap:large",164.7],["replaced:large",165.9]],"paint":[["first-paint",52],["first-contentful-paint",52]]}
+  [OK]   45 [chromium] > e2e\rerun-67.spec.ts:37:9 > re-run: replaced fires only after the DOM shows the rule (first-render handoff) > /ssr: every replaced emission sees its rule's view, including the update pass (309ms)
+[rerun-67] chromium /prerendered dom ["replaced-dom-check:large:shown"]
+[rerun-67] chromium /prerendered inner ["replaced-inner-check:large:shown"]
+[rerun-67] chromium /prerendered replaced-log "large"
+[rerun-67] chromium /prerendered timeline {"marks":[["mq-live-after-set",149.5],["outlet-swap:large",152.8],["replaced:large",153.8]],"paint":[["first-paint",36],["first-contentful-paint",36]]}
+  [OK]   46 [chromium] > e2e\rerun-67.spec.ts:37:9 > re-run: replaced fires only after the DOM shows the rule (first-render handoff) > /prerendered: every replaced emission sees its rule's view, including the update pass (283ms)
+[rerun-67] chromium /csr-fallback labels ["page-ctor","mq-ctor","outlet-docheck-swap:small","mq-live-before-set","mq-live-after-set"]
+  [OK]   47 [chromium] > e2e\rerun-67.spec.ts:73:9 > re-run finding: the ngDoCheck fallback never swaps once replaced stops firing early > /csr-fallback: the Server breakpoint's view stays, nothing is emitted (1.3s)
+[rerun-67] chromium /ssr-fallback labels ["page-ctor","mq-ctor","outlet-docheck-swap:small","mq-live-before-set","mq-live-after-set"]
+  [OK]   48 [chromium] > e2e\rerun-67.spec.ts:73:9 > re-run finding: the ngDoCheck fallback never swaps once replaced stops firing early > /ssr-fallback: the Server breakpoint's view stays, nothing is emitted (1.3s)
+[rerun-67] chromium /prerendered-fallback labels ["page-ctor","mq-ctor","outlet-docheck-swap:small","mq-live-before-set","mq-live-after-set"]
+  [OK]   49 [chromium] > e2e\rerun-67.spec.ts:73:9 > re-run finding: the ngDoCheck fallback never swaps once replaced stops firing early > /prerendered-fallback: the Server breakpoint's view stays, nothing is emitted (1.3s)
+[rerun-67] chromium /ssr defer dom ["replaced-dom-check:large:shown","replaced-dom-check:defer-large:shown"]
+  [OK]   50 [chromium] > e2e\rerun-67.spec.ts:90:9 > re-run: @defer (hydrate on viewport) block > /ssr: the deferred outlet's replaced sees its view (319ms)
+[rerun-67] chromium /prerendered defer dom ["replaced-dom-check:large:shown","replaced-dom-check:defer-large:shown"]
+  [OK]   51 [chromium] > e2e\rerun-67.spec.ts:90:9 > re-run: @defer (hydrate on viewport) block > /prerendered: the deferred outlet's replaced sees its view (363ms)
+[rerun-67] chromium /csr bg ["bg-check:naive:large:NOT-SHOWN","bg-check:handoff:large:shown"]
+  [OK]   52 [chromium] > e2e\rerun-67.spec.ts:109:9 > re-run: background mode (host style binding), handoff vs naive > /csr: record what background replaced sees (290ms)
+[rerun-67] chromium /ssr bg ["bg-check:naive:large:NOT-SHOWN","bg-check:handoff:large:shown"]
+  [OK]   53 [chromium] > e2e\rerun-67.spec.ts:109:9 > re-run: background mode (host style binding), handoff vs naive > /ssr: record what background replaced sees (265ms)
+[rerun-67] chromium /prerendered bg ["bg-check:naive:large:NOT-SHOWN","bg-check:handoff:large:shown"]
+  [OK]   54 [chromium] > e2e\rerun-67.spec.ts:109:9 > re-run: background mode (host style binding), handoff vs naive > /prerendered: record what background replaced sees (253ms)
+[rerun-67] chromium /csr-candidate dom ["replaced-dom-check:large:shown"]
+[rerun-67] chromium /csr-candidate inner ["replaced-inner-check:large:NOT-SHOWN"]
+  [OK]   55 [chromium] > e2e\rerun-67.spec.ts:137:9 > re-run: candidate fix (swap and emit in one render callback), measured > /csr-candidate: record what replaced sees (263ms)
+[rerun-67] chromium /ssr-candidate dom ["replaced-dom-check:large:shown"]
+[rerun-67] chromium /ssr-candidate inner ["replaced-inner-check:large:NOT-SHOWN"]
+  [OK]   56 [chromium] > e2e\rerun-67.spec.ts:137:9 > re-run: candidate fix (swap and emit in one render callback), measured > /ssr-candidate: record what replaced sees (279ms)
+[rerun-67] chromium /csr-candidate-detect dom ["replaced-dom-check:large:shown"]
+[rerun-67] chromium /csr-candidate-detect inner ["replaced-inner-check:large:shown"]
+  [OK]   57 [chromium] > e2e\rerun-67.spec.ts:137:9 > re-run: candidate fix (swap and emit in one render callback), measured > /csr-candidate-detect: record what replaced sees (267ms)
+[rerun-67] chromium /csr fromRenderCallback=true small {"smallDom":["replaced-dom-check:small:shown"],"smallInner":["replaced-inner-check:small:shown"],"smallFocus":["replaced-focus:small:small-link"],"activeAfter":"small-link"}
+[rerun-67] chromium /csr fromRenderCallback=true labels ["page-ctor","mq-ctor","outlet-ctor:1","outlet-swap:small","mq-live-before-set","mq-live-after-set","bg-check:naive:large:NOT-SHOWN","outlet-swap:large","replaced:large","replaced-dom-check:large:shown","replaced-inner-check:large:shown","replaced-focus:large:BODY","bg-check:handoff:large:shown","outlet-ctor:2","outlet-swap:large","replaced:large","replaced-dom-check:defer-large:shown","replaced-inner-check:defer-large:shown","replaced-focus:defer-large:BODY","bg-check:naive:small:NOT-SHOWN","outlet-swap:small","outlet-swap:small","replaced:small","replaced-dom-check:small:shown","replaced-inner-check:small:shown","replaced-focus:small:small-link","bg-check:handoff:small:shown","replaced:small","replaced-dom-check:defer-small:shown","replaced-inner-check:defer-small:shown","replaced-focus:defer-small:small-link"]
+  [OK]   58 [chromium] > e2e\rerun-67.spec.ts:171:9 > re-run: a later swap with focus inside the removed view > /csr: swap to small from a render callback (308ms)
+[rerun-67] chromium /csr fromRenderCallback=false small {"smallDom":["replaced-dom-check:small:shown"],"smallInner":["replaced-inner-check:small:shown"],"smallFocus":["replaced-focus:small:small-link"],"activeAfter":"small-link"}
+[rerun-67] chromium /csr fromRenderCallback=false labels ["page-ctor","mq-ctor","outlet-ctor:1","outlet-swap:small","mq-live-before-set","mq-live-after-set","bg-check:naive:large:NOT-SHOWN","outlet-swap:large","replaced:large","replaced-dom-check:large:shown","replaced-inner-check:large:shown","replaced-focus:large:BODY","bg-check:handoff:large:shown","outlet-ctor:2","outlet-swap:large","replaced:large","replaced-dom-check:defer-large:shown","replaced-inner-check:defer-large:shown","replaced-focus:defer-large:BODY","outlet-swap:small","outlet-swap:small","replaced:small","replaced-dom-check:small:shown","replaced-inner-check:small:shown","replaced-focus:small:small-link","bg-check:handoff:small:shown","bg-check:naive:small:shown","replaced:small","replaced-dom-check:defer-small:shown","replaced-inner-check:defer-small:shown","replaced-focus:defer-small:small-link"]
+  [OK]   59 [chromium] > e2e\rerun-67.spec.ts:171:9 > re-run: a later swap with focus inside the removed view > /csr: swap to small from a plain signal write (312ms)
+[rerun-67] chromium /ssr fromRenderCallback=true small {"smallDom":["replaced-dom-check:small:shown"],"smallInner":["replaced-inner-check:small:shown"],"smallFocus":["replaced-focus:small:small-link"],"activeAfter":"small-link"}
+[rerun-67] chromium /ssr fromRenderCallback=true labels ["page-ctor","mq-ctor","outlet-ctor:1","outlet-swap:small","mq-live-before-set","mq-live-after-set","bg-check:naive:large:NOT-SHOWN","outlet-swap:large","replaced:large","replaced-dom-check:large:shown","replaced-inner-check:large:shown","replaced-focus:large:BODY","bg-check:handoff:large:shown","bg-check:naive:small:NOT-SHOWN","outlet-swap:small","replaced:small","replaced-dom-check:small:shown","replaced-inner-check:small:shown","replaced-focus:small:small-link","bg-check:handoff:small:shown"]
+  [OK]   60 [chromium] > e2e\rerun-67.spec.ts:171:9 > re-run: a later swap with focus inside the removed view > /ssr: swap to small from a render callback (326ms)
+[rerun-67] chromium /csr-candidate fromRenderCallback=true small {"smallDom":["replaced-dom-check:small:shown"],"smallInner":["replaced-inner-check:small:NOT-SHOWN"],"smallFocus":["replaced-focus:small:BODY"],"activeAfter":"BODY"}
+[rerun-67] chromium /csr-candidate fromRenderCallback=true labels ["page-ctor","mq-ctor","outlet-swap-candidate:effect:small","mq-live-before-set","mq-live-after-set","outlet-swap-candidate:callback:large","replaced-candidate:large","replaced-dom-check:large:shown","replaced-inner-check:large:NOT-SHOWN","replaced-focus:large:BODY","outlet-swap-candidate:callback:small","replaced-candidate:small","replaced-dom-check:small:shown","replaced-inner-check:small:NOT-SHOWN","replaced-focus:small:BODY"]
+  [OK]   61 [chromium] > e2e\rerun-67.spec.ts:171:9 > re-run: a later swap with focus inside the removed view > /csr-candidate: swap to small from a render callback (302ms)
+[rerun-67] chromium /csr-candidate-detect fromRenderCallback=true small {"smallDom":["replaced-dom-check:small:shown"],"smallInner":["replaced-inner-check:small:shown"],"smallFocus":["replaced-focus:small:small-link"],"activeAfter":"small-link"}
+[rerun-67] chromium /csr-candidate-detect fromRenderCallback=true labels ["page-ctor","mq-ctor","outlet-swap-candidate:effect:small","mq-live-before-set","mq-live-after-set","outlet-swap-candidate:callback:large","replaced-candidate:large","replaced-dom-check:large:shown","replaced-inner-check:large:shown","replaced-focus:large:BODY","outlet-swap-candidate:callback:small","replaced-candidate:small","replaced-dom-check:small:shown","replaced-inner-check:small:shown","replaced-focus:small:small-link"]
+  [OK]   62 [chromium] > e2e\rerun-67.spec.ts:171:9 > re-run: a later swap with focus inside the removed view > /csr-candidate-detect: swap to small from a render callback (305ms)
+  [OK]   63 [firefox] > e2e\interchange-outlet.spec.ts:11:9 > case 1: server HTML carries the Server breakpoint template > /ssr server HTML contains the small rule's template, not the large one's (29ms)
+  [OK]   64 [firefox] > e2e\interchange-outlet.spec.ts:11:9 > case 1: server HTML carries the Server breakpoint template > /prerendered server HTML contains the small rule's template, not the large one's (10ms)
+  [OK]   65 [firefox] > e2e\interchange-outlet.spec.ts:30:9 > case 2: hydration claims the view with no NG05xx, then swaps to the live template > /ssr hydrates cleanly and swaps to the large rule's template (2.0s)
+  [OK]   66 [firefox] > e2e\interchange-outlet.spec.ts:30:9 > case 2: hydration claims the view with no NG05xx, then swaps to the live template > /prerendered hydrates cleanly and swaps to the large rule's template (1.6s)
+  [OK]   67 [firefox] > e2e\interchange-outlet.spec.ts:50:9 > case 1 and 2, ngDoCheck fallback: same server HTML and hydration guarantees > /ssr-fallback server HTML carries the small template, hydrates cleanly, and (re-run finding) never swaps (1.7s)
+  [OK]   68 [firefox] > e2e\interchange-outlet.spec.ts:50:9 > case 1 and 2, ngDoCheck fallback: same server HTML and hydration guarantees > /prerendered-fallback server HTML carries the small template, hydrates cleanly, and (re-run finding) never swaps (1.6s)
+  [OK]   69 [firefox] > e2e\interchange-outlet.spec.ts:83:7 > case 3: the swap lands in the same tick as the Breakpoint handoff on /csr > /csr never paints the small rule template; the swap to large lands at or before first paint (627ms)
+  [OK]   70 [firefox] > e2e\interchange-outlet.spec.ts:143:9 > case 3b: @defer (hydrate on viewport) hydrates into the live template after scrolling > /ssr: scrolling the deferred block into view hydrates it into the large rule's template (729ms)
+  [OK]   71 [firefox] > e2e\interchange-outlet.spec.ts:143:9 > case 3b: @defer (hydrate on viewport) hydrates into the live template after scrolling > /prerendered: scrolling the deferred block into view hydrates it into the large rule's template (843ms)
+  [OK]   72 [firefox] > e2e\interchange-outlet.spec.ts:167:9 > case 3c: replaced emits after each render, ending with the selected content > /csr: the replaced-log ends with 'large' (5.8s)
+  [OK]   73 [firefox] > e2e\interchange-outlet.spec.ts:167:9 > case 3c: replaced emits after each render, ending with the selected content > /ssr: the replaced-log ends with 'large' (1.1s)
+  [OK]   74 [firefox] > e2e\interchange-outlet.spec.ts:167:9 > case 3c: replaced emits after each render, ending with the selected content > /prerendered: the replaced-log ends with 'large' (1.8s)
+[rerun-67] firefox /csr dom ["replaced-dom-check:large:shown","replaced-dom-check:defer-large:shown"]
+[rerun-67] firefox /csr inner ["replaced-inner-check:large:shown","replaced-inner-check:defer-large:shown"]
+[rerun-67] firefox /csr replaced-log "large"
+[rerun-67] firefox /csr timeline {"marks":[["mq-live-after-set",224],["outlet-swap:large",227],["replaced:large",228],["outlet-swap:large",303],["replaced:large",306]],"paint":[["first-contentful-paint",236]]}
+  [OK]   75 [firefox] > e2e\rerun-67.spec.ts:37:9 > re-run: replaced fires only after the DOM shows the rule (first-render handoff) > /csr: every replaced emission sees its rule's view, including the update pass (849ms)
+[rerun-67] firefox /ssr dom ["replaced-dom-check:large:shown"]
+[rerun-67] firefox /ssr inner ["replaced-inner-check:large:shown"]
+[rerun-67] firefox /ssr replaced-log "large"
+[rerun-67] firefox /ssr timeline {"marks":[["mq-live-after-set",290],["outlet-swap:large",293],["replaced:large",294]],"paint":[["first-contentful-paint",117]]}
+  [OK]   76 [firefox] > e2e\rerun-67.spec.ts:37:9 > re-run: replaced fires only after the DOM shows the rule (first-render handoff) > /ssr: every replaced emission sees its rule's view, including the update pass (873ms)
+[rerun-67] firefox /prerendered dom ["replaced-dom-check:large:shown"]
+[rerun-67] firefox /prerendered inner ["replaced-inner-check:large:shown"]
+[rerun-67] firefox /prerendered replaced-log "large"
+[rerun-67] firefox /prerendered timeline {"marks":[["mq-live-after-set",274],["outlet-swap:large",276],["replaced:large",278]],"paint":[["first-contentful-paint",101]]}
+  [OK]   77 [firefox] > e2e\rerun-67.spec.ts:37:9 > re-run: replaced fires only after the DOM shows the rule (first-render handoff) > /prerendered: every replaced emission sees its rule's view, including the update pass (867ms)
+[rerun-67] firefox /csr-fallback labels ["page-ctor","mq-ctor","outlet-docheck-swap:small","mq-live-before-set","mq-live-after-set"]
+  [OK]   78 [firefox] > e2e\rerun-67.spec.ts:73:9 > re-run finding: the ngDoCheck fallback never swaps once replaced stops firing early > /csr-fallback: the Server breakpoint's view stays, nothing is emitted (1.7s)
+[rerun-67] firefox /ssr-fallback labels ["page-ctor","mq-ctor","outlet-docheck-swap:small","mq-live-before-set","mq-live-after-set"]
+  [OK]   79 [firefox] > e2e\rerun-67.spec.ts:73:9 > re-run finding: the ngDoCheck fallback never swaps once replaced stops firing early > /ssr-fallback: the Server breakpoint's view stays, nothing is emitted (1.6s)
+[rerun-67] firefox /prerendered-fallback labels ["page-ctor","mq-ctor","outlet-docheck-swap:small","mq-live-before-set","mq-live-after-set"]
+  [OK]   80 [firefox] > e2e\rerun-67.spec.ts:73:9 > re-run finding: the ngDoCheck fallback never swaps once replaced stops firing early > /prerendered-fallback: the Server breakpoint's view stays, nothing is emitted (1.7s)
+[rerun-67] firefox /ssr defer dom ["replaced-dom-check:large:shown","replaced-dom-check:defer-large:shown"]
+  [OK]   81 [firefox] > e2e\rerun-67.spec.ts:90:9 > re-run: @defer (hydrate on viewport) block > /ssr: the deferred outlet's replaced sees its view (794ms)
+[rerun-67] firefox /prerendered defer dom ["replaced-dom-check:large:shown","replaced-dom-check:defer-large:shown"]
+  [OK]   82 [firefox] > e2e\rerun-67.spec.ts:90:9 > re-run: @defer (hydrate on viewport) block > /prerendered: the deferred outlet's replaced sees its view (694ms)
+[rerun-67] firefox /csr bg ["bg-check:naive:large:NOT-SHOWN","bg-check:handoff:large:shown"]
+  [OK]   83 [firefox] > e2e\rerun-67.spec.ts:109:9 > re-run: background mode (host style binding), handoff vs naive > /csr: record what background replaced sees (548ms)
+[rerun-67] firefox /ssr bg ["bg-check:naive:large:NOT-SHOWN","bg-check:handoff:large:shown"]
+  [OK]   84 [firefox] > e2e\rerun-67.spec.ts:109:9 > re-run: background mode (host style binding), handoff vs naive > /ssr: record what background replaced sees (1.7s)
+[rerun-67] firefox /prerendered bg ["bg-check:naive:large:NOT-SHOWN","bg-check:handoff:large:shown"]
+  [OK]   85 [firefox] > e2e\rerun-67.spec.ts:109:9 > re-run: background mode (host style binding), handoff vs naive > /prerendered: record what background replaced sees (678ms)
+[rerun-67] firefox /csr-candidate dom ["replaced-dom-check:large:shown"]
+[rerun-67] firefox /csr-candidate inner ["replaced-inner-check:large:NOT-SHOWN"]
+  [OK]   86 [firefox] > e2e\rerun-67.spec.ts:137:9 > re-run: candidate fix (swap and emit in one render callback), measured > /csr-candidate: record what replaced sees (740ms)
+[rerun-67] firefox /ssr-candidate dom ["replaced-dom-check:large:shown"]
+[rerun-67] firefox /ssr-candidate inner ["replaced-inner-check:large:NOT-SHOWN"]
+  [OK]   87 [firefox] > e2e\rerun-67.spec.ts:137:9 > re-run: candidate fix (swap and emit in one render callback), measured > /ssr-candidate: record what replaced sees (687ms)
+[rerun-67] firefox /csr-candidate-detect dom ["replaced-dom-check:large:shown"]
+[rerun-67] firefox /csr-candidate-detect inner ["replaced-inner-check:large:shown"]
+  [OK]   88 [firefox] > e2e\rerun-67.spec.ts:137:9 > re-run: candidate fix (swap and emit in one render callback), measured > /csr-candidate-detect: record what replaced sees (1.2s)
+[rerun-67] firefox /csr fromRenderCallback=true small {"smallDom":["replaced-dom-check:small:shown"],"smallInner":["replaced-inner-check:small:shown"],"smallFocus":["replaced-focus:small:small-link"],"activeAfter":"small-link"}
+[rerun-67] firefox /csr fromRenderCallback=true labels ["page-ctor","mq-ctor","outlet-ctor:1","outlet-swap:small","mq-live-before-set","mq-live-after-set","bg-check:naive:large:NOT-SHOWN","outlet-swap:large","replaced:large","replaced-dom-check:large:shown","replaced-inner-check:large:shown","replaced-focus:large:BODY","bg-check:handoff:large:shown","outlet-ctor:2","outlet-swap:large","replaced:large","replaced-dom-check:defer-large:shown","replaced-inner-check:defer-large:shown","replaced-focus:defer-large:BODY","bg-check:naive:small:NOT-SHOWN","outlet-swap:small","outlet-swap:small","replaced:small","replaced-dom-check:small:shown","replaced-inner-check:small:shown","replaced-focus:small:small-link","bg-check:handoff:small:shown","replaced:small","replaced-dom-check:defer-small:shown","replaced-inner-check:defer-small:shown","replaced-focus:defer-small:small-link"]
+  [OK]   89 [firefox] > e2e\rerun-67.spec.ts:171:9 > re-run: a later swap with focus inside the removed view > /csr: swap to small from a render callback (791ms)
+[rerun-67] firefox /csr fromRenderCallback=false small {"smallDom":["replaced-dom-check:small:shown"],"smallInner":["replaced-inner-check:small:shown"],"smallFocus":["replaced-focus:small:small-link"],"activeAfter":"small-link"}
+[rerun-67] firefox /csr fromRenderCallback=false labels ["page-ctor","mq-ctor","outlet-ctor:1","outlet-swap:small","mq-live-before-set","mq-live-after-set","bg-check:naive:large:NOT-SHOWN","outlet-swap:large","replaced:large","replaced-dom-check:large:shown","replaced-inner-check:large:shown","replaced-focus:large:BODY","bg-check:handoff:large:shown","outlet-ctor:2","outlet-swap:large","replaced:large","replaced-dom-check:defer-large:shown","replaced-inner-check:defer-large:shown","replaced-focus:defer-large:BODY","outlet-swap:small","outlet-swap:small","replaced:small","replaced-dom-check:small:shown","replaced-inner-check:small:shown","replaced-focus:small:small-link","bg-check:handoff:small:shown","bg-check:naive:small:shown","replaced:small","replaced-dom-check:defer-small:shown","replaced-inner-check:defer-small:shown","replaced-focus:defer-small:small-link"]
+  [OK]   90 [firefox] > e2e\rerun-67.spec.ts:171:9 > re-run: a later swap with focus inside the removed view > /csr: swap to small from a plain signal write (947ms)
+[rerun-67] firefox /ssr fromRenderCallback=true small {"smallDom":["replaced-dom-check:small:shown"],"smallInner":["replaced-inner-check:small:shown"],"smallFocus":["replaced-focus:small:small-link"],"activeAfter":"small-link"}
+[rerun-67] firefox /ssr fromRenderCallback=true labels ["page-ctor","mq-ctor","outlet-ctor:1","outlet-swap:small","mq-live-before-set","mq-live-after-set","bg-check:naive:large:NOT-SHOWN","outlet-swap:large","replaced:large","replaced-dom-check:large:shown","replaced-inner-check:large:shown","replaced-focus:large:BODY","bg-check:handoff:large:shown","bg-check:naive:small:NOT-SHOWN","outlet-swap:small","replaced:small","replaced-dom-check:small:shown","replaced-inner-check:small:shown","replaced-focus:small:small-link","bg-check:handoff:small:shown"]
+  [OK]   91 [firefox] > e2e\rerun-67.spec.ts:171:9 > re-run: a later swap with focus inside the removed view > /ssr: swap to small from a render callback (858ms)
+[rerun-67] firefox /csr-candidate fromRenderCallback=true small {"smallDom":["replaced-dom-check:small:shown"],"smallInner":["replaced-inner-check:small:NOT-SHOWN"],"smallFocus":["replaced-focus:small:BODY"],"activeAfter":"BODY"}
+[rerun-67] firefox /csr-candidate fromRenderCallback=true labels ["page-ctor","mq-ctor","outlet-swap-candidate:effect:small","mq-live-before-set","mq-live-after-set","outlet-swap-candidate:callback:large","replaced-candidate:large","replaced-dom-check:large:shown","replaced-inner-check:large:NOT-SHOWN","replaced-focus:large:BODY","outlet-swap-candidate:callback:small","replaced-candidate:small","replaced-dom-check:small:shown","replaced-inner-check:small:NOT-SHOWN","replaced-focus:small:BODY"]
+  [OK]   92 [firefox] > e2e\rerun-67.spec.ts:171:9 > re-run: a later swap with focus inside the removed view > /csr-candidate: swap to small from a render callback (740ms)
+[rerun-67] firefox /csr-candidate-detect fromRenderCallback=true small {"smallDom":["replaced-dom-check:small:shown"],"smallInner":["replaced-inner-check:small:shown"],"smallFocus":["replaced-focus:small:small-link"],"activeAfter":"small-link"}
+[rerun-67] firefox /csr-candidate-detect fromRenderCallback=true labels ["page-ctor","mq-ctor","outlet-swap-candidate:effect:small","mq-live-before-set","mq-live-after-set","outlet-swap-candidate:callback:large","replaced-candidate:large","replaced-dom-check:large:shown","replaced-inner-check:large:shown","replaced-focus:large:BODY","outlet-swap-candidate:callback:small","replaced-candidate:small","replaced-dom-check:small:shown","replaced-inner-check:small:shown","replaced-focus:small:small-link"]
+  [OK]   93 [firefox] > e2e\rerun-67.spec.ts:171:9 > re-run: a later swap with focus inside the removed view > /csr-candidate-detect: swap to small from a render callback (785ms)
+  [OK]   94 [firefox] > e2e\interchange-outlet.spec.ts:11:9 > case 1: server HTML carries the Server breakpoint template > /ssr server HTML contains the small rule's template, not the large one's (36ms)
+  [OK]   95 [firefox] > e2e\interchange-outlet.spec.ts:11:9 > case 1: server HTML carries the Server breakpoint template > /prerendered server HTML contains the small rule's template, not the large one's (11ms)
+  [OK]   96 [firefox] > e2e\interchange-outlet.spec.ts:30:9 > case 2: hydration claims the view with no NG05xx, then swaps to the live template > /ssr hydrates cleanly and swaps to the large rule's template (1.8s)
+  [OK]   97 [firefox] > e2e\interchange-outlet.spec.ts:30:9 > case 2: hydration claims the view with no NG05xx, then swaps to the live template > /prerendered hydrates cleanly and swaps to the large rule's template (1.1s)
+  [OK]   98 [firefox] > e2e\interchange-outlet.spec.ts:50:9 > case 1 and 2, ngDoCheck fallback: same server HTML and hydration guarantees > /ssr-fallback server HTML carries the small template, hydrates cleanly, and (re-run finding) never swaps (1.7s)
+  [OK]   99 [firefox] > e2e\interchange-outlet.spec.ts:50:9 > case 1 and 2, ngDoCheck fallback: same server HTML and hydration guarantees > /prerendered-fallback server HTML carries the small template, hydrates cleanly, and (re-run finding) never swaps (1.7s)
+  [OK]  100 [firefox] > e2e\interchange-outlet.spec.ts:83:7 > case 3: the swap lands in the same tick as the Breakpoint handoff on /csr > /csr never paints the small rule template; the swap to large lands at or before first paint (674ms)
+  [OK]  101 [firefox] > e2e\interchange-outlet.spec.ts:143:9 > case 3b: @defer (hydrate on viewport) hydrates into the live template after scrolling > /ssr: scrolling the deferred block into view hydrates it into the large rule's template (721ms)
+  [OK]  102 [firefox] > e2e\interchange-outlet.spec.ts:143:9 > case 3b: @defer (hydrate on viewport) hydrates into the live template after scrolling > /prerendered: scrolling the deferred block into view hydrates it into the large rule's template (861ms)
+  [OK]  103 [firefox] > e2e\interchange-outlet.spec.ts:167:9 > case 3c: replaced emits after each render, ending with the selected content > /csr: the replaced-log ends with 'large' (5.7s)
+  [OK]  104 [firefox] > e2e\interchange-outlet.spec.ts:167:9 > case 3c: replaced emits after each render, ending with the selected content > /ssr: the replaced-log ends with 'large' (723ms)
+  [OK]  105 [firefox] > e2e\interchange-outlet.spec.ts:167:9 > case 3c: replaced emits after each render, ending with the selected content > /prerendered: the replaced-log ends with 'large' (1.4s)
+[rerun-67] firefox /csr dom ["replaced-dom-check:large:shown","replaced-dom-check:defer-large:shown"]
+[rerun-67] firefox /csr inner ["replaced-inner-check:large:shown","replaced-inner-check:defer-large:shown"]
+[rerun-67] firefox /csr replaced-log "large"
+[rerun-67] firefox /csr timeline {"marks":[["mq-live-after-set",203],["outlet-swap:large",205],["replaced:large",206],["outlet-swap:large",242],["replaced:large",243]],"paint":[["first-contentful-paint",211]]}
+  [OK]  106 [firefox] > e2e\rerun-67.spec.ts:37:9 > re-run: replaced fires only after the DOM shows the rule (first-render handoff) > /csr: every replaced emission sees its rule's view, including the update pass (648ms)
+[rerun-67] firefox /ssr dom ["replaced-dom-check:large:shown"]
+[rerun-67] firefox /ssr inner ["replaced-inner-check:large:shown"]
+[rerun-67] firefox /ssr replaced-log "large"
+[rerun-67] firefox /ssr timeline {"marks":[["mq-live-after-set",206],["outlet-swap:large",208],["replaced:large",208]],"paint":[["first-contentful-paint",92]]}
+  [OK]  107 [firefox] > e2e\rerun-67.spec.ts:37:9 > re-run: replaced fires only after the DOM shows the rule (first-render handoff) > /ssr: every replaced emission sees its rule's view, including the update pass (579ms)
+[rerun-67] firefox /prerendered dom ["replaced-dom-check:large:shown"]
+[rerun-67] firefox /prerendered inner ["replaced-inner-check:large:shown"]
+[rerun-67] firefox /prerendered replaced-log "large"
+[rerun-67] firefox /prerendered timeline {"marks":[["mq-live-after-set",196],["outlet-swap:large",199],["replaced:large",200]],"paint":[["first-contentful-paint",67]]}
+  [OK]  108 [firefox] > e2e\rerun-67.spec.ts:37:9 > re-run: replaced fires only after the DOM shows the rule (first-render handoff) > /prerendered: every replaced emission sees its rule's view, including the update pass (582ms)
+[rerun-67] firefox /csr-fallback labels ["page-ctor","mq-ctor","outlet-docheck-swap:small","mq-live-before-set","mq-live-after-set"]
+  [OK]  109 [firefox] > e2e\rerun-67.spec.ts:73:9 > re-run finding: the ngDoCheck fallback never swaps once replaced stops firing early > /csr-fallback: the Server breakpoint's view stays, nothing is emitted (1.6s)
+[rerun-67] firefox /ssr-fallback labels ["page-ctor","mq-ctor","outlet-docheck-swap:small","mq-live-before-set","mq-live-after-set"]
+  [OK]  110 [firefox] > e2e\rerun-67.spec.ts:73:9 > re-run finding: the ngDoCheck fallback never swaps once replaced stops firing early > /ssr-fallback: the Server breakpoint's view stays, nothing is emitted (1.6s)
+[rerun-67] firefox /prerendered-fallback labels ["page-ctor","mq-ctor","outlet-docheck-swap:small","mq-live-before-set","mq-live-after-set"]
+  [OK]  111 [firefox] > e2e\rerun-67.spec.ts:73:9 > re-run finding: the ngDoCheck fallback never swaps once replaced stops firing early > /prerendered-fallback: the Server breakpoint's view stays, nothing is emitted (1.6s)
+[rerun-67] firefox /ssr defer dom ["replaced-dom-check:large:shown","replaced-dom-check:defer-large:shown"]
+  [OK]  112 [firefox] > e2e\rerun-67.spec.ts:90:9 > re-run: @defer (hydrate on viewport) block > /ssr: the deferred outlet's replaced sees its view (683ms)
+[rerun-67] firefox /prerendered defer dom ["replaced-dom-check:large:shown","replaced-dom-check:defer-large:shown"]
+  [OK]  113 [firefox] > e2e\rerun-67.spec.ts:90:9 > re-run: @defer (hydrate on viewport) block > /prerendered: the deferred outlet's replaced sees its view (810ms)
+[rerun-67] firefox /csr bg ["bg-check:naive:large:NOT-SHOWN","bg-check:handoff:large:shown"]
+  [OK]  114 [firefox] > e2e\rerun-67.spec.ts:109:9 > re-run: background mode (host style binding), handoff vs naive > /csr: record what background replaced sees (946ms)
+[rerun-67] firefox /ssr bg ["bg-check:naive:large:NOT-SHOWN","bg-check:handoff:large:shown"]
+  [OK]  115 [firefox] > e2e\rerun-67.spec.ts:109:9 > re-run: background mode (host style binding), handoff vs naive > /ssr: record what background replaced sees (2.1s)
+[rerun-67] firefox /prerendered bg ["bg-check:naive:large:NOT-SHOWN","bg-check:handoff:large:shown"]
+  [OK]  116 [firefox] > e2e\rerun-67.spec.ts:109:9 > re-run: background mode (host style binding), handoff vs naive > /prerendered: record what background replaced sees (657ms)
+[rerun-67] firefox /csr-candidate dom ["replaced-dom-check:large:shown"]
+[rerun-67] firefox /csr-candidate inner ["replaced-inner-check:large:NOT-SHOWN"]
+  [OK]  117 [firefox] > e2e\rerun-67.spec.ts:137:9 > re-run: candidate fix (swap and emit in one render callback), measured > /csr-candidate: record what replaced sees (579ms)
+[rerun-67] firefox /ssr-candidate dom ["replaced-dom-check:large:shown"]
+[rerun-67] firefox /ssr-candidate inner ["replaced-inner-check:large:NOT-SHOWN"]
+  [OK]  118 [firefox] > e2e\rerun-67.spec.ts:137:9 > re-run: candidate fix (swap and emit in one render callback), measured > /ssr-candidate: record what replaced sees (597ms)
+[rerun-67] firefox /csr-candidate-detect dom ["replaced-dom-check:large:shown"]
+[rerun-67] firefox /csr-candidate-detect inner ["replaced-inner-check:large:shown"]
+  [OK]  119 [firefox] > e2e\rerun-67.spec.ts:137:9 > re-run: candidate fix (swap and emit in one render callback), measured > /csr-candidate-detect: record what replaced sees (625ms)
+[rerun-67] firefox /csr fromRenderCallback=true small {"smallDom":["replaced-dom-check:small:shown"],"smallInner":["replaced-inner-check:small:shown"],"smallFocus":["replaced-focus:small:small-link"],"activeAfter":"small-link"}
+[rerun-67] firefox /csr fromRenderCallback=true labels ["page-ctor","mq-ctor","outlet-ctor:1","outlet-swap:small","mq-live-before-set","mq-live-after-set","bg-check:naive:large:NOT-SHOWN","outlet-swap:large","replaced:large","replaced-dom-check:large:shown","replaced-inner-check:large:shown","replaced-focus:large:BODY","bg-check:handoff:large:shown","outlet-ctor:2","outlet-swap:large","replaced:large","replaced-dom-check:defer-large:shown","replaced-inner-check:defer-large:shown","replaced-focus:defer-large:BODY","bg-check:naive:small:NOT-SHOWN","outlet-swap:small","outlet-swap:small","replaced:small","replaced-dom-check:small:shown","replaced-inner-check:small:shown","replaced-focus:small:small-link","bg-check:handoff:small:shown","replaced:small","replaced-dom-check:defer-small:shown","replaced-inner-check:defer-small:shown","replaced-focus:defer-small:small-link"]
+  [OK]  120 [firefox] > e2e\rerun-67.spec.ts:171:9 > re-run: a later swap with focus inside the removed view > /csr: swap to small from a render callback (685ms)
+[rerun-67] firefox /csr fromRenderCallback=false small {"smallDom":["replaced-dom-check:small:shown"],"smallInner":["replaced-inner-check:small:shown"],"smallFocus":["replaced-focus:small:small-link"],"activeAfter":"small-link"}
+[rerun-67] firefox /csr fromRenderCallback=false labels ["page-ctor","mq-ctor","outlet-ctor:1","outlet-swap:small","mq-live-before-set","mq-live-after-set","bg-check:naive:large:NOT-SHOWN","outlet-swap:large","replaced:large","replaced-dom-check:large:shown","replaced-inner-check:large:shown","replaced-focus:large:BODY","bg-check:handoff:large:shown","outlet-ctor:2","outlet-swap:large","replaced:large","replaced-dom-check:defer-large:shown","replaced-inner-check:defer-large:shown","replaced-focus:defer-large:BODY","outlet-swap:small","outlet-swap:small","replaced:small","replaced-dom-check:small:shown","replaced-inner-check:small:shown","replaced-focus:small:small-link","bg-check:handoff:small:shown","bg-check:naive:small:shown","replaced:small","replaced-dom-check:defer-small:shown","replaced-inner-check:defer-small:shown","replaced-focus:defer-small:small-link"]
+  [OK]  121 [firefox] > e2e\rerun-67.spec.ts:171:9 > re-run: a later swap with focus inside the removed view > /csr: swap to small from a plain signal write (714ms)
+[rerun-67] firefox /ssr fromRenderCallback=true small {"smallDom":["replaced-dom-check:small:shown"],"smallInner":["replaced-inner-check:small:shown"],"smallFocus":["replaced-focus:small:small-link"],"activeAfter":"small-link"}
+[rerun-67] firefox /ssr fromRenderCallback=true labels ["page-ctor","mq-ctor","outlet-ctor:1","outlet-swap:small","mq-live-before-set","mq-live-after-set","bg-check:naive:large:NOT-SHOWN","outlet-swap:large","replaced:large","replaced-dom-check:large:shown","replaced-inner-check:large:shown","replaced-focus:large:BODY","bg-check:handoff:large:shown","bg-check:naive:small:NOT-SHOWN","outlet-swap:small","replaced:small","replaced-dom-check:small:shown","replaced-inner-check:small:shown","replaced-focus:small:small-link","bg-check:handoff:small:shown"]
+  [OK]  122 [firefox] > e2e\rerun-67.spec.ts:171:9 > re-run: a later swap with focus inside the removed view > /ssr: swap to small from a render callback (761ms)
+[rerun-67] firefox /csr-candidate fromRenderCallback=true small {"smallDom":["replaced-dom-check:small:shown"],"smallInner":["replaced-inner-check:small:NOT-SHOWN"],"smallFocus":["replaced-focus:small:BODY"],"activeAfter":"BODY"}
+[rerun-67] firefox /csr-candidate fromRenderCallback=true labels ["page-ctor","mq-ctor","outlet-swap-candidate:effect:small","mq-live-before-set","mq-live-after-set","outlet-swap-candidate:callback:large","replaced-candidate:large","replaced-dom-check:large:shown","replaced-inner-check:large:NOT-SHOWN","replaced-focus:large:BODY","outlet-swap-candidate:callback:small","replaced-candidate:small","replaced-dom-check:small:shown","replaced-inner-check:small:NOT-SHOWN","replaced-focus:small:BODY"]
+  [OK]  123 [firefox] > e2e\rerun-67.spec.ts:171:9 > re-run: a later swap with focus inside the removed view > /csr-candidate: swap to small from a render callback (729ms)
+[rerun-67] firefox /csr-candidate-detect fromRenderCallback=true small {"smallDom":["replaced-dom-check:small:shown"],"smallInner":["replaced-inner-check:small:shown"],"smallFocus":["replaced-focus:small:small-link"],"activeAfter":"small-link"}
+[rerun-67] firefox /csr-candidate-detect fromRenderCallback=true labels ["page-ctor","mq-ctor","outlet-swap-candidate:effect:small","mq-live-before-set","mq-live-after-set","outlet-swap-candidate:callback:large","replaced-candidate:large","replaced-dom-check:large:shown","replaced-inner-check:large:shown","replaced-focus:large:BODY","outlet-swap-candidate:callback:small","replaced-candidate:small","replaced-dom-check:small:shown","replaced-inner-check:small:shown","replaced-focus:small:small-link"]
+  [OK]  124 [firefox] > e2e\rerun-67.spec.ts:171:9 > re-run: a later swap with focus inside the removed view > /csr-candidate-detect: swap to small from a render callback (729ms)
+  [OK]  125 [webkit] > e2e\interchange-outlet.spec.ts:11:9 > case 1: server HTML carries the Server breakpoint template > /ssr server HTML contains the small rule's template, not the large one's (30ms)
+  [OK]  126 [webkit] > e2e\interchange-outlet.spec.ts:11:9 > case 1: server HTML carries the Server breakpoint template > /prerendered server HTML contains the small rule's template, not the large one's (11ms)
+  [OK]  127 [webkit] > e2e\interchange-outlet.spec.ts:30:9 > case 2: hydration claims the view with no NG05xx, then swaps to the live template > /ssr hydrates cleanly and swaps to the large rule's template (617ms)
+  [OK]  128 [webkit] > e2e\interchange-outlet.spec.ts:30:9 > case 2: hydration claims the view with no NG05xx, then swaps to the live template > /prerendered hydrates cleanly and swaps to the large rule's template (562ms)
+  [OK]  129 [webkit] > e2e\interchange-outlet.spec.ts:50:9 > case 1 and 2, ngDoCheck fallback: same server HTML and hydration guarantees > /ssr-fallback server HTML carries the small template, hydrates cleanly, and (re-run finding) never swaps (1.6s)
+  [OK]  130 [webkit] > e2e\interchange-outlet.spec.ts:50:9 > case 1 and 2, ngDoCheck fallback: same server HTML and hydration guarantees > /prerendered-fallback server HTML carries the small template, hydrates cleanly, and (re-run finding) never swaps (1.5s)
+  [OK]  131 [webkit] > e2e\interchange-outlet.spec.ts:83:7 > case 3: the swap lands in the same tick as the Breakpoint handoff on /csr > /csr never paints the small rule template; the swap to large lands at or before first paint (534ms)
+  [OK]  132 [webkit] > e2e\interchange-outlet.spec.ts:143:9 > case 3b: @defer (hydrate on viewport) hydrates into the live template after scrolling > /ssr: scrolling the deferred block into view hydrates it into the large rule's template (694ms)
+  [OK]  133 [webkit] > e2e\interchange-outlet.spec.ts:143:9 > case 3b: @defer (hydrate on viewport) hydrates into the live template after scrolling > /prerendered: scrolling the deferred block into view hydrates it into the large rule's template (790ms)
+  [OK]  134 [webkit] > e2e\interchange-outlet.spec.ts:167:9 > case 3c: replaced emits after each render, ending with the selected content > /csr: the replaced-log ends with 'large' (5.5s)
+  [OK]  135 [webkit] > e2e\interchange-outlet.spec.ts:167:9 > case 3c: replaced emits after each render, ending with the selected content > /ssr: the replaced-log ends with 'large' (525ms)
+  [OK]  136 [webkit] > e2e\interchange-outlet.spec.ts:167:9 > case 3c: replaced emits after each render, ending with the selected content > /prerendered: the replaced-log ends with 'large' (523ms)
+[rerun-67] webkit /csr dom ["replaced-dom-check:large:shown","replaced-dom-check:defer-large:shown"]
+[rerun-67] webkit /csr inner ["replaced-inner-check:large:shown","replaced-inner-check:defer-large:shown"]
+[rerun-67] webkit /csr replaced-log "large"
+[rerun-67] webkit /csr timeline {"marks":[["mq-live-after-set",251],["outlet-swap:large",257],["replaced:large",259],["outlet-swap:large",325],["replaced:large",327]],"paint":[["first-contentful-paint",268]]}
+  [OK]  137 [webkit] > e2e\rerun-67.spec.ts:37:9 > re-run: replaced fires only after the DOM shows the rule (first-render handoff) > /csr: every replaced emission sees its rule's view, including the update pass (589ms)
+[rerun-67] webkit /ssr dom ["replaced-dom-check:large:shown"]
+[rerun-67] webkit /ssr inner ["replaced-inner-check:large:shown"]
+[rerun-67] webkit /ssr replaced-log "large"
+[rerun-67] webkit /ssr timeline {"marks":[["mq-live-after-set",300],["outlet-swap:large",306],["replaced:large",308]],"paint":[["first-contentful-paint",80]]}
+  [OK]  138 [webkit] > e2e\rerun-67.spec.ts:37:9 > re-run: replaced fires only after the DOM shows the rule (first-render handoff) > /ssr: every replaced emission sees its rule's view, including the update pass (598ms)
+[rerun-67] webkit /prerendered dom ["replaced-dom-check:large:shown"]
+[rerun-67] webkit /prerendered inner ["replaced-inner-check:large:shown"]
+[rerun-67] webkit /prerendered replaced-log "large"
+[rerun-67] webkit /prerendered timeline {"marks":[["mq-live-after-set",234],["outlet-swap:large",241],["replaced:large",243]],"paint":[["first-contentful-paint",37]]}
+  [OK]  139 [webkit] > e2e\rerun-67.spec.ts:37:9 > re-run: replaced fires only after the DOM shows the rule (first-render handoff) > /prerendered: every replaced emission sees its rule's view, including the update pass (508ms)
+[rerun-67] webkit /csr-fallback labels ["page-ctor","mq-ctor","outlet-docheck-swap:small","mq-live-before-set","mq-live-after-set"]
+  [OK]  140 [webkit] > e2e\rerun-67.spec.ts:73:9 > re-run finding: the ngDoCheck fallback never swaps once replaced stops firing early > /csr-fallback: the Server breakpoint's view stays, nothing is emitted (1.5s)
+[rerun-67] webkit /ssr-fallback labels ["page-ctor","mq-ctor","outlet-docheck-swap:small","mq-live-before-set","mq-live-after-set"]
+  [OK]  141 [webkit] > e2e\rerun-67.spec.ts:73:9 > re-run finding: the ngDoCheck fallback never swaps once replaced stops firing early > /ssr-fallback: the Server breakpoint's view stays, nothing is emitted (1.4s)
+[rerun-67] webkit /prerendered-fallback labels ["page-ctor","mq-ctor","outlet-docheck-swap:small","mq-live-before-set","mq-live-after-set"]
+  [OK]  142 [webkit] > e2e\rerun-67.spec.ts:73:9 > re-run finding: the ngDoCheck fallback never swaps once replaced stops firing early > /prerendered-fallback: the Server breakpoint's view stays, nothing is emitted (1.5s)
+[rerun-67] webkit /ssr defer dom ["replaced-dom-check:large:shown","replaced-dom-check:defer-large:shown"]
+  [OK]  143 [webkit] > e2e\rerun-67.spec.ts:90:9 > re-run: @defer (hydrate on viewport) block > /ssr: the deferred outlet's replaced sees its view (706ms)
+[rerun-67] webkit /prerendered defer dom ["replaced-dom-check:large:shown","replaced-dom-check:defer-large:shown"]
+  [OK]  144 [webkit] > e2e\rerun-67.spec.ts:90:9 > re-run: @defer (hydrate on viewport) block > /prerendered: the deferred outlet's replaced sees its view (667ms)
+[rerun-67] webkit /csr bg ["bg-check:naive:large:NOT-SHOWN","bg-check:handoff:large:shown"]
+  [OK]  145 [webkit] > e2e\rerun-67.spec.ts:109:9 > re-run: background mode (host style binding), handoff vs naive > /csr: record what background replaced sees (464ms)
+[rerun-67] webkit /ssr bg ["bg-check:naive:large:NOT-SHOWN","bg-check:handoff:large:shown"]
+  [OK]  146 [webkit] > e2e\rerun-67.spec.ts:109:9 > re-run: background mode (host style binding), handoff vs naive > /ssr: record what background replaced sees (455ms)
+[rerun-67] webkit /prerendered bg ["bg-check:naive:large:NOT-SHOWN","bg-check:handoff:large:shown"]
+  [OK]  147 [webkit] > e2e\rerun-67.spec.ts:109:9 > re-run: background mode (host style binding), handoff vs naive > /prerendered: record what background replaced sees (442ms)
+[rerun-67] webkit /csr-candidate dom ["replaced-dom-check:large:shown"]
+[rerun-67] webkit /csr-candidate inner ["replaced-inner-check:large:NOT-SHOWN"]
+  [OK]  148 [webkit] > e2e\rerun-67.spec.ts:137:9 > re-run: candidate fix (swap and emit in one render callback), measured > /csr-candidate: record what replaced sees (497ms)
+[rerun-67] webkit /ssr-candidate dom ["replaced-dom-check:large:shown"]
+[rerun-67] webkit /ssr-candidate inner ["replaced-inner-check:large:NOT-SHOWN"]
+  [OK]  149 [webkit] > e2e\rerun-67.spec.ts:137:9 > re-run: candidate fix (swap and emit in one render callback), measured > /ssr-candidate: record what replaced sees (517ms)
+[rerun-67] webkit /csr-candidate-detect dom ["replaced-dom-check:large:shown"]
+[rerun-67] webkit /csr-candidate-detect inner ["replaced-inner-check:large:shown"]
+  [OK]  150 [webkit] > e2e\rerun-67.spec.ts:137:9 > re-run: candidate fix (swap and emit in one render callback), measured > /csr-candidate-detect: record what replaced sees (570ms)
+[rerun-67] webkit /csr fromRenderCallback=true small {"smallDom":["replaced-dom-check:small:shown"],"smallInner":["replaced-inner-check:small:shown"],"smallFocus":["replaced-focus:small:small-link"],"activeAfter":"small-link"}
+[rerun-67] webkit /csr fromRenderCallback=true labels ["page-ctor","mq-ctor","outlet-ctor:1","outlet-swap:small","mq-live-before-set","mq-live-after-set","bg-check:naive:large:NOT-SHOWN","outlet-swap:large","replaced:large","replaced-dom-check:large:shown","replaced-inner-check:large:shown","replaced-focus:large:BODY","bg-check:handoff:large:shown","outlet-ctor:2","outlet-swap:large","replaced:large","replaced-dom-check:defer-large:shown","replaced-inner-check:defer-large:shown","replaced-focus:defer-large:BODY","bg-check:naive:small:NOT-SHOWN","outlet-swap:small","outlet-swap:small","replaced:small","replaced-dom-check:small:shown","replaced-inner-check:small:shown","replaced-focus:small:small-link","bg-check:handoff:small:shown","replaced:small","replaced-dom-check:defer-small:shown","replaced-inner-check:defer-small:shown","replaced-focus:defer-small:small-link"]
+  [OK]  151 [webkit] > e2e\rerun-67.spec.ts:171:9 > re-run: a later swap with focus inside the removed view > /csr: swap to small from a render callback (683ms)
+[rerun-67] webkit /csr fromRenderCallback=false small {"smallDom":["replaced-dom-check:small:shown"],"smallInner":["replaced-inner-check:small:shown"],"smallFocus":["replaced-focus:small:small-link"],"activeAfter":"small-link"}
+[rerun-67] webkit /csr fromRenderCallback=false labels ["page-ctor","mq-ctor","outlet-ctor:1","outlet-swap:small","mq-live-before-set","mq-live-after-set","bg-check:naive:large:NOT-SHOWN","outlet-swap:large","replaced:large","replaced-dom-check:large:shown","replaced-inner-check:large:shown","replaced-focus:large:BODY","bg-check:handoff:large:shown","outlet-ctor:2","outlet-swap:large","replaced:large","replaced-dom-check:defer-large:shown","replaced-inner-check:defer-large:shown","replaced-focus:defer-large:BODY","outlet-swap:small","outlet-swap:small","replaced:small","replaced-dom-check:small:shown","replaced-inner-check:small:shown","replaced-focus:small:small-link","bg-check:handoff:small:shown","bg-check:naive:small:shown","replaced:small","replaced-dom-check:defer-small:shown","replaced-inner-check:defer-small:shown","replaced-focus:defer-small:small-link"]
+  [OK]  152 [webkit] > e2e\rerun-67.spec.ts:171:9 > re-run: a later swap with focus inside the removed view > /csr: swap to small from a plain signal write (611ms)
+[rerun-67] webkit /ssr fromRenderCallback=true small {"smallDom":["replaced-dom-check:small:shown"],"smallInner":["replaced-inner-check:small:shown"],"smallFocus":["replaced-focus:small:small-link"],"activeAfter":"small-link"}
+[rerun-67] webkit /ssr fromRenderCallback=true labels ["page-ctor","mq-ctor","outlet-ctor:1","outlet-swap:small","mq-live-before-set","mq-live-after-set","bg-check:naive:large:NOT-SHOWN","outlet-swap:large","replaced:large","replaced-dom-check:large:shown","replaced-inner-check:large:shown","replaced-focus:large:BODY","bg-check:handoff:large:shown","bg-check:naive:small:NOT-SHOWN","outlet-swap:small","replaced:small","replaced-dom-check:small:shown","replaced-inner-check:small:shown","replaced-focus:small:small-link","bg-check:handoff:small:shown"]
+  [OK]  153 [webkit] > e2e\rerun-67.spec.ts:171:9 > re-run: a later swap with focus inside the removed view > /ssr: swap to small from a render callback (564ms)
+[rerun-67] webkit /csr-candidate fromRenderCallback=true small {"smallDom":["replaced-dom-check:small:shown"],"smallInner":["replaced-inner-check:small:NOT-SHOWN"],"smallFocus":["replaced-focus:small:BODY"],"activeAfter":"BODY"}
+[rerun-67] webkit /csr-candidate fromRenderCallback=true labels ["page-ctor","mq-ctor","outlet-swap-candidate:effect:small","mq-live-before-set","mq-live-after-set","outlet-swap-candidate:callback:large","replaced-candidate:large","replaced-dom-check:large:shown","replaced-inner-check:large:NOT-SHOWN","replaced-focus:large:BODY","outlet-swap-candidate:callback:small","replaced-candidate:small","replaced-dom-check:small:shown","replaced-inner-check:small:NOT-SHOWN","replaced-focus:small:BODY"]
+  [OK]  154 [webkit] > e2e\rerun-67.spec.ts:171:9 > re-run: a later swap with focus inside the removed view > /csr-candidate: swap to small from a render callback (542ms)
+[rerun-67] webkit /csr-candidate-detect fromRenderCallback=true small {"smallDom":["replaced-dom-check:small:shown"],"smallInner":["replaced-inner-check:small:shown"],"smallFocus":["replaced-focus:small:small-link"],"activeAfter":"small-link"}
+[rerun-67] webkit /csr-candidate-detect fromRenderCallback=true labels ["page-ctor","mq-ctor","outlet-swap-candidate:effect:small","mq-live-before-set","mq-live-after-set","outlet-swap-candidate:callback:large","replaced-candidate:large","replaced-dom-check:large:shown","replaced-inner-check:large:shown","replaced-focus:large:BODY","outlet-swap-candidate:callback:small","replaced-candidate:small","replaced-dom-check:small:shown","replaced-inner-check:small:shown","replaced-focus:small:small-link"]
+  [OK]  155 [webkit] > e2e\rerun-67.spec.ts:171:9 > re-run: a later swap with focus inside the removed view > /csr-candidate-detect: swap to small from a render callback (518ms)
+  [OK]  156 [webkit] > e2e\interchange-outlet.spec.ts:11:9 > case 1: server HTML carries the Server breakpoint template > /ssr server HTML contains the small rule's template, not the large one's (30ms)
+  [OK]  157 [webkit] > e2e\interchange-outlet.spec.ts:11:9 > case 1: server HTML carries the Server breakpoint template > /prerendered server HTML contains the small rule's template, not the large one's (10ms)
+  [OK]  158 [webkit] > e2e\interchange-outlet.spec.ts:30:9 > case 2: hydration claims the view with no NG05xx, then swaps to the live template > /ssr hydrates cleanly and swaps to the large rule's template (646ms)
+  [OK]  159 [webkit] > e2e\interchange-outlet.spec.ts:30:9 > case 2: hydration claims the view with no NG05xx, then swaps to the live template > /prerendered hydrates cleanly and swaps to the large rule's template (612ms)
+  [OK]  160 [webkit] > e2e\interchange-outlet.spec.ts:50:9 > case 1 and 2, ngDoCheck fallback: same server HTML and hydration guarantees > /ssr-fallback server HTML carries the small template, hydrates cleanly, and (re-run finding) never swaps (1.6s)
+  [OK]  161 [webkit] > e2e\interchange-outlet.spec.ts:50:9 > case 1 and 2, ngDoCheck fallback: same server HTML and hydration guarantees > /prerendered-fallback server HTML carries the small template, hydrates cleanly, and (re-run finding) never swaps (1.5s)
+  [OK]  162 [webkit] > e2e\interchange-outlet.spec.ts:83:7 > case 3: the swap lands in the same tick as the Breakpoint handoff on /csr > /csr never paints the small rule template; the swap to large lands at or before first paint (508ms)
+  [OK]  163 [webkit] > e2e\interchange-outlet.spec.ts:143:9 > case 3b: @defer (hydrate on viewport) hydrates into the live template after scrolling > /ssr: scrolling the deferred block into view hydrates it into the large rule's template (707ms)
+  [OK]  164 [webkit] > e2e\interchange-outlet.spec.ts:143:9 > case 3b: @defer (hydrate on viewport) hydrates into the live template after scrolling > /prerendered: scrolling the deferred block into view hydrates it into the large rule's template (783ms)
+  [OK]  165 [webkit] > e2e\interchange-outlet.spec.ts:167:9 > case 3c: replaced emits after each render, ending with the selected content > /csr: the replaced-log ends with 'large' (5.5s)
+  [OK]  166 [webkit] > e2e\interchange-outlet.spec.ts:167:9 > case 3c: replaced emits after each render, ending with the selected content > /ssr: the replaced-log ends with 'large' (492ms)
+  [OK]  167 [webkit] > e2e\interchange-outlet.spec.ts:167:9 > case 3c: replaced emits after each render, ending with the selected content > /prerendered: the replaced-log ends with 'large' (501ms)
+[rerun-67] webkit /csr dom ["replaced-dom-check:large:shown"]
+[rerun-67] webkit /csr inner ["replaced-inner-check:large:shown"]
+[rerun-67] webkit /csr replaced-log "large"
+[rerun-67] webkit /csr timeline {"marks":[["mq-live-after-set",259],["outlet-swap:large",264],["replaced:large",266]],"paint":[["first-contentful-paint",272]]}
+  [OK]  168 [webkit] > e2e\rerun-67.spec.ts:37:9 > re-run: replaced fires only after the DOM shows the rule (first-render handoff) > /csr: every replaced emission sees its rule's view, including the update pass (534ms)
+[rerun-67] webkit /ssr dom ["replaced-dom-check:large:shown"]
+[rerun-67] webkit /ssr inner ["replaced-inner-check:large:shown"]
+[rerun-67] webkit /ssr replaced-log "large"
+[rerun-67] webkit /ssr timeline {"marks":[["mq-live-after-set",270],["outlet-swap:large",278],["replaced:large",281]],"paint":[["first-contentful-paint",86]]}
+  [OK]  169 [webkit] > e2e\rerun-67.spec.ts:37:9 > re-run: replaced fires only after the DOM shows the rule (first-render handoff) > /ssr: every replaced emission sees its rule's view, including the update pass (563ms)
+[rerun-67] webkit /prerendered dom ["replaced-dom-check:large:shown"]
+[rerun-67] webkit /prerendered inner ["replaced-inner-check:large:shown"]
+[rerun-67] webkit /prerendered replaced-log "large"
+[rerun-67] webkit /prerendered timeline {"marks":[["mq-live-after-set",288],["outlet-swap:large",295],["replaced:large",297]],"paint":[["first-contentful-paint",79]]}
+  [OK]  170 [webkit] > e2e\rerun-67.spec.ts:37:9 > re-run: replaced fires only after the DOM shows the rule (first-render handoff) > /prerendered: every replaced emission sees its rule's view, including the update pass (587ms)
+[rerun-67] webkit /csr-fallback labels ["page-ctor","mq-ctor","outlet-docheck-swap:small","mq-live-before-set","mq-live-after-set"]
+  [OK]  171 [webkit] > e2e\rerun-67.spec.ts:73:9 > re-run finding: the ngDoCheck fallback never swaps once replaced stops firing early > /csr-fallback: the Server breakpoint's view stays, nothing is emitted (1.5s)
+[rerun-67] webkit /ssr-fallback labels ["page-ctor","mq-ctor","outlet-docheck-swap:small","mq-live-before-set","mq-live-after-set"]
+  [OK]  172 [webkit] > e2e\rerun-67.spec.ts:73:9 > re-run finding: the ngDoCheck fallback never swaps once replaced stops firing early > /ssr-fallback: the Server breakpoint's view stays, nothing is emitted (1.5s)
+[rerun-67] webkit /prerendered-fallback labels ["page-ctor","mq-ctor","outlet-docheck-swap:small","mq-live-before-set","mq-live-after-set"]
+  [OK]  173 [webkit] > e2e\rerun-67.spec.ts:73:9 > re-run finding: the ngDoCheck fallback never swaps once replaced stops firing early > /prerendered-fallback: the Server breakpoint's view stays, nothing is emitted (1.4s)
+[rerun-67] webkit /ssr defer dom ["replaced-dom-check:large:shown","replaced-dom-check:defer-large:shown"]
+  [OK]  174 [webkit] > e2e\rerun-67.spec.ts:90:9 > re-run: @defer (hydrate on viewport) block > /ssr: the deferred outlet's replaced sees its view (899ms)
+[rerun-67] webkit /prerendered defer dom ["replaced-dom-check:large:shown","replaced-dom-check:defer-large:shown"]
+  [OK]  175 [webkit] > e2e\rerun-67.spec.ts:90:9 > re-run: @defer (hydrate on viewport) block > /prerendered: the deferred outlet's replaced sees its view (823ms)
+[rerun-67] webkit /csr bg ["bg-check:naive:large:NOT-SHOWN","bg-check:handoff:large:shown"]
+  [OK]  176 [webkit] > e2e\rerun-67.spec.ts:109:9 > re-run: background mode (host style binding), handoff vs naive > /csr: record what background replaced sees (533ms)
+[rerun-67] webkit /ssr bg ["bg-check:naive:large:NOT-SHOWN","bg-check:handoff:large:shown"]
+  [OK]  177 [webkit] > e2e\rerun-67.spec.ts:109:9 > re-run: background mode (host style binding), handoff vs naive > /ssr: record what background replaced sees (550ms)
+[rerun-67] webkit /prerendered bg ["bg-check:naive:large:NOT-SHOWN","bg-check:handoff:large:shown"]
+  [OK]  178 [webkit] > e2e\rerun-67.spec.ts:109:9 > re-run: background mode (host style binding), handoff vs naive > /prerendered: record what background replaced sees (458ms)
+[rerun-67] webkit /csr-candidate dom ["replaced-dom-check:large:shown"]
+[rerun-67] webkit /csr-candidate inner ["replaced-inner-check:large:NOT-SHOWN"]
+  [OK]  179 [webkit] > e2e\rerun-67.spec.ts:137:9 > re-run: candidate fix (swap and emit in one render callback), measured > /csr-candidate: record what replaced sees (497ms)
+[rerun-67] webkit /ssr-candidate dom ["replaced-dom-check:large:shown"]
+[rerun-67] webkit /ssr-candidate inner ["replaced-inner-check:large:NOT-SHOWN"]
+  [OK]  180 [webkit] > e2e\rerun-67.spec.ts:137:9 > re-run: candidate fix (swap and emit in one render callback), measured > /ssr-candidate: record what replaced sees (544ms)
+[rerun-67] webkit /csr-candidate-detect dom ["replaced-dom-check:large:shown"]
+[rerun-67] webkit /csr-candidate-detect inner ["replaced-inner-check:large:shown"]
+  [OK]  181 [webkit] > e2e\rerun-67.spec.ts:137:9 > re-run: candidate fix (swap and emit in one render callback), measured > /csr-candidate-detect: record what replaced sees (516ms)
+[rerun-67] webkit /csr fromRenderCallback=true small {"smallDom":["replaced-dom-check:small:shown"],"smallInner":["replaced-inner-check:small:shown"],"smallFocus":["replaced-focus:small:small-link"],"activeAfter":"small-link"}
+[rerun-67] webkit /csr fromRenderCallback=true labels ["page-ctor","mq-ctor","outlet-ctor:1","outlet-swap:small","mq-live-before-set","mq-live-after-set","bg-check:naive:large:NOT-SHOWN","outlet-swap:large","replaced:large","replaced-dom-check:large:shown","replaced-inner-check:large:shown","replaced-focus:large:BODY","bg-check:handoff:large:shown","outlet-ctor:2","outlet-swap:large","replaced:large","replaced-dom-check:defer-large:shown","replaced-inner-check:defer-large:shown","replaced-focus:defer-large:BODY","bg-check:naive:small:NOT-SHOWN","outlet-swap:small","outlet-swap:small","replaced:small","replaced-dom-check:small:shown","replaced-inner-check:small:shown","replaced-focus:small:small-link","bg-check:handoff:small:shown","replaced:small","replaced-dom-check:defer-small:shown","replaced-inner-check:defer-small:shown","replaced-focus:defer-small:small-link"]
+  [OK]  182 [webkit] > e2e\rerun-67.spec.ts:171:9 > re-run: a later swap with focus inside the removed view > /csr: swap to small from a render callback (637ms)
+[rerun-67] webkit /csr fromRenderCallback=false small {"smallDom":["replaced-dom-check:small:shown"],"smallInner":["replaced-inner-check:small:shown"],"smallFocus":["replaced-focus:small:small-link"],"activeAfter":"small-link"}
+[rerun-67] webkit /csr fromRenderCallback=false labels ["page-ctor","mq-ctor","outlet-ctor:1","outlet-swap:small","mq-live-before-set","mq-live-after-set","bg-check:naive:large:NOT-SHOWN","outlet-swap:large","replaced:large","replaced-dom-check:large:shown","replaced-inner-check:large:shown","replaced-focus:large:BODY","bg-check:handoff:large:shown","outlet-ctor:2","outlet-swap:large","replaced:large","replaced-dom-check:defer-large:shown","replaced-inner-check:defer-large:shown","replaced-focus:defer-large:BODY","outlet-swap:small","outlet-swap:small","replaced:small","replaced-dom-check:small:shown","replaced-inner-check:small:shown","replaced-focus:small:small-link","bg-check:handoff:small:shown","bg-check:naive:small:shown","replaced:small","replaced-dom-check:defer-small:shown","replaced-inner-check:defer-small:shown","replaced-focus:defer-small:small-link"]
+  [OK]  183 [webkit] > e2e\rerun-67.spec.ts:171:9 > re-run: a later swap with focus inside the removed view > /csr: swap to small from a plain signal write (561ms)
+[rerun-67] webkit /ssr fromRenderCallback=true small {"smallDom":["replaced-dom-check:small:shown"],"smallInner":["replaced-inner-check:small:shown"],"smallFocus":["replaced-focus:small:small-link"],"activeAfter":"small-link"}
+[rerun-67] webkit /ssr fromRenderCallback=true labels ["page-ctor","mq-ctor","outlet-ctor:1","outlet-swap:small","mq-live-before-set","mq-live-after-set","bg-check:naive:large:NOT-SHOWN","outlet-swap:large","replaced:large","replaced-dom-check:large:shown","replaced-inner-check:large:shown","replaced-focus:large:BODY","bg-check:handoff:large:shown","bg-check:naive:small:NOT-SHOWN","outlet-swap:small","replaced:small","replaced-dom-check:small:shown","replaced-inner-check:small:shown","replaced-focus:small:small-link","bg-check:handoff:small:shown"]
+  [OK]  184 [webkit] > e2e\rerun-67.spec.ts:171:9 > re-run: a later swap with focus inside the removed view > /ssr: swap to small from a render callback (583ms)
+[rerun-67] webkit /csr-candidate fromRenderCallback=true small {"smallDom":["replaced-dom-check:small:shown"],"smallInner":["replaced-inner-check:small:NOT-SHOWN"],"smallFocus":["replaced-focus:small:BODY"],"activeAfter":"BODY"}
+[rerun-67] webkit /csr-candidate fromRenderCallback=true labels ["page-ctor","mq-ctor","outlet-swap-candidate:effect:small","mq-live-before-set","mq-live-after-set","outlet-swap-candidate:callback:large","replaced-candidate:large","replaced-dom-check:large:shown","replaced-inner-check:large:NOT-SHOWN","replaced-focus:large:BODY","outlet-swap-candidate:callback:small","replaced-candidate:small","replaced-dom-check:small:shown","replaced-inner-check:small:NOT-SHOWN","replaced-focus:small:BODY"]
+  [OK]  185 [webkit] > e2e\rerun-67.spec.ts:171:9 > re-run: a later swap with focus inside the removed view > /csr-candidate: swap to small from a render callback (673ms)
+[rerun-67] webkit /csr-candidate-detect fromRenderCallback=true small {"smallDom":["replaced-dom-check:small:shown"],"smallInner":["replaced-inner-check:small:shown"],"smallFocus":["replaced-focus:small:small-link"],"activeAfter":"small-link"}
+[rerun-67] webkit /csr-candidate-detect fromRenderCallback=true labels ["page-ctor","mq-ctor","outlet-swap-candidate:effect:small","mq-live-before-set","mq-live-after-set","outlet-swap-candidate:callback:large","replaced-candidate:large","replaced-dom-check:large:shown","replaced-inner-check:large:shown","replaced-focus:large:BODY","outlet-swap-candidate:callback:small","replaced-candidate:small","replaced-dom-check:small:shown","replaced-inner-check:small:shown","replaced-focus:small:small-link"]
+  [OK]  186 [webkit] > e2e\rerun-67.spec.ts:171:9 > re-run: a later swap with focus inside the removed view > /csr-candidate-detect: swap to small from a render callback (605ms)
+
+  186 passed (3.4m)

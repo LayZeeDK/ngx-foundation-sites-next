@@ -98,7 +98,7 @@ Round 5 (depends on all of the above: Sass, tests, future platform).
 
 ### OPEN FOR HUMAN
 
-1. Focus target when a swap removes the view that holds focus (decision 24). Default applied: the first tabbable element of the new view, else leave focus to the browser and the consumer's `replaced` handler. Alternative: no library focus handling at all, leaving it entirely to `replaced`, which is simpler but lets focus fall to `<body>` on a device rotation unless every consumer handles it. Sources state that focus must not be lost, not which element of arbitrary consumer content should receive it.
+1. Focus target when a swap removes the view that holds focus (decision 24). Decided under the triage rule below.
 
 ## Prototype needed
 

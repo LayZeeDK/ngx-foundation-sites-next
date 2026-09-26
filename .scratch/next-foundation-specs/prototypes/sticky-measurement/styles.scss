@@ -1,12 +1,17 @@
-// Prototype: only the Sticky partial, not the whole Foundation grid/typography stack.
+// Prototype-only: only the Sticky partial, not the whole Foundation grid/typography stack, and
+// @use is used here for that one partial only to keep this fixture small. The shipped library
+// never uses @use for Foundation: [Sass packaging for the new library](../../issues/57-sass-packaging.md)
+// and ADR 0012 keep @import throughout, because foundation-sites 6.9 has not migrated its own
+// partials to @use/@forward (see the @import note below for the util layer this mixin needs).
 @use 'foundation-sites/scss/components/sticky';
 
 @include sticky.foundation-sticky;
 
 // breakpoint() needs Foundation's transitive util partials (math, unit, value, direction,
-// color, selector, flex). foundation-sites 6.9's util layer is still @import-based (ADR 0012
-// leaves Dart Sass's eventual @import removal OPEN FOR HUMAN for the real library); this
-// prototype uses @import only for this reason, after the @use above.
+// color, selector, flex). foundation-sites 6.9's util layer is still @import-based; Dart Sass's
+// eventual @import removal is decided, not open (Sass packaging for the new library, issue 57:
+// "no action now" for the real library); this prototype uses @import only for this reason,
+// after the @use above.
 @import 'foundation-sites/scss/util/util';
 
 // Documented custom CSS (specs/sticky.md "Sass" subsection, mixin nfs-sticky): Foundation's own

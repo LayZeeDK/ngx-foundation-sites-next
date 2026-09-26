@@ -82,7 +82,7 @@ Exact failures during the run, all fixed or explained: the first geometry probe 
 - Screen reader output: the modal announcement, the name from `aria-labelledby`, and browse-mode containment.
 - RTL (`inset-inline` is logical but was not run under `dir="rtl"`), `@defer` and incremental hydration around the dialog, event replay of the opener click before hydration, Motion class inputs other than the `nfs-fade-*` defaults, `deepLink`, `alertdialog`, and a dialog nested inside another dialog's DOM (the siblings of Foundation's docs markup were tested).
 - `getAnimations()` as an alternative to the `animationend` name filter.
-- OffCanvas overlap mode on `<dialog>` (Table B's folded question): not built. The findings that carry over are rules 1, 2, 5 and 6, the backdrop colour from `$offcanvas-overlay-background`, and the scroll lock.
+- OffCanvas overlap mode on `<dialog>` (Table B's folded question): not built. The findings that carry over are rules 1, 2, 5 and 6, the backdrop colour from `$offcanvas-exit-background`, and the scroll lock.
 
 ### Decision handed to the Reveal and OffCanvas specs
 
@@ -124,13 +124,13 @@ No WCAG rule was needed. Foundation's size classes, `.full`, full screen below m
 | `max-height: calc(100% - 200px)` for tall content | LOW (one CSS value, easy to change) | MEDIUM (prototype value) | Decided with this value |
 | Focus fallback when the invoker sits in a dialog that closed | MEDIUM (behaviour, no API) | MEDIUM (not built) | Decided: fall back to the closed dialog's invoker; the spec's browser-level test checks it |
 | Close-button target size | LOW | HIGH (passes by the spacing exception in all sizes; axe `target-size` passes) | Decided: no rule; the spec notes that consumers keep other targets at least 12 px from the button's centre |
-| `vOffset`/`hOffset` `'auto'` | HIGH (Foundation Options become public inputs; the default placement is a visible contract) | NOT HIGH (the prototype's top 100 px is Foundation's CSS default carried without deliberation, and it contradicts the inventory: Foundation's JS places a short modal at `(vh - h) / 4`) | OPEN FOR HUMAN |
+| `vOffset`/`hOffset` `'auto'` | HIGH (Foundation Options become public inputs; the default placement is a visible contract) | NOT HIGH at this prototype (the top 100 px default was carried without deliberation) | Settled by the [Spec: Reveal](18-spec-reveal.md) and confirmed by the [Prototype: Reveal `'auto'` offsets in CSS](69-prototype-reveal-auto-offsets.md); no longer OPEN FOR HUMAN |
 | Screen reader verification | -- | -- | Human-only (assistive technology) |
 | Reporting WebKit's empty `pseudoElement` on `::backdrop` `animationend` upstream | -- | -- | Human-only (upstream filing); first confirm it on real Safari |
 
 ### OPEN FOR HUMAN
 
-1. **`vOffset`/`hOffset` `'auto'`.** Options:
+1. **`vOffset`/`hOffset` `'auto'`.** Settled: see the [Spec: Reveal](18-spec-reveal.md), which chose a refined option (a) below: `'auto'` stays CSS-only (custom properties reproducing Foundation's CSS position, no runtime layout measurement) and numeric offsets bind those same custom properties, confirmed within Foundation's own rounding by the [Prototype: Reveal `'auto'` offsets in CSS](69-prototype-reveal-auto-offsets.md), except for a dialog taller than the height cap. Options as recorded when this item was open:
    - (a) Foundation's CSS position: top 100 px and centred. Numeric values become inline `top`/`left` bindings with no measurement. This is the prototype's default.
    - (b) Port Foundation's measured `'auto'`: `(vh - h) / 4`, or `min(100, vh / 10)` when taller than the viewport. This needs a layout read in `afterRenderEffect` after `showModal()` and a `ResizeObserver`, and it is not server-renderable.
    - (c) Drop both Options.
@@ -139,4 +139,4 @@ No WCAG rule was needed. Foundation's size classes, `.full`, full screen below m
 2. **Screen reader check** of the open modal (NVDA or JAWS with Chromium and Firefox, VoiceOver with Safari): role, name, modal containment in browse mode, and focus restore announcements. This needs assistive technology.
 3. **Upstream report** of WebKit's `animationend` for `::backdrop` arriving with `pseudoElement: ''` (Chromium and Firefox report `'::backdrop'`). First confirm it on Safari; filing is under the user's identity.
 
-New ticket suggestion for the orchestrator: if the OffCanvas spec wants overlap mode on `<dialog>`, a "Prototype: OffCanvas overlap mode on native `<dialog>`" ticket. It would cover the transform transition under the top layer, `::backdrop` from `$offcanvas-overlay-background`, and `contentScroll` with the scroll lock.
+New ticket suggestion for the orchestrator: if the OffCanvas spec wants overlap mode on `<dialog>`, a "Prototype: OffCanvas overlap mode on native `<dialog>`" ticket. It would cover the transform transition under the top layer, `::backdrop` from `$offcanvas-exit-background`, and `contentScroll` with the scroll lock.

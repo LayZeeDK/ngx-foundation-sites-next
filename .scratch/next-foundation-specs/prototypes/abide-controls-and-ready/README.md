@@ -20,7 +20,7 @@ the spec's design. The runnable workspace (with `node_modules`, the build, and t
 stays at `D:/tmp/nfs-proto-abide-controls-and-ready/app`.
 
 - `src/app/abide/abide.ts` -- the five directives from `specs/abide.md`'s API section, not the
-  DOM-lookup route prototype 49 used: `form[nfsAbide]` (policy inputs, `submitted`, `invalid`,
+  DOM-lookup route the [Prototype: Signal Forms on Abide markup](../../issues/49-prototype-signal-forms-abide.md) used: `form[nfsAbide]` (policy inputs, `submitted`, `invalid`,
   `showAlert`, and `ready` -- false until the first `afterNextRender`), `[nfsAbideInput]`
   (`FORM_FIELD` self-injection then `NgControl`; `is-invalid-input`, `aria-invalid` skipped on
   `input[type=radio]`, `aria-describedby` from registered `NfsFormError`s; event-based
@@ -52,7 +52,7 @@ stays at `D:/tmp/nfs-proto-abide-controls-and-ready/app`.
   boundaries: `RenderMode.Server` (`/ready`), `RenderMode.Prerender` (`/prerender`, declared in
   `app.routes.server.ts`), and `@defer (hydrate on interaction)` (`/defer`).
 - `src/app/app.config.ts` -- adds `withEventReplay()` and `withIncrementalHydration()` to
-  `provideClientHydration()` (prototype 49's app had neither; `@defer (hydrate on interaction)`
+  `provideClientHydration()` (the [Prototype: Signal Forms on Abide markup](../../issues/49-prototype-signal-forms-abide.md)'s app had neither; `@defer (hydrate on interaction)`
   needs the second one).
 - `e2e/controls.spec.ts` -- case 1. `e2e/adoption.spec.ts` -- case 2. `e2e/ready.spec.ts` --
   case 3. `playwright.config.ts` -- port 4661 (this effort's assigned range).
@@ -68,6 +68,8 @@ npx ng build
 PORT=4661 NG_ALLOWED_HOSTS=localhost,127.0.0.1 node dist/app/server/server.mjs   # restart after every build
 npx playwright test                                                            # other shell; chromium, firefox, webkit
 ```
+
+Run log not kept: the 27 of 27 and mid-typing-race counts below are taken from the ticket's captured tables, not a saved Playwright log file.
 
 ## Verdict
 
@@ -123,7 +125,7 @@ case 2's scenario); it is specific to a trigger event that starts hydration mid-
 | `select` | Works | Same test |
 | `textarea` (`required`, `minLength`) | Works | Same test |
 | Custom `FormValueControl` via `hostDirectives` | Works once linked by DI (wrapping label); a typed reference crashes the compiler | See "Exact error text" |
-| Invalid-state axe (5 WCAG 2.2 AA tag sets) | Clean, all engines | `controls.spec.ts` "invalid submit" |
+| Invalid-state axe (5 WCAG 2.2 AA tag sets: `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`; omits `best-practice`, so this is not the library's six-tag story gate, ADR 0018) | Clean, all engines | `controls.spec.ts` "invalid submit" |
 | Valid-state axe and class clearing | Clean, all engines | `controls.spec.ts` "valid submit" |
 | Reactive Forms twin (text, checkbox group, radio, select, textarea) | Works, same directives | `controls.spec.ts` "Reactive Forms twin" |
 | Event-based adoption: text, checkbox, radio, select, textarea | Survives 4 s hydration delay, all engines | `e2e/adoption.spec.ts` "event-based adoption" |
@@ -231,9 +233,11 @@ Mid-typing race results (three runs per engine, typing a 26-character email addr
      hydration is not itself mid-flight.
    - Confidence: NOT HIGH. Only 9 samples across 3 engines were measured (3 per engine); the
      exact race window and whether it is deterministic per engine version is unknown.
-   - Outcome: STAYS OPEN FOR HUMAN. The spec's rendering-modes subsection should note the
-     limitation; whether it needs a code fix (for example, hydrating on the first `pointerdown`
-     instead of `keydown` for text-entry blocks) is a design call beyond this prototype.
+   - Outcome: DECIDED by the orchestrator on 2026-09-26 under the triage rule (impact not HIGH
+     means the default applies, whatever the confidence): see the ticket's Triage item 2. The
+     Abide spec's rendering-modes subsection documents the limitation and recommends
+     `hydrate on viewport`, `on idle`, or `on immediate` over `hydrate on interaction` for a
+     block that holds text-entry fields.
 
 ### OPEN FOR HUMAN
 
@@ -242,9 +246,11 @@ Mid-typing race results (three runs per engine, typing a 26-character email addr
    an unlocated internal error (`Could not resolve [object Object] / [object Object]`) instead of
    a diagnostic. Filing needs the user's confirmation (repo rule: never file in a third-party
    repo without it).
-2. The `@defer (hydrate on interaction)` mid-typing character-drop race: whether it warrants a
-   spec-level mitigation (a different default trigger for text-entry blocks) or just a
-   documented limitation.
+Settled: see the ticket's Triage item 2. The `@defer (hydrate on interaction)` mid-typing
+character-drop race is decided under the triage rule (impact not HIGH), not left open: the
+Abide spec's rendering-modes subsection documents the limitation and recommends
+`hydrate on viewport`, `on idle`, or `on immediate` over `hydrate on interaction` for a block
+that holds text-entry fields.
 
 ## Workspace
 

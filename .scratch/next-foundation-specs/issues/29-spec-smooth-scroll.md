@@ -103,7 +103,7 @@ Round 5 (the user's standing rule, restated 2026-09-26: WCAG 2.2 AA as requireme
 
 ### OPEN FOR HUMAN
 
-1. Should a directive-handled jump write the fragment to the URL? Default applied: no (Foundation parity; no `popstate`, no history entry, no Router state to preserve; Magellan owns deep linking). Alternative: `history.replaceState(history.state, '', url)` so the address bar shows the section like a native link would (without its history entry). Sources give Foundation's behaviour and the native one; which users should get is a product call.
+1. Should a directive-handled jump write the fragment to the URL? Decided under the triage rule below.
 2. Should `href="#x"` links that `<base href>` resolves to another document be handled after hydration? Default applied: yes, with a development-mode warning (Foundation's `a[href^="#"]` contract keeps working in client-rendered Router apps). Alternative: handle only links the browser itself treats as same-document, so behaviour is identical before and after hydration, at the cost of Foundation's markup leaving the page on every deep route.
 3. Inherited, not new: building-blocks Part 4 item 3 (how a handler recognises a replayed event). Its default makes a pre-hydration click log one `preventDefault` error on replay; the spec's e2e assertion flips if the item is answered with a replay check.
 

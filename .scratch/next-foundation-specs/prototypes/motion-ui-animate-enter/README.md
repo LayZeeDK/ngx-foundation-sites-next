@@ -87,7 +87,7 @@ never adds Motion UI's own `mui-enter`/`mui-enter-active` companion classes, bec
 from Motion UI's `Motion.animateIn` runtime (`research/foundation-utilities-conventions.md` 4.1),
 which is not present. The compound selector can never match, so `getComputedStyle` never reports a
 transition on the element at all, and Angular's own animate.enter cleanup -- the same
-`requestAnimationFrame`-based "no animation detected, strip the class" mechanism prototype 52 found
+`requestAnimationFrame`-based "no animation detected, strip the class" mechanism P52 found
 in `runEnterAnimation` -- removes the unmatched class before the next frame instead of leaving it
 attached (Case 4a, 6/6 passing; confirmed by inspecting the settled class list, since the class is
 gone too quickly for a Playwright assertion to catch it still present).
@@ -98,7 +98,7 @@ its own `transition: transform 400ms` and its final `transform: translateY(0)` s
 companion class needed at all, still never animates when applied through `animate.enter`, and no
 `transitionrun`/`transitionend` ever fires (Case 4b, 6/6 passing). Unlike Case 4a, Angular's
 cleanup does *not* strip this class immediately, because `getComputedStyle` reports a genuine
-`transition-property` on it (prototype 52's mechanism keeps a class attached whenever it detects an
+`transition-property` on it (P52's mechanism keeps a class attached whenever it detects an
 animation is configured, even if none is observably running); the class instead stays on the
 element, unanimated, for at least the 600ms this prototype waited. This is the general reason
 transition classes cannot work under `animate.enter` on a newly inserted element: there is no prior
@@ -140,19 +140,19 @@ code or CSS; the mechanism itself never failed to complete in any run.
 
 ### What this prototype does not prove
 
-- The `(animate.enter)`/`(animate.leave)` function-callback form, only tested by prototype 52 as
+- The `(animate.enter)`/`(animate.leave)` function-callback form, only tested by P52 as
   "not tested" too; this prototype also used only the class-list form, matching how the map's
   specs plan to use it (building-blocks.md 1.6 rules 2 and 4).
 - Whether Angular's cleanup timing for an unmatched-selector class (Case 4a, stripped almost
   immediately) versus a matched-but-non-running-transition class (Case 4b, left attached
   indefinitely, or at least past 600ms) generalizes beyond what was directly observed here; the
-  mechanism (prototype 52's `requestAnimationFrame`-based "no animation detected" check) is
+  mechanism (P52's `requestAnimationFrame`-based "no animation detected" check) is
   architectural, so it should generalize, but this prototype did not chase how long Case 4b's class
   eventually stays attached (whether `MAX_ANIMATION_TIMEOUT`'s 4-second default applies to
   `animate.enter` the way it explicitly does to `(animate.leave)`'s callback form is unconfirmed).
-- Zoneless change detection specifically; the CLI's default app (this one) uses zone.js. Render-
-  callback and animation-queue timing is documented as zone-independent (prototype 52), but this
-  prototype did not verify that directly, matching prototype 52's own scope note.
+- Zoneless only (the Angular CLI 22.2 default; `zoneless.md:14`); no zone.js consumer was tried.
+  Render-callback and animation-queue timing is documented as zone-independent (P52), but this
+  prototype did not verify that directly, matching P52's own scope note.
 - Any Motion UI class other than `slide-in-down`; the mechanism (two-class protocol, `animate.enter`
   never adding the companion classes) applies identically to every other Motion UI transition class
   listed in `research/foundation-utilities-conventions.md` 4.1, so this is not expected to
@@ -222,7 +222,7 @@ anything Foundation already styles:
 
 Nothing here restyles anything Foundation for Sites already styles; this app has no
 `foundation-sites` Sass dependency, because the question is about Angular's animation instruction
-against generic CSS, not Foundation's visual contract (the same reasoning prototype 52 gave for the
+against generic CSS, not Foundation's visual contract (the same reasoning P52 gave for the
 same choice).
 
 ### OPEN FOR HUMAN
@@ -231,9 +231,9 @@ Settled: see the ticket's Triage. No run log was kept for this prototype in the 
 
 - Whether Case 4b's finding (a single-class transition with a genuine `transition-property` is left
   attached by Angular's cleanup, unlike Case 4a's unmatched-selector class, which is stripped almost
-  immediately) belongs in `research/angular-rendering-modes.md` or a note beside prototype 52's own
+  immediately) belongs in `research/angular-rendering-modes.md` or a note beside P52's own
   mechanism finding, since both prototypes now describe the same `runEnterAnimation` cleanup from
-  different angles. Recommend the orchestrator cross-link this README and prototype 52's README
+  different angles. Recommend the orchestrator cross-link this README and P52's README
   rather than duplicating the mechanism description into a research file.
 - Whether any spec's `animationIn`/`animationOut`-style input should validate at dev time that a
   consumer-supplied class name is a keyframe animation and reject (or warn on) a transition class

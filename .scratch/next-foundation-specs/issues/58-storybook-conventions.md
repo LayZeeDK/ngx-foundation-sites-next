@@ -98,6 +98,8 @@ None from this ticket. The gallery's dependence on Storybook preview internals s
 
 ### Other proposed shared-file changes (orchestrator applies)
 
+(paths relative to the effort root)
+
 - `building-blocks.md` 1.3 Story ids bullet: add "`<plugin>` is the entry point folder name, pinned by `meta.id`; conventions in [storybook-conventions.md](storybook-conventions.md)".
 - `building-blocks.md` 1.6 rule 5: add "Stories do not provide it globally (Storybook conventions, section 4)".
 - `building-blocks.md` 1.10 (orchestrator's request during this ticket, outside this ticket's edit scope): a first bullet stating WCAG 2.2 AA as a requirement with the criteria subsection, the Sass settings or smallest `nfs-<plugin>` rule for failing Foundation defaults (1.4.3, 1.4.11, 2.5.8, 2.4.11 so far), the six axe tags, the story gate as the enforcing check, and the compile-time `color-contrast()` check where axe has no rule (ADR 0022); and the gate bullet rewritten to name `runOnly` with `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`, `best-practice` instead of "widened to WCAG 2.2 AA", and "opt out" replaced by "the Anti-pattern story exception in the Storybook conventions".

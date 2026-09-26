@@ -15,7 +15,7 @@ Foundation closes a Dropdown on a body `click` or `tap` only when `closeOnClick`
 
 ## Consequences
 
-- Dropdown's `closeOnClick` and Tooltip's `clickOpen` switch only the pointer rule; Escape, the focus rule, and sibling groups always apply, which changes Foundation's default behaviour and is listed as a delta in the Dropdown, Tooltip, and Nested menu specs.
+- Dropdown's `closeOnClick` switches only the pointer rule; for tooltips the pointer rule is always on and `clickOpen` decides whether a press pins the tip; Escape, the focus rule, and sibling groups always apply, which changes Foundation's default behaviour and is listed as a delta in the Dropdown, Tooltip, and Nested menu specs.
 - Consumers receive a close reason (`'click' | 'keydown' | 'tab' | 'sibling'`, Material's `MenuCloseReason` words plus the sibling case) and return focus to the Trigger only for `'keydown'` with focus inside the pane.
 - The registry's document listeners exist only while an entry is open and are never replayed, which is correct because nothing is open before hydration.
 - When `popover="auto"` reaches the browser target, Dropdown panes and submenus can drop the registry without a behaviour change; tooltips wait for `popover="hint"` or keep their own group.

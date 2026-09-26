@@ -12,7 +12,7 @@ Extends the [Prototype: Foundation-styled `<input type="range">` Slider](../../i
 
 ## Verdict
 
-Mostly yes. Cases 1 and 2 pass in Chromium and WebKit; case 1's non-linear key case fails in Firefox with a reproducible root cause (below). Case 2 passes in all three engines. Case 3 passes in all three engines for RTL correctness; forced-colors visibility needed one new CSS rule (not yet in the spec) and then passed in Chromium and Firefox (WebKit has no `forced-colors` emulation in Playwright, so it is unproven there, not failing). See the ticket's `## Answer` for the full results table and the decisions handed to the Slider spec.
+Mostly yes. Cases 1 and 2 pass in Chromium and WebKit; case 1's non-linear key case fails in Firefox, with a root cause that is narrowed but not fully confirmed (see the ticket's "What the prototype does not prove"). Case 2 passes in all three engines. Case 3 passes in all three engines for RTL correctness; forced-colors visibility needed one new CSS rule (not yet in the spec) and then passed in Chromium and Firefox (WebKit has no `forced-colors` emulation in Playwright, so it is unproven there, not failing). See the ticket's `## Answer` for the full results table and the decisions handed to the Slider spec.
 
 ## What is here
 

@@ -141,7 +141,7 @@ product finding for assumption 3a itself, which holds.
 
 ### OPEN FOR HUMAN
 
-One item, per the Triage above: the mechanism that fixes the `replaced`-ordering finding (HIGH
+Settled: see the [Re-run: Interchange spec, the `replaced` timing and the outlet's focus rule](67-rerun-interchange-replaced-timing.md), which decided the rendered-rule handoff mechanism (impact HIGH, confidence HIGH once verified in code). The item as it stood when this ticket left it open, per the Triage above: the mechanism that fixes the `replaced`-ordering finding (HIGH
 impact, NOT-HIGH confidence in any specific fix). Routed through reopening
 [Spec: Interchange](35-spec-interchange.md), scoped to decision 12 and the ARIA focus rule.
 

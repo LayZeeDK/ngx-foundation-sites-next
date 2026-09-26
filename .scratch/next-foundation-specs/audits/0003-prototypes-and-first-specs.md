@@ -534,3 +534,22 @@ Recorded by the orchestrator on 2026-09-26. Every finding is fixed; none was tur
 | L11 | Fixed | `5acccc7` |
 | Unrecorded departure 1 (Responsive Toggle timer) | Fixed as M4 | `cad80fb` |
 | Unrecorded departure 2 (Interchange `effect()` creating views) | Recorded: building-blocks 1.5 names the exception for a rendered-state signal written by a swap effect, and the Interchange re-run measured the design | `fc47a1c`, `8367a92` |
+
+## Addendum, 2026-09-26 (audit 0004 follow-up)
+
+Recorded by a repair agent working audit 0004's fixes (rows added below the existing Resolution log; the rows above are not rewritten). Audit 0004 re-checked every row of this log against a later snapshot and found 12 of 27 only partly true. Per row: what audit 0004 found still open, and the commit that completes it, if any, else "completed by the audit 0004 fixes" where the remaining piece is in a file outside this agent's edit scope (specs, `building-blocks.md`) and left to the agent or commit that carries that scope.
+
+| Row | What audit 0004 found still open | Completes it |
+| --- | --- | --- |
+| M2 | ADR 0008 `:24` still named the animate-enter-hydration prototype as pending rather than stating its confirmed verdict | Fixed in this pass (ADR 0008 rewritten; uncommitted, the orchestrator commits) |
+| M3 | ADR 0017 `:13` still said "left OPEN FOR HUMAN in the ticket"; five map gists (Toggler, Smooth Scroll, Interchange, Equalizer, Responsive Toggle, plus the WAI-ARIA APG patterns, Abide, Nested menu, and Reveal dialog gists) still read stale; the Toggler, Smooth Scroll, and Interchange spec tickets still spelled out a decided item under `### OPEN FOR HUMAN` instead of pointing at the Triage; the Reveal dialog and Interchange outlet prototype write-ups and the Abide and Sticky measurement prototype write-ups still called a decided item open | Fixed in this pass (ADR 0017, the map gists, tickets 17/29/35, tickets 42/61, and the Abide and Sticky measurement captures; uncommitted). Ticket 24 (Responsive Toggle)'s own `### OPEN FOR HUMAN` wording is outside this agent's ticket scope; completed by the audit 0004 fixes |
+| M5 | The ResponsiveAccordionTabs prototype README still recommended the darkened `$tab-active-color` with no superseded note | Fixed in this pass (uncommitted) |
+| M6 | The Off-canvas spec names five axe tags instead of six | Outside this agent's scope (a spec file); completed by the audit 0004 fixes |
+| M7 | `specs/anchored-pane.md:408` still used the retired stack-neutral layer heading | Outside this agent's scope (a spec file); completed by the audit 0004 fixes |
+| M11 | The Orbit spec ticket was not reopened by the Orbit keyboard prototype's failed case, and the Smooth Scroll router prototype named no deciding question | Fixed in this pass (ticket 33 gained a dated "Reopened and re-run" paragraph; ticket 62 now states which question decides a reopen of which spec; uncommitted) |
+| L1 | "prototype 43" narration kept beside its `P43` key in the Accordion ticket; "prototype 52" narration kept beside its `P52` key in the Motion UI ticket and README | The Motion UI ticket and README are fixed in this pass (`prototype 52` replaced by `P52` throughout; uncommitted). The Accordion ticket (15) is outside this agent's ticket scope; completed by the audit 0004 fixes |
+| L3 | The Storybook conventions ticket and five spec/re-run tickets (Dropdown Menu, Tooltip, Nested menu, the Interchange re-run, the Slider re-run) quoted a proposal relative to `building-blocks.md` with no effort-root note | Fixed in this pass for the Dropdown Menu, Tooltip, Interchange re-run, Slider re-run, and Storybook conventions tickets (uncommitted). The Nested menu ticket (56) is outside this agent's ticket scope; completed by the audit 0004 fixes |
+| L4 | The Motion UI prototype ticket and README still said the app used zone.js | Fixed in this pass (both now state zoneless is the Angular CLI 22.2 default per `zoneless.md:14`; uncommitted) |
+| L8 | `specs/orbit.md:79` kept the retired file-path form | Outside this agent's scope (a spec file), and out of scope for audit 0004 itself (left to the Orbit re-run); completed by the audit 0004 fixes or the Orbit re-run's own commit |
+| L10 | The Interchange and Breakpoint service specs still had no `injectAsync` statement | Outside this agent's scope (spec files); completed by the audit 0004 fixes |
+| Departure 2 | Table B Interchange's risk cell still named the dropped `ngDoCheck` fallback | Outside this agent's scope (`building-blocks.md`); completed by the audit 0004 fixes |

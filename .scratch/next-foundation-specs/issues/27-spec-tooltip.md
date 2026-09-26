@@ -168,6 +168,8 @@ None. The candidates fail the bar: interactive hosts only (easy to relax later, 
 
 ### Proposed building-blocks changes
 
+(paths relative to the effort root)
+
 1. 1.4, the dropped class-name Options list: remove `templateClasses` and add after the list "(Tooltip keeps `templateClasses`: the consumer does not author the tip, so it is the only per-tooltip class hook)". Reason: decision 35.
 2. Table A, Tooltip row, selector cell: replace "(text from the input, default from the `title` attribute)" with "(text from the `nfsTooltip` value, else the static `title`, which stays on the host until the tip is first shown)". Reason: decisions 12, 13.
 3. Table A, Tooltip row, primitives cell: replace "`focusin`/`focusout`/`pointerenter`/`pointerleave`/`keydown.escape` host listeners" with "`focusin`/`focusout` host listeners (a replayed `focusin` re-checks `document.activeElement` and `:focus-visible`); press opening through code-added `click`/`pointerdown` listeners (no `jsaction`, so link hosts keep native navigation); hover through `nfsHoverIntent()`; Escape through Light dismiss" (consistent with the Anchored pane ticket's proposed change 3, adding the press listener). Reason: decisions 22, 24, 26.

@@ -33,6 +33,8 @@ Resolved 2026-09-26 (AFK, self-grilling both sides). [specs/slider.md](../specs/
 
 ### Proposed building-blocks changes
 
+(paths relative to the effort root)
+
 1. Table B, Slider row, "Rendering-mode constraints and risks" cell: replace "so the live `value` property is written in `afterRenderEffect` and a value the user changed before hydration is adopted rather than reset" with "so the live `value` property is written in `afterRenderEffect`, whose first pass leaves a pre-hydration native value alone; the replayed native `input` adopts it (idempotent), and a non-linear key handler writes the native value itself so its replayed companion `input` counts the key once. Needs event replay, on by default through incremental hydration". Reason: decisions 49 to 51.
 2. Table B, Slider row, "Open risks; prototype question" cell: append "; before hydration, non-linear bar-position bounds, real right-to-left compile, and forced colours: [Prototype: Slider before hydration, non-linear bounds, and RTL](issues/64-prototype-slider-hydration-nonlinear.md), with rule 13 for forced colours". Reason: decisions 52 to 55.
 3. Outside building-blocks, for the orchestrator: `research/angular-rendering-modes.md` section 7's Slider row says "`input`/`change` replay" only. A note that a replayed `keydown` runs before the companion `input` of its native default action, in the same synchronous pass, would help every spec whose key handler computes state the native control also changes.

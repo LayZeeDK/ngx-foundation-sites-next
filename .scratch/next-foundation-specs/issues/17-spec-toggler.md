@@ -111,7 +111,7 @@ Round 6 (coordinator's restated user rule, 2026-09-26: WCAG 2.2 AA as requiremen
 
 ### OPEN FOR HUMAN
 
-1. A Trigger-role override for class mode. Default applied: none; class mode always renders `aria-pressed`, and a class that shows or hides content belongs in visibility mode (dev check 5 flags Foundation's visibility classes). The alternative is a `triggerRole` input (`'toggle-button' | 'disclosure'`) on `NfsClassToggler` for a consumer class that reveals content in a way `hidden` cannot express (for example a custom collapse class with its own transition). Sources permit both: the APG picks the pattern by what the control does, which the library cannot see in a class name.
+1. A Trigger-role override for class mode. Decided under the triage rule below.
 
 ## Prototype needed
 

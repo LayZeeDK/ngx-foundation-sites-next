@@ -147,6 +147,8 @@ None. No decision here meets all three of the domain-modeling bar's tests: the O
 
 ### Proposed building-blocks changes
 
+(paths relative to the effort root)
+
 1. Table B, DropdownMenu row, Animation cell: replace "`js-dropdown-active` State class; optional keyframes via `animate` input" with "`js-dropdown-active` State class; no `animate` input (Foundation has none, and the Nested menu's dropdown mode has no leaving phase; a consumer may add an entrance keyframe on `.js-dropdown-active`)". Reason: decision 33.
 2. Table B, DropdownMenu row, DI cell: replace "hover-intent timers per item as signals" with "`nfsHoverIntent` per parent item through the Nested menu; the seven Options through `configure('dropdown', ...)`". Reason: decisions 12, 15.
 3. Table B, DropdownMenu row, Material cell: replace "`closed` reason (`'click' | 'keydown' | 'tab' | 'sibling'`, from Light dismiss)" with "root `opened`/`closed` carrying the `NfsMenuItem` (the Light dismiss reason stays internal to the focus-return rule)". Reason: decision 5.
