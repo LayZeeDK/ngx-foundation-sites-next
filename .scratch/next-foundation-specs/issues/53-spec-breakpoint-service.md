@@ -167,3 +167,11 @@ Orchestrator, 2026-09-26: the [Prototype: Breakpoint handoff under hydration](60
 ### Amendment, 2026-09-26 (Interchange re-run)
 
 Consumer rule 1 generalised by the orchestrator from the [Re-run: Interchange spec, the `replaced` timing and the outlet's focus rule](67-rerun-interchange-replaced-timing.md), proposed change 4: reading `document.activeElement` in `earlyRead` before the swap holds only when the consumer's own `earlyRead` callback commits the swap; a swap driven straight from this service's reads in change detection records focus in the change-detection code that removes the old nodes, or from `focusin`/`focusout` on a surviving host, and every consumer moves focus in a render callback keyed on rendered state (building-blocks 1.5).
+
+### Amendment, 2026-09-26 (Responsive Menu)
+
+Folded into `specs/breakpoint-service.md` from the [Spec: Responsive Menu](23-spec-responsive-menu.md) answer, proposed change 3 (its decisions 15 and 21), and [ADR 0035](../adr/0035-responsive-menu-swap-commit.md):
+
+1. Consumer table, ResponsiveMenu row: `parseNfsBreakpointRules(...)`, then `resolve(parsed, serverBreakpoint)` until the first render callback and `resolve(parsed)` after.
+2. Rendering modes, incremental hydration bullet: ResponsiveMenu, like ResponsiveAccordionTabs, starts each instance from `resolve(rules, serverBreakpoint)` and swaps in its first render callback, so its blocks hydrate as sent.
+3. Consumer rule 1, keeping the text the Interchange re-run generalised: the render callback that itself commits the swap now names the Nested menu root's swap callback for ResponsiveMenu next to the ResponsiveAccordionTabs prototype, and the change-detection case reads "the change-detection code that removes the old nodes or re-classes them".
