@@ -92,7 +92,7 @@ The utility replaces Foundation's Positionable and Box, the `closeme.zf.*` part 
 | `resizeme.zf.trigger` (debounced 250 ms window resize, MutationObserver bridge) | Re-runs `_setPosition` | `ResizeObserver` on pane, anchor, and bound while open |
 | `closeme.zf.dropdown`, `closeme.zf.tooltip` with `data-yeti-box` | Opening one closes every other instance of the same plugin by window-level DOM query, parents included | Light dismiss sibling groups; ancestors are kept open |
 | Dropdown `closeOnClick` body `click`/`tap` handler | Closes when a click lands outside the anchors and the pane | Light dismiss pointer rule, per-entry switch |
-| Tooltip `clickOpen` | A click keeps the tip open "until you click somewhere else" | The Tooltip spec switches the pointer rule on for click-opened tips |
+| Tooltip `clickOpen` | A click keeps the tip open "until you click somewhere else" | The Tooltip spec leaves the pointer rule on; `clickOpen` decides whether a press pins the tip |
 | Dropdown Escape (`keydown` on anchors and pane) | Closes and focuses the anchors | Light dismiss Escape rule (document-level, topmost entry) |
 | Dropdown `hover`, `hoverPane`, `hoverDelay` 250; Tooltip `hoverDelay` 200, `disableHover`; DropdownMenu `hoverDelay` 50, `closingTime` 500, `autoclose`, `disableHover` | `mouseenter`/`mouseleave` timers, gated by `what-input` (Dropdown), wrapped in `ignoreMousedisappear` | `nfsHoverIntent` with `openDelay`, `closeDelay`, `enabled`; the consumer maps its Options |
 | Tooltip `disableForTouch`, DropdownMenu `disableHoverOnTouch` (`true`) | Drop hover handling on touch-capable devices | The helper ignores `pointerType: 'touch'` on every event; the consumer specs decide whether the Options survive |
@@ -269,7 +269,7 @@ function nfsDocumentRect(element: Element): NfsRect;     // DOM read: call only 
 | anchor | `open(trigger)`, else the first registered Trigger | the host (trigger) | the parent item |
 | `closeOnClick` | Light dismiss `outsidePress` | none | Light dismiss `outsidePress` |
 | `clickOpen` | none | `outsidePress` left at its default (on); `clickOpen` decides whether a press pins the tip | none |
-| `hover`, `hoverDelay`, `hoverPane` | `nfsHoverIntent`, `enabled` = `hover`, both delays = `hoverDelay` (250); the pane must be in the Hover region (see ARIA requirements) | `enabled` = `!disableHover`, `openDelay` = `hoverDelay` (200), `closeDelay` from the Tooltip spec (floor 100) | `openDelay` = `hoverDelay` (50), `closeDelay` = `closingTime` (500), `enabled` = `!disableHover`; `autoclose` false keeps click-opened items open |
+| `hover`, `hoverDelay`, `hoverPane` | `nfsHoverIntent`, `enabled` = `hover`, both delays = `hoverDelay` (250); the pane must be in the Hover region (see ARIA requirements) | `enabled` = `!disableHover`, `openDelay` = `hoverDelay` (200), `closeDelay` from the Tooltip spec (floor 100) | `openDelay` = `hoverDelay` (50), `closeDelay` = `closingTime` (500), `enabled` = `!disableHover`; `autoclose` false keeps every hover-opened submenu open when the pointer leaves (Foundation closes on leave only while `autoclose` is on) |
 | `disableForTouch`, `disableHoverOnTouch` | none | Per-event touch filter replaces the device check; the Tooltip spec decides the Option | Same, the Nested menu spec decides |
 | group | `'nfs-dropdown-pane'` | `'nfs-tooltip'` | the menu decides (submenu siblings are its own rule) |
 | `autoFocus`, `trapFocus` | Dropdown pane spec (see ARIA requirements) | none | none |
@@ -405,7 +405,9 @@ Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test 
 - `anchored-pane--escape-in-dialog`: a pane inside a modal `<dialog>` opened with `showModal()`; Escape closes the pane, the dialog stays open, and no `cancel` fires; a second Escape closes the dialog.
 - `anchored-pane--scrolling-ancestor`: scrolling a static scroller with `followScroll` keeps the pane attached; with it off the pane detaches, as in Foundation.
 
-### 2. Browser-level test (stack per the [browser testing stack decision](../issues/41-browser-testing-stack-decision.md), ADR 0018; the cases are written stack-neutral)
+### 2. Browser-level test (Vitest browser mode, `npx nx test <lib>`)
+
+Vitest browser mode under the Angular unit-test builder (`npx nx test <lib>`, Chromium headless): TestBed specs in `<name>.spec.ts` next to the utility, over bare test host components (the test consumers above), zoneless with `await fixture.whenStable()`, asserting DOM and ARIA state; no story is mounted here and no axe runs here (ADR 0018).
 
 - Positioner phases: a run measures once and writes once per open; nothing runs while closed; the observer observes only while open and disconnects on close and destroy; an anchor, bound, or pane resize re-runs; the loop guard stops an alternating pane-resize pair; `reposition()` searches while open and does nothing while closed; `followScroll` re-offsets without changing `placement`.
 - `placement` and the consumer's classes change in the same tick as the inline offsets (one `whenStable()`), and `placement` keeps its value after close.
@@ -449,7 +451,7 @@ Against the prerendered fixture app, one route with a Dropdown-shaped test pane,
 - `autoFocus` and `trapFocus` implementations (the Dropdown pane spec), and DropdownMenu's `opens-*` classes and `alignment: auto` rules (the Nested menu spec).
 - Legacy position classes (`.top`, `.float-right`) as defaults: the consumer specs decide.
 - CDK Overlay, portals, and top-layer hosting of the tip (weighed and not taken; ticket answer, Triage).
-- Reveal and OffCanvas dismissal: `<dialog>` handles Reveal, and OffCanvas has its own overlay; neither is an Anchored pane.
+- OffCanvas dismissal (its own overlay) and modal Reveal dismissal (`<dialog>`); a non-modal Reveal uses Light dismiss only.
 - Native `popover`, CSS anchor positioning, `interestfor`, and `CloseWatcher` (out of target; Further Notes).
 - Library CSS and runtime theming.
 

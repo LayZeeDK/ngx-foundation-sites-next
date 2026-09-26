@@ -384,12 +384,12 @@ Phases, a `linkedSignal` derived from the shown state (`isOpen()` and a non-empt
 - Interruption: re-entering the Hover region during the fade-out switches leaving to entering (and back); the interrupted phase emits nothing and its timer is cleared.
 - Completion outputs: `opened` once the tip is shown and idle, `closed` once it is hidden and idle; never for the initial state.
 - `nfsAnimationsToken` `{disabled: true}` skips the Motion classes: the tip shows or hides in one pass and the outputs fire in the following render callback.
-- Reduced motion: `nfs-motion` sets `animation-duration: 1ms` on its classes under `prefers-reduced-motion: reduce`, so `animationend` still fires and the change is effectively instant; no separate code path (prototype 47). Hover delays are not motion and do not change.
+- Reduced motion: `nfs-motion` sets `animation-duration: 1ms` on its classes under `prefers-reduced-motion: reduce`, so `animationend` still fires and the change is effectively instant; no separate code path (the [Prototype: `animate.enter` and `animate.leave` with Motion UI transition classes](../issues/47-prototype-motion-ui-animate-enter.md)). Hover delays are not motion and do not change.
 - Hydration: nothing animates at hydration, because no tip exists in server HTML.
 
 ### Rendering modes
 
-Per ADR 0008 and `research/angular-rendering-modes.md` section 7, rules 1 to 11:
+Per ADR 0008 and the rendering-modes research, section 7, rules 1 to 11:
 
 - Server-side rendering and first paint: the host renders `.has-tip`, the text as `title`, and no `aria-describedby`; there is no tip, no `role="tooltip"`, no inline style (rule 1). This is the complete first-paint state: no tooltip is visible at first paint, the description is present, and the browser's own `title` tooltip serves no-JavaScript users. The `ViewContainerRef` anchor comment is serialised and matched at hydration like any empty container. An `isOpen` bound to `true` renders the same server HTML; the tip appears in the first client render callback after hydration.
 - Before hydration: construction reads only DI and `HostAttributeToken` values; the tip is created, placed, and listened to only in render callbacks; hover and Light dismiss listeners and every timer start only in render callbacks or handlers, outside the zone (rules 3 to 5). Tip ids are generated on the client only, so no server id can disagree.

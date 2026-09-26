@@ -161,3 +161,10 @@ None. Every hard-to-reverse choice here is already recorded: disclosure navigati
 1. Animation: with `nfsAnimationsToken` `{disabled: true}`, a parent item in accordion mode binds `transition: none` on its `li` (and a drilldown submenu on itself), as the Accordion spec's content wrapper does, besides completing at once. Reason: decision 35.
 2. Sass checks: in each mixin that checks the toggle size, also stop the compile when `$accordionmenu-submenu-toggle-background` is not `null` and `color-contrast($accordionmenu-arrow-color, $accordionmenu-submenu-toggle-background)` is below 3, not gated on the mode's arrow boolean. Reason: decision 37.
 3. API: state whether `NfsMenuItem.open()` opens closed ancestors. Default this spec assumes: it does not, as Foundation's `down()` did not. Reason: decision 25.
+
+### Amendment, 2026-09-26 (audit 0004)
+
+From [audit 0004](../audits/0004-second-spec-wave.md), findings H1 and L4; `specs/accordion-menu.md` was edited to match.
+
+1. Unrounded ratios (H1; decisions 36 and 37): the `nfs-accordion-menu` arrow checks compute each ratio from Foundation's `color-luminance()` with the WCAG formula and compare it unrounded, the rule of building-blocks 1.10 and of the Nested menu spec's own Sass checks, so the mixin has one rule. Foundation's `color-contrast()` is no longer used or listed as a reused function, because it rounds to one decimal and lets 2.95:1 pass a 3:1 threshold. This also supersedes the `color-contrast(...)` wording of proposed Nested menu change 2 above; the check itself (the arrow against the Hybrid toggle's background when set, not gated on the arrow boolean) is unchanged.
+2. Settled wording (L4; decision 35): the `transition: none` rule under `nfsAnimationsToken` is stated as the Nested menu spec's own rule, which its amendment from this ticket carries, instead of a proposed amendment.

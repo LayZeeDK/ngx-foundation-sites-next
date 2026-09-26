@@ -146,3 +146,9 @@ _Avoid_: deferred content (ambiguous with `@defer`), lazy panel, on-demand conte
 6. 1.9 Aria composition: add "an Aria input whose default differs from Foundation's is not exposed; the wrapper declares its own input and enforces it through Aria's models, methods, and event interception (proposed ADR)" and "Aria-hosting containers carry the Replay guard". Reason: decisions 5 and 21.
 7. 1.9 last bullet: exempt deep-link hashes from "restore any global the directive touched": the hash is the user's state. Reason: decision 12.
 8. 1.12 or the Accordion row: note the content key guard for Aria's accordion (keys from inside panels reach `AccordionGroup`). Reason: decision 22; ResponsiveAccordionTabs inherits it.
+
+### Amendment, 2026-09-26 (audit 0004)
+
+From [audit 0004](../audits/0004-second-spec-wave.md), finding H1; decision 33 changes as follows, and `specs/accordion.md` was edited to match (the 1.4.3 row of the WCAG table, D19, and the Sass subsection's checks and item 2).
+
+The `nfs-accordion` contrast `@warn`s compute each ratio (`$accordion-item-color` against `$accordion-background` and against `$accordion-item-background-hover`, `$accordion-content-color` against `$accordion-content-background`) from Foundation's `color-luminance()` with the WCAG formula and compare it unrounded, the rule of building-blocks 1.10 and the user's standing rule. Foundation's `color-contrast()` is no longer used or listed as a reused function, because it rounds to one decimal (`round($ratio * 10) * 0.1` in `scss/util/_color.scss`) and would pass a 4.498:1 pair as 4.5. D19 now reads "a Sass `@warn` from the unrounded ratio". The threshold (4.5), the required setting, and the numbers (3.76:1, 4.86:1, 6.0:1) are unchanged. The [Spec: Responsive Accordion Tabs](19-spec-responsive-accordion-tabs.md), which relies on this check, lists `color-luminance()` in its Sass subsection to match.

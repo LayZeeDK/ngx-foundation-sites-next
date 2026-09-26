@@ -207,6 +207,8 @@ Level, for the directive: native platform plus a thin custom Angular layer. `Res
 
 Primitives: `afterRenderEffect` (`mixedReadWrite`), `ResizeObserver` created on the effect's first run (a render callback, so never on the server), `Renderer2.setStyle`/`removeStyle` for the one value a host binding cannot express (building-blocks 1.5), `untracked`, `DestroyRef` (disconnect), `NfsMediaQuery.is()`, `inject` with `skipSelf` and `optional`.
 
+Render hooks and lazy loading (building-blocks 1.5 and 1.9): the pass's `afterRenderEffect` is the only render hook. `afterEveryRender` is not used: the pass must run only when the version signal, the registered elements, an input, or the gate changes, and running it after every change detection in the application would force one layout per render for nothing. `injectAsync` is not used: the directive has no service to load after an interaction (its passes follow observed sizes, not a client interaction), and the pass must run right after the first render so a client-rendered page is equal at its first paint; the entry point is its own, so a consumer's `@defer` splits it.
+
 Fallback: none needed. If a target browser misbehaved with element observation, the documented answer is the CSS path, which this spec already recommends first; the directive would not grow a second code path.
 
 ### Comparison with Angular Material

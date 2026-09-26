@@ -162,6 +162,8 @@ Host bindings (all on signal state; `isButton` is the host tag read once at cons
 
 Implementation level: native platform. Everything a button does is the HTML `<button>` and `<a>` element: activation on Enter and Space, `disabled` blocking clicks and implicit submission, `type` deciding the form action, and a link without `href` being a placeholder that is neither focusable nor navigable. `@angular/aria` has no button pattern in 22.2 (its patterns are accordion, combobox, grid, listbox, menu, tabs, toolbar, tree). `@angular/cdk` is not needed: `FocusMonitor` only tracks focus origin, which the browser's `:focus-visible` heuristic already covers for the focus ring, and `InteractivityChecker` has nothing to check. The Angular layer is host bindings over `input()` signals plus two `HostAttributeToken` reads; no `computed` is needed beyond the host expressions, no `effect`, no timer, no observer.
 
+Render hooks and lazy loading (building-blocks 1.5 and 1.9): the only render hook is the development-mode `afterRenderEffect` read phase of the link checks, which re-runs only when the signals it reads change; `afterEveryRender` is not used, because no production behaviour depends on a render. `injectAsync` is not used: the directive injects no service and declares no listener, and every effect is a host binding that must already be in the server HTML and in the first client render, so there is nothing to load later; the entry point is its own, so a consumer's `@defer` splits it.
+
 Fallback: none needed. No part of the design depends on an unverified behaviour; the one source-derived risk (listeners on anchors inside dehydrated blocks) is avoided by construction and asserted in e2e.
 
 ### Comparison with Angular Material (`MatButton`, 22.2)

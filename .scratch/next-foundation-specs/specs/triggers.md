@@ -196,6 +196,8 @@ Implementation level: custom Angular directives over native `<button>` activatio
 
 Primitives: `input()` and `input.required()` with aliases and a transform for the bare form, `computed()` for the resolved targets, the aggregate `isOpen`, and the ARIA values, one `effect()` for trigger registration (it writes no DOM, so it is safe on the server), `inject()` with `optional` and `skipSelf`, `ElementRef` for the host element passed to `open()`, host metadata for the listener and the four ARIA bindings, and `afterRenderEffect` for the dev checks. No CDK, no Aria, no timers, no observers, no `NgZone`.
 
+Render hooks and lazy loading (building-blocks 1.5 and 1.9): the dev checks' `afterRenderEffect`, which exists only in development builds, is the only render hook; `afterEveryRender` is not used, because every production behaviour is a host binding or the click handler. `injectAsync` is not used: a Trigger injects only the lightweight `nfsOpenableToken`, its ARIA must be in the server HTML, and its `click` handler must be live at hydration so a replayed pre-hydration click reaches the Openable at once; the entry point is its own, so a consumer's `@defer` splits it with the widget.
+
 Fallback: none needed. No behaviour depends on an unverified mechanism; the replay and hydration facts come from the rendering-modes research and are asserted in e2e.
 
 ### Comparison with Angular Material and CDK
@@ -414,7 +416,7 @@ Against the prerendered fixture app (the harness from the rendering-mode test se
 | Openable | Trigger role | Uses of the contract |
 | --- | --- | --- |
 | Reveal | `dialog` | `open(trigger)` for focus return; `close(result)` handed to its `closed` output, vetoed by `closePredicate`; bare `nfsClose` inside is the documented close button |
-| OffCanvas | `disclosure`, or `dialog` in its modal mode (focus trap plus overlay) if its spec follows the APG's modal-dialog reading | `open(trigger)` for focus return; bare `nfsClose` inside; the overlay element closes through its own directive, not a Trigger |
+| OffCanvas | `disclosure`, or `dialog` in its modal mode (`trapFocus` with an overlay present), as the [Spec: Off-canvas](../issues/25-spec-off-canvas.md) decided from the APG's modal-dialog reading | `open(trigger)` for focus return; bare `nfsClose` inside; the overlay element closes through its own directive, not a Trigger |
 | Dropdown pane | `disclosure`, or `dialog` when its `role` input is `dialog` | `open(trigger)` as the current anchor; `registerTrigger` for `hover`, programmatic anchoring against the first Trigger, and Light dismiss exclusion; a `role="dialog"` pane is named by the consumer |
 | Toggler | `disclosure` in visibility mode, `toggle-button` in class mode | `nfsToggle` and the multi-target form; the `data-closable` replacement in place |
 | ResponsiveToggle | `disclosure` | Bare `nfsToggle` inside the title bar; `id` is the menu's id |
@@ -508,7 +510,7 @@ The Reveal's `(closed)` payload and the Toggler's `toggler` input are sketches o
 </div>
 ```
 
-In both `data-closable` replacements the focused close button disappears with the callout, so the consumer moves focus to a logical next element in `dismiss()` or on the Toggler's `closed` output, as the APG's focus-persistence practice asks. The Tooltip example puts the tooltip on an interactive host, a link: tooltips go on interactive hosts only (a native button, link, or form control, with a development-mode warning otherwise), decided under the triage rule in the [Building-blocks map and cross-cutting architecture decisions](../issues/14-building-blocks-map.md) and inherited by the [Spec: Tooltip](../issues/27-spec-tooltip.md).
+In both `data-closable` replacements the focused close button disappears with the callout, so the consumer moves focus to a logical next element in `dismiss()` or on the Toggler's `closed` output, as the APG's focus-persistence practice asks. The Tooltip example puts the tooltip on an interactive host, a button: tooltips go on interactive hosts only (a native button, link, or form control, with a development-mode warning otherwise), decided at triage in the [Spec: Tooltip](../issues/27-spec-tooltip.md).
 
 A wrapper component that owns its Reveal and lets consumers close it from projected content:
 
@@ -547,7 +549,7 @@ Sass. The consumer compiles Foundation's Sass from its own settings; the library
 
 - Invoker Commands (`command`, `commandfor`; Baseline newly available 2025-12-12, widely available about 2028-06): the Triggers can render `commandfor` with the Openable's `id` and a command, `show-modal`/`close`/`request-close` for a Reveal's `<dialog>` and a custom `--nfs-open`/`--nfs-close`/`--nfs-toggle` for the others, which each Openable handles from the `command` event on itself. A Trigger that opens a Reveal would then work before hydration and inside `@defer (hydrate never)` with no JavaScript, and `CommandEvent.source` replaces the `trigger` argument. Custom commands need JavaScript on the target, and `command` is not a replayed event type, so the click listener stays until Angular replays it. An explicit `type="button"` (which `nfsButton` defaults) keeps commands working inside forms. Adoption needs consumer-supplied ids on the Openable, because the attribute must name an id that is identical on the server and the client.
 - `popovertarget` and `command="toggle-popover"`: when Dropdown pane and Tooltip move onto `popover` with anchor positioning, their Triggers render `popovertarget` (or `commandfor`), the browser sets `aria-expanded` on the invoker, and the invoker becomes the popover's implicit anchor, which replaces `open(trigger)` anchoring and `registerTrigger`.
-- `<form method="dialog">` is already in target and closes a Reveal's `<dialog>` without script. It skips the Reveal's exit animation and its `closePredicate`, so the Reveal spec decides whether it syncs `isOpen` from the dialog's `close` event; `nfsClose` remains the documented close button.
+- `<form method="dialog">` is already in target and closes a Reveal's `<dialog>` without script. It skips the Reveal's exit animation and its `closePredicate`, and the Reveal re-syncs `isOpen` from the dialog's `close` event, reporting `returnValue` (the [Spec: Reveal](../issues/18-spec-reveal.md), D18); `nfsClose` remains the documented close button.
 
 ### Foundation behaviour changed or dropped
 

@@ -194,6 +194,8 @@ Implementation level: native platform, with thin custom Angular directives. The 
 
 Primitives: `model()`, `input()` with a transform, `output()`, `computed()`, one `linkedSignal` for the animation phase (derived from `isOpen`, reset to idle on completion; building-blocks 1.4), `afterRenderEffect` for completion, focus return, and the Completion outputs, `inject()` with `HostAttributeToken`, `_IdGenerator`, host metadata for the class map, `[attr.hidden]`, `[attr.id]`, and the `animationend`/`animationcancel` listeners, `NgZone.runOutsideAngular` for the fallback timer. No CDK beyond `_IdGenerator`, no Aria, no observers, no services.
 
+Render hooks and lazy loading (building-blocks 1.5 and 1.9): the completion `afterRenderEffect` re-runs only when the phase or the committed state changes, and the development checks run in one `afterNextRender`; `afterEveryRender` is not used, because nothing needs to run on renders that change neither. `injectAsync` is not used: the directive injects no service beyond `_IdGenerator`, its first-paint state is host bindings that must be in the server HTML, and it must be live at hydration so a replayed Trigger click toggles it at once; the entry point is its own, so a consumer's `@defer` splits it.
+
 Fallback: none needed. Every mechanism is a platform feature in target or Angular behaviour the prototypes confirmed (keyframe State classes in three engines, P47; no animation at hydration through State classes, P52).
 
 ### Comparison with Angular Material
