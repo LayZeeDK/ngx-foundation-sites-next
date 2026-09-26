@@ -8,7 +8,7 @@ Map: ../map.md
 
 ## Question
 
-Which native HTML and CSS features, as of September 2026, can replace Foundation plugin JavaScript outright or shrink it to a thin directive, and what is their Baseline browser-support status? The library's first rung is the platform, so every spec must know what the platform already does.
+Which native HTML and CSS features, as of September 2026, can replace Foundation plugin JavaScript outright or shrink it to a thin directive, and what is their Baseline browser-support status? The library's first Implementation level is the platform, so every spec must know what the platform already does.
 
 Cover: `<dialog>` (modal, `closedby`, `requestClose`, top layer, `::backdrop`); the `popover` attribute (`auto`, `manual`, `hint`), `popovertarget`, and its light-dismiss and top-layer behaviour; CSS anchor positioning (`anchor-name`, `position-anchor`, `position-area`, `position-try-fallbacks`); `<details>` and `<summary>` with the `name` attribute for exclusive accordions and `::details-content`; `interpolate-size` and `calc-size()` for height animations; `@starting-style`, `transition-behavior: allow-discrete`, and `overlay`; scroll-driven animations; `position: sticky`; `scroll-snap-*`, `scrollIntoView`, `scroll-behavior`, `scroll-margin`, `scrollend`; IntersectionObserver and ResizeObserver; container queries and container units; `<picture>`, `srcset`, `sizes`, and `loading=lazy`; the Constraint Validation API and `:user-invalid`; `<input type="range">` styling limits including multi-thumb; the `inert` attribute; `:has()`; View Transitions; `prefers-reduced-motion`; `inputmode`; the Invoker Commands API (`command`, `commandfor`); `CloseWatcher`.
 

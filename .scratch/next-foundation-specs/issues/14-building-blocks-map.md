@@ -15,7 +15,7 @@ Every directive or component must be the best combination of: Foundation for Sit
 Decide, and record each as a glossary term in `CONTEXT.md` or an ADR in `adr/` when it meets the ADR bar:
 
 1. **Directive or component per plugin**: a matrix with the rule that produced each answer. Inputs to the rule: the repo skill `.claude/skills/foundation-api-design/SKILL.md` (its "one directive or component per structural CSS class" rule and naming pattern) and the user's standing preference for directives over components where the consumer already writes the Foundation markup. Also fix the spec shape: a `/to-spec` spec whose Implementation Decisions section carries the foundation-api-design tables (CSS class mapping, hierarchy, API, ARIA, keyboard, rendered HTML, Material comparison).
-2. **Implementation rung per plugin**: native platform, `@angular/aria`, `@angular/cdk`, or custom, with the reason and the fallback if the first choice fails a prototype.
+2. **Implementation level per plugin**: native platform, `@angular/aria`, `@angular/cdk`, or custom, with the reason and the fallback if the first choice fails a prototype.
 3. **Naming**: selector prefix, class names, file names, and how Foundation's plugin names map (Reveal stays Reveal, Drilldown versus DrilldownMenu, OffCanvas casing).
 4. **Input and output conventions**: camelCased `data-*` options as `input()`, which become `model()`, how Foundation events map to `output()` names, and how to treat options that only exist because of jQuery.
 5. **State and reactivity**: signals, `linkedSignal`, when a service is warranted, SSR and zoneless rules, DOM access rules (`afterRenderEffect`, Renderer).
@@ -28,7 +28,7 @@ Decide, and record each as a glossary term in `CONTEXT.md` or an ADR in `adr/` w
 11. **Shared utilities**: which of Foundation's utilities become their own spec (graduate fog if so; note it in the answer so the orchestrator can create tickets).
 12. **Sass and theming**: in or out of scope for the specs.
 
-Run `/grill-with-docs` against the research files under `research/` as the primary sources, playing both sides. Write `building-blocks.md` as the deliverable: a table of plugin, directive-or-component, rung, primitives, ARIA pattern, platform features, open risks. Write `CONTEXT.md` (glossary only, using the domain-modeling CONTEXT format) and `adr/NNNN-<slug>.md` files for decisions that meet the ADR bar. Mark anything you could not settle from sources as OPEN FOR HUMAN.
+Run `/grill-with-docs` against the research files under `research/` as the primary sources, playing both sides. Write `building-blocks.md` as the deliverable: a table of plugin, directive-or-component, Implementation level, primitives, ARIA pattern, platform features, open risks. Write `CONTEXT.md` (glossary only, using the domain-modeling CONTEXT format) and `adr/NNNN-<slug>.md` files for decisions that meet the ADR bar. Mark anything you could not settle from sources as OPEN FOR HUMAN.
 
 ## Answer
 
