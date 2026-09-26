@@ -149,6 +149,8 @@ _Avoid_: active branch, breadcrumb, trail
 
 ### Proposed building-blocks changes
 
+(paths relative to the effort root)
+
 1. Table A, Drilldown row, Primitives cell: replace "`inert` on the hidden parent level" with "Foundation's `invisible` on every hidden ancestor level (the root included), `inert` plus `invisible` on closed submenus". Reason: P50 row 9; decision 14.
 2. Table A, AccordionMenu row, Primitives cell: after "(`nfsMenuItem`, rows `auto 0fr` to `auto 1fr`)" add "keyed on the library attribute `data-nfs-expanded`, the clip released by `data-nfs-shown` once open". Reason: decisions 34, 35.
 3. Table A, DropdownMenu row, Primitives cell: replace "`focusout` close" with "Light dismiss per open submenu for focus leaving, Escape, and outside press". Reason: decision 25 (consistent with the Anchored pane spec's proposed change 4).
@@ -192,3 +194,12 @@ Folded into `specs/nested-menu.md` from the [Spec: Responsive Menu](23-spec-resp
 4. Consumer table, ResponsiveMenu row, and the usage sketch: the requested mode resolves at `mq.serverBreakpoint` until the directive's first render callback and at the live breakpoint after; the fallback is the smallest rule's mode, then `accordion` for a rule set with no valid mode; the sketch's `NfsDropdownMenu` host directive entry lists all seven inputs (`alignment`, `disableHover`, `hoverDelay`, `closingTime`, `autoclose`, `closeOnClick`, `closeOnClickInside`), not three. Decisions 8, 10, and 21.
 5. Implementation level, Fallback: the commit order is checked by the [Prototype: ResponsiveMenu swap committed in the Nested menu root's render callback](71-prototype-responsive-menu-swap-commit.md); if it misses a focus case, the fallback is the Responsive Menu answer's: the root records the focused control from `focusin`/`focusout` on the root and restores it in an `afterNextRender` after the swap.
 6. Testing: `nested-menu--mode-swap` adds the focus-outside cases (dropdown closes every submenu, drilldown keeps the first open per level, accordion closes nothing) and the back-item case; the browser-level layer adds the per-pass `MutationObserver` atomicity case; the node-level plan table adds the mode entered and focus on a back item.
+
+### Amendment, 2026-09-26 (audit 0004)
+
+Applied to `specs/nested-menu.md` from audit 0004's findings H1, M4, L4, and L6; nothing new is decided.
+
+1. H1: the 1.4.11 row now states the unrounded rule its Sass checks paragraph already used: ratios from Foundation's `color-luminance()` with the WCAG formula, compared unrounded, never `color-contrast()`; Sass item (2) lists `color-luminance` (and `rem-calc`) instead of `color-contrast`. This supersedes decision 42's "with Foundation's `color-contrast()`".
+2. M4: the dropdown collision flip acts only when the item's rendered mode, a signal written by an `effect()` beside the item's class-map binding, equals `mode()` (building-blocks 1.5); the render hooks table, its `effect` row, and D23 name that one `effect` as 1.5's rendered-state exception. The spec notes that under ADR 0035 `mode` already changes only in the root's swap callback's `write` phase, so the check guards against hook order rather than a known failure. The swap-rule row says why 1.5's too-late focus clause does not apply (surviving nodes are re-classed, and focus is read in `earlyRead` before the pass that applies the new classes). The fixture half gains the case the audit names, a statically open submenu prerendered at `small` and hydrated at 1280 px, in the two forms ADR 0035's plan gives: kept open when it holds focus (ends with the `opens-*` class a fresh open gives) and closed when focus is outside (ends with the Base side class).
+3. L6: `nfsHoverIntent` receives `isOpen: expanded`, which the Anchored pane spec declares required; the Sass checks paragraph adds the two `nfs-drilldown` checks the [Spec: Drilldown Menu](22-spec-drilldown-menu.md) adds (its decisions 34 and 40): the Hybrid arrow against `$body-background` and `$drilldown-submenu-background` when the toggle background is `null`, and the row height.
+4. L4: the `data-nfs-*` row cites ADR 0033 instead of "proposed ADR in the ticket".

@@ -175,3 +175,10 @@ Folded into `specs/breakpoint-service.md` from the [Spec: Responsive Menu](23-sp
 1. Consumer table, ResponsiveMenu row: `parseNfsBreakpointRules(...)`, then `resolve(parsed, serverBreakpoint)` until the first render callback and `resolve(parsed)` after.
 2. Rendering modes, incremental hydration bullet: ResponsiveMenu, like ResponsiveAccordionTabs, starts each instance from `resolve(rules, serverBreakpoint)` and swaps in its first render callback, so its blocks hydrate as sent.
 3. Consumer rule 1, keeping the text the Interchange re-run generalised: the render callback that itself commits the swap now names the Nested menu root's swap callback for ResponsiveMenu next to the ResponsiveAccordionTabs prototype, and the change-detection case reads "the change-detection code that removes the old nodes or re-classes them".
+
+### Amendment, 2026-09-26 (audit 0004)
+
+Recorded from audit 0004 (finding L5), which found decision 19 still reading "exposed as `resolve(rules)`" with no note of the API added since.
+
+1. Decision 19 refined: `resolve(rules, breakpoint?)` takes an optional breakpoint, default `current`, and the service exposes a read-only `serverBreakpoint` (the transferred value, else the token's, else the Zero breakpoint), so a consumer can resolve its rules at the breakpoint the service started from. Source: [ADR 0032](../adr/0032-responsive-accordion-tabs-instance-first-render.md) and the [Spec: Responsive Accordion Tabs](19-spec-responsive-accordion-tabs.md) answer (its decision 9 and proposed change 1), folded into the spec's API table and design decision 23 with that spec; ResponsiveMenu uses both from [ADR 0035](../adr/0035-responsive-menu-swap-commit.md).
+2. Spec follow-ups in the same pass: the ResponsiveAccordionTabs consumer row resolves at `serverBreakpoint` for the mode each instance starts from and at `current` for the live mode it swaps to; the Plain `@defer` bullet names ResponsiveAccordionTabs and ResponsiveMenu as the consumers that start from the Server breakpoint's mode and swap, unpainted, in their first render callback; the `serverBreakpoint` and `resolve` rows and design decision 23 name both consumers.

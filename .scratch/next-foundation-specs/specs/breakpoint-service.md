@@ -160,14 +160,14 @@ type NfsBreakpointRules<M extends string> = Readonly<Partial<Record<NfsBreakpoin
 | Member | Type | Meaning |
 | --- | --- | --- |
 | `current` | `Signal<NfsBreakpointName>` | The current breakpoint: the largest breakpoint whose query matches, or the Server breakpoint before the service goes live (see Rendering modes) |
-| `serverBreakpoint` | `NfsBreakpointName` | Read-only; the breakpoint the service started from: the transferred value, else the token's, else the Zero breakpoint. Stays the same after the service goes live, so a component can start every instance from it (ResponsiveAccordionTabs) |
+| `serverBreakpoint` | `NfsBreakpointName` | Read-only; the breakpoint the service started from: the transferred value, else the token's, else the Zero breakpoint. Stays the same after the service goes live, so a directive or component can start every instance from it (ResponsiveAccordionTabs, ResponsiveMenu) |
 | `reducedMotion` | `Signal<boolean>` | `(prefers-reduced-motion: reduce)` matches; `false` on the server and before the service goes live |
 | `breakpoints` | `readonly NfsBreakpointName[]` | The map's names from smallest to largest |
 | `atLeast(name)` | `boolean` | `current` is `name` or larger |
 | `upTo(name)` | `boolean` | `current` is `name` or smaller; `true` for the largest breakpoint |
 | `only(name)` | `boolean` | `current` is `name` |
 | `is(query)` | `boolean` | A Breakpoint query: `'<name>'` or `'<name> up'` as `atLeast`, `'<name> only'` as `only`, `'<name> down'` as `upTo`; `'all'` and `''` are `true` |
-| `resolve(rules, breakpoint?)` | `M \| undefined` | The mode of the largest rule breakpoint at or below `breakpoint`, default `current`; `undefined` when no rule applies yet (Foundation's "no match" case, left to the consuming spec). The optional second argument lets a component resolve against `serverBreakpoint` instead of `current` (ResponsiveAccordionTabs' `instance` strategy) |
+| `resolve(rules, breakpoint?)` | `M \| undefined` | The mode of the largest rule breakpoint at or below `breakpoint`, default `current`; `undefined` when no rule applies yet (Foundation's "no match" case, left to the consuming spec). The optional second argument lets a consumer resolve against `serverBreakpoint` instead of `current` (ResponsiveAccordionTabs' `instance` strategy, and ResponsiveMenu until its first render callback) |
 | `matches(mediaQuery)` | `boolean` | Whether an arbitrary media query matches (named queries); `false` on the server and before the service goes live |
 | `get(name)` | `string \| null` | Foundation's query string for a breakpoint, `only screen and (min-width: <px / 16>em)`, for example `only screen and (min-width: 40em)`, `(min-width: 68.75em)` for 1100 px, `(min-width: 0em)` for the Zero breakpoint |
 
@@ -207,7 +207,7 @@ Consumers and what each reads (building-blocks Part 2 and Part 3):
 | Consumer | Reads | Option |
 | --- | --- | --- |
 | ResponsiveMenu | `parseNfsBreakpointRules(rules, ['dropdown', 'drilldown', 'accordion'], mq.breakpoints)`, then `resolve(parsed, serverBreakpoint)` until the first render callback and `resolve(parsed)` after | `rules` |
-| ResponsiveAccordionTabs | `parseNfsBreakpointRules(rules, ['accordion', 'tabs'], ...)`, then `resolve()` | `rules` |
+| ResponsiveAccordionTabs | `parseNfsBreakpointRules(rules, ['accordion', 'tabs'], mq.breakpoints)`, then `resolve(parsed, serverBreakpoint)` for the mode each instance starts from and `resolve(parsed)` for the live mode it swaps to in its first render callback | `rules` |
 | ResponsiveToggle | `atLeast(hideFor)` for the open logic; first paint from Foundation's `.hide-for-<bp>`/`.show-for-<bp>` classes | `hideFor` |
 | OffCanvas | `atLeast(revealOn)`, `atLeast(inCanvasOn)`; first paint from `.reveal-for-<bp>`/`.in-canvas-for-<bp>` | `revealOn`, `inCanvasOn` |
 | Sticky | `is(stickyOn)` | `stickyOn` |
@@ -300,7 +300,7 @@ Per ADR 0008 and the rendering-modes research, section 7 rules 1 to 11:
 - What must not run before hydration: no `matchMedia`, no listener, no computed-style read, and no DOM write; the service never writes the DOM at all (CDK's style rule goes into `<head>`, outside the application root, and only from the render callback).
 - Incremental hydration: once the application has rendered, the service is live, so a breakpoint-gated directive inside a `@defer (hydrate on ...)` block hydrates with the live breakpoint. If that differs from the Server breakpoint, the block's classes are rewritten or its branch rebuilt during the block's hydration render. A replayed event whose target sat in a rebuilt branch is the consuming spec's concern (ResponsiveAccordionTabs states it). ResponsiveAccordionTabs itself starts each instance from the Server breakpoint's mode instead of `current` (the `instance` strategy, `resolve(rules, serverBreakpoint)`), so its own blocks hydrate as sent, with no rebuild at hydration. ResponsiveMenu, like ResponsiveAccordionTabs, starts each instance from `resolve(rules, serverBreakpoint)` and swaps in its first render callback, so its blocks hydrate as sent, with no re-classing at hydration (ADR 0035).
 - `hydrate never`: widgets there keep the Server breakpoint's state forever. This is why anything visible at first paint that differs per breakpoint uses Foundation's CSS classes (ResponsiveToggle, OffCanvas reveal) rather than the service.
-- Plain `@defer` (client-created content, route changes): the service is already live, so the directive's first render is live and there is no swap.
+- Plain `@defer` (client-created content, route changes): the service is already live, so a directive that reads `current` renders live at its first render and has no swap. ResponsiveAccordionTabs and ResponsiveMenu are the exceptions: they start every instance from the Server breakpoint's mode and swap in their first render callback, in the same tick, so the Server breakpoint's mode is never painted.
 - Event replay: the service declares no template or host listeners, so it adds no `jsaction` and nothing of its own replays. Replay runs after the hydrating render's `afterNextRender` callbacks (rendering-modes research, section 3), so a replayed handler that reads `is(showOn)` or `atLeast(hideFor)` sees live values.
 - Hydration boundaries: the service is application-wide and is not part of any widget's boundary.
 - Prerendering: SSR at build time; `REQUEST` is `null`, so a per-request factory falls back to the default and the page carries the default Server breakpoint. The library itself reads no request token (1.11 decision 11); the client-hint recipe is consumer code.
@@ -402,7 +402,7 @@ Against the prerendered fixture app (the harness from the [Prototype: Rendering-
 | 20 | Missing properties | One warning naming the include | Silence (the Sass ticket's recommended default was the warning) |
 | 21 | Invalid map | Development error at construction | Warning (every breakpoint-gated Plugin would misbehave silently) |
 | 22 | Entry point | `ngx-foundation-sites/media-query` | Inside each Plugin (duplicated), or the primary entry point (defeats per-Plugin `@defer`) |
-| 23 | Server breakpoint exposed as `serverBreakpoint`; `resolve` takes an optional breakpoint | Lets a component whose first-render swap removes focused nodes (ResponsiveAccordionTabs) start every instance from the Server breakpoint's mode without re-implementing the handoff or the rule parser | A private field with no public read (every consumer would need its own handoff state); a second method instead of an optional argument (a second spelling of `resolve`) |
+| 23 | Server breakpoint exposed as `serverBreakpoint`; `resolve` takes an optional breakpoint | Lets a consumer whose first-render swap could lose focus start every instance from the Server breakpoint's mode without re-implementing the handoff or the rule parser: ResponsiveAccordionTabs, whose swap removes focused nodes (ADR 0032), and ResponsiveMenu, whose swap re-classes them in the Nested menu root's render callback (ADR 0035) | A private field with no public read (every consumer would need its own handoff state); a second method instead of an optional argument (a second spelling of `resolve`) |
 
 ### Usage examples
 

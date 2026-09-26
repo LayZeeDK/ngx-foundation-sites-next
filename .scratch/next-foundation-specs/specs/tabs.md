@@ -453,7 +453,7 @@ Stack: `@storybook/angular-vite` 10.6 with `@storybook/addon-vitest` on Vitest 4
 
 ### 2. Browser-level test
 
-Stack (per the [browser testing stack decision](../issues/41-browser-testing-stack-decision.md)): Vitest browser mode under `@angular/build:unit-test` through `@nx/angular:unit-test`, `"browsers": ["chromiumHeadless"]` in the target options; TestBed over a bare test host component, zoneless, `await fixture.whenStable()`; explicit `test`: `npx nx test <lib>`. Mounts no story; no axe.
+Stack (per the [Decide the browser testing stack: Playwright component tests, Vitest Browser, or both](../issues/41-browser-testing-stack-decision.md) answer): Vitest browser mode under `@angular/build:unit-test` through `@nx/angular:unit-test`, `"browsers": ["chromiumHeadless"]` in the target options; TestBed over a bare test host component, zoneless, `await fixture.whenStable()`; explicit `test`: `npx nx test <lib>`. Mounts no story; no axe.
 
 - Composition: each wrapper exposes exactly the listed inputs; `#t="nfsTabs"`, `#a="nfsTab"`, `#p="nfsTabsPanel"` resolve; `NfsTab.selected()` and `NfsTabsPanel.visible()` follow selection.
 - First-tab default: unbound writes the first value, emits `selectedChange` once, and emits no `selectionChange`; each later change emits one `selectionChange` whose `tab` is the selected `NfsTab`; a deep link emits `deepLinked` with the same shape; a bound initial value wins; tabs arriving later through `@for` get the default; an unknown value falls back to the first tab after the next check.
