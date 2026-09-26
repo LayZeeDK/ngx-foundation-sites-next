@@ -1,0 +1,11 @@
+ [OK] |ui-node| src/lib/toggle/toggle.ssr.spec.ts > NfsToggle server render (file A) > starts outside server mode 1ms
+ [OK] |ui-node| src/lib/toggle/toggle-defer.ssr.spec.ts > NfsToggle server render inside @defer (hydrate on interaction) (file B) > starts outside server mode 3ms
+ [OK] |ui-node| src/lib/toggle/toggle.ssr.spec.ts > NfsToggle server render (file A) > renders host classes and jsaction on the elements expected to replay 107ms
+ [OK] |ui-node| src/lib/toggle/toggle.ssr.spec.ts > NfsToggle server render (file A) > leaves server mode after the render 0ms
+ [OK] |ui-node| src/lib/toggle/toggle-defer.ssr.spec.ts > NfsToggle server render inside @defer (hydrate on interaction) (file B) > renders the main block with jsaction and the block marker 115ms
+ [OK] |ui-node| src/lib/toggle/toggle-defer.ssr.spec.ts > NfsToggle server render inside @defer (hydrate on interaction) (file B) > leaves server mode after the render 0ms
+stdout | src/lib/toggle/dom-adapter.node.spec.ts > DOM adapter during a server render in the separate Vitest node project > is DominoAdapter
+ [OK] |ui-node| src/lib/toggle/dom-adapter.node.spec.ts > DOM adapter during a server render in the separate Vitest node project > is DominoAdapter 61ms
+ Test Files  3 passed (3)
+      Tests  7 passed (7)
+  Run duration:      4.1s

@@ -1,0 +1,78 @@
+{
+  "name": "fixture",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "nfs",
+  "sourceRoot": "apps/fixture/src",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@angular/build:application",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/apps/fixture",
+        "browser": "apps/fixture/src/main.ts",
+        "tsConfig": "apps/fixture/tsconfig.app.json",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/fixture/public"
+          }
+        ],
+        "styles": [
+          "apps/fixture/src/styles.css"
+        ],
+        "server": "apps/fixture/src/main.server.ts",
+        "outputMode": "static"
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "4kb",
+              "maximumError": "8kb"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true
+        }
+      }
+    },
+    "serve": {
+      "continuous": true,
+      "executor": "@angular/build:dev-server",
+      "defaultConfiguration": "development",
+      "configurations": {
+        "production": {
+          "buildTarget": "fixture:build:production"
+        },
+        "development": {
+          "buildTarget": "fixture:build:development"
+        }
+      }
+    },
+    "serve-static": {
+      "continuous": true,
+      "executor": "@nx/web:file-server",
+      "options": {
+        "buildTarget": "fixture:build:development",
+        "port": 4590,
+        "staticFilePath": "dist/apps/fixture/browser",
+        "spa": false
+      }
+    }
+  }
+}

@@ -1,0 +1,13 @@
+ [OK]  ui  packages/ui/src/lib/toggle/toggle.ssr.spec.ts > NfsToggle server render (file A) > starts outside server mode 2ms
+ [OK]  ui  packages/ui/src/lib/toggle/toggle.ssr.spec.ts > NfsToggle server render (file A) > renders host classes and jsaction on the elements expected to replay 55ms
+ [OK]  ui  packages/ui/src/lib/toggle/toggle.ssr.spec.ts > NfsToggle server render (file A) > leaves server mode after the render 0ms
+ [OK]  ui  packages/ui/src/lib/toggle/toggle-defer.ssr.spec.ts > NfsToggle server render inside @defer (hydrate on interaction) (file B) > starts outside server mode 3ms
+ [OK]  ui  packages/ui/src/lib/toggle/toggle-defer.ssr.spec.ts > NfsToggle server render inside @defer (hydrate on interaction) (file B) > renders the main block with jsaction and the block marker 60ms
+ [OK]  ui  packages/ui/src/lib/toggle/toggle-defer.ssr.spec.ts > NfsToggle server render inside @defer (hydrate on interaction) (file B) > leaves server mode after the render 0ms
+stdout | packages/ui/src/lib/toggle/dom-adapter.spec.ts > DOM adapter during a server render under the unit-test builder > is the browser adapter TestBed init installed, not DominoAdapter
+ [OK]  ui  packages/ui/src/lib/toggle/dom-adapter.spec.ts > DOM adapter during a server render under the unit-test builder > is the browser adapter TestBed init installed, not DominoAdapter 39ms
+ [OK]  ui  packages/ui/src/lib/toggle/toggle.spec.ts > NfsToggle client render (TestBed) > does not see server mode 2ms
+ [OK]  ui  packages/ui/src/lib/toggle/toggle.spec.ts > NfsToggle client render (TestBed) > runs afterNextRender and toggles the class on click 42ms
+ Test Files  4 passed (4)
+      Tests  9 passed (9)
+  Run duration:      7.1s

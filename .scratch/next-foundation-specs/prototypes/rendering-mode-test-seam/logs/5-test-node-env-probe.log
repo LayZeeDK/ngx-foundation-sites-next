@@ -1,0 +1,20 @@
+ERROR ReferenceError: document is not defined
+ >  ui  packages/ui/src/lib/toggle/toggle-defer.ssr.spec.ts (3 tests | 1 failed) 35ms
+     [FAIL] renders the main block with jsaction and the block marker 31ms
+ERROR ReferenceError: document is not defined
+ >  ui  packages/ui/src/lib/toggle/toggle.ssr.spec.ts (3 tests | 1 failed) 35ms
+     [FAIL] renders host classes and jsaction on the elements expected to replay 30ms
+ >  ui  packages/ui/src/lib/toggle/toggle.spec.ts (2 tests | 1 failed) 16ms
+     [FAIL] runs afterNextRender and toggles the class on click 11ms
+stderr | packages/ui/src/lib/toggle/dom-adapter.spec.ts > DOM adapter during a server render under the unit-test builder > is the browser adapter TestBed init installed, not DominoAdapter
+ERROR ReferenceError: document is not defined
+ >  ui  packages/ui/src/lib/toggle/dom-adapter.spec.ts (1 test | 1 failed) 27ms
+     [FAIL] is the browser adapter TestBed init installed, not DominoAdapter 26ms
+------- Failed Tests 4 -------
+ FAIL   ui  packages/ui/src/lib/toggle/dom-adapter.spec.ts > DOM adapter during a server render under the unit-test builder > is the browser adapter TestBed init installed, not DominoAdapter
+ FAIL   ui  packages/ui/src/lib/toggle/toggle-defer.ssr.spec.ts > NfsToggle server render inside @defer (hydrate on interaction) (file B) > renders the main block with jsaction and the block marker
+ FAIL   ui  packages/ui/src/lib/toggle/toggle.ssr.spec.ts > NfsToggle server render (file A) > renders host classes and jsaction on the elements expected to replay
+ReferenceError: document is not defined
+ FAIL   ui  packages/ui/src/lib/toggle/toggle.spec.ts > NfsToggle client render (TestBed) > runs afterNextRender and toggles the class on click
+ReferenceError: document is not defined
+ FAIL   ui  packages/ui/src/lib/toggle/toggle.spec.ts > NfsToggle client render (TestBed) > runs afterNextRender and toggles the class on click

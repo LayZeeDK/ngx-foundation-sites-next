@@ -1,0 +1,6 @@
+ [OK]  ui  packages/ui/src/leak-demo/module-scope-providers.spec.ts > provideServerRendering() evaluated at module scope > sets ngServerMode as soon as the spec module loads 2ms
+ [OK]  ui  packages/ui/src/leak-demo/module-scope-providers.spec.ts > provideServerRendering() evaluated at module scope > keeps ngServerMode set after the render 43ms
+ [OK]  ui  packages/ui/src/leak-demo/module-scope-providers.spec.ts > provideServerRendering() evaluated at module scope > breaks a later client render in the same module graph: afterNextRender never runs 61ms
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+  Run duration:      6.7s

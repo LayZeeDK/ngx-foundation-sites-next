@@ -1,0 +1,21 @@
+  Run duration:      7.5s
+  [OK]   1 [chromium] ? src\rendering-modes.spec.ts:40:7 ? first paint without JavaScript ? server HTML carries the classes, jsaction, and the dehydrated block (362ms)
+  [OK]   3 [chromium] ? src\rendering-modes.spec.ts:61:5 ? a click before hydration is replayed after the main bundle loads (580ms)
+ERROR NG0500: During hydration Angular expected <h1> but found <button>.
+  [OK]   4 [chromium] ? src\rendering-modes.spec.ts:125:5 ? negative control: a server HTML that does not match the client logs NG0500 (511ms)
+  [OK]   5 [chromium] ? src\rendering-modes.spec.ts:139:5 ? negative control: without the replay bootstrap script the pre-hydration click is lost (444ms)
+  [OK]   2 [chromium] ? src\rendering-modes.spec.ts:93:5 ? a hydrate on interaction block loads, hydrates, and replays the triggering click (512ms)
+  [OK]   6 [firefox] ? src\rendering-modes.spec.ts:40:7 ? first paint without JavaScript ? server HTML carries the classes, jsaction, and the dehydrated block (3.4s)
+ERROR NG0500: During hydration Angular expected <h1> but found <button>.
+  [OK]   9 [firefox] ? src\rendering-modes.spec.ts:125:5 ? negative control: a server HTML that does not match the client logs NG0500 (1.0s)
+  [OK]   8 [firefox] ? src\rendering-modes.spec.ts:93:5 ? a hydrate on interaction block loads, hydrates, and replays the triggering click (3.7s)
+  [OK]  10 [firefox] ? src\rendering-modes.spec.ts:139:5 ? negative control: without the replay bootstrap script the pre-hydration click is lost (1.2s)
+  [OK]   7 [firefox] ? src\rendering-modes.spec.ts:61:5 ? a click before hydration is replayed after the main bundle loads (8.6s)
+  [OK]  12 [webkit] ? src\rendering-modes.spec.ts:40:7 ? first paint without JavaScript ? server HTML carries the classes, jsaction, and the dehydrated block (863ms)
+  [OK]  11 [webkit] ? src\rendering-modes.spec.ts:61:5 ? a click before hydration is replayed after the main bundle loads (1.3s)
+ERROR NG0500: During hydration Angular expected <h1> but found <button>.
+  [OK]  13 [webkit] ? src\rendering-modes.spec.ts:125:5 ? negative control: a server HTML that does not match the client logs NG0500 (999ms)
+  [OK]  14 [webkit] ? src\rendering-modes.spec.ts:139:5 ? negative control: without the replay bootstrap script the pre-hydration click is lost (1.4s)
+  [OK]  15 [webkit] ? src\rendering-modes.spec.ts:93:5 ? a hydrate on interaction block loads, hydrates, and replays the triggering click (1.2s)
+  15 passed (25.6s)
+  Run duration:      43.2s
