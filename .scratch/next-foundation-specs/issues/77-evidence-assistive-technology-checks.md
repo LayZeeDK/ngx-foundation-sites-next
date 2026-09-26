@@ -1,15 +1,15 @@
-# 77. Evidence for the assistive-technology checks
+# 77. Resolve the assistive-technology checks
 
-Type: research
+Type: grilling
 Status: open
 Blocked by: none
-Labels: wayfinder:research
+Labels: wayfinder:grilling
 Map: ../map.md
 
 ## Question
 
-The README open list names thirteen checks that need assistive technology. A person with a screen reader decides them; this ticket narrows each to what can be known without one. For each check: what the three engines' accessibility trees expose for the markup the spec produces (computed role, name, description, states, live-region properties, and what changes across the interaction), measured from the prototype captures or a minimal page under `D:/tmp/` with Playwright's ARIA snapshot and the Chromium CDP accessibility tree; what published support data says about NVDA, JAWS, VoiceOver, and TalkBack for those roles and states (a11ysupport.io, PowerMapper screen reader reliability, the APG's own notes); which part of the check that evidence settles, which part is still a human judgement, and an exact listening checklist (screen reader, browser, steps, expected announcement, pass condition) so the remaining check takes minutes. Flag any check where the evidence shows the spec's markup is wrong, with the fix.
+The README open list names thirteen checks that were left for a person with a screen reader. The user has ruled that this pass resolves them autonomously (map, "Open-decision pass"). For each check, decide whether the spec's markup and behaviour are right, from evidence that does not need a person: what each engine exposes to assistive technology for the markup the spec produces (computed role, name, description, states, live-region properties, and what changes across the interaction), measured from the prototype captures or a minimal page under `D:/tmp/` with Playwright's ARIA snapshot, the Chromium CDP accessibility tree, and, on this Windows machine, the UI Automation tree that Narrator and NVDA consume (read-only inspection of the browser window); what published support data says about NVDA, JAWS, VoiceOver, and TalkBack for those roles and states (a11ysupport.io, PowerMapper screen reader reliability, the APG's own notes); and the WAI-ARIA and HTML-AAM mappings. Where the evidence shows the spec is wrong, the decision is the fix. Where it shows the spec is right, the check is resolved, and any manual confirmation still worth doing becomes a release-test step in the spec's Testing Decisions rather than an open decision.
 
 ## How to work it
 
-Research only, by `/research` subagents (two may split the thirteen checks). Do not install screen readers or other software system-wide. Write the findings to `research/assistive-technology-evidence.md` and the `## Answer` here with one line per check (settled by evidence, narrowed, or unchanged, and any spec defect found). The orchestrator carries the results into the README's open list and into the owning specs where a defect is found.
+Evidence agents (the thirteen checks may be split) write `research/assistive-technology-evidence.md`; an adversarial reviewer on Fable attacks each verdict; the orchestrator's judge writes the `## Answer` here with one line per check (verdict, evidence, spec change if any) and the exact spec edits. Do not install screen readers or other software system-wide.
