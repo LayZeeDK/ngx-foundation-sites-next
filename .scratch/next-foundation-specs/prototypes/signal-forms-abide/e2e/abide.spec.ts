@@ -1,0 +1,254 @@
+// PROTOTYPE tests against the SSR server (hydrated app). Run: npx playwright test
+import AxeBuilder from '@axe-core/playwright';
+import { expect, test, type Locator, type Page } from '@playwright/test';
+
+const INVALID = /(^|\s)is-invalid-input(\s|$)/;
+const INVALID_LABEL = /(^|\s)is-invalid-label(\s|$)/;
+const VISIBLE = /(^|\s)is-visible(\s|$)/;
+
+const errorsSeen: string[] = [];
+
+async function ready(page: Page): Promise<void> {
+  page.on('console', (m) => {
+    if (m.type() === 'error') {
+      errorsSeen.push(m.text());
+    }
+  });
+  page.on('pageerror', (e) => errorsSeen.push(e.message));
+  await page.goto('/');
+  await expect(page.locator('html[data-hydrated]')).toHaveCount(1);
+}
+
+/** Negative assertions pass instantly; give change detection a moment first. */
+async function settle(page: Page): Promise<void> {
+  await page.waitForTimeout(150);
+}
+
+function fields(form: Locator) {
+  const email = form.getByLabel('Email');
+
+  return {
+    email,
+    emailLabel: form.locator('label').filter({ hasText: /^\s*Email/ }),
+    emailError: form.getByText('Enter a valid email address.'),
+    password: form.getByLabel('Password', { exact: true }),
+    passwordLabel: form.locator('label', { hasText: /^Password$/ }),
+    passwordError: form.getByText('A password is required.'),
+    confirm: form.getByLabel('Repeat password'),
+    confirmRequired: form.getByText('Repeat the password.'),
+    confirmEqual: form.getByText('Passwords do not match.'),
+    zip: form.getByLabel('Postal code'),
+    zipLabel: form.locator('label', { hasText: 'Postal code' }),
+    zipError: form.getByText('Use four digits.'),
+    agree: form.getByLabel('I agree'),
+    agreeError: form.getByText('You must agree.'),
+    alert: form.getByRole('alert'),
+    submit: form.getByRole('button', { name: 'Submit' }),
+    result: form.locator('output'),
+  };
+}
+
+test.afterAll(() => {
+  // Surfaced in the report; the SSR tests assert on it directly.
+  if (errorsSeen.length) {
+    console.log('console errors:', JSON.stringify(errorsSeen));
+  }
+});
+
+test.describe('default policy (validateOn fieldChange)', () => {
+  test('pristine, blur-without-change, then change timing', async ({ page }) => {
+    await ready(page);
+    const f = fields(page.getByRole('form', { name: 'Default policy (validateOn fieldChange)' }));
+
+    await expect(f.email).not.toHaveClass(INVALID);
+    await expect(f.emailError).not.toHaveClass(VISIBLE);
+    await expect(f.alert).toBeHidden();
+
+    // Blur with no change: Abide fires no change event, so no validation.
+    await f.email.focus();
+    await f.email.blur();
+    await settle(page);
+    await expect(f.email).not.toHaveClass(INVALID);
+
+    // Typing does not validate (even after the earlier blur); the commit (change) does.
+    await f.email.focus();
+    await f.email.pressSequentially('x');
+    await settle(page);
+    await expect(f.email).not.toHaveClass(INVALID);
+    await f.email.blur();
+    await expect(f.email).toHaveClass(INVALID);
+    await expect(f.email).toHaveAttribute('aria-invalid', 'true');
+    await expect(f.emailLabel).toHaveClass(INVALID_LABEL);
+    await expect(f.emailError).toHaveClass(VISIBLE);
+    const errId = await f.emailError.getAttribute('id');
+    expect(errId).toBeTruthy();
+    await expect(f.email).toHaveAttribute('aria-describedby', `change-email-hint ${errId}`);
+
+    // Second visit: the error stays until the next commit, then clears.
+    await f.email.fill('larsbrinknielsen@gmail.com');
+    await settle(page);
+    await expect(f.email).toHaveClass(INVALID);
+    await f.email.blur();
+    await expect(f.email).not.toHaveClass(INVALID);
+    await expect(f.email).not.toHaveAttribute('aria-invalid', /.*/);
+    await expect(f.emailLabel).not.toHaveClass(INVALID_LABEL);
+    await expect(f.emailError).not.toHaveClass(VISIBLE);
+    await expect(f.email).toHaveAttribute('aria-describedby', 'change-email-hint');
+  });
+
+  test('checkbox validates on click (change), no blur needed', async ({ page }) => {
+    await ready(page);
+    const f = fields(page.getByRole('form', { name: 'Default policy (validateOn fieldChange)' }));
+    await f.agree.check();
+    await f.agree.uncheck();
+    // No blur happened (WebKit does not even focus a clicked checkbox): change alone shows it.
+    await expect(f.agree).toHaveClass(INVALID);
+    await expect(f.agreeError).toHaveClass(VISIBLE);
+  });
+
+  test('equalTo is a cross-field rule with per-kind errors', async ({ page }) => {
+    await ready(page);
+    const f = fields(page.getByRole('form', { name: 'Default policy (validateOn fieldChange)' }));
+    await f.password.fill('secret');
+    await f.password.blur();
+    await f.confirm.fill('other');
+    await f.confirm.blur();
+    await expect(f.confirm).toHaveClass(INVALID);
+    await expect(f.confirmEqual).toHaveClass(VISIBLE);
+    await expect(f.confirmRequired).not.toHaveClass(VISIBLE);
+    const eqId = await f.confirmEqual.getAttribute('id');
+    await expect(f.confirm).toHaveAttribute('aria-describedby', eqId!);
+    // Changing the other field re-validates this one (Abide re-validates equalTo dependants).
+    await f.password.fill('other');
+    await f.password.blur();
+    await expect(f.confirm).not.toHaveClass(INVALID);
+    await expect(f.confirmEqual).not.toHaveClass(VISIBLE);
+  });
+
+  test('label[for] and data-form-error-for', async ({ page }) => {
+    await ready(page);
+    const f = fields(page.getByRole('form', { name: 'Default policy (validateOn fieldChange)' }));
+    await f.zip.fill('12');
+    await f.zip.blur();
+    await expect(f.zip).toHaveClass(INVALID);
+    await expect(f.zipLabel).toHaveClass(INVALID_LABEL);
+    await expect(f.zipError).toHaveClass(VISIBLE);
+    await f.zip.fill('');
+    await f.zip.blur();
+    await expect(f.zip).not.toHaveClass(INVALID);
+    await expect(f.zipError).not.toHaveClass(VISIBLE);
+  });
+
+  test('submit shows every error and the [data-abide-error] alert; axe clean', async ({ page }) => {
+    await ready(page);
+    const form = page.getByRole('form', { name: 'Default policy (validateOn fieldChange)' });
+    const f = fields(form);
+    await f.submit.click();
+    await expect(f.alert).toBeVisible();
+    for (const input of [f.email, f.password, f.confirm, f.agree]) {
+      await expect(input).toHaveClass(INVALID);
+    }
+    await expect(f.passwordLabel).toHaveClass(INVALID_LABEL);
+    await expect(f.passwordError).toHaveClass(VISIBLE);
+    await expect(f.confirmRequired).toHaveClass(VISIBLE);
+    await expect(f.confirmEqual).not.toHaveClass(VISIBLE);
+    await expect(f.zip).not.toHaveClass(INVALID);
+    await expect(f.result).toHaveText('');
+
+    const tags = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice'];
+    const axe = await new AxeBuilder({ page }).withTags(tags).disableRules(['color-contrast']).analyze();
+    expect(axe.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target).join(', ')}`)).toEqual([]);
+    // Color contrast is Foundation's default $alert-color, not the directives: recorded, not asserted.
+    const contrast = await new AxeBuilder({ page }).withRules(['color-contrast']).analyze();
+    test.info().annotations.push({
+      type: 'color-contrast',
+      description: JSON.stringify(
+        contrast.violations.flatMap((v) => v.nodes.map((n) => `${n.target}: ${n.any[0]?.message}`)),
+      ),
+    });
+
+    // Fix everything: alert hides once the form is valid, submission runs.
+    await f.email.fill('larsbrinknielsen@gmail.com');
+    await f.password.fill('pw');
+    await f.confirm.fill('pw');
+    // Commit before clicking: in Firefox and WebKit the blur caused by the checkbox's
+    // mousedown hides the confirm field's .form-error (display: none), the layout shifts up
+    // before mouseup, and the click misses the checkbox ("Clicking the checkbox did not
+    // change its state"). Foundation's error CSS does the same under Abide.
+    await f.confirm.blur();
+    await f.agree.check();
+    await expect(f.alert).toBeHidden();
+    await f.submit.click();
+    await expect(f.result).toContainText('submitted');
+  });
+
+  for (const [name, flushed] of [
+    ['Default policy (validateOn fieldChange)', true],
+    ['Default policy with the prototype fixes off', false],
+  ] as const) {
+    test(`Enter-key submit while a debounced field has focus (flush ${flushed})`, async ({ page }) => {
+      await ready(page);
+      const f = fields(page.getByRole('form', { name }));
+      await f.password.fill('pw');
+      await f.confirm.fill('pw');
+      await f.agree.check();
+      await f.email.fill('larsbrinknielsen@gmail.com');
+      await f.email.press('Enter'); // no blur: the email value is still buffered
+      if (flushed) {
+        await expect(f.result).toContainText('"email":"larsbrinknielsen@gmail.com"');
+        await expect(f.email).not.toHaveClass(INVALID);
+      } else {
+        // submit() flushes only the root's pending sync, so the focused child's buffered
+        // value is validated stale: the input shows a valid address but the field is invalid.
+        await expect(f.email).toHaveClass(INVALID);
+        await expect(f.alert).toBeVisible();
+        await expect(f.result).toHaveText('');
+        await expect(f.email).toHaveValue('larsbrinknielsen@gmail.com');
+      }
+    });
+  }
+});
+
+test('liveValidate validates while typing', async ({ page }) => {
+  await ready(page);
+  const f = fields(page.getByRole('form', { name: 'liveValidate' }));
+  await f.email.pressSequentially('x');
+  await expect(f.email).toBeFocused();
+  await expect(f.email).toHaveClass(INVALID);
+  await expect(f.emailError).toHaveClass(VISIBLE);
+  await f.email.pressSequentially('@gmail.com');
+  await expect(f.email).not.toHaveClass(INVALID);
+});
+
+test('validateOnBlur validates on blur without a change', async ({ page }) => {
+  await ready(page);
+  const f = fields(page.getByRole('form', { name: 'validateOnBlur' }));
+  await f.email.focus();
+  await f.email.blur();
+  await expect(f.email).toHaveClass(INVALID);
+  await expect(f.emailLabel).toHaveClass(INVALID_LABEL);
+  await expect(f.emailError).toHaveClass(VISIBLE);
+});
+
+test('Reactive Forms: same classes through the NgControl courtesy', async ({ page }) => {
+  await ready(page);
+  const form = page.getByRole('form', { name: /Reactive Forms/ });
+  const name = form.getByLabel('Name');
+  const email = form.getByLabel('Email');
+  await name.focus();
+  await name.blur();
+  await settle(page);
+  await expect(name).not.toHaveClass(INVALID);
+  await email.fill('x');
+  await email.blur();
+  await expect(email).toHaveClass(INVALID);
+  await expect(form.locator('label[for="rf-email"]')).toHaveClass(INVALID_LABEL);
+  await expect(form.getByText('Enter a valid email address.')).toHaveClass(VISIBLE);
+  await form.getByRole('button', { name: 'Submit' }).click();
+  await expect(name).toHaveClass(INVALID);
+  await expect(form.locator('label').filter({ hasText: /^\s*Name/ })).toHaveClass(INVALID_LABEL);
+  await expect(form.getByRole('alert')).toBeVisible();
+  await email.fill('larsbrinknielsen@gmail.com');
+  await email.blur();
+  await expect(email).not.toHaveClass(INVALID);
+});

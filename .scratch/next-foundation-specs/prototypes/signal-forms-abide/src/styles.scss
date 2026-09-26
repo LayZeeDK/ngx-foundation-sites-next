@@ -1,0 +1,11 @@
+// PROTOTYPE -- Foundation's own Sass only. No custom CSS: the error contract
+// (.is-invalid-input, .is-invalid-label, .form-error.is-visible) comes from
+// foundation-forms (scss/forms/_error.scss); the form-level alert is .callout.alert
+// hidden with the native `hidden` attribute.
+@import 'foundation-sites/scss/foundation';
+
+@include foundation-global-styles;
+@include foundation-typography;
+@include foundation-forms;
+@include foundation-button;
+@include foundation-callout;
