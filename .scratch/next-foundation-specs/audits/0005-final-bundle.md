@@ -370,4 +370,19 @@ Spot checks against the local clones (all hold unless a finding says otherwise):
 
 ## Resolution log
 
-(For the orchestrator: record here which findings were fixed, turned into tickets, or rejected, with the commit that did it.)
+Recorded by the orchestrator on 2026-09-26. Every finding is fixed; one capture comment is kept as captured (L1).
+
+| Finding | Outcome | Commits |
+| --- | --- | --- |
+| M1 | Fixed. `nfs-accordion-menu` and `nfs-dropdown-menu` stop the compile below a 24 px row; the Nested menu and Responsive Menu specs agree | `264da83` |
+| M2 | Fixed. The map's triage rule names the Aria fallback as human-only by kind; the README, the consistency review, and the Orbit tickets follow it | `e6b086a`, `264da83`, `a8b1b8c` |
+| M3 | Decided under the triage rule (medium impact): Orbit slides keep `aria-roledescription="slide"`, following the APG's tabbed example over its pattern text (Orbit D22, decision 59); the screen-reader question joins assistive-technology item 12 | `264da83`, `a8b1b8c` |
+| M4 | Fixed | `264da83`, `a8b1b8c` |
+| M5 | Fixed | `264da83` |
+| M6 | Fixed | `264da83` |
+| M7 | Fixed | `264da83`, `a8b1b8c` |
+| L1 | Fixed with an addendum to audit 0004's log; the ticket-number comment in the Sticky measurement capture's stylesheet stays as captured | `a8b1b8c` |
+| L2 to L10 | Fixed | `264da83`, `a8b1b8c` |
+| Unrecorded departures 1 to 7 | Closed with M1, M3, M4, L4, L6, a plugin-internal service rule in building-blocks 1.5 (Off-canvas names its scroll-lock service), and the 1.10 wording | `264da83`, `a8b1b8c` |
+
+The open list is unchanged in size: 10 upstream filings, 13 assistive-technology checks, 3 trap-quadrant decisions, and 1 confirmation of the Aria fallbacks.
