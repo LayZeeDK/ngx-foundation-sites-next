@@ -1,0 +1,100 @@
+# Final run: npx playwright test (chromium, firefox, webkit), SSR server on port 4500
+# Filtered to the evidence lines and the summary; non-ASCII status glyphs replaced.
+[axe] accordion closed: no violations
+[axe] accordion open: no violations
+[axe] drilldown closed: no violations
+[drilldown] focused after open {"control":"Item 1A","rect":[16,177,928,38],"visible":true}
+[axe] drilldown level 1 open: no violations
+[drilldown] tab order from Back: ["BUTTON:Item 1A","A:Item 1B","A:Link after the menu"]
+[axe] dropdown closed: no violations
+[axe] dropdown open: no violations
+[axe] responsive small (drilldown) open: no violations
+[axe] responsive medium (dropdown) open: no violations
+[axe] responsive small (accordion) open: no violations
+[grid] opening {"before":38,"after":115,"samples":[38,42,50,61,73,83,91,97,102,106,109,112,113,114,115,115,115,115,115,115,115,115,115,115,115,115,115,115]}
+[grid] closing {"before":115,"after":38,"samples":[115,111,103,92,81,71,63,56,51,47,44,42,40,39,39,38,38,38,38,38,38,38,38,38,38,38,38,38]}
+[grid] hybrid closed {"li":38,"link":38}
+[grid] reduced motion 38.375 -> 115.125 (content 115)
+[drilldown] {"minHeight":"231px","tallest":231,"heights":[117,117,230,117]}
+[drilldown] {"focusedWithInertAncestor":false}
+[wcag] /accordion chromium {"controls":8,"small":[],"arrows":[{"text":"Item 1","fg":"23,121,186","bg":"254,254,254","ratio":4.65},{"text":"Item 1A","fg":"23,121,186","bg":"254,254,254","ratio":4.65},{"text":"Item 2 pages","fg":"23,121,186","bg":"254,254,254","ratio":4.65}]}
+[wcag] /accordion chromium focus ring {"el":"Item 1","style":"auto","width":"1px","color":"rgb(16, 16, 16)","focusVisible":true}
+[wcag] /drilldown chromium {"controls":3,"small":[],"arrows":[{"text":"Back","fg":"23,121,186","bg":"254,254,254","ratio":4.65},{"text":"Item 1A","fg":"23,121,186","bg":"254,254,254","ratio":4.65}]}
+[wcag] /drilldown chromium focus ring {"el":"Item 1A","style":"auto","width":"1px","color":"rgb(16, 16, 16)","focusVisible":true}
+[wcag] /dropdown chromium {"controls":6,"small":[],"arrows":[{"text":"Item 1","fg":"23,121,186","bg":"254,254,254","ratio":4.65},{"text":"Item 2 pages","fg":"23,121,186","bg":"254,254,254","ratio":4.65}]}
+[wcag] /dropdown chromium focus ring {"el":"Item 1","style":"auto","width":"1px","color":"rgb(16, 16, 16)","focusVisible":true}
+[collision] edge 800px: 1A opens-left submenu x=317 w=200
+[collision] 400px: 1A opens-inner submenu x=17 w=200
+[axe] dropdown opens-inner: no violations
+[collision] focus on Item 1B after the opens-inner submenu {"control":"Item 1B","rect":[17,217,198,38],"visible":true}
+[axe] F1 after swap to drilldown: no violations
+[axe] F2 after swap to dropdown: no violations
+[F3 fixup on] {"focused":"BUTTON:Item 1","expanded":"false","toggleVisible":true}
+[F3 fixup off] {"focused":"BODY","expanded":"true","toggleVisible":false}
+[axe] responsive first paint, server drilldown at large width: no violations
+[axe] accordion closed: no violations
+[axe] accordion open: no violations
+[axe] drilldown closed: no violations
+[drilldown] focused after open {"control":"Item 1A","rect":[16,177,928,38],"visible":true}
+[axe] drilldown level 1 open: no violations
+[drilldown] tab order from Back: ["BUTTON:Item 1A","A:Item 1B","A:Link after the menu"]
+[axe] dropdown closed: no violations
+[axe] dropdown open: no violations
+[axe] responsive small (drilldown) open: no violations
+[axe] responsive medium (dropdown) open: no violations
+[axe] responsive small (accordion) open: no violations
+[grid] opening {"before":38,"after":115,"samples":[38,40,49,59,73,83,91,98,103,107,110,112,113,114,115,115,115,115,115,115,115,115,115,115,115,115,115,115,115]}
+[grid] closing {"before":115,"after":38,"samples":[115,111,104,93,81,71,63,56,51,47,44,42,40,39,39,38,38,38,38,38,38,38,38,38,38,38,38,38]}
+[grid] hybrid closed {"li":38,"link":38}
+[grid] reduced motion 38.399993896484375 -> 115.19999694824219 (content 115)
+[drilldown] {"minHeight":"231px","tallest":231,"heights":[117,117,230,117]}
+[drilldown] {"focusedWithInertAncestor":false}
+[wcag] /accordion firefox {"controls":8,"small":[],"arrows":[{"text":"Item 1","fg":"23,121,186","bg":"254,254,254","ratio":4.65},{"text":"Item 1A","fg":"23,121,186","bg":"254,254,254","ratio":4.65},{"text":"Item 2 pages","fg":"23,121,186","bg":"254,254,254","ratio":4.65}]}
+[wcag] /accordion firefox focus ring {"el":"Item 1A","style":"dotted","width":"1px","color":"rgb(0, 0, 0)","focusVisible":true}
+[wcag] /drilldown firefox {"controls":3,"small":[],"arrows":[{"text":"Back","fg":"23,121,186","bg":"254,254,254","ratio":4.65},{"text":"Item 1A","fg":"23,121,186","bg":"254,254,254","ratio":4.65}]}
+[wcag] /drilldown firefox focus ring {"el":"Item 1A","style":"dotted","width":"1px","color":"rgb(0, 0, 0)","focusVisible":true}
+[wcag] /dropdown firefox {"controls":6,"small":[],"arrows":[{"text":"Item 1","fg":"23,121,186","bg":"254,254,254","ratio":4.65},{"text":"Item 2 pages","fg":"23,121,186","bg":"254,254,254","ratio":4.65}]}
+[wcag] /dropdown firefox focus ring {"el":"Item 1A","style":"dotted","width":"1px","color":"rgb(0, 0, 0)","focusVisible":true}
+[wcag] dropdown tab sweep [{"control":"Item 1A","rect":[17,178,198,38],"visible":true},{"control":"Item 1B","rect":[17,217,198,38],"visible":true},{"control":"Item 2","rect":[100,139,84,38],"visible":true},{"control":"Item 2 pages","rect":[185,139,40,40],"visible":true},{"control":"Item 3","rect":[225,139,76,38],"visible":true},{"control":"Link after the menu","rect":[16,197,137,17],"visible":true},{"control":"Link after the menu","rect":[16,197,137,17],"visible":true},{"control":"Link after the menu","rect":[16,197,137,17],"visible":true}]
+[collision] edge 800px: 1A opens-left submenu x=317 w=200
+[collision] 400px: 1A opens-inner submenu x=17 w=200
+[axe] dropdown opens-inner: no violations
+[collision] focus on Item 1B after the opens-inner submenu {"control":"Item 1B","rect":[17,217,198,38],"visible":true}
+[axe] F1 after swap to drilldown: no violations
+[axe] F2 after swap to dropdown: no violations
+[F3 fixup on] {"focused":"BUTTON:Item 1","expanded":"false","toggleVisible":true}
+[F3 fixup off] {"focused":"BODY","expanded":"true","toggleVisible":false}
+[axe] responsive first paint, server drilldown at large width: no violations
+[axe] accordion closed: no violations
+[axe] accordion open: no violations
+[axe] drilldown closed: no violations
+[drilldown] focused after open {"control":"Item 1A","rect":[16,177,928,38],"visible":true}
+[axe] drilldown level 1 open: no violations
+[drilldown] tab order from Back: ["BUTTON:Item 1A","BODY","BUTTON:Back"]
+[axe] dropdown closed: no violations
+[axe] dropdown open: no violations
+[axe] responsive small (drilldown) open: no violations
+[axe] responsive medium (dropdown) open: no violations
+[axe] responsive small (accordion) open: no violations
+[grid] opening {"before":38,"after":115,"samples":[42,55,72,88,97,105,110,113,115,115,115,115,115,115,115,115,115,115,115,115]}
+[grid] closing {"before":115,"after":38,"samples":[115,107,92,75,61,52,45,42,39,38,38,38,38,38,38,38,38,38,38,38,38]}
+[grid] hybrid closed {"li":38,"link":38}
+[grid] reduced motion 38.375 -> 115.125 (content 115)
+[drilldown] {"minHeight":"231px","tallest":231,"heights":[117,117,230,117]}
+[drilldown] {"focusedWithInertAncestor":false}
+[wcag] /accordion webkit {"controls":8,"small":[],"arrows":[{"text":"Item 1","fg":"23,121,186","bg":"254,254,254","ratio":4.65},{"text":"Item 1A","fg":"23,121,186","bg":"254,254,254","ratio":4.65},{"text":"Item 2 pages","fg":"23,121,186","bg":"254,254,254","ratio":4.65}]}
+[wcag] /accordion webkit focus ring {"el":"Item 1","style":"auto","width":"3px","color":"rgb(23, 121, 186)","focusVisible":true}
+[wcag] /drilldown webkit {"controls":3,"small":[],"arrows":[{"text":"Back","fg":"23,121,186","bg":"254,254,254","ratio":4.65},{"text":"Item 1A","fg":"23,121,186","bg":"254,254,254","ratio":4.65}]}
+[wcag] /drilldown webkit focus ring {"el":"Item 1A","style":"auto","width":"3px","color":"rgb(23, 121, 186)","focusVisible":true}
+[wcag] /dropdown webkit {"controls":6,"small":[],"arrows":[{"text":"Item 1","fg":"23,121,186","bg":"254,254,254","ratio":4.65},{"text":"Item 2 pages","fg":"23,121,186","bg":"254,254,254","ratio":4.65}]}
+[wcag] /dropdown webkit focus ring {"el":"Item 1","style":"auto","width":"3px","color":"rgb(23, 121, 186)","focusVisible":true}
+[collision] edge 800px: 1A opens-left submenu x=317 w=200
+[collision] 400px: 1A opens-inner submenu x=17 w=200
+[axe] dropdown opens-inner: no violations
+[axe] F1 after swap to drilldown: no violations
+[axe] F2 after swap to dropdown: no violations
+[F3 fixup on] {"focused":"BUTTON:Item 1","expanded":"false","toggleVisible":true}
+[F3 fixup off] {"focused":"BODY","expanded":"true","toggleVisible":false}
+[axe] responsive first paint, server drilldown at large width: no violations
+  1 skipped
+  92 passed (2.6m)

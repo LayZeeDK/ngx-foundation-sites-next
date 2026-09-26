@@ -1,0 +1,23 @@
+# First probe run (single-shot version, overflow hidden only), recorded from the console:
+[probe] chromium {"midSlide":"matrix(1, 0, 0, 1, 0, 0)","scrollLeft":928,"overflow":"hidden"}
+[probe] firefox {"midSlide":"matrix(1, 0, 0, 1, -141.94, 0)","scrollLeft":0,"overflow":"hidden"}
+# Second run (clip parameter added):
+[probe] clip=true chromium {"midSlide":"matrix(1, 0, 0, 1, 0, 0)","scrollLeft":0,"overflow":"clip"}
+# Repeat run (--repeat-each=4); the level had always started sliding in, and nothing scrolled:
+[probe] clip=false chromium {"midSlide":"matrix(1, 0, 0, 1, -102.816, 0)","scrollLeft":0,"overflow":"hidden"}
+[probe] clip=true chromium {"midSlide":"matrix(1, 0, 0, 1, -102.847, 0)","scrollLeft":0,"overflow":"clip"}
+[probe] clip=false chromium {"midSlide":"matrix(1, 0, 0, 1, -103.466, 0)","scrollLeft":0,"overflow":"hidden"}
+[probe] clip=true chromium {"midSlide":"matrix(1, 0, 0, 1, -103.354, 0)","scrollLeft":0,"overflow":"clip"}
+[probe] clip=false chromium {"midSlide":"matrix(1, 0, 0, 1, -103.317, 0)","scrollLeft":0,"overflow":"hidden"}
+[probe] clip=true chromium {"midSlide":"matrix(1, 0, 0, 1, -103.324, 0)","scrollLeft":0,"overflow":"clip"}
+[probe] clip=false chromium {"midSlide":"matrix(1, 0, 0, 1, -103.156, 0)","scrollLeft":0,"overflow":"hidden"}
+[probe] clip=true chromium {"midSlide":"matrix(1, 0, 0, 1, -102.94, 0)","scrollLeft":0,"overflow":"clip"}
+[probe] clip=false firefox {"midSlide":"matrix(1, 0, 0, 1, -81.6733, 0)","scrollLeft":0,"overflow":"hidden"}
+[probe] clip=true firefox {"midSlide":"matrix(1, 0, 0, 1, -103.111, 0)","scrollLeft":0,"overflow":"clip"}
+[probe] clip=false firefox {"midSlide":"matrix(1, 0, 0, 1, -199.968, 0)","scrollLeft":0,"overflow":"hidden"}
+[probe] clip=true firefox {"midSlide":"matrix(1, 0, 0, 1, -103.111, 0)","scrollLeft":0,"overflow":"clip"}
+[probe] clip=false firefox {"midSlide":"matrix(1, 0, 0, 1, -106.742, 0)","scrollLeft":0,"overflow":"hidden"}
+[probe] clip=true firefox {"midSlide":"matrix(1, 0, 0, 1, -103.111, 0)","scrollLeft":0,"overflow":"clip"}
+[probe] clip=false firefox {"midSlide":"matrix(1, 0, 0, 1, -138.307, 0)","scrollLeft":0,"overflow":"hidden"}
+[probe] clip=true firefox {"midSlide":"matrix(1, 0, 0, 1, -103.111, 0)","scrollLeft":0,"overflow":"clip"}
+  16 passed (34.0s)

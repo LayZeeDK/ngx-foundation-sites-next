@@ -1,0 +1,123 @@
+// PROTOTYPE -- every rule here is custom CSS Foundation's Sass cannot supply.
+// Each rule says why. Values come from Foundation's settings and mixins.
+
+// 1. Disclosure parents are <button>s (disclosure navigation, ADR 0004).
+//    Foundation's menu-base mixin styles only `a` and `.button` (display, padding,
+//    line-height), and the global button reset leaves a <button> inline and unpadded.
+.menu li > button:not(.submenu-toggle) {
+  display: block;
+  width: 100%;
+  padding: $menu-items-padding;
+  line-height: 1;
+  text-align: start;
+  color: $anchor-color;
+  cursor: pointer;
+}
+
+// 2. Arrows. Foundation draws every mode's arrow on `> a::after` (and the drilldown
+//    back arrow on `.js-drilldown-back > a::before`); a <button> parent gets none.
+//    Same geometry as Foundation's rules, through its css-triangle mixin.
+.accordion-menu .is-accordion-submenu-parent:not(.has-submenu-toggle) > button {
+  position: relative;
+
+  &::after {
+    @include css-triangle($accordionmenu-arrow-size, $accordionmenu-arrow-color, down);
+    position: absolute;
+    top: 50%;
+    margin-top: -1 * ($accordionmenu-arrow-size * 0.5);
+    #{$global-right}: 1rem;
+  }
+
+  &[aria-expanded='true']::after {
+    transform: rotate(180deg);
+    transform-origin: 50% 50%;
+  }
+}
+
+.drilldown .is-drilldown-submenu-parent > button:not(.submenu-toggle) {
+  position: relative;
+
+  &::after {
+    @include css-triangle($drilldown-arrow-size, $drilldown-arrow-color, $global-right);
+    position: absolute;
+    top: 50%;
+    margin-top: -1 * $drilldown-arrow-size;
+    #{$global-right}: 1rem;
+  }
+}
+
+.drilldown .js-drilldown-back > button::before {
+  @include css-triangle($drilldown-arrow-size, $drilldown-arrow-color, $global-left);
+  display: inline-block;
+  vertical-align: middle;
+  margin-#{$global-right}: 0.75rem;
+}
+
+.dropdown.menu > li.is-dropdown-submenu-parent > button:not(.submenu-toggle) {
+  position: relative;
+  padding-#{$global-right}: $dropdownmenu-arrow-padding;
+
+  &::after {
+    @include css-triangle($dropdownmenu-arrow-size, $dropdownmenu-arrow-color, down);
+    position: absolute;
+    top: 50%;
+    #{$global-right}: 5px;
+    margin-top: -1 * ($dropdownmenu-arrow-size * 0.5);
+  }
+}
+
+// 3. Hybrid form (link plus toggle) in drilldown mode. Foundation's only toggle
+//    styles are AccordionMenu's `.has-submenu-toggle` / `.submenu-toggle`, which
+//    position the toggle absolutely against its li (`.is-accordion-submenu-parent`
+//    is `position: relative`). A drilldown li must stay unpositioned, because the
+//    submenu slides against the root ul, so the toggle joins the row as a flex item.
+.drilldown .is-drilldown-submenu-parent.has-submenu-toggle {
+  display: flex;
+
+  > a {
+    flex: 1 1 auto;
+    margin-#{$global-right}: 0;
+  }
+
+  > .submenu-toggle {
+    position: static;
+    flex: none;
+  }
+}
+
+// 3b. Hybrid form in drilldown and dropdown mode: Foundation's link arrows for these
+//     modes have no `.has-submenu-toggle` exclusion (AccordionMenu's has one), so
+//     the link and its toggle would both draw an arrow. The toggle keeps its arrow.
+.drilldown .has-submenu-toggle > a::after,
+.dropdown.menu li.has-submenu-toggle > a::after {
+  content: none;
+}
+
+// 4. AccordionMenu height animation. Foundation's JavaScript used jQuery
+//    slideDown/slideUp and its Sass has no height rule. A grid on the multi-child
+//    ul.menu.nested would size only its first row (building-blocks 1.6 rule 3), so
+//    the grid sits on the parent li (nfsMenuItem) and the submenu ul is the clipped
+//    second row. `is-expanded` is a library State class because the li has no
+//    Foundation open class in accordion mode (`.is-active` on an li would trigger
+//    `.menu .is-active > a`, the active-link style) and `:has()` is out of target.
+//    250ms is Foundation's slideSpeed default.
+.accordion-menu .is-accordion-submenu-parent {
+  display: grid;
+  grid-template-rows: auto 0fr;
+  transition: grid-template-rows 250ms ease;
+
+  > .is-accordion-submenu {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  &.is-expanded {
+    grid-template-rows: auto 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .accordion-menu .is-accordion-submenu-parent {
+    transition-duration: 1ms;
+  }
+}

@@ -1,0 +1,27 @@
+// PROTOTYPE -- Foundation 6.9 Sass (the menu partials only) plus the documented
+// custom CSS in _nested-menu.scss.
+@import 'foundation-sites/scss/foundation';
+
+@include foundation-global-styles;
+@include foundation-visibility-classes; // .invisible / .visible used by Drilldown
+@include foundation-menu;
+@include foundation-accordion-menu;
+@include foundation-drilldown-menu;
+@include foundation-dropdown-menu;
+
+@import 'app/nested-menu/nested-menu';
+
+// Harness only.
+main {
+  padding: 1rem;
+  max-width: 60rem;
+}
+
+.status {
+  font-size: 0.8rem;
+  color: $black;
+}
+
+nav {
+  margin-bottom: 1rem;
+}
