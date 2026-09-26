@@ -1,6 +1,6 @@
 # Angular 22.2 rendering modes for DOM-touching directives
 
-Ticket: [Angular 22.2 @defer, SSR, prerendering, hydration, and event replay](../issues/38-angular-rendering-modes.md). Sources are the local clones at release branch 22.2.x unless a URL is given:
+Ticket: [Angular 22.2 @defer, SSR, prerendering, hydration, and event replay for DOM-touching directives](../issues/38-angular-rendering-modes.md). Sources are the local clones at release branch 22.2.x unless a URL is given:
 
 - `NG/` = `d:/projects/github/angular/angular` (22.2.0)
 - `NGC/` = `d:/projects/github/angular/components` (22.2.0)

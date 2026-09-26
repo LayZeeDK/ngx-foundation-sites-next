@@ -63,7 +63,7 @@ The stretch of scrolling during which a Sticky element can be stuck: the box of 
 _Avoid_: anchor range, sticky zone, scroll range
 
 **Motion class**:
-A CSS animation class name given to a Plugin's animation Option (`animationIn`, `animate`, `animInFromRight`), either one of Foundation's Motion UI names or the consumer's own.
+A CSS animation class name given to a Plugin's animation Option (`animationIn`, `animationOut`, `animate`), either one of Foundation's Motion UI names or the consumer's own.
 _Avoid_: Motion UI transition, mui class, animation name
 
 **Breakpoint map**:
@@ -149,7 +149,7 @@ Closing an Anchored pane, an open submenu, or a non-modal Reveal on an outside p
 _Avoid_: click-outside, closeme, auto-close, Backdrop press (which is a modal Reveal's)
 
 **Scroll lock**:
-Keeping the page behind an open modal Reveal from scrolling, through Foundation's `html.is-reveal-open` rule plus the scroll offset the library writes when the first modal opens and restores when the last one closes.
+Keeping the page behind an open modal Reveal from scrolling, as Foundation's `html.is-reveal-open` rule does.
 _Avoid_: body lock, scroll blocking, block scroll strategy (CDK's)
 
 **Backdrop press**:
@@ -161,7 +161,7 @@ An element placed against its Trigger inside the page flow rather than in an ove
 _Avoid_: overlay, popover, popup, floating element, connected overlay
 
 **Tip**:
-The `.tooltip` element a Tooltip creates on first show as the next sibling of its host and keeps afterwards, whose text describes the host; distinct from the Tooltip Plugin and from the host that triggers it.
+The `.tooltip` element whose text describes a Tooltip's host; distinct from the Tooltip Plugin and from the host that triggers it.
 _Avoid_: bubble, popup, tooltip element, template, overlay
 
 **Positioner**:
@@ -273,7 +273,7 @@ The unit a widget and its Triggers must share: the whole page under full hydrati
 _Avoid_: defer boundary, island, hydration zone
 
 **Replay guard**:
-A `keydown` listener on an Aria-hosting container that stops propagation of the keys Aria handles, so a Replayed event that Aria's throwing `preventDefault()` left unstopped is not handled again by an outer widget.
+The rule that a Replayed key event an Aria-hosted widget has handled stops at that widget's container and is not handled again by an outer widget.
 _Avoid_: replay fix, stop guard, key shield
 
 **Pre-hydration input**:
@@ -289,7 +289,7 @@ The test layer that renders a directive under Angular's TestBed in a real browse
 _Avoid_: unit test (for this layer), component test, Playwright component test, Vitest Browser (as the layer name)
 
 **Story id**:
-Storybook's id of a story, `<plugin>--<story>`, where `<plugin>` is the secondary entry point folder name fixed by the stories file's `meta.id`; a spec's play functions and its Playwright e2e tests address the same story by it.
+Storybook's id of a story, `<plugin>--<story>`, where `<plugin>` is the secondary entry point folder name; a spec's play functions and its Playwright e2e tests address the same story by it.
 _Avoid_: story name, test id, scenario
 
 **Anti-pattern story**:

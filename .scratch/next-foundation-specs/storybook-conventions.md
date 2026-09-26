@@ -107,7 +107,8 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
 - `_settings-overrides.scss` is the only place a story changes a Foundation setting. Each override is one variable per failing Foundation default, with a comment naming the axe rule id or the WCAG 2.2 SC, the spec, and the story that fails without it, and the same override is listed in that spec's Sass subsection (ADR 0018, ADR 0022):
 
   ```scss
-  // color-contrast (1.4.3): Foundation's selected tab is 3.75:1. Spec: Tabs, tabs--default.
+  // color-contrast (1.4.3): Foundation's selected tab is about 3.76:1 (axe reports 3.75). Spec: Tabs, tabs--default;
+  // also Responsive Accordion Tabs in tabs mode.
   $tab-background-active: $primary-color;
   $tab-active-color: $white;
 
@@ -116,16 +117,52 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
   $button-palette: map-merge($foundation-palette, ('alert': #bf3f2c, 'success': #177a3d, 'warning': #8a5a00));
 
   // color-contrast (1.4.3): Foundation's default Top Bar puts $anchor-color links at 3.76:1.
-  // Spec: Dropdown Menu, dropdown-menu--top-bar; also required by Magellan and Responsive Toggle
-  // stories that show a Top Bar.
+  // Spec: Dropdown Menu, dropdown-menu--top-bar; also required by the Nested menu, Magellan
+  // (magellan--sticky-top-bar), and Responsive Toggle (responsive-toggle--default) stories that show a Top Bar.
   $topbar-background: $white;
 
   // 1.4.10 Reflow: Foundation's 200px minimum does not fit every side at 320 CSS px.
-  // Spec: Dropdown Menu, dropdown-menu--fixture.
+  // Spec: Dropdown Menu, dropdown-menu--fixture; also the Nested menu and Responsive Menu in dropdown mode.
   $dropdownmenu-min-width: min(200px, 45vw);
+
+  // color-contrast (1.4.3): the accordion title is 3.76:1 on its hover and focus background.
+  // Spec: Accordion; also Responsive Accordion Tabs in accordion mode.
+  $accordion-item-color: scale-color($primary-color, $lightness: -15%);
+
+  // color-contrast (1.4.3) and non-text contrast (1.4.11): the alert colour is 4.49:1 on #fefefe, the invalid
+  // placeholder 3.93:1 on its tint, the placeholder 1.63:1, the input border 1.63:1.
+  // Spec: Abide, abide--invalid-state-contrast.
+  $input-error-color: #bf3f2c;
+  $form-label-color-invalid: #bf3f2c;
+  $input-background-invalid: #bf3f2c;
+  $input-placeholder-color: #737373;
+  $input-border: 1px solid $dark-gray;
+
+  // Non-text contrast (1.4.11) and 1.4.3 over images: nfs-orbit stops the compile on Foundation's bullets
+  // (about 1.6:1) and caption band (about 3.9:1). Spec: Orbit, every orbit--* story.
+  $orbit-bullet-background: $dark-gray;
+  $orbit-bullet-background-active: $black;
+  $orbit-caption-background: rgba($black, 0.6);
+
+  // Non-text contrast (1.4.11): nfs-slider stops the compile on Foundation's fill against its track
+  // (about 1.3:1); the Slider spec's example passing fill. Spec: Slider, every slider--* story.
+  $slider-fill-background: $primary-color;
+
+  // Non-text contrast (1.4.11) and color-contrast (1.4.3): nfs-off-canvas stops the compile on the close
+  // button (2.77:1 on $light-gray), and links are 3.76:1. Spec: Off-canvas, every off-canvas--* story.
+  $offcanvas-background: $white;
+
+  // 1.4.10 Reflow: a fixed pane width over 160px can leave no fitting Placement at 320 CSS px.
+  // Spec: Dropdown, dropdown-pane--reflow.
+  $dropdown-width: min(300px, 45vw);
+  $dropdown-sizes: (
+    tiny: 100px,
+    small: min(200px, 45vw),
+    large: min(400px, 45vw),
+  );
   ```
 
-  An override is a consumer-side setting, never an exception to the Accessibility gate. The overrides come after Foundation's settings file and before `foundation`, so Foundation's `!default` component variables pick them up and they can refer to settings such as `$primary-color`.
+  This is every override the published specs require; each spec's Sass subsection is the source, and a spec that adds or changes one changes its line here. An override is a consumer-side setting, never an exception to the Accessibility gate. The overrides come after Foundation's settings file and before `foundation`, so Foundation's `!default` component variables pick them up and they can refer to settings such as `$primary-color`.
 - The library's Sass is imported relatively (line 2) because inside its own repository the package is source. The consumer path through the `sass` export condition is proved by the Sass packaging ticket's built-package compile test (decision 18b), not by Storybook.
 - `foundation-everything` (`foundation-sites/scss/foundation.scss:79-155`) is the union of the per-component includes a consumer writes, except `foundation-range-input`, which the Slider spec adds, so each story sees exactly the rules its Export mixins print; a spec that needs an Export mixin outside it (`foundation-grid`) adds one line, and the spec states that the new classes do not overlap existing ones. `$prototype: true` adds the Prototype utilities (section 8); they are additive classes that restyle no component.
 - Every `nfs-<plugin>` include comes after `foundation-everything`, as ADR 0012 requires (library rules override Foundation's at equal specificity through source order). A Library mixin that refuses to compile with a Foundation default (the Slider's fill contrast check) is satisfied through `_settings-overrides.scss`, never by skipping its include.
