@@ -118,7 +118,7 @@ Round 6 (depends on all above): rendering modes, level, tests, extras.
 
 ### OPEN FOR HUMAN
 
-1. State at a breakpoint crossing. Default applied: `isOpen` persists (nothing is written on a crossing), so a menu opened on a phone, rotated to a desktop width and back, is still open. The alternative is Foundation's behaviour, closing the menu on a crossing, which in Angular needs either an `effect` that writes the model from a breakpoint change (against BB 1.5 and Angular's effect guidance) or an `isOpen` whose read value is derived from the breakpoint (so the model and the visible state disagree). Sources establish Foundation's reset as a side effect of its inline-`display` rewriting (FS `_update`, which even resets between two breakpoints below `hideFor`), not a documented feature, so they cannot settle what consumers expect.
+1. State at a breakpoint crossing: decided under the triage rule below. Default applied: `isOpen` persists (nothing is written on a crossing), so a menu opened on a phone, rotated to a desktop width and back, is still open. The alternative is Foundation's behaviour, closing the menu on a crossing, which in Angular needs either an `effect` that writes the model from a breakpoint change (against BB 1.5 and Angular's effect guidance) or an `isOpen` whose read value is derived from the breakpoint (so the model and the visible state disagree). Sources establish Foundation's reset as a side effect of its inline-`display` rewriting (FS `_update`, which even resets between two breakpoints below `hideFor`), not a documented feature, so they cannot settle what consumers expect.
 
 ## Prototype needed
 
