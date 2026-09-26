@@ -132,21 +132,15 @@ case 2's scenario); it is specific to a trigger event that starts hydration mid-
 | Ready gate: server-rendered route (`/ready`) | No navigation, no query string, pre-hydration; submit works after | `e2e/ready.spec.ts` "RenderMode.Server" |
 | Ready gate: prerendered route (`/prerender`) | Same | Same file, "RenderMode.Prerender" |
 | Ready gate: `@defer (hydrate on interaction)` | Same; the triggering keystroke is blocked correctly | Same file, "@defer" test |
-| `@defer` mid-typing race (informational, not a case 3 gate) | Chromium 2/3 dropped a char, WebKit 3/3, Firefox 0/3 | Same file, last test; console output captured below |
+| `@defer` mid-typing race (informational, not a case 3 gate) | Chromium 2/3 dropped a char, WebKit 3/3, Firefox 0/3 | Same file, last test; results below |
 
-Mid-typing race console output (three runs per engine, typing `larsbrinknielsen@gmail.com`):
+Mid-typing race results (three runs per engine, typing a 26-character email address into the field while the keystroke hydrates the block; the typed value itself is not reproduced here):
 
-```
-[defer mid-typing race] chromium: got "lrsbrinknielsen@gmail.com"
-[defer mid-typing race] chromium: got "larsbinknielsen@gmail.com"
-[defer mid-typing race] chromium: got "larsbrinknielsen@gmail.com"
-[defer mid-typing race] firefox: got "larsbrinknielsen@gmail.com"
-[defer mid-typing race] firefox: got "larsbrinknielsen@gmail.com"
-[defer mid-typing race] firefox: got "larsbrinknielsen@gmail.com"
-[defer mid-typing race] webkit: got "lrsbrinknielsen@gmail.com"
-[defer mid-typing race] webkit: got "lrsbrinknielsen@gmail.com"
-[defer mid-typing race] webkit: got "lsbrinknielsen@gmail.com"
-```
+| Engine | Run 1 | Run 2 | Run 3 |
+| --- | --- | --- | --- |
+| Chromium | 1 character dropped (the second) | 1 character dropped (the sixth) | intact |
+| Firefox | intact | intact | intact |
+| WebKit | 1 character dropped (the second) | 1 character dropped (the second) | 2 characters dropped (the second and third) |
 
 ## Exact error text for failures
 
