@@ -1,7 +1,7 @@
 # 70. Re-run: Orbit spec, the slide's ARIA contract and the focus handoff
 
 Type: grilling
-Status: open
+Status: resolved
 Blocked by: 65
 Labels: wayfinder:grilling
 Map: ../map.md
@@ -21,3 +21,70 @@ Read first: the prototype's answer and `prototypes/orbit-keyboard-hydration/READ
 ## How to work it
 
 Run `/grill-with-docs` (self-grilling, both sides) over each change against the prototype's evidence and the Aria and Angular sources; edit the spec in place; never edit `map.md`, `CONTEXT.md`, `building-blocks.md`, existing ADRs, or other specs; never commit. Under `## Answer`: the changes as written into the spec, any proposed ADR, `### Proposed building-blocks changes` (the Table A and Table B Orbit cells that name `TabPanel`), `### Triage`, and anything left `OPEN FOR HUMAN`.
+
+## Answer
+
+Resolved 2026-09-26 (AFK, self-grilling both sides) against the evidence of the [Prototype: Orbit keyboard scrolling and hydration details](65-prototype-orbit-keyboard-hydration.md) (P65 below) and the Angular 22.2 and Aria 22.2 sources. [specs/orbit.md](../specs/orbit.md) is revised in place. The decision log is appended to the [Spec: Orbit](33-spec-orbit.md) answer as `### Re-run, 2026-09-26`, decisions 47 to 58. Proposed ADR: [adr/0034-orbit-slide-contract.md](../adr/0034-orbit-slide-contract.md). The grilling kept the prototype's two fixes and changed three things around them: the root cause of the losing `inert` override is now explained from source, and it is a general binding rule, not a `TabPanel` quirk; the focus handoff covers every source of a selection change, not only the observer; and a new gap at the live flip (a slide in view made `inert` for a frame after a pre-hydration scroll or focus) is closed by reconciling the selection in the first render callback.
+
+### The changes as written into the spec
+
+1. The slide's ARIA contract (Solution; class mapping; hierarchy; DI shape, new "slide hosts no Aria directive" and "Ids" bullets; API comments; host binding table; implementation level; mechanic 9; Material comparison; ARIA table; rendered HTML; D10, D20). `NfsOrbitSlide` hosts no Aria directive. It has a static `role="tabpanel"` and binds `[attr.id]` (own `id` input, consumer id or `nfs-orbit-slide-`), `[attr.tabindex]` (`0` selected, `-1` otherwise), `[attr.aria-labelledby]` (the paired bullet's id), `[class.is-active]`, and `[attr.inert]` (`true` while live and not selected), the only `inert` binding on the element. Its own required `value` input. The API shape is unchanged.
+2. Binding precedence (new paragraph under the host binding table). Each attribute binding writes only when its own value changes, so a wrapper's binding, applied after its host directive's, holds only while Aria's value never changes after the wrapper's last write or equals the wrapper's when it does. Aria's `TabPanel` `inert` is absent in the first server pass (the bullets register after the slides) and turns on in a later pass while the wrapper's value is unchanged, so only Aria writes: the prototype's `false, true, true, true`, explained. The bullets' `tabindex` and new `aria-controls` overrides meet the rule.
+3. What leaving `TabPanel` out costs (DI shape, host binding table, dev check 6). Aria's `Tab` renders no `aria-controls` without a registered panel, so `NfsOrbitBullet` binds it to its slide's id (Aria's value is always absent, so the override holds). In development builds each Aria `Tab` warns once that it has no `ngTabPanel`, one `console.warn` per bullet, replacing the per-slide `ngTabContent` warning; documented, production silent. Dev check 6 also warns on duplicate slide values.
+4. Implementation level: platform for layout, movement, and swipe; Aria `Tabs`/`TabList`/`Tab` for the bullets; custom Angular for the slide's contract, with a "Why custom for the slides" paragraph (Aria's `TabPanel` ruled out by item 2, no CDK tab panel, a role and four bindings on existing state).
+5. Focus handoff (mechanic 8, D11, focus rules, keyboard table, user story 35, rendered HTML). Two steps: at the change, before any render, live focus is read and the new slide written into a pending-handoff signal (record points: the `selected` model's change notification, `ngOnChanges` for a parent binding, and the live flip); an `afterRenderEffect` `write` phase, after the pass that lifts the new slide's `inert`, focuses it with `preventScroll` while it is still selected. Covers the observer, `next()`/`previous()` from a control inside a slide, `selected` writes, and a rotation step after a pointer focus.
+6. Live-flip reconciliation (mechanic 4, D19, rendering modes, hydrated HTML, Tab row). The first render callback (`earlyRead` then `write`) aligns a bound non-first slide at `scrollLeft` 0 as before, otherwise adopts the slide at least half visible (one `selectedChange`, cause scroll) before `live` turns on, then records a handoff if focus is inside another slide. The slide in view never meets `inert`.
+7. Page Down, Page Up, Home, End on a focused slide: a keyboard table row, the 2.1.1 row, D21, and an e2e case that asserts focus and records the page scroll.
+8. Render hooks statement (Implementation level, "Render hooks" bullet): `afterNextRender` with phases for reconciliation, live flip, observers, and listeners; `afterRenderEffect` for movement, timer, and handoff (`write` only); `ngOnChanges` as a lifecycle record point; why the rendered-state rule holds without a rendered-state signal; no `effect()`; the audit fixer's `injectAsync` and `afterEveryRender` clauses kept.
+9. Rendering modes: server output names the id pairs and why no slide can be `inert`; before hydration Tab reaches every slide's content; full hydration includes the reconciled selection and P65's clean-hydration numbers; replay notes that the pre-hydration scroll is adopted in the first render callback and that the handoff adds no listener; `hydrate on viewport` notes P65's measurement and a keyboard user inside the block.
+10. WCAG 2.2 AA table: 1.3.1 (one `inert` binding, reconciliation, library-bound id pairs; SSR smoke and fixture cases), 2.1.1 (arrow scrolling, pre-hydration reach, the vertical keys), 2.4.3 split from 2.4.7 (the handoff for every source, the reconciliation). 2.4.7 now cites P65's ring measurement instead of "Prototype needed item 1".
+11. Test cases: `orbit--basics` (id pairs, handoff on ArrowRight), `orbit--rich-slides` (`next()` from inside a slide); browser-level handoff per source with an `inert`-at-focus probe and negative cases, reconciliation, live gate with no Aria directive on the slide, slide contract; SSR smoke (no `inert`, id pairs); e2e keyboard scrolling, server HTML without `inert`, pre-hydration scroll without `inert`, pre-hydration Tab into slide 2 kept. The six axe tags, the ADR 0018 layer wording, and the Replay guard modifiers are unchanged.
+
+### Proposed ADR
+
+[adr/0034-orbit-slide-contract.md](../adr/0034-orbit-slide-contract.md), "Orbit slides bind their own tab panel contract instead of hosting Aria's `TabPanel`", status `proposed`. It amends ADR 0025's mechanism and drops its second consequence; ADR 0025's decision (no slide `inert` before the directives are live) is kept. It meets the bar: hard to reverse (the slide's DOM contract and server HTML), surprising (the bullets compose Aria while the slides do not; a reader would re-host `TabPanel`), and a real trade-off (five options, recorded). ADR 0025 itself is not edited; when the orchestrator accepts this one, ADR 0025 can gain a one-line pointer the way ADR 0007 points to ADR 0031.
+
+### Proposed building-blocks changes
+
+(paths relative to the effort root)
+
+1. Table A, Orbit row, "Angular directives or components" cell: replace "`div[nfsOrbitSlide]` (hosts `ngTabPanel`; `tabpanel` is not allowed on `li`)" with "`div[nfsOrbitSlide]` (binds the tab panel contract itself, no Aria directive; `tabpanel` is not allowed on `li`)". "Level and reason" cell: replace "with Aria Tabs for the bullets (`R:platform` 9; `R:aria` 3)" with "with Aria Tabs for the bullets and custom slide bindings for the tab panel contract (`R:platform` 9; `R:aria` 3; [adr/0034-orbit-slide-contract.md](adr/0034-orbit-slide-contract.md))". "Primitives used" cell: replace "Aria `Tabs`/`TabList`/`Tab`/`TabPanel`" with "Aria `Tabs`/`TabList`/`Tab` (not `TabPanel`: its own `inert` binding reaches server HTML)". Reason: decisions 48 to 51.
+2. Table B, Orbit row. Table B names no `TabPanel`, but two cells depend on it. "Rendering-mode constraints and risks" cell: replace "all slides rendered and none `inert` (applied only once live)" with "all slides rendered and none `inert` (applied only once live, by the slide's own binding; no Aria `TabPanel` on the slide)". "Open risks; prototype question" cell: replace "Resolved by the [Prototype: Orbit on CSS scroll snap](issues/46-prototype-orbit-scroll-snap.md); remaining questions in the [Spec: Orbit](issues/33-spec-orbit.md) Prototype needed section." with "Resolved by the [Prototype: Orbit on CSS scroll snap](issues/46-prototype-orbit-scroll-snap.md) and the [Prototype: Orbit keyboard scrolling and hydration details](issues/65-prototype-orbit-keyboard-hydration.md), applied by the [Re-run: Orbit spec, the slide's ARIA contract and the focus handoff](issues/70-rerun-orbit-slide-contract-and-focus-handoff.md)." Reason: decisions 47 to 49.
+3. 1.9, Aria composition bullet: replace "The wrapper's host bindings win." with "The wrapper's host binding on an attribute the Aria directive also binds is applied after Aria's in each pass, but each binding writes only when its own value changes, so the override holds only when Aria's value never changes after the wrapper's last write (Orbit's bullet `aria-controls`, absent without a panel) or equals the wrapper's whenever it changes (the Tabs and Orbit bullet `tabindex` before and after Aria's first active item). An override that must differ from an Aria value that can still change is not a binding: the element does without that Aria directive ([adr/0034-orbit-slide-contract.md](adr/0034-orbit-slide-contract.md))." Reason: decision 48; it corrects a rule every Aria-hosting spec relies on.
+4. Outside building-blocks, for the orchestrator: `research/di-and-composition-patterns.md` repeats "wrapper's host bindings win" in its composition table (the `hostDirectives` row); [Spec: Tabs](16-spec-tabs.md) says the same in its Aria composition bullet and D10. The Tabs `tabindex` override is sound under the refined rule (equal to Aria's once Aria has an active tab, constant before), so only the wording would change, and only with the orchestrator's agreement, since other specs are not this ticket's to edit. The map's Decisions line for this re-run is the orchestrator's.
+
+### Triage
+
+Rule: the map's triage of human-only items; only HIGH impact with NOT-HIGH confidence stays OPEN FOR HUMAN, plus upstream filings and assistive-technology checks.
+
+1. The slide leaves Aria's `TabPanel` and binds the contract itself (a fallback from Aria, which AGENTS.md asks to confirm).
+   - Impact: HIGH. The slide's DOM contract, the server HTML, ADR 0025's mechanism, and a deviation from the Aria-first order.
+   - Confidence: HIGH. Measured failing in three engines (P65), and the cause is now explained from source (decision 48), so no binding-based variant can pass; the other four options are rejected on source grounds.
+   - Outcome: DECIDED, written as a proposed ADR, which is how the fallback reaches human review without blocking the spec.
+2. The binding-precedence rule and the proposed building-blocks 1.9 wording.
+   - Impact: MEDIUM. A cross-spec rule; the two existing `tabindex` overrides (Tabs, Orbit bullets) hold under it.
+   - Confidence: HIGH from the Angular and Aria sources and full agreement with P65's numbers; not re-measured. The SSR smoke and the prerendered fixture case assert the outcome.
+   - Outcome: DECIDED.
+3. The handoff generalised to every source, with the `selected` model's notification and `ngOnChanges` as record points.
+   - Impact: MEDIUM. Focus loss (W 2.4.3) on consumer paths; internal only, no API change.
+   - Confidence: HIGH for the observer path (P65 measured the two-step mechanism); HIGH from source for the record points (`set()` emits synchronously; signal inputs reach `ngOnChanges`); the other paths use the same `write`-phase step. One browser-level case per source settles it.
+   - Outcome: DECIDED.
+4. Reconciling the selection in the first render callback before `live` turns on.
+   - Impact: MEDIUM. Pre-hydration keyboard users under `hydrate on viewport`; internal only.
+   - Confidence: HIGH. A geometry read in a render callback at the observer's own threshold; P65's adoption result (one change, cause scroll) is kept.
+   - Outcome: DECIDED, with e2e cases.
+5. One Aria dev-mode warning per bullet.
+   - Impact: LOW. Development builds only.
+   - Confidence: HIGH (source: `tab.ts` dev check through `reportViolations`).
+   - Outcome: DECIDED: accept and document, the same ruling the [Prototype: `@angular/aria` Accordion and Tabs under Foundation markup](43-prototype-aria-accordion-tabs.md) gave the `ngTabContent` warning. No new upstream filing is proposed.
+6. Page Down, Page Up, Home, End scroll the page. Already decided at P65's triage (NOT HIGH impact, HIGH confidence); recorded in the spec (D21).
+7. Upstream question about host-binding override precedence (P65's OPEN FOR HUMAN). HUMAN-ONLY BY KIND (upstream filing). Decision 48 turns it into a documentation question: the adev "Directive execution order" section says a host can override any host-directive binding, which holds only in a pass where the host's value changes. The spec does not depend on an answer.
+8. Screen-reader output when the handoff moves focus, and when slides enter and leave `inert`. HUMAN-ONLY BY KIND (assistive-technology check); folded into the Spec: Orbit OPEN FOR HUMAN 2.
+
+### OPEN FOR HUMAN
+
+1. Upstream: optionally file a documentation issue in angular/angular asking that "Directive execution order" in the directive composition guide state that a host's binding overrides a host directive's binding on the same attribute only while the host's value changes last (each binding writes only when its own value changes). Filing in a repository the user does not own needs the user's confirmation. Default applied: no filing; the spec follows the rule as read from source.
+2. Assistive-technology check, added to the [Spec: Orbit](33-spec-orbit.md) OPEN FOR HUMAN 2: what NVDA, VoiceOver, and TalkBack announce when the focus handoff moves focus to the newly selected slide (its role description "slide" and its name from the bullet). Default applied: the DOM state tests assert.
+3. Added by the orchestrator on 2026-09-26: the repository's `AGENTS.md` asks for confirmation before falling back from an `@angular/aria` building block. The slides no longer host Aria's `TabPanel` ([ADR 0034](../adr/0034-orbit-slide-contract.md)); the spec applies that decision as the default because the prototype measured that the hosted form breaks ADR 0025 in every engine, but the fallback itself is the user's to confirm or overrule. The consistency review lists every such fallback across the bundle in one place.
+
+The Spec: Orbit OPEN FOR HUMAN 1 (Aria's roving tab-stop drift, upstream filing) is unchanged.

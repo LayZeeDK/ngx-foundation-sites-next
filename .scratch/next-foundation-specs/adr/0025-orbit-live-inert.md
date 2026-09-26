@@ -16,3 +16,4 @@ Aria's `TabPanel` renders `inert` on every unselected panel, server HTML include
 - Between first paint and hydration, assistive technology can reach slides that are out of view; the attribute change at hydration moves nothing on screen, so there is no flash.
 - The wrapper's `inert` binding must equal Aria's whenever both apply (after the first render callback), because two attribute bindings on one element are not merged; the spec defines it that way.
 - Server-render tests assert that no slide carries `inert`; browser-level tests assert that unselected slides do after the first render callback.
+- Mechanism amended by [ADR 0034](0034-orbit-slide-contract.md): the slide binds its own tab panel contract instead of hosting Aria's `TabPanel`, so the second consequence above no longer applies; the decision stands.
