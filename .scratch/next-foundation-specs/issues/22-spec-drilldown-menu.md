@@ -187,3 +187,10 @@ Applied to `specs/drilldown-menu.md` by the [Consistency review and bundle index
 2. D18 and D19, rejected alternatives: "the Nested menu spec's first text" and "the Nested menu spec's rule 12" now say "before this spec's amendment", because the Nested menu spec carries this spec's inset focus ring (rule 13) and its extended rule 12.
 
 OPEN FOR HUMAN 1 (the screen-reader pass over level changes) stays open: an assistive-technology check, human-only by kind.
+
+### Amendment, 2026-09-26 (audit 0005)
+
+From [audit 0005](../audits/0005-final-bundle.md), findings L4 and L8; `specs/drilldown-menu.md` was edited to match. No behaviour changes.
+
+1. Defaults (L4): `NfsDrilldownDefaults` gains `scrollTopElement` (a selector string or `null`; an element reference has no application-wide meaning), so the Defaults token seeds every input, as the browser-level test already said. The root example's comment now says the other inputs seed from the Defaults token, else from Foundation's value in the API table, because the Nested menu's drilldown slot holds `autoHeight` only.
+2. JavaScript-disabled e2e case (L8): "screenshot plus axe" names `@axe-core/playwright` with the six tags (ADR 0018, ADR 0022).

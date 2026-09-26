@@ -184,3 +184,7 @@ From the [Consistency review and bundle index](36-consistency-review.md); `specs
 #### Triage
 
 The one item under `### OPEN FOR HUMAN` above was already decided under the triage rule (`isOpen` persists across breakpoint crossings). Nothing in this ticket stays open.
+
+### Amendment, 2026-09-26 (audit 0005)
+
+From [audit 0005](../audits/0005-final-bundle.md), finding L3; `specs/responsive-toggle.md` was edited to match. The spec's first line now states "Targets Angular 22.2, Nx 23.2, Storybook 10.6 with `@storybook/angular-vite`, Vitest 4.1.x, TypeScript 6.0.x, and Foundation for Sites 6.9.0 Sass." No other change.

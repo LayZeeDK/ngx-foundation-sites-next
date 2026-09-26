@@ -188,3 +188,11 @@ Applied to `specs/responsive-menu.md` by the [Consistency review and bundle inde
 10. This ticket: an effort-root note now stands above the suggested Decisions-so-far line, whose links are written relative to the effort root.
 
 OPEN FOR HUMAN 1 (the screen-reader pass over a swap) stays open: an assistive-technology check, human-only by kind.
+
+### Amendment, 2026-09-26 (audit 0005)
+
+From [audit 0005](../audits/0005-final-bundle.md), findings M1 and L4; `specs/responsive-menu.md` was edited to match. No behaviour changes in this spec.
+
+1. 2.5.8 row (M1): "each mode's mixin stops the compile below 24 px" now says each mode's mixin stops the compile when a Hybrid toggle setting or a row of its mode is below 24 px, which holds for every mode now that the [Spec: Accordion Menu](20-spec-accordion-menu.md) and the [Spec: Dropdown Menu](21-spec-dropdown-menu.md) add the row check the Drilldown mixin had.
+2. Defaults (L4): every hosted input's default comes from the hosted root's Defaults token, else that root's own default (Foundation's value, in `nfsMenuBehaviourDefaults` for the Nested menu's slots and in the root spec's API table for the rest), replacing "else the Nested menu's `nfsMenuBehaviourDefaults`", whose drilldown slot holds `autoHeight` only.
+3. Drilldown members (L4): `openPath()` warns outside drilldown mode, and `currentLevel` reads `null` there, as the [Spec: Drilldown Menu](22-spec-drilldown-menu.md) defines them (the spec said both warn).

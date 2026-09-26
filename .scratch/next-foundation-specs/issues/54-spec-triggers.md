@@ -173,3 +173,7 @@ Changes to `specs/triggers.md` from the [Consistency review and bundle index](36
 #### Triage
 
 OPEN FOR HUMAN 1 (`aria-expanded` on a modal dialog's opener) was re-read under the map's rule and stays open: impact HIGH (a public union every Openable implements), confidence NOT HIGH (the applied default departs from the effort's own APG research for the modal case), as the Triage above records. It is a trap-quadrant decision, listed in the bundle's open list.
+
+### Amendment, 2026-09-26 (audit 0005)
+
+From [audit 0005](../audits/0005-final-bundle.md), finding L5; `specs/triggers.md` was edited to match. Wording only: the Reveal's `(closed)` payload and the Toggler's `toggler` input are "defined by the [Spec: Reveal](18-spec-reveal.md) and the [Spec: Toggler](17-spec-toggler.md)" instead of "sketches owned by those specs".

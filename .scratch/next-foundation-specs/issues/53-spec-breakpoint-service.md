@@ -192,3 +192,10 @@ Changes to `specs/breakpoint-service.md` from the [Consistency review and bundle
 3. Rendering modes, going live: links the [Prototype: Breakpoint handoff under hydration](60-prototype-breakpoint-handoff-hydration.md) as the evidence for the handoff in three engines, which that prototype's answer asked for and the orchestrator note above records.
 4. User story 23: "deferred content" (a glossary `_Avoid_` word, ambiguous with Lazy content) becomes "content in a plain `@defer` block".
 5. Checked and unchanged: the seven sections with the Material comparison under Implementation Decisions and the design decisions table first under Further Notes; the Implementation level with its `ResizeObserver` fallback; the WCAG 2.2 AA subsection of criteria imposed on consumers; the six axe tags; the four test layers; render hooks and `injectAsync` (eager, stated); consumer rule 1 as the source of the rendered-state rule; the Sass subsection for `nfs-breakpoint-properties`, which the Storybook preview includes; Story ids `media-query--<story>`; nothing OPEN FOR HUMAN and no prototype outstanding.
+
+### Amendment, 2026-09-26 (audit 0005)
+
+From [audit 0005](../audits/0005-final-bundle.md), findings L4 and L7; `specs/breakpoint-service.md` was edited to match. No API change.
+
+1. Consumer example (L4): the ResponsiveMenu example no longer publishes the requested mode as a public `mode`; it is the private `#requested`, handed to the Nested menu root's `drive()`, and a comment points at the [Spec: Responsive Menu](23-spec-responsive-menu.md), whose public `mode` is the displayed mode.
+2. Problem Statement (L7): "Nine of Foundation's 21 Plugins change behaviour with the viewport" listed eight viewport plugins and three reduced-motion ones; it now says eight change behaviour with the viewport and three more should stop moving things under reduced motion, and that the eight ask `Foundation.MediaQuery`.

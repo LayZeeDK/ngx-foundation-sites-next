@@ -154,6 +154,7 @@ interface NfsDrilldownDefaults {
   animateHeight?: boolean;    // Foundation false
   closeOnClick?: boolean;     // Foundation false
   scrollTop?: boolean;        // Foundation false
+  scrollTopElement?: string | null; // Foundation '': a selector, since an element reference has no application-wide meaning
   scrollTopOffset?: number;   // Foundation 0
 }
 
@@ -495,7 +496,7 @@ Against the static Storybook build, on `drilldown-menu--fixture` through `mount(
 
 Against the prerendered fixture app, one route with a standalone drilldown and one with a ResponsiveMenu-shaped root (`drilldown medium-dropdown`), prerendered at `small`:
 
-- JavaScript disabled: screenshot plus axe; the root level only, closed levels hidden, links navigable.
+- JavaScript disabled: screenshot plus `@axe-core/playwright` with the six tags; the root level only, closed levels hidden, links navigable.
 - Hydration: no NG05xx and `ngDevMode.componentsSkippedHydration === 0`; after hydration the wrapper gains `min-height` and nothing else changes; at 1280 px the ResponsiveMenu route ends with the dropdown classes, bare wrapper, and hidden back items.
 - Pre-hydration click on a toggle with the main bundle held back: after hydration the level opens exactly once and focus is in it; a pre-hydration ArrowRight on a focused toggle replays with the one accepted error log; on a route with a level open at first paint, a pre-hydration click on its back button closes it once.
 - `@defer (hydrate on interaction)` around the `nav`: a toggle click hydrates and opens; `hydrate never`: root links navigate, toggles do nothing, no error.
@@ -629,7 +630,8 @@ export class NfsDrilldown {
   protected readonly root = inject(nfsMenuModeToken, {self: true});
   readonly #defaults = inject(nfsDrilldownDefaultsToken, {optional: true});
   readonly autoHeight = input(this.#defaults?.autoHeight ?? nfsMenuBehaviourDefaults.drilldown.autoHeight, {transform: booleanAttribute});
-  // ... animateHeight, closeOnClick, scrollTop, scrollTopElement, scrollTopOffset, seeded the same way
+  // ... animateHeight, closeOnClick, scrollTop, scrollTopElement, scrollTopOffset: this.#defaults?.<key> ?? Foundation's value
+  //     from the API table (the Nested menu's drilldown slot holds autoHeight only)
   readonly opened = output<NfsMenuItem>();
   readonly closed = output<NfsMenuItem>();
   protected readonly live = computed(() => this.root.mode() === 'drilldown');

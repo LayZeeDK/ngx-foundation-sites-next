@@ -216,3 +216,18 @@ Applied to `specs/nested-menu.md` by the [Consistency review and bundle index](3
 6. Testing prior art adds the swap prototype's suite.
 
 OPEN FOR HUMAN 1 (the screen-reader pass over a swap) stays open: an assistive-technology check, human-only by kind.
+
+### Amendment, 2026-09-26 (audit 0005)
+
+From [audit 0005](../audits/0005-final-bundle.md), findings M1, M5, L4 (with unrecorded departure 4), and L8; `specs/nested-menu.md` was edited to match.
+
+1. Row height (M1): the 2.5.8 row, the Checks paragraph, and the Sass compile test now say that `nfs-accordion-menu` and `nfs-dropdown-menu` stop the compile on the Drilldown mixin's row condition, over `$accordionmenu-padding` or `$accordionmenu-submenu-padding` and over `$dropdownmenu-padding` or `$dropdownmenu-submenu-padding`, as the [Spec: Accordion Menu](20-spec-accordion-menu.md) and [Spec: Dropdown Menu](21-spec-dropdown-menu.md) amendments decide.
+2. A two-way `[(expanded)]` starting `false` beside a static `is-active` (M5): the `expanded` row now states the outcome, and the browser-level Seeding case asserts it: the seed writes `true` into the consumer's state during construction, so the submenu stays open and the state reads `true`; the static `is-active` wins over a two-way initial value, while a one-way `[expanded]="false"` wins over the class. This is the outcome the [Prototype: ResponsiveMenu swap committed in the Nested menu root's render callback](71-prototype-responsive-menu-swap-commit.md) predicted from its measured seed order (the seed emits after the item's listeners exist) and left unmeasured; the test is the pass condition.
+3. The one Sass list (L4): rule 6 names the `.align-left`/`.align-right` twins drawn with `$dropdownmenu-arrow-size` and `$dropdownmenu-arrow-color`; rule 10 names the `.<bp>-vertical` and `.<bp>-horizontal` variants inside `breakpoint()`; the Checks paragraph adds the Drilldown mixin's `$dropdownmenu-arrow-color` twin check and the Dropdown Menu mixin's two `@warn` checks; item (2) adds `$topbar-background`, `$topbar-submenu-background`, `$breakpoint-classes`, and `breakpoint`; the 1.4.11 row adds the Drilldown mixin's twin and Hybrid checks. Each now matches the [Spec: Dropdown Menu](21-spec-dropdown-menu.md) and [Spec: Drilldown Menu](22-spec-drilldown-menu.md) mixins.
+4. No-root fallback (L4, departure 4): a closed submenu with no root binds Foundation's `.is-hidden` beside `hidden` (the DI bullet, the `NfsSubmenu` host line, and the browser-level DI case), because a consumer's static `menu` class gives it Foundation's `.menu { display: flex }`, which beats normalize's `[hidden]` (building-blocks 1.10).
+5. `mode` (L4): implementable as a `linkedSignal` whose source is a signal holding the function passed to `drive()` and whose computation calls it inside `untracked`, as the prototype's root does; read literally, "whose source is the driven function" would track every breakpoint change, the design ADR 0035 rejects.
+6. JavaScript-disabled e2e case (L8): "screenshot plus axe" names `@axe-core/playwright` with the six tags.
+
+#### Triage
+
+Item 2: Impact MEDIUM (a documented outcome for a consumer binding; no API change). Confidence HIGH (the seed order was measured; Angular writes a two-way binding's target from the output before the first update pass reads it). Decided as the audit suggested; nothing is left open.

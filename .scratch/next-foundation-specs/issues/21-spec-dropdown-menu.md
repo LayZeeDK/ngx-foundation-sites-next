@@ -171,3 +171,13 @@ Applied to `specs/dropdown-menu.md` by the [Consistency review and bundle index]
 1. Usage examples: the ResponsiveMenu one-liner no longer calls the ResponsiveMenu markup "a sketch owned by its spec"; it names the published [Spec: Responsive Menu](23-spec-responsive-menu.md) as the owner.
 
 OPEN FOR HUMAN 1 (the screen-reader pass over the Dropdown Menu) stays open: an assistive-technology check, human-only by kind.
+
+### Amendment, 2026-09-26 (audit 0005)
+
+From [audit 0005](../audits/0005-final-bundle.md), finding M1 (unrecorded departure 1); `specs/dropdown-menu.md` was edited to match. The audit offered two fixes, a row check in the mixin or an exception recorded in building-blocks 1.10; the first is applied.
+
+1. Row height (new; this ticket recorded no decision on rows): `nfs-dropdown-menu` also stops the compile with `@error` naming the setting when `1rem` plus twice the first value of `$dropdownmenu-padding` or `$dropdownmenu-submenu-padding`, converted with `rem-calc()`, is below `rem-calc(24)` (2.5.8, rows at line height 1). Changed in the spec: the 2.5.8 row, the Sass compile test (a `$dropdownmenu-padding` of `0.2rem 1rem` stops the compile), checks item (e), and a new design decision D19. Reason: row height is a consumer setting, and small paddings give stacked submenu rows under 24 px, where the spacing exception does not apply; building-blocks 1.10 guarantees 2.5.8 in the Library mixin where settings can fail it, and the story gate compiles only the library's own settings (ADR 0022), as the [Spec: Drilldown Menu](22-spec-drilldown-menu.md) decided in its decision 40. Source: building-blocks 1.10; ADR 0022; the Drilldown Menu spec's D20; Foundation's `$dropdownmenu-padding` and `$dropdownmenu-submenu-padding` in the 6.9.0 settings.
+
+#### Triage
+
+Impact MEDIUM: a consumer compile with a padding under the threshold now stops; no API, markup, or default changes, and Foundation's defaults (38 px rows) pass. Confidence HIGH: building-blocks 1.10 and ADR 0022 require it, and the Drilldown mixin already does it. Decided.

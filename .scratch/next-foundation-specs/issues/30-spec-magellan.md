@@ -199,3 +199,11 @@ From the [Consistency review and bundle index](36-consistency-review.md); `specs
 #### Triage
 
 The one OPEN FOR HUMAN item (how NVDA, JAWS, and VoiceOver read a moving `aria-current`) is an assistive-technology check and stays human-only by kind. The inherited `<base href>` item stays owned, and open, in the [Spec: Smooth Scroll](29-spec-smooth-scroll.md) triage.
+
+### Amendment, 2026-09-26 (audit 0005)
+
+From [audit 0005](../audits/0005-final-bundle.md), findings L2, L5, and L8; `specs/magellan.md` was edited to match. Wording only.
+
+1. Audit names (L2): "audit H6" is "audit 0001 H6", and "audit M12" is "audit 0002 M12".
+2. Stale references (L5): the Parent token bullet no longer says Table B sketches an `nfsMagellanToken` (Table B no longer names one); it says an earlier building-blocks sketch named one. The replay bullet cites "building-blocks Part 4, Decided item 3".
+3. JavaScript-disabled e2e case (L8): "screenshot plus axe" names `@axe-core/playwright` with the six tags.

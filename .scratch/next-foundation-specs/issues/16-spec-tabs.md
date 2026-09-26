@@ -142,3 +142,7 @@ From the [Consistency review and bundle index](36-consistency-review.md); `specs
 #### Triage
 
 The two items under `### OPEN FOR HUMAN` above were re-rated under the map's triage rule: item 1 is an upstream filing in angular/components and item 2 a screen-reader check, both human-only by kind, so both stay open. No trap-quadrant item remains.
+
+### Amendment, 2026-09-26 (audit 0005)
+
+From [audit 0005](../audits/0005-final-bundle.md), finding L8; `specs/tabs.md` was edited to match. Wording only: the node-level SSR smoke now names its file, "under `npx nx test <lib>` in `tabs.ssr.spec.ts` through the shared `renderServer()` helper", as the other 25 specs do; the JavaScript-disabled e2e case names `@axe-core/playwright` with the six tags.

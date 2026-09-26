@@ -173,3 +173,11 @@ Checked and left as they are: the seven to-spec sections and the 1.14 placement;
 OPEN FOR HUMAN 1 (screen-reader check of the error announcements) stays human-only by kind (assistive-technology check). OPEN FOR HUMAN 2 (three upstream Angular reports) stays human-only by kind (upstream filings). Nothing else is open.
 
 The checks-only `nfs-abide` mixin: impact HIGH (a public Sass mixin name consumers write), confidence HIGH (ADR 0022 and building-blocks 1.10 require a compile-time check where axe has no rule; the name follows ADR 0012's `nfs-<plugin>` rule; the Slider, Orbit, Off-canvas, and Responsive Toggle mixins already hold such checks). Decided: add it.
+
+### Amendment, 2026-09-26 (audit 0005)
+
+From [audit 0005](../audits/0005-final-bundle.md), findings M4 (unrecorded departure 3), L3, and L7; `specs/abide.md` was edited to match.
+
+1. Registration of a reference-linked Form error (M4): a Form error or input found through DI registers at construction; a Form error linked by `[nfsFormError]="field"` registers from an `effect` whose cleanup unregisters, the reverse-link exception of building-blocks 1.5 and 1.9, because the reference arrives with the first update and can change. Changed in the spec: the Registration bullet, the primitives list (one `effect` per reference-linked Form error), and the Hydration boundary bullet. Building-blocks 1.5 now lists the Abide Form error with its referenced field among the reverse-link cases. Reason: at construction a signal input holds its default, so the reference cannot be read then, and building-blocks 1.9 sends a registration that can change after `ngOnInit` to an `effect`.
+2. Target versions (L3): the spec's first paragraph now states "Targets Angular 22.2, Nx 23.2, Storybook 10.6 with `@storybook/angular-vite`, Vitest 4.1.x, TypeScript 6.0.x, and Foundation for Sites 6.9.0 Sass."
+3. Changed behaviour (L7): Foundation set `aria-live` from `a11yErrorLevel` on the global error element; the Form alert gets a role instead (`alert`, `status`, or none), now listed under "Foundation behaviour dropped or changed". Source: the Foundation 6.9.0 clone, `js/foundation.abide.js` (`addGlobalErrorA11yAttributes`).

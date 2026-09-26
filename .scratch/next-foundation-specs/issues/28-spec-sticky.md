@@ -158,3 +158,7 @@ From the [Consistency review and bundle index](36-consistency-review.md); `specs
 #### Triage
 
 Nothing is open in this ticket: its own OPEN FOR HUMAN section says "None", and the [Prototype: CSS `position: sticky` with IntersectionObserver sentinels for Sticky](48-prototype-sticky-css.md) and the [Prototype: Sticky measurement refinements](63-prototype-sticky-measurement.md) leave nothing open either.
+
+### Amendment, 2026-09-26 (audit 0005)
+
+From [audit 0005](../audits/0005-final-bundle.md), finding L3; `specs/sticky.md` was edited to match. The spec's first line now states "Targets Angular 22.2, Nx 23.2, Storybook 10.6 with `@storybook/angular-vite`, Vitest 4.1.x, TypeScript 6.0.x, and Foundation for Sites 6.9.0 Sass."; it named no Angular version before. No other change.

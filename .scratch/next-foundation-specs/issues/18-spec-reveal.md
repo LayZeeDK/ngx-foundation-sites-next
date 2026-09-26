@@ -200,3 +200,7 @@ From the [Consistency review and bundle index](36-consistency-review.md); `specs
 #### Triage
 
 Both OPEN FOR HUMAN items stay open by kind: item 1 is an assistive-technology check and item 2 an upstream filing under the user's identity (map, Orchestration rules). No other item is open.
+
+### Amendment, 2026-09-26 (audit 0005)
+
+From [audit 0005](../audits/0005-final-bundle.md), finding L8; `specs/reveal.md` was edited to match. Wording only: the JavaScript-disabled e2e case names `@axe-core/playwright` with the six tags instead of "screenshot plus axe". The internal `NfsRevealStack` service (D20) is unchanged; building-blocks 1.5 now names such a plugin-internal service as allowed (audit 0005, unrecorded departure 5).

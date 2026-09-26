@@ -183,9 +183,9 @@ Inputs exposed from the hosted roots (every Option of the three plugins; each sp
 | `autoclose` | `NfsDropdownMenu` | `boolean` | `true` | `data-autoclose` |
 | `closeOnClickInside` | `NfsDropdownMenu` | `boolean` | `true` | `data-close-on-click-inside` |
 
-Every default comes from the hosted root's Defaults token, else the Nested menu's `nfsMenuBehaviourDefaults`, which hold Foundation's values. An input bound while its mode is not live stays bound and applies when the mode returns. The directive declares no `model()`: the open state is each item's `expanded` model (Nested menu), and the displayed mode follows the viewport, so it is read-only.
+Every default comes from the hosted root's Defaults token, else that root's own default (Foundation's value, in `nfsMenuBehaviourDefaults` for the Nested menu's slots and in the root spec's API table for the rest). An input bound while its mode is not live stays bound and applies when the mode returns. The directive declares no `model()`: the open state is each item's `expanded` model (Nested menu), and the displayed mode follows the viewport, so it is read-only.
 
-Per-item and mode-specific API, used as the Nested menu and the three root specs define it: `NfsMenuItem` with its `expanded` model, `opened`/`closed`, `open()`/`close()`/`toggle()`; `NfsSubmenu` with its `id`; `NfsSubmenuToggle` with `hybrid`; `openPath()` and `currentLevel` through `#d="nfsDrilldown"` (drilldown mode only; elsewhere they warn, as that spec says); `expandAll()` through `#a="nfsAccordionMenu"` (accordion mode with `multiOpen` on).
+Per-item and mode-specific API, used as the Nested menu and the three root specs define it: `NfsMenuItem` with its `expanded` model, `opened`/`closed`, `open()`/`close()`/`toggle()`; `NfsSubmenu` with its `id`; `NfsSubmenuToggle` with `hybrid`; `openPath()` and `currentLevel` through `#d="nfsDrilldown"` (drilldown mode only: `openPath()` warns outside drilldown mode; `currentLevel` reads `null` there, as that spec says); `expandAll()` through `#a="nfsAccordionMenu"` (accordion mode with `multiOpen` on).
 
 Behaviour rules:
 
@@ -311,7 +311,7 @@ Requirements, not recommendations. The Accessibility gate runs axe with the WCAG
 | 2.4.7 Focus Visible | A visible focus indicator in every mode | Each mode's rule (drilldown's inset ring inside the clipping wrapper); the library removes no outline | e2e screenshot per mode |
 | 2.4.11 Focus Not Obscured (Minimum) | No open submenu covers the focused control, also right after a swap | Dropdown submenus close when focus leaves them; a swap into dropdown keeps only the submenu focus is in, or none when focus is outside; drilldown levels and accordion sections are in flow | e2e centre hit test after swaps and Tab sweeps |
 | 2.5.3 Label in Name | Names contain the visible text | Named from content; no copied `aria-label` | Story play |
-| 2.5.8 Target Size (Minimum) | Every toggle, item, and back button at least 24 by 24 CSS px in every mode | Rows are 38 px high and Hybrid toggles 40 px with Foundation's defaults; each mode's mixin stops the compile below 24 px | Accessibility gate (`target-size`, on through the `wcag22aa` tag); Sass compile tests |
+| 2.5.8 Target Size (Minimum) | Every toggle, item, and back button at least 24 by 24 CSS px in every mode | Rows are 38 px high and Hybrid toggles 40 px with Foundation's defaults; each mode's mixin stops the compile when a Hybrid toggle setting or a row of its mode is below 24 px | Accessibility gate (`target-size`, on through the `wcag22aa` tag); Sass compile tests |
 | 3.2.1 On Focus | Focus alone changes nothing | A swap follows the viewport, never focus | Story play |
 | 4.1.2 Name, Role, Value | Names, roles, and `aria-expanded` are right in server HTML and after every swap | Host bindings recompute; a submenu the swap closes reports `aria-expanded="false"` in the same pass; Foundation's leftover attributes cannot occur | Accessibility gate after each swap; SSR smoke |
 

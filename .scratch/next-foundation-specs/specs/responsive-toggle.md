@@ -1,6 +1,6 @@
 # Spec: Responsive Toggle
 
-Ticket: [Spec: Responsive Toggle](../issues/24-spec-responsive-toggle.md)
+Ticket: [Spec: Responsive Toggle](../issues/24-spec-responsive-toggle.md). Targets Angular 22.2, Nx 23.2, Storybook 10.6 with `@storybook/angular-vite`, Vitest 4.1.x, TypeScript 6.0.x, and Foundation for Sites 6.9.0 Sass.
 
 ## Problem Statement
 

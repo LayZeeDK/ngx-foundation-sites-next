@@ -164,3 +164,7 @@ From the [Consistency review and bundle index](36-consistency-review.md); `specs
 #### Triage
 
 The four items under `### OPEN FOR HUMAN` above were re-rated under the map's triage rule. Items 1 to 3 are upstream filings in angular/components and item 4 is a screen-reader check; all four stay open by kind (outward-facing under the user's identity, or assistive technology). No trap-quadrant item remains; every design decision stays as decided.
+
+### Amendment, 2026-09-26 (audit 0005)
+
+From [audit 0005](../audits/0005-final-bundle.md), finding L5; `specs/accordion.md` was edited to match. Wording only: the missing `@supports` guard is no longer called "a delta from building-blocks 1.6 rule 3", because rule 3 now reaches the same conclusion; the Animation bullet and D11 say "building-blocks 1.6 rule 3 records the same conclusion", and D11's rejected alternative is the guard itself.

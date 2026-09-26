@@ -4,7 +4,7 @@ Ticket: [Spec: Breakpoint service (shared utility)](../issues/53-spec-breakpoint
 
 ## Problem Statement
 
-Nine of Foundation's 21 Plugins change behaviour with the viewport: ResponsiveMenu and ResponsiveAccordionTabs switch mode per breakpoint, ResponsiveToggle and OffCanvas change at a named breakpoint, Tooltip, Sticky and Equalizer switch themselves off below one, Interchange swaps sources by breakpoint or by orientation and pixel density, and Orbit, SmoothScroll, and Magellan should stop moving things when the user asks for reduced motion. In Foundation they all ask one utility, `Foundation.MediaQuery`, which learns the breakpoints by reading a serialised Sass map out of the computed `font-family` of a `<meta class="foundation-mq">` element and re-checks them on every window `resize`.
+Eight of Foundation's 21 Plugins change behaviour with the viewport: ResponsiveMenu and ResponsiveAccordionTabs switch mode per breakpoint, ResponsiveToggle and OffCanvas change at a named breakpoint, Tooltip, Sticky and Equalizer switch themselves off below one, and Interchange swaps sources by breakpoint or by orientation and pixel density; and three more, Orbit, SmoothScroll, and Magellan, should stop moving things when the user asks for reduced motion. In Foundation the eight all ask one utility, `Foundation.MediaQuery`, which learns the breakpoints by reading a serialised Sass map out of the computed `font-family` of a `<meta class="foundation-mq">` element and re-checks them on every window `resize`.
 
 That design cannot carry over to an Angular library that must render on the server:
 
@@ -494,7 +494,9 @@ export class NfsResponsiveMenu {
   readonly rules = input.required<string | NfsBreakpointRules<(typeof menuModes)[number]>>();
   readonly #parsed = computed(() => parseNfsBreakpointRules(this.rules(), menuModes, this.#mq.breakpoints));
   readonly #live = signal(false); // set in the first render callback (Responsive Menu spec, ADR 0035)
-  readonly mode = computed(() =>
+  // The requested mode, handed to the Nested menu root's drive(); the public `mode` is the displayed mode
+  // the root commits in its render callback, as the Responsive Menu spec defines it.
+  readonly #requested = computed(() =>
     this.#live() ? this.#mq.resolve(this.#parsed()) : this.#mq.resolve(this.#parsed(), this.#mq.serverBreakpoint),
   );
 }

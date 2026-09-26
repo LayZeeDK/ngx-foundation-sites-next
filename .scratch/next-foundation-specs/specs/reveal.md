@@ -509,7 +509,7 @@ Against the static Storybook build, on `reveal--fixture` and the stories named, 
 
 Against the prerendered fixture app (the harness from the rendering-mode test seam prototype), one route with a basic Reveal, an open-by-default Reveal, a deep-linked one, and a `@defer (hydrate on interaction)` block holding a Trigger and its Reveal:
 
-- JavaScript disabled: screenshot plus axe; every dialog hidden and its content in the DOM; the open-by-default one closed.
+- JavaScript disabled: screenshot plus `@axe-core/playwright` with the six tags; every dialog hidden and its content in the DOM; the open-by-default one closed.
 - Hydration: no NG05xx in the console, `ngDevMode.componentsSkippedHydration === 0`, and no `animationstart` on any dialog during hydration; the open-by-default Reveal is `:modal` after hydration with focus inside.
 - Pre-hydration click with the main bundle delayed: the Trigger clicked before hydration opens its Reveal exactly once after hydration, `:modal`, focus inside, no error logged.
 - The `hydrate on interaction` block: the first Trigger click hydrates the block and opens the Reveal.

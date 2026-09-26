@@ -191,3 +191,7 @@ From the [Consistency review and bundle index](36-consistency-review.md); `specs
 #### Triage
 
 No OPEN FOR HUMAN item exists; nothing is added.
+
+### Amendment, 2026-09-26 (audit 0005)
+
+From [audit 0005](../audits/0005-final-bundle.md), finding L5; `specs/dropdown.md` was edited to match. Wording only: the Reveal markup is "defined by the [Spec: Reveal](18-spec-reveal.md)" instead of "a sketch owned by its spec".

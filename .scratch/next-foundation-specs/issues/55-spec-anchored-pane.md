@@ -195,3 +195,7 @@ Changes to `specs/anchored-pane.md` from the [Consistency review and bundle inde
 - This ticket: the "Proposed building-blocks changes" list gains the "(paths relative to the effort root)" note its quoted links need (audit 0003 L3's convention).
 - Recorded here because this ticket had no note of them: audit 0004 already changed the spec's contract-table cell for Tooltip `clickOpen` (finding M7), the Out of Scope line on Reveal dismissal, the layer 2 heading, and the DropdownMenu `autoclose` cell (finding L6).
 - Checked and unchanged: the consumer calls in the Dropdown, Tooltip, Nested menu, and Reveal specs use `nfsPositioner`, `nfsLightDismiss` (with `outsidePress`), `nfsHoverIntent` (with its required `isOpen`), `nfsDocumentRect`, `nfsBodyBounds`, `nfsOverlap`, and `NfsDismissReason` as defined; the Hierarchy and Out of Scope agree with ADR 0024 and ADR 0031 (a non-modal Reveal uses Light dismiss only); the prototype verdict (in-place port within 0.02 px, no CDK Overlay) and both triage decisions are reflected; render hooks and `injectAsync` (eager) are stated; the Sass subsection says "No library CSS; there is no `nfs-anchored-pane` mixin". Nothing is OPEN FOR HUMAN.
+
+### Amendment, 2026-09-26 (audit 0005)
+
+From [audit 0005](../audits/0005-final-bundle.md), finding L5; `specs/anchored-pane.md` was edited to match. Wording only: D2's rejected root service is attributed to "building-blocks Table C's first sketch, since replaced", because Table C no longer holds it.

@@ -264,7 +264,7 @@ In an application with `<base href="/">`, `href="#first"` on the route `/guide/i
 
 - Smooth scrolling is browser-owned: `scrollIntoView` with `behavior: 'smooth'` for directive jumps, CSS `scroll-behavior: smooth` for native jumps when the consumer includes `nfs-smooth-scroll`. There is no library timing, no State class, no Motion class, no `animate.enter`/`animate.leave`, and no Completion output (ADR 0003 has nothing to govern here).
 - Reduced motion: the directive reads `NfsMediaQuery.reducedMotion` at the moment of each scroll (the Breakpoint service's live signal, `false` on the server and before the service goes live, which no click can precede) and passes `'instant'` while it is `true`. The mixin emits its rule only inside `@media (prefers-reduced-motion: no-preference)`, so native jumps are instant under `reduce` too. Building-blocks 1.6 rule 5's 1 ms override does not apply: no library code waits for a scroll to finish.
-- No completion signal: native smooth scrolling reports its end only through `scrollend`, which is outside the Browser target (Safari 26.2). Consumers that need "scrolling settled" (Magellan's transition flag) use the Magellan spec's IntersectionObserver settling. The instant jump under reduced motion also means Sticky's sentinels see an instantaneous jump; the Sticky spec's throttled scroll backstop covers that.
+- No completion signal: native smooth scrolling reports its end only through `scrollend`, which is outside the Browser target (Safari 26.2). Consumers that need "scrolling settled" (Magellan's transition flag) use the Magellan spec's 100 ms scroll-idle timer. The instant jump under reduced motion also means Sticky's sentinels see an instantaneous jump; the Sticky spec's throttled scroll backstop covers that.
 
 ### Rendering modes
 
@@ -332,7 +332,7 @@ Against the static Storybook build:
 
 Against the prerendered fixture app (the harness from the rendering-mode test seam prototype), served under `<base href="/">` on a nested route:
 
-- JavaScript disabled: screenshot plus axe on the server HTML; a same-document link jumps to its target at the CSS offset; a `#`-only link navigates to the base URL (documents the base-href hazard the dev check warns about).
+- JavaScript disabled: screenshot plus `@axe-core/playwright` with the six tags on the server HTML; a same-document link jumps to its target at the CSS offset; a `#`-only link navigates to the base URL (documents the base-href hazard the dev check warns about).
 - Hydration: no NG05xx in the console and `ngDevMode.componentsSkippedHydration === 0`.
 - Pre-hydration click with the main bundle delayed: the native jump happens at once; after hydration focus is on the target, the final position equals the target position, and exactly one "`preventDefault` called during event replay" error is logged (the building-blocks replay rule, decided at triage on 2026-09-26; the assertion would flip to zero only if a replay check were added later).
 - Dehydrated block, link host: inside `@defer (hydrate when hydrateNow())` with the signal held `false`, clicking the link does not jump before the block hydrates, then scrolls to and focuses the target, logs no error, and leaves the URL unchanged.
@@ -497,7 +497,7 @@ The offset rules (`scroll-padding-top`, `scroll-margin-top`) are the consumer's,
 
 ### Platform features to adopt when the browser target moves
 
-- `scrollend` (Baseline newly available 2025-12-12, outside the target): a `scrolled` Completion output, and a promise-returning `scrollTo`, emitted when the directive's scroll settles; Magellan's "in transition" flag can then use it instead of IntersectionObserver settling.
+- `scrollend` (Baseline newly available 2025-12-12, outside the target): a `scrolled` Completion output, and a promise-returning `scrollTo`, emitted when the directive's scroll settles; Magellan's "in transition" flag can then use it instead of the Magellan spec's 100 ms scroll-idle timer.
 - The Navigation API's `navigate` event (outside the target): same-document fragment navigations could be intercepted in one place, which would keep native `:target` and history semantics while avoiding the Router's `popstate` reaction; it would replace the per-host click listener, and so the replay caveats, if Angular's Router integrates with it.
 
 ### Foundation behaviour changed or dropped

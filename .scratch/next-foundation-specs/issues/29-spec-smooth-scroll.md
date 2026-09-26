@@ -172,3 +172,10 @@ Re-rated under the map's rule (only HIGH impact with NOT-HIGH confidence stays O
 1. OPEN FOR HUMAN 1 (a directive-handled jump writing the fragment): already DECIDED under Triage item 1 (the URL stays unchanged); nothing open.
 2. OPEN FOR HUMAN 2 (`#`-only `href`s that `<base href>` resolves to another document, handled after hydration). Impact: HIGH, unchanged (the [Spec: Magellan](30-spec-magellan.md) inherits the in-page test, and narrowing it later changes where shipped consumer links go). Confidence: NOT HIGH, unchanged. The [Prototype: Smooth Scroll under Router scroll restoration and replay](62-prototype-smooth-scroll-router-restoration.md) confirmed the hazard itself (its row 1d: a bare `href="#id"` on a non-root route reloads the application at `/`), which is evidence that the applied default leaves a link broken before hydration and in `hydrate never`, not evidence for either option. Outcome: STAYS OPEN FOR HUMAN as a trap-quadrant decision, with the two competing options of Triage item 2.
 3. OPEN FOR HUMAN 3 (replay recognition, inherited): the list still words it as inherited and open, but Triage item 3 records it DECIDED in the [Building-blocks map and cross-cutting architecture decisions](14-building-blocks-map.md) triage (state first, `preventDefault()` last, the logged error accepted); nothing open.
+
+### Amendment, 2026-09-26 (audit 0005)
+
+From [audit 0005](../audits/0005-final-bundle.md), findings L5 and L8; `specs/smooth-scroll.md` was edited to match. Wording only.
+
+1. Magellan's transition flag (L5): the "No completion signal" bullet and the `scrollend` note said Magellan uses IntersectionObserver settling; the [Spec: Magellan](30-spec-magellan.md) ends the flag on a 100 ms scroll-idle timer, and both now say so.
+2. JavaScript-disabled e2e case (L8): "screenshot plus axe" names `@axe-core/playwright` with the six tags.

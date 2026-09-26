@@ -460,7 +460,7 @@ export class AppHeader {
 }
 ```
 
-The Reveal's `(closed)` payload and the Toggler's `toggler` input are sketches owned by those specs.
+The Reveal's `(closed)` payload and the Toggler's `toggler` input are defined by the [Spec: Reveal](../issues/18-spec-reveal.md) and the [Spec: Toggler](../issues/17-spec-toggler.md).
 
 ```html
 <!-- OffCanvas: open from the title bar, close from inside or by following a link.

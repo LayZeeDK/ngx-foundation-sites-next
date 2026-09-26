@@ -626,7 +626,7 @@ A pane inside a Reveal: Escape closes the pane first and leaves the dialog open;
 </dialog>
 ```
 
-The Reveal markup is a sketch owned by its spec.
+The Reveal markup is defined by the [Spec: Reveal](../issues/18-spec-reveal.md).
 
 ### Sass
 

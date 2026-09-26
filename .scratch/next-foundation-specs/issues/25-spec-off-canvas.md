@@ -182,3 +182,14 @@ From the [Consistency review and bundle index](36-consistency-review.md); `specs
 #### Triage
 
 The one OPEN FOR HUMAN item (the screen-reader check) stays open by kind: it needs assistive technology. No other item is open.
+
+### Amendment, 2026-09-26 (audit 0005)
+
+From [audit 0005](../audits/0005-final-bundle.md), unrecorded departure 5 and finding L8; `specs/off-canvas.md` was edited to match.
+
+1. Home of the Scroll lock count (departure 5): the spec counted its Scroll lock per document without naming where the count lives. It now names `NfsOffCanvasScrollLock`, an internal `@Service()` of the entry point (not public API), holding the open panels with `contentScroll: false`: the first to lock adds `is-off-canvas-open` to `body`, the last to release removes it. Building-blocks 1.5 now allows a plugin-internal service for state shared across instances, naming Reveal's `NfsRevealStack` and this one. Behaviour is unchanged (the browser-level case "kept while a second locked panel is open" already asserted the count). Reason: a module-level counter would be shared between applications on one page, the reason the [Spec: Reveal](18-spec-reveal.md) gives in its D20.
+2. JavaScript-disabled e2e case (L8): "screenshot plus axe" names `@axe-core/playwright` with the six tags.
+
+#### Triage
+
+Item 1: Impact LOW (an internal service, not public API; behaviour unchanged). Confidence HIGH (the Reveal precedent and building-blocks 1.5 as amended). Decided.

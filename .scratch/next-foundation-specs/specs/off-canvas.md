@@ -141,7 +141,8 @@ div.off-canvas-wrapper                                         (CSS only)
 - Overlay to panel: `[nfsOffCanvasOverlay]="nav"` is a required reference; the overlay registers with the panel from an `effect` the same way, which tells the panel it has an overlay (Foundation's `contentOverlay`).
 - `nfsOffCanvasContentToken = new InjectionToken<NfsOffCanvasContent>('nfsOffCanvasContentToken')` in a token file that imports only types (lightweight token). No panel token: nothing injects the panel by class; `nfsOpenableToken` serves descendants and `exportAs` serves templates.
 - Defaults token, Shape B (building-blocks 1.4): `nfsOffCanvasDefaultsToken` with the all-optional `NfsOffCanvasDefaults` (`transition`, `closeOnClick`, `closeOnEsc`, `contentScroll`, `forceTo`, `autoFocus`, `trapFocus`), read with `inject(token, {optional: true})` to seed input defaults; nearest provider wins.
-- Injected by the panel: `NfsMediaQuery` (Breakpoint service), `nfsAnimationsToken`, CDK `FocusTrapFactory` (only used when `trapFocus` is on), CDK `InteractivityChecker`, CDK `_IdGenerator`, `DOCUMENT`, `Renderer2` (the `body` class, the listeners added while open, and the focus containment listeners), `NgZone` (fallback timer outside the zone), `DestroyRef`, `HostAttributeToken('id')`, `HostAttributeToken('class')`.
+- Injected by the panel: `NfsMediaQuery` (Breakpoint service), `nfsAnimationsToken`, CDK `FocusTrapFactory` (only used when `trapFocus` is on), CDK `InteractivityChecker`, CDK `_IdGenerator`, `DOCUMENT`, `Renderer2` (the `body` class, the listeners added while open, and the focus containment listeners), `NgZone` (fallback timer outside the zone), `DestroyRef`, `HostAttributeToken('id')`, `HostAttributeToken('class')`, and `NfsOffCanvasScrollLock`.
+- `NfsOffCanvasScrollLock`, an internal `@Service()` of the entry point (not public API), holds the Scroll lock count for the document: the open panels with `contentScroll: false`. The first to lock adds `is-off-canvas-open` to `body`, and the last to release removes it, so the class stays while a second locked panel is open. A service is allowed here for the reason building-blocks 1.5 gives, state shared across instances, as Reveal's `NfsRevealStack` holds its own count (amended 2026-09-26, audit 0005 unrecorded departure 5).
 - Entry point: `ngx-foundation-sites/off-canvas`, holding the three directives, the tokens, and the types; it imports `nfsOpenableToken` from the Triggers entry point and `NfsMediaQuery` from the media-query entry point.
 
 ### API
@@ -489,7 +490,7 @@ Against the static Storybook build, in Chromium, Firefox, and WebKit:
 
 Against the prerendered fixture app:
 
-- JavaScript disabled at 375 px and at 1300 px: screenshot plus axe; at 375 px the panel is not displayed; at 1300 px the revealed panel is displayed with its links working and the content has its margin.
+- JavaScript disabled at 375 px and at 1300 px: screenshot plus `@axe-core/playwright` with the six tags; at 375 px the panel is not displayed; at 1300 px the revealed panel is displayed with its links working and the content has its margin.
 - Hydration at 375 px and at 1300 px: no NG05xx, `ngDevMode.componentsSkippedHydration === 0`, and the panel's and overlay's class attributes identical before and after hydration (the content may gain only `has-reveal-left` at 1300 px, with no layout change).
 - Pre-hydration tap at 375 px with the main bundle held back: the panel opens exactly once after hydration, focus is inside it, and no error is logged.
 - `@defer (hydrate on idle)` around the set: after idle the Trigger works; `@defer (hydrate never)`: at 1300 px the revealed panel's links navigate, at 375 px the Trigger does nothing and no error is logged.
