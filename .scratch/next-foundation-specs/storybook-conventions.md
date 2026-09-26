@@ -101,6 +101,7 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
 @include nfs-accordion;
 // ... one @include nfs-<plugin> per plugin that has a Library mixin, after foundation-everything,
 // with the arguments its spec names (for example @include nfs-responsive-toggle(xlarge xxlarge);).
+// @include nfs-smooth-scroll; // Smooth Scroll: smooth native jumps on html; play functions scroll with behavior: 'instant'
 ```
 
 - Foundation's settings file is imported, not copied: stories then show Foundation 6.9's defaults exactly, and every deviation is visible in one short file. The settings file's own first line, `@import 'util/util'`, needs `node_modules/foundation-sites/scss` on the Sass load path, as Foundation's docs tell every consumer; `main.ts` adds it in `viteFinal` (`css.preprocessorOptions.scss.loadPaths`). Whether `@storybook/addon-vitest`'s run picks up that `viteFinal` the same way `storybook build` does is proved by the first story of the new repository; if it does not, the same path goes into `storybookAngularVitest({stylePreprocessorOptions: {includePaths: [...]}})`, which the framework's options plugin turns into Sass load paths (`@storybook/angular-vite` `dist/preset.js:1294-1310`).
@@ -194,7 +195,7 @@ A play function asserts what a user or assistive technology observes:
 
 - Queries, in order of preference: `getByRole(role, {name})`, `getByLabelText`, `getByText`; `getByTestId` only for an element with no role or name; `canvasElement.querySelector` only for technical checks with no semantic handle (Sticky's sentinel spans, a computed style the spec names). The same order as AGENTS.md's locator rule for e2e.
 - Assertions: roles, accessible names, `aria-*`, State classes, `hidden`, `inert`, focus (`toHaveFocus()`), native `value`/`disabled`, computed style or geometry where the spec names the relationship, and outputs through `fn()` spies in `args` (`toHaveBeenCalledWith`, `toHaveBeenCalledOnce`).
-- Input: `userEvent.click`, `userEvent.keyboard('{Enter}')`, `userEvent.tab()`, `userEvent.type`; programmatic `scrollTo` where the scenario is scrolling.
+- Input: `userEvent.click`, `userEvent.keyboard('{Enter}')`, `userEvent.tab()`, `userEvent.type`; programmatic `scrollTo` where the scenario is scrolling, with `behavior: 'instant'` whenever the play function asserts a position soon after, because `preview.scss` includes `nfs-smooth-scroll`, which makes a root scroll without a `behavior` smooth under `prefers-reduced-motion: no-preference` (Smooth Scroll spec).
 - Animations: wait for the Completion output spy or the final state with `waitFor(() => expect(...))`, never a fixed timeout.
 - Group phases with `step('...', async () => ...)` when a story has more than one.
 - End in a state the story's JSDoc describes. The e2e layer mounts with `embed=true`, which does not run the play function, so e2e tests always start from the story's initial args, never from where a play function left off.

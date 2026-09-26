@@ -16,4 +16,5 @@ The user requires WCAG 2.2 AA compliance for every directive and component (map,
 
 - A consumer who keeps a failing Foundation default (for example the slider fill colours) gets a compile error or warning from the library's mixin that names the setting to change.
 - The consistency review checks that every spec carries the criteria subsection and that its Sass subsection names the settings it requires.
+- 2026-09-26 (consistency review): checked; all 26 specs carry the criteria subsection and name the settings they require. The Abide spec had no Library mixin, so its placeholder and border settings, which axe does not check, reached consumers without the compile-time signal the first consequence promises; it now has a checks-only `nfs-abide` mixin that emits no CSS ([Consistency review and bundle index](../issues/36-consistency-review.md)).
 - Assistive-technology checks the sources cannot replace (screen-reader announcement of `aria-valuetext`, Chromium's orientation announcement for rotated range inputs) stay `OPEN FOR HUMAN` by kind.
