@@ -148,3 +148,12 @@ _Avoid_: lost input, early input, queued value
 
 - CONTEXT.md: the four terms above, in an "Abide" or "Forms" subsection under "Angular side" (Pre-hydration input could sit next to **Replayed event**).
 - Map, Decisions so far: one line for this ticket.
+
+### Amendment, 2026-09-26
+
+Folded into `specs/abide.md` from the [Prototype: Abide control kinds, value adoption, and the ready gate](66-prototype-abide-controls-and-ready.md), "Decision handed to the Spec: Abide" items 2 to 4, with its Triage item 2 as decided by the orchestrator. The prototype passed all three of its cases in three engines, so the spec's design stands; these are the restrictions and limits it found.
+
+1. Item 2, custom controls: a new Hierarchy and DI bullet says a custom `FormValueControl` applies `NfsAbideInput` through `hostDirectives` and links to its label and Form error through the wrapping label (DI), not a typed template reference, because such a reference crashes the compiler; the error text is quoted (`Error: Could not resolve [object Object] / [object Object]`, at `Scope.resolve` from `TcbReferenceOp.execute`, with `ng build` reporting only "Angular compilation diagnostics failed."). D3's rationale records the restriction. Filing the crash upstream stays OPEN FOR HUMAN in the prototype ticket.
+2. Item 3, groups: a new Hierarchy and DI bullet says the single Form error of a radio group, or of a checkbox group whose boxes share one `validate()` rule, links to any one control of the group.
+3. Item 4 and Triage item 2, the mid-typing race: the Rendering modes subsection's incremental-hydration bullet documents that typing on through the keystroke that hydrates a `hydrate on interaction` block can drop one character in some engines (Chromium 2 of 3 runs, WebKit 3 of 3, Firefox 0 of 3), distinct from the pre-hydration rescue and without effect on the `ready` gate, and recommends `hydrate on viewport`, `on idle`, or `on immediate` for blocks that hold text-entry fields.
+4. Tests, where the prototype's evidence suggests them: a browser-level "Control kinds" case (the custom control linked by its wrapping label with no template reference, the radio and checkbox group errors linked to one control, `select` and `textarea`, under both form APIs); the fixture's `hydrate on interaction` e2e case now says the race is not asserted, because it depends on the engine and did not occur in every run.
