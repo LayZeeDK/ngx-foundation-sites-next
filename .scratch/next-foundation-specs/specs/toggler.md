@@ -71,9 +71,11 @@ The developer writes a native `<button type="button" [nfsToggle]="panel">` next 
 
 ## Implementation Decisions
 
+Sources: P47 = the [Prototype: `animate.enter` and `animate.leave` with Motion UI transition classes](../issues/47-prototype-motion-ui-animate-enter.md); P52 = the [Prototype: `animate.enter` at hydration](../issues/52-prototype-animate-enter-hydration.md).
+
 ### Foundation contract
 
-Toggler 6.9 has two options, two events, one public method, and no CSS of its own (`Toggler.defaults` in the plugin source; `research/foundation-inventory-disclosure.md` Toggler).
+Toggler 6.9 has two options, two events, one public method, and no CSS of its own (`Toggler.defaults` in the plugin source; the Foundation disclosure inventory research, Toggler section).
 
 | Foundation | Behaviour in 6.9 | Library counterpart |
 | --- | --- | --- |
@@ -188,15 +190,15 @@ Behaviour rules:
 
 ### Implementation level and primitives
 
-Implementation level: native platform, with thin custom Angular directives. The platform does the work: the `hidden` attribute and CSS `display: none` hide, class bindings switch classes, CSS `@keyframes` animate, and native buttons activate. `@angular/aria` 22.2 has no disclosure or toggle-button pattern; `@angular/cdk` contributes only `_IdGenerator` (building-blocks 1.5). `<details>` is not the base: its `<summary>` must be the first child of the element it opens, so the trigger cannot sit elsewhere, cannot be one of several triggers or control several targets, and cannot express class mode; and animating its close needs `::details-content`, `interpolate-size`, or `transition-behavior: allow-discrete`, all out of target (`research/web-platform-features.md` 4, 5, 7). `popover="manual"` is out of target (Firefox 125) and places the element in the top layer, while Toggler targets are in-flow content (`research/web-platform-features.md` 2).
+Implementation level: native platform, with thin custom Angular directives. The platform does the work: the `hidden` attribute and CSS `display: none` hide, class bindings switch classes, CSS `@keyframes` animate, and native buttons activate. `@angular/aria` 22.2 has no disclosure or toggle-button pattern; `@angular/cdk` contributes only `_IdGenerator` (building-blocks 1.5). `<details>` is not the base: its `<summary>` must be the first child of the element it opens, so the trigger cannot sit elsewhere, cannot be one of several triggers or control several targets, and cannot express class mode; and animating its close needs `::details-content`, `interpolate-size`, or `transition-behavior: allow-discrete`, all out of target (the web platform features research, sections 4, 5, 7). `popover="manual"` is out of target (Firefox 125) and places the element in the top layer, while Toggler targets are in-flow content (the web platform features research, section 2).
 
 Primitives: `model()`, `input()` with a transform, `output()`, `computed()`, one `linkedSignal` for the animation phase (derived from `isOpen`, reset to idle on completion; building-blocks 1.4), `afterRenderEffect` for completion, focus return, and the Completion outputs, `inject()` with `HostAttributeToken`, `_IdGenerator`, host metadata for the class map, `[attr.hidden]`, `[attr.id]`, and the `animationend`/`animationcancel` listeners, `NgZone.runOutsideAngular` for the fallback timer. No CDK beyond `_IdGenerator`, no Aria, no observers, no services.
 
-Fallback: none needed. Every mechanism is a platform feature in target or Angular behaviour the prototypes confirmed (keyframe State classes in three engines, prototype 47; no animation at hydration through State classes, prototype 52).
+Fallback: none needed. Every mechanism is a platform feature in target or Angular behaviour the prototypes confirmed (keyframe State classes in three engines, P47; no animation at hydration through State classes, P52).
 
 ### Comparison with Angular Material
 
-Material has no Toggler counterpart (`research/angular-material-reference.md` summary table has no Toggler row). The nearest shapes, for reference only:
+Material has no Toggler counterpart (the Angular Material reference research summary table has no Toggler row). The nearest shapes, for reference only:
 
 | Concern | Nearest Material or CDK shape | Toggler |
 | --- | --- | --- |
@@ -219,7 +221,7 @@ APG patterns: Disclosure (visibility mode) and Button, toggle variant (class mod
 | `nfsClose` | nothing | nothing |
 | Multi-target `nfsToggle` | one aggregate `aria-expanded`, all ids in `aria-controls` (Triggers spec) | one aggregate `aria-pressed`; mixed modes in one array warn (Triggers spec) |
 
-- Class mode renders `aria-pressed` because a layout or theme class expands nothing (`research/aria-apg-patterns.md` Toggler: "`aria-expanded` would be wrong here because nothing is expanded"). The APG requires that a toggle button's label does not change with its state; the consumer keeps "Compact layout" as the label rather than switching between "Expand" and "Collapse".
+- Class mode renders `aria-pressed` because a layout or theme class expands nothing (the ARIA APG patterns research, Toggler: "`aria-expanded` would be wrong here because nothing is expanded"). The APG requires that a toggle button's label does not change with its state; the consumer keeps "Compact layout" as the label rather than switching between "Expand" and "Collapse".
 - Visibility mode is a disclosure; its content is not a dialog or a popup, so no `aria-haspopup`.
 - Triggers must be native `<button type="button">` (the Triggers spec warns otherwise); Foundation's `<a data-toggle>` without `href` becomes a button.
 
@@ -229,7 +231,7 @@ APG patterns: Disclosure (visibility mode) and Button, toggle variant (class mod
 | Tab, Shift+Tab | | Hidden content is skipped (`display: none`) | Native |
 | Escape | | Nothing by default: the APG disclosure pattern has no Escape. Content shown on focus (the `data-toggle-focus` replacement) must be dismissible (WCAG 1.4.13), so that usage adds `(keydown.escape)="hint.close()"` on the field | Consumer |
 
-Focus rules: opening leaves focus on the trigger; closing from inside returns focus to the opener (API behaviour rules); the dismissible-callout case moves focus in `closed`.
+Focus rules: opening leaves focus on the trigger; closing from inside returns focus to the Trigger that opened it (API behaviour rules); the dismissible-callout case moves focus in `closed`.
 
 WCAG 2.2 AA requirements (requirements, not recommendations; the story gate runs axe with the WCAG 2.2 AA rule set, `target-size` included, and the criteria axe cannot judge are asserted in play functions):
 
@@ -238,7 +240,7 @@ WCAG 2.2 AA requirements (requirements, not recommendations; the story gate runs
 | 4.1.2 Name, Role, Value | Every Trigger exposes the target's state: `aria-expanded` in visibility mode, `aria-pressed` in class mode, correct in the server HTML and after every change, including the aggregate value of a multi-target Trigger. A class-mode Trigger's accessible name does not change with its state. The target itself claims no role | Foundation stamped `aria-expanded` in both modes and stopped updating multi-id triggers; the Triggers' host bindings on the Openable's `isOpen` pass by construction. The label rule is the consumer's; the `toggler--class-mode` story asserts the name is unchanged after a click |
 | 1.3.1 Info and Relationships | A visibility-mode Trigger names the target in `aria-controls` | Triggers render it from `id`, which always exists (consumer or generated) |
 | 2.1.1 Keyboard | Every Trigger is operable from the keyboard | Native `<button type="button">` Triggers; the Triggers spec warns in dev mode on anything else. Foundation's `<a data-toggle>` without `href` failed this |
-| 2.4.3 Focus Order | Hidden content leaves the tab order; focus never stays on or inside hidden content: closing from inside returns focus to the opener, and a Toggler hidden with no opener (the dismissible callout) has its focus moved in `closed` | `hidden` and `.is-hidden` give `display: none`; focus return is library behaviour; the `closed` step is required consumer code in that usage, and `toggler--closable` asserts it |
+| 2.4.3 Focus Order | Hidden content leaves the tab order; focus never stays on or inside hidden content: closing from inside returns focus to the Trigger that opened it, and a Toggler that was never opened by a Trigger (the dismissible callout) has its focus moved in `closed` | `hidden` and `.is-hidden` give `display: none`; focus return is library behaviour; the `closed` step is required consumer code in that usage, and `toggler--closable` asserts it |
 | 2.4.7 Focus Visible | Every Trigger shows a visible keyboard focus indicator | Passes with Foundation's defaults: Foundation removes the outline only under what-input's `[data-whatinput='mouse']`/`'touch'` attributes (`disable-mouse-outline`, normalize), which the library never loads and which keyboard input never sets, so `.button`, `.close-button`, and plain buttons keep the browser's focus ring. No rule needed |
 | 2.4.11 Focus Not Obscured (Minimum) | Opening a Toggler never covers the focused Trigger; closing never leaves focus on something hidden | Toggler content is in-flow (it pushes the page, it does not overlay it), so it cannot cover the Trigger; content meant to float over the page is a Dropdown pane, not a Toggler. The hidden case is 2.4.3's focus rule |
 | 2.5.8 Target Size (Minimum) | Every Trigger is at least 24 by 24 CSS px or meets the spacing exception | `.button` passes at every Foundation size (Button spec). A `.close-button` is 2em (medium) or 1.5em (small) tall, but its `&times;` glyph is narrower than 24 px, so it passes through the spacing exception, which its absolute corner position (`$closebutton-offset-horizontal`, `$closebutton-offset-vertical`) meets when no other target sits within 12 px of its centre; axe's `target-size` rule checks this in `toggler--closable`. Where a consumer's layout breaks the exception, the smallest fix is the consumer's own `min-width: 24px` on that `.close-button` (Foundation has no width setting for it; the Close Button is a CSS-only component outside the library) |
@@ -311,16 +313,16 @@ Visibility mode phases, held in a `linkedSignal` derived from `isOpen`:
 
 - Opening: `hidden` and `.is-hidden` go and the in-class is bound in the same change detection pass, so the keyframes start from their first frame. Closing: the out-class plays on the visible element; `hidden` and `.is-hidden` are bound, and the out-class removed, in the pass after completion. `isOpen` (and so `aria-expanded`) changes at request time, as the Openable contract says.
 - Without a class for a direction, or with `nfsAnimationsToken` `{disabled: true}`, the phase goes straight to idle: the element shows or hides in the same pass.
-- Completion: in an `afterRenderEffect` read phase after the class is bound, the directive reads the host's computed `animation-name`, `animation-duration`, `animation-delay`, and `animation-iteration-count`, and takes the longest finite animation (Angular's own method for `animate.leave`). If there is none (the class has no keyframes, the stylesheet is missing, or `nfs-motion` was not included), the phase completes at once. Otherwise it completes on the host's `animationend` or `animationcancel` for that animation name with `event.target` equal to the host, or on a fallback timer of the measured length plus 100 ms, started outside the Angular zone, whichever comes first. This refines building-blocks 1.6 rule 1's "declared duration": Toggler's Motion classes are consumer-chosen and their length is set by the consumer's `nfs-motion($duration)` or their own keyframes, which no design-time constant knows; the case the fixed timer protects (the animation is missing) measures zero and completes immediately. Prototype 47's dropped-stylesheet case therefore still completes.
+- Completion: in an `afterRenderEffect` read phase after the class is bound, the directive reads the host's computed `animation-name`, `animation-duration`, `animation-delay`, and `animation-iteration-count`, and takes the longest finite animation (Angular's own method for `animate.leave`). If there is none (the class has no keyframes, the stylesheet is missing, or `nfs-motion` was not included), the phase completes at once. Otherwise it completes on the host's `animationend` or `animationcancel` for that animation name with `event.target` equal to the host, or on a fallback timer of the measured length plus 100 ms, started outside the Angular zone, whichever comes first. This refines building-blocks 1.6 rule 1's "declared duration": Toggler's Motion classes are consumer-chosen and their length is set by the consumer's `nfs-motion($duration)` or their own keyframes, which no design-time constant knows; the case the fixed timer protects (the animation is missing) measures zero and completes immediately. P47's dropped-stylesheet case therefore still completes.
 - Interruption: toggling during a phase recomputes the phase from the new `isOpen` (entering switches to leaving and back); the interrupted phase emits nothing, and its timer is cleared.
 - Completion outputs: once the phase is idle and the committed state differs from the last emitted one, the render callback emits `opened` or `closed` (no emission for the initial state). Without an animation they fire in the render callback after the pass that showed or hid the element, so a handler always sees the final DOM.
-- Motion classes: keyframe classes only. The library's `nfs-motion` mixin provides `nfs-fade-in`, `nfs-fade-out`, `nfs-slide-in-down`, `nfs-slide-out-up`, `nfs-hinge-in-from-top`, `nfs-spin-out`, and the rest of building-blocks 1.6 rule 4. Motion UI's own transition classes (`hinge-in-from-top`, `spin-out`, ...) never animate here (two-frame protocol, prototype 47) and trigger dev check 1. Foundation's docs example becomes `animate="nfs-hinge-in-from-top nfs-spin-out"`.
-- Reduced motion: `nfs-motion` sets `animation-duration: 1ms` on its classes under `prefers-reduced-motion: reduce`, so `animationend` still fires and the change is effectively instant; no separate code path (prototype 47). A consumer-supplied keyframe class must carry its own reduced-motion rule; the directive does not police it.
+- Motion classes: keyframe classes only. The library's `nfs-motion` mixin provides `nfs-fade-in`, `nfs-fade-out`, `nfs-slide-in-down`, `nfs-slide-out-up`, `nfs-hinge-in-from-top`, `nfs-spin-out`, and the rest of building-blocks 1.6 rule 4. Motion UI's own transition classes (`hinge-in-from-top`, `spin-out`, ...) never animate here (two-frame protocol, P47) and trigger dev check 1. Foundation's docs example becomes `animate="nfs-hinge-in-from-top nfs-spin-out"`.
+- Reduced motion: `nfs-motion` sets `animation-duration: 1ms` on its classes under `prefers-reduced-motion: reduce`, so `animationend` still fires and the change is effectively instant; no separate code path (P47). A consumer-supplied keyframe class must carry its own reduced-motion rule; the directive does not police it.
 - Nothing animates at hydration or on the first client render: the phase starts idle, and the class list on the server equals the class list after hydration.
 
 ### Rendering modes
 
-Per ADR 0008 and `research/angular-rendering-modes.md` section 7, rules 1 to 11:
+Per ADR 0008 and the Angular rendering modes research, section 7, rules 1 to 11:
 
 - Server-side rendering and first paint: `hidden`, `.is-hidden`, the toggled class, and `id` are host bindings on signal state that exists on the server, seeded from static attributes the server also has, so the server HTML is the final first-paint state (rule 1). Closed content is in the server HTML, hidden; open content is visible. Nothing depends on a breakpoint or a measurement.
 - Before hydration: construction reads only `HostAttributeToken` values and DI; no DOM writes outside host bindings, no `window`, no timers (rules 3 to 5). The phase `linkedSignal` and the dev check touch nothing on the server; `afterRenderEffect` and `afterNextRender` never run there.
@@ -341,9 +343,9 @@ A good test asserts what a user or assistive technology observes: whether the ta
 
 Story ids follow `toggler--<story>`: `toggler--class-mode`, `toggler--class-mode-initially-active`, `toggler--visibility`, `toggler--visibility-animated`, `toggler--initially-hidden`, `toggler--in-animation-only`, `toggler--multiple-targets`, `toggler--closable`, `toggler--focus-hint`, `toggler--programmatic`, `toggler--two-way-binding`.
 
-### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`)
+### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`, `npx nx test-storybook <lib>`)
 
-Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test = 'error'` and `runOnly` set to the WCAG 2.2 AA rule set (tags `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`), so `target-size` is part of the gate. Stories set `nfsAnimationsToken` only where noted; animated stories wait for the Completion output rather than a timeout.
+Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test = 'error'` and `runOnly` set to the six tags of the preview's rule set (`wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`, `best-practice`), so `target-size` is part of the gate. Stories set `nfsAnimationsToken` only where noted; animated stories wait for the Completion output rather than a timeout.
 
 - `toggler--class-mode`: Foundation's menu example on `ul.menu` with `toggler=".expanded"`; the button has `aria-pressed="false"` and no `aria-expanded`; clicking adds `.expanded` and flips `aria-pressed`; the button's accessible name is unchanged; Enter and Space work through `userEvent.keyboard`.
 - `toggler--class-mode-initially-active`: `class="menu expanded" toggler="expanded"` renders with `.expanded` and `aria-pressed="true"`.
@@ -357,7 +359,9 @@ Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test 
 - `toggler--programmatic`: buttons calling `open()`, `close()`, `toggle()` through the template reference; a bare `nfsClose` inside the opened panel closes it and focus returns to the button that opened it.
 - `toggler--two-way-binding`: `[(isOpen)]` and `[(active)]` bound to signals shown in the story; clicking Triggers updates them and changing them from a checkbox updates the targets.
 
-### 2. Browser-level test (stack per the [browser testing stack decision](../issues/41-browser-testing-stack-decision.md); stack-neutral)
+### 2. Browser-level test (Vitest browser mode, `npx nx test <lib>`)
+
+Vitest browser mode under the Angular unit-test builder (`npx nx test <lib>`, Chromium headless): TestBed specs in `<name>.spec.ts` next to the directive, over a bare test host component, zoneless with `await fixture.whenStable()`, asserting DOM and ARIA state; no story is mounted here and no axe runs here.
 
 - Directive matching: a host with a static `toggler`, one with `[toggler]` bound, and one without; exactly one Openable resolves on each (`nfsOpenableToken` from an inner element), of the right class; `#t="nfsToggler"` resolves in both modes.
 - Initial state seeding, driven by data: static `hidden`, static `is-hidden`, both, neither, and bound `[isOpen]` overriding each; static class with every, some, and none of the static `toggler` classes; bound `[toggler]` defaulting `active` to `false`.
@@ -372,10 +376,10 @@ Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test 
 
 ### 3. Node-level Vitest
 
-- SSR smoke: `renderApplication` over a fixture with a closed animated Toggler (static `hidden`), an open unanimated one with a generated id, a class-mode menu inactive and one initially active, a multi-target Trigger, and a bare `nfsClose` inside a callout. Assert `whenStable()` resolves; the server HTML matches the Rendered HTML section (`hidden=""`, `.is-hidden`, the toggled class, ids, Trigger ARIA); no Motion class is present; Toggler hosts carry no `jsaction`. Runs in its own file or process because `provideServerRendering()` leaves `ngServerMode` set; the runner is the [Prototype: Rendering-mode test seam](../issues/59-prototype-rendering-mode-test-seam.md).
+- SSR smoke: `renderApplication` over a fixture with a closed animated Toggler (static `hidden`), an open unanimated one with a generated id, a class-mode menu inactive and one initially active, a multi-target Trigger, and a bare `nfsClose` inside a callout. Assert `whenStable()` resolves; the server HTML matches the Rendered HTML section (`hidden=""`, `.is-hidden`, the toggled class, ids, Trigger ARIA); no Motion class is present; Toggler hosts carry no `jsaction`. Runs under `npx nx test <lib>` in `toggler.ssr.spec.ts` through the shared `renderServer()` helper; `npx nx test-node <lib>` only if the server path depends on the DOM adapter; the runner is the [Prototype: Rendering-mode test seam](../issues/59-prototype-rendering-mode-test-seam.md).
 - Pure logic, table-driven: the `toggler` transform, the `animate` parser (in, out, missing out, extra tokens), the Motion UI name check, the initial-state functions over static attribute values, and the longest-animation reduction over computed-style lists.
 
-### 4. Playwright e2e
+### 4. Playwright e2e (`npx nx e2e <lib>-e2e` against the static Storybook build; `npx nx e2e <fixture-app>-e2e` against the prerendered fixture app)
 
 Against the static Storybook build:
 
@@ -413,14 +417,14 @@ Against the prerendered fixture app (the harness from the rendering-mode test se
 | D4 | Initial state from static markup through `HostAttributeToken` | Foundation read the state from the DOM at init; static attributes are identical on server and client; stops the dynamic binding from stripping a static class | Defaults that ignore the markup (the static class is silently removed); reading computed style (no server equivalent) |
 | D5 | Visibility default open | Foundation's unhidden element is visible; the `data-closable` replacement and Foundation's docs panel start visible | Default closed (Material's `expanded: false`) |
 | D6 | Class mode triggers render `aria-pressed`; visibility mode triggers render `aria-expanded` | APG: a layout or theme class expands nothing; disclosure for shown and hidden content | `aria-expanded` in both modes (Foundation) |
-| D7 | State class keyframes for enter and leave; never `animate.enter` | Persistent element; `animate.enter` replays at hydration (prototype 52); keyframe path confirmed in three engines (prototype 47) | `animate.enter`/`animate.leave` with `@if` (removes content from server HTML and `aria-controls`) |
+| D7 | State class keyframes for enter and leave; never `animate.enter` | Persistent element; `animate.enter` replays at hydration (P52); keyframe path confirmed in three engines (P47) | `animate.enter`/`animate.leave` with `@if` (removes content from server HTML and `aria-controls`) |
 | D8 | Completion from the measured longest animation, then `animationend`/`animationcancel`, else a measured-length-plus-100-ms timer | Motion class lengths are the consumer's; a missing animation measures zero and completes at once; Angular measures the same way for `animate.leave` | A fixed declared duration (cuts long consumer keyframes, waits needlessly when none run) |
 | D9 | A missing out-class hides at once | Foundation's close never completed in that case | Waiting for a `transitionend` that never comes |
 | D10 | `opened`/`closed` only in visibility mode; `activeChange` in class mode | Building-blocks 1.4 event mapping; class mode has no animation to complete | `opened`/`closed` in class mode |
-| D11 | Focus returns to the opener only when a close from inside takes focus with it | APG focus persistence; Openable requirement; opening a disclosure keeps focus on the trigger | Always refocusing the trigger; never moving focus |
+| D11 | Focus returns to the Trigger that opened it only when a close from inside takes focus with it | APG focus persistence; Openable requirement; opening a disclosure keeps focus on the trigger | Always refocusing the trigger; never moving focus |
 | D12 | No `nfsTogglerToken` | No child directive injects the Toggler | A plugin token by habit |
 | D13 | `nfsTogglerDefaultsToken` with `animate` only | Building-blocks 1.4 defaults rule; a default `toggler` would have to change which directive matches | A `toggler` default |
-| D14 | Dev warning for Motion UI transition class names, class applied unchanged | Orchestrator's default on prototype 47; the names look valid and silently do nothing | Rejecting the class; silently ignoring it |
+| D14 | Dev warning for Motion UI transition class names, class applied unchanged | Orchestrator's default on P47; the names look valid and silently do nothing | Rejecting the class; silently ignoring it |
 | D15 | `<details>` is not the base, but documented as the platform answer for the plain case | Summary must be the element's first child; no remote, multiple, or multi-target triggers; no class mode; close animation out of target | `<details>` as the implementation |
 | D16 | No library CSS | Foundation's `[hidden]`, `.is-hidden`, and the `nfs-motion` classes cover everything | An `nfs-toggler` mixin |
 

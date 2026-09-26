@@ -274,7 +274,7 @@ The patterns are used through Signal Forms: `pattern(p.zip, nfsPatterns.integer)
 
 ### Implementation level and primitives, with the fallback
 
-Level: custom Angular on Signal Forms (ADR 0006; building-blocks Table A). The platform's Constraint Validation is not what Signal Forms uses, `@angular/aria` has no form-error pattern, and CDK contributes only `_IdGenerator`. Primitives: `FORM_FIELD`, `FieldState` (`invalid`, `touched`, `dirty`, `errors`, `markAsTouched()`), `NgControl` and `AbstractControl.events`, `linkedSignal`, `computed`, host bindings, `HostAttributeToken`, `afterNextRender` (value adoption, `ready`, dev checks), `_IdGenerator`, the native `hidden` attribute, and the form's native `submit` event. Not used: `provideSignalFormsConfig({classes})` (it can add the input class but cannot reach the label, the errors, or ARIA; prototype decision 7), `setCustomValidity()`, a bound `pattern` attribute, and `:user-invalid` in library CSS.
+Level: custom Angular on Signal Forms (ADR 0006; building-blocks Table A). The platform's Constraint Validation is not what Signal Forms uses, `@angular/aria` has no form-error pattern, and CDK contributes only `_IdGenerator`. Primitives: `FORM_FIELD`, `FieldState` (`invalid`, `touched`, `dirty`, `errors`, `markAsTouched()`), `NgControl` and `AbstractControl.events`, `linkedSignal`, `computed`, host bindings, `HostAttributeToken`, `afterNextRender` (value adoption, `ready`, dev checks), `_IdGenerator`, the native `hidden` attribute, and the form's native `submit` event. Not used: `provideSignalFormsConfig({classes})` (it can add the input class but cannot reach the label, the errors, or ARIA; prototype decision 7), `setCustomValidity()`, a bound `pattern` attribute, and `:user-invalid` in library CSS. `injectAsync` not used: the plugin is its own entry point and a consumer `@defer` splits it; `afterEveryRender` not needed: `afterNextRender`'s one-time run already covers value adoption, `ready`, and the dev checks, and nothing here needs to re-run on every render.
 
 Fallback: the prototype's DOM-lookup route (Abide's `findLabel`/`findFormError` rules resolved in `afterNextRender`, classes toggled with `Renderer2`) is proven and needs only `nfsAbide` and `nfsAbideInput`; it is the fallback if explicit linking fails in a case the Prototype needed item uncovers. The prototype's `controlValue.set()` is the fallback for event-based value adoption.
 
@@ -440,7 +440,7 @@ Story ids: `abide--default`, `abide--live-validate`, `abide--validate-on-blur`, 
 
 ### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`)
 
-Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test = 'error'` on the six-tag WCAG 2.2 AA rule set; no story silences a rule.
+Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test = 'error'` on the six tags of the preview's rule set (`wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`, `best-practice`); no story silences a rule.
 
 - `abide--default`: tab through an empty required field: no error; type without leaving: no error; commit (Tab): `.is-invalid-input`, `aria-invalid="true"`, `.is-invalid-label`, the `required` message visible and in the accessible description, the hint id first; fix and commit: all cleared and the description is the hint again.
 - `abide--live-validate`: the error appears on the first keystroke that makes the value invalid and clears on the keystroke that fixes it.

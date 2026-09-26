@@ -227,7 +227,7 @@ Both the CSS answer and the directive must comply with WCAG 2.2 AA. These criter
 | 1.3.2 Meaningful Sequence | Reading order equals the visual order that carries meaning | The recipes rely on source-order auto placement; the docs forbid `order`, `grid-auto-flow: dense`, and explicit placement that reorders cards | Never reorders or moves nodes; writes one inline style | Story play functions assert the DOM order of the watched boxes is unchanged after each pass |
 | 2.4.3 Focus Order | Focus order follows the meaningful sequence | Follows from 1.3.2 | Follows from 1.3.2; no `tabindex` | Covered by the 1.3.2 check |
 
-Foundation's own Equalizer fails 1.4.4 and 1.4.12 by construction (a fixed inline `height` clips content that grows after the pass until the next debounced resize or mutation) and that is the reason for D5. Foundation's Sass defaults pass as used here: the XY grid stacks below `medium`, and callouts and cards have no fixed heights; no setting or custom rule is needed. The story gate is axe through `@storybook/addon-a11y` with `parameters.a11y.test = 'error'` and `runOnly` set to the WCAG 2.2 AA tag set (`wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`); axe cannot detect clipping or reflow, so 1.4.4, 1.4.10, and 1.4.12 are proved by the Playwright cases above.
+Foundation's own Equalizer fails 1.4.4 and 1.4.12 by construction (a fixed inline `height` clips content that grows after the pass until the next debounced resize or mutation) and that is the reason for D5. Foundation's Sass defaults pass as used here: the XY grid stacks below `medium`, and callouts and cards have no fixed heights; no setting or custom rule is needed. The story gate is axe through `@storybook/addon-a11y` with `parameters.a11y.test = 'error'` and `runOnly` set to the six tags of the preview's rule set (`wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`, `best-practice`); axe cannot detect clipping or reflow, so 1.4.4, 1.4.10, and 1.4.12 are proved by the Playwright cases above.
 
 ### Rendered HTML
 
@@ -293,9 +293,9 @@ A good test asserts what a user sees: rendered box heights (`getBoundingClientRe
 
 Story ids follow `equalizer--<story>`. CSS answer, no directive: `equalizer--css-flex-cells`, `equalizer--css-block-grid-rows`, `equalizer--css-grid-equal-rows`, `equalizer--css-subgrid-card-sections`. Directive: `equalizer--docs-markup`, `equalizer--float-grid`, `equalizer--by-row`, `equalizer--on-stack`, `equalizer--nested`, `equalizer--dynamic-content`, `equalizer--hidden-then-shown`. Stories use `small-*` cell classes (never a breakpoint-dependent layout), because the Storybook test runner's viewport is narrow; breakpoint behaviour is Playwright's. The Storybook stylesheet includes `foundation-flex-classes` and, for `equalizer--float-grid`, `foundation-grid` next to the XY grid (their class names do not overlap).
 
-### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`)
+### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`, `npx nx test-storybook <lib>`)
 
-Every story runs axe with `parameters.a11y.test = 'error'` and `runOnly` set to the WCAG 2.2 AA tag set (`wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`), and every directive story asserts that the DOM order of its watched boxes is unchanged after each pass (WCAG 1.3.2).
+Every story runs axe with `parameters.a11y.test = 'error'` and `runOnly` set to the six tags of the preview's rule set (`wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`, `best-practice`), and every directive story asserts that the DOM order of its watched boxes is unchanged after each pass (WCAG 1.3.2).
 
 - `equalizer--css-flex-cells`, `equalizer--css-block-grid-rows`: no directive in the story; the callouts of each line are equal; in the block grid, lines have different heights; appending text to one callout keeps its line equal after the next frame.
 - `equalizer--css-grid-equal-rows`: every item of every row equal; `equalizer--css-subgrid-card-sections`: each card's section tops align across the row.
@@ -307,7 +307,9 @@ Every story runs axe with `parameters.a11y.test = 'error'` and `runOnly` set to 
 - `equalizer--dynamic-content`: buttons that append and remove text in the tallest box (heights follow up and down), add and remove a watched box through `@for`, and load an image from a data URI after the first pass; heights are equal after each action.
 - `equalizer--hidden-then-shown`: the group sits in a Toggler target (or a plain `[hidden]` binding until Toggler exists); showing it yields equal heights without any notification.
 
-### 2. Browser-level test (stack per the [browser testing stack decision](../issues/41-browser-testing-stack-decision.md); stack-neutral)
+### 2. Browser-level test (Vitest browser mode, `npx nx test <lib>`)
+
+Vitest browser mode under the Angular unit-test builder (`npx nx test <lib>`, Chromium headless): TestBed specs in `<name>.spec.ts` next to the directive, over a bare test host component, zoneless with `await fixture.whenStable()`, asserting DOM and ARIA state; no story is mounted here and no axe runs here.
 
 - Pass results: fixtures with known box heights assert the inline `min-height` of each element, the untouched tallest, and the `equalized` payload, in both modes, including ties, a zero-height group, and a single watched element.
 - Stacked rule: a column layout clears heights with `equalizeOnStack` off and equalizes with it on; a wide first item alone on its row followed by a row of three still equalizes (the order-independent delta).
@@ -324,10 +326,10 @@ Every story runs axe with `parameters.a11y.test = 'error'` and `runOnly` set to 
 
 ### 3. Node-level Vitest
 
-- SSR smoke: `renderApplication` over a fixture with an equalizer, three watches, a nested group on a shared element, and a CSS-answer grid, built with `provideServerRendering()` inside the bootstrap callback as the rendering-mode test seam prototype established, under the library's unit-test target. Assert `whenStable()` resolves; no element carries a `style` attribute with `min-height`; neither directive's host carries `jsaction`; no `data-resize` or `data-mutate` attribute exists.
+- SSR smoke, under `npx nx test <lib>` in `equalizer.ssr.spec.ts` through the shared `renderServer()` helper (`npx nx test-node <lib>` only if the server path depends on the DOM adapter, which it does not): a fixture with an equalizer, three watches, a nested group on a shared element, and a CSS-answer grid. Assert `whenStable()` resolves; no element carries a `style` attribute with `min-height`; neither directive's host carries `jsaction`; no `data-resize` or `data-mutate` attribute exists.
 - Pure logic: the planner (boxes of `{top, height}` plus `equalizeByRow` and `equalizeOnStack` to per-box `min-height` or none, plus row targets) is table-tested: one row, several rows, single-item rows, ties, zeros, sub-pixel tops, stacked columns, out-of-order input.
 
-### 4. Playwright e2e
+### 4. Playwright e2e (`npx nx e2e <lib>-e2e` against the static Storybook build; `npx nx e2e <fixture-app>-e2e` against the prerendered fixture app)
 
 Against the static Storybook build, in Chromium, Firefox, and WebKit:
 

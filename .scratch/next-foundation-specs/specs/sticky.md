@@ -289,9 +289,9 @@ A good test asserts what a visitor or a consumer observes: whether the element i
 
 Story ids: `sticky--basic`, `sticky--stick-to-bottom`, `sticky--margins`, `sticky--sticky-on`, `sticky--navigation`, `sticky--anchor-range-recipe`, `sticky--scroll-container`, `sticky--overflow-hidden-ancestor`, `sticky--outputs`. The Storybook preview stylesheet includes `foundation-sticky`, `nfs-sticky`, and `nfs-breakpoint-properties`. Stories other than `sticky--sticky-on` set `stickyOn="all"` so they behave at any iframe width.
 
-### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`)
+### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`, `npx nx test-storybook <lib>`)
 
-Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test = 'error'` and `runOnly` set to the WCAG 2.2 AA rule set (the `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, and `wcag22aa` tags, building-blocks 1.10); every story whose stuck element overlaps content gives it an opaque background (1.4.3). Play functions scroll the story's own document or scroll container and assert after the next animation frame:
+Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test = 'error'` and `runOnly` set to the six tags of the preview's rule set (`wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`, `best-practice`, building-blocks 1.10); every story whose stuck element overlaps content gives it an opaque background (1.4.3). Play functions scroll the story's own document or scroll container and assert after the next animation frame:
 
 - `sticky--basic`: at scroll 0 the element has `is-anchored is-at-top`; scrolled into the range it has `is-stuck is-at-top` and its top equals the inset; scrolled past, `is-anchored is-at-bottom`; the parent contains two `[data-nfs-sticky-sentinel]` spans and its height is unchanged from before the directive measured.
 - `sticky--stick-to-bottom`: the three states with `is-stuck is-at-bottom` while pinned and the element's bottom at the viewport bottom minus the inset.
@@ -303,7 +303,9 @@ Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test 
 - `sticky--overflow-hidden-ancestor`: inside a `.off-canvas-wrapper`-like `overflow: hidden` ancestor the element does not pin and never reports `is-stuck`; the same markup with `overflow: clip` pins and reports it.
 - `sticky--outputs`: a log shows `stuck: top`, `unstuck: bottom`, `stuck: top`, `unstuck: top` for a scroll down through the range and back up; `isStuck()` read through `#s="nfsSticky"` matches the log.
 
-### 2. Browser-level test (stack per the [Decide the browser testing stack: Playwright component tests, Vitest Browser, or both](../issues/41-browser-testing-stack-decision.md) ticket; stack-neutral)
+### 2. Browser-level test (Vitest browser mode, `npx nx test <lib>`)
+
+Vitest browser mode under the Angular unit-test builder (`npx nx test <lib>`, Chromium headless): TestBed specs in `<name>.spec.ts` next to the directive, over a bare test host component, zoneless with `await fixture.whenStable()`, asserting DOM and ARIA state; no story is mounted here and no axe runs here.
 
 Fixtures use a fixed-height scroll container as root so geometry is deterministic:
 
@@ -320,10 +322,10 @@ Fixtures use a fixed-height scroll container as root so geometry is deterministi
 ### 3. Node-level Vitest
 
 - Pure logic (table-driven): the state derivation for both `stickTo` values, before, inside, and after the range, at the 1 px tolerance on each side, with the gate open and closed, and with a scroll container offset from the viewport; the gate canonicalisation (`''`, `all`, `medium`, `medium up`, `large only`, `medium down`, extra whitespace, malformed).
-- SSR smoke: `renderApplication` over a fixture with a top and a bottom Sticky and one with `stickyOn="large only"`. Assert `whenStable()` resolves; the server HTML carries `.sticky-container`, `.sticky`, `is-anchored is-at-top`, the canonical `data-nfs-sticky-on`, and the inline insets; no `jsaction` on the sticky elements; no sentinel spans. Runs through the helper from the rendering-mode test seam prototype so `ngServerMode` stays isolated.
+- SSR smoke, under `npx nx test <lib>` in `sticky.ssr.spec.ts` through the shared `renderServer()` helper (`npx nx test-node <lib>` only if the server path depends on the DOM adapter, which it does not): a fixture with a top and a bottom Sticky and one with `stickyOn="large only"`. Assert `whenStable()` resolves; the server HTML carries `.sticky-container`, `.sticky`, `is-anchored is-at-top`, the canonical `data-nfs-sticky-on`, and the inline insets; no `jsaction` on the sticky elements; no sentinel spans.
 - Sass compile: compiling Foundation with a custom `$breakpoints` map, then the library, then `@include foundation-sticky; @include nfs-sticky;` emits one gated `position: sticky` rule per Breakpoint query form at the custom thresholds (in em, equal to Foundation's own media queries), the `all` rule, and the `width: auto` rule, and nothing else.
 
-### 4. Playwright e2e
+### 4. Playwright e2e (`npx nx e2e <lib>-e2e` against the static Storybook build; `npx nx e2e <fixture-app>-e2e` against the prerendered fixture app)
 
 Against the static Storybook build, in Chromium, Firefox, and WebKit:
 

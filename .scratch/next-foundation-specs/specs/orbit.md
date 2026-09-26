@@ -230,7 +230,7 @@ Implementation level: native platform for the slides, the movement, and the swip
 - Platform: CSS scroll snap (`scroll-snap-type: x mandatory`, `scroll-snap-align: start`, `scroll-snap-stop: always`), `scroll-behavior: smooth` under `prefers-reduced-motion: no-preference`, `overscroll-behavior-x: contain`, `Element.scrollBy()`, IntersectionObserver, `inert`, `:focus-visible` in the focus rule, `MutationObserver`; all Baseline widely available on 2026-05-07. `scrollend` and the scroll snap events are out of target and not used.
 - `@angular/aria`: `Tabs`, `TabList`, `Tab`, `TabPanel` through `hostDirectives`, with value-keyed pairing, roving focus, `aria-selected`, `aria-controls`, `aria-labelledby`, and the arrow, Home, End, Enter, and Space keys.
 - `@angular/cdk`: `_IdGenerator` only.
-- Angular: `input()` with `booleanAttribute`/`numberAttribute`, `model()`, `linkedSignal` for `playing`, `computed()` for the effective value, the rotation, and the classes; `afterNextRender` for the observers and the passive listeners; `afterRenderEffect` for the scroll (rectangles read in `earlyRead`, `scrollBy` in `write`) and the timer; host metadata for bindings and replayable listeners. No `effect()`.
+- Angular: `input()` with `booleanAttribute`/`numberAttribute`, `model()`, `linkedSignal` for `playing`, `computed()` for the effective value, the rotation, and the classes; `afterNextRender` for the observers and the passive listeners; `afterRenderEffect` for the scroll (rectangles read in `earlyRead`, `scrollBy` in `write`) and the timer; host metadata for bindings and replayable listeners. No `effect()`. `injectAsync` not used: the plugin is its own entry point and a consumer `@defer` splits it; `afterEveryRender` not needed: `afterRenderEffect` re-runs on its signals.
 
 Mechanics:
 
@@ -243,7 +243,7 @@ Mechanics:
 7. Hover pauses rotation: a `pointerover` listener sets "hovered" to whether the target is outside the rotation control, and `pointerleave` on the root clears it; both are added in code in `afterNextRender`, so a stale hover is never replayed after hydration.
 8. Focus handoff: when the observer changes the selection while focus is inside the slide that loses it (a keyboard or wheel scroll from a focused slide), the new slide receives focus with `focus({preventScroll: true})` before the old one becomes `inert`, because focus on an element that becomes `inert` falls back to the page body.
 9. Live gate: slides get `inert` only once the Orbit is live, that is from its first render callback on. The server HTML leaves every slide reachable (proposed ADR, and the `hydrate never` residue).
-10. Replay guard: `NfsOrbitBullets` calls `stopPropagation()` again in a host `keydown` listener for the keys Aria handles (ArrowLeft, ArrowRight, Home, End, Enter, Space), because a replayed key makes Aria's trailing `preventDefault()` throw and skip Aria's own `stopPropagation()`, so an Orbit inside an accordion panel would hand Home and End to the accordion (the Aria prototype's nested-accordion case 25).
+10. Replay guard: `NfsOrbitBullets` calls `stopPropagation()` again in a host `keydown` listener for the keys Aria handles (ArrowLeft, ArrowRight, Home, End, Enter, Space, without modifiers), because a replayed key makes Aria's trailing `preventDefault()` throw and skip Aria's own `stopPropagation()`, so an Orbit inside an accordion panel would hand Home and End to the accordion (the Aria prototype's nested-accordion case 25).
 
 Fallback: none. The `@if`-rendered slides with `animate.enter`/`animate.leave` that building-blocks 1.6 rule 2 named as the fallback is retired: the scroll-snap design failed no case, and the fallback would only have given a forward wrap, at the cost of slides missing from server HTML, a synthesized swipe, height jumps, and no no-JavaScript scrolling.
 
@@ -400,7 +400,7 @@ Story ids follow `orbit--<story>`: `orbit--basics`, `orbit--autoplay`, `orbit--n
 
 ### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`)
 
-Every story runs axe with `parameters.a11y.test = 'error'` on the six-tag WCAG 2.2 AA rule set. The story Sass sets `$orbit-bullet-background: $dark-gray`, `$orbit-bullet-background-active: $black`, and `$orbit-caption-background: rgba($black, 0.6)`, because the Library mixin refuses to compile with Foundation's defaults; axe cannot check those pairs (no 1.4.11 rule; text over images is incomplete). Stories other than `orbit--autoplay` set `autoPlay` off or `timerDelay` long, so play functions are deterministic.
+Every story runs axe with `parameters.a11y.test = 'error'` on the six tags of the preview's rule set (`wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`, `best-practice`). The story Sass sets `$orbit-bullet-background: $dark-gray`, `$orbit-bullet-background-active: $black`, and `$orbit-caption-background: rgba($black, 0.6)`, because the Library mixin refuses to compile with Foundation's defaults; axe cannot check those pairs (no 1.4.11 rule; text over images is incomplete). Stories other than `orbit--autoplay` set `autoPlay` off or `timerDelay` long, so play functions are deterministic.
 
 - `orbit--basics`: the region has roledescription "carousel"; the rotation control is the first button; "Next slide" selects slide 2 (`aria-selected`, `.is-active`, `tabindex` on the tab panel), focus stays on the arrow; "Previous slide" returns; clicking bullet 3 selects slide 3 with one `selectedChange`; ArrowRight, End, Home, ArrowLeft on the bullets select 1, 2 (last), 0, 2 and move focus; unselected slides are `inert` and the selected one is not.
 - `orbit--autoplay` (`timerDelay` 300): the selection advances and wraps; `aria-live` is `off`; the rotation control reads "Stop automatic slide show"; pressing it stops the rotation (no change in 1 s, label "Start...", `aria-live` `polite`) and pressing again restarts it; hovering the slides pauses, leaving resumes; hovering the rotation control does not pause; Tab onto "Previous slide" stops the rotation.
@@ -413,7 +413,9 @@ Every story runs axe with `parameters.a11y.test = 'error'` on the six-tag WCAG 2
 - `orbit--rtl`: under CDK `Dir` with `dir="rtl"`, ArrowLeft on a bullet selects the next slide.
 - `orbit--nested-in-accordion`: the Orbit inside an accordion panel; Home on a bullet selects the first slide and does not move the accordion's focus.
 
-### 2. Browser-level test (stack per the [browser testing stack decision](../issues/41-browser-testing-stack-decision.md); stack-neutral)
+### 2. Browser-level test (Vitest browser mode, `npx nx test <lib>`)
+
+Vitest browser mode under the Angular unit-test builder (`npx nx test <lib>`, Chromium headless): TestBed specs in `<name>.spec.ts` next to the directive, over a bare test host component, zoneless with `await fixture.whenStable()`, asserting DOM and ARIA state; no story is mounted here and no axe runs here.
 
 - `playing` and the effective rotation: `autoPlay`, `play()`, `stop()`, the focus rule (a `focusin` on a `:focus-visible` element stops, on the rotation control or a mouse-focused button does not), hover in and out of the rotation control, a single slide, and reduced motion from a Breakpoint service test double turning on and off.
 - Timer: with fake timers, a tick after `timerDelay`, a restart of the full delay on every selection change, no tick while paused or stopped, a stop at the end with `infiniteWrap` off, and the timer cleared on destroy.

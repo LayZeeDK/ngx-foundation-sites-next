@@ -287,7 +287,7 @@ Story ids follow `smooth-scroll--<story>`: `smooth-scroll--container`, `smooth-s
 
 ### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`)
 
-Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test = 'error'` and `runOnly` set to the WCAG 2.2 AA rule set (tags `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`), per building-blocks 1.10. Because axe does not test focus order, focus visibility, or obscured focus, the play functions below assert 2.4.3, 2.4.7, and 2.4.11 directly.
+Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test = 'error'` and `runOnly` set to the six tags of the preview's rule set (`wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`, `best-practice`), per building-blocks 1.10. Because axe does not test focus order, focus visibility, or obscured focus, the play functions below assert 2.4.3, 2.4.7, and 2.4.11 directly.
 
 - `smooth-scroll--container`: clicking "Second Arrival" brings `#second`'s top to the viewport top (within 1 px once stable); `#second` has focus and carries `tabindex="-1"`; `userEvent.tab()` then reaches the first link inside `#second`; the attribute is gone after that; the story iframe's `location.hash` is unchanged. Enter on a focused link does the same, and after Enter the target matches `:focus-visible` with a non-`none` computed `outline-style` (2.4.3, 2.4.7).
 - `smooth-scroll--single-link`: the one link scrolls to `#exclusive` and focuses it; a sibling link without the directive is not handled (its native jump changes `location.hash`).
@@ -299,7 +299,9 @@ Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test 
 - `smooth-scroll--back-to-top`: `href="#top"` and `href="#"` scroll to the top and move no focus.
 - `smooth-scroll--router-link-fragment`: in a menu mixing a plain same-document link and a `routerLink` with `fragment`, the plain link is directive-handled (URL unchanged), and the `routerLink` click is left to the Router (the URL gains the fragment through the Router).
 
-### 2. Browser-level test (stack per the [browser testing stack decision](../issues/41-browser-testing-stack-decision.md); stack-neutral)
+### 2. Browser-level test (Vitest browser mode, `npx nx test <lib>`)
+
+Vitest browser mode under the Angular unit-test builder (`npx nx test <lib>`, Chromium headless): TestBed specs in `<name>.spec.ts` next to the directive, over a bare test host component, zoneless with `await fixture.whenStable()`, asserting DOM and ARIA state; no story is mounted here and no axe runs here.
 
 - Link filter, driven by data: button 1 and 2, each modifier key, `target="_blank"`, `target="_self"`, `download`, a cross-document `href`, a same-document absolute `href`, a `#`-only `href` under a `<base href>` that points elsewhere, an empty fragment, `#top` with and without an element of that id, a percent-encoded fragment, an `a[name]` target. Assert handled or not handled (`defaultPrevented`, scroll position, focus).
 - Ownership: on a container host, a click already cancelled by a link-level listener is not handled; on a link host, an already-cancelled click is still scrolled and `preventDefault()` is not called again; nested hosts handle a click once.
@@ -312,7 +314,7 @@ Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test 
 
 ### 3. Node-level Vitest
 
-- SSR smoke: `renderApplication` over a fixture with a container host, a link host, a `routerLink` with `fragment` inside the container, and targets with ids. Assert `whenStable()` resolves; the server HTML equals the fixture markup plus `jsaction="click:;"` on both hosts; no host has any other added attribute; the `routerLink` renders its path-plus-fragment `href`; no `window`, `matchMedia`, or `scrollIntoView` access happens (an `NfsMediaQuery` spy records no live read). Runs in its own file or process because `provideServerRendering()` leaves `ngServerMode` set; whether under `@angular/build:unit-test` or a separate Vitest project is the [Prototype: Rendering-mode test seam](../issues/59-prototype-rendering-mode-test-seam.md).
+- SSR smoke: `renderApplication` over a fixture with a container host, a link host, a `routerLink` with `fragment` inside the container, and targets with ids. Assert `whenStable()` resolves; the server HTML equals the fixture markup plus `jsaction="click:;"` on both hosts; no host has any other added attribute; the `routerLink` renders its path-plus-fragment `href`; no `window`, `matchMedia`, or `scrollIntoView` access happens (an `NfsMediaQuery` spy records no live read). Runs under `npx nx test <lib>` in `smooth-scroll.ssr.spec.ts` through the shared `renderServer()` helper; `npx nx test-node <lib>` only if the server path depends on the DOM adapter, which it does not; the runner is the [Prototype: Rendering-mode test seam](../issues/59-prototype-rendering-mode-test-seam.md).
 - Pure logic: the in-page decision and target resolution (raw `href`, resolved URL, document URL, fragment decoding, `top` and empty fragments) is a pure function of strings plus an id lookup; a table-driven test covers it.
 - Sass compile (the library's Sass test from ADR 0012): `@include nfs-smooth-scroll;` emits `html { scroll-behavior: smooth; }` inside `@media (prefers-reduced-motion: no-preference)` and nothing else; `@include nfs-smooth-scroll($scroller: '.page-content');` moves the rule to that selector; importing the library without the include emits nothing.
 
