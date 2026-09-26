@@ -1,0 +1,97 @@
+// PROTOTYPE -- the documented custom CSS a `nfs-reveal` Library mixin would print (ADR 0012 shape:
+// imported after Foundation, reads the consumer's Foundation settings, emits only what Foundation
+// cannot). Every rule below says why Foundation's own `foundation-reveal` output does not cover it.
+
+@mixin nfs-reveal {
+  // 1. Foundation's `reveal-modal-base` sets `.reveal { display: none }` and its JavaScript showed the
+  //    modal with an inline `display: block`. A native dialog is shown by its `open` attribute, so the
+  //    open state needs one rule. (UA `dialog:not([open]) { display: none }` already hides it closed.)
+  //    The same selector (specificity 0,2,0, printed after `foundation-reveal`, so it also beats
+  //    `.reveal.tiny` and friends) carries the three geometry fixes the tests proved necessary:
+  .reveal[open] {
+    display: block;
+    // 3. The top layer computes Foundation's `position: relative` to `absolute`, whose containing
+    //    block is the initial containing block: on a scrolled page the dialog sits at the document
+    //    top, and focusing into it scrolls the page there. Foundation's overlay was `fixed`.
+    position: fixed;
+    // 4. Foundation centres at medium and up with `left: auto; right: auto; margin: 0 auto`, which
+    //    centres an in-flow box only. For a positioned box `auto` insets mean the static position
+    //    (x = 0 in Chromium, x = body padding in Firefox and WebKit), so the auto margins need both
+    //    insets at 0 to centre. Full screen and below medium already set both to 0.
+    inset-inline: 0;
+    // 5. Tall content: Foundation let the overlay scroll; the dialog scrolls itself (Foundation's
+    //    `overflow-y: auto`), so its box must end inside the viewport. The UA cap
+    //    `calc(100% - 6px - 2em)` plus Foundation's `top: 100px` leaves 62px below the fold at any
+    //    height. 200px = Foundation's literal `top: 100px` (no setting exists) mirrored at the bottom.
+    //    Full screen (`.full`, below medium) is unaffected: its `min-height: 100%` wins.
+    max-height: calc(100% - 200px);
+    // 6. The UA stylesheet gives `dialog` `color: CanvasText`; Foundation's `.reveal` div inherited
+    //    the body colour (`$body-font-color`).
+    color: inherit;
+  }
+
+  // 2. Foundation styles a generated `.reveal-overlay` element; a modal dialog paints `::backdrop`
+  //    instead. Only the colour needs carrying over: the UA already gives `::backdrop`
+  //    `position: fixed; inset: 0`, and Foundation's `reveal-overlay` mixin cannot be included here
+  //    because it also prints `display: none`, which removes the backdrop.
+  .reveal::backdrop {
+    background-color: $reveal-overlay-background;
+  }
+
+  // Everything else (size classes, full screen below medium, `.without-overlay`, the scroll-lock
+  // classes) is Foundation's own `foundation-reveal` output; see README "Custom CSS".
+}
+
+// The `nfs-motion` part the Reveal spec uses (ADR 0003, building-blocks 1.6 rules 4 and 5): keyframe
+// Motion classes under Foundation's Motion UI names prefixed `nfs-`, with the reduced-motion override.
+@mixin nfs-motion-reveal-subset {
+  @keyframes nfs-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes nfs-fade-out {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
+  // The backdrop's keyframes are named apart from the dialog's: its `animationend` is dispatched on
+  // the dialog element, and WebKit reports it with `pseudoElement: ''`, so the directive tells the
+  // two apart by `animationName`.
+  @keyframes nfs-reveal-backdrop-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes nfs-reveal-backdrop-out {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
+  .reveal[open] {
+    animation: nfs-fade-in 250ms ease-out;
+  }
+
+  .reveal[open]::backdrop {
+    animation: nfs-reveal-backdrop-in 250ms ease-out;
+  }
+
+  // State class for the exit (building-blocks 1.6 rule 1): the directive adds `.is-closing`, waits
+  // for `animationend` (or the duration + 100 ms fallback), then calls `dialog.close()`.
+  .reveal.is-closing {
+    animation: nfs-fade-out 250ms ease-in forwards;
+  }
+
+  .reveal.is-closing::backdrop {
+    animation: nfs-reveal-backdrop-out 250ms ease-in forwards;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal[open],
+    .reveal[open]::backdrop,
+    .reveal.is-closing,
+    .reveal.is-closing::backdrop {
+      animation-duration: 1ms;
+    }
+  }
+}

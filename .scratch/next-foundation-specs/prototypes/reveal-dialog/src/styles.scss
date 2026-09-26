@@ -1,0 +1,33 @@
+// PROTOTYPE -- Foundation 6.9 Sass, @import form (ADR 0012), then the library mixins.
+@import 'foundation-sites/scss/foundation';
+@import 'nfs-reveal';
+
+@include foundation-global-styles;
+@include foundation-button;
+@include foundation-close-button;
+@include foundation-reveal;
+@include nfs-reveal;
+@include nfs-motion-reveal-subset;
+
+// ---- Fixture only (not library CSS) ----
+body {
+  padding: 1rem;
+}
+
+.filler {
+  height: 3000px;
+  border-left: 4px dashed $medium-gray;
+}
+
+// Case variant: `overscroll-behavior: contain` on the dialog (scroll-behind question).
+.fx-contain {
+  overscroll-behavior: contain;
+}
+
+// Triggers stay in view on a scrolled page, so a Playwright click does not scroll the page first.
+.fx-triggers {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: $white;
+}
