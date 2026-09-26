@@ -26,6 +26,10 @@ _Avoid_: thumb (the draggable part a Handle draws), slider input, knob
 Where a value sits along a Slider's track, as a fraction from its start; equal to the value's share of the range except on a non-linear Slider, whose Handles carry it natively.
 _Avoid_: percentage, pctOfBar, offset
 
+**Watched element**:
+An element whose height an Equalizer matches to the tallest element of its row; the replacement for Foundation's `data-equalizer-watch` element.
+_Avoid_: watch, equalized item, equalizer child
+
 **State class**:
 A Foundation CSS class that expresses runtime state on an element (`.is-active`, `.is-open`, `.is-stuck`, `.is-closing`, `.js-dropdown-active`), as opposed to a Structural class.
 _Avoid_: modifier, flag class, status class
@@ -33,6 +37,18 @@ _Avoid_: modifier, flag class, status class
 **Variant class**:
 A Foundation CSS class that selects a static look for a Structural class (`.small`, `.alert`, `.hollow`, `.expanded`, `.dropdown` on `.button`), as distinct from a State class, which expresses runtime state.
 _Avoid_: modifier, appearance class, style class
+
+**Visibility class**:
+A Foundation CSS class that shows or hides an element by breakpoint of the Breakpoint map (`.show-for-medium`, `.hide-for-large`, `.show-for-small-only`), generated only for the breakpoints in `$breakpoint-classes`; distinct from a State class, which expresses runtime state.
+_Avoid_: responsive class, breakpoint class, visibility helper
+
+**Revealed panel**:
+An off-canvas panel shown as a permanent sidebar at and above its `revealOn` breakpoint by Foundation's `.reveal-for-<bp>` class; distinct from the Reveal plugin.
+_Avoid_: open panel, docked panel, persistent drawer, revealed modal
+
+**In-canvas panel**:
+An off-canvas panel rendered as a normal page element at and above its `inCanvasOn` breakpoint by Foundation's `.in-canvas-for-<bp>` class.
+_Avoid_: inline panel, static off-canvas, docked panel
 
 **Option**:
 A Plugin's `data-*` configuration attribute in Foundation, and its counterpart in the library.
@@ -124,17 +140,45 @@ _Avoid_: animate mode, disclosure mode, hide mode
 The Toggler form that adds and removes a class named by `toggler` on its element, and whose Triggers are toggle buttons; the replacement for `data-toggler=".class"`.
 _Avoid_: toggle-class mode, CSS mode, active mode
 
+**Modal mode**:
+The OffCanvas configuration with `trapFocus` and an overlay present, in which the panel is a modal dialog and the page content is inert; every other configuration is a disclosure.
+_Avoid_: overlay mode, trap mode, dialog mode
+
 **Light dismiss**:
-Closing an Anchored pane or an open submenu on an outside pointer press, on Escape, or when a sibling of the same kind opens; the replacement for Foundation's `closeme.zf.*` broadcast and body click handlers.
-_Avoid_: click-outside, closeme, auto-close, backdrop click (which is Reveal's)
+Closing an Anchored pane, an open submenu, or a non-modal Reveal on an outside pointer press, on Escape, when focus moves outside it, or when a sibling of the same kind opens; the replacement for Foundation's `closeme.zf.*` broadcast and body click handlers.
+_Avoid_: click-outside, closeme, auto-close, Backdrop press (which is a modal Reveal's)
+
+**Scroll lock**:
+Keeping the page behind an open modal Reveal from scrolling, through Foundation's `html.is-reveal-open` rule plus the scroll offset the library writes when the first modal opens and restores when the last one closes.
+_Avoid_: body lock, scroll blocking, block scroll strategy (CDK's)
+
+**Backdrop press**:
+A pointer press that starts and ends on a modal Reveal's `::backdrop`, which closes it when `closeOnClick` is on; distinct from Light dismiss, which non-modal content uses.
+_Avoid_: overlay click, outside click, backdrop click
 
 **Anchored pane**:
 An element placed against its Trigger inside the page flow rather than in an overlay: the Dropdown pane and the Tooltip tip.
 _Avoid_: overlay, popover, popup, floating element, connected overlay
 
+**Tip**:
+The `.tooltip` element a Tooltip creates on first show as the next sibling of its host and keeps afterwards, whose text describes the host; distinct from the Tooltip Plugin and from the host that triggers it.
+_Avoid_: bubble, popup, tooltip element, template, overlay
+
 **Positioner**:
 The shared piece that places an Anchored pane against its Trigger using Foundation's placement rules.
 _Avoid_: position strategy, tether, floating-ui, overlay position
+
+**Placement**:
+One of the 12 pairs of a position (the side of its Trigger an Anchored pane sits on) and an alignment (the edge or centre that lines up), such as `bottom-left` or `top-center`, that the Positioner resolves.
+_Avoid_: position (alone, which is one half), side, orientation, anchor point
+
+**Collision bound**:
+The box an Anchored pane's Placement must fit inside for the Positioner to accept it: the body box at the current scroll offset by default, as in Foundation, or a chosen ancestor.
+_Avoid_: viewport (which it is not), window, boundary box, container
+
+**Hover region**:
+The Triggers of a hover-opened Anchored pane together with the pane itself; the pane stays open while the pointer is anywhere over it.
+_Avoid_: hover area, hot zone, hover target
 
 **Nested menu**:
 The shared behaviour behind every menu Plugin's nested `ul.menu` markup, varied by Menu mode; the replacement for Foundation's Nest utility.
@@ -144,9 +188,21 @@ _Avoid_: Nest, feathered menu, submenu tree, menu tree
 Which nested-menu behaviour a menu root has: `accordion`, `drilldown`, or `dropdown`; ResponsiveMenu switches it per breakpoint.
 _Avoid_: menu type, plugin type, variant, strategy
 
+**Mode swap**:
+A responsive Plugin's change of mode when its Breakpoint rule resolves to another mode: a class and key change on the same nodes for the menu Plugins, a structural re-render of its own template for ResponsiveAccordionTabs, the one ADR 0008 accepts.
+_Avoid_: mode switch, re-init, re-render (bare), toggle
+
 **Disclosure navigation**:
 The APG navigation pattern built from native lists, buttons that show and hide submenus, and `aria-current`, with no menu or tree roles; every menu Plugin implements it.
 _Avoid_: menubar, ARIA menu, navigation tree, mega menu
+
+**Hybrid item**:
+A menu item whose parent both navigates, through its link, and opens its submenu, through a separate toggle button beside it.
+_Avoid_: split button, submenu toggle item, parent link
+
+**Open path**:
+The chain of open submenus from a menu root down to the innermost open one; Drilldown and DropdownMenu keep at most one per level, and a Menu mode swap keeps the one that holds focus.
+_Avoid_: active branch, breadcrumb, trail
 
 **Tab group**:
 The element that encloses one tab list and all of its panels, which the library requires as their common ancestor because Foundation writes the tab strip and the content box as siblings.

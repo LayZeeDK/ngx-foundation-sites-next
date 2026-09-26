@@ -94,6 +94,7 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
 
 // Extra Foundation Export mixins a spec asks for, one line each with the spec named:
 // @include foundation-grid; // Equalizer: equalizer--float-grid (no class overlap with the XY grid)
+// @include foundation-range-input; // Slider: every slider--* story
 
 @include nfs-breakpoint-properties;
 @include nfs-motion;
@@ -109,11 +110,15 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
   // color-contrast (1.4.3): Foundation's selected tab is 3.75:1. Spec: Tabs, tabs--default.
   $tab-background-active: $primary-color;
   $tab-active-color: $white;
+
+  // color-contrast (1.4.3) and non-text contrast (1.4.11): Foundation's alert button fill is 4.498:1,
+  // hollow and clear success 1.799:1 and warning 1.842:1. Spec: Button, button--colors and button--fills.
+  $button-palette: map-merge($foundation-palette, ('alert': #bf3f2c, 'success': #177a3d, 'warning': #8a5a00));
   ```
 
   An override is a consumer-side setting, never an exception to the Accessibility gate. The overrides come after Foundation's settings file and before `foundation`, so Foundation's `!default` component variables pick them up and they can refer to settings such as `$primary-color`.
 - The library's Sass is imported relatively (line 2) because inside its own repository the package is source. The consumer path through the `sass` export condition is proved by the Sass packaging ticket's built-package compile test (decision 18b), not by Storybook.
-- `foundation-everything` (`foundation-sites/scss/foundation.scss:79-155`) is the union of the per-component includes a consumer writes, so each story sees exactly the rules its Export mixins print; a spec that needs an Export mixin outside it (`foundation-grid`) adds one line, and the spec states that the new classes do not overlap existing ones. `$prototype: true` adds the Prototype utilities (section 8); they are additive classes that restyle no component.
+- `foundation-everything` (`foundation-sites/scss/foundation.scss:79-155`) is the union of the per-component includes a consumer writes, except `foundation-range-input`, which the Slider spec adds, so each story sees exactly the rules its Export mixins print; a spec that needs an Export mixin outside it (`foundation-grid`) adds one line, and the spec states that the new classes do not overlap existing ones. `$prototype: true` adds the Prototype utilities (section 8); they are additive classes that restyle no component.
 - Every `nfs-<plugin>` include comes after `foundation-everything`, as ADR 0012 requires (library rules override Foundation's at equal specificity through source order). A Library mixin that refuses to compile with a Foundation default (the Slider's fill contrast check) is satisfied through `_settings-overrides.scss`, never by skipping its include.
 - No story, stories file, or demo component declares `styles` or `styleUrl`, and no stories file imports CSS. Scenario scaffolding that needs a value Foundation has no class for (a scroll container's height, a tall page for Sticky) uses an inline `style` in the template (section 8).
 
@@ -181,7 +186,7 @@ The Fixture app is not built from stories: it has its own components, one route 
 
 - Project `<lib>-e2e`, specs `src/<plugin>.spec.ts`, Chromium, Firefox, and WebKit projects, all with `baseURL: 'http://localhost:4410/iframe.html?embed=true'`; `webServer.command: 'npx nx run <lib>:static-storybook'` with `reuseExistingServer: true`, and `static-storybook` pinned to port 4410 in `project.json`, as in the prototype, so it never collides with `storybook dev` on 4400 (AGENTS.md), which `reuseExistingServer` would otherwise reuse in place of the static build. `embed=true` turns off play-function autoplay (`shouldAutoplay` is `!shouldEmbed`, `storybook@10.6.0` `dist/preview/runtime.js:36017`), so Playwright owns the interaction; there is no project without `embed`.
 - A test calls `const root = await mount('<plugin>--<story>', props?)`, where `props` uses the story's arg names, queries from `root` with `getBy*` locators, and may call `root.update(props)`. `mount` rejects on an unknown id, a render error, and a failed Accessibility gate report; the test needs no axe call for the initial state. `@axe-core/playwright` with `withTags` on the six tags runs only after Playwright-driven interactions that no play function performs.
-- The gallery is `.storybook/playwright-gallery.ts`, installed by calling its exported `installPlaywrightGallery()` from `preview.ts` (a bare side-effect import is dropped from the build because the library's `package.json` says `"sideEffects": false`), plus the `previewHead` stub in `main.ts` that defines `window.mount`/`window.unmount` before Storybook loads `preview.ts`. It is the one file on Storybook preview internals; whether the library may keep it is OPEN FOR HUMAN in the [browser testing stack decision](issues/41-browser-testing-stack-decision.md). The fallback is `page.goto('/iframe.html?id=<story-id>&viewMode=story&args=<name>:<value>')`, which these conventions keep one mechanical rewrite away by addressing stories only by Story id and arg names.
+- The gallery is `.storybook/playwright-gallery.ts`, installed by calling its exported `installPlaywrightGallery()` from `preview.ts` (a bare side-effect import is dropped from the build because the library's `package.json` says `"sideEffects": false`), plus the `previewHead` stub in `main.ts` that defines `window.mount`/`window.unmount` before Storybook loads `preview.ts`. It is the one file on Storybook preview internals; it is adopted (triage in the [Decide the browser testing stack: Playwright component tests, Vitest Browser, or both](issues/41-browser-testing-stack-decision.md) ticket), and asking Storybook for a public API stays human-only. The fallback is `page.goto('/iframe.html?id=<story-id>&viewMode=story&args=<name>:<value>')`, which these conventions keep one mechanical rewrite away by addressing stories only by Story id and arg names.
 - `mount` is called without a type argument. Playwright 1.63's typed `Stories` registry (`interface Stories {}` in `types/test.d.ts`) is not generated: `StoryId` is `keyof Stories | (string & {})`, so a registry gives completion but never rejects a mistyped id (the gallery does, at run time), and `StoryProps<T>` expects a function or class story, not a CSF `StoryObj`, so typing `props` would need a generated map from `index.json` for no check the run does not already make.
 - e2e tests mount only Story ids their spec lists, never an Anti-pattern story, and never re-implement a play function's steps (ADR 0018).
 
