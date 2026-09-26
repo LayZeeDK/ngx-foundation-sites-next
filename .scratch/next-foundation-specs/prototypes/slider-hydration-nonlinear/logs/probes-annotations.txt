@@ -1,0 +1,36 @@
+=== probe: native default action of ArrowRight on step=any before hydration | chromium ===
+before=309.016994374947 native-default-action=319.016994374947 after-hydration=318.08681662017
+
+=== probe: forced-colors computed colours of the double slider | chromium ===
+{"forcedColors":true,"inputBackground":"rgba(0, 0, 0, 0)","inputAppearance":"none","fillBackground":"rgb(55, 0, 110)","containerBackground":"rgb(230, 230, 230)"}
+
+=== probe: native default action of ArrowRight on step=any before hydration | firefox ===
+before=309.01699437494744 native-default-action=310.016994374947 after-hydration=310.016994374947
+
+=== probe: forced-colors computed colours of the double slider | firefox ===
+{"forcedColors":true,"inputBackground":"rgba(0, 0, 0, 0)","inputAppearance":"none","fillBackground":"rgb(51, 153, 255)","containerBackground":"rgb(230, 230, 230)"}
+
+=== probe: native default action of ArrowRight on step=any before hydration | webkit ===
+before=309.016994374947 native-default-action=319.016994374947 after-hydration=318.08681662017
+
+=== probe: forced-colors computed colours of the double slider | webkit ===
+no forced-colors emulation
+
+=== probe: does a replayed keydown fire onKeydown in this engine | chromium ===
+final: native=318.08681662017 model=value=51 || [console:log] KEYDOWN LISTENER before eventPhase=3 key=ArrowRight target=nl-log || [console:log] KEYDOWN LISTENER returned normally, defaultPrevented=false || [console:error] ERROR Error: `preventDefault` called during event replay.
+    at KeyboardEvent.<anonymous> (http://localhost:4623/main-MKKW7GZM.js:4:117555)
+    at e.onKeydown (http://localhost:4623/main-MKKW7GZM.js:5:82422)
+    at http://localhost:4623/main-MKKW7GZM.js:5:82690
+    at Vp (http://localhost:4623/main-MKKW7GZM.js:4:68730)
+    at r (http://localhost:4623/main-MKKW7GZM.js:4:68566)
+    at cu (http://localhost:4623/main-MKKW7GZM.js:4:34275)
+    at FS (http://localhost:4623/main-MKKW7GZM.js:4:121793)
+    at na.dispatchDelegate (http://localhost:4623/main-MKKW7GZM.js:4:121652)
+    at na.dispatchToDelegate (http://localhost:4623/main-MKKW7GZM.js:4:117073)
+    at dispatcher.Hu.actionResolver [as dispatchDelegate] (http://localhost:4623/main-MKKW7GZM.js:4:116818)
+
+=== probe: does a replayed keydown fire onKeydown in this engine | firefox ===
+final: native=310.016994374947 model=value=50 || [console:log] KEYDOWN LISTENER before eventPhase=3 key=ArrowRight target=nl-log || [console:log] KEYDOWN LISTENER returned normally, defaultPrevented=false || [console:error] ERROR Error
+
+=== probe: does a replayed keydown fire onKeydown in this engine | webkit ===
+final: native=318.08681662017 model=value=51 || [console:log] KEYDOWN LISTENER before eventPhase=3 key=ArrowRight target=nl-log || [console:log] KEYDOWN LISTENER returned normally, defaultPrevented=false || [console:error] ERROR Error: `preventDefault` called during event replay.

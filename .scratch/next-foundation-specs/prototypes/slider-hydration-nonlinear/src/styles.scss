@@ -1,0 +1,22 @@
+// PROTOTYPE -- Foundation 6.9 Sass compiled through Angular's Sass pipeline.
+// Default (LTR) compile. The RTL compile lives in src/app/rtl.scss, scoped to
+// the RtlDemo component only, so the two Foundation compiles never collide.
+@import 'foundation-sites/scss/foundation';
+@import 'nfs-slider';
+
+@include foundation-global-styles;
+@include foundation-forms;
+@include foundation-slider;
+// Not part of `foundation-everything`: the native range styles are opt-in.
+@include foundation-range-input;
+@include foundation-prototype-spacing;
+@include nfs-slider;
+
+body {
+  padding: 1rem;
+}
+
+.case {
+  margin-bottom: 2rem;
+  max-width: 30rem;
+}

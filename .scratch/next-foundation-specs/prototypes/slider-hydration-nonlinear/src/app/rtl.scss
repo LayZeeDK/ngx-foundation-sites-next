@@ -1,0 +1,18 @@
+// PROTOTYPE -- Foundation 6.9 compiled a SECOND time with $global-text-direction:
+// rtl, scoped to RtlDemo only (Angular emulated encapsulation adds the same
+// _ngcontent attribute to this component's markup and to every selector in this
+// file, so it cannot collide with the default LTR compile in ../styles.scss).
+// This is the only way to test rule 12 (../_nfs-slider.scss) for real: the
+// slider-range-input prototype's "rtl" fixture used `dir="rtl"` under the
+// DEFAULT compile, so Foundation's `scale(-1, 1)` mirror (_slider.scss's "RTL
+// support" block) was never emitted and rule 12 was never exercised.
+$global-text-direction: rtl;
+
+@import 'foundation-sites/scss/foundation';
+@import '../nfs-slider';
+
+@include foundation-global-styles;
+@include foundation-forms;
+@include foundation-slider;
+@include foundation-range-input;
+@include nfs-slider;
