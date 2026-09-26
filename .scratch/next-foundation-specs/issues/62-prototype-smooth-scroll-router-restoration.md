@@ -2,7 +2,7 @@
 
 Type: prototype
 Status: open
-Blocked by: 29
+Blocked by: 29, 30
 Labels: wayfinder:prototype
 Map: ../map.md
 
@@ -24,3 +24,11 @@ Build the prototype per `/mattpocock-skills:prototype` at the high fidelity the 
 Capture it: copy the decisive files into `prototypes/smooth-scroll-router/` in the effort directory with a README that states the question, how to run it, and the verdict. The workspace under `D:/tmp/` may stay; record its path.
 
 Under `## Answer`: the verdict in one paragraph, a results table (case, result, evidence with final scroll positions per engine), exact error text for failures, what the prototype does not prove, the decision it hands to the Smooth Scroll and Magellan specs, and anything left `OPEN FOR HUMAN`.
+
+## Added on 2026-09-26 from the Magellan spec
+
+The [Spec: Magellan](30-spec-magellan.md) answer graduated a third question into this ticket, since it needs the same Router application:
+
+3. In a Router application with `scrollPositionRestoration` set to `'enabled'`, `'top'`, and `'disabled'`, what happens on Back and Forward over Magellan's `deepLinking` entries (`replaceState`) and `updateHistory` entries (`pushState`), and does a `replaceState` entry survive a navigation away and back? The spec assumes `replaceState` is safe in every mode and that `updateHistory` restores wrong positions on Back while the Router's restoration is on, so it documents `updateHistory` for pages without restoration and keeps an e2e guard. Measure the final scroll positions per engine; if the assumption fails, the orchestrator reopens the Magellan spec.
+
+Read also: `specs/magellan.md` (the deep-linking subsection) and `adr/0029-magellan-targets-from-links.md`.
