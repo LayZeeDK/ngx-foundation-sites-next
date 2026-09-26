@@ -163,3 +163,7 @@ _Avoid_: SSR default, fallback breakpoint, mobile default
 6. Table B, Interchange row, DI cell: "`nfsInterchangeDefaultsToken` for custom Named queries (`namedQueries`, defaulting to the Breakpoint service's `nfsDefaultNamedQueries`: `landscape`, `portrait`, `retina`)". Reason: decision 20.
 
 Orchestrator, 2026-09-26: the [Prototype: Breakpoint handoff under hydration](60-prototype-breakpoint-handoff-hydration.md) confirmed all three assumptions of this spec's first-render handoff in Chromium, Firefox, and WebKit (the live-breakpoint switch lands before the first paint; server-rendered and prerendered pages rebuild a breakpoint-dependent branch with no hydration error; a `hydrate on viewport` block hydrates into the live branch), and the per-request Server breakpoint round-trips through `TransferState`. ADR 0014 and the spec stand as written.
+
+### Amendment, 2026-09-26 (Interchange re-run)
+
+Consumer rule 1 generalised by the orchestrator from the [Re-run: Interchange spec, the `replaced` timing and the outlet's focus rule](67-rerun-interchange-replaced-timing.md), proposed change 4: reading `document.activeElement` in `earlyRead` before the swap holds only when the consumer's own `earlyRead` callback commits the swap; a swap driven straight from this service's reads in change detection records focus in the change-detection code that removes the old nodes, or from `focusin`/`focusout` on a surviving host, and every consumer moves focus in a render callback keyed on rendered state (building-blocks 1.5).
