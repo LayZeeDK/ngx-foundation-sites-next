@@ -50,12 +50,12 @@ The three directive findings:
 
 | Case | Result | Evidence (`results.log`) |
 | --- | --- | --- |
-| Size classes and full screen below medium, at 320 / 640 / 1024 | Pass, all equal after rules 3 and 4 | e.g. 1024 `.tiny`: dialog `358,100,307,150` = Foundation `358,100,307,150`; every size at 320: `0,0,320,800` both |
-| Without rules 3 and 4 (first probe) | Fail: dialog left-aligned (x=0 in Chromium, x=16 in Firefox and WebKit) and computed `position: absolute` | the first probe run, recorded in the ticket Answer |
+| Size classes and full screen below medium, at 320 / 640 / 1024 | Pass, all equal after rules 2 and 3 | e.g. 1024 `.tiny`: dialog `358,100,307,150` = Foundation `358,100,307,150`; every size at 320: `0,0,320,800` both |
+| Without rules 2 and 3 (first probe) | Fail: dialog left-aligned (x=0 in Chromium, x=16 in Firefox and WebKit) and computed `position: absolute` | the first probe run, recorded in the ticket Answer |
 | `::backdrop` = `.reveal-overlay` colour | Pass | `rgba(10, 10, 10, 0.45)` both |
-| Text colour | Pass after rule 6 (UA `CanvasText` gave `rgb(0,0,0)` vs body `rgb(10,10,10)`) | size tests assert computed `color` |
-| Scrolled page (scrollY 1000) | Pass after rule 3: dialog at y=100, page stays at 1000 | before rule 3 the dialog sat at the document top and the page jumped to 0 |
-| Tall content | Pass after rule 5: box `212,100,600,600`, end of content reachable by scrolling the dialog | without it the box was 762 px tall from y=100, 62 px below the fold |
+| Text colour | Pass after rule 5 (UA `CanvasText` gave `rgb(0,0,0)` vs body `rgb(10,10,10)`) | size tests assert computed `color` |
+| Scrolled page (scrollY 1000) | Pass after rule 2: dialog at y=100, page stays at 1000 | before rule 2 the dialog sat at the document top and the page jumped to 0 |
+| Tall content | Pass after rule 4: box `212,100,600,600`, end of content reachable by scrolling the dialog | without it the box was 762 px tall from y=100, 62 px below the fold |
 | `overlay: false` through `show()` | Pass: not `:modal`, `.without-overlay`, fixed and centred at `212,100`, page interactive, outside press closes, Escape closes through the directive's keydown | Foundation's CSS alone leaves `.without-overlay` at x=16; its JS centred it with an inline `left` |
 | Nested, `multipleOpened` | Pass: both open, inner on top, focus in the inner; Escape closes only the inner, focus returns to its Trigger in the outer; the second Escape returns focus to the page Trigger | `stacked={... topIsInner:true, focus:"im-close"}` |
 | Nested, `multipleOpened: false` | Pass for the open state; focus after the inner closes is `BODY` in all three (its Trigger was inside the dialog that closed) | `focusAfterInnerClose=BODY#` |

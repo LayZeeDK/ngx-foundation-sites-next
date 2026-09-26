@@ -117,7 +117,7 @@ Round 8: rendering modes and tests.
 43. Q: Replay? A: Arrow, rotation, and bullet clicks replay and act once (P46 replay case); replayed bullet keys act and Aria's `preventDefault()` logs (BB Part 4 item 3, P43 OPEN 2); scrolls and hovers do not replay; a pre-hydration scroll is adopted.
 44. Q: Hydrate triggers and boundary? A: One Hydration boundary for the whole carousel (BB 1.11 decision 6); `hydrate on viewport` recommended (BB Table B); `hydrate never` leaves a native scroll-snap gallery with every slide usable (decision 31).
 45. Q: Lazy slides? A: `@defer (on viewport)` inside a slide (the viewport observer respects the container's clip) and `loading="lazy"` on later images; no `ngTabContent`, which would empty slides in server HTML (BB 1.11 decision 2).
-46. Q: Testing seams? A: The four BB 1.12 layers: story play functions (interaction and axe; settings overridden to pass the compile checks), browser-level tests (state, timer, pending target, focus handoff, live gate, tab stop, dev checks, replay-safe handlers), node-level Vitest (SSR smoke, pure logic, Sass compile test), Playwright e2e (scroll positions, page scroll, timing, reduced motion, tab order, geometry, and the fixture app's no-JS, hydration, replay, zone, `hydrate on viewport`, and `hydrate never` cases). The browser-level layer is written stack-neutral while the browser testing stack decision runs.
+46. Q: Testing seams? A: The four BB 1.12 layers: story play functions (interaction and axe; settings overridden to pass the compile checks), browser-level tests (state, timer, pending target, focus handoff, live gate, tab stop, dev checks, replay-safe handlers), node-level Vitest (SSR smoke, pure logic, Sass compile test), Playwright e2e (scroll positions, page scroll, timing, reduced motion, tab order, geometry, and the fixture app's no-JS, hydration, replay, zone, `hydrate on viewport`, and `hydrate never` cases).
 
 ### Triage
 
@@ -158,6 +158,8 @@ _Avoid_: pause button, play button, autoplay toggle
 [adr/0025-orbit-live-inert.md](../adr/0025-orbit-live-inert.md): "Orbit slides are `inert` only once the directives are live". It meets the bar. Hard to reverse: it fixes Orbit's server HTML and its `hydrate never` residue. Surprising: it overrides Aria's `inert` and departs from BB 1.10's "hidden content that stays in the DOM gets `inert`", which a later reader would "fix". A real trade-off: Aria's server `inert` (P46) and disabling scrolling until live were the alternatives.
 
 ### Proposed building-blocks changes
+
+(paths relative to the effort root)
 
 1. 1.6 rule 2: replace "Elements the library inserts or removes (Lazy content, and Orbit slides if the [Prototype: Orbit on CSS scroll snap](issues/46-prototype-orbit-scroll-snap.md) fails):" with "Elements the library inserts or removes (Lazy content):". Reason: the prototype passed; decision 2.
 2. 1.6 rule 7: replace "(client-created Lazy content views, the Orbit fallback slides inserted after a user action)" with "(client-created Lazy content views)". Reason: decision 2.

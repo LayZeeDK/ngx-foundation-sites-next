@@ -27,7 +27,8 @@ Built as a plain Angular CLI 22.2.0 `--ssr` application under `D:/tmp/nfs-proto-
 real browser, not about Nx project graph or build targets), with `foundation-sites` 6.9.0's Sass
 `sticky` partial reused untouched (`@use 'foundation-sites/scss/components/sticky'; @include
 sticky.foundation-sticky;`) plus the one documented custom rule the building-blocks map already calls
-for (`.sticky { position: sticky; }` -- Foundation's own `_sticky.scss` has no such rule). Decisive
+for (`.sticky { position: sticky; }` -- Foundation's own `_sticky.scss` has no such rule). The `@use`
+form is prototype-only; the supported shape is ADR 0012's `@import` after Foundation. Decisive
 files and a full README (question, how to run, verdict, results table, custom-CSS list, the
 IntersectionObserver correctness gap found while building it, and the SSR/hydration evidence) are
 captured at [prototypes/sticky-css/](../prototypes/sticky-css/README.md); the runnable workspace stays
@@ -64,8 +65,8 @@ spec should not rely on sentinels alone.
 request with `ERROR: Bad Request ("http://localhost:4483/"). Header "host" with value
 "localhost:4483" is not allowed.` -- Angular 22's SSRF guard (`adev/src/content/guide/security.md`
 "Preventing Server-Side Request Forgery"). Fixed by setting `NG_ALLOWED_HOSTS="localhost:4483,localhost"`
-before starting the server; the same gotcha was independently hit by the [P11 `animate.enter` at
-hydration prototype](../prototypes/animate-enter-hydration/README.md).
+before starting the server; the same gotcha was independently hit by the [Prototype: `animate.enter` at
+hydration](../prototypes/animate-enter-hydration/README.md).
 
 **IntersectionObserver correctness gap** (found while building this, not asked by the ticket): a single
 instantaneous scroll jump larger than a sentinel's shrunk detection band (`window.scrollTo` with no
@@ -97,7 +98,7 @@ cases pass in all 3 engines.
 
 - Build Sticky as `[nfsSticky]` on `.sticky` (documented custom CSS: `position: sticky` only) plus
   `[nfsStickyContainer]` on `[data-sticky-container]` (a class marker, no JS-managed height), as
-  building-blocks.md row 217 already states.
+  the Table A Sticky row of building-blocks.md already states.
 - `stickTo: 'bottom'`, em-based `marginTop`/`marginBottom`, and the `stickyOn` gate are fully supported;
   drop the "documented limit" framing for these three.
 - `topAnchor`/`btmAnchor`/`anchor` become a documented limit **with a recipe** (size

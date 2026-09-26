@@ -22,9 +22,11 @@ Under `## Answer`: the verdict in one paragraph, a results table (case, result, 
 
 ## Answer
 
+Sources: P52 = the [Prototype: `animate.enter` at hydration](52-prototype-animate-enter-hydration.md).
+
 Built as a plain Angular CLI 22.2.0 application (`npx @angular/cli@22.2.0 new app --style=css
 --ssr=false --routing=false`), not the Nx workspace this ticket's "How to work it" describes,
-following the same override prototype 52 recorded for the same reason: the question needs no Nx
+following the same override prototype 52 (P52) recorded for the same reason: the question needs no Nx
 scaffolding, and a bare CLI app is the smallest runnable thing that exercises `animate.enter`/
 `animate.leave`. It has no `foundation-sites` Sass dependency, matching prototype 52's own choice,
 because the question is about Angular's animation instruction against generic CSS, not Foundation's
@@ -125,7 +127,11 @@ mechanism never failed to complete in any run, including every rerun after the f
   defaults and states it.
 - The fallback timer's duration must be a value the directive already knows at design time (not one
   measured from `getComputedStyle`), because it must complete correctly precisely when the
-  stylesheet that would supply a measurable duration is the thing that is missing.
+  stylesheet that would supply a measurable duration is the thing that is missing. This design-time
+  rule applies to library-owned animations like the `nfs-*` keyframes tested here; where the Motion
+  class is consumer-chosen (Toggler's `animate`, building-blocks 1.6 rule 1), the duration is
+  measured instead, because a dropped consumer stylesheet must still complete: a measured zero
+  completes at once, refining rather than contradicting this design-time rule.
 
 CSS added: six `@keyframes` plus their six trigger classes (`nfs-fade-in`, `nfs-fade-out`,
 `nfs-slide-in-down`, `nfs-slide-out-up`, `nfs-hinge-in-from-top`, `nfs-spin-out`), one State-class

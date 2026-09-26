@@ -106,7 +106,7 @@ For [Spec: Slider](32-spec-slider.md):
 7. Value channel: `value` is a `model()`. Bind `[attr.value]` for server HTML, and write the live `value` property in `afterRenderEffect` only when it differs. On the first client render, adopt a native value the user changed before hydration. A `[value]` host binding loses that input. Replay itself needs nothing special: the `input` event is replayable and state is set before any `preventDefault()`.
 8. Fill: `--nfs-slider-lo`/`--nfs-slider-hi` style bindings on the container (fractions of the bar, computed on the server too) position `.slider-fill` from the low thumb's outer edge to the high thumb's outer edge. No track gradient.
 9. Keys: every APG key is native for linear sliders; PageUp/PageDown move 10 % of the range in all engines. Foundation's `Shift+Arrow` fast step is dropped as a Foundation-only extra and listed under dropped behaviour.
-10. Corrections for the building-blocks Slider row (for the orchestrator): "fill gradient" becomes `.slider-fill` positioned by `--nfs-slider-lo`/`--nfs-slider-hi`; "replay is irrelevant" needs the hydration note from decision 7; P4 is answered in favour of native inputs for all forms.
+10. Corrections for the building-blocks Slider row (for the orchestrator): "fill gradient" becomes `.slider-fill` positioned by `--nfs-slider-lo`/`--nfs-slider-hi`; "replay is irrelevant" needs the hydration note from decision 7; the Slider prototype question is answered in favour of native inputs for all forms.
 
 ### OPEN FOR HUMAN
 

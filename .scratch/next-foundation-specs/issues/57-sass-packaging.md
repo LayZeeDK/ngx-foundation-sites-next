@@ -133,7 +133,7 @@ Each spec carries a "Sass" subsection under Further Notes with this content (But
 
 ### OPEN FOR HUMAN
 
-1. What happens when Dart Sass 3.0 removes `@import`. Foundation 6.9 and the library's Sass (which follows Foundation into the same compile, decision 5) will then stop compiling together. Sources cannot settle the response: Sass gives no 3.0 date beyond "no sooner than two years after Dart Sass 1.80.0" (released 2024-10-17, so October 2026 at the earliest; sass-lang.com Breaking Change: `@import`); the registry shows no Foundation release after 6.9.0; and `@angular/build` 22.2.0 pins Dart Sass 1.104.1, so Angular CLI consumers stay on 1.x until Angular moves. The options are a user call: wait for a module-based Foundation (the library then switches to `@use` of the same Foundation module URLs, and Sass's load-once module semantics would share the consumer's configured instance), document pinning Dart Sass 1.x, or maintain a module-system port of Foundation's Sass. Default applied here: nothing now; the pinned Angular toolchain carries consumers.
+1. Decided under the triage rule below.
 
 ### Proposed glossary terms
 

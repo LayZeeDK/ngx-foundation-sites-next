@@ -2,7 +2,7 @@
 
 Type: grilling
 Status: resolved
-Blocked by: 14, 38, 42, 53, 54
+Blocked by: 14, 38, 42, 53, 54, 63
 Labels: wayfinder:grilling
 Map: ../map.md
 

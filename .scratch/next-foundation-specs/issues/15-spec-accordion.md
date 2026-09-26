@@ -47,6 +47,8 @@ Gist: four attribute directives and one lazy marker on Foundation's markup, buil
 
 ### Decision log
 
+Sources: P43 = the [Prototype: `@angular/aria` Accordion and Tabs under Foundation markup](43-prototype-aria-accordion-tabs.md); P52 = the [Prototype: `animate.enter` at hydration](52-prototype-animate-enter-hydration.md).
+
 1. **Directive or component, and which markup?** Four attribute directives on `.accordion`, `.accordion-item`, `.accordion-title`, `.accordion-content`, the last an attribute-selector Wrapper component, plus `ng-template[nfsAccordionLazyContent]`; each directive adds its Structural class. Source: ADR 0001; building-blocks 1.1 case 2 and Table A; foundation-api-design SKILL "one directive per structural class".
 2. **Title element?** `button[nfsAccordionTitle]` as the only element child of `h1`-`h6`; dev check when not. Source: `research/aria-apg-patterns.md` Accordion ("The `button` element is the only element inside the `heading` element"); prototype 43 case 14.
 3. **Implementation level?** `@angular/aria`; no fallback needed. `<details name>` and `::details-content` are out of target, and `<summary>` cannot sit in a heading. Source: building-blocks Table A; prototype 43 verdict; `research/web-platform-features.md` 4.

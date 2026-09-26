@@ -66,8 +66,8 @@ The consistency review replaces each spec's heading `### 2. Browser-level test (
 
 ### OPEN FOR HUMAN
 
-1. Whether the new repository may depend on Storybook preview internals in `.storybook/playwright-gallery.ts` (`window.__STORYBOOK_PREVIEW__`, `storeInitializationPromise`, `teardownRender`, `currentRender`, and the channel events `setCurrentStory`, `updateStoryArgs`, `storyFinished`, `storyArgsUpdated`, `storyMissing`, `storyErrored`, `storyThrewException`, `playFunctionThrewException`), or should instead ask Storybook for a public "render story by id and report the outcome" API (an outward action in a third-party repository). Carried over from the prototype. Until answered the library uses the gallery as decided in entry 15; a "no" costs one mechanical rewrite of the `mount` calls to the public iframe URL and the loss of `update(props)`.
-2. Linux CI and macOS Safari runs of layer 4 (both halves). This machine cannot provide them; the first CI run of the new repository does. No spec depends on the outcome.
+1. Asking Storybook for a public "render story by id and report the outcome" API (an outward action in a third-party repository). Human-only by kind (Triage below); until answered the library uses the gallery as decided in entry 15.
+2. Decided under the triage rule below.
 
 ### Proposed glossary changes for `CONTEXT.md` (orchestrator applies)
 

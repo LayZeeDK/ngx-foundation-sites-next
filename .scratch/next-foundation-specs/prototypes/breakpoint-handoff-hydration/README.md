@@ -148,8 +148,8 @@ needed** to ADR 0014, `specs/breakpoint-service.md`'s rendering-modes subsection
 recorded:
 
 1. **A client-rendered app never paints the Server breakpoint's layout.** The Breakpoint service
-   spec's decision 9 ("Client before live: the Server breakpoint until the first `earlyRead`
-   callback, then live in the same tick") is confirmed as written; ResponsiveAccordionTabs and
+   spec's decision 9, that the client stays on the Server breakpoint until the first `earlyRead`
+   callback and then goes live in the same tick, is confirmed as written; ResponsiveAccordionTabs and
    ResponsiveMenu specs do not need a loading placeholder or a flash guard for the plain
    client-rendered case.
 2. **Full hydration rebuilds a breakpoint-dependent `@if` branch cleanly**, matching
@@ -160,9 +160,9 @@ recorded:
    its own focus-preservation rule across that rebuild (not tested here -- this prototype's page has
    no focusable content in the swapped branches).
 3. **`@defer (hydrate on viewport)` hydrates after the switch into the live branch**, confirming
-   building-blocks 1.11 decision 6's "the block's classes are rewritten or its branch rebuilt during
-   the block's hydration render" for the `viewport` trigger specifically (previously confirmed for
-   `interaction` only, by the rendering-mode-test-seam prototype).
+   building-blocks 1.11 decision 6, that the block's classes are rewritten or its branch rebuilt
+   during the block's hydration render, for the `viewport` trigger specifically (previously
+   confirmed for `interaction` only, by the rendering-mode-test-seam prototype).
 4. **A per-request Server breakpoint round-trips through `TransferState` without weakening any of
    the above**: hydration still succeeds and the client still ends up at the live breakpoint,
    whether or not the server's per-request choice matches the live viewport. When it already

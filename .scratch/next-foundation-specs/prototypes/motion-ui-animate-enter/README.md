@@ -1,6 +1,8 @@
 # Prototype: animate.enter/animate.leave with Motion UI transition classes
 
-Ticket: [47. Prototype: `animate.enter` and `animate.leave` with Motion UI transition classes](../../issues/47-prototype-motion-ui-animate-enter.md) (building-blocks.md 1.6 rule 4).
+Ticket: [Prototype: `animate.enter` and `animate.leave` with Motion UI transition classes](../../issues/47-prototype-motion-ui-animate-enter.md) (building-blocks.md 1.6 rule 4).
+
+Sources: P52 = the [Prototype: `animate.enter` at hydration](../animate-enter-hydration/README.md), also captured at `../../issues/52-prototype-animate-enter-hydration.md`.
 
 ## Question
 
@@ -15,8 +17,8 @@ WebKit? And does a consumer-supplied Motion UI transition class (`slide-in-down`
 ## What is here
 
 The decisive files only (a full Angular CLI 22.2.0 application, no SSR -- this question is about
-client-side animation instructions, not rendering modes, so SSR was not built, per the ticket's
-"SSR is not needed for this question"). The runnable workspace, including `node_modules`, the
+client-side animation instructions, not rendering modes, so SSR was not built). The runnable
+workspace, including `node_modules`, the
 build output, and Playwright's browser cache, stays at
 `D:/tmp/nfs-proto-motion-ui-animate-enter/app` and is not committed.
 
@@ -192,7 +194,11 @@ Confirms `adr/0003-animation-mechanics.md` and building-blocks.md 1.6 without ch
 - The fallback timer's declared-duration-plus-100ms design (ADR 0003 rule 1, Material's mechanic)
   is confirmed as a fixed, directive-known value (not a value measured from `getComputedStyle`),
   because the directive must complete correctly even when the stylesheet that would have supplied
-  a measurable duration is the very thing that is missing.
+  a measurable duration is the very thing that is missing. This design-time rule applies to
+  library-owned animations like the ones tested here; where the Motion class is consumer-chosen
+  (Toggler's `animate`, building-blocks 1.6 rule 1), the duration is measured instead, because a
+  dropped consumer stylesheet must still complete: a measured zero completes at once, refining
+  rather than contradicting this design-time rule.
 
 ### CSS added
 
@@ -220,6 +226,8 @@ against generic CSS, not Foundation's visual contract (the same reasoning protot
 same choice).
 
 ### OPEN FOR HUMAN
+
+Settled: see the ticket's Triage. No run log was kept for this prototype in the effort directory; the results above are taken from the ticket's captured tables.
 
 - Whether Case 4b's finding (a single-class transition with a genuine `transition-property` is left
   attached by Angular's cleanup, unlike Case 4a's unmatched-selector class, which is stripped almost

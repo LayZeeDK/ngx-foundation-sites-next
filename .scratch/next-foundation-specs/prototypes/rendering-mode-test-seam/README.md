@@ -54,7 +54,7 @@ bash tools/run-all.sh                            # all of the above, logs to log
 
 To rebuild the workspace from nothing:
 
-1. `env -u CLAUDECODE -u CLAUDE_CODE npx -y create-nx-workspace@23.2.1 nfs-proto-rendering-mode-test-seam --preset=angular-monorepo --appName=fixture --style=css --bundler=esbuild --e2eTestRunner=playwright --unitTestRunner=vitest --ssr=true --zoneless=true --prefix=nfs --linter=none --formatter=prettier --aiAgents=none --nxCloud=skip --skipGit --interactive=false --packageManager=npm --workspaces=false` (with the agent variables set, the preset is replaced by a demo template; see the [Playwright component testing prototype](../../issues/40-playwright-component-testing-prototype.md)).
+1. `env -u CLAUDECODE -u CLAUDE_CODE npx -y create-nx-workspace@23.2.1 nfs-proto-rendering-mode-test-seam --preset=angular-monorepo --appName=fixture --style=css --bundler=esbuild --e2eTestRunner=playwright --unitTestRunner=vitest --ssr=true --zoneless=true --prefix=nfs --linter=none --formatter=prettier --aiAgents=none --nxCloud=skip --skipGit --interactive=false --packageManager=npm --workspaces=false` (with the agent variables set, the preset is replaced by a demo template; see the [Prototype: Playwright component tests mounting CSF stories from @storybook/angular-vite](../../issues/40-playwright-component-testing-prototype.md)).
 2. `node tools/pin.mjs`, delete `node_modules` and `package-lock.json`, `npm install`.
 3. `npx nx g @nx/angular:library packages/ui --name=ui --publishable --importPath=@nfs/ui --prefix=nfs --style=css --unitTestRunner=vitest-angular --linter=none`.
 4. `npm i -D -E @analogjs/vite-plugin-angular@2.7.5 vite@8.3.1 @nx/vitest@23.2.1` (only for `test-node`).

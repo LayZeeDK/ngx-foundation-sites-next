@@ -8,7 +8,7 @@ Map: ../map.md
 
 ## Question
 
-Graduated on 2026-09-26 from the `## Prototype needed` section of the [Spec: Sticky](28-spec-sticky.md) answer. That spec departs from the [Prototype: CSS `position: sticky` plus sentinels for Sticky](48-prototype-sticky-css.md) in four ways and assumes six things hold; only running code can confirm them, in Chromium, Firefox, and WebKit:
+Graduated on 2026-09-26 from the `## Prototype needed` section of the [Spec: Sticky](28-spec-sticky.md) answer. That spec departs from the [Prototype: CSS `position: sticky` with IntersectionObserver sentinels for Sticky](48-prototype-sticky-css.md) in four ways and assumes six things hold; only running code can confirm them, in Chromium, Firefox, and WebKit:
 
 1. Absolutely positioned sentinels appended at the container's end leave layout unchanged, including in flex and grid containers and with container padding.
 2. State computed from the host's own rectangle against the stick line matches the pinned geometry under real wheel and keyboard scrolling.
@@ -17,7 +17,7 @@ Graduated on 2026-09-26 from the `## Prototype needed` section of the [Spec: Sti
 5. Consumer `scroll-padding` on the scroll container does not shift the sticky line.
 6. Appending sentinels next to a not-yet-hydrated `@defer` sibling causes no NG05xx error.
 
-The spec names a fallback for each; if a case fails, the orchestrator reopens the Sticky spec with that fallback, otherwise the verdict is appended to its decision log.
+The spec names a fallback for each; if a case fails, the orchestrator reopens the Sticky spec with that fallback, otherwise the verdict is appended to its decision log. Case 3 (the scroll-container root inside Foundation's OffCanvas wrapper) is the case that would have reopened both the Sticky and the Off-canvas specs; the rest refine their designs without reopening either.
 
 Read first: `specs/sticky.md` (the measurement and rendering-modes subsections and the fallbacks), `adr/0019-sticky-native-range.md`, the Sticky prototype's answer and `prototypes/sticky-css/`, `specs/breakpoint-service.md` (the Breakpoint query grammar), and `research/angular-rendering-modes.md` section 7.
 

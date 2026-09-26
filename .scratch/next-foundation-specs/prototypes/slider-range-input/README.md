@@ -8,7 +8,7 @@ Can the `foundation-range-input` mixin plus a fill, and two overlapped range inp
 
 ## Verdict
 
-Yes, with native inputs throughout; no custom `role=slider` is needed. All 17 cases pass in Chromium 153, Firefox 155 and WebKit 26.6 (Playwright 1.63) and again in Chromium 120, Firefox 119 and WebKit 17.4 (Playwright 1.40, the builds closest to the Chrome 119 / Firefox 119 / Safari 17 target), axe WCAG 2.2 AA included. Six documented custom CSS rule groups and about 150 lines of directive logic were needed. Open points: Chromium ignores `aria-orientation="vertical"` on a native range; nobody has yet heard a screen reader read `aria-valuetext` on these inputs; Foundation's default thumb is 22.4 px. See the ticket answer.
+Yes, with native inputs throughout; no custom `role=slider` is needed. All 17 cases pass in Chromium 153, Firefox 155 and WebKit 26.6 (Playwright 1.63) and again in Chromium 120, Firefox 119 and WebKit 17.4 (Playwright 1.40, the builds closest to the Chrome 119 / Firefox 119 / Safari 17 target), axe WCAG 2.2 AA included. 11 documented custom CSS rule groups and 374 lines of directive logic (including comments) were needed. Open points: Chromium ignores `aria-orientation="vertical"` on a native range; nobody has yet heard a screen reader read `aria-valuetext` on these inputs; Foundation's default thumb is 22.4 px. See the ticket answer.
 
 ## What is here
 

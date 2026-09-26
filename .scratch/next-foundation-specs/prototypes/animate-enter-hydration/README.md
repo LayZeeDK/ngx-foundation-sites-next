@@ -1,6 +1,6 @@
 # Prototype: animate.enter at hydration
 
-Ticket: [52. Prototype: `animate.enter` at hydration](../../issues/52-prototype-animate-enter-hydration.md) (building-blocks.md P11).
+Ticket: [Prototype: `animate.enter` at hydration](../../issues/52-prototype-animate-enter-hydration.md).
 
 ## Question
 
@@ -110,9 +110,10 @@ unproven here.
 - Whether the same suppression timing holds for `animate.leave`, or for the `(animate.enter)`
   function-callback form (only the class-list form was tested, matching how the map's specs plan to
   use it, building-blocks.md 1.6 rule 2 and rule 4).
-- Behaviour under Zoneless change detection specifically (the app used zone.js, the CLI default for
-  `--ssr` at 22.2.0; the map's rendering-modes research treats render-callback timing as
-  zone-independent, but this prototype did not verify that directly).
+- Behaviour under zoneless change detection specifically: zoneless is the Angular CLI 22.2 default
+  (`zoneless.md:14`), and no zone.js consumer was tried here; the map's rendering-modes research
+  treats render-callback timing as zone-independent, but this prototype did not verify that
+  directly.
 - Whether the `read`-phase and `setTimeout` results generalise to a slower or faster machine; the
   mechanism (Angular's own rAF-based animation-detection cleanup) is architectural, not timing-tuned,
   so it should generalise, but only one machine was used here.
@@ -143,11 +144,13 @@ contract.
 
 ## OPEN FOR HUMAN
 
+Settled: see the ticket's Triage. No run log was kept for this prototype in the effort directory; the results above are taken from the ticket's captured tables.
+
 - Whether the `read`-phase-loses-the-race finding changes the recommended mechanism in
   `research/angular-rendering-modes.md` section 3 and `adr/0003`/`adr/0008` (currently they only
   state the fact "no hydration guard exists"; this prototype adds the mechanism and the one working
-  workaround). Recommend the orchestrator link this README from those documents' "prototype P11"
-  references rather than duplicating the finding into them.
+  workaround). Recommend the orchestrator link this README from the documents that cite this
+  prototype by name rather than duplicating the finding into them.
 - Whether any spec should actually use the signal-gated or delayed-CSS-gate suppression pattern in
   production, given the map already chose State classes for every persistent animated element
   (Reveal, OffCanvas, dropdown panes, Toggler, Orbit fallback) -- this prototype only establishes that

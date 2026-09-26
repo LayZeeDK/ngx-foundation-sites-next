@@ -90,7 +90,7 @@ Round 4 (rendering modes, accessibility, styling, testing).
 
 ### OPEN FOR HUMAN
 
-1. Ship the directive pair in the first release, or publish Equalizer as CSS guidance only until a consumer asks for the residue. Default applied: ship it, optional and small, with the docs and stories leading with CSS. Sources settle what CSS covers (decisions 5 to 7), not whether the float-grid and non-grid residue is worth a maintained directive; that is a product call.
+1. Decided under the triage rule below.
 
 ## Prototype needed
 
@@ -107,6 +107,8 @@ _Avoid_: watch, equalized item, equalizer child
 `adr/0021-equalizer-min-height.md`: "Equalizer is CSS layout first; its optional directive writes `min-height` on every watched element except the tallest of its row". It meets the bar: hard to reverse (consumers' CSS will depend on `min-height` versus `height`), surprising without context (the tallest element is skipped on purpose, and Foundation writes `height`), and the result of a real trade-off (Foundation's `height` plus MutationObserver and image loader, `min-height` on every element, writes inside the observer callback).
 
 ### Proposed building-blocks changes
+
+(paths relative to the effort root)
 
 1. Table A, Equalizer, "Primitives used": replace "inline `height` writes batched in the `write` phase" with "inline `min-height` on every watched element except the tallest of its row, reset, measure, and apply in one `afterRenderEffect` `mixedReadWrite` pass; `ResizeObserver` on the watched elements and the container, created on the effect's first run". Reason: decisions 14 to 16.
 2. Table A, Equalizer, "Level and reason": append "the directive is optional, for markup CSS cannot reach (float grid, non-grid lists)". Reason: decisions 5 to 8.

@@ -45,7 +45,7 @@ Gist: two directives on Foundation's markup. `[nfsSticky]` adds `.sticky`, binds
 
 ### Decision log
 
-Self-grilling in rounds; each entry gives the question, the answer taken, and its sources. "BB" is `building-blocks.md`, "P48" the [Prototype: CSS `position: sticky` plus sentinels for Sticky](48-prototype-sticky-css.md) answer and README, "INV" the Sticky section of `research/foundation-inventory-positioned.md`.
+Self-grilling in rounds; each entry gives the question, the answer taken, and its sources. "BB" is `building-blocks.md`, "P48" the [Prototype: CSS `position: sticky` with IntersectionObserver sentinels for Sticky](48-prototype-sticky-css.md) answer and README, "INV" the Sticky section of `research/foundation-inventory-positioned.md`.
 
 Round 1: shape and level
 

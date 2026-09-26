@@ -69,9 +69,9 @@ succeeded without incident.
   / `hydrate never` triggers (only `interaction` and `viewport` were built).
 - Whether the same suppression timing holds for `animate.leave`, or for the `(animate.enter)`
   function-callback form (only the class-list form was tested, matching building-blocks.md 1.6 rules 2 and 4).
-- Behaviour specifically under zoneless change detection (the app used zone.js, the CLI default for `--ssr` at
-  22.2.0; render-callback timing is documented as zone-independent, but this prototype did not verify that
-  directly).
+- Behaviour under zoneless change detection specifically: zoneless is the Angular CLI 22.2 default
+  (`zoneless.md:14`), and no zone.js consumer was tried here; render-callback timing is documented as
+  zone-independent, but this prototype did not verify that directly.
 - Whether the `read`-phase and `setTimeout` results generalise beyond this one machine's timing; the mechanism
   (Angular's own rAF-based animation-detection cleanup) is architectural rather than timing-tuned, so it
   should generalise, but only one machine was used here.
@@ -101,8 +101,8 @@ Foundation's to reuse here.
 - Whether the mechanism this prototype adds (Angular's rAF-based "no animation detected, strip the class"
   cleanup, and the resulting same-tick-vs-later-tick suppression split) should be folded into
   `research/angular-rendering-modes.md` section 3 and the `adr/0003`/`adr/0008` prose, or left as a pointer to
-  this README. Recommend the orchestrator link this prototype's README from those documents' "prototype P11"
-  references rather than duplicating the finding.
+  this README. Recommend the orchestrator link this prototype's README from the documents that cite
+  this prototype by name rather than duplicating the finding.
 - Whether any spec should actually adopt the signal-gated or delayed-CSS-gate suppression pattern in
   production, given the map already chose State classes for every persistent animated element (Reveal,
   OffCanvas, dropdown panes, Toggler, Orbit fallback). This prototype only establishes that the option exists

@@ -1,6 +1,6 @@
 # Prototype: CSS `position: sticky` plus IntersectionObserver sentinels for Sticky
 
-Ticket: [48. Prototype: CSS `position: sticky` with IntersectionObserver sentinels for Sticky](../../issues/48-prototype-sticky-css.md) (building-blocks.md P7).
+Ticket: [Prototype: CSS `position: sticky` with IntersectionObserver sentinels for Sticky](../../issues/48-prototype-sticky-css.md).
 
 ## Question
 
@@ -31,6 +31,7 @@ Playwright browser cache, stays at `D:/tmp/nfs-proto-sticky-css/app` and is not 
 - `src/styles.scss` -- `@use 'foundation-sites/scss/components/sticky'` plus
   `@include sticky.foundation-sticky;` (Foundation's own `.sticky`/`.sticky-container`/`.is-stuck`/
   `.is-at-top`/`.is-at-bottom`/`.is-anchored` rules, untouched) and the one custom rule listed below.
+  The `@use` form is prototype-only; the supported shape is ADR 0012's `@import` after Foundation.
 - `e2e/sticky.spec.ts` -- Playwright tests for all seven cases, empirically derived (every threshold
   was measured in the running browser via `getBoundingClientRect`, not hand-calculated on paper first).
 - `playwright.config.ts` -- three projects (chromium, firefox, webkit) against a static file server.
@@ -43,8 +44,8 @@ prototype adds exactly two things, neither of which restyles a Foundation-owned 
 1. **`.sticky { position: sticky; }`** in `styles.scss`. Foundation's own `_sticky.scss` has no
    `position: sticky` rule at all (`scss/components/_sticky.scss`, confirmed by reading the file: it
    only has `.sticky { position: relative; ... }` for the default state and the JS-driven
-   `.is-stuck`/`.is-anchored` rules). This is the one documented custom rule the building-blocks map
-   (row 217) already calls for.
+   `.is-stuck`/`.is-anchored` rules). This is the one documented custom rule the Table A Sticky row of
+   the building-blocks map already calls for.
 2. **Inline styles on the two sentinel `<span>` elements** the directive creates (`display: block;
    height: 1px; margin: 0; padding: 0; pointer-events: none`), in `#createSentinel()` in
    `nfs-sticky.ts`. Foundation has no equivalent concept (its JS plugin uses scroll-position math, not
@@ -185,7 +186,7 @@ breakpoint `matchMedia` listener, scroll backstop) runs cleanly after hydration 
 
 - Build Sticky as `[nfsSticky]` on `.sticky` (documented custom CSS: `position: sticky` only) plus
   `[nfsStickyContainer]` on `[data-sticky-container]` (a class marker, no JS-managed height), exactly as
-  building-blocks.md row 217 already states.
+  the Table A Sticky row of building-blocks.md already states.
 - `stickTo: 'bottom'`, em-based `marginTop`/`marginBottom`, and the `stickyOn` breakpoint gate are all
   fully supported; the spec can drop the "documented limit" framing for these three and treat them as
   ordinary supported inputs.
@@ -203,6 +204,8 @@ breakpoint `matchMedia` listener, scroll backstop) runs cleanly after hydration 
   rAF-throttled scroll-listener backstop, not sentinels alone, per the correctness gap found above.
 
 ### OPEN FOR HUMAN
+
+Settled: see the ticket's Triage.
 
 - Whether the dev-mode warning for an `overflow: hidden` ancestor (suggested above) is worth the
   runtime cost of walking the ancestor chain on every Sticky instance, or whether documentation alone
