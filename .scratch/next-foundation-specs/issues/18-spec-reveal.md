@@ -166,3 +166,16 @@ _Avoid_: click-outside, closeme, auto-close, Backdrop press (which is a modal Re
 - Part 3, Anchored pane consumers (and the Anchored pane spec's consumer notes): add non-modal Reveals as a Light dismiss consumer (group `null`, `outsidePress` from `closeOnClick`); no API change.
 - 1.8: `<form method="dialog">` inside a Reveal re-syncs through the `close` event, reporting `returnValue`, without the exit animation or `closePredicate` (decision 32).
 - Part 4: nothing new; item 4 (`aria-expanded` on a modal's Trigger) is unchanged.
+
+### Amendment, 2026-09-26
+
+Verdict of the [Prototype: Reveal `'auto'` offsets in CSS](69-prototype-reveal-auto-offsets.md): rule 7 is confirmed for all six cases in Chromium, Firefox, and WebKit (every size and `.without-overlay` at three viewports, RTL, a scrolled page with the Scroll lock, nested modals, numeric offsets, crisp text at fractional offsets, transform keyframes composing with `translate`, `.full` and full screen below medium untouched), within Foundation's own `parseInt` rounding, so the named fallback is not triggered. A dialog taller than rule 4's cap, `vh - 2 * min(100px, 10vh)`, is capped and placed by the same quarter rule at `min(50px, 5vh)` from the top, away from Foundation's position; the prototype's triage kept rules 4 and 7 and corrected the text. The fallback as written (reading `offsetHeight`) reproduced exactly the capped placement, so it was corrected too.
+
+Edits folded into `specs/reveal.md` from the prototype's "Decision handed to the Reveal spec":
+
+1. Rule 4's reason, in the Sass and custom CSS list and the Further Notes Sass table: the cap leaves twice Foundation's tall-modal offset (or twice a numeric `vOffset`); with `'auto'` a capped dialog sits `min(50px, 5vh)` from the top with three times that below; Foundation used `min(100px, 10vh)` with a scrolling overlay and did not cap a dialog between the cap and the viewport height.
+2. Rule 7's reason and D10: "exactly that" holds while the dialog's natural height is at most `vh - 2 * min(100px, 10vh)`; both cite the prototype's confirmation.
+3. The Fallback paragraph under Implementation level: the port reads the natural height (`scrollHeight` plus the block borders, not `offsetHeight`), writes `--nfs-reveal-top` and `--nfs-reveal-shift: 0px` rather than inline `top`, and observes the content, not only the host; it is kept on record, not triggered.
+4. Testing Decisions, Playwright geometry: a tall-content row expecting `y = min(50px, 5vh)` and height `vh - 2 * min(100px, 10vh)`.
+5. "Foundation behaviour changed or dropped": a dialog taller than the cap is capped and sits at half Foundation's tall-modal offset; an `'auto'` dialog is re-placed when its content changes (Foundation re-placed only on resize).
+6. The two smaller deltas: case 3, a numeric `hOffset` under RTL measured from the left edge, added to "Foundation behaviour changed or dropped" beside Foundation's overlay result (`viewport width - width + hOffset`); case 5, keyframes may animate `transform` but not the `translate` property rule 7 owns, added to the Animation subsection's Motion classes bullet.
