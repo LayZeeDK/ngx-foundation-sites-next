@@ -164,6 +164,25 @@ Implementation level: native platform. Everything a button does is the HTML `<bu
 
 Fallback: none needed. No part of the design depends on an unverified behaviour; the one source-derived risk (listeners on anchors inside dehydrated blocks) is avoided by construction and asserted in e2e.
 
+### Comparison with Angular Material (`MatButton`, 22.2)
+
+| Concern | Material | `NfsButton` |
+| --- | --- | --- |
+| Selector | `button[matButton], a[matButton]` plus legacy `mat-*-button` attributes | `button[nfsButton], a[nfsButton]` |
+| Kind | Component with a template (ripple, label, focus indicator, touch target) | Directive, no template |
+| Appearance | `matButton="text\|filled\|elevated\|outlined\|tonal"` input; `defaultAppearance` in `MAT_BUTTON_CONFIG` | Foundation Variant classes; defaults are Sass settings |
+| Color | `color` input (M2 themes only) | Palette classes from `$button-palette` |
+| Disabled `<button>` | Native `disabled` | Native `disabled` |
+| Disabled `<a>` | `aria-disabled="true"`, `tabindex="-1"`, click listener with `preventDefault` and `stopImmediatePropagation` | Placeholder link (consumer removes the target), `role="link"`, `aria-disabled="true"`, `.disabled`, dev-mode checks, no listener |
+| `disabledInteractive` | Yes; submit stays active (documented caveat); global default in `MAT_BUTTON_CONFIG` | Yes; renders `type="button"` while disabled; no global default |
+| `type` | Not managed | Default `button`; `.submit` marker honoured |
+| `tabIndex`, `disableRipple`, `showProgress` | Inputs | None (native `tabindex`; no ripple; no progress slot) |
+| `focus(origin)` | Method through `FocusMonitor` | None (native `focus()`) |
+| `exportAs` | `matButton, matAnchor` | `nfsButton` |
+| Testing | `MatButtonHarness` | DOM-first assertions; no harness |
+
+Borrowed: the directive-on-native-element shape, one class for both hosts, the `disabledInteractive` name and its focusable `aria-disabled` behaviour. Not borrowed: the component template, appearance and color inputs (Material's classes are private; Foundation's are the public contract), the config token, and the anchor click blocker.
+
 ### ARIA and keyboard
 
 APG pattern: Button (command and toggle variants); Link for `<a>` hosts.
@@ -257,14 +276,6 @@ Consumer markup and the resulting DOM. Server HTML and hydrated DOM are identica
 
 The Trigger's attributes in the last example belong to the Triggers utility spec and are shown only to place them. A `jsaction` attribute appears in server HTML only on hosts where the consumer (or another directive, such as a Trigger) declared a listener; `NfsButton` itself never causes one.
 
-### Sass and custom CSS
-
-- Styling is Foundation's Sass, reused as is: the consumer includes `foundation-button` (and `foundation-button-group` and `foundation-close-button` when that markup is used) and configures it through the `$button-*`, `$buttongroup-*`, and `$closebutton-*` variables. Every class the directive binds or the consumer writes (`.button`, the size, color, and fill classes, `.expanded`, `.dropdown`, `.arrow-only`, `.disabled`) is a class `_button.scss` or `_button-group.scss` already styles.
-- The directive's job on the styling side is to map its inputs onto those classes and attributes: `disabled` onto native `[disabled]` (styled by Foundation's `&[disabled]` rule) or onto `.disabled` (styled by Foundation's `&.disabled` rule) for links and `disabledInteractive` buttons. Foundation has no `[aria-disabled]` rule, which is exactly why the directive binds `.disabled` alongside `aria-disabled` instead of adding a CSS rule.
-- Custom library CSS: one rule, for WCAG 2.2 AA 2.5.8. The `nfs-button` Library mixin, which the consumer includes after `foundation-button` (Sass packaging decision), emits `.button { min-width: 24px; min-height: 24px; }`, because Foundation's button size comes from font size and em padding with no minimum setting (see WCAG 2.2 AA). No rule duplicates or overrides Foundation's button, button group, or close button styles. The one other candidate considered, `pointer-events: none` on disabled links, is unnecessary because a placeholder link cannot navigate (D8, D15).
-- Compile-time checks, no CSS: the same mixin computes, with Foundation's `color-luminance()` and without rounding, every label pair at 4.5:1 (1.4.3), the dropdown arrow at 3:1 (1.4.11), and the enabled-to-disabled difference at 3:1 (1.4.1), and stops the compile with `@error` naming the failing setting and fill. Foundation's `color-contrast()` is not used for the comparison because it rounds to one decimal (4.498 becomes 4.5).
-- Required consumer setting on Foundation's defaults, set after Foundation's settings and before `foundation-button`: `$button-palette: map-merge($foundation-palette, ('alert': #bf3f2c, 'success': #177a3d, 'warning': #8a5a00));` (1.4.3 and 1.4.11; ratios in the WCAG 2.2 AA table). The Storybook preview's settings file sets the same value, with the axe rule id in its comment, so every story passes the gate on the palette a consumer must use.
-
 ### Animation
 
 - The only animation is Foundation's `$button-transition` (`background-color` and `color`, 0.25 s ease-out) on hover and focus. It is Foundation CSS, not a library animation: no State class change waits on it, no Completion output exists, and no `transitionend` is observed, so ADR 0003's mechanics have nothing to govern here.
@@ -284,28 +295,6 @@ Per ADR 0008 and the rendering-modes research, section 7 rules 1 to 11:
 - `@defer`: library templates contain no `@defer` (the directive has no template). A consumer may defer the directive with its entry point. Inside a dehydrated block, the button is its server HTML and works as a native element until the block hydrates, either through its hydrate trigger or through a replayable event on an element that carries `jsaction`. Inside `@defer (hydrate never)`, Angular annotates nothing (no `jsaction`), so buttons and links work as native elements and disabled states hold; consumer `(click)` handlers there never run, which is the consumer's choice of block.
 - Prerendering: identical to SSR; the directive reads no request token (rule 11).
 - Consumer hazards stated for the docs, both Angular behaviour rather than the directive's: a consumer `(click)` listener on an `a[nfsButton]` inside a dehydrated block makes the dispatcher cancel the native navigation (RouterLink then navigates on replay; a plain `href` does not); and an `<a>` that is itself a root node of a `@defer (hydrate on interaction)` block gets the trigger's `click` and `keydown` `jsaction` and is cancelled the same way, so such a link is wrapped in an element (`hydrate on hover` annotates only `mouseenter`, `mouseover`, and `focusin`, which the dispatcher does not cancel). Links that must navigate natively in deferred regions carry no click listener and are not block root nodes.
-
-### Design decisions
-
-| # | Decision | Rationale | Rejected alternative |
-| --- | --- | --- | --- |
-| D1 | Attribute directive on native `<button>` and `<a>` | ADR 0001; native semantics, keyboard, and form behaviour come free; Material does the same | A component with a template (Material's `MatButton` renders ripple, label, and focus-indicator spans the library does not need) |
-| D2 | One class, selector `button[nfsButton], a[nfsButton]` | One import covers both hosts; Material's shape | Separate `NfsButton` and `NfsAnchorButton` classes (considered to give only `<button>` a listener; unnecessary once no listener exists) |
-| D3 | Variant classes are consumer-written; no `size`, `color`, `fill`, `expanded`, `dropdown`, `arrowOnly` inputs | The classes are the public styling contract; the repo design skill's rule "purely for styling: apply the class directly, no directive needed"; open sets from `$button-palette` and `$button-sizes`; `.solid` versus `.hollow` depends on `$button-fill`; responsive `-expanded` classes need no model; Button has no Options for inputs to mirror | Building-blocks Table A's typed inputs (a `fill` enum, `size` and `color` string unions): a second spelling of the same classes that must track the consumer's Sass maps |
-| D4 | No Defaults token | Glossary: a Defaults token replaces a Plugin's `Foundation.X.defaults`, and Button has none; appearance defaults are Sass settings | `nfsButtonDefaultsToken` modelled on `MAT_BUTTON_CONFIG` |
-| D5 | `type` input, default `button`, `submit` with the `.submit` marker | Foundation's docs callout; prevents accidental submission; keeps Foundation's docs markup submitting; explicit `type="button"` also stays compatible with future Invoker Commands (HTML runs commands for Button-state buttons, not Auto-state ones inside a form) | No default (Material, HTML); a static host attribute (would also land on `<a>`); a constructor `setAttribute` like Aria's accordion trigger (a construction-time DOM write, which the building-blocks rendering rules forbid) |
-| D6 | Native `disabled` is the default on buttons | APG keyboard practice: remove disabled controls from the tab order when their presence can be inferred; the only mode the platform enforces before hydration and in `hydrate never` | Aria's composite-item default (`aria-disabled`, focusable), which the APG reserves for elements that must stay discoverable |
-| D7 | `disabledInteractive` opt-in; renders `aria-disabled`, `.disabled`, and `type="button"` while disabled | Material's name and behaviour for the same element; Foundation's CSS styles `.disabled` only; forcing `type="button"` removes the submit and reset default actions natively, in every rendering mode | A click-blocking host listener (fails before hydration and during replay, and would add `jsaction` to every host); leaving submit active (Material's documented caveat) |
-| D8 | A disabled link is a placeholder link: the consumer removes the target, the directive adds `role="link"`, `aria-disabled="true"`, `.disabled`, and dev-mode checks | HTML's placeholder link is non-focusable and non-navigable with no script; WAI-ARIA advises against `aria-disabled` on an `href` link; RouterLink owns `href` through its own host binding, so the directive cannot own it | Material's `aria-disabled` plus `tabindex="-1"` plus a click listener (navigates before hydration, in `hydrate never`, and whenever another directive's click listener runs first); the directive owning `href` through an input (collides with RouterLink's `[attr.href]`) |
-| D9 | No event listeners at all | Keeps plain links navigating inside dehydrated blocks (dispatcher `preventDefault` on anchors with `jsaction`); replay cannot honour a blocker anyway | Host `(click)` listener |
-| D10 | Button Group and Close Button stay markup | The map lists Button Group as CSS-only and out of scope; the group cascade needs no Parent token; `.close-button` is a different class contract and closes through `nfsClose` | `nfsButtonGroup` providing size and color through a Parent token; `button[nfsCloseButton]` |
-| D11 | No `input[type=submit]` or `input[type=button]` hosts | An `<input>` cannot hold `.show-for-sr` text, icons, or the `.dropdown` `::after` arrow; Foundation's docs never show it; native `disabled` already works there without a directive | Adding `input[type=submit][nfsButton]` to the selector |
-| D12 | `aria-pressed` stays the consumer's; no `pressed` model | Foundation has no pressed class or style; Toggler's class mode already covers toggling a class with `aria-pressed` | A `pressed` model with a click handler (would need a listener and custom CSS) |
-| D13 | No outputs, no methods, no custom harness | Native events and `focus()` suffice; building-blocks testing rule asserts the DOM | Material's `focus(origin)`, `MatButtonHarness` |
-| D14 | Static `role` is echoed; `.disabled` binds `true` or `undefined` | A host binding with `null` would erase a consumer's static `role` or `.disabled` | Plain `null` bindings |
-| D15 | Library CSS is one `.button` minimum-size rule in the `nfs-button` mixin; everything else is Foundation's | Foundation's `.button`, `.disabled`, and `[disabled]` rules cover every state the directive produces; WCAG 2.2 AA 2.5.8 is required for every directive (ADR 0022) and Foundation has no minimum-size setting, while its default `.tiny` width drops under 24 px for a narrow label | No library CSS (this spec's first version, which left 2.5.8 to settings and labels); `pointer-events: none` on disabled links, which the placeholder link makes unnecessary |
-| D16 | The `nfs-button` mixin checks label contrast (4.5:1), arrow contrast (3:1), and the disabled lightness difference (3:1) at compile time with `@error`, unrounded | ADR 0022; the settings are solid Sass colours, so the check is exact; axe tests only the resting state and has no 1.4.11 rule | A docs recommendation; `@warn` (a consumer on Foundation's defaults would ship failing `.alert` buttons); Foundation's `color-contrast()`, which rounds 4.498 up to 4.5 |
-| D17 | Required palette `alert: #bf3f2c`, `success: #177a3d`, `warning: #8a5a00` through `$button-palette` | The only settings-level fix: one palette entry drives the solid, hollow, and clear classes, so the entry must pass on white; it leaves `$foundation-palette` (callouts, labels) alone; `#bf3f2c` matches Abide's required alert colour | A library rule recolouring `.hollow.success` and friends (re-implements Foundation styles); changing `$foundation-palette` (recolours every component) |
 
 ## Testing Decisions
 
@@ -372,24 +361,27 @@ Against the prerendered fixture app (the harness from the rendering-mode test se
 
 ## Further Notes
 
-### Comparison with Angular Material (`MatButton`, 22.2)
+### Design decisions
 
-| Concern | Material | `NfsButton` |
-| --- | --- | --- |
-| Selector | `button[matButton], a[matButton]` plus legacy `mat-*-button` attributes | `button[nfsButton], a[nfsButton]` |
-| Kind | Component with a template (ripple, label, focus indicator, touch target) | Directive, no template |
-| Appearance | `matButton="text\|filled\|elevated\|outlined\|tonal"` input; `defaultAppearance` in `MAT_BUTTON_CONFIG` | Foundation Variant classes; defaults are Sass settings |
-| Color | `color` input (M2 themes only) | Palette classes from `$button-palette` |
-| Disabled `<button>` | Native `disabled` | Native `disabled` |
-| Disabled `<a>` | `aria-disabled="true"`, `tabindex="-1"`, click listener with `preventDefault` and `stopImmediatePropagation` | Placeholder link (consumer removes the target), `role="link"`, `aria-disabled="true"`, `.disabled`, dev-mode checks, no listener |
-| `disabledInteractive` | Yes; submit stays active (documented caveat); global default in `MAT_BUTTON_CONFIG` | Yes; renders `type="button"` while disabled; no global default |
-| `type` | Not managed | Default `button`; `.submit` marker honoured |
-| `tabIndex`, `disableRipple`, `showProgress` | Inputs | None (native `tabindex`; no ripple; no progress slot) |
-| `focus(origin)` | Method through `FocusMonitor` | None (native `focus()`) |
-| `exportAs` | `matButton, matAnchor` | `nfsButton` |
-| Testing | `MatButtonHarness` | DOM-first assertions; no harness |
-
-Borrowed: the directive-on-native-element shape, one class for both hosts, the `disabledInteractive` name and its focusable `aria-disabled` behaviour. Not borrowed: the component template, appearance and color inputs (Material's classes are private; Foundation's are the public contract), the config token, and the anchor click blocker.
+| # | Decision | Rationale | Rejected alternative |
+| --- | --- | --- | --- |
+| D1 | Attribute directive on native `<button>` and `<a>` | ADR 0001; native semantics, keyboard, and form behaviour come free; Material does the same | A component with a template (Material's `MatButton` renders ripple, label, and focus-indicator spans the library does not need) |
+| D2 | One class, selector `button[nfsButton], a[nfsButton]` | One import covers both hosts; Material's shape | Separate `NfsButton` and `NfsAnchorButton` classes (considered to give only `<button>` a listener; unnecessary once no listener exists) |
+| D3 | Variant classes are consumer-written; no `size`, `color`, `fill`, `expanded`, `dropdown`, `arrowOnly` inputs | The classes are the public styling contract; the repo design skill's rule "purely for styling: apply the class directly, no directive needed"; open sets from `$button-palette` and `$button-sizes`; `.solid` versus `.hollow` depends on `$button-fill`; responsive `-expanded` classes need no model; Button has no Options for inputs to mirror | Building-blocks Table A's typed inputs (a `fill` enum, `size` and `color` string unions): a second spelling of the same classes that must track the consumer's Sass maps |
+| D4 | No Defaults token | Glossary: a Defaults token replaces a Plugin's `Foundation.X.defaults`, and Button has none; appearance defaults are Sass settings | `nfsButtonDefaultsToken` modelled on `MAT_BUTTON_CONFIG` |
+| D5 | `type` input, default `button`, `submit` with the `.submit` marker | Foundation's docs callout; prevents accidental submission; keeps Foundation's docs markup submitting; explicit `type="button"` also stays compatible with future Invoker Commands (HTML runs commands for Button-state buttons, not Auto-state ones inside a form) | No default (Material, HTML); a static host attribute (would also land on `<a>`); a constructor `setAttribute` like Aria's accordion trigger (a construction-time DOM write, which the building-blocks rendering rules forbid) |
+| D6 | Native `disabled` is the default on buttons | APG keyboard practice: remove disabled controls from the tab order when their presence can be inferred; the only mode the platform enforces before hydration and in `hydrate never` | Aria's composite-item default (`aria-disabled`, focusable), which the APG reserves for elements that must stay discoverable |
+| D7 | `disabledInteractive` opt-in; renders `aria-disabled`, `.disabled`, and `type="button"` while disabled | Material's name and behaviour for the same element; Foundation's CSS styles `.disabled` only; forcing `type="button"` removes the submit and reset default actions natively, in every rendering mode | A click-blocking host listener (fails before hydration and during replay, and would add `jsaction` to every host); leaving submit active (Material's documented caveat) |
+| D8 | A disabled link is a placeholder link: the consumer removes the target, the directive adds `role="link"`, `aria-disabled="true"`, `.disabled`, and dev-mode checks | HTML's placeholder link is non-focusable and non-navigable with no script; WAI-ARIA advises against `aria-disabled` on an `href` link; RouterLink owns `href` through its own host binding, so the directive cannot own it | Material's `aria-disabled` plus `tabindex="-1"` plus a click listener (navigates before hydration, in `hydrate never`, and whenever another directive's click listener runs first); the directive owning `href` through an input (collides with RouterLink's `[attr.href]`) |
+| D9 | No event listeners at all | Keeps plain links navigating inside dehydrated blocks (dispatcher `preventDefault` on anchors with `jsaction`); replay cannot honour a blocker anyway | Host `(click)` listener |
+| D10 | Button Group and Close Button stay markup | The map lists Button Group as CSS-only and out of scope; the group cascade needs no Parent token; `.close-button` is a different class contract and closes through `nfsClose` | `nfsButtonGroup` providing size and color through a Parent token; `button[nfsCloseButton]` |
+| D11 | No `input[type=submit]` or `input[type=button]` hosts | An `<input>` cannot hold `.show-for-sr` text, icons, or the `.dropdown` `::after` arrow; Foundation's docs never show it; native `disabled` already works there without a directive | Adding `input[type=submit][nfsButton]` to the selector |
+| D12 | `aria-pressed` stays the consumer's; no `pressed` model | Foundation has no pressed class or style; Toggler's class mode already covers toggling a class with `aria-pressed` | A `pressed` model with a click handler (would need a listener and custom CSS) |
+| D13 | No outputs, no methods, no custom harness | Native events and `focus()` suffice; building-blocks testing rule asserts the DOM | Material's `focus(origin)`, `MatButtonHarness` |
+| D14 | Static `role` is echoed; `.disabled` binds `true` or `undefined` | A host binding with `null` would erase a consumer's static `role` or `.disabled` | Plain `null` bindings |
+| D15 | Library CSS is one `.button` minimum-size rule in the `nfs-button` mixin; everything else is Foundation's | Foundation's `.button`, `.disabled`, and `[disabled]` rules cover every state the directive produces; WCAG 2.2 AA 2.5.8 is required for every directive (ADR 0022) and Foundation has no minimum-size setting, while its default `.tiny` width drops under 24 px for a narrow label | No library CSS (this spec's first version, which left 2.5.8 to settings and labels); `pointer-events: none` on disabled links, which the placeholder link makes unnecessary |
+| D16 | The `nfs-button` mixin checks label contrast (4.5:1), arrow contrast (3:1), and the disabled lightness difference (3:1) at compile time with `@error`, unrounded | ADR 0022; the settings are solid Sass colours, so the check is exact; axe tests only the resting state and has no 1.4.11 rule | A docs recommendation; `@warn` (a consumer on Foundation's defaults would ship failing `.alert` buttons); Foundation's `color-contrast()`, which rounds 4.498 up to 4.5 |
+| D17 | Required palette `alert: #bf3f2c`, `success: #177a3d`, `warning: #8a5a00` through `$button-palette` | The only settings-level fix: one palette entry drives the solid, hollow, and clear classes, so the entry must pass on white; it leaves `$foundation-palette` (callouts, labels) alone; `#bf3f2c` matches Abide's required alert colour | A library rule recolouring `.hollow.success` and friends (re-implements Foundation styles); changing `$foundation-palette` (recolours every component) |
 
 ### Usage examples
 
@@ -475,8 +467,11 @@ The callout is itself an `nfsToggler` in visibility mode, the [Spec: Triggers (s
 - `.submit`: gains its documented meaning as the `type` default (D5).
 - Foundation's docs put `href` on some `<button>` examples and use `<a class="button">` without `href` in Button Group examples; both are docs sloppiness, and the second is caught by the dev-mode placeholder-link warning when `nfsButton` is present.
 
+### Sass
+
+Sass. The consumer compiles Foundation's Sass from its own settings; the library imports no Foundation code and copies no Foundation rule. The directive relies on Foundation's button and button-group partials, included through Foundation's export mixins `foundation-button` (and `foundation-button-group` and `foundation-close-button` when that markup is used), configured through the `$button-*`, `$buttongroup-*`, and `$closebutton-*` variables; every class the directive binds or the consumer writes (`.button`, the size, colour, and fill classes, `.expanded`, `.dropdown`, `.arrow-only`, `.disabled`) is already styled by those partials. Its documented custom CSS is the `nfs-button` mixin of the library's Sass (`@import 'ngx-foundation-sites';` after Foundation), included after `foundation-button`. (1) Rules: one, `.button { min-width: 24px; min-height: 24px; }`, because Foundation's button size comes from font size and em padding with no minimum setting (WCAG 2.2 AA 2.5.8); no rule duplicates or overrides Foundation's button, button group, or close button styles. (2) Reused settings: none copied into emitted CSS; the mixin's compile-time checks read `$button-color`, `$button-color-alt`, `$button-background`, `$button-background-hover`, `$button-palette` (with its hover lightness), `$button-hollow-hover-lightness`, `$body-background`, and `$button-opacity-disabled` from the consumer's compile and stop the build with `@error` when a label, arrow, or disabled pair fails 1.4.3, 1.4.11, or 1.4.1. (3) Custom properties: none. (4) Motion classes: none, and no `prefers-reduced-motion` override; Foundation's own `$button-transition` colour change is not motion (Animation). (5) What breaks when the include is missing: the one minimum-size rule is absent, so a narrow `.tiny` label can fall under 24 by 24 px, and the compile-time checks do not run, so a failing `$button-palette` or `$button-opacity-disabled` compiles with no warning.
+
 ### Notes
 
 - RTL: Foundation compiles direction into the CSS (`$global-text-direction`, `float: $global-right` for the `.dropdown` arrow); the directive has nothing direction-dependent.
 - Target size and contrast: see WCAG 2.2 AA under Implementation Decisions (measured sizes, computed ratios, the `nfs-button` floor rule, and the required palette).
-- Sass the consumer includes: `foundation-button`, and `foundation-button-group` and `foundation-close-button` when that markup is used, then the library's `nfs-button`; settings `$button-fill`, `$button-palette` (with the required entries), `$button-sizes`, `$button-responsive-expanded`, `$button-transition`, `$button-opacity-disabled`. The library's button Sass is the one minimum-size rule plus compile-time checks (D15, D16).

@@ -128,6 +128,7 @@ consumers:
   [nfsDropdownPane]           nfsPositioner + nfsLightDismiss + nfsHoverIntent
   NfsTooltipTip / [nfsTooltip] nfsPositioner (tip) + nfsLightDismiss + nfsHoverIntent
   Nested menu, dropdown mode  nfsDocumentRect + nfsBodyBounds + nfsOverlap + nfsLightDismiss + nfsHoverIntent
+  dialog[nfsReveal], non-modal  nfsLightDismiss only (group null, outsidePress from closeOnClick); no Positioner, no hover intent
 ```
 
 - Only the registry is a service, because only it holds state shared across instances: the stack of open entries and one set of document listeners (building-blocks 1.5). It is `@Service()`: a tree-shakable root singleton that exists only if something injects it.
@@ -212,7 +213,7 @@ Rules, applied to the open entries in the order they were added (the stack):
 1. Inside and ancestry. A node is inside an entry when the entry's pane or one of its Triggers contains it. An entry is an ancestor of another when it contains that entry's pane or one of its Triggers. Evaluated at event time, so Triggers registered after opening count.
 2. Pointer rule (the HTML popover light-dismiss algorithm). A capture-phase `pointerdown` on the document records its target; the following `pointerup` decides. When both targets are outside an entry and outside every open descendant of it, and the entry's `outsidePress()` is true, the entry closes with `'click'`. The walk goes from the top of the stack down and keeps an entry that contains the target or contains a kept entry, so a press inside a child keeps the parent, and a press inside the parent closes the child. A touch scroll ends in `pointercancel`, not `pointerup`, so it never dismisses; a press that starts inside and ends outside never dismisses; a press on a registered Trigger is inside, so the Trigger's own `click` toggles.
 3. Escape. A bubble-phase `keydown` on the document with `key === 'Escape'`, no modifier (`hasModifierKey`), not `isComposing`, and not `defaultPrevented` closes the topmost entry only, with `'keydown'`, then calls `preventDefault()` as its last statement, so an enclosing modal `<dialog>` does not also receive the close request (checked for this spec in Chromium 153, Firefox 155, and WebKit 26.6: a prevented `keydown` leaves the dialog open and fires no `cancel`; the next Escape closes it; a non-modal `<dialog>` has no Escape behaviour of its own). Bubble phase lets a control inside the pane (a combobox, a select) consume Escape first.
-4. Focus rule. A `focusin` on the document whose target is outside an entry (and not inside any open descendant of it) closes that entry, with `'click'` while a pointer press is in progress and `'tab'` otherwise. Always on, for every entry. Clicking a non-focusable area inside a pane fires no `focusin`, so it never closes; focus leaving the window fires none either.
+4. Focus rule. A `focusin` on the document whose target is outside an entry (and not inside any open descendant of it) closes that entry, with `'click'` while a pointer press is in progress and `'tab'` otherwise. Always on, for every entry. Clicking a non-focusable area inside a pane fires no `focusin`, so it never closes; focus leaving the window fires none either. A `focusin` whose target is no longer `document.activeElement` when it reaches the document is ignored: a focus trap's anchor that redirected focus into the pane produced it (CDK `FocusTrap` inserts its anchors beside the pane).
 5. Sibling rule. Adding an entry with a non-null `group` closes every open entry of the same group that is not its ancestor, with `'sibling'`.
 6. The registry attaches its five document listeners (`pointerdown`, `pointerup`, `pointercancel`, `keydown`, `focusin`) outside the Angular zone when the first entry is added and removes them when the last one leaves. `close()` runs the consumer's close path, which writes signals.
 
@@ -267,11 +268,13 @@ function nfsDocumentRect(element: Element): NfsRect;     // DOM read: call only 
 | `parentClass` | Positioner `boundary` | none | none |
 | anchor | `open(trigger)`, else the first registered Trigger | the host (trigger) | the parent item |
 | `closeOnClick` | Light dismiss `outsidePress` | none | Light dismiss `outsidePress` |
-| `clickOpen` | none | `outsidePress` true while click-opened | none |
+| `clickOpen` | none | `outsidePress` left at its default (on); `clickOpen` decides whether a press pins the tip | none |
 | `hover`, `hoverDelay`, `hoverPane` | `nfsHoverIntent`, `enabled` = `hover`, both delays = `hoverDelay` (250); the pane must be in the Hover region (see ARIA requirements) | `enabled` = `!disableHover`, `openDelay` = `hoverDelay` (200), `closeDelay` from the Tooltip spec (floor 100) | `openDelay` = `hoverDelay` (50), `closeDelay` = `closingTime` (500), `enabled` = `!disableHover`; `autoclose` false keeps click-opened items open |
 | `disableForTouch`, `disableHoverOnTouch` | none | Per-event touch filter replaces the device check; the Tooltip spec decides the Option | Same, the Nested menu spec decides |
 | group | `'nfs-dropdown-pane'` | `'nfs-tooltip'` | the menu decides (submenu siblings are its own rule) |
 | `autoFocus`, `trapFocus` | Dropdown pane spec (see ARIA requirements) | none | none |
+
+An Openable that is also a Light dismiss entry (the Dropdown pane, a non-modal Reveal) keeps its two entry points apart: Light dismiss calls a private dismissal path that writes `isOpen` and emits `closed` with the dismiss reason, and `close(result?)` stays the Openable contract's own entry point, unaffected by that reason.
 
 ### Implementation level and primitives
 
@@ -312,7 +315,7 @@ The utility renders no ARIA and no role. Each consumer's pattern applies (Disclo
 - Focus return: on `'keydown'` with focus inside the pane, move focus to the Trigger that opened it; on `'click'`, `'tab'`, and `'sibling'`, move no focus (the user already put it somewhere).
 - Hover region: a hover-opened pane passes itself as `pane` to `nfsHoverIntent` (WCAG 1.4.13 hoverable). Foundation's Dropdown `hoverPane: false` leaves the pane out and fails 1.4.13; the Dropdown spec must flip that default or drop the Option.
 - Focus opening: a `focusin` host listener that opens (Tooltip) re-checks `document.activeElement` against its host before opening, because a replayed `focusin` can arrive after focus has moved on.
-- `autoFocus` (Dropdown pane): the first element in DOM order for which `InteractivityChecker.isFocusable` and `isVisible` hold, focused in a render callback after the pane is placed; Foundation's tabindex sort is not kept. `trapFocus`: CDK `FocusTrap` on the pane while open, never with `aria-modal`, and Escape still closes (2.1.2 No Keyboard Trap); while a trap holds focus the focus rule never fires.
+- `autoFocus` (Dropdown pane): the first element in DOM order for which `InteractivityChecker.isFocusable` (which includes `isVisible`) and `isTabbable` hold, CDK's first-tabbable rule, focused in a render callback after the pane is placed; Foundation's tabindex sort is not kept. `trapFocus`: CDK `FocusTrap` on the pane while open, never with `aria-modal`, and Escape still closes (2.1.2 No Keyboard Trap); while a trap holds focus the focus rule never fires.
 - Trigger ARIA stays with the Triggers utility (`aria-expanded`, `aria-controls`, `aria-haspopup="dialog"`); a tooltip host carries `aria-describedby` to the tip once it exists.
 
 Keyboard behaviour the utility supplies:
@@ -408,7 +411,7 @@ Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test 
 - `placement` and the consumer's classes change in the same tick as the inline offsets (one `whenStable()`), and `placement` keeps its value after close.
 - RTL through a local `Directionality` test double backed by a signal, or CDK's `[dir]` wrapper; switching direction while open re-places.
 - Dev-mode warnings: same-axis alignment, negative offsets, a placed element that is not `position: absolute`; none for correct input.
-- Registry, driven by dispatched events: the pointer rule with `pointerdown` and `pointerup` outside, inside, split (down inside, up outside), and `pointercancel`; Trigger presses inside; ancestry through a child whose Trigger sits in the parent and through a child written elsewhere; Escape topmost-only, skipped when `defaultPrevented`, with a modifier, or while composing, and `preventDefault()` called; focus rule reasons (`'tab'` versus `'click'` during a press); sibling rule keeping ancestors; listeners attached on the first entry and removed after the last (asserted by spying on `addEventListener`/`removeEventListener`).
+- Registry, driven by dispatched events: the pointer rule with `pointerdown` and `pointerup` outside, inside, split (down inside, up outside), and `pointercancel`; Trigger presses inside; ancestry through a child whose Trigger sits in the parent and through a child written elsewhere; Escape topmost-only, skipped when `defaultPrevented`, with a modifier, or while composing, and `preventDefault()` called; focus rule reasons (`'tab'` versus `'click'` during a press); a `focusin` dispatched on an element outside the pane while focus sits inside does not close it (the stale focus-trap-anchor guard); sibling rule keeping ancestors; listeners attached on the first entry and removed after the last (asserted by spying on `addEventListener`/`removeEventListener`).
 - Hover intent with fake timers: `openDelay` and `closeDelay`; the 100 ms floor; touch `pointerenter` ignored; timers cleared when `isOpen` changes elsewhere; listeners follow a changing Trigger list.
 - Zoneless: the suite runs with zoneless change detection and `fixture.whenStable()`; a zone-based fixture shows no change detection from `pointermove`.
 
@@ -430,7 +433,7 @@ Against the static Storybook build, on `anchored-pane--fixture` through `mount(s
 - Reflow: at 320 x 640 a `.small` (200 px) pane from a trigger at the left edge and at the right edge lands with `document.documentElement.scrollWidth` equal to the viewport width.
 - Loop guard: a long tooltip at the right edge whose width depends on where it sits settles in one placement within two frames and stays there.
 - Clipping limit: a long tooltip inside a positioned `overflow: auto` scroller is clipped (asserted, so a change is noticed); the same tooltip in a static scroller is not.
-- Real input: a real mouse path from trigger across the gap onto the tip keeps it open; touch emulation (`hasTouch`) tap does not hover-open; Escape in a pane inside a modal `<dialog>` closes only the pane, in all three engines.
+- Real input: a real mouse path from trigger across the gap onto the tip keeps it open; touch emulation (`hasTouch`) tap does not hover-open; Escape in a pane inside a modal `<dialog>` closes only the pane, in all three engines; Tab wrap through CDK trap anchors keeps a trapped pane open in all three engines.
 
 Against the prerendered fixture app, one route with a Dropdown-shaped test pane, a tooltip-shaped test tip, and a pane open at first paint:
 
@@ -531,7 +534,7 @@ export class NfsDropdownPane implements NfsOpenable {
       triggers: this.#triggers,
       group: 'nfs-dropdown-pane',
       outsidePress: this.closeOnClick,
-      close: (reason) => this.close(reason),
+      close: (reason) => this.#dismiss(reason),
     });
     nfsHoverIntent({
       triggers: this.#triggers,
@@ -550,7 +553,15 @@ export class NfsDropdownPane implements NfsOpenable {
     this.isOpen.set(true);
   }
 
-  // close(reason) returns focus on 'keydown' when focus is inside, emits closed; toggle, registerTrigger ...
+  close(result?: unknown): void {
+    this.#dismiss(undefined); // the Openable contract's entry point; result is not a dismiss reason
+  }
+
+  #dismiss(reason: NfsDismissReason | undefined): void {
+    this.isOpen.set(false);
+    // returns focus on 'keydown' when focus is inside, emits closed with reason
+  }
+  // toggle, registerTrigger ...
 }
 ```
 
@@ -560,7 +571,7 @@ The Tooltip tip, created by the Tooltip directive on first show as the trigger's
 @Component({
   selector: 'nfs-tooltip-tip',
   template: '{{ text() }}',
-  host: {class: 'tooltip', role: 'tooltip', '[attr.id]': 'id', '[class]': 'placementClasses()'},
+  host: {class: 'tooltip', role: 'tooltip', '[attr.id]': 'id()', '[class]': 'placementClasses()'},
 })
 export class NfsTooltipTip {
   readonly text = signal('');
@@ -590,7 +601,7 @@ export class NfsTooltipTip {
 }
 ```
 
-The Tooltip directive then calls `nfsHoverIntent` with its host as the one Trigger and the tip as the pane, and `nfsLightDismiss` with group `'nfs-tooltip'` and `outsidePress` true only while click-opened. A consumer building its own anchored element (a date hint, a colour picker) uses the same three calls on a Foundation-styled `position: absolute` element.
+The Tooltip directive then calls `nfsHoverIntent` with its host as the one Trigger and the tip as the pane, and `nfsLightDismiss` with group `'nfs-tooltip'` and `outsidePress` left at its default (on); `clickOpen` decides whether a press pins the tip. A consumer building its own anchored element (a date hint, a colour picker) uses the same three calls on a Foundation-styled `position: absolute` element.
 
 ### Sass
 
