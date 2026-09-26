@@ -112,6 +112,10 @@ _Avoid_: parent Openable, ancestor target, bubbling target
 What an Openable declares its Triggers to be (disclosure, dialog opener, toggle button, or plain command), which decides the ARIA each Trigger renders.
 _Avoid_: trigger type, ARIA mode, popup type
 
+**Rotation control**:
+The button that stops and starts an Orbit's automatic slide rotation and precedes the slides, which the APG carousel pattern requires and Foundation lacks.
+_Avoid_: pause button, play button, autoplay toggle
+
 **Visibility mode**:
 The Toggler form that shows and hides its element, optionally with Motion classes, and whose Triggers are disclosure buttons; the replacement for `data-toggler` with `data-animate`.
 _Avoid_: animate mode, disclosure mode, hide mode
@@ -144,13 +148,37 @@ _Avoid_: menu type, plugin type, variant, strategy
 The APG navigation pattern built from native lists, buttons that show and hide submenus, and `aria-current`, with no menu or tree roles; every menu Plugin implements it.
 _Avoid_: menubar, ARIA menu, navigation tree, mega menu
 
+**Tab group**:
+The element that encloses one tab list and all of its panels, which the library requires as their common ancestor because Foundation writes the tab strip and the content box as siblings.
+_Avoid_: tabs container, tabs wrapper, tab set (for the element)
+
+**Current section**:
+The section a Magellan navigation marks as the one the reader is in, at most one per navigation; its links carry `.is-active` and `aria-current`, and Magellan's `active` holds its id.
+_Avoid_: active target, active link (the link is marked; the section is current), scroll-spy item
+
+**Activation line**:
+The line, `threshold` pixels below where a section lands when scrolled to, that the section's top edge must pass for it to become the Current section; the replacement for Foundation's Magellan "points".
+_Avoid_: threshold (the Option), marker, point, trigger line
+
 **Lazy content**:
-Panel, tab, or slide content that renders only while it is shown; distinct from a consumer's `@defer` block, which loads code.
+Panel, tab, or slide content that renders when first shown and, unless preserved, is removed once hidden again; distinct from a consumer's `@defer` block, which loads code.
 _Avoid_: deferred content (ambiguous with `@defer`), lazy panel, on-demand content
 
 **Defaults token**:
 The per-Plugin set of application-wide defaults for its Options; the replacement for `Foundation.X.defaults`.
 _Avoid_: config token, options token, global options, `MAT_*_DEFAULT_OPTIONS`
+
+**Error-state policy**:
+The rule that decides when a field's validation errors are shown (after a committed change, while typing, after leaving the field, or after a submit), as opposed to whether the field is invalid.
+_Avoid_: validation mode, error matcher, validateOn (as the name of the whole rule)
+
+**Form error**:
+A consumer-written message element (`.form-error`) tied to one field and, optionally, to one error kind, shown only while that field's errors are shown.
+_Avoid_: error message (bare), inline error, hint (which is `.help-text`)
+
+**Form alert**:
+The one form-level message (Foundation's `[data-abide-error]` box) shown while a submitted form is invalid.
+_Avoid_: global error, error summary, abide error
 
 **Completion output**:
 A past-tense output (`opened`, `closed`, Sticky's `stuck`, whose state signal is `isStuck`) emitted once a state change is committed and its animation has finished; the replacement for Foundation's `*.zf.*` events.
@@ -176,6 +204,14 @@ _Avoid_: static render, placeholder (which is `@placeholder`)
 The unit a widget and its Triggers must share: the whole page under full hydration, or one `@defer (hydrate on ...)` block.
 _Avoid_: defer boundary, island, hydration zone
 
+**Replay guard**:
+A `keydown` listener on an Aria-hosting container that stops propagation of the keys Aria handles, so a Replayed event that Aria's throwing `preventDefault()` left unstopped is not handled again by an outer widget.
+_Avoid_: replay fix, stop guard, key shield
+
+**Pre-hydration input**:
+A value the user typed, checked, or selected in a server-rendered control before hydration, which hydration overwrites unless the directive adopts it.
+_Avoid_: lost input, early input, queued value
+
 **Replayed event**:
 A user event fired before hydration that reaches a library handler late, once its Hydration boundary hydrates; the reason every library handler changes state before it calls `preventDefault()`.
 _Avoid_: queued click, pre-hydration event, captured event
@@ -185,8 +221,16 @@ The test layer that renders a directive under Angular's TestBed in a real browse
 _Avoid_: unit test (for this layer), component test, Playwright component test, Vitest Browser (as the layer name)
 
 **Story id**:
-This library's story naming scheme, `<plugin>--<story>`, by which a spec's play functions and its Playwright e2e tests address the same story.
+Storybook's id of a story, `<plugin>--<story>`, where `<plugin>` is the secondary entry point folder name fixed by the stories file's `meta.id`; a spec's play functions and its Playwright e2e tests address the same story by it.
 _Avoid_: story name, test id, scenario
+
+**Anti-pattern story**:
+A story that renders markup the library tells consumers not to write, to show why; the only story allowed to switch off Accessibility gate rules, and only the ones it demonstrates.
+_Avoid_: bad example, negative story, a11y exception
+
+**Accessibility gate**:
+The story-level axe run with the WCAG 2.2 AA tags that fails a story on any violation; the check that enforces the library's accessibility requirement.
+_Avoid_: a11y check, axe run (as the name), lint
 
 **Fixture app**:
 The prerendered Angular application, one route per Plugin, that the Playwright e2e layer drives to test the Rendering modes.

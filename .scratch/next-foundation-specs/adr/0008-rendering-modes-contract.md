@@ -14,7 +14,7 @@ Why: a directive has no escape hatch (`ngSkipHydration` works only on component 
 
 - Generating structure at construction (overlays, tips, back buttons) as Foundation does: rejected, it is the mismatch the hydration guide names; replaced by platform features, consumer-written elements, or browser-only creation on first show (Tooltip tip).
 - Aria's `ngAccordionContent`/`ngTabContent` as the default content mechanism: rejected because an open-by-default panel would be empty for crawlers and no-JS users and pop in after hydration; kept as an opt-in lazy mode.
-- Detecting replay with the internal `eventPhase === 101` constant to skip `preventDefault()`: not adopted as the default because the constant is not public; left OPEN FOR HUMAN.
+- Detecting replay with the internal `eventPhase === 101` constant to skip `preventDefault()`: not adopted as the default because the constant is not public; decided under the triage rule: not adopted; state first, `preventDefault()` last.
 - One entry point for the whole library: rejected because a consumer's `@defer` block could not split per plugin.
 
 ## Consequences

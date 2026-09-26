@@ -14,6 +14,6 @@ Building-blocks 1.11 decision 5 and ADR 0011 say a directive on `<a>` elements d
 
 ## Consequences
 
-- Before hydration a click jumps natively and its replay calls `preventDefault()` during replay, which Angular logs, until building-blocks Part 4 OPEN FOR HUMAN 3 is answered.
+- Before hydration a click jumps natively and its replay calls `preventDefault()` during replay, which Angular logs; decided under the triage rule (building-blocks Part 4, Decided item 3): state first, `preventDefault()` last, accept the logged error.
 - In-page links a Router application leaves outside the directive (or places in `hydrate never`) still reach the Router as `popstate` navigations; the spec documents the rule for applications that use both.
 - Magellan composes `NfsSmoothScroll` through `hostDirectives` and reuses its click handling and `scrollTo`.
