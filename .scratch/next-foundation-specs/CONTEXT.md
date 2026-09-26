@@ -18,6 +18,14 @@ _Avoid_: static component, plain component, pure-CSS widget
 A Foundation CSS class that names an element of a Plugin's or a CSS-only component's markup (`.accordion-item`, `.dropdown-pane`, `.orbit-slide`, `.button`).
 _Avoid_: layout class, block class, container class
 
+**Handle**:
+A native `<input type="range">` inside a Slider that carries one of its values; the library's replacement for Foundation's `.slider-handle` span.
+_Avoid_: thumb (the draggable part a Handle draws), slider input, knob
+
+**Bar position**:
+Where a value sits along a Slider's track, as a fraction from its start; equal to the value's share of the range except on a non-linear Slider, whose Handles carry it natively.
+_Avoid_: percentage, pctOfBar, offset
+
 **State class**:
 A Foundation CSS class that expresses runtime state on an element (`.is-active`, `.is-open`, `.is-stuck`, `.is-closing`, `.js-dropdown-active`), as opposed to a Structural class.
 _Avoid_: modifier, flag class, status class
@@ -31,8 +39,12 @@ A Plugin's `data-*` configuration attribute in Foundation, and its counterpart i
 _Avoid_: setting, config, parameter, data attribute (when meaning the input)
 
 **Dropped option**:
-An Option that exists only because of jQuery or HTML-string injection and has no counterpart in the library.
+An Option with no counterpart in the library, because it exists only for jQuery or HTML-string injection, or because the platform mechanism the library uses cannot honour it (Sticky's anchors).
 _Avoid_: unsupported option, removed feature, legacy option
+
+**Sticky range**:
+The stretch of scrolling during which a Sticky element can be stuck: the box of its parent element (the sticky container), which is its containing block; the replacement for Foundation's anchor Options.
+_Avoid_: anchor range, sticky zone, scroll range
 
 **Motion class**:
 A CSS animation class name given to a Plugin's animation Option (`animationIn`, `animate`, `animInFromRight`), either one of Foundation's Motion UI names or the consumer's own.
@@ -57,6 +69,10 @@ _Avoid_: media query (for this), breakpoint string, size
 **Named query**:
 A media query addressed by a name that is not a breakpoint (`landscape`, `portrait`, `retina`, or the consumer's own), used in Interchange rules.
 _Avoid_: special query (Foundation's code name), custom breakpoint
+
+**Interchange rule**:
+A `[content, query]` pair of Interchange, whose query is a breakpoint name, a Named query, or a media query; in a list of them the last matching one applies.
+_Avoid_: breakpoint rule (which assigns modes), responsive source, interchange query
 
 **Export mixin**:
 A Foundation Sass mixin that prints one component's CSS (`foundation-accordion`, `foundation-reveal`), included by the consumer and compiled from the consumer's settings.
@@ -95,6 +111,14 @@ _Avoid_: parent Openable, ancestor target, bubbling target
 **Trigger role**:
 What an Openable declares its Triggers to be (disclosure, dialog opener, toggle button, or plain command), which decides the ARIA each Trigger renders.
 _Avoid_: trigger type, ARIA mode, popup type
+
+**Visibility mode**:
+The Toggler form that shows and hides its element, optionally with Motion classes, and whose Triggers are disclosure buttons; the replacement for `data-toggler` with `data-animate`.
+_Avoid_: animate mode, disclosure mode, hide mode
+
+**Class mode**:
+The Toggler form that adds and removes a class named by `toggler` on its element, and whose Triggers are toggle buttons; the replacement for `data-toggler=".class"`.
+_Avoid_: toggle-class mode, CSS mode, active mode
 
 **Light dismiss**:
 Closing an Anchored pane or an open submenu on an outside pointer press, on Escape, or when a sibling of the same kind opens; the replacement for Foundation's `closeme.zf.*` broadcast and body click handlers.
@@ -157,12 +181,16 @@ A user event fired before hydration that reaches a library handler late, once it
 _Avoid_: queued click, pre-hydration event, captured event
 
 **Browser-level test**:
-The test layer that runs directive logic in a real browser outside Storybook.
-_Avoid_: unit test (for this layer), component test, Vitest Browser (as the layer name)
+The test layer that renders a directive under Angular's TestBed in a real browser, outside Storybook, for the logic no story reaches.
+_Avoid_: unit test (for this layer), component test, Playwright component test, Vitest Browser (as the layer name)
 
 **Story id**:
-This library's story naming scheme, `<plugin>--<story>`, by which a spec's play functions, browser-level tests, and Playwright e2e address the same story.
+This library's story naming scheme, `<plugin>--<story>`, by which a spec's play functions and its Playwright e2e tests address the same story.
 _Avoid_: story name, test id, scenario
+
+**Fixture app**:
+The prerendered Angular application, one route per Plugin, that the Playwright e2e layer drives to test the Rendering modes.
+_Avoid_: demo app, kitchen sink, SSR app, universal app
 
 **Library mixin**:
 A mixin of the library's Sass (`nfs-accordion`, `nfs-motion`) that prints only the documented custom CSS Foundation cannot provide, reusing the consumer's Foundation settings and mixins in the same compile; included after the matching Export mixin.

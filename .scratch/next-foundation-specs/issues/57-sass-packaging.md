@@ -161,3 +161,16 @@ _Avoid_: breakpoint variables, CSS breakpoints, breakpoint tokens
 - [Spec: Breakpoint service (shared utility)](53-spec-breakpoint-service.md): its Sass-sync question is answered by decisions 13-15; the spec keeps the token shape, the drift check, and the absent-properties behaviour.
 - [Consistency review and bundle index](36-consistency-review.md): add "every spec has the Sass subsection this ticket prescribes" to its checks.
 - ADR 0005 needs no change ("the library Sass emits the same values" stays true: the library mixin emits them).
+
+### Orchestrator note, 2026-09-26
+
+Per [Spec: Slider](32-spec-slider.md) (decision 40): `foundation-range-input` is not included in `foundation-everything` (`foundation-sites/scss/foundation.scss`); a consumer using the Slider must `@include foundation-range-input;` explicitly.
+
+### Triage (auto-trap quadrant), 2026-09-26
+
+Rule: [map](../map.md), Orchestration rules, "Triage of human-only items". Only HIGH impact with NOT-HIGH confidence stays OPEN FOR HUMAN; upstream filings and assistive-technology checks stay human-only by kind.
+
+1. What happens when Dart Sass 3.0 removes `@import`. Applied: nothing now; the pinned Angular toolchain carries consumers.
+   - Impact: not HIGH for the item as decided. Deferring freezes nothing new: the packaging model (`@import` after Foundation) was decided separately in ADR 0012, and every later response (switch to `@use` of a module-based Foundation, document pinning Dart Sass 1.x, or maintain a module port) stays available when the facts arrive.
+   - Confidence: HIGH. `@angular/build` 22.2.0 pins Dart Sass 1.104.1, so Angular CLI consumers stay on 1.x until Angular moves; Sass gives no 3.0 date beyond "no sooner than two years after 1.80.0" (October 2026 at the earliest); no Foundation release after 6.9.0 exists to switch to. Choosing a response now would be a bare guess.
+   - Outcome: DECIDED: no action now; revisit when an Angular release moves to Dart Sass 3 or Foundation publishes a module-based release.

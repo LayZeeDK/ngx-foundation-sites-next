@@ -199,7 +199,7 @@ A bare `mode` maps to the Zero breakpoint. A repeated breakpoint keeps the last 
 
 Breakpoint query grammar (`is()`): `'all' | '' | <breakpoint> | <breakpoint> WS ('up' | 'only' | 'down')`, whitespace-trimmed.
 
-Named query tokens (Interchange): a token is a breakpoint name, answered by `atLeast(name)`, or a key of the named-query map from Interchange's Defaults token, answered by `matches(namedQueries[key])`; anything else warns and answers `false`. Interchange's own rule order (the last matching rule wins) stays Interchange's, because its rules mix breakpoints with orientation and density queries that have no single order.
+Named query tokens (Interchange): a token is a breakpoint name, answered by `atLeast(name)`, or a key of the named-query map from Interchange's Defaults token, answered by `matches(namedQueries[key])`; a token containing whitespace or `(` is a media query answered by `matches(token)`; any other unknown token warns and answers `false`. Interchange's own rule order (the last matching rule wins) stays Interchange's, because its rules mix breakpoints with orientation and density queries that have no single order.
 
 Consumers and what each reads (building-blocks Part 2 and Part 3):
 
@@ -214,7 +214,7 @@ Consumers and what each reads (building-blocks Part 2 and Part 3):
 | Tooltip | `is(showOn)` at show time | `showOn` |
 | Interchange | named query tokens through `atLeast` and `matches`, `nfsDefaultNamedQueries` | `rules`, Defaults token `namedQueries` |
 | Orbit | `reducedMotion` (autoplay off) | `autoPlay` |
-| SmoothScroll, Magellan | `reducedMotion` (`behavior: 'auto'` instead of `'smooth'`) | none |
+| SmoothScroll, Magellan | `reducedMotion` (`behavior: 'instant'` instead of `'smooth'`) | none |
 
 ### Implementation level and primitives
 

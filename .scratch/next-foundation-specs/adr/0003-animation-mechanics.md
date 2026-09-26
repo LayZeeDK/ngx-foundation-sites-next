@@ -16,5 +16,5 @@ The user ruled out `@angular/animations` and JavaScript-timed animation. Foundat
 
 - `.accordion-content` is a wrapper component; `.tabs-panel` is one only if Aria's tab panel needs it (ADR 0001).
 - Every spec names its State classes, keyframes, and completion event; `prefers-reduced-motion` shortens every library animation to 1 ms so completion events still fire, and `nfsAnimationsToken` disables them for tests.
-- Reveal's exit animation runs before `close()`; Orbit's default is scroll snap (no Motion classes) pending the [Prototype: Orbit on CSS scroll snap](../issues/46-prototype-orbit-scroll-snap.md).
+- Reveal's exit animation runs before `close()`; Orbit uses scroll snap with no Motion classes and no `@if`-rendered slide fallback, confirmed by the [Prototype: Orbit on CSS scroll snap](../issues/46-prototype-orbit-scroll-snap.md).
 - The [Prototype: `animate.enter` and `animate.leave` with Motion UI transition classes](../issues/47-prototype-motion-ui-animate-enter.md) confirms the keyframe path in Chromium, Firefox, and WebKit.

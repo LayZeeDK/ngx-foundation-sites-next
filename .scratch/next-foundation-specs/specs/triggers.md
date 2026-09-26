@@ -466,8 +466,8 @@ The Reveal's `(closed)` payload and the Toggler's `toggler` input are sketches o
 <button type="button" [nfsToggle]="hint" aria-label="Explain HTML">?</button>
 
 <!-- data-toggle-focus replacement -->
-<input type="text" (focus)="formHint.open()" (blur)="formHint.close()" aria-describedby="form-hint">
-<div nfsToggler #formHint="nfsToggler" animate="nfs-fade-in nfs-fade-out" id="form-hint" class="secondary callout">
+<input type="text" (focus)="formHint.open()" (blur)="formHint.close()" (keydown.escape)="formHint.close()" aria-describedby="form-hint">
+<div nfsToggler #formHint="nfsToggler" hidden animate="nfs-fade-in nfs-fade-out" id="form-hint" class="secondary callout">
   This is only visible while the field has focus.
 </div>
 
