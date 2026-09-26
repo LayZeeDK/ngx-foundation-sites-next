@@ -1,0 +1,2 @@
+{"case":"zone build, autoplay timer outside the zone: stability and replay","inside":false,"stableAt":2503,"log":[{"i":1,"cause":"user","t":2496},{"i":2,"cause":"auto","t":3206},{"i":3,"cause":"auto","t":3919},{"i":0,"cause":"auto","t":4636},{"i":1,"cause":"auto","t":5341}],"active":1,"replayed":true}
+{"case":"zone build, autoplay timer inside the zone: stability and replay","inside":true,"stableAt":null,"log":[{"i":1,"cause":"auto","t":2921},{"i":2,"cause":"auto","t":3635},{"i":3,"cause":"auto","t":4352},{"i":0,"cause":"auto","t":5071}],"active":0,"replayed":false}

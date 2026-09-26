@@ -1,0 +1,22 @@
+// PROTOTYPE -- Foundation 6.9 Sass, @import form (ADR 0012), then the library mixin.
+@import 'foundation-sites/scss/foundation';
+@import 'nfs-orbit';
+
+@include foundation-global-styles;
+// Typography base resets list and block padding, as foundation-everything does for consumers.
+@include foundation-typography;
+@include foundation-button;
+@include foundation-visibility-classes;
+@include foundation-orbit;
+@include nfs-orbit;
+
+// ---- Fixture only (not library CSS) ----
+body {
+  padding: 1rem;
+}
+
+.fixture-filler {
+  height: 150vh;
+  border-left: 4px dashed $medium-gray;
+  padding-left: 1rem;
+}
