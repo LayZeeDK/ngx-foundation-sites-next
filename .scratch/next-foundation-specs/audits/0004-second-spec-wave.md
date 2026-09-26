@@ -421,4 +421,30 @@ Spot checks against the local clones (all hold unless a finding says otherwise):
 
 ## Resolution log
 
-(For the orchestrator: record here which findings were fixed, turned into tickets, or rejected, with the commit that did it.)
+Recorded by the orchestrator on 2026-09-26. Every finding is fixed except the two parts handed to the consistency review, which are named below.
+
+| Finding | Outcome | Commits |
+| --- | --- | --- |
+| H1 | Fixed. ADR 0022 and every spec compare the unrounded WCAG ratio from `color-luminance()`; the Nested menu's 1.4.11 row matches its Sass checks | `d17749f`, `aff6fd9`, `c13eb23` |
+| H2 | Fixed. The Dropdown Menu and Drilldown Menu proposals and glossary terms are carried; the ResponsiveMenu DI cell names the Nested menu root | `6fcf4b3`, `730d236` |
+| H3 | Fixed. The Abide README's console log is replaced by a table that does not reproduce the typed value (the tokens remain in the history of `d99f426`; they are the approved public address with letters dropped, not another identity) | `6087313` |
+| M1 | Fixed. The Orbit spec ticket records the reopen and the re-run (ADR 0034); ADR 0025 says its second consequence was measured not to hold; the map rule describes the practice; the router prototype names its deciding questions | `ac78f51`, `d17749f`, `6fcf4b3` |
+| M2 | Fixed | `a2cfa8a` |
+| M3 | Fixed | `d17749f`, `b0692d0` |
+| M4 | Fixed. Off-canvas and Responsive Toggle record focus from `focusin`/`focusout` and act on the host's computed visibility; the Nested menu collision flip waits on the rendered mode; Drilldown's `scrollTop` ignores swaps in both directions | `aff6fd9`, `c13eb23`, `afd1294` |
+| M5 | Fixed | `aff6fd9` |
+| M6 | Fixed, including Button, Triggers, Equalizer, Magellan, Responsive Toggle, Toggler, and the Breakpoint service | `aff6fd9`, `730d236` |
+| M7 | Fixed | `d17749f`, `aff6fd9` |
+| M8 | Fixed | `d17749f`, `aff6fd9` |
+| M9 | Fixed in the Off-canvas spec (the Responsive Toggle mixin is required for a title-bar menu icon). Whether the hit area moves to a shared mixin is handed to the consistency review | `aff6fd9`, `15743e8` |
+| L1 | Fixed | `aff6fd9`, `d17749f`, `b0692d0` |
+| L2 | Fixed | `aff6fd9`, `a2cfa8a`, `c13eb23`, `d17749f` |
+| L3 | Fixed | `d17749f`, `c13eb23` |
+| L4 | Fixed at every line the audit lists; the sweep of other specs for the same wording is handed to the consistency review | `aff6fd9`, `a2cfa8a`, `c13eb23`, `15743e8` |
+| L5 | Fixed | `a2cfa8a`, `c13eb23`, `d17749f` |
+| L6 | Fixed | `aff6fd9`, `c13eb23` |
+| L7 | Fixed; the Interchange re-run's run logs and modified test file are now captured, and the Abide and Sticky measurement READMEs say no run log was kept | `aff6fd9`, `a2cfa8a`, `d17749f` |
+| L8 | Fixed | `a2cfa8a` |
+| L9 | Fixed | `aff6fd9` |
+| L10 | Fixed. Reveal's close-glyph pairs are `@error`; the dialog-edge pair stays `@warn` because building-blocks 1.10 requires `@error` only for pairs that carry state. Audit 0003's log has a dated addendum | `aff6fd9`, `a2cfa8a`, `d17749f` |
+| Unrecorded departures 1 to 8 | Closed with H1, H2, M2, M4, and, for 6 to 8, by the consistency review's sweep (Off-canvas registration effects, the Tooltip tip's `hidden`, Dropdown under `reducedMotion`), which the review must confirm | as above |
