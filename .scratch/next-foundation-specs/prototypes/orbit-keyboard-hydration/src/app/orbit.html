@@ -1,0 +1,85 @@
+<!-- PROTOTYPE: Foundation's Orbit docs markup (ul/li become div: tabpanel is not an allowed role on li), with the APG deltas (rotation control first,
+     roledescriptions, live region off while rotating, bullets as an Aria tablist). Slides use [slideGate] and bullets [bulletGate] instead of
+     Aria's [ngTabPanel]/[ngTab] directly, so the `inert` gate (ADR 0025) and the bullet tabindex handover can override Aria's own bindings. -->
+<div
+  class="orbit"
+  role="region"
+  aria-roledescription="carousel"
+  aria-label="Favorite test cards"
+  ngTabs
+  [dir]="dir"
+  (pointerenter)="hovered.set(true)"
+  (pointerleave)="hovered.set(false)"
+  (focusin)="onFocusIn($event)"
+>
+  <button
+    type="button"
+    class="button small"
+    data-rotation
+    aria-controls="orbit-slides"
+    (click)="toggleRotation()"
+  >
+    {{ playing() ? 'Stop automatic slide show' : 'Start automatic slide show' }}
+  </button>
+  <div class="orbit-wrapper">
+    <div class="orbit-controls">
+      <button type="button" class="orbit-previous" aria-controls="orbit-slides" (click)="previous()">
+        <span class="show-for-sr">Previous slide</span><span aria-hidden="true">&#9664;&#xFE0E;</span>
+      </button>
+      <button type="button" class="orbit-next" aria-controls="orbit-slides" (click)="next()">
+        <span class="show-for-sr">Next slide</span><span aria-hidden="true">&#9654;&#xFE0E;</span>
+      </button>
+    </div>
+    <!-- tabindex="-1": Firefox makes a scroll container a tab stop; the visible tabpanel
+         (tabindex 0 from Aria) is the keyboard entry to the slides. -->
+    <div
+      #container
+      id="orbit-slides"
+      class="orbit-container"
+      tabindex="-1"
+      aria-atomic="false"
+      [attr.aria-live]="rotating() ? 'off' : 'polite'"
+    >
+      @for (s of slides; track s.src; let i = $index) {
+        <div
+          #slide
+          class="orbit-slide"
+          slideGate
+          [value]="'s' + i"
+          [live]="live()"
+          [isSelected]="selected() === i"
+          aria-roledescription="slide"
+          [class.is-active]="selected() === i"
+          [attr.data-index]="i"
+        >
+          <figure class="orbit-figure">
+            <img class="orbit-image" [src]="s.src" [alt]="s.alt" [width]="s.w" [height]="s.h" />
+            <figcaption class="orbit-caption">{{ s.caption }}</figcaption>
+          </figure>
+        </div>
+      }
+    </div>
+  </div>
+  <nav
+    class="orbit-bullets"
+    ngTabList
+    aria-label="Choose slide to display"
+    [selectedTab]="selectedValue()"
+    (selectedTabChange)="onTabChange($event)"
+    [wrap]="infiniteWrap"
+  >
+    @for (s of slides; track s.src; let i = $index) {
+      <button
+        bulletGate
+        [value]="'s' + i"
+        [live]="live()"
+        [isSelected]="selected() === i"
+        [class.is-active]="selected() === i"
+        [attr.data-index]="i"
+      >
+        <span class="show-for-sr">Slide {{ i + 1 }}: {{ s.caption }}</span>
+      </button>
+    }
+  </nav>
+</div>
+<p class="fixture-filler">Fixture filler so the page can scroll the carousel out of view.</p>

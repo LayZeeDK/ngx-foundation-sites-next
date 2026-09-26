@@ -1,0 +1,65 @@
+// PROTOTYPE -- the documented custom CSS the Orbit spec would ship in its `nfs-orbit`
+// Library mixin, included after Foundation's `foundation-orbit` Export mixin.
+// Everything else (bullets, controls, caption, figure, image) is Foundation's own CSS,
+// except the 24 px bullet floor (rule 10) and the focused slide's inward ring (rule 11).
+@mixin nfs-orbit {
+  .orbit-container {
+    // Overrides Foundation's `height: 0` ("Prevent FOUC by not showing until JS sets
+    // height"): a flex row is as tall as its tallest slide, so no JavaScript measurement
+    // and every slide paints from server HTML.
+    height: auto;
+    display: flex;
+    // Slides keep their own height (Foundation's absolute slides did), so a caption at
+    // the slide bottom stays on its image; the container is still as tall as the tallest.
+    align-items: flex-start;
+    // Overrides the x half of Foundation's `overflow: hidden`: native horizontal
+    // scrolling is the swipe and the target of `scrollIntoView`. `overflow-y` stays
+    // hidden from Foundation's shorthand.
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    // A horizontal overscroll at either end must not become a browser back/forward swipe.
+    overscroll-behavior-x: contain;
+    // Rule 12: Foundation's Orbit never showed a scrollbar; the bullets and arrows are
+    // the pointer control. `scrollbar-width` covers Firefox 64+ and Chromium 121+; the
+    // pseudo-element covers Chromium before 121 and Safari, so the pair covers the target.
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  // Smooth movement for arrows, bullets, and autoplay; instant under reduced motion
+  // (`scroll-behavior` stays `auto`, and `scrollIntoView()` without a `behavior`
+  // option follows the CSS value).
+  @media (prefers-reduced-motion: no-preference) {
+    .orbit-container {
+      scroll-behavior: smooth;
+    }
+  }
+
+  .orbit-slide {
+    // Overrides Foundation's `position: absolute`: slides sit side by side in the flex
+    // row. Still positioned, so `.orbit-caption { position: absolute; bottom: 0 }`
+    // keeps anchoring to its slide.
+    position: relative;
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    // One swipe moves at most one slide, like Foundation's swipe.
+    scroll-snap-stop: always;
+
+    // Rule 11: the container clips a ring drawn outside the slide (`overflow-x: auto`,
+    // `overflow-y` hidden), so the UA focus ring is drawn inward instead, on the focused
+    // slide itself (the visible tabpanel, WCAG 2.4.7).
+    &:focus-visible {
+      outline-offset: -0.25rem;
+    }
+  }
+
+  // Rule 10: WCAG 2.5.8; Foundation's 1.2rem (19.2 px) bullets, 1.6 px apart, fail both
+  // the size and the spacing exception.
+  .orbit-bullets button {
+    width: max(24px, $orbit-bullet-diameter);
+    height: max(24px, $orbit-bullet-diameter);
+  }
+}
