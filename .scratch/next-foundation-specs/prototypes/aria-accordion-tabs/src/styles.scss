@@ -1,0 +1,11 @@
+// PROTOTYPE (throwaway). Foundation first (its @import API), then the library's
+// custom-rule mixin, per ADR 0012.
+@import 'foundation-sites/scss/foundation';
+@include foundation-global-styles;
+@include foundation-xy-grid-classes;
+@include foundation-typography;
+@include foundation-accordion;
+@include foundation-tabs;
+
+@import 'nfs-accordion';
+@include nfs-accordion;

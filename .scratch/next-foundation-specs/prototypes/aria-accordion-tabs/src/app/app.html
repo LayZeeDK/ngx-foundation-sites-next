@@ -1,0 +1,77 @@
+<main class="grid-container">
+  <h1>Prototype: Aria Accordion and Tabs under Foundation markup</h1>
+
+  <h2>Accordion (multiExpand bound to false)</h2>
+  <ul nfsAccordion class="accordion" [multiExpand]="false" data-testid="acc1">
+    <li nfsAccordionItem class="accordion-item">
+      <h3><button nfsAccordionTitle class="accordion-title" [panel]="p1" [(expanded)]="a1">Section 1</button></h3>
+      <div nfsAccordionContent class="accordion-content" #p1="ngAccordionPanel" data-testid="acc1-c1">
+        <p>Panel 1 content is projected. It is open at first paint.</p>
+        <ul nfsAccordion class="accordion" [multiExpand]="true" data-testid="inner">
+          <li nfsAccordionItem class="accordion-item">
+            <h4><button nfsAccordionTitle class="accordion-title" [panel]="i1">Inner 1</button></h4>
+            <div nfsAccordionContent class="accordion-content" #i1="ngAccordionPanel"><p>Inner 1 content.</p></div>
+          </li>
+          <li nfsAccordionItem class="accordion-item">
+            <h4><button nfsAccordionTitle class="accordion-title" [panel]="i2">Inner 2</button></h4>
+            <div nfsAccordionContent class="accordion-content" #i2="ngAccordionPanel"><p>Inner 2 content.</p></div>
+          </li>
+        </ul>
+      </div>
+    </li>
+    <li nfsAccordionItem class="accordion-item">
+      <h3><button nfsAccordionTitle class="accordion-title" [panel]="p2" [(expanded)]="a2">Section 2</button></h3>
+      <div nfsAccordionContent class="accordion-content" #p2="ngAccordionPanel" data-testid="acc1-c2">
+        <p>Panel 2 content.</p>
+        <p>A second paragraph so the height is visibly animated.</p>
+      </div>
+    </li>
+    <li nfsAccordionItem class="accordion-item">
+      <h3><button nfsAccordionTitle class="accordion-title" [panel]="p3" [(expanded)]="a3">Section 3</button></h3>
+      <div nfsAccordionContent class="accordion-content" #p3="ngAccordionPanel" data-testid="acc1-c3">
+        <p>Panel 3 content.</p>
+      </div>
+    </li>
+  </ul>
+
+  <h2>Accordion (multiExpand not bound; panel linked through the wrapper export: #q="nfsAccordionContent", [panel]="q.panel")</h2>
+  <ul nfsAccordion class="accordion" data-testid="acc2">
+    <li nfsAccordionItem class="accordion-item">
+      <h3><button nfsAccordionTitle class="accordion-title" [panel]="q1.panel">Default A</button></h3>
+      <div nfsAccordionContent class="accordion-content" #q1="nfsAccordionContent"><p>A</p></div>
+    </li>
+    <li nfsAccordionItem class="accordion-item">
+      <h3><button nfsAccordionTitle class="accordion-title" [panel]="q2.panel">Default B</button></h3>
+      <div nfsAccordionContent class="accordion-content" #q2="nfsAccordionContent"><p>B</p></div>
+    </li>
+  </ul>
+
+  <h2>Tabs (selected bound)</h2>
+  <div nfsTabsGroup data-testid="tabs1">
+    <ul nfsTabs class="tabs" [(selected)]="selected" aria-label="Example tabs">
+      <li nfsTabsTitle class="tabs-title"><a nfsTab value="panel1">Tab 1</a></li>
+      <li nfsTabsTitle class="tabs-title"><a nfsTab value="panel2">Tab 2</a></li>
+      <li nfsTabsTitle class="tabs-title"><a nfsTab value="panel3">Tab 3</a></li>
+    </ul>
+    <div class="tabs-content">
+      <div nfsTabsPanel class="tabs-panel" value="panel1"><p>Tab panel 1 content, projected.</p></div>
+      <div nfsTabsPanel class="tabs-panel" value="panel2"><p>Tab panel 2 content.</p></div>
+      <div nfsTabsPanel class="tabs-panel" value="panel3"><p>Tab panel 3 content.</p></div>
+    </div>
+  </div>
+
+  <h2>Tabs (selected not bound; the wrapper writes the first tab into Aria's selectedTab model)</h2>
+  <div nfsTabsGroup data-testid="tabs2">
+    <ul nfsTabs class="tabs" aria-label="Unbound tabs">
+      <li nfsTabsTitle class="tabs-title"><a nfsTab value="x">Tab X</a></li>
+      <li nfsTabsTitle class="tabs-title"><a nfsTab value="y">Tab Y</a></li>
+    </ul>
+    <div class="tabs-content">
+      <div nfsTabsPanel class="tabs-panel" value="x"><p>Panel X.</p></div>
+      <div nfsTabsPanel class="tabs-panel" value="y"><p>Panel Y.</p></div>
+    </div>
+  </div>
+
+  <h2>State</h2>
+  <pre data-testid="state">a1={{ a1() }} a2={{ a2() }} a3={{ a3() }} selected={{ selected() }}</pre>
+</main>

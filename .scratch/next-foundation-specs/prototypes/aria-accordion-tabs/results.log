@@ -1,0 +1,114 @@
+# Final run, production build, all three engines (replay guard on)
+FINDING server tab tabindex values: -1,-1,-1,-1,-1; accordion trigger tabindex values: 0,0,0,0,0,0,0
+  [OK]   1 [chromium] > e2e\aria-accordion-tabs.spec.ts:21:7 > step 1: server HTML > open panel and selected tab panel are in server HTML; no ng-template (164ms)
+FINDING [chromium] no-JS heights: open panel 181.59375px, collapsed panel 0px
+FINDING [chromium] accordion aria snapshot (no JS):
+  [OK]   2 [chromium] > e2e\aria-accordion-tabs.spec.ts:45:7 > step 1: server HTML > first paint with JavaScript disabled (327ms)
+FINDING [chromium] grid rows mid=27.625px end=83.1875px events=transitionrun:grid-template-rows transitionrun:padding-bottom transitionrun:padding-top transitionend:grid-template-rows transitionend:padding-bottom transitionend:padding-top
+  [OK]   3 [chromium] > e2e\aria-accordion-tabs.spec.ts:76:7 > step 2: hydrated behaviour and CSS > accordion: .is-active, single expand, grid-row animation, Foundation title rules (2.5s)
+  [OK]   4 [chromium] > e2e\aria-accordion-tabs.spec.ts:128:7 > step 2: hydrated behaviour and CSS > accordion without multiExpand binding keeps Aria default (multi) (2.1s)
+  [OK]   5 [chromium] > e2e\aria-accordion-tabs.spec.ts:137:7 > step 2: hydrated behaviour and CSS > nested accordion: ArrowDown after hydration stays in the inner group (control for step 3) (1.7s)
+  [OK]   6 [chromium] > e2e\aria-accordion-tabs.spec.ts:145:7 > step 2: hydrated behaviour and CSS > tabs: .is-active on li and panel, arrow keys, two-way selected (1.8s)
+FINDING [chromium] ArrowDown on accordion Section 1: focus before hydration="Section 1" after="Section 2" state="a1=true a2=false a3=false selected=panel1"
+    console.error: ERROR Error: `preventDefault` called during event replay.
+    console.info: [trace] keydown key="ArrowDown" eventPhase=101 expanded=true,false,false
+  [OK]   7 [chromium] > e2e\aria-accordion-tabs.spec.ts:178:9 > step 3: replayed events (main bundle held back) > ArrowDown on accordion Section 1 (1.9s)
+FINDING [chromium] Enter on accordion Section 2: focus before hydration="Section 2" after="Section 2" state="a1=false a2=true a3=false selected=panel1"
+    console.error: ERROR Error: `preventDefault` called during event replay.
+    console.info: [trace] keydown key="Enter" eventPhase=101 expanded=false,true,false
+    console.info: [trace] click eventPhase=101 expanded=false,true,false
+  [OK]   8 [chromium] > e2e\aria-accordion-tabs.spec.ts:178:9 > step 3: replayed events (main bundle held back) > Enter on accordion Section 2 (1.9s)
+FINDING [chromium] Space on accordion Section 2: focus before hydration="Section 2" after="Section 2" state="a1=false a2=true a3=false selected=panel1"
+    console.error: ERROR Error: `preventDefault` called during event replay.
+    console.info: [trace] keydown key=" " eventPhase=101 expanded=false,true,false
+    console.info: [trace] click eventPhase=101 expanded=false,true,false
+  [OK]   9 [chromium] > e2e\aria-accordion-tabs.spec.ts:178:9 > step 3: replayed events (main bundle held back) > Space on accordion Section 2 (1.9s)
+FINDING [chromium] ArrowRight on Tab 1: focus before hydration="Tab 1" after="Tab 2" state="a1=true a2=false a3=false selected=panel2"
+    console.error: ERROR Error: `preventDefault` called during event replay.
+  [OK]  10 [chromium] > e2e\aria-accordion-tabs.spec.ts:178:9 > step 3: replayed events (main bundle held back) > ArrowRight on Tab 1 (2.0s)
+FINDING [chromium] click on accordion Section 2 (control): focus before hydration="Section 2" after="Section 2" state="a1=false a2=true a3=false selected=panel1"
+    console.info: [trace] click eventPhase=101 expanded=false,true,false
+  [OK]  11 [chromium] > e2e\aria-accordion-tabs.spec.ts:178:9 > step 3: replayed events (main bundle held back) > click on accordion Section 2 (control) (2.0s)
+FINDING [chromium] ArrowDown on nested accordion Inner 1: focus before hydration="Inner 1" after="Inner 2" state="a1=true a2=false a3=false selected=panel1"
+    console.error: ERROR Error: `preventDefault` called during event replay.
+    console.info: [trace] keydown key="ArrowDown" eventPhase=101 expanded=false,false
+  [OK]  12 [chromium] > e2e\aria-accordion-tabs.spec.ts:178:9 > step 3: replayed events (main bundle held back) > ArrowDown on nested accordion Inner 1 (1.9s)
+FINDING axe hydrated: color-contrast (2): Elements must meet minimum color contrast ratio thresholds
+FINDING axe server paint: color-contrast (2): Elements must meet minimum color contrast ratio thresholds
+FINDING axe color-contrast nodes: #ng-tab-a36110-0 3.75; #ng-tab-a36110-3 3.75
+  [OK]  13 [chromium] > e2e\axe-and-dev.spec.ts:9:5 > axe: hydrated page and server paint (main bundle blocked) (2.3s)
+FINDING [firefox] no-JS heights: open panel 181.60000610351562px, collapsed panel 0px
+FINDING [firefox] accordion aria snapshot (no JS):
+  [OK]  16 [firefox] > e2e\aria-accordion-tabs.spec.ts:45:7 > step 1: server HTML > first paint with JavaScript disabled (1.9s)
+FINDING [firefox] grid rows mid=27.5167px end=83.2px events=transitionrun:grid-template-rows transitionrun:padding-bottom transitionrun:padding-top transitionend:grid-template-rows transitionend:padding-bottom transitionend:padding-top
+  [OK]  17 [firefox] > e2e\aria-accordion-tabs.spec.ts:76:7 > step 2: hydrated behaviour and CSS > accordion: .is-active, single expand, grid-row animation, Foundation title rules (2.8s)
+  [OK]  18 [firefox] > e2e\aria-accordion-tabs.spec.ts:128:7 > step 2: hydrated behaviour and CSS > accordion without multiExpand binding keeps Aria default (multi) (2.3s)
+  [OK]  19 [firefox] > e2e\aria-accordion-tabs.spec.ts:137:7 > step 2: hydrated behaviour and CSS > nested accordion: ArrowDown after hydration stays in the inner group (control for step 3) (2.1s)
+  [OK]  20 [firefox] > e2e\aria-accordion-tabs.spec.ts:145:7 > step 2: hydrated behaviour and CSS > tabs: .is-active on li and panel, arrow keys, two-way selected (2.2s)
+FINDING [firefox] ArrowDown on accordion Section 1: focus before hydration="Section 1" after="Section 2" state="a1=true a2=false a3=false selected=panel1"
+    console.error: ERROR Error
+    console.info: [trace] keydown key="ArrowDown" eventPhase=101 expanded=true,false,false
+  [OK]  21 [firefox] > e2e\aria-accordion-tabs.spec.ts:178:9 > step 3: replayed events (main bundle held back) > ArrowDown on accordion Section 1 (2.2s)
+FINDING [firefox] Enter on accordion Section 2: focus before hydration="Section 2" after="Section 2" state="a1=false a2=true a3=false selected=panel1"
+    console.error: ERROR Error
+    console.info: [trace] keydown key="Enter" eventPhase=101 expanded=false,true,false
+    console.info: [trace] click eventPhase=101 expanded=false,true,false
+  [OK]  22 [firefox] > e2e\aria-accordion-tabs.spec.ts:178:9 > step 3: replayed events (main bundle held back) > Enter on accordion Section 2 (2.2s)
+FINDING [firefox] Space on accordion Section 2: focus before hydration="Section 2" after="Section 2" state="a1=false a2=true a3=false selected=panel1"
+    console.error: ERROR Error
+    console.info: [trace] keydown key=" " eventPhase=101 expanded=false,true,false
+    console.info: [trace] click eventPhase=101 expanded=false,true,false
+  [OK]  23 [firefox] > e2e\aria-accordion-tabs.spec.ts:178:9 > step 3: replayed events (main bundle held back) > Space on accordion Section 2 (2.2s)
+FINDING [firefox] ArrowRight on Tab 1: focus before hydration="Tab 1" after="Tab 2" state="a1=true a2=false a3=false selected=panel2"
+    console.error: ERROR Error
+  [OK]  24 [firefox] > e2e\aria-accordion-tabs.spec.ts:178:9 > step 3: replayed events (main bundle held back) > ArrowRight on Tab 1 (2.2s)
+FINDING [firefox] click on accordion Section 2 (control): focus before hydration="Section 2" after="Section 2" state="a1=false a2=true a3=false selected=panel1"
+    console.info: [trace] click eventPhase=101 expanded=false,true,false
+  [OK]  25 [firefox] > e2e\aria-accordion-tabs.spec.ts:178:9 > step 3: replayed events (main bundle held back) > click on accordion Section 2 (control) (3.0s)
+FINDING [firefox] ArrowDown on nested accordion Inner 1: focus before hydration="Inner 1" after="Inner 2" state="a1=true a2=false a3=false selected=panel1"
+    console.error: ERROR Error
+    console.info: [trace] keydown key="ArrowDown" eventPhase=101 expanded=false,false
+  [OK]  26 [firefox] > e2e\aria-accordion-tabs.spec.ts:178:9 > step 3: replayed events (main bundle held back) > ArrowDown on nested accordion Inner 1 (2.3s)
+FINDING [webkit] no-JS heights: open panel 181.59375px, collapsed panel 0px
+FINDING [webkit] accordion aria snapshot (no JS):
+  [OK]  30 [webkit] > e2e\aria-accordion-tabs.spec.ts:45:7 > step 1: server HTML > first paint with JavaScript disabled (421ms)
+FINDING [webkit] grid rows mid=23.25px end=83.1875px events=transitionrun:grid-template-rows transitionend:grid-template-rows
+  [OK]  31 [webkit] > e2e\aria-accordion-tabs.spec.ts:76:7 > step 2: hydrated behaviour and CSS > accordion: .is-active, single expand, grid-row animation, Foundation title rules (2.7s)
+  [OK]  32 [webkit] > e2e\aria-accordion-tabs.spec.ts:128:7 > step 2: hydrated behaviour and CSS > accordion without multiExpand binding keeps Aria default (multi) (2.3s)
+  [OK]  33 [webkit] > e2e\aria-accordion-tabs.spec.ts:137:7 > step 2: hydrated behaviour and CSS > nested accordion: ArrowDown after hydration stays in the inner group (control for step 3) (1.8s)
+  [OK]  34 [webkit] > e2e\aria-accordion-tabs.spec.ts:145:7 > step 2: hydrated behaviour and CSS > tabs: .is-active on li and panel, arrow keys, two-way selected (2.0s)
+FINDING [webkit] ArrowDown on accordion Section 1: focus before hydration="Section 1" after="Section 2" state="a1=true a2=false a3=false selected=panel1"
+    console.error: ERROR Error: `preventDefault` called during event replay.
+    console.info: [trace] keydown key="ArrowDown" eventPhase=101 expanded=true,false,false
+  [OK]  35 [webkit] > e2e\aria-accordion-tabs.spec.ts:178:9 > step 3: replayed events (main bundle held back) > ArrowDown on accordion Section 1 (2.3s)
+FINDING [webkit] Enter on accordion Section 2: focus before hydration="Section 2" after="Section 2" state="a1=false a2=true a3=false selected=panel1"
+    console.error: ERROR Error: `preventDefault` called during event replay.
+    console.info: [trace] keydown key="Enter" eventPhase=101 expanded=false,true,false
+    console.info: [trace] click eventPhase=101 expanded=false,true,false
+  [OK]  36 [webkit] > e2e\aria-accordion-tabs.spec.ts:178:9 > step 3: replayed events (main bundle held back) > Enter on accordion Section 2 (2.0s)
+FINDING [webkit] Space on accordion Section 2: focus before hydration="Section 2" after="Section 2" state="a1=false a2=true a3=false selected=panel1"
+    console.error: ERROR Error: `preventDefault` called during event replay.
+    console.info: [trace] keydown key=" " eventPhase=101 expanded=false,true,false
+    console.info: [trace] click eventPhase=101 expanded=false,true,false
+  [OK]  37 [webkit] > e2e\aria-accordion-tabs.spec.ts:178:9 > step 3: replayed events (main bundle held back) > Space on accordion Section 2 (2.0s)
+FINDING [webkit] ArrowRight on Tab 1: focus before hydration="Tab 1" after="Tab 2" state="a1=true a2=false a3=false selected=panel2"
+    console.error: ERROR Error: `preventDefault` called during event replay.
+  [OK]  38 [webkit] > e2e\aria-accordion-tabs.spec.ts:178:9 > step 3: replayed events (main bundle held back) > ArrowRight on Tab 1 (2.0s)
+FINDING [webkit] click on accordion Section 2 (control): focus before hydration="Section 2" after="Section 2" state="a1=false a2=true a3=false selected=panel1"
+    console.info: [trace] click eventPhase=101 expanded=false,true,false
+  [OK]  39 [webkit] > e2e\aria-accordion-tabs.spec.ts:178:9 > step 3: replayed events (main bundle held back) > click on accordion Section 2 (control) (2.1s)
+FINDING [webkit] ArrowDown on nested accordion Inner 1: focus before hydration="Inner 1" after="Inner 2" state="a1=true a2=false a3=false selected=panel1"
+    console.error: ERROR Error: `preventDefault` called during event replay.
+    console.info: [trace] keydown key="ArrowDown" eventPhase=101 expanded=false,false
+  [OK]  40 [webkit] > e2e\aria-accordion-tabs.spec.ts:178:9 > step 3: replayed events (main bundle held back) > ArrowDown on nested accordion Inner 1 (2.0s)
+  7 skipped
+  35 passed (1.2m)
+
+# Nested replay case BEFORE the replay guard was added (Chromium; Firefox and WebKit identical)
+FINDING [chromium] ArrowDown on nested accordion Inner 1: focus before hydration="Inner 1" after="Section 1" state="a1=true a2=false a3=false selected=panel1"
+  logs:
+    console.error: ERROR Error: `preventDefault` called during event replay.
+    console.info: [trace] keydown key="ArrowDown" eventPhase=101 expanded=false,false
+    console.error: ERROR Error: `preventDefault` called during event replay.
+    console.info: [trace] keydown key="ArrowDown" eventPhase=101 expanded=true,false,false
+  [OK]  12 [chromium] > e2e\aria-accordion-tabs.spec.ts:178:9 > step 3: replayed events (main bundle held back) > ArrowDown on nested accordion Inner 1 (2.0s)

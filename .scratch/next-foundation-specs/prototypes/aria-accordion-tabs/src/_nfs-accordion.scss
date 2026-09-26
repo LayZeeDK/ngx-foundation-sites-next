@@ -1,0 +1,61 @@
+// PROTOTYPE (throwaway): the smallest custom rules Foundation's accordion Sass
+// cannot supply for `h3 > button.accordion-title` plus a projected, grid-animated
+// `.accordion-content`. Imported after Foundation (ADR 0012 shape); reads
+// Foundation's settings and re-uses its `accordion-title` mixin.
+
+@mixin nfs-accordion($duration: 0.25s) {
+  // 1. The APG heading around the title. Foundation's base typography gives
+  //    headings a bottom margin; the heading is only a semantic container here.
+  .accordion-item > :is(h1, h2, h3, h4, h5, h6) {
+    margin: 0;
+  }
+
+  // 2. Foundation assumes `<a class="accordion-title">`; a <button> does not
+  //    stretch or left-align on its own.
+  button.accordion-title {
+    width: 100%;
+    text-align: start;
+    cursor: pointer;
+  }
+
+  // 3. Foundation's `accordion-title` mixin writes two child-combinator rules
+  //    (`:last-child:not(.is-active) > &` for the closed last item's bottom border
+  //    and `.is-active > &::before` for the minus icon) that stop matching once a
+  //    heading sits between the item and the title. Re-including Foundation's own
+  //    mixin under the heading selector re-creates them from the consumer's settings.
+  :is(h1, h2, h3, h4, h5, h6) > .accordion-title {
+    @include accordion-title;
+  }
+
+  // 4. Foundation hides `.accordion-content` with `display: none` and its jQuery
+  //    wrote inline `display` to show it; there is no CSS rule for the shown state.
+  //    Show it as a one-row grid and animate the row (building-blocks 1.6 rule 3).
+  //    Collapsed: row 0fr and no vertical padding or border, so a closed item looks
+  //    like Foundation's `display: none` one; open: Foundation's own padding and
+  //    border apply untouched.
+  .accordion-content {
+    display: grid;
+    grid-template-rows: 1fr;
+    transition:
+      grid-template-rows $duration ease,
+      padding-block $duration ease;
+  }
+
+  .accordion-item:not(.is-active) > .accordion-content {
+    grid-template-rows: 0fr;
+    padding-block: 0;
+    border-block-width: 0;
+  }
+
+  // The single wrapper child the grid row clips.
+  .nfs-accordion-content-body {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .accordion-content {
+      transition-duration: 1ms;
+    }
+  }
+}

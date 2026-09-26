@@ -1,0 +1,137 @@
+  <app-root ng-version="22.2.0" ngh="1" ng-server-context="ssr">
+<main class="grid-container">
+<h1>Prototype: Aria Accordion and Tabs under Foundation markup</h1>
+<h2>Accordion (multiExpand bound to false)</h2>
+<ul nfsaccordion="" data-testid="acc1" class="accordion" jsaction="keydown:;click:;focusin:;">
+<li nfsaccordionitem="" class="accordion-item is-active">
+<h3>
+<button role="button" ngaccordiontrigger="" nfsaccordiontitle="" class="accordion-title" type="button" id="ng-accordion-trigger-a97723-0" data-active="false" aria-expanded="true" aria-controls="ng-accordion-panel-a97723-0" aria-disabled="false" tabindex="0">Section 1</button>
+</h3>
+<div role="region" nfsaccordioncontent="" data-testid="acc1-c1" class="accordion-content" id="ng-accordion-panel-a97723-0" aria-labelledby="ng-accordion-trigger-a97723-0" ngh="0">
+<div class="nfs-accordion-content-body">
+<p>Panel 1 content is projected. It is open at first paint.</p>
+<ul nfsaccordion="" data-testid="inner" class="accordion" jsaction="keydown:;click:;focusin:;">
+<li nfsaccordionitem="" class="accordion-item">
+<h4>
+<button role="button" ngaccordiontrigger="" nfsaccordiontitle="" class="accordion-title" type="button" id="ng-accordion-trigger-a97723-1" data-active="false" aria-expanded="false" aria-controls="ng-accordion-panel-a97723-1" aria-disabled="false" tabindex="0">Inner 1</button>
+</h4>
+<div role="region" nfsaccordioncontent="" class="accordion-content" id="ng-accordion-panel-a97723-1" aria-labelledby="ng-accordion-trigger-a97723-1" inert="true" ngh="0">
+<div class="nfs-accordion-content-body">
+<p>Inner 1 content.</p>
+</div>
+</div>
+</li>
+<li nfsaccordionitem="" class="accordion-item">
+<h4>
+<button role="button" ngaccordiontrigger="" nfsaccordiontitle="" class="accordion-title" type="button" id="ng-accordion-trigger-a97723-2" data-active="false" aria-expanded="false" aria-controls="ng-accordion-panel-a97723-2" aria-disabled="false" tabindex="0">Inner 2</button>
+</h4>
+<div role="region" nfsaccordioncontent="" class="accordion-content" id="ng-accordion-panel-a97723-2" aria-labelledby="ng-accordion-trigger-a97723-2" inert="true" ngh="0">
+<div class="nfs-accordion-content-body">
+<p>Inner 2 content.</p>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</li>
+<li nfsaccordionitem="" class="accordion-item">
+<h3>
+<button role="button" ngaccordiontrigger="" nfsaccordiontitle="" class="accordion-title" type="button" id="ng-accordion-trigger-a97723-3" data-active="false" aria-expanded="false" aria-controls="ng-accordion-panel-a97723-3" aria-disabled="false" tabindex="0">Section 2</button>
+</h3>
+<div role="region" nfsaccordioncontent="" data-testid="acc1-c2" class="accordion-content" id="ng-accordion-panel-a97723-3" aria-labelledby="ng-accordion-trigger-a97723-3" inert="true" ngh="0">
+<div class="nfs-accordion-content-body">
+<p>Panel 2 content.</p>
+<p>A second paragraph so the height is visibly animated.</p>
+</div>
+</div>
+</li>
+<li nfsaccordionitem="" class="accordion-item">
+<h3>
+<button role="button" ngaccordiontrigger="" nfsaccordiontitle="" class="accordion-title" type="button" id="ng-accordion-trigger-a97723-4" data-active="false" aria-expanded="false" aria-controls="ng-accordion-panel-a97723-4" aria-disabled="false" tabindex="0">Section 3</button>
+</h3>
+<div role="region" nfsaccordioncontent="" data-testid="acc1-c3" class="accordion-content" id="ng-accordion-panel-a97723-4" aria-labelledby="ng-accordion-trigger-a97723-4" inert="true" ngh="0">
+<div class="nfs-accordion-content-body">
+<p>Panel 3 content.</p>
+</div>
+</div>
+</li>
+</ul>
+<h2>Accordion (multiExpand not bound; panel linked through the wrapper export: #q="nfsAccordionContent", [panel]="q.panel")</h2>
+<ul nfsaccordion="" data-testid="acc2" class="accordion" jsaction="keydown:;click:;focusin:;">
+<li nfsaccordionitem="" class="accordion-item">
+<h3>
+<button role="button" ngaccordiontrigger="" nfsaccordiontitle="" class="accordion-title" type="button" id="ng-accordion-trigger-a97723-5" data-active="false" aria-expanded="false" aria-controls="ng-accordion-panel-a97723-5" aria-disabled="false" tabindex="0">Default A</button>
+</h3>
+<div role="region" nfsaccordioncontent="" class="accordion-content" id="ng-accordion-panel-a97723-5" aria-labelledby="ng-accordion-trigger-a97723-5" inert="true" ngh="0">
+<div class="nfs-accordion-content-body">
+<p>A</p>
+</div>
+</div>
+</li>
+<li nfsaccordionitem="" class="accordion-item">
+<h3>
+<button role="button" ngaccordiontrigger="" nfsaccordiontitle="" class="accordion-title" type="button" id="ng-accordion-trigger-a97723-6" data-active="false" aria-expanded="false" aria-controls="ng-accordion-panel-a97723-6" aria-disabled="false" tabindex="0">Default B</button>
+</h3>
+<div role="region" nfsaccordioncontent="" class="accordion-content" id="ng-accordion-panel-a97723-6" aria-labelledby="ng-accordion-trigger-a97723-6" inert="true" ngh="0">
+<div class="nfs-accordion-content-body">
+<p>B</p>
+</div>
+</div>
+</li>
+</ul>
+<h2>Tabs (selected bound)</h2>
+<div nfstabsgroup="" data-testid="tabs1">
+<ul role="tablist" nfstabs="" aria-label="Example tabs" class="tabs" tabindex="-1" aria-disabled="false" aria-orientation="horizontal" jsaction="keydown:;click:;focusin:;">
+<li role="presentation" nfstabstitle="" class="tabs-title is-active">
+<a role="tab" nfstab="" value="panel1" data-active="false" id="ng-tab-a97723-0" tabindex="-1" aria-selected="true" aria-disabled="false" aria-controls="ng-tabpanel-a97723-0">Tab 1</a>
+</li>
+<li role="presentation" nfstabstitle="" class="tabs-title">
+<a role="tab" nfstab="" value="panel2" data-active="false" id="ng-tab-a97723-1" tabindex="-1" aria-selected="false" aria-disabled="false" aria-controls="ng-tabpanel-a97723-1">Tab 2</a>
+</li>
+<li role="presentation" nfstabstitle="" class="tabs-title">
+<a role="tab" nfstab="" value="panel3" data-active="false" id="ng-tab-a97723-2" tabindex="-1" aria-selected="false" aria-disabled="false" aria-controls="ng-tabpanel-a97723-2">Tab 3</a>
+</li>
+</ul>
+<div class="tabs-content">
+<div role="tabpanel" nfstabspanel="" value="panel1" class="tabs-panel is-active" id="ng-tabpanel-a97723-0" tabindex="0" aria-labelledby="ng-tab-a97723-0">
+<p>Tab panel 1 content, projected.</p>
+</div>
+<div role="tabpanel" nfstabspanel="" value="panel2" class="tabs-panel" id="ng-tabpanel-a97723-1" tabindex="-1" inert="true" aria-labelledby="ng-tab-a97723-1">
+<p>Tab panel 2 content.</p>
+</div>
+<div role="tabpanel" nfstabspanel="" value="panel3" class="tabs-panel" id="ng-tabpanel-a97723-2" tabindex="-1" inert="true" aria-labelledby="ng-tab-a97723-2">
+<p>Tab panel 3 content.</p>
+</div>
+</div>
+</div>
+<h2>Tabs (selected not bound; the wrapper writes the first tab into Aria's selectedTab model)</h2>
+<div nfstabsgroup="" data-testid="tabs2">
+<ul role="tablist" nfstabs="" aria-label="Unbound tabs" class="tabs" tabindex="-1" aria-disabled="false" aria-orientation="horizontal" jsaction="keydown:;click:;focusin:;">
+<li role="presentation" nfstabstitle="" class="tabs-title is-active">
+<a role="tab" nfstab="" value="x" data-active="false" id="ng-tab-a97723-3" tabindex="-1" aria-selected="true" aria-disabled="false" aria-controls="ng-tabpanel-a97723-3">Tab X</a>
+</li>
+<li role="presentation" nfstabstitle="" class="tabs-title">
+<a role="tab" nfstab="" value="y" data-active="false" id="ng-tab-a97723-4" tabindex="-1" aria-selected="false" aria-disabled="false" aria-controls="ng-tabpanel-a97723-4">Tab Y</a>
+</li>
+</ul>
+<div class="tabs-content">
+<div role="tabpanel" nfstabspanel="" value="x" class="tabs-panel is-active" id="ng-tabpanel-a97723-3" tabindex="0" aria-labelledby="ng-tab-a97723-3">
+<p>Panel X.</p>
+</div>
+<div role="tabpanel" nfstabspanel="" value="y" class="tabs-panel" id="ng-tabpanel-a97723-4" tabindex="-1" inert="true" aria-labelledby="ng-tab-a97723-4">
+<p>Panel Y.</p>
+</div>
+</div>
+</div>
+<h2>State</h2>
+<pre data-testid="state">a1=true a2=false a3=false selected=panel1</pre>
+</main>
+</app-root>
+<script src="main-UZ3HB75S.js" type="module">
+</script>
+
+<script id="ng-state" type="application/json">{"__nghData__":[{},{"n":{"12":"10f2","21":"19f2","29":"27f2","37":"35f2","47":"45f2","58":"56f2","66":"64f2"}}]}</script>
+<script>document.querySelectorAll('link[data-beasties-media]').forEach(function(l){l.media=l.getAttribute('data-beasties-media');l.removeAttribute('data-beasties-media')})</script>
+</body>
+</html><script>window.__jsaction_bootstrap(document.body,"ng",["keydown","click","focusin"],[]);
