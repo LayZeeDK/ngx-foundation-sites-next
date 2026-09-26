@@ -91,7 +91,7 @@ From Foundation 6.9's `Magellan.defaults`, its source, its docs page, and its vi
 | Methods | `calcPoints()`, `scrollToLoc(loc)`, `reflow()`, `destroy()` | `scrollTo(target, options?)`; nothing else (the observer sees layout changes) |
 | Events | `init.zf.magellan`, `update.zf.magellan` `[$active]`, `destroyed.zf.magellan` | `activeChange` (the `active` model's output, the section id or `null`); no counterpart for `init`/`destroyed` |
 | Container id | Own id or generated `magellan-*`, plus `data-resize`/`data-scroll` | Dropped |
-| Sass | None (no `_magellan.scss`) | None; Foundation's Menu styles the marker |
+| Sass | None (Foundation ships no Magellan Sass) | None; Foundation's Menu styles the marker |
 
 Options (`Magellan.defaults` has exactly seven; audit H6: the ticket's `barOffset` does not exist in 6.9, and Foundation's own visual test still carries a dead `data-bar-offset`):
 
@@ -215,6 +215,8 @@ Development-mode checks (only with `ngDevMode`, never on the server): in the fir
 ### Implementation level and primitives
 
 Implementation level: native platform. `IntersectionObserver` (widely available since 2021; a `Document` root since Chromium 81, Gecko 76, Safari 14), `ResizeObserver`, the History API, `scroll-padding`/`scroll-margin` (2021), and, through the composed `NfsSmoothScroll`, `scrollIntoView` with `behavior` and `prefers-reduced-motion`, all inside the Browser target (the platform research, sections 9, 10, 18). `@angular/aria` has no scroll-spy or link pattern. From `@angular/cdk`: `ViewportRuler.change()` for viewport resizes, and `InteractivityChecker` through `NfsSmoothScroll`; CDK's `ScrollDispatcher` and `CdkScrollable` report scroll events of registered scrollables, which the observer already replaces. Angular: `model`, `input` with transforms, `hostDirectives`, `afterNextRender`, `afterRenderEffect`, `afterEveryRender`, `DestroyRef`, `Renderer2`.
+
+Render hooks (building-blocks 1.5): `afterNextRender` is the first render callback (scroll container, observer, scroll backstop, first-render deep link, development checks); `afterRenderEffect` carries the model-write scroll, the marker writes (write phase), and the history writes, each re-running only on the signals it reads; `afterEveryRender` (read phase) only re-reads the host's links and re-resolves missing sections, because a section that another component's `@if` or `@defer` renders changes no signal Magellan reads ([ADR 0029](../adr/0029-magellan-targets-from-links.md)). None of these callbacks acts on a breakpoint-driven render, so the rendered-state rule does not apply.
 
 `injectAsync`: not used. The composed `NfsSmoothScroll` and Magellan's own `click` listener must be live at hydration to handle a replayed click, and tracking starts in the first render callback so the marker appears right after hydration, which an awaited chunk would delay; the entry point is its own, so a consumer's `@defer (hydrate on viewport)` already defers a sidebar navigation until it appears.
 
@@ -372,7 +374,7 @@ A good test asserts what the user observes: which link carries `.is-active` and 
 
 Story ids follow `magellan--<story>`: `magellan--menu`, `magellan--sticky-top-bar` (with `nfsSticky`), `magellan--table-of-contents` (vertical sticky sidebar), `magellan--scroll-container`, `magellan--unordered-links`, `magellan--custom-nav`, `magellan--threshold`, `magellan--jump-select` (`[(active)]` with a `<select>`), `magellan--programmatic`, `magellan--deep-linking`, `magellan--router-link-fragment` (Router provided in the story).
 
-### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`)
+### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`, `npx nx test-storybook <lib>`)
 
 Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test = 'error'` and `runOnly` set to the WCAG 2.2 AA rule set (tags `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`, `best-practice`; building-blocks 1.10 and 1.12), with the marker present (the play function scrolls into a section before the run completes). Axe does not test focus order, focus visibility, obscured focus, or the marker's non-text contrast, so the play functions assert 2.4.3, 2.4.7, 2.4.11, and 1.4.11 directly.
 
@@ -417,7 +419,7 @@ Against the static Storybook build, on the Story ids above:
 - Real wheel and key input in Chromium, Firefox, and WebKit on `magellan--menu`: the marker follows scrolling in all three engines; Enter on a link and then Tab lands inside the section with a visible focus indicator (2.4.3, 2.4.7); the marker never visits intermediate links during the glide.
 - Obscured focus on `magellan--sticky-top-bar` in three engines: after Enter on a link and each following Tab, the focused element does not intersect the sticky bar (2.4.11).
 - Reduced motion: `page.emulateMedia({reducedMotion: 'reduce'})` makes link jumps complete within one frame and the marker settle on the target 100 ms later; a jump into a gap between sections still marks the right section.
-- History API on `magellan--deep-linking` through the public `iframe.html?id=magellan--deep-linking` URL: loading with `#third` scrolls to and marks Third after hydration with focus left on the body; scrolling rewrites the hash with `history.length` unchanged; with `updateHistory` (story arg), each section adds one entry and Back restores the previous section's scroll position and marker; no `hashchange` handler scrolls a second time.
+- History API on `magellan--deep-linking` through the public `iframe.html?id=magellan--deep-linking` URL: loading with `#third` scrolls to and marks Third after hydration with focus left on the body; scrolling rewrites the hash with `history.length` unchanged; with `updateHistory` (story arg), each section adds one entry and Back returns the fragment to the previous section's id, with the marker on the section where the browser's own restoration lands; the position itself is asserted in Chromium only, because the [Prototype: Smooth Scroll under Router scroll restoration and replay](../issues/62-prototype-smooth-scroll-router-restoration.md) measured the browser's restoration of these entries exact only there (Firefox and WebKit landed about 1600 px off, its row 3d); no `hashchange` handler scrolls a second time.
 - Router coexistence on `magellan--router-link-fragment` with `scrollPositionRestoration: 'enabled'`: deep-linking writes keep `history.state.navigationId`; a Router navigation away and Back returns to the route without a Router error; with `updateHistory`, Back after two section entries is recorded as the regression guard for Comparison rule 4 (the wrong position the [Prototype: Smooth Scroll under Router scroll restoration and replay](../issues/62-prototype-smooth-scroll-router-restoration.md) measured).
 
 Against the prerendered fixture app (the harness from the rendering-mode test seam prototype), served under `<base href="/">` on a nested route with same-document `href`s:
@@ -503,7 +505,7 @@ export class Guide {
 ```
 
 ```scss
-// styles.scss, after the consumer's Foundation imports and includes (foundation-menu among them)
+// The application's global stylesheet, after the consumer's Foundation imports and includes (foundation-menu among them)
 @import 'ngx-foundation-sites';
 @include nfs-smooth-scroll; // optional: smooth native jumps (before hydration, hydrate never)
 

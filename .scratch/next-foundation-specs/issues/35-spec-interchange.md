@@ -159,3 +159,17 @@ The audit fixer skipped `specs/interchange.md` while the re-run above was editin
 2. Layer 2's heading becomes "Browser-level test (Vitest browser mode, `npx nx test <lib>`)" in place of the stack-neutral heading, and the section opens with the decision's verbatim sentence.
 3. Layer 3 opens with "Runs under `npx nx test <lib>` in `<name>.ssr.spec.ts` through the shared `renderServer()` helper; `npx nx test-node <lib>` only if the server path depends on the DOM adapter", which replaces the SSR smoke's superseded "own file or process" sentence.
 4. Layer 4's heading gains the two commands (the static Storybook build and the prerendered fixture app); the Storybook half opens stories through `mount(storyId, props)` over `iframe.html?embed=true`, and axe in layer 4 runs `@axe-core/playwright` on the same six tags.
+
+### Amendment, 2026-09-26 (consistency review)
+
+Made by the [Consistency review and bundle index](36-consistency-review.md) in `specs/interchange.md`; no case, API member, or default changed.
+
+- The opening line now also names [ADR 0015](../adr/0015-interchange-no-image-or-partial-mode.md), the record this ticket proposed and that is accepted.
+- Out of Scope: the image mode and the HTML-partial mode cited "(proposed ADR in the ticket answer)" and "(proposed ADR)"; both now cite ADR 0015.
+- Design decision 7: the rejected alternative said "proposed amendment in the ticket answer" for the Breakpoint service spec's named-query paragraph; that amendment is applied (the paragraph now answers a token with whitespace or `(` through `matches(token)`), so the cell says the paragraph now states this rule.
+
+Checked and left as they are: the rendered-rule handoff of building-blocks 1.5 and the focus rule from the re-run; the render hooks and the `injectAsync` statement; the WCAG 2.2 AA criteria table; the six axe tags in layers 1 and 4; the ADR 0018 layer wording; the Breakpoint service members used (`breakpoints`, `atLeast`, `matches`, `get`), which exist with the same meaning in its spec; Story ids `interchange--<story>`.
+
+#### Triage
+
+Nothing is open.

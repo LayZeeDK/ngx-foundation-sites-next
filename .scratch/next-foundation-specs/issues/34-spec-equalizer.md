@@ -125,3 +125,17 @@ Rule: [map](../map.md), Orchestration rules, "Triage of human-only items". Only 
    - Impact: HIGH. Shipping creates a public API (two directives, a token, a defaults token, an output) that is hard to withdraw once consumers use it.
    - Confidence: HIGH. The user's own Destination and goal condition ask for a directive or component that replaces every Foundation plugin (map, Destination and Goal condition); decisions 5 to 7 establish a real residue that CSS cannot reach without restructuring (Foundation 6.9's float grid, non-grid lists, boxes at unrelated depths; FS `docs/pages/equalizer.md:100-123`); the pair is small, optional, and led by the CSS recipes in the docs and stories, so the default is deliberated, not bare.
    - Outcome: DECIDED: ship the optional directive pair in the first release, with the docs and stories leading with CSS.
+
+### Amendment, 2026-09-26 (consistency review)
+
+Made by the [Consistency review and bundle index](36-consistency-review.md) in `specs/equalizer.md`; no case, API member, or default changed.
+
+- Glossary vocabulary: the spec used "watch" and "watches" as nouns about thirty times, although this ticket's own glossary term, **Watched element**, lists "watch" under `_Avoid_`. Each use now says "watched element" (the element) or names the directive (`nfsEqualizerWatch`, "the watch directive") where the directive instance is meant, in the Solution, user stories 10, 11, 12, 24, 28, and 29, the hierarchy sketch, the Hierarchy and DI bullets, the `register`/`unregister` note, Rendering modes, the browser-level and SSR cases, Out of Scope, D3, D4, and two usage-example captions. Foundation's attribute names (`data-equalizer-watch`) are unchanged.
+- Implementation level, render hooks: one sentence states why building-blocks 1.5's rendered-state rule needs no rendered-state signal here: the directive renders nothing breakpoint-dependent, the layout it measures follows the viewport through CSS media queries the browser applies before any render callback, the gate is read in `mixedReadWrite` after the Breakpoint service goes live (ADR 0014), and a consumer swap inside the container changes an observed size, which runs the next pass.
+- Testing Decisions, layer 4: the fixture's JavaScript-disabled case names `@axe-core/playwright` on the six tags.
+
+Checked and left as they are: the seven to-spec sections and the 1.14 placement; the Implementation level with its fallback; the `injectAsync` statement; the WCAG 2.2 AA criteria table; the six axe tags in layer 1; the ADR 0018 layer wording; no required Sass setting, so nothing is missing from the Storybook conventions' overrides block; Story ids `equalizer--<story>`.
+
+#### Triage
+
+Nothing is open: the one item, shipping the directive pair, was decided under the triage rule above.

@@ -142,3 +142,19 @@ _Avoid_: unsupported option, removed feature, legacy option
 6. 1.10: add "Elements that can cover content (Sticky): WCAG 2.4.11 is met by required consumer `scroll-padding`, checked by a development warning and an e2e case". Reason: decision 22.
 
 Orchestrator, 2026-09-26: the [Prototype: Sticky measurement refinements](63-prototype-sticky-measurement.md) confirmed all six assumptions in Chromium, Firefox, and WebKit (147 of 147 cases), so no fallback applies and the spec stands. Its one refinement, measuring the stick line from the scroll container's padding box rather than its border box so a bordered `overflow` ancestor does not shift the class contract by the border width, is folded into the spec's "How the class contract is measured" paragraph.
+
+### Amendment, 2026-09-26 (consistency review)
+
+From the [Consistency review and bundle index](36-consistency-review.md); `specs/sticky.md` was edited as listed. No decision changed.
+
+- Foundation contract: "`Sticky.defaults` in `foundation.sticky.js`" now reads "in Foundation's Sticky plugin source" (the to-spec rule against file paths in specs).
+- Hierarchy and DI shape: the Breakpoint service link now targets the [Spec: Breakpoint service (shared utility)](53-spec-breakpoint-service.md) ticket instead of the spec's file name.
+- Rendering modes, Breakpoint handoff: one sentence states how building-blocks 1.5's rendered-state rule holds (the gate is a media query the browser applies at the viewport change, and `data-nfs-sticky-on` never changes with the breakpoint, so the measured host rectangle already reflects the breakpoint `canStick` reports).
+- Out of Scope: the `.off-canvas-wrapper` item said "the OffCanvas spec decides (see the proposed building-blocks change in the ticket)"; it now states the settled rule: the [Spec: Off-canvas](25-spec-off-canvas.md)'s `nfs-off-canvas` mixin sets `overflow: clip; display: flow-root` on the wrapper, confirmed by case 3 of the [Prototype: Sticky measurement refinements](63-prototype-sticky-measurement.md). The off-canvas usage example now says the include already applies the fix and gives the same two declarations for consumers without it.
+- Out of Scope: "Anchor ranges outside the Sticky range" now reads "Ranges set by anchors outside the Sticky range" (the glossary lists "anchor range" under Sticky range's `_Avoid_`).
+- Testing Decisions, layer 1: `sticky--overflow-hidden-ancestor` now uses Foundation's `.overflow-hidden` Prototype class on the ancestor and an inline `overflow: clip` only where no Foundation class exists (Storybook conventions, section 8); play functions scroll with `behavior: 'instant'`, because the Storybook preview includes `nfs-smooth-scroll`, which makes a root scroll without a `behavior` smooth.
+- Superseded wording in this ticket's decision log, recorded rather than rewritten: decision 21 names five axe tags and decision 28 calls the browser-level tests stack-neutral; the spec already names the six tags (`best-practice` included) and the four layers in the wording of [ADR 0018](../adr/0018-browser-testing-stack.md).
+
+#### Triage
+
+Nothing is open in this ticket: its own OPEN FOR HUMAN section says "None", and the [Prototype: CSS `position: sticky` with IntersectionObserver sentinels for Sticky](48-prototype-sticky-css.md) and the [Prototype: Sticky measurement refinements](63-prototype-sticky-measurement.md) leave nothing open either.

@@ -152,3 +152,23 @@ Edits folded into `specs/smooth-scroll.md`:
 1. The click-order paragraph ("Why the link host skips step 2") now says the dispatcher's `preventDefault()` on a replayed click whose action element is an `<a>` is bookkeeping on the replayed event, not a cancellation, when the click was made before the app hydrated: the native jump has already happened, the replayed click's scroll is what remains, and only the container host logs the replay error.
 2. Rendering modes: the link-host bullet separates a click made before the app hydrates (queued, no cancellation, native jump at once; measured) from a click on a still-dehydrated block after the app has hydrated (the dispatcher cancels the live click because the action element is an `<a>`, as the source reads); the container-host bullet adds the measured outcome.
 3. Comparison rule 3, the Fallback paragraph (the reference to this ticket's Prototype needed), and the e2e Router coexistence case record the verdict; D2 and D3 say "marked `defaultPrevented`" where they said "cancelled".
+
+### Amendment, 2026-09-26 (consistency review)
+
+From the [Consistency review and bundle index](36-consistency-review.md); `specs/smooth-scroll.md` was edited as listed. No decision changed.
+
+- Testing Decisions: the layer 1 heading gains `npx nx test-storybook <lib>`, and the layer 4 heading gains `npx nx e2e <lib>-e2e` and `npx nx e2e <fixture-app>-e2e`, the wording the [Decide the browser testing stack: Playwright component tests, Vitest Browser, or both](41-browser-testing-stack-decision.md) answer fixes for every spec.
+- Testing Decisions: one sentence records that the Storybook preview includes `@include nfs-smooth-scroll;` with its default `html` scroller, as it includes every Library mixin (Storybook conventions, section 5), so a play function that scrolls the root programmatically passes `behavior: 'instant'` when it asserts a position after one frame (the Sticky spec's play functions do).
+- D2: "see the proposed ADR in the ticket" now cites [ADR 0017](../adr/0017-smooth-scroll-click-handling.md), which is accepted.
+- Usage example: the `styles.scss` comment now reads "The application's global stylesheet" (no file paths in specs).
+- Animation: "the Sticky prototype's scroll-listener backstop" now reads "the Sticky spec's throttled scroll backstop", the design the spec adopted from that prototype.
+- Out of Scope: "the active link" now reads "the Current section and its marked links" (the glossary lists "active link" under Current section's `_Avoid_`).
+- Superseded wording in this ticket's decision log, recorded rather than rewritten: decision 28's story gate names five axe tags; the spec names the six (`best-practice` included).
+
+#### Triage
+
+Re-rated under the map's rule (only HIGH impact with NOT-HIGH confidence stays OPEN FOR HUMAN):
+
+1. OPEN FOR HUMAN 1 (a directive-handled jump writing the fragment): already DECIDED under Triage item 1 (the URL stays unchanged); nothing open.
+2. OPEN FOR HUMAN 2 (`#`-only `href`s that `<base href>` resolves to another document, handled after hydration). Impact: HIGH, unchanged (the [Spec: Magellan](30-spec-magellan.md) inherits the in-page test, and narrowing it later changes where shipped consumer links go). Confidence: NOT HIGH, unchanged. The [Prototype: Smooth Scroll under Router scroll restoration and replay](62-prototype-smooth-scroll-router-restoration.md) confirmed the hazard itself (its row 1d: a bare `href="#id"` on a non-root route reloads the application at `/`), which is evidence that the applied default leaves a link broken before hydration and in `hydrate never`, not evidence for either option. Outcome: STAYS OPEN FOR HUMAN as a trap-quadrant decision, with the two competing options of Triage item 2.
+3. OPEN FOR HUMAN 3 (replay recognition, inherited): the list still words it as inherited and open, but Triage item 3 records it DECIDED in the [Building-blocks map and cross-cutting architecture decisions](14-building-blocks-map.md) triage (state first, `preventDefault()` last, the logged error accepted); nothing open.

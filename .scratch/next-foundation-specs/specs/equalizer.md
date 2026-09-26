@@ -20,7 +20,7 @@ What remains after CSS is a small residue: boxes that are not items of one flex 
 The spec answers in two parts, CSS first.
 
 1. CSS guidance, with no directive: for boxes inside XY grid cells, Foundation's own classes do it (the cell gets `.flex-container.flex-dir-column`, the box gets `.flex-child-grow`), and each wrapped row equalizes separately, which is Foundation's `equalizeByRow`. For one height across every row, or across a stacked column, the developer's own CSS uses CSS grid with `grid-auto-rows: 1fr`; for aligning parts of cards across a row, `grid-template-rows: subgrid`. Every feature is in the Browser target, renders equal heights on the server, and needs no library code. The usage examples start here, and the stories test it.
-2. An optional pair of directives for the residue: `nfsEqualizer` on the container and `nfsEqualizerWatch` on each box. The watches register with the nearest equalizer through DI (no names). The container observes the boxes and itself with one `ResizeObserver`, and on each signal runs one pass in an `afterRenderEffect`: clear the inline `min-height` it wrote, measure, then give every box except the tallest of its row `min-height` equal to that tallest height. The tallest box keeps its natural height, so any growth or shrinkage anywhere changes an observed size and triggers the next pass; images that load, fonts that swap, text that is enlarged, and panels that open are all caught without an image loader or a MutationObserver. `equalizeOn`, `equalizeOnStack`, and `equalizeByRow` keep Foundation's meaning; `equalizeOn` goes through the Breakpoint service. One output, `equalized`, reports the row heights applied.
+2. An optional pair of directives for the residue: `nfsEqualizer` on the container and `nfsEqualizerWatch` on each box. Each `nfsEqualizerWatch` registers its watched element with the nearest equalizer through DI (no names). The container observes the boxes and itself with one `ResizeObserver`, and on each signal runs one pass in an `afterRenderEffect`: clear the inline `min-height` it wrote, measure, then give every box except the tallest of its row `min-height` equal to that tallest height. The tallest box keeps its natural height, so any growth or shrinkage anywhere changes an observed size and triggers the next pass; images that load, fonts that swap, text that is enlarged, and panels that open are all caught without an image loader or a MutationObserver. `equalizeOn`, `equalizeOnStack`, and `equalizeByRow` keep Foundation's meaning; `equalizeOn` goes through the Breakpoint service. One output, `equalized`, reports the row heights applied.
 
 What earns the directive its place, stated plainly: not Foundation parity. A developer on the XY grid should not use it; the stories and the docs say so. It exists because Foundation 6.9 still ships markup that CSS cannot equalize without restructuring (the float grid, non-grid lists) and because a drop-in counterpart of `data-equalizer` lets such pages move to Angular without a layout rewrite. Whether that residue justifies shipping the directive in the first release was decided at triage on 2026-09-26: ship it, small and optional (impact HIGH, because a shipped directive is public API; confidence HIGH, because the map's Destination asks for a directive or component per plugin and the residue is real).
 
@@ -35,9 +35,9 @@ What earns the directive its place, stated plainly: not Foundation parity. A dev
 7. As a user on a slow connection, I want equal heights in the server-rendered HTML, so that the page does not jump when JavaScript arrives.
 8. As a user with JavaScript disabled, I want equal heights anyway, so that the layout is right without scripts.
 9. As an application developer maintaining pages on Foundation's float grid, I want `nfsEqualizer` and `nfsEqualizerWatch` as a drop-in for `data-equalizer` and `data-equalizer-watch`, so that I can move to Angular without rewriting the layout.
-10. As an application developer, I want watches to find their equalizer through DI, so that I never invent group names.
-11. As an application developer, I want an inner `nfsEqualizer` to take its own watches away from the outer one automatically, so that nested groups need no `foo`/`bar` names.
-12. As an application developer, I want one element to be both a watch of the outer group and the container of an inner group, as in Foundation's nesting example, so that Foundation's docs markup keeps working.
+10. As an application developer, I want watched elements to find their equalizer through DI, so that I never invent group names.
+11. As an application developer, I want an inner `nfsEqualizer` to take its own watched elements away from the outer one automatically, so that nested groups need no `foo`/`bar` names.
+12. As an application developer, I want one element to be both a watched element of the outer group and the container of an inner group, as in Foundation's nesting example, so that Foundation's docs markup keeps working.
 13. As an application developer, I want the outer group to re-equalize after an inner group changes its boxes, without events between them, so that nesting just works.
 14. As an application developer, I want `equalizeOn` to accept Foundation's Breakpoint queries (`medium`, `medium up`, `large only`, `medium down`), so that the directive switches itself on and off like Foundation's.
 15. As an application developer, I want the directive to clear the heights it wrote when `equalizeOn` stops matching, so that stacked layouts show natural heights.
@@ -49,12 +49,12 @@ What earns the directive its place, stated plainly: not Foundation parity. A dev
 21. As an application developer, I want images that load after the first pass to re-equalize the group, so that I need no image loader.
 22. As an application developer, I want content that grows or shrinks after load (async data, an opened accordion, a swapped font) to re-equalize the group, so that the heights never go stale.
 23. As an application developer, I want a group inside a hidden tab or toggled panel to equalize when it is shown, so that I do not have to notify it.
-24. As an application developer, I want watches added or removed by `@for`, `@if`, or a nested `@defer` block to join or leave the group, so that dynamic lists work.
+24. As an application developer, I want watched elements added or removed by `@for`, `@if`, or a nested `@defer` block to join or leave the group, so that dynamic lists work.
 25. As an application developer, I want an `equalized` output with the row heights, so that I can react to the final layout and tell an applied state from a cleared one.
 26. As an application developer, I want `equalize()` on the directive reference, so that I can force a pass after a layout change the observers cannot see (reordering items of equal size).
 27. As an application developer, I want application-wide defaults for the three Options through a Defaults token, so that I set them once like `Foundation.Equalizer.defaults`.
-28. As an application developer, I want `hostDirectives: [NfsEqualizerWatch]` to work on my own card component, so that the component is a watch wherever it is used.
-29. As an application developer, I want a development-mode warning when a watch has no equalizer, so that I notice a watch declared outside the equalizer's template.
+28. As an application developer, I want `hostDirectives: [NfsEqualizerWatch]` to work on my own card component, so that the component is a watched element wherever it is used.
+29. As an application developer, I want a development-mode warning when an `nfsEqualizerWatch` has no equalizer, so that I notice one declared outside the equalizer's template.
 30. As an application developer, I want the directive to write no styles on the server and nothing before hydration, so that hydration never reports a mismatch.
 31. As an application developer, I want no event listeners from the directive, so that it adds no `jsaction` and nothing to replay.
 32. As an application developer, I want no `ResizeObserver loop` errors in my console or in my ErrorHandler, so that the directive does not raise noise in monitored applications.
@@ -124,18 +124,18 @@ Equalizer has no Structural class and no State class. The CSS answer reuses Foun
 ```
 [nfsEqualizer]                         NfsEqualizer: provides nfsEqualizerToken (useExisting)
   |-- [nfsEqualizerWatch]              NfsEqualizerWatch: inject(nfsEqualizerToken, {optional, skipSelf})
-  |-- [nfsEqualizerWatch][nfsEqualizer] one element: a watch of the outer group and the inner container
+  |-- [nfsEqualizerWatch][nfsEqualizer] one element: a watched element of the outer group and the inner container
   |     |-- [nfsEqualizerWatch]        registers with the inner group (nearest provider)
   |     '-- [nfsEqualizerWatch]
   '-- [nfsEqualizerWatch]
 ```
 
 - Parent handle: `nfsEqualizerToken`, an `InjectionToken<NfsEqualizer>` declared with a type-only import of the class (building-blocks 1.9). `NfsEqualizer` provides it with `useExisting`.
-- Watches inject it with `{optional: true, skipSelf: true}` and register their host element at construction (no inputs to wait for), unregistering through `DestroyRef`. `skipSelf` starts at the parent element injector, so a watch on the same element as an inner `nfsEqualizer` joins the outer group, which is Foundation's nesting example.
-- Nested groups: an inner `nfsEqualizer` provides the token itself, and that provider is what keeps its watches out of the outer group. Nothing re-provides the token as `undefined`. The `CdkAccordionItem` pattern that building-blocks 1.9 names solves a different problem (an item that is not itself a container), and here an `undefined` provider on the watch would collide with the inner equalizer's provider on the element both share.
-- A watch with no equalizer warns once in development mode ("nfsEqualizerWatch found no nfsEqualizer among the element injectors of its template") and does nothing. DI follows the declaration site: an equalizer inside a child component's own template does not see watches projected into it; the equalizer goes on an element of the template that declares the watches, or on the projecting component's host.
+- `NfsEqualizerWatch` injects it with `{optional: true, skipSelf: true}` and registers its host element at construction (no inputs to wait for), unregistering through `DestroyRef`. `skipSelf` starts at the parent element injector, so a watched element that also carries an inner `nfsEqualizer` joins the outer group, which is Foundation's nesting example.
+- Nested groups: an inner `nfsEqualizer` provides the token itself, and that provider is what keeps its watched elements out of the outer group. Nothing re-provides the token as `undefined`. The `CdkAccordionItem` pattern that building-blocks 1.9 names solves a different problem (an item that is not itself a container), and here an `undefined` provider on the watch directive would collide with the inner equalizer's provider on the element both share.
+- An `nfsEqualizerWatch` with no equalizer warns once in development mode ("nfsEqualizerWatch found no nfsEqualizer among the element injectors of its template") and does nothing. DI follows the declaration site: an equalizer inside a child component's own template does not see watched elements projected into it; the equalizer goes on an element of the template that declares them, or on the projecting component's host.
 - Registration: parent-owned, into a signal holding the registered elements. The set is unordered, because nothing in the algorithm depends on order; no DOM-order sort and no MutationObserver are needed (building-blocks 1.9's sorted-collection rule applies to ordered children only).
-- `hostDirectives: [NfsEqualizerWatch]` on a consumer component makes its host a watch; the directive has no inputs to expose.
+- `hostDirectives: [NfsEqualizerWatch]` on a consumer component makes its host a watched element; the directive has no inputs to expose.
 - Defaults token: `nfsEqualizerDefaultsToken`, `InjectionToken<NfsEqualizerDefaults>` with an all-optional `{equalizeOn?, equalizeOnStack?, equalizeByRow?}`, read with `inject(..., {optional: true})` to seed the input defaults (building-blocks 1.4, Material shape B). Nearest provider wins.
 - Service: `NfsMediaQuery` for `is(equalizeOn)`, exactly as the Breakpoint service spec defines it.
 - Entry point: `ngx-foundation-sites/equalizer`, importing the Breakpoint service's entry point.
@@ -167,7 +167,7 @@ class NfsEqualizer {
 - Models: none. The directive owns no two-way state; the heights are a result of layout.
 - Output `equalized: readonly number[]`: the equal height of each equalized row in px, top to bottom; one entry when `equalizeByRow` is off; an empty array when the directive holds no heights (gate off, stacked, fewer than two watched elements, nothing taller than 0). Emitted after a pass whose result differs from the previous one, never on a pass that changes nothing. It is a Completion output in the glossary's sense: the heights are written when it fires. Replaces `preequalized` and `postequalized`.
 - `equalize()`: requests a pass (the pass runs in the next render, not synchronously). For layout changes that change no observed size: reordering watched elements of equal size in by-row mode, or moving the container between two parents of the same width.
-- `register`/`unregister`: public because the watch calls them through the token; documented as internal to the pair. Consumers use `nfsEqualizerWatch` or `hostDirectives`.
+- `register`/`unregister`: public because `NfsEqualizerWatch` calls them through the token; documented as internal to the pair. Consumers use `nfsEqualizerWatch` or `hostDirectives`.
 - No host bindings, no host listeners, no classes, no attributes.
 
 #### `NfsEqualizerWatch`
@@ -207,7 +207,7 @@ Level, for the directive: native platform plus a thin custom Angular layer. `Res
 
 Primitives: `afterRenderEffect` (`mixedReadWrite`), `ResizeObserver` created on the effect's first run (a render callback, so never on the server), `Renderer2.setStyle`/`removeStyle` for the one value a host binding cannot express (building-blocks 1.5), `untracked`, `DestroyRef` (disconnect), `NfsMediaQuery.is()`, `inject` with `skipSelf` and `optional`.
 
-Render hooks and lazy loading (building-blocks 1.5 and 1.9): the pass's `afterRenderEffect` is the only render hook. `afterEveryRender` is not used: the pass must run only when the version signal, the registered elements, an input, or the gate changes, and running it after every change detection in the application would force one layout per render for nothing. `injectAsync` is not used: the directive has no service to load after an interaction (its passes follow observed sizes, not a client interaction), and the pass must run right after the first render so a client-rendered page is equal at its first paint; the entry point is its own, so a consumer's `@defer` splits it.
+Render hooks and lazy loading (building-blocks 1.5 and 1.9): the pass's `afterRenderEffect` is the only render hook. The rendered-state rule of building-blocks 1.5 needs no rendered-state signal here: the directive renders nothing that depends on the breakpoint, the layout it measures follows the viewport through CSS media queries that the browser applies before any render callback, and it reads `is(equalizeOn)` in the `mixedReadWrite` phase, after the Breakpoint service goes live in its `earlyRead` callback (ADR 0014). When consumer content inside the container swaps on a breakpoint in change detection after the pass, the swap changes an observed size and the next pass re-equalizes (Convergence, above). `afterEveryRender` is not used: the pass must run only when the version signal, the registered elements, an input, or the gate changes, and running it after every change detection in the application would force one layout per render for nothing. `injectAsync` is not used: the directive has no service to load after an interaction (its passes follow observed sizes, not a client interaction), and the pass must run right after the first render so a client-rendered page is equal at its first paint; the entry point is its own, so a consumer's `@defer` splits it.
 
 Fallback: none needed. If a target browser misbehaved with element observation, the documented answer is the CSS path, which this spec already recommends first; the directive would not grow a second code path.
 
@@ -275,10 +275,10 @@ None. Height changes are applied instantly: no State class, no Motion class, no 
 
 Per ADR 0008 and the rendering-modes research, section 7 rules 1 to 11:
 
-- Server-side rendering and first paint: the directives render nothing on the server; watches register into an in-memory set, the render effect never runs, and no inline style reaches the server HTML (rule 3). The CSS answer is equal at first paint; the directive's boxes are at natural heights.
+- Server-side rendering and first paint: the directives render nothing on the server; watched elements register into an in-memory set, the render effect never runs, and no inline style reaches the server HTML (rule 3). The CSS answer is equal at first paint; the directive's boxes are at natural heights.
 - Before hydration: no `ResizeObserver`, no measurement, no style write; the observer and every DOM access live in the render effect (rules 3 to 5). No timer is started.
 - Full hydration: hydration claims the consumer's nodes unchanged, because the directives bind nothing; the first render effect pass then writes `min-height`, which is a layout shift at hydration wherever the boxes differ. The docs state it and point at the CSS answer, which has no shift. The pass reads `NfsMediaQuery.is(equalizeOn)` in the `mixedReadWrite` phase of the first pass, after the service went live in its `earlyRead` callback, so it sees the live breakpoint (ADR 0014); the Server breakpoint never reaches a height decision.
-- Incremental hydration: the container and its watches belong to one Hydration boundary (1.11 decision 6); while that boundary is dehydrated the boxes keep natural heights. A watch inside a nested `@defer` block within the container joins the group when its block renders or hydrates, because registration runs at construction and triggers a pass, so a partial boundary degrades to "equalized a little later", never to an error.
+- Incremental hydration: the container and its watched elements belong to one Hydration boundary (1.11 decision 6); while that boundary is dehydrated the boxes keep natural heights. A watched element inside a nested `@defer` block within the container joins the group when its block renders or hydrates, because registration runs at construction and triggers a pass, so a partial boundary degrades to "equalized a little later", never to an error.
 - `hydrate never`: the directive never runs; boxes keep natural heights forever. The CSS answer works there, which is one more reason it comes first (1.11 decision 7 names natural heights as Equalizer's residue).
 - Plain `@defer`: client-created content; the first pass runs before its first paint.
 - Event replay: no template or host listeners, so no `jsaction`, nothing queued, nothing replayed; the building-blocks rule for replayed events (decided at triage on 2026-09-26) does not affect Equalizer.
@@ -318,8 +318,8 @@ Vitest browser mode under the Angular unit-test builder (`npx nx test <lib>`, Ch
 - Rows out of DOM order: a CSS `order` that moves the last item to the first row groups it with that row (a planner fixture only; the docs forbid reordering, WCAG 1.3.2).
 - Gate: a fake `MediaMatcher` (the Breakpoint service's test seam) switching across `medium` clears and restores heights, and the observer observes nothing while the gate is off.
 - Emission: a pass that changes nothing emits nothing; clearing emits `[]` once; a consumer handler that reads a signal does not make the effect re-run when that signal changes.
-- Registration: watches from `@for`, `@if`, and a nested `@defer` block join and leave; removing the tallest re-equalizes to the next one; `hostDirectives: [NfsEqualizerWatch]` on a test component registers it.
-- Nesting and DI: a watch on an inner container's element joins the outer group; inner watches join only the inner group; a watch outside any equalizer warns once.
+- Registration: watched elements from `@for`, `@if`, and a nested `@defer` block join and leave; removing the tallest re-equalizes to the next one; `hostDirectives: [NfsEqualizerWatch]` on a test component registers it.
+- Nesting and DI: a watched element that is also an inner container joins the outer group; inner watched elements join only the inner group; an `nfsEqualizerWatch` outside any equalizer warns once.
 - Observer hygiene: over a sequence of content changes and container resizes, no `error` event reaches `window` and nothing reaches `ErrorHandler`; each change settles within two passes; destroying the equalizer disconnects the observer (later size changes run nothing).
 - Hidden container: with the container `display: none`, passes keep the current heights; showing it re-equalizes.
 - `equalize()`: after swapping two equal-size items between rows in by-row mode, heights are stale until `equalize()` and correct after the next render.
@@ -328,7 +328,7 @@ Vitest browser mode under the Angular unit-test builder (`npx nx test <lib>`, Ch
 
 ### 3. Node-level Vitest
 
-- SSR smoke, under `npx nx test <lib>` in `equalizer.ssr.spec.ts` through the shared `renderServer()` helper (`npx nx test-node <lib>` only if the server path depends on the DOM adapter, which it does not): a fixture with an equalizer, three watches, a nested group on a shared element, and a CSS-answer grid. Assert `whenStable()` resolves; no element carries a `style` attribute with `min-height`; neither directive's host carries `jsaction`; no `data-resize` or `data-mutate` attribute exists.
+- SSR smoke, under `npx nx test <lib>` in `equalizer.ssr.spec.ts` through the shared `renderServer()` helper (`npx nx test-node <lib>` only if the server path depends on the DOM adapter, which it does not): a fixture with an equalizer, three watched elements, a nested group on a shared element, and a CSS-answer grid. Assert `whenStable()` resolves; no element carries a `style` attribute with `min-height`; neither directive's host carries `jsaction`; no `data-resize` or `data-mutate` attribute exists.
 - Pure logic: the planner (boxes of `{top, height}` plus `equalizeByRow` and `equalizeOnStack` to per-box `min-height` or none, plus row targets) is table-tested: one row, several rows, single-item rows, ties, zeros, sub-pixel tops, stacked columns, out-of-order input.
 
 ### 4. Playwright e2e (`npx nx e2e <lib>-e2e` against the static Storybook build; `npx nx e2e <fixture-app>-e2e` against the prerendered fixture app)
@@ -344,7 +344,7 @@ Against the static Storybook build, in Chromium, Firefox, and WebKit:
 
 Against the prerendered fixture app (the harness from the rendering-mode test seam prototype):
 
-- JavaScript disabled: screenshot plus axe; the CSS-answer grid is equal; the directive's boxes are natural.
+- JavaScript disabled: screenshot plus axe (`@axe-core/playwright` on the six tags); the CSS-answer grid is equal; the directive's boxes are natural.
 - Hydration: no NG05xx in the console and `ngDevMode.componentsSkippedHydration === 0`; after hydration the directive's boxes are equal.
 - Dehydrated block: an equalizer inside `@defer (hydrate when hydrateNow())` with the signal held `false` keeps natural heights; releasing the signal equalizes them.
 - `@defer (hydrate never)`: the directive's boxes stay natural and the CSS-answer grid inside the same block is equal.
@@ -355,7 +355,7 @@ Against the prerendered fixture app (the harness from the rendering-mode test se
 - Equalizing widths, or any dimension other than height in the horizontal writing mode.
 - Content-box elements: the written value assumes Foundation's global `box-sizing: border-box`.
 - Transitions on the equalized height.
-- Group names and a reference input on `nfsEqualizerWatch` for a watch that should skip its nearest equalizer; no Foundation example needs it (it can follow the Triggers pattern of a typed reference if one appears).
+- Group names and a reference input on `nfsEqualizerWatch` for a watched element that should skip its nearest equalizer; no Foundation example needs it (it can follow the Triggers pattern of a typed reference if one appears).
 - Masonry layouts, which are a different problem (items packed without rows).
 - Runtime theming through custom properties (building-blocks 1.13).
 
@@ -367,8 +367,8 @@ Against the prerendered fixture app (the harness from the rendering-mode test se
 | --- | --- | --- | --- |
 | D1 | CSS guidance first: XY grid cells with Foundation's flex helpers, `grid-auto-rows: 1fr`, `subgrid` | Equal at first paint, on the server, without JavaScript, in `hydrate never`, and on every content change; all in the Browser target; uses Foundation's classes | Directive as the primary answer (Foundation parity): a hydration shift and a measurement loop for a layout job |
 | D2 | Keep an optional directive pair for the residue | Float grid and non-grid markup cannot be equalized by CSS without restructuring; a drop-in `data-equalizer` counterpart lets such pages move over | CSS guidance only, no directive (the lazier choice; rejected at triage on 2026-09-26, see the ticket) |
-| D3 | `[nfsEqualizer]` on the container, `[nfsEqualizerWatch]` on each box, parent-owned registration through `nfsEqualizerToken` with `skipSelf` | Directive-first (ADR 0001); DI replaces names; `skipSelf` makes Foundation's shared-element nesting work | `contentChildren` queries (miss projected and `@defer` watches); a watch-less directive that queries `[nfsEqualizerWatch]` in the DOM (not declaration-scoped) |
-| D4 | No token re-provided as `undefined` | The inner equalizer's own provider already shadows the outer one; an `undefined` provider on the watch would collide with it on the shared element | The `CdkAccordionItem` pattern named in building-blocks 1.9 |
+| D3 | `[nfsEqualizer]` on the container, `[nfsEqualizerWatch]` on each box, parent-owned registration through `nfsEqualizerToken` with `skipSelf` | Directive-first (ADR 0001); DI replaces names; `skipSelf` makes Foundation's shared-element nesting work | `contentChildren` queries (miss projected and `@defer` watched elements); a single directive that queries `[nfsEqualizerWatch]` in the DOM (not declaration-scoped) |
+| D4 | No token re-provided as `undefined` | The inner equalizer's own provider already shadows the outer one; an `undefined` provider on the watch directive would collide with it on the shared element | The `CdkAccordionItem` pattern named in building-blocks 1.9 |
 | D5 | Inline `min-height`, tallest element of each row untouched | Content can grow at 200 percent zoom, under user text spacing, and at 320 px reflow (WCAG 2.2 AA 1.4.4, 1.4.12, 1.4.10 as requirements); growth and shrinkage both change an observed size, so one `ResizeObserver` catches images, fonts, text, and panels | Foundation's `height` (clips content, hides growth from the observer, needs a MutationObserver and an image loader) |
 | D6 | One `ResizeObserver` on the watched elements and the container; no MutationObserver, no image loader | Size changes are what matter; the container catches re-wrapping of fixed-width items | Porting `resizeme`, `mutateme`, and `onImagesLoaded`; CDK `ContentObserver` |
 | D7 | Observer callback only bumps a signal; the pass runs in `afterRenderEffect` `mixedReadWrite` | Writing inside the callback raises the loop `ErrorEvent`, which Angular forwards to `ErrorHandler`; one forced layout per pass; no painted reset | Writes in the callback; `write` then `read` across two renders (paints the reset) |
@@ -463,7 +463,7 @@ export class LegacyPanels {
 }
 ```
 
-Foundation's nesting example, with DI instead of names; the element in the first column is a watch of the outer group and the container of the inner one:
+Foundation's nesting example, with DI instead of names; the element in the first column is a watched element of the outer group and the container of the inner one:
 
 ```html
 <div class="row" nfsEqualizer equalizeOn="medium">
@@ -479,7 +479,7 @@ Foundation's nesting example, with DI instead of names; the element in the first
 </div>
 ```
 
-A component that is always a watch, and application-wide defaults:
+A component that is always a watched element, and application-wide defaults:
 
 ```ts
 @Component({

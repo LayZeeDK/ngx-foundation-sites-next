@@ -172,6 +172,8 @@ In `building-blocks.md` (paths relative to the effort root):
 
 ### Proposed building-blocks changes
 
+(paths relative to the effort root)
+
 1. 1.2, the CDK bullet: replace "except as the named fallbacks (CDK `FlexibleConnectedPositionStrategy` in ADR 0002, CDK Dialog in ADR 0007, CDK accordion state in Table B Accordion)" with "except as the named fallbacks (CDK Dialog in ADR 0007, CDK accordion state in Table B Accordion; the anchored pane prototype retired ADR 0002's CDK Overlay fallback)". Reason: decision 23.
 2. Table A, Dropdown (pane) row, Primitives cell: replace "Anchored pane positioner (Positionable port on `getBoundingClientRect` in `afterRenderEffect`), `ResizeObserver` on pane and anchor, Light dismiss registry," with "Anchored pane utility: `nfsPositioner()` (Positionable port on `getBoundingClientRect` in `afterRenderEffect`, `ResizeObserver` on pane, anchor, and bound while open), `nfsLightDismiss()`, `nfsHoverIntent()`,". Reason: decisions 5, 7, 19.
 3. Table A, Tooltip row, Primitives cell: replace "`focusin`/`focusout`/`pointerenter`/`pointerleave`/`keydown.escape` host listeners" with "`focusin`/`focusout` host listeners (a replayed `focusin` re-checks live focus); hover through `nfsHoverIntent()` on the trigger and the tip; Escape through Light dismiss, document-level, so a hover-opened tip closes wherever focus is (WCAG 1.4.13)". Reason: decisions 29, 37, 38.
@@ -180,3 +182,16 @@ In `building-blocks.md` (paths relative to the effort root):
 6. Table B, Tooltip row, Open risks cell: append "A tip inside a positioned `overflow` container is clipped and an ancestor stacking context bounds its `z-index`; accepted and documented (the Anchored pane spec, Triage 2)." Reason: Triage 2.
 7. Table B, DropdownMenu row, Material cell: after "`closed` reason" add "(`'click' | 'keydown' | 'tab' | 'sibling'`, from Light dismiss)". Reason: decision 33.
 8. 1.10, the Escape bullet: replace "(WCAG 1.4.13 for hover and focus content)" with "(WCAG 2.2 1.4.13 for hover and focus content, 2.4.11 for focus not obscured; the Light dismiss registry supplies both for Anchored panes and submenus)". Reason: decision 42.
+
+### Amendment, 2026-09-26 (consistency review)
+
+Changes to `specs/anchored-pane.md` from the [Consistency review and bundle index](36-consistency-review.md):
+
+- Implementation level, fallback: "(proposed ADR 0002 amendment in the ticket answer)" now states the settled record: ADR 0002 lists CDK Overlay as measured and rejected, as the fallback too.
+- WCAG 2.2 AA: the criteria table the consumers inherit now sits under its own `### WCAG 2.2 AA` heading, with an opening sentence that states each criterion as a requirement and a closing sentence naming the six axe tags and saying the utility needs no Sass setting, library rule, or compile-time contrast check (it draws nothing) (ADR 0022).
+- Testing Decisions, in the ADR 0018 wording: layer 1 names `npx nx test-storybook <lib>`; the layer 3 SSR smoke runs under `npx nx test <lib>` in `<name>.ssr.spec.ts` through `renderServer()`; the layer 4 heading names `npx nx e2e <lib>-e2e` and `npx nx e2e <fixture-app>-e2e`; the fixture's JavaScript-disabled axe run names the six tags.
+- Rendering modes, hydration boundary: "(ADR 0008 decision 6)" becomes "(ADR 0008; building-blocks 1.11 decision 6)", because ADR 0008 has no numbered decisions.
+- Consumer decisions now settled in their specs are stated as settled, not as "the consumer specs decide": the Tooltip spec reads its trigger's legacy position class for `auto` and the Dropdown spec drops legacy classes (contract row and Out of Scope); the Dropdown spec keeps `parentClass` and resolves it to `boundary`; the Tooltip spec keeps `disableForTouch` per press and the Dropdown Menu spec drops `disableHoverOnTouch`; the Dropdown spec drops `hoverPane`, so a hover-opened pane is always in the Hover region (ARIA requirements). The Dropdown usage sketch's lead-in is no longer future tense.
+- This ticket: the "Proposed building-blocks changes" list gains the "(paths relative to the effort root)" note its quoted links need (audit 0003 L3's convention).
+- Recorded here because this ticket had no note of them: audit 0004 already changed the spec's contract-table cell for Tooltip `clickOpen` (finding M7), the Out of Scope line on Reveal dismissal, the layer 2 heading, and the DropdownMenu `autoclose` cell (finding L6).
+- Checked and unchanged: the consumer calls in the Dropdown, Tooltip, Nested menu, and Reveal specs use `nfsPositioner`, `nfsLightDismiss` (with `outsidePress`), `nfsHoverIntent` (with its required `isOpen`), `nfsDocumentRect`, `nfsBodyBounds`, `nfsOverlap`, and `NfsDismissReason` as defined; the Hierarchy and Out of Scope agree with ADR 0024 and ADR 0031 (a non-modal Reveal uses Light dismiss only); the prototype verdict (in-place port within 0.02 px, no CDK Overlay) and both triage decisions are reflected; render hooks and `injectAsync` (eager) are stated; the Sass subsection says "No library CSS; there is no `nfs-anchored-pane` mixin". Nothing is OPEN FOR HUMAN.

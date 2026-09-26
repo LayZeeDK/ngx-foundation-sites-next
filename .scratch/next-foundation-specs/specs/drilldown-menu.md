@@ -503,7 +503,7 @@ Against the prerendered fixture app, one route with a standalone drilldown and o
 ## Out of Scope
 
 - The Nested menu utility itself: item, submenu, and toggle directives, class maps, key tables, completion, the focus-loss guard, and the Menu mode swap rule ([Spec: Nested menu (shared utility)](../issues/56-spec-nested-menu.md)).
-- ResponsiveMenu's `rules` input and which Drilldown inputs and outputs its host directive list exposes ([Spec: Responsive Menu](../issues/23-spec-responsive-menu.md)); this spec asks it to expose `autoHeight`, `animateHeight`, `closeOnClick`, `scrollTop`, `scrollTopElement`, `scrollTopOffset`, `opened`, and `closed`.
+- ResponsiveMenu's `rules` input and which Drilldown inputs and outputs its host directive list exposes ([Spec: Responsive Menu](../issues/23-spec-responsive-menu.md)), which exposes `autoHeight`, `animateHeight`, `closeOnClick`, `scrollTop`, `scrollTopElement`, `scrollTopOffset`, `opened`, and `closed`.
 - The opt-in menu-and-menubar variant (a vertical `role="menu"` drilldown) and the tree variant (map, Out of scope; ADR 0004).
 - `parentLink` clones, generated back items, and any generated DOM.
 - A slide direction that follows a runtime `dir` attribute: Foundation's drilldown slide and arrows follow the compile-time `$global-text-direction`, and the library's rules reuse `$global-left`/`$global-right`, so an RTL site compiles Foundation for RTL, as Foundation documents.
@@ -534,8 +534,8 @@ Against the prerendered fixture app, one route with a standalone drilldown and o
 | D15 | `openPath(item, {focus})` keeps `_showMenu()`; `collapseAll()` keeps `_hideAll()` | The utility's `open()` opens only its target (Foundation's `down()` did the same), so showing a deep level from code needs the whole Open path opened in order; the "Open path" vocabulary and Material/Aria verbs | Only per-item `open()` on each ancestor, left to every consumer (easy to get the order or the siblings wrong; a deep item under closed levels shows nothing) |
 | D16 | Aggregate `opened`/`closed` carry `NfsMenuItem`, emitted after the slide, one `closed` per level on `collapseAll()` | Building-blocks 1.4; the Nested menu consumer table | Foundation's four events with mixed timing; a separate `collapsed` output |
 | D17 | Every submenu needs a back item (development warning) | Without it a pointer user cannot leave a level | Generating one (DOM creation, rule 4) |
-| D18 | `nfs-drilldown` adds an inset focus ring inside `.is-drilldown` | The wrapper must clip, which cut ring edges (worse with `autoHeight`); 2.4.7 | Accepting clipped edges (the Nested menu spec's first text); `overflow-clip-margin` (not in the Browser target) |
-| D19 | Reduced motion covers `.is-drilldown.animate-height` as well as the slide | ADR 0003: every animation the library turns on honours the preference | Only the slide (the Nested menu spec's rule 12) |
+| D18 | `nfs-drilldown` adds an inset focus ring inside `.is-drilldown` | The wrapper must clip, which cut ring edges (worse with `autoHeight`); 2.4.7 | Accepting clipped edges (the Nested menu spec's text before this spec's amendment); `overflow-clip-margin` (not in the Browser target) |
+| D19 | Reduced motion covers `.is-drilldown.animate-height` as well as the slide | ADR 0003: every animation the library turns on honours the preference | Only the slide (the Nested menu spec's rule 12 before this spec's amendment) |
 | D20 | A row-height compile check beside the arrow and toggle checks | 2.5.8 is guaranteed by the Library mixin where settings can fail it (building-blocks 1.10) | Relying on the story gate (it sees only the library's settings) |
 | D21 | `autoApplyClass` dropped; `drilldown` bound from the mode | Required by Foundation's CSS and by ResponsiveMenu | An input that could leave the menu unstyled |
 | D22 | No `effect`, no `afterEveryRender`, no `injectAsync` | No non-DOM side effect; nothing loads after interaction | A lazily loaded measurement helper |

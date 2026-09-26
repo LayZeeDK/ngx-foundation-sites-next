@@ -1,6 +1,6 @@
 # Spec: Interchange
 
-Ticket: [Spec: Interchange](../issues/35-spec-interchange.md). Targets Angular 22.2, Nx 23.2, Storybook 10.6 with `@storybook/angular-vite`, Vitest 4.1.x, TypeScript 6.0.x, and Foundation for Sites 6.9.0 Sass. Builds on the [Spec: Breakpoint service (shared utility)](../issues/53-spec-breakpoint-service.md) (`NfsMediaQuery`, `nfsDefaultNamedQueries`, the Server breakpoint, and the first-render handoff of ADR 0014) and on ADR 0001 (Directive-first), ADR 0005 (Breakpoint source of truth), ADR 0008 (Rendering-modes contract), and ADR 0012 (Sass packaging). The decision log with sources is in the ticket answer.
+Ticket: [Spec: Interchange](../issues/35-spec-interchange.md). Targets Angular 22.2, Nx 23.2, Storybook 10.6 with `@storybook/angular-vite`, Vitest 4.1.x, TypeScript 6.0.x, and Foundation for Sites 6.9.0 Sass. Builds on the [Spec: Breakpoint service (shared utility)](../issues/53-spec-breakpoint-service.md) (`NfsMediaQuery`, `nfsDefaultNamedQueries`, the Server breakpoint, and the first-render handoff of ADR 0014) and on ADR 0001 (Directive-first), ADR 0005 (Breakpoint source of truth), ADR 0008 (Rendering-modes contract), ADR 0012 (Sass packaging), and [ADR 0015](../adr/0015-interchange-no-image-or-partial-mode.md) (no image mode and no HTML-partial mode). The decision log with sources is in the ticket answer.
 
 ## Problem Statement
 
@@ -383,8 +383,8 @@ Against the prerendered fixture app (the harness from the [Prototype: Rendering-
 
 ## Out of Scope
 
-- An image mode (`img[nfsInterchange]`) and any wrapper around `<picture>` or `NgOptimizedImage`: images use the platform and Angular's directive (proposed ADR in the ticket answer).
-- The HTML-partial mode, runtime compilation of fetched markup, and any `innerHTML` insertion by the library (proposed ADR).
+- An image mode (`img[nfsInterchange]`) and any wrapper around `<picture>` or `NgOptimizedImage`: images use the platform and Angular's directive (ADR 0015).
+- The HTML-partial mode, runtime compilation of fetched markup, and any `innerHTML` insertion by the library (ADR 0015).
 - A `type` input and `auto` detection by file extension.
 - A public `replace(path)` method.
 - A component that generates `<picture>` from Interchange rules: `<picture>` is short to write and a component would re-render markup the consumer owns (ADR 0001).
@@ -405,7 +405,7 @@ Against the prerendered fixture app (the harness from the [Prototype: Rendering-
 | 4 | Template mode as a directive | Kept, per building-blocks Table A, for Foundation's rule syntax, Named queries, and last-match-wins | Documentation only, `@if`/`@switch` over `NfsMediaQuery` (still documented as the equivalent for code that needs none of those; see Usage examples) |
 | 5 | Rule forms | Foundation's string (elements only) and a labelled tuple `[content, query]` | Objects `{path, query}` (longer in templates; `path` is wrong for templates); string only (no typed data binding) |
 | 6 | Rule split | First comma, trimmed | Foundation's `', '` split with the last piece as query (breaks the retina query and any media query list, drops commas from paths) |
-| 7 | Query tokens | Breakpoint name, then Named query key, then raw media query (whitespace or `(`), else warn | Names only, as the Breakpoint service spec's paragraph reads (drops Foundation's documented raw media queries; proposed amendment in the ticket answer) |
+| 7 | Query tokens | Breakpoint name, then Named query key, then raw media query (whitespace or `(`), else warn | Names only, as the Breakpoint service spec's paragraph first read (drops Foundation's documented raw media queries; that paragraph now states this rule) |
 | 8 | Custom Named queries | `namedQueries` in `nfsInterchangeDefaultsToken`, replacing the default map | A field on `nfsBreakpointsToken` (only Interchange uses them; Breakpoint service spec decision 16); merging automatically (the binding example spreads `nfsDefaultNamedQueries` explicitly) |
 | 9 | No match | Clear the content | Keep the previous content, Foundation's behaviour (depends on resize history; server and `hydrate never` output would not be a function of the media state) |
 | 10 | Background binding | `[style.background-image]` host binding, `url("...")` with CSS string escaping | `Renderer2.setStyle` (not rendered on the server, forbidden before hydration); percent-encoding only parentheses (quotes and backslashes still break the value) |

@@ -324,6 +324,8 @@ Tabs mode (the Tabs spec's tables, horizontal only):
 | Enter, Space | Selects the focused tab (`explicit` mode) | Aria |
 | Up, Down | Not handled (page scrolls) | Browser |
 
+Known deviation in tabs mode, as the [Spec: Tabs](../issues/16-spec-tabs.md) documents it: once the user has operated the strip, a bound `selected` write or a deep link leaves Aria's roving tab stop on the last tab the user operated (no public Aria API moves it; decided, accept and document). A Mode swap creates the tab list again, which resets it to the selected tab.
+
 Focus rules:
 
 - A Mode swap moves focus only when focus was inside the widget, to the equivalent control of the new mode: title to tab and tab to title for the same `value`; focus anywhere inside a section's content or on a tab panel goes to that section's control. Focus outside the widget is never moved. The first-render swap follows the same rule (a server-rendered title can hold focus before hydration).
@@ -533,7 +535,7 @@ Storybook half, `@playwright/test` 1.63 in Chromium, Firefox, and WebKit, `mount
 
 Fixture half, one `responsive-accordion-tabs` route (the harness from the rendering-mode test seam prototype), plus a `@defer (hydrate on viewport)` route below a spacer and a client-hint route whose server provider renders `large`:
 
-- JavaScript disabled at 1300 px: the Server breakpoint's accordion is painted, titles are reachable by Tab; screenshot plus axe.
+- JavaScript disabled at 1300 px: the Server breakpoint's accordion is painted, titles are reachable by Tab; screenshot plus `@axe-core/playwright` with the six tags.
 - Hydration at 1300 px: no NG05xx, `componentsSkippedHydration === 0`, a per-frame recorder shows no frame of the accordion after the service goes live, and exactly one swap.
 - Hydration at 500 px: no swap and no visible change between the screenshots before and after hydration.
 - Focus before hydration with the main bundle held back: focus the Specs title at 1300 px, release the bundle: focus is on the Specs tab.

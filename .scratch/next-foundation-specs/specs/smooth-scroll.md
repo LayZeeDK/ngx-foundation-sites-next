@@ -264,7 +264,7 @@ In an application with `<base href="/">`, `href="#first"` on the route `/guide/i
 
 - Smooth scrolling is browser-owned: `scrollIntoView` with `behavior: 'smooth'` for directive jumps, CSS `scroll-behavior: smooth` for native jumps when the consumer includes `nfs-smooth-scroll`. There is no library timing, no State class, no Motion class, no `animate.enter`/`animate.leave`, and no Completion output (ADR 0003 has nothing to govern here).
 - Reduced motion: the directive reads `NfsMediaQuery.reducedMotion` at the moment of each scroll (the Breakpoint service's live signal, `false` on the server and before the service goes live, which no click can precede) and passes `'instant'` while it is `true`. The mixin emits its rule only inside `@media (prefers-reduced-motion: no-preference)`, so native jumps are instant under `reduce` too. Building-blocks 1.6 rule 5's 1 ms override does not apply: no library code waits for a scroll to finish.
-- No completion signal: native smooth scrolling reports its end only through `scrollend`, which is outside the Browser target (Safari 26.2). Consumers that need "scrolling settled" (Magellan's transition flag) use the Magellan spec's IntersectionObserver settling. The instant jump under reduced motion also means Sticky's sentinels see an instantaneous jump; the Sticky prototype's scroll-listener backstop covers that.
+- No completion signal: native smooth scrolling reports its end only through `scrollend`, which is outside the Browser target (Safari 26.2). Consumers that need "scrolling settled" (Magellan's transition flag) use the Magellan spec's IntersectionObserver settling. The instant jump under reduced motion also means Sticky's sentinels see an instantaneous jump; the Sticky spec's throttled scroll backstop covers that.
 
 ### Rendering modes
 
@@ -285,9 +285,9 @@ Per ADR 0008 and the rendering-modes research, section 7 rules 1 to 11:
 
 A good test asserts what the user observes: where the target lands relative to the viewport or its scroll container, which element has focus, whether Tab continues inside the section, the URL and `history.length`, and whether a click navigated. No test reads the directive's fields. Scroll position assertions poll with a tolerance of 1 px until the position is stable, because smooth scrolling has no completion event in the Browser target. There is no prior art in the new repository; the patterns are the building-blocks testing rule, Angular's own `renderApplication`-based SSR tests, and the Angular Components universal-app e2e.
 
-Story ids follow `smooth-scroll--<story>`: `smooth-scroll--container`, `smooth-scroll--single-link`, `smooth-scroll--sticky-offset`, `smooth-scroll--scroll-container`, `smooth-scroll--focusable-target`, `smooth-scroll--link-filters`, `smooth-scroll--programmatic`, `smooth-scroll--back-to-top`, `smooth-scroll--router-link-fragment` (Router provided in the story).
+Story ids follow `smooth-scroll--<story>`: `smooth-scroll--container`, `smooth-scroll--single-link`, `smooth-scroll--sticky-offset`, `smooth-scroll--scroll-container`, `smooth-scroll--focusable-target`, `smooth-scroll--link-filters`, `smooth-scroll--programmatic`, `smooth-scroll--back-to-top`, `smooth-scroll--router-link-fragment` (Router provided in the story). The Storybook preview includes `@include nfs-smooth-scroll;` with its default `html` scroller, as it includes every Library mixin (Storybook conventions, section 5), so native jumps in stories are smooth under `prefers-reduced-motion: no-preference`; a play function of any plugin that scrolls the root programmatically therefore passes `behavior: 'instant'` when it asserts a position after one frame.
 
-### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`)
+### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`, `npx nx test-storybook <lib>`)
 
 Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test = 'error'` and `runOnly` set to the six tags of the preview's rule set (`wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`, `best-practice`), per building-blocks 1.10. Because axe does not test focus order, focus visibility, or obscured focus, the play functions below assert 2.4.3, 2.4.7, and 2.4.11 directly.
 
@@ -320,7 +320,7 @@ Vitest browser mode under the Angular unit-test builder (`npx nx test <lib>`, Ch
 - Pure logic: the in-page decision and target resolution (raw `href`, resolved URL, document URL, fragment decoding, `top` and empty fragments) is a pure function of strings plus an id lookup; a table-driven test covers it.
 - Sass compile (the library's Sass test from ADR 0012): `@include nfs-smooth-scroll;` emits `html { scroll-behavior: smooth; }` inside `@media (prefers-reduced-motion: no-preference)` and nothing else; `@include nfs-smooth-scroll($scroller: '.page-content');` moves the rule to that selector; importing the library without the include emits nothing.
 
-### 4. Playwright e2e
+### 4. Playwright e2e (`npx nx e2e <lib>-e2e` against the static Storybook build; `npx nx e2e <fixture-app>-e2e` against the prerendered fixture app)
 
 Against the static Storybook build:
 
@@ -341,7 +341,7 @@ Against the prerendered fixture app (the harness from the rendering-mode test se
 
 ## Out of Scope
 
-- Scroll spying, the active link, `aria-current`, deep linking, and URL or history updates: the Magellan spec, which composes this directive.
+- Scroll spying, the Current section and its marked links, `aria-current`, deep linking, and URL or history updates: the Magellan spec, which composes this directive.
 - Cross-page fragment navigation (`/guide#install` from another route): the Router's `anchorScrolling`.
 - Configuring the Router; the spec documents the interaction only.
 - A duration or easing control, and a JavaScript-computed offset (Dropped options and the CSS mapping above).
@@ -358,7 +358,7 @@ Against the prerendered fixture app (the harness from the rendering-mode test se
 | # | Decision | Rationale | Rejected alternative |
 | --- | --- | --- | --- |
 | D1 | One attribute directive, `[nfsSmoothScroll]`, on a container or one link | Foundation's two documented placements; directive-first (ADR 0001); event delegation handles dynamic links with no registration | Documentation plus Router configuration only (cannot keep plain links out of the Router's `popstate` handling, cannot focus non-focusable targets, gives Magellan nothing to reuse); separate container and link directives (two imports, one behaviour) |
-| D2 | One `click` host listener, state first and `preventDefault()` last, skipped when already prevented | The click must be cancelled to avoid `popstate` and history entries; replay needs a template or `host` listener (ADR 0008); the guard avoids the replay throw where the dispatcher already marked the replayed click `defaultPrevented` | Listener-free native navigation plus CSS as the only mechanism (kept as the documented recipe; see the proposed ADR in the ticket for why building-blocks 1.11 decision 5's no-listener rule yields here); a `Renderer2` listener (not replayed) |
+| D2 | One `click` host listener, state first and `preventDefault()` last, skipped when already prevented | The click must be cancelled to avoid `popstate` and history entries; replay needs a template or `host` listener (ADR 0008); the guard avoids the replay throw where the dispatcher already marked the replayed click `defaultPrevented` | Listener-free native navigation plus CSS as the only mechanism (kept as the documented recipe; [ADR 0017](../adr/0017-smooth-scroll-click-handling.md) records why building-blocks 1.11 decision 5's no-listener rule yields here); a `Renderer2` listener (not replayed) |
 | D3 | Container host yields to clicks already cancelled; link host owns its link | `RouterLink` cancels its own anchor clicks; on a link host inside a dehydrated block the dispatcher's `defaultPrevented` mark must not suppress the replayed scroll, which is the one that remains | One rule for both (either loses the dehydrated link-host click or double-handles `routerLink` clicks) |
 | D4 | Offset and threshold are CSS (`scroll-padding-top`, `scroll-margin-top`) | Same landing point for native and directive jumps, before and after hydration, and in nested scrollers | `offset`/`threshold` inputs computed in JavaScript (Foundation's formula; browser-only, viewport-only, diverges from pre-hydration jumps) |
 | D5 | `animationDuration` and `animationEasing` dropped | Native smooth scrolling exposes neither | A JavaScript `requestAnimationFrame` scroll loop (JavaScript-timed animation, which the user ruled out) |
@@ -403,7 +403,7 @@ export class Guide {
 ```
 
 ```scss
-// styles.scss, after the consumer's Foundation imports and includes
+// The application's global stylesheet, after the consumer's Foundation imports and includes
 @import 'ngx-foundation-sites';
 @include nfs-smooth-scroll;
 

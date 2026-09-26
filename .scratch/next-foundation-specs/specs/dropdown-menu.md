@@ -608,7 +608,7 @@ bootstrapApplication(App, {
 });
 ```
 
-The same menu as one mode of a ResponsiveMenu (the ResponsiveMenu markup is a sketch owned by its spec): `<ul class="vertical medium-horizontal menu" nfsResponsiveMenu="drilldown medium-dropdown" hoverDelay="100">`. A bound `closeOnClick` there reaches both the Drilldown and Dropdown Menu roots; left unbound, each keeps its own default.
+The same menu as one mode of a ResponsiveMenu (markup owned by the [Spec: Responsive Menu](../issues/23-spec-responsive-menu.md)): `<ul class="vertical medium-horizontal menu" nfsResponsiveMenu="drilldown medium-dropdown" hoverDelay="100">`. A bound `closeOnClick` there reaches both the Drilldown and Dropdown Menu roots; left unbound, each keeps its own default.
 
 A consumer entrance animation, in the consumer's own stylesheet (no library support needed):
 

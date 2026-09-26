@@ -199,3 +199,19 @@ Worked by the [Re-run: Orbit spec, the slide's ARIA contract and the focus hando
 58. Q: Which tests change? A: Story play functions: `orbit--basics` asserts the slide and bullet id pairs and the handoff on ArrowRight; `orbit--rich-slides` asserts `next()` from inside a slide. Browser-level tests: one handoff case per source with a probe recording the new slide's `inert` at the moment it takes focus (absent), negative cases (bullets, arrows, focus outside), the reconciliation, the live gate with no Aria directive on the slide, and the slide contract. Node-level Vitest: the SSR smoke asserts no `inert` and the id pairs. Playwright e2e: keyboard scrolling with the vertical keys recorded, the prerendered server HTML without `inert`, a pre-hydration scroll whose slide never carries `inert`, and a pre-hydration Tab into slide 2's link whose focus survives hydration. The six axe tags and the ADR 0018 layer names are unchanged.
 
 Triage of the re-run: see the re-run ticket's `### Triage`. OPEN FOR HUMAN 2 above now also covers what is announced when the handoff moves focus; P65's upstream question about binding precedence stays human-only by kind, recorded in the re-run ticket.
+
+### Amendment, 2026-09-26 (consistency review)
+
+Made by the [Consistency review and bundle index](36-consistency-review.md) in `specs/orbit.md`; no case, API member, or default changed.
+
+- ARIA and keyboard: the APG example's repository path became "the APG's tabbed carousel example" (the to-spec rule: no file paths in a spec).
+- ARIA and keyboard, known deviation: "(OPEN FOR HUMAN in the ticket, default applied)" contradicted this ticket's Triage, which decided the roving tab-stop drift (accept and document, decision 29, D13); it now says so, and that only the upstream request for a public Aria API (OPEN FOR HUMAN 1) stays human-only.
+- Rendering modes, event replay: "(building-blocks OPEN FOR HUMAN 3, ...)" pointed at an item building-blocks moved to Part 4, Decided item 3; the bullet now says the logged error is accepted under the triage rule and that asking angular/components to skip `preventDefault()` during replay stays human-only (the Aria prototype's OPEN FOR HUMAN 2).
+- Testing Decisions, layer 3: the SSR smoke now says it runs under `npx nx test <lib>` in `orbit.ssr.spec.ts` through `renderServer()`, with `npx nx test-node <lib>` only for a DOM-adapter dependency (none), as the browser testing stack decision's wording requires.
+- Testing Decisions, layer 4: the heading gains the two commands (`npx nx e2e <lib>-e2e`, `npx nx e2e <fixture-app>-e2e`), and the fixture's JavaScript-disabled case names `@axe-core/playwright` on the six tags.
+
+Checked and left as they are: the slide contract of [ADR 0034](../adr/0034-orbit-slide-contract.md) and the live gate of ADR 0025; the render hooks, the rendered-state statement, and the `injectAsync` statement; the compile-time checks from the unrounded `color-luminance()` ratio; the three required Sass settings, which match the Storybook conventions' overrides block; the six axe tags in layer 1; Story ids `orbit--<story>`.
+
+#### Triage
+
+OPEN FOR HUMAN 1 (an angular/components issue asking for a public way to move `TabList`'s active item) stays human-only by kind (upstream filing). OPEN FOR HUMAN 2 (screen-reader verification, including the focus handoff) stays human-only by kind (assistive-technology check). The slide's fallback from Aria's `TabPanel` (ADR 0034) is listed once in the consistency review's open list for the user's confirmation, as the repository's `AGENTS.md` asks. Nothing else is open.

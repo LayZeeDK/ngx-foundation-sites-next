@@ -129,3 +129,9 @@ Rule: [map](../map.md), Orchestration rules, "Triage of human-only items". Items
    - Impact: not HIGH. Consumer Sass settings plus a compile-time check; no API.
    - Confidence: HIGH. Same user requirement (WCAG 2.2 AA 1.4.11); the ratios are computed with Foundation's own `color-contrast()` (FS `scss/util/_color.scss`).
    - Outcome: DECIDED: 3:1 fill and thumb colours required, checked at compile time with `@error` (already closed by [Spec: Slider](32-spec-slider.md) decisions 44 and 45).
+
+### Amendment, 2026-09-26 (consistency review)
+
+Recorded by the [Consistency review and bundle index](36-consistency-review.md); the answer above is not rewritten.
+
+- Triage item 4 says the fill ratios "are computed with Foundation's own `color-contrast()`". Superseded: the [Spec: Slider](32-spec-slider.md) (D17) computes both ratios unrounded from Foundation's `color-luminance()` with the WCAG formula and never uses `color-contrast()`, which rounds to one decimal and can pass a failing pair (building-blocks 1.10; [ADR 0022](../adr/0022-wcag-2-2-aa-enforcement.md)). The item's outcome stands.

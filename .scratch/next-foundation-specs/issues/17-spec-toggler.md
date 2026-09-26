@@ -155,3 +155,15 @@ Rule: [map](../map.md), Orchestration rules, "Triage of human-only items". Only 
    - Impact: not HIGH. The default ships no input; adding one later is additive and breaks no consumer. The `triggerRole` union itself is unchanged either way (both values already exist in the Triggers contract).
    - Confidence: HIGH. The APG picks the pattern by what the control does (decision 13; `research/aria-apg-patterns.md` Toggler: `aria-expanded` is wrong when nothing is expanded), visibility mode already covers every class that shows or hides content, and development check 5 flags Foundation's visibility classes used in class mode.
    - Outcome: DECIDED: no role override; class mode always renders `aria-pressed`, and content that shows or hides belongs in visibility mode. An input can be added later if a consumer case appears.
+
+### Amendment, 2026-09-26 (consistency review)
+
+From the [Consistency review and bundle index](36-consistency-review.md); `specs/toggler.md` was edited to match. No behaviour, API, or test case changes.
+
+- Hierarchy and DI shape: "The proposed ADR records it" becomes a link to the accepted [ADR 0016](../adr/0016-toggler-two-directives.md).
+- Animation, reduced motion: one sentence points at the Breakpoint service spec's consumer rule 3, which the review amends (audit 0004 unrecorded departure 8) to let a directive bind no consumer Motion class while `reducedMotion` is true, as Responsive Toggle and Dropdown do. Toggler keeps its single code path: it does not read `reducedMotion`, relies on the `nfs-motion` 1 ms override for the library's classes, and leaves a consumer keyframe class's reduced-motion rule to the consumer.
+- Layer 4, fixture half: "screenshot plus axe" on the JavaScript-disabled page now names `@axe-core/playwright` with the six tags (ADR 0018, ADR 0022).
+
+#### Triage
+
+The one item under `### OPEN FOR HUMAN` above was already decided under the triage rule (no Trigger-role override for class mode). Nothing in this ticket stays open.

@@ -188,3 +188,19 @@ Worked by the [Re-run: Slider spec, hydration adoption, non-linear bounds, and f
 56. Q: What does the e2e layer assert for these? A: On the prerendered fixture app, in three engines: a non-linear key before hydration counts once at 50 and at 5 (the second point exposes a coincidental pass), native value equal to the position; End on a non-linear range minimum before hydration; a two-handle linear drag before hydration. On the static Storybook build: the two-handle `log` pixels, drag, fill, and End cases; right-to-left arrows per engine; forced-colours pixels for thumb, fill, track edge, and focus outline in Chromium and Firefox. Browser-level tests assert the replay order directly (keydown, then an `input` after a drift of 10 or of 1).
 
 Triage of the re-run: see the re-run ticket's `### Triage`. Nothing new stays OPEN FOR HUMAN; OPEN FOR HUMAN 1 and 2 above are unchanged.
+
+### Amendment, 2026-09-26 (consistency review)
+
+Made by the [Consistency review and bundle index](36-consistency-review.md) in `specs/slider.md`; no case, API member, or default changed.
+
+- Foundation contract: "Foundation's `docs/pages/slider.md` and `js/foundation.slider.js`" became "Foundation's Slider docs page and plugin source" (the to-spec rule: no file paths in a spec).
+- The `positionValueFunction` row said "(proposed ADR)"; it now links [ADR 0020](../adr/0020-slider-non-linear-bar-position.md).
+- Testing Decisions, layer 4: the heading gains the two commands of the browser testing stack decision (`npx nx e2e <lib>-e2e` against the static Storybook build; `npx nx e2e <fixture-app>-e2e` against the prerendered fixture app), and the fixture's JavaScript-disabled case names `@axe-core/playwright` on the six tags.
+- WCAG table, 1.4.11 row: "axe 4.11 has no 1.4.11 rule" now names axe-core 4.13.0, the version the Storybook conventions pin; the claim still holds (no rule in that version's `axe.js` carries a `wcag1411` tag, checked in a prototype workspace's `node_modules`).
+- Out of Scope: "Screen-reader and touch-device verification (OPEN FOR HUMAN in the ticket)" now names OPEN FOR HUMAN 1 and 2 and lists real touch devices apart, since no OPEN FOR HUMAN item covers touch.
+
+Checked and left as they are: the Firefox pre-hydration key wording (Rendering modes, last bullet) matches the re-run's triage: the fix is unverified in code, the e2e case decides it, and the limitation text is the fallback; the compile-time contrast check uses the unrounded `color-luminance()` ratio; `$slider-fill-background: $primary-color` matches the Storybook conventions' overrides block; render hooks and `injectAsync` are stated; Story ids `slider--<story>`.
+
+#### Triage
+
+OPEN FOR HUMAN 1 (Chromium announces a vertical native range as horizontal) stays open as a trap-quadrant item (impact HIGH, confidence NOT HIGH, as rated above). OPEN FOR HUMAN 2 (`aria-valuetext` announcement) stays human-only by kind (assistive-technology check). Nothing else is open.

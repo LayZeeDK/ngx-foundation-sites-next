@@ -186,3 +186,19 @@ None. The candidates fail the bar: interactive hosts only (easy to relax later, 
 - `specs/triggers.md`, the Tooltip usage example (`<abbr nfsTooltip #hint="nfsTooltip" tabindex="0" ...>`) and its trailing note: use `<button type="button" nfsTooltip #hint="nfsTooltip" title="HyperText Markup Language">HTML</button>` and drop the sentence saying `tabindex="0"` stands for whatever this spec decides. Reason: Triage 1.
 - `CONTEXT.md`: add **Tip** (above).
 - `map.md` Decisions so far: one line for this ticket.
+
+### Amendment, 2026-09-26 (consistency review)
+
+From the [Consistency review and bundle index](36-consistency-review.md); `specs/tooltip.md` was edited to match. No decision changes.
+
+- Utility calls: a new behaviour-rule bullet states the `nfsHoverIntent` and `nfsLightDismiss` options exactly as the Anchored pane spec defines them, including the required `isOpen` of hover intent, the host as the one hover Trigger, the host plus registered Triggers for Light dismiss, group `'nfs-tooltip'`, and `outsidePress` left at its default.
+- Hiding (audit 0004's unrecorded departure 7, confirmed): the Sass and custom CSS paragraph says the tip is hidden with `hidden` alone and points at building-blocks 1.10, which now binds Foundation's `.is-hidden` only where a Foundation rule sets `display` on the element; Foundation 6.9's `tooltip` mixin sets none (its `display: inline-block` belongs to `.has-tip`).
+- WCAG subsection: its opening sentence now names the six axe tags.
+- `tooltip--show-on`: the story no longer sets a viewport; it uses `showOn="large"` above the `small` breakpoint of the 414 px story viewport, because play functions never resize the viewport (Storybook conventions, sections 4 and 7).
+- D7 and D12: the rejected-alternative cells no longer call their shared-document notes proposals; building-blocks 1.4 keeps `templateClasses` and the Anchored pane mapping was amended to leave the pointer rule on.
+- Rendering modes, Hydration boundary bullet: "(ADR 0008 decision 6)" becomes "(ADR 0008; building-blocks 1.11 decision 6)", because ADR 0008 has no numbered decisions (the Anchored pane spec made the same correction).
+- Checked and unchanged: the seven to-spec sections and the 1.14 placement; the component exception (building-blocks 1.1 case 3); render hooks and the eager-loading decision; the rendering modes; the four test layers; Story ids `tooltip--<story>`; no library CSS and no settings override.
+
+#### Triage
+
+The one OPEN FOR HUMAN item (the screen-reader pass over the `title` to `aria-describedby` switch) stays open by kind: it needs assistive technology. No other item is open.

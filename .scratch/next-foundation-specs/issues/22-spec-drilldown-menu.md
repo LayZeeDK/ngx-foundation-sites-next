@@ -178,3 +178,12 @@ Folded into `specs/drilldown-menu.md` from the [Spec: Responsive Menu](23-spec-r
 
 1. Development checks 1 to 3 run from the first render in which drilldown is the live mode, so a responsive root that has not reached a drilldown width, or whose rules do not name drilldown, does not warn about a wrapper or back items it does not use (the checks list, the render hooks row, and the browser-level mode-gating case).
 2. `scrollTop` records the current level anew whenever drilldown mode becomes live, so a swap into drilldown with a level open does not scroll the page; Foundation's Drilldown scrolled on level changes, never on init (the `scrollTop` API row, its render hooks row, and the browser-level `scrollTop` case).
+
+### Amendment, 2026-09-26 (consistency review)
+
+Applied to `specs/drilldown-menu.md` by the [Consistency review and bundle index](36-consistency-review.md), from its sweep for settled wording; nothing new is decided.
+
+1. Out of Scope: "this spec asks it to expose `autoHeight`, ... `closed`" becomes "which exposes" them; the [Spec: Responsive Menu](23-spec-responsive-menu.md) is published and exposes all six inputs and both outputs.
+2. D18 and D19, rejected alternatives: "the Nested menu spec's first text" and "the Nested menu spec's rule 12" now say "before this spec's amendment", because the Nested menu spec carries this spec's inset focus ring (rule 13) and its extended rule 12.
+
+OPEN FOR HUMAN 1 (the screen-reader pass over level changes) stays open: an assistive-technology check, human-only by kind.

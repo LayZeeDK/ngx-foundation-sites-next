@@ -62,7 +62,7 @@ After the first render the directive measures, in the browser, whether the eleme
 
 ### Foundation contract
 
-From the Foundation inventory (Sticky section) and `Sticky.defaults` in `foundation.sticky.js`:
+From the Foundation inventory (Sticky section) and `Sticky.defaults` in Foundation's Sticky plugin source:
 
 | Foundation | Kind | Library counterpart |
 | --- | --- | --- |
@@ -116,7 +116,7 @@ Behaviour that changes, with the reason:
 - No parent token. The sticky element's range is its DOM parent, which is what CSS uses; DI would answer a different question (the declaration-site injector), and nothing else needs the instance. The building-blocks sketch named an `nfsStickyToken`; nothing injects it, so it is not created.
 - `NfsStickyContainer` has no inputs, outputs, or DI. It is kept as a directive, although it only adds a class, because ADR 0001 names the sticky container as a consumer-written element with a directive on it and because it keeps Foundation's attribute-shaped markup. Writing `class="sticky-container"` instead is equivalent and documented.
 - `nfsStickyDefaultsToken`: `InjectionToken<NfsStickyDefaults>` with `interface NfsStickyDefaults { stickTo?: NfsStickyEdge; marginTop?: number; marginBottom?: number; stickyOn?: string }`, injected with `{optional: true}` and used to seed the input defaults (building-blocks 1.4, Shape B). Provided at bootstrap, route, or element level; the nearest wins.
-- `NfsMediaQuery` from the [Spec: Breakpoint service (shared utility)](breakpoint-service.md), used exactly as defined there: `canStick = computed(() => mq.is(this.stickyOn()))`.
+- `NfsMediaQuery` from the [Spec: Breakpoint service (shared utility)](../issues/53-spec-breakpoint-service.md), used exactly as defined there: `canStick = computed(() => mq.is(this.stickyOn()))`.
 - Entry point `ngx-foundation-sites/sticky`, which imports the Breakpoint service's entry point.
 
 ### API
@@ -276,7 +276,7 @@ Per ADR 0008 and the rendering-modes research, section 7 rules 1 to 11:
 - Event replay: the directive declares no template or host listeners, so it adds no `jsaction` and nothing of its own is queued or replayed; `scroll` is not a replayed event type, and the first measurement after hydration reads the scroll position the page has by then. The building-blocks rule for handlers of a Replayed event (decided at triage on 2026-09-26) does not affect Sticky.
 - Incremental hydration and `@defer`: library templates contain no `@defer`; a consumer may defer the Sticky entry point. Inside a dehydrated block the element is its Dehydrated state and sticks through CSS; when the block hydrates (for example `hydrate on viewport`), the directive measures and the classes and outputs start. Inside `@defer (hydrate never)` the element keeps sticking at the right widths and its classes stay `is-anchored is-at-top` (building-blocks 1.11 decision 7: Sticky is fully functional as dehydrated HTML). Plain `@defer` renders the directive on the client, which measures in its first render callback.
 - Hydration boundary: none is required. The Sticky range is the DOM parent whatever block the parent belongs to, and a block is always hydrated after the blocks around it, so the parent is hydrated when the sticky element's directive runs.
-- Breakpoint handoff: the class contract reads `canStick` only inside the measurement, which runs in render callbacks after the Breakpoint service went live (ADR 0014), so it never sees the Server breakpoint on the client.
+- Breakpoint handoff: the class contract reads `canStick` only inside the measurement, which runs in render callbacks after the Breakpoint service went live (ADR 0014), so it never sees the Server breakpoint on the client. The rendered-state rule of building-blocks 1.5 is met without a rendered-state signal: no change detection pass renders the gate, because the gate is a media query the browser applies at the viewport change itself and `data-nfs-sticky-on` never changes with the breakpoint, so the host rectangle the measurement reads already reflects the breakpoint `canStick` reports.
 - Prerendering: identical to server rendering; no request token is read (rule 11).
 
 ### Sass and custom CSS
@@ -293,7 +293,7 @@ Story ids: `sticky--basic`, `sticky--stick-to-bottom`, `sticky--margins`, `stick
 
 ### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`, `npx nx test-storybook <lib>`)
 
-Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test = 'error'` and `runOnly` set to the six tags of the preview's rule set (`wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`, `best-practice`, building-blocks 1.10); every story whose stuck element overlaps content gives it an opaque background (1.4.3). Play functions scroll the story's own document or scroll container and assert after the next animation frame:
+Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test = 'error'` and `runOnly` set to the six tags of the preview's rule set (`wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`, `best-practice`, building-blocks 1.10); every story whose stuck element overlaps content gives it an opaque background (1.4.3). Play functions scroll the story's own document or scroll container with `behavior: 'instant'` (the Storybook preview includes the Smooth Scroll spec's `nfs-smooth-scroll`, which makes a root scroll without a `behavior` smooth) and assert after the next animation frame:
 
 - `sticky--basic`: at scroll 0 the element has `is-anchored is-at-top`; scrolled into the range it has `is-stuck is-at-top` and its top equals the inset; scrolled past, `is-anchored is-at-bottom`; the parent contains two `[data-nfs-sticky-sentinel]` spans and its height is unchanged from before the directive measured.
 - `sticky--stick-to-bottom`: the three states with `is-stuck is-at-bottom` while pinned and the element's bottom at the viewport bottom minus the inset.
@@ -302,7 +302,7 @@ Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test 
 - `sticky--navigation`: a page-spanning container with a title bar and a `nav` landmark; one large `scrollTo` jump into the range yields `is-stuck` (the backstop); tabbing to a link far down leaves that link's rectangle clear of the stuck bar (the `scroll-padding-top` recipe).
 - `sticky--anchor-range-recipe`: Foundation's two-anchor example rewritten with the container spanning the anchors; the element unsticks where the bottom anchor ends.
 - `sticky--scroll-container`: inside an `overflow: auto` panel, scrolling the panel (not the window) pins the element and sets `is-stuck`; scrolling the window leaves it unchanged.
-- `sticky--overflow-hidden-ancestor`: inside a `.off-canvas-wrapper`-like `overflow: hidden` ancestor the element does not pin and never reports `is-stuck`; the same markup with `overflow: clip` pins and reports it.
+- `sticky--overflow-hidden-ancestor`: inside an ancestor carrying Foundation's `.overflow-hidden` Prototype class (the clash Foundation's `.off-canvas-wrapper` has without the `nfs-off-canvas` include) the element does not pin and never reports `is-stuck`; the same markup with that class replaced by an inline `overflow: clip` (no Foundation class exists for it) pins and reports it.
 - `sticky--outputs`: a log shows `stuck: top`, `unstuck: bottom`, `stuck: top`, `unstuck: top` for a scroll down through the range and back up; `isStuck()` read through `#s="nfsSticky"` matches the log.
 
 ### 2. Browser-level test (Vitest browser mode, `npx nx test <lib>`)
@@ -346,12 +346,12 @@ Against the prerendered fixture app:
 
 ## Out of Scope
 
-- Anchor ranges outside the Sticky range (`anchor`, `topAnchor`, `btmAnchor`), and any JavaScript `position: fixed` emulation that would honour them.
+- Ranges set by anchors outside the Sticky range (`anchor`, `topAnchor`, `btmAnchor`), and any JavaScript `position: fixed` emulation that would honour them.
 - A container generated when the consumer wrote none (`container` Option); the consumer writes the container.
 - Sticking to both edges (Foundation's unimplemented `both` placeholder) and horizontal sticking (`left`/`right`).
 - Shrink-on-scroll and other scroll-linked effects: consumer CSS on `.is-stuck`; scroll-driven animations are out of the Browser target.
 - Setting `scroll-padding` automatically: it is required consumer CSS (2.4.11), checked by development warning 5 and the e2e case, because only the consumer knows what a stuck element overlaps and one scroll container may hold several stuck elements.
-- Changing Foundation's `.off-canvas-wrapper` overflow: the OffCanvas spec decides (see the proposed building-blocks change in the ticket).
+- Changing Foundation's `.off-canvas-wrapper` overflow: the [Spec: Off-canvas](../issues/25-spec-off-canvas.md) owns it; its `nfs-off-canvas` mixin sets `overflow: clip; display: flow-root` on the wrapper, confirmed by case 3 of the [Prototype: Sticky measurement refinements](../issues/63-prototype-sticky-measurement.md), so Sticky works inside it.
 - Sticky table headers: CDK and Material tables already use native `position: sticky`.
 
 ## Further Notes
@@ -448,11 +448,11 @@ Inside a scrolling panel:
 </div>
 ```
 
-Inside Foundation's off-canvas wrapper, where the consumer controls the wrapper's CSS:
+Inside Foundation's off-canvas wrapper: the Off-canvas spec's `@include nfs-off-canvas;` already replaces the wrapper's `overflow: hidden` with `overflow: clip; display: flow-root`. A consumer who uses Foundation's wrapper without that include writes the same fix:
 
 ```css
 /* overflow: hidden makes the wrapper a scroll container, so nothing inside can stick to the window */
-.off-canvas-wrapper { overflow: clip; }
+.off-canvas-wrapper { overflow: clip; display: flow-root; }
 ```
 
 Application defaults:

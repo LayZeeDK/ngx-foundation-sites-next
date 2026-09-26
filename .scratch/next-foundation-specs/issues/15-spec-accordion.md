@@ -152,3 +152,15 @@ _Avoid_: deferred content (ambiguous with `@defer`), lazy panel, on-demand conte
 From [audit 0004](../audits/0004-second-spec-wave.md), finding H1; decision 33 changes as follows, and `specs/accordion.md` was edited to match (the 1.4.3 row of the WCAG table, D19, and the Sass subsection's checks and item 2).
 
 The `nfs-accordion` contrast `@warn`s compute each ratio (`$accordion-item-color` against `$accordion-background` and against `$accordion-item-background-hover`, `$accordion-content-color` against `$accordion-content-background`) from Foundation's `color-luminance()` with the WCAG formula and compare it unrounded, the rule of building-blocks 1.10 and the user's standing rule. Foundation's `color-contrast()` is no longer used or listed as a reused function, because it rounds to one decimal (`round($ratio * 10) * 0.1` in `scss/util/_color.scss`) and would pass a 4.498:1 pair as 4.5. D19 now reads "a Sass `@warn` from the unrounded ratio". The threshold (4.5), the required setting, and the numbers (3.76:1, 4.86:1, 6.0:1) are unchanged. The [Spec: Responsive Accordion Tabs](19-spec-responsive-accordion-tabs.md), which relies on this check, lists `color-luminance()` in its Sass subsection to match.
+
+### Amendment, 2026-09-26 (consistency review)
+
+From the [Consistency review and bundle index](36-consistency-review.md); `specs/accordion.md` was edited to match. Wording only: no behaviour, API, or test changes.
+
+- The expansion policy is cited as accepted [ADR 0028](../adr/0028-accordion-expansion-policy.md) instead of "proposed ADR" in four places: the `multiExpand` row of the Foundation contract table, the `multiExpand` row of the API table, the Expansion policy behaviour rule, and design decision D5. Reason: the ADR was accepted when this ticket resolved; stale "proposed" wording is in the review's sweep list.
+- Layer 4, fixture half: "screenshot plus axe" on the JavaScript-disabled page now names `@axe-core/playwright` with the six tags, the rule set every axe run uses (ADR 0018, ADR 0022).
+- Decision 25's source "prototypes 43 (case 12) and 52" means P43 (case 12) and P52, the keys defined at the head of the decision log; the earlier answer is not rewritten.
+
+#### Triage
+
+The four items under `### OPEN FOR HUMAN` above were re-rated under the map's triage rule. Items 1 to 3 are upstream filings in angular/components and item 4 is a screen-reader check; all four stay open by kind (outward-facing under the user's identity, or assistive technology). No trap-quadrant item remains; every design decision stays as decided.

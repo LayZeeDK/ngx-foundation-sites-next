@@ -163,3 +163,11 @@ None. No decision here meets all three of the domain-modeling bar's tests: the O
 5. Cross-spec note for the Magellan and Responsive Toggle specs: any story that shows Foundation's default Top Bar with `$anchor-color` links fails the Accessibility gate's `color-contrast` (3.76:1); the Storybook settings override `$topbar-background: $white;` proposed here fixes every such story, and `specs/magellan.md`'s Sass subsection ("no settings override is listed") and its marker ratio against the bar (then 4.65:1 on white) would need a matching line. Reason: decision 23.
 6. `CONTEXT.md`: the Base side term above.
 7. `map.md` Decisions so far: one line for this ticket.
+
+### Amendment, 2026-09-26 (consistency review)
+
+Applied to `specs/dropdown-menu.md` by the [Consistency review and bundle index](36-consistency-review.md), from its sweep for settled wording; nothing new is decided.
+
+1. Usage examples: the ResponsiveMenu one-liner no longer calls the ResponsiveMenu markup "a sketch owned by its spec"; it names the published [Spec: Responsive Menu](23-spec-responsive-menu.md) as the owner.
+
+OPEN FOR HUMAN 1 (the screen-reader pass over the Dropdown Menu) stays open: an assistive-technology check, human-only by kind.

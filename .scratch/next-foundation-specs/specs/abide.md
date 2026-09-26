@@ -1,6 +1,6 @@
 # Spec: Abide
 
-Ticket: [Spec: Abide](../issues/31-spec-abide.md). Decision records: ADR 0006 (Signal Forms replaces Abide's engine), ADR 0008 (Rendering modes), ADR 0012 (Sass packaging), and the two proposed Abide ADRs named in the ticket answer (explicit error-markup directives; the pre-hydration submit stance). Prototype: [Prototype: Signal Forms on Abide markup](../issues/49-prototype-signal-forms-abide.md).
+Ticket: [Spec: Abide](../issues/31-spec-abide.md). Decision records: ADR 0006 (Signal Forms replaces Abide's engine), ADR 0008 (Rendering modes), ADR 0012 (Sass packaging), [ADR 0026](../adr/0026-abide-explicit-error-directives.md) (explicit error-markup directives), and [ADR 0027](../adr/0027-abide-pre-hydration-submit.md) (the pre-hydration submit stance). Prototype: [Prototype: Signal Forms on Abide markup](../issues/49-prototype-signal-forms-abide.md).
 
 ## Problem Statement
 
@@ -60,7 +60,7 @@ Validation itself is Signal Forms: `required()`, `pattern()`, `email()`, `valida
 36. As a user, I want my entries kept after a failed submit, so that I only fix what is wrong (3.3.7).
 37. As a user signing in, I want to paste into password and confirmation fields, so that password managers work (3.3.8).
 38. As a library maintainer, I want the error-state rule to be one pure function, so that it is tested as a truth table.
-39. As a library maintainer, I want no library CSS for Abide, so that Foundation's Sass stays the only styling.
+39. As a library maintainer, I want no library CSS for Abide, only compile-time contrast checks, so that Foundation's Sass stays the only styling and a consumer who keeps a failing setting hears about it in their own compile.
 40. As a library maintainer, I want dev-mode warnings when a label or Form error cannot find its field, or when a field shows an error with no visible message, so that broken markup is caught early.
 41. As a library maintainer, I want the story axe gate to fail when the consumer settings are missing, so that the contrast fix cannot regress silently.
 
@@ -315,8 +315,8 @@ WCAG 2.2 AA criteria addressed (requirements, each checked in Testing Decisions)
 | --- | --- |
 | 1.3.5 Identify Input Purpose | Usage examples carry `autocomplete` tokens (`email`, `new-password`, `cc-number`, `cc-csc`) |
 | 1.4.1 Use of Color | Every error state has visible text (Form error); dev-mode warning when a field shows an error with no visible Form error |
-| 1.4.3 Contrast (Minimum) | Five Foundation settings (Sass subsection): error text and invalid label 5.25:1, invalid placeholder 4.55:1, resting placeholder 4.70:1 |
-| 1.4.11 Non-text Contrast | Resting field border 3.42:1 with `$input-border`; invalid border 5.25:1 against the page, 4.55:1 against its tint |
+| 1.4.3 Contrast (Minimum) | Five Foundation settings (Sass subsection): error text and invalid label 5.25:1, invalid placeholder 4.55:1, resting placeholder 4.70:1; the `nfs-abide` mixin checks each pair at compile time with the unrounded ratio from Foundation's `color-luminance()` and the WCAG formula, because axe does not check placeholder text |
+| 1.4.11 Non-text Contrast | Resting field border 3.42:1 with `$input-border`; invalid border 5.25:1 against the page, 4.55:1 against its tint; checked at compile time by `nfs-abide` the same way, because axe has no 1.4.11 rule |
 | 2.5.8 Target Size | Native checkboxes and radios are user-agent controls (exception) and the examples wrap them in their label, which enlarges the target; the story gate runs axe `target-size` |
 | 3.3.1 Error Identification | `aria-invalid` plus visible text referenced by `aria-describedby` |
 | 3.3.2 Labels or Instructions | Native labels required in every example; required fields marked in the label text; hints through `aria-describedby` |
@@ -432,7 +432,7 @@ Per ADR 0008 and the rendering-modes research, section 7 (the Abide checklist ro
 
 ### Sass and custom CSS
 
-No library CSS and no `nfs-abide` mixin: Foundation's `foundation-form-error` (inside `foundation-forms`) already styles `.is-invalid-input`, `.is-invalid-label`, and `.form-error.is-visible`, and `foundation-callout` styles the alert. The required consumer settings that make the invalid state pass WCAG 2.2 AA are in the Sass subsection under Further Notes.
+No library CSS: Foundation's `foundation-form-error` (inside `foundation-forms`) already styles `.is-invalid-input`, `.is-invalid-label`, and `.form-error.is-visible`, and `foundation-callout` styles the alert. The required consumer settings that make the invalid state pass WCAG 2.2 AA are in the Sass subsection under Further Notes. The `nfs-abide` Library mixin emits no CSS: it holds only the compile-time contrast checks that ADR 0022 and building-blocks 1.10 require where axe has no rule (placeholder text, borders), so a consumer on a failing setting gets an `@error` or `@warn` in their own compile, not only a failing story in the library's CI.
 
 ## Testing Decisions
 
@@ -479,6 +479,8 @@ Vitest browser mode under the Angular unit-test builder (`npx nx test <lib>`, Ch
 - Pure logic: `nfsAbideErrorState` as a full truth table over `invalid`, `touched`, `dirty`, `changed`, `submitted`, and the three policy options; `nfsPatterns` table-driven: each key carries exactly the `v` flag and no `g` or `y`, each Foundation example is accepted or rejected as Foundation does, `date` rejects an unanchored prefix, and each key agrees with Foundation 6.9.0's original regex (and `website` with Foundation's `test()` object) on the seeded corpus from the ticket's Node script; each source compiles as `^(?:source)$` with `v`; the value-adoption decision (saved value, current value, host type) as a small pure function.
 - SSR smoke, runs under `npx nx test <lib>` in its `<name>.ssr.spec.ts` file through the shared `renderServer()` helper (`npx nx test-node <lib>` only if the server path depends on the DOM adapter): the Rendered HTML fixture resolves `whenStable()`; the server HTML has no `is-invalid-*`, `is-visible`, or `aria-invalid`; the alert has `hidden` and `role="alert"`; each Form error has `.form-error`, an `id`, and `role="alert"`; each field's `aria-describedby` holds only consumer ids; the submit control has `disabled`; the form has `novalidate` and `jsaction` containing `submit:`; each field's `jsaction` contains `change:`.
 
+- Sass compile (the Sass packaging decision's node-level check): Foundation's default settings plus `@include nfs-abide;` stop with the `@error` naming `$input-error-color`, `$form-label-color-invalid`, and `$input-background-invalid`, and warn for `$input-placeholder-color` and `$input-border`; with the five required values the compile emits no CSS, no `@error`, and no `@warn`; a pair at 4.498:1 fails although Foundation's rounding `color-contrast()` would report 4.5.
+
 ### 4. Playwright e2e (`npx nx e2e <lib>-e2e` against the static Storybook build; `npx nx e2e <fixture-app>-e2e` against the prerendered fixture app)
 
 Against the static Storybook build, Chromium, Firefox, and WebKit with real input:
@@ -513,7 +515,7 @@ Against the prerendered fixture app (the harness from the rendering-mode test se
 | # | Decision | Rationale | Rejected alternative |
 | --- | --- | --- | --- |
 | D1 | Signal Forms owns validity; the directives only map state to Foundation's contract | ADR 0006; one source of truth | Porting Abide's engine |
-| D2 | Five directives, label and Form error and alert explicit (proposed ADR) | Host bindings for every class and ARIA value (building-blocks 1.5); the alert's `hidden` is first-paint state and must be a server-rendered binding (1.11 decision 1); no flat-markup trap; typed links; `a11yAttributes` rendered on the server | The prototype's DOM lookup (proven, two directives, but consumer-written `hidden`, client-only roles, `Renderer2` writes on foreign elements, and Abide's sibling trap); it stays the fallback |
+| D2 | Five directives, label and Form error and alert explicit (ADR 0026) | Host bindings for every class and ARIA value (building-blocks 1.5); the alert's `hidden` is first-paint state and must be a server-rendered binding (1.11 decision 1); no flat-markup trap; typed links; `a11yAttributes` rendered on the server | The prototype's DOM lookup (proven, two directives, but consumer-written `hidden`, client-only roles, `Renderer2` writes on foreign elements, and Abide's sibling trap); it stays the fallback |
 | D3 | Links by enclosing label (DI) or typed template reference | Foundation's wrapping-label markup needs no references; everything else is compile-checked (ADR 0013 shape); a custom `FormValueControl` links only through its wrapping label, because a typed reference to a directive applied through `hostDirectives` crashes the compiler | `data-form-error-for` id strings; a field-group container directive |
 | D4 | One pure Error-state policy with a `changed` signal from native `change` | Prototype: `dirty && touched` misfires; Material's matcher shape; testable as a truth table | Per-input booleans; `dirty && touched` |
 | D5 | Policy options on the form plus `nfsAbideDefaultsToken`; no per-input matcher | Foundation's options are form-level; building-blocks 1.4 defaults tokens | Material's `errorStateMatcher` input |
@@ -521,12 +523,12 @@ Against the prerendered fixture app (the harness from the rendering-mode test se
 | D7 | `role="alert"` on Form errors, alert role from `a11yErrorLevel` | 4.1.3 and ARIA19; Abide's `a11yAttributes` default; Foundation markup has no persistent live container | Material's polite subscript container (needs a wrapper element Foundation lacks); screen-reader verification is OPEN FOR HUMAN |
 | D8 | `(keydown.enter)` flush on `input` hosts | Prototype: `submit()` flushes only the root; a form-level flush depends on import order | Flush in the form's `(submit)` listener |
 | D9 | Adopt values typed before hydration | 3.3.7; public API only; no-op in client rendering; consistent with Slider's adoption of a pre-hydration value | Documenting the loss |
-| D10 | Submit disabled until `ready()` as the documented default for server-rendered forms (proposed ADR) | Stops the GET leak (passwords in URLs, CWE-598) and the 3.3.7 loss; natively enforced before hydration; the lost no-JS submission posts nowhere useful in a Signal Forms app | Library-bound `method="post"` (changes consumer semantics, fails on static hosts); accepting and documenting the leak; `disabledInteractive` (one-field implicit submission) |
+| D10 | Submit disabled until `ready()` as the documented default for server-rendered forms (ADR 0027) | Stops the GET leak (passwords in URLs, CWE-598) and the 3.3.7 loss; natively enforced before hydration; the lost no-JS submission posts nowhere useful in a Signal Forms app | Library-bound `method="post"` (changes consumer semantics, fails on static hosts); accepting and documenting the leak; `disabledInteractive` (one-field implicit submission) |
 | D11 | `nfsPatterns` with the `v` flag, camelCase keys, `date` anchored, `website` one RegExp | Node script: 7 of 16 rewritten with escape-only changes and 0 mismatches; building-blocks 1.4 camelCase; source bug fixed; `pattern()` takes a RegExp | Foundation's snake_case keys; porting without `v`; keeping the unanchored `date` |
 | D12 | `nfsEqualTo()` helper; `data-validator` and `data-min-required` as `validate()` recipes | ADR 0006 names `equalTo`; a custom validator is already one Signal Forms call | A validator registry mirroring `Abide.defaults.validators` |
 | D13 | No `pattern` attribute, no `setCustomValidity`, no `:user-invalid` rule | Signal Forms does not mirror `pattern` and says not to rely on native validity; `FormRoot` renders `novalidate` | Binding `pattern` from `FieldState.pattern()` (building-blocks Table B's first sketch) |
 | D14 | `inputmode` documented per pattern, not bound | The directive cannot know which pattern a consumer means without matching RegExp identity; `inputmode` is markup like `type` | Binding `inputmode` from the field's patterns |
-| D15 | No library CSS; five consumer Sass settings for WCAG 2.2 AA | Foundation styles every class; the story gate enforces the settings | A library colour override (would copy Foundation values) |
+| D15 | No library CSS; five consumer Sass settings for WCAG 2.2 AA, checked at compile time by a checks-only `nfs-abide` mixin (added by the [Consistency review and bundle index](../issues/36-consistency-review.md)) | Foundation styles every class; axe checks neither placeholder text nor borders, so ADR 0022 and building-blocks 1.10 put a compile-time check in the Library mixin; the story gate enforces the settings in the library's own CI | A library colour override (would copy Foundation values); the settings enforced only by the play function (a consumer on Foundation's defaults would get no signal, against ADR 0022) |
 | D16 | Form alert hides live when the form becomes valid | Field state is live; Abide re-checks only on submit | Waiting for the next submit |
 | D17 | No outputs and no public methods | building-blocks 1.4; field state signals and `onInvalid` cover Abide's events | `valid`/`invalid`/`formValid` outputs |
 
@@ -637,9 +639,9 @@ Angular's `Validators.email` error key is `email`; Reactive error keys are the k
 
 ### Sass
 
-Sass. The consumer compiles Foundation's Sass from its own settings; the library imports no Foundation code and copies no Foundation rule. This plugin relies on Foundation's export mixins `foundation-forms` (which includes `foundation-form-error`, the rules for `.is-invalid-input`, `.is-invalid-label`, and `.form-error.is-visible`) and `foundation-callout` (the Form alert's `.callout.alert`). No library CSS; there is no `nfs-abide` mixin.
+Sass. The consumer compiles Foundation's Sass from its own settings; the library imports no Foundation code and copies no Foundation rule. This plugin relies on Foundation's export mixins `foundation-forms` (which includes `foundation-form-error`, the rules for `.is-invalid-input`, `.is-invalid-label`, and `.form-error.is-visible`) and `foundation-callout` (the Form alert's `.callout.alert`). No library CSS: the `nfs-abide` mixin of the library's Sass (`@import 'ngx-foundation-sites';` after Foundation), included after `foundation-forms`, emits no rule and holds only compile-time contrast checks.
 
-1. Rules the library emits: none.
+1. Rules the library emits: none. Checks: each ratio is computed from Foundation's `color-luminance()` with the WCAG formula and compared unrounded, never with Foundation's `color-contrast()`, which rounds to one decimal (building-blocks 1.10). `@error` for the pairs that show the invalid state: `$input-error-color` and `$form-label-color-invalid` against `$body-background` (4.5:1), and `$input-background-invalid` both against the invalid tint Foundation's `form-input-error` mixin paints, `mix($input-background-invalid, $white, 10%)` at that mixin's default (4.5:1, the placeholder text), and against `$body-background` (3:1, the invalid border). `@warn` for the resting pairs, which carry no state: `$input-placeholder-color` against `$input-background` (4.5:1) and the colour in the `$input-border` shorthand against `$body-background` (3:1). Each message names the setting to change. Reason: axe checks neither placeholder text nor borders, so without these checks a consumer on Foundation's defaults gets no signal (ADR 0022).
 2. Foundation settings the consumer must set for WCAG 2.2 AA (declared before `@import 'foundation'`; Foundation's settings are `!default`). Measured by the prototype in three engines against Foundation's default `$body-background` and `$input-background` (`#fefefe`); the story preview's settings file carries the same five lines:
 
 | Setting | Foundation default (measured) | Required value | After | Criterion |
@@ -654,7 +656,7 @@ A consumer with a different palette or background picks any colour with 4.5:1 on
 
 3. Custom properties written by the directives: none.
 4. Motion classes: none; no transition or animation is added or awaited.
-5. What breaks when the include is missing: nothing, there is no include. Missing settings fail the `abide--invalid-state-contrast` story and axe `color-contrast` in every story that shows an error.
+5. What breaks when the include is missing: nothing visible, because the mixin emits no CSS; the compile-time checks do not run, so a failing setting is caught only where axe or a play function sees it. Missing settings fail the `abide--invalid-state-contrast` story and axe `color-contrast` in every story that shows an error.
 
 ### Platform features to adopt when the browser target moves
 

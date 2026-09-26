@@ -176,3 +176,18 @@ None. No decision here meets all three bars: the ones that are surprising (`hove
 7. `specs/anchored-pane.md`, ARIA requirements, the `autoFocus` bullet: replace "for which `InteractivityChecker.isFocusable` and `isVisible` hold" with "for which `InteractivityChecker.isFocusable` (which includes `isVisible`) and `isTabbable` hold, CDK's first-tabbable rule". Reason: decision 21.
 8. `specs/triggers.md`, "Consumers: what each Openable spec provides", Dropdown pane row: replace "`registerTrigger` for `hover`, programmatic anchoring against the first Trigger, Light dismiss exclusion, and its `aria-labelledby`" with "`registerTrigger` for `hover`, programmatic anchoring against the first Trigger, and Light dismiss exclusion; a `role="dialog"` pane is named by the consumer". Reason: decision 28.
 9. `map.md`, Decisions so far: one line for this ticket.
+
+### Amendment, 2026-09-26 (consistency review)
+
+From the [Consistency review and bundle index](36-consistency-review.md); `specs/dropdown.md` was edited to match. No decision changes.
+
+- Stale-`focusin` guard: the focus-trap-lifetime rule and Out of Scope no longer call the guard a proposal; they cite it as the Anchored pane spec's focus rule, which carried proposal 6.
+- No plugin token: the hierarchy bullet and D2 now say the building-blocks sketch named `nfsDropdownPaneToken` and Table B records none (proposal 1 is carried).
+- Hover: the behaviour rule now lists every `nfsHoverIntent` member the Anchored pane spec defines, adding `enabled` from `hover` and the required `isOpen`, whose changes clear pending timers.
+- Reduced motion (audit 0004's unrecorded departure 8, confirmed): the Animation bullet and D21 point at the Breakpoint service spec's consumer rule 3, which now names binding no consumer Motion class under `reducedMotion` as a permitted exception (Responsive Toggle, Dropdown).
+- Rendering modes, Hydration boundary bullet: "(ADR 0008 decision 6)" becomes "(ADR 0008; building-blocks 1.11 decision 6)", because ADR 0008 has no numbered decisions (the Anchored pane spec made the same correction).
+- Checked and unchanged: the seven to-spec sections and the 1.14 placement; the WCAG 2.2 AA subsection and the required `$dropdown-width`/`$dropdown-sizes` settings, which the Storybook conventions list; the six axe tags; the four test layers; render hooks and `injectAsync`; the Positioner and Light dismiss calls; Story ids `dropdown-pane--<story>`.
+
+#### Triage
+
+No OPEN FOR HUMAN item exists; nothing is added.

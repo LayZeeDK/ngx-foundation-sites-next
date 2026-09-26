@@ -77,12 +77,12 @@ The utility replaces Foundation's Positionable and Box, the `closeme.zf.*` part 
 
 | Foundation feature | What it does in 6.9 | Library counterpart |
 | --- | --- | --- |
-| `position` (`'auto'`) | Side of the anchor: `left`, `right`, `top`, `bottom`; `auto` becomes `bottom` (Dropdown) or `top` (Tooltip), after reading legacy `.top/.left/.right/.bottom` classes | Positioner `position`; `auto` resolves through `autoPosition`; legacy classes are not read by the utility (consumer specs decide) |
+| `position` (`'auto'`) | Side of the anchor: `left`, `right`, `top`, `bottom`; `auto` becomes `bottom` (Dropdown) or `top` (Tooltip), after reading legacy `.top/.left/.right/.bottom` classes | Positioner `position`; `auto` resolves through `autoPosition`; legacy classes are not read by the utility (the Tooltip spec reads its trigger's legacy class for `auto`; the Dropdown spec drops them) |
 | `alignment` (`'auto'`) | Edge that lines up; `auto` becomes `left` (`right` in RTL) for top/bottom and `bottom` for left/right (Dropdown), `center` (Tooltip); Dropdown reads `.float-*` on the anchor | Positioner `alignment`; `auto` resolves through `autoAlignment` or the RTL-aware base rule; `.float-*` not read |
 | `vOffset`, `hOffset` (`0`) | Pixel distance, with Foundation's sign asymmetry on the alignment axis | Same, same formulas |
 | `allowOverlap` (`false`) | Skip the search | Same |
 | `allowBottomOverlap` (`true`, Tooltip `false`) | Ignore overflow past the bottom bound | Same; the consumer passes its default |
-| `parentClass` (Dropdown, `null`) | Bound by the nearest ancestor with that class instead of the body box | Positioner `boundary` element; the Dropdown spec decides how it is expressed |
+| `parentClass` (Dropdown, `null`) | Bound by the nearest ancestor with that class instead of the body box | Positioner `boundary` element; the Dropdown spec keeps `parentClass` and resolves it to the nearest matching ancestor |
 | `tooltipHeight` 14, `tooltipWidth` 12 (Tooltip) | Added to `vOffset` for top/bottom and to `hOffset` for left/right, room for the pip | Positioner `pip` |
 | `Box.GetExplicitOffsets`, `Box.OverlapArea`, `Box.GetDimensions` | Formulas in document coordinates; the bound is `document.body`'s box at the current scroll offset, with the right edge ignoring `scrollX` | Pure functions `nfsExplicitOffsets`, `nfsOverlap`, `nfsBodyBounds`, `nfsRectBounds`, `nfsPlace`; the asymmetric right edge is kept for parity |
 | `_setPosition` search | Try alignments of the current position cyclically, then positions in the order `left, right, top, bottom`, re-measuring per candidate; least overlap if nothing fits; tried set kept across opens | Same order and least-overlap rule from one measurement; tried set fresh on every run |
@@ -95,7 +95,7 @@ The utility replaces Foundation's Positionable and Box, the `closeme.zf.*` part 
 | Tooltip `clickOpen` | A click keeps the tip open "until you click somewhere else" | The Tooltip spec leaves the pointer rule on; `clickOpen` decides whether a press pins the tip |
 | Dropdown Escape (`keydown` on anchors and pane) | Closes and focuses the anchors | Light dismiss Escape rule (document-level, topmost entry) |
 | Dropdown `hover`, `hoverPane`, `hoverDelay` 250; Tooltip `hoverDelay` 200, `disableHover`; DropdownMenu `hoverDelay` 50, `closingTime` 500, `autoclose`, `disableHover` | `mouseenter`/`mouseleave` timers, gated by `what-input` (Dropdown), wrapped in `ignoreMousedisappear` | `nfsHoverIntent` with `openDelay`, `closeDelay`, `enabled`; the consumer maps its Options |
-| Tooltip `disableForTouch`, DropdownMenu `disableHoverOnTouch` (`true`) | Drop hover handling on touch-capable devices | The helper ignores `pointerType: 'touch'` on every event; the consumer specs decide whether the Options survive |
+| Tooltip `disableForTouch`, DropdownMenu `disableHoverOnTouch` (`true`) | Drop hover handling on touch-capable devices | The helper ignores `pointerType: 'touch'` on every event; the Tooltip spec keeps `disableForTouch` with a per-press meaning, and the Dropdown Menu spec drops `disableHoverOnTouch` |
 | DropdownMenu `Box.ImNotTouchingYou($sub, null, true)` | Left-and-right overflow test against the body box, used to flip `opens-*` | `nfsDocumentRect`, `nfsBodyBounds`, `nfsOverlap` with `axis: 'horizontal'` |
 
 Not ported, deliberately: the tried-positions set kept across opens, the stale per-candidate measurement, the `closeme` DOM queries, the shared `click.zf.dropdown` namespace that let Reveal remove Dropdown's handler, `what-input`, `ignoreMousedisappear`, the `tap` special event, and the `.is-opening` measure dance.
@@ -270,7 +270,7 @@ function nfsDocumentRect(element: Element): NfsRect;     // DOM read: call only 
 | `closeOnClick` | Light dismiss `outsidePress` | none | Light dismiss `outsidePress` |
 | `clickOpen` | none | `outsidePress` left at its default (on); `clickOpen` decides whether a press pins the tip | none |
 | `hover`, `hoverDelay`, `hoverPane` | `nfsHoverIntent`, `enabled` = `hover`, both delays = `hoverDelay` (250); the pane must be in the Hover region (see ARIA requirements) | `enabled` = `!disableHover`, `openDelay` = `hoverDelay` (200), `closeDelay` from the Tooltip spec (floor 100) | `openDelay` = `hoverDelay` (50), `closeDelay` = `closingTime` (500), `enabled` = `!disableHover`; `autoclose` false keeps every hover-opened submenu open when the pointer leaves (Foundation closes on leave only while `autoclose` is on) |
-| `disableForTouch`, `disableHoverOnTouch` | none | Per-event touch filter replaces the device check; the Tooltip spec decides the Option | Same, the Nested menu spec decides |
+| `disableForTouch`, `disableHoverOnTouch` | none | Per-event touch filter replaces the device check; `disableForTouch` kept, ignoring touch presses only (the Tooltip spec) | Per-event touch filter; `disableHoverOnTouch` dropped (the Dropdown Menu spec) |
 | group | `'nfs-dropdown-pane'` | `'nfs-tooltip'` | the menu decides (submenu siblings are its own rule) |
 | `autoFocus`, `trapFocus` | Dropdown pane spec (see ARIA requirements) | none | none |
 
@@ -282,7 +282,7 @@ Implementation level: custom Angular with platform measurement (ADR 0002). Nativ
 
 Primitives: `getBoundingClientRect` and `getComputedStyle` in `afterRenderEffect` `earlyRead`; `Renderer2.setStyle` in `write`; `ResizeObserver`; Pointer Events (`pointerdown`, `pointerup`, `pointercancel`, `pointerenter`, `pointerleave`, `pointerType`); `focusin`; `keydown` with `event.key`; `Node.contains`; `Directionality.valueSignal`; `hasModifierKey` from `@angular/cdk/keycodes`; `NgZone.runOutsideAngular` for listeners and timers; `DestroyRef`. All are in the browser target.
 
-Fallback: none. The prototype showed the in-place port matching Foundation everywhere Foundation follows its own formulas, including scrolling ancestors, so CDK Overlay is not the fallback ADR 0002 named (proposed ADR 0002 amendment in the ticket answer).
+Fallback: none. The prototype showed the in-place port matching Foundation everywhere Foundation follows its own formulas, including scrolling ancestors, so CDK Overlay is not the fallback ADR 0002 first named; ADR 0002 now records it as measured and rejected, as the fallback too.
 
 Hooks: `afterRenderEffect` for all three parts, because its phases re-run only when a tracked signal changes, so a closed pane costs nothing; `afterEveryRender` is not used (it would re-measure every pane after every change detection in the application), and `afterNextRender` is not needed.
 
@@ -313,7 +313,7 @@ The utility renders no ARIA and no role. Each consumer's pattern applies (Disclo
 
 - Never `aria-hidden` on a pane: Foundation's `display: none` on a closed `.dropdown-pane` and `hidden` or a State class on a closed tip already remove it from the accessibility tree (building-blocks 1.10). Never `aria-modal` on a pane, trapped or not (APG dialog: modal only with an obscuring overlay).
 - Focus return: on `'keydown'` with focus inside the pane, move focus to the Trigger that opened it; on `'click'`, `'tab'`, and `'sibling'`, move no focus (the user already put it somewhere).
-- Hover region: a hover-opened pane passes itself as `pane` to `nfsHoverIntent` (WCAG 1.4.13 hoverable). Foundation's Dropdown `hoverPane: false` leaves the pane out and fails 1.4.13; the Dropdown spec must flip that default or drop the Option.
+- Hover region: a hover-opened pane passes itself as `pane` to `nfsHoverIntent` (WCAG 1.4.13 hoverable). Foundation's Dropdown `hoverPane: false` leaves the pane out and fails 1.4.13, so the [Spec: Dropdown](../issues/26-spec-dropdown.md) drops the Option: a hover-opened pane is always in the Hover region.
 - Focus opening: a `focusin` host listener that opens (Tooltip) re-checks `document.activeElement` against its host before opening, because a replayed `focusin` can arrive after focus has moved on.
 - `autoFocus` (Dropdown pane): the first element in DOM order for which `InteractivityChecker.isFocusable` (which includes `isVisible`) and `isTabbable` hold, CDK's first-tabbable rule, focused in a render callback after the pane is placed; Foundation's tabindex sort is not kept. `trapFocus`: CDK `FocusTrap` on the pane while open, never with `aria-modal`, and Escape still closes (2.1.2 No Keyboard Trap); while a trap holds focus the focus rule never fires.
 - Trigger ARIA stays with the Triggers utility (`aria-expanded`, `aria-controls`, `aria-haspopup="dialog"`); a tooltip host carries `aria-describedby` to the tip once it exists.
@@ -328,7 +328,9 @@ Keyboard behaviour the utility supplies:
 | Pointer press outside | Closes entries whose pointer rule is on | Light dismiss |
 | Pointer over Trigger, then pane | Opens after `openDelay`, stays open while over either | Hover intent |
 
-WCAG 2.2 AA criteria the consumers inherit, and what the utility guarantees:
+### WCAG 2.2 AA
+
+The target is WCAG 2.2 level AA (user rule; ADR 0022). The utility renders no content of its own, so each criterion below is met as a requirement through what the utility guarantees and what each consumer spec must do; the consumer specs test them on their own stories and fixture routes. WCAG 2.2 AA criteria the consumers inherit, and what the utility guarantees:
 
 | Criterion | Utility guarantee | Consumer's part |
 | --- | --- | --- |
@@ -338,6 +340,8 @@ WCAG 2.2 AA criteria the consumers inherit, and what the utility guarantees:
 | 2.5.8 Target Size (Minimum) | Adds no targets; never places a pane over its Trigger | Triggers are the consumers' buttons |
 | 1.3.2 Meaningful Sequence, 2.4.3 Focus Order | The pane stays where the consumer wrote it, so reading and focus order follow the DOM | Write the pane right after its Trigger |
 | 2.1.2 No Keyboard Trap | Escape and the focus rule always apply | `trapFocus` stays non-modal |
+
+The axe gate in every story runs the WCAG 2.2 AA rule set (tags `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`, plus `best-practice`) with `parameters.a11y.test = 'error'` (ADR 0018). The utility draws nothing, so it needs no Sass setting, no library rule, and no compile-time contrast check of its own; the colours of `.dropdown-pane` and `.tooltip` are the consumer specs' criteria.
 
 ### Rendered output
 
@@ -376,7 +380,7 @@ Per ADR 0008 and the rendering-modes research, section 7 rules 1 to 11:
 - Before hydration: document listeners are attached only by the registry, only when an entry is added, and entries are added only in render callbacks, so none exist before hydration (rules 3 and 5). Hover listeners and timers likewise start only in render callbacks and handlers, outside the zone (rule 4).
 - Full hydration: the utility writes no host binding and no structure, so hydration has nothing to compare (rule 10); inline offsets are written after hydration only.
 - Event replay: the Light dismiss listeners are document-level and added in code, so they never replay, which is correct because nothing is open before hydration. A trigger `click` before hydration replays through the Trigger's host listener, opens the pane, and the Positioner places it in the following render callback, when layout exists. `pointerenter` and `pointerleave` are not replayed types and the hover listeners are added in code, so a hover before hydration does nothing; the next pointer entry after hydration opens. A replayed `focusin` that opens a tooltip re-checks live focus (ARIA requirements). The registry's Escape handler calls `preventDefault()` last and is never replayed, so the replay error cannot occur in it.
-- Hydration boundary: a Trigger, its pane, and (for nested panes) the parent pane belong in one boundary (ADR 0008 decision 6).
+- Hydration boundary: a Trigger, its pane, and (for nested panes) the parent pane belong in one boundary (ADR 0008; building-blocks 1.11 decision 6).
 - `@defer`: library code contains no `@defer`. Inside a dehydrated block a pane is its server HTML, closed; a trigger click hydrates the block, replays, opens, and places. With `hydrate on hover` the first hover only hydrates the block (its `mouseover` trigger fires, but the `pointerenter` that would open has already passed), so hover-opened panes open on the second entry; `hydrate on viewport` or `on idle`, which usually hydrate before the pointer arrives, avoid that. Inside `hydrate never` panes stay closed (an open-at-first-paint pane stays at its static position) and nothing dismisses. Plain `@defer` renders on the client like any client render.
 - Prerendering: identical to server rendering; no request token is read (rule 11).
 - Zoneless: all state is signals; pointer, focus, key, scroll, and timer callbacks run outside the Angular zone and reach Angular only by writing signals or calling the consumer's close path, so pointer movement never runs change detection.
@@ -393,7 +397,7 @@ Story ids follow `anchored-pane--<story>`: `anchored-pane--placements`, `anchore
 
 ### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`)
 
-Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test = 'error'` on the library's WCAG 2.2 AA rule set (`runOnly` tags `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`, `best-practice`, ADR 0018), which includes axe's `target-size` rule for the stories' Triggers; axe runs with each pane open as well as closed.
+Run by `npx nx test-storybook <lib>`. Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test = 'error'` on the library's WCAG 2.2 AA rule set (`runOnly` tags `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`, `best-practice`, ADR 0018), which includes axe's `target-size` rule for the stories' Triggers; axe runs with each pane open as well as closed.
 
 - `anchored-pane--placements`: for each of the 12 placements (args), open the pane and assert the placement classes and that the pane box sits on the expected side of the anchor within 0.5 px of the formula.
 - `anchored-pane--auto-position`: triggers near each viewport edge; the resolved placement equals the prototype's (`bottom-right` near the right edge, `right-top` for `position: left` near the left edge, `bottom-left` for `position: top` near the top edge).
@@ -420,9 +424,9 @@ Vitest browser mode under the Angular unit-test builder (`npx nx test <lib>`, Ch
 ### 3. Node-level Vitest
 
 - Pure logic, table-driven: `nfsExplicitOffsets` for the 12 placements with and without offsets and pip; `nfsPlace` visiting candidates in Foundation's order (a bound that always collides yields the 12 in sequence), returning the first zero-overflow candidate, the least-overlap candidate when nothing fits, and starting fresh on every call; `nfsOverlap` in all three axes with `ignoreBottom`; `nfsBodyBounds` asymmetry reproduced from a stub document; `nfsResolvePlacement` for both `auto` sets in LTR and RTL.
-- SSR smoke: `renderApplication` over a fixture with the test pane (closed and open at first paint), a test tip host, and hover intent enabled. `whenStable()` resolves (no pending timers); the server HTML carries no inline `top`/`left` and no placement classes; the open pane carries `.is-open`; no tip element exists; no document listener was added (spy on the server document).
+- SSR smoke: `renderApplication` over a fixture with the test pane (closed and open at first paint), a test tip host, and hover intent enabled. `whenStable()` resolves (no pending timers); the server HTML carries no inline `top`/`left` and no placement classes; the open pane carries `.is-open`; no tip element exists; no document listener was added (spy on the server document). Runs under `npx nx test <lib>` in `<name>.ssr.spec.ts` through the shared `renderServer()` helper; `npx nx test-node <lib>` only if the server path depends on the DOM adapter.
 
-### 4. Playwright e2e
+### 4. Playwright e2e (`npx nx e2e <lib>-e2e` against the static Storybook build; `npx nx e2e <fixture-app>-e2e` against the prerendered fixture app)
 
 Against the static Storybook build, on `anchored-pane--fixture` through `mount(storyId, props)`, in Chromium, Firefox, and WebKit:
 
@@ -439,7 +443,7 @@ Against the static Storybook build, on `anchored-pane--fixture` through `mount(s
 
 Against the prerendered fixture app, one route with a Dropdown-shaped test pane, a tooltip-shaped test tip, and a pane open at first paint:
 
-- JavaScript disabled: screenshot plus axe; closed panes hidden, the open pane visible at its static position.
+- JavaScript disabled: screenshot plus axe (`@axe-core/playwright` with `withTags` on `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`, and `best-practice`); closed panes hidden, the open pane visible at its static position.
 - Hydration: no NG05xx in the console and `ngDevMode.componentsSkippedHydration === 0`; after hydration the open pane carries inline offsets and its placement classes.
 - Pre-hydration click with the main bundle delayed: the pane opens exactly once after hydration and is placed; an outside click before hydration does nothing.
 - `@defer (hydrate on interaction)` block holding a Trigger and pane: the click hydrates, opens, and places.
@@ -449,7 +453,7 @@ Against the prerendered fixture app, one route with a Dropdown-shaped test pane,
 
 - Each consumer's Options, defaults, outputs, and ARIA: the Dropdown, Tooltip, and Nested menu specs. This spec fixes only what they pass to the utility and what it guarantees back.
 - `autoFocus` and `trapFocus` implementations (the Dropdown pane spec), and DropdownMenu's `opens-*` classes and `alignment: auto` rules (the Nested menu spec).
-- Legacy position classes (`.top`, `.float-right`) as defaults: the consumer specs decide.
+- Legacy position classes (`.top`, `.float-right`) as defaults: decided by the consumer specs (the Tooltip spec reads its trigger's legacy class for `auto`; the Dropdown spec drops them).
 - CDK Overlay, portals, and top-layer hosting of the tip (weighed and not taken; ticket answer, Triage).
 - OffCanvas dismissal (its own overlay) and modal Reveal dismissal (`<dialog>`); a non-modal Reveal uses Light dismiss only.
 - Native `popover`, CSS anchor positioning, `interestfor`, and `CloseWatcher` (out of target; Further Notes).
@@ -485,7 +489,7 @@ Against the prerendered fixture app, one route with a Dropdown-shaped test pane,
 
 ### Usage examples
 
-The Dropdown pane directive, as its spec will build it (inputs are sketches owned by that spec):
+A sketch of the Dropdown pane directive's use of the utility (the [Spec: Dropdown](../issues/26-spec-dropdown.md) owns its inputs and the rest of the directive):
 
 ```ts
 @Directive({
