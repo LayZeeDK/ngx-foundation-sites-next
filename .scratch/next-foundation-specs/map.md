@@ -114,6 +114,8 @@ Online: https://angular.dev, https://material.angular.dev, https://get.foundatio
 - Prototypes that must settle a contested design question: Opus 5.5.
 - Second working session (2026-09-25 to 2026-09-26): the orchestrator started on Opus 5.5 and switched to Fable 5.1 after the usage reset. Fable credit was out at the start of the session and is available again since the reset, so Fable 5.1 is used where a ticket makes cross-cutting calls or where it is clearly the better fit for a spec; the commit body says why whenever a ticket runs on Fable.
 
+- Open-decision pass (2026-09-27): Fable credit ran out mid-pass (user notice). Roles planned for Fable that had not finished run on Sonnet 5 for panelists and reviewers (a different model keeps the panel independent) and on Opus 5.5 for judges; each ticket answer names the model per role.
+
 ### Audits (user instruction)
 
 After every wave (research, building blocks, each spec wave, testing chain, final), the orchestrator spawns an audit subagent that reviews the map, the tickets, and every other document under the effort directory for compliance with the `/wayfinder`, `/domain-modeling`, `/grill-with-docs` (and `/grilling`), `/research`, `/to-spec`, and `/mattpocock-skills:prototype` skills. Findings go to `audits/NNNN-<scope>.md` (ranked, each with file, rule, evidence, fix) and are committed; the orchestrator applies the fixes or turns them into tickets, and records what it did at the end of the audit file.
