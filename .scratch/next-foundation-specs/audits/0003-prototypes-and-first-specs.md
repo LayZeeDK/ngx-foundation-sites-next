@@ -503,4 +503,34 @@ Spot checks against the clones and research (all hold; failures are reported abo
 
 ## Resolution log
 
-(For the orchestrator: record here which findings were fixed, turned into tickets, or rejected, with the commit that did it.)
+Recorded by the orchestrator on 2026-09-26. Every finding is fixed; none was turned into a ticket or rejected, except the part of L6 noted below.
+
+| Finding | Outcome | Commits |
+| --- | --- | --- |
+| H1 | Fixed. The Breakpoint service spec says the first-render swap moves focus like any other, gains `serverBreakpoint` and `resolve(rules, breakpoint?)`, and consumer rule 1 records focus where the old nodes are removed (generalised again by the Interchange re-run); ADR 0014 carries the per-instance note | `88b9849`, `2741d24`, `8367a92` |
+| H2 | Fixed. ADR 0007 records the ported scroll lock (modal Reveals only) and CDK Dialog as not needed; Table B Reveal matches the Reveal spec | `5acccc7` |
+| H3 | Fixed. ADR 0002, the matrix, and the glossary carry the Anchored pane spec's changes; the spec itself took the Dropdown and Tooltip corrections | `5acccc7`, `2741d24` |
+| M1 | Fixed. Orbit, Abide, Accordion, Tabs, Storybook conventions, Magellan, Equalizer, and Responsive Toggle proposals carried | `88b9849`, `5acccc7` |
+| M2 | Fixed. The `animate.enter` verdict, the nested menu corrections, and the ResponsiveAccordionTabs facts reached 1.6, 1.11, ADR 0008, and the matrix | `88b9849`, `5acccc7` |
+| M3 | Fixed. Map gists, ticket OPEN FOR HUMAN sections, building-blocks Part 4 and 1.12, ADRs 0002, 0008, 0017, 0018, and the Storybook conventions state the triage outcomes | `88b9849`, `5acccc7`, `843069f` |
+| M4 | Fixed. Responsive Toggle measures its completion timer; 1.6 rule 1, ticket 47, and its README reconcile the design-time rule | `cad80fb`, `5acccc7`, `843069f` |
+| M5 | Fixed. The ResponsiveAccordionTabs prototype marks its tab setting superseded by the Tabs spec; the matrix and the ResponsiveAccordionTabs spec use the Tabs settings | `843069f`, `5acccc7`, `dacf30e` |
+| M6 | Fixed. ADR 0022 and every spec name the six axe tags | `5acccc7`, `cad80fb`, `6120db8`, `c2b0c11` |
+| M7 | Fixed. Every spec uses the stack decision's layer wording | `6120db8`, `cad80fb`, `c2b0c11` |
+| M8 | Fixed. Button's sections follow 1.14 and its Sass subsection follows the Sass packaging form | `2741d24` |
+| M9 | Fixed. All proposed terms are in `CONTEXT.md` | `88b9849`, `5acccc7` |
+| M10 | Fixed. The Anchored pane sketch routes dismissal through a private path; `close(result?)` keeps one meaning | `2741d24` |
+| M11 | Fixed. The map's rule describes the practice (a failed case reopens the spec, the review waits on every prototype); the Off-canvas ticket gains its edge; ticket 63 names its deciding case. Two later prototypes that failed a case reopened their specs through re-run tickets (Orbit) or a triaged correction (Reveal) | `843069f`, `2bc94ac`, `ccc22b8` |
+| L1 | Fixed | `843069f`, `cad80fb` |
+| L2 | Fixed, including the Sticky spec and ADR 0019 | `843069f`, `8f823ca` |
+| L3 | Fixed with an "effort-root relative" note above each quoted proposal | `843069f` |
+| L4 | Fixed in the READMEs and tickets 42, 43, 47, 51, 52 | `843069f`, `5d5f9c4` |
+| L5 | Fixed; the two missing run logs are recorded as not kept | `843069f` |
+| L6 | ADR 0005 wording fixed. The three long ADR titles are kept: they are also the files' names, linked from dozens of documents, and shortening them buys less than the churn costs | `5acccc7` |
+| L7 | Fixed | `2741d24`, `cad80fb` |
+| L8 | Fixed | `2741d24`, `cad80fb` |
+| L9 | Fixed in the specs; the tickets' question template also moved to the glossary's Implementation level | `2741d24`, `cad80fb`, `ee20f9d` |
+| L10 | Fixed | `cad80fb` |
+| L11 | Fixed | `5acccc7` |
+| Unrecorded departure 1 (Responsive Toggle timer) | Fixed as M4 | `cad80fb` |
+| Unrecorded departure 2 (Interchange `effect()` creating views) | Recorded: building-blocks 1.5 names the exception for a rendered-state signal written by a swap effect, and the Interchange re-run measured the design | `fc47a1c`, `8367a92` |
