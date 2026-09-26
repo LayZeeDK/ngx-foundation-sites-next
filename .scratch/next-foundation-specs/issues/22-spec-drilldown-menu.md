@@ -171,3 +171,10 @@ None. The domain-modeling bar needs all three of hard to reverse, surprising, an
 3. `specs/nested-menu.md`, Sass rule 12: add `.is-drilldown.animate-height` to the `nfs-drilldown` selectors; Sass list: add the Drilldown spec's inset focus ring rule to `nfs-drilldown`; 2.4.7 row: replace "the top and bottom edges of the ring stay visible" with "the `nfs-drilldown` mixin draws rings inside the control box (`outline-offset: -2px`), so no edge is clipped". Reason: decisions 28, 38.
 4. `specs/nested-menu.md`, ResponsiveMenu usage example and consumer table (and the [Spec: Responsive Menu](23-spec-responsive-menu.md) when written): the `NfsDrilldown` host directive entry should expose `autoHeight`, `animateHeight`, `closeOnClick`, `scrollTop`, `scrollTopElement`, `scrollTopOffset`, and the outputs `opened`, `closed`. Reason: decisions 16 to 18, 25.
 5. `research/aria-apg-patterns.md`, Drilldown option 1: the dated correction the [Spec: Nested menu (shared utility)](56-spec-nested-menu.md) proposed (hidden ancestor levels use Foundation's `invisible`, not `hidden`) still applies, and it should add that the back control is a native `button`. Reason: decisions 19, 20.
+
+### Amendment, 2026-09-26 (Responsive Menu)
+
+Folded into `specs/drilldown-menu.md` from the [Spec: Responsive Menu](23-spec-responsive-menu.md) answer, proposed change 2 (its decisions 14 and 32), in its wording; the published Responsive Menu spec already assumed both.
+
+1. Development checks 1 to 3 run from the first render in which drilldown is the live mode, so a responsive root that has not reached a drilldown width, or whose rules do not name drilldown, does not warn about a wrapper or back items it does not use (the checks list, the render hooks row, and the browser-level mode-gating case).
+2. `scrollTop` records the current level anew whenever drilldown mode becomes live, so a swap into drilldown with a level open does not scroll the page; Foundation's Drilldown scrolled on level changes, never on init (the `scrollTop` API row, its render hooks row, and the browser-level `scrollTop` case).
