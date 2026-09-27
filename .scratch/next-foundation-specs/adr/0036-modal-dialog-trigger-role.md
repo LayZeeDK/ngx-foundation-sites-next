@@ -20,3 +20,4 @@ The Trigger role union is part of the public `NfsOpenable` interface (ADR 0013),
 - Deciding now is the cheap direction: adding the value after release would break every exhaustive `switch` over the union, while a later reversal keeps `modal-dialog` as a deprecated alias rendered like `dialog` and breaks nobody.
 - A modal Reveal's story and SSR smoke assert the absence of `aria-expanded`; the non-modal story asserts it flips. An Openable that misreports a modal `<dialog>` as `dialog` renders the previous default's output, which conforms to WCAG 2.2 AA.
 - The Off-canvas spec keeps `dialog` in Modal mode and says why; the decision's rule reassigns it if its inertness ever covers the whole page.
+- 2026-09-27: the Off-canvas spec's inertness now covers the page (the Modal inert set), so, as this record anticipated, Off-canvas Modal mode reports `modal-dialog` ([Resolve the assistive-technology checks](../issues/77-evidence-assistive-technology-checks.md)).

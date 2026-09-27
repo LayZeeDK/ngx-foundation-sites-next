@@ -116,27 +116,15 @@ All 38 records are accepted, except [0034](adr/0034-orbit-slide-contract.md), su
 
 ## Open list
 
-Everything below is left OPEN FOR HUMAN after the triage rule in the map's Orchestration rules: only an item of HIGH impact with NOT-HIGH confidence stays open, plus outward-facing actions under the user's identity (upstream filings) and checks that need assistive technology. Each item runs on its applied default until the user decides; its ticket holds the options and the evidence. No `Prototype needed` item is open: every graduated prototype and re-run is resolved and reflected in its specs.
+Everything below was left OPEN FOR HUMAN by the triage rule in the map's Orchestration rules: an item of HIGH impact with NOT-HIGH confidence, plus outward-facing actions under the user's identity. The [Open-decision pass](map.md#open-decision-pass-user-instruction-2026-09-26) decided every item the consistency review's list raised: none of the ten identified upstream filings is made, all thirteen assistive-technology checks are decided, all three trap-quadrant items are decided, and all nine `@angular/aria` fallback confirmations are decided. Each section below keeps the ticket that decided it, with its options and evidence. No `Prototype needed` item is open: every graduated prototype and re-run is resolved and reflected in its specs.
 
 ### Upstream filings
 
 The user ruled that no [Upstream filings](issues/76-evidence-upstream-filing-readiness.md) are made.
 
-### Assistive-technology checks (13)
+### Assistive-technology checks (decided 2026-09-27)
 
-1. Accordion: name, button role, expanded state, the locked title announced as unavailable, region names, and how the plus and minus glyphs read. [Spec: Accordion](issues/15-spec-accordion.md).
-2. Tabs: `a[role="tab"]` without `href`, the tab list name, and panel names. [Spec: Tabs](issues/16-spec-tabs.md).
-3. Responsive Accordion Tabs: whether the focus move of a Mode swap (title to tab, tab to title) is announced as a usable change. [Spec: Responsive Accordion Tabs](issues/19-spec-responsive-accordion-tabs.md), [Prototype: ResponsiveAccordionTabs as one component](issues/51-prototype-responsive-accordion-tabs.md).
-4. Reveal: a modal Reveal, an alert dialog, and a non-modal Reveal (role, name, containment, focus return); the modal Trigger's announcement on focus and focus return (popup type, no expanded state) and the non-modal Trigger's expanded state. [Spec: Reveal](issues/18-spec-reveal.md), [Prototype: Reveal on native `<dialog>` under Foundation Sass](issues/42-prototype-reveal-dialog.md).
-5. Off-canvas: the modal panel (role, name, containment, the role switch at open), the disclosure Trigger, and the revealed sidebar. [Spec: Off-canvas](issues/25-spec-off-canvas.md).
-6. Tooltip: the description on first keyboard focus across the `title` to `aria-describedby` switch, and from the kept hidden tip. [Spec: Tooltip](issues/27-spec-tooltip.md).
-7. Nested menu and Responsive Menu: a Mode swap with a submenu open and focus inside it. [Spec: Responsive Menu](issues/23-spec-responsive-menu.md), [Spec: Nested menu (shared utility)](issues/56-spec-nested-menu.md), [Prototype: Nested menu directive family with breakpoint mode switching](issues/50-prototype-nested-menu.md).
-8. Dropdown Menu: expanded state on parent buttons and Hybrid toggles, an open overlaying submenu read after its button, silent hover opening, touch double tap. [Spec: Dropdown Menu](issues/21-spec-dropdown-menu.md).
-9. Drilldown Menu: what is announced when focus lands in a level and returns to its toggle, and whether each level list needs a name. [Spec: Drilldown Menu](issues/22-spec-drilldown-menu.md).
-10. Abide: `role="alert"` Form errors and the Form alert (several at once, on blur, inside a wrapping label). [Spec: Abide](issues/31-spec-abide.md).
-11. Slider: `aria-valuetext` on native range inputs; and, on a vertical slider, whether any screen reader or touch assistive technology fails to change a rotated Handle's value because Chromium exposes it as horizontal (the one fact that would reopen [Decide: Slider vertical orientation](issues/73-decide-slider-vertical-orientation.md)). [Spec: Slider](issues/32-spec-slider.md).
-12. Orbit: the toggled `aria-live`, the "carousel" and "slide" role descriptions (including whether a tab-panel slide reads better with the "slide" role description, which the APG's tabbed example sets and its pattern text omits), slides entering and leaving `inert`, and the focus handoff to a newly selected slide. [Spec: Orbit](issues/33-spec-orbit.md), [Re-run: Orbit spec, the slide's ARIA contract and the focus handoff](issues/70-rerun-orbit-slide-contract-and-focus-handoff.md).
-13. Magellan: how the Current section's link reads with `aria-current="true"`, and silence while `aria-current` moves during scrolling. [Spec: Magellan](issues/30-spec-magellan.md).
+The user ruled that this pass decides them from evidence; [Resolve the assistive-technology checks](issues/77-evidence-assistive-technology-checks.md) did, from the platform accessibility trees, NVDA's and WebKit's sources, and published support data. Seven checks confirmed their specs; six spec defects were fixed: Off-canvas Modal mode makes everything outside the panel inert and its Triggers take the `modal-dialog` shape, Tooltip describes through a hidden element beside the host, Dropdown Menu hover no longer takes keyboard focus, Drilldown levels are named, Abide's native Form errors go after the label, and Magellan's announcement row is corrected. Every spec in the list carries a manual release test for what only a screen reader can confirm.
 
 ### Trap-quadrant decisions (0; HIGH impact, NOT-HIGH confidence, default applied)
 

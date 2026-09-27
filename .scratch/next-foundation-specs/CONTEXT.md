@@ -141,8 +141,12 @@ The Toggler form that adds and removes a class named by `toggler` on its element
 _Avoid_: toggle-class mode, CSS mode, active mode
 
 **Modal mode**:
-The OffCanvas configuration with `trapFocus` and an overlay present, in which the panel is a modal dialog and the page content is inert; every other configuration is a disclosure.
+The OffCanvas configuration with `trapFocus` and an overlay present, in which the panel is a modal dialog and everything outside the panel is inert (the Modal inert set); every other configuration is a disclosure.
 _Avoid_: overlay mode, trap mode, dialog mode
+
+**Modal inert set**:
+The elements an OffCanvas panel in Modal mode makes inert while it is open: every element sibling of the panel and of each of its ancestors up to `body`, except the overlay, the focus-trap anchors, live regions, popovers, and CDK's overlay and description containers.
+_Avoid_: background, page content (when meaning the set)
 
 **Light dismiss**:
 Closing an Anchored pane, an open submenu, or a non-modal Reveal on an outside pointer press, on Escape, when focus moves outside it, or when a sibling of the same kind opens; the replacement for Foundation's `closeme.zf.*` broadcast and body click handlers.
