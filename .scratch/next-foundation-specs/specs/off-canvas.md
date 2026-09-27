@@ -184,7 +184,7 @@ class NfsOffCanvasOverlay {   // selector [nfsOffCanvasOverlay], exportAs 'nfsOf
 | Member | Foundation | Behaviour and deltas |
 | --- | --- | --- |
 | `transition` | `data-transition`, `'push'` | Binds `is-transition-<t>`; a nested panel uses `overlap` whatever the input says (Foundation's rule, silent) |
-| `content` | `data-content-id` | Typed reference; a bound value wins over the enclosing content. Without either, nothing is pushed, made inert, or clicked to close, and a development warning fires when the configuration needs a content (push, modal mode, or `closeOnClick` without an overlay) |
+| `content` | `data-content-id` | Typed reference; a bound value wins over the enclosing content. Without either, nothing is pushed or clicked to close, and a development warning fires when the configuration needs a content (push, or `closeOnClick` without an overlay); modal mode needs none, because its Modal inert set covers everything outside the panel whether a content is linked or not |
 | `closeOnClick` | `data-close-on-click`, `true` | Overlay `click` closes; with no overlay registered, a `click` inside the linked content closes, except clicks inside the panel or on a registered Trigger (Foundation's content listener would also catch the Trigger's own click) |
 | `closeOnEsc` | none | New, default `true` = Foundation's unconditional Escape. `false` stops Escape from closing; in modal mode a close control inside the panel is then required (2.1.2), and a non-modal panel loses the 2.4.11 escape route; both cases warn in development mode |
 | `contentScroll` | `data-content-scroll`, `true` | `false` adds `is-off-canvas-open` to `body` from the open render callback until the close transition completes; Foundation's `overflow: hidden` does the locking; the touch handlers are dropped |
@@ -237,7 +237,7 @@ Development-mode checks, each once per instance, in render callbacks that exist 
 
 1. No `.position-*` class in the static `class` attribute, or the live class list disagrees with it (a bound position class).
 2. A hand-written `reveal-for-*` or `in-canvas-for-*` class in the static `class` attribute (use the inputs).
-3. No content linked when the configuration needs one (push, modal mode, or `closeOnClick` without an overlay); a push panel whose content has no `.off-canvas-wrapper` parent (1.4.10).
+3. No content linked when the configuration needs one (push, or `closeOnClick` without an overlay); a push panel whose content has no `.off-canvas-wrapper` parent (1.4.10).
 4. Modal mode without `aria-label` or `aria-labelledby` on the panel; modal mode without a registered Trigger inside the panel (a close button, APG and 2.1.2); modal mode with `autoFocus: false`.
 5. `trapFocus` without an overlay; `closeOnEsc: false` on a non-modal panel (2.4.11).
 6. A registered Trigger outside the panel that is rendered while the panel is revealed or in-canvas (it would do nothing: hide it with Foundation's `.hide-for-<bp>`).
@@ -267,7 +267,7 @@ Completion: on a `transitionend` host listener on the panel with `event.target` 
 
 Focus rules:
 
-- Open: after the classes are applied, in the phase machine's `write` step, focus moves to the `autoFocus` target with `preventScroll: true` (the panel is still translated off-screen, Material's guard), and only then is `#focusPlaced` set, so the content becomes `inert` after focus has left it (Material's order: an `inert` applied to the focused Trigger first would drop focus to `body`). Focus moves at the start of the transition rather than after `transitionend` (Foundation), so keyboard and screen reader users can act at once and focus never depends on the transition firing.
+- Open: after the classes are applied, in the phase machine's `write` step, focus moves to the `autoFocus` target with `preventScroll: true` (the panel is still translated off-screen, Material's guard), and only then is `#focusPlaced` set, so in modal mode the Modal inert set is applied after focus has left the Trigger and everything else outside the panel (Material's order: an `inert` applied to the focused Trigger first would drop focus to `body`). Focus moves at the start of the transition rather than after `transitionend` (Foundation), so keyboard and screen reader users can act at once and focus never depends on the transition firing.
 - An initially open panel (server or first client render) moves focus only in modal mode, in the first render callback; a non-modal panel open at first paint moves nothing.
 - Close, by any path (Escape, overlay, content click, a Trigger, the model, a method): in the `write` step after the classes are applied, when `document.activeElement` is inside the panel or is `body` (the panel turned `inert` while exiting, or a click on the overlay blurred), focus moves to the `trigger` passed to the last `open()`, else to the element that was focused before the panel opened, else to the first registered Trigger outside the panel. Focus elsewhere (a content link the user clicked) is left alone. A close caused by a breakpoint crossing moves nothing. The Trigger is the element passed by `open(trigger)` because WebKit does not focus a button on mouse click (the Reveal dialog prototype).
 
@@ -316,7 +316,7 @@ Patterns: WAI-ARIA APG Disclosure for every non-modal configuration, with the pa
 | --- | --- | --- |
 | Enter, Space | Trigger | Opens, closes, or toggles (native button activation; Triggers utility) |
 | Tab, Shift+Tab | Open non-modal panel | Native order: through the panel, which precedes the content in the DOM, then into the content |
-| Tab, Shift+Tab | Open modal panel, or `trapFocus` | Wraps inside the panel (CDK `FocusTrap` anchors); the content is `inert` in modal mode |
+| Tab, Shift+Tab | Open modal panel, or `trapFocus` | Wraps inside the panel (CDK `FocusTrap` anchors); in modal mode everything outside the panel is `inert` (the Modal inert set) |
 | Escape | Anywhere while a panel is open | Closes it (unless `closeOnEsc` is `false` or a control already handled the key); focus returns to the Trigger when it was inside the panel |
 | Enter, Space | Close button, links with `nfsClose` | Close (native activation) |
 
@@ -402,7 +402,7 @@ Revealed sidebar (`revealOn="large"`), server HTML: `<div class="off-canvas posi
 
 Nested panel inside the content: `class="off-canvas position-right is-transition-overlap is-closed"` whatever `transition` says.
 
-Server HTML, open by the consumer's initial `[(isOpen)]="true"`: the open classes above with no Motion step, no `inert` on the content, and no `body` class (both arrive in the first client render callback).
+Server HTML, open by the consumer's initial `[(isOpen)]="true"`: the open classes above with no Motion step, no `inert` outside the panel, and no `body` class (both arrive in the first client render callback).
 
 ### Animation
 
@@ -524,7 +524,7 @@ Release test (manual, before each release; [Resolve the assistive-technology che
 | D6 | Position | Static `.position-*` class | Foundation reads the class; classes are the contract |
 | D7 | `revealOn`/`inCanvasOn` | Inputs that bind Foundation's classes; the Breakpoint service only for behaviour | One typed source, correct server HTML at every width (building-blocks 1.11 decision 8); the Responsive Toggle spec's `hideFor` pattern |
 | D8 | `is-closed` while revealed | Kept | Foundation's breakpoint classes win in CSS, so no server-bound class depends on the breakpoint |
-| D9 | Crossing into the revealed or in-canvas range | Closes an open panel | Foundation's behaviour; an overlay, `inert` content, or lock must not return on the way back; differs from Responsive Toggle's persistence for that reason |
+| D9 | Crossing into the revealed or in-canvas range | Closes an open panel | Foundation's behaviour; an overlay, the Modal inert set, or a lock must not return on the way back; differs from Responsive Toggle's persistence for that reason |
 | D10 | `#active` | Every page effect follows `isOpen && !revealed && !inCanvas` | A stale `isOpen` can never cover a sidebar |
 | D11 | `closeOnEsc` | New input, default `true` | Audit 0002 M6; Foundation always closes on Escape |
 | D12 | Escape listener | `window`, bubble phase, while open | Works with focus behind a non-modal panel (2.4.11 note); runs after Light dismiss so inner panes close first |

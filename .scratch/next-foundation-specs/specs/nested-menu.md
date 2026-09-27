@@ -300,7 +300,7 @@ Borrowed: Material's open/close vocabulary, the close-reason words (through Ligh
 
 Pattern: Disclosure Navigation Menu (APG), the hybrid variant for Hybrid items, in every mode. The consumer wraps the menu in `nav` with `aria-label` or `aria-labelledby` naming the site's navigation (never "navigation"). WebKit also exposes a `list-style: none` list as a list only inside a navigation landmark, so VoiceOver announces the menu's lists only there (`AccessibilityNodeObject::determineListRoleWithCleanChildren`).
 
-Constant across modes (the swap never changes these):
+Constant across modes, except the Drilldown level names that drilldown mode adds (a swap adds or removes those and changes nothing else here):
 
 | Element | Semantics |
 | --- | --- |
@@ -409,8 +409,8 @@ Server HTML at the Server breakpoint `small` (drilldown), abbreviated: directive
 ```html
 <ul class="vertical medium-horizontal menu drilldown" jsaction="keydown:;click:;">
   <li class="is-drilldown-submenu-parent">
-    <button type="button" aria-expanded="false" aria-controls="nfs-submenu-x1-0" jsaction="click:;">Products</button>
-    <ul id="nfs-submenu-x1-0" inert=""
+    <button type="button" id="nfs-submenu-toggle-x1-0" aria-expanded="false" aria-controls="nfs-submenu-x1-0" jsaction="click:;">Products</button>
+    <ul id="nfs-submenu-x1-0" aria-labelledby="nfs-submenu-toggle-x1-0" inert=""
         class="menu vertical nested submenu is-drilldown-submenu invisible drilldown-submenu-cover-previous">
       <li class="js-drilldown-back">...</li>
       <li class="is-submenu-item is-drilldown-submenu-item"><a href="/products/boards">Boards</a></li>
@@ -419,9 +419,9 @@ Server HTML at the Server breakpoint `small` (drilldown), abbreviated: directive
   </li>
   <li class="is-drilldown-submenu-parent has-submenu-toggle">
     <a href="/services">Services</a>
-    <button type="button" class="submenu-toggle" aria-expanded="false" aria-controls="nfs-submenu-x1-1" jsaction="click:;">
+    <button type="button" id="nfs-submenu-toggle-x1-1" class="submenu-toggle" aria-expanded="false" aria-controls="nfs-submenu-x1-1" jsaction="click:;">
       <span class="submenu-toggle-text">Services pages</span></button>
-    <ul id="nfs-submenu-x1-1" inert="" class="menu vertical nested submenu is-drilldown-submenu invisible drilldown-submenu-cover-previous">...</ul>
+    <ul id="nfs-submenu-x1-1" aria-labelledby="nfs-submenu-toggle-x1-1" inert="" class="menu vertical nested submenu is-drilldown-submenu invisible drilldown-submenu-cover-previous">...</ul>
   </li>
   <li><a href="/about">About</a></li>
 </ul>
@@ -434,7 +434,7 @@ Accordion mode, Products open (a root in accordion mode, same items):
 ```html
 <ul class="vertical menu accordion-menu">
   <li class="is-accordion-submenu-parent" data-nfs-expanded="">
-    <button type="button" aria-expanded="true" aria-controls="nfs-submenu-x1-0">Products</button>
+    <button type="button" id="nfs-submenu-toggle-x1-0" aria-expanded="true" aria-controls="nfs-submenu-x1-0">Products</button>
     <ul id="nfs-submenu-x1-0" data-nfs-shown="" class="menu vertical nested submenu is-accordion-submenu is-active">
       <li class="is-submenu-item is-accordion-submenu-item"><a href="/products/boards">Boards</a></li>
     </ul>
@@ -447,14 +447,14 @@ Dropdown mode after the swap at `medium`, Products open at the right edge (root 
 ```html
 <ul class="vertical medium-horizontal menu dropdown">
   <li class="is-dropdown-submenu-parent is-active opens-left" data-nfs-expanded="">
-    <button type="button" aria-expanded="true" aria-controls="nfs-submenu-x1-0">Products</button>
+    <button type="button" id="nfs-submenu-toggle-x1-0" aria-expanded="true" aria-controls="nfs-submenu-x1-0">Products</button>
     <ul id="nfs-submenu-x1-0" data-nfs-shown="" class="menu vertical nested submenu is-dropdown-submenu js-dropdown-active first-sub">...</ul>
   </li>
   <li class="is-dropdown-submenu-parent has-submenu-toggle opens-right">...</li>
 </ul>
 ```
 
-`jsaction` lists the root's replayable listeners (`keydown`; `click` from DropdownMenu, present whenever the DropdownMenu root is on the element) and each toggle's `click`; Angular removes it after hydration. `transitionend` is not a replayable type and adds none. Generated ids differ between server and client and are rewritten at hydration, which is safe because `aria-controls` is itself a host binding (building-blocks 1.5).
+`jsaction` lists the root's replayable listeners (`keydown`; `click` from DropdownMenu, present whenever the DropdownMenu root is on the element) and each toggle's `click`; Angular removes it after hydration. `transitionend` is not a replayable type and adds none. Generated ids differ between server and client and are rewritten at hydration, which is safe because `aria-controls` and `aria-labelledby` are themselves host bindings (building-blocks 1.5).
 
 ### Animation
 
