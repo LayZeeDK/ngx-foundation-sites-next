@@ -1,6 +1,6 @@
 # Spec: Reveal
 
-Ticket: [Spec: Reveal](../issues/18-spec-reveal.md). Targets Angular 22.2, Nx 23.2, Storybook 10.6 with `@storybook/angular-vite`, Vitest 4.1.x, TypeScript 6.0.x, and Foundation for Sites 6.9.0 Sass. Accessibility target: WCAG 2.2 AA.
+Ticket: [Spec: Reveal](../issues/18-spec-reveal.md). Targets Angular 22.2, Nx 23.2, Storybook 10.6 with `@storybook/angular-vite`, Vitest 4.1.x, TypeScript 6.0.x, and Foundation for Sites 6.9.0 Sass. Accessibility target: WCAG 2.2 AA. Revised on 2026-09-28 by the [Re-run: Reveal spec under the class rule](../issues/110-rerun-reveal-class-rule.md) under the class rule ([ADR 0039](../adr/0039-directives-manage-every-foundation-class.md)) and the Variant typing rules ([ADR 0040](../adr/0040-variant-input-types.md)).
 
 ## Problem Statement
 
@@ -13,24 +13,25 @@ A developer building an Angular application on Foundation for Sites needs modal 
 - `open.zf.reveal` fires synchronously while the enter animation still runs, `closed.zf.reveal` after the exit animation, and `closeme.zf.reveal` fires before this modal opens rather than before it closes. Nothing can veto a close, so a half-filled form is lost on a stray Escape or overlay click.
 - Its animations need Motion UI's two-frame transition protocol and its positioning needs a measurement with `visibility: hidden; display: block` before every open.
 - It locks page scroll with classes on `html` and a `top` offset, correctly, but decides when to unlock by counting `$('.reveal:visible')`.
+- Its markup is its classes: the developer writes `.reveal`, a size class, `.collapse`, and `.close-button` by hand, and Motion UI names such as `spin-in` as attribute values. Under the library's class rule the developer writes no Foundation or library class, not even as an input value, so each class needs an Angular home and each animation name a typed form.
 
 A server-rendered Angular application adds more: the dialog must be in the server HTML with its content, closed unless it is a non-modal dialog that is open by default, and hydrate without a mismatch; an open-by-default modal dialog must become modal after hydration; a click on its Trigger before hydration must still open it afterwards; and nothing may touch `window`, `history`, or focus before hydration.
 
 ## Solution
 
-One attribute directive, `NfsReveal`, on the native `<dialog class="reveal">` the developer writes where it belongs in the template. The browser supplies what Foundation's JavaScript emulated: `showModal()` puts the dialog in the top layer without moving it, makes the rest of the page inert, contains focus, and paints `::backdrop`, which the library styles with Foundation's own overlay colour. Foundation's `.reveal` Sass, its size classes (`.tiny`, `.small`, `.large`, `.full`), full screen below medium, `.collapse`, `.without-overlay`, and its `html.is-reveal-open` scroll lock are all reused unchanged; the library adds seven small documented rules in the `nfs-reveal` Library mixin for what a `<dialog>` in the top layer needs, and CDK Dialog is not used.
+One attribute directive, `NfsReveal`, on the native `<dialog>` the developer writes where it belongs in the template. It binds Foundation's `.reveal` class and sets the size classes (`.tiny`, `.small`, `.large`, `.full`) and `.collapse` from the typed `size` and `collapse` inputs, so the developer writes no Foundation or library class. The browser supplies what Foundation's JavaScript emulated: `showModal()` puts the dialog in the top layer without moving it, makes the rest of the page inert, contains focus, and paints `::backdrop`, which the library styles with Foundation's own overlay colour. Foundation's `.reveal` Sass, its size classes, full screen below medium, `.collapse`, `.without-overlay`, and its `html.is-reveal-open` scroll lock are all reused unchanged; the library adds seven small documented rules in the `nfs-reveal` Library mixin for what a `<dialog>` in the top layer needs, and CDK Dialog is not used.
 
-The Reveal is an Openable: `nfsOpen`, `nfsClose`, and `nfsToggle` operate it, a bare `nfsClose` inside it closes it, and `close(result)` hands a value to its `closed` output, as Material's `[mat-dialog-close]` does. Focus moves to the first tabbable element inside (or a heading, or a selector), wraps with Tab and Shift+Tab, and returns to the Trigger on close, even in WebKit, which does not focus a button on mouse click. A `closePredicate` can veto any close, and because the directive intercepts Escape before the browser turns it into a close request, a veto holds however often Escape is pressed. `overlay: false` gives a non-modal dialog that dismisses itself like the library's Anchored panes. Animations are keyframe Motion classes applied through State classes, with the dialog closed only after its exit animation ends. The server HTML is the dialog with its content, closed, or shown when a non-modal Reveal is open at its first render, so that its Trigger's `aria-expanded="true"` is true from the first paint; everything else happens in render callbacks after hydration.
+The Reveal is an Openable: `nfsOpen`, `nfsClose`, and `nfsToggle` operate it, a bare `nfsClose` inside it closes it (on Foundation's close button it sits beside the Close Button directive, `nfsCloseButton`), and `close(result)` hands a value to its `closed` output, as Material's `[mat-dialog-close]` does. Focus moves to the first tabbable element inside (or a heading, or a selector), wraps with Tab and Shift+Tab, and returns to the Trigger on close, even in WebKit, which does not focus a button on mouse click. A `closePredicate` can veto any close, and because the directive intercepts Escape before the browser turns it into a close request, a veto holds however often Escape is pressed. `overlay: false` gives a non-modal dialog that dismisses itself like the library's Anchored panes. Animations take Foundation's Motion UI names (`animationIn="spin-in"`), which the directive maps to the library's `nfs-` keyframe classes, or the developer's own keyframe classes written with a leading dot; they run through State classes, with the dialog closed only after its exit animation ends. The server HTML is the dialog with its content, closed, or shown when a non-modal Reveal is open at its first render, so that its Trigger's `aria-expanded="true"` is true from the first paint; everything else happens in render callbacks after hydration.
 
 ## User Stories
 
-1. As an application developer, I want to write `<dialog nfsReveal class="reveal">` where the dialog belongs in my template, so that its content keeps my component's bindings and styles and nothing is moved in the DOM.
+1. As an application developer, I want to write `<dialog nfsReveal>` where the dialog belongs in my template and get Foundation's `.reveal` class from the directive, so that its content keeps my component's bindings and styles, nothing is moved in the DOM, and I write no Foundation class.
 2. As an application developer, I want `[nfsOpen]="signup"` on a button to open the Reveal, so that I link the two with a typed reference instead of an id.
-3. As an application developer, I want a bare `nfsClose` on the `.close-button` inside the Reveal to close it, so that Foundation's docs markup works with one attribute changed.
+3. As an application developer, I want `nfsCloseButton` with a bare `nfsClose` on the close button inside the Reveal to close it, so that Foundation's docs close button needs only directive attributes in place of its class and `data-close`.
 4. As an application developer, I want `[nfsCloseResult]="true"` on a close button and the value on `(closed)`, so that a confirmation dialog reports the choice.
 5. As an application developer, I want `[(isOpen)]` two-way binding, so that my component state and the dialog agree.
 6. As an application developer, I want `open()`, `close(result)`, and `toggle()` through the template reference, so that I can drive the dialog from code.
-7. As an application developer, I want Foundation's size classes, `.full`, `.collapse`, and full screen below medium to look exactly as in Foundation 6.9, so that migrating changes nothing visible.
+7. As an application developer, I want `size="tiny"`, `size="small"`, `size="large"`, `size="full"`, `collapse`, and full screen below medium to look exactly as Foundation 6.9's size classes, `.full`, and `.collapse` do, so that migrating changes nothing visible.
 8. As an application developer, I want a short modal placed where Foundation's JavaScript placed it, a quarter of the free space from the top and centred, so that the default look is Foundation's.
 9. As an application developer, I want numeric `vOffset` and `hOffset`, so that Foundation's fixed placement keeps working at medium and up.
 10. As an application developer, I want tall content to scroll inside the dialog with its end reachable, so that long forms work on short screens.
@@ -51,7 +52,7 @@ The Reveal is an Openable: `nfsOpen`, `nfsClose`, and `nfsToggle` operate it, a 
 25. As an application developer, I want nested modals with `multipleOpened`, each layer returning focus to the button in the layer below, so that Foundation's nested example works.
 26. As an application developer, I want opening a Reveal to close other open Reveals by default, so that Foundation's `multipleOpened: false` default is kept.
 27. As an application developer, I want `role="alertdialog"` for confirmations, so that assistive technology announces them as alerts.
-28. As an application developer, I want `animationIn` and `animationOut` to take `nfs-*` keyframe classes and fade the backdrop with them, so that Foundation's animated modal example works without Motion UI.
+28. As an application developer, I want `animationIn` and `animationOut` to take Foundation's Motion UI names (`animationIn="spin-in" animationOut="spin-out"`), bind the library's keyframe classes of those names, and fade the backdrop with them, so that Foundation's animated modal example works without Motion UI and with its attribute values unchanged.
 29. As an application developer, I want `(opened)` after the enter animation and `(closed)` after the dialog has closed, so that my handlers see the final state.
 30. As a user who asked for reduced motion, I want the dialog to open and close without motion, so that animation does not bother me.
 31. As an application developer, I want `deepLink` to open the Reveal when the URL hash names it, and to write and clear the hash, so that dialogs can be linked and the Back button closes them.
@@ -70,6 +71,11 @@ The Reveal is an Openable: `nfsOpen`, `nfsClose`, and `nfsToggle` operate it, a 
 44. As a developer of a zoneless application, I want the Reveal to need no zone, so that it works with zoneless change detection.
 45. As a library maintainer, I want every behaviour asserted through roles, attributes, focus, and geometry at the test layer that owns it, so that regressions surface where they belong.
 46. As a developer of a server-rendered application, I want a non-modal Reveal that is open by default to be shown in the server HTML, so that its Trigger's expanded state is true from the first paint, the dialog does not pop in at hydration, and a click on its Trigger before hydration does what the user saw.
+47. As an application developer, I want a misspelt size or Motion name (`size="huge"`, `animationIn="fade-inn"`), an exit name on `animationIn`, or a library class name as a value (`animationIn="nfs-fade-in"`) to fail to compile, so that a typo never ships a dialog without its look or its animation.
+48. As an application developer, I want to give `animationIn` and `animationOut` my own keyframe classes with a leading dot (`animationIn=".my-zoom-in"`), so that I can animate a Reveal at another speed or with another effect than the library's.
+49. As an application developer migrating Foundation markup, I want a development warning when I copy a Foundation class onto the dialog (`class="tiny reveal"`), naming the input to bind instead, so that my markup moves to the directive's inputs.
+50. As an application developer, I want to put a class of my own on the dialog and style its `::backdrop`, so that one Reveal can dim the page differently, as Foundation's `additionalOverlayClasses` allowed.
+51. As a developer of a server-rendered application, I want the server HTML to carry `.reveal`, the size class, and `.collapse` although I wrote none of them, so that Foundation's CSS styles the first paint.
 
 ## Implementation Decisions
 
@@ -79,21 +85,21 @@ Foundation 6.9's Reveal, from its `Reveal.defaults`, its events, and its methods
 
 | Foundation Option | Default | What it does in 6.9 | Library counterpart |
 | --- | --- | --- | --- |
-| `animationIn` | `''` | Motion UI class for opening (the overlay gets `fade-in`); empty means jQuery `show()` | `animationIn` input, keyframe Motion classes only; the backdrop fades with it |
-| `animationOut` | `''` | Motion UI class for closing (the overlay gets `fade-out`) | `animationOut` input, same rules |
+| `animationIn` | `''` | Motion UI class for opening (the overlay gets `fade-in`); empty means jQuery `show()` | `animationIn` input: a Motion name, which binds the library's keyframe class of that name (`spin-in` binds `nfs-spin-in`), or the consumer's own keyframe classes written with a leading dot; the backdrop fades with it |
+| `animationOut` | `''` | Motion UI class for closing (the overlay gets `fade-out`) | `animationOut` input, same rules with the leaving names |
 | `showDelay`, `hideDelay` | `0` | Duration of jQuery `show()`/`hide()` when no animation is set | Dropped option: timing belongs to CSS (building-blocks 1.4) |
 | `closeOnClick` | `true` | A click on the overlay closes; without an overlay, a body click closes unless `fullScreen` | `closeOnClick` input: a Backdrop press on a modal Reveal; the Light dismiss pointer rule on a non-modal one |
 | `closeOnEsc` | `true` | A window `keydown` handler closes on Escape while open | `closeOnEsc` input: the directive handles unhandled Escape before the browser's close request, so `false` holds |
 | `multipleOpened` | `false` | When false, fires `closeme.zf.reveal` before opening so other Reveals close | `multipleOpened` input: `false` closes the other open Reveals first; `true` stacks modals with nested `showModal()` |
 | `vOffset` | `'auto'` | Inline `top`: `(viewport height - modal height) / 4`, or `min(100, vh / 10)` when taller than the viewport; a number is px | `vOffset` input; `'auto'` reproduced in CSS by rule 7; a number applies at medium and up |
 | `hOffset` | `'auto'` | Inline `left`; `auto` centres; a number also zeroes the margins | `hOffset` input; `'auto'` is Foundation's CSS centring; a number applies at medium and up |
-| `fullScreen` | `false` | Forced true by `.full`; forces `overlay: false` and disables the body click | Dropped option: write the `.full` Variant class; a full-screen Reveal stays modal |
+| `fullScreen` | `false` | Forced true by `.full`; forces `overlay: false` and disables the body click | Dropped option: `size="full"` sets the `.full` Variant class; a full-screen Reveal stays modal |
 | `overlay` | `true` | Generate `.reveal-overlay`; `false` adds `.without-overlay` | `overlay` input: `true` opens with `showModal()` and `::backdrop`, `false` opens with `show()` and binds `.without-overlay` |
 | `resetOnClose` | `false` | Re-assigns `innerHTML` on close to stop media | Dropped option (building-blocks 1.4): re-parsing destroys Angular bindings; content that must reset is Lazy content under `@if (reveal.isOpen())` |
 | `deepLink` | `false` | Opens on load when `location.hash` is `#id`, writes and clears the hash, follows `hashchange` | `deepLink` input, after hydration, consumer id required |
 | `updateHistory` | `false` | `pushState` instead of `replaceState` | `updateHistory` input |
 | `appendTo` | `'body'` | Where the overlay (or the modal) is moved | Dropped option: the top layer needs no move |
-| `additionalOverlayClasses` | `''` | Extra classes on the generated overlay | Dropped option: there is no overlay element; the consumer puts classes on the dialog and styles `.reveal.<class>::backdrop` |
+| `additionalOverlayClasses` | `''` | Extra classes on the generated overlay | Dropped option: there is no overlay element; the consumer puts a class of its own on the dialog and styles `dialog.<class>::backdrop`, which outranks rule 6 (specificity 0,1,2 against 0,1,1) |
 
 | Foundation event | When | Library counterpart |
 | --- | --- | --- |
@@ -108,16 +114,31 @@ Dropped options and behaviours: `showDelay`, `hideDelay`, `fullScreen`, `resetOn
 
 ### CSS class to Angular mapping
 
-| Foundation class or element | Angular | Rationale |
-| --- | --- | --- |
-| `.reveal` (Structural class) | `NfsReveal`, selector `dialog[nfsReveal]`; the host also binds `.reveal` | Attribute directive on the consumer's element (ADR 0001, ADR 0007); the element is `<dialog>`, the one markup delta from Foundation's `div` |
-| `.reveal-overlay` (generated) | None: `::backdrop`, coloured by rule 6 of the `nfs-reveal` mixin | Replaced by a platform feature (building-blocks 1.1) |
-| `.tiny`, `.small`, `.large`, `.full`, `.collapse` (Variant classes) | Written by the consumer | Classes stay classes (ADR 0010's rule, applied here); `.full` replaces the `fullScreen` Option |
-| `.without-overlay` (Foundation's non-modal class) | Host binding `[class.without-overlay]` from `overlay` being false | Foundation's own `position: fixed` rule for it |
-| `.is-opening`, `.is-closing` (State classes) | Host bindings while an enter or exit Motion class runs | Foundation's own State class names (Dropdown's `.is-opening`, Drilldown's `.is-closing`); Foundation's Reveal Sass styles neither, so they only key the backdrop keyframes and the completion wait |
-| Motion classes from `animationIn`/`animationOut` | Host class binding during the matching phase | ADR 0003, building-blocks 1.6 rules 1 and 4 |
-| `html.is-reveal-open`, `html.zf-has-scroll` (State classes on `html`) | Written on the document element by the Scroll lock | Foundation's Sass does the locking; the directive writes the classes and the `top` offset |
-| `.close-button` (CSS-only component) | Consumer markup with a bare `nfsClose` | The Close Button's classes belong to Foundation; the Trigger comes from the Triggers spec |
+No Foundation or library class is left for the consumer to write ([ADR 0039](../adr/0039-directives-manage-every-foundation-class.md)); the consumer writes the `<dialog>` element and the directive's attributes.
+
+| Foundation class or element | Kind | Angular | Type, Sass setting, and Variant registry | Class each value sets | Variant property |
+| --- | --- | --- | --- | --- | --- |
+| `.reveal` | Structural class | `NfsReveal` (`dialog[nfsReveal]`), static host class | - | `reveal` | - |
+| `.tiny`, `.small`, `.large`, `.full` | Variant classes, a Closed Variant family | `size` Variant input of `NfsReveal` | `NfsRevealSize`, closed: `'tiny' \| 'small' \| 'large' \| 'full'`; `foundation-reveal` writes the four classes itself and no Sass setting lists them, so there is no registry | the name itself (`size="tiny"` sets `.tiny`); unset sets none, so the dialog has Foundation's default width (`$reveal-width`) and full screen below medium as always; `'full'` replaces the `fullScreen` Option | none (closed) |
+| `.collapse` | Variant class, a single modifier | `collapse` Variant input of `NfsReveal` | boolean through `nfsVariantBoolean`, closed | `collapse` while true | none (closed) |
+| `.without-overlay` | Foundation's JavaScript class for its `overlay` Option | Host binding `[class.without-overlay]` from the `overlay` Option being false | the Option's `booleanAttribute` (an Option, not a Variant input) | - | - |
+| `.is-opening`, `.is-closing` | State classes | Host bindings while an enter or exit Motion class runs | - | - | - |
+| Motion classes: the `nfs-` keyframe classes of `nfs-motion`, or the consumer's own | Motion classes | Host class binding during the matching phase, from the value of `animationIn` or `animationOut` | `NfsMotionIn` and `NfsMotionOut` (closed Motion names, or the consumer's classes written with a leading dot; API below) | a Motion name sets `nfs-<name>` (`fade-in` sets `nfs-fade-in`); the dot form sets the consumer's classes without their dots; `''` sets none | - |
+| `html.is-reveal-open`, `html.zf-has-scroll` | State classes on an element that carries no library directive | Written on the document element with `Renderer2` by the Scroll lock, from a render callback | - | - | - |
+| `.reveal-overlay` | generated by Foundation's JavaScript | None: `::backdrop`, coloured by rule 6 of the `nfs-reveal` mixin | - | - | - |
+| `.close-button` | Structural class of the Close Button | `button[nfsCloseButton]` ([Spec: Close Button](../issues/83-spec-close-button.md)) with a bare `nfsClose` beside it | - | `close-button` | - |
+
+Reasons, row by row:
+
+- `.reveal`: an attribute directive on the consumer's element (ADR 0001, ADR 0007); the element is `<dialog>`, the one markup delta from Foundation's `div`. A `class="reveal"` copied from Foundation's markup merges with the static host class and is not reported (building-blocks 1.4).
+- Sizes: building-blocks 1.4 rule 3 names the input `size`, and Foundation's own `.full` rule makes the four mutually exclusive in effect (it comes last in `foundation-reveal` and overrides the width of the others), so one enum input holds them. `fullScreen` does not name the family (rule 1): it names one member, and Foundation's JavaScript set the Option from the class, never the class from the Option. Foundation has no responsive size class, so `size` takes no Breakpoint query or rules object.
+- `.collapse`: building-blocks 1.4 rule 4, a single on or off class is a boolean named after it.
+- `.without-overlay`: the consumer never wrote it in Foundation's markup; Foundation's JavaScript added it from `data-overlay="false"`, and the class follows the `overlay` Option, which also decides modal or non-modal behaviour. So `overlay` stays an Option with `booleanAttribute` and a Defaults token slot (building-blocks 1.4), which a Variant input could not have.
+- `.is-opening`, `.is-closing`: Foundation's own State class names (Dropdown's `.is-opening`, Drilldown's `.is-closing`); Foundation's Reveal Sass styles neither, so they only key the backdrop keyframes and the completion wait.
+- Motion classes: ADR 0003 and building-blocks 1.6 rules 1 and 4; the value is a typed name, never a class name (ADR 0039, the follow-up on class names passed as input values).
+- `html` classes: Foundation's Sass does the locking; the Scroll lock writes the classes and the `top` offset on the document element, which no library directive hosts, for a state that has no first-paint value (no Reveal is modal before hydration, and only modal Reveals lock). A `Renderer2` write there satisfies the class rule: the consumer writes no class and the directive that owns the state manages it (the user's decision recorded by the [Re-run: Magellan spec under the class rule](../issues/122-rerun-magellan-class-rule.md)).
+- `.close-button`: the Close Button spec owns the class, the `type` default, the name checks, and the 24 px floor; the closing comes from the Triggers spec's `nfsClose`, placed beside it and never hosted (Close Button D2).
+- Triggers: the Reveal writes no class on its Triggers, neither by host binding nor with `Renderer2` ([Spec: Triggers (shared utility)](../issues/54-spec-triggers.md), D18); a Trigger's classes come from the directive beside it, `nfsButton` or `nfsCloseButton`.
 
 ### Hierarchy and DI shape
 
@@ -129,20 +150,31 @@ ngx-foundation-sites/reveal  (secondary entry point)
     injects  nfsRevealDefaultsToken (optional)  -> Defaults token
     injects  nfsAnimationsToken (optional)      -> animations off in tests
     injects  InteractivityChecker, _IdGenerator (CDK), DOCUMENT, NgZone, Injector, DestroyRef
+    injects  HostAttributeToken('class') (development builds only) -> the copied-class check
     uses     nfsLightDismiss(...) while open and non-modal (Anchored pane utility)
+    uses     nfsVariantBoolean, nfsMotionClasses (primary entry point)
   NfsRevealStack      internal @Service(): the open Reveals in order, the Scroll lock, one window keydown listener
 ```
 
 - `nfsOpenableToken` makes the Reveal the Nearest Openable of everything inside it, so a bare `nfsClose` closes it and a bare `nfsClose` inside a Dropdown pane inside it closes only the pane (Triggers spec, D4).
 - `nfsRevealToken = new InjectionToken<NfsReveal>('nfsRevealToken')`, in a token file that imports only types (building-blocks 1.9, ADR 0009): a component projected into the dialog injects it with `{optional: true}` to call `close(result)`, the declarative counterpart of injecting Material's `MatDialogRef`. A nested Reveal provides its own, so the nearest wins.
-- `nfsRevealDefaultsToken: InjectionToken<NfsRevealDefaults>`, all-optional Material shape B (building-blocks 1.4): `overlay`, `closeOnClick`, `closeOnEsc`, `multipleOpened`, `vOffset`, `hOffset`, `animationIn`, `animationOut`, `deepLink`, `updateHistory`, `autoFocus`, `restoreFocus` (boolean only). Provided at bootstrap, route, or element level; the nearest wins.
+- `nfsRevealDefaultsToken: InjectionToken<NfsRevealDefaults>`, all-optional Material shape B (building-blocks 1.4): `overlay`, `closeOnClick`, `closeOnEsc`, `multipleOpened`, `vOffset`, `hOffset`, `animationIn` (`NfsMotionIn`), `animationOut` (`NfsMotionOut`), `deepLink`, `updateHistory`, `autoFocus`, `restoreFocus` (boolean only). Provided at bootstrap, route, or element level; the nearest wins. It holds no Variant input: `size` and `collapse` have no application-wide default ([ADR 0040](../adr/0040-variant-input-types.md)).
 - `NfsRevealStack` holds state shared across instances, which is the only reason a service is allowed (building-blocks 1.5): the ordered list of open Reveals (for `multipleOpened`, the topmost modal, and the focus fallback), the Scroll lock count, and the single `window` `keydown` listener that exists only while a modal Reveal is open. It is internal to the entry point, not public API.
 - Non-modal Reveals use the Light dismiss registry through `nfsLightDismiss` from the Anchored pane utility (group `null`, `outsidePress` from `closeOnClick`, Triggers from `registerTrigger`); modal Reveals never register, because the page behind them is inert.
-- Entry point `ngx-foundation-sites/reveal`; it imports the Triggers token and the Anchored pane utility.
+- Entry point `ngx-foundation-sites/reveal`; it imports the Triggers token and the Anchored pane utility. It exports `NfsRevealSize`; the Motion name types and `nfsMotionClasses` come from the primary entry point `ngx-foundation-sites`, beside the Variant types, because the four directives with Motion inputs share them. The close button's directive comes from `ngx-foundation-sites/close-button`, which the consumer imports; the Reveal does not import it.
 
 ### API
 
 ```ts
+// ngx-foundation-sites (primary entry point), shared by every Motion input
+type NfsMotionInName = 'fade-in' | 'slide-in-down' | 'slide-in-left' | 'slide-in-right' | 'hinge-in-from-top' | 'spin-in';
+type NfsMotionOutName = 'fade-out' | 'slide-out-up' | 'slide-out-left' | 'slide-out-right' | 'spin-out';
+type NfsMotionClassList = `.${string}`; // the consumer's own keyframe classes, each written with a leading dot
+type NfsMotionIn = NfsMotionInName | NfsMotionClassList | '';
+type NfsMotionOut = NfsMotionOutName | NfsMotionClassList | '';
+
+// ngx-foundation-sites/reveal
+type NfsRevealSize = 'tiny' | 'small' | 'large' | 'full';
 type NfsRevealRole = 'dialog' | 'alertdialog';
 type NfsRevealAutoFocus = 'first-tabbable' | 'first-heading' | (string & {}) | false;
 type NfsRevealRestoreFocus = boolean | string | HTMLElement;
@@ -152,14 +184,16 @@ class NfsReveal implements NfsOpenable { // selector dialog[nfsReveal], exportAs
   readonly isOpen: ModelSignal<boolean>;
   readonly id: InputSignal<string>;
   readonly triggerRole: Signal<'dialog' | 'modal-dialog'>;
+  readonly size: InputSignal<NfsRevealSize | undefined>; // default undefined: no class
+  readonly collapse: InputSignalWithTransform<boolean, NfsVariantBoolean>; // default false
   readonly overlay: InputSignalWithTransform<boolean, unknown>;
   readonly closeOnClick: InputSignalWithTransform<boolean, unknown>;
   readonly closeOnEsc: InputSignalWithTransform<boolean, unknown>;
   readonly multipleOpened: InputSignalWithTransform<boolean, unknown>;
   readonly vOffset: InputSignalWithTransform<NfsRevealOffset, unknown>;
   readonly hOffset: InputSignalWithTransform<NfsRevealOffset, unknown>;
-  readonly animationIn: InputSignal<string>;
-  readonly animationOut: InputSignal<string>;
+  readonly animationIn: InputSignal<NfsMotionIn>;
+  readonly animationOut: InputSignal<NfsMotionOut>;
   readonly deepLink: InputSignalWithTransform<boolean, unknown>;
   readonly updateHistory: InputSignalWithTransform<boolean, unknown>;
   readonly role: InputSignal<NfsRevealRole>;
@@ -185,8 +219,8 @@ Inputs (Foundation Options first, then the Material-derived ones):
 | `multipleOpened` | `input()`, `booleanAttribute` | boolean | `false` | `data-multiple-opened` | Escape closes only the topmost modal (Foundation closed every open one) |
 | `vOffset` | `input()`, transform `'auto'` or `numberAttribute` | number (px) or `'auto'` | `'auto'` | `data-v-offset` | `'auto'` is CSS; a number applies at medium and up only (below medium the dialog is full screen) |
 | `hOffset` | `input()`, same transform | number (px) or `'auto'` | `'auto'` | `data-h-offset` | Same |
-| `animationIn` | `input()` | string (space-separated classes) | `''` | `data-animation-in` | Keyframe Motion classes only (ADR 0003); dev warning for a Motion UI transition class |
-| `animationOut` | `input()` | string | `''` | `data-animation-out` | Same |
+| `animationIn` | `input()`, explicit type argument `NfsMotionIn` | an entering Motion name (`NfsMotionInName`), the consumer's own keyframe classes each with a leading dot (`'.my-zoom-in'`), or `''` | Defaults token, else `''` | `data-animation-in` | A Motion name binds the library's `nfs-<name>` keyframe class, so Foundation's `data-animation-in="spin-in"` keeps its value; a misspelt name, a leaving name, Motion UI's `fast`/`slow` modifiers, and a library class name (`'nfs-fade-in'`) fail to compile (ADR 0039, class names passed as input values); keyframe classes only (ADR 0003); development check 3 |
+| `animationOut` | `input()`, explicit type argument `NfsMotionOut` | a leaving Motion name (`NfsMotionOutName`), the dot form, or `''` | Defaults token, else `''` | `data-animation-out` | Same, with the leaving names |
 | `deepLink` | `input()`, `booleanAttribute` | boolean | `false` | `data-deep-link` | Applies after hydration; requires a consumer-supplied `id` |
 | `updateHistory` | `input()`, `booleanAttribute` | boolean | `false` | `data-update-history` | `history.state` passed through |
 | `id` | `input()` | string | generated, prefix `nfs-reveal-` | The consumer's required `id` | Optional except with `deepLink`; bound as `[attr.id]`; the Openable's `id` |
@@ -194,6 +228,15 @@ Inputs (Foundation Options first, then the Material-derived ones):
 | `autoFocus` | `input()`, transform (`''` becomes `'first-tabbable'`, `'false'` becomes `false`) | `'first-tabbable' \| 'first-heading' \|` selector `\| false` | `'first-tabbable'` | None (Foundation focuses the modal) | New, Material's union without `'dialog'` |
 | `restoreFocus` | `input()`, transform (`''` becomes `true`, `'false'` becomes `false`) | boolean, selector, or element | `true` | None (Foundation always refocuses its anchor) | New, CDK's `RestoreFocusValue` |
 | `closePredicate` | `input()` | `(result) => boolean`, or `null` | `null` | None | New, Material's `closePredicate` with the result only |
+
+Variant inputs (building-blocks 1.4; [ADR 0040](../adr/0040-variant-input-types.md)), each declared with explicit type arguments that name its exported alias, never with `booleanAttribute`, and never held by the Defaults token:
+
+| Input | Kind | Type | Default | Foundation equivalent | Delta |
+| --- | --- | --- | --- | --- | --- |
+| `size` | `input()`, no transform | `NfsRevealSize`: `'tiny' \| 'small' \| 'large' \| 'full'` (Closed Variant family) | `undefined`, which sets no class | `.reveal.tiny`, `.small`, `.large`, `.full`; the `fullScreen` Option | New. The JSDoc names the class template `.reveal.<size>`; `'full'` is the full-screen dialog, which stays modal |
+| `collapse` | `input()`, transform `nfsVariantBoolean` | boolean from `NfsVariantBoolean` (`boolean \| '' \| 'true' \| 'false' \| null \| undefined`) | `false` | `.reveal.collapse` | New. The bare attribute sets it; `collapse="flase"` fails to compile |
+
+Neither family is open: no Sass setting lists Reveal's size names or `.collapse`, so the Reveal has no Variant registry, writes no Variant property, and takes no part in the Runtime checks. Class bindings on the host: the static `reveal` class; one `[class]` binding from a `computed` list holding the `size` class, `collapse`, and the Motion classes of the current phase, each only when it is one class token, so the consumer's own classes and a copied Variant class stay (development check 8 reports the copy); and `[class.without-overlay]`, `[class.is-opening]`, `[class.is-closing]` from signal state, which strip a copied one.
 
 Model, outputs, methods:
 
@@ -223,7 +266,7 @@ Behaviour:
 - `multipleOpened: true`: each Reveal calls `showModal()` on top of the others; the top layer orders them. Escape, Backdrop press, and Tab wrap act on the topmost only.
 - Deep linking (only when `deepLink` is true, all after the first render): in the first render callback, and on every `hashchange` (a `window` listener added in an `afterRenderEffect` keyed on `deepLink`, removed in its cleanup and on destroy), a hash equal to `#` plus `id()` opens the Reveal when closed; any other hash closes it when open (Foundation's `_handleState`), so a non-modal Reveal open at first paint closes at hydration when the hash does not name it, and `deepLink` is not combined with `[isOpen]="true"`. Opening writes `location.pathname + location.search + '#' + id()` with `history.replaceState(history.state, '', url)`, or `pushState` with `updateHistory`, unless the hash is already there; closing while the hash names this Reveal writes `pathname + search` the same way. Passing `history.state` through keeps the Router's own entry data, as the Tabs spec does. A hash-driven change writes nothing.
 - Destroy while open: the stack entry is removed, the Scroll lock is released if this was the last modal, timers are cleared, and the hash is left alone; removing an open `<dialog>` from the document closes it natively. No `closed` is emitted.
-- Dev-mode checks, in one `afterNextRender` that exists only when `ngDevMode` is on, plus one check at open and one at close, each warning once per instance: (1) no `aria-labelledby` and no `aria-label` on the host; (2) `role` is `'alertdialog'` and there is no `aria-describedby`; (3) `animationIn` or `animationOut` names a Motion UI transition class (`/^(fade|slide|hinge|scale|spin)-(in|out)/` without the `nfs-` prefix): "Motion UI transition classes do not animate; use a keyframe class such as `nfs-fade-in`", the class applied unchanged; (4) `deepLink` with a generated id; (5) a `tabindex` attribute on the dialog (HTML forbids it on `<dialog>`); (6) at open, nothing tabbable inside the dialog (the APG strongly recommends a visible close button, and without one every engine focuses the dialog box); (7) at close, with `restoreFocus` not `false`, no usable restore target (the `restoreFocus` target, the `trigger`, the element focused at open, and the first registered Trigger outside the dialog, each missing or unfocusable): the warning names the `restoreFocus` input.
+- Dev-mode checks, only when `ngDevMode` is on, each warning once per instance: checks 1, 2, 4, 5, and 8 in one `afterNextRender`, check 3 in the `read` phase that measures a phase's animation, check 6 at open, and check 7 at close. (1) No `aria-labelledby` and no `aria-label` on the host; (2) `role` is `'alertdialog'` and there is no `aria-describedby`; (3) a non-empty `animationIn` or `animationOut` whose classes start no CSS animation when their phase begins (a consumer class without `@keyframes`, a Motion UI transition class given in the dot form, or a Motion name without the `nfs-motion` include): "animationIn="spin-in" started no animation: include nfs-motion, or give your own class @keyframes", the phase completing at once as before; and a dot-form class that starts with `nfs-`: "write the library's Motion name without its prefix: animationIn="fade-in""; (4) `deepLink` with a generated id; (5) a `tabindex` attribute on the dialog (HTML forbids it on `<dialog>`); (6) at open, nothing tabbable inside the dialog (the APG strongly recommends a visible close button, and without one every engine focuses the dialog box); (7) at close, with `restoreFocus` not `false`, no usable restore target (the `restoreFocus` target, the `trigger`, the element focused at open, and the first registered Trigger outside the dialog, each missing or unfocusable): the warning names the `restoreFocus` input; (8) the host's static `class` holds a Foundation or library class the directive sets (a size name, `collapse`, `without-overlay`, `is-opening`, `is-closing`, or an `nfs-` class), read through `HostAttributeToken('class')` in a field initialiser that exists only in development builds, because a stripped class is gone from the element by the first render: "class="tiny" is set by nfsReveal: bind size="tiny" instead", naming each class with its input (`[overlay]="false"` for `without-overlay`, the Motion inputs for an `nfs-` class, none for a State class); a redundant `reveal` merges with the static host class and is not reported (building-blocks 1.4, the initial-state rule; the Button spec's copied-class check).
 
 ### Focus
 
@@ -251,7 +294,7 @@ Ported from Foundation's `_disableScroll`/`_addGlobalClasses` and `_enableScroll
 
 Implementation level: native platform. `<dialog>`, `showModal()`, `show()`, the top layer, `::backdrop`, `:modal`, the `cancel` and `close` events, and implicit inertness of the rest of the page are Baseline widely available and inside the Browser target (ADR 0007). `@angular/aria` 22.2 has no dialog pattern. CDK Dialog, ADR 0007's named fallback, is not needed for any case: the Reveal dialog prototype matched Foundation's own `.reveal` inside `.reveal-overlay` to the pixel for every size at 320, 640, and 1024 px in Chromium, Firefox, and WebKit once the Library mixin's rules were added, and CDK Dialog would not use `<dialog>`, defaults `aria-modal` off, and hides siblings with `aria-hidden`. `dialog.closedby`, `requestClose()`, `CloseWatcher`, `@starting-style`, and Invoker Commands are out of target and not used (Further Notes).
 
-Primitives: `HTMLDialogElement.showModal()`, `show()`, `close()`, `returnValue`; `cancel` and `close` events; Pointer Events on the host; `keydown` with `event.key` and `isComposing`; `animationend`/`animationcancel` with `pseudoElement` and `animationName`; `getComputedStyle` for the animation lengths; CDK `InteractivityChecker` (focusable, visible, tabbable) and `_IdGenerator`; the History API and `hashchange`; `model()`, `input()` with transforms, `output()`, `computed()` (one of them reading `isOpen` and `overlay` untracked, so the first-render `open` binding never re-evaluates), one `linkedSignal` for the animation phase, `afterRenderEffect`, `afterNextRender`, `inject()` with `optional`, host metadata for classes, attributes, custom-property style bindings, and listeners; `NgZone.runOutsideAngular` for the fallback timer and the `window` listeners; `nfsLightDismiss` from the Anchored pane utility.
+Primitives: `HTMLDialogElement.showModal()`, `show()`, `close()`, `returnValue`; `cancel` and `close` events; Pointer Events on the host; `keydown` with `event.key` and `isComposing`; `animationend`/`animationcancel` with `pseudoElement` and `animationName`; `getComputedStyle` for the animation lengths; CDK `InteractivityChecker` (focusable, visible, tabbable) and `_IdGenerator`; the History API and `hashchange`; `model()`, `input()` with transforms, `output()`, `computed()` (one of them reading `isOpen` and `overlay` untracked, so the first-render `open` binding never re-evaluates), one `linkedSignal` for the animation phase, `afterRenderEffect`, `afterNextRender`, `inject()` with `optional`, host metadata for classes, attributes, custom-property style bindings, and listeners; `HostAttributeToken('class')` in development builds only (check 8); `NgZone.runOutsideAngular` for the fallback timer and the `window` listeners; `nfsLightDismiss` from the Anchored pane utility; `nfsVariantBoolean` and `nfsMotionClasses` from the primary entry point.
 
 Render hooks and effects (building-blocks 1.5):
 
@@ -259,7 +302,7 @@ Render hooks and effects (building-blocks 1.5):
 | --- | --- | --- |
 | Open and close sync (showModal, close, Scroll lock, focus, history) | `afterRenderEffect` with phases: `earlyRead` reads `document.activeElement` and the page scroll position before anything moves; `write` applies the Scroll lock, removes `autofocus`, calls `showModal()`/`show()` or `close()`, places or restores focus, and writes history; `read` measures the host's computed animations after the phase classes are bound and starts the completion wait | It re-runs only when `isOpen`, the phase, or `overlay` change, so a closed Reveal costs nothing; the phases keep the scroll read ahead of the lock's writes; it covers open-by-default because its first run follows the first render, and never runs on the server |
 | Deep-link listener and first hash read | `afterRenderEffect` keyed on `deepLink` (cleanup removes the `hashchange` listener) | Follows a changing input; `location` and `history` only after first render (building-blocks 1.11 decision 3) |
-| Dev-mode checks | `afterNextRender`, only when `ngDevMode` | One-shot, browser-only, removed in production |
+| Dev-mode checks | `afterNextRender`, only when `ngDevMode`; check 8's static-class read in a field initialiser under the same guard; check 3 in the open and close sync's `read` phase | One-shot, browser-only, removed in production; the static class must be read at construction, before a binding strips it |
 | Light dismiss registration (non-modal) | `nfsLightDismiss`, which registers in its own render callback while open | Owned by the Anchored pane utility |
 | `effect` | Not used | Every side effect here touches the DOM, focus, `window`, or `history`, and an `effect` also runs on the server |
 | `afterEveryRender` | Not used | It would run after every change detection in the application for a dialog that is almost always closed |
@@ -277,20 +320,20 @@ Fallback: for rule 7 (the `'auto'` offsets in CSS), which the [Prototype: Reveal
 | Result | `afterClosed()` emits the result | `closed` output carries the result |
 | Lifecycle | `afterOpened()`, `beforeClosed()`, `afterClosed()`, `getState()` | `opened`, `isOpenChange`, `closed`; `.is-closing` shows the closing state in CSS |
 | Veto | `closePredicate(result, config, instance)`, `disableClose` | `closePredicate(result)`; `closeOnEsc` and `closeOnClick` for the per-gesture switches |
-| Close button | `[mat-dialog-close]="result"`, `type="button"` default, `aria-label` input | Bare `nfsClose` with `[nfsCloseResult]`; `type` and names are native attributes |
+| Close button | `[mat-dialog-close]="result"`, `type="button"` default, `aria-label` input | Bare `nfsClose` with `[nfsCloseResult]`, beside `nfsCloseButton` on Foundation's close button, which owns the look and the `type="button"` default ([Spec: Close Button](../issues/83-spec-close-button.md)); names are native attributes |
 | Title and name | `mat-dialog-title` queues its id into `aria-labelledby`; `ariaLabel`, `ariaLabelledBy`, `ariaDescribedBy` config | The consumer's `aria-labelledby`, `aria-label`, `aria-describedby` on the `<dialog>`; dev warnings when missing |
 | Role | `role: 'dialog' \| 'alertdialog'` | Same values, `role` input |
 | Modality | CDK overlay, `aria-modal` configurable (default false), `aria-hidden` on siblings | Native `showModal()`: top layer and inert page; no `aria-modal`, no `aria-hidden` |
-| Backdrop | `hasBackdrop`, `backdropClass`, `backdropClick()` | `overlay`; `::backdrop` styled by Foundation's setting; the consumer styles `.reveal.<class>::backdrop` |
+| Backdrop | `hasBackdrop`, `backdropClass`, `backdropClick()` | `overlay`; `::backdrop` styled by Foundation's setting; the consumer puts a class of its own on the dialog and styles `dialog.<class>::backdrop` |
 | Escape | Closes without modifier keys unless `disableClose` | Unhandled Escape closes the topmost modal unless `closeOnEsc` is false or the predicate vetoes; the close request is cancelled so vetoes hold |
 | Initial focus | `autoFocus`: `'first-tabbable'`, `'first-heading'`, `'dialog'`, selector, boolean | Same without `'dialog'` (the APG forbids focusing the dialog element); `false` leaves the browser's choice |
 | Focus trap | CDK `FocusTrap` with sentinels | Native containment plus the directive's Tab wrap (CDK's sentinels would sit outside the dialog, in the inert page) |
 | Restore focus | `restoreFocus: boolean \| string \| HTMLElement`, only when focus is still inside | Same type and guard, plus the `trigger` from `open(trigger)` and the fallback up closed Reveals |
-| Sizing and position | `width`, `height`, `min*`, `max*`, `position` config | Foundation's Variant classes and `vOffset`/`hOffset` |
+| Sizing and position | `width`, `height`, `min*`, `max*`, `position` config | The `size` and `collapse` Variant inputs over Foundation's classes, and `vOffset`/`hOffset` |
 | Scroll | `scrollStrategy` (block by default) | Foundation's `html.is-reveal-open` Scroll lock |
 | Several dialogs | `openDialogs`, `closeAll()` | `multipleOpened` |
 | Navigation | `closeOnNavigation` (true) | Not borrowed: a Reveal lives in a template and is destroyed with its route; a Reveal in a persistent layout stays open, as in Foundation |
-| Animation | MDC classes plus a timer, or keyframes with `animationend` and a fallback of total time plus 100 ms | Keyframe Motion classes through State classes, `animationend` filtered by name, measured length plus 100 ms fallback |
+| Animation | MDC classes plus a timer, or keyframes with `animationend` and a fallback of total time plus 100 ms | Typed Motion names mapped to the library's keyframe classes, or the consumer's own, through State classes, `animationend` filtered by name, measured length plus 100 ms fallback |
 
 Borrowed: `close(result)`, `closePredicate`, the `autoFocus` union, `restoreFocus`, `role`, the `[mat-dialog-close]` result through `nfsClose`, the restore-only-when-focus-is-inside guard, the fallback timer. Not borrowed: the service and overlay container, `aria-modal` and sibling `aria-hidden`, sizing config, `closeOnNavigation`, `beforeClosed()`, `backdropClick()`, `keydownEvents()`.
 
@@ -308,7 +351,7 @@ APG pattern: Dialog (Modal) for `overlay: true`; Alert Dialog when `role` is `'a
 | `<dialog>` | `open` | Set by `showModal()`/`show()`; bound only for a non-modal Reveal open at its first render, from a value fixed then, so no later change detection writes it (Rendering modes) |
 | `<dialog>` | `tabindex`, `aria-hidden` | Never (HTML forbids `tabindex` on `<dialog>`; closed dialogs are `display: none`) |
 | Trigger | `aria-haspopup="dialog"`, `aria-controls`; plus `aria-expanded` only when `overlay` is false | Triggers spec, `modal-dialog` or `dialog` Trigger role |
-| `.close-button` | name | The consumer's `aria-label`; the `&times;` glyph is `aria-hidden="true"` (Foundation's docs markup) |
+| `button[nfsCloseButton]` | name | The consumer's `aria-label`; the `&times;` glyph is `aria-hidden="true"` (Foundation's docs markup); the Close Button's development checks warn on a missing or symbol-only name ([Spec: Close Button](../issues/83-spec-close-button.md)) |
 
 | Key | Modal Reveal | Non-modal Reveal | Owner |
 | --- | --- | --- | --- |
@@ -327,45 +370,45 @@ Requirements, each checked where stated.
 | --- | --- | --- |
 | 1.3.1 Info and Relationships, 4.1.2 Name, Role, Value | The dialog exposes role `dialog` (or `alertdialog`), modal state, and a name. Role and modal state come from `<dialog>` and `showModal()`; the name is required from the consumer's `aria-labelledby` or `aria-label`; an alert dialog requires `aria-describedby` | Dev checks 1 and 2; axe in every story with the dialog open; the screen-reader announcement is the release test under Testing Decisions |
 | 1.4.3 Contrast (Minimum) | Text inside the dialog meets 4.5:1. Rule 5 makes the dialog inherit Foundation's body colour instead of the user-agent `CanvasText`; Foundation's defaults (`$body-font-color` on `$reveal-background`) pass | axe `color-contrast` in every story |
-| 1.4.11 Non-text Contrast | The close glyph, the visual that identifies the `.close-button` control, contrasts at least 3:1 with the dialog in both states: `$closebutton-color` and `$closebutton-color-hover` against `$reveal-background` (defaults 3.42:1 and 19.63:1 against Foundation's `$white`, `#fefefe`; the 32 px glyph also counts as large text for 1.4.3). The dialog's edge contrasts at least 3:1 with the page dimmed by the backdrop: `$reveal-background` against `$reveal-overlay-background` composited over `$body-background` (defaults 3.17:1) | The `nfs-reveal` mixin computes the three ratios from the consumer's settings, each from Foundation's `color-luminance()` with the WCAG formula and compared unrounded (Foundation's `color-contrast()` is not used, because it rounds to one decimal and would pass 2.95:1). It stops the compile with `@error` naming the setting when a close-glyph ratio is under 3, as the `nfs-off-canvas` mixin does for the same glyph, and emits `@warn` naming the setting when the dialog-edge ratio is under 3 (axe has no 1.4.11 rule); node-level Sass test |
+| 1.4.11 Non-text Contrast | The close glyph, the visual that identifies the close button (`nfsCloseButton`), contrasts at least 3:1 with the dialog in both states, the surface under it; `nfs-close-button` checks the same two settings against `$body-background`, and each container checks its own background (Close Button D9): `$closebutton-color` and `$closebutton-color-hover` against `$reveal-background` (defaults 3.42:1 and 19.63:1 against Foundation's `$white`, `#fefefe`; the 32 px glyph also counts as large text for 1.4.3). The dialog's edge contrasts at least 3:1 with the page dimmed by the backdrop: `$reveal-background` against `$reveal-overlay-background` composited over `$body-background` (defaults 3.17:1) | The `nfs-reveal` mixin computes the three ratios from the consumer's settings, each from Foundation's `color-luminance()` with the WCAG formula and compared unrounded (Foundation's `color-contrast()` is not used, because it rounds to one decimal and would pass 2.95:1). It stops the compile with `@error` naming the setting when a close-glyph ratio is under 3, as the `nfs-off-canvas` mixin does for the same glyph, and emits `@warn` naming the setting when the dialog-edge ratio is under 3 (axe has no 1.4.11 rule); node-level Sass test |
 | 1.4.10 Reflow | At 320 CSS px (and 400% zoom of 1280 px) the dialog is full screen through Foundation's small-only rule; tall content scrolls inside the dialog, whose box ends inside the viewport (rule 4), so the end of the content is reachable without two-dimensional scrolling | e2e at 320 x 640 and with tall content |
 | 1.4.13 Content on Hover or Focus | Not applicable: a Reveal opens on activation, never on hover or focus | None |
 | 2.1.1 Keyboard, 2.1.2 No Keyboard Trap | Every Trigger is a native button; the modal contains focus by design and is left with Escape or a close button; with `closeOnEsc` false or a vetoing `closePredicate`, the dialog must contain a control that closes it | Dev check 6; story `reveal--alert-dialog` |
 | 2.4.3 Focus Order | Focus moves into the dialog on open, wraps inside a modal, and returns to the Trigger on close; a non-modal Reveal sits in the tab order where it is written, so the consumer writes it right after its Trigger | Stories `reveal--basic`, `reveal--nested`; browser-level focus tests |
 | 2.4.7 Focus Visible | The browser's `:focus-visible` ring shows on every control inside (Foundation removes outlines only under what-input's `[data-whatinput='mouse']`, which the library never loads) | e2e computed outline in three engines |
 | 2.4.11 Focus Not Obscured (Minimum) | Modal: the page behind is inert, so focus never reaches content under the dialog; a focused control in a tall dialog is scrolled into view by the browser; the Trigger is focused after the Scroll lock has restored the page position. Non-modal: the dialog closes when focus moves outside it, one of the ways of passing the Understanding document names for non-modal content. A non-modal Reveal shown at first paint cannot be dismissed before hydration (Light dismiss starts in its first render callback, Rendering modes), so until the page hydrates it can cover a control the user focuses, the obstruction the dissent of [Decide: the server state of an open-by-default non-modal Reveal's Trigger](../issues/78-decide-open-by-default-non-modal-reveal-server-state.md) names; from its first render callback it takes focus only when nothing else has focus (D22), and Light dismiss closes it when focus then moves outside | e2e hit tests on focus stops and on the restored Trigger |
-| 2.5.8 Target Size (Minimum) | Foundation's `.close-button` (18.7 x 32 px) passes by the spacing exception: no other target may come within the 24 px circle centred on it, so consumers keep other targets at least 12 px clear of its centre; Foundation's docs placement leaves 134 to 156 px | axe `target-size` (enabled by the `wcag22aa` tag) in every story |
+| 2.5.8 Target Size (Minimum) | Every close button is at least 24 by 24 CSS px through the `nfs-close-button` floor ([Spec: Close Button](../issues/83-spec-close-button.md)); the Reveal adds no rule | axe `target-size` (enabled by the `wcag22aa` tag) in every story; `reveal--basic` asserts the close button's box |
 
-No WCAG rule is added to the library CSS: Foundation's defaults pass every check above (the Reveal dialog prototype, axe with the WCAG 2.2 AA tags at 320 and 1024 px in every size, three engines).
+The `nfs-reveal` mixin adds no WCAG rule: Foundation's defaults pass every check above (the Reveal dialog prototype, axe with the WCAG 2.2 AA tags at 320 and 1024 px in every size, three engines), and the close button's target size is the `nfs-close-button` floor's.
 
 ### Rendered HTML
 
-Consumer markup (Foundation's docs example with the two deltas: `<dialog>` for `div`, `nfsReveal` and `nfsClose` for the data attributes):
+Consumer markup (Foundation's docs example with its deltas: `<dialog>` for `div`, and directive attributes for its classes and data attributes: `nfsReveal` for `.reveal` and `data-reveal`, `nfsCloseButton` with a bare `nfsClose` for `.close-button` and `data-close`, `nfsButton` for `.button`). The docs' `p.lead` is a Typography Helpers class whose directive the [Spec: Typography Helpers](../issues/106-spec-typography-helpers.md) names, so the examples here leave it out:
 
 ```html
 <button nfsButton [nfsOpen]="signup">Click me for a modal</button>
 
-<dialog nfsReveal #signup="nfsReveal" id="signup" aria-labelledby="signup-title" class="reveal">
+<dialog nfsReveal #signup="nfsReveal" id="signup" aria-labelledby="signup-title">
   <h1 id="signup-title">Awesome. I Have It.</h1>
-  <p class="lead">Your couch. It is mine.</p>
-  <button class="close-button" type="button" aria-label="Close modal" nfsClose>
+  <p>Your couch. It is mine.</p>
+  <button nfsCloseButton nfsClose aria-label="Close modal">
     <span aria-hidden="true">&times;</span>
   </button>
 </dialog>
 ```
 
-Server HTML (closed; identical for `[isOpen]="true"` on this modal Reveal, because only a non-modal Reveal binds `open`); `jsaction` lists the host's replayable listeners and is removed at hydration:
+Server HTML (closed; identical for `[isOpen]="true"` on this modal Reveal, because only a non-modal Reveal binds `open`); every class comes from a host binding; `jsaction` lists the host's replayable listeners and is removed at hydration. Angular also renders the directive attributes and every static attribute that feeds an input (`nfsreveal`, `nfsclosebutton`, `size="tiny"`, `collapse`, `animationin="spin-in"`), none of which means anything to HTML on these elements; the HTML below leaves them out:
 
 ```html
 <button class="button" type="button" aria-haspopup="dialog" aria-controls="signup" jsaction="click:;">Click me for a modal</button>
 <dialog id="signup" aria-labelledby="signup-title" class="reveal" jsaction="pointerdown:;pointerup:;keydown:;">
   <h1 id="signup-title">Awesome. I Have It.</h1>
-  <p class="lead">Your couch. It is mine.</p>
+  <p>Your couch. It is mine.</p>
   <button class="close-button" type="button" aria-label="Close modal" jsaction="click:;"><span aria-hidden="true">&times;</span></button>
 </dialog>
 ```
 
-Hydrated, open, with `animationIn="nfs-fade-in"` while the enter animation runs (the page's `html` carries the Scroll lock):
+Hydrated, open, with `animationIn="fade-in"` while the enter animation runs (the page's `html` carries the Scroll lock):
 
 ```html
 <html class="is-reveal-open zf-has-scroll" style="top: -1000px;">
@@ -376,25 +419,28 @@ Hydrated, open, with `animationIn="nfs-fade-in"` while the enter animation runs 
 </dialog>
 ```
 
-After the enter animation `is-opening nfs-fade-in` are gone; during the exit `is-closing nfs-fade-out` are bound while `open` stays; after `dialog.close()` the markup equals the server HTML without `jsaction`.
+After the enter animation `is-opening nfs-fade-in` are gone; during the exit (`animationOut="fade-out"`) `is-closing nfs-fade-out` are bound while `open` stays; after `dialog.close()` the markup equals the server HTML without `jsaction`. With the dot form, `animationIn=".my-zoom-in"` binds `my-zoom-in` in place of `nfs-fade-in`.
 
-Non-modal, alert dialog, and offsets:
+Non-modal, alert dialog, sizes, and offsets:
 
 ```html
-<dialog nfsReveal #note="nfsReveal" id="note" class="reveal" aria-label="Note" [overlay]="false">...</dialog>
+<dialog nfsReveal #note="nfsReveal" id="note" aria-label="Note" [overlay]="false">...</dialog>
 <!-- open: class="reveal without-overlay" open; not :modal; no html classes -->
 <!-- its Trigger: aria-haspopup="dialog" aria-controls="note" aria-expanded="false", then "true" while open -->
 <!-- with [isOpen]="true", server and hydrated: class="reveal without-overlay" open, and its Trigger aria-expanded="true" -->
 <!-- a modal Reveal with [isOpen]="true" stays without open on the server and is shown by showModal() after hydration -->
 
-<dialog nfsReveal #confirm="nfsReveal" id="confirm" class="tiny reveal" role="alertdialog"
+<dialog nfsReveal #confirm="nfsReveal" id="confirm" size="tiny" role="alertdialog"
         aria-labelledby="confirm-title" aria-describedby="confirm-text"
         autoFocus="#confirm-cancel" [closeOnClick]="false" [closeOnEsc]="false">...</dialog>
-<!-- server: <dialog id="confirm" class="tiny reveal" role="alertdialog" aria-labelledby="confirm-title"
+<!-- server: <dialog id="confirm" class="reveal tiny" role="alertdialog" aria-labelledby="confirm-title"
      aria-describedby="confirm-text" autofocus="#confirm-cancel" jsaction="...">; the directive removes
      the autofocus attribute before showModal() -->
 
-<dialog nfsReveal id="placed" class="reveal" aria-label="Placed" vOffset="50" hOffset="20">...</dialog>
+<dialog nfsReveal id="gallery" size="full" collapse aria-label="Gallery">...</dialog>
+<!-- server and client: class="reveal full collapse" -->
+
+<dialog nfsReveal id="placed" aria-label="Placed" vOffset="50" hOffset="20">...</dialog>
 <!-- server and client: style="--nfs-reveal-top: 50px; --nfs-reveal-shift: 0px; --nfs-reveal-left: 20px;" -->
 ```
 
@@ -407,14 +453,14 @@ Per ADR 0003 and building-blocks 1.6 rule 1: the dialog stays in the DOM, so it 
 | Phase | Entered when | Host classes | Backdrop |
 | --- | --- | --- | --- |
 | idle | first render on server and client, and after every completion | none of the below | none |
-| opening | `isOpen` becomes true after the first render, `animationIn` is non-empty, and animations are enabled | `is-opening` plus the `animationIn` classes | `nfs-reveal-backdrop-in` keyframes (modal only) |
-| closing | `isOpen` becomes false, `animationOut` is non-empty, and animations are enabled | `is-closing` plus the `animationOut` classes | `nfs-reveal-backdrop-out` keyframes (modal only) |
+| opening | `isOpen` becomes true after the first render, `animationIn` is non-empty, and animations are enabled | `is-opening` plus the classes of `animationIn` (`nfs-<name>` for a Motion name, the consumer's classes for the dot form) | `nfs-reveal-backdrop-in` keyframes (modal only) |
+| closing | `isOpen` becomes false, `animationOut` is non-empty, and animations are enabled | `is-closing` plus the classes of `animationOut` | `nfs-reveal-backdrop-out` keyframes (modal only) |
 
 - The phase is a `linkedSignal` derived from `isOpen`, so it is computed during change detection, starts idle on both platforms, and is set back to idle by completion. The classes are bound in the change detection pass before the render callback that calls `showModal()`, so the keyframes start from their first frame when the dialog becomes rendered.
-- Default: no animation, Foundation's default (`animationIn` and `animationOut` are empty): the dialog and backdrop appear and disappear in one pass. `animationIn="nfs-fade-in" animationOut="nfs-fade-out"` (or the Defaults token) gives the fade; the backdrop fades whenever the dialog's class runs, as Foundation faded its overlay only with `animationIn`/`animationOut`.
-- Completion: in the `read` phase after the classes are bound, the directive reads the host's computed `animation-name`, `animation-duration`, `animation-delay`, and `animation-iteration-count` and takes the longest finite animation (the Toggler spec's D8, Angular's own method for `animate.leave`). None measured (the class has no keyframes, or `nfs-motion` is missing) completes at once. Otherwise the phase completes on a host `animationend` or `animationcancel` whose `target` is the host, whose `pseudoElement` is empty, and whose `animationName` is one of the host's measured names, or on a fallback timer of the measured length plus 100 ms started outside the Angular zone, whichever comes first. The name check exists because the backdrop's animation events are dispatched on the dialog, and WebKit reports them with `pseudoElement: ''`; the backdrop's keyframes carry their own names for that reason.
+- Default: no animation, Foundation's default (`animationIn` and `animationOut` are empty): the dialog and backdrop appear and disappear in one pass. `animationIn="fade-in" animationOut="fade-out"` (or the Defaults token) gives the fade; the backdrop fades whenever the dialog's class runs, as Foundation faded its overlay only with `animationIn`/`animationOut`.
+- Completion: in the `read` phase after the classes are bound, the directive reads the host's computed `animation-name`, `animation-duration`, `animation-delay`, and `animation-iteration-count` and takes the longest finite animation (the Toggler spec's D8, Angular's own method for `animate.leave`). None measured (the class has no keyframes, or `nfs-motion` is missing) completes at once, and development check 3 reports it. Otherwise the phase completes on a host `animationend` or `animationcancel` whose `target` is the host, whose `pseudoElement` is empty, and whose `animationName` is one of the host's measured names, or on a fallback timer of the measured length plus 100 ms started outside the Angular zone, whichever comes first. The name check exists because the backdrop's animation events are dispatched on the dialog, and WebKit reports them with `pseudoElement: ''`; the backdrop's keyframes carry their own names for that reason.
 - Interruption: a close request while opening switches to closing (or straight to closing without a class) and emits no `opened`; an open request while closing cancels the exit, removes `is-closing` and the class, keeps the dialog open, and emits nothing.
-- Motion classes: keyframe classes only; `nfs-motion` provides the `nfs-*` set of building-blocks 1.6 rule 4, with `both` fill mode. Motion UI's own transition classes never animate under this mechanism ([Prototype: `animate.enter` and `animate.leave` with Motion UI transition classes](../issues/47-prototype-motion-ui-animate-enter.md)) and trigger dev check 3. Foundation's docs example becomes `animationIn="nfs-spin-in" animationOut="nfs-spin-out"` when `nfs-motion` provides those names, or the consumer's own keyframe classes. Motion UI's `fast`/`slow` speed modifiers are not supported; a consumer who needs another speed writes a keyframe class. Keyframes may animate `transform` freely but must not animate the `translate` property, which rule 7 owns; the two translations add, so the rest position does not move (the [Prototype: Reveal `'auto'` offsets in CSS](../issues/69-prototype-reveal-auto-offsets.md), case 5).
+- Motion names and Motion classes: the value is a Motion name or the consumer's own classes, never a library class name (ADR 0039). A Motion name is one of the `nfs-motion` set of building-blocks 1.6 rule 4 written without its prefix, entering names on `animationIn` (`fade-in`, `slide-in-down`, `slide-in-left`, `slide-in-right`, `hinge-in-from-top`, `spin-in`) and leaving names on `animationOut` (`fade-out`, `slide-out-up`, `slide-out-left`, `slide-out-right`, `spin-out`); the directive binds `nfs-<name>`, the library's keyframe class with `both` fill mode. This spec adds `nfs-spin-in` to that set, the keyframe counterpart of Motion UI's `spin-in` as `nfs-spin-out` is of `spin-out`, so Foundation's docs example keeps its attribute values: `animationIn="spin-in" animationOut="spin-out"`. The consumer's own keyframe classes take the dot form, each class written with a leading dot as Foundation's `data-toggler=".class"` writes one (`animationIn=".my-zoom-in"`); the directive binds them without the dots. `nfsMotionClasses`, a pure function of the primary entry point, maps a value to its classes: `''` to none, a Motion name to `nfs-<name>`, the dot form to its classes, and anything else (reachable only through a cast or `$any()`) to none. Motion UI's own transition classes never animate under this mechanism ([Prototype: `animate.enter` and `animate.leave` with Motion UI transition classes](../issues/47-prototype-motion-ui-animate-enter.md)); with the typed names they can no longer be passed by mistake, and one given in the dot form trips development check 3. Motion UI's `fast`/`slow` speed modifiers are not supported and fail to compile (`"spin-in fast"`); a consumer who needs another speed writes a keyframe class in the dot form. Keyframes may animate `transform` freely but must not animate the `translate` property, which rule 7 owns; the two translations add, so the rest position does not move (the [Prototype: Reveal `'auto'` offsets in CSS](../issues/69-prototype-reveal-auto-offsets.md), case 5).
 - Reduced motion: `nfs-motion` shortens its classes and the two backdrop animations to 1 ms under `prefers-reduced-motion: reduce`, so `animationend` still fires and nothing moves; no separate code path, and the Breakpoint service's `reducedMotion` is not read. A consumer's own keyframe class carries its own reduced-motion rule (the default path of the Breakpoint service spec's consumer rule 3, which also names the directives that instead bind no Motion class under reduced motion).
 - `nfsAnimationsToken` with `{disabled: true}` keeps the phase idle, so tests open and close in one pass.
 - Open-by-default and plain client rendering: the phase starts idle, so a Reveal that is open at its first render appears without its enter animation, as the Toggler does; opens after that (a Trigger, a deep link) animate.
@@ -423,8 +469,8 @@ Per ADR 0003 and building-blocks 1.6 rule 1: the dialog stays in the DOM, so it 
 
 Per ADR 0008 and the rendering-modes research, section 7 rules 1 to 11:
 
-- Server-side rendering and first paint: the server renders the consumer's `<dialog class="reveal">` with its content. A modal Reveal renders without `open`, whatever `isOpen` is, and the user-agent stylesheet hides it: a dialog cannot be made modal without script, and the `open` attribute alone is a non-modal dialog that `showModal()` cannot later promote (it throws `InvalidStateError` on it, measured in three engines). A non-modal Reveal that is open at its first render renders with `open`, the shown non-modal dialog that `show()` would make: the host binds `[attr.open]` to a value fixed at the first render, `''` when `isOpen` is true and `overlay` is false then and absent otherwise (a `computed` that reads both untracked, so it never re-evaluates), so the first paint matches `isOpen` and the `dialog`-role Trigger's `aria-expanded="true"` is true from the first paint (rule 1; building-blocks 1.11 decisions 1 and 2; the Triggers spec's rule that an Openable's server `isOpen` is its first-paint state). A modal Reveal open by default is the one case whose server `isOpen` differs from its first paint; its `modal-dialog` Triggers render nothing from `isOpen`, so no Trigger state is false. Host bindings on the server: `.reveal`, `id`, `role` for alert dialogs, `.without-overlay`, `open` as above, the offset custom properties. No phase class, no `html` class, no focus, no history (rule 1). Crawlers get the content in the DOM either way. Without JavaScript a modal Reveal open by default stays closed, and a non-modal one stays shown and can be closed only by a `<form method="dialog">` button inside it (measured in three engines), because its `nfsClose` buttons need script.
-- Before hydration: construction reads only inputs, DI, and static attributes; `showModal()`, `focus()`, the Scroll lock, `location`, `history`, and listeners outside `host` metadata run only in render callbacks (rules 3 to 5). The fallback timer and the `window` listeners start in render callbacks and handlers, outside the zone (rule 4).
+- Server-side rendering and first paint: the server renders the consumer's `<dialog>` with its content and with `.reveal`, the size class, and `.collapse` from host bindings. A modal Reveal renders without `open`, whatever `isOpen` is, and the user-agent stylesheet hides it: a dialog cannot be made modal without script, and the `open` attribute alone is a non-modal dialog that `showModal()` cannot later promote (it throws `InvalidStateError` on it, measured in three engines). A non-modal Reveal that is open at its first render renders with `open`, the shown non-modal dialog that `show()` would make: the host binds `[attr.open]` to a value fixed at the first render, `''` when `isOpen` is true and `overlay` is false then and absent otherwise (a `computed` that reads both untracked, so it never re-evaluates), so the first paint matches `isOpen` and the `dialog`-role Trigger's `aria-expanded="true"` is true from the first paint (rule 1; building-blocks 1.11 decisions 1 and 2; the Triggers spec's rule that an Openable's server `isOpen` is its first-paint state). A modal Reveal open by default is the one case whose server `isOpen` differs from its first paint; its `modal-dialog` Triggers render nothing from `isOpen`, so no Trigger state is false. Host bindings on the server: `.reveal`, the `size` class, `.collapse`, `id`, `role` for alert dialogs, `.without-overlay`, `open` as above, the offset custom properties; a close button inside carries `.close-button` and `type` from its own directive. No phase class, no Motion class, no `html` class, no focus, no history (rule 1). The development checks, check 8's report of a copied class included, run only in client render callbacks; a copied Foundation class is in the server HTML as the consumer wrote it (a copied size class stays, a copied `without-overlay` is stripped by its binding), because the check reports rather than rewrites. Crawlers get the content in the DOM either way. Without JavaScript a modal Reveal open by default stays closed, and a non-modal one stays shown and can be closed only by a `<form method="dialog">` button inside it (measured in three engines), because its `nfsClose` buttons need script.
+- Before hydration: construction reads only inputs, DI, and static attributes (the static `class`, in development builds only); `showModal()`, `focus()`, the Scroll lock, `location`, `history`, and listeners outside `host` metadata run only in render callbacks (rules 3 to 5). The fallback timer and the `window` listeners start in render callbacks and handlers, outside the zone (rule 4).
 - Full hydration: host binding values equal the server's (generated ids aside, rewritten at hydration), so hydration changes nothing and there is no structure to mismatch. Hydration writes the fixed `open` value once more, which the HTML standard's attribute change steps ignore for a dialog that already has it: no `toggle` or `close` event, no focus move, and the dialog stays shown (measured in three engines). No animation plays at hydration, because the phase is idle on both platforms (rule 10). An open-by-default modal Reveal calls `showModal()` in the first `afterRenderEffect` run after hydration, with focus placed then; a non-modal Reveal open at first paint takes the first-paint path (Behaviour). When the client's first state is closed where the server's was open, hydration removes `open`, which hides the dialog without a `close` event (the HTML standard's note on removing the attribute; measured), so no `closed` fires for a dialog the client never opened. After a later `dialog.close()` the fixed value is never written again, so the dialog stays closed until `show()` reopens it (measured).
 - Event replay: the Trigger's `click` host listener replays after hydration and calls `open(trigger)`, or `toggle(trigger)` for `nfsToggle`; the open runs in the following render callback. `showModal()` and `focus()` need no user activation, so a replayed open works, with focus inside the dialog. A Trigger click before hydration on a non-modal Reveal open at first paint replays as a close of the dialog the user saw open; with a closed server dialog the same click met a hidden dialog, which then appeared at hydration and was closed by the replayed toggle (both measured in three engines). For a modal Reveal open by default, an `nfsToggle` click before hydration replays after the first render callback has shown the dialog and closes it; its Triggers use `nfsOpen`. The Reveal's own host listeners (`pointerdown`, `pointerup`, `keydown`) are annotated; on a modal Reveal they cannot fire before hydration, because the dialog is closed and not rendered, and on a non-modal Reveal open at first paint they replay into handlers that act only on modal Reveals. Escape pressed before hydration is lost, which is harmless for a closed dialog; the Light dismiss listeners are added in code and never replay, so a non-modal Reveal open at first paint cannot be dismissed by an outside press or Escape until hydration (the Dropdown pane spec's first-paint exception), while its `nfsClose` click replays and closes it. A `<form method="dialog">` button pressed before hydration closes the dialog natively, and hydration then writes `open` again and shows it, because Angular sets up an element's bound and static attributes when it claims the element (measured in three engines), so `nfsClose` is the close control of a Reveal that can be open at first paint. The Tab-wrap handler changes focus first and calls `preventDefault()` last (rule 5). The `window` and document listeners are added in code and never replay, which is correct.
 - Hydration boundary: a Trigger and its Reveal belong to one hydration boundary (ADR 0008; building-blocks 1.11 decision 6); template-reference scoping stops a Trigger outside a `@defer` block from naming a Reveal inside it (ADR 0013).
@@ -444,30 +490,30 @@ The `nfs-reveal` Library mixin, included after `foundation-reveal`, prints seven
 6. `.reveal::backdrop { background-color: $reveal-overlay-background }`: Foundation's `reveal-overlay` mixin cannot be included, because it also prints `display: none`.
 7. At medium and up (Foundation's `breakpoint(medium)`), `.reveal[open]:not(.full) { top: var(--nfs-reveal-top, 25%); translate: 0 var(--nfs-reveal-shift, -25%); margin-left: var(--nfs-reveal-left, auto); }`: Foundation's JavaScript placed every modal with `vOffset: 'auto'` at `(viewport height - modal height) / 4`; `top: 25%` with a translate of `-25%` of the dialog's own height is exactly that while the dialog's natural height is at most `vh - 2 * min(100px, 10vh)` (rule 4's cap; a taller dialog is capped by rule 4 and then placed by the same quarter rule), in CSS, recomputed by the browser on every resize and content change. The [Prototype: Reveal `'auto'` offsets in CSS](../issues/69-prototype-reveal-auto-offsets.md) confirmed it in Chromium, Firefox, and WebKit for every size, `.without-overlay`, RTL, a scrolled page, nested modals, numeric offsets, and full screen, within Foundation's own rounding, with text as crisp as at an integer `top`. `:not(.full)` leaves Foundation's full-screen `top: 0`. A numeric `vOffset` sets `--nfs-reveal-top` and a zero `--nfs-reveal-shift`; a numeric `hOffset` sets `--nfs-reveal-left`, so the box sits at that distance from the left edge while `inset-inline: 0` and the automatic right margin absorb the rest, in either text direction. Below medium the dialog is full screen and the numbers do not apply.
 
-The custom properties `--nfs-reveal-top`, `--nfs-reveal-shift`, and `--nfs-reveal-left` are an implementation channel written by the directive's host style bindings, not theming (building-blocks 1.13). The mixin also runs the three compile-time contrast checks of the WCAG subsection. The `nfs-motion` mixin gains the two backdrop keyframes and their rules (Further Notes, Sass). The full Sass subsection is under Further Notes.
+The custom properties `--nfs-reveal-top`, `--nfs-reveal-shift`, and `--nfs-reveal-left` are an implementation channel written by the directive's host style bindings, not theming (building-blocks 1.13). The mixin also runs the three compile-time contrast checks of the WCAG subsection. The `nfs-motion` mixin gains the two backdrop keyframes and their rules, and `nfs-spin-in` (Further Notes, Sass). The full Sass subsection is under Further Notes.
 
 ## Testing Decisions
 
 A good test asserts what a user or assistive technology observes: whether the dialog is open and `:modal`, its role, name, and classes, where focus lands and where it returns, the page's scroll position, the dialog's geometry, the URL, and when `opened` and `closed` fire relative to the animation. No test reads private fields, the phase signal, or the stack. Prior art: the [Prototype: Reveal on native `<dialog>` under Foundation Sass](../issues/42-prototype-reveal-dialog.md) Playwright suite (29 tests in three engines, with the geometry values recorded there), the Triggers spec's four layers, and the Toggler spec's completion tests; nothing exists in the new repository yet.
 
-Story ids follow `reveal--<story>`: `reveal--basic`, `reveal--sizes` (args: `tiny`, `small`, `large`, `full`, `collapse`), `reveal--tall-content`, `reveal--offsets`, `reveal--without-overlay`, `reveal--nested`, `reveal--replace`, `reveal--animated`, `reveal--alert-dialog`, `reveal--close-predicate`, `reveal--focus`, `reveal--programmatic`, `reveal--form-method-dialog`, `reveal--deep-link`, `reveal--scroll-lock`, and `reveal--fixture` (args-driven for e2e: size, offsets, overlay, content length, direction, page length, animation classes).
+Story ids follow `reveal--<story>`: `reveal--basic`, `reveal--sizes` (args: `size`, one of `tiny`, `small`, `large`, `full`, or unset, and `collapse`), `reveal--tall-content`, `reveal--offsets`, `reveal--without-overlay`, `reveal--nested`, `reveal--replace`, `reveal--animated`, `reveal--alert-dialog`, `reveal--close-predicate`, `reveal--focus`, `reveal--programmatic`, `reveal--form-method-dialog`, `reveal--deep-link`, `reveal--scroll-lock`, and `reveal--fixture` (args-driven for e2e: `size`, offsets, overlay, content length, direction, page length, `animationIn` and `animationOut`). No story writes a Foundation or library class on any element (ADR 0039; the Storybook conventions' checklist): the dialogs carry `nfsReveal` and its inputs, Triggers and the dialogs' own buttons are `button[nfsButton]` with Button Variant inputs, and close buttons are `button[nfsCloseButton]` with a bare `nfsClose`. The Variant values are Foundation's own names, so the Storybook program needs no Variant declaration file for this spec, and the Motion names are the `nfs-motion` set, which the preview stylesheet includes.
 
 ### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`)
 
 Stack: `@storybook/angular-vite` 10.6 with `@storybook/addon-vitest` on Vitest 4.1 browser mode, Playwright Chromium headless; inferred `test-storybook`: `npx nx test-storybook <lib>`. Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test = 'error'` and `parameters.a11y.options.runOnly = {type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice']}` in the Storybook preview configuration, the enforcing gate, so `color-contrast` and `target-size` are part of it; play functions run axe again with the dialog open. CSR only; the single home of interaction tests.
 
-- `reveal--basic`: clicking the Trigger opens a `:modal` dialog; focus is on its first tabbable element, never the dialog; the Trigger carries `aria-haspopup="dialog"` and `aria-controls` and no `aria-expanded` before, while, and after the dialog is open; the page behind is inert (a page button cannot be focused); Escape closes it and focus returns to the Trigger; the bare `nfsClose` closes it the same way.
-- `reveal--sizes`: each Variant class renders with Foundation's width at the story viewport; `.collapse` has no padding.
+- `reveal--basic`: clicking the Trigger opens a `:modal` dialog; focus is on its first tabbable element, never the dialog; the Trigger carries `aria-haspopup="dialog"` and `aria-controls` and no `aria-expanded` before, while, and after the dialog is open; the page behind is inert (a page button cannot be focused); Escape closes it and focus returns to the Trigger; the close button, found by `getByRole('button', {name: 'Close modal'})`, carries `.close-button` and `type="button"`, measures at least 24 by 24 px (the `nfs-close-button` floor), and its bare `nfsClose` closes the dialog the same way.
+- `reveal--sizes`: each `size` value renders its class with Foundation's width at the story viewport and no size renders none, at Foundation's default width; `collapse` renders `.collapse` and no padding.
 - `reveal--tall-content`: the last control inside is reachable by Tab and scrolled into view; the dialog box ends inside the viewport.
 - `reveal--without-overlay`: the dialog is open but not `:modal`, carries `.without-overlay`, and the page stays interactive; an outside press closes it; clicking its Trigger while open closes it once (no reopen); tabbing out of it closes it; Escape with focus on the page closes it; its Trigger shows `aria-expanded="true"` while open and `"false"` after it closes; a second one with `[isOpen]="true"` is open from the first render with its Trigger at `aria-expanded="true"`, takes focus only when nothing else has it, and does not fire `opened`.
 - `reveal--nested`: with `multipleOpened`, the inner dialog opens above the outer; Escape closes only the inner and focus returns to the inner's Trigger in the outer; the next Escape closes the outer and focus returns to the page Trigger.
 - `reveal--replace`: with the default `multipleOpened: false`, opening the inner closes the outer; closing the inner returns focus to the outer's page Trigger (the fallback chain), not to `body`.
-- `reveal--animated`: `animationIn="nfs-fade-in" animationOut="nfs-fade-out"`; after opening, `is-opening` is present and `opened` has not fired, then `opened` fires and the classes are gone; after closing, `is-closing` shows while `open` is still set, then the dialog closes and `closed` fires.
+- `reveal--animated`: `animationIn="fade-in" animationOut="fade-out"`; after opening, `is-opening` and `nfs-fade-in` are present and `opened` has not fired, then `opened` fires and the classes are gone; after closing, `is-closing` and `nfs-fade-out` show while `open` is still set, then the dialog closes and `closed` fires. A second Reveal with Foundation's docs values, `animationIn="spin-in" animationOut="spin-out"`, binds `nfs-spin-in` and `nfs-spin-out` the same way.
 - `reveal--alert-dialog`: `role="alertdialog"` with `aria-describedby`; focus starts on the least destructive button through an `autoFocus` selector; Escape and a backdrop press leave it open; the "Delete" button closes it with the result `true`, shown in the story.
 - `reveal--close-predicate`: a form marked dirty vetoes Escape, a backdrop press, and the close button; after saving, the same actions close it.
 - `reveal--focus`: `autoFocus` variants: first tabbable, a descendant with `autofocus`, `'first-heading'` (the heading gets `tabindex="-1"` while focused and loses it on blur), a selector, and `false`; a static `autoFocus="first-heading"` attribute still focuses the heading, not the dialog; Tab and Shift+Tab wrap, a radio group is one stop, and the dialog element is never focused.
 - `reveal--programmatic`: `open()`, `close()`, `toggle()` through the template reference; `[(isOpen)]` bound to a checkbox; `[isOpen]="true"` opens after the first render without an enter animation.
-- `reveal--form-method-dialog`: a `<form method="dialog">` with two submit buttons closes the dialog; `closed` carries the pressed button's value and `isOpen` is false.
+- `reveal--form-method-dialog`: a `<form method="dialog">` with two submit buttons (`button[nfsButton]` with `type="submit"` and a `value`) closes the dialog; `closed` carries the pressed button's value and `isOpen` is false; its close button is `nfsCloseButton` with `type="submit"`, because the Close Button directive defaults to `button`.
 - `reveal--scroll-lock`: on a long page scrolled down, opening adds `is-reveal-open` and `zf-has-scroll` to `html` with the page visually unmoved; closing removes them and restores the scroll position.
 
 ### 2. Browser-level test (Vitest browser mode, `npx nx test <lib>`)
@@ -476,6 +522,7 @@ Vitest browser mode under the Angular unit-test builder (`npx nx test <lib>`, Ch
 
 - Open and close sync: `open()`, `close(result)`, `toggle()`, and model writes call `showModal()`/`show()`/`close()` in the render callback after the change; `open()` while open and `close()` while closed do nothing; `opened` and `closed` fire once each, in order, with the result; a parent writing `isOpen` false skips `closePredicate`.
 - Open at first paint: a non-modal Reveal with `[isOpen]="true"` has `open` after its first pass; its first render callback does not call `show()`, emits no `opened`, and registers with Light dismiss; with focus on `body` it places focus by `autoFocus`, with focus on an element outside it moves nothing, and with a static `autoFocus` attribute and focus on the host it moves focus to the `autoFocus` target and the attribute is gone; `close()` removes `open`, and further change detection never writes it back; `open()` afterwards calls `show()`; a modal Reveal with `[isOpen]="true"` has no `open` before its `showModal()`.
+- Variant and Motion bindings: a class-free host renders `.reveal`; each `size` value sets its class and clearing it removes only that class; `collapse` (bare attribute, `true`, `'true'`) sets `.collapse` and `false` removes it; a consumer's own static class and `[class]` binding stay; a size or Motion value reached through `$any()` that holds a space, or a Motion value that is neither a name nor the dot form, sets no class; `animationIn="fade-in"` binds `nfs-fade-in` while opening and `animationIn=".a .b"` binds `a` and `b`.
 - Phases with a test stylesheet: class lists after each step; completion on `animationend`; an `animationend` from a child, from `::backdrop` (dispatched with an empty `pseudoElement` and the backdrop keyframe name, WebKit's shape), or with another name does not complete; `animationcancel` completes; interruption in both directions emits nothing for the interrupted phase; a class without keyframes completes at once; a suppressed `animationend` completes after the measured length plus 100 ms (fake timers); `nfsAnimationsToken` `{disabled: true}` binds no class.
 - Escape through a dispatched `keydown` on `window`: the topmost modal closes; a `defaultPrevented` or `isComposing` event is ignored; `closeOnEsc` false and a vetoing predicate keep it open; `preventDefault()` is called in every case the topmost modal sees; a dispatched `cancel` routes to `close()` and is cancelled.
 - Native close: calling the element's `close()` directly re-syncs `isOpen`, releases the Scroll lock, restores focus, and emits `closed` with `returnValue`.
@@ -486,22 +533,22 @@ Vitest browser mode under the Angular unit-test builder (`npx nx test <lib>`, Ch
 - Scroll lock counting: the first modal locks, a second does not re-lock, the last close unlocks; a non-modal Reveal never locks; destroying an open modal unlocks.
 - Deep linking with a stubbed `location` and `history`: the first render opens on a matching hash; `hashchange` opens and closes; open and close write with `replaceState` or `pushState` and pass `history.state` through; a hash-driven change writes nothing.
 - Defaults token: each Foundation Option and `autoFocus`/`restoreFocus` default applies and is overridden by an attribute.
-- Dev-mode checks: each of the seven warnings fires once for its case and not for correct markup (`nfs-fade-in` does not warn).
+- Dev-mode checks: each of the eight warnings fires once for its case and not for correct markup (`animationIn="fade-in"` with the test stylesheet's keyframes does not warn; a dot-form class without keyframes and a dot-form `.nfs-fade-in` do); check 8 fires for `class="tiny reveal"` naming `size="tiny"`, for `class="without-overlay"` naming `[overlay]="false"`, and for `class="nfs-fade-in"`, and not for `class="reveal"` or a consumer class; nothing is checked when `ngDevMode` is false.
 - Replay-safe handler: a Tab `keydown` whose `eventPhase` reads 101 and whose `preventDefault` throws still moves focus, and nothing reaches `ErrorHandler`.
 
 ### 3. Node-level Vitest
 
 Runs under `npx nx test <lib>` in `<name>.ssr.spec.ts` through the shared `renderServer()` helper; `npx nx test-node <lib>` only if the server path depends on the DOM adapter, which none here does.
 
-- SSR smoke: `renderApplication` over a fixture with a basic Reveal and its Trigger, a modal open-by-default Reveal, a non-modal one, a non-modal one open by default with its Trigger, an alert dialog with a static `autoFocus`, and one with numeric offsets. Assert `whenStable()` resolves; every `<dialog>` is present with its content and without `open`, except the non-modal one open by default, which carries `open` while its Trigger carries `aria-expanded="true"`; classes are `reveal` plus the consumer's, `without-overlay` on the non-modal ones, no `is-opening`, `is-closing`, or Motion class; `role="alertdialog"` where set; the offset custom properties where set; `jsaction` on the dialog hosts and the Triggers; no class or style on `html`; the modal Reveals' Triggers carry no `aria-expanded`, the non-modal ones' carry it.
-- Pure logic, table-driven: the phase transition function (idle, opening, closing, interruption, animations off), the longest-animation reduction over computed-style lists, the Motion UI name check, the `vOffset`/`hOffset` and `autoFocus`/`restoreFocus` transforms, and the restore-target resolution over a chain of closed Reveals.
-- Sass compile: Foundation 6.9 plus the library with Foundation's defaults emits the seven `nfs-reveal` rules and the `nfs-motion` backdrop keyframes and rules, no copy of a Foundation rule, and no warning; a theme with `$closebutton-color` or `$closebutton-color-hover` under 3:1 against `$reveal-background` stops the compile with the `@error` naming the setting, and a backdrop that leaves the dialog under 3:1 against the dimmed page produces the matching `@warn`.
+- SSR smoke: `renderApplication` over a fixture with a basic Reveal and its Trigger, a modal open-by-default Reveal, a non-modal one, a non-modal one open by default with its Trigger, an alert dialog with a static `autoFocus` and `size="tiny"`, a `size="full" collapse` one with `animationIn="fade-in"`, and one with numeric offsets; no element of the fixture carries a `class` attribute, and every close button is `nfsCloseButton` with a bare `nfsClose`. Assert `whenStable()` resolves; every `<dialog>` is present with its content and without `open`, except the non-modal one open by default, which carries `open` while its Trigger carries `aria-expanded="true"`; classes are `reveal`, `tiny` and `full collapse` where set, `without-overlay` on the non-modal ones, no `is-opening`, `is-closing`, or Motion class; every close button carries `close-button` and `type="button"`; `role="alertdialog"` where set; the offset custom properties where set; `jsaction` on the dialog hosts and the Triggers; no class or style on `html`; the modal Reveals' Triggers carry no `aria-expanded`, the non-modal ones' carry it.
+- Pure logic, table-driven: the phase transition function (idle, opening, closing, interruption, animations off), the longest-animation reduction over computed-style lists, the Motion value mapping of `nfsMotionClasses` (`''`, each Motion name, the dot form with one and several classes, a dot-form `nfs-` class, and a value that is neither), the `vOffset`/`hOffset` and `autoFocus`/`restoreFocus` transforms, and the restore-target resolution over a chain of closed Reveals.
+- Sass compile: Foundation 6.9 plus the library with Foundation's defaults emits the seven `nfs-reveal` rules, the `nfs-motion` backdrop keyframes and rules, and `nfs-spin-in` with its reduced-motion override, no copy of a Foundation rule, no Variant property, and no warning; a theme with `$closebutton-color` or `$closebutton-color-hover` under 3:1 against `$reveal-background` stops the compile with the `@error` naming the setting, and a backdrop that leaves the dialog under 3:1 against the dimmed page produces the matching `@warn`.
 
 ### 4. Playwright e2e (`npx nx e2e <lib>-e2e` against the static Storybook build; `npx nx e2e <fixture-app>-e2e` against the prerendered fixture app)
 
 Against the static Storybook build, on `reveal--fixture` and the stories named, in Chromium, Firefox, and WebKit:
 
-- Geometry: default, `.tiny`, `.small`, `.large`, `.full` at 320, 640, and 1024 px wide against the prototype's recorded Foundation values (for example 1024 `.tiny` left 358, width 307) for width and horizontal position, and against Foundation's `'auto'` formula `(viewport height - dialog height) / 4` for vertical position, within 1 px; a tall-content row, a dialog whose natural height exceeds `vh - 2 * min(100px, 10vh)`, expecting `y = min(50px, 5vh)` and height `vh - 2 * min(100px, 10vh)`, beside the `(vh - h) / 4` rows; numeric offsets at 1024 px; full screen at 320 px; under `dir="rtl"`; on a page scrolled to 1000 px.
+- Geometry: no `size`, then `size` set to `tiny`, `small`, `large`, and `full`, at 320, 640, and 1024 px wide against the prototype's recorded Foundation values (for example 1024 `.tiny` left 358, width 307) for width and horizontal position, and against Foundation's `'auto'` formula `(viewport height - dialog height) / 4` for vertical position, within 1 px; a tall-content row, a dialog whose natural height exceeds `vh - 2 * min(100px, 10vh)`, expecting `y = min(50px, 5vh)` and height `vh - 2 * min(100px, 10vh)`, beside the `(vh - h) / 4` rows; numeric offsets at 1024 px; full screen at 320 px; under `dir="rtl"`; on a page scrolled to 1000 px.
 - Tall content: the box ends inside the viewport and the last control is reachable in all three engines.
 - Real Escape: repeated presses (five, with no other input between) on `reveal--alert-dialog` and on a dirty `reveal--close-predicate` leave the dialog open in all three engines, the case the browser's close-request anti-abuse rule would otherwise close.
 - Real Tab and Shift+Tab wrap in all three engines, including WebKit with a link inside (skipped by WebKit's own Tab order).
@@ -510,10 +557,10 @@ Against the static Storybook build, on `reveal--fixture` and the stories named, 
 - Backdrop press with a real mouse closes; a touch swipe starting on the backdrop (`hasTouch`) does not.
 - `emulateMedia({reducedMotion: 'reduce'})` on `reveal--animated`: completion within a few frames and `closed` still fires.
 - `reveal--deep-link`: navigating to the story URL with `#<id>` opens the dialog after load; closing removes the hash; with `updateHistory`, Back after opening closes it through `hashchange`.
-- Focus indicator: the focused close button shows a non-`none` computed outline in all three engines.
+- Focus indicator: the focused close button (`nfsCloseButton`) shows a non-`none` computed outline in all three engines.
 - 2.4.11: every focus stop in the tall dialog and the restored Trigger hit-test to themselves.
 
-Against the prerendered fixture app (the harness from the rendering-mode test seam prototype), one route with a basic Reveal, a modal open-by-default Reveal, a non-modal Reveal open by default with its `nfsToggle` Trigger and a `<form method="dialog">` button, a deep-linked one, and a `@defer (hydrate on interaction)` block holding a Trigger and its Reveal:
+Against the prerendered fixture app (the harness from the rendering-mode test seam prototype), one route whose markup writes no Foundation or library class, with a basic Reveal, a modal open-by-default Reveal, a non-modal Reveal open by default with its `nfsToggle` Trigger and a `<form method="dialog">` button, a deep-linked one, and a `@defer (hydrate on interaction)` block holding a Trigger and its Reveal:
 
 - JavaScript disabled: screenshot plus `@axe-core/playwright` with the six tags; every dialog but the non-modal open-by-default one hidden and its content in the DOM; the modal open-by-default one closed; the non-modal open-by-default one shown, not `:modal`, its Trigger at `aria-expanded="true"`, and closed by its `<form method="dialog">` button.
 - Hydration: no NG05xx in the console, `ngDevMode.componentsSkippedHydration === 0`, and no `animationstart` on any dialog during hydration; the modal open-by-default Reveal is `:modal` after hydration with focus inside; the non-modal open-by-default Reveal stays shown with no `toggle` or `close` event, focus moves into it from `body`, and focus placed in a page field before hydration stays in the field.
@@ -529,7 +576,9 @@ Release test (manual, before each release; [Resolve the assistive-technology che
 - A Material-style service that opens components or templates in an overlay (ADR 0007).
 - CDK Dialog, as implementation or fallback (the Reveal dialog prototype).
 - `showDelay`, `hideDelay`, `fullScreen`, `resetOnClose`, `appendTo`, `additionalOverlayClasses` (Foundation contract, dropped options).
-- Motion UI transition classes, the `motion-ui` package, and the `fast`/`slow` speed modifiers (ADR 0003).
+- Motion UI transition classes, the `motion-ui` package, and the `fast`/`slow` speed modifiers (ADR 0003); Motion UI names outside the `nfs-motion` set, which a consumer writes as its own keyframe class in the dot form.
+- The close button's look, `type` default, name checks, and target size: the [Spec: Close Button](../issues/83-spec-close-button.md).
+- A Variant registry or Variant property for the Reveal's sizes: the family is closed ([ADR 0040](../adr/0040-variant-input-types.md)).
 - Closing on Router navigation (`closeOnNavigation`).
 - An exit animation and `closePredicate` for `<form method="dialog">` closes; `nfsClose` covers both.
 - OffCanvas: its overlap mode is not built on `<dialog>` (Further Notes, what OffCanvas inherits).
@@ -542,7 +591,7 @@ Release test (manual, before each release; [Resolve the assistive-technology che
 
 | # | Decision | Rationale | Rejected alternative |
 | --- | --- | --- | --- |
-| D1 | Directive on a consumer-written `<dialog class="reveal">` | ADR 0007, ADR 0001; the top layer needs no move; server-renderable in place | A service opening components (not in the document, not server-renderable); CDK Dialog (no `<dialog>`, `aria-modal` off) |
+| D1 | Directive on a consumer-written `<dialog>`, binding `.reveal` as a static host class | ADR 0007, ADR 0001, ADR 0039; the top layer needs no move; server-renderable in place; the consumer writes no Foundation class | A service opening components (not in the document, not server-renderable); CDK Dialog (no `<dialog>`, `aria-modal` off); a consumer-written `class="reveal"` (ADR 0039) |
 | D2 | Seven documented rules in `nfs-reveal`, Foundation's Sass otherwise unchanged | The prototype matched Foundation to the pixel with rules 1 to 6; rule 7 restores Foundation's `'auto'` placement | Re-implementing `.reveal` for `<dialog>` (copies Foundation) |
 | D3 | `isOpen` model, `open(trigger?)`, `close(result?)`, `toggle(trigger?)`, `registerTrigger` | The Openable contract (Triggers spec, ADR 0013); `isX` naming (building-blocks 1.3) | An `open` model (collides with the method and the dialog's `open` attribute) |
 | D4 | `opened` after the enter animation, `closed(result)` after `dialog.close()`, no `beforeClosed` | Completion output rule, no start events (building-blocks 1.4); `isOpenChange(false)` marks the start of a close | Foundation's synchronous `open.zf.reveal`; Material's `beforeClosed()` |
@@ -552,7 +601,7 @@ Release test (manual, before each release; [Resolve the assistive-technology che
 | D8 | Non-modal Reveals dismiss through the Light dismiss registry, focus leaving included | One model for non-modal floating content; topmost-first Escape with nested panes; Triggers inside; WCAG 2.4.11 met by closing on focus loss | Own document listeners (the prototype: an outside `pointerdown` closed the dialog before its Trigger's click reopened it); a Tab trap (the APG does not trap non-modal dialogs) |
 | D9 | `multipleOpened: false` closes the other open Reveals through `close()`; `true` stacks nested `showModal()` | Foundation's default and ADR 0007; each layer returns focus to its own Trigger | Foundation's Escape closing every open layer |
 | D10 | `'auto'` offsets reproduced in CSS (`top: 25%` plus `translate: 0 -25%`); numbers through custom properties at medium and up | Foundation's default placement (building-blocks 1.4 keeps Foundation defaults) without measurement, recomputed by the browser; exact while the dialog's natural height is at most `vh - 2 * min(100px, 10vh)`, confirmed in three engines by the [Prototype: Reveal `'auto'` offsets in CSS](../issues/69-prototype-reveal-auto-offsets.md); full screen below medium keeps its box | Foundation's CSS `top: 100px` (not where Foundation's JavaScript put a modal); a measured port (layout reads and observers for what CSS computes); dropping both Options |
-| D11 | `fullScreen` dropped in favour of the `.full` Variant class; full-screen Reveals stay modal | Its only behaviour was forcing `overlay: false`, which a full-screen top-layer dialog does not need | A `fullScreen` input binding `.full` (a second spelling of a class) |
+| D11 | `fullScreen` dropped; `size="full"` sets the `.full` Variant class; full-screen Reveals stay modal | Its only behaviour was forcing `overlay: false`, which a full-screen top-layer dialog does not need; `.full` is one of the size classes, so the size family's one input is its one spelling | A `fullScreen` input binding `.full` (a second spelling of one size; building-blocks 1.4 rule 1 keeps an Option's name only when the Option names the whole family) |
 | D12 | `autoFocus` union without `'dialog'`, a descendant `autofocus` honoured, static attribute stripped | APG; the platform's own initial-focus rule; the prototype's case-insensitive `autofocus` collision | Material's `'dialog'` value; renaming the input (breaks ADR 0007's vocabulary) |
 | D13 | Tab wrap on every Tab in sequential focus order, modal only | No engine wraps; WebKit puts the dialog element in its Tab order and skips links; radio groups stay one stop | End-only wrapping (misfires in WebKit); CDK `FocusTrap` (its sentinels would sit in the inert page) |
 | D14 | Restore focus to the Trigger from `open(trigger)`, CDK's guard, and a fallback up closed Reveals; the first registered Trigger outside the dialog as the last fallback (a Reveal open at its first render has no `trigger`) | WebKit click-does-not-focus; the prototype's `BODY` result under `multipleOpened: false` | `document.activeElement` only |
@@ -564,26 +613,32 @@ Release test (manual, before each release; [Resolve the assistive-technology che
 | D20 | Internal `NfsRevealStack` service | Shared state across instances (building-blocks 1.5): order, the Scroll lock count, one `window` listener | A module-level set (shared between applications on one page); per-instance `window` listeners |
 | D21 | Trigger role from `overlay`: `modal-dialog` with the overlay, `dialog` without | `showModal()` makes the Trigger inert while open, so no expanded state is ever exposed; `overlay` is an input, so the server value is final ([Decide: `aria-expanded` on a modal dialog's opener](../issues/72-decide-aria-expanded-on-modal-opener.md)) | A constant `'dialog'` (renders `aria-expanded` on an inert opener and a false `"true"` in open-by-default server HTML) |
 | D22 | A non-modal Reveal open at first paint is not re-shown and emits no `opened`; its first render callback places focus only when nothing else has focus (`body`, or the host after HTML `autofocus`) | The dialog has been shown since the first paint, and outputs skip the initial state (the Toggler and Dropdown pane rules); Light dismiss closes on any focus move outside, so without focus inside a keyboard user's first Tab elsewhere closes the dialog before it can be reached; focus the user placed before hydration is theirs (measured in three engines); HTML `autofocus` focuses a dialog parsed open at page load in all three engines, and the APG forbids focus on the dialog element | Running the ordinary opening steps at hydration (steals focus from where the user put it before hydration); never moving focus, the Dropdown pane's first-paint rule (the first Tab closes the dialog); leaving focus on the dialog element |
+| D23 | `size` (`NfsRevealSize`, closed `'tiny' \| 'small' \| 'large' \| 'full'`) and `collapse` (boolean through `nfsVariantBoolean`) Variant inputs; unset sets no class; no registry, Variant property, Runtime check, or Defaults token entry | ADR 0039 (every Variant class a typed input) and ADR 0040 (closed types; Reveal's sizes a Closed Variant family); building-blocks 1.4 rules 3 and 4 name the inputs; `foundation-reveal` writes the four size classes and `.collapse` itself, so no Sass setting could extend them; `.full` overrides the other sizes, so one enum holds all four | Consumer-written classes (ADR 0010, superseded); a registry-backed size (no Sass setting lists the names); four booleans (`tiny`, `full`, ...) that could contradict each other; `booleanAttribute` for `collapse` (`collapse="flase"` would compile and set the class) |
+| D24 | `animationIn`/`animationOut` take Motion names (`'spin-in'`, typed `NfsMotionIn`/`NfsMotionOut`) that bind `nfs-<name>`, or the consumer's own keyframe classes each with a leading dot; `nfs-spin-in` joins `nfs-motion` | ADR 0039's follow-up: no library class name in consumer code, even as an input value, while inputs that apply the consumer's own classes stay; a closed name union fails typos, leaving names on `animationIn`, `fast`/`slow`, and `'nfs-fade-in'` at compile time (measured with `ngc` 22.2.0 strict templates), and Foundation's docs values (`spin-in`, `spin-out`) keep working; the leading dot is Foundation's own way of writing a class name in an attribute (`data-toggler=".class"`) | `NfsMotionName \| (string & {})` (a typo and `'nfs-fade-in'` compile, the reason ADR 0040 dropped the same escape); a Variant registry of Motion names (registries follow Sass settings, and the consumer's keyframes have none); library names only (drops the consumer's own keyframe classes, which ADR 0003 and the Motion class term allow); a second pair of inputs for the consumer's classes (two inputs per direction and a precedence rule) |
+| D25 | `overlay` stays an Option with `booleanAttribute` and a Defaults token slot; `.without-overlay` is its host binding | Foundation's docs never write `.without-overlay`: its JavaScript added it from `data-overlay`; the Option decides modal or non-modal behaviour, so it is not a static look, and a Variant input could have no application-wide default, which would drop a decided Defaults token field | Retyping `overlay` as a Variant input through `nfsVariantBoolean` (loses the Defaults token default; `overlay="flase"` is the same trade every boolean Option makes) |
+| D26 | Development check 8 reports a copied Foundation or library class and names the input to bind; a copied size class stays, a copied State or `without-overlay` class is stripped by its binding | building-blocks 1.4's initial-state rule; the Button spec's copied-class check; Foundation's docs markup is `class="tiny reveal"`, and a silent change would hide the migration | Reading a copied class as a seed (building-blocks 1.4 forbids it); no report |
+| D27 | The Scroll lock's `html.is-reveal-open` and `html.zf-has-scroll` stay `Renderer2` writes on the document element | The document element carries no library directive and the lock has no first-paint value; the user ruled that a `Renderer2` write on such an element satisfies the class rule ([Re-run: Magellan spec under the class rule](../issues/122-rerun-magellan-class-rule.md), User decision) | A directive the consumer writes on `html` (the root is outside every component template) |
+| D28 | The close button is `button[nfsCloseButton]` with a bare `nfsClose` beside it; 2.5.8 is the `nfs-close-button` floor; the 1.4.11 check against `$reveal-background` stays | The [Spec: Close Button](../issues/83-spec-close-button.md): it owns `.close-button`, the `type` default, the name checks, and the 24 px floor, and closes nothing itself (its D2); each container checks the glyph against its own background (its D9) | The spacing exception (the first version's 2.5.8 reasoning, which axe cannot verify); `nfsClose` alone on a consumer-written `class="close-button"` (ADR 0039) |
 
 ### Usage examples
 
 ```ts
 @Component({
   selector: 'app-account',
-  imports: [NfsButton, NfsOpen, NfsClose, NfsReveal, ReactiveFormsModule],
+  imports: [NfsButton, NfsCloseButton, NfsOpen, NfsClose, NfsReveal, ReactiveFormsModule],
   template: `
     <button nfsButton [nfsOpen]="edit">Edit profile</button>
 
-    <dialog nfsReveal #edit="nfsReveal" id="edit-profile" class="small reveal"
-            aria-labelledby="edit-title" animationIn="nfs-fade-in" animationOut="nfs-fade-out"
+    <dialog nfsReveal #edit="nfsReveal" id="edit-profile" size="small"
+            aria-labelledby="edit-title" animationIn="fade-in" animationOut="fade-out"
             [closePredicate]="canClose" (closed)="onClosed($event)">
       <h2 id="edit-title">Edit profile</h2>
       <form [formGroup]="form">
         <label>Name <input formControlName="name" /></label>
       </form>
-      <button nfsButton class="secondary" nfsClose>Cancel</button>
+      <button nfsButton color="secondary" nfsClose>Cancel</button>
       <button nfsButton nfsClose [nfsCloseResult]="form.value">Save</button>
-      <button class="close-button" type="button" aria-label="Close" nfsClose>
+      <button nfsCloseButton nfsClose aria-label="Close profile editor">
         <span aria-hidden="true">&times;</span>
       </button>
     </dialog>
@@ -606,51 +661,75 @@ export class AppAccount {
 
 ```html
 <!-- Alert dialog: forced choice, least destructive button focused first -->
-<button nfsButton class="alert" [nfsOpen]="confirm">Delete account</button>
-<dialog nfsReveal #confirm="nfsReveal" id="confirm-delete" class="tiny reveal" role="alertdialog"
+<button nfsButton color="alert" [nfsOpen]="confirm">Delete account</button>
+<dialog nfsReveal #confirm="nfsReveal" id="confirm-delete" size="tiny" role="alertdialog"
         aria-labelledby="confirm-title" aria-describedby="confirm-text"
         autoFocus="#confirm-cancel" [closeOnClick]="false" [closeOnEsc]="false"
         (closed)="$event === true && deleteAccount()">
   <h2 id="confirm-title">Delete your account?</h2>
   <p id="confirm-text">This cannot be undone.</p>
-  <button nfsButton class="secondary" id="confirm-cancel" nfsClose [nfsCloseResult]="false">Cancel</button>
-  <button nfsButton class="alert" nfsClose [nfsCloseResult]="true">Delete</button>
+  <button nfsButton color="secondary" id="confirm-cancel" nfsClose [nfsCloseResult]="false">Cancel</button>
+  <button nfsButton color="alert" nfsClose [nfsCloseResult]="true">Delete</button>
 </dialog>
 
 <!-- Nested modals (Foundation's docs example) -->
 <button nfsButton [nfsOpen]="first">Click me for a modal</button>
-<dialog nfsReveal #first="nfsReveal" id="first-modal" class="reveal" aria-labelledby="first-title" multipleOpened>
+<dialog nfsReveal #first="nfsReveal" id="first-modal" aria-labelledby="first-title" multipleOpened>
   <h1 id="first-title">Awesome!</h1>
   <button nfsButton [nfsOpen]="second">Click me for another modal!</button>
-  <button class="close-button" type="button" aria-label="Close reveal" nfsClose><span aria-hidden="true">&times;</span></button>
+  <button nfsCloseButton nfsClose aria-label="Close first modal"><span aria-hidden="true">&times;</span></button>
 </dialog>
-<dialog nfsReveal #second="nfsReveal" id="second-modal" class="reveal" aria-labelledby="second-title" multipleOpened>
+<dialog nfsReveal #second="nfsReveal" id="second-modal" aria-labelledby="second-title" multipleOpened>
   <h2 id="second-title">ANOTHER MODAL!!!</h2>
-  <button class="close-button" type="button" aria-label="Close reveal" nfsClose><span aria-hidden="true">&times;</span></button>
+  <button nfsCloseButton nfsClose aria-label="Close second modal"><span aria-hidden="true">&times;</span></button>
 </dialog>
+
+<!-- Animated (Foundation's docs example, with its Motion UI names unchanged) -->
+<button nfsButton [nfsOpen]="dizzy">Click me for a modal</button>
+<dialog nfsReveal #dizzy="nfsReveal" id="animated-modal" aria-labelledby="dizzy-title"
+        animationIn="spin-in" animationOut="spin-out">
+  <h1 id="dizzy-title">Whoa, I'm dizzy!</h1>
+  <button nfsCloseButton nfsClose aria-label="Close animated modal"><span aria-hidden="true">&times;</span></button>
+</dialog>
+
+<!-- The consumer's own keyframe classes and backdrop, in the dot form and with a class of its own -->
+<dialog nfsReveal id="slow-modal" class="dim-backdrop" aria-label="Slow modal"
+        animationIn=".slow-zoom-in" animationOut=".slow-zoom-out">...</dialog>
+<!-- the consumer's stylesheet: dialog.dim-backdrop::backdrop { background-color: rgb(0 0 0 / 0.7); }
+     plus @keyframes for .slow-zoom-in and .slow-zoom-out, each with its own reduced-motion rule -->
 
 <!-- No overlay: a non-modal dialog written right after its Trigger -->
 <button nfsButton [nfsToggle]="free">Click me for an overlay-lacking modal</button>
-<dialog nfsReveal #free="nfsReveal" id="free-modal" class="reveal" aria-label="Note" [overlay]="false">
+<dialog nfsReveal #free="nfsReveal" id="free-modal" aria-label="Note" [overlay]="false">
   <p>I feel so free!</p>
-  <button class="close-button" type="button" aria-label="Close reveal" nfsClose><span aria-hidden="true">&times;</span></button>
+  <button nfsCloseButton nfsClose aria-label="Close note"><span aria-hidden="true">&times;</span></button>
 </dialog>
 
 <!-- Full screen, deep-linkable, with content that must reset on close (Lazy content) -->
-<dialog nfsReveal #video="nfsReveal" id="intro-video" class="full reveal" aria-label="Introduction video" deepLink>
+<dialog nfsReveal #video="nfsReveal" id="intro-video" size="full" aria-label="Introduction video" deepLink>
   @if (video.isOpen()) {
     <iframe src="https://player.example/intro" title="Introduction video"></iframe>
   }
-  <button class="close-button" type="button" aria-label="Close video" nfsClose><span aria-hidden="true">&times;</span></button>
+  <button nfsCloseButton nfsClose aria-label="Close video"><span aria-hidden="true">&times;</span></button>
+</dialog>
+
+<!-- Closing natively through <form method="dialog">: the close button submits, so it says so -->
+<dialog nfsReveal id="notice" aria-label="Notice">
+  <form method="dialog">
+    <button nfsCloseButton type="submit" value="dismissed" aria-label="Close notice"><span aria-hidden="true">&times;</span></button>
+  </form>
 </dialog>
 ```
+
+The consumer's own class on the dialog (`dim-backdrop`) and its `dialog.<class>::backdrop` rule replace Foundation's `additionalOverlayClasses`; they select no Foundation or library class (building-blocks 1.1). A backdrop colour of the consumer's own is outside the `nfs-reveal` mixin's dialog-edge check (1.4.11), so the consumer keeps the dialog's edge at 3:1 or more against the page it dims; a darker backdrop than Foundation's only raises that ratio.
 
 A component inside a Reveal that closes it with a result:
 
 ```ts
 @Component({
   selector: 'app-color-picker',
-  template: `@for (c of colors; track c) { <button type="button" (click)="pick(c)">{{ c }}</button> }`,
+  imports: [NfsButton],
+  template: `@for (c of colors; track c) { <button nfsButton (click)="pick(c)">{{ c }}</button> }`,
 })
 export class AppColorPicker {
   protected readonly colors = ['red', 'green', 'blue'];
@@ -665,12 +744,16 @@ export class AppColorPicker {
 Application-wide defaults:
 
 ```ts
-providers: [{ provide: nfsRevealDefaultsToken, useValue: { animationIn: 'nfs-fade-in', animationOut: 'nfs-fade-out' } }]
+providers: [
+  { provide: nfsRevealDefaultsToken, useValue: { animationIn: 'fade-in', animationOut: 'fade-out' } satisfies NfsRevealDefaults },
+]
 ```
+
+`satisfies` keeps the Motion names checked, because a provider's `useValue` is untyped.
 
 ### Sass
 
-Sass. The consumer compiles Foundation's Sass from its own settings; the library imports no Foundation code and copies no Foundation rule. This plugin relies on Foundation's export mixins `foundation-reveal` (and `foundation-close-button` for the close control). Its documented custom CSS is the `nfs-reveal` mixin of the library's Sass (`@import 'ngx-foundation-sites';` after Foundation), included after `foundation-reveal`.
+Sass. The consumer compiles Foundation's Sass from its own settings; the library imports no Foundation code and copies no Foundation rule. This plugin relies on Foundation's export mixin `foundation-reveal`; its close button relies on `foundation-close-button` and the `nfs-close-button` Library mixin of the [Spec: Close Button](../issues/83-spec-close-button.md). Its documented custom CSS is the `nfs-reveal` mixin of the library's Sass (`@import 'ngx-foundation-sites';` after Foundation), included after `foundation-reveal`.
 
 (1) Rules the mixin emits, with the reason Foundation's CSS cannot provide each (only the declarations that differ from Foundation's):
 
@@ -689,9 +772,11 @@ Sass. The consumer compiles Foundation's Sass from its own settings; the library
 
 (3) Custom properties the directive writes and the mixin reads: `--nfs-reveal-top` (a numeric `vOffset` in px), `--nfs-reveal-shift` (`0px` with a numeric `vOffset`), `--nfs-reveal-left` (a numeric `hOffset` in px). An implementation channel, not theming (building-blocks 1.13).
 
-(4) Motion classes: none by default (Foundation's `animationIn` and `animationOut` are empty); any `nfs-*` class from `nfs-motion` when set. The `nfs-motion` mixin gains, for this spec, `@keyframes nfs-reveal-backdrop-in` and `nfs-reveal-backdrop-out` (opacity 0 to 1 and back, named apart from the dialog's keyframes so the directive can tell their `animationend` events apart in WebKit) and the rules `.reveal.is-opening::backdrop { animation: nfs-reveal-backdrop-in $duration $timing-function both; }` and `.reveal.is-closing::backdrop { animation: nfs-reveal-backdrop-out $duration $timing-function both; }`, with both backdrop rules added to its `prefers-reduced-motion: reduce` block (`animation-duration: 1ms`). The mixin's `$duration` and `$timing-function` parameters (Motion UI's defaults) apply.
+(4) Motion classes: none by default (Foundation's `animationIn` and `animationOut` are empty); the `nfs-motion` class of any Motion name set on them. The `nfs-motion` mixin gains, for this spec, `nfs-spin-in` (the keyframe counterpart of Motion UI's `spin-in` with its default settings: a clockwise rotation from minus three quarters of a turn to none while fading in, under the same reduced-motion override as the rest of the set), so Foundation's animated docs example needs no class of the consumer's own, and `@keyframes nfs-reveal-backdrop-in` and `nfs-reveal-backdrop-out` (opacity 0 to 1 and back, named apart from the dialog's keyframes so the directive can tell their `animationend` events apart in WebKit) and the rules `.reveal.is-opening::backdrop { animation: nfs-reveal-backdrop-in $duration $timing-function both; }` and `.reveal.is-closing::backdrop { animation: nfs-reveal-backdrop-out $duration $timing-function both; }`, with both backdrop rules added to its `prefers-reduced-motion: reduce` block (`animation-duration: 1ms`). The mixin's `$duration` and `$timing-function` parameters (Motion UI's defaults) apply.
 
-(5) What breaks without the include: an opened dialog stays invisible (Foundation's `display: none`), and with only rule 1 it sits at the top-left of the document, scrolls the page to the top when focused, grows past the viewport with tall content, shows black text, and has the user agent's backdrop instead of Foundation's overlay colour; without `nfs-motion`, Motion classes measure no animation and open and close at once.
+(5) What breaks without the include: an opened dialog stays invisible (Foundation's `display: none`), and with only rule 1 it sits at the top-left of the document, scrolls the page to the top when focused, grows past the viewport with tall content, shows black text, and has the user agent's backdrop instead of Foundation's overlay colour; without `nfs-motion`, Motion names measure no animation and open and close at once, which development check 3 reports; without `nfs-close-button`, the close button falls back to Foundation's glyph box, under 24 px wide (the Close Button spec, which its `strictVariantProperties` Runtime check reports).
+
+(6) Variant properties: none. The Reveal's Variant families (`size`, `collapse`) are closed, so the mixin writes no `--nfs-*` Variant property and the Reveal takes no part in the Runtime checks.
 
 ### Platform features to adopt when the browser target moves
 
@@ -716,11 +801,12 @@ The Reveal dialog prototype listed what carries over to OffCanvas: the scroll-lo
 - A backdrop press needs both ends on the backdrop (Foundation closed on `click`/`tap` on the overlay).
 - A non-modal Reveal closes when focus leaves it, closes on Escape from anywhere, and does not lock page scroll.
 - `opened` fires after the enter animation (Foundation's `open.zf.reveal` fired synchronously); `closed` carries a result.
-- `fullScreen` becomes the `.full` class; full-screen Reveals stay modal.
+- `fullScreen` becomes `size="full"`, which sets the `.full` class; full-screen Reveals stay modal.
+- The consumer writes no Foundation class: `.reveal`, the size classes, `.collapse`, and `.close-button` come from directives and their inputs, and the server HTML still carries them.
 - Numeric offsets apply at medium and up; below medium the dialog stays full screen.
 - Under `dir="rtl"` a numeric `hOffset` is measured from the left edge; Foundation's overlay case placed the box at `viewport width - width + hOffset`, because it wrote `left` on a `position: relative` box, while its `.without-overlay` case measured from the left as the library does.
 - A dialog taller than rule 4's cap, `vh - 2 * min(100px, 10vh)`, is capped and sits at half Foundation's tall-modal offset, `min(50px, 5vh)` from the top (Foundation placed it at `min(100px, 10vh)` and let its overlay scroll, and did not cap a dialog between the cap and the viewport height).
 - An `'auto'` dialog is re-placed when its content changes (Foundation re-placed only on resize).
 - `resetOnClose`'s `innerHTML` re-parse becomes Lazy content under `@if`.
-- Motion UI transition classes and `fast`/`slow` modifiers are replaced by keyframe Motion classes; the overlay's `fade-in`/`fade-out` becomes the backdrop keyframes.
+- Motion UI transition classes and `fast`/`slow` modifiers are replaced by keyframe Motion classes; Motion UI's names stay the values (`spin-in` binds the library's `nfs-spin-in`), and a name outside the `nfs-motion` set fails to compile rather than silently not animating; the overlay's `fade-in`/`fade-out` becomes the backdrop keyframes.
 - The `resizeme` re-centring, `data-yeti-box`, `data-resize`, `aria-hidden` toggling, and `tabindex` stamping on anchors are gone.
