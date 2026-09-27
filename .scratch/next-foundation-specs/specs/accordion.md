@@ -1,10 +1,10 @@
 # Spec: Accordion
 
-Ticket: [Spec: Accordion](../issues/15-spec-accordion.md). Targets Angular 22.2 (`@angular/core`, `@angular/cdk`, `@angular/aria`), Nx 23.2, Storybook 10.6 with `@storybook/angular-vite`, Vitest 4.1.x, TypeScript 6.0.x, and Foundation for Sites 6.9.0 Sass. Built on the resolved [Prototype: `@angular/aria` Accordion and Tabs under Foundation markup](../issues/43-prototype-aria-accordion-tabs.md), [Prototype: `animate.enter` at hydration](../issues/52-prototype-animate-enter-hydration.md), and [Prototype: Rendering-mode test seam](../issues/59-prototype-rendering-mode-test-seam.md).
+Ticket: [Spec: Accordion](../issues/15-spec-accordion.md). Targets Angular 22.2 (`@angular/core`, `@angular/cdk`, `@angular/aria`), Nx 23.2, Storybook 10.6 with `@storybook/angular-vite`, Vitest 4.1.x, TypeScript 6.0.x, and Foundation for Sites 6.9.0 Sass. Built on the resolved [Prototype: `@angular/aria` Accordion and Tabs under Foundation markup](../issues/43-prototype-aria-accordion-tabs.md), [Prototype: `animate.enter` at hydration](../issues/52-prototype-animate-enter-hydration.md), and [Prototype: Rendering-mode test seam](../issues/59-prototype-rendering-mode-test-seam.md). Revised on 2026-09-27 under the class rule ([ADR 0039](../adr/0039-directives-manage-every-foundation-class.md)) by [Re-run: Accordion spec under the class rule](../issues/107-rerun-accordion-class-rule.md): the consumer writes no Foundation or library class.
 
 ## Problem Statement
 
-A developer building an Angular application on Foundation for Sites wants Foundation's accordion: a list of titles, each showing and hiding a panel of content, styled by Foundation's `.accordion`, `.accordion-item`, `.accordion-title`, and `.accordion-content` classes and its plus and minus glyph. Foundation's Accordion plugin does this with jQuery, and it leaves problems an Angular library must not copy:
+A developer building an Angular application on Foundation for Sites wants Foundation's accordion: a list of titles, each showing and hiding a panel of content, styled by Foundation's `.accordion`, `.accordion-item`, `.accordion-title`, and `.accordion-content` classes and its plus and minus glyph, without writing those classes, the `.is-active` State class, or Foundation's `data-*` attributes by hand. Foundation's Accordion plugin does this with jQuery, and it leaves problems an Angular library must not copy:
 
 - The title is `<a href="#">`, a link that behaves like a button, outside any heading. The WAI-ARIA APG accordion pattern asks for a `button` inside a heading, so screen reader users hear the wrong role and cannot find the sections by heading.
 - Collapsed panels are hidden with `aria-hidden` and jQuery's inline `display`; Foundation's CSS has no rule that shows an open panel, so an accordion that is open at page load is only correct after the plugin runs.
@@ -17,21 +17,21 @@ A server-rendered Angular application adds more: the open panel must be visible 
 
 ## Solution
 
-Four attribute directives and one small lazy-content directive on the markup Foundation already documents, built on `@angular/aria`'s accordion through `hostDirectives`:
+Four attribute directives and one small lazy-content directive on the elements of Foundation's documented markup, built on `@angular/aria`'s accordion through `hostDirectives`. Each directive binds its Foundation Structural class, and the item binds the State class, so the developer writes elements and directive attributes and no Foundation or library class (ADR 0039):
 
-- `[nfsAccordion]` on `ul.accordion` hosts Aria's `AccordionGroup` and owns Foundation's expansion policy: single-open by default (`multiExpand`), keep one open by default (`allowAllClosed`), deep links, and the container-level Completion outputs.
-- `[nfsAccordionItem]` on `li.accordion-item` binds Foundation's `.is-active` State class and is the handle for `open()`, `close()`, `toggle()` and the item-level `opened`/`closed` outputs.
-- `button[nfsAccordionTitle]` inside a heading hosts Aria's `AccordionTrigger`: native button, `aria-expanded`, `aria-controls`, roving keys, and the two-way `expanded` model.
-- `[nfsAccordionContent]` on `.accordion-content` is the one Wrapper component: it hosts Aria's `AccordionPanel` (`role="region"`, `aria-labelledby`, `inert` while collapsed) and adds a single inner element so CSS can animate the height with `grid-template-rows`.
+- `[nfsAccordion]` on the `ul` binds `.accordion`, hosts Aria's `AccordionGroup`, and owns Foundation's expansion policy: single-open by default (`multiExpand`), keep one open by default (`allowAllClosed`), deep links, and the container-level Completion outputs.
+- `[nfsAccordionItem]` on each `li` binds `.accordion-item` and Foundation's `.is-active` State class, and is the handle for `open()`, `close()`, `toggle()` and the item-level `opened`/`closed` outputs.
+- `button[nfsAccordionTitle]` inside a heading binds `.accordion-title` and hosts Aria's `AccordionTrigger`: native button, `aria-expanded`, `aria-controls`, roving keys, and the two-way `expanded` model, which also sets a panel open at first paint (`[expanded]="true"` in place of Foundation's `class="is-active"`).
+- `[nfsAccordionContent]` on the panel `div` is the one Wrapper component: it binds `.accordion-content`, hosts Aria's `AccordionPanel` (`role="region"`, `aria-labelledby`, `inert` while collapsed), and adds a single inner element so CSS can animate the height with `grid-template-rows`.
 - `ng-template[nfsAccordionLazyContent]` inside the content, optional, holds Lazy content that renders only while the panel is shown (or, with `preserveContent`, from its first showing on).
 
-The developer writes `<h3><button nfsAccordionTitle [panel]="c.panel">Title</button></h3>` above `<div nfsAccordionContent #c="nfsAccordionContent">` and projects the panel content, so the server HTML carries the open panel's content, the collapsed panels as `inert`, and every State class and ARIA attribute. The height animation is a CSS transition on the content host keyed on the item's `.is-active` class (ADR 0003), never `animate.enter`, so nothing animates at hydration. The library's `nfs-accordion` Library mixin adds the few rules Foundation's Sass cannot express for a button title inside a heading and a CSS-shown panel, each with its reason.
+The developer writes `<h3><button nfsAccordionTitle [panel]="c.panel">Title</button></h3>` above `<div nfsAccordionContent #c="nfsAccordionContent">` and projects the panel content, with no `class` attribute on any of them, so the server HTML carries every Foundation class the directives bind, the open panel's content, the collapsed panels as `inert`, and every State class and ARIA attribute. Foundation's accordion has no Variant classes, so no directive has a Variant input. The height animation is a CSS transition on the content host keyed on the item's `.is-active` class (ADR 0003), never `animate.enter`, so nothing animates at hydration. The library's `nfs-accordion` Library mixin adds the few rules Foundation's Sass cannot express for a button title inside a heading and a CSS-shown panel, each with its reason.
 
 ## User Stories
 
-1. As an application developer, I want to put `nfsAccordion`, `nfsAccordionItem`, `nfsAccordionTitle`, and `nfsAccordionContent` on Foundation's accordion markup, so that I keep Foundation's classes and look without Foundation's JavaScript.
-2. As an application developer, I want the directives to add Foundation's Structural classes themselves, so that `<ul nfsAccordion>` works with or without `class="accordion"`.
-3. As an application developer migrating Foundation markup, I want `class="is-active"` on an item to open it at first paint, so that Foundation's documented initial state carries over.
+1. As an application developer, I want to put `nfsAccordion`, `nfsAccordionItem`, `nfsAccordionTitle`, and `nfsAccordionContent` on the elements of Foundation's accordion markup, so that I get Foundation's look without Foundation's JavaScript.
+2. As an application developer, I want the directives to set every Foundation class themselves (`.accordion`, `.accordion-item`, `.accordion-title`, `.accordion-content`, `.is-active`), so that my templates carry no Foundation or library class and cannot drift from Foundation's class contract.
+3. As an application developer, I want `[expanded]="true"` on a title to open its panel at first paint, in the server HTML too, so that Foundation's documented initial state (`class="is-active"` on the item) carries over without a class.
 4. As an application developer, I want only one panel open at a time by default, so that the behaviour matches Foundation's `data-multi-expand="false"` default.
 5. As an application developer, I want `[multiExpand]="true"`, so that several panels can be open together.
 6. As an application developer, I want the last open panel to stay open by default, so that Foundation's `allowAllClosed: false` default carries over.
@@ -56,7 +56,7 @@ The developer writes `<h3><button nfsAccordionTitle [panel]="c.panel">Title</but
 25. As an application developer, I want app-wide defaults through `nfsAccordionDefaultsToken`, so that every accordion in my app shares `multiExpand`, `allowAllClosed`, and deep-link settings.
 26. As an application developer, I want `[region]="false"` on a multi-expand accordion with many panels, so that screen readers are not flooded with landmarks, as the APG advises.
 27. As an application developer, I want my own `id` on a title or content to be used, so that my links and styles keep working.
-28. As an application developer, I want dev-mode warnings for a title outside a heading, a deep link on a generated id, several open items in single mode, a missing `nfs-accordion` include, and `collapseAll()` that cannot run, so that mistakes surface early.
+28. As an application developer, I want dev-mode warnings for a title outside a heading, a deep link on a generated id, several open items in single mode, a missing `nfs-accordion` include, `collapseAll()` that cannot run, and a `class="is-active"` copied from Foundation's markup onto an item, so that mistakes surface early.
 29. As an application developer, I want a Sass warning when my accordion colours fail WCAG 2.2 AA contrast, so that I fix my settings before release.
 30. As a screen reader user, I want each title to be a button inside a heading, so that I can navigate sections by heading and hear "button, expanded" or "collapsed".
 31. As a screen reader user, I want each open panel to be a labelled region, so that I can tell which section I am reading.
@@ -79,6 +79,8 @@ The developer writes `<h3><button nfsAccordionTitle [panel]="c.panel">Title</but
 48. As a developer of a zoneless application, I want the accordion to need no zone, so that it works with zoneless change detection.
 49. As an application developer, I want to import the accordion from its own entry point, so that a `@defer` block can split it with the rest of a deferred widget.
 50. As a library maintainer, I want every behaviour asserted through roles, ARIA, attributes, and classes at the four test layers, so that regressions surface where they belong.
+51. As an application developer migrating Foundation markup, I want a copied `class="is-active"` to be reported rather than silently dropped, so that I learn to bind `[expanded]` instead of wondering why the panel renders closed.
+52. As an application developer, I want the accordion's look to come only from Foundation's Sass settings and the `nfs-accordion` mixin, with no Variant input to learn, so that Foundation's accordion settings stay the one place I change it.
 
 ## Implementation Decisions
 
@@ -94,10 +96,10 @@ Accordion 6.9: eight options, three plugin events plus the lifecycle pair, three
 | `updateHistory` (`data-update-history`, `false`) | `pushState` instead of `replaceState` | `updateHistory` input, same meaning; `history.state` is preserved |
 | `deepLinkSmudge` (`false`) | Animates `html, body` `scrollTop` to the accordion's top after a deep link | `deepLinkSmudge` input; `scrollIntoView({block: 'start'})` on the deep-linked item after it has opened, smooth unless reduced motion |
 | `deepLinkSmudgeDelay` (`300`) | Scroll animation duration | Dropped: the browser owns smooth-scroll timing (building-blocks 1.4) |
-| `deepLinkSmudgeOffset` (`0`) | Offset for a sticky header | Dropped: CSS `scroll-margin-top` on `.accordion-item` or `scroll-padding-top` on the scroller, which `scrollIntoView` honours (also for native fragment jumps) |
+| `deepLinkSmudgeOffset` (`0`) | Offset for a sticky header | Dropped: CSS `scroll-padding-top` on the scroller, or `scroll-margin-top` on the item through an application class or an inline style, which `scrollIntoView` honours (also for native fragment jumps) |
 | `slideSpeed` (`250`) | jQuery slide duration | Dropped as an input: the `nfs-accordion($duration: 250ms)` mixin parameter (CSS owns timing, building-blocks 1.4) |
 | `disabled` attribute on the container | Blocks `toggle`, `down`, `up`; Foundation CSS `.accordion[disabled] .accordion-title { cursor: not-allowed }` | `disabled` input (Aria's), rendered back as the `disabled` attribute so Foundation's rule applies; titles render `aria-disabled` |
-| `.is-active` on the item (markup) | Initial and current open state | Bound by `NfsAccordionItem` from `expanded`; a static `is-active` seeds the initial state |
+| `.is-active` on the item (markup) | Initial and current open state | A host binding of `NfsAccordionItem` from `expanded`; the consumer sets the initial state with `[expanded]="true"` on the title and never writes the class; a copied static `is-active` is stripped by that binding and reported by dev check 7 |
 | `down.zf.accordion` / `up.zf.accordion` | After `slideDown` / `slideUp`, payload the pane | Item `opened` / `closed` (void) and container `opened` / `closed` (payload `NfsAccordionItem`), after the height transition |
 | `deeplink.zf.accordion` | After a hash matched a title | Container `deepLinked` (payload `NfsAccordionItem`) |
 | `init.zf.accordion` / `destroyed.zf.accordion` | Lifecycle | None (Angular lifecycle) |
@@ -105,21 +107,24 @@ Accordion 6.9: eight options, three plugin events plus the lifecycle pair, three
 | Keys: Enter/Space toggle, ArrowDown/ArrowUp next/previous, Home/End first/last, no wrap | Arrow keys also click in single mode | Aria's key table: the same keys, focus only, no wrap |
 | ARIA: `<a>` with `aria-expanded`, `aria-controls`; content `role=region`, `aria-labelledby`, `aria-hidden` | No heading, no button role, no `aria-disabled` | `button` inside a heading, `aria-expanded`, `aria-controls`, `aria-disabled`; content `role="region"` (optional), `aria-labelledby`, `inert` |
 
-Dropped options: `slideSpeed`, `deepLinkSmudgeDelay`, `deepLinkSmudgeOffset` (replacements above). Dropped behaviour: arrow keys opening panes in single mode, `aria-hidden` on panes, the title `href` as the deep-link source, `console.info` on toggling a disabled accordion, `GetYoDigits` ids, and `Foundation.Accordion.defaults` as a mutable global (replaced by `nfsAccordionDefaultsToken`).
+Dropped options: `slideSpeed`, `deepLinkSmudgeDelay`, `deepLinkSmudgeOffset` (replacements above). Dropped behaviour: arrow keys opening panes in single mode, `aria-hidden` on panes, the title `href` as the deep-link source, `console.info` on toggling a disabled accordion, `GetYoDigits` ids, `Foundation.Accordion.defaults` as a mutable global (replaced by `nfsAccordionDefaultsToken`), and the consumer-written markup contract: Foundation's classes, `.is-active` as the initial state, and the `data-accordion`, `data-accordion-item`, and `data-tab-content` attributes (replaced by the directives, which bind the classes, and by `[expanded]`).
 
 ### CSS class to Angular mapping
 
-| Foundation class or markup | Angular | Rationale |
-| --- | --- | --- |
-| `.accordion` (`ul[data-accordion]`) | `NfsAccordion`, selector `[nfsAccordion]`, `exportAs: 'nfsAccordion'`, static host class `accordion` | Attribute directive on the container (ADR 0001); any element, as Foundation allows |
-| `.accordion-item` (`li[data-accordion-item]`) | `NfsAccordionItem`, selector `[nfsAccordionItem]`, `exportAs: 'nfsAccordionItem'`, static host class `accordion-item` | Holds the item's State class and methods |
-| `.accordion-title` (`a[href="#"]`) | `NfsAccordionTitle`, selector `button[nfsAccordionTitle]`, `exportAs: 'nfsAccordionTitle'`, static host class `accordion-title` | Native button inside a heading (APG); the selector enforces the element |
-| `.accordion-content` (`div[data-tab-content]`) | `NfsAccordionContent`, attribute-selector component `[nfsAccordionContent]`, `exportAs: 'nfsAccordionContent'`, static host class `accordion-content` | Wrapper component (building-blocks 1.1 case 2): one inner element for the grid-row animation |
-| `.is-active` | Host class binding on `NfsAccordionItem` from `expanded` | State class, bound on server and client |
-| `.accordion[disabled]` | `[attr.disabled]` host binding on `NfsAccordion` from the `disabled` input | Keeps Foundation's disabled cursor rule working for a bound `[disabled]` |
-| Plus and minus glyph (`::before`, `$accordion-plusminus`) | Foundation CSS on the title, keyed on `.is-active` | No directive; Sass setting stays compile-time |
-| (none) | `NfsAccordionLazyContent`, selector `ng-template[nfsAccordionLazyContent]` | Lazy content marker; renders inside the wrapper's inner element |
-| (none) | `.nfs-accordion-content-body` and `.nfs-accordion-content-shown` on the wrapper's own inner element | Library-owned element; clipped only while collapsed or animating |
+Every Foundation and library class on an accordion is set by a directive or the Wrapper component's template; no class is left for the consumer to write (ADR 0039, building-blocks 1.14). Structural classes are static `host` classes, so a class the consumer wrote anyway merges with them; the State class is a dynamic host binding, which wins over a static class of the same name.
+
+| Foundation class or markup | Kind | Angular | Rationale |
+| --- | --- | --- | --- |
+| `.accordion` (`ul[data-accordion]`) | Structural | `NfsAccordion`, selector `[nfsAccordion]`, `exportAs: 'nfsAccordion'`, binds `accordion` as a static `host` class | Attribute directive on the container (ADR 0001); any element, as Foundation allows |
+| `.accordion-item` (`li[data-accordion-item]`) | Structural | `NfsAccordionItem`, selector `[nfsAccordionItem]`, `exportAs: 'nfsAccordionItem'`, binds `accordion-item` as a static `host` class | Holds the item's State class and methods |
+| `.accordion-title` (`a[href="#"]`) | Structural | `NfsAccordionTitle`, selector `button[nfsAccordionTitle]`, `exportAs: 'nfsAccordionTitle'`, binds `accordion-title` as a static `host` class | Native button inside a heading (APG); the selector enforces the element |
+| `.accordion-content` (`div[data-tab-content]`) | Structural | `NfsAccordionContent`, attribute-selector component `[nfsAccordionContent]`, `exportAs: 'nfsAccordionContent'`, binds `accordion-content` as a static `host` class | Wrapper component (building-blocks 1.1 case 2): one inner element for the grid-row animation |
+| Variant classes | Variant | None: Foundation's accordion Sass defines no Variant class, so no directive has a Variant input, no Variant registry or alias exists, and the `nfs-accordion` mixin writes no Variant property | The look is Foundation's accordion settings (`$accordion-*`), compile-time (building-blocks 1.13) |
+| `.is-active` | State | `[class.is-active]` host binding on `NfsAccordionItem` from `expanded` | Bound on server and client; the consumer binds `[expanded]` on the title, never the class (dev check 7 reports a copied static one) |
+| `.accordion[disabled]` | Attribute | `[attr.disabled]` host binding on `NfsAccordion` from the `disabled` input | Keeps Foundation's disabled cursor rule working for a bound `[disabled]` |
+| Plus and minus glyph (`::before`, `$accordion-plusminus`) | Sass setting | Foundation CSS on the title, keyed on `.is-active` | No directive and no input; a Sass boolean stays compile-time (building-blocks 1.13) |
+| (none) | Library marker | `NfsAccordionLazyContent`, selector `ng-template[nfsAccordionLazyContent]` | Lazy content marker; renders inside the wrapper's inner element |
+| (none) | Library | `.nfs-accordion-content-body` (static) and `.nfs-accordion-content-shown` (bound) on the wrapper's own inner element, in its template | Library-owned element the consumer never writes; clipped only while collapsed or animating |
 
 ### Hierarchy and DI shape
 
@@ -190,7 +195,7 @@ class NfsAccordionItem {                    // [nfsAccordionItem], exportAs 'nfs
 
 class NfsAccordionTitle {                   // button[nfsAccordionTitle], exportAs 'nfsAccordionTitle'
   readonly panel: InputSignal<AccordionPanel>;   // Aria, required: bind [panel]="c.panel"
-  readonly expanded: ModelSignal<boolean>;       // Aria, default false (or true from a static is-active on the item)
+  readonly expanded: ModelSignal<boolean>;       // Aria, default false; [expanded]="true" opens the panel at first paint
   readonly disabled: InputSignalWithTransform<boolean, unknown>; // Aria, default false
   readonly id: InputSignal<string>;              // Aria, default generated 'ng-accordion-trigger-...'
 }
@@ -222,7 +227,7 @@ The inputs of `NfsAccordionTitle` and `NfsAccordionContent` are Aria's, exposed 
 | | `opened`, `closed` | `output<void>()` | | per-pane `down/up` | After the content's `grid-template-rows` transition ends (Animation) |
 | | `open()`, `close()`, `toggle()` | methods | | `down`, `up`, `toggle` | Go through Aria's pattern, so they respect `disabled` and the expansion policy; `close()` on the only open panel does nothing while `allowAllClosed` is `false` |
 | `NfsAccordionTitle` | `panel` | `input.required` (Aria) | | title `href` plus content `id` | Consumer binds `[panel]="c.panel"`; NG8008 at build time when missing |
-| | `expanded` | `model()` (Aria) | `false`, or `true` when the item's static `class` contains `is-active` | `.is-active` | `expandedChange` fires at request time, before the animation |
+| | `expanded` | `model()` (Aria) | `false` | `.is-active` on the item | `expandedChange` fires at request time, before the animation. The initial state is a binding: `[expanded]="true"` (a constant one-way binding, applied in the first update pass on server and client alike and never re-applied, so the user can still close the panel) or `[(expanded)]`. The bare attribute `expanded` does not compile under strict templates, because Aria's model takes `boolean` with no transform |
 | | `disabled` | `input()` (Aria) | `false` | none (Foundation disables only the whole accordion) | New per item; soft-disabled: focusable, `aria-disabled="true"` |
 | | `id` | `input()` (Aria) | `ng-accordion-trigger-<random>-<n>` | `<item id>-label` | The prefix is Aria's; a wrapper cannot change an Aria input default |
 | `NfsAccordionContent` | `id` | `input()` (Aria) | `ng-accordion-panel-<random>-<n>` | content `id` | Required from the consumer for deep links |
@@ -232,19 +237,19 @@ The inputs of `NfsAccordionTitle` and `NfsAccordionContent` are Aria's, exposed 
 Behaviour rules:
 
 - Expansion policy (ADR 0028): Aria's group stays in multi-expand mode. Each item subscribes to its title's `expanded` model (a `model()` emits synchronously on every internal `set`). When it emits `true` and `multiExpand` is `false`, the accordion calls Aria's `collapse()` on every other expanded item's title. `lockedTitle` for an item is `computed`: `!allowAllClosed() && expanded() && openCount() === 1`. While locked, the title renders `aria-disabled="true"` (its own host binding wins over Aria's) and its host `click` and `keydown` listeners call `stopPropagation()` for a click and for Enter or Space without modifiers, so Aria's group listener never toggles it; the listener calls no `preventDefault()`, so a replayed event logs nothing.
-- Initial state from markup: `NfsAccordionItem` reads `inject(new HostAttributeToken('class'), {optional: true})`; when it contains `is-active`, the title's constructor writes `true` into Aria's `expanded` model before any subscriber exists, so a bound `[expanded]` still wins on the first update pass (the Toggler spec's seeding rule, adapted to a model the library does not declare).
+- Initial state: bound, never read from a class (ADR 0039). A panel open at first paint is written `[expanded]="true"` on its title, or `[(expanded)]` from a signal; the item reads no static class to seed the model, and no directive writes into Aria's model at construction. Binding writes do not make the model emit, so no expansion policy runs for them: two titles bound open in single mode both stay open, which dev check 4 reports. A static `class="is-active"` copied onto an item from Foundation's markup is stripped on server and client alike, because the item's dynamic `[class.is-active]` binding wins over a static class of the same name (Angular's styling resolution consults static classes only when every binding for the class is `undefined`); dev check 7 reports it.
 - Focus: opening never moves focus (the APG keeps focus on the title). When an item's `expanded` model emits `false` while its content contains `document.activeElement`, the item focuses its title in the same callback, before `inert` is applied (Material's rule, the Angular Material reference research, section 1). A consumer's write to the `[expanded]` binding is not observed this way (bindings do not emit); `close()` is the call that keeps focus safe.
 - Content key guard: Aria's group `keydown` listener handles every keydown that bubbles to the group, including keys typed in an input inside an open panel (source reading of `AccordionGroupPattern.onKeydown`, which checks no target): Space would toggle the last focused title and be prevented, Home would move focus to the first title. `NfsAccordionContent` therefore has a host `keydown` listener that calls `stopPropagation()` for exactly the keys Aria matches (ArrowUp, ArrowDown, Home, End, Space, Enter, without modifiers; Home, End, Space, and Enter only when not repeated), so a key from inside a panel never reaches its own or an outer accordion's group.
 - Replay guard: `NfsAccordion` has a host `keydown` listener that runs after Aria's (host-directive listeners run first) and calls `stopPropagation()` again for the same keys when they come from one of its titles, because Aria's `preventDefault()` throws on a Replayed event and skips its own `stopPropagation()`, letting an outer accordion handle the key a second time (prototype case 25).
 - Deep links (`deepLink`): in `afterNextRender` the accordion reads `location.hash` through `DOCUMENT.defaultView`, decodes it, and looks it up among its items' content ids; a match opens that item (policy applies) and emits `deepLinked`; with `deepLinkSmudge` the item's `li` is scrolled into view when its `opened` fires. A `hashchange` listener, added in the same callback and removed on destroy, repeats the lookup; an empty hash reopens the item that was open at first render (Foundation's back-navigation rule). When the user opens an item (its model emits `true` outside a deep-link application), the accordion writes `#<content id>` with `history.replaceState(history.state, '', ...)`, or `pushState` with `updateHistory`; when the user closes the item the hash names, it writes the URL without the fragment. `history.state` is passed through so a Router's entries keep their state. The URL is not restored on destroy: the hash is the user's state, and a route change owns the next URL (a stated exception to building-blocks 1.9's restore rule).
 - Methods: `open()`, `close()`, `toggle()` call Aria's `expand()`, `collapse()`, `toggle()` on the title, so the expansion policy, `disabled`, and focus rules run for code and users alike. `expandAll()` calls Aria's `expandAll()` when `multiExpand` is `true`; `collapseAll()` calls Aria's `collapseAll()` when `allowAllClosed` is `true`.
-- Dev-mode checks, in one `afterNextRender` per directive that exists only when `ngDevMode` is on, each warning once per instance: (1) a title whose parent is not `h1`-`h6`, or not the heading's only element child (APG; 1.3.1); (2) `deepLink` with a content id that starts with Aria's generated prefix; (3) `deepLink` while the hash looks like a hash route (`#/`), which this feature does not support; (4) more than one item open at first render while `multiExpand` is `false`; (5) `collapseAll()` called while `allowAllClosed` is `false`; (6) an expanded content whose computed `display` is `none` ("include `nfs-accordion` after `foundation-accordion`"). Aria's own checks stay (trigger inside its panel, panel with two triggers) and so does its warning for panels without `ngAccordionContent` (Rendering modes).
+- Dev-mode checks, in one `afterNextRender` per directive that exists only when `ngDevMode` is on, each warning once per instance: (1) a title whose parent is not `h1`-`h6`, or not the heading's only element child (APG; 1.3.1); (2) `deepLink` with a content id that starts with Aria's generated prefix; (3) `deepLink` while the hash looks like a hash route (`#/`), which this feature does not support; (4) more than one item open at first render while `multiExpand` is `false`; (5) `collapseAll()` called while `allowAllClosed` is `false`; (6) an expanded content whose computed `display` is `none` ("include `nfs-accordion` after `foundation-accordion`"); (7) an item whose static `class` list contains `is-active` ("the class is set by `nfsAccordionItem`; bind `[expanded]="true"` on the title instead"), read with `inject(new HostAttributeToken('class'), {optional: true})` in a field initialiser that runs only when `ngDevMode` is on, because the rendered class list no longer shows the copied class once the host binding has stripped it. Structural classes written redundantly (`class="accordion"`) merge with the static `host` classes and are not reported. Aria's own checks stay (trigger inside its panel, panel with two triggers) and so does its warning for panels without `ngAccordionContent` (Rendering modes).
 
 ### Implementation level and primitives
 
 Implementation level: `@angular/aria` (building-blocks Table A). Aria's accordion is a direct match for Foundation's markup, and the [Prototype: `@angular/aria` Accordion and Tabs under Foundation markup](../issues/43-prototype-aria-accordion-tabs.md) proved host-directive composition under server rendering, hydration, and replay in Chromium, Firefox, and WebKit. The native level does not fit: `<details name>` (exclusive groups) and `::details-content` are out of the Browser target (Chrome 120, Firefox 130, Safari 17.2; Chromium 131, Firefox 143, Safari 18.4), and even in target `<summary>` must be the first child of `<details>`, so it cannot sit inside a heading as the APG requires, and Foundation's `.accordion-title` rules do not apply to it (the web platform features research, section 4).
 
-Primitives: Aria `AccordionGroup`, `AccordionTrigger`, `AccordionPanel` through `hostDirectives`; not Aria's `AccordionContent`/`DeferredContent` (its view is created in `afterRenderEffect`, so an open lazy panel would be empty in server HTML, the Angular rendering modes research, section 5); `input()`, `model()` (Aria's), `output()`, `computed()`, `linkedSignal` for the transition phase, `afterNextRender` and `afterRenderEffect` for the dev checks, deep links, measurement, and Completion outputs; `HostAttributeToken`; `contentChild` for the lazy template; `@if` plus `NgTemplateOutlet` in the wrapper's template; `NgZone.runOutsideAngular` for the fallback timer; the History API; `scrollIntoView`; `NfsMediaQuery.reducedMotion()` (Breakpoint service); `nfsAnimationsToken`. CDK contributes nothing directly (Aria brings `_IdGenerator` and `Directionality`). `injectAsync` not used: the plugin is its own entry point and a consumer `@defer` splits it; `afterEveryRender` not needed: `afterRenderEffect` re-runs on its signals.
+Primitives: Aria `AccordionGroup`, `AccordionTrigger`, `AccordionPanel` through `hostDirectives`; not Aria's `AccordionContent`/`DeferredContent` (its view is created in `afterRenderEffect`, so an open lazy panel would be empty in server HTML, the Angular rendering modes research, section 5); `input()`, `model()` (Aria's), `output()`, `computed()`, `linkedSignal` for the transition phase, `afterNextRender` and `afterRenderEffect` for the dev checks, deep links, measurement, and Completion outputs; `HostAttributeToken` for dev check 7 only, in development builds; `contentChild` for the lazy template; `@if` plus `NgTemplateOutlet` in the wrapper's template; `NgZone.runOutsideAngular` for the fallback timer; the History API; `scrollIntoView`; `NfsMediaQuery.reducedMotion()` (Breakpoint service); `nfsAnimationsToken`. CDK contributes nothing directly (Aria brings `_IdGenerator` and `Directionality`). `injectAsync` not used: the plugin is its own entry point and a consumer `@defer` splits it; `afterEveryRender` not needed: `afterRenderEffect` re-runs on its signals.
 
 Fallback: none needed; the prototype resolved the risk the map flagged. Had composition failed, the named fallback was CDK accordion state with the library's own ARIA and keys (building-blocks Table B).
 
@@ -252,11 +257,11 @@ Fallback: none needed; the prototype resolved the risk the map flagged. Had comp
 
 | Concern | `MatAccordion` / `MatExpansionPanel` (CDK underneath) | This library |
 | --- | --- | --- |
-| Shape | Directive container, component panel and header rendering their own markup and indicator | Four directives plus one Wrapper component on consumer-written Foundation markup (Aria's shape) |
+| Shape | Directive container, component panel and header rendering their own markup and indicator | Four directives plus one Wrapper component on the consumer's elements, which carry no Foundation class (Aria's shape; ADR 0039) |
 | Single or multiple | `multi`, default `false` | `multiExpand`, default `false` |
 | Keep one open | None | `allowAllClosed` (Foundation), with `aria-disabled` per the APG |
 | Container methods | `openAll()`, `closeAll()` | `expandAll()`, `collapseAll()` (Aria's names, building-blocks 1.3) |
-| Open state | `expanded` input plus `expandedChange` on the panel | `expanded` model on the title (Aria owns it); read-only `expanded` on the item |
+| Open state | `expanded` input plus `expandedChange` on the panel | `expanded` model on the title (Aria owns it), also the initial state (`[expanded]="true"`); read-only `expanded` on the item |
 | Events | `opened`/`closed` at the state change, `afterExpand`/`afterCollapse` after the animation | `expandedChange` at the state change; `opened`/`closed` Completion outputs after the animation (building-blocks 1.4: no start events) |
 | Item methods | `open()`, `close()`, `toggle()`; Material ignores `disabled`, CDK respects it | Same names; respect `disabled` (CDK's and Aria's rule) |
 | Disabled | Per panel | Per title and for the whole accordion; soft-disabled (focusable) |
@@ -266,7 +271,7 @@ Fallback: none needed; the prototype resolved the risk the map flagged. Had comp
 | Collapsed body | `inert` on the body wrapper; grid-row animation, `@supports` fallback | `inert` on the content (Aria); grid-row animation on the content, no `@supports` guard (Animation) |
 | Indicator | SVG chevron; `hideToggle`, `togglePosition` | Foundation's CSS glyph; `$accordion-plusminus` is a Sass setting, no input |
 | Defaults | `MAT_EXPANSION_PANEL_DEFAULT_OPTIONS` | `nfsAccordionDefaultsToken` |
-| Visual options | `displayMode`, `expandedHeight`, `collapsedHeight` | None: Foundation classes and settings |
+| Visual options | `displayMode`, `expandedHeight`, `collapsedHeight` | None: Foundation's accordion settings; Foundation has no accordion Variant class, so there is no Variant input |
 | Harness | `MatAccordionHarness`, `MatExpansionPanelHarness` | None; DOM-first assertions (Aria's `AccordionHarness` also finds the titles, because Aria stamps `ngAccordionTrigger` on them) |
 
 Borrowed: `multi` semantics and default, method names, Completion timing of `afterExpand`/`afterCollapse` under the names `opened`/`closed`, focus return on close, `inert`, the grid-row animation, the defaults token. Not borrowed: header and panel components, the indicator inputs, `displayMode`, promises or `UniqueSelectionDispatcher`.
@@ -277,11 +282,11 @@ APG pattern: Accordion (the ARIA APG patterns research, Accordion), in full.
 
 | Element | Role and attributes | Source |
 | --- | --- | --- |
-| `ul.accordion` | No role beyond the list; `disabled` attribute while disabled (Foundation's CSS contract) | Aria sets none on the group |
-| `li.accordion-item` | `listitem`; `.is-active` while open | Foundation |
+| `ul[nfsAccordion]` (`.accordion`) | No role beyond the list; `disabled` attribute while disabled (Foundation's CSS contract) | Aria sets none on the group |
+| `li[nfsAccordionItem]` (`.accordion-item`) | `listitem`; `.is-active` while open (host binding) | Foundation's class, bound by the item |
 | `h1`-`h6` | The consumer's heading, level chosen for the page; the title is its only element child | APG; dev check 1 |
-| `button.accordion-title` | Native button with Aria's redundant `role="button"`; `type="button"`; `id`; `aria-expanded`; `aria-controls` = content id; `aria-disabled="true"` when disabled or locked, else `"false"`; `tabindex="0"` (every title is in the Tab order); `data-active` on the focused title | Aria, plus the library's `aria-disabled` override |
-| `.accordion-content` | `role="region"` and `aria-labelledby` = title id (both removed with `[region]="false"`); `id`; `inert` while collapsed | Aria, plus the library's override for `region` |
+| `button[nfsAccordionTitle]` (`.accordion-title`) | Native button with Aria's redundant `role="button"`; `type="button"`; `id`; `aria-expanded`; `aria-controls` = content id; `aria-disabled="true"` when disabled or locked, else `"false"`; `tabindex="0"` (every title is in the Tab order); `data-active` on the focused title | Aria, plus the library's `aria-disabled` override |
+| `div[nfsAccordionContent]` (`.accordion-content`) | `role="region"` and `aria-labelledby` = title id (both removed with `[region]="false"`); `id`; `inert` while collapsed | Aria, plus the library's override for `region` |
 
 | Key | Where | Effect | Owner |
 | --- | --- | --- | --- |
@@ -316,12 +321,12 @@ Reduced motion is honoured on top of AA (Animation).
 
 Directive attributes (`nfsaccordion`, `nfsaccordionitem`, `nfsaccordiontitle`, `nfsaccordioncontent`, and Aria's stamped `ngaccordiontrigger`) stay in the DOM and are omitted below for brevity. Server HTML carries `jsaction` on each element with a replayable host listener: the accordion (`keydown`, `click`, `focusin`: Aria's listeners plus the Replay guard), each title (`click`, `keydown`: the lock interception), and each content (`keydown`: the content key guard). Angular removes them after hydration. Generated ids differ between server and client and are rewritten at hydration, because every reference to them is a host binding.
 
-Consumer markup (Foundation's docs example with the library's deltas: `<button>` in a heading instead of `<a href="#">`, one `[panel]` binding per item):
+Consumer markup (Foundation's docs example with the library's deltas: directive attributes in place of Foundation's classes and `data-*` attributes, so no element carries a `class`; `<button>` in a heading instead of `<a href="#">`; one `[panel]` binding per item; `[expanded]="true"` on the title in place of `class="is-active"` on the item):
 
 ```html
 <ul nfsAccordion>
-  <li nfsAccordionItem class="is-active">
-    <h3><button nfsAccordionTitle [panel]="shipping.panel">Shipping</button></h3>
+  <li nfsAccordionItem>
+    <h3><button nfsAccordionTitle [panel]="shipping.panel" [expanded]="true">Shipping</button></h3>
     <div nfsAccordionContent #shipping="nfsAccordionContent" id="faq-shipping">
       <p>Orders ship within two days.</p>
     </div>
@@ -335,7 +340,7 @@ Consumer markup (Foundation's docs example with the library's deltas: `<button>`
 </ul>
 ```
 
-Server HTML, and hydrated before any interaction (single mode, `allowAllClosed` false, so the only open title is locked):
+Server HTML, and hydrated before any interaction (single mode, `allowAllClosed` false, so the only open title is locked). Every class in it comes from a directive or the wrapper's template; the `[expanded]` binding leaves no attribute:
 
 ```html
 <ul class="accordion" jsaction="keydown:;click:;focusin:;">
@@ -434,8 +439,8 @@ Per ADR 0003 and building-blocks 1.6 rule 3: the content stays in the DOM, so th
 
 Per ADR 0008 and the Angular rendering modes research, section 7, rules 1 to 11:
 
-- Server-side rendering and first paint: `.is-active`, `aria-expanded`, `aria-controls`, `aria-disabled` (locked included, from registration counts), `role`, `aria-labelledby`, `inert`, the `disabled` attribute, the inner element's classes, and open lazy content are all host or template bindings on signal state that exists on the server (rule 1). Open panels are visible through `nfs-accordion` (Foundation's CSS never shows `.accordion-content`, rule 2); collapsed panels are clipped to zero height and `inert`. Panel content is projected, so it is in the server HTML (building-blocks 1.11 decision 2). Titles carry `tabindex="0"`, so the Tab key reaches them before hydration (prototype case 10).
-- Before hydration: construction only reads `HostAttributeToken`, injects, registers, and seeds Aria's model; Aria's own constructor adds `type="button"` to a typeless button, which lands identically in server HTML. Hash, history, `hashchange`, computed style, focus, scrolling, and timers run only in render callbacks or handlers (rules 3 to 5).
+- Server-side rendering and first paint: the Structural classes (static `host` classes), `.is-active`, `aria-expanded`, `aria-controls`, `aria-disabled` (locked included, from registration counts), `role`, `aria-labelledby`, `inert`, the `disabled` attribute, the inner element's classes, and open lazy content are all host or template bindings on signal state that exists on the server (rule 1). Open panels are visible through `nfs-accordion` (Foundation's CSS never shows `.accordion-content`, rule 2); collapsed panels are clipped to zero height and `inert`. Panel content is projected, so it is in the server HTML (building-blocks 1.11 decision 2). Titles carry `tabindex="0"`, so the Tab key reaches them before hydration (prototype case 10).
+- Before hydration: construction only injects and registers (and, in development builds, reads the item's static `class` for dev check 7); nothing writes Aria's model at construction, since the initial state is a template binding applied in the first update pass on both platforms. Aria's own constructor adds `type="button"` to a typeless button, which lands identically in server HTML. Hash, history, `hashchange`, computed style, focus, scrolling, and timers run only in render callbacks or handlers (rules 3 to 5).
 - Full hydration: host binding values equal the server's (generated ids aside), so nothing changes and no transition runs (rule 10). Clean hydration with no NG05xx and no skipped components was measured in the prototype (case 16).
 - Event replay: the title's `click` and `keydown`, the accordion's `keydown`, `click`, `focusin`, and the content's `keydown` replay (rule 6). A replayed click toggles once with no error (case 23). A replayed Enter or Space toggles once, because Aria ignores the synthetic click (case 21). A replayed arrow key, Enter, or Space from a title changes state and then Aria's trailing `preventDefault()` throws, so Angular's `ErrorHandler` logs ``ERROR Error: `preventDefault` called during event replay.`` once per replayed key (cases 20 to 22; the log is accepted, Triage in the ticket); the Replay guard keeps an outer accordion from handling the key again (case 25). A replayed Enter or Space on a locked title is stopped by the library listener before Aria and logs nothing. Replayed keys from inside a panel are stopped by the content key guard.
 - Hydration boundary: the accordion, its items, titles, and contents belong to one hydration boundary; items in a dehydrated block would not be registered with the accordion (rule 7). A nested accordion is a complete widget and may sit in its own `@defer` block inside a panel.
@@ -447,37 +452,38 @@ Per ADR 0008 and the Angular rendering modes research, section 7, rules 1 to 11:
 
 ### Sass and custom CSS
 
-One Library mixin, `nfs-accordion`, included after `foundation-accordion`; the Sass subsection under Further Notes lists every rule and its reason. No directive or component declares `styles` (ADR 0012).
+One Library mixin, `nfs-accordion`, included after `foundation-accordion`; the Sass subsection under Further Notes lists every rule and its reason. No directive or component declares `styles` (ADR 0012). The mixin writes no Variant property, because the accordion has no Open Variant family (building-blocks 1.13).
 
 ## Testing Decisions
 
-A good test asserts what a user or assistive technology observes: `aria-expanded`, `aria-disabled`, `aria-controls`, `role`, `inert`, `.is-active`, the inner element's classes, the rendered height, where focus lands, the URL, and when `opened`/`closed` fire relative to the transition. No test reads private fields or the phase signal. Prior art: the prototype's Playwright suite (server HTML, hydrated behaviour, replay with the bundle held back) and the published [Spec: Toggler](../issues/17-spec-toggler.md) layers; no prior art exists in the new repository.
+A good test asserts what a user or assistive technology observes: `aria-expanded`, `aria-disabled`, `aria-controls`, `role`, `inert`, `.is-active`, the inner element's classes, the rendered height, where focus lands, the URL, and when `opened`/`closed` fire relative to the transition. No test reads private fields or the phase signal. No story, test host, or fixture writes a Foundation or library class on any element (ADR 0039): every class a test asserts comes from a directive or the wrapper's template, and the one deliberate exception is the dev check 7 case, whose host copies `class="is-active"` to prove it is reported. Prior art: the prototype's Playwright suite (server HTML, hydrated behaviour, replay with the bundle held back) and the published [Spec: Toggler](../issues/17-spec-toggler.md) layers; no prior art exists in the new repository.
 
 Story ids follow `accordion--<story>`: `accordion--default`, `accordion--multi-expand`, `accordion--allow-all-closed`, `accordion--disabled`, `accordion--disabled-item`, `accordion--nested`, `accordion--form-in-panel`, `accordion--lazy-content`, `accordion--programmatic`, `accordion--two-way-binding`, `accordion--deep-link`, `accordion--no-region`.
 
 ### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`, `npx nx test-storybook <lib>`)
 
-Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test = 'error'` and `parameters.a11y.options.runOnly = {type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice']}` from the Storybook preview, so `target-size` and `color-contrast` are part of the enforcing gate. The preview's Foundation settings carry `$accordion-item-color: scale-color($primary-color, $lightness: -15%);` with a `color-contrast` comment (the browser testing stack decision's permitted response to a failing Foundation default). Animated steps wait for the Completion output shown in the story, never a timeout.
+Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test = 'error'` and `parameters.a11y.options.runOnly = {type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice']}` from the Storybook preview, so `target-size` and `color-contrast` are part of the enforcing gate. The preview's Foundation settings carry `$accordion-item-color: scale-color($primary-color, $lightness: -15%);` with a `color-contrast` comment (the browser testing stack decision's permitted response to a failing Foundation default). Animated steps wait for the Completion output shown in the story, never a timeout. Story templates write Foundation's elements and the library's directives and no Foundation or NFS class ([storybook-conventions.md](../storybook-conventions.md), section 3 and the checklist); a panel open at load is bound with `[expanded]="true"`, and the scaffolding buttons that call methods are `button[nfsButton]` from the Button entry point at its default size, with no Variant input.
 
-- `accordion--default`: Foundation's docs example with a static `is-active` first item. First title `aria-expanded="true"`, `aria-disabled="true"`; clicking it changes nothing; clicking the second closes the first and opens the second (`.is-active` moves, first content `inert`); `closed` and `opened` appear; ArrowDown, ArrowUp, Home, End move focus without opening; Enter and Space toggle through `userEvent.keyboard`. Each title's name contains its visible text. The play ends with focus on a title, so axe measures the focus background.
-- `accordion--multi-expand`: two panels open together; `expandAll()` and `collapseAll()` buttons (with `allowAllClosed`) open and close all.
+- `accordion--default`: Foundation's docs example with the first title bound `[expanded]="true"`. The first item carries `.is-active` and every element its Structural class, though the template writes no class; first title `aria-expanded="true"`, `aria-disabled="true"`; clicking it changes nothing; clicking the second closes the first and opens the second (`.is-active` moves, first content `inert`); `closed` and `opened` appear; ArrowDown, ArrowUp, Home, End move focus without opening; Enter and Space toggle through `userEvent.keyboard`. Each title's name contains its visible text. The play ends with focus on a title, so axe measures the focus background.
+- `accordion--multi-expand`: two panels open together; `expandAll()` and `collapseAll()` buttons (`button[nfsButton]`, with `allowAllClosed`) open and close all.
 - `accordion--allow-all-closed`: the only open title has `aria-disabled="false"` and closes.
 - `accordion--disabled`: `disabled` on the accordion renders the `disabled` attribute and `aria-disabled="true"` on every title; clicks and keys change nothing; titles stay focusable.
 - `accordion--disabled-item`: one disabled title; others work; ArrowDown still reaches the disabled title.
 - `accordion--nested`: an accordion inside a panel; keys on inner titles move only among inner titles; closing the outer panel does not change the inner state.
 - `accordion--form-in-panel`: a text input and a textarea inside an open panel; typing Space, Enter, Home, End, ArrowDown there edits text, keeps focus, and leaves every panel as it was.
 - `accordion--lazy-content`: lazy content is absent while closed, present while open, removed after `closed`; with `preserveContent`, kept after closing.
-- `accordion--programmatic`: `open()`, `close()`, `toggle()` through `#item`; a "Done" button inside a panel calls `close()` and focus lands on that panel's title.
+- `accordion--programmatic`: `open()`, `close()`, `toggle()` through `#item`, from `button[nfsButton]` controls; a "Done" `button[nfsButton]` inside a panel calls `close()` and focus lands on that panel's title.
 - `accordion--two-way-binding`: `[(expanded)]` bound to signals shown in the story; clicks update them, checkboxes update the panels.
-- `accordion--deep-link`: `deepLink` and `updateHistory` controls and consumer ids; clicking a title writes the hash shown in the story (the Storybook half of layer 4 covers reload and Back).
-- `accordion--no-region`: `[region]="false"` with five open panels; contents have no `role` and no `aria-labelledby`.
+- `accordion--deep-link`: `deepLink` and `updateHistory` controls, consumer ids, and a `scroll-margin-top` inline style on each item (a value Foundation has no class for); clicking a title writes the hash shown in the story (the Storybook half of layer 4 covers reload and Back).
+- `accordion--no-region`: `[region]="false"` with five panels bound open (`multiExpand`, `[expanded]="true"` on each title); contents have no `role` and no `aria-labelledby`.
 
 ### 2. Browser-level test (Vitest browser mode, `npx nx test <lib>`)
 
 Vitest browser mode under the Angular unit-test builder (`npx nx test <lib>`, Chromium headless): TestBed specs in `<name>.spec.ts` next to the directive, over a bare test host component, zoneless with `await fixture.whenStable()`, asserting DOM and ARIA state; no story is mounted here and no axe runs here.
 
 - Expansion policy, table-driven over `multiExpand` and `allowAllClosed`: exclusivity through clicks, `open()`, and `toggle()`; the lock appears and moves with the open count; `close()` on a locked item does nothing; a disabled open item stays open when another opens (Aria's `isExpandable` rule); `expandAll()` only with `multiExpand`, `collapseAll()` only with `allowAllClosed`.
-- Initial state: static `is-active` seeds `expanded`; a bound `[expanded]="false"` wins over it; two static `is-active` items in single mode keep both open and warn.
+- Initial state: a title bound `[expanded]="true"` renders its item with `.is-active`, `aria-expanded="true"`, and `nfs-accordion-content-shown` at first render, with no `expandedChange` and no Completion output; the user can then close it (unless locked) although the constant binding stays; two titles bound open in single mode keep both open and fire dev check 4; a host that copies `class="is-active"` onto an item renders it without `.is-active` and collapsed, and fires dev check 7 once.
+- Class rule: a test host with no `class` attribute renders `.accordion`, `.accordion-item`, `.accordion-title`, and `.accordion-content` on the four hosts; a redundant `class="accordion"` on the container still renders `.accordion` and fires no warning.
 - `expandedChange` fires at request time; item and container `opened`/`closed` fire once each, after `transitionend` for `grid-template-rows` on the host, in order, with the item as payload; `transitionend` from a nested content or for `padding-top` does not complete; `transitioncancel` does not complete; interruption emits only for the final state.
 - Fallback paths: a stylesheet without the transition completes at once; a suppressed `transitionend` completes after the measured total plus 100 ms (fake timers); `nfsAnimationsToken` `{disabled: true}` binds `transition: none` and completes at once.
 - `nfs-accordion-content-shown`: present at first render for open items, removed at once on close, added only after completion on open.
@@ -487,14 +493,14 @@ Vitest browser mode under the Angular unit-test builder (`npx nx test <lib>`, Ch
 - `region`: `[region]="false"` removes `role` and `aria-labelledby`; `true` restores them; the defaults token sets it.
 - Defaults token: each option seeded, overridden by a binding.
 - Deep-link logic against the test page's own history: `afterNextRender` reads a preset hash and opens the matching item and emits `deepLinked`; a dispatched `hashchange` opens another; an empty hash reopens the first-render item; user opening writes `#id` with `replaceState` and keeps `history.state`; `updateHistory` uses `pushState`; closing the named item clears the fragment; exclusivity closing does not clear the new hash.
-- Dev-mode checks: each of the six warnings fires once for its case and not for correct markup.
+- Dev-mode checks: each of the seven warnings fires once for its case and not for correct markup.
 - Aria composition: Aria's `AccordionHarness` from `@angular/aria/accordion/testing` finds each title and reports `isExpanded`, `isDisabled` consistent with the DOM.
 
 ### 3. Node-level Vitest
 
-- SSR smoke, under `npx nx test <lib>` in `accordion.ssr.spec.ts` through the shared `renderServer()` helper (`npx nx test-node <lib>` only if the server path depends on the DOM adapter, which it does not): a fixture with the default example (static `is-active` first item), a bound open item, a disabled accordion, a disabled item, a nested accordion, lazy content open and closed, `[region]="false"`, consumer and generated ids, and one accordion inside `@defer (hydrate on interaction)`. Assert `whenStable()` resolves; the HTML matches the Rendered HTML section (`.is-active`, `aria-expanded`, `aria-disabled` including the locked title, `aria-controls`, `role`, `aria-labelledby`, `inert`, the `disabled` attribute, `nfs-accordion-content-shown` on open bodies, open lazy content present and closed absent); `jsaction` on the accordion (`keydown`, `click`, `focusin`), titles (`click`, `keydown`), and contents (`keydown`); `ngb` and `click:;keydown:;` on the deferred block's root.
+- SSR smoke, under `npx nx test <lib>` in `accordion.ssr.spec.ts` through the shared `renderServer()` helper (`npx nx test-node <lib>` only if the server path depends on the DOM adapter, which it does not): a fixture with the default example (first title bound `[expanded]="true"`), an item bound open from a signal, a disabled accordion, a disabled item, a nested accordion, lazy content open and closed, `[region]="false"`, consumer and generated ids, and one accordion inside `@defer (hydrate on interaction)`. The fixture template writes no `class` attribute. Assert `whenStable()` resolves; the HTML matches the Rendered HTML section (the four Structural classes on their hosts, `.is-active`, `aria-expanded`, `aria-disabled` including the locked title, `aria-controls`, `role`, `aria-labelledby`, `inert`, the `disabled` attribute, `nfs-accordion-content-shown` on open bodies, open lazy content present and closed absent); `jsaction` on the accordion (`keydown`, `click`, `focusin`), titles (`click`, `keydown`), and contents (`keydown`); `ngb` and `click:;keydown:;` on the deferred block's root.
 - Sass compile, node-level (ADR 0012's compile test): `nfs-accordion` compiled after Foundation with default settings emits the seven rule groups and one `@warn` for contrast; with `$accordion-item-color: scale-color($primary-color, $lightness: -15%)` it emits no warning; with `$accordion-plusminus: false` the re-included title rules carry no `::before`.
-- Pure logic, table-driven: the transition-list reduction (property, duration, delay lists of unequal length, `all`, `0s`), the heading check over parent tag names, the hash lookup (encoded ids, `#/` routes, empty hash), and the guarded-key matcher.
+- Pure logic, table-driven: the transition-list reduction (property, duration, delay lists of unequal length, `all`, `0s`), the heading check over parent tag names, the hash lookup (encoded ids, `#/` routes, empty hash), the guarded-key matcher, and dev check 7's class-list test (`is-active` as a whole token among other classes and extra whitespace; `is-activated` and `my-is-active` do not match).
 
 ### 4. Playwright e2e (`npx nx e2e <lib>-e2e` against the static Storybook build; `npx nx e2e <fixture-app>-e2e` against the prerendered fixture app)
 
@@ -523,6 +529,8 @@ Release test (manual, before each release; [Resolve the assistive-technology che
 - Runtime theming through custom properties (building-blocks 1.13); the animation duration is a Sass mixin parameter.
 - Hash routing (`HashLocationStrategy`) with `deepLink`, and deep links through the Angular Router.
 - Motion classes (`nfs-motion`) for panels: Foundation animated height, not Motion UI.
+- Variant inputs: Foundation's accordion defines no Variant class; its look is the `$accordion-*` settings, and `$accordion-plusminus` is a Sass boolean that stays compile-time (building-blocks 1.13).
+- Reading Foundation's static `is-active` as an initial-state seed: the class rule leaves the consumer no class to write (ADR 0039); `[expanded]="true"` replaces it, and dev check 7 reports a copied one.
 - Automated screen-reader output: the manual release test under Testing Decisions covers it ([Resolve the assistive-technology checks](../issues/77-evidence-assistive-technology-checks.md)).
 
 ## Further Notes
@@ -532,13 +540,13 @@ Release test (manual, before each release; [Resolve the assistive-technology che
 | # | Decision | Rationale | Rejected alternative |
 | --- | --- | --- | --- |
 | D1 | `@angular/aria` accordion through `hostDirectives` | Direct match; composition proven under SSR, hydration, and replay in three engines (the [Prototype: `@angular/aria` Accordion and Tabs under Foundation markup](../issues/43-prototype-aria-accordion-tabs.md)) | Native `<details name>` (out of target, no heading); CDK accordion with custom ARIA (the unused fallback) |
-| D2 | Four directives plus one Wrapper component and a lazy marker | ADR 0001 case 2: the grid row needs one inner element; everything else is consumer markup | Component items or panels rendering their own markup |
+| D2 | Four directives plus one Wrapper component and a lazy marker | ADR 0001 case 2: the grid row needs one inner element; every other element is the consumer's, carrying a directive in place of its Foundation class (ADR 0039) | Component items or panels rendering their own markup |
 | D3 | `button[nfsAccordionTitle]` inside `h1`-`h6`, dev check 1 | APG; Aria adds `role="button"` to any host, a native button needs no emulation | Foundation's `<a href="#">` |
 | D4 | The consumer binds `[panel]="c.panel"` with `#c="nfsAccordionContent"` | Markup names only library exports, as with `#x="nfsReveal"` (ADR 0013); Aria stays an implementation detail of the content; both forms are type-checked under strict templates (prototype case 3) | `#p="ngAccordionPanel"` with `[panel]="p"` (shorter, but writes Aria's export name into every consumer template); a component item that binds `panel` itself (cannot bind inputs on projected elements, case 1) |
 | D5 | Library-owned `multiExpand` (default `false`) and `allowAllClosed` (default `false`) over Aria in multi mode | Foundation, CDK, and Material default to single; a wrapper cannot change Aria's input default (cases 4, 5) but can drive its models (ADR 0028) | Expose Aria's `multiExpandable` and record `true` as a delta |
 | D6 | Locked title: `aria-disabled="true"` plus `click`/Enter/Space stopped at the title | APG rule for a panel that may not collapse; no double `expandedChange`; no `preventDefault`, so replay logs nothing | Re-opening after Aria closed it |
 | D7 | `expanded` model on the title, read-only `expanded` and methods and Completion outputs on the item | Aria owns the model on the trigger; two writable copies would need syncing; the item is Foundation's `.accordion-item` and Material's panel counterpart | A second `expanded` model on the item |
-| D8 | Static `is-active` on the item seeds the initial state | Foundation's documented markup; identical on server and client; the Toggler precedent | Ignoring the static class (the binding would strip it) |
+| D8 | The initial state is the title's `expanded` binding (`[expanded]="true"`); no static class is read to seed it (revised 2026-09-27, class rule) | ADR 0039: the consumer writes no Foundation class, `.is-active` included; a constant binding is applied in the first update pass on server and client alike, so the server HTML is unchanged; one code path instead of a construction-time write into Aria's model | The previous seed from a static `is-active` on the item (a second, class-based spelling of the state); a library input on the item (two writable copies, D7); a bare `expanded` attribute (Aria's model has no transform, so strict templates reject it) |
 | D9 | Completion measured from the computed transition, then `transitionend`, else measured total plus 100 ms; `transitioncancel` ignored | `$duration` is the consumer's; a missing transition completes at once; reversal fires cancel for the old transition | A fixed declared duration; completing on cancel |
 | D10 | Inner element clips only while collapsed or animating | Focus rings, Anchored panes, and text-spacing overrides inside open panels; matches `slideDown` | Permanent `overflow: hidden` (the prototype's rule) |
 | D11 | No `@supports` guard | Never matches in target; a non-interpolating browser snaps, which is correct (building-blocks 1.6 rule 3 records the same conclusion) | A `@supports not (grid-template-rows: 0fr)` guard |
@@ -551,24 +559,28 @@ Release test (manual, before each release; [Resolve the assistive-technology che
 | D18 | Glyph kept in the accessible name | Meets 2.5.3 and 4.1.2 as written; CSS alternative text is out of target; one code path (building-blocks 1.2) | A second CSS path with `content: ... / ''`; moving the glyph (re-implements Foundation's icon rule) |
 | D19 | Contrast fixed by a consumer setting plus a Sass `@warn` from the unrounded ratio (Foundation's `color-luminance()` and the WCAG formula) | Reuses Foundation settings; the library does not override consumer colours; the unrounded ratio is building-blocks 1.10's rule, because `color-contrast()` rounds to one decimal and would pass a failing pair | A library colour rule overriding `$accordion-item-color`; a `@warn` from Foundation's `color-contrast()` |
 | D20 | `:where()` for the heading selectors in `nfs-accordion` | Re-included Foundation declarations keep `.accordion-title`'s specificity, so consumer rules written for Foundation still win by order | The prototype's `:is()` (raises specificity of every re-included declaration) |
-| D21 | Directives add their Structural classes | Bare directive markup gets Foundation's contract; copied Foundation markup still works | Requiring the consumer to write every class |
+| D21 | Directives set every Foundation class: the four Structural classes as static `host` classes and `.is-active` as a host binding; the consumer writes none (revised 2026-09-27, class rule) | ADR 0039; static `host` classes merge with a class the consumer wrote anyway, so redundant Structural classes are harmless and go unreported | Requiring the consumer to write every class (Foundation's markup); treating a written Structural class as an error |
 | D22 | No token re-provided as `undefined`; required parent injection | Every nested level is its own accordion; Aria requires the group anyway | The CDK nesting pattern (no case needs it here) |
 | D23 | Aria's generated id prefixes kept | A wrapper cannot change an Aria input default; ids matter only when addressed from outside, which needs consumer ids | `nfs-accordion-panel-` (building-blocks 1.5) |
+| D24 | No Variant input (added 2026-09-27, class rule) | Foundation's accordion Sass defines no Variant class; its look is the `$accordion-*` settings, and `$accordion-plusminus` is a Sass boolean (building-blocks 1.13), so there is nothing for a typed input to set and no Variant registry or property | A glyph or colour input (would be runtime theming or a second path for a Sass setting) |
+| D25 | Dev check 7 reports a copied static `is-active`, read through `HostAttributeToken('class')` in development builds only (added 2026-09-27, class rule) | The item's dynamic binding strips the class on server and client, so copied Foundation markup would otherwise render the panel closed with no signal; after render the class list no longer shows it, so the static attribute is the only place to see it; production pays nothing | No check (a silent change for migrating markup); honouring the class as a legacy seed (a second spelling the class rule removes); checking every Foundation class (redundant Structural classes merge and do no harm) |
+| D26 | Stories and examples call methods from `button[nfsButton]` controls (added 2026-09-27, class rule) | The Button directive is the library's way to get Foundation's `.button` without writing it; a bare `<button>` is unstyled under Foundation's reset | `class="button"` (a consumer-written class); unstyled native buttons |
+| D27 | Consumer CSS recipes select no Foundation or library class: `scroll-padding-top` on the scroller, `scroll-margin-top` through an application class or an inline style (added 2026-09-27, class rule) | Keeps every example free of Foundation and library class names, whichever way the class rule is read for stylesheets; D20 still keeps the specificity of re-included rules equal to Foundation's for any consumer rule that does target a Foundation class | `.accordion-item { scroll-margin-top: ... }` (the previous recipe) |
 
 ### Usage examples
 
 ```ts
 @Component({
   selector: 'app-faq',
-  imports: [NFS_ACCORDION],
+  imports: [NFS_ACCORDION, NfsButton],
   template: `
-    <button type="button" class="button" (click)="faq.expandAll()">Expand all</button>
-    <button type="button" class="button" (click)="faq.collapseAll()">Collapse all</button>
+    <button nfsButton (click)="faq.expandAll()">Expand all</button>
+    <button nfsButton (click)="faq.collapseAll()">Collapse all</button>
 
     <ul nfsAccordion #faq="nfsAccordion" multiExpand allowAllClosed deepLink
         (opened)="track($event)">
-      <li nfsAccordionItem class="is-active">
-        <h2><button nfsAccordionTitle [panel]="shipping.panel">Shipping</button></h2>
+      <li nfsAccordionItem>
+        <h2><button nfsAccordionTitle [panel]="shipping.panel" [expanded]="true">Shipping</button></h2>
         <div nfsAccordionContent #shipping="nfsAccordionContent" id="faq-shipping">
           <p>Orders ship within two days.</p>
         </div>
@@ -577,7 +589,7 @@ Release test (manual, before each release; [Resolve the assistive-technology che
         <h2><button nfsAccordionTitle [panel]="returns.panel" [(expanded)]="returnsOpen">Returns</button></h2>
         <div nfsAccordionContent #returns="nfsAccordionContent" id="faq-returns">
           <p>Returns are free for 30 days.</p>
-          <button type="button" class="button small" (click)="returnsItem.close()">Done</button>
+          <button nfsButton size="small" (click)="returnsItem.close()">Done</button>
         </div>
       </li>
       <li nfsAccordionItem>
@@ -602,10 +614,12 @@ export class Faq {
 ```
 
 ```html
-<!-- Foundation's default behaviour: one open at a time, last one stays open -->
+<!-- Foundation's default behaviour: one open at a time, last one stays open;
+     no element carries a class: the directives set .accordion, .accordion-item,
+     .accordion-title, .accordion-content, and .is-active -->
 <ul nfsAccordion>
-  <li nfsAccordionItem class="is-active">
-    <h3><button nfsAccordionTitle [panel]="a.panel">Accordion 1</button></h3>
+  <li nfsAccordionItem>
+    <h3><button nfsAccordionTitle [panel]="a.panel" [expanded]="true">Accordion 1</button></h3>
     <div nfsAccordionContent #a="nfsAccordionContent"><p>Panel 1.</p></div>
   </li>
   <li nfsAccordionItem>
@@ -668,6 +682,8 @@ Plus compile-time checks that emit no CSS: `@warn` when the ratio of `$accordion
 
 (5) What breaks without the include: open panels never show (Foundation's `display: none` stays), which dev check 6 reports; titles are narrow and centred; the minus glyph and the closed last title's border are missing; there is no animation. Without the contrast setting, the `@warn` fires and the story gate fails on focused and hovered titles.
 
+(6) Variant properties: none. Foundation's accordion has no Variant classes, so the mixin writes no `--nfs-<setting>` property and the Runtime checks have nothing to read for it.
+
 The library's Storybook preview settings set `$accordion-item-color: scale-color($primary-color, $lightness: -15%);` with a comment naming axe's `color-contrast` rule.
 
 ### Platform features to adopt when the browser target moves
@@ -681,12 +697,13 @@ The library's Storybook preview settings set `$accordion-item-color: scale-color
 
 ### Foundation behaviour changed or dropped
 
-- `<a href="#" class="accordion-title">` becomes `<button>` inside a heading; `href` is no longer the deep-link source, the content `id` is.
+- The consumer writes no Foundation class and no `data-accordion`, `data-accordion-item`, or `data-tab-content` attribute: `nfsAccordion`, `nfsAccordionItem`, `nfsAccordionTitle`, and `nfsAccordionContent` bind `.accordion`, `.accordion-item`, `.accordion-title`, and `.accordion-content`, and the item binds `.is-active` (ADR 0039). Foundation's initial state, `class="is-active"` on the item, becomes `[expanded]="true"` on the title; a copied class is stripped and reported in development (dev check 7).
+- `<a href="#" class="accordion-title">` becomes `<button nfsAccordionTitle>` inside a heading; `href` is no longer the deep-link source, the content `id` is.
 - Arrow keys no longer open panels in single mode; they move focus (APG, Aria).
 - The title of a pane that may not close announces `aria-disabled="true"`; Foundation gave no signal.
 - `aria-hidden` on panes becomes `inert`; the pane is shown by CSS (`nfs-accordion`) instead of inline `display`.
 - Closing the pane the hash names clears the fragment; Foundation left it, so a reload reopened a pane the user had closed.
-- `deepLinkSmudge` scrolls the opened item after it has opened, by the browser's smooth scroll, instead of animating the accordion's top in JavaScript; `deepLinkSmudgeDelay` and `deepLinkSmudgeOffset` are dropped (`scroll-margin-top`).
+- `deepLinkSmudge` scrolls the opened item after it has opened, by the browser's smooth scroll, instead of animating the accordion's top in JavaScript; `deepLinkSmudgeDelay` and `deepLinkSmudgeOffset` are dropped (`scroll-padding-top` on the scroller, or `scroll-margin-top` on the item).
 - `slideSpeed` becomes the `nfs-accordion($duration)` mixin parameter.
 - New: per-item `disabled`, `region`, `expandAll()`, `collapseAll()`, Lazy content, and focus return when a panel closes around focus.
 - jQuery-only behaviour dropped: `slideDown`/`slideUp` with `finish()`, `$('html, body').animate` for the smudge, `.data()` option coercion, `find('a:first')` title discovery, `_closeTab` over multi-element sets, `GetYoDigits` ids, `console.info` on disabled toggles, and the mutable `Foundation.Accordion.defaults` object.

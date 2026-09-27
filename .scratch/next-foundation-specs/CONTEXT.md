@@ -117,7 +117,7 @@ The rule that a Plugin, a CSS-only component, a layout system, or a utility fami
 _Avoid_: headless, unstyled, wrapper-less
 
 **Wrapper component**:
-A component on a consumer-written Foundation element (`[nfsAccordionContent]`) that adds one inner element around the projected content because the element's CSS needs it.
+A component on an element of Foundation's markup that the consumer writes without its class (`[nfsAccordionContent]` on the panel `div`), which binds that class and adds one inner element around the projected content because the element's CSS needs it.
 _Avoid_: panel component, content component, shell
 
 **Implementation level**:
