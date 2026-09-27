@@ -115,6 +115,7 @@ Online: https://angular.dev, https://material.angular.dev, https://get.foundatio
 - Second working session (2026-09-25 to 2026-09-26): the orchestrator started on Opus 5.5 and switched to Fable 5.1 after the usage reset. Fable credit was out at the start of the session and is available again since the reset, so Fable 5.1 is used where a ticket makes cross-cutting calls or where it is clearly the better fit for a spec; the commit body says why whenever a ticket runs on Fable.
 
 - Open-decision pass (2026-09-27): Fable credit ran out mid-pass (user notice). Roles planned for Fable that had not finished run on Sonnet 5 for panelists and reviewers (a different model keeps the panel independent) and on Opus 5.5 for judges; each ticket answer names the model per role.
+- Fable fallback (user rule, 2026-09-27): when Fable credit runs out, Opus 5.5 takes every Fable role; Sonnet 5 never replaces Fable, not even to keep a panel's models distinct. The rule came after the open-decision pass, where Sonnet 5 sat in Fable seats in two records: the api and vsalt lenses of [Decide: `#`-only links that `<base href>` resolves to another document](issues/74-decide-base-href-hash-links.md) and the review of [Resolve the assistive-technology checks](issues/77-evidence-assistive-technology-checks.md). Both records name those models; their Opus judges weighed the arguments.
 
 ### Audits (user instruction)
 
