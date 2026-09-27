@@ -513,6 +513,8 @@ Fixture half, one `accordion` route (the harness from the rendering-mode test se
 - `@defer (hydrate on interaction)`: a click on a title hydrates the block and toggles the panel.
 - `@defer (hydrate never)`: the open panel stays readable, a title click changes nothing and logs nothing.
 
+Release test (manual, before each release; [Resolve the assistive-technology checks](../issues/77-evidence-assistive-technology-checks.md)): Before each release, with NVDA on Firefox and on Chrome and VoiceOver on Safari (macOS), Tab to the open title of `accordion--default` and confirm 'expanded' and 'unavailable' (VoiceOver: 'dimmed') are spoken, press H to confirm each title is reached as a heading, Tab into the open panel and confirm the region's name is spoken, and record how the glyph is read (NVDA default: 'plus' for a collapsed title, nothing for the en dash); a change from this baseline reopens D18.
+
 ## Out of Scope
 
 - `<details>`/`<summary>` as the base, and `<details name>` exclusivity (out of target; heading problem; Further Notes).
@@ -521,7 +523,7 @@ Fixture half, one `accordion` route (the harness from the rendering-mode test se
 - Runtime theming through custom properties (building-blocks 1.13); the animation duration is a Sass mixin parameter.
 - Hash routing (`HashLocationStrategy`) with `deepLink`, and deep links through the Angular Router.
 - Motion classes (`nfs-motion`) for panels: Foundation animated height, not Motion UI.
-- Screen reader verification beyond the axe gate and the name, role, and state assertions (listed human-only in the ticket).
+- Automated screen-reader output: the manual release test under Testing Decisions covers it ([Resolve the assistive-technology checks](../issues/77-evidence-assistive-technology-checks.md)).
 
 ## Further Notes
 

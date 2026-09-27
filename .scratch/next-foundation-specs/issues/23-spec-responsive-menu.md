@@ -196,3 +196,12 @@ From [audit 0005](../audits/0005-final-bundle.md), findings M1 and L4; `specs/re
 1. 2.5.8 row (M1): "each mode's mixin stops the compile below 24 px" now says each mode's mixin stops the compile when a Hybrid toggle setting or a row of its mode is below 24 px, which holds for every mode now that the [Spec: Accordion Menu](20-spec-accordion-menu.md) and the [Spec: Dropdown Menu](21-spec-dropdown-menu.md) add the row check the Drilldown mixin had.
 2. Defaults (L4): every hosted input's default comes from the hosted root's Defaults token, else that root's own default (Foundation's value, in `nfsMenuBehaviourDefaults` for the Nested menu's slots and in the root spec's API table for the rest), replacing "else the Nested menu's `nfsMenuBehaviourDefaults`", whose drilldown slot holds `autoHeight` only.
 3. Drilldown members (L4): `openPath()` warns outside drilldown mode, and `currentLevel` reads `null` there, as the [Spec: Drilldown Menu](22-spec-drilldown-menu.md) defines them (the spec said both warn).
+
+### Amendment, 2026-09-27 (Resolve the assistive-technology checks)
+
+From [Resolve the assistive-technology checks](77-evidence-assistive-technology-checks.md), check 7 (Nested menu and Responsive Menu): the spec is correct; `specs/responsive-menu.md` was edited to match. No decision changes.
+
+- OPEN FOR HUMAN item 1 (the screen-reader pass over a swap) is closed. Across four swap scenarios, three runs: focus never leaves the control the user is on (Chromium fires no focus, state, or name event; Firefox re-fires focus on the same link, which NVDA re-speaks with its list); a focused toggle whose submenu the swap closes reports "collapsed"; focus on a back item the swap hides lands on the level's first link with one focus event. In WebKit `document.activeElement` stays on the same element through all four swaps (one run; WebKit exposes no accessibility tree on Windows). A live region is not needed.
+- Spec edits: Testing Decisions ends with a manual release test (NVDA on Firefox and on Chrome, JAWS on Chrome, VoiceOver on Safari), which notes that entering drilldown may also read the level's name, "Products", the name the Drilldown level names add; the Out of Scope bullet on screen-reader verification now reads "Automated screen-reader output", covered by that release test.
+
+Triage, from the decision ticket: impact limited to Testing Decisions and one Out of Scope bullet, confidence HIGH. Decided; nothing new is open.

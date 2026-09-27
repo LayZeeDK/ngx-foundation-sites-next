@@ -229,3 +229,13 @@ From [Decide: the server state of an open-by-default non-modal Reveal's Trigger]
 ### Amendment, 2026-09-27 (focus restore fallback)
 
 Applied by the orchestrator from the follow-up of [Decide: the server state of an open-by-default non-modal Reveal's Trigger](78-decide-open-by-default-non-modal-reveal-server-state.md): the restore order gains the first registered Trigger after the element focused when the Reveal opened (when that was not `body`), so a Reveal open at its first render returns focus to a Trigger, and a development warning names the `restoreFocus` input when no target is usable.
+
+### Amendment, 2026-09-27 (Resolve the assistive-technology checks)
+
+From [Resolve the assistive-technology checks](77-evidence-assistive-technology-checks.md), check 4: the spec is correct for all three dialog forms and for both Trigger shapes; `specs/reveal.md` was edited to match. No decision changes.
+
+- OPEN FOR HUMAN item 1 (the screen-reader check) is closed: `showModal()` removes the rest of the page from both Windows engines' trees, the dialog and the alert dialog are exposed with role, `aria-labelledby` name, description, and modal state, focus lands inside with the dialog as ancestor, and focus returns to the Trigger; `role="alertdialog"` on a `showModal()` dialog stays modal without `aria-modal`; the non-modal Reveal stays non-modal with the page reachable, and its Trigger flips to expanded and back. WebKit prunes to the modal node (source). Firefox fires no system alert event for the alert dialog; NVDA still speaks its role, name, and description, because the dialog is a newly entered focus ancestor. The modal Trigger (`modal-dialog`) carries `haspopup:dialog` and no expanded or collapsed state in MSAA and IA2 on focus and focus return (case B of [Decide: `aria-expanded` on a modal dialog's opener](72-decide-aria-expanded-on-modal-opener.md)); only Firefox's UI Automation infers "collapsed", which is true whenever the Trigger is reachable.
+- Spec edits: the WCAG 2.2 AA table's 1.3.1 and 4.1.2 row names the release test instead of a human-only check; Testing Decisions ends with a manual release test (NVDA on Firefox and on Chrome, VoiceOver on Safari on macOS and iOS: the modal Trigger announced as opening a dialog with no expanded state, role and name inside, containment, focus return; the non-modal Trigger announced as expanded and collapsed); the Out of Scope bullet on screen-reader verification now reads "Automated screen-reader output", covered by that release test.
+- Item 2 (the upstream WebKit report) is not touched here.
+
+Triage, from the decision ticket: impact limited to Testing Decisions and two table and Out of Scope cells, confidence HIGH. Decided; nothing new is open.

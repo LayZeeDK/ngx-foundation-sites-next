@@ -18,7 +18,7 @@ A server-rendered Angular application adds more: nothing may be created, measure
 
 One attribute directive, `nfsTooltip`, on the interactive element the developer writes (a native `<button>`, a link, a form control), with the text as its value or taken from the element's `title`, exactly where Foundation's `data-tooltip` went. The directive adds Foundation's `.has-tip` class and nothing else to the server HTML: the text stays in `title` until the tip is first shown, so the description is present for assistive technology and for no-JavaScript users from the first byte.
 
-The tip itself is Foundation's `.tooltip` element with `role="tooltip"`, created by the directive the first time it is shown, as the trigger's next sibling, and kept afterwards. At that moment the directive moves the text off the `title` (as Foundation does) and points the trigger's `aria-describedby` at the tip. The tip is placed by the shared Positioner with Foundation's own formulas and Foundation's own pip classes, fades in and out with the library's `nfs-fade-in` and `nfs-fade-out` keyframe classes, and is hidden with `hidden` once closed, so the description keeps working while it is not shown.
+The description is an element of its own: in its first client render callback after hydration the directive inserts a hidden internal `nfs-tooltip-description` (`role="tooltip"`, the text) as the trigger's next sibling and adds its id to the trigger's `aria-describedby`, after any static consumer value, so the description exists before any focus and never changes when the tip shows or hides. The visible tip is Foundation's `.tooltip` element, created by the directive the first time it is shown, after the description element, kept afterwards, and `aria-hidden="true"`; at its first show the directive moves the text off the `title` (as Foundation does). The tip is placed by the shared Positioner with Foundation's own formulas and Foundation's own pip classes, fades in and out with the library's `nfs-fade-in` and `nfs-fade-out` keyframe classes, and is hidden with `hidden` once closed.
 
 The tip opens on hover after Foundation's 200 ms delay, at once on keyboard focus, and on a click that keeps it open (Foundation's `clickOpen`). It stays open while the pointer is over the trigger or the tip, closes when the pointer leaves both, when focus leaves the trigger, on a press outside, on Escape from anywhere, or when another tooltip opens. Every Foundation option that still means something is an input with Foundation's default; `showOn` asks the Breakpoint service. No library CSS is added beyond the shared keyframe classes.
 
@@ -121,6 +121,8 @@ ngx-foundation-sites/tooltip  (secondary entry point)
       injects  nfsTooltipDefaultsToken (optional), NfsMediaQuery, _IdGenerator,
                ViewContainerRef, HostAttributeToken('title' | 'class' | 'aria-describedby')
       calls    nfsLightDismiss(), nfsHoverIntent()   (Anchored pane utility)
+    creates in its first client render callback, via its ViewContainerRef, as the host's next sibling:
+    nfs-tooltip-description  NfsTooltipDescription   internal component, not public API (hidden, role tooltip, the text)
     creates on first show, via its ViewContainerRef, as the host's next sibling, then keeps:
     nfs-tooltip-tip  NfsTooltipTip   internal component, not public API
       injects  nfsTooltipToken (the directive, through the container's injector)
@@ -198,7 +200,7 @@ class NfsTooltip implements NfsOpenable {   // selector [nfsTooltip], exportAs '
 Behaviour rules:
 
 - Text: `text = tipText() !== '' ? tipText() : staticTitle ?? ''`, where `staticTitle` is read once with `inject(new HostAttributeToken('title'), {optional: true})`. A bound `[title]` or `[attr.title]` on the host is not supported (the directive owns the host's `title`); dynamic text goes through `nfsTooltip`. An empty text is the off switch: open requests are ignored, and the tip is shown only while the text is non-empty, so clearing the text while open hides the tip (and emits `closed`) while `isOpen` keeps the requested value.
-- `title` and `aria-describedby`: until the tip exists, the host binds `title` to the text and binds no reference, so the accessible description comes from `title` (accname: `title` is the description when there is no `aria-describedby` and it is not the name), in the server HTML and on the client. When the tip is created, the same render pass removes `title`, adds the tip id to `aria-describedby`, and inserts the tip. After that the reference stays, and the kept tip (hidden when closed) is the description, like Material's always-present description element. A consumer's static `aria-describedby` (read with `HostAttributeToken`) is kept first in the list; a dynamic consumer binding of the same attribute loses to the directive's (Angular's host-binding rule) and is not supported.
+- `title` and `aria-describedby`: the host binds `title` to the text until the tip is first shown (server HTML included) and removes it in the pass that shows the tip. In the first client render callback in which the text is non-empty (an `afterRenderEffect` on the text, `write` phase, creating once), the directive creates `nfs-tooltip-description` through its `ViewContainerRef` at index 0; from the next pass the host's `aria-describedby` is the consumer's static value followed by that element's id while the text is non-empty; an empty text drops the id, and the element is destroyed with the directive. From then on the description is that element's text (`aria-describedby` is the first applicable description source, HTML-AAM), in every engine and before any focus; the tip is `aria-hidden="true"` and never a description source, so showing, hiding, and Escape change no description (measured in Chromium and Firefox, [Resolve the assistive-technology checks](../issues/77-evidence-assistive-technology-checks.md)). The element sits beside its host, so it is inert, in the top layer, or pruned exactly when the host is: inside a modal `<dialog>`, inside an Off-canvas panel under its Modal inert set, and inside any consumer `inert` subtree. A consumer's static `aria-describedby` (read with `HostAttributeToken`) is kept first; a dynamic consumer binding of the same attribute loses to the directive's (Angular's host-binding rule) and is not supported. Inside a block that never hydrates, the host keeps `title` as its description.
 - Open sources, all through one internal open path that checks the text and `is(showOn())` first:
   1. Hover: `nfsHoverIntent` on the host, mouse and pen only, after `hoverDelay`, unless `disableHover`.
   2. Keyboard focus: a `focusin` host listener opens at once when `document.activeElement` is the host and the host matches `:focus-visible`. The live check makes a replayed `focusin` safe; `:focus-visible` keeps a mouse click that focuses the host from opening through focus (the click rule decides that).
@@ -215,10 +217,12 @@ Behaviour rules:
   2. Host not focusable (`InteractivityChecker.isFocusable` false): a natively disabled button gets "use `disabledInteractive` so the tooltip stays reachable"; anything else gets "keyboard users cannot reach this tooltip".
   3. No text: no `nfsTooltip` value and no static `title` at first render.
   4. No name of its own: a form control with no associated `label`, `aria-label`, or `aria-labelledby`, or another host with no text content, no `aria-label`/`aria-labelledby`, and no descendant with a non-empty `alt` or `aria-label`: "the tooltip is a description, not a name".
-  5. The host sits inside a `label`: the tip is inserted into the label, so its text joins the label's accessible name while shown.
+  5. The host sits inside a `label`: the tip is inserted into the label, so a press on the tip is a press on the label (the tip is `aria-hidden` and the description element `hidden`, so neither joins the label's name).
   The Positioner adds its own three (same-axis alignment, negative offsets, tip not `position: absolute`).
 
-`NfsTooltipTip` (internal): selector `nfs-tooltip-tip`, template `{{ text() }}` (text node only, never HTML), host `class="tooltip"`, `role="tooltip"`, `[attr.id]`, `[hidden]`, `[class]` for the pip classes, `templateClasses`, and the Motion classes, and `(animationend)`/`(animationcancel)` host listeners that report to the directive. It reads text, options, and phase from `nfsTooltipToken` and calls `nfsPositioner` with its own host as the placed element.
+`NfsTooltipTip` (internal): selector `nfs-tooltip-tip`, template `{{ text() }}` (text node only, never HTML), host `class="tooltip"`, `aria-hidden="true"`, `[attr.id]`, `[hidden]`, `[class]` for the pip classes, `templateClasses`, and the Motion classes, and `(animationend)`/`(animationcancel)` host listeners that report to the directive. It reads text, options, and phase from `nfsTooltipToken` and calls `nfsPositioner` with its own host as the placed element.
+
+`NfsTooltipDescription` (internal): selector `nfs-tooltip-description`, template `{{ text() }}` (text node only), host `hidden`, `role="tooltip"`, `[attr.id]` (a second `_IdGenerator` id, prefix `nfs-tooltip-desc-`); it reads the text from `nfsTooltipToken`.
 
 ### Implementation level and primitives
 
@@ -232,6 +236,7 @@ Render hooks (building-blocks 1.5):
 
 | Piece | Hook | Why |
 | --- | --- | --- |
+| Description element | `afterRenderEffect` on the text, `write` phase; creates once | Client only, after hydration and before any focus; never on the server |
 | Tip creation | `afterRenderEffect`, `write` phase, tracking the shown state; creates once and never again | Structure is created only in a render callback, so never on the server or before hydration, whatever set `isOpen` (a handler, a method, a bound model); `effect` is ruled out because it runs on the server and must not write the DOM. A sequence registered by a component with a view is added when that view is refreshed (the after-render manager's `register`), so the tip's own Positioner runs in the same `ApplicationRef.tick()` and the tip is placed before its first painted frame; Aria's `DeferredContent` creates views from `afterRenderEffect` the same way |
 | Completion (measure the Motion class, fallback timer, emit `opened`/`closed`) | `afterRenderEffect`, `read` phase after the class is bound | Computed `animation-*` is a layout-free style read that must follow the class write; re-runs only when the phase changes |
 | Code-added `click` and `pointerdown` listeners | `afterNextRender` | Attached once on the client after the first render, removed through `DestroyRef`; never replayed, never on the server |
@@ -257,7 +262,7 @@ Loading: eager. `injectAsync` does not apply: it resolves an auto-provided servi
 | Click | No click behaviour | `clickOpen` pins on a pointer click |
 | Hoverable | Interactive by default; `disableTooltipInteractivity` option | Always hoverable (WCAG 1.4.13) |
 | Escape | Closes, no modifiers | Light dismiss: closes the topmost entry, no modifiers, from anywhere |
-| Description | `aria-describedby` to a hidden copy kept by `AriaDescriber`; the visible bubble is `aria-hidden` | `title` until first show, then `aria-describedby` to the kept tip itself (`role="tooltip"`), hidden when closed |
+| Description | `aria-describedby` to a hidden copy kept by `AriaDescriber`; the visible bubble is `aria-hidden` | `title` until the first client render callback, then `aria-describedby` to a hidden `role="tooltip"` element beside the host (Material's hidden copy, kept beside the host instead of in `AriaDescriber`'s `body` container); the visible tip is `aria-hidden` |
 | Methods | `show(delay?)`, `hide(delay?)`, `toggle()` | `open()`, `close()`, `toggle()` (Openable vocabulary, building-blocks 1.3) |
 | Outputs | None | `isOpenChange`, `opened`, `closed` |
 | Extra classes | `matTooltipClass` (string, array, set, map) | `templateClasses` (string, Foundation's option) |
@@ -265,7 +270,7 @@ Loading: eager. `injectAsync` does not apply: it resolves an auto-provided servi
 | Animation | Keyframes 150/75 ms on the bubble, `animationend` | `nfs-fade-in`/`nfs-fade-out` keyframes at the `nfs-motion` duration, `animationend` plus a measured fallback timer |
 | Server | Nothing rendered | Host with `.has-tip` and `title`; no tip |
 
-Borrowed: the directive-plus-internal-component shape, the string input under the selector name, keyboard-origin opening, Escape without modifiers, a defaults token, `toggle()`, an always-present description. Not borrowed: the overlay, the hidden copy (the kept tip plays that role), `aria-hidden` on the visible tip, logical positions, `positionAtOrigin`, long-press gestures.
+Borrowed: the directive-plus-internal-component shape, the string input under the selector name, keyboard-origin opening, Escape without modifiers, a defaults token, `toggle()`, an always-present description, the hidden copy, `aria-hidden` on the visible tip. Not borrowed: the overlay, logical positions, `positionAtOrigin`, long-press gestures.
 
 ### ARIA and keyboard
 
@@ -273,13 +278,16 @@ APG pattern: Tooltip (work in progress, no task force consensus, no example; the
 
 | Element | Attribute or state | Value | When |
 | --- | --- | --- | --- |
-| Host | `title` | The text | Until the tip exists (server HTML included); removed in the pass that creates the tip |
-| Host | `aria-describedby` | The consumer's static value, then the tip id | From the pass that creates the tip; never in server HTML, never pointing at a missing element |
+| Host | `title` | The text | Until the tip is first shown (server HTML included); removed in the pass that shows the tip |
+| Host | `aria-describedby` | The consumer's static value, then the description element's id | From the pass after the first client render callback, while the text is non-empty; never in server HTML, never pointing at a missing element |
 | Host | `aria-expanded`, `aria-haspopup`, `aria-controls` | Never | Trigger role `'none'`: a tooltip is not a popup, and Triggers that toggle it render nothing either |
-| Tip | `role` | `tooltip` | Static |
+| Tip | `aria-hidden` | `true` | From creation |
 | Tip | `id` | Generated `nfs-tooltip-...` | From creation |
 | Tip | `hidden` | Present | While closed and no leave animation runs |
-| Tip | `aria-hidden`, `aria-label`, `aria-labelledby`, `tabindex` | Never | Hidden by `hidden`; named from its text (ARIA prohibits naming a tooltip); never focusable |
+| Tip | `aria-label`, `aria-labelledby`, `tabindex` | Never | Hidden by `hidden`; named from its text (ARIA prohibits naming a tooltip); never focusable |
+| Description element | `role` | `tooltip` | Static |
+| Description element | `hidden` | Present | Always |
+| Description element | `id` | Generated `nfs-tooltip-desc-...` | From creation |
 
 | Key or input | Where | Behaviour | Owner |
 | --- | --- | --- | --- |
@@ -307,8 +315,8 @@ Requirements, not recommendations. The story gate runs axe with the WCAG 2.2 AA 
 | 2.4.7 Focus Visible | The host keeps a visible focus indicator | Passes with Foundation's defaults: `.has-tip` sets no outline, and Foundation removes outlines only under what-input's mouse and touch attributes, which the library never loads |
 | 2.4.11 Focus Not Obscured (Minimum) | The tip never covers its focused host, and never stays over a control that receives focus | Every placement puts the tip beside the host for non-negative offsets (development warning below 0); focus leaving the host closes the tip, and the Light dismiss focus rule closes a hover-opened tip when focus moves anywhere else. A hover-opened tip that sits over a control focused earlier is dismissed with Escape without moving focus |
 | 2.5.8 Target Size (Minimum) | Not applicable to the tip: it is not a target (not operable, not focusable; the pointer over it only keeps it open). The host's size is the host's own | The directive adds no target and does not shrink the host; `.button` hosts pass (Button spec); inline links in a sentence meet the inline exception |
-| 4.1.2 Name, Role, Value | The host keeps its own name and role; the tooltip text is its description, never its name; the tip has role `tooltip`, named from content; no host carries `aria-expanded` or `aria-haspopup` for a tooltip | Foundation blanked `title` at initialisation, which removed the name of icon-only triggers named by `title`; here the development check reports a host with no name of its own. `aria-describedby` is bound only while the tip exists |
-| 1.3.1 Info and Relationships | The relation is programmatic at every moment: `title` before the first show, `aria-describedby` after | By construction |
+| 4.1.2 Name, Role, Value | The host keeps its own name and role; the tooltip text is its description, never its name; the tip has role `tooltip`, named from content; no host carries `aria-expanded` or `aria-haspopup` for a tooltip | Foundation blanked `title` at initialisation, which removed the name of icon-only triggers named by `title`; here the development check reports a host with no name of its own. `aria-describedby` is bound from the first client render callback, to the hidden description element |
+| 1.3.1 Info and Relationships | The relation is programmatic at every moment: `title` in server HTML and until the first client render callback, `aria-describedby` from then on | By construction |
 | 2.1.1 Keyboard, 2.1.2 No Keyboard Trap | Every tip is reachable by keyboard focus on its host; the tip never takes focus | Interactive hosts only (development warnings 1 and 2); `disabledInteractive` keeps a disabled button focusable |
 | 1.4.10 Reflow, 1.4.4 Resize Text, 1.4.12 Text Spacing | The tip fits a 320 px viewport and grows with text and spacing | `$tooltip-max-width` 10rem wraps text; the tip has no fixed height; the Positioner picks a placement with no spill-over whenever one exists. The documented clipping limit (below) is the consumer's layout |
 | 3.2.1 On Focus | Showing a tip on focus is not a change of context | No navigation, no focus move, no new window |
@@ -324,20 +332,24 @@ Directive attributes (`nfstooltip`, `nfsbutton`) and static input attributes sta
 <!-- Consumer markup: a defined term (a button host, Foundation's .has-tip look) -->
 The <button type="button" nfsTooltip title="Fancy word for a beetle.">scarabaeus</button> hung quite clear of any branches.
 
-<!-- server, and hydrated before the first show -->
+<!-- server, and during hydration -->
 The <button type="button" title="Fancy word for a beetle." class="has-tip" jsaction="focusin:;focusout:;">scarabaeus</button><!--container--> hung ...
 
+<!-- hydrated, after the first client render callback, before the first show -->
+The <button type="button" title="Fancy word for a beetle." class="has-tip" aria-describedby="nfs-tooltip-desc-a1b2-0">scarabaeus</button><nfs-tooltip-description hidden="" role="tooltip" id="nfs-tooltip-desc-a1b2-0">Fancy word for a beetle.</nfs-tooltip-description><!--container--> hung ...
+
 <!-- hydrated, first show by hover (default top-center), while the fade-in runs; inline offsets from the Positioner -->
-The <button type="button" class="has-tip" aria-describedby="nfs-tooltip-a1b2-0">scarabaeus</button>
-<nfs-tooltip-tip role="tooltip" id="nfs-tooltip-a1b2-0" class="tooltip nfs-fade-in top align-center"
+The <button type="button" class="has-tip" aria-describedby="nfs-tooltip-desc-a1b2-0">scarabaeus</button>
+<nfs-tooltip-description hidden="" role="tooltip" id="nfs-tooltip-desc-a1b2-0">Fancy word for a beetle.</nfs-tooltip-description>
+<nfs-tooltip-tip aria-hidden="true" id="nfs-tooltip-a1b2-0" class="tooltip nfs-fade-in top align-center"
                  style="top: -57.19px; left: 0.75px;">Fancy word for a beetle.</nfs-tooltip-tip><!--container--> hung ...
 
 <!-- after animationend: opened is emitted -->
-<nfs-tooltip-tip role="tooltip" id="nfs-tooltip-a1b2-0" class="tooltip top align-center" style="...">Fancy word for a beetle.</nfs-tooltip-tip>
+<nfs-tooltip-tip aria-hidden="true" id="nfs-tooltip-a1b2-0" class="tooltip top align-center" style="...">Fancy word for a beetle.</nfs-tooltip-tip>
 
 <!-- closing: the fade-out plays in place, then hidden is set and closed is emitted; the tip is kept -->
-<nfs-tooltip-tip role="tooltip" id="nfs-tooltip-a1b2-0" class="tooltip nfs-fade-out top align-center" style="...">...</nfs-tooltip-tip>
-<nfs-tooltip-tip role="tooltip" id="nfs-tooltip-a1b2-0" class="tooltip top align-center" style="..." hidden="">...</nfs-tooltip-tip>
+<nfs-tooltip-tip aria-hidden="true" id="nfs-tooltip-a1b2-0" class="tooltip nfs-fade-out top align-center" style="...">...</nfs-tooltip-tip>
+<nfs-tooltip-tip aria-hidden="true" id="nfs-tooltip-a1b2-0" class="tooltip top align-center" style="..." hidden="">...</nfs-tooltip-tip>
 ```
 
 ```html
@@ -348,8 +360,9 @@ The <button type="button" class="has-tip" aria-describedby="nfs-tooltip-a1b2-0">
 <button class="button has-tip" type="button" title="Fancy word for a beetle." jsaction="focusin:;focusout:;">Bottom Left</button><!--container-->
 
 <!-- hydrated, open -->
-<button class="button has-tip" type="button" aria-describedby="nfs-tooltip-a1b2-1">Bottom Left</button>
-<nfs-tooltip-tip role="tooltip" id="nfs-tooltip-a1b2-1" class="tooltip bottom align-left" style="...">Fancy word for a beetle.</nfs-tooltip-tip><!--container-->
+<button class="button has-tip" type="button" aria-describedby="nfs-tooltip-desc-a1b2-1">Bottom Left</button>
+<nfs-tooltip-description hidden="" role="tooltip" id="nfs-tooltip-desc-a1b2-1">Fancy word for a beetle.</nfs-tooltip-description>
+<nfs-tooltip-tip aria-hidden="true" id="nfs-tooltip-a1b2-1" class="tooltip bottom align-left" style="...">Fancy word for a beetle.</nfs-tooltip-tip><!--container-->
 ```
 
 ```html
@@ -357,16 +370,17 @@ The <button type="button" class="has-tip" aria-describedby="nfs-tooltip-a1b2-0">
 <button nfsButton [disabled]="true" disabledInteractive aria-describedby="plan-note" nfsTooltip="Upgrade to export">Export</button>
 
 <!-- hydrated, after the first show -->
-<button class="button has-tip disabled" type="button" aria-disabled="true" aria-describedby="plan-note nfs-tooltip-a1b2-2">Export</button>
-<nfs-tooltip-tip role="tooltip" id="nfs-tooltip-a1b2-2" class="tooltip top align-center" style="...">Upgrade to export</nfs-tooltip-tip><!--container-->
+<button class="button has-tip disabled" type="button" aria-disabled="true" aria-describedby="plan-note nfs-tooltip-desc-a1b2-2">Export</button>
+<nfs-tooltip-description hidden="" role="tooltip" id="nfs-tooltip-desc-a1b2-2">Upgrade to export</nfs-tooltip-description>
+<nfs-tooltip-tip aria-hidden="true" id="nfs-tooltip-a1b2-2" class="tooltip top align-center" style="...">Upgrade to export</nfs-tooltip-tip><!--container-->
 ```
 
-Where the tip lives: always the host's next sibling, inside the host's parent. Its containing block is therefore the host's containing block for absolute positioning (the nearest ancestor that is positioned or otherwise establishes one), not `.has-tip`, whose `position: relative` applies to the host alone; with no such ancestor it is the initial containing block. The Positioner measures that origin and writes inline `top`/`left`, the same mechanism Foundation's `$.fn.offset()` used; ADR 0002's in-place rule holds because the tip is created in place on the client and never moved. Documented limits, accepted with that choice (the Anchored pane spec, Triage 2):
+Where the tip lives: after the description element, which is the host's next sibling from the first client render callback, inside the host's parent. Its containing block is therefore the host's containing block for absolute positioning (the nearest ancestor that is positioned or otherwise establishes one), not `.has-tip`, whose `position: relative` applies to the host alone; with no such ancestor it is the initial containing block. The Positioner measures that origin and writes inline `top`/`left`, the same mechanism Foundation's `$.fn.offset()` used; ADR 0002's in-place rule holds because the tip is created in place on the client and never moved. Documented limits, accepted with that choice (the Anchored pane spec, Triage 2):
 
 - A positioned ancestor with `overflow` other than `visible` clips the tip (Foundation's `body`-appended tip was never clipped), and an ancestor stacking context bounds its `z-index: 1200`.
-- Structural pseudo-classes and sibling combinators among the host's siblings see the tip once it exists: in Foundation's CSS that touches `.button-group` (`.button:last-child` margin and corner radius, `.no-gaps` `.button + .button` borders, and the float-mode `.expanded` `nth-last-child` widths). With Foundation's defaults (flexbox, radius on each button) the only visible change is a 1 px right margin on a group's last button after its tooltip first shows.
-- An ancestor whose accessible name comes from its content (a wrapping `label`, a table header cell) includes the tip text while the tip is shown; write labels with `for` (development warning 5).
-- Inside a modal `<dialog>` the tip is in the dialog's top layer with it, so tooltips inside a Reveal work; a tip appended to `body` would sit behind it.
+- Structural pseudo-classes and sibling combinators among the host's siblings see the description element from the first client render callback and the tip once it exists: in Foundation's CSS that touches `.button-group` (`.button:last-child` margin and corner radius, `.no-gaps` `.button + .button` borders, and the float-mode `.expanded` `nth-last-child` widths). With Foundation's defaults (flexbox, radius on each button) the only visible change is a 1 px right margin on a group's last button from hydration on.
+- A tip inside a wrapping `label` sits inside it, so a press on the tip is a press on the label; neither the `aria-hidden` tip nor the `hidden` description element joins the label's name; write labels with `for` (development warning 5).
+- Inside a modal `<dialog>` the tip is in the dialog's top layer with it, so tooltips inside a Reveal work; a tip appended to `body` would sit behind it; the description element is inside the dialog with its host, so the description survives the dialog's inertness of the page (measured in Chromium and Firefox, [Resolve the assistive-technology checks](../issues/77-evidence-assistive-technology-checks.md)).
 
 ### Animation
 
@@ -394,7 +408,7 @@ Per ADR 0008 and the rendering-modes research, section 7, rules 1 to 11:
 
 - Server-side rendering and first paint: the host renders `.has-tip`, the text as `title`, and no `aria-describedby`; there is no tip, no `role="tooltip"`, no inline style (rule 1). This is the complete first-paint state: no tooltip is visible at first paint, the description is present, and the browser's own `title` tooltip serves no-JavaScript users. The `ViewContainerRef` anchor comment is serialised and matched at hydration like any empty container. An `isOpen` bound to `true` renders the same server HTML; the tip appears in the first client render callback after hydration.
 - Before hydration: construction reads only DI and `HostAttributeToken` values; the tip is created, placed, and listened to only in render callbacks; hover and Light dismiss listeners and every timer start only in render callbacks or handlers, outside the zone (rules 3 to 5). Tip ids are generated on the client only, so no server id can disagree.
-- Full hydration: host binding values equal the server's (`class`, `title`, no reference), so hydration changes nothing; the `title` removal and the reference arrive with the first show (rule 10).
+- Full hydration: host binding values equal the server's (`class`, `title`, no reference), so hydration changes nothing; the description element and the reference arrive in the first client render callback and the `title` removal with the first show (rule 10). A host that holds focus from before hydration gains the reference while focused, so Firefox reports one description change with the same text.
 - Event replay: the `focusin` and `focusout` host listeners replay. A replayed `focusin` opens only if the host is still `document.activeElement` and matches `:focus-visible`, so a keyboard user who tabbed to the host before hydration sees the tip once hydrated, and one who moved on sees nothing. A replayed `focusout` finds nothing open. No tooltip handler calls `preventDefault()`, so replay cannot throw in one. Hover (`pointerenter`/`pointerleave`) and the press listeners are added in code and never replay: a hover or click before hydration opens nothing afterwards, which is correct for supplementary content (a stale tip is worse than none). Because the press listener is not in host metadata, a link host carries no `click` annotation, so Angular's dispatcher never cancels its native navigation inside a dehydrated block (building-blocks 1.11 decision 5).
 - Hydration boundary: a tooltip host and any external Trigger that toggles it belong to one boundary (ADR 0008; building-blocks 1.11 decision 6; template-reference scoping enforces half of it, ADR 0013). The tip itself is client-created next to its host and needs no boundary of its own.
 - `@defer`: library templates contain no `@defer`; `ngx-foundation-sites/tooltip` is its own entry point. Inside a dehydrated block the host is its server HTML with `title`, so mouse users get the browser's tooltip. A keyboard focus on the host is a replayable interaction: it hydrates the block and replays, and the live check then shows the tip. `hydrate on hover` hydrates on the first hover without opening (the `pointerenter` has passed), so the tip opens on the next entry; `hydrate on viewport`, `on idle`, or `on interaction` avoid that for hover-heavy regions. Inside `hydrate never` the host keeps its `title` forever and no tip ever appears. Plain `@defer` renders on the client like any client render.
@@ -416,7 +430,7 @@ Story ids follow `tooltip--<story>`: `tooltip--defined-term`, `tooltip--button`,
 
 Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test = 'error'` on the WCAG 2.2 AA rule set (`runOnly` tags `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`, `best-practice`, ADR 0018); stories that open a tip run axe again with it open. Hover steps use `userEvent.hover`/`unhover`, which dispatch pointer events.
 
-- `tooltip--defined-term`: a `button.has-tip` term in a sentence; before any interaction the host has `title` and no `aria-describedby` and no tip exists; hovering shows the tip after the delay above the term (`top align-center`), `title` is gone, `aria-describedby` names the tip, the tip has `role="tooltip"` and the text; axe passes with the tip open (`aria-tooltip-name`, `color-contrast`).
+- `tooltip--defined-term`: a `button.has-tip` term in a sentence; before any interaction the host has `title`, `aria-describedby` naming a hidden `nfs-tooltip-description` with `role="tooltip"` and the text, and no tip exists; hovering shows the tip after the delay above the term (`top align-center`), `title` is gone, `aria-describedby` is unchanged, and the tip has `aria-hidden="true"`, no `role`, and the text; axe passes with the tip open (`color-contrast`).
 - `tooltip--button`: a `.button` host; the same sequence; the tip's box is beside the host, never over it.
 - `tooltip--placements`: the 12 explicit placements (args); each tip carries the matching pip classes and sits on the expected side.
 - `tooltip--legacy-position-class`: `class="right"` on the host with `position` unset opens `right align-center`.
@@ -429,7 +443,7 @@ Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test 
 - `tooltip--external-trigger`: an info button with `[nfsToggle]="tip"` toggles the tip; the info button has no `aria-expanded`; clicking it while open closes the tip once (no close and reopen).
 - `tooltip--disabled-interactive`: a `disabledInteractive` disabled `nfsButton` host is focusable, shows its tip on focus, and carries `aria-disabled="true"`.
 - `tooltip--link-host`: a link host shows its tip on hover and focus and navigates on click (the story records the navigation attempt); the link has no `jsaction` for `click` in the story's server-render counterpart (covered in layer 3).
-- `tooltip--described-by-merge`: a host with a static `aria-describedby="note"` has `note` alone before the first show and `note nfs-tooltip-...` after.
+- `tooltip--described-by-merge`: a host with a static `aria-describedby="note"` has `note nfs-tooltip-desc-...` from the first render, before any show, and unchanged after.
 - `tooltip--dynamic-text`: changing the bound text while open updates the tip; clearing it hides the tip and emits `closed`; restoring it shows the tip again.
 - `tooltip--sibling-group`: opening tooltip B closes tooltip A.
 - `tooltip--in-modal-dialog`: a tooltip on a button inside a `<dialog>` opened with `showModal()`; the tip is visible above the dialog content; the first Escape closes the tip and the dialog stays open; the second closes the dialog.
@@ -441,9 +455,9 @@ Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test 
 Vitest browser mode under the Angular unit-test builder (`npx nx test <lib>`, Chromium headless): TestBed specs in `<name>.spec.ts` next to the directive, over a bare test host component, zoneless with `await fixture.whenStable()`, asserting DOM and ARIA state; no story is mounted here and no axe runs here.
 
 - Text resolution, driven by data: value only, static `title` only, both (value wins and replaces `title`), neither (development warning 3), bare attribute with `title`.
-- Tip lifecycle: no tip before the first show; created once as the host's next sibling on first show, whatever the source (hover timer, focus, click, `open()`, a bound `[isOpen]`); kept after close with `hidden`; never recreated; destroyed with the host.
-- One-pass swap: after the `whenStable()` that follows an open request, the host has no `title`, `aria-describedby` names the tip, the tip carries the pip classes and inline offsets, and it has no `hidden`, all together.
-- `aria-describedby` merge with a static consumer value; no reference before the first show; the reference kept after close.
+- Tip lifecycle: no tip before the first show; the description element created once in the first render as the host's next sibling, the tip after it; created once as the host's next sibling on first show, whatever the source (hover timer, focus, click, `open()`, a bound `[isOpen]`); kept after close with `hidden`; never recreated; destroyed with the host.
+- One-pass swap: after the `whenStable()` that follows an open request, the host has no `title`, `aria-describedby` still names the description element, the tip carries the pip classes and inline offsets, and it has no `hidden`, all together.
+- `aria-describedby` merge with a static consumer value, present from the first render and unchanged by show, hide, and close; a text change updates the description element's text and not the reference; an empty text drops the id; destroy removes the element; the element never changes its `hidden`.
 - Open sources: `focusin` with the host focused and `:focus-visible` opens; a dispatched `focusin` while focus is elsewhere does not; a replay-shaped `focusin` (an event whose `eventPhase` reads 101 and whose `preventDefault` throws) with the host still focused opens and nothing reaches `ErrorHandler`; a pointer `click` (`detail` 1) opens and pins; a keyboard `click` (`detail` 0) does not; a touch `pointerdown` then `click` is ignored with `disableForTouch` and honoured without it.
 - Close sources: `focusout` to the body closes; hover leave while pinned, and while the host is keyboard-focused, does not close; Escape and an outside press close (Light dismiss, driven by dispatched events); a sibling tooltip opening closes with `'sibling'`.
 - `showOn` through a Breakpoint service with a fake `MediaMatcher`: open requests below the query are ignored; a model write still opens; `'all'` always opens.
@@ -458,7 +472,7 @@ Vitest browser mode under the Angular unit-test builder (`npx nx test <lib>`, Ch
 
 Runs under `npx nx test <lib>` in `<name>.ssr.spec.ts` through the shared `renderServer()` helper; `npx nx test-node <lib>` only if the server path depends on the DOM adapter.
 
-- SSR smoke: `renderApplication` over a fixture with a defined-term button host (static `title`), a `.button` host with a bound value, a link host, a host with a static `aria-describedby`, and a host with `[isOpen]="true"`. Assert that `whenStable()` resolves (no pending timers); every host carries `class="... has-tip"`, the text as `title`, `jsaction="focusin:;focusout:;"`, and no `aria-describedby` beyond the consumer's static one; no host carries a `click` annotation; the document contains no `nfs-tooltip-tip`, no `role="tooltip"`, and no inline `top`/`left`; no document listener was added (spy on the server document).
+- SSR smoke: `renderApplication` over a fixture with a defined-term button host (static `title`), a `.button` host with a bound value, a link host, a host with a static `aria-describedby`, and a host with `[isOpen]="true"`. Assert that `whenStable()` resolves (no pending timers); every host carries `class="... has-tip"`, the text as `title`, `jsaction="focusin:;focusout:;"`, and no `aria-describedby` beyond the consumer's static one; no host carries a `click` annotation; the document contains no `nfs-tooltip-tip`, no `nfs-tooltip-description`, no `role="tooltip"`, and no inline `top`/`left`; no document listener was added (spy on the server document).
 - Pure logic, table-driven: the legacy position class parser (tokens, several matches, SVG-like `class` values, none); text resolution; the `aria-describedby` merge; the interactive-host classifier over tag, `href`, `type`, and `role`; the longest-animation reduction over computed-style lists.
 
 ### 4. Playwright e2e (`npx nx e2e <lib>-e2e` against the static Storybook build; `npx nx e2e <fixture-app>-e2e` against the prerendered fixture app)
@@ -473,6 +487,7 @@ Against the static Storybook build, on `tooltip--fixture` through `mount(storyId
 - Viewport breakpoints: with `showOn="medium"` at 600 px wide nothing opens and at 800 px the tip opens.
 - `tooltip--in-modal-dialog`: real Escape closes the tip and keeps the dialog open, then closes the dialog.
 - `tooltip--clipping-limit`: the clip holds in all three engines; the same tip in a static scroller is not clipped.
+- Chromium CDP: the host's computed description equals the text before the first show, while the tip is shown, and after Escape.
 
 Against the prerendered fixture app, one route with a defined-term host, a `.button` host, a link host, and hosts inside `@defer` blocks:
 
@@ -483,6 +498,8 @@ Against the prerendered fixture app, one route with a defined-term host, a `.but
 - Link host inside `@defer (hydrate on interaction)`: clicking it navigates natively (no cancellation), because the host carries no `click` annotation.
 - `@defer (hydrate on hover)`: the first hover hydrates without showing the tip; the next entry shows it.
 - `@defer (hydrate never)`: the host keeps its `title`, no tip appears on hover or focus, and no error is logged.
+
+Release test (manual, before each release; [Resolve the assistive-technology checks](../issues/77-evidence-assistive-technology-checks.md)): Before each release, with NVDA on Firefox and on Chrome, JAWS on Chrome, and VoiceOver on Safari (macOS and iOS), Tab to the hosts of `tooltip--defined-term`, `tooltip--described-by-merge`, `tooltip--disabled-interactive`, and `tooltip--in-modal-dialog` and confirm the tooltip text is spoken once as the description on the first focus (after the consumer's own description), is not repeated when the tip appears or when Escape dismisses it, and is spoken again on the next focus.
 
 ## Out of Scope
 
@@ -504,9 +521,9 @@ Against the prerendered fixture app, one route with a defined-term host, a `.but
 | # | Decision | Rationale | Rejected alternative |
 | --- | --- | --- | --- |
 | D1 | `[nfsTooltip]` directive on the trigger plus an internal `nfs-tooltip-tip` component | Building-blocks 1.1 case 3 and ADR 0001: the tip is generated structure the consumer never writes; Material's shape | A consumer-written tip element (Foundation never asked for one); a component wrapping the trigger |
-| D2 | Tip created on first show, as the host's next sibling, and kept | No DOM creation before hydration (ADR 0008); `aria-describedby` then always names an existing element; the leave fade plays on the kept element | Created at construction (hydration mismatch, cost for unopened tips); removed on hide (`aria-describedby` dangling, `animate.leave` in a child component does not run when the parent removes it) |
+| D2 | Tip created on first show, as the host's next sibling, and kept | No DOM creation before hydration (ADR 0008); `aria-describedby` then always names an existing element; the leave fade plays on the kept element; the description element is created in the first client render callback, the tip on first show | Created at construction (hydration mismatch, cost for unopened tips); removed on hide (`aria-describedby` dangling, `animate.leave` in a child component does not run when the parent removes it) |
 | D3 | Tip created in an `afterRenderEffect` `write` phase, not in the open handler | One path for every open source, model writes included, never on the server; view-bound sequences join the same tick, so placement lands before paint | Creation in handlers (misses a bound `[isOpen]`); `effect` (runs on the server) |
-| D4 | Text stays in `title` until the first show; then `title` is removed and `aria-describedby` is added in one pass | A description at every moment (server HTML, no JavaScript, first focus) without Material's hidden copy; honours the ARIA "before or at the time" rule; Foundation's `title` move happens at first show instead of at initialisation | Remove `title` at construction (no description until first show, none without JavaScript); a hidden always-present copy (`AriaDescriber`; a second element per tooltip) |
+| D4 | Text stays in `title` until the first show; a hidden `role="tooltip"` description element beside the host carries the text from the first client render callback, and the visible tip is `aria-hidden` | A description at every moment (server HTML and no JavaScript from `title`, before any focus from the element); showing, hiding, and Escape never change the description, so Firefox reports no description change and NVDA repeats nothing, and a static consumer `aria-describedby` no longer hides the tooltip text on first focus (both measured, [Resolve the assistive-technology checks](../issues/77-evidence-assistive-technology-checks.md)); beside the host, the element shares its inertness and modal subtree | The kept tip as the description (Firefox description-change events at every show and hide; no tooltip text on first focus beside a static consumer value); CDK `AriaDescriber` (a `body` container, so the description depends on each engine following a reference across a modal boundary: it holds in Chromium and Firefox, and WebKit is unmeasured; D23); removing `title` in the first render callback (mouse users below `showOn` and before the first show lose the browser's tooltip) |
 | D5 | Interactive hosts only, enforced by development warnings, no production behaviour change | APG presumes a natively focusable trigger; touch and keyboard users cannot reach a tooltip on plain text; relaxing later breaks no one (triage) | Refusing to open on non-interactive hosts (surprising, extra code); silently supporting `span[tabindex]` (a focusable element with no role) |
 | D6 | `.has-tip` always added; `triggerClass` dropped | Foundation's default trigger class and building-blocks 1.4; the class is the contract | Keeping `triggerClass` (a class-name Option); consumer-written `.has-tip` (differs from Foundation's output) |
 | D7 | `templateClasses` kept | The only way to style one tip, because the consumer does not author the tip; Material's `matTooltipClass` | Dropped with the other class-name Options (building-blocks 1.4 now names `templateClasses` as the one kept exception) |
@@ -525,7 +542,7 @@ Against the prerendered fixture app, one route with a defined-term host, a `.but
 | D20 | Empty text disables; shown state is `isOpen` and non-empty text | Material's behaviour without a `disabled` input | A `disabled` input (a second off switch) |
 | D21 | Eager loading, not `injectAsync` | `injectAsync` resolves services, not components; first-show latency; the one-pass swap; small code; per-plugin entry point | A dynamic `import()` of the tip on first show |
 | D22 | Consumer's static `aria-describedby` kept first | Material's `AriaDescriber` appends rather than replaces; Foundation reused the value as the tip id and lost the consumer's description | Replacing it (Foundation) |
-| D23 | Clipping by positioned `overflow` ancestors, stacking bounds, and sibling pseudo-class effects documented as limits | Consequences of the in-place sibling tip (ADR 0002, ADR 0008, building-blocks 1.1); the Anchored pane spec's Triage 2 | A tip appended to `body` (behind modal dialogs; node creation outside the component tree); CDK Overlay (breaks `.tooltip` CSS) |
+| D23 | Clipping by positioned `overflow` ancestors, stacking bounds, and sibling pseudo-class effects documented as limits | Consequences of the in-place sibling tip (ADR 0002, ADR 0008, building-blocks 1.1); the Anchored pane spec's Triage 2 | A tip, or a description, appended to `body` (behind modal dialogs; node creation outside the component tree); CDK Overlay (breaks `.tooltip` CSS) |
 
 ### Usage examples
 
@@ -606,7 +623,7 @@ Sass. The consumer compiles Foundation's Sass from its own settings; the library
 ### Foundation behaviour changed or dropped
 
 - The tip is created on first show next to its trigger instead of at initialisation in `body`, and kept; it is positioned with Foundation's formulas from one measurement (Foundation's tip could land 19 px off its own formula), and it follows its trigger inside static scrolling containers.
-- The `title` stays on the trigger until the first show (Foundation emptied it at initialisation and restored it on destroy); an existing `aria-describedby` is kept and extended instead of being reused as the tip id.
+- The `title` stays on the trigger until the first show (Foundation emptied it at initialisation and restored it on destroy); an existing `aria-describedby` is kept and extended instead of being reused as the tip id; the description is a hidden element beside the trigger from the first client render callback, and the visible tip is `aria-hidden`.
 - Leaving the trigger closes after 100 ms and never while the pointer is over the tip; Escape closes from anywhere; focus leaving and outside presses close every tip; a second tap no longer toggles a tip closed: WCAG 2.2 AA fixes and the Light dismiss model (ADR 0024).
 - Keyboard focus opens only for keyboard focus (`:focus-visible`); Foundation's `isClick`/`isFocus` bookkeeping, the `tabindex` special case in `mousedown`, and the commented-out toggle branch are gone.
 - `show.zf.tooltip` and `hide.zf.tooltip` became Completion outputs that fire after the fade, not before it.

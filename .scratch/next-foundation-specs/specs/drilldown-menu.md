@@ -278,7 +278,7 @@ Pattern: the APG Disclosure Navigation Menu, applied per Drilldown level inside 
 | --- | --- | --- |
 | `nav` | `navigation` landmark, named | Consumer |
 | Wrapper | Generic element, no role | Consumer element; `NfsDrilldownWrapper` adds classes and height only |
-| Root and submenu `ul`, every `li` (back item included) | Native `list` and `listitem`; no `role`, no `aria-*` | Consumer markup; utility adds no roles |
+| Root and submenu `ul`, every `li` (back item included) | Native `list` and `listitem`; no `role`; each submenu carries `aria-labelledby` naming its level after its parent toggle | Consumer markup; the utility adds the level name |
 | Parent toggle | Native `button`, `type="button"`, `aria-expanded`, `aria-controls` = the submenu id, name from its text | Utility |
 | Hybrid item | `a[href]` (navigates) followed by the toggle named by its `.submenu-toggle-text` span | Consumer markup, utility toggle |
 | Back button | Native `button`, `type="button"`, name "Back" plus a visually hidden suffix naming the level it returns to; no `aria-expanded` | Consumer markup, `NfsDrilldownBack` behaviour |
@@ -370,22 +370,22 @@ Server HTML (and prerendered HTML), abbreviated: directive attributes omitted, i
   <div class="is-drilldown">
     <ul class="vertical menu drilldown" jsaction="keydown:;">
       <li class="is-drilldown-submenu-parent">
-        <button type="button" aria-expanded="false" aria-controls="nfs-submenu-a1-0" jsaction="click:;">Products</button>
-        <ul id="nfs-submenu-a1-0" inert=""
+        <button type="button" id="nfs-submenu-toggle-a1-0" aria-expanded="false" aria-controls="nfs-submenu-a1-0" jsaction="click:;">Products</button>
+        <ul id="nfs-submenu-a1-0" aria-labelledby="nfs-submenu-toggle-a1-0" inert=""
             class="menu vertical nested submenu is-drilldown-submenu invisible drilldown-submenu-cover-previous">
           <li class="js-drilldown-back" jsaction="click:;"><button type="button">Back<span class="show-for-sr"> to Shop</span></button></li>
           <li class="is-submenu-item is-drilldown-submenu-item"><a href="/products/boards">Boards</a></li>
           <li class="is-submenu-item is-drilldown-submenu-item is-drilldown-submenu-parent">
-            <button type="button" aria-expanded="false" aria-controls="nfs-submenu-a1-1" jsaction="click:;">Wheels</button>
-            <ul id="nfs-submenu-a1-1" inert="" class="menu vertical nested submenu is-drilldown-submenu invisible drilldown-submenu-cover-previous">...</ul>
+            <button type="button" id="nfs-submenu-toggle-a1-1" aria-expanded="false" aria-controls="nfs-submenu-a1-1" jsaction="click:;">Wheels</button>
+            <ul id="nfs-submenu-a1-1" aria-labelledby="nfs-submenu-toggle-a1-1" inert="" class="menu vertical nested submenu is-drilldown-submenu invisible drilldown-submenu-cover-previous">...</ul>
           </li>
         </ul>
       </li>
       <li class="is-drilldown-submenu-parent has-submenu-toggle">
         <a href="/services">Services</a>
-        <button type="button" class="submenu-toggle" aria-expanded="false" aria-controls="nfs-submenu-a1-2" jsaction="click:;">
+        <button type="button" id="nfs-submenu-toggle-a1-2" class="submenu-toggle" aria-expanded="false" aria-controls="nfs-submenu-a1-2" jsaction="click:;">
           <span class="submenu-toggle-text">Services pages</span></button>
-        <ul id="nfs-submenu-a1-2" inert="" class="menu vertical nested submenu is-drilldown-submenu invisible drilldown-submenu-cover-previous">...</ul>
+        <ul id="nfs-submenu-a1-2" aria-labelledby="nfs-submenu-toggle-a1-2" inert="" class="menu vertical nested submenu is-drilldown-submenu invisible drilldown-submenu-cover-previous">...</ul>
       </li>
       <li><a href="/about">About</a></li>
     </ul>
@@ -468,6 +468,7 @@ Vitest browser mode under the Angular unit-test builder (`npx nx test <lib>`, Ch
 - `closeOnClick`: listeners exist only while a level is open and the input is on; `pointerdown` and `pointerup` outside collapse, and the `click` that follows is not `defaultPrevented`; down inside and up outside, down outside and up inside, and `pointerdown` followed by `pointercancel` do not collapse.
 - `scrollTop`: with a `window.scrollTo` spy, no call at the first render, for an open-at-first-paint path, or for a swap into or out of drilldown mode with a level open under a driving test root; one call per level change with Foundation's top plus offset formula; an element reference and a selector as `scrollTopElement`; a selector that matches nothing uses the root and warns; `behavior` follows a fake `NfsMediaQuery.reducedMotion`.
 - Reveal step: with a `scrollIntoView` spy, called with `{block: 'nearest', inline: 'nearest'}` on the focused control after an open and after a back completion (dispatched `transitionend` or the fallback with a fake timer), and not called when focus is outside the root.
+- Level entry timing: on a click on a toggle, the toggle's `focusout` carries the level's first control as `relatedTarget` (never `null`), and `document.activeElement` is that control in the first `requestAnimationFrame` callback after the click; the level's `aria-labelledby` resolves to the toggle's `id`, for the Hybrid level too.
 - Replay-safe handlers: a replay-shaped back `click` (`eventPhase` 101, throwing `preventDefault`) closes its level with nothing reaching `ErrorHandler`.
 - Development warnings: a submenu without a back item, a nameless back button, a back item without a button, `animateHeight` without `autoHeight`, an item expanded under a closed level; none for correct markup.
 
@@ -500,6 +501,8 @@ Against the prerendered fixture app, one route with a standalone drilldown and o
 - Hydration: no NG05xx and `ngDevMode.componentsSkippedHydration === 0`; after hydration the wrapper gains `min-height` and nothing else changes; at 1280 px the ResponsiveMenu route ends with the dropdown classes, bare wrapper, and hidden back items.
 - Pre-hydration click on a toggle with the main bundle held back: after hydration the level opens exactly once and focus is in it; a pre-hydration ArrowRight on a focused toggle replays with the one accepted error log; on a route with a level open at first paint, a pre-hydration click on its back button closes it once.
 - `@defer (hydrate on interaction)` around the `nav`: a toggle click hydrates and opens; `hydrate never`: root links navigate, toggles do nothing, no error.
+
+Release test (manual, before each release; [Resolve the assistive-technology checks](../issues/77-evidence-assistive-technology-checks.md)): Before each release, with NVDA and JAWS on Chrome and Firefox and VoiceOver on macOS, open and close a Drilldown level on `drilldown-menu--default` and `drilldown-menu--hybrid` by keyboard and by click: entering a level announces the level's name ('Products', or 'Services pages' for the Hybrid level) and its first control, reading the level with the virtual cursor (JAWS, VoiceOver) reaches the list's name, and going back announces the parent toggle as collapsed.
 
 ## Out of Scope
 
@@ -540,7 +543,8 @@ Against the prerendered fixture app, one route with a standalone drilldown and o
 | D20 | A row-height compile check beside the arrow and toggle checks | 2.5.8 is guaranteed by the Library mixin where settings can fail it (building-blocks 1.10) | Relying on the story gate (it sees only the library's settings) |
 | D21 | `autoApplyClass` dropped; `drilldown` bound from the mode | Required by Foundation's CSS and by ResponsiveMenu | An input that could leave the menu unstyled |
 | D22 | No `effect`, no `afterEveryRender`, no `injectAsync` | No non-DOM side effect; nothing loads after interaction | A lazily loaded measurement helper |
-| D23 | No ADR | Every decision here is local to the plugin and reversible, or follows an existing ADR | - |
+| D23 | Each Drilldown level is named after its parent toggle through `aria-labelledby`, in drilldown mode only; a Hybrid level by its toggle | Opening a level fires only a focus event: the toggle's expanded state never reaches assistive technology, because the render that opens the level hides the toggle, so the level's name is the one cue of which level the user entered; NVDA speaks a named list ancestor on focus entry. The name resolves only because hidden ancestor levels are `invisible` (D11): Chromium keeps text referenced through a `visibility: hidden` node and drops it from a rendered inert one (both measured by [Resolve the assistive-technology checks](../issues/77-evidence-assistive-technology-checks.md)); WebKit's reading of this reference is not measured, so the release test covers VoiceOver | Unnamed levels (the back button's suffix names the way back, but Tab skips it on entry); naming by the Hybrid item's link (a second naming rule) |
+| D24 | No ADR | Every decision here is local to the plugin and reversible, or follows an existing ADR | - |
 
 ### Usage examples
 

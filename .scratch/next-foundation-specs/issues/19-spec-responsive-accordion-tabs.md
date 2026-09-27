@@ -153,3 +153,13 @@ From the [Consistency review and bundle index](36-consistency-review.md); `specs
 #### Triage
 
 The two items under `### OPEN FOR HUMAN` above were re-rated under the map's triage rule: item 1 is a screen-reader check of a Mode swap and item 2 the inherited upstream filings in angular/components, both human-only by kind, so both stay open. No trap-quadrant item remains.
+
+### Amendment, 2026-09-27 (Resolve the assistive-technology checks)
+
+From [Resolve the assistive-technology checks](77-evidence-assistive-technology-checks.md), check 3: the spec is correct; `specs/responsive-accordion-tabs.md` was edited to match. No decision changes.
+
+- OPEN FOR HUMAN item 1 (screen-reader behaviour of a Mode swap) is closed, and its default (no announcement) stands: every Mode swap fires exactly one focus event, on the equivalent control, whose ancestor chain holds the new container, with no focus on the document, the host, or `body` in between (four swaps, three runs, Chromium and Firefox). NVDA speaks every newly entered presentable ancestor on such a focus, so the user hears the tab list's name or the section's heading before the control and its state; a live region would announce twice.
+- Spec edits: the ARIA and keyboard bullet on swaps now says the moved focus is the announcement, with that evidence; Testing Decisions ends with a manual release test (NVDA on Firefox, JAWS on Chrome, VoiceOver on iOS), including a JAWS step that its virtual cursor follows the replaced subtree; the Out of Scope bullet on screen-reader verification now reads "Automated screen-reader output", covered by that release test.
+- Item 2 (the inherited upstream filings) is not touched here.
+
+Triage, from the decision ticket: impact limited to one ARIA sentence and Testing Decisions, confidence HIGH. Decided; nothing new is open.

@@ -330,7 +330,7 @@ Focus rules:
 
 - A Mode swap moves focus only when focus was inside the widget, to the equivalent control of the new mode: title to tab and tab to title for the same `value`; focus anywhere inside a section's content or on a tab panel goes to that section's control. Focus outside the widget is never moved. The first-render swap follows the same rule (a server-rendered title can hold focus before hydration).
 - Nothing else in the component moves focus: selection by click, model write, or deep link never focuses; the Accordion's own rule (a section closing around focus hands it to its title) and Aria's arrow-key navigation still apply.
-- Swaps are not announced through a live region (Breakpoint service consumer rule 4: layout changes, not content). Whether a screen reader user notices the moved focus as a usable change is an assistive-technology check (ticket, OPEN FOR HUMAN).
+- Swaps are not announced through a live region (Breakpoint service consumer rule 4: layout changes, not content). The moved focus is the announcement: each swap fires one focus event on the equivalent control, whose new container a screen reader speaks as a newly entered ancestor (measured in Chromium and Firefox, NVDA's source; [Resolve the assistive-technology checks](../issues/77-evidence-assistive-technology-checks.md)).
 
 ### WCAG 2.2 AA criteria
 
@@ -544,6 +544,8 @@ Fixture half, one `responsive-accordion-tabs` route (the harness from the render
 - `@defer (hydrate on viewport)`: the block hydrates as sent when scrolled into view (development statistics: every component hydrated, 0 skipped), then swaps; focus placed on a dehydrated title is carried to the equivalent tab.
 - `@defer (hydrate never)`: the accordion stays as sent; a title click changes nothing and logs nothing.
 
+Release test (manual, before each release; [Resolve the assistive-technology checks](../issues/77-evidence-assistive-technology-checks.md)): Before each release, with NVDA on Firefox, JAWS on Chrome, and VoiceOver on iOS, put focus on the open title of `responsive-accordion-tabs--mode-swap`, cross the medium breakpoint (resize, or rotate the phone), and confirm the tab list's name and the equivalent selected tab are announced and, with JAWS, that the next Down Arrow reads from that tab and not from the removed accordion; then cross back and confirm the section's heading and title are announced with 'expanded'.
+
 ## Out of Scope
 
 - `multiExpand` and several open sections (Design decisions D5); the accordion mode is single-expand.
@@ -556,7 +558,7 @@ Fixture half, one `responsive-accordion-tabs` route (the harness from the render
 - Completion outputs (`opened`/`closed` after the height transition).
 - Container queries as the switch (ADR 0005: Foundation's rules are viewport breakpoints).
 - A live-region announcement of a swap (Breakpoint service consumer rule 4).
-- Screen-reader verification of a swap beyond the axe gate and the role and focus assertions (human-only in the ticket).
+- Automated screen-reader output: the manual release test under Testing Decisions covers it ([Resolve the assistive-technology checks](../issues/77-evidence-assistive-technology-checks.md)).
 
 ## Further Notes
 

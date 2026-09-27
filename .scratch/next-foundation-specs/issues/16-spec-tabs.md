@@ -156,3 +156,13 @@ The [Decide the `@angular/aria` fallback confirmation](75-evidence-aria-fallback
 3. Aria composition bullet: the binding rule gains its third clause (a wrapper binding also holds when it changes in every pass in which Aria's does, which a binding computed from the same public Aria signal guarantees; the Orbit slide's `inert`), now credited to [ADR 0037](../adr/0037-orbit-slide-hosts-tab-panel.md), superseding ADR 0034, and the decision ticket; the sentence "An override that must differ from an Aria value that can still change is not a binding." is deleted. D10 cites "the binding rule (ADR 0037)". `NfsTab`'s `tabindex` override is unchanged and still holds.
 
 Triage, from the decision ticket: impact MEDIUM (a rationale and a phrase), confidence HIGH (the Aria prototype's cases 9 and 11 and probe E). Decided; nothing open.
+
+### Amendment, 2026-09-27 (Resolve the assistive-technology checks)
+
+From [Resolve the assistive-technology checks](77-evidence-assistive-technology-checks.md), check 2: the spec is correct; `specs/tabs.md` was edited to match. No decision changes.
+
+- OPEN FOR HUMAN item 2 (the screen-reader check of `a[role="tab"]` without `href`, the tab list name, and the panel names) is closed: in Chromium and Firefox, three runs, the anchor host is a page tab (UI Automation `TabItem`) with its name, selected state, selection events, and position, never a link; the tab list's name "Product details" is the ancestor of every tab focus; each shown panel is a named property page and hidden panels are absent. HTML-AAM maps `a` without `href` to `generic`, so `role="tab"` overrides no link role.
+- Spec edits: Testing Decisions ends with a manual release test (NVDA on Firefox, JAWS on Chrome, VoiceOver on Safari). JAWS joins because published data for anchor tabs is thin and JAWS is the reader most likely to treat `a` specially; a step that fails is repeated on the APG "Tabs with Manual Activation" example with the same screen reader and browser, and counts as a library defect only when the example passes.
+- Item 1 (the upstream filing) is not touched here.
+
+Triage, from the decision ticket: impact limited to Testing Decisions, confidence HIGH. Decided; nothing new is open.

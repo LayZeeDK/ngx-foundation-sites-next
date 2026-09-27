@@ -254,3 +254,14 @@ The [Decide the `@angular/aria` fallback confirmation](75-evidence-aria-fallback
 #### Triage
 
 From the decision ticket's Triage: fallback 1 (overruled) is impact HIGH, confidence HIGH, measured in the server renderer and end to end in three engines; the residual risk (Angular's `bindingUpdated` telling `null` from `undefined`, Aria's `inert` staying a function of `visible()`, and the synchronous link) is guarded by the two SSR fixtures, the live-gate test, and the initial-position and handoff tests. Fallback 2 is impact LOW, confidence HIGH. Nothing new is open here.
+
+### Amendment, 2026-09-27 (Resolve the assistive-technology checks)
+
+From [Resolve the assistive-technology checks](77-evidence-assistive-technology-checks.md), check 12: the spec is correct, and D22 is confirmed; `specs/orbit.md` was edited to match. No decision changes.
+
+- OPEN FOR HUMAN item 2 (screen-reader verification, as the [Re-run: Orbit spec, the slide's ARIA contract and the focus handoff](70-rerun-orbit-slide-contract-and-focus-handoff.md) extended it to the focus handoff) is closed: the "carousel" and "slide" role descriptions are exposed (IA2 `roledescription` in both engines, the UI Automation localized control type in Chromium); without "slide" NVDA names each slide "property page", so D22's "slide" reads better (decision 59); text inserted into the container is ignored while `aria-live="off"` and reported while `polite`; `inert` slides are absent from both trees; the handoff fires one focus event on the new slide with its name and role description and never on `body`, and NVDA's focus speech carries no slide content (it reports text content only for objects with navigable text), so the content is announced once, from the live region.
+- A touch tap on Next during rotation is not announced and does not stop rotation: that is the APG's model, which gives users whose assistive technology moves neither keyboard focus nor the mouse the rotation control, first in the carousel; user story 22 holds. VoiceOver on iOS and TalkBack do not convey role descriptions (they say "tab panel"), and Narrator with Firefox ignores them.
+- Spec edits: D22's Rationale; Testing Decisions ends with a manual release test (NVDA and JAWS on Chrome and Firefox, VoiceOver on macOS and iOS, TalkBack on Chrome), including a step that swipe navigation reaches the Rotation control first; the Out of Scope bullet on screen-reader verification now reads "Automated screen-reader output", covered by that release test.
+- Item 1 (the upstream filing) is not touched here.
+
+Triage, from the decision ticket: impact limited to one rationale and Testing Decisions, confidence HIGH. Decided; nothing new is open.

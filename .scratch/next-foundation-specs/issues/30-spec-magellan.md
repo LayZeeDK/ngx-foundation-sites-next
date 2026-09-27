@@ -218,3 +218,13 @@ From the [Decide: `#`-only links that `<base href>` resolves to another document
 4. Router example: the link binds `path() + '#requirements'`, and `InstallGuide` keeps `path` as a signal updated from `Location.onUrlChange` (unsubscribed through `DestroyRef`), the same body as the Smooth Scroll spec's Router example, because a path read once goes stale when the Router reuses the component.
 
 Ticket edits: the Triage row "`#`-only hrefs under `<base href>`" now records the outcome DECIDED (not in-page), and the consistency-review triage sentence on the inherited `<base href>` item now says it is decided by that panel (Smooth Scroll D9).
+
+### Amendment, 2026-09-27 (Resolve the assistive-technology checks)
+
+From [Resolve the assistive-technology checks](77-evidence-assistive-technology-checks.md), check 13: the markup and behaviour are correct; one wording defect, fixed. `specs/magellan.md` was edited to match. No decision changes.
+
+- OPEN FOR HUMAN item 1 (how NVDA, JAWS, and VoiceOver read a moving `aria-current`) is closed: `aria-current="true"` maps to IA2 `current:true` and UI Automation `current=true` (measured); moving it during scrolling fires only attribute changes (and, in Firefox, state changes) on links without focus, which NVDA does not speak (it reports `aria-current` changes only for the focus object); `true` is read "current" by JAWS, NVDA, VoiceOver, and TalkBack (a11ysupport.io). `location` stays a non-default token (D12).
+- The wording defect: the ARIA table's "Announcements: None" row was false for a focused link. When a keyboard user has tabbed to a Magellan link without activating it and the page then scrolls by other means, NVDA says "current" as that link's section becomes current, and VoiceOver on iOS "current page" (a11ysupport.io change test); that is informative and expected.
+- Spec edits: the ARIA table's Announcements row and its Source cell; Testing Decisions ends with a manual release test (NVDA and JAWS on Chrome and Firefox, VoiceOver on macOS and iOS).
+
+Triage, from the decision ticket: impact LOW (one sentence), confidence HIGH. Decided; nothing new is open.

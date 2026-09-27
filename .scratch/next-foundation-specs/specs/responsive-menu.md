@@ -505,6 +505,8 @@ Against the prerendered fixture app, route `/responsive-menu` with the Rendered 
 - `@defer (hydrate never)`: the root keeps `drilldown`, links navigate, toggles do nothing, and no error is logged.
 - Client-hint route: at 1280 px the server HTML carries `dropdown` and hydration swaps nothing; at 500 px it swaps to `drilldown`.
 
+Release test (manual, before each release; [Resolve the assistive-technology checks](../issues/77-evidence-assistive-technology-checks.md)): Before each release, with NVDA on Firefox and on Chrome, JAWS on Chrome, and VoiceOver on Safari, open Products in `responsive-menu--mode-swap` at the Zero breakpoint, move focus to Boards, cross the medium breakpoint both ways, and confirm focus stays on Boards (NVDA with Firefox may re-read 'Boards, link', and on entering drilldown the level's name 'Products'), that nothing else is announced, that with JAWS the next Down Arrow reads the item after Boards, and that with focus on the open Products toggle entering drilldown announces 'collapsed'.
+
 ## Out of Scope
 
 - The item, submenu, and toggle directives, the class maps, key tables, completion, the swap rule's mechanics, and the focus-loss guard: the [Spec: Nested menu (shared utility)](../issues/56-spec-nested-menu.md), which carries the swap commit this spec relies on (ADR 0035).
@@ -517,7 +519,7 @@ Against the prerendered fixture app, route `/responsive-menu` with the Rendered 
 - Foundation's no-plugin state below the first rule, `data-mutate`, and any generated DOM.
 - Mega menus and arbitrary content inside submenus beyond links, back items, and nested lists.
 - Runtime theming through custom properties.
-- A screen-reader verification of a swap beyond the Accessibility gate and the role and focus assertions (human-only in the ticket).
+- Automated screen-reader output: the manual release test under Testing Decisions covers it ([Resolve the assistive-technology checks](../issues/77-evidence-assistive-technology-checks.md)).
 
 ## Further Notes
 

@@ -35,7 +35,7 @@ Validation itself is Signal Forms: `required()`, `pattern()`, `email()`, `valida
 11. As an application developer, I want a form-level alert that appears while a submitted form is invalid and disappears when it is valid, so that users know the submit failed.
 12. As an application developer, I want several messages per field, each shown only for its error kind (`required`, `pattern`, `equalTo`, my own), so that the message says exactly what to fix.
 13. As an application developer, I want to place a Form error away from its field (input groups), so that Foundation's `data-form-error-for` layout still works.
-14. As an application developer, I want the wrapping-label markup to link label, field, and errors with no references, so that Foundation's default markup needs only attributes.
+14. As an application developer, I want the wrapping-label markup to link label and field with no references, and Form errors placed after the label to link by a typed template reference, so that an error never becomes part of the field's name.
 15. As an application developer, I want the `label[for]` markup to link through typed template references, so that the compiler catches a wrong link.
 16. As an application developer, I want Foundation's seventeen named patterns as exported regular expressions, so that I do not copy regexes by hand.
 17. As an application developer, I want those patterns to be valid under the `v` flag, so that I can also reuse their source in an HTML `pattern` attribute.
@@ -130,7 +130,7 @@ form[nfsAbide]                       provides nfsAbideToken; policy, submitted, 
 ```
 
 - `nfsAbideToken` (`InjectionToken<NfsAbide>`, lightweight, `import type`), provided by `NfsAbide` with `useExisting`. `NfsAbideInput` injects it `{optional: true}`: a field outside an `nfsAbide` form still works with the Defaults token policy and never counts as submitted. `NfsAbideAlert` injects it without `optional`: an alert outside a form is an error (NG0201).
-- `nfsAbideLabelToken`, provided by `NfsAbideLabel`. An input inside the label registers itself (`inject(nfsAbideLabelToken, {optional: true, skipSelf: true})`); a bare `nfsFormError` inside the label resolves its field through it.
+- `nfsAbideLabelToken`, provided by `NfsAbideLabel`. An input inside the label registers itself (`inject(nfsAbideLabelToken, {optional: true, skipSelf: true})`); a bare `nfsFormError` inside the label resolves its field through it. That form is for custom `FormValueControl` hosts only; a native control's Form error goes after the label with a reference (the development check).
 - Links that DI cannot express (a `label[for]` beside the input, an error away from the field) are typed template references: `[nfsAbideLabel]="pw"` and `[nfsFormError]="pw"` with `#pw="nfsAbideInput"`, the same target rule as Triggers (ADR 0013). The bare attribute (`nfsFormError` with no value) means "the field of the enclosing `nfsAbideLabel`".
 - Custom controls: a component implementing `FormValueControl` applies `NfsAbideInput` through `hostDirectives` and links to its label and Form error through the wrapping label (DI): `<label nfsAbideLabel>Rate your interest <app-star-rating [formField]="f.rating" /><span nfsFormError>Pick at least one star.</span></label>`, where the component declares `hostDirectives: [{directive: NfsAbideInput, inputs: ['aria-describedby']}]` on the element `[formField]` binds. It cannot use a typed template reference: a reference such as `#rating="nfsAbideInput"` to a directive applied through `hostDirectives` crashes the Angular compiler with an internal error that names no file or line (`Error: Could not resolve [object Object] / [object Object]`, thrown at `Scope.resolve` from `TcbReferenceOp.execute`, while `ng build` reports only "Angular compilation diagnostics failed."), measured by the [Prototype: Abide control kinds, value adoption, and the ready gate](../issues/66-prototype-abide-controls-and-ready.md). Linking through the wrapping label compiles and behaves identically.
 - Groups: a radio group (every radio bound to one path) or a checkbox group whose boxes share one `validate()` rule (the `data-min-required` recipe) has one Form error for the group, and it links to any one control of the group, by its wrapping label or a reference to that control: every control bound to the same path has identical field state, and the shared rule makes every box of the checkbox group invalid together (the [Prototype: Abide control kinds, value adoption, and the ready gate](../issues/66-prototype-abide-controls-and-ready.md), under both form APIs).
@@ -230,7 +230,7 @@ Host: `[class.is-invalid-label]` = the resolved field's `errorState()`. Dev mode
 | `id` | `input()` | `string`, default generated `nfs-form-error-<n>` | | Consumer `id` wins |
 | `visible` | `Signal<boolean>` | read-only | | `field.errorState() && (formErrorOn is null or intersects field.status().kinds)` |
 
-Host: static `class="form-error"` (merged with the consumer's classes), `[id]`, `[class.is-visible]` = `visible()`, `[attr.role]` = the static `role` attribute when the consumer wrote one (read through `HostAttributeToken('role')`), else `'alert'`. Dev mode: warns once when no field resolves, and the field warns once when it enters its error state with no visible Form error (WCAG 3.3.1 and 1.4.1 need visible text).
+Host: static `class="form-error"` (merged with the consumer's classes), `[id]`, `[class.is-visible]` = `visible()`, `[attr.role]` = the static `role` attribute when the consumer wrote one (read through `HostAttributeToken('role')`), else `'alert'`. Dev mode: warns once when no field resolves, warns once when it is a descendant of a `label` and its field is a native control (Firefox then reads the error as part of the field's name and Chromium fires no alert event for it; place it after the label and link it by reference), and the field warns once when it enters its error state with no visible Form error (WCAG 3.3.1 and 1.4.1 need visible text).
 
 `NfsAbideAlert`, selector `[nfsAbideAlert]`: no inputs. Host: `[hidden]` while not (`submitted() && invalid()`), `[attr.role]` from the form's `a11yErrorLevel` unless the consumer wrote a static `role`.
 
@@ -352,10 +352,10 @@ Consumer markup (Signal Forms, wrapping label for email, `label[for]` for the pa
 
   <label nfsAbideLabel>
     Email (required)
-    <input type="email" autocomplete="email" nfsAbideInput [formField]="f.email" aria-describedby="email-hint" />
-    <span nfsFormError formErrorOn="required">Enter your email address.</span>
-    <span nfsFormError formErrorOn="email">Enter a complete email address, with an @ and a domain.</span>
+    <input type="email" autocomplete="email" nfsAbideInput #email="nfsAbideInput" [formField]="f.email" aria-describedby="email-hint" />
   </label>
+  <span [nfsFormError]="email" formErrorOn="required">Enter your email address.</span>
+  <span [nfsFormError]="email" formErrorOn="email">Enter a complete email address, with an @ and a domain.</span>
   <p class="help-text" id="email-hint">We never share it.</p>
 
   <div>
@@ -384,9 +384,9 @@ Server HTML (pristine; SSR and prerendering; ids shown generated):
     Email (required)
     <input type="email" autocomplete="email" nfsabideinput="" name="ng.form0.email" required=""
            aria-describedby="email-hint" jsaction="change:;input:;blur:;">
-    <span nfsformerror="" formerroron="required" class="form-error" id="nfs-form-error-a1b0" role="alert">Enter your email address.</span>
-    <span nfsformerror="" formerroron="email" class="form-error" id="nfs-form-error-a1b1" role="alert">Enter a complete email address, with an @ and a domain.</span>
   </label>
+  <span formerroron="required" class="form-error" id="nfs-form-error-a1b0" role="alert">Enter your email address.</span>
+  <span formerroron="email" class="form-error" id="nfs-form-error-a1b1" role="alert">Enter a complete email address, with an @ and a domain.</span>
   ...
   <button type="submit" class="success button" disabled="">Sign up</button>
 </form>
@@ -402,9 +402,9 @@ Hydrated, after the user left the email empty with a committed change and submit
   Email (required)
   <input type="email" ... class="is-invalid-input" aria-invalid="true"
          aria-describedby="email-hint nfs-form-error-b7c0">
-  <span ... class="form-error is-visible" id="nfs-form-error-b7c0" role="alert">Enter your email address.</span>
-  <span ... class="form-error" id="nfs-form-error-b7c1" role="alert">Enter a complete email address, with an @ and a domain.</span>
 </label>
+<span ... class="form-error is-visible" id="nfs-form-error-b7c0" role="alert">Enter your email address.</span>
+<span ... class="form-error" id="nfs-form-error-b7c1" role="alert">Enter a complete email address, with an @ and a domain.</span>
 <button type="submit" class="success button">Sign up</button>
 ```
 
@@ -457,12 +457,13 @@ Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test 
 - `abide--polite-alert`: `a11yErrorLevel="polite"` renders `role="status"` on the alert.
 - `abide--reactive-forms`: the same markup on `FormGroup`/`formControlName` with `updateOn: 'blur'` gives the same classes, ARIA, and alert.
 - `abide--invalid-state-contrast`: submits a form with four fields in error and asserts from computed styles (axe checks neither placeholders nor borders), floored to two decimals: Form error text and invalid label at least 4.5:1, invalid placeholder on the invalid tint at least 4.5:1, resting placeholder at least 4.5:1, resting border at least 3:1 against the page, invalid border at least 3:1 against the page and the tint; plus `role="alert"` on every visible Form error (4.1.3) and `toHaveAccessibleDescription` per field (3.3.1).
+- `abide--default`, `abide--submit`, `abide--checkbox`, and `abide--reactive-forms` assert that no visible Form error of a native control is a descendant of its `label`; `abide--checkbox` and `abide--reactive-forms` use the after-label markup.
 
 ### 2. Browser-level test (Vitest browser mode, `npx nx test <lib>`)
 
 Vitest browser mode under the Angular unit-test builder (`npx nx test <lib>`, Chromium headless): TestBed specs in `<name>.spec.ts` next to the directive, over a bare test host component, zoneless with `await fixture.whenStable()`, asserting DOM and ARIA state; no story is mounted here and no axe runs here.
 
-- Linking: bare `nfsFormError` inside `nfsAbideLabel` resolves the nested field; references resolve across the template; an unresolved label or error warns once in dev mode; a field in error with no visible Form error warns once.
+- Linking: bare `nfsFormError` inside `nfsAbideLabel` resolves the nested field; references resolve across the template; an unresolved label or error warns once in dev mode; a field in error with no visible Form error warns once; the in-label development warning fires once for a native control's Form error inside its label, and not for a custom `FormValueControl` or an after-label error.
 - Control kinds (the [Prototype: Abide control kinds, value adoption, and the ready gate](../issues/66-prototype-abide-controls-and-ready.md) cases, under Signal Forms and Reactive Forms): a custom `FormValueControl` test component that applies `NfsAbideInput` through `hostDirectives`, inside a wrapping `nfsAbideLabel` with a bare `nfsFormError`, gets `.is-invalid-label` on the label, the error in its `aria-describedby`, and `.is-visible` on the error after an invalid submit, with no template reference in the fixture; a radio group's single Form error linked to one radio, and a checkbox group's single Form error linked to one box under a shared minimum-count rule, show after an invalid submit and hide once the group is valid; `select` and `textarea` hosts get the same classes and ARIA as text inputs.
 - `aria-describedby` composition: static and bound consumer ids first, visible error ids after, hidden ones never, `null` when empty; a consumer `id` on a Form error is used as written.
 - `aria-invalid` is never rendered on `input[type=radio]`, and is rendered on text, checkbox, and `select` hosts.
@@ -497,6 +498,8 @@ Against the prerendered fixture app (the harness from the rendering-mode test se
 - Pre-hydration submit: with the bundle held back, click the submit control and press Enter in a field: the URL is unchanged, it has no query string, and no navigation happened.
 - `@defer (hydrate on interaction)` route variant: the first keystroke in a field hydrates the block, the character is kept, and later validation works. Typing a whole value on through the hydrating keystroke is the documented limit under Rendering modes and is not asserted, because the dropped character depends on the engine and did not occur in every run.
 
+Release test (manual, before each release; [Resolve the assistive-technology checks](../issues/77-evidence-assistive-technology-checks.md)): Before each release, with NVDA and JAWS on Chrome and Firefox and VoiceOver on macOS and iOS, on `abide--submit`, `abide--validate-on-blur`, and `abide--checkbox`: a failed submit announces the Form alert and each Form error once, in DOM order, without an error cutting off the one before it (with NVDA on Chrome, each error once although Chromium reports it both as an alert and as a live-region insertion); leaving an empty required field announces its error and the next field, the error interrupting the field's announcement and the field then resuming; focusing an invalid field announces its label, invalid state, and error once, with no error text in the name (Firefox included); on VoiceOver, the error is read as the field's description.
+
 ## Out of Scope
 
 - A form-field component (Material's `mat-form-field` shape), floating labels, and prefix or suffix slots.
@@ -516,11 +519,11 @@ Against the prerendered fixture app (the harness from the rendering-mode test se
 | --- | --- | --- | --- |
 | D1 | Signal Forms owns validity; the directives only map state to Foundation's contract | ADR 0006; one source of truth | Porting Abide's engine |
 | D2 | Five directives, label and Form error and alert explicit (ADR 0026) | Host bindings for every class and ARIA value (building-blocks 1.5); the alert's `hidden` is first-paint state and must be a server-rendered binding (1.11 decision 1); no flat-markup trap; typed links; `a11yAttributes` rendered on the server | The prototype's DOM lookup (proven, two directives, but consumer-written `hidden`, client-only roles, `Renderer2` writes on foreign elements, and Abide's sibling trap); it stays the fallback |
-| D3 | Links by enclosing label (DI) or typed template reference | Foundation's wrapping-label markup needs no references; everything else is compile-checked (ADR 0013 shape); a custom `FormValueControl` links only through its wrapping label, because a typed reference to a directive applied through `hostDirectives` crashes the compiler | `data-form-error-for` id strings; a field-group container directive |
+| D3 | Links by enclosing label (DI) or typed template reference | A wrapping label links its field with no reference; a native control's Form error goes after the label with a reference, because inside the label Firefox makes it part of the field's name and Chromium fires no alert event for it ([Resolve the assistive-technology checks](../issues/77-evidence-assistive-technology-checks.md)); everything else is compile-checked (ADR 0013 shape); a custom `FormValueControl` links only through its wrapping label, because a typed reference to a directive applied through `hostDirectives` crashes the compiler | `data-form-error-for` id strings; a field-group container directive |
 | D4 | One pure Error-state policy with a `changed` signal from native `change` | Prototype: `dirty && touched` misfires; Material's matcher shape; testable as a truth table | Per-input booleans; `dirty && touched` |
 | D5 | Policy options on the form plus `nfsAbideDefaultsToken`; no per-input matcher | Foundation's options are form-level; building-blocks 1.4 defaults tokens | Material's `errorStateMatcher` input |
 | D6 | `aria-invalid="true"` whenever the error shows; never on radios | Abide's contract; the policy already avoids the pristine case Material guards; WAI-ARIA applicability | Material's `null` while empty and required |
-| D7 | `role="alert"` on Form errors, alert role from `a11yErrorLevel` | 4.1.3 and ARIA19; Abide's `a11yAttributes` default; Foundation markup has no persistent live container | Material's polite subscript container (needs a wrapper element Foundation lacks); screen-reader verification is OPEN FOR HUMAN |
+| D7 | `role="alert"` on Form errors, alert role from `a11yErrorLevel` | 4.1.3 and ARIA19; Abide's `a11yAttributes` default; Foundation markup has no persistent live container | Material's polite subscript container (needs a wrapper element Foundation lacks); screen-reader behaviour decided from the platform events and NVDA's source, confirmed by the release test |
 | D8 | `(keydown.enter)` flush on `input` hosts | Prototype: `submit()` flushes only the root; a form-level flush depends on import order | Flush in the form's `(submit)` listener |
 | D9 | Adopt values typed before hydration | 3.3.7; public API only; no-op in client rendering; consistent with Slider's adoption of a pre-hydration value | Documenting the loss |
 | D10 | Submit disabled until `ready()` as the documented default for server-rendered forms (ADR 0027) | Stops the GET leak (passwords in URLs, CWE-598) and the 3.3.7 loss; natively enforced before hydration; the lost no-JS submission posts nowhere useful in a Signal Forms app | Library-bound `method="post"` (changes consumer semantics, fails on static hosts); accepting and documenting the leak; `disabledInteractive` (one-field implicit submission) |
@@ -554,10 +557,10 @@ import { NfsButton } from 'ngx-foundation-sites/button';
       <span [nfsFormError]="zip" formErrorOn="pattern">Use four digits, for example 2100.</span>
     </div>
     <label nfsAbideLabel>
-      <input type="checkbox" nfsAbideInput [formField]="f.terms" />
+      <input type="checkbox" nfsAbideInput #terms="nfsAbideInput" [formField]="f.terms" />
       I accept the terms (required)
-      <span nfsFormError>Accept the terms to continue.</span>
-    </label>`,
+    </label>
+    <span [nfsFormError]="terms">Accept the terms to continue.</span>`,
 })
 export class Signup {
   protected readonly model = signal({ email: '', password: '', confirm: '', zip: '', terms: false });
@@ -620,10 +623,10 @@ Reactive Forms (courtesy):
       <div nfsAbideAlert class="alert callout"><p>There are some errors in your form.</p></div>
       <label nfsAbideLabel>
         Email (required)
-        <input type="email" autocomplete="email" required formControlName="email" nfsAbideInput />
-        <span nfsFormError formErrorOn="required">Enter your email address.</span>
-        <span nfsFormError formErrorOn="email">Enter a complete email address, with an @ and a domain.</span>
+        <input type="email" autocomplete="email" required formControlName="email" nfsAbideInput #email="nfsAbideInput" />
       </label>
+      <span [nfsFormError]="email" formErrorOn="required">Enter your email address.</span>
+      <span [nfsFormError]="email" formErrorOn="email">Enter a complete email address, with an @ and a domain.</span>
       <button nfsButton type="submit">Save</button>
     </form>`,
 })
@@ -679,3 +682,4 @@ A consumer with a different palette or background picks any colour with 4.5:1 on
 - The alert staying visible until the next submit: it now hides as soon as the form is valid (D16).
 - `aria-live` on the global error element from `a11yErrorLevel` (Foundation wrote `aria-live="assertive"`, `"polite"`, or `"off"` when the element had none): the Form alert gets a role instead, `role="alert"`, `role="status"`, or none, which carry the same live-region politeness (D7; added 2026-09-26, audit 0005 L7).
 - The implicit pattern from the `type` attribute: dropped (Foundation contract table).
+- `.form-error` inside the label, as Foundation's docs write it: for a native control the Form error goes after the label with `[nfsFormError]="ref"`, and the in-label form warns in development mode. This gives up user story 14's reference-free errors for native controls, a migration step for every docs-shaped form.

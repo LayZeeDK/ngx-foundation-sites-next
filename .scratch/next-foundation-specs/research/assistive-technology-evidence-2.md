@@ -161,6 +161,8 @@ The expanded state is exposed on parent buttons and Hybrid toggles and changes a
 
 Testing Decisions line (layer 4, release test, manual): "Before each release, with VoiceOver on iOS and TalkBack, double tap a parent button and a Hybrid toggle on `dropdown-menu--default` and `dropdown-menu--hybrid`: each double tap toggles the submenu once, the new state is announced, and swiping on from the button reaches the submenu's first item; with VoiceOver on macOS and NVDA with Chrome, hovering a parent with focus elsewhere produces no speech. The automated layers assert the attributes (`aria-expanded`, `inert`) and DOM order, not Playwright role queries, which do not treat `inert` as hidden."
 
+Correction (2026-09-27, from [Resolve the assistive-technology checks](../issues/77-evidence-assistive-technology-checks.md)): the WebKit touch sentence under Measured exposure, and the verdict's "(Chromium and WebKit source)" for WebKit, are wrong. Pointer events are in WebKit's `TouchRelated` event category (`EventNames.json`), so the item's `pointerenter` and `pointerleave` listeners make `hasTouchEventListener()` true (it walks ancestors, `AccessibilityObjectIOS.mm`), and `press()` then dispatches touch events and returns before `dispatchSimulatedClick` when that succeeds (`AccessibilityObject.cpp`). Whether that yields exactly one click on iOS is closed source; the Dropdown Menu's release test is the gate. The statement that a hover opening produces no event "any screen reader is designed to speak" is measured and source-backed for NVDA only; for other screen readers it is an inference.
+
 ---
 
 ## Check 9: Drilldown Menu
@@ -241,6 +243,8 @@ Exact fix:
 3. Testing Decisions (layer 2): "Each submenu in drilldown mode has `aria-labelledby` resolving to its parent toggle, and none in accordion or dropdown mode." Layer 2 also: "Opening a level moves focus in the same task as the render that lifts `inert`: no `focusout` with a `null` `relatedTarget` occurs on the toggle" (the `?timing=frames` measurement shows the landmark or document receiving focus otherwise).
 
 Testing Decisions line (layer 4, release test, manual): "Before each release, with NVDA and JAWS on Chrome and Firefox and VoiceOver on macOS, open and close a Drilldown level on `drilldown-menu--default` by keyboard and by click: entering a level is announced with the level's name and its first control, and going back announces the parent toggle as collapsed."
+
+Correction (2026-09-27, from [Resolve the assistive-technology checks](../issues/77-evidence-assistive-technology-checks.md)): the Hybrid level is named by its toggle, whose name is its `.submenu-toggle-text` ("Services pages"), one rule for every level; the `?named=1` variant's reference from the Hybrid level to the link "Services" is not the decided markup.
 
 ---
 
@@ -507,6 +511,8 @@ Two limits the judge may note without a spec change: Firefox's UIA ignores the r
 
 Testing Decisions line (layer 4, release test, manual): "Before each release, with NVDA and JAWS on Chrome and Firefox, VoiceOver on macOS and iOS, and TalkBack, on `orbit--autoplay` and `orbit--default`: while rotating, slide changes produce no speech; after the Rotation control stops rotation, Next and the bullets announce the new slide's content; the carousel is announced with its label and "carousel", a focused slide with its name and "slide"; ArrowRight on a focused slide moves focus to the new slide and announces it; slides out of view are never read. The automated layers assert the `inert` attribute and `aria-live` value, not Playwright role queries, which include `inert` slides."
 
+Correction (2026-09-27, from [Resolve the assistive-technology checks](../issues/77-evidence-assistive-technology-checks.md)): the handoff's focus speech carries no slide content. NVDA reports an object's text content in focus speech only for objects with navigable text, which a tab panel or property page is not (`speech/speech.py`, `getObjectSpeech`, and `NVDAObjects/__init__.py`, `_get__hasNavigableText`, at `release-2026.2`), so focus speech is the slide's name and "slide", and the content is announced once, from the live region.
+
 ---
 
 ## Check 13: Magellan
@@ -573,6 +579,8 @@ No focus, alert, live-region, name, or description event is fired by a move in e
 The Current section's link exposes `aria-current="true"` in every platform API (measured) and is read "current" by JAWS, NVDA, VoiceOver, and TalkBack (a11ysupport.io; NVDA source); moving the marker during scrolling fires only attribute and state changes on links without focus (measured), which NVDA does not speak (source) and which JAWS, TalkBack, and VoiceOver on macOS do not announce even for the focused link (a11ysupport.io 2023). `location` would read "current location"; the spec's configurable token covers it and `true` stays the default.
 
 Testing Decisions line (layer 4, release test, manual): "Before each release, with NVDA and JAWS on Chrome and Firefox and VoiceOver on macOS and iOS, on `magellan--menu`: reading the page and scrolling through the sections produces no speech from the navigation; tabbing to the Current section's link reads it as current, and the other links without it."
+
+Correction (2026-09-27, from [Resolve the assistive-technology checks](../issues/77-evidence-assistive-technology-checks.md)): the verdict summary, here and in the table at the top, omits that the change is announced on a focused link: when the link that holds focus gains `aria-current`, NVDA 2023.1 says "current page" and VoiceOver iOS 16.4 "current page link" (a11ysupport.io change test), and NVDA's source speaks it for the focus object (the fourth bullet under What NVDA does). A keyboard user who tabs to a Magellan link and then scrolls by wheel or scrollbar hears "current" when that section becomes current; the Magellan spec's ARIA table now says so.
 
 ---
 

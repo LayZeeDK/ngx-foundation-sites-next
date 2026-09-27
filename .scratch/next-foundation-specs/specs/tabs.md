@@ -495,6 +495,8 @@ Fixture half: the same runner against the prerendered Nx fixture app (developmen
 - `@defer (hydrate on interaction)`: the first click on a tab loads the chunk, hydrates, and selects.
 - `@defer (hydrate never)`: the selected panel is readable, clicks change nothing, no error is logged.
 
+Release test (manual, before each release; [Resolve the assistive-technology checks](../issues/77-evidence-assistive-technology-checks.md)): Before each release, with NVDA on Firefox, JAWS on Chrome, and VoiceOver on Safari, Tab into `tabs--default` and confirm the tab list's name and the selected tab with its position are spoken, press Right Arrow and confirm the newly selected tab is announced as selected, then Tab and confirm the panel is announced with the tab's name. A step that fails is repeated on the APG 'Tabs with Manual Activation' example with the same screen reader and browser, and counts as a library defect only when the example passes.
+
 ## Out of Scope
 
 - `activeCollapse` and a collapsed state with no selected tab (APG: a selected tab has a rendered panel; Accordion covers collapsing).

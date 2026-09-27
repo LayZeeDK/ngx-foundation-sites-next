@@ -200,7 +200,7 @@ Per-item API, used as the Nested menu defines it (not repeated here): `NfsMenuIt
 Behaviour rules the root adds or pins down:
 
 - Mode: in a standalone menu the mode is always `dropdown`. Under `nfsResponsiveMenu` the root binds no class and handles no key or click while another mode is live; its inputs stay bound and apply when dropdown mode returns.
-- Hover: with hover enabled, pointing at a parent item opens its submenu after `hoverDelay`; the item, which contains its submenu, is the Hover region, so moving into the submenu keeps it open; leaving the item closes a hover-opened submenu after `closingTime` while `autoclose` is on and it was not since clicked; `autoclose` off keeps it open until Escape, a sibling opening, focus leaving, or an outside press. Opening a sibling by hover closes the open one (the Nested menu's sibling rule).
+- Hover: with hover enabled, pointing at a parent item opens its submenu after `hoverDelay`; the item, which contains its submenu, is the Hover region, so moving into the submenu keeps it open; leaving the item closes a hover-opened submenu after `closingTime` while `autoclose` is on and it was not since clicked; `autoclose` off keeps it open until Escape, a sibling opening, focus leaving, or an outside press. Opening a sibling by hover closes the open one (the Nested menu's sibling rule), except while focus is inside the open one: then hover opens nothing (the Nested menu's hover rule).
 - Outside press and focus: with `closeOnClick` off, a press on plain page content leaves submenus open, but a press that moves focus to a control outside the submenu still closes it through the focus rule (Light dismiss rule 4), in engines that focus buttons on click; Safari does not, so there a press on an outside button leaves the submenu open (the Dropdown spec's D11 consequence, same mechanism).
 - Leaf click: with `closeOnClickInside` on, a click inside a leaf item closes every open submenu in the same pass; when the clicked link or button is inside a closing submenu and keeps focus (a Router link, a leaf button), the Nested menu's focus-loss guard moves focus to the top-level toggle of the closed Open path in the next render.
 
@@ -488,6 +488,8 @@ Against the prerendered fixture app, one route `/dropdown-menu` with the Rendere
 - `@defer (hydrate on interaction)`: a toggle click hydrates the block and opens the submenu.
 - `@defer (hydrate on hover)`: the first hover hydrates without opening; leaving and re-entering opens.
 - `@defer (hydrate never)`: links navigate, toggles and hover do nothing, and no error is logged.
+
+Release test (manual, before each release; [Resolve the assistive-technology checks](../issues/77-evidence-assistive-technology-checks.md)): Before each release, with VoiceOver on iOS and TalkBack on Chrome, double tap a parent button and a Hybrid toggle on `dropdown-menu--default` and `dropdown-menu--hybrid`: each double tap toggles the submenu exactly once, the new state is announced, and swiping on from the button reaches the submenu's first item (on iOS the activation is dispatched as touch events, because the item has pointer listeners; open source does not settle that it yields one click). With VoiceOver on macOS and NVDA with Chrome, hovering a parent with focus elsewhere produces no speech, and hovering a sibling while focus is inside an open submenu opens nothing and moves no focus.
 
 ## Out of Scope
 

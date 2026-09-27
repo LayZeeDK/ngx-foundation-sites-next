@@ -256,7 +256,7 @@ APG pattern: none (no widget). Composition, per the APG research: a `navigation`
 | Current section's list item | `.is-active` only (styling), no ARIA | Foundation Menu contract |
 | Targets | The consumer's elements with consumer ids; `tabindex="-1"` only while the composed Smooth Scroll's focus is on a non-focusable one | Smooth Scroll spec |
 | Target naming | Not named by the library; sections become `region` landmarks only if the consumer names them, which should be done only for sections meant as landmarks | APG Magellan note |
-| Announcements | None. `aria-current` changes during scrolling are not announced by screen readers and need not be: the reader is moving through the content, and the state is read when the user reaches the navigation | Material sort accessibility note (attribute changes are not announced); AT confirmation is a human check (ticket, OPEN FOR HUMAN) |
+| Announcements | None while focus is outside the navigation: `aria-current` changes on links without focus are not announced (NVDA speaks them only for the focused object) and need not be, because the state is read when the user reaches the navigation. When a keyboard user has tabbed to a Magellan link without activating it and the page then scrolls by other means, NVDA says 'current' as that link's section becomes current, and VoiceOver on iOS 'current page' (a11ysupport.io); that is expected | Material sort accessibility note (attribute changes are not announced); a11ysupport.io aria-current change test; NVDA `ia2Web` source ([Resolve the assistive-technology checks](../issues/77-evidence-assistive-technology-checks.md)) |
 
 | Key | Behaviour | Owner |
 | --- | --- | --- |
@@ -430,6 +430,8 @@ Against the prerendered fixture app (the harness from the rendering-mode test se
 - Navigation inside `@defer (hydrate on viewport)` in a sticky sidebar: no marker before the block hydrates; after it hydrates, the Current section is marked.
 - Sections inside `@defer (hydrate never)`: they are tracked and marked as the reader scrolls, although their block never hydrates.
 - Navigation inside `@defer (hydrate never)`: its links jump natively; no marker appears.
+
+Release test (manual, before each release; [Resolve the assistive-technology checks](../issues/77-evidence-assistive-technology-checks.md)): Before each release, with NVDA and JAWS on Chrome and Firefox and VoiceOver on macOS and iOS, on `magellan--menu`: reading the page and scrolling through the sections with focus outside the navigation produces no speech from the navigation; tabbing to the Current section's link reads it as current and the other links without it; with focus parked on a link that is not current, scrolling its section into place by wheel or scrollbar makes NVDA say 'current' once (VoiceOver on iOS may say 'current page'), which is expected.
 
 ## Out of Scope
 

@@ -325,7 +325,7 @@ Requirements, each checked where stated.
 
 | Criterion | Requirement and how it is met | Check |
 | --- | --- | --- |
-| 1.3.1 Info and Relationships, 4.1.2 Name, Role, Value | The dialog exposes role `dialog` (or `alertdialog`), modal state, and a name. Role and modal state come from `<dialog>` and `showModal()`; the name is required from the consumer's `aria-labelledby` or `aria-label`; an alert dialog requires `aria-describedby` | Dev checks 1 and 2; axe in every story with the dialog open; the screen-reader announcement is human-only (ticket, OPEN FOR HUMAN) |
+| 1.3.1 Info and Relationships, 4.1.2 Name, Role, Value | The dialog exposes role `dialog` (or `alertdialog`), modal state, and a name. Role and modal state come from `<dialog>` and `showModal()`; the name is required from the consumer's `aria-labelledby` or `aria-label`; an alert dialog requires `aria-describedby` | Dev checks 1 and 2; axe in every story with the dialog open; the screen-reader announcement is the release test under Testing Decisions |
 | 1.4.3 Contrast (Minimum) | Text inside the dialog meets 4.5:1. Rule 5 makes the dialog inherit Foundation's body colour instead of the user-agent `CanvasText`; Foundation's defaults (`$body-font-color` on `$reveal-background`) pass | axe `color-contrast` in every story |
 | 1.4.11 Non-text Contrast | The close glyph, the visual that identifies the `.close-button` control, contrasts at least 3:1 with the dialog in both states: `$closebutton-color` and `$closebutton-color-hover` against `$reveal-background` (defaults 3.42:1 and 19.63:1 against Foundation's `$white`, `#fefefe`; the 32 px glyph also counts as large text for 1.4.3). The dialog's edge contrasts at least 3:1 with the page dimmed by the backdrop: `$reveal-background` against `$reveal-overlay-background` composited over `$body-background` (defaults 3.17:1) | The `nfs-reveal` mixin computes the three ratios from the consumer's settings, each from Foundation's `color-luminance()` with the WCAG formula and compared unrounded (Foundation's `color-contrast()` is not used, because it rounds to one decimal and would pass 2.95:1). It stops the compile with `@error` naming the setting when a close-glyph ratio is under 3, as the `nfs-off-canvas` mixin does for the same glyph, and emits `@warn` naming the setting when the dialog-edge ratio is under 3 (axe has no 1.4.11 rule); node-level Sass test |
 | 1.4.10 Reflow | At 320 CSS px (and 400% zoom of 1280 px) the dialog is full screen through Foundation's small-only rule; tall content scrolls inside the dialog, whose box ends inside the viewport (rule 4), so the end of the content is reachable without two-dimensional scrolling | e2e at 320 x 640 and with tall content |
@@ -522,6 +522,8 @@ Against the prerendered fixture app (the harness from the rendering-mode test se
 - Deep link on the prerendered route: loading with the hash opens the Reveal after hydration.
 - `@defer (hydrate never)`: the Reveal stays closed, its Trigger does nothing, no error is logged.
 
+Release test (manual, before each release; [Resolve the assistive-technology checks](../issues/77-evidence-assistive-technology-checks.md)): Before each release, with NVDA on Firefox and on Chrome and VoiceOver on Safari (macOS and iOS), Tab to the Trigger of `reveal--basic` and confirm it is announced as a button that opens a dialog, with no expanded or collapsed state; open `reveal--basic` and `reveal--alert-dialog` from their Triggers and confirm the dialog's role and name (and for the alert dialog its description) are spoken with focus on the first control, that browse or virtual cursor navigation stays inside the dialog, and that closing returns focus to the Trigger, announced again without an expanded state; open `reveal--without-overlay` and confirm its Trigger is announced as expanded while it is open and collapsed after, that the dialog is not announced as modal, and that the page stays reachable.
+
 ## Out of Scope
 
 - A Material-style service that opens components or templates in an overlay (ADR 0007).
@@ -532,7 +534,7 @@ Against the prerendered fixture app (the harness from the rendering-mode test se
 - An exit animation and `closePredicate` for `<form method="dialog">` closes; `nfsClose` covers both.
 - OffCanvas: its overlap mode is not built on `<dialog>` (Further Notes, what OffCanvas inherits).
 - `dialog.closedby`, `requestClose()`, `CloseWatcher`, `@starting-style`, and Invoker Commands (out of target; Further Notes).
-- Screen-reader verification (human-only, ticket OPEN FOR HUMAN).
+- Automated screen-reader output: the manual release test under Testing Decisions covers it ([Resolve the assistive-technology checks](../issues/77-evidence-assistive-technology-checks.md)).
 
 ## Further Notes
 

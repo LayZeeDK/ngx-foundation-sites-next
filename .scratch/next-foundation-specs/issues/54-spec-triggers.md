@@ -194,3 +194,13 @@ From the [Decide the `@angular/aria` fallback confirmation](75-evidence-aria-fal
 
 - Implementation level: "`@angular/aria` 22.2 has no disclosure, dialog, or trigger pattern." now states the literal value Aria renders: Aria has no disclosure or dialog pattern, and its only trigger, `ngMenuTrigger`, targets `ngMenu` only, keeps the open state in the trigger (this spec keeps it in the Openable, so several Triggers can operate one), and renders `aria-haspopup="true"`, which WAI-ARIA treats as `menu`, wrong for a disclosure or dialog opener. The CDK and Material literal `"menu"` in the next sentence is correct and unchanged.
 - Decision 34's "Aria 22.2 has no disclosure or dialog trigger" stands.
+
+### Amendment, 2026-09-27 (Resolve the assistive-technology checks)
+
+From [Resolve the assistive-technology checks](77-evidence-assistive-technology-checks.md), check 5 (Off-canvas), a change to the outcome of [Decide: `aria-expanded` on a modal dialog's opener](72-decide-aria-expanded-on-modal-opener.md): Off-canvas Modal mode now reports `modal-dialog`. `specs/triggers.md` was edited to match.
+
+- The [Spec: Off-canvas](25-spec-off-canvas.md) now makes every element outside a Modal-mode panel's ancestor chain inert while the panel is open (the Modal inert set, with named exceptions), so every Trigger outside the panel is inert then. That is the condition decisions 16 and 18, as the earlier amendment records them, give for `modal-dialog`: report it only where the platform makes every Trigger outside the Openable inert while it is open. Off-canvas Modal mode's Triggers render `aria-haspopup="dialog"` and `aria-controls` without `aria-expanded`; non-modal Off-canvas Triggers keep `disclosure`. The `NfsTriggerRole` union does not change.
+- Spec edits: the Solution; user story 41; the APG patterns line; the `dialog` bullet (its Off-canvas clause deleted) and the `modal-dialog` bullet (Off-canvas Modal mode under its Modal inert set, with a link to the decision ticket); D7's Rationale and Rejected alternatives (their Off-canvas clauses deleted); the Consumers table's OffCanvas row; the "Foundation behaviour changed or dropped" bullet on Off-canvas Triggers.
+- Stale text above, not rewritten: the 2026-09-27 amendment from [Decide: `aria-expanded` on a modal dialog's opener](72-decide-aria-expanded-on-modal-opener.md) says an Off-canvas panel in Modal mode keeps `dialog` with `aria-expanded`.
+
+Triage, from the decision ticket: impact HIGH (the Trigger role one Openable reports, part of the public `NfsTriggerRole` contract as applied; the union itself does not change), confidence HIGH. Decided; nothing new is open.

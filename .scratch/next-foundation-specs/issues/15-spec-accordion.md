@@ -178,3 +178,13 @@ The [Decide the `@angular/aria` fallback confirmation](75-evidence-aria-fallback
 3. ADR 0008 gains a dated pointer (the orchestrator's edit): the opt-in lazy mode is Aria's `TabContent` in Tabs (client-only) and the library's own template in the Accordion. The [Spec: Tabs](16-spec-tabs.md) D19 rationale no longer calls the two "consistent".
 
 Triage, from the decision ticket: impact HIGH (the Accordion's public lazy API), confidence HIGH. Decided; nothing open.
+
+### Amendment, 2026-09-27 (Resolve the assistive-technology checks)
+
+From [Resolve the assistive-technology checks](77-evidence-assistive-technology-checks.md), check 1: the spec is correct; `specs/accordion.md` was edited to match. No decision changes.
+
+- OPEN FOR HUMAN item 4 (the screen-reader check) is closed, decided from evidence under the user's ruling for the open-decision pass: in Chromium and Firefox each title is a focusable button in a level-3 heading with its expanded or collapsed state, the locked title is unavailable (MSAA) and not enabled (UI Automation) while still focusable, the open panel is a region named by its title, and collapsed panels are absent; `aria-disabled="true"` is announced as unavailable, dimmed, or disabled by every screen reader with published data. NVDA reads Foundation's glyph as "plus" and the en dash as nothing at its default symbol level, the cost decision 32 accepted.
+- Spec edits: Testing Decisions ends with a manual release test (NVDA on Firefox and on Chrome, VoiceOver on Safari on macOS), in which a change from the recorded glyph reading reopens D18; the Out of Scope bullet on screen-reader verification now reads "Automated screen-reader output", covered by that release test.
+- Items 1 to 3 (upstream filings) are not touched here.
+
+Triage, from the decision ticket: impact limited to Testing Decisions and one Out of Scope bullet, confidence HIGH (two engines, three runs, NVDA's release source, published data). Decided; nothing new is open.
