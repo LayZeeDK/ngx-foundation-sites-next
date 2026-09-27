@@ -1,0 +1,39 @@
+Angular is running in development mode.
+g0 slide a: inert=(none) wrapper=undefined | <div role="tabpanel" ngtabpanel="" id="ng-tabpanel-a64654-4" tabindex="0" aria-labelledby="ng-tab-a64654-4">
+g0 slide b: inert=true wrapper=undefined | <div role="tabpanel" ngtabpanel="" id="ng-tabpanel-a64654-5" tabindex="-1" inert="true" aria-labelledby="ng-tab-a64654-5">
+g0 slide c: inert=true wrapper=undefined | <div role="tabpanel" ngtabpanel="" id="ng-tabpanel-a64654-6" tabindex="-1" inert="true" aria-labelledby="ng-tab-a64654-6">
+g0 slide d: inert=true wrapper=undefined | <div role="tabpanel" ngtabpanel="" id="ng-tabpanel-a64654-7" tabindex="-1" inert="true" aria-labelledby="ng-tab-a64654-7">
+g1 slide a: inert=(none) wrapper=absent | <div role="tabpanel" probeslide="" id="ng-tabpanel-a64654-8" tabindex="0" data-wrapper-inert="absent" aria-labelledby="ng-tab-a64654-8">
+g1 slide b: inert=true wrapper=absent | <div role="tabpanel" probeslide="" id="ng-tabpanel-a64654-9" tabindex="-1" data-wrapper-inert="absent" inert="true" aria-labelledby="ng-tab-a64654-9">
+g1 slide c: inert=true wrapper=absent | <div role="tabpanel" probeslide="" id="ng-tabpanel-a64654-10" tabindex="-1" data-wrapper-inert="absent" inert="true" aria-labelledby="ng-tab-a64654-10">
+g1 slide d: inert=true wrapper=absent | <div role="tabpanel" probeslide="" id="ng-tabpanel-a64654-11" tabindex="-1" data-wrapper-inert="absent" inert="true" aria-labelledby="ng-tab-a64654-11">
+g2 slide a: inert=(none) wrapper=absent | <div role="tabpanel" probeslide="" id="ng-tabpanel-a64654-12" tabindex="0" aria-labelledby="ng-tab-a64654-12" data-wrapper-inert="absent">
+g2 slide b: inert=(none) wrapper=absent | <div role="tabpanel" probeslide="" id="ng-tabpanel-a64654-13" tabindex="-1" aria-labelledby="ng-tab-a64654-13" data-wrapper-inert="absent">
+g2 slide c: inert=(none) wrapper=absent | <div role="tabpanel" probeslide="" id="ng-tabpanel-a64654-14" tabindex="-1" aria-labelledby="ng-tab-a64654-14" data-wrapper-inert="absent">
+g2 slide d: inert=(none) wrapper=absent | <div role="tabpanel" probeslide="" id="ng-tabpanel-a64654-15" tabindex="-1" aria-labelledby="ng-tab-a64654-15" data-wrapper-inert="absent">
+g3 slide a: inert=(none) wrapper=absent | <div role="tabpanel" probeslideepoch="" id="ng-tabpanel-a64654-16" tabindex="0" data-wrapper-inert="absent" aria-labelledby="ng-tab-a64654-16">
+g3 slide b: inert=(none) wrapper=absent | <div role="tabpanel" probeslideepoch="" id="ng-tabpanel-a64654-17" tabindex="-1" data-wrapper-inert="absent" aria-labelledby="ng-tab-a64654-17">
+g3 slide c: inert=(none) wrapper=absent | <div role="tabpanel" probeslideepoch="" id="ng-tabpanel-a64654-18" tabindex="-1" data-wrapper-inert="absent" aria-labelledby="ng-tab-a64654-18">
+g3 slide d: inert=(none) wrapper=absent | <div role="tabpanel" probeslideepoch="" id="ng-tabpanel-a64654-19" tabindex="-1" data-wrapper-inert="absent" aria-labelledby="ng-tab-a64654-19">
+g4 slide a: inert=(none) wrapper=absent | <div role="tabpanel" probeslide="" value="a" id="ng-tabpanel-a64654-0" tabindex="0" aria-labelledby="ng-tab-a64654-0" data-wrapper-inert="absent">
+g4 slide b: inert=(none) wrapper=absent | <div role="tabpanel" probeslide="" value="b" id="ng-tabpanel-a64654-1" tabindex="-1" aria-labelledby="ng-tab-a64654-1" data-wrapper-inert="absent">
+g4 slide c: inert=(none) wrapper=absent | <div role="tabpanel" probeslide="" value="c" id="ng-tabpanel-a64654-2" tabindex="-1" aria-labelledby="ng-tab-a64654-2" data-wrapper-inert="absent">
+g4 slide d: inert=(none) wrapper=absent | <div role="tabpanel" probeslide="" value="d" id="ng-tabpanel-a64654-3" tabindex="-1" aria-labelledby="ng-tab-a64654-3" data-wrapper-inert="absent">
+g5 slide a: inert=(none) wrapper=absent | <div role="tabpanel" probeslidevisible="" id="ng-tabpanel-a64654-20" tabindex="0" data-wrapper-inert="absent" aria-labelledby="ng-tab-a64654-20">
+g5 slide b: inert=(none) wrapper=absent | <div role="tabpanel" probeslidevisible="" id="ng-tabpanel-a64654-21" tabindex="-1" data-wrapper-inert="absent" aria-labelledby="ng-tab-a64654-21">
+g5 slide c: inert=(none) wrapper=absent | <div role="tabpanel" probeslidevisible="" id="ng-tabpanel-a64654-22" tabindex="-1" data-wrapper-inert="absent" aria-labelledby="ng-tab-a64654-22">
+g5 slide d: inert=(none) wrapper=absent | <div role="tabpanel" probeslidevisible="" id="ng-tabpanel-a64654-23" tabindex="-1" data-wrapper-inert="absent" aria-labelledby="ng-tab-a64654-23">
+g6 slide a: inert=(none) wrapper=absent | <div role="tabpanel" probeslidevisible="" id="ng-tabpanel-a64654-24" tabindex="-1" data-wrapper-inert="absent" aria-labelledby="ng-tab-a64654-24">
+g6 slide b: inert=(none) wrapper=absent | <div role="tabpanel" probeslidevisible="" id="ng-tabpanel-a64654-25" tabindex="-1" data-wrapper-inert="absent" aria-labelledby="ng-tab-a64654-25">
+g6 slide c: inert=(none) wrapper=absent | <div role="tabpanel" probeslidevisible="" id="ng-tabpanel-a64654-26" tabindex="0" data-wrapper-inert="absent" aria-labelledby="ng-tab-a64654-26">
+g6 slide d: inert=(none) wrapper=absent | <div role="tabpanel" probeslidevisible="" id="ng-tabpanel-a64654-27" tabindex="-1" data-wrapper-inert="absent" aria-labelledby="ng-tab-a64654-27">
+g7 slide a: inert=true wrapper=absent | <div role="tabpanel" probeslide="" id="ng-tabpanel-a64654-28" tabindex="-1" aria-labelledby="ng-tab-a64654-28" data-wrapper-inert="absent" inert="true">
+g7 slide b: inert=(none) wrapper=absent | <div role="tabpanel" probeslide="" id="ng-tabpanel-a64654-29" tabindex="-1" aria-labelledby="ng-tab-a64654-29" data-wrapper-inert="absent">
+g7 slide c: inert=(none) wrapper=absent | <div role="tabpanel" probeslide="" id="ng-tabpanel-a64654-30" tabindex="0" aria-labelledby="ng-tab-a64654-30" data-wrapper-inert="absent">
+g7 slide d: inert=(none) wrapper=absent | <div role="tabpanel" probeslide="" id="ng-tabpanel-a64654-31" tabindex="-1" aria-labelledby="ng-tab-a64654-31" data-wrapper-inert="absent">
+g8 slide a: inert=true wrapper=absent | <div role="tabpanel" probeslideepoch="" id="ng-tabpanel-a64654-32" tabindex="-1" data-wrapper-inert="absent" aria-labelledby="ng-tab-a64654-32" inert="true">
+g8 slide b: inert=(none) wrapper=absent | <div role="tabpanel" probeslideepoch="" id="ng-tabpanel-a64654-33" tabindex="-1" data-wrapper-inert="absent" aria-labelledby="ng-tab-a64654-33">
+g8 slide c: inert=(none) wrapper=absent | <div role="tabpanel" probeslideepoch="" id="ng-tabpanel-a64654-34" tabindex="0" data-wrapper-inert="absent" aria-labelledby="ng-tab-a64654-34">
+g8 slide d: inert=(none) wrapper=absent | <div role="tabpanel" probeslideepoch="" id="ng-tabpanel-a64654-35" tabindex="-1" data-wrapper-inert="absent" aria-labelledby="ng-tab-a64654-35">
+panels found: 36
+any " inert=" in body: true

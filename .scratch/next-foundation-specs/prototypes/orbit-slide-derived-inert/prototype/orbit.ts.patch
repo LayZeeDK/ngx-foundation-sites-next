@@ -1,0 +1,26 @@
+--- D:/tmp/nfs-proto-orbit-keyboard-hydration/orbit/src/app/orbit.ts	2026-09-26 13:56:42.474123000 +0200
++++ D:/tmp/nfs-judge-75/orbit/src/app/orbit.ts	2026-09-26 23:56:39.000000000 +0200
+@@ -43,9 +43,22 @@
+   },
+ })
+ export class SlideGate {
++  readonly #panel = inject(TabPanel);
+   readonly live = input.required<boolean>();
+   readonly isSelected = input.required<boolean>();
+-  protected readonly inertOverride = computed(() => (this.live() && !this.isSelected() ? true : null));
++  // OVERRULE PROBE: derived from Aria's own public TabPanel.visible(), so this binding's
++  // value changes in every pass in which Aria's `!visible() ? true : null` changes and is
++  // written after it (host directives bind first). Before live, null and undefined both
++  // render as "no attribute"; once live it equals Aria's value.
++  protected readonly inertOverride = computed(() => {
++    const visible = this.#panel.visible();
++
++    if (this.live()) {
++      return visible ? null : true;
++    }
++
++    return visible ? null : undefined;
++  });
+ }
+ 
+ // The bullet's pre-hydration tab stop. Aria's roving `tabindex` depends on its internal

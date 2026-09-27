@@ -1,0 +1,17 @@
+
+Running 12 tests using 1 worker
+
+  [OK]   1 [chromium] > e2e\keyboard.spec.ts:7:5 > focused slide: ArrowRight, ArrowLeft, PageDown, PageUp, End, Home keep focus inside the carousel (2.7s)
+  [OK]   2 [chromium] > e2e\keyboard.spec.ts:35:5 > finding: Page Down/Up, End, and Home also scroll the page (the container has no vertical overflow to consume them) (951ms)
+  [OK]   3 [chromium] > e2e\keyboard.spec.ts:59:5 > the focused slide shows an inward focus ring (outline, not clipped by the container) (309ms)
+  [OK]   4 [chromium] > e2e\keyboard.spec.ts:81:5 > no horizontal scrollbar changes the container box (clientHeight equals offsetHeight) (285ms)
+  [OK]   5 [firefox] > e2e\keyboard.spec.ts:7:5 > focused slide: ArrowRight, ArrowLeft, PageDown, PageUp, End, Home keep focus inside the carousel (3.9s)
+  [OK]   6 [firefox] > e2e\keyboard.spec.ts:35:5 > finding: Page Down/Up, End, and Home also scroll the page (the container has no vertical overflow to consume them) (1.3s)
+  [OK]   7 [firefox] > e2e\keyboard.spec.ts:59:5 > the focused slide shows an inward focus ring (outline, not clipped by the container) (617ms)
+  [OK]   8 [firefox] > e2e\keyboard.spec.ts:81:5 > no horizontal scrollbar changes the container box (clientHeight equals offsetHeight) (536ms)
+  [OK]   9 [webkit] > e2e\keyboard.spec.ts:7:5 > focused slide: ArrowRight, ArrowLeft, PageDown, PageUp, End, Home keep focus inside the carousel (1.7s)
+  [OK]  10 [webkit] > e2e\keyboard.spec.ts:35:5 > finding: Page Down/Up, End, and Home also scroll the page (the container has no vertical overflow to consume them) (1.2s)
+  [OK]  11 [webkit] > e2e\keyboard.spec.ts:59:5 > the focused slide shows an inward focus ring (outline, not clipped by the container) (611ms)
+  [OK]  12 [webkit] > e2e\keyboard.spec.ts:81:5 > no horizontal scrollbar changes the container box (clientHeight equals offsetHeight) (477ms)
+
+  12 passed (17.6s)

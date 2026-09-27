@@ -1,0 +1,11 @@
+--- D:/tmp/nfs-proto-orbit-keyboard-hydration/orbit/playwright.config.ts	2026-09-26 08:38:45.883292200 +0200
++++ D:/tmp/nfs-judge-75/orbit/playwright.config.ts	2026-09-27 00:00:33.000000000 +0200
+@@ -5,7 +5,7 @@
+ //   PORT=4651 node dist/orbit-dev/server/server.mjs            (development build, e2e-hydration/)
+ // BASE_URL selects the testDir: 4651 runs the hydration/defer suite (it needs ngDevMode).
+ const viewport = { width: 1000, height: 800 };
+-const onDevServer = process.env['BASE_URL']?.endsWith('4651') ?? false;
++const onDevServer = process.env['SUITE'] === 'hydration' || (process.env['BASE_URL']?.endsWith('4651') ?? false);
+ 
+ export default defineConfig({
+   testDir: onDevServer ? './e2e-hydration' : './e2e',

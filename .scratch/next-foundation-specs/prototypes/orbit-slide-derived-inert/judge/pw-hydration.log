@@ -1,0 +1,47 @@
+
+Running 21 tests using 1 worker
+
+  [OK]   1 [chromium] > e2e-hydration\defer.spec.ts:6:5 > `@defer (hydrate on viewport)`: rotation is silent off-screen, starts once scrolled into view (19.7s)
+  [OK]   2 [chromium] > e2e-hydration\hydration.spec.ts:8:5 > inert gate: no slide is inert in server HTML; hydration is clean; unselected slides are inert after (815ms)
+  [OK]   3 [chromium] > e2e-hydration\hydration.spec.ts:47:5 > bullet tabindex hands over to Aria after a user interaction moves the roving item (1.4s)
+  [OK]   4 [chromium] > e2e-hydration\hydration.spec.ts:59:5 > a bound non-first selected slide aligns instantly, no intermediate scroll position (900ms)
+  [OK]   5 [chromium] > e2e-hydration\hydration.spec.ts:89:5 > a scroll made before hydration is adopted as the selection, with one selectedChange (1.4s)
+  [OK]   6 [chromium] > e2e-hydration\judge.spec.ts:55:5 > judge: no slide shows inert at any mutation callback before live; hydration transient recorded (9.0s)
+  [FAIL]   7 [chromium] > e2e-hydration\judge.spec.ts:74:5 > judge: a slide focused before hydration keeps focus through the hydration transient (743ms)
+  [OK]   8 [firefox] > e2e-hydration\defer.spec.ts:6:5 > `@defer (hydrate on viewport)`: rotation is silent off-screen, starts once scrolled into view (4.9s)
+  [OK]   9 [firefox] > e2e-hydration\hydration.spec.ts:8:5 > inert gate: no slide is inert in server HTML; hydration is clean; unselected slides are inert after (875ms)
+  [OK]  10 [firefox] > e2e-hydration\hydration.spec.ts:47:5 > bullet tabindex hands over to Aria after a user interaction moves the roving item (1.7s)
+  [OK]  11 [firefox] > e2e-hydration\hydration.spec.ts:59:5 > a bound non-first selected slide aligns instantly, no intermediate scroll position (1.1s)
+  [OK]  12 [firefox] > e2e-hydration\hydration.spec.ts:89:5 > a scroll made before hydration is adopted as the selection, with one selectedChange (1.6s)
+  [OK]  13 [firefox] > e2e-hydration\judge.spec.ts:55:5 > judge: no slide shows inert at any mutation callback before live; hydration transient recorded (908ms)
+  [OK]  14 [firefox] > e2e-hydration\judge.spec.ts:74:5 > judge: a slide focused before hydration keeps focus through the hydration transient (957ms)
+  [OK]  15 [webkit] > e2e-hydration\defer.spec.ts:6:5 > `@defer (hydrate on viewport)`: rotation is silent off-screen, starts once scrolled into view (4.0s)
+  [OK]  16 [webkit] > e2e-hydration\hydration.spec.ts:8:5 > inert gate: no slide is inert in server HTML; hydration is clean; unselected slides are inert after (673ms)
+  [OK]  17 [webkit] > e2e-hydration\hydration.spec.ts:47:5 > bullet tabindex hands over to Aria after a user interaction moves the roving item (1.1s)
+  [OK]  18 [webkit] > e2e-hydration\hydration.spec.ts:59:5 > a bound non-first selected slide aligns instantly, no intermediate scroll position (759ms)
+  [OK]  19 [webkit] > e2e-hydration\hydration.spec.ts:89:5 > a scroll made before hydration is adopted as the selection, with one selectedChange (820ms)
+  [OK]  20 [webkit] > e2e-hydration\judge.spec.ts:55:5 > judge: no slide shows inert at any mutation callback before live; hydration transient recorded (769ms)
+  [OK]  21 [webkit] > e2e-hydration\judge.spec.ts:74:5 > judge: a slide focused before hydration keeps focus through the hydration transient (765ms)
+
+
+  1) [chromium] > e2e-hydration\judge.spec.ts:74:5 > judge: a slide focused before hydration keeps focus through the hydration transient 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "3"
+    Received: null
+
+       97 |   const firstPresent = entries.find((e) => e.kind === 'mutation' && e.hasInertAtCallback);
+       98 |   const transient = entries.filter((e) => e.kind === 'mutation' && (!firstPresent || e.batch < firstPresent.batch));
+    >  99 |   expect(activeBefore).toBe('3');
+          |                        ^
+      100 |   expect(transient.every((e) => e.active === '3')).toBe(true);
+      101 |   const earlyFocusout = entries.filter(
+      102 |     (e) => e.kind === 'focusout' && e.target === '3' && (!firstPresent || e.batch < firstPresent.batch),
+        at D:\tmp\nfs-judge-75\orbit\e2e-hydration\judge.spec.ts:99:24
+
+    Error Context: test-results\judge-judge-a-slide-focuse-1f12f-ugh-the-hydration-transient-chromium\error-context.md
+
+  1 failed
+    [chromium] > e2e-hydration\judge.spec.ts:74:5 > judge: a slide focused before hydration keeps focus through the hydration transient 
+  20 passed (1.2m)

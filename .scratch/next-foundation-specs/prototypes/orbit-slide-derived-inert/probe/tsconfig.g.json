@@ -1,0 +1,53 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "skipLibCheck": true,
+    "lib": [
+      "ES2022",
+      "DOM"
+    ],
+    "types": [],
+    "outDir": "./out-g",
+    "paths": {
+      "@angular/core": [
+        "D:/tmp/nfs-proto-aria-accordion-tabs/app/node_modules/@angular/core/types/core.d.ts"
+      ],
+      "@angular/core/primitives/signals": [
+        "D:/tmp/nfs-proto-aria-accordion-tabs/app/node_modules/@angular/core/types/primitives-signals.d.ts"
+      ],
+      "@angular/platform-browser": [
+        "D:/tmp/nfs-proto-aria-accordion-tabs/app/node_modules/@angular/platform-browser/types/platform-browser.d.ts"
+      ],
+      "@angular/common": [
+        "D:/tmp/nfs-proto-aria-accordion-tabs/app/node_modules/@angular/common/types/common.d.ts"
+      ],
+      "@angular/aria/*": [
+        "D:/tmp/nfs-proto-aria-accordion-tabs/app/node_modules/@angular/aria/types/*.d.ts"
+      ],
+      "@angular/cdk/*": [
+        "D:/tmp/nfs-proto-aria-accordion-tabs/app/node_modules/@angular/cdk/types/*.d.ts"
+      ],
+      "rxjs": [
+        "D:/tmp/nfs-proto-aria-accordion-tabs/app/node_modules/rxjs/dist/types/index.d.ts"
+      ],
+      "@angular/platform-server": [
+        "D:/tmp/nfs-proto-aria-accordion-tabs/app/node_modules/@angular/platform-server/types/platform-server.d.ts"
+      ],
+      "@angular/compiler": [
+        "D:/tmp/nfs-proto-aria-accordion-tabs/app/node_modules/@angular/compiler/types/compiler.d.ts"
+      ],
+      "@angular/common/http": [
+        "D:/tmp/nfs-proto-aria-accordion-tabs/app/node_modules/@angular/common/types/http.d.ts"
+      ]
+    }
+  },
+  "angularCompilerOptions": {
+    "strictTemplates": true
+  },
+  "files": [
+    "g-orbit-order.ts"
+  ]
+}

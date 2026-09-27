@@ -1,0 +1,21 @@
+Angular is running in development mode.
+<probe-root ng-version="22.2.0" ng-server-context="other">
+<div ngaccordiongroup="">
+<h3>
+<button role="button" ngaccordiontrigger="" type="button" id="ng-accordion-trigger-a80351-0" data-active="false" aria-expanded="true" aria-controls="h-1" aria-disabled="false" tabindex="0">One</button>
+</h3>
+<div role="region" probeacccontent="" id="h-1" class="accordion-content" aria-labelledby="ng-accordion-trigger-a80351-0" data-found="content-found">
+<div class="inner">
+<!--container-->
+</div>
+</div>
+<h3>
+<button role="button" ngaccordiontrigger="" type="button" id="ng-accordion-trigger-a80351-1" data-active="false" aria-expanded="false" aria-controls="h-2" aria-disabled="false" tabindex="0">Two</button>
+</h3>
+<div role="region" probeacccontent="" id="h-2" class="accordion-content" aria-labelledby="ng-accordion-trigger-a80351-1" inert="true" data-found="content-missing">
+<div class="inner">
+<p>Two projected</p>
+</div>
+</div>
+</div>
+</probe-root>

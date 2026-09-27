@@ -1,0 +1,11 @@
+
+Running 6 tests using 1 worker
+
+  [OK]  1 [chromium] > e2e-hydration\judge.spec.ts:62:5 > judge: inert writes during hydration, in call order (624ms)
+  [OK]  2 [chromium] > e2e-hydration\judge.spec.ts:72:5 > judge: a slide focused before hydration keeps focus through the hydration transient (521ms)
+  [OK]  3 [firefox] > e2e-hydration\judge.spec.ts:62:5 > judge: inert writes during hydration, in call order (2.2s)
+  [OK]  4 [firefox] > e2e-hydration\judge.spec.ts:72:5 > judge: a slide focused before hydration keeps focus through the hydration transient (1.3s)
+  [OK]  5 [webkit] > e2e-hydration\judge.spec.ts:62:5 > judge: inert writes during hydration, in call order (885ms)
+  [OK]  6 [webkit] > e2e-hydration\judge.spec.ts:72:5 > judge: a slide focused before hydration keeps focus through the hydration transient (824ms)
+
+  6 passed (10.8s)
