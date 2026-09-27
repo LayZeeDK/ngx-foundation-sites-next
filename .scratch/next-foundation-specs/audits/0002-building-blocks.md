@@ -282,8 +282,6 @@ Hygiene: no non-ASCII character in any scope file (`rg` exit 1, positive control
 
 ## Resolution log
 
-(For the orchestrator: record here which findings were fixed, turned into tickets, or rejected, with the commit that did it.)
-
 Orchestrator, 2026-09-26:
 
 - All 25 findings applied. Map findings (M7, M14, L6 map parts) in commit 3e3decb. Ticket 57's part of M2 and ticket 52's part of L6 in commit b747b1e, before those tickets were fired. Everything else in the commit "apply the building-blocks audit to the decision documents and tickets", by one fix agent on Opus 5.5 with the orchestrator's choices: H3 keeps the Tooltip tip once created (State class animation, no `aria-describedby` in server HTML); M6 settles `expandAll()`/`collapseAll()`, Toggler's `isOpen`/`active` models, OffCanvas's `transition` input with a new `closeOnEsc` delta, and Sticky's `isStuck` signal; M13 orders the multi-question prototypes rather than splitting them; L2 adds ADR 0009 for the `Nfs` prefix and token naming. Applying M6 exposed a further clash, `open` model against `open()` method, settled by a rule in 1.3: a boolean state signal whose verb would collide with a method or output is `isX` (`isOpen`, `isStuck`).

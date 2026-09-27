@@ -278,8 +278,6 @@ Research (`/research`), with citation spot checks (at least ten per file; all pa
 
 ## Resolution log
 
-(For the orchestrator: record here which findings were fixed, turned into tickets, or rejected, with the commit that did it.)
-
 Orchestrator, 2026-09-25:
 
 - M4 fixed in commit 60fd449 (graduate the building-blocks fog into tickets): the four live-ticket fog patches were removed and the prototype patch graduated into tickets.
