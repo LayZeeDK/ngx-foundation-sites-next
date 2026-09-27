@@ -39,7 +39,7 @@ npx tsc --noEmit -p tsconfig.app.json          # includes skill-check.ts
 
 - **Contrast.** Foundation's defaults fail 1.4.3: `.form-error` and `.is-invalid-label` at 4.49:1, the invalid placeholder at 3.93:1, and the placeholder at 1.63:1. They also fail 1.4.11: the input border is 1.63:1. The five settings above raise these to 5.25, 5.25, 4.55, 4.70, and 3.42:1. The invalid border already passes 1.4.11 at the defaults.
 - **Status messages (4.1.3).** Field errors appear without taking focus, so the directive adds `role="alert"` to each `.form-error` that has none. Abide's `a11yAttributes` does the same.
-- **Redundant entry (3.3.7).** It fails for input entered before hydration unless the rescue below is on, and it fails for a submit before hydration. That second case is OPEN FOR HUMAN.
+- **Redundant entry (3.3.7).** It fails for input entered before hydration unless the rescue below is on, and it fails for a submit before hydration. That second case was OPEN FOR HUMAN and is decided by [ADR 0027](../../adr/0027-abide-pre-hydration-submit.md): the submit control stays disabled until the form is ready.
 
 The full table is in the ticket's `## Answer`.
 

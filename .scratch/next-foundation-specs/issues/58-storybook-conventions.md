@@ -113,3 +113,7 @@ From [audit 0005](../audits/0005-final-bundle.md), findings L2, L7, and L9; `sto
 1. `preview.scss` block (L9): `@include nfs-smooth-scroll;` is written as a required line instead of a commented one, because section 7 says the preview includes it and the Smooth Scroll and Sticky specs rely on it; a preview copied from the block now compiles with it. The audit offered two fixes (uncomment the line, or say under the block that the commented `@include` lines are required); the first is applied.
 2. Orbit overrides comment (L7): Foundation's caption band is 3.7:1 (it said about 3.9:1), computed unrounded from Foundation's palette.
 3. Link text (L2): the browser testing stack ticket is linked by its exact title in this ticket's answer.
+
+### Amendment, 2026-09-27 (audit 0007)
+
+The gallery's dependence on Storybook preview internals is adopted at triage in the [Decide the browser testing stack: Playwright component tests, Vitest Browser, or both](41-browser-testing-stack-decision.md), and asking Storybook for a public API is not filed, by the user's ruling ([Upstream filings](76-evidence-upstream-filing-readiness.md)); nothing stays OPEN FOR HUMAN.

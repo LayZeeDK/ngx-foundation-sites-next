@@ -166,3 +166,7 @@ From [audit 0005](../audits/0005-final-bundle.md), findings L2 and L7. This tick
 
 1. Link text (L2): the Nested menu spec ticket is linked by its exact title, [Spec: Nested menu (shared utility)](56-spec-nested-menu.md).
 2. Figures and claims (L7): "147 of 147" now says that the Hybrid-link case passes as a test because it records the failure rather than asserting it; the route list says every route except `/deferred-prerendered` has a `/current` variant; the no-animation-frame claim is limited to the three first-render routes (`/csr`, `/ssr`, `/prerendered`), where the interval from the service's construction was measured; row 1 no longer cites the captured `nav` fragment for an `ng-state` value it does not hold (no full server HTML was captured, so the clause is removed); the quoted "dirtied after its own `earlyRead` already ran, runs again in the same tick" is attributed to the [Spec: Responsive Menu](23-spec-responsive-menu.md), not to ADR 0035.
+
+### Amendment, 2026-09-27 (audit 0007)
+
+The screen-reader pass over a swap with a submenu open (under What the prototype does not prove, and under OPEN FOR HUMAN) is decided by [Resolve the assistive-technology checks](77-evidence-assistive-technology-checks.md), check 7; its release test is in the [Spec: Responsive Menu](23-spec-responsive-menu.md), Testing Decisions.

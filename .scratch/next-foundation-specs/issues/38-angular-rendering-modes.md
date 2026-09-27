@@ -58,3 +58,7 @@ Findings: ../research/angular-rendering-modes.md
 The OPEN FOR HUMAN item in this answer (how a handler detects a replayed event) is the same question as item 3 of [Building-blocks map and cross-cutting architecture decisions](14-building-blocks-map.md), which owns it; it is triaged there once. Outcome there: DECIDED, state first and `preventDefault()` last, accepting the error Angular logs on replay; asking angular/components to skip `preventDefault()` during replay stays HUMAN-ONLY BY KIND in [Prototype: `@angular/aria` Accordion and Tabs under Foundation markup](43-prototype-aria-accordion-tabs.md).
 
 The other open questions listed in this answer were settled by later tickets and were never OPEN FOR HUMAN: `animate.enter` at hydration by [Prototype: `animate.enter` at hydration](52-prototype-animate-enter-hydration.md), the fourth test seam by [Prototype: Rendering-mode test seam](59-prototype-rendering-mode-test-seam.md), and projected versus client-only Aria panel content by [Prototype: `@angular/aria` Accordion and Tabs under Foundation markup](43-prototype-aria-accordion-tabs.md).
+
+### Amendment, 2026-09-27 (audit 0007)
+
+The upstream request the Triage calls human-only is closed as not filed, by the user's ruling ([Upstream filings](76-evidence-upstream-filing-readiness.md)).

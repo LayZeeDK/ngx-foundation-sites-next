@@ -14,7 +14,7 @@ Source abbreviations used below:
 | CLI | `d:/projects/github/angular/angular-cli`, branch `22.0.x`, commit `5584a589` (2026-07-10), version 22.0.6 (the clone is not on a 22.2 branch; the brief forbids checking one out) |
 | FS | `d:/projects/github/foundation/foundation-sites`, `v6.9.0-1-g337be7a8d` |
 | APG | `d:/projects/github/w3c/aria-practices`, commit `3f094fde` (2026-09-15) |
-| EXP | This dossier's experiment, `D:/tmp/nfs-decision-base-href/app/` (section 2.4) |
+| EXP | This dossier's experiment, `D:/tmp/nfs-decision-base-href/app/` (section 2.4); decisive files captured at [prototypes/base-href-hash-links/](../prototypes/base-href-hash-links/README.md) |
 | P62 | [Prototype: Smooth Scroll under Router scroll restoration and replay](../issues/62-prototype-smooth-scroll-router-restoration.md) and `prototypes/smooth-scroll-router/` |
 | WF | `web-features` 3.40.0 (npm, published 2026-09-24), `data.json` |
 

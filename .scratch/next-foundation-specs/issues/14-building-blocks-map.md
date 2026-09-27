@@ -198,3 +198,7 @@ Rule: [map](../map.md), Orchestration rules, "Triage of human-only items". Only 
    - Outcome: DECIDED: state first, `preventDefault()` last, accept the logged error on replay; no internal constant is used. Asking angular/components to skip `preventDefault()` during replay stays HUMAN-ONLY BY KIND (upstream filing), recorded in [Prototype: `@angular/aria` Accordion and Tabs under Foundation markup](43-prototype-aria-accordion-tabs.md).
 
 For the orchestrator (files outside this triage's edit scope): `building-blocks.md` Part 4 items 1 to 3 and 1.11 decision 5, the map's Decisions-so-far line for the rendering-modes ticket, ADR 0008 ("left OPEN FOR HUMAN") and ADR 0017 (Consequences, "until building-blocks Part 4 OPEN FOR HUMAN 3 is answered") still describe these items as open, and `specs/triggers.md` (decision prose on replay, and the Tooltip example's "open question about non-interactive hosts") was left untouched because another agent is editing it.
+
+### Amendment, 2026-09-27 (audit 0007)
+
+Triage item 3's upstream request (asking angular/components to skip `preventDefault()` during replay) is closed as not filed, by the user's ruling ([Upstream filings](76-evidence-upstream-filing-readiness.md)); the accepted replay log stands (building-blocks Part 4, Decided item 3).

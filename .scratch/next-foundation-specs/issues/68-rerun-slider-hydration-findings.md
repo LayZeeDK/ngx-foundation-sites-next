@@ -53,3 +53,7 @@ Rule: the map's triage of human-only items; only HIGH impact with NOT-HIGH confi
 ### OPEN FOR HUMAN
 
 None new. The Slider spec's OPEN FOR HUMAN 1 (Chromium announces a vertical native range as horizontal) and 2 (screen-reader announcement of `aria-valuetext`) are unchanged.
+
+### Amendment, 2026-09-27 (audit 0007)
+
+The Slider spec's OPEN FOR HUMAN 1 is decided by [Decide: Slider vertical orientation](73-decide-slider-vertical-orientation.md) and its OPEN FOR HUMAN 2 by [Resolve the assistive-technology checks](77-evidence-assistive-technology-checks.md), check 11 (the [Spec: Slider](32-spec-slider.md) amendments of 2026-09-27).

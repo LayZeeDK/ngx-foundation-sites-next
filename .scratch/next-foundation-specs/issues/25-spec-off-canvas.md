@@ -222,5 +222,6 @@ From [audit 0006](../audits/0006-open-decision-pass.md), finding M5; `specs/off-
 - Render hooks, phase machine row: cleanup clears the timer and removes an applied Modal inert set.
 - D14: the set is removed at the close request, or on destroy, from exactly the elements it changed.
 - Browser-level Modal mode case: destroying an open modal panel removes `inert` from every element the set changed.
+- M3 (applied by audit 0007's fixes): the Modal mode paragraph, the ARIA bullet on `modal-dialog`, and the 4.1.2 row name the edge cases [Decide: `aria-expanded` on a modal dialog's opener](72-decide-aria-expanded-on-modal-opener.md) accepts.
 
 Triage: impact LOW (an internal cleanup step; no input, output, or contract changes), confidence HIGH (building-blocks 1.9's destroy rule). Decided; nothing new is open.

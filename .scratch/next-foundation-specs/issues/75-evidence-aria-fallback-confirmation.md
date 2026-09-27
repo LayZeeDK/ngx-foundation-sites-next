@@ -271,4 +271,6 @@ The runnable workspace is `D:/tmp/nfs-judge-75/orbit` (no `node_modules`): recre
 
 ### Gist for the map
 
+(Paths relative to the effort root.)
+
 [Decide the `@angular/aria` fallback confirmation](issues/75-evidence-aria-fallback-confirmation.md) -- one of nine fallbacks is overruled: Orbit slides host Aria's `TabPanel` again with an `inert` override derived from `TabPanel.visible()`, measured keeping `inert` out of server HTML in the server renderer and in three engines (re-run by the judge), with the Orbit writing Aria's selection synchronously and tests asserting `inert` by presence (ADR 0037 supersedes ADR 0034); the other eight stand, with corrected reasons (the accordion trigger tab stop is not roving; `preserveContent` is bindable on the content element; menu and tree facts added; `aria-haspopup="true"`), and ADR 0008 and ADR 0004 carry dated notes. Dossier: [research/aria-fallback-evidence.md](research/aria-fallback-evidence.md).

@@ -137,4 +137,6 @@ Line numbers are those at commit `0cc7d03`. The judge wrote the ADR as a proposa
 
 ### Gist for Decisions so far
 
+(Paths relative to the effort root.)
+
 - [Decide: `#`-only links that `<base href>` resolves to another document](issues/74-decide-base-href-hash-links.md) -- decided by the panel: `NfsSmoothScroll`, and Magellan through it, treats a link as in-page only when the browser would make it a same-document fragment navigation, so a `#`-only `href` that `<base href>` resolves elsewhere is left to the browser with a development warning at first render and at click time; the documented current-path `href` now follows `Location.onUrlChange`, because a path read once goes stale when the Router reuses a component; confidence HIGH, impact HIGH; ADR 0038. Dossier: [research/decision-base-href-hash-links.md](research/decision-base-href-hash-links.md).

@@ -17,7 +17,7 @@ Ticket: [Decide: Slider vertical orientation](../issues/73-decide-slider-vertica
 | FS | Foundation for Sites, `d:/projects/github/foundation/foundation-sites` | `v6.9.0-1-g337be7a8d` |
 | NG | Angular, `d:/projects/github/angular/angular` | branch `22.2.x`, commit `5db6fc44532b` |
 | NGC | Angular components, `d:/projects/github/angular/components` | branch `22.2.x`, commit `708d4c6e2bf9` |
-| EXP | This dossier's throwaway experiments, `D:/tmp/nfs-decision-slider-vertical/` | see "Measured behaviour" |
+| EXP | This dossier's throwaway experiments, `D:/tmp/nfs-decision-slider-vertical/`; decisive files captured at [prototypes/slider-vertical-orientation/](../prototypes/slider-vertical-orientation/README.md) | see "Measured behaviour" |
 | P45 | [Prototype: Foundation-styled `<input type="range">` Slider](../issues/45-prototype-slider-range-input.md) and `prototypes/slider-range-input/` | as committed |
 
 Fetching followed the user's chain (markdown.new, then WebFetch, then a headless render with Playwright for client-rendered pages). No upstream issue, pull request, or discussion was created, commented on, or reacted to; `gh` was used only for read-only `gh api` GET and `gh search` calls.

@@ -47,3 +47,5 @@ npx playwright test e2e/slider.spec.ts   # starts node dist/slider-proto/server/
 PORT=4623 node dist/slider-proto/server/server.mjs   # to browse it by hand (/ and /rtl)
 npx playwright test e2e/probe-keydown-replay.spec.ts e2e/probe-forced-colors.spec.ts   # the diagnostic probes
 ```
+
+The 'OPEN FOR HUMAN 3' in the comment at `src/app/slider.ts:407` is building-blocks Part 4, Decided item 3 (the logged replay error is accepted); the captured code is left as it ran.

@@ -140,6 +140,8 @@ No role change. Add after the bullet at `:312`: "- Modal mode keeps `aria-expand
 
 ### Gist for the map's Decisions so far
 
+(Paths relative to the effort root.)
+
 - [Decide: `aria-expanded` on a modal dialog's opener](issues/72-decide-aria-expanded-on-modal-opener.md) -- decided by the panel: a fifth Trigger role, `modal-dialog`, renders `aria-haspopup="dialog"` and `aria-controls` without `aria-expanded` and is reported only where the platform makes the opener inert while open (a Reveal with `overlay: true`); non-modal Reveals, `role="dialog"` Dropdown panes, and Off-canvas Modal mode keep `dialog`, because a Trigger outside the inert content keeps a true expanded state; confidence HIGH, impact HIGH; ADR 0036; two Reveal and Off-canvas follow-ups routed. Dossier: [research/decision-aria-expanded-modal-opener.md](research/decision-aria-expanded-modal-opener.md).
 
 ### Amendment, 2026-09-27 (Resolve the assistive-technology checks)

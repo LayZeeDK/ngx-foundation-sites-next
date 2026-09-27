@@ -367,4 +367,6 @@ The user ruled that this pass leaves nothing open (map, "Open-decision pass"), s
 
 ### Gist for the map's Decisions so far
 
+(Paths relative to the effort root.)
+
 - [Resolve the assistive-technology checks](issues/77-evidence-assistive-technology-checks.md) -- all thirteen decided from platform trees, NVDA's and WebKit's sources, and published data (review on Sonnet 5, judge on Opus 5.5); seven specs confirmed, six defects fixed: Off-canvas Modal mode makes everything outside the panel inert (named exceptions for overlays, live regions, and CDK containers), which closes the modal-opener decision's follow-up 2 and moves Off-canvas Modal-mode Triggers to `modal-dialog`; Tooltip describes through a hidden element beside its host instead of the kept tip (no `AriaDescriber`); Dropdown Menu hover no longer takes keyboard focus; Drilldown levels are named after their toggles; Abide's native Form errors go after the label; Magellan's announcement row is corrected; every affected spec gains a manual release test. Evidence: [research/assistive-technology-evidence.md](research/assistive-technology-evidence.md), [research/assistive-technology-evidence-2.md](research/assistive-technology-evidence-2.md).

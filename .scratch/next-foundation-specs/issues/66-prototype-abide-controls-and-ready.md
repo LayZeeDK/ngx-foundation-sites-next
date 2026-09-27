@@ -97,7 +97,8 @@ Yes to all three questions, with one design decision the DI-based linking forced
 
 1. File the custom-control typed-reference compiler crash upstream (angular/angular): a `#ref="exportAs"` template reference on a directive applied through `hostDirectives` produces an unlocated internal error (`Could not resolve [object Object] / [object Object]`) instead of a diagnostic. Filing needs the user's confirmation (repo rule: never file in a third-party repo without it).
 
+The `@defer (hydrate on interaction)` mid-typing race first listed here was decided under the triage rule (Triage item 2), so only the upstream filing stays open.
+
 ### Amendment, 2026-09-27 (audit 0006)
 
 The upstream item is closed as not filed, by the user's ruling ([Upstream filings](76-evidence-upstream-filing-readiness.md)); no workaround here depends on it.
-The `@defer (hydrate on interaction)` mid-typing race first listed here was decided under the triage rule (Triage item 2), so only the upstream filing stays open.

@@ -67,7 +67,7 @@ passed [webkit] hydrated click, rule A, dl-bare :: reloaded=false url=/guide/a h
 passed [webkit] hydrated click, rule A, nc-bare :: reloaded=false url=/guide/a#s2 hist=1 top=1871 y=1871 active=BODY tab=- events=["popstate http://localhost:4784/guide/a#s2","hashchange http://localhost:4784/guide/a#s2"] clicks= errors=0
 passed [webkit] pre-hydration click, rule A, c-bare :: reloaded=false url=/guide/a#s2 hist=- top=1871 y=1871 active=s2 tab=- events="-" clicks=scrolled, calling preventDefault() errors=1 ["ERROR Error: `preventDefault` called during event replay."]
 passed [webkit] pre-hydration click, rule A, l-bare :: reloaded=false url=/guide/a#s4 hist=- top=4873 y=4873 active=s4 tab=- events="-" clicks=scrolled, preventDefault() skipped errors=0
-timedOut [webkit] pre-hydration click, rule A, c-safe :: ?[31mTest timeout of 60000ms exceeded.?[39m
+timedOut [webkit] pre-hydration click, rule A, c-safe :: Test timeout of 60000ms exceeded.
 passed [webkit] modified clicks, rule A, c-bare :: {"rule":"a","results":{"ControlOrMeta+click":{"newPageUrl":"http://localhost:4784/guide/a#s2","openerUrl":"http://localhost:4784/guide/a"},"middle click":{"noNewPage":"TimeoutError: browserContext.waitForEvent: Timeout 5000ms exceeded while waiting for event \"page\"","openerUrl":"http://localhost:4784/guide/a#s2"}}}
 passed [webkit] hydrated click, rule B, c-bare :: reloaded=false url=/guide/b hist=0 top=1871 y=1871 active=s2 tab=- events=[] clicks=scrolled, preventDefault() returned errors=0
 passed [webkit] hydrated click, rule B, c-safe :: reloaded=false url=/guide/b hist=0 top=3372 y=3372 active=s3 tab=- events=[] clicks=scrolled, preventDefault() returned errors=0
@@ -80,7 +80,7 @@ passed [webkit] hydrated click, rule B, dl-bare :: reloaded=false url=/guide/b h
 passed [webkit] hydrated click, rule B, nc-bare :: reloaded=false url=/guide/b#s2 hist=1 top=1871 y=1871 active=BODY tab=- events=["popstate http://localhost:4784/guide/b#s2","hashchange http://localhost:4784/guide/b#s2"] clicks= errors=0
 passed [webkit] pre-hydration click, rule B, c-bare :: reloaded=false url=/guide/b#s2 hist=- top=1871 y=1871 active=s2 tab=- events="-" clicks=scrolled, calling preventDefault() errors=1 ["ERROR Error: `preventDefault` called during event replay."]
 passed [webkit] pre-hydration click, rule B, l-bare :: reloaded=false url=/guide/b#s4 hist=- top=4873 y=4873 active=s4 tab=- events="-" clicks=scrolled, preventDefault() skipped errors=0
-timedOut [webkit] pre-hydration click, rule B, c-safe :: ?[31mTest timeout of 60000ms exceeded.?[39m
+timedOut [webkit] pre-hydration click, rule B, c-safe :: Test timeout of 60000ms exceeded.
 passed [webkit] modified clicks, rule B, c-bare :: {"rule":"b","results":{"ControlOrMeta+click":{"newPageUrl":"http://localhost:4784/guide/b#s2","openerUrl":"http://localhost:4784/guide/b"},"middle click":{"noNewPage":"TimeoutError: browserContext.waitForEvent: Timeout 5000ms exceeded while waiting for event \"page\"","openerUrl":"http://localhost:4784/guide/b#s2"}}}
 passed [webkit] JavaScript disabled :: {"c-bare":{"url":"/guide/a#s2","scrollY":1871},"l-bare":{"url":"/guide/a#s4","scrollY":4873},"c-safe":{"url":"/guide/a#s3","scrollY":3372},"dl-bare":{"url":"/guide/a#s6","scrollY":7875},"nc-bare":{"url":"/guide/a#s2","scrollY":1871}}
 passed [chromium] recipe after component reuse, once :: {"testId":"once","componentReused":true,"urlBeforeClick":"/docs/y","hrefBeforeClick":"/docs/x#s3","reloaded":true,"urlAfter":"/docs/x#s3","active":"BODY","scrollY":3168}

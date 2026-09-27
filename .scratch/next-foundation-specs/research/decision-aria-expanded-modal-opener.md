@@ -17,7 +17,7 @@ Citation keys used below:
 | NGC | angular/components clone `d:/projects/github/angular/components`, branch 22.2.x | HEAD `708d4c6`, 2026-09-25 |
 | NG | angular/angular clone `d:/projects/github/angular/angular`, branch 22.2.x | HEAD `5db6fc4`, 2026-09-25 |
 | WF | `web-features` npm package `data.json` (https://cdn.jsdelivr.net/npm/web-features@3.40.0/data.json) | 3.40.0 |
-| EXP | This dossier's experiment under `D:/tmp/nfs-decision-aria-expanded/` (section 2.4) | run 2026-09-26 |
+| EXP | This dossier's experiment under `D:/tmp/nfs-decision-aria-expanded/` (section 2.4); decisive files captured at [prototypes/modal-opener-aria/](../prototypes/modal-opener-aria/README.md) | run 2026-09-26 |
 
 ## 1. The decision
 

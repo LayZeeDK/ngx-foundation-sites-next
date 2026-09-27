@@ -11,7 +11,7 @@ The runnable workspace stayed under `D:/tmp/nfs-decision-reveal-open/app/` (an A
 - `app/index.html`: the script that logs dialog events from the first byte.
 - `public/platform.html`, `public/autofocus.html`, `public/ax.html`: the plain pages behind the P1-P6 platform cases.
 - `e2e/decision.spec.ts`: the 18 Playwright tests (times 3 engines) behind cases P1-P6 and A1-A10.
-- `run1.log`: the first run, before the focus rule was refined.
+- `run1.log`: the first run, before the focus rule was refined: 48 tests (A9 and A10 did not exist yet) from an earlier `decision.spec.ts` that is not kept, so its line references (A7 at `:259`, A8 at `:280`) do not match the captured file (A7 at `:305`, A8 at `:326`).
 - `run2.log`: the final run, 54 passed -- the one the ticket's Measurement section cites.
 
 ## How it was produced

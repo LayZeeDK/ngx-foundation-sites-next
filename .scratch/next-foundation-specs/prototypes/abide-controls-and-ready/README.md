@@ -246,6 +246,9 @@ Mid-typing race results (three runs per engine, typing a 26-character email addr
    an unlocated internal error (`Could not resolve [object Object] / [object Object]`) instead of
    a diagnostic. Filing needs the user's confirmation (repo rule: never file in a third-party
    repo without it).
+
+Closed: the upstream filing is not made, by the user's ruling ([Upstream filings](../../issues/76-evidence-upstream-filing-readiness.md)); the wrapping-label link stays the documented form for custom controls.
+
 Settled: see the ticket's Triage item 2. The `@defer (hydrate on interaction)` mid-typing
 character-drop race is decided under the triage rule (impact not HIGH), not left open: the
 Abide spec's rendering-modes subsection documents the limitation and recommends

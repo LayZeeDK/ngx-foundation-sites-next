@@ -249,3 +249,7 @@ From [audit 0006](../audits/0006-open-decision-pass.md), findings M2, M4, and L2
 - L2, the edges of the server-state decision: the `isOpen` row now says `[isOpen]="true"` opens a modal Reveal after hydration and renders a non-modal one shown from the first paint; the event-replay bullet states that for a modal Reveal open by default an `nfsToggle` click before hydration replays after the first render callback has shown the dialog and closes it, so its Triggers use `nfsOpen`; the 2.4.11 row names the pre-hydration window in which a non-modal Reveal shown at first paint cannot be dismissed (the decision's dissent) and the first-render focus rule (D22).
 
 Triage: impact LOW (a development warning and statements of decided behaviour; no input, output, or contract changes), confidence HIGH (each edit restates a recorded decision). Nothing new is open.
+
+### Amendment, 2026-09-27 (audit 0007)
+
+The last focus-restore fallback is the first registered Trigger outside the Openable: a bare `nfsClose` inside it registers too, and the Triggers spec's rule that it never becomes the return target holds. Development check 7 tests the same target. Triage: impact LOW (a restore-target filter and a warning condition; no API change), confidence HIGH (the Off-canvas spec's rule and the Triggers spec's 2.4.3 row).

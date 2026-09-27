@@ -215,3 +215,7 @@ From [audit 0006](../audits/0006-open-decision-pass.md), findings M4, L1, and L2
 - Outside this ticket's files, for the orchestrator (audit 0006 L1): building-blocks 1.8, Part 4 item 4, and Table B OffCanvas, and the README's ADR 0036 row.
 
 Triage: impact LOW (inherited requirements restated to match two Openable specs; no member, type, or rendered attribute changes), confidence HIGH. Nothing new is open.
+
+### Amendment, 2026-09-27 (audit 0007)
+
+The last focus-restore fallback is the first registered Trigger outside the Openable: a bare `nfsClose` inside it registers too, and the Triggers spec's rule that it never becomes the return target holds. Development check 7 tests the same target. Triage: impact LOW (a restore-target filter and a warning condition; no API change), confidence HIGH (the Off-canvas spec's rule and the Triggers spec's 2.4.3 row).

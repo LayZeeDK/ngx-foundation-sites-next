@@ -156,3 +156,7 @@ Rule: [map](../map.md), Orchestration rules, "Triage of human-only items". Only 
 ### Amendment, 2026-09-27 (audit 0006)
 
 The upstream items are closed as not filed, by the user's ruling ([Upstream filings](76-evidence-upstream-filing-readiness.md)); no workaround here depends on them.
+
+### Amendment, 2026-09-27 (audit 0007)
+
+OPEN FOR HUMAN item 1 (the pre-hydration submit) was decided by [ADR 0027](../adr/0027-abide-pre-hydration-submit.md): a server-rendered Abide form keeps its submit control disabled until the form is ready ([Spec: Abide](31-spec-abide.md)). Nothing in this ticket stays open.

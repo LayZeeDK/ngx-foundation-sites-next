@@ -101,7 +101,7 @@ Not changed: `specs/triggers.md` and `issues/54-spec-triggers.md` (the contract 
 
 ### Proposed shared-document changes
 
-For the orchestrator, who owns these files. (Paths relative to the effort root; links inside proposed ADR text are relative to `adr/`.)
+For the orchestrator, who owns these files. (Paths relative to the effort root.)
 
 1. `building-blocks.md`, Table B, Reveal row, Rendering column: replace "Server output: `<dialog class="reveal">` closed (no `open` attribute), content rendered for SEO;" with "Server output: `<dialog class="reveal">` with its content, closed (no `open` attribute) except a non-modal Reveal open at its first render, which carries `open` bound from a value fixed at that render, so its Trigger's `aria-expanded="true"` is true from the first paint;", and replace "open-by-default calls `showModal()` in the first `afterRenderEffect` run after hydration, without an enter animation (the `open` attribute alone is non-modal)" with "a modal Reveal open by default calls `showModal()` in the first `afterRenderEffect` run after hydration, without an enter animation (the `open` attribute alone is non-modal, and `showModal()` throws on it); a non-modal one open at first paint is not re-shown and takes focus at hydration only when nothing else has it". Reason: evidence 3 to 7.
 2. `building-blocks.md`, 1.11 decision 5: after "Document-level handlers (Light dismiss, outside click, global Escape) do not replay, which is correct: nothing is open before hydration." add "The exceptions, a Dropdown pane and a non-modal Reveal open at first paint, cannot be dismissed that way until hydration." Reason: the Dropdown spec already records its case; this decision adds the Reveal's.
@@ -136,6 +136,8 @@ Throwaway workspace `D:/tmp/nfs-decision-reveal-open/app` (an Angular CLI 22.2.0
 The engines are newer than the Browser target. The decision does not depend on `show()` returning early (the first-paint path never calls it); it depends on `showModal()` throwing for an open dialog, which the standard required before the current wording as well, and on attribute writes, which carry no dialog side effect beyond the setup and cleanup steps.
 
 ### Gist for the map's Decisions so far
+
+(Paths relative to the effort root.)
 
 - [Decide: the server state of an open-by-default non-modal Reveal's Trigger](issues/78-decide-open-by-default-non-modal-reveal-server-state.md) -- a non-modal Reveal open at its first render is rendered shown: `[attr.open]` bound from a value fixed at that render, so the server HTML is the shown non-modal dialog and its Trigger's `aria-expanded="true"` is true from the first paint; the first render callback does not re-show it, emits no `opened`, and takes focus only when nothing else has it; modal Reveals stay closed on the server; a `<form method="dialog">` close before hydration is undone by hydration, so `nfsClose` is the close control; the Openable contract is unchanged; measured in three engines (54 of 54); impact MEDIUM, confidence HIGH; no ADR. Spec: [specs/reveal.md](specs/reveal.md).
 
