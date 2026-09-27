@@ -27,6 +27,7 @@ Decided by a panel under the map's Open-decision pass note: the dossier is [Rese
 - The user proposed a change of plan: option A plus a generator that writes the consumer's `.d.ts` from the consumer's Sass (the `.d.ts` may also be hand-written), combined with an Nx sync generator, so that a Sass change synchronises the consumer's TypeScript automatically (`syncGenerators` on targets, `nx sync`, and `nx sync:check` in CI). The user also asked for a research round on alternatives not yet considered that do not rely on the vetoed options: [Research: further typing and synchronisation options for Variant inputs](135-research-further-variant-typing-options.md). This ticket waits on it, and the judge's provisional ruling is below.
 - The user: "Having a development mode (or optionally production mode) runtime check and a CI check sounds like a good idea."
 - The user: "Development/production mode runtime check opt-in could be inspired by @ngrx/store's runtime configuration." The research ticket's sync-tooling researcher is verifying NgRx's `runtimeChecks` shape from source.
+- The user: "Development mode runtime check should default to on but opting out should be possible." So the development-mode check is on by default with a per-check opt-out, and the production-mode check stays opt-in.
 
 ## Provisional ruling, 2026-09-27 (pending [Research: further typing and synchronisation options for Variant inputs](135-research-further-variant-typing-options.md))
 
