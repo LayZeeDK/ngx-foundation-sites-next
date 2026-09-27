@@ -28,6 +28,7 @@ Decided by a panel under the map's Open-decision pass note: the dossier is [Rese
 - The user: "Having a development mode (or optionally production mode) runtime check and a CI check sounds like a good idea."
 - The user: "Development/production mode runtime check opt-in could be inspired by @ngrx/store's runtime configuration." The research ticket's sync-tooling researcher is verifying NgRx's `runtimeChecks` shape from source.
 - The user: "Development mode runtime check should default to on but opting out should be possible." So the development-mode check is on by default with a per-check opt-out, and the production-mode check stays opt-in.
+- The user, on the ESLint template rule the second research round found (N5 in `research/variant-typing-alternatives.md`): "An ESLint plugin is a good idea but would add to the library's API surface and maintenance burden and I struggle to see how it could be fed its options from SCSS or provided values." The orchestrator's note for the judge: with declaration merging, such a rule checks only literal values the compiler already rejects, so it adds cost and no check; the same holds for a shipped stand-alone type-checker check (N6).
 
 ## Provisional ruling, 2026-09-27 (pending [Research: further typing and synchronisation options for Variant inputs](135-research-further-variant-typing-options.md))
 
