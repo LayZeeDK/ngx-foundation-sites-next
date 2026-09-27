@@ -218,6 +218,7 @@ From the [Decide: `#`-only links that `<base href>` resolves to another document
 4. Router example: the link binds `path() + '#requirements'`, and `InstallGuide` keeps `path` as a signal updated from `Location.onUrlChange` (unsubscribed through `DestroyRef`), the same body as the Smooth Scroll spec's Router example, because a path read once goes stale when the Router reuses the component.
 
 Ticket edits: the Triage row "`#`-only hrefs under `<base href>`" now records the outcome DECIDED (not in-page), and the consistency-review triage sentence on the inherited `<base href>` item now says it is decided by that panel (Smooth Scroll D9).
+- Re-judged the same day with the api and vsalt seats re-run on Fable 5.1: confirmed. Wording refinements from the re-judgement: user story 1 names the in-page links it promises, and the hierarchy sketch shows in-page `a[href]` links.
 
 ### Amendment, 2026-09-27 (Resolve the assistive-technology checks)
 

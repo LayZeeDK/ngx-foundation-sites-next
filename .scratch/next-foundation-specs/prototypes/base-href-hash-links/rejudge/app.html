@@ -1,0 +1,7 @@
+<nav aria-label="Shell">
+  <a routerLink="/param-b/y" data-testid="shell-go-b-y">shell: go to /param-b/y</a>
+  <ul nfsSmoothScroll data-testid="shell-container">
+    <li><a [href]="path() + '#s3'" data-testid="shell-url">shell, onUrlChange recipe #s3</a></li>
+  </ul>
+</nav>
+<router-outlet />

@@ -29,7 +29,7 @@ The library adds no CSS: Foundation's Menu already styles the marker, and the of
 
 ## User Stories
 
-1. As an application developer, I want to put `nfsMagellan` on a Foundation Menu of `#section` links, so that the menu tracks the section the reader is in, as `data-magellan` did.
+1. As an application developer, I want to put `nfsMagellan` on a Foundation Menu of in-page section links (Foundation's `#section` hrefs on a page whose URL is the base URL or in an application without `<base href>`, hrefs built from the current path on other routes; Smooth Scroll D9), so that the menu tracks the section the reader is in, as `data-magellan` did.
 2. As an application developer, I want sections to need only an `id`, so that I do not write the same value twice in `id` and `data-magellan-target`.
 3. As an application developer migrating Foundation markup, I want leftover `data-magellan-target` attributes to do no harm, so that I can migrate a page without editing every section.
 4. As a reader, I want the link of the section I am reading highlighted with Foundation's Menu active style, so that I see where I am without custom CSS.
@@ -122,7 +122,7 @@ Library additions with no Foundation Option: `ariaCurrentWhenActive` (Foundation
 ```
 [nfsMagellan]                      NfsMagellan on the link container
   hostDirectives: NfsSmoothScroll  click handling, focus, reduced motion, scrollTo
-  a[href="#id"] ...                consumer links, found by query (no directive)
+  a[href] (in-page) ...            consumer links, found by query (no directive)
 section[id] ...                    consumer targets anywhere in the document (no directive)
 ```
 

@@ -31,7 +31,7 @@ What earns the directive a place, stated plainly: for a page without the Router'
 
 ## User Stories
 
-1. As an application developer, I want to put `nfsSmoothScroll` on a Foundation Menu of `#section` links, so that every link in it scrolls smoothly to its section, as `data-smooth-scroll` did.
+1. As an application developer, I want to put `nfsSmoothScroll` on a Foundation Menu of in-page section links (Foundation's `#section` hrefs on a page whose URL is the base URL or in an application without `<base href>`, hrefs built from the current path on other routes; D9), so that every link in it scrolls smoothly to its section, as `data-smooth-scroll` did.
 2. As an application developer, I want to put `nfsSmoothScroll` on a single in-page link, so that one "back to the form" link glides without wrapping it in a container.
 3. As an application developer, I want links added later inside the container (by `@for` or `@if`) to be handled too, so that generated tables of contents need nothing extra.
 4. As a keyboard user, I want focus to land on the section I scrolled to, so that the next Tab continues inside that section and not back in the menu.
@@ -330,13 +330,13 @@ Against the static Storybook build:
 - Reduced motion: `page.emulateMedia({reducedMotion: 'reduce'})` makes the jump complete within one frame, with and without the directive; `no-preference` makes it take several frames.
 - Router coexistence in `smooth-scroll--router-link-fragment` with `scrollPositionRestoration: 'enabled'`: a directive-handled link stays at its target; a native in-page link outside the directive is recorded as ending at the restored position (the regression guard for the Router behaviour in Comparison rule 3, confirmed by the prototype).
 
-Against the prerendered fixture app (the harness from the rendering-mode test seam prototype), served under `<base href="/">` on a nested route:
+Against the prerendered fixture app (the harness from the rendering-mode test seam prototype), served under `<base href="/">` on a nested route; its in-page links carry the current path (Usage examples) except where a case names a `#`-only link:
 
 - JavaScript disabled: screenshot plus `@axe-core/playwright` with the six tags on the server HTML; a same-document link jumps to its target at the CSS offset; a `#`-only link navigates to the base URL.
 - Hydration: no NG05xx in the console and `ngDevMode.componentsSkippedHydration === 0`.
 - After hydration: a `#`-only link inside a container host on the nested route navigates to the base URL as well (not handled, `history.length` +1), and a current-path link in the same container is handled; after a Router navigation between two parameter values of one route, and after a query change, the current-path link is still handled in place; a skip link in the application shell built from the current path stays in-page after a navigation.
 - Pre-hydration click with the main bundle delayed: the native jump happens at once; after hydration focus is on the target, the final position equals the target position, and exactly one "`preventDefault` called during event replay" error is logged (the building-blocks replay rule, decided at triage on 2026-09-26; the assertion would flip to zero only if a replay check were added later).
-- Dehydrated block, link host: inside `@defer (hydrate when hydrateNow())` with the signal held `false`, clicking the link does not jump before the block hydrates, then scrolls to and focuses the target, logs no error, and leaves the URL unchanged.
+- Dehydrated block, link host: inside `@defer (hydrate when hydrateNow())` with the signal held `false`, clicking the link does not jump before the block hydrates, then scrolls to and focuses the target, logs no error, and leaves the URL unchanged. With a `#`-only `href` on the same link host instead, the click does nothing: no navigation before or after the block hydrates, no scroll, and no focus move to the target (Rendering modes; decision dossier row H8).
 - Dehydrated block, container host: the native jump happens at once and the replay focuses the target.
 - `@defer (hydrate never)`: links jump natively with the CSS offset, smoothly with the mixin included.
 

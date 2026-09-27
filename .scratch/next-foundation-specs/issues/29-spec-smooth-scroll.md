@@ -196,6 +196,7 @@ Triage item 2 above and item 2 of the consistency-review triage (OPEN FOR HUMAN 
 10. Design decisions, D9: rewritten to the decided rule, its rationale, and the rejected alternatives (the earlier default among them); Out of Scope unchanged.
 11. Usage examples: the first example's heading limits Foundation's `#id` hrefs to a page whose URL is the base URL or an application without `<base href>`; the Router example binds `path()` and keeps it as a signal updated from `Location.onUrlChange` (unsubscribed through `DestroyRef`), with a note on `withHashLocation()`; the listener-free recipe points at the current-path `href`.
 12. Further Notes: a new subsection, "Applications without `<base href>`", and a new bullet under Foundation behaviour changed or dropped for `a[href^="#"]` as the in-page test.
+- Re-judged the same day with the api and vsalt seats re-run on Fable 5.1: confirmed. Wording refinements from the re-judgement: user story 1 names the in-page links it promises, and the fixture-app e2e states that its links carry the current path, with a negative control for a bare link host in a dehydrated block.
 
 ### Amendment, 2026-09-27 (audit 0006)
 
