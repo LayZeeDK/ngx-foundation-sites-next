@@ -145,7 +145,7 @@ The OffCanvas configuration with `trapFocus` and an overlay present, in which th
 _Avoid_: overlay mode, trap mode, dialog mode
 
 **Modal inert set**:
-The elements an OffCanvas panel in Modal mode makes inert while it is open: every element sibling of the panel and of each of its ancestors up to `body`, except the overlay, the focus-trap anchors, live regions, popovers, and CDK's overlay and description containers.
+Everything on the page outside an OffCanvas panel in Modal mode that the panel makes inert while it is open; the overlay and page-level live regions and popovers stay reachable.
 _Avoid_: background, page content (when meaning the set)
 
 **Light dismiss**:
@@ -165,7 +165,7 @@ An element placed against its Trigger inside the page flow rather than in an ove
 _Avoid_: overlay, popover, popup, floating element, connected overlay
 
 **Tip**:
-The `.tooltip` element whose text describes a Tooltip's host; distinct from the Tooltip Plugin and from the host that triggers it.
+The `.tooltip` element a Tooltip shows beside its host, carrying the same text as the host's description; distinct from the Tooltip Plugin and from the host that triggers it.
 _Avoid_: bubble, popup, tooltip element, template, overlay
 
 **Positioner**:
@@ -193,7 +193,7 @@ Which nested-menu behaviour a menu root has: `accordion`, `drilldown`, or `dropd
 _Avoid_: menu type, plugin type, variant, strategy
 
 **Mode swap**:
-A responsive Plugin's change of mode when its Breakpoint rule resolves to another mode: a class and key change on the same nodes for the menu Plugins, a structural re-render of its own template for ResponsiveAccordionTabs, the one ADR 0008 accepts.
+A responsive Plugin's change of mode when its Breakpoint rule resolves to another mode: a class and key change on the same nodes for the menu Plugins, which drilldown mode extends with level names, a structural re-render of its own template for ResponsiveAccordionTabs, the one ADR 0008 accepts.
 _Avoid_: mode switch, re-init, re-render (bare), toggle
 
 **Disclosure navigation**:

@@ -13,6 +13,7 @@ Foundation's docs markup already carries every element a plugin needs, and `@ang
 
 ## Consequences
 
+- 2026-09-27: the Tooltip exception also covers the tip's hidden description element, created in the first client render callback and never authored ([Resolve the assistive-technology checks](../issues/77-evidence-assistive-technology-checks.md)).
 - Consumers write Foundation's markup with small documented deltas (`<a href="#">` triggers become `<button>`, `<div class="reveal">` becomes `<dialog class="reveal">`).
 - No directive creates DOM before hydration; measurements and observers wait for render callbacks.
 - Specs that find they need generated structure must first look for a platform feature or a one-element consumer authoring step before proposing a component.
