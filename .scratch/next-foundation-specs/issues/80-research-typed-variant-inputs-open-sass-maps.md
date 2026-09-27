@@ -1,7 +1,7 @@
 # 80. Research: typed Variant inputs over open Sass maps
 
 Type: research
-Status: open
+Status: resolved
 Blocked by: 79
 Labels: wayfinder:research
 Map: ../map.md
@@ -13,3 +13,13 @@ Under the class rule of the user's ruling on 2026-09-27 ([Triage the out-of-scop
 ## How to work it
 
 Resolve with a `/research` subagent (Opus 5.5). Inventory every Foundation Sass map and setting whose keys become Variant class names (with `file:line` in the 6.9.0 clone) and which of them a consumer can extend or shrink. Then survey typing approaches without declaration merging, with sources and measured facts where cheap to measure: a closed union of Foundation's defaults plus a `string` escape; a generic or branded string type; a typed provider or injection token the consumer calls with its names (`provideNfs...`) and what type inference it can give templates; generating a TypeScript file from the consumer's Sass settings (a Sass function, a build step, or an Angular builder) and the cost to the consumer's build; reading class availability at runtime (for example from CSS custom properties or computed styles) for a development-mode check; and how Angular Material, the CDK, `@angular/aria`, and other design-system libraries (Bootstrap and Bulma wrappers for Angular, MUI, Chakra, Radix Themes, Tailwind variant libraries) type theme-extensible props, noting which rely on declaration merging. For each: template type checking in strict mode, editor completion, SSR and hydration, bundle cost, what happens when TypeScript and Sass disagree, and the development-mode check it allows. Write `research/typed-variant-inputs.md` with the options, the evidence, and open unknowns; decide nothing.
+
+## Answer
+
+Resolved 2026-09-27 (Opus 5.5; the survey of other libraries by a Sonnet 5 sweep, spot-checked). Findings: [research/typed-variant-inputs.md](../research/typed-variant-inputs.md). Nothing is decided; the panel of [Decide: typed Variant inputs over open Sass maps](81-decide-typed-variant-inputs-open-sass-maps.md) chooses.
+
+- Inventory: four palettes (`$foundation-palette`, which Callout and Progress Bar use directly, plus `$button-palette`, `$badge-palette`, `$label-palette`), five size or ratio maps whose `default` key has no class, `$breakpoint-classes` behind every responsive Variant class (a subset of `$breakpoints`, the set `NfsBreakpointName` covers), five counts, eight Prototyping lists, and settings that decide whether a class exists (`$button-fill`, `$button-responsive-expanded`, the grid and export-mixin choices). The fill names stay a closed set that renders correctly under any `$button-fill`; an input default that emits a class can fight a Sass default.
+- Measured with `ngc` 22.2.0, TypeScript 6.0.3, and the Angular language service under `strictTemplates` (on by default in 22.2): a closed union rejects typos and the consumer's own names; `(string & {})` accepts typos and completes only the defaults, and `| string` completes nothing; a generic directive infers any string; a consumer subclass of a generic abstract base, a library type module remapped by tsconfig `paths` (with a shipped default), and a branded factory value each check and complete the consumer's names; a consumer narrowing directive checks them but does not complete them; a typed provider changes no template type, and a factory-made directive fails to compile ahead of time. An unresolved type module becomes a silent `any` under the CLI's `skipLibCheck: true`.
+- Build and runtime: a Sass custom function exports the consumer's names to a TypeScript file in about 0.25 s, but `@angular/build` has no hook for it, so it is a separate step; one custom property per family, or a stylesheet scan, gives a development-mode check in three engines, browser-only.
+- Declaration merging stays out by the user's veto; MUI and Mantine rely on it. No Angular library surveyed lets a consumer extend a variant type other than by accepting any string.
+- Twelve unknowns for the panel, first among them whether the veto's unrecorded reason also covers `paths` remapping and generators that overwrite a package's declaration files, and whether a typed input must reject typos at compile time.
