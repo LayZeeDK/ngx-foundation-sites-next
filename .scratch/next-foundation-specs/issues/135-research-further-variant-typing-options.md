@@ -1,7 +1,7 @@
 # 135. Research: further typing and synchronisation options for Variant inputs
 
 Type: research
-Status: claimed
+Status: resolved
 Blocked by: none
 Labels: wayfinder:research
 Map: ../map.md
@@ -20,3 +20,10 @@ Two `/research` subagents in parallel, each writing one file and deciding nothin
 2. Typing alternatives (`research/variant-typing-alternatives.md`, Fable 5.1): Angular template type-checking mechanisms not yet weighed (generic directives whose type parameter is inferred from another input or from a composed host directive, input transforms with generic or overloaded types, `ngAcceptInputType`-style declarations, what `hostDirectives` does to input types), lint-time checks (an angular-eslint template rule that validates Variant values against a generated palette list) and Angular extended diagnostics, TypeScript 6.0 features that bear on it, and how other ecosystems type theme-extensible component props without the vetoed mechanisms (web components' element maps, Vue, Svelte, Lit, Stencil, Qwik, Solid, and Angular libraries); for each, measure with `ngc` 22.2 and strict templates where cheap, and compare it with option A plus the generator and sync generator.
 
 Resolved when both files exist; the answer here summarises them for the judge of the decision.
+
+## Answer
+
+Resolved 2026-09-27; both files decide nothing.
+
+- [research/variant-typing-alternatives.md](../research/variant-typing-alternatives.md) (Fable 5.1): ten typing options measured with `ngc` 22.2 strict templates. No provider affects a template type, wherever it is registered (`ApplicationConfig.providers`, a `StaticProvider` through `BootstrapContext.platformRef`); the compiler's template type check reads no injector. One consumer constant (`defineNfsTheme({...} as const)`) can drive both `provideNfsVariants(theme)` and the declaration-merging augmentation: typos fail with TS2820 and a suggestion, custom names complete, removal works through `false` members; without `as const` every name compiles silently, and an augmentation file that is not a module replaces the library's types. A consumer directive hosting the library directive through `hostDirectives` also fails typos, at the cost of one consumer directive per library directive. An angular-eslint rule or a stand-alone type-checker check fails literal values only; the user judged an ESLint plugin not worth its API surface and upkeep. Option A needs closed library defaults, explicit fallback annotations, a module augmentation file, and the file in every program.
+- [research/variant-typing-sync-tooling.md](../research/variant-typing-sync-tooling.md) (Opus 5.5): an Nx task sync generator keeps the declaration file in step locally, but returns early in CI (measured: a stale file built with `CI=true`), so `nx sync:check` must be its own CI step; an executor with `--check` runs in CI; on the Angular CLI alone an Architect builder runs through npm `pre*` scripts but not under a bare `ng build` or `ng serve`, and the dev server picked up only the first change to a declaration file; esbuild code plugins cannot see the Sass compile; the reverse direction (TypeScript or design tokens as the source, the Sass map generated) works and moves staleness to the Sass side. NgRx 22.0.1's `runtimeChecks` force every check off in production, so a production opt-in is this library's own design: feature functions in the `provideRouter` pattern (`provideNfs(withRuntimeChecks(...), withProductionRuntimeChecks(...))`) keep the checker out of bundles that do not opt in (measured 87 B).
