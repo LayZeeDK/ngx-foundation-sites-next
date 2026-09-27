@@ -1,7 +1,7 @@
 # 81. Decide: typed Variant inputs over open Sass maps
 
 Type: grilling
-Status: claimed
+Status: resolved
 Blocked by: 80, 135
 Labels: wayfinder:grilling
 Map: ../map.md
@@ -227,3 +227,400 @@ Expected to reach:
 - The README, and a tooling spec ticket for the generator.
 
 The first draft's ADR text is kept outside the bundle, in the judge's scratchpad, for reuse.
+
+## Answer
+
+Model: Opus 5.5
+
+Judge's ruling, 2026-09-27. This Answer supersedes the provisional ruling above wherever the two differ; the provisional ruling's probes and verified facts stand and are cited from it. Evidence:
+- the first dossier (`research/typed-variant-inputs.md`, "D");
+- the four panel arguments, all on Opus 5.5, argued before the user's later rulings;
+- the judge's two probe rounds (cases J, S, and L in round 1; A, B, C, K, O, and R in round 2, above);
+- the second research round, [Research: further typing and synchronisation options for Variant inputs](135-research-further-variant-typing-options.md): `research/variant-typing-alternatives.md` (Fable 5.1, "ALT", with its option numbers N1 to N10) and `research/variant-typing-sync-tooling.md` (Opus 5.5, "SYNC", with its mechanism numbers T1 to T13).
+
+"Verified" marks a fact the judge re-read at its source or re-measured.
+
+### Decision
+
+**Every Variant input's type is closed, and the consumer extends the open families in its own code.** The library declares one Variant registry, an empty interface, per Sass setting whose keys become Variant class names. The registries live in its primary entry point `ngx-foundation-sites`. Each directive family's alias combines Foundation's default names with its registry through MUI's true/false union (`NfsOverridableStringUnion<defaults, registry>`): `name: true` adds a name and `name: false` removes a default. The consumer's Variant declaration file, `src/nfs-variants.d.ts` in each application, augments the registries. The measured effect:
+- A misspelt name fails to compile with the compiler's suggestion.
+- A Foundation class name passed as a value fails.
+- The consumer's declared names compile and are offered by the editor.
+- A name its Sass removed fails.
+
+Per family:
+- **Closed sets Foundation's Sass fixes** (the fills `solid`, `hollow`, `clear`; Reveal and Switch sizes; Menu `horizontal` and `vertical`; Button Group `stacked-for-small` and `-medium`; single modifier classes such as `.expanded`, `.dropdown`, `.arrow-only`, `.no-gaps`): a literal union when the names exclude each other. A single modifier class is a boolean through the library transform `nfsVariantBoolean`, whose parameter type `NfsVariantBoolean` is `boolean | '' | 'true' | 'false' | null | undefined`; `booleanAttribute` is never used.
+- **Open palettes, size and ratio maps, and Prototyping lists** (`$foundation-palette`, `$button-palette`, `$badge-palette`, `$label-palette`, `$button-sizes`, `$callout-sizes`, `$closebutton-size`, `$dropdown-sizes`, `$responsive-embed-ratios`, and the `$prototype-*` lists): Foundation's default names over the setting's registry. The aliases chain where Foundation's Sass defaults chain: `$button-palette`, `$badge-palette`, and `$label-palette` default to `$foundation-palette`, so `NfsButtonColor` builds on `NfsFoundationPaletteColor` (round 2, B01). No `(string & {})` member, because one would accept every string again (ALT section 3, "A"). A consumer who wants open typing for one setting declares an index signature in that registry (round 2, O01); the docs give it as the opt-out.
+- **Breakpoint-keyed responsive Variants**: the breakpoint goes into the value of the family's own input.
+  - An on or off family takes `true` or a Breakpoint query typed `NfsClassBreakpointQuery<M>` (`expanded="medium only"` sets `.medium-only-expanded`; `showFor="large only"` sets `.show-for-large-only`), where `M` lists only the modifiers whose classes Foundation generates for the family.
+  - A valued family takes a bare value, which means the Zero breakpoint, or `NfsClassBreakpointRules<V>` (`[size]="{small: 12, medium: 6}"`, `[orientation]="{small: 'vertical', medium: 'horizontal'}"`).
+  - A `<words>-for-<bp>` class keeps Foundation's words (`stackedFor="medium"`).
+  - Breakpoint names, queries, and rules keys are closed over `NfsClassBreakpoint`, which mirrors `$breakpoint-classes` through the registry `NfsBreakpointClassesOverrides`. So a misspelt query or key fails at compile time (A10, A13), and an added `xlarge` compiles once declared (A09, A12).
+  - The directive maps each value to the class with its meaning and fills Foundation's Zero-breakpoint gaps: `expanded="small"` sets `.expanded`, `expanded="small down"` sets `.small-only-expanded`, and a Menu rule for the Zero breakpoint sets `.vertical`.
+  - There is no input per breakpoint and never a class-name or rule string as a value.
+  - Behaviour Options keep the open `NfsBreakpointName` (`specs/breakpoint-service.md:145`). An Option that sets a class only for Class breakpoints (`revealOn`, `inCanvasOn`) is typed `NfsClassBreakpoint`.
+- **Numeric counts** (`$grid-columns`, `$xy-block-grid-max`, `$grid-column-count`, `$block-grid-max`, `$flex-source-ordering-count`, `$prototype-spacers-count`): the registry holds one `count` member (`interface NfsGridColumnsOverrides { count: 16 }`). The type is the range up to it, `NfsOverridableCount<default, registry>`, and a transform accepts the range's numbers and their static-attribute strings (A14, A15, B05). `numberAttribute` is never used.
+
+**Input names**, in this order:
+1. A Foundation `data-*` Option that already names the family keeps its name (Off-canvas `revealOn` and `inCanvasOn`, Responsive Toggle `hideFor`, Slider `vertical`).
+2. Otherwise, the input name of the hosted `@angular/aria` directive for the same concept: `orientation` (as the Tabs spec already has it, `specs/tabs.md:184`) for `.horizontal`, `.vertical`, and their responsive forms.
+3. Otherwise, mutually exclusive names from one Sass setting or loop form one enum input named for the dimension Foundation's docs and Sass use:
+   - `color` for a palette;
+   - `size` for a size map and for Reveal, Switch, and grid cell sizes;
+   - `fill` for `solid`, `hollow`, and `clear`;
+   - `ratio` for `$responsive-embed-ratios`;
+   - `offset`, `up`, and `order` for the grid and flex families.
+4. Otherwise, a single on or off class is a boolean named with the camelCase of its class (`expanded`, `dropdown`, `arrowOnly`, `noGaps`, `unstriped`).
+5. A responsive form is never its own input. Remove the breakpoint and any `only` or `down` from Foundation's class template; what remains names the input, and the breakpoint goes into the value.
+6. Names:
+   - A registry is `Nfs` + the PascalCase of its Sass setting + `Overrides` (`NfsButtonPaletteOverrides`, `NfsClosebuttonSizeOverrides`, `NfsBreakpointClassesOverrides`), a mechanical rule the generator follows.
+   - A directive family's alias is `Nfs` + component + dimension (`NfsButtonColor`, `NfsCalloutSize`, `NfsResponsiveEmbedRatio`, `NfsCellSize`).
+   - Each input's JSDoc names the Foundation class template and the Sass setting (AGENTS.md Design Philosophy 5).
+
+**Default and binding rules**:
+- Every Variant input defaults to `undefined` (`false` for a boolean) and then sets no class, so the consumer's Sass default is the look: the `$button-fill` fill, `$button-background`, the `default` key of `$button-sizes`, `$callout-sizes`, and `$responsive-embed-ratios`, `$closebutton-default-size`, and Menu's horizontal.
+- The value `'default'`, where Foundation's map has that key, also sets no class.
+- No Defaults token holds a Variant default.
+- An explicit value always sets its class, even when it names the default look.
+- The directive binds a value only when it is one class token. Under the closed type, only a cast or `$any()` can reach this guard.
+
+**Library authoring rules**:
+- Every Variant input declares explicit type arguments that name exported aliases, and the library's build asserts that each Variant input's emitted write type in the typings names its alias. Two measurements make this necessary:
+  - Declaration emit printed a count input whose type was inferred from its transform as the resolved default range, which froze Foundation's defaults where no declaration can reach them (round 2, A19).
+  - Even with an explicit argument, the count's read type printed resolved (provisional ruling, "The trap"). ALT found the same for a conditional fallback (ALT 2.4, A05 against A08).
+- The registries and the shared Variant types live in the primary entry point. Secondary entry points use them as types only, which added no runtime import to a secondary's FESM bundle (round 2, verified), so per-plugin `@defer` splitting is untouched. The helpers are `NfsOverridableStringUnion`, `NfsOverridableCount`, `NfsClassBreakpoint`, `NfsClassBreakpointQuery`, `NfsClassBreakpointRules`, and `NfsVariantBoolean` with its transform `nfsVariantBoolean`. The library also ships, in the same package version, a manifest of its registries (Sass setting, registry name, default names or count) for the generator.
+
+**The Variant declaration file: source, direction, and form**:
+- **Source and direction**: the consumer's Sass, towards TypeScript. The library's generator compiles the application's global stylesheet with the Sass JavaScript API, using the application build target's own `styles` and `stylePreprocessorOptions.includePaths`. It then reads the Variant properties (`--nfs-<setting>` lists on `:root`) from the compiled CSS text, the same channel the runtime check reads. Two reasons for reading the compiled text:
+  - It is exact by construction, and it agreed with the built CSS where the two were compared (SYNC 3, reader R1).
+  - A custom Sass function receives colour-name keys such as `purple` as colours, not strings (SYNC 3, R3).
+
+  The parser accepts lists broken over several lines, as an unoptimized build prints them (SYNC 3).
+- **Output**: `src/nfs-variants.d.ts`, never anything under `node_modules` (veto C). It is a module (an `import` of `ngx-foundation-sites`) containing one `declare module 'ngx-foundation-sites'` block, with each registry's added names as `true` (sorted), then its removed defaults as `false` in the library's order, and counts as `count`. A header names the source stylesheet and the command that regenerates it. The output is deterministic, so a diff check is exact (SYNC 8.5). The file is committed, so the editor and the first type check see it before any build (D unknown 8).
+- **Hand-writing**: a hand-written file is supported, and the CI check compares it with the Sass just the same. The docs warn about two traps:
+  - A file with no `import` or `export` makes `declare module` an ambient module that replaces the library's types (ALT 2.3, TS2305).
+  - A file that derives names from a value needs `as const`, or every name compiles (ALT 2.3, the widened row).
+- **Where it is seen**: every program that type-checks templates must include the file. The Angular CLI and Nx application templates include `src/**/*.ts`, and their test setups include `src/**/*.d.ts` (verified, provisional ruling), so the defaults are covered. A program without the file rejects the consumer's names: it fails closed (C01). A shared Nx library's own type check, tests, and stories see no application's file (SYNC 4.4), so the library's tsconfigs include the declaration file of the application it is tested against. Including several applications' files merges them (SYNC 4.4).
+
+**Synchronisation and CI steps**:
+
+The tooling is one shared core behind three entry points in the library's own package, declared through its `package.json` `generators` and `builders` fields. No consumer-side plugin is needed (SYNC 4.1):
+- a setup generator, which is an Nx generator exposed as an Angular CLI schematic through `convertNxGenerator` (the user's rule);
+- an Nx task sync generator;
+- an Architect builder with a `check` configuration.
+
+- **Nx workspace**:
+  - Setup: `nx g ngx-foundation-sites:variant-types` writes each application's declaration file. It registers the sync generator through `targetDefaults` keyed by executor, which puts it on every matching target without touching `project.json`: `"@angular/build:application": {"syncGenerators": ["ngx-foundation-sites:variant-types-sync"]}`, the same for `@angular/build:dev-server` (both measured, SYNC 4.1), and the unit-test executor (not measured). It also offers `"sync": {"applyChanges": true}` in `nx.json`.
+  - Locally: before `build`, `serve`, and `test`, Nx runs the sync generator. With `applyChanges: true` it rewrites a stale file and runs the task (measured, SYNC 4.2). Without it, Nx prompts in a terminal and stops outside one. `nx sync` rewrites the file on demand. A git hook or agent shell runs `nx sync` first, because a non-interactive run outside CI exits when the file is stale (SYNC 4.2; source, SYNC 9.3).
+  - CI: **`nx sync:check` is its own required step**. No Nx 23.2.1 task runs a sync generator when `CI` is set: a build with `CI=true` passed against a stale file and shipped a Variant with no class (SYNC 4.2; `run-command.ts:687-689`), while `CI=true nx sync:check` exited 1.
+  - Watch mode: `nx serve` syncs once at start (SYNC 4.3), and the dev server re-checked templates only after the first change to the declaration file (SYNC 5.4, on the same builder). After a change of Sass keys, the docs tell the consumer to run `nx sync` and restart the server.
+  - Several applications: one run covers the workspace, because a sync generator receives the tree alone (SYNC 4.1). The generator reports each application's failure with its fix, for example a missing Library mixin include, because one failing application blocks every task that carries the generator (SYNC 4.4).
+- **Angular CLI without Nx**:
+  - Setup: `ng g ngx-foundation-sites:variant-types` writes the file and adds an `nfs-variants` target to each application in `angular.json`, with a `check` configuration; `--npm-scripts` also adds `prebuild`, `prestart`, and `pretest` scripts that run it.
+  - Locally: `ng run <app>:nfs-variants` rewrites the file. The optional npm scripts run it for `npm run build`, `npm start`, and `npm test`, but nothing runs for a bare `ng build`, an IDE's run button, or `ng serve` (measured, SYNC 5.2). The dev-server restart note above applies here too (SYNC 5.4).
+  - CI: `ng run <app>:nfs-variants:check`, which exits 1 when the file and the Sass disagree (measured, SYNC 5.1).
+  - Dependencies: the builder is a plain `createBuilder` over the shared core and needs only `@angular-devkit/architect`, which the CLI already installs (SYNC 5.3). The schematic, being an Nx generator converted with `convertNxGenerator`, needs `nx` at run time: `invoke-nx-generator.js:5-6` requires `nx/src/devkit-exports` and `nx/src/devkit-internals`, and `@nx/devkit` 23.2.1 has the peer `nx >= 22 <= 24` (verified). So an Angular CLI consumer installs `nx` as a development dependency to run it, 36 MB on win32-arm64 with its native binary (SYNC 5.3). The user's rule on the generator's form stands; the check that runs in CI avoids the dependency.
+
+**The runtime checks**, in the direction of NgRx's `runtimeChecks`, with this library's own production opt-in, because NgRx forces every check off in production (SYNC 8.2):
+
+```ts
+export interface NfsRuntimeChecks {
+  /** A bound Variant value the compiled CSS has no class for (not in its --nfs-<setting> list), a value that is not one class token, or a Breakpoint query or rules key that cannot be parsed. */
+  strictVariantNames: boolean;
+  /** Variant properties missing from :root: a Library mixin include was forgotten. */
+  strictVariantProperties: boolean;
+  /** nfsBreakpointsToken and the Breakpoint properties disagree (ADR 0005's drift check). */
+  strictBreakpointSync: boolean;
+}
+
+export interface NfsRuntimeCheckReport {
+  readonly check: keyof NfsRuntimeChecks;
+  readonly message: string;
+  readonly directive?: string;
+  readonly input?: string;
+  readonly value?: unknown;
+  readonly setting?: string;
+  readonly names?: readonly string[];
+}
+
+/** Development overrides: every check is on without this provider; returns no providers when ngDevMode is false. */
+export function provideNfsRuntimeChecks(checks: Partial<NfsRuntimeChecks>): EnvironmentProviders;
+
+/** Production opt-in, per check; all off unless listed; the only production code path that references the checker. */
+export function provideNfsProductionRuntimeChecks(
+  checks: Partial<NfsRuntimeChecks>,
+  options?: { report?: (report: NfsRuntimeCheckReport) => void },
+): EnvironmentProviders;
+```
+
+- **Defaults**: in development builds all three checks are on with no provider (a root token factory) and report through `console.warn`. A consumer opts a check out with `provideNfsRuntimeChecks({strictVariantProperties: false})` (the user's default-on-with-opt-out ruling). In production builds none runs until `provideNfsProductionRuntimeChecks` lists it, and its reports go to `report`, or to `console.warn` when none is given.
+- **Why two functions and not an umbrella `provideNfs(withRuntimeChecks(), withProductionRuntimeChecks())`** (SYNC 8.4, shape 1): building-blocks 1.9 rejects a single `provideNfs*()`, and the property that matters holds either way. The directives reference only a development fallback behind `ngDevMode`, so a production bundle keeps the checker only when the production function is called (measured with esbuild: 87 B when not installed, 895 B once installed, SYNC 8.3).
+- **What each check sees**: the compiler now reports typos, so the checks report what it cannot see:
+  - drift between the declaration file and the compiled CSS for a value that is rendered (a removed key still declared, a class a Sass flag leaves out, such as the responsive `-expanded` classes behind `$button-responsive-expanded`);
+  - a missing include;
+  - a value that bypasses the type (`$any()`, or a string cast from data);
+  - Breakpoint drift.
+- **Where and when they run**: in the browser only, after the first render. Each reads one `--nfs-<setting>` property per realm, once, and reports once per distinct value. They never run on the server, which has no computed style (`research/angular-rendering-modes.md:31`, `:51`).
+- **What a production opt-in costs**: the checker's code (about 0.9 KB minified for the stand-in, more for the real one, which also parses queries and rules keys), one computed-style property read per setting per realm, and one report per distinct value. The Variant properties ship in production CSS either way. The case it serves is Variant values from runtime data, such as a colour name from a CMS.
+- **Home**: the runtime checks, their configuration, and the Variant check live beside the Breakpoint service's drift check in `ngx-foundation-sites/media-query`, which already reads `:root` in development.
+
+**Not adopted**:
+- the open default for open families (O2), superseded by the user's ideal and the narrowed veto;
+- consumer subclasses (O4), by the user's composition rule;
+- narrowing directives with generated import lists (O5), and consumer directives hosting the library directive (ALT N4);
+- a generic directive inferring names from a bound palette (ALT N1);
+- transform and write-type tricks (ALT N2, N3);
+- a language-service plugin (ALT N8);
+- a provider or theme constant as the type source (ALT N9, N10; D O8);
+- TypeScript or design tokens as the source (SYNC T8, T9);
+- branded factories (O6) and inference-only generics (O3);
+- a tsconfig `paths` remap (O7, veto B), and every form of writing into `node_modules` (veto C);
+- an angular-eslint rule or a stand-alone `TemplateTypeChecker` check (ALT N5, N6);
+- a builder that wraps `@angular/build:application`, an esbuild plugin (SYNC T7), or a watcher shipped with the library (SYNC T6);
+- an Nx executor with a check mode: `nx sync:check` covers Nx workspaces, and the Architect builder also runs under Nx for a workspace that declines sync generators.
+
+### Why
+
+The deciding evidence, in the order it decides:
+
+1. **Declaration merging meets the user's ideal for every consumer, with no setup.** A misspelt palette, size, breakpoint, or count fails to compile (round 2, A02 with TS2820 "Did you mean '"primary"'?", A10, A13, A15). The consumer's names compile once declared and are offered by the editor (A01, A09, A12, A14; K01, K04). A removed key fails (A03), and so does a Foundation class name passed as a value (A06). The judge measured this across a real ng-packagr 22.2.0 package resolved through its `exports`, for registries declared in the primary entry point, in a secondary one, and through a re-export (A07, B03, B04, R01). ALT measured it independently with `ngc` 22.2 (ALT 2.3, rows A and N; 2.5). ALT's open unknowns 1, 2, and 4 (ng-packagr's declaration bundling, secondary entry points through `exports`, several applications) are answered by round 2.
+2. **Nothing else reaches the ideal without per-directive consumer code:**
+   - No provider affects a template type wherever it is registered, because the compiler's template type check reads no injector (ALT N10, measured with `ApplicationConfig.providers` and a platform `StaticProvider`).
+   - A generic directive checks only elements that also bind the palette (ALT N1, G03).
+   - Consumer directives beside or around the library directive fail open in components that import the library directive (round 1, L05; ALT N4, H05).
+   - Subclasses lose their providers, selector, and `exportAs` (verified: `NG/packages/core/src/render3/features/providers_feature.ts:44-58` sets no `ngInherit`; `NG/adev/src/content/guide/components/inheritance.md:23-25`), and the user ruled them out.
+
+   The registry is the one closed-by-default type that the consumer extends per Sass setting, in one file per application.
+3. **It fails closed, and where the file is needed is predictable.** A program that lacks the file rejects the consumer's names (C01; ALT 3, "A"; SYNC 4.4, the library's own program), and the default templates include it (verified). The earlier generated lists failed open (L05).
+4. **The Sass stays the source of truth**, where Foundation documents customisation (`map-merge` on its Button, Badge, and Label pages, D 2), and ADR 0012 has the library read the consumer's Foundation settings. The generator and the runtime check read one channel, the Variant properties. The reverse direction works (SYNC 6.2 measured it), but it moves staleness to a generated Sass partial that compiles silently without the new class, and it replaces Foundation's settings workflow (SYNC 6.2). A theme constant driving the augmentation (ALT N9) adds a second list beside the Sass and a silent `as const` trap, and its runtime list duplicates what the CI check already compares.
+5. **The mirror is verified at the two points the compiler cannot see.** CI compares the declaration file with a fresh read of the Sass before merge (`nx sync:check`, or the check builder, both measured to fail on drift, SYNC 4.2, 5.1). In development, the runtime check reports the rendered values the CSS lacks. That is ADR 0005's shape for breakpoints, a TypeScript mirror verified through `:root` custom properties (`adr/0005-breakpoint-source-of-truth.md:7`, `:13`), applied to names. The CI step is required on Nx because tasks skip the sync in CI (SYNC 4.2), and on the CLI because nothing runs the builder by itself (SYNC 5.2).
+6. **The runtime-check configuration follows the user's two rulings exactly.** Development checks are on with a per-check opt-out, and production is opt-in. NgRx's configuration is the model for the option object and its per-check flags (`NGRX/modules/store/src/runtime_checks.ts:21-40`, SYNC 8.2). NgRx cannot supply a production opt-in, and the provider-function split keeps the checker out of every bundle that does not opt in (SYNC 8.3).
+7. **The rules that did not depend on option A stand, on the evidence recorded in the provisional ruling:** the typed boolean transform (J05 against J09; verified `coercion.ts:23-25`), the responsive shapes and Zero-breakpoint mapping (verified `_button.scss:345-365`, `_menu.scss:413-429`), the naming order, the no-class default (D 2.8, 2.9), and the native `<progress>` and `<table>` finding.
+
+How each argument was weighed:
+- **vsloose lens**: its central demand, that a name the consumer's Sass does not generate fails to compile by default, is met, without its subclass route. Its closed rules-object keys, its typed boolean transform, its native `<progress>` finding, and its concession that a misspelt attribute name compiles under every option are all adopted.
+- **api lens**: its reversibility table now favours the decision. The library's default is the narrow type, and widening is the consumer's own declaration, never a breaking library change. Its naming order, Zero-breakpoint mapping, and Class breakpoint type are adopted.
+- **ergo lens**: its day-two cost becomes one line per changed name, or one generator run, which the sync generator makes automatic on Nx. Its multi-application case is measured (B02; SYNC 4.4).
+- **vsdirective lens**: its measured failures of subclassing (providers, selectors, `exportAs`, class-token injection, composed inputs) are why the decision needs no consumer directive and no subclass. Its preference for no consumer code at all gives way to the user's ideal, at one declaration file per application.
+- **The orchestrator's proposals**:
+  - The generated narrowing lists are superseded by the registry (point 3).
+  - The executor-on-every-build becomes the Nx sync generator, Nx's own mechanism for keeping generated workspace files in step before tasks.
+  - The Angular CLI builder that wraps the application builder is not adopted (SYNC 5.3: `@angular/build` 22.2.0 has no Sass hook, and code plugins never see the Sass compile). A committed file needs a check, not a rebuild step.
+- **The user's proposal** (option A, a generator writing the consumer's `.d.ts` from its Sass, hand-writable, and an Nx sync generator with `nx sync` and `nx sync:check`) is adopted as stated, with two findings attached. `nx sync:check` must be its own CI step, because a task never syncs in CI. The Angular CLI gets a check builder in place of synchronisation.
+- **The user's view of an ESLint rule** stands: under the registry, a lint rule or a stand-alone type-checker check sees only literal values the compiler already rejects (ALT N5, N6), so it adds API and upkeep for no extra check.
+
+### Dissent
+
+- **api, ergo, and vsdirective lenses (argued before the user's rulings)**: the open type by default, so no consumer ever writes TypeScript. Overridden by the user's ideal and the narrowed veto. Reopens if a supported toolchain cannot see the declaration file in a way CI does not catch: Vitest under `@angular/build:unit-test` and `@storybook/angular-vite` are not measured with it.
+- **The orchestrator's N9 candidate (ALT)**: one consumer constant driving `provideNfsVariants(theme)` and the augmentation, so the runtime list and the types come from one declaration. Not adopted: the Sass would remain a second list, the constant needs `as const` or every name compiles silently, and the CI check already compares the types with the Sass. Reopens if a runtime check that compares every declared name with the CSS, not just the rendered ones, is ever wanted, because that needs the declared names at run time (SYNC 8.1, unknown 9).
+- **The reverse direction (SYNC T8, T9)**: TypeScript or design tokens as the source, with the Sass map generated, so the types can never be stale. Not adopted (point 4). Reopens if the library's consumers commonly keep design tokens as their source (Style Dictionary pipelines). The library would then document that route with the same declaration file and the same CI check on the generated Sass partial.
+- **SYNC's shape 1**: an umbrella `provideNfs(withRuntimeChecks(...), withProductionRuntimeChecks(...))` in the `provideRouter` pattern. Not adopted in favour of two provider functions, with the same tree-shaking property (building-blocks 1.9). Reopens if the library gains other application-wide features that an umbrella would group.
+- **api, ergo, and vsdirective lenses**: `booleanAttribute` for pure boolean Variant inputs, the Angular-native shape. Overridden by J05 and J09. Reopens if the consistency review finds the two boolean conventions (Options with `booleanAttribute`, Variants with `nfsVariantBoolean`) confuse consumers enough to extend the typed transform to Options.
+- **vsdirective lens**: `<modifier>At` inputs for `<bp>-<modifier>` classes. Overridden by naming rule 5. Reopens if a family needs two independent responsive modifiers on one element that one rules object cannot express.
+- **api lens**: one shared properties mixin with a single include. Not adopted: per-entry-point mixins keep ADR 0012's rule of including `nfs-<x>` after `foundation-<x>`. Reopens if the consistency review counts too many properties-only mixins.
+
+### Triage
+
+- **Impact: HIGH.** Registry names, alias names, input names, and value shapes become public API in the 25 new specs and the 26 re-runs, and the tooling and the runtime-check API are new public surface.
+- **Confidence: HIGH for the decision.**
+  - The typing mechanism was measured twice, independently (round 2; ALT), across a real package boundary.
+  - The Nx behaviour was measured on Nx 23.2.1 with the source read (SYNC 4), and the Angular CLI behaviour on the 22.2 builders (SYNC 5).
+  - The runtime-check shape follows the user's rulings, and its bundle property was measured (SYNC 8.3).
+  - None of it is a bare default, and none contradicts the effort's research or ADRs.
+- **MEDIUM for the tooling details not measured**, left to the tooling spec and the Breakpoint service re-run. None of them changes a Variant input's type:
+  - the unit-test executor's sync registration;
+  - Vitest and Storybook with the declaration file;
+  - whether the generator's standalone compile reproduces every build configuration (per-configuration `styles`, several global stylesheets, `pkg:` URLs; SYNC unknown 3);
+  - the dev server's stale diagnostics (SYNC unknown 1);
+  - tree-shaking of the production opt-in under the real application builder with an `InjectionToken` (SYNC unknown 8).
+- **Outcome: DECIDED.**
+- **Residual risk the decision accepts, and how the specs guard it**:
+  - (a) A committed file goes stale after a Sass edit. An added name fails loudly until the next sync. A removed name compiles until then; the sync generator, the CI step, and `strictVariantNames` catch it.
+  - (b) A pipeline without `nx sync:check` ships drift. The setup generator's output and the docs name the step as required, and the tooling spec's e2e runs a build with `CI=true` against a stale file.
+  - (c) The dev server may show stale template diagnostics after a sync. The docs say to restart it.
+  - (d) The library could freeze its defaults through declaration emit. The build assertion on the emitted typings guards this.
+  - (e) Angular CLI consumers who run the schematic install `nx`. This is recorded, and the CI check avoids it.
+
+### Changes to apply
+
+Line numbers are those at commit `951614e`. The judge wrote the ADR as a proposal; the orchestrator numbered it ADR 0040, `adr/0040-variant-input-types.md`. Paths are relative to the effort root; links inside ADR text are relative to `adr/`.
+
+#### New ADR
+
+`adr/proposed-variant-input-types.md`, "Variant inputs are closed unions over library registries that a declaration file generated from the consumer's Sass extends", in the ADR-FORMAT shape. It meets the bar:
+- It is hard to reverse: every spec with a Variant family freezes its types, and the tooling and runtime-check API are public.
+- It is surprising without context: a reader expects either `string` or a closed union, and finds interfaces to augment.
+- It is a real trade-off: the open default, the reverse direction, and the theme constant are all measured alternatives.
+
+#### ADR 0039
+
+Consequences, append after `:26`:
+
+"- 2026-09-27 ([Decide: typed Variant inputs over open Sass maps](../issues/81-decide-typed-variant-inputs-open-sass-maps.md)): Variant inputs are typed by [ADR 0040](0040-variant-input-types.md). The same day, the user narrowed the veto recorded in the second Considered option: consumer-side declaration merging of library-declared registry interfaces is allowed, while a tsconfig `paths` remap and anything that writes into `node_modules` stay out.
+  - ADR 0010's objections are answered there. Open value sets, custom palette colours, and custom sizes are Foundation's default names, extended or shrunk by the consumer's Variant declaration file, generated from its Sass, so a misspelt or removed name fails to compile. `.solid` is one of three fill names, each of which renders its own fill whatever `$button-fill` is. A responsive class behind a Sass flag is listed in the Variant properties only while the flag is on, so the runtime check reports it. A runtime default cannot fight the Sass settings, because every Variant input's default sets no class.
+  - The rule that an element Foundation styles only by tag gets no directive holds only while Foundation gives the element no class. Native `<progress>` takes the palette classes (Foundation's `scss/forms/_progress.scss:70-71`, shown on its Progress Bar docs page), and `<table>` takes `.unstriped`, `.striped`, `.stack`, `.scroll`, and `.hover` (`scss/components/_table.scss:168-321`), so the Progress Bar and Table specs give those elements directives for their Variant inputs; `<meter>` has no class."
+
+#### ADR 0012
+
+Consequences, append after `:24`:
+
+"- 2026-09-27 ([Decide: typed Variant inputs over open Sass maps](../issues/81-decide-typed-variant-inputs-open-sass-maps.md)): Library mixins also write the Variant properties ([ADR 0040](0040-variant-input-types.md)).
+  - Each mixin of an entry point with an Open Variant family writes, on `:root` and from the consumer's settings, one `--nfs-<setting>` property per Sass setting its classes loop over. The property lists, space-separated, the names that generate a class, or the count. A family that a Sass flag gates writes an empty list while the flag is off. `nfs-breakpoint-properties` also writes `--nfs-breakpoint-classes` from `$breakpoint-classes`.
+  - They are a verification channel like the Breakpoint properties. The library's generator reads them from a compile of the application's stylesheet to write the consumer's Variant declaration file, and the runtime checks read them in the browser. They count among the rules Foundation cannot provide.
+  - An entry point with an Open Variant family therefore always has a Library mixin, properties-only where it has no custom CSS or checks. Expected new ones include `nfs-callout`, `nfs-progress-bar`, `nfs-close-button`, `nfs-responsive-embed`, the Dropdown pane's, and those of the grids and the Prototyping Utilities; each spec decides its own."
+
+#### ADR 0005
+
+Consequences, append after `:20`:
+
+"- 2026-09-27: the verification channel also lists the Class breakpoints: `nfs-breakpoint-properties` writes `--nfs-breakpoint-classes` from `$breakpoint-classes` ([ADR 0040](0040-variant-input-types.md)). The drift check becomes the `strictBreakpointSync` runtime check: on by default in development with a per-check opt-out, and available in production by opt-in. Behaviour Options keep `NfsBreakpointName`; Variant inputs name Class breakpoints (`NfsClassBreakpoint`), which the consumer's Variant declaration file extends."
+
+#### `building-blocks.md`
+
+1. 1.3 Naming, new bullet after the "Class names" bullet (`:44`): "- Variant types ([ADR 0040](adr/0040-variant-input-types.md)):
+   - A Variant registry is `Nfs` + the PascalCase of its Sass setting + `Overrides` (`NfsButtonPaletteOverrides` for `$button-palette`, `NfsFoundationPaletteOverrides`, `NfsButtonSizesOverrides`, `NfsBreakpointClassesOverrides`, `NfsGridColumnsOverrides`). There is one per setting, and all are declared in the primary entry point `ngx-foundation-sites`.
+   - A directive family's alias is `Nfs` + component + dimension (`NfsButtonColor`, `NfsCalloutSize`, `NfsResponsiveEmbedRatio`, `NfsCellSize`), built with `NfsOverridableStringUnion<defaults, registry>`, or `NfsOverridableCount<default, registry>` for a count.
+   - `NfsClassBreakpoint`, `NfsClassBreakpointQuery<M>`, and `NfsClassBreakpointRules<V>` mirror `$breakpoint-classes`. `NfsBreakpointName` stays the type of behaviour Options (Tooltip `showOn`, Sticky `stickyOn`)."
+2. 1.4 Inputs and outputs, new bullet after the first bullet (`:53`):
+
+   "- Variant inputs ([ADR 0040](adr/0040-variant-input-types.md)): every Variant class family is one input of the directive that binds its Structural class, and its type is closed. Unlike Options, a Variant input never uses `booleanAttribute` or `numberAttribute`, whose `unknown` parameter accepts any template value.
+     - Names, in this order:
+       1. A Foundation `data-*` Option that already names the family keeps its name (Off-canvas `revealOn` and `inCanvasOn`, Responsive Toggle `hideFor`, Slider `vertical`).
+       2. Otherwise, the input name of the hosted `@angular/aria` directive for the same concept (`orientation`, as Tabs has it, for `.horizontal`, `.vertical`, and their responsive forms).
+       3. Otherwise, mutually exclusive names from one Sass setting or loop form one enum input named for the dimension Foundation's docs and Sass use: `color` for a palette; `size` for a size map and for Reveal, Switch, and grid cell sizes; `fill` for `solid`, `hollow`, and `clear`; `ratio` for `$responsive-embed-ratios`; `offset`, `up`, and `order` for the grid and flex families.
+       4. Otherwise, a single on or off class is a boolean named with the camelCase of its class (`expanded`, `dropdown`, `arrowOnly`, `noGaps`).
+
+       A responsive form is never its own input: remove the breakpoint and any `only` or `down` from Foundation's class template, and what remains names the input (`.medium-only-expanded` is `expanded="medium only"`, `.medium-6` is `[size]="{medium: 6}"`, `.medium-horizontal` is `[orientation]="{medium: 'horizontal'}"`). A `<words>-for-<bp>` class keeps Foundation's words (`stackedFor="medium"`, `showFor="large only"`). The input's JSDoc names the Foundation class template and the Sass setting (AGENTS.md Design Philosophy 5).
+     - Types:
+       - A Closed Variant family is a literal union, or a boolean through `nfsVariantBoolean`, whose parameter is `NfsVariantBoolean`: `boolean | '' | 'true' | 'false' | null | undefined`.
+       - An Open Variant family is its alias over the setting's Variant registry (1.3), with no `(string & {})` member.
+       - A count is `NfsOverridableCount`, through a transform whose parameter adds the static-attribute strings and the family's keywords.
+       - An on or off responsive family takes `true` or an `NfsClassBreakpointQuery<M>` whose `M` lists only the modifiers whose classes Foundation generates for it.
+       - A valued responsive family takes a bare value, which means the Zero breakpoint, or `NfsClassBreakpointRules<V>`.
+       - A class-name string is never a value (ADR 0039).
+     - Authoring: every Variant input declares explicit type arguments that name exported aliases, and the library's build asserts that each emitted write type in the typings names its alias. Declaration emit can print an inferred or conditional type resolved, which would freeze Foundation's defaults where no consumer declaration reaches them.
+     - Defaults and binding: every Variant input defaults to `undefined` (`false` for a boolean), which sets no class, so the consumer's Sass default is the look; `'default'`, where Foundation's map has that key, also sets none. An explicit value always sets its class. The directive maps each value to the one class with its meaning, including Foundation's Zero-breakpoint gaps (`expanded="small down"` sets `.small-only-expanded`; a Menu rule for the Zero breakpoint sets `.vertical`), and binds nothing for a value that is not one class token.
+     - The consumer's names reach these types only through its Variant declaration file (1.13), never through a provider, a subclass, or a consumer directive."
+3. 1.4, the Defaults-token bullet (`:61`), append: "A Defaults token never holds a Variant input's default ([ADR 0040](adr/0040-variant-input-types.md))."
+4. 1.7 Breakpoints, the "CSS first" bullet (`:94`): replace "set by the directive that owns them (a typed input or a host binding, ADR 0039), and no breakpoint logic in JavaScript." with: "set by the directive that owns them through a Variant input (1.4) or a host binding (ADR 0039), and no breakpoint logic in JavaScript. A responsive Variant input takes a Breakpoint query for an on or off class (`showFor="large only"`, `expanded="medium down"`) or a Breakpoint rules object for a valued family (`[orientation]="{small: 'vertical', medium: 'horizontal'}"`). It never takes a rule string, whose tokens would be Foundation class names. Its breakpoint names are Class breakpoints (`NfsClassBreakpoint`), closed over `$breakpoint-classes` and extended by the consumer's Variant declaration file, so a misspelt breakpoint, modifier, or rules key fails to compile. `nfs-breakpoint-properties` also lists them as `--nfs-breakpoint-classes`. An Option that sets a class only for Class breakpoints (`revealOn`, `inCanvasOn`) is typed `NfsClassBreakpoint`; an Option whose spec emits the classes for every breakpoint keeps `NfsBreakpointName` (Responsive Toggle `hideFor`)."
+5. 1.9 DI patterns, new bullet after "Parent handle" (`:105`): "- Composition, never subclassing (map, Standing preferences; [ADR 0040](adr/0040-variant-input-types.md)): library directives are not extension points. An Angular subclass inherits host bindings, inputs, outputs, host directives, and lifecycle hooks, but not `providers`, its selector, or `exportAs`, and a directive injected by class matches its exact type only, so a consumer subclass of a token-providing directive would leave its children silently without a parent. No spec asks a consumer to subclass or to wrap a library directive in order to type an input."
+6. 1.9, the Defaults-tokens bullet (`:111`), append: "The runtime checks are configured by two provider functions of `ngx-foundation-sites/media-query`, `provideNfsRuntimeChecks` (development overrides) and `provideNfsProductionRuntimeChecks` (production opt-in), not by an umbrella `provideNfs()` ([ADR 0040](adr/0040-variant-input-types.md))."
+7. 1.13 Sass and theming, new paragraph after the second paragraph (`:179`):
+
+   "Variant properties, the Variant declaration file, and the runtime checks ([ADR 0040](adr/0040-variant-input-types.md)).
+   - Variant properties: each Library mixin of an entry point with an Open Variant family writes on `:root` one `--nfs-<setting>` property per Sass setting its classes loop over, listing the names that generate a class, space-separated, or the count (`--nfs-button-palette: primary secondary success warning alert;`, `--nfs-grid-columns: 12;`). A family that a Sass flag gates writes an empty list while the flag is off, and `nfs-breakpoint-properties` also writes `--nfs-breakpoint-classes`. An entry point with an Open Variant family therefore always has a Library mixin (ADR 0012, dated note).
+   - The Variant declaration file: the library's generator reads the Variant properties from a compile of the application's global stylesheet and writes the consumer's `src/nfs-variants.d.ts`, the file that augments the Variant registries. It is kept in step by an Nx sync generator, with `nx sync:check` as a required CI step, or on the Angular CLI by an Architect builder with a `check` configuration.
+   - The runtime checks: `strictVariantNames`, `strictVariantProperties`, and `strictBreakpointSync` read the same properties in the browser after the first render. They are on by default in development builds, where a consumer can opt one out, and off in production unless the consumer opts one in.
+
+   Like the Breakpoint properties, the Variant properties are a verification channel, not theming." In the quoted "Sass" subsection template (`:183`), after item (5) add: "(6) the Variant properties its mixin writes, one per Sass setting its Variant classes loop over;".
+8. 1.14 Spec shape, item 2 (`:193`) becomes: "2. CSS class to directive mapping: one row per Structural class with the directive that binds it; one row per Variant class family with its Variant input, its type alias, the Sass setting and Variant registry it follows (or "closed"), its value shape (name, boolean, query, rules object, count), the class each value sets (with the Zero-breakpoint gaps), and the Variant property the runtime check reads; State classes as host bindings; no class left for the consumer to write (ADR 0039)."
+
+#### `CONTEXT.md`
+
+1. Foundation side, after **Variant class** (`:37-39`), new terms:
+
+   ```markdown
+   **Open Variant family**:
+   The Variant classes whose names come from a Sass setting the consumer can change (a palette, a size or ratio map, `$breakpoint-classes`, a count, a Prototyping list).
+   _Avoid_: dynamic variant, custom variant, open set
+
+   **Closed Variant family**:
+   The Variant classes whose names Foundation's Sass fixes (`solid`, `hollow`, `clear`; Reveal's sizes; a single modifier class).
+   _Avoid_: fixed variant, static variant, closed set
+
+   **Class breakpoint**:
+   A breakpoint listed in `$breakpoint-classes` (`small`, `medium`, `large` by default), the only breakpoints Foundation generates responsive classes for; a subset of the Breakpoint map.
+   _Avoid_: responsive breakpoint, class size, breakpoint class
+   ```
+
+2. **Variant class** (`:38`): "set by a typed input of the directive, never written by the consumer" becomes "set by a Variant input of the directive, never written by the consumer".
+3. **Visibility class** (`:42`): "generated only for the breakpoints in `$breakpoint-classes`" becomes "generated only for Class breakpoints".
+4. **Breakpoint rule** (`:78`) becomes: "A Foundation rule string such as `drilldown medium-dropdown` or `accordion medium-tabs`, or its object form (`{small: 'drilldown', medium: 'dropdown'}`), that assigns a mode or value per breakpoint; a responsive Variant input takes only the object form, because a Variant rule string would spell Foundation class names (`medium-horizontal`)."
+5. **Breakpoint query** (`:86`) becomes: "An Option or Variant input value that names a breakpoint with an optional `up`, `only`, or `down` modifier (`medium`, `large only`, `medium down`), as in Tooltip `showOn`, Sticky `stickyOn`, or Button `expanded`; distinct from a Breakpoint rule, which assigns modes."
+6. Angular side, after **Defaults token** (`:243-245`), new terms:
+
+   ```markdown
+   **Variant input**:
+   A directive input that sets one family of Variant classes from a typed name, a boolean, a Breakpoint query, a Breakpoint rule object, or a count; with no value it sets no class, so the consumer's Sass default is the look.
+   _Avoid_: appearance input, style input, modifier input
+
+   **Variant registry**:
+   An empty interface the library declares for one Sass setting (`NfsButtonPaletteOverrides`) and the consumer's Variant declaration file augments, adding names (`purple: true`), removing defaults (`warning: false`), or setting a count, so the Variant inputs over that setting accept exactly the names the consumer's Sass generates.
+   _Avoid_: overrides interface, theme interface, type registry
+
+   **Variant declaration file**:
+   The consumer's `src/nfs-variants.d.ts`, generated from its Sass by the library's tooling or written by hand, that augments the Variant registries; kept in step by a sync step and checked in CI.
+   _Avoid_: theme typings, typegen output, augmentation file
+   ```
+
+7. **Breakpoint properties** (`:320`): "that the Breakpoint service's drift check compares with the Breakpoint map" becomes "that the `strictBreakpointSync` Runtime check compares with the Breakpoint map". After it (`:321`), new terms:
+
+   ```markdown
+   **Variant properties**:
+   The `--nfs-<setting>` custom properties on `:root` that a Library mixin writes to list the names (or the count) the consumer's Sass generates Variant classes for, such as `--nfs-button-palette` and `--nfs-breakpoint-classes`; read by the library's generator and by the Runtime checks.
+   _Avoid_: theme tokens, palette variables, names property
+
+   **Runtime check**:
+   A check the library runs in the browser after the first render, on by default in development builds with a per-check opt-out and off in production unless the consumer opts in, that reports what the compiler cannot see: a Variant value with no class in the compiled CSS, missing Variant properties, or Breakpoint drift.
+   _Avoid_: dev check, drift warning, sanity check
+   ```
+
+#### `specs/breakpoint-service.md` (for [Re-run: Breakpoint service (shared utility) spec under the class rule](129-rerun-breakpoint-service-class-rule.md))
+
+1. API, after the Types block (`:144-153`), add: "The Class breakpoint types (`NfsClassBreakpoint`, `NfsClassBreakpointQuery<M>`, `NfsClassBreakpointRules<V>`) and their registry `NfsBreakpointClassesOverrides` live in the primary entry point ([ADR 0040](../adr/0040-variant-input-types.md)); `NfsBreakpointName` types behaviour Options."
+2. Rendered output, the Breakpoint properties block (`:280-288`): add `--nfs-breakpoint-classes: small medium large;`, written from the consumer's `$breakpoint-classes`.
+3. The development-mode drift check (`:290-295`) becomes the `strictBreakpointSync` runtime check. A new subsection, "Runtime checks", specifies:
+   - the API in the decision above (`NfsRuntimeChecks`, `NfsRuntimeCheckReport`, `provideNfsRuntimeChecks`, `provideNfsProductionRuntimeChecks`), and the defaults (all on in development, none in production unless listed);
+   - the Variant check behind `strictVariantNames` and `strictVariantProperties`, which reads each requested `--nfs-<setting>` once per realm in the first `earlyRead` after the first render, never on the server, and reports once per distinct value, naming the directive, input, value, setting, and listed names, or, for a missing property, the include;
+   - a browser-level test and a production-build measurement showing that a production bundle without `provideNfsProductionRuntimeChecks` keeps no checker code (the property SYNC 8.3 measured with esbuild).
+
+   With `--nfs-breakpoint-classes` present, the drift check also reads `--nfs-breakpoint-<name>` for each Class breakpoint, which narrows the limit at `:294`.
+4. Out of Scope (`:378`): the names-list half is decided by [ADR 0040](../adr/0040-variant-input-types.md) (`--nfs-breakpoint-classes`); `@property` registration stays a possible follow-up.
+5. Entry point (`:138`): the exports gain the runtime-check API.
+
+#### `README.md`
+
+1. ADR index: add the row `| [0040](adr/0040-variant-input-types.md) | Variant inputs are closed unions over library registries that a declaration file generated from the consumer's Sass extends |` after the 0039 row (`:116`), and change "All 39 records" (`:74`) to "All 40 records".
+2. Open list, item 1 under the class-rule wave (`:126`): mark it decided by this ticket (ADR 0040), and add the new tooling ticket below.
+
+#### New ticket (orchestrator)
+
+"Spec: Variant declaration tooling", blocked by this ticket, before [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md). It owns:
+- everything the primary entry point `ngx-foundation-sites` holds for Variant typing: the registries, `NfsOverridableStringUnion`, `NfsOverridableCount`, `NfsVariantBoolean` with `nfsVariantBoolean`, the Class breakpoint types, and the manifest of registries with their default names;
+- the shared core, the setup generator exposed as a schematic, the Nx task sync generator, and the Architect builder, with their commands, options, and messages;
+- the output format and its determinism;
+- the `targetDefaults` and `angular.json` setup;
+- the CI steps;
+- the shared-library rule;
+- the build assertion on the emitted typings.
+
+Its prototype questions are SYNC's unknowns 1 to 3 and 8: the dev server's stale diagnostics, Vitest and Storybook with the declaration file, the standalone compile against complex build configurations, and a measured e2e in which `CI=true nx build` against a stale file is caught by `nx sync:check`. It adds one spec to the map's Destination (52) unless the orchestrator carries it as part of an existing shared-utility spec; the judge recommends a separate spec, because no existing spec owns workspace tooling.
+
+#### What the 25 spec tickets and 26 re-run tickets need to know
+
+- Apply building-blocks 1.3, 1.4, 1.7, 1.9, 1.13, and 1.14 item 2 as amended above. Each spec lists its Variant families, open or closed, each with its input, alias, Sass setting and registry, value shape, value-to-class mapping, and Variant property. The tooling spec collects the settings into the registry manifest; a component spec declares no registry itself.
+- Every entry point with an Open Variant family has a Library mixin that writes its Variant properties, a properties-only one if it has no other CSS or checks. Its Sass subsection lists them (item 6).
+- Its tests:
+  - its browser-level tests cover the runtime check: a listed value is silent, an unlisted value reached through a cast reports once, and a missing property reports once, naming the include;
+  - its SSR smoke asserts the class in server HTML, since the checks never run on the server;
+  - its stories use Foundation's default names. A story that demonstrates a consumer name needs the Storybook settings and a Storybook-program declaration file to match.
+- Published specs whose consumer markup still carries Variant classes convert them in their re-runs:
+  - Button: sizes, colours, fills, `expanded` with its responsive forms, `dropdown`, and `arrow-only` (`specs/button.md:97-101`). Its D4, no Defaults token, stands, and user story 8 ("so that my Sass settings are the only list of colors", `specs/button.md:33`) stays true, because the declaration file is generated from those settings.
+  - Tabs: `orientation` now binds `.vertical`, so its development check for a disagreeing class goes away.
+  - The Nested menu and the menu specs: `vertical medium-horizontal` becomes `[orientation]` rules.
+  - Reveal's `size` and Slider's `vertical` are closed.
+  - Off-canvas types `revealOn` and `inCanvasOn` as `NfsClassBreakpoint`, and its development check for a breakpoint with no class is covered by `strictVariantNames`.
+  - Responsive Toggle keeps `NfsBreakpointName` for `hideFor` only while its mixin emits the missing Visibility classes; its re-run decides.
+- The Progress Bar spec gives native `<progress>` a directive for its `color`, and the Table spec gives `<table>` one for its Variant classes (ADR 0039, dated note).
+- No spec asks a consumer to subclass or wrap a library directive (building-blocks 1.9).
+
+### Gist for Decisions so far
+
+(Paths relative to the effort root.)
+
+- [Decide: typed Variant inputs over open Sass maps](issues/81-decide-typed-variant-inputs-open-sass-maps.md) -- decided by the panel and a second research round:
+  - Every Variant input's type is closed. Closed families are literal unions or booleans with a typed transform. Open palettes, size and ratio maps, Prototyping lists, counts, and Class breakpoints are Foundation's defaults over a Variant registry that the consumer's `src/nfs-variants.d.ts` augments. Measured across a real ng-packagr package: a misspelt, removed, or class-name value fails to compile, and declared names compile and complete.
+  - The declaration file is generated from the Variant properties of the compiled Sass by the library's Nx generator (an Angular CLI schematic) and kept in step by an Nx sync generator, with `nx sync:check` as a required CI step because tasks skip the sync in CI, or on the Angular CLI by a builder whose `check` configuration runs in CI.
+  - Runtime checks in the NgRx style are on in development with a per-check opt-out and opt-in for production.
+  - Responsive Variants take a Breakpoint query or rules object on the family's own input, and every input defaults to setting no class. No subclass, provider, or ESLint rule.
+  - Impact HIGH, confidence HIGH; ADR 0040; a tooling spec ticket follows. Dossiers: [research/typed-variant-inputs.md](research/typed-variant-inputs.md), [research/variant-typing-alternatives.md](research/variant-typing-alternatives.md), [research/variant-typing-sync-tooling.md](research/variant-typing-sync-tooling.md).
