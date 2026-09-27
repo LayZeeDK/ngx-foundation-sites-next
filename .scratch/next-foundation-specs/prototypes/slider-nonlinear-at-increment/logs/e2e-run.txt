@@ -1,0 +1,1068 @@
+# npx playwright test e2e/at-increment.spec.ts (JSON reporter, summarized by tools/summarize.mjs)
+# playwright-core 1.63.0; chromium 153.0.8010.12, firefox 155.0, webkit 26.6; Angular 22.2.0, Foundation 6.9.0, TypeScript 6.0.3; Windows 11 ARM64
+# stats: expected(passed)=122 unexpected(failed)=0 skipped=4 flaky=0
+== PASSED A. native attributes and live values > server attributes against the live, sanitized native value [chromium]
+-- chromium attributes
+nl-any: min=0 max=1000 step=any attr=309.01699437494744 live=309.016994374947
+nl: min=0 max=1000 step=1 attr=309 live=309
+nl5: min=0 max=1000 step=1 attr=21 live=21
+nl-raw: min=0 max=1000 step=1 attr=309.01699437494744 live=309
+nld-min: min=0 max=586 step=1 attr=124 live=124
+nld-max: min=124 max=1000 step=1 attr=586 live=586
+nld-raw-min: min=0 max=585.9253812205275 step=1 attr=123.83719530530513 live=124
+nld-raw-max: min=123.83719530530513 max=1000 step=1 attr=585.9253812205275 live=585.837195305305
+nld-any-min: min=0 max=585.9253812205275 step=any attr=123.83719530530513 live=123.837195305305
+nld-any-max: min=123.83719530530513 max=1000 step=any attr=585.9253812205275 live=585.925381220528
+pow: min=0 max=1000 step=1 attr=683 live=683
+dense: min=0 max=1000 step=1 attr=2 live=2
+dense-auto: min=0 max=10000 step=1 attr=20 live=20
+-- chromium raw sanitization
+nld-raw-min live=124 (attr 123.83719530530513); nld-raw-max live=585.837195305305 (attr 585.9253812205275)
+== PASSED A. native attributes and live values > raw mode: End on the minimum stops short of the maximum on the native grid [chromium]
+-- chromium raw End
+min handle live=585 max=585.9253812205275; max handle live=585.925381220528 min=585.9253812205275
+-- chromium grid End
+min handle live=586 max=586; max handle live=586 min=586
+== PASSED A. native attributes and live values > server attributes against the live, sanitized native value [firefox]
+-- firefox attributes
+nl-any: min=0 max=1000 step=any attr=309.01699437494744 live=309.01699437494744
+nl: min=0 max=1000 step=1 attr=309 live=309
+nl5: min=0 max=1000 step=1 attr=21 live=21
+nl-raw: min=0 max=1000 step=1 attr=309.01699437494744 live=309
+nld-min: min=0 max=586 step=1 attr=124 live=124
+nld-max: min=124 max=1000 step=1 attr=586 live=586
+nld-raw-min: min=0 max=585.9253812205275 step=1 attr=123.83719530530513 live=124
+nld-raw-max: min=123.83719530530513 max=1000 step=1 attr=585.9253812205275 live=585.837195305305
+nld-any-min: min=0 max=585.9253812205275 step=any attr=123.83719530530513 live=123.83719530530513
+nld-any-max: min=123.83719530530513 max=1000 step=any attr=585.9253812205275 live=585.9253812205275
+pow: min=0 max=1000 step=1 attr=683 live=683
+dense: min=0 max=1000 step=1 attr=2 live=2
+dense-auto: min=0 max=10000 step=1 attr=20 live=20
+-- firefox raw sanitization
+nld-raw-min live=124 (attr 123.83719530530513); nld-raw-max live=585.837195305305 (attr 585.9253812205275)
+== PASSED A. native attributes and live values > raw mode: End on the minimum stops short of the maximum on the native grid [firefox]
+-- firefox raw End
+min handle live=585 max=585.9253812205275; max handle live=585.925381220528 min=585.9253812205275
+-- firefox grid End
+min handle live=586 max=586; max handle live=586 min=586
+== PASSED A. native attributes and live values > server attributes against the live, sanitized native value [webkit]
+-- webkit attributes
+nl-any: min=0 max=1000 step=any attr=309.01699437494744 live=309.016994374947
+nl: min=0 max=1000 step=1 attr=309 live=309
+nl5: min=0 max=1000 step=1 attr=21 live=21
+nl-raw: min=0 max=1000 step=1 attr=309.01699437494744 live=309
+nld-min: min=0 max=586 step=1 attr=124 live=124
+nld-max: min=124 max=1000 step=1 attr=586 live=586
+nld-raw-min: min=0 max=585.9253812205275 step=1 attr=123.83719530530513 live=124
+nld-raw-max: min=123.83719530530513 max=1000 step=1 attr=585.9253812205275 live=585.837195305305
+nld-any-min: min=0 max=585.9253812205275 step=any attr=123.83719530530513 live=123.837195305305
+nld-any-max: min=123.83719530530513 max=1000 step=any attr=585.9253812205275 live=585.925381220528
+pow: min=0 max=1000 step=1 attr=683 live=683
+dense: min=0 max=1000 step=1 attr=2 live=2
+dense-auto: min=0 max=10000 step=1 attr=20 live=20
+-- webkit raw sanitization
+nld-raw-min live=124 (attr 123.83719530530513); nld-raw-max live=585.837195305305 (attr 585.9253812205275)
+== PASSED A. native attributes and live values > raw mode: End on the minimum stops short of the maximum on the native grid [webkit]
+-- webkit raw End
+min handle live=585 max=585.9253812205275; max handle live=585.925381220528 min=585.9253812205275
+-- webkit grid End
+min handle live=586 max=586; max handle live=586 min=586
+== PASSED B. single-handle increments > blink increments on nl-any (recorded) [chromium]
+-- chromium blink nl-any
++ native 309.016994374947->318.08681662017 => value=51 rule=1 live=318.08681662017
++ native 318.08681662017->327.303793024188 => value=52 rule=2 live=327.303793024188
+- native 327.303793024188->318.08681662017 => value=51 rule=3 live=318.08681662017
+- native 318.08681662017->309.016994374947 => value=50 rule=4 live=309.016994374947
+- native 309.016994374947->300.091976890465 => value=49 rule=5 live=300.091976890465
+sequence=51,52,51,50,49
+== PASSED B. single-handle increments > blink increments on nl [chromium]
+-- chromium blink nl
++ native 309->318 => value=51 rule=1 live=318
++ native 318->327 => value=52 rule=2 live=327
+- native 327->318 => value=51 rule=3 live=318
+- native 318->309 => value=50 rule=4 live=309
+- native 309->300 => value=49 rule=5 live=300
+sequence=51,52,51,50,49
+== PASSED B. single-handle increments > blink increments on nl5 [chromium]
+-- chromium blink nl5
++ native 21->25 => value=6 rule=1 live=25
++ native 25->30 => value=7 rule=2 live=30
+- native 30->25 => value=6 rule=3 live=25
+- native 25->21 => value=5 rule=4 live=21
+- native 21->17 => value=4 rule=5 live=17
+sequence=6,7,6,5,4
+== PASSED B. single-handle increments > blink increments on nl-raw [chromium]
+-- chromium blink nl-raw
++ native 309->318 => value=51 rule=1 live=318
++ native 318->327 => value=52 rule=2 live=327
+- native 327->318 => value=51 rule=3 live=318
+- native 318->309 => value=50 rule=4 live=309
+- native 309->300 => value=49 rule=5 live=300
+sequence=51,52,51,50,49
+== PASSED B. single-handle increments > blink increments on pow [chromium]
+-- chromium blink pow
++ native 683->691 => value=51 rule=1 live=691
++ native 691->699 => value=52 rule=2 live=699
+- native 699->691 => value=51 rule=3 live=691
+- native 691->683 => value=50 rule=4 live=683
+- native 683->674 => value=49 rule=5 live=674
+sequence=51,52,51,50,49
+== PASSED B. single-handle increments > blink increments on dense (recorded) [chromium]
+-- chromium blink dense
++ native 2->3 => value=7 rule=0 live=3
++ native 3->4 => value=10 rule=0 live=4
+- native 4->3 => value=7 rule=0 live=3
+- native 3->2 => value=5 rule=0 live=2
+- native 2->1 => value=2 rule=0 live=1
+sequence=7,10,7,5,2
+== PASSED B. single-handle increments > blink increments on dense-auto [chromium]
+-- chromium blink dense-auto
++ native 20->24 => value=6 rule=1 live=24
++ native 24->28 => value=7 rule=2 live=28
+- native 28->24 => value=6 rule=3 live=24
+- native 24->20 => value=5 rule=4 live=20
+- native 20->16 => value=4 rule=5 live=16
+sequence=6,7,6,5,4
+== PASSED B. single-handle increments > webkit increments on nl-any (recorded) [chromium]
+-- chromium webkit nl-any
++ native 309.016994374947->318.08681662017 => value=51 rule=1 live=318.08681662017
++ native 318.08681662017->327.303793024188 => value=52 rule=2 live=327.303793024188
+- native 327.303793024188->336.670311103082 => value=53 rule=3 live=336.670311103082
+- native 336.670311103082->346.188797109405 => value=54 rule=4 live=346.188797109405
+- native 346.188797109405->355.861716660664 => value=55 rule=5 live=355.861716660664
+sequence=51,52,53,54,55
+== PASSED B. single-handle increments > webkit increments on nl [chromium]
+-- chromium webkit nl
++ native 309->318 => value=51 rule=1 live=318
++ native 318->327 => value=52 rule=2 live=327
+- native 327->318 => value=51 rule=3 live=318
+- native 318->309 => value=50 rule=4 live=309
+- native 309->300 => value=49 rule=5 live=300
+sequence=51,52,51,50,49
+== PASSED B. single-handle increments > webkit increments on nl5 [chromium]
+-- chromium webkit nl5
++ native 21->25 => value=6 rule=1 live=25
++ native 25->30 => value=7 rule=2 live=30
+- native 30->25 => value=6 rule=3 live=25
+- native 25->21 => value=5 rule=4 live=21
+- native 21->17 => value=4 rule=5 live=17
+sequence=6,7,6,5,4
+== PASSED B. single-handle increments > webkit increments on nl-raw [chromium]
+-- chromium webkit nl-raw
++ native 309->318 => value=51 rule=1 live=318
++ native 318->327 => value=52 rule=2 live=327
+- native 327->318 => value=51 rule=3 live=318
+- native 318->309 => value=50 rule=4 live=309
+- native 309->300 => value=49 rule=5 live=300
+sequence=51,52,51,50,49
+== PASSED B. single-handle increments > webkit increments on pow [chromium]
+-- chromium webkit pow
++ native 683->691 => value=51 rule=1 live=691
++ native 691->699 => value=52 rule=2 live=699
+- native 699->691 => value=51 rule=3 live=691
+- native 691->683 => value=50 rule=4 live=683
+- native 683->674 => value=49 rule=5 live=674
+sequence=51,52,51,50,49
+== PASSED B. single-handle increments > webkit increments on dense (recorded) [chromium]
+-- chromium webkit dense
++ native 2->3 => value=7 rule=0 live=3
++ native 3->4 => value=10 rule=0 live=4
+- native 4->3 => value=7 rule=0 live=3
+- native 3->2 => value=5 rule=0 live=2
+- native 2->1 => value=2 rule=0 live=1
+sequence=7,10,7,5,2
+== PASSED B. single-handle increments > webkit increments on dense-auto [chromium]
+-- chromium webkit dense-auto
++ native 20->24 => value=6 rule=1 live=24
++ native 24->28 => value=7 rule=2 live=28
+- native 28->24 => value=6 rule=3 live=24
+- native 24->20 => value=5 rule=4 live=20
+- native 20->16 => value=4 rule=5 live=16
+sequence=6,7,6,5,4
+== PASSED B. single-handle increments > gecko increments on nl-any (recorded) [chromium]
+-- chromium gecko nl-any
++ native 309.016994374947->309.016994374947 (no event) => value=50 rule=0 live=309.016994374947
++ native 309.016994374947->309.016994374947 (no event) => value=50 rule=0 live=309.016994374947
+- native 309.016994374947->309.016994374947 (no event) => value=50 rule=0 live=309.016994374947
+- native 309.016994374947->309.016994374947 (no event) => value=50 rule=0 live=309.016994374947
+- native 309.016994374947->309.016994374947 (no event) => value=50 rule=0 live=309.016994374947
+sequence=50,50,50,50,50
+== PASSED B. single-handle increments > gecko increments on nl [chromium]
+-- chromium gecko nl
++ native 309->318 => value=51 rule=1 live=318
++ native 318->327 => value=52 rule=2 live=327
+- native 327->318 => value=51 rule=3 live=318
+- native 318->309 => value=50 rule=4 live=309
+- native 309->300 => value=49 rule=5 live=300
+sequence=51,52,51,50,49
+== PASSED B. single-handle increments > gecko increments on nl5 [chromium]
+-- chromium gecko nl5
++ native 21->25 => value=6 rule=1 live=25
++ native 25->30 => value=7 rule=2 live=30
+- native 30->25 => value=6 rule=3 live=25
+- native 25->21 => value=5 rule=4 live=21
+- native 21->17 => value=4 rule=5 live=17
+sequence=6,7,6,5,4
+== PASSED B. single-handle increments > gecko increments on nl-raw [chromium]
+-- chromium gecko nl-raw
++ native 309->318 => value=51 rule=1 live=318
++ native 318->327 => value=52 rule=2 live=327
+- native 327->318 => value=51 rule=3 live=318
+- native 318->309 => value=50 rule=4 live=309
+- native 309->300 => value=49 rule=5 live=300
+sequence=51,52,51,50,49
+== PASSED B. single-handle increments > gecko increments on pow [chromium]
+-- chromium gecko pow
++ native 683->691 => value=51 rule=1 live=691
++ native 691->699 => value=52 rule=2 live=699
+- native 699->691 => value=51 rule=3 live=691
+- native 691->683 => value=50 rule=4 live=683
+- native 683->674 => value=49 rule=5 live=674
+sequence=51,52,51,50,49
+== PASSED B. single-handle increments > gecko increments on dense (recorded) [chromium]
+-- chromium gecko dense
++ native 2->3 => value=7 rule=0 live=3
++ native 3->4 => value=10 rule=0 live=4
+- native 4->3 => value=7 rule=0 live=3
+- native 3->2 => value=5 rule=0 live=2
+- native 2->1 => value=2 rule=0 live=1
+sequence=7,10,7,5,2
+== PASSED B. single-handle increments > gecko increments on dense-auto [chromium]
+-- chromium gecko dense-auto
++ native 20->24 => value=6 rule=1 live=24
++ native 24->28 => value=7 rule=2 live=28
+- native 28->24 => value=6 rule=3 live=24
+- native 24->20 => value=5 rule=4 live=20
+- native 20->16 => value=4 rule=5 live=16
+sequence=6,7,6,5,4
+== PASSED B. single-handle increments > blink increments on nl-any (recorded) [firefox]
+-- firefox blink nl-any
++ native 309.01699437494744->318.08681662016977 => value=51 rule=1 live=318.08681662016977
++ native 318.08681662016977->327.3037930241882 => value=52 rule=2 live=327.3037930241882
+- native 327.3037930241882->318.08681662016977 => value=51 rule=3 live=318.08681662016977
+- native 318.08681662016977->309.01699437494744 => value=50 rule=4 live=309.01699437494744
+- native 309.01699437494744->300.09197689046454 => value=49 rule=5 live=300.09197689046454
+sequence=51,52,51,50,49
+== PASSED B. single-handle increments > blink increments on nl [firefox]
+-- firefox blink nl
++ native 309->318 => value=51 rule=1 live=318
++ native 318->327 => value=52 rule=2 live=327
+- native 327->318 => value=51 rule=3 live=318
+- native 318->309 => value=50 rule=4 live=309
+- native 309->300 => value=49 rule=5 live=300
+sequence=51,52,51,50,49
+== PASSED B. single-handle increments > blink increments on nl5 [firefox]
+-- firefox blink nl5
++ native 21->25 => value=6 rule=1 live=25
++ native 25->30 => value=7 rule=2 live=30
+- native 30->25 => value=6 rule=3 live=25
+- native 25->21 => value=5 rule=4 live=21
+- native 21->17 => value=4 rule=5 live=17
+sequence=6,7,6,5,4
+== PASSED B. single-handle increments > blink increments on nl-raw [firefox]
+-- firefox blink nl-raw
++ native 309->318 => value=51 rule=1 live=318
++ native 318->327 => value=52 rule=2 live=327
+- native 327->318 => value=51 rule=3 live=318
+- native 318->309 => value=50 rule=4 live=309
+- native 309->300 => value=49 rule=5 live=300
+sequence=51,52,51,50,49
+== PASSED B. single-handle increments > blink increments on pow [firefox]
+-- firefox blink pow
++ native 683->691 => value=51 rule=1 live=691
++ native 691->699 => value=52 rule=2 live=699
+- native 699->691 => value=51 rule=3 live=691
+- native 691->683 => value=50 rule=4 live=683
+- native 683->674 => value=49 rule=5 live=674
+sequence=51,52,51,50,49
+== PASSED B. single-handle increments > blink increments on dense (recorded) [firefox]
+-- firefox blink dense
++ native 2->3 => value=7 rule=0 live=3
++ native 3->4 => value=10 rule=0 live=4
+- native 4->3 => value=7 rule=0 live=3
+- native 3->2 => value=5 rule=0 live=2
+- native 2->1 => value=2 rule=0 live=1
+sequence=7,10,7,5,2
+== PASSED B. single-handle increments > blink increments on dense-auto [firefox]
+-- firefox blink dense-auto
++ native 20->24 => value=6 rule=1 live=24
++ native 24->28 => value=7 rule=2 live=28
+- native 28->24 => value=6 rule=3 live=24
+- native 24->20 => value=5 rule=4 live=20
+- native 20->16 => value=4 rule=5 live=16
+sequence=6,7,6,5,4
+== PASSED B. single-handle increments > webkit increments on nl-any (recorded) [firefox]
+-- firefox webkit nl-any
++ native 309.01699437494744->318.08681662016977 => value=51 rule=1 live=318.08681662016977
++ native 318.08681662016977->327.3037930241882 => value=52 rule=2 live=327.3037930241882
+- native 327.3037930241882->336.67031110308244 => value=53 rule=3 live=336.67031110308244
+- native 336.67031110308244->346.18879710940473 => value=54 rule=4 live=346.18879710940473
+- native 346.18879710940473->355.8617166606635 => value=55 rule=5 live=355.8617166606635
+sequence=51,52,53,54,55
+== PASSED B. single-handle increments > webkit increments on nl [firefox]
+-- firefox webkit nl
++ native 309->318 => value=51 rule=1 live=318
++ native 318->327 => value=52 rule=2 live=327
+- native 327->318 => value=51 rule=3 live=318
+- native 318->309 => value=50 rule=4 live=309
+- native 309->300 => value=49 rule=5 live=300
+sequence=51,52,51,50,49
+== PASSED B. single-handle increments > webkit increments on nl5 [firefox]
+-- firefox webkit nl5
++ native 21->25 => value=6 rule=1 live=25
++ native 25->30 => value=7 rule=2 live=30
+- native 30->25 => value=6 rule=3 live=25
+- native 25->21 => value=5 rule=4 live=21
+- native 21->17 => value=4 rule=5 live=17
+sequence=6,7,6,5,4
+== PASSED B. single-handle increments > webkit increments on nl-raw [firefox]
+-- firefox webkit nl-raw
++ native 309->318 => value=51 rule=1 live=318
++ native 318->327 => value=52 rule=2 live=327
+- native 327->318 => value=51 rule=3 live=318
+- native 318->309 => value=50 rule=4 live=309
+- native 309->300 => value=49 rule=5 live=300
+sequence=51,52,51,50,49
+== PASSED B. single-handle increments > webkit increments on pow [firefox]
+-- firefox webkit pow
++ native 683->691 => value=51 rule=1 live=691
++ native 691->699 => value=52 rule=2 live=699
+- native 699->691 => value=51 rule=3 live=691
+- native 691->683 => value=50 rule=4 live=683
+- native 683->674 => value=49 rule=5 live=674
+sequence=51,52,51,50,49
+== PASSED B. single-handle increments > webkit increments on dense (recorded) [firefox]
+-- firefox webkit dense
++ native 2->3 => value=7 rule=0 live=3
++ native 3->4 => value=10 rule=0 live=4
+- native 4->3 => value=7 rule=0 live=3
+- native 3->2 => value=5 rule=0 live=2
+- native 2->1 => value=2 rule=0 live=1
+sequence=7,10,7,5,2
+== PASSED B. single-handle increments > webkit increments on dense-auto [firefox]
+-- firefox webkit dense-auto
++ native 20->24 => value=6 rule=1 live=24
++ native 24->28 => value=7 rule=2 live=28
+- native 28->24 => value=6 rule=3 live=24
+- native 24->20 => value=5 rule=4 live=20
+- native 20->16 => value=4 rule=5 live=16
+sequence=6,7,6,5,4
+== PASSED B. single-handle increments > gecko increments on nl-any (recorded) [firefox]
+-- firefox gecko nl-any
++ native 309.01699437494744->309.016994374947 => value=50 rule=0 live=309.016994374947
++ native 309.016994374947->309.016994374947 (no event) => value=50 rule=0 live=309.016994374947
+- native 309.016994374947->309.016994374947 (no event) => value=50 rule=0 live=309.016994374947
+- native 309.016994374947->309.016994374947 (no event) => value=50 rule=0 live=309.016994374947
+- native 309.016994374947->309.016994374947 (no event) => value=50 rule=0 live=309.016994374947
+sequence=50,50,50,50,50
+== PASSED B. single-handle increments > gecko increments on nl [firefox]
+-- firefox gecko nl
++ native 309->318 => value=51 rule=1 live=318
++ native 318->327 => value=52 rule=2 live=327
+- native 327->318 => value=51 rule=3 live=318
+- native 318->309 => value=50 rule=4 live=309
+- native 309->300 => value=49 rule=5 live=300
+sequence=51,52,51,50,49
+== PASSED B. single-handle increments > gecko increments on nl5 [firefox]
+-- firefox gecko nl5
++ native 21->25 => value=6 rule=1 live=25
++ native 25->30 => value=7 rule=2 live=30
+- native 30->25 => value=6 rule=3 live=25
+- native 25->21 => value=5 rule=4 live=21
+- native 21->17 => value=4 rule=5 live=17
+sequence=6,7,6,5,4
+== PASSED B. single-handle increments > gecko increments on nl-raw [firefox]
+-- firefox gecko nl-raw
++ native 309->318 => value=51 rule=1 live=318
++ native 318->327 => value=52 rule=2 live=327
+- native 327->318 => value=51 rule=3 live=318
+- native 318->309 => value=50 rule=4 live=309
+- native 309->300 => value=49 rule=5 live=300
+sequence=51,52,51,50,49
+== PASSED B. single-handle increments > gecko increments on pow [firefox]
+-- firefox gecko pow
++ native 683->691 => value=51 rule=1 live=691
++ native 691->699 => value=52 rule=2 live=699
+- native 699->691 => value=51 rule=3 live=691
+- native 691->683 => value=50 rule=4 live=683
+- native 683->674 => value=49 rule=5 live=674
+sequence=51,52,51,50,49
+== PASSED B. single-handle increments > gecko increments on dense (recorded) [firefox]
+-- firefox gecko dense
++ native 2->3 => value=7 rule=0 live=3
++ native 3->4 => value=10 rule=0 live=4
+- native 4->3 => value=7 rule=0 live=3
+- native 3->2 => value=5 rule=0 live=2
+- native 2->1 => value=2 rule=0 live=1
+sequence=7,10,7,5,2
+== PASSED B. single-handle increments > gecko increments on dense-auto [firefox]
+-- firefox gecko dense-auto
++ native 20->24 => value=6 rule=1 live=24
++ native 24->28 => value=7 rule=2 live=28
+- native 28->24 => value=6 rule=3 live=24
+- native 24->20 => value=5 rule=4 live=20
+- native 20->16 => value=4 rule=5 live=16
+sequence=6,7,6,5,4
+== PASSED B. single-handle increments > blink increments on nl-any (recorded) [webkit]
+-- webkit blink nl-any
++ native 309.016994374947->318.08681662017 => value=51 rule=1 live=318.08681662017
++ native 318.08681662017->327.303793024188 => value=52 rule=2 live=327.303793024188
+- native 327.303793024188->318.08681662017 => value=51 rule=3 live=318.08681662017
+- native 318.08681662017->309.016994374947 => value=50 rule=4 live=309.016994374947
+- native 309.016994374947->300.091976890465 => value=49 rule=5 live=300.091976890465
+sequence=51,52,51,50,49
+== PASSED B. single-handle increments > blink increments on nl [webkit]
+-- webkit blink nl
++ native 309->318 => value=51 rule=1 live=318
++ native 318->327 => value=52 rule=2 live=327
+- native 327->318 => value=51 rule=3 live=318
+- native 318->309 => value=50 rule=4 live=309
+- native 309->300 => value=49 rule=5 live=300
+sequence=51,52,51,50,49
+== PASSED B. single-handle increments > blink increments on nl5 [webkit]
+-- webkit blink nl5
++ native 21->25 => value=6 rule=1 live=25
++ native 25->30 => value=7 rule=2 live=30
+- native 30->25 => value=6 rule=3 live=25
+- native 25->21 => value=5 rule=4 live=21
+- native 21->17 => value=4 rule=5 live=17
+sequence=6,7,6,5,4
+== PASSED B. single-handle increments > blink increments on nl-raw [webkit]
+-- webkit blink nl-raw
++ native 309->318 => value=51 rule=1 live=318
++ native 318->327 => value=52 rule=2 live=327
+- native 327->318 => value=51 rule=3 live=318
+- native 318->309 => value=50 rule=4 live=309
+- native 309->300 => value=49 rule=5 live=300
+sequence=51,52,51,50,49
+== PASSED B. single-handle increments > blink increments on pow [webkit]
+-- webkit blink pow
++ native 683->691 => value=51 rule=1 live=691
++ native 691->699 => value=52 rule=2 live=699
+- native 699->691 => value=51 rule=3 live=691
+- native 691->683 => value=50 rule=4 live=683
+- native 683->674 => value=49 rule=5 live=674
+sequence=51,52,51,50,49
+== PASSED B. single-handle increments > blink increments on dense (recorded) [webkit]
+-- webkit blink dense
++ native 2->3 => value=7 rule=0 live=3
++ native 3->4 => value=10 rule=0 live=4
+- native 4->3 => value=7 rule=0 live=3
+- native 3->2 => value=5 rule=0 live=2
+- native 2->1 => value=2 rule=0 live=1
+sequence=7,10,7,5,2
+== PASSED B. single-handle increments > blink increments on dense-auto [webkit]
+-- webkit blink dense-auto
++ native 20->24 => value=6 rule=1 live=24
++ native 24->28 => value=7 rule=2 live=28
+- native 28->24 => value=6 rule=3 live=24
+- native 24->20 => value=5 rule=4 live=20
+- native 20->16 => value=4 rule=5 live=16
+sequence=6,7,6,5,4
+== PASSED B. single-handle increments > webkit increments on nl-any (recorded) [webkit]
+-- webkit webkit nl-any
++ native 309.016994374947->318.08681662017 => value=51 rule=1 live=318.08681662017
++ native 318.08681662017->327.303793024188 => value=52 rule=2 live=327.303793024188
+- native 327.303793024188->336.670311103082 => value=53 rule=3 live=336.670311103082
+- native 336.670311103082->346.188797109405 => value=54 rule=4 live=346.188797109405
+- native 346.188797109405->355.861716660664 => value=55 rule=5 live=355.861716660664
+sequence=51,52,53,54,55
+== PASSED B. single-handle increments > webkit increments on nl [webkit]
+-- webkit webkit nl
++ native 309->318 => value=51 rule=1 live=318
++ native 318->327 => value=52 rule=2 live=327
+- native 327->318 => value=51 rule=3 live=318
+- native 318->309 => value=50 rule=4 live=309
+- native 309->300 => value=49 rule=5 live=300
+sequence=51,52,51,50,49
+== PASSED B. single-handle increments > webkit increments on nl5 [webkit]
+-- webkit webkit nl5
++ native 21->25 => value=6 rule=1 live=25
++ native 25->30 => value=7 rule=2 live=30
+- native 30->25 => value=6 rule=3 live=25
+- native 25->21 => value=5 rule=4 live=21
+- native 21->17 => value=4 rule=5 live=17
+sequence=6,7,6,5,4
+== PASSED B. single-handle increments > webkit increments on nl-raw [webkit]
+-- webkit webkit nl-raw
++ native 309->318 => value=51 rule=1 live=318
++ native 318->327 => value=52 rule=2 live=327
+- native 327->318 => value=51 rule=3 live=318
+- native 318->309 => value=50 rule=4 live=309
+- native 309->300 => value=49 rule=5 live=300
+sequence=51,52,51,50,49
+== PASSED B. single-handle increments > webkit increments on pow [webkit]
+-- webkit webkit pow
++ native 683->691 => value=51 rule=1 live=691
++ native 691->699 => value=52 rule=2 live=699
+- native 699->691 => value=51 rule=3 live=691
+- native 691->683 => value=50 rule=4 live=683
+- native 683->674 => value=49 rule=5 live=674
+sequence=51,52,51,50,49
+== PASSED B. single-handle increments > webkit increments on dense (recorded) [webkit]
+-- webkit webkit dense
++ native 2->3 => value=7 rule=0 live=3
++ native 3->4 => value=10 rule=0 live=4
+- native 4->3 => value=7 rule=0 live=3
+- native 3->2 => value=5 rule=0 live=2
+- native 2->1 => value=2 rule=0 live=1
+sequence=7,10,7,5,2
+== PASSED B. single-handle increments > webkit increments on dense-auto [webkit]
+-- webkit webkit dense-auto
++ native 20->24 => value=6 rule=1 live=24
++ native 24->28 => value=7 rule=2 live=28
+- native 28->24 => value=6 rule=3 live=24
+- native 24->20 => value=5 rule=4 live=20
+- native 20->16 => value=4 rule=5 live=16
+sequence=6,7,6,5,4
+== PASSED B. single-handle increments > gecko increments on nl-any (recorded) [webkit]
+-- webkit gecko nl-any
++ native 309.016994374947->309.016994374947 (no event) => value=50 rule=0 live=309.016994374947
++ native 309.016994374947->309.016994374947 (no event) => value=50 rule=0 live=309.016994374947
+- native 309.016994374947->309.016994374947 (no event) => value=50 rule=0 live=309.016994374947
+- native 309.016994374947->309.016994374947 (no event) => value=50 rule=0 live=309.016994374947
+- native 309.016994374947->309.016994374947 (no event) => value=50 rule=0 live=309.016994374947
+sequence=50,50,50,50,50
+== PASSED B. single-handle increments > gecko increments on nl [webkit]
+-- webkit gecko nl
++ native 309->318 => value=51 rule=1 live=318
++ native 318->327 => value=52 rule=2 live=327
+- native 327->318 => value=51 rule=3 live=318
+- native 318->309 => value=50 rule=4 live=309
+- native 309->300 => value=49 rule=5 live=300
+sequence=51,52,51,50,49
+== PASSED B. single-handle increments > gecko increments on nl5 [webkit]
+-- webkit gecko nl5
++ native 21->25 => value=6 rule=1 live=25
++ native 25->30 => value=7 rule=2 live=30
+- native 30->25 => value=6 rule=3 live=25
+- native 25->21 => value=5 rule=4 live=21
+- native 21->17 => value=4 rule=5 live=17
+sequence=6,7,6,5,4
+== PASSED B. single-handle increments > gecko increments on nl-raw [webkit]
+-- webkit gecko nl-raw
++ native 309->318 => value=51 rule=1 live=318
++ native 318->327 => value=52 rule=2 live=327
+- native 327->318 => value=51 rule=3 live=318
+- native 318->309 => value=50 rule=4 live=309
+- native 309->300 => value=49 rule=5 live=300
+sequence=51,52,51,50,49
+== PASSED B. single-handle increments > gecko increments on pow [webkit]
+-- webkit gecko pow
++ native 683->691 => value=51 rule=1 live=691
++ native 691->699 => value=52 rule=2 live=699
+- native 699->691 => value=51 rule=3 live=691
+- native 691->683 => value=50 rule=4 live=683
+- native 683->674 => value=49 rule=5 live=674
+sequence=51,52,51,50,49
+== PASSED B. single-handle increments > gecko increments on dense (recorded) [webkit]
+-- webkit gecko dense
++ native 2->3 => value=7 rule=0 live=3
++ native 3->4 => value=10 rule=0 live=4
+- native 4->3 => value=7 rule=0 live=3
+- native 3->2 => value=5 rule=0 live=2
+- native 2->1 => value=2 rule=0 live=1
+sequence=7,10,7,5,2
+== PASSED B. single-handle increments > gecko increments on dense-auto [webkit]
+-- webkit gecko dense-auto
++ native 20->24 => value=6 rule=1 live=24
++ native 24->28 => value=7 rule=2 live=28
+- native 28->24 => value=6 rule=3 live=24
+- native 24->20 => value=5 rule=4 live=20
+- native 20->16 => value=4 rule=5 live=16
+sequence=6,7,6,5,4
+== PASSED C. two-handle increments and dependent bounds > blink increments on nld [chromium]
+-- chromium blink nld
+min + native 124->130 => lo=26 hi=75 rule=1/0
+min End => lo=26 hi=75 rule=1/0
+min + native 586->586 (no event) => lo=75 hi=75 rule=1/0
+max - native 586->586 (no event) => lo=75 hi=75 rule=1/0
+max + native 586->599 => lo=75 hi=76 rule=1/1
+min + native 586->599 => lo=76 hi=76 rule=2/1
+result=lo=26 hi=75 | lo=75 hi=75 | lo=75 hi=75 | lo=75 hi=76 | lo=76 hi=76
+== PASSED C. two-handle increments and dependent bounds > blink increments on nld-raw [chromium]
+-- chromium blink nld-raw
+min + native 124->130 => lo=26 hi=75 rule=1/0
+min End => lo=26 hi=75 rule=1/0
+min + native 585->585 (no event) => lo=75 hi=75 rule=1/0
+max - native 585.925381220528->585.925381220528 (no event) => lo=75 hi=75 rule=1/0
+max + native 585.925381220528->599.925381220528 => lo=75 hi=76 rule=1/1
+min + native 585->599 => lo=76 hi=76 rule=2/1
+result=lo=26 hi=75 | lo=75 hi=75 | lo=75 hi=75 | lo=75 hi=76 | lo=76 hi=76
+== PASSED C. two-handle increments and dependent bounds > blink increments on nld-any (recorded) [chromium]
+-- chromium blink nld-any
+min + native 123.837195305305->129.902550999657 => lo=26 hi=75 rule=1/0
+min End => lo=26 hi=75 rule=1/0
+min + native 585.925381220528->585.925381220528 (no event) => lo=75 hi=75 rule=1/0
+max - native 585.925381220528->585.925381220528 (no event) => lo=75 hi=75 rule=1/0
+max + native 585.925381220528->599.487928860814 => lo=75 hi=76 rule=1/1
+min + native 585.925381220528->599.487928860814 => lo=76 hi=76 rule=2/1
+result=lo=26 hi=75 | lo=75 hi=75 | lo=75 hi=75 | lo=75 hi=76 | lo=76 hi=76
+== PASSED C. two-handle increments and dependent bounds > webkit increments on nld [chromium]
+-- chromium webkit nld
+min + native 124->130 => lo=26 hi=75 rule=1/0
+min End => lo=75 hi=75 rule=1/0
+min + native 586->586 (no event) => lo=75 hi=75 rule=1/0
+max - native 586->586 (no event) => lo=75 hi=75 rule=1/0
+max + native 586->599 => lo=75 hi=76 rule=1/1
+min + native 586->599 => lo=76 hi=76 rule=2/1
+result=lo=26 hi=75 | lo=75 hi=75 | lo=75 hi=75 | lo=75 hi=76 | lo=76 hi=76
+== PASSED C. two-handle increments and dependent bounds > webkit increments on nld-raw [chromium]
+-- chromium webkit nld-raw
+min + native 124->130 => lo=26 hi=75 rule=1/0
+min End => lo=26 hi=75 rule=1/0
+min + native 585->585 (no event) => lo=75 hi=75 rule=1/0
+max - native 585.925381220528->585.925381220528 (no event) => lo=75 hi=75 rule=1/0
+max + native 585.925381220528->599.925381220528 => lo=75 hi=76 rule=1/1
+min + native 585->599 => lo=76 hi=76 rule=2/1
+result=lo=26 hi=75 | lo=75 hi=75 | lo=75 hi=75 | lo=75 hi=76 | lo=76 hi=76
+== PASSED C. two-handle increments and dependent bounds > webkit increments on nld-any (recorded) [chromium]
+-- chromium webkit nld-any
+min + native 123.837195305305->129.902550999657 => lo=26 hi=75 rule=1/0
+min End => lo=26 hi=75 rule=1/0
+min + native 585.925381220528->572.579367202728 => lo=74 hi=75 rule=2/0
+max - native 585.925381220528->572.579367202728 => lo=74 hi=74 rule=2/1
+max + native 572.579367202728->572.579367202728 (no event) => lo=74 hi=74 rule=2/1
+min + native 572.579367202728->559.446429727602 => lo=73 hi=74 rule=3/1
+result=lo=26 hi=75 | lo=74 hi=75 | lo=74 hi=74 | lo=74 hi=74 | lo=73 hi=74
+== PASSED C. two-handle increments and dependent bounds > gecko increments on nld [chromium]
+-- chromium gecko nld
+min + native 124->130 => lo=26 hi=75 rule=1/0
+min End => lo=75 hi=75 rule=1/0
+min + native 586->586 (no event) => lo=75 hi=75 rule=1/0
+max - native 586->586 (no event) => lo=75 hi=75 rule=1/0
+max + native 586->599 => lo=75 hi=76 rule=1/1
+min + native 586->599 => lo=76 hi=76 rule=2/1
+result=lo=26 hi=75 | lo=75 hi=75 | lo=75 hi=75 | lo=75 hi=76 | lo=76 hi=76
+== PASSED C. two-handle increments and dependent bounds > gecko increments on nld-raw [chromium]
+-- chromium gecko nld-raw
+min + native 124->130 => lo=26 hi=75 rule=1/0
+min End => lo=26 hi=75 rule=1/0
+min + native 585->585 (no event) => lo=75 hi=75 rule=1/0
+max - native 585.925381220528->585.925381220528 (no event) => lo=75 hi=75 rule=1/0
+max + native 585.925381220528->599.925381220528 => lo=75 hi=76 rule=1/1
+min + native 585->599 => lo=76 hi=76 rule=2/1
+result=lo=26 hi=75 | lo=75 hi=75 | lo=75 hi=75 | lo=75 hi=76 | lo=76 hi=76
+== PASSED C. two-handle increments and dependent bounds > gecko increments on nld-any (recorded) [chromium]
+-- chromium gecko nld-any
+min + native 123.837195305305->123.837195305305 (no event) => lo=25 hi=75 rule=0/0
+min End => lo=75 hi=75 rule=0/0
+min + native 585.925381220528->585.925381220528 (no event) => lo=75 hi=75 rule=0/0
+max - native 585.925381220528->585.925381220528 (no event) => lo=75 hi=75 rule=0/0
+max + native 585.925381220528->585.925381220528 (no event) => lo=75 hi=75 rule=0/0
+min + native 585.925381220528->585.925381220528 (no event) => lo=75 hi=75 rule=0/0
+result=lo=25 hi=75 | lo=75 hi=75 | lo=75 hi=75 | lo=75 hi=75 | lo=75 hi=75
+== PASSED C. two-handle increments and dependent bounds > blink increments on nld [firefox]
+-- firefox blink nld
+min + native 124->130 => lo=26 hi=75 rule=1/0
+min End => lo=75 hi=75 rule=1/0
+min + native 586->586 (no event) => lo=75 hi=75 rule=1/0
+max - native 586->586 (no event) => lo=75 hi=75 rule=1/0
+max + native 586->599 => lo=75 hi=76 rule=1/1
+min + native 586->599 => lo=76 hi=76 rule=2/1
+result=lo=26 hi=75 | lo=75 hi=75 | lo=75 hi=75 | lo=75 hi=76 | lo=76 hi=76
+== PASSED C. two-handle increments and dependent bounds > blink increments on nld-raw [firefox]
+-- firefox blink nld-raw
+min + native 124->130 => lo=26 hi=75 rule=1/0
+min End => lo=75 hi=75 rule=1/0
+min + native 585->585 (no event) => lo=75 hi=75 rule=1/0
+max - native 585.925381220528->585.925381220528 (no event) => lo=75 hi=75 rule=1/0
+max + native 585.925381220528->599.925381220528 => lo=75 hi=76 rule=1/1
+min + native 585->599 => lo=76 hi=76 rule=2/1
+result=lo=26 hi=75 | lo=75 hi=75 | lo=75 hi=75 | lo=75 hi=76 | lo=76 hi=76
+== PASSED C. two-handle increments and dependent bounds > blink increments on nld-any (recorded) [firefox]
+-- firefox blink nld-any
+min + native 123.83719530530513->129.90255099965708 => lo=26 hi=75 rule=1/0
+min End => lo=75 hi=75 rule=1/0
+min + native 585.9253812205275->585.925381220528 => lo=75 hi=75 rule=1/0
+max - native 585.9253812205275->585.925381220528 => lo=75 hi=75 rule=1/0
+max + native 585.925381220528->599.4879288608139 => lo=75 hi=76 rule=1/1
+min + native 585.925381220528->599.4879288608139 => lo=76 hi=76 rule=2/1
+result=lo=26 hi=75 | lo=75 hi=75 | lo=75 hi=75 | lo=75 hi=76 | lo=76 hi=76
+== PASSED C. two-handle increments and dependent bounds > webkit increments on nld [firefox]
+-- firefox webkit nld
+min + native 124->130 => lo=26 hi=75 rule=1/0
+min End => lo=75 hi=75 rule=1/0
+min + native 586->586 (no event) => lo=75 hi=75 rule=1/0
+max - native 586->586 (no event) => lo=75 hi=75 rule=1/0
+max + native 586->599 => lo=75 hi=76 rule=1/1
+min + native 586->599 => lo=76 hi=76 rule=2/1
+result=lo=26 hi=75 | lo=75 hi=75 | lo=75 hi=75 | lo=75 hi=76 | lo=76 hi=76
+== PASSED C. two-handle increments and dependent bounds > webkit increments on nld-raw [firefox]
+-- firefox webkit nld-raw
+min + native 124->130 => lo=26 hi=75 rule=1/0
+min End => lo=75 hi=75 rule=1/0
+min + native 585->585 (no event) => lo=75 hi=75 rule=1/0
+max - native 585.925381220528->585.925381220528 (no event) => lo=75 hi=75 rule=1/0
+max + native 585.925381220528->599.925381220528 => lo=75 hi=76 rule=1/1
+min + native 585->599 => lo=76 hi=76 rule=2/1
+result=lo=26 hi=75 | lo=75 hi=75 | lo=75 hi=75 | lo=75 hi=76 | lo=76 hi=76
+== PASSED C. two-handle increments and dependent bounds > webkit increments on nld-any (recorded) [firefox]
+-- firefox webkit nld-any
+min + native 123.83719530530513->129.90255099965708 => lo=26 hi=75 rule=1/0
+min End => lo=75 hi=75 rule=1/0
+min + native 585.9253812205275->572.5793672027279 => lo=74 hi=75 rule=2/0
+max - native 585.9253812205275->572.5793672027279 => lo=74 hi=74 rule=2/1
+max + native 572.5793672027279->572.579367202728 => lo=74 hi=74 rule=2/1
+min + native 572.5793672027279->559.4464297276015 => lo=73 hi=74 rule=3/1
+result=lo=26 hi=75 | lo=74 hi=75 | lo=74 hi=74 | lo=74 hi=74 | lo=73 hi=74
+== PASSED C. two-handle increments and dependent bounds > gecko increments on nld [firefox]
+-- firefox gecko nld
+min + native 124->130 => lo=26 hi=75 rule=1/0
+min End => lo=75 hi=75 rule=1/0
+min + native 586->586 (no event) => lo=75 hi=75 rule=1/0
+max - native 586->586 (no event) => lo=75 hi=75 rule=1/0
+max + native 586->599 => lo=75 hi=76 rule=1/1
+min + native 586->599 => lo=76 hi=76 rule=2/1
+result=lo=26 hi=75 | lo=75 hi=75 | lo=75 hi=75 | lo=75 hi=76 | lo=76 hi=76
+== PASSED C. two-handle increments and dependent bounds > gecko increments on nld-raw [firefox]
+-- firefox gecko nld-raw
+min + native 124->130 => lo=26 hi=75 rule=1/0
+min End => lo=75 hi=75 rule=1/0
+min + native 585->585 (no event) => lo=75 hi=75 rule=1/0
+max - native 585.925381220528->585.925381220528 (no event) => lo=75 hi=75 rule=1/0
+max + native 585.925381220528->599.925381220528 => lo=75 hi=76 rule=1/1
+min + native 585->599 => lo=76 hi=76 rule=2/1
+result=lo=26 hi=75 | lo=75 hi=75 | lo=75 hi=75 | lo=75 hi=76 | lo=76 hi=76
+== PASSED C. two-handle increments and dependent bounds > gecko increments on nld-any (recorded) [firefox]
+-- firefox gecko nld-any
+min + native 123.83719530530513->123.837195305305 => lo=25 hi=75 rule=0/0
+min End => lo=75 hi=75 rule=0/0
+min + native 585.9253812205275->585.925381220528 => lo=75 hi=75 rule=0/0
+max - native 585.9253812205275->585.925381220528 => lo=75 hi=75 rule=0/0
+max + native 585.925381220528->585.925381220528 (no event) => lo=75 hi=75 rule=0/0
+min + native 585.925381220528->585.925381220528 (no event) => lo=75 hi=75 rule=0/0
+result=lo=25 hi=75 | lo=75 hi=75 | lo=75 hi=75 | lo=75 hi=75 | lo=75 hi=75
+== PASSED C. two-handle increments and dependent bounds > blink increments on nld [webkit]
+-- webkit blink nld
+min + native 124->130 => lo=26 hi=75 rule=1/0
+min End => lo=26 hi=75 rule=1/0
+min + native 586->586 (no event) => lo=75 hi=75 rule=1/0
+max - native 586->586 (no event) => lo=75 hi=75 rule=1/0
+max + native 586->599 => lo=75 hi=76 rule=1/1
+min + native 586->599 => lo=76 hi=76 rule=2/1
+result=lo=26 hi=75 | lo=75 hi=75 | lo=75 hi=75 | lo=75 hi=76 | lo=76 hi=76
+== PASSED C. two-handle increments and dependent bounds > blink increments on nld-raw [webkit]
+-- webkit blink nld-raw
+min + native 124->130 => lo=26 hi=75 rule=1/0
+min End => lo=75 hi=75 rule=1/0
+min + native 585->585 (no event) => lo=75 hi=75 rule=1/0
+max - native 585.925381220528->585.925381220528 (no event) => lo=75 hi=75 rule=1/0
+max + native 585.925381220528->599.925381220528 => lo=75 hi=76 rule=1/1
+min + native 585->599 => lo=76 hi=76 rule=2/1
+result=lo=26 hi=75 | lo=75 hi=75 | lo=75 hi=75 | lo=75 hi=76 | lo=76 hi=76
+== PASSED C. two-handle increments and dependent bounds > blink increments on nld-any (recorded) [webkit]
+-- webkit blink nld-any
+min + native 123.837195305305->129.902550999657 => lo=26 hi=75 rule=1/0
+min End => lo=75 hi=75 rule=1/0
+min + native 585.925381220528->585.925381220528 (no event) => lo=75 hi=75 rule=1/0
+max - native 585.925381220528->585.925381220528 (no event) => lo=75 hi=75 rule=1/0
+max + native 585.925381220528->599.487928860814 => lo=75 hi=76 rule=1/1
+min + native 585.925381220528->599.487928860814 => lo=76 hi=76 rule=2/1
+result=lo=26 hi=75 | lo=75 hi=75 | lo=75 hi=75 | lo=75 hi=76 | lo=76 hi=76
+== PASSED C. two-handle increments and dependent bounds > webkit increments on nld [webkit]
+-- webkit webkit nld
+min + native 124->130 => lo=26 hi=75 rule=1/0
+min End => lo=26 hi=75 rule=1/0
+min + native 586->586 (no event) => lo=75 hi=75 rule=1/0
+max - native 586->586 (no event) => lo=75 hi=75 rule=1/0
+max + native 586->599 => lo=75 hi=76 rule=1/1
+min + native 586->599 => lo=76 hi=76 rule=2/1
+result=lo=26 hi=75 | lo=75 hi=75 | lo=75 hi=75 | lo=75 hi=76 | lo=76 hi=76
+== PASSED C. two-handle increments and dependent bounds > webkit increments on nld-raw [webkit]
+-- webkit webkit nld-raw
+min + native 124->130 => lo=26 hi=75 rule=1/0
+min End => lo=26 hi=75 rule=1/0
+min + native 585->585 (no event) => lo=75 hi=75 rule=1/0
+max - native 585.925381220528->585.925381220528 (no event) => lo=75 hi=75 rule=1/0
+max + native 585.925381220528->599.925381220528 => lo=75 hi=76 rule=1/1
+min + native 585->599 => lo=76 hi=76 rule=2/1
+result=lo=26 hi=75 | lo=75 hi=75 | lo=75 hi=75 | lo=75 hi=76 | lo=76 hi=76
+== PASSED C. two-handle increments and dependent bounds > webkit increments on nld-any (recorded) [webkit]
+-- webkit webkit nld-any
+min + native 123.837195305305->129.902550999657 => lo=26 hi=75 rule=1/0
+min End => lo=26 hi=75 rule=1/0
+min + native 585.925381220528->572.579367202728 => lo=74 hi=75 rule=2/0
+max - native 585.925381220528->572.579367202728 => lo=74 hi=74 rule=2/1
+max + native 572.579367202728->572.579367202728 (no event) => lo=74 hi=74 rule=2/1
+min + native 572.579367202728->559.446429727602 => lo=73 hi=74 rule=3/1
+result=lo=26 hi=75 | lo=74 hi=75 | lo=74 hi=74 | lo=74 hi=74 | lo=73 hi=74
+== PASSED C. two-handle increments and dependent bounds > gecko increments on nld [webkit]
+-- webkit gecko nld
+min + native 124->130 => lo=26 hi=75 rule=1/0
+min End => lo=26 hi=75 rule=1/0
+min + native 586->586 (no event) => lo=75 hi=75 rule=1/0
+max - native 586->586 (no event) => lo=75 hi=75 rule=1/0
+max + native 586->599 => lo=75 hi=76 rule=1/1
+min + native 586->599 => lo=76 hi=76 rule=2/1
+result=lo=26 hi=75 | lo=75 hi=75 | lo=75 hi=75 | lo=75 hi=76 | lo=76 hi=76
+== PASSED C. two-handle increments and dependent bounds > gecko increments on nld-raw [webkit]
+-- webkit gecko nld-raw
+min + native 124->130 => lo=26 hi=75 rule=1/0
+min End => lo=26 hi=75 rule=1/0
+min + native 585->585 (no event) => lo=75 hi=75 rule=1/0
+max - native 585.925381220528->585.925381220528 (no event) => lo=75 hi=75 rule=1/0
+max + native 585.925381220528->599.925381220528 => lo=75 hi=76 rule=1/1
+min + native 585->599 => lo=76 hi=76 rule=2/1
+result=lo=26 hi=75 | lo=75 hi=75 | lo=75 hi=75 | lo=75 hi=76 | lo=76 hi=76
+== PASSED C. two-handle increments and dependent bounds > gecko increments on nld-any (recorded) [webkit]
+-- webkit gecko nld-any
+min + native 123.837195305305->123.837195305305 (no event) => lo=25 hi=75 rule=0/0
+min End => lo=25 hi=75 rule=0/0
+min + native 585.925381220528->585.925381220528 (no event) => lo=75 hi=75 rule=0/0
+max - native 585.925381220528->585.925381220528 (no event) => lo=75 hi=75 rule=0/0
+max + native 585.925381220528->585.925381220528 (no event) => lo=75 hi=75 rule=0/0
+min + native 585.925381220528->585.925381220528 (no event) => lo=75 hi=75 rule=0/0
+result=lo=25 hi=75 | lo=75 hi=75 | lo=75 hi=75 | lo=75 hi=75 | lo=75 hi=75
+== PASSED D. before hydration > one key on each non-linear handle counts once [chromium]
+-- chromium pre-hydration keys
+nl native after key=310
+nl5 native after key=22
+nl-any native after key=319.016994374947
+pow native after key=684
+dense native after key=3
+dense-auto native after key=21
+nld-min native after End=586
+--- after hydration ---
+nl: value=51 rule=0
+nl5: value=6 rule=0
+nl-any: value=51 rule=0
+pow: value=51 rule=0
+dense: value=5 rule=0
+dense-auto: value=6 rule=0
+nld: lo=75 hi=75 rule=0/0
+nl live=318 nl5 live=25
+-- chromium dense fixed
+value=5 rule=0
+== PASSED D. before hydration > native residue without hydration: what the keys do natively (recorded) [chromium]
+-- chromium native keys before hydration
+nl-any ArrowRight: 309.016994374947 -> 319.016994374947
+nl-any PageUp: 319.016994374947 -> 419.016994374947
+nl-any End: 419.016994374947 -> 1000
+nl-any Home: 1000 -> 0
+nl ArrowRight: 309 -> 310
+nl PageUp: 310 -> 410
+nl End: 410 -> 1000
+nl Home: 1000 -> 0
+== PASSED D. before hydration > three keys count three steps [chromium]
+-- chromium three keys
+native before=312 after=337 value=53 rule=0
+== PASSED D. before hydration > drags survive and the rule does not add a step [chromium]
+-- chromium pre-hydration short drag without the pointer guard
+nl-noguard native=311 -> value=51 rule=1
+-- chromium pre-hydration drags
+lin-min native=10 -> lo=10 hi=75 rule=0/0
+nl native=620 -> value=77 rule=0 live=613
+pow short drag native=685 -> value=50 rule=0 live=685
+== PASSED D. before hydration > one key on each non-linear handle counts once [firefox]
+-- firefox pre-hydration keys
+nl native after key=310
+nl5 native after key=22
+nl-any native after key=310.016994374947
+pow native after key=684
+dense native after key=3
+dense-auto native after key=21
+nld-min native after End=586
+--- after hydration ---
+nl: value=51 rule=0
+nl5: value=6 rule=0
+nl-any: value=51 rule=0
+pow: value=51 rule=0
+dense: value=5 rule=0
+dense-auto: value=6 rule=0
+nld: lo=75 hi=75 rule=0/0
+nl live=318 nl5 live=25
+-- firefox dense fixed
+value=5 rule=0
+== PASSED D. before hydration > native residue without hydration: what the keys do natively (recorded) [firefox]
+-- firefox native keys before hydration
+nl-any ArrowRight: 309.01699437494744 -> 310.016994374947
+nl-any PageUp: 310.016994374947 -> 410.016994374947
+nl-any End: 410.016994374947 -> 1000
+nl-any Home: 1000 -> 0
+nl ArrowRight: 309 -> 310
+nl PageUp: 310 -> 410
+nl End: 410 -> 1000
+nl Home: 1000 -> 0
+== PASSED D. before hydration > three keys count three steps [firefox]
+-- firefox three keys
+native before=312 after=337 value=53 rule=0
+== PASSED D. before hydration > drags survive and the rule does not add a step [firefox]
+-- firefox pre-hydration short drag without the pointer guard
+nl-noguard native=310 -> value=51 rule=1
+-- firefox pre-hydration drags
+lin-min native=10 -> lo=10 hi=75 rule=0/0
+nl native=618 -> value=77 rule=0 live=613
+pow short drag native=684 -> value=50 rule=0 live=684
+== PASSED D. before hydration > one key on each non-linear handle counts once [webkit]
+-- webkit pre-hydration keys
+nl native after key=310
+nl5 native after key=22
+nl-any native after key=319.016994374947
+pow native after key=684
+dense native after key=3
+dense-auto native after key=21
+nld-min native after End=586
+--- after hydration ---
+nl: value=51 rule=0
+nl5: value=6 rule=0
+nl-any: value=51 rule=0
+pow: value=51 rule=0
+dense: value=5 rule=0
+dense-auto: value=6 rule=0
+nld: lo=75 hi=75 rule=0/0
+nl live=318 nl5 live=25
+-- webkit dense fixed
+value=5 rule=0
+== PASSED D. before hydration > native residue without hydration: what the keys do natively (recorded) [webkit]
+-- webkit native keys before hydration
+nl-any ArrowRight: 309.016994374947 -> 319.016994374947
+nl-any PageUp: 319.016994374947 -> 419.016994374947
+nl-any End: 419.016994374947 -> 1000
+nl-any Home: 1000 -> 0
+nl ArrowRight: 309 -> 310
+nl PageUp: 310 -> 410
+nl End: 410 -> 1000
+nl Home: 1000 -> 0
+== PASSED D. before hydration > three keys count three steps [webkit]
+-- webkit three keys
+native before=312 after=337 value=53 rule=0
+== PASSED D. before hydration > drags survive and the rule does not add a step [webkit]
+-- webkit pre-hydration short drag without the pointer guard
+nl-noguard native=310 -> value=51 rule=1
+-- webkit pre-hydration drags
+lin-min native=10 -> lo=10 hi=75 rule=0/0
+nl native=618 -> value=77 rule=0 live=613
+pow short drag native=684 -> value=50 rule=0 live=684
+== PASSED E. after hydration: drags, keys, track presses, code > a drag that ends between steps, then increments go the right way [chromium]
+-- chromium drag then increments
+drag end: value=68 rule=0 live=500
++ 500->509 => value=69 rule=1 live=509
+- 509->497 => value=68 rule=2 live=497
+- 497->485 => value=67 rule=3 live=485
+== PASSED E. after hydration: drags, keys, track presses, code > a slow drag in small moves on nl never triggers the rule [chromium]
+-- chromium slow drag nl
+2.5px live=318 value=51 rule=0
+5px live=320 value=51 rule=0
+7.5px live=325 value=52 rule=0
+10px live=331 value=52 rule=0
+12.5px live=336 value=53 rule=0
+15px live=346 value=54 rule=0
+end: value=54 rule=0 live=346
+== PASSED E. after hydration: drags, keys, track presses, code > a slow drag in small moves on nl-noguard (recorded: no pointer guard) [chromium]
+-- chromium slow drag nl-noguard
+2.5px live=318 value=51 rule=2
+5px live=318 value=51 rule=4
+7.5px live=327 value=52 rule=6
+10px live=337 value=53 rule=9
+12.5px live=327 value=52 rule=12
+15px live=337 value=53 rule=15
+end: value=53 rule=15 live=337
+== PASSED E. after hydration: drags, keys, track presses, code > keys, a range track press, and a write from code never trigger the rule [chromium]
+-- chromium keys, track, code
+ArrowRight => value=51 rule=0 live=318
+PageUp => value=61 rule=0 live=417
+ArrowLeft => value=60 rule=0 live=407
+PageDown => value=50 rule=0 live=309
+Home => value=0 rule=0 live=0
+End => value=100 rule=0 live=1000
+track press at 0.05 => lo=11 hi=75 rule=0/0
+code sets 60 => value=60 rule=0 live=407
+== PASSED E. after hydration: drags, keys, track presses, code > a touch drag on nl (Chromium, CDP touch) never triggers the rule [chromium]
+-- chromium touch drag nl
+2.5px live=358 value=55 rule=0
+5px live=364 value=56 rule=0
+7.5px live=369 value=56 rule=0
+10px live=375 value=57 rule=0
+12.5px live=380 value=57 rule=0
+15px live=385 value=58 rule=0
+end: value=58 rule=0 live=385
+== PASSED E. after hydration: drags, keys, track presses, code > a touch drag on nl-noguard (Chromium, CDP touch) (recorded: no pointer guard) [chromium]
+-- chromium touch drag nl-noguard
+2.5px live=356 value=55 rule=2
+5px live=366 value=56 rule=4
+7.5px live=376 value=57 rule=7
+10px live=366 value=56 rule=9
+12.5px live=376 value=57 rule=11
+15px live=386 value=58 rule=13
+end: value=58 rule=13 live=386
+== PASSED E. after hydration: drags, keys, track presses, code > a drag that ends between steps, then increments go the right way [firefox]
+-- firefox drag then increments
+drag end: value=68 rule=0 live=500
++ 500->509 => value=69 rule=1 live=509
+- 509->497 => value=68 rule=2 live=497
+- 497->485 => value=67 rule=3 live=485
+== PASSED E. after hydration: drags, keys, track presses, code > a slow drag in small moves on nl never triggers the rule [firefox]
+-- firefox slow drag nl
+2.5px live=318 value=51 rule=0
+5px live=319 value=51 rule=0
+7.5px live=325 value=52 rule=0
+10px live=330 value=52 rule=0
+12.5px live=336 value=53 rule=0
+15px live=340 value=53 rule=0
+end: value=53 rule=0 live=340
+== PASSED E. after hydration: drags, keys, track presses, code > a slow drag in small moves on nl-noguard (recorded: no pointer guard) [firefox]
+-- firefox slow drag nl-noguard
+2.5px live=309 value=50 rule=4
+5px live=318 value=51 rule=6
+7.5px live=327 value=52 rule=8
+10px live=327 value=52 rule=10
+12.5px live=337 value=53 rule=12
+15px live=346 value=54 rule=15
+end: value=53 rule=15 live=337
+== PASSED E. after hydration: drags, keys, track presses, code > keys, a range track press, and a write from code never trigger the rule [firefox]
+-- firefox keys, track, code
+ArrowRight => value=51 rule=0 live=318
+PageUp => value=61 rule=0 live=417
+ArrowLeft => value=60 rule=0 live=407
+PageDown => value=50 rule=0 live=309
+Home => value=0 rule=0 live=0
+End => value=100 rule=0 live=1000
+track press at 0.05 => lo=11 hi=75 rule=0/0
+code sets 60 => value=60 rule=0 live=407
+== SKIPPED E. after hydration: drags, keys, track presses, code > a touch drag on nl (Chromium, CDP touch) never triggers the rule [firefox]
+-- skip
+CDP touch input is Chromium-only
+== SKIPPED E. after hydration: drags, keys, track presses, code > a touch drag on nl-noguard (Chromium, CDP touch) (recorded: no pointer guard) [firefox]
+-- skip
+CDP touch input is Chromium-only
+== PASSED E. after hydration: drags, keys, track presses, code > a drag that ends between steps, then increments go the right way [webkit]
+-- webkit drag then increments
+drag end: value=68 rule=0 live=497
++ 497->509 => value=69 rule=1 live=509
+- 509->497 => value=68 rule=2 live=497
+- 497->485 => value=67 rule=3 live=485
+== PASSED E. after hydration: drags, keys, track presses, code > a slow drag in small moves on nl never triggers the rule [webkit]
+-- webkit slow drag nl
+2.5px live=318 value=51 rule=0
+5px live=319 value=51 rule=0
+7.5px live=325 value=52 rule=0
+10px live=330 value=52 rule=0
+12.5px live=336 value=53 rule=0
+15px live=340 value=53 rule=0
+end: value=53 rule=0 live=340
+== PASSED E. after hydration: drags, keys, track presses, code > a slow drag in small moves on nl-noguard (recorded: no pointer guard) [webkit]
+-- webkit slow drag nl-noguard
+2.5px live=318 value=51 rule=2
+5px live=327 value=52 rule=5
+7.5px live=318 value=51 rule=8
+10px live=327 value=52 rule=9
+12.5px live=337 value=53 rule=11
+15px live=346 value=54 rule=14
+end: value=54 rule=14 live=346
+== PASSED E. after hydration: drags, keys, track presses, code > keys, a range track press, and a write from code never trigger the rule [webkit]
+-- webkit keys, track, code
+ArrowRight => value=51 rule=0 live=318
+PageUp => value=61 rule=0 live=417
+ArrowLeft => value=60 rule=0 live=407
+PageDown => value=50 rule=0 live=309
+Home => value=0 rule=0 live=0
+End => value=100 rule=0 live=1000
+track press at 0.05 => lo=11 hi=75 rule=0/0
+code sets 60 => value=60 rule=0 live=407
+== SKIPPED E. after hydration: drags, keys, track presses, code > a touch drag on nl (Chromium, CDP touch) never triggers the rule [webkit]
+-- skip
+CDP touch input is Chromium-only
+== SKIPPED E. after hydration: drags, keys, track presses, code > a touch drag on nl-noguard (Chromium, CDP touch) (recorded: no pointer guard) [webkit]
+-- skip
+CDP touch input is Chromium-only

@@ -1,0 +1,90 @@
+# UIA RangeValuePattern.SetValue on non-linear Slider Handles -- firefox 155.0 (Playwright, headed), Windows 11 ARM64
+
+## nl-any log (#nl-any) start: UIA value=309.016994374947 min=0 max=1000 small=0 large=100 framework=Gecko; value=50 rule=0
+  set 310.016994374947 (value + 1, the increment arithmetic): UIA value=318.08681662017 min=0 max=1000 small=0 large=100; DOM nl-any:input; live=318.08681662016977; value=51 rule=1
+  set 317.08681662017 (value - 1): UIA value=309.016994374947 min=0 max=1000 small=0 large=100; DOM nl-any:input; live=309.01699437494744; value=50 rule=2
+  set 308.016994374947 (value - 1): UIA value=300.091976890465 min=0 max=1000 small=0 large=100; DOM nl-any:input; live=300.09197689046454; value=49 rule=3
+  set 303.091976890465 (value + 3 native units, inside one value step): UIA value=309.016994374947 min=0 max=1000 small=0 large=100; DOM nl-any:input; live=309.01699437494744; value=50 rule=4
+  set 800 (absolute set, 80 percent of the native range): UIA value=797.184758463537 min=0 max=1000 small=0 large=100; DOM nl-any:input; live=797.1847584635368; value=89 rule=4
+  set 797.184758463537 (the same value again): UIA value=797.184758463537 min=0 max=1000 small=0 large=100; DOM nl-any:input; live=797.184758463537; value=89 rule=4
+
+## nl log (#nl) start: UIA value=309 min=0 max=1000 small=1 large=100 framework=Gecko; value=50 rule=0
+  set 310 (value + 1, the increment arithmetic): UIA value=318 min=0 max=1000 small=1 large=100; DOM nl-any:change nl:input; live=318; value=51 rule=1
+  set 317 (value - 1): UIA value=309 min=0 max=1000 small=1 large=100; DOM nl:input; live=309; value=50 rule=2
+  set 308 (value - 1): UIA value=300 min=0 max=1000 small=1 large=100; DOM nl:input; live=300; value=49 rule=3
+  set 301 (value + SmallChange): UIA value=309 min=0 max=1000 small=1 large=100; DOM nl:input; live=309; value=50 rule=4
+  set 312 (value + 3 native units, inside one value step): UIA value=318 min=0 max=1000 small=1 large=100; DOM nl:input; live=318; value=51 rule=5
+  set 800 (absolute set, 80 percent of the native range): UIA value=797 min=0 max=1000 small=1 large=100; DOM nl:input; live=797; value=89 rule=5
+  set 797 (the same value again): UIA value=797 min=0 max=1000 small=1 large=100; DOM nl:input; live=797; value=89 rule=5
+
+## nl5 log (#nl5) start: UIA value=21 min=0 max=1000 small=1 large=100 framework=Gecko; value=5 rule=0
+  set 22 (value + 1, the increment arithmetic): UIA value=25 min=0 max=1000 small=1 large=100; DOM nl:change nl5:input; live=25; value=6 rule=1
+  set 24 (value - 1): UIA value=21 min=0 max=1000 small=1 large=100; DOM nl5:input; live=21; value=5 rule=2
+  set 20 (value - 1): UIA value=17 min=0 max=1000 small=1 large=100; DOM nl5:input; live=17; value=4 rule=3
+  set 18 (value + SmallChange): UIA value=21 min=0 max=1000 small=1 large=100; DOM nl5:input; live=21; value=5 rule=4
+  set 24 (value + 3 native units, inside one value step): UIA value=25 min=0 max=1000 small=1 large=100; DOM nl5:input; live=25; value=6 rule=4
+  set 800 (absolute set, 80 percent of the native range): UIA value=797 min=0 max=1000 small=1 large=100; DOM nl5:input; live=797; value=89 rule=4
+  set 797 (the same value again): UIA value=797 min=0 max=1000 small=1 large=100; DOM nl5:input; live=797; value=89 rule=4
+
+## nl-raw log (#nl-raw) start: UIA value=309 min=0 max=1000 small=1 large=100 framework=Gecko; value=50 rule=0
+  set 310 (value + 1, the increment arithmetic): UIA value=318 min=0 max=1000 small=1 large=100; DOM nl5:change nl-raw:input; live=318; value=51 rule=1
+  set 317 (value - 1): UIA value=309 min=0 max=1000 small=1 large=100; DOM nl-raw:input; live=309; value=50 rule=2
+  set 308 (value - 1): UIA value=300 min=0 max=1000 small=1 large=100; DOM nl-raw:input; live=300; value=49 rule=3
+  set 301 (value + SmallChange): UIA value=309 min=0 max=1000 small=1 large=100; DOM nl-raw:input; live=309; value=50 rule=4
+  set 312 (value + 3 native units, inside one value step): UIA value=318 min=0 max=1000 small=1 large=100; DOM nl-raw:input; live=318; value=51 rule=5
+  set 800 (absolute set, 80 percent of the native range): UIA value=797 min=0 max=1000 small=1 large=100; DOM nl-raw:input; live=797; value=89 rule=5
+  set 797 (the same value again): UIA value=797 min=0 max=1000 small=1 large=100; DOM nl-raw:input; live=797; value=89 rule=5
+
+## pow scale (#pow) start: UIA value=683 min=0 max=1000 small=1 large=100 framework=Gecko; value=50 rule=0
+  set 684 (value + 1, the increment arithmetic): UIA value=691 min=0 max=1000 small=1 large=100; DOM nl-raw:change pow:input; live=691; value=51 rule=1
+  set 690 (value - 1): UIA value=683 min=0 max=1000 small=1 large=100; DOM pow:input; live=683; value=50 rule=2
+  set 682 (value - 1): UIA value=674 min=0 max=1000 small=1 large=100; DOM pow:input; live=674; value=49 rule=3
+  set 675 (value + SmallChange): UIA value=683 min=0 max=1000 small=1 large=100; DOM pow:input; live=683; value=50 rule=4
+  set 686 (value + 3 native units, inside one value step): UIA value=691 min=0 max=1000 small=1 large=100; DOM pow:input; live=691; value=51 rule=5
+  set 800 (absolute set, 80 percent of the native range): UIA value=803 min=0 max=1000 small=1 large=100; DOM pow:input; live=803; value=66 rule=5
+  set 803 (the same value again): UIA value=803 min=0 max=1000 small=1 large=100; DOM pow:input; live=803; value=66 rule=5
+
+## dense-auto log (#dense-auto) start: UIA value=20 min=0 max=10000 small=1 large=1000 framework=Gecko; value=5 rule=0
+  set 21 (value + 1, the increment arithmetic): UIA value=24 min=0 max=10000 small=1 large=1000; DOM pow:change dense-auto:input; live=24; value=6 rule=1
+  set 23 (value - 1): UIA value=20 min=0 max=10000 small=1 large=1000; DOM dense-auto:input; live=20; value=5 rule=2
+  set 19 (value - 1): UIA value=16 min=0 max=10000 small=1 large=1000; DOM dense-auto:input; live=16; value=4 rule=3
+  set 17 (value + SmallChange): UIA value=20 min=0 max=10000 small=1 large=1000; DOM dense-auto:input; live=20; value=5 rule=4
+  set 23 (value + 3 native units, inside one value step): UIA value=24 min=0 max=10000 small=1 large=1000; DOM dense-auto:input; live=24; value=6 rule=4
+  set 8000 (absolute set, 80 percent of the native range): UIA value=8006 min=0 max=10000 small=1 large=1000; DOM dense-auto:input; live=8006; value=892 rule=4
+  set 8006 (the same value again): UIA value=8006 min=0 max=10000 small=1 large=1000; DOM dense-auto:input; live=8006; value=892 rule=4
+
+## nld log minimum (#nld-min) start: UIA value=124 min=0 max=586 small=1 large=58.6 framework=Gecko; lo=25 hi=75 rule=0/0
+  set 125 (value + 1, the increment arithmetic): UIA value=130 min=0 max=586 small=1 large=58.6; DOM dense-auto:change nld-min:input; live=130; lo=26 hi=75 rule=1/0
+  set 129 (value - 1): UIA value=124 min=0 max=586 small=1 large=58.6; DOM nld-min:input; live=124; lo=25 hi=75 rule=2/0
+  set 123 (value - 1): UIA value=118 min=0 max=586 small=1 large=58.6; DOM nld-min:input; live=118; lo=24 hi=75 rule=3/0
+  set 119 (value + SmallChange): UIA value=124 min=0 max=586 small=1 large=58.6; DOM nld-min:input; live=124; lo=25 hi=75 rule=4/0
+  set 127 (value + 3 native units, inside one value step): UIA value=130 min=0 max=586 small=1 large=58.6; DOM nld-min:input; live=130; lo=26 hi=75 rule=4/0
+  set 469 (absolute set, 80 percent of the native range): UIA value=473 min=0 max=586 small=1 large=58.6; DOM nld-min:input; live=473; lo=66 hi=75 rule=4/0
+  set 473 (the same value again): UIA value=473 min=0 max=586 small=1 large=58.6; DOM nld-min:input; live=473; lo=66 hi=75 rule=4/0
+
+## nld log maximum (#nld-max) start: UIA value=586 min=473 max=1000 small=1 large=52.7 framework=Gecko; lo=66 hi=75 rule=4/0
+  set 587 (value + 1, the increment arithmetic): UIA value=599 min=473 max=1000 small=1 large=52.7; DOM nld-min:change nld-max:input; live=599; lo=66 hi=76 rule=4/1
+  set 598 (value - 1): UIA value=586 min=473 max=1000 small=1 large=52.7; DOM nld-max:input; live=586; lo=66 hi=75 rule=4/2
+  set 585 (value - 1): UIA value=573 min=473 max=1000 small=1 large=52.7; DOM nld-max:input; live=573; lo=66 hi=74 rule=4/3
+  set 574 (value + SmallChange): UIA value=586 min=473 max=1000 small=1 large=52.7; DOM nld-max:input; live=586; lo=66 hi=75 rule=4/4
+  set 589 (value + 3 native units, inside one value step): UIA value=599 min=473 max=1000 small=1 large=52.7; DOM nld-max:input; live=599; lo=66 hi=76 rule=4/5
+  set 895 (absolute set, 80 percent of the native range): UIA value=903 min=473 max=1000 small=1 large=52.7; DOM nld-max:input; live=903; lo=66 hi=95 rule=4/5
+  set 903 (the same value again): UIA value=903 min=473 max=1000 small=1 large=52.7; DOM nld-max:input; live=903; lo=66 hi=95 rule=4/5
+
+## nld-raw log maximum (#nld-raw-max) start: UIA value=585.837195305305 min=123.837195305305 max=1000 small=1 large=87.6162804694695 framework=Gecko; lo=25 hi=75 rule=0/0
+  set 586.837195305305 (value + 1, the increment arithmetic): UIA value=599.837195305305 min=123.837195305305 max=1000 small=1 large=87.6162804694695; DOM nld-max:change nld-raw-max:input; live=599.837195305305; lo=25 hi=76 rule=0/1
+  set 598.837195305305 (value - 1): UIA value=585.837195305305 min=123.837195305305 max=1000 small=1 large=87.6162804694695; DOM nld-raw-max:input; live=585.837195305305; lo=25 hi=75 rule=0/2
+  set 584.837195305305 (value - 1): UIA value=572.837195305305 min=123.837195305305 max=1000 small=1 large=87.6162804694695; DOM nld-raw-max:input; live=572.837195305305; lo=25 hi=74 rule=0/3
+  set 573.837195305305 (value + SmallChange): UIA value=585.837195305305 min=123.837195305305 max=1000 small=1 large=87.6162804694695; DOM nld-raw-max:input; live=585.837195305305; lo=25 hi=75 rule=0/4
+  set 588.837195305305 (value + 3 native units, inside one value step): UIA value=599.837195305305 min=123.837195305305 max=1000 small=1 large=87.6162804694695; DOM nld-raw-max:input; live=599.837195305305; lo=25 hi=76 rule=0/5
+  set 825 (absolute set, 80 percent of the native range): UIA value=831.837195305305 min=123.837195305305 max=1000 small=1 large=87.6162804694695; DOM nld-raw-max:input; live=831.837195305305; lo=25 hi=91 rule=0/5
+  set 831.837195305305 (the same value again): UIA value=831.837195305305 min=123.837195305305 max=1000 small=1 large=87.6162804694695; DOM nld-raw-max:input; live=831.837195305305; lo=25 hi=91 rule=0/5
+
+## lin linear minimum (#lin-min) start: UIA value=25 min=0 max=75 small=1 large=7.5 framework=Gecko; lo=25 hi=75 rule=0/0
+  set 26 (value + 1, the increment arithmetic): UIA value=26 min=0 max=75 small=1 large=7.5; DOM nld-raw-max:change lin-min:input; live=26; lo=26 hi=75 rule=0/0
+  set 25 (value - 1): UIA value=25 min=0 max=75 small=1 large=7.5; DOM lin-min:input; live=25; lo=25 hi=75 rule=0/0
+  set 24 (value - 1): UIA value=24 min=0 max=75 small=1 large=7.5; DOM lin-min:input; live=24; lo=24 hi=75 rule=0/0
+  set 25 (value + SmallChange): UIA value=25 min=0 max=75 small=1 large=7.5; DOM lin-min:input; live=25; lo=25 hi=75 rule=0/0
+  set 28 (value + 3 native units, inside one value step): UIA value=28 min=0 max=75 small=1 large=7.5; DOM lin-min:input; live=28; lo=28 hi=75 rule=0/0
+  set 60 (absolute set, 80 percent of the native range): UIA value=60 min=0 max=75 small=1 large=7.5; DOM lin-min:input; live=60; lo=60 hi=75 rule=0/0
+  set 60 (the same value again): UIA value=60 min=0 max=75 small=1 large=7.5; DOM lin-min:input; live=60; lo=60 hi=75 rule=0/0
