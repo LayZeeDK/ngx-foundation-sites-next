@@ -14,6 +14,10 @@ _Avoid_: widget, module, component (for the Foundation thing)
 A Foundation component that ships Sass and classes but no Plugin, such as Button, Button Group, Close Button, or Callout.
 _Avoid_: static component, plain component, pure-CSS widget
 
+**Close Button**:
+Foundation's CSS-only component for the corner control drawn as a glyph, marked by the `.close-button` Structural class; distinct from a close Trigger (`nfsClose`), which does the closing and can sit on any button.
+_Avoid_: close trigger (for the component), dismiss button, X button
+
 **Structural class**:
 A Foundation CSS class that names an element of a Plugin's or a CSS-only component's markup (`.accordion-item`, `.dropdown-pane`, `.orbit-slide`, `.button`); bound by its directive, never written by the consumer.
 _Avoid_: layout class, block class, container class
@@ -57,6 +61,10 @@ _Avoid_: responsive class, breakpoint class, visibility helper
 **Utility class**:
 A Foundation CSS class from a layout system or utility family (`.grid-x`, `.cell`, `.align-center`, `.float-left`, `.text-center`, `.margin-1`) that can style any element and names no element of a component's markup; set by its directive, never written by the consumer. Visibility classes are one family of them.
 _Avoid_: helper class, layout class, utility helper
+
+**Form label**:
+A `<label>` element that names a form control, styled by Foundation by tag, with one Variant class (`.middle`); distinct from Foundation's Label component (`.label`), a coloured text tag.
+_Avoid_: label (bare, where the Label component could be meant), field label, caption
 
 **Revealed panel**:
 An off-canvas panel shown as a permanent sidebar at and above its `revealOn` breakpoint by Foundation's `.reveal-for-<bp>` class; distinct from the Reveal plugin.
@@ -274,11 +282,15 @@ _Avoid_: validation mode, error matcher, validateOn (as the name of the whole ru
 
 **Form error**:
 A consumer-written message element (`.form-error`) tied to one field and, optionally, to one error kind, shown only while that field's errors are shown.
-_Avoid_: error message (bare), inline error, hint (which is `.help-text`)
+_Avoid_: error message (bare), inline error, hint (which is Help text)
 
 **Form alert**:
 The one form-level message (Foundation's `[data-abide-error]` box) shown while a submitted form is invalid.
 _Avoid_: global error, error summary, abide error
+
+**Help text**:
+A `.help-text` element that describes one field through the id the field lists in its `aria-describedby`, shown at all times; distinct from a Form error, which shows only while the field's errors are shown.
+_Avoid_: hint, helper text, description (for the element)
 
 **Completion output**:
 A past-tense output (`opened`, `closed`, Sticky's `stuck`, whose state signal is `isStuck`) emitted once a state change is committed and its animation has finished; the replacement for Foundation's `*.zf.*` events.

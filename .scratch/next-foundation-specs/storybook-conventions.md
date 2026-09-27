@@ -132,14 +132,18 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
   // Spec: Accordion; also Responsive Accordion Tabs in accordion mode.
   $accordion-item-color: scale-color($primary-color, $lightness: -15%);
 
+  // color-contrast (1.4.3) and non-text contrast (1.4.11): the placeholder is 1.63:1, the input border 1.63:1,
+  // and the focus border equals the required resting border, which leaves a focused select with a 1.63:1 glow.
+  // Spec: Forms, forms--field-contrast and forms--select; also Abide, abide--invalid-state-contrast.
+  $input-placeholder-color: #737373;
+  $input-border: 1px solid $dark-gray;
+  $input-border-focus: 1px solid $black;
+
   // color-contrast (1.4.3) and non-text contrast (1.4.11): the alert colour is 4.49:1 on #fefefe, the invalid
-  // placeholder 3.93:1 on its tint, the placeholder 1.63:1, the input border 1.63:1.
-  // Spec: Abide, abide--invalid-state-contrast.
+  // placeholder 3.93:1 on its tint. Spec: Abide, abide--invalid-state-contrast.
   $input-error-color: #bf3f2c;
   $form-label-color-invalid: #bf3f2c;
   $input-background-invalid: #bf3f2c;
-  $input-placeholder-color: #737373;
-  $input-border: 1px solid $dark-gray;
 
   // Non-text contrast (1.4.11) and 1.4.3 over images: nfs-orbit stops the compile on Foundation's bullets
   // (1.6:1) and caption band (3.7:1). Spec: Orbit, every orbit--* story.

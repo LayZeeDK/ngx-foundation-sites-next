@@ -17,3 +17,4 @@ Material disables an anchor button with `aria-disabled`, `tabindex="-1"`, and a 
 - Disabling a link takes two bindings (the target and `disabled`); the dev-mode check catches a forgotten one.
 - A single-text-field form can still submit implicitly while its only submit button is focusably disabled, because HTML then treats the form as having no submit button; the form's submit handler checks the state. Natively disabled submit buttons do not have this gap.
 - Any future directive placed on `<a>` elements whose navigation must stay native inside deferred regions follows the same rule: no host `click` listener.
+- 2026-09-27 ([Re-run: Button spec under the class rule](../issues/128-rerun-button-class-rule.md)): the contract also covers `<input type="submit|button|reset">` hosts, which take native `disabled` and, with `disabledInteractive`, render `type="button"` while disabled.
