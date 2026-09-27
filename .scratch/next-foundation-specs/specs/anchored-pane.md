@@ -311,12 +311,12 @@ Measured in the prototype on identical fixtures: CDK reproduces the pane geometr
 
 The utility renders no ARIA and no role. Each consumer's pattern applies (Disclosure or non-modal Dialog for the Dropdown pane, Tooltip for the tip, Disclosure navigation for DropdownMenu), with these requirements that follow from the utility:
 
-- Never `aria-hidden` on a pane: Foundation's `display: none` on a closed `.dropdown-pane` and `hidden` or a State class on a closed tip already remove it from the accessibility tree (building-blocks 1.10). Never `aria-modal` on a pane, trapped or not (APG dialog: modal only with an obscuring overlay).
+- Never `aria-hidden` on a pane: Foundation's `display: none` on a closed `.dropdown-pane` and `hidden` or a State class on a closed tip already remove it from the accessibility tree (building-blocks 1.10). The Tooltip tip is the one exception: it is `aria-hidden="true"` at all times, because the Tooltip's hidden description element carries its text (the Tooltip spec). Never `aria-modal` on a pane, trapped or not (APG dialog: modal only with an obscuring overlay).
 - Focus return: on `'keydown'` with focus inside the pane, move focus to the Trigger that opened it; on `'click'`, `'tab'`, and `'sibling'`, move no focus (the user already put it somewhere).
 - Hover region: a hover-opened pane passes itself as `pane` to `nfsHoverIntent` (WCAG 1.4.13 hoverable). Foundation's Dropdown `hoverPane: false` leaves the pane out and fails 1.4.13, so the [Spec: Dropdown](../issues/26-spec-dropdown.md) drops the Option: a hover-opened pane is always in the Hover region.
 - Focus opening: a `focusin` host listener that opens (Tooltip) re-checks `document.activeElement` against its host before opening, because a replayed `focusin` can arrive after focus has moved on.
 - `autoFocus` (Dropdown pane): the first element in DOM order for which `InteractivityChecker.isFocusable` (which includes `isVisible`) and `isTabbable` hold, CDK's first-tabbable rule, focused in a render callback after the pane is placed; Foundation's tabindex sort is not kept. `trapFocus`: CDK `FocusTrap` on the pane while open, never with `aria-modal`, and Escape still closes (2.1.2 No Keyboard Trap); while a trap holds focus the focus rule never fires.
-- Trigger ARIA stays with the Triggers utility (`aria-expanded`, `aria-controls`, `aria-haspopup="dialog"`); a tooltip host carries `aria-describedby` to the tip once it exists.
+- Trigger ARIA stays with the Triggers utility (`aria-expanded`, `aria-controls`, `aria-haspopup="dialog"`); a tooltip host carries `aria-describedby` to its hidden description element, and the tip is `aria-hidden` (the Tooltip spec).
 
 Keyboard behaviour the utility supplies:
 
@@ -359,13 +359,15 @@ The utility's only DOM output is inline `top` and `left` on the placed element, 
 <div id="account-pane" class="dropdown-pane is-open has-position-bottom has-alignment-left"
      style="top: 47.88px; left: 0px;">...</div>
 
-<!-- Tooltip tip: created on first show as the trigger's next sibling, kept after close -->
-<button type="button" class="has-tip" nfsTooltip="Fancy word for a beetle" aria-describedby="nfs-tooltip-1">scarabaeus</button>
-<nfs-tooltip-tip id="nfs-tooltip-1" class="tooltip top align-center" role="tooltip"
-                 style="top: -57.19px; left: 0.75px;">Fancy word for a beetle</nfs-tooltip-tip>
+<!-- Tooltip tip: created on first show after the description element, kept after close
+     (the Tooltip spec's hydrated markup at the first show by hover, while the fade-in runs) -->
+<button type="button" class="has-tip" aria-describedby="nfs-tooltip-desc-a1b2-0">scarabaeus</button>
+<nfs-tooltip-description hidden="" role="tooltip" id="nfs-tooltip-desc-a1b2-0">Fancy word for a beetle.</nfs-tooltip-description>
+<nfs-tooltip-tip aria-hidden="true" id="nfs-tooltip-a1b2-0" class="tooltip nfs-fade-in top align-center"
+                 style="top: -57.19px; left: 0.75px;">Fancy word for a beetle.</nfs-tooltip-tip>
 ```
 
-The Dropdown and Tooltip specs own their inputs, their `id`s, and how the closed tip is hidden; the offsets and classes here are the utility's part. The pane's containing block is its nearest positioned ancestor: for a Dropdown pane that is wherever the consumer wrote it; for the tip, because it is the trigger's next sibling, the trigger's nearest positioned ancestor, not `.has-tip`.
+The Dropdown and Tooltip specs own their inputs, their `id`s, the description element, and how the closed tip is hidden; the offsets and classes here are the utility's part. The pane's containing block is its nearest positioned ancestor: for a Dropdown pane that is wherever the consumer wrote it; for the tip, because it sits beside the trigger in the trigger's parent, the trigger's nearest positioned ancestor, not `.has-tip`.
 
 ### Animation
 
@@ -571,13 +573,13 @@ export class NfsDropdownPane implements NfsOpenable {
 }
 ```
 
-The Tooltip tip, created by the Tooltip directive on first show as the trigger's next sibling:
+The Tooltip tip, created by the Tooltip directive on first show after the description element:
 
 ```ts
 @Component({
   selector: 'nfs-tooltip-tip',
   template: '{{ text() }}',
-  host: {class: 'tooltip', role: 'tooltip', '[attr.id]': 'id()', '[class]': 'placementClasses()'},
+  host: {class: 'tooltip', 'aria-hidden': 'true', '[attr.id]': 'id()', '[class]': 'placementClasses()'},
 })
 export class NfsTooltipTip {
   readonly text = signal('');
@@ -628,4 +630,4 @@ Sass. The consumer compiles Foundation's Sass from its own settings; the library
 - Panes follow their trigger through static scrolling containers (`followScroll`).
 - Escape closes Tooltips and hover-opened panes from anywhere, focus leaving closes every pane, and hover content stays open while the pointer is over it: WCAG 2.2 AA fixes over Foundation.
 - Opening a pane no longer closes an open parent pane of the same kind (`closeme` did).
-- `what-input`, `ignoreMousedisappear`, the `tap` event, `data-yeti-box`, `data-resize`, `aria-hidden` on panes, and the `.is-opening` dance are gone.
+- `what-input`, `ignoreMousedisappear`, the `tap` event, `data-yeti-box`, `data-resize`, `aria-hidden` on Dropdown panes (the Tooltip tip keeps it, always `true`, the Tooltip spec), and the `.is-opening` dance are gone.

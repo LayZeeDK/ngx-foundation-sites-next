@@ -163,3 +163,9 @@ From [Resolve the assistive-technology checks](77-evidence-assistive-technology-
 - Item 2 (the inherited upstream filings) is not touched here.
 
 Triage, from the decision ticket: impact limited to one ARIA sentence and Testing Decisions, confidence HIGH. Decided; nothing new is open.
+
+### Amendment, 2026-09-27 (audit 0006)
+
+From [audit 0006](../audits/0006-open-decision-pass.md), finding M2. No spec change and no decision change.
+
+- The upstream items are closed as not filed, by the user's ruling ([Upstream filings](76-evidence-upstream-filing-readiness.md)); no workaround here depends on them. That covers OPEN FOR HUMAN item 2 (the upstream filings inherited from the [Spec: Accordion](15-spec-accordion.md) and the [Spec: Tabs](16-spec-tabs.md)), which the Triage and the assistive-technology amendment above still list as open or untouched.

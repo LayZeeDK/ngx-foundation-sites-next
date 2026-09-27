@@ -200,3 +200,11 @@ From [Resolve the assistive-technology checks](77-evidence-assistive-technology-
 - Spec edits: the Behaviour rules "Hover:" bullet gains the exception (hover opens nothing while focus is inside the open sibling); Testing Decisions ends with a manual release test (VoiceOver on iOS and TalkBack on Chrome double taps; VoiceOver on macOS and NVDA with Chrome for silent hover and the sibling-hover case).
 
 Triage, from the decision ticket: impact LOW (one callback guard), confidence MEDIUM-HIGH (the rule is derived from the specs' own mechanisms and the measured events; the WebKit and JAWS readings are left to the release test). Decided; nothing new is open.
+
+### Amendment, 2026-09-27 (audit 0006)
+
+From [audit 0006](../audits/0006-open-decision-pass.md), findings L10 and L11 and, for this spec, H2; `specs/dropdown-menu.md` was edited to match. No decision changes.
+
+- Rendered HTML: every toggle in the server HTML and in the hydrated example carries the `id` the [Spec: Nested menu (shared utility)](56-spec-nested-menu.md) binds in every mode (`nfs-submenu-toggle-...`, rewritten at hydration like the submenu ids).
+- SSR smoke: it also asserts an `id` on every toggle and no `aria-labelledby` on any submenu, because the Drilldown level names belong to drilldown mode only.
+- WCAG 2.4.3 row: states that hover never moves keyboard focus, the hover guard check 8 of [Resolve the assistive-technology checks](77-evidence-assistive-technology-checks.md) added to the Nested menu's dropdown mode.

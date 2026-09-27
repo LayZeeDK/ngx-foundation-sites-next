@@ -166,3 +166,10 @@ From [Resolve the assistive-technology checks](77-evidence-assistive-technology-
 - Item 1 (the upstream filing) is not touched here.
 
 Triage, from the decision ticket: impact limited to Testing Decisions, confidence HIGH. Decided; nothing new is open.
+
+### Amendment, 2026-09-27 (audit 0006)
+
+From [audit 0006](../audits/0006-open-decision-pass.md), finding M2; `specs/tabs.md` was edited to match. Wording only; no decision changes.
+
+- The upstream items are closed as not filed, by the user's ruling ([Upstream filings](76-evidence-upstream-filing-readiness.md)); no workaround here depends on them. That covers OPEN FOR HUMAN item 1 (projected panel content without the `ngTabContent` warning, and skipping `preventDefault()` during event replay), which the Triage and the assistive-technology amendment above still list as open or untouched.
+- Spec edit: the known-deviation paragraph under ARIA and keyboard no longer says that asking angular/components for a public way to move the active item "stays human-only"; it says the request is not filed, by the user's ruling, with a link to that ruling.

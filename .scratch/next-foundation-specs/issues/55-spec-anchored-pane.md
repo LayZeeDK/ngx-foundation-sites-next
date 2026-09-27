@@ -199,3 +199,12 @@ Changes to `specs/anchored-pane.md` from the [Consistency review and bundle inde
 ### Amendment, 2026-09-26 (audit 0005)
 
 From [audit 0005](../audits/0005-final-bundle.md), finding L5; `specs/anchored-pane.md` was edited to match. Wording only: D2's rejected root service is attributed to "building-blocks Table C's first sketch, since replaced", because Table C no longer holds it.
+
+### Amendment, 2026-09-27 (audit 0006)
+
+From [audit 0006](../audits/0006-open-decision-pass.md), finding H1; `specs/anchored-pane.md` was edited to match the [Spec: Tooltip](27-spec-tooltip.md) as check 6 of [Resolve the assistive-technology checks](77-evidence-assistive-technology-checks.md) changed it: in its first client render callback the Tooltip directive inserts a hidden internal `nfs-tooltip-description` (`role="tooltip"`) as the host's next sibling and references it from `aria-describedby`; the visible tip, created on first show after it, is `aria-hidden="true"`. This spec still showed the kept tip as the description, the design check 6 rejected. No decision of this utility changes: it still places the tip and renders no ARIA.
+
+- ARIA requirements: a tooltip host carries `aria-describedby` to its hidden description element, and the tip is `aria-hidden` (the Tooltip spec); the "Never `aria-hidden` on a pane" rule names the Tooltip tip as its one exception, because the description element carries the tip's text.
+- Rendered output: the tooltip block is the Tooltip spec's hydrated markup at the first show (host, description element, `aria-hidden` tip); its comment and the tip sketch's lead-in say the tip is created "after the description element" instead of "as the trigger's next sibling"; the paragraph under the block names the description element among what the Tooltip spec owns and says the tip sits beside the trigger in the trigger's parent.
+- Tip sketch: the host metadata binds `'aria-hidden': 'true'` in place of `role: 'tooltip'`.
+- "Foundation behaviour changed or dropped": `aria-hidden` is gone from Dropdown panes, while the Tooltip tip keeps it, always `true`.

@@ -223,3 +223,11 @@ From [Resolve the assistive-technology checks](77-evidence-assistive-technology-
 - The vertical question stays with [Decide: Slider vertical orientation](73-decide-slider-vertical-orientation.md) (item 1, decided).
 
 Triage, from the decision ticket: impact limited to Testing Decisions and two cells, confidence HIGH. Decided; nothing new is open.
+
+### Amendment, 2026-09-27 (audit 0006)
+
+From [audit 0006](../audits/0006-open-decision-pass.md), findings M8 and L4; `specs/slider.md` was edited to match. No decision changes.
+
+- M8: the one probe that would reopen [Decide: Slider vertical orientation](73-decide-slider-vertical-orientation.md) (its Dissent, second reopening fact; its Triage guard (d)) had lived in the README's assistive-technology check 11, which the README's summary later dropped, so no spec or list held it. The release test now ends with it: on `slider--vertical` and `slider--vertical-two-handles`, with JAWS on Chrome and Edge and TalkBack on Chrome, each Handle's value changes with the arrow keys and with the screen reader's own slider commands and gestures; if any fails to change a rotated Handle's value because Chromium exposes it as horizontal, that decision reopens.
+- L4: the WCAG table gains a 1.3.1 row, the criterion the decision's dossier and ruling treat as touched beside 4.1.2: each Handle's own label, the range form's `role="group"` named by `aria-labelledby` (consumer markup), and `aria-orientation="vertical"` on each vertical Handle (exposed by Firefox and WebKit; Chromium's horizontal readout accepted by the decision); enforced by axe in every story, `slider--two-handles` finding each Handle by its own name, and the `aria-orientation` assertions of `slider--vertical` and `slider--vertical-two-handles`.
+- Outside this ticket's files, for the orchestrator (audit 0006 M8): a dated note under the Slider decision's Triage naming the Slider spec's release test as where guard (d) now lives.

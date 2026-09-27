@@ -300,16 +300,16 @@ Consumer markup, Foundation's docs example with its parents as buttons, a Hybrid
 </nav>
 ```
 
-Server HTML, and the same after hydration before any interaction (directive attributes omitted; `_IdGenerator` ids differ between server and client and are rewritten at hydration because `id` and `aria-controls` are both host bindings):
+Server HTML, and the same after hydration before any interaction (directive attributes omitted; `_IdGenerator` ids differ between server and client and are rewritten at hydration because `id` and `aria-controls` are both host bindings; each toggle carries the `id` the Nested menu binds in every mode):
 
 ```html
 <nav aria-label="Docs">
   <ul class="vertical menu accordion-menu" jsaction="keydown:;">
     <li class="is-accordion-submenu-parent">
-      <button type="button" aria-expanded="false" aria-controls="nfs-submenu-x1-0" jsaction="click:;">Item 1</button>
+      <button type="button" id="nfs-submenu-toggle-x1-0" aria-expanded="false" aria-controls="nfs-submenu-x1-0" jsaction="click:;">Item 1</button>
       <ul id="nfs-submenu-x1-0" inert="" class="menu vertical nested submenu is-accordion-submenu">
         <li class="is-submenu-item is-accordion-submenu-item is-accordion-submenu-parent">
-          <button type="button" aria-expanded="false" aria-controls="nfs-submenu-x1-1" jsaction="click:;">Item 1A</button>
+          <button type="button" id="nfs-submenu-toggle-x1-1" aria-expanded="false" aria-controls="nfs-submenu-x1-1" jsaction="click:;">Item 1A</button>
           <ul id="nfs-submenu-x1-1" inert="" class="menu vertical nested submenu is-accordion-submenu">
             <li class="is-submenu-item is-accordion-submenu-item"><a href="/1a/i">Item 1Ai</a></li>
           </ul>
@@ -319,7 +319,7 @@ Server HTML, and the same after hydration before any interaction (directive attr
     </li>
     <li class="is-accordion-submenu-parent has-submenu-toggle" data-nfs-expanded="">
       <a href="/guides">Guides</a>
-      <button type="button" class="submenu-toggle" aria-expanded="true" aria-controls="nfs-submenu-x1-2" jsaction="click:;">
+      <button type="button" id="nfs-submenu-toggle-x1-2" class="submenu-toggle" aria-expanded="true" aria-controls="nfs-submenu-x1-2" jsaction="click:;">
         <span class="submenu-toggle-text">More Guides pages</span></button>
       <ul id="nfs-submenu-x1-2" data-nfs-shown="" class="menu vertical nested is-active submenu is-accordion-submenu">
         <li class="is-submenu-item is-accordion-submenu-item"><a href="/guides/theming" aria-current="page">Theming</a></li>
@@ -337,7 +337,7 @@ Hydrated, after a click on "Item 1": the first `li` gains `data-nfs-expanded`; i
 
 ```html
 <li class="is-accordion-submenu-parent" data-nfs-expanded="">
-  <button type="button" aria-expanded="true" aria-controls="nfs-submenu-y2-0">Item 1</button>
+  <button type="button" id="nfs-submenu-toggle-y2-0" aria-expanded="true" aria-controls="nfs-submenu-y2-0">Item 1</button>
   <ul id="nfs-submenu-y2-0" class="menu vertical nested submenu is-accordion-submenu is-active" data-nfs-shown="">...</ul>
 </li>
 ```
@@ -414,7 +414,7 @@ Vitest browser mode under the Angular unit-test builder (`npx nx test <lib>`, Ch
 
 Runs under `npx nx test <lib>` in `<name>.ssr.spec.ts` through the shared `renderServer()` helper; `npx nx test-node <lib>` only if the server path depends on the DOM adapter, which none here does.
 
-- SSR smoke: `renderApplication` over a fixture with the Rendered HTML markup (a three-level menu, a Hybrid item, a statically open nested section, an `aria-current` link), a second menu with `[multiOpen]="false"`, and a menu inside `@defer (hydrate on interaction)`. Assert `whenStable()` resolves (no pending timers); the HTML matches the Rendered HTML section: `accordion-menu` on the root, the Nest classes per level, `aria-expanded` and `aria-controls` resolving to an element, `inert` on every closed submenu and not on the open one, `data-nfs-expanded` and `data-nfs-shown` only on the open section, `is-active` on its submenu, no `role` and no `aria-hidden` anywhere, no inline `style`; `jsaction="keydown:;"` on the root (no `click`), `click:;` on each toggle, none on `li` or links; `ngb` and `click:;keydown:;` on the deferred block's root.
+- SSR smoke: `renderApplication` over a fixture with the Rendered HTML markup (a three-level menu, a Hybrid item, a statically open nested section, an `aria-current` link), a second menu with `[multiOpen]="false"`, and a menu inside `@defer (hydrate on interaction)`. Assert `whenStable()` resolves (no pending timers); the HTML matches the Rendered HTML section: `accordion-menu` on the root, the Nest classes per level, `aria-expanded` and `aria-controls` resolving to an element, an `id` on every toggle and no `aria-labelledby` on any submenu (the Drilldown level names belong to drilldown mode), `inert` on every closed submenu and not on the open one, `data-nfs-expanded` and `data-nfs-shown` only on the open section, `is-active` on its submenu, no `role` and no `aria-hidden` anywhere, no inline `style`; `jsaction="keydown:;"` on the root (no `click`), `click:;` on each toggle, none on `li` or links; `ngb` and `click:;keydown:;` on the deferred block's root.
 - Pure logic, table-driven: the development check's rule (a description of levels and expanded flags, with `multiOpen`, gives warn or not).
 - Sass compile test: `nfs-accordion-menu` compiles after `foundation-accordion-menu` with Foundation's defaults and emits the grid, clip, and button rules; `$duration: 400ms` appears in the transition; `$accordionmenu-arrows: false` drops the parent-button arrow rules and keeps the toggle checks; a `$accordionmenu-arrow-color` below 3:1 on `$body-background`, a `$accordionmenu-submenu-toggle-background` below 3:1 with the arrow colour, a 20 px `$accordionmenu-submenu-toggle-width`, and a `$accordionmenu-padding` of `0.2rem 1rem` each stop the compile with an `@error` naming the setting.
 

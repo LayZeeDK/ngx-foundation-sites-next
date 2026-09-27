@@ -213,3 +213,14 @@ From [Resolve the assistive-technology checks](77-evidence-assistive-technology-
 - Brought into line afterwards, from the same ruling: the `content` member row and development check 3 no longer count modal mode as needing a linked content; the Focus rules' open step applies the Modal inert set after focus has left the Trigger, not "the content becomes `inert`"; and the keyboard table's modal Tab row, the open-at-first-paint server HTML sentence, and D9's reason name the Modal inert set, not the content.
 
 Triage, from the decision ticket: impact HIGH (behaviour every modal Off-canvas page inherits, and the Trigger role one Openable reports; the `NfsTriggerRole` union itself does not change, so no consumer `switch` breaks), confidence HIGH (measured in two engines over three runs and re-measured by the judge). Decided; nothing new is open.
+
+### Amendment, 2026-09-27 (audit 0006)
+
+From [audit 0006](../audits/0006-open-decision-pass.md), finding M5; `specs/off-canvas.md` was edited to match. A behaviour fix to the Modal inert set: it was removed only at the close request, so a panel destroyed while open (a route component replaced, an enclosing `@if` turned false) ran no close request and left the rest of the page inert. Building-blocks 1.9 requires every directive to restore in `DestroyRef.onDestroy` any global it touched; before the Modal inert set, `inert` was a host binding on `nfsOffCanvasContent` and went with the directive.
+
+- Modal mode paragraph: a panel destroyed while the set is applied removes it in `DestroyRef.onDestroy`.
+- Render hooks, phase machine row: cleanup clears the timer and removes an applied Modal inert set.
+- D14: the set is removed at the close request, or on destroy, from exactly the elements it changed.
+- Browser-level Modal mode case: destroying an open modal panel removes `inert` from every element the set changed.
+
+Triage: impact LOW (an internal cleanup step; no input, output, or contract changes), confidence HIGH (building-blocks 1.9's destroy rule). Decided; nothing new is open.

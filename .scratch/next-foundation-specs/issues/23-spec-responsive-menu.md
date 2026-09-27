@@ -205,3 +205,16 @@ From [Resolve the assistive-technology checks](77-evidence-assistive-technology-
 - Spec edits: Testing Decisions ends with a manual release test (NVDA on Firefox and on Chrome, JAWS on Chrome, VoiceOver on Safari), which notes that entering drilldown may also read the level's name, "Products", the name the Drilldown level names add; the Out of Scope bullet on screen-reader verification now reads "Automated screen-reader output", covered by that release test.
 
 Triage, from the decision ticket: impact limited to Testing Decisions and one Out of Scope bullet, confidence HIGH. Decided; nothing new is open.
+
+### Amendment, 2026-09-27 (audit 0006)
+
+From [audit 0006](../audits/0006-open-decision-pass.md), finding H2; `specs/responsive-menu.md` was edited to match. The spec now composes the [Spec: Nested menu (shared utility)](56-spec-nested-menu.md) as that spec defines itself since check 9 of [Resolve the assistive-technology checks](77-evidence-assistive-technology-checks.md): every toggle binds an `id` in every mode, and in drilldown mode every submenu binds `aria-labelledby` to its parent toggle (the Drilldown level names). The spec had said a Mode swap changes classes and keys only, so an SSR smoke written from it would have failed against the Nested menu it composes; its own release test already expected the level's name "Products" on entering drilldown.
+
+- Solution and "Foundation behaviour changed or dropped": a Mode swap changes classes, key handling, and the Drilldown level names on the same nodes, never roles.
+- ARIA and keyboard: the intro says a swap changes classes, keys, and, in drilldown mode, the Drilldown level names only; the table's heading is "Semantics" (no longer "constant across modes"); the list row allows `aria-labelledby` on each submenu in drilldown mode, naming its level after its parent toggle; the Parent toggle row names its `id` in every mode.
+- WCAG 1.3.1 row: names the level names and that a swap adds or removes them with the mode.
+- Rendered HTML: the drilldown server HTML gives each toggle `id="nfs-submenu-toggle-a1-<n>"` and each submenu `aria-labelledby` to it; the note under it states both; the hydrated dropdown HTML gives the toggle its `id` without `aria-labelledby`; the focus-inside swap paragraph and the accordion-mode note say when submenus gain or lack the reference; the ids sentence names `aria-labelledby` beside `id` and `aria-controls` as host bindings rewritten at hydration.
+- Tests: the `responsive-menu--mode-swap` story asserts after every flip that submenus carry `aria-labelledby` in `drilldown` only; the SSR smoke asserts an `id` on every toggle and `aria-labelledby` on each submenu only in drilldown mode, resolving to its parent toggle's `id`.
+- Outside this ticket's files, for the orchestrator (audit 0006 H2 gives the text): building-blocks Tables A and B ResponsiveMenu, and the glossary's Mode swap.
+
+Triage: impact LOW (the spec now states what the Nested menu already renders; no input, output, or contract changes), confidence HIGH. Nothing new is open.

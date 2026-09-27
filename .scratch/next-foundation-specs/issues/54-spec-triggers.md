@@ -204,3 +204,14 @@ From [Resolve the assistive-technology checks](77-evidence-assistive-technology-
 - Stale text above, not rewritten: the 2026-09-27 amendment from [Decide: `aria-expanded` on a modal dialog's opener](72-decide-aria-expanded-on-modal-opener.md) says an Off-canvas panel in Modal mode keeps `dialog` with `aria-expanded`.
 
 Triage, from the decision ticket: impact HIGH (the Trigger role one Openable reports, part of the public `NfsTriggerRole` contract as applied; the union itself does not change), confidence HIGH. Decided; nothing new is open.
+
+### Amendment, 2026-09-27 (audit 0006)
+
+From [audit 0006](../audits/0006-open-decision-pass.md), findings M4, L1, and L2; `specs/triggers.md` was edited to match. The Openable contract (its members and types) does not change; the inherited requirements now state two rules the Reveal and Off-canvas specs already apply.
+
+- M4, the focus-return rule: the inherited requirement stopped at "else to the element focused before opening". The Consumers requirements, the `open(trigger?)` row, and the 2.4.3 row now add "else, where the Openable says so, to its first registered Trigger", as the [Spec: Reveal](18-spec-reveal.md) (its focus restore fallback, from the follow-up of [Decide: the server state of an open-by-default non-modal Reveal's Trigger](78-decide-open-by-default-non-modal-reveal-server-state.md)) and the [Spec: Off-canvas](25-spec-off-canvas.md) do; the Reveal and OffCanvas Consumers rows list `registerTrigger` for that fallback (and, for the Reveal, Light dismiss exclusion when non-modal).
+- L1, `modal-dialog` explained through the Reveal only: the `triggerRole` row adds OffCanvas switching between `disclosure` and `modal-dialog` from its modal mode; D7's rationale adds that an Off-canvas panel in Modal mode makes its Trigger inert through its Modal inert set; the Consumers row attributes OffCanvas's `modal-dialog` to [Resolve the assistive-technology checks](77-evidence-assistive-technology-checks.md), because its Modal inert set makes every Trigger outside the panel inert while it is open, instead of to the Off-canvas spec's APG reading.
+- L2: the first-paint requirement names its one exception, a modal Reveal open by default, whose server HTML stays closed because `showModal()` cannot promote a dialog opened by attribute (the Reveal spec's Rendering modes).
+- Outside this ticket's files, for the orchestrator (audit 0006 L1): building-blocks 1.8, Part 4 item 4, and Table B OffCanvas, and the README's ADR 0036 row.
+
+Triage: impact LOW (inherited requirements restated to match two Openable specs; no member, type, or rendered attribute changes), confidence HIGH. Nothing new is open.

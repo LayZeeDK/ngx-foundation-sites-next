@@ -188,3 +188,9 @@ From [Resolve the assistive-technology checks](77-evidence-assistive-technology-
 - Items 1 to 3 (upstream filings) are not touched here.
 
 Triage, from the decision ticket: impact limited to Testing Decisions and one Out of Scope bullet, confidence HIGH (two engines, three runs, NVDA's release source, published data). Decided; nothing new is open.
+
+### Amendment, 2026-09-27 (audit 0006)
+
+From [audit 0006](../audits/0006-open-decision-pass.md), finding M2. No spec change and no decision change.
+
+- The upstream items are closed as not filed, by the user's ruling ([Upstream filings](76-evidence-upstream-filing-readiness.md)); no workaround here depends on them. That covers OPEN FOR HUMAN items 1 to 3 (projected panel content without `ngAccordionContent`, skipping `preventDefault()` during event replay, and the `AccordionGroup` `keydown` target check), which the Triage and the assistive-technology amendment above still list as open or untouched; their applied defaults (the documented development warnings, the one logged error per replayed Aria key, and the content key guard) are the spec as written.

@@ -228,3 +228,11 @@ From [Resolve the assistive-technology checks](77-evidence-assistive-technology-
 - Spec edits: the ARIA table's Announcements row and its Source cell; Testing Decisions ends with a manual release test (NVDA and JAWS on Chrome and Firefox, VoiceOver on macOS and iOS).
 
 Triage, from the decision ticket: impact LOW (one sentence), confidence HIGH. Decided; nothing new is open.
+
+### Amendment, 2026-09-27 (audit 0006)
+
+From [audit 0006](../audits/0006-open-decision-pass.md), finding L8; `specs/magellan.md` was edited to match. Wording only; no decision changes.
+
+- The assistive-technology amendment above, and the spec after it, said VoiceOver on iOS says "current page" when a focused link's section becomes current. The a11ysupport.io change test behind that wording sets `aria-current="page"`; for `true`, which Magellan renders by default, a11ysupport.io records VoiceOver on iOS reading "current", and NVDA maps `true` to "current" and `page` to "current page".
+- Spec edits: the ARIA table's Announcements row says VoiceOver on iOS is expected to say "current" (a11ysupport.io; its change test, run with `page`, heard "current page"); its Source cell says attribute changes on elements without focus are not announced; the release test says VoiceOver on iOS may say "current".
+- Outside this ticket's files, for the orchestrator (audit 0006 L8): the same correction in check 13 of [Resolve the assistive-technology checks](77-evidence-assistive-technology-checks.md) and a dated note in its second evidence file.

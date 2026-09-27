@@ -265,3 +265,11 @@ From [Resolve the assistive-technology checks](77-evidence-assistive-technology-
 - Item 1 (the upstream filing) is not touched here.
 
 Triage, from the decision ticket: impact limited to one rationale and Testing Decisions, confidence HIGH. Decided; nothing new is open.
+
+### Amendment, 2026-09-27 (audit 0006)
+
+From [audit 0006](../audits/0006-open-decision-pass.md), findings M2 and L5; `specs/orbit.md` was edited to match. Wording only; no decision changes.
+
+- M2: the upstream items are closed as not filed, by the user's ruling ([Upstream filings](76-evidence-upstream-filing-readiness.md)); no workaround here depends on them. That covers OPEN FOR HUMAN item 1 (a public way to move `TabList`'s active item) and the binding-precedence question of the [Prototype: Orbit keyboard scrolling and hydration details](65-prototype-orbit-keyboard-hydration.md) that the re-run triage above calls human-only, both still listed as open or untouched above; the accepted and documented roving tab-stop drift (D13) and the binding rule the spec states are the spec as written.
+- Spec edits (M2): the known-deviation paragraph under ARIA and keyboard, and the event-replay bullet under Rendering modes, no longer say that asking angular/components (for a public API, and to skip `preventDefault()` during replay) "stays human-only"; each says the request is not filed, by the user's ruling, with a link to that ruling.
+- L5: the binding-precedence paragraph gave the superseded cause beside the new one ("the bullets have not registered yet (they follow the slides in the document)"), while the same paragraph and ADR 0037 say document order is not the cause (probe G `g4` keeps Foundation's order and holds); it now reads "(inside `@for`, the bullets' embedded views register after the slides bind)".

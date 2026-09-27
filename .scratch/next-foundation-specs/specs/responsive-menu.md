@@ -21,7 +21,7 @@ One attribute directive, `nfsResponsiveMenu`, on the outer `ul` the developer al
 - passes every Option of the three roots through under Foundation's names (`multiOpen`, `autoHeight`, `closeOnClick`, `hoverDelay`, and the rest), as Foundation's child plugins read every `data-*` attribute of the same `ul`; `closeOnClick` reaches Drilldown and Dropdown Menu at once, each with its own default;
 - re-emits the live root's `opened` and `closed` with the item, exposes the displayed Menu mode as a read-only `mode` signal, and offers `collapseAll()`.
 
-A Mode swap changes classes and key handling on the same nodes, never roles: every mode is disclosure navigation. The open submenus that hold focus stay open, so focus stays on the same control; a swap into drilldown also closes the submenu whose own row holds focus (its toggle, or a Hybrid item's link), because the open level would hide that row; a swap into dropdown with focus outside the menu closes every submenu, so no overlay is left covering the page. The swap is decided and applied in one render callback, while the old mode's classes are still on the page, so no render ever shows the new mode over submenus the swap is about to close.
+A Mode swap changes classes, key handling, and the Drilldown level names on the same nodes, never roles: every mode is disclosure navigation. The open submenus that hold focus stay open, so focus stays on the same control; a swap into drilldown also closes the submenu whose own row holds focus (its toggle, or a Hybrid item's link), because the open level would hide that row; a swap into dropdown with focus outside the menu closes every submenu, so no overlay is left covering the page. The swap is decided and applied in one render callback, while the old mode's classes are still on the page, so no render ever shows the new mode over submenus the swap is about to close.
 
 The server renders the Server breakpoint's mode. Every instance, deferred and client-created ones included, starts from that mode and follows the viewport from its first render callback on, so server HTML hydrates exactly as sent and a client-rendered page never paints the wrong mode. The directive adds no CSS of its own: each mode's Library mixin styles its mode, keyed on its root class.
 
@@ -256,13 +256,13 @@ Borrowed: the signal-plus-bindings shape of a responsive switch (the schematic),
 
 ### ARIA and keyboard
 
-Pattern: Disclosure Navigation Menu (APG) in every mode, with the hybrid variant for Hybrid items (ADR 0004); the APG's ResponsiveMenu note applies: the `nav` landmark stays constant and focus persists across a swap. The role set never changes, so a swap changes classes and keys only.
+Pattern: Disclosure Navigation Menu (APG) in every mode, with the hybrid variant for Hybrid items (ADR 0004); the APG's ResponsiveMenu note applies: the `nav` landmark stays constant and focus persists across a swap. The role set never changes, so a swap changes classes, keys, and, in drilldown mode, the Drilldown level names only.
 
-| Element | Semantics, constant across modes | Source |
+| Element | Semantics | Source |
 | --- | --- | --- |
 | Wrapper | `nav` with `aria-label` or `aria-labelledby` naming the navigation (never "navigation"); consumer-written; it may carry `nfsDrilldownWrapper` | APG disclosure navigation |
-| Root and submenu `ul`, every `li` | Native `list` and `listitem`; no `role`, no `aria-*` | Nested menu |
-| Parent toggle | Native `button`, `type="button"`, `aria-expanded`, `aria-controls` = the submenu id, named by its text | Nested menu |
+| Root and submenu `ul`, every `li` | Native `list` and `listitem`; no `role`, and no `aria-*` except, in drilldown mode, `aria-labelledby` on each submenu naming its Drilldown level after its parent toggle (Nested menu) | Nested menu |
+| Parent toggle | Native `button`, `type="button"`, an `id` in every mode (the consumer's static one, else generated), `aria-expanded`, `aria-controls` = the submenu id, named by its text | Nested menu |
 | Hybrid item | `a[href]` that navigates, then the toggle with `.submenu-toggle`, named by its `.submenu-toggle-text` span | Nested menu |
 | Drilldown back item | Native `button`, name "Back" plus a visually hidden suffix; `hidden` outside drilldown mode | Drilldown Menu |
 | Current page | `aria-current="page"` on its link, consumer-written (Router: `routerLinkActive` plus `ariaCurrentWhenActive="page"`) | APG; Nested menu |
@@ -296,7 +296,7 @@ Requirements, not recommendations. The Accessibility gate runs axe with the WCAG
 
 | Criterion | Requirement for the Responsive Menu | Foundation default and what makes it pass | Checked by |
 | --- | --- | --- | --- |
-| 1.3.1 Info and Relationships | The hierarchy and each toggle's controlled submenu are programmatic in every mode | Native nested lists and `aria-controls`; the role set is identical in every mode, so no mode leaves roles or states another mode set | Accessibility gate per mode; SSR smoke |
+| 1.3.1 Info and Relationships | The hierarchy and each toggle's controlled submenu are programmatic in every mode | Native nested lists and `aria-controls`; in drilldown mode each submenu's `aria-labelledby` names its Drilldown level after its parent toggle, and a swap adds or removes it with the mode; the role set is identical in every mode, so no mode leaves roles or states another mode set | Accessibility gate per mode; SSR smoke |
 | 1.3.4 Orientation | Content and functions do not depend on orientation | A rotation that crosses a breakpoint swaps the mode, but every mode has the same links, toggles, and Open path | e2e at 640 x 360 and 360 x 640 |
 | 1.4.3 Contrast (Minimum) | Link and parent text reach 4.5:1 in every mode | Passes on the page with Foundation's defaults in every mode. Fails for dropdown mode inside Foundation's default Top Bar (3.76:1): a menu whose rules name dropdown and that sits in a `.top-bar` needs a bar background on which `$anchor-color` reaches 4.5:1, for example `$topbar-background: $white;`, which `nfs-dropdown-menu` warns about at compile time (Dropdown Menu spec) | Accessibility gate (`color-contrast`); Sass compile test of that mixin |
 | 1.4.4 Resize Text | The Mode swap happens at the width where Foundation's CSS changes the layout, with the user's text size | The Breakpoint service's queries are Foundation's em strings, so a 20 px default font moves `medium` to 800 CSS px for both | e2e in Firefox with the font-size preference at 20 |
@@ -351,43 +351,43 @@ Consumer markup, Foundation's docs example with parents as buttons, the `nav` as
 </nav>
 ```
 
-Server HTML at the default Server breakpoint (`small`, drilldown), abbreviated: directive attributes omitted, ids generated and rewritten at hydration because `id` and `aria-controls` are both host bindings:
+Server HTML at the default Server breakpoint (`small`, drilldown), abbreviated: directive attributes omitted, ids generated and rewritten at hydration because `id`, `aria-controls`, and `aria-labelledby` are all host bindings:
 
 ```html
 <nav aria-label="Main" class="is-drilldown">
   <ul class="vertical medium-horizontal menu drilldown" jsaction="keydown:;click:;">
     <li class="is-drilldown-submenu-parent">
-      <button type="button" aria-expanded="false" aria-controls="nfs-submenu-a1-0" jsaction="click:;">Item 1</button>
-      <ul id="nfs-submenu-a1-0" inert=""
+      <button type="button" id="nfs-submenu-toggle-a1-0" aria-expanded="false" aria-controls="nfs-submenu-a1-0" jsaction="click:;">Item 1</button>
+      <ul id="nfs-submenu-a1-0" aria-labelledby="nfs-submenu-toggle-a1-0" inert=""
           class="vertical menu nested submenu is-drilldown-submenu invisible drilldown-submenu-cover-previous">
         <li class="js-drilldown-back" jsaction="click:;"><button type="button">Back<span class="show-for-sr"> to main menu</span></button></li>
         <li class="is-submenu-item is-drilldown-submenu-item is-drilldown-submenu-parent">
-          <button type="button" aria-expanded="false" aria-controls="nfs-submenu-a1-1" jsaction="click:;">Item 1A</button>
-          <ul id="nfs-submenu-a1-1" inert="" class="vertical menu nested submenu is-drilldown-submenu invisible drilldown-submenu-cover-previous">...</ul>
+          <button type="button" id="nfs-submenu-toggle-a1-1" aria-expanded="false" aria-controls="nfs-submenu-a1-1" jsaction="click:;">Item 1A</button>
+          <ul id="nfs-submenu-a1-1" aria-labelledby="nfs-submenu-toggle-a1-1" inert="" class="vertical menu nested submenu is-drilldown-submenu invisible drilldown-submenu-cover-previous">...</ul>
         </li>
         <li class="is-submenu-item is-drilldown-submenu-item"><a href="/1b">Item 1B</a></li>
       </ul>
     </li>
     <li class="is-drilldown-submenu-parent has-submenu-toggle">
       <a href="/products">Products</a>
-      <button type="button" class="submenu-toggle" aria-expanded="false" aria-controls="nfs-submenu-a1-2" jsaction="click:;">
+      <button type="button" id="nfs-submenu-toggle-a1-2" class="submenu-toggle" aria-expanded="false" aria-controls="nfs-submenu-a1-2" jsaction="click:;">
         <span class="submenu-toggle-text">Products pages</span></button>
-      <ul id="nfs-submenu-a1-2" inert="" class="vertical menu nested submenu is-drilldown-submenu invisible drilldown-submenu-cover-previous">...</ul>
+      <ul id="nfs-submenu-a1-2" aria-labelledby="nfs-submenu-toggle-a1-2" inert="" class="vertical menu nested submenu is-drilldown-submenu invisible drilldown-submenu-cover-previous">...</ul>
     </li>
     <li><a href="/about">About</a></li>
   </ul>
 </nav>
 ```
 
-- Exactly one mode class on the root. `jsaction` on the root lists `keydown` (the three roots' listeners merge) and `click` (Dropdown Menu's leaf rule, present in every mode), and each toggle and back item carries `click`; links carry none, so a link click before hydration navigates natively. No `role`, `aria-hidden`, or inline `style` anywhere; the wrapper's `min-height` arrives after hydration, and only in drilldown mode.
+- Exactly one mode class on the root. `jsaction` on the root lists `keydown` (the three roots' listeners merge) and `click` (Dropdown Menu's leaf rule, present in every mode), and each toggle and back item carries `click`; links carry none, so a link click before hydration navigates natively. Every toggle carries its `id`, and in drilldown mode every submenu carries `aria-labelledby` resolving to its parent toggle's `id` (its Drilldown level name). No `role`, `aria-hidden`, or inline `style` anywhere; the wrapper's `min-height` arrives after hydration, and only in drilldown mode.
 
-The same page hydrated at 1280 px: hydration claims the drilldown markup as sent; the first render callbacks make the service live and flip the first-render flag; the root's swap callback reads focus (on `body` here), plans nothing to close, and commits `dropdown`; the next pass, in the same tick and before the next paint, renders:
+The same page hydrated at 1280 px: hydration claims the drilldown markup as sent; the first render callbacks make the service live and flip the first-render flag; the root's swap callback reads focus (on `body` here), plans nothing to close, and commits `dropdown`; the next pass, in the same tick and before the next paint, renders (every toggle still carries an `id`; no submenu carries `aria-labelledby` outside drilldown mode):
 
 ```html
 <nav aria-label="Main">
   <ul class="vertical medium-horizontal menu dropdown">
     <li class="is-dropdown-submenu-parent opens-right">
-      <button type="button" aria-expanded="false" aria-controls="nfs-submenu-b2-0">Item 1</button>
+      <button type="button" id="nfs-submenu-toggle-b2-0" aria-expanded="false" aria-controls="nfs-submenu-b2-0">Item 1</button>
       <ul id="nfs-submenu-b2-0" inert="" class="vertical menu nested submenu is-dropdown-submenu first-sub">
         <li class="js-drilldown-back is-hidden" hidden=""><button type="button">Back<span class="show-for-sr"> to main menu</span></button></li>
         <li class="is-submenu-item is-dropdown-submenu-item is-dropdown-submenu-parent opens-right">...</li>
@@ -400,11 +400,11 @@ The same page hydrated at 1280 px: hydration claims the drilldown markup as sent
 </nav>
 ```
 
-A swap with focus inside: at 1280 px the user opens Item 1 and Item 1A and focuses "Item 1A i", then narrows the window below 640 px. The swap keeps both submenus open and commits `drilldown` in one pass: the wrapper gains `is-drilldown`, the root `drilldown invisible`, Item 1's submenu `is-drilldown-submenu is-active invisible` (a level hidden behind its open child), Item 1A's submenu `is-drilldown-submenu is-active visible`, the back items lose `hidden`; `aria-expanded="true"` stays on both toggles; focus stays on "Item 1A i"; one observation later the wrapper gets its `min-height`. No output fires.
+A swap with focus inside: at 1280 px the user opens Item 1 and Item 1A and focuses "Item 1A i", then narrows the window below 640 px. The swap keeps both submenus open and commits `drilldown` in one pass: the wrapper gains `is-drilldown`, the root `drilldown invisible`, Item 1's submenu `is-drilldown-submenu is-active invisible` (a level hidden behind its open child), Item 1A's submenu `is-drilldown-submenu is-active visible`, every submenu gains `aria-labelledby` naming its level after its toggle, the back items lose `hidden`; `aria-expanded="true"` stays on both toggles; focus stays on "Item 1A i"; one observation later the wrapper gets its `min-height`. No output fires.
 
 The current section marked for the phone layout (`class="vertical menu nested is-active"` on the Products submenu): the server HTML at `small` shows the Products level open (the root `invisible`, the submenu `is-active visible` with `data-nfs-shown`, its toggle `aria-expanded="true"`); a desktop client's first-render swap into dropdown with focus outside closes it in the same tick, the toggle reads `aria-expanded="false"`, and `closed` fires once with the Products item.
 
-With `accordion medium-dropdown`, the server HTML at `small` carries `accordion-menu` on the root, `is-accordion-submenu-parent` on parents, and the accordion grid state (`data-nfs-expanded` and `data-nfs-shown` only on open sections); no wrapper or back items are needed.
+With `accordion medium-dropdown`, the server HTML at `small` carries `accordion-menu` on the root, `is-accordion-submenu-parent` on parents, and the accordion grid state (`data-nfs-expanded` and `data-nfs-shown` only on open sections); no submenu carries `aria-labelledby`, and no wrapper or back items are needed.
 
 ### Animation
 
@@ -446,7 +446,7 @@ Stack: `@storybook/angular-vite` 10.6 with `@storybook/addon-vitest` on Vitest 4
 - `responsive-menu--default`: at 414 px the root carries `drilldown` and neither `dropdown` nor `accordion-menu`; the `nav` carries `is-drilldown`; back items are visible; no element has a `role` attribute; clicking Item 1 opens its level (the root gains `invisible`, focus on "Item 1A"), Back returns and refocuses the Item 1 button; `opened` and `closed` each fire once with the item; hovering a toggle opens nothing.
 - `responsive-menu--accordion-dropdown`: the root carries `accordion-menu`; two sections open together (`multiOpen` default); Right opens a section with focus staying; no wrapper or back item exists.
 - `responsive-menu--drilldown-accordion`: the root carries `drilldown`; the docs markup passes the gate.
-- `responsive-menu--mode-swap`: flipping `rules` between `drilldown`, `dropdown`, and `accordion`: with focus on "Item 1A i" inside open Item 1 and Item 1A, every flip keeps both open and focus on the same link (F1, F2); with focus on the open Item 1 toggle, flipping to `drilldown` closes Item 1's submenu and focus stays on the toggle (F3); with the Products submenu open and focus on the Hybrid Products link, flipping from `dropdown` to `drilldown` closes the Products submenu and focus stays on the link; from `accordion` with two sections open and focus in the second, flipping to `dropdown` keeps only the focused one (F4); with focus on the story's own control outside the menu, flipping to `dropdown` closes every submenu and flipping to `drilldown` keeps the first open per level; with focus on a back button, flipping to `dropdown` puts focus on the level's first item; after every flip the root carries exactly one mode class, every toggle's `aria-expanded` matches its submenu, the printed `mode` matches the class, closed submenus are `inert`, and a flip that closes nothing emits no output while each closed submenu emits `closed` once.
+- `responsive-menu--mode-swap`: flipping `rules` between `drilldown`, `dropdown`, and `accordion`: with focus on "Item 1A i" inside open Item 1 and Item 1A, every flip keeps both open and focus on the same link (F1, F2); with focus on the open Item 1 toggle, flipping to `drilldown` closes Item 1's submenu and focus stays on the toggle (F3); with the Products submenu open and focus on the Hybrid Products link, flipping from `dropdown` to `drilldown` closes the Products submenu and focus stays on the link; from `accordion` with two sections open and focus in the second, flipping to `dropdown` keeps only the focused one (F4); with focus on the story's own control outside the menu, flipping to `dropdown` closes every submenu and flipping to `drilldown` keeps the first open per level; with focus on a back button, flipping to `dropdown` puts focus on the level's first item; after every flip the root carries exactly one mode class, every toggle's `aria-expanded` matches its submenu, every submenu carries `aria-labelledby` naming its parent toggle in `drilldown` and none in the other modes, the printed `mode` matches the class, closed submenus are `inert`, and a flip that closes nothing emits no output while each closed submenu emits `closed` once.
 - `responsive-menu--rules-object`: `{small: 'drilldown', medium: 'dropdown'}`, `drilldown medium-dropdown`, and `medium-dropdown drilldown` all render drilldown at 414 px; `medium-dropdown large-accordion` renders dropdown (the smallest rule's mode) on its vertical root.
 - `responsive-menu--hybrid`: in each mode (flipped through `rules`) the Hybrid link keeps its `href` and has no `aria-expanded`, its toggle carries `submenu-toggle` and is named by its span, its item `has-submenu-toggle`, and only one arrow is drawn.
 - `responsive-menu--options`: unbound `closeOnClick`: in `dropdown` an outside press closes the open submenu, in `drilldown` it leaves the level open; bound `closeOnClick="true"`: in `drilldown` an outside press returns to the root level; `hoverDelay="200"` opens after the delay in `dropdown`; `multiOpen="false"` in `accordion` closes the open sibling.
@@ -475,7 +475,7 @@ Vitest browser mode under the Angular unit-test builder (`npx nx test <lib>`, Ch
 
 Runs under `npx nx test <lib>` in `<name>.ssr.spec.ts` through the shared `renderServer()` helper; `npx nx test-node <lib>` only if the server path depends on the DOM adapter, which none here does.
 
-- SSR smoke: `renderApplication` over fixtures with the Rendered HTML markup (`drilldown medium-dropdown`, a Hybrid item, back items, a static `is-active` section), `accordion medium-dropdown`, `medium-dropdown large-accordion` on a vertical root, a server provider `{map, serverBreakpoint: 'large'}` for the first fixture, and one inside `@defer (hydrate on interaction)`. Assert `whenStable()` resolves (no pending timers); the HTML matches the Rendered HTML section: exactly one mode class on each root (`drilldown`, `accordion-menu`, `dropdown`, and `dropdown` for the `large` provider), the mode's item and submenu classes, `aria-expanded` and `aria-controls` resolving to an element, `inert` on closed submenus, the static `is-active` section open with `data-nfs-shown` in drilldown mode, the wrapper `is-drilldown` only in drilldown mode, back items `hidden` with `is-hidden` outside drilldown mode, no `role` or `aria-hidden` anywhere, no inline `style`; `jsaction="keydown:;click:;"` on the root, `click:;` on each toggle and back item, none on links; `ngb` and `click:;keydown:;` on the deferred block's root; the `ng-state` script carries `nfsServerBreakpoint`.
+- SSR smoke: `renderApplication` over fixtures with the Rendered HTML markup (`drilldown medium-dropdown`, a Hybrid item, back items, a static `is-active` section), `accordion medium-dropdown`, `medium-dropdown large-accordion` on a vertical root, a server provider `{map, serverBreakpoint: 'large'}` for the first fixture, and one inside `@defer (hydrate on interaction)`. Assert `whenStable()` resolves (no pending timers); the HTML matches the Rendered HTML section: exactly one mode class on each root (`drilldown`, `accordion-menu`, `dropdown`, and `dropdown` for the `large` provider), the mode's item and submenu classes, `aria-expanded` and `aria-controls` resolving to an element, an `id` on every toggle, `aria-labelledby` on each submenu only in drilldown mode, resolving to its parent toggle's `id`, `inert` on closed submenus, the static `is-active` section open with `data-nfs-shown` in drilldown mode, the wrapper `is-drilldown` only in drilldown mode, back items `hidden` with `is-hidden` outside drilldown mode, no `role` or `aria-hidden` anywhere, no inline `style`; `jsaction="keydown:;click:;"` on the root, `click:;` on each toggle and back item, none on links; `ngb` and `click:;keydown:;` on the deferred block's root; the `ng-state` script carries `nfsServerBreakpoint`.
 - Pure logic, table-driven over the module's mode-resolution function (not public API): rules by breakpoint, before and after the first render callback, with the smallest-rule and empty-rules fallbacks; and the development check 3 predicate (Zero-breakpoint mode and static class).
 - Sass compile: `nfs-accordion-menu`, `nfs-drilldown`, and `nfs-dropdown-menu` included together after their Foundation export mixins, with Foundation's defaults plus the Dropdown Menu spec's settings, compile, and every rule they emit has a selector scoped to its own mode's root class (`.accordion-menu`, `.drilldown` or `.is-drilldown`, `.dropdown.menu`), so no rule matches a root that carries another mode's class.
 
@@ -683,7 +683,7 @@ $topbar-background: $white;
 
 ### Foundation behaviour changed or dropped
 
-- A breakpoint change swaps classes and keys on the same nodes instead of destroying one plugin and constructing another; the Open path holding focus stays open and focus stays on the same control, where Foundation closed everything and dropped focus to `body` when the focused control was hidden.
+- A breakpoint change swaps classes, keys, and, in drilldown mode, the Drilldown level names on the same nodes instead of destroying one plugin and constructing another; the Open path holding focus stays open and focus stays on the same control, where Foundation closed everything and dropped focus to `body` when the focused control was hidden.
 - No attribute is left behind by a swap; Foundation's AccordionMenu cleanup left `aria-expanded`, `aria-controls`, `aria-hidden`, and `role="group"` on elements the next plugin never updated.
 - Rules resolve by breakpoint order, a bare mode applies from the Zero breakpoint, tokens split at the last hyphen, unknown modes warn and are skipped, and below the first rule the smallest rule's mode applies instead of no plugin.
 - A swap into dropdown with focus outside the menu closes every submenu; Foundation's DropdownMenu ignored the `is-active` marker a phone layout used to open the current section, and the library matches that on every entry into dropdown mode.

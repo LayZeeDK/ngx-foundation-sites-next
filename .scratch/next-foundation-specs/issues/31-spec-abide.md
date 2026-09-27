@@ -194,3 +194,11 @@ From [Resolve the assistive-technology checks](77-evidence-assistive-technology-
 - Brought into line afterwards, from the same ruling: the Groups bullet places a radio or checkbox group's one Form error after the controls' labels and links it by a reference to one control, no longer by a wrapping label, which the new development warning flags.
 
 Triage, from the decision ticket: impact MEDIUM (Form error placement consumers write, and user story 14), confidence HIGH. Decided; nothing new is open.
+
+### Amendment, 2026-09-27 (audit 0006)
+
+From [audit 0006](../audits/0006-open-decision-pass.md), findings M2, L9, and L11; `specs/abide.md` was edited to match. No decision changes.
+
+- M2: the upstream items are closed as not filed, by the user's ruling ([Upstream filings](76-evidence-upstream-filing-readiness.md)); no workaround here depends on them. That covers OPEN FOR HUMAN item 2 (the three upstream Angular reports), which the Triage and the assistive-technology amendment above still list as open or untouched; the value adoption, the ready gate, and linking custom controls through their wrapping label are the spec as written.
+- L9: the Custom controls bullet now documents the limitation the amendment above calls documented: a custom `FormValueControl`'s Form error stays inside the wrapping label, where Chromium fires no system alert event for a `role="alert"` element; the error still reaches screen readers through the live-region path; a known limitation while custom controls link through their wrapping label (check 10 of [Resolve the assistive-technology checks](77-evidence-assistive-technology-checks.md)).
+- L11: the WCAG 4.1.3 row gives the after-label placement of a native control's Form error and its reason (inside a `label` Chromium fires no alert event and Firefox adds the error to the field's name), and points at the custom-control limitation.

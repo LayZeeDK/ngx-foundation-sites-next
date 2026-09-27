@@ -13,7 +13,7 @@ A developer building a long page on Foundation for Sites (a documentation page, 
 
 An Angular application adds three problems Foundation never had:
 
-- Every Angular CLI application has `<base href="/">`. A Foundation-style `href="#first"` resolves against the base URL, so on any route other than the root it is a cross-document navigation to the home page whenever no script handles it: before hydration, inside `@defer (hydrate never)`, for crawlers, and on middle-click.
+- Every Angular CLI application has `<base href="/">`. A Foundation-style `href="#first"` resolves against the base URL, so on any route other than the base URL it is a cross-document navigation to the home page in every rendering mode, after hydration too, because the directive handles only links the browser treats as same-document (D9, ADR 0038).
 - In an application that uses the Router with `scrollPositionRestoration` set to `'enabled'` or `'top'`, a native fragment navigation fires `popstate`; the Router answers it with a navigation of its own whose scroll event restores a stored position or the top of the page, undoing the jump.
 - Whatever the Angular layer does must be right in server HTML, must not break hydration, and must behave predictably for clicks that happen before hydration, inside dehydrated `@defer (hydrate on ...)` blocks, and inside `@defer (hydrate never)` blocks.
 

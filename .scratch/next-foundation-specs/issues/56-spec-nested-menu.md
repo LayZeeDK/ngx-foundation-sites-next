@@ -251,3 +251,12 @@ From [Resolve the assistive-technology checks](77-evidence-assistive-technology-
 - Brought into line afterwards, from the same ruling: the ARIA table's intro names the Drilldown level names as the one thing a swap changes instead of "Constant across modes"; the Rendered HTML gives every toggle its `id` and each drilldown submenu its `aria-labelledby`; and the hydration sentence on generated ids names `aria-labelledby` beside `aria-controls`.
 
 Triage, from the decision ticket: check 7 changes only Testing Decisions elsewhere, confidence HIGH; checks 8 and 9 are impact LOW (one callback guard, two host bindings), confidence MEDIUM-HIGH. Decided; nothing new is open.
+
+### Amendment, 2026-09-27 (audit 0006)
+
+From [audit 0006](../audits/0006-open-decision-pass.md), finding L11 and, for this spec, H2; `specs/nested-menu.md` was edited to match. No behaviour changes: the two design decisions record what the assistive-technology amendment above added.
+
+- WCAG 1.3.1 row: names the Drilldown level names (each submenu's `aria-labelledby` to its parent toggle in drilldown mode, in server HTML too).
+- SSR smoke: it also asserts an `id` on every toggle and `aria-labelledby` on each submenu only under the drilldown-mode root, resolving to its parent toggle's `id`.
+- New D24 (the hover guard: in dropdown mode the hover-intent `open` callback does nothing while focus is inside an open submenu of a sibling item, so hover never moves keyboard focus; check 8) and D25 (the Drilldown level names and the toggle `id` bound in every mode; check 9), each with its rationale and rejected alternatives, citing [Resolve the assistive-technology checks](77-evidence-assistive-technology-checks.md) and, for D25, the [Spec: Drilldown Menu](22-spec-drilldown-menu.md) D23.
+- The [Spec: Responsive Menu](23-spec-responsive-menu.md), the [Spec: Accordion Menu](20-spec-accordion-menu.md), and the [Spec: Dropdown Menu](21-spec-dropdown-menu.md) now show the toggle ids and, in drilldown mode, the level names in their rendered HTML and SSR smokes (their amendments of this date).

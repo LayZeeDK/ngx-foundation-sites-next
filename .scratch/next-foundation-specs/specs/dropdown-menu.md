@@ -314,7 +314,7 @@ Requirements, not recommendations. The Accessibility gate runs axe with the WCAG
 | 1.4.13 Content on Hover or Focus | A hover-opened submenu is dismissible, hoverable, and persistent | Dismissible: Escape closes the topmost open submenu from anywhere without moving pointer or focus (Light dismiss), and hover does not reopen it until the pointer leaves and re-enters. Hoverable: the Hover region is the item, which contains its submenu, so the pointer can move onto the submenu. Persistent: no timer hides it while the pointer is over it; it closes `closingTime` (at least 100 ms) after the pointer leaves the item, never while `autoclose` is off, and never after a click opened it. Nothing opens on focus | Story play; e2e with a real mouse |
 | 2.1.1 Keyboard | Every open, close, and link is reachable with Tab, Enter, and Space alone | Native buttons and links; hover opening always has the click equivalent; the arrow keys only add shortcuts | Story play |
 | 2.1.2 No Keyboard Trap | Focus can always leave the menu | Nothing traps focus; Tab leaves after the last control and closes what it leaves | e2e Tab sweep |
-| 2.4.3 Focus Order | Focus follows the visible order and never enters a closed submenu | DOM order; closed submenus are `inert` and `display: none`; the focus-loss guard moves focus to the toggle of a submenu that closes under it | Story play; e2e |
+| 2.4.3 Focus Order | Focus follows the visible order and never enters a closed submenu | DOM order; closed submenus are `inert` and `display: none`; the focus-loss guard moves focus to the toggle of a submenu that closes under it; hover never moves keyboard focus | Story play; e2e |
 | 2.4.6 Headings and Labels | Every toggle's name says which submenu it opens | Parent buttons are named by their text; a Hybrid toggle by its own `.submenu-toggle-text`; a nameless one warns in development (Nested menu) | Browser-level test; Accessibility gate (`button-name`) |
 | 2.4.7 Focus Visible | Every control shows a visible focus indicator | Passes with Foundation's defaults: the library removes no outline, and Foundation's `disable-mouse-outline` on `.dropdown.menu a` acts only under what-input's `[data-whatinput='mouse']`, which the library never sets; `.is-dropdown-submenu` does not clip | e2e screenshot |
 | 2.4.11 Focus Not Obscured (Minimum) | An open submenu never stays over the focused control | Focus moving outside an open submenu closes it, per submenu, so an `opens-inner` submenu dropped over later siblings closes before Tab reaches them (prototype row 25); a hover-opened submenu over a focused control elsewhere is dismissed with Escape without moving focus | e2e hit test of the focused control's centre |
@@ -357,17 +357,17 @@ Consumer markup, Foundation's horizontal docs example with its parents as button
 </nav>
 ```
 
-Server HTML, and the same after hydration before any interaction (directive attributes omitted; `_IdGenerator` ids differ between server and client and are rewritten at hydration because `id` and `aria-controls` are both host bindings):
+Server HTML, and the same after hydration before any interaction (directive attributes omitted; `_IdGenerator` ids differ between server and client and are rewritten at hydration because `id` and `aria-controls` are both host bindings; each toggle carries the `id` the Nested menu binds in every mode):
 
 ```html
 <nav aria-label="Main">
   <ul class="dropdown menu" jsaction="keydown:;click:;">
     <li class="is-dropdown-submenu-parent opens-right">
-      <button type="button" aria-expanded="false" aria-controls="nfs-submenu-x1-0" jsaction="click:;">Item 1</button>
+      <button type="button" id="nfs-submenu-toggle-x1-0" aria-expanded="false" aria-controls="nfs-submenu-x1-0" jsaction="click:;">Item 1</button>
       <ul id="nfs-submenu-x1-0" inert="" class="menu submenu is-dropdown-submenu first-sub">
         <li class="is-submenu-item is-dropdown-submenu-item"><a href="/1a">Item 1A</a></li>
         <li class="is-submenu-item is-dropdown-submenu-item is-dropdown-submenu-parent opens-right">
-          <button type="button" aria-expanded="false" aria-controls="nfs-submenu-x1-1" jsaction="click:;">Item 1B</button>
+          <button type="button" id="nfs-submenu-toggle-x1-1" aria-expanded="false" aria-controls="nfs-submenu-x1-1" jsaction="click:;">Item 1B</button>
           <ul id="nfs-submenu-x1-1" inert="" class="menu submenu is-dropdown-submenu">
             <li class="is-submenu-item is-dropdown-submenu-item"><a href="/1b/i" aria-current="page">Item 1B i</a></li>
           </ul>
@@ -376,7 +376,7 @@ Server HTML, and the same after hydration before any interaction (directive attr
     </li>
     <li class="is-dropdown-submenu-parent has-submenu-toggle opens-right">
       <a href="/products">Products</a>
-      <button type="button" class="submenu-toggle" aria-expanded="false" aria-controls="nfs-submenu-x1-2" jsaction="click:;">
+      <button type="button" id="nfs-submenu-toggle-x1-2" class="submenu-toggle" aria-expanded="false" aria-controls="nfs-submenu-x1-2" jsaction="click:;">
         <span class="submenu-toggle-text">Products pages</span></button>
       <ul id="nfs-submenu-x1-2" inert="" class="menu submenu is-dropdown-submenu first-sub">...</ul>
     </li>
@@ -392,7 +392,7 @@ Hydrated, after the pointer rests on "Item 1" for 50 ms (or a click on it): the 
 
 ```html
 <li class="is-dropdown-submenu-parent opens-right is-active" data-nfs-expanded="">
-  <button type="button" aria-expanded="true" aria-controls="nfs-submenu-y2-0">Item 1</button>
+  <button type="button" id="nfs-submenu-toggle-y2-0" aria-expanded="true" aria-controls="nfs-submenu-y2-0">Item 1</button>
   <ul id="nfs-submenu-y2-0" class="menu submenu is-dropdown-submenu first-sub js-dropdown-active" data-nfs-shown="">...</ul>
 </li>
 ```
@@ -466,7 +466,7 @@ Vitest browser mode under the Angular unit-test builder (`npx nx test <lib>`, Ch
 
 Runs under `npx nx test <lib>` in `<name>.ssr.spec.ts` through the shared `renderServer()` helper; `npx nx test-node <lib>` only if the server path depends on the DOM adapter, which none here does.
 
-- SSR smoke: `renderApplication` over a fixture with the Rendered HTML markup, a `.vertical` root with `class="... align-right"`, a root inside `.top-bar-right`, a root with a static `.is-active` submenu, and a menu inside `@defer (hydrate on interaction)`. Assert `whenStable()` resolves (no pending timers); the HTML matches the Rendered HTML section: `dropdown` on the root, the Nest classes per level, `first-sub` on top-level submenus only, `opens-right` on every parent of the plain root and `opens-left` on the `align-right` root, `opens-right` on the `.top-bar-right` root (the walk has not run), `aria-expanded` and `aria-controls` resolving to an element, `inert` on every closed submenu, `js-dropdown-active` and `data-nfs-shown` only on the statically open one, no `role`, `aria-haspopup`, or `aria-hidden` anywhere, no inline `style`; `jsaction="keydown:;click:;"` on the root, `click:;` on each toggle, none on `li` or links; `ngb` and `click:;keydown:;` on the deferred block's root; no document listener was added (spy on the server document).
+- SSR smoke: `renderApplication` over a fixture with the Rendered HTML markup, a `.vertical` root with `class="... align-right"`, a root inside `.top-bar-right`, a root with a static `.is-active` submenu, and a menu inside `@defer (hydrate on interaction)`. Assert `whenStable()` resolves (no pending timers); the HTML matches the Rendered HTML section: `dropdown` on the root, the Nest classes per level, `first-sub` on top-level submenus only, `opens-right` on every parent of the plain root and `opens-left` on the `align-right` root, `opens-right` on the `.top-bar-right` root (the walk has not run), `aria-expanded` and `aria-controls` resolving to an element, an `id` on every toggle and no `aria-labelledby` on any submenu (the Drilldown level names belong to drilldown mode), `inert` on every closed submenu, `js-dropdown-active` and `data-nfs-shown` only on the statically open one, no `role`, `aria-haspopup`, or `aria-hidden` anywhere, no inline `style`; `jsaction="keydown:;click:;"` on the root, `click:;` on each toggle, none on `li` or links; `ngb` and `click:;keydown:;` on the deferred block's root; no document listener was added (spy on the server document).
 - Sass compile test: `nfs-dropdown-menu` compiles after `foundation-dropdown-menu` and `foundation-accordion-menu` with Foundation's defaults and emits the button, arrow, active-parent, and Hybrid arrow-suppression rules; `$dropdownmenu-arrows: false` drops the button-arrow rules and keeps the toggle checks; a `$dropdownmenu-arrow-color` below 3:1 on `$body-background` or on `$dropdownmenu-submenu-background`, an `$accordionmenu-arrow-color` below 3:1 on a set `$accordionmenu-submenu-toggle-background`, a 20 px `$accordionmenu-submenu-toggle-width`, and a `$dropdownmenu-padding` of `0.2rem 1rem` each stop the compile with an `@error` naming the setting; the default `$dropdownmenu-min-width: 200px` warns and `min(200px, 45vw)` and `160px` do not; the default `$topbar-background` warns (3.76:1) and `$white` does not.
 
 ### 4. Playwright e2e (`npx nx e2e <lib>-e2e` against the static Storybook build; `npx nx e2e <fixture-app>-e2e` against the prerendered fixture app)

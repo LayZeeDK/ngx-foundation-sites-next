@@ -239,3 +239,13 @@ From [Resolve the assistive-technology checks](77-evidence-assistive-technology-
 - Item 2 (the upstream WebKit report) is not touched here.
 
 Triage, from the decision ticket: impact limited to Testing Decisions and two table and Out of Scope cells, confidence HIGH. Decided; nothing new is open.
+
+### Amendment, 2026-09-27 (audit 0006)
+
+From [audit 0006](../audits/0006-open-decision-pass.md), findings M2, M4, and L2; `specs/reveal.md` was edited to match, and the [Spec: Triggers (shared utility)](54-spec-triggers.md) with it. No decision changes: the edits carry the focus restore fallback above and the server-state decision into every part of the spec that states them.
+
+- M2: the upstream items are closed as not filed, by the user's ruling ([Upstream filings](76-evidence-upstream-filing-readiness.md)); no workaround here depends on them. That covers OPEN FOR HUMAN item 2 (WebKit's empty `pseudoElement` on the `::backdrop` `animationend`), which the triage and the assistive-technology amendment above still list as open or untouched; the spec matches on the keyframe name.
+- M4, the focus restore fallback, which had reached only the Restore bullet: the development checks gain check 7 (at close, with `restoreFocus` not `false`, no usable restore target among the `restoreFocus` target, the `trigger`, the element focused at open, and every registered Trigger: the warning names the `restoreFocus` input), and their lead-in now counts one check at open and one at close; the `registerTrigger` row names the first registered Trigger as the last focus-restore fallback; the browser-level focus case adds the first registered Trigger for a Reveal open at its first render with focus on `body`, and the warning when no target is usable; the development-check case counts seven warnings; D14 adds the first registered Trigger as the last fallback (a Reveal open at its first render has no `trigger`).
+- L2, the edges of the server-state decision: the `isOpen` row now says `[isOpen]="true"` opens a modal Reveal after hydration and renders a non-modal one shown from the first paint; the event-replay bullet states that for a modal Reveal open by default an `nfsToggle` click before hydration replays after the first render callback has shown the dialog and closes it, so its Triggers use `nfsOpen`; the 2.4.11 row names the pre-hydration window in which a non-modal Reveal shown at first paint cannot be dismissed (the decision's dissent) and the first-render focus rule (D22).
+
+Triage: impact LOW (a development warning and statements of decided behaviour; no input, output, or contract changes), confidence HIGH (each edit restates a recorded decision). Nothing new is open.

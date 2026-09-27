@@ -194,3 +194,10 @@ The [Decide the `@angular/aria` fallback confirmation](75-evidence-aria-fallback
 3. Changed in the spec: the Implementation level paragraph's Aria accordion clause, replaced with the reasons above, plus the ResponsiveMenu sentence.
 
 Triage, from the decision ticket: impact HIGH, confidence HIGH (source read by the judge; the tab stops measured). Decided; nothing open.
+
+### Amendment, 2026-09-27 (audit 0006)
+
+From [audit 0006](../audits/0006-open-decision-pass.md), finding L10 and, for this spec, H2; `specs/accordion-menu.md` was edited to match. No decision changes.
+
+- Rendered HTML: every toggle in the server HTML and in the hydrated example carries the `id` the [Spec: Nested menu (shared utility)](56-spec-nested-menu.md) binds in every mode (`nfs-submenu-toggle-...`, rewritten at hydration like the submenu ids), which the assistive-technology decision added there.
+- SSR smoke: it also asserts an `id` on every toggle and no `aria-labelledby` on any submenu, because the Drilldown level names belong to drilldown mode only.

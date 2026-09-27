@@ -212,3 +212,11 @@ From [Resolve the assistive-technology checks](77-evidence-assistive-technology-
 - Spec edits: the ARIA table row for lists (each submenu carries `aria-labelledby`; the utility adds the level name); the server Rendered HTML (each toggle gains an `id`, each submenu an `aria-labelledby`); a new D23 for the level names, with the former D23 ("No ADR") renumbered D24; a browser-level "Level entry timing" case (the toggle's `focusout` carries the level's first control as `relatedTarget`, and that control is `document.activeElement` in the first animation frame after the click, for the Hybrid level too); Testing Decisions ends with a manual release test (NVDA and JAWS on Chrome and Firefox, VoiceOver on macOS).
 
 Triage, from the decision ticket: impact LOW (two host bindings), confidence MEDIUM-HIGH (derived from the specs' own mechanisms and the measured events; WebKit and JAWS left to the release test). Decided; nothing new is open.
+
+### Amendment, 2026-09-27 (audit 0006)
+
+From [audit 0006](../audits/0006-open-decision-pass.md), finding L11 and, for this spec, H2; `specs/drilldown-menu.md` was edited to match. No decision changes.
+
+- WCAG 1.3.1 row: names the Drilldown level names (each submenu's `aria-labelledby` to its parent toggle, in server HTML too, D23).
+- SSR smoke: it also asserts an `id` on every toggle and, under the drilldown root, `aria-labelledby` on every submenu resolving to its parent toggle's `id` (the Hybrid level's to its toggle, not its link), with none under the non-drilldown root.
+- E2e Mode swap case: resizing across `medium` also removes each submenu's `aria-labelledby`, and resizing back restores it, as the Nested menu binds it in drilldown mode only.
