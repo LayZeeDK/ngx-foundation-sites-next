@@ -47,7 +47,7 @@ The judge's fifth decision (how far the triage reaches into published specs) is 
 
 ### The API-design skill
 
-The repository skill `.claude/skills/foundation-api-design/SKILL.md` says "CSS class is purely for styling (no behavior): apply class directly, no directive needed", which the ruling overturns for the next library. It is a file of this repository, outside the planning bundle, so it is not edited here; the triage file's section 5 gives replacement text, which the class rule now extends to Variant classes (typed inputs) and utility families (directives).
+The repository skill `.claude/skills/foundation-api-design/SKILL.md` says "CSS class is purely for styling (no behavior): apply class directly, no directive needed", which the ruling overturns for the next library. It is a file of this repository, outside the planning bundle, and it is not edited. The user clarified the same day that the skill is an initial sketch from an earlier attempt at spec-driven development with Spec Kit in this repository: one input among many, not a source of truth and not of the highest precedence, while the specs this map produces are implemented in a separate, new repository. The bundle's ADRs, building-blocks, and the user's rulings take precedence over it, so the triage file's proposed skill text (its section 5) is not applied.
 
 ### New tickets
 
