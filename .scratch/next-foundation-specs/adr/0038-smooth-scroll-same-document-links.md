@@ -1,0 +1,24 @@
+---
+status: accepted
+---
+
+# Smooth Scroll treats a link as in-page only when the browser does
+
+Foundation's SmoothScroll and Magellan select `a[href^="#"]`, and every Angular CLI application ships `<base href="/">`, so on any route other than the base URL a Foundation-style `href="#id"` resolves to `/#id`, another document. The [Spec: Smooth Scroll](../issues/29-spec-smooth-scroll.md) had applied a default that handled such links in place after hydration, with a development warning, and kept it open as a trap-quadrant item. We decided, through the panel in [Decide: `#`-only links that `<base href>` resolves to another document](../issues/74-decide-base-href-hash-links.md), that `NfsSmoothScroll`, and `NfsMagellan` through it, treats a link as in-page exactly when a click on it would be a same-document fragment navigation for the browser: its resolved URL equals the document URL with fragments excluded, and its fragment is non-null (HTML's navigate condition). The raw `href` attribute is not consulted; a `#`-only `href` that `<base href>` resolves elsewhere is left to the browser, a development-mode warning names it, and the docs give a current-path `href` that follows URL changes. Why: measured in Chromium, Firefox, and WebKit, the earlier default changed the outcome of a bare link in one state only (an unmodified click after hydration), while the same link still left the page before hydration, without JavaScript, in `hydrate never`, from a container host inside a dehydrated block, and on modified clicks, copy link, and open in new tab; the links it added were exactly those for which the spec's own promises about pre-hydration, dehydrated, and `hydrate never` links, and ADR 0008's reason for its contract, were false; Chromium's, WebKit's, and NVDA's accessibility layers use the same same-document test to call a link same-page; and widening the rule later breaks nobody, where narrowing it would.
+
+## Considered options
+
+- Handle every raw `#` `href` after hydration, with a development warning (the earlier default, Foundation's selector): rejected for the reasons above. It also hides the defect from a developer who tests only after load, since the only signal is a console warning.
+- Rewrite bare `href`s in the browser after render, as angular.dev and the Material docs site do for fetched content: not adopted now. Server HTML stays bare, so every pre-hydration and no-JavaScript case still leaves the page, and its interplay with consumer `[href]` bindings is unmeasured. It can be added later as an opt-in on top of this rule without breaking anyone.
+- A library input that owns the link's `href`: rejected. It is new public API per link and collides with `RouterLink`'s or a consumer's `href` binding (ADR 0011).
+- Dropping `<base href>` in the application: documented as the application's choice, not the library's recommendation. Angular prefers `<base href>`, and the 22.2 dev server ignores `deployUrl`, so a deep route loaded directly without `<base>` does not boot under `ng serve`.
+- A configuration switch between the two rules: rejected. Smooth Scroll has no inputs or Defaults token (its D11), and whoever opts in gets the earlier default's problems.
+- Matching the resolved fragment alone (Bootstrap ScrollSpy's rule): rejected. It captures links to other pages whose fragment happens to exist on the current one.
+
+## Consequences
+
+- Foundation's `href="#id"` markup is in-page wherever the page URL is the base URL, or in an application without `<base href>`; on other routes the consumer builds the `href` from the current path or uses `routerLink` with `fragment`. It is one more docs-markup delta of the kind ADR 0023 records for Tabs.
+- The documented current-path `href` re-reads the path on `Location.onUrlChange`: a path read once goes stale when the Router reuses a component for a new parameter or query, and the link then loads the previous page (measured in three engines by two panelists).
+- A link host whose `href` is not in-page, inside a dehydrated block of a hydrated application, is cancelled by Angular's dispatcher and its replayed click is not handled, so the click does nothing. It is the hazard every link host whose `href` leaves the page already has (ADR 0017); the development check names it when it is clicked.
+- Magellan tracks exactly the links Smooth Scroll handles, so a Magellan whose links are all bare on a deep route has no in-page links, and its existing development warning fires.
+- Reopened by evidence that a large share of bare `#id` links in Router applications come from run-time HTML the developer neither writes nor tests (Markdown or CMS content); the answer then is the browser-side rewrite as an opt-in on top of this rule, not a return to the earlier default.
