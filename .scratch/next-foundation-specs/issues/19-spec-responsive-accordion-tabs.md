@@ -171,3 +171,17 @@ Re-judged the same day with the review re-run on Fable 5.1: the focus-continuity
 From [audit 0006](../audits/0006-open-decision-pass.md), finding M2. No spec change and no decision change.
 
 - The upstream items are closed as not filed, by the user's ruling ([Upstream filings](76-evidence-upstream-filing-readiness.md)); no workaround here depends on them. That covers OPEN FOR HUMAN item 2 (the upstream filings inherited from the [Spec: Accordion](15-spec-accordion.md) and the [Spec: Tabs](16-spec-tabs.md)), which the Triage and the assistive-technology amendment above still list as open or untouched.
+
+### Amendment, 2026-09-27 (class rule)
+
+From [Re-run: Responsive Accordion Tabs spec under the class rule](111-rerun-responsive-accordion-tabs-class-rule.md), under the class rule of [ADR 0039](../adr/0039-directives-manage-every-foundation-class.md) and the Variant typing of [ADR 0040](../adr/0040-variant-input-types.md); `specs/responsive-accordion-tabs.md` was revised in place. Behaviour, ARIA, keyboard, the Mode swap, rendering modes, and the existing Story ids are unchanged; the decision log is in that ticket's Answer.
+
+- The consumer already wrote no class (the host and `ng-template` sections carry none). The component's own template now writes none either: `div[nfsTabsContent]` replaces the plain `div.tabs-content`, and every Structural and State class of both modes is bound by the composed Accordion and Tabs directives, so their copied-class checks stay silent (D21). The class mapping gains a Kind column and a Variant table.
+- The initial section is `selected` (a static `selected="specs"` or a binding), applied in accordion mode through the title's `[expanded]` binding, the Accordion spec's only initial-state path; no class seeds it (D24).
+- New Variant inputs `simple` and `primary` (booleans through `nfsVariantBoolean`) pass Foundation's two tab-strip looks to `NfsTabs` in tabs mode and do nothing in accordion mode, because Foundation's plugin keeps those classes on its element across switches and the consumer cannot reach the internal strip (D22). `nfs-tabs` is required when either is set; the WCAG rows for 1.4.3, 1.4.11, and 2.5.8 cite its rules. They are not in the Defaults token.
+- New dev check 7: a Foundation class copied onto the host (`accordion`, `tabs`, `vertical`, `simple`, `primary`) is reported, because the host binds no class and a copied `tabs` draws a border and background around the whole widget, measured in three engines (D23).
+- The equal-heights recipe (Foundation's `matchHeight`) is restated on an application class on the host with role-based selectors that name no Foundation class, measured in three engines (D25).
+- RAT4 and RAT6 keep their exclusions with restated reasons (the out-of-scope triage, section 3): rich titles are a first-release limit, a title template the upgrade; D13 now leads with the refocus-at-swap reason and no longer rests on the APG's caution. RAT2 (vertical tabs) keeps its reason, noting that `orientation` would now set both `.vertical` classes.
+- User stories 47 to 51 are appended; one story is added, `responsive-accordion-tabs--tabs-looks`; the browser-level, SSR smoke, and pure-logic cases gain the class-rule, pass-through, and dev check 7 cases; story controls are `button[nfsButton]`.
+
+Triage: the `simple` and `primary` inputs are impact MEDIUM (public API, though a mirror of the Tabs spec's decided inputs), confidence HIGH; every other item is LOW impact, HIGH confidence. Decided; nothing is `OPEN FOR HUMAN`.
