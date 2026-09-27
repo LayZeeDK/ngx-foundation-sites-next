@@ -40,6 +40,10 @@ Resolved 2026-09-27. Evidence: [research/out-of-scope-exclusions.md](../research
 
 The judge's fifth decision (how far the triage reaches into published specs) is overtaken by decision 6: every published spec is re-run under the class rule, and the menu cross-links the Angular-native lens proposed (the Nested menu roots hosting the Menu directive, the Top Bar feeding the Dropdown Menu through DI) are questions for the Menu, Top Bar, and menu re-run tickets.
 
+### Follow-up decision: class names passed as input values (2026-09-27)
+
+Asked after the fold-in found the ruling silent on inputs whose value is a class name, the user chose: no Foundation or NFS class name appears in consumer code, not even as an input value: an input that selects a library class takes a typed name (a Motion input takes `'fade-in'`, never `'nfs-fade-in'`), and the directive maps it to its class, applying it with `animate.enter` and `animate.leave` where the element enters or leaves the DOM and with a State class on a persistent element otherwise (building-blocks 1.6); inputs that apply the consumer's own classes stay (the Toggler's class mode toggling an application class, the Tooltip's `templateClasses` for application classes), because the rule is about the library's classes. The user added: keep in mind to use `animate.enter` and `animate.leave` when applicable. ADR 0039 records it.
+
 ### What stays out
 
 - Foundation's base element styles (Global Styles, Typography Base) and its tooling and guide pages (Installation, Sass, JavaScript, RTL, Kitchen Sink, and the like): they style elements by tag or describe setup, so there is no class for a consumer to write and nothing for a directive to manage; a spec that relies on a base element style documents it.
