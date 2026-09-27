@@ -213,6 +213,8 @@ From [Resolve the assistive-technology checks](77-evidence-assistive-technology-
 
 Triage, from the decision ticket: impact LOW (two host bindings), confidence MEDIUM-HIGH (derived from the specs' own mechanisms and the measured events; WebKit and JAWS left to the release test). Decided; nothing new is open.
 
+Re-judged the same day with the review re-run on Fable 5.1: D23's rationale now cites the re-judgement's own measurement of the Hybrid level's name, "Services pages", read from its hidden toggle's visually hidden text in Chromium and Firefox, three runs each.
+
 ### Amendment, 2026-09-27 (audit 0006)
 
 From [audit 0006](../audits/0006-open-decision-pass.md), finding L11 and, for this spec, H2; `specs/drilldown-menu.md` was edited to match. No decision changes.

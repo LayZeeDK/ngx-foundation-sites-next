@@ -240,6 +240,8 @@ From [Resolve the assistive-technology checks](77-evidence-assistive-technology-
 
 Triage, from the decision ticket: impact limited to Testing Decisions and two table and Out of Scope cells, confidence HIGH. Decided; nothing new is open.
 
+Re-judged the same day with the review re-run on Fable 5.1: the release test now names each screen reader's published wording for the modal Trigger's popup type (NVDA, JAWS, VoiceOver on macOS and iOS, TalkBack, Narrator), from a11ysupport.io's `aria-haspopup` results.
+
 ### Amendment, 2026-09-27 (audit 0006)
 
 From [audit 0006](../audits/0006-open-decision-pass.md), findings M2, M4, and L2; `specs/reveal.md` was edited to match, and the [Spec: Triggers (shared utility)](54-spec-triggers.md) with it. No decision changes: the edits carry the focus restore fallback above and the server-state decision into every part of the spec that states them.

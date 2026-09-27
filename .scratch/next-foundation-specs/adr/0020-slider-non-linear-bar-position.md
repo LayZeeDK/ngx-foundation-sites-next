@@ -6,6 +6,8 @@ status: accepted
 
 Foundation's Slider maps values onto the track through `log` and `pow` scales (`positionValueFunction`, `nonLinearBase`), and the library builds every Slider on native `<input type="range">` handles (the [Prototype: Foundation-styled `<input type="range">` Slider](../issues/45-prototype-slider-range-input.md)). A native thumb moves linearly in its own value, so a native input cannot show a non-linear value at the right place. We decided that a non-linear handle's native input carries the Bar position (`min="0"`, `max="1000"`, `step="any"`), that the handle's `value` model holds the value mapped with Foundation's formulas, that `aria-valuetext` always carries the value, and that a keydown handler makes one key press one value step. Consequence a reader would not expect: the native `value`, `aria-valuenow`, and a native form submission carry the position (0..1000), not the value, so non-linear sliders are for forms Angular handles; a consumer who needs a native submission adds a hidden input bound to the value.
 
+2026-09-27: assistive-technology increment and decrement actions step the native input by its `step`, which `any` makes 0 in WebKit (VoiceOver's swipe changes nothing) and which Chromium's increment replaces with one native unit (several actions per value step); the Slider spec documents it as a limitation (its D22), and a prototype weighs a numeric native step ([Resolve the assistive-technology checks](../issues/77-evidence-assistive-technology-checks.md)).
+
 ## Considered options
 
 - A custom `role="slider"` handle for non-linear scales only: exact ARIA values, but a second slider implementation owning pointer, keys, ARIA, and value maths, and the APG's touch caution, for one Option.

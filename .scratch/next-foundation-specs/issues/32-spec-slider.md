@@ -224,6 +224,8 @@ From [Resolve the assistive-technology checks](77-evidence-assistive-technology-
 
 Triage, from the decision ticket: impact limited to Testing Decisions and two cells, confidence HIGH. Decided; nothing new is open.
 
+Re-judged the same day with the review re-run on Fable 5.1: the spec gains a documented limitation (new D22) that VoiceOver's and TalkBack's increment and decrement actions do not move a non-linear Handle one value step at a time, with a release-test check and a prototype to fix it, and the Timing paragraph now names NVDA's own change filter, not its event limiter, as why the previous value is never spoken.
+
 ### Amendment, 2026-09-27 (audit 0006)
 
 From [audit 0006](../audits/0006-open-decision-pass.md), findings M8 and L4; `specs/slider.md` was edited to match. No decision changes.

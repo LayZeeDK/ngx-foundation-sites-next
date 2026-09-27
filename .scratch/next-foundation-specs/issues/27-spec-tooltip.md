@@ -216,6 +216,8 @@ From [Resolve the assistive-technology checks](77-evidence-assistive-technology-
 
 Triage, from the decision ticket: impact MEDIUM (rendered structure consumers see: a hidden element per tooltip), confidence HIGH (measured in two engines, three runs, by the judge). Decided; nothing new is open.
 
+Re-judged the same day with the review re-run on Fable 5.1: D4's rationale narrows to the defect that remains, a static consumer's `aria-describedby` hiding the tooltip text on first focus, because NVDA's own change filter means Firefox's repeated description-change events were never announced twice.
+
 ### Amendment, 2026-09-27 (audit 0006)
 
 From [audit 0006](../audits/0006-open-decision-pass.md), findings H1 and M6; `specs/tooltip.md` was edited to match. No behaviour changes: the description element of the assistive-technology amendment above stands as specified.

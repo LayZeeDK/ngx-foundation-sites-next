@@ -201,6 +201,8 @@ From [Resolve the assistive-technology checks](77-evidence-assistive-technology-
 
 Triage, from the decision ticket: impact LOW (one callback guard), confidence MEDIUM-HIGH (the rule is derived from the specs' own mechanisms and the measured events; the WebKit and JAWS readings are left to the release test). Decided; nothing new is open.
 
+Re-judged the same day with the review re-run on Fable 5.1: the release test gained a TalkBack exploration clause, because Chromium hands hover events to its own accessibility hit test while a screen reader runs, so exploring across the parent buttons before the double tap opens nothing.
+
 ### Amendment, 2026-09-27 (audit 0006)
 
 From [audit 0006](../audits/0006-open-decision-pass.md), findings L10 and L11 and, for this spec, H2; `specs/dropdown-menu.md` was edited to match. No decision changes.

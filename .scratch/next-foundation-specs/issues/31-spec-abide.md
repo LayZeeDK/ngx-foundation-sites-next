@@ -195,6 +195,8 @@ From [Resolve the assistive-technology checks](77-evidence-assistive-technology-
 
 Triage, from the decision ticket: impact MEDIUM (Form error placement consumers write, and user story 14), confidence HIGH. Decided; nothing new is open.
 
+Re-judged the same day with the review re-run on Fable 5.1: the custom-control limitation, the development warning, the 4.1.3 row, and the release test now state that NVDA on Chrome hears an in-label Form error only through the system alert event and not at all when it appears while focus is elsewhere, because its live-region path ignores an alert that is the root of its own region, so there is no double announcement to guard against.
+
 ### Amendment, 2026-09-27 (audit 0006)
 
 From [audit 0006](../audits/0006-open-decision-pass.md), findings M2, L9, and L11; `specs/abide.md` was edited to match. No decision changes.

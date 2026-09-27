@@ -163,6 +163,8 @@ Testing Decisions line (layer 4, release test, manual): "Before each release, wi
 
 Correction (2026-09-27, from [Resolve the assistive-technology checks](../issues/77-evidence-assistive-technology-checks.md)): the WebKit touch sentence under Measured exposure, and the verdict's "(Chromium and WebKit source)" for WebKit, are wrong. Pointer events are in WebKit's `TouchRelated` event category (`EventNames.json`), so the item's `pointerenter` and `pointerleave` listeners make `hasTouchEventListener()` true (it walks ancestors, `AccessibilityObjectIOS.mm`), and `press()` then dispatches touch events and returns before `dispatchSimulatedClick` when that succeeds (`AccessibilityObject.cpp`). Whether that yields exactly one click on iOS is closed source; the Dropdown Menu's release test is the gate. The statement that a hover opening produces no event "any screen reader is designed to speak" is measured and source-backed for NVDA only; for other screen readers it is an inference.
 
+Correction (2026-09-27, re-judgement in [Resolve the assistive-technology checks](../issues/77-evidence-assistive-technology-checks.md)): TalkBack's explore-by-touch does not reach the page. While an accessibility service runs, Chromium's `WebContentsViewAndroid::OnMouseEvent` hands hover enter, move, and exit to the accessibility manager, which consumes them for its hit test (`web_contents_accessibility_android.cc`, `OnHoverEvent`, at the pinned commit), before the render widget's view sees them; so exploring across a parent button raises no `pointerenter`, and hover intent's touch rule is not what keeps the submenu shut there.
+
 ---
 
 ## Check 9: Drilldown Menu
@@ -245,6 +247,8 @@ Exact fix:
 Testing Decisions line (layer 4, release test, manual): "Before each release, with NVDA and JAWS on Chrome and Firefox and VoiceOver on macOS, open and close a Drilldown level on `drilldown-menu--default` by keyboard and by click: entering a level is announced with the level's name and its first control, and going back announces the parent toggle as collapsed."
 
 Correction (2026-09-27, from [Resolve the assistive-technology checks](../issues/77-evidence-assistive-technology-checks.md)): the Hybrid level is named by its toggle, whose name is its `.submenu-toggle-text` ("Services pages"), one rule for every level; the `?named=1` variant's reference from the Hybrid level to the link "Services" is not the decided markup.
+
+Correction (2026-09-27, re-judgement): the decided rule was measured: every level named by its parent toggle, the Hybrid level by the Hybrid toggle, whose only content is Foundation's visually hidden `.submenu-toggle-text`. Chromium and Firefox, three runs each, expose `List name="Services pages"` in UIA and in the IA2 show event, and Chromium's CDP tree `list name="Services pages" labelledby="t-services"` (`D:/tmp/nfs-rejudge-77/dd/out/hybrid-r1..r3-*.txt`).
 
 ---
 
@@ -349,6 +353,8 @@ Exact fix:
 
 Testing Decisions line (layer 4, release test, manual): "Before each release, with NVDA and JAWS on Chrome and Firefox and VoiceOver on macOS and iOS, on `abide--submit` and `abide--validate-on-blur`: a failed submit announces the Form alert and each Form error once, in DOM order, without an error cutting off the one before it; leaving an empty required field announces its error and then the next field; focusing an invalid field announces its label, invalid state, and error once (no duplicated error text); on VoiceOver, the error is read as the field's description. The automated layers assert the DOM (`role`, `.is-visible`, `aria-describedby`, `aria-invalid`) and, in Chromium, the CDP name and description, not Playwright's computed names."
 
+Correction (2026-09-27, re-judgement in [Resolve the assistive-technology checks](../issues/77-evidence-assistive-technology-checks.md)): the third bullet under What NVDA does is wrong. NVDA's IA2 live-region hook ignores an `EVENT_OBJECT_SHOW` whose parent implements `IAccessibleText` or has no live `container-live`, treating the object as the root of its region, and drops a text event on an object without `container-live` (`nvdaHelper/remote/ia2LiveRegions.cpp` 147-151 and 196-226 at `release-2026.2`). A Form error that toggles from `display: none` is such a root, so NVDA on Chrome hears it only through `EVENT_SYSTEM_ALERT` and `event_alert`: once after the label, and not at all inside a wrapping label, where Chromium fires no system alert (the raw log `out/probe-alert-chromium-events.log`, lines 16-19 and 22-25). The verdict's 'get the error only through the live-region path' therefore understates the in-label defect, and the double-path question has its answer: no duplication.
+
 ---
 
 ## Check 11: Slider
@@ -410,6 +416,8 @@ The value string that MSAA, IAccessible2, and UIA `Value.Value` expose is `aria-
 `aria-valuetext` on a native range input is the value string every Windows accessibility API reports in Chromium and Firefox, at focus and after each step, including on the non-linear Handle whose numeric value is the Bar position (measured); WebKit and Chromium on Android pass it to VoiceOver and TalkBack (source); JAWS, NVDA, and VoiceOver convey `aria-valuetext` on sliders (ARIA-AT). The spec's rule to bind it always on non-linear Handles is what keeps TalkBack from reading a percentage of the Bar position (Chromium source).
 
 Testing Decisions line (layer 4, release test, manual): "Before each release, with NVDA and JAWS on Chrome and Firefox, VoiceOver on macOS and iOS, and TalkBack on Chrome, on `slider--step` and the non-linear story: focus and each arrow, Page, Home, and End step announce the `displayWith` text (on the non-linear Handle, the value, never the Bar position or a percentage), and the announced text is the new value after the step, not the previous one. The automated layers assert the `aria-valuetext` attribute after each step, not CDP's `valuetext` property."
+
+Correction (2026-09-27, re-judgement in [Resolve the assistive-technology checks](../issues/77-evidence-assistive-technology-checks.md)): the limiter bullet under What NVDA does is not the mechanism that matters: NVDA speaks a changed value only when it differs from the value it last spoke (`speech/speech.py` 769-781), so the previous text is never spoken whichever event it reads first. The README's second half of the check is answered from source: neither Chromium's increment and decrement (`AXNodeObject::AlterSliderOrSpinButtonValue`, synthesized keys off by default) nor WebKit's (`alterRangeValue`) reads orientation, so a rotated linear Handle responds exactly as an unrotated one. A non-linear Handle's `step="any"` reads as 0 in WebKit, so VoiceOver's increment changes nothing, and Chromium's increment steps it by one native unit, which maps back to the same value; the Slider spec documents that as a limitation.
 
 ---
 

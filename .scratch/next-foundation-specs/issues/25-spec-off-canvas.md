@@ -214,6 +214,8 @@ From [Resolve the assistive-technology checks](77-evidence-assistive-technology-
 
 Triage, from the decision ticket: impact HIGH (behaviour every modal Off-canvas page inherits, and the Trigger role one Openable reports; the `NfsTriggerRole` union itself does not change, so no consumer `switch` breaks), confidence HIGH (measured in two engines over three runs and re-measured by the judge). Decided; nothing new is open.
 
+Re-judged the same day with the review re-run on Fable 5.1: the release test now closes each modal panel once with VoiceOver's two-finger scrub on iOS, and the Platform features note corrects itself, WebKit already dispatches that scrub as a trusted Escape `keydown` the existing `window` listener handles, so no `CloseWatcher` is needed for it.
+
 ### Amendment, 2026-09-27 (audit 0006)
 
 From [audit 0006](../audits/0006-open-decision-pass.md), finding M5; `specs/off-canvas.md` was edited to match. A behaviour fix to the Modal inert set: it was removed only at the close request, so a panel destroyed while open (a route component replaced, an enclosing `@if` turned false) ran no close request and left the rest of the page inert. Building-blocks 1.9 requires every directive to restore in `DestroyRef.onDestroy` any global it touched; before the Modal inert set, `inert` was a host binding on `nfsOffCanvasContent` and went with the directive.

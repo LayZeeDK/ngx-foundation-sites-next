@@ -164,6 +164,8 @@ From [Resolve the assistive-technology checks](77-evidence-assistive-technology-
 
 Triage, from the decision ticket: impact limited to one ARIA sentence and Testing Decisions, confidence HIGH. Decided; nothing new is open.
 
+Re-judged the same day with the review re-run on Fable 5.1: the focus-continuity assertion now checks `document.activeElement` in the first animation frame after a swap rather than a `focusout` with a `null` `relatedTarget` (Chromium fires that event on the removed control even in a correct swap), and the release test gained a step confirming a tab reached from a collapsed title is announced unselected until Enter selects it.
+
 ### Amendment, 2026-09-27 (audit 0006)
 
 From [audit 0006](../audits/0006-open-decision-pass.md), finding M2. No spec change and no decision change.
