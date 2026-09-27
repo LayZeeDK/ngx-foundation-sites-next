@@ -14,6 +14,10 @@ _Avoid_: widget, module, component (for the Foundation thing)
 A Foundation component that ships Sass and classes but no Plugin, such as Button, Button Group, Close Button, or Callout.
 _Avoid_: static component, plain component, pure-CSS widget
 
+**Menu**:
+Foundation's `ul.menu` list of links: the CSS-only component whose class and Variants the Menu directive sets, and the markup of every menu Plugin's root and submenus; distinct from the ARIA `menu` role, which no menu uses.
+_Avoid_: nav list, menubar, ARIA menu (for this)
+
 **Close Button**:
 Foundation's CSS-only component for the corner control drawn as a glyph, marked by the `.close-button` Structural class; distinct from a close Trigger (`nfsClose`), which does the closing and can sit on any button.
 _Avoid_: close trigger (for the component), dismiss button, X button
@@ -232,6 +236,10 @@ _Avoid_: split button, submenu toggle item, parent link
 The chain of open submenus from a menu root down to the innermost open one; Drilldown and DropdownMenu keep at most one per level, and a Menu mode swap keeps the one that holds focus.
 _Avoid_: active branch, breadcrumb, trail
 
+**Current link**:
+The link a menu marks as the page the reader is on, with `aria-current` present and not `false`; the library gives it Foundation's active menu look, so no class marks it.
+_Avoid_: active item, is-active item, selected link
+
 **Drilldown level**:
 One list of a Drilldown, the root list or a submenu, shown alone in the Drilldown wrapper while it is the innermost open list.
 _Avoid_: panel, pane, screen, page, current menu
@@ -273,8 +281,16 @@ An empty interface the library declares for one Sass setting (`NfsButtonPaletteO
 _Avoid_: overrides interface, theme interface, type registry
 
 **Variant declaration file**:
-The consumer's `src/nfs-variants.d.ts`, generated from its Sass by the library's tooling or written by hand, that augments the Variant registries; kept in step by a sync step and checked in CI.
+The `nfs-variants.d.ts` at the source root of a consumer's application, or of a shared library whose own programs use names Foundation's defaults lack, generated from its Sass by the library's tooling or written by hand, that augments the Variant registries; kept in step by a sync step and checked for Declaration drift in CI.
 _Avoid_: theme typings, typegen output, augmentation file
+
+**Variant manifest**:
+The library's list of its Variant registries, each with its Sass setting, its Variant property, its default names or count, and the Variant inputs that follow it; the one list the library's Sass, types, and tooling agree on.
+_Avoid_: registry list, variant config, schema
+
+**Declaration drift**:
+A difference between a Variant declaration file and the Variant properties of the Sass it mirrors: a name one has and the other lacks, a differing count, or a registry the library does not have.
+_Avoid_: stale types, out of sync (Nx's word for any sync generator), mismatch
 
 **Error-state policy**:
 The rule that decides when a field's validation errors are shown (after a committed change, while typing, after leaving the field, or after a submit), as opposed to whether the field is invalid.

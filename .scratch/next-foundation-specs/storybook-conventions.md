@@ -101,6 +101,7 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
 @include nfs-breakpoint-properties;
 @include nfs-motion;
 @include nfs-accordion;
+@include nfs-menu; // Menu: the current link's look from aria-current and simple-menu rows; every menu--* story and every menu Plugin story
 // ... one @include nfs-<plugin> per plugin that has a Library mixin, after foundation-everything,
 // with the arguments its spec names (for example @include nfs-responsive-toggle(xlarge xxlarge);).
 @include nfs-smooth-scroll; // Smooth Scroll: smooth native jumps on html; play functions scroll with behavior: 'instant'
@@ -169,7 +170,8 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
   );
   ```
 
-  This is every override the published specs require; each spec's Sass subsection is the source, and a spec that adds or changes one changes its line here. An override is a consumer-side setting, never an exception to the Accessibility gate. The overrides come after Foundation's settings file and before `foundation`, so Foundation's `!default` component variables pick them up and they can refer to settings such as `$primary-color`.
+  This is every override the published specs require; each spec's Sass subsection is the source, and a spec that adds or changes one changes its line here. An override is a consumer-side setting, never an exception to the Accessibility gate. The overrides come after Foundation's settings file and before `foundation`, so Foundation's `!default` component variables pick them up and they can refer to settings such as `$primary-color`. Settings overrides change Variant values, never Variant names, so the library's Storybook program needs no Variant declaration file. A story that shows a name Foundation's defaults lack would need a file generated from `preview.scss` (the shared-library rule of the [Spec: Variant declaration tooling](issues/136-spec-variant-declaration-tooling.md)).
+- Recipe CSS: a spec that documents consumer CSS and shows it in a story puts it in `preview.scss` after the Library mixins, one block per recipe on the recipe's own classes (never a Foundation or NFS class), with a comment naming the spec and the story. Tabs: `tabs--nav-bar` (`.account-tabs`, Foundation's `tabs-container` and `tabs-title` mixins plus the recipe's `aria-current` rule) and `tabs--equal-heights` (`.equal-heights`).
 - The library's Sass is imported relatively (line 2) because inside its own repository the package is source. The consumer path through the `sass` export condition is proved by the Sass packaging ticket's built-package compile test (decision 18b), not by Storybook.
 - `foundation-everything` (`foundation-sites/scss/foundation.scss:79-155`) is the union of the per-component includes a consumer writes, except `foundation-range-input`, which the Slider spec adds, so each story sees exactly the rules its Export mixins print; a spec that needs an Export mixin outside it (`foundation-grid`) adds one line, and the spec states that the new classes do not overlap existing ones. `$prototype: true` adds the Prototype utilities (section 8); they are additive classes that restyle no component.
 - Every `nfs-<plugin>` include comes after `foundation-everything`, as ADR 0012 requires (library rules override Foundation's at equal specificity through source order). A Library mixin that refuses to compile with a Foundation default (the Slider's fill contrast check) is satisfied through `_settings-overrides.scss`, never by skipping its include.
