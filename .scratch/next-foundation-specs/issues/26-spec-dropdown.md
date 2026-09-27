@@ -195,3 +195,28 @@ No OPEN FOR HUMAN item exists; nothing is added.
 ### Amendment, 2026-09-26 (audit 0005)
 
 From [audit 0005](../audits/0005-final-bundle.md), finding L5; `specs/dropdown.md` was edited to match. Wording only: the Reveal markup is "defined by the [Spec: Reveal](18-spec-reveal.md)" instead of "a sketch owned by its spec".
+
+### Amendment, 2026-09-28 (class rule)
+
+From [Re-run: Dropdown spec under the class rule](118-rerun-dropdown-class-rule.md), under [ADR 0039](../adr/0039-directives-manage-every-foundation-class.md) (consumers write no Foundation or library class, not even as an input value) and [ADR 0040](../adr/0040-variant-input-types.md); `specs/dropdown.md` was revised in place. The re-run's Answer holds the decision log.
+
+- D1, D6, D20, and D22 are revised; D26 to D30 are added.
+- D1: the consumer writes `<div nfsDropdownPane>` with no class. The directive already bound `.dropdown-pane` as a static host class and `.is-open`, `has-position-*`, and `has-alignment-*` as host bindings. What the consumer still wrote was `class="dropdown-pane"`, the size classes, and Foundation's legacy position classes.
+- D26: the size classes become the `size` Variant input, `NfsDropdownPaneSize = NfsOverridableStringUnion<'tiny' | 'small' | 'large', NfsDropdownSizesOverrides>`. It is an Open Variant family over `$dropdown-sizes` with no `'default'` value and no Breakpoint form, and it is not in the Defaults token.
+- D29: the `nfs-dropdown-pane` mixin now writes `--nfs-dropdown-sizes` on `:root`, its one emitted rule.
+- D28: the directive reports to the Runtime checks through `nfsVariantCheck`, requesting the include whether or not `size` is bound, because the include carries the 1.4.10 warning.
+- D27: a copied `is-open` is stripped by its binding, and it, a copied size, legacy position, or Placement class, and `is-opening` are reported in development (dev check 7, `HostAttributeToken('class')` in development builds only).
+- D20: `animate` takes typed Motion names (`animate="fade-in fade-out"`), or the consumer's own keyframe classes with a leading dot, which the directive maps to classes with the shared `nfsMotionClasses`. It is typed `NfsMotionPair`, Foundation's one-string pair over the shared Motion types that the [Re-run: Reveal spec under the class rule](110-rerun-reveal-class-rule.md) named; the Toggler's `animate` takes the same pair. Dev check 5 is now the Reveal's "started no animation" warning.
+- D6: `parentClass` names the consumer's own class, never a Foundation or library class.
+- D30: a split button's pane goes after the Button Group, and a pane inside a group warns (dev check 8).
+- Spec edits:
+  - Problem Statement, Solution, and user stories 1, 5 to 7, and 38 rewritten, with 46 to 50 added (numbering kept).
+  - The Foundation contract rows, the CSS class mapping (Structural and State table plus the Variant table of building-blocks 1.14 item 2), and the hierarchy and entry-point bullets.
+  - The API block and table (`size`, `animate`, `parentClass`) and the Classes, Motion names, Variant check, and dev-check behaviour rules (eight checks).
+  - The primitives and render hooks, one Material comparison row, and the 1.4.10 row wording. The 1.4.3 and 1.4.11 ratios are restated by the exact WCAG formula (19.63:1 and 1.63:1, the same verdicts); the pane has no compile-time contrast check.
+  - Rendered HTML (class-free consumer markup, a `size` pane, typed Motion names, a copied-markup case), the Animation and Rendering-modes bullets, and the Sass and custom CSS paragraph.
+  - Stories (the default story without its XY Grid scaffolding, a class-free parent-class box, `size` args), the browser-level cases (classes, copied classes, Variant check, eight dev checks), the SSR smoke fixture, pure logic, the Sass compile test, and the e2e reflow sizes.
+  - Out of Scope, the usage examples (a split button, a declaration file for a custom size, the Reveal example), the Sass subsection's items 1, 4, 5, and 6, and Foundation behaviour changed or dropped.
+- Unchanged: behaviour, ARIA, keyboard, focus rules, the animation mechanism, rendering modes, Story ids, and every other decision in the log above.
+
+Triage, from the re-run: impact HIGH (the consumer markup contract and a public type), confidence HIGH (ADR 0039, ADR 0040, and building-blocks 1.4 decide each change mechanically), so it is decided with nothing open. `NfsMotionPair` is proposed for building-blocks 1.6 rule 4, so the Toggler's `animate` and the pane's share one pair type.
