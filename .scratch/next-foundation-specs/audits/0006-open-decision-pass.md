@@ -369,4 +369,35 @@ Spot checks against the local clones and fetched sources (all hold unless a find
 
 ## Resolution log
 
-(For the orchestrator: record here which findings were fixed, turned into tickets, or rejected, with the commit that did it.)
+Every finding was fixed; none became a ticket and none was rejected. Three agents applied the fixes in parallel, each to its own files (shared documents; map, tickets, and captures; specs and their tickets), and the orchestrator applied what fell outside all three scopes. Commits: `3feb9ba` (shared documents), `0aa2c97` (map, tickets, and captures), `eb585f3` (sixteen specs and their tickets), `05600ba` (the rest).
+
+| Finding | Fixed in | Where |
+| --- | --- | --- |
+| H1 | `3feb9ba`, `eb585f3` | Building-blocks 1.1 case 3 and Tables A and B Tooltip; the Anchored pane spec's prose, rendered output, and sketch |
+| H2 | `3feb9ba`, `eb585f3` | Building-blocks Tables A and B ResponsiveMenu and the glossary's Mode swap; the Responsive Menu spec's ARIA rows, server and hydrated HTML, story, and SSR smoke, and the Accordion Menu, Dropdown Menu, and Drilldown Menu tests |
+| M1 | `0aa2c97` | The map's gists, with the three judges' map edits on the Slider, Smooth Scroll, and Orbit re-run lines |
+| M2 | `3feb9ba`, `0aa2c97`, `eb585f3` | Building-blocks, ADR 0018, and the Storybook conventions; nine prototype and decision tickets; the specs, with amendments in the Accordion, Tabs, Reveal, Responsive Accordion Tabs, Abide, and Orbit spec tickets |
+| M3 | `3feb9ba` | ADRs 0030 and 0036, beside the passages they reverse |
+| M4 | `eb585f3` | The Reveal spec's restore lists and development check 7; the Triggers spec's focus-return rule names Reveal and OffCanvas |
+| M5 | `eb585f3` | The Off-canvas spec removes the Modal inert set on destroy |
+| M6 | `3feb9ba`, `eb585f3`, `05600ba` | ADR 0001's dated bullet, then its reason; building-blocks 1.1 case 3; the Tooltip spec's D1 |
+| M7 | `0aa2c97` | Four new capture folders under `prototypes/`, each linked from its decision ticket |
+| M8 | `eb585f3`, `05600ba` | The Slider release test and the Slider spec ticket's amendment; the note under the Slider decision's Triage |
+| M9 | `0aa2c97` | The three answers name their models |
+| L1 | `3feb9ba`, `eb585f3` | Building-blocks 1.8, Part 4, and Table B OffCanvas; the Triggers spec's cells |
+| L2 | `eb585f3` | The Reveal and Triggers specs |
+| L3 | `eb585f3` | The Smooth Scroll spec |
+| L4 | `eb585f3` | The Slider WCAG table's 1.3.1 row |
+| L5 | `eb585f3` | The Orbit spec's binding-precedence paragraph |
+| L6 | `0aa2c97` | The Orbit capture's README |
+| L7 | `0aa2c97`, `eb585f3` | The fallback, upstream-filings, and assistive-technology decisions; the Orbit ticket's audit 0006 amendment covers its `:201` item instead of the stale-reference list |
+| L8 | `eb585f3`, `05600ba` | The Magellan spec and its ticket; a dated correction under check 13 of the assistive-technology decision and in its second evidence file |
+| L9 | `eb585f3` | The Abide spec |
+| L10 | `eb585f3` | The Accordion Menu and Dropdown Menu rendered HTML |
+| L11 | `eb585f3` | The WCAG rows, SSR smokes, and design decisions of the specs the pass changed |
+| L12 | `3feb9ba` | The glossary's Modal inert set and Tip entries |
+| L13 | `3feb9ba` | The README's counts and index |
+| L14 | `0aa2c97` | Path notes on the pass's quoted proposals |
+| L15 | `3feb9ba` | "A link host" in building-blocks; the three story-id errata, appended to each section's dated correction |
+
+The seven unrecorded departures are closed by H2, H1, M6, M5, L10, L2, and L1 in that order. The assistive-technology decision's own ticket keeps its verbatim release step and change list as applied; its dated correction states the phrase that replaced them.
