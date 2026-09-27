@@ -140,6 +140,7 @@ README item 1: "Orbit slides do not host Aria's `TabPanel`: its own `inert` bind
 - Not measured: whether an Orbit whose bullets precede the slides in the document (Aria's `inert` present from the first pass, so constant afterwards) would let a slide binding hold under ADR 0034's rule. Foundation's order is the opposite.
 - The root-cause explanation was not separately reproduced (the prototype's minimal repro did not fail).
 - The upstream documentation question on host-binding override precedence is unfiled ([Re-run: Orbit spec, the slide's ARIA contract and the focus handoff](../issues/70-rerun-orbit-slide-contract-and-focus-handoff.md), OPEN FOR HUMAN 1).
+- Closed 2026-09-27: probe G reproduced the root cause (`g1` against `g4`), measured document order failing on a late selection change (`g7`), and measured the derived override holding (`g5`, `g6`); the judge re-ran it and the keyboard prototype, and measured the client transient; evidence under `prototypes/orbit-slide-derived-inert/`.
 
 ## 2. Orbit offers no Aria `TabContent` for lazy slides
 
@@ -199,6 +200,7 @@ README item 3: "Accordion does not use Aria's `AccordionContent`, even for Lazy 
 
 - The close-timing loss with `preserveContent` false is source reading; no capture exists.
 - `AccordionContent` discovered through a component host (`NfsAccordionContent`) rather than a directive host is not measured.
+- Closed 2026-09-27: probe H, discovery through a component host works.
 
 ## 4. Tabs uses Aria's `TabContent` only behind the opt-in lazy template
 

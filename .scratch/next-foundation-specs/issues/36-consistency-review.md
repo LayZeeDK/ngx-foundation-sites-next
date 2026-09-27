@@ -125,6 +125,8 @@ Nothing new is left OPEN FOR HUMAN by this ticket. The bundle's open list follow
 
 ### Open list
 
+Amended 2026-09-27: the open-decision pass (map, Notes) resolved this list. The user ruled that no upstream filings are made ([Upstream filings](76-evidence-upstream-filing-readiness.md)); the trap-quadrant decisions were decided by [Decide: `aria-expanded` on a modal dialog's opener](72-decide-aria-expanded-on-modal-opener.md), [Decide: Slider vertical orientation](73-decide-slider-vertical-orientation.md), and [Decide: `#`-only links that `<base href>` resolves to another document](74-decide-base-href-hash-links.md); the confirmation item by [Decide the `@angular/aria` fallback confirmation](75-evidence-aria-fallback-confirmation.md); and the assistive-technology checks by [Resolve the assistive-technology checks](77-evidence-assistive-technology-checks.md). The list below is kept as the review recorded it, apart from items the fold-ins already removed; the bundle's current open list is the one in `README.md`.
+
 Everything below is left OPEN FOR HUMAN after the triage rule in the map's Orchestration rules: only an item of HIGH impact with NOT-HIGH confidence stays open, plus outward-facing actions under the user's identity (upstream filings), checks that need assistive technology, and the fallbacks from `@angular/aria` building blocks that `AGENTS.md` asks the user to confirm, a kind the triage rule also names human-only (added 2026-09-26, audit 0005 M2). Each item runs on its applied default until the user decides; its ticket holds the options and the evidence. No `Prototype needed` item is open: every graduated prototype and re-run is resolved and reflected in its specs.
 
 #### Upstream filings (10; filing needs the user's confirmation)

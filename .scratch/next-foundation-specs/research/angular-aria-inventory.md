@@ -160,7 +160,7 @@ ARIA attribute is set on the group element. Orientation is fixed `'vertical'`
 
 Host attributes: `role="button"`, `[id]`, `aria-expanded`, `aria-controls` (panel id),
 `aria-disabled`, `disabled` (only when hard-disabled: `disabled && !group.softDisabled`),
-`tabindex` (0 when focusable, else -1; roving), `data-active`
+`tabindex` (0 on every enabled trigger, -1 on a hard-disabled one; not roving: `isFocusable`, not `getItemTabIndex`), `data-active`
 (accordion-trigger.ts:46-60; `AccordionTriggerPattern` in
 `src/aria/private/accordion/accordion.ts:196-208`).
 

@@ -125,7 +125,7 @@ The closest Openable that encloses a Trigger in the template where the Trigger i
 _Avoid_: parent Openable, ancestor target, bubbling target
 
 **Trigger role**:
-What an Openable declares its Triggers to be (disclosure, dialog opener, toggle button, or plain command), which decides the ARIA each Trigger renders.
+What an Openable declares its Triggers to be (disclosure, dialog opener, modal dialog opener, toggle button, or plain command), which decides the ARIA each Trigger renders.
 _Avoid_: trigger type, ARIA mode, popup type
 
 **Rotation control**:

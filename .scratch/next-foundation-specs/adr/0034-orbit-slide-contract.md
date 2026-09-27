@@ -1,5 +1,5 @@
 ---
-status: accepted
+status: superseded by ADR-0037
 ---
 
 # Orbit slides bind their own tab panel contract instead of hosting Aria's `TabPanel`
@@ -22,3 +22,4 @@ status: accepted
 - The slide's generated id takes the library prefix `nfs-orbit-slide-` instead of Aria's `ng-tabpanel-`.
 - The rule behind the failure is general: a Foundation-classed wrapper can override an Aria host binding only when Aria's value never changes after the wrapper's last write, or equals the wrapper's whenever it changes (the Tabs and Orbit bullet `tabindex` overrides meet it). An override that must differ from an Aria value that can still change is not a binding; the element does without that Aria directive.
 - 2026-09-26 (audit 0005 L7): the development warning of each Aria `Tab` is two `console.warn` lines per bullet, not one, because Aria's `reportViolations` writes a header line and then the message; the decision is unchanged.
+- 2026-09-27: superseded by [ADR 0037](0037-orbit-slide-hosts-tab-panel.md). The universal claim in the last consequence was measured false by the [Decide the `@angular/aria` fallback confirmation](../issues/75-evidence-aria-fallback-confirmation.md): a wrapper binding computed from Aria's own `TabPanel.visible()` changes in every pass in which Aria's `inert` changes and keeps it out of server HTML (probe G; the keyboard prototype re-run in three engines). The slides host `TabPanel` again.
