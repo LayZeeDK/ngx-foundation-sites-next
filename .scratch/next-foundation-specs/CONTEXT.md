@@ -1,6 +1,6 @@
 # ngx-foundation-sites (next)
 
-An Angular directive library that keeps Foundation for Sites 6.9's Sass and CSS class contract and replaces every Foundation JavaScript plugin with Angular directives (components only where Foundation generated structure). This glossary is the shared language for the building-blocks map, the ADRs, and the 26 specs.
+An Angular directive library that keeps Foundation for Sites 6.9's Sass and CSS class contract and gives every Foundation UI component, JavaScript plugin or CSS-only, and every layout system and utility family Angular directives (components only where Foundation generated structure), which set every Foundation and library class so the consumer writes none (ADR 0039). This glossary is the shared language for the building-blocks map, the ADRs, and the specs.
 
 ## Language
 
@@ -15,7 +15,7 @@ A Foundation component that ships Sass and classes but no Plugin, such as Button
 _Avoid_: static component, plain component, pure-CSS widget
 
 **Structural class**:
-A Foundation CSS class that names an element of a Plugin's or a CSS-only component's markup (`.accordion-item`, `.dropdown-pane`, `.orbit-slide`, `.button`).
+A Foundation CSS class that names an element of a Plugin's or a CSS-only component's markup (`.accordion-item`, `.dropdown-pane`, `.orbit-slide`, `.button`); bound by its directive, never written by the consumer.
 _Avoid_: layout class, block class, container class
 
 **Handle**:
@@ -31,16 +31,20 @@ An element whose height an Equalizer matches to the tallest element of its row; 
 _Avoid_: watch, equalized item, equalizer child
 
 **State class**:
-A Foundation CSS class that expresses runtime state on an element (`.is-active`, `.is-open`, `.is-stuck`, `.is-closing`, `.js-dropdown-active`), as opposed to a Structural class.
+A Foundation CSS class that expresses runtime state on an element (`.is-active`, `.is-open`, `.is-stuck`, `.is-closing`, `.js-dropdown-active`), as opposed to a Structural class; a host binding of the directive that owns the state, never written by the consumer.
 _Avoid_: modifier, flag class, status class
 
 **Variant class**:
-A Foundation CSS class that selects a static look for a Structural class (`.small`, `.alert`, `.hollow`, `.expanded`, `.dropdown` on `.button`), as distinct from a State class, which expresses runtime state.
+A Foundation CSS class that selects a static look for a Structural class (`.small`, `.alert`, `.hollow`, `.expanded`, `.dropdown` on `.button`), as distinct from a State class, which expresses runtime state; set by a typed input of the directive, never written by the consumer.
 _Avoid_: modifier, appearance class, style class
 
 **Visibility class**:
 A Foundation CSS class that shows or hides an element by breakpoint of the Breakpoint map (`.show-for-medium`, `.hide-for-large`, `.show-for-small-only`), generated only for the breakpoints in `$breakpoint-classes`; distinct from a State class, which expresses runtime state.
 _Avoid_: responsive class, breakpoint class, visibility helper
+
+**Utility class**:
+A Foundation CSS class from a layout system or utility family (`.grid-x`, `.cell`, `.align-center`, `.float-left`, `.text-center`, `.margin-1`) that can style any element and names no element of a component's markup; set by its directive, never written by the consumer. Visibility classes are one family of them.
+_Avoid_: helper class, layout class, utility helper
 
 **Revealed panel**:
 An off-canvas panel shown as a permanent sidebar at and above its `revealOn` breakpoint by Foundation's `.reveal-for-<bp>` class; distinct from the Reveal plugin.
@@ -97,7 +101,7 @@ _Avoid_: Foundation styles, component mixin
 ### Angular side
 
 **Directive-first**:
-The rule that a Plugin becomes attribute directives on the markup the consumer writes; a component is the exception for structure Foundation generated.
+The rule that a Plugin, a CSS-only component, a layout system, or a utility family becomes attribute directives on the elements the consumer writes; a component is the exception for structure Foundation generated.
 _Avoid_: headless, unstyled, wrapper-less
 
 **Wrapper component**:

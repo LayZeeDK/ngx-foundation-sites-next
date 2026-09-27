@@ -1,5 +1,5 @@
 ---
-status: accepted
+status: superseded by ADR-0039
 ---
 
 # Variant classes stay consumer-written classes
@@ -15,3 +15,4 @@ Foundation's appearance classes on a Structural class (on `.button`: the sizes f
 
 - Storybook stories map their args to classes in the story template instead of to inputs.
 - Other specs apply the same test to their Variant classes (Reveal sizes, Menu and Tabs orientation classes, Callout-like colors): purely visual stays a class; behaviour-changing becomes an input that binds the class.
+- 2026-09-27: superseded by [ADR 0039](0039-directives-manage-every-foundation-class.md). The user ruled, in [Triage the out-of-scope Foundation components and variants](../issues/79-triage-out-of-scope-components-and-variants.md), that consumers write no Foundation or NFS class, so every Variant class, of every family, is set by a typed input, not only where the directive's behaviour depends on it. The objections above to typed inputs (open value sets, custom palette colours and sizes, `.solid` existing only when `$button-fill` is not `solid`, responsive classes behind a Sass flag, runtime defaults) are for [Decide: typed Variant inputs over open Sass maps](../issues/81-decide-typed-variant-inputs-open-sass-maps.md) to answer. The quotation in the first rejected option comes from this repository's early API-design sketch, from its Spec Kit attempt, which the bundle's ADRs and the user's rulings outrank.
