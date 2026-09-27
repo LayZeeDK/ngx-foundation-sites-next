@@ -335,4 +335,29 @@ Hygiene: no non-ASCII character, no banned word, no banned pair, and no email-sh
 
 ## Resolution log
 
-(Recorded by the orchestrator.)
+Every finding was fixed as its Fix states; none became a ticket and none was rejected. One agent applied all twenty findings, so no part fell between scopes, and checked the README counts (M4: 28 prototype folders, seven audits) against the working tree after every other fix. All fixes are in commit `92f8f84`.
+
+| Finding | Where |
+| --- | --- |
+| M1 | `specs/off-canvas.md` (the modal-mode paragraph, the ARIA bullet, the 4.1.2 row); `issues/25-spec-off-canvas.md` (a bullet on the audit 0006 amendment); this file's own resolution-log row for audit 0006's M3 (the "Fixed in" and "Where" cells) |
+| M2 | `building-blocks.md` Part 4 item 4 |
+| M3 | `specs/reveal.md` (the `registerTrigger` row, check 7, the Restore bullet, the browser-level case, D14); `specs/triggers.md` (three cells); `specs/off-canvas.md` (the breakpoint-crossing focus rule); `issues/18-spec-reveal.md` and `issues/54-spec-triggers.md` (a dated amendment section in each) |
+| M4 | `README.md` (the prototypes line and the audits line) |
+| M5 | a dated amendment section appended to `issues/14-building-blocks-map.md`, `issues/38-angular-rendering-modes.md`, `issues/49-prototype-signal-forms-abide.md`, `issues/58-storybook-conventions.md`, `issues/64-prototype-slider-hydration-nonlinear.md`, `issues/68-rerun-slider-hydration-findings.md`, `issues/71-prototype-responsive-menu-swap-commit.md` |
+| L1 | `specs/off-canvas.md` (three live-region phrases); this file's resolution-log row for audit 0006's L12 |
+| L2 | `README.md` (the ADR 0030 and ADR 0036 rows, annotated); this file's resolution-log row for audit 0006's L1 |
+| L3 | `building-blocks.md` 1.10 |
+| L4 | `building-blocks.md` 1.9; `map.md` (the Off-canvas gist) |
+| L5 | `building-blocks.md` (Table A Tooltip's Kind column; 1.1 case 3) |
+| L6 | `specs/triggers.md` (the `registerTrigger` member row) |
+| L7 | `specs/nested-menu.md` (the Solution, two sentences); `map.md` (the Responsive Menu gist); `adr/0004-menus-use-disclosure-navigation.md` (a dated Consequences bullet); `issues/56-spec-nested-menu.md` (a bullet on the audit 0006 amendment) |
+| L8 | `specs/slider.md` (the release test); `issues/73-decide-slider-vertical-orientation.md` and `issues/32-spec-slider.md` (the same probe named in each) |
+| L9 | `research/assistive-technology-evidence.md` (two errata) and `research/assistive-technology-evidence-2.md` (one erratum), each now headed "Erratum (audit 0006 L15)" |
+| L10 | `adr/0018-browser-testing-stack.md` (a dated qualifier); `research/decision-aria-expanded-modal-opener.md`, `research/decision-slider-vertical.md`, `research/decision-base-href-hash-links.md` (each EXP row points at its capture folder); this file's resolution-log rows for audit 0006's M2 and M7 |
+| L11 | `prototypes/abide-controls-and-ready/README.md`, `prototypes/nested-menu/README.md`, `prototypes/signal-forms-abide/README.md`, `prototypes/slider-hydration-nonlinear/README.md` |
+| L12 | `issues/66-prototype-abide-controls-and-ready.md` (the stray sentence moved out of the audit 0006 amendment) |
+| L13 | `prototypes/modal-opener-aria/README.md`, `prototypes/slider-vertical-orientation/README.md`, `prototypes/base-href-hash-links/README.md`, `prototypes/reveal-open-first-paint/README.md` |
+| L14 | `prototypes/slider-vertical-orientation/panel-a11y/webaim10.md` (the dead sponsor link removed); `prototypes/slider-vertical-orientation/README.md` (the JSON-response note); `prototypes/base-href-hash-links/panel-vsdefault/summary-e.log` (two garbled colour-code lines cleaned) |
+| L15 | `issues/78-decide-open-by-default-non-modal-reveal-server-state.md:104`; a path note under the "Gist" heading in `issues/72-decide-aria-expanded-on-modal-opener.md`, `issues/73-decide-slider-vertical-orientation.md`, `issues/74-decide-base-href-hash-links.md`, `issues/75-evidence-aria-fallback-confirmation.md`, `issues/77-evidence-assistive-technology-checks.md`, `issues/78-decide-open-by-default-non-modal-reveal-server-state.md` |
+
+The six unrecorded departures this file lists are closed by M3, M1, M2, L7, L3, and L4 in that order (the same findings that list them).
