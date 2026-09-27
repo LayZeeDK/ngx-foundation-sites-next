@@ -1,6 +1,6 @@
 # Spec: Abide
 
-Ticket: [Spec: Abide](../issues/31-spec-abide.md). Decision records: ADR 0006 (Signal Forms replaces Abide's engine), ADR 0008 (Rendering modes), ADR 0012 (Sass packaging), [ADR 0026](../adr/0026-abide-explicit-error-directives.md) (explicit error-markup directives), and [ADR 0027](../adr/0027-abide-pre-hydration-submit.md) (the pre-hydration submit stance). Prototype: [Prototype: Signal Forms on Abide markup](../issues/49-prototype-signal-forms-abide.md). Targets Angular 22.2, Nx 23.2, Storybook 10.6 with `@storybook/angular-vite`, Vitest 4.1.x, TypeScript 6.0.x, and Foundation for Sites 6.9.0 Sass.
+Ticket: [Spec: Abide](../issues/31-spec-abide.md), re-run by [Re-run: Abide spec under the class rule](../issues/123-rerun-abide-class-rule.md). Decision records: ADR 0006 (Signal Forms replaces Abide's engine), ADR 0008 (Rendering modes), ADR 0012 (Sass packaging), ADR 0022 (WCAG 2.2 AA enforcement), [ADR 0026](../adr/0026-abide-explicit-error-directives.md) (explicit error-markup directives), [ADR 0027](../adr/0027-abide-pre-hydration-submit.md) (the pre-hydration submit stance), [ADR 0039](../adr/0039-directives-manage-every-foundation-class.md) (the class rule), and [ADR 0040](../adr/0040-variant-input-types.md) (Variant input types). Prototype: [Prototype: Signal Forms on Abide markup](../issues/49-prototype-signal-forms-abide.md). Neighbours on the same elements: [Spec: Forms](../issues/98-spec-forms.md) (form labels, help text, input groups, and every field's resting look), [Spec: Callout](../issues/89-spec-callout.md) (the Form alert's look), and [Spec: Button](../issues/37-spec-button.md) (the submit control). Targets Angular 22.2, Nx 23.2, Storybook 10.6 with `@storybook/angular-vite`, Vitest 4.1.x, TypeScript 6.0.x, and Foundation for Sites 6.9.0 Sass.
 
 ## Problem Statement
 
@@ -8,21 +8,25 @@ Foundation for Sites ships Abide, a jQuery validation engine for forms: seventee
 
 The developer also meets problems Abide never had to solve. Angular 22's Signal Forms own the value and the validity, so the error display has to follow field state, not the DOM. Server-rendered forms are pristine HTML until hydration: a value typed before hydration is overwritten when Angular takes over, and a submit before hydration is a native GET that puts every field, the password included, into the URL. Foundation's default error colours miss WCAG 2.2 AA contrast by a hair (4.49:1), and its per-field errors are invisible to a screen reader unless something makes them live.
 
+The library's class rule adds one more constraint: the developer writes Foundation's elements and the library's directive attributes, never a Foundation or library class (ADR 0039). Abide's own examples are written in classes: `.form-error` on each message, `.help-text` on each hint, `.alert.callout` on the form-level box, `.input-group` and its parts around a prefixed field, `.button` on the submit control, and, to show the error look, static `.is-invalid-label`, `.is-invalid-input`, and `.form-error.is-visible`. Each of those must come from a directive, and a State class copied from the docs must not fail silently.
+
 ## Solution
 
-Five small attribute directives on the Foundation form markup the developer already writes, driven by Signal Forms field state, with Reactive Forms supported as a courtesy:
+Five small attribute directives on the form elements the developer already writes, driven by Signal Forms field state, with Reactive Forms supported as a courtesy:
 
 - `form[nfsAbide]` holds the Error-state policy (Foundation's `validateOn`, `liveValidate`, `validateOnBlur`) and knows whether the form has been submitted.
 - `[nfsAbideInput]` on each `input`, `textarea`, or `select` reads the Signal Forms field bound on the same element and renders `.is-invalid-input`, `aria-invalid`, and `aria-describedby` from it.
 - `label[nfsAbideLabel]` renders `.is-invalid-label`.
-- `[nfsFormError]` on each Form error (`.form-error`) shows the message for the error kind it names and joins the field's `aria-describedby` only while shown.
+- `[nfsFormError]` on each Form error binds `.form-error`, shows the message for the error kind it names, and joins the field's `aria-describedby` only while shown.
 - `[nfsAbideAlert]` on the Form alert (Foundation's `[data-abide-error]` box) shows it while a submitted form is invalid.
 
-Validation itself is Signal Forms: `required()`, `pattern()`, `email()`, `validate()`. The library exports Foundation's seventeen patterns as `nfsPatterns` (checked and, where needed, rewritten to compile under the `v` regex flag) and Abide's `equalTo` as `nfsEqualTo()`. Every class and ARIA attribute is a host binding, so the server HTML is the pristine form; values typed before hydration are adopted, not lost; and the spec requires one Foundation Sass setting set (five variables) that makes the invalid state pass WCAG 2.2 AA.
+Validation itself is Signal Forms: `required()`, `pattern()`, `email()`, `validate()`. The library exports Foundation's seventeen patterns as `nfsPatterns` (checked and, where needed, rewritten to compile under the `v` regex flag) and Abide's `equalTo` as `nfsEqualTo()`. Every class and ARIA attribute is a host binding, so the server HTML is the pristine form; values typed before hydration are adopted, not lost; a State class copied from Foundation's docs is reported in development builds; and the spec requires three Foundation settings for the invalid state, beside the three the Forms spec requires for every field, so that validated fields pass WCAG 2.2 AA.
+
+The other classes of Abide's examples come from the directives of their own docs pages, written beside the Abide directives on the same elements and never hosted by them: the Form alert's look is `nfsCallout color="alert"` ([Spec: Callout](../issues/89-spec-callout.md)); help text is `nfsHelpText`, a label's `.middle` is `nfsFormLabel middle`, and an input group is `nfsInputGroup` with its parts ([Spec: Forms](../issues/98-spec-forms.md)); the submit control is `nfsButton` with its `color` input ([Spec: Button](../issues/37-spec-button.md)). The Abide entry point imports none of them, and none of them imports Abide.
 
 ## User Stories
 
-1. As an application developer, I want to keep Foundation's form markup (`label`, `input`, `.form-error`, `.help-text`, `.callout.alert`), so that I reuse Foundation's docs and Sass without learning new structure.
+1. As an application developer, I want to keep the element structure of Foundation's form markup (`label`, `input`, the message beside each field, the hint, the form-level box) and write the library's directive attributes where Foundation's docs write classes, so that I reuse Foundation's docs and Sass without writing a Foundation class (ADR 0039).
 2. As an application developer, I want validation to live in my Signal Forms schema, so that there is one source of truth for value and validity.
 3. As an application developer, I want the invalid field to get Foundation's `.is-invalid-input`, so that Foundation's error border and tint appear.
 4. As an application developer, I want the field's label to get `.is-invalid-label`, so that the label turns to the error colour as in Foundation.
@@ -34,7 +38,7 @@ Validation itself is Signal Forms: `required()`, `pattern()`, `email()`, `valida
 10. As an application developer, I want every error to show after a submit, so that nothing invalid stays silent.
 11. As an application developer, I want a form-level alert that appears while a submitted form is invalid and disappears when it is valid, so that users know the submit failed.
 12. As an application developer, I want several messages per field, each shown only for its error kind (`required`, `pattern`, `equalTo`, my own), so that the message says exactly what to fix.
-13. As an application developer, I want to place a Form error away from its field (input groups), so that Foundation's `data-form-error-for` layout still works.
+13. As an application developer, I want to place a Form error away from its field (after an input group built with the Forms directives), so that Foundation's `data-form-error-for` layout still works.
 14. As an application developer, I want the wrapping-label markup to link label and field with no references, and Form errors placed after the label to link by a typed template reference, so that an error never becomes part of the field's name.
 15. As an application developer, I want the `label[for]` markup to link through typed template references, so that the compiler catches a wrong link.
 16. As an application developer, I want Foundation's seventeen named patterns as exported regular expressions, so that I do not copy regexes by hand.
@@ -60,9 +64,14 @@ Validation itself is Signal Forms: `required()`, `pattern()`, `email()`, `valida
 36. As a user, I want my entries kept after a failed submit, so that I only fix what is wrong (3.3.7).
 37. As a user signing in, I want to paste into password and confirmation fields, so that password managers work (3.3.8).
 38. As a library maintainer, I want the error-state rule to be one pure function, so that it is tested as a truth table.
-39. As a library maintainer, I want no library CSS for Abide, only compile-time contrast checks, so that Foundation's Sass stays the only styling and a consumer who keeps a failing setting hears about it in their own compile.
+39. As a library maintainer, I want no library CSS for Abide, only compile-time contrast checks for the invalid state (the resting field's are the Forms spec's), so that Foundation's Sass stays the only styling and a consumer who keeps a failing setting hears about it in their own compile.
 40. As a library maintainer, I want dev-mode warnings when a label or Form error cannot find its field, or when a field shows an error with no visible message, so that broken markup is caught early.
 41. As a library maintainer, I want the story axe gate to fail when the consumer settings are missing, so that the contrast fix cannot regress silently.
+42. As an application developer, I want the Form alert to take Foundation's callout look from `nfsCallout color="alert"` written beside `nfsAbideAlert`, or any other look I choose, so that the alert's appearance is not tied to validation.
+43. As an application developer, I want `nfsHelpText`, `nfsFormLabel middle`, and the input group directives to sit beside the Abide directives on the same elements, so that adding validation changes no structure and writes no class.
+44. As an application developer migrating Foundation markup, I want a development warning when I copy a State class Abide sets (`is-invalid-input`, `is-invalid-label`, `is-visible`), so that a class the directive silently strips does not leave me wondering why the error look is gone.
+45. As a keyboard user, I want a focused invalid select menu to change by more than hue from its unfocused invalid look, so that I can see where focus is on a control with no text caret (1.4.1, 2.4.7).
+46. As an application developer, I want my submit control to be `nfsButton` with a typed `color`, so that the validated form follows the same class rule as the rest of the page.
 
 ## Implementation Decisions
 
@@ -101,34 +110,48 @@ Field attributes Abide reads, and their replacement:
 
 Error markup Abide reads: `.form-error` as sibling or inside the parent (replaced by explicit links, below), `[data-form-error-for]` (replaced by `[nfsFormError]="field"`), `[data-form-error-on]` (the `formErrorOn` input), `[data-abide-error]` (the element carrying `nfsAbideAlert`).
 
+Classes the Abide docs page writes in its examples, and who sets each under the class rule (ADR 0039; mapping below): `.form-error` (`nfsFormError`); `.is-invalid-label`, `.is-invalid-input`, and `.form-error.is-visible`, written statically to show the error look (host bindings of the Abide directives, which strip a copied one and report it in development builds); `.alert.callout` on the Form alert (`nfsCallout color="alert"`, [Spec: Callout](../issues/89-spec-callout.md)); `.help-text`, `.input-group`, `.input-group-label`, and `.input-group-field` (the [Spec: Forms](../issues/98-spec-forms.md) directives); `.button` on the submit and reset controls (`nfsButton`). The input group example's Form alert writes `.sr-only`, which Foundation 6.9 does not define; a visually hidden Form alert takes the Visibility Classes directive for `.show-for-sr` instead (written `nfsShowForSr` until the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md) names it).
+
 Events: `valid.zf.abide`, `invalid.zf.abide`, `formvalid.zf.abide`, `forminvalid.zf.abide`, `formreset.zf.abide` have no outputs (building-blocks 1.4; ADR 0006). Consumers read field state signals; a failed submit is Signal Forms' `onInvalid` submission callback.
 
 Methods: none carried. `validateForm()` is a native submit (`requestSubmit()` or a submit button); `validateInput()` is unnecessary because Signal Forms validates continuously; `resetForm()` is `form().reset(value)`; `enableValidation()`/`disableValidation()` are `applyWhen()` or `ignoreValidators`; `requiredCheck`, `findFormError`, `findLabel`, `addErrorClasses`, `removeErrorClasses`, `matchValidation`, `_reflow` are internals of the jQuery engine.
 
 ### CSS class to Angular mapping
 
-| Foundation class or attribute | Element | Angular | Notes |
-| --- | --- | --- | --- |
-| `form[data-abide]` | `form` | `form[nfsAbide]`, `NfsAbide` | Plugin element; no Structural class |
-| `.is-invalid-input` | `input`, `textarea`, `select` | `[nfsAbideInput]`, `NfsAbideInput`, host class binding | State class |
-| `.is-invalid-label` | `label` | `label[nfsAbideLabel]`, `NfsAbideLabel`, host class binding | State class on a label |
-| `.form-error` | any element, usually `span` or `p` | `[nfsFormError]`, `NfsFormError`, adds `.form-error` | Structural class |
-| `.form-error.is-visible` | same | `NfsFormError` host class binding | State class |
-| `[data-abide-error]` (with `.alert.callout`) | `div` | `[nfsAbideAlert]`, `NfsAbideAlert`, `hidden` host binding | The consumer keeps `.callout.alert` as Variant classes |
-| `.help-text` | `p` | none | Consumer id goes into `aria-describedby` |
+| Foundation class or attribute | Element | Angular | Kind | Notes |
+| --- | --- | --- | --- | --- |
+| `form[data-abide]` | `form` | `form[nfsAbide]`, `NfsAbide` | Plugin element | No Foundation class |
+| `.is-invalid-input` | `input`, `textarea`, `select` | `[nfsAbideInput]`, `NfsAbideInput`, `[class.is-invalid-input]` host binding | State | A copied static one is stripped by the binding and reported in development builds |
+| `.is-invalid-label` | `label` | `label[nfsAbideLabel]`, `NfsAbideLabel`, `[class.is-invalid-label]` host binding | State | As above |
+| `.form-error` | any element, usually `span` or `p` | `[nfsFormError]`, `NfsFormError`, static host class | Structural | A redundant written `form-error` merges with the host class and is not reported |
+| `.form-error.is-visible` | same | `NfsFormError`, `[class.is-visible]` host binding | State | As `.is-invalid-input` |
+| `[data-abide-error]` | the Form alert element, usually `div` | `[nfsAbideAlert]`, `NfsAbideAlert`, `hidden` and `role` host bindings | Plugin element | No Foundation class of its own |
+| `.callout`, `.alert` on the Form alert | same | `nfsCallout` with `color="alert"`, written beside `nfsAbideAlert` ([Spec: Callout](../issues/89-spec-callout.md)) | Structural and Variant, not Abide's | `.callout` sets no `display`, so `hidden` alone hides it (building-blocks 1.10) |
+| `.help-text` | usually `p` | `nfsHelpText` ([Spec: Forms](../issues/98-spec-forms.md)) | Structural, not Abide's | Consumer id; the field's `aria-describedby` lists it and `NfsAbideInput` composes it with the visible errors |
+| `.middle` on a label | `label` | `nfsFormLabel` with `middle`, beside `nfsAbideLabel` ([Spec: Forms](../issues/98-spec-forms.md)) | Variant, not Abide's | `NfsAbideLabel` does not host `NfsFormLabel` (D19) |
+| `.input-group`, `.input-group-label`, `.input-group-field`, `.input-group-button` | the group, its prefix, the field, the button wrapper | `nfsInputGroup`, `nfsInputGroupLabel`, `nfsInputGroupField` beside `nfsAbideInput`, `nfsInputGroupButton` ([Spec: Forms](../issues/98-spec-forms.md)) | Structural, not Abide's | The field's Form error goes after the group, linked by reference |
+| `.button` and a palette class on the submit control | `button` | `nfsButton` with `color` ([Spec: Button](../issues/37-spec-button.md)) | Structural and Variant, not Abide's | |
+
+Variant families (building-blocks 1.14 item 2): none. Foundation's Abide classes are one Structural class (`.form-error`) and three State classes; the Variant classes in its examples belong to Callout, Forms, and Button, whose specs type them. So the entry point declares no Variant registry, writes no Variant property, and reports nothing to the Runtime checks.
 
 ### Hierarchy and DI shape
 
 ```
 form[nfsAbide]                       provides nfsAbideToken; policy, submitted, ready
   [nfsAbideAlert]                    injects nfsAbideToken (required)
+                                     beside it: nfsCallout color="alert" (Spec: Callout), or none
   label[nfsAbideLabel]               provides nfsAbideLabelToken; field = reference ?? registered input
+                                     beside it: nfsFormLabel [middle] (Spec: Forms), optional
     input[nfsAbideInput][formField]  self-injects FORM_FIELD, else NgControl; registers with the
                                      form (optional) and the enclosing label (optional)
+                                     beside it: nfsInputGroupField inside nfsInputGroup (Spec: Forms)
     [nfsFormError]                   field = reference ?? enclosing label's field; registers with the field
   [nfsFormError]="emailField"        anywhere in the template (Foundation's data-form-error-for)
+  [nfsHelpText] id="..."             Spec: Forms; reached through the field's aria-describedby, no DI
+  button[nfsButton] type="submit"    Spec: Button; [disabled]="!abide.ready()"
 ```
 
+- Neighbouring directives: the Callout, Forms, and Button directives sit on the same elements as the Abide directives and bind different classes and attributes, so neither set injects, hosts, or imports the other, and attribute order does not matter. No Abide directive hosts one of them through `hostDirectives`: a consumer who also wrote the hosted attribute would match the directive twice, which Angular rejects at run time (NG0309), the hosted look would be forced on every host (a Form alert that is visually hidden, or styled by the application, is not a callout), and the Abide entry point would import theirs (D18, D19). The only link between the sets is the field's `aria-describedby`: the consumer writes the help text's id there, `NfsAbideInput` composes it with the visible Form errors (below), and no Forms directive writes it.
 - `nfsAbideToken` (`InjectionToken<NfsAbide>`, lightweight, `import type`), provided by `NfsAbide` with `useExisting`. `NfsAbideInput` injects it `{optional: true}`: a field outside an `nfsAbide` form still works with the Defaults token policy and never counts as submitted. `NfsAbideAlert` injects it without `optional`: an alert outside a form is an error (NG0201).
 - `nfsAbideLabelToken`, provided by `NfsAbideLabel`. An input inside the label registers itself (`inject(nfsAbideLabelToken, {optional: true, skipSelf: true})`); a bare `nfsFormError` inside the label resolves its field through it. That form is for custom `FormValueControl` hosts only; a native control's Form error goes after the label with a reference (the development check).
 - Links that DI cannot express (a `label[for]` beside the input, an error away from the field) are typed template references: `[nfsAbideLabel]="pw"` and `[nfsFormError]="pw"` with `#pw="nfsAbideInput"`, the same target rule as Triggers (ADR 0013). The bare attribute (`nfsFormError` with no value) means "the field of the enclosing `nfsAbideLabel`".
@@ -230,9 +253,11 @@ Host: `[class.is-invalid-label]` = the resolved field's `errorState()`. Dev mode
 | `id` | `input()` | `string`, default generated `nfs-form-error-<n>` | | Consumer `id` wins |
 | `visible` | `Signal<boolean>` | read-only | | `field.errorState() && (formErrorOn is null or intersects field.status().kinds)` |
 
-Host: static `class="form-error"` (merged with the consumer's classes), `[id]`, `[class.is-visible]` = `visible()`, `[attr.role]` = the static `role` attribute when the consumer wrote one (read through `HostAttributeToken('role')`), else `'alert'`. Dev mode: warns once when no field resolves, warns once when it is a descendant of a `label` and its field is a native control (a defect, not a style preference: Firefox then reads the error as part of the field's name, and Chromium fires no alert event for it, so NVDA with Chrome never announces it when it appears while focus is elsewhere; place it after the label and link it by reference), and the field warns once when it enters its error state with no visible Form error (WCAG 3.3.1 and 1.4.1 need visible text).
+Host: static `class="form-error"` (merged with any class the consumer's application adds), `[id]`, `[class.is-visible]` = `visible()`, `[attr.role]` = the static `role` attribute when the consumer wrote one (read through `HostAttributeToken('role')`), else `'alert'`. Dev mode: warns once when no field resolves, warns once when it is a descendant of a `label` and its field is a native control (a defect, not a style preference: Firefox then reads the error as part of the field's name, and Chromium fires no alert event for it, so NVDA with Chrome never announces it when it appears while focus is elsewhere; place it after the label and link it by reference), and the field warns once when it enters its error state with no visible Form error (WCAG 3.3.1 and 1.4.1 need visible text).
 
-`NfsAbideAlert`, selector `[nfsAbideAlert]`: no inputs. Host: `[hidden]` while not (`submitted() && invalid()`), `[attr.role]` from the form's `a11yErrorLevel` unless the consumer wrote a static `role`.
+`NfsAbideAlert`, selector `[nfsAbideAlert]`: no inputs. Host: `[hidden]` while not (`submitted() && invalid()`), `[attr.role]` from the form's `a11yErrorLevel` unless the consumer wrote a static `role`. It binds no class: the alert's look is whatever directive the consumer writes beside it, Foundation's being `nfsCallout color="alert"`. `hidden` alone hides it, because neither `.callout` nor Foundation's visually hidden `.show-for-sr` sets `display` (building-blocks 1.10 binds `.is-hidden` only where a Foundation rule does).
+
+Copied State classes (building-blocks 1.4, the initial-state rule): Foundation's Abide docs show the error look with static `class="is-invalid-label"`, `class="is-invalid-input"`, and `class="form-error is-visible"`. Each is stripped on server and client by the directive's own class binding, because Angular's styling resolution consults a static class only when every binding for it is `undefined`, and these bindings are always `true` or `false`. So `NfsAbideInput`, `NfsAbideLabel`, and `NfsFormError` each read their host's static `class` with `inject(new HostAttributeToken('class'), {optional: true})` in a field initialiser that runs only when `ngDevMode` is on, and warn once when it holds the State class they set: "class="is-invalid-input" is set by nfsAbideInput from the field's error state; remove it" (and the same for `is-invalid-label` with `nfsAbideLabel` and `is-visible` with `nfsFormError`). A redundant `form-error` merges with `NfsFormError`'s static host class and is not reported. No Abide directive reads a static class to seed state.
 
 Schema helpers, exported from the same entry point:
 
@@ -276,7 +301,7 @@ The patterns are used through Signal Forms: `pattern(p.zip, nfsPatterns.integer)
 
 ### Implementation level and primitives, with the fallback
 
-Level: custom Angular on Signal Forms (ADR 0006; building-blocks Table A). The platform's Constraint Validation is not what Signal Forms uses, `@angular/aria` has no form-error pattern, and CDK contributes only `_IdGenerator`. Primitives: `FORM_FIELD`, `FieldState` (`invalid`, `touched`, `dirty`, `errors`, `markAsTouched()`), `NgControl` and `AbstractControl.events`, `linkedSignal`, `computed`, one `effect` per Form error linked by reference (the reverse-link registration of building-blocks 1.5; it writes only the field's registry signal and no DOM), host bindings, `HostAttributeToken`, `afterNextRender` (value adoption, `ready`, dev checks), `_IdGenerator`, the native `hidden` attribute, and the form's native `submit` event. Not used: `provideSignalFormsConfig({classes})` (it can add the input class but cannot reach the label, the errors, or ARIA; prototype decision 7), `setCustomValidity()`, a bound `pattern` attribute, and `:user-invalid` in library CSS. `injectAsync` not used: the plugin is its own entry point and a consumer `@defer` splits it; `afterEveryRender` not needed: `afterNextRender`'s one-time run already covers value adoption, `ready`, and the dev checks, and nothing here needs to re-run on every render.
+Level: custom Angular on Signal Forms (ADR 0006; building-blocks Table A). The platform's Constraint Validation is not what Signal Forms uses, `@angular/aria` has no form-error pattern, and CDK contributes only `_IdGenerator`. Primitives: `FORM_FIELD`, `FieldState` (`invalid`, `touched`, `dirty`, `errors`, `markAsTouched()`), `NgControl` and `AbstractControl.events`, `linkedSignal`, `computed`, one `effect` per Form error linked by reference (the reverse-link registration of building-blocks 1.5; it writes only the field's registry signal and no DOM), host bindings, `HostAttributeToken` (`'role'` always; `'class'` in development builds only, for the copied State class check), `afterNextRender` (value adoption, `ready`, dev checks), `_IdGenerator`, the native `hidden` attribute, and the form's native `submit` event. Not used: `provideSignalFormsConfig({classes})` (it can add the input class but cannot reach the label, the errors, or ARIA; prototype decision 7), `setCustomValidity()`, a bound `pattern` attribute, and `:user-invalid` in library CSS. `injectAsync` not used: the plugin is its own entry point and a consumer `@defer` splits it; `afterEveryRender` not needed: `afterNextRender`'s one-time run already covers value adoption, `ready`, and the dev checks, and nothing here needs to re-run on every render.
 
 Fallback: the prototype's DOM-lookup route (Abide's `findLabel`/`findFormError` rules resolved in `afterNextRender`, classes toggled with `Renderer2`) is proven and needs only `nfsAbide` and `nfsAbideInput`; it is the fallback if explicit linking fails in a case the prototypes did not cover (the [Prototype: Abide control kinds, value adoption, and the ready gate](../issues/66-prototype-abide-controls-and-ready.md) found none). The prototype's `controlValue.set()` is the fallback for event-based value adoption.
 
@@ -284,7 +309,7 @@ Fallback: the prototype's DOM-lookup route (Abide's `findLabel`/`findFormError` 
 
 | Concern | Material 22.2 (`MatFormField`, `MatInput`, `MatError`, `ErrorStateMatcher`) | Library |
 | --- | --- | --- |
-| Shape | `mat-form-field` component renders label, outline, subscript; `matInput` and `mat-error` are directives | Five directives on consumer-written Foundation markup; no component |
+| Shape | `mat-form-field` component renders label, outline, subscript; `matInput` and `mat-error` are directives | Five directives on the consumer's form elements, beside the Forms, Callout, and Button directives; no component |
 | Error policy | Injectable `ErrorStateMatcher`: `invalid && (touched \|\| submitted)`; Signal Forms variant `invalid && touched`; per-input `errorStateMatcher` input | Pure `nfsAbideErrorState` with Abide's three options on the form plus a Defaults token; no per-input override (Foundation has form-level options only) |
 | Field state | `inject(FORM_FIELD, {self, optional})` and `inject(NgControl, {self, optional})` | Same injections, `FORM_FIELD` first |
 | `aria-describedby` | Consumer ids (`userAriaDescribedBy`) plus hint and error ids pushed by the form field | Consumer ids (same alias) plus the ids of visible Form errors |
@@ -292,7 +317,7 @@ Fallback: the prototype's DOM-lookup route (Abide's `findLabel`/`findFormError` 
 | Live announcement | Subscript container `aria-live="polite"`, `aria-atomic="true"` | `role="alert"` on each Form error (Abide's `a11yAttributes`), because Foundation markup has no persistent container; the Form alert per `a11yErrorLevel` |
 | `required` | Derived from validators when not set | Signal Forms mirrors `required`; Reactive consumers write `required` |
 | Error ids | `_IdGenerator` | `_IdGenerator`, consumer id wins |
-| Hints hidden while errors show | Yes | No: Foundation shows `.help-text` always; both stay described |
+| Hints hidden while errors show | Yes | No: Foundation shows help text (`nfsHelpText`) always; both stay described |
 | Testing | `MatFormFieldHarness`, `MatErrorHarness`, `MatInputHarness` | DOM-first assertions, no harness |
 
 Borrowed: the self-injection of the field, the `aria-describedby` alias and id collection, an error-state function, `_IdGenerator` ids. Not borrowed: the form-field component, appearance and floating-label inputs, hint hiding, `aria-invalid` null on empty required, the per-input matcher.
@@ -314,9 +339,10 @@ WCAG 2.2 AA criteria addressed (requirements, each checked in Testing Decisions)
 | Criterion | How |
 | --- | --- |
 | 1.3.5 Identify Input Purpose | Usage examples carry `autocomplete` tokens (`email`, `new-password`, `cc-number`, `cc-csc`) |
-| 1.4.1 Use of Color | Every error state has visible text (Form error); dev-mode warning when a field shows an error with no visible Form error |
-| 1.4.3 Contrast (Minimum) | Five Foundation settings (Sass subsection): error text and invalid label 5.25:1, invalid placeholder 4.55:1, resting placeholder 4.70:1; the `nfs-abide` mixin checks each pair at compile time with the unrounded ratio from Foundation's `color-luminance()` and the WCAG formula, because axe does not check placeholder text |
-| 1.4.11 Non-text Contrast | Resting field border 3.42:1 with `$input-border`; invalid border 5.25:1 against the page, 4.55:1 against its tint; checked at compile time by `nfs-abide` the same way, because axe has no 1.4.11 rule |
+| 1.4.1 Use of Color | Every error state has visible text (Form error); dev-mode warning when a field shows an error with no visible Form error. A focused invalid field differs from an unfocused one by more than hue: Foundation's invalid rule applies only while the field is not focused, so focus swaps the invalid border for the focus border, and the two colours are at least 3:1 apart (3.74:1 with the required settings; 1.31:1 on Foundation's defaults), the lightness rule the Forms and Button specs apply; `nfs-abide` checks it at compile time |
+| 1.4.3 Contrast (Minimum) | Three Foundation settings for the invalid state (Sass subsection): error text and invalid label 5.25:1, invalid placeholder 4.55:1 on its tint; the `nfs-abide` mixin checks each pair at compile time with the unrounded ratio from Foundation's `color-luminance()` and the WCAG formula, because axe does not check placeholder text. The resting placeholder (4.70:1) is every field's and the [Spec: Forms](../issues/98-spec-forms.md)'s requirement, checked by `nfs-forms` |
+| 1.4.11 Non-text Contrast | Invalid border 5.25:1 against the page, 4.55:1 against its tint; checked at compile time by `nfs-abide` the same way, because axe has no 1.4.11 rule. The resting field border (3.42:1 with `$input-border`) and the focus border against the page and the focus background (19.63:1) are the Forms spec's, checked by `nfs-forms` |
+| 2.4.7 Focus Visible | A text input or text area shows focus through its caret, which the Understanding document for 1.4.11 accepts on its own; a select menu has no caret, so its indicator is the focus border, valid or invalid: the Forms spec's `$input-border-focus: 1px solid $black` against the page and its resting border, and, for an invalid select, against the invalid border it replaces (1.4.1 row) |
 | 2.5.8 Target Size | Native checkboxes and radios are user-agent controls (exception) and the examples wrap them in their label, which enlarges the target; the story gate runs axe `target-size` |
 | 3.3.1 Error Identification | `aria-invalid` plus visible text referenced by `aria-describedby` |
 | 3.3.2 Labels or Instructions | Native labels required in every example; required fields marked in the label text; hints through `aria-describedby` |
@@ -341,12 +367,12 @@ Focus: the library never moves focus. After a failed submit, the documented reci
 
 ### Rendered HTML
 
-Consumer markup (Signal Forms, wrapping label for email, `label[for]` for the password pair):
+Consumer markup (Signal Forms, wrapping label for email, `label[for]` for the password pair; no Foundation class is written, ADR 0039):
 
 ```html
 <form [formRoot]="f" nfsAbide #abide="nfsAbide" aria-labelledby="signup-h">
   <h2 id="signup-h">Sign up</h2>
-  <div nfsAbideAlert class="alert callout">
+  <div nfsAbideAlert nfsCallout color="alert">
     <p>There are some errors in your form.</p>
   </div>
 
@@ -356,7 +382,7 @@ Consumer markup (Signal Forms, wrapping label for email, `label[for]` for the pa
   </label>
   <span [nfsFormError]="email" formErrorOn="required">Enter your email address.</span>
   <span [nfsFormError]="email" formErrorOn="email">Enter a complete email address, with an @ and a domain.</span>
-  <p class="help-text" id="email-hint">We never share it.</p>
+  <p nfsHelpText id="email-hint">We never share it.</p>
 
   <div>
     <label for="pw" [nfsAbideLabel]="pw">Password (required)</label>
@@ -370,16 +396,18 @@ Consumer markup (Signal Forms, wrapping label for email, `label[for]` for the pa
     <span [nfsFormError]="pw2" formErrorOn="equalTo">The passwords do not match.</span>
   </div>
 
-  <button nfsButton type="submit" class="success" [disabled]="!abide.ready()">Sign up</button>
+  <button nfsButton type="submit" color="success" [disabled]="!abide.ready()">Sign up</button>
 </form>
 ```
 
-Server HTML (pristine; SSR and prerendering; ids shown generated):
+`nfsCallout` and its `color` input stand for the directive of the [Spec: Callout](../issues/89-spec-callout.md), named here after the triage's selector and building-blocks 1.4 (`color` for a palette) until that spec publishes; `nfsHelpText` is the [Spec: Forms](../issues/98-spec-forms.md)'s, and `color` on `nfsButton` the [Spec: Button](../issues/37-spec-button.md)'s.
+
+Server HTML (pristine; SSR and prerendering; ids shown generated; class order is not significant):
 
 ```html
 <form nfsabide="" aria-labelledby="signup-h" novalidate="" jsaction="submit:;">
   <h2 id="signup-h">Sign up</h2>
-  <div nfsabidealert="" class="alert callout" role="alert" hidden="">...</div>
+  <div nfsabidealert="" nfscallout="" color="alert" class="callout alert" role="alert" hidden="">...</div>
   <label nfsabidelabel="">
     Email (required)
     <input type="email" autocomplete="email" nfsabideinput="" name="ng.form0.email" required=""
@@ -387,17 +415,18 @@ Server HTML (pristine; SSR and prerendering; ids shown generated):
   </label>
   <span formerroron="required" class="form-error" id="nfs-form-error-a1b0" role="alert">Enter your email address.</span>
   <span formerroron="email" class="form-error" id="nfs-form-error-a1b1" role="alert">Enter a complete email address, with an @ and a domain.</span>
+  <p nfshelptext="" id="email-hint" class="help-text">We never share it.</p>
   ...
-  <button type="submit" class="success button" disabled="">Sign up</button>
+  <button nfsbutton="" type="submit" color="success" class="button success" disabled="">Sign up</button>
 </form>
 ```
 
-No `.is-invalid-*`, `.is-visible`, or `aria-invalid` exists in server HTML (validation runs only on interaction); the alert carries `hidden`; the submit control is disabled because `ready()` is `false` on the server. Field `name` values come from Signal Forms' process-wide counter unless the form is created with `form(model, schema, {name: 'signup'})`, which the docs recommend for any form whose server handles a native POST.
+No `.is-invalid-*`, `.is-visible`, or `aria-invalid` exists in server HTML (validation runs only on interaction); the alert carries `hidden` beside the callout classes that `nfsCallout` binds; static input attributes such as `color` stay in the DOM, as Angular leaves every static attribute; the submit control is disabled because `ready()` is `false` on the server. Field `name` values come from Signal Forms' process-wide counter unless the form is created with `form(model, schema, {name: 'signup'})`, which the docs recommend for any form whose server handles a native POST.
 
 Hydrated, after the user left the email empty with a committed change and submitted:
 
 ```html
-<div nfsabidealert="" class="alert callout" role="alert">...</div>
+<div nfsabidealert="" nfscallout="" color="alert" class="callout alert" role="alert">...</div>
 <label nfsabidelabel="" class="is-invalid-label">
   Email (required)
   <input type="email" ... class="is-invalid-input" aria-invalid="true"
@@ -405,21 +434,22 @@ Hydrated, after the user left the email empty with a committed change and submit
 </label>
 <span ... class="form-error is-visible" id="nfs-form-error-b7c0" role="alert">Enter your email address.</span>
 <span ... class="form-error" id="nfs-form-error-b7c1" role="alert">Enter a complete email address, with an @ and a domain.</span>
-<button type="submit" class="success button">Sign up</button>
+<p nfshelptext="" id="email-hint" class="help-text">We never share it.</p>
+<button nfsbutton="" type="submit" color="success" class="button success">Sign up</button>
 ```
 
 Hydration rewrites the generated ids (client ids differ, building-blocks 1.5) and removes `disabled` in the pass after `ready` turns `true`. Before the user interacts, the hydrated DOM equals the server DOM apart from ids and the enabled submit control.
 
 ### Animation
 
-None. Foundation shows and hides `.form-error` with `display` and the Form alert with `hidden`; there is no transition to await, no Completion output, no Motion class, and no `animate.enter`/`animate.leave`. Reduced motion needs nothing. Foundation's `.is-invalid-input:not(:focus)` rule suppresses the error tint while the field has focus; that is Foundation CSS and is kept.
+None. Foundation shows and hides `.form-error` with `display` and the Form alert with `hidden`; there is no transition to await, no Completion output, no Motion class, and no `animate.enter`/`animate.leave`. Reduced motion needs nothing. Foundation's `.is-invalid-input:not(:focus)` rule suppresses the error tint and the invalid border while the field has focus; that is Foundation CSS and is kept, and it is why a focused invalid select shows the focus border, whose difference from the invalid border `nfs-abide` checks (Sass subsection). Foundation's `$input-transition` on the border colour is a colour change, not motion.
 
 ### Rendering modes
 
 Per ADR 0008 and the rendering-modes research, section 7 (the Abide checklist row: no error state on the server, native constraint attributes rendered, form and fields in one boundary, handlers never relying on `preventDefault()` during replay):
 
-- Server output and first paint: the pristine form. Every first-paint state is a host binding: the alert's `hidden` and role, each Form error's `.form-error`, `id`, and `role`, each field's consumer `aria-describedby`, and the consumer's `[disabled]="!abide.ready()"`. Signal Forms renders `name`, `required`, `min`, `max`, `minlength`, `maxlength`, and `FormRoot` renders `novalidate`.
-- Before hydration: the directives touch no DOM outside host bindings. Reading the host's `value` at construction is the only DOM read before the first render callback; it writes nothing. `ready`, the value adoption, and the dev-mode checks run in `afterNextRender`.
+- Server output and first paint: the pristine form. Every first-paint state is a host binding: the alert's `hidden` and role, each Form error's `.form-error`, `id`, and `role`, each field's consumer `aria-describedby`, and the consumer's `[disabled]="!abide.ready()"`; the classes of the directives beside them (the alert's callout classes, `.help-text`, `.middle`, the input group's classes, the submit control's `.button` and palette class) are host bindings of those directives and render on the server too, so no class is left for the first client pass. Signal Forms renders `name`, `required`, `min`, `max`, `minlength`, `maxlength`, and `FormRoot` renders `novalidate`.
+- Before hydration: the directives touch no DOM outside host bindings. Reading the host's `value` at construction is the only DOM read before the first render callback, apart from the static `class` attribute that development builds read through `HostAttributeToken` for the copied State class check; neither writes anything. `ready`, the value adoption, and the dev-mode checks run in `afterNextRender`.
 - Values typed or checked before hydration: hydration's first forms pass writes the model into the reused nodes and would clear them (prototype result), in Signal Forms and Reactive Forms alike. `nfsAbideInput` adopts them (API section), before replay, so the replayed `input`, `change`, and `blur` then see the user's value.
 - Submit before hydration: a dehydrated form submits natively (a GET to the same URL with every named field in the query string, passwords included; nothing replays because the page navigates away). The spec's default is that server-rendered forms keep their submit control natively disabled until `ready()`: the server renders `disabled`, the browser then performs neither a click submission nor Enter's implicit submission (HTML blocks implicit submission while the default button is disabled), and the control enables in the first client pass. Native `disabled` is required, not `nfsButton`'s `disabledInteractive`, because a `type="button"` swap leaves a one-field form with no default button, which submits implicitly (ADR 0011). A consumer whose server handles native submissions (progressive enhancement) uses `method="post"` instead and does not bind `ready`. Whether a form uses one or the other is the consumer's choice; the library makes the first one a single binding.
 - Event replay: `(change)` on fields and `(submit)` on the form are host listeners, annotated with `jsaction` and replayed; neither calls `preventDefault()`. Signal Forms' own `input` and `blur` listeners replay into field state (prototype result). `(keydown.enter)` is registered by the key-events plugin and not annotated; before hydration Enter is blocked by the disabled submit control, so nothing is lost. `FormRoot` calls `preventDefault()` first in its submit handler, which would throw during replay, but a pre-hydration submit is either blocked (default) or has already navigated, so no submit is ever replayed.
@@ -432,13 +462,13 @@ Per ADR 0008 and the rendering-modes research, section 7 (the Abide checklist ro
 
 ### Sass and custom CSS
 
-No library CSS: Foundation's `foundation-form-error` (inside `foundation-forms`) already styles `.is-invalid-input`, `.is-invalid-label`, and `.form-error.is-visible`, and `foundation-callout` styles the alert. The required consumer settings that make the invalid state pass WCAG 2.2 AA are in the Sass subsection under Further Notes. The `nfs-abide` Library mixin emits no CSS: it holds only the compile-time contrast checks that ADR 0022 and building-blocks 1.10 require where axe has no rule (placeholder text, borders), so a consumer on a failing setting gets an `@error` or `@warn` in their own compile, not only a failing story in the library's CI.
+No library CSS: Foundation's `foundation-form-error` (inside `foundation-forms`) already styles `.is-invalid-input`, `.is-invalid-label`, and `.form-error.is-visible`, and `foundation-callout` styles the alert once `nfsCallout` sets its classes. The required consumer settings that make the invalid state pass WCAG 2.2 AA are in the Sass subsection under Further Notes. The `nfs-abide` Library mixin emits no CSS: it holds only the compile-time contrast checks for the invalid state that ADR 0022 and building-blocks 1.10 require where axe has no rule (placeholder text, borders, the focus border of a caret-less control), each an `@error`, so a consumer on a failing setting learns it in their own compile, not only from a failing story in the library's CI. The resting field (placeholder, border, focus border) is every form's, validated or not, so its checks are the `nfs-forms` mixin's ([Spec: Forms](../issues/98-spec-forms.md), D11), which every consumer of `foundation-forms` includes; an Abide form includes both.
 
 ## Testing Decisions
 
-A good test asserts what a user or assistive technology observes: classes, `aria-invalid`, the accessible description, visibility of messages and the alert, whether a submit happened, and computed contrast. No test reads directive fields. Prior art: the prototype's Playwright suite (45 cases in three engines, including the WCAG 2.2 AA audit), the Button spec's layer tables, and the rendering-mode test seam.
+A good test asserts what a user or assistive technology observes: classes, `aria-invalid`, the accessible description, visibility of messages and the alert, whether a submit happened, and computed contrast. No test reads directive fields. No story, test host, or fixture writes a Foundation or library class on any element (ADR 0039): every class a test asserts comes from a directive, and the one deliberate exception is the layer-2 copied State class case, whose hosts copy Foundation's demonstration classes to prove they are reported. Prior art: the prototype's Playwright suite (45 cases in three engines, including the WCAG 2.2 AA audit), the Button spec's layer tables, the [Spec: Accordion](../issues/15-spec-accordion.md)'s copied-class check (its dev check 7), and the rendering-mode test seam.
 
-Story ids: `abide--default`, `abide--live-validate`, `abide--validate-on-blur`, `abide--manual`, `abide--label-for`, `abide--error-kinds`, `abide--checkbox`, `abide--patterns`, `abide--submit`, `abide--reset`, `abide--polite-alert`, `abide--reactive-forms`, `abide--invalid-state-contrast`. The Storybook preview's Sass settings file carries the five settings from the Sass subsection, each with its rule id or criterion in a comment.
+Story ids: `abide--default`, `abide--live-validate`, `abide--validate-on-blur`, `abide--manual`, `abide--label-for`, `abide--error-kinds`, `abide--checkbox`, `abide--patterns`, `abide--submit`, `abide--reset`, `abide--polite-alert`, `abide--reactive-forms`, `abide--invalid-state-contrast`. The stories import `NfsCallout` for the Form alert's look, `NfsHelpText` for the hints, `NfsButton` for the submit and reset controls, and, in `abide--label-for`, the input group directives; the Abide entry point itself imports none of them. The Storybook preview's Sass settings file carries the three invalid-state settings from the Sass subsection and the [Spec: Forms](../issues/98-spec-forms.md)'s three field settings, each with its rule id or criterion in a comment, and the preview stylesheet includes `nfs-forms` and `nfs-abide` after `foundation-everything`.
 
 ### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`)
 
@@ -448,15 +478,15 @@ Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test 
 - `abide--live-validate`: the error appears on the first keystroke that makes the value invalid and clears on the keystroke that fixes it.
 - `abide--validate-on-blur`: focus and leave an empty required field with no change: the error shows.
 - `abide--manual`: commits and blurs show nothing; submit shows every error.
-- `abide--label-for`: `[nfsAbideLabel]="ref"` and `[nfsFormError]="ref"` link a sibling label and an error placed elsewhere in the form (Foundation's input-group layout).
+- `abide--label-for`: Foundation's input group layout under the [Spec: Forms](../issues/98-spec-forms.md) directives: a `label for` with `[nfsAbideLabel]="amount"`, an `nfsInputGroup` holding an `nfsInputGroupLabel` prefix and the field, which carries `nfsInputGroupField` beside `nfsAbideInput`, and `[nfsFormError]="amount"` after the group. After an invalid commit the reference-linked label gets `.is-invalid-label`, the field gets `.is-invalid-input` beside `.input-group-field`, and the error placed after the group is visible and in the field's accessible description.
 - `abide--error-kinds`: an invalid email shows only the `email` message; an empty one only the `required` message; `nfsEqualTo`: a mismatch shows the `equalTo` message, and fixing the password clears it without touching the confirmation.
 - `abide--checkbox`: clicking a required checkbox twice (checked, unchecked) shows its error at the second `change` with no blur.
 - `abide--patterns`: one field per `nfsPatterns` key with a known-good and a known-bad value (the Node corpus's seeds); each shows its `pattern` message only for the bad value.
-- `abide--submit`: submitting an invalid form shows every field's error and the alert (`role="alert"`, not `hidden`); fixing all fields hides the alert without a new submit; a valid submit runs the story's action spy once.
+- `abide--submit`: submitting an invalid form shows every field's error and the alert (`role="alert"`, not `hidden`, with the callout classes that `nfsCallout` sets beside it); fixing all fields hides the alert without a new submit; a valid submit runs the story's action spy once.
 - `abide--reset`: after a failed submit, the story's reset button calls `form().reset(initial)`: every error, the alert, and `submitted` clear; typing again does not show errors before the next commit.
 - `abide--polite-alert`: `a11yErrorLevel="polite"` renders `role="status"` on the alert.
 - `abide--reactive-forms`: the same markup on `FormGroup`/`formControlName` with `updateOn: 'blur'` gives the same classes, ARIA, and alert.
-- `abide--invalid-state-contrast`: submits a form with four fields in error and asserts from computed styles (axe checks neither placeholders nor borders), floored to two decimals: Form error text and invalid label at least 4.5:1, invalid placeholder on the invalid tint at least 4.5:1, resting placeholder at least 4.5:1, resting border at least 3:1 against the page, invalid border at least 3:1 against the page and the tint; plus `role="alert"` on every visible Form error (4.1.3) and `toHaveAccessibleDescription` per field (3.3.1).
+- `abide--invalid-state-contrast`: submits a form with four fields in error, one of them a required `select`, and asserts from computed styles (axe checks neither placeholders nor borders), floored to two decimals: Form error text and invalid label at least 4.5:1, invalid placeholder on the invalid tint at least 4.5:1, invalid border at least 3:1 against the page and the tint; after `userEvent.tab()` moves focus onto the invalid select, its border colour is at least 3:1 from the invalid border colour read before (1.4.1, 2.4.7); plus `role="alert"` on every visible Form error (4.1.3) and `toHaveAccessibleDescription` per field (3.3.1). The resting placeholder and border are asserted by the Forms spec's `forms--field-contrast`, which owns them.
 - `abide--default`, `abide--submit`, `abide--checkbox`, and `abide--reactive-forms` assert that no visible Form error of a native control is a descendant of its `label`; `abide--checkbox` and `abide--reactive-forms` use the after-label markup.
 
 ### 2. Browser-level test (Vitest browser mode, `npx nx test <lib>`)
@@ -468,6 +498,8 @@ Vitest browser mode under the Angular unit-test builder (`npx nx test <lib>`, Ch
 - `aria-describedby` composition: static and bound consumer ids first, visible error ids after, hidden ones never, `null` when empty; a consumer `id` on a Form error is used as written.
 - `aria-invalid` is never rendered on `input[type=radio]`, and is rendered on text, checkbox, and `select` hosts.
 - `role` on Form errors and the alert: a static consumer role wins; `a11yErrorLevel` values `assertive`, `polite`, `off`.
+- Form alert beside `nfsCallout`: an `nfsAbideAlert` host that also carries `nfsCallout color="alert"` compiles in either attribute order, keeps the callout classes while `hidden` toggles, and keeps the role from `a11yErrorLevel`; an `nfsAbideAlert` with no other directive carries no class.
+- Copied State classes: hosts that copy `class="is-invalid-input"`, `class="is-invalid-label"`, and `class="form-error is-visible"` render without the State class while the field is valid, gain it only from field state, and each directive warns once naming the class and the directive that sets it; `class="form-error"` alone is kept and not reported; the static class is read in development builds only (a production-mode fixture logs nothing).
 - Policy inputs: `validateOn` transform (`'fieldChange'` kept, any other string and `null` become manual); Defaults token values reach `NfsAbide` and a form-less `NfsAbideInput`; the nearest provider wins.
 - `changed` resets when `dirty` falls (Signal Forms `reset()`), and `submitted` resets when every registered field is untouched again (Signal Forms `reset()` and Reactive `reset()`).
 - Enter flush: a field with `debounce(path, 'blur')` holding a typed value is valid and submitted after a `keydown.enter` followed by `requestSubmit()`, regardless of the order in which `FormRoot` and the Abide directives are imported; a `textarea` Enter does not touch the field.
@@ -478,9 +510,9 @@ Vitest browser mode under the Angular unit-test builder (`npx nx test <lib>`, Ch
 ### 3. Node-level Vitest
 
 - Pure logic: `nfsAbideErrorState` as a full truth table over `invalid`, `touched`, `dirty`, `changed`, `submitted`, and the three policy options; `nfsPatterns` table-driven: each key carries exactly the `v` flag and no `g` or `y`, each Foundation example is accepted or rejected as Foundation does, `date` rejects an unanchored prefix, and each key agrees with Foundation 6.9.0's original regex (and `website` with Foundation's `test()` object) on the seeded corpus from the ticket's Node script; each source compiles as `^(?:source)$` with `v`; the value-adoption decision (saved value, current value, host type) as a small pure function.
-- SSR smoke, runs under `npx nx test <lib>` in its `<name>.ssr.spec.ts` file through the shared `renderServer()` helper (`npx nx test-node <lib>` only if the server path depends on the DOM adapter): the Rendered HTML fixture resolves `whenStable()`; the server HTML has no `is-invalid-*`, `is-visible`, or `aria-invalid`; the alert has `hidden` and `role="alert"`; each Form error has `.form-error`, an `id`, and `role="alert"`; each field's `aria-describedby` holds only consumer ids; the submit control has `disabled`; the form has `novalidate` and `jsaction` containing `submit:`; each field's `jsaction` contains `change:`.
+- SSR smoke, runs under `npx nx test <lib>` in its `<name>.ssr.spec.ts` file through the shared `renderServer()` helper (`npx nx test-node <lib>` only if the server path depends on the DOM adapter): the Rendered HTML fixture resolves `whenStable()`; the server HTML has no `is-invalid-*`, `is-visible`, or `aria-invalid`; the alert has `hidden`, `role="alert"`, and the callout classes of the `nfsCallout` beside it; each Form error has `.form-error`, an `id`, and `role="alert"`; the help text has `.help-text`; each field's `aria-describedby` holds only consumer ids; the submit control has `disabled` and its `.button` classes; the form has `novalidate` and `jsaction` containing `submit:`; each field's `jsaction` contains `change:`.
 
-- Sass compile (the Sass packaging decision's node-level check): Foundation's default settings plus `@include nfs-abide;` stop with the `@error` naming `$input-error-color`, `$form-label-color-invalid`, and `$input-background-invalid`, and warn for `$input-placeholder-color` and `$input-border`; with the five required values the compile emits no CSS, no `@error`, and no `@warn`; a pair at 4.498:1 fails although Foundation's rounding `color-contrast()` would report 4.5.
+- Sass compile (the Sass packaging decision's node-level check): Foundation's default settings plus `@include nfs-abide;` stop with the `@error` naming `$input-error-color`, `$form-label-color-invalid`, `$input-background-invalid`, and `$input-border-focus` (1.31:1 from the invalid border); the three invalid-state values with Foundation's default focus border stop with the error naming `$input-border-focus` (1.53:1); the three invalid-state values with the Forms spec's `$input-border-focus: 1px solid $black` compile and emit no CSS, no `@error`, and no `@warn`, whatever `$input-placeholder-color` and `$input-border` are, because `nfs-abide` no longer checks the resting field (`nfs-forms` does); a pair at 4.498:1 fails although Foundation's rounding `color-contrast()` would report 4.5; an invalid colour 2.31:1 from the focus border (`#8b1a10` against `$black`) fails.
 
 ### 4. Playwright e2e (`npx nx e2e <lib>-e2e` against the static Storybook build; `npx nx e2e <fixture-app>-e2e` against the prerendered fixture app)
 
@@ -488,7 +520,7 @@ Against the static Storybook build, Chromium, Firefox, and WebKit with real inpu
 
 - `abide--default`: real Tab and typing give the commit timing in all three engines; a real Enter in a blur-debounced email field submits the typed value.
 - `abide--checkbox`: a real click shows the error in WebKit, which does not focus a clicked checkbox.
-- `abide--invalid-state-contrast`: the computed-style contrast checks repeated in Firefox and WebKit.
+- `abide--invalid-state-contrast`: the computed-style contrast checks repeated in Firefox and WebKit; the invalid select is focused with a real Tab in Firefox and with `focus()` in WebKit, whose Tab reach of form controls depends on a platform keyboard preference (as the Forms spec's select check does).
 
 Against the prerendered fixture app (the harness from the rendering-mode test seam prototype), route `/abide`:
 
@@ -510,6 +542,7 @@ Release test (manual, before each release; [Resolve the assistive-technology che
 - Moving focus on submit (a documented recipe instead).
 - Server-side handling of native POST submissions (the consumer's server).
 - Runtime theming of error colours (building-blocks 1.13).
+- The looks and checks of the neighbouring directives: the Form alert's callout look ([Spec: Callout](../issues/89-spec-callout.md)); form labels and `.middle`, help text and its pairing check, input groups and their labelled-field check, and the resting field's contrast settings and `nfs-forms` checks ([Spec: Forms](../issues/98-spec-forms.md)); the submit control ([Spec: Button](../issues/37-spec-button.md)); a visually hidden Form alert's `.show-for-sr` ([Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)).
 
 ## Further Notes
 
@@ -531,9 +564,14 @@ Release test (manual, before each release; [Resolve the assistive-technology che
 | D12 | `nfsEqualTo()` helper; `data-validator` and `data-min-required` as `validate()` recipes | ADR 0006 names `equalTo`; a custom validator is already one Signal Forms call | A validator registry mirroring `Abide.defaults.validators` |
 | D13 | No `pattern` attribute, no `setCustomValidity`, no `:user-invalid` rule | Signal Forms does not mirror `pattern` and says not to rely on native validity; `FormRoot` renders `novalidate` | Binding `pattern` from `FieldState.pattern()` (building-blocks Table B's first sketch) |
 | D14 | `inputmode` documented per pattern, not bound | The directive cannot know which pattern a consumer means without matching RegExp identity; `inputmode` is markup like `type` | Binding `inputmode` from the field's patterns |
-| D15 | No library CSS; five consumer Sass settings for WCAG 2.2 AA, checked at compile time by a checks-only `nfs-abide` mixin (added by the [Consistency review and bundle index](../issues/36-consistency-review.md)) | Foundation styles every class; axe checks neither placeholder text nor borders, so ADR 0022 and building-blocks 1.10 put a compile-time check in the Library mixin; the story gate enforces the settings in the library's own CI | A library colour override (would copy Foundation values); the settings enforced only by the play function (a consumer on Foundation's defaults would get no signal, against ADR 0022) |
+| D15 | No library CSS; three consumer Sass settings for the invalid state, checked at compile time by a checks-only `nfs-abide` mixin (added by the [Consistency review and bundle index](../issues/36-consistency-review.md)); the resting field's settings and checks are the Forms spec's `nfs-forms` (revised 2026-09-27, class rule) | Foundation styles every class; axe checks neither placeholder text nor borders, so ADR 0022 and building-blocks 1.10 put a compile-time check in the Library mixin; the story gate enforces the settings in the library's own CI; a field's resting look belongs to every form, validated or not, so its checks moved to `nfs-forms` as `@error` ([Spec: Forms](../issues/98-spec-forms.md), D11) | A library colour override (would copy Foundation values); the settings enforced only by the play function (a consumer on Foundation's defaults would get no signal, against ADR 0022); keeping the resting pairs in `nfs-abide` as `@warn` (two mixins checking one setting, one of them with a warning a consumer can scroll past) |
 | D16 | Form alert hides live when the form becomes valid | Field state is live; Abide re-checks only on submit | Waiting for the next submit |
 | D17 | No outputs and no public methods | building-blocks 1.4; field state signals and `onInvalid` cover Abide's events | `valid`/`invalid`/`formValid` outputs |
+| D18 | The Form alert's look comes from a directive the consumer writes beside `nfsAbideAlert`, Foundation's being `nfsCallout color="alert"`; `NfsAbideAlert` binds no class and hosts no Callout (added 2026-09-27, class rule) | The class rule leaves `.callout.alert` to the Callout directive and its typed `color` (ADR 0039, ADR 0040); composition by placing directives side by side (map, Standing preferences), as the [Re-run: Smooth Scroll spec under the class rule](../issues/121-rerun-smooth-scroll-class-rule.md) placed `nfsMenu` beside `nfsSmoothScroll` (its D13); Foundation's own examples use a callout and a visually hidden box; `.callout` sets no `display`, so `hidden` needs no `.is-hidden` (building-blocks 1.10) | `NfsAbideAlert` binding `.callout` and `.alert` itself (a second directive setting Callout's classes, a colour fixed in Abide, a callout look on a visually hidden alert); hosting `NfsCallout` through `hostDirectives` (a written `nfsCallout` would match twice, NG0309; the Abide entry point would import Callout's) |
+| D19 | Help text, a label's `.middle`, and input groups use the [Spec: Forms](../issues/98-spec-forms.md) directives beside the Abide directives; `NfsAbideLabel` does not host `NfsFormLabel`, and help text stays paired by the consumer's id (added 2026-09-27, class rule) | The Forms spec's D4 and D5: the two sets bind different classes on the same elements, neither imports the other, and `NfsAbideInput` already composes the consumer's `aria-describedby` ids with the visible errors; the Form error of an input group field goes after the group, where it does not take the field's joined corner | `NfsAbideLabel` hosting `NfsFormLabel` (a written `nfsFormLabel` would throw NG0309, and `middle` would be spelt through two directives); help text registering with an Abide field (a second way to pair a hint, for validated fields only) |
+| D20 | A static `is-invalid-input`, `is-invalid-label`, or `is-visible` copied from Foundation's docs is reported once in development builds (added 2026-09-27, class rule) | Each is stripped by the directive's class binding on server and client, so copied markup would lose the error look with no signal; after render the class list no longer shows it, so the static attribute read through `HostAttributeToken('class')` is the only place to see it; production pays nothing (building-blocks 1.4, the initial-state rule; the Accordion's dev check 7) | No check (a silent change for migrating markup); honouring the copied class as initial state (a second source of error state beside the field) |
+| D21 | `nfs-abide` also checks the `$input-border-focus` colour against `$input-background-invalid`, at least 3:1 (added 2026-09-27, class rule) | Foundation's invalid rule applies only while the field is not focused, so focusing an invalid select, which has no caret, swaps the invalid border for the focus border; measured with Foundation's `color-luminance()`: 3.74:1 with the required settings, 1.31:1 on Foundation's defaults, 1.53:1 with Abide's settings and Foundation's focus border; the 1.4.1 lightness rule of the Forms and Button specs; `@error`, because the pair carries state (building-blocks 1.10) | No check (the caret argument holds for text inputs only, and a consumer with a darker invalid colour, such as `#8b1a10` at 2.31:1, would get no signal); a library `select:focus` rule (Foundation already has the setting) |
+| D22 | An Abide form includes both `nfs-forms` and `nfs-abide`; `nfs-abide` does not include `nfs-forms` (added 2026-09-27, class rule) | ADR 0012: the consumer writes one `@include nfs-<entry point>;` after each matching Foundation include, and every Abide form's fields come from `foundation-forms`, whose Library mixin is `nfs-forms` ([Spec: Forms](../issues/98-spec-forms.md)); `nfs-abide` adds only the invalid state, so each check runs once | `nfs-abide` calling `nfs-forms` (a hidden dependency between two mixins and a double run for a consumer who includes both) |
 
 ### Usage examples
 
@@ -544,10 +582,12 @@ import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { debounce, email, form, FormField, FormRoot, pattern, required, submit } from '@angular/forms/signals';
 import { NfsAbide, NfsAbideAlert, NfsAbideInput, NfsAbideLabel, NfsFormError, nfsEqualTo, nfsPatterns } from 'ngx-foundation-sites/abide';
 import { NfsButton } from 'ngx-foundation-sites/button';
+import { NfsCallout } from 'ngx-foundation-sites/callout'; // the Callout spec's entry point and name
+import { NfsHelpText } from 'ngx-foundation-sites/forms';
 
 @Component({
   selector: 'app-signup',
-  imports: [FormField, FormRoot, NfsAbide, NfsAbideAlert, NfsAbideInput, NfsAbideLabel, NfsFormError, NfsButton],
+  imports: [FormField, FormRoot, NfsAbide, NfsAbideAlert, NfsAbideInput, NfsAbideLabel, NfsFormError, NfsButton, NfsCallout, NfsHelpText],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `<!-- the Rendered HTML consumer markup, plus: -->
     <div>
@@ -617,10 +657,10 @@ Reactive Forms (courtesy):
 
 ```ts
 @Component({
-  imports: [ReactiveFormsModule, NfsAbide, NfsAbideAlert, NfsAbideInput, NfsAbideLabel, NfsFormError],
+  imports: [ReactiveFormsModule, NfsAbide, NfsAbideAlert, NfsAbideInput, NfsAbideLabel, NfsFormError, NfsButton, NfsCallout],
   template: `
     <form [formGroup]="group" (ngSubmit)="save()" nfsAbide>
-      <div nfsAbideAlert class="alert callout"><p>There are some errors in your form.</p></div>
+      <div nfsAbideAlert nfsCallout color="alert"><p>There are some errors in your form.</p></div>
       <label nfsAbideLabel>
         Email (required)
         <input type="email" autocomplete="email" required formControlName="email" nfsAbideInput #email="nfsAbideInput" />
@@ -640,30 +680,68 @@ export class Profile {
 
 Angular's `Validators.email` error key is `email`; Reactive error keys are the kinds. Reactive consumers write `required` themselves (Signal Forms mirrors it).
 
+A validated input group with a `middle` label (the [Spec: Forms](../issues/98-spec-forms.md) directives beside the Abide ones; `nfsGridX` and `nfsCell` stand for the [Spec: XY Grid](../issues/99-spec-xy-grid.md) directives until it names them):
+
+```html
+<div nfsGridX>
+  <div nfsCell size="3">
+    <label for="amount" nfsFormLabel middle [nfsAbideLabel]="amount">Amount in dollars (required)</label>
+  </div>
+  <div nfsCell size="9">
+    <div nfsInputGroup>
+      <span nfsInputGroupLabel>$</span>
+      <input id="amount" type="number" inputmode="decimal" autocomplete="transaction-amount"
+             nfsInputGroupField nfsAbideInput #amount="nfsAbideInput" [formField]="f.amount"
+             aria-describedby="amount-help">
+    </div>
+    <span [nfsFormError]="amount" formErrorOn="required">Enter an amount.</span>
+    <p nfsHelpText id="amount-help">Whole dollars only.</p>
+  </div>
+</div>
+```
+
+A visually hidden Form alert, as in Foundation's input group example (`nfsShowForSr` stands for the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md) directive until it names it):
+
+```html
+<div nfsAbideAlert nfsShowForSr>There are some errors in your form.</div>
+```
+
 ### Sass
 
-Sass. The consumer compiles Foundation's Sass from its own settings; the library imports no Foundation code and copies no Foundation rule. This plugin relies on Foundation's export mixins `foundation-forms` (which includes `foundation-form-error`, the rules for `.is-invalid-input`, `.is-invalid-label`, and `.form-error.is-visible`) and `foundation-callout` (the Form alert's `.callout.alert`). No library CSS: the `nfs-abide` mixin of the library's Sass (`@import 'ngx-foundation-sites';` after Foundation), included after `foundation-forms`, emits no rule and holds only compile-time contrast checks.
+Sass. The consumer compiles Foundation's Sass from its own settings; the library imports no Foundation code and copies no Foundation rule. This plugin relies on Foundation's export mixins `foundation-forms` (which includes `foundation-form-error`, the rules for `.is-invalid-input`, `.is-invalid-label`, and `.form-error.is-visible`) and `foundation-callout` (the Form alert's look, whose classes `nfsCallout` sets). No library CSS: the `nfs-abide` mixin of the library's Sass (`@import 'ngx-foundation-sites';` after Foundation), included after `foundation-forms`, emits no rule and holds only compile-time contrast checks for the invalid state. The resting field is checked by `nfs-forms` ([Spec: Forms](../issues/98-spec-forms.md)), which every consumer of `foundation-forms` includes after it; an Abide form therefore includes both, and `nfs-abide` does not include `nfs-forms` (D22).
 
-1. Rules the library emits: none. Checks: each ratio is computed from Foundation's `color-luminance()` with the WCAG formula and compared unrounded, never with Foundation's `color-contrast()`, which rounds to one decimal (building-blocks 1.10). `@error` for the pairs that show the invalid state: `$input-error-color` and `$form-label-color-invalid` against `$body-background` (4.5:1), and `$input-background-invalid` both against the invalid tint Foundation's `form-input-error` mixin paints, `mix($input-background-invalid, $white, 10%)` at that mixin's default (4.5:1, the placeholder text), and against `$body-background` (3:1, the invalid border). `@warn` for the resting pairs, which carry no state: `$input-placeholder-color` against `$input-background` (4.5:1) and the colour in the `$input-border` shorthand against `$body-background` (3:1). Each message names the setting to change. Reason: axe checks neither placeholder text nor borders, so without these checks a consumer on Foundation's defaults gets no signal (ADR 0022).
-2. Foundation settings the consumer must set for WCAG 2.2 AA (declared before `@import 'foundation'`; Foundation's settings are `!default`). Measured by the prototype in three engines against Foundation's default `$body-background` and `$input-background` (`#fefefe`); the story preview's settings file carries the same five lines:
+1. Rules the library emits: none. Checks, each an `@error` that names the setting to change, with each ratio computed from Foundation's `color-luminance()` with the WCAG formula and compared unrounded, never with Foundation's `color-contrast()`, which rounds to one decimal (building-blocks 1.10); border colours are read from the shorthands with Foundation's `get-border-value()`:
+   - `$input-error-color` and `$form-label-color-invalid` against `$body-background`, at least 4.5:1 (1.4.3, the error text and the invalid label);
+   - `$input-background-invalid` against the invalid tint Foundation's `form-input-error` mixin paints, `mix($input-background-invalid, $white, 10%)` at that mixin's default, at least 4.5:1 (1.4.3, the invalid placeholder), and against `$body-background`, at least 3:1 (1.4.11, the invalid border);
+   - the `$input-border-focus` colour against `$input-background-invalid`, at least 3:1 (1.4.1 and 2.4.7: `form-input-error` applies only while the field is not focused, so focusing an invalid select, which has no caret, swaps the invalid border for the focus border, and the swap must be more than a change of hue; D21).
+
+   No `@warn` remains: the resting pairs (`$input-placeholder-color` against `$input-background`, the `$input-border` colour against `$body-background`) moved to `nfs-forms` as `@error` checks, beside that mixin's focus border checks. Reason: axe checks neither placeholder text nor borders, so without these checks a consumer on Foundation's defaults gets no signal (ADR 0022).
+2. Foundation settings the consumer must set for WCAG 2.2 AA (declared before `@import 'foundation'`; Foundation's settings are `!default`). Measured by the prototype in three engines against Foundation's default `$body-background` and `$input-background` (`#fefefe`), and re-measured with Foundation 6.9.0's `color-luminance()` by the re-run; the story preview's settings file carries the same lines. Abide's own, for the invalid state:
 
 | Setting | Foundation default (measured) | Required value | After | Criterion |
 | --- | --- | --- | --- | --- |
 | `$input-error-color` | `get-color(alert)`, `#cc4b37`: 4.49:1 on `#fefefe` (axe `color-contrast`) | `#bf3f2c` | 5.25:1 | 1.4.3 |
 | `$form-label-color-invalid` | `get-color(alert)`: 4.49:1 | `#bf3f2c` | 5.25:1 | 1.4.3 |
-| `$input-background-invalid` | `#cc4b37`, which is also the invalid placeholder colour, on its own 10% tint `#f9ecea`: 3.93:1 | `#bf3f2c` | 4.55:1 placeholder on the tint; border 5.25:1 against the page, 4.55:1 against the tint | 1.4.3, 1.4.11 |
-| `$input-placeholder-color` | `$medium-gray`, `#cacaca`: 1.63:1 | `#737373` | 4.70:1 | 1.4.3 |
-| `$input-border` | `1px solid $medium-gray`: 1.63:1 against the page (the input background equals the page, so the border is the field's only boundary) | `1px solid $dark-gray` (`#8a8a8a`) | 3.42:1 | 1.4.11 |
+| `$input-background-invalid` | `#cc4b37`, which is also the invalid placeholder colour, on its own 10% tint `#f9ecea`: 3.93:1 | `#bf3f2c` | 4.55:1 placeholder on the tint; border 5.25:1 against the page, 4.55:1 against the tint; 3.74:1 from the required focus border | 1.4.3, 1.4.11, 1.4.1 |
 
-A consumer with a different palette or background picks any colour with 4.5:1 on its `$body-background` and on its own 10% tint for the first three, 4.5:1 for the placeholder, and 3:1 for the border. The Form alert (`.callout.alert`, `$callout-font-color` on the faded alert colour) measures 16.2:1 and needs nothing. After the border change the focus border (`$input-border-focus`, also `$dark-gray`) equals the resting one; focus stays visible through the caret and Foundation's `$input-shadow-focus`, which WCAG 1.4.11's Understanding document accepts.
+   Every field's, required by the [Spec: Forms](../issues/98-spec-forms.md) and checked by `nfs-forms`, which an Abide form needs as well (the Forms spec's Sass subsection holds the measurements):
+
+| Setting | Required value | Why an Abide form needs it |
+| --- | --- | --- |
+| `$input-placeholder-color` | `#737373` (4.70:1 on the field; Foundation's `#cacaca` is 1.63:1) | 1.4.3 for the placeholder of a valid field |
+| `$input-border` | `1px solid $dark-gray` (3.42:1 against the page; Foundation's `$medium-gray` is 1.63:1) | 1.4.11 for the boundary of a valid empty field |
+| `$input-border-focus` | `1px solid $black` (19.63:1 against the page and the focus background; 5.73:1 from the resting border; 3.74:1 from Abide's invalid border) | 1.4.11, 1.4.1, and 2.4.7 for a focused select, valid or invalid; Foundation's default `$dark-gray` equals the required resting border (1:1) and is 1.53:1 from the invalid border |
+
+A consumer with a different palette or background picks any colour with 4.5:1 on its `$body-background` and on its own 10% tint for Abide's three, and a focus border at least 3:1 from that colour as well as from the resting border (the Forms spec states the rest). The Form alert under `nfsCallout color="alert"` (`$callout-font-color` on the faded alert colour of `$foundation-palette`) measures 16.2:1 and needs nothing. A text input or text area shows focus through its caret, which WCAG 1.4.11's Understanding document accepts on its own; that holds for text inputs only. A select menu has no caret, so its focus indicator is the focus border, for a valid select against its resting border and for an invalid one against the invalid border it replaces, because Foundation's `form-input-error` rule stops at `:focus`; Foundation's `$input-shadow-focus` glow is 1.63:1 and does not count.
 
 3. Custom properties written by the directives: none.
 4. Motion classes: none; no transition or animation is added or awaited.
-5. What breaks when the include is missing: nothing visible, because the mixin emits no CSS; the compile-time checks do not run, so a failing setting is caught only where axe or a play function sees it. Missing settings fail the `abide--invalid-state-contrast` story and axe `color-contrast` in every story that shows an error.
+5. What breaks when the include is missing: nothing visible, because the mixin emits no CSS; the invalid-state checks do not run, so a failing setting is caught only where axe or a play function sees it. Missing settings fail the `abide--invalid-state-contrast` story and axe `color-contrast` in every story that shows an error. Without `nfs-forms`, the resting field's checks do not run, and the Forms spec's `forms--field-contrast` story is the only signal.
+6. Variant properties: none. Abide has no Variant family; the Form alert's `color` is the Callout directive's, whose Library mixin (`nfs-callout`, as ADR 0012 expects) writes its Variant properties.
 
 ### Platform features to adopt when the browser target moves
 
-- `:has()` (out of target): `.form-group:has(:user-invalid)`-style parent styling could replace `.is-invalid-label` for consumers who want CSS-only label state; the directive would still own the ARIA.
+- `:has()` (out of target): `label:has(+ :user-invalid)`-style parent styling could replace `.is-invalid-label` for consumers who want CSS-only label state; the directive would still own the ARIA.
 - `aria-errormessage`: kept out while assistive technology support trails `aria-describedby`; it would carry only the visible error, with `aria-invalid="true"`, if support becomes reliable.
 - Signal Forms mirroring `pattern` or exposing a submitted state, or a public hydration-status signal in Angular, would let the library drop its `submitted` tracking or `ready`.
 - `field-sizing` and similar form features have no bearing on this plugin.
@@ -683,3 +761,5 @@ A consumer with a different palette or background picks any colour with 4.5:1 on
 - `aria-live` on the global error element from `a11yErrorLevel` (Foundation wrote `aria-live="assertive"`, `"polite"`, or `"off"` when the element had none): the Form alert gets a role instead, `role="alert"`, `role="status"`, or none, which carry the same live-region politeness (D7; added 2026-09-26, audit 0005 L7).
 - The implicit pattern from the `type` attribute: dropped (Foundation contract table).
 - `.form-error` inside the label, as Foundation's docs write it: for a native control the Form error goes after the label with `[nfsFormError]="ref"`, and the in-label form warns in development mode. This gives up user story 14's reference-free errors for native controls, a migration step for every docs-shaped form.
+- Every class in Foundation's Abide examples (added 2026-09-27, class rule): the consumer writes directive attributes instead (ADR 0039): `nfsFormError` for `.form-error`, `nfsCallout color="alert"` for the Form alert's `.alert.callout`, `nfsHelpText` for `.help-text`, the input group directives for `.input-group` and its parts, and `nfsButton` for `.button`. The static `is-invalid-label`, `is-invalid-input`, and `is-visible` that the docs write to show the error look are stripped by the directives' bindings and reported in development builds (D20); the look appears only from field state.
+- The input group example's Form alert with `class="sr-only"`, a class Foundation 6.9 does not define (added 2026-09-27, class rule): a visually hidden Form alert takes the Visibility Classes directive for `.show-for-sr` (usage examples).
