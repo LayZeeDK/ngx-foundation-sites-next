@@ -16,7 +16,7 @@ An Angular application adds the problems the Smooth Scroll spec already describe
 
 ## Solution
 
-One attribute directive, `nfsMagellan`, placed where Foundation places `data-magellan`: on the container of the navigation links (Foundation's Menu `ul.menu`, inside a `nav` landmark, or the `nav` itself).
+One attribute directive, `nfsMagellan`, placed where Foundation places `data-magellan`: on the container of the navigation links (Foundation's Menu, written `ul[nfsMenu]`, inside a `nav` landmark, or the `nav` itself).
 
 - It composes `NfsSmoothScroll` through `hostDirectives`, so every in-page link in it scrolls smoothly (instantly under reduced motion), moves focus to its section, keeps the URL unchanged, and stops at the CSS offset, exactly as the Smooth Scroll spec defines.
 - Its sections need no directive: each link's fragment names a section by `id`, and the directive finds the sections from its own links. Foundation's `data-magellan-target` attribute is not needed (a leftover one is harmless).
@@ -27,13 +27,15 @@ One attribute directive, `nfsMagellan`, placed where Foundation places `data-mag
 
 The library adds no CSS: Foundation's Menu already styles the marker, and the offset is the consumer's scroll padding, which the Smooth Scroll spec already requires for WCAG 2.2 2.4.11 when a sticky bar is present.
 
+The consumer writes no Foundation or library class ([ADR 0039](../adr/0039-directives-manage-every-foundation-class.md)). Magellan has no Structural class and no Variant class, so it binds nothing on its host; the classes of the element it sits on come from the directives written beside it. Foundation's Menu container is therefore `<ul nfsMenu nfsMagellan>`: the Menu directive binds `.menu` and sets its Variant classes from typed inputs (`orientation="vertical"` for `.vertical`, `expanded` for `.expanded`), and `nfsMagellan` adds the tracking. The one class Magellan manages is its marker, `.is-active`, which it writes on the consumer's links and list items after the first render; the consumer never writes it.
+
 ## User Stories
 
-1. As an application developer, I want to put `nfsMagellan` on a Foundation Menu of in-page section links (Foundation's `#section` hrefs on a page whose URL is the base URL or in an application without `<base href>`, hrefs built from the current path on other routes; Smooth Scroll D9), so that the menu tracks the section the reader is in, as `data-magellan` did.
+1. As an application developer, I want to put `nfsMagellan` beside `nfsMenu` on a Foundation Menu (`<ul nfsMenu nfsMagellan>`) of in-page section links (Foundation's `#section` hrefs on a page whose URL is the base URL or in an application without `<base href>`, hrefs built from the current path on other routes; Smooth Scroll D9), so that the menu tracks the section the reader is in, as `data-magellan` did.
 2. As an application developer, I want sections to need only an `id`, so that I do not write the same value twice in `id` and `data-magellan-target`.
 3. As an application developer migrating Foundation markup, I want leftover `data-magellan-target` attributes to do no harm, so that I can migrate a page without editing every section.
 4. As a reader, I want the link of the section I am reading highlighted with Foundation's Menu active style, so that I see where I am without custom CSS.
-5. As an application developer with a custom navigation (bare links, no list), I want the link itself to carry `.is-active`, so that my own CSS for Magellan's class keeps working.
+5. As an application developer with a custom navigation (bare links, no list), I want the link itself to carry the marker (`aria-current`, and `.is-active` as Foundation's Magellan wrote it), so that I can style the current link with my own CSS, by `a[aria-current]`, and CSS migrated from Foundation's Magellan keeps working.
 6. As a screen reader user, I want the current section's link to carry `aria-current`, so that I hear which section is current when I move through the navigation.
 7. As an application developer building a multi-step page, I want to choose the `aria-current` token (`true`, `location`, or `step`), so that assistive technology describes the current item accurately.
 8. As a reader, I want exactly one section to be current at a time, the last one whose top has passed the Activation line, so that the marker does not flicker between two visible sections.
@@ -64,7 +66,7 @@ The library adds no CSS: Foundation's Menu already styles the marker, and the of
 33. As an application developer, I want application-wide defaults for `threshold`, `deepLinking`, `updateHistory`, and the `aria-current` token, so that I configure every Magellan once, as `Foundation.Magellan.defaults` allowed.
 34. As an application developer, I want to pair Magellan with Sticky by placing `nfsMagellan` inside an `nfsSticky` bar or sidebar, so that the documented Foundation pattern works with no link between the two directives beyond my scroll padding.
 35. As an application developer on the Router, I want `routerLink` links with a `fragment` in the same menu to be tracked and marked, while the Router keeps their clicks, so that both link kinds can share one navigation.
-36. As a developer of a server-rendered application, I want the server HTML to be my markup unchanged apart from Angular's event annotation, so that first paint is plain Foundation markup and hydration changes nothing.
+36. As a developer of a server-rendered application, I want Magellan to add nothing to the server HTML but Angular's event annotation, the first paint being my markup with the classes the directives beside it bind (the Menu's `.menu`), so that first paint is plain Foundation markup and hydration changes nothing.
 37. As a developer of a server-rendered application, I want the marker to appear after hydration without a mismatch, so that no hydration error is caused by tracking.
 38. As a developer of a server-rendered application, I want a link clicked before hydration to jump natively and the marker to settle on that section after hydration, so that early users are not left with a wrong marker.
 39. As a developer using incremental hydration, I want sections inside dehydrated or `hydrate never` blocks to be tracked, so that deferring my long content does not break the navigation.
@@ -72,6 +74,8 @@ The library adds no CSS: Foundation's Menu already styles the marker, and the of
 41. As a developer of a zoneless application, I want Magellan to need no zone, and in a zone-based application I want scrolling not to trigger change detection, so that tracking costs nothing when nothing changes.
 42. As a developer, I want a development-mode warning when the navigation is not inside a `nav` landmark, when sections sit in different scroll containers, when the container has no in-page links, when I write an unknown id to `active`, and when `updateHistory` is set without `deepLinking`, so that I catch markup mistakes.
 43. As a library maintainer, I want the behaviour asserted through the marker, `aria-current`, focus, scroll position, the URL, and history length in stories, browser-level tests, a server-render smoke test, and e2e, so that regressions surface at the layer that owns them.
+44. As an application developer, I want to write no Foundation class on a Magellan navigation (`<ul nfsMenu nfsMagellan>`, with `orientation="vertical"` for a vertical table of contents), so that the directives manage every class, as they do for every other component.
+45. As an application developer migrating Foundation markup, I want a `class="is-active"` copied onto a tracked link or its list item to be reported in development and removed when Magellan first marks the Current section, so that the navigation never shows two current items.
 
 ## Implementation Decisions
 
@@ -109,13 +113,22 @@ Library additions with no Foundation Option: `ariaCurrentWhenActive` (Foundation
 
 ### CSS class to Angular mapping
 
-| Foundation class | Element | Angular | Rationale |
-| --- | --- | --- | --- |
-| (none) container | `ul.menu` or `nav` carrying `data-magellan` | `NfsMagellan` on `[nfsMagellan]` | Magellan has no Structural class; the class is named after the Plugin (building-blocks 1.3). The container's classes (`.menu`, `.vertical`, `.expanded`, `.simple`) stay the consumer's Variant classes (ADR 0010) |
-| `.is-active` (State class) | The current section's link, and the link's parent `li` when it has one | Written by `NfsMagellan` with `Renderer2` after render | On the link: Magellan's own contract, for custom navigations and existing CSS. On the `li`: Foundation Menu's documented active state ("Add the class `.is-active` to any `<li>`", styled by `.menu .is-active > a` and Dropdown Menu's `li.is-active > a`), so the marker is visible with no library CSS |
-| (none) target | `section[id]` | No directive | Targets are found from the links ([ADR 0029](../adr/0029-magellan-targets-from-links.md)) |
+Magellan has no Structural class and no Variant class in Foundation (its Plugin writes only `activeClass` on the links; Foundation ships no Magellan Sass). `NfsMagellan` therefore binds no class on its host, has no Variant input, and declares no Variant registry and writes no Variant property; per building-blocks 1.3 the class is named after the Plugin. Under the class rule ([ADR 0039](../adr/0039-directives-manage-every-foundation-class.md)) the classes on the elements around it are set by the directives written beside them, never by the consumer, and the marker is Magellan's own:
 
-`aria-current` is not a class but travels with `.is-active` on the link. Neither can be a host binding: the links are consumer elements inside the host, found by query as Smooth Scroll finds them, and there is no first-paint value to bind (the server cannot know the scroll position). Angular's `RouterLinkActive` writes its classes and `aria-current` with `Renderer2` for the same reason.
+| Foundation class | Kind | Element | Set by | Owner and rationale |
+| --- | --- | --- | --- | --- |
+| (none of Magellan's own) | -- | The link container, `ul[nfsMenu]` or `nav`, carrying `nfsMagellan` | `NfsMagellan` binds nothing on its host | This spec |
+| `.menu` | Structural class of the Menu | The typical container `ul` | `NfsMenu`, `ul[nfsMenu]`, written beside `nfsMagellan` on the same `ul` (D17) | [Spec: Menu](../issues/85-spec-menu.md) |
+| `.vertical`, `.horizontal` and their responsive forms, `.expanded`, `.simple`, and the Menu's other Variant classes | Variant classes of the Menu | The container `ul` | The Menu directive's Variant inputs (`orientation="vertical"`, `expanded`, `simple`) | [Spec: Menu](../issues/85-spec-menu.md) |
+| `.is-active` | State class | The Current section's links, and each such link's parent `li` when it has one | Written by `NfsMagellan` with `Renderer2` after render; removed from every other tracked link and its `li` (D11, D18) | This spec. On the link: Magellan's own contract (Foundation's `activeClass`), for custom navigations and CSS migrated from Foundation. On the `li`: Foundation Menu's documented active state ("Add the class `.is-active` to any `<li>`", styled by `.menu .is-active > a` and Dropdown Menu's `li.is-active > a`), so the marker is visible with no library CSS |
+| (none) target | -- | `section[id]` | No directive | Targets are found from the links ([ADR 0029](../adr/0029-magellan-targets-from-links.md)) |
+| `.top-bar`, `.top-bar-right` (the top bar usage example and the `magellan--sticky-top-bar` story) | Structural classes of the Top Bar | The bar and its right section | `NfsTopBar` (`[nfsTopBar]`) and `NfsTopBarRight` (`[nfsTopBarRight]`) | [Spec: Top Bar](../issues/86-spec-top-bar.md) |
+| `.sticky`, `.sticky-container` (the Sticky pairing in usage examples and stories) | Structural classes of Sticky | The sticky element and its container | `NfsSticky` (`[nfsSticky]`) and `NfsStickyContainer` (`[nfsStickyContainer]`) | [Spec: Sticky](../issues/28-spec-sticky.md) |
+| `.grid-x`, `.cell`, `.large-3`, `.large-9` (the guide usage example and the `magellan--table-of-contents` story layout) | Utility classes of the XY Grid | The grid and its cells | `NfsGridX` (`[nfsGridX]`) and `NfsCell` (`[nfsCell]`) with its `size` Variant input (`[size]="{large: 3}"`) | [Spec: XY Grid](../issues/99-spec-xy-grid.md) |
+
+`aria-current` is not a class but travels with `.is-active` on the link. Neither is a host binding. The class rule's "every State class is a host binding" (ADR 0039) presumes a host, and D11 keeps the `Renderer2` write because these elements have none: the marked links and list items are the consumer's elements inside the host, found by query as Smooth Scroll finds them, and no library directive sits on them, since they carry no Structural class that ADR 0039 would give a directive; the rule's reason, that host bindings render on the server so the first paint carries the class, does not apply, because the server cannot know the scroll position and no section is current in server HTML. The consumer still writes no class: Magellan manages the marker, as the class rule requires. The [Spec: Menu](../issues/85-spec-menu.md) gives a Menu's link items no directive (only `li[nfsMenuText]`, for items without a link) and marks a current page by `aria-current` alone, so the list item has one writer, Magellan. Angular's `RouterLinkActive` also writes its classes and `aria-current` with `Renderer2`, and the Off-canvas panel writes Foundation's `is-off-canvas-open` on `body` for the same reason as Magellan: no host binding reaches the element.
+
+`NfsMenu`, `orientation`, `expanded`, and `simple` are the Menu spec's names (the Smooth Scroll spec uses them too), and `NfsSticky` and `NfsStickyContainer` are the Sticky spec's. `NfsTopBar`, `NfsTopBarRight`, `NfsGridX`, `NfsCell`, and `size` are the ones the out-of-scope triage and building-blocks 1.3 and 1.4 give; the Top Bar and XY Grid specs own them, and the class-rule consistency review aligns this spec's examples if their final names differ.
 
 ### Hierarchy and DI shape
 
@@ -124,10 +137,12 @@ Library additions with no Foundation Option: `ariaCurrentWhenActive` (Foundation
   hostDirectives: NfsSmoothScroll  click handling, focus, reduced motion, scrollTo
   a[href] (in-page) ...            consumer links, found by query (no directive)
 section[id] ...                    consumer targets anywhere in the document (no directive)
+ul[nfsMenu][nfsMagellan]           the documented container: NfsMenu (Menu spec) beside it binds .menu
 ```
 
 - One directive class, `NfsMagellan`, selector `[nfsMagellan]`, `exportAs: 'nfsMagellan'`, entry point `ngx-foundation-sites/magellan`, which imports `NfsSmoothScroll` from `ngx-foundation-sites/smooth-scroll`.
-- `hostDirectives: [NfsSmoothScroll]`, with no inputs or outputs to forward (it has none). Host directives run their listeners before the host's (Angular host-directive execution order), so on each click `NfsSmoothScroll` scrolls, focuses, and calls `preventDefault()` before Magellan's own listener runs; Angular runs every host listener of an element separately and reports a throwing one to `ErrorHandler` without skipping the others, so Smooth Scroll's replay error never skips Magellan's listener. Writing `nfsSmoothScroll` on the same element as well is Angular's "directive matches multiple times" error, which is the right outcome.
+- `hostDirectives: [NfsSmoothScroll]`, with no inputs or outputs to forward (it has none). Host directives run their listeners before the host's (Angular host-directive execution order), so on each click `NfsSmoothScroll` scrolls, focuses, and calls `preventDefault()` before Magellan's own listener runs; Angular runs every host listener of an element separately and reports a throwing one to `ErrorHandler` without skipping the others, so Smooth Scroll's replay error never skips Magellan's listener. Writing `nfsSmoothScroll` on the same element as well is harmless and unnecessary: since Angular 22.0 a directive that the template matches and that is also a host directive applies once, as the template match (the host-directive match is discarded; `trackHostDirectiveDef` in Angular's host-directives feature, and its "de-duplication" acceptance tests), so the element still has one `NfsSmoothScroll`, which Magellan injects. Its listener may then run after Magellan's, in the elements' match order; Magellan's listener does not depend on that order, because it neither reads `defaultPrevented` nor calls `preventDefault()`.
+- Beside, not hosting (D17): `NfsMagellan` does not host `NfsMenu`, and this spec relies on the Menu directive hosting neither `NfsMagellan` nor `NfsSmoothScroll`. The consumer writes `nfsMenu` and `nfsMagellan` on one element, the map's composition of directives placed beside each other, as the Smooth Scroll spec does (its D13). A Magellan container need not be a Menu (a `nav` of bare links, a step list), and host directives are static, so hosting `NfsMenu` would put `.menu` on every Magellan container, with no way to opt out; a Menu of links to other pages needs no tracking. (A consumer's `nfsMenu` written beside a host of `NfsMenu` would not be an error: since Angular 22.0 the template match discards the host-directive match of the same directive, as the [Spec: Menu](../issues/85-spec-menu.md) measured. The reason against hosting is the class on non-Menu containers, not a duplicate-directive error; the Menu spec's D6 gives the same one.) Neither injects the other. The two things `nfsMagellan` needs from a directive beside it: it does not cancel in-page link clicks (the composed Smooth Scroll yields to a click that is already `defaultPrevented`, so nothing would scroll, and the marker would return to the true Current section after the 100 ms idle), and it does not bind `.is-active` on the tracked links or their list items, which Magellan owns (D18).
 - No Parent token. Nothing registers with the container: links are queried, targets are looked up by id. An earlier building-blocks sketch named an `nfsMagellanToken`; it has no consumer and is not created.
 - Defaults token: `nfsMagellanDefaultsToken`, an `InjectionToken<NfsMagellanDefaults>` (all-optional `threshold`, `deepLinking`, `updateHistory`, `ariaCurrentWhenActive`), injected with `{optional: true}` to seed the input defaults; provided at bootstrap, route, or element level, nearest wins (building-blocks 1.4, Material shape B).
 - Injection: `ElementRef` (the host), `DOCUMENT`, `Renderer2` (marker writes), `NgZone` (`runOutsideAngular` for the scroll listener and the idle timer), `DestroyRef`, `NfsSmoothScroll` (the host-directive instance, for `scrollTo`), and CDK `ViewportRuler` (viewport resize when the scroll container is the document). Nothing from `@angular/router`.
@@ -167,11 +182,14 @@ Inputs:
 | `updateHistory` | boolean | `false` | `data-update-history` | `input()`, `booleanAttribute` | With `deepLinking`: `pushState` instead of `replaceState`; alone: no effect (dev warning) |
 | `ariaCurrentWhenActive` | `true`, `'location'`, `'step'` | `true` | none | `input()`, transform maps the attribute string `'true'` to `true` | Same name and meaning as `RouterLinkActive.ariaCurrentWhenActive`; `false` and `'page'` are excluded (a current section must be exposed, and it is not a page) |
 
+No Variant input: Magellan sets no Variant class, so the class rule adds no input, and these four are Options (or, for `ariaCurrentWhenActive`, a library addition that sets an ARIA token, not a class), which keep `booleanAttribute` and `numberAttribute` (building-blocks 1.4).
+
 Model:
 
 - `active: ModelSignal<string | null>`, the id of the Current section, `null` above the first section and before tracking starts. Its generated `activeChange` output is the counterpart of `update.zf.magellan` (building-blocks 1.4 mapping) and fires once per change, with the id instead of Foundation's jQuery link collection.
 - Magellan writes it from tracking, from its click listener, and from `scrollTo`. A consumer write (through `[(active)]` or `set()`) is a request to make that section current: Magellan scrolls to it without moving focus (a model write is not a link activation; code that wants focus calls `scrollTo`). A write of an id that is not tracked marks no link and scrolls nowhere, with a development-mode warning; the next tracking update replaces it. A write of `null` marks nothing and scrolls nowhere.
 - Implementation: Magellan keeps a private signal with the last value it published itself. An `afterRenderEffect` reads `active()`; when it differs from that private value, the write came from outside and the effect calls `scrollTo(value, {focus: false})`. Tracking and clicks update both, so they never trigger a scroll. The effect is a render callback, so it never runs on the server.
+- Initial state is bound, never read from a class (building-blocks 1.4): nothing in the markup seeds the Current section. It comes from the scroll position after the first render, from a bound `active` (which scrolls there like any consumer write), or from the deep link at first render; a `class="is-active"` or `aria-current` copied from Foundation's markup is not read, and is removed and reported instead (D18).
 
 Outputs: `activeChange` only. No Completion output: nothing animates (the glide is browser-owned and reports no end inside the Browser target).
 
@@ -201,7 +219,7 @@ Tracking:
 - Transition: started by a tracked-link click, `scrollTo`, a consumer write to `active`, and the deep link at first render. While it lasts, observer callbacks update nothing, so the clicked section stays current while the page glides past the ones in between (Foundation's `_inTransition`). It ends at the first 100 ms without a `scroll` event, counted from its start, so an instant scroll, a scroll that does not move, and a Router that does not scroll all end it too; a reader who takes over mid-glide ends it when they stop, and the recomputation then marks where they are.
 - Targets and links: after every application render (`afterEveryRender`, read phase), Magellan re-reads its host's in-page links and resolves any link whose section is missing or no longer connected; when the set changes it re-observes and recomputes. This picks up links rendered by `@for` and sections that a `@defer` block or an `@if` renders later. The check is a query of the host's links plus one `getElementById` per unresolved fragment, cheap for a navigation of a few dozen links (a ceiling stated in Design decisions D2).
 
-Marker writes: an `afterRenderEffect` (write phase) keyed on `active()`, the tracked links, and `ariaCurrentWhenActive()` removes `.is-active` and `aria-current` from the previously marked links and list items and adds them to every link of the Current section (several links to one section are all marked) and to each such link's parent element when that parent is an `li`. On destroy, Magellan removes the classes and attributes it added, disconnects its observers, removes its listener, and clears its timer.
+Marker writes: an `afterRenderEffect` (write phase) keyed on `active()`, the tracked links, and `ariaCurrentWhenActive()` removes `.is-active` and `aria-current` from every tracked link, and `.is-active` from each tracked link's parent `li`, that does not belong to the Current section, and adds them to every link of the Current section (several links to one section are all marked) and to each such link's parent element when that parent is an `li`. Magellan owns the marker on the tracked links and their list items: its first write, the first render after hydration, also removes a class or attribute copied from Foundation's markup (D18). Links Magellan does not track (links to other pages) are never touched. On destroy, Magellan removes the classes and attributes it added, disconnects its observers, removes its listener, and clears its timer.
 
 Deep linking (`deepLinking` true):
 
@@ -210,7 +228,7 @@ Deep linking (`deepLinking` true):
 - No `hashchange` listener: a fragment change the reader makes (editing the address bar, Back and Forward over Magellan's own entries) is a native fragment navigation or traversal that already scrolls (and restores scroll position on traversal); tracking follows it. Foundation's listener existed only to animate.
 - Magellan never writes the URL when `deepLinking` is off, and never on destroy (building-blocks 1.9 asks directives to restore globals they touched; rewriting history while a route is being torn down would corrupt the Router's navigation, so this is a recorded exception).
 
-Development-mode checks (only with `ngDevMode`, never on the server): in the first render callback, a host with no in-page links (including a host whose links are all `#`-only hrefs that `<base href>` resolves to another document; the composed Smooth Scroll check names each such link); a host that is neither inside nor itself a `nav` element or `role="navigation"` element; `updateHistory` without `deepLinking`. When the target set changes, targets in different scroll containers. On a consumer write, an unknown id.
+Development-mode checks (only with `ngDevMode`, never on the server): in the first render callback, a host with no in-page links (including a host whose links are all `#`-only hrefs that `<base href>` resolves to another document; the composed Smooth Scroll check names each such link); a host that is neither inside nor itself a `nav` element or `role="navigation"` element; `updateHistory` without `deepLinking`. When the target set changes, targets in different scroll containers. On a consumer write, an unknown id. When Magellan first sees a tracked link (in the first render callback's `earlyRead` phase, and in the read phase that picks up links added later, both before the marker write that would remove it), a `class="is-active"` on the link or its parent `li`, or an `aria-current` on the link, written in the markup: one warning per instance naming the element and saying that Magellan marks the Current section itself and that `[(active)]` sets it (D18).
 
 ### Implementation level and primitives
 
@@ -240,7 +258,7 @@ Material has no scroll spy; its closest shape is `MatSort`: a directive holding 
 The Router's neighbours: `RouterLinkActive` (classes and `aria-current` for route matches, written with `Renderer2`, with the same `ariaCurrentWhenActive` input, which Magellan borrows by name) and `withInMemoryScrolling({anchorScrolling})` for fragment links (the Smooth Scroll spec's comparison applies unchanged). Rules for applications that use the Router:
 
 1. `routerLink` links with a `fragment` inside the Magellan container are tracked and marked like plain links; their clicks belong to the Router (the composed Smooth Scroll container yields to them). Magellan's listener still marks the section and starts the transition, and the Router's anchor scrolling (with `ViewportScroller.setOffset` equal to the CSS offset, the Smooth Scroll spec's rule 2) lands on the same section.
-2. `routerLinkActive` is not combined with Magellan on the same links: both would write `.is-active`.
+2. `routerLinkActive`, and the Menu's own marking of a current-page item (the Menu spec's), are not combined with Magellan on the same links or list items: Magellan owns `.is-active` and `aria-current` there and removes them from every tracked link and item that is not current (D18).
 3. With `scrollPositionRestoration` other than `'disabled'`, links that jump natively (outside any Magellan or Smooth Scroll, or inside `hydrate never`) are undone by the Router's popstate scroll (the Smooth Scroll spec's rule 3, confirmed in three engines by the [Prototype: Smooth Scroll under Router scroll restoration and replay](../issues/62-prototype-smooth-scroll-router-restoration.md): the Router undoes unhandled native jumps, and a replayed handler in a dehydrated block runs last).
 4. `deepLinking` with `replaceState` keeps `history.state`, fires no `popstate`, and so leaves the Router alone; `router.url` keeps the fragment of the last Router navigation until the next one. `updateHistory` pushes same-document entries that carry a copy of the current `history.state`; with the Router's scroll restoration on (which sets `history.scrollRestoration` to `manual`), a Back press is a Router popstate navigation that restores the position stored for the copied navigation id, not the section's, so `updateHistory` is documented for pages without the Router's scroll restoration. The [Prototype: Smooth Scroll under Router scroll restoration and replay](../issues/62-prototype-smooth-scroll-router-restoration.md) measured that wrong position in three engines, and the e2e suite guards it. Without the Router's restoration, Back over `updateHistory` entries uses the browser's own restoration, measured exact only in Chromium; the entries are for Foundation parity, not exact positions.
 
@@ -250,7 +268,7 @@ APG pattern: none (no widget). Composition, per the APG research: a `navigation`
 
 | Element or state | Rendered semantics | Source |
 | --- | --- | --- |
-| Navigation | The consumer's `nav` (implicit `navigation` landmark) with `aria-label` (for example "On this page") whenever the page has another `nav`; Magellan warns in development mode when it is not inside one | APG landmark practice ("each should have a unique label"); axe `landmark-unique` (best-practice) |
+| Navigation | The consumer's `nav` (implicit `navigation` landmark) with `aria-label` (for example "On this page") whenever the page has another `nav`; Magellan warns in development mode when it is not inside one; Foundation's Menu inside it is `ul[nfsMenu]`, whose list semantics the class rule leaves unchanged | APG landmark practice ("each should have a unique label"); axe `landmark-unique` (best-practice) |
 | Links | Native `a[href]`, role `link`; Magellan adds nothing but the current marker | APG Link pattern |
 | Current section's link | `aria-current="true"` (or the `ariaCurrentWhenActive` token), on every link of that section, removed from all others; absent above the first section and in server HTML | WAI-ARIA `aria-current` (`true`: "current item within a set"; `location`: "current location within an environment or context"; `step`); unknown tokens are read as `true` |
 | Current section's list item | `.is-active` only (styling), no ARIA | Foundation Menu contract |
@@ -272,14 +290,14 @@ WCAG 2.2 AA requirements (each a requirement of the directive or of documented c
 | --- | --- | --- |
 | 1.3.1 Info and Relationships (A) | The navigation is a `nav` list of links; the current item is exposed programmatically through `aria-current`, not only visually | Foundation Magellan's class-only marker exposed nothing; fixed by `aria-current` |
 | 1.4.1 Use of Color (A) | Foundation Menu's marker is a filled box (`$menu-item-background-active`, default primary `#1779ba`) behind the link, a change of area and luminance (4.65:1 against the unmarked state on `$white`), not a hue change alone | A consumer marker that only changes the text hue fails it; the stories use Foundation's filled style |
-| 1.4.3 Contrast (Minimum) (AA) | Marker text: Foundation's `color-pick-contrast` picks `$white` (`#fefefe`) on `#1779ba`, 4.65:1. Unmarked links: `$anchor-color` (`#1779ba`) on `$white`, 4.65:1. Inside Foundation's default Top Bar (`$topbar-background: $light-gray`, `#e6e6e6`) the unmarked links are 3.76:1 and fail, so a Magellan navigation in a `.top-bar` requires a bar background (`$topbar-background`) on which `$anchor-color` reaches 4.5:1, for example `$topbar-background: $white;`, or a darker `$anchor-color`, the setting the [Spec: Dropdown Menu](../issues/21-spec-dropdown-menu.md) requires for menus in a Top Bar | A lighter `$menu-item-background-active` (or a custom palette) can drop below 4.5:1; the story gate (axe `color-contrast`) fails it; the fix is the consumer's `$menu-item-background-active` or `$menu-item-color-active` setting, never library CSS. Foundation's default Top Bar fails it for the unmarked links (`magellan--sticky-top-bar` without the Storybook setting); the fix is the `$topbar-background` setting above |
-| 1.4.11 Non-text Contrast (AA) | The marker box against its surroundings: `#1779ba` on `$white` 4.65:1, on the default Top Bar (`$topbar-background: $light-gray`, `#e6e6e6`) 3.76:1, both above 3:1; with the `$topbar-background: $white` that 1.4.3 requires in a Top Bar, 4.65:1 against the bar | A consumer `$menu-item-background-active` below 3:1 against the bar or page; axe cannot measure it, so the `magellan--sticky-top-bar` and `magellan--menu` play functions compute the ratio of the marked item's background to the container's and assert at least 3:1; the fix is the setting |
+| 1.4.3 Contrast (Minimum) (AA) | Marker text: Foundation's `color-pick-contrast` picks `$white` (`#fefefe`) on `#1779ba`, 4.65:1. Unmarked links: `$anchor-color` (`#1779ba`) on `$white`, 4.65:1. Inside Foundation's default Top Bar (`$topbar-background: $light-gray`, `#e6e6e6`) the unmarked links are 3.76:1 and fail, so a Magellan navigation in a Top Bar (`[nfsTopBar]`) requires a bar background (`$topbar-background`) on which `$anchor-color` reaches 4.5:1, for example `$topbar-background: $white;`, or a darker `$anchor-color`, the setting the [Spec: Dropdown Menu](../issues/21-spec-dropdown-menu.md) requires for menus in a Top Bar | A lighter `$menu-item-background-active` (or a custom palette) can drop below 4.5:1; the story gate (axe `color-contrast`) fails it; the fix is the consumer's `$menu-item-background-active` or `$menu-item-color-active` setting, never library CSS. Foundation's default Top Bar fails it for the unmarked links (`magellan--sticky-top-bar` without the Storybook setting); the fix is the `$topbar-background` setting above |
+| 1.4.11 Non-text Contrast (AA) | The marker box against its surroundings: `#1779ba` on `$white` 4.65:1, on the default Top Bar (`$topbar-background: $light-gray`, `#e6e6e6`) 3.76:1, both above 3:1; with the `$topbar-background: $white` that 1.4.3 requires in a Top Bar, 4.65:1 against the bar | A consumer `$menu-item-background-active` below 3:1 against the bar or page; axe cannot measure it, so the `magellan--sticky-top-bar` and `magellan--menu` play functions compute the ratio of the marked item's background to the container's and assert at least 3:1; the fix is the setting. The Menu spec's `nfs-menu` stops the compile below 3:1 against `$body-background`; the pair against a Top Bar background is the Top Bar spec's to check |
 | 2.1.1 Keyboard (A) | Native links; Enter produces the click both listeners handle | None |
 | 2.4.1 Bypass Blocks (A) | The labelled `nav` landmark lets assistive technology skip or reach the navigation | A second unlabelled `nav`; the dev check and axe `landmark-unique` catch it |
 | 2.4.3 Focus Order (A) | Link activation moves focus into the section (Smooth Scroll); a consumer write to `active` moves none; `scrollTo` moves focus by default | Foundation left focus on the link; fixed through composition. A "Jump to section" `<select>` bound with `[(active)]` moves no focus, so the usage example calls `scrollTo` from its `change` handler instead when focus should follow |
 | 2.4.7 Focus Visible (AA) | Browser `:focus-visible` rings on links and on the focused section after keyboard activation (Foundation's outline removal needs what-input, which the library does not load) | A consumer rule removing outlines |
 | 2.4.11 Focus Not Obscured (Minimum) (AA) | With a sticky bar (the documented Magellan plus Sticky pairing), `scroll-padding-top` of at least the bar height on the scroll container is required consumer CSS (the Smooth Scroll spec's rule); Magellan reads the same value, so it is also the tracking offset | Foundation's `offset` Option in JavaScript did not protect later Tab moves; the smallest rule is the consumer's `html { scroll-padding-top: <bar height>; }`, shown in the usage examples |
-| 2.5.8 Target Size (Minimum) (AA) | Foundation Menu links: `$menu-items-padding` (`0.7rem 1rem`) with `line-height: 1` make them 38.4 px tall at a 16 px base | `.menu.simple.vertical` sets link padding to 0 and stacks 16 px targets with no spacing, which fails (axe `target-size`); the smallest consumer rule is `.menu.simple.vertical a { padding-block: 0.25rem; }` (24 px), or leave `.simple` off vertical Magellan menus; horizontal `.simple` menus pass through `$menu-simple-margin` spacing |
+| 2.5.8 Target Size (Minimum) (AA) | Foundation Menu links: `$menu-items-padding` (`0.7rem 1rem`) with `line-height: 1` make them 38.4 px tall at a 16 px base | A Menu with `simple` and `orientation="vertical"` (Foundation's `.menu.simple.vertical`) sets link padding to 0 and stacks 16 px targets with no spacing, which fails on Foundation's CSS alone (axe `target-size`). The Menu owns this failure of its documented markup (ADR 0039): the [Spec: Menu](../issues/85-spec-menu.md)'s `nfs-menu` mixin, which the consumer includes for the Menu, gives simple-menu links a 24 px row, so a Magellan Menu passes with that include. Without it, the smallest consumer rule selects the navigation by its directive attribute, never a Foundation class (building-blocks 1.1): `[nfsMagellan] a { padding-block: 0.25rem; }` (24 px); horizontal `simple` menus pass through `$menu-simple-margin` spacing |
 | 4.1.2 Name, Role, Value (A) | Links named by their text; the current state as `aria-current` | None |
 | 2.3.3 Animation from Interactions (AAA, honoured) | Instant jumps under reduced motion (Smooth Scroll) | None |
 
@@ -287,24 +305,24 @@ Focus rules: only link activation and `scrollTo` (default) move focus, to the se
 
 ### Rendered HTML
 
-Magellan has no host bindings. Server HTML is the consumer's markup plus the `jsaction` attribute hydration adds for the two `click` listeners (one attribute); after hydration Angular removes it, and tracking adds the marker.
+Consumer markup and the resulting DOM. Magellan has no host bindings, so it adds nothing to the server HTML but the `jsaction` attribute hydration adds for the two `click` listeners (one attribute); after hydration Angular removes it, and tracking adds the marker. Every class in the server HTML comes from a directive beside it (the container's `.menu` and `.expanded` from `NfsMenu`), because host bindings render on the server (building-blocks 1.11 decision 1): the first paint is Foundation's Menu before any script runs, and hydration changes no class. The blocks below leave out the attributes the template writes for directives, their selector attributes and static input values such as `expanded` or `orientation="vertical"`; Angular keeps those in the DOM and in server HTML as static attributes, serialised in lowercase (`nfsmenu=""`, `nfsmagellan=""`), as the Smooth Scroll spec records from the server HTML of the [Prototype: CSS `position: sticky` with IntersectionObserver sentinels for Sticky](../issues/48-prototype-sticky-css.md). Blocks marked as rendered show classes that directives wrote; no consumer template writes them.
 
 ```html
-<!-- Consumer markup (Foundation's docs, with the nav landmark and without data-magellan-target) -->
+<!-- Consumer markup (Foundation's docs, with the nav landmark, without data-magellan-target, and with directives for classes) -->
 <nav aria-label="On this page">
-  <ul class="menu expanded" nfsMagellan>
+  <ul nfsMenu expanded nfsMagellan>
     <li><a href="#first">First Arrival</a></li>
     <li><a href="#second">Second Arrival</a></li>
     <li><a href="#third">Third Arrival</a></li>
   </ul>
 </nav>
-<div class="sections">
+<main>
   <section id="first">First Section</section>
   <section id="second">Second Section</section>
   <section id="third">Third Section</section>
-</div>
+</main>
 
-<!-- Server HTML (SSR and prerender): no marker, the scroll position is unknown -->
+<!-- Server HTML (SSR and prerender): .menu and .expanded from NfsMenu; no marker, the scroll position is unknown -->
 <nav aria-label="On this page">
   <ul class="menu expanded" jsaction="click:;">
     <li><a href="#first">First Arrival</a></li>
@@ -313,31 +331,37 @@ Magellan has no host bindings. Server HTML is the consumer's markup plus the `js
   </ul>
 </nav>
 
-<!-- Hydrated, reader above the first section: the consumer's markup, active = null -->
+<!-- Rendered, hydrated, reader above the first section: the Menu's classes only, active = null -->
 <ul class="menu expanded">...</ul>
 
-<!-- Hydrated, reader in the second section: active = 'second' -->
+<!-- Rendered, hydrated, reader in the second section: active = 'second'; the marker is Magellan's -->
 <ul class="menu expanded">
   <li><a href="#first">First Arrival</a></li>
   <li class="is-active"><a href="#second" class="is-active" aria-current="true">Second Arrival</a></li>
   <li><a href="#third">Third Arrival</a></li>
 </ul>
 
-<!-- Just after Enter on "Third Arrival": marked at once, section focused while the page glides -->
+<!-- Rendered, just after Enter on "Third Arrival": marked at once, section focused while the page glides -->
 <li class="is-active"><a href="#third" class="is-active" aria-current="true">Third Arrival</a></li>
 <section id="third" tabindex="-1">Third Section</section>
 
-<!-- Custom navigation without list items: the link alone carries the class -->
+<!-- Custom navigation without list items: no class in the markup -->
 <nav aria-label="Steps" nfsMagellan ariaCurrentWhenActive="step">
+  <a href="#shipping">Shipping</a>
+  <a href="#payment">Payment</a>
+</nav>
+<!-- Rendered, reader in #shipping: the link alone carries the marker -->
+<nav aria-label="Steps">
   <a href="#shipping" class="is-active" aria-current="step">Shipping</a>
   <a href="#payment">Payment</a>
 </nav>
 
-<!-- Router application: same-document hrefs (base href safe) -->
-<ul class="menu vertical" nfsMagellan>
+<!-- Router application: same-document hrefs (base href safe); orientation sets .vertical -->
+<ul nfsMenu orientation="vertical" nfsMagellan>
   <li><a href="/guide/install#requirements">Requirements</a></li>      <!-- Smooth Scroll-owned click -->
   <li><a routerLink="." fragment="configure">Configure</a></li>          <!-- Router-owned click, still tracked -->
 </ul>
+<!-- Server HTML: class="menu vertical" on the ul; RouterLink renders href="/guide/install#configure"; the RouterLink host carries its own jsaction -->
 ```
 
 With `deepLinking`, the address bar after the second state reads `/guide#second`; above the first section it reads `/guide` again. The attribute order in server HTML is not significant.
@@ -352,21 +376,21 @@ With `deepLinking`, the address bar after the second state reads `/guide#second`
 
 Per ADR 0008 and the rendering-modes research, section 7 rules 1 to 11:
 
-- Server-side rendering and first paint: nothing is read or written (rule 1). No marker, because the scroll position is unknown on the server (the research checklist's Magellan row). First paint is plain Foundation markup with working links (given same-document `href`s).
+- Server-side rendering and first paint: nothing is read or written (rule 1). No marker, because the scroll position is unknown on the server (the research checklist's Magellan row). First paint is plain Foundation markup with working links (given same-document `href`s): the Menu's classes are in the server HTML from `NfsMenu`'s host bindings, and Magellan adds only `jsaction`.
 - Before hydration: nothing runs (rules 3 to 5). A click on a link jumps natively: the CSS offset, native focus handling, the fragment in the URL, and a history entry, even with `deepLinking` off (inherent to native fragment navigation).
-- Full hydration: no host bindings, so hydration compares and changes nothing; no `ngSkipHydration` (rule 10). The first render callback finds the links and targets, builds the observer, whose initial callback marks the Current section; the marker appears after hydration by `Renderer2` writes, which hydration never sees.
+- Full hydration: Magellan has no host bindings, and the Menu directive's classes are the same on both sides, so hydration compares and changes nothing; no `ngSkipHydration` (rule 10). The first render callback finds the links and targets, builds the observer, whose initial callback marks the Current section; the marker appears after hydration by `Renderer2` writes, which hydration never sees.
 - Event replay: both `click` listeners live in the host metadata of the container and replay. A click made before hydration is replayed after the native jump: the Smooth Scroll listener's scroll is a no-op, it focuses the section, and its final `preventDefault()` throws and is logged (building-blocks Part 4, Decided item 3's accepted default, audit 0002 M12's wording: "the handler always scrolls the target into view, then calls `preventDefault()` last; on a replay after a native jump the scroll is a no-op and the logged error is accepted"); Magellan's listener, run separately, marks the section and starts the transition, which ends 100 ms later with the section current. Magellan's own listener calls no `preventDefault()`, so it adds no error.
 - Incremental hydration, navigation inside a dehydrated block: the `jsaction` is on the container, not on the `<a>`, so the dispatcher does not cancel the native jump; the click hydrates the block and replays as above. No tracking before the block hydrates; `hydrate on viewport` for a sticky sidebar hydrates it when it appears.
 - Targets may sit anywhere, including in dehydrated `@defer (hydrate ...)` blocks and in `hydrate never` blocks: Magellan only observes their server-rendered elements and never writes to them, so they are tracked before and without hydration. This is why targets have no directive (a directive in a dehydrated block is not constructed and could not register). A target inside a plain `@defer` block that has not rendered does not exist yet and is picked up when it renders.
 - Hydration boundary: the container and its links share one boundary (the links are its descendants; building-blocks 1.11 decision 6). Targets are exempt from that rule for the reason above.
-- `@defer`: library templates contain no `@defer`; the directive is its own entry point. Inside `@defer (hydrate never)` the navigation's links jump natively with the CSS offset (and smoothly with the mixin), with no marker ever (building-blocks 1.11 decision 7's residue for Magellan).
+- `@defer`: library templates contain no `@defer`; the directive is its own entry point. Inside `@defer (hydrate never)` the navigation's links jump natively with the CSS offset (and smoothly with the mixin), with no marker ever, and the Menu keeps Foundation's look from its server-rendered classes (building-blocks 1.11 decision 7's residue for Magellan).
 - Deep links apply after hydration (building-blocks 1.11 decision 9): the server never sees the fragment; the first render callback reads it. Section ids must be consumer-supplied and stable (building-blocks 1.5): Magellan generates no ids, and a generated id would change the URL between server and client and between deploys.
 - Timers and listeners: the scroll listener and the idle timer run outside the Angular zone (rule 4), so scrolling triggers no change detection in zone-based applications; the observers' callbacks write signals only when the Current section changes, and signal writes schedule rendering in zoneless and zone-based applications alike.
 - Prerendering: identical to server rendering; no request token is read (rule 11).
 
 ### Sass and custom CSS
 
-No library CSS; there is no `nfs-magellan` mixin. The marker is Foundation's Menu active style (`foundation-menu`, `.menu .is-active > a`), which the list-item placement reaches; the offset is the consumer's `scroll-padding-top`, already required by the Smooth Scroll spec. No directive declares `styles` or `styleUrl`. The Sass subsection under Further Notes has the full statement.
+No library CSS; there is no `nfs-magellan` mixin. The marker is Foundation's Menu active style (`foundation-menu`, `.menu .is-active > a`), which the list-item placement reaches; the offset is the consumer's `scroll-padding-top`, already required by the Smooth Scroll spec. No directive declares `styles` or `styleUrl`. Magellan has no Variant family, so it needs no mixin for Variant properties either (ADR 0012, dated note). The Sass subsection under Further Notes has the full statement.
 
 ## Testing Decisions
 
@@ -374,22 +398,24 @@ A good test asserts what the user observes: which link carries `.is-active` and 
 
 Story ids follow `magellan--<story>`: `magellan--menu`, `magellan--sticky-top-bar` (with `nfsSticky`), `magellan--table-of-contents` (vertical sticky sidebar), `magellan--scroll-container`, `magellan--unordered-links`, `magellan--custom-nav`, `magellan--threshold`, `magellan--jump-select` (`[(active)]` with a `<select>`), `magellan--programmatic`, `magellan--deep-linking`, `magellan--router-link-fragment` (Router provided in the story).
 
+Story markup follows the class rule (Storybook conventions, section 8; ADR 0039): no story element carries a Foundation or library class written in the template. Menu containers are `ul[nfsMenu]` beside `nfsMagellan` (with `orientation="vertical"` in the table of contents); the sticky bar is a Top Bar (`[nfsTopBar]`) that `nfsSticky` makes sticky inside an `[nfsStickyContainer]` spanning the story's scroller, with `stickyOn="all"` so it sticks at the 414 px story viewport (the Sticky spec's title bar example); the sidebar layout is the XY Grid's `[nfsGridX]` and `[nfsCell]` with `size`; story buttons are `button[nfsButton]`. Each is imported from its own entry point as scaffolding beside `NfsMagellan` in the stories file's `moduleMetadata.imports`. Scaffolding that needs a value Foundation has no class for (a scroller's height, `overflow-y: auto`, a section's `scroll-margin-top`) uses an inline `style`. Story ids are unchanged by the class rule.
+
 ### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`, `npx nx test-storybook <lib>`)
 
 Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test = 'error'` and `runOnly` set to the WCAG 2.2 AA rule set (tags `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`, `best-practice`; building-blocks 1.10 and 1.12), with the marker present (the play function scrolls into a section before the run completes). Axe does not test focus order, focus visibility, obscured focus, or the marker's non-text contrast, so the play functions assert 2.4.3, 2.4.7, 2.4.11, and 1.4.11 directly.
 
 - `magellan--menu`: at the top no link is marked and no `aria-current` exists; scrolling the story's scroller until `#second`'s top is 40 px below the top (inside the 50 px threshold) marks "Second Arrival" (`.is-active` on the link and its `li`, `aria-current="true"` on the link, nothing elsewhere) and records `activeChange('second')`; scrolling back above `#first` removes the marker and records `null`; the marked item's background against the menu's background is at least 3:1 (1.4.11).
 - `magellan--menu`, click: clicking "Third Arrival" marks it at once, `#third` has focus, "Second Arrival" is never marked while the page glides (the recorded `activeChange` sequence is exactly `'third'`), and after settling `#third`'s top is at the scroller's top; Enter on a focused link does the same, and the focused section matches `:focus-visible` with a non-`none` outline (2.4.3, 2.4.7).
-- `magellan--sticky-top-bar`: with a sticky `.top-bar` and `scroll-padding-top: 3.5rem`, a section becomes current when its top is within 3.5rem plus 50 px of the scroller's top; after Enter on a link and a following Tab, the focused element's rectangle does not intersect the bar's (2.4.11); the marker contrast against the bar background is at least 3:1.
-- `magellan--table-of-contents`: a vertical Menu in a sticky sidebar; scrolling to the very end marks the last, short section; a section with its own `scroll-margin-top: 6rem` is current right after a click lands it.
+- `magellan--sticky-top-bar`: with a Top Bar (`[nfsTopBar]`) made sticky by `nfsSticky` and `scroll-padding-top: 3.5rem`, a section becomes current when its top is within 3.5rem plus 50 px of the scroller's top; after Enter on a link and a following Tab, the focused element's rectangle does not intersect the bar's (2.4.11); the marker contrast against the bar background is at least 3:1.
+- `magellan--table-of-contents`: a vertical Menu (`ul[nfsMenu]` with `orientation="vertical"`, rendered with `.menu.vertical`) in a sticky sidebar; scrolling to the very end marks the last, short section; a section with its own `scroll-margin-top: 6rem` is current right after a click lands it.
 - `magellan--scroll-container`: sections inside an `overflow: auto` panel are tracked while the story page itself does not scroll, and clicks scroll the panel.
 - `magellan--unordered-links`: links in a different order from the sections, and two links to `#three`: scrolling marks sections in document order, and both links to `#three` are marked together.
-- `magellan--custom-nav`: a `nav` of bare links with `ariaCurrentWhenActive="step"`: the current link carries `.is-active` and `aria-current="step"`, and no other element gets a class.
+- `magellan--custom-nav`: a `nav` of bare links with `ariaCurrentWhenActive="step"` and no class in its markup: the current link carries `.is-active` and `aria-current="step"`, and no other element gets a class.
 - `magellan--threshold`: with `threshold="0"`, a section becomes current only when its top reaches the scroller's top.
 - `magellan--jump-select`: choosing a section in the `<select>` bound to `[(active)]` scrolls there and marks it, with focus left on the select; scrolling by hand updates the select's value.
-- `magellan--programmatic`: a story button calls `scrollTo('third')` through the `exportAs` reference and shows `true`, and focus moves to `#third`; `scrollTo('missing')` shows `false`; `scrollTo('first', {focus: false})` scrolls without moving focus.
+- `magellan--programmatic`: a story button (`button[nfsButton]`) calls `scrollTo('third')` through the `exportAs` reference and shows `true`, and focus moves to `#third`; `scrollTo('missing')` shows `false`; `scrollTo('first', {focus: false})` scrolls without moving focus.
 - `magellan--deep-linking`: scrolling into `#second` makes the story iframe's `location.hash` `#second` and leaves `history.length` unchanged; scrolling above the first section removes the hash.
-- `magellan--router-link-fragment`: in a menu mixing a plain same-document link and a `routerLink` with `fragment`, both are marked when their sections are current; the plain link's click leaves the URL unchanged, the `routerLink` click is the Router's (the URL gains the fragment through the Router) and still marks its section at once.
+- `magellan--router-link-fragment`: in a Menu (`ul[nfsMenu]`) mixing a plain same-document link and a `routerLink` with `fragment`, both are marked when their sections are current; the plain link's click leaves the URL unchanged, the `routerLink` click is the Router's (the URL gains the fragment through the Router) and still marks its section at once.
 
 ### 2. Browser-level test (Vitest browser mode, `npx nx test <lib>`)
 
@@ -398,17 +424,17 @@ Vitest browser mode under the Angular unit-test builder (`npx nx test <lib>`, Ch
 - Current-section rule, driven by data over a fixture of sections with known heights in a fixed-height scroll container: above the first line (`null`), exactly at a line, between lines, in a gap between sections after an instant jump (fixed by the idle recomputation), at the scroll end with a short last section, per-target `scroll-margin-top`, `scroll-padding-top` in px and in percent, `threshold` 0, 50, and a bound change.
 - Transition: a tracked-link click sets `active` at once and suppresses observer updates until 100 ms without a `scroll` event; a click on a link whose `click` was already cancelled by a link-level listener still sets `active`; a scroll that does not move ends the transition after 100 ms; a user scroll after the click ends it when the user stops, with the marker where the user stopped.
 - Model: a host binding `[(active)]` receives tracking updates; a host write scrolls (through an `NfsSmoothScroll` spy) with `focus: false`; an unknown id warns in development mode and marks nothing; tracking and click updates never cause a scroll.
-- Marker: `.is-active` on the link and its parent `li`, not on a non-`li` parent; `aria-current` follows `ariaCurrentWhenActive` (the attribute string `"true"` becomes `true`); several links to one section are all marked; everything Magellan added is removed on destroy.
+- Marker: `.is-active` on the link and its parent `li`, not on a non-`li` parent; `aria-current` follows `ariaCurrentWhenActive` (the attribute string `"true"` becomes `true`); several links to one section are all marked; everything Magellan added is removed on destroy. Copied marker (D18), the one case where a test host writes a Foundation class, on purpose: a host whose template writes `class="is-active"` on one tracked link and on a second tracked link's `li`, neither of them current, renders with no `.is-active` on either after the first render, reports once in development mode, and leaves an untracked link's own classes and attributes alone; the container is `ul[nfsMenu]`, whose `.menu` Magellan never touches.
 - Links and targets: links added by `@for` after the first render are tracked; a section rendered later by `@if` (and by a `@defer` block driven with `DeferBlockBehavior.Manual`) is observed after the render; a removed and re-created section is re-resolved; targets in two scroll containers warn once.
 - Deep linking with a real `location` (the Tabs spec's pattern): a fragment at first render scrolls to its section without moving focus; a tracking change calls `replaceState` with the existing `history.state` object and `pathname + search + '#id'`; `updateHistory` calls `pushState`; `null` removes the fragment; nothing is written during a transition, at first render, with `deepLinking` off, or on destroy; `updateHistory` alone warns.
 - Replay-safe listener: a click whose `eventPhase` reads 101 and whose `preventDefault` throws (the full-hydration replay): Smooth Scroll's error reaches `ErrorHandler` once, and Magellan's listener still sets `active` and starts the transition; nothing Magellan does calls `preventDefault()`.
 - Composition: `NfsSmoothScroll` is present on the host through `hostDirectives` (link clicks scroll and focus), and `inject(NfsSmoothScroll)` in a child of the host resolves to the composed instance.
 - Zone: in a zone-based test host, scrolling the container triggers no change detection until the Current section changes.
-- Development-mode checks: each warning fires once for its case and not for correct markup.
+- Development-mode checks: each warning fires once for its case and not for correct markup, the copied marker included (none for `<ul nfsMenu nfsMagellan>` with class-free links).
 
 ### 3. Node-level Vitest
 
-- SSR smoke, run under `npx nx test <lib>` in `<name>.ssr.spec.ts` through the shared `renderServer()` helper; `npx nx test-node <lib>` only if the server path depends on the DOM adapter: `renderApplication` over a fixture with a Magellan Menu inside a `nav`, a `routerLink` with `fragment` inside it, and sections with ids, one of them inside `@defer (hydrate on viewport)`. Assert that `whenStable()` resolves; the server HTML equals the fixture markup plus `jsaction="click:;"` on the container; no link has `.is-active` or `aria-current`; the deferred section's server HTML carries its id; no `IntersectionObserver`, `history`, `location`, `scroll-padding` read, or `scrollIntoView` access happens (spies record none).
+- SSR smoke, run under `npx nx test <lib>` in `<name>.ssr.spec.ts` through the shared `renderServer()` helper; `npx nx test-node <lib>` only if the server path depends on the DOM adapter: `renderApplication` over a fixture with a Magellan Menu (`<ul nfsMenu nfsMagellan>`, the documented form) inside a `nav`, a `routerLink` with `fragment` inside it, and sections with ids, one of them inside `@defer (hydrate on viewport)`. Assert that `whenStable()` resolves; the server HTML equals the fixture markup (its directive attributes serialised in lowercase) plus `class="menu"` on the container, which `NfsMenu` binds, and `jsaction="click:;"` on the container; `NfsMagellan` adds no class and no other attribute to its host; no link or list item has `.is-active` or `aria-current`; the deferred section's server HTML carries its id; no `IntersectionObserver`, `history`, `location`, `scroll-padding` read, or `scrollIntoView` access happens (spies record none).
 - Pure logic: the current-section rule as a pure function of target rectangles, per-target lines, and the scroll-end flag (table-driven, the same table as layer 2 without layout); the band margin from the root height and line; the resolution of `scroll-padding-top` values (`auto`, px, percent); the `ariaCurrentWhenActive` transform.
 - Sass: none; the library ships no `nfs-magellan` mixin, and the library's Sass compile test asserts that importing the library emits nothing for Magellan.
 
@@ -422,7 +448,7 @@ Against the static Storybook build, on the Story ids above:
 - History API on `magellan--deep-linking` through the public `iframe.html?id=magellan--deep-linking` URL: loading with `#third` scrolls to and marks Third after hydration with focus left on the body; scrolling rewrites the hash with `history.length` unchanged; with `updateHistory` (story arg), each section adds one entry and Back returns the fragment to the previous section's id, with the marker on the section where the browser's own restoration lands; the position itself is asserted in Chromium only, because the [Prototype: Smooth Scroll under Router scroll restoration and replay](../issues/62-prototype-smooth-scroll-router-restoration.md) measured the browser's restoration of these entries exact only there (Firefox and WebKit landed about 1600 px off, its row 3d); no `hashchange` handler scrolls a second time.
 - Router coexistence on `magellan--router-link-fragment` with `scrollPositionRestoration: 'enabled'`: deep-linking writes keep `history.state.navigationId`; a Router navigation away and Back returns to the route without a Router error; with `updateHistory`, Back after two section entries is recorded as the regression guard for Comparison rule 4 (the wrong position the [Prototype: Smooth Scroll under Router scroll restoration and replay](../issues/62-prototype-smooth-scroll-router-restoration.md) measured).
 
-Against the prerendered fixture app (the harness from the rendering-mode test seam prototype), served under `<base href="/">` on a nested route with same-document `href`s:
+Against the prerendered fixture app (the harness from the rendering-mode test seam prototype), served under `<base href="/">` on a nested route with same-document `href`s; its Magellan containers are `ul[nfsMenu]`, and it writes no Foundation class:
 
 - JavaScript disabled: screenshot plus `@axe-core/playwright` with the six tags on the server HTML (no marker); links jump natively to their sections at the CSS offset.
 - Hydration: no NG05xx in the console and `ngDevMode.componentsSkippedHydration === 0`; after hydration, with the page scrolled into the second section before hydration, the second link is marked.
@@ -441,7 +467,8 @@ Release test (manual, before each release; [Resolve the assistive-technology che
 - A reading-progress indicator (scroll-driven animations are outside the Browser target; see Further Notes).
 - Announcing Current section changes through a live region (see ARIA; a consumer can use CDK `LiveAnnouncer` on `activeChange` if a product needs it).
 - Deep linking under the Router's `HashLocationStrategy`, where the URL fragment holds the route: Magellan's fragment writes would replace it; such applications leave `deepLinking` off.
-- Styling the marker for custom navigations: consumers who do not use Foundation's Menu style `.is-active` themselves, as Foundation's own Magellan visual tests did.
+- Styling the marker for custom navigations: consumers who do not use Foundation's Menu style the current link themselves, by `a[aria-current]` (Foundation's own Magellan visual tests styled `.is-active`; a spec recipe selects no Foundation class, building-blocks 1.1).
+- The Menu's classes, its Variant inputs, its 2.5.8 and contrast rules, and how it marks a current-page item: the Menu spec, whose directive sits beside this one (D17). The Top Bar's, Sticky's, and XY Grid's classes in the examples and stories: their specs.
 - Restoring the URL on destroy (recorded exception to building-blocks 1.9).
 - Runtime theming through custom properties (building-blocks 1.13).
 
@@ -453,7 +480,7 @@ Release test (manual, before each release; [Resolve the assistive-technology che
 | --- | --- | --- | --- |
 | D1 | One attribute directive, `[nfsMagellan]`, on the link container | Foundation's placement; directive-first (ADR 0001); the container is where the links live and where Smooth Scroll delegates clicks | `nav[nfsMagellan]` as the only selector (Foundation puts `data-magellan` on the `ul.menu`; a `nav`-only selector would silently not match it); a component rendering the menu (the consumer owns the markup) |
 | D2 | No target directive: the links' fragments name the sections, found by id; missing or disconnected sections re-resolved after each application render | Sections in dehydrated and `hydrate never` blocks are tracked (a directive there is never constructed); Foundation's `data-magellan-target` only repeated the id; no registry service and no cross-sibling DI link is needed. Ceiling: one query of the host's links and one `getElementById` per unresolved fragment per application render, fine for a navigation of a few dozen links; a registration directive is the upgrade if that ever shows in a profile | `[nfsMagellanTarget]` registering by id with the container through a typed reference or a root registry (misses dehydrated sections, adds an attribute to every section, and a registry is what ADR 0013 rejected for Triggers); a document-wide `MutationObserver` (watches every DOM change in the application) |
-| D3 | Compose `NfsSmoothScroll` through `hostDirectives` | The Smooth Scroll spec's contract: one click behaviour (scroll, focus, `preventDefault()` last, Router yielding) and one `scrollTo` for every in-page link | Magellan's own scroll code (two behaviours to keep equal); consumers placing both directives (Angular rejects a double match on one element, and the composition must be automatic) |
+| D3 | Compose `NfsSmoothScroll` through `hostDirectives` | The Smooth Scroll spec's contract: one click behaviour (scroll, focus, `preventDefault()` last, Router yielding) and one `scrollTo` for every in-page link | Magellan's own scroll code (two behaviours to keep equal); consumers placing both directives (the composition must be automatic; a consumer who writes `nfsSmoothScroll` as well still gets one instance, because Angular 22.0 de-duplicates a host directive the template also matches) |
 | D4 | Magellan's own `click` listener marks a tracked link's section and starts the transition, with no `preventDefault()` | Host directives' listeners run first, so Smooth Scroll has acted; every accepted tracked-link click ends at that section (Smooth Scroll's scroll or the Router's anchor scroll), so the listener need not know which | A hook from `NfsSmoothScroll` reporting each started scroll (a change to a published spec's API, and a start event, which building-blocks 1.4 rules out); inferring from focus (indirect) |
 | D5 | Tracking by `IntersectionObserver` on a 1 px band at the Activation line, recomputing from live rectangles, with a scroll-idle backstop | No per-frame work; layout changes without scrolling are seen; the backstop covers instantaneous jumps over the band and the scroll end, the pattern the Sticky prototype settled on | Scroll-position maths per animation frame (per-frame layout reads interleaved with class writes; misses layout-only changes); an observer alone (misses jumps over the band and a short last section) |
 | D6 | Observer root is the sections' scroll container, or its `Document` | Works in app shells that scroll an inner element and inside iframes (the implicit root is the top-level viewport) | The implicit root (wrong inside Storybook's iframe and embedded apps); window-only tracking (Foundation) |
@@ -461,12 +488,14 @@ Release test (manual, before each release; [Resolve the assistive-technology che
 | D8 | Current section: last target in document order past its line; at the scroll end the last target; `null` before the first; no direction-dependent hysteresis | Foundation's semantics minus the scroll-direction threshold doubling, which made the same position mean different sections depending on direction | "Most visible section" (flickers between two half-visible sections and ignores reading position); Foundation's hysteresis |
 | D9 | Transition from click, `scrollTo`, model write, and first-render deep link until 100 ms without a `scroll` event | Keeps the clicked link marked through the glide (Foundation's `_inTransition`) without `scrollend`; also ends for instant, unmoving, and user-interrupted scrolls | Waiting for the target to reach its line (never happens for a short last section or when the Router does not scroll); no transition (the marker runs through every intermediate link) |
 | D10 | `active` model holding the section id; a consumer write scrolls there without focus; `activeChange` replaces `update.zf.magellan` | Building-blocks 1.4 (`active` model); Material `MatSort` id-keyed active state; a write meaning "make this current" makes `[(active)]` useful for jump controls | A read-only signal plus output (no two-way binding); a write that only moves the marker (overwritten by the next tracking update, so meaningless) |
-| D11 | `.is-active` on the link and on its parent `li`; `aria-current` on the link; `Renderer2` writes after render | Magellan's own class contract kept on the link; Foundation Menu's documented `li.is-active` makes the marker visible with no library CSS; there is no first-paint value, and `RouterLinkActive` writes the same way | Link only (Foundation Magellan; invisible in a Menu without custom CSS, which would re-implement `menu-state-active`); list item only (breaks consumers' `a.is-active` CSS and bare-link navigations); a link directive with host bindings (an attribute on every link Foundation never needed, for no first-paint gain) |
+| D11 | `.is-active` on the link and on its parent `li`; `aria-current` on the link; `Renderer2` writes after render. Reaffirmed 2026-09-27 under the class rule ([Re-run: Magellan spec under the class rule](../issues/122-rerun-magellan-class-rule.md)) | Magellan's own class contract kept on the link; Foundation Menu's documented `li.is-active` makes the marker visible with no library CSS; there is no first-paint value, and `RouterLinkActive` writes the same way. Under ADR 0039 the consumer still writes no class, because Magellan manages the marker; the State-class clause's host binding needs a host, and the marked links and list items carry no library directive and no Structural class of Magellan's that would give them one; the clause's reason (the server HTML carries the class) does not apply where no section is current on the server; the Off-canvas panel's `is-off-canvas-open` on `body` is the same case | Link only (Foundation Magellan; invisible in a Menu without custom CSS, which would re-implement `menu-state-active`); list item only (breaks bare-link navigations and CSS migrated from Foundation's `a.is-active`); a link directive and a list-item directive with host bindings, so that the marker is a host binding (two attributes on every item Foundation never needed; a forgotten one silently loses the marker; a Parent token for links that are found by query today; the `li` of a Menu is the Menu spec's element; and no first-paint gain, since both render nothing on the server) |
 | D12 | `ariaCurrentWhenActive` input, default `true` | `true` is read correctly by every assistive technology and means "current item within a set", which a table of contents is; the input (named as in `RouterLinkActive`) lets a step list use `step` or a map-like navigation `location` | A fixed token (one wrong for some navigations); `page` (a section is not a page) |
 | D13 | `deepLinking`: `replaceState` (or `pushState` with `updateHistory`) with `history.state` passed through and `pathname + search + '#id'`; first-render fragment scrolled to without focus; no `hashchange` listener; URL untouched when off and on destroy | Foundation parity with the Router's state preserved (the Tabs spec's rule); native traversal and fragment navigation already scroll; a load-time section focus would paint a ring the native jump does not | Foundation's `replaceState({}, ...)` (erases the Router's navigation id); the Router's `Location` service (the Tabs spec writes history directly, and one mechanism across specs is simpler to reason about); a `hashchange` scroll (fights the browser's scroll restoration on Back) |
-| D14 | Dropped: `animationDuration`, `animationEasing`, `activeClass`, the container id, `calcPoints()`, `reflow()` | Browser-owned timing; classes are the contract; the observer re-measures by itself | Keeping `reflow()` as a no-op (a method that does nothing) |
+| D14 | Dropped: `animationDuration`, `animationEasing`, `activeClass`, the container id, `calcPoints()`, `reflow()` | Browser-owned timing; classes are the contract, and no Foundation class name is an input value (ADR 0039); the observer re-measures by itself | Keeping `reflow()` as a no-op (a method that does nothing) |
 | D15 | Defaults token `nfsMagellanDefaultsToken` | Building-blocks 1.4: global defaults replace `Foundation.Magellan.defaults` | A `provideNfsMagellan()` function (none of Aria, CDK, or Material ships one) |
 | D16 | No library CSS | Foundation's Menu styles the marker; the offset is the consumer's scroll padding | A `.menu a.is-active` rule re-applying `menu-state-active` (needed only if the class stayed on the link alone) |
+| D17 | The classes of the element `nfsMagellan` sits on come from the directives written beside it (`<ul nfsMenu nfsMagellan>`); `NfsMagellan` hosts `NfsSmoothScroll` and no class directive, and binds no class. Decided 2026-09-27 under the class rule ([Re-run: Magellan spec under the class rule](../issues/122-rerun-magellan-class-rule.md)) | ADR 0039: the consumer writes no Foundation class, and `.menu` is the Menu directive's to bind; directives placed beside each other are the map's composition rule; the Smooth Scroll spec's D13 decided the same for `nfsSmoothScroll`; a Magellan container need not be a Menu (a `nav` of bare links, a step list), and a Menu need not track; server HTML carries the Menu's class from its host binding, so the first paint and `hydrate never` blocks keep Foundation's look | `NfsMagellan` hosting `NfsMenu` (host directives are static, so every Magellan container, a bare-link `nav` or a step list included, would get `.menu` with no way to opt out; the Menu's Variant inputs would need a second exposure on this directive for consumers who do not also write `nfsMenu`; and the Magellan entry point would import the Menu's. A consumer's `nfsMenu` beside it would not be an error, since Angular 22.0 keeps the template match and discards the host-directive one); the Menu directive hosting `NfsMagellan` or `NfsSmoothScroll` (every Menu would track or handle in-page clicks, and the Menu entry point would import theirs, against per-plugin `@defer` splitting); the consumer's `class="menu"` (forbidden by ADR 0039) |
+| D18 | Magellan owns the marker on the tracked links and their list items: each marker write removes `.is-active` and `aria-current` from every tracked link and item outside the Current section, so a class copied from Foundation's markup is gone after the first client render; a development-mode check reports it once, read before that write. Decided 2026-09-27 under the class rule | Building-blocks 1.4: initial state is bound, never read from a class, and a copied class is stripped and reported; a host binding would strip it on server and client, but the marker is not a host binding (D11), so the write strips it on the client and the check names it; Magellan reads nothing from the markup, so the Current section's first value is the scroll position, a bound `active`, or the deep link | Removing only the links Magellan itself marked (a copied class stays forever, and two items look current); reading a copied `is-active` as the initial Current section (Foundation's markup never did, and tracking would overwrite it at once); stripping it in the server render (nothing Magellan does runs on the server; the server cannot know the Current section) |
 
 ### Usage examples
 
@@ -477,21 +506,19 @@ A guide page with a sticky table of contents (Magellan inside Sticky, Foundation
 ```ts
 @Component({
   selector: 'app-guide',
-  imports: [NfsMagellan, NfsSticky],
+  imports: [NfsMagellan, NfsMenu, NfsSticky, NfsStickyContainer, NfsGridX, NfsCell],
   template: `
-    <div class="grid-x grid-margin-x">
-      <div class="cell large-3">
-        <nav class="sticky-container" aria-label="On this page">
-          <div class="sticky" nfsSticky stickyOn="large">
-            <ul class="vertical menu" nfsMagellan (activeChange)="current.set($event)">
-              @for (s of sections(); track s.id) {
-                <li><a [href]="'#' + s.id">{{ s.title }}</a></li>
-              }
-            </ul>
-          </div>
+    <div nfsGridX>
+      <div nfsCell [size]="{ large: 3 }" nfsStickyContainer>
+        <nav nfsSticky stickyOn="large" aria-label="On this page">
+          <ul nfsMenu orientation="vertical" nfsMagellan (activeChange)="current.set($event)">
+            @for (s of sections(); track s.id) {
+              <li><a [href]="'#' + s.id">{{ s.title }}</a></li>
+            }
+          </ul>
         </nav>
       </div>
-      <article class="cell large-9">
+      <article nfsCell [size]="{ large: 9 }">
         @for (s of sections(); track s.id) {
           <section [id]="s.id">
             <h2>{{ s.title }}</h2>
@@ -507,6 +534,8 @@ export class Guide {
   protected readonly current = signal<string | null>(null);
 }
 ```
+
+No class is written: `nfsMenu` with `orientation="vertical"` renders Foundation's `.menu.vertical`, `nfsGridX` and `nfsCell` with `size` render `.grid-x`, `.cell`, `.large-3`, and `.large-9`, and `nfsStickyContainer` and `nfsSticky` render `.sticky-container` and `.sticky`. The grid cell is the sticky container, as in the Sticky spec's sticky column: the Sticky range is the sticky element's parent ([ADR 0019](../adr/0019-sticky-native-range.md)), so the stretched cell, not a `nav` wrapped tightly around the sticky element, gives the navigation the article's height to stick along (Foundation's docs put the container on such a `nav` and set the range with `data-anchor`, an Option the library drops).
 
 ```scss
 // The application's global stylesheet, after the consumer's Foundation imports and includes (foundation-menu among them)
@@ -529,12 +558,12 @@ export const appConfig: ApplicationConfig = {
 
 @Component({
   selector: 'app-landing',
-  imports: [NfsMagellan],
+  imports: [NfsMagellan, NfsMenu, NfsTopBar, NfsTopBarRight],
   template: `
-    <div class="top-bar">
-      <div class="top-bar-right">
+    <div nfsTopBar>
+      <div nfsTopBarRight>
         <nav aria-label="Sections">
-          <ul class="menu" nfsMagellan deepLinking>
+          <ul nfsMenu nfsMagellan deepLinking>
             <li><a href="#features">Features</a></li>
             <li><a href="#pricing">Pricing</a></li>
             <li><a href="#faq">FAQ</a></li>
@@ -550,14 +579,14 @@ export const appConfig: ApplicationConfig = {
 export class Landing {}
 ```
 
-A "Jump to section" select for small screens, sharing the state two ways, with focus moved on purpose:
+A "Jump to section" select beside the navigation, sharing the state two ways, with focus moved on purpose:
 
 ```ts
 @Component({
   selector: 'app-docs',
-  imports: [NfsMagellan],
+  imports: [NfsMagellan, NfsMenu],
   template: `
-    <label class="hide-for-large">
+    <label>
       Jump to section
       <select [value]="current() ?? ''" (change)="jump(toc, $any($event.target).value)">
         @for (s of sections; track s.id) {
@@ -565,8 +594,8 @@ A "Jump to section" select for small screens, sharing the state two ways, with f
         }
       </select>
     </label>
-    <nav class="show-for-large" aria-label="On this page">
-      <ul class="vertical menu" nfsMagellan #toc="nfsMagellan" [(active)]="current">
+    <nav aria-label="On this page">
+      <ul nfsMenu orientation="vertical" nfsMagellan #toc="nfsMagellan" [(active)]="current">
         @for (s of sections; track s.id) {
           <li><a [href]="'#' + s.id">{{ s.title }}</a></li>
         }
@@ -588,17 +617,17 @@ export class Docs {
 }
 ```
 
-Binding `[(active)]` alone to the select (`(change)="current.set(...)"`) also scrolls, but leaves focus on the select, which suits a control the user keeps using and not a navigation.
+Binding `[(active)]` alone to the select (`(change)="current.set(...)"`) also scrolls, but leaves focus on the select, which suits a control the user keeps using and not a navigation. On a responsive page the select is typically shown below `large` and the navigation from `large` up; the Visibility Classes spec's directives set those Visibility classes, so the example writes neither ([Spec: Visibility Classes](../issues/104-spec-visibility-classes.md) names them).
 
 With the Router (base href safe hrefs; both link kinds in one menu):
 
 ```ts
 @Component({
   selector: 'app-install-guide',
-  imports: [NfsMagellan, RouterLink],
+  imports: [NfsMagellan, NfsMenu, RouterLink],
   template: `
     <nav aria-label="On this page">
-      <ul class="vertical menu" nfsMagellan deepLinking>
+      <ul nfsMenu orientation="vertical" nfsMagellan deepLinking>
         <li><a [href]="path() + '#requirements'">Requirements</a></li>
         <li><a routerLink="." fragment="configure">Configure</a></li>
       </ul>
@@ -624,13 +653,14 @@ export class InstallGuide {
 
 ### Sass
 
-Sass. The consumer compiles Foundation's Sass from its own settings; the library imports no Foundation code and copies no Foundation rule. This Plugin relies on no Foundation Export mixin of its own (Foundation ships no Magellan Sass); its marker is drawn by `foundation-menu`, which the consumer includes for the Menu itself (`.menu .is-active > a` through `menu-state-active`, reading `$menu-item-background-active`, `$menu-item-color-active`, and `$menu-item-color-alt-active`). No library CSS; there is no `nfs-magellan` mixin.
+Sass. The consumer compiles Foundation's Sass from its own settings; the library imports no Foundation code and copies no Foundation rule. This Plugin relies on no Foundation Export mixin of its own (Foundation ships no Magellan Sass); its marker is drawn by `foundation-menu`, which the consumer includes for the Menu itself (`.menu .is-active > a` through `menu-state-active`, reading `$menu-item-background-active`, `$menu-item-color-active`, and `$menu-item-color-alt-active`). The Menu's own classes (`.menu`, `.vertical`, `.expanded`) are bound by the Menu directive written beside `nfsMagellan`, whose spec owns the Menu's mixin: `nfs-menu`, which the consumer includes for the Menu, paints a link carrying `aria-current` with the same `menu-state-active` look, so Magellan's marker (the `li`'s `.is-active` and the link's `aria-current`) gets one look from both rules, and it gives simple-menu links their 24 px row ([Spec: Menu](../issues/85-spec-menu.md)). No library CSS; there is no `nfs-magellan` mixin.
 
 1. Rules: none. The only reason a rule would be needed, a marker on the link inside a Menu, is avoided by also placing `.is-active` on the list item, where Foundation's Menu already styles it.
-2. Reused Foundation settings, mixins, functions: `foundation-menu` and the three menu active settings above, from the consumer's compile. For WCAG 2.2 AA with changed settings: `$menu-item-background-active` must keep at least 3:1 against the menu's background (1.4.11), and the text color `color-pick-contrast` picks must keep at least 4.5:1 (1.4.3); Foundation's defaults give 4.65:1 for both on `$white` and 3.76:1 against the default Top Bar. Inside a `.top-bar`, the unmarked links (`$anchor-color`) are 3.76:1 against Foundation's default `$topbar-background` (`$light-gray`) and fail 1.4.3, so the consumer must set a bar background on which `$anchor-color` reaches 4.5:1, for example `$topbar-background: $white;` (4.65:1), or a darker `$anchor-color`. The Storybook preview's settings file carries that override, commented with its criterion (1.4.3 `color-contrast`, `magellan--sticky-top-bar`); it is the same line the [Spec: Dropdown Menu](../issues/21-spec-dropdown-menu.md) adds for its Top Bar story, so the shared preview needs it once.
+2. Reused Foundation settings, mixins, functions: `foundation-menu` and the three menu active settings above, from the consumer's compile. For WCAG 2.2 AA with changed settings: `$menu-item-background-active` must keep at least 3:1 against the menu's background (1.4.11), and the text color `color-pick-contrast` picks must keep at least 4.5:1 (1.4.3); Foundation's defaults give 4.65:1 for both on `$white` and 3.76:1 against the default Top Bar. Inside a Top Bar (`[nfsTopBar]`), the unmarked links (`$anchor-color`) are 3.76:1 against Foundation's default `$topbar-background` (`$light-gray`) and fail 1.4.3, so the consumer must set a bar background on which `$anchor-color` reaches 4.5:1, for example `$topbar-background: $white;` (4.65:1), or a darker `$anchor-color`. The Storybook preview's settings file carries that override, commented with its criterion (1.4.3 `color-contrast`, `magellan--sticky-top-bar`); it is the same line the [Spec: Dropdown Menu](../issues/21-spec-dropdown-menu.md) adds for its Top Bar story, so the shared preview needs it once.
 3. Custom properties: none.
 4. Motion classes: none; scrolling is browser-owned through `NfsSmoothScroll`, whose opt-in `nfs-smooth-scroll` mixin gates native smooth jumps under `prefers-reduced-motion: no-preference`.
 5. Missing include: without `foundation-menu`, the list item's `.is-active` paints nothing (the Menu itself is unstyled too); `aria-current` and the link's `.is-active` are unaffected. Without the consumer's `scroll-padding-top` under a sticky bar, jumps end under the bar and sections become current late.
+6. Variant properties: none. Magellan has no Variant class family, so no mixin writes a `--nfs-<setting>` property for it; the Menu's Variant families, and whether they need Variant properties, are the Menu spec's (ADR 0040).
 
 ### Platform features to adopt when the browser target moves
 
@@ -654,3 +684,5 @@ Sass. The consumer compiles Foundation's Sass from its own settings; the library
 - `calcPoints()`, `reflow()`: dropped; layout changes are observed.
 - The generated container id and `data-resize`/`data-scroll` attributes: dropped.
 - `destroy()` trying to strip the hash (a no-op string call in Foundation): Magellan leaves the URL alone on destroy.
+- `class="menu expanded"` (or `vertical menu`) written on the container, as Foundation's docs markup does: the Menu directive written beside `nfsMagellan` binds `.menu` and sets its Variant classes from typed inputs (`<ul nfsMenu expanded nfsMagellan>`), and the consumer writes no class (ADR 0039, D17). The docs' `div.sections` wrapper, a class no Foundation Sass defines, is left out of the examples.
+- The Sticky pairing's container on a `nav` around the sticky element, with the range set by `data-anchor`: the grid cell is the container (Sticky's range is the parent, ADR 0019).
