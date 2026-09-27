@@ -582,6 +582,8 @@ Testing Decisions line (layer 4, release test, manual): "Before each release, wi
 
 Correction (2026-09-27, from [Resolve the assistive-technology checks](../issues/77-evidence-assistive-technology-checks.md)): the verdict summary, here and in the table at the top, omits that the change is announced on a focused link: when the link that holds focus gains `aria-current`, NVDA 2023.1 says "current page" and VoiceOver iOS 16.4 "current page link" (a11ysupport.io change test), and NVDA's source speaks it for the focus object (the fourth bullet under What NVDA does). A keyboard user who tabs to a Magellan link and then scrolls by wheel or scrollbar hears "current" when that section becomes current; the Magellan spec's ARIA table now says so.
 
+Correction (2026-09-27, audit 0006 L8): the change test above sets `aria-current="page"`, so its "current page" is the `page` token's phrase. Magellan renders `true` by default, which this file's `aria-current` attribute results record as "current" for VoiceOver on iOS, and which NVDA's `controlTypes/isCurrent.py` maps to "current". The Magellan spec now expects VoiceOver on iOS to say "current" for its focused link.
+
 ---
 
 ## Gaps and limits of this evidence
