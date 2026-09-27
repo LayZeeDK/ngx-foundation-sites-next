@@ -36,7 +36,7 @@ Resolved 2026-09-27. Evidence: [research/out-of-scope-exclusions.md](../research
 4. Destination: this map's Destination is redrawn (the user's goal condition already asks for specs "for each component in Foundation for Sites"), not a fresh effort.
 5. The legacy Float Grid and Flex Grid (legacy since 6.4, disabled by default) get a spec each.
 6. The 26 published specs are carried into the class rule by one re-run ticket each.
-7. How a Variant input is typed over an open Sass map (custom palette colours, custom button sizes, breakpoints) is decided by a `/research` subagent and then a panel. The user vetoed consumer-side TypeScript `namespace` or `module` augmentation (declaration merging).
+7. How a Variant input is typed over an open Sass map (custom palette colours, custom button sizes, breakpoints) is decided by a `/research` subagent and then a panel. The user vetoed consumer-side TypeScript `namespace` or `module` augmentation (declaration merging), and later the same day extended the veto to every way of changing the library's types from outside the consumer's own code: a tsconfig `paths` remapping of a library type module and a generator that overwrites a type file inside the installed package are out too.
 
 The judge's fifth decision (how far the triage reaches into published specs) is overtaken by decision 6: every published spec is re-run under the class rule, and the menu cross-links the Angular-native lens proposed (the Nested menu roots hosting the Menu directive, the Top Bar feeding the Dropdown Menu through DI) are questions for the Menu, Top Bar, and menu re-run tickets.
 
