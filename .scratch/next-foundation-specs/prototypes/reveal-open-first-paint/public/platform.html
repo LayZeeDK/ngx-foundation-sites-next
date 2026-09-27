@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Platform probe</title>
+  <script>
+    // THROWAWAY: what show(), showModal(), setAttribute, removeAttribute, and close() do with a
+    // dialog that was parsed with `open` (a server-rendered non-modal dialog).
+    window.__log = [];
+    for (const type of ['close', 'toggle', 'beforetoggle', 'cancel']) {
+      document.addEventListener(type, (e) => window.__log.push(type + ':' + e.target.id), true);
+    }
+    const settle = () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(r, 100))));
+    const take = () => window.__log.splice(0);
+    const state = (d) => ({ open: d.open, attr: d.getAttribute('open'), modal: d.matches(':modal'), display: getComputedStyle(d).display, active: document.activeElement.id || document.activeElement.tagName });
+    window.probe = {
+      async a() {
+        const d = document.getElementById('a');
+        const before = state(d);
+        take();
+        let error = null;
+        try { d.show(); } catch (e) { error = e.name; }
+        await settle();
+        return { before, error, events: take(), after: state(d) };
+      },
+      async b() {
+        const d = document.getElementById('b');
+        let error = null;
+        try { d.showModal(); } catch (e) { error = e.name; }
+        await settle();
+        return { error, events: take(), after: state(d) };
+      },
+      async c() {
+        const d = document.getElementById('c');
+        take();
+        d.setAttribute('open', '');
+        await settle();
+        const afterSet = { events: take(), state: state(d) };
+        d.close('x');
+        await settle();
+        const afterClose = { events: take(), state: state(d), returnValue: d.returnValue };
+        d.show();
+        await settle();
+        const afterShow = { events: take(), state: state(d) };
+        d.close();
+        await settle();
+        const afterClose2 = { events: take(), state: state(d) };
+        return { afterSet, afterClose, afterShow, afterClose2 };
+      },
+      async d() {
+        const d = document.getElementById('d');
+        take();
+        d.removeAttribute('open');
+        await settle();
+        const afterRemove = { events: take(), state: state(d) };
+        let error = null;
+        try { d.show(); } catch (e) { error = e.name; }
+        await settle();
+        const afterShow = { error, events: take(), state: state(d) };
+        d.close();
+        await settle();
+        const afterClose = { events: take(), state: state(d) };
+        return { afterRemove, afterShow, afterClose };
+      },
+    };
+  </script>
+</head>
+<body>
+  <dialog open id="a"><button id="a-btn">A</button></dialog>
+  <dialog open id="b"><button id="b-btn">B</button></dialog>
+  <dialog open id="c"><button id="c-btn">C</button></dialog>
+  <dialog open id="d"><button id="d-btn">D</button></dialog>
+</body>
+</html>

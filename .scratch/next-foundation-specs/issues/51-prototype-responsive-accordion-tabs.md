@@ -105,3 +105,7 @@ Exact error text: no case failed in the final build. Every failing assertion dur
 
 1. Screen-reader behaviour of a mode swap (NVDA, JAWS, VoiceOver): whether moving focus from a title to the equivalent tab (or back) is announced as a usable context change, and whether a live-region message is needed. Needs assistive technology; axe and the role checks here cannot answer it.
 2. Inherited, not re-opened: the Aria development warnings on projected panels (case 24) and the replay log, both in the [Prototype: `@angular/aria` Accordion and Tabs under Foundation markup](43-prototype-aria-accordion-tabs.md) answer; both involve an upstream filing that needs the user's confirmation.
+
+### Amendment, 2026-09-27 (audit 0006)
+
+The upstream item (2) is closed as not filed, by the user's ruling ([Upstream filings](76-evidence-upstream-filing-readiness.md)); no workaround here depends on it. The screen-reader item (1) is decided by [Resolve the assistive-technology checks](77-evidence-assistive-technology-checks.md) check 3; the release test is in the [Spec: Responsive Accordion Tabs](19-spec-responsive-accordion-tabs.md), Testing Decisions.

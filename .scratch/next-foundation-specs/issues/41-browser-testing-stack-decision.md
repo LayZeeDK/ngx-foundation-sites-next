@@ -95,3 +95,7 @@ Rule: [map](../map.md), Orchestration rules, "Triage of human-only items". Only 
    - Impact: not HIGH. No spec and no decision depends on the outcome (decision 16); layer 4 is the only three-engine layer.
    - Confidence: HIGH that nothing here needs a person's decision: it is an environment the new repository's first CI run supplies (`mcr.microsoft.com/playwright:v1.63.0-noble` or `npx playwright install --with-deps`).
    - Outcome: DECIDED: verified by the new repository's first CI run; not a human question.
+
+### Amendment, 2026-09-27 (audit 0006)
+
+The upstream item is closed as not filed, by the user's ruling ([Upstream filings](76-evidence-upstream-filing-readiness.md)); no workaround here depends on it.

@@ -1,0 +1,27 @@
+{"engine":"chromium","after":"routerLink to-b","link":"toc-once","href":"/guide/a#s3","docURLBefore":"/guide/b","urlAfter":"/guide/a#s3","reloaded":true}
+{"engine":"chromium","after":"routerLink to-b","link":"toc-reactive","href":"/guide/b#s3","docURLBefore":"/guide/b","urlAfter":"/guide/b#s3","reloaded":false}
+{"engine":"chromium","after":"routerLink to-b-query","link":"toc-once","href":"/guide/a#s3","docURLBefore":"/guide/b?v=2","urlAfter":"/guide/a#s3","reloaded":true}
+{"engine":"chromium","after":"routerLink to-b-query","link":"toc-reactive","href":"/guide/b?v=2#s3","docURLBefore":"/guide/b?v=2","urlAfter":"/guide/b?v=2#s3","reloaded":false}
+{"engine":"chromium","after":"routerLink to-b","link":"skip-once","href":"/guide/a#main","docURLBefore":"/guide/b","urlAfter":"/guide/a#main","reloaded":true}
+{"engine":"chromium","after":"routerLink to-b","link":"skip-reactive","href":"/guide/b#main","docURLBefore":"/guide/b","urlAfter":"/guide/b#main","reloaded":false}
+{"engine":"chromium","after":"routerLink to-b","link":"skip-bare","href":"#main","docURLBefore":"/guide/b","urlAfter":"/guide/a#main","reloaded":true}
+{"engine":"chromium","after":"first load /guide/a","link":"skip-bare","href":"#main","docURLBefore":"/guide/a","urlAfter":"/guide/a#main","reloaded":true}
+{"engine":"chromium","after":"first load /guide/a","link":"toc-once","href":"/guide/a#s3","docURLBefore":"/guide/a","urlAfter":"/guide/a#s3","reloaded":false}
+{"engine":"firefox","after":"routerLink to-b","link":"toc-once","href":"/guide/a#s3","docURLBefore":"/guide/b","urlAfter":"/guide/a#s3","reloaded":true}
+{"engine":"firefox","after":"routerLink to-b","link":"toc-reactive","href":"/guide/b#s3","docURLBefore":"/guide/b","urlAfter":"/guide/b#s3","reloaded":false}
+{"engine":"firefox","after":"routerLink to-b-query","link":"toc-once","href":"/guide/a#s3","docURLBefore":"/guide/b?v=2","urlAfter":"/guide/a#s3","reloaded":true}
+{"engine":"firefox","after":"routerLink to-b-query","link":"toc-reactive","href":"/guide/b?v=2#s3","docURLBefore":"/guide/b?v=2","urlAfter":"/guide/b?v=2#s3","reloaded":false}
+{"engine":"firefox","after":"routerLink to-b","link":"skip-once","href":"/guide/a#main","docURLBefore":"/guide/b","urlAfter":"/guide/a#main","reloaded":true}
+{"engine":"firefox","after":"routerLink to-b","link":"skip-reactive","href":"/guide/b#main","docURLBefore":"/guide/b","urlAfter":"/guide/b#main","reloaded":false}
+{"engine":"firefox","after":"routerLink to-b","link":"skip-bare","href":"#main","docURLBefore":"/guide/b","urlAfter":"/guide/a#main","reloaded":true}
+{"engine":"firefox","after":"first load /guide/a","link":"skip-bare","href":"#main","docURLBefore":"/guide/a","urlAfter":"/guide/a#main","reloaded":true}
+{"engine":"firefox","after":"first load /guide/a","link":"toc-once","href":"/guide/a#s3","docURLBefore":"/guide/a","urlAfter":"/guide/a#s3","reloaded":false}
+{"engine":"webkit","after":"routerLink to-b","link":"toc-once","href":"/guide/a#s3","docURLBefore":"/guide/b","urlAfter":"/guide/a#s3","reloaded":true}
+{"engine":"webkit","after":"routerLink to-b","link":"toc-reactive","href":"/guide/b#s3","docURLBefore":"/guide/b","urlAfter":"/guide/b#s3","reloaded":false}
+{"engine":"webkit","after":"routerLink to-b-query","link":"toc-once","href":"/guide/a#s3","docURLBefore":"/guide/b?v=2","urlAfter":"/guide/a#s3","reloaded":true}
+{"engine":"webkit","after":"routerLink to-b-query","link":"toc-reactive","href":"/guide/b?v=2#s3","docURLBefore":"/guide/b?v=2","urlAfter":"/guide/b?v=2#s3","reloaded":false}
+{"engine":"webkit","after":"routerLink to-b","link":"skip-once","href":"/guide/a#main","docURLBefore":"/guide/b","urlAfter":"/guide/a#main","reloaded":true}
+{"engine":"webkit","after":"routerLink to-b","link":"skip-reactive","href":"/guide/b#main","docURLBefore":"/guide/b","urlAfter":"/guide/b#main","reloaded":false}
+{"engine":"webkit","after":"routerLink to-b","link":"skip-bare","href":"#main","docURLBefore":"/guide/b","urlAfter":"/guide/a#main","reloaded":true}
+{"engine":"webkit","after":"first load /guide/a","link":"skip-bare","href":"#main","docURLBefore":"/guide/a","urlAfter":"/guide/a#main","reloaded":true}
+{"engine":"webkit","after":"first load /guide/a","link":"toc-once","href":"/guide/a#s3","docURLBefore":"/guide/a","urlAfter":"/guide/a#s3","reloaded":false}

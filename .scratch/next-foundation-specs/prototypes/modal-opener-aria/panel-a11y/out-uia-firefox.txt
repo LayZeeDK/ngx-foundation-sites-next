@@ -1,0 +1,11 @@
+firefox 155.0
+== case I1
+before: ["Document lct=\"dokument\" name=\"panel72 a11y probe\" focusable FOCUSED value=\"http://127.0.0.1:4760/probe.html\"","Button lct=\"knap\" name=\"Open I1\" id=openI1 focusable expandCollapse=Collapsed","Hyperlink lct=\"link\" name=\"A page link\" id=pageLink focusable value=\"http://127.0.0.1:4760/probe.html#x\"","Text lct=\"tekst\" name=\"A page link\""]
+open:   ["Button lct=\"knap\" name=\"Open I1\" id=openI1 focusable expandCollapse=Expanded","Button lct=\"knap\" name=\"Close I\" id=closeI focusable FOCUSED"]
+after:  ["Button lct=\"knap\" name=\"Open I1\" id=openI1 focusable FOCUSED expandCollapse=Collapsed","Hyperlink lct=\"link\" name=\"A page link\" id=pageLink focusable value=\"http://127.0.0.1:4760/probe.html#x\"","Text lct=\"tekst\" name=\"A page link\""]
+== case I2
+before: ["Document lct=\"dokument\" name=\"panel72 a11y probe\" focusable FOCUSED value=\"http://127.0.0.1:4760/probe.html\"","Button lct=\"knap\" name=\"Open I2\" id=openI2 focusable expandCollapse=Collapsed","Hyperlink lct=\"link\" name=\"A page link\" id=pageLink focusable value=\"http://127.0.0.1:4760/probe.html#x\"","Text lct=\"tekst\" name=\"A page link\""]
+open:   ["Button lct=\"knap\" name=\"Open I2\" id=openI2 offscreen focusable expandCollapse=Collapsed","Button lct=\"knap\" name=\"Close I\" id=closeI offscreen focusable FOCUSED"]
+after:  ["Button lct=\"knap\" name=\"Open I2\" id=openI2 focusable FOCUSED expandCollapse=Collapsed","Hyperlink lct=\"link\" name=\"A page link\" id=pageLink focusable value=\"http://127.0.0.1:4760/probe.html#x\"","Text lct=\"tekst\" name=\"A page link\""]
+== case J
+static: ["Document lct=\"dokument\" name=\"panel72 a11y probe\" focusable FOCUSED value=\"http://127.0.0.1:4760/probe.html\"","Button lct=\"knap\" name=\"Open J\" id=openJ focusable expandCollapse=Expanded","Hyperlink lct=\"link\" name=\"A page link\" id=pageLink focusable value=\"http://127.0.0.1:4760/probe.html#x\"","Text lct=\"tekst\" name=\"A page link\""]

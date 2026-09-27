@@ -1,0 +1,30 @@
+=== pw163 chromium 153.0.8010.12
+s-vlr-ltr                wm=vertical-lr/ltr cdp=vertical thumbY v0=11.5/200 v100=187.5/200 | Up=49 Down=51 Right=51 Left=49 PageUp=60 PageDown=40 Home=0 End=100 | click top=0 bottom=100
+s-vlr-rtl                wm=vertical-lr/rtl cdp=vertical thumbY v0=187.5/200 v100=11.5/200 | Up=51 Down=49 Right=51 Left=49 PageUp=60 PageDown=40 Home=0 End=100 | click top=100 bottom=0
+s-vrl-ltr                wm=vertical-rl/ltr cdp=vertical thumbY v0=11.5/200 v100=187.5/200 | Up=49 Down=51 Right=51 Left=49 PageUp=60 PageDown=40 Home=0 End=100 | click top=0 bottom=100
+s-vrl-rtl                wm=vertical-rl/rtl cdp=vertical thumbY v0=187.5/200 v100=11.5/200 | Up=51 Down=49 Right=51 Left=49 PageUp=60 PageDown=40 Home=0 End=100 | click top=100 bottom=0
+s-vlr-ltr-flip           wm=vertical-lr/ltr cdp=vertical thumbY v0=187.5/200 v100=11.5/200 | Up=49 Down=51 Right=51 Left=49 PageUp=60 PageDown=40 Home=0 End=100 | click top=100 bottom=0
+s-vlr-rtl-flip           wm=vertical-lr/rtl cdp=vertical thumbY v0=11.5/200 v100=187.5/200 | Up=51 Down=49 Right=51 Left=49 PageUp=60 PageDown=40 Home=0 End=100 | click top=0 bottom=100
+s-rot-fnd                wm=horizontal-tb/ltr cdp=horizontal thumbY v0=187.5/200 v100=11.5/200 | Up=51 Down=49 Right=51 Left=49 PageUp=60 PageDown=40 Home=0 End=100 | click top=100 bottom=0
+s-vlr-inherit-rtl-page   wm=vertical-lr/rtl cdp=vertical thumbY v0=187.5/200 v100=11.5/200 | Up=51 Down=49 Right=51 Left=49 PageUp=60 PageDown=40 Home=0 End=100 | click top=100 bottom=0
+s-sv                     wm=horizontal-tb/ltr cdp=vertical thumbY v0=none v100=none | Up=51 Down=49 Right=51 Left=49 PageUp=60 PageDown=40 Home=0 End=100 | click top=100 bottom=0
+=== pw163 firefox 155.0
+s-vlr-ltr                wm=vertical-lr/ltr cdp=- thumbY v0=11.5/200 v100=187.5/200 | Up=51 Down=49 Right=51 Left=49 PageUp=60 PageDown=40 Home=0 End=100 | click top=0 bottom=100
+s-vlr-rtl                wm=vertical-lr/rtl cdp=- thumbY v0=187.5/200 v100=11.5/200 | Up=51 Down=49 Right=49 Left=51 PageUp=60 PageDown=40 Home=0 End=100 | click top=100 bottom=0
+s-vrl-ltr                wm=vertical-rl/ltr cdp=- thumbY v0=11.5/200 v100=187.5/200 | Up=51 Down=49 Right=51 Left=49 PageUp=60 PageDown=40 Home=0 End=100 | click top=0 bottom=100
+s-vrl-rtl                wm=vertical-rl/rtl cdp=- thumbY v0=187.5/200 v100=11.5/200 | Up=51 Down=49 Right=49 Left=51 PageUp=60 PageDown=40 Home=0 End=100 | click top=100 bottom=0
+s-vlr-ltr-flip           wm=vertical-lr/ltr cdp=- thumbY v0=188.5/201 v100=12.5/201 | Up=51 Down=49 Right=51 Left=49 PageUp=60 PageDown=40 Home=0 End=100 | click top=100 bottom=0
+s-vlr-rtl-flip           wm=vertical-lr/rtl cdp=- thumbY v0=12.5/201 v100=188.5/201 | Up=51 Down=49 Right=49 Left=51 PageUp=60 PageDown=40 Home=0 End=100 | click top=0 bottom=100
+s-rot-fnd                wm=horizontal-tb/ltr cdp=- thumbY v0=187.5/200 v100=11.5/200 | Up=51 Down=49 Right=51 Left=49 PageUp=60 PageDown=40 Home=0 End=100 | click top=100 bottom=0
+s-vlr-inherit-rtl-page   wm=vertical-lr/rtl cdp=- thumbY v0=187.5/200 v100=11.5/200 | Up=51 Down=49 Right=49 Left=51 PageUp=60 PageDown=40 Home=0 End=100 | click top=100 bottom=0
+s-sv                     wm=horizontal-tb/ltr cdp=- thumbY v0=11.5/200 v100=11.5/200 | Up=51 Down=49 Right=51 Left=49 PageUp=60 PageDown=40 Home=0 End=100 | click top=0 bottom=0
+=== pw163 webkit 26.6
+s-vlr-ltr                wm=vertical-lr/ltr cdp=- thumbY v0=11.5/200 v100=187.5/200 | Up=51 Down=49 Right=51 Left=49 PageUp=60 PageDown=40 Home=0 End=100 | click top=0 bottom=100
+s-vlr-rtl                wm=vertical-lr/rtl cdp=- thumbY v0=187.5/200 v100=11.5/200 | Up=51 Down=49 Right=51 Left=49 PageUp=60 PageDown=40 Home=0 End=100 | click top=100 bottom=0
+s-vrl-ltr                wm=vertical-rl/ltr cdp=- thumbY v0=11.5/200 v100=187.5/200 | Up=51 Down=49 Right=51 Left=49 PageUp=60 PageDown=40 Home=0 End=100 | click top=0 bottom=100
+s-vrl-rtl                wm=vertical-rl/rtl cdp=- thumbY v0=187.5/200 v100=11.5/200 | Up=51 Down=49 Right=51 Left=49 PageUp=60 PageDown=40 Home=0 End=100 | click top=100 bottom=0
+s-vlr-ltr-flip           wm=vertical-lr/ltr cdp=- thumbY v0=187.5/200 v100=11.5/200 | Up=51 Down=49 Right=51 Left=49 PageUp=60 PageDown=40 Home=0 End=100 | click top=100 bottom=0
+s-vlr-rtl-flip           wm=vertical-lr/rtl cdp=- thumbY v0=11.5/200 v100=187.5/200 | Up=51 Down=49 Right=51 Left=49 PageUp=60 PageDown=40 Home=0 End=100 | click top=0 bottom=100
+s-rot-fnd                wm=horizontal-tb/ltr cdp=- thumbY v0=187.5/200 v100=11.5/200 | Up=51 Down=49 Right=51 Left=49 PageUp=60 PageDown=40 Home=0 End=100 | click top=100 bottom=0
+s-vlr-inherit-rtl-page   wm=vertical-lr/rtl cdp=- thumbY v0=187.5/200 v100=11.5/200 | Up=51 Down=49 Right=51 Left=49 PageUp=60 PageDown=40 Home=0 End=100 | click top=100 bottom=0
+s-sv                     wm=horizontal-tb/ltr cdp=- thumbY v0=none v100=none | Up=51 Down=49 Right=49 Left=51 PageUp=60 PageDown=40 Home=100 End=0 | click top=100 bottom=0

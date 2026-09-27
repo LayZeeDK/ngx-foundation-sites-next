@@ -1,0 +1,27 @@
+{
+  "chromium": "153.0.8010.12",
+  "cases": {
+    "I": {
+      "before": "ignored=false role=button expanded=false hasPopup=dialog",
+      "t+150ms": "ignored=true (inertElement) role=none expanded=- hasPopup=- | content.inert=true active=closeI attr=true",
+      "after": "ignored=false role=button expanded=false hasPopup=dialog"
+    },
+    "J": {
+      "before": "ignored=false role=button expanded=false hasPopup=dialog",
+      "t+150ms": "ignored=false role=button expanded=true hasPopup=dialog | content.inert=true active=closeJ attr=true",
+      "after": "ignored=false role=button expanded=false hasPopup=dialog"
+    },
+    "K": {
+      "before": "ignored=false role=button expanded=false hasPopup=dialog",
+      "t+100ms": "ignored=false role=button expanded=true hasPopup=dialog | content.inert=false active=closeK attr=true",
+      "t+1200ms": "ignored=true (inertElement) role=none expanded=- hasPopup=- | content.inert=true active=closeK attr=true",
+      "after": "ignored=false role=button expanded=false hasPopup=dialog"
+    },
+    "L": {
+      "before": "ignored=false role=button expanded=false hasPopup=dialog",
+      "t+100ms": "ignored=false role=button expanded=true hasPopup=dialog | content.inert=false active=closeL attr=true",
+      "t+1200ms": "ignored=true (inertElement) role=none expanded=- hasPopup=- | content.inert=true active=closeL attr=true",
+      "after": "ignored=false role=button expanded=false hasPopup=dialog"
+    }
+  }
+}

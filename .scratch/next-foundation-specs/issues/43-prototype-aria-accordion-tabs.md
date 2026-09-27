@@ -110,3 +110,7 @@ Rule: [map](../map.md), Orchestration rules, "Triage of human-only items". Only 
    - Outcome: DECIDED: accept and document the warnings. Filing the issue in angular/components stays HUMAN-ONLY BY KIND (upstream filing).
 2. Replayed Aria-handled keys log ``preventDefault` called during event replay``: same question as item 3 of [Building-blocks map and cross-cutting architecture decisions](14-building-blocks-map.md), triaged there once. Outcome: DECIDED, option (a): accept the log, with the case 25 replay guard for nested groups; option (b) is not used (internal constant, and it drops the user's key).
    - Option (c), asking angular/components to skip `preventDefault()` during replay in its `KeyboardEventManager`. Outcome: HUMAN-ONLY BY KIND: upstream filing under the user's identity. It is the only route that removes the log for Aria-hosted keys.
+
+### Amendment, 2026-09-27 (audit 0006)
+
+The upstream items are closed as not filed, by the user's ruling ([Upstream filings](76-evidence-upstream-filing-readiness.md)); no workaround here depends on them.

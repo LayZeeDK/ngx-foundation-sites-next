@@ -1,0 +1,9 @@
+firefox 155.0
+== case J
+before: ["Document lct=\"dokument\" name=\"panel72 offcanvas modal probe\" focusable FOCUSED value=\"http://127.0.0.1:4764/probe2.html\"","Button lct=\"knap\" name=\"Open J\" id=openJ focusable expandCollapse=Collapsed"]
+open:   ["Button lct=\"knap\" name=\"Open J\" id=openJ focusable expandCollapse=Expanded","Button lct=\"knap\" name=\"Close J\" id=closeJ focusable FOCUSED"]
+after:  ["Button lct=\"knap\" name=\"Open J\" id=openJ focusable FOCUSED expandCollapse=Collapsed"]
+== case I
+before: ["Document lct=\"dokument\" name=\"panel72 offcanvas modal probe\" focusable FOCUSED value=\"http://127.0.0.1:4764/probe2.html\"","Button lct=\"knap\" name=\"Open I\" id=openI focusable expandCollapse=Collapsed"]
+open:   ["Button lct=\"knap\" name=\"Close I\" id=closeI focusable FOCUSED"]
+after:  ["Button lct=\"knap\" name=\"Open I\" id=openI focusable FOCUSED expandCollapse=Collapsed"]

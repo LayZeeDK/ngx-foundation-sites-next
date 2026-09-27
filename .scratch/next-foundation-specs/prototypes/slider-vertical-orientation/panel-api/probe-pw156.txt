@@ -1,0 +1,3 @@
+pw156 chromium Chrome/141.0.7390.37 sideways-lr=true vertical-lr=true b2.writingMode=vertical-lr b2.transform=none b2.box=24x200 b2.clickTop=100 b2.clickBottom=0 wm.writingMode=vertical-lr wm.box=24x200
+pw156 firefox Firefox/142.0 sideways-lr=true vertical-lr=true b2.writingMode=vertical-lr b2.transform=none b2.box=24x200 b2.clickTop=100 b2.clickBottom=0 wm.writingMode=vertical-lr wm.box=24x200
+pw156 webkit Version/26.0 sideways-lr=true vertical-lr=true b2.writingMode=horizontal-tb b2.transform=none b2.box=24x200 b2.clickTop=50 b2.clickBottom=50 wm.writingMode=horizontal-tb wm.box=24x200

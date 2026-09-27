@@ -140,3 +140,7 @@ No WCAG rule was needed. Foundation's size classes, `.full`, full screen below m
 3. **Upstream report** of WebKit's `animationend` for `::backdrop` arriving with `pseudoElement: ''` (Chromium and Firefox report `'::backdrop'`). First confirm it on Safari; filing is under the user's identity.
 
 New ticket suggestion for the orchestrator: if the OffCanvas spec wants overlap mode on `<dialog>`, a "Prototype: OffCanvas overlap mode on native `<dialog>`" ticket. It would cover the transform transition under the top layer, `::backdrop` from `$offcanvas-exit-background`, and `contentScroll` with the scroll lock.
+
+### Amendment, 2026-09-27 (audit 0006)
+
+The upstream item (3) is closed as not filed, by the user's ruling ([Upstream filings](76-evidence-upstream-filing-readiness.md)); no workaround here depends on it. The screen reader check (2) is decided by [Resolve the assistive-technology checks](77-evidence-assistive-technology-checks.md) check 4; the release test is in the [Spec: Reveal](18-spec-reveal.md), Testing Decisions.

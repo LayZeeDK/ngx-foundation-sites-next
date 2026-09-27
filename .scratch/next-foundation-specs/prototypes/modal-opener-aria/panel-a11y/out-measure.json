@@ -1,0 +1,25 @@
+{
+  "chromium": "153.0.8010.12",
+  "cases": {
+    "I1": {
+      "before": "ignored=false role=button expanded=false hasPopup=dialog",
+      "open": "ignored=false role=button expanded=true hasPopup=dialog",
+      "openPageLink": "ignored=true (inertElement) role=none expanded=- hasPopup=-",
+      "openActive": "closeI",
+      "after": "ignored=false role=button expanded=false hasPopup=dialog",
+      "afterActive": "openI1"
+    },
+    "I2": {
+      "before": "ignored=false role=button expanded=- hasPopup=dialog",
+      "open": "ignored=false role=button expanded=- hasPopup=dialog",
+      "openPageLink": "ignored=true (inertElement) role=none expanded=- hasPopup=-",
+      "openActive": "closeI",
+      "after": "ignored=false role=button expanded=- hasPopup=dialog",
+      "afterActive": "openI2"
+    },
+    "J": {
+      "static": "ignored=false role=button expanded=true hasPopup=dialog",
+      "dialogOpen": false
+    }
+  }
+}

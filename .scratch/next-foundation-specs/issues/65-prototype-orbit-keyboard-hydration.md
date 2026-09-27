@@ -102,3 +102,7 @@ Rule: [map](../map.md), Orchestration rules, "Triage of human-only items".
 ### OPEN FOR HUMAN
 
 - Filing an upstream question or issue with the Angular team about why a host-directive (and a plain template) attribute-binding override does not win over `TabPanel`'s own `[attr.inert]` binding, when the identical pattern does win for `Tab`'s `[attr.tabindex]` and Angular's own documentation says host-directive bindings should be overridable. Human-only by kind (outward-facing action under the user's identity); the workaround (decision 1) does not depend on an answer.
+
+### Amendment, 2026-09-27 (audit 0006)
+
+The upstream item is closed as not filed, by the user's ruling ([Upstream filings](76-evidence-upstream-filing-readiness.md)); no workaround here depends on it.

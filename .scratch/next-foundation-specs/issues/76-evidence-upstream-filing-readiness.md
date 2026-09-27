@@ -18,7 +18,7 @@ Resolved 2026-09-26 by the user's ruling: no upstream filings. None of the ten i
 - Aria's roving tab stop after an outside selection change: accepted and documented as a known deviation in Orbit, Tabs, and Responsive Accordion Tabs.
 - Signal Forms `submit()`, hydration overwriting pre-hydration values, and native submits before hydration: handled by the Abide spec's value adoption and ready gate (ADR 0027).
 - The compiler crash on a typed reference to a host directive: avoided by linking custom controls through their wrapping label (the Abide spec).
-- The directive composition guide's wording: the bundle states the binding rule itself (building-blocks 1.9, ADR 0034).
+- The directive composition guide's wording: the bundle states the binding rule itself (building-blocks 1.9, ADR 0037, which superseded ADR 0034).
 - Storybook's missing public render API: the Playwright gallery on preview internals is adopted (ADR 0018).
 - The two Playwright community packages: nothing depends on them.
 - WebKit's empty `pseudoElement` on the backdrop's `animationend`: the Reveal spec matches on the keyframe name.

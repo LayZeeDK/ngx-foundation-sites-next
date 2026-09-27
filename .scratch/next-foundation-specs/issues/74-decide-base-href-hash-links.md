@@ -18,7 +18,7 @@ The orchestrator runs the panel. The evidence dossier goes to `research/decision
 
 ## Answer
 
-Judge's ruling, 2026-09-27, over the dossier (`research/decision-base-href-hash-links.md`, cited as "D n.n", its experiment rows as "EXP H1" and so on) and four panel arguments: the a11y lens (Opus 5.5), the api lens (Sonnet 5, standing in for Fable 5.1 after Fable credit ran out), the vsdefault lens (Opus 5.5, adversarial against the current default), and the vsalt lens (Sonnet 5, standing in for Fable 5.1, adversarial against the alternatives). The judge ran on Opus 5.5. Facts the ruling rests on were re-read by the judge at their source or in the raw experiment logs; those are marked "verified".
+Judge's ruling, 2026-09-27, over the dossier (`research/decision-base-href-hash-links.md`, cited as "D n.n", its experiment rows as "EXP H1" and so on) and four panel arguments: the a11y lens (Opus 5.5), the api lens (Sonnet 5, standing in for Fable 5.1 after Fable credit ran out), the vsdefault lens (Opus 5.5, adversarial against the current default), and the vsalt lens (Sonnet 5, standing in for Fable 5.1, adversarial against the alternatives). The judge ran on Opus 5.5. Facts the ruling rests on were re-read by the judge at their source or in the raw experiment logs; those are marked "verified". Evidence capture: the experiment logs these marks cite are kept at [prototypes/base-href-hash-links/](../prototypes/base-href-hash-links/README.md); the full workspaces stayed under `D:/tmp/`.
 
 ### Decision
 
@@ -58,7 +58,7 @@ How each panelist's strongest argument was weighed:
 
 ### Changes to apply
 
-Line numbers are those at commit `0cc7d03`. The judge wrote the ADR as a proposal; the orchestrator numbered it ADR 0038 (`adr/0038-smooth-scroll-same-document-links.md`, status accepted), and the text below uses that number.
+Line numbers are those at commit `0cc7d03`. The judge wrote the ADR as a proposal; the orchestrator numbered it ADR 0038 (`adr/0038-smooth-scroll-same-document-links.md`, status accepted), and the text below uses that number. (Paths relative to the effort root; links inside proposed ADR text are relative to `adr/`.)
 
 #### `specs/smooth-scroll.md`
 

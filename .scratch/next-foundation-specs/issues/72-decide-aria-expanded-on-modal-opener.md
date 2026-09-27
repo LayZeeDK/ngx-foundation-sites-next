@@ -18,7 +18,7 @@ The orchestrator runs the panel. The evidence dossier goes to `research/decision
 
 ## Answer
 
-Judge's ruling, 2026-09-27, over the dossier (`research/decision-aria-expanded-modal-opener.md`, cited as "D n.n") and four panel arguments: the a11y lens (Opus), the api lens (Fable), the vsdefault lens (Opus, adversarial against the default), and the vsalt lens (Fable, adversarial against the alternatives). Every fact the ruling rests on was re-read at its source or re-run by the judge; those are marked "verified".
+Judge's ruling (Fable 5.1, before the credit ran out), 2026-09-27, over the dossier (`research/decision-aria-expanded-modal-opener.md`, cited as "D n.n") and four panel arguments: the a11y lens (Opus), the api lens (Fable), the vsdefault lens (Opus, adversarial against the default), and the vsalt lens (Fable, adversarial against the alternatives). Every fact the ruling rests on was re-read at its source or re-run by the judge; those are marked "verified". Evidence capture: the UIA, MSAA, and compile-probe files these marks cite are kept at [prototypes/modal-opener-aria/](../prototypes/modal-opener-aria/README.md); the full workspaces stayed under `D:/tmp/`.
 
 ### Decision
 
@@ -59,7 +59,7 @@ Arguments the decision overrides, and what would reopen it:
 
 ### Changes to apply
 
-Line numbers are those at commit `1c8476f`. The orchestrator applies the shared-document edits; `specs/dropdown.md` needs no change (its `role="dialog"` pane is non-modal and keeps `dialog`).
+Line numbers are those at commit `1c8476f`. The orchestrator applies the shared-document edits; `specs/dropdown.md` needs no change (its `role="dialog"` pane is non-modal and keeps `dialog`). (Paths relative to the effort root; links inside proposed ADR text are relative to `adr/`.)
 
 #### `specs/triggers.md`
 

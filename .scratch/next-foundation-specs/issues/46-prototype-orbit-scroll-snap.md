@@ -158,3 +158,7 @@ Rule: [map](../map.md), Orchestration rules, "Triage of human-only items". Only 
 ### Amendment, 2026-09-26 (audit 0005)
 
 From [audit 0005](../audits/0005-final-bundle.md), finding L5. Item 1 of the Triage above ("STAYS OPEN FOR HUMAN") was later decided: the [Spec: Orbit](33-spec-orbit.md) triage accepted and documented the roving tab-stop drift (its decision 29 and D13), and the [Consistency review and bundle index](36-consistency-review.md), Triage 4, applied the same ruling to Tabs and Responsive Accordion Tabs, whose specs document it as a known deviation. Only the upstream request for a public way to move `TabList`'s active item stays human-only (an upstream filing, in the bundle's open list). The entry above is kept as the record of the triage at the time.
+
+### Amendment, 2026-09-27 (audit 0006)
+
+The upstream item is closed as not filed, by the user's ruling ([Upstream filings](76-evidence-upstream-filing-readiness.md)); no workaround here depends on it.

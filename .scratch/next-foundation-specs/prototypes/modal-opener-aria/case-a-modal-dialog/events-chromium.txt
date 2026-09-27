@@ -1,0 +1,92 @@
+[1790458993742] winevent hooks pid=12252 ok=True,True,True
+[1790458993782] listening on aria-expanded modal opener probe - Google Chrome for Testing
+[1790458997303] ---- case A: focus opener
+[1790458997613] FOCUS Button lct="knap" name="Open A" ariaRole=button ariaProps="haspopup=dialog" id=openA focusable FOCUSED expandCollapse=Collapsed
+[1790458997618] FOCUS Button lct="knap" name="Open A" ariaRole=button ariaProps="haspopup=dialog" id=openA focusable FOCUSED expandCollapse=Collapsed
+[1790458997632] WE OBJ_FOCUS role=pushbutton name="Open A" states=focused|collapsed|focusable|haspopup ia2role=43 ia2attrs{haspopup:dialog}
+[1790458998446] ---- case A: press Enter on opener
+[1790458998730] FOCUS Button lct="knap" name="Close A" ariaRole=button id=closeA focusable FOCUSED
+[1790458998741] WE IA2_TEXT_REMOVED role=document name="aria-expanded modal opener probe" value="http://127.0.0.1:4720/probe.html" states=readonly|focusable ia2role=15 ia2attrs{explicit-name:true}
+[1790458998743] WE IA2_TEXT_INSERTED role=document name="aria-expanded modal opener probe" value="http://127.0.0.1:4720/probe.html" states=readonly|focusable ia2role=15 ia2attrs{explicit-name:true}
+[1790458998744] WE OBJ_REORDER role=document name="aria-expanded modal opener probe" value="http://127.0.0.1:4720/probe.html" states=readonly|focusable ia2role=15 ia2attrs{explicit-name:true}
+[1790458998745] WE OBJ_SHOW role=0x12 name="Dialog A" states=focusable ia2role=18 ia2attrs{explicit-name:true}
+[1790458998747] WE OBJ_FOCUS role=pushbutton name="Close A" states=focused|focusable ia2role=43
+[1790459000556] FOCUS Button lct="knap" name="Open A" ariaRole=button ariaProps="haspopup=dialog" id=openA focusable FOCUSED expandCollapse=Collapsed
+[1790459000570] WE IA2_TEXT_REMOVED role=document name="aria-expanded modal opener probe" value="http://127.0.0.1:4720/probe.html" states=readonly|focusable ia2role=15 ia2attrs{explicit-name:true}
+[1790459000572] WE IA2_TEXT_INSERTED role=document name="aria-expanded modal opener probe" value="http://127.0.0.1:4720/probe.html" states=readonly|focusable ia2role=15 ia2attrs{explicit-name:true}
+[1790459000574] WE OBJ_REORDER role=document name="aria-expanded modal opener probe" value="http://127.0.0.1:4720/probe.html" states=readonly|focusable ia2role=15 ia2attrs{explicit-name:true}
+[1790459000575] WE OBJ_FOCUS role=pushbutton name="Open A" states=focused|collapsed|focusable|haspopup ia2role=43 ia2attrs{haspopup:dialog}
+[1790459001669] WE OBJ_NAMECHANGE role=0x6 name="Normal" states=
+[1790459001903] WE OBJ_NAMECHANGE role=0x6 name="Rediger" states=
+[1790459001946] WE OBJ_NAMECHANGE role=0x6 name="Normal" states=
+[1790459002091] ---- case H: focus opener
+[1790459002106] WE OBJ_NAMECHANGE role=0x6 name="Rediger" states=
+[1790459002130] WE OBJ_NAMECHANGE role=0x6 name="Normal" states=
+[1790459002373] FOCUS Button lct="knap" name="Open H" ariaRole=button ariaProps="haspopup=dialog" id=openH focusable FOCUSED expandCollapse=Collapsed
+[1790459002384] WE OBJ_FOCUS role=pushbutton name="Open H" states=focused|collapsed|focusable|haspopup ia2role=43 ia2attrs{haspopup:dialog}
+[1790459002759] FOCUS TabItem lct="faneelement" name="engelsk" ariaRole=tab ariaProps="selected=true" focusable FOCUSED selected=True
+[1790459002767] FOCUS TabItem lct="faneelement" name="engelsk" ariaRole=tab ariaProps="selected=true" focusable FOCUSED selected=True
+[1790459002772] WE OBJ_REORDER role=client name="Skrivebord 1" states=focusable
+[1790459002777] WE OBJ_FOCUS role=alert name="Vil du oversaette denne side?" desc="Denne dialogboks er ikke fremhaevet i ojeblikket. Tryk pa Alt+Shift+A for at fremhaeve denne dialogboks." states= ia2role=8 ia2attrs{explicit-name:true}
+[1790459002779] WE OBJ_FOCUS role=pagetab name="engelsk" states=selected|focused|focusable|selectable ia2role=37
+[1790459002781] WE OBJ_STATECHANGE role=pushbutton name="Luk" states=checked|focusable ia2role=43 ia2attrs{explicit-name:true}
+[1790459003020] WE OBJ_HIDE (no object)
+[1790459003025] WE OBJ_REORDER role=client name="Skrivebord 1" states=focusable
+[1790459003029] WE OBJ_FOCUS role=pane name="aria-expanded modal opener probe - Google Chrome for Testing" states= ia2role=16 ia2attrs{explicit-name:true}
+[1790459003035] WE OBJ_FOCUS role=pushbutton name="Open H" states=focused|collapsed|focusable|haspopup ia2role=43 ia2attrs{haspopup:dialog}
+[1790459003035] WE OBJ_DESTROY (no object)
+[1790459003027] FOCUS Button lct="knap" name="Open H" ariaRole=button ariaProps="haspopup=dialog" id=openH focusable FOCUSED expandCollapse=Collapsed
+[1790459003104] WE OBJ_NAMECHANGE role=0x6 name="Vandret storrelse" states=
+[1790459003190] ---- case H: press Enter on opener
+[1790459003493] PROP ExpandCollapseState=1 on Button lct="knap" name="Open H" ariaRole=button ariaProps="expanded=true;haspopup=dialog" id=openH focusable FOCUSED expandCollapse=Expanded
+[1790459003498] PROP AriaProperties=readonly=true;expanded=true;haspopup=dialog;multiline=false;multiselectable=false;required=false;hasactions=false on Button lct="knap" name="Open H" ariaRole=button ariaProps="expanded=true;haspopup=dialog" id=openH focusable FOCUSED expandCollapse=Expanded
+[1790459003501] WE OBJ_STATECHANGE role=pushbutton name="Open H" states=focused|expanded|focusable|haspopup ia2role=43 ia2attrs{haspopup:dialog}
+[1790459003801] FOCUS Button lct="knap" name="Close H" ariaRole=button id=closeH focusable FOCUSED
+[1790459003807] WE IA2_TEXT_REMOVED role=document name="aria-expanded modal opener probe" value="http://127.0.0.1:4720/probe.html" states=readonly|focusable ia2role=15 ia2attrs{explicit-name:true}
+[1790459003809] WE IA2_TEXT_INSERTED role=document name="aria-expanded modal opener probe" value="http://127.0.0.1:4720/probe.html" states=readonly|focusable ia2role=15 ia2attrs{explicit-name:true}
+[1790459003811] WE OBJ_REORDER role=document name="aria-expanded modal opener probe" value="http://127.0.0.1:4720/probe.html" states=readonly|focusable ia2role=15 ia2attrs{explicit-name:true}
+[1790459003812] WE OBJ_SHOW role=0x12 name="Dialog H" states=focusable ia2role=18 ia2attrs{explicit-name:true}
+[1790459003813] WE OBJ_FOCUS role=pushbutton name="Close H" states=focused|focusable ia2role=43
+[1790459005037] ---- case H: press Enter on close button
+[1790459005330] FOCUS Button lct="knap" name="Open H" ariaRole=button ariaProps="haspopup=dialog" id=openH focusable FOCUSED expandCollapse=Collapsed
+[1790459005333] WE IA2_TEXT_REMOVED role=document name="aria-expanded modal opener probe" value="http://127.0.0.1:4720/probe.html" states=readonly|focusable ia2role=15 ia2attrs{explicit-name:true}
+[1790459005335] WE IA2_TEXT_INSERTED role=document name="aria-expanded modal opener probe" value="http://127.0.0.1:4720/probe.html" states=readonly|focusable ia2role=15 ia2attrs{explicit-name:true}
+[1790459005336] WE OBJ_REORDER role=document name="aria-expanded modal opener probe" value="http://127.0.0.1:4720/probe.html" states=readonly|focusable ia2role=15 ia2attrs{explicit-name:true}
+[1790459005338] WE OBJ_FOCUS role=pushbutton name="Open H" states=focused|collapsed|focusable|haspopup ia2role=43 ia2attrs{haspopup:dialog}
+[1790459006852] ---- case B: focus opener
+[1790459007145] FOCUS Button lct="knap" name="Open B" ariaRole=button ariaProps="haspopup=dialog" id=openB focusable FOCUSED expandCollapse=LeafNode
+[1790459007152] WE OBJ_FOCUS role=pushbutton name="Open B" states=focused|focusable|haspopup ia2role=43 ia2attrs{haspopup:dialog}
+[1790459007981] ---- case B: press Enter on opener
+[1790459008276] WE IA2_TEXT_REMOVED role=document name="aria-expanded modal opener probe" value="http://127.0.0.1:4720/probe.html" states=readonly|focusable ia2role=15 ia2attrs{explicit-name:true}
+[1790459008278] WE IA2_TEXT_INSERTED role=document name="aria-expanded modal opener probe" value="http://127.0.0.1:4720/probe.html" states=readonly|focusable ia2role=15 ia2attrs{explicit-name:true}
+[1790459008271] FOCUS Button lct="knap" name="Close B" ariaRole=button id=closeB focusable FOCUSED
+[1790459008279] WE OBJ_REORDER role=document name="aria-expanded modal opener probe" value="http://127.0.0.1:4720/probe.html" states=readonly|focusable ia2role=15 ia2attrs{explicit-name:true}
+[1790459008281] WE OBJ_SHOW role=0x12 name="Dialog B" states=focusable ia2role=18 ia2attrs{explicit-name:true}
+[1790459008282] WE OBJ_FOCUS role=pushbutton name="Close B" states=focused|focusable ia2role=43
+[1790459009789] ---- case B: press Enter on close button
+[1790459010108] WE IA2_TEXT_REMOVED role=document name="aria-expanded modal opener probe" value="http://127.0.0.1:4720/probe.html" states=readonly|focusable ia2role=15 ia2attrs{explicit-name:true}
+[1790459010104] FOCUS Button lct="knap" name="Open B" ariaRole=button ariaProps="haspopup=dialog" id=openB focusable FOCUSED expandCollapse=LeafNode
+[1790459010109] WE IA2_TEXT_INSERTED role=document name="aria-expanded modal opener probe" value="http://127.0.0.1:4720/probe.html" states=readonly|focusable ia2role=15 ia2attrs{explicit-name:true}
+[1790459010111] WE OBJ_REORDER role=document name="aria-expanded modal opener probe" value="http://127.0.0.1:4720/probe.html" states=readonly|focusable ia2role=15 ia2attrs{explicit-name:true}
+[1790459010112] WE OBJ_FOCUS role=pushbutton name="Open B" states=focused|focusable|haspopup ia2role=43 ia2attrs{haspopup:dialog}
+[1790459011930] FOCUS Button lct="knap" name="Open C" ariaRole=button ariaProps="haspopup=dialog" id=openC focusable FOCUSED expandCollapse=Collapsed
+[1790459011940] WE OBJ_FOCUS role=pushbutton name="Open C" states=focused|collapsed|focusable|haspopup ia2role=43 ia2attrs{haspopup:dialog}
+[1790459012773] ---- case C: press Enter on opener
+[1790459013063] FOCUS Button lct="knap" name="Close C" ariaRole=button id=closeC focusable FOCUSED
+[1790459013067] PROP ExpandCollapseState=1 on Button lct="knap" name="Open C" ariaRole=button ariaProps="expanded=true;haspopup=dialog" id=openC focusable expandCollapse=Expanded
+[1790459013069] PROP AriaProperties=readonly=true;expanded=true;haspopup=dialog;multiline=false;multiselectable=false;required=false;hasactions=false on Button lct="knap" name="Open C" ariaRole=button ariaProps="expanded=true;haspopup=dialog" id=openC focusable expandCollapse=Expanded
+[1790459013075] WE IA2_TEXT_INSERTED role=grouping states= ia2role=1069 ia2attrs{xml-roles:main}
+[1790459013076] WE OBJ_REORDER role=grouping states= ia2role=1069 ia2attrs{xml-roles:main}
+[1790459013077] WE OBJ_SHOW role=0x12 name="Dialog C" states=focusable ia2role=18 ia2attrs{explicit-name:true}
+[1790459013078] WE OBJ_FOCUS role=pushbutton name="Close C" states=focused|focusable ia2role=43
+[1790459013079] WE OBJ_STATECHANGE role=pushbutton name="Open C" states=expanded|focusable|haspopup ia2role=43 ia2attrs{haspopup:dialog}
+[1790459014586] ---- case C: press Enter on close button
+[1790459014891] WE OBJ_HIDE role= states= (child -817)
+[1790459014893] WE IA2_TEXT_REMOVED role=grouping states= ia2role=1069 ia2attrs{xml-roles:main}
+[1790459014894] WE OBJ_REORDER role=grouping states= ia2role=1069 ia2attrs{xml-roles:main}
+[1790459014890] FOCUS Button lct="knap" name="Open C" ariaRole=button ariaProps="haspopup=dialog" id=openC focusable FOCUSED expandCollapse=Collapsed
+[1790459014895] WE OBJ_FOCUS role=pushbutton name="Open C" states=focused|collapsed|focusable|haspopup ia2role=43 ia2attrs{haspopup:dialog}
+[1790459014896] WE OBJ_STATECHANGE role=pushbutton name="Open C" states=focused|collapsed|focusable|haspopup ia2role=43 ia2attrs{haspopup:dialog}
+[1790459014896] PROP ExpandCollapseState=0 on Button lct="knap" name="Open C" ariaRole=button ariaProps="haspopup=dialog" id=openC focusable FOCUSED expandCollapse=Collapsed
+[1790459014901] PROP AriaProperties=readonly=true;expanded=false;haspopup=dialog;multiline=false;multiselectable=false;required=false;hasactions=false on Button lct="knap" name="Open C" ariaRole=button ariaProps="haspopup=dialog" id=openC focusable FOCUSED expandCollapse=Collapsed
+[1790459016409] ---- done

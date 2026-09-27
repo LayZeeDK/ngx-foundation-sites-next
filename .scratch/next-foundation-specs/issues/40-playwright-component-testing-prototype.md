@@ -117,3 +117,7 @@ Rule: [map](../map.md), Orchestration rules, "Triage of human-only items". Only 
 1. Dependence on Storybook preview internals in the gallery: carried into [Decide the browser testing stack: Playwright component tests, Vitest Browser, or both](41-browser-testing-stack-decision.md) (its OPEN FOR HUMAN 1) and triaged there, once: DECIDED, the gallery is adopted; asking Storybook for a public API stays HUMAN-ONLY BY KIND there.
    - Bug reports against `@playwright-labs/selectors-angular` (the `parseAttributeSelector` error) and `@jscutlery/playwright-ct-angular` (NG0950 under SWC). Outcome: HUMAN-ONLY BY KIND: upstream filing in third-party repositories under the user's identity. Nothing in the effort depends on them; the chosen solution uses none of the three community packages.
 2. Linux CI and macOS WebKit behaviour: carried into the same ticket (its OPEN FOR HUMAN 2) and triaged there: DECIDED, verified by the new repository's first CI run; no spec depends on it.
+
+### Amendment, 2026-09-27 (audit 0006)
+
+The upstream items are closed as not filed, by the user's ruling ([Upstream filings](76-evidence-upstream-filing-readiness.md)); no workaround here depends on them.

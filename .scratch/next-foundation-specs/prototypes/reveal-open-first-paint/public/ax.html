@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Accessibility probe</title>
+</head>
+<body>
+  <!-- f: the candidate's server HTML (open non-modal dialog). g: the spec's server HTML (closed). -->
+  <button id="tf" aria-haspopup="dialog" aria-controls="f" aria-expanded="true">Note F</button>
+  <dialog open id="f" aria-label="Dialog F"><button>Close F</button></dialog>
+  <button id="tg" aria-haspopup="dialog" aria-controls="g" aria-expanded="true">Note G</button>
+  <dialog id="g" aria-label="Dialog G"><button>Close G</button></dialog>
+</body>
+</html>

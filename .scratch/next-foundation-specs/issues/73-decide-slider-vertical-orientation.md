@@ -18,7 +18,7 @@ The orchestrator runs the panel. The evidence dossier goes to `research/decision
 
 ## Answer
 
-Judge's ruling, 2026-09-27, on Opus 5.5: the judge runs on Opus because Fable credit ran out during the open-decision pass (map Notes, Model per ticket). It weighs the dossier (`research/decision-slider-vertical.md`, cited as "D n.n") and four panel arguments: the a11y lens (Opus), the api lens (Fable), the vsdefault lens (Opus, adversarial against the default), and the vsalt lens (Fable, adversarial against the alternatives). Every fact the ruling rests on was re-read at its source or re-run by the judge; those are marked "verified".
+Judge's ruling, 2026-09-27, on Opus 5.5: the judge runs on Opus because Fable credit ran out during the open-decision pass (map Notes, Model per ticket). It weighs the dossier (`research/decision-slider-vertical.md`, cited as "D n.n") and four panel arguments: the a11y lens (Opus), the api lens (Fable), the vsdefault lens (Opus, adversarial against the default), and the vsalt lens (Fable, adversarial against the alternatives). Every fact the ruling rests on was re-read at its source or re-run by the judge; those are marked "verified". Evidence capture: the key-mapping, engine-source, and feature-query files these marks cite are kept at [prototypes/slider-vertical-orientation/](../prototypes/slider-vertical-orientation/README.md); the full workspaces stayed under `D:/tmp/`.
 
 ### Decision
 
@@ -77,7 +77,7 @@ Arguments the decision overrides, and what would reopen them:
 
 ### Changes to apply
 
-Line numbers are those at commit `6a4ea65`. User story 10, the host binding table, the key table, the Rendered HTML, the stories' assertions, and mixin rules 0 to 10, 12, and 13 stay as written; rule 11 changes only its reason.
+Line numbers are those at commit `6a4ea65`. User story 10, the host binding table, the key table, the Rendered HTML, the stories' assertions, and mixin rules 0 to 10, 12, and 13 stay as written; rule 11 changes only its reason. (Paths relative to the effort root; links inside proposed ADR text are relative to `adr/`.)
 
 #### `specs/slider.md`
 

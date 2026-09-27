@@ -1,0 +1,29 @@
+chromium 153.0.8010.12
+== case A
+before: ["Document lct=\"dokument\" name=\"aria-expanded modal opener probe\" id=RootWebArea focusable FOCUSED value=\"http://127.0.0.1:4720/probe.html\"","Button lct=\"knap\" name=\"Open A\" id=openA focusable expandCollapse=Collapsed"]
+open:   ["Button lct=\"knap\" name=\"Close A\" id=closeA focusable FOCUSED"]
+after:  ["Button lct=\"knap\" name=\"Open A\" id=openA focusable FOCUSED expandCollapse=Collapsed"]
+== case B
+before: ["Document lct=\"dokument\" name=\"aria-expanded modal opener probe\" id=RootWebArea focusable FOCUSED value=\"http://127.0.0.1:4720/probe.html\"","Button lct=\"knap\" name=\"Open B\" id=openB focusable expandCollapse=LeafNode"]
+open:   ["Button lct=\"knap\" name=\"Close B\" id=closeB focusable FOCUSED"]
+after:  ["Button lct=\"knap\" name=\"Open B\" id=openB focusable FOCUSED expandCollapse=LeafNode"]
+== case C
+before: ["Document lct=\"dokument\" name=\"aria-expanded modal opener probe\" id=RootWebArea focusable FOCUSED value=\"http://127.0.0.1:4720/probe.html\"","Button lct=\"knap\" name=\"Open C\" id=openC focusable expandCollapse=Collapsed"]
+open:   ["Button lct=\"knap\" name=\"Open C\" id=openC focusable expandCollapse=Expanded","Button lct=\"knap\" name=\"Close C\" id=closeC focusable FOCUSED"]
+after:  ["Button lct=\"knap\" name=\"Open C\" id=openC focusable FOCUSED expandCollapse=Collapsed"]
+== case D
+before: ["Document lct=\"dokument\" name=\"aria-expanded modal opener probe\" id=RootWebArea focusable FOCUSED value=\"http://127.0.0.1:4720/probe.html\"","Button lct=\"knap\" name=\"Open D\" id=openD focusable expandCollapse=Collapsed"]
+open:   ["Button lct=\"knap\" name=\"Close D\" id=closeD focusable FOCUSED"]
+after:  ["Button lct=\"knap\" name=\"Open D\" id=openD focusable FOCUSED expandCollapse=Collapsed"]
+== case E
+before: ["Document lct=\"dokument\" name=\"aria-expanded modal opener probe\" id=RootWebArea focusable FOCUSED value=\"http://127.0.0.1:4720/probe.html\"","Button lct=\"knap\" name=\"Open E\" id=openE focusable expandCollapse=Collapsed"]
+open:   ["Button lct=\"knap\" name=\"Open E\" id=openE focusable expandCollapse=Expanded","Button lct=\"knap\" name=\"Close E\" id=closeE focusable FOCUSED"]
+after:  ["Button lct=\"knap\" name=\"Open E\" id=openE focusable FOCUSED expandCollapse=Collapsed"]
+== case F
+before: ["Document lct=\"dokument\" name=\"aria-expanded modal opener probe\" id=RootWebArea focusable FOCUSED value=\"http://127.0.0.1:4720/probe.html\"","Button lct=\"knap\" name=\"Open F\" id=openF focusable"]
+open:   ["Button lct=\"knap\" name=\"Close F\" id=closeF focusable FOCUSED"]
+after:  ["Button lct=\"knap\" name=\"Open F\" id=openF focusable FOCUSED"]
+== case G
+before: ["Document lct=\"dokument\" name=\"aria-expanded modal opener probe\" id=RootWebArea focusable FOCUSED value=\"http://127.0.0.1:4720/probe.html\"","Button lct=\"knap\" name=\"Open G\" id=openG focusable expandCollapse=Collapsed"]
+open:   ["Button lct=\"knap\" name=\"Open G\" id=openG focusable FOCUSED expandCollapse=Expanded"]
+after:  ["Button lct=\"knap\" name=\"Open G\" id=openG focusable FOCUSED expandCollapse=Collapsed"]

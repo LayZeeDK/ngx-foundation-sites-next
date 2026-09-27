@@ -152,3 +152,7 @@ Rule: [map](../map.md), Orchestration rules, "Triage of human-only items". Only 
    - Outcome: DECIDED: `nfsAbideInput` ships the rescue. Reporting the hydration value loss for every `[formField]` control to Angular is HUMAN-ONLY BY KIND (upstream filing).
 3. Upstream report for `submit()` not flushing debounced children. Outcome: HUMAN-ONLY BY KIND: upstream filing in angular/angular under the user's identity. The library does not wait on it: the input directive flushes on `(keydown.enter)` (decision 3).
 4. Foundation's default colours fail WCAG 2.2 AA: already settled by the orchestrator note above. Impact not HIGH (consumer Sass settings), confidence HIGH (the user's WCAG 2.2 AA rule; five settings measured passing in three engines). Outcome: DECIDED: the Abide spec requires the five settings.
+
+### Amendment, 2026-09-27 (audit 0006)
+
+The upstream items are closed as not filed, by the user's ruling ([Upstream filings](76-evidence-upstream-filing-readiness.md)); no workaround here depends on them.
