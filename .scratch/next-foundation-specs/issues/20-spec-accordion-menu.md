@@ -184,3 +184,13 @@ From [audit 0005](../audits/0005-final-bundle.md), finding M1 (unrecorded depart
 #### Triage
 
 Impact MEDIUM: a consumer compile with a padding under the threshold now stops, but no API, markup, or default changes, and Foundation's defaults (38 px rows) pass. Confidence HIGH: building-blocks 1.10 and ADR 0022 require it, and the Drilldown mixin already does it. Decided.
+
+### Amendment, 2026-09-27 (Decide the `@angular/aria` fallback confirmation)
+
+The [Decide the `@angular/aria` fallback confirmation](75-evidence-aria-fallback-confirmation.md) confirmed that the Accordion Menu does not use Aria's accordion (its fallback 7), with a condition: "one roving tab stop over the triggers" is false. `specs/accordion-menu.md` was edited to match.
+
+1. Decision 11 and the consistency-review amendment's item 1 above: the claim that Aria's accordion triggers "share one roving tab stop" (item 1 cited `focusMode` `'roving'`) is struck. Every enabled trigger is a tab stop: Aria computes `tabindex` from `isFocusable` (0 unless hard-disabled), not from the roving rule, measured `0,0,0,0,0,0,0` in the Aria prototype's case 10 and in probes E and H, which matches the APG accordion pattern. Decision 11's tree facts (a roving tab stop for `ngTree`) are correct and stand.
+2. The reason rests on these facts instead: the group's host `keydown` listener handles keys from inside open sections without checking the target, so its arrow keys move between triggers only and its Enter and Space toggle a section and are cancelled, and a menu would have to guard Aria's keys off on every level and re-add Foundation's cross-link arrows beside them (else Enter on a link inside an open section toggles the section and does not follow the link); the `region` landmark per panel is removable through the Accordion's `region` input, so it is a cost, not a blocker; each trigger needs a required `[panel]` binding; and ResponsiveMenu needs one directive family across its modes (ADR 0004), so an Accordion Menu on Aria's accordion would be a second implementation of the plugin.
+3. Changed in the spec: the Implementation level paragraph's Aria accordion clause, replaced with the reasons above, plus the ResponsiveMenu sentence.
+
+Triage, from the decision ticket: impact HIGH, confidence HIGH (source read by the judge; the tab stops measured). Decided; nothing open.

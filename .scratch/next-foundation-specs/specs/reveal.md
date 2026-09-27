@@ -150,7 +150,7 @@ type NfsRevealOffset = number | 'auto';
 class NfsReveal implements NfsOpenable { // selector dialog[nfsReveal], exportAs 'nfsReveal'
   readonly isOpen: ModelSignal<boolean>;
   readonly id: InputSignal<string>;
-  readonly triggerRole: Signal<'dialog'>;
+  readonly triggerRole: Signal<'dialog' | 'modal-dialog'>;
   readonly overlay: InputSignalWithTransform<boolean, unknown>;
   readonly closeOnClick: InputSignalWithTransform<boolean, unknown>;
   readonly closeOnEsc: InputSignalWithTransform<boolean, unknown>;
@@ -178,7 +178,7 @@ Inputs (Foundation Options first, then the Material-derived ones):
 
 | Input | Kind | Type | Default | Foundation equivalent | Delta |
 | --- | --- | --- | --- | --- | --- |
-| `overlay` | `input()`, `booleanAttribute` | boolean | `true` | `data-overlay` | `false` is a non-modal dialog (`show()`), dismissed by Light dismiss |
+| `overlay` | `input()`, `booleanAttribute` | boolean | `true` | `data-overlay` | `false` is a non-modal dialog (`show()`), dismissed by Light dismiss; its Triggers render `aria-expanded` only then |
 | `closeOnClick` | `input()`, `booleanAttribute` | boolean | `true` | `data-close-on-click` | Modal: a Backdrop press (down and up on the backdrop), not a click that ends there; non-modal: the Light dismiss pointer rule |
 | `closeOnEsc` | `input()`, `booleanAttribute` | boolean | `true` | `data-close-on-esc` | Also covers the platform's other close requests (the Android back gesture) on a modal; always reliable for the Escape key |
 | `multipleOpened` | `input()`, `booleanAttribute` | boolean | `false` | `data-multiple-opened` | Escape closes only the topmost modal (Foundation closed every open one) |
@@ -205,7 +205,7 @@ Model, outputs, methods:
 | `close(result?)` | A no-op when closed; otherwise asks `closePredicate(result)`, and when it does not veto, requests the close, keeping `result` for `closed` |
 | `toggle(trigger?)` | `isOpen() ? close() : open(trigger)` |
 | `registerTrigger(trigger)` | Remembers the element so the Light dismiss pointer rule treats presses on it as inside (non-modal Reveals); returns the unregister function |
-| `triggerRole` | Always `'dialog'`: Triggers render `aria-haspopup="dialog"`, `aria-controls`, and `aria-expanded` (Triggers spec) |
+| `triggerRole` | `computed` from `overlay`: `'modal-dialog'` while `overlay` is true (Triggers render `aria-haspopup="dialog"` and `aria-controls`; the Trigger is inert while the dialog is open), `'dialog'` when it is false (Triggers add `aria-expanded`) (Triggers spec) |
 
 No `beforeClosed` output: building-blocks 1.4 allows no start events, and the start of a close is already observable as `isOpenChange(false)`, emitted the moment the close is accepted, before the exit animation. Material's `backdropClick()` and `keydownEvents()` are template `(pointerdown)` and `(keydown)` bindings on the consumer's own `<dialog>`.
 
@@ -305,7 +305,7 @@ APG pattern: Dialog (Modal) for `overlay: true`; Alert Dialog when `role` is `'a
 | `<dialog>` | `id` | The `id` input; what the Triggers' `aria-controls` names |
 | `<dialog>` | `open` | Set only by `showModal()`/`show()`; never a binding |
 | `<dialog>` | `tabindex`, `aria-hidden` | Never (HTML forbids `tabindex` on `<dialog>`; closed dialogs are `display: none`) |
-| Trigger | `aria-haspopup="dialog"`, `aria-controls`, `aria-expanded` | Triggers spec, `dialog` Trigger role |
+| Trigger | `aria-haspopup="dialog"`, `aria-controls`; plus `aria-expanded` only when `overlay` is false | Triggers spec, `modal-dialog` or `dialog` Trigger role |
 | `.close-button` | name | The consumer's `aria-label`; the `&times;` glyph is `aria-hidden="true"` (Foundation's docs markup) |
 
 | Key | Modal Reveal | Non-modal Reveal | Owner |
@@ -355,7 +355,7 @@ Consumer markup (Foundation's docs example with the two deltas: `<dialog>` for `
 Server HTML (closed; identical for `[isOpen]="true"`, because nothing is bound to `open`); `jsaction` lists the host's replayable listeners and is removed at hydration:
 
 ```html
-<button class="button" type="button" aria-haspopup="dialog" aria-controls="signup" aria-expanded="false" jsaction="click:;">Click me for a modal</button>
+<button class="button" type="button" aria-haspopup="dialog" aria-controls="signup" jsaction="click:;">Click me for a modal</button>
 <dialog id="signup" aria-labelledby="signup-title" class="reveal" jsaction="pointerdown:;pointerup:;keydown:;">
   <h1 id="signup-title">Awesome. I Have It.</h1>
   <p class="lead">Your couch. It is mine.</p>
@@ -368,7 +368,7 @@ Hydrated, open, with `animationIn="nfs-fade-in"` while the enter animation runs 
 ```html
 <html class="is-reveal-open zf-has-scroll" style="top: -1000px;">
 ...
-<button class="button" type="button" aria-haspopup="dialog" aria-controls="signup" aria-expanded="true">Click me for a modal</button>
+<button class="button" type="button" aria-haspopup="dialog" aria-controls="signup">Click me for a modal</button>
 <dialog id="signup" aria-labelledby="signup-title" class="reveal is-opening nfs-fade-in" open>
   ...
 </dialog>
@@ -381,6 +381,7 @@ Non-modal, alert dialog, and offsets:
 ```html
 <dialog nfsReveal #note="nfsReveal" id="note" class="reveal" aria-label="Note" [overlay]="false">...</dialog>
 <!-- open: class="reveal without-overlay" open; not :modal; no html classes -->
+<!-- its Trigger: aria-haspopup="dialog" aria-controls="note" aria-expanded="false", then "true" while open -->
 
 <dialog nfsReveal #confirm="nfsReveal" id="confirm" class="tiny reveal" role="alertdialog"
         aria-labelledby="confirm-title" aria-describedby="confirm-text"
@@ -451,10 +452,10 @@ Story ids follow `reveal--<story>`: `reveal--basic`, `reveal--sizes` (args: `tin
 
 Stack: `@storybook/angular-vite` 10.6 with `@storybook/addon-vitest` on Vitest 4.1 browser mode, Playwright Chromium headless; inferred `test-storybook`: `npx nx test-storybook <lib>`. Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test = 'error'` and `parameters.a11y.options.runOnly = {type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice']}` in the Storybook preview configuration, the enforcing gate, so `color-contrast` and `target-size` are part of it; play functions run axe again with the dialog open. CSR only; the single home of interaction tests.
 
-- `reveal--basic`: clicking the Trigger opens a `:modal` dialog; focus is on its first tabbable element, never the dialog; the Trigger shows `aria-expanded="true"`; the page behind is inert (a page button cannot be focused); Escape closes it and focus returns to the Trigger; the bare `nfsClose` closes it the same way.
+- `reveal--basic`: clicking the Trigger opens a `:modal` dialog; focus is on its first tabbable element, never the dialog; the Trigger carries `aria-haspopup="dialog"` and `aria-controls` and no `aria-expanded` before, while, and after the dialog is open; the page behind is inert (a page button cannot be focused); Escape closes it and focus returns to the Trigger; the bare `nfsClose` closes it the same way.
 - `reveal--sizes`: each Variant class renders with Foundation's width at the story viewport; `.collapse` has no padding.
 - `reveal--tall-content`: the last control inside is reachable by Tab and scrolled into view; the dialog box ends inside the viewport.
-- `reveal--without-overlay`: the dialog is open but not `:modal`, carries `.without-overlay`, and the page stays interactive; an outside press closes it; clicking its Trigger while open closes it once (no reopen); tabbing out of it closes it; Escape with focus on the page closes it.
+- `reveal--without-overlay`: the dialog is open but not `:modal`, carries `.without-overlay`, and the page stays interactive; an outside press closes it; clicking its Trigger while open closes it once (no reopen); tabbing out of it closes it; Escape with focus on the page closes it; its Trigger shows `aria-expanded="true"` while open and `"false"` after it closes.
 - `reveal--nested`: with `multipleOpened`, the inner dialog opens above the outer; Escape closes only the inner and focus returns to the inner's Trigger in the outer; the next Escape closes the outer and focus returns to the page Trigger.
 - `reveal--replace`: with the default `multipleOpened: false`, opening the inner closes the outer; closing the inner returns focus to the outer's page Trigger (the fallback chain), not to `body`.
 - `reveal--animated`: `animationIn="nfs-fade-in" animationOut="nfs-fade-out"`; after opening, `is-opening` is present and `opened` has not fired, then `opened` fires and the classes are gone; after closing, `is-closing` shows while `open` is still set, then the dialog closes and `closed` fires.
@@ -487,7 +488,7 @@ Vitest browser mode under the Angular unit-test builder (`npx nx test <lib>`, Ch
 
 Runs under `npx nx test <lib>` in `<name>.ssr.spec.ts` through the shared `renderServer()` helper; `npx nx test-node <lib>` only if the server path depends on the DOM adapter, which none here does.
 
-- SSR smoke: `renderApplication` over a fixture with a basic Reveal and its Trigger, an open-by-default Reveal, a non-modal one, an alert dialog with a static `autoFocus`, and one with numeric offsets. Assert `whenStable()` resolves; every `<dialog>` is present with its content and without `open`; classes are `reveal` plus the consumer's, `without-overlay` on the non-modal one, no `is-opening`, `is-closing`, or Motion class; `role="alertdialog"` where set; the offset custom properties where set; `jsaction` on the dialog hosts and the Trigger; no class or style on `html`.
+- SSR smoke: `renderApplication` over a fixture with a basic Reveal and its Trigger, an open-by-default Reveal, a non-modal one, an alert dialog with a static `autoFocus`, and one with numeric offsets. Assert `whenStable()` resolves; every `<dialog>` is present with its content and without `open`; classes are `reveal` plus the consumer's, `without-overlay` on the non-modal one, no `is-opening`, `is-closing`, or Motion class; `role="alertdialog"` where set; the offset custom properties where set; `jsaction` on the dialog hosts and the Trigger; no class or style on `html`; the modal Reveals' Triggers carry no `aria-expanded`, the non-modal one's carries it.
 - Pure logic, table-driven: the phase transition function (idle, opening, closing, interruption, animations off), the longest-animation reduction over computed-style lists, the Motion UI name check, the `vOffset`/`hOffset` and `autoFocus`/`restoreFocus` transforms, and the restore-target resolution over a chain of closed Reveals.
 - Sass compile: Foundation 6.9 plus the library with Foundation's defaults emits the seven `nfs-reveal` rules and the `nfs-motion` backdrop keyframes and rules, no copy of a Foundation rule, and no warning; a theme with `$closebutton-color` or `$closebutton-color-hover` under 3:1 against `$reveal-background` stops the compile with the `@error` naming the setting, and a backdrop that leaves the dialog under 3:1 against the dimmed page produces the matching `@warn`.
 
@@ -554,6 +555,7 @@ Against the prerendered fixture app (the harness from the rendering-mode test se
 | D18 | `<form method="dialog">` re-syncs through `close`, reporting `returnValue` | Keeps the platform mechanism working with honest state | Intercepting `submit` (collides with form libraries' own submit handling) |
 | D19 | Contrast pairs checked at compile time from the unrounded ratio (Foundation's `color-luminance()` and the WCAG formula): `@error` for the two close-glyph pairs, `@warn` for the dialog-edge pair | ADR 0022 for 1.4.11, which axe does not test; building-blocks 1.10 asks for an `@error` on colour pairs that carry state, and the close glyph marks the close control at rest and on hover, the same pair the `nfs-off-canvas` mixin stops on; the dialog edge carries no state, so a warning; `color-contrast()` rounds to one decimal and would pass 2.95:1 | A runtime check; no check; a `@warn` for the close glyph (a failing theme would compile inside a Reveal and not inside an Off-canvas panel); Foundation's `color-contrast()` |
 | D20 | Internal `NfsRevealStack` service | Shared state across instances (building-blocks 1.5): order, the Scroll lock count, one `window` listener | A module-level set (shared between applications on one page); per-instance `window` listeners |
+| D21 | Trigger role from `overlay`: `modal-dialog` with the overlay, `dialog` without | `showModal()` makes the Trigger inert while open, so no expanded state is ever exposed; `overlay` is an input, so the server value is final ([Decide: `aria-expanded` on a modal dialog's opener](../issues/72-decide-aria-expanded-on-modal-opener.md)) | A constant `'dialog'` (renders `aria-expanded` on an inert opener and a false `"true"` in open-by-default server HTML) |
 
 ### Usage examples
 

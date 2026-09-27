@@ -231,3 +231,11 @@ From [audit 0005](../audits/0005-final-bundle.md), findings M1, M5, L4 (with unr
 #### Triage
 
 Item 2: Impact MEDIUM (a documented outcome for a consumer binding; no API change). Confidence HIGH (the seed order was measured; Angular writes a two-way binding's target from the output before the first update pass reads it). Decided as the audit suggested; nothing is left open.
+
+### Amendment, 2026-09-27 (Decide the `@angular/aria` fallback confirmation)
+
+The [Decide the `@angular/aria` fallback confirmation](75-evidence-aria-fallback-confirmation.md) confirmed that the menus use neither `ngMenuBar`/`ngMenu` nor `ngTree` (its fallback 6), with a condition: the stated reason is corrected where it overstated and extended where it understated. `specs/nested-menu.md` was edited to match; ADR 0004 gains a dated pointer (the orchestrator's edit).
+
+1. Implementation level, the `@angular/aria` sentence: the roles reason stays (the APG rejects `menu`, `menuitem`, and `tree` for site navigation). Added, from `@angular/aria` 22.2 source and probe F: the containers set no tab stop in server HTML (their first active item is chosen in a render callback), so before hydration the Tab key reaches no link; Aria's menu cancels Enter on a link item (it maps Enter to its own activation). Corrected: `ng-template` groups with `[parent]` and `[ownedBy]` inputs are the tree's, whose child levels are absent from server HTML even when expanded, while a menu needs a `[submenu]` reference per parent and `role="none"` on every item. "Drilldown matches neither" stands.
+
+Triage, from the decision ticket: impact HIGH (the ARIA contract of four plugins), confidence HIGH (source read by the judge; the chosen design measured in the [Prototype: Nested menu directive family with breakpoint mode switching](50-prototype-nested-menu.md)). Decided; nothing open.

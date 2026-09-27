@@ -181,3 +181,11 @@ From [audit 0005](../audits/0005-final-bundle.md), finding M1 (unrecorded depart
 #### Triage
 
 Impact MEDIUM: a consumer compile with a padding under the threshold now stops; no API, markup, or default changes, and Foundation's defaults (38 px rows) pass. Confidence HIGH: building-blocks 1.10 and ADR 0022 require it, and the Drilldown mixin already does it. Decided.
+
+### Amendment, 2026-09-27 (Decide the `@angular/aria` fallback confirmation)
+
+The [Decide the `@angular/aria` fallback confirmation](75-evidence-aria-fallback-confirmation.md) confirmed that the menus do not use `ngMenuBar`/`ngMenu` (its fallback 6), with a condition: the stated reason is corrected where it overstated and extended where it understated. `specs/dropdown-menu.md` was edited to match.
+
+1. Decision 9 and the Implementation level's `@angular/aria` bullet: "rendered from `ng-template` content, which breaks Foundation's nested `ul` markup and leaves open submenus out of server HTML" overstated. Submenus are separate `ngMenu` elements linked by `[submenu]` references, with `role="none"` on every `li`; in Aria's reference shape their items sit in `ngMenuContent` templates and are absent from server HTML, and placed directly they are present but no item is a tab stop before hydration (probe F). Added: Enter on a link item is cancelled by Aria's own activation. The horizontal-only menubar and the hover rule stand.
+
+Triage, from the decision ticket: impact HIGH (the ARIA contract of four plugins), confidence HIGH (source read by the judge). Decided; nothing open.

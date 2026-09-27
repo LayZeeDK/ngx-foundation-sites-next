@@ -81,7 +81,7 @@ From Foundation 6.9's `Magellan.defaults`, its source, its docs page, and its vi
 
 | Feature | Foundation | Library |
 | --- | --- | --- |
-| Activation | `data-magellan` on the link container; links are every `a` inside it, clicks delegated to `a[href^="#"]` | `nfsMagellan` on the link container; links are the in-page `a[href]` descendants (Smooth Scroll's in-page rule, so Router-safe `/path#id` hrefs count, and `#`-only hrefs that `<base href>` resolves elsewhere count after hydration, following that spec's applied default, which its ticket keeps open for a human) |
+| Activation | `data-magellan` on the link container; links are every `a` inside it, clicks delegated to `a[href^="#"]` | `nfsMagellan` on the link container; links are the in-page `a[href]` descendants by Smooth Scroll's in-page rule (the browser's same-document test), so Router-safe `/path#id` hrefs and `routerLink` with `fragment` count, and `#`-only hrefs that `<base href>` resolves to another document do not (Smooth Scroll D9, ADR 0038) |
 | Targets | Every `[data-magellan-target]` in the document; value must equal the link fragment and the `id` | The elements the links' fragments name, found by `id` (HTML's indicated part); no attribute, no directive |
 | Tracking | Window `scroll`, debounced 10 ms through Triggers; `points[]` from `offset().top - threshold`, recomputed on `resizeme` | `IntersectionObserver` with a 1 px band at the Activation line, root = the sections' scroll container; recomputation from live rectangles |
 | Current section | Before the first point: none; exactly at the bottom: last; else the last point `<= scrollY` (with `offset`, and `threshold` again when scrolling up) | Before the first Activation line: none; at the scroll end: the last target; else the last target (document order) whose top has passed its Activation line; no direction-dependent hysteresis |
@@ -210,7 +210,7 @@ Deep linking (`deepLinking` true):
 - No `hashchange` listener: a fragment change the reader makes (editing the address bar, Back and Forward over Magellan's own entries) is a native fragment navigation or traversal that already scrolls (and restores scroll position on traversal); tracking follows it. Foundation's listener existed only to animate.
 - Magellan never writes the URL when `deepLinking` is off, and never on destroy (building-blocks 1.9 asks directives to restore globals they touched; rewriting history while a route is being torn down would corrupt the Router's navigation, so this is a recorded exception).
 
-Development-mode checks (only with `ngDevMode`, never on the server): in the first render callback, a host with no in-page links; a host that is neither inside nor itself a `nav` element or `role="navigation"` element; `updateHistory` without `deepLinking`. When the target set changes, targets in different scroll containers. On a consumer write, an unknown id.
+Development-mode checks (only with `ngDevMode`, never on the server): in the first render callback, a host with no in-page links (including a host whose links are all `#`-only hrefs that `<base href>` resolves to another document; the composed Smooth Scroll check names each such link); a host that is neither inside nor itself a `nav` element or `role="navigation"` element; `updateHistory` without `deepLinking`. When the target set changes, targets in different scroll containers. On a consumer write, an unknown id.
 
 ### Implementation level and primitives
 
@@ -468,6 +468,8 @@ Against the prerendered fixture app (the harness from the rendering-mode test se
 
 ### Usage examples
 
+The next three examples use Foundation's `#id` hrefs, which are in-page only on a page whose URL is the base URL or in an application without `<base href>`; on any other route of an application with `<base href>`, build them from the current path as in the Router example at the end.
+
 A guide page with a sticky table of contents (Magellan inside Sticky, Foundation's documented pairing):
 
 ```ts
@@ -595,7 +597,7 @@ With the Router (base href safe hrefs; both link kinds in one menu):
   template: `
     <nav aria-label="On this page">
       <ul class="vertical menu" nfsMagellan deepLinking>
-        <li><a [href]="path + '#requirements'">Requirements</a></li>
+        <li><a [href]="path() + '#requirements'">Requirements</a></li>
         <li><a routerLink="." fragment="configure">Configure</a></li>
       </ul>
     </nav>
@@ -605,7 +607,16 @@ With the Router (base href safe hrefs; both link kinds in one menu):
 })
 export class InstallGuide {
   readonly #location = inject(Location);
-  protected readonly path = this.#location.prepareExternalUrl(this.#location.path());
+  readonly #currentPath = () => this.#location.prepareExternalUrl(this.#location.path());
+  // The current path and query without the fragment, base href applied, identical on server and client.
+  // It follows URL changes: the Router reuses this component when only its parameters or query change
+  // (and an application shell is never re-created), so a path read once goes stale and the link then
+  // loads the previous page.
+  protected readonly path = signal(this.#currentPath());
+
+  constructor() {
+    inject(DestroyRef).onDestroy(this.#location.onUrlChange(() => this.path.set(this.#currentPath())));
+  }
 }
 ```
 

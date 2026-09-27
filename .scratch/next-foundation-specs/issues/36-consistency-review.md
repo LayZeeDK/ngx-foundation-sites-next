@@ -156,11 +156,9 @@ Everything below is left OPEN FOR HUMAN after the triage rule in the map's Orche
 12. Orbit: the toggled `aria-live`, the "carousel" and "slide" role descriptions (including whether a tab-panel slide reads better with the "slide" role description, which the APG's tabbed example sets and its pattern text omits; added 2026-09-26, audit 0005 M3), slides entering and leaving `inert`, and the focus handoff to a newly selected slide. [Spec: Orbit](33-spec-orbit.md), [Re-run: Orbit spec, the slide's ARIA contract and the focus handoff](70-rerun-orbit-slide-contract-and-focus-handoff.md).
 13. Magellan: how the Current section's link reads with `aria-current="true"`, and silence while `aria-current` moves during scrolling. [Spec: Magellan](30-spec-magellan.md).
 
-#### Trap-quadrant decisions (3; HIGH impact, NOT-HIGH confidence, default applied)
+#### Trap-quadrant decisions (1; HIGH impact, NOT-HIGH confidence, default applied)
 
-1. `aria-expanded` on a modal dialog's opener. Default: the `dialog` Trigger role renders it on every dialog opener; alternative: a fifth role value that omits it, matching Foundation and the APG's plain opener. [Spec: Triggers (shared utility)](54-spec-triggers.md); building-blocks Part 4.
-2. Slider vertical orientation. Default: native rotated range inputs with `aria-orientation="vertical"`, which Chromium announces as horizontal until vertical form controls reach the Browser target; alternative: a custom `role="slider"` handle for the vertical form only. [Spec: Slider](32-spec-slider.md), [Prototype: Foundation-styled `<input type="range">` Slider](45-prototype-slider-range-input.md).
-3. `#`-only `href`s that `<base href>` resolves to another document. Default: handled as in-page after hydration, with a development warning; alternative: handle only links the browser treats as same-document. [Spec: Smooth Scroll](29-spec-smooth-scroll.md); Magellan inherits it.
+1. `#`-only `href`s that `<base href>` resolves to another document. Default: handled as in-page after hydration, with a development warning; alternative: handle only links the browser treats as same-document. [Spec: Smooth Scroll](29-spec-smooth-scroll.md); Magellan inherits it.
 
 #### Confirmation: `@angular/aria` building blocks not used (1 item)
 

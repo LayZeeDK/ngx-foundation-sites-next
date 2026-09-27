@@ -129,7 +129,7 @@ Rule: [map](../map.md), Orchestration rules, "Triage of human-only items". Only 
 | --- | --- | --- | --- |
 | `aria-current` token (inherited from BB Part 4 item 1) | Not HIGH: the default is one attribute value, now behind an input (`ariaCurrentWhenActive`) consumers can override; no other spec depends on it | HIGH: BB triage already DECIDED `true`; ARIA defines `true` as "current item within a set" and treats unknown tokens as `true`; `page` is wrong for sections (R:apg Magellan); `RouterLinkActive` offers the same input | DECIDED: `ariaCurrentWhenActive`, default `true` (decision 22) |
 | URL fragment on directive-handled jumps (inherited from SS) | Not HIGH: SS's default (no write) is additive to change; Magellan owns URL writing through `deepLinking` | HIGH: SS triage DECIDED it; Foundation parity for both plugins; `history.state` preserved in Magellan's writes (Tabs rule) | DECIDED: Smooth Scroll never writes; Magellan writes only with `deepLinking` (decisions 24-25) |
-| `#`-only hrefs under `<base href>` (SS OPEN FOR HUMAN 2) | HIGH | NOT HIGH | Not re-triaged here: owned and kept OPEN FOR HUMAN by the [Spec: Smooth Scroll](29-spec-smooth-scroll.md) triage; Magellan inherits whichever answer, since it uses the same in-page rule (decision 10) |
+| `#`-only hrefs under `<base href>` (SS OPEN FOR HUMAN 2) | HIGH | NOT HIGH | DECIDED by the [Decide: `#`-only links that `<base href>` resolves to another document](74-decide-base-href-hash-links.md) panel: not in-page (Smooth Scroll D9, ADR 0038) |
 | No target directive (decision 7) | HIGH: consumer markup and public API | HIGH: sections are not descendants (DI cannot reach them), dehydrated blocks never construct a directive (BB 1.11 decisions 6-7), ADR 0013 rejected id registries | DECIDED; proposed ADR |
 | `.is-active` on link and `li` (decision 20) | HIGH: the class contract | HIGH: FS Menu docs and Sass style `li.is-active`; FS Magellan writes `a.is-active`; the union keeps both working with no library CSS | DECIDED |
 | `active` model write scrolls without focus (decision 17) | HIGH: public API semantics | HIGH: BB 1.4 names `active` a model; a write that only moved the marker would be overwritten by tracking; focus stays with link activation per 2.4.3 reasoning | DECIDED |
@@ -198,7 +198,7 @@ From the [Consistency review and bundle index](36-consistency-review.md); `specs
 
 #### Triage
 
-The one OPEN FOR HUMAN item (how NVDA, JAWS, and VoiceOver read a moving `aria-current`) is an assistive-technology check and stays human-only by kind. The inherited `<base href>` item stays owned, and open, in the [Spec: Smooth Scroll](29-spec-smooth-scroll.md) triage.
+The one OPEN FOR HUMAN item (how NVDA, JAWS, and VoiceOver read a moving `aria-current`) is an assistive-technology check and stays human-only by kind. The inherited `<base href>` item is decided by the [Decide: `#`-only links that `<base href>` resolves to another document](74-decide-base-href-hash-links.md) panel (Smooth Scroll D9).
 
 ### Amendment, 2026-09-26 (audit 0005)
 
@@ -207,3 +207,14 @@ From [audit 0005](../audits/0005-final-bundle.md), findings L2, L5, and L8; `spe
 1. Audit names (L2): "audit H6" is "audit 0001 H6", and "audit M12" is "audit 0002 M12".
 2. Stale references (L5): the Parent token bullet no longer says Table B sketches an `nfsMagellanToken` (Table B no longer names one); it says an earlier building-blocks sketch named one. The replay bullet cites "building-blocks Part 4, Decided item 3".
 3. JavaScript-disabled e2e case (L8): "screenshot plus axe" names `@axe-core/playwright` with the six tags.
+
+### Amendment, 2026-09-27 (Decide: `#`-only links that `<base href>` resolves to another document)
+
+From the [Decide: `#`-only links that `<base href>` resolves to another document](74-decide-base-href-hash-links.md) panel (option B, [ADR 0038](../adr/0038-smooth-scroll-same-document-links.md)): Smooth Scroll treats a link as in-page only when the browser would make it a same-document fragment navigation, and Magellan inherits the rule through the composed `NfsSmoothScroll`. `specs/magellan.md` was edited as listed.
+
+1. Foundation contract, Activation row: links are the in-page `a[href]` descendants by Smooth Scroll's in-page rule (the browser's same-document test), so Router-safe `/path#id` hrefs and `routerLink` with `fragment` count, and `#`-only hrefs that `<base href>` resolves to another document do not (Smooth Scroll D9, ADR 0038); the reference to an applied default kept open for a human is gone.
+2. Development-mode checks: "a host with no in-page links" now includes a host whose links are all `#`-only hrefs that `<base href>` resolves to another document; the composed Smooth Scroll check names each such link.
+3. Usage examples: a new opening paragraph says the next three examples use Foundation's `#id` hrefs, which are in-page only on a page whose URL is the base URL or without `<base href>`, and points at the Router example for other routes.
+4. Router example: the link binds `path() + '#requirements'`, and `InstallGuide` keeps `path` as a signal updated from `Location.onUrlChange` (unsubscribed through `DestroyRef`), the same body as the Smooth Scroll spec's Router example, because a path read once goes stale when the Router reuses the component.
+
+Ticket edits: the Triage row "`#`-only hrefs under `<base href>`" now records the outcome DECIDED (not in-page), and the consistency-review triage sentence on the inherited `<base href>` item now says it is decided by that panel (Smooth Scroll D9).

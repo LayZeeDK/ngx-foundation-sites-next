@@ -194,3 +194,11 @@ From [audit 0005](../audits/0005-final-bundle.md), findings L4 and L8; `specs/dr
 
 1. Defaults (L4): `NfsDrilldownDefaults` gains `scrollTopElement` (a selector string or `null`; an element reference has no application-wide meaning), so the Defaults token seeds every input, as the browser-level test already said. The root example's comment now says the other inputs seed from the Defaults token, else from Foundation's value in the API table, because the Nested menu's drilldown slot holds `autoHeight` only.
 2. JavaScript-disabled e2e case (L8): "screenshot plus axe" names `@axe-core/playwright` with the six tags (ADR 0018, ADR 0022).
+
+### Amendment, 2026-09-27 (Decide the `@angular/aria` fallback confirmation)
+
+The [Decide the `@angular/aria` fallback confirmation](75-evidence-aria-fallback-confirmation.md) confirmed that the menus use neither `ngMenu` nor `ngTree` (its fallback 6), with a condition: the stated reason is corrected and extended. `specs/drilldown-menu.md` was edited to match.
+
+1. Implementation level, the `@angular/aria` sentence: besides the `tree` and `menu` roles, `ngTree` and `ngMenu` set no tab stop in server HTML (probe F); the `ng-template` groups and `[parent]` inputs are the tree's, and the menu needs a `[submenu]` reference per parent (ADR 0004). Decision 19's tree reasons stand; Aria still has no pattern for stacked levels.
+
+Triage, from the decision ticket: impact HIGH (the ARIA contract of four plugins), confidence HIGH (source read by the judge). Decided; nothing open.

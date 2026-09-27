@@ -18,7 +18,7 @@ A server-rendered Angular application adds a second problem: a trigger must rend
 
 Three attribute directives, `nfsOpen`, `nfsClose`, and `nfsToggle`, on the native `<button>` (or link) the developer writes, and one small contract, `nfsOpenableToken`, that every Openable provides: Reveal, OffCanvas, Dropdown pane, Toggler, ResponsiveToggle, and Tooltip.
 
-A Trigger names its target with a typed template reference (`[nfsToggle]="pane"`) or an array of references for Foundation's multi-target form. `nfsClose` and `nfsToggle` written without a value act on the Nearest Openable, the closest Openable enclosing the Trigger, which is Foundation's empty `data-close` rule expressed through dependency injection. The Openable tells its Triggers which ARIA shape to render through its Trigger role, so a disclosure trigger gets `aria-expanded` and `aria-controls`, a dialog trigger gets `aria-haspopup="dialog"` as well, a Toggler in class mode gets `aria-pressed`, and a tooltip's external trigger gets nothing extra. All of it is host bindings on signals, so the server HTML already carries the right ARIA, and activation is one `click` host listener that never calls `preventDefault()`, so a pre-hydration click replays cleanly.
+A Trigger names its target with a typed template reference (`[nfsToggle]="pane"`) or an array of references for Foundation's multi-target form. `nfsClose` and `nfsToggle` written without a value act on the Nearest Openable, the closest Openable enclosing the Trigger, which is Foundation's empty `data-close` rule expressed through dependency injection. The Openable tells its Triggers which ARIA shape to render through its Trigger role, so a disclosure trigger gets `aria-expanded` and `aria-controls`, a dialog trigger gets `aria-haspopup="dialog"` as well, a modal Reveal's trigger gets `aria-haspopup="dialog"` and `aria-controls` without `aria-expanded`, a Toggler in class mode gets `aria-pressed`, and a tooltip's external trigger gets nothing extra. All of it is host bindings on signals, so the server HTML already carries the right ARIA, and activation is one `click` host listener that never calls `preventDefault()`, so a pre-hydration click replays cleanly.
 
 Everything else Foundation's Triggers did is dropped or replaced by something the platform or Angular already provides: `data-toggle-focus` by template `(focus)`/`(blur)` bindings, `data-closable` by `@if` with `animate.leave` or by a Toggler with an empty `nfsClose`, the custom events by method calls on the contract, `closeme.zf.*` by the Light dismiss registry, and `data-resize`/`data-scroll`/`data-mutate` by native observers inside each consuming spec. Triggers add no Foundation class, no CSS, and no service.
 
@@ -64,6 +64,7 @@ Everything else Foundation's Triggers did is dropped or replaced by something th
 38. As an application developer, I want to import the Triggers from their own entry point, so that a `@defer` block can split them with the rest of a deferred widget.
 39. As a plugin spec author, I want one small interface every Openable implements, so that each plugin spec only states its Trigger role and focus rules.
 40. As a library maintainer, I want every behaviour asserted through roles, ARIA, and state in stories, browser-level tests, a server-render smoke test, and e2e, so that regressions surface at the layer that owns them.
+41. As a screen reader user, I want a button that opens a modal Reveal to announce that it opens a dialog without a 'collapsed' state it can never leave while I can reach it, so that every focus on it tells me only what is true.
 
 ## Implementation Decisions
 
@@ -123,7 +124,7 @@ nfsOpenableToken : InjectionToken<NfsOpenable>     provided by every Openable wi
 The contract:
 
 ```ts
-type NfsTriggerRole = 'disclosure' | 'dialog' | 'toggle-button' | 'none';
+type NfsTriggerRole = 'disclosure' | 'dialog' | 'modal-dialog' | 'toggle-button' | 'none';
 
 interface NfsOpenable {
   readonly isOpen: Signal<boolean>;             // the Openable's isOpen model, read-only here
@@ -142,7 +143,7 @@ const nfsOpenableToken: InjectionToken<NfsOpenable>;
 | --- | --- | --- |
 | `isOpen` | The Openable's `isOpen` model (building-blocks 1.3); `true` from the moment an open is requested until a close is requested, not waiting for animations | `aria-expanded`, `aria-pressed`, toggle decisions |
 | `id` | The id of the controlled element: the panel for OffCanvas, the pane, the dialog, the Toggler target, and the menu (not the title bar) for ResponsiveToggle; consumer-supplied or generated | `aria-controls` |
-| `triggerRole` | A signal, because Toggler switches between `disclosure` (visibility mode) and `toggle-button` (class mode), and Dropdown pane between `disclosure` and `dialog` from its `role` input | The ARIA table |
+| `triggerRole` | A signal, because Toggler switches between `disclosure` (visibility mode) and `toggle-button` (class mode), and Dropdown pane between `disclosure` and `dialog` from its `role` input, and Reveal between `modal-dialog` and `dialog` from its `overlay` input | The ARIA table |
 | `open(trigger?)` | Opens; records `trigger` as the element to position against and to return focus to; without it the Openable falls back to its first registered Trigger for anchoring and to the element focused before opening for focus return (Material's rule) | Reveal, OffCanvas, Dropdown pane |
 | `close(result?)` | Requests a close; the Openable may veto (Reveal's `closePredicate`) and may hand `result` to its `closed` output | `nfsClose`, Reveal results |
 | `toggle(trigger?)` | `isOpen() ? close() : open(trigger)` | Single-target `nfsToggle`, programmatic use |
@@ -192,7 +193,7 @@ class NfsClose {  // selector [nfsClose], exportAs 'nfsClose'
 
 ### Implementation level and primitives
 
-Implementation level: custom Angular directives over native `<button>` activation. Native platform first: Invoker Commands (`command`, `commandfor`) and `popovertarget` are the platform versions of this utility, and both are outside the browser target (Invoker Commands Baseline newly available December 2025; `popovertarget` Baseline 2024 but its targets must be popovers, which are out of target too). `@angular/aria` 22.2 has no disclosure, dialog, or trigger pattern. `@angular/cdk` has no generic trigger: `cdkMenuTriggerFor` and Material's `matMenuTriggerFor` open overlay menus with `aria-haspopup="menu"`, which is wrong for every Openable here, and CDK Dialog is not used (ADR 0007).
+Implementation level: custom Angular directives over native `<button>` activation. Native platform first: Invoker Commands (`command`, `commandfor`) and `popovertarget` are the platform versions of this utility, and both are outside the browser target (Invoker Commands Baseline newly available December 2025; `popovertarget` Baseline 2024 but its targets must be popovers, which are out of target too). `@angular/aria` 22.2 has no disclosure or dialog pattern, and its only trigger, `ngMenuTrigger`, targets `ngMenu` only, keeps the open state in the trigger, and renders `aria-haspopup="true"`, which WAI-ARIA treats as `menu`. `@angular/cdk` has no generic trigger: `cdkMenuTriggerFor` and Material's `matMenuTriggerFor` open overlay menus with `aria-haspopup="menu"`, which is wrong for every Openable here, and CDK Dialog is not used (ADR 0007).
 
 Primitives: `input()` and `input.required()` with aliases and a transform for the bare form, `computed()` for the resolved targets, the aggregate `isOpen`, and the ARIA values, one `effect()` for trigger registration (it writes no DOM, so it is safe on the server; the reverse-link exception of building-blocks 1.5), `inject()` with `optional` and `skipSelf`, `ElementRef` for the host element passed to `open()`, host metadata for the listener and the four ARIA bindings, and `afterRenderEffect` for the dev checks. No CDK, no Aria, no timers, no observers, no `NgZone`.
 
@@ -215,17 +216,19 @@ Borrowed: the typed-reference input with `exportAs`, `[mat-dialog-close]`'s DI l
 
 ### ARIA and keyboard
 
-APG patterns: Disclosure (disclosure role), Dialog (Modal) and non-modal dialog (dialog role), Button toggle button (toggle-button role). The Trigger renders:
+APG patterns: Disclosure (disclosure role), Dialog (Modal) opened with `showModal()` (modal-dialog role), non-modal dialog and Off-canvas Modal mode (dialog role), Button toggle button (toggle-button role). The Trigger renders:
 
 | Trigger role | `nfsOpen` | `nfsToggle` | `nfsClose` |
 | --- | --- | --- | --- |
 | `disclosure` | `aria-expanded`, `aria-controls` | `aria-expanded`, `aria-controls` | nothing |
 | `dialog` | `aria-haspopup="dialog"`, `aria-controls`, `aria-expanded` | `aria-haspopup="dialog"`, `aria-controls`, `aria-expanded` | nothing |
+| `modal-dialog` | `aria-haspopup="dialog"`, `aria-controls` | `aria-haspopup="dialog"`, `aria-controls` | nothing |
 | `toggle-button` | nothing | `aria-pressed` | nothing |
 | `none` | nothing | nothing | nothing |
 
 - `aria-expanded` and `aria-pressed` are `"true"`/`"false"` from `isOpen`; `aria-controls` is the space-separated list of target ids.
-- `dialog` renders `aria-expanded` as well: a non-modal dialog (a Dropdown pane with `role="dialog"`, a Reveal with `overlay: false`) keeps the Trigger that opened it reachable while open, and the non-modal dialog shape drawn from the APG (a trigger with `aria-haspopup="dialog"` and `aria-expanded`) needs the state there; for a modal Reveal the Trigger that opened it is inert while the dialog is open, so only the collapsed state is ever announced.
+- `dialog` renders `aria-expanded` as well: a non-modal dialog (a Dropdown pane with `role="dialog"`, trapped or not; a Reveal with `overlay: false`) keeps the Trigger that opened it reachable while open, and so can an Off-canvas panel in Modal mode, whose `inert` covers only `.off-canvas-content` while neither Chromium nor Firefox hides content outside an `aria-modal` dialog; the state is observable and true there.
+- `modal-dialog` renders no `aria-expanded`: the Openable is a `<dialog>` opened with `showModal()`, which makes every Trigger outside it inert while it is open, so engines drop the Trigger from their accessibility trees and fire no expanded-state change, and the only value assistive technology could read is `false`. This matches Foundation's Reveal opener, the APG Dialog (Modal) examples, and HTML-AAM's `command="show-modal"` mapping, and it keeps an open-by-default Reveal's server HTML from claiming a dialog that is still closed ([Decide: `aria-expanded` on a modal dialog's opener](../issues/72-decide-aria-expanded-on-modal-opener.md)). `aria-controls` stays for Foundation parity and the closed-state relationship.
 - `aria-haspopup="true"` is never rendered: WAI-ARIA treats it as `menu`, and no Openable is a menu.
 - `nfsClose` renders nothing: the APG dialog pattern's close button carries no state, and a one-way control has no expanded state to report.
 - `none` is Tooltip's role: WAI-ARIA says a tooltip is not a popup, and the tooltip's own host carries `aria-describedby`.
@@ -246,7 +249,7 @@ The target is WCAG 2.2 level AA (user rule; ADR 0022). Each criterion below is a
 
 | Criterion | Requirement and how it is met | Foundation default | Test |
 | --- | --- | --- | --- |
-| 4.1.2 Name, Role, Value | Every Trigger exposes the state of what it controls, per Trigger role, in the server HTML and after every change: `disclosure` renders `aria-expanded` and `aria-controls` on `nfsOpen` and `nfsToggle`; `dialog` adds `aria-haspopup="dialog"`; `toggle-button` renders `aria-pressed` on `nfsToggle` only, and the consumer keeps the accessible name constant; `none` and every `nfsClose` render nothing. `aria-haspopup="true"` is never rendered, because WAI-ARIA reads it as `menu` and no Openable is a menu. A multi-target `nfsToggle` reports one aggregate `aria-expanded`, which is true because the targets move together (D11). `aria-controls` always names an element that exists, because every Openable has an `id` (consumer-supplied or generated). A `disabledInteractive` host keeps its `aria-disabled="true"` from `nfsButton`, and the Trigger ignores its clicks (D14). The Trigger adds no name; names come from content or the consumer's `aria-label`/`aria-labelledby` | Fails: Dropdown stamps `aria-haspopup="true"`; Toggler stops updating `aria-expanded` on multi-id triggers; `data-close` triggers get `aria-expanded`; Reveal stamps `tabindex="0"` | axe (`aria-allowed-attr`, `aria-valid-attr-value`, `button-name`) in every story; play functions of `triggers--open-close-toggle`, `triggers--dialog-role`, `triggers--toggle-button-role`, and `triggers--multiple-targets`; browser-level ARIA table driven by data; SSR smoke |
+| 4.1.2 Name, Role, Value | Every Trigger exposes the state of what it controls, per Trigger role, in the server HTML and after every change: `disclosure` renders `aria-expanded` and `aria-controls` on `nfsOpen` and `nfsToggle`; `dialog` adds `aria-haspopup="dialog"`; `modal-dialog` renders `aria-haspopup="dialog"` and `aria-controls` and no `aria-expanded`, because its Trigger is inert whenever the dialog is open; `toggle-button` renders `aria-pressed` on `nfsToggle` only, and the consumer keeps the accessible name constant; `none` and every `nfsClose` render nothing. `aria-haspopup="true"` is never rendered, because WAI-ARIA reads it as `menu` and no Openable is a menu. A multi-target `nfsToggle` reports one aggregate `aria-expanded`, which is true because the targets move together (D11). `aria-controls` always names an element that exists, because every Openable has an `id` (consumer-supplied or generated). A `disabledInteractive` host keeps its `aria-disabled="true"` from `nfsButton`, and the Trigger ignores its clicks (D14). The Trigger adds no name; names come from content or the consumer's `aria-label`/`aria-labelledby` | Fails: Dropdown stamps `aria-haspopup="true"`; Toggler stops updating `aria-expanded` on multi-id triggers; `data-close` triggers get `aria-expanded`; Reveal stamps `tabindex="0"` | axe (`aria-allowed-attr`, `aria-valid-attr-value`, `button-name`) in every story; play functions of `triggers--open-close-toggle`, `triggers--dialog-role`, `triggers--modal-dialog-role`, `triggers--toggle-button-role`, and `triggers--multiple-targets`; browser-level ARIA table driven by data; SSR smoke |
 | 2.5.8 Target Size (Minimum) | Every Trigger host is at least 24 by 24 CSS px or meets the spacing exception. The Trigger cannot know its host's styling, so the requirement is inherited from the host's contract: an `nfsButton` or `.button` host through the Button spec's `.button { min-width: 24px; min-height: 24px; }` floor in the `nfs-button` mixin; a `.close-button` through the spacing exception of its corner position, with the consumer's `min-width: 24px` where a layout breaks it (the Button and Toggler specs); a `.title-bar .menu-icon` through the 24 by 24 px hit area of the `nfs-responsive-toggle` mixin, which the consumer includes (`@include nfs-responsive-toggle;`, no argument) for a title-bar menu icon with or without ResponsiveToggle; a `.menu-icon` outside `.title-bar` gets no library hit area, so the consumer sizes it to 24 px or keeps the spacing exception. A plain `<button>` under Foundation's global reset (`padding: 0`, `border: 0`, `line-height: 1`) is only as tall as its font size, 16 px by default, so a plain-button Trigger is styled to 24 px by the consumer or is an `nfsButton`; the Rendered HTML examples show bare `<button type="button">` hosts only to place the ARIA | Fails for a bare `<button>` host (16 px tall) unless the spacing exception holds; passes for `.button` hosts at Foundation's default sizes | axe `target-size` in every story; every Triggers story puts its Triggers on `nfsButton`, `.close-button`, or `.menu-icon` hosts, so the gate proves the inherited floor; each Openable spec's stories cover their own Trigger markup |
 | 2.4.7 Focus Visible | Every Trigger host shows the browser's focus indicator; the Trigger removes no outline and adds no style. Foundation's global `button` reset, `.button`, and `.close-button` remove the outline only under what-input's `[data-whatinput='mouse']` (`disable-mouse-outline`), which the library never loads | Passes, checked in Foundation's global styles and the button and close button partials | e2e: a screenshot comparison before and after Tab to a Trigger in `triggers--open-close-toggle` shows a focus indicator in three engines |
 | 2.1.1 Keyboard | Every Trigger is operable from the keyboard through native activation: Enter and Space on a `<button>`, Enter on an `<a href>`; the Trigger adds no key handling and needs none. Hosts that cannot be operated from the keyboard (a `div`, an `<a>` without `href` or with `#`) get dev-mode check 3 | Fails: Foundation's docs use `<a data-toggle>` without `href`, which is neither focusable nor activatable from the keyboard | Play functions with `userEvent.keyboard` on `triggers--open-close-toggle`; browser-level dev-mode check cases; e2e real key presses in three engines |
@@ -269,7 +272,7 @@ Consumer markup and the resulting DOM. Server HTML carries `jsaction="click:;"` 
 <!-- hydrated, after a click -->
 <button class="button" type="button" aria-expanded="true" aria-controls="account-pane">Account</button>
 
-<!-- Dialog: the Trigger that opens a Reveal, and a bare close button inside -->
+<!-- Modal dialog: the Trigger that opens a Reveal (modal-dialog role), and a bare close button inside -->
 <button type="button" [nfsOpen]="signup">Sign up</button>
 <dialog nfsReveal #signup="nfsReveal" id="signup" class="reveal" aria-labelledby="signup-title">
   <h2 id="signup-title">Sign up</h2>
@@ -279,8 +282,9 @@ Consumer markup and the resulting DOM. Server HTML carries `jsaction="click:;"` 
 </dialog>
 
 <!-- server, closed -->
-<button type="button" aria-haspopup="dialog" aria-controls="signup" aria-expanded="false" jsaction="click:;">Sign up</button>
+<button type="button" aria-haspopup="dialog" aria-controls="signup" jsaction="click:;">Sign up</button>
 <button class="close-button" type="button" aria-label="Close" jsaction="click:;"><span aria-hidden="true">&times;</span></button>
+<!-- the same Trigger for a Reveal with [overlay]="false" (dialog role): aria-haspopup="dialog" aria-controls="signup" aria-expanded="false" -->
 
 <!-- Toggle button: Toggler in class mode -->
 <button type="button" [nfsToggle]="theme">Dark theme</button>
@@ -325,7 +329,7 @@ Per ADR 0008 and the rendering-modes research, section 7 rules 1 to 11:
 
 A good test asserts what a user or assistive technology observes: `aria-expanded`, `aria-controls`, `aria-haspopup`, `aria-pressed`, whether the Openable is shown, where focus lands, and whether a click submits or navigates. No test reads a directive's private fields. Tests that need an Openable before the plugin specs exist use a test Openable: a small directive that provides `nfsOpenableToken`, holds an `isOpen` model, binds `hidden` from it, and records the arguments of `open`, `close`, and `registerTrigger`. It lives with the tests and the stories, not in the public API. There is no prior art in the new repository; the patterns are the building-blocks testing rule, Angular's own `renderApplication`-based SSR tests, and the Angular Components universal-app e2e.
 
-Story ids follow `triggers--<story>`: `triggers--open-close-toggle`, `triggers--nearest-openable`, `triggers--nested-openables`, `triggers--multiple-targets`, `triggers--dialog-role`, `triggers--toggle-button-role`, `triggers--close-result`, `triggers--with-nfs-button`, `triggers--link-trigger`, `triggers--focus-replacement`. Plugin specs add composition stories under their own ids (`reveal--...`, `dropdown-pane--...`).
+Story ids follow `triggers--<story>`: `triggers--open-close-toggle`, `triggers--nearest-openable`, `triggers--nested-openables`, `triggers--multiple-targets`, `triggers--dialog-role`, `triggers--modal-dialog-role`, `triggers--toggle-button-role`, `triggers--close-result`, `triggers--with-nfs-button`, `triggers--link-trigger`, `triggers--focus-replacement`. Plugin specs add composition stories under their own ids (`reveal--...`, `dropdown-pane--...`).
 
 ### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`)
 
@@ -335,7 +339,8 @@ Run by `npx nx test-storybook <lib>`. Every story runs axe with `parameters.a11y
 - `triggers--nearest-openable`: a bare `nfsClose` and a bare `nfsToggle` inside the Openable close it; a bare `nfsClose` with no Openable around it does nothing.
 - `triggers--nested-openables`: a bare `nfsClose` in an inner Openable closes only the inner one; the outer stays open.
 - `triggers--multiple-targets`: three targets, one hidden by a separate control first; the toggle closes all while any is open, then opens all; `aria-controls` lists three ids and `aria-expanded` matches the aggregate.
-- `triggers--dialog-role`: the Trigger carries `aria-haspopup="dialog"`, `aria-controls`, `aria-expanded`; never `aria-haspopup="true"`.
+- `triggers--dialog-role`: the Trigger of a non-modal test Openable carries `aria-haspopup="dialog"`, `aria-controls`, `aria-expanded`; never `aria-haspopup="true"`.
+- `triggers--modal-dialog-role`: the Trigger of a test Openable in the `modal-dialog` role carries `aria-haspopup="dialog"` and `aria-controls` and has no `aria-expanded` attribute, closed and open; never `aria-haspopup="true"`.
 - `triggers--toggle-button-role`: `nfsToggle` flips `aria-pressed`, has no `aria-expanded` and no `aria-controls`, and its accessible name does not change.
 - `triggers--close-result`: `[nfsCloseResult]="'saved'"` reaches the test Openable's `close` and is shown in the story.
 - `triggers--with-nfs-button`: `nfsButton` plus `nfsToggle` renders `.button`, `type="button"`, and the Trigger ARIA; with `disabledInteractive` and `disabled`, a click leaves the Openable unchanged.
@@ -357,7 +362,7 @@ Vitest browser mode under the Angular unit-test builder (`npx nx test <lib>`, Ch
 
 ### 3. Node-level Vitest
 
-- SSR smoke: `renderApplication` over a fixture component with test Openables in each Trigger role, one open and one closed, a multi-target Trigger, a bare `nfsClose` inside an Openable, and a bound `null`. Assert `whenStable()` resolves; the server HTML carries every attribute from the Rendered HTML section; each Trigger host carries `jsaction="click:;"`; the `nfsClose` hosts carry no ARIA from the Trigger. Runs under `npx nx test <lib>` in `<name>.ssr.spec.ts` through the shared `renderServer()` helper; `npx nx test-node <lib>` only if the server path depends on the DOM adapter.
+- SSR smoke: `renderApplication` over a fixture component with test Openables in each of the five Trigger roles, one open and one closed, a multi-target Trigger, a bare `nfsClose` inside an Openable, and a bound `null`. Assert `whenStable()` resolves; the server HTML carries every attribute from the Rendered HTML section; each Trigger host carries `jsaction="click:;"`; the `nfsClose` hosts carry no ARIA from the Trigger; the `modal-dialog` fixture's Trigger carries `aria-haspopup` and `aria-controls` and no `aria-expanded`. Runs under `npx nx test <lib>` in `<name>.ssr.spec.ts` through the shared `renderServer()` helper; `npx nx test-node <lib>` only if the server path depends on the DOM adapter.
 - Pure logic: the ARIA derivation (directive kind, Trigger role, `isOpen`, ids to the four attribute values) is a pure function; a table-driven test covers it.
 
 ### 4. Playwright e2e (`npx nx e2e <lib>-e2e` against the static Storybook build; `npx nx e2e <fixture-app>-e2e` against the prerendered fixture app)
@@ -399,8 +404,8 @@ Against the prerendered fixture app (the harness from the rendering-mode test se
 | D3 | Only the bare attribute selects the Nearest Openable; a bound `null` means no target | An explicit binding never silently operates an ancestor | `null` and `undefined` falling back to the ancestor |
 | D4 | Nearest Openable through `inject(nfsOpenableToken, {optional: true, skipSelf: true})` | Foundation's bubbling rule, and Reveal's own guard that only its own close bubbles close it; `skipSelf` keeps a Tooltip on the same element from capturing it; the repository's content-projection DI pattern (optional injection with `skipSelf`) | DOM `closest()` lookups (breaks with projection and needs the DOM before hydration) |
 | D5 | Contract is an interface behind a lightweight `InjectionToken`, with `isOpen`, `id`, `triggerRole` as signals and `open(trigger?)`, `close(result?)`, `toggle(trigger?)`, optional `registerTrigger` | Lightweight-token guide; consumers can implement it; `trigger` gives focus return and anchoring (Foundation's `$lastTrigger` and `$currentAnchor`); `registerTrigger` gives Dropdown its anchors before any click | An abstract class (consumers would have to extend a library class); custom DOM events (not typed, not replayed) |
-| D6 | Trigger role union `disclosure`, `dialog`, `toggle-button`, `none` | Building-blocks 1.8 plus `toggle-button`, because the Toggler rows require `aria-pressed` in class mode and `none` cannot render it | Consumers binding `[attr.aria-pressed]` themselves |
-| D7 | `dialog` renders `aria-expanded` too | Non-modal dialogs (Dropdown pane `role="dialog"`, Reveal `overlay: false`) keep the Trigger that opened them reachable; for modal ones only the collapsed state is announced | A separate modal role that omits it (OPEN FOR HUMAN 1) |
+| D6 | Trigger role union `disclosure`, `dialog`, `modal-dialog`, `toggle-button`, `none` | Building-blocks 1.8 plus `toggle-button`, because the Toggler rows require `aria-pressed` in class mode and `none` cannot render it; `modal-dialog` because a Trigger that is inert whenever its dialog is open has no state to report ([Decide: `aria-expanded` on a modal dialog's opener](../issues/72-decide-aria-expanded-on-modal-opener.md)) | Consumers binding `[attr.aria-pressed]` themselves |
+| D7 | `dialog` renders `aria-expanded`; `modal-dialog` does not | A non-modal dialog's Trigger, and an Off-canvas Modal-mode Trigger outside the inert content, stay reachable, so the state is observable; a `showModal()` dialog makes its Trigger inert while open, so the state could only ever read `false`, its change is never delivered, and an open-by-default Reveal would ship `aria-expanded="true"` next to a closed dialog in server HTML | One `dialog` role for both (the previous default); an optional modality member on `NfsOpenable` (two channels for one ARIA shape, silent fallback in wrappers); `modal-dialog` for Off-canvas Modal mode (a Trigger outside `.off-canvas-content` stays exposed, and Firefox infers 'collapsed' from `aria-haspopup` while the panel is open); `none` for modal Triggers (drops `aria-haspopup="dialog"`) |
 | D8 | `nfsClose` renders no ARIA | APG dialog close buttons carry no state; a one-way control has no expanded state | Foundation's `aria-expanded` on `data-close` triggers |
 | D9 | `data-toggle-focus` dropped | It toggles on both focus and blur, so it inverts; `(focus)`/`(blur)` bindings to `open()`/`close()` are one line and correct | A `nfsToggleFocus` directive |
 | D10 | `data-closable` is not a directive | Building-blocks 1.8; `@if` with `animate.leave` removes, a Toggler in visibility mode hides in place, both already exist | An `nfsClosable` Openable (a third way to hide an element) |
@@ -415,8 +420,8 @@ Against the prerendered fixture app (the harness from the rendering-mode test se
 
 | Openable | Trigger role | Uses of the contract |
 | --- | --- | --- |
-| Reveal | `dialog` | `open(trigger)` for focus return; `close(result)` handed to its `closed` output, vetoed by `closePredicate`; bare `nfsClose` inside is the documented close button |
-| OffCanvas | `disclosure`, or `dialog` in its modal mode (`trapFocus` with an overlay present), as the [Spec: Off-canvas](../issues/25-spec-off-canvas.md) decided from the APG's modal-dialog reading | `open(trigger)` for focus return; bare `nfsClose` inside; the overlay element closes through its own directive, not a Trigger |
+| Reveal | `modal-dialog` while `overlay` is true (the default), `dialog` when it is false | `open(trigger)` for focus return; `close(result)` handed to its `closed` output, vetoed by `closePredicate`; bare `nfsClose` inside is the documented close button |
+| OffCanvas | `disclosure`, or `dialog` in its modal mode (`trapFocus` with an overlay present), as the [Spec: Off-canvas](../issues/25-spec-off-canvas.md) decided from the APG's modal-dialog reading (not `modal-dialog`: its `inert` covers only the linked content, so a Trigger outside it keeps an observable expanded state) | `open(trigger)` for focus return; bare `nfsClose` inside; the overlay element closes through its own directive, not a Trigger |
 | Dropdown pane | `disclosure`, or `dialog` when its `role` input is `dialog` | `open(trigger)` as the current anchor; `registerTrigger` for `hover`, programmatic anchoring against the first Trigger, and Light dismiss exclusion; a `role="dialog"` pane is named by the consumer |
 | Toggler | `disclosure` in visibility mode, `toggle-button` in class mode | `nfsToggle` and the multi-target form; the `data-closable` replacement in place |
 | ResponsiveToggle | `disclosure` | Bare `nfsToggle` inside the title bar; `id` is the menu's id |
@@ -530,7 +535,7 @@ export class AppConfirm implements NfsOpenable {
   protected readonly reveal = viewChild.required<NfsReveal>('reveal');
   readonly isOpen = computed(() => this.reveal().isOpen());
   readonly id = computed(() => this.reveal().id());
-  readonly triggerRole = signal<NfsTriggerRole>('dialog').asReadonly();
+  readonly triggerRole = computed(() => this.reveal().triggerRole());
 
   open(trigger?: HTMLElement): void {
     this.reveal().open(trigger);
@@ -546,19 +551,22 @@ export class AppConfirm implements NfsOpenable {
 }
 ```
 
+Delegating `triggerRole` keeps the wrapper's Triggers in step with the Reveal's `overlay`; a constant `'dialog'` would render the non-modal shape on a modal Reveal.
+
 ### Sass
 
 Sass. The consumer compiles Foundation's Sass from its own settings; the library imports no Foundation code and copies no Foundation rule. Triggers rely on no Foundation export mixin: they add no Foundation class, and the classes on their hosts (`.button`, `.close-button`, `.menu-icon`) belong to the Button spec, the Close Button markup, and the Title Bar markup. No library CSS; there is no `nfs-triggers` mixin. (1) Rules: none. (2) Reused settings: none. (3) Custom properties: none. (4) Motion classes: none, and no `prefers-reduced-motion` override, because Triggers animate nothing. (5) A missing include breaks nothing, because there is none.
 
 ### Platform features to adopt when the browser target moves
 
-- Invoker Commands (`command`, `commandfor`; Baseline newly available 2025-12-12, widely available about 2028-06): the Triggers can render `commandfor` with the Openable's `id` and a command, `show-modal`/`close`/`request-close` for a Reveal's `<dialog>` and a custom `--nfs-open`/`--nfs-close`/`--nfs-toggle` for the others, which each Openable handles from the `command` event on itself. A Trigger that opens a Reveal would then work before hydration and inside `@defer (hydrate never)` with no JavaScript, and `CommandEvent.source` replaces the `trigger` argument. Custom commands need JavaScript on the target, and `command` is not a replayed event type, so the click listener stays until Angular replays it. An explicit `type="button"` (which `nfsButton` defaults) keeps commands working inside forms. Adoption needs consumer-supplied ids on the Openable, because the attribute must name an id that is identical on the server and the client.
+- Invoker Commands (`command`, `commandfor`; Baseline newly available 2025-12-12, widely available about 2028-06): the Triggers can render `commandfor` with the Openable's `id` and a command, `show-modal`/`close`/`request-close` for a Reveal's `<dialog>` and a custom `--nfs-open`/`--nfs-close`/`--nfs-toggle` for the others, which each Openable handles from the `command` event on itself. A Trigger that opens a Reveal would then work before hydration and inside `@defer (hydrate never)` with no JavaScript, and `CommandEvent.source` replaces the `trigger` argument. Custom commands need JavaScript on the target, and `command` is not a replayed event type, so the click listener stays until Angular replays it. An explicit `type="button"` (which `nfsButton` defaults) keeps commands working inside forms. Adoption needs consumer-supplied ids on the Openable, because the attribute must name an id that is identical on the server and the client. The `show-modal` mapping exposes no expanded state (HTML-AAM), which is what the `modal-dialog` role already renders, so the upgrade changes no announced state; the library keeps `aria-haspopup="dialog"` and `aria-controls` as author bindings.
 - `popovertarget` and `command="toggle-popover"`: when Dropdown pane and Tooltip move onto `popover` with anchor positioning, their Triggers render `popovertarget` (or `commandfor`), the browser sets `aria-expanded` on the invoker, and the invoker becomes the popover's implicit anchor, which replaces `open(trigger)` anchoring and `registerTrigger`.
 - `<form method="dialog">` is already in target and closes a Reveal's `<dialog>` without script. It skips the Reveal's exit animation and its `closePredicate`, and the Reveal re-syncs `isOpen` from the dialog's `close` event, reporting `returnValue` (the [Spec: Reveal](../issues/18-spec-reveal.md), D18); `nfsClose` remains the documented close button.
 
 ### Foundation behaviour changed or dropped
 
 - `aria-haspopup="true"` on Dropdown triggers becomes nothing (disclosure) or `"dialog"`.
+- A modal Reveal's Trigger keeps Foundation's shape: `aria-haspopup="dialog"` and `aria-controls`, no `aria-expanded`; Off-canvas Triggers keep Foundation's `aria-expanded` in every mode.
 - `aria-expanded` on `data-close` triggers is dropped.
 - Toggler's single-id-only `aria-expanded` updates become one aggregate value for every Trigger.
 - Reveal's `tabindex="0"` stamping on anchors is dropped; Triggers are native buttons or links.

@@ -119,7 +119,7 @@ No new prototype ticket is needed. Items 1 to 3 each need a person with assistiv
 
 ### Triage (auto-trap quadrant), 2026-09-26
 
-Rule: [map](../map.md), Orchestration rules, "Triage of human-only items". Items 1 and 2 were carried into [Spec: Slider](32-spec-slider.md) (its OPEN FOR HUMAN 1 and 2) and are triaged there, once: item 1 (vertical orientation) STAYS OPEN FOR HUMAN as a trap-quadrant item, and item 2 (`aria-valuetext` announcement) is HUMAN-ONLY BY KIND (assistive-technology check).
+Rule: [map](../map.md), Orchestration rules, "Triage of human-only items". Items 1 and 2 were carried into [Spec: Slider](32-spec-slider.md) (its OPEN FOR HUMAN 1 and 2) and are triaged there, once: item 1 (vertical orientation) STAYS OPEN FOR HUMAN as a trap-quadrant item, and item 2 (`aria-valuetext` announcement) is HUMAN-ONLY BY KIND (assistive-technology check). Item 1 was decided on 2026-09-27 by [Decide: Slider vertical orientation](73-decide-slider-vertical-orientation.md).
 
 3. Thumb size and WCAG 2.5.8.
    - Impact: not HIGH. A Sass rule in the `nfs-slider` Library mixin; no API.

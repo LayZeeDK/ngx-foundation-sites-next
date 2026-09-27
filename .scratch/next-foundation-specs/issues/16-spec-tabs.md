@@ -146,3 +146,13 @@ The two items under `### OPEN FOR HUMAN` above were re-rated under the map's tri
 ### Amendment, 2026-09-26 (audit 0005)
 
 From [audit 0005](../audits/0005-final-bundle.md), finding L8; `specs/tabs.md` was edited to match. Wording only: the node-level SSR smoke now names its file, "under `npx nx test <lib>` in `tabs.ssr.spec.ts` through the shared `renderServer()` helper", as the other 25 specs do; the JavaScript-disabled e2e case names `@axe-core/playwright` with the six tags.
+
+### Amendment, 2026-09-27 (Decide the `@angular/aria` fallback confirmation)
+
+The [Decide the `@angular/aria` fallback confirmation](75-evidence-aria-fallback-confirmation.md) confirmed decision 18 (projected panel content by default, Aria's `TabContent` only behind the opt-in lazy template; its fallback 4) with a condition, and changed the binding rule this spec cites (its fallback 1); `specs/tabs.md` was edited to match.
+
+1. Decisions 18 and 19, D19's rationale corrected: "Consistent with Accordion" was false, because the Accordion keeps its own renderer (the [Spec: Accordion](15-spec-accordion.md) decision 30, confirmed by the same ticket). D19 now cites ADR 0008's Considered options and building-blocks 1.11 decision 2 (opt-in, client-only), keeps "queries match host directives, so Aria's panel finds it", and adds that Tabs has no close transition to protect (decision 19: panel visibility is `display`, switches are instant), where the Accordion keeps its own renderer to server-render open lazy panels and to hold content through its close (Accordion D12).
+2. Class mapping, the "(Lazy content)" row: the "counterpart" phrase now says the Accordion's `nfsAccordionLazyContent` differs in two ways: its open lazy panel is in server HTML and its content stays through the close transition.
+3. Aria composition bullet: the binding rule gains its third clause (a wrapper binding also holds when it changes in every pass in which Aria's does, which a binding computed from the same public Aria signal guarantees; the Orbit slide's `inert`), now credited to [ADR 0037](../adr/0037-orbit-slide-hosts-tab-panel.md), superseding ADR 0034, and the decision ticket; the sentence "An override that must differ from an Aria value that can still change is not a binding." is deleted. D10 cites "the binding rule (ADR 0037)". `NfsTab`'s `tabindex` override is unchanged and still holds.
+
+Triage, from the decision ticket: impact MEDIUM (a rationale and a phrase), confidence HIGH (the Aria prototype's cases 9 and 11 and probe E). Decided; nothing open.

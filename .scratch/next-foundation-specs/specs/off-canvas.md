@@ -310,6 +310,7 @@ Patterns: WAI-ARIA APG Disclosure for every non-modal configuration, with the pa
 - A closed panel is hidden from assistive technology by Foundation's `.is-closed { visibility: hidden }`; `aria-hidden` is not used (building-blocks 1.10). An exiting panel is `inert`.
 - Generated panel ids differ between server and client and are rewritten at hydration, since `id` and `aria-controls` are both bindings (building-blocks 1.5).
 - Modal mode inerts only `.off-canvas-content`; the page's content belongs inside it (Foundation's documented markup), and the `FocusTrap` covers anything left outside for keyboard users.
+- Modal mode keeps `aria-expanded` on its Triggers (Trigger role `dialog`, not `modal-dialog`): a Trigger outside `.off-canvas-content`, such as one in a fixed title bar placed outside the content as the fixed-elements note advises, or inside another panel, stays in the accessibility tree with its expanded state while the panel is open, because neither Chromium nor Firefox hides content outside an `aria-modal` dialog, and without `aria-expanded` Firefox would infer 'collapsed' from `aria-haspopup` alone (measured for [Decide: `aria-expanded` on a modal dialog's opener](../issues/72-decide-aria-expanded-on-modal-opener.md)).
 
 | Key | Where | Behaviour |
 | --- | --- | --- |
@@ -514,7 +515,7 @@ What these layers cannot prove: real iOS Safari touch scrolling behind a locked 
 | --- | --- | --- | --- |
 | D1 | Directives | `nfsOffCanvas` on the panel, `nfsOffCanvasContent` on the content, `nfsOffCanvasOverlay` on a consumer-written overlay | Foundation's markup has every element except the overlay, which becomes one plain element (ADR 0001, building-blocks 1.1) |
 | D2 | `<dialog>` | Not used in any mode | A closed `<dialog>` cannot be a revealed or in-canvas panel in server HTML; the transform transition cannot start from `display: none` in target; the default panel is not modal (ADR 0030) |
-| D3 | Modal mode | `trapFocus` with an overlay: `role="dialog"`, `aria-modal`, `inert` content, CDK `FocusTrap`, Trigger role `dialog` | The APG's two-mode reading: modal only when interaction outside is blocked and the page is obscured |
+| D3 | Modal mode | `trapFocus` with an overlay: `role="dialog"`, `aria-modal`, `inert` content, CDK `FocusTrap`, Trigger role `dialog` | The APG's two-mode reading: modal only when interaction outside is blocked and the page is obscured; the Trigger role stays `dialog` rather than `modal-dialog` because the panel's inertness covers only the linked content (the decision ticket above) |
 | D4 | Content link | `content` reference, else the enclosing content through DI | ADR 0013 (references, never ids); DI covers Foundation's nested and closest-ancestor cases; a sibling has no DI path |
 | D5 | Overlay | Consumer element, required reference to the panel; omission is `contentOverlay: false` | No generated structure (ADR 0008); Foundation's classes and fade reused |
 | D6 | Position | Static `.position-*` class | Foundation reads the class; classes are the contract |

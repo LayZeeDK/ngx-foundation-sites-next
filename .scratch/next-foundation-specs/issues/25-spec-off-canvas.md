@@ -193,3 +193,9 @@ From [audit 0005](../audits/0005-final-bundle.md), unrecorded departure 5 and fi
 #### Triage
 
 Item 1: Impact LOW (an internal service, not public API; behaviour unchanged). Confidence HIGH (the Reveal precedent and building-blocks 1.5 as amended). Decided.
+
+### Amendment, 2026-09-27 (Decide: `aria-expanded` on a modal dialog's opener)
+
+From the [Decide: `aria-expanded` on a modal dialog's opener](72-decide-aria-expanded-on-modal-opener.md) panel ([ADR 0036](../adr/0036-modal-dialog-trigger-role.md)); `specs/off-canvas.md` was edited to match. Decisions 8 and 37 stand: Modal mode keeps the `dialog` Trigger role, with `aria-expanded`, and does not take the new `modal-dialog` role. Reason: Modal mode makes only `.off-canvas-content` inert, so a Trigger outside it (in a fixed title bar placed outside the content as the fixed-elements note advises, or inside another panel) stays in the Chromium and Firefox accessibility trees with its expanded state while the panel is open, because neither engine hides content outside an `aria-modal` dialog; without `aria-expanded`, Firefox would infer 'collapsed' from `aria-haspopup` alone (measured by the panel). The decision's rule assigns `modal-dialog` only where the platform makes every Trigger outside the Openable inert while it is open.
+
+- Spec edits: an ARIA and keyboard bullet after "Modal mode inerts only `.off-canvas-content`" stating the above; D3's Why gains why the Trigger role stays `dialog`.

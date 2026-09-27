@@ -168,3 +168,13 @@ The four items under `### OPEN FOR HUMAN` above were re-rated under the map's tr
 ### Amendment, 2026-09-26 (audit 0005)
 
 From [audit 0005](../audits/0005-final-bundle.md), finding L5; `specs/accordion.md` was edited to match. Wording only: the missing `@supports` guard is no longer called "a delta from building-blocks 1.6 rule 3", because rule 3 now reaches the same conclusion; the Animation bullet and D11 say "building-blocks 1.6 rule 3 records the same conclusion", and D11's rejected alternative is the guard itself.
+
+### Amendment, 2026-09-27 (Decide the `@angular/aria` fallback confirmation)
+
+The [Decide the `@angular/aria` fallback confirmation](75-evidence-aria-fallback-confirmation.md) confirmed decision 30 (the library's own lazy template, not Aria's `AccordionContent`; its fallback 3) with a corrected third reason. `specs/accordion.md` is unchanged: its D12 does not state the corrected reason.
+
+1. Decision 30, third reason, corrected: `preserveContent` cannot be exposed through the wrapper's own `hostDirectives` inputs (NG2017), but a consumer can bind it on the content element through `AccordionPanel`'s own exposure, in bound form only (`strictTemplates` rejects the bare attribute); library code reading it would depend on Aria's private-prefixed re-export. This replaces "cannot be forwarded through a second host-directive level".
+2. The first two reasons stand, now measured or read from source: an open lazy panel under Aria's `AccordionContent` is empty in server HTML (Aria sets `contentVisible` and creates the view in render callbacks), which user story 19 rules out whenever `expanded` is bound from server state; and on collapse Aria destroys the view at the start of the close transition unless `preserveContent` is true.
+3. ADR 0008 gains a dated pointer (the orchestrator's edit): the opt-in lazy mode is Aria's `TabContent` in Tabs (client-only) and the library's own template in the Accordion. The [Spec: Tabs](16-spec-tabs.md) D19 rationale no longer calls the two "consistent".
+
+Triage, from the decision ticket: impact HIGH (the Accordion's public lazy API), confidence HIGH. Decided; nothing open.
