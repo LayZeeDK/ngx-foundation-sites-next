@@ -4,7 +4,7 @@ Question: should `NfsSmoothScroll` (and `NfsMagellan` through it) treat every `#
 
 ## What this holds
 
-The runnable workspaces stayed under `D:/tmp/` (`nfs-decision-base-href/`, `nfs-panel-74-a11y/`, `nfs-panel-74-vsdefault/`); this folder keeps only the files the ticket's Why section cites as "verified". No non-ASCII characters were found in these files.
+The runnable workspaces stayed under `D:/tmp/` (`nfs-decision-base-href/`, `nfs-panel-74-a11y/`, `nfs-panel-74-vsdefault/`); this folder keeps only the files the ticket's Why section cites as "verified". No non-ASCII characters were found in these files. The two panel workspaces shared `nfs-decision-base-href/app/node_modules` through an `app/node_modules` junction each, removed on 2026-09-27 so no copy of `D:/tmp` follows them; to re-run either, recreate that junction (`New-Item -ItemType Junction -Path app/node_modules -Target D:/tmp/nfs-decision-base-href/app/node_modules`) and remove it with `rmdir` afterwards.
 
 - `decision-app/` (from `D:/tmp/nfs-decision-base-href/app/`): `annotations.log`, the judge's own experiment run (EXP P1, P2, J1, H1, H2, H3, H5, H7, H8, H9, M1, M2 -- the state table comparing rule A, the current default, against rule B, the browser's own same-document test) across Chromium, Firefox, and WebKit.
 - `panel-a11y/` (from `D:/tmp/nfs-panel-74-a11y/`): `results-check.log`, the a11y lens's measurement that the spec's read-once current-path `href` goes stale after a `routerLink` navigation to a new parameter or query, in three engines.
