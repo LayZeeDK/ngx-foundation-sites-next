@@ -21,6 +21,8 @@ An Angular application adds three problems Foundation never had:
 
 One attribute directive, `nfsSmoothScroll`, placed exactly where Foundation places `data-smooth-scroll`: on a container of in-page links (Foundation's Menu) or on one link. It has one `click` host listener. For an unmodified primary click on an in-page link whose target exists, it scrolls the target into view with `scrollIntoView` (smooth, or instant when the user prefers reduced motion), moves focus to the target (adding `tabindex="-1"` for the duration of that focus when the target is not focusable), and calls `preventDefault()` as its last statement. It does not change the URL, as Foundation's Plugin did not, so no `popstate` reaches the Router. Its public `scrollTo(target)` method is the same behaviour for code, and it is what the Magellan spec reuses.
 
+The consumer writes no Foundation or library class ([ADR 0039](../adr/0039-directives-manage-every-foundation-class.md)). SmoothScroll has no class of its own, so the directive binds none; the classes of the element it sits on come from the directives written beside it. Foundation's Menu container is therefore `<ul nfsMenu nfsSmoothScroll>`: the Menu directive binds `.menu` and sets its Variant classes from typed inputs (`orientation="vertical"` for `.vertical`), and `nfsSmoothScroll` adds the click handling.
+
 Everything else is the platform and CSS, so it holds before the directive exists in the browser:
 
 - The stopping point is CSS: `scroll-padding-top` on the scroll container (one rule for a sticky bar, and required whenever the page has a sticky or fixed bar, so focused content is never hidden under it, WCAG 2.2 2.4.11) or `scroll-margin-top` on a target. Both are honoured by `scrollIntoView` and by native fragment navigation alike, so the offset is the same before hydration, after hydration, and inside nested scroll containers.
@@ -31,7 +33,7 @@ What earns the directive a place, stated plainly: for a page without the Router'
 
 ## User Stories
 
-1. As an application developer, I want to put `nfsSmoothScroll` on a Foundation Menu of in-page section links (Foundation's `#section` hrefs on a page whose URL is the base URL or in an application without `<base href>`, hrefs built from the current path on other routes; D9), so that every link in it scrolls smoothly to its section, as `data-smooth-scroll` did.
+1. As an application developer, I want to put `nfsSmoothScroll` on a Foundation Menu (`ul[nfsMenu]`) of in-page section links (Foundation's `#section` hrefs on a page whose URL is the base URL or in an application without `<base href>`, hrefs built from the current path on other routes; D9), so that every link in it scrolls smoothly to its section, as `data-smooth-scroll` did.
 2. As an application developer, I want to put `nfsSmoothScroll` on a single in-page link, so that one "back to the form" link glides without wrapping it in a container.
 3. As an application developer, I want links added later inside the container (by `@for` or `@if`) to be handled too, so that generated tables of contents need nothing extra.
 4. As a keyboard user, I want focus to land on the section I scrolled to, so that the next Tab continues inside that section and not back in the menu.
@@ -56,7 +58,7 @@ What earns the directive a place, stated plainly: for a page without the Router'
 23. As an application developer, I want to opt out of the focus move for a programmatic scroll, so that a scroll that is not user navigation does not steal focus.
 24. As the Magellan spec author, I want to compose `NfsSmoothScroll` as a host directive and call its `scrollTo`, so that Magellan's link clicks scroll, focus, and respect reduced motion exactly as Smooth Scroll does.
 25. As an application developer, I want `href="#"` and `href="#top"` (with no element of that id) to scroll to the top of the page when they resolve to the current document (on a page whose URL is the base URL, or built from the current path), so that "back to top" links behave as the platform defines.
-26. As a developer of a server-rendered application, I want the server HTML to be my markup unchanged, so that the first paint is correct and hydration changes nothing.
+26. As a developer of a server-rendered application, I want the directive to add nothing to the server HTML but its event-replay annotation, so that the first paint is my markup with the classes the directives beside it bind (the Menu's `.menu`), and hydration changes nothing.
 27. As a developer of a server-rendered application, I want an in-page link clicked before hydration to jump natively (smoothly, when I include the mixin) and land at the same offset, so that early users get working links.
 28. As a developer of a server-rendered application, I want that early click to be replayed harmlessly after hydration, so that focus ends on the target and nothing scrolls twice visibly.
 29. As a developer using incremental hydration, I want an in-page link inside a dehydrated block to scroll to its target, so that deferring a region never breaks its links.
@@ -67,6 +69,7 @@ What earns the directive a place, stated plainly: for a page without the Router'
 34. As an application developer on the Router, I want the docs to tell me how the Router's `withInMemoryScrolling`, `ViewportScroller.setOffset`, and the mixin interact, so that I configure both without surprises.
 35. As an application developer, I want to import the directive from its own entry point, so that a `@defer` block can split it with the rest of the deferred content.
 36. As a library maintainer, I want the behaviour asserted through scroll position, focus, the URL, and history length in stories, browser-level tests, a server-render smoke test, and e2e, so that regressions surface at the layer that owns them.
+37. As an application developer, I want to write no Foundation class on a smooth-scrolling Menu, so that the Menu directive beside `nfsSmoothScroll` owns the Menu's look and a typo in a Variant name fails to compile.
 
 ## Implementation Decisions
 
@@ -97,17 +100,28 @@ Foundation's defaults therefore stop a target 25 px below the viewport top; a co
 
 ### CSS class to Angular mapping
 
-None. SmoothScroll has no Structural class, no State class, no Variant class, and no Sass in Foundation; the Plugin is a behaviour on consumer markup (typically Foundation's `.menu`, whose classes stay the consumer's). The directive binds no class. Per building-blocks 1.3 the class is named after the Plugin: `NfsSmoothScroll`.
+SmoothScroll has no Structural class, no State class, no Variant class, and no Sass in Foundation: the Plugin is a behaviour on markup that other components style. `NfsSmoothScroll` binds no class, has no Variant input, and so declares no Variant registry and writes no Variant property. Per building-blocks 1.3 the class is named after the Plugin: `NfsSmoothScroll`. Under the class rule ([ADR 0039](../adr/0039-directives-manage-every-foundation-class.md)) the classes on the elements it sits on are set by the directives written beside it, never by the consumer:
+
+| Foundation class | Kind | Set by | Owner |
+| --- | --- | --- | --- |
+| (none of SmoothScroll's own) | -- | `NfsSmoothScroll` binds nothing | This spec |
+| `.menu` on the typical container | Structural class of the Menu | `NfsMenu`, `ul[nfsMenu]`, written beside `nfsSmoothScroll` on the same `ul` | [Spec: Menu](../issues/85-spec-menu.md) |
+| `.vertical`, `.horizontal` and their responsive forms, and the Menu's other Variant classes | Variant classes of the Menu | The Menu directive's Variant inputs (`orientation="vertical"`) | [Spec: Menu](../issues/85-spec-menu.md) |
+| `.top-bar` (the sticky bar of the `smooth-scroll--sticky-offset` story only) | Structural class of the Top Bar | `NfsTopBar`, `[nfsTopBar]` | [Spec: Top Bar](../issues/86-spec-top-bar.md) |
+
+The targets carry no Foundation class: a section is the consumer's element with its own `id`, and the temporary `tabindex="-1"` is an attribute, not a class. `:target` is a pseudo-class the browser sets on native jumps only (Foundation behaviour changed or dropped). The names `NfsMenu`, `orientation`, and `NfsTopBar` are the ones the out-of-scope triage and building-blocks 1.4 give; the Menu and Top Bar specs own them, and the class-rule consistency review aligns this spec's examples if their final names differ.
 
 ### Hierarchy and DI shape
 
 ```
 [nfsSmoothScroll]                 NfsSmoothScroll on a container of in-page links
 a[href][nfsSmoothScroll]          NfsSmoothScroll on one link (same class)
+ul[nfsMenu][nfsSmoothScroll]      the documented container: NfsMenu (Menu spec) beside it binds .menu
 ```
 
 - One directive class, one selector (`[nfsSmoothScroll]`); whether it acts as a link host or a container host is decided once at construction from the host tag (`a` or not). Two classes would give two imports for one behaviour.
 - No parent, no children, no Parent token, no providers, no host directives. Links are found by event delegation at click time, not registered, so links created by `@for`, `@if`, or a deferred block are handled with no bookkeeping.
+- Beside, not hosting (D13): `NfsSmoothScroll` does not host `NfsMenu`, and this spec relies on the Menu directive not hosting `NfsSmoothScroll`. The consumer writes both attributes on one element, the map's composition of directives placed beside each other. A Smooth Scroll container need not be a Menu (a `form` whose errors it scrolls to, an `article` with a table of contents, a `nav`, or a single link), so hosting `NfsMenu` would put `.menu` on elements that are not Menus; and a Menu of links to other pages needs no Smooth Scroll. Neither injects the other: the Menu directive owns the Menu's classes, and `NfsSmoothScroll` handles the clicks. The one thing the container host needs from a directive beside it is that it does not cancel in-page link clicks, because a container host yields to a click that is already `defaultPrevented` (click handling step 2).
 - No Defaults token. Foundation's four Options are either browser-owned or CSS, so there is nothing a Defaults token could hold.
 - Injection: `ElementRef` (the host), `DOCUMENT`, `NfsMediaQuery` (the Breakpoint service, for `reducedMotion` exactly as its spec defines it), and CDK `InteractivityChecker` (to decide whether a target is focusable). Nothing from `@angular/router`: the directive does not depend on the Router.
 - Designed to be hosted: Magellan (and any consumer component) may list `NfsSmoothScroll` in `hostDirectives` and reach it with `inject(NfsSmoothScroll)`; the composed host then gets the same click handling and the `scrollTo` method.
@@ -188,7 +202,7 @@ APG pattern: none; the Link pattern applies to the links and nothing is added to
 | Element or state | Rendered semantics | Source |
 | --- | --- | --- |
 | In-page link | Native `a[href]`, implicit role `link`; the directive adds no attribute | APG Link pattern ("Authors are strongly encouraged to use a native host language link element") |
-| Container | The consumer's element and landmark (`nav` with `aria-label` when the page has several navigation landmarks; Foundation's `ul.menu`) | APG landmark practice |
+| Container | The consumer's element and landmark (`nav` with `aria-label` when the page has several navigation landmarks; Foundation's Menu as `ul[nfsMenu]`, whose list semantics the class rule leaves unchanged) | APG landmark practice |
 | Target | The consumer's element with a consumer-supplied `id`; gets `tabindex="-1"` only while the directive's focus is on it, when it is not focusable itself | WHATWG HTML scroll-to-the-fragment runs the focusing steps for the target; APG keyboard practice (focus persistence) |
 | Target naming | Not named by the library; a `section` becomes a `region` landmark only if the consumer names it, and should only when it is meant as a landmark | APG Magellan and landmark notes |
 | Current section | Not tracked here; `aria-current` is Magellan's | Magellan spec |
@@ -216,12 +230,12 @@ Focus rules: focus lands on the target at the start of the scroll, with `prevent
 
 ### Rendered HTML
 
-Consumer markup and the resulting DOM. The directive has no host bindings, so the server HTML is the consumer's markup plus the `jsaction` attribute Angular's hydration annotation adds for the `click` listener; after hydration Angular removes `jsaction` and the DOM is the consumer's markup again.
+Consumer markup and the resulting DOM. The directive has no host bindings, so it adds nothing to the server HTML but the `jsaction` attribute Angular's hydration annotation adds for the `click` listener; after hydration Angular removes `jsaction`. Every class in the server HTML comes from a directive beside it (the container's `.menu` from `NfsMenu`), because host bindings render on the server (building-blocks 1.11 decision 1): the first paint is Foundation's Menu before any script runs, and hydration changes no class. The blocks below leave out the attributes the template writes for directives, their selector attributes and static input values such as `orientation="vertical"`; Angular keeps those in the DOM and in server HTML as static attributes, serialised in lowercase (`nfsmenu=""`, `nfssmoothscroll=""`), as the server HTML of the [Prototype: CSS `position: sticky` with IntersectionObserver sentinels for Sticky](../issues/48-prototype-sticky-css.md) shows for its directives.
 
 ```html
-<!-- Container (Foundation's Menu) -->
+<!-- Container: Foundation's Menu, whose class NfsMenu binds -->
 <nav aria-label="On this page">
-  <ul class="menu" nfsSmoothScroll>
+  <ul nfsMenu nfsSmoothScroll>
     <li><a href="#first">First Arrival</a></li>
     <li><a href="#second">Second Arrival</a></li>
   </ul>
@@ -229,7 +243,7 @@ Consumer markup and the resulting DOM. The directive has no host bindings, so th
 <section id="first">...</section>
 <section id="second">...</section>
 
-<!-- Server HTML (SSR and prerender) -->
+<!-- Server HTML (SSR and prerender): .menu from NfsMenu, jsaction for NfsSmoothScroll's listener -->
 <nav aria-label="On this page">
   <ul class="menu" jsaction="click:;">
     <li><a href="#first">First Arrival</a></li>
@@ -237,10 +251,15 @@ Consumer markup and the resulting DOM. The directive has no host bindings, so th
   </ul>
 </nav>
 
-<!-- Hydrated DOM: the consumer's markup, no library attributes -->
+<!-- Hydrated DOM: jsaction gone; the class stays, bound by NfsMenu -->
 <ul class="menu">...</ul>
 
-<!-- One link -->
+<!-- A vertical Menu: the Variant class comes from the Menu's orientation input -->
+<ul nfsMenu orientation="vertical" nfsSmoothScroll>...</ul>
+<!-- Server HTML -->
+<ul class="menu vertical" jsaction="click:;">...</ul>
+
+<!-- One link: no class on either side -->
 <a href="#exclusive" nfsSmoothScroll>Exclusive Section</a>
 <!-- Server HTML -->
 <a href="#exclusive" jsaction="click:;">Exclusive Section</a>
@@ -251,14 +270,14 @@ Consumer markup and the resulting DOM. The directive has no host bindings, so th
 <section id="first">...</section>
 
 <!-- Router application: same-document hrefs (base href safe) -->
-<ul class="menu" nfsSmoothScroll>
+<ul nfsMenu nfsSmoothScroll>
   <li><a href="/guide/install#first">First Arrival</a></li>      <!-- directive-owned -->
   <li><a routerLink="." fragment="second">Second Arrival</a></li> <!-- Router-owned -->
 </ul>
-<!-- Server HTML: RouterLink renders href="/guide/install#second"; the RouterLink host carries its own jsaction -->
+<!-- Server HTML: class="menu" on the ul; RouterLink renders href="/guide/install#second"; the RouterLink host carries its own jsaction -->
 ```
 
-In an application with `<base href="/">`, `href="#first"` on the route `/guide/install` resolves to `/#first`, another document: the browser, assistive technology, and the directive all treat it as a link to the base URL, before and after hydration alike, and the development-mode check warns about it. The attribute order in server HTML is not significant.
+In an application with `<base href="/">`, `href="#first"` on the route `/guide/install` resolves to `/#first`, another document: the browser, assistive technology, and the directive all treat it as a link to the base URL, before and after hydration alike, and the development-mode check warns about it. The order of attributes in server HTML, and of the names inside `class`, is not significant.
 
 ### Animation
 
@@ -270,14 +289,14 @@ In an application with `<base href="/">`, `href="#first"` on the route `/guide/i
 
 Per ADR 0008 and the rendering-modes research, section 7 rules 1 to 11:
 
-- Server-side rendering and first paint: the directive renders nothing and reads nothing (rule 1). Server HTML is the consumer's markup plus `jsaction="click:;"` on the host. First paint is plain Foundation markup, correct without JavaScript as long as the `href`s resolve to the current document.
+- Server-side rendering and first paint: the directive renders nothing and reads nothing (rule 1). Server HTML is the consumer's markup with the host bindings of the directives beside it (the container's `.menu` from `NfsMenu`) plus `jsaction="click:;"` on the host. First paint is Foundation markup with every Foundation class in place, correct without JavaScript as long as the `href`s resolve to the current document.
 - Before hydration: nothing runs (rules 3 to 5). The early event contract does not cancel the click, so the browser performs a native fragment navigation: `scroll-behavior` from the mixin (smooth unless `reduce`), the CSS offset, the platform's focus handling (it focuses a focusable target and otherwise moves the sequential focus navigation starting point to it), and a new history entry with the fragment. The Router, not yet bootstrapped, sees no `popstate`. After hydration the queued click is replayed: the handler scrolls to the same target (already in view, so nothing visible moves), focuses it, and then calls `preventDefault()`, which throws during replay; Angular reports the error to `ErrorHandler`. This is the building-blocks rule for replayed events (state first, `preventDefault()` last, accept the logged error), decided at triage on 2026-09-26 (impact not HIGH, confidence HIGH; see the building-blocks ticket's triage). A later replay check would only add a guard that skips `preventDefault()` on replay; nothing else would change.
-- Full hydration: there are no host bindings, so hydration changes nothing and there is no structure to mismatch; no `ngSkipHydration` (rule 10).
+- Full hydration: there are no host bindings, so hydration changes nothing and there is no structure to mismatch (the Menu's class binding has the same value on both platforms); no `ngSkipHydration` (rule 10).
 - Incremental hydration, link host inside a dehydrated block: the host `<a>` carries `jsaction`. A click made before the app hydrates is only queued by the early event contract, which cancels nothing, so the browser jumps natively at once, as with a container host; once the app has hydrated and only the block is still dehydrated, Angular's dispatcher cancels the live click before it hydrates the block, because the action element is an `<a>`. Either way the block hydrates and the click is replayed with `defaultPrevented` already `true`: the handler (which skips step 2 on a link host) scrolls and focuses, does not call `preventDefault()`, and no error is logged, and the replayed click's scroll is what remains (the first case measured in three engines by the [Prototype: Smooth Scroll under Router scroll restoration and replay](../issues/62-prototype-smooth-scroll-router-restoration.md), case 2b). In the second case the scroll waits for the block to hydrate, including any chunk download; no `popstate`, so no Router interference. A link host whose `href` is not in-page (for example a bare `#id` under a `<base href>` that points elsewhere) is cancelled the same way once the app has hydrated, and its replayed click is not handled, so the click does nothing (focus stays on the link, or falls to the body in WebKit; decision dossier row H8); the development-mode check names it at click time. It is the hazard of any link host whose `href` leaves the page.
 - Incremental hydration, container host inside a dehydrated block: the `jsaction` sits on the container, not on the `<a>`, so the dispatcher does not cancel: the browser jumps natively at once, the click hydrates the block and is replayed as in the full-hydration case (scroll no-op, focus, logged `preventDefault()` error). Because the app is already hydrated, the native jump's `popstate` reaches the Router (Comparison, rule 3). Measured with the click made before the app hydrated, the replayed click's scroll is what remains, landing after the Router's own first scroll, and the replay error is logged, in all three engines (the prototype's case 2a).
 - A plain in-page link with no directive that is a root node of a `@defer (hydrate on interaction)` block gets the trigger's `click` `jsaction` and is cancelled by the dispatcher with nothing to replay it to (the Button spec's hazard); consumers wrap such links in an element, or put `nfsSmoothScroll` on them.
 - Hydration boundary: the directive and the links it handles belong to one boundary (a container host handles only links that are its DOM descendants). Targets may sit anywhere, including in dehydrated blocks, because their server HTML already carries the ids; a target inside a plain `@defer` block that has not rendered yet does not exist, so the click falls back to the native default. Target ids must be consumer-supplied (building-blocks 1.5): a generated id differs between server and client.
-- `@defer`: library templates contain no `@defer`; the directive is its own entry point, so a consumer can defer it with the region. Inside `@defer (hydrate never)` nothing is annotated: links jump natively, smoothly with the mixin, with the CSS offset (the residue building-blocks 1.11 decision 7 lists for SmoothScroll), and after hydration of the rest of the app those jumps reach the Router as `popstate` (Comparison, rule 3).
+- `@defer`: library templates contain no `@defer`; the directive is its own entry point, so a consumer can defer it with the region. Inside `@defer (hydrate never)` nothing is annotated and the Menu keeps the classes its server HTML carries: links jump natively, smoothly with the mixin, with the CSS offset (the residue building-blocks 1.11 decision 7 lists for SmoothScroll), and after hydration of the rest of the app those jumps reach the Router as `popstate` (Comparison, rule 3).
 - Zoneless: the handler writes no signal and needs no change detection; no `NgZone`.
 - Prerendering: identical to server rendering; no request token is read (rule 11).
 
@@ -287,19 +306,21 @@ A good test asserts what the user observes: where the target lands relative to t
 
 Story ids follow `smooth-scroll--<story>`: `smooth-scroll--container`, `smooth-scroll--single-link`, `smooth-scroll--sticky-offset`, `smooth-scroll--scroll-container`, `smooth-scroll--focusable-target`, `smooth-scroll--link-filters`, `smooth-scroll--programmatic`, `smooth-scroll--back-to-top`, `smooth-scroll--router-link-fragment` (Router provided in the story). The Storybook preview includes `@include nfs-smooth-scroll;` with its default `html` scroller, as it includes every Library mixin (Storybook conventions, section 5), so native jumps in stories are smooth under `prefers-reduced-motion: no-preference`; a play function of any plugin that scrolls the root programmatically therefore passes `behavior: 'instant'` when it asserts a position after one frame.
 
+Story markup follows the class rule (Storybook conventions, section 8; ADR 0039): no story element carries a Foundation or library class written in the template. Containers are `ul[nfsMenu]`, the sticky bar is `[nfsTopBar]`, and story buttons are `button[nfsButton]`, each imported from its own entry point as scaffolding beside `NfsSmoothScroll` in the stories file's `moduleMetadata.imports`. Scaffolding that needs a value Foundation has no class for (a panel height, `overflow-y: auto`, `position: sticky` on the bar) uses an inline `style`.
+
 ### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`, `npx nx test-storybook <lib>`)
 
 Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test = 'error'` and `runOnly` set to the six tags of the preview's rule set (`wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`, `best-practice`), per building-blocks 1.10. Because axe does not test focus order, focus visibility, or obscured focus, the play functions below assert 2.4.3, 2.4.7, and 2.4.11 directly.
 
 - `smooth-scroll--container`: clicking "Second Arrival" brings `#second`'s top to the viewport top (within 1 px once stable); `#second` has focus and carries `tabindex="-1"`; `userEvent.tab()` then reaches the first link inside `#second`; the attribute is gone after that; the story iframe's `location.hash` is unchanged. Enter on a focused link does the same, and after Enter the target matches `:focus-visible` with a non-`none` computed `outline-style` (2.4.3, 2.4.7).
 - `smooth-scroll--single-link`: the one link scrolls to `#exclusive` and focuses it; a sibling link without the directive is not handled (its native jump changes `location.hash`).
-- `smooth-scroll--sticky-offset`: with `scroll-padding-top: 4rem` on the story's scroller and a sticky `.top-bar`, the target's top lands 4rem below the scroller's top and the heading is not covered by the bar; after Tab moves focus to a link inside the section, that link's rectangle does not intersect the bar's (2.4.11); a second target with `scroll-margin-top` lands at its own distance.
-- `smooth-scroll--scroll-container`: links inside an `overflow: auto` panel scroll the panel, not the page.
+- `smooth-scroll--sticky-offset`: with `scroll-padding-top: 4rem` on the story's scroller and a Top Bar (`[nfsTopBar]`) held at the scroller's top by an inline `position: sticky; top: 0`, the target's top lands 4rem below the scroller's top and the heading is not covered by the bar; after Tab moves focus to a link inside the section, that link's rectangle does not intersect the bar's (2.4.11); a second target with `scroll-margin-top` lands at its own distance.
+- `smooth-scroll--scroll-container`: links inside a panel with an inline height and `overflow-y: auto` scroll the panel, not the page.
 - `smooth-scroll--focusable-target`: a target that is a focusable element (a heading with the consumer's `tabindex="-1"`, a form field) is focused without the directive adding or removing anything.
 - `smooth-scroll--link-filters`: a link to another page, a `target="_blank"` link, and a `download` link are not handled (the story's click spy on a wrapper records `defaultPrevented === false`); a link to a missing id is not handled.
-- `smooth-scroll--programmatic`: a story button calls `scrollTo('third')` through the `exportAs` reference and shows `true`; `scrollTo('missing')` shows `false`; `scrollTo(el, {focus: false})` scrolls without moving focus.
+- `smooth-scroll--programmatic`: a story button (`button[nfsButton]`) calls `scrollTo('third')` through the `exportAs` reference and shows `true`; `scrollTo('missing')` shows `false`; `scrollTo(el, {focus: false})` scrolls without moving focus.
 - `smooth-scroll--back-to-top`: `href="#top"` and `href="#"` scroll to the top and move no focus.
-- `smooth-scroll--router-link-fragment`: in a menu mixing a plain same-document link and a `routerLink` with `fragment`, the plain link is directive-handled (URL unchanged), and the `routerLink` click is left to the Router (the URL gains the fragment through the Router).
+- `smooth-scroll--router-link-fragment`: in a Menu (`ul[nfsMenu]`) mixing a plain same-document link and a `routerLink` with `fragment`, the plain link is directive-handled (URL unchanged), and the `routerLink` click is left to the Router (the URL gains the fragment through the Router).
 
 ### 2. Browser-level test (Vitest browser mode, `npx nx test <lib>`)
 
@@ -316,7 +337,7 @@ Vitest browser mode under the Angular unit-test builder (`npx nx test <lib>`, Ch
 
 ### 3. Node-level Vitest
 
-- SSR smoke: `renderApplication` over a fixture with a container host, a link host, a `routerLink` with `fragment` inside the container, and targets with ids. Assert `whenStable()` resolves; the server HTML equals the fixture markup plus `jsaction="click:;"` on both hosts; no host has any other added attribute; the `routerLink` renders its path-plus-fragment `href`; no `window`, `matchMedia`, or `scrollIntoView` access happens (an `NfsMediaQuery` spy records no live read). Runs under `npx nx test <lib>` in `smooth-scroll.ssr.spec.ts` through the shared `renderServer()` helper; `npx nx test-node <lib>` only if the server path depends on the DOM adapter, which it does not; the runner is the [Prototype: Rendering-mode test seam](../issues/59-prototype-rendering-mode-test-seam.md).
+- SSR smoke: `renderApplication` over a fixture with a container host on `ul[nfsMenu]` (the documented form), a link host, a `routerLink` with `fragment` inside the container, and targets with ids. Assert `whenStable()` resolves; the server HTML equals the fixture markup (its directive attributes serialised in lowercase) plus `class="menu"` on the container, which `NfsMenu` binds, and `jsaction="click:;"` on both hosts; `NfsSmoothScroll` adds no class and no other attribute to either host; the `routerLink` renders its path-plus-fragment `href`; no `window`, `matchMedia`, or `scrollIntoView` access happens (an `NfsMediaQuery` spy records no live read). Runs under `npx nx test <lib>` in `smooth-scroll.ssr.spec.ts` through the shared `renderServer()` helper; `npx nx test-node <lib>` only if the server path depends on the DOM adapter, which it does not; the runner is the [Prototype: Rendering-mode test seam](../issues/59-prototype-rendering-mode-test-seam.md).
 - Pure logic: the in-page decision and target resolution (resolved URL, document URL, a non-null empty fragment, fragment decoding, `top`; the raw `href` feeds only the development check) is a pure function of strings plus an id lookup; a table-driven test covers it.
 - Sass compile (the library's Sass test from ADR 0012): `@include nfs-smooth-scroll;` emits `html { scroll-behavior: smooth; }` inside `@media (prefers-reduced-motion: no-preference)` and nothing else; `@include nfs-smooth-scroll($scroller: '.page-content');` moves the rule to that selector; importing the library without the include emits nothing.
 
@@ -330,7 +351,7 @@ Against the static Storybook build:
 - Reduced motion: `page.emulateMedia({reducedMotion: 'reduce'})` makes the jump complete within one frame, with and without the directive; `no-preference` makes it take several frames.
 - Router coexistence in `smooth-scroll--router-link-fragment` with `scrollPositionRestoration: 'enabled'`: a directive-handled link stays at its target; a native in-page link outside the directive is recorded as ending at the restored position (the regression guard for the Router behaviour in Comparison rule 3, confirmed by the prototype).
 
-Against the prerendered fixture app (the harness from the rendering-mode test seam prototype), served under `<base href="/">` on a nested route; its in-page links carry the current path (Usage examples) except where a case names a `#`-only link:
+Against the prerendered fixture app (the harness from the rendering-mode test seam prototype), served under `<base href="/">` on a nested route; its containers are `ul[nfsMenu]` and its in-page links carry the current path (Usage examples) except where a case names a `#`-only link:
 
 - JavaScript disabled: screenshot plus `@axe-core/playwright` with the six tags on the server HTML; a same-document link jumps to its target at the CSS offset; a `#`-only link navigates to the base URL.
 - Hydration: no NG05xx in the console and `ngDevMode.componentsSkippedHydration === 0`.
@@ -350,6 +371,7 @@ Against the prerendered fixture app (the harness from the rendering-mode test se
 - Horizontal in-page scrolling as a feature: `inline: 'nearest'` keeps the platform's behaviour, nothing more.
 - `area[href]` and SVG `a` hosts; Foundation's contract is `a[href^="#"]`.
 - Rewriting consumer `href`s to fix `<base href>` resolution (design decision D9).
+- The Menu's classes, its Variant inputs, and how it marks a current-page item: the Menu spec, whose directive sits beside this one (D13). The Top Bar's classes: the Top Bar spec.
 - Runtime theming through custom properties (building-blocks 1.13).
 
 ## Further Notes
@@ -368,8 +390,9 @@ Against the prerendered fixture app (the harness from the rendering-mode test se
 | D8 | URL unchanged | Foundation parity; no `popstate` and no history entry, so the Router's state and scroll restoration are untouched; Magellan owns deep linking. Decided at triage (2026-09-26): impact not HIGH (an opt-in can be added later), confidence HIGH | `replaceState` of the fragment (would need to preserve the Router's `history.state`); `pushState` (a history entry without Router state, which the Router then restores as navigation id 0) |
 | D9 | A link is in-page only when the browser treats it as same-document: its resolved URL equals the document URL apart from the fragment, and it has a fragment. A `#`-only `href` that `<base href>` resolves to another document is left to the browser, with a development-mode warning, and the docs give a current-path `href` | Every link the directive handles works the same before and after hydration, without JavaScript, in `hydrate never`, in dehydrated blocks, and on modified clicks (ADR 0008; user stories 27, 29, 30), measured in three engines; it is HTML's fragment-navigation condition and the same-page test of Chromium's, WebKit's, and NVDA's accessibility layers; a bare link under `<base href>` fails on the first click in development instead of only before hydration in production; widening the rule later breaks nobody. Decided by the [Decide: `#`-only links that `<base href>` resolves to another document](../issues/74-decide-base-href-hash-links.md) panel, 2026-09-27 ([ADR 0038](../adr/0038-smooth-scroll-same-document-links.md)) | Every raw `#` `href` in-page after hydration (the earlier default: the link goes to one place after hydration and to another before it, without JavaScript, in `hydrate never`, in container hosts inside dehydrated blocks, and on modified clicks, and narrowing it later would break shipped links); the directive rewriting `href` through a host binding (collides with `RouterLink`'s `href` binding, ADR 0011, and cannot reach a container's links); a browser-only rewrite of bare `href`s (server HTML stays bare; possible later as an opt-in); matching the fragment alone (captures links to other pages); a configuration switch (D11) |
 | D10 | Public `scrollTo(target, {focus})` on the directive, returning `boolean` | Foundation's `scrollToLoc` returned `false` on a miss; Magellan composes the directive and reuses it | A root service (services are for shared state, building-blocks 1.5); a static function (loses the injected `reducedMotion` and `InteractivityChecker`) |
-| D11 | No inputs, outputs, Defaults token, or host bindings | Every Option is CSS or browser-owned; no event exists without `scrollend` | Material-style config token |
+| D11 | No inputs, outputs, Defaults token, or host bindings | Every Option is CSS or browser-owned; no event exists without `scrollend`; SmoothScroll has no Foundation class, so the class rule (ADR 0039) adds no Variant input and no State class | Material-style config token |
 | D12 | Opt-in `nfs-smooth-scroll($scroller: html)` mixin, gated by `prefers-reduced-motion: no-preference` | Foundation ships no smooth-scroll CSS; native jumps need it; `scroll-behavior` on `html` changes every programmatic root scroll, so it must be the consumer's choice (CDK's block scroll strategy resets it for the same reason) | Always-on library CSS; no CSS at all (pre-hydration and `hydrate never` jumps would be instant) |
+| D13 | The classes of the element `nfsSmoothScroll` sits on come from the directives written beside it (`<ul nfsMenu nfsSmoothScroll>`); `NfsSmoothScroll` hosts no class directive and binds no class. Decided 2026-09-27 under the class rule ([Re-run: Smooth Scroll spec under the class rule](../issues/121-rerun-smooth-scroll-class-rule.md)) | ADR 0039: the consumer writes no Foundation class, and `.menu` is the Menu directive's to bind; directives placed beside each other are the map's composition rule; a Smooth Scroll container need not be a Menu (a `form`, an `article`, a `nav`, one link), and a Menu need not scroll; server HTML carries the Menu's class from its host binding, so the first paint and `hydrate never` blocks keep Foundation's look | `NfsSmoothScroll` hosting `NfsMenu` (puts `.menu` on every container, Magellan's included through its composition; needs a second copy of the Menu's Variant inputs on this directive; and makes a consumer's `nfsMenu` written beside it Angular's development-mode NG0309 error, a directive matched twice on one element); a second selector such as `ul[nfsSmoothScroll]` that hosts `NfsMenu` (two behaviours behind one attribute, and `.menu` on lists that are not Menus); the Menu directive hosting `NfsSmoothScroll` (every Menu would handle in-page clicks); the consumer's `class="menu"` (forbidden by ADR 0039) |
 
 ### Usage examples
 
@@ -378,10 +401,11 @@ Without `<base href>`, or on a page whose URL is the base URL (Foundation's `#id
 ```ts
 @Component({
   selector: 'app-guide',
-  imports: [NfsSmoothScroll],
+  imports: [NfsMenu, NfsSmoothScroll],
   template: `
     <nav aria-label="On this page">
-      <ul class="menu vertical" nfsSmoothScroll>
+      <!-- NfsMenu binds .menu and, from orientation, .vertical; no class is written here -->
+      <ul nfsMenu orientation="vertical" nfsSmoothScroll>
         @for (s of sections(); track s.id) {
           <li><a [href]="'#' + s.id">{{ s.title }}</a></li>
         }
@@ -430,9 +454,9 @@ export const appConfig: ApplicationConfig = {
 
 @Component({
   selector: 'app-install-guide',
-  imports: [NfsSmoothScroll, RouterLink],
+  imports: [NfsMenu, NfsSmoothScroll, RouterLink],
   template: `
-    <ul class="menu" nfsSmoothScroll>
+    <ul nfsMenu nfsSmoothScroll>
       <!-- Directive-owned: same-document href, no navigation, URL unchanged -->
       <li><a [href]="path() + '#requirements'">Requirements</a></li>
       <!-- Router-owned: the container yields; the Router scrolls and records the fragment -->
@@ -500,13 +524,14 @@ An application that drops `<base href>`, provides `APP_BASE_HREF`, and serves it
 
 ### Sass
 
-Sass. The consumer compiles Foundation's Sass from its own settings; the library imports no Foundation code and copies no Foundation rule. This Plugin relies on no Foundation Export mixin: Foundation ships no SmoothScroll Sass, and the Menu classes on a typical container belong to `foundation-menu`, which the consumer includes for the menu itself. Its documented custom CSS is the `nfs-smooth-scroll` Library mixin of the library's Sass (`@import 'ngx-foundation-sites';` after Foundation); it has no ordering constraint against any Foundation include.
+Sass. The consumer compiles Foundation's Sass from its own settings; the library imports no Foundation code and copies no Foundation rule. This Plugin relies on no Foundation Export mixin: Foundation ships no SmoothScroll Sass, and the Menu classes on a typical container are bound by the Menu directive and styled by `foundation-menu`, which the consumer includes for the Menu itself. Its documented custom CSS is the `nfs-smooth-scroll` Library mixin of the library's Sass (`@import 'ngx-foundation-sites';` after Foundation); it has no ordering constraint against any Foundation include.
 
 1. Rules: one, `#{$scroller} { scroll-behavior: smooth; }` inside `@media (prefers-reduced-motion: no-preference)`. Reason: Foundation's CSS has no smooth-scrolling rule (its JavaScript animated `scrollTop`), and without one every native fragment jump (clicks before hydration, links inside `@defer (hydrate never)`, Router-owned fragment links) is instant. The rule sits on the scroll container, not on the link container, because `scroll-behavior` applies to the scrolling box.
 2. Reused Foundation settings, mixins, functions: none; Foundation has no setting for this. One library parameter, `$scroller` (default `html`, the page's scrolling box), because Foundation has no setting that names the scroll container and because `scroll-behavior` on `html` also changes every programmatic root scroll (Comparison, rule 4).
 3. Custom properties: none.
 4. Motion classes: none. The reduced-motion handling is the `no-preference` media query around the one rule; there is no transition or animation to shorten, so no 1 ms override.
 5. Missing include: native jumps are instant; the directive's own jumps are still smooth (it passes `behavior` explicitly), and offsets, focus, and reduced motion are unaffected.
+6. Variant properties: none. SmoothScroll has no Variant class, so the mixin writes no `--nfs-<setting>` property, and the entry point declares no Variant registry and adds nothing for the runtime checks to read.
 
 The offset rules (`scroll-padding-top`, `scroll-margin-top`) are the consumer's, because their value is the consumer's own sticky bar height; the mixin does not emit them.
 
@@ -522,6 +547,7 @@ The offset rules (`scroll-padding-top`, `scroll-margin-top`) are the consumer's,
 - `a[href^="#"]` as the in-page test: replaced by HTML's same-document condition, which selects the same links on a page whose URL is the base URL or without `<base href>`; on other routes Foundation's bare markup is left to the browser (D9).
 - The `threshold / 2 + offset` stopping point: CSS `scroll-margin-top` / `scroll-padding-top`, default 0 instead of Foundation's effective 25 px.
 - The generated container id: dropped; nothing references it.
+- `class="menu"` written on the container, as Foundation's docs markup does: the Menu directive written beside `nfsSmoothScroll` binds it (`<ul nfsMenu nfsSmoothScroll>`), and the consumer writes no class (ADR 0039, D13).
 - No focus move after the animated scroll: focus now moves to the target.
 - `prefers-reduced-motion` ignored: now honoured by both the directive and the mixin.
 - `href="#"` placeholder links, which Foundation's handler passed to `$('#')`: scroll to the top as HTML defines; Foundation's docs use such links as triggers, which the library writes as buttons (building-blocks 1.10).
