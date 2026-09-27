@@ -624,3 +624,7 @@ Its prototype questions are SYNC's unknowns 1 to 3 and 8: the dev server's stale
   - Runtime checks in the NgRx style are on in development with a per-check opt-out and opt-in for production.
   - Responsive Variants take a Breakpoint query or rules object on the family's own input, and every input defaults to setting no class. No subclass, provider, or ESLint rule.
   - Impact HIGH, confidence HIGH; ADR 0040; a tooling spec ticket follows. Dossiers: [research/typed-variant-inputs.md](research/typed-variant-inputs.md), [research/variant-typing-alternatives.md](research/variant-typing-alternatives.md), [research/variant-typing-sync-tooling.md](research/variant-typing-sync-tooling.md).
+
+### Amendment, 2026-09-27 (tooling spec)
+
+The [Spec: Variant declaration tooling](136-spec-variant-declaration-tooling.md) replaces two details of this Answer's "Synchronisation and CI steps". The setup generator registers the sync generator on each covered project's own targets with Nx's `"..."` spread, not through `targetDefaults` keyed by executor: Nx 23.2.1 resolves target defaults by the executor key alone when it exists (`resolveTargetDefault`), so the entries proposed here would drop a workspace's `build` defaults. It also adds the `nfs-variants` target to Nx projects, where it carries each project's options for the sync generator. The exact diff check becomes a comparison by meaning, so a formatter's output and a hand-written file's layout never count as drift. The rest of the Answer stands.
