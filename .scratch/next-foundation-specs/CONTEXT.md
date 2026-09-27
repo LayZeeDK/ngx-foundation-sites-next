@@ -22,6 +22,14 @@ _Avoid_: nav list, menubar, ARIA menu (for this)
 Foundation's CSS-only component for the corner control drawn as a glyph, marked by the `.close-button` Structural class; distinct from a close Trigger (`nfsClose`), which does the closing and can sit on any button.
 _Avoid_: close trigger (for the component), dismiss button, X button
 
+**Split button**:
+A Button Group of two buttons, a main action and an arrow-only dropdown button that opens more actions of the same kind; built from the group, the buttons, and a Trigger, with no component of its own. Distinct from a Hybrid item, whose link navigates and whose toggle opens a submenu.
+_Avoid_: dropdown button (for the pair), menu button, action menu
+
+**Callout**:
+Foundation's CSS-only container for a highlighted message or aside, marked by the `.callout` Structural class and coloured from `$foundation-palette`; a coloured callout is not an alert, which only a live `role` makes it.
+_Avoid_: alert (for the component), panel, notice, callout box
+
 **Structural class**:
 A Foundation CSS class that names an element of a Plugin's or a CSS-only component's markup (`.accordion-item`, `.dropdown-pane`, `.orbit-slide`, `.button`); bound by its directive, never written by the consumer.
 _Avoid_: layout class, block class, container class
@@ -164,6 +172,10 @@ _Avoid_: pause button, play button, autoplay toggle
 The Toggler form that shows and hides its element, optionally with Motion classes, and whose Triggers are disclosure buttons; the replacement for `data-toggler` with `data-animate`.
 _Avoid_: animate mode, disclosure mode, hide mode
 
+**Dismissible callout**:
+A Callout the user can close with a close button inside it, either hidden in place as a Toggler in Visibility mode or removed with `@if`; the replacement for Foundation's `data-closable` on a callout.
+_Avoid_: closable callout, alert box, closable (the Foundation attribute)
+
 **Class mode**:
 The Toggler form that adds and removes a class named by `toggler` on its element, and whose Triggers are toggle buttons; the replacement for `data-toggler=".class"`.
 _Avoid_: toggle-class mode, CSS mode, active mode
@@ -297,7 +309,7 @@ The rule that decides when a field's validation errors are shown (after a commit
 _Avoid_: validation mode, error matcher, validateOn (as the name of the whole rule)
 
 **Form error**:
-A consumer-written message element (`.form-error`) tied to one field and, optionally, to one error kind, shown only while that field's errors are shown.
+A message element (`.form-error`, bound by `nfsFormError`) tied to one field and, optionally, to one error kind, shown only while that field's errors are shown.
 _Avoid_: error message (bare), inline error, hint (which is Help text)
 
 **Form alert**:

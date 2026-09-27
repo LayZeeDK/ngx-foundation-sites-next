@@ -17,3 +17,4 @@ AccordionMenu's height animation needs an "expanded" hook on the parent `li` (a 
 
 - Consumers who theme the open state target `[data-nfs-expanded]`, a stable, documented, prefixed hook.
 - When `:has()` enters the browser target, `li:has(> [aria-expanded='true'])` can replace `data-nfs-expanded` without a visible change.
+- 2026-09-27 ([Spec: Callout](../issues/89-spec-callout.md)): the rule also covers a structural condition Foundation has no class for: `NfsCallout` binds `data-nfs-close-button` while its content holds a close button, from a content query, and `nfs-callout` reserves room on that side for WCAG 1.4.12. `.callout:has(.close-button)` replaces it once `:has()` enters the Browser target.

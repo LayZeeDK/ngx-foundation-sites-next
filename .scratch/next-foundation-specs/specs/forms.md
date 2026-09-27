@@ -303,7 +303,7 @@ Server HTML and the hydrated DOM are identical for every example: every class is
 <label for="middle-label" class="middle text-right">Label</label>
 ```
 
-Beside Abide (the Abide directives as the [Spec: Abide](../issues/31-spec-abide.md) defines them; its re-run may rename parts of that API, and this example follows it):
+Beside Abide (the Abide directives as the [Spec: Abide](../issues/31-spec-abide.md) defines them; its class-rule re-run renamed nothing):
 
 ```html
 <form [formRoot]="f" nfsAbide #abide="nfsAbide" aria-labelledby="pay-h">
@@ -529,7 +529,7 @@ Sass. The consumer compiles Foundation's Sass from its own settings; the library
 | `$input-border` | `1px solid $medium-gray`: 1.63:1 against the page (the field background equals the page, so the border is the field's only boundary) | `1px solid $dark-gray` (`#8a8a8a`) | 3.42:1 | 1.4.11 |
 | `$input-border-focus` | `1px solid $dark-gray`: 3.42:1 against the page, but 2.11:1 from Foundation's resting border and 1:1 from the required one | `1px solid $black` (`#0a0a0a`) | 19.63:1 against the page and the focus background; 5.73:1 from the resting border | 1.4.11, 1.4.1, 2.4.7 |
 
-   A consumer with another palette or background picks any placeholder colour at 4.5:1 on its field, any border colour at 3:1 on its page (or a field background at 3:1 on its page), and any focus border colour at 3:1 on its page and focus background and 3:1 from its resting border. `$select-triangle-color` (`$dark-gray`, 3.42:1) passes by default and needs nothing. The first two settings are also required by the [Spec: Abide](../issues/31-spec-abide.md), whose invalid-state settings stay its own.
+   A consumer with another palette or background picks any placeholder colour at 4.5:1 on its field, any border colour at 3:1 on its page (or a field background at 3:1 on its page), and any focus border colour at 3:1 on its page and focus background and 3:1 from its resting border. `$select-triangle-color` (`$dark-gray`, 3.42:1) passes by default and needs nothing. The [Spec: Abide](../issues/31-spec-abide.md) points here for all three and keeps its invalid-state settings; its `nfs-abide` also checks this focus border against the invalid border (3:1), because a focused invalid select shows the focus border in place of the invalid one.
 3. Custom properties written by the directives: none.
 4. Motion classes: none; no transition or animation is added or awaited.
 5. What breaks when the include is missing: nothing visible, because the mixin emits no CSS; the checks do not run, so a failing setting is caught only by the `forms--field-contrast` play function and the e2e focus check in the library's own CI.

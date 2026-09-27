@@ -135,7 +135,7 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
 
   // color-contrast (1.4.3) and non-text contrast (1.4.11): the placeholder is 1.63:1, the input border 1.63:1,
   // and the focus border equals the required resting border, which leaves a focused select with a 1.63:1 glow.
-  // Spec: Forms, forms--field-contrast and forms--select; also Abide, abide--invalid-state-contrast.
+  // Spec: Forms, forms--field-contrast and forms--select; also Abide, abide--invalid-state-contrast (a focused invalid select, 3.74:1 from the invalid border).
   $input-placeholder-color: #737373;
   $input-border: 1px solid $dark-gray;
   $input-border-focus: 1px solid $black;
@@ -159,6 +159,14 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
   // Non-text contrast (1.4.11) and color-contrast (1.4.3): nfs-off-canvas stops the compile on the close
   // button (2.77:1 on $light-gray), and links are 3.76:1. Spec: Off-canvas, every off-canvas--* story.
   $offcanvas-background: $white;
+
+  // color-contrast (1.4.3) and non-text contrast (1.4.11): $anchor-color links are 3.78:1 to 4.20:1 on five
+  // callout backgrounds (axe reports 3.82 to 4.25), and the close-button glyph 2.82:1 to 2.87:1 on primary,
+  // secondary, and alert, which axe marks incomplete. Spec: Callout, callout--colors and callout--closable;
+  // also the Close Button and Abide stories that show callouts.
+  $anchor-color: scale-color($primary-color, $lightness: -15%);
+  $anchor-color-hover: scale-color($anchor-color, $lightness: -14%);
+  $closebutton-color: #767676;
 
   // 1.4.10 Reflow: a fixed pane width over 160px can leave no fitting Placement at 320 CSS px.
   // Spec: Dropdown, dropdown-pane--reflow.
