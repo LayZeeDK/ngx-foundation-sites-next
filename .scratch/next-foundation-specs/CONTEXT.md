@@ -35,11 +35,23 @@ A Foundation CSS class that expresses runtime state on an element (`.is-active`,
 _Avoid_: modifier, flag class, status class
 
 **Variant class**:
-A Foundation CSS class that selects a static look for a Structural class (`.small`, `.alert`, `.hollow`, `.expanded`, `.dropdown` on `.button`), as distinct from a State class, which expresses runtime state; set by a typed input of the directive, never written by the consumer.
+A Foundation CSS class that selects a static look for a Structural class (`.small`, `.alert`, `.hollow`, `.expanded`, `.dropdown` on `.button`), as distinct from a State class, which expresses runtime state; set by a Variant input of the directive, never written by the consumer.
 _Avoid_: modifier, appearance class, style class
 
+**Open Variant family**:
+The Variant classes whose names come from a Sass setting the consumer can change (a palette, a size or ratio map, `$breakpoint-classes`, a count, a Prototyping list).
+_Avoid_: dynamic variant, custom variant, open set
+
+**Closed Variant family**:
+The Variant classes whose names Foundation's Sass fixes (`solid`, `hollow`, `clear`; Reveal's sizes; a single modifier class).
+_Avoid_: fixed variant, static variant, closed set
+
+**Class breakpoint**:
+A breakpoint listed in `$breakpoint-classes` (`small`, `medium`, `large` by default), the only breakpoints Foundation generates responsive classes for; a subset of the Breakpoint map.
+_Avoid_: responsive breakpoint, class size, breakpoint class
+
 **Visibility class**:
-A Foundation CSS class that shows or hides an element by breakpoint of the Breakpoint map (`.show-for-medium`, `.hide-for-large`, `.show-for-small-only`), generated only for the breakpoints in `$breakpoint-classes`; distinct from a State class, which expresses runtime state.
+A Foundation CSS class that shows or hides an element by breakpoint of the Breakpoint map (`.show-for-medium`, `.hide-for-large`, `.show-for-small-only`), generated only for Class breakpoints; distinct from a State class, which expresses runtime state.
 _Avoid_: responsive class, breakpoint class, visibility helper
 
 **Utility class**:
@@ -75,7 +87,7 @@ Foundation's named viewport breakpoints (`small`, `medium`, `large`, `xlarge`, `
 _Avoid_: media query list, screen sizes, `Breakpoints` (the CDK constants)
 
 **Breakpoint rule**:
-A Foundation rule string such as `drilldown medium-dropdown` or `accordion medium-tabs` that assigns a mode per breakpoint.
+A Foundation rule string such as `drilldown medium-dropdown` or `accordion medium-tabs`, or its object form (`{small: 'drilldown', medium: 'dropdown'}`), that assigns a mode or value per breakpoint; a responsive Variant input takes only the object form, because a Variant rule string would spell Foundation class names (`medium-horizontal`).
 _Avoid_: responsive config, mode map, query string
 
 **Zero breakpoint**:
@@ -83,7 +95,7 @@ The breakpoint of the Breakpoint map whose minimum width is 0 (`small` in Founda
 _Avoid_: base breakpoint, mobile breakpoint, default breakpoint
 
 **Breakpoint query**:
-An Option value that names a breakpoint with an optional `up`, `only`, or `down` modifier (`medium`, `large only`, `medium down`), as in Tooltip `showOn` or Sticky `stickyOn`; distinct from a Breakpoint rule, which assigns modes.
+An Option or Variant input value that names a breakpoint with an optional `up`, `only`, or `down` modifier (`medium`, `large only`, `medium down`), as in Tooltip `showOn`, Sticky `stickyOn`, or Button `expanded`; distinct from a Breakpoint rule, which assigns modes.
 _Avoid_: media query (for this), breakpoint string, size
 
 **Named query**:
@@ -244,6 +256,18 @@ _Avoid_: deferred content (ambiguous with `@defer`), lazy panel, on-demand conte
 The per-Plugin set of application-wide defaults for its Options; the replacement for `Foundation.X.defaults`.
 _Avoid_: config token, options token, global options, `MAT_*_DEFAULT_OPTIONS`
 
+**Variant input**:
+A directive input that sets one family of Variant classes from a typed name, a boolean, a Breakpoint query, a Breakpoint rule object, or a count; with no value it sets no class, so the consumer's Sass default is the look.
+_Avoid_: appearance input, style input, modifier input
+
+**Variant registry**:
+An empty interface the library declares for one Sass setting (`NfsButtonPaletteOverrides`) and the consumer's Variant declaration file augments, adding names (`purple: true`), removing defaults (`warning: false`), or setting a count, so the Variant inputs over that setting accept exactly the names the consumer's Sass generates.
+_Avoid_: overrides interface, theme interface, type registry
+
+**Variant declaration file**:
+The consumer's `src/nfs-variants.d.ts`, generated from its Sass by the library's tooling or written by hand, that augments the Variant registries; kept in step by a sync step and checked in CI.
+_Avoid_: theme typings, typegen output, augmentation file
+
 **Error-state policy**:
 The rule that decides when a field's validation errors are shown (after a committed change, while typing, after leaving the field, or after a submit), as opposed to whether the field is invalid.
 _Avoid_: validation mode, error matcher, validateOn (as the name of the whole rule)
@@ -317,5 +341,13 @@ A mixin of the library's Sass (`nfs-accordion`, `nfs-motion`) that prints only t
 _Avoid_: `_nfs-<plugin>.scss`, custom stylesheet, theme mixin
 
 **Breakpoint properties**:
-The `--nfs-breakpoint-<name>` custom properties on `:root`, in px, that mirror the Sass `$breakpoints` the consumer compiles Foundation with, and that the Breakpoint service's drift check compares with the Breakpoint map.
+The `--nfs-breakpoint-<name>` custom properties on `:root`, in px, that mirror the Sass `$breakpoints` the consumer compiles Foundation with, and that the `strictBreakpointSync` Runtime check compares with the Breakpoint map.
 _Avoid_: breakpoint variables, CSS breakpoints, breakpoint tokens
+
+**Variant properties**:
+The `--nfs-<setting>` custom properties on `:root` that a Library mixin writes to list the names (or the count) the consumer's Sass generates Variant classes for, such as `--nfs-button-palette` and `--nfs-breakpoint-classes`; read by the library's generator and by the Runtime checks.
+_Avoid_: theme tokens, palette variables, names property
+
+**Runtime check**:
+A check the library runs in the browser after the first render, on by default in development builds with a per-check opt-out and off in production unless the consumer opts in, that reports what the compiler cannot see: a Variant value with no class in the compiled CSS, missing Variant properties, or Breakpoint drift.
+_Avoid_: dev check, drift warning, sanity check
