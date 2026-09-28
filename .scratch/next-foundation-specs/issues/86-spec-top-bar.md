@@ -226,3 +226,12 @@ Nothing is left `OPEN FOR HUMAN`, and no prototype ticket is needed: every quest
 ### Correction, 2026-09-28
 
 The sticky Top Bar example's container wrapped only the bar, so its Sticky range was empty and it never stuck; the container now spans the page, found by [Re-run: Sticky spec under the class rule](120-rerun-sticky-class-rule.md).
+
+### Amendment, 2026-09-28 (out-of-scope survivors)
+
+[Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) found this spec's reason for not drawing the menu icon's bars under forced colours wrong. The reason was that restating `hamburger()`'s offsets would copy Foundation's values. But `hamburger()` computes the offsets from its own arguments, so a call with system colours copies nothing. The [Re-run: Top Bar spec, out-of-scope survivors](148-rerun-top-bar-out-of-scope-survivors.md) measured the rule in Chromium and Firefox, and it holds; the spec is revised in place (new D16):
+
+- Decision 6 gains a forced-colours block in `nfs-menu-icon`: `.menu-icon, .menu-icon.dark { @include hamburger($color: CanvasText, $color-hover: Highlight); }`, `.menu-icon { border-color: Canvas; }`, and `.menu-icon::after { forced-color-adjust: none; }`, inside `@media (forced-colors: active)`. Measured: three `CanvasText` bars on Canvas, `Highlight` on hover, the 24 by 24 px box unchanged, and the compiled output outside forced colours byte-identical. Without `forced-color-adjust: none` the `box-shadow` bars are dropped; without the `.dark` selector the dark icon keeps `$black`; without the `Canvas` border the forced border colour joins the outer bars into a filled box.
+- The Probe 1 finding that "under Chromium's forced-colours emulation Foundation's bars disappear, and (B)'s border is drawn as a visible box" still holds, but the outlined box is no longer the forced-colours look: the border now takes `Canvas`, and the bars show.
+- The forced-colours e2e case now asserts bar, gap, border, and hover pixels against system-colour swatches, in both colour schemes. WebKit is skipped because its emulation matches the query without forcing colours.
+- Every Out of Scope bullet and rejected alternative the spec keeps now carries a category. The "bars drawn under forced colours" bullet is gone.
