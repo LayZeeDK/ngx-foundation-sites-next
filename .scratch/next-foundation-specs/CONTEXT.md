@@ -50,6 +50,10 @@ _Avoid_: loading bar, progress indicator, meter (for the component)
 The `.progress-meter` element inside a Progress Bar whose width is the value's share of the range; distinct from the native `<meter>` element.
 _Avoid_: fill (bare), bar, meter (bare), indicator
 
+**Badge**:
+Foundation's CSS-only component that shows a short count, letter, or icon beside or inside what it counts, marked by the `.badge` Structural class and coloured from `$badge-palette`; distinct from a Label, which tags content with words, and from Angular Material's badge, which decorates its host.
+_Avoid_: counter, pill, notification dot, chip
+
 **Structural class**:
 A Foundation CSS class that names an element of a Plugin's or a CSS-only component's markup (`.accordion-item`, `.dropdown-pane`, `.orbit-slide`, `.button`); bound by its directive, never written by the consumer.
 _Avoid_: layout class, block class, container class
@@ -61,6 +65,10 @@ _Avoid_: thumb (the draggable part a Handle draws), slider input, knob
 **Bar position**:
 Where a value sits along a Slider's track, as a fraction from its start; equal to the value's share of the range except on a non-linear Slider, whose Handles carry it natively.
 _Avoid_: percentage, pctOfBar, offset
+
+**Fill**:
+The part of a Slider that paints the selected stretch of its track, from the track's start to the one Handle or between the two; Foundation's `.slider-fill`. Distinct from the `fill` Variant input of a Button, which chooses `solid`, `hollow`, or `clear`.
+_Avoid_: range, bar, progress, track fill
 
 **Watched element**:
 An element whose height an Equalizer matches to the tallest element of its row; the replacement for Foundation's `data-equalizer-watch` element.
@@ -93,6 +101,10 @@ _Avoid_: responsive class, breakpoint class, visibility helper
 **Utility class**:
 A Foundation CSS class from a layout system or utility family (`.grid-x`, `.cell`, `.align-center`, `.float-left`, `.text-center`, `.margin-1`) that can style any element and names no element of a component's markup; set by its directive, never written by the consumer. Visibility classes are one family of them.
 _Avoid_: helper class, layout class, utility helper
+
+**Application class**:
+A CSS class the consumer defines in its own stylesheet, never a Foundation or library class; the only class a consumer writes, on its own elements or as the value of an input that applies or names one (the Toggler's `toggler`, the Tooltip's `templateClasses`, the Dropdown pane's `parentClass`, a Motion input's dot form).
+_Avoid_: custom class, own class (bare), user class
 
 **Form label**:
 A `<label>` element that names a form control, styled by Foundation by tag, with one Variant class (`.middle`); distinct from Foundation's Label component (`.label`), a coloured text tag.
@@ -217,7 +229,7 @@ Closing an Anchored pane, an open submenu, or a non-modal Reveal on an outside p
 _Avoid_: click-outside, closeme, auto-close, Backdrop press (which is a modal Reveal's)
 
 **Scroll lock**:
-Keeping the page behind an open modal Reveal from scrolling, as Foundation's `html.is-reveal-open` rule does.
+Keeping the page from scrolling behind an open modal Reveal, as Foundation's `html.is-reveal-open` rule does, or behind an open OffCanvas panel whose `contentScroll` is false, as Foundation's `body.is-off-canvas-open` rule does; counted per document so the lock holds while any locking Openable is open.
 _Avoid_: body lock, scroll blocking, block scroll strategy (CDK's)
 
 **Backdrop press**:
@@ -225,7 +237,7 @@ A pointer press that starts and ends on a modal Reveal's `::backdrop`, which clo
 _Avoid_: overlay click, outside click, backdrop click
 
 **Anchored pane**:
-An element placed against its Trigger inside the page flow rather than in an overlay: the Dropdown pane and the Tooltip tip.
+An element placed against its Trigger inside the page flow rather than in an overlay: the Dropdown pane, the Tooltip tip, or an application's own element placed through the Positioner.
 _Avoid_: overlay, popover, popup, floating element, connected overlay
 
 **Tip**:

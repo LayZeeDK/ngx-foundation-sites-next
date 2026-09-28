@@ -111,7 +111,7 @@ Triggers bind no Foundation or library class and have no Variant input (ADR 0039
 
 ```
 nfsOpenableToken : InjectionToken<NfsOpenable>     provided by every Openable with useExisting
-  dialog[nfsReveal] | [nfsOffCanvas] | [nfsDropdownPane] | [nfsToggler] | [nfsResponsiveToggle] | [nfsTooltip]
+  dialog[nfsReveal] | [nfsOffCanvas] | [nfsOffCanvasAbsolute] | [nfsDropdownPane] | [nfsToggler] | [nfsResponsiveToggle] | [nfsTooltip]
 
 [nfsOpen]   -> explicit target(s), required
 [nfsClose]  -> explicit target(s), or the Nearest Openable when written bare

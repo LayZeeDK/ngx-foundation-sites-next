@@ -105,9 +105,11 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
 @include nfs-accordion;
 @include nfs-menu; // Menu: the current link's look from aria-current and simple-menu rows; every menu--* story, every nested-menu--* story, and every menu Plugin story
 @include nfs-progress-bar; // Progress Bar: meter text colours and --nfs-foundation-palette; every progress-bar--* story
+@include nfs-badge; // Badge: text contrast check, the text colour where Foundation's pick is the worse, and --nfs-badge-palette; every badge--* story
 @include nfs-menu-icon; // Top Bar: the menu icon's 24 px box; every story with a menu icon (Top Bar, Responsive Toggle, Off-canvas, Triggers)
 @include nfs-title-bar; // Top Bar: title-bar contrast checks
 @include nfs-top-bar; // Top Bar: Top Bar contrast checks
+@include nfs-off-canvas; // Off-canvas: reduced motion, the wrapper clip, panel contrast checks; every off-canvas--* story
 // ... one @include nfs-<plugin> per plugin that has a Library mixin, after foundation-everything,
 // with the arguments its spec names (for example @include nfs-responsive-toggle(xlarge xxlarge);).
 @include nfs-smooth-scroll; // Smooth Scroll: smooth native jumps on html; play functions scroll with behavior: 'instant'
@@ -166,8 +168,10 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
   // (about 1.3:1); the Slider spec's example passing fill. Spec: Slider, every slider--* story.
   $slider-fill-background: $primary-color;
 
-  // Non-text contrast (1.4.11) and color-contrast (1.4.3): nfs-off-canvas stops the compile on the close
-  // button (2.77:1 on $light-gray), and links are 3.76:1. Spec: Off-canvas, every off-canvas--* story.
+  // Non-text contrast (1.4.11) and color-contrast (1.4.3): on Foundation's defaults nfs-off-canvas stops the compile on the
+  // close button (2.77:1 on $light-gray) and links are 3.76:1 (exact WCAG formula). With the Callout lines below they would
+  // pass on $light-gray (3.64:1 and 4.87:1); the Off-canvas stories keep the setting the spec documents.
+  // Spec: Off-canvas, every off-canvas--* story.
   $offcanvas-background: $white;
 
   // color-contrast (1.4.3) and non-text contrast (1.4.11): $anchor-color links are 3.78:1 to 4.20:1 on five
@@ -180,8 +184,16 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
 
   // color-contrast (1.4.3): nfs-progress-bar stops the compile on Foundation's alert fill, whose $white meter
   // text is 4.498:1 (4.36:1 with $black; axe reports 4.49). Spec: Progress Bar, progress-bar--with-text and
-  // progress-bar--colors; it also recolours alert callouts, badges, and labels in every story (all still passing).
+  // progress-bar--colors; it also recolours alert callouts in every story (still passing); badges, labels, and
+  // buttons keep the palettes Foundation's settings file assigned before this file, so their specs add lines of
+  // their own (measured, [Spec: Badge](issues/93-spec-badge.md)).
   $foundation-palette: map-merge($foundation-palette, (alert: #bf3f2c));
+
+  // color-contrast (1.4.3): nfs-badge stops the compile on Foundation's alert badge, whose $white text is 4.498:1
+  // (4.36:1 with $black); axe marks one-character badges incomplete (shortTextContent) and reports 4.49 on longer
+  // ones. Foundation's settings file assigned $badge-palette before this file, so a $foundation-palette merge does
+  // not reach it. Spec: Badge, badge--colors and badge--in-controls.
+  $badge-palette: map-merge($foundation-palette, (alert: #bf3f2c));
 
   // 1.4.10 Reflow: a fixed pane width over 160px can leave no fitting Placement at 320 CSS px.
   // Spec: Dropdown, dropdown-pane--reflow.
@@ -244,7 +256,7 @@ A play function never:
 
 - `meta.component` is the plugin's primary directive or component class, so the docs props table and the controls come from its declared inputs and outputs (the framework's docgen server documents directive classes as well as components, `@storybook/angular-vite` `dist/docgen/docgen-worker.js:210, 545`). The `propsTable` framework option keeps its default, `'api'`.
 - Stories render through `render: (args) => ({ props: args, template: \`...\` })` with the consumer markup written out (Foundation's elements with the library's directives, and no Foundation or NFS class, ADR 0039), because the library is directive-first and the markup is part of what a story documents. `moduleMetadata.imports` lists the entry point's directives; components come from `imports` too.
-- `args` hold only the public API: inputs (including `model()` inputs, bound two-way in the template), and outputs as `fn()` spies. Public signals, methods, and `exportAs` references are shown through the template (a printed value, a button calling a method), never as args. Nothing private or story-internal is an arg. `argTypes` are added only where docgen cannot infer a control (a string-literal union input gets `control: 'select'` with its options).
+- `args` hold only the public API: inputs (including `model()` inputs, bound two-way in the template), and outputs as `fn()` spies. Public signals, methods, and `exportAs` references are shown through the template (a printed value, a button calling a method), never as args. Nothing private or story-internal is an arg. `argTypes` are added only where docgen cannot infer a control (a string-literal union input gets `control: 'select'` with its options). Measured by [Prototype: Variant declaration tooling in real Nx and Angular CLI workspaces](issues/137-prototype-variant-declaration-tooling.md): a Variant input typed with a registry-built alias declared in source (`NfsOverridableStringUnion<...>`, chained or not) gets an enum control of Foundation's default names from the docgen server, so this library's stories need no `argTypes` for it; the docgen server skips aliases declared in declaration files, so a consumer's story over an alias from the installed package gets no options.
 - The arg names are the e2e `props` names (section 10), so an arg rename is a breaking change to the spec's e2e tests.
 - Outputs shown in the story (a log line, a printed value) are for readers; assertions use the spy.
 - Demo scaffolding (wrappers, spacing, lists, filler content) uses Foundation's own CSS: component classes (`.callout`, grid classes), typography helpers (`.text-center`, `.lead`), visibility classes (`.show-for-sr`, `.hide-for-*`), float and flex classes, and the Prototype utilities compiled by `foundation-everything($prototype: true)`: spacing (`.margin-*`, `.padding-*`, 0 to 3 with directions), display, overflow, sizing, list style (`.no-bullet`, `.list-disc`), and the text utilities. Prototype classes go on scaffolding only, never on a plugin's Structural class elements, whose look must be Foundation's component CSS unaltered. 2026-09-27: under the class rule (ADR 0039) a library element carries no Foundation class written in the story, and every class family in this list (Callout and the other CSS-only components, the grids, the typography helpers, the visibility, float, and flex classes, the Prototype utilities) now gets directives of its own; once their specs define them, scaffolding uses those directives instead of the classes, and [Consistency review: the class-rule wave](issues/133-consistency-review-class-rule-wave.md) rewrites this list. The `.text-primary`-style colour classes in this repo's AGENTS.md are not Foundation classes (Foundation 6.9's Sass defines no such class) and are not used; colour comes from Foundation components.
