@@ -160,7 +160,7 @@ interface NfsVariantManifestUse {
 ```
 
 - One entry per row of the table above, in that order. `mixins` and `uses` are filled from the component specs: every Open Variant family row of a component spec's class mapping (building-blocks 1.14 item 2) becomes one `uses` entry per registry it reads. An input that takes a count or a Breakpoint rules object reads two registries (`NfsCell.size` reads `NfsGridColumnsOverrides` with shape `count` and `NfsBreakpointClassesOverrides` with shape `rules`) and appears under both.
-- Known `mixins` today: `nfs-callout` and `nfs-progress-bar` write `--nfs-foundation-palette`; `nfs-button` writes `--nfs-button-palette` and `--nfs-button-sizes`; `nfs-badge`, `nfs-label`, `nfs-close-button`, `nfs-dropdown-pane`, and `nfs-responsive-embed` write their settings; `nfs-breakpoint-properties` writes `--nfs-breakpoint-classes`. The grid, flexbox, Prototyping, and Button Group specs name theirs.
+- Known `mixins` today: `nfs-callout` and `nfs-progress-bar` write `--nfs-foundation-palette` (the one exception to one writer per property: `$foundation-palette` belongs to no entry point); `nfs-button` writes `--nfs-button-palette` and `--nfs-button-sizes`; `nfs-badge`, `nfs-label`, `nfs-close-button`, `nfs-dropdown-pane`, and `nfs-responsive-embed` write their settings; `nfs-breakpoint-properties` writes `--nfs-breakpoint-classes`. The grid, flexbox, Prototyping, and Button Group specs name theirs.
 - `base` records Foundation's chained defaults: `$button-palette`, `$badge-palette`, and `$label-palette` default to `$foundation-palette`, so their aliases build on `NfsFoundationPaletteColor` (T, B01).
 
 ### Hierarchy and package shape

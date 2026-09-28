@@ -472,3 +472,4 @@ A consumer who edits `$anchor-color` in its own copy of Foundation's settings fi
 - A close button rendered by a child component's template is outside the callout's content query, so its callout gets no room; the docs write the close button in the callout's own template, which is also where a bare `nfsClose` finds the Toggler as its Nearest Openable.
 - A callout nested in a closable callout also marks the outer one (the query searches descendants), which only widens the outer callout's padding on the button's side.
 - With the Callout's required settings, links reach 4.77:1 and glyphs 3.64:1 on `$light-gray`, the default background of the Off-canvas panel and the Top Bar.
+- With the Progress Bar's required alert `#bf3f2c` (Storybook settings overrides), the alert callout's background is about `#f7e1dd`; links reach about 4.85:1 and close-button glyphs about 3.63:1.

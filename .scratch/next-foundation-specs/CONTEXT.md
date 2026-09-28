@@ -42,6 +42,14 @@ _Avoid_: dropdown button (for the pair), menu button, action menu
 Foundation's CSS-only container for a highlighted message or aside, marked by the `.callout` Structural class and coloured from `$foundation-palette`; a coloured callout is not an alert, which only a live `role` makes it.
 _Avoid_: alert (for the component), panel, notice, callout box
 
+**Progress Bar**:
+Foundation's CSS-only component that shows how far a task has come, marked by the `.progress` Structural class and exposed by the library as a `progressbar`; distinct from the native `<progress>` element, which Foundation styles by tag, and from `<meter>`, which shows a measurement, not progress.
+_Avoid_: loading bar, progress indicator, meter (for the component)
+
+**Progress meter**:
+The `.progress-meter` element inside a Progress Bar whose width is the value's share of the range; distinct from the native `<meter>` element.
+_Avoid_: fill (bare), bar, meter (bare), indicator
+
 **Structural class**:
 A Foundation CSS class that names an element of a Plugin's or a CSS-only component's markup (`.accordion-item`, `.dropdown-pane`, `.orbit-slide`, `.button`); bound by its directive, never written by the consumer.
 _Avoid_: layout class, block class, container class
@@ -277,7 +285,7 @@ The consumer-written element around a Drilldown's root list that clips the Drill
 _Avoid_: wrapper component (which adds an element inside a component), container, viewport
 
 **Base side**:
-The side, left or right, toward which a dropdown-mode submenu opens before the collision check moves it; set by `alignment`, the menu's `align` Variant (Foundation's `align-right` class), an enclosing Top Bar right-hand section, and the reading direction.
+The side, left or right, toward which a dropdown-mode submenu opens before the collision check moves it; set by `alignment`, the Menu's `align` Variant, an enclosing Top Bar right-hand section, and the reading direction.
 _Avoid_: alignment (the Option), default side, opening direction
 
 **Tab group**:
@@ -387,6 +395,10 @@ _Avoid_: bad example, negative story, a11y exception
 **Accessibility gate**:
 The story-level axe run with the WCAG 2.2 AA tags that fails a story on any violation; the check that enforces the library's accessibility requirement.
 _Avoid_: a11y check, axe run (as the name), lint
+
+**Visible value**:
+The text a sighted user reads for a Progress Bar's, a native progress element's, or a meter's value, in its meter text or beside it, which the library requires because the bar's graphic alone does not meet non-text contrast; distinct from `aria-valuetext`, the value assistive technology speaks.
+_Avoid_: value text (ambiguous with `aria-valuetext`), label (the name), caption, percentage label
 
 **Fixture app**:
 The prerendered Angular application, one route per Plugin, that the Playwright e2e layer drives to test the Rendering modes.

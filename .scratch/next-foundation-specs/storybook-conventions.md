@@ -97,11 +97,14 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
 // Extra Foundation Export mixins a spec asks for, one line each with the spec named:
 // @include foundation-grid; // Equalizer: equalizer--float-grid (no class overlap with the XY grid)
 // @include foundation-range-input; // Slider: every slider--* story
+// @include foundation-progress-element; // Progress Bar: progress-bar--native-progress and progress-bar--right-to-left (element selector; no other story renders <progress>)
+// @include foundation-meter-element; // Progress Bar: progress-bar--native-meter (element selector; no other story renders <meter>)
 
 @include nfs-breakpoint-properties;
 @include nfs-motion;
 @include nfs-accordion;
 @include nfs-menu; // Menu: the current link's look from aria-current and simple-menu rows; every menu--* story, every nested-menu--* story, and every menu Plugin story
+@include nfs-progress-bar; // Progress Bar: meter text colours and --nfs-foundation-palette; every progress-bar--* story
 @include nfs-menu-icon; // Top Bar: the menu icon's 24 px box; every story with a menu icon (Top Bar, Responsive Toggle, Off-canvas, Triggers)
 @include nfs-title-bar; // Top Bar: title-bar contrast checks
 @include nfs-top-bar; // Top Bar: Top Bar contrast checks
@@ -175,6 +178,11 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
   $anchor-color-hover: scale-color($anchor-color, $lightness: -14%);
   $closebutton-color: #767676;
 
+  // color-contrast (1.4.3): nfs-progress-bar stops the compile on Foundation's alert fill, whose $white meter
+  // text is 4.498:1 (4.36:1 with $black; axe reports 4.49). Spec: Progress Bar, progress-bar--with-text and
+  // progress-bar--colors; it also recolours alert callouts, badges, and labels in every story (all still passing).
+  $foundation-palette: map-merge($foundation-palette, (alert: #bf3f2c));
+
   // 1.4.10 Reflow: a fixed pane width over 160px can leave no fitting Placement at 320 CSS px.
   // Spec: Dropdown, dropdown-pane--reflow.
   $dropdown-width: min(300px, 45vw);
@@ -188,7 +196,7 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
   This is every override the published specs require; each spec's Sass subsection is the source, and a spec that adds or changes one changes its line here. An override is a consumer-side setting, never an exception to the Accessibility gate. The overrides come after Foundation's settings file and before `foundation`, so Foundation's `!default` component variables pick them up and they can refer to settings such as `$primary-color`. Settings overrides change Variant values, never Variant names, so the library's Storybook program needs no Variant declaration file. A story that shows a name Foundation's defaults lack would need a file generated from `preview.scss` (the shared-library rule of the [Spec: Variant declaration tooling](issues/136-spec-variant-declaration-tooling.md)).
 - Recipe CSS: a spec that documents consumer CSS and shows it in a story puts it in `preview.scss` after the Library mixins, one block per recipe on the recipe's own classes (never a Foundation or NFS class), with a comment naming the spec and the story. Tabs: `tabs--nav-bar` (`.account-tabs`, Foundation's `tabs-container` and `tabs-title` mixins plus the recipe's `aria-current` rule) and `tabs--equal-heights` (`.equal-heights`).
 - The library's Sass is imported relatively (line 2) because inside its own repository the package is source. The consumer path through the `sass` export condition is proved by the Sass packaging ticket's built-package compile test (decision 18b), not by Storybook.
-- `foundation-everything` (`foundation-sites/scss/foundation.scss:79-155`) is the union of the per-component includes a consumer writes, except `foundation-range-input`, which the Slider spec adds, so each story sees exactly the rules its Export mixins print; a spec that needs an Export mixin outside it (`foundation-grid`) adds one line, and the spec states that the new classes do not overlap existing ones. `$prototype: true` adds the Prototype utilities (section 8); they are additive classes that restyle no component.
+- `foundation-everything` (`foundation-sites/scss/foundation.scss:79-155`) is the union of the per-component includes a consumer writes, except `foundation-range-input`, which the Slider spec adds, and `foundation-progress-element` and `foundation-meter-element`, which the Progress Bar spec adds, so each story sees exactly the rules its Export mixins print; a spec that needs an Export mixin outside it (`foundation-grid`) adds one line, and the spec states that the new classes do not overlap existing ones. `$prototype: true` adds the Prototype utilities (section 8); they are additive classes that restyle no component.
 - Every `nfs-<plugin>` include comes after `foundation-everything`, as ADR 0012 requires (library rules override Foundation's at equal specificity through source order). A Library mixin that refuses to compile with a Foundation default (the Slider's fill contrast check) is satisfied through `_settings-overrides.scss`, never by skipping its include.
 - No story, stories file, or demo component declares `styles` or `styleUrl`, and no stories file imports CSS. Scenario scaffolding that needs a value Foundation has no class for (a scroll container's height, a tall page for Sticky) uses an inline `style` in the template (section 8).
 
