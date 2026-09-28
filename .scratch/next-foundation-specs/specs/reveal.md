@@ -383,7 +383,7 @@ The `nfs-reveal` mixin adds no WCAG rule: Foundation's defaults pass every check
 
 ### Rendered HTML
 
-Consumer markup (Foundation's docs example with its deltas: `<dialog>` for `div`, and directive attributes for its classes and data attributes: `nfsReveal` for `.reveal` and `data-reveal`, `nfsCloseButton` with a bare `nfsClose` for `.close-button` and `data-close`, `nfsButton` for `.button`). The docs' `p.lead` is a Typography Helpers class whose directive the [Spec: Typography Helpers](../issues/106-spec-typography-helpers.md) names, so the examples here leave it out:
+Consumer markup (Foundation's docs example with its deltas: `<dialog>` for `div`, and directive attributes for its classes and data attributes: `nfsReveal` for `.reveal` and `data-reveal`, `nfsCloseButton` with a bare `nfsClose` for `.close-button` and `data-close`, `nfsButton` for `.button`). The docs' `p.lead` is `p nfsLead`, the [Spec: Typography Helpers](../issues/106-spec-typography-helpers.md)'s attribute, which the examples here leave out because it changes nothing the dialog owns:
 
 ```html
 <button nfsButton [nfsOpen]="signup">Click me for a modal</button>

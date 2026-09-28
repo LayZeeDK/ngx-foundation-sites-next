@@ -370,7 +370,7 @@ Consumer markup, then the server HTML. The hydrated DOM equals the server HTML: 
 </div>
 ```
 
-A list used as a row (`<ul nfsRow>` with `<li nfsColumn>`) keeps its list role and markers, and loses its indent to the row's own side margins, so at a narrow width the first item's marker sits outside the viewport while the others show (measured in three engines). A list row without markers also carries the [Spec: Typography Helpers](../issues/106-spec-typography-helpers.md)'s directive for `.no-bullet`, whose name that spec decides, and the examples leave it out until then.
+A list used as a row (`<ul nfsRow>` with `<li nfsColumn>`) keeps its list role and markers, and loses its indent to the row's own side margins, so at a narrow width the first item's marker sits outside the viewport while the others show (measured in three engines). A list row without markers also carries the [Spec: Typography Helpers](../issues/106-spec-typography-helpers.md)'s `nfsNoBullet`, whose margin reset that spec's `nfs-typography-helpers` keeps off a top-level row's `auto` margins (measured in three engines), and `role="list"` where its item count matters (WebKit); the examples show the rows with their markers.
 
 ### Animation
 
@@ -451,7 +451,7 @@ No manual assistive-technology test: the directives expose nothing to assistive 
 - The legacy Flex Grid (`.row` and `.column` as flex containers and items, `.shrink`, `.<bp>-expand`, `.<bp>-unstack`, `.is-collapse-child`): the [Spec: Flex Grid](../issues/101-spec-flex-grid.md), which shares this spec's directive and input names for the classes both grids generate. Category: `scope-boundary`.
 - Compiling the Float Grid beside the Flex Grid in one stylesheet: both style the same `.row` and `.column` elements, and measured by the Flex Grid's ticket, a justified flex row leaves 178 px empty beside the Float Grid's rules; Foundation's docs say the two "don't play nice together". Category: `other`.
 - Showing and hiding columns by breakpoint (`.hide-for-*`, `.show-for-*`): the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md). Category: `scope-boundary`.
-- Removing a list row's markers (`.no-bullet`): the [Spec: Typography Helpers](../issues/106-spec-typography-helpers.md). Category: `scope-boundary`.
+- Removing a list row's markers (`.no-bullet`): the [Spec: Typography Helpers](../issues/106-spec-typography-helpers.md)'s `nfsNoBullet`. Category: `scope-boundary`.
 - A `dir="rtl"` region inside a left-to-right compile: Foundation compiles the float side, offsets, and push and pull against `$global-text-direction`, and mirroring them per region would need library CSS for every family of the grid; a right-to-left page compiles Foundation with `$global-text-direction: rtl` (measured: the first DOM column is then at the right). Category: `other`.
 - The float build's effect on other components (`$global-flexbox: false`, Foundation's Flexbox mode): compile-time configuration of those components, never an input (building-blocks 1.13), which their own specs describe. Category: `scope-boundary`.
 - An ARIA `grid`, `row`, or `gridcell` role on rows and columns: a CSS layout is not the APG Grid composite, whose two-dimensional arrow keys a layout does not have. Category: `platform-or-a11y`.

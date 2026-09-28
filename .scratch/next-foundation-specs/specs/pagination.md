@@ -95,7 +95,7 @@ Every Foundation Pagination class, per building-blocks 1.14 item 2. Pagination h
 | `.ellipsis` | Structural | `NfsPaginationEllipsis`, `li[nfsPaginationEllipsis]`, static host class plus `aria-hidden="true"` | Always |
 | `.current` | State | Not bound. The current page is `aria-current` on its link or button; `nfs-pagination` styles it with Foundation's `pagination-item-current` (D4) | A link or button whose `aria-current` is present and neither `false` nor empty |
 | `.disabled` | State | Not bound. A disabled item is a placeholder link with `role="link"` and `aria-disabled="true"`, or a natively disabled button; `nfs-pagination` styles it with Foundation's `pagination-item-disabled` (D5) | `a[aria-disabled='true']`, `button:disabled` |
-| `.text-center` | Utility (Typography Helpers) | The [Spec: Typography Helpers](../issues/106-spec-typography-helpers.md)'s text-alignment directive, written `nfsTextAlign="center"` until that spec names it (D10) | Not this entry point's |
+| `.text-center` | Utility (Typography Helpers) | The [Spec: Typography Helpers](../issues/106-spec-typography-helpers.md)'s `nfsTextAlign="center"` (`NfsTextAlignment`), written beside `nfsPagination` (D10) | Not this entry point's |
 | `.show-for-sr` | Utility (Visibility classes) | Not used by the recipes: `aria-label` names the links, as Foundation's docs do (D7). Where visually hidden text is wanted, the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)'s directive (`nfsShowForSr`) | Not this entry point's |
 
 No class is left for the consumer to write (ADR 0039). `.current` and `.disabled` are never bound, so a copied one is not stripped; it is reported in development builds (Development checks, 2), because it would draw a current or disabled look that no ARIA state backs.
@@ -221,7 +221,7 @@ The story gate runs axe with the six tags of ADR 0018 (`wcag2a`, `wcag2aa`, `wca
 
 ### Rendered HTML
 
-Consumer markup and the resulting DOM. Server HTML and hydrated DOM are identical in every example: every class and attribute is static, and the states are the consumer's attributes. The blocks leave out the directives' selector attributes, which Angular keeps in the DOM and in server HTML (serialised in lowercase, `nfspagination=""`). Class order is not significant. `nfsTextAlign` stands for the [Spec: Typography Helpers](../issues/106-spec-typography-helpers.md)'s text-alignment directive until that spec names it; its class belongs to that spec and is shown only to place it.
+Consumer markup and the resulting DOM. Server HTML and hydrated DOM are identical in every example: every class and attribute is static, and the states are the consumer's attributes. The blocks leave out the directives' selector attributes, which Angular keeps in the DOM and in server HTML (serialised in lowercase, `nfspagination=""`). Class order is not significant. `nfsTextAlign` is the [Spec: Typography Helpers](../issues/106-spec-typography-helpers.md)'s text-alignment attribute (`NfsTextAlignment`, from `ngx-foundation-sites/typography-helpers`); its class belongs to that spec and is shown only to place it.
 
 ```html
 <!-- Foundation's Basics: page 1 of 13 -->
@@ -312,7 +312,7 @@ Run by `npx nx test-storybook <lib>`. Every story runs axe with `parameters.a11y
 
 - `pagination--basic`: Foundation's Basics as the recipe (page 1 of 13, a disabled Previous, an ellipsis). The list is found by `getByRole('list')` inside `getByRole('navigation', {name: 'Pagination'})` and has `.pagination`; `getAllByRole('listitem')` counts 8 (the ellipsis is hidden); `getByRole('link', {current: 'page'})` is "Page 1", its computed background equals `$pagination-item-background-current` and its colour `$pagination-item-color-current`, and the ratios computed from computed styles are at least 4.5:1 (text on fill) and 3:1 (fill against the page); `getByRole('link', {name: 'Previous page'})` has `aria-disabled="true"`, no `href`, and the computed colour `$pagination-item-color-disabled`; the first Tab lands on "Page 1" and the last on "Next page"; the ellipsis item has `.ellipsis` and `aria-hidden="true"`; the Previous and Next items have their classes.
 - `pagination--last-page`: page 13 current; "Next page" is the disabled placeholder link and "Previous page" an enabled link; Tab skips Next.
-- `pagination--centered`: Foundation's Centered example with the Typography Helpers' text-alignment directive on the list (placeholder `nfsTextAlign` until that spec names it); the items are centred (computed geometry: equal space on both sides within the list's content box).
+- `pagination--centered`: Foundation's Centered example with the Typography Helpers' `nfsTextAlign="center"` on the list; the items are centred (computed geometry: equal space on both sides within the list's content box).
 - `pagination--buttons`: a button pager over a signal (page 1 of 3) with a results heading. Clicking "Page 2" moves `aria-current` to it and removes it from "Page 1"; focus moves to the results heading (`tabindex="-1"`); on page 3 "Next page" is `disabled` and its computed colour is the disabled one; every button box is at least 24 by 24 px.
 - `pagination--rtl`: under `dir="rtl"` the first item is the rightmost; no class changes with direction.
 

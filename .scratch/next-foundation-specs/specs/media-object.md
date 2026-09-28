@@ -225,7 +225,7 @@ The axe gate in every story runs the WCAG 2.2 AA rule set (tags `wcag2a`, `wcag2
 
 ### Rendered HTML
 
-Consumer markup, then the server HTML. The hydrated DOM equals the server HTML: the directives declare no listener, so nothing adds `jsaction`. Class order is not significant; Angular also renders the directive attributes and static input attributes (`nfsmediaobject=""`, `stackfor="small"`), which the resulting DOM below leaves out, as the other specs do. `nfsThumbnail` stands for the [Spec: Thumbnail](../issues/97-spec-thumbnail.md)'s directive, as the [Spec: Card](../issues/90-spec-card.md) writes it, and `nfsFlexChild` with `alignSelf` for the [Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md)'s.
+Consumer markup, then the server HTML. The hydrated DOM equals the server HTML: the directives declare no listener, so nothing adds `jsaction`. Class order is not significant; Angular also renders the directive attributes and static input attributes (`nfsmediaobject=""`, `stackfor="small"`), which the resulting DOM below leaves out, as the other specs do. `nfsThumbnail` (`NfsThumbnail`) is the [Spec: Thumbnail](../issues/97-spec-thumbnail.md)'s directive, as the [Spec: Card](../issues/90-spec-card.md) writes it, and `nfsFlexChild` with `alignSelf` is the [Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md)'s.
 
 ```html
 <!-- Basics, flexbox build: the centre section takes the remaining width -->
@@ -437,7 +437,7 @@ export class Avatar {
 </article>
 ```
 
-`<app-avatar>` renders `class="media-object-section"` from the hosted directive, so its host metadata names no Foundation class; to expose `mainSection` or `alignment` it lists them in `hostDirectives`' `inputs`. The avatar's `alt` is empty because the heading beside it names the person. `nfsThumbnail`, `NfsThumbnail`, `nfsFlexAlign`, and `alignY` are the names the [Spec: Thumbnail](../issues/97-spec-thumbnail.md) and the [Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md) give or will give; the class-rule consistency review aligns this spec's examples if they differ.
+`<app-avatar>` renders `class="media-object-section"` from the hosted directive, so its host metadata names no Foundation class; to expose `mainSection` or `alignment` it lists them in `hostDirectives`' `inputs`. The avatar's `alt` is empty because the heading beside it names the person. `nfsThumbnail`, `NfsThumbnail`, `nfsFlexAlign`, and `alignY` are the names the [Spec: Thumbnail](../issues/97-spec-thumbnail.md) and the [Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md) give; the class-rule consistency review aligns this spec's examples if they differ.
 
 ### Platform features to adopt when the browser target moves
 

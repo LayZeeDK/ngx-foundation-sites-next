@@ -135,7 +135,7 @@ APG pattern: none. A card is a container of ordinary content; the APG has no car
 | Element or state | Rendered semantics | Source |
 | --- | --- | --- |
 | `[nfsCard]` | The host element's own role: `generic` for a `div`, `article` for an `article`, `region` for a `section` with a name, `listitem` for a `li`; the directives add no role, name, or state | WHATWG HTML; HTML-AAM; measured in Chromium for `article` and a named `section` |
-| A set of cards that is a list | A `ul` whose list items hold the cards (or carry `nfsCard` themselves); measured in Chromium, the `list` and `listitem` roles stay when the list is an XY block grid | HTML-AAM |
+| A set of cards that is a list | A `ul` whose list items hold the cards (or carry `nfsCard` themselves), with `nfsNoBullet` for Foundation's markerless look and `role="list"`, because WebKit exposes a list without markers outside a navigation landmark as a group ([Spec: Typography Helpers](../issues/106-spec-typography-helpers.md)); measured in Chromium, the `list` and `listitem` roles stay when the list is an XY block grid | HTML-AAM; WebKit's list heuristic |
 | Card title | A heading at the level the page outline needs, holding the card's link when the card leads somewhere | WCAG 1.3.1, 2.4.6 |
 | `[nfsCardDivider]` on a `div` | `generic` | HTML-AAM |
 | `[nfsCardDivider]` on a `header` or `footer` | `sectionheader` or `sectionfooter` inside an `article`, `aside`, `main`, `nav`, or `section` (or an element with one of their roles); elsewhere `banner` or `contentinfo`, a page landmark. Measured in Chromium: a `header` divider in a `div` card outside `main` is a `banner`, and its `footer` a `contentinfo` | HTML-AAM (`header`, `footer`) |
@@ -283,11 +283,11 @@ Against the prerendered fixture app, on the Card route:
 - A card that is itself a link or a button, or a stretched-link recipe that makes the whole card clickable (D5): Foundation has no clickable card, a link around a card names it with every word inside, and the linked title is the control; additive later. Category: `scope-boundary`.
 - A development check for missing `alt` on card images (D10): axe `image-alt` reports it on every run, and the image carries no library directive. Category: `platform-or-a11y`.
 - A development check for `header` or `footer` dividers outside a sectioning element (D4): axe's best-practice landmark rules report the second banner or content information. Category: `platform-or-a11y`.
-- Checks of typography colours other than the card's own text and link colours (`$header-color`, `$header-small-font-color`): page-wide settings of Foundation's base typography, which has no directive (ADR 0039). Category: `scope-boundary`.
+- Checks of typography colours other than the card's own text and link colours (`$header-color`, `$header-small-font-color`): page-wide settings of Foundation's base typography; `$header-small-font-color` is checked by the [Spec: Typography Helpers](../issues/106-spec-typography-helpers.md)'s `nfs-typography-base`, and `$header-color` inherits the card's text colour. Category: `scope-boundary`.
 - The grid, cell, and block-grid classes that size cards, and the flex helpers that lay out their parts: the [Spec: XY Grid](../issues/99-spec-xy-grid.md) and the [Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md). Category: `scope-boundary`.
 - Equal-height cards and aligned card parts across a row: the [Spec: Equalizer](../issues/34-spec-equalizer.md)'s CSS answer and subgrid recipe. Category: `scope-boundary`.
 - The Thumbnail look for an image inside a card section: the [Spec: Thumbnail](../issues/97-spec-thumbnail.md). Category: `scope-boundary`.
-- Removing the bullets of a list of cards (`.no-bullet`): the [Spec: Typography Helpers](../issues/106-spec-typography-helpers.md). Category: `scope-boundary`.
+- Removing the bullets of a list of cards (`.no-bullet`): the [Spec: Typography Helpers](../issues/106-spec-typography-helpers.md)'s `nfsNoBullet`, which the list-of-cards recipe uses. Category: `scope-boundary`.
 - Responsive image sources for card images: native `srcset` and `<picture>`, and the [Spec: Interchange](../issues/35-spec-interchange.md). Category: `scope-boundary`.
 - Runtime theming through custom properties (building-blocks 1.13). Category: `scope-boundary`.
 
@@ -314,8 +314,8 @@ Against the prerendered fixture app, on the Card route:
 ### Usage examples
 
 ```html
-<!-- A set of cards that is a list, each an article with a linked title -->
-<ul nfsGridX [up]="{small: 1, medium: 3}">
+<!-- A set of cards that is a list, each an article with a linked title; nfsNoBullet removes the markers and the list indent, and role="list" keeps it a list in WebKit -->
+<ul nfsGridX [up]="{small: 1, medium: 3}" nfsNoBullet role="list">
   <li nfsCell>
     <article nfsCard>
       <img src="/menus/winter.jpg" alt="" width="600" height="300">
@@ -359,7 +359,7 @@ export class ProductCard {
 }
 ```
 
-`<app-product-card>` renders `class="card"` from the hosted directive, so its host metadata names no Foundation class; the product photo's `alt` is empty because the linked name beside it says what it shows. `nfsGridX`, `nfsCell`, `up`, and `gridMarginX` are the [Spec: XY Grid](../issues/99-spec-xy-grid.md)'s; `nfsFlexContainer` is the [Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md)'s.
+`<app-product-card>` renders `class="card"` from the hosted directive, so its host metadata names no Foundation class; the product photo's `alt` is empty because the linked name beside it says what it shows. `nfsGridX`, `nfsCell`, `up`, and `gridMarginX` are the [Spec: XY Grid](../issues/99-spec-xy-grid.md)'s; `nfsFlexContainer` is the [Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md)'s; `nfsNoBullet` is the [Spec: Typography Helpers](../issues/106-spec-typography-helpers.md)'s.
 
 ### Platform features to adopt when the browser target moves
 
@@ -398,6 +398,6 @@ A consumer who edits `$anchor-color` in its own copy of Foundation's settings fi
 - Forced colours: measured in Chromium and Firefox, the card's border takes CanvasText, its background and the divider's background take Canvas, text takes CanvasText, and links LinkText, so the card's boundary stays and the divider's band disappears; the divider's content, a heading or a link, carries its meaning. No rule is needed.
 - `$global-flexbox: false` makes the card and divider blocks; the rule and the checks are the same.
 - A divider is a row flex container under `$global-flexbox`, so two elements written in one divider sit side by side; Foundation's docs write one element per divider, and so do the recipes.
-- An image inside a card section that takes Foundation's Thumbnail look is the Thumbnail's own directive, written `img[nfsThumbnail]` until the [Spec: Thumbnail](../issues/97-spec-thumbnail.md) names it; the card adds nothing to it.
+- An image inside a card section that takes Foundation's Thumbnail look carries the Thumbnail's own `nfsThumbnail` ([Spec: Thumbnail](../issues/97-spec-thumbnail.md)); a linked one carries it on the link around the image; the card adds nothing to it.
 - Composition: `nfsCard` beside `nfsEqualizerWatch`, the XY Grid's cell directive, and the Flexbox Utilities' directives binds nothing they bind; the Equalizer's subgrid recipe replaces the card's `display` from the consumer's own selector, and `nfs-card` sets no `display`.
-- Other Foundation containers that clip with `overflow: hidden` (the XY Grid's frame, Orbit, Drilldown, the off-canvas wrappers, the Responsive Embed) can cut off text in the same way; their specs decide whether it can happen there.
+- Other Foundation containers that clip with `overflow: hidden` (the XY Grid's frame, Orbit, Drilldown, the off-canvas wrappers, the Responsive Embed) can cut off text in the same way; their specs decide whether it can happen there. The [Spec: Responsive Embed](../issues/96-spec-responsive-embed.md) measured its box: it cuts off an `<object>`'s long fallback text and the whole focus outline of a focused video, and its Library mixin releases the clip while the box holds focus.

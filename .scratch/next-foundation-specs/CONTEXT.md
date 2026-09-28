@@ -94,9 +94,25 @@ _Avoid_: panel, tile, box, mat-card
 The shaded band of a Card (`.card-divider`) used as its title, its footer, or a break between its parts; distinct from a horizontal rule, which draws a line.
 _Avoid_: card header, card footer, divider (bare), separator
 
+**Responsive Embed**:
+Foundation's CSS-only box, marked by the `.responsive-embed` Structural class, that keeps an Embedded element at a ratio from `$responsive-embed-ratios` (4:3 by default, `widescreen` 16:9) as the page narrows; Foundation's old name for it, Flex Video, survives only as the `.flex-video` alias.
+_Avoid_: flex video, video wrapper, aspect-ratio box, embed container
+
+**Embedded element**:
+The `iframe`, `object`, `embed`, or `video` a Responsive Embed holds and Foundation's CSS stretches to fill it; the consumer's own element, which carries no library directive.
+_Avoid_: embed (bare), media, player, frame (for all four)
+
 **Label**:
 Foundation's CSS-only inline tag that marks content with a word or a short phrase of metadata ("High priority", "Draft"), marked by the `.label` Structural class and coloured from `$label-palette`; not a control. Distinct from a Form label, which names a form control, and from a Badge, which shows a short count.
 _Avoid_: tag, chip, pill, media label, label (bare, where a Form label could be meant)
+
+**Thumbnail**:
+Foundation's CSS-only framed image, marked by the `.thumbnail` Structural class on the image itself, on the link around it, or on a wrapper element around it; the image and its text alternative are the consumer's.
+_Avoid_: avatar (for the component), image card, framed image, preview
+
+**Linked thumbnail**:
+A Thumbnail whose class is on the link that holds its image, the only form Foundation gives a hover and focus shadow; the image's text alternative is the link's name.
+_Avoid_: thumbnail link (for a plain link around a thumbnail image), image link (bare), clickable thumbnail
 
 **Media Object**:
 Foundation's CSS-only component that sets an item, usually an image, beside content in two or three side-by-side sections, marked by the `.media-object` Structural class; a Media Object nested in a section indents it, as in a comment thread.
@@ -166,17 +182,45 @@ _Avoid_: helper class, layout class, utility helper
 The Utility classes one Foundation export mixin prints (`foundation-prototype-spacing`, `foundation-float-classes`), which one library directive sets through its Utility attributes.
 _Avoid_: utility group, helper set, utility module
 
+**Clearfix**:
+Foundation's `clearfix` mixin and the `.clearfix` class it prints: two table-display pseudo-elements that make an element contain its floated children; the element itself neither floats nor clears, and on a flex or grid container the pseudo-elements become items.
+_Avoid_: clear, clear-both, float container
+
 **Prototyping Utilities**:
 Foundation's opt-in Prototype mode: the Utility families of spacing, sizing, display, overflow, position, borders, corners, shadows, arrows, separators, font and list styles, and text helpers, printed only when the consumer includes them.
 _Avoid_: prototype classes, helpers (bare), prototype mode (for the classes)
+
+**Typography Helpers**:
+Foundation's Utility family of text styles: the text alignment classes and their responsive forms, `.subheader`, `.lead`, `.stat`, `.no-bullet`, the Typescale classes `.h1` to `.h6`, and the citation and code looks `.cite-block`, `.code-inline`, and `.code-block`.
+_Avoid_: typography utilities, text helpers (bare), typography base (for these classes)
+
+**Subheader**:
+Foundation's lighter heading look (`.subheader`): on a paragraph grouped with its heading in an `hgroup` it marks a subtitle; on a heading it lightens the heading of a section of its own.
+_Avoid_: subheading (for the look), subtitle (for the class), secondary heading
+
+**Heading size**:
+The look of a heading level (`.h1` to `.h6`) given to any element; it never changes the element's own heading level or role.
+_Avoid_: heading level (for the look), typescale (for the value), header size
 
 **Cell**:
 An element of an XY Grid, marked by `.cell`, whose size and offset per breakpoint are set on it; distinct from a table cell and from the ARIA `gridcell` role, which no layout uses.
 _Avoid_: column (the legacy grids' word), tile, grid item
 
 **Block grid**:
-A grid whose cells share each row equally from a per-breakpoint count set on the grid (Foundation's `.<bp>-up-<n>`), rather than from each cell's own size.
+A grid whose Cells or Columns share each row equally from a per-breakpoint count set on the grid or Row (Foundation's `.<bp>-up-<n>`), rather than from each one's own size.
 _Avoid_: card grid, equal grid, up grid
+
+**Row**:
+An element of a legacy grid (the Float Grid or the Flex Grid), marked by `.row`, that holds Columns and carries the settings they share, such as a block grid count or collapsed gutters.
+_Avoid_: grid (bare), line, container
+
+**Column**:
+An element of a legacy grid's Row, marked by `.column`, whose size and offset per breakpoint are set on it, and in the Float Grid also its push, pull, and centring; in the Flex Grid a Column without a size expands into the space its Row leaves.
+_Avoid_: cell (the XY Grid's word), col, grid item
+
+**Column row**:
+An element that is both a Row and a Column, which Foundation draws as a centred, padded block for content rather than a Row of Columns.
+_Avoid_: single-column row, row column
 
 **Grid frame**:
 An XY Grid sized to the viewport that clips whatever does not fit, so that its cell blocks scroll on their own (Foundation's `.grid-frame`).
@@ -195,8 +239,8 @@ An immediate child of a Flex parent, which can align itself, take a share of the
 _Avoid_: flex item (CSS's term), cell (the XY Grid's element), column
 
 **Source ordering**:
-Foundation's per-breakpoint change of the visual order of Flex children through its order classes, which leaves the DOM order, the reading and focus order, as written.
-_Avoid_: reordering (bare), push and pull (the Float Grid's own mechanism), sort order
+Foundation's per-breakpoint change of the visual order of a layout's items, through the Flexbox Utilities' order classes or the Float Grid's push and pull classes, which leaves the DOM order, the reading and focus order, as written.
+_Avoid_: reordering (bare), sort order
 
 **Application class**:
 A CSS class the consumer defines in its own stylesheet, never a Foundation or library class; the only class a consumer writes, on its own elements or as the value of an input that applies or names one (the Toggler's `toggler`, the Tooltip's `templateClasses`, the Dropdown pane's `parentClass`, a Motion input's dot form).
@@ -261,6 +305,10 @@ _Avoid_: breakpoint rule (which assigns modes), responsive source, interchange q
 **Export mixin**:
 A Foundation Sass mixin that prints one component's CSS (`foundation-accordion`, `foundation-reveal`), included by the consumer and compiled from the consumer's settings.
 _Avoid_: Foundation styles, component mixin
+
+**Float build**:
+Foundation's CSS compiled with Flexbox mode off (`foundation-everything($flex: false)`, what Foundation ships as its float CSS), the one `foundation-everything` compile that prints the Float Grid, and one without the XY Grid, the Flex Grid, and the Flexbox Utilities.
+_Avoid_: float mode, legacy build, IE build
 
 **Flexbox mode**:
 Foundation compiled with `$global-flexbox: true`, its default, in which its components lay out with flexbox; with `$global-flexbox: false` they use Foundation's older float and table layouts, and some Variant classes exist in only one of the two.

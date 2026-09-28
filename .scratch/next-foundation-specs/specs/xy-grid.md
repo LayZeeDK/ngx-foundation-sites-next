@@ -369,7 +369,7 @@ Consumer markup, then the server HTML. The hydrated DOM equals the server HTML: 
 </div>
 ```
 
-The list grid's `ul` keeps Foundation's list margin (20 px) and markers (measured in three engines), because `.grid-x` resets neither; a list grid without markers also carries the [Spec: Typography Helpers](../issues/106-spec-typography-helpers.md)'s directive for `.no-bullet`, whose name and list-role notes that spec decides, and the example leaves it out until then. The frame's `body { overflow: hidden; }` needs are in the usage examples.
+The list grid's `ul` keeps Foundation's list margin (20 px) and markers (measured in three engines), because `.grid-x` resets neither; a list grid without markers also carries the [Spec: Typography Helpers](../issues/106-spec-typography-helpers.md)'s `nfsNoBullet`, whose margin reset that spec's `nfs-typography-helpers` keeps off a margin grid's own gutters (measured in three engines), and `role="list"` where its item count matters, because WebKit exposes a list without markers outside a `nav` as a group; the example shows the list grid with its markers. The frame's `body { overflow: hidden; }` needs are in the usage examples.
 
 ### Animation
 
@@ -444,7 +444,7 @@ Manual release test (ADR 0022): with NVDA on Firefox and Chrome, JAWS on Chrome,
 
 - Source ordering (`.<bp>-order-<n>`), flex alignment (`.align-*`, `.align-self-*`, `.align-center-middle`), and the flex container helpers on grids and cells: the [Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md), whose `nfsFlexAlign` and `nfsFlexChild` are written beside `nfsGridX`, `nfsGridY`, and `nfsCell`, and whose development visual-order check, which covers cells, owns the 1.3.2 and 2.4.3 hazard of reordering. Category: `scope-boundary`.
 - Showing and hiding cells by breakpoint (`.hide-for-*`, `.show-for-*`): the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md). Category: `scope-boundary`.
-- Removing a list grid's markers and margin (`.no-bullet`): the [Spec: Typography Helpers](../issues/106-spec-typography-helpers.md). Category: `scope-boundary`.
+- Removing a list grid's markers and margin (`.no-bullet`): the [Spec: Typography Helpers](../issues/106-spec-typography-helpers.md)'s `nfsNoBullet`. Category: `scope-boundary`.
 - Foundation's semantic grid mixins (`xy-grid`, `xy-cell`, `xy-gutters`, `xy-grid-layout`, and the rest) in the consumer's own Sass for the consumer's own classes: the class rule governs Foundation's and the library's classes, and the directives set only the classes Foundation generates. Category: `scope-boundary`.
 - `.<bp>-full`: Foundation gives it no width, only a `flex-basis` reset, so it would not do what its name says; a cell with no `size`, or `size` at the column count, is full width. Category: `other`.
 - Push and pull classes: not part of the XY Grid, whose docs replace them with source ordering. Category: `superseded`.
@@ -589,3 +589,4 @@ Sass. The consumer compiles Foundation's Sass from its own settings; the library
 - A vertical grid needs a height from the consumer (an inline style, a frame, or the consumer's own CSS), as Foundation's docs say.
 - Alignment on a vertical grid follows the flex axes: `nfsFlexAlign`'s `alignX` sets `justify-content`, which runs along the column, so on `nfsGridY` it moves cells vertically, and `alignY` moves them across (the [Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md)).
 - The `hidden` attribute does not hide a grid: measured in three engines, `.grid-x`, `.grid-y`, and `.cell-block-container` keep `display: flex` under `hidden`, because Foundation's rules come after normalize's `[hidden] { display: none }`, while a plain `.cell` and `.grid-container` are hidden. A grid that comes and goes is removed with `@if`, or hidden by the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)'s directive or a Toggler in Visibility mode, which binds `.is-hidden` (building-blocks 1.10).
+- Beside the Float Grid ([Spec: Float Grid](../issues/100-spec-float-grid.md)): a page that also compiles `foundation-grid` includes it before `foundation-xy-grid-classes` and keeps `$grid-column-count` equal to `$grid-columns`. Measured in three engines: in the other order the Float Grid's unscoped `.small-6 { width: 50% }` makes a vertical grid's `size="6"` cell half as wide as its grid, and with unequal counts the grid compiled last sets both grids' offsets.

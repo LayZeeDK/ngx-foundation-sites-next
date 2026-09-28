@@ -95,7 +95,7 @@ Flexbox Utilities has no Plugin, no `defaults` object, no `data-*` Options, no e
 
 Settings: `$flex-source-ordering-count` (count, 6) and `$flexbox-responsive-breakpoints` (flag, `true`); `$breakpoint-classes` and `$global-text-direction` are global. The partial is compiled by `foundation-everything` only while its `$flex` argument is true (the default), or by `@include foundation-flex-classes`.
 
-Docs conventions kept or corrected: every example (kept, with directives in place of classes, D1 to D6); the XY Grid as the example parent (kept); `.align-center-middle` as "central alignment" (kept, with its difference from the pair stated, D4); the Source Ordering example (kept, with the reading-and-focus requirement and its check, D9, D10); the `.text-center` demo class and inline `height` (kept as story scaffolding under the Storybook conventions); the Helper Mixins section (kept as Sass guidance, Out of Scope).
+Docs conventions kept or corrected: every example (kept, with directives in place of classes, D1 to D6); the XY Grid as the example parent (kept); `.align-center-middle` as "central alignment" (kept, with its difference from the pair stated, D4); the Source Ordering example (kept, with the reading-and-focus requirement and its check, D9, D10); the `.text-center` demo class (as the [Spec: Typography Helpers](../issues/106-spec-typography-helpers.md)'s `nfsTextAlign="center"`) and inline `height` (kept as story scaffolding under the Storybook conventions); the Helper Mixins section (kept as Sass guidance, Out of Scope).
 
 ### CSS class to directive mapping
 
