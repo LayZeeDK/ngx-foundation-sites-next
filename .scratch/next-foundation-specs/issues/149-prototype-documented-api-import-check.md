@@ -32,3 +32,7 @@ One Opus 5.5 agent built and measured it on 2026-09-28: code in `prototypes/miss
 ### Gist for the map
 
 - [Prototype: a static import check on documented APIs only](issues/149-prototype-documented-api-import-check.md) -- TypeScript's compiler API, `angular-html-parser`, and a selector matcher of its own over the manifest give the compiler-based check's findings element by element on every in-scope case and on 240 and 1000 components (106 of 106, 442 of 442, none extra), in half or less of its run time (798 against 1559 ms, 1092 against 2948 ms), with no Angular API; the one difference, `ngNonBindable` content, is the compiler check's false report. Its costs are 404 lines copying twelve Angular rules, a new dependency, and skipped components with a notice for every array, a consumer's own included; the compiler check stays in the library's CI as the oracle for drift. Findings: [research/missing-directive-import-documented.md](research/missing-directive-import-documented.md).
+
+### User ruling, 2026-09-28 (arrays)
+
+Asked whether the check should follow array constants the consumer declares in its own workspace (the prototype skipped 144 of 240 and 600 of 1000 components in the mixed-style workspaces for importing one), the user chose no arrays: a component whose `imports` holds an array of any form, plain `const` included, is skipped with the NFS9002 notice. [ADR 0046](../adr/0046-forgotten-imports-caught-by-checks.md) records it.
