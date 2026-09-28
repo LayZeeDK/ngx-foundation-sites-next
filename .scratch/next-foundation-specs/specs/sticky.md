@@ -6,18 +6,18 @@ Ticket: [Spec: Sticky](../issues/28-spec-sticky.md). Targets Angular 22.2, Nx 23
 
 Foundation's Sticky Plugin keeps an element (a sidebar, a table of contents, a title bar) in view while the page scrolls past a range, and exposes that state through the State classes `.is-stuck`, `.is-anchored`, `.is-at-top`, and `.is-at-bottom` plus the `sticky.zf.stuckto:*` and `sticky.zf.unstuckfrom:*` events. It does this with a jQuery emulation of what CSS now does natively: it measures anchors on window `load`, recomputes on every scroll, switches the element to `position: fixed`, copies the container's width into an inline `max-width`, and freezes the container's height so the layout does not collapse. None of it runs on the server, so the server HTML of a Foundation page never sticks until the Plugin has measured; the Breakpoint query in `stickyOn` needs Foundation's `meta.foundation-mq` handshake, which needs a rendered stylesheet; and the element jumps between `relative` and `fixed` positioning with margins applied and removed around the switch.
 
-An Angular developer who builds on Foundation's Sass wants Foundation's markup and State classes on an Angular page without jQuery, a sticky element that already sticks in server HTML, in prerendered pages, and inside dehydrated `@defer` blocks, a class contract and outputs that report what the browser actually does, and an honest account of the Foundation Options the platform cannot honour, with a recipe for each.
+An Angular developer who builds on Foundation's Sass wants Foundation's Sticky elements, Structural classes, and State classes on an Angular page without jQuery and without writing any of those classes by hand, a sticky element that already sticks in server HTML, in prerendered pages, and inside dehydrated `@defer` blocks, a class contract and outputs that report what the browser actually does, and an honest account of the Foundation Options the platform cannot honour, with a recipe for each.
 
 ## Solution
 
-Two attribute directives on the markup the developer already writes. `[nfsSticky]` sits on the sticky element, adds `.sticky`, and binds its offset from `marginTop` or `marginBottom` as an inline `top` or `bottom` in em. The Library mixin `nfs-sticky` turns `.sticky` into `position: sticky` above the `stickyOn` breakpoint, with media queries built from the consumer's own `$breakpoints` by Foundation's `breakpoint()` mixin, so the element sticks correctly at every viewport width from the server HTML alone, before any script runs. `[nfsStickyContainer]` sits on the element Foundation marks `[data-sticky-container]` and adds `.sticky-container`. The browser pins the element; its Sticky range is its parent element's box.
+Two attribute directives on the elements the developer writes, which bind every Sticky class; the developer writes none ([ADR 0039](../adr/0039-directives-manage-every-foundation-class.md)). `[nfsSticky]` sits on the sticky element, binds `.sticky`, and binds its offset from `marginTop` or `marginBottom` as an inline `top` or `bottom` in em. The Library mixin `nfs-sticky` turns `.sticky` into `position: sticky` above the `stickyOn` breakpoint, with media queries built from the consumer's own `$breakpoints` by Foundation's `breakpoint()` mixin, so the element sticks correctly at every viewport width from the server HTML alone, before any script runs. `[nfsStickyContainer]` sits on the element Foundation marks `[data-sticky-container]` and binds `.sticky-container`. Each is written beside the directive of the element it sits on (a Title Bar's `nfsTitleBar`, a grid cell's `nfsCell`), and neither hosts the other's directives nor is hosted. The browser pins the element; its Sticky range is its parent element's box.
 
-After the first render the directive measures, in the browser, whether the element is pinned and at which end of its range it rests, and binds Foundation's State classes from that. It exposes the result as the read-only signals `isStuck` and `edge` and emits the Completion outputs `stuck` and `unstuck` with the edge as payload. Measurement uses two invisible sentinels inside the container observed by `IntersectionObserver`, a `requestAnimationFrame`-throttled scroll listener that catches instantaneous jumps the observers miss, and `ResizeObserver` for size changes, all against the element's real scroll container. Foundation's anchor Options (`anchor`, `topAnchor`, `btmAnchor`) have no counterpart, because `position: sticky` cannot bound an element by anything but its containing block; the documented recipe is to make the container span the wanted range.
+After the first render the directive measures, in the browser, whether the element is pinned and at which end of its range it rests, and binds Foundation's State classes from that. It exposes the result as the read-only signals `isStuck` and `edge` and emits the Completion outputs `stuck` and `unstuck` with the edge as payload. Measurement uses two invisible sentinels inside the container observed by `IntersectionObserver`, a `requestAnimationFrame`-throttled scroll listener that catches instantaneous jumps the observers miss, and `ResizeObserver` for size changes, all against the element's real scroll container. Foundation's anchor Options (`anchor`, `topAnchor`, `btmAnchor`) have no counterpart, because `position: sticky` cannot bound an element by anything but its containing block; the documented recipe is to make the container span the wanted range. Sticky has no Variant class, so it has no Variant input; a developer who wants a stuck element to look different binds a class of their own from `isStuck()`.
 
 ## User Stories
 
-1. As an Angular developer using Foundation's Sass, I want to write Foundation's Sticky markup with `nfsSticky` and `nfsStickyContainer` in place of `data-sticky` and `data-sticky-container`, so that I keep Foundation's docs markup and CSS.
-2. As an Angular developer, I want the directive to add `.sticky` for me, so that Foundation's title-bar example, which carries no `.sticky` class, works as written.
+1. As an Angular developer using Foundation's Sass, I want to write Foundation's Sticky elements with `nfsSticky` and `nfsStickyContainer` in place of `class="sticky" data-sticky` and `data-sticky-container`, so that I keep Foundation's docs element structure and CSS and write no Foundation class.
+2. As an Angular developer, I want the directives to bind `.sticky` and `.sticky-container` for me, so that I write neither class, as Foundation's own title-bar example already leaves `.sticky` out.
 3. As an Angular developer, I want the element to stick through native `position: sticky`, so that it never jumps between flow and `position: fixed` and never needs a frozen container height.
 4. As a site visitor on a server-rendered or prerendered page, I want the sidebar to stick while I scroll before the application has hydrated, so that the page behaves the same whether or not scripts have loaded.
 5. As a site visitor with JavaScript disabled, I want a sticky element to stick at the widths the developer chose, so that the layout still works.
@@ -26,7 +26,7 @@ After the first render the directive measures, in the browser, whether the eleme
 8. As an Angular developer, I want `stickyOn="large"` to keep the element in normal flow below the large breakpoint, so that small screens do not lose space to a pinned element.
 9. As an Angular developer, I want `stickyOn` to accept every Breakpoint query form (`medium`, `medium up`, `large only`, `medium down`, `all`), so that it reads like Tooltip's `showOn` and Equalizer's `equalizeOn`.
 10. As an Angular developer who customised `$breakpoints` in Sass, I want the `stickyOn` gate to switch at my breakpoints, so that the gate agrees with the rest of my Foundation CSS.
-11. As an Angular developer, I want `.is-stuck` while the element is pinned and `.is-anchored` otherwise, so that I can style a stuck header (a shadow, a smaller logo) with Foundation's classes.
+11. As an Angular developer, I want the directive to bind `.is-stuck` while the element is pinned and `.is-anchored` otherwise, so that Foundation's Sticky CSS, and CSS I migrate from a Foundation site, keeps applying.
 12. As an Angular developer, I want `.is-at-top` or `.is-at-bottom` to tell me which edge the element is pinned to, or which end of its range it rests at, so that Foundation's class contract keeps its meaning.
 13. As an Angular developer, I want a read-only `isStuck` signal, so that templates and `computed` state can react to the element being pinned without listening to outputs.
 14. As an Angular developer, I want an `edge` signal, so that I can tell in code whether an unstuck element rests before or after its range.
@@ -38,7 +38,7 @@ After the first render the directive measures, in the browser, whether the eleme
 20. As an Angular developer, I want a development warning when an `overflow: hidden` ancestor stops the element from sticking, with the `overflow: clip` fix, so that I do not lose time on Foundation's off-canvas wrapper clash.
 21. As an Angular developer migrating Foundation markup, I want a development warning when the container is no taller than the sticky element, so that I learn why Foundation's title-bar example does not stick and how to fix it.
 22. As an Angular developer migrating Foundation markup, I want a development warning when `data-anchor`, `data-top-anchor`, or `data-btm-anchor` is still on the element, so that I learn the anchors are not honoured and see the container recipe.
-23. As an Angular developer, I want a development warning when the container is not positioned, so that I add `nfsStickyContainer` or `.sticky-container` before the class contract drifts.
+23. As an Angular developer, I want a development warning when the container is not positioned, so that I add `nfsStickyContainer` before the class contract drifts.
 24. As an Angular developer, I want application-wide defaults for `stickTo`, `marginTop`, `marginBottom`, and `stickyOn` through a Defaults token, so that I can change Foundation's defaults once instead of on every element.
 25. As an Angular developer, I want the directive to export itself as `nfsSticky`, so that I can read `isStuck()` through a template reference.
 26. As an Angular developer, I want the directive to work in a zoneless application with OnPush components, so that State classes and signals update without `NgZone`.
@@ -57,6 +57,8 @@ After the first render the directive measures, in the browser, whether the eleme
 39. As an Angular developer, I want a development warning when a focused element ends up entirely hidden behind a stuck element, so that I add the `scroll-padding` WCAG 2.4.11 requires before users meet the problem.
 40. As a low-vision user reading at 400% zoom, I want sticking never to add horizontal scrolling and small viewports to stay free of pinned elements by default, so that content reflows (WCAG 1.4.10).
 41. As a reader, I want a stuck element that overlaps content to have an opaque background, so that neither its text nor the text under it loses contrast (WCAG 1.4.3).
+42. As an Angular developer, I want to write `nfsSticky` beside `nfsTitleBar`, `nfsTopBar`, or `nfsCallout`, and `nfsStickyContainer` beside `nfsCell`, on one element, so that a sticky bar, a sticky callout, or a sticky grid column needs no extra element and each directive keeps its own classes.
+43. As an Angular developer, I want to style a stuck element (a shadow, a smaller logo) through a class of my own bound from `isStuck()`, so that my templates and stylesheets name no Foundation or library class.
 
 ## Implementation Decisions
 
@@ -66,18 +68,18 @@ From the Foundation inventory (Sticky section) and `Sticky.defaults` in Foundati
 
 | Foundation | Kind | Library counterpart |
 | --- | --- | --- |
-| `.sticky[data-sticky]` | Structural class and Plugin attribute | `[nfsSticky]`, which adds `.sticky` |
-| `[data-sticky-container]` and `.sticky-container` | Plugin attribute, Structural class added by the Plugin | `[nfsStickyContainer]`, which adds `.sticky-container` |
+| `.sticky[data-sticky]` | Structural class and Plugin attribute | `[nfsSticky]`, which binds `.sticky`; the consumer writes neither |
+| `[data-sticky-container]` and `.sticky-container` | Plugin attribute, Structural class added by the Plugin | `[nfsStickyContainer]`, which binds `.sticky-container`; the consumer writes neither |
 | `.is-stuck`, `.is-anchored`, `.is-at-top`, `.is-at-bottom` | State classes | Host class bindings from `isStuck` and `edge` |
 | `stickTo` (`'top'`) | Option | `stickTo` input, same default |
 | `marginTop` (`1`, em) | Option | `marginTop` input, same default and unit |
 | `marginBottom` (`1`, em) | Option | `marginBottom` input, same default and unit |
 | `stickyOn` (`'medium'`) | Option (Breakpoint query) | `stickyOn` input, same default |
-| `anchor`, `topAnchor`, `btmAnchor` (`''`) | Options | Dropped options: the platform cannot honour them (recipe below) |
-| `container` (`'<div data-sticky-container></div>'`) | Option (HTML string) | Dropped option (building-blocks 1.4, 1.1) |
-| `stickyClass`, `containerClass` | Options (class names) | Dropped options (building-blocks 1.4) |
-| `dynamicHeight` (`true`) | Option | Dropped option: `ResizeObserver` always follows the height |
-| `checkEvery` (`-1`) | Option | Dropped option: replaced by the throttled scroll backstop |
+| `anchor`, `topAnchor`, `btmAnchor` (`''`) | Options | Dropped options: the platform cannot honour them (recipe below). Category: `platform-or-a11y` |
+| `container` (`'<div data-sticky-container></div>'`) | Option (HTML string) | Dropped option: the consumer writes the container element with `nfsStickyContainer` (building-blocks 1.4, 1.1). Category: `jquery-or-dom-plumbing` |
+| `stickyClass`, `containerClass` | Options (class names) | Dropped options: the classes are the contract (building-blocks 1.4), and no Foundation or library class name is an input value ([ADR 0039](../adr/0039-directives-manage-every-foundation-class.md)). Category: `variant-as-class` |
+| `dynamicHeight` (`true`) | Option | Dropped option: `ResizeObserver` always follows the height. Category: `superseded` |
+| `checkEvery` (`-1`) | Option | Dropped option: replaced by the throttled scroll backstop. Category: `superseded` |
 | `sticky.zf.stuckto:top/bottom` | Event | `stuck` output, payload `'top' \| 'bottom'` |
 | `sticky.zf.unstuckfrom:top/bottom` | Event | `unstuck` output, payload `'top' \| 'bottom'` |
 | `init.zf.sticky`, `destroyed.zf.sticky`, `pause.zf.sticky` (private) | Events | None (Angular lifecycle; the pause is internal) |
@@ -95,26 +97,38 @@ Behaviour that changes, with the reason:
 
 ### CSS class to Angular mapping
 
-| Foundation class or attribute | Angular | Notes |
-| --- | --- | --- |
-| `.sticky` + `[data-sticky]` | `NfsSticky`, selector `[nfsSticky]`, host `class: 'sticky'` | The Structural class; the consumer may also write it |
-| `.sticky-container` + `[data-sticky-container]` | `NfsStickyContainer`, selector `[nfsStickyContainer]`, host `class: 'sticky-container'` | Foundation's `position: relative` on it is what positions the sentinels |
-| `.is-stuck` | `[class.is-stuck]="isStuck()"` | State class |
-| `.is-anchored` | `[class.is-anchored]="!isStuck()"` | State class |
-| `.is-at-top` | `[class.is-at-top]="edge() === 'top'"` | State class |
-| `.is-at-bottom` | `[class.is-at-bottom]="edge() === 'bottom'"` | State class |
-| `[data-sticky-on]` | `[attr.data-nfs-sticky-on]` carrying the canonical Breakpoint query | Library-owned attribute the `nfs-sticky` gate rules key on; a different name from Foundation's so a leftover static `data-sticky-on` never collides with the binding |
+Foundation's `foundation-sticky` Export mixin defines two Structural classes, `.sticky-container` and `.sticky`, and four State classes, which it styles only in compounds with `.sticky`; it defines no Variant class. So `NfsSticky` has no Variant input, declares no Variant registry, writes no Variant property, and requests no Runtime check ([ADR 0040](../adr/0040-variant-input-types.md)). Under the class rule ([ADR 0039](../adr/0039-directives-manage-every-foundation-class.md)) the consumer writes none of these classes, and the classes on the elements Sticky sits on come from the directives written beside it:
+
+| Foundation class or attribute | Kind | Element | Set by | Notes and owner |
+| --- | --- | --- | --- | --- |
+| `.sticky` + `[data-sticky]` | Structural class, Plugin attribute | The sticky element | `NfsSticky`, selector `[nfsSticky]`, static host `class: 'sticky'` | The consumer writes neither; a redundant `class="sticky"` merges with the host class and is not reported (building-blocks 1.4). This spec |
+| `.sticky-container` + `[data-sticky-container]` | Structural class (added by Foundation's Plugin), Plugin attribute | The sticky element's parent | `NfsStickyContainer`, selector `[nfsStickyContainer]`, static host `class: 'sticky-container'` | Foundation's `position: relative` on it is what positions the sentinels; the directive is the only way to get the class (D1). This spec |
+| `.is-stuck` | State class | The sticky element | `[class.is-stuck]="isStuck()"` | This spec |
+| `.is-anchored` | State class | The sticky element | `[class.is-anchored]="!isStuck()"` | This spec |
+| `.is-at-top` | State class | The sticky element | `[class.is-at-top]="edge() === 'top'"` | This spec |
+| `.is-at-bottom` | State class | The sticky element | `[class.is-at-bottom]="edge() === 'bottom'"` | This spec |
+| `[data-sticky-on]` | Plugin attribute (Option) | The sticky element | `[attr.data-nfs-sticky-on]` carrying the canonical Breakpoint query | Library-owned attribute the `nfs-sticky` gate rules key on; a different name from Foundation's so a leftover static `data-sticky-on` never collides with the binding. An attribute, not a class, so the class rule does not touch it. This spec |
+| `.title-bar`, `.title-bar-left` (the title-bar usage example and `sticky--navigation`) | Structural classes of the Title Bar | A bar written with `nfsSticky` beside it, and its left section | `NfsTitleBar` (`[nfsTitleBar]`) and `NfsTitleBarLeft` (`[nfsTitleBarLeft]`) | [Spec: Top Bar](../issues/86-spec-top-bar.md) |
+| `.top-bar` | Structural class of the Top Bar | A bar written with `nfsSticky` beside it | `NfsTopBar` (`[nfsTopBar]`) | [Spec: Top Bar](../issues/86-spec-top-bar.md) |
+| `.callout` (the stick-to-bottom usage example) | Structural class of the Callout | A callout written with `nfsSticky` beside it | `NfsCallout` (`[nfsCallout]`) | [Spec: Callout](../issues/89-spec-callout.md) |
+| `.grid-x`, `.cell`, `.small-6` (the column examples) | Utility classes of the XY Grid | The grid, the cell that is the Sticky container, and the content cell | `NfsGridX` (`[nfsGridX]`) and `NfsCell` (`[nfsCell]`) with its `size` Variant input (`size="6"`, a bare value, so the Zero breakpoint's `.small-6`), written beside `nfsStickyContainer` | [Spec: XY Grid](../issues/99-spec-xy-grid.md), open: the names are building-blocks 1.3's and 1.4's and the Magellan spec's, aligned by the class-rule consistency review if that spec names them otherwise |
+| `.thumbnail` (the column examples) | Structural class of the Thumbnail | The image inside the sticky element | `img[nfsThumbnail]` | [Spec: Thumbnail](../issues/97-spec-thumbnail.md), open; the name is the Toggler spec's |
+
+A State class written statically on the host (copied from a page Foundation's JavaScript rendered) is stripped on server and client, because each State-class binding always has a boolean value and Angular's styling resolution consults a static class only when every binding for it is `undefined`; no development check reports it (D16). `stickTo` stays an Option, not a Variant input: the classes it influences, `.is-at-top` and `.is-at-bottom`, are State classes from `edge`, which is `'bottom'` for an element with `stickTo: 'top'` once scrolled past its range.
 
 ### Hierarchy and DI shape
 
 ```
-[nfsStickyContainer]  (.sticky-container, position: relative from Foundation)
- '-- [nfsSticky]      (.sticky; its DOM parent is its Sticky range)
+[nfsStickyContainer]  (.sticky-container, position: relative from Foundation;
+ |                     on any parent element, beside nfsCell on a grid cell)
+ '-- [nfsSticky]      (.sticky and the four State classes; its DOM parent is its Sticky range;
+                       on any element, beside nfsTitleBar, nfsTopBar, or nfsCallout)
       injects: NfsMediaQuery, nfsStickyDefaultsToken (optional), ElementRef, DestroyRef, NgZone
 ```
 
 - No parent token. The sticky element's range is its DOM parent, which is what CSS uses; DI would answer a different question (the declaration-site injector), and nothing else needs the instance. The building-blocks sketch named an `nfsStickyToken`; nothing injects it, so it is not created.
-- `NfsStickyContainer` has no inputs, outputs, or DI. It is kept as a directive, although it only adds a class, because ADR 0001 names the sticky container as a consumer-written element with a directive on it and because it keeps Foundation's attribute-shaped markup. Writing `class="sticky-container"` instead is equivalent and documented.
+- `NfsStickyContainer` has no inputs, outputs, or DI and binds only its class, which is what ADR 0039 asks of a directive for a Structural class. Under the class rule it is the only way to get `.sticky-container`: the consumer writes no class, and a `Renderer2` write from `nfsSticky` onto its parent is not allowed, because ADR 0039's dated note permits that only for state with no first-paint value, and the container's `position: relative` is first-paint layout (D1).
+- Composition by placement (building-blocks 1.9; the [Spec: Top Bar](../issues/86-spec-top-bar.md)'s D10): `nfsSticky` is written beside the class directive of the element it pins (`<header nfsTitleBar nfsSticky>`, `<div nfsTopBar nfsSticky>`, `<div nfsCallout nfsSticky>`) and `nfsStickyContainer` beside the one of the element that bounds the range (`<div nfsCell size="6" nfsStickyContainer>`). Neither hosts another directive and none hosts them, because host directives are static and Sticky may sit on any element: a bar that hosted `NfsSticky` would pin every bar (D18). None of `.title-bar`, `.top-bar`, or `.cell` sets `position`; `.callout` sets `position: relative` at the same specificity as `.sticky`, and the `nfs-sticky` gate rule (0,2,0) overrides both where it is open.
 - `nfsStickyDefaultsToken`: `InjectionToken<NfsStickyDefaults>` with `interface NfsStickyDefaults { stickTo?: NfsStickyEdge; marginTop?: number; marginBottom?: number; stickyOn?: string }`, injected with `{optional: true}` and used to seed the input defaults (building-blocks 1.4, Shape B). Provided at bootstrap, route, or element level; the nearest wins.
 - `NfsMediaQuery` from the [Spec: Breakpoint service (shared utility)](../issues/53-spec-breakpoint-service.md), used exactly as defined there: `canStick = computed(() => mq.is(this.stickyOn()))`.
 - Entry point `ngx-foundation-sites/sticky`, which imports the Breakpoint service's entry point.
@@ -151,7 +165,7 @@ Rules the API follows:
 
 Development-mode warnings (under `ngDevMode`, each at most once per instance, from the first render callback; stripped from production builds):
 
-1. The parent element's computed `position` is `static`: "ngx-foundation-sites: the parent of an nfsSticky element is not positioned. Add nfsStickyContainer (or the sticky-container class) to the parent so the Sticky state is measured correctly."
+1. The parent element's computed `position` is `static`: "ngx-foundation-sites: the parent of an nfsSticky element is not positioned. Add nfsStickyContainer to the parent so the Sticky state is measured correctly."
 2. The parent's content height is not larger than the element's height: "... this nfsSticky element's Sticky range is its parent, which is no taller than the element, so it never sticks. Make the parent span the range you want (Foundation's topAnchor/btmAnchor recipe)."
 3. The nearest scroll container is an element with computed `overflow` `hidden` in either axis: "... an ancestor with overflow: hidden (<selector-ish description>) is the scroll container of this nfsSticky element, so it cannot stick while the page scrolls. Use overflow: clip on that ancestor if it only needs to clip."
 4. The host carries `data-anchor`, `data-top-anchor`, or `data-btm-anchor`: "... Foundation's anchor Options are not supported; the Sticky range is the parent element. Size or place the parent to span the range."
@@ -198,7 +212,7 @@ Sticky has no APG pattern (ARIA APG research, Sticky: "No pattern"). It sets no 
 
 | Element | Role and ARIA | Notes |
 | --- | --- | --- |
-| Sticky element | None from the directive | A sticky site header is a `header` or `nav` the consumer writes; a second `nav` on the page needs a unique `aria-label` (APG landmark regions) |
+| Sticky element | None from the directive | A sticky site header is a `header` or `nav` the consumer writes, with `nfsTitleBar` or `nfsTopBar` beside `nfsSticky` for Foundation's bars; a second `nav` on the page needs a unique `aria-label` (APG landmark regions) |
 | Container | None | |
 | Sentinels | `aria-hidden="true"` | Empty and out of the accessibility tree |
 
@@ -211,7 +225,7 @@ WCAG 2.2 AA requirements (every criterion is a requirement, never a recommendati
 | Criterion | What Sticky requires | How it is met and checked |
 | --- | --- | --- |
 | 2.4.11 Focus Not Obscured (Minimum) | A stuck element must never entirely hide the element that has keyboard focus | Required usage, stated in the directive's documentation: when a stuck element can overlap focusable content (a page-spanning header or footer), the scroll container carries `scroll-padding-top` (for `stickTo: 'top'`) or `scroll-padding-bottom` (for `'bottom'`) of at least the stuck element's height plus its inset, so the browser scrolls focused elements clear of it. Stuck sidebars in their own column overlap nothing and need nothing. The library cannot compute this (only the consumer knows what overlaps what, and one scroll container may hold several stuck elements), so it checks instead: development warning 5 fires when a newly focused element is entirely covered by a stuck `nfsSticky`; the `sticky--navigation` story and a Playwright case assert every focused link stays visible. |
-| 1.4.3 Contrast (Minimum) | Text of a stuck element that overlaps page content, and the content under it, stays readable | Required usage: a stuck element that overlaps content has an opaque background. Foundation's `.title-bar` and `.top-bar` have one (`$titlebar-background`, `$topbar-background`); Foundation's `.sticky` has none and the library cannot choose a color, so stories that overlap content set one, and the documentation states the rule. |
+| 1.4.3 Contrast (Minimum) | Text of a stuck element that overlaps page content, and the content under it, stays readable | Required usage: a stuck element that overlaps content has an opaque background. A Title Bar (`nfsTitleBar`) paints `$titlebar-background`, opaque on Foundation's defaults, and a Callout (`nfsCallout`) paints its callout background. A Top Bar (`nfsTopBar`) paints `$topbar-background`, so it is opaque only while that setting is. The Top Bar spec's required `$topbar-background: $white` is opaque; a transparent Top Bar, which Foundation's Sass documents (its `$topbar-submenu-background` setting exists for that case), is not, and the Top Bar spec's compile-time check composites a transparent bar over `$body-background`, which says nothing about the content a stuck bar covers. A stuck Top Bar that overlaps content therefore needs an opaque `$topbar-background`. Foundation's `.sticky` paints nothing and the library cannot choose a colour, so any other overlapping element (a plain `nav` or `aside`) gets its background from the consumer's own class or style; stories that overlap content pin a component that paints one, and the documentation states the rule. |
 | 1.4.10 Reflow | Sticking never causes horizontal scrolling at 320 CSS px | The element stays in flow at its container width; `nfs-sticky` replaces Foundation's `width: 100%` on `.is-stuck` with `width: auto`, which would otherwise overflow by the element's horizontal margins (D14). The default `stickyOn: 'medium'` also keeps small viewports, which include 400% zoom of a 1280 px window, free of pinned elements. |
 | 1.4.4 Resize Text | The inset scales with text | Insets are in em. |
 | 2.4.7 Focus Visible | Unchanged | The directive adds no focusable element and no style to focus indicators; 2.4.11's `scroll-padding` also keeps indicators clear of a stuck bar. |
@@ -221,37 +235,42 @@ Stories are gated by axe with the WCAG 2.2 AA rule set (Testing Decisions); axe 
 
 ### Rendered HTML
 
-Consumer markup (Foundation's column example):
+Consumer markup (Foundation's column example, with no class written):
 
 ```html
-<div class="grid-x">
-  <div class="cell small-6" nfsStickyContainer>
+<div nfsGridX>
+  <div nfsCell size="6" nfsStickyContainer>
     <div nfsSticky [marginTop]="0">
-      <img class="thumbnail" src="..." alt="...">
+      <img nfsThumbnail src="..." alt="...">
     </div>
   </div>
-  <div class="cell small-6">...long content...</div>
+  <div nfsCell size="6">...long content...</div>
 </div>
 ```
 
 Server HTML and hydrated DOM before the first measurement (identical):
 
 ```html
-<div class="cell small-6 sticky-container" nfsstickycontainer="">
-  <div nfssticky="" class="sticky is-anchored is-at-top"
-       data-nfs-sticky-on="medium" style="top: 0em; bottom: auto;">
-    <img class="thumbnail" src="..." alt="...">
+<div nfsgridx="" class="grid-x">
+  <div nfscell="" size="6" nfsstickycontainer="" class="cell sticky-container small-6">
+    <div nfssticky="" class="sticky is-anchored is-at-top"
+         data-nfs-sticky-on="medium" style="top: 0em; bottom: auto;">
+      <img nfsthumbnail="" src="..." alt="..." class="thumbnail">
+    </div>
   </div>
+  <div nfscell="" size="6" class="cell small-6">...long content...</div>
 </div>
 ```
 
-Hydrated, after measuring, while the element is pinned:
+Every class comes from a directive's host binding, so the server HTML carries all of them. Static template attributes, directive selectors included, are serialised in lowercase; the order of class tokens follows directive matching and is not part of the contract; the grid and thumbnail classes are the XY Grid and Thumbnail specs', shown with Foundation's names.
+
+Hydrated, after measuring, while the element is pinned (the grid wrapper and the content cell are unchanged and left out):
 
 ```html
-<div class="cell small-6 sticky-container" nfsstickycontainer="">
+<div nfscell="" size="6" nfsstickycontainer="" class="cell sticky-container small-6">
   <div nfssticky="" class="sticky is-stuck is-at-top"
        data-nfs-sticky-on="medium" style="top: 0em; bottom: auto;">
-    <img class="thumbnail" src="..." alt="...">
+    <img nfsthumbnail="" src="..." alt="..." class="thumbnail">
   </div>
   <span data-nfs-sticky-sentinel="top" aria-hidden="true"
         style="position: absolute; left: 0px; width: 1px; height: 1px; pointer-events: none; top: 0px;"></span>
@@ -262,9 +281,11 @@ Hydrated, after measuring, while the element is pinned:
 
 After scrolling past the range: `class="sticky is-anchored is-at-bottom"`. With `stickTo="bottom"` the inline style is `top: auto; bottom: 1em;` and a pinned element carries `is-stuck is-at-bottom`. Below the `stickyOn` breakpoint the markup is the same and the gate rules do not match, so Foundation's `.sticky { position: relative }` applies and the element never carries `is-stuck`. The sentinels never appear in server HTML.
 
+Beside a bar directive (the title-bar usage example), server HTML: `<header nfstitlebar="" nfssticky="" stickyon="all" class="title-bar sticky is-anchored is-at-top" data-nfs-sticky-on="all" style="top: 0em; bottom: auto;">`, with `<div nfstitlebarleft="" class="title-bar-left">` inside; each directive binds its own classes and neither touches the other's.
+
 ### Animation
 
-None. Foundation's Sticky has no animation and no Motion class Option, and the library adds none: no `animate.enter`/`animate.leave`, no keyframes, no `transitionend` wait, no reduced-motion rule. A consumer may put a CSS transition on `.sticky.is-stuck` (a shadow, a smaller logo); the State class flips at once and no Completion output waits for it, because the pinning itself is not animated (Foundation re-measured after `transitionend`; that listener is dropped).
+None. Foundation's Sticky has no animation and no Motion class Option, and the library adds none: no `animate.enter`/`animate.leave`, no keyframes, no `transitionend` wait, no reduced-motion rule. A consumer may put a CSS transition on a class of its own bound from `isStuck()` (a shadow, a smaller logo; D17); that class and the State class flip at once and no Completion output waits for either, because the pinning itself is not animated (Foundation re-measured after `transitionend`; that listener is dropped).
 
 ### Rendering modes
 
@@ -272,7 +293,7 @@ Per ADR 0008 and the rendering-modes research, section 7 rules 1 to 11:
 
 - Server-side rendering and first paint: the host bindings (`.sticky`, `.is-anchored`, `.is-at-top`, `data-nfs-sticky-on`, the inline inset) are all signal state known on the server, and the `nfs-sticky` gate rules are media queries, so the server HTML sticks correctly at every viewport width with no script (rule 1, rule 9). None of the host bindings reads the Breakpoint service, so the Server breakpoint does not affect the first paint and there is no breakpoint swap at hydration. This is why the gate is CSS and not a `position` binding from `NfsMediaQuery`: with the default Server breakpoint (`small`) and the default `stickyOn` (`medium`), such a binding would render `position: static` on the server, so desktop visitors would get a non-sticky page until hydration and forever inside `hydrate never`.
 - Before hydration: the directive creates no nodes, reads no geometry, and adds no listener outside render callbacks (rules 3 to 5). The sentinels, the scroll-container walk, the observers, the scroll listener, and the development checks all start in the first render callback; the `afterRenderEffect` that builds them never runs on the server.
-- Full hydration: host binding values equal the server's, so hydration changes no attribute; the first measurement then flips State classes if the page is not at the top (a class change, not a structural one). The sentinels are appended after hydration of the container, as its last children.
+- Full hydration: host binding values equal the server's, so hydration changes no attribute; the first measurement then flips State classes if the page is not at the top (a class change, not a structural one). A consumer's own class bound from `isStuck()` (D17) follows the same timing: absent from server HTML, set by the first measurement that finds the element stuck. The sentinels are appended after hydration of the container, as its last children.
 - Event replay: the directive declares no template or host listeners, so it adds no `jsaction` and nothing of its own is queued or replayed; `scroll` is not a replayed event type, and the first measurement after hydration reads the scroll position the page has by then. The building-blocks rule for handlers of a Replayed event (decided at triage on 2026-09-26) does not affect Sticky.
 - Incremental hydration and `@defer`: library templates contain no `@defer`; a consumer may defer the Sticky entry point. Inside a dehydrated block the element is its Dehydrated state and sticks through CSS; when the block hydrates (for example `hydrate on viewport`), the directive measures and the classes and outputs start. Inside `@defer (hydrate never)` the element keeps sticking at the right widths and its classes stay `is-anchored is-at-top` (building-blocks 1.11 decision 7: Sticky is fully functional as dehydrated HTML). Plain `@defer` renders the directive on the client, which measures in its first render callback.
 - Hydration boundary: none is required. The Sticky range is the DOM parent whatever block the parent belongs to, and a block is always hydrated after the blocks around it, so the parent is hydrated when the sticky element's directive runs.
@@ -281,7 +302,7 @@ Per ADR 0008 and the rendering-modes research, section 7 rules 1 to 11:
 
 ### Sass and custom CSS
 
-- Foundation's `foundation-sticky` Export mixin is reused untouched; the directives bind only classes it already styles (`.sticky`, `.sticky-container`, and the four State classes).
+- Foundation's `foundation-sticky` Export mixin is reused untouched; the directives bind only classes it already styles (`.sticky`, `.sticky-container`, and the four State classes), and the consumer writes none of them.
 - The `nfs-sticky` Library mixin adds two things Foundation's Sass cannot express, each the smallest rule for its reason: the `stickyOn` gate (`position: sticky` on `.sticky[data-nfs-sticky-on=...]` inside Foundation's `breakpoint()` media queries, because Foundation has no `position: sticky` rule and no per-breakpoint sticky class), and `width: auto` on `.sticky.is-stuck` (D14). The full list, the reused settings, and what breaks without the include are in the Sass subsection under Further Notes.
 - The per-instance inset is an inline style from a host binding, not library CSS; the sentinels' inline styles belong to elements the directive creates. No directive declares `styles` or `styleUrl`.
 
@@ -289,20 +310,22 @@ Per ADR 0008 and the rendering-modes research, section 7 rules 1 to 11:
 
 A good test asserts what a visitor or a consumer observes: whether the element is pinned (its rectangle against the stick line), the State classes, the `isStuck` and `edge` values, the outputs and their payloads, the server HTML, and the development warnings; never private fields, observer objects, or listener bookkeeping. There is no prior art in the new repository; the patterns are the prototype's geometric Playwright suite, Angular's `renderApplication`-based SSR tests, the harness from the [Prototype: Rendering-mode test seam](../issues/59-prototype-rendering-mode-test-seam.md), and the node-level Sass compile test from ADR 0012.
 
-Story ids: `sticky--basic`, `sticky--stick-to-bottom`, `sticky--margins`, `sticky--sticky-on`, `sticky--navigation`, `sticky--anchor-range-recipe`, `sticky--scroll-container`, `sticky--overflow-hidden-ancestor`, `sticky--outputs`. The Storybook preview stylesheet includes `foundation-sticky`, `nfs-sticky`, and `nfs-breakpoint-properties`. Stories other than `sticky--sticky-on` set `stickyOn="all"` so they behave at any iframe width.
+Story ids: `sticky--basic`, `sticky--stick-to-bottom`, `sticky--margins`, `sticky--sticky-on`, `sticky--navigation`, `sticky--anchor-range-recipe`, `sticky--scroll-container`, `sticky--overflow-hidden-ancestor`, `sticky--outputs`. The Storybook preview stylesheet includes `foundation-sticky`, `nfs-sticky`, and `nfs-breakpoint-properties` (and, for the title bar of `sticky--navigation`, the `foundation-title-bar` and `nfs-title-bar` lines it already has). Stories other than `sticky--sticky-on` set `stickyOn="all"` so they behave at any iframe width.
+
+Story markup follows the class rule (Storybook conventions, section 8; ADR 0039): no story element carries a Foundation or library class written in the template. Sticky elements are `nfsSticky` hosts and their parents `nfsStickyContainer` hosts; the bar in `sticky--navigation` is `nfsTitleBar` with `nfsTitleBarLeft`, the checkout bar in `sticky--stick-to-bottom` is `nfsCallout`, column layouts use the XY Grid's `nfsGridX` and `nfsCell` with `size`, images are `img[nfsThumbnail]`, and controls are `button[nfsButton]`, each imported from its own entry point. Inline `style` only for heights, tall pages, the scroll panel's `overflow: auto`, and the two overflow values `sticky--overflow-hidden-ancestor` compares (D19).
 
 ### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`, `npx nx test-storybook <lib>`)
 
-Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test = 'error'` and `runOnly` set to the six tags of the preview's rule set (`wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`, `best-practice`, building-blocks 1.10); every story whose stuck element overlaps content gives it an opaque background (1.4.3). Play functions scroll the story's own document or scroll container with `behavior: 'instant'` (the Storybook preview includes the Smooth Scroll spec's `nfs-smooth-scroll`, which makes a root scroll without a `behavior` smooth) and assert after the next animation frame:
+Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test = 'error'` and `runOnly` set to the six tags of the preview's rule set (`wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`, `best-practice`, building-blocks 1.10); every story whose stuck element overlaps content pins a component that paints an opaque background, a Title Bar or a Callout (1.4.3). Play functions scroll the story's own document or scroll container with `behavior: 'instant'` (the Storybook preview includes the Smooth Scroll spec's `nfs-smooth-scroll`, which makes a root scroll without a `behavior` smooth) and assert after the next animation frame:
 
 - `sticky--basic`: at scroll 0 the element has `is-anchored is-at-top`; scrolled into the range it has `is-stuck is-at-top` and its top equals the inset; scrolled past, `is-anchored is-at-bottom`; the parent contains two `[data-nfs-sticky-sentinel]` spans and its height is unchanged from before the directive measured.
 - `sticky--stick-to-bottom`: the three states with `is-stuck is-at-bottom` while pinned and the element's bottom at the viewport bottom minus the inset.
 - `sticky--margins`: `marginTop="3"` pins the top at 3 em of the element's font size; `[marginTop]="0"` pins at 0.
 - `sticky--sticky-on`: shows the canonical `data-nfs-sticky-on` for each control value; at the iframe's current width, `is-stuck` appears only when the computed `position` is `sticky` (the viewport sweep is Playwright's).
-- `sticky--navigation`: a page-spanning container with a title bar and a `nav` landmark; one large `scrollTo` jump into the range yields `is-stuck` (the backstop); tabbing to a link far down leaves that link's rectangle clear of the stuck bar (the `scroll-padding-top` recipe).
+- `sticky--navigation`: a page-spanning `nfsStickyContainer` holding a `header` with `nfsTitleBar` and `nfsSticky` beside each other and a `nav` landmark with links down the page; the bar carries `.title-bar` and `.sticky` with no class in the template; one large `scrollTo` jump into the range yields `is-stuck` (the backstop); tabbing to a link far down leaves that link's rectangle clear of the stuck bar (the `scroll-padding-top` recipe).
 - `sticky--anchor-range-recipe`: Foundation's two-anchor example rewritten with the container spanning the anchors; the element unsticks where the bottom anchor ends.
 - `sticky--scroll-container`: inside an `overflow: auto` panel, scrolling the panel (not the window) pins the element and sets `is-stuck`; scrolling the window leaves it unchanged.
-- `sticky--overflow-hidden-ancestor`: inside an ancestor carrying Foundation's `.overflow-hidden` Prototype class (the clash Foundation's `.off-canvas-wrapper` has without the `nfs-off-canvas` include) the element does not pin and never reports `is-stuck`; the same markup with that class replaced by an inline `overflow: clip` (no Foundation class exists for it) pins and reports it.
+- `sticky--overflow-hidden-ancestor`: inside an ancestor with an inline `overflow: hidden` (the clash Foundation's `.off-canvas-wrapper` has without the `nfs-off-canvas` include) the element does not pin and never reports `is-stuck`; the same markup with an inline `overflow: clip` instead pins and reports it. Both values are inline because the overflow value is what the story compares, Foundation has a class for only one of them, and its `.overflow-hidden` Prototype class is not written under the class rule while the [Spec: Prototyping Utilities](../issues/102-spec-prototyping-utilities.md) has not named its directive (D19).
 - `sticky--outputs`: a log shows `stuck: top`, `unstuck: bottom`, `stuck: top`, `unstuck: top` for a scroll down through the range and back up; `isStuck()` read through `#s="nfsSticky"` matches the log.
 
 ### 2. Browser-level test (Vitest browser mode, `npx nx test <lib>`)
@@ -311,7 +334,7 @@ Vitest browser mode under the Angular unit-test builder (`npx nx test <lib>`, Ch
 
 Fixtures use a fixed-height scroll container as root so geometry is deterministic:
 
-- Host bindings: `.sticky` added; `top` and `bottom` inline values for both `stickTo` values; `data-nfs-sticky-on` canonical values for every Breakpoint query form; inputs seeded from `nfsStickyDefaultsToken` and overridden by bound inputs; an unparsable margin falls back to the default.
+- Host bindings: a test host that writes no class renders `.sticky` on the `nfsSticky` host and `.sticky-container` on its `nfsStickyContainer` parent; `nfsSticky` beside `nfsTitleBar` keeps `.title-bar` and adds `.sticky` and the State classes; a static `class="is-stuck"` on the host is absent while the element is not stuck, and no warning is logged (D16); `top` and `bottom` inline values for both `stickTo` values; `data-nfs-sticky-on` canonical values for every Breakpoint query form; inputs seeded from `nfsStickyDefaultsToken` and overridden by bound inputs; an unparsable margin falls back to the default.
 - Transitions and outputs: scrolling through the range in steps and in single jumps produces the exact output sequence and payloads, one emission per transition, with signals already written when the handler runs; the first measurement after a mid-range start emits `stuck` once; destroy emits nothing.
 - Backstop: a single jump across both bands updates the state within one animation frame.
 - Size changes: growing the host's height moves the unstick point (far band rebuilt); growing the container extends the range.
@@ -324,7 +347,7 @@ Fixtures use a fixed-height scroll container as root so geometry is deterministi
 ### 3. Node-level Vitest
 
 - Pure logic (table-driven): the state derivation for both `stickTo` values, before, inside, and after the range, at the 1 px tolerance on each side, with the gate open and closed, and with a scroll container offset from the viewport; the gate canonicalisation (`''`, `all`, `medium`, `medium up`, `large only`, `medium down`, extra whitespace, malformed).
-- SSR smoke, under `npx nx test <lib>` in `sticky.ssr.spec.ts` through the shared `renderServer()` helper (`npx nx test-node <lib>` only if the server path depends on the DOM adapter, which it does not): a fixture with a top and a bottom Sticky and one with `stickyOn="large only"`. Assert `whenStable()` resolves; the server HTML carries `.sticky-container`, `.sticky`, `is-anchored is-at-top`, the canonical `data-nfs-sticky-on`, and the inline insets; no `jsaction` on the sticky elements; no sentinel spans.
+- SSR smoke, under `npx nx test <lib>` in `sticky.ssr.spec.ts` through the shared `renderServer()` helper (`npx nx test-node <lib>` only if the server path depends on the DOM adapter, which it does not): a fixture with a top and a bottom Sticky, one with `stickyOn="large only"`, and one `header` with `nfsTitleBar` beside `nfsSticky`, none of which writes a `class` attribute. Assert `whenStable()` resolves; the server HTML carries `.sticky-container`, `.sticky`, `is-anchored is-at-top`, the canonical `data-nfs-sticky-on`, and the inline insets, and the title-bar host carries both `title-bar` and `sticky`; no `jsaction` on the sticky elements; no sentinel spans.
 - Sass compile: compiling Foundation with a custom `$breakpoints` map, then the library, then `@include foundation-sticky; @include nfs-sticky;` emits one gated `position: sticky` rule per Breakpoint query form at the custom thresholds (in em, equal to Foundation's own media queries), the `all` rule, and the `width: auto` rule, and nothing else.
 
 ### 4. Playwright e2e (`npx nx e2e <lib>-e2e` against the static Storybook build; `npx nx e2e <fixture-app>-e2e` against the prerendered fixture app)
@@ -337,7 +360,7 @@ Against the static Storybook build, in Chromium, Firefox, and WebKit:
 - Focus not obscured (2.4.11): on `sticky--navigation`, Tab forward and backward through every link while the bar is stuck; no focused link is entirely covered by the stuck bar, and no development warning is logged.
 - Reflow (1.4.10): at 320 px wide with `stickyOn="all"` and a stuck element with horizontal margins, the document has no horizontal scroll.
 
-Against the prerendered fixture app:
+Against the prerendered fixture app (its Sticky route writes directives only, as the stories do):
 
 - JavaScript disabled: at 1280 px wide, after scrolling, the element's top equals its inset (it sticks); at 480 px it scrolls away (gate closed); axe passes on the server HTML.
 - Hydration: no NG05xx in the console and `ngDevMode.componentsSkippedHydration === 0`; after a reload in the middle of the range the element gains `is-stuck` after hydration with no error.
@@ -346,57 +369,69 @@ Against the prerendered fixture app:
 
 ## Out of Scope
 
-- Ranges set by anchors outside the Sticky range (`anchor`, `topAnchor`, `btmAnchor`), and any JavaScript `position: fixed` emulation that would honour them.
-- A container generated when the consumer wrote none (`container` Option); the consumer writes the container.
-- Sticking to both edges (Foundation's unimplemented `both` placeholder) and horizontal sticking (`left`/`right`).
-- Shrink-on-scroll and other scroll-linked effects: consumer CSS on `.is-stuck`; scroll-driven animations are out of the Browser target.
-- Setting `scroll-padding` automatically: it is required consumer CSS (2.4.11), checked by development warning 5 and the e2e case, because only the consumer knows what a stuck element overlaps and one scroll container may hold several stuck elements.
-- Changing Foundation's `.off-canvas-wrapper` overflow: the [Spec: Off-canvas](../issues/25-spec-off-canvas.md) owns it; its `nfs-off-canvas` mixin sets `overflow: clip; display: flow-root` on the wrapper, confirmed by case 3 of the [Prototype: Sticky measurement refinements](../issues/63-prototype-sticky-measurement.md), so Sticky works inside it.
-- Sticky table headers: CDK and Material tables already use native `position: sticky`.
+Each item carries its reason and its exclusion category.
+
+- Ranges set by anchors outside the Sticky range (`anchor`, `topAnchor`, `btmAnchor`), and any JavaScript `position: fixed` emulation that would honour them: `position: sticky` confines an element to its containing block, so anchors outside the parent cannot be honoured ([ADR 0019](../adr/0019-sticky-native-range.md)). Category: `platform-or-a11y`.
+- A container generated when the consumer wrote none (`container` Option): the consumer writes the container element with `nfsStickyContainer`, and structure injected from an HTML string is jQuery plumbing (building-blocks 1.4). Category: `jquery-or-dom-plumbing`.
+- Sticking to both edges: Foundation's `both` is a comment in its Sticky source, never implemented. Category: `deprecated-upstream`.
+- Horizontal sticking (`left`, `right`): Foundation's Sticky has no such Option. Category: `scope-boundary`.
+- Shrink-on-scroll and other scroll-linked effects: the consumer's CSS on its own class bound from `isStuck()` covers the stuck look (D17), and scroll-driven animations are out of the Browser target. Category: `other` (a platform gap).
+- Setting `scroll-padding` automatically: it is required consumer CSS (2.4.11), checked by development warning 5 and the e2e case, because only the consumer knows what a stuck element overlaps and one scroll container may hold several stuck elements. Category: `scope-boundary`.
+- Changing Foundation's `.off-canvas-wrapper` overflow: the [Spec: Off-canvas](../issues/25-spec-off-canvas.md) owns it; its `nfs-off-canvas` mixin sets `overflow: clip; display: flow-root` on the `nfsOffCanvasWrapper` element, confirmed by case 3 of the [Prototype: Sticky measurement refinements](../issues/63-prototype-sticky-measurement.md), so Sticky works inside it. Category: `scope-boundary`.
+- Sticky table headers: Foundation's Table has no sticky header, and CDK and Material tables already use native `position: sticky`. Category: `scope-boundary`.
 
 ## Further Notes
 
 ### Design decisions
 
+A row whose decision leaves a Foundation feature or Option out names that item's exclusion category in its Rationale.
+
 | # | Decision | Rationale | Rejected alternative |
 | --- | --- | --- | --- |
-| D1 | `[nfsSticky]` on the sticky element and `[nfsStickyContainer]` on its parent | ADR 0001 and building-blocks Table A; Foundation's markup carries both elements | A component that generates the container (Foundation's `wrap`); dropping the container directive (ADR 0001 names it) |
-| D2 | Native `position: sticky`; the Sticky range is the parent box | Correct first paint with no script, no layout jump, in the Browser target; confirmed in three engines by the prototype | Porting Foundation's `position: fixed` emulation (no server paint, re-measures on every scroll, loses the grid width) |
-| D3 | `anchor`, `topAnchor`, `btmAnchor` are Dropped options with a container recipe and a development warning for leftover attributes | An input that is never read promises behaviour the directive cannot give; a bound unknown input is a compile error, which is the clearest signal | Keeping them as accepted no-op inputs for Foundation parity (the prototype's suggestion) |
+| D1 | `[nfsSticky]` on the sticky element and `[nfsStickyContainer]` on its parent, binding `.sticky` and `.sticky-container`; the consumer writes neither class | ADR 0001 and building-blocks Table A; Foundation's markup carries both elements; ADR 0039 gives every Structural class its directive, and the container directive is the only way to get `.sticky-container`, whose `position: relative` is first-paint layout. Exclusion category of the generated container (`container`): `jquery-or-dom-plumbing` | A component that generates the container (Foundation's `wrap`); dropping the container directive (ADR 0001 names it); `class="sticky-container"` written by the consumer (ADR 0039); `nfsSticky` writing `.sticky-container` on its parent with `Renderer2` (ADR 0039's dated note allows that only for state with no first-paint value) |
+| D2 | Native `position: sticky`; the Sticky range is the parent box | Correct first paint with no script, no layout jump, in the Browser target; confirmed in three engines by the prototype. Exclusion category of the `position: fixed` emulation: `superseded` | Porting Foundation's `position: fixed` emulation (no server paint, re-measures on every scroll, loses the grid width) |
+| D3 | `anchor`, `topAnchor`, `btmAnchor` are Dropped options with a container recipe and a development warning for leftover attributes | An input that is never read promises behaviour the directive cannot give; a bound unknown input is a compile error, which is the clearest signal. Exclusion category: `platform-or-a11y` | Keeping them as accepted no-op inputs for Foundation parity (the prototype's suggestion) |
 | D4 | The `stickyOn` gate is CSS in `nfs-sticky`, keyed on `data-nfs-sticky-on` and built with Foundation's `breakpoint()` from the consumer's `$breakpoints`; `NfsMediaQuery.is(stickyOn)` gates only the class contract | Server HTML and `hydrate never` stick at the right widths; no breakpoint swap at hydration; CSS and JavaScript share the Breakpoint map (the Breakpoint service's drift check covers it) | An inline `position` binding from `NfsMediaQuery` (the building-blocks sketch): renders the Server breakpoint, so desktop pages do not stick before hydration |
-| D5 | Offsets are inline `top`/`bottom` insets in em; the unused edge is bound `auto` | Per-instance values; inline beats Foundation's `top: 0`/`bottom: 0` on `.is-stuck`/`.is-anchored` classes, and `auto` on the other edge removes Foundation's stray `bottom: 0` from the equation | Margins as Foundation applied them (layout jump); a custom property per instance read by library CSS (more CSS for the same result) |
+| D5 | Offsets are inline `top`/`bottom` insets in em; the unused edge is bound `auto` | Per-instance values; inline beats Foundation's `top: 0`/`bottom: 0` on `.is-stuck`/`.is-anchored` classes, and `auto` on the other edge removes Foundation's stray `bottom: 0` from the equation. Exclusion category of Foundation's margins applied on stick and removed on unstick: `superseded` | Margins as Foundation applied them (layout jump); a custom property per instance read by library CSS (more CSS for the same result) |
 | D6 | State from the host's rectangle against the stick line, by one pure function | Reports what the browser did, independent of container padding and child order; testable without a browser | The prototype's sentinel-geometry thresholds (depend on padding and on the element being the first child) |
 | D7 | Absolutely positioned sentinels appended at the container's end | No layout shift, no extra flex or grid items, no interference with nodes hydration has yet to claim | The prototype's in-flow sentinels inserted as first and last child (2 px growth, hydration cursor risk) |
-| D8 | IntersectionObserver plus a rAF-throttled passive scroll backstop plus ResizeObserver, torn down while the gate is closed | The prototype's correctness gap for instantaneous jumps; `dynamicHeight` always on; Foundation's pause | Observers alone (stale after jumps); a scroll listener alone (misses layout-driven movement) |
+| D8 | IntersectionObserver plus a rAF-throttled passive scroll backstop plus ResizeObserver, torn down while the gate is closed | The prototype's correctness gap for instantaneous jumps; `dynamicHeight` always on; Foundation's pause. Exclusion category of `dynamicHeight` and `checkEvery`: `superseded` | Observers alone (stale after jumps); a scroll listener alone (misses layout-driven movement) |
 | D9 | Observer root and listener target are the nearest scroll container | Classes agree with the pixels in `overflow: auto` panels and never report "stuck" under an `overflow: hidden` wrapper; the walk runs once per instance | Window only (the prototype; classes lie under any scroll container) |
 | D10 | `isStuck` plus `edge` as the public state; no `isAtTop`/`isAtBottom`/`isAnchored` signals | Two values determine all four State classes; 1.3's `isX` rule for the one boolean | Four booleans, three of them derived |
 | D11 | `stuck`/`unstuck` payload: the edge stuck to, and the end rested at | Foundation's `stuckto:<stickTo>` and `unstuckfrom:<rest end>` namespaces; building-blocks 1.4 mapping | `void` outputs (lose Foundation's namespace information) |
 | D12 | Five development-mode warnings | Each catches a silent failure the prototype, Foundation's docs markup, or a missing 2.4.11 `scroll-padding` produces; stripped from production | Documentation only (the prototype's alternative) |
 | D13 | `nfsStickyDefaultsToken`, no parent token | Building-blocks 1.4 defaults rule; nothing injects a Sticky parent | `nfsStickyToken` from the building-blocks sketch |
-| D14 | `width: auto` on `.sticky.is-stuck` in `nfs-sticky` | Foundation's `width: 100%` sized a `position: fixed` element to the viewport; an in-flow element keeps its container width, and 100% plus horizontal margins would overflow (WCAG 1.4.10) | Leaving Foundation's width (overflow with margins) |
-| D15 | WCAG 2.4.11 is met by required consumer `scroll-padding`, checked by development warning 5 and a Playwright case; 1.4.3 by a required opaque background on overlapping stuck elements | The overlap depends on the page, which only the consumer knows; the checks turn a silent failure into a warning and a failing test | The directive writing `scroll-padding` on the scroll container (a global write that several stuck elements would fight over); documenting it as advice only |
+| D14 | `width: auto` on `.sticky.is-stuck` in `nfs-sticky` | Foundation's `width: 100%` sized a `position: fixed` element to the viewport; an in-flow element keeps its container width, and 100% plus horizontal margins would overflow (WCAG 1.4.10). Exclusion category of Foundation's `width: 100%` on a stuck element: `superseded` | Leaving Foundation's width (overflow with margins) |
+| D15 | WCAG 2.4.11 is met by required consumer `scroll-padding`, checked by development warning 5 and a Playwright case; 1.4.3 by a required opaque background on overlapping stuck elements (a Top Bar has one only while `$topbar-background` is opaque) | The overlap depends on the page, which only the consumer knows; the checks turn a silent failure into a warning and a failing test. Exclusion category of automatic `scroll-padding`: `scope-boundary` | The directive writing `scroll-padding` on the scroll container (a global write that several stuck elements would fight over); documenting it as advice only |
+| D16 | No Variant input, Variant registry, Variant property, or Runtime check request; the four State classes stay host bindings; a static copy of a State class is stripped by the bindings and not reported | Foundation's `foundation-sticky` defines no Variant class (ADR 0040 has nothing to type); `stickTo` is an Option whose classes are State classes of the measured `edge`; building-blocks 1.4's report for a copied class exists to catch an initial state the consumer meant to set, and Sticky's state is measured, never set: a copy changes nothing the bindings do not already correct, and Foundation's Sticky markup carries no State class to copy | A development warning for a copied State class (it would report markup whose outcome is already correct); `stickTo` as a Variant input for `.is-at-top` and `.is-at-bottom` (an element with `stickTo: 'top'` carries `.is-at-bottom` once scrolled past its range) |
+| D17 | Styling a stuck element is the consumer's own class bound from `isStuck()` or `edge()` through `#s="nfsSticky"`; no recipe selects `.is-stuck` or another Foundation or library class | Building-blocks 1.1: a spec's recipe for consumer CSS selects elements, attributes, or the consumer's own classes; the signals are public API, zoneless-safe, and false on the server exactly as the State classes are; the State classes stay Foundation's contract for Foundation's own CSS and CSS migrated from Foundation | Recipes on `.sticky.is-stuck` (a Foundation class in consumer code however the rule is read for stylesheets); a library styling attribute such as `data-nfs-stuck` (a second spelling of the State class that adds no information) |
+| D18 | Composition by placement: `nfsSticky` beside `nfsTitleBar`, `nfsTopBar`, or `nfsCallout`, or on any element; `nfsStickyContainer` beside `nfsCell`, or on any parent; neither hosts another directive or is hosted | Building-blocks 1.9: a behaviour that may sit on any element is written beside the class directive; the Top Bar spec's D10; host directives are static, so a bar that hosted `NfsSticky` would pin every bar; none of the bar, callout, or cell rules sets a `position` the gate cannot override | `NfsTitleBar` or `NfsTopBar` hosting `NfsSticky`; a `sticky` boolean on the bar directives (Sticky is a Plugin with its own Options, not a Variant of the bar) |
+| D19 | Examples, stories, test hosts, and fixtures write no Foundation or library class (except the one browser-level case that copies `is-stuck` onto a host to show it is stripped, D16): `nfsGridX` and `nfsCell` with `size`, `img[nfsThumbnail]`, `nfsCallout`, `nfsTitleBar` with `nfsTitleBarLeft`, `button[nfsButton]`; `sticky--overflow-hidden-ancestor` sets `overflow: hidden` and `overflow: clip` inline | ADR 0039 and the Storybook conventions' class-rule note; the names of the open XY Grid and Thumbnail specs are building-blocks 1.3's and the Magellan and Toggler specs', aligned by the class-rule consistency review; the overflow story compares two values, Foundation has a class for one, and the Prototyping Utilities spec has not named its directive | Keeping Foundation's docs classes in examples (copied into applications, they would bring back what the rule removes); Foundation's `.overflow-hidden` class in the story (a Foundation class in story markup); a guessed Prototyping Utilities directive name |
+| D20 | No consumer CSS recipe for Foundation's off-canvas wrapper: `@include nfs-off-canvas;` is the fix, and development warning 3 names `overflow: clip` for any other clipping ancestor | Building-blocks 1.1 (no recipe selects a Foundation class); the Off-canvas spec's Sass subsection already lists sticking inside the wrapper among what breaks without its include | Keeping `.off-canvas-wrapper { overflow: clip; display: flow-root; }` (a Foundation class in a consumer recipe); the same rule on `[nfsOffCanvasWrapper]` (a second copy of the Off-canvas mixin's rule in consumer CSS) |
 
 ### Usage examples
 
-A sticky column (Foundation's first docs example):
+Every example writes Foundation's elements and the library's directives, never a Foundation or library class (ADR 0039); each directive comes from its own entry point (`NfsSticky` and `NfsStickyContainer` from the Sticky one, `NfsTitleBar` and `NfsTitleBarLeft` from the Top Bar one, and so on).
+
+A sticky column (Foundation's first docs example); the grid cell, which stretches to the row's height, is the Sticky container:
 
 ```html
-<div class="grid-x">
-  <div class="cell small-6" nfsStickyContainer>
+<div nfsGridX>
+  <div nfsCell size="6" nfsStickyContainer>
     <div nfsSticky [marginTop]="0">
-      <img class="thumbnail" src="assets/rectangle-3.jpg" alt="Product photo">
+      <img nfsThumbnail src="assets/rectangle-3.jpg" alt="Product photo">
     </div>
   </div>
-  <div class="cell small-6"><!-- long content --></div>
+  <div nfsCell size="6"><!-- long content --></div>
 </div>
 ```
 
-A sticky title bar for the whole page (Foundation's navigation example, with the container spanning the page instead of wrapping only the bar):
+A sticky title bar for the whole page (Foundation's navigation example, with the container spanning the page instead of wrapping only the bar, and `nfsSticky` beside `nfsTitleBar`):
 
 ```html
 <div nfsStickyContainer>
-  <header class="title-bar" nfsSticky [marginTop]="0" stickyOn="all">
-    <div class="title-bar-left">...</div>
+  <header nfsTitleBar nfsSticky [marginTop]="0" stickyOn="all">
+    <div nfsTitleBarLeft>...</div>
   </header>
   <main>...</main>
 </div>
@@ -405,6 +440,19 @@ A sticky title bar for the whole page (Foundation's navigation example, with the
 ```css
 /* Focus not obscured (WCAG 2.4.11): keep focused elements clear of the stuck bar */
 html { scroll-padding-top: 3.5rem; }
+```
+
+A different look while stuck (a shadow), from a class of the application's own bound from `isStuck()` (D17):
+
+```html
+<header nfsTitleBar nfsSticky #bar="nfsSticky" [class.app-bar-raised]="bar.isStuck()" [marginTop]="0" stickyOn="all">
+  <div nfsTitleBarLeft>...</div>
+</header>
+```
+
+```css
+/* The application's own class; no Foundation or library class is selected */
+.app-bar-raised { box-shadow: 0 2px 4px rgb(0 0 0 / 30%); }
 ```
 
 Foundation's two anchors as a container recipe (`data-top-anchor="example2:top" data-btm-anchor="foo:bottom"`): place the container so it starts at `#example2` and ends at the bottom of `#foo`, for example by making `#example2` through `#foo` the children of one wrapper and putting the sticky element first in it:
@@ -417,12 +465,12 @@ Foundation's two anchors as a container recipe (`data-top-anchor="example2:top" 
 </div>
 ```
 
-Stick to the bottom (the element last in its container):
+Stick to the bottom (the element last in its container; the Callout paints the opaque background 1.4.3 needs):
 
 ```html
 <div nfsStickyContainer>
   <article>...</article>
-  <div class="callout" nfsSticky stickTo="bottom" [marginBottom]="0">Checkout</div>
+  <div nfsCallout nfsSticky stickTo="bottom" [marginBottom]="0">Checkout</div>
 </div>
 ```
 
@@ -440,7 +488,7 @@ Reading the state:
 Inside a scrolling panel:
 
 ```html
-<div class="panel" style="overflow: auto; max-height: 30rem;">
+<div style="overflow: auto; max-height: 30rem;">
   <section nfsStickyContainer>
     <h3 nfsSticky [marginTop]="0" stickyOn="all">Section A</h3>
     ...
@@ -448,12 +496,7 @@ Inside a scrolling panel:
 </div>
 ```
 
-Inside Foundation's off-canvas wrapper: the Off-canvas spec's `@include nfs-off-canvas;` already replaces the wrapper's `overflow: hidden` with `overflow: clip; display: flow-root`. A consumer who uses Foundation's wrapper without that include writes the same fix:
-
-```css
-/* overflow: hidden makes the wrapper a scroll container, so nothing inside can stick to the window */
-.off-canvas-wrapper { overflow: clip; display: flow-root; }
-```
+Inside the off-canvas wrapper (`nfsOffCanvasWrapper`): the Off-canvas spec's `@include nfs-off-canvas;` replaces the wrapper's `overflow: hidden` with `overflow: clip; display: flow-root`, so the sticky element needs nothing more. Without that include the wrapper is the element's scroll container, the element does not stick to the window, and development warning 3 names the wrapper; the fix is the include, not consumer CSS on Foundation's wrapper class (D20). Any other clipping ancestor of the consumer's own takes `overflow: clip` in the consumer's CSS, as warning 3 says.
 
 Application defaults:
 
@@ -480,6 +523,7 @@ Sass. The consumer compiles Foundation's Sass from its own settings; the library
 3. Custom properties: none. The inset is an inline `top` or `bottom` from a host binding. The sentinels' inline styles are set by the directive on elements Foundation knows nothing about (listed under Implementation level, step 3), so they need no library CSS and work even without the include.
 4. Motion classes: none; no transition or animation is added or awaited, so the mixin emits no `prefers-reduced-motion` rule.
 5. What visibly breaks when the include is missing: the element never sticks at any width, because Foundation's `.sticky { position: relative }` stays. The class contract reports the truth (the host never sits at the stick line, so it is never stuck), which also means Foundation's `.sticky.is-stuck { position: fixed; width: 100% }` never applies. Nothing else changes.
+6. Variant properties: none. Sticky has no Variant class (CSS class to Angular mapping), so the mixin writes no `--nfs-<setting>` property and no directive of this entry point requests a Runtime check.
 
 ### Platform features to adopt when the browser target moves
 
@@ -488,7 +532,8 @@ Sass. The consumer compiles Foundation's Sass from its own settings; the library
 
 ### Foundation behaviour changed or dropped
 
-- Dropped jQuery-only behaviour: `$element.wrap()`/`unwrap()` to create the container; `$.fn.offset()` anchor positions; namespaced window scroll listeners; `data-resize`/`data-mutate` stamping and the `resizeme`/`mutateme` triggers (replaced by `ResizeObserver` and `IntersectionObserver`); the window `load` wait (render callbacks run after hydration; late image loads resize the container, which the `ResizeObserver` sees).
-- Dropped emulation: `position: fixed` while stuck, inline `max-width` copied from the container, the container's inline height, margins applied on stick and removed on unstick, and the `transitionend` re-measure.
-- Dropped options: `anchor`, `topAnchor`, `btmAnchor` (recipe above), `container`, `stickyClass`, `containerClass`, `dynamicHeight`, `checkEvery`.
+- Dropped jQuery-only behaviour: `$element.wrap()`/`unwrap()` to create the container; `$.fn.offset()` anchor positions; namespaced window scroll listeners; `data-resize`/`data-mutate` stamping and the `resizeme`/`mutateme` triggers (replaced by `ResizeObserver` and `IntersectionObserver`); the window `load` wait (render callbacks run after hydration; late image loads resize the container, which the `ResizeObserver` sees). Category: `jquery-or-dom-plumbing`.
+- Dropped emulation: `position: fixed` while stuck, inline `max-width` copied from the container, the container's inline height, margins applied on stick and removed on unstick, and the `transitionend` re-measure; native `position: sticky` needs none of it ([ADR 0019](../adr/0019-sticky-native-range.md)). Category: `superseded`.
+- Dropped options, each with its reason in the Foundation contract table: `anchor`, `topAnchor`, `btmAnchor` (recipe above; `platform-or-a11y`), `container` (`jquery-or-dom-plumbing`), `stickyClass`, `containerClass` (`variant-as-class`), `dynamicHeight`, `checkEvery` (`superseded`).
+- Changed by the class rule: Foundation's markup writes `.sticky` and its Plugin adds `.sticky-container`; here the directives bind both and the consumer writes no class ([ADR 0039](../adr/0039-directives-manage-every-foundation-class.md)).
 - Changed: the Sticky range is the parent box (Foundation's default was the whole document); `em` resolves against the element's font size; any scroll container is supported, not only the window.

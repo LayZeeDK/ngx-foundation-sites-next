@@ -162,3 +162,16 @@ Nothing is open in this ticket: its own OPEN FOR HUMAN section says "None", and 
 ### Amendment, 2026-09-26 (audit 0005)
 
 From [audit 0005](../audits/0005-final-bundle.md), finding L3; `specs/sticky.md` was edited to match. The spec's first line now states "Targets Angular 22.2, Nx 23.2, Storybook 10.6 with `@storybook/angular-vite`, Vitest 4.1.x, TypeScript 6.0.x, and Foundation for Sites 6.9.0 Sass."; it named no Angular version before. No other change.
+
+### Amendment, 2026-09-28 (class rule)
+
+From [Re-run: Sticky spec under the class rule](120-rerun-sticky-class-rule.md), under [ADR 0039](../adr/0039-directives-manage-every-foundation-class.md) and [ADR 0040](../adr/0040-variant-input-types.md); `specs/sticky.md` was revised in place. The API, the measurement, the ARIA and keyboard tables, the rendering modes, the Sass rules, and the Story ids are unchanged; the decision log above stands, and its decision 1's "writing the class instead is documented as equivalent" no longer holds.
+
+- `nfsSticky` binds `.sticky` and `nfsStickyContainer` binds `.sticky-container`, and the consumer writes neither: the mapping row that let the consumer write `.sticky`, the hierarchy's "Writing `class="sticky-container"` instead is equivalent and documented", development warning 1's "(or the sticky-container class)", and user story 23's `.sticky-container` are gone. The container directive is now the only way to get its class; a `Renderer2` write from `nfsSticky` onto the parent is ruled out because ADR 0039's dated note allows that only for state with no first-paint value (D1).
+- Sticky has no Variant class, so no Variant input, registry, Variant property, or Runtime check request; `stickTo` stays an Option. A copied State class is stripped by the bindings and not reported, because Sticky's state is measured, never set (D16).
+- Styling a stuck element is the consumer's own class bound from `isStuck()`; the Animation paragraph, user story 11, the new user story 43, and Out of Scope's shrink-on-scroll item no longer point at `.is-stuck` in consumer CSS (D17).
+- Composition by placement: `nfsSticky` beside `nfsTitleBar`, `nfsTopBar`, or `nfsCallout`, `nfsStickyContainer` beside `nfsCell`, neither hosting nor hosted (D18, user story 42).
+- The CSS class mapping gains a Kind column and rows for the classes of the elements Sticky sits on in the examples (Title Bar, Top Bar, Callout, XY Grid, Thumbnail); every example, story, test host, SSR fixture, and the Rendered HTML write directives only; the scrolling-panel example drops a stray `class="panel"`; `sticky--overflow-hidden-ancestor` sets both overflow values inline instead of Foundation's `.overflow-hidden` Prototype class (D19).
+- The off-canvas wrapper recipe `.off-canvas-wrapper { overflow: clip; display: flow-root; }` is removed: `@include nfs-off-canvas;` is the fix, and development warning 3 names `overflow: clip` for other clipping ancestors (D20).
+- The 1.4.3 row notes that a Top Bar is opaque only while `$topbar-background` is, as the [Spec: Top Bar](86-spec-top-bar.md) asked.
+- Out of Scope, Dropped options, and Design decisions carry an exclusion category per item; "sticking to both edges and horizontal sticking" is split into two items, and sticky table headers move from `superseded` to `scope-boundary`.
