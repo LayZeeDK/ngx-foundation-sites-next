@@ -8,7 +8,7 @@ Map: ../map.md
 
 ## Question
 
-The user asked on 2026-09-28 for researched guiding principles for directive and component architecture in Angular UI component libraries, gave a draft to start from ([research/architecture-principles-user-draft.md](../research/architecture-principles-user-draft.md), 15 principles, four layers, a decision framework), and asked for a guide authored from them, an audit of every spec against the guide, and every surviving finding resolved. What do primary sources say about each draft principle and about the principles the draft lacks, and where does each one hold, need a qualification, or conflict with Angular 22.2, the Baseline browser target, Foundation's CSS contract, or this map's recorded decisions?
+The user asked on 2026-09-28 for researched guiding principles for directive and component architecture in Angular UI component libraries, gave a draft to start from ([research/architecture-principles-user-draft.md](../research/architecture-principles-user-draft.md), 15 principles, four layers, a decision framework; the user added the same day that Microsoft Copilot generated the draft with little to no research: it is a list of candidate principles and questions to test, with no weight of its own, and a principle enters the guide only on the research's evidence), and asked for a guide authored from them, an audit of every spec against the guide, and every surviving finding resolved. What do primary sources say about each draft principle and about the principles the draft lacks, and where does each one hold, need a qualification, or conflict with Angular 22.2, the Baseline browser target, Foundation's CSS contract, or this map's recorded decisions?
 
 ## How to work it
 
