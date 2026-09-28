@@ -2,7 +2,7 @@
 
 Type: grilling
 Status: open
-Blocked by: 100, 101, 105, 106, 138, 139, 141, 143, 144, 145
+Blocked by: 100, 101, 105, 106, 138, 139, 141, 143, 144, 145, 146, 147, 148, 149, 150
 Labels: wayfinder:grilling
 Map: ../map.md
 
