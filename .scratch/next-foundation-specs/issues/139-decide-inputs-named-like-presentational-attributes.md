@@ -1,7 +1,7 @@
 # 139. Decide: inputs named like HTML presentational attributes
 
 Type: grilling
-Status: open
+Status: claimed
 Blocked by: 102, 105, 106
 Labels: wayfinder:grilling
 Map: ../map.md
