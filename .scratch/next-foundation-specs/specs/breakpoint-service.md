@@ -263,7 +263,7 @@ Consumers and what each reads (building-blocks Part 2 and Part 3):
 | Sticky | `is(stickyOn)` | `stickyOn` |
 | Equalizer | `is(equalizeOn)` | `equalizeOn` |
 | Tooltip | `is(showOn)` at show time | `showOn` |
-| Interchange | named query tokens through `atLeast` and `matches`, `nfsDefaultNamedQueries` | `rules`, Defaults token `namedQueries` |
+| Interchange | named query tokens through `atLeast` and `matches`, `nfsDefaultNamedQueries` | `rules` (breakpoint tokens are Breakpoint map names, `NfsBreakpointName`, not Class breakpoints), Defaults token `namedQueries` |
 | Orbit | `reducedMotion` (autoplay off) | `autoPlay` |
 | SmoothScroll; Magellan through the composed `NfsSmoothScroll` | `reducedMotion` (`behavior: 'instant'` instead of `'smooth'`) | none |
 | Accordion, Tabs, ResponsiveAccordionTabs | `reducedMotion` (`behavior: 'instant'` for the deep-link smudge scroll, and for Tabs' `autoFocus` scroll) | `deepLinkSmudge`, `autoFocus` (Tabs) |

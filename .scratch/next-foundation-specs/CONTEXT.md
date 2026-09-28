@@ -34,6 +34,10 @@ _Avoid_: mobile bar, app bar, toolbar
 Foundation's three-bar button drawn in CSS (`.menu-icon`), light by default and dark as a Variant, which opens a menu or a panel through a Trigger beside it; distinct from the Menu component.
 _Avoid_: hamburger (for the component), burger button, menu toggle
 
+**Pagination**:
+Foundation's CSS-only navigation through the numbered pages of a set of results: a list of page links with previous and next items and an ellipsis where pages are skipped; distinct from Material's paginator, a control that pages a table in place.
+_Avoid_: paginator, pager (for the component), page navigation
+
 **Split button**:
 A Button Group of two buttons, a main action and an arrow-only dropdown button that opens more actions of the same kind; built from the group, the buttons, and a Trigger, with no component of its own. Distinct from a Hybrid item, whose link navigates and whose toggle opens a submenu.
 _Avoid_: dropdown button (for the pair), menu button, action menu
@@ -50,9 +54,33 @@ _Avoid_: loading bar, progress indicator, meter (for the component)
 The `.progress-meter` element inside a Progress Bar whose width is the value's share of the range; distinct from the native `<meter>` element.
 _Avoid_: fill (bare), bar, meter (bare), indicator
 
+**Switch**:
+Foundation's CSS-only on/off control: a native checkbox or radio hidden inside a `.switch` container and drawn by its Switch paddle; distinct from the ARIA `switch` role, which a Switch carries only when the consumer writes it on a checkbox.
+_Avoid_: toggle, slide toggle, toggle switch
+
+**Switch paddle**:
+The `<label>` bound `.switch-paddle` that directly follows a Switch's input, draws its track and the knob inside it, and is its pointer target.
+_Avoid_: paddle (bare, which Foundation's Sass also uses for the knob), track, handle
+
+**Inner label**:
+A `.switch-active` or `.switch-inactive` word inside a Switch paddle that shows the state visually and is hidden from assistive technology.
+_Avoid_: state label, switch text, on/off label
+
 **Badge**:
 Foundation's CSS-only component that shows a short count, letter, or icon beside or inside what it counts, marked by the `.badge` Structural class and coloured from `$badge-palette`; distinct from a Label, which tags content with words, and from Angular Material's badge, which decorates its host.
 _Avoid_: counter, pill, notification dot, chip
+
+**Card**:
+Foundation's CSS-only container for content about one subject, marked by the `.card` Structural class and divided into Card dividers, padded card sections, and images; it has no role of its own, which the element it is written on gives it.
+_Avoid_: panel, tile, box, mat-card
+
+**Card divider**:
+The shaded band of a Card (`.card-divider`) used as its title, its footer, or a break between its parts; distinct from a horizontal rule, which draws a line.
+_Avoid_: card header, card footer, divider (bare), separator
+
+**Label**:
+Foundation's CSS-only inline tag that marks content with a word or a short phrase of metadata ("High priority", "Draft"), marked by the `.label` Structural class and coloured from `$label-palette`; not a control. Distinct from a Form label, which names a form control, and from a Badge, which shows a short count.
+_Avoid_: tag, chip, pill, media label, label (bare, where a Form label could be meant)
 
 **Structural class**:
 A Foundation CSS class that names an element of a Plugin's or a CSS-only component's markup (`.accordion-item`, `.dropdown-pane`, `.orbit-slide`, `.button`); bound by its directive, never written by the consumer.
@@ -159,7 +187,7 @@ A media query addressed by a name that is not a breakpoint (`landscape`, `portra
 _Avoid_: special query (Foundation's code name), custom breakpoint
 
 **Interchange rule**:
-A `[content, query]` pair of Interchange, whose query is a breakpoint name, a Named query, or a media query; in a list of them the last matching one applies.
+A `[content, query]` pair of Interchange, whose query is a name of the Breakpoint map (a Class breakpoint or not), a Named query, or a media query; in a list of them the last matching one applies.
 _Avoid_: breakpoint rule (which assigns modes), responsive source, interchange query
 
 **Export mixin**:
@@ -285,8 +313,12 @@ The chain of open submenus from a menu root down to the innermost open one; Dril
 _Avoid_: active branch, breadcrumb, trail
 
 **Current link**:
-The link a menu marks as the page the reader is on, with `aria-current` present and not `false`; the library gives it Foundation's active menu look, so no class marks it.
-_Avoid_: active item, is-active item, selected link
+The link a menu or a pagination marks as the page the reader is on (a pagination's button, in a pager that updates in place), with `aria-current` present and neither `false` nor empty; the library gives it Foundation's active menu look or current pagination look, so no class marks it.
+_Avoid_: active item, is-active item, selected link, current item (for Foundation's `.current`)
+
+**Placeholder link**:
+An `<a>` without `href`, which HTML treats as a placeholder that is neither focusable nor navigable; marked `role="link"` and `aria-disabled="true"`, it is the library's disabled link (a disabled `nfsButton` link, a pagination's disabled previous or next item).
+_Avoid_: disabled anchor, dead link, `href="#"` link
 
 **Drilldown level**:
 One list of a Drilldown, the root list or a submenu, shown alone in the Drilldown wrapper while it is the innermost open list.

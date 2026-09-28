@@ -587,7 +587,7 @@ A consumer's settings and the file the tooling writes from them:
 // the application's global stylesheet
 @import 'foundation-sites/scss/settings/settings';
 $button-palette: map-merge($foundation-palette, (purple: #7a3fbf));
-$label-palette: map-remove($foundation-palette, warning);
+$label-palette: map-merge(map-remove($foundation-palette, warning), (alert: #bf3f2c));
 $breakpoint-classes: (small medium large xlarge);
 $grid-columns: 16;
 @import 'foundation-sites/scss/foundation';

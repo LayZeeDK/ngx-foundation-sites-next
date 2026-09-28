@@ -95,7 +95,7 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
 @include foundation-everything($prototype: true); // (3) every Export mixin plus the Prototype utilities
 
 // Extra Foundation Export mixins a spec asks for, one line each with the spec named:
-// @include foundation-grid; // Equalizer: equalizer--float-grid (no class overlap with the XY grid)
+// @include foundation-grid; // Equalizer: equalizer--float-grid (its size classes share names with the XY grid's, harmlessly: the XY grid's size rules are scoped to .grid-x > and outrank them)
 // @include foundation-range-input; // Slider: every slider--* story
 // @include foundation-progress-element; // Progress Bar: progress-bar--native-progress and progress-bar--right-to-left (element selector; no other story renders <progress>)
 // @include foundation-meter-element; // Progress Bar: progress-bar--native-meter (element selector; no other story renders <meter>)
@@ -104,11 +104,15 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
 @include nfs-motion;
 @include nfs-accordion;
 @include nfs-menu; // Menu: the current link's look from aria-current and simple-menu rows; every menu--* story, every nested-menu--* story, and every menu Plugin story
+@include nfs-pagination; // Pagination: the current and disabled looks from ARIA and the 24 px floor; every pagination--* story
 @include nfs-progress-bar; // Progress Bar: meter text colours and --nfs-foundation-palette; every progress-bar--* story
+@include nfs-switch; // Switch: the focus ring, forced colours, reduced motion, and contrast and height checks; every switch--* story
 @include nfs-badge; // Badge: text contrast check, the text colour where Foundation's pick is the worse, and --nfs-badge-palette; every badge--* story
+@include nfs-label; // Label: text contrast check, the text colour where Foundation's pick is the worse, and --nfs-label-palette; every label--* story
 @include nfs-menu-icon; // Top Bar: the menu icon's 24 px box; every story with a menu icon (Top Bar, Responsive Toggle, Off-canvas, Triggers)
 @include nfs-title-bar; // Top Bar: title-bar contrast checks
 @include nfs-top-bar; // Top Bar: Top Bar contrast checks
+@include nfs-card; // Card: overflow-wrap for words the card would cut off (1.4.10, 1.4.12) and text and link contrast checks; every card--* story
 @include nfs-off-canvas; // Off-canvas: reduced motion, the wrapper clip, panel contrast checks; every off-canvas--* story
 // ... one @include nfs-<plugin> per plugin that has a Library mixin, after foundation-everything,
 // with the arguments its spec names (for example @include nfs-responsive-toggle(xlarge xxlarge);).
@@ -152,6 +156,12 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
   $input-border: 1px solid $dark-gray;
   $input-border-focus: 1px solid $black;
 
+  // Non-text contrast (1.4.11) and color-contrast (1.4.3): the off track is 1.63:1 against the page and the knob,
+  // and white inner-label text 1.63:1 on it; nfs-switch stops the compile. Spec: Switch, every switch--* story.
+  $switch-background: #767676;
+  // Foundation's settings file set the focus track from the old colour; without this line it stays 2.02:1.
+  $switch-background-focus: scale-color($switch-background, $lightness: -10%);
+
   // color-contrast (1.4.3) and non-text contrast (1.4.11): the alert colour is 4.49:1 on #fefefe, the invalid
   // placeholder 3.93:1 on its tint. Spec: Abide, abide--invalid-state-contrast.
   $input-error-color: #bf3f2c;
@@ -159,7 +169,7 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
   $input-background-invalid: #bf3f2c;
 
   // Non-text contrast (1.4.11) and 1.4.3 over images: nfs-orbit stops the compile on Foundation's bullets
-  // (1.6:1) and caption band (3.7:1). Spec: Orbit, every orbit--* story.
+  // (1.63:1) and caption band (3.68:1 over #fff, exact formula). Spec: Orbit, every orbit--* story.
   $orbit-bullet-background: $dark-gray;
   $orbit-bullet-background-active: $black;
   $orbit-caption-background: rgba($black, 0.6);
@@ -177,7 +187,8 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
   // color-contrast (1.4.3) and non-text contrast (1.4.11): $anchor-color links are 3.78:1 to 4.20:1 on five
   // callout backgrounds (axe reports 3.82 to 4.25), and the close-button glyph 2.82:1 to 2.87:1 on primary,
   // secondary, and alert, which axe marks incomplete. Spec: Callout, callout--colors and callout--closable;
-  // also the Close Button and Abide stories that show callouts.
+  // also the Close Button and Abide stories that show callouts; and Spec: Card, card--divider, whose divider
+  // link is 3.755:1 on $light-gray without it.
   $anchor-color: scale-color($primary-color, $lightness: -15%);
   $anchor-color-hover: scale-color($anchor-color, $lightness: -14%);
   $closebutton-color: #767676;
@@ -195,6 +206,11 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
   // not reach it. Spec: Badge, badge--colors and badge--in-controls.
   $badge-palette: map-merge($foundation-palette, (alert: #bf3f2c));
 
+  // color-contrast (1.4.3): nfs-label stops the compile on Foundation's alert label, whose $white text is 4.498:1
+  // (4.364:1 with $black; axe reports 4.49). Foundation's settings file assigned $label-palette before this file,
+  // so a $foundation-palette merge does not reach it. Spec: Label, label--colors and label--icons.
+  $label-palette: map-merge($foundation-palette, (alert: #bf3f2c));
+
   // 1.4.10 Reflow: a fixed pane width over 160px can leave no fitting Placement at 320 CSS px.
   // Spec: Dropdown, dropdown-pane--reflow.
   $dropdown-width: min(300px, 45vw);
@@ -206,7 +222,7 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
   ```
 
   This is every override the published specs require; each spec's Sass subsection is the source, and a spec that adds or changes one changes its line here. An override is a consumer-side setting, never an exception to the Accessibility gate. The overrides come after Foundation's settings file and before `foundation`, so Foundation's `!default` component variables pick them up and they can refer to settings such as `$primary-color`. Settings overrides change Variant values, never Variant names, so the library's Storybook program needs no Variant declaration file. A story that shows a name Foundation's defaults lack would need a file generated from `preview.scss` (the shared-library rule of the [Spec: Variant declaration tooling](issues/136-spec-variant-declaration-tooling.md)).
-- Recipe CSS: a spec that documents consumer CSS and shows it in a story puts it in `preview.scss` after the Library mixins, one block per recipe on the recipe's own classes (never a Foundation or NFS class), with a comment naming the spec and the story. Tabs: `tabs--nav-bar` (`.account-tabs`, Foundation's `tabs-container` and `tabs-title` mixins plus the recipe's `aria-current` rule) and `tabs--equal-heights` (`.equal-heights`).
+- Recipe CSS: a spec that documents consumer CSS and shows it in a story puts it in `preview.scss` after the Library mixins, one block per recipe on the recipe's own classes (never a Foundation or NFS class), with a comment naming the spec and the story. Tabs: `tabs--nav-bar` (`.account-tabs`, Foundation's `tabs-container` and `tabs-title` mixins plus the recipe's `aria-current` rule) and `tabs--equal-heights` (`.equal-heights`). Interchange: the background stories (`.hero`: a `min-height` and `background-size: cover`, so an empty host shows its background) and `interchange--no-match` (`.hero-default`: the stylesheet background that shows when no rule matches; an inline `style` cannot carry it, because the directive's `null` binding removes a static inline `background-image`).
 - The library's Sass is imported relatively (line 2) because inside its own repository the package is source. The consumer path through the `sass` export condition is proved by the Sass packaging ticket's built-package compile test (decision 18b), not by Storybook.
 - `foundation-everything` (`foundation-sites/scss/foundation.scss:79-155`) is the union of the per-component includes a consumer writes, except `foundation-range-input`, which the Slider spec adds, and `foundation-progress-element` and `foundation-meter-element`, which the Progress Bar spec adds, so each story sees exactly the rules its Export mixins print; a spec that needs an Export mixin outside it (`foundation-grid`) adds one line, and the spec states that the new classes do not overlap existing ones. `$prototype: true` adds the Prototype utilities (section 8); they are additive classes that restyle no component.
 - Every `nfs-<plugin>` include comes after `foundation-everything`, as ADR 0012 requires (library rules override Foundation's at equal specificity through source order). A Library mixin that refuses to compile with a Foundation default (the Slider's fill contrast check) is satisfied through `_settings-overrides.scss`, never by skipping its include.

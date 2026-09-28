@@ -64,7 +64,7 @@ Ratings follow the triage quadrant (`map.md:140`), as impact, then confidence.
 
 - Effort boundaries and scope notes: G2 G3 G6 G7 G10 AB9 AC2 AP1 AP2 AP3 AP5 SS3 TR5.
 - Not a Foundation feature (Material, APG, or library additions): B6 B8 AC3 AB4 AB6 AB7 AB8 AM4 AM5 DM16 DL10 NM3 RM7 EQ2 EQ4 EQ6 MG5 MG6 OR11 SL8 SL10 TB8 TT3 TT5 TT6 TT7 TG3 TG6 RV6 RV9 RAT3 RAT7 RAT8 RM3 RM4 BP3 BP6 BP7 BP8 DP7 ST8 ST9 TR7.
-- Foundation lacks the look, the rule, or the CSS: TB4 TB6 TB10 EQ1. EQ10 holds because its directive ships (`specs/equalizer.md:368`). OC7 holds under ADR 0001's generated-structure rule.
+- Foundation lacks the look, the rule, or the CSS: TB4 TB6 TB10 EQ1. EQ10 holds because its directive ships (`specs/equalizer.md:368`). (2026-09-28, [Re-run: Equalizer spec under the class rule](../issues/126-rerun-equalizer-class-rule.md): EQ1 is recorded as `scope-boundary`: Foundation has no class or rule for one height across wrapped rows or for aligned card parts, a CSS grid copy of the block grid would re-implement Foundation's layout, and Foundation's own feature is `nfsEqualizer` with `equalizeByRow` off. EQ10 is recorded as `platform-or-a11y`: a measuring directive leaves the server HTML unequal and shifts the layout at hydration.) OC7 holds under ADR 0001's generated-structure rule.
 - Runtime theming (`building-blocks.md:179`): G9 AB10 AC4 DP17, and the theming halves of DL11 and NM9.
 - jQuery and DOM plumbing: G4 AC10 AM1 AM2 B9 DL2 DL3 DL4 DL5 DM2 DM5 DM6 DM8 DM9 DM10 DM11 DP2 DP4 DP8 DP9 DP10 EQ7 EQ11 IC2 NM2 NM5 NM7 NM8 OC1 OC10 OR1 OR2 OR6 RM1 RT1 RT4 RV3 SS7 ST2 TB11 TG5 TR1 TR2 TR4 TT9.
 - Class-name Options, because "the classes are the contract" (`building-blocks.md:59`): AB1 DM3 DM4 MG2 OC5 OR8 SL4 ST3 TB3 TT11.

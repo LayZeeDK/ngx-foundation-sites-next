@@ -222,3 +222,7 @@ Nothing is left `OPEN FOR HUMAN`, and no prototype ticket is needed: every quest
 ### Gist for Decisions so far
 
 - [Spec: Top Bar](issues/86-spec-top-bar.md) -- nine listener-free class directives in one entry point (`nfsTopBar` with a `stackedFor` Class-breakpoint input, its left, right, and title sections, the four Title Bar directives, and `button[nfsMenuIcon]` with a `type` default, a boolean `dark`, and development name checks, opening nothing itself); the menu icon meets 2.5.8 by a transparent border that grows its box to 24 px around Foundation's unchanged drawing (measured in three engines: axe passes it beside another target and fails the published pseudo-element hit area), in `nfs-menu-icon`, one of three Library mixins with checks-only `nfs-title-bar` and `nfs-top-bar`, whose ratios use the exact WCAG formula because Foundation's `color-luminance()` was measured passing failing pairs; `nfsTopBarRight` provides a token so the Dropdown Menu opens left in server HTML; consumers set `$topbar-background` and, after the settings file, `$topbar-submenu-background` (measured: open submenus otherwise fail axe); impact HIGH, confidence HIGH; one ADR proposed. Spec: [specs/top-bar.md](specs/top-bar.md).
+
+### Correction, 2026-09-28
+
+The sticky Top Bar example's container wrapped only the bar, so its Sticky range was empty and it never stuck; the container now spans the page, found by [Re-run: Sticky spec under the class rule](120-rerun-sticky-class-rule.md).
