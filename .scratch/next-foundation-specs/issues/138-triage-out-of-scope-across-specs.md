@@ -1,7 +1,7 @@
 # 138. Triage: out-of-scope items across the specs
 
 Type: grilling
-Status: open
+Status: claimed
 Blocked by: 82, 84, 87, 88, 90, 91, 92, 93, 94, 95, 96, 97, 99, 100, 101, 102, 103, 104, 105, 106, 112, 113, 114, 115, 116, 117, 119, 120, 124, 125, 126, 127, 131, 136, 137, 143, 144
 Labels: wayfinder:grilling
 Map: ../map.md
