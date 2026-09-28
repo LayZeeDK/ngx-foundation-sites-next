@@ -1,0 +1,133 @@
+{"case":"outlet","approach":"debug","phase":"owners","owners":[{"text":"Outlet missing","owner":"_OutletHostImporting"},{"text":"Outlet imported","owner":"_OutletHostPlain"}]}
+{"case":"stress","approach":"class","n":2000,"hook":"every","cold":{"maxMs":20.80000001192093,"scans":2,"matched":8001,"findings":0},"warm":{"lastMs":6.0999999940395355,"totalMs":104.60000011324883,"scans":12}}
+{"case":"stress","approach":"class","n":2000,"hook":"mutations","cold":{"maxMs":22.200000017881393,"scans":2,"matched":0,"findings":0},"warm":{"lastMs":0,"totalMs":22.599999994039536,"scans":12}}
+{"case":"stress","approach":"class","n":500,"hook":"every","cold":{"maxMs":4.800000011920929,"scans":2,"matched":2001,"findings":0},"warm":{"lastMs":2.0999999940395355,"totalMs":26.000000029802322,"scans":12}}
+{"case":"stress","approach":"class","n":500,"hook":"mutations","cold":{"maxMs":5.5,"scans":2,"matched":0,"findings":0},"warm":{"lastMs":0,"totalMs":6.0999999940395355,"scans":12}}
+{"case":"stress","approach":"debug","n":2000,"hook":"every","cold":{"maxMs":29.400000005960464,"scans":2,"matched":8001,"findings":0},"warm":{"lastMs":8.299999982118607,"totalMs":118.40000003576279,"scans":12}}
+{"case":"stress","approach":"debug","n":2000,"hook":"mutations","cold":{"maxMs":33.20000001788139,"scans":2,"matched":0,"findings":0},"warm":{"lastMs":0,"totalMs":33.80000001192093,"scans":12}}
+{"case":"stress","approach":"debug","n":500,"hook":"every","cold":{"maxMs":13.200000017881393,"scans":2,"matched":2001,"findings":0},"warm":{"lastMs":1.7999999821186066,"totalMs":40.499999940395355,"scans":12}}
+{"case":"stress","approach":"debug","n":500,"hook":"mutations","cold":{"maxMs":11.400000005960464,"scans":2,"matched":0,"findings":0},"warm":{"lastMs":0.09999999403953552,"totalMs":12,"scans":12}}
+{"case":"stress","approach":"hybrid","n":2000,"hook":"every","cold":{"maxMs":32.5,"scans":2,"matched":8001,"findings":0},"warm":{"lastMs":6.0999999940395355,"totalMs":116.99999997019768,"scans":12}}
+{"case":"stress","approach":"hybrid","n":2000,"hook":"mutations","cold":{"maxMs":33.69999998807907,"scans":2,"matched":0,"findings":0},"warm":{"lastMs":0,"totalMs":34.09999996423721,"scans":12}}
+{"case":"stress","approach":"hybrid","n":500,"hook":"every","cold":{"maxMs":15.200000017881393,"scans":2,"matched":2001,"findings":0},"warm":{"lastMs":2.0999999940395355,"totalMs":41.39999997615814,"scans":12}}
+{"case":"stress","approach":"hybrid","n":500,"hook":"mutations","cold":{"maxMs":12.099999994039536,"scans":2,"matched":0,"findings":0},"warm":{"lastMs":0,"totalMs":12.499999970197678,"scans":12}}
+{"case":"stress","approach":"registry","n":2000,"hook":"every","cold":{"maxMs":17,"scans":2,"matched":8001,"findings":0},"warm":{"lastMs":6.700000017881393,"totalMs":100,"scans":12}}
+{"case":"stress","approach":"registry","n":2000,"hook":"mutations","cold":{"maxMs":19.30000001192093,"scans":2,"matched":0,"findings":0},"warm":{"lastMs":0,"totalMs":20.500000089406967,"scans":12}}
+{"case":"stress","approach":"registry","n":500,"hook":"every","cold":{"maxMs":4.5,"scans":2,"matched":2001,"findings":0},"warm":{"lastMs":1.800000011920929,"totalMs":28.200000077486038,"scans":12}}
+{"case":"stress","approach":"registry","n":500,"hook":"mutations","cold":{"maxMs":4.200000017881393,"scans":2,"matched":0,"findings":0},"warm":{"lastMs":0,"totalMs":4.700000047683716,"scans":12}}
+{"case":"twins","approach":"debug","phase":"constructor names","names":[["_NfsColumn"],["_NfsColumn"]]}
+copied     | load               | registry   | scans=2 warn=1 | NfsButton "Copied class missing" owner=CopiedCase
+copied     | load               | debug      | scans=2 warn=1 | NfsButton "Copied class missing" owner=CopiedCase
+copied     | load               | debug-name | scans=2 warn=2 | NfsButton "Copied class missing" owner=CopiedCase; NfsSmoothScroll "Imported smooth scroll" owner=CopiedCase
+copied     | load               | class      | scans=2 warn=0 | no report
+copied     | load               | hybrid     | scans=2 warn=1 | NfsButton "Copied class missing" owner=CopiedCase
+css-attr   | load               | registry   | scans=2 warn=1 | NfsButton(wrong element) "Wrong element" owner=CssAttrCase
+css-attr   | load               | debug      | scans=2 warn=1 | NfsButton(wrong element) "Wrong element" owner=CssAttrCase
+css-attr   | load               | debug-name | scans=2 warn=2 | NfsButton(wrong element) "Wrong element" owner=CssAttrCase; NfsButton "Imported button" owner=CssAttrCase
+css-attr   | load               | class      | scans=2 warn=1 | NfsButton(wrong element) "Wrong element" owner=CssAttrCase
+css-attr   | load               | hybrid     | scans=2 warn=1 | NfsButton(wrong element) "Wrong element" owner=CssAttrCase
+css-attr   | typos on           | registry   | scans=3 warn=4 | NfsButton(wrong element) "Wrong element" owner=null; NfsButton "Imported button" owner=null; nfshighlight "Consumer CSS hook" owner=null; nfsbuton "Typo of nfsButton" owner=null
+css-attr   | typos on           | debug      | scans=3 warn=3 | nfshighlight "Consumer CSS hook" owner=null; nfsbuton "Typo of nfsButton" owner=null; NfsButton(wrong element) "Wrong element" owner=CssAttrCase
+css-attr   | typos on           | debug-name | scans=3 warn=4 | nfshighlight "Consumer CSS hook" owner=null; nfsbuton "Typo of nfsButton" owner=null; NfsButton(wrong element) "Wrong element" owner=CssAttrCase; NfsButton "Imported button" owner=CssAttrCase
+css-attr   | typos on           | class      | scans=3 warn=3 | NfsButton(wrong element) "Wrong element" owner=null; nfshighlight "Consumer CSS hook" owner=null; nfsbuton "Typo of nfsButton" owner=null
+css-attr   | typos on           | hybrid     | scans=3 warn=3 | NfsButton(wrong element) "Wrong element" owner=null; nfshighlight "Consumer CSS hook" owner=null; nfsbuton "Typo of nfsButton" owner=null
+defer      | load               | registry   | scans=4 warn=1 | NfsButton "Deferred missing" owner=DeferMissing
+defer      | load               | debug      | scans=4 warn=1 | NfsButton "Deferred missing" owner=DeferMissing
+defer      | load               | debug-name | scans=4 warn=3 | NfsSmoothScroll "Imported smooth scroll" owner=DeferCase; NfsButton "Deferred missing" owner=DeferMissing; NfsButton "Deferred imported" owner=DeferOk
+defer      | load               | class      | scans=4 warn=1 | NfsButton "Deferred missing" owner=DeferMissing
+defer      | load               | hybrid     | scans=4 warn=1 | NfsButton "Deferred missing" owner=DeferMissing
+external   | load               | registry   | scans=2 warn=1 | NfsAccordionTitle "External member missing" owner=ExternalCase
+external   | load               | debug      | scans=2 warn=1 | NfsAccordionTitle "External member missing" owner=ExternalCase
+external   | load               | debug-name | scans=2 warn=4 | NfsAccordion "External member missingPanel 1" owner=ExternalCase; NfsAccordionItem "External member missingPanel 1" owner=ExternalCase; NfsAccordionTitle "External member missing" owner=ExternalCase; NfsAccordionContent "Panel 1" owner=ExternalCase
+external   | load               | class      | scans=2 warn=1 | NfsAccordionTitle "External member missing" owner=ExternalCase
+external   | load               | hybrid     | scans=2 warn=1 | NfsAccordionTitle "External member missing" owner=ExternalCase
+family     | load               | registry   | scans=2 warn=5 | NfsAccordion "Family missingPanel 1" owner=FamilyCase; NfsAccordionItem "Family missingPanel 1" owner=FamilyCase; NfsAccordionTitle "Family missing" owner=FamilyCase; NfsAccordionContent "Panel 1" owner=FamilyCase; NfsSmoothScroll "Behaviour missing" owner=FamilyCase
+family     | load               | debug      | scans=2 warn=5 | NfsAccordion "Family missingPanel 1" owner=FamilyCase; NfsAccordionItem "Family missingPanel 1" owner=FamilyCase; NfsAccordionTitle "Family missing" owner=FamilyCase; NfsAccordionContent "Panel 1" owner=FamilyCase; NfsSmoothScroll "Behaviour missing" owner=FamilyCase
+family     | load               | debug-name | scans=2 warn=6 | NfsAccordion "Family missingPanel 1" owner=FamilyCase; NfsAccordionItem "Family missingPanel 1" owner=FamilyCase; NfsAccordionTitle "Family missing" owner=FamilyCase; NfsAccordionContent "Panel 1" owner=FamilyCase; NfsButton "Imported button" owner=FamilyCase; NfsSmoothScroll "Behaviour missing" owner=FamilyCase
+family     | load               | class      | scans=2 warn=4 | NfsAccordion "Family missingPanel 1" owner=FamilyCase; NfsAccordionItem "Family missingPanel 1" owner=FamilyCase; NfsAccordionTitle "Family missing" owner=FamilyCase; NfsAccordionContent "Panel 1" owner=FamilyCase
+family     | load               | hybrid     | scans=2 warn=5 | NfsAccordion "Family missingPanel 1" owner=FamilyCase; NfsAccordionItem "Family missingPanel 1" owner=FamilyCase; NfsAccordionTitle "Family missing" owner=FamilyCase; NfsAccordionContent "Panel 1" owner=FamilyCase; NfsSmoothScroll "Behaviour missing" owner=FamilyCase
+for        | 1 row              | registry   | scans=2 warn=1 | NfsButton "For missing 1" owner=ForCase
+for        | 1 row              | debug      | scans=2 warn=1 | NfsButton "For missing 1" owner=ForCase
+for        | 1 row              | debug-name | scans=2 warn=2 | NfsSmoothScroll "Imported smooth scroll" owner=ForCase; NfsButton "For missing 1" owner=ForCase
+for        | 1 row              | class      | scans=2 warn=1 | NfsButton "For missing 1" owner=ForCase
+for        | 1 row              | hybrid     | scans=2 warn=1 | NfsButton "For missing 1" owner=ForCase
+for        | 3 rows             | registry   | scans=4 warn=1 | NfsButton "For missing 1" owner=ForCase; NfsButton "For missing 2" owner=ForCase; NfsButton "For missing 3" owner=ForCase
+for        | 3 rows             | debug      | scans=4 warn=1 | NfsButton "For missing 1" owner=ForCase; NfsButton "For missing 2" owner=ForCase; NfsButton "For missing 3" owner=ForCase
+for        | 3 rows             | debug-name | scans=4 warn=2 | NfsSmoothScroll "Imported smooth scroll" owner=ForCase; NfsButton "For missing 1" owner=ForCase; NfsButton "For missing 2" owner=ForCase; NfsButton "For missing 3" owner=ForCase
+for        | 3 rows             | class      | scans=4 warn=1 | NfsButton "For missing 1" owner=ForCase; NfsButton "For missing 2" owner=ForCase; NfsButton "For missing 3" owner=ForCase
+for        | 3 rows             | hybrid     | scans=4 warn=1 | NfsButton "For missing 1" owner=ForCase; NfsButton "For missing 2" owner=ForCase; NfsButton "For missing 3" owner=ForCase
+hydrate    | after interaction  | registry   | scans=4 warn=1 | NfsButton "Hydrate imported" owner=null; NfsButton "Hydrate missing" owner=null; NfsButton "Never hydrated missing" owner=null
+hydrate    | after interaction  | debug      | scans=4 warn=1 | NfsButton "Hydrate missing" owner=HydrateMissing
+hydrate    | after interaction  | debug-name | scans=4 warn=3 | NfsSmoothScroll "Imported smooth scroll" owner=HydrateCase; NfsButton "Hydrate missing" owner=HydrateMissing; NfsButton "Hydrate imported" owner=HydrateOk
+hydrate    | after interaction  | class      | scans=4 warn=1 | NfsButton "Hydrate missing" owner=null; NfsButton "Never hydrated missing" owner=null
+hydrate    | after interaction  | hybrid     | scans=4 warn=1 | NfsButton "Hydrate missing" owner=null; NfsButton "Never hydrated missing" owner=null
+hydrate    | before interaction | registry   | scans=2 warn=1 | NfsButton "Hydrate imported" owner=null; NfsButton "Hydrate missing" owner=null; NfsButton "Never hydrated missing" owner=null
+hydrate    | before interaction | debug      | scans=2 warn=0 | no report
+hydrate    | before interaction | debug-name | scans=2 warn=1 | NfsSmoothScroll "Imported smooth scroll" owner=HydrateCase
+hydrate    | before interaction | class      | scans=2 warn=1 | NfsButton "Hydrate missing" owner=null; NfsButton "Never hydrated missing" owner=null
+hydrate    | before interaction | hybrid     | scans=2 warn=1 | NfsButton "Hydrate missing" owner=null; NfsButton "Never hydrated missing" owner=null
+hydrate    | client navigation  | registry   | scans=6 warn=2 | NfsButton "Hydrate missing" owner=HydrateMissing; NfsButton "Never hydrated missing" owner=HydrateNever
+hydrate    | client navigation  | debug      | scans=6 warn=2 | NfsButton "Hydrate missing" owner=HydrateMissing; NfsButton "Never hydrated missing" owner=HydrateNever
+hydrate    | client navigation  | debug-name | scans=6 warn=10 | NfsAccordion "Section 1Panel 1" owner=OkCase; NfsAccordionItem "Section 1Panel 1" owner=OkCase; NfsAccordionTitle "Section 1" owner=OkCase; NfsAccordionContent "Panel 1" owner=OkCase; NfsButton "Save" owner=OkCase; NfsSmoothScroll "Top" owner=OkCase; NfsSmoothScroll "Imported smooth scroll" owner=HydrateCase; NfsButton "Hydrate missing" owner=HydrateMissing; NfsButton "Never hydrated missing" owner=HydrateNever; NfsButton "Hydrate imported" owner=HydrateOk
+hydrate    | client navigation  | class      | scans=6 warn=2 | NfsButton "Hydrate missing" owner=HydrateMissing; NfsButton "Never hydrated missing" owner=HydrateNever
+hydrate    | client navigation  | hybrid     | scans=6 warn=2 | NfsButton "Hydrate missing" owner=HydrateMissing; NfsButton "Never hydrated missing" owner=HydrateNever
+if         | after click        | registry   | scans=3 warn=1 | NfsButton "If missing" owner=IfCase
+if         | after click        | debug      | scans=3 warn=1 | NfsButton "If missing" owner=IfCase
+if         | after click        | debug-name | scans=3 warn=2 | NfsSmoothScroll "Imported smooth scroll" owner=IfCase; NfsButton "If missing" owner=IfCase
+if         | after click        | class      | scans=3 warn=1 | NfsButton "If missing" owner=IfCase
+if         | after click        | hybrid     | scans=3 warn=1 | NfsButton "If missing" owner=IfCase
+if         | before click       | registry   | scans=2 warn=0 | no report
+if         | before click       | debug      | scans=2 warn=0 | no report
+if         | before click       | debug-name | scans=2 warn=1 | NfsSmoothScroll "Imported smooth scroll" owner=IfCase
+if         | before click       | class      | scans=2 warn=0 | no report
+if         | before click       | hybrid     | scans=2 warn=0 | no report
+member     | checks off         | registry   | scans=0 warn=0 | not started
+member     | checks off         | debug      | scans=0 warn=0 | not started
+member     | checks off         | debug-name | scans=0 warn=0 | not started
+member     | checks off         | class      | scans=0 warn=0 | not started
+member     | checks off         | hybrid     | scans=0 warn=0 | not started
+member     | client navigation  | registry   | scans=4 warn=1 | NfsAccordionTitle "Member missing" owner=MemberCase
+member     | client navigation  | debug      | scans=4 warn=1 | NfsAccordionTitle "Member missing" owner=MemberCase
+member     | client navigation  | debug-name | scans=4 warn=10 | NfsAccordion "Section 1Panel 1" owner=OkCase; NfsAccordionItem "Section 1Panel 1" owner=OkCase; NfsAccordionTitle "Section 1" owner=OkCase; NfsAccordionContent "Panel 1" owner=OkCase; NfsButton "Save" owner=OkCase; NfsSmoothScroll "Top" owner=OkCase; NfsAccordion "Member missingPanel 1" owner=MemberCase; NfsAccordionItem "Member missingPanel 1" owner=MemberCase; NfsAccordionTitle "Member missing" owner=MemberCase; NfsAccordionContent "Panel 1" owner=MemberCase
+member     | client navigation  | class      | scans=4 warn=1 | NfsAccordionTitle "Member missing" owner=MemberCase
+member     | client navigation  | hybrid     | scans=4 warn=1 | NfsAccordionTitle "Member missing" owner=MemberCase
+member     | load               | registry   | scans=2 warn=1 | NfsAccordionTitle "Member missing" owner=MemberCase
+member     | load               | debug      | scans=2 warn=1 | NfsAccordionTitle "Member missing" owner=MemberCase
+member     | load               | debug-name | scans=2 warn=4 | NfsAccordion "Member missingPanel 1" owner=MemberCase; NfsAccordionItem "Member missingPanel 1" owner=MemberCase; NfsAccordionTitle "Member missing" owner=MemberCase; NfsAccordionContent "Panel 1" owner=MemberCase
+member     | load               | class      | scans=2 warn=1 | NfsAccordionTitle "Member missing" owner=MemberCase
+member     | load               | hybrid     | scans=2 warn=1 | NfsAccordionTitle "Member missing" owner=MemberCase
+none       | load               | registry   | scans=0 warn=0 | not started
+none       | load               | debug      | scans=0 warn=0 | not started
+none       | load               | debug-name | scans=0 warn=0 | not started
+none       | load               | class      | scans=0 warn=0 | not started
+none       | load               | hybrid     | scans=0 warn=0 | not started
+none       | provider start     | registry   | scans=3 warn=2 | NfsButton "None instantiated" owner=null; NfsSmoothScroll "Behaviour missing" owner=null
+none       | provider start     | debug      | scans=3 warn=2 | NfsButton "None instantiated" owner=NoneCase; NfsSmoothScroll "Behaviour missing" owner=NoneCase
+none       | provider start     | debug-name | scans=3 warn=2 | NfsButton "None instantiated" owner=NoneCase; NfsSmoothScroll "Behaviour missing" owner=NoneCase
+none       | provider start     | class      | scans=3 warn=1 | NfsButton "None instantiated" owner=null
+none       | provider start     | hybrid     | scans=3 warn=2 | NfsButton "None instantiated" owner=null; NfsSmoothScroll "Behaviour missing" owner=NoneCase
+ok         | load               | registry   | scans=2 warn=0 | no report
+ok         | load               | debug      | scans=2 warn=0 | no report
+ok         | load               | debug-name | scans=2 warn=6 | NfsAccordion "Section 1Panel 1" owner=OkCase; NfsAccordionItem "Section 1Panel 1" owner=OkCase; NfsAccordionTitle "Section 1" owner=OkCase; NfsAccordionContent "Panel 1" owner=OkCase; NfsButton "Save" owner=OkCase; NfsSmoothScroll "Top" owner=OkCase
+ok         | load               | class      | scans=2 warn=0 | no report
+ok         | load               | hybrid     | scans=2 warn=0 | no report
+outlet     | load               | registry   | scans=2 warn=1 | NfsButton "Outlet missing" owner=OutletHostImporting
+outlet     | load               | debug      | scans=2 warn=1 | NfsButton "Outlet missing" owner=OutletHostImporting
+outlet     | load               | debug-name | scans=2 warn=3 | NfsSmoothScroll "Imported smooth scroll" owner=OutletCase; NfsButton "Outlet missing" owner=OutletHostImporting; NfsButton "Outlet imported" owner=OutletHostPlain
+outlet     | load               | class      | scans=2 warn=1 | NfsButton "Outlet missing" owner=OutletHostImporting
+outlet     | load               | hybrid     | scans=2 warn=1 | NfsButton "Outlet missing" owner=OutletHostImporting
+projection | load               | registry   | scans=2 warn=1 | NfsButton "Projected missing" owner=ProjectionMissing
+projection | load               | debug      | scans=2 warn=1 | NfsButton "Projected missing" owner=ProjectionMissing
+projection | load               | debug-name | scans=2 warn=3 | NfsSmoothScroll "Imported smooth scroll" owner=ProjectionCase; NfsButton "Projected missing" owner=ProjectionMissing; NfsButton "Projected imported" owner=ProjectionOk
+projection | load               | class      | scans=2 warn=1 | NfsButton "Projected missing" owner=ProjectionMissing
+projection | load               | hybrid     | scans=2 warn=1 | NfsButton "Projected missing" owner=ProjectionMissing
+single     | load               | registry   | scans=2 warn=1 | NfsButton "Single missing" owner=SingleCase
+single     | load               | debug      | scans=2 warn=1 | NfsButton "Single missing" owner=SingleCase
+single     | load               | debug-name | scans=2 warn=2 | NfsButton "Single missing" owner=SingleCase; NfsSmoothScroll "Imported smooth scroll" owner=SingleCase
+single     | load               | class      | scans=2 warn=1 | NfsButton "Single missing" owner=SingleCase
+single     | load               | hybrid     | scans=2 warn=1 | NfsButton "Single missing" owner=SingleCase
+twins      | load               | registry   | scans=2 warn=0 | no report
+twins      | load               | debug      | scans=2 warn=0 | no report
+twins      | load               | debug-name | scans=2 warn=2 | NfsColumn "Flex column" owner=FlexTwin; NfsColumn "Float column" owner=FloatTwin
+twins      | load               | class      | scans=2 warn=0 | no report
+twins      | load               | hybrid     | scans=2 warn=0 | no report

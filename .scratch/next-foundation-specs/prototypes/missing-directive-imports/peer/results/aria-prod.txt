@@ -1,0 +1,88 @@
+aria-prod ssr ok: HTTP 200, items 2/2 claimed
+  (no messages)
+aria-prod csr ok: HTTP 200, items 2/2 claimed
+  (no messages)
+aria-prod ssr acc-no-accordion: HTTP 200, items 2/2 claimed
+  (no messages)
+aria-prod csr acc-no-accordion: HTTP 200, items 2/2 claimed
+  (no messages)
+aria-prod ssr acc-no-item: HTTP 200, items 2/2 claimed
+  (no messages)
+aria-prod csr acc-no-item: HTTP 200, items 2/2 claimed
+  (no messages)
+aria-prod ssr acc-no-title: HTTP 200, items 2/2 claimed
+  (no messages)
+aria-prod csr acc-no-title: HTTP 200, items 2/2 claimed
+  (no messages)
+aria-prod ssr acc-family: HTTP 200, items 2/2 claimed
+  (no messages)
+aria-prod csr acc-family: HTTP 200, items 2/2 claimed
+  (no messages)
+aria-prod ssr menu-no-root: HTTP 200, items 0/0 claimed
+  (no messages)
+aria-prod csr menu-no-root: HTTP 200, items 0/0 claimed
+  (no messages)
+aria-prod ssr menu-no-item: HTTP 200, items 0/0 claimed
+  (no messages)
+aria-prod csr menu-no-item: HTTP 200, items 0/0 claimed
+  (no messages)
+aria-prod ssr menu-no-toggle: HTTP 200, items 0/0 claimed
+  (no messages)
+aria-prod csr menu-no-toggle: HTTP 200, items 0/0 claimed
+  (no messages)
+aria-prod ssr menu-family: HTTP 200, items 0/0 claimed
+  (no messages)
+aria-prod csr menu-family: HTTP 200, items 0/0 claimed
+  (no messages)
+aria-prod ssr button: HTTP 200, items 0/0 claimed
+  (no messages)
+aria-prod csr button: HTTP 200, items 0/0 claimed
+  (no messages)
+aria-prod ssr css-attr: HTTP 200, items 1/1 claimed
+  (no messages)
+aria-prod csr css-attr: HTTP 200, items 1/1 claimed
+  (no messages)
+aria-prod ssr defer: HTTP 200, items 2/2 claimed
+  (no messages)
+aria-prod csr defer: HTTP 200, items 2/2 claimed
+  (no messages)
+aria-prod ssr defer-hydrate-ok: HTTP 200, items 2/2 claimed, after click 2/2
+  (no messages)
+aria-prod csr defer-hydrate-ok: HTTP 200, items 2/2 claimed, after click 2/2
+  (no messages)
+aria-prod ssr defer-hydrate-no-item: HTTP 200, items 2/2 claimed, after click 2/2
+  (no messages)
+aria-prod csr defer-hydrate-no-item: HTTP 200, items 2/2 claimed, after click 2/2
+  (no messages)
+aria-prod ssr if-whole: HTTP 200, items 0/0 claimed, after click 2/2
+  (no messages)
+aria-prod csr if-whole: HTTP 200, items 0/0 claimed, after click 2/2
+  (no messages)
+aria-prod ssr if-leaf: HTTP 200, items 1/1 claimed, after click 1/1
+  (no messages)
+aria-prod csr if-leaf: HTTP 200, items 1/1 claimed, after click 1/1
+  (no messages)
+aria-prod ssr for: HTTP 200, items 3/3 claimed
+  (no messages)
+aria-prod csr for: HTTP 200, items 3/3 claimed
+  (no messages)
+aria-prod ssr outlet: HTTP 200, items 2/2 claimed
+  (no messages)
+aria-prod csr outlet: HTTP 200, items 2/2 claimed
+  (no messages)
+aria-prod ssr outlet-across: HTTP 200, items 2/2 claimed
+  (no messages)
+aria-prod csr outlet-across: HTTP 200, items 2/2 claimed
+  (no messages)
+aria-prod ssr projected-ok: HTTP 200, items 2/2 claimed
+  (no messages)
+aria-prod csr projected-ok: HTTP 200, items 2/2 claimed
+  (no messages)
+aria-prod ssr projected-no-item: HTTP 200, items 2/2 claimed
+  (no messages)
+aria-prod csr projected-no-item: HTTP 200, items 2/2 claimed
+  (no messages)
+aria-prod ssr external: HTTP 200, items 1/1 claimed
+  (no messages)
+aria-prod csr external: HTTP 200, items 1/1 claimed
+  (no messages)

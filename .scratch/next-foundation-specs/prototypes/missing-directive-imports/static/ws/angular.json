@@ -1,0 +1,21 @@
+{
+  "$schema": "../node_modules/@angular-devkit/core/src/workspace/json/schema.json",
+  "version": 1,
+  "projects": {
+    "shop": {
+      "root": "",
+      "sourceRoot": "src",
+      "projectType": "application",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "options": { "browser": "src/main.ts", "tsConfig": "tsconfig.json" }
+        },
+        "nfs-imports": {
+          "builder": "../ngtsc-check:missing-imports",
+          "options": {}
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,114 @@
+aria-dev ssr ok: HTTP 200, items 2/2 claimed
+  (no messages)
+aria-dev csr ok: HTTP 200, items 2/2 claimed
+  (no messages)
+aria-dev ssr acc-no-accordion: HTTP 200, items 2/2 claimed
+  [load/warning] [ngx-foundation-sites] <ul nfsAccordion> has no NfsAccordion instance, so it renders unstyled and does nothing: add NfsAccordion to the imports of AccNoAccordionPage (found by NfsAccordionItem).
+aria-dev csr acc-no-accordion: HTTP 200, items 2/2 claimed
+  [load/warning] [ngx-foundation-sites] <ul nfsAccordion> has no NfsAccordion instance, so it renders unstyled and does nothing: add NfsAccordion to the imports of AccNoAccordionPage (found by NfsAccordionItem).
+aria-dev ssr acc-no-item: HTTP 200, items 2/2 claimed
+  [load/warning] [ngx-foundation-sites] <li nfsAccordionItem> has no NfsAccordionItem instance, so it renders unstyled and does nothing: add NfsAccordionItem to the imports of AccNoItemPage (found by NfsAccordion).
+  [load/warning] [ngx-foundation-sites] <li nfsAccordionItem> has no NfsAccordionItem instance, so it renders unstyled and does nothing: add NfsAccordionItem to the imports of AccNoItemPage (found by NfsAccordion).
+aria-dev csr acc-no-item: HTTP 200, items 2/2 claimed
+  [load/warning] [ngx-foundation-sites] <li nfsAccordionItem> has no NfsAccordionItem instance, so it renders unstyled and does nothing: add NfsAccordionItem to the imports of AccNoItemPage (found by NfsAccordion).
+  [load/warning] [ngx-foundation-sites] <li nfsAccordionItem> has no NfsAccordionItem instance, so it renders unstyled and does nothing: add NfsAccordionItem to the imports of AccNoItemPage (found by NfsAccordion).
+aria-dev ssr acc-no-title: HTTP 200, items 2/2 claimed
+  [load/warning] [ngx-foundation-sites] <button nfsAccordionTitle> has no NfsAccordionTitle instance, so it renders unstyled and does nothing: add NfsAccordionTitle to the imports of AccNoTitlePage (found by NfsAccordionItem).
+  [load/warning] [ngx-foundation-sites] <button nfsAccordionTitle> has no NfsAccordionTitle instance, so it renders unstyled and does nothing: add NfsAccordionTitle to the imports of AccNoTitlePage (found by NfsAccordionItem).
+aria-dev csr acc-no-title: HTTP 200, items 2/2 claimed
+  [load/warning] [ngx-foundation-sites] <button nfsAccordionTitle> has no NfsAccordionTitle instance, so it renders unstyled and does nothing: add NfsAccordionTitle to the imports of AccNoTitlePage (found by NfsAccordionItem).
+  [load/warning] [ngx-foundation-sites] <button nfsAccordionTitle> has no NfsAccordionTitle instance, so it renders unstyled and does nothing: add NfsAccordionTitle to the imports of AccNoTitlePage (found by NfsAccordionItem).
+aria-dev ssr acc-family: HTTP 200, items 2/2 claimed
+  (no messages)
+aria-dev csr acc-family: HTTP 200, items 2/2 claimed
+  (no messages)
+aria-dev ssr menu-no-root: HTTP 200, items 0/0 claimed
+  [load/warning] [ngx-foundation-sites] <ul nfsDropdownMenu> has no NfsDropdownMenu instance, so it renders unstyled and does nothing: add NfsDropdownMenu to the imports of MenuNoRootPage (found by NfsMenuItem).
+aria-dev csr menu-no-root: HTTP 200, items 0/0 claimed
+  [load/warning] [ngx-foundation-sites] <ul nfsDropdownMenu> has no NfsDropdownMenu instance, so it renders unstyled and does nothing: add NfsDropdownMenu to the imports of MenuNoRootPage (found by NfsMenuItem).
+aria-dev ssr menu-no-item: HTTP 200, items 0/0 claimed
+  [load/warning] [ngx-foundation-sites] <li nfsMenuItem> has no NfsMenuItem instance, so it renders unstyled and does nothing: add NfsMenuItem to the imports of MenuNoItemPage (found by NfsDropdownMenu).
+  [load/warning] [ngx-foundation-sites] <li nfsMenuItem> has no NfsMenuItem instance, so it renders unstyled and does nothing: add NfsMenuItem to the imports of MenuNoItemPage (found by NfsDropdownMenu).
+  [load/warning] [ngx-foundation-sites] <li nfsMenuItem> has no NfsMenuItem instance, so it renders unstyled and does nothing: add NfsMenuItem to the imports of MenuNoItemPage (found by NfsDropdownMenu).
+aria-dev csr menu-no-item: HTTP 200, items 0/0 claimed
+  [load/warning] [ngx-foundation-sites] <li nfsMenuItem> has no NfsMenuItem instance, so it renders unstyled and does nothing: add NfsMenuItem to the imports of MenuNoItemPage (found by NfsDropdownMenu).
+  [load/warning] [ngx-foundation-sites] <li nfsMenuItem> has no NfsMenuItem instance, so it renders unstyled and does nothing: add NfsMenuItem to the imports of MenuNoItemPage (found by NfsDropdownMenu).
+  [load/warning] [ngx-foundation-sites] <li nfsMenuItem> has no NfsMenuItem instance, so it renders unstyled and does nothing: add NfsMenuItem to the imports of MenuNoItemPage (found by NfsDropdownMenu).
+aria-dev ssr menu-no-toggle: HTTP 200, items 0/0 claimed
+  [load/warning] [ngx-foundation-sites] <button nfsSubmenuToggle> has no NfsSubmenuToggle instance, so it renders unstyled and does nothing: add NfsSubmenuToggle to the imports of MenuNoTogglePage (found by NfsMenuItem).
+aria-dev csr menu-no-toggle: HTTP 200, items 0/0 claimed
+  [load/warning] [ngx-foundation-sites] <button nfsSubmenuToggle> has no NfsSubmenuToggle instance, so it renders unstyled and does nothing: add NfsSubmenuToggle to the imports of MenuNoTogglePage (found by NfsMenuItem).
+aria-dev ssr menu-family: HTTP 200, items 0/0 claimed
+  (no messages)
+aria-dev csr menu-family: HTTP 200, items 0/0 claimed
+  (no messages)
+aria-dev ssr button: HTTP 200, items 0/0 claimed
+  (no messages)
+aria-dev csr button: HTTP 200, items 0/0 claimed
+  (no messages)
+aria-dev ssr css-attr: HTTP 200, items 1/1 claimed
+  (no messages)
+aria-dev csr css-attr: HTTP 200, items 1/1 claimed
+  (no messages)
+aria-dev ssr defer: HTTP 200, items 2/2 claimed
+  [load/warning] [ngx-foundation-sites] <li nfsAccordionItem> has no NfsAccordionItem instance, so it renders unstyled and does nothing: add NfsAccordionItem to the imports of DeferPage (found by NfsAccordion).
+  [load/warning] [ngx-foundation-sites] <li nfsAccordionItem> has no NfsAccordionItem instance, so it renders unstyled and does nothing: add NfsAccordionItem to the imports of DeferPage (found by NfsAccordion).
+aria-dev csr defer: HTTP 200, items 2/2 claimed
+  [load/warning] [ngx-foundation-sites] <li nfsAccordionItem> has no NfsAccordionItem instance, so it renders unstyled and does nothing: add NfsAccordionItem to the imports of DeferPage (found by NfsAccordion).
+  [load/warning] [ngx-foundation-sites] <li nfsAccordionItem> has no NfsAccordionItem instance, so it renders unstyled and does nothing: add NfsAccordionItem to the imports of DeferPage (found by NfsAccordion).
+aria-dev ssr defer-hydrate-ok: HTTP 200, items 0/2 claimed, after click 2/2
+  (no messages)
+aria-dev csr defer-hydrate-ok: HTTP 200, items 2/2 claimed, after click 2/2
+  (no messages)
+aria-dev ssr defer-hydrate-no-item: HTTP 200, items 0/2 claimed, after click 2/2
+  [after-click/warning] [ngx-foundation-sites] <li nfsAccordionItem> has no NfsAccordionItem instance, so it renders unstyled and does nothing: add NfsAccordionItem to the imports of DeferHydrateNoItemPage (found by NfsAccordion).
+  [after-click/warning] [ngx-foundation-sites] <li nfsAccordionItem> has no NfsAccordionItem instance, so it renders unstyled and does nothing: add NfsAccordionItem to the imports of DeferHydrateNoItemPage (found by NfsAccordion).
+aria-dev csr defer-hydrate-no-item: HTTP 200, items 2/2 claimed, after click 2/2
+  [load/warning] [ngx-foundation-sites] <li nfsAccordionItem> has no NfsAccordionItem instance, so it renders unstyled and does nothing: add NfsAccordionItem to the imports of DeferHydrateNoItemPage (found by NfsAccordion).
+  [load/warning] [ngx-foundation-sites] <li nfsAccordionItem> has no NfsAccordionItem instance, so it renders unstyled and does nothing: add NfsAccordionItem to the imports of DeferHydrateNoItemPage (found by NfsAccordion).
+aria-dev ssr if-whole: HTTP 200, items 0/0 claimed, after click 2/2
+  [after-click/warning] [ngx-foundation-sites] <li nfsAccordionItem> has no NfsAccordionItem instance, so it renders unstyled and does nothing: add NfsAccordionItem to the imports of IfWholePage (found by NfsAccordion).
+  [after-click/warning] [ngx-foundation-sites] <li nfsAccordionItem> has no NfsAccordionItem instance, so it renders unstyled and does nothing: add NfsAccordionItem to the imports of IfWholePage (found by NfsAccordion).
+aria-dev csr if-whole: HTTP 200, items 0/0 claimed, after click 2/2
+  [after-click/warning] [ngx-foundation-sites] <li nfsAccordionItem> has no NfsAccordionItem instance, so it renders unstyled and does nothing: add NfsAccordionItem to the imports of IfWholePage (found by NfsAccordion).
+  [after-click/warning] [ngx-foundation-sites] <li nfsAccordionItem> has no NfsAccordionItem instance, so it renders unstyled and does nothing: add NfsAccordionItem to the imports of IfWholePage (found by NfsAccordion).
+aria-dev ssr if-leaf: HTTP 200, items 1/1 claimed, after click 1/1
+  [after-click/warning] [ngx-foundation-sites] <button nfsAccordionTitle> has no NfsAccordionTitle instance, so it renders unstyled and does nothing: add NfsAccordionTitle to the imports of IfLeafPage (found by NfsAccordionItem).
+aria-dev csr if-leaf: HTTP 200, items 1/1 claimed, after click 1/1
+  [after-click/warning] [ngx-foundation-sites] <button nfsAccordionTitle> has no NfsAccordionTitle instance, so it renders unstyled and does nothing: add NfsAccordionTitle to the imports of IfLeafPage (found by NfsAccordionItem).
+aria-dev ssr for: HTTP 200, items 3/3 claimed
+  [load/warning] [ngx-foundation-sites] <li nfsAccordionItem> has no NfsAccordionItem instance, so it renders unstyled and does nothing: add NfsAccordionItem to the imports of ForPage (found by NfsAccordionTitle).
+  [load/warning] [ngx-foundation-sites] <li nfsAccordionItem> has no NfsAccordionItem instance, so it renders unstyled and does nothing: add NfsAccordionItem to the imports of ForPage (found by NfsAccordionTitle).
+  [load/warning] [ngx-foundation-sites] <li nfsAccordionItem> has no NfsAccordionItem instance, so it renders unstyled and does nothing: add NfsAccordionItem to the imports of ForPage (found by NfsAccordionTitle).
+aria-dev csr for: HTTP 200, items 3/3 claimed
+  [load/warning] [ngx-foundation-sites] <li nfsAccordionItem> has no NfsAccordionItem instance, so it renders unstyled and does nothing: add NfsAccordionItem to the imports of ForPage (found by NfsAccordionTitle).
+  [load/warning] [ngx-foundation-sites] <li nfsAccordionItem> has no NfsAccordionItem instance, so it renders unstyled and does nothing: add NfsAccordionItem to the imports of ForPage (found by NfsAccordionTitle).
+  [load/warning] [ngx-foundation-sites] <li nfsAccordionItem> has no NfsAccordionItem instance, so it renders unstyled and does nothing: add NfsAccordionItem to the imports of ForPage (found by NfsAccordionTitle).
+aria-dev ssr outlet: HTTP 200, items 2/2 claimed
+  [load/warning] [ngx-foundation-sites] <li nfsAccordionItem> has no NfsAccordionItem instance, so it renders unstyled and does nothing: add NfsAccordionItem to the imports of OutletPage (found by NfsAccordion).
+  [load/warning] [ngx-foundation-sites] <li nfsAccordionItem> has no NfsAccordionItem instance, so it renders unstyled and does nothing: add NfsAccordionItem to the imports of OutletPage (found by NfsAccordion).
+aria-dev csr outlet: HTTP 200, items 2/2 claimed
+  [load/warning] [ngx-foundation-sites] <li nfsAccordionItem> has no NfsAccordionItem instance, so it renders unstyled and does nothing: add NfsAccordionItem to the imports of OutletPage (found by NfsAccordion).
+  [load/warning] [ngx-foundation-sites] <li nfsAccordionItem> has no NfsAccordionItem instance, so it renders unstyled and does nothing: add NfsAccordionItem to the imports of OutletPage (found by NfsAccordion).
+aria-dev ssr outlet-across: HTTP 200, items 2/2 claimed
+  [load/warning] [ngx-foundation-sites] <li nfsAccordionItem> sits inside a NfsAccordion that its injector cannot reach: it is declared in another template (content projection or a template outlet), and DI follows the declaration site.
+  [load/warning] [ngx-foundation-sites] <li nfsAccordionItem> sits inside a NfsAccordion that its injector cannot reach: it is declared in another template (content projection or a template outlet), and DI follows the declaration site.
+aria-dev csr outlet-across: HTTP 200, items 2/2 claimed
+  [load/warning] [ngx-foundation-sites] <li nfsAccordionItem> sits inside a NfsAccordion that its injector cannot reach: it is declared in another template (content projection or a template outlet), and DI follows the declaration site.
+  [load/warning] [ngx-foundation-sites] <li nfsAccordionItem> sits inside a NfsAccordion that its injector cannot reach: it is declared in another template (content projection or a template outlet), and DI follows the declaration site.
+aria-dev ssr projected-ok: HTTP 200, items 2/2 claimed
+  [load/warning] [ngx-foundation-sites] <li nfsAccordionItem> sits inside a NfsAccordion that its injector cannot reach: it is declared in another template (content projection or a template outlet), and DI follows the declaration site.
+  [load/warning] [ngx-foundation-sites] <li nfsAccordionItem> sits inside a NfsAccordion that its injector cannot reach: it is declared in another template (content projection or a template outlet), and DI follows the declaration site.
+aria-dev csr projected-ok: HTTP 200, items 2/2 claimed
+  [load/warning] [ngx-foundation-sites] <li nfsAccordionItem> sits inside a NfsAccordion that its injector cannot reach: it is declared in another template (content projection or a template outlet), and DI follows the declaration site.
+  [load/warning] [ngx-foundation-sites] <li nfsAccordionItem> sits inside a NfsAccordion that its injector cannot reach: it is declared in another template (content projection or a template outlet), and DI follows the declaration site.
+aria-dev ssr projected-no-item: HTTP 200, items 2/2 claimed
+  [load/warning] [ngx-foundation-sites] <li nfsAccordionItem> has no NfsAccordionItem instance, so it renders unstyled and does nothing: add NfsAccordionItem to the imports of ProjectedNoItemPage (found by NfsAccordion).
+  [load/warning] [ngx-foundation-sites] <li nfsAccordionItem> has no NfsAccordionItem instance, so it renders unstyled and does nothing: add NfsAccordionItem to the imports of ProjectedNoItemPage (found by NfsAccordion).
+aria-dev csr projected-no-item: HTTP 200, items 2/2 claimed
+  [load/warning] [ngx-foundation-sites] <li nfsAccordionItem> has no NfsAccordionItem instance, so it renders unstyled and does nothing: add NfsAccordionItem to the imports of ProjectedNoItemPage (found by NfsAccordion).
+  [load/warning] [ngx-foundation-sites] <li nfsAccordionItem> has no NfsAccordionItem instance, so it renders unstyled and does nothing: add NfsAccordionItem to the imports of ProjectedNoItemPage (found by NfsAccordion).
+aria-dev ssr external: HTTP 200, items 1/1 claimed
+  [load/warning] [ngx-foundation-sites] <li nfsAccordionItem> has no NfsAccordionItem instance, so it renders unstyled and does nothing: add NfsAccordionItem to the imports of ExternalPage (found by NfsAccordion).
+aria-dev csr external: HTTP 200, items 1/1 claimed
+  [load/warning] [ngx-foundation-sites] <li nfsAccordionItem> has no NfsAccordionItem instance, so it renders unstyled and does nothing: add NfsAccordionItem to the imports of ExternalPage (found by NfsAccordion).

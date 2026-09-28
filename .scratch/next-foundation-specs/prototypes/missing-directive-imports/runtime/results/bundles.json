@@ -1,0 +1,106 @@
+[
+  {
+    "mode": "development",
+    "variant": "m-none",
+    "files": 24,
+    "raw": 1592269,
+    "gzip": 340911,
+    "found": []
+  },
+  {
+    "mode": "development",
+    "variant": "m-registry",
+    "files": 24,
+    "raw": 1634785,
+    "gzip": 347432,
+    "found": [
+      "to the imports of the component whose template",
+      "__nfsImportCheck",
+      "nfsTopBarTitle",
+      "nfsImportCheckToken",
+      "takeRecords"
+    ]
+  },
+  {
+    "mode": "development",
+    "variant": "m-debug",
+    "files": 24,
+    "raw": 1635032,
+    "gzip": 347527,
+    "found": [
+      "to the imports of the component whose template",
+      "__nfsImportCheck",
+      "nfsTopBarTitle",
+      "nfsImportCheckToken",
+      "takeRecords"
+    ]
+  },
+  {
+    "mode": "development",
+    "variant": "m-class",
+    "files": 24,
+    "raw": 1634594,
+    "gzip": 347419,
+    "found": [
+      "to the imports of the component whose template",
+      "__nfsImportCheck",
+      "nfsTopBarTitle",
+      "nfsImportCheckToken",
+      "takeRecords"
+    ]
+  },
+  {
+    "mode": "development",
+    "variant": "m-hybrid",
+    "files": 24,
+    "raw": 1635559,
+    "gzip": 347604,
+    "found": [
+      "to the imports of the component whose template",
+      "__nfsImportCheck",
+      "nfsTopBarTitle",
+      "nfsImportCheckToken",
+      "takeRecords"
+    ]
+  },
+  {
+    "mode": "production",
+    "variant": "m-none",
+    "files": 21,
+    "raw": 295556,
+    "gzip": 96198,
+    "found": []
+  },
+  {
+    "mode": "production",
+    "variant": "m-registry",
+    "files": 21,
+    "raw": 295550,
+    "gzip": 96236,
+    "found": []
+  },
+  {
+    "mode": "production",
+    "variant": "m-debug",
+    "files": 21,
+    "raw": 295550,
+    "gzip": 96248,
+    "found": []
+  },
+  {
+    "mode": "production",
+    "variant": "m-class",
+    "files": 21,
+    "raw": 295586,
+    "gzip": 96237,
+    "found": []
+  },
+  {
+    "mode": "production",
+    "variant": "m-hybrid",
+    "files": 21,
+    "raw": 295550,
+    "gzip": 96235,
+    "found": []
+  }
+]

@@ -21,3 +21,27 @@ Three Opus 5.5 prototype agents in parallel, each writing rough, runnable code u
 3. In-family checks in the Angular Aria and ng-primitives styles: each part checks its peers in a development-mode `afterRenderEffect` and reports what is missing (Aria), and every child requires its parent's token so a forgotten parent throws NG0201 (ng-primitives). Measure the same cases, including what each cannot see (a forgotten whole family or single directive runs no code), and which families can require their parent, given the optional injections building-blocks 1.9 and the guide's P4 keep on purpose.
 
 The orchestrator then records a short Answer comparing the three with the import-array options, and takes the choice to the user, since P24 is OPEN FOR HUMAN.
+
+## Answer
+
+Three Opus 5.5 prototypes ran in parallel on 2026-09-28 against Angular 22.2 stand-ins, each with its code under `prototypes/missing-directive-imports/` and its findings file:
+
+- Static check: [research/missing-directive-import-static.md](../research/missing-directive-import-static.md), code in `prototypes/missing-directive-imports/static/`. A script over Angular's own compiler (a second `NgCompiler` with the template type checker on, `getDirectivesOfNode`, and `SelectorMatcher` over a selector manifest the library ships), runnable as an Architect builder; beside it, an ESLint rule on `@angular-eslint`'s template parser.
+- Runtime manifest check: [research/missing-directive-import-runtime.md](../research/missing-directive-import-runtime.md), code in `prototypes/missing-directive-imports/runtime/`. A development-only scan in `afterEveryRender` over subtrees a `MutationObserver` saw added, with five ways to decide whether a directive sits on an element; the hybrid (the Structural class missing, then Angular's development `ng.getDirectives` by compiled selector) had no false report and no miss.
+- In-family checks: [research/missing-directive-import-peer.md](../research/missing-directive-import-peer.md), code in `prototypes/missing-directive-imports/peer/`. Angular Aria style (each part probes the DOM for a peer attribute with no instance and reports once, naming the directive and the component to fix) and ng-primitives style (every child requires its parent's token).
+
+| Case | Static, compiler | Static, ESLint | Runtime manifest, hybrid | In-family, Aria style | In-family, required parent | Import array (P24) |
+| --- | --- | --- | --- | --- | --- | --- |
+| Forgotten member | reports | reports | reports, once rendered | reports, naming the fix | throws NG0201 for a forgotten parent, silent for a leaf | prevents it |
+| Forgotten whole family | reports | reports | reports (needs `provideNfsRuntimeChecks` when no library directive runs) | silent | silent | silent |
+| Forgotten single directive | reports | reports | reports | silent | silent | silent |
+| Template never rendered in development | reports | reports | silent | silent | silent | n/a |
+| Harder cases (function-built `imports`, NgModule scope, `hostDirectives`, a package's array, a template elsewhere) | matches Angular in all 7 | misses 2, 4 false positives | n/a | n/a | n/a | n/a |
+| Consumer CSS attributes such as `nfsHighlight` | clean | clean | clean | clean | clean | n/a |
+| Production cost | none (CI only) | none | none, if nothing at module level calls the checker | none, if the `ngDevMode` guard is inline at every call site | NG0201 blanks the page or block, 404 on the server | none |
+| Development cost | 1.8 s at 273 and 3.7 s at 1033 components, a second analysis | a published plugin; 0.3 to 0.7 s | about 6.6 kB gzip, 34 kB of it the manifest; 0 ms per later render | 848 B gzip for eight directives; about 1 ms per render at 500 items | 127 B of token descriptions | about 50 public names; the unused-imports diagnostic and the cleanup migration no longer see those members |
+| Depends on | `@angular/compiler-cli` exports that are not documented public API | angular-eslint's parser and processor | Angular's development `ng` global and one private static field | Angular's development `ng` global for naming the fix | nothing new | nothing new |
+
+What the evidence shows: the static compiler check is the only complete detector (it also sees unrendered templates) and needs no import arrays; the Aria-style in-family check is cheap, fits building-blocks 1.9 and the guide's P23, and catches the subtle case (a part that renders unstyled and without its ARIA inside a family that works); a forgotten whole family or single directive renders visibly unstyled at once in development, and only the static or the runtime manifest check reports it; required parent injection breaks production and misleads for projected content, so optional injections stay optional (the prototype lists which families can require their parent, and the specs already require those). Side findings: an `as const` array does not compile in an NgModule's `imports` or `exports` (TS2322), so NgModule consumers would spread it; a hoisted `const dev = ngDevMode` or a module-level `new InjectionToken(...)` keeps a development checker in the production bundle, while an inline guard or a token factory returning `null` outside development does not.
+
+The choice goes to the user: P24's import array is HIGH impact with NOT-HIGH confidence, and the user has judged the loss of the unused-imports diagnostic, the cleanup migration, and the check they give a significant cost.
