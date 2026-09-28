@@ -399,7 +399,7 @@ Server HTML (static selector and input attributes such as `nfstabs=""` and `valu
 
 Hydrated, before any interaction: identical except that `jsaction` is gone, tab ids and `aria-labelledby` carry the client's generated ids, and the selected tab has `data-active="true"` (Aria's default active tab). With `#reviews` in the URL and `deepLink` on, the first render callback then selects Reviews: `.is-active`, `aria-selected`, `tabindex`, and `inert` move, and the hash stays. After ArrowRight in `follow` mode from Description, the same move happens and the hash becomes `#reviews` through `replaceState`.
 
-Vertical tabs in Foundation's grid layout, with the XY Grid row as the group. The row and cells use the XY Grid spec's directives, named here as building-blocks 1.3 and 1.4 name them (`nfsGridX`, `nfsCell` with a `size` rules object) until the [Spec: XY Grid](../issues/99-spec-xy-grid.md) is published:
+Vertical tabs in Foundation's grid layout, with the XY Grid row as the group. The row and cells use the [Spec: XY Grid](../issues/99-spec-xy-grid.md)'s directives (`nfsGridX`, `nfsCell` with a `size` rules object):
 
 ```html
 <div nfsGridX nfsTabsGroup>

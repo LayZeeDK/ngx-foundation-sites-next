@@ -40,7 +40,7 @@ Stories are never mounted by browser-level tests (layer 2) and never render serv
 
 ### Title
 
-`title: '<Group>/<Name>'` with three groups: `Plugins/<Foundation docs name>` (`Plugins/Accordion`, `Plugins/Off-canvas`), `CSS-only components/Button`, `Shared utilities/<glossary name>` (`Shared utilities/Breakpoint service`, `Shared utilities/Triggers`). The title is display only; the id comes from `meta.id`.
+`title: '<Group>/<Name>'` with four groups: `Plugins/<Foundation docs name>` (`Plugins/Accordion`, `Plugins/Off-canvas`), `CSS-only components/Button`, `Shared utilities/<glossary name>` (`Shared utilities/Breakpoint service`, `Shared utilities/Triggers`), and `Utilities/<Foundation docs name>` for Foundation's utility families (`Utilities/Flexbox Utilities`). The title is display only; the id comes from `meta.id`.
 
 ### Story names
 
@@ -105,7 +105,9 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
 @include nfs-accordion;
 @include nfs-menu; // Menu: the current link's look from aria-current and simple-menu rows; every menu--* story, every nested-menu--* story, and every menu Plugin story
 @include nfs-pagination; // Pagination: the current and disabled looks from ARIA and the 24 px floor; every pagination--* story
+@include nfs-breadcrumbs; // Breadcrumbs: the current link's colour, silent separators, 24 px targets, and the direction; every breadcrumbs--* story
 @include nfs-progress-bar; // Progress Bar: meter text colours and --nfs-foundation-palette; every progress-bar--* story
+@include nfs-table; // Table: the stacked footer and the table contrast checks; every table--* story
 @include nfs-switch; // Switch: the focus ring, forced colours, reduced motion, and contrast and height checks; every switch--* story
 @include nfs-badge; // Badge: text contrast check, the text colour where Foundation's pick is the worse, and --nfs-badge-palette; every badge--* story
 @include nfs-label; // Label: text contrast check, the text colour where Foundation's pick is the worse, and --nfs-label-palette; every label--* story
@@ -114,9 +116,12 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
 @include nfs-top-bar; // Top Bar: Top Bar contrast checks
 @include nfs-card; // Card: overflow-wrap for words the card would cut off (1.4.10, 1.4.12) and text and link contrast checks; every card--* story
 @include nfs-off-canvas; // Off-canvas: reduced motion, the wrapper clip, panel contrast checks; every off-canvas--* story
+@include nfs-media-object; // Media Object: --nfs-media-object-section for the Variant check; every media-object--* story
+@include nfs-flexbox-utilities; // Flexbox Utilities: --nfs-flex-source-ordering-count and --nfs-flexbox-responsive-breakpoints for the Runtime checks; every flexbox-utilities--* story that binds order or a responsive helper
 // ... one @include nfs-<plugin> per plugin that has a Library mixin, after foundation-everything,
 // with the arguments its spec names (for example @include nfs-responsive-toggle(xlarge xxlarge);).
 @include nfs-smooth-scroll; // Smooth Scroll: smooth native jumps on html; play functions scroll with behavior: 'instant'
+@include nfs-prototyping-utilities; // Prototyping Utilities: responsive spacing in breakpoint order and the Variant properties; every prototyping-utilities--* story and every story whose scaffolding uses a Utility attribute
 ```
 
 - Foundation's settings file is imported, not copied: stories then show Foundation 6.9's defaults exactly, and every deviation is visible in one short file. The settings file's own first line, `@import 'util/util'`, needs `node_modules/foundation-sites/scss` on the Sass load path, as Foundation's docs tell every consumer; `main.ts` adds it in `viteFinal` (`css.preprocessorOptions.scss.loadPaths`). Whether `@storybook/addon-vitest`'s run picks up that `viteFinal` the same way `storybook build` does is proved by the first story of the new repository; if it does not, the same path goes into `storybookAngularVitest({stylePreprocessorOptions: {includePaths: [...]}})`, which the framework's options plugin turns into Sass load paths (`@storybook/angular-vite` `dist/preset.js:1294-1310`).
@@ -156,6 +161,10 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
   $input-border: 1px solid $dark-gray;
   $input-border-focus: 1px solid $black;
 
+  // color-contrast (1.4.3): Foundation's disabled breadcrumb is 1.63:1 (axe reports 1.62), and nfs-breadcrumbs
+  // stops the compile. Spec: Breadcrumbs, breadcrumbs--basic.
+  $breadcrumbs-item-color-disabled: #737373;
+
   // Non-text contrast (1.4.11) and color-contrast (1.4.3): the off track is 1.63:1 against the page and the knob,
   // and white inner-label text 1.63:1 on it; nfs-switch stops the compile. Spec: Switch, every switch--* story.
   $switch-background: #767676;
@@ -188,7 +197,8 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
   // callout backgrounds (axe reports 3.82 to 4.25), and the close-button glyph 2.82:1 to 2.87:1 on primary,
   // secondary, and alert, which axe marks incomplete. Spec: Callout, callout--colors and callout--closable;
   // also the Close Button and Abide stories that show callouts; and Spec: Card, card--divider, whose divider
-  // link is 3.755:1 on $light-gray without it.
+  // link is 3.755:1 on $light-gray without it; and Spec: Table, table--stripes, whose links are 3.97:1 to
+  // 4.45:1 on seven table backgrounds (axe reports 4.14 on a striped row).
   $anchor-color: scale-color($primary-color, $lightness: -15%);
   $anchor-color-hover: scale-color($anchor-color, $lightness: -14%);
   $closebutton-color: #767676;
@@ -199,6 +209,11 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
   // buttons keep the palettes Foundation's settings file assigned before this file, so their specs add lines of
   // their own (measured, [Spec: Badge](issues/93-spec-badge.md)).
   $foundation-palette: map-merge($foundation-palette, (alert: #bf3f2c));
+
+  // 1.3.1 and 1.4.10 (no axe rule): Foundation's stacked table hides its column headers below
+  // $table-stack-breakpoint (two rows and no column headers in the Chromium and Firefox platform trees),
+  // and nfs-table stops the compile. Spec: Table, table--stacked.
+  $show-header-for-stacked: true;
 
   // color-contrast (1.4.3): nfs-badge stops the compile on Foundation's alert badge, whose $white text is 4.498:1
   // (4.36:1 with $black); axe marks one-character badges incomplete (shortTextContent) and reports 4.49 on longer
@@ -219,6 +234,13 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
     small: min(200px, 45vw),
     large: min(400px, 45vw),
   );
+
+  // Feature switches, not accessibility overrides. Prototyping Utilities: prototyping-utilities--responsive.
+  // $global-prototype-breakpoints does nothing here: the settings file assigned each flag from it.
+  $prototype-spacing-breakpoints: true;
+  $prototype-sizing-breakpoints: true;
+  $prototype-display-breakpoints: true;
+  $prototype-bordered-breakpoints: true;
   ```
 
   This is every override the published specs require; each spec's Sass subsection is the source, and a spec that adds or changes one changes its line here. An override is a consumer-side setting, never an exception to the Accessibility gate. The overrides come after Foundation's settings file and before `foundation`, so Foundation's `!default` component variables pick them up and they can refer to settings such as `$primary-color`. Settings overrides change Variant values, never Variant names, so the library's Storybook program needs no Variant declaration file. A story that shows a name Foundation's defaults lack would need a file generated from `preview.scss` (the shared-library rule of the [Spec: Variant declaration tooling](issues/136-spec-variant-declaration-tooling.md)).
@@ -275,7 +297,7 @@ A play function never:
 - `args` hold only the public API: inputs (including `model()` inputs, bound two-way in the template), and outputs as `fn()` spies. Public signals, methods, and `exportAs` references are shown through the template (a printed value, a button calling a method), never as args. Nothing private or story-internal is an arg. `argTypes` are added only where docgen cannot infer a control (a string-literal union input gets `control: 'select'` with its options). Measured by [Prototype: Variant declaration tooling in real Nx and Angular CLI workspaces](issues/137-prototype-variant-declaration-tooling.md): a Variant input typed with a registry-built alias declared in source (`NfsOverridableStringUnion<...>`, chained or not) gets an enum control of Foundation's default names from the docgen server, so this library's stories need no `argTypes` for it; the docgen server skips aliases declared in declaration files, so a consumer's story over an alias from the installed package gets no options.
 - The arg names are the e2e `props` names (section 10), so an arg rename is a breaking change to the spec's e2e tests.
 - Outputs shown in the story (a log line, a printed value) are for readers; assertions use the spy.
-- Demo scaffolding (wrappers, spacing, lists, filler content) uses Foundation's own CSS: component classes (`.callout`, grid classes), typography helpers (`.text-center`, `.lead`), visibility classes (`.show-for-sr`, `.hide-for-*`), float and flex classes, and the Prototype utilities compiled by `foundation-everything($prototype: true)`: spacing (`.margin-*`, `.padding-*`, 0 to 3 with directions), display, overflow, sizing, list style (`.no-bullet`, `.list-disc`), and the text utilities. Prototype classes go on scaffolding only, never on a plugin's Structural class elements, whose look must be Foundation's component CSS unaltered. 2026-09-27: under the class rule (ADR 0039) a library element carries no Foundation class written in the story, and every class family in this list (Callout and the other CSS-only components, the grids, the typography helpers, the visibility, float, and flex classes, the Prototype utilities) now gets directives of its own; once their specs define them, scaffolding uses those directives instead of the classes, and [Consistency review: the class-rule wave](issues/133-consistency-review-class-rule-wave.md) rewrites this list. The `.text-primary`-style colour classes in this repo's AGENTS.md are not Foundation classes (Foundation 6.9's Sass defines no such class) and are not used; colour comes from Foundation components.
+- Demo scaffolding (wrappers, spacing, lists, filler content) uses Foundation's own CSS: component classes (`.callout`, grid classes), typography helpers (`.text-center`, `.lead`), visibility classes (`.show-for-sr`, `.hide-for-*`), float and flex classes, and the Prototyping Utilities' attributes (`nfsMargin*`, `nfsPadding*`, `nfsDisplay`, `nfsOverflow*`, `nfsWidth`, `nfsHeight`, `nfsListStyleType`, and the text utilities, from `ngx-foundation-sites/prototyping-utilities`; `nfsPrototypeClasses` imports them all), compiled by `foundation-everything($prototype: true)`; `.no-bullet` belongs to the Typography Helpers. They go on scaffolding only, never on a plugin's Structural class elements, whose look must be Foundation's component CSS unaltered. 2026-09-27: under the class rule (ADR 0039) a library element carries no Foundation class written in the story, and every class family in this list (Callout and the other CSS-only components, the grids, the typography helpers, the visibility, float, and flex classes, the Prototype utilities) now gets directives of its own; once their specs define them, scaffolding uses those directives instead of the classes, and [Consistency review: the class-rule wave](issues/133-consistency-review-class-rule-wave.md) rewrites this list. The Visibility classes' directives are `nfsVisibility` (`showFor`, `hideFor`, `invisible`, `visible`), `nfsShowForSr`, and `nfsShowOnFocus` ([Spec: Visibility Classes](issues/104-spec-visibility-classes.md)); scaffolding uses them in place of `.show-for-sr` and `.hide-for-*`. The `.text-primary`-style colour classes in this repo's AGENTS.md are not Foundation classes (Foundation 6.9's Sass defines no such class) and are not used; colour comes from Foundation components.
 - Inline `style` only for: `--nfs-*` custom properties a scenario demonstrates, values Foundation has no class for (a scroll container height, a tall page), and nothing else. `dir="rtl"` is an attribute, not a style.
 
 ## 9. What stories do not cover
@@ -308,5 +330,5 @@ The Fixture app is not built from stories: it has its own components, one route 
 - [ ] Play functions use `canvas`, `userEvent`, `step` from the context and `expect`, `fn`, `waitFor`, `within` from `storybook/test`; they assert DOM and ARIA state, wait on Completion outputs rather than time, hold at a 414 px viewport, and restore any global state.
 - [ ] Any provider a story needs (`nfsAnimationsToken` off, Router, a Defaults token) is a story-level `applicationConfig`, with the reason in the story's JSDoc.
 - [ ] No library element carries a Foundation or NFS class written in the story; Structural classes come from directives, Variant classes from typed inputs, State classes from host bindings (ADR 0039).
-- [ ] Demo scaffolding uses Foundation classes and Prototype utilities only until their directives are specified, then those directives (section 8); inline styles only for `--nfs-*` properties and values Foundation has no class for.
+- [ ] Demo scaffolding uses the directives of the CSS-only components and utility families, the Prototyping Utilities' attributes among them (section 8); inline styles only for `--nfs-*` properties and values Foundation has no class for.
 - [ ] `npx nx test-storybook <lib>` passes with the Accessibility gate, and the spec's e2e tests mount the same ids with `embed=true`.

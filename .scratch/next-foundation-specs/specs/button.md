@@ -314,7 +314,7 @@ Consumer markup and the resulting DOM. Server HTML and hydrated DOM are identica
 </button>
 ```
 
-The Trigger's attributes in the last example belong to the Triggers utility spec and are shown only to place them. `nfsShowForSr` stands for the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)'s directive for `.show-for-sr`, under that name until that spec names it. A `jsaction` attribute appears in server HTML only on hosts where the consumer (or another directive, such as a Trigger) declared a listener; `NfsButton` itself never causes one. The split button, a Button Group holding a main action and an arrow-only button, is the [Spec: Button Group](../issues/82-spec-button-group.md)'s.
+The Trigger's attributes in the last example belong to the Triggers utility spec and are shown only to place them. `nfsShowForSr` is the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)'s directive for `.show-for-sr`, imported as `NfsShowForSr` from `ngx-foundation-sites/visibility`. A `jsaction` attribute appears in server HTML only on hosts where the consumer (or another directive, such as a Trigger) declared a listener; `NfsButton` itself never causes one. The split button, a Button Group holding a main action and an arrow-only button, is the [Spec: Button Group](../issues/82-spec-button-group.md)'s.
 
 ### Animation
 

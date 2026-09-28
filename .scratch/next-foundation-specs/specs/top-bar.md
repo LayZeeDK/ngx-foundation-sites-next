@@ -233,7 +233,7 @@ APG pattern: none of their own. A Top Bar holds site navigation (a list of links
 | Search in the bar | A `form` with `role="search"` and a label on its field (`aria-label` or a visually hidden `label`); the button is `nfsButton type="submit"` | Consumer ([Spec: Forms](../issues/98-spec-forms.md), [Spec: Button](../issues/37-spec-button.md)) |
 | Sections and titles | Generic elements; a title may be a heading or a link the consumer writes | Consumer |
 | `button[nfsMenuIcon]` | Native `button`, `type="button"` unless the consumer sets another | `nfsMenuIcon` |
-| Menu icon name | `aria-labelledby` pointing at the `nfsTitleBarTitle` element's static `id` (visible text beats `aria-label`), visually hidden text inside the button (the screen-reader-only directive of the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)), or `aria-label`; checked in development | Consumer |
+| Menu icon name | `aria-labelledby` pointing at the `nfsTitleBarTitle` element's static `id` (visible text beats `aria-label`), visually hidden text inside the button (`nfsShowForSr` of the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)), or `aria-label`; checked in development | Consumer |
 | Menu icon state | `aria-expanded` and `aria-controls` from a disclosure Trigger (Responsive Toggle, an Off-canvas panel); `aria-haspopup="dialog"` and `aria-controls` without `aria-expanded` from the Trigger of an Off-canvas panel in Modal mode; nothing from `nfsMenuIcon` | [Spec: Triggers (shared utility)](../issues/54-spec-triggers.md) |
 | Current page in a Top Bar menu | `aria-current` on the link, styled by `nfs-menu` | [Spec: Menu](../issues/85-spec-menu.md) |
 
@@ -371,7 +371,7 @@ Consumer markup and the resulting DOM. Server HTML and hydrated DOM are identica
 <div class="top-bar site-header">...</div>
 ```
 
-The Trigger attributes (`aria-expanded`, `aria-haspopup`, `aria-controls`, `jsaction`) and the Responsive Toggle's `.hide-for-medium` and `.show-for-medium` belong to those specs; the Dropdown Menu's `opens-left` in the server HTML follows D9 once the Nested menu root reads `nfsTopBarRightToken`. `nfsShowForSr` stands for the screen-reader-only directive of the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md), whose name that spec fixes. None of the nine directives causes a `jsaction` attribute: they declare no listeners.
+The Trigger attributes (`aria-expanded`, `aria-haspopup`, `aria-controls`, `jsaction`) and the Responsive Toggle's `.hide-for-medium` and `.show-for-medium` belong to those specs; the Dropdown Menu's `opens-left` in the server HTML follows D9 once the Nested menu root reads `nfsTopBarRightToken`. `nfsShowForSr` is the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)'s directive for `.show-for-sr`, imported as `NfsShowForSr` from `ngx-foundation-sites/visibility`. None of the nine directives causes a `jsaction` attribute: they declare no listeners.
 
 ### Animation
 

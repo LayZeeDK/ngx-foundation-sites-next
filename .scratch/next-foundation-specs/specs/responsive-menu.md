@@ -126,7 +126,7 @@ Every class on a responsive menu's elements, per building-blocks 1.14 item 2; th
 | `.submenu-toggle-text` | Structural | `NfsSubmenuToggleText`, `span[nfsSubmenuToggleText]` inside a Hybrid item's toggle, static host class | Foundation's visually hidden name holder (ADR 0039 names it) |
 | Generated `div.is-drilldown` wrapper | State (`is-drilldown`, `animate-height`) | The Drilldown Menu's `[nfsDrilldownWrapper]` on the consumer's element around the root (a `div`, the `nav`, or a Top Bar section), when the rules name drilldown | Binds `is-drilldown` and the measured height only in drilldown mode, and `animate-height` from the `animateHeight` Option; a copied `animate-height` is reported by the Drilldown's check |
 | Generated `li.js-drilldown-back` | Structural | The Drilldown Menu's `li[nfsDrilldownBack]` (static `.js-drilldown-back`) holding a `<button type="button">`, in every submenu, when the rules name drilldown | `hidden` plus `.is-hidden` outside drilldown mode; a copied `is-hidden` is reported by the Drilldown's check |
-| `.show-for-sr` around a back button's hidden suffix | Visibility class | The screen-reader-only directive of the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md), written `nfsShowForSr` until that spec names it | The suffix names the level the button returns to (the Drilldown Menu spec's naming rule) |
+| `.show-for-sr` around a back button's hidden suffix | Visibility class | The screen-reader-only directive of the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md), `nfsShowForSr` | The suffix names the level the button returns to (the Drilldown Menu spec's naming rule) |
 | `.is-active` on a submenu, Foundation's pre-open marker | State, never read | The item's `[expanded]="true"` or `[(expanded)]` (Nested menu); a copied one is stripped in every mode and reported naming `[expanded]` | Building-blocks 1.4: initial state is bound, never read from a class |
 | `.is-active` on the current page's `li` | State, not bound | `aria-current` on its link, styled by `nfs-menu` (the Menu spec, D4); a copied one is stripped and reported naming `aria-current` | `.is-active` is the Nested menu's open state; no class marks the current page in any mode |
 | `.title-bar`, `.title-bar-title`, `.menu-icon`, `.top-bar`, `.top-bar-left`, `.top-bar-right` around a responsive menu | Structural (Top Bar) | The [Spec: Top Bar](../issues/86-spec-top-bar.md)'s directives, with the [Spec: Responsive Toggle](../issues/24-spec-responsive-toggle.md)'s written beside them | A right-hand Top Bar section turns the dropdown Base side through the Nested menu root (Hierarchy and DI shape) |
@@ -369,7 +369,7 @@ Outside a Top Bar, no Foundation default fails a criterion in accordion or drill
 
 ### Rendered HTML
 
-Consumer markup, Foundation's docs example with parents as buttons, the `nav` as the Drilldown wrapper, back items, a Hybrid item, and the current page marked. It carries no class: the root's `menu vertical medium-horizontal` come from `orientation` on the one hosted `NfsMenu`, each submenu's `menu nested vertical` from `NfsSubmenu`, the back items' `js-drilldown-back` from `NfsDrilldownBack`, the hidden suffix's `show-for-sr` from the screen-reader-only directive (`nfsShowForSr` stands for the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)'s directive, under that name until that spec names it), and the toggle text's class from `NfsSubmenuToggleText`:
+Consumer markup, Foundation's docs example with parents as buttons, the `nav` as the Drilldown wrapper, back items, a Hybrid item, and the current page marked. It carries no class: the root's `menu vertical medium-horizontal` come from `orientation` on the one hosted `NfsMenu`, each submenu's `menu nested vertical` from `NfsSubmenu`, the back items' `js-drilldown-back` from `NfsDrilldownBack`, the hidden suffix's `show-for-sr` from the screen-reader-only directive (`nfsShowForSr` is the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)'s directive, imported as `NfsShowForSr` from `ngx-foundation-sites/visibility`), and the toggle text's class from `NfsSubmenuToggleText`:
 
 ```html
 <nav nfsDrilldownWrapper aria-label="Main">
@@ -615,7 +615,7 @@ Release test (manual, before each release; [Resolve the assistive-technology che
 
 ### Usage examples
 
-No example writes a class: `[orientation]` replaces Foundation's `vertical medium-horizontal`, `nfsSubmenu` gives every nested list `menu nested vertical`, `[expanded]` replaces the pre-open `is-active`, and `routerLinkActive ariaCurrentWhenActive="page"` replaces the current page's `is-active`. `nfsShowForSr` stands for the screen-reader-only directive of the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md), under that name until that spec names it.
+No example writes a class: `[orientation]` replaces Foundation's `vertical medium-horizontal`, `nfsSubmenu` gives every nested list `menu nested vertical`, `[expanded]` replaces the pre-open `is-active`, and `routerLinkActive ariaCurrentWhenActive="page"` replaces the current page's `is-active`. `nfsShowForSr` is the screen-reader-only directive of the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md), imported as `NfsShowForSr` from `ngx-foundation-sites/visibility`.
 
 ```ts
 @Component({

@@ -38,6 +38,14 @@ _Avoid_: hamburger (for the component), burger button, menu toggle
 Foundation's CSS-only navigation through the numbered pages of a set of results: a list of page links with previous and next items and an ellipsis where pages are skipped; distinct from Material's paginator, a control that pages a table in place.
 _Avoid_: paginator, pager (for the component), page navigation
 
+**Breadcrumbs**:
+Foundation's CSS-only trail of links to the parent pages of the current page, in hierarchy order, marked by the `.breadcrumbs` Structural class inside a named navigation landmark; distinct from an Open path, a menu's chain of open submenus.
+_Avoid_: breadcrumb bar, trail (bare), path, crumbs
+
+**Disabled step**:
+A Breadcrumbs item for a level of the hierarchy that has no page of its own, written as text with Foundation's disabled look; not a control, so it has no disabled state for assistive technology and its text meets the text contrast minimum.
+_Avoid_: disabled link, inactive crumb, unavailable item
+
 **Split button**:
 A Button Group of two buttons, a main action and an arrow-only dropdown button that opens more actions of the same kind; built from the group, the buttons, and a Trigger, with no component of its own. Distinct from a Hybrid item, whose link navigates and whose toggle opens a submenu.
 _Avoid_: dropdown button (for the pair), menu button, action menu
@@ -53,6 +61,14 @@ _Avoid_: loading bar, progress indicator, meter (for the component)
 **Progress meter**:
 The `.progress-meter` element inside a Progress Bar whose width is the value's share of the range; distinct from the native `<meter>` element.
 _Avoid_: fill (bare), bar, meter (bare), indicator
+
+**Table**:
+Foundation's CSS-only component for tabular data: the native `table` element, which Foundation styles by tag, with Variant classes for row hover, stripes, stacking, and scrolling, and a scroll wrapper marked by the `.table-scroll` Structural class; a static structure, distinct from an ARIA grid, which is an interactive widget.
+_Avoid_: data table (for the component), grid, datagrid
+
+**Stacked table**:
+A Table shown with one block per row below Foundation's stack breakpoint, with its column headers listed above the rows and its footer kept; distinct from a table in a Scroll region, which keeps its columns.
+_Avoid_: responsive table, mobile table, card table
 
 **Switch**:
 Foundation's CSS-only on/off control: a native checkbox or radio hidden inside a `.switch` container and drawn by its Switch paddle; distinct from the ARIA `switch` role, which a Switch carries only when the consumer writes it on a checkbox.
@@ -81,6 +97,14 @@ _Avoid_: card header, card footer, divider (bare), separator
 **Label**:
 Foundation's CSS-only inline tag that marks content with a word or a short phrase of metadata ("High priority", "Draft"), marked by the `.label` Structural class and coloured from `$label-palette`; not a control. Distinct from a Form label, which names a form control, and from a Badge, which shows a short count.
 _Avoid_: tag, chip, pill, media label, label (bare, where a Form label could be meant)
+
+**Media Object**:
+Foundation's CSS-only component that sets an item, usually an image, beside content in two or three side-by-side sections, marked by the `.media-object` Structural class; a Media Object nested in a section indents it, as in a comment thread.
+_Avoid_: media block, flag object, media card
+
+**Main section**:
+The section of a Media Object that takes the width the other sections leave, Foundation's `.main-section`, which only Flexbox mode styles.
+_Avoid_: content section, body section, centre section
 
 **Structural class**:
 A Foundation CSS class that names an element of a Plugin's or a CSS-only component's markup (`.accordion-item`, `.dropdown-pane`, `.orbit-slide`, `.button`); bound by its directive, never written by the consumer.
@@ -123,12 +147,56 @@ A breakpoint listed in `$breakpoint-classes` (`small`, `medium`, `large` by defa
 _Avoid_: responsive breakpoint, class size, breakpoint class
 
 **Visibility class**:
-A Foundation CSS class that shows or hides an element by breakpoint of the Breakpoint map (`.show-for-medium`, `.hide-for-large`, `.show-for-small-only`), generated only for Class breakpoints; distinct from a State class, which expresses runtime state.
+A Foundation CSS class of the Visibility Classes family that hides an element always (`.hide`, `.invisible`) or under a condition: a breakpoint range of the Breakpoint map (`.show-for-medium`, `.hide-for-large-only`, generated only for Class breakpoints), an orientation, the dark colour scheme, or a stuck Sticky element; `.show-for-sr` and `.show-on-focus` hide an element only from sight. Distinct from a State class, which expresses runtime state.
 _Avoid_: responsive class, breakpoint class, visibility helper
+
+**Visually hidden**:
+Hidden from sight but kept in the accessibility tree, as Foundation's `.show-for-sr` does; distinct from hidden (`display: none`, `hidden`, `.hide`), which hides from everyone, and from `aria-hidden`, which hides from assistive technology only.
+_Avoid_: screen-reader-only, sr-only, invisible (Foundation's `visibility: hidden`)
+
+**Skip link**:
+A link at the start of a page, Visually hidden until it has focus, that moves focus past repeated blocks to the main content; Foundation's `.show-on-focus` link.
+_Avoid_: skip-to-content button, bypass link, jump link
 
 **Utility class**:
 A Foundation CSS class from a layout system or utility family (`.grid-x`, `.cell`, `.align-center`, `.float-left`, `.text-center`, `.margin-1`) that can style any element and names no element of a component's markup; set by its directive, never written by the consumer. Visibility classes are one family of them.
 _Avoid_: helper class, layout class, utility helper
+
+**Utility family**:
+The Utility classes one Foundation export mixin prints (`foundation-prototype-spacing`, `foundation-float-classes`), which one library directive sets through its Utility attributes.
+_Avoid_: utility group, helper set, utility module
+
+**Prototyping Utilities**:
+Foundation's opt-in Prototype mode: the Utility families of spacing, sizing, display, overflow, position, borders, corners, shadows, arrows, separators, font and list styles, and text helpers, printed only when the consumer includes them.
+_Avoid_: prototype classes, helpers (bare), prototype mode (for the classes)
+
+**Cell**:
+An element of an XY Grid, marked by `.cell`, whose size and offset per breakpoint are set on it; distinct from a table cell and from the ARIA `gridcell` role, which no layout uses.
+_Avoid_: column (the legacy grids' word), tile, grid item
+
+**Block grid**:
+A grid whose cells share each row equally from a per-breakpoint count set on the grid (Foundation's `.<bp>-up-<n>`), rather than from each cell's own size.
+_Avoid_: card grid, equal grid, up grid
+
+**Grid frame**:
+An XY Grid sized to the viewport that clips whatever does not fit, so that its cell blocks scroll on their own (Foundation's `.grid-frame`).
+_Avoid_: app shell, full-height grid, viewport grid
+
+**Cell block**:
+A cell that scrolls its own overflow inside a Grid frame (Foundation's `.cell-block`, `.cell-block-y`), which the library makes a Scroll region.
+_Avoid_: scroll cell, scroll pane, scroller
+
+**Flex parent**:
+An element laid out with `display: flex` whose children the Flexbox Utilities' alignment classes place: a Foundation grid, Button Group, Media Object, Card, or Menu, or any element the `.flex-container` class makes one.
+_Avoid_: flex container (CSS's term, and the name of the one Foundation class that makes any element a flex parent), flexbox parent, row
+
+**Flex child**:
+An immediate child of a Flex parent, which can align itself, take a share of the space, or take another place in the visual order.
+_Avoid_: flex item (CSS's term), cell (the XY Grid's element), column
+
+**Source ordering**:
+Foundation's per-breakpoint change of the visual order of Flex children through its order classes, which leaves the DOM order, the reading and focus order, as written.
+_Avoid_: reordering (bare), push and pull (the Float Grid's own mechanism), sort order
 
 **Application class**:
 A CSS class the consumer defines in its own stylesheet, never a Foundation or library class; the only class a consumer writes, on its own elements or as the value of an input that applies or names one (the Toggler's `toggler`, the Tooltip's `templateClasses`, the Dropdown pane's `parentClass`, a Motion input's dot form).
@@ -193,6 +261,10 @@ _Avoid_: breakpoint rule (which assigns modes), responsive source, interchange q
 **Export mixin**:
 A Foundation Sass mixin that prints one component's CSS (`foundation-accordion`, `foundation-reveal`), included by the consumer and compiled from the consumer's settings.
 _Avoid_: Foundation styles, component mixin
+
+**Flexbox mode**:
+Foundation compiled with `$global-flexbox: true`, its default, in which its components lay out with flexbox; with `$global-flexbox: false` they use Foundation's older float and table layouts, and some Variant classes exist in only one of the two.
+_Avoid_: flex mode, flex build, Flex Grid (a layout system)
 
 ### Angular side
 
@@ -313,7 +385,7 @@ The chain of open submenus from a menu root down to the innermost open one; Dril
 _Avoid_: active branch, breadcrumb, trail
 
 **Current link**:
-The link a menu or a pagination marks as the page the reader is on (a pagination's button, in a pager that updates in place), with `aria-current` present and neither `false` nor empty; the library gives it Foundation's active menu look or current pagination look, so no class marks it.
+The link a menu, a pagination, or a Breadcrumbs trail marks as the page the reader is on (a pagination's button, in a pager that updates in place), with `aria-current` present and neither `false` nor empty; the library gives it Foundation's active menu look, current pagination look, or current breadcrumb colour, so no class marks it.
 _Avoid_: active item, is-active item, selected link, current item (for Foundation's `.current`)
 
 **Placeholder link**:
@@ -353,8 +425,12 @@ The per-Plugin set of application-wide defaults for its Options; the replacement
 _Avoid_: config token, options token, global options, `MAT_*_DEFAULT_OPTIONS`
 
 **Variant input**:
-A directive input that sets one family of Variant classes from a typed name, a boolean, a Breakpoint query, a Breakpoint rule object, or a count; with no value it sets no class, so the consumer's Sass default is the look.
+A directive input that sets one family of Variant classes, or of a layout system's or utility family's Utility classes, from a typed name, a boolean, a Breakpoint query, a Breakpoint rule object, or a count; with no value it sets no class, so the consumer's Sass default is the look.
 _Avoid_: appearance input, style input, modifier input
+
+**Utility attribute**:
+An `nfs`-prefixed input of a Utility family's directive whose name is also one of that directive's attribute selectors (`nfsMarginTop="1"`, `nfsBordered`), written where Foundation's docs write the Utility class and typed like a Variant input.
+_Avoid_: utility input, utility directive (for the attribute), helper attribute
 
 **Variant registry**:
 An empty interface the library declares for one Sass setting (`NfsButtonPaletteOverrides`) and the consumer's Variant declaration file augments, adding names (`purple: true`), removing defaults (`warning: false`), or setting a count, so the Variant inputs over that setting accept exactly the names the consumer's Sass generates.
@@ -443,6 +519,10 @@ _Avoid_: a11y check, axe run (as the name), lint
 **Visible value**:
 The text a sighted user reads for a Progress Bar's, a native progress element's, or a meter's value, in its meter text or beside it, which the library requires because the bar's graphic alone does not meet non-text contrast; distinct from `aria-valuetext`, the value assistive technology speaks.
 _Avoid_: value text (ambiguous with `aria-valuetext`), label (the name), caption, percentage label
+
+**Scroll region**:
+An element whose content scrolls inside it and that the keyboard can focus, with a role and an accessible name, such as a Table's scroll wrapper, a table that scrolls itself, or an XY Grid Cell block; distinct from a scroll container in general, which the keyboard may not reach.
+_Avoid_: scroll container (bare), scroller, overflow wrapper
 
 **Fixture app**:
 The prerendered Angular application, one route per Plugin, that the Playwright e2e layer drives to test the Rendering modes.

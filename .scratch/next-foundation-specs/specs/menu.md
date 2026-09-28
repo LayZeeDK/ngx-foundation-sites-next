@@ -218,7 +218,7 @@ APG pattern: none of its own. A plain menu is a list of links in a navigation la
 | Current page | `aria-current="page"` (or `step`, `location`, `date`, `time`, `true`) on the link; `false` or an empty value means not current. The link keeps its `href` | Consumer or `RouterLinkActive` |
 | `li[nfsMenuText]` | Native `listitem` with text | Native |
 | Icon beside text | `aria-hidden="true"` on the icon element, or an `<img alt="">` | Consumer |
-| Icon-only link | Named by `aria-label` or visually hidden text (the screen-reader-only directive of the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)) | Consumer |
+| Icon-only link | Named by `aria-label` or visually hidden text (`nfsShowForSr` of the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)) | Consumer |
 | Nested plain menu | Native nested `ul` inside the `li`, always shown | Native |
 
 Keyboard: native only. Tab and Shift+Tab move through the links in DOM order; Enter follows a link. The directives add no key handling and change no tab order.
@@ -529,4 +529,4 @@ Checks (no CSS output), each `@error` naming the setting, with ratios from the e
 ### Notes
 
 - RTL: Foundation compiles alignment against `$global-text-direction`. In an RTL compile `.align-right` still means the right edge; inside a `dir="rtl"` region of an LTR compile, `align="left"` gives `flex-start`, the region's right edge. The directives have nothing direction-dependent.
-- A consumer who wants a plain menu's items to change the page's layout, not the menu's (source ordering, visibility by breakpoint), uses the directives of the [Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md) and the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md) on the elements concerned.
+- A consumer who wants a plain menu's items to change the page's layout, not the menu's (source ordering, visibility by breakpoint), uses the directives of the [Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md) and `nfsVisibility` of the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md) on the elements concerned.

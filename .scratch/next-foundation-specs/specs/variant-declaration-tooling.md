@@ -104,7 +104,6 @@ Foundation 6.9's Sass settings whose names or count become Variant class names (
 | `$prototype-display` | `NfsPrototypeDisplayOverrides` | `--nfs-prototype-display` | names | `inline inline-block block table table-cell` | none | Prototyping Utilities |
 | `$prototype-position` | `NfsPrototypePositionOverrides` | `--nfs-prototype-position` | names | `static relative absolute fixed` | none | Prototyping Utilities |
 | `$prototype-overflow` | `NfsPrototypeOverflowOverrides` | `--nfs-prototype-overflow` | names | `visible hidden scroll` | none | Prototyping Utilities |
-| `$prototype-sizing` | `NfsPrototypeSizingOverrides` | `--nfs-prototype-sizing` | names | `width height` | none | Prototyping Utilities |
 | `$prototype-sizes` | `NfsPrototypeSizesOverrides` | `--nfs-prototype-sizes` | names | `25 50 75 100` | none | Prototyping Utilities |
 | `$prototype-text-decoration` | `NfsPrototypeTextDecorationOverrides` | `--nfs-prototype-text-decoration` | names | `overline underline line-through` | none | Prototyping Utilities |
 | `$prototype-text-transformation` | `NfsPrototypeTextTransformationOverrides` | `--nfs-prototype-text-transformation` | names | `lowercase uppercase capitalize` | none | Prototyping Utilities |
@@ -120,11 +119,12 @@ Foundation 6.9's Sass settings whose names or count become Variant class names (
 
 Settings that are deliberately not registries:
 
-- `$breakpoints`: behaviour Options keep the open `NfsBreakpointName` (ADR 0005, ADR 0040). The Zero breakpoint's name in Media Object's `stack-for-<zero>` is the Media Object spec's to type.
+- `$breakpoints`: behaviour Options keep the open `NfsBreakpointName` (ADR 0005, ADR 0040). The Zero breakpoint's name in Media Object's `stack-for-<zero>` needs no registry: `stackFor` is typed `NfsClassBreakpoint`, and the directive builds the class from `nfsBreakpointsToken`'s Zero breakpoint ([Spec: Media Object](../issues/91-spec-media-object.md), D2).
 - `$offcanvas-sizes` and `$offcanvas-vertical-sizes`: keyed by breakpoint, they produce media queries, not classes.
 - `$button-fill`: the fills `solid`, `hollow`, `clear` are a Closed Variant family whatever the setting says (ADR 0039, dated note).
-- Flags that gate a family's classes (`$button-responsive-expanded`, the `$prototype-*-breakpoints` flags, `$global-flexbox`, `$xy-grid`): they change whether classes exist, not which names they have, so the types do not change. The owning spec gives a gated family a Variant property of its own, which its mixin writes as the empty list while the flag is off and which only the runtime check reads (a gated family never writes a registry's property, such as `--nfs-breakpoint-classes`, empty). Such a property follows the Variant property format and is not in the manifest.
+- Flags that gate a family's classes (`$button-responsive-expanded`, the `$prototype-*-breakpoints` flags, `$global-flexbox`, `$xy-grid`, `$flexbox-responsive-breakpoints`): they change whether classes exist, not which names they have, so the types do not change. The owning spec gives a gated family a Variant property of its own, which its mixin writes as the empty list while the flag is off and which only the runtime check reads (or, for two families one flag gates in opposite directions, one property listing whichever names the compile generates, as `--nfs-media-object-section`) (a gated family never writes a registry's property, such as `--nfs-breakpoint-classes`, empty). Such a property follows the Variant property format and is not in the manifest; `$flexbox-responsive-breakpoints`'s is `--nfs-flexbox-responsive-breakpoints`.
 - Class-name renames (`$grid-column-alias`, the Float Grid's class-name parameters, `$maincontent-class`): they rename Structural or Utility classes, which directives bind; the Float Grid spec decides its own; the Off-canvas spec decided that `nfs-off-canvas` stops the compile on a renamed `$maincontent-class`.
+- `$prototype-sizing`: its names are CSS properties, which become the attribute names `nfsWidth` and `nfsHeight`; a template cannot grow attributes from Sass, so names a consumer adds generate classes no attribute sets ([Spec: Prototyping Utilities](../issues/102-spec-prototyping-utilities.md), D10).
 
 A component spec declares no registry (the typing decision). A spec whose family needs a setting missing from this table proposes a new row for this spec.
 
@@ -160,8 +160,11 @@ interface NfsVariantManifestUse {
 ```
 
 - One entry per row of the table above, in that order. `mixins` and `uses` are filled from the component specs: every Open Variant family row of a component spec's class mapping (building-blocks 1.14 item 2) becomes one `uses` entry per registry it reads. An input that takes a count or a Breakpoint rules object reads two registries (`NfsCell.size` reads `NfsGridColumnsOverrides` with shape `count` and `NfsBreakpointClassesOverrides` with shape `rules`) and appears under both.
-- Known `mixins` today: `nfs-callout` and `nfs-progress-bar` write `--nfs-foundation-palette` (the one exception to one writer per property: `$foundation-palette` belongs to no entry point); `nfs-button` writes `--nfs-button-palette` and `--nfs-button-sizes`; `nfs-badge`, `nfs-label`, `nfs-close-button`, `nfs-dropdown-pane`, and `nfs-responsive-embed` write their settings; `nfs-breakpoint-properties` writes `--nfs-breakpoint-classes`. The grid, flexbox, Prototyping, and Button Group specs name theirs.
-- Known `uses` under `NfsBreakpointClassesOverrides` ([Re-run: Off-canvas spec under the class rule](../issues/117-rerun-off-canvas-class-rule.md)): `{entryPoint: 'ngx-foundation-sites/off-canvas', directive: 'NfsOffCanvas', input: 'revealOn', alias: 'NfsClassBreakpoint', shape: 'name'}` and the same for `inCanvasOn`; `position` is closed and has no entry.
+- Known `mixins` today: `nfs-callout` and `nfs-progress-bar` write `--nfs-foundation-palette` (the one exception to one writer per property: `$foundation-palette` belongs to no entry point); `nfs-button` writes `--nfs-button-palette` and `--nfs-button-sizes`; `nfs-badge`, `nfs-label`, `nfs-close-button`, `nfs-dropdown-pane`, and `nfs-responsive-embed` write their settings; `nfs-breakpoint-properties` writes `--nfs-breakpoint-classes`; `nfs-flexbox-utilities` writes `--nfs-flex-source-ordering-count`. `nfs-xy-grid` writes `--nfs-grid-columns` and `--nfs-xy-block-grid-max`. `nfs-prototyping-utilities` writes the ten `$prototype-*` registry properties, and one flag property per `$prototype-*-breakpoints` flag outside the manifest ([Spec: Prototyping Utilities](../issues/102-spec-prototyping-utilities.md)). The legacy grid and Button Group specs name theirs.
+- Known `uses` under `NfsBreakpointClassesOverrides` ([Re-run: Off-canvas spec under the class rule](../issues/117-rerun-off-canvas-class-rule.md)): `{entryPoint: 'ngx-foundation-sites/off-canvas', directive: 'NfsOffCanvas', input: 'revealOn', alias: 'NfsClassBreakpoint', shape: 'name'}` and the same for `inCanvasOn`; `position` is closed and has no entry. [Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md) adds `{entryPoint: 'ngx-foundation-sites/flexbox-utilities', directive: 'NfsFlexChild', input: 'order', alias: 'NfsFlexOrderInput', shape: 'rules'}`, the same with `input: 'nfsFlexChild', alias: 'NfsFlexChildInput', shape: 'rules'`, with `directive: 'NfsFlexContainer', input: 'direction', alias: 'NfsFlexDirectionInput', shape: 'rules'`, and with `directive: 'NfsFlexContainer', input: 'nfsFlexContainer', alias: 'NfsFlexContainerInput', shape: 'query'`. [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md) adds `{entryPoint: 'ngx-foundation-sites/visibility', directive: 'NfsVisibility', input: 'showFor', alias: 'NfsVisibilityShowFor', shape: 'query'}` and `{entryPoint: 'ngx-foundation-sites/visibility', directive: 'NfsVisibility', input: 'hideFor', alias: 'NfsVisibilityHideFor', shape: 'query'}`. [Spec: XY Grid](../issues/99-spec-xy-grid.md) adds, all with entry point `ngx-foundation-sites/xy-grid`: `{directive: 'NfsCell', input: 'size', alias: 'NfsCellSizeInput', shape: 'rules'}`, `{directive: 'NfsCell', input: 'offset', alias: 'NfsCellOffsetInput', shape: 'rules'}`, `{directive: 'NfsGridX', input: 'up', alias: 'NfsGridUpInput', shape: 'rules'}`, and, all with alias `NfsGridQuery` and shape `query`, `{directive: 'NfsCell', input: 'cellBlock'}`, `{directive: 'NfsCell', input: 'cellBlockY'}`, `{directive: 'NfsCell', input: 'cellBlockContainer'}`, `{directive: 'NfsGridX', input: 'marginCollapse'}`, `{directive: 'NfsGridX', input: 'paddingCollapse'}`, `{directive: 'NfsGridX', input: 'gridFrame'}`, and `{directive: 'NfsGridY', input: 'gridFrame'}`.
+- Known `uses` under `NfsFlexSourceOrderingCountOverrides` ([Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md)): `mixins: ['nfs-flexbox-utilities']` and `uses: [{entryPoint: 'ngx-foundation-sites/flexbox-utilities', directive: 'NfsFlexChild', input: 'order', alias: 'NfsFlexOrderInput', shape: 'count'}]`.
+- Known `uses` under `NfsGridColumnsOverrides` ([Spec: XY Grid](../issues/99-spec-xy-grid.md)): `{entryPoint: 'ngx-foundation-sites/xy-grid', directive: 'NfsCell', input: 'size', alias: 'NfsCellSizeInput', shape: 'count'}` and `{entryPoint: 'ngx-foundation-sites/xy-grid', directive: 'NfsCell', input: 'offset', alias: 'NfsCellOffsetInput', shape: 'count'}`.
+- Known `uses` under `NfsXyBlockGridMaxOverrides` ([Spec: XY Grid](../issues/99-spec-xy-grid.md)): `{entryPoint: 'ngx-foundation-sites/xy-grid', directive: 'NfsGridX', input: 'up', alias: 'NfsGridUpInput', shape: 'count'}`.
 - `base` records Foundation's chained defaults: `$button-palette`, `$badge-palette`, and `$label-palette` default to `$foundation-palette`, so their aliases build on `NfsFoundationPaletteColor` (T, B01).
 
 ### Hierarchy and package shape
@@ -170,7 +173,7 @@ There is no directive family. The pieces, all in the one `ngx-foundation-sites` 
 
 ```
 ngx-foundation-sites (primary entry point)
-  Variant registries (26 empty interfaces), helper types, Class breakpoint types,
+  Variant registries (25 empty interfaces), helper types, Class breakpoint types,
   NfsFoundationPaletteColor, NfsVariantBoolean + nfsVariantBoolean
       ^ import type (no runtime import)                      ^ import (one pure function)
       |                                                      |
@@ -597,7 +600,7 @@ $grid-columns: 16;
 @include nfs-breakpoint-properties;
 @include nfs-button;
 @include nfs-label;
-@include nfs-xy-grid; // the XY Grid spec names its mixin
+@include nfs-xy-grid;
 ```
 
 ```ts

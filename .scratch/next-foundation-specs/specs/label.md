@@ -201,7 +201,7 @@ The axe gate in every story runs the WCAG 2.2 AA rule set (tags `wcag2a`, `wcag2
 
 ### Rendered HTML
 
-Consumer markup, then the server HTML. The hydrated DOM equals the server HTML: the directive declares no listener, so nothing adds `jsaction`. Class order is not significant; Angular also renders the directive attributes and the static attributes that feed inputs (`nfslabel=""`, `color="alert"`), which the resulting DOM below leaves out, as the other specs do. `nfsShowForSr` stands for the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)'s screen-reader-only directive until that spec names it; its class belongs to that spec and is shown only to place it.
+Consumer markup, then the server HTML. The hydrated DOM equals the server HTML: the directive declares no listener, so nothing adds `jsaction`. Class order is not significant; Angular also renders the directive attributes and the static attributes that feed inputs (`nfslabel=""`, `color="alert"`), which the resulting DOM below leaves out, as the other specs do. `nfsShowForSr` is the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)'s directive for `.show-for-sr`, imported as `NfsShowForSr` from `ngx-foundation-sites/visibility`; its class belongs to that spec and is shown only to place it.
 
 ```html
 <!-- Basics: the label inside the heading it tags -->

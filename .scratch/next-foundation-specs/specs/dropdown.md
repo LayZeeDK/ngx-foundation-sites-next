@@ -599,12 +599,12 @@ Against the prerendered fixture app (the harness from the rendering-mode test se
 
 ### Usage examples
 
-`nfsShowForSr` stands for the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)'s directive for `.show-for-sr`, the Button and Button Group specs' placeholder; its import is left out until that spec names it. `account-box` is the application's own class.
+`nfsShowForSr` is the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)'s directive for `.show-for-sr`, imported as `NfsShowForSr` from `ngx-foundation-sites/visibility`. `account-box` is the application's own class.
 
 ```ts
 @Component({
   selector: 'app-header',
-  imports: [NfsButton, NfsButtonGroup, NfsToggle, NfsClose, NfsDropdownPane],
+  imports: [NfsButton, NfsButtonGroup, NfsToggle, NfsClose, NfsDropdownPane, NfsShowForSr],
   template: `
     <!-- Click to toggle, Foundation's docs example: no class on the pane -->
     <button nfsButton [nfsToggle]="example">Toggle Dropdown</button>

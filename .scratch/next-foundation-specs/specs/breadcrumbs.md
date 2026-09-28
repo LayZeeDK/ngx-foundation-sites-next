@@ -94,7 +94,7 @@ Every Foundation Breadcrumbs class, per building-blocks 1.14 item 2. Breadcrumbs
 | `.breadcrumbs` | Structural | `NfsBreadcrumbs`, `ul[nfsBreadcrumbs]` and `ol[nfsBreadcrumbs]`, static host class | Always |
 | `.disabled` on an item | State | `NfsBreadcrumbsItem`, `li[nfsBreadcrumbsItem]`, host binding `[class.disabled]` from the `disabled` input (D5) | `true` sets `.disabled`; `false` sets none and strips a copied static one |
 | Current page | No class | Not bound. `aria-current` on the current page's link, which `nfs-breadcrumbs` colours with `$breadcrumbs-item-color-current`, or on its `li` when it is text (D4) | A link whose `aria-current` is present and neither `false` nor empty |
-| `.show-for-sr` | Utility (Visibility classes) | Not used by the recipes: `aria-current` replaces Foundation's "Current: " text (D4). Where visually hidden text is wanted, the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)'s screen-reader-only directive | Not this entry point's |
+| `.show-for-sr` | Utility (Visibility classes) | Not used by the recipes: `aria-current` replaces Foundation's "Current: " text (D4). Where visually hidden text is wanted, the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)'s `nfsShowForSr` | Not this entry point's |
 
 No class is left for the consumer to write (ADR 0039). A `disabled` copied onto an `li` without `nfsBreadcrumbsItem` is not stripped, because no directive binds that element; it still draws Foundation's disabled look, and development check 2 reports it. A copied `current` or `is-active` draws nothing in Foundation's breadcrumbs CSS and says nothing to assistive technology; check 2 reports it too, as the Pagination reports its copied `current`.
 

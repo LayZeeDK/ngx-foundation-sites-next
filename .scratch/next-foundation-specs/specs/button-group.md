@@ -97,7 +97,7 @@ Variant classes, one row per family (building-blocks 1.14 item 2):
 | `.stacked-for-small`, `.stacked-for-medium` | `stackedFor` | `NfsButtonGroupStackedFor` | Closed: Foundation writes both names and their breakpoints literally | Name | `'small'` sets `.stacked-for-small` (stacked below `medium`); `'medium'` sets `.stacked-for-medium` (stacked below `large`); no value sets none | None (closed) |
 | `.no-gaps` | `noGaps` | `boolean` through `nfsVariantBoolean` | Closed | Boolean | `.no-gaps` | None (closed) |
 
-The Flexbox alignment classes on the group are set by the [Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md)'s directive placed beside `nfsButtonGroup`, written `nfsAlign` in this spec until that spec names it (D9).
+The Flexbox alignment classes on the group are set by `NfsFlexAlign` of the [Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md), placed beside `nfsButtonGroup` with its `alignX` input (D9).
 
 ### Hierarchy and DI shape
 
@@ -290,11 +290,11 @@ Consumer markup and the resulting DOM. Server HTML and hydrated DOM are identica
 </div>
 
 <!-- Flexbox alignment from the Flexbox Utilities directive beside the group -->
-<div nfsButtonGroup nfsAlign="center">...</div>
+<div nfsButtonGroup nfsFlexAlign alignX="center">...</div>
 <div class="button-group align-center">...</div>
 ```
 
-The Trigger's attributes belong to the [Spec: Triggers (shared utility)](../issues/54-spec-triggers.md) and the pane's markup to the [Spec: Dropdown](../issues/26-spec-dropdown.md); they are shown only to place them. `nfsShowForSr` stands for the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)'s directive for `.show-for-sr`, and `nfsAlign` for the [Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md)'s directive and input for `.align-*`, under those names until those specs name them. No `jsaction` appears on the group; the buttons carry one only where the consumer or another directive declared a listener.
+The Trigger's attributes belong to the [Spec: Triggers (shared utility)](../issues/54-spec-triggers.md) and the pane's markup to the [Spec: Dropdown](../issues/26-spec-dropdown.md); they are shown only to place them. `nfsShowForSr` is the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)'s directive for `.show-for-sr`, imported as `NfsShowForSr` from `ngx-foundation-sites/visibility`; `nfsFlexAlign` and `alignX` are the [Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md)'s. No `jsaction` appears on the group; the buttons carry one only where the consumer or another directive declared a listener.
 
 ### Animation
 
@@ -385,7 +385,7 @@ Against the prerendered fixture app: JavaScript disabled, a screenshot plus axe 
 | D6 | A development warning for `stacked` with `stackedFor` | Both classes together unstack from the next breakpoint (measured at 800 px), which neither input's name suggests; two inputs cannot exclude each other in the template type | Binding only one of the two (an explicit value always sets its class, building-blocks 1.4) |
 | D7 | A development warning for Foundation classes copied onto the host, through `HostAttributeToken('class')` in development builds only, covering the group's classes and the docs page's four alignment classes | Building-blocks 1.4's initial-state rule; copied classes keep styling beside the inputs' classes without being the contract, and the alignment classes appear on this docs page's own example | No check; checking consumer-declared palette and size names (the Variant check reports values the CSS lacks) |
 | D8 | No group-level `disabled`, outputs, methods, or models | Foundation has no group state; each `nfsButton` owns its disabled contract, which a group value could only duplicate | Material's toggle-group `disabled` cascade |
-| D9 | Flexbox alignment comes from the Flexbox Utilities directive beside `nfsButtonGroup`, written `nfsAlign` until that spec names it | `.align-*` are Utility classes of `foundation-flex-classes`, not of the button-group partial; directive composition over duplication (map, Standing preferences) | An `align` input on the group, which would give one Utility class family two owners |
+| D9 | Flexbox alignment comes from `nfsFlexAlign` and its `alignX` input, written beside `nfsButtonGroup` | `.align-*` are Utility classes of `foundation-flex-classes`, not of the button-group partial; directive composition over duplication (map, Standing preferences) | An `align` input on the group, which would give one Utility class family two owners |
 | D10 | Native implementation level; Aria's `Toolbar` is not used, and this is not a fallback | Foundation's Button Group has no keyboard contract; the APG toolbar pattern changes Tab into arrow keys and is for three or more controls; `nfsButton` on an `ngToolbarWidget` fights its `disabled` and `aria-disabled` bindings | Hosting `ngToolbar` on the group |
 | D11 | `nfs-button-group` writes no Variant property; the group's `color` and `size` are checked against `--nfs-button-palette` and `--nfs-button-sizes`, which `nfs-button` alone writes | A Variant property needs one writer: an empty property and a missing one read the same, so a second writer of the same list would keep the properties present when `nfs-button` is missing and hide that include from `strictVariantProperties`; a group is always used with `nfsButton`, so `nfs-button` is always there to write them | Writing both properties again, as a literal reading of building-blocks 1.13 would have it (duplicate CSS that hides a missing `nfs-button`) |
 | D12 | No `exportAs` | Nothing reads a group through a template reference; adding it later is additive | `exportAs: 'nfsButtonGroup'` for parity with `nfsButton` and `nfsCloseButton` |
@@ -393,12 +393,12 @@ Against the prerendered fixture app: JavaScript disabled, a screenshot plus axe 
 
 ### Usage examples
 
-`nfsShowForSr` is the Visibility Classes placeholder of the Rendered HTML section; its import is left out until that spec names it.
+`nfsShowForSr` is the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)'s directive for `.show-for-sr`, imported as `NfsShowForSr` from `ngx-foundation-sites/visibility`.
 
 ```ts
 @Component({
   selector: 'app-document-actions',
-  imports: [NfsButtonGroup, NfsButton, NfsToggle, NfsDropdownPane],
+  imports: [NfsButtonGroup, NfsButton, NfsToggle, NfsDropdownPane, NfsShowForSr],
   template: `
     <!-- A split button: the arrow's text names its menu -->
     <div nfsButtonGroup fill="hollow" role="group" aria-label="Save">

@@ -128,7 +128,7 @@ Magellan has no Structural class and no Variant class in Foundation (its Plugin 
 
 `aria-current` is not a class but travels with `.is-active` on the link. Neither is a host binding. The class rule's "every State class is a host binding" (ADR 0039) presumes a host, and D11 keeps the `Renderer2` write because these elements have none: the marked links and list items are the consumer's elements inside the host, found by query as Smooth Scroll finds them, and no library directive sits on them, since they carry no Structural class that ADR 0039 would give a directive; the rule's reason, that host bindings render on the server so the first paint carries the class, does not apply, because the server cannot know the scroll position and no section is current in server HTML. The consumer still writes no class: Magellan manages the marker, as the class rule requires. The [Spec: Menu](../issues/85-spec-menu.md) gives a Menu's link items no directive (only `li[nfsMenuText]`, for items without a link) and marks a current page by `aria-current` alone, so the list item has one writer, Magellan. Angular's `RouterLinkActive` also writes its classes and `aria-current` with `Renderer2`, and the Off-canvas panel writes Foundation's `is-off-canvas-open` on `body` for the same reason as Magellan: no host binding reaches the element.
 
-`NfsMenu`, `orientation`, `expanded`, and `simple` are the Menu spec's names (the Smooth Scroll spec uses them too), and `NfsSticky` and `NfsStickyContainer` are the Sticky spec's. `NfsTopBar`, `NfsTopBarRight`, `NfsGridX`, `NfsCell`, and `size` are the ones the out-of-scope triage and building-blocks 1.3 and 1.4 give; the Top Bar and XY Grid specs own them, and the class-rule consistency review aligns this spec's examples if their final names differ.
+`NfsMenu`, `orientation`, `expanded`, and `simple` are the Menu spec's names (the Smooth Scroll spec uses them too), and `NfsSticky` and `NfsStickyContainer` are the Sticky spec's. `NfsTopBar` and `NfsTopBarRight` are the Top Bar spec's names; `NfsGridX`, `NfsCell`, and `size` are the [Spec: XY Grid](../issues/99-spec-xy-grid.md)'s.
 
 ### Hierarchy and DI shape
 
@@ -617,7 +617,7 @@ export class Docs {
 }
 ```
 
-Binding `[(active)]` alone to the select (`(change)="current.set(...)"`) also scrolls, but leaves focus on the select, which suits a control the user keeps using and not a navigation. On a responsive page the select is typically shown below `large` and the navigation from `large` up; the Visibility Classes spec's directives set those Visibility classes, so the example writes neither ([Spec: Visibility Classes](../issues/104-spec-visibility-classes.md) names them).
+Binding `[(active)]` alone to the select (`(change)="current.set(...)"`) also scrolls, but leaves focus on the select, which suits a control the user keeps using and not a navigation. On a responsive page the select is typically shown below `large` and the navigation from `large` up; `nfsVisibility` sets those Visibility classes: `hideFor="large"` on the select's form and `showFor="large"` on the navigation ([Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)).
 
 With the Router (base href safe hrefs; both link kinds in one menu):
 

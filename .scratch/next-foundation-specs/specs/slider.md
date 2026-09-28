@@ -632,7 +632,7 @@ export class Filters {
 
 ```html
 <!-- Foundation's data binding example: the same signal on a number input -->
-<div nfsGridX>
+<div nfsGridX gridMarginX>
   <div nfsCell size="10">
     <div nfsSlider [step]="5">
       <input type="range" nfsSliderHandle aria-label="Amount" [(value)]="amount" />
@@ -657,7 +657,7 @@ providers: [{ provide: nfsSliderDefaultsToken, useValue: { decimal: 0, step: 5 }
 
 A `type="number"` input needs no `inputmode`; a `type="text"` input bound the same way gets `inputmode="decimal"`.
 
-No example writes a Foundation or library class. The data binding example's row and cells use the XY Grid spec's directives, named here as building-blocks 1.3 and 1.4 name them (`nfsGridX`, `nfsCell` with a `size` count for Foundation's `small-10` and `small-2`) until the [Spec: XY Grid](../issues/99-spec-xy-grid.md) names them; Foundation's `.grid-margin-x` gutter is left out until that spec names its input.
+No example writes a Foundation or library class. The data binding example's row and cells use the [Spec: XY Grid](../issues/99-spec-xy-grid.md)'s directives (`nfsGridX` with `gridMarginX` for Foundation's `.grid-margin-x`, `nfsCell` with `size="10"` and `size="2"` for `small-10` and `small-2`).
 
 ### Sass
 

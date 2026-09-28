@@ -243,7 +243,7 @@ The axe gate in every story runs the WCAG 2.2 AA rule set (tags `wcag2a`, `wcag2
 
 ### Rendered HTML
 
-Server HTML and the hydrated DOM are identical for every example: every class is a static host class or a host binding on an input, and no directive reads the platform, a breakpoint, or a generated id. The directive attributes themselves (`nfsinputgroup=""` and so on) are left out below, and class order is not significant. The layout directives (`nfsGridX`, `nfsCell` with `size`) and the text-alignment directive (`nfsTextAlign`) stand for the directives of [Spec: XY Grid](../issues/99-spec-xy-grid.md) and [Spec: Typography Helpers](../issues/106-spec-typography-helpers.md); their names here are placeholders that [Consistency review: the class-rule wave](../issues/133-consistency-review-class-rule-wave.md) replaces with the published ones.
+Server HTML and the hydrated DOM are identical for every example: every class is a static host class or a host binding on an input, and no directive reads the platform, a breakpoint, or a generated id. The directive attributes themselves (`nfsinputgroup=""` and so on) are left out below, and class order is not significant. `nfsGridX` and `nfsCell` with `size` are the [Spec: XY Grid](../issues/99-spec-xy-grid.md)'s. The text-alignment directive (`nfsTextAlign`) stands for the directive of [Spec: Typography Helpers](../issues/106-spec-typography-helpers.md); its name here is a placeholder that [Consistency review: the class-rule wave](../issues/133-consistency-review-class-rule-wave.md) replaces with the published one.
 
 ```html
 <!-- Input group, unvalidated -->

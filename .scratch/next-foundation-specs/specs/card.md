@@ -231,7 +231,7 @@ Per ADR 0008 and the rendering-modes research, section 7 rules 1 to 11:
 
 A good test asserts what a user or assistive technology observes: the classes, roles and names, the computed backgrounds and padding, where images and text sit against the card's edges, and the DOM order. No test reads a directive's fields. The patterns are the four layers of building-blocks 1.12 and the [Spec: Callout](../issues/89-spec-callout.md)'s and [Spec: Badge](../issues/93-spec-badge.md)'s tests, the nearest precedents.
 
-Story ids follow `card--<story>`: `card--default`, `card--divider`, `card--images`, `card--sizing`, `card--long-words`. `meta.component` is `NfsCard`; there are no args, because no directive has an input. The Storybook settings overrides already carry the required setting (the Callout's `$anchor-color` line), and the preview includes `nfs-card`. Grid scaffolding uses the XY Grid's directives, written `nfsGridX`, `nfsCell`, and `up` as the [Spec: Equalizer](../issues/34-spec-equalizer.md) writes them until the [Spec: XY Grid](../issues/99-spec-xy-grid.md) names them; every story image has an `alt`.
+Story ids follow `card--<story>`: `card--default`, `card--divider`, `card--images`, `card--sizing`, `card--long-words`. `meta.component` is `NfsCard`; there are no args, because no directive has an input. The Storybook settings overrides already carry the required setting (the Callout's `$anchor-color` line), and the preview includes `nfs-card`. Grid scaffolding uses the [Spec: XY Grid](../issues/99-spec-xy-grid.md)'s `nfsGridX`, `nfsCell`, and `up`; every story image has an `alt`.
 
 ### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`)
 
@@ -359,7 +359,7 @@ export class ProductCard {
 }
 ```
 
-`<app-product-card>` renders `class="card"` from the hosted directive, so its host metadata names no Foundation class; the product photo's `alt` is empty because the linked name beside it says what it shows. The XY Grid's `nfsGridX`, `nfsCell`, and `up`, and the Flexbox Utilities' `nfsFlexContainer`, are the names the [Spec: Equalizer](../issues/34-spec-equalizer.md) uses until the [Spec: XY Grid](../issues/99-spec-xy-grid.md) and the [Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md) name their directives; Foundation's gutter classes are left out until the XY Grid spec names its input.
+`<app-product-card>` renders `class="card"` from the hosted directive, so its host metadata names no Foundation class; the product photo's `alt` is empty because the linked name beside it says what it shows. `nfsGridX`, `nfsCell`, `up`, and `gridMarginX` are the [Spec: XY Grid](../issues/99-spec-xy-grid.md)'s; `nfsFlexContainer` is the [Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md)'s.
 
 ### Platform features to adopt when the browser target moves
 

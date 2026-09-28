@@ -235,7 +235,7 @@ Pattern: WAI-ARIA APG Disclosure, in the shape of the mobile navigation button o
 | Element | Role | Attributes | Who renders them |
 | --- | --- | --- | --- |
 | Hamburger `button[nfsMenuIcon]` | native `button` | `type="button"`; `aria-expanded` from `isOpen`; `aria-controls` = the menu id | `nfsMenuIcon` (`type`, the Top Bar spec); `nfsToggle` (the disclosure Trigger role) |
-| Hamburger name | | `aria-labelledby` pointing at the `nfsTitleBarTitle` element's static `id` (visible text beats `aria-label`); alternative: visually hidden text inside the button (the screen-reader-only directive of the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md), written `nfsShowForSr` here until that spec names it); a missing or symbol-only name warns in development | Consumer markup; the checks are `nfsMenuIcon`'s |
+| Hamburger name | | `aria-labelledby` pointing at the `nfsTitleBarTitle` element's static `id` (visible text beats `aria-label`); alternative: visually hidden text inside the button (`nfsShowForSr` of the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)); a missing or symbol-only name warns in development | Consumer markup; the checks are `nfsMenuIcon`'s |
 | Title `[nfsTitleBarTitle]` | none | a static `id` | Consumer markup; `.title-bar-title` from the Top Bar spec |
 | Title bar | none | none | nothing |
 | Menu | the consumer's element; a `nav` landmark is recommended, named with `aria-label` or `aria-labelledby` | `inert` only while animating out | `nfsResponsiveToggleMenu` |

@@ -96,7 +96,7 @@ Every Foundation Pagination class, per building-blocks 1.14 item 2. Pagination h
 | `.current` | State | Not bound. The current page is `aria-current` on its link or button; `nfs-pagination` styles it with Foundation's `pagination-item-current` (D4) | A link or button whose `aria-current` is present and neither `false` nor empty |
 | `.disabled` | State | Not bound. A disabled item is a placeholder link with `role="link"` and `aria-disabled="true"`, or a natively disabled button; `nfs-pagination` styles it with Foundation's `pagination-item-disabled` (D5) | `a[aria-disabled='true']`, `button:disabled` |
 | `.text-center` | Utility (Typography Helpers) | The [Spec: Typography Helpers](../issues/106-spec-typography-helpers.md)'s text-alignment directive, written `nfsTextAlign="center"` until that spec names it (D10) | Not this entry point's |
-| `.show-for-sr` | Utility (Visibility classes) | Not used by the recipes: `aria-label` names the links, as Foundation's docs do (D7). Where visually hidden text is wanted, the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)'s directive (`nfsShowForSr` until that spec names it) | Not this entry point's |
+| `.show-for-sr` | Utility (Visibility classes) | Not used by the recipes: `aria-label` names the links, as Foundation's docs do (D7). Where visually hidden text is wanted, the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)'s directive (`nfsShowForSr`) | Not this entry point's |
 
 No class is left for the consumer to write (ADR 0039). `.current` and `.disabled` are never bound, so a copied one is not stripped; it is reported in development builds (Development checks, 2), because it would draw a current or disabled look that no ARIA state backs.
 
