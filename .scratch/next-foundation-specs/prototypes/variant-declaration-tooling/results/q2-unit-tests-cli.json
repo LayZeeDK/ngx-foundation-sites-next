@@ -1,0 +1,64 @@
+[
+  {
+    "name": "ng test (@angular/build:unit-test, Vitest, jsdom)",
+    "withFile": {
+      "exit": 0,
+      "diag": [],
+      "tests": "Tests  1 passed (1)",
+      "tail": [
+        "  Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.",
+        "  More info and automated migrator: https://sass-lang.com/d/import",
+        "  The plugin \"angular-sass\" was triggered by this import",
+        "    angular:styles/global:styles:1:8:",
+        "      1 | @import 'src/styles.scss';",
+        "        '         ~~~~~~~~~~~~~~~~~"
+      ]
+    },
+    "withoutFile": {
+      "exit": 1,
+      "diag": [
+        "X [ERROR] TS2322: Type '\"purple\"' is not assignable to type 'NfsButtonColor | undefined'. [plugin angular-compiler]"
+      ],
+      "tests": "",
+      "tail": [
+        "      2 | <button nfsButton color=\"purple\">Purple</button>",
+        "        '                   ~~~~~",
+        "  Error occurs in the template of component App.",
+        "    D:/tmp/nfs-proto-137/cli-ws/src/app/app.ts:7:15:",
+        "      7 |   templateUrl: './app.html',",
+        "        '                ~~~~~~~~~~~~"
+      ]
+    }
+  },
+  {
+    "name": "ng test --browsers=ChromiumHeadless (Vitest browser mode, Playwright)",
+    "withFile": {
+      "exit": 0,
+      "diag": [],
+      "tests": "Tests  1 passed (1)",
+      "tail": [
+        "  More info and automated migrator: https://sass-lang.com/d/import",
+        "  The plugin \"angular-sass\" was triggered by this import",
+        "    angular:styles/global:styles:1:8:",
+        "      1 | @import 'src/styles.scss';",
+        "        '         ~~~~~~~~~~~~~~~~~",
+        "Plugin \"vitest:mocks:interceptor\" defines Vite-specific hooks (configureServer) in a plugin returned from applyToEnvironment. These hooks will be ignored."
+      ]
+    },
+    "withoutFile": {
+      "exit": 1,
+      "diag": [
+        "X [ERROR] TS2322: Type '\"purple\"' is not assignable to type 'NfsButtonColor | undefined'. [plugin angular-compiler]"
+      ],
+      "tests": "",
+      "tail": [
+        "      2 | <button nfsButton color=\"purple\">Purple</button>",
+        "        '                   ~~~~~",
+        "  Error occurs in the template of component App.",
+        "    D:/tmp/nfs-proto-137/cli-ws/src/app/app.ts:7:15:",
+        "      7 |   templateUrl: './app.html',",
+        "        '                ~~~~~~~~~~~~"
+      ]
+    }
+  }
+]

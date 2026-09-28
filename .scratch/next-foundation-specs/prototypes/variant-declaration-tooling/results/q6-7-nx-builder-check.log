@@ -1,0 +1,14 @@
+
+> nx run shop:nfs-variants:check
+
+ngx-foundation-sites: apps/shop/src/styles.scss 752 ms, 115 files
+
+
+
+ NX   Successfully ran target nfs-variants for project shop
+
+
+  Run duration:      1.5s
+  Cache:             0/1 hit (0%)
+  Critical path:     1.5s (1 task)
+  Recoverable time:  <1ms

@@ -1,0 +1,13 @@
+// Q3: a second global stylesheet whose button palette disagrees with the first.
+@import 'util/util';
+@import 'settings/settings';
+$button-palette: map-merge(
+  $foundation-palette,
+  (
+    teal: #007a7a,
+  )
+);
+@import 'foundation';
+@import 'ngx-foundation-sites';
+
+@include nfs-button;

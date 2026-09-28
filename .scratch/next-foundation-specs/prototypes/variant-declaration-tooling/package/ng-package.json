@@ -1,0 +1,7 @@
+{
+  "$schema": "../node_modules/ng-packagr/ng-package.schema.json",
+  "dest": "../../pkg-dist",
+  "deleteDestPath": true,
+  "lib": { "entryFile": "src/public-api.ts" },
+  "assets": ["_index.scss", "tooling/**/*"]
+}

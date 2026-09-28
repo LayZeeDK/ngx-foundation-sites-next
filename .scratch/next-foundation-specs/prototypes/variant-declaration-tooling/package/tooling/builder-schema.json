@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "Variant declaration file",
+  "type": "object",
+  "properties": {
+    "buildTarget": {
+      "type": "string",
+      "description": "The build target whose global stylesheets the tooling compiles; <project>:build by default."
+    },
+    "stylesheets": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Stylesheets to compile instead of a build target's."
+    },
+    "includePaths": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Sass load paths for stylesheets."
+    },
+    "check": {
+      "type": "boolean",
+      "default": false,
+      "description": "Compare only: fail on Declaration drift, never write."
+    }
+  },
+  "required": []
+}

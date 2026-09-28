@@ -1,0 +1,10 @@
+// Q3: pkg: URLs for Foundation and ngx-foundation-sites.
+@import 'util/util';
+@import 'settings/settings';
+@import '../app-settings';
+@import 'pkg:foundation-sites/scss/foundation';
+@import 'pkg:ngx-foundation-sites';
+
+@include foundation-everything;
+@include nfs-breakpoint-properties;
+@include nfs-button;

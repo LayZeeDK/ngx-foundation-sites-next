@@ -1,0 +1,20 @@
+
+> nx run shop:nfs-variants:check
+
+ngx-foundation-sites: apps/shop/src/nfs-variants.d.ts no longer matches apps/shop/src/styles.scss:
+  NfsButtonPaletteOverrides: add teal: true (teal is in --nfs-button-palette)
+Run `nx sync` or `nx run shop:nfs-variants` to update it.
+
+
+
+ NX   Running target nfs-variants for project shop failed
+
+Failed tasks:
+
+- shop:nfs-variants:check
+
+Hint: run the command with --verbose for more details.
+
+  Run duration:      1.7s
+  Critical path:     1.7s (1 task)
+  Recoverable time:  <1ms

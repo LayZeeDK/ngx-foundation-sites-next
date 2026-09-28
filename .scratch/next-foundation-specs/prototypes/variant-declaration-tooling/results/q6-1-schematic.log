@@ -1,0 +1,10 @@
+ngx-foundation-sites: set up the Variant declaration files.
+cli-ws:
+  added the nfs-variants target to angular.json
+  wrote src/nfs-variants.d.ts
+added prebuild, prestart, and pretest to package.json
+Add this step to CI: npx ng run cli-ws:nfs-variants:check.
+After the file changes while a dev server runs, restart the server.
+CREATE src/nfs-variants.d.ts (255 bytes)
+UPDATE angular.json (2472 bytes)
+UPDATE package.json (1084 bytes)

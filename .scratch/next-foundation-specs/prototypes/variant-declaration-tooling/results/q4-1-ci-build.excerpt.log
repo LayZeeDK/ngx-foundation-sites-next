@@ -1,0 +1,3 @@
+[OK]  nx run ui:build:production
+> nx run shop:build:production
+ NX   Successfully ran target build for project shop and 1 task it depends on

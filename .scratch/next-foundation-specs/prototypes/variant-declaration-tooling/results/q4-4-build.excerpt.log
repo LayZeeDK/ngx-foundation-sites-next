@@ -1,0 +1,7 @@
+ NX   Running target build for project shop and 1 task it depends on:
+Application bundle generation failed. [2.094 seconds] - 2026-09-28T03:03:17.524Z
+X [ERROR] TS2322: Type '"warning"' is not assignable to type 'NfsButtonColor | undefined'. [plugin angular-compiler]
+    D:/tmp/nfs-proto-137/nx-ws/apps/shop/src/app/app.html:3:18:
+      3 | <button nfsButton color="warning">Warning</button>
+      9 |   templateUrl: './app.html',
+ NX   Running target build for project shop and 1 task it depends on failed

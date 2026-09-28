@@ -1,0 +1,11 @@
+// Q3: the first global stylesheet, without the XY Grid include.
+@import 'util/util';
+@import 'settings/settings';
+@import '../app-settings';
+@import 'foundation';
+@import 'ngx-foundation-sites';
+
+@include foundation-everything;
+@include nfs-breakpoint-properties;
+@include nfs-button;
+@include nfs-callout;

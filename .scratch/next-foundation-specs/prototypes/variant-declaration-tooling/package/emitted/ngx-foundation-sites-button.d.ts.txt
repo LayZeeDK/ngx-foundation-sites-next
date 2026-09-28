@@ -1,0 +1,27 @@
+import { NfsButtonPaletteOverrides, NfsClassBreakpointQuery, NfsFoundationPaletteColor, NfsOverridableStringUnion } from "ngx-foundation-sites";
+import * as i0 from "@angular/core";
+/** `$button-palette`, chained on `$foundation-palette`. Shape: name. */
+export type NfsButtonColor = NfsOverridableStringUnion<NfsFoundationPaletteColor, NfsButtonPaletteOverrides>;
+/** `.expanded` and its responsive forms. Shape: query. */
+export type NfsButtonExpanded = NfsClassBreakpointQuery<'only' | 'down'>;
+/** PROTOTYPE stand-in for Foundation's Button (name and query shapes). */
+export declare class NfsButton {
+  /** A `$button-palette` name. */
+  readonly color: import("@angular/core").InputSignal<NfsButtonColor | undefined>;
+  /** `expanded`, as a Breakpoint query over Class breakpoints. */
+  readonly expanded: import("@angular/core").InputSignal<NfsButtonExpanded | undefined>;
+  protected readonly classes: import("@angular/core").Signal<string>;
+  static thetafac: i0.thetathetaFactoryDeclaration<NfsButton, never>;
+  static thetadir: i0.thetathetaDirectiveDeclaration<NfsButton, "[nfsButton]", never, {
+    "color": {
+      "alias": "color";
+      "required": false;
+      "isSignal": true;
+    };
+    "expanded": {
+      "alias": "expanded";
+      "required": false;
+      "isSignal": true;
+    };
+  }, {}, never, never, true, never>;
+}

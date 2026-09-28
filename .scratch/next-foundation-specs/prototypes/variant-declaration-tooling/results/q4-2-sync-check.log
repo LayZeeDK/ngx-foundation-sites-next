@@ -1,0 +1,9 @@
+
+ NX   The workspace is out of sync
+
+[ngx-foundation-sites:variant-types-sync]: ngx-foundation-sites: the Variant declaration files no longer match the Sass they are generated from.
+apps/shop/src/nfs-variants.d.ts (shop, from apps/shop/src/styles.scss): NfsButtonPaletteOverrides: add warning: false (warning is not in --nfs-button-palette)
+libs/ui/src/nfs-variants.d.ts (ui, from apps/shop/src/styles.scss): NfsButtonPaletteOverrides: add warning: false (warning is not in --nfs-button-palette)
+
+Run `nx sync` to sync the workspace.
+

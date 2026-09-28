@@ -1,0 +1,54 @@
+{
+  "name": "ui",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/ui/src",
+  "prefix": "lib",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/angular:ng-packagr-lite",
+      "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
+      "defaultConfiguration": "production",
+      "syncGenerators": ["...", "ngx-foundation-sites:variant-types-sync"],
+      "options": {
+        "project": "libs/ui/ng-package.json",
+        "tsConfig": "libs/ui/tsconfig.lib.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "libs/ui/tsconfig.lib.prod.json"
+        },
+        "development": {}
+      }
+    },
+    "test": {
+      "executor": "@nx/angular:unit-test",
+      "syncGenerators": ["...", "ngx-foundation-sites:variant-types-sync"],
+      "options": {
+        "watch": false
+      }
+    },
+    "nfs-variants": {
+      "executor": "ngx-foundation-sites:variant-types",
+      "cache": false,
+      "options": {
+        "buildTarget": "shop:build"
+      },
+      "configurations": {
+        "check": {
+          "check": true
+        }
+      }
+    },
+    "build-storybook": {
+      "syncGenerators": ["...", "ngx-foundation-sites:variant-types-sync"]
+    },
+    "storybook": {
+      "syncGenerators": ["...", "ngx-foundation-sites:variant-types-sync"]
+    },
+    "test-storybook": {
+      "syncGenerators": ["...", "ngx-foundation-sites:variant-types-sync"]
+    }
+  }
+}

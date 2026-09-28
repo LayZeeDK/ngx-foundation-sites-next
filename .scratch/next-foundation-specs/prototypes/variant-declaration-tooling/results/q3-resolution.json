@@ -1,0 +1,163 @@
+[
+  {
+    "case": "1 @import ngx-foundation-sites (sass export condition) + includePaths",
+    "core": {
+      "sources": ["src/styles.scss"],
+      "properties": {
+        "--nfs-breakpoint-classes": "small medium large",
+        "--nfs-button-palette": "primary secondary success warning alert purple",
+        "--nfs-foundation-palette": "primary secondary success warning alert",
+        "--nfs-grid-columns": "12"
+      },
+      "warnings": []
+    },
+    "builds": {
+      "production": {
+        "styles.css": {
+          "--nfs-breakpoint-classes": "small medium large",
+          "--nfs-button-palette": "primary secondary success warning alert purple",
+          "--nfs-foundation-palette": "primary secondary success warning alert",
+          "--nfs-grid-columns": "12"
+        }
+      }
+    }
+  },
+  {
+    "case": "2 pkg: URLs",
+    "core": {
+      "sources": ["src/q3/styles-pkg.scss"],
+      "properties": {
+        "--nfs-breakpoint-classes": "small medium large",
+        "--nfs-button-palette": "primary secondary success warning alert purple"
+      },
+      "warnings": []
+    },
+    "builds": {
+      "production": {
+        "styles.css": {
+          "--nfs-breakpoint-classes": "small medium large",
+          "--nfs-button-palette": "primary secondary success warning alert purple"
+        }
+      }
+    }
+  },
+  {
+    "case": "3 ~ prefix",
+    "core": {
+      "sources": ["src/q3/styles-tilde.scss"],
+      "error": "ngx-foundation-sites: compiling src/q3/styles-tilde.scss for cli-ws failed: Error: Can't find stylesheet to import.",
+      "warnings": []
+    },
+    "builds": {
+      "production": {
+        "failed": true,
+        "exit": 1,
+        "error": "X [ERROR] Error: Can't find stylesheet to import."
+      }
+    }
+  },
+  {
+    "case": "4 no includePaths, package specifiers only",
+    "core": {
+      "sources": ["src/q3/styles-noinclude.scss"],
+      "error": "ngx-foundation-sites: compiling src/q3/styles-noinclude.scss for cli-ws failed: Error: Can't find stylesheet to import.",
+      "warnings": []
+    },
+    "builds": {
+      "production": {
+        "failed": true,
+        "exit": 1,
+        "error": "X [ERROR] Error: Can't find stylesheet to import."
+      }
+    }
+  },
+  {
+    "case": "5 two global stylesheets, different registries",
+    "core": {
+      "sources": ["src/styles.scss", "src/q3/extra-grid.scss"],
+      "error": "ngx-foundation-sites: --nfs-grid-columns lists different names in src/styles.scss and src/q3/extra-grid.scss; name the one to follow in the nfs-variants target's stylesheets option.",
+      "warnings": []
+    },
+    "builds": {
+      "production": {
+        "styles.css": {
+          "--nfs-breakpoint-classes": "small medium large",
+          "--nfs-button-palette": "primary secondary success warning alert purple",
+          "--nfs-foundation-palette": "primary secondary success warning alert",
+          "--nfs-grid-columns": "12 | 16"
+        }
+      }
+    }
+  },
+  {
+    "case": "6 two global stylesheets that disagree",
+    "core": {
+      "sources": ["src/styles.scss", "src/q3/extra-teal.scss"],
+      "error": "ngx-foundation-sites: --nfs-button-palette lists different names in src/styles.scss and src/q3/extra-teal.scss; name the one to follow in the nfs-variants target's stylesheets option.",
+      "warnings": []
+    },
+    "builds": {
+      "production": {
+        "styles.css": {
+          "--nfs-breakpoint-classes": "small medium large",
+          "--nfs-button-palette": "primary secondary success warning alert purple | primary secondary success warning alert teal",
+          "--nfs-foundation-palette": "primary secondary success warning alert",
+          "--nfs-grid-columns": "12"
+        }
+      }
+    }
+  },
+  {
+    "case": "7 inject: false theme",
+    "core": {
+      "sources": ["src/styles.scss"],
+      "properties": {
+        "--nfs-breakpoint-classes": "small medium large",
+        "--nfs-button-palette": "primary secondary success warning alert purple",
+        "--nfs-foundation-palette": "primary secondary success warning alert",
+        "--nfs-grid-columns": "12"
+      },
+      "warnings": []
+    },
+    "builds": {
+      "production": {
+        "styles.css": {
+          "--nfs-breakpoint-classes": "small medium large",
+          "--nfs-button-palette": "primary secondary success warning alert purple",
+          "--nfs-foundation-palette": "primary secondary success warning alert",
+          "--nfs-grid-columns": "12"
+        },
+        "theme-teal.css": {
+          "--nfs-button-palette": "primary secondary success warning alert teal"
+        }
+      }
+    }
+  },
+  {
+    "case": "8 production configuration overrides styles",
+    "core": {
+      "sources": ["src/q3/styles-alt.scss"],
+      "properties": {
+        "--nfs-button-palette": "primary secondary success warning alert teal"
+      },
+      "warnings": [
+        "ngx-foundation-sites: the production configuration of cli-ws:build changes styles or stylePreprocessorOptions; src/nfs-variants.d.ts follows the production configuration."
+      ]
+    },
+    "builds": {
+      "production": {
+        "styles.css": {
+          "--nfs-button-palette": "primary secondary success warning alert teal"
+        }
+      },
+      "development": {
+        "styles.css": {
+          "--nfs-breakpoint-classes": "small medium large",
+          "--nfs-button-palette": "primary secondary success warning alert purple",
+          "--nfs-foundation-palette": "primary secondary success warning alert",
+          "--nfs-grid-columns": "12"
+        }
+      }
+    }
+  }
+]

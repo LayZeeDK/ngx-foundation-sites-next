@@ -1,0 +1,9 @@
+// shop's own settings (a consumer's edits to its copy of Foundation's _settings.scss).
+$button-palette: map-merge(
+  $foundation-palette,
+  (
+    purple: #7a3fbf,
+  )
+);
+$breakpoint-classes: (small medium large xlarge);
+$grid-columns: 16;

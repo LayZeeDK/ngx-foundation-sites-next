@@ -1,0 +1,1 @@
+ngx-foundation-sites: the schematic needs nx and @nx/devkit. Install them: npm install --save-dev nx @nx/devkit

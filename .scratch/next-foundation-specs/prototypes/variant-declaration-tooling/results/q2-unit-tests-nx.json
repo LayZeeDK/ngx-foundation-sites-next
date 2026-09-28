@@ -1,0 +1,132 @@
+[
+  {
+    "name": "nx test shop (@angular/build:unit-test, jsdom)",
+    "withFile": {
+      "exit": 0,
+      "diag": [],
+      "tests": "Tests  1 passed (1)",
+      "tail": [
+        "  Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.\r",
+        "  More info and automated migrator: https://sass-lang.com/d/import\r",
+        "  The plugin \"angular-sass\" was triggered by this import\r",
+        "    angular:styles/global:styles:1:8:\r",
+        "      1 | @import 'apps/shop/src/styles.scss';\r",
+        "        '         ~~~~~~~~~~~~~~~~~~~~~~~~~~~\r"
+      ]
+    },
+    "withoutFile": {
+      "exit": 1,
+      "diag": [
+        "X [ERROR] TS2322: Type '\"purple\"' is not assignable to type 'NfsButtonColor | undefined'. [plugin angular-compiler]",
+        "X [ERROR] TS2322: Type '\"purple\"' is not assignable to type 'NfsButtonColor | undefined'. [plugin angular-compiler]",
+        "X [ERROR] TS2820: Type '\"xlarge down\"' is not assignable to type 'NfsButtonExpanded | undefined'. Did you mean '\"large down\"'? [plugin angular-compiler]",
+        "X [ERROR] TS2322: Type '\"16\"' is not assignable to type 'NfsCellSize | undefined'. [plugin angular-compiler]"
+      ],
+      "tests": "",
+      "tail": [
+        "      9 |   templateUrl: './app.html',\r",
+        "        '                ~~~~~~~~~~~~\r",
+        " NX   Running target test for project shop failed\r",
+        "Failed tasks:\r",
+        "- shop:test\r",
+        "Hint: run the command with --verbose for more details.\r"
+      ]
+    }
+  },
+  {
+    "name": "nx test shop --browsers=ChromiumHeadless (browser mode)",
+    "withFile": {
+      "exit": 0,
+      "diag": [],
+      "tests": "Tests  1 passed (1)",
+      "tail": [
+        "  Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.\r",
+        "  More info and automated migrator: https://sass-lang.com/d/import\r",
+        "  The plugin \"angular-sass\" was triggered by this import\r",
+        "    angular:styles/global:styles:1:8:\r",
+        "      1 | @import 'apps/shop/src/styles.scss';\r",
+        "        '         ~~~~~~~~~~~~~~~~~~~~~~~~~~~\r"
+      ]
+    },
+    "withoutFile": {
+      "exit": 1,
+      "diag": [
+        "X [ERROR] TS2322: Type '\"purple\"' is not assignable to type 'NfsButtonColor | undefined'. [plugin angular-compiler]",
+        "X [ERROR] TS2322: Type '\"purple\"' is not assignable to type 'NfsButtonColor | undefined'. [plugin angular-compiler]",
+        "X [ERROR] TS2820: Type '\"xlarge down\"' is not assignable to type 'NfsButtonExpanded | undefined'. Did you mean '\"large down\"'? [plugin angular-compiler]",
+        "X [ERROR] TS2322: Type '\"16\"' is not assignable to type 'NfsCellSize | undefined'. [plugin angular-compiler]"
+      ],
+      "tests": "",
+      "tail": [
+        "      9 |   templateUrl: './app.html',\r",
+        "        '                ~~~~~~~~~~~~\r",
+        " NX   Running target test for project shop failed\r",
+        "Failed tasks:\r",
+        "- shop:test\r",
+        "Hint: run the command with --verbose for more details.\r"
+      ]
+    }
+  },
+  {
+    "name": "nx test ui (@nx/angular:unit-test, jsdom)",
+    "withFile": {
+      "exit": 0,
+      "diag": [],
+      "tests": "Tests  1 passed (1)",
+      "tail": [
+        "   Duration  772ms (transform 40ms, setup 204ms, import 20ms, tests 25ms, environment 350ms)\r",
+        " NX   Successfully ran target test for project ui\r",
+        "  Run duration:      3.0s",
+        "  Cache:             Skipped (--skip-nx-cache)",
+        "  Critical path:     3.0s (1 task)",
+        "  Recoverable time:  <1ms"
+      ]
+    },
+    "withoutFile": {
+      "exit": 1,
+      "diag": [
+        "X [ERROR] TS2322: Type '\"purple\"' is not assignable to type 'NfsButtonColor | undefined'. [plugin angular-compiler]"
+      ],
+      "tests": "",
+      "tail": [
+        "      7 |   template: `<button nfsButton color=\"purple\">Shared purple</button>`,\r",
+        "        '                                ~~~~~\r",
+        " NX   Running target test for project ui failed\r",
+        "Failed tasks:\r",
+        "- ui:test\r",
+        "Hint: run the command with --verbose for more details.\r"
+      ]
+    }
+  },
+  {
+    "name": "nx test ui --browsers=ChromiumHeadless (@nx/angular:unit-test, browser mode)",
+    "withFile": {
+      "exit": 0,
+      "diag": [],
+      "tests": "Tests  1 passed (1)",
+      "tail": [
+        "   Duration  2.47s (transform 0ms, setup 1.03s, import 24ms, tests 41ms, environment 0ms)\r",
+        " NX   Successfully ran target test for project ui\r",
+        "  Run duration:      4.9s",
+        "  Cache:             Skipped (--skip-nx-cache)",
+        "  Critical path:     4.9s (1 task)",
+        "  Recoverable time:  <1ms"
+      ]
+    },
+    "withoutFile": {
+      "exit": 1,
+      "diag": [
+        "X [ERROR] TS2322: Type '\"purple\"' is not assignable to type 'NfsButtonColor | undefined'. [plugin angular-compiler]"
+      ],
+      "tests": "",
+      "tail": [
+        "      7 |   template: `<button nfsButton color=\"purple\">Shared purple</button>`,\r",
+        "        '                                ~~~~~\r",
+        " NX   Running target test for project ui failed\r",
+        "Failed tasks:\r",
+        "- ui:test\r",
+        "Hint: run the command with --verbose for more details.\r"
+      ]
+    }
+  }
+]

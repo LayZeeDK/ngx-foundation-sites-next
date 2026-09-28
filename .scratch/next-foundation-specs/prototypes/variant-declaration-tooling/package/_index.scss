@@ -1,0 +1,44 @@
+// PROTOTYPE stand-in for the ngx-foundation-sites package-root _index.scss (ADR 0012):
+// global mixins, @import-ed after Foundation, emitting nothing on import. Each Library
+// mixin writes its Variant properties on :root in the Variant property format.
+@if not mixin-exists(foundation-everything) {
+  @error 'Import Foundation before ngx-foundation-sites.';
+}
+
+@function -nfs-names($list) {
+  @if length($list) == 0 {
+    @return unquote('');
+  }
+
+  @return join((), $list, space);
+}
+
+@mixin nfs-breakpoint-properties {
+  :root {
+    --nfs-breakpoint-classes: #{-nfs-names($breakpoint-classes)};
+  }
+}
+
+@mixin nfs-button {
+  :root {
+    --nfs-button-palette: #{-nfs-names(map-keys($button-palette))};
+  }
+}
+
+@mixin nfs-callout {
+  :root {
+    --nfs-foundation-palette: #{-nfs-names(map-keys($foundation-palette))};
+  }
+}
+
+@mixin nfs-xy-grid {
+  :root {
+    --nfs-grid-columns: #{$grid-columns};
+  }
+}
+
+@mixin nfs-prototype-sizing {
+  :root {
+    --nfs-prototype-sizes: #{-nfs-names(map-keys($prototype-sizes))};
+  }
+}

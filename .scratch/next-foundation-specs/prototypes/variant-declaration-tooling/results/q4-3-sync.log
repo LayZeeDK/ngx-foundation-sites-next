@@ -1,0 +1,9 @@
+
+ NX   The workspace is out of sync
+
+[ngx-foundation-sites:variant-types-sync]: ngx-foundation-sites: the Variant declaration files no longer match the Sass they are generated from.
+
+Syncing the workspace...
+The workspace was synced successfully!
+
+Please make sure to commit the changes to your repository.

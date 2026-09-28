@@ -1,0 +1,14 @@
+{
+  "components": {
+    "nfsbutton": {
+      "id": "nfsbutton",
+      "name": "NfsButton",
+      "path": "./src/lib/ui/nfs-button.stories.ts",
+      "jsDocTags": {},
+      "error": {
+        "name": "AngularComponentMetaNotFound",
+        "message": "No metadata was extracted for the \"NfsButton\" export of D:\\tmp\\nfs-proto-137\\nx-ws\\node_modules\\ngx-foundation-sites\\fesm2022\\ngx-foundation-sites-button.mjs.\nCheck that the file exports the component class and is covered by a tsconfig.json in or above its directory."
+      }
+    }
+  }
+}

@@ -1,0 +1,7 @@
+// The application's own settings.
+$button-palette: map-merge(
+  $foundation-palette,
+  (
+    purple: #7a3fbf,
+  )
+);

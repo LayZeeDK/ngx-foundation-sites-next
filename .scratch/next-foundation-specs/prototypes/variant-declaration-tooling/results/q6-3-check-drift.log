@@ -1,0 +1,3 @@
+ngx-foundation-sites: src/nfs-variants.d.ts no longer matches src/styles.scss:
+  NfsButtonPaletteOverrides: add teal: true (teal is in --nfs-button-palette)
+Run `ng run cli-ws:nfs-variants` to update it.

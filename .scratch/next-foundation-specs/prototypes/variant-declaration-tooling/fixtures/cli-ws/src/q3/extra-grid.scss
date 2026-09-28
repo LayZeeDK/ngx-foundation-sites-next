@@ -1,0 +1,8 @@
+// Q3: a second global stylesheet that prints another registry's property.
+@import 'util/util';
+@import 'settings/settings';
+$grid-columns: 16;
+@import 'foundation';
+@import 'ngx-foundation-sites';
+
+@include nfs-xy-grid;

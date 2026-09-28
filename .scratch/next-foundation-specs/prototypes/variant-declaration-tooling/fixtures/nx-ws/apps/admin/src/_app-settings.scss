@@ -1,0 +1,8 @@
+// admin's own settings.
+$foundation-palette: map-merge(
+  $foundation-palette,
+  (
+    teal: #007a7a,
+  )
+);
+$button-palette: $foundation-palette;

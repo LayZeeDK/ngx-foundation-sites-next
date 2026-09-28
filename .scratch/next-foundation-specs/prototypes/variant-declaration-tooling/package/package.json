@@ -1,0 +1,28 @@
+{
+  "name": "ngx-foundation-sites",
+  "version": "0.0.0-proto.137",
+  "description": "PROTOTYPE stand-in for ticket 137 (Variant declaration tooling). Not the real library.",
+  "license": "MIT",
+  "sideEffects": false,
+  "peerDependencies": {
+    "@angular/core": "^22.2.0",
+    "@nx/devkit": "^23.0.0",
+    "nx": "^23.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@nx/devkit": {
+      "optional": true
+    },
+    "nx": {
+      "optional": true
+    }
+  },
+  "generators": "./tooling/collection.json",
+  "schematics": "./tooling/collection.json",
+  "builders": "./tooling/builders.json",
+  "exports": {
+    ".": {
+      "sass": "./_index.scss"
+    }
+  }
+}

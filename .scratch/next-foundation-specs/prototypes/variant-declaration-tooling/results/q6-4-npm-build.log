@@ -1,0 +1,130 @@
+
+> cli-ws@0.0.0 prebuild
+> ng run cli-ws:nfs-variants
+
+ngx-foundation-sites: wrote src/nfs-variants.d.ts (NfsButtonPaletteOverrides: add teal: true (teal is in --nfs-button-palette)).
+
+> cli-ws@0.0.0 build
+> ng build
+
+> Building...
+[OK] Building...
+Initial chunk files | Names         |  Raw size | Estimated transfer size
+main-T5ACPCDZ.js    | main          | 198.33 kB |                54.56 kB
+styles-CQ4OXIBO.css | styles        | 117.43 kB |                14.04 kB
+
+                    | Initial total | 315.76 kB |                68.60 kB
+
+Application bundle generation complete. [1.382 seconds] - 2026-09-27T22:20:25.700Z
+
+[WARN] [WARNING] Deprecation [plugin angular-sass]
+
+    src/_app-settings.scss:2:17:
+      2 | $button-palette: map-merge($foundation-palette, (purple: #7a3fbf, t...
+        '                  ^
+
+
+  Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+  Use map.merge instead.
+  
+  More info and automated migrator: https://sass-lang.com/d/import
+
+  The plugin "angular-sass" was triggered by this import
+
+    angular:styles/global:styles:1:8:
+      1 | @import 'src/styles.scss';
+        '         ~~~~~~~~~~~~~~~~~
+
+
+[WARN] [WARNING] Deprecation [plugin angular-sass]
+
+    src/styles.scss:2:8:
+      2 | @import 'util/util';
+        '         ^
+
+
+  Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+  
+  More info and automated migrator: https://sass-lang.com/d/import
+
+  The plugin "angular-sass" was triggered by this import
+
+    angular:styles/global:styles:1:8:
+      1 | @import 'src/styles.scss';
+        '         ~~~~~~~~~~~~~~~~~
+
+
+[WARN] [WARNING] Deprecation [plugin angular-sass]
+
+    src/styles.scss:3:8:
+      3 | @import 'settings/settings';
+        '         ^
+
+
+  Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+  
+  More info and automated migrator: https://sass-lang.com/d/import
+
+  The plugin "angular-sass" was triggered by this import
+
+    angular:styles/global:styles:1:8:
+      1 | @import 'src/styles.scss';
+        '         ~~~~~~~~~~~~~~~~~
+
+
+[WARN] [WARNING] Deprecation [plugin angular-sass]
+
+    src/styles.scss:4:8:
+      4 | @import 'app-settings';
+        '         ^
+
+
+  Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+  
+  More info and automated migrator: https://sass-lang.com/d/import
+
+  The plugin "angular-sass" was triggered by this import
+
+    angular:styles/global:styles:1:8:
+      1 | @import 'src/styles.scss';
+        '         ~~~~~~~~~~~~~~~~~
+
+
+[WARN] [WARNING] Deprecation [plugin angular-sass]
+
+    src/styles.scss:5:8:
+      5 | @import 'foundation';
+        '         ^
+
+
+  Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+  
+  More info and automated migrator: https://sass-lang.com/d/import
+
+  The plugin "angular-sass" was triggered by this import
+
+    angular:styles/global:styles:1:8:
+      1 | @import 'src/styles.scss';
+        '         ~~~~~~~~~~~~~~~~~
+
+
+[WARN] [WARNING] Deprecation [plugin angular-sass]
+
+    src/styles.scss:6:8:
+      6 | @import 'ngx-foundation-sites';
+        '         ^
+
+
+  Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+  
+  More info and automated migrator: https://sass-lang.com/d/import
+
+  The plugin "angular-sass" was triggered by this import
+
+    angular:styles/global:styles:1:8:
+      1 | @import 'src/styles.scss';
+        '         ~~~~~~~~~~~~~~~~~
+
+
+Output location: D:\tmp\nfs-proto-137\cli-ws\dist\cli-ws
+

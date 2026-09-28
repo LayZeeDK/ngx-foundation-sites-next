@@ -1,0 +1,150 @@
+{
+  "results": {
+    "A preset executor-keyed defaults + per-project spread": {
+      "build": {
+        "cache": true,
+        "dependsOn": ["^build"],
+        "inputs": [
+          "production",
+          "^production",
+          "{workspaceRoot}/marker-executor-key"
+        ],
+        "syncGenerators": ["ngx-foundation-sites:variant-types-sync"]
+      },
+      "serve": {
+        "syncGenerators": ["ngx-foundation-sites:variant-types-sync"]
+      },
+      "test": {
+        "syncGenerators": ["ngx-foundation-sites:variant-types-sync"]
+      }
+    },
+    "B name-keyed defaults + per-project spread": {
+      "build": {
+        "cache": true,
+        "dependsOn": ["^build"],
+        "inputs": [
+          "production",
+          "^production",
+          "{workspaceRoot}/marker-name-key"
+        ],
+        "syncGenerators": ["ngx-foundation-sites:variant-types-sync"]
+      },
+      "serve": {
+        "dependsOn": ["^build"],
+        "syncGenerators": ["ngx-foundation-sites:variant-types-sync"]
+      },
+      "test": {
+        "cache": true,
+        "inputs": ["default", "^production", "{workspaceRoot}/marker-name-key"],
+        "syncGenerators": ["ngx-foundation-sites:variant-types-sync"]
+      }
+    },
+    "C name-keyed defaults + executor-keyed entries for the sync generator (no per-project)": {
+      "build": {
+        "cache": true,
+        "syncGenerators": ["ngx-foundation-sites:variant-types-sync"]
+      },
+      "serve": {
+        "syncGenerators": ["ngx-foundation-sites:variant-types-sync"]
+      },
+      "test": {
+        "cache": true,
+        "syncGenerators": ["ngx-foundation-sites:variant-types-sync"]
+      }
+    },
+    "D preset executor-keyed defaults with syncGenerators merged into that entry (no per-project)": {
+      "build": {
+        "cache": true,
+        "dependsOn": ["^build"],
+        "inputs": [
+          "production",
+          "^production",
+          "{workspaceRoot}/marker-executor-key"
+        ],
+        "syncGenerators": ["ngx-foundation-sites:variant-types-sync"]
+      },
+      "serve": {
+        "syncGenerators": ["ngx-foundation-sites:variant-types-sync"]
+      },
+      "test": {
+        "syncGenerators": ["ngx-foundation-sites:variant-types-sync"]
+      }
+    },
+    "E name-keyed and preset executor-keyed defaults together + per-project spread": {
+      "build": {
+        "cache": true,
+        "dependsOn": ["^build"],
+        "inputs": [
+          "production",
+          "^production",
+          "{workspaceRoot}/marker-executor-key"
+        ],
+        "syncGenerators": ["ngx-foundation-sites:variant-types-sync"]
+      },
+      "serve": {
+        "dependsOn": ["^build"],
+        "syncGenerators": ["ngx-foundation-sites:variant-types-sync"]
+      },
+      "test": {
+        "cache": true,
+        "inputs": ["default", "^production", "{workspaceRoot}/marker-name-key"],
+        "syncGenerators": ["ngx-foundation-sites:variant-types-sync"]
+      }
+    },
+    "F executor-keyed syncGenerators from another tool + per-project spread": {
+      "build": {
+        "cache": true,
+        "dependsOn": ["^build"],
+        "inputs": [
+          "production",
+          "^production",
+          "{workspaceRoot}/marker-executor-key"
+        ],
+        "syncGenerators": [
+          "@nx/js:typescript-sync",
+          "ngx-foundation-sites:variant-types-sync"
+        ]
+      },
+      "serve": {
+        "syncGenerators": ["ngx-foundation-sites:variant-types-sync"]
+      },
+      "test": {
+        "syncGenerators": ["ngx-foundation-sites:variant-types-sync"]
+      }
+    },
+    "G executor-keyed syncGenerators from another tool + per-project without the spread": {
+      "build": {
+        "cache": true,
+        "dependsOn": ["^build"],
+        "inputs": [
+          "production",
+          "^production",
+          "{workspaceRoot}/marker-executor-key"
+        ],
+        "syncGenerators": ["ngx-foundation-sites:variant-types-sync"]
+      },
+      "serve": {
+        "syncGenerators": ["ngx-foundation-sites:variant-types-sync"]
+      },
+      "test": {
+        "syncGenerators": ["ngx-foundation-sites:variant-types-sync"]
+      }
+    }
+  },
+  "warnings": {
+    "A preset executor-keyed defaults + per-project spread": [],
+    "B name-keyed defaults + per-project spread": [],
+    "C name-keyed defaults + executor-keyed entries for the sync generator (no per-project)": [
+      " NX   Some targets are only cacheable through a deprecated fallback.\r",
+      "  - \"@angular/build:application\" does not set \"cache\", so it was read from \"build\"\r",
+      "  - \"@angular/build:unit-test\" does not set \"cache\", so it was read from \"test\"\r",
+      "An executor key applies to every target that resolves through it, so exclude any continuous target before setting \"cache\" on one -- a target that is both cacheable and continuous is rejected.\r",
+      "Target defaults resolve to a single key rather than merging, so an executor key hides the target name key entirely.\r",
+      "Set \"cache\" on the executor key to keep these targets cacheable -- reading it from the target name key is deprecated and will be removed in Nx 24.\r"
+    ],
+    "D preset executor-keyed defaults with syncGenerators merged into that entry (no per-project)": [],
+    "E name-keyed and preset executor-keyed defaults together + per-project spread": [],
+    "F executor-keyed syncGenerators from another tool + per-project spread": [],
+    "G executor-keyed syncGenerators from another tool + per-project without the spread": []
+  }
+}

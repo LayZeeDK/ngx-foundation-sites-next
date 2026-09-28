@@ -1,0 +1,25 @@
+[
+  {
+    "case": "5 two global stylesheets, different registries",
+    "core": {
+      "sources": ["src/q3/styles-no-grid.scss", "src/q3/extra-grid.scss"],
+      "properties": {
+        "--nfs-breakpoint-classes": "small medium large",
+        "--nfs-button-palette": "primary secondary success warning alert purple",
+        "--nfs-foundation-palette": "primary secondary success warning alert",
+        "--nfs-grid-columns": "16"
+      },
+      "warnings": []
+    },
+    "builds": {
+      "production": {
+        "styles.css": {
+          "--nfs-breakpoint-classes": "small medium large",
+          "--nfs-button-palette": "primary secondary success warning alert purple",
+          "--nfs-foundation-palette": "primary secondary success warning alert",
+          "--nfs-grid-columns": "16"
+        }
+      }
+    }
+  }
+]

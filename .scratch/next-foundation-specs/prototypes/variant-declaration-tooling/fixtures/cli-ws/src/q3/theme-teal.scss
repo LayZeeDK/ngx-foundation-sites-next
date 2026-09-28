@@ -1,0 +1,13 @@
+// Q3: a lazily loaded theme (inject: false) with its own palette.
+@import 'util/util';
+@import 'settings/settings';
+$button-palette: map-merge(
+  $foundation-palette,
+  (
+    teal: #007a7a,
+  )
+);
+@import 'foundation';
+@import 'ngx-foundation-sites';
+
+@include nfs-button;

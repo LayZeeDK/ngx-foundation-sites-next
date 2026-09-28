@@ -1,0 +1,9 @@
+{
+  "builders": {
+    "variant-types": {
+      "implementation": "./builder.cjs",
+      "schema": "./builder-schema.json",
+      "description": "Rewrite or check the project's Variant declaration file."
+    }
+  }
+}

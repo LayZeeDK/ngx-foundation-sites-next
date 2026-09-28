@@ -1,0 +1,57 @@
+{
+  "components": {
+    "ui": {
+      "id": "ui",
+      "name": "Ui",
+      "path": "./src/lib/ui/ui.stories.ts",
+      "description": "A shared component with a Variant input of its own.",
+      "jsDocTags": {},
+      "argTypes": {
+        "color": {
+          "name": "color",
+          "description": "A `$button-palette` name (alias from the package).",
+          "type": {
+            "name": "other",
+            "value": "empty-enum"
+          },
+          "table": {
+            "category": "inputs",
+            "type": {
+              "summary": "NfsButtonColor"
+            },
+            "defaultValue": {
+              "summary": "primary"
+            }
+          }
+        },
+        "local": {
+          "name": "local",
+          "description": "Registry-built alias declared in this source tree.",
+          "type": {
+            "name": "enum",
+            "value": ["primary", "secondary"]
+          },
+          "table": {
+            "category": "inputs",
+            "type": {
+              "summary": "LocalColor"
+            },
+            "defaultValue": {
+              "summary": "primary"
+            }
+          }
+        }
+      },
+      "apiDescription": "## Inputs\n\n```\nexport type UiInputs = {\n  /**\n   * A `$button-palette` name (alias from the package).\n   *\n   * @default primary\n   */\n  color?: NfsButtonColor;\n  /**\n   * Registry-built alias declared in this source tree.\n   *\n   * @default primary\n   */\n  local?: LocalColor;\n}\n```",
+      "renderer": "angular",
+      "angularComponentMeta": {
+        "name": "Ui",
+        "selector": "lib-ui",
+        "standalone": true,
+        "inputs": ["color", "local"],
+        "outputs": [],
+        "enums": []
+      }
+    }
+  }
+}

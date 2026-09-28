@@ -1,0 +1,82 @@
+{
+  "kind": "cli",
+  "variant": "files",
+  "steps": [
+    {
+      "step": "initial build (file declares purple)",
+      "purpleError": false,
+      "rebuilt": true
+    },
+    {
+      "step": "rewrite 1: purple removed",
+      "rebuilt": true,
+      "purpleError": true,
+      "correct": true,
+      "trace": [
+        "[nfs-trace] shim app.ngtypecheck.ts len=498 version=743446cc oldLen=46 oldVersion=dc3b62cf text=\"import * as i0 from './app';\\nimport * as i1 from 'ngx-foundation-sites/button';\\nimport * as i2 from '@angular/core';\\n\\n/*tcb1*/\\nfunction _tcb1(this: i0.App) {\\nif\"",
+        "[nfs-trace] ttc shim affected app.ngtypecheck.ts",
+        "[nfs-trace] rebuild modified=[nfs-variants.d.ts] usingBuildInfo=false ngtsc=fresh affected=[nfs-variants.d.ts,app.ts]",
+        "[nfs-trace] template diagnostics from cache app.routes.ts 0",
+        "[nfs-trace] template diagnostics from cache app.config.ts 0",
+        "[nfs-trace] template diagnostics computed app.ts 1",
+        "[nfs-trace] template diagnostics from cache main.ts 0"
+      ]
+    },
+    {
+      "step": "rewrite 2: purple back",
+      "rebuilt": true,
+      "purpleError": true,
+      "correct": false,
+      "trace": [
+        "[nfs-trace] shim app.ngtypecheck.ts len=498 version=743446cc oldLen=498 oldVersion=743446cc text=\"import * as i0 from './app';\\nimport * as i1 from 'ngx-foundation-sites/button';\\nimport * as i2 from '@angular/core';\\n\\n/*tcb1*/\\nfunction _tcb1(this: i0.App) {\\nif\"",
+        "[nfs-trace] rebuild modified=[nfs-variants.d.ts] usingBuildInfo=false ngtsc=fresh affected=[nfs-variants.d.ts]",
+        "[nfs-trace] template diagnostics from cache app.routes.ts 0",
+        "[nfs-trace] template diagnostics from cache app.config.ts 0",
+        "[nfs-trace] template diagnostics from cache app.ts 1",
+        "[nfs-trace] template diagnostics from cache main.ts 0"
+      ]
+    },
+    {
+      "step": "rewrite 3: purple removed",
+      "rebuilt": true,
+      "purpleError": true,
+      "correct": true,
+      "trace": [
+        "[nfs-trace] shim app.ngtypecheck.ts len=498 version=743446cc oldLen=498 oldVersion=743446cc text=\"import * as i0 from './app';\\nimport * as i1 from 'ngx-foundation-sites/button';\\nimport * as i2 from '@angular/core';\\n\\n/*tcb1*/\\nfunction _tcb1(this: i0.App) {\\nif\"",
+        "[nfs-trace] rebuild modified=[nfs-variants.d.ts] usingBuildInfo=false ngtsc=fresh affected=[nfs-variants.d.ts]",
+        "[nfs-trace] template diagnostics from cache app.routes.ts 0",
+        "[nfs-trace] template diagnostics from cache app.config.ts 0",
+        "[nfs-trace] template diagnostics from cache app.ts 1",
+        "[nfs-trace] template diagnostics from cache main.ts 0"
+      ]
+    },
+    {
+      "step": "rewrite 4: purple back",
+      "rebuilt": true,
+      "purpleError": true,
+      "correct": false,
+      "trace": [
+        "[nfs-trace] shim app.ngtypecheck.ts len=498 version=743446cc oldLen=498 oldVersion=743446cc text=\"import * as i0 from './app';\\nimport * as i1 from 'ngx-foundation-sites/button';\\nimport * as i2 from '@angular/core';\\n\\n/*tcb1*/\\nfunction _tcb1(this: i0.App) {\\nif\"",
+        "[nfs-trace] rebuild modified=[nfs-variants.d.ts] usingBuildInfo=false ngtsc=fresh affected=[nfs-variants.d.ts]",
+        "[nfs-trace] template diagnostics from cache app.routes.ts 0",
+        "[nfs-trace] template diagnostics from cache app.config.ts 0",
+        "[nfs-trace] template diagnostics from cache app.ts 1",
+        "[nfs-trace] template diagnostics from cache main.ts 0"
+      ]
+    },
+    {
+      "step": "rewrite 5: purple removed",
+      "rebuilt": true,
+      "purpleError": true,
+      "correct": true,
+      "trace": [
+        "[nfs-trace] shim app.ngtypecheck.ts len=498 version=743446cc oldLen=498 oldVersion=743446cc text=\"import * as i0 from './app';\\nimport * as i1 from 'ngx-foundation-sites/button';\\nimport * as i2 from '@angular/core';\\n\\n/*tcb1*/\\nfunction _tcb1(this: i0.App) {\\nif\"",
+        "[nfs-trace] rebuild modified=[nfs-variants.d.ts] usingBuildInfo=false ngtsc=fresh affected=[nfs-variants.d.ts]",
+        "[nfs-trace] template diagnostics from cache app.routes.ts 0",
+        "[nfs-trace] template diagnostics from cache app.config.ts 0",
+        "[nfs-trace] template diagnostics from cache app.ts 1",
+        "[nfs-trace] template diagnostics from cache main.ts 0"
+      ]
+    }
+  ]
+}

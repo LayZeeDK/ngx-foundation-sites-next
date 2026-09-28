@@ -1,0 +1,24 @@
+{
+  "name": "ngx-foundation-sites",
+  "version": "0.0.0",
+  "generators": {
+    "variant-types": {
+      "factory": "./setup.cjs#variantTypesGenerator",
+      "schema": "./setup-schema.json",
+      "description": "Set up the Variant declaration file of each application."
+    },
+    "variant-types-sync": {
+      "factory": "./sync.cjs#variantTypesSyncGenerator",
+      "schema": "./sync-schema.json",
+      "description": "Keep every Variant declaration file in step with its Sass.",
+      "hidden": true
+    }
+  },
+  "schematics": {
+    "variant-types": {
+      "factory": "./setup.cjs#variantTypesSchematic",
+      "schema": "./setup-schema.json",
+      "description": "Set up the Variant declaration file of each application."
+    }
+  }
+}

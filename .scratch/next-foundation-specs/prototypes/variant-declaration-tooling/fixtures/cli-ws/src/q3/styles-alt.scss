@@ -1,0 +1,14 @@
+// Q3: the stylesheet a configuration swaps in through styles.
+@import 'util/util';
+@import 'settings/settings';
+$button-palette: map-merge(
+  $foundation-palette,
+  (
+    teal: #007a7a,
+  )
+);
+@import 'foundation';
+@import 'ngx-foundation-sites';
+
+@include foundation-everything;
+@include nfs-button;

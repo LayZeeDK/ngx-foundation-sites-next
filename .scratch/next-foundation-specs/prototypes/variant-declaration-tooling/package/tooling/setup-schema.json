@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "NfsVariantTypes",
+  "title": "Set up the Variant declaration files",
+  "type": "object",
+  "properties": {
+    "projects": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "The projects to set up; every Angular application by default."
+    },
+    "buildTarget": {
+      "type": "string",
+      "description": "The build target whose global stylesheets the tooling compiles (one project only)."
+    },
+    "stylesheets": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Stylesheets to compile instead of a build target's (one project only)."
+    },
+    "includePaths": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Sass load paths for stylesheets."
+    },
+    "sync": {
+      "type": "boolean",
+      "default": true,
+      "description": "Nx: register the sync generator on the project's targets."
+    },
+    "applyChanges": {
+      "type": "boolean",
+      "default": false,
+      "description": "Nx: set sync.applyChanges to true in nx.json."
+    },
+    "npmScripts": {
+      "type": "boolean",
+      "default": false,
+      "description": "Angular CLI: add prebuild, prestart, and pretest scripts."
+    }
+  },
+  "required": []
+}

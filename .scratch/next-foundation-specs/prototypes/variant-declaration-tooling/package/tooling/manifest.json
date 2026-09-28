@@ -1,0 +1,90 @@
+{
+  "version": 1,
+  "registries": [
+    {
+      "registry": "NfsFoundationPaletteOverrides",
+      "setting": "$foundation-palette",
+      "property": "--nfs-foundation-palette",
+      "kind": "names",
+      "defaults": ["primary", "secondary", "success", "warning", "alert"],
+      "mixins": ["nfs-callout"],
+      "uses": [
+        {
+          "entryPoint": "ngx-foundation-sites/callout",
+          "directive": "NfsCallout",
+          "input": "color",
+          "alias": "NfsCalloutColor",
+          "shape": "name"
+        }
+      ]
+    },
+    {
+      "registry": "NfsButtonPaletteOverrides",
+      "setting": "$button-palette",
+      "property": "--nfs-button-palette",
+      "kind": "names",
+      "defaults": ["primary", "secondary", "success", "warning", "alert"],
+      "base": "$foundation-palette",
+      "mixins": ["nfs-button"],
+      "uses": [
+        {
+          "entryPoint": "ngx-foundation-sites/button",
+          "directive": "NfsButton",
+          "input": "color",
+          "alias": "NfsButtonColor",
+          "shape": "name"
+        }
+      ]
+    },
+    {
+      "registry": "NfsBreakpointClassesOverrides",
+      "setting": "$breakpoint-classes",
+      "property": "--nfs-breakpoint-classes",
+      "kind": "names",
+      "defaults": ["small", "medium", "large"],
+      "mixins": ["nfs-breakpoint-properties"],
+      "uses": [
+        {
+          "entryPoint": "ngx-foundation-sites/button",
+          "directive": "NfsButton",
+          "input": "expanded",
+          "alias": "NfsButtonExpanded",
+          "shape": "query"
+        },
+        {
+          "entryPoint": "ngx-foundation-sites/xy-grid",
+          "directive": "NfsCell",
+          "input": "size",
+          "alias": "NfsCellSize",
+          "shape": "rules"
+        }
+      ]
+    },
+    {
+      "registry": "NfsPrototypeSizesOverrides",
+      "setting": "$prototype-sizes",
+      "property": "--nfs-prototype-sizes",
+      "kind": "names",
+      "defaults": ["25", "50", "75", "100"],
+      "mixins": ["nfs-prototype-sizing"],
+      "uses": []
+    },
+    {
+      "registry": "NfsGridColumnsOverrides",
+      "setting": "$grid-columns",
+      "property": "--nfs-grid-columns",
+      "kind": "count",
+      "count": 12,
+      "mixins": ["nfs-xy-grid"],
+      "uses": [
+        {
+          "entryPoint": "ngx-foundation-sites/xy-grid",
+          "directive": "NfsCell",
+          "input": "size",
+          "alias": "NfsCellSize",
+          "shape": "count"
+        }
+      ]
+    }
+  ]
+}
