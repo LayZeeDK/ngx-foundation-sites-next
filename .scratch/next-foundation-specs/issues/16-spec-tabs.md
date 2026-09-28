@@ -188,3 +188,7 @@ From [Re-run: Tabs spec under the class rule](108-rerun-tabs-class-rule.md), und
 8. Tests: stories `tabs--simple` and `tabs--primary` are added; stories, hosts, and fixtures write no class; the class bindings, the content box's `.vertical`, and the copied-class check get browser-level cases; the SSR smoke asserts every bound class; a node-level Sass compile covers `nfs-tabs`; e2e measures `simple` titles in three engines.
 
 Triage: every item is decided; none is `OPEN FOR HUMAN`. The ratings are in the re-run ticket's Answer.
+
+### Amendment, 2026-09-28 (inputs named like HTML attributes)
+
+From [Decide: inputs named like HTML presentational attributes](139-decide-inputs-named-like-presentational-attributes.md); `specs/tabs.md` was edited in place. `autoFocus` keeps its name and is kind `insertion` under building-blocks 1.4: `NfsTabs` binds `'[attr.autofocus]': 'null'`, the input is set by binding or `nfsTabsDefaultsToken`, and a static attribute is reported in development (new D25), because the strip carries Aria's `tabindex="-1"`, and a static `autoFocus`, `"false"` included, focuses and scrolls to the `tablist` at page load in three engines (the evidence's audit row 64 had judged the list not focusable). The host line, the `autoFocus` row, the dev-mode checks, and the tests changed to match. Impact MEDIUM, confidence HIGH.

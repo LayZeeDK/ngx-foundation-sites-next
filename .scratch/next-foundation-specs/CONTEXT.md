@@ -191,7 +191,7 @@ Foundation's opt-in Prototype mode: the Utility families of spacing, sizing, dis
 _Avoid_: prototype classes, helpers (bare), prototype mode (for the classes)
 
 **Typography Helpers**:
-Foundation's Utility family of text styles: the text alignment classes and their responsive forms, `.subheader`, `.lead`, `.stat`, `.no-bullet`, the Typescale classes `.h1` to `.h6`, and the citation and code looks `.cite-block`, `.code-inline`, and `.code-block`.
+Foundation's Utility family of text styles: the text alignment classes and their responsive forms, `.subheader`, `.lead`, `.stat`, `.no-bullet`, the Typescale classes `.h1` to `.h6`, the citation and code looks `.cite-block`, `.code-inline`, and `.code-block`, and the print helper `.print-break-inside`, which lets an element the print styles keep on one page break across pages.
 _Avoid_: typography utilities, text helpers (bare), typography base (for these classes)
 
 **Subheader**:

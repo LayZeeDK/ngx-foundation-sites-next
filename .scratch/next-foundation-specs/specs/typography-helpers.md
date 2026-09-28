@@ -418,7 +418,7 @@ Against the prerendered fixture app, on the Typography Helpers route:
 - Logical alignment (`text-align: start` and `end`) for right-to-left layouts: Foundation's classes are physical; a right-to-left build flips only `.no-bullet`'s side (`$global-left`). Alignment that follows the reading direction is the consumer's own CSS. Category: `scope-boundary`.
 - Foundation's Sass-only helpers (`cite-block`, `code-style`, `code-inline`, and `code-block` mixins) in the consumer's Sass for its own classes: they print no class, so there is nothing for a directive to set. Category: `scope-boundary`.
 - `$enable-cite-block` and `$enable-code-inline` as inputs: Sass booleans are compile-time configuration (building-blocks 1.13). Category: `other`.
-- The alignment Variant classes of components (the Menu's `align`, which [Decide: inputs named like HTML presentational attributes](../issues/139-decide-inputs-named-like-presentational-attributes.md) decides): they belong to their components' directives. Category: `scope-boundary`.
+- The alignment Variant classes of components (the Menu's `align`, kept with `'[attr.align]': 'null'` by [Decide: inputs named like HTML presentational attributes](../issues/139-decide-inputs-named-like-presentational-attributes.md)): they belong to their components' directives. Category: `scope-boundary`.
 - The Variant registries, the helper types, and the declaration-file generator: [Spec: Variant declaration tooling](../issues/136-spec-variant-declaration-tooling.md); the Runtime checks' configuration: [Spec: Breakpoint service (shared utility)](../issues/53-spec-breakpoint-service.md). Category: `scope-boundary`.
 - Runtime theming through custom properties (building-blocks 1.13). Category: `scope-boundary`.
 

@@ -220,3 +220,7 @@ From [Re-run: Dropdown spec under the class rule](118-rerun-dropdown-class-rule.
 - Unchanged: behaviour, ARIA, keyboard, focus rules, the animation mechanism, rendering modes, Story ids, and every other decision in the log above.
 
 Triage, from the re-run: impact HIGH (the consumer markup contract and a public type), confidence HIGH (ADR 0039, ADR 0040, and building-blocks 1.4 decide each change mechanically), so it is decided with nothing open. `NfsMotionPair` is proposed for building-blocks 1.6 rule 4, so the Toggler's `animate` and the pane's share one pair type.
+
+### Amendment, 2026-09-28 (inputs named like HTML attributes)
+
+From [Decide: inputs named like HTML presentational attributes](139-decide-inputs-named-like-presentational-attributes.md); `specs/dropdown.md` was edited in place. D13 stands, and the pane also binds `'[attr.autofocus]': 'null'` (kind `insertion` under building-blocks 1.4). D13's rationale and development check 6 now say what was measured: the pane has no `tabindex`, so a static `autoFocus` acts only once a consumer makes the pane focusable. The `autoFocus` row and the SSR smoke changed to match. Impact LOW, confidence HIGH.
