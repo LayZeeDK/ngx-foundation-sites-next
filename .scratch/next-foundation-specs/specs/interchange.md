@@ -1,6 +1,6 @@
 # Spec: Interchange
 
-Ticket: [Spec: Interchange](../issues/35-spec-interchange.md). Targets Angular 22.2, Nx 23.2, Storybook 10.6 with `@storybook/angular-vite`, Vitest 4.1.x, TypeScript 6.0.x, and Foundation for Sites 6.9.0 Sass. Builds on the [Spec: Breakpoint service (shared utility)](../issues/53-spec-breakpoint-service.md) (`NfsMediaQuery`, `nfsDefaultNamedQueries`, the Server breakpoint, and the first-render handoff of ADR 0014) and on ADR 0001 (Directive-first), ADR 0005 (Breakpoint source of truth), ADR 0008 (Rendering-modes contract), ADR 0012 (Sass packaging), and [ADR 0015](../adr/0015-interchange-no-image-or-partial-mode.md) (no image mode and no HTML-partial mode). The decision log with sources is in the ticket answer.
+Ticket: [Spec: Interchange](../issues/35-spec-interchange.md). Targets Angular 22.2, Nx 23.2, Storybook 10.6 with `@storybook/angular-vite`, Vitest 4.1.x, TypeScript 6.0.x, and Foundation for Sites 6.9.0 Sass. Builds on the [Spec: Breakpoint service (shared utility)](../issues/53-spec-breakpoint-service.md) (`NfsMediaQuery`, `nfsDefaultNamedQueries`, the Server breakpoint, and the first-render handoff of ADR 0014) and on ADR 0001 (Directive-first), ADR 0005 (Breakpoint source of truth), ADR 0008 (Rendering-modes contract), ADR 0012 (Sass packaging), and [ADR 0015](../adr/0015-interchange-no-image-or-partial-mode.md) (no image mode and no HTML-partial mode). Revised on 2026-09-28 under the class rule ([ADR 0039](../adr/0039-directives-manage-every-foundation-class.md)) and the Variant typing rule ([ADR 0040](../adr/0040-variant-input-types.md)) by the [Re-run: Interchange spec under the class rule](../issues/127-rerun-interchange-class-rule.md). The decision log with sources is in the ticket answers.
 
 ## Problem Statement
 
@@ -19,18 +19,19 @@ Developers migrating from Foundation need to know which of Interchange's uses th
 
 Interchange becomes documentation plus two small directives that share one attribute, `nfsInterchange`:
 
-- Images get no directive. The spec documents `<picture>` with `<source media>` for art direction (a different crop per breakpoint) and `NgOptimizedImage` (`ngSrc` with `sizes`) or plain `srcset`/`sizes` for resolution switching (one image at several sizes). Both are rendered on the server, choose the right file before any JavaScript runs, and keep working in every rendering mode, including inside `@defer (hydrate never)`. Putting `nfsInterchange` on an `<img>` raises a development-mode error that points at `<picture>`.
+- Images get no directive of this library. The spec documents `<picture>` with `<source media>` for art direction (a different crop per breakpoint) and Angular's `NgOptimizedImage` (`ngSrc` with `sizes` and a configured image loader) for resolution switching (one image at several sizes). `NgOptimizedImage` is the project's image rule: every static `<img>` in this spec's examples, stories, and fixtures uses it, except the `<img>` of an art-directed `<picture>`, which Angular 22.2 does not support, and a `data:` or `blob:` URL, which it rejects; those use a plain `<img>` with hand-written `srcset` and `sizes`. Both forms are rendered on the server, choose the right file before any JavaScript runs, and keep working in every rendering mode, including inside `@defer (hydrate never)`. Putting `nfsInterchange` on an `<img>` raises a development-mode error that points at `<picture>` and `NgOptimizedImage`.
 - Background mode, `NfsInterchange`: on any element except `<ng-container>`, `nfsInterchange="[hero-small.jpg, small], [hero-large.jpg, large]"` binds the element's inline `background-image` to the last Interchange rule whose query matches. Foundation's rule string is accepted unchanged, and a typed tuple form, `[['hero-small.jpg', 'small'], ['hero-large.jpg', 'large']]`, is accepted for URLs that come from data. Backgrounds whose URLs are known when the stylesheet compiles need no directive: the developer's own stylesheet uses Foundation's `breakpoint()` mixin and CSS `image-set()`.
 - Template mode, `NfsInterchangeOutlet`: on an `<ng-container>`, `[nfsInterchange]="[[compact, 'small'], [full, 'large']]"` renders the `<ng-template>` of the last matching rule, the way `NgTemplateOutlet` renders one template. This replaces the HTML-partial mode: code splitting is a consumer `@defer` block inside the template, and fetched data is a consumer `httpResource` or `resource` inside the rendered component.
-- Queries are Foundation's: a breakpoint name (`medium`) means "at least that breakpoint", a Named query (`landscape`, `portrait`, `retina`, or the developer's own from `nfsInterchangeDefaultsToken`) means its media query, and anything else that looks like a media query is used as written. All of it is answered by the Breakpoint service, so the server renders the Server breakpoint's rule deterministically and the client switches to the live viewport at the service's first render callback.
+- Queries are Foundation's: a breakpoint name (`medium`, any breakpoint of the Breakpoint map, `xlarge` and `xxlarge` included, not only a Class breakpoint) means "at least that breakpoint", a Named query (`landscape`, `portrait`, `retina`, or the developer's own from `nfsInterchangeDefaultsToken`) means its media query, and anything else that looks like a media query is used as written. All of it is answered by the Breakpoint service, so the server renders the Server breakpoint's rule deterministically and the client switches to the live viewport at the service's first render callback.
 - A `replaced` output reports the rule that was applied once the page shows it (after the change-detection pass that rendered it, so a handler sees the new content with its bindings applied), and a read-only `selected` signal gives the current rule.
+- No classes to write (the class rule, ADR 0039). Interchange has no Structural, Variant, or State class, so neither directive binds a class and the consumer writes none for it. A background host that needs a Foundation look gets it from the library directive that owns that class, written beside `nfsInterchange` on the same element or inside it (`nfsCallout`, an XY Grid cell's directive), and it keeps the application's own classes (`.hero`). An Interchange rule's breakpoint name is behaviour, not a Variant class, so it is a name of the Breakpoint map (`NfsBreakpointName`), never a Class breakpoint (`NfsClassBreakpoint`, ADR 0040), and no Runtime check reads it.
 
 ## User Stories
 
 1. As a developer migrating from Foundation, I want the spec to tell me that images need no directive, so that I use `<picture>` and `srcset` instead of porting `data-interchange` on `<img>`.
 2. As a developer, I want a `<picture>` example that uses Foundation's breakpoint widths in `<source media>`, so that my art-directed images switch at the same widths as my Foundation CSS.
 3. As a developer, I want to know that `<picture>` takes the first matching `<source>` while Interchange takes the last matching rule, so that I write my sources largest first.
-4. As a developer, I want an `NgOptimizedImage` example for one image at several sizes, so that I get generated `srcset`, lazy loading, and priority preloading from Angular.
+4. As a developer, I want an `NgOptimizedImage` example for one image at several sizes, with the image loader it needs, so that I get generated `srcset`, lazy loading, and priority preloading from Angular.
 5. As a developer, I want to know that `NgOptimizedImage` does not support `<picture>` in Angular 22.2, so that I use a plain `<img>` inside `<picture>` for art direction.
 6. As a developer who put `nfsInterchange` on an `<img>` out of Foundation habit, I want a development-mode error that names `<picture>`, so that I do not ship an image that swaps after hydration.
 7. As a visitor on a slow network, I want images chosen before JavaScript runs, so that I download one image, not two.
@@ -70,6 +71,10 @@ Interchange becomes documentation plus two small directives that share one attri
 41. As a test author, I want to fake `MediaMatcher` and drive the directives, so that browser-level tests need no window resizing.
 42. As a test author, I want the rule parser as a pure function, so that I can test Foundation's rule strings in Node.
 43. As a library maintainer, I want the directives to call `matchMedia` only through the Breakpoint service, so that the rendering-modes rules are enforced in one place.
+44. As a developer, I want to write no Foundation class for Interchange, so that my markup is `nfsInterchange` and my own classes, as the class rule promises for every directive.
+45. As a developer, I want to put `nfsInterchange` beside a library directive that binds Foundation classes, or to put that directive inside the background host, so that a background combines with a callout or a grid cell without my writing `class="callout"` or `class="cell"`.
+46. As a developer, I want every static image in the spec's examples to use `NgOptimizedImage`, and to be told why the `<img>` of an art-directed `<picture>` does not, so that I follow the project's image rule and know its one exception.
+47. As a developer with a custom Breakpoint map, I want `xlarge` and my own breakpoint names to work in Interchange rules even though Foundation generates no classes for them, so that Interchange keeps Foundation's rule that every breakpoint is a query.
 
 ## Implementation Decisions
 
@@ -100,11 +105,19 @@ Deltas from Foundation, each deliberate:
 - A raw media query is recognised by whitespace or a parenthesis; a bare word is always a name. A bare media type (`print`) is therefore written as a query (`only print`).
 - A custom named query cannot shadow a breakpoint name: breakpoint names are resolved first and the shadowing key warns once in development.
 
-Dropped options: `type` (the host element decides the mode) and the `"[path, query]"` string-array form of the programmatic `rules` option (the tuple form replaces it). The `data-interchange` rule string itself stays, as the `nfsInterchange` value. Dropped public method: `replace(path)`.
+Dropped options, each with its reason and category: `type` (the host element decides the mode; category `superseded`) and the `"[path, query]"` string-array form of the programmatic `rules` option (the typed tuple form replaces it; `superseded`). The `data-interchange` rule string itself stays, as the `nfsInterchange` value. Dropped public method: `replace(path)` (content is derived from `rules`, so the rules change instead; `superseded`). Dropped with no Option: the generated `id` and `data-resize` (they served Foundation's resize bus, which the Breakpoint service's `MediaQueryList` listeners replace; `jquery-or-dom-plumbing`) and the `init.zf.interchange` and `destroyed.zf.interchange` events (Angular's lifecycle replaces them; `superseded`).
 
 ### CSS class to Angular mapping
 
-None. Interchange has no Foundation CSS class, Structural or State, and no Export mixin. The directives add no class; the classes the consumer writes on the host (`.hero`, `.thumbnail`, a grid cell) are untouched. Per building-blocks 1.3, a Plugin with no Structural class takes the Plugin name: `NfsInterchange`, and `NfsInterchangeOutlet` for the template form, named after `NgTemplateOutlet`, whose job it does.
+Interchange has no Foundation CSS class and no Export mixin: Foundation ships no Interchange Sass, and its Plugin writes an inline style, an `src`, or fetched markup, never a class. So neither directive binds a class, the class rule ([ADR 0039](../adr/0039-directives-manage-every-foundation-class.md)) adds no host binding here, and there is no Variant input, Variant registry, or Variant property (building-blocks 1.14 item 2):
+
+| Kind | Class | Owner | Notes |
+| --- | --- | --- | --- |
+| Structural | none | | Per building-blocks 1.3, a Plugin with no Structural class takes the Plugin name: `NfsInterchange`, and `NfsInterchangeOutlet` for the template form, named after `NgTemplateOutlet`, whose job it does |
+| Variant | none | | An Interchange rule's breakpoint name is a query (behaviour), not a Variant class: it is a name of the Breakpoint map (`NfsBreakpointName`), resolved by the Breakpoint service, never a Class breakpoint; no `nfsVariantCheck` report and no Runtime check reads it |
+| State | none | | `selected` is not a class; the only host binding is `[style.background-image]` |
+| Classes on the same host | the owning directive's | the library directive beside `nfsInterchange` (`nfsCallout`; an XY Grid cell's directive), or the application | Neither Interchange directive binds or strips a class, so a Foundation look on a background host comes from the directive that owns that class, and the application's own classes (`.hero`) stay; the outlet's `<ng-container>` has no element and so no classes |
+| Foundation classes read | none | | No part of Interchange reads a class to seed state or pick a rule (building-blocks 1.4, "Initial state is bound, never read from a class"); the initial rule comes from `rules` and the media state |
 
 ### Hierarchy and DI shape
 
@@ -125,6 +138,7 @@ Internal: the selection computed (rules + NfsMediaQuery + namedQueries), the ren
 - The two selectors are disjoint, so exactly one directive matches an element and the template type checker types `nfsInterchange` per element: strings or string tuples on elements, template tuples on `<ng-container>`. This is Material's `matButton` shape (one attribute, `MatButton` on `<button>` and `MatAnchor` on `<a>`). Angular's selector parser accepts `:not(<element>)` and element-qualified selectors on `<ng-container>` (its compiler matches `ng-container[directiveA]` in its own tests).
 - `nfsInterchangeDefaultsToken`: `InjectionToken<NfsInterchangeDefaults>`, Shape B (building-blocks 1.4 and 1.9), read with `inject(nfsInterchangeDefaultsToken, {optional: true})`; the nearest provider wins (bootstrap, route, or an element injector). It holds the Named queries because the Breakpoint service spec placed them here: only Interchange uses them.
 - No parent or child tokens: nothing registers with anything. No `nfsOpenableToken`: Interchange is not an Openable.
+- No hosted class directive: a behaviour that may sit on any element is written beside the class directive, never hosts it (building-blocks 1.9, "Hosting a class directive"), so `nfsInterchange` composes with `nfsCallout` or a grid cell's directive on one element by placement. No Variant registry and no `nfsVariantCheck` handle: Interchange has no Variant input.
 - `NfsMediaQuery` is injected, never re-provided. CDK `InteractivityChecker` is injected by the outlet for the focus rule.
 - Entry point: `ngx-foundation-sites/interchange`, which imports `ngx-foundation-sites/media-query`, so a consumer `@defer` block pulls in both with the first Interchange use.
 
@@ -147,6 +161,8 @@ declare const nfsInterchangeDefaultsToken: InjectionToken<NfsInterchangeDefaults
 declare function parseNfsInterchangeRules(rules: string): NfsInterchangeRule<string>[];
 ```
 
+The query stays `string`. It is a breakpoint name, a Named query, or a media query: Named queries come from a Defaults token at run time and media queries are free text, so no compile-time type can list them, and the development warning for an unknown bare word covers typos. Its breakpoint names are the Breakpoint map's (`NfsBreakpointName`, open, the type of behaviour Options), not the Class breakpoints that type Variant inputs (`NfsClassBreakpoint`, ADR 0040): a query is behaviour, and Foundation's `SPECIAL_QUERIES` take every `$breakpoints` key, so `xlarge` and `xxlarge` are queries although Foundation generates no classes for them by default.
+
 `NfsInterchange` (background mode). Selector `[nfsInterchange]:not(ng-container)`, `exportAs: 'nfsInterchange'`.
 
 | Member | Kind | Type | Default | Foundation | Meaning |
@@ -154,7 +170,7 @@ declare function parseNfsInterchangeRules(rules: string): NfsInterchangeRule<str
 | `rules` | `input.required`, alias `nfsInterchange` | `string \| readonly NfsInterchangeRule<string>[]` | none | `data-interchange`, option `rules` | Background URLs and their queries; a string is parsed with `parseNfsInterchangeRules` |
 | `selected` | read-only signal (`computed`) | `Signal<NfsInterchangeRule<string> \| undefined>` | | `currentPath` | The last rule whose query matches, or `undefined` |
 | `replaced` | `output` | `NfsInterchangeRule<string> \| undefined` | | `replaced.zf.interchange` | Emitted from a render callback after the change-detection pass that wrote the rule's `background-image`, when that rule differs from the last one reported, starting with the first client render (once, with the live rule; see Emission timing); `undefined` when the background was cleared |
-| host `[style.background-image]` | host binding | `string \| null` | | `background` mode | `url("<escaped path>")` of `selected`, or `null` (no inline property) |
+| host `[style.background-image]` | host binding | `string \| null` | | `background` mode | `url("<escaped path>")` of `selected`, or `null` (no inline property). Angular's styling resolution treats `null` as a value and consults the host's static `style` attribute only when every binding for the property is `undefined`, so a static inline `background-image` written on the host never shows; a default background goes in a stylesheet (user story 22) |
 
 `NfsInterchangeOutlet` (template mode). Selector `ng-container[nfsInterchange]`, `exportAs: 'nfsInterchange'`.
 
@@ -168,7 +184,7 @@ Neither directive has a `model()` (nothing is two-way: the viewport owns the sta
 
 Query resolution (one internal helper, used by both directives), per rule in written order, last match wins:
 
-1. The query is a name of the Breakpoint map (`mq.breakpoints`): `mq.atLeast(query)`, which matches Foundation's `only screen and (min-width: <em>)` meaning.
+1. The query is a name of the Breakpoint map (`mq.breakpoints`, every breakpoint, whether or not it is a Class breakpoint): `mq.atLeast(query)`, which matches Foundation's `only screen and (min-width: <em>)` meaning.
 2. The query is a key of `namedQueries` (the Defaults token's map, else `nfsDefaultNamedQueries`): `mq.matches(namedQueries[query])`.
 3. The query contains whitespace or `(`: `mq.matches(query)`, a raw media query as Foundation documents ("`media_query` can be any CSS media query").
 4. Otherwise: a development warning once per distinct string ("unknown Interchange query 'meduim'; use a breakpoint name, a named query, or a media query") and no match.
@@ -177,11 +193,11 @@ Query resolution (one internal helper, used by both directives), per rule in wri
 
 Emission timing (decision 12). `selected` is the rule the directive wants; the rendered rule is the one change detection has put on the page. Each directive keeps the rendered rule in a private signal that is written only in change detection, by the same `effect()` that performs the swap (template mode) or by an `effect()` that runs in the same change-detection pass as the host binding that writes the style (background mode). The render callback that emits `replaced` depends on the rendered rule, never on `selected` alone, and acts only when the two are equal and the rule differs from the last one reported. This is what makes the order hold when the write that changes `selected` comes from another render callback, as the Breakpoint service's first-render handoff does: that write happens in an `earlyRead` callback, and a later-phase render callback that read `selected` directly would run in the same batch of render hooks, before the change-detection pass that renders the swap (the [Prototype: Interchange template outlet under hydration](../issues/61-prototype-interchange-outlet-hydration.md) measured exactly that, in both modes and in three engines). With the rendered rule, that batch sees the two disagree and does nothing; the swap's write to the rendered rule schedules the callback again, and Angular runs render hooks only after a change-detection pass that leaves no view dirty, so the new view's bindings and control flow are in the DOM when `replaced` fires. At the first client render `replaced` fires once, with the live rule: when the handoff replaces the Server breakpoint's rule before the first paint, that rule is never reported, because it was never shown. The [Re-run: Interchange spec, the `replaced` timing and the outlet's focus rule](../issues/67-rerun-interchange-replaced-timing.md) verified this in three engines under client rendering, full hydration, prerendering, and `@defer (hydrate on viewport)`, for the handoff, for a later write made inside a render callback, and for a later plain signal write.
 
-Development-mode checks (stripped from production builds): `NfsInterchange` on an `<img>` host throws "nfsInterchange does not support <img>: use <picture> with <source media> for art direction, or srcset/sizes (NgOptimizedImage) for resolution switching" (a construction-time read of the host's `nodeName`, which is also safe on the server); an unparseable segment of a rule string warns and is skipped; an unknown bare name warns once; a `namedQueries` key equal to a breakpoint name warns once that the breakpoint wins.
+Development-mode checks (stripped from production builds): `NfsInterchange` on an `<img>` host throws "nfsInterchange does not support <img>: use <picture> with <source media> for art direction, or NgOptimizedImage (ngSrc with sizes) for resolution switching" (a construction-time read of the host's `nodeName`, which is also safe on the server); an unparseable segment of a rule string warns and is skipped; an unknown bare name warns once; a `namedQueries` key equal to a breakpoint name warns once that the breakpoint wins.
 
 ### Implementation level and primitives
 
-- Images: native platform. `<picture>`, `<source media>`, `srcset`, `sizes`, and `<img loading="lazy">` are all in the Browser target (web platform research section 12), so images stop at the first level with no library code. `NgOptimizedImage` (Angular, not this library) is the documented tool for resolution switching.
+- Images: native platform. `<picture>`, `<source media>`, `srcset`, `sizes`, and `<img loading="lazy">` are all in the Browser target (web platform research section 12), so images stop at the first level with no library code. `NgOptimizedImage` (Angular, not this library) is the project's image rule and the documented tool for resolution switching; the `<img>` of an art-directed `<picture>` is its one exception here (Comparison with Angular Material and `NgOptimizedImage`).
 - Background and template modes: custom Angular directives over the Breakpoint service. The platform supplies the media queries (`matchMedia` and `MediaQueryList` `change`, reached only through `NfsMediaQuery`, which wraps CDK `MediaMatcher`); `@angular/aria` has no pattern for this; CDK contributes `MediaMatcher` (inside the service) and `InteractivityChecker` (the outlet's focus rule). No `@defer` in the library (building-blocks 1.11 decision 7).
 - Background: one host style binding on a `computed`; no `Renderer2`, no `ElementRef` writes, no listeners. One `effect()` writes `selected()` into the rendered-rule signal; a directive's view effects run in the same change-detection pass of the declaring view that applies its host bindings, so the rendered rule and the style change together, and the `replaced` render callback runs after that pass.
 - Template: the outlet injects `ViewContainerRef`; an `effect()` compares the selected template with the one currently rendered and, when it differs, first records whether the live `document.activeElement` is inside the view it is about to remove (only then does that view still exist; the check is a DOM read, no layout), then clears the container and calls `createEmbeddedView`; in every run it writes `selected()` into the rendered-rule signal. The effect runs on the server too, which is what puts the Server breakpoint's template into the server HTML; creating a view is Angular rendering, not a DOM write behind Angular's back, and it is the same `ViewContainerRef` path `NgTemplateOutlet` takes, whose dehydrated views hydration claims by template id. Angular runs a view's effects before it refreshes that view's embedded views, so the new view gets its first update pass in the same change-detection pass. The [Prototype: Interchange template outlet under hydration](../issues/61-prototype-interchange-outlet-hydration.md) confirmed the effect-driven view under SSR, hydration, `@defer (hydrate on viewport)`, and the Breakpoint service's same-tick switch (the swap lands before the first paint in three engines).
@@ -200,14 +216,14 @@ Angular Material has no counterpart: there is no responsive-content or responsiv
 
 | Concern | `NgOptimizedImage` | Plain `<picture>` / `srcset` | A hypothetical `img[nfsInterchange]` |
 | --- | --- | --- | --- |
-| Resolution switching (one image, several widths) | Generates `srcset` from a loader and `sizes`; prefixes `sizes` with `auto, ` for lazy images, which WHATWG HTML allows as a fallback list | `srcset` and `sizes` written by hand | Only by breakpoint rule, never by layout width or pixel density |
-| Art direction (different crop per breakpoint) | Not supported: its guide says it does not work with `<picture>` yet | `<source media>`, first match wins | Yes, but see the next rows |
+| Resolution switching (one image, several widths) | Generates `srcset` from a configured image loader and `sizes` (with the default loader it generates none, and it rejects a hand-written `srcset`); prefixes `sizes` with `auto, ` for lazy images, which WHATWG HTML allows as a fallback list | `srcset` and `sizes` written by hand | Only by breakpoint rule, never by layout width or pixel density |
+| Art direction (different crop per breakpoint) | Not supported: its guide says it does not work with `<picture>` yet. On the `<img>` of a `<picture>` its checks misread the page: the aspect-ratio check compares the natural size of the file the browser chose from a `<source>` with the `<img>`'s `width` and `height` and warns for a crop of another shape, and its server preload for `priority` names the `<img>`'s own file, which a viewport that matches a `<source>` never shows | `<source media>`, first match wins, with a plain `<img>` | Yes, but see the next rows |
 | Chosen before JavaScript | Yes (server-rendered attributes) | Yes (preload scanner) | No: the server renders the Server breakpoint's file, the client swaps after hydration, and a desktop visitor downloads both |
 | LCP helpers | `priority` sets `fetchpriority` and emits a preload link on the server; enforces `width`/`height` | By hand (`width`/`height`, `loading`) | None |
 | Inside `@defer (hydrate never)` | Works (native attributes) | Works | Stuck on the Server breakpoint's file |
-| Verdict | Use for resolution switching | Use for art direction | Not built |
+| Verdict | Use for resolution switching and every other static image (the project's image rule) | Use for art direction, and for a `data:` or `blob:` URL, which `NgOptimizedImage` rejects | Not built |
 
-Borrowed from `NgOptimizedImage`: nothing in the API; the spec's image guidance defers to it.
+Borrowed from `NgOptimizedImage`: nothing in the API; the spec's image guidance defers to it, and every static `<img>` in the spec's examples, stories, and fixtures uses it (`ngSrc` with `width` and `height`), except the `<img>` of an art-directed `<picture>`.
 
 ### ARIA and keyboard
 
@@ -230,7 +246,7 @@ WCAG 2.2 AA requirements (requirements, not recommendations; the story gate runs
 | --- | --- | --- |
 | 1.1.1 Non-text Content | Every `<img>` has an `alt` that is true for every source that can be shown: a `<picture>`'s single `alt` for all its sources, one `alt` per `<img>` in each template of template mode. Swapping sources never makes the `alt` false; if the meaning differs per breakpoint, the images go into template mode with separate `alt` values. Decorative images use `alt=""` | Foundation emits no `alt`; this is consumer markup, and every story's image carries a true `alt` |
 | 1.3.1 Info and Relationships | A background image set by background mode is decoration only: any information it carries is also in the page text, for every rule's image, so a swap never changes what the text conveys. The directive adds no `role="img"` or `aria-label` to make a background into content; an image that carries meaning is an `<img>` (in `<picture>` or a template) | Foundation's background mode had the same gap; the spec documents the rule and the stories show text that carries the information |
-| 1.4.3 Contrast (Minimum) | Text placed over a background image meets 4.5:1 (3:1 for large text) against every rule's image, not only the one the author looked at, or sits on a solid or overlay background that meets it | No Foundation setting applies; consumer CSS. The `interchange--background` story places its text on a Foundation `.callout` (solid background from `$callout-background`) so axe's contrast check is decidable |
+| 1.4.3 Contrast (Minimum) | Text placed over a background image meets 4.5:1 (3:1 for large text) against every rule's image, not only the one the author looked at, or sits on a solid or overlay background that meets it | No Foundation setting applies; consumer CSS. The `interchange--background` story places its text on an element carrying `nfsCallout`, whose `.callout` (from the directive, not written in the story) paints a solid background from `$callout-background`, so axe's contrast check is decidable |
 | 1.4.5 Images of Text | Swapped images do not carry text that could be real text (headings, slogans, labels in a crop); where a chart or logo must be an image, its text is in the `alt` or the page. Art direction may not introduce text into a crop that the other crops lack | Consumer content; documented |
 | 1.4.10 Reflow | Images and backgrounds fit 320 CSS px without two-dimensional scrolling at every rule | Foundation's `foundation-global-styles` sets `img { max-width: 100%; height: auto; }`, which covers `<img>` inside `<picture>` and templates; a consumer who does not include `foundation-global-styles` adds the same two declarations. Background hosts take their width from the layout (Foundation grid), never a fixed width wider than 320 px |
 | 2.4.3 Focus Order and 2.4.11 Focus Not Obscured (Minimum) | A template swap that removes the focused view moves focus into the new view (the focus rule above), at runtime and at the first-render handoff, so focus neither stays on `<body>` nor lands on hidden content. The move happens only after the new view is rendered with its bindings and control flow, so the target is the first tabbable element the user actually sees, and before `replaced`, so a consumer's handler sees where focus is | Library behaviour of the outlet |
@@ -240,7 +256,7 @@ WCAG 2.2 AA requirements (requirements, not recommendations; the story gate runs
 
 Default Server breakpoint (`small`), viewport 1300 px (`xlarge`), portrait flag false.
 
-Images, no directive. Consumer markup, server HTML, and hydrated DOM are identical; the browser picks `hero-large.jpg` at parse time:
+Images, no directive. Consumer markup, server HTML, and hydrated DOM are identical; the browser picks `hero-large.jpg` at parse time. The `<img>` inside `<picture>` is a plain `<img>`, the one exception to the `NgOptimizedImage` rule:
 
 ```html
 <picture>
@@ -250,7 +266,7 @@ Images, no directive. Consumer markup, server HTML, and hydrated DOM are identic
 </picture>
 ```
 
-Background mode. Consumer markup:
+Background mode. Consumer markup (`hero` is the application's own class; no Foundation class is written):
 
 ```html
 <div class="hero" nfsInterchange="[hero-small.jpg, small], [hero-large.jpg, large]"></div>
@@ -269,6 +285,20 @@ Hydrated DOM after the Breakpoint service goes live (same node, style rewritten 
 ```
 
 With a rule list that matches nothing on the server, for example `[[a.jpg, 'landscape'], [b.jpg, 'portrait']]`, the server HTML has no inline `background-image` (Named queries answer `false` on the server), and the client adds it at the first render callback.
+
+With a Foundation look, the directive that owns the class sits inside the host or beside `nfsInterchange` on it, and its class is in the server HTML because it is a host binding (building-blocks 1.11 decision 1). Consumer markup, then server HTML:
+
+```html
+<section class="hero" nfsInterchange="[hero-small.jpg, small], [hero-large.jpg, large]">
+  <div nfsCallout><h2>Harbour tours</h2></div>
+</section>
+```
+
+```html
+<section class="hero" nfsinterchange="[hero-small.jpg, small], [hero-large.jpg, large]" style="background-image: url(&quot;hero-small.jpg&quot;);">
+  <div nfscallout="" class="callout"><h2>Harbour tours</h2></div>
+</section>
+```
 
 Template mode. Consumer markup:
 
@@ -302,7 +332,7 @@ Per ADR 0008, ADR 0014, and the rendering-modes research, section 7 rules 1 to 1
 - Before hydration: nothing outside host bindings and view creation. The background host binding is the only DOM effect of `NfsInterchange`; the outlet's view creation is Angular rendering. The outlet's swap effect reads `document.activeElement` when it swaps (a read of document state, no layout; on the server there is no previous view to test, and a missing `activeElement` counts as "not inside"). No listeners, observers, timers, or focus calls (rules 3 to 5); `focus()` is called only from the render callback. The rendered-rule signal is written on the server too, where no render callback reads it.
 - Client rendering: the first change-detection pass renders the Server breakpoint's rule; the service goes live in the first `earlyRead` callback of that tick; the outlet's `replaced` callback, in the same batch of render hooks, sees the rendered rule disagree with `selected` and waits; the next pass swaps (the effect) or rewrites the style (the host binding) and records the rendered rule; the hooks after that pass emit `replaced` once, with the live rule. All of it happens inside one `ApplicationRef` tick, before the first paint (measured in the re-run: in all three engines the swap lands 1 to 3 ms after the handoff write and `replaced` 0 to 3 ms after the swap, all before the first paint entry).
 - Full hydration: the hydration pass claims the server's style and view with the server's values (the Breakpoint service reports the Server breakpoint until its first `earlyRead` callback). The service then goes live and the same tick re-renders: the style binding is rewritten, and the outlet swaps its view if the live rule differs. The swap is a re-render inside the outlet, not a hydration error, the same as an `@if` branch that differs (rendering-modes research section 2). `replaced` follows the order of the Client rendering bullet: it fires once, after the swap's pass, with the live rule; the Server breakpoint's rule is not reported when it is replaced in the handoff tick. If a keyboard user focused a server-rendered link inside the outlet's view before hydration, the swap effect sees it and the focus rule moves focus into the live view.
-- Double fetch: a server-rendered inline background starts downloading when the page parses, before hydration. On a viewport whose rule differs from the Server breakpoint's, the client then requests the other file. This is the accepted cost of background mode; the mitigations are the stylesheet recipe (static URLs) and a per-request Server breakpoint from client hints (Breakpoint service spec), which removes the swap for Chromium visitors. `<picture>` has no such cost, which is why images use it.
+- Double fetch: a server-rendered inline background starts downloading when the page parses, before hydration. On a viewport whose rule differs from the Server breakpoint's, the client then requests the other file. This is the accepted cost of background mode; the mitigations are the stylesheet recipe (static URLs) and a per-request Server breakpoint from client hints (Breakpoint service spec), which removes the swap for Chromium visitors. `<picture>` has no such cost, which is why images use it. An `<img>` inside a rule template that the first client render swaps out has the same cost when it is in the viewport at parse time, and `NgOptimizedImage`'s `priority` on it would preload the Server breakpoint's file on every viewport, so such an image does not take `priority`; when one `alt` fits every source, `<picture>` avoids both.
 - Strict CSP: a page whose `style-src` forbids inline styles ignores the server-rendered `style` attribute, so under such a policy the background appears only when hydration writes it through the CSSOM (which CSP allows). The stylesheet recipe avoids this.
 - Event replay: neither directive declares a template or host listener, so no Interchange host gets `jsaction` and nothing of Interchange replays. Listeners inside a rendered template are the consumer's and replay as usual. A pre-hydration click on an element inside a view that the first client render swaps out is lost, because replay runs after that render and its target is gone; consumers who need such clicks set the Server breakpoint from client hints or place interactive content outside the swapped template.
 - Hydration boundary: each directive is self-contained; the outlet and its `<ng-template>` references belong to one template, so they share a boundary by construction (a `@defer` block is its own view, so a template declared inside it cannot be named from outside).
@@ -324,16 +354,16 @@ Story ids follow `interchange--<story>`: `interchange--picture` (no directive), 
 
 ### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`)
 
-Stack: `@storybook/angular-vite` 10.6 with `@storybook/addon-vitest` on Vitest 4.1 browser mode, Playwright Chromium headless; inferred `test-storybook`: `npx nx test-storybook <lib>`. Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test = 'error'` and `parameters.a11y.options.runOnly = {type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice']}` in the Storybook preview configuration, the WCAG 2.2 AA rule set and the enforcing gate (ADR 0018). CSR only; the single home of interaction tests. Play functions assert relationships that hold at any iframe width (viewport widths are Playwright's job): the expected rule is computed in the play function from `window.matchMedia` on Foundation's query strings.
+Stack: `@storybook/angular-vite` 10.6 with `@storybook/addon-vitest` on Vitest 4.1 browser mode, Playwright Chromium headless; inferred `test-storybook`: `npx nx test-storybook <lib>`. Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test = 'error'` and `parameters.a11y.options.runOnly = {type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice']}` in the Storybook preview configuration, the WCAG 2.2 AA rule set and the enforcing gate (ADR 0018). CSR only; the single home of interaction tests. Play functions assert relationships that hold at any iframe width (viewport widths are Playwright's job): the expected rule is computed in the play function from `window.matchMedia` on Foundation's query strings. No story element carries a Foundation or NFS class written in the story ([ADR 0039](../adr/0039-directives-manage-every-foundation-class.md)): the background hosts carry the recipe classes `hero` and `hero-default`, whose rules sit in the Storybook stylesheet's recipe block (`hero`: a `min-height` and `background-size: cover`, so an empty host shows its background; `hero-default`: the stylesheet background of `interchange--no-match`), and a Foundation look comes from `nfsCallout`. Every static `<img>` uses `NgOptimizedImage`, except the `<img>` of `interchange--picture`.
 
 - `interchange--picture`: the `<img>` has a non-empty `alt`; `img.currentSrc` ends with the file of the first `<source>` whose `media` matches, or the `src` when none does.
-- `interchange--optimized-image`: an `img[ngSrc]` with `sizes` renders `srcset`, `loading="lazy"`, and a `sizes` value starting with `auto, `.
-- `interchange--background`: the host's inline `background-image` equals `url("<file>")` of the last matching rule; the story's `replaced` log shows that rule once; the headline over the image sits on a Foundation `.callout`, so axe's contrast check passes for every rule's image (WCAG 1.4.3), and the information the image illustrates is in that text (1.3.1).
+- `interchange--optimized-image`: with a story-level `IMAGE_LOADER` that maps each width to a file name (without a loader `NgOptimizedImage` generates no `srcset`), an `img[ngSrc]` with `sizes` renders `srcset`, `loading="lazy"`, and a `sizes` value starting with `auto, `.
+- `interchange--background`: the host's inline `background-image` equals `url("<file>")` of the last matching rule; the story's `replaced` log shows that rule once; the headline over the image sits inside an `nfsCallout` element, which carries `.callout` from the directive, so axe's contrast check passes for every rule's image (WCAG 1.4.3), and the information the image illustrates is in that text (1.3.1).
 - `interchange--background-rule-forms`: a rule string and the equivalent tuple array on two elements produce the same `background-image`; a rule string with the full `retina` query inline parses (no warning in the story's console panel).
 - `interchange--named-queries`: `landscape` and `portrait` rules produce the image of whichever orientation `window.matchMedia` reports; a `retina` rule agrees with `window.matchMedia` on Foundation's retina string.
 - `interchange--custom-named-query`: with a story-level `nfsInterchangeDefaultsToken` adding `dark: '(prefers-color-scheme: dark)'`, the `dark` rule applies exactly when `window.matchMedia` says so.
 - `interchange--raw-media-query`: a rule `[wide.jpg, (min-aspect-ratio: 2/1)]` applies exactly when that query matches.
-- `interchange--no-match`: with rules that cannot match (`[x.jpg, (max-width: 1px)]`), the host has no inline `background-image` and the story stylesheet's default background shows (computed style).
+- `interchange--no-match`: with rules that cannot match (`[x.jpg, (max-width: 1px)]`), the host has no inline `background-image` and the default background of its `hero-default` recipe class shows (computed style). The default is a stylesheet rule, not an inline `style` on the host, which the directive's `null` binding would remove (API, host binding row).
 - `interchange--template`: the text of the template chosen by the last matching rule is present and the other template's text is absent; `replaced` logged once.
 - `interchange--template-deferred`: the desktop template's content sits in `@defer (on immediate)`; at the story's width the expected content (or its placeholder, then content) appears; axe passes on both states.
 - `interchange--template-focus`: a button with the story's `toggle` control switches the rules from breakpoint to raw queries so the other template is selected while a link inside the current view has focus; afterwards focus is on the first link of the new view.
@@ -353,6 +383,7 @@ A fake `MediaMatcher` provided in the test's environment injector returns contro
 - Rules input changes at runtime re-select without any media change.
 - Outlet: the previous view is destroyed (a test component's `DestroyRef` callback runs) and the new one created; with focus inside the old view, focus lands on the first tabbable element of the new view, including one rendered inside an `@if` of that view, and the `replaced` handler already sees `document.activeElement` on it; this holds for the two later-change cases of the ordering item (write inside a render callback, plain listener write); with focus elsewhere, focus does not move; a new view with no tabbable element leaves focus on `<body>`.
 - Escaping: a path containing `"`, `\`, `(`, `)`, and a space yields a `background-image` the browser accepts (computed style is not `none`).
+- Classes (the class rule): on a class-free host neither directive adds a class; beside a test directive that binds a static host class and a `[class.x]` binding on the same element, `nfsInterchange` keeps both classes, sets the inline `background-image`, and the test directive's class toggles without touching the style. A static inline `background-image` on the host is absent from the element's style both while a rule matches and after the rules stop matching (the `null` binding), which is why the spec puts a default in a stylesheet.
 - Development checks: `nfsInterchange` on `<img>` throws the documented error; a malformed rule-string segment warns and the other rules still apply.
 
 ### 3. Node-level Vitest
@@ -360,7 +391,7 @@ A fake `MediaMatcher` provided in the test's environment injector returns contro
 Runs under `npx nx test <lib>` in `<name>.ssr.spec.ts` through the shared `renderServer()` helper; `npx nx test-node <lib>` only if the server path depends on the DOM adapter.
 
 - Pure logic (table-driven): `parseNfsInterchangeRules` on Foundation's docs examples, whitespace variants (`[a.jpg,small]`, extra spaces), a query list with commas (the `retina` string, `print, (min-width: 40em)`), a path with parentheses, an empty string, a missing bracket, and a segment without a comma (warn and skip); the query classifier (breakpoint name, named key, raw query, unknown word); the CSS `url()` escaper.
-- SSR smoke: `renderApplication` over a fixture with a background element, a template outlet, a `<picture>`, and a rule list that only has `landscape`/`portrait`. Assert `whenStable()` resolves; the background host carries `background-image: url("hero-small.jpg")`; the outlet rendered the `small` template's text and not the `large` one's; the orientation-only element has no inline `background-image`; no Interchange host carries `jsaction`; the `<picture>` is serialised unchanged; with a server provider `{map, serverBreakpoint: 'large'}` the background and template are the `large` ones; a `MediaMatcher` spy records no call.
+- SSR smoke: `renderApplication` over a fixture with a background element, a template outlet, a `<picture>`, and a rule list that only has `landscape`/`portrait`; the fixture writes no Foundation or NFS class, and its background host carries only the application class `hero`. Assert `whenStable()` resolves; the background host carries `background-image: url("hero-small.jpg")` and its `class` attribute is exactly `hero`, so neither directive added a class; the outlet rendered the `small` template's text and not the `large` one's; the orientation-only element has no inline `background-image`; no Interchange host carries `jsaction`; the `<picture>` is serialised unchanged; with a server provider `{map, serverBreakpoint: 'large'}` the background and template are the `large` ones; a `MediaMatcher` spy records no call.
 
 ### 4. Playwright e2e (`npx nx e2e <lib>-e2e` against the static Storybook build; `npx nx e2e <fixture-app>-e2e` against the prerendered fixture app)
 
@@ -383,15 +414,18 @@ Against the prerendered fixture app (the harness from the [Prototype: Rendering-
 
 ## Out of Scope
 
-- An image mode (`img[nfsInterchange]`) and any wrapper around `<picture>` or `NgOptimizedImage`: images use the platform and Angular's directive (ADR 0015).
-- The HTML-partial mode, runtime compilation of fetched markup, and any `innerHTML` insertion by the library (ADR 0015).
-- A `type` input and `auto` detection by file extension.
-- A public `replace(path)` method.
-- A component that generates `<picture>` from Interchange rules: `<picture>` is short to write and a component would re-render markup the consumer owns (ADR 0001).
-- Background selection through custom properties and a Library mixin (Implementation level, last bullet).
-- Container queries as Interchange queries: Foundation's Interchange queries are viewport media queries (ADR 0005); consumers who need element-width switching use `srcset` with `sizes` for images or container queries in their own stylesheet.
-- Waiting for the image to load before emitting `replaced`: background images have no load event on the element, and Foundation emitted before load too.
-- Each consuming layout's focus rule beyond the first-tabbable default: consumers refine it from `replaced`.
+Each item carries its reason and one category of the out-of-scope triage. Being CSS-only is never the reason: Interchange is a Plugin, and each item below is excluded for what the platform, Angular, or the design does.
+
+- An image mode (`img[nfsInterchange]`) and any wrapper around `<picture>` or `NgOptimizedImage`: the server cannot know the viewport, so a directive that binds `src` renders one fixed file and swaps it after hydration (two downloads on another viewport, the largest contentful paint after JavaScript, the wrong file kept inside `hydrate never`), while `<picture>` and `srcset` let the browser choose at parse time and Angular's own `NgOptimizedImage` is the Angular directive for images (ADR 0015; re-checked on 2026-09-28 under the CSS-only ruling, which does not touch this reason). Category: `platform-or-a11y`.
+- The HTML-partial mode, runtime compilation of fetched markup, and any `innerHTML` insertion by the library: markup inserted with `innerHTML` is not compiled by Angular and is a sanitisation surface, and Foundation's `$.get`, `.html()`, and `$(response).foundation()` have no counterpart; template mode with a consumer `@defer` and `httpResource` covers the use (ADR 0015). Category: `jquery-or-dom-plumbing`.
+- A `type` input and `auto` detection by file extension: the host element decides the mode. Category: `superseded`.
+- A public `replace(path)` method: content is derived from `rules`, so the rules change instead. Category: `superseded`.
+- A component that generates `<picture>` from Interchange rules: `<picture>` is short to write and a component would re-render markup the consumer owns (ADR 0001). Category: `scope-boundary`.
+- Background selection through custom properties and a Library mixin: it covers breakpoint names only, so it would be a second code path with different semantics (Implementation level, last bullet; building-blocks 1.2). Category: `other` (one code path per behaviour).
+- Container queries as Interchange queries: Foundation's Interchange queries are viewport media queries (ADR 0005); consumers who need element-width switching use `srcset` with `sizes` for images or container queries in their own stylesheet. Category: `scope-boundary`.
+- Waiting for the image to load before emitting `replaced`: background images have no load event on the element, and Foundation emitted before load too. Category: `platform-or-a11y`.
+- Each consuming layout's focus rule beyond the first-tabbable default: consumers refine it from `replaced`. Category: `scope-boundary`.
+- A Foundation class bound by Interchange, or a class directive (`NfsCallout`, a grid cell's) hosted through `hostDirectives`: Interchange has no class of its own, and a behaviour that may sit on any element is written beside the class directive (building-blocks 1.9), so each class keeps one owner (decision 17). Category: `scope-boundary`.
 
 ## Further Notes
 
@@ -399,26 +433,29 @@ Against the prerendered fixture app (the harness from the [Prototype: Rendering-
 
 | # | Decision | Chosen | Alternatives not taken, and why |
 | --- | --- | --- | --- |
-| 1 | Images | No directive; `<picture>` for art direction, `NgOptimizedImage` or `srcset`/`sizes` for resolution switching; dev error on `img[nfsInterchange]` | A `src`-binding directive (server renders one file, client swaps after hydration, double download, LCP after JavaScript, stuck in `hydrate never`); silently ignoring `<img>` (Foundation migrants would ship broken images) |
-| 2 | HTML partials | Dropped; template mode plus consumer `@defer` and `httpResource`/`resource` | Fetch and `innerHTML` (not compiled, no directives, a sanitisation and XSS surface, Foundation's `$(response).foundation()` has no counterpart); a `PendingTasks`-backed loader for server HTML (a data-fetching API inside a layout directive, which `httpResource` already is) |
-| 3 | Shape | Two directives on one attribute with disjoint selectors, `NfsInterchange` and `NfsInterchangeOutlet` | One directive detecting the mode from the value type (a host style binding on `<ng-container>` has no element to write to); two attribute names (Foundation's `data-interchange` covers both modes) |
-| 4 | Template mode as a directive | Kept, per building-blocks Table A, for Foundation's rule syntax, Named queries, and last-match-wins | Documentation only, `@if`/`@switch` over `NfsMediaQuery` (still documented as the equivalent for code that needs none of those; see Usage examples) |
-| 5 | Rule forms | Foundation's string (elements only) and a labelled tuple `[content, query]` | Objects `{path, query}` (longer in templates; `path` is wrong for templates); string only (no typed data binding) |
-| 6 | Rule split | First comma, trimmed | Foundation's `', '` split with the last piece as query (breaks the retina query and any media query list, drops commas from paths) |
-| 7 | Query tokens | Breakpoint name, then Named query key, then raw media query (whitespace or `(`), else warn | Names only, as the Breakpoint service spec's paragraph first read (drops Foundation's documented raw media queries; that paragraph now states this rule) |
-| 8 | Custom Named queries | `namedQueries` in `nfsInterchangeDefaultsToken`, replacing the default map | A field on `nfsBreakpointsToken` (only Interchange uses them; Breakpoint service spec decision 16); merging automatically (the binding example spreads `nfsDefaultNamedQueries` explicitly) |
-| 9 | No match | Clear the content | Keep the previous content, Foundation's behaviour (depends on resize history; server and `hydrate never` output would not be a function of the media state) |
-| 10 | Background binding | `[style.background-image]` host binding, `url("...")` with CSS string escaping | `Renderer2.setStyle` (not rendered on the server, forbidden before hydration); percent-encoding only parentheses (quotes and backslashes still break the value) |
-| 11 | Template rendering | `ViewContainerRef.createEmbeddedView` from an `effect()` on both platforms (confirmed by the outlet prototype); no fallback | `NgTemplateOutlet` as a host directive (its input cannot be set from the class); `afterRenderEffect` alone (does not run on the server, so no server content); the swap in `afterRenderEffect` after the first client render (the new view has had only its creation pass when the callback goes on to focus and emit; with `detectChanges()` it works but needs two swap paths); `ngDoCheck` (never runs again in a zoneless app once nothing else re-checks the declaring view; re-run measurement) |
-| 12 | `replaced` timing and payload | From an `afterRenderEffect` (`mixedReadWrite`) that depends on a private rendered-rule signal written in change detection by the swap (or style) effect, and emits only when the rendered rule equals `selected` and differs from the last one reported; once at the first client render, with the live rule; the rule tuple, or `undefined` when cleared. Revised on 2026-09-26 after the outlet prototype showed the published form (a render callback reading `selected`) firing before the swap when the triggering write comes from another render callback | Reading `selected` in the render callback (fires in the same hook batch as the handoff write, before the swap: measured in both modes, three engines); swap and emit in one render callback (see 11); Foundation's synchronous emit before load; emitting on the server (outputs have no listener there and render callbacks do not run) |
-| 13 | Public state | Read-only `selected` signal via `exportAs: 'nfsInterchange'` | A `model()` (the viewport owns the state; nothing to write back) |
-| 14 | Focus on swap | First tabbable element of the new view when focus was inside the old one: containment recorded by the swap effect just before it clears the container, focus moved in the `replaced` render callback before the emission, only if focus has fallen to `<body>`; applies at the first-render handoff too | No focus handling (APG: do not remove the focused element without moving focus); a focus-target input (API for a rare case that `replaced` covers); checking containment in the render callback (after a runtime swap the old view is gone and the browser has already moved focus to `<body>`) |
-| 15 | Static backgrounds | Stylesheet recipe with Foundation's `breakpoint()` and `image-set()` | Directive for every background (double fetch and CSP cost with no benefit when URLs are static) |
-| 16 | Library CSS | None | A Library mixin for custom-property backgrounds (Implementation level, last bullet) |
+| 1 | Images | No directive of this library; `<picture>` for art direction, `NgOptimizedImage` for resolution switching and every other static image (hand-written `srcset`/`sizes` only where it cannot be used, decision 18); dev error on `img[nfsInterchange]` | A `src`-binding directive: the server renders one file, the client swaps after hydration, a second download, LCP after JavaScript, stuck in `hydrate never` (`platform-or-a11y`); silently ignoring `<img>`: Foundation migrants would ship images that never change (`other`, a silent no-op) |
+| 2 | HTML partials | Dropped; template mode plus consumer `@defer` and `httpResource`/`resource` | Fetch and `innerHTML`: not compiled, no directives, a sanitisation and XSS surface, and Foundation's `$(response).foundation()` has no counterpart (`jquery-or-dom-plumbing`); a `PendingTasks`-backed loader for server HTML: a data-fetching API inside a layout directive, which `httpResource` already is (`superseded`) |
+| 3 | Shape | Two directives on one attribute with disjoint selectors, `NfsInterchange` and `NfsInterchangeOutlet` | One directive detecting the mode from the value type: a host style binding on `<ng-container>` has no element to write to (`other`, Angular limit); two attribute names: Foundation's `data-interchange` covers both modes (`other`, Foundation fidelity) |
+| 4 | Template mode as a directive | Kept, per building-blocks Table A, for Foundation's rule syntax, Named queries, and last-match-wins | Documentation only, `@if`/`@switch` over `NfsMediaQuery`: it drops the rule syntax, Named queries, and last-match-wins; still documented as the equivalent for code that needs none of those, see Usage examples (`other`, design choice) |
+| 5 | Rule forms | Foundation's string (elements only) and a labelled tuple `[content, query]` | Objects `{path, query}`: longer in templates, and `path` is wrong for templates (`other`, design choice); string only: no typed data binding (`other`, design choice) |
+| 6 | Rule split | First comma, trimmed | Foundation's `', '` split with the last piece as query: breaks the retina query and any media query list, drops commas from paths (`other`, a Foundation parser defect) |
+| 7 | Query tokens | Breakpoint name, then Named query key, then raw media query (whitespace or `(`), else warn | Names only, as the Breakpoint service spec's paragraph first read: drops Foundation's documented raw media queries; that paragraph now states this rule (`other`, drops a Foundation feature) |
+| 8 | Custom Named queries | `namedQueries` in `nfsInterchangeDefaultsToken`, replacing the default map | A field on `nfsBreakpointsToken`: only Interchange uses them, Breakpoint service spec decision 16 (`scope-boundary`); merging automatically: the binding example spreads `nfsDefaultNamedQueries` explicitly, so the consumer can also shrink the map (`other`, design choice) |
+| 9 | No match | Clear the content | Keep the previous content, Foundation's behaviour: it depends on resize history, so server and `hydrate never` output would not be a function of the media state (`other`, determinism across rendering modes) |
+| 10 | Background binding | `[style.background-image]` host binding, `url("...")` with CSS string escaping | `Renderer2.setStyle`: not rendered on the server and forbidden before hydration (`jquery-or-dom-plumbing`); percent-encoding only parentheses: quotes and backslashes still break the value (`other`, a Foundation escaping defect) |
+| 11 | Template rendering | `ViewContainerRef.createEmbeddedView` from an `effect()` on both platforms (confirmed by the outlet prototype); no fallback | `NgTemplateOutlet` as a host directive: its input cannot be set from the class (`other`, Angular limit); `afterRenderEffect` alone: it does not run on the server, so no server content (`other`, Angular limit); the swap in `afterRenderEffect` after the first client render: the new view has had only its creation pass when the callback goes on to focus and emit, and with `detectChanges()` it works but needs two swap paths (`other`, measured in the re-run); `ngDoCheck`: never runs again in a zoneless app once nothing else re-checks the declaring view (`other`, Angular limit measured in the re-run) |
+| 12 | `replaced` timing and payload | From an `afterRenderEffect` (`mixedReadWrite`) that depends on a private rendered-rule signal written in change detection by the swap (or style) effect, and emits only when the rendered rule equals `selected` and differs from the last one reported; once at the first client render, with the live rule; the rule tuple, or `undefined` when cleared. Revised on 2026-09-26 after the outlet prototype showed the published form (a render callback reading `selected`) firing before the swap when the triggering write comes from another render callback | Reading `selected` in the render callback: fires in the same hook batch as the handoff write, before the swap, measured in both modes and three engines (`other`, Angular render-hook order); swap and emit in one render callback: see 11 (`other`, measured in the re-run); Foundation's synchronous emit before load: the Completion output rule of building-blocks 1.4 replaces it (`superseded`); emitting on the server: outputs have no listener there and render callbacks do not run (`other`, Angular limit) |
+| 13 | Public state | Read-only `selected` signal via `exportAs: 'nfsInterchange'` | A `model()`: the viewport owns the state, and there is nothing to write back (`other`, design choice) |
+| 14 | Focus on swap | First tabbable element of the new view when focus was inside the old one: containment recorded by the swap effect just before it clears the container, focus moved in the `replaced` render callback before the emission, only if focus has fallen to `<body>`; applies at the first-render handoff too | No focus handling: the APG says not to remove the focused element without moving focus, WCAG 2.4.3 (`platform-or-a11y`); a focus-target input: API for a rare case that `replaced` covers (`scope-boundary`); checking containment in the render callback: after a runtime swap the old view is gone and the browser has already moved focus to `<body>` (`platform-or-a11y`) |
+| 15 | Static backgrounds | Stylesheet recipe with Foundation's `breakpoint()` and `image-set()` | Directive for every background: a double fetch and the strict-CSP cost with no benefit when URLs are static (`platform-or-a11y`) |
+| 16 | Library CSS | None | A Library mixin for custom-property backgrounds: a second code path with different semantics, Implementation level, last bullet (`other`, one code path per behaviour) |
+| 17 | Classes (class rule, revised 2026-09-28) | Neither directive binds, reads, or strips a class; a Foundation look on or in a background host comes from the directive that owns that class, written beside `nfsInterchange` or inside the host (`nfsCallout`, a grid cell's directive); the application's own classes (`.hero`) stay; examples and stories write no Foundation or NFS class | Hosting `NfsCallout` or a grid directive through `hostDirectives`: a behaviour that may sit on any element is written beside the class directive, building-blocks 1.9, so every class keeps one owner (`scope-boundary`); an Interchange input that sets a Foundation class on the host: Interchange has no class, and each class belongs to its own directive's Variant input (`scope-boundary`) |
+| 18 | Images and the project's image rule (revised 2026-09-28) | `NgOptimizedImage` (`ngSrc` with `width` and `height`; a configured image loader for resolution switching) for every static `<img>` in the examples, stories, and fixtures; a plain `<img>` only inside an art-directed `<picture>` and for a `data:` or `blob:` URL | `ngSrc` on the `<img>` of a `<picture>`: Angular 22.2 does not support `<picture>`, its aspect-ratio check warns for a crop of another shape, and its `priority` preload names a file a matching `<source>` replaces (`other`, Angular 22.2 limit read in source); plain `<img src>` everywhere, the published examples: forgoes the lazy loading, dimension checks, and priority preloading of the project's image rule (`other`, project rule) |
+| 19 | Query type (revised 2026-09-28) | `string`; its breakpoint names are the Breakpoint map's (`NfsBreakpointName`), resolved by the Breakpoint service; no Runtime check reads it | Class breakpoints (`NfsClassBreakpoint`): a query is behaviour, not a Variant class, and Foundation's `SPECIAL_QUERIES` take every `$breakpoints` key, so `xlarge` would stop working (`other`, ADR 0040's split between behaviour and Variant types); a template-literal union of breakpoint names, Named query keys, and `(${string}` queries: Named queries come from a Defaults token at run time, so the type cannot list them, and the development warning already catches an unknown bare word (`other`, design choice) |
 
 ### Usage examples
 
-Art direction with `<picture>` (no directive). Sources are listed largest first because `<picture>` takes the first matching `<source>`; the `media` values are Foundation's default breakpoints in em (px / 16, as Foundation's Sass computes them):
+Art direction with `<picture>` (no directive). Sources are listed largest first because `<picture>` takes the first matching `<source>`; the `media` values are Foundation's default breakpoints in em (px / 16, as Foundation's Sass computes them). The `<img>` stays a plain `<img>`, the one exception to the `NgOptimizedImage` rule (decision 18):
 
 ```html
 <picture>
@@ -437,7 +474,7 @@ With a customised Breakpoint map, bind the strings from the Breakpoint service s
 </picture>
 ```
 
-Resolution switching with `NgOptimizedImage` (one image, the browser picks the width):
+Resolution switching with `NgOptimizedImage` (one image, the browser picks the width), with an image loader configured: a built-in CDN loader, or an `IMAGE_LOADER` function that maps each requested width to a file. With the default loader `NgOptimizedImage` renders only `src`:
 
 ```html
 <img ngSrc="harbour.jpg" width="1600" height="900" sizes="(min-width: 64em) 50vw, 100vw" alt="Fishing boats in the harbour at dawn" />
@@ -455,16 +492,18 @@ A static background in the developer's stylesheet (no directive), compiled with 
 }
 ```
 
-Background mode with Foundation's markup, then with data:
+Background mode with Foundation's markup, then with data and a callout for the text. `hero` and `banner` are the application's own classes; the callout's `.callout` comes from `nfsCallout`, and its solid background keeps the text's contrast independent of every rule's image (WCAG 1.4.3):
 
 ```html
 <div class="hero" nfsInterchange="[hero-small.jpg, small], [hero-medium.jpg, medium], [hero-large.jpg, large], [hero-large-2x.jpg, retina]"></div>
 
 <section
-  class="callout"
+  class="banner"
   [nfsInterchange]="[[banner().mobileUrl, 'small'], [banner().desktopUrl, 'large']]"
   (replaced)="log($event)"
-></section>
+>
+  <div nfsCallout><p>{{ banner().text }}</p></div>
+</section>
 ```
 
 A custom Named query, application-wide:
@@ -507,7 +546,7 @@ Template mode replacing an HTML partial: the compact view is server-rendered for
   selector: 'app-product-table',
   template: `
     @if (products.hasValue()) {
-      <table class="hover">...</table>
+      <table>...</table>
     }
   `,
 })
@@ -516,12 +555,12 @@ export class ProductTable {
 }
 ```
 
-Art direction whose meaning changes per breakpoint (one `alt` cannot describe both), in template mode:
+Art direction whose meaning changes per breakpoint (one `alt` cannot describe both), in template mode. Each `<img>` is its own view's only image, so it uses `NgOptimizedImage`; neither takes `priority` (Rendering modes, Double fetch):
 
 ```html
 <ng-container [nfsInterchange]="[[chartSmall, 'small'], [chartLarge, 'large']]" />
-<ng-template #chartSmall><img src="sales-2026.png" alt="Sales rose 12% in 2026" width="400" height="300" /></ng-template>
-<ng-template #chartLarge><img src="sales-by-region-2026.png" alt="Sales rose 12% in 2026; the north region grew fastest at 20%" width="1200" height="600" /></ng-template>
+<ng-template #chartSmall><img ngSrc="sales-2026.png" alt="Sales rose 12% in 2026" width="400" height="300" /></ng-template>
+<ng-template #chartLarge><img ngSrc="sales-by-region-2026.png" alt="Sales rose 12% in 2026; the north region grew fastest at 20%" width="1200" height="600" /></ng-template>
 ```
 
 The equivalent without the directive, for code that needs no Named queries or rule strings:
@@ -536,7 +575,7 @@ The equivalent without the directive, for code that needs no Named queries or ru
 
 ### Sass
 
-Sass. The consumer compiles Foundation's Sass from its own settings; the library imports no Foundation code and copies no Foundation rule. Interchange relies on no Foundation export mixin: Foundation ships no Interchange CSS, and the directives add no class. No library CSS; there is no `nfs-interchange` mixin. (1) Rules: none; background mode writes an inline style host binding, and template mode renders consumer templates. (2) Reused settings: none in library CSS; breakpoint-named queries read `nfsBreakpointsToken`, whose CSS mirror is `nfs-breakpoint-properties`, and the static-background recipe under Usage examples is consumer CSS that calls Foundation's `breakpoint()` mixin with the consumer's own `$breakpoints`. (3) Custom properties: none; the directive writes no `--nfs-interchange-*` property. (4) Motion classes: none, and no `prefers-reduced-motion` override, because Interchange animates nothing. (5) A missing include breaks nothing, because there is none; without `nfs-breakpoint-properties` only the Breakpoint service's development drift check is lost.
+Sass. The consumer compiles Foundation's Sass from its own settings; the library imports no Foundation code and copies no Foundation rule. Interchange relies on no Foundation export mixin: Foundation ships no Interchange CSS, and the directives add no class. No library CSS; there is no `nfs-interchange` mixin. (1) Rules: none; background mode writes an inline style host binding, and template mode renders consumer templates. (2) Reused settings: none in library CSS; breakpoint-named queries read `nfsBreakpointsToken`, whose CSS mirror is `nfs-breakpoint-properties`, and the static-background recipe under Usage examples is consumer CSS that calls Foundation's `breakpoint()` mixin with the consumer's own `$breakpoints`. (3) Custom properties: none; the directive writes no `--nfs-interchange-*` property. (4) Motion classes: none, and no `prefers-reduced-motion` override, because Interchange animates nothing. (5) A missing include breaks nothing, because there is none; without `nfs-breakpoint-properties` only the Breakpoint service's `strictBreakpointSync` Runtime check is affected, never Interchange's output. (6) Variant properties: none, because Interchange has no Variant class; it makes no `nfsVariantCheck` report. The stories' recipe classes (`hero`, `hero-default`) are consumer CSS in the Storybook stylesheet's recipe block and select no Foundation or NFS class; the headline callout in `interchange--background` relies on the Storybook stylesheet's `nfs-callout` include, which the Callout spec owns, and needs no settings override (its text is not a link).
 
 ### Platform features to adopt when the browser target moves
 
@@ -546,10 +585,11 @@ Sass. The consumer compiles Foundation's Sass from its own settings; the library
 
 ### Foundation behaviour changed or dropped
 
-- `src` mode, `html` mode, `type`, `auto` detection by file extension, and `replace(path)` are dropped (decisions 1, 2, and the Foundation contract).
+- `src` mode (`platform-or-a11y`), `html` mode (`jquery-or-dom-plumbing`), `type` and `auto` detection by file extension (`superseded`), and `replace(path)` (`superseded`) are dropped (decisions 1, 2, and the Foundation contract; reasons in Out of Scope).
 - `$.get` plus `.html()` plus `$(response).foundation()` becomes template mode with `@defer` and `httpResource` or `resource`.
-- `resizeme.zf.trigger` re-evaluation on every resize and the load-time `[data-resize]` snapshot (which missed elements added later) become `MediaQueryList` `change` events through the Breakpoint service, which fire once per threshold crossing and reach elements created at any time.
+- `resizeme.zf.trigger` re-evaluation on every resize and the load-time `[data-resize]` snapshot (which missed elements added later) become `MediaQueryList` `change` events through the Breakpoint service, which fire once per threshold crossing and reach elements created at any time (`jquery-or-dom-plumbing`).
 - Manual `(`/`)` percent-encoding becomes CSS string escaping inside `url("...")`.
 - The `src` quirk that emitted `replaced` before the image loaded and re-set `src` on a resize during loading disappears with `src` mode.
-- Generated `id` and `data-resize` attributes are no longer written.
+- Generated `id` and `data-resize` attributes are no longer written (`jquery-or-dom-plumbing`).
+- Foundation's docs markup writes `<img data-interchange>` with no `alt` (an axe `image-alt` failure); the development error on `img[nfsInterchange]` sends that markup to `<picture>` or `NgOptimizedImage`, and every image in this spec carries a true `alt` (WCAG 1.1.1).
 - No match clears instead of keeping the previous content; the rule split and the raw-media-query recognition are the Deltas under Foundation contract.

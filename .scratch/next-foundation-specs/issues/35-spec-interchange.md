@@ -173,3 +173,18 @@ Checked and left as they are: the rendered-rule handoff of building-blocks 1.5 a
 #### Triage
 
 Nothing is open.
+
+### Amendment, 2026-09-28 (class rule)
+
+Made by the [Re-run: Interchange spec under the class rule](127-rerun-interchange-class-rule.md) in `specs/interchange.md`, under ADR 0039 and ADR 0040; its Answer holds the decision log. Behaviour, ARIA, keyboard, rendering modes, API members, defaults, and Story ids are unchanged.
+
+1. Interchange has no Structural, Variant, or State class, so neither directive binds, reads, or strips one; the CSS class mapping is now a Kind table saying so, and adds that a Foundation look on or in a background host comes from the directive that owns that class, written beside `nfsInterchange` or inside the host (`nfsCallout`, a grid cell's directive), never hosted (new design decision 17).
+2. Consumer-written Foundation classes removed: the `interchange--background` story's `.callout` becomes an `nfsCallout` element; the data-bound background example's `class="callout"` host becomes the application class `banner` with an `nfsCallout` child for the text; the product table's `class="hover"` goes (plain `<table>`, until the Table spec names its input); the mapping prose no longer lists `.thumbnail` and a grid cell as classes the consumer writes. `.hero` stays: it is the application's own class.
+3. The project's image rule (`NgOptimizedImage`, from the repository's AGENTS.md) is applied: every static `<img>` in examples, stories, and fixtures uses `ngSrc`, except the `<img>` of an art-directed `<picture>` (Angular 22.2 does not support `<picture>`; read in its source, the aspect-ratio check would warn for a crop of another shape and the `priority` preload would name a file a matching `<source>` replaces) and `data:` or `blob:` URLs, which it rejects (new design decision 18). The chart example's images use `ngSrc`; the `interchange--optimized-image` story provides an `IMAGE_LOADER`, without which `NgOptimizedImage` generates no `srcset`; the development error on `img[nfsInterchange]` names `NgOptimizedImage (ngSrc with sizes)`.
+4. Query typing (new design decision 19): the query stays `string`; its breakpoint names are the Breakpoint map's (`NfsBreakpointName`), never Class breakpoints, because a query is behaviour and Foundation's `SPECIAL_QUERIES` take every `$breakpoints` key; no Runtime check reads it and there is no `nfsVariantCheck` report. User stories 44 to 47 are appended.
+5. Every Out of Scope item, dropped option, and rejected Design-decisions alternative now carries its reason and one category of the out-of-scope triage. The image mode (IC1) is re-checked under the CSS-only ruling (contradiction C9 of `research/out-of-scope-exclusions.md`): its reason is the platform (the server cannot know the viewport), so it stays out, now as `platform-or-a11y`; it was `superseded` in the exclusion table of the [Triage the out-of-scope Foundation components and variants](79-triage-out-of-scope-components-and-variants.md).
+6. Documented from Angular's styling source: the host's `null` binding removes a static inline `background-image` too, so a default background goes in a stylesheet; the `interchange--no-match` story takes it from the recipe class `hero-default`, and a browser-level case asserts it. Also added: a browser-level class-composition case, an SSR smoke assertion that the background host's `class` is only the application's, a Double fetch sentence for images in swapped rule templates (no `priority` there), the Sass subsection's item (6), and the Foundation docs' `alt`-less `<img data-interchange>` under Foundation behaviour changed.
+
+#### Triage
+
+Nothing is open; the ratings are in the re-run's Answer.
