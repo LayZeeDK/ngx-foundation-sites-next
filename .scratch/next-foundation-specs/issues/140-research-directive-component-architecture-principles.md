@@ -1,7 +1,7 @@
 # 140. Research: directive and component architecture principles for Angular UI libraries
 
 Type: research
-Status: claimed
+Status: resolved
 Blocked by: none
 Labels: wayfinder:research
 Map: ../map.md
@@ -19,3 +19,21 @@ Three `/research` subagents in parallel, each writing one findings file with a s
 3. Critique (Opus 5.5, an adversarial lens): each draft principle, layer, and decision rule tested against Angular 22.2's source and docs, the Baseline target, Foundation's class-based styling contract, and this map's recorded decisions (ADRs, building-blocks, the standing preferences and user rulings in the map's Notes); principles the draft lacks (rendering modes, entry points and tree shaking, forms integration, theming and Sass, naming, deprecation and versioning, testing harnesses, internationalisation and direction). File: `research/architecture-principles-critique.md`.
 
 Resolved when the three files exist; the Answer lists them with a few lines each. [Decide: the directive and component architecture guide](141-decide-directive-component-architecture-guide.md) writes the guide from them.
+
+## Answer
+
+Three `/research` lenses ran in parallel on 2026-09-28; each wrote one findings file with a source for every claim. The user ruled during the run that the draft is not authoritative, only inspiration for the type of guide and principles to produce, with any adopted claim verified and backed by research; the critique lens applied that ruling to every draft claim, marking each Verified, Refuted, or Unverified.
+
+1. Angular ecosystem, Sonnet 5: [research/architecture-angular-ecosystem.md](../research/architecture-angular-ecosystem.md). angular.dev and the angular/components source at 22.2.0 (Angular Aria's accordion and tabs, Material's coding standards and `MatButton`), and first-party docs or source of Spartan, ng-primitives, NG-ZORRO, Taiga UI, ng-bootstrap, PrimeNG, Clarity, and Optimus UI. Angular's own Accordion and Tabs, and ng-bootstrap's Dropdown, coordinate several elements through directives and an injected coordinator with no component, which refutes the draft's "components exist for coordination"; the draft's directive-first axis is really attribute selector against custom element (Material's `mat-button` is a component with an attribute selector). Adds entry-point granularity, lightweight injection tokens, `hostDirectives` with its limits, and declaration-site DI for projected content. The user corrected the first version's PrimeNG note: PrimeNG became a paid product (PrimeTek's announcement: future majors under the commercial PrimeUI license, existing MIT versions stay MIT), and Optimus UI by OpenNG is its free, MIT-licensed continuation of PrimeNG v21; the file now cites both, and surveys Optimus UI (the same directive and component split, `hostDirectives` across its button family, still decorator-based inputs).
+2. Headless primitives and the platform, Sonnet 5: [research/architecture-headless-primitives.md](../research/architecture-headless-primitives.md). Radix UI, React Aria, Headless UI, Zag and Ark UI, Base UI, shadcn/ui, Open UI, and the APG converge on named compound parts, controlled and uncontrolled state (`model()` in Angular), and APG conformance; `asChild` and copy-in distribution are rejected, because a directive attaches to the consumer's own element and the Destination is one published library; data-attribute state hooks would duplicate Foundation's state classes. A translation table maps React idioms to directives, `hostDirectives`, DI, and `model()`.
+3. Critique, Opus 5.5: [research/architecture-principles-critique.md](../research/architecture-principles-critique.md). Rejects the draft's principle 3 with Layer 3 and decision rule 3 (a component is for a template; Angular Aria ships no component; Material's `MatAccordion` is a directive), principle 14 with Layer 4 (Stack, Cluster, Sidebar, and Switcher are not Foundation's and would break its child selectors), the "2-5 inputs" count (published container directives have 7 to 18 inputs, one per Foundation Option), and splitting styling from behaviour into separate layers (ADR 0041). Qualifies the rest, refutes several example names (`nfsCardHeader`, `nfsInput`, `nfsTextarea`, `nfsDropdown`), and adds 13 principles: rendering modes, entry points, forms integration, the Sass side, naming, host-directive limits, composition over inheritance, one source per state, declaration-site DI, development-mode checks, internationalisation and direction, the test surface, and deprecation and versioning.
+
+Baseline on 2026-05-07 (web-features 3.40.0, checked by lenses 2 and 3): usable are `<dialog>`, `ResizeObserver`, `IntersectionObserver`, `:focus-visible`, `:checked`, `:disabled`, and size container queries; not usable without a fallback are the Popover API and `:popover-open`, `:open`, `:has()`, CSS anchor positioning, View Transitions, and container style queries. CSS nesting also misses the date, which does not matter here because Sass flattens it.
+
+For the guide author, from the lenses: `building-blocks.md` allows `effect()` for history writes and timers against its own rendering-mode rules; AGENTS.md puts `@angular/aria` first where the map puts the native platform first; a forgotten directive import fails silently for attribute selectors; the effort already uses "layer" for testing; deprecation and versioning have no recorded decision.
+
+Impact: MEDIUM (research informs the guide; it decides nothing). Confidence: HIGH (primary sources, cited).
+
+### Gist for Decisions so far
+
+- [Research: directive and component architecture principles for Angular UI libraries](issues/140-research-directive-component-architecture-principles.md) -- three lenses (Angular ecosystem, headless primitives and the platform, an adversarial critique) test the Copilot draft against primary sources: coordination does not need a component (Angular Aria, Material, ng-bootstrap), the layout primitives and the input count are rejected, 13 missing principles are added, and seven of the draft's platform features miss the 2026-05-07 Baseline.
