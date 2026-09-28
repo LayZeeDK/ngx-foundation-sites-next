@@ -322,7 +322,7 @@ The pre-hydration click on a dismissible callout's close button is the [Spec: Cl
 - A default `role`, a `role` or politeness input, and a library announcer (D6).
 - Restoring Foundation's removed link tint (D16).
 - The Form alert's behaviour: [Spec: Abide](../issues/31-spec-abide.md), whose Form alert takes this look with `nfsCallout` beside `nfsAbideAlert`.
-- Heading typography inside callouts (Foundation's base typography), and the Card, Media Object, and other containers with their own docs pages.
+- Checks of typography colours inside callouts: headings take the callout's checked text colour (`$header-color: inherit`), and the greys of a heading `small`, a subheader, a `cite`, or a `blockquote` are the [Spec: Typography Helpers](../issues/106-spec-typography-helpers.md)'s, checked on the page only; that spec requires them to reach 4.5:1 on a callout's tint too and sets them to `#666666` on Foundation's defaults, which does (4.686:1 at worst, on the alert tint), while `nfs-callout` checks what Foundation's callout markup puts on its backgrounds (D7). The Card, Media Object, and other containers with their own docs pages belong to their own specs. Category: `scope-boundary`.
 - The Variant registries, the helper types, the manifest rows, and the declaration-file generator: [Spec: Variant declaration tooling](../issues/136-spec-variant-declaration-tooling.md); the Runtime checks' configuration: [Spec: Breakpoint service (shared utility)](../issues/53-spec-breakpoint-service.md).
 - Runtime theming through custom properties (building-blocks 1.13).
 
