@@ -101,7 +101,10 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
 @include nfs-breakpoint-properties;
 @include nfs-motion;
 @include nfs-accordion;
-@include nfs-menu; // Menu: the current link's look from aria-current and simple-menu rows; every menu--* story and every menu Plugin story
+@include nfs-menu; // Menu: the current link's look from aria-current and simple-menu rows; every menu--* story, every nested-menu--* story, and every menu Plugin story
+@include nfs-menu-icon; // Top Bar: the menu icon's 24 px box; every story with a menu icon (Top Bar, Responsive Toggle, Off-canvas, Triggers)
+@include nfs-title-bar; // Top Bar: title-bar contrast checks
+@include nfs-top-bar; // Top Bar: Top Bar contrast checks
 // ... one @include nfs-<plugin> per plugin that has a Library mixin, after foundation-everything,
 // with the arguments its spec names (for example @include nfs-responsive-toggle(xlarge xxlarge);).
 @include nfs-smooth-scroll; // Smooth Scroll: smooth native jumps on html; play functions scroll with behavior: 'instant'
@@ -120,10 +123,14 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
   // hollow and clear success 1.799:1 and warning 1.842:1. Spec: Button, button--colors and button--fills.
   $button-palette: map-merge($foundation-palette, ('alert': #bf3f2c, 'success': #177a3d, 'warning': #8a5a00));
 
-  // color-contrast (1.4.3): Foundation's default Top Bar puts $anchor-color links at 3.76:1.
-  // Spec: Dropdown Menu, dropdown-menu--top-bar; also required by the Nested menu, Magellan
-  // (magellan--sticky-top-bar), and Responsive Toggle (responsive-toggle--default) stories that show a Top Bar.
+  // color-contrast (1.4.3): Foundation's default Top Bar puts $anchor-color links at 3.76:1, and nfs-top-bar
+  // stops the compile. Spec: Top Bar, every top-bar--* story; also the Dropdown Menu (dropdown-menu--top-bar),
+  // Nested menu, Magellan (magellan--sticky-top-bar), Responsive Menu, and Responsive Toggle
+  // (responsive-toggle--default) stories that show a Top Bar.
   $topbar-background: $white;
+  // Foundation's settings file set the submenu background from the old bar colour; without this line open
+  // Top Bar submenus stay $light-gray and fail color-contrast (measured in three engines, Spec: Top Bar).
+  $topbar-submenu-background: $topbar-background;
 
   // 1.4.10 Reflow: Foundation's 200px minimum does not fit every side at 320 CSS px.
   // Spec: Dropdown Menu, dropdown-menu--fixture; also the Nested menu and Responsive Menu in dropdown mode.

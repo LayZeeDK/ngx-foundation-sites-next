@@ -22,6 +22,18 @@ _Avoid_: nav list, menubar, ARIA menu (for this)
 Foundation's CSS-only component for the corner control drawn as a glyph, marked by the `.close-button` Structural class; distinct from a close Trigger (`nfsClose`), which does the closing and can sit on any button.
 _Avoid_: close trigger (for the component), dismiss button, X button
 
+**Top Bar**:
+Foundation's CSS-only navigation bar with a left-hand and a right-hand section that stack below a breakpoint, holding menus, a title, and form controls; the wide-screen counterpart of a Title Bar.
+_Avoid_: navbar, header bar, top nav
+
+**Title Bar**:
+Foundation's CSS-only compact bar holding a Menu icon and a title, shown in place of a Top Bar on small screens or beside an off-canvas panel.
+_Avoid_: mobile bar, app bar, toolbar
+
+**Menu icon**:
+Foundation's three-bar button drawn in CSS (`.menu-icon`), light by default and dark as a Variant, which opens a menu or a panel through a Trigger beside it; distinct from the Menu component.
+_Avoid_: hamburger (for the component), burger button, menu toggle
+
 **Split button**:
 A Button Group of two buttons, a main action and an arrow-only dropdown button that opens more actions of the same kind; built from the group, the buttons, and a Trigger, with no component of its own. Distinct from a Hybrid item, whose link navigates and whose toggle opens a submenu.
 _Avoid_: dropdown button (for the pair), menu button, action menu
@@ -99,8 +111,12 @@ The stretch of scrolling during which a Sticky element can be stuck: the box of 
 _Avoid_: anchor range, sticky zone, scroll range
 
 **Motion class**:
-A CSS animation class name given to a Plugin's animation Option (`animationIn`, `animationOut`, `animate`), either one of Foundation's Motion UI names or the consumer's own.
+A CSS animation class that animates an element's entry, exit, or state change: one of the library's `nfs-*` keyframe classes, which a directive applies from a typed Motion name, or the consumer's own keyframe class; never a library class name written in consumer code.
 _Avoid_: Motion UI transition, mui class, animation name
+
+**Motion name**:
+A Motion UI animation name (`fade-in`, `spin-out`) given as the value of a Plugin's animation Option, which the directive maps to the library's keyframe Motion class of that name; never a class name.
+_Avoid_: Motion class (for the value), animation class, effect name
 
 **Breakpoint map**:
 Foundation's named viewport breakpoints (`small`, `medium`, `large`, `xlarge`, `xxlarge`) with their minimum widths, one set shared by the library and the consumer's Sass `$breakpoints`.
@@ -177,7 +193,7 @@ A Callout the user can close with a close button inside it, either hidden in pla
 _Avoid_: closable callout, alert box, closable (the Foundation attribute)
 
 **Class mode**:
-The Toggler form that adds and removes a class named by `toggler` on its element, and whose Triggers are toggle buttons; the replacement for `data-toggler=".class"`.
+The Toggler form that adds and removes the consumer's own class named by `toggler` on its element, or, with `toggler` written without a value, switches no class and holds the state a Foundation Variant input is bound from; its Triggers are toggle buttons; the replacement for `data-toggler=".class"`.
 _Avoid_: toggle-class mode, CSS mode, active mode
 
 **Modal mode**:
@@ -261,7 +277,7 @@ The consumer-written element around a Drilldown's root list that clips the Drill
 _Avoid_: wrapper component (which adds an element inside a component), container, viewport
 
 **Base side**:
-The side, left or right, toward which a dropdown-mode submenu opens before the collision check moves it; set by `alignment`, Foundation's `align-right`, a `.top-bar-right` ancestor, and the reading direction.
+The side, left or right, toward which a dropdown-mode submenu opens before the collision check moves it; set by `alignment`, the menu's `align` Variant (Foundation's `align-right` class), an enclosing Top Bar right-hand section, and the reading direction.
 _Avoid_: alignment (the Option), default side, opening direction
 
 **Tab group**:

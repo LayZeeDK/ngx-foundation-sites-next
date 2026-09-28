@@ -19,3 +19,4 @@ The [Spec: Nested menu (shared utility)](../issues/56-spec-nested-menu.md) lets 
 - The Nested menu spec's `mode` and `drive()` rows, its swap rule, its render hooks table, and its ResponsiveMenu rendering-modes bullet change; the swap rule also closes every submenu when a swap enters dropdown mode with focus outside the menu.
 - Building-blocks 1.11 decision 8 lists ResponsiveMenu, like ResponsiveAccordionTabs, among the plugins whose blocks hydrate as sent.
 - A pre-hydration click replays onto a node the swap kept, so it is applied once in the live mode, unlike ResponsiveAccordionTabs, whose swap removes the clicked control.
+- 2026-09-28 ([Re-run: Nested menu (shared utility) spec under the class rule](../issues/132-rerun-nested-menu-class-rule.md)): a section open at first paint is now only a bound `expanded`; the static `is-active` seed named in the second considered option is gone (building-blocks 1.4). The option's rejection stands on the `expanded` case.

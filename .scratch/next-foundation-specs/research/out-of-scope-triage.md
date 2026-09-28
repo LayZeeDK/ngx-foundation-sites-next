@@ -40,7 +40,7 @@ Ratings follow the triage quadrant (`map.md:140`), as impact, then confidence.
 - Menu stays out of Nested menu, which acts only under a plugin root (`specs/nested-menu.md:119`). Pagination and Breadcrumbs share its `nav > ul` shape.
 - The Forms parts stay out of Abide, so unvalidated forms need not import it; Switch has its own contrast and role work.
 - Groups follow Foundation's sidebar (`docs/partials/component-list.html:76-134`).
-- The native lens's cross-links are left out: the Dropdown Menu's ancestry read (`building-blocks.md:247`) must stay for consumer-written `.top-bar-right`, so DI would give it two sources. Both are additive later (Decision 5).
+- The native lens's cross-links are left out: the Dropdown Menu's ancestry read (`building-blocks.md:247`) must stay for consumer-written `.top-bar-right`, so DI would give it two sources. Both are additive later (Decision 5). (2026-09-28, [Re-run: Nested menu (shared utility) spec under the class rule](../issues/132-rerun-nested-menu-class-rule.md): under the class rule `.top-bar-right` is bound by the Top Bar's directive, not consumer-written; the ancestry read stays for a menu projected into a Top Bar section, which declaration-site DI would miss.)
 
 **No Structural class to bind:** `table` itself (`scss/components/_table.scss:307`), the form `label` and its `.middle` Variant, `select`, checkbox, radio, text inputs, native `<progress>` and `<meter>` (`docs/pages/progress-bar.md:99-140`), bare `fieldset` and `legend`, and the typography base. Each is in scope and documented in its docs page's spec, with no directive, which would bind nothing.
 
