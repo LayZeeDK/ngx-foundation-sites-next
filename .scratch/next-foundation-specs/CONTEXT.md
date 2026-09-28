@@ -163,7 +163,7 @@ A breakpoint listed in `$breakpoint-classes` (`small`, `medium`, `large` by defa
 _Avoid_: responsive breakpoint, class size, breakpoint class
 
 **Visibility class**:
-A Foundation CSS class of the Visibility Classes family that hides an element always (`.hide`, `.invisible`) or under a condition: a breakpoint range of the Breakpoint map (`.show-for-medium`, `.hide-for-large-only`, generated only for Class breakpoints), an orientation, the dark colour scheme, or a stuck Sticky element; `.show-for-sr` and `.show-on-focus` hide an element only from sight. Distinct from a State class, which expresses runtime state.
+A Foundation CSS class of the Visibility Classes family that hides an element always (`.hide`, `.invisible`) or under a condition: a breakpoint range of the Breakpoint map (`.show-for-medium`, `.hide-for-large-only`, generated only for Class breakpoints), an orientation, the dark colour scheme, a stuck Sticky element, or printing (`.show-for-print`, `.hide-for-print`, from Foundation's print styles); `.show-for-sr` and `.show-on-focus` hide an element only from sight. Distinct from a State class, which expresses runtime state.
 _Avoid_: responsive class, breakpoint class, visibility helper
 
 **Visually hidden**:
