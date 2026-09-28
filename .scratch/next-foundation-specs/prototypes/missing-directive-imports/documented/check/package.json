@@ -1,0 +1,6 @@
+{
+  "name": "nfs-missing-imports-documented-proto",
+  "private": true,
+  "type": "module",
+  "builders": "./builders.json"
+}

@@ -1,0 +1,9 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "type": "object",
+  "properties": {
+    "buildTarget": { "type": "string", "description": "The build target whose tsConfig the check compiles; default <project>:build." },
+    "tsConfig": { "type": "string", "description": "A tsconfig to compile instead of the build target's." }
+  },
+  "additionalProperties": false
+}

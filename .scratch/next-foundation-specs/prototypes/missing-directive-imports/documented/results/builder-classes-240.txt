@@ -1,0 +1,16 @@
+[warn] src/app/cases/correct-array-external.ts:12:14 - NFS9002: CorrectArrayExternal not checked: `NFS_ACCORDION` is not a class.
+[warn] src/app/cases/correct-array-inline.ts:24:14 - NFS9002: CorrectArrayInline not checked: `NFS_ACCORDION` is not a class.
+[warn] src/app/cases/correct-local-array-external.ts:11:14 - NFS9002: CorrectLocalArrayExternal not checked: `SHARED_NFS` is not a class.
+[warn] src/app/cases/correct-local-array-inline.ts:23:14 - NFS9002: CorrectLocalArrayInline not checked: `SHARED_NFS` is not a class.
+[warn] src/app/cases/correct-module-external.ts:11:14 - NFS9002: CorrectModuleExternal not checked: `...NFS_ACCORDION` is not an identifier.
+[warn] src/app/cases/correct-module-inline.ts:23:14 - NFS9002: CorrectModuleInline not checked: `...NFS_ACCORDION` is not an identifier.
+[warn] src/app/cases/hard/hard-alias.ts:11:14 - NFS9002: HardAlias not checked: `UI_IMPORTS` is not a class.
+[warn] src/app/cases/hard/hard-function.ts:15:14 - NFS9002: HardFunction not checked: `buttonImports()` is not an identifier.
+[warn] src/app/cases/hard/hard-ngmodule.ts:11:14 - NFS9002: HardNgModule not checked: it is declared in an NgModule (standalone: false).
+[warn] src/app/cases/hard/hard-package.ts:11:14 - NFS9002: HardPackage not checked: `DS_IMPORTS` is not a class.
+[error] src/app/cases/bound-input-external.html:1:1 - NFS9001: nfsCallout matches NfsCallout, which BoundInputExternal's imports do not include; import NfsCallout from 'ngx-foundation-sites/callout'.
+[error] src/app/cases/bound-input-external.html:2:1 - NFS9001: nfsCallout matches NfsCallout, which BoundInputExternal's imports do not include; import NfsCallout from 'ngx-foundation-sites/callout'.
+[... 171 NFS9001 errors in all ...]
+[error] src/app/scope/syntax.html:5:29 - NFS9001: nfsButton matches NfsButton, which Syntax's imports do not include; import NfsButton from 'ngx-foundation-sites/button'.
+[info] 171 finding(s) in 277 component(s), 10 skipped, 541 ms.
+builder success: false

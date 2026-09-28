@@ -1,0 +1,4 @@
+tsc type check (TypeScript alone, for scale): median 1145 ms (1079, 1118, 1145, 1150, 1158)
+ngc type check (the build baseline): median 3915 ms (3850, 3851, 3915, 3971, 4003)
+compiler check (static prototype (b)): median 2948 ms (2924, 2934, 2948, 2971, 3025)
+documented check: median 1092 ms (1075, 1088, 1092, 1094, 1161)

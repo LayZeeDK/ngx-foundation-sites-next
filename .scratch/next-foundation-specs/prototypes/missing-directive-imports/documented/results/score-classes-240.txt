@@ -1,0 +1,65 @@
+
+== static cases
+case | expected | compiler | documented
+src/app/cases/member-inline.ts | 2 | 2 (0 missed, 0 extra) | 2 (0 missed, 0 extra)
+src/app/cases/member-external.html | 2 | 2 (0 missed, 0 extra) | 2 (0 missed, 0 extra)
+src/app/cases/family-inline.ts | 7 | 7 (0 missed, 0 extra) | 7 (0 missed, 0 extra)
+src/app/cases/family-external.html | 7 | 7 (0 missed, 0 extra) | 7 (0 missed, 0 extra)
+src/app/cases/single-inline.ts | 1 | 1 (0 missed, 0 extra) | 1 (0 missed, 0 extra)
+src/app/cases/single-external.html | 1 | 1 (0 missed, 0 extra) | 1 (0 missed, 0 extra)
+src/app/cases/correct-classes-inline.ts | 0 | 0 (0 missed, 0 extra) | 0 (0 missed, 0 extra)
+src/app/cases/correct-classes-external.html | 0 | 0 (0 missed, 0 extra) | 0 (0 missed, 0 extra)
+src/app/cases/correct-array-inline.ts | 0 | 0 (0 missed, 0 extra) | skipped: `NFS_ACCORDION` is not a class
+src/app/cases/correct-array-external.html | 0 | 0 (0 missed, 0 extra) | skipped: `NFS_ACCORDION` is not a class
+src/app/cases/correct-local-array-inline.ts | 0 | 0 (0 missed, 0 extra) | skipped: `SHARED_NFS` is not a class
+src/app/cases/correct-local-array-external.html | 0 | 0 (0 missed, 0 extra) | skipped: `SHARED_NFS` is not a class
+src/app/cases/correct-module-inline.ts | 0 | 0 (0 missed, 0 extra) | skipped: `...NFS_ACCORDION` is not an identifier
+src/app/cases/correct-module-external.html | 0 | 0 (0 missed, 0 extra) | skipped: `...NFS_ACCORDION` is not an identifier
+src/app/cases/css-attr-inline.ts | 0 | 0 (0 missed, 0 extra) | 0 (0 missed, 0 extra)
+src/app/cases/css-attr-external.html | 0 | 0 (0 missed, 0 extra) | 0 (0 missed, 0 extra)
+src/app/cases/bound-input-inline.ts | 2 | 2 (0 missed, 0 extra) | 2 (0 missed, 0 extra)
+src/app/cases/bound-input-external.html | 2 | 2 (0 missed, 0 extra) | 2 (0 missed, 0 extra)
+src/app/cases/contexts-inline.ts | 5 | 5 (0 missed, 0 extra) | 5 (0 missed, 0 extra)
+src/app/cases/contexts-external.html | 5 | 5 (0 missed, 0 extra) | 5 (0 missed, 0 extra)
+src/app/cases/contexts-ok-inline.ts | 0 | 0 (0 missed, 0 extra) | 0 (0 missed, 0 extra)
+src/app/cases/contexts-ok-external.html | 0 | 0 (0 missed, 0 extra) | 0 (0 missed, 0 extra)
+src/app/cases/multi-a.html | 0 | 0 (0 missed, 0 extra) | 0 (0 missed, 0 extra)
+src/app/cases/multi.ts#MultiB | 1 | 1 (0 missed, 0 extra) | 1 (0 missed, 0 extra)
+src/app/cases/multi.ts#MultiC | 0 | 0 (0 missed, 0 extra) | 0 (0 missed, 0 extra)
+src/app/cases/shared/card.ts | 0 | 0 (0 missed, 0 extra) | 0 (0 missed, 0 extra)
+src/app/cases/hard/hard-function.ts | 1 | 1 (0 missed, 0 extra) | skipped: `buttonImports()` is not an identifier
+src/app/cases/hard/hard-alias.ts | 1 | 1 (0 missed, 0 extra) | skipped: `UI_IMPORTS` is not a class
+src/app/cases/hard/hard-package.ts | 0 | 0 (0 missed, 0 extra) | skipped: `DS_IMPORTS` is not a class
+src/app/cases/hard/hard-far-template.ts | 1 | 1 (0 missed, 0 extra) | 1 (0 missed, 0 extra)
+src/app/cases/hard/hard-renamed.ts | 0 | 0 (0 missed, 0 extra) | 0 (0 missed, 0 extra)
+src/app/cases/hard/hard-host-directive.ts | 0 | 0 (0 missed, 0 extra) | 0 (0 missed, 0 extra)
+src/app/cases/hard/hard-ngmodule.ts | 1 | 1 (0 missed, 0 extra) | skipped: it is declared in an NgModule (standalone: false)
+
+== scope cases
+case | expected | compiler | documented
+src/app/scope/bound-names-inline.ts | 7 | 7 (0 missed, 0 extra) | 7 (0 missed, 0 extra)
+src/app/scope/bound-names-external.html | 7 | 7 (0 missed, 0 extra) | 7 (0 missed, 0 extra)
+src/app/scope/bound-names-ok-inline.ts | 0 | 0 (0 missed, 0 extra) | 0 (0 missed, 0 extra)
+src/app/scope/bound-names-ok-external.html | 0 | 0 (0 missed, 0 extra) | 0 (0 missed, 0 extra)
+src/app/scope/switch-container-inline.ts | 5 | 5 (0 missed, 0 extra) | 5 (0 missed, 0 extra)
+src/app/scope/switch-container-external.html | 5 | 5 (0 missed, 0 extra) | 5 (0 missed, 0 extra)
+src/app/scope/switch-container-ok-inline.ts | 0 | 0 (0 missed, 0 extra) | 0 (0 missed, 0 extra)
+src/app/scope/switch-container-ok-external.html | 0 | 0 (0 missed, 0 extra) | 0 (0 missed, 0 extra)
+src/app/scope/alias-classes.ts | 1 | 1 (0 missed, 0 extra) | 1 (0 missed, 0 extra)
+src/app/scope/alias-renamed.ts | 0 | 0 (0 missed, 0 extra) | 0 (0 missed, 0 extra)
+src/app/scope/namespace-import.ts | 1 | 1 (0 missed, 0 extra) | 1 (0 missed, 0 extra)
+src/app/scope/module-classes.ts | 1 | 1 (0 missed, 0 extra) | 1 (0 missed, 0 extra)
+src/app/scope/host-chain.ts | 1 | 1 (0 missed, 0 extra) | 1 (0 missed, 0 extra)
+src/app/scope/syntax.html | 1 | 2 (0 missed, 1 extra) | 1 (0 missed, 0 extra)
+
+== generated workspace (240 components, 24 faulty)
+compiler, all components: {"expected":106,"reported":106,"missed":0,"extra":0,"components":240}
+documented, checked components: {"expected":106,"reported":106,"missed":0,"extra":0,"components":240}
+compiler, the same checked components: {"expected":106,"reported":106,"missed":0,"extra":0,"components":240}
+documented skipped 0 generated component(s), 0 of them faulty
+
+== element by element on checked components: 171 documented, 172 compiler, 0 only documented, 1 only compiler
+  only compiler: src/app/scope/syntax.html:2:33 NfsButton
+compiler findings with no attribute name: 2 (src/app/scope/bound-names-external.html:6:1 NfsCallout, src/app/scope/bound-names-inline.ts:14:5 NfsCallout)
+
+components: documented checked 277, skipped 10; compiler checked 287

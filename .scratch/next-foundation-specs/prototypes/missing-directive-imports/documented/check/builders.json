@@ -1,0 +1,9 @@
+{
+  "builders": {
+    "missing-imports": {
+      "implementation": "./builder.mjs",
+      "schema": "./schema.json",
+      "description": "Reports elements that match a library directive the component's scope does not import."
+    }
+  }
+}
