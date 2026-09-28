@@ -134,7 +134,7 @@ All 43 records are accepted, except [0010](adr/0010-button-variant-classes-stay-
 
 The open work is the class-rule wave, the first subsection below. Everything after it was left OPEN FOR HUMAN by the triage rule in the map's Orchestration rules: an item of HIGH impact with NOT-HIGH confidence, plus outward-facing actions under the user's identity, checks that need assistive technology, and fallbacks from `@angular/aria` building blocks. The [Open-decision pass](map.md#open-decision-pass-user-instruction-2026-09-26) decided every item the consistency review's list raised: none of the ten identified upstream filings is made, all thirteen assistive-technology checks are decided, all three trap-quadrant items are decided, and all nine `@angular/aria` fallback confirmations are decided. Each section below keeps the ticket that decided it, with its options and evidence. No `Prototype needed` item is open: every graduated prototype and re-run is resolved and reflected in its specs.
 
-### The class-rule wave (58 tickets; the typing research, the typing decision, and the Slider prototype resolved, the rest open)
+### The class-rule wave (59 tickets; the typing research, the typing decision, and the Slider prototype resolved, the rest open)
 
 The ruling of [Triage the out-of-scope Foundation components and variants](issues/79-triage-out-of-scope-components-and-variants.md) opened these tickets on 2026-09-27, and [ADR 0039](adr/0039-directives-manage-every-foundation-class.md) holds the class rule. Every spec and re-run ticket waits on the typing decision; each ticket's `Blocked by` line gives the rest of the order.
 
@@ -144,7 +144,8 @@ The ruling of [Triage the out-of-scope Foundation components and variants](issue
 4. [Prototype: a non-linear Slider Handle that assistive-technology increments move](issues/134-prototype-slider-nonlinear-at-increment.md), from the assistive-technology re-judgement: resolved, the rule holds with conditions.
 5. [Spec: Variant declaration tooling](issues/136-spec-variant-declaration-tooling.md), the fifth shared utility, blocked by [Decide: typed Variant inputs over open Sass maps](issues/81-decide-typed-variant-inputs-open-sass-maps.md) and before the consistency review below; it owns the primary entry point's Variant types, the setup generator and schematic, the Nx task sync generator, the Architect builder, and the build assertion on the emitted typings: resolved; its prototype, [Prototype: Variant declaration tooling in real Nx and Angular CLI workspaces](issues/137-prototype-variant-declaration-tooling.md), is open.
 6. [Triage: out-of-scope items across the specs](issues/138-triage-out-of-scope-across-specs.md), auditing every spec's out-of-scope items after the wave, with survivors resolved before the review.
-7. [Consistency review: the class-rule wave](issues/133-consistency-review-class-rule-wave.md), after all of them; an audit of the wave follows it.
+7. [Decide: inputs named like HTML presentational attributes](issues/139-decide-inputs-named-like-presentational-attributes.md), from the Media Object spec's finding that a static `align` attribute stays on the element and aligns its text; it decides the naming rule and the Menu family's `align` input before the review.
+8. [Consistency review: the class-rule wave](issues/133-consistency-review-class-rule-wave.md), after all of them; an audit of the wave follows it.
 
 ### Upstream filings
 
