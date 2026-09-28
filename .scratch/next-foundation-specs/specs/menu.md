@@ -402,7 +402,7 @@ Against the prerendered fixture app, one route with a plain menu, a Router-marke
 - A current-page input on an item directive, a link directive with an `activated` input, and `routerLinkActive` with a class name (D4).
 - Foundation's back-compatibility forms `.active`, `.menu-centered`, and `.icon-*` without `.icons` (D10), and the responsive `.<bp>-simple` classes (D2).
 - The flex utilities' `.align-justify` and `.align-spaced` on a menu: they are the classes of the [Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md), not the Menu's documented alignment.
-- `ol` hosts and `role="list"` restoration outside a `nav` (a consumer attribute).
+- `ol` hosts: no menu on Foundation's docs pages is an `ol`. `role="list"` restoration outside a `nav`: a consumer attribute (D14).
 - Icon libraries: the icon element and its classes are the consumer's.
 - Opt-in `role="menu"` or `role="menubar"` variants (map, Out of scope; ADR 0004).
 - Runtime theming through custom properties (building-blocks 1.13).

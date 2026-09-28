@@ -400,7 +400,7 @@ Against the prerendered fixture app (the harness from the rendering-mode test se
 - Each Openable's own behaviour: focus management, Escape, `closePredicate`, animations, and what `close(result)` does with the result belong to the Reveal, OffCanvas, Dropdown pane, Toggler, ResponsiveToggle, and Tooltip specs.
 - Menu openers: submenu toggles are the Nested menu utility's `nfsSubmenuToggle`, and accordion and tab titles are Aria-hosted; none of them are Triggers.
 - Invoker Commands and `popovertarget` (out of target; Further Notes).
-- A `type` input, a `preventNavigation` input, keyboard handlers, and outputs.
+- A `type` input, a `preventNavigation` input, keyboard handlers, and outputs: `nfsButton`, `nfsCloseButton`, `nfsMenuIcon`, or the consumer owns `type` (D13); activation is one replayable `click`, native activation already clicks on a key press, and a link that must not navigate is a button (D12); the Openable's `isOpenChange`, `opened`, and `closed` are the events.
 - The classes on a Trigger's host (`.button`, `.close-button`, `.menu-icon`, and their Variant classes), their `type` defaults, name checks, and 24 px floors: the [Spec: Button](../issues/37-spec-button.md), the [Spec: Close Button](../issues/83-spec-close-button.md), and the [Spec: Top Bar](../issues/86-spec-top-bar.md).
 - A development check for Foundation classes copied onto a Trigger's host: a Trigger owns no class, so a copied class is the concern of the directive that binds it.
 - A typed leave-animation directive for elements the consumer removes, and a Motion input on each removable component's directive (D17).

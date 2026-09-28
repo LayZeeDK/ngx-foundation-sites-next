@@ -573,12 +573,12 @@ Release test (manual, before each release; [Resolve the assistive-technology che
 - The screen-reader-only directive of the back items' hidden suffix: the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md).
 - Deriving the Menu's `orientation` from the rules (D20).
 - Container queries as the switch, and rules keyed on a container's width instead of the viewport (ADR 0005).
-- A swap animation or a live-region announcement of a swap.
+- A swap animation or a live-region announcement of a swap: Foundation's swap is instant, and a swap changes layout, not content (the Breakpoint service's consumer rule 4); the focus moved to the equivalent control is the announcement.
 - Loading a mode's code only when its breakpoint first matches (`injectAsync`): host directives are static.
 - Opt-in `role="menu"` or `role="tree"` variants (map, Out of scope; ADR 0004).
-- Foundation's no-plugin state below the first rule, `data-mutate`, and any generated DOM.
-- Mega menus and arbitrary content inside submenus beyond links, back items, and nested lists.
-- Runtime theming through custom properties.
+- Foundation's no-plugin state below the first rule (D5), `data-mutate` (Dropped options), and any generated DOM (building-blocks 1.4).
+- Mega menus and arbitrary content inside submenus beyond links, back items, and nested lists: not a Foundation feature; Foundation's menus nest lists of links, and no docs page puts other content in a submenu.
+- Runtime theming through custom properties (building-blocks 1.13).
 - Automated screen-reader output: the manual release test under Testing Decisions covers it ([Resolve the assistive-technology checks](../issues/77-evidence-assistive-technology-checks.md)).
 
 ## Further Notes

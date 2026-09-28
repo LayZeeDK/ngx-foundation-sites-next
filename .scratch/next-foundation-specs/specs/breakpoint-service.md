@@ -107,7 +107,7 @@ What Foundation 6.9's MediaQuery utility does (its source, the "JavaScript" part
 | `only(size)` | `size === current` | Same |
 | `is('medium')`, `is('medium up')`, `is('medium only')`, `is('medium down')` | Dispatch to `atLeast`/`only`/`upTo`; throws on any other modifier | Same grammar plus `all` (Tooltip's keyword) and the empty string (Equalizer's "no gate"), both `true`; a bad modifier warns and answers `false` |
 | `get(size)` | Query string or `null` | Same |
-| `next(size)` | Following breakpoint name | Dropped from the public API (no consumer; `upTo` covers it) |
+| `next(size)` | Following breakpoint name | Dropped from the public API (no directive or documented use needs the following breakpoint's name; Foundation's own `upTo` is its only caller) |
 | `changed.zf.mediaquery` on `window` with `[newSize, oldSize]` | Broadcast on breakpoint change | The `current` signal; consumers derive with `computed`, `linkedSignal`, or `effect` |
 | `_init()`, `_reInit()`, `isInitialized` | Lazy initialisation and re-reading late CSS | Dropped (DI constructs the service; the token does not depend on CSS) |
 | `window.matchMedia` polyfill | For pre-IE10 browsers | Dropped (`matchMedia` and `MediaQueryList` `change` are in the Browser target) |

@@ -751,7 +751,7 @@ Sass. The consumer compiles Foundation's Sass from its own settings; the library
 - On a `.primary` bar the selected tab takes the panel's colours (`$tab-content-background` behind `$tab-color`) instead of `$tab-background-active` behind the bar's text colour, and `.simple` titles get a 24 by 24 px minimum.
 - The nav bar is a consumer recipe on the consumer's own class; the library has no rule for it.
 - `href="#id"` and `data-tabs-target` pairing becomes `value` pairing; `data-tabs-content` becomes the `[nfsTabsGroup]` ancestor.
-- Up and Down on horizontal strips no longer switch tabs; Home, End, and the right-to-left flip are added; vertical strips get `aria-orientation`.
+- Up and Down on horizontal strips no longer switch tabs, because the APG's horizontal tab list does not listen for them, so they keep scrolling the page, and the hosted Aria Tabs binds only the orientation's arrows; Home, End, and the right-to-left flip are added; vertical strips get `aria-orientation`.
 - `aria-hidden` on hidden panels becomes `inert`; visible panels become focusable (`tabindex="0"`).
 - `activeCollapse`, `matchHeight`, the class-name options, `deepLinkSmudgeDelay`, the `mutateme` broadcast, `selectTab()`, and `destroy()`'s inline hiding are dropped; jQuery-only mechanics go with them: measuring hidden panels by forcing them visible, `$('html, body').animate` scrolling, `[href$="#id"]` lookups.
 - `autoFocus` runs at the first render callback rather than on window load, and scrolls with the browser's smooth scroll.

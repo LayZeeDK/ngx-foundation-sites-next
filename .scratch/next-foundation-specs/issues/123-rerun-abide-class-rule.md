@@ -111,3 +111,7 @@ Nothing is OPEN FOR HUMAN, and no prototype is needed: every point is measured, 
 ### Gist for Decisions so far
 
 - [Re-run: Abide spec under the class rule](issues/123-rerun-abide-class-rule.md) -- the five directives already bound `.form-error` and the State classes, so no API changes; the classes the examples still wrote come from their own directives written beside Abide's and never hosted (`nfsCallout color="alert"` on the Form alert, `nfsHelpText`, `nfsFormLabel middle`, the input group directives with the Form error after the group, `nfsButton color="success"`); a copied static State class is reported in development; the resting contrast checks move to `nfs-forms` as `@error`, and `nfs-abide` adds a check that a focused invalid select's focus border is 3:1 from the invalid border (3.74:1 required, 1.31:1 on Foundation's defaults), since the caret argument holds for text inputs only; impact MEDIUM, confidence HIGH. Spec: [specs/abide.md](specs/abide.md).
+
+### Note, 2026-09-28 (out-of-scope reasons)
+
+- 2026-09-28: the Out of Scope reasons named in [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) are corrected in the spec.

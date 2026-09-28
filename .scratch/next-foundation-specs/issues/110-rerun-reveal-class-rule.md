@@ -164,3 +164,7 @@ No change to `storybook-conventions.md` (the preview already includes every `nfs
 ### Gist for Decisions so far
 
 - [Re-run: Reveal spec under the class rule](issues/110-rerun-reveal-class-rule.md) -- the consumer writes `<dialog nfsReveal>` and no class: `.reveal` stays a static host class, the size classes become the closed `size` Variant input (`'tiny' | 'small' | 'large' | 'full'`, so `size="full"` replaces `fullScreen`) and `.collapse` a boolean `collapse`, with no registry or Variant property; `animationIn`/`animationOut` take Motion names (`spin-in` binds `nfs-spin-in`, which joins `nfs-motion`) or the consumer's keyframe classes with a leading dot, typed so misspelt names and `nfs-` class names fail to compile (measured with `ngc` 22.2.0), a shared rule proposed for every Motion input; `overlay` stays an Option, the Scroll lock's `html` classes stay `Renderer2` writes, close buttons are `nfsCloseButton` with a bare `nfsClose` and the 24 px floor, and a copied Foundation class is reported in development; behaviour, ARIA, keys, rendering modes, and Story ids unchanged; impact HIGH, confidence HIGH. Spec: [specs/reveal.md](specs/reveal.md).
+
+### Note, 2026-09-28 (out-of-scope reasons)
+
+- 2026-09-28: the Out of Scope reasons named in [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) are corrected in the spec.

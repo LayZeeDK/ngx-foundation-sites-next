@@ -84,3 +84,7 @@ No change to any ADR, `README.md`, or another spec is needed from this ticket.
 ### Gist for Decisions so far
 
 - [Re-run: Accordion spec under the class rule](issues/107-rerun-accordion-class-rule.md) -- the directives already bound every Structural class and `.is-active`; what the consumer still wrote goes: `[expanded]="true"` on the title replaces Foundation's `class="is-active"` seed (a copied one is stripped by the item's binding and reported by a development-only check), the accordion has no Variant classes and so no Variant input, stories and examples call methods from `nfsButton` controls, and CSS recipes select no Foundation class; behaviour, ARIA, keys, animation, rendering modes, and Story ids unchanged; impact HIGH, confidence HIGH. Spec: [specs/accordion.md](specs/accordion.md).
+
+### Note, 2026-09-28 (out-of-scope reasons)
+
+- 2026-09-28: the Out of Scope reasons named in [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) are corrected in the spec.

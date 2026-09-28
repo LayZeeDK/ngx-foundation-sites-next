@@ -128,3 +128,7 @@ Nothing is OPEN FOR HUMAN, and no prototype is needed.
 ### User decision, 2026-09-27
 
 Asked about D11, the user chose to keep the `Renderer2` marker: when a directive manages a State class on an element that carries no library directive (the current-section marker on the consumer's links, the Off-canvas class on `body`), a `Renderer2` write satisfies the class rule, because the consumer writes no class and the directive manages it. ADR 0039's "every State class is a host binding" is clarified to apply where a library directive hosts the element (proposals 1 and 2 above).
+
+### Note, 2026-09-28 (out-of-scope reasons)
+
+- 2026-09-28: the Out of Scope reasons named in [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) are corrected in the spec.

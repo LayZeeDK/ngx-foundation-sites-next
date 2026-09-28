@@ -563,8 +563,8 @@ Release test (manual, before each release; [Resolve the assistive-technology che
 - The Menu mode swap and breakpoint rules: the [Spec: Responsive Menu](../issues/23-spec-responsive-menu.md), which composes this root.
 - The Top Bar, its sections, its token, and its `nfs-top-bar` checks: the [Spec: Top Bar](../issues/86-spec-top-bar.md); the toggled bar: the [Spec: Responsive Toggle](../issues/24-spec-responsive-toggle.md).
 - An opt-in APG Menubar variant (`role="menubar"`, roving `tabindex`, typeahead) for application command menus (map, Out of scope; ADR 0004).
-- Mega menus and arbitrary content inside submenus beyond links, buttons, and nested lists.
-- A close reason on `closed`, a submenu animation Option, and runtime theming through custom properties.
+- Mega menus and arbitrary content inside submenus beyond links, buttons, and nested lists: not a Foundation feature; Foundation's menus nest lists of links, and no docs page puts other content in a submenu.
+- A close reason on `closed`: Foundation's `hide.zf.dropdownMenu` carries only the closed submenus. A submenu animation Option: Foundation has none (D12). Runtime theming through custom properties (building-blocks 1.13).
 - Native `popover`, CSS anchor positioning, interest invokers, `:has()`, and `CloseWatcher` (out of target; Further Notes).
 
 ## Further Notes

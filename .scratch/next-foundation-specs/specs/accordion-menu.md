@@ -474,10 +474,10 @@ Against the prerendered fixture app, one route with the Rendered HTML markup (no
 - The Off-canvas panel, Triggers, and title bar around a mobile menu: their own specs.
 - An opt-in Navigation Treeview variant (`role="tree"`, roving `tabindex`, typeahead) for sidebar page trees (map, Out of scope; ADR 0004).
 - Opening the Open path to the current page automatically: Foundation has no such Option and the APG disclosure navigation pattern does not require it; the consumer binds `expanded` on each item of the Open path (Usage examples).
-- `parentLink` clones, generated toggles, and any generated DOM.
-- Home, End, and typeahead keys.
-- Arbitrary content in a parent row or a section beyond links, section buttons, and nested lists (mega menus).
-- Runtime theming through custom properties; the slide duration is a Sass mixin parameter.
+- `parentLink` clones, generated toggles, and any generated DOM: the consumer writes every item, the Hybrid item's toggle included, in markup (building-blocks 1.4; ADR 0001).
+- Home, End, and typeahead keys: APG optional keys that Foundation's AccordionMenu never had, as the [Spec: Nested menu (shared utility)](../issues/56-spec-nested-menu.md) rules.
+- Arbitrary content in a parent row or a section beyond links, section buttons, and nested lists (mega menus): not a Foundation feature; Foundation's menus nest lists of links, and no docs page puts other content in a submenu.
+- Runtime theming through custom properties (building-blocks 1.13); the slide duration is a Sass mixin parameter.
 - Native `<details name>`, `::details-content`, `:has()`, and `interpolate-size` (out of target; Further Notes).
 
 ## Further Notes

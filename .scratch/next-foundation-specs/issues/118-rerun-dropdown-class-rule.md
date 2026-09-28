@@ -165,3 +165,7 @@ No change is needed to `CONTEXT.md`, any ADR, or `README.md`, whose Dropdown row
 ### Gist for Decisions so far
 
 - [Re-run: Dropdown spec under the class rule](issues/118-rerun-dropdown-class-rule.md) -- the pane is written `<div nfsDropdownPane>` with no class: the directive already bound `.dropdown-pane` and its State classes, and the size classes become the Open Variant input `size` (`NfsDropdownPaneSize` over `NfsDropdownSizesOverrides`, no `'default'`, no Breakpoint form), whose `--nfs-dropdown-sizes` `nfs-dropdown-pane` now writes and whose include the Runtime check requests on every pane, because it carries the 1.4.10 warning; `animate` takes Motion names (`fade-in fade-out`) or the consumer's own keyframe classes with a leading dot, over the Reveal's shared Motion types through a one-string pair alias, `NfsMotionPair`, with the Reveal's "started no animation" warning; `parentClass` names the consumer's own class; copied Foundation classes (`is-open`, sizes, legacy position and Placement classes, `is-opening`) and a pane inside a Button Group warn in development; no class on Triggers (`.hover` stays dropped); behaviour, ARIA, rendering modes, and Story ids unchanged; impact HIGH, confidence HIGH; no ADR. Spec: [specs/dropdown.md](specs/dropdown.md).
+
+### Note, 2026-09-28 (out-of-scope reasons)
+
+- 2026-09-28: the Out of Scope reasons named in [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) are corrected in the spec.

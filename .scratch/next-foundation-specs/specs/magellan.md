@@ -94,7 +94,7 @@ From Foundation 6.9's `Magellan.defaults`, its source, its docs page, and its vi
 | URL | With `deepLinking`: `replaceState({}, '', '#id')` (or `pushState` with `updateHistory`) on each change; hash removed above the first section; on load and on `hashchange`, `scrollToLoc(location.hash)` | With `deepLinking`: `replaceState(history.state, '', pathname + search + '#id')` (or `pushState` with `updateHistory`); fragment removed above the first section; at first render the fragment's section is scrolled to; no `hashchange` listener |
 | Methods | `calcPoints()`, `scrollToLoc(loc)`, `reflow()`, `destroy()` | `scrollTo(target, options?)`; nothing else (the observer sees layout changes) |
 | Events | `init.zf.magellan`, `update.zf.magellan` `[$active]`, `destroyed.zf.magellan` | `activeChange` (the `active` model's output, the section id or `null`); no counterpart for `init`/`destroyed` |
-| Container id | Own id or generated `magellan-*`, plus `data-resize`/`data-scroll` | Dropped |
+| Container id | Own id or generated `magellan-*`, plus `data-resize`/`data-scroll` | Dropped: nothing references it; Foundation used it only as the listener key of `data-resize` and `data-scroll`, which the observers replace, and a generated id differs between server and client (building-blocks 1.11) |
 | Sass | None (Foundation ships no Magellan Sass) | None; Foundation's Menu styles the marker |
 
 Options (`Magellan.defaults` has exactly seven; audit 0001 H6: the ticket's `barOffset` does not exist in 6.9, and Foundation's own visual test still carries a dead `data-bar-offset`):

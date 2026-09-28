@@ -118,3 +118,7 @@ No change is needed in `CONTEXT.md` (Drilldown level and Drilldown wrapper still
 ### Gist for Decisions so far
 
 - [Re-run: Drilldown Menu spec under the class rule](issues/114-rerun-drilldown-menu-class-rule.md) -- `ul[nfsDrilldown]` hosts `NfsMenu` with the five Menu inputs, so `orientation="vertical"` replaces Foundation's `vertical` and `align` turns the drilldown arrows, and sets no orientation of its own; submenus, the Hybrid toggle's `span[nfsSubmenuToggleText]`, `li[nfsDrilldownBack]` (binding `js-drilldown-back`), and the wrapper carry no class, and the back suffix takes the Visibility Classes directive (placeholder `nfsShowForSr`); a level open at first paint is `[expanded]` on its Open path (Foundation's Drilldown never read an `is-active` marker, a published claim corrected); the current page is `aria-current` only; `animateHeight` and the other Options keep `booleanAttribute`; copied State and Option classes are stripped and reported, redundant Structural ones are not; `nfs-drilldown` computes every ratio with the exact WCAG formula and checks the current link's fill (1.4.1), its quoted 4.65:1 figures unchanged; impact HIGH, confidence HIGH. Spec: [specs/drilldown-menu.md](specs/drilldown-menu.md).
+
+### Note, 2026-09-28 (out-of-scope reasons)
+
+- 2026-09-28: the Out of Scope reasons named in [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) are corrected in the spec.

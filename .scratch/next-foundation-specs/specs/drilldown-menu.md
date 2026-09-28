@@ -541,10 +541,10 @@ Release test (manual, before each release; [Resolve the assistive-technology che
 - `nfsShowForSr` for `.show-for-sr` ([Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)).
 - ResponsiveMenu's `rules` input and which Drilldown inputs and outputs its host directive list exposes ([Spec: Responsive Menu](../issues/23-spec-responsive-menu.md)), which exposes `autoHeight`, `animateHeight`, `closeOnClick`, `scrollTop`, `scrollTopElement`, `scrollTopOffset`, `opened`, and `closed`.
 - The opt-in menu-and-menubar variant (a vertical `role="menu"` drilldown) and the tree variant (map, Out of scope; ADR 0004).
-- `parentLink` clones, generated back items, and any generated DOM.
+- `parentLink` clones, generated back items, and any generated DOM: the consumer writes every item, back items included, in markup (building-blocks 1.4; ADR 0001).
 - A slide direction that follows a runtime `dir` attribute: Foundation's drilldown slide and arrows follow the compile-time `$global-text-direction`, and the library's rules reuse `$global-left`/`$global-right`, so an RTL site compiles Foundation for RTL, as Foundation documents.
 - A scroll Completion output (`scrollme.zf.drilldown`) until `scrollend` is in the Browser target.
-- Mega menus and arbitrary content inside levels beyond links, back items, and nested lists.
+- Mega menus and arbitrary content inside levels beyond links, back items, and nested lists: not a Foundation feature; Foundation's menus nest lists of links, and no docs page puts other content in a submenu.
 - Runtime theming; native View Transitions and `CloseWatcher` (Further Notes).
 
 ## Further Notes

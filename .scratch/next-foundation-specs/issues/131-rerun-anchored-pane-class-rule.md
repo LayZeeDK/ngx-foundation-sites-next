@@ -106,3 +106,7 @@ No change to `README.md` (its Anchored pane row names no class), any ADR (ADR 00
 ### Gist for Decisions so far
 
 - [Re-run: Anchored pane (shared utility) spec under the class rule](issues/131-rerun-anchored-pane-class-rule.md) -- the API is unchanged; the utility reads and writes no class (its only DOM output is inline `top`/`left`), and each consuming directive binds every class on its host, the Placement classes from `placement` included, so there is no Variant class or Runtime check; the legacy position and `.float-*` classes are read nowhere, both the Tooltip and the Dropdown pane dropping them; a developer's own anchored element is styled by an application class, never `.dropdown-pane` or `.tooltip`, with `nfsDropdownPane` for Foundation's look; `parentClass` names an application class; the examples drop `class="dropdown-pane"`; test consumers bind their own classes and no story, test host, or fixture writes one (inline scaffolding, a 200 px inline width for the reflow case); "consuming directive" replaces the overloaded "consumer"; exclusions carry categories; impact LOW to MEDIUM, confidence HIGH; no ADR. Spec: [specs/anchored-pane.md](specs/anchored-pane.md).
+
+### Note, 2026-09-28 (out-of-scope reasons)
+
+- 2026-09-28: the Out of Scope reasons named in [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) are corrected in the spec.

@@ -577,7 +577,7 @@ Release test (manual, before each release; [Resolve the assistive-technology che
 - Motion UI transition classes, the `motion-ui` package, and the `fast`/`slow` speed modifiers (ADR 0003); Motion UI names outside the `nfs-motion` set, which a consumer writes as its own keyframe class in the dot form.
 - The close button's look, `type` default, name checks, and target size: the [Spec: Close Button](../issues/83-spec-close-button.md).
 - A Variant registry or Variant property for the Reveal's sizes: the family is closed ([ADR 0040](../adr/0040-variant-input-types.md)).
-- Closing on Router navigation (`closeOnNavigation`).
+- Closing on Router navigation (`closeOnNavigation`): a Reveal lives in a template and is destroyed with its route, and one in a persistent layout stays open, as in Foundation (Material comparison).
 - An exit animation and `closePredicate` for `<form method="dialog">` closes; `nfsClose` covers both.
 - OffCanvas: its overlap mode is not built on `<dialog>` (Further Notes, what OffCanvas inherits).
 - `dialog.closedby`, `requestClose()`, `CloseWatcher`, `@starting-style`, and Invoker Commands (out of target; Further Notes).

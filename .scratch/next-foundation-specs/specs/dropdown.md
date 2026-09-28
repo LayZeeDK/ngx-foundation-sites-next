@@ -558,7 +558,7 @@ Against the prerendered fixture app (the harness from the rendering-mode test se
 - A `boundary` input that takes an element instead of a class name (D6).
 - Motion UI transition classes and the `motion-ui` package (ADR 0003).
 - Native `popover`, CSS anchor positioning, `@starting-style`, interest invokers, and `CloseWatcher` (out of target; Further Notes).
-- Runtime theming through custom properties.
+- Runtime theming through custom properties (building-blocks 1.13).
 
 ## Further Notes
 

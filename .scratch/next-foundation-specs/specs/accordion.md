@@ -525,9 +525,9 @@ Release test (manual, before each release; [Resolve the assistive-technology che
 
 - `<details>`/`<summary>` as the base, and `<details name>` exclusivity (out of target; heading problem; Further Notes).
 - AccordionMenu and ResponsiveAccordionTabs, which have their own specs; they reuse the policy, the guards, and the animation rules described here.
-- A Material-style header component, indicator inputs (`hideToggle`, `togglePosition`), `displayMode`, and fixed header heights.
+- A Material-style header component, indicator inputs (`hideToggle`, `togglePosition`), `displayMode`, and fixed header heights: Foundation's accordion has none of them; its indicator is Foundation's CSS glyph under the `$accordion-plusminus` setting, and it prints no Variant class (Material comparison).
 - Runtime theming through custom properties (building-blocks 1.13); the animation duration is a Sass mixin parameter.
-- Hash routing (`HashLocationStrategy`) with `deepLink`, and deep links through the Angular Router.
+- Hash routing (`HashLocationStrategy`) with `deepLink`, and deep links through the Angular Router: under `HashLocationStrategy` the fragment is the route, so `deepLink` cannot share it (development check 3 reports a `#/` hash), and a route that opens a panel is the application's routing.
 - Motion classes (`nfs-motion`) for panels: Foundation animated height, not Motion UI.
 - Variant inputs: Foundation's accordion defines no Variant class; its look is the `$accordion-*` settings, and `$accordion-plusminus` is a Sass boolean that stays compile-time (building-blocks 1.13).
 - Reading Foundation's static `is-active` as an initial-state seed: the class rule leaves the consumer no class to write (ADR 0039); `[expanded]="true"` replaces it, and dev check 7 reports a copied one.

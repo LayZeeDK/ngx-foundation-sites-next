@@ -131,3 +131,7 @@ No change to `CONTEXT.md`, the ADRs, `README.md`, or `storybook-conventions.md`:
 ### Gist for Decisions so far
 
 - [Re-run: Accordion Menu spec under the class rule](issues/112-rerun-accordion-menu-class-rule.md) -- `ul[nfsAccordionMenu]` hosts `NfsMenu` with the five Menu inputs, so `orientation="vertical"` replaces `class="vertical menu"` (no default orientation: `.accordion-menu li { width: 100% }` stacks rows either way) and submenus are bare `ul[nfsSubmenu]`; a section open at first paint is `[expanded]="true"`, Foundation's pre-open `.is-active` a Dropped behaviour stripped and reported; the current page is `aria-current` only, styled by `nfs-menu`, whose fill `nfs-accordion-menu` checks against `$accordionmenu-item-background` (the fill's rule outranks Foundation's link background); Hybrid links match the Router exactly, so a section's link is not a second current page; the name sits in `span[nfsSubmenuToggleText]`; every ratio uses the exact WCAG formula, and none moves; impact HIGH, confidence HIGH. Spec: [specs/accordion-menu.md](specs/accordion-menu.md).
+
+### Note, 2026-09-28 (out-of-scope reasons)
+
+- 2026-09-28: the Out of Scope reasons named in [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) are corrected in the spec.

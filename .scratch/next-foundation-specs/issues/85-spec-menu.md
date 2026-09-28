@@ -195,3 +195,7 @@ Nothing is left `OPEN FOR HUMAN`, and no prototype ticket is needed: the one des
 ### Amendment, 2026-09-28 (inputs named like HTML attributes)
 
 From [Decide: inputs named like HTML presentational attributes](139-decide-inputs-named-like-presentational-attributes.md), which holds the measurements, the panel record, and the triage; `specs/menu.md` was edited in place. The `align` input keeps its name (D12, whose rejected alternatives gain `alignX` and a name Foundation does not use), and `NfsMenu` binds `'[attr.align]': 'null'` (new D15, kind `removed` under building-blocks 1.4), so a static `align` sets the input and leaves no HTML `align` attribute on any menu, menu Plugin root, or submenu, in the server HTML or in the browser. Changed to match: the `align` row, the host line, the Rendered HTML note, the full-hydration bullet, the RTL note, and the tests (class table, hosting, SSR smoke, the `menu--rtl` story, a right-to-left e2e, the fixture's hydration check). The menu Plugin specs need no edit. Impact HIGH, confidence HIGH; nothing OPEN FOR HUMAN.
+
+### Note, 2026-09-28 (out-of-scope reasons)
+
+- 2026-09-28: the Out of Scope reasons named in [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) are corrected in the spec.

@@ -217,3 +217,7 @@ Paths are relative to the effort root; links inside each quoted text are relativ
 ### Prototype verdict, 2026-09-28
 
 [Prototype: Variant declaration tooling in real Nx and Angular CLI workspaces](137-prototype-variant-declaration-tooling.md) passed questions 4 and 5 as specified. Questions 1, 2, 3, and 6 found rules the spec states wrongly, each corrected in place as a text correction by the prototype's triage: the generated file ends with `declare global {}` instead of a restart note (D28); Storybook type-checks nothing, and a library build needs the file in `compilerOptions.types` because ng-packagr ignores `include`; the core compiles with `sass-embedded` and resolves through the application builder's own esbuild options, without `~` stripping or `NodePackageImporter` (D20); the generator edits `angular.json` itself, formats its output under Nx, and the builder relies on Architect's default configuration. No re-run is needed.
+
+### Note, 2026-09-28 (out-of-scope reasons)
+
+- 2026-09-28: the Out of Scope reasons named in [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) are corrected in the spec.

@@ -92,3 +92,7 @@ Self-grilled, both sides, against ADR 0039, ADR 0040, building-blocks 1.3, 1.4 (
 ### Gist for Decisions so far
 
 - [Re-run: Button spec under the class rule](issues/128-rerun-button-class-rule.md) -- `nfsButton` binds `.button` and sets every Variant class from six typed inputs (`size`, `color`, `fill`, `expanded` with Breakpoint queries and the Zero-breakpoint gaps, `dropdown`, `arrowOnly`), leaving no class for the consumer; `<input type="submit|button|reset">` hosts join, `<label>` waits for a 2.4.7 fix; the `.submit` marker is dropped and copied Foundation classes are reported in development; `nfs-button` restores the solid dropdown arrow under `$button-fill: hollow` and writes three Variant properties (measured: an empty property reads like a missing one); Button Group and Close Button move to their own specs; impact HIGH, confidence HIGH. Spec: [specs/button.md](specs/button.md).
+
+### Note, 2026-09-28 (out-of-scope reasons)
+
+- 2026-09-28: the Out of Scope reasons named in [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) are corrected in the spec.

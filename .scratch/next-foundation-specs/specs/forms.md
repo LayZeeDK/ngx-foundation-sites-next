@@ -424,7 +424,7 @@ Against the prerendered fixture app, route `/forms`:
 - Switch: [Spec: Switch](../issues/84-spec-switch.md). Range inputs: [Spec: Slider](../issues/32-spec-slider.md). `progress` and `meter`: [Spec: Progress Bar](../issues/95-spec-progress-bar.md).
 - The label-as-button file upload (`label.button` over a `.show-for-sr` input): whether `nfsButton` takes `label` or `input` hosts is decided by [Re-run: Button spec under the class rule](../issues/128-rerun-button-class-rule.md), and `.show-for-sr` by [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md); this spec offers the native file input (D12).
 - Label alignment and floats (`.text-right`, `.float-right`, `.float-left`) and grid placement: [Spec: Typography Helpers](../issues/106-spec-typography-helpers.md), [Spec: Float Classes](../issues/105-spec-float-classes.md), [Spec: XY Grid](../issues/99-spec-xy-grid.md).
-- A forced-colours rule for the select arrow (unmeasured; the select stays identifiable by its border and text; see Further Notes).
+- A forced-colours rule for the select arrow: WCAG 2.2 AA has no forced-colours criterion, and the arrow is not the select's only visual, as the Switch's drawing is (the [Spec: Switch](../issues/84-spec-switch.md), D12): the select stays identifiable by its border and text, which take system colours (not measured; see Further Notes).
 - Runtime theming of form colours (building-blocks 1.13).
 - How the library's Sass ships next to the consumer's Foundation: [Sass packaging for the new library](../issues/57-sass-packaging.md) (ADR 0012).
 

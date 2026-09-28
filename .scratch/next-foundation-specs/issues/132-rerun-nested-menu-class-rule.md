@@ -167,3 +167,7 @@ Others:
 ### Gist for Decisions so far
 
 - [Re-run: Nested menu (shared utility) spec under the class rule](issues/132-rerun-nested-menu-class-rule.md) -- every plugin root and every `ul[nfsSubmenu]` host `NfsMenu`, so the Menu binds `.menu` and its Variants (roots expose `orientation`, `expanded`, `simple`, `align`, `iconPosition`; submenus `align` and `iconPosition`) and the submenu binds `nested` and `vertical` in every mode; the dropdown Base side reads the hosted Menu's `align()` through `inject(NfsMenu, {self: true})` in the root's factory, measured in a server render; the class maps hold every owned class in every mode, so copied Foundation classes are stripped and reported; the static `is-active` seed gives way to `[expanded]`, the current page is `aria-current` only, `span[nfsSubmenuToggleText]` binds `.submenu-toggle-text`, and each mode mixin checks the current link's fill against its backgrounds (1.4.1); impact HIGH, confidence HIGH. Spec: [specs/nested-menu.md](specs/nested-menu.md).
+
+### Note, 2026-09-28 (out-of-scope reasons)
+
+- 2026-09-28: the Out of Scope reasons named in [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) are corrected in the spec.

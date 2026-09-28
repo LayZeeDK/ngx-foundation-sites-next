@@ -154,3 +154,7 @@ No new ADR: the focus rule is reversible CSS with no API, and the hydration fact
 ### Gist for Decisions so far
 
 - [Spec: Responsive Embed](issues/96-spec-responsive-embed.md) -- one listener-free `[nfsResponsiveEmbed]` binding `.responsive-embed`, with `ratio` over `NfsResponsiveEmbedRatiosOverrides` plus `'default'`; `.flex-video` (renamed in 6.3.0, its mixins removed in 6.5.0) is not bound and is reported when copied; development checks report an unnamed `iframe`, `object`, or `embed` (every docs iframe fails axe `frame-title`) and anything written beside the embedded element, which covers it while it stays focusable; measured in three engines, Foundation's `overflow: hidden` hides a focused video's whole ring in Firefox and WebKit, so `nfs-responsive-embed` sets `display: flow-root` and releases the clip on `:focus-within`, and cuts off long `<object>` fallback under the 1.4.12 spacing, so fallback is one sentence with a link; measured with Angular 22.2, every server-rendered frame and video, static or bound, loads again at hydration because Angular writes `src` again, so the recipes use `@defer (hydrate never)` or `@defer (on viewport)` with a placeholder; impact up to HIGH (public names), confidence HIGH; no ADR. Spec: [specs/responsive-embed.md](specs/responsive-embed.md).
+
+### Note, 2026-09-28 (out-of-scope reasons)
+
+- 2026-09-28: the Out of Scope reasons named in [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) are corrected in the spec.

@@ -118,3 +118,7 @@ Nothing is OPEN FOR HUMAN, and no prototype is needed: SYNC's unknown 8 is measu
 ### Gist for Decisions so far
 
 - [Re-run: Breakpoint service (shared utility) spec under the class rule](issues/129-rerun-breakpoint-service-class-rule.md) -- the service has no class of its own and reads none, so the Visibility and breakpoint classes it points to are host bindings of their directives; Variant inputs name Class breakpoints (`NfsClassBreakpoint`, from the primary entry point), behaviour Options keep the open `NfsBreakpointName`, Variant directives read the Zero breakpoint from the token without the service, and `nfs-breakpoint-properties` also writes `--nfs-breakpoint-classes`; the drift check becomes `strictBreakpointSync`, one of three Runtime checks here, configured by `provideNfsRuntimeChecks` and `provideNfsProductionRuntimeChecks`, each acting only in its own build, with directives reporting through the `nfsVariantCheck(directive)` handle (`include()` as a presence request, `value()` per rendered value); a production bundle without the opt-in carries no checker code, measured under the real application builder (SYNC's unknown 8); impact HIGH, confidence HIGH. Spec: [specs/breakpoint-service.md](specs/breakpoint-service.md).
+
+### Note, 2026-09-28 (out-of-scope reasons)
+
+- 2026-09-28: the Out of Scope reasons named in [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) are corrected in the spec.

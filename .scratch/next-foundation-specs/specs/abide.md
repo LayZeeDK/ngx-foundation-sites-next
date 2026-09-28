@@ -537,7 +537,7 @@ Release test (manual, before each release; [Resolve the assistive-technology che
 - A form-field component (Material's `mat-form-field` shape), floating labels, and prefix or suffix slots.
 - A validation engine of the library's own, `setCustomValidity()`, and native constraint validation as a mode (ADR 0006).
 - Template-driven forms beyond what the `NgControl` courtesy gives for free (not separately designed).
-- Radio groups, checkbox groups with a minimum count, `select`, `textarea`, and custom `FormValueControl` controls beyond what the [Prototype: Abide control kinds, value adoption, and the ready gate](../issues/66-prototype-abide-controls-and-ready.md) covered and this spec states.
+- Custom `FormValueControl` controls, and cases of the covered kinds (radio groups, checkbox groups with a minimum count, `select`, and `textarea`, whose error pairing and `aria-invalid` this spec states) beyond what the [Prototype: Abide control kinds, value adoption, and the ready gate](../issues/66-prototype-abide-controls-and-ready.md) covered: untested, so not specified.
 - Async validation display (`pending`): errors appear when validators settle; no busy state is rendered.
 - Moving focus on submit (a documented recipe instead).
 - Server-side handling of native POST submissions (the consumer's server).

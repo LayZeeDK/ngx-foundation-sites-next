@@ -151,3 +151,7 @@ None. The two open measurements, the `simple` title boxes in three engines and t
 ### Gist for Decisions so far
 
 - [Re-run: Tabs spec under the class rule](issues/108-rerun-tabs-class-rule.md) -- the Tabs directives bind `.tabs`, `.tabs-title`, `.tabs-content` (new `[nfsTabsContent]`, providing nothing), and `.tabs-panel`. Aria's `orientation` alone sets `.vertical` on the strip and the content box; `simple` and `primary` are closed boolean Variant inputs. `nfs-tabs` now gives `simple` titles a 24 px floor and the selected tab on a `primary` bar the panel's colours (4.65:1, compile-time check), and drops its nav-bar rule: the nav bar is a consumer recipe of Foundation's tabs mixins (TB9 holds). Copied Foundation classes are stripped and reported in development. All decided, confidence HIGH.
+
+### Note, 2026-09-28 (out-of-scope reasons)
+
+- 2026-09-28: the Out of Scope reasons named in [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) are corrected in the spec.

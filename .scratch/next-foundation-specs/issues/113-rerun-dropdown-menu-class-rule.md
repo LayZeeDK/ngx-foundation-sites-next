@@ -213,3 +213,7 @@ Paths are relative to the effort root; links inside each quoted text are relativ
 ### Gist for Decisions so far
 
 - [Re-run: Dropdown Menu spec under the class rule](issues/113-rerun-dropdown-menu-class-rule.md) -- `ul[nfsDropdownMenu]` hosts `NfsMenu` with the five Menu inputs, so `orientation` and `align="right"` replace `vertical` and `align-right`, and binds only `.dropdown` (a copied one is not reported); submenus, the toggle text, first-paint state, the current page, and the Top Bar sections carry no class; the Top Bar question is settled by combining both answers, measured under hydration in three engines: the Nested menu root reads `nfsTopBarRightToken` at construction, so a right-hand menu opens left in the server HTML, and walks the DOM after hydration only when it found no token, for a projected menu, with a development warning naming `alignment="right"`; the current top-level link keeps the Menu's fill through one `nfs-dropdown-menu` rule (without it a set `$dropdownmenu-background` gave 1:1, which axe reports only as incomplete) and a 1.4.1 check; `nfs-top-bar` owns `$anchor-color` on the bar; every ratio is exact and none moves; impact HIGH, confidence HIGH; the Top Bar's proposed ADR revised. Spec: [specs/dropdown-menu.md](specs/dropdown-menu.md).
+
+### Note, 2026-09-28 (out-of-scope reasons)
+
+- 2026-09-28: the Out of Scope reasons named in [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) are corrected in the spec.

@@ -89,3 +89,7 @@ No change to `CONTEXT.md`, any ADR, `README.md`, or `storybook-conventions.md` i
 ### Gist for Decisions so far
 
 - [Re-run: Responsive Accordion Tabs spec under the class rule](issues/111-rerun-responsive-accordion-tabs-class-rule.md) -- the consumer already wrote no class; now the component's template writes none either (`div[nfsTabsContent]`, every class bound by the composed Accordion and Tabs directives), `selected` is the stated initial state, Foundation's `.simple` and `.primary` looks become boolean Variant inputs passed to `NfsTabs` in tabs mode (with `nfs-tabs` required when set), a Foundation class copied onto the host is reported in development, and the equal-heights recipe names no Foundation class (both measured in three engines); RAT4 and RAT6 keep their exclusions with restated reasons, RAT2 holds; impact MEDIUM, confidence HIGH. Spec: [specs/responsive-accordion-tabs.md](specs/responsive-accordion-tabs.md).
+
+### Note, 2026-09-28 (out-of-scope reasons)
+
+- 2026-09-28: the Out of Scope reasons named in [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) are corrected in the spec.

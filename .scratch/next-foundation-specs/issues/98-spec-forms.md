@@ -159,3 +159,7 @@ For the orchestrator; line numbers at commit `46b7d0a`.
 ### Gist for Decisions so far
 
 - [Spec: Forms](issues/98-spec-forms.md) -- seven class directives in one entry point (`nfsInputGroup` and its label, field, and button parts, `nfsHelpText`, `fieldset[nfsFieldset]`, and `label[nfsFormLabel]` with a boolean `middle` Variant), none for native controls, which Foundation styles by tag; validation State classes stay with the Abide directives, placed beside these on the same elements; development checks for an unlabelled input group field, a `for` that names nothing, and unpaired help text; a checks-only `nfs-forms` mixin requires three settings, one of them a darker focus border because a focused select has no caret; the native file input replaces the label-as-button recipe. Spec: [specs/forms.md](specs/forms.md).
+
+### Note, 2026-09-28 (out-of-scope reasons)
+
+- 2026-09-28: the Out of Scope reasons named in [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) are corrected in the spec.

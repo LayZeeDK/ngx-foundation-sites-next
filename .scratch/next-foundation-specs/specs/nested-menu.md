@@ -630,14 +630,14 @@ Against the prerendered fixture app, one route with a ResponsiveMenu-shaped test
 ## Out of Scope
 
 - The root directives, their Options, Defaults tokens, aggregate outputs, and `exportAs` names: the [Spec: Accordion Menu](../issues/20-spec-accordion-menu.md), [Spec: Dropdown Menu](../issues/21-spec-dropdown-menu.md), [Spec: Drilldown Menu](../issues/22-spec-drilldown-menu.md), and [Spec: Responsive Menu](../issues/23-spec-responsive-menu.md).
-- Drilldown's wrapper, measurement, back button directive, `closeOnClick`, `animateHeight`, `autoHeight` height, and `scrollTop`.
+- Drilldown's wrapper, measurement, back button directive, `closeOnClick`, `animateHeight`, `autoHeight` height, and `scrollTop`: the [Spec: Drilldown Menu](../issues/22-spec-drilldown-menu.md).
 - The Menu directive (`NfsMenu`, `NfsMenuText`), its Variant inputs, their types and runtime checks, its development checks, and `nfs-menu`: the [Spec: Menu](../issues/85-spec-menu.md). This spec hosts it on every submenu and requires the roots to host it.
 - The Top Bar's sections and their classes (the [Spec: Top Bar](../issues/86-spec-top-bar.md)); the utility reads `nfsTopBarRightToken`, and a `.top-bar-right` ancestor when no token was found, for the dropdown Base side.
 - The dropdown top level's current-link look and its contrast pair (the [Spec: Dropdown Menu](../issues/21-spec-dropdown-menu.md)).
 - Opt-in `role="menu"` or `role="tree"` variants (map, Out of scope).
 - Typeahead, Home and End (APG optional keys Foundation never had), and roving `tabindex`.
 - `parentLink` clones and any generated DOM.
-- Mega menus and arbitrary content inside submenus beyond links and nested lists.
+- Mega menus and arbitrary content inside submenus beyond links and nested lists: not a Foundation feature; Foundation's menus nest lists of links, and no docs page puts other content in a submenu.
 - Runtime theming; native `popover` and anchor positioning (Further Notes).
 
 ## Further Notes

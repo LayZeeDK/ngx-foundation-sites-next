@@ -133,3 +133,7 @@ No change to any ADR, `README.md`, or `research/` is needed: the X rows TR1 to T
 ### Gist for Decisions so far
 
 - [Re-run: Triggers (shared utility) spec under the class rule](issues/130-rerun-triggers-class-rule.md) -- Triggers have no Foundation class and still bind none, so no Variant input, registry, or Runtime check request; trigger hosts become `nfsButton`, `nfsCloseButton` (with a bare `nfsClose` beside it, since it closes nothing itself), or `nfsMenuIcon`, placed beside rather than hosted, and every Openable, title bar, menu, and callout in the examples is its directive; the `data-closable` replacements write no library class (hide in place through the Toggler's typed Motion input; remove with `@if` animated only by the consumer's own keyframe class, or hide through the Toggler and remove in its `closed` output for a library Motion; no typed leave directive, D17); no Openable writes a class on its Triggers (D18); 2.5.8 takes the Close Button floor and the Top Bar spec's menu-icon hit area; API, contract, ARIA, keys, rendering modes, and Story ids unchanged; impact MEDIUM, confidence HIGH. Spec: [specs/triggers.md](specs/triggers.md).
+
+### Note, 2026-09-28 (out-of-scope reasons)
+
+- 2026-09-28: the Out of Scope reasons named in [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) are corrected in the spec.

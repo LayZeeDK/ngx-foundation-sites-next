@@ -110,3 +110,7 @@ No change to `CONTEXT.md` (beyond item 3), any ADR, `README.md`, `storybook-conv
 ### Gist for Decisions so far
 
 - [Re-run: Responsive Menu spec under the class rule](issues/115-rerun-responsive-menu-class-rule.md) -- the responsive `ul` gets one `NfsMenu` through its three roots, and the Menu's five Variant inputs bind on it without being listed in `hostDirectives` (measured in the Menu ticket and the Nested menu re-run; Angular's mapping check rejects a listed one), so Foundation's `vertical medium-horizontal menu` becomes `[orientation]="{small: 'vertical', medium: 'horizontal'}"`, bound by the consumer rather than derived from the rules, and `align="right"` turns dropdown mode's submenus left in server HTML; submenus are bare `ul[nfsSubmenu]`, the current page's section open at first paint is `[expanded]="true"`, and `span[nfsSubmenuToggleText]` and the screen-reader-only directive replace the last consumer-written spans; the Advanced Layout example uses the Top Bar directives with `nfs-top-bar` in any mode; check 3 reads the Menu's `orientation()`, and the check for a copied mode class is removed, since a copy changes nothing, as the three roots decided; Hybrid Router links match exactly; every quoted ratio is exact; impact MEDIUM, confidence HIGH. Spec: [specs/responsive-menu.md](specs/responsive-menu.md).
+
+### Note, 2026-09-28 (out-of-scope reasons)
+
+- 2026-09-28: the Out of Scope reasons named in [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) are corrected in the spec.

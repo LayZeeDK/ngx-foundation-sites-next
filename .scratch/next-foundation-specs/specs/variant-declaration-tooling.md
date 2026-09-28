@@ -547,10 +547,10 @@ No cases: nothing here runs in a browser. The workspace e2e above takes its plac
 - The runtime checks (`strictVariantNames`, `strictVariantProperties`, `strictBreakpointSync`), their provider functions, and their reading of the Variant properties in the browser: the [Spec: Breakpoint service (shared utility)](../issues/53-spec-breakpoint-service.md) and its re-run own them (ADR 0040).
 - Writing the Variant properties: each Library mixin's spec owns its rules; this spec fixes the property names and format.
 - The family aliases, input names, value shapes, transforms, and class mappings of each Variant family: the component specs.
-- An `ng add` or `nx add` schematic for the whole library, and `ng update` or `nx migrate` migrations: the next sync or check reports any registry change an upgrade brings, so no migration is needed for the file.
+- An `ng add` or `nx add` entry for the whole library: additive in any release (ADR 0045), and such an entry would also have to decide the Sass import, the settings overrides, and the `nx` and `@nx/devkit` development dependencies the schematic needs on an Angular CLI workspace, which no spec has designed; the setup generator is the install step. A migration for the Variant declaration file: the next sync or check reports any registry change an upgrade brings (D29). The library's own migrations follow ADR 0045 (Nx migrations in the package's `migrations.json`, reused as `ng update` migrations) and arrive with the first release that needs one, because `nx migrate` and `ng update` read the migrations of the version they move to; a renamed registry interface follows ADR 0045's deprecation rule, because a hand-written file (ADR 0040) keeps the old name.
 - A watch mode, an esbuild plugin, a builder that wraps `@angular/build:application`, an ESLint rule, a language-service plugin, generated narrowing directives, a provider or theme constant as the source of names, and the reverse direction (TypeScript or design tokens as the source): not adopted by ADR 0040.
-- Merging several applications' files into one program.
-- Editing CI configuration files.
+- Merging several applications' files into one program: merging adds every application's names and removes every application's removals, and conflicting counts pass unseen under `skipLibCheck: true` (Implementation Decisions; ADR 0040, dated note).
+- Editing CI configuration files: CI configuration is the workspace's own; the docs name the check step (`nx sync:check`, `ng run <app>:nfs-variants:check`), and the tooling writes only files it generated (ADR 0040, dated note).
 - Caching the sync generator's Sass compile between daemon runs: each run costs one compile per covered project in the background; add a cache keyed on the loaded Sass files if that cost is ever measured as a problem.
 
 ## Further Notes
@@ -587,7 +587,7 @@ No cases: nothing here runs in a browser. The workspace e2e above takes its plac
 | D26 | Build assertion | Alias names in the emitted typings plus two probe programs from the manifest, plus the manifest-to-Sass compile | The alias-name check alone (misses an intermediate alias or a transform's parameter printed resolved while the input still names its alias); template fixtures per input (needs a selector and element per directive) |
 | D27 | Testing layers | Node-level Vitest, workspace e2e included; no story, browser, or Playwright case | A Playwright runner for command tests (no browser behaviour to test) |
 | D28 | Dev server | The generated file ends with `declare global {}`, so every rewrite reaches the dev server's template diagnostics (measured by the prototype) | A restart note (the dev server re-checks templates after a rewrite only in its first incremental rebuild, when the placeholder type-check shims are replaced); a shipped watcher; a `/// <reference path>` from the entry file or a `files` entry (measured: neither changes which files are affected) |
-| D29 | Library upgrades | The next sync or check reports every registry and default change; unknown registries fail | A migration schematic (the semantic comparison already reports it) |
+| D29 | Library upgrades | The next sync or check reports every registry and default change; unknown registries fail | A migration schematic for the file (the semantic comparison already reports it; the library's own migrations are ADR 0045's) |
 
 ### Usage examples
 

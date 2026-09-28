@@ -160,3 +160,7 @@ No new ADR: the pick correction and the placement rule are reversible without to
 ### Gist for Decisions so far
 
 - [Spec: Badge](issues/93-spec-badge.md) -- one listener-free `[nfsBadge]` binding `.badge`, with `color` over `NfsBadgePaletteOverrides` chained on the shared palette; no role: the badge sits inside the heading or control it counts (measured: it joins their names, while Foundation's heading `aria-describedby` is a description heading navigation drops), a focusable control beside it references it, and a live count is the consumer's `role="status"`; development checks for a text-less badge (axe reports nothing for Foundation's icon badges) and copied classes; measured with the exact formula: Foundation's alert badge is 4.498:1, which axe marks incomplete on every one-character example, and Foundation's `color-pick-contrast()` can pick the failing text colour, so `nfs-badge` checks every pair, corrects the pick where it is the worse, and needs `$badge-palette: map-merge($foundation-palette, (alert: #bf3f2c));`, because the Progress Bar's `$foundation-palette` merge does not reach `$badge-palette` from an overrides file; impact MEDIUM to HIGH, confidence HIGH; no ADR. Spec: [specs/badge.md](specs/badge.md).
+
+### Note, 2026-09-28 (out-of-scope reasons)
+
+- 2026-09-28: the Out of Scope reasons named in [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) are corrected in the spec.

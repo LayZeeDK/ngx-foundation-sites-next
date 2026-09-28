@@ -597,7 +597,7 @@ Release test (manual, before each release; [Resolve the assistive-technology che
 - `autoFocus` (D13): passed through, the Tabs directive's once-per-instance focus would fire at every Mode swap into tabs, because each swap creates the tab list again; a component-owned option that focuses once per page is additive later.
 - Reading a static Foundation class as initial state or a look: sections are templates and the host binds no class (ADR 0039); `selected`, `simple`, and `primary` replace them, and dev check 7 reports a class copied onto the host.
 - Keeping consumer state inside sections across a swap by moving views between the branches (D10).
-- Completion outputs (`opened`/`closed` after the height transition).
+- Completion outputs (`opened`/`closed` after the height transition): the component's state is `selected`, which no animation drives in tabs mode; a consumer who needs them uses the Accordion directly.
 - Container queries as the switch (ADR 0005: Foundation's rules are viewport breakpoints).
 - A live-region announcement of a swap (Breakpoint service consumer rule 4).
 - Automated screen-reader output: the manual release test under Testing Decisions covers it ([Resolve the assistive-technology checks](../issues/77-evidence-assistive-technology-checks.md)).
