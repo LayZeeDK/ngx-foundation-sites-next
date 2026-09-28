@@ -331,16 +331,16 @@ Avoided: a check shipped in every production bundle; a thrown error for a copied
 Decided by: ADR 0040; ADR 0018 (consequences); building-blocks 1.4 (initial state, copied classes), 1.8 and 1.9 ("warns in dev mode"; required against optional injection).
 Sources: `NC/src/aria/accordion/accordion-group.ts:119`; `NC/src/cdk/a11y/focus-trap/focus-trap.ts:185`; `adr/0040-variant-input-types.md:13`, `:49`; `adr/0018-browser-testing-stack.md:24`; `specs/accordion.md:151`; `specs/abide.md:155`; critique, principle J; review, points 13 and 29.
 
-#### P24. A forgotten import of an attribute directive fails silently; the spec names its mitigations (provisional in part)
+#### P24. A forgotten import of an attribute directive fails silently; checks catch it, not import arrays
 
-Rule: A spec's TypeScript usage examples import every directive they use, its class and ARIA assertions run in the story gate, and a directive that needs an ancestor library directive it may stand without reports its absence in development (building-blocks 1.9). Provisional (OPEN FOR HUMAN in the ticket's Answer, not audited): each entry point exports one import array of its directives, so a consumer imports a family as one and a forgotten member cannot render unstyled; the array's name form is part of the open question.
+Rule: A spec's TypeScript usage examples import every directive they use, its class and ARIA assertions run in the story gate, and a directive that needs an ancestor library directive it may stand without reports its absence in development (building-blocks 1.9). Entry points export their directive classes and no import arrays; each family's parts report a peer attribute with no instance in development, and the library also ships a static check, a runtime manifest check, and an opt-in `strictParents` flag (decided by the user on 2026-09-28, [ADR 0046](adr/0046-forgotten-imports-caught-by-checks.md); [Spec: forgotten-import checks (shared utility)](issues/150-spec-forgotten-import-checks.md) specifies them).
 
 Why: Angular reports no error for a static attribute that matches no imported directive; a bound input on the missing directive fails (NG8002, binding to a property that does not exist), a static one does not, and the library's checks run only inside a directive that exists. Three specs already export an array under two naming forms (`NFS_ACCORDION`, `NFS_RESPONSIVE_ACCORDION_TABS`, and `nfsPrototypeClasses`); Material's per-component NgModules serve the same all-or-none role, and Angular Aria exports classes and tokens only.
 
-Preferred: `imports: [NFS_ACCORDION]` (provisional); `[expanded]="true"` on a title, which fails to compile when `NfsAccordionTitle` is not imported; `nfsSliderFill` warning outside a slider.
-Avoided: a TypeScript example that shows `<button nfsButton>` without its import; a static attribute as the only way to reach a directive whose absence nothing reports.
+Preferred: `imports: [NfsAccordion, NfsAccordionItem, NfsAccordionTitle, NfsAccordionContent]`, which the unused-imports diagnostic can check member by member; `[expanded]="true"` on a title, which fails to compile when `NfsAccordionTitle` is not imported; `nfsSliderFill` warning outside a slider.
+Avoided: an exported import array such as `NFS_ACCORDION`; a TypeScript example that shows `<button nfsButton>` without its import; a static attribute as the only way to reach a directive whose absence nothing reports.
 
-Decided by: restates building-blocks 1.9 (optional injection with a development warning) and `specs/accordion.md:155`; New and provisional: the import array and its name form.
+Decided by: restates building-blocks 1.9 (optional injection with a development warning) and `specs/accordion.md:155`; the user's ruling of 2026-09-28 against import arrays and for four checks ([ADR 0046](adr/0046-forgotten-imports-caught-by-checks.md)).
 Sources: `NG/guide/components/selectors.md:140-143`; `NG/reference/errors/NG8002.md:5-12`; `NC/src/aria/accordion/public-api.ts`; `NC/src/material/button/button-module.ts:16-20`; `specs/accordion.md:155`; `specs/responsive-accordion-tabs.md:179`; `specs/prototyping-utilities.md:192`; `adr/0009-nfs-prefix-and-token-naming.md:12`; critique, principle 1 (the cost) and summary item 7; review, point 24.
 
 #### P25. Tests assert the DOM; no harness classes in the first specs

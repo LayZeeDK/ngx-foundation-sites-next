@@ -88,7 +88,7 @@ Cross-cutting prototypes whose verdicts every spec carries:
 
 ## Decisions index
 
-All 45 records are accepted, except [0010](adr/0010-button-variant-classes-stay-classes.md), superseded by [0039](adr/0039-directives-manage-every-foundation-class.md), and [0034](adr/0034-orbit-slide-contract.md), superseded by [0037](adr/0037-orbit-slide-hosts-tab-panel.md); none is proposed.
+All 46 records are accepted, except [0010](adr/0010-button-variant-classes-stay-classes.md), superseded by [0039](adr/0039-directives-manage-every-foundation-class.md), and [0034](adr/0034-orbit-slide-contract.md), superseded by [0037](adr/0037-orbit-slide-hosts-tab-panel.md); none is proposed.
 
 | ADR | Decision |
 | --- | --- |
@@ -137,6 +137,7 @@ All 45 records are accepted, except [0010](adr/0010-button-variant-classes-stay-
 | [0043](adr/0043-menu-root-top-bar-right-section-token.md) | A menu root learns it sits in a Top Bar's right-hand section through dependency injection, and from the DOM only when projection hides it |
 | [0044](adr/0044-utility-directive-rule.md) | Utility families: one directive per Foundation export mixin, set through Utility attributes |
 | [0045](adr/0045-release-policy-devkit-version-scheme.md) | The library follows the Angular devkit's version scheme, and a visible platform upgrade or a removal waits for Angular's next major |
+| [0046](adr/0046-forgotten-imports-caught-by-checks.md) | Forgotten directive imports are caught by checks, not by import arrays |
 
 ## Open list
 
