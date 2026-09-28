@@ -112,7 +112,7 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
 @include nfs-switch; // Switch: the focus ring, forced colours, reduced motion, and contrast and height checks; every switch--* story
 @include nfs-badge; // Badge: text contrast check, the text colour where Foundation's pick is the worse, and --nfs-badge-palette; every badge--* story
 @include nfs-label; // Label: text contrast check, the text colour where Foundation's pick is the worse, and --nfs-label-palette; every label--* story
-@include nfs-menu-icon; // Top Bar: the menu icon's 24 px box; every story with a menu icon (Top Bar, Responsive Toggle, Off-canvas, Triggers)
+@include nfs-menu-icon; // Top Bar: the menu icon's 24 px box and its forced-colours bars; every story with a menu icon (Top Bar, Responsive Toggle, Off-canvas, Triggers)
 @include nfs-title-bar; // Top Bar: title-bar contrast checks
 @include nfs-top-bar; // Top Bar: Top Bar contrast checks
 @include nfs-card; // Card: overflow-wrap for words the card would cut off (1.4.10, 1.4.12) and text and link contrast checks; every card--* story
@@ -125,7 +125,7 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
 // with the arguments its spec names (for example @include nfs-responsive-toggle(xlarge xxlarge);).
 @include nfs-smooth-scroll; // Smooth Scroll: smooth native jumps on html; play functions scroll with behavior: 'instant'
 @include nfs-prototyping-utilities; // Prototyping Utilities: responsive spacing in breakpoint order and the Variant properties; every prototyping-utilities--* story and every story whose scaffolding uses a Utility attribute
-@include nfs-typography-base; // Typography Helpers: the heading small-text contrast check
+@include nfs-typography-base; // Typography Helpers: the heading small-text and blockquote contrast checks
 @include nfs-typography-helpers; // Typography Helpers: list grid margins under nfsNoBullet and the subheader, citation, and code contrast checks; every typography-helpers--* story and every story whose list grid uses nfsNoBullet
 ```
 
@@ -241,13 +241,16 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
     large: min(400px, 45vw),
   );
 
-  // color-contrast (1.4.3): Foundation's $dark-gray subheaders and citations are 3.423:1 and its $medium-gray
-  // heading small text 1.625:1 on the page (axe fails them in three engines), and nfs-typography-helpers and
-  // nfs-typography-base stop the compile. Spec: Typography Helpers, typography-helpers--subheader,
-  // --code-and-citations, and --typescale; also every story with a cite element or a small inside a heading.
-  $subheader-color: #737373;
-  $cite-color: #737373;
-  $header-small-font-color: #737373;
+  // color-contrast (1.4.3): Foundation's $dark-gray subheaders, citations, and blockquote text are 3.423:1 and its
+  // $medium-gray heading small text 1.625:1 on the page (axe fails them in three engines), and nfs-typography-helpers
+  // and nfs-typography-base stop the compile. #666666, not the page's minimum #737373, because the greys must also
+  // reach 4.5:1 inside callouts, card dividers, and table rows (4.601:1 at worst). Spec: Typography Helpers,
+  // typography-helpers--subheader, --code-and-citations, --typescale, --composition, and --print-breaks; also every
+  // story with a cite, a blockquote, or a small inside a heading.
+  $subheader-color: #666666;
+  $cite-color: #666666;
+  $header-small-font-color: #666666;
+  $blockquote-color: #666666;
 
   // Feature switches, not accessibility overrides. Prototyping Utilities: prototyping-utilities--responsive.
   // $global-prototype-breakpoints does nothing here: the settings file assigned each flag from it.

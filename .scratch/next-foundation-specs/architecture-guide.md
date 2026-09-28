@@ -291,7 +291,7 @@ Preferred: `NfsSliderHandle implements FormValueControl<number>` on `input[type=
 Avoided: `<nfs-input>` re-rendering the control; a `checked` model on `input[nfsSwitchInput]`; a directive implementing both `ControlValueAccessor` and `FormValueControl`; a ported Abide engine.
 
 Decided by: ADR 0006; ADR 0026; building-blocks Table A (Slider, Abide) and Table D (Switch, Forms); Switch spec, D8; Slider spec, D4.
-Sources: `NG/guide/forms/signals/migration.md:455-462`; `NG/guide/forms/signals/custom-controls.md:124-140`; `NC/CODING_STANDARDS.md:274-305`; `specs/slider.md:197`, `:244`; `specs/switch.md:434`; critique, principle C; review, point 18.
+Sources: `NG/guide/forms/signals/migration.md:455-462`; `NG/guide/forms/signals/custom-controls.md:124-140`; `NC/CODING_STANDARDS.md:274-305`; `specs/slider.md:197`, `:244`; `specs/switch.md:441`; critique, principle C; review, point 18.
 
 #### P21. No library strings; direction from `Directionality`; logical properties
 
