@@ -152,7 +152,8 @@ NfsMediaQuery (Breakpoint service)              -> reducedMotion() for the smudg
 - Registration, not queries (building-blocks 1.9): an item registers with its accordion in `ngOnInit` and unregisters on destroy; a title and a content register with their item at construction. The accordion's registry is a `signal<Set<NfsAccordionItem>>`; order is not needed (exclusivity, counts, and deep-link lookup are order-free; Aria owns key order through its own `SortedCollection`). `@for`, `@if`, and Lazy content inside panels work because registration happens at construction.
 - Link between title and content: the consumer binds Aria's required `panel` input with `[panel]="c.panel"` and `#c="nfsAccordionContent"` (decision on the two forms the prototype proved: see Design decisions D4).
 - Defaults token: `nfsAccordionDefaultsToken`, `InjectionToken<NfsAccordionDefaults>` with all-optional `multiExpand`, `allowAllClosed`, `deepLink`, `updateHistory`, `deepLinkSmudge`, `region`, injected with `{optional: true}` to seed the input defaults (building-blocks 1.4, Shape B). Provided at bootstrap, route, or element level; the nearest wins.
-- Entry point: `ngx-foundation-sites/accordion`, exporting the five directives, the two parent tokens, the defaults token and its interface, and an `NFS_ACCORDION` array of the five directives for `imports`.
+- Entry point: `ngx-foundation-sites/accordion`, exporting the five directives, the two parent tokens, and the defaults token and its interface; no import array ([ADR 0046](../adr/0046-forgotten-imports-caught-by-checks.md)): a component lists the directives it uses, which the unused-imports diagnostic can check one by one.
+- Forgotten imports ([Spec: forgotten-import checks (shared utility)](../issues/150-spec-forgotten-import-checks.md)): `NfsAccordion` probes `NfsAccordionItem`; `NfsAccordionItem` probes `NfsAccordionTitle` and `NfsAccordionContent`; the item, title, and content have no parent check, because their injections are required and NG0201 is the report, with both tokens' development descriptions; `NfsAccordionLazyContent` sits on `ng-template` and calls nothing; the title's `[panel]` link needs no probe, because its forgotten form fails with NG8002; `strictParents` changes nothing.
 
 ### API
 
@@ -572,7 +573,7 @@ Release test (manual, before each release; [Resolve the assistive-technology che
 ```ts
 @Component({
   selector: 'app-faq',
-  imports: [NFS_ACCORDION, NfsButton],
+  imports: [NfsAccordion, NfsAccordionItem, NfsAccordionTitle, NfsAccordionContent, NfsAccordionLazyContent, NfsButton],
   template: `
     <button nfsButton (click)="faq.expandAll()">Expand all</button>
     <button nfsButton (click)="faq.collapseAll()">Collapse all</button>

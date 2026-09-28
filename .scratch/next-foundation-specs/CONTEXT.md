@@ -589,5 +589,17 @@ The `--nfs-<setting>` custom properties on `:root` that a Library mixin writes t
 _Avoid_: theme tokens, palette variables, names property
 
 **Runtime check**:
-A check the library runs in the browser after the first render, on by default in development builds with a per-check opt-out and off in production unless the consumer opts in, that reports what the compiler cannot see: a Variant value with no class in the compiled CSS, missing Variant properties, or Breakpoint drift.
+A check the library runs in development builds after the first render, on by default with a per-check opt-out, that reports what the compiler cannot see: a Variant value with no class in the compiled CSS, missing Variant properties, Breakpoint drift, or a Forgotten import on a rendered element; the Variant and Breakpoint checks can also be opted into production. The `strictParents` flag beside them is not one: it is off unless the consumer opts in, and makes a missing parent throw at construction.
 _Avoid_: dev check, drift warning, sanity check
+
+**Forgotten import**:
+A library attribute written in a template whose component's imports do not bring in the directive it names, so the element renders without that directive's classes, ARIA, and behaviour, with no compiler error.
+_Avoid_: missing import, unimported directive, dead attribute
+
+**Selector manifest**:
+The library's list of its exported directives and components that have an attribute selector, each with its class name, entry point, selector, the Structural class it always binds, and the library directives it hosts; the list the forgotten-import checks match templates and rendered elements against.
+_Avoid_: directive manifest, import manifest, selector list
+
+**In-family check**:
+A development warning from one part of a directive family about a peer: an element that carries the peer's attribute with no instance of it, or a parent that dependency injection cannot reach from the part's template.
+_Avoid_: peer check, family validation, sibling check

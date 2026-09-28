@@ -133,7 +133,7 @@ A component spec declares no registry (the typing decision). A spec whose family
 
 ### Registry to property and input mapping: the Variant manifest
 
-The Variant manifest is a JSON document inside the package, read by the tooling from its own install location, never exported through the package's `exports` and never loaded by application code. It is the one list the library's Sass, types, generator, and typings check agree on. Its shape:
+The Variant manifest is a JSON document inside the package, read by the tooling from its own install location, never exported through the package's `exports` and never loaded by application code. It is the one list the library's Sass, types, generator, and typings check agree on. The package ships a second JSON document under the same rules, the Selector manifest of [Spec: forgotten-import checks (shared utility)](../issues/150-spec-forgotten-import-checks.md), which the `ngx-foundation-sites:missing-imports` builder reads; that spec owns its shape and its build steps. Its shape:
 
 ```ts
 interface NfsVariantManifest {
@@ -193,6 +193,10 @@ Workspace tooling (Node, CommonJS, not an Angular entry point):
     <- setup generator  ngx-foundation-sites:variant-types       (package "generators": Nx; "schematics": Angular CLI via convertNxGenerator)
     <- sync generator   ngx-foundation-sites:variant-types-sync  (package "generators", hidden)
     <- builder          ngx-foundation-sites:variant-types       (package "builders": Angular CLI and Nx)
+
+  Selector manifest (JSON), for the forgotten-import checks
+    <- setup generator  ngx-foundation-sites:missing-imports   (package "generators"; "schematics" via convertNxGenerator)
+    <- builder          ngx-foundation-sites:missing-imports   (package "builders": Angular CLI and Nx)
 ```
 
 - Family aliases live in their component's entry point (building-blocks 1.3); the primary entry point holds only what several entry points share: the registries, the helpers, the Class breakpoint types, and `NfsFoundationPaletteColor`, the base of three chained registries. A family alias another entry point needs is imported as a type from its own entry point (Button Group's colour from `ngx-foundation-sites/button`).
@@ -411,7 +415,7 @@ Why per-project registration and not `targetDefaults` keyed by executor: Nx reso
 
 - Nx: the setup generator writes the `nfs-variants` target and the per-target `syncGenerators` entries in `project.json`, and `sync.applyChanges` in `nx.json` only when asked. It adds no `targetDefaults` entry.
 - Angular CLI: the `nfs-variants` target in `angular.json`, optional npm scripts, nothing else.
-- Dependencies: the tooling adds no dependency to applications and no `dependencies` entry to the package. It loads, only when it runs: `sass-embedded` (or `sass`) and `esbuild`, both dependencies of `@angular/build`, and `typescript` (in every Angular workspace), `@angular-devkit/architect` (the builder), `nx` and `@nx/devkit` (the generators; optional peer dependencies of the package at the Nx major the release is tested with, `^23.0.0` first), and `prettier` if installed. A missing package ends the run with M9 naming the install command. The schematic therefore needs `nx` and `@nx/devkit` as development dependencies on an Angular CLI workspace (36 MB on win32-arm64, SYNC 5.3); the check builder does not.
+- Dependencies: the Variant tooling adds no dependency to applications and no `dependencies` entry to the package; the opt-in `ngx-foundation-sites:missing-imports` setup adds `angular-html-parser`, an optional peer dependency of the package, to a workspace's `devDependencies` ([Spec: forgotten-import checks (shared utility)](../issues/150-spec-forgotten-import-checks.md)). It loads, only when it runs: `sass-embedded` (or `sass`) and `esbuild`, both dependencies of `@angular/build`, and `typescript` (in every Angular workspace), `@angular-devkit/architect` (the builder), `nx` and `@nx/devkit` (the generators; optional peer dependencies of the package at the Nx major the release is tested with, `^23.0.0` first), and `prettier` if installed. A missing package ends the run with M9 naming the install command. The schematic therefore needs `nx` and `@nx/devkit` as development dependencies on an Angular CLI workspace (36 MB on win32-arm64, SYNC 5.3); the check builder does not.
 - Nothing is ever written under `node_modules` (veto C).
 
 ### CI steps
@@ -580,7 +584,7 @@ No cases: nothing here runs in a browser. The workspace e2e above takes its plac
 | D19 | Sources | The build target's injected Sass global stylesheets under the named or default configuration; `stylesheets` to override | Every configuration compiled and required to agree (a compile per configuration on every task for a rare case); the built CSS (only after a build) |
 | D20 | Sass resolution | The application builder's importer re-implemented over its own esbuild resolver and stylesheet options, compiled with the Sass compiler it loads (`sass-embedded`), confirmed by the prototype in eight cases | `@angular/build`'s private Sass service (not public API); Node resolution with Sass's `NodePackageImporter` and `~` stripping (both differ from the builder, measured) |
 | D21 | Shared libraries | A file of the library's own, from a named build target or stylesheet | Including applications' files (merging hides count conflicts under `skipLibCheck`); no file (the library's own checks reject application names) |
-| D22 | Packaging | CommonJS tooling beside the Angular entry points; generators and schematics in one collection; one Architect builder for both workspace kinds | A separate tooling package (a second version to keep in step with the manifest); an Nx executor beside the builder (two implementations of the check) |
+| D22 | Packaging | CommonJS tooling beside the Angular entry points; generators and schematics in one collection; one Architect builder per tool for both workspace kinds (`variant-types`, and `missing-imports` of the forgotten-import checks) | A separate tooling package (a second version to keep in step with the manifest); an Nx executor beside the builder (two implementations of the check) |
 | D23 | Dependencies | Optional peers loaded on demand, M9 when missing | `dependencies` on `nx` and `@nx/devkit` (installs them for every consumer, used or not) |
 | D24 | CI | `nx sync:check`, or the builder's `check` configuration, as its own step | A check inside the build (tasks skip sync in CI; the CLI has no target dependencies) |
 | D25 | npm scripts | Opt-in `--npmScripts` | Always (edits `package.json` scripts for users who run `ng` directly) |

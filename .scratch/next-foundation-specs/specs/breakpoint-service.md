@@ -28,7 +28,7 @@ A root service, `NfsMediaQuery`, that answers Foundation's MediaQuery questions 
 - On the server and while prerendering the service answers with the Server breakpoint, `small` by default. On the client it keeps answering with the same Server breakpoint until its first render callback, then switches to the live viewport inside the same change-detection pass, so hydration always starts from exactly what the server sent. A server that picks its breakpoint per request (for example from client hints) hands the choice to the client through Angular's `TransferState`.
 - One pure parser reads Foundation's Breakpoint rule strings for ResponsiveMenu and ResponsiveAccordionTabs, typed by the modes each Plugin allows; rules resolve by the order of the Breakpoint map, not by the order they are written.
 - The Class breakpoints, Foundation's `$breakpoint-classes`, are typed apart from the map's names. Variant inputs, and the Options that set a class only for Class breakpoints (Off-canvas `revealOn`, `inCanvasOn`), take `NfsClassBreakpoint` from the primary entry point, closed over Foundation's `small`, `medium`, and `large` and extended by the consumer's Variant declaration file; behaviour Options and this service's own API keep the open `NfsBreakpointName`. The developer's `@include nfs-breakpoint-properties;` also lists the Class breakpoints as `--nfs-breakpoint-classes`.
-- The library's Runtime checks live here, with one configuration. `strictBreakpointSync` compares the Breakpoint map with the Breakpoint properties that `nfs-breakpoint-properties` emits from the developer's Sass `$breakpoints`, and reports a Class breakpoint the map lacks. `strictVariantNames` and `strictVariantProperties` read the Variant properties for every library directive that reports its Variant inputs through `nfsVariantCheck()`. All three run in development builds unless `provideNfsRuntimeChecks` opts one out; none runs in production unless `provideNfsProductionRuntimeChecks` lists it, and a production bundle without that call carries none of the checker's code (measured). Every report is made once, in the browser, after the first render.
+- The library's Runtime checks live here, with one configuration. `strictBreakpointSync` compares the Breakpoint map with the Breakpoint properties that `nfs-breakpoint-properties` emits from the developer's Sass `$breakpoints`, and reports a Class breakpoint the map lacks. `strictVariantNames` and `strictVariantProperties` read the Variant properties for every library directive that reports its Variant inputs through `nfsVariantCheck()`. `strictDirectiveImports` ([Spec: forgotten-import checks (shared utility)](../issues/150-spec-forgotten-import-checks.md)) reports a rendered element that carries a library directive's attribute with no library directive on it. All four run in development builds unless `provideNfsRuntimeChecks` opts one out; the first three run in production only when `provideNfsProductionRuntimeChecks` lists them and `strictDirectiveImports` never does, and a production bundle without that call carries none of the checker's code (measured). Every report is made once, in the browser, after the first render. The same configuration holds the opt-in `strictParents` flag, which that spec owns.
 
 Anything that only looks different per breakpoint stays in Foundation's CSS: the Visibility classes and the breakpoint classes (`.show-for-*`, `.hide-for-*`, `.<bp>-horizontal`, `.reveal-for-<bp>`, `.in-canvas-for-<bp>`), which the directive that owns each family sets from its Variant input or Option (a Visibility Classes directive's `showFor`, a Menu's `[orientation]` rules, Off-canvas `revealOn`), so the consumer writes none of them and the server HTML carries them. The service is for behaviour; it reads no class and writes none.
 
@@ -162,6 +162,7 @@ nfsRuntimeCheckerToken (internal; root factory: the development checker behind n
   <- provideNfsRuntimeChecks(checks)                       development overrides (an internal value token), nothing in production
   <- provideNfsProductionRuntimeChecks(checks, {report})   replaces the factory: the production opt-in
 nfsVariantCheck(directive) -> NfsVariantCheck | null        every library directive whose Variant inputs read a Variant property
+nfsDirectiveCheck(directive, family?)                       every library directive with an attribute selector, development builds only (forgotten-import checks)
 
 Pure functions (no DI): parseNfsBreakpointRules, nfsBreakpointForWidth
 Constants: nfsDefaultBreakpointMap, nfsDefaultNamedQueries
@@ -172,7 +173,7 @@ Constants: nfsDefaultBreakpointMap, nfsDefaultNamedQueries
 - `NfsMediaQuery`: `@Service()` (root singleton, tree-shaken when unused, per Angular's services guide). One instance per application, which on the server means one per request, because each request bootstraps its own application.
 - No provider function for the Breakpoint map: one token needs none (building-blocks 1.9; the components repo ships `provide*` only to swap a class). Consumers write `{provide: nfsBreakpointsToken, useValue: ...}` or `useFactory` for the per-request recipe. The entry point's two provider functions, `provideNfsRuntimeChecks` and `provideNfsProductionRuntimeChecks`, configure the Runtime checks, not the map, and are two rather than one umbrella `provideNfs()` (ADR 0040; building-blocks 1.9).
 - No Defaults token of its own: Breakpoint queries and rules are Options of the consuming Plugins, whose Defaults tokens hold their defaults. Named queries belong to Interchange, the only Plugin that uses them, so they are the `namedQueries` field of Interchange's Defaults token (building-blocks Table B, Interchange), defaulting to `nfsDefaultNamedQueries`.
-- Entry point: its own secondary entry point, `ngx-foundation-sites/media-query` (Foundation's utility name, building-blocks 1.3), imported by the consuming Plugins' entry points so a consumer's `@defer` block pulls it in with the first gated Plugin. It also exports the Runtime-check API (`NfsRuntimeChecks`, `NfsRuntimeCheckReport`, `provideNfsRuntimeChecks`, `provideNfsProductionRuntimeChecks`, `nfsVariantCheck`, `NfsVariantCheck`, `NfsVariantNeed`), so every entry point with a Variant input imports it too. What such an entry point keeps of it in a production build without the opt-in is the `nfsVariantCheck` call and one injection of a token whose factory returns `null` (Runtime checks, measured); `NfsMediaQuery` itself is tree-shaken from an application that never injects it.
+- Entry point: its own secondary entry point, `ngx-foundation-sites/media-query` (Foundation's utility name, building-blocks 1.3), imported by the consuming Plugins' entry points so a consumer's `@defer` block pulls it in with the first gated Plugin. It also exports the Runtime-check API (`NfsRuntimeChecks`, `NfsRuntimeCheckReport`, `provideNfsRuntimeChecks`, `provideNfsProductionRuntimeChecks`, `nfsVariantCheck`, `NfsVariantCheck`, `NfsVariantNeed`, and the forgotten-import checks' `nfsDirectiveCheck` and `NfsFamilyPeers`), so every entry point with a Variant input or an attribute selector imports it too. What such an entry point keeps of it in a production build without the opt-in is the `nfsVariantCheck` call and one injection of a token whose factory returns `null` (Runtime checks, measured); `NfsMediaQuery` itself is tree-shaken from an application that never injects it.
 - The Class breakpoint types (`NfsClassBreakpoint`, `NfsClassBreakpointQuery<M>`, `NfsClassBreakpointRules<V>`) and their Variant registry `NfsBreakpointClassesOverrides` are not exported here: they live in the primary entry point `ngx-foundation-sites` with every other Variant registry (ADR 0040; the [Spec: Variant declaration tooling](../issues/136-spec-variant-declaration-tooling.md) declares them). This entry point needs none of them: its own API takes `NfsBreakpointName`, to which every Class breakpoint is assignable (API).
 
 ### API
@@ -345,7 +346,7 @@ The service renders no DOM and binds no class. What reaches the page:
 
 ### Runtime checks
 
-The library's Runtime checks (ADR 0040) live in this entry point beside the breakpoint drift check they grew from. There are three, configured in the direction of NgRx's `runtimeChecks` (per-check flags over defaults), with this library's own production opt-in, which NgRx lacks:
+The library's Runtime checks (ADR 0040) live in this entry point beside the breakpoint drift check they grew from. There are four, and one flag, configured in the direction of NgRx's `runtimeChecks` (per-check flags over defaults), with this library's own production opt-in, which NgRx lacks; `strictDirectiveImports` and the `strictParents` flag are specified by the [Spec: forgotten-import checks (shared utility)](../issues/150-spec-forgotten-import-checks.md):
 
 ```ts
 export interface NfsRuntimeChecks {
@@ -355,6 +356,10 @@ export interface NfsRuntimeChecks {
   strictVariantProperties: boolean;
   /** nfsBreakpointsToken and the Breakpoint properties disagree, or a Class breakpoint is missing from the token (ADR 0005's drift check). */
   strictBreakpointSync: boolean;
+  /** A rendered element carrying a library directive's attribute with no library directive on it, or on an element no selector of that directive admits. Development builds only. */
+  strictDirectiveImports: boolean;
+  /** Off by default. In development builds, a part whose optional parent injection found nothing throws at construction. A flag, not a Runtime check; development builds only. */
+  strictParents: boolean;
 }
 
 export interface NfsRuntimeCheckReport {
@@ -367,12 +372,12 @@ export interface NfsRuntimeCheckReport {
   readonly names?: readonly string[];
 }
 
-/** Development overrides: every check is on without this provider; returns no providers when ngDevMode is false. */
-export function provideNfsRuntimeChecks(checks: Partial<NfsRuntimeChecks>): EnvironmentProviders;
+/** Development overrides: every check but strictParents is on without this provider; it also starts strictDirectiveImports when no library directive runs; returns no providers when ngDevMode is false. */
+export function provideNfsRuntimeChecks(checks?: Partial<NfsRuntimeChecks>): EnvironmentProviders;
 
 /** Production opt-in, per check; all off unless listed; the only production code path that references the checker. */
 export function provideNfsProductionRuntimeChecks(
-  checks: Partial<NfsRuntimeChecks>,
+  checks: Partial<Omit<NfsRuntimeChecks, 'strictDirectiveImports' | 'strictParents'>>,
   options?: {report?: (report: NfsRuntimeCheckReport) => void},
 ): EnvironmentProviders;
 ```
@@ -382,18 +387,21 @@ export function provideNfsProductionRuntimeChecks(
 | `strictVariantNames` | A rendered Variant value whose name its property does not list, or a count above its property's count; a value that maps to no class | The `--nfs-<setting>` of each need a directive reports | Each directive's render callback, through `nfsVariantCheck` | On; `provideNfsRuntimeChecks({strictVariantNames: false})` opts out | Off; `provideNfsProductionRuntimeChecks({strictVariantNames: true})` opts in |
 | `strictVariantProperties` | A Library mixin whose listed properties are all missing | The properties a directive names in `include()` | The same | Same form | Same form |
 | `strictBreakpointSync` | Breakpoint map drift, a Class breakpoint the token lacks, a missing `nfs-breakpoint-properties` include | `--nfs-breakpoint-<name>`, `--nfs-breakpoint-classes` | The service's go-live callback | Same form | Same form |
+| `strictDirectiveImports` | A rendered element carrying a library directive's attribute with no library directive on it; a library attribute on an element no selector of its directive admits | The DOM, the development host record, the Selector manifest, `ng.getOwningComponent` | One `afterEveryRender` callback per application, started by the first library directive or by `provideNfsRuntimeChecks()` | Same form | Never (the production provider does not accept it) |
+| `strictParents` (a flag, not a Runtime check) | Throws at construction when an optional parent injection that the forgotten-import checks list found nothing | The part's injection result | `nfsDirectiveCheck`, at construction, on the server and in the browser | Off; `provideNfsRuntimeChecks({strictParents: true})` opts in | Never |
 
 Configuration:
 
-- Defaults: with no provider, a development build runs all three and reports through `console.warn`, each message prefixed with its check's name ("ngx-foundation-sites [strictVariantNames]: ..."). A production build runs none.
+- Defaults: with no provider, a development build runs all four Runtime checks and reports through `console.warn`, each message prefixed with its check's name ("ngx-foundation-sites [strictVariantNames]: ..."), and `strictParents` is off. A production build runs none.
 - `provideNfsRuntimeChecks(checks)` switches single checks off, or back on, in development builds. In production builds it returns no providers (the shape of Angular's own `provideCheckNoChangesConfig`), so an application that calls it in its shared configuration ships nothing for it.
+- `provideNfsRuntimeChecks()` also adds an environment initializer that starts the `strictDirectiveImports` scan, the only start for an application whose templates instantiate no library directive; its argument is optional, and the install docs put `provideNfsRuntimeChecks()` in every application configuration.
 - `provideNfsProductionRuntimeChecks(checks, options)` runs only the listed checks in production builds and sends their reports to `options.report`, or to `console.warn` when there is none. Each function affects only its own kind of build: in a development build the production call changes nothing, so development reports always go to the console, and the `report` path is tested on a production build (Testing Decisions, e2e).
 - Both are provided at application level only, like `nfsBreakpointsToken`: the checker is a root singleton, so a route or element provider is never read.
 - Mechanism, the part that keeps production bundles clean: an internal root token holds the checker. Its factory returns the development checker behind `typeof ngDevMode === 'undefined' || ngDevMode`, and `null` otherwise; the development checker reads its overrides from an internal value token that only `provideNfsRuntimeChecks` provides. `provideNfsProductionRuntimeChecks` replaces the token's factory. Nothing else constructs the checker, so when the Angular CLI defines `ngDevMode` as `false` (script optimization on) and the production call is absent, the checker's code is removed. Measured under `@angular/build:application` 22.2.0 with an ng-packagr 22.2.0 library resolved through its package `exports` (the re-run's decision log): no checker code in the production bundle, and 62 bytes more for an application that only calls `provideNfsRuntimeChecks`; with the production call, 3,976 bytes more minified (about 1.2 kB transferred), which includes Angular's `afterRenderEffect` for an application that used none.
 
 When and where:
 
-- In the browser only, after the first render: every read is in a render callback (`afterRenderEffect` or `afterNextRender`), both of which Angular makes a no-op on the server. The server has no computed style, so the server HTML carries whatever class a value produced, unchecked (building-blocks 1.11 decision 3).
+- In the browser only, after the first render: every read is in a render callback (`afterRenderEffect` or `afterNextRender`), both of which Angular makes a no-op on the server. The server has no computed style, so the server HTML carries whatever class a value produced, unchecked (building-blocks 1.11 decision 3). `strictParents` is the exception: it acts at construction, on the server too.
 - They write no DOM and add no listener, so hydration, event replay, and `@defer` behave the same with and without them. A directive inside a `hydrate never` block is never checked, because it never runs on the client; one inside a `hydrate on ...` block is checked when the block hydrates.
 - Once per realm: each property is read once per JavaScript realm (a module-level cache), and each report is made once per realm per check and distinct subject: the directive, input, and failing name or value for `strictVariantNames`; the Library mixin for `strictVariantProperties`; the whole comparison for `strictBreakpointSync`. Reason, as for the first drift check: consumer unit tests that do not compile the Sass would otherwise report in every test; per realm is one report per test file, and a consumer can also switch the checks off in its test setup (usage examples). Limit, stated in the docs: a stylesheet added or hot-replaced after a property's first read is seen after the next page load.
 - A `report` callback that throws is handed to Angular's `ErrorHandler` like any render-callback error (the after-render manager catches it), and the other checks go on.

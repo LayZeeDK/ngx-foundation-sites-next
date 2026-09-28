@@ -176,7 +176,7 @@ nfs-responsive-accordion-tabs  NfsResponsiveAccordionTabs (component, OnPush, no
         div[nfsAccordionContent] #content [id]   binds .accordion-content -> NgTemplateOutlet(section template)
 ```
 
-- The component imports the Accordion and Tabs directive sets from their entry points and uses their tokens as they define them; it provides no token to them and re-provides none. `[nfsTabsContent]` sits inside `[nfsTabsGroup]`, whose token it requires, and binds `.vertical` only while the tab list is vertical, which it never is here. Its own entry point is `ngx-foundation-sites/responsive-accordion-tabs`, exporting the component, the panel directive, the Defaults token and its interface, the change type, the mode type, and an `NFS_RESPONSIVE_ACCORDION_TABS` array for `imports`. It depends on `ngx-foundation-sites/accordion`, `ngx-foundation-sites/tabs`, `ngx-foundation-sites/media-query`, and the primary entry point `ngx-foundation-sites` for `nfsVariantBoolean` and its type `NfsVariantBoolean` (ADR 0040).
+- The component imports the Accordion and Tabs directive sets from their entry points and uses their tokens as they define them; it provides no token to them and re-provides none. `[nfsTabsContent]` sits inside `[nfsTabsGroup]`, whose token it requires, and binds `.vertical` only while the tab list is vertical, which it never is here. Its own entry point is `ngx-foundation-sites/responsive-accordion-tabs`, exporting the component, the panel directive, the Defaults token and its interface, the change type, and the mode type, and no import array ([ADR 0046](../adr/0046-forgotten-imports-caught-by-checks.md)). It depends on `ngx-foundation-sites/accordion`, `ngx-foundation-sites/tabs`, `ngx-foundation-sites/media-query`, and the primary entry point `ngx-foundation-sites` for `nfsVariantBoolean` and its type `NfsVariantBoolean` (ADR 0040).
 - Class ownership: the component's template writes no `class` attribute, because every Foundation class of both modes is bound by the directive that owns it (ADR 0039). A class written there would either merge with a static host class to no effect (a Structural class) or be stripped by a dynamic binding and fire that directive's copied-class warning (`is-active`, `simple`, `primary`), so it is never written.
 - Sections: `contentChildren(NfsResponsiveAccordionTabsPanel)` with the default `descendants: false`. This is a rendering query, not validation (building-blocks 1.9 keeps queries for validation otherwise): the component renders its own template from the sections during the server render, where no registration from render callbacks runs, and template order is the order the consumer wrote. Sections inside `@for` or `@if` directly under the host match, because Angular's direct-child rule treats nodes in an embedded view created from a template directly in the content as direct children (Angular's query matching, `isApplyingToNode`); sections of a nested instance inside a panel belong to that instance.
 - DI inside sections: a section template is declared in the consumer's template, so its content injects from the consumer's injector (declaration site), whichever mode renders it.
@@ -639,7 +639,7 @@ Release test (manual, before each release; [Resolve the assistive-technology che
 ```ts
 @Component({
   selector: 'app-product',
-  imports: [NFS_RESPONSIVE_ACCORDION_TABS],
+  imports: [NfsResponsiveAccordionTabs, NfsResponsiveAccordionTabsPanel],
   template: `
     <h2 id="details-heading">Product details</h2>
     <nfs-responsive-accordion-tabs
