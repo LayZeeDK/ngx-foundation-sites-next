@@ -2,7 +2,7 @@
 
 Type: grilling
 Status: open
-Blocked by: 82, 84, 87, 88, 90, 91, 92, 93, 94, 95, 96, 97, 99, 100, 101, 102, 103, 104, 105, 106, 112, 113, 114, 115, 116, 117, 119, 120, 124, 125, 126, 127, 131, 136, 137
+Blocked by: 82, 84, 87, 88, 90, 91, 92, 93, 94, 95, 96, 97, 99, 100, 101, 102, 103, 104, 105, 106, 112, 113, 114, 115, 116, 117, 119, 120, 124, 125, 126, 127, 131, 136, 137, 143
 Labels: wayfinder:grilling
 Map: ../map.md
 
@@ -11,6 +11,10 @@ Map: ../map.md
 The user asked on 2026-09-28 for every spec item currently deemed out of scope to be audited and triaged, in the context of the map, the tickets, the research, the references, the requirements, the precedence of the bundle's sources, the goals, and every other artifact under `.scratch/`. Which items that the 52 specs, the map, building-blocks, and the ADRs rule out of scope should come into scope, and what do they become? Every exclusion's reason is re-checked against its sources and against the rulings that postdate it: the CSS-only ruling and the class rule ([Triage the out-of-scope Foundation components and variants](79-triage-out-of-scope-components-and-variants.md), ADR 0039), the Variant typing decision ([Decide: typed Variant inputs over open Sass maps](81-decide-typed-variant-inputs-open-sass-maps.md), ADR 0040), directive composition over subclassing, and the user's precedence note that the repository's API-design skill ranks below the bundle's decisions. Items whose reason still holds stay out with the reason restated; survivors come into scope and are resolved before the consistency review.
 
 This ticket waits until every spec and re-run ticket of the class-rule wave has resolved, so that it reads settled Out of Scope sections and no survivor edits a spec another agent is writing.
+
+## Inputs noted after charting
+
+- 2026-09-28, from the [Spec: Typography Helpers](106-spec-typography-helpers.md) ticket: `$blockquote-color` is 3.423:1 on the page on Foundation's defaults, a WCAG 1.4.3 failure on a base element style, which the map's Out of scope rules out and no spec owns. The Typography Helpers ticket names `nfs-typography-base` as the natural home for a compile-time check if one is adopted. Triage it with the other out-of-scope items.
 
 ## How to work it
 
