@@ -122,13 +122,15 @@ Magellan has no Structural class and no Variant class in Foundation (its Plugin 
 | `.vertical`, `.horizontal` and their responsive forms, `.expanded`, `.simple`, and the Menu's other Variant classes | Variant classes of the Menu | The container `ul` | The Menu directive's Variant inputs (`orientation="vertical"`, `expanded`, `simple`) | [Spec: Menu](../issues/85-spec-menu.md) |
 | `.is-active` | State class | The Current section's links, and each such link's parent `li` when it has one | Written by `NfsMagellan` with `Renderer2` after render; removed from every other tracked link and its `li` (D11, D18) | This spec. On the link: Magellan's own contract (Foundation's `activeClass`), for custom navigations and CSS migrated from Foundation. On the `li`: Foundation Menu's documented active state ("Add the class `.is-active` to any `<li>`", styled by `.menu .is-active > a` and Dropdown Menu's `li.is-active > a`), so the marker is visible with no library CSS |
 | (none) target | -- | `section[id]` | No directive | Targets are found from the links ([ADR 0029](../adr/0029-magellan-targets-from-links.md)) |
-| `.top-bar`, `.top-bar-right` (the top bar usage example and the `magellan--sticky-top-bar` story) | Structural classes of the Top Bar | The bar and its right section | `NfsTopBar` (`[nfsTopBar]`) and `NfsTopBarRight` (`[nfsTopBarRight]`) | [Spec: Top Bar](../issues/86-spec-top-bar.md) |
+| `.top-bar`, `.top-bar-right` (the top bar usage example and the `magellan--sticky-top-bar` story), `.top-bar-left` (Foundation's docs example) | Structural classes of the Top Bar | The bar and its sections | `NfsTopBar` (`[nfsTopBar]`), `NfsTopBarRight` (`[nfsTopBarRight]`), and `NfsTopBarLeft` (`[nfsTopBarLeft]`) | [Spec: Top Bar](../issues/86-spec-top-bar.md) |
+| `.menu-text` (the site title of Foundation's docs example) | Structural class of the Menu | A menu item without a link | `NfsMenuText` (`li[nfsMenuText]`) | [Spec: Menu](../issues/85-spec-menu.md) |
 | `.sticky`, `.sticky-container` (the Sticky pairing in usage examples and stories) | Structural classes of Sticky | The sticky element and its container | `NfsSticky` (`[nfsSticky]`) and `NfsStickyContainer` (`[nfsStickyContainer]`) | [Spec: Sticky](../issues/28-spec-sticky.md) |
-| `.grid-x`, `.cell`, `.large-3`, `.large-9` (the guide usage example and the `magellan--table-of-contents` story layout) | Utility classes of the XY Grid | The grid and its cells | `NfsGridX` (`[nfsGridX]`) and `NfsCell` (`[nfsCell]`) with its `size` Variant input (`[size]="{large: 3}"`) | [Spec: XY Grid](../issues/99-spec-xy-grid.md) |
+| `.grid-x`, `.grid-margin-x`, `.cell`, `.large-3`, `.large-9` (the guide usage example and the `magellan--table-of-contents` story layout) | Utility classes of the XY Grid | The grid and its cells | `NfsGridX` (`[nfsGridX]`) with its `gridMarginX` Variant input and `NfsCell` (`[nfsCell]`) with its `size` Variant input (`[size]="{large: 3}"`) | [Spec: XY Grid](../issues/99-spec-xy-grid.md) |
+| `.button` (the `magellan--programmatic` story's buttons) | Structural class of the Button | Story controls | `NfsButton` (`button[nfsButton]`) | [Spec: Button](../issues/37-spec-button.md) |
 
 `aria-current` is not a class but travels with `.is-active` on the link. Neither is a host binding. The class rule's "every State class is a host binding" (ADR 0039) presumes a host, and D11 keeps the `Renderer2` write because these elements have none: the marked links and list items are the consumer's elements inside the host, found by query as Smooth Scroll finds them, and no library directive sits on them, since they carry no Structural class that ADR 0039 would give a directive; the rule's reason, that host bindings render on the server so the first paint carries the class, does not apply, because the server cannot know the scroll position and no section is current in server HTML. The consumer still writes no class: Magellan manages the marker, as the class rule requires. The [Spec: Menu](../issues/85-spec-menu.md) gives a Menu's link items no directive (only `li[nfsMenuText]`, for items without a link) and marks a current page by `aria-current` alone, so the list item has one writer, Magellan. Angular's `RouterLinkActive` also writes its classes and `aria-current` with `Renderer2`, and the Off-canvas panel writes Foundation's `is-off-canvas-open` on `body` for the same reason as Magellan: no host binding reaches the element.
 
-`NfsMenu`, `orientation`, `expanded`, and `simple` are the Menu spec's names (the Smooth Scroll spec uses them too), and `NfsSticky` and `NfsStickyContainer` are the Sticky spec's. `NfsTopBar` and `NfsTopBarRight` are the Top Bar spec's names; `NfsGridX`, `NfsCell`, and `size` are the [Spec: XY Grid](../issues/99-spec-xy-grid.md)'s.
+`NfsMenu`, `orientation`, `expanded`, and `simple` are the Menu spec's names (the Smooth Scroll spec uses them too), and `NfsSticky` and `NfsStickyContainer` are the Sticky spec's. `NfsTopBar`, `NfsTopBarLeft`, and `NfsTopBarRight` are the Top Bar spec's names, and `NfsMenuText` the Menu spec's; `NfsGridX`, `gridMarginX`, `NfsCell`, and `size` are the [Spec: XY Grid](../issues/99-spec-xy-grid.md)'s.
 
 ### Hierarchy and DI shape
 
@@ -508,7 +510,7 @@ A guide page with a sticky table of contents (Magellan inside Sticky, Foundation
   selector: 'app-guide',
   imports: [NfsMagellan, NfsMenu, NfsSticky, NfsStickyContainer, NfsGridX, NfsCell],
   template: `
-    <div nfsGridX>
+    <div nfsGridX gridMarginX>
       <div nfsCell [size]="{ large: 3 }" nfsStickyContainer>
         <nav nfsSticky stickyOn="large" aria-label="On this page">
           <ul nfsMenu orientation="vertical" nfsMagellan (activeChange)="current.set($event)">
@@ -535,7 +537,7 @@ export class Guide {
 }
 ```
 
-No class is written: `nfsMenu` with `orientation="vertical"` renders Foundation's `.menu.vertical`, `nfsGridX` and `nfsCell` with `size` render `.grid-x`, `.cell`, `.large-3`, and `.large-9`, and `nfsStickyContainer` and `nfsSticky` render `.sticky-container` and `.sticky`. The grid cell is the sticky container, as in the Sticky spec's sticky column: the Sticky range is the sticky element's parent ([ADR 0019](../adr/0019-sticky-native-range.md)), so the stretched cell, not a `nav` wrapped tightly around the sticky element, gives the navigation the article's height to stick along (Foundation's docs put the container on such a `nav` and set the range with `data-anchor`, an Option the library drops).
+No class is written: `nfsMenu` with `orientation="vertical"` renders Foundation's `.menu.vertical`, `nfsGridX` with `gridMarginX` and `nfsCell` with `size` render `.grid-x`, `.grid-margin-x`, `.cell`, `.large-3`, and `.large-9`, and `nfsStickyContainer` and `nfsSticky` render `.sticky-container` and `.sticky`. The grid cell is the sticky container, as in the Sticky spec's sticky column: the Sticky range is the sticky element's parent ([ADR 0019](../adr/0019-sticky-native-range.md)), so the stretched cell, not a `nav` wrapped tightly around the sticky element, gives the navigation the article's height to stick along (Foundation's docs put the container on such a `nav` and set the range with `data-anchor`, an Option the library drops).
 
 ```scss
 // The application's global stylesheet, after the consumer's Foundation imports and includes (foundation-menu among them)

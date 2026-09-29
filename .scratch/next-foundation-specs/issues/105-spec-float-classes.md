@@ -142,3 +142,14 @@ No placeholder usage shows a need this API does not meet.
 ### Gist for Decisions so far
 
 One stand-alone Utility directive, `NfsFloatClasses`, sets `.float-left`, `.float-right`, `.float-center`, and `.clearfix` through `nfsFloat` (closed `left | right | center`) and `nfsClearfix`, with development checks for reversed float order, floats on flex or grid items, and a clearfix on a flex or grid container.
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2, group c, under the decisions of phase 1 ([research/consistency-review-decisions.md](../research/consistency-review-decisions.md)); the review's record for this spec is [research/consistency-review-group-c.md](../research/consistency-review-group-c.md). `specs/float-classes.md` was revised in place. Items applied: R16, R32/R64, R36, CR-B. Changed:
+
+- Out of Scope, the `hidden` bullet, takes R16's shared sentence: `.float-center` sets `display: block` after normalize's `[hidden]`, so the element is removed with `@if` or hidden with a Toggler in Visibility mode (`.is-hidden`) or `nfsVisibility` with a bare `hideFor`, and the Thumbnail, Flexbox Utilities, XY Grid, and Flex Grid specs state the same rule; `.float-left`, `.float-right`, and `.clearfix` set no `display` on their host, so `hidden` hides such an element.
+- Rendered HTML: the Float Center image's server line drops `src` (the `NgOptimizedImage` output rule of building-blocks 1.2); the percentage-width box is written `nfsWidth="50"`, the Prototyping Utilities' attribute for Foundation's `.width-50`, in place of an inline width, and renders `class="float-center width-50"`; the lead-in names `nfsWidth`.
+- Stories: `float-classes--float-center` takes `nfsWidth="50"` (`NfsPrototypeSizing` in its `moduleMetadata.imports`), because storybook-conventions section 8 keeps inline styles for values Foundation has no class for; the scaffolding sentence lists `NfsPrototypeSizing` and `NfsPrototypeSpacing`.
+- CSS class mapping gains a table of the other families' classes the examples, stories, and Foundation's page use (Callout, Button, XY Grid, the Forms' `.middle`, Prototyping Utilities), each with its directive and owning spec.
+
+Unchanged: the API, the two attributes' types and defaults, the development checks, ARIA, the WCAG rows, the rendering modes, and the Story ids. Confirmed: R39 (placements), CR-A, CR-C (no placeholder), CR-D (the `app-order-header` imports). Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.

@@ -90,7 +90,7 @@ Forms has no Plugin, no `defaults` object, no `data-*` Options, no events, and n
 | Validation state | `.is-invalid-input`, `.is-invalid-label`, `.form-error`, `.is-visible` | `foundation-form-error` (inside `foundation-forms`) | Documented on the Abide page: [Spec: Abide](../issues/31-spec-abide.md) |
 | Range, progress, meter | `input[type='range']`, `progress`, `meter` | `foundation-range-input`, `foundation-progress-element`, `foundation-meter-element` (not in `foundation-forms`) | Documented on the Slider and Progress Bar pages: [Spec: Slider](../issues/32-spec-slider.md), [Spec: Progress Bar](../issues/95-spec-progress-bar.md) |
 
-The page's other sections use classes that other specs own: Label Positioning's `.text-right`, `.float-right`, and `.float-left` ([Spec: Typography Helpers](../issues/106-spec-typography-helpers.md), [Spec: Float Classes](../issues/105-spec-float-classes.md)); every example's grid ([Spec: XY Grid](../issues/99-spec-xy-grid.md)); File Upload Button's `label.button` ([Re-run: Button spec under the class rule](../issues/128-rerun-button-class-rule.md)) and `.show-for-sr` ([Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)); Custom Controls' slider ([Spec: Slider](../issues/32-spec-slider.md)).
+The page's other sections use classes that other specs own: Label Positioning's `.text-right`, `.float-right`, and `.float-left` ([Spec: Typography Helpers](../issues/106-spec-typography-helpers.md), [Spec: Float Classes](../issues/105-spec-float-classes.md)); every example's grid ([Spec: XY Grid](../issues/99-spec-xy-grid.md)); File Upload Button's `label.button` ([Spec: Button](../issues/37-spec-button.md), whose `nfsButton` takes no `label` host, its D11) and `.show-for-sr` ([Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)); Custom Controls' slider ([Spec: Slider](../issues/32-spec-slider.md)).
 
 Docs conventions the spec keeps or corrects: wrapping labels and `for`/`id` pairs (kept); `fieldset` with `legend` for groups (kept); help text with a unique id and `aria-describedby` (kept, now checked); the unlabelled Input Group example (corrected: its field gets a label, and a development check reports a missing one); the label-as-button file upload (replaced by the native file input, D12).
 
@@ -107,6 +107,13 @@ Docs conventions the spec keeps or corrects: wrapping labels and `for`/`id` pair
 | `.middle` | `label` | `NfsFormLabel`, `label[nfsFormLabel]`, `[class.middle]` from the `middle` Variant input | Variant | See the Variant family row below |
 | `.is-invalid-input`, `.is-invalid-label`, `.form-error`, `.is-visible` | fields, labels, messages | The Abide directives (`NfsAbideInput`, `NfsAbideLabel`, `NfsFormError`) | State and Structural | Never bound by a Forms directive (D4) |
 | none | text inputs, `textarea`, `select`, checkboxes, radios, file inputs, bare `fieldset`, `legend` | No directive | Styled by tag or type | Documented here (ADR 0039) |
+| `.button` | the input group's button; `label.button` in Foundation's File Upload Button | `NfsButton` (`button[nfsButton]`, `a[nfsButton]`, and the `input[type=submit\|button\|reset]` hosts), inside `nfsInputGroupButton`; no `label` host, so the File Upload Button recipe is not offered (D12) | Another family's (the Button) | [Spec: Button](../issues/37-spec-button.md), D11 |
+| `.text-right` (and the other text alignments) | a label (Label Positioning) | `NfsTextAlignment`, `nfsTextAlign="right"`, beside `nfsFormLabel` | Another family's (the Typography Helpers) | [Spec: Typography Helpers](../issues/106-spec-typography-helpers.md) |
+| `.float-right`, `.float-left` | a label (Label Positioning) | `NfsFloatClasses`, `nfsFloat="right"`, beside `nfsFormLabel` | Another family's (the Float Classes) | [Spec: Float Classes](../issues/105-spec-float-classes.md) |
+| `.grid-container`, `.grid-x`, `.grid-padding-x`, `.cell`, the cell sizes (`.small-3`, `.medium-6`) | every example's grid | `NfsGridContainer`, `NfsGridX` with `gridPaddingX`, `NfsCell` with `size` | Another family's (the XY Grid) | [Spec: XY Grid](../issues/99-spec-xy-grid.md) |
+| `.align-center` on the Label Positioning grid | the grid | `NfsFlexAlign`, `alignX="center"`, beside `nfsGridX` | Another family's (the Flexbox Utilities) | [Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md) |
+| `.show-for-sr` on the File Upload Button's input | the file input | Not used: the file control is the native input with its own label (D12); the class is `NfsShowForSr`'s | Another family's (the Visibility Classes) | [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md) |
+| `.slider`, `.slider-handle`, `.slider-fill` (Custom Controls) | the range control | `NfsSlider` (`[nfsSlider]`) and `NfsSliderFill`; the Handle, `NfsSliderHandle` on a native range input, replaces Foundation's `.slider-handle` span | Another family's (the Slider) | [Spec: Slider](../issues/32-spec-slider.md) |
 
 Variant families (building-blocks 1.14 item 2):
 
@@ -229,7 +236,7 @@ Keyboard: all native, and the directives add no handler. Tab and Shift+Tab move 
 
 ### WCAG 2.2 AA
 
-The target is WCAG 2.2 level AA (user rule; ADR 0022). Each row is a requirement with the layer that tests it. Ratios were computed with Foundation 6.9.0's own `color-luminance()` from its default settings (`$body-background`, `$input-background`, `$input-background-focus`, and `$select-background` are all `#fefefe`) and are unrounded.
+The target is WCAG 2.2 level AA (user rule; ADR 0022). Each row is a requirement with the layer that tests it. Ratios are the exact WCAG 2.2 relative-luminance ratio of Foundation 6.9.0's default settings (`$body-background`, `$input-background`, `$input-background-focus`, and `$select-background` are all `#fefefe`), unrounded, as the library's contrast helper computes them (building-blocks 1.10).
 
 | Criterion | Requirement and how it is met | Foundation default | Test |
 | --- | --- | --- | --- |
@@ -429,7 +436,7 @@ Against the prerendered fixture app, route `/forms`:
 - A form-field component (Material's `mat-form-field` shape), floating labels, and hints connected to the field automatically (D5).
 - Validation, the error state and its classes (`.is-invalid-input`, `.is-invalid-label`, `.form-error`, `.is-visible`), and the Form alert: [Spec: Abide](../issues/31-spec-abide.md).
 - Switch: [Spec: Switch](../issues/84-spec-switch.md). Range inputs: [Spec: Slider](../issues/32-spec-slider.md). `progress` and `meter`: [Spec: Progress Bar](../issues/95-spec-progress-bar.md).
-- The label-as-button file upload (`label.button` over a `.show-for-sr` input): whether `nfsButton` takes `label` or `input` hosts is decided by [Re-run: Button spec under the class rule](../issues/128-rerun-button-class-rule.md), and `.show-for-sr` by [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md); this spec offers the native file input (D12).
+- The label-as-button file upload (`label.button` over a `.show-for-sr` input): `nfsButton` takes `<input type="submit|button|reset">` hosts and no `label` host, because focus would land on a clipped input with no visible indicator ([Spec: Button](../issues/37-spec-button.md), D11), and `.show-for-sr` is the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)'s `nfsShowForSr`; this spec offers the native file input (D12).
 - Label alignment and floats (`.text-right`, `.float-right`, `.float-left`) and grid placement: [Spec: Typography Helpers](../issues/106-spec-typography-helpers.md), [Spec: Float Classes](../issues/105-spec-float-classes.md), [Spec: XY Grid](../issues/99-spec-xy-grid.md).
 - A forced-colours rule for the select arrow: WCAG 2.2 AA has no forced-colours criterion, and the arrow is not the select's only visual, as the Switch's drawing is (the [Spec: Switch](../issues/84-spec-switch.md), D12): the select stays identifiable by its border and text, which take system colours (not measured; see Further Notes).
 - Runtime theming of form colours (building-blocks 1.13).
@@ -451,8 +458,8 @@ Against the prerendered fixture app, route `/forms`:
 | D8 | No parent token, Defaults token, outputs, methods, or `exportAs` | The input group's Sass is child and descendant selectors, so the cascade does the parent's work, as the triage found for Button Group; Forms has no Options | An `nfsInputGroupToken` with child registration; `exportAs` names with nothing to export |
 | D9 | Element-restricted selectors: the field on `input`, `select`, `textarea` (as `NfsAbideInput`); `.fieldset` on `fieldset`; `.middle` on `label`; the other four on any element | The field check needs a labelable element; a `.fieldset` look on a `div` draws a group box with no group semantics (1.3.1); Foundation's `.middle` rule matches only `label` | Unrestricted selectors everywhere |
 | D10 | `.fieldset` is a Structural class bound by `NfsFieldset`; no development check for a missing `legend` | Foundation calls `.fieldset` the class that holds a fieldset's styles; every documented fieldset has a legend; axe has no fieldset rule; a check can be added later without an API change | Treating `.fieldset` as a boolean Variant of a tag-styled `fieldset` (a second spelling for one class) |
-| D11 | A checks-only `nfs-forms` Library mixin with five `@error` checks and three required settings (`$input-placeholder-color: #737373`, `$input-border: 1px solid $dark-gray`, `$input-border-focus: 1px solid $black`) | ADR 0022 and building-blocks 1.10 (a compile-time check where axe has no rule, with the unrounded `color-luminance()` ratio); the resting look of every field belongs to this page, validated or not; a select menu has no caret, so its focus border is its indicator; Foundation has settings for every case, so no library rule is needed (ADR 0012) | `@warn` for the resting pairs (the `nfs-abide` choice, which a consumer can scroll past on defaults that fail by a wide margin); a library `select:focus` outline rule (Foundation already has the setting); leaving select focus to Foundation's 1.63:1 glow |
-| D12 | The file control is the native `<input type="file">` with its own label; no file-upload directive | The native control is keyboard operable, shows the browser's focus ring, and shows the chosen file name; Foundation's label-as-button recipe puts focus on a clipped 1 px input (2.4.7) and hides the file name; label hosts for `nfsButton` are the Button spec's decision | A directive that styles a label as a button over a hidden input; binding `.show-for-sr` from this spec |
+| D11 | A checks-only `nfs-forms` Library mixin with five `@error` checks and three required settings (`$input-placeholder-color: #737373`, `$input-border: 1px solid $dark-gray`, `$input-border-focus: 1px solid $black`) | ADR 0022 and building-blocks 1.10 (a compile-time check where axe has no rule, with the exact unrounded ratio); the resting look of every field belongs to this page, validated or not; a select menu has no caret, so its focus border is its indicator; Foundation has settings for every case, so no library rule is needed (ADR 0012) | `@warn` for the resting pairs (the `nfs-abide` choice, which a consumer can scroll past on defaults that fail by a wide margin); a library `select:focus` outline rule (Foundation already has the setting); leaving select focus to Foundation's 1.63:1 glow |
+| D12 | The file control is the native `<input type="file">` with its own label; no file-upload directive | The native control is keyboard operable, shows the browser's focus ring, and shows the chosen file name; Foundation's label-as-button recipe puts focus on a clipped 1 px input (2.4.7) and hides the file name; `nfsButton` takes no `label` host for the same reason ([Spec: Button](../issues/37-spec-button.md), D11) | A directive that styles a label as a button over a hidden input; binding `.show-for-sr` from this spec |
 | D13 | No library CSS and no Variant properties | Foundation's forms Sass styles every class the directives set; the page has no Open Variant family | A properties-only mixin (nothing to list) |
 | D14 | Development checks run once per instance in an `afterNextRender` read callback, only when `ngDevMode` is on | Nothing signal-driven changes the attributes they read; once is enough for a development aid; never on the server or in production | `afterRenderEffect` re-running on every change; a `MutationObserver` |
 | D15 | Label alignment and grid placement come from the Typography Helpers and XY Grid directives placed beside `nfsFormLabel` | One spec per docs page; the classes are those families' Utility classes (ADR 0039) | `align` or `float` inputs on `NfsFormLabel` (a second spelling of utility classes) |
@@ -461,12 +468,12 @@ Against the prerendered fixture app, route `/forms`:
 
 ```ts
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { NfsFieldset, NfsFormLabel, NfsHelpText, NfsInputGroup, NfsInputGroupButton, NfsInputGroupField, NfsInputGroupLabel } from 'ngx-foundation-sites/forms';
+import { NfsFieldset, NfsHelpText, NfsInputGroup, NfsInputGroupButton, NfsInputGroupField, NfsInputGroupLabel } from 'ngx-foundation-sites/forms';
 import { NfsButton } from 'ngx-foundation-sites/button';
 
 @Component({
   selector: 'app-donate',
-  imports: [NfsButton, NfsFieldset, NfsFormLabel, NfsHelpText, NfsInputGroup, NfsInputGroupButton, NfsInputGroupField, NfsInputGroupLabel],
+  imports: [NfsButton, NfsFieldset, NfsHelpText, NfsInputGroup, NfsInputGroupButton, NfsInputGroupField, NfsInputGroupLabel],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <form (submit)="donate($event)">
@@ -520,7 +527,7 @@ A file field:
 
 Sass. The consumer compiles Foundation's Sass from its own settings; the library imports no Foundation code and copies no Foundation rule. This entry point relies on Foundation's Export mixin `foundation-forms` (its `foundation-form-text`, `foundation-form-checkbox`, `foundation-form-label`, `foundation-form-helptext`, `foundation-form-prepostfix`, `foundation-form-fieldset`, and `foundation-form-select` parts; its `foundation-form-error` part serves Abide). No library CSS: the `nfs-forms` mixin of the library's Sass (`@import 'ngx-foundation-sites';` after Foundation), included after `foundation-forms`, emits no rule and holds only compile-time checks.
 
-1. Rules the library emits: none. Checks, each an `@error` that names the setting to change, with ratios from Foundation's `color-luminance()` and the WCAG formula compared unrounded, never through Foundation's `color-contrast()`, which rounds to one decimal (building-blocks 1.10); border colours are read from the shorthands with Foundation's `get-border-value()`:
+1. Rules the library emits: none. Checks, each an `@error` that names the setting to change; every contrast ratio the mixin checks is computed unrounded with the exact WCAG 2.2 relative-luminance formula by the library's internal contrast helper (`math.pow`), which composites a translucent colour over `$body-background` first (building-blocks 1.10), never with Foundation's `color-luminance()`, whose approximate power overstates some ratios, or its `color-contrast()`, which rounds to one decimal; border colours are read from the shorthands with Foundation's `get-border-value()`:
    - `$input-placeholder-color` on `$input-background`, at least 4.5:1 (1.4.3);
    - the `$input-border` colour on `$body-background`, or `$input-background` on `$body-background`, at least 3:1 (1.4.11, the boundary of an empty field);
    - the `$input-border-focus` colour on `$body-background` and on `$input-background-focus`, at least 3:1 each (1.4.11 and 2.4.7, the focus indicator of a select menu or colour input);
@@ -528,7 +535,7 @@ Sass. The consumer compiles Foundation's Sass from its own settings; the library
    - `$select-triangle-color` on `$select-background`, at least 3:1, unless it is `transparent` (1.4.11).
 
    Reason: axe checks neither placeholder text nor borders, so without these checks a consumer on Foundation's defaults gets no signal (ADR 0022).
-2. Foundation settings the consumer must set for WCAG 2.2 AA (declared before `@import 'foundation'`; Foundation's settings are `!default`), measured with Foundation 6.9.0's `color-luminance()` against its default `#fefefe` backgrounds. The Storybook settings overrides carry the same three lines:
+2. Foundation settings the consumer must set for WCAG 2.2 AA (declared before `@import 'foundation'`; Foundation's settings are `!default`), computed with the exact WCAG formula against its default `#fefefe` backgrounds. The Storybook settings overrides carry the same three lines:
 
 | Setting | Foundation default (measured) | Required value | After | Criterion |
 | --- | --- | --- | --- | --- |

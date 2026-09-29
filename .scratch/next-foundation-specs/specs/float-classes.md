@@ -85,6 +85,16 @@ Every class is a Utility class. There are no Structural classes and no State cla
 - Foundation generates no responsive form of any of the four classes, so neither attribute takes a Breakpoint query or rules object (building-blocks 1.4: a responsive form exists only where Foundation's classes do).
 - Each value maps to exactly the class the table gives, and to nothing for a value that is not one of the three names (reachable only through a cast or `$any()`).
 
+Other families' classes in this spec's examples and stories and in the examples of Foundation's Float Classes page, each set by its own directive written beside or around the utilities (building-blocks 1.14 item 2):
+
+| Foundation classes | Kind | Element | Set by | Owner |
+| --- | --- | --- | --- | --- |
+| `.callout` | Another family's (the Callout) | The clearfix container of the Float Left/Right example; the centred call to action | `NfsCallout` (`[nfsCallout]`) | [Spec: Callout](../issues/89-spec-callout.md) |
+| `.button` and its palette classes (`.primary`) | Another family's (the Button) | The floated buttons and the reading-order group's buttons | `NfsButton` (`button[nfsButton]`) with its `color` Variant input | [Spec: Button](../issues/37-spec-button.md) |
+| `.grid-x`, `.cell`, the cell sizes (`.small-3`, `.small-9`) | Another family's (the XY Grid) | The Forms label-positioning example | `NfsGridX` (`[nfsGridX]`) and `NfsCell` (`[nfsCell]`) with its `size` Variant input | [Spec: XY Grid](../issues/99-spec-xy-grid.md) |
+| `.middle` on a `label` | Another family's (the Forms) | The label of the Forms label-positioning example | `NfsFormLabel` (`label[nfsFormLabel]`) with its `middle` Variant input | [Spec: Forms](../issues/98-spec-forms.md) |
+| `.width-50`, `.margin-left-1` | Another family's (the Prototyping Utilities) | The percentage-width box of `float-classes--float-center` and the Rendered HTML; the composition story's button and the floated figure of the usage examples | `NfsPrototypeSizing` (`nfsWidth="50"`) and `NfsPrototypeSpacing` (`nfsMarginLeft="1"`) | [Spec: Prototyping Utilities](../issues/102-spec-prototyping-utilities.md) |
+
 ### The Utility directive rule, applied
 
 The Float Classes take the stand-alone shape of the rule (clause 0). Each class styles whatever element carries it: a float needs no clearfix parent, a clearfix contains floats of any origin (the docs' buttons, an image, a component's own floated items), and `.float-center` needs neither. No class of the family modifies an element another class of it gives a role, so the roles shape (building-blocks 1.4's Structural class shape, the Flexbox Utilities' case) does not apply, and the templates do not together express one effect under `<words>-for-<bp>` names, so the one-effect shape (the Visibility Classes' case) does not either. Clause by clause:
@@ -188,7 +198,7 @@ The axe gate in every story runs the WCAG 2.2 AA rule set (tags `wcag2a`, `wcag2
 
 ### Rendered HTML
 
-Consumer markup, then the server HTML. The hydrated DOM equals the server HTML: the directive declares no listener, so nothing adds `jsaction`. Class order is not significant; Angular also renders the attributes that feed inputs (`nfsfloat="left"`, `nfsclearfix=""`), and `NgOptimizedImage` its own image attributes, which the resulting DOM below leaves out, as the other specs do. `nfsCallout`, `nfsButton`, `nfsFormLabel`, `nfsGridX`, and `nfsCell` are their specs' directives, shown only to place the utilities beside them.
+Consumer markup, then the server HTML. The hydrated DOM equals the server HTML: the directive declares no listener, so nothing adds `jsaction`. Class order is not significant; Angular also renders the attributes that feed inputs (`nfsfloat="left"`, `nfsclearfix=""`), and `NgOptimizedImage` its own image attributes, which the resulting DOM below leaves out, as the other specs do. `nfsCallout`, `nfsButton`, `nfsFormLabel`, `nfsGridX`, `nfsCell`, and the Prototyping Utilities' `nfsWidth` are their specs' directives, shown only to place the utilities beside them.
 
 ```html
 <!-- Float Left/Right: Foundation's docs example, with buttons in place of anchors without href -->
@@ -204,10 +214,10 @@ Consumer markup, then the server HTML. The hydrated DOM equals the server HTML: 
 
 <!-- Float Center: an image, and a box with a percentage width -->
 <img ngSrc="/voyager.jpg" width="400" height="300" alt="The Voyager spacecraft" nfsFloat="center" />
-<div nfsFloat="center" style="width: 50%">...</div>
+<div nfsFloat="center" nfsWidth="50">...</div>
 
-<img src="/voyager.jpg" width="400" height="300" alt="The Voyager spacecraft" class="float-center" />
-<div class="float-center" style="width: 50%">...</div>
+<img width="400" height="300" alt="The Voyager spacecraft" class="float-center" />
+<div class="float-center width-50">...</div>
 
 <!-- Controls at the end of the line, in reading order: one floated group -->
 <div nfsClearfix>
@@ -259,14 +269,14 @@ Per ADR 0008 and the rendering-modes research, section 7 rules 1 to 11:
 
 A good test asserts what a user or assistive technology observes: the classes on each element, the computed `float`, `display`, and margins, the boxes' geometry (a float at its container's edge, a centred box's equal side gaps, a container that contains its floats), the order Tab reaches controls in against the order they are drawn, and the accessible names. No test reads a directive's fields. The patterns are the four layers of building-blocks 1.12 and the [Spec: Prototyping Utilities](../issues/102-spec-prototyping-utilities.md)'s and [Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md)'s tests, the nearest precedents; the cascade and order cases are this spec's ticket's measurements, kept as tests.
 
-Story ids follow `float-classes--<story>`: `float-classes--float-left-right`, `--float-center`, `--clearfix`, `--reading-order`, `--rtl`, `--composition`. The stories file sets `id: 'float-classes'`, `title: 'Utilities/Float Classes'`, and `component: NfsFloatClasses`; `nfsFloat` gets an enum control and `nfsClearfix` a boolean control from docgen. The family has no Variant registry, so the library's Storybook program needs no declaration file for it, and the preview needs no settings override and no Library mixin include. Scaffolding imports `NfsButton`, `NfsCallout`, and the XY Grid and Forms directives from their entry points; every story image uses `NgOptimizedImage` with an `alt`, and no story element carries a Foundation or library class written in the story.
+Story ids follow `float-classes--<story>`: `float-classes--float-left-right`, `--float-center`, `--clearfix`, `--reading-order`, `--rtl`, `--composition`. The stories file sets `id: 'float-classes'`, `title: 'Utilities/Float Classes'`, and `component: NfsFloatClasses`; `nfsFloat` gets an enum control and `nfsClearfix` a boolean control from docgen. The family has no Variant registry, so the library's Storybook program needs no declaration file for it, and the preview needs no settings override and no Library mixin include. Scaffolding imports `NfsButton`, `NfsCallout`, the XY Grid and Forms directives, and the Prototyping Utilities' `NfsPrototypeSizing` and `NfsPrototypeSpacing` from their entry points; every story image uses `NgOptimizedImage` with an `alt`, and no story element carries a Foundation or library class written in the story.
 
 ### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`)
 
 Run by `npx nx test-storybook <lib>`. Every story runs axe with `parameters.a11y.test = 'error'` and the six tags.
 
 - `float-classes--float-left-right`: Foundation's docs example: an `nfsCallout nfsClearfix` holding two `nfsButton` buttons with `nfsFloat="left"` and `nfsFloat="right"`, found by `getByRole('button', {name: 'Left'})` and `{name: 'Right'}`. Their computed `float` is `left` and `right`; the left button's left edge and the right button's right edge lie on the callout's content box edges (within 1 px); the callout's bottom edge is at or below both buttons'.
-- `float-classes--float-center`: an `NgOptimizedImage` image and a `width: 50%` box, each with `nfsFloat="center"`, in a container of known width: each has equal gaps to both container edges (within 1 px), and the image keeps its name (`getByRole('img', {name})`). A third box with an `auto` width shows that it fills the line (gaps of 0).
+- `float-classes--float-center`: an `NgOptimizedImage` image and a box whose 50% width comes from the Prototyping Utilities' `nfsWidth="50"` (`NfsPrototypeSizing`, listed in the story's `moduleMetadata.imports`; Foundation's `.width-50`, because storybook-conventions section 8 keeps inline styles for values Foundation has no class for), each with `nfsFloat="center"`, in a container of known width: each has equal gaps to both container edges (within 1 px), and the image keeps its name (`getByRole('img', {name})`). A third box with an `auto` width shows that it fills the line (gaps of 0).
 - `float-classes--clearfix`: the same two floated boxes in two containers, one with `nfsClearfix` and one without: the first container's height reaches its floats, the second's does not; setting the story's `nfsClearfix` arg, which the second container binds, to `true` makes it reach them too.
 - `float-classes--reading-order`: the recipe of the Rendered HTML (a heading floated left and one right-floated group holding Cancel and Save). The play function focuses a button before the example and presses Tab three times with `userEvent.tab()`; the focus reaches Cancel, then Save, and each focused box's left edge is greater than the previous one's. A spy on `console.warn` records no warning.
 - `float-classes--rtl`: a `dir="rtl"` region with `nfsFloat="left"` and `nfsFloat="right"` boxes: the left one's left edge is the region's left edge, the right one's right edge its right edge (the classes are physical); the Forms label-positioning example of the Rendered HTML, whose label is found by `getByLabelText('Amount')`.
@@ -305,7 +315,7 @@ Against the prerendered fixture app, on the Float Classes route:
 - Responsive float classes (`.medium-float-left`): Foundation 6.9 generates none, and the library copies no Foundation rule and adds CSS only where Foundation cannot meet a requirement; a placement that changes by breakpoint is the Flexbox Utilities' (`alignX`, `order`) or the XY Grid's. Category: `scope-boundary`.
 - Logical floats (`float: inline-start`, `inline-end`) for mixed-direction pages: Foundation's classes are physical by design, as its docs say; a float that follows the reading direction is the consumer's own CSS, as `nfs-breadcrumbs` does for its own items ([Spec: Breadcrumbs](../issues/88-spec-breadcrumbs.md)). Category: `scope-boundary`.
 - Foundation's `clearfix` Sass mixin: it prints no class, so there is nothing for a directive to set; it stays consumer Sass for its own CSS, and the components that include it (Breadcrumbs, Pagination, Tabs, the Top Bar, the Title Bar) are their specs'. Category: `scope-boundary`.
-- Hiding an `nfsFloat="center"` element with the `hidden` attribute: `.float-center`'s `display: block` beats normalize's `[hidden]` by source order (measured); hide it with `@if`, a Toggler in Visibility mode (which also binds `.is-hidden`), or the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)'s hide directive, as the Flexbox Utilities and XY Grid specs say for their flex parents. Category: `scope-boundary`.
+- Hiding an `nfsFloat="center"` element with the `hidden` attribute. The `hidden` attribute alone does not hide an `nfsFloat="center"` element: Foundation's `.float-center` sets `display: block` after normalize's `[hidden] { display: none }` at equal specificity (measured in Chromium, Firefox, and WebKit), as building-blocks 1.10 records. Remove it with `@if`, or hide it with a Toggler in Visibility mode, which binds Foundation's `.is-hidden` ([Spec: Toggler](../issues/17-spec-toggler.md), D3), or with `nfsVisibility` and a bare `hideFor` ([Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)); the Thumbnail, Flexbox Utilities, XY Grid, and Flex Grid specs state the same rule for their classes. `.float-left`, `.float-right`, and `.clearfix` set no `display` on their host, so `hidden` hides such an element. Category: `scope-boundary`.
 - A development check that `nfsFloat="center"` has a width narrower than its container: the answer depends on the viewport and the content at first render, as the Prototyping Utilities' D18 found for width checks; the requirement is documented and the story shows it. Category: `other`.
 - Detecting a missing `foundation-float-classes` include: the Runtime checks read the Variant properties a Library mixin writes, not Foundation's rules, and this family writes none, as the [Spec: Prototyping Utilities](../issues/102-spec-prototyping-utilities.md) decides for its export mixins. Category: `platform-or-a11y`.
 - Runtime theming through custom properties (building-blocks 1.13). Category: `scope-boundary`.

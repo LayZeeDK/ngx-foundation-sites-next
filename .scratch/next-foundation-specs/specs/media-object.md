@@ -91,6 +91,7 @@ Docs conventions kept or corrected: `h4` headings (kept in the stories for Found
 | `.middle`, `.bottom` | `alignment` of `NfsMediaObjectSection` | `NfsMediaObjectAlignment`, closed (`'middle' \| 'bottom'`); generated only while `$global-flexbox` is false | A name | `'middle'` sets `.middle`, `'bottom'` sets `.bottom`; no value sets none (top, Foundation's default) | `--nfs-media-object-section`, written by `nfs-media-object` |
 | `.main-section` | `mainSection` of `NfsMediaObjectSection` | `boolean` through `nfsVariantBoolean`, closed; generated only while `$global-flexbox` is true | Boolean | `true`, the bare attribute, or `'true'` sets `.main-section`; `false` sets none | `--nfs-media-object-section` |
 | `.align-self-<y>` on a section, `.align-<x>` and `.align-<y>` on the container | `alignSelf` of `NfsFlexChild`, and `alignX`, `alignY`, `alignCenterMiddle` of `NfsFlexAlign`, written beside ([Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md)) | That spec's | That spec's | That spec's | That spec's |
+| `.thumbnail` on a section's image (another family's; Foundation's docs put it on a wrapping `div`) | `NfsThumbnail` (`[nfsThumbnail]`), written on the `img` itself ([Spec: Thumbnail](../issues/97-spec-thumbnail.md)) | That spec's | That spec's | That spec's | That spec's |
 
 State classes: none. Foundation's media object has no State class. `$global-flexbox`, `$mediaobject-margin-bottom`, `$mediaobject-section-padding`, and `$mediaobject-image-width-stacked` are Sass settings, compile-time configuration and never inputs (building-blocks 1.13). No class is left for the consumer to write (ADR 0039).
 
@@ -226,13 +227,13 @@ The axe gate in every story runs the WCAG 2.2 AA rule set (tags `wcag2a`, `wcag2
 
 ### Rendered HTML
 
-Consumer markup, then the server HTML. The hydrated DOM equals the server HTML: the directives declare no listener, so nothing adds `jsaction`. Class order is not significant; Angular also renders the directive attributes and static input attributes (`nfsmediaobject=""`, `stackfor="small"`), which the resulting DOM below leaves out, as the other specs do. `nfsThumbnail` (`NfsThumbnail`) is the [Spec: Thumbnail](../issues/97-spec-thumbnail.md)'s directive, as the [Spec: Card](../issues/90-spec-card.md) writes it, and `nfsFlexChild` with `alignSelf` is the [Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md)'s.
+Consumer markup, then the server HTML. The hydrated DOM equals the server HTML: the directives declare no listener, so nothing adds `jsaction`. Class order is not significant; Angular also renders the directive attributes and static input attributes (`nfsmediaobject=""`, `stackfor="small"`), and `NgOptimizedImage` its own image attributes (`src`, `loading`, `fetchpriority`, and the like), which the resulting DOM below leaves out, as the other specs do. `nfsThumbnail` (`NfsThumbnail`) is the [Spec: Thumbnail](../issues/97-spec-thumbnail.md)'s directive, as the [Spec: Card](../issues/90-spec-card.md) writes it, and `nfsFlexChild` with `alignSelf` is the [Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md)'s.
 
 ```html
 <!-- Basics, flexbox build: the centre section takes the remaining width -->
 <div nfsMediaObject>
   <div nfsMediaObjectSection>
-    <img nfsThumbnail src="/avatars/cobb.jpg" alt="Cobb in a grey suit" width="100" height="100">
+    <img nfsThumbnail ngSrc="/avatars/cobb.jpg" alt="Cobb in a grey suit" width="100" height="100">
   </div>
   <div nfsMediaObjectSection mainSection>
     <h4>Dreams feel real while we're in them.</h4>
@@ -242,7 +243,7 @@ Consumer markup, then the server HTML. The hydrated DOM equals the server HTML: 
 
 <div class="media-object">
   <div class="media-object-section">
-    <img class="thumbnail" src="/avatars/cobb.jpg" alt="Cobb in a grey suit" width="100" height="100">
+    <img class="thumbnail" alt="Cobb in a grey suit" width="100" height="100">
   </div>
   <div class="media-object-section main-section">
     <h4>Dreams feel real while we're in them.</h4>
@@ -252,15 +253,15 @@ Consumer markup, then the server HTML. The hydrated DOM equals the server HTML: 
 
 <!-- Section alignment, flexbox build: three sections stack at the Zero breakpoint (1.4.10) -->
 <div nfsMediaObject stackFor="small">
-  <div nfsMediaObjectSection nfsFlexChild alignSelf="middle"><img nfsThumbnail src="/avatars/ariadne.jpg" alt="" width="100" height="100"></div>
+  <div nfsMediaObjectSection nfsFlexChild alignSelf="middle"><img nfsThumbnail ngSrc="/avatars/ariadne.jpg" alt="" width="100" height="100"></div>
   <div nfsMediaObjectSection mainSection><h4>Why is it so important to dream?</h4><p>...</p></div>
-  <div nfsMediaObjectSection nfsFlexChild alignSelf="bottom"><img nfsThumbnail src="/avatars/eames.jpg" alt="" width="100" height="100"></div>
+  <div nfsMediaObjectSection nfsFlexChild alignSelf="bottom"><img nfsThumbnail ngSrc="/avatars/eames.jpg" alt="" width="100" height="100"></div>
 </div>
 
 <div class="media-object stack-for-small">
-  <div class="media-object-section align-self-middle"><img class="thumbnail" src="/avatars/ariadne.jpg" alt="" width="100" height="100"></div>
+  <div class="media-object-section align-self-middle"><img class="thumbnail" alt="" width="100" height="100"></div>
   <div class="media-object-section main-section"><h4>Why is it so important to dream?</h4><p>...</p></div>
-  <div class="media-object-section align-self-bottom"><img class="thumbnail" src="/avatars/eames.jpg" alt="" width="100" height="100"></div>
+  <div class="media-object-section align-self-bottom"><img class="thumbnail" alt="" width="100" height="100"></div>
 </div>
 
 <!-- Section alignment in a build compiled with $global-flexbox: false -->
@@ -278,19 +279,19 @@ Consumer markup, then the server HTML. The hydrated DOM equals the server HTML: 
 
 <!-- A comment thread: the reply stacks, so it stays indented and fits at 320 CSS px -->
 <article nfsMediaObject>
-  <div nfsMediaObjectSection><img nfsThumbnail src="/avatars/cobb.jpg" alt="" width="100" height="100"></div>
+  <div nfsMediaObjectSection><img nfsThumbnail ngSrc="/avatars/cobb.jpg" alt="" width="100" height="100"></div>
   <div nfsMediaObjectSection mainSection>
     <h3>Cobb</h3>
     <p>An idea is like a virus.</p>
     <article nfsMediaObject stackFor="small">
-      <div nfsMediaObjectSection><img nfsThumbnail src="/avatars/mal.jpg" alt="" width="100" height="100"></div>
+      <div nfsMediaObjectSection><img nfsThumbnail ngSrc="/avatars/mal.jpg" alt="" width="100" height="100"></div>
       <div nfsMediaObjectSection mainSection><h4>Mal</h4><p>Resilient, highly contagious.</p></div>
     </article>
   </div>
 </article>
 
 <article class="media-object">
-  <div class="media-object-section"><img class="thumbnail" src="/avatars/cobb.jpg" alt="" width="100" height="100"></div>
+  <div class="media-object-section"><img class="thumbnail" alt="" width="100" height="100"></div>
   <div class="media-object-section main-section">
     <h3>Cobb</h3>
     <p>An idea is like a virus.</p>
@@ -299,7 +300,7 @@ Consumer markup, then the server HTML. The hydrated DOM equals the server HTML: 
 </article>
 ```
 
-The avatars' `alt` is empty where the heading beside them names the person; the Basics image has a description because no text names what it shows. With a provided `nfsBreakpointsToken` whose Zero breakpoint is `xs` (and a Variant declaration file that declares `xs`), `stackFor="xs"` renders `.stack-for-xs`. An `NgOptimizedImage` image (`ngSrc`) renders the same way, because no media-object directive sits on the image.
+The avatars' `alt` is empty where the heading beside them names the person; the Basics image has a description because no text names what it shows. With a provided `nfsBreakpointsToken` whose Zero breakpoint is `xs` (and a Variant declaration file that declares `xs`), `stackFor="xs"` renders `.stack-for-xs`. The images use `NgOptimizedImage` (building-blocks 1.2); no media-object directive sits on an image.
 
 ### Animation
 
@@ -320,7 +321,7 @@ Per ADR 0008 and the rendering-modes research, section 7 rules 1 to 11:
 
 A good test asserts what a user or assistive technology observes: the classes, roles and names, computed alignment, the sections' geometry at each width, and the DOM order. No test reads a directive's fields. The patterns are the four layers of building-blocks 1.12 and the [Spec: Card](../issues/90-spec-card.md)'s and [Spec: Top Bar](../issues/86-spec-top-bar.md)'s tests, the nearest precedents.
 
-Story ids follow `media-object--<story>`: `media-object--basics`, `media-object--section-alignment`, `media-object--stack-on-small`, `media-object--nesting`. `meta.component` is `NfsMediaObject`; its `stackFor` gets an enum control from docgen. The preview compiles Foundation's flexbox build, so no story binds `alignment`, whose classes that build does not style; the table build is covered by layers 2 and 3. The preview includes `nfs-media-object` and needs no settings override. Scaffolding imports the Thumbnail directive and the Flexbox Utilities' `NfsFlexChild` from their entry points; every story image has an `alt`.
+Story ids follow `media-object--<story>`: `media-object--basics`, `media-object--section-alignment`, `media-object--stack-on-small`, `media-object--nesting`. `meta.component` is `NfsMediaObject`; its `stackFor` gets an enum control from docgen. The preview compiles Foundation's flexbox build, so no story binds `alignment`, whose classes that build does not style; the table build is covered by layers 2 and 3. The preview includes `nfs-media-object` and needs no settings override. Scaffolding imports the Thumbnail directive, the Flexbox Utilities' `NfsFlexChild`, and `NgOptimizedImage` from their entry points; every story image uses `NgOptimizedImage` (`ngSrc` with `width` and `height`, building-blocks 1.2) and has an `alt`.
 
 ### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`)
 
@@ -336,10 +337,10 @@ Run by `npx nx test-storybook <lib>` at Vitest's 414 px viewport, which is the Z
 TestBed specs next to the directives over a bare test host component, zoneless with `await fixture.whenStable()`; no story is mounted and no axe runs here. Where a case needs Foundation's layout, a style block carries Foundation's compiled media-object rules from the node-level compile's output.
 
 - Classes, driven by data: each directive puts its Structural class on a `div`, an `article`, and a `li`; `stackFor` with the Zero breakpoint sets `.stack-for-small`, with `'medium'` sets none, and changing the value moves the class; with a provided `nfsBreakpointsToken` whose Zero breakpoint is `xs`, a cast `'xs'` sets `.stack-for-xs` and `'small'` sets none; `alignment` `'middle'` and `'bottom'` set their class, `undefined` none, and a change removes the old class; `mainSection` follows `true`, the bare attribute, `'true'`, and `'false'`; a cast `alignment` that is not one of the names binds nothing. The consumer's own static class and a `[class]` binding stay; the directives add no attribute (`role`, `tabindex`, `id`, `aria-*`, `hidden`).
-- Binding rule: a static `class="media-object stack-for-small"` with no `stackFor` loses `stack-for-small`, and a static `class="middle main-section"` with no inputs loses both; a static `media-object-section` and an application class stay.
+- Binding rule: a static `class="media-object stack-for-small"` with no `stackFor` loses `stack-for-small`, and a static `class="middle main-section"` with no inputs loses both; a static `media-object-section` and an Application class stay.
 - Composition: `nfsMediaObjectSection` beside `nfsFlexChild alignSelf="middle"` keeps both directives' classes, and their input names do not collide; a test component with `hostDirectives: [NfsMediaObjectSection]` inside a media object renders `.media-object-section` on its host and does not warn.
-- Development checks: each of checks 1 to 3 warns once for its case and not for correct markup (a copied `stack-for-small`, `middle`, `bottom`, `main-section`, `align-self-middle`, and `align-center` each named with its input or directive; a redundant Structural class and an application class not reported; `stackFor="medium"` warns once and `'small'` does not; a section inside a wrapper `div` warns, and neither a direct child nor a direct child of an element that carries `nfsMediaObject` without the directive does). Check 4: a 485 px image beside text in a 320 px wide test container warns once with both widths and never again, and the same markup with `stackFor="small"` is silent at the 414 px test viewport; a container that narrows from 800 to 300 px warns once after the resize; destroying the host disconnects the observer. Nothing is checked when `ngDevMode` is false or during a server render.
-- Runtime checks: with `--nfs-media-object-section: main-section` on the test document, `mainSection` is silent and `alignment="middle"` reports once under `strictVariantNames`, naming `nfsMediaObjectSection`, `alignment`, `middle`, and `$media-object-section`; with `middle bottom`, `alignment` is silent and `mainSection` reports once; with the property absent and `alignment` bound, `strictVariantProperties` reports once, naming `nfs-media-object`, and no name is reported; with neither input bound, nothing is requested; `provideNfsRuntimeChecks({strictVariantNames: false})` silences the name reports.
+- Development checks: each of checks 1 to 3 warns once for its case and not for correct markup (a copied `stack-for-small`, `middle`, `bottom`, `main-section`, `align-self-middle`, and `align-center` each named with its input or directive; a redundant Structural class and an Application class not reported; `stackFor="medium"` warns once and `'small'` does not; a section inside a wrapper `div` warns, and neither a direct child nor a direct child of an element that carries `nfsMediaObject` without the directive does). Check 4: a 485 px image beside text in a 320 px wide test container warns once with both widths and never again, and the same markup with `stackFor="small"` is silent at the 414 px test viewport; a container that narrows from 800 to 300 px warns once after the resize; destroying the host disconnects the observer. Nothing is checked when `ngDevMode` is false or during a server render.
+- Runtime checks: with `--nfs-media-object-section: main-section` on the test document, `mainSection` is silent and `alignment="middle"` reports once under `strictVariantNames`, naming `nfsMediaObjectSection`, `alignment`, `middle`, and `$media-object-section`; with `middle bottom`, `alignment` is silent and `mainSection` reports once; in a test file of its own, with the property absent and `alignment` bound, `strictVariantProperties` reports once, naming `nfs-media-object`, and no name is reported; with neither input bound, nothing is requested; `provideNfsRuntimeChecks({strictVariantNames: false})` silences the name reports.
 - Zoneless: the suite runs with zoneless change detection; no test needs `NgZone`.
 
 ### 3. Node-level Vitest
@@ -398,11 +399,11 @@ Against the prerendered fixture app, on the Media Object route:
 ### Usage examples
 
 ```html
-<!-- A list of posts, each a media object whose photo and heading link to the post -->
+<!-- A list of posts, each a media object whose heading links to the post -->
 <ul>
   <li nfsMediaObject stackFor="small">
     <div nfsMediaObjectSection>
-      <img nfsThumbnail src="/posts/winter.jpg" alt="" width="240" height="160">
+      <img nfsThumbnail ngSrc="/posts/winter.jpg" alt="" width="240" height="160">
     </div>
     <div nfsMediaObjectSection mainSection>
       <h3><a href="/posts/winter-menu">Our winter menu</a></h3>
@@ -413,7 +414,7 @@ Against the prerendered fixture app, on the Media Object route:
 
 <!-- All sections vertically centred at once, in the flexbox build -->
 <div nfsMediaObject nfsFlexAlign alignY="middle">
-  <div nfsMediaObjectSection><img nfsThumbnail src="/avatars/ariadne.jpg" alt="" width="100" height="100"></div>
+  <div nfsMediaObjectSection><img nfsThumbnail ngSrc="/avatars/ariadne.jpg" alt="" width="100" height="100"></div>
   <div nfsMediaObjectSection mainSection><h4>Ariadne</h4><p>Architect.</p></div>
 </div>
 ```
@@ -438,7 +439,7 @@ export class Avatar {
 </article>
 ```
 
-`<app-avatar>` renders `class="media-object-section"` from the hosted directive, so its host metadata names no Foundation class; to expose `mainSection` or `alignment` it lists them in `hostDirectives`' `inputs`. The avatar's `alt` is empty because the heading beside it names the person. `nfsThumbnail`, `NfsThumbnail`, `nfsFlexAlign`, and `alignY` are the names the [Spec: Thumbnail](../issues/97-spec-thumbnail.md) and the [Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md) give; the class-rule consistency review aligns this spec's examples if they differ.
+`<app-avatar>` renders `class="media-object-section"` from the hosted directive, so its host metadata names no Foundation class; to expose `mainSection` or `alignment` it lists them in `hostDirectives`' `inputs`. The avatar's `alt` is empty because the heading beside it names the person. `nfsThumbnail` (`NfsThumbnail`) is the [Spec: Thumbnail](../issues/97-spec-thumbnail.md)'s directive, and `nfsFlexAlign` with `alignY` the [Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md)'s.
 
 ### Platform features to adopt when the browser target moves
 

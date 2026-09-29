@@ -132,3 +132,12 @@ Asked about D11, the user chose to keep the `Renderer2` marker: when a directive
 ### Note, 2026-09-28 (out-of-scope reasons)
 
 - 2026-09-28: the Out of Scope reasons named in [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) are corrected in the spec.
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2, group c, under the decisions of phase 1 ([research/consistency-review-decisions.md](../research/consistency-review-decisions.md)); the review's record for this spec is [research/consistency-review-group-c.md](../research/consistency-review-group-c.md). `specs/magellan.md` was revised in place. Items applied: R48 (item 1), CR-B. Changed:
+
+- The guide usage example restores Foundation's gutter: `<div nfsGridX gridMarginX>`; the sentence after it names `gridMarginX` and `.grid-margin-x`; the XY Grid mapping row adds `.grid-margin-x` and `NfsGridX`'s `gridMarginX` Variant input; the names sentence lists `gridMarginX` (R48, from this ticket's "What other specs need").
+- The class mapping gains `.top-bar-left` (`NfsTopBarLeft`) and a `.menu-text` row (`NfsMenuText`) for Foundation's docs example, and a `.button` row for the `magellan--programmatic` story's controls (CR-B).
+
+Unchanged: the directive, its API, tracking, the marker (D11, D18), deep linking, ARIA, the rendering modes, and the Story ids. Confirmed: R40 (the `nfsCell` Sticky container spans its row), R48 items 2 to 4 (the State-class reading, the list-item marker, the corrected duplicate-directive text), CR-A, CR-C, CR-D (the four component examples). Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.

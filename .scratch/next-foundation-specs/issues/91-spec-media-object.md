@@ -163,3 +163,15 @@ Line numbers are those of the working tree when this Answer was written.
 ### Amendment, 2026-09-29 (in-family check lines)
 
 [Re-run: CSS-only component and free-behaviour family specs, In-family check lines](154-rerun-css-only-component-and-free-behaviour-family-in-family-lines.md), from item R4 of [Audit: the specs against the architecture guide](142-audit-specs-against-architecture-guide.md), adds the Media Object's In-family checks under Hierarchy and DI shape by the rule of [Spec: forgotten-import checks (shared utility)](150-spec-forgotten-import-checks.md) ([ADR 0046](../adr/0046-forgotten-imports-caught-by-checks.md)): `NfsMediaObject` calls `nfsDirectiveCheck('NfsMediaObject', {children: ['NfsMediaObjectSection']})` and probes its sections; `NfsMediaObjectSection` calls `nfsDirectiveCheck('NfsMediaObjectSection')` and probes nothing; neither has a parent check or a peer; `strictParents` changes nothing. Development check 3 stays a DOM check (D10) and now says nothing for a parent that carries `nfsMediaObject` without `.media-object`: that parent is a forgotten `NfsMediaObject` import, which the `strictDirectiveImports` check reports once, and the check's message, which names `hostDirectives`, would name the wrong fix. D10 and the browser-level development-check case say so. No other decision changes.
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2, group c, under the decisions of phase 1 ([research/consistency-review-decisions.md](../research/consistency-review-decisions.md)); the review's record for this spec is [research/consistency-review-group-c.md](../research/consistency-review-group-c.md). `specs/media-object.md` was revised in place. Items applied: R10, R32/R64, R57, R59, CR-B. Changed:
+
+- Rendered HTML and usage examples: every `<img nfsThumbnail>` writes `ngSrc` with its `width` and `height`; the server lines drop `src`; the lead-in says `NgOptimizedImage`'s own image attributes are left out; the sentence after the block says the images use `NgOptimizedImage` (building-blocks 1.2); the post list's comment no longer claims a linked photo its markup does not have (R32/R64).
+- Stories: the scaffolding imports `NgOptimizedImage`, and every story image uses it (R32/R64).
+- The names sentence after the usage examples states the owning specs' names plainly (R10).
+- Tests: "Application class" (R57); the missing-property Runtime check case sits in a test file of its own (R59).
+- CSS class to directive mapping gains a `.thumbnail` row: another family's class, set by `NfsThumbnail` on the `img` itself (CR-B).
+
+Unchanged: both directives, their API, the development checks (check 3 as ticket 154 left it), the In-family line, ARIA, the rendering modes, and the Story ids. Confirmed: R37 (beside, D4), R59's conditional `include()` call, CR-A, CR-C, CR-D (`app-avatar`). Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.

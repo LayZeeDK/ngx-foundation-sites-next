@@ -207,3 +207,13 @@ From [Re-run: navigation family specs, In-family check lines](151-rerun-navigati
 - Hierarchy and DI shape gains the In-family lines. `NfsMenu` probes `NfsMenuText`, hosted too, because the child probe also counts the host record ([Re-run: CSS-only component and free-behaviour family specs, In-family check lines](154-rerun-css-only-component-and-free-behaviour-family-in-family-lines.md), S1). `NfsMenuText` has a parent check over `NfsMenu`, `NfsAccordionMenu`, `NfsDrilldown`, `NfsDropdownMenu`, `NfsResponsiveMenu`, and `NfsSubmenu`, with the sentence "It is unstyled outside a menu.", and throws under `strictParents`.
 - Development check 3 becomes that parent check's report, so an item outside a menu is reported once; the hierarchy diagram's lookup is now "for its parent check".
 - No API, class, ARIA, rendering, or Sass change. Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2, group c, under the decisions of phase 1 ([research/consistency-review-decisions.md](../research/consistency-review-decisions.md)); the review's record for this spec is [research/consistency-review-group-c.md](../research/consistency-review-group-c.md). `specs/menu.md` was revised in place. Items applied: R4, R57, R59. Changed:
+
+- Sass, the checks: S1's sentence (the exact formula by the library's internal contrast helper, never Foundation's `color-luminance()` or `color-contrast()`); the figures stand (4.65:1, 4.484:1 for `#787878` with the dark pick, and Foundation's labelled 4.59:1) (R4).
+- Runtime checks: `NfsMenu` creates `nfsVariantCheck('nfsMenu')` and calls `include('nfs-breakpoint-properties', ['breakpoint-classes'])` only while an `orientation` rules key or an `expanded` query names a Class breakpoint above the Zero breakpoint (the Top Bar's rule); the missing-property browser-level case sits in a test file of its own, and a menu with no responsive value requests nothing (R59).
+- Tests: "Application class" (R57).
+
+Unchanged: both directives, their API, the binding rule, the In-family lines of ticket 151, development checks 1 to 3, ARIA, the rendering modes, and the Story ids. Confirmed: R3 (the hosting roots, D5), R10 (`align` with D15), R48 (the de-duplication text), R69/R70 (every `align="right"` is consumer markup), CR-A (the copied-class block and Foundation's markup are labelled), CR-B, CR-C, CR-D. Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.

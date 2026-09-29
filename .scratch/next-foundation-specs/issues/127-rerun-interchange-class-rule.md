@@ -120,3 +120,15 @@ Nothing is OPEN FOR HUMAN, and no prototype is needed.
 ### Note, 2026-09-29 (architecture audit)
 
 - 2026-09-29: the fixer items of [Audit: the specs against the architecture guide](142-audit-specs-against-architecture-guide.md) are applied to the spec.
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2, group c, under the decisions of phase 1 ([research/consistency-review-decisions.md](../research/consistency-review-decisions.md)); the review's record for this spec is [research/consistency-review-group-c.md](../research/consistency-review-group-c.md). `specs/interchange.md` was revised in place. Items applied: R13, R52, R57, R62, CR-B, CR-D. Changed:
+
+- Usage examples, `app-product-table`: `imports: [NfsTable]`, `<table nfsTable hover>` with a `<caption>`, and a sentence naming `NfsTable`'s entry point, the Table's `hover` Variant input, and the caption the Table spec requires (R13, CR-D).
+- ARIA, the swap-while-focused row: "consumer rule 1" becomes "consuming-directive rule 1" (R52).
+- The SSR smoke case writes "Application class `hero`" (R57).
+- WCAG 2.2 AA, the 1.4.3 row: text over a background image sits on a solid background that meets the ratio, or on a translucent overlay that meets it composited over `#fff` and over `#000` (building-blocks 1.10) (R62).
+- CSS class to Angular mapping gains two rows for the other families' classes the examples use: the Callout's `.callout` and the Table's `.hover` (CR-B).
+
+Unchanged: both directives, their API, the query resolution, the emission timing, the focus rule, the rendering modes, and the Story ids. Confirmed: R32/R64 (the `<img>` of an art-directed `<picture>` stays a plain `<img>`, every other image uses `NgOptimizedImage`), CR-A, CR-C, the single-directive In-family line. Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.

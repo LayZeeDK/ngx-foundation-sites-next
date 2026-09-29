@@ -219,3 +219,14 @@ What changed, against the decisions above:
 - Decision 7 (development checks): the placement check counts an element that carries `nfsRow` as a row, class or no class, for the host and for its parent, so a forgotten row import is reported once by the import checks and not as a placement warning per column, and a column row whose own `NfsRow` is forgotten is not told it is outside a row. Rejected: keeping the message (false for a column inside the row's element; `other`); a message per column naming the import (one warning per column for one defect; `other`).
 - Tests: one browser-level case for a parent row whose directive is left out.
 - Spec sections revised: Hierarchy and DI shape (one bullet added), the development checks (check 2), and Testing Decisions (layer 2).
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2, group c, under the decisions of phase 1 ([research/consistency-review-decisions.md](../research/consistency-review-decisions.md)); the review's record for this spec is [research/consistency-review-group-c.md](../research/consistency-review-group-c.md). `specs/float-grid.md` was revised in place. Items applied: R34/R35, R59, CR-B, CR-C. Changed:
+
+- A page that enables both grids: the sentence on the Reveal's, Button's, Button Group's, and Menu's scoped rules now names the one descendant rule that reaches a column, the Reveal's `.reveal .column { min-width: 0 }`, which changes nothing, because a float column's `min-width` already resolves to 0 (R35).
+- Hierarchy and DI shape, Injection: the Runtime checks' handle names its argument, `nfsVariantCheck('nfsRow')` and `nfsVariantCheck('nfsColumn')` (R59).
+- CSS class to directive mapping gains a table of the other families' classes in the examples and on Foundation's Grid page (Callout, Thumbnail, Visibility Classes, Typography Helpers), each with its directive and owning spec (CR-B).
+- D1's rationale states a fact in place of a deferral word: the names "are the names the Spec: Equalizer already wrote" (CR-C).
+
+Unchanged: the API, types, defaults, development checks, the In-family line of ticket 155, ARIA, the WCAG rows, the rendering modes, and the Story ids. Confirmed: R16 (the Notes' `hidden` line stays: `hidden` hides a row and a column), R59's `include()` calls and the one-file-per-case Runtime check tests, CR-A, CR-D (`app-legacy-article`). Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.

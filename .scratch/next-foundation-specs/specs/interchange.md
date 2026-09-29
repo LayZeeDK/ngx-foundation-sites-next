@@ -118,6 +118,8 @@ Interchange has no Foundation CSS class and no Export mixin: Foundation ships no
 | State | none | | `selected` is not a class; the only host binding is `[style.background-image]` |
 | Classes on the same host | the owning directive's | the library directive beside `nfsInterchange` (`nfsCallout`; an XY Grid cell's directive), or the application | Neither Interchange directive binds or strips a class, so a Foundation look on a background host comes from the directive that owns that class, and the application's own classes (`.hero`) stay; the outlet's `<ng-container>` has no element and so no classes |
 | Foundation classes read | none | | No part of Interchange reads a class to seed state or pick a rule (building-blocks 1.4, "Initial state is bound, never read from a class"); the initial rule comes from `rules` and the media state |
+| Another family's (the Callout) | `.callout` | `NfsCallout` (`[nfsCallout]`), inside the background host or beside `nfsInterchange` ([Spec: Callout](../issues/89-spec-callout.md)) | The text over a background image in the Rendered HTML, the usage examples, and `interchange--background` |
+| Another family's (the Table) | `.hover` on a `table` | `NfsTable` (`table[nfsTable]`) with its `hover` Variant input ([Spec: Table](../issues/92-spec-table.md)) | The `app-product-table` usage example |
 
 ### Hierarchy and DI shape
 
@@ -236,7 +238,7 @@ No APG pattern applies (APG patterns research, Interchange). The directives add 
 | Decorative image | `alt=""` (the native form of `role="presentation"`) | Consumer |
 | Background image (background mode) | Carries no text alternative; if it conveys information, the information is in the page text. The directive adds no `aria-label` or `role="img"` | Consumer (documented) |
 | Template view | Brings its own semantics; each template's content must be accessible on its own | Consumer |
-| Swap while focused (template mode) | When a swap removes the view that contains `document.activeElement`, the outlet moves focus to the first tabbable element of the new view (CDK `InteractivityChecker.isTabbable`). Two steps, because the removed view no longer exists once the new one is rendered: the swap `effect()` records, just before it clears the container, whether the live `activeElement` is inside the old view; the render callback, after the change-detection pass that rendered the new view (bindings and control flow included), moves focus only when that record is set and focus has fallen to `<body>` (so a focus move the user or other code made in between is kept), and then emits `replaced`. If the new view has no tabbable element, focus is left where the browser put it and the consumer can move it from `replaced`. The swap at the first render (Server breakpoint to live) follows the same rule: in a client-rendered app nothing is focused yet, so nothing moves; on a server-rendered or prerendered page a keyboard user may already be on a server-rendered link inside the view before hydration, and focus then moves into the live view (Breakpoint service spec, consumer rule 1) | Library (Breakpoint service spec, ARIA rule 1; APG keyboard practice on persistence of focus) |
+| Swap while focused (template mode) | When a swap removes the view that contains `document.activeElement`, the outlet moves focus to the first tabbable element of the new view (CDK `InteractivityChecker.isTabbable`). Two steps, because the removed view no longer exists once the new one is rendered: the swap `effect()` records, just before it clears the container, whether the live `activeElement` is inside the old view; the render callback, after the change-detection pass that rendered the new view (bindings and control flow included), moves focus only when that record is set and focus has fallen to `<body>` (so a focus move the user or other code made in between is kept), and then emits `replaced`. If the new view has no tabbable element, focus is left where the browser put it and the consumer can move it from `replaced`. The swap at the first render (Server breakpoint to live) follows the same rule: in a client-rendered app nothing is focused yet, so nothing moves; on a server-rendered or prerendered page a keyboard user may already be on a server-rendered link inside the view before hydration, and focus then moves into the live view (Breakpoint service spec, consuming-directive rule 1) | Library (Breakpoint service spec, ARIA rule 1; APG keyboard practice on persistence of focus) |
 | Announcements | Swaps are not announced through live regions: they change layout, not content (Breakpoint service spec, ARIA rule 4) | Library (nothing added) |
 
 Keyboard table: none. Neither directive handles keys or pointer events; controls inside a rendered template keep their own keyboard behaviour.
@@ -247,7 +249,7 @@ WCAG 2.2 AA requirements (requirements, not recommendations; the story gate runs
 | --- | --- | --- |
 | 1.1.1 Non-text Content | Every `<img>` has an `alt` that is true for every source that can be shown: a `<picture>`'s single `alt` for all its sources, one `alt` per `<img>` in each template of template mode. Swapping sources never makes the `alt` false; if the meaning differs per breakpoint, the images go into template mode with separate `alt` values. Decorative images use `alt=""` | Foundation emits no `alt`; this is consumer markup, and every story's image carries a true `alt` |
 | 1.3.1 Info and Relationships | A background image set by background mode is decoration only: any information it carries is also in the page text, for every rule's image, so a swap never changes what the text conveys. The directive adds no `role="img"` or `aria-label` to make a background into content; an image that carries meaning is an `<img>` (in `<picture>` or a template) | Foundation's background mode had the same gap; the spec documents the rule and the stories show text that carries the information |
-| 1.4.3 Contrast (Minimum) | Text placed over a background image meets 4.5:1 (3:1 for large text) against every rule's image, not only the one the author looked at, or sits on a solid or overlay background that meets it | No Foundation setting applies; consumer CSS. The `interchange--background` story places its text on an element carrying `nfsCallout`, whose `.callout` (from the directive, not written in the story) paints a solid background from `$callout-background`, so axe's contrast check is decidable |
+| 1.4.3 Contrast (Minimum) | Text placed over a background image meets 4.5:1 (3:1 for large text) against every rule's image, not only the one the author looked at, or sits on a solid background that meets it, or on a translucent overlay that meets it composited over `#fff` and over `#000`, the lightest and darkest colours an image can hold (building-blocks 1.10) | No Foundation setting applies; consumer CSS. The `interchange--background` story places its text on an element carrying `nfsCallout`, whose `.callout` (from the directive, not written in the story) paints a solid background from `$callout-background`, so axe's contrast check is decidable |
 | 1.4.5 Images of Text | Swapped images do not carry text that could be real text (headings, slogans, labels in a crop); where a chart or logo must be an image, its text is in the `alt` or the page. Art direction may not introduce text into a crop that the other crops lack | Consumer content; documented |
 | 1.4.10 Reflow | Images and backgrounds fit 320 CSS px without two-dimensional scrolling at every rule | Foundation's `foundation-global-styles` sets `img { max-width: 100%; height: auto; }`, which covers `<img>` inside `<picture>` and templates; a consumer who does not include `foundation-global-styles` adds the same two declarations. Background hosts take their width from the layout (Foundation grid), never a fixed width wider than 320 px |
 | 2.4.3 Focus Order and 2.4.11 Focus Not Obscured (Minimum) | A template swap that removes the focused view moves focus into the new view (the focus rule above), at runtime and at the first-render handoff, so focus neither stays on `<body>` nor lands on hidden content. The move happens only after the new view is rendered with its bindings and control flow, so the target is the first tabbable element the user actually sees, and before `replaced`, so a consumer's handler sees where focus is | Library behaviour of the outlet |
@@ -392,7 +394,7 @@ A fake `MediaMatcher` provided in the test's environment injector returns contro
 Runs under `npx nx test <lib>` in `<name>.ssr.spec.ts` through the shared `renderServer()` helper; `npx nx test-node <lib>` only if the server path depends on the DOM adapter.
 
 - Pure logic (table-driven): `parseNfsInterchangeRules` on Foundation's docs examples, whitespace variants (`[a.jpg,small]`, extra spaces), a query list with commas (the `retina` string, `print, (min-width: 40em)`), a path with parentheses, an empty string, a missing bracket, and a segment without a comma (warn and skip); the query classifier (breakpoint name, named key, raw query, unknown word); the CSS `url()` escaper.
-- SSR smoke: `renderApplication` over a fixture with a background element, a template outlet, a `<picture>`, and a rule list that only has `landscape`/`portrait`; the fixture writes no Foundation or NFS class, and its background host carries only the application class `hero`. Assert `whenStable()` resolves; the background host carries `background-image: url("hero-small.jpg")` and its `class` attribute is exactly `hero`, so neither directive added a class; the outlet rendered the `small` template's text and not the `large` one's; the orientation-only element has no inline `background-image`; no Interchange host carries `jsaction`; the `<picture>` is serialised unchanged; with a server provider `{map, serverBreakpoint: 'large'}` the background and template are the `large` ones; a `MediaMatcher` spy records no call.
+- SSR smoke: `renderApplication` over a fixture with a background element, a template outlet, a `<picture>`, and a rule list that only has `landscape`/`portrait`; the fixture writes no Foundation or NFS class, and its background host carries only the Application class `hero`. Assert `whenStable()` resolves; the background host carries `background-image: url("hero-small.jpg")` and its `class` attribute is exactly `hero`, so neither directive added a class; the outlet rendered the `small` template's text and not the `large` one's; the orientation-only element has no inline `background-image`; no Interchange host carries `jsaction`; the `<picture>` is serialised unchanged; with a server provider `{map, serverBreakpoint: 'large'}` the background and template are the `large` ones; a `MediaMatcher` spy records no call.
 
 ### 4. Playwright e2e (`npx nx e2e <lib>-e2e` against the static Storybook build; `npx nx e2e <fixture-app>-e2e` against the prerendered fixture app)
 
@@ -545,9 +547,13 @@ Template mode replacing an HTML partial: the compact view is server-rendered for
 ```ts
 @Component({
   selector: 'app-product-table',
+  imports: [NfsTable],
   template: `
     @if (products.hasValue()) {
-      <table>...</table>
+      <table nfsTable hover>
+        <caption>Products</caption>
+        ...
+      </table>
     }
   `,
 })
@@ -555,6 +561,8 @@ export class ProductTable {
   protected readonly products = httpResource<Product[]>(() => '/api/products');
 }
 ```
+
+`NfsTable` comes from `ngx-foundation-sites/table`; `hover` is the [Spec: Table](../issues/92-spec-table.md)'s Variant input for Foundation's `.hover`, and the caption names the table, as that spec requires.
 
 Art direction whose meaning changes per breakpoint (one `alt` cannot describe both), in template mode. Each `<img>` is its own view's only image, so it uses `NgOptimizedImage`; neither takes `priority` (Rendering modes, Double fetch):
 
