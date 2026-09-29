@@ -182,3 +182,15 @@ No ADR: the decisions follow ADR 0039, ADR 0040, and building-blocks rules; the 
 ### Gist for Decisions so far
 
 Proposal 7 above.
+
+### Amendment, 2026-09-29 (in-family check lines)
+
+By [Re-run: layout system and flex utility family specs, In-family check lines](155-rerun-layout-system-and-flex-utility-family-in-family-lines.md), which holds the grilling record and the triage. [Audit: the specs against the architecture guide](142-audit-specs-against-architecture-guide.md) found that this spec, written before [ADR 0046](../adr/0046-forgotten-imports-caught-by-checks.md), lacks the In-family check lines that [Spec: forgotten-import checks (shared utility)](150-spec-forgotten-import-checks.md) requires of a family with more than one directive. [specs/flex-grid.md](../specs/flex-grid.md) is revised in place, with the [Spec: Float Grid](100-spec-float-grid.md)'s lines.
+
+What changed, against the decisions above:
+
+- Decision 1 (no DI) gains the In-family lines, the Float Grid's: `NfsRow` probes `NfsColumn`, those of a column row included; `NfsColumn` probes nothing; neither has a parent check, a peer, or a parent token; `strictParents` changes nothing. Both grids' pairs make the same calls, as the Selector manifest's rule 2 requires of two directives with one class name, and a report of a forgotten one names both entry points (the re-run's proposal 1 for the development messages; NFS9001 names both already).
+- Decision 7 (development checks): the placement check counts an element that carries `nfsRow` as a row and one that carries `nfsColumn` as a column, class or no class, so a forgotten row import is reported once by the import checks and not as a placement warning per column. Rejected: as for the Float Grid (`other`).
+- Found, not changed: check 3 has no exception for a column row, so the `nfsColumn` of a top-level `<article nfsRow nfsColumn>`, this spec's own Rendered HTML example, warns that it is not a direct child of `nfsRow`, while the Float Grid's check 2 skips a host that is also a row; routed to [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md) with a proposed fix in the re-run's Answer.
+- Tests: one browser-level case for a parent row whose directive is left out.
+- Spec sections revised: Hierarchy and DI shape (one bullet added), the development checks (check 3), and Testing Decisions (layer 2).

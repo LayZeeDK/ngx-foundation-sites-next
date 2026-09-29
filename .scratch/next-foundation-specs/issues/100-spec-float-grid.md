@@ -208,3 +208,14 @@ No ADR: the decisions follow ADR 0039, ADR 0040, building-blocks rules, and the 
 - [Spec: Reveal](18-spec-reveal.md): its `.reveal.collapse` and `.reveal .column` rules share names with the Float Grid's classes and are scoped, so they never interact; its `collapse` input and the row's never share an element.
 - [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md): the shared-name decisions above; the Storybook preview order (proposed change 6); same-element input names (proposed change 4).
 - [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md): this spec's Out of Scope items each carry a reason and a category; none rests on being CSS-only.
+
+### Amendment, 2026-09-29 (in-family check lines)
+
+By [Re-run: layout system and flex utility family specs, In-family check lines](155-rerun-layout-system-and-flex-utility-family-in-family-lines.md), which holds the grilling record and the triage. [Audit: the specs against the architecture guide](142-audit-specs-against-architecture-guide.md) found that this spec, written before [ADR 0046](../adr/0046-forgotten-imports-caught-by-checks.md), lacks the In-family check lines that [Spec: forgotten-import checks (shared utility)](150-spec-forgotten-import-checks.md) requires of a family with more than one directive. [specs/float-grid.md](../specs/float-grid.md) is revised in place, with lines that the [Spec: Flex Grid](101-spec-flex-grid.md)'s repeat.
+
+What changed, against the decisions above:
+
+- Decision 12 (no DI) gains the In-family lines, development-only reads of the DOM: `NfsRow` probes `NfsColumn`, a column row inside it included; `NfsColumn` probes nothing, because a column holds content and a row nested in it is a row of its own; neither has a parent check, a peer, or a parent token; `strictParents` changes nothing. The Flex Grid's `NfsRow` and `NfsColumn` make the same two calls, as the Selector manifest's rule 2 requires of two directives with one class name, and a report of a forgotten one names both entry points (the re-run's proposal 1 for the development messages; NFS9001 names both already). Rejected: a column probe of nested rows (`other`, as the XY Grid's cell).
+- Decision 7 (development checks): the placement check counts an element that carries `nfsRow` as a row, class or no class, for the host and for its parent, so a forgotten row import is reported once by the import checks and not as a placement warning per column, and a column row whose own `NfsRow` is forgotten is not told it is outside a row. Rejected: keeping the message (false for a column inside the row's element; `other`); a message per column naming the import (one warning per column for one defect; `other`).
+- Tests: one browser-level case for a parent row whose directive is left out.
+- Spec sections revised: Hierarchy and DI shape (one bullet added), the development checks (check 2), and Testing Decisions (layer 2).
