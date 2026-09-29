@@ -122,3 +122,14 @@ Nothing is OPEN FOR HUMAN, and no prototype is needed: SYNC's unknown 8 is measu
 ### Note, 2026-09-28 (out-of-scope reasons)
 
 - 2026-09-28: the Out of Scope reasons named in [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) are corrected in the spec.
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2, group a, under the decisions of phase 1 ([research/consistency-review-decisions.md](../research/consistency-review-decisions.md)); the review's record for this spec is [research/consistency-review-group-a.md](../research/consistency-review-group-a.md). `specs/breakpoint-service.md` was revised in place. Items applied: R2, R52, R54, R59. Changed:
+
+- R2: the consumer table's ResponsiveToggle and Dropdown pane rows name `animate`'s type, `NfsMotionPair`.
+- R52: "consumer" that names a library directive or spec built on the service becomes "consuming directive" or "consuming spec": the table "Consuming directives and what each reads" and its header, the heading "ARIA requirements imposed on consuming directives", the WCAG table's two headers, rule 1's recorder, the 1.4.10, 1.4.4, and 2.4.3 rows (their requirements, the swap callback, the stories, and the mode), and D23's rationale and rejected cell; every "consumer rule N" is "consuming-directive rule N". Where a sentence holds for any code that injects the service (the `changed.zf.mediaquery` row, the Material comparison's RxJS cell, `resolve`'s second argument, "Consumers memoise", the 2.2.2 row, the Testing lead, the Out of Scope `toObservable` bullet) it says "a directive or application". "Consumer" stays where it names the application (its Sass, token, Variant declaration file, unit tests, callback, and client-hint recipe).
+- R54: rule 3's exception reads "bind no Motion class ..., neither the library's class mapped from a Motion name nor the consumer's own class in the dot form"; the ResponsiveToggle row reads "binds no Motion class, consuming-directive rule 3".
+- R59: the last consumer table row states the "only while bound" exception and that the missing-property case sits in a test file of its own.
+
+Unchanged: the service, the token, the pure functions, the Runtime checks and their configuration, the rendering modes, and the Story ids. Confirmed: the Runtime checks section already states the "only while bound" rule and the once-per-realm test files; CR-A (the one class in an example is a labelled server-HTML comment), CR-B, CR-C, CR-D. Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.

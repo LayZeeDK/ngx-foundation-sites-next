@@ -164,3 +164,16 @@ No new ADR: the pick correction and the placement rule are reversible without to
 ### Note, 2026-09-28 (out-of-scope reasons)
 
 - 2026-09-28: the Out of Scope reasons named in [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) are corrected in the spec.
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2, group a, under the decisions of phase 1 ([research/consistency-review-decisions.md](../research/consistency-review-decisions.md)); the review's record for this spec is [research/consistency-review-group-a.md](../research/consistency-review-group-a.md). `specs/badge.md` was revised in place. Items applied: R28/R29, R59, R74, R4 (S1's wording completed), CR-B. Changed:
+
+- R28/R29: `NfsBadge` gains development check 3, the Label's link-host check: an `a` host warns once, whatever `color` is, because Foundation's `a:hover, a:focus` rule turns an uncoloured badge's text to 1.27:1 on its background (measured in three engines by the [Spec: Label](94-spec-label.md) ticket), a state axe does not test. D12's decision cell, its rationale, and its rejected cell follow (a warning on a `button` or another focusable host stays rejected); the Out of Scope bullet now names a badge on a button only; the Solution, the 1.4.3 row, and the browser-level cases say so. The Sass subsection gives Foundation's Custom Colors for `$badge-palette` in the forms that work from an overrides file (no `!default`; `map-remove` with separate key arguments), keeping the required alert.
+- R59: the Injection bullet names the handle with its argument, `nfsVariantCheck('nfsBadge')`.
+- R74: development check 1 reads text as accessible-name computation does, the non-blank `alt` of an `img` or the non-blank `aria-label` of an element with `role="img"` counting as text; D5's decision cell and the browser-level text-check case (a badge holding only an `img` with alt text is silent) follow.
+- R4: Sass rule (c) names both Foundation functions as not used, completing S1's wording.
+- CR-B: the class mapping gains a table of the other families' classes the markup writes, the Visibility Classes' `.show-for-sr` and the Button's `.button`.
+- The `exportAs` bullet and D1 no longer cite `nfsButton` and `nfsCloseButton` for parity: the review removes their `exportAs` (R17), so the parity named is with `nfsCallout` and `nfsLabel`. Whether `NfsBadge` keeps `exportAs` at all under building-blocks 1.3 is recorded as a finding in the review's report for the closing pass; the spec keeps it.
+
+Unchanged: the directive, its `color` input, the Library mixin's rules, checks, and required setting, ARIA, the rendering modes, and the Story ids. Confirmed: R1 (`nfsShowForSr` plain; `app-cart-button` imports `NfsShowForSr`), R4's figures (4.498, 4.364, 4.647, 4.504, 5.255, 4.569, 4.654 and 4.218, 4.951 stand), R5 (a `$foundation-palette` merge does not reach `$badge-palette`), R6 (D9), R30, CR-A, CR-C, CR-D. Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.

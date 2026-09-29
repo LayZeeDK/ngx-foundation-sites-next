@@ -88,3 +88,14 @@ No change to any ADR, `README.md`, or another spec is needed from this ticket.
 ### Note, 2026-09-28 (out-of-scope reasons)
 
 - 2026-09-28: the Out of Scope reasons named in [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) are corrected in the spec.
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2, group a, under the decisions of phase 1 ([research/consistency-review-decisions.md](../research/consistency-review-decisions.md)); the review's record for this spec is [research/consistency-review-group-a.md](../research/consistency-review-group-a.md). `specs/accordion.md` was revised in place. Items applied: R4, R57, CR-B, and the family rule's form. Changed:
+
+- R4: the 1.4.3 row, D19, and the Sass checks name the exact WCAG relative-luminance formula and the library's internal contrast helper instead of Foundation's `color-luminance()`, which leaves the list of reused Foundation functions; the Sass checks carry S1's sentence. The figures take the page colour Foundation's settings use, `$white` `#fefefe`: the title colour is 4.65:1 on `$accordion-background` (was 4.69:1 on white), the fixed colour 6.01:1 on `$white` (was 6.0:1), the glyph 4.65:1 by default, and the border 1.24:1 (was 1.25:1). 3.76:1 and 4.86:1 stand.
+- R57: "an application class" is written "an Application class" (the `deepLinkSmudgeOffset` row and D27).
+- The Forgotten imports sentence under Hierarchy and DI shape becomes the "In-family checks" bullet with one line per part, the family rule's form ([Spec: forgotten-import checks (shared utility)](150-spec-forgotten-import-checks.md), the rule's items 1 to 5), as the five family re-runs write it; the content is unchanged (the probes, no parent check for the required injections, the `[panel]` peer by reference, `NfsAccordionLazyContent` calling nothing, `strictParents` changing nothing). The Tokens bullet states both tokens' development-only descriptions in M7's form, which the sentence had named without quoting. [Re-run: navigation family specs, In-family check lines](151-rerun-navigation-family-in-family-lines.md) left this alignment to the review.
+- CR-B: the class mapping gains a row for the Button's `.button` on the method-calling controls (D26).
+
+Unchanged: the directives, their inputs, outputs, methods, ARIA, keys, animation, the rendering modes, the Sass rules, and the Story ids. Confirmed: X1 (D19's `@warn` stands, ADR 0022's "a compile error or warning"), CR-A (every class in an example is rendered output, the library's own inner element, or prose), CR-C, CR-D (`app-faq` imports every library directive its template writes). Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.

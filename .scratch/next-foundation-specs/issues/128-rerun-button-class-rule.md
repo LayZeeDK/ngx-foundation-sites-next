@@ -96,3 +96,17 @@ Self-grilled, both sides, against ADR 0039, ADR 0040, building-blocks 1.3, 1.4 (
 ### Note, 2026-09-28 (out-of-scope reasons)
 
 - 2026-09-28: the Out of Scope reasons named in [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) are corrected in the spec.
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2, group a, under the decisions of phase 1 ([research/consistency-review-decisions.md](../research/consistency-review-decisions.md)); the review's record for this spec is [research/consistency-review-group-a.md](../research/consistency-review-group-a.md). `specs/button.md` was revised in place. Items applied: R4, R5, R6, R17, R29, R57, R59, CR-B. Changed:
+
+- R4: the WCAG subsection opens with S2 (the exact WCAG ratio, unrounded, on Foundation's defaults, as the library's helper computes it) in place of "computed with Foundation 6.9.0's own `color-luminance()`", and Sass item (2) carries S1's sentence. Figures: the primary label 4.65:1 (hover 6.01:1), hollow and clear primary 4.65:1, solid warning hover 6.84:1, the required success 5.36:1 and the required hovers 7.34, 7.39, and 8.04:1; the arrow minimum "at least 4.498:1, alert"; the 1.4.1 row's solid primary 3.32:1 and "3.62 to 4.08:1" (the helper's unrounded values).
+- R5 and R29: the Sass subsection gains the required `$button-palette` line with two sentences: the line sets `$button-palette` itself, because a `$foundation-palette` merge does not reach buttons or button groups, and Foundation's Custom Colors for `$button-palette` have the two faults the [Spec: Label](94-spec-label.md) measured (D17 there).
+- R6: the 1.4.3 row says the checks read Foundation's `color-pick-contrast()` label colour as emitted and do not correct it, and the `@error` names the other candidate's ratio; new D23 records the position.
+- R17: no `exportAs` (the API line, the bullet, and the Material row): the directive owns no state or method to read (building-blocks 1.3); adding one later is additive, and ADR 0045's deprecation policy starts at the first release.
+- R57: "application class(es)" reads "Application class(es)".
+- R59: the Variant check bullet names the handle `nfsVariantCheck('nfsButton')` and the `include('nfs-button', ['button-palette', 'button-sizes'])` call on every run, never the flag-gated property; the missing-property case sits in a test file of its own.
+- CR-B: the class mapping gains rows for the other families the markup writes: the Visibility Classes' `.show-for-sr`, and the Button Group and Dropdown pane around or beside a button.
+
+Unchanged: the inputs, host bindings, the disabled contract, the development checks, the Library mixin's rules, the rendering modes, and the Story ids. Confirmed: R14 (the floor does not reach a Close Button, whose spec owns it), R60 (the two boolean conventions, Notes), R65, R66 (D22), CR-A, CR-C, CR-D (`app-invoice-actions` imports exactly the directives its template writes). Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.

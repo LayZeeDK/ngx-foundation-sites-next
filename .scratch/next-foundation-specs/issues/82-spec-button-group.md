@@ -145,3 +145,16 @@ No ADR: the one-writer rule and the mixin rules are reversible and carry no publ
 ### Gist for Decisions so far
 
 - [Spec: Button Group](issues/82-spec-button-group.md) -- one listener-free `[nfsButtonGroup]` binding `.button-group` with seven Variant inputs (`size`, `color`, `fill` on the Button's aliases, `expanded`, `stacked`, `stackedFor` as `'small' | 'medium'`, `noGaps`); no token, because Foundation's descendant selectors carry the group's look to its `nfsButton` hosts (measured), so `nfsButton` is unchanged; development warnings for a button `size` that never renders inside a group, `color` or `fill` set on both, `stacked` with `stackedFor`, and copied classes; no default role; the split button is a composition with a Trigger and a Dropdown pane; `nfs-button-group` fixes invisible dropdown arrows in filled groups (1.00:1 measured, 1.4.11) and the no-gaps overlap (23 px, an axe violation, 2.5.8) and writes no Variant property, because each property has one writer; impact HIGH, confidence HIGH; no ADR. Spec: [specs/button-group.md](specs/button-group.md).
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2, group a, under the decisions of phase 1 ([research/consistency-review-decisions.md](../research/consistency-review-decisions.md)); the review's record for this spec is [research/consistency-review-group-a.md](../research/consistency-review-group-a.md). `specs/button-group.md` was revised in place. Items applied: R4, R6, R17, R57, R59, CR-B. Changed:
+
+- R4: the measured arrow figures are unrounded with the exact WCAG formula instead of Foundation's `color-luminance()`: 4.50:1 or more in solid groups (secondary, 4.504:1), 1.13:1 in a solid alert group under `$button-fill: hollow` (also in the Problem Statement and the 1.4.11 row), and 4.65:1 primary, 5.25:1 alert, 5.36:1 success on the page. The group has no check of its own, so no S1.
+- R6: Sass item (2) says the label colour Foundation's `color-pick-contrast()` picks for a group's palette class is checked as emitted and not corrected, the [Spec: Button](37-spec-button.md)'s position.
+- R17: D12's rejected alternative cites building-blocks 1.3, since `nfsButton` and `nfsCloseButton` have no `exportAs` either.
+- R57: "application classes" reads "Application classes".
+- R59: the Variant check bullet names the handle `nfsVariantCheck('nfsButtonGroup')` and the `include('nfs-button', ['button-palette', 'button-sizes'])` call on every run; the missing-property case sits in a test file of its own.
+- CR-B: the one-sentence Flexbox note becomes a table of the other families' classes, the Flexbox Utilities' alignment classes, a grouped button's own Button classes, the Visibility Classes' `.show-for-sr`, and the Dropdown pane placed after the group.
+
+Unchanged: the directive, its seven Variant inputs, the development checks, the Library mixin's rules, ARIA, the rendering modes, and the Story ids. Confirmed: R1 (`nfsShowForSr` plain; `app-document-actions` imports it), R17's size check (no example sets `size` on a grouped `nfsButton` except the labelled warning), R18 (D9), R19 (D10), R65, CR-A, CR-C, CR-D. Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.

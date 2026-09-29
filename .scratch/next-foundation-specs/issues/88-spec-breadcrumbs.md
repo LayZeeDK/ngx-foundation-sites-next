@@ -160,3 +160,13 @@ From [Re-run: navigation family specs, In-family check lines](151-rerun-navigati
 - Hierarchy and DI shape gains the In-family lines: `NfsBreadcrumbs` probes `NfsBreadcrumbsItem`; `NfsBreadcrumbsItem` has a parent check over `NfsBreadcrumbs`, through its development-only lookup by class, with the sentence "Foundation's disabled look applies only inside the trail.", and throws under `strictParents`.
 - Development check 7 becomes that parent check's report, so an item outside a trail is reported once.
 - No API, class, ARIA, rendering, or Sass change. Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2, group a, under the decisions of phase 1 ([research/consistency-review-decisions.md](../research/consistency-review-decisions.md)); the review's record for this spec is [research/consistency-review-group-a.md](../research/consistency-review-group-a.md). `specs/breadcrumbs.md` was revised in place. Items applied: R24, R57, R4 (S1's wording completed). Changed:
+
+- R24: in Rendered HTML the Router example and its output sit in `<nav aria-label="Breadcrumb">`, as every other trail does, so development check 1 would not report the spec's own example.
+- R57: "the application class" in the SSR smoke reads "the Application class".
+- R4: the Sass checks name both Foundation functions as not used (`color-luminance()`, `color-contrast()`), completing S1's wording.
+
+Unchanged: the two directives, their inputs, the development checks, the In-family lines of [Re-run: navigation family specs, In-family check lines](151-rerun-navigation-family-in-family-lines.md), the Library mixin's rules and required setting, ARIA, the rendering modes, and the Story ids. Confirmed: R73 (`#737373`, 4.7015:1), R74 (the landmark check reads attributes only), R4's figures (4.6473, 19.6304, 1.6252:1), CR-A (every class is rendered output, the labelled copied-class case, or Foundation's labelled markup), CR-B, CR-C, CR-D (`app-feature-trail` imports exactly the directives its template writes). Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.

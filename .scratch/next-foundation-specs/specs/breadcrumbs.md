@@ -267,16 +267,20 @@ Consumer markup and the resulting DOM, with the Pagination's conventions. Server
 </nav>
 
 <!-- The Router marks the current page (server HTML rendered at /features/cloning) -->
-<ol nfsBreadcrumbs>
-  <li><a routerLink="/" routerLinkActive [routerLinkActiveOptions]="{exact: true}" ariaCurrentWhenActive="page">Home</a></li>
-  <li><a routerLink="/features" routerLinkActive [routerLinkActiveOptions]="{exact: true}" ariaCurrentWhenActive="page">Features</a></li>
-  <li><a routerLink="/features/cloning" routerLinkActive [routerLinkActiveOptions]="{exact: true}" ariaCurrentWhenActive="page">Cloning</a></li>
-</ol>
-<ol class="breadcrumbs">
-  <li><a href="/">Home</a></li>
-  <li><a href="/features">Features</a></li>
-  <li><a href="/features/cloning" aria-current="page">Cloning</a></li>
-</ol>
+<nav aria-label="Breadcrumb">
+  <ol nfsBreadcrumbs>
+    <li><a routerLink="/" routerLinkActive [routerLinkActiveOptions]="{exact: true}" ariaCurrentWhenActive="page">Home</a></li>
+    <li><a routerLink="/features" routerLinkActive [routerLinkActiveOptions]="{exact: true}" ariaCurrentWhenActive="page">Features</a></li>
+    <li><a routerLink="/features/cloning" routerLinkActive [routerLinkActiveOptions]="{exact: true}" ariaCurrentWhenActive="page">Cloning</a></li>
+  </ol>
+</nav>
+<nav aria-label="Breadcrumb">
+  <ol class="breadcrumbs">
+    <li><a href="/">Home</a></li>
+    <li><a href="/features">Features</a></li>
+    <li><a href="/features/cloning" aria-current="page">Cloning</a></li>
+  </ol>
+</nav>
 
 <!-- A copied class is stripped from an item directive's host (and reported in development builds) -->
 <li nfsBreadcrumbsItem class="disabled step">Gene Splicing</li>
@@ -330,7 +334,7 @@ TestBed specs in `<name>.spec.ts` next to each directive, over a bare test host 
 
 ### 3. Node-level Vitest
 
-- SSR smoke through the shared `renderServer()` helper in `<name>.ssr.spec.ts`, under `npx nx test <lib>`, with `provideRouter` and the URL `/features/cloning`, over a fixture with each Rendered HTML example. `whenStable()` resolves; the HTML matches the Rendered HTML section, the copied `disabled` absent from the item directive's host and the application class present; `aria-current="page"` on the Cloning link only; no `jsaction` on the list, an item, or a plain link; no development warning is logged. `npx nx test-node <lib>` only if the server path depends on the DOM adapter, which it does not.
+- SSR smoke through the shared `renderServer()` helper in `<name>.ssr.spec.ts`, under `npx nx test <lib>`, with `provideRouter` and the URL `/features/cloning`, over a fixture with each Rendered HTML example. `whenStable()` resolves; the HTML matches the Rendered HTML section, the copied `disabled` absent from the item directive's host and the Application class present; `aria-current="page"` on the Cloning link only; no `jsaction` on the list, an item, or a plain link; no development warning is logged. `npx nx test-node <lib>` only if the server path depends on the DOM adapter, which it does not.
 - Sass compile, over Foundation 6.9.0's settings file and an overrides file after it, with `@import 'ngx-foundation-sites';`:
   - Foundation's defaults plus `@include nfs-breadcrumbs;` stop with one `@error` naming `$breadcrumbs-item-color-disabled` `#cacaca` on `$body-background` `#fefefe` at 1.625:1.
   - With the required setting the include compiles and emits exactly the four rules of the Sass subsection, the separator rotated `15deg`.
@@ -474,7 +478,7 @@ Sass. The consumer compiles Foundation's Sass from its own settings; the library
 | 3 | `.breadcrumbs li` | `float: inline-start; line-height: max(24px, <$list-lineheight as em>); min-height: 24px` | 1.3.2: the trail follows `dir` (Foundation's float is fixed at compile time); 2.5.8: one line of at least 24 px for every item keeps the rows 24 px apart and the floats aligned; `$list-lineheight` is the line height Foundation gives lists |
 | 4 | `.breadcrumbs a` | `display: inline-block; min-width: 24px; min-height: 24px; text-align: center` | 2.5.8 by size: an inline link's box is its 12 px text; the box grows to 24 by 24 px around Foundation's unchanged text, whose line it centres; Foundation has no setting for it |
 
-Checks (no CSS output), one `@error` listing every failing colour with its setting and its exact unrounded ratio from the library's helper (a translucent colour composited over `$body-background` first): `$breadcrumbs-item-color`, `$breadcrumbs-item-color-current`, and `$breadcrumbs-item-color-disabled` on `$body-background` under 4.5:1 (1.4.3). Over Foundation 6.9.0's defaults: 4.6473, 19.6304, and 1.6252:1, so the compile stops on the disabled colour until the required setting is made.
+Checks (no CSS output), one `@error` listing every failing colour with its setting and its exact unrounded ratio from the library's helper (a translucent colour composited over `$body-background` first; never Foundation's `color-luminance()`, whose approximate power overstates some ratios, or its `color-contrast()`, which rounds to one decimal, building-blocks 1.10): `$breadcrumbs-item-color`, `$breadcrumbs-item-color-current`, and `$breadcrumbs-item-color-disabled` on `$body-background` under 4.5:1 (1.4.3). Over Foundation 6.9.0's defaults: 4.6473, 19.6304, and 1.6252:1, so the compile stops on the disabled colour until the required setting is made.
 
 (2) Reused settings, mixins, and functions: `$breadcrumbs-item-color`, `$breadcrumbs-item-color-current`, `$breadcrumbs-item-color-disabled`, `$breadcrumbs-item-separator` (after Foundation's own mapping of the legacy `$breadcrumbs-item-slash`), `$breadcrumbs-item-separator-item`, `$breadcrumbs-item-separator-item-rtl`, `$global-text-direction`, `$list-lineheight`, and `$body-background`, all read from the consumer's compile; no mixin parameter. 24 px and 4.5 are WCAG's numbers; the separator's `0.8em`, `0.1em`, and `15deg` draw the glyph's shape (the APG example's values, measured to match Foundation's glyph).
 

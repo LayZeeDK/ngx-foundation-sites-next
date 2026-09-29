@@ -110,3 +110,14 @@ No change to `README.md` (its Anchored pane row names no class), any ADR (ADR 00
 ### Note, 2026-09-28 (out-of-scope reasons)
 
 - 2026-09-28: the Out of Scope reasons named in [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) are corrected in the spec.
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2, group a, under the decisions of phase 1 ([research/consistency-review-decisions.md](../research/consistency-review-decisions.md)); the review's record for this spec is [research/consistency-review-group-a.md](../research/consistency-review-group-a.md). `specs/anchored-pane.md` was revised in place. Items applied: R42, R57, CR-B, CR-C. Changed:
+
+- R42: in `anchored-pane--fixture` the `relative` and `scroll` containing blocks take `nfsPosition="relative"` of the [Spec: Prototyping Utilities](102-spec-prototyping-utilities.md), which sets Foundation's `.position-relative`; the scrollers' `overflow: auto`, the pane width, the trigger coordinates, and the body height stay inline.
+- CR-C: the Testing Decisions lead no longer defers the scaffolding to the Prototyping Utilities "where they fit": a positioned containing block takes `nfsPosition="relative"` (`NfsPrototypePosition`, which those stories import), and scaffolding Foundation has no class for is inline style (Storybook conventions, section 8); D24 says the same, with a dated revision note.
+- R57: "application class" is written "Application class" throughout, and "a developer's own application class" and "a developer's application class" read "an Application class"; "a developer's own anchored element" stays, as R57 allows.
+- CR-B: the class mapping gains rows for the other families the examples and stories write, the Button's `.button` on the Triggers and the Prototyping Utilities' `.position-relative` on the stories' containing blocks.
+
+Unchanged: the three parts, their API, the placement formulas, the Light dismiss rules, ARIA, the rendering modes, and the Story ids. Confirmed: R51 (every `class="dropdown-pane"` is rendered output or library directive metadata), R52 (the renamed headings stand; "test consumers" stays), R65 (the Triggers are `nfsButton` hosts with no class), CR-A, CR-D (no `@Component` example writes a library directive it does not import). Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.

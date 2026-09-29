@@ -122,6 +122,8 @@ Every class on the menu's elements, per building-blocks 1.14 item 2; the consume
 | `.is-active` on the current page's `li` | State, not bound | None: the current page is `aria-current` on its link, styled by `nfs-menu` with Foundation's `menu-state-active` ([ADR 0042](../adr/0042-menu-current-page-aria-current.md)) | `.is-active` is the open state in the Nested menu; a copied current-page `is-active` is stripped by the item's map and reported naming `aria-current` |
 | `.menu-text` on a text item | Structural (Menu) | `li[nfsMenuText]` (the Menu spec), with or without `nfsMenuItem` | An item with no link |
 | (none) `data-nfs-expanded` on a parent `li`; `data-nfs-shown` on a submenu | Attributes, not classes | Host attribute bindings of the Nested menu | The accordion grid's hooks (Animation; ADR 0033) |
+| `.off-canvas`, `.position-left` on the panel around the menu (the Off-canvas usage example and story) | Another family's (Off-canvas) | `NfsOffCanvas` (`[nfsOffCanvas]`) with its required `position` Variant input | [Spec: Off-canvas](../issues/25-spec-off-canvas.md), D6; the panel is that spec's markup |
+| `.button` on controls outside the menu ("Collapse all", the stories' scaffolding) | Another family's (Button) | `NfsButton` (`button[nfsButton]`) | [Spec: Button](../issues/37-spec-button.md) |
 
 ### Hierarchy and DI shape
 
@@ -510,7 +512,7 @@ Against the prerendered fixture app, one route with the Rendered HTML markup (no
 | D21 | A section open at first paint is its item's bound `expanded`; Foundation's pre-open `.is-active` is a Dropped behaviour, stripped and reported (added 2026-09-28) | building-blocks 1.4; ADR 0039; the Nested menu's D29; a bound value renders the same on server and client and emits nothing | Keeping the static seed (a class-based second spelling of the state) |
 | D22 | The current page is `aria-current` only; `nfs-menu` gives its look; `nfs-accordion-menu` checks the fill against `$accordionmenu-item-background` (1.4.1) (added 2026-09-28) | [ADR 0042](../adr/0042-menu-current-page-aria-current.md); the Nested menu's D32; the current link's rule outranks Foundation's `.accordion-menu a` background, so that is the neighbour pair | `routerLinkActive="is-active"` on a leaf `li` (the published recipe: a Foundation class as an input value, ADR 0039) |
 | D23 | A Hybrid item's link uses `[routerLinkActiveOptions]="{exact: true}"` in every Router example (added 2026-09-28) | `RouterLinkActive` defaults to a subset match, so a section's link would carry `aria-current="page"` on every page of its section beside the real current link | The default match (two current links on one page) |
-| D24 | No report for a copied `accordion-menu` (added 2026-09-28) | Standalone, the binding is always `true`, so the copy merges like a redundant Structural class (building-blocks 1.4); under a ResponsiveMenu the copy is stripped outside accordion mode, and that spec decides whether its root reports it | A root check through `HostAttributeToken` (a warning for markup that renders correctly) |
+| D24 | No report for a copied `accordion-menu` (added 2026-09-28) | Standalone, the binding is always `true`, so the copy merges like a redundant Structural class (building-blocks 1.4); under a ResponsiveMenu the copy is stripped outside accordion mode, and the [Spec: Responsive Menu](../issues/23-spec-responsive-menu.md) does not report it either (its D22) | A root check through `HostAttributeToken` (a warning for markup that renders correctly) |
 
 ### Usage examples
 
@@ -586,7 +588,7 @@ bootstrapApplication(App, {
 });
 ```
 
-Inside an Off-canvas panel (markup owned by that spec; `position="left"` stands for Foundation's `.position-left`, whose input the [Re-run: Off-canvas spec under the class rule](../issues/117-rerun-off-canvas-class-rule.md) names): Escape closes the open section first and the panel on the next press; a bare `nfsClose` on a link closes the panel.
+Inside an Off-canvas panel (markup owned by the [Spec: Off-canvas](../issues/25-spec-off-canvas.md); `position="left"` is its required `position` Variant input, which sets Foundation's `.position-left`, its D6): Escape closes the open section first and the panel on the next press; a bare `nfsClose` on a link closes the panel.
 
 ```html
 <div nfsOffCanvas #nav="nfsOffCanvas" position="left" id="offCanvasNav">

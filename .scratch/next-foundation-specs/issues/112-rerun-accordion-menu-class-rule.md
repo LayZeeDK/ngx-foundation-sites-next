@@ -139,3 +139,13 @@ No change to `CONTEXT.md`, the ADRs, `README.md`, or `storybook-conventions.md`:
 ### Note, 2026-09-29 (in-family check lines)
 
 - 2026-09-29: `specs/accordion-menu.md` gains its In-family checks line, quoted in [Re-run: navigation family specs, In-family check lines](151-rerun-navigation-family-in-family-lines.md).
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2, group a, under the decisions of phase 1 ([research/consistency-review-decisions.md](../research/consistency-review-decisions.md)); the review's record for this spec is [research/consistency-review-group-a.md](../research/consistency-review-group-a.md). `specs/accordion-menu.md` was revised in place. Items applied: R3, R56, CR-B. Changed:
+
+- R3: D24's rationale no longer defers to the Responsive Menu spec: the [Spec: Responsive Menu](23-spec-responsive-menu.md) does not report a copied `accordion-menu` either (its D22).
+- R56: the Off-canvas usage paragraph names `position="left"` as the [Spec: Off-canvas](25-spec-off-canvas.md)'s required `position` Variant input (its D6), in place of the deferral to the Off-canvas re-run.
+- CR-B: the class mapping gains rows for the two other families the examples write, the Off-canvas panel's `.off-canvas` and `.position-left` and the Button's `.button` on the controls outside the menu.
+
+Unchanged: the root, its Option, outputs, methods, hosted Menu inputs, ARIA and keys, the Sass rules and checks, and the Story ids. Confirmed: the In-family checks line that [Re-run: navigation family specs, In-family check lines](151-rerun-navigation-family-in-family-lines.md) quoted is in the spec as quoted; R4 (the WCAG subsection and the Sass checks already name the exact formula, the internal helper, and both Foundation functions as not used; 4.65:1 and 2.94:1 stand), R57 (the spec writes no "application class" and no "developer's own class"), R65 (the one Trigger, a bare `nfsClose` on a link, carries no class), R66, CR-A, CR-C, CR-D (`app-docs-nav` imports exactly the directives its template writes). Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.
