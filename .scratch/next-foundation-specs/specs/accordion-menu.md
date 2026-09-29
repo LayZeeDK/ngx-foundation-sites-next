@@ -156,6 +156,7 @@ composed by (another spec):
 - Not an Openable: the menu provides no `nfsOpenableToken`, so a bare `nfsClose` on a link inside a menu inside an off-canvas panel closes the panel (Nested menu D22).
 - `nfsAccordionMenuDefaultsToken`: Shape B, all-optional, injected `{optional: true}` to seed the `multiOpen` default (building-blocks 1.4); a missing value falls back to `nfsMenuBehaviourDefaults.accordion.multiOpen`, Foundation's `true`. It holds no Menu Variant (a Defaults token never holds a Variant input's default, building-blocks 1.4).
 - The entry point exports only the accordion root, its Defaults token, and its interface. The Nested menu directives are imported from their own entry point, as the Triggers are for the Dropdown pane, and the Menu directive arrives hosted, so every symbol has one owner.
+- In-family checks ([Spec: forgotten-import checks (shared utility)](../issues/150-spec-forgotten-import-checks.md)): `NfsAccordionMenu` calls `nfsDirectiveCheck('NfsAccordionMenu', {children: ['NfsMenuItem']})`, the probe the [Spec: Nested menu (shared utility)](../issues/56-spec-nested-menu.md) requires of every menu root, and its hosted `NfsMenu` probes `NfsMenuText` (the [Spec: Menu](../issues/85-spec-menu.md)); it has no parent check, because its injections are `self`, no peers, and `strictParents` changes nothing.
 
 ### API
 

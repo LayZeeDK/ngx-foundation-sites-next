@@ -135,3 +135,7 @@ No change to `CONTEXT.md`, the ADRs, `README.md`, or `storybook-conventions.md`:
 ### Note, 2026-09-28 (out-of-scope reasons)
 
 - 2026-09-28: the Out of Scope reasons named in [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) are corrected in the spec.
+
+### Note, 2026-09-29 (in-family check lines)
+
+- 2026-09-29: `specs/accordion-menu.md` gains its In-family checks line, quoted in [Re-run: navigation family specs, In-family check lines](151-rerun-navigation-family-in-family-lines.md).
