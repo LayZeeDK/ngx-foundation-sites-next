@@ -166,3 +166,16 @@ From [Re-run: disclosure and carousel family specs, In-family check lines](152-r
 - The tab's warning for a parent element that is not an `li[nfsTabsTitle]` reads the element and the attribute, so a title whose import was forgotten is reported once, by the strip's probe; a browser-level case asserts it.
 
 Triage: impact LOW (development-only checks and messages), confidence HIGH (ADR 0046, building-blocks 1.9, the shared spec's rule, the directive composition guide's execution order, and Aria's `tab-list.ts`, `tab.ts`, and `tab-panel.ts`, which inject `TABS` and `TAB_LIST` without `optional`). Nothing is OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2, group e, applying [its decisions](../research/consistency-review-decisions.md) and the review's checks CR-A to CR-D; `specs/tabs.md` was revised in place, and [the group's report](../research/consistency-review-group-e.md) lists every edit.
+
+- R4: the bar pair's check names the exact unrounded ratio of the library's internal contrast helper (the 1.4.11 row and the Sass subsection); `color-luminance()` leaves the reused functions; the canonical sentence S1 joins the Sass subsection. Figures stand.
+- R45: `nfs-tabs` also stops the compile on every strip (`$tab-color` against `$tab-background`, its hover colour against `$tab-item-background-hover`, `$tab-active-color` against `$tab-background-active`, `$tab-background-active` against `$tab-background`, and the `primary` bar's picked text against the bar), so every application with a tab strip includes it: the Sass items (1), (2), and (5), the 1.4.3 and 1.4.11 rows, the Solution and the Sass summary, the compile test, D17, and new D26.
+- R57: "application class" is written "Application class".
+- The DOM-placement rule of [Spec: forgotten-import checks (shared utility)](150-spec-forgotten-import-checks.md): the tab-title warning's In-family sentence names the rule it follows (an `li` that carries `nfsTabsTitle` without `.tabs-title` is a forgotten import, which the strip's probe reports once).
+- CR-D: `app-product`'s `imports` also list the two components its template writes (`AppReviewList`, `AppStatsChart`).
+- Unchanged (confirmed): R27, R44, R46, R69/R70; CR-A and CR-C hold.
+
+Triage: impact LOW (a library-internal Sass check and an include line; no API, ADR 0045), confidence HIGH (ADR 0022's first consequence, building-blocks 1.10). Nothing is OPEN FOR HUMAN.

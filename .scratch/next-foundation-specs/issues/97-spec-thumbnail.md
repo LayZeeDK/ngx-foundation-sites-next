@@ -143,3 +143,13 @@ No change to `storybook-conventions.md` (no settings override and no Library mix
 ### Gist for Decisions so far
 
 - [Spec: Thumbnail](issues/97-spec-thumbnail.md) -- one listener-free `[nfsThumbnail]` binding `.thumbnail` as a static host class on any element: the image, the link around it, or a wrapper around it as Foundation's Media Object writes it; no inputs, no role, no Library mixin, no required setting; a linked thumbnail is the link, the reverse of the Label's rule, because `.thumbnail` sets no colour or cursor, and measured in three engines: on the image inside a plain link it loses Foundation's shadow and Firefox draws the focus ring as a 17 px band across the picture, which axe passes, so development checks report that, an image without `alt`, and a link without `href` or name; measured with Angular 22.2.0: on the image, `NgOptimizedImage`'s picture renders 8 px smaller than declared and small wide images get a false NG02952, so the docs give the wrapper or link form for exact sizes; clipping ancestors and a bare `hidden` are documented, with a Toggler's `.is-hidden` or `@if` for hiding; impact MEDIUM to HIGH, confidence HIGH; no ADR. Spec: [specs/thumbnail.md](specs/thumbnail.md).
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2, group e, applying [its decisions](../research/consistency-review-decisions.md) and the review's checks CR-A to CR-D; `specs/thumbnail.md` was revised in place, and [the group's report](../research/consistency-review-group-e.md) lists every edit.
+
+- R16: the hiding rule names its third means, `nfsVisibility` with a bare `hideFor` (the Solution and D9), and Notes gains the shared sentence on the `hidden` attribute, which points at the Toggler's `.is-hidden`, the Visibility Classes, and the four specs that state the same rule.
+- A7 and CR-C: the Notes sentence on other specs' `img[nfsThumbnail]` states the fact; two more sentences that called `nfsGridX`, `nfsCell`, and `up` the Card's names "until the XY Grid spec names them" now name the [Spec: XY Grid](99-spec-xy-grid.md)'s directives.
+- Unchanged (confirmed): R10, R11, R28/R29, R32/R64, R65, R74 (check 2 already counts an image's `alt`); CR-A and CR-D hold.
+
+Triage: impact LOW (wording), confidence HIGH. Nothing is OPEN FOR HUMAN.

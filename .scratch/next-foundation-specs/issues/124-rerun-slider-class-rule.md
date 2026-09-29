@@ -116,3 +116,14 @@ From the [Re-run: form and value-control family specs, In-family check lines](15
 - Hierarchy and DI shape gains the In-family check lines, one per directive: `NfsSlider` probes `NfsSliderHandle` and `NfsSliderFill`; the Handle has no parent check, because its required injection's NG0201 is the report; the fill's development check 6 becomes its parent check over `NfsSlider`, with the family's `alone` sentence, so a fill outside a slider reports once, and under `strictParents` it throws at construction, as the shared spec's table lists (D24 and the layer-2 case follow).
 - `nfsSliderToken` gains its development-only description ("nfsSliderToken (provided by NfsSlider from 'ngx-foundation-sites/slider' on an ancestor element declared in the same template)").
 - A non-linear Handle without `displayWith` speaks `` `${value}` ``, JavaScript's number-to-string conversion with no locale format, as Material's default `displayWith` ([Audit: the specs against the architecture guide](142-audit-specs-against-architecture-guide.md), fixer X9).
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2, group e, applying [its decisions](../research/consistency-review-decisions.md) and the review's checks CR-A to CR-D; `specs/slider.md` was revised in place, and [the group's report](../research/consistency-review-group-e.md) lists every edit.
+
+- R15: the forced-colours row's WebKit reason: Playwright's WebKit matches `(forced-colors: active)` under emulation but forces no colour, so rule 13 would apply over the author palette, and Safari has no forced-colours mode.
+- R20: rule 6 draws `outline: $input-border-focus; outline-offset: 2px` on a focused thumb, Foundation's focus setting for form controls, as the Switch's ring does; rule 0a stops the compile when that colour, read with Foundation's `get-border-value()`, is under 3:1 against `$body-background`; Sass (2) reuses `$input-border-focus` and `get-border-value()`; the 2.4.7 row and the pixel tests read the ring at the outline offset plus half its width; the compile test adds the dark-page case; new D26.
+- Consequential fixes: `$black` leaves the reused settings and rule 13's reason; the consumer-settings paragraph names the ring requirement; the default ring's figure is 3.42:1 (3.4230 exact; the Switch's 3.422:1 is floored, which this spec does not do).
+- Unchanged (confirmed): R4 (1.31:1 and 3.76:1), R60 (both boolean conventions stated), R61/R63, R66, R69/R70; the fill's In-family line already says why M4's template-outlet fix is the one its Handles need (the class-only-part note of ticket 152).
+
+Triage: impact LOW (one Library mixin value and one compile check; no API), confidence HIGH (the Switch's D9 reasoning and Foundation's settings). Nothing is OPEN FOR HUMAN.

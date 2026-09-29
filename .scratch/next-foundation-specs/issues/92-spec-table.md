@@ -186,3 +186,12 @@ No new ADR: every decision here is reversible without touching shipped consumer 
 ### Amendment, 2026-09-29 (in-family check lines)
 
 [Re-run: CSS-only component and free-behaviour family specs, In-family check lines](154-rerun-css-only-component-and-free-behaviour-family-in-family-lines.md), from item R4 of [Audit: the specs against the architecture guide](142-audit-specs-against-architecture-guide.md), adds the Table's In-family checks under Hierarchy and DI shape by the rule of [Spec: forgotten-import checks (shared utility)](150-spec-forgotten-import-checks.md) ([ADR 0046](../adr/0046-forgotten-imports-caught-by-checks.md)): `NfsTableScroll` calls `nfsDirectiveCheck('NfsTableScroll', {children: ['NfsTable']})` and probes an `nfsTable` inside it, so a forgotten `NfsTable` in a wrapper is reported; `NfsTable` calls `nfsDirectiveCheck('NfsTable')` and probes nothing; neither has a parent check or a peer; `strictParents` changes nothing. The entry point imports `nfsDirectiveCheck` from `ngx-foundation-sites/media-query` for the call alone, and the DI bullet notes that only the wrapper's development check names `NfsTable`. The two directives still share no DI; no other decision changes.
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2, group e, applying [its decisions](../research/consistency-review-decisions.md) and the review's checks CR-A to CR-D; `specs/table.md` was revised in place, and [the group's report](../research/consistency-review-group-e.md) lists every edit.
+
+- R74: `NfsTable`'s development check 1 and `NfsTableScroll`'s name check count an image's non-blank `alt`, or the non-blank `aria-label` of an element with `role="img"`, as text (building-blocks 1.10, Names); the browser-level cases gain a caption that holds only an image with alt text, which is silent.
+- Unchanged (confirmed): R4 (the exact helper; figures stand), R13, R27, R73 (the spec quotes no grey); CR-A, CR-C, and CR-D hold.
+
+Triage: impact LOW (development checks only), confidence HIGH. Nothing is OPEN FOR HUMAN.

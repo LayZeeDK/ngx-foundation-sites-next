@@ -242,21 +242,21 @@ Consumer markup (Foundation's column example, with no class written):
 <div nfsGridX>
   <div nfsCell size="6" nfsStickyContainer>
     <div nfsSticky [marginTop]="0">
-      <img nfsThumbnail src="..." alt="...">
+      <img nfsThumbnail ngSrc="..." width="600" height="400" alt="...">
     </div>
   </div>
   <div nfsCell size="6">...long content...</div>
 </div>
 ```
 
-Server HTML and hydrated DOM before the first measurement (identical):
+Server HTML and hydrated DOM before the first measurement (identical; `NgOptimizedImage`'s own image attributes, `ngsrc`, `src`, `loading`, `fetchpriority`, and the like, are left out):
 
 ```html
 <div nfsgridx="" class="grid-x">
   <div nfscell="" size="6" nfsstickycontainer="" class="cell sticky-container small-6">
     <div nfssticky="" class="sticky is-anchored is-at-top"
          data-nfs-sticky-on="medium" style="top: 0em; bottom: auto;">
-      <img nfsthumbnail="" src="..." alt="..." class="thumbnail">
+      <img nfsthumbnail="" width="600" height="400" alt="..." class="thumbnail">
     </div>
   </div>
   <div nfscell="" size="6" class="cell small-6">...long content...</div>
@@ -271,7 +271,7 @@ Hydrated, after measuring, while the element is pinned (the grid wrapper and the
 <div nfscell="" size="6" nfsstickycontainer="" class="cell sticky-container small-6">
   <div nfssticky="" class="sticky is-stuck is-at-top"
        data-nfs-sticky-on="medium" style="top: 0em; bottom: auto;">
-    <img nfsthumbnail="" src="..." alt="..." class="thumbnail">
+    <img nfsthumbnail="" width="600" height="400" alt="..." class="thumbnail">
   </div>
   <span data-nfs-sticky-sentinel="top" aria-hidden="true"
         style="position: absolute; left: 0px; width: 1px; height: 1px; pointer-events: none; top: 0px;"></span>
@@ -313,7 +313,7 @@ A good test asserts what a visitor or a consumer observes: whether the element i
 
 Story ids: `sticky--basic`, `sticky--stick-to-bottom`, `sticky--margins`, `sticky--sticky-on`, `sticky--navigation`, `sticky--anchor-range-recipe`, `sticky--scroll-container`, `sticky--overflow-hidden-ancestor`, `sticky--outputs`. The Storybook preview stylesheet includes `foundation-sticky`, `nfs-sticky`, and `nfs-breakpoint-properties` (and, for the title bar of `sticky--navigation`, the `foundation-title-bar` and `nfs-title-bar` lines it already has). Stories other than `sticky--sticky-on` set `stickyOn="all"` so they behave at any iframe width.
 
-Story markup follows the class rule (Storybook conventions, section 8; ADR 0039): no story element carries a Foundation or library class written in the template. Sticky elements are `nfsSticky` hosts and their parents `nfsStickyContainer` hosts; the bar in `sticky--navigation` is `nfsTitleBar` with `nfsTitleBarLeft`, the checkout bar in `sticky--stick-to-bottom` is `nfsCallout`, column layouts use the XY Grid's `nfsGridX` and `nfsCell` with `size`, images are `img[nfsThumbnail]`, and controls are `button[nfsButton]`, each imported from its own entry point. Inline `style` only for heights, tall pages, the scroll panel's `overflow: auto`, and the two overflow values `sticky--overflow-hidden-ancestor` compares (D19).
+Story markup follows the class rule (Storybook conventions, section 8; ADR 0039): no story element carries a Foundation or library class written in the template. Sticky elements are `nfsSticky` hosts and their parents `nfsStickyContainer` hosts; the bar in `sticky--navigation` is `nfsTitleBar` with `nfsTitleBarLeft`, the checkout bar in `sticky--stick-to-bottom` is `nfsCallout`, column layouts use the XY Grid's `nfsGridX` and `nfsCell` with `size`, images are `img[nfsThumbnail]` with `NgOptimizedImage`'s `ngSrc`, `width`, and `height` (building-blocks 1.2), and controls are `button[nfsButton]`, each imported from its own entry point. `sticky--overflow-hidden-ancestor` writes its `overflow: hidden` ancestor with the [Spec: Prototyping Utilities](../issues/102-spec-prototyping-utilities.md)'s `nfsOverflow="hidden"`. Inline `style` only for heights, tall pages, the scroll panel's `overflow: auto`, and the `overflow: clip` that `sticky--overflow-hidden-ancestor` compares with it, values Foundation's default lists have no class for (D19).
 
 ### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`, `npx nx test-storybook <lib>`)
 
@@ -326,7 +326,7 @@ Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test 
 - `sticky--navigation`: a page-spanning `nfsStickyContainer` holding a `header` with `nfsTitleBar` and `nfsSticky` beside each other and a `nav` landmark with links down the page; the bar carries `.title-bar` and `.sticky` with no class in the template; one large `scrollTo` jump into the range yields `is-stuck` (the backstop); tabbing to a link far down leaves that link's rectangle clear of the stuck bar (the `scroll-padding-top` recipe).
 - `sticky--anchor-range-recipe`: Foundation's two-anchor example rewritten with the container spanning the anchors; the element unsticks where the bottom anchor ends.
 - `sticky--scroll-container`: inside an `overflow: auto` panel, scrolling the panel (not the window) pins the element and sets `is-stuck`; scrolling the window leaves it unchanged.
-- `sticky--overflow-hidden-ancestor`: inside an ancestor with an inline `overflow: hidden` (the clash Foundation's `.off-canvas-wrapper` has without the `nfs-off-canvas` include) the element does not pin and never reports `is-stuck`; the same markup with an inline `overflow: clip` instead pins and reports it. Both values are inline because the overflow value is what the story compares, Foundation has a class for only one of them, and its `.overflow-hidden` Prototype class is not written under the class rule while the [Spec: Prototyping Utilities](../issues/102-spec-prototyping-utilities.md) has not named its directive (D19).
+- `sticky--overflow-hidden-ancestor`: inside an ancestor written `nfsOverflow="hidden"` (the clash Foundation's `.off-canvas-wrapper` has without the `nfs-off-canvas` include) the element does not pin and never reports `is-stuck`; the same markup with an inline `overflow: clip` instead pins and reports it. The first ancestor's value comes from the Prototyping Utilities' `nfsOverflow="hidden"` (`NfsPrototypeOverflow`, from `ngx-foundation-sites/prototyping-utilities`), which sets Foundation's `.overflow-hidden`; `overflow: clip` stays inline, because Foundation has no class for it (D19). The story's `moduleMetadata.imports` lists `NfsPrototypeOverflow`.
 - `sticky--outputs`: a log shows `stuck: top`, `unstuck: bottom`, `stuck: top`, `unstuck: top` for a scroll down through the range and back up; `isStuck()` read through `#s="nfsSticky"` matches the log.
 
 ### 2. Browser-level test (Vitest browser mode, `npx nx test <lib>`)
@@ -407,12 +407,12 @@ A row whose decision leaves a Foundation feature or Option out names that item's
 | D16 | No Variant input, Variant registry, Variant property, or Runtime check request; the four State classes stay host bindings; a static copy of a State class is stripped by the bindings and not reported | Foundation's `foundation-sticky` defines no Variant class (ADR 0040 has nothing to type); `stickTo` is an Option whose classes are State classes of the measured `edge`; building-blocks 1.4's report for a copied class exists to catch an initial state the consumer meant to set, and Sticky's state is measured, never set: a copy changes nothing the bindings do not already correct, and Foundation's Sticky markup carries no State class to copy | A development warning for a copied State class (it would report markup whose outcome is already correct); `stickTo` as a Variant input for `.is-at-top` and `.is-at-bottom` (an element with `stickTo: 'top'` carries `.is-at-bottom` once scrolled past its range) |
 | D17 | Styling a stuck element is the consumer's own class bound from `isStuck()` or `edge()` through `#s="nfsSticky"`; no recipe selects `.is-stuck` or another Foundation or library class | Building-blocks 1.1: a spec's recipe for consumer CSS selects elements, attributes, or the consumer's own classes; the signals are public API, zoneless-safe, and false on the server exactly as the State classes are; the State classes stay Foundation's contract for Foundation's own CSS and CSS migrated from Foundation | Recipes on `.sticky.is-stuck` (a Foundation class in consumer code however the rule is read for stylesheets); a library styling attribute such as `data-nfs-stuck` (a second spelling of the State class that adds no information) |
 | D18 | Composition by placement: `nfsSticky` beside `nfsTitleBar`, `nfsTopBar`, or `nfsCallout`, or on any element; `nfsStickyContainer` beside `nfsCell`, or on any parent; neither hosts another directive or is hosted | Building-blocks 1.9: a behaviour that may sit on any element is written beside the class directive; the Top Bar spec's D10; host directives are static, so a bar that hosted `NfsSticky` would pin every bar; none of the bar, callout, or cell rules sets a `position` the gate cannot override | `NfsTitleBar` or `NfsTopBar` hosting `NfsSticky`; a `sticky` boolean on the bar directives (Sticky is a Plugin with its own Options, not a Variant of the bar) |
-| D19 | Examples, stories, test hosts, and fixtures write no Foundation or library class (except the one browser-level case that copies `is-stuck` onto a host to show it is stripped, D16): `nfsGridX` and `nfsCell` with `size`, `img[nfsThumbnail]`, `nfsCallout`, `nfsTitleBar` with `nfsTitleBarLeft`, `button[nfsButton]`; `sticky--overflow-hidden-ancestor` sets `overflow: hidden` and `overflow: clip` inline | ADR 0039 and the Storybook conventions' class-rule note; `nfsGridX` and `nfsCell` are the [Spec: XY Grid](../issues/99-spec-xy-grid.md)'s; `nfsThumbnail` is the [Spec: Thumbnail](../issues/97-spec-thumbnail.md)'s name; the names of the Magellan and Toggler specs are building-blocks 1.3's, aligned by the class-rule consistency review; the overflow story compares two values, Foundation has a class for one, and the Prototyping Utilities spec has not named its directive | Keeping Foundation's docs classes in examples (copied into applications, they would bring back what the rule removes); Foundation's `.overflow-hidden` class in the story (a Foundation class in story markup); a guessed Prototyping Utilities directive name |
+| D19 | Examples, stories, test hosts, and fixtures write no Foundation or library class (except the one browser-level case that copies `is-stuck` onto a host to show it is stripped, D16): `nfsGridX` and `nfsCell` with `size`, `img[nfsThumbnail]`, `nfsCallout`, `nfsTitleBar` with `nfsTitleBarLeft`, `button[nfsButton]`; `sticky--overflow-hidden-ancestor` writes its first ancestor with `nfsOverflow="hidden"` and sets `overflow: clip` inline on the second | ADR 0039 and the Storybook conventions' class-rule note; `nfsGridX` and `nfsCell` are the [Spec: XY Grid](../issues/99-spec-xy-grid.md)'s, `nfsThumbnail` the [Spec: Thumbnail](../issues/97-spec-thumbnail.md)'s, `nfsCallout` the [Spec: Callout](../issues/89-spec-callout.md)'s, and `nfsTitleBar`, `nfsTitleBarLeft`, and `nfsTopBar` the [Spec: Top Bar](../issues/86-spec-top-bar.md)'s; the overflow story compares two values: Foundation's `.overflow-hidden` comes from the [Spec: Prototyping Utilities](../issues/102-spec-prototyping-utilities.md)'s `nfsOverflow="hidden"`, and `overflow: clip` has no Foundation class, so it stays inline (Storybook conventions, section 8) | Keeping Foundation's docs classes in examples (copied into applications, they would bring back what the rule removes); Foundation's `.overflow-hidden` class in the story (a Foundation class in story markup); `overflow: hidden` inline (a value Foundation has a class for, against Storybook conventions section 8) |
 | D20 | No consumer CSS recipe for Foundation's off-canvas wrapper: `@include nfs-off-canvas;` is the fix, and development warning 3 names `overflow: clip` for any other clipping ancestor | Building-blocks 1.1 (no recipe selects a Foundation class); the Off-canvas spec's Sass subsection already lists sticking inside the wrapper among what breaks without its include | Keeping `.off-canvas-wrapper { overflow: clip; display: flow-root; }` (a Foundation class in a consumer recipe); the same rule on `[nfsOffCanvasWrapper]` (a second copy of the Off-canvas mixin's rule in consumer CSS) |
 
 ### Usage examples
 
-Every example writes Foundation's elements and the library's directives, never a Foundation or library class (ADR 0039); each directive comes from its own entry point (`NfsSticky` and `NfsStickyContainer` from the Sticky one, `NfsTitleBar` and `NfsTitleBarLeft` from the Top Bar one, and so on).
+Every example writes Foundation's elements and the library's directives, never a Foundation or library class (ADR 0039); each directive comes from its own entry point (`NfsSticky` and `NfsStickyContainer` from the Sticky one, `NfsTitleBar` and `NfsTitleBarLeft` from the Top Bar one, and so on), and an image uses `NgOptimizedImage` from `@angular/common` (building-blocks 1.2).
 
 A sticky column (Foundation's first docs example); the grid cell, which stretches to the row's height, is the Sticky container:
 
@@ -420,7 +420,7 @@ A sticky column (Foundation's first docs example); the grid cell, which stretche
 <div nfsGridX>
   <div nfsCell size="6" nfsStickyContainer>
     <div nfsSticky [marginTop]="0">
-      <img nfsThumbnail src="assets/rectangle-3.jpg" alt="Product photo">
+      <img nfsThumbnail ngSrc="assets/rectangle-3.jpg" width="600" height="400" alt="Product photo">
     </div>
   </div>
   <div nfsCell size="6"><!-- long content --></div>
@@ -480,6 +480,8 @@ Reading the state:
 ```html
 <div nfsStickyContainer>
   <nav aria-label="On this page" nfsSticky #toc="nfsSticky" (stuck)="onStuck($event)">...</nav>
+  <!-- The container also holds the content the element scrolls past: the Sticky range is the sticky element's parent (ADR 0019) -->
+  <article>...</article>
 </div>
 @if (toc.isStuck()) {
   <button type="button" nfsButton (click)="scrollToTop()">Back to top</button>
@@ -509,7 +511,7 @@ Deferred:
 
 ```html
 @defer (hydrate on viewport) {
-  <div nfsStickyContainer><div nfsSticky>...</div></div>
+  <div nfsStickyContainer><div nfsSticky>...</div><article>...</article></div>
 }
 ```
 

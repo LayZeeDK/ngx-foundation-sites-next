@@ -172,3 +172,16 @@ No change to `storybook-conventions.md` (the preview already includes every `nfs
 ### Note, 2026-09-29 (architecture audit)
 
 - 2026-09-29: the fixer items of [Audit: the specs against the architecture guide](142-audit-specs-against-architecture-guide.md) are applied to the spec.
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2, group e, applying [its decisions](../research/consistency-review-decisions.md) and the review's checks CR-A to CR-D; `specs/reveal.md` was revised in place, and [the group's report](../research/consistency-review-group-e.md) lists every edit.
+
+- R4: the three compile-time contrast checks name the exact WCAG relative-luminance formula of the library's internal contrast helper (the 1.4.11 row, D19, the Sass checks row); `color-luminance()` leaves the reused functions; the canonical sentence S1 joins the Sass subsection. Figures stand (3.42:1, 19.63:1, 3.17:1).
+- R25: `NfsReveal` binds `data-nfs-close-button` from `contentChild(nfsCloseButtonToken, {descendants: true})`, the Callout's hook, and `nfs-reveal` rule 8 sets the padding on the close button's side to `max($reveal-padding, <offset> + max(24px, <font size>))` over every close-button size (48 px on Foundation's defaults), because Foundation's own example fails 1.4.12 at 320 px in three engines and the rule removes the overlap (measured by this review); a 1.4.12 WCAG row, D29, the Sass (2) and (5) additions, and tests (48 px padding in `reveal--basic`, the attribute in the SSR smoke, a browser-level hook case, an e2e text-spacing case).
+- R52: "consumer rule 3" is "consuming-directive rule 3".
+- R57: the `animationIn` row names Application classes that are keyframe animations; "the developer's own keyframe classes" is "the consumer's own".
+- Consequential fixes: the mixin's rule count reads eight (Solution, the Sass summary, the compile test, D2's note); the server and hydrated HTML show `data-nfs-close-button=""` on the example dialog; the entry-point bullet says the Reveal imports only `nfsCloseButtonToken` from `ngx-foundation-sites/close-button`; Foundation behaviour changed gains the room; the development-check test counts nine warnings (check 9 was added on 2026-09-28).
+- Unchanged (confirmed): R2, R14, R27, R34/R35, R49, R50, R54, R65, R69/R70; CR-A, CR-C, CR-D hold.
+
+Triage: impact LOW (one Library mixin rule and one host attribute before the first release, ADR 0045; wording), confidence HIGH (measured in three engines; the Callout's decided mechanism). Nothing is OPEN FOR HUMAN.

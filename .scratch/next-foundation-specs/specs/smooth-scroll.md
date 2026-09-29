@@ -109,7 +109,7 @@ SmoothScroll has no Structural class, no State class, no Variant class, and no S
 | `.vertical`, `.horizontal` and their responsive forms, and the Menu's other Variant classes | Variant classes of the Menu | The Menu directive's Variant inputs (`orientation="vertical"`) | [Spec: Menu](../issues/85-spec-menu.md) |
 | `.top-bar` (the sticky bar of the `smooth-scroll--sticky-offset` story only) | Structural class of the Top Bar | `NfsTopBar`, `[nfsTopBar]` | [Spec: Top Bar](../issues/86-spec-top-bar.md) |
 
-The targets carry no Foundation class: a section is the consumer's element with its own `id`, and the temporary `tabindex="-1"` is an attribute, not a class. `:target` is a pseudo-class the browser sets on native jumps only (Foundation behaviour changed or dropped). The names `NfsMenu`, `orientation`, and `NfsTopBar` are the ones the out-of-scope triage and building-blocks 1.4 give; the Menu and Top Bar specs own them, and the class-rule consistency review aligns this spec's examples if their final names differ.
+The targets carry no Foundation class: a section is the consumer's element with its own `id`, and the temporary `tabindex="-1"` is an attribute, not a class. `:target` is a pseudo-class the browser sets on native jumps only (Foundation behaviour changed or dropped). The names are the published ones: `NfsMenu` (`ul[nfsMenu]`) and its `orientation` Variant input from the [Spec: Menu](../issues/85-spec-menu.md), and `NfsTopBar` (`[nfsTopBar]`) from the [Spec: Top Bar](../issues/86-spec-top-bar.md).
 
 ### Hierarchy and DI shape
 

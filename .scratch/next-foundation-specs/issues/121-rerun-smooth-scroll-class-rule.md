@@ -92,3 +92,12 @@ Rule: [map](../map.md), Orchestration rules, "Triage of human-only items".
 ### Correction, 2026-09-27
 
 From [Re-run: Magellan spec under the class rule](122-rerun-magellan-class-rule.md), decision 7: decisions 6 and 15, the triage's confidence line, and the Magellan bullet under "What other specs need from this one" cite Angular's NG0309 duplicate-directive error as a reason against hosting `NfsMenu`. Since Angular 22.0 a directive that the template matches and that is also a host directive applies once, as the template match (`trackHostDirectiveDef` in Angular's host-directives feature; commit 9c55fcb, "feat(core): de-duplicate host directives", in v22.0.0), so a consumer's `nfsMenu` beside a host of `NfsMenu` is not an error. D13 stands on its other reasons: host directives are static, so every container would get `.menu`, and the Menu's Variant inputs would need a second exposure. `specs/smooth-scroll.md` D13's rejected-alternative cell is corrected to match.
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2, group e, applying [its decisions](../research/consistency-review-decisions.md) and the review's checks CR-A to CR-D; `specs/smooth-scroll.md` was revised in place, and [the group's report](../research/consistency-review-group-e.md) lists every edit.
+
+- R12: the names sentence under the CSS class mapping now says the names are the published ones: `NfsMenu` (`ul[nfsMenu]`) and its `orientation` Variant input from the [Spec: Menu](85-spec-menu.md), and `NfsTopBar` (`[nfsTopBar]`) from the [Spec: Top Bar](86-spec-top-bar.md).
+- Unchanged (confirmed): R48 (D13 already states the Angular 22 fact); CR-A, CR-C, and CR-D hold. The directive is a single directive with no parent, child, or peer, so it adds no In-family line (the family rule of [Spec: forgotten-import checks (shared utility)](150-spec-forgotten-import-checks.md)); D13 states the Menu written beside it.
+
+Triage: impact LOW (one sentence), confidence HIGH. Nothing is OPEN FOR HUMAN.

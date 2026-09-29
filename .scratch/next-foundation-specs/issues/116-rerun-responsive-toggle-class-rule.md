@@ -135,3 +135,17 @@ From [Re-run: disclosure and carousel family specs, In-family check lines](152-r
 - Hierarchy and DI shape gains the In-family lines: `NfsResponsiveToggle` and `NfsResponsiveToggleMenu` each call `nfsDirectiveCheck` with their class name and pass no parent and no children, because neither injects a parent and the bare `nfsToggle`, the Top Bar directives, and any menu inside belong to other families. The bar's `menu` is a peer by a required reference, so a forgotten import on either side fails to compile (NG8002 for the bar, NG8003 for the menu), and development check 3 cannot be caused by one. `strictParents` changes nothing. The plugin has no parent token.
 
 Triage: impact LOW (development-only lines), confidence HIGH (ADR 0046, building-blocks 1.9, the shared spec's rule). Nothing is OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2, group e, applying [its decisions](../research/consistency-review-decisions.md) and the review's checks CR-A to CR-D; `specs/responsive-toggle.md` was revised in place, and [the group's report](../research/consistency-review-group-e.md) lists every edit.
+
+- R2: development check 4 has three cases with three messages (a half that starts no animation; a dot-form class that starts with `nfs-`; a value that does not split into one entering and one leaving value, which the type admits through a value that starts with a dot, `'.a .b .c'` or `'.a fade-in'`, not only through a cast); the browser-level Motion values case names that route; Out of Scope gains the Motion UI bullet (transition classes, `motion-ui`, the `fast`/`slow` modifiers, and names outside the `nfs-motion` set, written as the consumer's own keyframe class in the dot form).
+- R52: the Breakpoint service spec's rules are cited as "consuming-directive rule 1" and "consuming-directive rule 3".
+- R55: new story `responsive-toggle--sticky-title-bar` (`hideFor="xxlarge"`; a scroller with `nfsOverflowY="scroll"`, an inline height, and `scroll-padding-top: 3rem`; the bar held by an inline `position: sticky; top: 0`), with its play-function bullet; the 2.4.11 row and the e2e case point at it.
+- R57: "application class" is written "Application class"; "the developer's own" keyframe classes and classes are "the consumer's own"; the `animate` API row names its dot-form tokens Application classes that are keyframe animations.
+- CR-A: the copied `hide-for-medium` on the developer's own bar carries the copied-class comment, and the server-HTML half of that block is labelled.
+- The registration rule of [Spec: forgotten-import checks (shared utility)](150-spec-forgotten-import-checks.md) (a family check that finds a peer by registration says nothing where the element it looks for carries the peer's attribute): check 3's In-family sentence now says why it keeps its message: it looks for no element, and the bar's required reference fails to compile when either import is forgotten.
+- Unchanged (confirmed): R4 (the exact formula; figures stand), R22/R53 (`$topbar-submenu-background: $topbar-background;` beside `$topbar-background: $white;`), R39, R54 (no Motion class under reduced motion), R65 (Trigger hosts carry no class); CR-C found no placeholder, and the spec has no component example for CR-D.
+
+Triage: impact LOW (development messages, one additive story, wording), confidence HIGH (the decisions file's ratings). Nothing is OPEN FOR HUMAN.

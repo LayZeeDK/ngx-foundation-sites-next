@@ -152,3 +152,15 @@ Nothing is OPEN FOR HUMAN, and no prototype is needed: no decision rests on an u
 ### Amendment, 2026-09-29 (in-family check lines)
 
 [Re-run: CSS-only component and free-behaviour family specs, In-family check lines](154-rerun-css-only-component-and-free-behaviour-family-in-family-lines.md), from item R4 of [Audit: the specs against the architecture guide](142-audit-specs-against-architecture-guide.md), adds the Sticky's In-family checks under Hierarchy and DI shape of the [spec](../specs/sticky.md), by the rule of [Spec: forgotten-import checks (shared utility)](150-spec-forgotten-import-checks.md) ([ADR 0046](../adr/0046-forgotten-imports-caught-by-checks.md)): `NfsStickyContainer` calls `nfsDirectiveCheck('NfsStickyContainer', {children: ['NfsSticky']})` and probes the `nfsSticky` elements inside it; `NfsSticky` calls `nfsDirectiveCheck('NfsSticky')` and probes nothing; neither has a parent check or a peer; `strictParents` changes nothing. Development warning 1 stays a DOM check and is not given for a parent that carries `nfsStickyContainer` without `.sticky-container`: that parent is a forgotten `NfsStickyContainer` import, which the `strictDirectiveImports` check reports once, and "Add nfsStickyContainer to the parent" would ask for a directive already written. The browser-level warnings case asserts it. No other decision changes.
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2, group e, applying [its decisions](../research/consistency-review-decisions.md) and the review's checks CR-A to CR-D; `specs/sticky.md` was revised in place, and [the group's report](../research/consistency-review-group-e.md) lists every edit.
+
+- R11: D19's rationale names each neighbour's owning spec (the XY Grid's `nfsGridX` and `nfsCell`, the Thumbnail's `nfsThumbnail`, the Callout's `nfsCallout`, the Top Bar's `nfsTitleBar`, `nfsTitleBarLeft`, and `nfsTopBar`) and drops the deferral.
+- R32/R64: `img[nfsThumbnail]` in the Rendered HTML and the usage example takes `ngSrc` with `width="600" height="400"`; the rendered lines drop `src` and the lead-in says `NgOptimizedImage`'s own attributes are left out; the story markup and the usage lead-in name `NgOptimizedImage`.
+- R41: `sticky--overflow-hidden-ancestor` writes its first ancestor `nfsOverflow="hidden"` (`NfsPrototypeOverflow`, listed in the story's `moduleMetadata.imports`) and keeps `overflow: clip` inline; D19's decision, rationale, and rejected cells, and the story-markup sentence follow.
+- Other fix: two usage examples ("Reading the state" and "Deferred") held only the sticky element in their container, so under ADR 0019 they could never stick and development warning 2 would fire; each gains the content the element scrolls past, as R40 did for the Visibility Classes.
+- Unchanged (confirmed): R40 (no Sticky class outside rendered output, no recipe on `.is-stuck`); CR-A, CR-C, and CR-D hold (the examples are HTML fragments).
+
+Triage: impact LOW (examples and a story), confidence HIGH (ADR 0019, Foundation's default `$prototype-overflow`). Nothing is OPEN FOR HUMAN.

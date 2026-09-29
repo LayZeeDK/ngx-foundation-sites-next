@@ -124,3 +124,14 @@ From the [Re-run: form and value-control family specs, In-family check lines](15
 
 - Hierarchy and DI shape gains the In-family check lines, one per directive: `NfsSwitch` probes `NfsSwitchInput` and `NfsSwitchPaddle`, the paddle probes `NfsSwitchActive` and `NfsSwitchInactive`, and no part has a parent check (none injects another); the paddle's `for` link to its input is a peer by value.
 - Development check 6 also takes a previous sibling that carries the `nfsSwitchInput` attribute as the input, so an input whose import was forgotten is reported once, by `NfsSwitch`'s probe, and not a second time as a paddle that does not follow its input (new D19; its layer-2 case added).
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2, group e, applying [its decisions](../research/consistency-review-decisions.md) and the review's checks CR-A to CR-D; `specs/switch.md` was revised in place, and [the group's report](../research/consistency-review-group-e.md) lists every edit.
+
+- R15: Sass 1 (b)'s knob and on-track selectors also name Foundation's more specific `:focus-visible` forms (`input:focus-visible ~ .switch-paddle::after`, 0,2,2; `input:checked:focus-visible ~ .switch-paddle`, 0,3,1), with the reason (measured in Chromium and Firefox: a keyboard-focused off switch lost its knob and a focused on switch its `Highlight` track); D12 records it; the e2e forced-colours case checks the focused knob and track, waits for the paddle transition, and states the WebKit reason.
+- R20: D9's rejected cell names the library colour the Slider's first ring used, now aligned on `$input-border-focus`.
+- R74: development checks 1, 2, and 5 count an image's non-blank `alt`, or the non-blank `aria-label` of an element with `role="img"`, as text, the reading accessible-name computation applies (building-blocks 1.10, Names); the Notes bullet and the Measured groups sentence follow; D16's rationale now matches Chromium's tree on all 24 grouping patterns, and the text-only reading moves to its rejected alternatives; the browser-level cases gain a label that holds only an image with alt text (silent), such an image in the paddle (reported), and a legend that holds only one (silent). This reverses decision 8's stated limit.
+- Unchanged (confirmed): R4 (the exact helper; floored figures), R21; CR-A, CR-C, and CR-D hold.
+
+Triage: impact LOW (a Library mixin selector list inside a media query and development checks; no API), confidence HIGH (measured by this review; accname and HTML-AAM; the Thumbnail's check 2). Nothing is OPEN FOR HUMAN.
