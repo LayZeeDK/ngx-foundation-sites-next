@@ -180,3 +180,7 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - R57: "the consumer's own classes" in two places.
 - The registration rule of the forgotten-import checks spec (its second bullet after the family rule's item 5): development check 3's content half says nothing for a panel inside an element that carries `nfsOffCanvasContent` without its directive, whose forgotten import `strictDirectiveImports` reports once (M1); it keeps its message for a bare panel with no such element. The `NfsOffCanvas` In-family line and the browser-level development-check case follow. This replaces the disclosure and carousel re-run's "check 3 stays the report ... still true when a content ... lost its import", whose shared-spec proposal was not adopted.
 - Unchanged, confirmed: R4, R14, R22/R53, R50, R56, R59, R65, R66, R68, R69/R70, CR-A, CR-C, CR-D (no component example).
+
+### Amendment, 2026-09-29 (audit 0008)
+
+- L4, [Audit 0008: the class-rule wave](../audits/0008-class-rule-wave.md): `NfsOffCanvasOverlay` loses its `exportAs` (`nfsOffCanvasOverlay`); its only member is its required `panel` input, no state or method to read (building-blocks 1.3).

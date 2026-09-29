@@ -452,7 +452,7 @@ A different look while stuck (a shadow), from a class of the application's own b
 ```
 
 ```css
-/* The application's own class; no Foundation or library class is selected */
+/* An Application class; no Foundation or library class is selected */
 .app-bar-raised { box-shadow: 0 2px 4px rgb(0 0 0 / 30%); }
 ```
 

@@ -37,16 +37,16 @@ The checks of item 4: only the Accordion lists In-family check lines (`accordion
 | ID | Finding | Principle | Verdict |
 | --- | --- | --- | --- |
 | T1 | 30 specs with more than one directive predate ADR 0046: no In-family line per part, no `strictParents` line, no Drilldown wrapper reason, parent tokens without descriptions (also Reveal's token) | P24 | Survives: R1 to R5, X1 to X6 |
-| T2 | 17 single-directive specs do not state the `nfsDirectiveCheck` call | P24 | Dropped against the specs (building-blocks 1.9 is inherited; ticket 150's own routing); the shared spec's rule line corrected: X7 |
-| T3 | The Accordion's lines are one bullet | P24 | Dropped: ticket 150's proposal 10 text, all five items per part |
+| T2 | 17 single-directive specs do not state the `nfsDirectiveCheck` call | P24 | Dropped against the specs (building-blocks 1.9 is inherited; [Spec: forgotten-import checks (shared utility)](150-spec-forgotten-import-checks.md)'s own routing); the shared spec's rule line corrected: X7 |
+| T3 | The Accordion's lines are one bullet | P24 | Dropped: [Spec: forgotten-import checks (shared utility)](150-spec-forgotten-import-checks.md)'s proposal 10 text, all five items per part |
 | T4 | Typography Helpers says a forgotten `NfsPrintStyles` "reports nothing" | P24 | Survives: X8 |
 | T5 | Float Classes and Float Grid development checks read the computed `direction`, unrecorded in building-blocks 1.5 | P21 | Survives against the record: BB1, BB2, E5 |
 | T6 | The Slider's non-linear value text has no stated format | P21 | Survives: X9, E5 |
 | T7 | `[nfsTooltip]` accepts any element | P5 | Dropped: interactivity includes ARIA-role hosts a selector cannot list; D5 |
-| T8 | Progress Bar states no kind for `value`, `min`, `max` | P9 | Dropped: ticket 139 does not rate published `inert` rows |
+| T8 | Progress Bar states no kind for `value`, `min`, `max` | P9 | Dropped: [Decide: inputs named like HTML presentational attributes](139-decide-inputs-named-like-presentational-attributes.md) does not rate published `inert` rows |
 | T9 | One `nfs-prototyping-utilities` mixin for seventeen export mixins, against ADR 0012's dated note | P18 | OPEN FOR HUMAN |
 | T10 | Forms and Abide cite NG0309, which building-blocks 1.9 measured not to occur | P8 | Survives: X10 |
-| T11 | `color-luminance()` ratios in Accordion and Forms | P17 | Dropped here: row R4 of `research/consistency-review-routed-items.md` carries it to ticket 133 |
+| T11 | `color-luminance()` ratios in Accordion and Forms | P17 | Dropped here: row R4 of `research/consistency-review-routed-items.md` carries it to [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md) |
 | T12 | Reveal and Accordion measure the timer always | P19 | Dropped: building-blocks 1.6 rule 1 now measures always |
 | G1 | P13's "four-step order" is ambiguous | P13 | Survives: E2 |
 | G2 | P10 and a service's methods | P10 | Dropped: methods are not a forbidden form; 1.7 records the reactive reads |
@@ -62,7 +62,7 @@ Group d's P18 guide problem is T9: the guide restates ADR 0012 correctly, so P18
 | Item | Impact | Confidence | Verdict |
 | --- | --- | --- | --- |
 | T1 | MEDIUM: development-only checks in 30 specs; the `strictParents` part list is fixed already | HIGH: ADR 0046, building-blocks 1.9, and the shared spec's rule decide the form | Decided: R1 to R5, X1 to X6 |
-| T2 | LOW: one sentence of the shared spec | HIGH: building-blocks 1.9 and ticket 150's routing | Decided: X7 |
+| T2 | LOW: one sentence of the shared spec | HIGH: building-blocks 1.9 and [Spec: forgotten-import checks (shared utility)](150-spec-forgotten-import-checks.md)'s routing | Decided: X7 |
 | T4 | LOW | HIGH: ADR 0046's runtime and static checks report it | Decided: X8 |
 | T5 | LOW: development-only checks | HIGH: the Slider exception's own reason, stated by both Float specs | Decided: BB1, BB2, E5 |
 | T6 | MEDIUM: what assistive technology speaks | HIGH: Material's default `` `${value}` ``; P21 needs no locale service | Decided: X9, E5 |
@@ -186,7 +186,7 @@ T9, the Prototyping Utilities' Library mixin. `specs/prototyping-utilities.md:58
 - (b) One Library mixin per prototype export mixin that needs one (`nfs-prototype-spacing` after `foundation-prototype-spacing`, and so on), each writing its own registry, flag, and presence properties. For: the record's rule, and each check and reprint only for what the consumer compiles. Against: up to seventeen includes for a consumer who writes Foundation's umbrella; seventeen public names; D19 changes.
 - (c) (b), plus `nfs-prototype-classes`, named after Foundation's umbrella export mixin `foundation-prototype-classes`, included after it, and including the seventeen. For: the rule read literally (the umbrella is itself an export mixin), with one include for the common case, as Foundation offers. Against: eighteen public names; an umbrella the Typography Helpers did not add for `foundation-typography`.
 
-Recommendation: (c). Why confidence is not high: the applied default contradicts ADR 0012's dated note, ADR 0044's singular wording points the other way, and whether to add an umbrella is a vocabulary choice no record makes. After the ruling, (b) or (c) opens "Re-run: Prototyping Utilities spec, architecture-guide findings", blocking [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md); (a) is a dated note on ADR 0012.
+Recommendation: (c). Why confidence is not high: the applied default contradicts ADR 0012's dated note, ADR 0044's singular wording points the other way, and whether to add an umbrella is a vocabulary choice no record makes. After the ruling, (b) or (c) opens "Re-run: Prototyping Utilities spec, architecture-guide findings", which the audit after it checks (map, Audits), since [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md) resolved on 2026-09-29 with T9 open; (a) is a dated note on ADR 0012.
 
 No ADR from this ticket. No prototype is needed.
 

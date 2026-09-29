@@ -190,3 +190,7 @@ Triage: impact LOW (development messages, wording, a story's scaffolding, docume
 From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), closing pass:
 
 - `specs/dropdown.md`: development check 8 also counts an enclosing `nfsButtonGroup` attribute, and its browser-level case follows, by the [Spec: forgotten-import checks (shared utility)](150-spec-forgotten-import-checks.md)'s bullet for checks that find another family's peer by its class.
+
+### Amendment, 2026-09-29 (audit 0008)
+
+- L5, [Audit 0008: the class-rule wave](../audits/0008-class-rule-wave.md): the usage comment "Bounded by an ancestor that carries the application's own class" reads "Bounded by an ancestor that carries an Application class".

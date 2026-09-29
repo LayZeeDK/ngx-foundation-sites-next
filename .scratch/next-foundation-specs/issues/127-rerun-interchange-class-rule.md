@@ -132,3 +132,7 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - CSS class to Angular mapping gains two rows for the other families' classes the examples use: the Callout's `.callout` and the Table's `.hover` (CR-B).
 
 Unchanged: both directives, their API, the query resolution, the emission timing, the focus rule, the rendering modes, and the Story ids. Confirmed: R32/R64 (the `<img>` of an art-directed `<picture>` stays a plain `<img>`, every other image uses `NgOptimizedImage`), CR-A, CR-C, the single-directive In-family line. Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (audit 0008)
+
+- L5, [Audit 0008: the class-rule wave](../audits/0008-class-rule-wave.md): the Background mode lead-in's "`hero` is the application's own class" reads "`hero` is an Application class", and the later "`hero` and `banner` are the application's own classes" reads "`hero` and `banner` are Application classes".

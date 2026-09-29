@@ -448,4 +448,4 @@ The triage pass rated replay recognition not high impact, high confidence: every
 
 ### OPEN FOR HUMAN (no prototype can settle this)
 
-None.
+One, from [Audit: the specs against the architecture guide](issues/142-audit-specs-against-architecture-guide.md) (T9): whether the Prototyping Utilities keep one Library mixin, `nfs-prototyping-utilities`, for seventeen export mixins, against ADR 0012's dated note; Table D's row applies the one mixin until the user rules.

@@ -164,3 +164,7 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - Unchanged (confirmed): R40 (no Sticky class outside rendered output, no recipe on `.is-stuck`); CR-A, CR-C, and CR-D hold (the examples are HTML fragments).
 
 Triage: impact LOW (examples and a story), confidence HIGH (ADR 0019, Foundation's default `$prototype-overflow`). Nothing is OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (audit 0008)
+
+- L5, [Audit 0008: the class-rule wave](../audits/0008-class-rule-wave.md): the usage comment "The application's own class; no Foundation or library class is selected" reads "An Application class; no Foundation or library class is selected".

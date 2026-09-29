@@ -191,3 +191,8 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - The registration rule of the forgotten-import checks spec: development checks 1 and 3 say nothing where the root holds an element carrying `nfsOrbitRotation`, `nfsOrbitBullets`, or `nfsOrbitBullet` that registered nothing (a forgotten import, which the root's probe reports once, M2), and keep their messages for an Orbit with no such element. The root's In-family line, the check definitions, and the browser-level case follow; the disclosure and carousel re-run's "Dev checks 1 and 3 stay" is replaced.
 - The class-only parts' In-family line says why M4 and the `strictParents` throw hold for a projected class-only part (every part with behaviour must already be declared in the Orbit's template), as the forgotten-import checks spec's `strictParents` table now notes; the disclosure and carousel re-run flagged it for this review.
 - Unchanged, confirmed: R1, R4 (figures stand; the new figures are the measured ones of R15 and R26), R62, CR-A, CR-C, CR-D.
+
+### Amendment, 2026-09-29 (audit 0008)
+
+- L4, [Audit 0008: the class-rule wave](../audits/0008-class-rule-wave.md): `NfsOrbitContainer` and `NfsOrbitBullets` lose their `exportAs`; both classes are empty, with no state or method to read (building-blocks 1.3).
+- L5, [Audit 0008: the class-rule wave](../audits/0008-class-rule-wave.md): the Content slides comment's "chart-placeholder is the application's own class" reads "chart-placeholder is an Application class".

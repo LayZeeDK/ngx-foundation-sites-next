@@ -385,7 +385,7 @@ Story ids follow `toggler--<story>`: `toggler--class-mode`, `toggler--class-mode
 Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test = 'error'` and `runOnly` set to the six tags of the preview's rule set (`wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`, `best-practice`), so `target-size` is part of the gate. Stories set `nfsAnimationsToken` only where noted; animated stories wait for the Completion output rather than a timeout.
 
 - `toggler--class-mode`: Foundation's menu example on `ul[nfsMenu]` with `nfsToggler toggler` and `[expanded]="menuBar.active()"`; the `nfsButton` Trigger has `aria-pressed="false"` and no `aria-expanded`; clicking makes the Menu directive add `.expanded` and flips `aria-pressed`; the button's accessible name is unchanged; Enter and Space work through `userEvent.keyboard`.
-- `toggler--class-mode-initially-active`: the consumer's own class, `class="compact-layout" toggler="compact-layout"`, renders with the class and `aria-pressed="true"`; a click removes the class and the printed `active()` reads `false`. The story's text says the class is the application's own and carries no Foundation style.
+- `toggler--class-mode-initially-active`: the consumer's own class, `class="compact-layout" toggler="compact-layout"`, renders with the class and `aria-pressed="true"`; a click removes the class and the printed `active()` reads `false`. The story's text says the class is an Application class and carries no Foundation style.
 - `toggler--visibility`: no `animate`; the `nfsCallout` panel starts shown; a click sets `hidden` and `.is-hidden` at once and `aria-expanded="false"`; a second click restores it; `aria-controls` equals the panel id.
 - `toggler--visibility-animated`: `animate="hinge-in-from-top spin-out"`; after a click `nfs-spin-out` is present and the panel still visible, then `closed` fires (shown in the story) and the panel is hidden; reopening binds `nfs-hinge-in-from-top`, then `opened` fires and the class is gone.
 - `toggler--initially-hidden`: a panel written with `hidden` and one written with `[isOpen]="false"` both start closed with `aria-expanded="false"` on their buttons.
@@ -492,7 +492,7 @@ Against the prerendered fixture app (the harness from the rendering-mode test se
       <li><a routerLink="/two">Two</a></li>
     </ul>
 
-    <!-- Class mode switching the application's own class -->
+    <!-- Class mode switching an Application class -->
     <button nfsButton [nfsToggle]="layout">Compact layout</button>
     <div nfsToggler #layout="nfsToggler" toggler="compact" id="content">...</div>
 

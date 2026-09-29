@@ -205,13 +205,13 @@ class NfsOrbit {                          // [nfsOrbit], exportAs 'nfsOrbit'
   stop(): void;
 }
 
-class NfsOrbitContainer {}                // div[nfsOrbitContainer], exportAs 'nfsOrbitContainer'
+class NfsOrbitContainer {}                // div[nfsOrbitContainer]; no exportAs
 class NfsOrbitSlide {                     // div[nfsOrbitSlide], exportAs 'nfsOrbitSlide'
   readonly value: InputSignal<string>;    // required, Aria TabPanel's; pairs the slide with the bullet of equal value
   readonly id: InputSignal<string>;       // Aria TabPanel's; generated 'ng-tabpanel-...' when absent
   readonly isActive: Signal<boolean>;
 }
-class NfsOrbitBullets {}                  // [nfsOrbitBullets], exportAs 'nfsOrbitBullets'
+class NfsOrbitBullets {}                  // [nfsOrbitBullets]; no exportAs
 class NfsOrbitBullet {                    // button[nfsOrbitBullet], exportAs 'nfsOrbitBullet'
   readonly value: InputSignal<string>;    // required, Aria Tab's
   readonly id: InputSignal<string>;       // Aria Tab's
@@ -244,7 +244,7 @@ class NfsOrbitCaption {}                  // figcaption[nfsOrbitCaption], binds 
 - `next()` and `previous()` select the following or preceding slide in DOM order; at the ends they wrap when `infiniteWrap` is on and do nothing otherwise. `play()` and `stop()` set `playing`. A write to `selected`, from code or a two-way binding, scrolls the container to that slide; an unknown value is ignored with a dev-mode warning.
 - `NfsOrbitSlide.isActive` and `NfsOrbitBullet.isActive` are the "this value is the selected one" signals behind `.is-active`; the slide's `tabindex` and `inert` follow Aria's `TabPanel.visible()`, which the synchronous selection link keeps equal to it.
 - Outputs: only `selectedChange`. Container-level payloads (building-blocks 1.4) add nothing to the value here, so there is no aggregate event.
-- `exportAs`: `nfsOrbit`, `nfsOrbitContainer`, `nfsOrbitSlide`, `nfsOrbitBullets`, `nfsOrbitBullet`. The consumer labels the rotation control with `orbit.playing()`.
+- `exportAs`: `nfsOrbit`, `nfsOrbitSlide`, `nfsOrbitBullet`; the container and the bullets' tablist have no state or method to read, so none (building-blocks 1.3). The consumer labels the rotation control with `orbit.playing()`.
 - No Variant input: Foundation's Orbit has no Variant class (the class mapping).
 - Dev-mode checks, in one `afterNextRender` of the Orbit that exists only when `ngDevMode` is on, each warning once per instance: (1) `autoPlay` on and no rotation control (WCAG 2.2.2), not given when the root holds a `button` carrying `nfsOrbitRotation` that registered no control; (2) the rotation control after the container in DOM order (the APG requires it to precede the rotating content); (3) no `[nfsOrbitBullets]` or no bullets (the slides are tab panels that no tab controls, so Aria renders them without `aria-labelledby`, and the carousel is not the tabbed style this spec implements), not given when the root holds an element carrying `nfsOrbitBullets`, or a bullets element holds one carrying `nfsOrbitBullet`, that registered nothing. In both exceptions the element's import was forgotten, which the root's In-family probe reports once (M2; Hierarchy and DI shape), so checks 1 and 3 keep their messages for an Orbit that has no such element at all; (4) the root has no `aria-label`/`aria-labelledby` or no `aria-roledescription`, or a slide has no `aria-roledescription`; (5) the bullets directive has no accessible name; (6) two slides with one `value` (Aria's panel map keeps only the last; Aria itself reports a slide without a bullet, a bullet without a slide, and duplicate bullet values). Two more run in the directive's own field initialiser under `ngDevMode`, each warning once per element: (7) a slide or a bullet whose static `class` holds `is-active` (Foundation's docs mark the first slide and bullet with it), read through `HostAttributeToken('class')` as a whole token, because the binding strips it and it would otherwise change nothing silently; the message names `[selected]` on the Orbit. A redundant Structural class (`orbit-slide`) is not reported. (8) `nfsOrbitWrapper`, `nfsOrbitControls`, `nfsOrbitFigure`, `nfsOrbitImage`, or `nfsOrbitCaption` with no `nfsOrbitToken` above it, from an optional lookup (a caption outside a slide is positioned against whatever ancestor is positioned): since 2026-09-29 not a check of its own but the five directives' In-family parent check (Hierarchy and DI shape): the constructor passes the lookup's result to `nfsDirectiveCheck`, which reports after the render once, with the caption's sentence, and tells a forgotten `NfsOrbit` import and a part declared in another template apart from a part outside any Orbit.
 
@@ -623,7 +623,7 @@ export class Gallery {
 The first slide's image is `priority`, the others lazy-load (`NgOptimizedImage`'s default); `first` never changes because the slide list is constant, which `priority` requires. `NfsButton` comes from `ngx-foundation-sites/button`. `nfsShowForSr` is the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)'s directive for `.show-for-sr`, imported as `NfsShowForSr` from `ngx-foundation-sites/visibility`.
 
 ```html
-<!-- Content slides with deferred heavy content; chart-placeholder is the application's own class -->
+<!-- Content slides with deferred heavy content; chart-placeholder is an Application class -->
 <div nfsOrbitSlide value="stats" aria-roledescription="slide">
   <h3>Launch statistics</h3>
   @defer (on viewport) { <app-launch-chart /> } @placeholder { <div class="chart-placeholder"></div> }

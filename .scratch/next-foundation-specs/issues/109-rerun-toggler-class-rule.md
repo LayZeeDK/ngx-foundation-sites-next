@@ -168,3 +168,7 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - CR-B: the class mapping gains a row for each other family whose classes the examples or Foundation's Toggler docs page use (Callout, Menu, Thumbnail, XY Grid, Button, Close Button).
 - Unchanged: R11, R14, R16 (D3 is the reference), R65, R66; CR-A, CR-C, CR-D; the In-family line.
 - Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (audit 0008)
+
+- L5, [Audit 0008: the class-rule wave](../audits/0008-class-rule-wave.md): the story's "the class is the application's own and carries no Foundation style" reads "the class is an Application class and carries no Foundation style", and the "Class mode switching the application's own class" comment reads "Class mode switching an Application class".

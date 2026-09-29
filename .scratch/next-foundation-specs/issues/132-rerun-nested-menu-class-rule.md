@@ -192,3 +192,7 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - CR-B: the mapping rows of the Nest and State classes point at the per-mode host tables under API (`NfsMenuItem`, `NfsSubmenu`), which stay the one copy.
 - `nfsMenuModeToken`'s development description drops "a menu root:" and takes M7's form for a token several directives provide, as `nfsOpenableToken`'s does (the disclosure and carousel re-run asked the review to align the two).
 - Unchanged, confirmed: R3, R4 (the exact-formula sentences; 4.65:1, with Foundation's 4.59:1 kept as its labelled false pass), R66, R69/R70, CR-A, CR-C, CR-D (no component example), and the navigation re-run's In-family lines (check 4 already says nothing for a toggle whose import was forgotten).
+
+### Amendment, 2026-09-29 (audit 0008)
+
+- L4, [Audit 0008: the class-rule wave](../audits/0008-class-rule-wave.md): `NfsSubmenuToggle` loses its `exportAs` (`nfsSubmenuToggle`); its only member is the `hybrid` input, no state or method to read (building-blocks 1.3).

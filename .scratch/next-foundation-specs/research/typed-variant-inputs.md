@@ -178,15 +178,15 @@ Emitted JavaScript for the consumer's P4 subclass and P7 narrowing directive (`n
 
 | Position | Entries |
 | --- | --- |
-| TypeScript: `const x: NfsOpenColor = 'p|'` | primary, secondary, success, warning, alert |
-| TypeScript: `const x: NfsWideColor = 'p|'` | none |
+| TypeScript: `const x: NfsOpenColor = 'p\|'` | primary, secondary, success, warning, alert |
+| TypeScript: `const x: NfsWideColor = 'p\|'` | none |
 | Static attribute, closed union (P1) | primary, secondary, success, warning, alert |
 | Static attribute, `NfsOpenColor` (P2) | primary, secondary, success, warning, alert |
 | Static attribute, `NfsWideColor` (P2b) | none |
 | Bound string literal, closed / open / wide | the five / the five / none |
 | Static attribute, consumer subclass (P4) | the five and purple |
 | Static attribute, remapped type module (P6) | the five and purple |
-| Member access `palette.|` (P5) | alert, primary, purple, secondary, success, warning |
+| Member access `palette.\|` (P5) | alert, primary, purple, secondary, success, warning |
 | Static attribute, P7 narrowing directive over `NfsWideColor` | none |
 | Static attribute, P7 narrowing directive over `NfsOpenColor` | the five (not purple) |
 

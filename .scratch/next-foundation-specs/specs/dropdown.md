@@ -646,7 +646,7 @@ Against the prerendered fixture app (the harness from the rendering-mode test se
     <div nfsDropdownPane #help="nfsDropdownPane"
          animate="fade-in fade-out" closeOnClick>...</div>
 
-    <!-- Bounded by an ancestor that carries the application's own class -->
+    <!-- Bounded by an ancestor that carries an Application class -->
     <section class="account-box">
       <button nfsButton [nfsToggle]="boxMenu">More</button>
       <div nfsDropdownPane #boxMenu="nfsDropdownPane" size="tiny" parentClass="account-box">...</div>

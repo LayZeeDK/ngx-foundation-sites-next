@@ -223,3 +223,7 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - CR-C: D4's "published placeholders" becomes a statement citing the Typography Helpers and Visibility Classes specs; the story line's pointer to a change this ticket's Answer proposed points at storybook-conventions section 5, which carries it.
 - Left open, not touched: T9 of [Audit: the specs against the architecture guide](142-audit-specs-against-architecture-guide.md) (one Library mixin for seventeen export mixins), OPEN FOR HUMAN since that audit.
 - Unchanged, confirmed: R39, R41/R42, R43, CR-A, CR-D (the usage component).
+
+### Amendment, 2026-09-29 (audit 0008)
+
+- M1, [Audit 0008: the class-rule wave](../audits/0008-class-rule-wave.md): the Sass subsection states that the Library mixin question, T9 of [Audit: the specs against the architecture guide](142-audit-specs-against-architecture-guide.md), is OPEN FOR HUMAN, and applies the one mixin until the user rules.

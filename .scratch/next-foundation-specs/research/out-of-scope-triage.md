@@ -97,6 +97,8 @@ The grids are not settled. The map's line named "Grid" (`map.md:243`), and Found
 
 Under (b) or (c), a new ADR 0040 in the ADR-FORMAT template supersedes it (`status: superseded by ADR-0040`).
 
+Correction (2026-09-29, audit 0008 L6): ADR 0039 was created as `adr/0039-directives-manage-every-foundation-class.md`, with the user's broader rule; the file name below and in the link at `:92` was never used.
+
 **New ADR 0039**, `adr/0039-css-only-components-get-directives.md`, `status: accepted`:
 
 > # CSS-only components get directives; Utility classes do not

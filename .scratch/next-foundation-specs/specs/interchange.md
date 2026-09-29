@@ -269,7 +269,7 @@ Images, no directive. Consumer markup, server HTML, and hydrated DOM are identic
 </picture>
 ```
 
-Background mode. Consumer markup (`hero` is the application's own class; no Foundation class is written):
+Background mode. Consumer markup (`hero` is an Application class; no Foundation class is written):
 
 ```html
 <div class="hero" nfsInterchange="[hero-small.jpg, small], [hero-large.jpg, large]"></div>
@@ -495,7 +495,7 @@ A static background in the developer's stylesheet (no directive), compiled with 
 }
 ```
 
-Background mode with Foundation's markup, then with data and a callout for the text. `hero` and `banner` are the application's own classes; the callout's `.callout` comes from `nfsCallout`, and its solid background keeps the text's contrast independent of every rule's image (WCAG 1.4.3):
+Background mode with Foundation's markup, then with data and a callout for the text. `hero` and `banner` are Application classes; the callout's `.callout` comes from `nfsCallout`, and its solid background keeps the text's contrast independent of every rule's image (WCAG 1.4.3):
 
 ```html
 <div class="hero" nfsInterchange="[hero-small.jpg, small], [hero-medium.jpg, medium], [hero-large.jpg, large], [hero-large-2x.jpg, retina]"></div>
