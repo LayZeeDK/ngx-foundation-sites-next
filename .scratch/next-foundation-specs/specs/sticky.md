@@ -132,6 +132,7 @@ A State class written statically on the host (copied from a page Foundation's Ja
 - `nfsStickyDefaultsToken`: `InjectionToken<NfsStickyDefaults>` with `interface NfsStickyDefaults { stickTo?: NfsStickyEdge; marginTop?: number; marginBottom?: number; stickyOn?: string }`, injected with `{optional: true}` and used to seed the input defaults (building-blocks 1.4, Shape B). Provided at bootstrap, route, or element level; the nearest wins.
 - `NfsMediaQuery` from the [Spec: Breakpoint service (shared utility)](../issues/53-spec-breakpoint-service.md), used exactly as defined there: `canStick = computed(() => mq.is(this.stickyOn()))`.
 - Entry point `ngx-foundation-sites/sticky`, which imports the Breakpoint service's entry point.
+- In-family checks ([Spec: forgotten-import checks (shared utility)](../issues/150-spec-forgotten-import-checks.md)): `NfsStickyContainer` calls `nfsDirectiveCheck('NfsStickyContainer', {children: ['NfsSticky']})` and probes the `nfsSticky` elements inside it; `NfsSticky` calls `nfsDirectiveCheck('NfsSticky')` and probes nothing (its sentinels are its own elements and carry no directive attribute). Neither has a parent check, because neither injects a parent (above): a sticky element may sit in any parent, and development warning 1 reads the parent's computed `position` from the DOM, leaving a parent that carries `nfsStickyContainer` without `.sticky-container`, a forgotten `NfsStickyContainer`, to the `strictDirectiveImports` check and the static check. No peer is linked by reference or value (`#s="nfsSticky"` is the consumer's read, and the bar, callout, and cell directives written beside belong to their own families); `strictParents` changes nothing.
 
 ### API
 
@@ -165,7 +166,7 @@ Rules the API follows:
 
 Development-mode warnings (under `ngDevMode`, each at most once per instance, from the first render callback; stripped from production builds):
 
-1. The parent element's computed `position` is `static`: "ngx-foundation-sites: the parent of an nfsSticky element is not positioned. Add nfsStickyContainer to the parent so the Sticky state is measured correctly."
+1. The parent element's computed `position` is `static`: "ngx-foundation-sites: the parent of an nfsSticky element is not positioned. Add nfsStickyContainer to the parent so the Sticky state is measured correctly." Not given when the parent carries the `nfsStickyContainer` attribute without `.sticky-container`: that is a forgotten `NfsStickyContainer` import, which the `strictDirectiveImports` Runtime check reports once on the parent with the import to add, and the static check in CI, so the warning never asks for a directive already written.
 2. The parent's content height is not larger than the element's height: "... this nfsSticky element's Sticky range is its parent, which is no taller than the element, so it never sticks. Make the parent span the range you want (Foundation's topAnchor/btmAnchor recipe)."
 3. The nearest scroll container is an element with computed `overflow` `hidden` in either axis: "... an ancestor with overflow: hidden (<selector-ish description>) is the scroll container of this nfsSticky element, so it cannot stick while the page scrolls. Use overflow: clip on that ancestor if it only needs to clip."
 4. The host carries `data-anchor`, `data-top-anchor`, or `data-btm-anchor`: "... Foundation's anchor Options are not supported; the Sticky range is the parent element. Size or place the parent to span the range."
@@ -341,7 +342,7 @@ Fixtures use a fixed-height scroll container as root so geometry is deterministi
 - Gate: with a fake `MediaMatcher` below the query the state stays anchored and the observers and listener are torn down (no measurement on scroll); crossing the query re-measures without a scroll.
 - Scroll container: the walk picks the nearest `auto`, `scroll`, or `hidden` ancestor, skips `clip` and `visible`, and treats `body` and the root as the viewport.
 - Sentinels: appended as the last children, absolutely positioned, removed on destroy; the container's size is unchanged.
-- Development warnings: each of the five fires once for its case and not for the correct case; warning 5 fires when a focused link ends up entirely under a stuck bar without `scroll-padding` and not with it, and its `focusin` listener is absent while the element is not stuck.
+- Development warnings: each of the five fires once for its case and not for the correct case; warning 1 is also silent for a parent that carries `nfsStickyContainer` without the directive; warning 5 fires when a focused link ends up entirely under a stuck bar without `scroll-padding` and not with it, and its `focusin` listener is absent while the element is not stuck.
 - Zoneless: runs with zoneless change detection and `whenStable()`; in a zone-based fixture, scrolling does not start an application tick unless a signal changed.
 
 ### 3. Node-level Vitest

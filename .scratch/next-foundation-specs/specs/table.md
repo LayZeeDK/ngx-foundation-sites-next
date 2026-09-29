@@ -101,10 +101,11 @@ div[nfsTableScroll]    NfsTableScroll (standalone directive, no template, no par
     caption, thead, tbody, tfoot, tr, th, td   no directive: Foundation styles them by tag
 ```
 
-- The two directives do not know each other: no token, no parent handle, no content query. A table inside a scroll wrapper and a table outside one behave the same, so neither needs the other (building-blocks 1.9 needs no DI link here).
+- The two directives do not know each other: no token, no parent handle, no content query. A table inside a scroll wrapper and a table outside one behave the same, so neither needs the other (building-blocks 1.9 needs no DI link here). Only the wrapper's development In-family check names `NfsTable`, to probe an `nfsTable` inside it (below).
 - No host directives, and no Defaults token: Table has no Options, and a Defaults token never holds a Variant input's default (building-blocks 1.4).
 - Injection: `ElementRef` for the development checks; in development builds only, `HostAttributeToken('class')` (optional) on `NfsTable` for the copied-class warning (D12). Neither directive requests a Variant check handle: no Table input reads a Variant property (D5, D11).
 - Entry point: `ngx-foundation-sites/table` (one per Foundation docs page), so a consumer's `@defer` can split it. It exports `NfsTable` and `NfsTableScroll`; `NfsVariantBoolean` and `nfsVariantBoolean` live in the primary entry point `ngx-foundation-sites` and are used here.
+- In-family checks ([Spec: forgotten-import checks (shared utility)](../issues/150-spec-forgotten-import-checks.md)): `NfsTableScroll` calls `nfsDirectiveCheck('NfsTableScroll', {children: ['NfsTable']})` and probes an `nfsTable` inside it, so a forgotten `NfsTable` in a wrapper is reported, as is an `nfsTable` on an element other than a `table`; a plain table carries no attribute and is never reported. `NfsTable` calls `nfsDirectiveCheck('NfsTable')` and probes nothing, because the caption, row groups, rows, and cells carry no directive. Neither has a parent check, because neither injects a parent and a table outside a wrapper is Foundation's usual form; neither has a peer linked by reference or value (a region's `aria-labelledby` names the consumer's caption, not a directive); `strictParents` changes nothing. The entry point imports `nfsDirectiveCheck` from `ngx-foundation-sites/media-query` for this call alone; the call sits behind the inline `ngDevMode` guard, so a production build keeps nothing of it.
 
 ### API: `NfsTable`
 
