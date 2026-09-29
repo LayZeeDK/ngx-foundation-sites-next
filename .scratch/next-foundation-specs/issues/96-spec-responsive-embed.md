@@ -158,3 +158,12 @@ No new ADR: the focus rule is reversible CSS with no API, and the hydration fact
 ### Note, 2026-09-28 (out-of-scope reasons)
 
 - 2026-09-28: the Out of Scope reasons named in [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) are corrected in the spec.
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2, group d, applying the coordinator's decisions in [research/consistency-review-decisions.md](../research/consistency-review-decisions.md) and the forgotten-import checks spec's rules for family checks; `specs/responsive-embed.md` was revised in place. The reviewer's record is [research/consistency-review-group-d.md](../research/consistency-review-group-d.md).
+
+- R59: the missing-property browser-level case sits in a test file of its own.
+- R74: check 1 counts an image's non-blank `alt` (or a `role="img"` element's non-blank `aria-label`) in the element `aria-labelledby` references; the check 1 cases gain the silent image-only case.
+- CR-C: the Notes line "the Float Classes spec can note it" reads "notes it too"; that spec does.
+- Unchanged, confirmed: R26, R31, CR-A, CR-D.

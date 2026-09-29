@@ -155,3 +155,12 @@ From [Re-run: navigation family specs, In-family check lines](151-rerun-navigati
 - Hierarchy and DI shape gains the In-family lines: `NfsPagination` probes `NfsPaginationPrevious`, `NfsPaginationNext`, and `NfsPaginationEllipsis`; each of the three has a parent check over `NfsPagination`, through its development-only lookup by class, with the sentence "Foundation lays out and draws pagination items only inside a pagination.", and throws under `strictParents`.
 - The items' outside-the-pagination warning becomes that parent check's report, so an item outside a pagination is reported once.
 - No API, class, ARIA, rendering, or Sass change. Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2, group d, applying the coordinator's decisions in [research/consistency-review-decisions.md](../research/consistency-review-decisions.md) and the forgotten-import checks spec's rules for family checks; `specs/pagination.md` was revised in place. The reviewer's record is [research/consistency-review-group-d.md](../research/consistency-review-group-d.md).
+
+- R4: the Sass subsection's checks paragraph gains the canonical helper sentence (S1): it named the library's helper but neither Foundation function as unused.
+- The `app-invoice-pager` example's `viewChild` query is `protected`, not `private` (the repository's AGENTS.md: Angular signal queries take `protected`; `private` is not used).
+- The `NfsPagination` In-family line says that the Typography Helpers' `nfsTextAlign` beside it belongs to another family and is not probed (the form and value-control re-run asked the review to state cross-family neighbours the same way in every spec).
+- Unchanged, confirmed: R4 (figures), R9/R23, R24, R74 (attribute-only landmark check), CR-A, CR-C, CR-D.

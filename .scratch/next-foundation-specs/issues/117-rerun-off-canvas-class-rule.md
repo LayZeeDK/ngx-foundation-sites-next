@@ -169,3 +169,14 @@ From [Re-run: disclosure and carousel family specs, In-family check lines](152-r
 - Development check 3's wrapper half finds the wrapper by its `nfsOffCanvasWrapper` attribute or its class, so a wrapper whose import was forgotten is reported once, by `strictDirectiveImports` on the wrapper (M1), and check 3 never asks for an attribute already written; a browser-level case asserts it.
 
 Triage: impact LOW (development-only checks and one development-only string), confidence HIGH (ADR 0046, building-blocks 1.9, the shared spec's rule and its kept-optional list, D26's DOM-ancestry reason). Nothing is OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2, group d, applying the coordinator's decisions in [research/consistency-review-decisions.md](../research/consistency-review-decisions.md) and the forgotten-import checks spec's rules for family checks; `specs/off-canvas.md` was revised in place. The reviewer's record is [research/consistency-review-group-d.md](../research/consistency-review-group-d.md).
+
+- R25: the 1.4.3 row names Foundation's `$anchor-color` for its 4.65:1 and adds 6.01:1 with the Callout's required `$anchor-color`, which the Storybook overrides carry; a 1.4.12 row after the 1.4.10 row (Foundation's example passes: the menu links end before the close button at 320 CSS px with the text spacing, in three engines); the e2e layer's text-spacing case on `off-canvas--default`.
+- R26: rule (b) adds `overflow-wrap: break-word` to `.off-canvas-wrapper` with its measured reason and why not `anywhere`; the Solution, the Sass summary, D19, the 1.4.10 row, and the missing-include item follow.
+- R52: "consuming-directive rule 1" in the two citations of the Breakpoint service's rule.
+- R57: "the consumer's own classes" in two places.
+- The registration rule of the forgotten-import checks spec (its second bullet after the family rule's item 5): development check 3's content half says nothing for a panel inside an element that carries `nfsOffCanvasContent` without its directive, whose forgotten import `strictDirectiveImports` reports once (M1); it keeps its message for a bare panel with no such element. The `NfsOffCanvas` In-family line and the browser-level development-check case follow. This replaces the disclosure and carousel re-run's "check 3 stays the report ... still true when a content ... lost its import", whose shared-spec proposal was not adopted.
+- Unchanged, confirmed: R4, R14, R22/R53, R50, R56, R59, R65, R66, R68, R69/R70, CR-A, CR-C, CR-D (no component example).

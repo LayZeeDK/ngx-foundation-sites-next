@@ -200,3 +200,15 @@ From the [Re-run: form and value-control family specs, In-family check lines](15
 
 - Hierarchy and DI shape gains the In-family check lines, one per directive: `NfsProgress` probes `NfsProgressMeter`, and the meter probes `NfsProgressMeterText`; the meter and the meter text have no parent check, because their required injections' NG0201 is the report; `NfsProgressElement` has no parent, probe, or peer. The meter text keeps its lookup of `NfsProgressMeter` by class, whose NG0201 prints the class name, rather than gaining a public token for one message.
 - `nfsProgressToken` gains its development-only description ("nfsProgressToken (provided by NfsProgress from 'ngx-foundation-sites/progress-bar' on an ancestor element declared in the same template)").
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2, group d, applying the coordinator's decisions in [research/consistency-review-decisions.md](../research/consistency-review-decisions.md) and the forgotten-import checks spec's rules for family checks; `specs/progress-bar.md` was revised in place. The reviewer's record is [research/consistency-review-group-d.md](../research/consistency-review-group-d.md).
+
+- R5: after the overrides-file sentence, the palettes a `$foundation-palette` merge reaches (the progress bars, the native progress element, the callouts) and those it does not (`$button-palette`, `$badge-palette`, `$label-palette`).
+- R15: the e2e forced-colours bullet gives the shared reason WebKit is not run.
+- R30: `progress-bar--right-to-left` names each bar and shows and asserts its Visible value.
+- R59: the injection bullet names the handles `nfsVariantCheck('nfsProgress')` and `nfsVariantCheck('nfsProgressElement')`.
+- R74: check 1 and the progress element's name check count an image's non-blank `alt` (or a `role="img"` element's non-blank `aria-label`) in the referenced elements and labels; the development-check cases gain the silent image-only cases.
+- R4: Sass rule (c) gains the canonical helper sentence (S1), which named neither Foundation function as unused.
+- Unchanged, confirmed: R4 (figures), R59's call and own-file case, CR-A, CR-C, CR-D, and the form and value-control re-run's In-family lines.

@@ -180,3 +180,15 @@ From [Re-run: navigation family specs, In-family check lines](151-rerun-navigati
 - `nfsMenuModeToken` gets its development-only description, naming the four roots and their entry points.
 - Development checks: check 3 keeps the non-hybrid toggle case, and a span outside any toggle is the parent check's report; check 4 says nothing for an item that holds an element carrying `nfsSubmenuToggle`, whose forgotten import the item's child probe reports; check 5's item case is the parent check's report. The browser-level warning cases gain the check 4 case.
 - No API, class, ARIA, keyboard, rendering, or Sass change. Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2, group d, applying the coordinator's decisions in [research/consistency-review-decisions.md](../research/consistency-review-decisions.md) and the forgotten-import checks spec's rules for family checks; `specs/nested-menu.md` was revised in place. The reviewer's record is [research/consistency-review-group-d.md](../research/consistency-review-group-d.md).
+
+- R26: Library mixin rule 9 (`nfs-drilldown` on `.is-drilldown`) gains `overflow-wrap: break-word` beside `overflow: clip`, with its measured reason (a 27-letter word in a 250 px panel lost 31.3 px with the 1.4.12 spacing in three engines).
+- R47: the 1.4.1 row says that an open nested Hybrid item's link in dropdown mode keeps Foundation's `.menu .is-active > a` fill, the Current link look, and shows its open state through its toggle's `aria-expanded` and the visible submenu (ADR 0042, dated note).
+- R52: the family diagram's "consumers (other specs):" reads "consuming specs:", and the header cell of "What each consuming spec maps" reads "Consuming spec".
+- R57: "an Application class" in the class-map test.
+- CR-B: the mapping rows of the Nest and State classes point at the per-mode host tables under API (`NfsMenuItem`, `NfsSubmenu`), which stay the one copy.
+- `nfsMenuModeToken`'s development description drops "a menu root:" and takes M7's form for a token several directives provide, as `nfsOpenableToken`'s does (the disclosure and carousel re-run asked the review to align the two).
+- Unchanged, confirmed: R3, R4 (the exact-formula sentences; 4.65:1, with Foundation's 4.59:1 kept as its labelled false pass), R66, R69/R70, CR-A, CR-C, CR-D (no component example), and the navigation re-run's In-family lines (check 4 already says nothing for a toggle whose import was forgotten).

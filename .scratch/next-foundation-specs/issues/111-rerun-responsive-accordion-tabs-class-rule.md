@@ -93,3 +93,15 @@ No change to `CONTEXT.md`, any ADR, `README.md`, or `storybook-conventions.md` i
 ### Note, 2026-09-28 (out-of-scope reasons)
 
 - 2026-09-28: the Out of Scope reasons named in [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) are corrected in the spec.
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2, group d, applying the coordinator's decisions in [research/consistency-review-decisions.md](../research/consistency-review-decisions.md) and the forgotten-import checks spec's rules for family checks; `specs/responsive-accordion-tabs.md` was revised in place. The reviewer's record is [research/consistency-review-group-d.md](../research/consistency-review-group-d.md).
+
+- R4: 6.01:1 on `$white` in the 1.4.3 row; the Sass subsection's reused list no longer names `color-luminance()` (the checks compare the exact unrounded ratio of the library's internal helper).
+- R45: `nfs-tabs` is required for tabs mode, whatever `simple` and `primary` say: the Solution, the 1.4.3 row, the Sass and custom CSS summary, the Sass subsection's lead, rules (1), (2), and (5), D20, and the include comment; the citations point at the Tabs spec's D26.
+- R46: a sentence after the equal-heights recipe ties its selectors to the documented tabs-mode structure.
+- R52: "consuming-directive rule 4" in two places. R57: "Application class" in four places.
+- ADR 0046: Hierarchy and DI shape gains an In-family line in the form the architecture audit's X1 gave the Interchange: the component's element selector is NG8001's, the panel directive on `ng-template` calls nothing, and the composed Accordion and Tabs directives follow their own lines.
+- CR-D: the `app-product` example imports `ReviewList`, the application component its template writes inside `@defer`.
+- Unchanged, confirmed: CR-A, CR-C.

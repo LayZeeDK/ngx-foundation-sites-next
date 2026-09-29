@@ -118,3 +118,13 @@ No change to `CONTEXT.md` (beyond item 3), any ADR, `README.md`, `storybook-conv
 ### Note, 2026-09-29 (in-family check lines)
 
 - 2026-09-29: `specs/responsive-menu.md` gains its In-family checks line, quoted in [Re-run: navigation family specs, In-family check lines](151-rerun-navigation-family-in-family-lines.md).
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2, group d, applying the coordinator's decisions in [research/consistency-review-decisions.md](../research/consistency-review-decisions.md) and the forgotten-import checks spec's rules for family checks; `specs/responsive-menu.md` was revised in place. The reviewer's record is [research/consistency-review-group-d.md](../research/consistency-review-group-d.md).
+
+- R26: the 1.4.12 row reads "the drilldown wrapper re-measured and its long words broken".
+- R47: the Base side bullet says the root learns the Top Bar's right-hand section through `nfsTopBarRightToken` at construction, or one DOM walk after hydration, by the Nested menu's Base-side rule (ADR 0043).
+- R52: "consuming-directive rule 4" in two places. R57: "an Application class" in the class-rule test.
+- The `app-site-nav` example's `viewChild` query is `protected readonly siteMenu`, not an ES private field (the repository's AGENTS.md: Angular signal queries take `protected`).
+- Unchanged, confirmed: R1, R3, R4, R65, R66, R69/R70, the navigation re-run's quoted In-family line, CR-A, CR-C, CR-D.

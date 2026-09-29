@@ -211,3 +211,15 @@ Eighteen export-mixin directives set all 357 Prototype classes through 42 `nfs`-
 ### Note, 2026-09-29 (architecture audit)
 
 - 2026-09-29: the fixer items of [Audit: the specs against the architecture guide](142-audit-specs-against-architecture-guide.md) are applied to the spec.
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2, group d, applying the coordinator's decisions in [research/consistency-review-decisions.md](../research/consistency-review-decisions.md) and the forgotten-import checks spec's rules for family checks; `specs/prototyping-utilities.md` was revised in place. The reviewer's record is [research/consistency-review-group-d.md](../research/consistency-review-group-d.md).
+
+- R32/R64: the rendered image-replacement `img` shows no `src`; the usage example's hero image takes `priority` (building-blocks 1.2 image rule 2: the likely largest contentful paint).
+- R59: `include()` names no `prototype-<flag>-breakpoints` flag property; the injection bullet names the handle with its argument (`nfsVariantCheck('nfsPrototypeSpacing')`, the directive class's camelCase).
+- R4: Sass rule (c) gains the canonical helper sentence (S1).
+- ADR 0046 (no import arrays): the story line no longer says each story imports `nfsPrototypeClasses`, the array D2 rejects; each story lists the directives of the families it uses in `moduleMetadata.imports`.
+- CR-C: D4's "published placeholders" becomes a statement citing the Typography Helpers and Visibility Classes specs; the story line's pointer to a change this ticket's Answer proposed points at storybook-conventions section 5, which carries it.
+- Left open, not touched: T9 of [Audit: the specs against the architecture guide](142-audit-specs-against-architecture-guide.md) (one Library mixin for seventeen export mixins), OPEN FOR HUMAN since that audit.
+- Unchanged, confirmed: R39, R41/R42, R43, CR-A, CR-D (the usage component).
