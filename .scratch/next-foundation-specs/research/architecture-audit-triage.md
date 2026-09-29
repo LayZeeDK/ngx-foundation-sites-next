@@ -1,0 +1,116 @@
+# Architecture audit: triage
+
+Ticket: [Audit: the specs against the architecture guide](../issues/142-audit-specs-against-architecture-guide.md). Judge: Opus 5.5, 2026-09-29. Inputs: the six findings files `research/architecture-audit-a.md` to `-f.md` (six Sonnet 5 auditors, about nine specs each), the four spec findings that [Decide: the directive and component architecture guide](../issues/141-decide-directive-component-architecture-guide.md) routed to this audit, and the records that outrank the guide (the map's Notes, the ADRs, `building-blocks.md`). Every finding was checked against the spec text as it is on 2026-09-29; quotes carry the file and line. The guide's Release policy is not audited.
+
+## Counts
+
+- Raw items: 53 spec findings, 7 guide problems (P13, P10, P26, P4 from group a; P17 and P18 from group d; P19 from group e; group c's P21 note is the same cause as its two P21 findings), and 4 routed items from ticket 141: 64.
+- Deduplicated: 18 findings. 11 survive (one of them OPEN FOR HUMAN) and 7 are dropped; four raw findings that survive also lose a part (Dropped parts, below).
+- Resolution: 5 re-run tickets, 10 fixer items (14 edits), guide edits to P4, P13, P17, P19, and P21, three `building-blocks.md` edits (1.5 once, 1.10 twice), and 1 item OPEN FOR HUMAN. The fixer items and proposals are quoted in the ticket's Answer.
+
+## The ticket's own checks (How to work it, item 4)
+
+- In-family check lines: `rg "nfsDirectiveCheck|strictParents|In-family" specs/` matches three files: `accordion.md` (1), `breakpoint-service.md` (10), `forgotten-import-checks.md` (51). Of the 31 specs with more than one directive, only the Accordion lists its lines (`accordion.md:156`, the text of ticket 150's proposal 10).
+- Parent tokens: 15 in the corpus; the Accordion's two carry their development descriptions (`accordion.md:156`), the other 13 do not, and six specs show a plain-string declaration the inherited building-blocks 1.9 now replaces (`nested-menu.md:212`, `off-canvas.md:175`, `orbit.md:168`, `slider.md:158`, `reveal.md:160`, `triggers.md:121`).
+- `strictParents`: none of the eight families of `forgotten-import-checks.md:232-242` (Nested menu, Menu, Breadcrumbs, Pagination, Slider, Orbit, Equalizer, Drilldown Menu) says its part throws.
+- The Drilldown Menu does not say why its root's wrapper injection stays optional (`drilldown-menu.md:145`, `:164`; the reason is only at `forgotten-import-checks.md:249`).
+
+## Deduplicated findings
+
+| ID | Cause | Principle | Reaches | Raw items | Verdict | Impact | Confidence |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| T1 | Specs written before ADR 0046 list no In-family check line per part, no `strictParents` line for the parts in the shared spec's table, no reason for the Drilldown root's optional wrapper injection, and parent tokens without development descriptions | P24 | 30 specs with more than one directive (below), and Reveal's token | abide-a1, breadcrumbs-a1, card-a1, drilldown-menu-a1, equalizer-a1, flex-grid-a1, flexbox-utilities-a1, float-grid-a1, forms-a1, interchange-a1, media-object-a1, menu-a1, nested-menu-a1, off-canvas-a1, orbit-a1, pagination-a1, progress-bar-a1, prototyping-utilities-a1, responsive-toggle-a1, slider-a1, sticky-a1, switch-a1, table-a1, tabs-a1, toggler-a1, top-bar-a1, triggers-a1, typography-helpers-a1 (its line part), visibility-classes-a1, xy-grid-a1, reveal-a1 (its token part) | Survives: five family-group re-runs (R1 to R5) and six fixer items (X1 to X6) | MEDIUM | HIGH |
+| T2 | Single-directive specs do not state that their directive calls `nfsDirectiveCheck` | P24 | 17 specs (below) | accordion-menu-a1, badge-a1, button-a1, button-group-a1, callout-a1, close-button-a1, dropdown-menu-a1, dropdown-a1, float-classes-a1, label-a1, magellan-a1, responsive-embed-a1, responsive-menu-a1, reveal-a1 (its call part), smooth-scroll-a1, thumbnail-a1, tooltip-a1 | Dropped against the 17 specs; survives against the shared spec's rule line: fixer X7 | LOW | HIGH |
+| T3 | The Accordion's In-family lines are one bullet, not one line per part | P24 | accordion | accordion-a1 | Dropped | - | - |
+| T4 | Typography Helpers says a forgotten `NfsPrintStyles` "reports nothing" | P24 | typography-helpers | typography-helpers-a1 (its Notes part) | Survives: fixer X8 | LOW | HIGH |
+| T5 | Development geometry checks read the computed `direction`, a case building-blocks 1.5 does not record | P21 | float-classes, float-grid (building-blocks 1.5 and 1.10, the guide's P21) | float-classes-a2, float-grid-a2, group c's guide note | Survives against the record, not the specs: BB1, BB2, and the P21 edit | LOW | HIGH |
+| T6 | A non-linear Slider Handle without `displayWith` speaks "the value as text" in no stated format | P21 | slider (and the guide's P21) | slider-a2; ticket 141, item 4 | Survives: fixer X9 and the P21 edit | MEDIUM | HIGH |
+| T7 | `[nfsTooltip]` accepts any element | P5 | tooltip | tooltip-a2 | Dropped | - | - |
+| T8 | The Progress Bar's input table states no kind for `value`, `min`, `max` | P9 | progress-bar | progress-bar-a2 | Dropped | - | - |
+| T9 | One `nfs-prototyping-utilities` Library mixin for seventeen Foundation export mixins, against ADR 0012's dated note | P18 | prototyping-utilities | group d's P18 guide problem, reclassified | OPEN FOR HUMAN | HIGH | NOT HIGH |
+| T10 | Forms and Abide give NG0309 as a reason not to host a directive, which building-blocks 1.9 measured to be false | P8 | forms, abide | ticket 141, item 1 (the judge found Abide's three copies of the claim) | Survives: fixer X10 (five edits) | LOW | HIGH |
+| T11 | Accordion and Forms quote ratios from Foundation's `color-luminance()` | P17 | accordion, forms | ticket 141, item 2 | Dropped here: already routed to ticket 133 | - | - |
+| T12 | Reveal and Accordion measure the fallback timer always, against building-blocks 1.6 rule 1 | P19 | reveal, accordion | ticket 141, item 3 | Dropped against the specs; the guide's stale wording is G7 | - | - |
+| G1 | P13's "four-step order" reads either as a naming rule or as a declaration order | P13 | the guide | group a, guide problem 1 | Survives: P13 edit | LOW | HIGH |
+| G2 | P10 does not say whether it binds a service's methods | P10 | the guide | group a, guide problem 2 | Dropped | - | - |
+| G3 | P26's "one tab stop per composite" against the Accordion's tabbable headers | P26 | the guide | group a, guide problem 3 | Dropped | - | - |
+| G4 | P4 requires a token for every parent lookup, while three families look their parent up by class in development builds only | P4 | the guide | group a, guide problem 4 | Survives: P4 edit | LOW | HIGH |
+| G5 | P17's list of `inert` exceptions lacks the Drilldown's hidden ancestor levels | P17 | the guide, building-blocks 1.10 | group d, the Nested menu guide problem | Survives: P17 edit and BB3 | LOW | HIGH |
+| G7 | P19 quotes building-blocks 1.6 rule 1 as it was before ticket 141 changed it, and omits rule 5's reduced-motion exception | P19 | the guide | group e, guide problem 1; T12 | Survives: P19 edit | LOW | HIGH |
+
+G6 (group d's P18 guide problem) is not in the table because it is T9: the guide restates the record correctly, and the spec departs from it.
+
+### T1: the specs it reaches and the evidence
+
+Re-runs (25 specs, grouped by family so that cross-spec parent lists stay in one ticket):
+
+- R1, navigation: `menu.md:116` ("li[nfsMenuText]  NfsMenuText   in development builds only: inject(NfsMenu, {optional: true}) for its warning"); `nested-menu.md:140` ("li[nfsMenuItem]        inject(nfsMenuModeToken, {optional}), inject(NfsSubmenu, {optional})"), `:146`, `:212`; `drilldown-menu.md:145-148` ("inject(NfsDrilldownWrapper, {optional: true, skipSelf: true})", "li[nfsDrilldownBack] > button   inject(NfsDrilldown, {optional: true}),"); `top-bar.md:128` ("nfsTopBarRightToken   InjectionToken<NfsTopBarRight>"); `breadcrumbs.md:108` ("inject(NfsBreadcrumbs, {optional: true})"); `pagination.md:110` ("li[nfsPaginationPrevious]      NfsPaginationPrevious   in development builds only: inject(NfsPagination, {optional: true})").
+- R2, disclosure and carousel: `triggers.md:121` ("`nfsOpenableToken = new InjectionToken<NfsOpenable>('nfsOpenableToken')`"); `off-canvas.md:175`; `responsive-toggle.md:199` ("The menu has no registered title bar"); `tabs.md:146` (`nfsTabsGroupToken`); `orbit.md:168` ("in development builds each looks the token up with `{optional: true}` for dev check 8").
+- R3, forms and value controls: `abide.md:155` ("injects it `{optional: true}`"); `forms.md:132` ("No injection tokens, no providers, no parent discovery, no host directives, and no Defaults token"); `switch.md:126`; `slider.md:153`, `:158`, `:236` ("in development builds only it injects `nfsSliderToken` (`{optional: true}`) for development check 6"); `progress-bar.md:116` ("Injection besides the above: `ElementRef` for the development checks").
+- R4, CSS-only components and free behaviours: `card.md:95` ("Injection: none, in development builds too"); `media-object.md:165` ("whose parent element carries no `.media-object`"); `table.md:104` ("The two directives do not know each other: no token, no parent handle, no content query."); `sticky.md:129` ("No parent token"); `equalizer.md:136` ("NfsEqualizerWatch: inject(nfsEqualizerToken, {optional, skipSelf})"), `:144`.
+- R5, layout systems and flex utilities: `xy-grid.md:210` ("this cell is not a direct child of"); `float-grid.md:160`; `flex-grid.md:127` ("Two standalone directives with no template, no parent, no children"); `flexbox-utilities.md:124` ("No token, no providers, no parent discovery through DI").
+
+Fixer items (five families whose parts never nest and never link, so every line is the call's name and "none", and Reveal's token): `interchange.md` (X1), `prototyping-utilities.md` (X2), `typography-helpers.md` (X3), `visibility-classes.md` (X4), `toggler.md` (X5), `reveal.md:160` (X6).
+
+Not reached: `accordion.md` (T3); `responsive-accordion-tabs.md`, whose component has an element selector and whose panel directive sits on `ng-template`, both outside the call by the shared spec's own text (group d's finding holds).
+
+Rating: MEDIUM, because the lines specify development-only checks and the `strictParents` part list is already fixed by the shared spec, so no public API changes; HIGH, because ADR 0046, building-blocks 1.9, and the shared spec's rule (`forgotten-import-checks.md:198-206`) decide the form, and each part's content follows from its spec's hierarchy (ticket 150 rated the family rule MEDIUM, HIGH).
+
+Why five re-runs rather than one or thirty: one ticket over 25 specs is one long serial run for edits that are small per spec; 25 tickets repeat one brief 25 times and split the parent lists that cross specs (`NfsMenuText`'s parents are `NfsMenu` and every directive that hosts it, spread over five specs; `nfsOpenableToken` has six providers; the Float Grid's and Flex Grid's `NfsRow` and `NfsColumn` must agree by the manifest's rule 2, `forgotten-import-checks.md:143`). Five groups keep each dependency inside one ticket, touch disjoint spec sets, and can run in parallel under the map's concurrency rule.
+
+### T2: why the single-directive items are dropped
+
+- `building-blocks.md` 1.9, the Forgotten imports bullet, inherited by every spec ("Every plugin spec inherits Part 1", `building-blocks.md:6`): "Every library directive and component with an attribute selector calls `nfsDirectiveCheck('<Class>', family?)` from `ngx-foundation-sites/media-query` once, from its constructor".
+- Ticket 150's own routing, "What other specs need from this one": "Every library directive and component with an attribute selector: one `nfsDirectiveCheck` call (building-blocks 1.9, proposed). No spec text needs it beyond the family lines, because building-blocks Part 1 is inherited."
+- Against both, `forgotten-import-checks.md:206`: "A single directive's spec states only that it calls `nfsDirectiveCheck` with its name." The guide's P24 asks only family specs to list lines. The 17 specs meet the records; the shared spec's line is the text that disagrees with its ticket, so X7 corrects it. The 17 specs: accordion-menu, badge, button, button-group, callout, close-button, dropdown-menu, dropdown, float-classes, label, magellan, responsive-embed, responsive-menu, reveal, smooth-scroll, thumbnail, tooltip.
+
+### T5: evidence
+
+`float-classes.md:154`: "`Directionality` reports the `dir` attribute, while float placement follows the computed `direction`, so the development check reads the computed style"; `float-grid.md:237`: "orders each line by its left edge, or by its right edge from the right when the row's computed `direction` is `rtl`"; `building-blocks.md:107`: "Exception: the Slider reads the host's computed `direction` in client event handlers, because its native inputs and fill follow CSS direction." `slider.md:276` gives the same reason ("a subtree can set `dir` or CSS `direction` without CDK's `Dir` directive, in which case `Directionality` would disagree"). The Float checks run in development only and test what CSS rendered, which is the Slider exception's own reason, so the record gains the case; no spec changes.
+
+### T6: evidence
+
+`slider.md:258`: "`displayWith(value)`; for a non-linear handle without `displayWith`, the value as text; otherwise absent". Material's default is locale-free: `NC/src/material/slider/slider.ts:366`, `` @Input() displayWith: (value: number) => string = (value: number) => `${value}`; ``. P21 renders no library string and needs no locale service, so the fallback is `` `${value}` ``. MEDIUM: the text assistive technology speaks, which a later change would alter for consumers (ADR 0045); HIGH: Material's precedent and P21 agree, and [Resolve the assistive-technology checks](../issues/77-evidence-assistive-technology-checks.md) already requires the value, never the Bar position.
+
+### T9: evidence (OPEN FOR HUMAN; options in the ticket's Answer)
+
+- `adr/0012-sass-packaging.md:29` (dated 2026-09-28, Top Bar): "an entry point whose docs page covers several Foundation export mixins gets one Library mixin per export mixin, named after it and included after it, so each check runs only for a component the consumer compiles". Added in commit 7fba317 (2026-09-28 04:54), before the Prototyping Utilities spec's commit 1528fd1 (09:22).
+- `prototyping-utilities.md:584`: "Its documented custom CSS is the `nfs-prototyping-utilities` mixin of the library's Sass", over `foundation-prototype-spacing` to `-text-decoration` (seventeen family export mixins) and the umbrella `foundation-prototype-classes`; `:591`: "Only `nfs-prototyping-utilities` writes them." No design decision of the spec weighs one mixin against one per export mixin.
+- `adr/0044-utility-directive-rule.md:7`: "the family's Library mixin prints out-of-order responsive rules again in order" (singular); its Consequences speak of directive shapes only.
+- The guide's P18 restates ADR 0012's note, and its Avoided form "one mixin for a docs page that covers three export mixins" is this shape. Group d read it as a guide conflict with ADR 0044; it is a spec departure from ADR 0012 that ADR 0044's wording blurs. No other spec shares the shape: Float Classes and Flexbox Utilities each rely on one export mixin, Typography Helpers has `nfs-typography-base` and `nfs-typography-helpers`, Top Bar three mixins.
+- What the one mixin costs: the arrow contrast check (`:586` (c)) runs, the responsive spacing reprint (`:586` (a), 4087 bytes) prints, and every registry's Variant and flag properties are written whether or not the consumer compiled that export mixin, so `strictVariantProperties` cannot report a Prototyping directive whose Foundation export mixin is missing.
+
+### T10: evidence
+
+`building-blocks.md` 1.9, Hosting a class directive: "a template match of the same directive discards its host-directive matches, so a consumer who also writes it gets no NG0309 ... All three were measured with Angular 22.2.0 in the Menu ticket"; `menu.md:133` states the same measurement. Against it: `forms.md:148` ("which Angular rejects at run time (NG0309, ...)"), `forms.md:440`, `abide.md:154`, `abide.md:570`, `abide.md:571`. Each decision has other stated reasons, which stand (`middle` spelt through two directives; the hosted look forced on every host; one entry point importing another's), and a label has no Structural class for a host to own (P6), so only the NG0309 clauses go.
+
+## Dropped findings and why
+
+- T3 (accordion-a1). `accordion.md:156` is ticket 150's proposal 10, applied as the shared rule's worked example, and it states all five items for each of the five parts; the one-bullet form carries the same content. The re-runs may use either form.
+- T7 (tooltip-a2). P5 asks a selector to name the native element "wherever the ARIA or the platform behaviour depends on it". The Tooltip depends on an interactive host, which includes a host with one of fifteen interactive ARIA roles (`tooltip.md:224`); a selector matches only static template attributes, so a host whose role comes from a binding or from its own component's host bindings would fall outside a narrowed selector. D5 (`tooltip.md:568`) records interactive hosts enforced by development warnings; the spec meets P5.
+- T8 (progress-bar-a2). Ticket 139's Answer: the audit "does not rate a published `inert` row for a missing kind statement; a spec changed after 2026-09-28 that adds an input named like an HTML attribute states its kind"; `research/presentational-attribute-inputs.md:222-224` (rows 41-43) class `value`, `min`, and `max` on the `div` as doing nothing.
+- T11 (ticket 141, item 2). ADR 0022's dated note assigns it: "the class-rule consistency review rechecks every ratio a spec quotes" (`adr/0022-wcag-2-2-aa-enforcement.md:23`), and `research/consistency-review-routed-items.md` row R4 already carries the helper replacement for the Accordion, the Forms, and fifteen other specs to [Consistency review: the class-rule wave](../issues/133-consistency-review-class-rule-wave.md). Routing it again would duplicate R4.
+- T12 (ticket 141, item 3). `building-blocks.md:115` (1.6 rule 1) now reads "library-owned animations are measured too, as the Reveal and Accordion specs already do", from ticket 141's proposal 2, so both specs meet the record. The guide's P19 still quotes the old rule (G7).
+- G2. P10 names the forms public API takes and forbids decorators, `EventEmitter`, a public `effect()`, and a public negation; a plain read method is none of them, P13 names the method vocabulary, and `building-blocks.md:126` (1.7) records `atLeast`, `upTo`, `only`, `is`, and `resolve` as reactive reads (Breakpoint service spec decision 14). The Breakpoint service meets P10 on the record's text; no auditor reached two verdicts on it.
+- G3. APG Accordion, Keyboard Interaction: "all focusable elements in the accordion are included in the page Tab sequence" (`APG/content/patterns/accordion/accordion-pattern.html:62`). Accordion headers are buttons, not a composite widget, so building-blocks 1.10's "one tab stop per composite (roving `tabindex`)" (`building-blocks.md:164`) does not reach them; the Accordion meets P26.
+
+Dropped parts of findings that survive under T1:
+
+- breadcrumbs-a1: "a correctly-imported `nfsBreadcrumbsItem` with `disabled=false` ... risks being misreported as a forgotten import". Building-blocks 1.9 gives the item the call, which fills the host record the runtime verdict's step 4 reads (`forgotten-import-checks.md:180`).
+- media-object-a1: replacing check 3's DOM read with a parent check. `NfsMediaObjectSection` injects no parent, and building-blocks 1.9 records "A check that only reports placement reads the DOM alone (the Top Bar's section check, its D13)"; the shared parent check exists only for an optional parent injection (`forgotten-import-checks.md:188`).
+- triggers-a1: routing check 1 through the parent check with a `strictParents` effect. The shared spec keeps `nfsClose` and `nfsToggle` optional, "a bound target replaces the Nearest Openable, and inputs are not set at construction" (`forgotten-import-checks.md:246`), so `strictParents` changes nothing and check 1 stays.
+- xy-grid-a1: only the replacement is dropped; how a DOM placement message reads when the parent's own import is forgotten is a decision R5 makes.
+
+## Guide problems
+
+Accepted (edits quoted in the ticket's Answer):
+
+- G1, P13. The Rule says "Variant inputs follow the four-step order"; building-blocks 1.4 (`building-blocks.md:62-66`) gives the steps as "Names, in this order", a precedence for one input's name. Group a showed that the guide's wording also reads as a declaration order, which would fail `button-group.md`'s inputs. The edit states the precedence reading.
+- G4, P4. The Rule requires every parent to provide an `InjectionToken`; its Why is bundle retention (P22), which a development-only lookup inside one entry point does not have. The records use class lookups there: Menu D9 (`menu.md:424`) rejects "A `nfsMenuToken` for `NfsMenuText` (the same entry point, a development-only lookup)"; `breadcrumbs.md:112`: "the item lives in the same entry point, so it looks the list up by class, as `NfsMenuText` looks up `NfsMenu` and the Pagination's items look up `NfsPagination`; the lookup is removed from production bundles"; `forgotten-import-checks.md:236-238` lists each as "development only". Without the edit every such lookup reads as falling short.
+- G5, P17. `building-blocks.md:161` lists the `inert` exceptions (dialogs and top-layer elements, the closed off-canvas panel, the Tooltip tip); `nested-menu.md:657` (D9): "Hidden drilldown ancestor levels use Foundation's `invisible`, never `inert` | `inert` on an ancestor blocks the open level (prototype row 9)", and building-blocks Table C's Nested menu row lists "Foundation's `invisible`". The record and the guide both gain the case (BB3).
+- G7, P19. The Rule quotes 1.6 rule 1 as "the declared duration plus 100 ms, the duration measured ... where the Motion class is consumer-chosen or the length is a consumer Sass setting", which contradicts the rule as changed on 2026-09-28 (`building-blocks.md:115`, measured always), and says "`prefers-reduced-motion` shortens every library animation to 1 ms", omitting rule 5's exception (`building-blocks.md:119`): "A directive may in addition bind no consumer Motion class while `reducedMotion()` is true and complete the change in the same tick, which also covers a consumer class without that rule (Responsive Toggle, Dropdown)". Group e's Responsive Toggle reading shows the false finding it produces.
+- P21 (from T5 and T6). The Rule's two Slider exceptions become the recorded rendered-layout exception (with the Float checks) and the resolved value text.
+
+Reclassified: G6 (P18) is T9, a spec finding; P18 needs no edit.
+
+Not guide problems: group b and group f found none; group c's note is T5.
