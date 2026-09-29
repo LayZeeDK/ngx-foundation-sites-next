@@ -117,3 +117,10 @@ For the orchestrator; anchors are quoted because line numbers move.
 ### Gist for Decisions so far
 
 - [Re-run: Switch spec, out-of-scope survivors](issues/147-rerun-switch-out-of-scope-survivors.md) -- `input[nfsSwitchInput]` gains a development check (check 5): a radio switch group (HTML's radio button group: same form owner and `name`) that no `fieldset` or `group`/`radiogroup` element named in accessible-name order holds warns once, from its first radio switch, naming the `fieldset` and `legend` fix; measured on 24 grouping patterns against Chromium's and Firefox's accessibility trees, it agrees with Chromium on 23 (the false positive is an image-only legend, a stated limit), and named landmarks do not count as groups; `.show-for-sr` gets its reason (D4); a visible-group-name check stays out; no default changes (ADR 0045); LOW, HIGH; no ADR. Spec: [specs/switch.md](specs/switch.md).
+
+### Amendment, 2026-09-29 (in-family check lines)
+
+From the [Re-run: form and value-control family specs, In-family check lines](153-rerun-form-and-value-control-family-in-family-lines.md), under [ADR 0046](../adr/0046-forgotten-imports-caught-by-checks.md) and the family rule of the [Spec: forgotten-import checks (shared utility)](150-spec-forgotten-import-checks.md); `specs/switch.md` was revised in place, and the decision log is that ticket's Answer. Behaviour, API, ARIA, the rendering modes, and the Story ids are unchanged. Changed:
+
+- Hierarchy and DI shape gains the In-family check lines, one per directive: `NfsSwitch` probes `NfsSwitchInput` and `NfsSwitchPaddle`, the paddle probes `NfsSwitchActive` and `NfsSwitchInactive`, and no part has a parent check (none injects another); the paddle's `for` link to its input is a peer by value.
+- Development check 6 also takes a previous sibling that carries the `nfsSwitchInput` attribute as the input, so an input whose import was forgotten is reported once, by `NfsSwitch`'s probe, and not a second time as a paddle that does not follow its input (new D19; its layer-2 case added).

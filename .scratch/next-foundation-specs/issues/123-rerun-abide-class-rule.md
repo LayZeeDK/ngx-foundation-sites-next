@@ -115,3 +115,11 @@ Nothing is OPEN FOR HUMAN, and no prototype is needed: every point is measured, 
 ### Note, 2026-09-28 (out-of-scope reasons)
 
 - 2026-09-28: the Out of Scope reasons named in [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) are corrected in the spec.
+
+### Amendment, 2026-09-29 (in-family check lines)
+
+From the [Re-run: form and value-control family specs, In-family check lines](153-rerun-form-and-value-control-family-in-family-lines.md), under [ADR 0046](../adr/0046-forgotten-imports-caught-by-checks.md) and the family rule of the [Spec: forgotten-import checks (shared utility)](150-spec-forgotten-import-checks.md); `specs/abide.md` was revised in place, and the decision log is that ticket's Answer. Behaviour, API, ARIA, the rendering modes, and the Story ids are unchanged. Changed:
+
+- Hierarchy and DI shape gains the In-family check lines, one per directive: `NfsAbide` probes `NfsAbideInput`, `NfsAbideLabel`, `NfsFormError`, and `NfsAbideAlert`; `NfsAbideLabel` probes the input and bare Form error inside it; `NfsAbideInput` and `NfsFormError` pass no parent, because their optional lookups have a supported `null`, so `strictParents` changes nothing for them; `NfsAbideAlert` has no parent check, because its required injection's NG0201 is the report. No part probes a Forms, Callout, Button, or Visibility Classes directive beside it, and the shared verdict decides each attribute on its own.
+- `nfsAbideToken` and `nfsAbideLabelToken` gain their development-only descriptions ("<token> (provided by <Directive> from 'ngx-foundation-sites/abide' on an ancestor element declared in the same template)").
+- The NG0309 reason is removed from the Neighbouring directives bullet, D18, and D19: building-blocks 1.9 measured that a directive a template also matches is created once ([Audit: the specs against the architecture guide](142-audit-specs-against-architecture-guide.md), fixer X10). Each decision stands on its other reasons.

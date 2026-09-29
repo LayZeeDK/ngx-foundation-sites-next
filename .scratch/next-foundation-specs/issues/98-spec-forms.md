@@ -163,3 +163,10 @@ For the orchestrator; line numbers at commit `46b7d0a`.
 ### Note, 2026-09-28 (out-of-scope reasons)
 
 - 2026-09-28: the Out of Scope reasons named in [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) are corrected in the spec.
+
+### Amendment, 2026-09-29 (in-family check lines)
+
+From the [Re-run: form and value-control family specs, In-family check lines](153-rerun-form-and-value-control-family-in-family-lines.md), under [ADR 0046](../adr/0046-forgotten-imports-caught-by-checks.md) and the family rule of the [Spec: forgotten-import checks (shared utility)](150-spec-forgotten-import-checks.md); `specs/forms.md` was revised in place, and the decision log is that ticket's Answer. Behaviour, API, ARIA, the rendering modes, and the Story ids are unchanged. Changed:
+
+- Hierarchy and DI shape gains the In-family check lines, one per directive: `NfsInputGroup` probes `NfsInputGroupLabel`, `NfsInputGroupField`, and `NfsInputGroupButton`; every other directive has no parent check and no probe; the label's and the help text's value-linked peers (`for`, the id in `aria-describedby`) get no probe. Decided with the Abide spec: neither set probes the other's directives, the shared verdict decides each attribute on an element on its own, and the three development checks read only the DOM and native properties, so their messages hold when a neighbour's import is forgotten.
+- The NG0309 reason is removed from Beside the Abide directives and D4 ([Audit: the specs against the architecture guide](142-audit-specs-against-architecture-guide.md), fixer X10), and from the fallback line, which called the same double match "the one measured risk"; building-blocks 1.9 measured that a directive a template also matches is created once. D4 stands on `middle` being spelt through one directive.

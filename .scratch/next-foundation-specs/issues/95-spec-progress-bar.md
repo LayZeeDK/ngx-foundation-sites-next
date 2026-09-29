@@ -193,3 +193,10 @@ No new ADR: the Visible value and the palette-property exception are reversible 
 ### Note, 2026-09-28 (out-of-scope reasons)
 
 - 2026-09-28: the Out of Scope reasons named in [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) are corrected in the spec.
+
+### Amendment, 2026-09-29 (in-family check lines)
+
+From the [Re-run: form and value-control family specs, In-family check lines](153-rerun-form-and-value-control-family-in-family-lines.md), under [ADR 0046](../adr/0046-forgotten-imports-caught-by-checks.md) and the family rule of the [Spec: forgotten-import checks (shared utility)](150-spec-forgotten-import-checks.md); `specs/progress-bar.md` was revised in place, and the decision log is that ticket's Answer. Behaviour, API, ARIA, the rendering modes, and the Story ids are unchanged. Changed:
+
+- Hierarchy and DI shape gains the In-family check lines, one per directive: `NfsProgress` probes `NfsProgressMeter`, and the meter probes `NfsProgressMeterText`; the meter and the meter text have no parent check, because their required injections' NG0201 is the report; `NfsProgressElement` has no parent, probe, or peer. The meter text keeps its lookup of `NfsProgressMeter` by class, whose NG0201 prints the class name, rather than gaining a public token for one message.
+- `nfsProgressToken` gains its development-only description ("nfsProgressToken (provided by NfsProgress from 'ngx-foundation-sites/progress-bar' on an ancestor element declared in the same template)").
