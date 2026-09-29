@@ -114,6 +114,11 @@ Docs conventions kept or corrected: the classes on any element (kept); `.hide` f
 | `.show-on-focus` | Utility (Visibility class) | `NfsShowOnFocus` (`[nfsShowOnFocus]`), static host class | - | - | `show-on-focus` | - |
 | `.show-for-ie`, `.hide-for-ie` | Utility (Visibility class) | None: dropped (D6); a copy is reported | - | - | - | - |
 | `.is-stuck` (read by the sticky classes) | State class of Sticky | `nfsSticky`'s host binding ([Spec: Sticky](../issues/28-spec-sticky.md)) | - | - | - | - |
+| `.sticky-container`, `.sticky` (the Sticky element the sticky conditions sit in) | Another family's: Structural classes of Sticky | `NfsStickyContainer` and `NfsSticky` ([Spec: Sticky](../issues/28-spec-sticky.md)) | - | - | - | - |
+| `.close-button` | Another family's: the Close Button's Structural class | `NfsCloseButton` (`button[nfsCloseButton]`) ([Spec: Close Button](../issues/83-spec-close-button.md)) | - | - | - | - |
+| `.button` | Another family's: the Button's Structural class | `NfsButton` (`button[nfsButton]`) ([Spec: Button](../issues/37-spec-button.md)) | - | - | - | - |
+| `.menu` | Another family's: the Menu's Structural class | `NfsMenu` (`ul[nfsMenu]`) ([Spec: Menu](../issues/85-spec-menu.md)) | - | - | - | - |
+| `.top-bar` and its section classes (`visibility--skip-link`) | Another family's: the Top Bar's Structural classes | `NfsTopBar` and its section directives ([Spec: Top Bar](../issues/86-spec-top-bar.md)) | - | - | - | - |
 
 State classes: none of this family's own. No class is left for the consumer to write (ADR 0039). The Visibility classes that Plugin directives bind for their own behaviour stay theirs and are not this entry point's (D7): the Responsive Toggle's `.hide-for-<hideFor>` on its bar and `.show-for-<hideFor>` on its menu ([Spec: Responsive Toggle](../issues/24-spec-responsive-toggle.md)), and the Nested menu's `invisible` on hidden Drilldown levels ([Spec: Nested menu (shared utility)](../issues/56-spec-nested-menu.md)).
 
@@ -178,7 +183,7 @@ Host bindings, all on signal state:
      3. `showFor` holds `'print'` while `hideFor` holds any value: "nfsVisibility: showFor="print" shows this element only in print, where <the other class> either hides it as well or has no effect; remove hideFor or put it on a wrapper element".
 
      Measured in four engines under `foundation-everything`'s include order: the orientation and `show-for-dark-mode` pairs with a breakpoint class and `.hide` all fail by the override; `show-for-landscape` beside `hide-for-print` still prints, and `hide-for-landscape` or `hide-for-portrait` beside `show-for-print` shows the element on screen in one orientation; `show-for-print` beside a hide class up to `$print-breakpoint`, `.hide`, or `hide-for-print` never shows, and beside a hide class above `$print-breakpoint`, `hide-for-dark-mode`, or `hide-for-sticky` it prints as it would alone. `hideFor="dark-mode"` and the sticky conditions combine with a breakpoint class, and `hideFor="print"` combines with every breakpoint `showFor`, `showFor="sticky"`, `showFor="dark-mode"`, and `showFor="portrait"` (whose own rule already hides it in print), so none of those warns. Under the reverse include order (the Visibility classes before `foundation-typography`, measured) every `showFor="print"` pair prints as the element would alone and `showFor="landscape"` with `hideFor="print"` combines; the check still warns on them, because it cannot see the include order and each pair is then either pointless or right only by source order.
-  3. A sticky condition out of place (D4): `showFor` or `hideFor` is `'sticky'` and no ancestor of the host carries `.sticky` (the class `nfsSticky` binds), or the host carries it itself: "nfsVisibility: showFor="sticky" reacts to an enclosing nfsSticky element's stuck state; put it on an element inside nfsSticky". A placement check reads the DOM alone (building-blocks 1.9).
+  3. A sticky condition out of place (D4): `showFor` or `hideFor` is `'sticky'` and no ancestor of the host carries `.sticky` (the class `nfsSticky` binds) or the `nfsSticky` attribute, or the host carries either itself: "nfsVisibility: showFor="sticky" reacts to an enclosing nfsSticky element's stuck state; put it on an element inside nfsSticky". A placement check reads the DOM alone (building-blocks 1.9). An ancestor that carries the `nfsSticky` attribute without `.sticky` is a Sticky element whose import was forgotten, which `strictDirectiveImports` reports once on that element, so this check stays silent there rather than naming the wrong fix (the one-report rule of the [Spec: forgotten-import checks (shared utility)](../issues/150-spec-forgotten-import-checks.md)).
   4. A second owner (D7): a class this directive lists is missing from the host's class list, or the host carries a Visibility class that neither this directive nor the static `class` attribute put there: "nfsVisibility: another directive on this element binds Visibility classes (<class>); put nfsVisibility on a wrapper element". The Responsive Toggle's class records, whose `false` entries win over a `true` in a lower-priority binding (Angular consults a binding's value unless it is `undefined`), are the case it catches.
   5. `invisible` and `visible` both true: "nfsVisibility: .visible overrides .invisible on the same element; set one".
 - Runtime check (D11): in the same read phase, only while `showFor` or `hideFor` holds a Breakpoint query, `NfsVisibility` calls `include('nfs-breakpoint-properties', ['breakpoint-classes'])`, then `value('showFor', value, needs)` and `value('hideFor', value, needs)` for each bound value: `[{setting: 'breakpoint-classes', name: <bp>}]` for a class of a breakpoint, `[]` for a condition, `.hide`, or the Zero breakpoint's `showFor` (whose meaning needs no class), and `null` for a value that maps to no class. `strictVariantNames` reports a breakpoint `--nfs-breakpoint-classes` does not list; `strictVariantProperties` reports a missing `@include nfs-breakpoint-properties;`. `invisible` and `visible` are closed and need no call. The directive writes no Variant property; `nfs-breakpoint-properties` is the one writer of `--nfs-breakpoint-classes` ([Spec: Breakpoint service (shared utility)](../issues/53-spec-breakpoint-service.md)).
@@ -318,6 +323,8 @@ Consumer markup, then the server HTML. The hydrated DOM equals the server HTML: 
     <p nfsVisibility hideFor="sticky">We be scrolling...</p>
     <p nfsVisibility showFor="sticky">I'm going to rest here for a sec. You keep scrolling.</p>
   </div>
+  <!-- The container also holds the content the element scrolls past: the Sticky range is the sticky element's parent (ADR 0019) -->
+  <main>...</main>
 </div>
 
 <div class="sticky-container">
@@ -325,6 +332,7 @@ Consumer markup, then the server HTML. The hydrated DOM equals the server HTML: 
     <p class="hide-for-sticky">We be scrolling...</p>
     <p class="show-for-sticky">I'm going to rest here for a sec. You keep scrolling.</p>
   </div>
+  <main>...</main>
 </div>
 
 <!-- Visually hidden text -->
@@ -374,7 +382,7 @@ Run by `npx nx test-storybook <lib>`. Every story runs axe with `parameters.a11y
 - `visibility--alternatives`: a navigation (`nav` with `ul[nfsMenu]`) with `showFor="large"` and a jump-menu `select` inside a labelled form with `hideFor="large"`, both listing the same destinations; exactly one of the two is displayed at the test viewport, and it holds every destination (1.4.10).
 - `visibility--hide-and-invisible`: a `hideFor` paragraph (computed `display: none`, absent from the accessibility tree), an `invisible` list keeping its height, and inside it a `visible` item, which is displayed with computed `visibility: visible` and found by `getByText`.
 - `visibility--conditions`: a landscape and portrait pair of hints and a light and dark pair, each on a `div`, and a print pair: a `p` with `showFor="print"` holding the page address and a `div` with `hideFor="print"` holding a Print button; exactly one of each pair is displayed at the test viewport and colour scheme; on screen the Print button is found by `getByRole('button', {name: 'Print this page'})`, and the print-only paragraph is not displayed and is not in the accessibility tree.
-- `visibility--sticky`: Foundation's sticky example inside `nfsStickyContainer` and `nfsSticky`; before any scroll the `hideFor="sticky"` title is displayed and the `showFor="sticky"` one is not.
+- `visibility--sticky`: Foundation's sticky example inside `nfsStickyContainer` and `nfsSticky`, the container also holding a tall body (an inline height, Storybook conventions section 8); before any scroll the `hideFor="sticky"` title is displayed and the `showFor="sticky"` one is not.
 - `visibility--screen-reader-text`: an icon-only close button named "Close" by `nfsShowForSr` text, a back button named "Back to Products" whose visible text is "Back", and a `role="status"` region with `nfsShowForSr`; each control is found by `getByRole` and its name; each hidden span's box is 1 by 1 px with computed `position: absolute`; after the story's Save button is clicked, the status region's text is "Saved" and focus stays on the button.
 - `visibility--skip-link`: an application shell whose first element is the skip link (`nfsShowOnFocus nfsSmoothScroll`, `href="#visibility-main"`, in-page in the story iframe, which has no `<base href>`, as the Smooth Scroll stories do), a Top Bar navigation, and `main` with `tabindex="-1"`. Before focus the link's box is 1 by 1 px and it is found by `getByRole('link', {name: 'Skip to content'})`; after `userEvent.tab()` it has focus, its box is larger than 1 by 1 px, and its computed `outline-style` is not `none`; after Enter, `main` has focus; the next Tab reaches the first link inside `main`; axe runs after the focus step.
 
@@ -384,7 +392,7 @@ TestBed specs next to the directives over a bare test host component, zoneless w
 
 - Class mapping, driven by data: every `showFor` and `hideFor` value of the mapping table, including the Zero-breakpoint gaps, sets exactly its class, with the default Breakpoint map and with a provided `nfsBreakpointsToken` whose Zero breakpoint has another name (values the library's closed types reject are bound through a typed cast); `hideFor` as the bare attribute, `true`, and `'true'` set `.hide`, and `false`, `'false'`, and no value set none; `invisible` and `visible` set their classes; a cast value that is not a breakpoint query or condition, and one containing a space, set none; changing a value swaps its class and leaves the consumer's own static class and `[class]` binding alone; the directive adds no attribute.
 - `nfsShowForSr` and `nfsShowOnFocus` bind their static classes, and a redundant copy merges without a report.
-- Development checks of `NfsVisibility`: a static `class="show-for-medium hide-for-ie show-for-sr hide-for-print"` warns once, naming `showFor`, the IE removal, `nfsShowForSr`, and `hideFor="print"`; `showFor="landscape"` with `hideFor="medium"`, `hideFor="portrait"` with `showFor="large"`, `showFor="landscape"` with `hideFor="print"`, `hideFor="landscape"` with `showFor="print"`, and `showFor="dark-mode"` with `hideFor` written alone each warn once with the override message; `showFor="print"` with `hideFor="large"`, with `hideFor` written alone, with `hideFor="print"`, and with `hideFor="dark-mode"` each warn once with the print message; while `hideFor="dark-mode"` with `showFor="medium"`, `showFor="sticky"` with `hideFor="medium"`, and `hideFor="print"` with `showFor="medium only"`, `showFor="dark-mode"`, `showFor="portrait"`, and `showFor="sticky"` are silent; `showFor="sticky"` outside an element carrying `.sticky`, and on that element itself, warn once, and inside it is silent; a sibling test directive whose `[class]` binding sets `hide-for-large` to `false` and takes priority (the test first asserts the class is absent) warns once beside `hideFor="large"`, and one binding `hide-for-medium` beside `showFor="large"` warns once; `invisible` with `visible` warns once.
+- Development checks of `NfsVisibility`: a static `class="show-for-medium hide-for-ie show-for-sr hide-for-print"` warns once, naming `showFor`, the IE removal, `nfsShowForSr`, and `hideFor="print"`; `showFor="landscape"` with `hideFor="medium"`, `hideFor="portrait"` with `showFor="large"`, `showFor="landscape"` with `hideFor="print"`, `hideFor="landscape"` with `showFor="print"`, and `showFor="dark-mode"` with `hideFor` written alone each warn once with the override message; `showFor="print"` with `hideFor="large"`, with `hideFor` written alone, with `hideFor="print"`, and with `hideFor="dark-mode"` each warn once with the print message; while `hideFor="dark-mode"` with `showFor="medium"`, `showFor="sticky"` with `hideFor="medium"`, and `hideFor="print"` with `showFor="medium only"`, `showFor="dark-mode"`, `showFor="portrait"`, and `showFor="sticky"` are silent; `showFor="sticky"` outside an element carrying `.sticky`, and on that element itself, warn once, and inside it is silent, as it is inside an element carrying `nfsSticky` whose `NfsSticky` is left out of the test host's imports; a sibling test directive whose `[class]` binding sets `hide-for-large` to `false` and takes priority (the test first asserts the class is absent) warns once beside `hideFor="large"`, and one binding `hide-for-medium` beside `showFor="large"` warns once; `invisible` with `visible` warns once.
 - Development check of `NfsShowForSr`: on a `button`, on a `span` holding a link, and on a `.show-for-sr` file input, it warns once; on a `span` inside a button, on a `div role="status"`, and on a `span` holding a `tabindex="-1"` element, it is silent.
 - Development check of `NfsShowOnFocus`: on a `p` holding a link it warns naming the link; on a `span` with no focusable content it warns that Tab never reaches it; on a link with an `href` and on a `button` it is silent.
 - Nothing is checked or warned when `ngDevMode` is false.
@@ -503,6 +511,8 @@ Manual release test (ADR 0022): with NVDA on Firefox and Chrome, JAWS on Chrome,
     <h2 nfsVisibility hideFor="sticky">Quarterly report 2026</h2>
     <p nfsVisibility showFor="sticky">Q3 report</p>
   </div>
+  <!-- The container also holds the content the element scrolls past: the Sticky range is the sticky element's parent (ADR 0019) -->
+  <main>...</main>
 </div>
 
 <!-- A navigation shown from large up and never printed: hideFor="print" combines with a breakpoint -->
@@ -520,7 +530,7 @@ The skip link in an application shell under `<base href>`, with the [Spec: Smoot
 ```ts
 @Component({
   selector: 'app-root',
-  imports: [NfsShowOnFocus, NfsSmoothScroll, RouterOutlet],
+  imports: [NfsShowOnFocus, NfsSmoothScroll, RouterOutlet, SiteHeader],
   template: `
     <a nfsShowOnFocus nfsSmoothScroll [href]="path() + '#main-content'">Skip to content</a>
     <app-site-header />
@@ -571,7 +581,7 @@ declare module 'ngx-foundation-sites' {
 }
 ```
 
-`NfsVisibility`, `NfsShowForSr`, and `NfsShowOnFocus` come from `ngx-foundation-sites/visibility`; `NfsSmoothScroll`, `NfsButton`, `NfsMenu`, `NfsSticky`, and `NfsStickyContainer` from their own entry points, and are shown only to place them.
+`NfsVisibility`, `NfsShowForSr`, and `NfsShowOnFocus` come from `ngx-foundation-sites/visibility`; `NfsSmoothScroll`, `NfsButton`, `NfsMenu`, `NfsSticky`, and `NfsStickyContainer` from their own entry points, and are shown only to place them. `SiteHeader` is the application's own header component, such as the [Spec: Top Bar](../issues/86-spec-top-bar.md)'s usage example.
 
 ### Platform features to adopt when the browser target moves
 

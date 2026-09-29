@@ -146,3 +146,20 @@ From [Re-run: disclosure and carousel family specs, In-family check lines](152-r
 - `nfsOpenableToken` carries a development-only description listing the seven library Openable directives with their entry points and "a component that implements NfsOpenable", because the token has several providers and an application may add its own (ADR 0013); the library injects it only optionally.
 
 Triage: impact LOW (development-only lines and one development-only string), confidence HIGH (ADR 0046, building-blocks 1.9, the shared spec's rule and its kept-optional list). Nothing is OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2 (group f), applying the coordinator's decisions ([research/consistency-review-decisions.md](../research/consistency-review-decisions.md)) and the review's checks CR-A to CR-D; `specs/triggers.md` was revised in place. The evidence for each change is in [research/consistency-review-group-f.md](../research/consistency-review-group-f.md).
+
+- R2, with R65: the focus hint writes `animate="fade-in fade-out"`, `data-closable` replacement 2 and "Both at once" write `animate="fade-out"`, and the paragraph after them names the Toggler's Motion names ([Spec: Toggler](17-spec-toggler.md), D18); this ticket's proposal for those examples is applied.
+- R14: the 2.5.8 row, the story paragraph, the Off-canvas usage comment, and Sass item (5) name `nfs-menu-icon`'s 24 px box.
+- R22/R53: D13 cites the [Spec: Top Bar](86-spec-top-bar.md).
+- R52: the heading "What each Openable spec provides", and the 2.4.3 row's citation of it.
+- R57: "Application class" is capitalised.
+- R65: the prose Trigger reads `<button type="button" nfsClose nfsTooltip="Close">`.
+- The registration rule of the [Spec: forgotten-import checks (shared utility)](150-spec-forgotten-import-checks.md): development check 1 says nothing for a bare Trigger inside an element that carries an Openable's attribute with no instance of its directive, a forgotten import that `strictDirectiveImports` reports once; it keeps its message for a truly bare Trigger. The In-family line and a browser-level case follow. This supersedes the part of decision 1.2 of the [Re-run: disclosure and carousel family specs, In-family check lines](152-rerun-disclosure-and-carousel-family-in-family-lines.md) that kept check 1 as the report for a forgotten Openable import; the shared spec did not adopt that sentence.
+- CR-C: three deferrals to the Top Bar spec and the usage paragraph's link to the Off-canvas re-run cite the published [Spec: Top Bar](86-spec-top-bar.md) and [Spec: Off-canvas](25-spec-off-canvas.md).
+- CR-D: the `app-header` example imports `NfsClassToggler`, which its class-mode Toggler (`toggler="compact"`) matches, in place of the unused `NfsToggler`.
+- CR-B: the class mapping gains rows for the other families' classes the examples use (the Openables, the Title Bar, the Callout, the Menu).
+- Unchanged: R50, R51, R56; CR-A; `nfsOpenableToken`'s description.
+- Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.

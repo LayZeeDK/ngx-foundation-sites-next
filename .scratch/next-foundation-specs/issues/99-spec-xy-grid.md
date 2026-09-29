@@ -190,3 +190,14 @@ What changed, against the decisions above:
 - Decision 9 (development checks): the placement check counts a parent that carries `nfsGridX` or `nfsGridY` as a grid, class or no class. Such a parent is a grid whose import was forgotten, which the `strictDirectiveImports` Runtime check reports once on that element, as do the container's probe and the static check, so its cells no longer warn that they are outside a grid; an `offset` under a forgotten `nfsGridY` still warns, because it stays wrong once the import is fixed. Rejected: keeping the message (false for a cell inside the grid's element, and repeated per cell; `other`); a message per cell naming the import (one warning per cell for one defect, outside the shared report's once-per-subject rule; `other`).
 - Tests: two browser-level cases for a parent grid whose directive is left out.
 - Spec sections revised: Hierarchy and DI shape (one bullet added), the development checks (check 2), and Testing Decisions (layer 2).
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2 (group f), applying the coordinator's decisions ([research/consistency-review-decisions.md](../research/consistency-review-decisions.md)) and the review's checks CR-A to CR-D; `specs/xy-grid.md` was revised in place. The evidence for each change is in [research/consistency-review-group-f.md](../research/consistency-review-group-f.md).
+
+- R16: the `hidden` note takes the review's shared sentence with this spec's classes (`.grid-x`, `.grid-y`, `.cell-block-container`) and the three hiding means, and keeps the measured detail that a plain cell and container are hidden.
+- R43: D3's rejected alternative drops the collision with the Prototyping Utilities' sizing names, whose attribute is `nfsWidth` ([Spec: Prototyping Utilities](102-spec-prototyping-utilities.md)); D3 stands on its other reason.
+- R59: the handle is written with its argument, one per directive.
+- CR-B: the class mapping gains rows for the Flexbox Utilities' and the Card's classes of the usage examples.
+- Unchanged: R9/R23, R11, R26, R34/R35, R37, R44, R48; check 2 agrees with the placement rule of the [Spec: forgotten-import checks (shared utility)](150-spec-forgotten-import-checks.md); CR-A, CR-C, CR-D; the In-family line.
+- Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.

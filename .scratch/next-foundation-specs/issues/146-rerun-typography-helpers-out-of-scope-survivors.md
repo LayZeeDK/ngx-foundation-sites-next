@@ -154,3 +154,14 @@ No `CONTEXT.md` term and no ADR.
 ### Note, 2026-09-29 (architecture audit)
 
 - 2026-09-29: the fixer items of [Audit: the specs against the architecture guide](142-audit-specs-against-architecture-guide.md) are applied to the spec.
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2 (group f), applying the coordinator's decisions ([research/consistency-review-decisions.md](../research/consistency-review-decisions.md)) and the review's checks CR-A to CR-D; `specs/typography-helpers.md` was revised in place. The evidence for each change is in [research/consistency-review-group-f.md](../research/consistency-review-group-f.md).
+
+- No decided item changes the spec.
+- The Sass subsection's contrast check names Foundation's `color-luminance()` and `color-contrast()` as not used, beside the exact helper it already named (the review's R4, S1 or its equivalent).
+- CR-C: D4's "the published placeholders already use `nfsTextAlign`" states the fact: the Forms, Pagination, Flexbox Utilities, Float Classes, and Prototyping Utilities specs write `nfsTextAlign`.
+- CR-B: a table of the other families' classes the examples and stories use (Pagination, XY Grid, Card, Callout).
+- Unchanged: R4 (figures), R9/R23, R39, R59, R71/R72, R73; CR-A, CR-D; the In-family line.
+- Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.

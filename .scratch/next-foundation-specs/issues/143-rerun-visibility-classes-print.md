@@ -148,3 +148,14 @@ Nothing is OPEN FOR HUMAN, and no prototype is needed: every question that neede
 ### Note, 2026-09-29 (architecture audit)
 
 - 2026-09-29: the fixer items of [Audit: the specs against the architecture guide](142-audit-specs-against-architecture-guide.md) are applied to the spec.
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2 (group f), applying the coordinator's decisions ([research/consistency-review-decisions.md](../research/consistency-review-decisions.md)) and the review's checks CR-A to CR-D; `specs/visibility-classes.md` was revised in place. The evidence for each change is in [research/consistency-review-group-f.md](../research/consistency-review-group-f.md).
+
+- R40: the two sticky examples hold `<main>...</main>` after the sticky element, with a comment that the Sticky range is the sticky element's parent ([ADR 0019](../adr/0019-sticky-native-range.md)), so the element can stick and the e2e case can pass; `visibility--sticky` has a tall body.
+- Development check 3 reads the `nfsSticky` attribute as well as `.sticky`, and stays silent inside a Sticky element whose import was forgotten, which `strictDirectiveImports` reports; a browser-level case follows ([Re-run: form and value-control family specs, In-family check lines](153-rerun-form-and-value-control-family-in-family-lines.md), its item for the consistency review).
+- CR-D: the `app-root` example imports the `SiteHeader` its template writes, and the sentence after names it.
+- CR-B: the class mapping gains rows for the Sticky's, Close Button's, Button's, Menu's, and Top Bar's classes.
+- Unchanged: R1, R39, R59, R71/R72; CR-A, CR-C; the In-family line.
+- Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.

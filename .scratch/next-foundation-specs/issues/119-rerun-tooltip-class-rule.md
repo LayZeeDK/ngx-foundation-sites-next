@@ -128,3 +128,13 @@ No change to `README.md` (its Tooltip rows name no class), `storybook-convention
 ### Gist for Decisions so far
 
 - [Re-run: Tooltip spec under the class rule](issues/119-rerun-tooltip-class-rule.md) -- the directive already bound `.has-tip` and the tip `.tooltip`, its pip classes (State classes of the resolved Placement), and its fixed `nfs-fade-in`/`nfs-fade-out`; Foundation's tooltip has no Variant class, so no Variant input, registry, or Runtime check, and `position`/`alignment` stay Options; the legacy `top`/`left`/`right`/`bottom` trigger classes are no longer read (`auto` is `top`) and a copied one is reported in development; `templateClasses` takes only application classes, the tip leaving out its own and `nfs-` classes with a development report (no type can exclude them, measured); the 150 ms recipe selects an application class set through the Defaults token; examples use `nfsButton` inputs and a class-free `nfsDropdownPane`; `tooltip--legacy-position-class` becomes `tooltip--term-positions`; exclusions carry categories; behaviour, ARIA, keys, and rendering modes unchanged; impact MEDIUM, confidence HIGH; no ADR. Spec: [specs/tooltip.md](specs/tooltip.md).
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2 (group f), applying the coordinator's decisions ([research/consistency-review-decisions.md](../research/consistency-review-decisions.md)) and the review's checks CR-A to CR-D; `specs/tooltip.md` was revised in place. The evidence for each change is in [research/consistency-review-group-f.md](../research/consistency-review-group-f.md).
+
+- R57: the `templateClasses` cells of the Foundation contract, the class mapping, and the API table read "Application classes"; D7's rationale gains the reason `is-` names are neither filtered nor reported (this ticket's grilling question 6, now in the spec); "the developer's own class" reads "the consumer's own class", and "the application's own class" reads "Application class".
+- Development check 4 reads a name from content as accessible-name computation does: text outside `aria-hidden="true"` subtrees (it read all text content, so a trigger holding only an `aria-hidden` glyph was not reported), the reading the review decided for every such check (its R74).
+- CR-B: the class mapping gains rows for the Button's classes on a trigger and the Dropdown pane's class in the usage example.
+- Unchanged: R51 (the labelled check-6 input), R65, R66; CR-A, CR-C, CR-D (no component example).
+- Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.

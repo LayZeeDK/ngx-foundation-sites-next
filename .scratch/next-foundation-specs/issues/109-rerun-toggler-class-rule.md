@@ -156,3 +156,15 @@ No change to `README.md` (its Toggler row names no class), `storybook-convention
 ### Note, 2026-09-29 (architecture audit)
 
 - 2026-09-29: the fixer items of [Audit: the specs against the architecture guide](142-audit-specs-against-architecture-guide.md) are applied to the spec.
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2 (group f), applying the coordinator's decisions ([research/consistency-review-decisions.md](../research/consistency-review-decisions.md)) and the review's checks CR-A to CR-D; `specs/toggler.md` was revised in place. The evidence for each change is in [research/consistency-review-group-f.md](../research/consistency-review-group-f.md).
+
+- R2: development check 4 has three cases with three messages, among them a value that does not split into one entering and one leaving value, which `NfsMotionPair` admits through a value that starts with a dot (measured with `tsc` 6.0.3); the API comment, the `animate` row, the browser-level Motion names case, and the pure-logic case say that such a value maps to no class and warns once; the Out of Scope Motion bullet names the `fast`/`slow` modifiers and Motion UI names outside the `nfs-motion` set; the Fallback records the pair type's compile.
+- R32/R64: the usage component imports `NgOptimizedImage`, and its three thumbnails write `ngSrc` with `width="300" height="200"`.
+- R52, R54: "consuming-directive rule 3 lets a directive bind no Motion class".
+- R57: the `toggler` row names Application class names, the `animate` row an Application class that is a keyframe animation; the term is capitalised, and "the developer's own class" and its variants read "the consumer's own class".
+- CR-B: the class mapping gains a row for each other family whose classes the examples or Foundation's Toggler docs page use (Callout, Menu, Thumbnail, XY Grid, Button, Close Button).
+- Unchanged: R11, R14, R16 (D3 is the reference), R65, R66; CR-A, CR-C, CR-D; the In-family line.
+- Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.

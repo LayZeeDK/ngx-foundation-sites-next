@@ -126,3 +126,18 @@ From [Re-run: navigation family specs, In-family check lines](151-rerun-navigati
 - `nfsTopBarRightToken` gets its development-only description.
 - Development check 7 counts an ancestor that carries the bar's attribute without its class as the bar and says nothing, because that is a forgotten import which `strictDirectiveImports` reports once (the rule [Re-run: CSS-only component and free-behaviour family specs, In-family check lines](154-rerun-css-only-component-and-free-behaviour-family-in-family-lines.md) proposes as S2). The browser-level development cases gain that case.
 - No API, class, ARIA, rendering, or Sass change. Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2 (group f), applying the coordinator's decisions ([research/consistency-review-decisions.md](../research/consistency-review-decisions.md)) and the review's checks CR-A to CR-D; `specs/top-bar.md` was revised in place. The evidence for each change is in [research/consistency-review-group-f.md](../research/consistency-review-group-f.md).
+
+- R47: D9's projected case is fixed with `alignment="right"`; a provided token has no value to give.
+- R56: the `top-bar--title-bar` story's panels are Off-canvas panels with `position="left"` and `position="right"`, imported as scaffolding.
+- R59, with R56's Zero-breakpoint `needs`: the Runtime checks paragraph names `nfsVariantCheck('nfsTopBar')`, the `include('nfs-breakpoint-properties', ['breakpoint-classes'])` call only while `stackedFor` is bound, and the `needs` of each value, as the Off-canvas panel's; the missing-property browser-level case sits in a test file of its own.
+- R57: "Application class" is capitalised.
+- R74: `NfsMenuIcon` check 1 counts the non-blank `alt` of an `img` or the non-blank `aria-label` of a `role="img"` element inside the button, check 2 reads the name as check 1 does, and the browser-level list gains a silent image-only case.
+- Development check 3 reads the `nfsButton` and `nfsCloseButton` attributes as well as their classes, so a forgotten `NfsButton` import no longer hides the misuse; a browser-level case follows ([Re-run: form and value-control family specs, In-family check lines](153-rerun-form-and-value-control-family-in-family-lines.md), its item for the consistency review).
+- "The hit-area rule" and "the hit area" (Solution, D7) read "the 24 px box": the box is a transparent border on a content box, not a hit area (the review's R14 and R22).
+- CR-B: a table of the other families' classes the markup and Foundation's Top Bar docs page use.
+- Unchanged: R4 (figures stand), R15, R22/R53, R40, R48, R65; check 7 agrees with the placement rule of the [Spec: forgotten-import checks (shared utility)](150-spec-forgotten-import-checks.md); CR-A, CR-C, CR-D; the In-family lines.
+- Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.

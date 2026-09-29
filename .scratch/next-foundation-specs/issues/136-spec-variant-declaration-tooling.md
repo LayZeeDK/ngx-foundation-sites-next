@@ -221,3 +221,14 @@ Paths are relative to the effort root; links inside each quoted text are relativ
 ### Note, 2026-09-28 (out-of-scope reasons)
 
 - 2026-09-28: the Out of Scope reasons named in [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) are corrected in the spec.
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2 (group f), applying the coordinator's decisions ([research/consistency-review-decisions.md](../research/consistency-review-decisions.md)) and the review's checks CR-A to CR-D; `specs/variant-declaration-tooling.md` was revised in place. The evidence for each change is in [research/consistency-review-group-f.md](../research/consistency-review-group-f.md).
+
+- R27: the flags bullet adds that a flag which only chooses which of two opposite classes exists, where the absent class's look is the default, needs no property (the [Spec: Table](92-spec-table.md)'s D5).
+- R30: the known-mixins bullet names the exception for a setting no entry point owns (which the legacy grids' shared settings also take), `nfs-callout` as the one writer of `--nfs-callout-sizes`, and `nfs-button-group` as writing none ([Spec: Button Group](82-spec-button-group.md), D11).
+- The manifest shape's example comment lists `['nfs-button']` alone as the writer of `--nfs-button-palette`, which R30 implies.
+- The package diagram counts 26 registries, as the settings table, the Solution, and D2 do (it said 25).
+- Unchanged: R67 (the prototype's verdict, D28); R2's primary-entry-point sentence; CR-A to CR-D (no class, no component example).
+- Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.
