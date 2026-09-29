@@ -160,3 +160,7 @@ The user refined the ruling above the same day: migrations are written as Nx mig
 ### Amendment, 2026-09-29 (audit 0008)
 
 The three open Triage rows are closed. The release policy: the user's ruling above ([ADR 0045](../adr/0045-release-policy-devkit-version-scheme.md)). P24's import array: the user's ruling in [Prototype: detecting a forgotten attribute directive import](145-prototype-missing-directive-import-checks.md), no import arrays and four checks ([ADR 0046](../adr/0046-forgotten-imports-caught-by-checks.md)). P9: [Decide: inputs named like HTML presentational attributes](139-decide-inputs-named-like-presentational-attributes.md). Nothing in this ticket stays OPEN FOR HUMAN.
+
+### Note, 2026-09-29 (exportAs on every directive)
+
+P13's `exportAs` clause and this ticket's building-blocks 1.3 bullet (Shared-file change 3 above) are superseded: the user ruled that every directive and component has an `exportAs` ([Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md)).

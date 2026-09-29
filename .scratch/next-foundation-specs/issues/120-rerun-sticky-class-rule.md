@@ -168,3 +168,7 @@ Triage: impact LOW (examples and a story), confidence HIGH (ADR 0019, Foundation
 ### Amendment, 2026-09-29 (audit 0008)
 
 - L5, [Audit 0008: the class-rule wave](../audits/0008-class-rule-wave.md): the usage comment "The application's own class; no Foundation or library class is selected" reads "An Application class; no Foundation or library class is selected".
+
+### Amendment, 2026-09-29 (exportAs on every directive)
+
+- [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md): `NfsStickyContainer` gains `exportAs: 'nfsStickyContainer'` for the first time; `NfsSticky` already had `exportAs: 'nfsSticky'`.

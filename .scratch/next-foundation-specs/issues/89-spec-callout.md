@@ -201,3 +201,7 @@ Triage: impact LOW (wording, figures, test placement, documentation rows), confi
 From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), closing pass:
 
 - `specs/callout.md`: `NfsCallout` has no `exportAs` (the API line, the bullet, D4), by R17's rule, which the closing pass extends to every directive whose public members are only inputs and outputs (building-blocks 1.3, 2026-09-29).
+
+### Amendment, 2026-09-29 (exportAs on every directive)
+
+From [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md), which reverses R17 and this ticket's closing-pass line above: `specs/callout.md`'s `NfsCallout` gains `exportAs: 'nfsCallout'` (the API line, the bullet, D4).

@@ -173,3 +173,7 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), closing pass:
 
 - `specs/responsive-embed.md`: `NfsResponsiveEmbed` has no `exportAs` (the API line, the bullet, D1), by R17's rule, which the closing pass extends to every directive whose public members are only inputs and outputs (building-blocks 1.3, 2026-09-29).
+
+### Amendment, 2026-09-29 (exportAs on every directive)
+
+- [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md): `NfsResponsiveEmbed` regains `exportAs: 'nfsResponsiveEmbed'` (removed by the consistency review's closing pass, above); the API line and D1 state it, and the bullet that only gave the removed reason is gone.

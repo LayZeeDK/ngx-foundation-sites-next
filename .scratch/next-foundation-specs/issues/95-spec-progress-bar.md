@@ -212,3 +212,7 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - R74: check 1 and the progress element's name check count an image's non-blank `alt` (or a `role="img"` element's non-blank `aria-label`) in the referenced elements and labels; the development-check cases gain the silent image-only cases.
 - R4: Sass rule (c) gains the canonical helper sentence (S1), which named neither Foundation function as unused.
 - Unchanged, confirmed: R4 (figures), R59's call and own-file case, CR-A, CR-C, CR-D, and the form and value-control re-run's In-family lines.
+
+### Amendment, 2026-09-29 (exportAs on every directive)
+
+- [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md): `NfsProgressMeter`, `NfsProgressMeterText`, and `NfsProgressElement` each gain an `exportAs` for the first time (`nfsProgressMeter`, `nfsProgressMeterText`, `nfsProgressElement`); `NfsProgress` already had `exportAs: 'nfsProgress'`.

@@ -165,3 +165,7 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - CR-B: a table of the other families' classes the examples and stories use (Pagination, XY Grid, Card, Callout).
 - Unchanged: R4 (figures), R9/R23, R39, R59, R71/R72, R73; CR-A, CR-D; the In-family line.
 - Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (exportAs on every directive)
+
+- [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md): `NfsTextAlignment`, `NfsTypographyHelpers`, `NfsNoBullet`, `NfsTypographyBase`, and `NfsPrintStyles` each gain an `exportAs` for the first time, each its class name with a lowercase first letter; D17 no longer lists `exportAs` among what the family lacks.

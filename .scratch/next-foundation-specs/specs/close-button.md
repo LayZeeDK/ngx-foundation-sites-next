@@ -103,7 +103,7 @@ button[nfsCloseButton]      NfsCloseButton (standalone directive, no template)
 
 ### API: `NfsCloseButton`
 
-Selector `button[nfsCloseButton]`; no `exportAs`; standalone; no template.
+Selector `button[nfsCloseButton]`; `exportAs: 'nfsCloseButton'`; standalone; no template.
 
 ```ts
 type NfsCloseButtonSize = NfsOverridableStringUnion<'small' | 'medium', NfsClosebuttonSizeOverrides>;
@@ -120,7 +120,6 @@ class NfsCloseButton {
 | `type` | `'button' \| 'submit' \| 'reset'` | `'button'` | Docs: `type="button"` on every close button | New default. HTML's missing-value default for `<button type>` is the Auto state, which submits a form |
 
 - Models, outputs, and methods: none. The native `click` event is the API, and `focus()` is the native method.
-- No `exportAs`: the directive owns no state or method a template could read (building-blocks 1.3), as `nfsButton` has none; adding one later is additive.
 
 Host bindings, all on signal state:
 

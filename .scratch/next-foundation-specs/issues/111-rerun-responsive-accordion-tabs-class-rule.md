@@ -105,3 +105,7 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - ADR 0046: Hierarchy and DI shape gains an In-family line in the form the architecture audit's X1 gave the Interchange: the component's element selector is NG8001's, the panel directive on `ng-template` calls nothing, and the composed Accordion and Tabs directives follow their own lines.
 - CR-D: the `app-product` example imports `ReviewList`, the application component its template writes inside `@defer`.
 - Unchanged, confirmed: CR-A, CR-C.
+
+### Amendment, 2026-09-29 (exportAs on every directive)
+
+- [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md): `NfsResponsiveAccordionTabsPanel` gains `exportAs: 'nfsResponsiveAccordionTabsPanel'` for the first time; `NfsResponsiveAccordionTabs` already had `exportAs: 'nfsResponsiveAccordionTabs'`.

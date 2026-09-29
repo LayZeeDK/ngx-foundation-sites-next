@@ -176,7 +176,7 @@ Variant class families (building-blocks 1.4 and 1.14; [ADR 0040](../adr/0040-var
 
 All seven are standalone directives with no template; the plugin has no component. Each binds its Structural class as a static host class, so the class is in the server HTML and merges with any class of the consumer's own.
 
-`NfsTabsGroup`, selector `[nfsTabsGroup]`, no `exportAs`. No inputs, outputs, or public methods, and no class, so nothing a template reference could read (building-blocks 1.3). Its registration methods (for the tab list and the panels) are internal (Aria's `_register` convention) and not documented API.
+`NfsTabsGroup`, selector `[nfsTabsGroup]`, `exportAs: 'nfsTabsGroup'`. No inputs, outputs, or public methods, and no class. Its registration methods (for the tab list and the panels) are internal (Aria's `_register` convention) and not documented API.
 
 `NfsTabs`, selector `ul[nfsTabs]`, `exportAs: 'nfsTabs'`. Host: `class="tabs"`, `[class.vertical]` while `orientation()` is `'vertical'`, `[class.simple]`, `[class.primary]`, and `'[attr.autofocus]': 'null'` (D25):
 
@@ -243,7 +243,7 @@ Library-owned Options read their default from `nfsTabsDefaultsToken` when provid
 - Copied-class check (development builds only, the Accordion spec's dev check 7 applied here): `NfsTabs`, `NfsTabsTitle`, `NfsTabsContent`, and `NfsTabsPanel` each read their host's static `class` with `inject(new HostAttributeToken('class'), {optional: true})` in a field initialiser that runs only when `ngDevMode` is on, because the rendered class list no longer shows a class the host binding has stripped, and each warns once in its first render callback when that list holds, as a whole token, a class it binds dynamically. The message names the input to bind: `is-active` on a title or a panel, "select the tab with `selected` on `ul[nfsTabs]`"; `vertical` on the strip or the content box, "set `orientation="vertical"` on `ul[nfsTabs]`"; `simple` or `primary` on the strip, "bind `simple`" or "bind `primary`". Structural classes written redundantly (`class="tabs"`, `class="tabs-panel"`) merge with the static host classes and are not reported. This replaces the earlier check that compared a written `.vertical` with `orientation`: `orientation` binds the class now, so the two cannot disagree, and only a copied class is left to report.
 - Methods: none. `selected` is the programmatic API; Foundation's `selectTab()` becomes a model write.
 
-`NfsTabsTitle`, selector `li[nfsTabsTitle]`, no `exportAs`. Host: `class="tabs-title"`, `role="presentation"`, and `[class.is-active]` from its child tab's `selected()`. No inputs or outputs.
+`NfsTabsTitle`, selector `li[nfsTabsTitle]`, `exportAs: 'nfsTabsTitle'`. Host: `class="tabs-title"`, `role="presentation"`, and `[class.is-active]` from its child tab's `selected()`. No inputs or outputs.
 
 `NfsTab`, selector `a[nfsTab]`, `exportAs: 'nfsTab'`:
 
@@ -259,7 +259,7 @@ class NfsTab {
 - No `href`: a tab carries no `href`. Aria's click handling does not cancel navigation, so an `href="#panel2"` would jump and change the hash behind `deepLink`'s back. Dev mode warns on an `href`, and on a tab whose parent element is not an `li[nfsTabsTitle]` (an `li` without `role="presentation"` inside a `tablist` breaks the required-children rule), tested with the selector on the element and its attribute, not with `.tabs-title`, so a title whose import was forgotten is left to the strip's In-family probe (Hierarchy and DI shape).
 - `disabled` is not exposed: Foundation's Sass has no disabled-tab look.
 
-`NfsTabsContent`, selector `[nfsTabsContent]`, no `exportAs`. Host: `class="tabs-content"` and `[class.vertical]` while the group's tab list has `orientation()` `'vertical'`. No inputs, outputs, providers, or public members; it injects `nfsTabsGroupToken` (required), and in development builds its host's static `class` for the copied-class check. Foundation's `.tabs-content` transition applies to it unchanged.
+`NfsTabsContent`, selector `[nfsTabsContent]`, `exportAs: 'nfsTabsContent'`. Host: `class="tabs-content"` and `[class.vertical]` while the group's tab list has `orientation()` `'vertical'`. No inputs, outputs, providers, or public members; it injects `nfsTabsGroupToken` (required), and in development builds its host's static `class` for the copied-class check. Foundation's `.tabs-content` transition applies to it unchanged.
 
 `NfsTabsPanel`, selector `[nfsTabsPanel]`, `exportAs: 'nfsTabsPanel'`:
 
@@ -274,7 +274,7 @@ class NfsTabsPanel {
 
 Host: `class="tabs-panel"` and `[class.is-active]` from `visible()`. Aria adds `role`, `id`, `tabindex`, `inert`, `aria-labelledby`.
 
-`NfsTabsLazyContent`, selector `ng-template[nfsTabsLazyContent]`, no inputs. Its view is created when the panel becomes visible and destroyed when hidden unless `preserveContent` is true (Aria's `DeferredContent`, created in a render callback: never in server HTML).
+`NfsTabsLazyContent`, selector `ng-template[nfsTabsLazyContent]`, `exportAs: 'nfsTabsLazyContent'`; no inputs. Its view is created when the panel becomes visible and destroyed when hidden unless `preserveContent` is true (Aria's `DeferredContent`, created in a render callback: never in server HTML).
 
 `NfsTabsDefaults`:
 

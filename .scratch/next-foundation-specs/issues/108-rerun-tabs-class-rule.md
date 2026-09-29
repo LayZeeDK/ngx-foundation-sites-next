@@ -185,3 +185,7 @@ Triage: impact LOW (a library-internal Sass check and an include line; no API, A
 From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), closing pass:
 
 - `specs/tabs.md`: `NfsTabsGroup`, which has no inputs, outputs, or public methods, has no `exportAs`, by R17's rule, which the closing pass extends to every directive whose public members are only inputs and outputs (building-blocks 1.3, 2026-09-29).
+
+### Amendment, 2026-09-29 (exportAs on every directive)
+
+- [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md): `NfsTabsGroup` regains `exportAs: 'nfsTabsGroup'` (removed by the consistency review's closing pass, above); `NfsTabsTitle`, `NfsTabsContent`, and `NfsTabsLazyContent` gain one for the first time (`nfsTabsTitle`, `nfsTabsContent`, `nfsTabsLazyContent`); `NfsTabs`, `NfsTab`, and `NfsTabsPanel` already had theirs.

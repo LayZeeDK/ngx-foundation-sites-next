@@ -119,7 +119,7 @@ written beside (their specs):
 
 ### API: `NfsMediaObject`
 
-Selector `[nfsMediaObject]`; standalone; no template; no `exportAs`, because nothing is read through a template reference (adding one later is additive).
+Selector `[nfsMediaObject]`; standalone; no template; `exportAs: 'nfsMediaObject'`.
 
 ```ts
 class NfsMediaObject {
@@ -137,7 +137,7 @@ class NfsMediaObject {
 
 ### API: `NfsMediaObjectSection`
 
-Selector `[nfsMediaObjectSection]`; standalone; no template; no `exportAs`.
+Selector `[nfsMediaObjectSection]`; standalone; no template; `exportAs: 'nfsMediaObjectSection'`.
 
 ```ts
 type NfsMediaObjectAlignment = 'middle' | 'bottom';
@@ -380,7 +380,7 @@ Against the prerendered fixture app, on the Media Object route:
 
 | # | Decision | Rationale | Rejected alternative |
 | --- | --- | --- | --- |
-| D1 | Two attribute directives, one per Structural class (`[nfsMediaObject]`, `[nfsMediaObjectSection]`), each on any element; entry point `ngx-foundation-sites/media-object`; no `exportAs` | ADR 0001 and ADR 0039: "a container with the class `.media-object`, and two or three sections", and Foundation generates nothing; the out-of-scope triage's names; nothing to expose, as the Card and the Top Bar sections have it | A component with named slots, Material's list-item shape (Foundation's markup carries the elements; ADR 0001) (`scope-boundary`); one directive whose library CSS styles its children (ADR 0039 has one directive per class) (`other`) |
+| D1 | Two attribute directives, one per Structural class (`[nfsMediaObject]`, `exportAs: 'nfsMediaObject'`; `[nfsMediaObjectSection]`, `exportAs: 'nfsMediaObjectSection'`), each on any element; entry point `ngx-foundation-sites/media-object` | ADR 0001 and ADR 0039: "a container with the class `.media-object`, and two or three sections", and Foundation generates nothing; the out-of-scope triage's names | A component with named slots, Material's list-item shape (Foundation's markup carries the elements; ADR 0001) (`scope-boundary`); one directive whose library CSS styles its children (ADR 0039 has one directive per class) (`other`) |
 | D2 | `stackFor` on `NfsMediaObject`, typed `NfsClassBreakpoint`: the Zero breakpoint, read from `nfsBreakpointsToken`, sets `.stack-for-<zero>`; any other name sets none and warns in development | Building-blocks 1.4 rule 5 keeps Foundation's words `stack-for` and puts the breakpoint in the value, as the Top Bar's and Button Group's `stackedFor` do; the class name follows `$breakpoints`' first key, which the token mirrors and `strictBreakpointSync` checks, so no new type or property is needed; the Top Bar's D2 accepts the same gap the other way round (its Zero breakpoint sets none) | A registry and Variant property for the Zero breakpoint's name, an exact type with one member (new public surface for one class, and the token already mirrors the name) (`other`); a boolean `stacked` or `stackForSmall` (rule 5 puts the breakpoint in the value, and the name would be wrong for a renamed Zero breakpoint) (`other`); the literal `'small'` (fails a renamed Zero breakpoint, the Menu's D11) (`other`) |
 | D3 | `alignment` (`'middle' \| 'bottom'`) on `NfsMediaObjectSection` sets Foundation's `.middle` and `.bottom`; named `alignment`, not `align` | Foundation's own Variant classes of the section, named for the docs' Section Alignment (building-blocks 1.4 rule 3); Angular renders a static input attribute on the host, and measured in three engines a static `align="middle"` on a `div` centres its text (HTML's obsolete `align` presentational hint), and on `li`, `article`, `section`, `figure`, and `header` in Chromium and WebKit | `align` (the HTML presentational hint centres the section's text) (`platform-or-a11y`); `verticalAlign` (names a CSS property, not Foundation's docs term) (`other`); no input, leaving the build without `$global-flexbox` unserved (ADR 0039 gives every Variant class a typed input) (`variant-as-class`) |
 | D4 | Flexbox-build alignment is the Flexbox Utilities' `nfsFlexChild alignSelf` beside a section and `nfsFlexAlign` beside the media object, written beside, not hosted | Foundation's docs use those classes in the flexbox build; their spec is the one owner of `.align-*` and `.align-self-*`, and another spec writes its directives beside or hosts them, never declaring its own inputs for them; a media object is a Flex parent only while `$global-flexbox` is true, so hosting would put an input on every section that does nothing in the other build, where `nfsFlexChild`'s own placement check warns; beside keeps the entry point free of a runtime import of `flexbox-utilities` | `alignment` also setting `.align-self-*` (two owners for one Utility class family, the Button Group's D9) (`other`); hosting `NfsFlexChild` in `NfsMediaObjectSection` and `NfsFlexAlign` in `NfsMediaObject` (the reasons above) (`other`); a library rule styling `.middle` and `.bottom` in the flexbox build (re-implements what Foundation expresses with its flex helper classes, and changes Foundation's flexbox output) (`other`) |

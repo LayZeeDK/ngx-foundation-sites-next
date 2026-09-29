@@ -115,7 +115,7 @@ State classes: none. Foundation's Label has no State class, and the directive bi
 
 ### API: `NfsLabel`
 
-Selector `[nfsLabel]`; no `exportAs`; standalone; no template.
+Selector `[nfsLabel]`; `exportAs: 'nfsLabel'`; standalone; no template.
 
 ```ts
 type NfsLabelColor = NfsOverridableStringUnion<NfsFoundationPaletteColor, NfsLabelPaletteOverrides>;
@@ -130,7 +130,6 @@ class NfsLabel {
 | `color` | `NfsLabelColor`, declared with explicit type arguments that name the alias; no transform | `undefined`, which sets no class | `.label.<color>` from `$label-palette` | New. The JSDoc names the class template `.label.<color>` and the setting. The consumer's own names reach the type only through its Variant declaration file; a name added to `$foundation-palette` reaches it through the chain while `$label-palette` follows `$foundation-palette` |
 
 - Models, outputs, and methods: none. A label has no state; its text is the consumer's content.
-- No `exportAs`: the directive owns no state or method a template could read, only the consumer's `color` input (building-blocks 1.3); adding one later is additive.
 
 Host bindings, all on signal state:
 
@@ -338,7 +337,7 @@ Manual release test (ADR 0022): with NVDA on Firefox and Chrome, JAWS on Chrome,
 
 | # | Decision | Rationale | Rejected alternative |
 | --- | --- | --- | --- |
-| D1 | One attribute directive, `[nfsLabel]`, on any element, binding `.label`; no `exportAs`; entry point `ngx-foundation-sites/label` | ADR 0001 and ADR 0039: `.label` is a Structural class on a consumer-written element ("any tag will work fine"), and Foundation generates nothing; the name follows the class (building-blocks 1.3), and the form `label` is `NfsFormLabel`; no `exportAs`, because a directive with no state or method to read has none (building-blocks 1.3) | An `nfs-label` component, or Material's static chip with its own template (Foundation's markup carries the element; ADR 0001) (`scope-boundary`); `NfsMediaLabel` or `NfsTag` (neither is Foundation's name) (`other`) |
+| D1 | One attribute directive, `[nfsLabel]`, on any element, binding `.label`; `exportAs: 'nfsLabel'`; entry point `ngx-foundation-sites/label` | ADR 0001 and ADR 0039: `.label` is a Structural class on a consumer-written element ("any tag will work fine"), and Foundation generates nothing; the name follows the class (building-blocks 1.3), and the form `label` is `NfsFormLabel` | An `nfs-label` component, or Material's static chip with its own template (Foundation's markup carries the element; ADR 0001) (`scope-boundary`); `NfsMediaLabel` or `NfsTag` (neither is Foundation's name) (`other`) |
 | D2 | `color` Variant input, alias `NfsLabelColor = NfsOverridableStringUnion<NfsFoundationPaletteColor, NfsLabelPaletteOverrides>` | ADR 0040 and building-blocks 1.3, 1.4: the palette is an Open Variant family named `color`; `$label-palette` is its own setting that defaults to `$foundation-palette`, so its registry chains on the shared one, as `NfsButtonColor` and `NfsBadgeColor` do | The Callout's plain alias of `NfsFoundationPaletteColor` (a consumer's `map-remove` on `$label-palette` alone could not remove a name) (`other`); consumer-written palette classes (ADR 0039) (`variant-as-class`) |
 | D3 | No State classes, role, ARIA, outputs, methods, models, Defaults token, or providers | A label is text and has no state; the consumer's element and native attributes carry every relationship | A `hidden` input for an empty tag (a second spelling of `@if`) (`scope-boundary`) |
 | D4 | A label sits inside the element it tags (a heading, a cell, a link) or right after text that takes no focus; `aria-describedby` references a label from a focusable control beside it; Foundation's paragraph pairing becomes a link pairing | Inside, the label is part of the heading's or cell's content and the link's name (measured in Chromium); a description is announced chiefly on focus, which a paragraph never takes, and the label after a paragraph is read next in reading order anyway; the Badge's D4 split, which follows Angular Material's badge | Foundation's paragraph `aria-describedby` kept as the recipe (Chromium exposes it, but nobody hears it in reading) (`platform-or-a11y`); an input that writes the reference on another element (the native attribute already does it) (`platform-or-a11y`) |

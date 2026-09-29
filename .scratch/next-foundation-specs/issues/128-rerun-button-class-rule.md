@@ -110,3 +110,7 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - CR-B: the class mapping gains rows for the other families the markup writes: the Visibility Classes' `.show-for-sr`, and the Button Group and Dropdown pane around or beside a button.
 
 Unchanged: the inputs, host bindings, the disabled contract, the development checks, the Library mixin's rules, the rendering modes, and the Story ids. Confirmed: R14 (the floor does not reach a Close Button, whose spec owns it), R60 (the two boolean conventions, Notes), R65, R66 (D22), CR-A, CR-C, CR-D (`app-invoice-actions` imports exactly the directives its template writes). Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (exportAs on every directive)
+
+From [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md): `specs/button.md`'s `NfsButton` gains `exportAs: 'nfsButton'` (the API line, the Models/outputs/methods bullet, and the Material comparison table).

@@ -219,9 +219,9 @@ State model, all signals:
 
 Completion functions passed to `configure()`: `opened(item)` emits `opened` and runs the reveal step; `closed(item)` emits `closed` and runs the reveal step. The reveal step runs in these client-only callbacks, after the slide has ended (the utility's `transitionend` or fallback timer): when `document.activeElement` is inside the root, it calls `activeElement.scrollIntoView({block: 'nearest', inline: 'nearest', behavior})` with the same `behavior` rule as `scrollTop`. `scrollIntoView` with `nearest` does nothing when the control is already in view (it honours the scroller's `scroll-padding`), and it cannot scroll the wrapper, because `overflow: clip` makes the wrapper no scroll container (Sass rule 5); the level has finished moving, so nothing horizontal is left to reveal. This covers the control the utility focused with `preventScroll: true`.
 
-#### `NfsDrilldownWrapper` (`[nfsDrilldownWrapper]`, no `exportAs`)
+#### `NfsDrilldownWrapper` (`[nfsDrilldownWrapper]`, `exportAs: 'nfsDrilldownWrapper'`)
 
-No inputs, outputs, public methods, or `exportAs` (building-blocks 1.3: nothing to read). Registration from its root is internal to the entry point.
+No inputs, outputs, or public methods. Registration from its root is internal to the entry point.
 
 Host, all from signals, the classes `false` and the styles `null` until a root is registered and while the root's mode is not `'drilldown'` (a `false` class binding also strips a copied class, because Angular consults a static class only when every binding for it is `undefined`):
 
@@ -236,9 +236,9 @@ Measurement: one `ResizeObserver`, created lazily and outside the Angular zone i
 
 The submenu elements come from `NfsSubmenu.element`, the Nested menu utility's read-only member for the submenu's host.
 
-#### `NfsDrilldownBack` (`li[nfsDrilldownBack]`, no `exportAs`)
+#### `NfsDrilldownBack` (`li[nfsDrilldownBack]`, `exportAs: 'nfsDrilldownBack'`)
 
-No inputs, outputs, public methods, or `exportAs` (building-blocks 1.3: nothing to read).
+No inputs, outputs, or public methods.
 
 Host: static `class="js-drilldown-back"`; `[attr.hidden]` and `[class.is-hidden]` while there is no `NfsDrilldown` or its mode is not `'drilldown'` (Foundation's `.is-hidden` because later `.menu li` display rules beat normalize's `[hidden]`, building-blocks 1.10); `(click)`: in drilldown mode, calls `close()` on its level's owning item (`submenu.item`). The handler never calls `preventDefault()`. Focus then moves to that item's toggle through the utility's focus-loss guard, because focus was on a control inside the closing level; a keyboard press on the button is a native `click`, so this is the key table's "Back button: same as Left".
 

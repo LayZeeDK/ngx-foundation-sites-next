@@ -124,7 +124,7 @@ ngx-foundation-sites/pagination     (secondary entry point)
 
 ### API: `NfsPagination`
 
-Selector `ul[nfsPagination]`; standalone; no template; no `exportAs`, because it has no state to read.
+Selector `ul[nfsPagination]`; standalone; no template; `exportAs: 'nfsPagination'`.
 
 ```ts
 class NfsPagination {}
@@ -141,7 +141,7 @@ class NfsPagination {}
 | `NfsPaginationNext` | `li[nfsPaginationNext]` | static `class="pagination-next"` | Holds the Next link or button |
 | `NfsPaginationEllipsis` | `li[nfsPaginationEllipsis]` | static `class="ellipsis"` and `aria-hidden="true"` | Empty: Foundation's CSS draws the glyph |
 
-No inputs, models, outputs, or methods on any of them. On Foundation's default small-screen setting only the first and last items show, so `nfsPaginationPrevious` goes on the first item and `nfsPaginationNext` on the last, as in Foundation's docs.
+No inputs, models, outputs, or methods on any of them. `exportAs`: `nfsPaginationPrevious`, `nfsPaginationNext`, `nfsPaginationEllipsis`, each the class name with a lowercase first letter. On Foundation's default small-screen setting only the first and last items show, so `nfsPaginationPrevious` goes on the first item and `nfsPaginationNext` on the last, as in Foundation's docs.
 
 ### Development checks
 

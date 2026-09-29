@@ -174,7 +174,7 @@ Development-mode warnings (under `ngDevMode`, each at most once per instance, fr
 
 An unknown or malformed `stickyOn` gets the Breakpoint service's own warning.
 
-`NfsStickyContainer` (selector `[nfsStickyContainer]`): host `class: 'sticky-container'`; no other members.
+`NfsStickyContainer` (selector `[nfsStickyContainer]`, `exportAs: 'nfsStickyContainer'`): host `class: 'sticky-container'`; no other members.
 
 ### Implementation level and primitives
 

@@ -156,7 +156,7 @@ The three Options are not Variant inputs: they set no class. `equalizeOnStack` a
 
 #### `NfsEqualizer`
 
-Selector `[nfsEqualizer]`; no `exportAs` (its output is bound in the template, and `register`/`unregister` are internal to the pair, building-blocks 1.3); standalone; no template.
+Selector `[nfsEqualizer]`; `exportAs: 'nfsEqualizer'`; standalone; no template.
 
 ```ts
 class NfsEqualizer {
@@ -185,7 +185,7 @@ class NfsEqualizer {
 
 #### `NfsEqualizerWatch`
 
-Selector `[nfsEqualizerWatch]`; no inputs, outputs, methods, or host bindings; no `exportAs`. It registers its host element with the nearest `NfsEqualizer` and unregisters on destroy.
+Selector `[nfsEqualizerWatch]`; no inputs, outputs, methods, or host bindings; `exportAs: 'nfsEqualizerWatch'`. It registers its host element with the nearest `NfsEqualizer` and unregisters on destroy.
 
 #### Style ownership
 

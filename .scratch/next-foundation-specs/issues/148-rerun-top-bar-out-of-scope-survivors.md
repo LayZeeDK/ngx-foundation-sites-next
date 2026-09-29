@@ -147,3 +147,7 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), closing pass:
 
 - `specs/top-bar.md`: `NfsTopBar` and `NfsMenuIcon` have no `exportAs` (the hierarchy block, the two API lines, D12), by R17's rule, which the closing pass extends to every directive whose public members are only inputs and outputs (building-blocks 1.3, 2026-09-29).
+
+### Amendment, 2026-09-29 (exportAs on every directive)
+
+- [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md): `NfsTopBar` and `NfsMenuIcon` regain their `exportAs` (removed by the consistency review's closing pass, above); `NfsTopBarLeft`, `NfsTopBarRight`, `NfsTopBarTitle`, `NfsTitleBar`, `NfsTitleBarLeft`, `NfsTitleBarRight`, and `NfsTitleBarTitle` gain one for the first time (`nfsTopBarLeft`, `nfsTopBarRight`, `nfsTopBarTitle`, `nfsTitleBar`, `nfsTitleBarLeft`, `nfsTitleBarRight`, `nfsTitleBarTitle`).

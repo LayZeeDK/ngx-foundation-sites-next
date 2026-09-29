@@ -170,3 +170,7 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - R4: the Sass checks name both Foundation functions as not used (`color-luminance()`, `color-contrast()`), completing S1's wording.
 
 Unchanged: the two directives, their inputs, the development checks, the In-family lines of [Re-run: navigation family specs, In-family check lines](151-rerun-navigation-family-in-family-lines.md), the Library mixin's rules and required setting, ARIA, the rendering modes, and the Story ids. Confirmed: R73 (`#737373`, 4.7015:1), R74 (the landmark check reads attributes only), R4's figures (4.6473, 19.6304, 1.6252:1), CR-A (every class is rendered output, the labelled copied-class case, or Foundation's labelled markup), CR-B, CR-C, CR-D (`app-feature-trail` imports exactly the directives its template writes). Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (exportAs on every directive)
+
+From [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md): `specs/breadcrumbs.md`'s `NfsBreadcrumbs` and `NfsBreadcrumbsItem` gain `exportAs: 'nfsBreadcrumbs'` and `exportAs: 'nfsBreadcrumbsItem'` (the API lines and D1).

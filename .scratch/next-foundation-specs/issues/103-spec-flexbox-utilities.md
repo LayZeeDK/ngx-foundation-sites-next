@@ -208,3 +208,7 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - Unchanged (confirmed): R10, R37, R38, R39; check 2's message already names a forgotten Flex parent import ([Re-run: layout system and flex utility family specs, In-family check lines](155-rerun-layout-system-and-flex-utility-family-in-family-lines.md)); CR-A and CR-D hold.
 
 Triage: impact LOW (wording, examples, documentation rows), confidence HIGH. Nothing is OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (exportAs on every directive)
+
+From [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md): `specs/flexbox-utilities.md`'s `NfsFlexContainer`, `NfsFlexAlign`, and `NfsFlexChild` gain `exportAs: 'nfsFlexContainer'`, `exportAs: 'nfsFlexAlign'`, and `exportAs: 'nfsFlexChild'` (the Models/outputs/methods bullet and D1).

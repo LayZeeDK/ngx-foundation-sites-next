@@ -195,3 +195,7 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - Unchanged (confirmed): R4 (the exact helper; figures stand), R13, R27, R73 (the spec quotes no grey); CR-A, CR-C, and CR-D hold.
 
 Triage: impact LOW (development checks only), confidence HIGH. Nothing is OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (exportAs on every directive)
+
+- [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md): `NfsTable` and `NfsTableScroll` each gain an `exportAs` for the first time (`nfsTable`, `nfsTableScroll`).

@@ -141,7 +141,7 @@ Binding rule: `NfsVisibility` binds one `computed` class list holding only the c
 
 ### API: `NfsVisibility`
 
-Selector `[nfsVisibility]`; no `exportAs`; standalone; no template.
+Selector `[nfsVisibility]`; `exportAs: 'nfsVisibility'`; standalone; no template.
 
 ```ts
 type NfsVisibilityQuery = NfsClassBreakpointQuery<'up' | 'only'>;
@@ -190,7 +190,7 @@ Host bindings, all on signal state:
 
 ### API: `NfsShowForSr`
 
-Selector `[nfsShowForSr]`; standalone; no template; no inputs, outputs, or `exportAs`.
+Selector `[nfsShowForSr]`; `exportAs: 'nfsShowForSr'`; standalone; no template; no inputs or outputs.
 
 | Binding | Value |
 | --- | --- |
@@ -201,7 +201,7 @@ Selector `[nfsShowForSr]`; standalone; no template; no inputs, outputs, or `expo
 
 ### API: `NfsShowOnFocus`
 
-Selector `[nfsShowOnFocus]`; standalone; no template; no inputs, outputs, or `exportAs`.
+Selector `[nfsShowOnFocus]`; `exportAs: 'nfsShowOnFocus'`; standalone; no template; no inputs or outputs.
 
 | Binding | Value |
 | --- | --- |
@@ -462,7 +462,7 @@ Manual release test (ADR 0022): with NVDA on Firefox and Chrome, JAWS on Chrome,
 
 | # | Decision | Rationale | Rejected alternative |
 | --- | --- | --- | --- |
-| D1 | Three attribute directives in `ngx-foundation-sites/visibility`: `[nfsVisibility]` (`NfsVisibility`, no `exportAs`: it has no state to read) for the conditional and generic hiding classes, and `[nfsShowForSr]` (`NfsShowForSr`) and `[nfsShowOnFocus]` (`NfsShowOnFocus`), each binding one class | ADR 0039 gives utility families directives; building-blocks 1.3 lets a utility family's spec name them: the family's shared directive takes the docs page's name, a single-class directive its class's name (1.3's class rule); the screen-reader classes keep a different contract (visible to assistive technology) with checks of their own, and a dozen published specs already write `nfsShowForSr`; one entry point per docs page | A directive per class template with the query as its selector input (`nfsShowFor="medium"`, `nfsHideFor`, `nfsInvisible`): building-blocks 1.4 names the inputs `showFor` and `hideFor`, two directives cannot see each other's value for the combination check, and it adds five public classes (`other`); `.show-for-sr` and `.show-on-focus` as `nfsVisibility` inputs (a different contract behind one attribute, and a rename in a dozen specs) (`other`); a skip-link component (Foundation's skip link is the consumer's link with one class; ADR 0001) (`scope-boundary`); consumer-written classes (ADR 0039) (`variant-as-class`) |
+| D1 | Three attribute directives in `ngx-foundation-sites/visibility`: `[nfsVisibility]` (`NfsVisibility`) for the conditional and generic hiding classes, and `[nfsShowForSr]` (`NfsShowForSr`) and `[nfsShowOnFocus]` (`NfsShowOnFocus`), each binding one class | ADR 0039 gives utility families directives; building-blocks 1.3 lets a utility family's spec name them: the family's shared directive takes the docs page's name, a single-class directive its class's name (1.3's class rule); the screen-reader classes keep a different contract (visible to assistive technology) with checks of their own, and a dozen published specs already write `nfsShowForSr`; one entry point per docs page | A directive per class template with the query as its selector input (`nfsShowFor="medium"`, `nfsHideFor`, `nfsInvisible`): building-blocks 1.4 names the inputs `showFor` and `hideFor`, two directives cannot see each other's value for the combination check, and it adds five public classes (`other`); `.show-for-sr` and `.show-on-focus` as `nfsVisibility` inputs (a different contract behind one attribute, and a rename in a dozen specs) (`other`); a skip-link component (Foundation's skip link is the consumer's link with one class; ADR 0001) (`scope-boundary`); consumer-written classes (ADR 0039) (`variant-as-class`) |
 | D2 | `showFor` and `hideFor` take `NfsClassBreakpointQuery<'up' \| 'only'>`, named with Foundation's words; no `down` | ADR 0040 and building-blocks 1.4: an on or off responsive family takes a Breakpoint query whose modifiers are those Foundation generates classes for, and a `<words>-for-<bp>` class keeps Foundation's words (the rule's own example is `showFor="large only"`); Foundation generates `show-for-<bp>`, `-only`, `hide-for-<bp>`, and `-only`, never a `down` form; closed over `$breakpoint-classes`, so a misspelt or undeclared breakpoint fails to compile | A `down` modifier mapped to the next breakpoint's `hide-for` class (a second spelling that has no class for the last Class breakpoint, where the type could not know it) (`other`); one input per breakpoint (`mediumUp`) (ADR 0040 rule 5) (`other`); a rule string (its tokens would be Foundation class names) (`variant-as-class`) |
 | D3 | Zero-breakpoint gaps: `showFor` at the Zero breakpoint's `up` form sets no class; `hideFor` written alone, `true`, or at the Zero breakpoint's `up` form sets `.hide` | Foundation generates neither `show-for-<zero>` nor `hide-for-<zero>` and names `.hide` for "always hidden"; building-blocks 1.4 maps each value to the one class with its meaning, as `expanded="small"` sets `.expanded`; `.hide` is the unconditional form of the hide family, as `.expanded` is of the expanded family; the Zero breakpoint comes from `nfsBreakpointsToken`, the same on server and client | A separate `hide` boolean (ADR 0040 rule 5 folds the unconditional form into the family's input) (`other`); a warning for `showFor` at the Zero breakpoint (a bound value uses it to mean "shown at every width") (`other`); binding `hidden` in place of `.hide` (`[hidden]` loses to a Foundation component's `display` rule, building-blocks 1.10) (`platform-or-a11y`) |
 | D4 | The conditions are values of the same two inputs: `'landscape'`, `'portrait'`, `'dark-mode'`, `'sticky'`, and `'print'` (D20); one value per input; development warnings for a combination Foundation's CSS cannot give and for a sticky condition out of place | Foundation's classes are `show-for-<condition>` and `hide-for-<condition>`, so its words hold; measured in four engines, the orientation rules and `.show-for-dark-mode` set `display: block !important` and override a breakpoint class or `.hide` on the same element, while `.hide-for-dark-mode` and the sticky rules combine; `.show-for-sticky` on the Sticky element itself never shows | An `orientation` input (Menu and Tabs already take `orientation` for `.vertical`, and Angular sets one attribute on every directive of the element that declares the input) (`other`); a `colorScheme` input (Foundation's word is `dark-mode`) (`other`); lists of conditions per input (they would promise combinations the CSS does not give) (`other`) |

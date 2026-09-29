@@ -131,7 +131,7 @@ Every Foundation and library class on the widget is set by a directive the compo
 | Foundation class or markup | Kind | Angular | Rationale |
 | --- | --- | --- | --- |
 | The element carrying `data-responsive-accordion-tabs` | Component host | `NfsResponsiveAccordionTabs`, selector `nfs-responsive-accordion-tabs`, `exportAs: 'nfsResponsiveAccordionTabs'`, no host class | Element-selector component (building-blocks 1.1 case 1, ADR 0001): it renders one of two markup trees; the Structural classes sit on the lists it renders, where Foundation's per-mode `.accordion` or `.tabs` sat on its element; a Foundation class copied onto the host is reported (dev check 7) |
-| Each Foundation section (accordion item or tab plus panel) | Library marker | `NfsResponsiveAccordionTabsPanel`, selector `ng-template[nfsResponsiveAccordionTabsPanel]` | The consumer writes each section once; the template is instantiated in either mode and carries no class |
+| Each Foundation section (accordion item or tab plus panel) | Library marker | `NfsResponsiveAccordionTabsPanel`, selector `ng-template[nfsResponsiveAccordionTabsPanel]`, `exportAs: 'nfsResponsiveAccordionTabsPanel'` | The consumer writes each section once; the template is instantiated in either mode and carries no class |
 | `.accordion`, `.accordion-item`, `.accordion-title`, `.accordion-content` (accordion mode) | Structural | The Accordion spec's `NfsAccordion`, `NfsAccordionItem`, `NfsAccordionTitle`, `NfsAccordionContent`, rendered by the component, each binding its class as a static `host` class | Composed exactly as the Accordion spec defines them; the component's template puts no `class` on their hosts, so the Accordion's dev check 7 stays silent |
 | `.tabs`, `.tabs-title`, `.tabs-content`, `.tabs-panel` (tabs mode) | Structural | The Tabs spec's `NfsTabs`, `NfsTabsTitle`, `NfsTabsContent`, `NfsTabsPanel`, rendered by the component, each binding its class as a static `host` class; `NfsTabsGroup` on a plain `div` and `NfsTab` on each anchor bind none | Composed exactly as the Tabs spec defines them; `div[nfsTabsContent]` replaces the plain `div.tabs-content` of the first version of this spec; no `class` on their hosts, so the Tabs copied-class check stays silent |
 | `.is-active` on `.accordion-item`, `.tabs-title`, `.tabs-panel` | State | Host bindings of `NfsAccordionItem` (from its title's `expanded`), `NfsTabsTitle`, and `NfsTabsPanel` (from the selected tab) | Bound from `selected` through the composed directives on server and client; the consumer sets the initial section with `selected`, never the class |
@@ -228,7 +228,7 @@ class NfsResponsiveAccordionTabs {   // nfs-responsive-accordion-tabs, exportAs 
   readonly mode: Signal<NfsResponsiveAccordionTabsMode>;                     // the displayed mode
 }
 
-class NfsResponsiveAccordionTabsPanel {  // ng-template[nfsResponsiveAccordionTabsPanel]
+class NfsResponsiveAccordionTabsPanel {  // ng-template[nfsResponsiveAccordionTabsPanel], exportAs 'nfsResponsiveAccordionTabsPanel'
   readonly title: InputSignal<string>;   // required
   readonly value: InputSignal<string>;   // required, unique within the instance
   readonly id: InputSignal<string | undefined>;  // optional; the rendered content or panel id

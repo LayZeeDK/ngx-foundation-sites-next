@@ -196,3 +196,7 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 
 - L4, [Audit 0008: the class-rule wave](../audits/0008-class-rule-wave.md): `NfsOrbitContainer` and `NfsOrbitBullets` lose their `exportAs`; both classes are empty, with no state or method to read (building-blocks 1.3).
 - L5, [Audit 0008: the class-rule wave](../audits/0008-class-rule-wave.md): the Content slides comment's "chart-placeholder is the application's own class" reads "chart-placeholder is an Application class".
+
+### Amendment, 2026-09-29 (exportAs on every directive)
+
+- [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md): `NfsOrbitContainer` and `NfsOrbitBullets` regain their `exportAs` (removed by audit 0008 L4), and `NfsOrbitRotation`, `NfsOrbitWrapper`, `NfsOrbitControls`, `NfsOrbitPrevious`, `NfsOrbitNext`, `NfsOrbitFigure`, `NfsOrbitImage`, and `NfsOrbitCaption` gain one for the first time (`nfsOrbitRotation`, `nfsOrbitWrapper`, `nfsOrbitControls`, `nfsOrbitPrevious`, `nfsOrbitNext`, `nfsOrbitFigure`, `nfsOrbitImage`, `nfsOrbitCaption`).

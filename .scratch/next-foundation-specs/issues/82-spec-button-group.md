@@ -158,3 +158,7 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - CR-B: the one-sentence Flexbox note becomes a table of the other families' classes, the Flexbox Utilities' alignment classes, a grouped button's own Button classes, the Visibility Classes' `.show-for-sr`, and the Dropdown pane placed after the group.
 
 Unchanged: the directive, its seven Variant inputs, the development checks, the Library mixin's rules, ARIA, the rendering modes, and the Story ids. Confirmed: R1 (`nfsShowForSr` plain; `app-document-actions` imports it), R17's size check (no example sets `size` on a grouped `nfsButton` except the labelled warning), R18 (D9), R19 (D10), R65, CR-A, CR-C, CR-D. Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (exportAs on every directive)
+
+From [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md), which reverses D12: `specs/button-group.md`'s `NfsButtonGroup` gains `exportAs: 'nfsButtonGroup'` (the API line and D12, whose Decision cell now states it and whose Rejected alternative cell keeps the superseded 2026-09-28 reading for the record).

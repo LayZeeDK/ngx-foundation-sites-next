@@ -109,7 +109,7 @@ div[nfsTableScroll]    NfsTableScroll (standalone directive, no template, no par
 
 ### API: `NfsTable`
 
-Selector `table[nfsTable]`; standalone; no template; no `exportAs`. Named after Foundation's `table` mixin and docs page, as building-blocks 1.3 names a directive on an element Foundation styles by tag.
+Selector `table[nfsTable]`; standalone; no template; `exportAs: 'nfsTable'`. Named after Foundation's `table` mixin and docs page, as building-blocks 1.3 names a directive on an element Foundation styles by tag.
 
 ```ts
 class NfsTable {
@@ -153,7 +153,7 @@ Host bindings, all on signal state:
 
 ### API: `NfsTableScroll`
 
-Selector `div[nfsTableScroll]`; standalone; no template; no inputs, outputs, or methods. Restricted to `div`, the element Foundation's docs write, because `role="region"` would replace the role of a `table`, `figure`, or `section`.
+Selector `div[nfsTableScroll]`; `exportAs: 'nfsTableScroll'`; standalone; no template; no inputs, outputs, or methods. Restricted to `div`, the element Foundation's docs write, because `role="region"` would replace the role of a `table`, `figure`, or `section`.
 
 | Binding | Value |
 | --- | --- |

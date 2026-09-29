@@ -127,3 +127,7 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - Unchanged (confirmed): R4 (1.31:1 and 3.76:1), R60 (both boolean conventions stated), R61/R63, R66, R69/R70; the fill's In-family line already says why M4's template-outlet fix is the one its Handles need (the class-only-part note of [Re-run: disclosure and carousel family specs, In-family check lines](152-rerun-disclosure-and-carousel-family-in-family-lines.md)).
 
 Triage: impact LOW (one Library mixin value and one compile check; no API), confidence HIGH (the Switch's D9 reasoning and Foundation's settings). Nothing is OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (exportAs on every directive)
+
+- [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md): `NfsSliderFill` gains `exportAs: 'nfsSliderFill'` for the first time; `NfsSlider` and `NfsSliderHandle` already had theirs.

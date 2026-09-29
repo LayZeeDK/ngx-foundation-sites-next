@@ -123,7 +123,7 @@ Every Foundation and library class on an accordion is set by a directive or the 
 | `.is-active` | State | `[class.is-active]` host binding on `NfsAccordionItem` from `expanded` | Bound on server and client; the consumer binds `[expanded]` on the title, never the class (dev check 7 reports a copied static one) |
 | `.accordion[disabled]` | Attribute | `[attr.disabled]` host binding on `NfsAccordion` from the `disabled` input | Keeps Foundation's disabled cursor rule working for a bound `[disabled]` |
 | Plus and minus glyph (`::before`, `$accordion-plusminus`) | Sass setting | Foundation CSS on the title, keyed on `.is-active` | No directive and no input; a Sass boolean stays compile-time (building-blocks 1.13) |
-| (none) | Library marker | `NfsAccordionLazyContent`, selector `ng-template[nfsAccordionLazyContent]` | Lazy content marker; renders inside the wrapper's inner element |
+| (none) | Library marker | `NfsAccordionLazyContent`, selector `ng-template[nfsAccordionLazyContent]`, `exportAs: 'nfsAccordionLazyContent'` | Lazy content marker; renders inside the wrapper's inner element |
 | (none) | Library | `.nfs-accordion-content-body` (static) and `.nfs-accordion-content-shown` (bound) on the wrapper's own inner element, in its template | Library-owned element the consumer never writes; clipped only while collapsed or animating |
 | `.button` (and a `size` class) on the controls that call methods | Another family's (Button) | `NfsButton` (`button[nfsButton]`) with its `size` Variant input, in the examples and stories (D26) | [Spec: Button](../issues/37-spec-button.md) |
 
@@ -213,7 +213,7 @@ class NfsAccordionContent {                 // [nfsAccordionContent] component, 
   readonly id: InputSignal<string>;          // Aria AccordionPanel.id, default generated 'ng-accordion-panel-...'
 }
 
-class NfsAccordionLazyContent {             // ng-template[nfsAccordionLazyContent]
+class NfsAccordionLazyContent {             // ng-template[nfsAccordionLazyContent], exportAs 'nfsAccordionLazyContent'
   readonly preserveContent: InputSignalWithTransform<boolean, unknown>; // default false
 }
 ```

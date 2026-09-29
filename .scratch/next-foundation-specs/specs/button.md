@@ -134,7 +134,7 @@ button[nfsButton] | a[nfsButton] | input[type=submit|button|reset][nfsButton]   
 
 ### API: `NfsButton`
 
-Selector `button[nfsButton], a[nfsButton], input[type=submit][nfsButton], input[type=button][nfsButton], input[type=reset][nfsButton]`; no `exportAs`; standalone; OnPush does not apply (no template).
+Selector `button[nfsButton], a[nfsButton], input[type=submit][nfsButton], input[type=button][nfsButton], input[type=reset][nfsButton]`; `exportAs: 'nfsButton'`; standalone; OnPush does not apply (no template).
 
 ```ts
 class NfsButton {
@@ -172,7 +172,6 @@ type NfsButtonExpanded = boolean | NfsButtonExpandedQuery;
 - Models: none. The directive owns no two-way state; `aria-pressed` toggling stays in the consumer's component (see ARIA).
 - Outputs: none. The native `click`, `focus`, and `blur` events are the API; the directive neither wraps nor re-emits them.
 - Methods: none. `focus()` is the native element method; Material's `focus(origin)` exists to feed `FocusMonitor`, which this library does not use for buttons.
-- No `exportAs`: the directive owns no state or method a template could read, only the consumer's own inputs (building-blocks 1.3); adding one later is additive.
 
 Host bindings (all on signal state; the host tag is read once at construction, either `a` or a form button, `button` or `input`):
 
@@ -217,7 +216,7 @@ Fallback: none needed. No part of the design depends on an unverified behaviour;
 | `type` | Not managed | Default `button` |
 | `tabIndex`, `disableRipple`, `showProgress` | Inputs | None (native `tabindex`; no ripple; no progress slot) |
 | `focus(origin)` | Method through `FocusMonitor` | None (native `focus()`) |
-| `exportAs` | `matButton, matAnchor` | None (building-blocks 1.3: no state or method to read) |
+| `exportAs` | `matButton, matAnchor` | `exportAs: 'nfsButton'` |
 | Testing | `MatButtonHarness` | DOM-first assertions; no harness |
 
 Borrowed: the directive-on-native-element shape, one class for every host, the `disabledInteractive` name and its focusable `aria-disabled` behaviour, and typed appearance inputs, here named after Foundation's class families and closed over the consumer's Sass. Not borrowed: the component template, Material's appearance names (its classes are private; Foundation's are the styled contract the inputs map to), the config token, and the anchor click blocker.

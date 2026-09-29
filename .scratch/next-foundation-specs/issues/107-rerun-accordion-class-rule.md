@@ -99,3 +99,7 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - CR-B: the class mapping gains a row for the Button's `.button` on the method-calling controls (D26).
 
 Unchanged: the directives, their inputs, outputs, methods, ARIA, keys, animation, the rendering modes, the Sass rules, and the Story ids. Confirmed: X1 (D19's `@warn` stands, ADR 0022's "a compile error or warning"), CR-A (every class in an example is rendered output, the library's own inner element, or prose), CR-C, CR-D (`app-faq` imports every library directive its template writes). Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (exportAs on every directive)
+
+From [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md): `specs/accordion.md`'s `NfsAccordionLazyContent` gains `exportAs: 'nfsAccordionLazyContent'` (the class mapping row and the class sketch comment); `NfsAccordion`, `NfsAccordionItem`, `NfsAccordionTitle`, and `NfsAccordionContent` already had theirs.

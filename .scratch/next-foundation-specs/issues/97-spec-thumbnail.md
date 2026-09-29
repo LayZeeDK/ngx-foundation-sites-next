@@ -153,3 +153,7 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - Unchanged (confirmed): R10, R11, R28/R29, R32/R64, R65, R74 (check 2 already counts an image's `alt`); CR-A and CR-D hold.
 
 Triage: impact LOW (wording), confidence HIGH. Nothing is OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (exportAs on every directive)
+
+- [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md): `NfsThumbnail` gains `exportAs: 'nfsThumbnail'` for the first time.

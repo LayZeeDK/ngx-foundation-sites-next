@@ -227,3 +227,7 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 ### Amendment, 2026-09-29 (audit 0008)
 
 - M1, [Audit 0008: the class-rule wave](../audits/0008-class-rule-wave.md): the Sass subsection states that the Library mixin question, T9 of [Audit: the specs against the architecture guide](142-audit-specs-against-architecture-guide.md), is OPEN FOR HUMAN, and applies the one mixin until the user rules.
+
+### Amendment, 2026-09-29 (exportAs on every directive)
+
+- [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md): all eighteen directives (`NfsPrototypeSpacing`, `NfsPrototypeSizing`, `NfsPrototypeDisplay`, `NfsPrototypeOverflow`, `NfsPrototypePosition`, `NfsPrototypeBorderBox`, `NfsPrototypeBorderNone`, `NfsPrototypeBordered`, `NfsPrototypeRounded`, `NfsPrototypeShadow`, `NfsPrototypeArrow`, `NfsPrototypeSeparator`, `NfsPrototypeFontStyling`, `NfsPrototypeListUnordered`, `NfsPrototypeListOrdered`, `NfsPrototypeTextUtilities`, `NfsPrototypeTextTransformation`, `NfsPrototypeTextDecoration`) gain an `exportAs` for the first time, each its class name with a lowercase first letter; D20's rejected `exportAs` alternative is now the decision.

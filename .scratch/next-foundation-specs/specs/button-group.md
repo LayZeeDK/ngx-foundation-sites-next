@@ -120,7 +120,7 @@ Other families' classes in this spec's markup and Foundation's docs page, each s
 
 ### API: `NfsButtonGroup`
 
-Selector `[nfsButtonGroup]`; no `exportAs` (D12); standalone; OnPush does not apply (no template).
+Selector `[nfsButtonGroup]`; `exportAs: 'nfsButtonGroup'` (D12); standalone; OnPush does not apply (no template).
 
 ```ts
 class NfsButtonGroup {
@@ -395,7 +395,7 @@ Against the prerendered fixture app: JavaScript disabled, a screenshot plus axe 
 | D9 | Flexbox alignment comes from `nfsFlexAlign` and its `alignX` input, written beside `nfsButtonGroup` | `.align-*` are Utility classes of `foundation-flex-classes`, not of the button-group partial; directive composition over duplication (map, Standing preferences) | An `align` input on the group, which would give one Utility class family two owners |
 | D10 | Native implementation level; Aria's `Toolbar` is not used, and this is not a fallback | Foundation's Button Group has no keyboard contract; the APG toolbar pattern changes Tab into arrow keys and is for three or more controls; `nfsButton` on an `ngToolbarWidget` fights its `disabled` and `aria-disabled` bindings | Hosting `ngToolbar` on the group |
 | D11 | `nfs-button-group` writes no Variant property; the group's `color` and `size` are checked against `--nfs-button-palette` and `--nfs-button-sizes`, which `nfs-button` alone writes | A Variant property needs one writer: an empty property and a missing one read the same, so a second writer of the same list would keep the properties present when `nfs-button` is missing and hide that include from `strictVariantProperties`; a group is always used with `nfsButton`, so `nfs-button` is always there to write them | Writing both properties again, as a literal reading of building-blocks 1.13 would have it (duplicate CSS that hides a missing `nfs-button`) |
-| D12 | No `exportAs` | Nothing reads a group through a template reference; adding it later is additive | `exportAs: 'nfsButtonGroup'` (building-blocks 1.3: a directive with no state or method to read has none; `nfsButton` and `nfsCloseButton` have none either) |
+| D12 | `exportAs: 'nfsButtonGroup'` | Every directive and component has one, the class name with a lowercase first letter (2026-09-29, user ruling, [Decide: an exportAs on every directive](../issues/156-decide-exportas-on-every-directive.md), which supersedes this row's 2026-09-28 reading of building-blocks 1.3) | No `exportAs`, kept for parity with `nfsButton` and `nfsCloseButton` (building-blocks 1.3's 2026-09-28 rule: a directive with no state or method to read has none) |
 | D13 | `nfs-button-group` emits the arrow rules and the no-gaps floor, and no compile-time check of its own | 1.4.11 and 2.5.8 failures Foundation's settings cannot fix (measured); every label and arrow colour the rules produce is a pair `nfs-button` already checks, because the group calls Foundation's `button-fill-style` with the same settings | A second contrast check duplicating `nfs-button`'s; arrow rules per palette entry mirroring Foundation's button rules (one rule per fill and name, where `currentColor` is one rule per fill) |
 
 ### Usage examples

@@ -153,3 +153,7 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - CSS class mapping gains a table of the other families' classes the examples, stories, and Foundation's page use (Callout, Button, XY Grid, the Forms' `.middle`, Prototyping Utilities), each with its directive and owning spec.
 
 Unchanged: the API, the two attributes' types and defaults, the development checks, ARIA, the WCAG rows, the rendering modes, and the Story ids. Confirmed: R39 (placements), CR-A, CR-C (no placeholder), CR-D (the `app-order-header` imports). Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (exportAs on every directive)
+
+From [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md): `specs/float-classes.md`'s `NfsFloatClasses` gains `exportAs: 'nfsFloatClasses'` (the API line).

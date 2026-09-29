@@ -230,3 +230,7 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - D1's rationale states a fact in place of a deferral word: the names "are the names the Spec: Equalizer already wrote" (CR-C).
 
 Unchanged: the API, types, defaults, development checks, the In-family line of [Re-run: layout system and flex utility family specs, In-family check lines](155-rerun-layout-system-and-flex-utility-family-in-family-lines.md), ARIA, the WCAG rows, the rendering modes, and the Story ids. Confirmed: R16 (the Notes' `hidden` line stays: `hidden` hides a row and a column), R59's `include()` calls and the one-file-per-case Runtime check tests, CR-A, CR-D (`app-legacy-article`). Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (exportAs on every directive)
+
+From [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md): `specs/float-grid.md`'s `NfsRow` and `NfsColumn` gain `exportAs: 'nfsRow'` and `exportAs: 'nfsColumn'` (the class sketch comments, the Models/outputs/methods bullet, the Material comparison table, and D1), the same names as the Flex Grid's directives for the same classes.

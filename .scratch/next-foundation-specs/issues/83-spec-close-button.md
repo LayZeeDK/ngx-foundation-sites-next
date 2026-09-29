@@ -176,3 +176,7 @@ Triage: impact LOW (an `exportAs` removed before the first release, R17's rating
 From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), closing pass:
 
 - `specs/close-button.md`: development check 3 also counts the `nfsButton` attribute, and its browser-level case follows, by the [Spec: forgotten-import checks (shared utility)](150-spec-forgotten-import-checks.md)'s bullet for checks that find another family's peer by its class, so it agrees with the Top Bar's check 3.
+
+### Amendment, 2026-09-29 (exportAs on every directive)
+
+From [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md): `specs/close-button.md`'s `NfsCloseButton` gains `exportAs: 'nfsCloseButton'` (the API line and the Models/outputs/methods bullet).

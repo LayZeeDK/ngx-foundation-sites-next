@@ -164,3 +164,7 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - The `app-invoice-pager` example's `viewChild` query is `protected`, not `private` (the repository's AGENTS.md: Angular signal queries take `protected`; `private` is not used).
 - The `NfsPagination` In-family line says that the Typography Helpers' `nfsTextAlign` beside it belongs to another family and is not probed (the form and value-control re-run asked the review to state cross-family neighbours the same way in every spec).
 - Unchanged, confirmed: R4 (figures), R9/R23, R24, R74 (attribute-only landmark check), CR-A, CR-C, CR-D.
+
+### Amendment, 2026-09-29 (exportAs on every directive)
+
+- [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md): `NfsPagination`, `NfsPaginationPrevious`, `NfsPaginationNext`, and `NfsPaginationEllipsis` each gain an `exportAs` for the first time (`nfsPagination`, `nfsPaginationPrevious`, `nfsPaginationNext`, `nfsPaginationEllipsis`).

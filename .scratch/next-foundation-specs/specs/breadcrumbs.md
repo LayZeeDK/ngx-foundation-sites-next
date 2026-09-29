@@ -119,7 +119,7 @@ ngx-foundation-sites/breadcrumbs    (secondary entry point)
 
 ### API: `NfsBreadcrumbs`
 
-Selector `ul[nfsBreadcrumbs], ol[nfsBreadcrumbs]`; standalone; no template; no `exportAs`, because it has no state to read.
+Selector `ul[nfsBreadcrumbs], ol[nfsBreadcrumbs]`; standalone; no template; `exportAs: 'nfsBreadcrumbs'`.
 
 ```ts
 class NfsBreadcrumbs {}
@@ -130,7 +130,7 @@ class NfsBreadcrumbs {}
 
 ### API: `NfsBreadcrumbsItem`
 
-Selector `li[nfsBreadcrumbsItem]`; standalone; no template; no `exportAs`.
+Selector `li[nfsBreadcrumbsItem]`; standalone; no template; `exportAs: 'nfsBreadcrumbsItem'`.
 
 ```ts
 class NfsBreadcrumbsItem {
@@ -379,7 +379,7 @@ Manual release test (ADR 0022): with NVDA on Firefox and Chrome, JAWS on Chrome,
 
 | # | Decision | Rationale | Rejected alternative |
 | --- | --- | --- | --- |
-| D1 | Two attribute directives in `ngx-foundation-sites/breadcrumbs`: `NfsBreadcrumbs` binds `.breadcrumbs`; `NfsBreadcrumbsItem` binds `.disabled` from `disabled`; no component, no `exportAs` | One directive per Structural class and every State class a host binding (ADR 0039); nothing is generated (ADR 0001); the item has no Structural class, so it is named after Foundation's term for it (the `$breadcrumbs-item-*` settings, building-blocks 1.3) | A breadcrumbs component rendering steps from an input (Foundation's markup is the consumer's; ADR 0001) (`scope-boundary`); an item directive required on every `li` (only a disabled step has a state) (`other`) |
+| D1 | Two attribute directives in `ngx-foundation-sites/breadcrumbs`: `NfsBreadcrumbs` binds `.breadcrumbs`, `exportAs: 'nfsBreadcrumbs'`; `NfsBreadcrumbsItem` binds `.disabled` from `disabled`, `exportAs: 'nfsBreadcrumbsItem'`; no component | One directive per Structural class and every State class a host binding (ADR 0039); nothing is generated (ADR 0001); the item has no Structural class, so it is named after Foundation's term for it (the `$breadcrumbs-item-*` settings, building-blocks 1.3) | A breadcrumbs component rendering steps from an input (Foundation's markup is the consumer's; ADR 0001) (`scope-boundary`); an item directive required on every `li` (only a disabled step has a state) (`other`) |
 | D2 | Hosts `ul` and `ol` | Foundation's docs use `ul` and its CSS styles the class alone, so an `ol` renders the same; the APG's example uses an ordered list because a trail is an order | `ul` only, as the Menu and Pagination (a trail's order is its meaning) (`other`) |
 | D3 | No Variant input | Foundation's Breadcrumbs has no Variant class; `$breadcrumbs-item-uppercase` and `$breadcrumbs-item-separator` are Sass booleans, which stay compile-time configuration and never become inputs (the library's input-naming rule) | Inputs for the Sass booleans (they select no class) (`other`) |
 | D4 | The current page is `aria-current="page"` on its link, which keeps its `href`; `nfs-breadcrumbs` colours it `$breadcrumbs-item-color-current` with the Menu's and the Pagination's selector exclusion; a current page written as text carries `aria-current` on its `li`; Foundation's hidden "Current: " is dropped | The APG pattern; ADR 0042 and the [Spec: Pagination](../issues/87-spec-pagination.md)'s D4; one source for the announcement and the look (1.3.1); Foundation colours a current breadcrumb only as its `li`'s text, so a current link otherwise keeps the link colour (measured in three engines); the hidden text would be read beside `aria-current` | A `current` input (a second source, and an item directive cannot reach its link) (`platform-or-a11y`); keeping the hidden "Current: " (read twice where `aria-current` is announced) (`platform-or-a11y`) |

@@ -206,3 +206,7 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - Unchanged (confirmed): R34/R35, R37; the In-family lines of 2026-09-29 stand; check 3 agrees with the shared spec's DOM-placement bullet (S2), and check 5 is silent for a parent whose column import was forgotten; CR-A, CR-C, and CR-D hold.
 
 Triage: impact LOW (a development warning's condition, wording, documentation rows), confidence HIGH. Nothing is OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (exportAs on every directive)
+
+From [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md): `specs/flex-grid.md`'s `NfsRow` and `NfsColumn` gain `exportAs: 'nfsRow'` and `exportAs: 'nfsColumn'` (the class sketch comments, the Models/outputs/methods bullet, the Material comparison table, and D1), the same names as the Float Grid's directives for the same classes.

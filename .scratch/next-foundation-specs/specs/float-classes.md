@@ -120,7 +120,7 @@ The Float Classes take the stand-alone shape of the rule (clause 0). Each class 
 
 ### API
 
-Standalone, no template, no `exportAs` (it has no state or method to read), no model, no output, no method. Each attribute is an `input()` whose public name is the attribute (the class member drops the `nfs` prefix), declared with explicit type arguments that name the exported alias (building-blocks 1.4), with the JSDoc naming Foundation's class template and saying no Sass setting applies.
+Standalone, no template, `exportAs: 'nfsFloatClasses'`, no model, no output, no method. Each attribute is an `input()` whose public name is the attribute (the class member drops the `nfs` prefix), declared with explicit type arguments that name the exported alias (building-blocks 1.4), with the JSDoc naming Foundation's class template and saying no Sass setting applies.
 
 ```ts
 /** The placements of Foundation's `.float-<v>` classes, printed by `foundation-float-classes`; closed, no Sass setting. */

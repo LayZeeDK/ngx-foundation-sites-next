@@ -184,3 +184,7 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 ### Amendment, 2026-09-29 (audit 0008)
 
 - L4, [Audit 0008: the class-rule wave](../audits/0008-class-rule-wave.md): `NfsOffCanvasOverlay` loses its `exportAs` (`nfsOffCanvasOverlay`); its only member is its required `panel` input, no state or method to read (building-blocks 1.3).
+
+### Amendment, 2026-09-29 (exportAs on every directive)
+
+- [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md): `NfsOffCanvasOverlay` regains `exportAs: 'nfsOffCanvasOverlay'` (removed by audit 0008 L4) and `NfsOffCanvasWrapper` gains `exportAs: 'nfsOffCanvasWrapper'`.

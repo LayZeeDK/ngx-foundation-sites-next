@@ -173,3 +173,7 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - Unchanged (confirmed): R31, R34/R35, R73; the In-family line of 2026-09-29 stands; CR-A, CR-C, and CR-D hold.
 
 Triage: impact LOW (examples, stories, wording), confidence HIGH. Nothing is OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (exportAs on every directive)
+
+From [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md): `specs/card.md`'s `NfsCard`, `NfsCardDivider`, `NfsCardSection`, and `NfsCardImage` gain `exportAs: 'nfsCard'`, `exportAs: 'nfsCardDivider'`, `exportAs: 'nfsCardSection'`, and `exportAs: 'nfsCardImage'` (the combined prose line and D1).

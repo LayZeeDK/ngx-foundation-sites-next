@@ -218,11 +218,11 @@ class NfsOffCanvas implements NfsOpenable {   // selector [nfsOffCanvas], [nfsOf
 class NfsOffCanvasContent {   // selector [nfsOffCanvasContent], exportAs 'nfsOffCanvasContent'; no inputs or outputs
 }
 
-class NfsOffCanvasOverlay {   // selector [nfsOffCanvasOverlay]; no exportAs
+class NfsOffCanvasOverlay {   // selector [nfsOffCanvasOverlay]; exportAs 'nfsOffCanvasOverlay'
   readonly panel: InputSignal<NfsOffCanvas>;  // alias 'nfsOffCanvasOverlay', required
 }
 
-class NfsOffCanvasWrapper {   // selector [nfsOffCanvasWrapper]; no exportAs, inputs, outputs, or providers
+class NfsOffCanvasWrapper {   // selector [nfsOffCanvasWrapper]; exportAs 'nfsOffCanvasWrapper'; no inputs, outputs, or providers
 }
 ```
 

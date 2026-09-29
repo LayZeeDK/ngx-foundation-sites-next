@@ -114,7 +114,7 @@ Every class on the menu's elements, per building-blocks 1.14 item 2; the consume
 | `is-active` (dropdown parent), `opens-left`, `opens-right`, `opens-inner` | State | Host class map on `NfsMenuItem`, per mode in the table under API, `NfsMenuItem` | Open state and the dropdown side |
 | `submenu`, `is-<mode>-submenu` | State (Nest) | Host class map on `NfsSubmenu`, per mode in the table under API, `NfsSubmenu` | Nest's classes, from the Menu mode |
 | `is-active` (accordion, drilldown), `js-dropdown-active`, `first-sub`, `visible`, `invisible`, `is-closing`, `drilldown-submenu-cover-previous`, `is-hidden` (no root, closed) | State | Host class map on `NfsSubmenu`, per mode in the table under API, `NfsSubmenu` | Open state and slide phases |
-| Parent `a` that opened a submenu; AccordionMenu's generated `button.submenu-toggle` | Structural (`.submenu-toggle`, the generated toggle only) | `NfsSubmenuToggle`, selector `button[nfsSubmenuToggle]`, no `exportAs`; `[class.submenu-toggle]` while `hybrid` | The disclosure button (building-blocks 1.10; ADR 0004); a native button needs no key handling for Enter and Space; Foundation's parent link had no class, its generated toggle had `.submenu-toggle`, Foundation's only toggle styles, applied in every mode |
+| Parent `a` that opened a submenu; AccordionMenu's generated `button.submenu-toggle` | Structural (`.submenu-toggle`, the generated toggle only) | `NfsSubmenuToggle`, selector `button[nfsSubmenuToggle]`, `exportAs: 'nfsSubmenuToggle'`; `[class.submenu-toggle]` while `hybrid` | The disclosure button (building-blocks 1.10; ADR 0004); a native button needs no key handling for Enter and Space; Foundation's parent link had no class, its generated toggle had `.submenu-toggle`, Foundation's only toggle styles, applied in every mode |
 | `.submenu-toggle-text` span | Structural | `NfsSubmenuToggleText`, selector `span[nfsSubmenuToggleText]`, static host class | Foundation's visually hidden name holder inside the Hybrid item's toggle (ADR 0039 names it) |
 | `.is-active` on the current page's `li` | State, not bound | None: the current page is `aria-current` on its link, styled by `nfs-menu` with Foundation's `menu-state-active` (the Menu spec, D4) | `.is-active` is the Nested menu's open state; no class marks the current page in any mode |
 | `.menu-text` on a text item | Structural (Menu) | `li[nfsMenuText]` (the Menu spec), with or without `nfsMenuItem` | An item with no link |
@@ -271,7 +271,7 @@ Host: `[id]`, `[class]` (the submenu map: `nested` and `vertical` always `true`,
 
 A hidden drilldown ancestor level is never `inert`: the open level is its descendant, and `inert` cannot be undone inside a subtree (prototype row 9). Foundation's `visibility: hidden` takes it out of the tab order and the accessibility tree, and the open level's `visible` overrides it. `.visible` follows `.invisible` in Foundation's CSS, so the two are never bound together.
 
-#### `NfsSubmenuToggle` (`button[nfsSubmenuToggle]`, no `exportAs`)
+#### `NfsSubmenuToggle` (`button[nfsSubmenuToggle]`, `exportAs: 'nfsSubmenuToggle'`)
 
 | Member | Kind | Type | Notes |
 | --- | --- | --- | --- |
@@ -279,9 +279,9 @@ A hidden drilldown ancestor level is never `inert`: the open level is its descen
 
 Host: `type="button"` (static; a consumer's static `type` wins), `[attr.id]` (the consumer's static `id`, else `_IdGenerator.getId('nfs-submenu-toggle-', true)`, rewritten at hydration like the submenu ids), `[attr.aria-expanded]` from the item, `[attr.aria-controls]` from the submenu id, `[class.submenu-toggle]` from `hybrid` (`false` strips a copied one), and `(click)`. The click handler toggles the item, with one dropdown-mode exception taken from Foundation's `data-is-click` rule: a pointer click (`event.detail > 0`) on a submenu that hover opened keeps it open and marks it click-opened, so hover then click does not close it; a keyboard-generated click always toggles. The handler never calls `preventDefault()`.
 
-#### `NfsSubmenuToggleText` (`span[nfsSubmenuToggleText]`)
+#### `NfsSubmenuToggleText` (`span[nfsSubmenuToggleText]`, `exportAs: 'nfsSubmenuToggleText'`)
 
-No inputs, models, outputs, or methods, and no `exportAs`. Host: static `class="submenu-toggle-text"`, Foundation's visually hidden name holder (`element-invisible`, from `foundation-accordion-menu`), so the Hybrid item's toggle is named by text in the accessibility tree while only its arrow shows. It sits inside a `hybrid` toggle; in development builds only it injects `NfsSubmenuToggle` (`{optional: true}`) for its warning.
+No inputs, models, outputs, or methods. Host: static `class="submenu-toggle-text"`, Foundation's visually hidden name holder (`element-invisible`, from `foundation-accordion-menu`), so the Hybrid item's toggle is named by text in the accessibility tree while only its arrow shows. It sits inside a `hybrid` toggle; in development builds only it injects `NfsSubmenuToggle` (`{optional: true}`) for its warning.
 
 #### Development checks
 

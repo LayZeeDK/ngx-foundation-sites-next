@@ -135,3 +135,7 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - Unchanged (confirmed): R4 (the exact helper; floored figures), R21; CR-A, CR-C, and CR-D hold.
 
 Triage: impact LOW (a Library mixin selector list inside a media query and development checks; no API), confidence HIGH (measured by this review; accname and HTML-AAM; the Thumbnail's check 2). Nothing is OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (exportAs on every directive)
+
+- [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md): `NfsSwitch`, `NfsSwitchInput`, `NfsSwitchPaddle`, `NfsSwitchActive`, and `NfsSwitchInactive` each gain an `exportAs` for the first time (`nfsSwitch`, `nfsSwitchInput`, `nfsSwitchPaddle`, `nfsSwitchActive`, `nfsSwitchInactive`); D8 no longer lists `exportAs` among what the family lacks.

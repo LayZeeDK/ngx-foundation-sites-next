@@ -173,7 +173,7 @@ Host bindings, all on signal state:
 
 ### API: `NfsProgressMeter`
 
-Selector `[nfsProgressMeter]`; standalone; no template; no inputs, outputs, or methods.
+Selector `[nfsProgressMeter]`; `exportAs: 'nfsProgressMeter'`; standalone; no template; no inputs, outputs, or methods.
 
 | Binding | Value |
 | --- | --- |
@@ -185,14 +185,14 @@ Selector `[nfsProgressMeter]`; standalone; no template; no inputs, outputs, or m
 
 ### API: `NfsProgressMeterText`
 
-Selector `[nfsProgressMeterText]`; standalone; no template; no inputs, outputs, or methods. It binds the static class `progress-meter-text`; the text is the consumer's content.
+Selector `[nfsProgressMeterText]`; `exportAs: 'nfsProgressMeterText'`; standalone; no template; no inputs, outputs, or methods. It binds the static class `progress-meter-text`; the text is the consumer's content.
 
 - Development-mode check (D6), in one `afterRenderEffect` read phase that exists only when `ngDevMode` is on (never on the server, never in production): at the first render and after each render in which its progress bar's `percentage()` changed, it compares its host's horizontal extent with its meter's, and warns once, then stops checking: "nfsProgressMeterText: the meter text "<text>" is wider than its meter at <percentage> percent, so part of it sits on the track or the page, where it can fall under 4.5:1 (WCAG 1.4.3); show the value beside the bar while the meter can be narrower than its text". Only the horizontal extent counts: the text's line box is 18 px against Foundation's 16 px bar at the default size, and its glyphs fit.
 - A progress bar is a `progressbar`, whose children are presentational (WAI-ARIA: "Children Presentational: True"), so the meter text is not exposed as text of its own (measured in Chromium: the meter's node in the accessibility tree has the role `none`, and the Windows UI Automation ProgressBar has no children). A screen reader announces `aria-valuetext` when it is set, otherwise the value's share of the range, so a meter text that is not a share of the range goes into `valueText` as well.
 
 ### API: `NfsProgressElement`
 
-Selector `progress[nfsProgressElement]`; standalone; no template. Named after Foundation's `foundation-progress-element` mixin, as building-blocks 1.3 names a directive on an element Foundation styles by tag.
+Selector `progress[nfsProgressElement]`; `exportAs: 'nfsProgressElement'`; standalone; no template. Named after Foundation's `foundation-progress-element` mixin, as building-blocks 1.3 names a directive on an element Foundation styles by tag.
 
 ```ts
 class NfsProgressElement {

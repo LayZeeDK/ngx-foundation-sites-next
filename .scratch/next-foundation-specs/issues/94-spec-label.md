@@ -178,3 +178,7 @@ Unchanged: the directive, its API, checks 2 and 3, the Library mixin's rules and
 From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), closing pass:
 
 - `specs/label.md`: `NfsLabel` has no `exportAs` (the API line, the bullet, D1), by R17's rule, which the closing pass extends to every directive whose public members are only inputs and outputs (building-blocks 1.3, 2026-09-29).
+
+### Amendment, 2026-09-29 (exportAs on every directive)
+
+From [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md), which reverses R17 and this ticket's closing-pass line above: `specs/label.md`'s `NfsLabel` gains `exportAs: 'nfsLabel'` (the API line, the bullet, D1).

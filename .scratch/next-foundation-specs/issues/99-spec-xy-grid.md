@@ -201,3 +201,7 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - CR-B: the class mapping gains rows for the Flexbox Utilities' and the Card's classes of the usage examples.
 - Unchanged: R9/R23, R11, R26, R34/R35, R37, R44, R48; check 2 agrees with the placement rule of the [Spec: forgotten-import checks (shared utility)](150-spec-forgotten-import-checks.md); CR-A, CR-C, CR-D; the In-family line.
 - Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (exportAs on every directive)
+
+- [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md): `NfsGridContainer`, `NfsGridX`, `NfsGridY`, and `NfsCell` each gain an `exportAs` for the first time (`nfsGridContainer`, `nfsGridX`, `nfsGridY`, `nfsCell`); D1 and the Material comparison row no longer say the family has none.

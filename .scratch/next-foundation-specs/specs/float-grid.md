@@ -196,14 +196,14 @@ type NfsFloatGridCenteredInput = NfsVariantBoolean | NfsClassBreakpointRules<boo
 /** .gutter-<key>: a key of $grid-column-gutter while it is a map (small, medium by default). */
 type NfsFloatGridGutter = NfsOverridableStringUnion<'small' | 'medium', NfsGridColumnGutterOverrides>;
 
-class NfsRow {                               // [nfsRow]
+class NfsRow {                               // [nfsRow], exportAs 'nfsRow'
   readonly expanded: InputSignalWithTransform<boolean, NfsVariantBoolean>;                                    // default false
   readonly up: InputSignalWithTransform<NfsFloatGridUpValue | undefined, NfsFloatGridUpInput | undefined>;    // default undefined
   readonly collapse: InputSignalWithTransform<NfsFloatGridCollapse, NfsFloatGridCollapseInput>;               // default false
   readonly gutter: InputSignal<NfsFloatGridGutter | undefined>;                                               // default undefined
 }
 
-class NfsColumn {                            // [nfsColumn]
+class NfsColumn {                            // [nfsColumn], exportAs 'nfsColumn'
   readonly size: InputSignalWithTransform<NfsFloatGridColumnSizeValue | undefined, NfsFloatGridColumnSizeInput | undefined>; // default undefined
   readonly offset: InputSignalWithTransform<NfsFloatGridOffsetValue | undefined, NfsFloatGridOffsetInput | undefined>;       // default undefined
   readonly push: InputSignalWithTransform<NfsFloatGridOffsetValue | undefined, NfsFloatGridOffsetInput | undefined>;         // default undefined
@@ -229,7 +229,7 @@ class NfsColumn {                            // [nfsColumn]
 
 - Every input's JSDoc names Foundation's class template and the Sass setting (AGENTS.md Design Philosophy 5), and `collapse`'s names the difference between `.collapse` and `.<bp>-collapse` for nested rows. Every input declares explicit type arguments that name the exported aliases (or `NfsVariantBoolean`), and the library build's typings assertion covers all of them ([ADR 0040](../adr/0040-variant-input-types.md)).
 - The count transforms turn a static attribute's string (`size="6"`, `push="0"`) into its number and pass Breakpoint rules through; the on-or-off transforms map `NfsVariantBoolean` through `nfsVariantBoolean` and pass a rules object through. None uses `numberAttribute` or `booleanAttribute`. The transforms are internal.
-- Models, outputs, and methods: none. The grid has no state; `exportAs`: none, because there is nothing to expose.
+- Models, outputs, and methods: none. `exportAs`: `nfsRow` on `NfsRow`, `nfsColumn` on `NfsColumn`.
 
 Host bindings, all on signal state:
 
@@ -253,7 +253,7 @@ Material has no CSS layout grid; the nearest component is `MatGridList`, a tile 
 
 | Concern | Material `mat-grid-list` and `mat-grid-tile` | Float Grid directives |
 | --- | --- | --- |
-| Kind | Components with templates, `MAT_GRID_LIST` parent token, `exportAs: 'matGridList'` | Attribute directives on the consumer's elements; no template, token, or `exportAs` |
+| Kind | Components with templates, `MAT_GRID_LIST` parent token, `exportAs: 'matGridList'` | Attribute directives on the consumer's elements; no template or token; `exportAs: 'nfsRow'`, `exportAs: 'nfsColumn'` |
 | Layout | Computed in `ngAfterContentChecked` and written as inline styles on each tile; `cols`, `rowHeight`, `gutterSize` | Foundation's compiled CSS (floats); the classes are host bindings in server HTML |
 | Item size | `colspan`, `rowspan` inputs on the tile | `size`, `offset`, `push`, `pull`, `centered` on the column, per breakpoint through Breakpoint rules |
 | Responsive | None built in | CSS media queries through Foundation's breakpoint classes; no JavaScript |
@@ -474,7 +474,7 @@ No manual assistive-technology test: the directives expose nothing to assistive 
 
 | # | Decision | Rationale | Rejected alternative |
 | --- | --- | --- | --- |
-| D1 | Two attribute directives, one per class that names an element of the layout (`[nfsRow]`, `[nfsColumn]`), each a static host class on any element; entry point `ngx-foundation-sites/float-grid`; no `exportAs`. The Flex Grid's directives for the same classes take the same selectors, class names, and input names in `ngx-foundation-sites/flex-grid`, while each grid's type aliases carry its name (`NfsFloatGrid...`, `NfsFlexGrid...`) | ADR 0001 and ADR 0039; the names follow the classes (building-blocks 1.3, the XY Grid's rule for layout systems) and are the names the [Spec: Equalizer](../issues/34-spec-equalizer.md) already wrote; Foundation names the two legacy grids' classes the same and one stylesheet holds only one of them, so one set of names lets a page change grids by its imports; the alias prefix keeps apart two unions of different values, as the [Spec: Flex Grid](../issues/101-spec-flex-grid.md)'s D7 decided | One shared directive pair for both legacy grids (it would type inputs whose classes the other grid lacks: push, pull, centring, `end`, and gutters are float-only, `shrink`, `expand`, and `unstack` flex-only) (`other`); prefixed names such as `nfsFloatRow` (not Foundation's class names, against building-blocks 1.3) (`other`); a `nfs-row` component (Foundation's markup carries the elements; ADR 0001) (`scope-boundary`) |
+| D1 | Two attribute directives, one per class that names an element of the layout (`[nfsRow]`, `exportAs: 'nfsRow'`; `[nfsColumn]`, `exportAs: 'nfsColumn'`), each a static host class on any element; entry point `ngx-foundation-sites/float-grid`. The Flex Grid's directives for the same classes take the same selectors, class names, `exportAs` names, and input names in `ngx-foundation-sites/flex-grid`, while each grid's type aliases carry its name (`NfsFloatGrid...`, `NfsFlexGrid...`) | ADR 0001 and ADR 0039; the names follow the classes (building-blocks 1.3, the XY Grid's rule for layout systems) and are the names the [Spec: Equalizer](../issues/34-spec-equalizer.md) already wrote; Foundation names the two legacy grids' classes the same and one stylesheet holds only one of them, so one set of names lets a page change grids by its imports; the alias prefix keeps apart two unions of different values, as the [Spec: Flex Grid](../issues/101-spec-flex-grid.md)'s D7 decided | One shared directive pair for both legacy grids (it would type inputs whose classes the other grid lacks: push, pull, centring, `end`, and gutters are float-only, `shrink`, `expand`, and `unstack` flex-only) (`other`); prefixed names such as `nfsFloatRow` (not Foundation's class names, against building-blocks 1.3) (`other`); a `nfs-row` component (Foundation's markup carries the elements; ADR 0001) (`scope-boundary`) |
 | D2 | Input names by building-blocks 1.4: `size`, `offset`, `push`, `pull`, and `up` for the counted families and `gutter` for the gutter keys (rule 3); booleans `expanded`, `end`, `columnBlock` (rule 4); `collapse` and `centered` for the families with an on and an off class per breakpoint | The decided naming rule, applied mechanically; `size`, `offset`, and `up` match the XY Grid's, so the three grids read alike | Separate `uncollapse` and `uncentered` inputs (one family split in two, and two inputs that could contradict each other at one breakpoint) (`other`); a class-name string such as `size="medium-6"` (ADR 0039) (`variant-as-class`) |
 | D3 | `collapse` takes a boolean or Breakpoint rules of booleans: `true` sets `.collapse`; a rules key sets `.<bp>-collapse` for `true` and `.<bp>-uncollapse` for `false`; never both | Foundation generates both an unprefixed `.collapse` and `.<bp>-collapse`, and they differ for nested rows (measured: 10 px overhang against 0); `.<bp>-uncollapse` cannot undo `.collapse` (0,2,0 against 0,3,0), so one value shape per row keeps every combination that works reachable and none that silently fails; a family with an on and an off class per breakpoint is a valued responsive family (building-blocks 1.4), as the Tabs' `orientation` rules are | A Breakpoint query, the XY Grid's `marginCollapse="medium"` shape (it cannot say "collapsed below large", which needs `.large-uncollapse`) (`other`); mapping `true` to `.small-collapse` and never binding `.collapse` (leaves a documented Foundation class without a home, ADR 0039) (`other`) |
 | D4 | `centered` takes a boolean or rules of booleans; `true` fills the Zero-breakpoint gap with `.small-centered`, read from `nfsBreakpointsToken`; bare `size`, `offset`, `push`, `pull`, and `up` values set the Zero breakpoint's prefixed class | Foundation generates no `.centered` (checked); every other family has a prefixed Zero-breakpoint class; the token is the same on server and client (the Button's D20) | Hard-coding `small` (a consumer may rename the Zero breakpoint) (`other`) |

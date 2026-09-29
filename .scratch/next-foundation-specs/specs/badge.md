@@ -107,7 +107,7 @@ Other families' classes in this spec's markup and Foundation's docs page, each s
 
 ### API: `NfsBadge`
 
-Selector `[nfsBadge]`; no `exportAs`; standalone; no template.
+Selector `[nfsBadge]`; `exportAs: 'nfsBadge'`; standalone; no template.
 
 ```ts
 type NfsBadgeColor = NfsOverridableStringUnion<NfsFoundationPaletteColor, NfsBadgePaletteOverrides>;
@@ -122,7 +122,6 @@ class NfsBadge {
 | `color` | `NfsBadgeColor`, declared with explicit type arguments that name the alias; no transform | `undefined`, which sets no class | `.badge.<color>` from `$badge-palette` | New. The JSDoc names the class template `.badge.<color>` and the setting. The consumer's own names reach the type only through its Variant declaration file; a name added to `$foundation-palette` reaches it through the chain while `$badge-palette` follows `$foundation-palette` |
 
 - Models, outputs, and methods: none. A badge has no state; its count is the consumer's content.
-- No `exportAs`: the directive owns no state or method a template could read, only the consumer's `color` input (building-blocks 1.3); adding one later is additive.
 
 Host bindings, all on signal state:
 
@@ -319,7 +318,7 @@ Manual release test (ADR 0022): with NVDA on Firefox and Chrome, JAWS on Chrome,
 
 | # | Decision | Rationale | Rejected alternative |
 | --- | --- | --- | --- |
-| D1 | One attribute directive, `[nfsBadge]`, on any element, binding `.badge`; no `exportAs`; entry point `ngx-foundation-sites/badge` | ADR 0001 and ADR 0039: `.badge` is a Structural class on a consumer-written element ("any tag will work fine"), and Foundation generates nothing; no `exportAs`, because a directive with no state or method to read has none (building-blocks 1.3) | An `nfs-badge` component, or Material's decorating directive that creates the badge (Foundation's markup carries the element; ADR 0001) (`scope-boundary`) |
+| D1 | One attribute directive, `[nfsBadge]`, on any element, binding `.badge`; `exportAs: 'nfsBadge'`; entry point `ngx-foundation-sites/badge` | ADR 0001 and ADR 0039: `.badge` is a Structural class on a consumer-written element ("any tag will work fine"), and Foundation generates nothing | An `nfs-badge` component, or Material's decorating directive that creates the badge (Foundation's markup carries the element; ADR 0001) (`scope-boundary`) |
 | D2 | `color` Variant input, alias `NfsBadgeColor = NfsOverridableStringUnion<NfsFoundationPaletteColor, NfsBadgePaletteOverrides>` | ADR 0040 and building-blocks 1.3, 1.4: the palette is an Open Variant family named `color`; `$badge-palette` is its own setting that defaults to `$foundation-palette`, so its registry chains on the shared one, as `NfsButtonColor` does for `$button-palette` | The Callout's plain alias of `NfsFoundationPaletteColor` (a consumer's `map-remove` on `$badge-palette` alone could not remove a name) (`other`); consumer-written palette classes (ADR 0039) (`variant-as-class`) |
 | D3 | No State classes, role, ARIA, outputs, methods, models, Defaults token, or providers | A badge is text and has no state; the consumer's element and native attributes carry every relationship | A `hidden` input for an empty count (a second spelling of `@if`) (`scope-boundary`) |
 | D4 | A badge sits inside the element it counts; `aria-describedby` references a badge only from a focusable control beside it; Foundation's heading example is corrected | Inside, the count is part of the heading's text and the control's name (measured in Chromium), so heading and control navigation carry it; a description is not part of the name, and screen readers announce it mainly on focus, which a heading never takes; Angular Material's badge makes the same split between focusable and other hosts | Foundation's heading `aria-describedby` kept (Chromium exposes it, but heading navigation drops the count) (`platform-or-a11y`); an input that writes the reference on another element (the native attribute already does it) (`platform-or-a11y`) |
