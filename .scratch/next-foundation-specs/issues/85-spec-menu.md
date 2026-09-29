@@ -217,3 +217,9 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - Tests: "Application class" (R57).
 
 Unchanged: both directives, their API, the binding rule, the In-family lines of ticket 151, development checks 1 to 3, ARIA, the rendering modes, and the Story ids. Confirmed: R3 (the hosting roots, D5), R10 (`align` with D15), R48 (the de-duplication text), R69/R70 (every `align="right"` is consumer markup), CR-A (the copied-class block and Foundation's markup are labelled), CR-B, CR-C, CR-D. Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (consistency review, closing pass)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), closing pass:
+
+- `specs/menu.md`: `NfsMenu` has no `exportAs` (the hierarchy block and the API line), by R17's rule, which the closing pass extends to every directive whose public members are only inputs and outputs (building-blocks 1.3, 2026-09-29).

@@ -159,3 +159,9 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - CR-B: the class mapping gains rows for the Sticky's, Close Button's, Button's, Menu's, and Top Bar's classes.
 - Unchanged: R1, R39, R59, R71/R72; CR-A, CR-C; the In-family line.
 - Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (consistency review, closing pass)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), closing pass:
+
+- `specs/visibility-classes.md`: `NfsVisibility` has no `exportAs` (the API line, D1), by R17's rule, which the closing pass extends to every directive whose public members are only inputs and outputs (building-blocks 1.3, 2026-09-29).

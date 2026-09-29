@@ -177,3 +177,9 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - The `exportAs` bullet and D1 no longer cite `nfsButton` and `nfsCloseButton` for parity: the review removes their `exportAs` (R17), so the parity named is with `nfsCallout` and `nfsLabel`. Whether `NfsBadge` keeps `exportAs` at all under building-blocks 1.3 is recorded as a finding in the review's report for the closing pass; the spec keeps it.
 
 Unchanged: the directive, its `color` input, the Library mixin's rules, checks, and required setting, ARIA, the rendering modes, and the Story ids. Confirmed: R1 (`nfsShowForSr` plain; `app-cart-button` imports `NfsShowForSr`), R4's figures (4.498, 4.364, 4.647, 4.504, 5.255, 4.569, 4.654 and 4.218, 4.951 stand), R5 (a `$foundation-palette` merge does not reach `$badge-palette`), R6 (D9), R30, CR-A, CR-C, CR-D. Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (consistency review, closing pass)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), closing pass:
+
+- `specs/badge.md`: `NfsBadge` has no `exportAs` (the API line, the bullet, D1), by R17's rule, which the closing pass extends to every directive whose public members are only inputs and outputs (building-blocks 1.3, 2026-09-29).

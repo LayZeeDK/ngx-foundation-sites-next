@@ -106,3 +106,9 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - Unchanged (confirmed): R34/R35; the In-family lines of 2026-09-29 stand; CR-A, CR-B, CR-C, and CR-D hold.
 
 Triage: impact LOW (examples, one story, one test's scope, wording), confidence HIGH. Nothing is OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (consistency review, closing pass)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), closing pass:
+
+- `specs/equalizer.md`: `NfsEqualizer` has no `exportAs` (its output is bound in the template, and `register` and `unregister` are internal to the pair), by R17's rule, which the closing pass extends to every directive whose public members are only inputs and outputs (building-blocks 1.3, 2026-09-29).

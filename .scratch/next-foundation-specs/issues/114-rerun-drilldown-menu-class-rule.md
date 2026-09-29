@@ -143,3 +143,9 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - Unchanged (confirmed): R1, R3, R4, R39, R66; the In-family lines of 2026-09-29 stand; CR-A, CR-C, and CR-D hold.
 
 Triage: impact LOW (a Library mixin declaration inside an existing rule, a development check's reading, wording), confidence HIGH. Nothing is OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (consistency review, closing pass)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), closing pass:
+
+- `specs/drilldown-menu.md`: `NfsDrilldownWrapper` and `NfsDrilldownBack` have no `exportAs` (the two mapping rows, the two API headings and their first lines), by R17's rule, which the closing pass extends to every directive whose public members are only inputs and outputs (building-blocks 1.3, 2026-09-29); the root keeps `exportAs: 'nfsDrilldown'`.

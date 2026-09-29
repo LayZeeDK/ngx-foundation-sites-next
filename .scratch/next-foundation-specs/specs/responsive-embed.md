@@ -98,7 +98,7 @@ State classes: none. Foundation's Responsive Embed has no State class; the focus
 
 ### API: `NfsResponsiveEmbed`
 
-Selector `[nfsResponsiveEmbed]`; `exportAs: 'nfsResponsiveEmbed'`; standalone; no template.
+Selector `[nfsResponsiveEmbed]`; no `exportAs`; standalone; no template.
 
 ```ts
 type NfsResponsiveEmbedRatio =
@@ -115,7 +115,7 @@ class NfsResponsiveEmbed {
 | `ratio` | `NfsResponsiveEmbedRatio`, declared with explicit type arguments that name the alias; no transform | `undefined`, which sets no class | `.responsive-embed.<ratio>` from `$responsive-embed-ratios` | New. The name `ratio` is building-blocks 1.4's rule for `$responsive-embed-ratios`. `'default'` names the map's `default` key and sets no class; it is a library literal outside the registry, because the key never generates a class, so the Variant property never lists it (the Callout's `size` rule). The JSDoc names the class template `.responsive-embed.<ratio>` and the setting |
 
 - Models, outputs, and methods: none. A Responsive Embed has no state and no behaviour.
-- `exportAs: 'nfsResponsiveEmbed'` exposes the input signal to template references, as `nfsCallout` and `nfsBadge` do.
+- No `exportAs`: the directive owns no state or method a template could read, only the consumer's `ratio` input (building-blocks 1.3); adding one later is additive.
 
 Host bindings, all on signal state:
 
@@ -348,7 +348,7 @@ Against the prerendered fixture app, on the Responsive Embed route, with every e
 
 | # | Decision | Rationale | Rejected alternative |
 | --- | --- | --- | --- |
-| D1 | One attribute directive, `[nfsResponsiveEmbed]` (`NfsResponsiveEmbed`), binding `.responsive-embed` as a static host class on any element; entry point `ngx-foundation-sites/responsive-embed`; `exportAs: 'nfsResponsiveEmbed'` | ADR 0001 and ADR 0039: one directive per Structural class, and Foundation generates nothing; the triage's name ([Triage the out-of-scope Foundation components and variants](../issues/79-triage-out-of-scope-components-and-variants.md)); `exportAs` as the other Variant-input directives have it | An `nfs-responsive-embed` component that renders the embedded element from inputs (Foundation's markup carries the element; ADR 0001) (`scope-boundary`); a directive on the embedded element itself (Foundation's box is the wrapper, and its CSS sizes the element from it) (`other`) |
+| D1 | One attribute directive, `[nfsResponsiveEmbed]` (`NfsResponsiveEmbed`), binding `.responsive-embed` as a static host class on any element; entry point `ngx-foundation-sites/responsive-embed`; no `exportAs` | ADR 0001 and ADR 0039: one directive per Structural class, and Foundation generates nothing; the triage's name ([Triage the out-of-scope Foundation components and variants](../issues/79-triage-out-of-scope-components-and-variants.md)); no `exportAs`, because a directive with no state or method to read has none (building-blocks 1.3) | An `nfs-responsive-embed` component that renders the embedded element from inputs (Foundation's markup carries the element; ADR 0001) (`scope-boundary`); a directive on the embedded element itself (Foundation's box is the wrapper, and its CSS sizes the element from it) (`other`) |
 | D2 | `ratio` Variant input typed `NfsResponsiveEmbedRatio`, `NfsOverridableStringUnion<'widescreen', NfsResponsiveEmbedRatiosOverrides>` plus the library literal `'default'`; no value and `'default'` set no class | ADR 0040 and building-blocks 1.4: an Open Variant family over `$responsive-embed-ratios`, named `ratio` by the naming rule; the `default` key is the base look and never generates a class, as the Callout's `size` treats `$callout-sizes` | `(string & {})` for custom names (a typo compiles; ADR 0040) (`superseded`); a boolean `widescreen` input (the map is open, and the docs remove `widescreen`) (`other`) |
 | D3 | No State classes, models, outputs, methods, Defaults token, providers, or queries | Foundation's Responsive Embed has no State class and no Options; nothing links the box to anything | A parent token so the embedded element could find its box (nothing on the element needs the box) (`other`) |
 | D4 | Development check 1: an `iframe`, `object`, or `embed` child with no accessible name warns once | ADR 0039 and ADR 0022: the directive owns the check its documented markup lacks; every docs iframe fails `frame-title` in three engines; axe runs only where a team runs it and has no rule for `embed`; the triage named the check | No check, as the Card has none for `alt` (the Card's image is any content; the box exists only to hold this element, and Foundation's own examples fail) (`platform-or-a11y`); checking `video` too (no criterion or axe rule asks a video for a name) (`platform-or-a11y`) |

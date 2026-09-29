@@ -141,3 +141,9 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - CR-B: a table of the other families' classes the markup and Foundation's Top Bar docs page use.
 - Unchanged: R4 (figures stand), R15, R22/R53, R40, R48, R65; check 7 agrees with the placement rule of the [Spec: forgotten-import checks (shared utility)](150-spec-forgotten-import-checks.md); CR-A, CR-C, CR-D; the In-family lines.
 - Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (consistency review, closing pass)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), closing pass:
+
+- `specs/top-bar.md`: `NfsTopBar` and `NfsMenuIcon` have no `exportAs` (the hierarchy block, the two API lines, D12), by R17's rule, which the closing pass extends to every directive whose public members are only inputs and outputs (building-blocks 1.3, 2026-09-29).

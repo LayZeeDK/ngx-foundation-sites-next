@@ -184,3 +184,9 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - Unchanged (confirmed): R17, R50, R51, R65, R68, R69/R70; CR-A holds. The pane's check 3 finds Triggers by registration, but a bound Trigger's forgotten import fails to compile (NG8002) and a bare Trigger sits inside the pane it cannot open, so the registration rule needs no change there.
 
 Triage: impact LOW (development messages, wording, a story's scaffolding, documentation rows), confidence HIGH. Nothing is OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (consistency review, closing pass)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), closing pass:
+
+- `specs/dropdown.md`: development check 8 also counts an enclosing `nfsButtonGroup` attribute, and its browser-level case follows, by the [Spec: forgotten-import checks (shared utility)](150-spec-forgotten-import-checks.md)'s bullet for checks that find another family's peer by its class.

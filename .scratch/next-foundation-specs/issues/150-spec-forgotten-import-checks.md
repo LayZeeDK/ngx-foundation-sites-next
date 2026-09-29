@@ -274,3 +274,9 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - The template-outlet pattern's consumer comment names only `NfsMenuItem`, the one library directive that template writes (CR-D).
 
 Unchanged: the four checks, the API, the Selector manifest, the verdict, the `strictParents` table and kept-optional list, M1 to M6 and M8 to M10, the static check, and every test layer. Confirmed: CR-D (the `app-faq` example's deliberate omission of `NfsAccordionTitle` stays, labelled), CR-A (every class in the spec is a test case, output, or library code). Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (consistency review, closing pass)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), closing pass:
+
+- `specs/forgotten-import-checks.md`: the registration bullet names the Orbit's checks 1 and 3, the Off-canvas panel's check 3, the Triggers' check 1, and the Abide warnings among its examples (group a's P2, group d's P1), the class-peer bullet names the Close Button's check 3 and the Dropdown pane's check 8, and the family rule's item 2 leaves a forgotten parent import to the registration bullet (group d's P2).

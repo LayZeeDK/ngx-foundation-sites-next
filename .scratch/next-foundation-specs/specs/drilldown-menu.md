@@ -115,11 +115,11 @@ Every class on the Drilldown's elements, per building-blocks 1.14 item 2; the co
 | `.menu` on the root | Structural (Menu) | The static host class of the hosted `NfsMenu` (`hostDirectives`; the Menu spec, D5) | A Drilldown root is always a Menu; `NfsDrilldown` binds no `.menu` itself (D25) |
 | `.vertical`, `.horizontal`, `.<bp>-vertical`, `.<bp>-horizontal`, `.expanded`, `.<bp>-expanded`, `.simple`, `.align-left`, `.align-right`, `.align-center`, `.icons` with `.icon-*` on the root | Variant (Menu) | `orientation`, `expanded`, `simple`, `align`, `iconPosition`, exposed by `NfsDrilldown` from its hosted `NfsMenu`, with the Menu spec's closed types (`NfsMenuOrientationInput` and `NfsMenuExpandedInput`, whose breakpoint keys follow `$breakpoint-classes` through `NfsBreakpointClassesOverrides`, read back from `--nfs-breakpoint-classes`; `NfsVariantBoolean`; `NfsMenuAlign`; `NfsMenuIconPosition`) | Foundation's docs write `vertical` on every drilldown root, so the examples write `orientation="vertical"`; `align="left"` and `align="right"` also turn Foundation's drilldown arrows (`zf-drilldown-left-right-arrows`, and the `nfs-drilldown` rule 2 twins); a copied class is stripped and reported by the Menu, naming its input |
 | `invisible` on the root | State | Host class binding while a top-level item is expanded in drilldown mode (`hasOpenItem`) | Foundation's hidden ancestor level (utility, D9); a copied one is stripped and reported (D28) |
-| Generated `div.is-drilldown` | Structural (wrapper element) | `NfsDrilldownWrapper`, selector `[nfsDrilldownWrapper]`, `exportAs: 'nfsDrilldownWrapper'`, on the consumer's element (usually a `div`, or the `nav` itself) | One plain consumer-written element with a directive (ADR 0001); named after Foundation's `wrapper` Option because `is-drilldown` reads as a State class |
+| Generated `div.is-drilldown` | Structural (wrapper element) | `NfsDrilldownWrapper`, selector `[nfsDrilldownWrapper]`, on the consumer's element (usually a `div`, or the `nav` itself) | One plain consumer-written element with a directive (ADR 0001); named after Foundation's `wrapper` Option because `is-drilldown` reads as a State class |
 | `is-drilldown` on the wrapper | Structural | Host class binding while in drilldown mode | Foundation's `position: relative; overflow: hidden` (rule 5 makes it `clip`); a copied one is redundant in drilldown mode, stripped otherwise, and not reported (D28) |
 | `animate-height` on the wrapper | Option class (Foundation's JavaScript, from its `animateHeight` Option) | Host class binding while in drilldown mode, `animateHeight()` is on, and `nfsAnimationsToken.disabled` is not set | Foundation's `transition: height 0.5s`; `animateHeight` stays an Option with `booleanAttribute` (D27); a copied one is stripped and reported, naming `animateHeight` (D28) |
 | Inline `min-height` / `height` on the wrapper | Inline style, not a class | Host style bindings from the measured Drilldown level heights | Foundation's own inline mechanism; no custom property |
-| Generated `li.js-drilldown-back > a` | Structural (back item element) | `NfsDrilldownBack`, selector `li[nfsDrilldownBack]`, `exportAs: 'nfsDrilldownBack'`, on the consumer's `li` holding a `<button type="button">` | One consumer-written element with a directive (ADR 0001); a native button (building-blocks 1.10) |
+| Generated `li.js-drilldown-back > a` | Structural (back item element) | `NfsDrilldownBack`, selector `li[nfsDrilldownBack]`, on the consumer's `li` holding a `<button type="button">` | One consumer-written element with a directive (ADR 0001); a native button (building-blocks 1.10) |
 | `js-drilldown-back` | Structural | Static host class on `NfsDrilldownBack` | Foundation's required class for the back item's styles; the utility's focus rule skips controls inside it; a copied one merges and is not reported |
 | `is-hidden` on the back item | State | Host class binding, with `hidden`, while there is no drilldown root or drilldown is not the live mode | Foundation's `.is-hidden` beats the later `.menu li` display rules that defeat normalize's `[hidden]` (building-blocks 1.10); a copied one is stripped and reported (D28) |
 | `.show-for-sr` around the back button's hidden suffix | Utility (Visibility classes) | The [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)'s directive for `.show-for-sr`, `nfsShowForSr` (D29) | Foundation's visually hidden text; not this entry point's |
@@ -219,9 +219,9 @@ State model, all signals:
 
 Completion functions passed to `configure()`: `opened(item)` emits `opened` and runs the reveal step; `closed(item)` emits `closed` and runs the reveal step. The reveal step runs in these client-only callbacks, after the slide has ended (the utility's `transitionend` or fallback timer): when `document.activeElement` is inside the root, it calls `activeElement.scrollIntoView({block: 'nearest', inline: 'nearest', behavior})` with the same `behavior` rule as `scrollTop`. `scrollIntoView` with `nearest` does nothing when the control is already in view (it honours the scroller's `scroll-padding`), and it cannot scroll the wrapper, because `overflow: clip` makes the wrapper no scroll container (Sass rule 5); the level has finished moving, so nothing horizontal is left to reveal. This covers the control the utility focused with `preventScroll: true`.
 
-#### `NfsDrilldownWrapper` (`[nfsDrilldownWrapper]`, `exportAs: 'nfsDrilldownWrapper'`)
+#### `NfsDrilldownWrapper` (`[nfsDrilldownWrapper]`, no `exportAs`)
 
-No inputs, outputs, or public methods. Registration from its root is internal to the entry point.
+No inputs, outputs, public methods, or `exportAs` (building-blocks 1.3: nothing to read). Registration from its root is internal to the entry point.
 
 Host, all from signals, the classes `false` and the styles `null` until a root is registered and while the root's mode is not `'drilldown'` (a `false` class binding also strips a copied class, because Angular consults a static class only when every binding for it is `undefined`):
 
@@ -236,9 +236,9 @@ Measurement: one `ResizeObserver`, created lazily and outside the Angular zone i
 
 The submenu elements come from `NfsSubmenu.element`, the Nested menu utility's read-only member for the submenu's host.
 
-#### `NfsDrilldownBack` (`li[nfsDrilldownBack]`, `exportAs: 'nfsDrilldownBack'`)
+#### `NfsDrilldownBack` (`li[nfsDrilldownBack]`, no `exportAs`)
 
-No inputs, outputs, or public methods.
+No inputs, outputs, public methods, or `exportAs` (building-blocks 1.3: nothing to read).
 
 Host: static `class="js-drilldown-back"`; `[attr.hidden]` and `[class.is-hidden]` while there is no `NfsDrilldown` or its mode is not `'drilldown'` (Foundation's `.is-hidden` because later `.menu li` display rules beat normalize's `[hidden]`, building-blocks 1.10); `(click)`: in drilldown mode, calls `close()` on its level's owning item (`submenu.item`). The handler never calls `preventDefault()`. Focus then moves to that item's toggle through the utility's focus-loss guard, because focus was on a control inside the closing level; a keyboard press on the button is a native `click`, so this is the key table's "Back button: same as Left".
 

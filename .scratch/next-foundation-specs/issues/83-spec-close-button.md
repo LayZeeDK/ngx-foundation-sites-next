@@ -170,3 +170,9 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - Unchanged (confirmed): R14, R50, R65; CR-A, CR-C, and CR-D hold. A single directive with no in-family parent, child, or peer, so no In-family line.
 
 Triage: impact LOW (an `exportAs` removed before the first release, R17's rating; wording and development checks), confidence HIGH. Nothing is OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (consistency review, closing pass)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), closing pass:
+
+- `specs/close-button.md`: development check 3 also counts the `nfsButton` attribute, and its browser-level case follows, by the [Spec: forgotten-import checks (shared utility)](150-spec-forgotten-import-checks.md)'s bullet for checks that find another family's peer by its class, so it agrees with the Top Bar's check 3.

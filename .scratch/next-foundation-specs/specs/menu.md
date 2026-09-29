@@ -112,7 +112,7 @@ Binding rule (D3). `NfsMenu` binds one computed class record that holds every Me
 
 ```
 ngx-foundation-sites/menu      (secondary entry point)
-  ul[nfsMenu]        NfsMenu       exportAs 'nfsMenu'; no providers, no token, no host directives
+  ul[nfsMenu]        NfsMenu       no exportAs, no providers, no token, no host directives
     li[nfsMenuText]  NfsMenuText   in development builds only: inject(NfsMenu, {optional: true}) for its parent check
   uses: nfsBreakpointsToken (ngx-foundation-sites/media-query) for the Zero breakpoint and the responsive keys;
         HostAttributeToken('class') and ElementRef in development builds only; the runtime checks of
@@ -138,7 +138,7 @@ written beside (their specs):
 
 ### API: `NfsMenu`
 
-Selector `ul[nfsMenu]`; `exportAs: 'nfsMenu'`; standalone; no template.
+Selector `ul[nfsMenu]`; no `exportAs` (it owns no state or method a template could read, only the consumer's inputs, building-blocks 1.3); standalone; no template.
 
 ```ts
 type NfsMenuOrientation = 'horizontal' | 'vertical';

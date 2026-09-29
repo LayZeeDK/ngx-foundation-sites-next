@@ -167,3 +167,9 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - R74: check 1 counts an image's non-blank `alt` (or a `role="img"` element's non-blank `aria-label`) in the element `aria-labelledby` references; the check 1 cases gain the silent image-only case.
 - CR-C: the Notes line "the Float Classes spec can note it" reads "notes it too"; that spec does.
 - Unchanged, confirmed: R26, R31, CR-A, CR-D.
+
+### Amendment, 2026-09-29 (consistency review, closing pass)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), closing pass:
+
+- `specs/responsive-embed.md`: `NfsResponsiveEmbed` has no `exportAs` (the API line, the bullet, D1), by R17's rule, which the closing pass extends to every directive whose public members are only inputs and outputs (building-blocks 1.3, 2026-09-29).

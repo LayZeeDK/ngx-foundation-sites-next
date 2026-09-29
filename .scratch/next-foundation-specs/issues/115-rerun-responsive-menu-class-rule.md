@@ -128,3 +128,9 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - R52: "consuming-directive rule 4" in two places. R57: "an Application class" in the class-rule test.
 - The `app-site-nav` example's `viewChild` query is `protected readonly siteMenu`, not an ES private field (the repository's AGENTS.md: Angular signal queries take `protected`).
 - Unchanged, confirmed: R1, R3, R4, R65, R66, R69/R70, the navigation re-run's quoted In-family line, CR-A, CR-C, CR-D.
+
+### Amendment, 2026-09-29 (consistency review, closing pass)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), closing pass:
+
+- `specs/responsive-menu.md`: the browser-level case that proves the one merged `NfsMenu` finds it with a `viewChild(NfsMenu)` query of the test host, because `NfsMenu` has no `exportAs` any more (R17's rule, extended by the closing pass).

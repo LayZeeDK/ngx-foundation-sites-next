@@ -134,13 +134,15 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
 - `_settings-overrides.scss` is the only place a story changes a Foundation setting. Each override is one variable per failing Foundation default, with a comment naming the axe rule id or the WCAG 2.2 SC, the spec, and the story that fails without it, and the same override is listed in that spec's Sass subsection (ADR 0018, ADR 0022):
 
   ```scss
-  // color-contrast (1.4.3): Foundation's selected tab is about 3.76:1 (axe reports 3.75). Spec: Tabs, tabs--default;
+  // color-contrast (1.4.3) and non-text contrast (1.4.11): Foundation's selected tab is about 3.76:1 (axe reports 3.75)
+  // and its selected look 1.24:1, and nfs-tabs stops the compile on both. Spec: Tabs, tabs--default;
   // also Responsive Accordion Tabs in tabs mode.
   $tab-background-active: $primary-color;
   $tab-active-color: $white;
 
   // color-contrast (1.4.3) and non-text contrast (1.4.11): Foundation's alert button fill is 4.498:1,
   // hollow and clear success 1.799:1 and warning 1.842:1. Spec: Button, button--colors and button--fills.
+  // It reaches buttons and button groups only.
   $button-palette: map-merge($foundation-palette, ('alert': #bf3f2c, 'success': #177a3d, 'warning': #8a5a00));
 
   // color-contrast (1.4.3): Foundation's default Top Bar puts $anchor-color links at 3.76:1, and nfs-top-bar
@@ -177,7 +179,7 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
   // Foundation's settings file set the focus track from the old colour; without this line it stays 2.02:1.
   $switch-background-focus: scale-color($switch-background, $lightness: -10%);
 
-  // color-contrast (1.4.3) and non-text contrast (1.4.11): the alert colour is 4.49:1 on #fefefe, the invalid
+  // color-contrast (1.4.3) and non-text contrast (1.4.11): the alert colour is 4.498:1 on #fefefe, the invalid
   // placeholder 3.93:1 on its tint. Spec: Abide, abide--invalid-state-contrast.
   $input-error-color: #bf3f2c;
   $form-label-color-invalid: #bf3f2c;
@@ -195,25 +197,29 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
 
   // Non-text contrast (1.4.11) and color-contrast (1.4.3): on Foundation's defaults nfs-off-canvas stops the compile on the
   // close button (2.77:1 on $light-gray) and links are 3.76:1 (exact WCAG formula). With the Callout lines below they would
-  // pass on $light-gray (3.64:1 and 4.87:1); the Off-canvas stories keep the setting the spec documents.
+  // pass on $light-gray (3.64:1 and 4.86:1); the Off-canvas stories keep the setting the spec documents.
   // Spec: Off-canvas, every off-canvas--* story.
   $offcanvas-background: $white;
 
-  // color-contrast (1.4.3) and non-text contrast (1.4.11): $anchor-color links are 3.78:1 to 4.20:1 on five
+  // color-contrast (1.4.3) and non-text contrast (1.4.11): $anchor-color links are 3.83:1 to 4.26:1 on five
   // callout backgrounds (axe reports 3.82 to 4.25), and the close-button glyph 2.82:1 to 2.87:1 on primary,
   // secondary, and alert, which axe marks incomplete. Spec: Callout, callout--colors and callout--closable;
   // also the Close Button and Abide stories that show callouts; and Spec: Card, card--divider, whose divider
   // link is 3.755:1 on $light-gray without it; and Spec: Table, table--stripes, whose links are 3.97:1 to
   // 4.45:1 on seven table backgrounds (axe reports 4.14 on a striped row).
+  // It changes the link colour of every story, only raising contrast, so a spec's figures for Foundation's
+  // default $anchor-color hold for Foundation's defaults, not for its stories.
   $anchor-color: scale-color($primary-color, $lightness: -15%);
   $anchor-color-hover: scale-color($anchor-color, $lightness: -14%);
   $closebutton-color: #767676;
 
   // color-contrast (1.4.3): nfs-progress-bar stops the compile on Foundation's alert fill, whose $white meter
   // text is 4.498:1 (4.36:1 with $black; axe reports 4.49). Spec: Progress Bar, progress-bar--with-text and
-  // progress-bar--colors; it also recolours alert callouts in every story (still passing); badges, labels, and
-  // buttons keep the palettes Foundation's settings file assigned before this file, so their specs add lines of
-  // their own (measured, [Spec: Badge](issues/93-spec-badge.md)).
+  // progress-bar--colors. It reaches every class Foundation's mixins loop over $foundation-palette at their include,
+  // so it also recolours alert callouts in every story (still passing) and the native progress element; badges,
+  // labels, buttons, and button groups keep the palettes Foundation's settings file assigned before this file, and
+  // $alert-color and the settings assigned from it keep #cc4b37, so the Badge, Label, Button, and Abide specs add
+  // lines of their own (measured, [Spec: Badge](issues/93-spec-badge.md)).
   $foundation-palette: map-merge($foundation-palette, (alert: #bf3f2c));
 
   // 1.3.1 and 1.4.10 (no axe rule): Foundation's stacked table hides its column headers below
@@ -315,8 +321,17 @@ A play function never:
 - `args` hold only the public API: inputs (including `model()` inputs, bound two-way in the template), and outputs as `fn()` spies. Public signals, methods, and `exportAs` references are shown through the template (a printed value, a button calling a method), never as args. Nothing private or story-internal is an arg. `argTypes` are added only where docgen cannot infer a control (a string-literal union input gets `control: 'select'` with its options). Measured by [Prototype: Variant declaration tooling in real Nx and Angular CLI workspaces](issues/137-prototype-variant-declaration-tooling.md): a Variant input typed with a registry-built alias declared in source (`NfsOverridableStringUnion<...>`, chained or not) gets an enum control of Foundation's default names from the docgen server, so this library's stories need no `argTypes` for it; the docgen server skips aliases declared in declaration files, so a consumer's story over an alias from the installed package gets no options.
 - The arg names are the e2e `props` names (section 10), so an arg rename is a breaking change to the spec's e2e tests.
 - Outputs shown in the story (a log line, a printed value) are for readers; assertions use the spy.
-- Demo scaffolding (wrappers, spacing, lists, filler content) uses Foundation's own CSS: component classes (`.callout`, grid classes), the Typography Helpers' attributes (`nfsTextAlign`, `nfsLead`, `nfsNoBullet`, from `ngx-foundation-sites/typography-helpers`), visibility classes (`.show-for-sr`, `.hide-for-*`), the Float Classes' `nfsFloat` and `nfsClearfix` (from `ngx-foundation-sites/float-classes`), flex classes, and the Prototyping Utilities' attributes (`nfsMargin*`, `nfsPadding*`, `nfsDisplay`, `nfsOverflow*`, `nfsWidth`, `nfsHeight`, `nfsListStyleType`, and the text utilities, from `ngx-foundation-sites/prototyping-utilities`, each family's directive listed in `moduleMetadata.imports`), compiled by `foundation-everything($prototype: true)`; `.no-bullet` belongs to the Typography Helpers. They go on scaffolding only, never on a plugin's Structural class elements, whose look must be Foundation's component CSS unaltered. 2026-09-27: under the class rule (ADR 0039) a library element carries no Foundation class written in the story, and every class family in this list (Callout and the other CSS-only components, the grids, the typography helpers, the visibility, float, and flex classes, the Prototype utilities) now gets directives of its own; once their specs define them, scaffolding uses those directives instead of the classes, and [Consistency review: the class-rule wave](issues/133-consistency-review-class-rule-wave.md) rewrites this list. The Visibility classes' directives are `nfsVisibility` (`showFor`, `hideFor`, `invisible`, `visible`), `nfsShowForSr`, and `nfsShowOnFocus` ([Spec: Visibility Classes](issues/104-spec-visibility-classes.md)); scaffolding uses them in place of `.show-for-sr` and `.hide-for-*`. The `.text-primary`-style colour classes in this repo's AGENTS.md are not Foundation classes (Foundation 6.9's Sass defines no such class) and are not used; colour comes from Foundation components.
-- Inline `style` only for: `--nfs-*` custom properties a scenario demonstrates, values Foundation has no class for (a scroll container height, a tall page), and nothing else. `dir="rtl"` is an attribute, not a style.
+- Demo scaffolding (wrappers, layout, spacing, lists, filler content) takes its look from Foundation's CSS through the library's directives, never through a class written in the story (ADR 0039); each directive is imported from its entry point and listed in `moduleMetadata.imports`:
+  - containers and filler: the CSS-only components' own directives (`nfsCallout` with `color` and `size`, `nfsCard` with `nfsCardDivider` and `nfsCardSection`, `nfsButton`);
+  - layout: the XY Grid's `nfsGridContainer`, `nfsGridX`, `nfsGridY`, and `nfsCell` (`ngx-foundation-sites/xy-grid`); the Float Grid's `nfsRow` and `nfsColumn` (`ngx-foundation-sites/float-grid`) only in the stories that show that grid (`float-grid--*`, `equalizer--float-grid`), and the Flex Grid's only in its own configuration (section 5);
+  - flex layout: the Flexbox Utilities' `nfsFlexContainer` (`direction`), `nfsFlexAlign` (`alignX`, `alignY`, `alignCenterMiddle`), and `nfsFlexChild` (`alignSelf`, `order`) (`ngx-foundation-sites/flexbox-utilities`); scaffolding never sets `order` or a reverse `direction`, which change only the visual order (building-blocks 1.10);
+  - text and lists: the Typography Helpers' `nfsTextAlign`, `nfsSubheader`, `nfsLead`, `nfsStat`, `nfsHeadingSize`, and `nfsNoBullet` on a `ul` or `ol` (`ngx-foundation-sites/typography-helpers`);
+  - visibility: `nfsVisibility` (`showFor`, `hideFor`, `invisible`, `visible`), `nfsShowForSr`, and `nfsShowOnFocus` (`ngx-foundation-sites/visibility`);
+  - floats: the Float Classes' `nfsFloat` and `nfsClearfix` (`ngx-foundation-sites/float-classes`);
+  - spacing, sizing, display, overflow, position, borders, and text: the Prototyping Utilities' Utility attributes (`nfsMargin*`, `nfsPadding*`, `nfsWidth`, `nfsHeight`, `nfsDisplay`, `nfsOverflow*`, `nfsPosition`, `nfsListStyleType`, `nfsTextTruncate`, and the rest of that family, `ngx-foundation-sites/prototyping-utilities`), compiled by `foundation-everything($prototype: true)` from Foundation's default lists.
+
+  They go on scaffolding only, never on an element of the component a story demonstrates, whose look must be Foundation's component CSS unaltered, except in the stories of the family that owns them. The `.text-primary`-style colour classes in this repo's AGENTS.md are not Foundation classes (Foundation 6.9's Sass defines no such class) and are not used; colour comes from Foundation components.
+- Inline `style` only for: `--nfs-*` custom properties a scenario demonstrates, values Foundation's default lists have no class for (a scroll container height, a tall page, `overflow: auto` and `overflow: clip`, which `$prototype-overflow` lacks), and nothing else. `dir="rtl"` is an attribute, not a style.
 
 ## 9. What stories do not cover
 

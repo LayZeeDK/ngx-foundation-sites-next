@@ -179,3 +179,9 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - Unchanged (confirmed): R27, R44, R46, R69/R70; CR-A and CR-C hold.
 
 Triage: impact LOW (a library-internal Sass check and an include line; no API, ADR 0045), confidence HIGH (ADR 0022's first consequence, building-blocks 1.10). Nothing is OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (consistency review, closing pass)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), closing pass:
+
+- `specs/tabs.md`: `NfsTabsGroup`, which has no inputs, outputs, or public methods, has no `exportAs`, by R17's rule, which the closing pass extends to every directive whose public members are only inputs and outputs (building-blocks 1.3, 2026-09-29).

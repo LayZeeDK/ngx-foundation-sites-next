@@ -176,7 +176,7 @@ Variant class families (building-blocks 1.4 and 1.14; [ADR 0040](../adr/0040-var
 
 All seven are standalone directives with no template; the plugin has no component. Each binds its Structural class as a static host class, so the class is in the server HTML and merges with any class of the consumer's own.
 
-`NfsTabsGroup`, selector `[nfsTabsGroup]`, `exportAs: 'nfsTabsGroup'`. No inputs, outputs, or public methods, and no class. Its registration methods (for the tab list and the panels) are internal (Aria's `_register` convention) and not documented API.
+`NfsTabsGroup`, selector `[nfsTabsGroup]`, no `exportAs`. No inputs, outputs, or public methods, and no class, so nothing a template reference could read (building-blocks 1.3). Its registration methods (for the tab list and the panels) are internal (Aria's `_register` convention) and not documented API.
 
 `NfsTabs`, selector `ul[nfsTabs]`, `exportAs: 'nfsTabs'`. Host: `class="tabs"`, `[class.vertical]` while `orientation()` is `'vertical'`, `[class.simple]`, `[class.primary]`, and `'[attr.autofocus]': 'null'` (D25):
 

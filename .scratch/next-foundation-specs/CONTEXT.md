@@ -573,7 +573,7 @@ An element whose content scrolls inside it and that the keyboard can focus, with
 _Avoid_: scroll container (bare), scroller, overflow wrapper
 
 **Fixture app**:
-The prerendered Angular application, one route per Plugin, that the Playwright e2e layer drives to test the Rendering modes.
+The prerendered Angular application, one route per entry point whose spec tests the Rendering modes there, at `/<entry point>`, that the Playwright e2e layer drives to test the Rendering modes.
 _Avoid_: demo app, kitchen sink, SSR app, universal app
 
 **Library mixin**:

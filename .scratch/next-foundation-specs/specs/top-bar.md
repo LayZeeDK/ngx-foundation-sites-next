@@ -128,7 +128,7 @@ Binding rule (building-blocks 1.4). `NfsTopBar` binds one computed class record 
 
 ```
 ngx-foundation-sites/top-bar          (secondary entry point)
-  [nfsTopBar]           NfsTopBar          exportAs 'nfsTopBar'; stackedFor
+  [nfsTopBar]           NfsTopBar          stackedFor
     [nfsTopBarLeft]     NfsTopBarLeft
     [nfsTopBarRight]    NfsTopBarRight     providers: {provide: nfsTopBarRightToken, useExisting: NfsTopBarRight}
     [nfsTopBarTitle]    NfsTopBarTitle
@@ -136,7 +136,7 @@ ngx-foundation-sites/top-bar          (secondary entry point)
     [nfsTitleBarLeft]   NfsTitleBarLeft
     [nfsTitleBarRight]  NfsTitleBarRight
     [nfsTitleBarTitle]  NfsTitleBarTitle
-  button[nfsMenuIcon]   NfsMenuIcon        exportAs 'nfsMenuIcon'; type, dark
+  button[nfsMenuIcon]   NfsMenuIcon        type, dark
   nfsTopBarRightToken   InjectionToken<NfsTopBarRight>, in its own token file importing the class as a type only
   uses: nfsBreakpointsToken (ngx-foundation-sites/media-query) for the Zero breakpoint and the stacking keys;
         HostAttributeToken('class') and ElementRef in development builds only; the runtime checks of
@@ -163,7 +163,7 @@ written beside (their specs):
 
 ### API: `NfsTopBar`
 
-Selector `[nfsTopBar]`; `exportAs: 'nfsTopBar'`; standalone; no template.
+Selector `[nfsTopBar]`; no `exportAs`; standalone; no template.
 
 ```ts
 class NfsTopBar {
@@ -185,7 +185,7 @@ class NfsTopBar {
 
 ### API: `NfsMenuIcon`
 
-Selector `button[nfsMenuIcon]`; `exportAs: 'nfsMenuIcon'`; standalone; no template.
+Selector `button[nfsMenuIcon]`; no `exportAs`; standalone; no template.
 
 ```ts
 class NfsMenuIcon {
@@ -497,7 +497,7 @@ Against the prerendered fixture app, one route with a Top Bar holding a Dropdown
 | D9 | `NfsTopBarRight` provides `nfsTopBarRightToken`; the Nested menu root injects it optionally at construction for the dropdown Base side, and walks the DOM after hydration only when it found none (settled 2026-09-28 by the [Re-run: Dropdown Menu spec under the class rule](../issues/113-rerun-dropdown-menu-class-rule.md)) | The class rule makes `.top-bar-right` a directive, so DI now has one source, and it resolves on the server: the right-hand menu's `opens-left` is in the server HTML and hydration changes nothing. A lightweight token keeps the directive class out of menu bundles. The projection case, where DI misses the section, is reported in development by the menu root and fixed with `alignment="right"`; a provided token has no value to give (Hierarchy and DI shape). The walk finds a menu projected into the section, which DI cannot; it runs only when DI found nothing and can only add the section, so it never overrides DI (measured under hydration in three engines) | The Dropdown Menu spec's DOM walk alone (the side flips at hydration in every such layout, with a development warning) (`superseded`); the token alone (a projected menu keeps the wrong preferred side in production, with only a development warning) (`other`) |
 | D10 | Responsive Toggle, Sticky, Magellan, and Smooth Scroll are written beside these directives | They may sit on any element, as the Menu spec's D6 decided for Smooth Scroll and Magellan; the Responsive Toggle works on a custom bar too | `nfsResponsiveToggle` hosting `NfsTitleBar` (forces `.title-bar` on custom bars) (`other`) |
 | D11 | `nfsTitleBarTitle` binds its class only; the consumer's static `id` names the icon | RT6 of the out-of-scope triage: the directive returns, a generated id and an `aria-label` input stay out, because visible text wins and static ids survive hydration | A generated id and an automatic `aria-labelledby` from the icon (differs between server and client) (`other`) |
-| D12 | No listeners, models, outputs, methods, Defaults token, or Parent token for the bars; `exportAs` on `nfsTopBar` and `nfsMenuIcon` only | Nothing to handle or emit; the Menu and Close Button precedent; the directives with inputs expose them | Parent tokens for the sections (D13) (`other`) |
+| D12 | No listeners, models, outputs, methods, Defaults token, Parent token, or `exportAs` for the bars and the menu icon | Nothing to handle or emit; a directive with no state or method to read has no `exportAs` (building-blocks 1.3), as the Menu and the Close Button have none | Parent tokens for the sections (D13) (`other`) |
 | D13 | Section placement is checked by DOM ancestry in development | Foundation's CSS styles by DOM ancestry, and a section projected through a layout component has no DI path to its bar, so a DI check would warn falsely | A required Parent token (breaks projection) (`other`) |
 | D14 | No `role` on any bar; no Aria `ngToolbar` | The consumer's `header` and `nav` give the landmarks; a toolbar's roving tab stop does not suit site navigation (ADR 0004) | `role="navigation"` on the bar (hides its sections' own landmarks) (`platform-or-a11y`); `role="toolbar"` (a roving tab stop that site navigation does not use, ADR 0004) (`platform-or-a11y`) |
 | D15 | The Storybook settings overrides add `$topbar-submenu-background: $topbar-background;` beside `$topbar-background: $white;` | Measured in three engines: with the bar line alone, set after Foundation's settings file, open submenus keep `$light-gray` and axe fails their links; `nfs-top-bar` now stops that compile | Relying on the bar line (the published Dropdown Menu, Nested menu, and Responsive Toggle stories would fail axe with a submenu open) (`platform-or-a11y`) |

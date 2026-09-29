@@ -172,3 +172,9 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - Rendered HTML gains the icon-only label with `nfsShowForSr` visually hidden text, which the lead-in already named without an example; `label--icons` names `NfsShowForSr` in its imports; the mapping gains a table of the other families' classes (the Visibility Classes' `.show-for-sr`, the Button's `.button`) and a sentence on icon-font classes (CR-B).
 
 Unchanged: the directive, its API, checks 2 and 3, the Library mixin's rules and required setting, ARIA, the rendering modes, and the Story ids. Confirmed: R1, R5, R6 (D9), R28/R29 (check 3, D12, D17), R30, CR-A, CR-C, CR-D; every figure near a threshold recomputed with the review's contrast calculator stands in both of its modes (4.498, 4.364, 4.647, 4.504, 5.255, 4.569, 4.440 and 4.421, 4.424 and 4.437, 4.654 and 4.218, 4.951). Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (consistency review, closing pass)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), closing pass:
+
+- `specs/label.md`: `NfsLabel` has no `exportAs` (the API line, the bullet, D1), by R17's rule, which the closing pass extends to every directive whose public members are only inputs and outputs (building-blocks 1.3, 2026-09-29).

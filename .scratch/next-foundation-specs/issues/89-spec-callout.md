@@ -195,3 +195,9 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - Unchanged (confirmed): R5, R14, R26, R28/R29, R65, R73; CR-A, CR-C, and CR-D hold. A single directive with no in-family parent, child, or peer, so no In-family line.
 
 Triage: impact LOW (wording, figures, test placement, documentation rows), confidence HIGH. Nothing is OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (consistency review, closing pass)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), closing pass:
+
+- `specs/callout.md`: `NfsCallout` has no `exportAs` (the API line, the bullet, D4), by R17's rule, which the closing pass extends to every directive whose public members are only inputs and outputs (building-blocks 1.3, 2026-09-29).

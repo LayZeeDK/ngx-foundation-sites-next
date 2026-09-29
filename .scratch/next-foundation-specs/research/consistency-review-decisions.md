@@ -15,7 +15,9 @@ How the next phases use this file:
   end lists, for each spec, the items that change it and the items it only confirms. Each reviewer records its edits in
   the spec's own spec ticket (for a re-run spec, its original spec ticket, as the 2026-09-27 class-rule amendments did)
   under `### Amendment, 2026-09-29 (class-rule consistency review)`: the item ids applied, the spec edits, and
-  "Unchanged:". Reviewers leave shared documents alone.
+  "Unchanged:". Reviewers leave shared documents alone. Correction (2026-09-29, closing pass): the reviewers
+  followed their brief, which names the ticket the map's Decisions so far cites last for the spec and the heading
+  `### Amendment, 2026-09-29 (consistency review)`; that form is the one kept for every spec (ticket 133's Answer).
 - Phase 3: the closing pass applies the shared-document changes collected in the last section (README, the map,
   CONTEXT, building-blocks, storybook-conventions, ADR dated notes).
 
@@ -999,7 +1001,7 @@ spec.
 
 ### R17: `exportAs` on the Button family and the Forms directives; `size` on a grouped button
 
-- **Decision.** Building-blocks 1.3's `exportAs` rule (2026-09-28) decides: a directive has an `exportAs` only where a template needs the instance (state, methods, a Trigger target); "a directive with no state or method to read has none". `NfsButton` and `NfsCloseButton` have no model, output, method, or state of their own: their only members are the consumer's own inputs, which the template already holds. Every other directive whose members are only inputs has no `exportAs` (Button Group D12, Forms D8, the grids, the Prototyping Utilities: "no `exportAs` (it has no state or method to read)"), so the two are the outliers, and their stated reasons ("exposes the nine input signals", "parity with `nfsButton` at no code cost", ticket 83 Q14) are the reading the rest of the bundle rejects. Both drop `exportAs`. Adding one later is additive (Button Group D12), and ADR 0045's deprecation policy starts at the first release, so the removal costs no deprecation. No spec writes `#x="nfsButton"` or `#x="nfsCloseButton"` (swept: no hit in `specs/`). `nfsButtonGroup` and the Forms directives keep none, now for the same reason. The second check holds: no spec's example sets `size` on an `nfsButton` inside `nfsButtonGroup`; the three `size` hits are a button inside a Dropdown pane placed after the group (button-group.md near line 412, dropdown.md near line 657) and the labelled development-warning example (button-group.md near line 433, CR-A (b)).
+- **Decision.** Building-blocks 1.3's `exportAs` rule (2026-09-28) decides: a directive has an `exportAs` only where a template needs the instance (state, methods, a Trigger target); "a directive with no state or method to read has none". `NfsButton` and `NfsCloseButton` have no model, output, method, or state of their own: their only members are the consumer's own inputs, which the template already holds. Every other directive whose members are only inputs has no `exportAs` (Button Group D12, Forms D8, the grids, the Prototyping Utilities: "no `exportAs` (it has no state or method to read)"), so the two are the outliers (correction, 2026-09-29, closing pass: they are not the only ones; `NfsBadge`, `NfsLabel`, `NfsCallout`, `NfsResponsiveEmbed`, `NfsDrilldownWrapper`, `NfsDrilldownBack`, `NfsMenu`, `NfsTopBar`, `NfsMenuIcon`, `NfsVisibility`, `NfsTabsGroup`, and `NfsEqualizer` also exported a name with only inputs and outputs, and the closing pass extends this decision to them), and their stated reasons ("exposes the nine input signals", "parity with `nfsButton` at no code cost", ticket 83 Q14) are the reading the rest of the bundle rejects. Both drop `exportAs`. Adding one later is additive (Button Group D12), and ADR 0045's deprecation policy starts at the first release, so the removal costs no deprecation. No spec writes `#x="nfsButton"` or `#x="nfsCloseButton"` (swept: no hit in `specs/`). `nfsButtonGroup` and the Forms directives keep none, now for the same reason. The second check holds: no spec's example sets `size` on an `nfsButton` inside `nfsButtonGroup`; the three `size` hits are a button inside a Dropdown pane placed after the group (button-group.md near line 412, dropdown.md near line 657) and the labelled development-warning example (button-group.md near line 433, CR-A (b)).
 - **Evidence.** building-blocks.md 1.3 `exportAs` bullet (line 56); architecture-guide.md P13 (line 200, "none otherwise"; line 204 preferred "no `exportAs` on `NfsCardDivider`"); button.md lines 135, 173, 218; close-button.md lines 103, 120; button-group.md line 116 and D12 (line 391); forms.md line 182 and D8 (line 444); prototyping-utilities.md line 196; issues/83-spec-close-button.md line 60 (Q14: "Against `exportAs`: nothing needs it today"); `rg '="nfsButton"|="nfsCloseButton"' specs/` finds nothing; `rg -A15 nfsButtonGroup specs/*.md | rg size` finds only the three hits named above.
 - **Per-spec changes.**
   - [button](../specs/button.md): near line 135 replace "`exportAs: 'nfsButton'`; standalone" with "no `exportAs`; standalone". Near line 173 replace the bullet "`exportAs: 'nfsButton'` exposes the nine input signals to template references (for example a sibling Tooltip reading `button.disabled()`)." with "No `exportAs`: the directive owns no state or method a template could read, only the consumer's own inputs (building-blocks 1.3); adding one later is additive." In the Material comparison (near line 218) the `exportAs` row's last cell becomes "None (building-blocks 1.3: no state or method to read)".
@@ -1073,7 +1075,9 @@ spec.
       offset wording matches the 2.4.7 row.
     - Node-level Sass compile test: add `with $input-border-focus: 1px solid $black and $body-background:
       #0a0a0a (and passing slider colours) the compile stops naming $input-border-focus; with Foundation's
-      default $input-border-focus it compiles (3.422:1 on #fefefe)`.
+      default $input-border-focus it compiles (3.422:1 on #fefefe)`. Correction (2026-09-29, closing pass): the
+      exact figure is 3.4230 in both modes, so the Slider, which does not floor, writes 3.42:1; 3.422:1 is the
+      Switch's floored figure.
     - Design decisions: add `| D26 | Rule 6 draws $input-border-focus, offset 2 px, around a focused thumb, and
       rule 0a checks its colour at 3:1 against $body-background (2026-09-29, class-rule consistency review) |
       Foundation's one focus setting for form controls; a dark theme changes it; the Switch's D9 ring and check;
@@ -1995,7 +1999,10 @@ spec.
     amendment in [Spec: Abide](../issues/31-spec-abide.md) each state that the NG0309 reason in ticket 98
     (decision 3, triage row "Validation State classes stay with Abide") and in [Re-run: Abide spec under the class rule](../issues/123-rerun-abide-class-rule.md) (decision 7, triage row "Neighbouring directives beside,
     not hosted") is superseded by building-blocks 1.9, and that the decisions stand on their other reasons. The
-    records themselves are not rewritten.
+    records themselves are not rewritten. Correction (2026-09-29, closing pass): in ticket 98 the reason sits in
+    grilling question 5, decision 4, and the triage row "Validation State classes stay with Abide; sets side by
+    side (4)", not in a decision 3; and the Abide amendment is in [Re-run: Abide spec under the class rule](../issues/123-rerun-abide-class-rule.md),
+    the ticket the map cites last for the Abide spec, not in [Spec: Abide](../issues/31-spec-abide.md).
   - [smooth-scroll](../specs/smooth-scroll.md), [menu](../specs/menu.md), [top-bar](../specs/top-bar.md),
     [xy-grid](../specs/xy-grid.md): Already hold for this item; confirm.
 - **Shared-document changes.** None (ADR 0039's note, building-blocks 1.1 and 1.4, and `map.md` already carry
@@ -2727,7 +2734,8 @@ the order given. Reviewers in phase 2 leave these documents alone.
 4. The spec count and index: "34 published specs" becomes 53, and every spec has a row. Ten specs have none today:
    flexbox-utilities, flex-grid, float-classes, float-grid, media-object, menu, pagination, prototyping-utilities,
    typography-helpers, xy-grid; each takes the README row its spec ticket proposed (for example ticket 91's proposed
-   Media Object row), in the table of its kind.
+   Media Object row), in the table of its kind. Correction (2026-09-29, closing pass): no spec ticket proposed a
+   README row (ticket 91's row is building-blocks Table D's); the closing pass wrote the ten rows from the specs.
 5. The ADR count: 46 decision records (44 accepted; 0010 and 0034 superseded), with 0039 to 0046 in the index.
 6. The Orbit row: no change (the spec records R15's measurement).
 
