@@ -155,3 +155,14 @@ None. The two open measurements, the `simple` title boxes in three engines and t
 ### Note, 2026-09-28 (out-of-scope reasons)
 
 - 2026-09-28: the Out of Scope reasons named in [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) are corrected in the spec.
+
+### Amendment, 2026-09-29 (in-family check lines)
+
+From [Re-run: disclosure and carousel family specs, In-family check lines](152-rerun-disclosure-and-carousel-family-in-family-lines.md), under [ADR 0046](../adr/0046-forgotten-imports-caught-by-checks.md) and the family rule of [Spec: forgotten-import checks (shared utility)](150-spec-forgotten-import-checks.md); `specs/tabs.md` was revised in place. The API, the markup, ARIA, keyboard, rendering modes, and Story ids do not change.
+
+- Hierarchy and DI shape gains the In-family lines: `NfsTabsGroup` probes `NfsTabs`, `NfsTabsContent`, and `NfsTabsPanel`; `NfsTabs` probes `NfsTabsTitle` and `NfsTab`; the title, the tab, the content box, and the panel probe nothing. Every parent injection is required, so no part has a parent check and `strictParents` changes nothing. Tabs and panels are peers paired by `value`. `NfsTabsLazyContent` sits on `ng-template` and calls nothing.
+- `nfsTabsGroupToken` and `nfsTabsToken` carry development-only descriptions naming `NfsTabsGroup` and `NfsTabs` and `ngx-foundation-sites/tabs`.
+- Recorded: the strip, the tab, and the panel host Aria's `TabList`, `Tab`, and `TabPanel`, which require Aria's `TABS` or `TAB_LIST`, and host directives are constructed before their host, so a missing or forgotten group or strip throws Aria's NG0201, which names no library directive; the library's descriptions are printed where its injection fails first (`NfsTabsContent` outside a group, or a part under a consumer's own Aria `ngTabs` or `ngTabList`), and the static check names the import.
+- The tab's warning for a parent element that is not an `li[nfsTabsTitle]` reads the element and the attribute, so a title whose import was forgotten is reported once, by the strip's probe; a browser-level case asserts it.
+
+Triage: impact LOW (development-only checks and messages), confidence HIGH (ADR 0046, building-blocks 1.9, the shared spec's rule, the directive composition guide's execution order, and Aria's `tab-list.ts`, `tab.ts`, and `tab-panel.ts`, which inject `TABS` and `TAB_LIST` without `optional`). Nothing is OPEN FOR HUMAN.

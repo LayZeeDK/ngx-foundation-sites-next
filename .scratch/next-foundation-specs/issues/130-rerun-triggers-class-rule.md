@@ -137,3 +137,12 @@ No change to any ADR, `README.md`, or `research/` is needed: the X rows TR1 to T
 ### Note, 2026-09-28 (out-of-scope reasons)
 
 - 2026-09-28: the Out of Scope reasons named in [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) are corrected in the spec.
+
+### Amendment, 2026-09-29 (in-family check lines)
+
+From [Re-run: disclosure and carousel family specs, In-family check lines](152-rerun-disclosure-and-carousel-family-in-family-lines.md), under [ADR 0046](../adr/0046-forgotten-imports-caught-by-checks.md) and the family rule of [Spec: forgotten-import checks (shared utility)](150-spec-forgotten-import-checks.md); `specs/triggers.md` was revised in place. The API, the Openable contract, the Trigger roles, ARIA, keyboard, rendering modes, development checks, and Story ids do not change.
+
+- Hierarchy and DI shape gains the In-family lines: `NfsOpen`, `NfsClose`, and `NfsToggle` each call `nfsDirectiveCheck` with their class name and pass no parent and no children. `NfsOpen` injects no parent; `NfsClose` and `NfsToggle` keep their Nearest Openable injection optional (a bound target replaces it, and construction cannot see the inputs), so development check 1 stays the report for a bare Trigger with no Nearest Openable. Their targets are peers linked by reference, whose forgotten imports fail to compile (NG8002, NG8003). An Openable probes no Trigger, as the Toggler's line already says. `strictParents` changes nothing.
+- `nfsOpenableToken` carries a development-only description listing the seven library Openable directives with their entry points and "a component that implements NfsOpenable", because the token has several providers and an application may add its own (ADR 0013); the library injects it only optionally.
+
+Triage: impact LOW (development-only lines and one development-only string), confidence HIGH (ADR 0046, building-blocks 1.9, the shared spec's rule and its kept-optional list). Nothing is OPEN FOR HUMAN.
