@@ -174,4 +174,4 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - Tests: "Application class" (R57); the missing-property Runtime check case sits in a test file of its own (R59).
 - CSS class to directive mapping gains a `.thumbnail` row: another family's class, set by `NfsThumbnail` on the `img` itself (CR-B).
 
-Unchanged: both directives, their API, the development checks (check 3 as ticket 154 left it), the In-family line, ARIA, the rendering modes, and the Story ids. Confirmed: R37 (beside, D4), R59's conditional `include()` call, CR-A, CR-C, CR-D (`app-avatar`). Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.
+Unchanged: both directives, their API, the development checks (check 3 as [Re-run: CSS-only component and free-behaviour family specs, In-family check lines](154-rerun-css-only-component-and-free-behaviour-family-in-family-lines.md) left it), the In-family line, ARIA, the rendering modes, and the Story ids. Confirmed: R37 (beside, D4), R59's conditional `include()` call, CR-A, CR-C, CR-D (`app-avatar`). Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.

@@ -1,6 +1,6 @@
 # Consistency review, group b: report
 
-Ticket: [Consistency review: the class-rule wave](../issues/133-consistency-review-class-rule-wave.md), phase 2, group b, 2026-09-29, AFK under the map's override. Model: Opus 5.5. Input: the decisions of phase 1 ([consistency-review-decisions.md](consistency-review-decisions.md)), its per-spec index and checks CR-A to CR-D, the Answers of the five family re-runs (tickets 151 to 155), the orchestrator's rule on registration checks in [Spec: forgotten-import checks (shared utility)](../issues/150-spec-forgotten-import-checks.md), building-blocks, the ADRs, the glossary, and Foundation 6.9.0's docs pages for the nine components (the local `foundation-sites` clone, read only).
+Ticket: [Consistency review: the class-rule wave](../issues/133-consistency-review-class-rule-wave.md), phase 2, group b, 2026-09-29, AFK under the map's override. Model: Opus 5.5. Input: the decisions of phase 1 ([consistency-review-decisions.md](consistency-review-decisions.md)), its per-spec index and checks CR-A to CR-D, the Answers of the five family re-runs ([Re-run: navigation family specs, In-family check lines](../issues/151-rerun-navigation-family-in-family-lines.md) to [Re-run: layout system and flex utility family specs, In-family check lines](../issues/155-rerun-layout-system-and-flex-utility-family-in-family-lines.md)), the orchestrator's rule on registration checks in [Spec: forgotten-import checks (shared utility)](../issues/150-spec-forgotten-import-checks.md), building-blocks, the ADRs, the glossary, and Foundation 6.9.0's docs pages for the nine components (the local `foundation-sites` clone, read only).
 
 Specs revised in place, each read in full: [callout](../specs/callout.md), [card](../specs/card.md), [close-button](../specs/close-button.md), [drilldown-menu](../specs/drilldown-menu.md), [dropdown-menu](../specs/dropdown-menu.md), [dropdown](../specs/dropdown.md), [equalizer](../specs/equalizer.md), [flex-grid](../specs/flex-grid.md), [flexbox-utilities](../specs/flexbox-utilities.md).
 
@@ -17,8 +17,8 @@ Each spec's governing ticket (the one the map's Decisions so far cites last for 
 | dropdown-menu | R3 | 0 | None |
 | dropdown | R2, R52, R54, R57, R59, CR-B | 4 | None |
 | equalizer | R7, R32/R64, R57, R58 | 2 | None |
-| flex-grid | R16, R59, CR-B, ticket 155's check 3 | 0 | None |
-| flexbox-utilities | R16, R57, R59, A1, A2, CR-B, ticket 153's cross-family sentence | 3 | None |
+| flex-grid | R16, R59, CR-B, [Re-run: layout system and flex utility family specs, In-family check lines](../issues/155-rerun-layout-system-and-flex-utility-family-in-family-lines.md)'s check 3 | 0 | None |
+| flexbox-utilities | R16, R57, R59, A1, A2, CR-B, [Re-run: form and value-control family specs, In-family check lines](../issues/153-rerun-form-and-value-control-family-in-family-lines.md)'s cross-family sentence | 3 | None |
 
 Nothing is OPEN FOR HUMAN. Every edit is impact LOW (wording, figures, examples, stories, development checks and their tests, documentation rows, one Library mixin declaration inside an existing rule, before the first release under ADR 0045), confidence HIGH (the decisions file's ratings, the owning specs' published names, Foundation's docs markup read in the clone). No decided API or default was changed by this reviewer beyond R17's own decision; the two `exportAs` items that would change a decided API are proposals below, rated impact LOW and confidence HIGH under the triage rule (R17's rating for the same change), so they are decided in substance and only their application is the coordinator's.
 
@@ -59,7 +59,7 @@ Other fixes:
 1. Sass (1)(b) described the helper as "`math.pow` on 8-bit channels" and did not name Foundation's two functions as unused, so it met neither R4's S1 nor its equivalence clause; 8-bit channels are how the ticket computed its figures (the painted colours), not how the helper computes (unrounded, R4's ratio rule). It now names the helper and both functions as never used. Every figure stands.
 2. The story paragraph's scaffolding list names `gridMarginX`, because the stories now use it.
 
-Confirmed unchanged: R4 figures (4.858:1, 6.012:1, 3.755:1, and the rest), R31 (the Responsive Embed note), R34/R35, R73 (4.601:1); the In-family line of ticket 154; CR-A, CR-C, CR-D (`app-product-card` imports `NgOptimizedImage` and `NfsCardSection` and hosts `NfsCard`).
+Confirmed unchanged: R4 figures (4.858:1, 6.012:1, 3.755:1, and the rest), R31 (the Responsive Embed note), R34/R35, R73 (4.601:1); the In-family line of [Re-run: CSS-only component and free-behaviour family specs, In-family check lines](../issues/154-rerun-css-only-component-and-free-behaviour-family-in-family-lines.md); CR-A, CR-C, CR-D (`app-product-card` imports `NgOptimizedImage` and `NfsCardSection` and hosts `NfsCard`).
 
 ### close-button
 
@@ -94,7 +94,7 @@ Other fix:
 
 Left open (a decided API, not changed): proposal 2.
 
-Confirmed unchanged: R1 (`nfsShowForSr` cited plainly; `app-shop-nav` imports `NfsShowForSr`), R3 (D28 needs no change), R4 (the 1.4.11 row and the Sass checks name the helper and both functions), R39, R66; the In-family lines of ticket 151, whose checks 1 and 2 already follow the registration bullet; CR-A (the copied-class prose and test fixture say so), CR-C, CR-D (the `templateUrl` example's imports cover the markup it cites).
+Confirmed unchanged: R1 (`nfsShowForSr` cited plainly; `app-shop-nav` imports `NfsShowForSr`), R3 (D28 needs no change), R4 (the 1.4.11 row and the Sass checks name the helper and both functions), R39, R66; the In-family lines of [Re-run: navigation family specs, In-family check lines](../issues/151-rerun-navigation-family-in-family-lines.md), whose checks 1 and 2 already follow the registration bullet; CR-A (the copied-class prose and test fixture say so), CR-C, CR-D (the `templateUrl` example's imports cover the markup it cites).
 
 ### dropdown-menu
 
@@ -102,7 +102,7 @@ Decided item applied:
 
 - R3: the `.dropdown` row, as decided.
 
-Confirmed unchanged: R4 (exact, the helper named with both functions), R22/R53 (`$topbar-submenu-background: $topbar-background;` wherever the Top Bar line is required), R47 (D9 and D15), R66; the In-family line applied from ticket 151 (the note in ticket 113); CR-A, CR-B (the Top Bar row exists), CR-C, CR-D (`app-site-nav`).
+Confirmed unchanged: R4 (exact, the helper named with both functions), R22/R53 (`$topbar-submenu-background: $topbar-background;` wherever the Top Bar line is required), R47 (D9 and D15), R66; the In-family line applied from [Re-run: navigation family specs, In-family check lines](../issues/151-rerun-navigation-family-in-family-lines.md) (the note in [Re-run: Dropdown Menu spec under the class rule](../issues/113-rerun-dropdown-menu-class-rule.md)); CR-A, CR-B (the Top Bar row exists), CR-C, CR-D (`app-site-nav`).
 
 ### dropdown
 
@@ -121,7 +121,7 @@ Other fixes:
 3. CR-C: the stories paragraph left out "demo scaffolding whose Foundation classes have no directive yet", and `dropdown-pane--default` left out the docs example's form grid "whose directives the XY Grid spec names"; every scaffolding class has a directive now, so the paragraph points at storybook-conventions section 8, and the story ports the grid (`nfsGridContainer`, `nfsGridX` with `gridMarginX`, `nfsCell` with `[size]="{medium: 6}"`, Foundation's markup read in `docs/pages/dropdown.md`).
 4. CR-D, the rule's intent: `app-header` renders `<app-heavy-details />` in a `@defer` block but did not import its component, which fails to compile (NG8001); `imports` gains `HeavyDetails`, and the lead-in names it as the application's own component.
 
-Confirmed unchanged: R17 (the `size="small"` button sits after the group), R50, R51 (every `class="dropdown-pane"` is output or a labelled check input), R65, R68 (the static `autoFocus` report stays), R69/R70; CR-A. A single directive: no In-family line (ticket 152 found nothing for it).
+Confirmed unchanged: R17 (the `size="small"` button sits after the group), R50, R51 (every `class="dropdown-pane"` is output or a labelled check input), R65, R68 (the static `autoFocus` report stays), R69/R70; CR-A. A single directive: no In-family line ([Re-run: disclosure and carousel family specs, In-family check lines](../issues/152-rerun-disclosure-and-carousel-family-in-family-lines.md) found nothing for it).
 
 ### equalizer
 
@@ -137,7 +137,7 @@ Other fixes:
 1. R58 adds a breakpoint-aware story, which the stories paragraph forbade ("never a breakpoint-dependent layout"); the paragraph now states `equalizer--reflow` as the one exception and why.
 2. CR-C: the stories paragraph's "`nfsGridX` and `nfsCell` (the XY Grid spec fixes the names)" cites the [Spec: XY Grid](../issues/99-spec-xy-grid.md) and says which stories carry a gutter.
 
-Confirmed unchanged: R34/R35; the In-family lines of ticket 154; CR-A, CR-B (the mapping has one row per other family already), CR-D (`app-legacy-panels`; `app-product-tile` hosts its directives).
+Confirmed unchanged: R34/R35; the In-family lines of [Re-run: CSS-only component and free-behaviour family specs, In-family check lines](../issues/154-rerun-css-only-component-and-free-behaviour-family-in-family-lines.md); CR-A, CR-B (the mapping has one row per other family already), CR-D (`app-legacy-panels`; `app-product-tile` hosts its directives).
 
 ### flex-grid
 
@@ -146,9 +146,9 @@ Decided items applied:
 - R16: the Notes line takes the shared sentence for `.row` (pointing at the four other specs, as the committed reviewers wrote it), then the measured detail.
 - R59: the Injection bullet names `nfsVariantCheck('nfsRow')` and `nfsVariantCheck('nfsColumn')`.
 - CR-B: rows for the Flexbox Utilities' (`.align-*`, `.align-self-*`, `.<bp>-order-<n>`), Callout's, Visibility Classes', and Typography Helpers' classes on Foundation's docs page and in the spec's markup (the docs page's own chrome classes are left out).
-- Ticket 155's routed fix: check 3's condition "a host that is not also a row, whose parent element is not a row, warns", and layer 2's "a column row outside a row does not".
+- [Re-run: layout system and flex utility family specs, In-family check lines](../issues/155-rerun-layout-system-and-flex-utility-family-in-family-lines.md)'s routed fix: check 3's condition "a host that is not also a row, whose parent element is not a row, warns", and layer 2's "a column row outside a row does not".
 
-Confirmed unchanged: R34/R35, R37 (D15); the In-family lines of ticket 155; check 3 counts the parent's attribute as a row (the shared DOM-placement bullet); check 5 reads the parent's `column` class and is silent where the parent's `NfsColumn` import was forgotten, which the runtime check reports; CR-A, CR-C, CR-D (`app-product-list`).
+Confirmed unchanged: R34/R35, R37 (D15); the In-family lines of [Re-run: layout system and flex utility family specs, In-family check lines](../issues/155-rerun-layout-system-and-flex-utility-family-in-family-lines.md); check 3 counts the parent's attribute as a row (the shared DOM-placement bullet); check 5 reads the parent's `column` class and is silent where the parent's `NfsColumn` import was forgotten, which the runtime check reports; CR-A, CR-C, CR-D (`app-product-list`).
 
 ### flexbox-utilities
 
@@ -159,7 +159,7 @@ Decided items applied:
 - R59: the Injection bullet names the two handles and that `NfsFlexAlign` makes no call.
 - A1 and A2, as decided.
 - CR-B: rows for the XY Grid's, Callout's, Button Group's, Button's, Media Object's, Menu's, and Typography Helpers' classes (Foundation's docs examples use `.grid-x.grid-padding-x`, `.cell.small-<n>`, `.callout.primary`, and `.text-center`; the spec's markup adds the others).
-- Ticket 153's routed item: the In-family line states the cross-family neighbours the shared spec's way.
+- [Re-run: form and value-control family specs, In-family check lines](../issues/153-rerun-form-and-value-control-family-in-family-lines.md)'s routed item: the In-family line states the cross-family neighbours the shared spec's way.
 
 Other fixes:
 
@@ -167,16 +167,16 @@ Other fixes:
 2. The Out of Scope hiding bullet still named "the hide directive of the Visibility Classes"; it names `nfsVisibility` with a bare `hideFor`, R16's third means.
 3. The usage example quoting the Equalizer's CSS answer takes `gridMarginX`, as R7 made the Equalizer spec write it.
 
-Confirmed unchanged: R10, R37 (D8), R38, R39; check 2's message already names a forgotten Flex parent import (ticket 155); CR-A, CR-D (`app-product-summary`).
+Confirmed unchanged: R10, R37 (D8), R38, R39; check 2's message already names a forgotten Flex parent import ([Re-run: layout system and flex utility family specs, In-family check lines](../issues/155-rerun-layout-system-and-flex-utility-family-in-family-lines.md)); CR-A, CR-D (`app-product-summary`).
 
 ## The registration rule (the brief's addendum)
 
 The shared spec's two bullets (DOM-placement checks and registration checks say nothing where the element they look for carries the peer's attribute) were checked against every development check of the group that finds a part:
 
-- Drilldown checks 1 and 2 (registration): already aligned by ticket 151; check 3's "outside any submenu" stays, because `NfsSubmenu` stays optional and a back item outside any submenu is a bare part.
+- Drilldown checks 1 and 2 (registration): already aligned by [Re-run: navigation family specs, In-family check lines](../issues/151-rerun-navigation-family-in-family-lines.md); check 3's "outside any submenu" stays, because `NfsSubmenu` stays optional and a back item outside any submenu is a bare part.
 - Dropdown pane check 3 (Triggers found by registration): no change. A bound Trigger (`[nfsToggle]="pane"`) whose import is forgotten fails to compile (NG8002), and a bare Trigger reaches the pane only from inside it, where it cannot open a closed pane, so no forgotten import can reach the check.
-- Flex Grid check 3 and the Flexbox Utilities' check 2 (DOM placement): already follow the rule (ticket 155).
-- Close Button check 3 (`nfsButton` seen as the host's `.button`) and Dropdown pane check 8 (`closest('.button-group')`): they find another family's directive by its class, so a forgotten `NfsButton` or `NfsButtonGroup` import leaves them silent while the runtime check reports it, and the message holds once the import is added (ticket 153's question); no change.
+- Flex Grid check 3 and the Flexbox Utilities' check 2 (DOM placement): already follow the rule ([Re-run: layout system and flex utility family specs, In-family check lines](../issues/155-rerun-layout-system-and-flex-utility-family-in-family-lines.md)).
+- Close Button check 3 (`nfsButton` seen as the host's `.button`) and Dropdown pane check 8 (`closest('.button-group')`): they find another family's directive by its class, so a forgotten `NfsButton` or `NfsButtonGroup` import leaves them silent while the runtime check reports it, and the message holds once the import is added ([Re-run: form and value-control family specs, In-family check lines](../issues/153-rerun-form-and-value-control-family-in-family-lines.md)'s question); no change.
 
 None of the checks the addendum names (the Orbit's, the Triggers', the Off-canvas', the Tabs') is in this group.
 
@@ -208,7 +208,7 @@ These are proposals only; this reviewer made none of them.
 
    > - No `exportAs`: the directive owns no state or method a template could read (building-blocks 1.3), as `nfsButton` and `nfsCloseButton` have none; adding one later is additive.
 
-   and in D4 replace "Defaults token, or providers; `exportAs: 'nfsCallout'`" with "Defaults token, providers, or `exportAs`", and "Foundation's callout has no state; parity with `nfsButton` and `nfsCloseButton` at no code cost" with "Foundation's callout has no state, and a directive with no state or method to read has no `exportAs` (building-blocks 1.3), as `nfsButton` and `nfsCloseButton` have none". Ticket 89's amendment then gains a bullet: "R17's rule applied to `NfsCallout`: no `exportAs`."
+   and in D4 replace "Defaults token, or providers; `exportAs: 'nfsCallout'`" with "Defaults token, providers, or `exportAs`", and "Foundation's callout has no state; parity with `nfsButton` and `nfsCloseButton` at no code cost" with "Foundation's callout has no state, and a directive with no state or method to read has no `exportAs` (building-blocks 1.3), as `nfsButton` and `nfsCloseButton` have none". [Spec: Callout](../issues/89-spec-callout.md)'s amendment then gains a bullet: "R17's rule applied to `NfsCallout`: no `exportAs`."
 
 2. The Drilldown wrapper's and back item's `exportAs` (this group; a decided API). `NfsDrilldownWrapper` and `NfsDrilldownBack` have "No inputs, outputs, or public methods" (their API headings), yet export `nfsDrilldownWrapper` and `nfsDrilldownBack`; no spec writes either reference (searched). Same rating and reasoning as proposal 1; the root's `exportAs: 'nfsDrilldown'` stays (it has `openPath()`, `collapseAll()`, and `currentLevel`). In `specs/drilldown-menu.md`: in the mapping rows, remove "`, `exportAs: 'nfsDrilldownWrapper'`" and "`, `exportAs: 'nfsDrilldownBack'`"; the headings become "#### `NfsDrilldownWrapper` (`[nfsDrilldownWrapper]`, no `exportAs`)" and "#### `NfsDrilldownBack` (`li[nfsDrilldownBack]`, no `exportAs`)"; and each "No inputs, outputs, or public methods." becomes "No inputs, outputs, public methods, or `exportAs` (building-blocks 1.3: nothing to read)."
 

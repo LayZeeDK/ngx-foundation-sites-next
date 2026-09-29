@@ -4,7 +4,7 @@ Ticket: [Consistency review: the class-rule wave](../issues/133-consistency-revi
 2026-09-29. Model: Opus 5.5, one reviewer, AFK under the map's override. Specs: Toggler, Tooltip, Top Bar, Triggers,
 Typography Helpers, Variant declaration tooling, Visibility Classes, XY Grid. Input: the coordinator's decisions
 ([consistency-review-decisions.md](consistency-review-decisions.md)), with its checks CR-A to CR-D and its per-spec
-index; the Answers of the five family re-runs (tickets 151 to 155); the orchestrator's addendum on the registration
+index; the Answers of the five family re-runs ([Re-run: navigation family specs, In-family check lines](../issues/151-rerun-navigation-family-in-family-lines.md) to [Re-run: layout system and flex utility family specs, In-family check lines](../issues/155-rerun-layout-system-and-flex-utility-family-in-family-lines.md)); the orchestrator's addendum on the registration
 rule of [Spec: forgotten-import checks (shared utility)](../issues/150-spec-forgotten-import-checks.md); every spec
 of the group read in full against building-blocks, ADRs 0039, 0040, 0044, 0045, and 0046, and the glossary.
 
@@ -101,7 +101,7 @@ Other fixes:
 
 - Check 3 found `nfsButton` or `nfsCloseButton` beside the icon by their classes only, so with a forgotten
   `NfsButton` import it stayed silent about a misuse that remains once the import is added. It now reads the
-  attributes too, with a test case (ticket 153's routed item on checks that find a peer by its class; the placement
+  attributes too, with a test case ([Re-run: form and value-control family specs, In-family check lines](../issues/153-rerun-form-and-value-control-family-in-family-lines.md)'s routed item on checks that find a peer by its class; the placement
   rule's "separate misuse" sentence).
 - "The hit-area rule" (Solution) and "the hit area" (D7, twice) become "the 24 px box": R14 and R22 record that the
   box is a transparent border on a content box, not a hit area, which building-blocks 1.10 rejects.
@@ -110,7 +110,7 @@ Other fixes:
 
 Confirmed, unchanged: R4 (the WCAG and Sass subsections name the exact formula, the helper, and both Foundation
 functions as not used; figures stand), R15, R22/R53, R40, R48, R65; check 7 agrees with the placement rule of the
-forgotten-import checks spec (ticket 154's routed item); CR-A, CR-C, CR-D; the In-family lines (ticket 151), kept.
+forgotten-import checks spec ([Re-run: CSS-only component and free-behaviour family specs, In-family check lines](../issues/154-rerun-css-only-component-and-free-behaviour-family-in-family-lines.md)'s routed item); CR-A, CR-C, CR-D; the In-family lines ([Re-run: navigation family specs, In-family check lines](../issues/151-rerun-navigation-family-in-family-lines.md)), kept.
 
 ### Triggers (6 decided items, 4 other fixes)
 
@@ -131,7 +131,7 @@ Other fixes:
   Openable). It now says nothing for a bare Trigger inside an element that carries an Openable's attribute where the
   shared verdict finds no instance of its directive, a forgotten import that `strictDirectiveImports` reports once
   (M1); it keeps its message for a truly bare Trigger, the kept-optional case of the family rule's item 2. The
-  In-family line and a browser-level case follow. This revises ticket 152's decision 1.2 ("check 1 stays the report
+  In-family line and a browser-level case follow. This revises [Re-run: disclosure and carousel family specs, In-family check lines](../issues/152-rerun-disclosure-and-carousel-family-in-family-lines.md)'s decision 1.2 ("check 1 stays the report
   ... and it stays true when the Openable's import was forgotten"), which the shared spec did not adopt.
 - CR-C: three deferrals ("by the out-of-scope triage, `type` (the Top Bar spec fixes it)", "which fixes its inputs",
   "take the directive names given in [Triage ...] which the [Spec: Top Bar] fixes") and the link to the Off-canvas
@@ -142,8 +142,8 @@ Other fixes:
 - CR-B: rows for the other families' classes the examples use (the Dropdown pane, Reveal, Off-canvas panel, Toggler,
   Responsive Toggle, and Tooltip as Openables; the Title Bar; the Callout; the Menu).
 
-Confirmed, unchanged: R50, R51, R56; CR-A; the In-family lines (ticket 152), apart from check 1's alignment above;
-`nfsOpenableToken`'s description follows M7's multi-provider form (ticket 152's routed item; see the Nested menu
+Confirmed, unchanged: R50, R51, R56; CR-A; the In-family lines ([Re-run: disclosure and carousel family specs, In-family check lines](../issues/152-rerun-disclosure-and-carousel-family-in-family-lines.md)), apart from check 1's alignment above;
+`nfsOpenableToken`'s description follows M7's multi-provider form ([Re-run: disclosure and carousel family specs, In-family check lines](../issues/152-rerun-disclosure-and-carousel-family-in-family-lines.md)'s routed item; see the Nested menu
 proposal below).
 
 ### Typography Helpers (no decided item, 3 other fixes)
@@ -191,7 +191,7 @@ Other fixes:
 
 - Development check 3 found the Sticky element by its class `.sticky` only, so with a forgotten `NfsSticky` import
   it told the developer to move a correctly placed element inside `nfsSticky`. It now reads the `nfsSticky`
-  attribute too and stays silent there, `strictDirectiveImports` being the report, with a test case (ticket 153's
+  attribute too and stays silent there, `strictDirectiveImports` being the report, with a test case ([Re-run: form and value-control family specs, In-family check lines](../issues/153-rerun-form-and-value-control-family-in-family-lines.md)'s
   routed item on checks that find a peer by its class).
 - CR-D: the `app-root` example's template writes `<app-site-header />`, which its `imports` did not list, so it
   would not compile; `SiteHeader` joins the imports, and the sentence after names it as the application's own
@@ -216,24 +216,24 @@ Other fixes:
 - CR-B: rows for the Flexbox Utilities' and the Card's classes of the usage examples.
 
 Confirmed, unchanged: R9/R23, R11, R26 (the frame's 1.4.12 row), R34/R35, R37 (D15), R44, R48; check 2 agrees with
-the placement rule, the separate-misuse sentence included (tickets 154 and 155); CR-A, CR-C, CR-D; the In-family
-line (ticket 155), kept.
+the placement rule, the separate-misuse sentence included ([Re-run: CSS-only component and free-behaviour family specs, In-family check lines](../issues/154-rerun-css-only-component-and-free-behaviour-family-in-family-lines.md) and [Re-run: layout system and flex utility family specs, In-family check lines](../issues/155-rerun-layout-system-and-flex-utility-family-in-family-lines.md)); CR-A, CR-C, CR-D; the In-family
+line ([Re-run: layout system and flex utility family specs, In-family check lines](../issues/155-rerun-layout-system-and-flex-utility-family-in-family-lines.md)), kept.
 
 ## The re-runs' routed items
 
-- Ticket 151 (label and form of the In-family lines): every spec of the group uses the label "In-family checks";
+- [Re-run: navigation family specs, In-family check lines](../issues/151-rerun-navigation-family-in-family-lines.md) (label and form of the In-family lines): every spec of the group uses the label "In-family checks";
   the forms differ with the family (nested lines for the Top Bar and Triggers, one bullet for the XY Grid, one
   sentence for the fixer lines of the Toggler, Typography Helpers, and Visibility Classes). The brief keeps the
   re-runs' bullets as they are, so no form was changed.
-- Ticket 152: `nfsOpenableToken` and `nfsMenuModeToken` both follow M7's multi-provider form; the Nested menu's adds
-  the words "a menu root:" (proposal 2 below). The registration checks follow the shared spec, not ticket 152's
+- [Re-run: disclosure and carousel family specs, In-family check lines](../issues/152-rerun-disclosure-and-carousel-family-in-family-lines.md): `nfsOpenableToken` and `nfsMenuModeToken` both follow M7's multi-provider form; the Nested menu's adds
+  the words "a menu root:" (proposal 2 below). The registration checks follow the shared spec, not [Re-run: disclosure and carousel family specs, In-family check lines](../issues/152-rerun-disclosure-and-carousel-family-in-family-lines.md)'s
   sentence (Triggers check 1 above).
-- Ticket 153: cross-family neighbours are left to the runtime and static checks in every spec of the group (the
+- [Re-run: form and value-control family specs, In-family check lines](../issues/153-rerun-form-and-value-control-family-in-family-lines.md): cross-family neighbours are left to the runtime and static checks in every spec of the group (the
   Triggers line says so; the other families probe only their own parts). Checks that find a peer by its class: the
   XY Grid's check 2 already accepts the attribute; the Top Bar's check 3 and the Visibility Classes' check 3 now do.
   No other check in the group finds a peer by class.
-- Ticket 154: the Top Bar's check 7 and the XY Grid's check 2 agree with the placement rule.
-- Ticket 155: its routed Flex Grid item is not in this group.
+- [Re-run: CSS-only component and free-behaviour family specs, In-family check lines](../issues/154-rerun-css-only-component-and-free-behaviour-family-in-family-lines.md): the Top Bar's check 7 and the XY Grid's check 2 agree with the placement rule.
+- [Re-run: layout system and flex utility family specs, In-family check lines](../issues/155-rerun-layout-system-and-flex-utility-family-in-family-lines.md): its routed Flex Grid item is not in this group.
 
 ## Open
 

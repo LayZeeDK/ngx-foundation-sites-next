@@ -17,14 +17,14 @@ How the next phases use this file:
   under `### Amendment, 2026-09-29 (class-rule consistency review)`: the item ids applied, the spec edits, and
   "Unchanged:". Reviewers leave shared documents alone. Correction (2026-09-29, closing pass): the reviewers
   followed their brief, which names the ticket the map's Decisions so far cites last for the spec and the heading
-  `### Amendment, 2026-09-29 (consistency review)`; that form is the one kept for every spec (ticket 133's Answer).
+  `### Amendment, 2026-09-29 (consistency review)`; that form is the one kept for every spec ([Consistency review: the class-rule wave](../issues/133-consistency-review-class-rule-wave.md)'s Answer).
 - Phase 3: the closing pass applies the shared-document changes collected in the last section (README, the map,
   CONTEXT, building-blocks, storybook-conventions, ADR dated notes).
 
 Conventions of this file:
 
 - Line numbers are locators taken on 2026-09-29 and move; every change quotes the text it replaces. Where a quoted
-  sentence no longer matches because another item or ticket 142's audit changed it first, the reviewer applies the
+  sentence no longer matches because another item or [Audit: the specs against the architecture guide](../issues/142-audit-specs-against-architecture-guide.md)'s audit changed it first, the reviewer applies the
   decision's intent to the current sentence and says so in the amendment.
 - "Already holds; confirm" means the reviewer checks the cited text while reading the spec in full and changes nothing
   unless it no longer holds.
@@ -45,7 +45,7 @@ Conventions of this file:
 - The review's own checks: CR-A to CR-C (the three the ticket names) and CR-D (example imports, from ADR 0046), all
   decided.
 - Beyond the routed items: seven placeholders the sweep found (A1 to A7; three of them fold into R2, R12, and R56) and
-  four findings (X1 decided, X2 left to ticket 142, X3 and X4 fixed under R15 and R40).
+  four findings (X1 decided, X2 left to [Audit: the specs against the architecture guide](../issues/142-audit-specs-against-architecture-guide.md), X3 and X4 fixed under R15 and R40).
 - Measured for this phase: Orbit and Switch under forced colours (R15), close-button overlap under text spacing in the
   Reveal and the Off-canvas (R25), text clipping in the Orbit, the Drilldown, and the Off-canvas wrapper (R26), the
   `NfsMotionPair` type (R2), every recomputed contrast figure (R4 and its neighbours), and the two class sweeps.
@@ -181,11 +181,11 @@ spec.
 ### R1: `nfsShowForSr` qualifiers
 
 - **Decision.** Already applied: no spec qualifies `nfsShowForSr` as a placeholder any more. The reviewer
-  confirms, and additionally checks the one part of ticket 104's proposal 7 that is a separate rule: every
+  confirms, and additionally checks the one part of [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)'s proposal 7 that is a separate rule: every
   `@Component` usage example whose template writes `nfsShowForSr` lists `NfsShowForSr` in its `imports` (CR-D
   generalises this).
 - **Evidence.** `rg -n "names it|a placeholder\)|stands for|left out until"` over specs finds no hit beside
-  `nfsShowForSr`; orbit.md:612, button-group.md:297 and :396, button.md:317 carry ticket 104's replacement sentence;
+  `nfsShowForSr`; orbit.md:612, button-group.md:297 and :396, button.md:317 carry [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)'s replacement sentence;
   drilldown-menu.md:125, :241, :541, :584; responsive-menu.md:129, :618; abide.md:113, :703; badge.md:77, :195;
   label.md:204 cite the Visibility Classes spec plainly. Component examples whose template uses it and whose
   `imports` list it: orbit.md:571-575, responsive-menu.md:623-627, badge, drilldown-menu, dropdown, button-group.
@@ -215,7 +215,7 @@ spec.
   2. `nfsMotionPairClasses` maps a value that does not split into at most one entering and one leaving token to no
      class in either direction (the counterpart of `nfsMotionClasses` mapping "anything else" to none), and the
      development check reports it.
-  3. A pair half holds one class. The compound dot form (`.a.b`) that ticket 109 asked about is not added: several
+  3. A pair half holds one class. The compound dot form (`.a.b`) that [Re-run: Toggler spec under the class rule](../issues/109-rerun-toggler-class-rule.md) asked about is not added: several
      keyframe classes on one element do not compose (the later `animation` declaration wins), so a half needs one
      class, and a compound form is additive later. A single-direction input (Reveal) keeps `.a .b` for several
      classes, as its spec and tests say, because nothing else shares its string.
@@ -226,7 +226,7 @@ spec.
   5. The examples that left the Toggler's Motion input out "until the Toggler re-run names its values" (Triggers,
      Callout, Close Button) now write the names: `animate="fade-out"` for Foundation's default `data-closable` fade,
      `animate="slide-out-right"` where Foundation's docs write `data-closable="slide-out-right"`, and
-     `animate="fade-in fade-out"` on the Triggers' focus hint, as tickets 109 and 130 proposed.
+     `animate="fade-in fade-out"` on the Triggers' focus hint, as [Re-run: Toggler spec under the class rule](../issues/109-rerun-toggler-class-rule.md) and [Re-run: Triggers (shared utility) spec under the class rule](../issues/130-rerun-triggers-class-rule.md) proposed.
 - **Evidence.** BB 1.6 rule 4 (building-blocks.md:118). Types: specs/reveal.md:168-174, specs/toggler.md:139-148
   (`NfsMotionPair` defined there), specs/dropdown.md:176-181, specs/responsive-toggle.md:149-160. Dot form, one per half:
   specs/toggler.md:466 (D18), specs/responsive-toggle.md:347; Reveal several classes: specs/reveal.md:523, :542. Checks:
@@ -301,20 +301,20 @@ spec.
     removed one leaves at once, animates through `animate.leave` with the consumer's own keyframe class, or, to play a
     library Motion, hides through a Toggler and is removed in its `closed` output: the `data-closable` replacements of
     the [Spec: Triggers (shared utility)](../issues/54-spec-triggers.md) (D17), because no library class name may appear
-    in consumer code (ADR 0039).` (ticket 130's proposal, not yet applied).
+    in consumer code (ADR 0039).` ([Re-run: Triggers (shared utility) spec under the class rule](../issues/130-rerun-triggers-class-rule.md)'s proposal, not yet applied).
   - [callout](../specs/callout.md), Out of Scope, the Closing bullet (near line 319): `and the typed leave animation of the
-    `@if` recipe belong to` becomes `and the `@if` recipe's animation belong to` (ticket 130's proposal).
+    `@if` recipe belong to` becomes `and the `@if` recipe's animation belong to` ([Re-run: Triggers (shared utility) spec under the class rule](../issues/130-rerun-triggers-class-rule.md)'s proposal).
   - [callout](../specs/callout.md), story `callout--closable` (near line 276): `the second closing with a Motion class
     through the Toggler's own input` becomes `the second closing with `animate="slide-out-right"`, Foundation's
     `data-closable="slide-out-right"` as a leaving Motion name on the Toggler's own input`.
   - [close-button](../specs/close-button.md), Animation (near line 234): replace `(a Toggler's Motion classes,
     `animate.leave` on an `@if` block)` with `(a Toggler's typed Motion input, or `animate.leave` with the consumer's
-    own keyframe class on an `@if` block, the Triggers spec's D17)` (ticket 130's proposal, not yet applied).
+    own keyframe class on an `@if` block, the Triggers spec's D17)` ([Re-run: Triggers (shared utility) spec under the class rule](../issues/130-rerun-triggers-class-rule.md)'s proposal, not yet applied).
   - [close-button](../specs/close-button.md), story `close-button--closable` (near line 258): `the second closing with a
     Motion class through the Toggler's own input` becomes `the second closing with `animate="slide-out-right"`,
     Foundation's `data-closable="slide-out-right"` as a leaving Motion name on the Toggler's own input`.
   - [breakpoint-service](../specs/breakpoint-service.md), consumer table (near lines 262 and 272): the Options cell
-    ``animate`` of the ResponsiveToggle and Dropdown pane rows becomes ``animate` (`NfsMotionPair`)` (ticket 116's note).
+    ``animate`` of the ResponsiveToggle and Dropdown pane rows becomes ``animate` (`NfsMotionPair`)` ([Re-run: Responsive Toggle spec under the class rule](../issues/116-rerun-responsive-toggle-class-rule.md)'s note).
 - **Shared-document changes.** `building-blocks.md` 1.6 rule 4: after "split at whitespace into one token per direction,
   each mapped by `nfsMotionClasses`" insert: ", so a pair half holds one class (a compound form such as `.a.b` is not
   supported); a value that does not split so, which the type admits only through a value that starts with a dot
@@ -667,7 +667,7 @@ spec.
 
 ### R9, R23: Forms' and Pagination's grid and alignment names
 
-- **Decision.** Already applied: both specs carry ticket 106's replacement sentences and the published XY Grid
+- **Decision.** Already applied: both specs carry [Spec: Typography Helpers](../issues/106-spec-typography-helpers.md)'s replacement sentences and the published XY Grid
   names. The Pagination's class check (no `current`, `disabled`, `ellipsis`, `pagination-previous`,
   `pagination-next`, `text-center` written) is CR-A and is confirmed by the class sweep.
 - **Evidence.** specs/forms.md:246 ("`nfsGridX` and `nfsCell` with `size` are the [Spec: XY Grid]'s. `nfsTextAlign`
@@ -683,7 +683,7 @@ spec.
 - **Decision.** (1) `nfsThumbnail`, `NfsThumbnail`, `nfsFlexAlign`, and `alignY` are the owning specs' names; the
   qualifier goes. (2) The Menu's `align` is settled by [Decide: inputs named like HTML presentational attributes](../issues/139-decide-inputs-named-like-presentational-attributes.md): the Menu keeps `align` and
   `NfsMenu` binds `'[attr.align]': 'null'` (Menu D15), so a static `align="right"` never reaches the DOM and a
-  menu's look does not change; the Media Object's D3 stands with ticket 139's dated amendment (its `alignment` is
+  menu's look does not change; the Media Object's D3 stands with [Decide: inputs named like HTML presentational attributes](../issues/139-decide-inputs-named-like-presentational-attributes.md)'s dated amendment (its `alignment` is
   building-blocks 1.4 rule 3's name). Nothing more to decide here. (3) The 1.13 refinement (two families one flag
   gates in opposite directions share one property) is in building-blocks 1.13 already.
 - **Evidence.** specs/media-object.md:440; issues/91:111-113, :152; issues/139:353-357 (the Media Object amendment),
@@ -698,7 +698,7 @@ spec.
     none for this item.
 - **Shared-document changes.** None (building-blocks 1.13 already carries the refinement; confirm in the closing
   pass).
-- **Rating.** Impact LOW; confidence HIGH (ticket 139 decided the `align` question with measurements). Decided.
+- **Rating.** Impact LOW; confidence HIGH ([Decide: inputs named like HTML presentational attributes](../issues/139-decide-inputs-named-like-presentational-attributes.md) decided the `align` question with measurements). Decided.
 
 ### R11: Sticky decision 9's neighbour names
 
@@ -1001,7 +1001,7 @@ spec.
 
 ### R17: `exportAs` on the Button family and the Forms directives; `size` on a grouped button
 
-- **Decision.** Building-blocks 1.3's `exportAs` rule (2026-09-28) decides: a directive has an `exportAs` only where a template needs the instance (state, methods, a Trigger target); "a directive with no state or method to read has none". `NfsButton` and `NfsCloseButton` have no model, output, method, or state of their own: their only members are the consumer's own inputs, which the template already holds. Every other directive whose members are only inputs has no `exportAs` (Button Group D12, Forms D8, the grids, the Prototyping Utilities: "no `exportAs` (it has no state or method to read)"), so the two are the outliers (correction, 2026-09-29, closing pass: they are not the only ones; `NfsBadge`, `NfsLabel`, `NfsCallout`, `NfsResponsiveEmbed`, `NfsDrilldownWrapper`, `NfsDrilldownBack`, `NfsMenu`, `NfsTopBar`, `NfsMenuIcon`, `NfsVisibility`, `NfsTabsGroup`, and `NfsEqualizer` also exported a name with only inputs and outputs, and the closing pass extends this decision to them), and their stated reasons ("exposes the nine input signals", "parity with `nfsButton` at no code cost", ticket 83 Q14) are the reading the rest of the bundle rejects. Both drop `exportAs`. Adding one later is additive (Button Group D12), and ADR 0045's deprecation policy starts at the first release, so the removal costs no deprecation. No spec writes `#x="nfsButton"` or `#x="nfsCloseButton"` (swept: no hit in `specs/`). `nfsButtonGroup` and the Forms directives keep none, now for the same reason. The second check holds: no spec's example sets `size` on an `nfsButton` inside `nfsButtonGroup`; the three `size` hits are a button inside a Dropdown pane placed after the group (button-group.md near line 412, dropdown.md near line 657) and the labelled development-warning example (button-group.md near line 433, CR-A (b)).
+- **Decision.** Building-blocks 1.3's `exportAs` rule (2026-09-28) decides: a directive has an `exportAs` only where a template needs the instance (state, methods, a Trigger target); "a directive with no state or method to read has none". `NfsButton` and `NfsCloseButton` have no model, output, method, or state of their own: their only members are the consumer's own inputs, which the template already holds. Every other directive whose members are only inputs has no `exportAs` (Button Group D12, Forms D8, the grids, the Prototyping Utilities: "no `exportAs` (it has no state or method to read)"), so the two are the outliers (correction, 2026-09-29, closing pass: they are not the only ones; `NfsBadge`, `NfsLabel`, `NfsCallout`, `NfsResponsiveEmbed`, `NfsDrilldownWrapper`, `NfsDrilldownBack`, `NfsMenu`, `NfsTopBar`, `NfsMenuIcon`, `NfsVisibility`, `NfsTabsGroup`, and `NfsEqualizer` also exported a name with only inputs and outputs, and the closing pass extends this decision to them), and their stated reasons ("exposes the nine input signals", "parity with `nfsButton` at no code cost", [Spec: Close Button](../issues/83-spec-close-button.md) Q14) are the reading the rest of the bundle rejects. Both drop `exportAs`. Adding one later is additive (Button Group D12), and ADR 0045's deprecation policy starts at the first release, so the removal costs no deprecation. No spec writes `#x="nfsButton"` or `#x="nfsCloseButton"` (swept: no hit in `specs/`). `nfsButtonGroup` and the Forms directives keep none, now for the same reason. The second check holds: no spec's example sets `size` on an `nfsButton` inside `nfsButtonGroup`; the three `size` hits are a button inside a Dropdown pane placed after the group (button-group.md near line 412, dropdown.md near line 657) and the labelled development-warning example (button-group.md near line 433, CR-A (b)).
 - **Evidence.** building-blocks.md 1.3 `exportAs` bullet (line 56); architecture-guide.md P13 (line 200, "none otherwise"; line 204 preferred "no `exportAs` on `NfsCardDivider`"); button.md lines 135, 173, 218; close-button.md lines 103, 120; button-group.md line 116 and D12 (line 391); forms.md line 182 and D8 (line 444); prototyping-utilities.md line 196; issues/83-spec-close-button.md line 60 (Q14: "Against `exportAs`: nothing needs it today"); `rg '="nfsButton"|="nfsCloseButton"' specs/` finds nothing; `rg -A15 nfsButtonGroup specs/*.md | rg size` finds only the three hits named above.
 - **Per-spec changes.**
   - [button](../specs/button.md): near line 135 replace "`exportAs: 'nfsButton'`; standalone" with "no `exportAs`; standalone". Near line 173 replace the bullet "`exportAs: 'nfsButton'` exposes the nine input signals to template references (for example a sibling Tooltip reading `button.disabled()`)." with "No `exportAs`: the directive owns no state or method a template could read, only the consumer's own inputs (building-blocks 1.3); adding one later is additive." In the Material comparison (near line 218) the `exportAs` row's last cell becomes "None (building-blocks 1.3: no state or method to read)".
@@ -1014,7 +1014,7 @@ spec.
 
 ### R18: Button Group's `nfsAlign`
 
-- **Decision.** Already applied as ticket 103 proposed: the group's alignment is `nfsFlexAlign` with `alignX`,
+- **Decision.** Already applied as [Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md) proposed: the group's alignment is `nfsFlexAlign` with `alignX`,
   written beside `nfsButtonGroup`.
 - **Evidence.** specs/button-group.md:100, :293, :388 (D9); issues/103:157-166.
 - **Per-spec changes.** [button-group](../specs/button-group.md): Already holds; confirm.
@@ -1023,7 +1023,7 @@ spec.
 
 ### R19: Aria's Toolbar unused by the Button Group
 
-- **Decision.** The spec already lists it with the right reason: Implementation level (button-group.md line 164: "This is a different pattern, not a fallback from an Aria building block (D10)"), D10 (line 389), and Out of Scope (line 365). Nothing changes in the spec. The README's "`@angular/aria` building blocks not used" section lists the fallbacks ticket 75 decided and then says "No available Aria pattern was declined elsewhere", which the 25 new specs have made false: three specs decline Aria's `Toolbar`, the Menu declines `ngMenuBar`/`ngMenu`/`ngToolbar`, and three decline Aria's `Grid`, each as a different pattern and not a fallback. The closing pass replaces that paragraph so the list the `AGENTS.md` confirmation rule relies on is complete.
+- **Decision.** The spec already lists it with the right reason: Implementation level (button-group.md line 164: "This is a different pattern, not a fallback from an Aria building block (D10)"), D10 (line 389), and Out of Scope (line 365). Nothing changes in the spec. The README's "`@angular/aria` building blocks not used" section lists the fallbacks [Decide the `@angular/aria` fallback confirmation](../issues/75-evidence-aria-fallback-confirmation.md) decided and then says "No available Aria pattern was declined elsewhere", which the 25 new specs have made false: three specs decline Aria's `Toolbar`, the Menu declines `ngMenuBar`/`ngMenu`/`ngToolbar`, and three decline Aria's `Grid`, each as a different pattern and not a fallback. The closing pass replaces that paragraph so the list the `AGENTS.md` confirmation rule relies on is complete.
 - **Evidence.** button-group.md lines 164, 365, 389; top-bar.md D14 (line 485); pagination.md D14 (line 385) and line 176; menu.md Implementation level (line 203); table.md D14 (line 399); xy-grid.md D13 (line 476); flex-grid.md D13 (line 453); float-grid.md line 457 (no grid roles, no Aria named); README.md line 198.
 - **Per-spec changes.**
   - [button-group](../specs/button-group.md): already holds (lines 164, 365, 389); confirm.
@@ -1125,7 +1125,7 @@ spec.
   `$topbar-background: $white` line or requirement where a Top Bar holds submenus carries
   `$topbar-submenu-background: $topbar-background;` (Dropdown Menu, Nested menu, Responsive Menu, Responsive
   Toggle, Top Bar, storybook-conventions section 5); Magellan's, Sticky's, and Smooth Scroll's Top Bars show no
-  submenus, so they need no companion (ticket 86 said so for Magellan). No spec includes `nfs-responsive-toggle`
+  submenus, so they need no companion ([Spec: Top Bar](../issues/86-spec-top-bar.md) said so for Magellan). No spec includes `nfs-responsive-toggle`
   without an argument or for a menu icon; the Off-canvas spec says in its 2.5.8 row, D32, and Sass subsection
   that the box is `nfs-menu-icon`'s, and its panel-scoped close-button rule is recorded as removed. The menu
   icon's box is a transparent border on a content box, not a hit area (building-blocks 1.10, Target size
@@ -1345,7 +1345,7 @@ spec.
 
 - **Decision.** (a) No spec writes `.hover`, `.unstriped`, `.striped`, `.stack`, `.scroll`, or `.table-scroll` in
   consumer code; every hit is rendered output or a dev-check case (CR-A (a), (b)). (b) building-blocks 1.10's
-  Names bullet carries ticket 92's proposal 3, and every spec agrees with it (the Reveal, Orbit, Tabs, Slider,
+  Names bullet carries [Spec: Table](../issues/92-spec-table.md)'s proposal 3, and every spec agrees with it (the Reveal, Orbit, Tabs, Slider,
   Progress Bar, and Table names are the consumer's own attributes; only Responsive Accordion Tabs has `label` and
   `labelledBy`, the stated exception), but the bullet's first sentence still says "inputs" and contradicts its
   appended sentence: it is reworded. (c) The Table's 1.13 exception is in building-blocks 1.13; the one other
@@ -1378,7 +1378,7 @@ spec.
 ### R28, R29: Badge and Label classes, the link host, Custom Colors, and other `a` hosts
 
 - **Decision.** (a) No spec writes `.badge`, `.label`, or a palette class on either in consumer code (every hit is
-  rendered output or a dev-check case). (b) The Badge adopts the Label's link-host check, as ticket 94 recommends:
+  rendered output or a dev-check case). (b) The Badge adopts the Label's link-host check, as [Spec: Label](../issues/94-spec-label.md) recommends:
   the failure is measured for the badge too (`<a class="badge" href>` turns `#1468a0` on hover and focus, 1.274:1
   on `#1779ba`, in three engines, issues/94:152; 1.614:1 under the Storybook overrides, `pairs-r29.txt`), and the
   Badge's D12 reason ("axe `target-size` and name queries") does not reach a hover colour. (c) No spec quotes
@@ -1419,7 +1419,7 @@ spec.
 - **Shared-document changes.** building-blocks.md 1.10, the Badge bullet: append "; a badge is never written on a
   link, and `NfsBadge` warns in development, as `NfsLabel` does".
 - **Rating.** Impact LOW (a development warning and documentation); confidence HIGH (measured in three engines by
-  ticket 94; the same Sass semantics read in the settings file). Decided.
+  [Spec: Label](../issues/94-spec-label.md); the same Sass semantics read in the settings file). Decided.
 
 ### R30: Progress Bar classes and Visible values, the one-writer exception, the alert override's reach
 
@@ -1466,7 +1466,7 @@ spec.
 
 - **Decision.** Already holds. The fixture route with counted embed requests is in the spec's e2e (fixture half,
   "Against the prerendered fixture app, on the Responsive Embed route, with every embed pointed at a route the
-  test fulfils and counts through `page.route`"); every one of ticket 96's proposed shared-file changes 1 to 10 is
+  test fulfils and counts through `page.route`"); every one of [Spec: Responsive Embed](../issues/96-spec-responsive-embed.md)'s proposed shared-file changes 1 to 10 is
   applied (Table D row; the 1.10 Responsive Embed bullet; 2.4.7 in the 1.10 first bullet; the "axe cannot enforce"
   focus-outline wording; the 1.11 hydration-writes-`src` bullet; the two CONTEXT terms; the README row; the
   `preview.scss` include; the Card's Notes bullet, card.md:403; the tooling spec's `uses` bullet, :168). One glossary
@@ -1485,9 +1485,9 @@ spec.
 
 ### R32, R64: images in examples (the image rule), and thumbnails inside plain links
 
-- **Decision.** Ticket 97's proposal 6 is applied (card.md:401; sticky.md:115; Sticky D19's wording is
+- **Decision.** [Spec: Thumbnail](../issues/97-spec-thumbnail.md)'s proposal 6 is applied (card.md:401; sticky.md:115; Sticky D19's wording is
   R11's). No spec puts a thumbnail inside a plain link (the Media Object's list comment claims a linked photo that
-  its markup does not have and is corrected). The image rule of building-blocks 1.2 (Interchange D18, ticket 127's
+  its markup does not have and is corrected). The image rule of building-blocks 1.2 (Interchange D18, [Re-run: Interchange spec under the class rule](../issues/127-rerun-interchange-class-rule.md)'s
   proposal 5, adopted) is applied mechanically:
   1. Consumer code (Usage examples, the consumer half of Rendered HTML, story, fixture, and test templates): every
      `<img>` that is not the `<img>` of an art-directed `<picture>` and has no `data:` or `blob:` URL writes `ngSrc`
@@ -1583,8 +1583,8 @@ spec.
 
 ### R36: storybook-conventions section 8, the demo-scaffolding list
 
-- **Decision.** Replace the demo-scaffolding bullet with the final names. The other asks of tickets 100, 101, and
-  103 already hold: section 3 has the five title groups (`Utilities/`, `Layout systems/`), section 5 puts
+- **Decision.** Replace the demo-scaffolding bullet with the final names. The other asks of [Spec: Float Grid](../issues/100-spec-float-grid.md), [Spec: Flex Grid](../issues/101-spec-flex-grid.md), and
+  [Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md) already hold: section 3 has the five title groups (`Utilities/`, `Layout systems/`), section 5 puts
   `foundation-grid` before `foundation-everything` and describes the Flex Grid's second configuration, and section
   11's checklist line is the new one. The inline-style bullet names the two overflow values that stay inline (R41,
   R42).
@@ -1655,7 +1655,7 @@ spec.
 
 ### R38: the Flexbox Utilities' three placeholders
 
-- **Decision.** The three placeholders of ticket 103's table (`nfsFlexContainer` with `direction`, `nfsFlexChild`,
+- **Decision.** The three placeholders of [Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md)'s table (`nfsFlexContainer` with `direction`, `nfsFlexChild`,
   `nfsAlign`) lived in the Equalizer, Card, and Button Group specs, not in the Flexbox Utilities spec; all three are
   replaced (Equalizer and Card by the re-run, Button Group by R18), apart from the Equalizer's last qualifier (R7).
   The Flexbox Utilities spec itself carries two placeholder remarks of its own (A1, A2). Section 8's
@@ -1760,7 +1760,7 @@ spec.
 
 ### R43: XY Grid D3's rejected alternative
 
-- **Decision.** Apply ticket 102's replacement: the Prototyping Utilities' sizing attribute is `nfsWidth`, so a
+- **Decision.** Apply [Spec: Prototyping Utilities](../issues/102-spec-prototyping-utilities.md)'s replacement: the Prototyping Utilities' sizing attribute is `nfsWidth`, so a
   `width` enum on `NfsGridContainer` would not collide; D3 stands on its other reason.
 - **Evidence.** issues/102:125; specs/xy-grid.md:466 (D3); specs/prototyping-utilities.md (Utility attributes are
   `nfs`-prefixed, ADR 0044).
@@ -1776,7 +1776,7 @@ spec.
 ### R44: the Tabs' XY Grid names and the recipe-CSS convention
 
 - **Decision.** Already holds: the Tabs examples write `nfsGridX` and `nfsCell` with a `size` rules object, and
-  storybook-conventions section 5 carries ticket 108's change 6 as its "Recipe CSS" bullet (the `.account-tabs` and
+  storybook-conventions section 5 carries [Re-run: Tabs spec under the class rule](../issues/108-rerun-tabs-class-rule.md)'s change 6 as its "Recipe CSS" bullet (the `.account-tabs` and
   `.equal-heights` recipes on the consumer's own classes).
 - **Evidence.** specs/tabs.md:402-409, :631-639, :438, :490-491; storybook-conventions.md section 5, "Recipe CSS".
 - **Per-spec changes.** [tabs](../specs/tabs.md): Already holds; confirm. [xy-grid](../specs/xy-grid.md): none.
@@ -1850,7 +1850,7 @@ spec.
 
 - **Decision.** Holds: `simple` and `primary` have the Tabs spec's names, types (`input<boolean,
   NfsVariantBoolean>`), and `nfs-tabs` rules, reached by binding `NfsTabs`' inputs of the same names; dev check 7 is
-  building-blocks 1.4's rule (ticket 111's proposal 4 is in the initial-state bullet), so it is no departure. The
+  building-blocks 1.4's rule ([Re-run: Responsive Accordion Tabs spec under the class rule](../issues/111-rerun-responsive-accordion-tabs-class-rule.md)'s proposal 4 is in the initial-state bullet), so it is no departure. The
   equal-heights recipe gets one sentence that ties its selectors to the documented structure.
 - **Evidence.** specs/responsive-accordion-tabs.md:24, :138, :149-150, :223-224, :635 (D25), :734-748; specs/tabs.md:138-139,
   :182-183, :206-207, :580; building-blocks.md 1.4 ("A component whose host binds no class reads the host's static
@@ -1924,7 +1924,7 @@ spec.
 - **Decision.**
   1. Names: Magellan's `NfsMenu`, `orientation`, `expanded`, `simple`, `NfsTopBar`, `NfsTopBarRight`, `NfsGridX`,
      `NfsCell`, and `size` match the published Menu, Top Bar, and XY Grid specs. The guide example dropped
-     Foundation's `grid-margin-x` "until that spec names its input" (ticket 122, What other specs need); the XY
+     Foundation's `grid-margin-x` "until that spec names its input" ([Re-run: Magellan spec under the class rule](../issues/122-rerun-magellan-class-rule.md), What other specs need); the XY
      Grid spec names it `gridMarginX` on `NfsGridX` (a closed boolean through `nfsVariantBoolean`), so the gutter
      is restored.
   2. The State-class reading of ADR 0039 (Magellan decision 6, the user's decision of 2026-09-27) holds in every
@@ -1932,18 +1932,18 @@ spec.
      first-paint value (Reveal `html`, Off-canvas `body`, Magellan's links and list items); every other State
      class is a host binding (Orbit says so explicitly; Triggers D18 and the Dropdown's dropped `.hover` apply
      it to Trigger hosts; Sticky rejects a `Renderer2` `.sticky-container` because it has a first-paint value).
-  3. Ticket 122's Menu item (b), dropping the list-item half of Magellan's marker: not done. ADR 0039's
+  3. [Re-run: Magellan spec under the class rule](../issues/122-rerun-magellan-class-rule.md)'s Menu item (b), dropping the list-item half of Magellan's marker: not done. ADR 0039's
      user-confirmed note names "Magellan's `.is-active` on the consumer's links and list items"; Magellan D11
      already weighs link-only (invisible in a Menu without `nfs-menu`); with `nfs-menu` both rules give the same
      look (the Menu spec's own note). No change.
   4. Stale duplicate-directive claims: since Angular 22.0 a template match discards host-directive matches of the
      same directive (building-blocks 1.9, measured with Angular 22.2.0 in the Menu ticket). Smooth Scroll D13,
-     the Magellan D17 paragraph and row, ticket 121 (its Correction, 2026-09-27), and `map.md`'s Smooth Scroll
+     the Magellan D17 paragraph and row, [Re-run: Smooth Scroll spec under the class rule](../issues/121-rerun-smooth-scroll-class-rule.md) (its Correction, 2026-09-27), and `map.md`'s Smooth Scroll
      line are already corrected. Still stale: the Forms spec (three places) and the Abide spec (three places),
      which cite NG0309 as a reason for not hosting `NfsFormLabel` or `NfsCallout`, and the records behind them
-     (ticket 98's decision 3 and triage row, ticket 123's decision 7 and triage row). The other reasons stand
+     ([Spec: Forms](../issues/98-spec-forms.md)'s decision 3 and triage row, [Re-run: Abide spec under the class rule](../issues/123-rerun-abide-class-rule.md)'s decision 7 and triage row). The other reasons stand
      (two spellings of `middle`, a forced callout look, one entry point importing another), so every decision
-     stays; only the reason is removed. Ticket 141 also routed the Forms sentences to the architecture audit
+     stays; only the reason is removed. [Decide: the directive and component architecture guide](../issues/141-decide-directive-component-architecture-guide.md) also routed the Forms sentences to the architecture audit
      ([Audit: the specs against the architecture guide](../issues/142-audit-specs-against-architecture-guide.md));
      if its survivor lands first, the reviewer confirms instead of editing twice.
 - **Evidence.** `specs/magellan.md:123-131`, `:145`, `:491` (D11), `:497` (D17), `:505-538`;
@@ -1996,17 +1996,17 @@ spec.
       would be spelt through two directives)` with `(`middle` would be spelt through two directives, and Abide
       would import Forms)`.
   - Amendments (phase 2): the Forms amendment in [Spec: Forms](../issues/98-spec-forms.md) and the Abide
-    amendment in [Spec: Abide](../issues/31-spec-abide.md) each state that the NG0309 reason in ticket 98
+    amendment in [Spec: Abide](../issues/31-spec-abide.md) each state that the NG0309 reason in [Spec: Forms](../issues/98-spec-forms.md)
     (decision 3, triage row "Validation State classes stay with Abide") and in [Re-run: Abide spec under the class rule](../issues/123-rerun-abide-class-rule.md) (decision 7, triage row "Neighbouring directives beside,
     not hosted") is superseded by building-blocks 1.9, and that the decisions stand on their other reasons. The
-    records themselves are not rewritten. Correction (2026-09-29, closing pass): in ticket 98 the reason sits in
+    records themselves are not rewritten. Correction (2026-09-29, closing pass): in [Spec: Forms](../issues/98-spec-forms.md) the reason sits in
     grilling question 5, decision 4, and the triage row "Validation State classes stay with Abide; sets side by
     side (4)", not in a decision 3; and the Abide amendment is in [Re-run: Abide spec under the class rule](../issues/123-rerun-abide-class-rule.md),
     the ticket the map cites last for the Abide spec, not in [Spec: Abide](../issues/31-spec-abide.md).
   - [smooth-scroll](../specs/smooth-scroll.md), [menu](../specs/menu.md), [top-bar](../specs/top-bar.md),
     [xy-grid](../specs/xy-grid.md): Already hold for this item; confirm.
 - **Shared-document changes.** None (ADR 0039's note, building-blocks 1.1 and 1.4, and `map.md` already carry
-  ticket 122's changes 1 to 4 and 7).
+  [Re-run: Magellan spec under the class rule](../issues/122-rerun-magellan-class-rule.md)'s changes 1 to 4 and 7).
 - **Rating.** Impact LOW (the gutter is one example attribute; the NG0309 fixes change reasons, not decisions;
   item (b) keeps what the user confirmed); confidence HIGH (published names read; the Angular fact measured and
   recorded in building-blocks 1.9). Decided.
@@ -2068,7 +2068,7 @@ spec.
 
 - **Decision.** The Anchored pane's renamed headings stand, and no spec cites the old ones: "What each consumer maps"
   and "ARIA requirements it imposes on consumers" occur only in resolved tickets (26, 27, 55) and research, which are
-  records and stay as written. The vocabulary of ticket 131's decision 3 applies to all four shared-utility specs:
+  records and stay as written. The vocabulary of [Re-run: Anchored pane (shared utility) spec under the class rule](../issues/131-rerun-anchored-pane-class-rule.md)'s decision 3 applies to all four shared-utility specs:
   "consumer" is the application and its developer, as ADR 0039 uses it; a library directive or spec built on a utility
   is a "consuming directive" or "consuming spec" (a Plugin, where the text lists Plugins). The Anchored pane spec
   already follows it; the Breakpoint service, Triggers, and Nested menu specs still use "consumer" for the library side
@@ -2076,7 +2076,7 @@ spec.
   That label collides inside one phrase ("binds no consumer Motion class, consumer rule 3": the first is the
   application's class, the second the Plugin's rule), so it is renamed "consuming-directive rule N" wherever it is
   cited. "Test consumer" (the Anchored pane's test-only directives and hosts, also in storybook-conventions section 2)
-  stays: ticket 131 kept it, and it names test code that uses the entry point as an application's own anchored element
+  stays: [Re-run: Anchored pane (shared utility) spec under the class rule](../issues/131-rerun-anchored-pane-class-rule.md) kept it, and it names test code that uses the entry point as an application's own anchored element
   does (the Anchored pane's D23).
 - **Evidence.** issues/131:35, :54 (decision 3), :73, :104; anchored-pane.md:274, :325 (renamed headings); `rg` for the
   old headings finds only issues/26:177, issues/27:185, issues/55:102, :218, research/out-of-scope-exclusions-2.md:69.
@@ -2101,7 +2101,7 @@ spec.
   - [nested-menu](../specs/nested-menu.md): in the family diagram (near line 152) `consumers (other specs):` becomes `consuming specs:`; under "What each consuming spec maps" (near line 293) the header cell `Consumer` becomes `Consuming spec`. The other uses name the application (checked: lines 89-863).
   - [off-canvas](../specs/off-canvas.md) (281, 313), [responsive-toggle](../specs/responsive-toggle.md) (219, 350), [responsive-menu](../specs/responsive-menu.md) (340, 576), [reveal](../specs/reveal.md) (462), [dropdown](../specs/dropdown.md) (445, 589), [responsive-accordion-tabs](../specs/responsive-accordion-tabs.md) (370, 602), [interchange](../specs/interchange.md) (238), [toggler](../specs/toggler.md) (350): every `consumer rule <n>` becomes `consuming-directive rule <n>`; nothing else changes.
 - **Shared-document changes.** `building-blocks.md` 1.6 rule 5: replace `The Breakpoint service spec's consumer rule 3 names this exception` with `The Breakpoint service spec's consuming-directive rule 3 names this exception`, in the same edit as R54's change to that rule. Records (resolved tickets, research, audits) stay as written.
-- **Rating.** Impact LOW (wording and a citation label; no API or contract); confidence HIGH (ticket 131's decision 3,
+- **Rating.** Impact LOW (wording and a citation label; no API or contract); confidence HIGH ([Re-run: Anchored pane (shared utility) spec under the class rule](../issues/131-rerun-anchored-pane-class-rule.md)'s decision 3,
   HIGH/LOW there, and ADR 0039's usage; the label collision is in the text). Decided.
 
 ### R54: "bind no Motion class" under reduced motion covers the library's mapped classes too
@@ -2175,7 +2175,7 @@ spec.
 - **Decision.** Every Off-canvas panel written in any spec's examples binds `position` (12 panels, in the
   Off-canvas, Triggers, and Accordion Menu specs). Two texts still defer: the Accordion Menu calls `position` the
   input the Off-canvas re-run "names", and the Top Bar's `top-bar--title-bar` story does not say its story panels
-  are Off-canvas panels with `position` (ticket 117 asked for both). The Top Bar's `stackedFor` and the Off-canvas
+  are Off-canvas panels with `position` ([Re-run: Off-canvas spec under the class rule](../issues/117-rerun-off-canvas-class-rule.md) asked for both). The Top Bar's `stackedFor` and the Off-canvas
   `revealOn` and `inCanvasOn` agree on the Zero breakpoint (no class, a development warning), but only the
   Off-canvas spec says what the Runtime check receives for it (`needs` `[]`, so one mistake makes one report);
   the Top Bar says the same in its Runtime checks paragraph.
@@ -2296,11 +2296,11 @@ spec.
   - [top-bar](../specs/top-bar.md): near line 202 replace "whose spec defines how a directive reports): while `stackedFor` is bound, `strictVariantNames` reports" with "whose spec defines how a directive reports): `NfsTopBar` creates the handle `nfsVariantCheck('nfsTopBar')` and, only while `stackedFor` is bound, calls `include('nfs-breakpoint-properties', ['breakpoint-classes'])`, then `value('stackedFor', value, needs)` with `needs` `[{setting: 'breakpoint-classes', name: value}]` for a Class breakpoint above the Zero breakpoint and `[]` for the Zero breakpoint (development check 6 reports that one, so one mistake makes one report), as the Off-canvas panel does for `revealOn` and `inCanvasOn` (R56); `strictVariantNames` reports". Near line 422 replace "with the property absent and `stackedFor` bound, `strictVariantProperties` reports once" with "in a test file of its own, with the property absent and `stackedFor` bound, `strictVariantProperties` reports once".
   - [breakpoint-service](../specs/breakpoint-service.md): in the consumer table row near line 274 replace "`include()` at its first render, whether or not a value is bound, and `value()` for each rendered Variant value (Runtime checks)." with "`include()` from its first render on, whether or not a value is bound (or only while a value that reads the property is bound, where its own mixin holds nothing it needs, as the Runtime checks section says), and `value()` for each rendered Variant value; its missing-property browser-level case sits in a test file of its own (Runtime checks)."
 - **Shared-document changes.** building-blocks.md 1.4, "Defaults and binding" bullet: replace "it calls `include(mixin, settings)` on every run, bound value or not, naming only properties its mixin never leaves empty on Foundation's defaults, then `value(input, value, needs)` for each rendered value, with `needs` from the same mapping that sets its classes." with "it calls `include(mixin, settings)` on every run, bound value or not (or, where the property is read only for a value that may stay unbound and its own mixin holds nothing it needs, only while such a value is bound: the Off-canvas `revealOn`, the Top Bar `stackedFor`, the grids' counts), naming only properties its mixin never leaves empty on Foundation's defaults and never a flag-gated one, then `value(input, value, needs)` for each rendered value, with `needs` from the same mapping that sets its classes; the spec names the call as `nfsVariantCheck('<directive>')`, and its missing-property browser-level case sits in a test file of its own, because reads and reports are once per realm ([Spec: Breakpoint service (shared utility)](issues/53-spec-breakpoint-service.md), Runtime checks)." (Check the exact current sentence before replacing; line 77.)
-- **Rating.** Impact LOW (spec wording and test-file placement; the contract is the Breakpoint service spec's, unchanged); confidence HIGH (the rule is quoted from breakpoint-service.md and ticket 129; the sweep lists every spec). Decided.
+- **Rating.** Impact LOW (spec wording and test-file placement; the contract is the Breakpoint service spec's, unchanged); confidence HIGH (the rule is quoted from breakpoint-service.md and [Re-run: Breakpoint service (shared utility) spec under the class rule](../issues/129-rerun-breakpoint-service-class-rule.md); the sweep lists every spec). Decided.
 
 ### R60: `NfsButton` and `NfsSlider` carry both boolean conventions
 
-- **Decision.** The case exists as stated, and both specs already say so (button.md line 544; slider.md line 223): `disabled`, `disabledInteractive`, and the Slider's `clickSelect` are Options through `booleanAttribute`, while `dropdown`, `arrowOnly`, `expanded`, and the Slider's `vertical` are Variant inputs through `nfsVariantBoolean`. The dissent recorded in ticket 81 reopens only "if the consistency review finds the two boolean conventions ... confuse consumers enough to extend the typed transform to Options". The review does not find that, so ADR 0040 is not reopened and building-blocks 1.4 keeps Options on `booleanAttribute`. Reasons: (1) every value a consumer is meant to write (the bare attribute, `"true"`, `"false"`, a bound boolean) behaves the same under both transforms; only a misspelt string differs (`dropdown="flase"` fails to compile, `disabled="flase"` compiles and disables), so nothing a correct template does shows the difference; (2) one convention cannot be reached anyway: an `@angular/aria` boolean a wrapper exposes through `hostDirectives` keeps Aria's `booleanAttribute`, because a wrapper cannot change a hosted input's transform (the Accordion's `AccordionGroup.disabled`, `src/aria/accordion/accordion-group.ts:90`), so extending the typed transform to the library's own Options would leave a third, mixed state; (3) `booleanAttribute` is what Angular Material and Aria use for every boolean, the shape consumers already know. The two specs' existing sentences are the documentation; nothing changes in them.
+- **Decision.** The case exists as stated, and both specs already say so (button.md line 544; slider.md line 223): `disabled`, `disabledInteractive`, and the Slider's `clickSelect` are Options through `booleanAttribute`, while `dropdown`, `arrowOnly`, `expanded`, and the Slider's `vertical` are Variant inputs through `nfsVariantBoolean`. The dissent recorded in [Decide: typed Variant inputs over open Sass maps](../issues/81-decide-typed-variant-inputs-open-sass-maps.md) reopens only "if the consistency review finds the two boolean conventions ... confuse consumers enough to extend the typed transform to Options". The review does not find that, so ADR 0040 is not reopened and building-blocks 1.4 keeps Options on `booleanAttribute`. Reasons: (1) every value a consumer is meant to write (the bare attribute, `"true"`, `"false"`, a bound boolean) behaves the same under both transforms; only a misspelt string differs (`dropdown="flase"` fails to compile, `disabled="flase"` compiles and disables), so nothing a correct template does shows the difference; (2) one convention cannot be reached anyway: an `@angular/aria` boolean a wrapper exposes through `hostDirectives` keeps Aria's `booleanAttribute`, because a wrapper cannot change a hosted input's transform (the Accordion's `AccordionGroup.disabled`, `src/aria/accordion/accordion-group.ts:90`), so extending the typed transform to the library's own Options would leave a third, mixed state; (3) `booleanAttribute` is what Angular Material and Aria use for every boolean, the shape consumers already know. The two specs' existing sentences are the documentation; nothing changes in them.
 - **Evidence.** issues/81-decide-typed-variant-inputs-open-sass-maps.md line 418 (the dissent and its trigger), line 60 (J09), line 137; adr/0040-variant-input-types.md line 38; building-blocks.md 1.4 (line 60 Options, line 61 Variant inputs); button.md lines 159-167, 544; slider.md lines 214-217, 223; accordion.md line 136 (`hostDirectives: AccordionGroup (inputs: disabled)`); `d:/projects/github/angular/components/src/aria/accordion/accordion-group.ts:90`, `accordion-trigger.ts:82`; `d:/projects/github/angular/components/src/material/button/button-base.ts:101-139`.
 - **Per-spec changes.**
   - [button](../specs/button.md): already holds (line 544); confirm.
@@ -2317,7 +2317,7 @@ spec.
   everywhere they are cited: a static host class, no inputs or `exportAs`, nothing injected in production, an
   optional development-only parent lookup that warns outside the parent, and in the forgotten-import spec a
   `strictParents` throw. One wording gap: the Orbit's hierarchy block calls them "(class only)" where the Slider's
-  names the development-only lookup; it is aligned. Table A's Orbit row carries ticket 125's proposal 1 (directives
+  names the development-only lookup; it is aligned. Table A's Orbit row carries [Re-run: Orbit spec under the class rule](../issues/125-rerun-orbit-class-rule.md)'s proposal 1 (directives
   cell, "one per Structural class", and the Primitives clause), and Table B's DI cell carries proposal 2.
 - **Evidence.** orbit.md:120-127, :143, :153-161, :219-223, :251, :255, :561 (D23); slider.md:152, :236;
   forgotten-import-checks.md:239-240; building-blocks.md Table A:298, Table B:327; issues/125:128-139, :162.
@@ -2358,11 +2358,11 @@ spec.
   than the three (the Thumbnail's `<button type="button" nfsThumbnail [nfsOpen]="lightbox">`) is equally compliant (Triggers
   D16, D18). The Top Bar and Off-canvas names in the Triggers spec match their published specs (`nfsTitleBar`,
   `nfsTitleBarLeft`, `nfsTitleBarTitle`, `button[nfsMenuIcon]`; `nfsOffCanvas` with the required `position`). The
-  CONTEXT **Motion class** definition already is ticket 130's proposal 6, word for word. Two changes remain: the
+  CONTEXT **Motion class** definition already is [Re-run: Triggers (shared utility) spec under the class rule](../issues/130-rerun-triggers-class-rule.md)'s proposal 6, word for word. Two changes remain: the
   Toggler re-run has named its Motion values, so the Triggers' deferral ("the examples leave it out") ends and its
   in-place `data-closable` examples take `animate="fade-out"` (a leaving name alone, the counterpart of Foundation's
   bare `data-closable` and its `fadeOut()`; `data-closable="slide-out-right"` becomes `animate="slide-out-right"`,
-  Toggler user story 44), as ticket 130 asked; and the one prose Trigger without `type` gets it (building-blocks 1.8:
+  Toggler user story 44), as [Re-run: Triggers (shared utility) spec under the class rule](../issues/130-rerun-triggers-class-rule.md) asked; and the one prose Trigger without `type` gets it (building-blocks 1.8:
   Triggers are native `<button type="button">`).
 - **Evidence.** Sweep: `D:/tmp/nfs-133/triggers/hosts-out.txt` (107 hosts in 16 specs; zero with `class` or `[class`;
   zero hosts outside the five kinds; the six native buttons: thumbnail.md:326, triggers.md:123, :283, :297, :309,
@@ -2380,13 +2380,13 @@ spec.
     - Nearest Openable bullet (near line 123): `<button nfsClose nfsTooltip="Close">` becomes `<button type="button" nfsClose nfsTooltip="Close">`.
   - [thumbnail](../specs/thumbnail.md), [dropdown](../specs/dropdown.md), [off-canvas](../specs/off-canvas.md), [reveal](../specs/reveal.md), [toggler](../specs/toggler.md), [top-bar](../specs/top-bar.md), [responsive-toggle](../specs/responsive-toggle.md), [close-button](../specs/close-button.md), [callout](../specs/callout.md), [button](../specs/button.md), [button-group](../specs/button-group.md), [tooltip](../specs/tooltip.md), [anchored-pane](../specs/anchored-pane.md), [accordion-menu](../specs/accordion-menu.md), [responsive-menu](../specs/responsive-menu.md): Already holds (sweep); confirm, and apply the check to any Trigger the reviewer adds. The Callout's and Close Button's dismissible examples and stories take R2's Motion values (the Motion input stays optional; hiding at once is allowed).
 - **Shared-document changes.** None: CONTEXT's Motion class line is already proposal 6, and building-blocks 1.6 rule 2
-  already carries ticket 130's proposal 5.
+  already carries [Re-run: Triggers (shared utility) spec under the class rule](../issues/130-rerun-triggers-class-rule.md)'s proposal 5.
 - **Rating.** Impact LOW (examples and one sentence; the contract is Triggers D16 to D18 and the Toggler's published
   input); confidence HIGH (sweep; Toggler story 44 and building-blocks 1.6 rule 4 define the value). Decided.
 
 ### R66: every static-class read follows building-blocks 1.4's initial-state rule
 
-- **Decision.** Ticket 107's proposal 1 is adopted as building-blocks 1.4's "Initial state is bound, never read from a
+- **Decision.** [Re-run: Accordion spec under the class rule](../issues/107-rerun-accordion-class-rule.md)'s proposal 1 is adopted as building-blocks 1.4's "Initial state is bound, never read from a
   class" bullet, and all ten re-run specs apply it: none seeds state or a Variant from a static Foundation class; each
   directive that binds a Foundation class dynamically reads its host's static `class` through `HostAttributeToken` in
   development builds only and warns once naming the input; redundant Structural classes merge unreported; the Toggler
@@ -2423,9 +2423,9 @@ spec.
 - **Rating.** Impact LOW (the specs already hold; the shared text records what four specs decided); confidence HIGH
   (each spec's text, cited). Decided.
 
-### R67: README item 5 and the tooling spec after ticket 137
+### R67: README item 5 and the tooling spec after [Prototype: Variant declaration tooling in real Nx and Angular CLI workspaces](../issues/137-prototype-variant-declaration-tooling.md)
 
-- **Decision.** Ticket 137 is resolved and the tooling spec already carries its verdict (the generated file ends
+- **Decision.** [Prototype: Variant declaration tooling in real Nx and Angular CLI workspaces](../issues/137-prototype-variant-declaration-tooling.md) is resolved and the tooling spec already carries its verdict (the generated file ends
   with `declare global {}`, D28; Storybook checks no template or story types; the unit-test builders see the file),
   so only README item 5 changes.
 - **Evidence.** issues/137 Status resolved, Answer section 1; specs/variant-declaration-tooling.md:288, :298, :382,
@@ -2447,8 +2447,8 @@ spec.
   measured), and building-blocks 1.4 itself names its check 6 as the pattern, so its report stays. The Off-canvas
   panel is never focusable: the library never focuses it (building-blocks 1.10), gives it no `tabindex`, and drops
   Foundation's `tabindex="-1"` on the content; its `autoFocus` is a string union whose natural form is static
-  (`autoFocus="first-heading"`), and the rendered `autofocus` does nothing there (measured in ticket 139: a closed
-  `aside autofocus` leaves a later `autofocus` its turn), so its static form stays supported. Ticket 139 already
+  (`autoFocus="first-heading"`), and the rendered `autofocus` does nothing there (measured in [Decide: inputs named like HTML presentational attributes](../issues/139-decide-inputs-named-like-presentational-attributes.md): a closed
+  `aside autofocus` leaves a later `autofocus` its turn), so its static form stays supported. [Decide: inputs named like HTML presentational attributes](../issues/139-decide-inputs-named-like-presentational-attributes.md) already
   called the report a floor, not a ceiling.
 - **Evidence.** dropdown.md:253, :281 (check 6), :581 (D13); off-canvas.md:237, :608 (D16), :661, :766;
   building-blocks.md 1.4, inputs named like HTML attributes, kind 3; issues/139:366; research/presentational-attribute-
@@ -2456,7 +2456,7 @@ spec.
 - **Per-spec changes.**
   - [dropdown](../specs/dropdown.md), [off-canvas](../specs/off-canvas.md): Already holds; confirm.
 - **Shared-document changes.** None.
-- **Rating.** Impact LOW (ticket 139's rating; a development report only); confidence HIGH (building-blocks 1.4's own
+- **Rating.** Impact LOW ([Decide: inputs named like HTML presentational attributes](../issues/139-decide-inputs-named-like-presentational-attributes.md)'s rating; a development report only); confidence HIGH (building-blocks 1.4's own
   condition and the measured rows). Decided.
 
 ### R69, R70: rendered `align` and `autofocus`; the Slider's kept attributes; README item 7; the guide
@@ -2467,7 +2467,7 @@ spec.
   carries `autofocus`. The Slider's Rendered HTML intro lists only `vertical=""` and
   `positionvaluefunction="log"` as kept static input attributes and says a static container `disabled` and a
   Handle `readonly` are removed (the `disabled=""` in its vertical example is the native input's, an `output`
-  binding). README's class-rule item 7 already carries the resolved text of ticket 139's change 8. The
+  binding). README's class-rule item 7 already carries the resolved text of [Decide: inputs named like HTML presentational attributes](../issues/139-decide-inputs-named-like-presentational-attributes.md)'s change 8. The
   architecture guide's P9 states the decided rule, and question 9 of its decision framework asks the kind of each
   input named like an HTML attribute; neither says the question is pending.
 - **Evidence.** `rg -n 'autofocus=|autofocus[ >]| align="|disabled=""|readonly=""'` over `specs/`;
@@ -2604,7 +2604,7 @@ The CR-C search over all 53 specs found these deferrals beyond the routed items.
   `@error` is that spec's reasoning, not a building-blocks rule; changing D19 would re-decide a published decision
   that no ticket routed here. Impact LOW; confidence HIGH (ADR 0022's text). Decided.
 - X2. The Orbit and Slider specs carry no `nfsDirectiveCheck` or `strictParents` line for the parts that
-  forgotten-import-checks.md (near lines 239-240) lists. Ticket 142 checks exactly this (its step 4), so it is left
+  forgotten-import-checks.md (near lines 239-240) lists. [Audit: the specs against the architecture guide](../issues/142-audit-specs-against-architecture-guide.md) checks exactly this (its step 4), so it is left
   to [Audit: the specs against the architecture guide](../issues/142-audit-specs-against-architecture-guide.md); a
   reviewer who meets the gap before that ticket's fix lands applies the forgotten-import spec's line form. Not decided
   here.
@@ -2730,12 +2730,12 @@ the order given. Reviewers in phase 2 leave these documents alone.
 
 1. "`@angular/aria` building blocks not used": R19's replacement paragraph.
 2. The CSS-only table's Switch row: R21's last cell.
-3. The class-rule wave list, item 5: R67's replacement; item 7 already carries ticket 139's resolved text (R70).
+3. The class-rule wave list, item 5: R67's replacement; item 7 already carries [Decide: inputs named like HTML presentational attributes](../issues/139-decide-inputs-named-like-presentational-attributes.md)'s resolved text (R70).
 4. The spec count and index: "34 published specs" becomes 53, and every spec has a row. Ten specs have none today:
    flexbox-utilities, flex-grid, float-classes, float-grid, media-object, menu, pagination, prototyping-utilities,
-   typography-helpers, xy-grid; each takes the README row its spec ticket proposed (for example ticket 91's proposed
+   typography-helpers, xy-grid; each takes the README row its spec ticket proposed (for example [Spec: Media Object](../issues/91-spec-media-object.md)'s proposed
    Media Object row), in the table of its kind. Correction (2026-09-29, closing pass): no spec ticket proposed a
-   README row (ticket 91's row is building-blocks Table D's); the closing pass wrote the ten rows from the specs.
+   README row ([Spec: Media Object](../issues/91-spec-media-object.md)'s row is building-blocks Table D's); the closing pass wrote the ten rows from the specs.
 5. The ADR count: 46 decision records (44 accepted; 0010 and 0034 superseded), with 0039 to 0046 in the index.
 6. The Orbit row: no change (the spec records R15's measurement).
 

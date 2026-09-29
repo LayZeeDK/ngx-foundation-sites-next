@@ -1,6 +1,6 @@
 # Consistency review, group e: report
 
-Ticket: [Consistency review: the class-rule wave](../issues/133-consistency-review-class-rule-wave.md), phase 2, group e, 2026-09-29, AFK under the map's override. Model: Opus 5.5. Input: the decisions of phase 1 ([consistency-review-decisions.md](consistency-review-decisions.md)), its per-spec index and checks CR-A to CR-D, the Answers of the five family re-runs (tickets 151 to 155), and the orchestrator's addendum on the registration rule of [Spec: forgotten-import checks (shared utility)](../issues/150-spec-forgotten-import-checks.md).
+Ticket: [Consistency review: the class-rule wave](../issues/133-consistency-review-class-rule-wave.md), phase 2, group e, 2026-09-29, AFK under the map's override. Model: Opus 5.5. Input: the decisions of phase 1 ([consistency-review-decisions.md](consistency-review-decisions.md)), its per-spec index and checks CR-A to CR-D, the Answers of the five family re-runs ([Re-run: navigation family specs, In-family check lines](../issues/151-rerun-navigation-family-in-family-lines.md) to [Re-run: layout system and flex utility family specs, In-family check lines](../issues/155-rerun-layout-system-and-flex-utility-family-in-family-lines.md)), and the orchestrator's addendum on the registration rule of [Spec: forgotten-import checks (shared utility)](../issues/150-spec-forgotten-import-checks.md).
 
 Specs revised in place, each read in full: [responsive-toggle](../specs/responsive-toggle.md), [reveal](../specs/reveal.md), [slider](../specs/slider.md), [smooth-scroll](../specs/smooth-scroll.md), [sticky](../specs/sticky.md), [switch](../specs/switch.md), [table](../specs/table.md), [tabs](../specs/tabs.md), [thumbnail](../specs/thumbnail.md).
 
@@ -75,13 +75,13 @@ Other fixes:
 2. The consumer-settings paragraph under Sass and custom CSS names the ring requirement and its check.
 3. The default ring's figure: the decisions file quotes 3.422:1, the Switch's floored figure; `ratio.mjs` gives 3.4230 in both modes, so under R4's ratio rule the Slider, which does not floor, writes 3.42:1.
 
-Confirmed, unchanged: R4, R60, R61/R63, R66, R69/R70; the class-only-part note of ticket 152 (the fill's In-family line already says why M4's template-outlet fix is the one its Handles need); CR-A, CR-C, CR-D (`app-filters` imports exactly its directives and `FormField`).
+Confirmed, unchanged: R4, R60, R61/R63, R66, R69/R70; the class-only-part note of [Re-run: disclosure and carousel family specs, In-family check lines](../issues/152-rerun-disclosure-and-carousel-family-in-family-lines.md) (the fill's In-family line already says why M4's template-outlet fix is the one its Handles need); CR-A, CR-C, CR-D (`app-filters` imports exactly its directives and `FormField`).
 
 ### smooth-scroll
 
 Decided items applied: R12, the names sentence, as decided.
 
-Confirmed, unchanged: R48 (D13); CR-A, CR-C, CR-D (all three component examples). Ticket 153 asked the review to check that cross-family neighbours are stated the same way, naming Smooth Scroll beside Menu: this spec is a single directive with no parent, child, or peer, so the family rule gives it no In-family line (forgotten-import checks, "A spec with a single directive and no parent, child, or peer adds no line"), and D13 already states the Menu written beside it; nothing to align.
+Confirmed, unchanged: R48 (D13); CR-A, CR-C, CR-D (all three component examples). [Re-run: form and value-control family specs, In-family check lines](../issues/153-rerun-form-and-value-control-family-in-family-lines.md) asked the review to check that cross-family neighbours are stated the same way, naming Smooth Scroll beside Menu: this spec is a single directive with no parent, child, or peer, so the family rule gives it no In-family line (forgotten-import checks, "A spec with a single directive and no parent, child, or peer adds no line"), and D13 already states the Menu written beside it; nothing to align.
 
 ### sticky
 
@@ -147,18 +147,18 @@ Confirmed, unchanged: R10, R11, R28/R29, R32/R64, R65, R74; CR-A, CR-D (`app-ava
 
 The shared spec now says a family check that reports placement from the DOM alone, and one that finds a peer by registration, say nothing where the element they look for carries the peer directive's attribute. In this group:
 
-- Tabs: its one such check is DOM-placement, the tab's warning for a parent that is not an `li[nfsTabsTitle]`, which ticket 152 already made read the element and the attribute. Its In-family sentence ended "and the warning's message holds for the case it reports", ticket 152's wording; it now names the shared rule it follows (an `li` carrying `nfsTabsTitle` without `.tabs-title` is a forgotten import, reported once by the strip's probe). No behaviour change. The Tabs has no registration check (its panel and tab-list registries feed no warning).
-- Responsive Toggle: development check 3 (no registered title bar, or a second one) reads a registration, and ticket 152 kept it. It keeps its message under the shared rule too, because it looks for no element: the bar reaches the menu only through the required reference `[nfsResponsiveToggle]="menu"`, whose forgotten import on either side fails to compile (NG8002, NG8003). The In-family sentence now says this in the shared rule's terms (proposal 3 below would put the case in the shared spec).
-- Switch: check 6 already accepts the input's attribute (ticket 153, D19); aligned. Sticky: warning 1 already follows the DOM-placement rule (ticket 154). Slider, Reveal, Table, Thumbnail, Smooth Scroll: no such check.
+- Tabs: its one such check is DOM-placement, the tab's warning for a parent that is not an `li[nfsTabsTitle]`, which [Re-run: disclosure and carousel family specs, In-family check lines](../issues/152-rerun-disclosure-and-carousel-family-in-family-lines.md) already made read the element and the attribute. Its In-family sentence ended "and the warning's message holds for the case it reports", [Re-run: disclosure and carousel family specs, In-family check lines](../issues/152-rerun-disclosure-and-carousel-family-in-family-lines.md)'s wording; it now names the shared rule it follows (an `li` carrying `nfsTabsTitle` without `.tabs-title` is a forgotten import, reported once by the strip's probe). No behaviour change. The Tabs has no registration check (its panel and tab-list registries feed no warning).
+- Responsive Toggle: development check 3 (no registered title bar, or a second one) reads a registration, and [Re-run: disclosure and carousel family specs, In-family check lines](../issues/152-rerun-disclosure-and-carousel-family-in-family-lines.md) kept it. It keeps its message under the shared rule too, because it looks for no element: the bar reaches the menu only through the required reference `[nfsResponsiveToggle]="menu"`, whose forgotten import on either side fails to compile (NG8002, NG8003). The In-family sentence now says this in the shared rule's terms (proposal 3 below would put the case in the shared spec).
+- Switch: check 6 already accepts the input's attribute ([Re-run: form and value-control family specs, In-family check lines](../issues/153-rerun-form-and-value-control-family-in-family-lines.md), D19); aligned. Sticky: warning 1 already follows the DOM-placement rule ([Re-run: CSS-only component and free-behaviour family specs, In-family check lines](../issues/154-rerun-css-only-component-and-free-behaviour-family-in-family-lines.md)). Slider, Reveal, Table, Thumbnail, Smooth Scroll: no such check.
 
 ## Items the family re-runs routed to this review, for this group
 
-- Ticket 152, "registration checks keep their messages and DOM checks match the attribute": decided by the addendum above.
-- Ticket 152, class-only parts under `strictParents` (the Slider fill): the Slider's fill line already explains it; no sentence added.
-- Ticket 153, cross-family neighbours stated the same way (Smooth Scroll beside Menu): nothing to align (see smooth-scroll).
-- Ticket 153, a check that finds a peer by its class (the Switch's check 6): already takes the attribute.
-- Ticket 154, the Top Bar, XY Grid, and Flex Grid placement checks against S2, and ticket 155's Flex Grid check 3: not in this group.
-- Ticket 151, the In-family label and form: the group's In-family bullets are kept as they are, as the brief asks.
+- [Re-run: disclosure and carousel family specs, In-family check lines](../issues/152-rerun-disclosure-and-carousel-family-in-family-lines.md), "registration checks keep their messages and DOM checks match the attribute": decided by the addendum above.
+- [Re-run: disclosure and carousel family specs, In-family check lines](../issues/152-rerun-disclosure-and-carousel-family-in-family-lines.md), class-only parts under `strictParents` (the Slider fill): the Slider's fill line already explains it; no sentence added.
+- [Re-run: form and value-control family specs, In-family check lines](../issues/153-rerun-form-and-value-control-family-in-family-lines.md), cross-family neighbours stated the same way (Smooth Scroll beside Menu): nothing to align (see smooth-scroll).
+- [Re-run: form and value-control family specs, In-family check lines](../issues/153-rerun-form-and-value-control-family-in-family-lines.md), a check that finds a peer by its class (the Switch's check 6): already takes the attribute.
+- [Re-run: CSS-only component and free-behaviour family specs, In-family check lines](../issues/154-rerun-css-only-component-and-free-behaviour-family-in-family-lines.md), the Top Bar, XY Grid, and Flex Grid placement checks against S2, and [Re-run: layout system and flex utility family specs, In-family check lines](../issues/155-rerun-layout-system-and-flex-utility-family-in-family-lines.md)'s Flex Grid check 3: not in this group.
+- [Re-run: navigation family specs, In-family check lines](../issues/151-rerun-navigation-family-in-family-lines.md), the In-family label and form: the group's In-family bullets are kept as they are, as the brief asks.
 
 ## Proposed shared-document and other-group changes
 

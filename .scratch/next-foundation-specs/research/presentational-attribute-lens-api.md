@@ -147,7 +147,7 @@ If the judge weighs item 2 of the argument against more heavily than the answer,
 
 Hosting specs (`accordion-menu.md`, `drilldown-menu.md`, `dropdown-menu.md`, `nested-menu.md`, `responsive-menu.md`): no edit required. Their examples keep `align="..."`; their rendered HTML already leaves static input attributes out; they inherit `NfsMenu`'s host bindings, and the Menu spec's hosting tests cover their shapes. `top-bar.md` has no `align` input. `flexbox-utilities.md`, ADR 0041, `building-blocks.md` 1.9, `map.md`, and `CONTEXT.md` keep `align` unchanged.
 
-References that name ticket 139 as pending, to update when the answer lands (no change in substance): `specs/float-classes.md` D11 ("decides the general rule later"), `specs/typography-helpers.md` lines 14 and 385, and `architecture-guide.md` as quoted in Decision 1. `specs/media-object.md` D3 needs no edit: its name comes from the docs' Section Alignment by rule 3, and its reason for rejecting `align` still holds for a directive without the binding.
+References that name [Decide: inputs named like HTML presentational attributes](../issues/139-decide-inputs-named-like-presentational-attributes.md) as pending, to update when the answer lands (no change in substance): `specs/float-classes.md` D11 ("decides the general rule later"), `specs/typography-helpers.md` lines 14 and 385, and `architecture-guide.md` as quoted in Decision 1. `specs/media-object.md` D3 needs no edit: its name comes from the docs' Section Alignment by rule 3, and its reason for rejecting `align` still holds for a directive without the binding.
 
 ## Decision 3: the audit's other rows
 

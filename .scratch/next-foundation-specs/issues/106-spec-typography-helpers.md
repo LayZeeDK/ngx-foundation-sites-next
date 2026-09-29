@@ -41,7 +41,7 @@ Round 1 (the frontier once ADR 0039, ADR 0040, and the Utility directive rule ar
 4. What is one directive? Clause 1: one per export mixin. `foundation-text-alignment` is `NfsTextAlignment`; `foundation-typography-helpers` is `NfsTypographyHelpers`, with its element-qualified `.no-bullet` in a directive of its own; `foundation-typography-base` is `NfsTypographyBase`, whose only classes are `.h1` to `.h6`.
 5. One class or two for `ul.no-bullet` and `ol.no-bullet`? One: Foundation writes one rule with one meaning for both and has no inner mixin to name two after; the element-qualified selector is what clause 1's element clause is for (the attribute must not exist on a `div`), and the type is the same boolean on both. A clarification of clause 1 is proposed below.
 6. Names? `nfsTextAlign` (clause 3's own example, and the published placeholder); booleans after their classes for the six helpers and `.no-bullet`; `.code-inline` and `.code-block` are two single classes, so two booleans, as `nfsFontBold` and `nfsFontNormal` are. `.h<n>` needs a name for its dimension: `nfsHeadingSize` (the docs' "header sizes", in HTML's word for `h1` to `h6`), valued 1 to 6, because the value `h1` would be the class name.
-7. The presentational-attribute rule (ticket 139, until decided): `align` and `type` were considered and rejected; every chosen name renders as an attribute HTML ignores (measured for `nfstextalign`).
+7. The presentational-attribute rule ([Decide: inputs named like HTML presentational attributes](139-decide-inputs-named-like-presentational-attributes.md), until decided): `align` and `type` were considered and rejected; every chosen name renders as an attribute HTML ignores (measured for `nfstextalign`).
 
 Round 2 (hangs on 3 to 7):
 

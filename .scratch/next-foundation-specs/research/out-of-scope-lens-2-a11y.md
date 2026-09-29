@@ -6,7 +6,7 @@ One of three lenses for [Triage: out-of-scope items across the specs](../issues/
 
 Paths: bundle paths are relative to EFFORT; `FS/` is the Foundation clone (`v6.9.0-1-g337be7a8d`; no cited file differs from the tag); `axe.js` is the pinned axe-core 4.13.0 at `D:/tmp/nfs-ct-prototype/node_modules/axe-core/axe.js`. Ratios are the exact WCAG formula over 8-bit colours, with Sass `scale-color()` and Foundation's `smart-scale()` reproduced for the backgrounds. As a control, the method gives the Callout spec's own close-button figures for `#8a8a8a` on the primary, secondary, and alert tints (2.839, 2.870, and 2.818:1 here; "2.82:1 to 2.87:1", `specs/callout.md:10`).
 
-Counts: 1 fails and 6 partly, in four groups; all 417 `new` rows are covered below; one `re-checked` row (map-1, ticket 79's G1) is reopened by a finding that postdates ticket 79. No item is HIGH impact with NOT-HIGH confidence, so nothing goes to the user from this lens.
+Counts: 1 fails and 6 partly, in four groups; all 417 `new` rows are covered below; one `re-checked` row (map-1, [Triage the out-of-scope Foundation components and variants](../issues/79-triage-out-of-scope-components-and-variants.md)'s G1) is reopened by a finding that postdates [Triage the out-of-scope Foundation components and variants](../issues/79-triage-out-of-scope-components-and-variants.md). No item is HIGH impact with NOT-HIGH confidence, so nothing goes to the user from this lens.
 
 ## 1. Fails and partly
 
@@ -52,8 +52,8 @@ Counts: 1 fails and 6 partly, in four groups; all 417 `new` rows are covered bel
 
 ## 2. Re-checked rows
 
-- map-1 (ticket 79's G1): holds for directives, partly fails for checks (1.1). The Typography Helpers ticket's finding (`issues/106-spec-typography-helpers.md:119`) postdates ticket 79.
-- Every other `re-checked` row holds from this lens. No ruling since ticket 79 (ADR 0039, ADR 0040, ADR 0044, ADR 0045, directive composition, the API-design skill's rank) touches an accessibility reason: the WCAG and APG drops ticket 79 grouped (AC9, DP1, DP5, DP14, OR5, SL7, TB1, TB5, TT1, TT2, and the rest), the Menu roles of ADR 0004, and the platform limits stand, and the class rule removes no accessible option from any of them. The Label host of B4 (button-3) stays out; section 5 says what an inclusion would need.
+- map-1 ([Triage the out-of-scope Foundation components and variants](../issues/79-triage-out-of-scope-components-and-variants.md)'s G1): holds for directives, partly fails for checks (1.1). The Typography Helpers ticket's finding (`issues/106-spec-typography-helpers.md:119`) postdates [Triage the out-of-scope Foundation components and variants](../issues/79-triage-out-of-scope-components-and-variants.md).
+- Every other `re-checked` row holds from this lens. No ruling since [Triage the out-of-scope Foundation components and variants](../issues/79-triage-out-of-scope-components-and-variants.md) (ADR 0039, ADR 0040, ADR 0044, ADR 0045, directive composition, the API-design skill's rank) touches an accessibility reason: the WCAG and APG drops [Triage the out-of-scope Foundation components and variants](../issues/79-triage-out-of-scope-components-and-variants.md) grouped (AC9, DP1, DP5, DP14, OR5, SL7, TB1, TB5, TT1, TT2, and the rest), the Menu roles of ADR 0004, and the platform limits stand, and the class rule removes no accessible option from any of them. The Label host of B4 (button-3) stays out; section 5 says what an inclusion would need.
 
 ## 3. Holds, grouped
 
@@ -97,11 +97,11 @@ Each line gives the group's reason, then its rows in the evidence file's order.
 - A `closable` Callout input (callout-3): focus must leave the removed close button (2.4.3); the recipes move it in `closed` handlers, and an input would need a focus target rule.
 - A `current` input on menu items or breadcrumbs (menu-4, breadcrumbs-3): a second source beside `aria-current`; the two can disagree, and the look and the announcement then split (ADR 0042).
 - Default live roles on Badge, Label, and Callout (badge-2, label-2, callout-4): `role="status"` on every badge announces every count change, and `role="alert"` on server-rendered content interrupts at load in some readers.
-- Swap announcements (responsive-accordion-tabs-11, and RM3 of ticket 79): speech while a user zooms, as in section 3.
+- Swap announcements (responsive-accordion-tabs-11, and RM3 of [Triage the out-of-scope Foundation components and variants](../issues/79-triage-out-of-scope-components-and-variants.md)): speech while a user zooms, as in section 3.
 - `focusMode="activedescendant"` for Tabs (TB5): the focused tab shows no browser ring, so 2.4.7 needs library CSS.
-- Generated ids and English default names (switch-8, top-bar-5, close-button-2, RT6 of ticket 79): ids break references before hydration; English names read in the wrong language on other pages (3.1.2).
-- Menu roles (menu-9, nested-menu-6, and G8 of ticket 79): only with the full APG key tables, and never on site navigation.
-- Tooltips on non-interactive text or on a label (TT2 of ticket 79, label-11): unreachable by keyboard and touch (2.1.1, 1.4.13).
+- Generated ids and English default names (switch-8, top-bar-5, close-button-2, RT6 of [Triage the out-of-scope Foundation components and variants](../issues/79-triage-out-of-scope-components-and-variants.md)): ids break references before hydration; English names read in the wrong language on other pages (3.1.2).
+- Menu roles (menu-9, nested-menu-6, and G8 of [Triage the out-of-scope Foundation components and variants](../issues/79-triage-out-of-scope-components-and-variants.md)): only with the full APG key tables, and never on site navigation.
+- Tooltips on non-interactive text or on a label (TT2 of [Triage the out-of-scope Foundation components and variants](../issues/79-triage-out-of-scope-components-and-variants.md), label-11): unreachable by keyboard and touch (2.1.1, 1.4.13).
 - A width transition on the progress meter (progress-bar-6): it would need the reduced-motion override every library animation has.
 
 ## 6. Outside the rows

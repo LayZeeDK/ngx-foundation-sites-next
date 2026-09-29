@@ -28,7 +28,7 @@ Round 1 (the frontier: prerequisites all settled by ADR 0039 and ADR 0040):
 - Q3. Implementation level? Native platform. Aria's `ngMenuBar`, `ngMenu`, and `ngToolbar` apply roles the APG rejects for site navigation (ADR 0004); CDK has nothing to do.
 - Q4. How is the current page marked without a consumer-written `.is-active`? Options argued: (a) a `current` input on an item directive binding `.is-active`; (b) a link directive with Material's `activated` input (class plus `aria-current`, `MatListItem`'s shape); (c) `routerLinkActive="is-active"` (a Foundation class name as an input value, forbidden by ADR 0039); (d) `aria-current` on the link as the only source, styled by the library with Foundation's own `menu-state-active`. Settled: (d). It closes Foundation's 1.3.1 gap by construction, needs no directive on `li` or `a`, matches the Tabs nav bar's `nfs-tabs` rule (its D18) and AGENTS.md's listed reason for custom CSS (bridging ARIA attributes to Foundation's class-based styling), and the Router already writes the attribute (`ariaCurrentWhenActive`).
 - Q5. How do the menu Plugins relate to `NfsMenu`: host it, bind `.menu` themselves, or have the consumer write it beside them? Settled: host it, after measuring Angular 22's host-directive de-duplication (Probe 1).
-- Q6. Variant inputs and types? Building-blocks 1.4 applied: `orientation` (the name ticket 81 already fixed for the menu specs), `expanded`, `simple`, `nested`, `align`, `iconPosition`.
+- Q6. Variant inputs and types? Building-blocks 1.4 applied: `orientation` (the name [Decide: typed Variant inputs over open Sass maps](81-decide-typed-variant-inputs-open-sass-maps.md) already fixed for the menu specs), `expanded`, `simple`, `nested`, `align`, `iconPosition`.
 
 Round 2:
 - Q7. `nested`: explicit boolean or derived from an enclosing `NfsMenu` through DI? Explicit. Foundation writes the class explicitly, and a menu inside a Dropdown pane inside a menu item would pick up the indentation from DI.
@@ -80,7 +80,7 @@ Probe 2, `sass/`: Dart Sass (`D:/tmp/nfs-ct-prototype`'s install) over the Found
 | --- | --- | --- | --- |
 | 4, current page as `aria-current` styled by `nfs-menu` | HIGH: every menu Plugin, the Top Bar, and consumer markup inherit it | HIGH: WCAG 1.3.1 and the APG's `aria-current`; the Tabs nav bar precedent; AGENTS.md's listed reason for custom CSS; the rule compiled over Foundation's settings (Probe 2); `RouterLinkActive` source read | Decided |
 | 5, the menu roots and `NfsSubmenu` host `NfsMenu` | HIGH: five specs' APIs | HIGH: measured in Angular 22.2.0 under strict templates and a server render (Probe 1); the de-duplication source and commit read | Decided |
-| 2, input names and types | HIGH: public API | HIGH: building-blocks 1.4 applied rule by rule; `orientation` fixed by ticket 81; `align` forced by the Dropdown Menu's `alignment` Option; `.<bp>-simple` defect read in the Sass | Decided |
+| 2, input names and types | HIGH: public API | HIGH: building-blocks 1.4 applied rule by rule; `orientation` fixed by [Decide: typed Variant inputs over open Sass maps](81-decide-typed-variant-inputs-open-sass-maps.md); `align` forced by the Dropdown Menu's `alignment` Option; `.<bp>-simple` defect read in the Sass | Decided |
 | 3, strip copied classes | MEDIUM | HIGH: building-blocks 1.4's new rule; measured (Probe 1) | Decided |
 | 6, `nfs-menu` padding rule and checks | LOW: one mixin, reversible | HIGH: the 2.5.8 failure follows from Foundation's zero padding and WCAG's spacing geometry; the checks measured (Probe 2); e2e measures the rows | Decided |
 | 7, 8, 9 | LOW | HIGH | Decided |
@@ -216,7 +216,7 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - Runtime checks: `NfsMenu` creates `nfsVariantCheck('nfsMenu')` and calls `include('nfs-breakpoint-properties', ['breakpoint-classes'])` only while an `orientation` rules key or an `expanded` query names a Class breakpoint above the Zero breakpoint (the Top Bar's rule); the missing-property browser-level case sits in a test file of its own, and a menu with no responsive value requests nothing (R59).
 - Tests: "Application class" (R57).
 
-Unchanged: both directives, their API, the binding rule, the In-family lines of ticket 151, development checks 1 to 3, ARIA, the rendering modes, and the Story ids. Confirmed: R3 (the hosting roots, D5), R10 (`align` with D15), R48 (the de-duplication text), R69/R70 (every `align="right"` is consumer markup), CR-A (the copied-class block and Foundation's markup are labelled), CR-B, CR-C, CR-D. Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.
+Unchanged: both directives, their API, the binding rule, the In-family lines of [Re-run: navigation family specs, In-family check lines](151-rerun-navigation-family-in-family-lines.md), development checks 1 to 3, ARIA, the rendering modes, and the Story ids. Confirmed: R3 (the hosting roots, D5), R10 (`align` with D15), R48 (the de-duplication text), R69/R70 (every `align="right"` is consumer markup), CR-A (the copied-class block and Foundation's markup are labelled), CR-B, CR-C, CR-D. Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.
 
 ### Amendment, 2026-09-29 (consistency review, closing pass)
 

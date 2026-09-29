@@ -2,15 +2,15 @@
 
 Written for [Triage: out-of-scope items across the specs](../issues/138-triage-out-of-scope-across-specs.md), step 1, on 2026-09-28, after every spec and re-run of the class-rule wave resolved. It updates [out-of-scope-exclusions.md](out-of-scope-exclusions.md), the evidence of [Triage the out-of-scope Foundation components and variants](../issues/79-triage-out-of-scope-components-and-variants.md), whose ids and category list (`jquery-or-dom-plumbing`, `platform-or-a11y`, `superseded`, `deprecated-upstream`, `scope-boundary`, `variant-as-class`, `other`) the rows refer to, and whose verdicts are in [out-of-scope-triage.md](out-of-scope-triage.md).
 
-Five Sonnet 5 agents gathered the rows read-only, four over 13 specs each and one over the shared documents. Every row is one item a source rules out of scope: an Out of Scope bullet, a dropped option, event, or method, a rejected Design-decisions row, or an exclusion in the map, building-blocks, an ADR, or the architecture guide. Ids are `<source slug>-<n>`. The category column quotes the source; `none stated` means the source gives none, and the agents assigned none. The last column says whether ticket 79 already triaged the item (`re-checked: <id>`, with its verdict), listed it without a verdict (`carried: <id>`), or never saw it (`new`). Each part ends with the stated reasons that cite a record that no longer says them; none were found.
+Five Sonnet 5 agents gathered the rows read-only, four over 13 specs each and one over the shared documents. Every row is one item a source rules out of scope: an Out of Scope bullet, a dropped option, event, or method, a rejected Design-decisions row, or an exclusion in the map, building-blocks, an ADR, or the architecture guide. Ids are `<source slug>-<n>`. The category column quotes the source; `none stated` means the source gives none, and the agents assigned none. The last column says whether [Triage the out-of-scope Foundation components and variants](../issues/79-triage-out-of-scope-components-and-variants.md) already triaged the item (`re-checked: <id>`, with its verdict), listed it without a verdict (`carried: <id>`), or never saw it (`new`). Each part ends with the stated reasons that cite a record that no longer says them; none were found.
 
-Rows: 718: 417 new since ticket 79, 297 re-checked by it, and 4 carried from its table without a verdict.
+Rows: 718: 417 new since [Triage the out-of-scope Foundation components and variants](../issues/79-triage-out-of-scope-components-and-variants.md), 297 re-checked by it, and 4 carried from its table without a verdict.
 
 ## 1. Specs: abide, accordion, accordion-menu, anchored-pane, badge, breadcrumbs, breakpoint-service, button, button-group, callout, card, close-button, drilldown-menu
 
-Evidence for ticket 138 step 1, gathered from the 13 sources listed in the brief. Read-only; no repository files touched.
+Evidence for [Triage: out-of-scope items across the specs](../issues/138-triage-out-of-scope-across-specs.md) step 1, gathered from the 13 sources listed in the brief. Read-only; no repository files touched.
 
-| id | source | location | item | kind | stated reason (quoted, short) | category | since ticket 79 |
+| id | source | location | item | kind | stated reason (quoted, short) | category | since [Triage the out-of-scope Foundation components and variants](../issues/79-triage-out-of-scope-components-and-variants.md) |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | abide-1 | abide | Foundation contract table:91 | `labelErrorClass`, `inputErrorClass`, `formErrorClass` Options | option | "the classes are the contract" | variant-as-class | re-checked: AB1, holds |
 | abide-2 | abide | Foundation contract table:92 | `formErrorSelector` Option | option | "Form errors are the elements carrying nfsFormError" | superseded | re-checked: AB2, holds |
@@ -177,15 +177,15 @@ Evidence for ticket 138 step 1, gathered from the 13 sources listed in the brief
 
 ### Stale reasons
 
-None found. Every stated reason in these 13 sources that cites another record (an ADR, building-blocks rule, or sibling spec decision) was checked against that record as read in this pass, and each citation still holds as stated. One item is worth flagging for the judge's attention even though it is not a stale citation: `anchored-pane-3` (legacy position classes) restates ticket 79's AP3 reason but under a different category (`superseded` here, `scope-boundary` in `out-of-scope-exclusions.md`) and a materially different justification (the utility now reads no class at all, versus the earlier "decided by the consumer specs"). Both are internally consistent with their own dates; this is evolution under the class rule, not a contradiction.
+None found. Every stated reason in these 13 sources that cites another record (an ADR, building-blocks rule, or sibling spec decision) was checked against that record as read in this pass, and each citation still holds as stated. One item is worth flagging for the judge's attention even though it is not a stale citation: `anchored-pane-3` (legacy position classes) restates [Triage the out-of-scope Foundation components and variants](../issues/79-triage-out-of-scope-components-and-variants.md)'s AP3 reason but under a different category (`superseded` here, `scope-boundary` in `out-of-scope-exclusions.md`) and a materially different justification (the utility now reads no class at all, versus the earlier "decided by the consumer specs"). Both are internally consistent with their own dates; this is evolution under the class rule, not a contradiction.
 
 ## 2. Specs: dropdown, dropdown-menu, equalizer, flexbox-utilities, flex-grid, float-classes, float-grid, forms, interchange, label, magellan, media-object, menu
 
-Sources: `specs/dropdown.md`, `specs/dropdown-menu.md`, `specs/equalizer.md`, `specs/flexbox-utilities.md`, `specs/flex-grid.md`, `specs/float-classes.md`, `specs/float-grid.md`, `specs/forms.md`, `specs/interchange.md`, `specs/label.md`, `specs/magellan.md`, `specs/media-object.md`, `specs/menu.md`. Line numbers are current HEAD (read after the class-rule wave settled). "since ticket 79" cross-references `research/out-of-scope-exclusions.md` ids and `research/out-of-scope-triage.md` verdicts. Five of these specs (dropdown, dropdown-menu, equalizer, interchange, magellan) existed at ticket 79; the other eight (flexbox-utilities, flex-grid, float-classes, float-grid, forms, label, media-object, menu) are new since ticket 79, so every row from them is `new`.
+Sources: `specs/dropdown.md`, `specs/dropdown-menu.md`, `specs/equalizer.md`, `specs/flexbox-utilities.md`, `specs/flex-grid.md`, `specs/float-classes.md`, `specs/float-grid.md`, `specs/forms.md`, `specs/interchange.md`, `specs/label.md`, `specs/magellan.md`, `specs/media-object.md`, `specs/menu.md`. Line numbers are current HEAD (read after the class-rule wave settled). "since [Triage the out-of-scope Foundation components and variants](../issues/79-triage-out-of-scope-components-and-variants.md)" cross-references `research/out-of-scope-exclusions.md` ids and `research/out-of-scope-triage.md` verdicts. Five of these specs (dropdown, dropdown-menu, equalizer, interchange, magellan) existed at [Triage the out-of-scope Foundation components and variants](../issues/79-triage-out-of-scope-components-and-variants.md); the other eight (flexbox-utilities, flex-grid, float-classes, float-grid, forms, label, media-object, menu) are new since [Triage the out-of-scope Foundation components and variants](../issues/79-triage-out-of-scope-components-and-variants.md), so every row from them is `new`.
 
 ### Table
 
-| id | source | location | item | kind | stated reason (quoted, short) | category | since ticket 79 |
+| id | source | location | item | kind | stated reason (quoted, short) | category | since [Triage the out-of-scope Foundation components and variants](../issues/79-triage-out-of-scope-components-and-variants.md) |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | dropdown-1 | dropdown.md | Out of Scope, L548 | Positioner, Light dismiss registry, hover intent themselves | not-a-foundation-item | "the Anchored pane spec" | none stated | new |
 | dropdown-2 | dropdown.md | Out of Scope, L549 | Triggers' ARIA, activation, and replay | not-a-foundation-item | "the Triggers spec" | none stated | new |
@@ -363,9 +363,9 @@ One historical case is worth flagging as resolved rather than stale: dropdown-me
 
 ## 3. Specs: nested-menu, off-canvas, orbit, pagination, progress-bar, prototyping-utilities, responsive-accordion-tabs, responsive-embed, responsive-menu, responsive-toggle, reveal, slider, smooth-scroll
 
-Evidence for ticket 138 step 1, this agent's assigned sources only. Sources: `EFFORT/research/out-of-scope-exclusions.md` (old ids, rules R1-R10) and `EFFORT/research/out-of-scope-triage.md` (ticket 79 verdicts) for the "since ticket 79" column; the 13 specs named above for everything else.
+Evidence for [Triage: out-of-scope items across the specs](../issues/138-triage-out-of-scope-across-specs.md) step 1, this agent's assigned sources only. Sources: `EFFORT/research/out-of-scope-exclusions.md` (old ids, rules R1-R10) and `EFFORT/research/out-of-scope-triage.md` ([Triage the out-of-scope Foundation components and variants](../issues/79-triage-out-of-scope-components-and-variants.md) verdicts) for the "since [Triage the out-of-scope Foundation components and variants](../issues/79-triage-out-of-scope-components-and-variants.md)" column; the 13 specs named above for everything else.
 
-| id | source | location | item | kind | stated reason (quoted, short) | category | since ticket 79 |
+| id | source | location | item | kind | stated reason (quoted, short) | category | since [Triage the out-of-scope Foundation components and variants](../issues/79-triage-out-of-scope-components-and-variants.md) |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | nested-menu-1 | nested-menu.md | Out of Scope, line 632 | The root directives, their Options, Defaults tokens, aggregate outputs, exportAs names | not-a-foundation-item | "the Spec: Accordion Menu, Dropdown Menu, Drilldown Menu, and Responsive Menu" | none stated | new |
 | nested-menu-2 | nested-menu.md | Out of Scope, line 633 | Drilldown's wrapper, measurement, back button directive, closeOnClick, animateHeight, autoHeight height, scrollTop | not-a-foundation-item | delegated, not elaborated | none stated | new |
@@ -557,15 +557,15 @@ Evidence for ticket 138 step 1, this agent's assigned sources only. Sources: `EF
 
 ### Stale reasons
 
-None found. All 13 specs in this part carry 2026-09-27 or 2026-09-28 dated revisions under the class rule (ADR 0039/0040) and post-date ticket 79's ruling; every ADR and ticket citation checked against its target (ADR 0001, 0003, 0004, 0005, 0007, 0008, 0009 no longer applicable here, 0010's amendment, 0012, 0022, 0025, 0030, 0034 superseded by 0037 in nested-menu.md D20 and already stated as superseded inline, 0035, 0036, 0037, 0038, 0039, 0040) matches what the cited record currently says. The one place a stale record could have mattered, nested-menu.md D20's reference to the "custom tab panel contract of ADR 0034", already names its own supersession ("ADR 0037 replaced it") inline, so it is not a stale citation, it is the spec correctly recording history.
+None found. All 13 specs in this part carry 2026-09-27 or 2026-09-28 dated revisions under the class rule (ADR 0039/0040) and post-date [Triage the out-of-scope Foundation components and variants](../issues/79-triage-out-of-scope-components-and-variants.md)'s ruling; every ADR and ticket citation checked against its target (ADR 0001, 0003, 0004, 0005, 0007, 0008, 0009 no longer applicable here, 0010's amendment, 0012, 0022, 0025, 0030, 0034 superseded by 0037 in nested-menu.md D20 and already stated as superseded inline, 0035, 0036, 0037, 0038, 0039, 0040) matches what the cited record currently says. The one place a stale record could have mattered, nested-menu.md D20's reference to the "custom tab panel contract of ADR 0034", already names its own supersession ("ADR 0037 replaced it") inline, so it is not a stale citation, it is the spec correctly recording history.
 
 ## 4. Specs: sticky, switch, table, tabs, thumbnail, toggler, tooltip, top-bar, triggers, typography-helpers, variant-declaration-tooling, visibility-classes, xy-grid
 
-Evidence for ticket 138, step 1, for the 13 sources listed in the brief. Sources are read-only; this file is the only output. "since ticket 79" cross-references `research/out-of-scope-exclusions.md` (ids `ST1`-`ST9`, `TB1`-`TB11`, `TG1`-`TG8`, `TT1`-`TT11`, `TR1`-`TR8`, and rules `R1`-`R10`) and `research/out-of-scope-triage.md` (verdict groups in its section 3). Five of the 13 sources (sticky, tabs, toggler, tooltip, triggers) existed at ticket 79 and carry old ids; the other eight (switch, table, thumbnail, top-bar, typography-helpers, variant-declaration-tooling, visibility-classes, xy-grid) are new specs written after ticket 79 resolved the CSS-only ruling, so every row from them is `new`.
+Evidence for [Triage: out-of-scope items across the specs](../issues/138-triage-out-of-scope-across-specs.md), step 1, for the 13 sources listed in the brief. Sources are read-only; this file is the only output. "since [Triage the out-of-scope Foundation components and variants](../issues/79-triage-out-of-scope-components-and-variants.md)" cross-references `research/out-of-scope-exclusions.md` (ids `ST1`-`ST9`, `TB1`-`TB11`, `TG1`-`TG8`, `TT1`-`TT11`, `TR1`-`TR8`, and rules `R1`-`R10`) and `research/out-of-scope-triage.md` (verdict groups in its section 3). Five of the 13 sources (sticky, tabs, toggler, tooltip, triggers) existed at [Triage the out-of-scope Foundation components and variants](../issues/79-triage-out-of-scope-components-and-variants.md) and carry old ids; the other eight (switch, table, thumbnail, top-bar, typography-helpers, variant-declaration-tooling, visibility-classes, xy-grid) are new specs written after [Triage the out-of-scope Foundation components and variants](../issues/79-triage-out-of-scope-components-and-variants.md) resolved the CSS-only ruling, so every row from them is `new`.
 
 ### Table
 
-| id | source | location | item | kind | stated reason (quoted, short) | category | since ticket 79 |
+| id | source | location | item | kind | stated reason (quoted, short) | category | since [Triage the out-of-scope Foundation components and variants](../issues/79-triage-out-of-scope-components-and-variants.md) |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | sticky-1 | specs/sticky.md | Out of Scope:374 | Anchors outside the Sticky range (`anchor`, `topAnchor`, `btmAnchor`) and JS `position: fixed` emulation to honour them | option | "position: sticky confines an element to its containing block, so anchors outside the parent cannot be honoured" | platform-or-a11y | re-checked: ST1 (holds) |
 | sticky-2 | specs/sticky.md | Out of Scope:375 | A container generated when the consumer wrote none (`container` Option) | option | "structure injected from an HTML string is jQuery plumbing" | jquery-or-dom-plumbing | re-checked: ST2 (holds) |
@@ -748,21 +748,21 @@ Evidence for ticket 138, step 1, for the 13 sources listed in the brief. Sources
 
 ### Stale reasons
 
-None found in this part. Every one of the 13 sources was written or last amended after ticket 79 resolved the CSS-only ruling: each already cites ADR 0039 (CSS-only components get directives) and ADR 0040 (typed Variant inputs) where those apply, and none of the 178 rows above justifies an exclusion by citing the map's old CSS-only line (`map.md:238`), the repo's `foundation-api-design` skill, or the pre-amendment text of ADR 0010. Where an old ticket-79 category differs from what the current spec states for the same item (for example sticky-8's `Sticky table headers`, categorized `superseded` in `out-of-scope-exclusions.md` as `ST9` but `scope-boundary` in the current `specs/sticky.md`), the current spec's own wording still supports its stated category and names no record that has since changed; that is a difference in the auditor's category judgment, not a stale citation, so it is not listed here as a stale reason.
+None found in this part. Every one of the 13 sources was written or last amended after [Triage the out-of-scope Foundation components and variants](../issues/79-triage-out-of-scope-components-and-variants.md) resolved the CSS-only ruling: each already cites ADR 0039 (CSS-only components get directives) and ADR 0040 (typed Variant inputs) where those apply, and none of the 178 rows above justifies an exclusion by citing the map's old CSS-only line (`map.md:238`), the repo's `foundation-api-design` skill, or the pre-amendment text of ADR 0010. Where an old ticket-79 category differs from what the current spec states for the same item (for example sticky-8's `Sticky table headers`, categorized `superseded` in `out-of-scope-exclusions.md` as `ST9` but `scope-boundary` in the current `specs/sticky.md`), the current spec's own wording still supports its stated category and names no record that has since changed; that is a difference in the auditor's category judgment, not a stale citation, so it is not listed here as a stale reason.
 
 ## 5. Shared documents: the map, building-blocks, the ADRs, the architecture guide, and the charting input
 
-For ticket 138, step 1, agent e5. Sources: map.md (Out of scope section and every exclusion in its Notes),
+For [Triage: out-of-scope items across the specs](../issues/138-triage-out-of-scope-across-specs.md), step 1, agent e5. Sources: map.md (Out of scope section and every exclusion in its Notes),
 building-blocks.md (Dropped options lists and any "never" / "not offered" / "out of scope" rule), every ADR
 in adr/, architecture-guide.md (where it rules something out), and the "Inputs noted after charting" item
 (the blockquote-color finding from the Typography Helpers ticket). Specs are out of scope for this part;
 other agents cover them.
 
 Read first: issues/138-triage-out-of-scope-across-specs.md, research/out-of-scope-exclusions.md (ids G1-G13,
-B1-TR8, rules R1-R10), research/out-of-scope-triage.md (verdicts). "since ticket 79" verdicts below are taken
+B1-TR8, rules R1-R10), research/out-of-scope-triage.md (verdicts). "since [Triage the out-of-scope Foundation components and variants](../issues/79-triage-out-of-scope-components-and-variants.md)" verdicts below are taken
 from out-of-scope-triage.md section 3 ("Reasons that still hold") and its Menu-roles line, unless noted.
 
-Category: none of map.md, building-blocks.md, the ADRs, or architecture-guide.md use ticket 79's category
+Category: none of map.md, building-blocks.md, the ADRs, or architecture-guide.md use [Triage the out-of-scope Foundation components and variants](../issues/79-triage-out-of-scope-components-and-variants.md)'s category
 words (jquery-or-dom-plumbing, platform-or-a11y, superseded, deprecated-upstream, scope-boundary,
 variant-as-class, other) in the passages cited below; that taxonomy lives only in
 research/out-of-scope-exclusions.md, which is not one of this part's sources. Every row below is therefore
@@ -770,7 +770,7 @@ research/out-of-scope-exclusions.md, which is not one of this part's sources. Ev
 
 ### Table
 
-| id | source | location | item | kind | stated reason (quoted, short) | category | since ticket 79 |
+| id | source | location | item | kind | stated reason (quoted, short) | category | since [Triage the out-of-scope Foundation components and variants](../issues/79-triage-out-of-scope-components-and-variants.md) |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | map-1 | map.md | Out of scope, map.md:309 | Foundation's base element styles (Global Styles, Typography Base) | component | "they style elements by tag ... so there is no class for a consumer to write and nothing for a directive to manage" | none stated | re-checked: G1 (CSS-only reversed by the 2026-09-27 ruling; base styles stay out) |
 | map-2 | map.md | Out of scope, map.md:309 | Foundation's tooling and guide pages (Installation, Sass, JavaScript, RTL, Kitchen Sink, and the like) | not-a-foundation-item | "describe setup" | none stated | new |
