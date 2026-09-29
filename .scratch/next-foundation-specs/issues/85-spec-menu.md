@@ -199,3 +199,11 @@ From [Decide: inputs named like HTML presentational attributes](139-decide-input
 ### Note, 2026-09-28 (out-of-scope reasons)
 
 - 2026-09-28: the Out of Scope reasons named in [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) are corrected in the spec.
+
+### Amendment, 2026-09-29 (in-family check lines)
+
+From [Re-run: navigation family specs, In-family check lines](151-rerun-navigation-family-in-family-lines.md), under [ADR 0046](../adr/0046-forgotten-imports-caught-by-checks.md), building-blocks 1.9, and the family rule of the [Spec: forgotten-import checks (shared utility)](150-spec-forgotten-import-checks.md); `specs/menu.md` was revised in place. The re-run's Answer holds the decisions and the triage.
+
+- Hierarchy and DI shape gains the In-family lines. `NfsMenu` probes `NfsMenuText`, hosted too, because the child probe also counts the host record ([Re-run: CSS-only component and free-behaviour family specs, In-family check lines](154-rerun-css-only-component-and-free-behaviour-family-in-family-lines.md), S1). `NfsMenuText` has a parent check over `NfsMenu`, `NfsAccordionMenu`, `NfsDrilldown`, `NfsDropdownMenu`, `NfsResponsiveMenu`, and `NfsSubmenu`, with the sentence "It is unstyled outside a menu.", and throws under `strictParents`.
+- Development check 3 becomes that parent check's report, so an item outside a menu is reported once; the hierarchy diagram's lookup is now "for its parent check".
+- No API, class, ARIA, rendering, or Sass change. Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.

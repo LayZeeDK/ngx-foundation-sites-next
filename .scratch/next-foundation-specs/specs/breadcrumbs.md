@@ -113,6 +113,9 @@ ngx-foundation-sites/breadcrumbs    (secondary entry point)
 - No Defaults token: Breadcrumbs has no Options, and a Defaults token never holds a Variant input's default (building-blocks 1.4).
 - `nfsBreadcrumbsItem` goes only on an item that has a state to set, a disabled step (D5); a step's link and the current page need no item directive, as the Menu's and the Pagination's items need none.
 - DI follows the declaration site: an item projected into a `ul[nfsBreadcrumbs]` from another template does not find it and warns in development; the recipes declare the items in the trail's own template.
+- In-family checks ([Spec: forgotten-import checks (shared utility)](../issues/150-spec-forgotten-import-checks.md)), one line per part:
+  - `NfsBreadcrumbs`: `nfsDirectiveCheck('NfsBreadcrumbs', {children: ['NfsBreadcrumbsItem']})`; no parent check, because it injects none; it probes `NfsBreadcrumbsItem`; no peers; `strictParents` changes nothing.
+  - `NfsBreadcrumbsItem`: `nfsDirectiveCheck('NfsBreadcrumbsItem', {parent})`, its development-only `inject(NfsBreadcrumbs, {optional: true})` giving `found`. Parent check over `NfsBreadcrumbs`, with the `alone` sentence "Foundation's disabled look applies only inside the trail." (Foundation scopes `.disabled` under `.breadcrumbs`), which replaces development check 7, so an item outside a trail is reported once. No child probes. No peers. `strictParents`: it throws at construction when no trail is found.
 
 ### API: `NfsBreadcrumbs`
 
@@ -158,7 +161,7 @@ Each warns once per instance through `console.warn`, never on the server and nev
 
 `NfsBreadcrumbsItem`, in its first client render callback:
 
-7. No `NfsBreadcrumbs` above it in the injector tree: "this item is outside nfsBreadcrumbs".
+7. No `NfsBreadcrumbs` above it in the injector tree: reported once by its In-family parent check (Hierarchy and DI shape), whose sentence says Foundation's disabled look applies only inside the trail; the item runs no check of its own for it.
 8. `disabled` with an `a` inside the item: "a disabled step is text: remove its link, or remove disabled". Foundation colours the link, not the item, so the step would look like a link and still navigate.
 9. A static `class` holding `disabled`, read through `HostAttributeToken('class')` in development builds only: "class="disabled" is set by nfsBreadcrumbsItem: bind disabled instead". The class is stripped while `disabled` is `false` and redundant while it is `true`; it is reported either way (building-blocks 1.4).
 

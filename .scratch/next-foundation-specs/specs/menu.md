@@ -113,7 +113,7 @@ Binding rule (D3). `NfsMenu` binds one computed class record that holds every Me
 ```
 ngx-foundation-sites/menu      (secondary entry point)
   ul[nfsMenu]        NfsMenu       exportAs 'nfsMenu'; no providers, no token, no host directives
-    li[nfsMenuText]  NfsMenuText   in development builds only: inject(NfsMenu, {optional: true}) for its warning
+    li[nfsMenuText]  NfsMenuText   in development builds only: inject(NfsMenu, {optional: true}) for its parent check
   uses: nfsBreakpointsToken (ngx-foundation-sites/media-query) for the Zero breakpoint and the responsive keys;
         HostAttributeToken('class') and ElementRef in development builds only; the runtime checks of
         ngx-foundation-sites/media-query
@@ -132,6 +132,9 @@ written beside (their specs):
 - No Defaults token. Defaults tokens replace a Plugin's `Foundation.X.defaults`, and Menu has none; a Defaults token never holds a Variant input's default (building-blocks 1.4).
 - Hosting (D5): Angular 22.0 creates a directive reached several times through host directives on one element once, with the exposed input maps merged, and discards host-directive matches of a directive the template also matches, so `nfsMenu` written beside a hosting root is not an NG0309 error. Measured with Angular 22.2.0 under strict templates and a server render: one `NfsMenu` instance on a Responsive-Menu-shaped host of two roots, a bound input reaching it through two levels of host directives, a misspelt value failing to compile through both levels, and a host's own class bindings winning over the hosted `NfsMenu`'s `false` keys.
 - A hosting root reads the Menu's inputs through `inject(NfsMenu, {self: true})`; the Dropdown Menu's Base side reads `align()` there instead of Foundation's `align-right` in the root's static class, which the class rule removes.
+- In-family checks ([Spec: forgotten-import checks (shared utility)](../issues/150-spec-forgotten-import-checks.md)), one line per part:
+  - `NfsMenu`: `nfsDirectiveCheck('NfsMenu', {children: ['NfsMenuText']})`. No parent check: it injects no parent. It probes `NfsMenuText` on a plain `ul[nfsMenu]` and, hosted, on every menu Plugin root and every `ul[nfsSubmenu]`, because the shared spec's child probe also counts the host record, in which a hosted `NfsMenu` records its host element. No peers linked by reference or value. `strictParents` changes nothing.
+  - `NfsMenuText`: `nfsDirectiveCheck('NfsMenuText', {parent})`, its development-only `inject(NfsMenu, {optional: true})` giving `found`. Parent check over `NfsMenu` and every directive that hosts it: `NfsAccordionMenu`, `NfsDrilldown`, `NfsDropdownMenu`, `NfsResponsiveMenu`, and `NfsSubmenu`, with the `alone` sentence "It is unstyled outside a menu." (Foundation scopes `.menu-text` under `.menu`), which replaces development check 3's warning, so an item outside a menu is reported once. No child probes: it is a leaf. No peers. `strictParents`: it throws the shared spec's error at construction when no menu is found.
 
 ### API: `NfsMenu`
 
@@ -180,7 +183,7 @@ Development checks, each warning once per instance through `console.warn`, run i
 
 1. A Foundation Menu class copied onto the `nfsMenu` host (read through `HostAttributeToken('class')` in development builds only): the warning names the class and the input to bind (`vertical` and `medium-horizontal` name `orientation`; `align-right` names `align`; `icons` and `icon-top` name `iconPosition`; `<bp>-simple` explains that it renders the expanded layout and names `expanded`). A redundant `menu` is not reported. This is building-blocks 1.4's rule for copied classes. A copied class that the host still carries after the first render although `NfsMenu`'s record sets it `false` is bound by the hosting directive and is not reported: the Nested menu's `NfsSubmenu` binds `nested` and `vertical`, so Foundation's `class="menu vertical nested"` copied onto a submenu is redundant, not stripped.
 2. A copied current-page marker: a direct child `li` of the host with no nested list, carrying Foundation's `is-active` or `active`, whose link has no `aria-current` other than `false`. The warning names `aria-current="page"` on the link. The Nested menu's open parents carry a nested list, and Magellan sets `aria-current` with its `.is-active`, so neither is reported.
-3. `NfsMenuText` with no `NfsMenu` above it in its injector tree: the warning says the item is unstyled outside a menu.
+3. `NfsMenuText` with no `NfsMenu` above it in its injector tree: reported once by its In-family parent check (Hierarchy and DI shape), whose sentence says the item is unstyled outside a menu; the directive runs no check of its own for it.
 
 Runtime checks (ADR 0040, configured by `provideNfsRuntimeChecks` and `provideNfsProductionRuntimeChecks` of `ngx-foundation-sites/media-query`, whose spec defines how a directive reports): under `strictVariantNames`, a breakpoint above the Zero breakpoint named by an `orientation` rules key or an `expanded` query that `--nfs-breakpoint-classes` does not list (drift between the Variant declaration file and the compiled Sass), and a value that maps to no class; under `strictVariantProperties`, a missing `--nfs-breakpoint-classes`, naming `@include nfs-breakpoint-properties;`. They run in the browser after the first render, never on the server.
 

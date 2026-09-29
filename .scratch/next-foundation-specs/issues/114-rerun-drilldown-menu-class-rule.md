@@ -122,3 +122,11 @@ No change is needed in `CONTEXT.md` (Drilldown level and Drilldown wrapper still
 ### Note, 2026-09-28 (out-of-scope reasons)
 
 - 2026-09-28: the Out of Scope reasons named in [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) are corrected in the spec.
+
+### Amendment, 2026-09-29 (in-family check lines)
+
+From [Re-run: navigation family specs, In-family check lines](151-rerun-navigation-family-in-family-lines.md), under [ADR 0046](../adr/0046-forgotten-imports-caught-by-checks.md), building-blocks 1.9, and the family rule of the [Spec: forgotten-import checks (shared utility)](150-spec-forgotten-import-checks.md); `specs/drilldown-menu.md` was revised in place. The re-run's Answer holds the decisions and the triage.
+
+- Hierarchy and DI shape gains the In-family lines. `NfsDrilldown` probes `NfsMenuItem` and `NfsDrilldownBack` (from the responsive `ul` when a ResponsiveMenu hosts it); its wrapper injection stays optional, with the shared spec's reason, so it has no parent check. `NfsDrilldownWrapper` probes `NfsDrilldown`. `NfsDrilldownBack` has a parent check over `NfsDrilldown` and `NfsResponsiveMenu` with the sentence "It stays hidden and closes no level.", and throws under `strictParents`; its `NfsSubmenu` injection stays optional.
+- Development checks: check 1 says nothing for a root whose parent element carries `nfsDrilldownWrapper` without a registered wrapper, and check 2 nothing for a level holding an element that carries `nfsDrilldownBack`, because each is a forgotten import that the runtime check or the root's child probe reports once; check 3's outside-a-drilldown-root case is the parent check's report. The browser-level warning cases gain both silent cases.
+- No API, class, ARIA, keyboard, rendering, or Sass change. Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.

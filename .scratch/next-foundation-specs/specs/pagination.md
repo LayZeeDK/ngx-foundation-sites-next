@@ -118,6 +118,9 @@ ngx-foundation-sites/pagination     (secondary entry point)
 - No Defaults token: Pagination has no Options, and a Defaults token never holds a Variant input's default (building-blocks 1.4).
 - No directive on page items, links, or buttons (D3): a page item has no Structural class, and its state is an ARIA attribute the consumer (or the Router) already writes.
 - DI follows the declaration site: items projected into a `ul[nfsPagination]` from another template do not find it and warn in development; the recipes declare the items in the pagination's own template.
+- In-family checks ([Spec: forgotten-import checks (shared utility)](../issues/150-spec-forgotten-import-checks.md)), one line per part:
+  - `NfsPagination`: `nfsDirectiveCheck('NfsPagination', {children: ['NfsPaginationPrevious', 'NfsPaginationNext', 'NfsPaginationEllipsis']})`; no parent check, because it injects none; it probes the three item directives; no peers; `strictParents` changes nothing.
+  - `NfsPaginationPrevious`, `NfsPaginationNext`, `NfsPaginationEllipsis`: each calls `nfsDirectiveCheck` with its class name and a parent, its development-only `inject(NfsPagination, {optional: true})` giving `found`. Parent check over `NfsPagination`, with the `alone` sentence "Foundation lays out and draws pagination items only inside a pagination." (its item layout and `.ellipsis` glyph are scoped under `.pagination`), which replaces their outside-the-pagination warning, so an item outside a pagination is reported once. No child probes. No peers. `strictParents`: each throws at construction when no pagination is found.
 
 ### API: `NfsPagination`
 
@@ -152,7 +155,7 @@ Each warns once per instance through `console.warn`, never on the server and nev
 4. Disabled contract (ADR 0011's placeholder link, the Button spec's checks for its own hosts): an `a` with `aria-disabled="true"` and an `href`: "a disabled link still navigates: bind its href or routerLink to null"; an `a` with `aria-disabled="true"` and no `role="link"`: "a placeholder link with aria-disabled needs role="link" to be announced as an unavailable link"; an `a` with neither `href` nor `aria-disabled="true"`: "a link without href is not focusable: add an href, or mark it disabled with role="link" and aria-disabled="true"".
 5. Missing include: the first link or button with `aria-current` has a fully transparent computed `background-color`: "the current page has no look: @include nfs-pagination; after foundation-pagination". Foundation's CSS gives a resting link no background, and `nfs-pagination` stops the compile for a current fill under 3:1 against the page, so a transparent one means the include (or Foundation's pagination CSS) is missing (measured: without the include the current link's background is `rgba(0, 0, 0, 0)` in three engines).
 
-`NfsPaginationPrevious`, `NfsPaginationNext`, and `NfsPaginationEllipsis` each warn, in their first client render callback, when no `NfsPagination` is above them in the injector tree: "this item is outside nfsPagination".
+`NfsPaginationPrevious`, `NfsPaginationNext`, and `NfsPaginationEllipsis` with no `NfsPagination` above them in the injector tree are reported once, by their In-family parent check (Hierarchy and DI shape); they run no check of their own for it.
 
 Runtime checks ([ADR 0040](../adr/0040-variant-input-types.md)): none. Pagination has no Variant input and its mixin writes no Variant property, so there is nothing for `strictVariantNames` or `strictVariantProperties` to read; check 5 covers the missing include instead.
 

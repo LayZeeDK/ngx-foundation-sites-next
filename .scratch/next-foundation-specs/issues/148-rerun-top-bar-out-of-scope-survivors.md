@@ -117,3 +117,12 @@ No change is proposed to `CONTEXT.md`, the ADRs, or the architecture guide.
 ### Gist for Decisions so far
 
 - [Re-run: Top Bar spec, out-of-scope survivors](issues/148-rerun-top-bar-out-of-scope-survivors.md) -- top-bar-7 comes in, measured in Chromium and Firefox. Under forced colours `nfs-menu-icon` calls Foundation's own `hamburger()` on `.menu-icon` and `.menu-icon.dark` with `CanvasText` and `Highlight`, sets `forced-color-adjust: none` on the bars (without it the browser drops the `box-shadow` bars; without the `.dark` selector the dark icon keeps `$black`), and paints D6's border `Canvas`, because the forced border colour joined the outer bars into a filled box. The output outside forced colours and the 24 px box are unchanged. `Highlight` is 6.80 to 11.81:1 on Canvas in the four Windows 11 contrast themes, but 2.94:1 in Firefox's emulation palette. WebKit's emulation matches the query without forcing colours, so its e2e run is skipped. Every kept Out of Scope item and rejected alternative now carries a category. Impact LOW, confidence HIGH; no ADR. Spec: [specs/top-bar.md](specs/top-bar.md).
+
+### Amendment, 2026-09-29 (in-family check lines)
+
+From [Re-run: navigation family specs, In-family check lines](151-rerun-navigation-family-in-family-lines.md), under [ADR 0046](../adr/0046-forgotten-imports-caught-by-checks.md), building-blocks 1.9, and the family rule of the [Spec: forgotten-import checks (shared utility)](150-spec-forgotten-import-checks.md); `specs/top-bar.md` was revised in place. The re-run's Answer holds the decisions and the triage.
+
+- Hierarchy and DI shape gains the In-family lines. `NfsTopBar` probes its two sections, its title, and `NfsMenuIcon`; `NfsTitleBar` probes its two sections, its title, and `NfsMenuIcon`; no part injects a parent, so none has a parent check, and `strictParents` changes nothing; `nfsTopBarRightToken` stays an optional context lookup of the Nested menu root (ADR 0043).
+- `nfsTopBarRightToken` gets its development-only description.
+- Development check 7 counts an ancestor that carries the bar's attribute without its class as the bar and says nothing, because that is a forgotten import which `strictDirectiveImports` reports once (the rule [Re-run: CSS-only component and free-behaviour family specs, In-family check lines](154-rerun-css-only-component-and-free-behaviour-family-in-family-lines.md) proposes as S2). The browser-level development cases gain that case.
+- No API, class, ARIA, rendering, or Sass change. Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.

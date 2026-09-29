@@ -152,3 +152,11 @@ Nothing is left `OPEN FOR HUMAN`, and no prototype ticket is needed: every desig
 ### Gist for Decisions so far
 
 - [Spec: Breadcrumbs](issues/88-spec-breadcrumbs.md) -- `ul[nfsBreadcrumbs]` or `ol[nfsBreadcrumbs]` binds `.breadcrumbs` and `li[nfsBreadcrumbsItem]` binds `.disabled` from its `disabled` input for a step without a page, written as text (not a control, unlike the Pagination's disabled item, so 1.4.3 applies and the consumer sets `$breadcrumbs-item-color-disabled: #737373;`; Foundation's example fails axe at 1.62 in three engines); no Variant input; the current page is `aria-current` on its link (ADR 0042), which `nfs-breadcrumbs` colours `$breadcrumbs-item-color-current`, or on its `li` when it is text; the mixin also draws Foundation's default separator without text (the APG example's technique; the glyph is text in the accessibility tree, measured), gives links 24 px boxes on 24 px rows (a wrapped trail failed `target-size` in three engines), and floats items to `inline-start` so the trail follows `dir`; development checks parallel to the Pagination's, plus one for more than one current step; impact HIGH, confidence HIGH; no ADR. Spec: [specs/breadcrumbs.md](specs/breadcrumbs.md).
+
+### Amendment, 2026-09-29 (in-family check lines)
+
+From [Re-run: navigation family specs, In-family check lines](151-rerun-navigation-family-in-family-lines.md), under [ADR 0046](../adr/0046-forgotten-imports-caught-by-checks.md), building-blocks 1.9, and the family rule of the [Spec: forgotten-import checks (shared utility)](150-spec-forgotten-import-checks.md); `specs/breadcrumbs.md` was revised in place. The re-run's Answer holds the decisions and the triage.
+
+- Hierarchy and DI shape gains the In-family lines: `NfsBreadcrumbs` probes `NfsBreadcrumbsItem`; `NfsBreadcrumbsItem` has a parent check over `NfsBreadcrumbs`, through its development-only lookup by class, with the sentence "Foundation's disabled look applies only inside the trail.", and throws under `strictParents`.
+- Development check 7 becomes that parent check's report, so an item outside a trail is reported once.
+- No API, class, ARIA, rendering, or Sass change. Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.

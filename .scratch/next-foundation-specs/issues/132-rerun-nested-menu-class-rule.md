@@ -171,3 +171,12 @@ Others:
 ### Note, 2026-09-28 (out-of-scope reasons)
 
 - 2026-09-28: the Out of Scope reasons named in [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) are corrected in the spec.
+
+### Amendment, 2026-09-29 (in-family check lines)
+
+From [Re-run: navigation family specs, In-family check lines](151-rerun-navigation-family-in-family-lines.md), under [ADR 0046](../adr/0046-forgotten-imports-caught-by-checks.md), building-blocks 1.9, and the family rule of the [Spec: forgotten-import checks (shared utility)](150-spec-forgotten-import-checks.md); `specs/nested-menu.md` was revised in place. The re-run's Answer holds the decisions and the triage.
+
+- Hierarchy and DI shape gains the In-family lines. Every plugin root probes `NfsMenuItem` (a consumer contract of this utility; a root hosted by `NfsResponsiveMenu` probes from the responsive `ul`, because the child probe also counts the host record, so `NfsResponsiveMenu` calls with its name only). `NfsMenuItem` has a parent check over the four roots with the shared spec's sentence and probes `NfsSubmenu` and `NfsSubmenuToggle`; `NfsSubmenu` probes its items; `NfsSubmenuToggle` probes `NfsSubmenuToggleText`; `NfsSubmenuToggleText` has a parent check over `NfsSubmenuToggle`. `NfsMenuItem` and `NfsSubmenuToggleText` throw under `strictParents`; the required class lookups of the submenu and the toggle keep NG0201 as their report; `NfsMenuItem` to `NfsSubmenu` and the root to `nfsTopBarRightToken` stay optional.
+- `nfsMenuModeToken` gets its development-only description, naming the four roots and their entry points.
+- Development checks: check 3 keeps the non-hybrid toggle case, and a span outside any toggle is the parent check's report; check 4 says nothing for an item that holds an element carrying `nfsSubmenuToggle`, whose forgotten import the item's child probe reports; check 5's item case is the parent check's report. The browser-level warning cases gain the check 4 case.
+- No API, class, ARIA, keyboard, rendering, or Sass change. Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.
