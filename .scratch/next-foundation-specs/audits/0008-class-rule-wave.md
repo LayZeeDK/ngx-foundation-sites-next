@@ -220,3 +220,22 @@ Hygiene:
 17. Every unresolved relative link but one (L6) is a placeholder or a root-relative link inside quoted proposal text or a gist.
 
 ## Resolution log
+
+Every finding was fixed as its Fix states; none became a ticket, none was rejected, and none adds an OPEN FOR HUMAN item. Two Sonnet 5 fixers applied them on disjoint files so no file had two writers: fixer a took M1 to M3, L1 to L6, and the part of M4 in the map and in the two tickets M3 and M1 touch; fixer b took the rest of M4. Every anchor matched the quoted text at `0adf802`. Fixer a's changes are in commit `1646146`, fixer b's in `3f8064f`. After both, a check of every ticket link on the lines they added found 396 links, each with its ticket's exact title, and the orchestrator's identity scan passed on every file they touched.
+
+| Finding | Where |
+| --- | --- |
+| M1 | `specs/prototyping-utilities.md` (the Sass subsection names T9); `building-blocks.md` Part 4 (the one open item); `README.md` (the Part 4 line); `issues/142-audit-specs-against-architecture-guide.md` (T9's last paragraph); `issues/102-spec-prototyping-utilities.md` (an audit 0008 amendment) |
+| M2 | `map.md` (four Decisions-so-far lines, the last one verbatim from `issues/149-prototype-documented-api-import-check.md`) |
+| M3 | `map.md` (the architecture guide's line); `issues/141-decide-directive-component-architecture-guide.md` (its gist and an audit 0008 amendment closing the three Triage rows) |
+| M4 | `map.md` (four lines); `issues/141-*` and `issues/142-*` (fixer a); 14 tickets and 17 research files (fixer b, 257 replacements on 261 lines, one line for one line), with one further line of the same pattern, `research/consistency-review-decisions.md:1587`, the continuation of a list the audit named at `:1586` |
+| L1 | `README.md` (the Variant tooling cell, the Slider row, the Typography row, the six shared utilities, the eight audits, and the two lines that said an audit follows) |
+| L2 | `README.md` (the ADR 0007 row, equal to its H1 with an amended note) |
+| L3 | `map.md` (the Button, Off-canvas, and Reveal gists, each with a later-changed pointer) |
+| L4 | `specs/nested-menu.md`, `specs/orbit.md`, `specs/off-canvas.md` (four `exportAs` names removed); audit 0008 amendments in `issues/132-*`, `issues/125-*`, `issues/117-*` |
+| L5 | `specs/toggler.md`, `specs/dropdown.md`, `specs/interchange.md`, `specs/sticky.md`, `specs/orbit.md` (seven phrases now Application class); audit 0008 amendments in `issues/109-*`, `issues/118-*`, `issues/127-*`, `issues/120-*`, and the Orbit line in `issues/125-*` |
+| L6 | `research/typed-variant-inputs.md`, `research/architecture-audit-b.md`, `research/architecture-audit-c.md` (pipes escaped); `research/out-of-scope-triage.md` (the dated correction; the draft link at `:92` stays, as the Fix says) |
+
+Departures from M4's line list, each kept on purpose: six lines keep a bare number, because it sits inside quoted text that reproduces another document's earlier wording verbatim (`issues/139-decide-inputs-named-like-presentational-attributes.md:158`, `:172`, `:174`; `research/presentational-attribute-lens-api.md:72`; `research/presentational-attribute-lens-adversarial.md:93`) or inside an existing link's text (`research/architecture-guide-review.md:19`). The fixer's reasons are in its skip list; the audit's rule excepts both cases.
+
+The one unrecorded departure this file lists is closed by L4, and the recorded conflict it names is now stated in the spec by M1; T9 itself stays OPEN FOR HUMAN in its ticket.
