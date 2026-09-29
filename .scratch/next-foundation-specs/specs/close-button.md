@@ -83,6 +83,9 @@ Docs conventions kept or corrected: `type="button"` (kept, now the default); `ar
 | --- | --- | --- | --- | --- | --- |
 | `.close-button` | `NfsCloseButton` (`button[nfsCloseButton]`), static host class | - | - | `close-button` | - |
 | `.small`, `.medium`, and every other key of `$closebutton-size` | `size` Variant input of `NfsCloseButton` | `NfsCloseButtonSize` over `$closebutton-size` and its registry `NfsClosebuttonSizeOverrides` (Open Variant family) | a name | the name itself (`size="small"` sets `.small`); unset sets none, so `$closebutton-default-size` is the look; an explicit default name still sets its class | `--nfs-closebutton-size` (`small medium` by default) |
+| `.callout` and its colour class (another family's: the Callout's) | `NfsCallout` (`[nfsCallout]`) with its `color` Variant input, around the close button | The [Spec: Callout](../issues/89-spec-callout.md)'s | - | `callout` | - |
+| `.is-hidden` (another family's: the Toggler's State class) | `NfsToggler`'s host binding in Visibility mode, on the dismissible callout | The [Spec: Toggler](../issues/17-spec-toggler.md)'s | - | - | - |
+| `.reveal` (another family's: the Reveal's) | `NfsReveal` (`dialog[nfsReveal]`) around the close button | The [Spec: Reveal](../issues/18-spec-reveal.md)'s | - | `reveal` | - |
 
 State classes: none. Foundation's Close Button has no State class; hover and focus are the `:hover` and `:focus` pseudo-classes. No class is left for the consumer to write (ADR 0039), and the glyph's `span` carries none. Foundation has no responsive close-button size, so `size` takes no Breakpoint query or rules object.
 
@@ -100,7 +103,7 @@ button[nfsCloseButton]      NfsCloseButton (standalone directive, no template)
 
 ### API: `NfsCloseButton`
 
-Selector `button[nfsCloseButton]`; `exportAs: 'nfsCloseButton'`; standalone; no template.
+Selector `button[nfsCloseButton]`; no `exportAs`; standalone; no template.
 
 ```ts
 type NfsCloseButtonSize = NfsOverridableStringUnion<'small' | 'medium', NfsClosebuttonSizeOverrides>;
@@ -117,7 +120,7 @@ class NfsCloseButton {
 | `type` | `'button' \| 'submit' \| 'reset'` | `'button'` | Docs: `type="button"` on every close button | New default. HTML's missing-value default for `<button type>` is the Auto state, which submits a form |
 
 - Models, outputs, and methods: none. The native `click` event is the API, and `focus()` is the native method.
-- `exportAs: 'nfsCloseButton'` exposes the two input signals to template references, as `nfsButton` does.
+- No `exportAs`: the directive owns no state or method a template could read (building-blocks 1.3), as `nfsButton` has none; adding one later is additive.
 
 Host bindings, all on signal state:
 
@@ -129,11 +132,11 @@ Host bindings, all on signal state:
 
 - Attribute ownership: `type` belongs to the directive; a static `type` attribute or a `[type]` binding feeds the input. A consumer `[attr.type]` binding loses to the host binding, and the docs never show it.
 - Development-mode checks, in one `afterNextRender` read callback that exists only when `ngDevMode` is on (never on the server, never in production), each warning once per instance:
-  1. No accessible name. The name, taken in accessible-name order from the text of the elements `aria-labelledby` references, then a non-blank `aria-label`, then text outside `aria-hidden="true"` subtrees, then `title`, is empty: "nfsCloseButton: this close button has no accessible name; add aria-label, for example aria-label="Close alert"".
-  2. Symbol-only name. The name contains no letter and no digit (the multiplication sign, a dash): "nfsCloseButton: this close button's name is only a symbol; name what it closes and keep the glyph in aria-hidden="true"".
+  1. No accessible name. The name, taken in accessible-name order from the text of the elements `aria-labelledby` references, then a non-blank `aria-label`, then text outside `aria-hidden="true"` subtrees, or the non-blank `alt` of an `img` or the non-blank `aria-label` of an element with `role="img"`, then `title`, is empty: "nfsCloseButton: this close button has no accessible name; add aria-label, for example aria-label="Close alert"".
+  2. Symbol-only name. The name, read as check 1 reads it, contains no letter and no digit (the multiplication sign, a dash): "nfsCloseButton: this close button's name is only a symbol; name what it closes and keep the glyph in aria-hidden="true"".
   3. `nfsButton` on the same element, seen as the host carrying `.button`: "nfsCloseButton and nfsButton on one element: .close-button and .button are separate class contracts; remove nfsButton".
 - The name checks run once, at the first render, because the name must already be in server HTML, where assistive technology reads the dehydrated button; a name bound only after the first render warns.
-- Runtime check: at its first render `NfsCloseButton` requests `closebutton-size` from the Runtime check whether or not `size` is bound (D10). `strictVariantNames` reports a bound size that `--nfs-closebutton-size` does not list, which only a cast or `$any()` can reach. `strictVariantProperties` reports a missing `--nfs-closebutton-size` and names `@include nfs-close-button;`, whose absence also removes the 2.5.8 floor.
+- Runtime check: `NfsCloseButton` creates the handle `nfsVariantCheck('nfsCloseButton')` and, from its first render on, calls `include('nfs-close-button', ['closebutton-size'])` on every run whether or not `size` is bound, then `value('size', ...)` for a bound size (D10). `strictVariantNames` reports a bound size that `--nfs-closebutton-size` does not list, which only a cast or `$any()` can reach. `strictVariantProperties` reports a missing `--nfs-closebutton-size` and names `@include nfs-close-button;`, whose absence also removes the 2.5.8 floor.
 
 ### Comparison with Angular Material (22.2)
 
@@ -180,7 +183,7 @@ Focus: the directive moves no focus. When a bare `nfsClose` beside it closes the
 
 ### WCAG 2.2 AA
 
-The target is WCAG 2.2 level AA (user rule; ADR 0022). Each criterion below is a requirement with the layer that tests it; none is advice. Sizes were measured by this spec's ticket on Foundation 6.9.0's compiled CSS in Chromium, Firefox, and WebKit (Playwright 1.63, axe-core 4.13.0) and agree across the three to 0.01 px; ratios were computed with Foundation's own `color-luminance()` and the WCAG formula, unrounded.
+The target is WCAG 2.2 level AA (user rule; ADR 0022). Each criterion below is a requirement with the layer that tests it; none is advice. Sizes were measured by this spec's ticket on Foundation 6.9.0's compiled CSS in Chromium, Firefox, and WebKit (Playwright 1.63, axe-core 4.13.0) and agree across the three to 0.01 px; ratios are the exact WCAG relative-luminance ratio, unrounded.
 
 | Criterion | Requirement and how it is met | Foundation default | Test |
 | --- | --- | --- | --- |
@@ -227,11 +230,11 @@ Consumer markup, then the server HTML. The hydrated DOM equals the server HTML a
 <button class="close-button" type="submit" aria-label="Close notice">...</button>
 ```
 
-The callout's own attributes belong to the [Spec: Callout](../issues/89-spec-callout.md) and are shown only to place the button; `nfsCallout` is the name the triage gave it ([Triage the out-of-scope Foundation components and variants](../issues/79-triage-out-of-scope-components-and-variants.md)), and the Callout spec fixes it.
+The callout's own attributes belong to the [Spec: Callout](../issues/89-spec-callout.md) and are shown only to place the button; `nfsCallout` is the [Spec: Callout](../issues/89-spec-callout.md)'s directive.
 
 ### Animation
 
-None. The directive inserts, removes, and animates nothing; Foundation's close-button partial declares no transition, and its hover colour change is instant. A container that hides when its close button is pressed animates through its own directive (a Toggler's Motion classes, `animate.leave` on an `@if` block), under its own spec's reduced-motion rules.
+None. The directive inserts, removes, and animates nothing; Foundation's close-button partial declares no transition, and its hover colour change is instant. A container that hides when its close button is pressed animates through its own directive (a Toggler's typed Motion input, or `animate.leave` with the consumer's own keyframe class on an `@if` block, the Triggers spec's D17), under its own spec's reduced-motion rules.
 
 ### Rendering modes
 
@@ -248,14 +251,14 @@ Per ADR 0008 and the rendering-modes research, section 7 rules 1 to 11:
 
 A good test asserts what a user or assistive technology observes: the role, the name, `type`, the classes, the button's box, whether a click submits or closes, and where focus lands. No test reads the directive's fields. The patterns are the four layers of building-blocks 1.12 and the [Spec: Button](../issues/37-spec-button.md)'s tests, the nearest precedent.
 
-Story ids follow `close-button--<story>`: `close-button--default`, `close-button--closable`, `close-button--removable`, `close-button--sizes`, `close-button--in-form`. `meta.component` is `NfsCloseButton`; `size` and `type` are args. The stories use Foundation's default size names and the default and success callouts, whose backgrounds pass 1.4.11 with Foundation's `$closebutton-color`, so the Storybook settings overrides need no line for this spec.
+Story ids follow `close-button--<story>`: `close-button--default`, `close-button--closable`, `close-button--removable`, `close-button--sizes`, `close-button--in-form`. `meta.component` is `NfsCloseButton`; `size` and `type` are args. The stories use Foundation's default size names and the default and success callouts, whose backgrounds pass 1.4.11 with Foundation's `$closebutton-color`, so the Storybook settings overrides need no line for this spec; the stories render the `$closebutton-color: #767676` the overrides carry for the Callout, which passes on both.
 
 ### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`)
 
 Run by `npx nx test-storybook <lib>`. Every story runs axe with `parameters.a11y.test = 'error'` and the six tags (which include `target-size` and `button-name`), and every play function asserts that each close button's bounding box is at least 24 by 24 px.
 
 - `close-button--default`: Foundation's first docs example, a callout holding a close button and a paragraph. The button is found by `getByRole('button', {name: 'Close alert'})`, carries `.close-button` and `type="button"`, and its glyph is `aria-hidden="true"`; a click leaves the callout in place.
-- `close-button--closable`: Foundation's "Making Closable" pair, a default callout and a success callout, each a Toggler in visibility mode with a bare `nfsClose` on its close button, the second closing with a Motion class through the Toggler's own input. A click hides the first (`hidden`), Enter on the second hides it, and the story's `closed` handler moves focus to the heading that follows, which the play function asserts.
+- `close-button--closable`: the Close Button docs page's "Making Closable" pair, a default callout and a success callout (the Callout's `callout--closable` ports the Callout page's alert and success pair), each a Toggler in visibility mode with a bare `nfsClose` on its close button, the second closing with `animate="slide-out-right"`, Foundation's `data-closable="slide-out-right"` as a leaving Motion name on the Toggler's own input. A click hides the first (`hidden`), Enter on the second hides it, and the story's `closed` handler moves focus to the heading that follows, which the play function asserts.
 - `close-button--removable`: a callout inside `@if`, closed by the consumer's `(click)` handler with no Trigger; the callout leaves the DOM, and focus lands on the element the handler names.
 - `close-button--sizes`: no `size`, `size="small"`, and `size="medium"`, plus a small button under a 14 px scaffolding container. The computed `font-size` is 1.5 times the parent's for the small buttons and 2 times for the medium one, the unset one equals the medium one, and every box is at least 24 by 24.
 - `close-button--in-form`: two close buttons in a form with a text field; a click on the default one does not call the story's `submit` spy, and a click on the `type="submit"` one calls it once.
@@ -265,8 +268,8 @@ Run by `npx nx test-storybook <lib>`. Every story runs axe with `parameters.a11y
 TestBed specs next to the directive over a bare test host component, zoneless with `await fixture.whenStable()`; no story is mounted and no axe runs here.
 
 - Host bindings: `.close-button` is present; `type` is `button` by default and follows a static `type="submit"` and a changing `[type]` binding; `size` sets its class, and clearing it removes only that class; a consumer's own static class and `[class]` binding stay; a size reached through `$any()` that contains a space sets no class; the host provides `nfsCloseButtonToken`.
-- Development checks: each name source (`aria-labelledby`, `aria-label`, hidden text, `title`) is silent; no name warns once; `aria-label=""` warns once; `aria-labelledby` pointing at a missing id warns once; a glyph-only name (`&times;` without `aria-hidden`) warns once with the symbol message; `nfsButton` on the same element warns once; nothing is checked when `ngDevMode` is false.
-- Runtime check: with `--nfs-closebutton-size: small medium` on the test document, `size="small"` is silent and `'large'` through `$any()` reports once under `strictVariantNames`; with the property absent, a close button with no `size` reports once under `strictVariantProperties`, naming `nfs-close-button`.
+- Development checks: each name source (`aria-labelledby`, `aria-label`, hidden text, `title`) is silent; a close button whose only content is an `img` with alt text ("Close alert") is silent; no name warns once; `aria-label=""` warns once; `aria-labelledby` pointing at a missing id warns once; a glyph-only name (`&times;` without `aria-hidden`) warns once with the symbol message; `nfsButton` on the same element warns once; nothing is checked when `ngDevMode` is false.
+- Runtime check: with `--nfs-closebutton-size: small medium` on the test document, `size="small"` is silent and `'large'` through `$any()` reports once under `strictVariantNames`; in a test file of its own, with the property absent, a close button with no `size` reports once under `strictVariantProperties`, naming `nfs-close-button`.
 - Composition: with a test Openable, a bare `nfsClose` beside `nfsCloseButton` closes it on click, and the button carries no `aria-expanded`; a consumer `(click)` on a close button with no Trigger runs.
 - Zoneless: the suite runs with zoneless change detection; no test needs `NgZone`.
 
@@ -316,7 +319,7 @@ Against the prerendered fixture app, on the Close Button route:
 | D7 | A development warning for `nfsButton` on the same element | `.button` and `.close-button` are separate class contracts whose padding, background, and position collide | Mutually exclusive selectors (the second directive would silently not apply) |
 | D8 | 2.5.8 by a 24 px box floor on every `.close-button`, in `nfs-close-button` | building-blocks 1.10 meets target size by size wherever a spec owns the control. The box is transparent, so the floor draws nothing and the glyph moves at most 5 px. Measured in three engines: axe passes the floored button, and reports Foundation's box, and a pseudo-element hit area, as incomplete when the button sits over a link. One rule replaces the Off-canvas spec's panel-scoped rule and the spacing-exception reasoning of the Reveal, Toggler, Triggers, and Button specs | The spacing exception per container (the accessibility lens's dissent at triage): it depends on layouts the library cannot see, and axe reports an overlap as incomplete rather than as a violation, so the gate cannot catch a broken exception. A transparent `::before` hit area (the ResponsiveToggle technique): pointer hits land 2 px outside the box, but axe cannot see it |
 | D9 | `@error` when `$closebutton-color` or `$closebutton-color-hover` is under 3:1 against `$body-background`; containers check their own backgrounds | ADR 0022; axe marks the glyph incomplete; the close button does not know its container, and the container does (the Reveal and Off-canvas precedent) | One check in `nfs-close-button` against every container's background (it would need every container's settings and include order); no check (a light `$closebutton-color` would ship silently) |
-| D10 | The directive requests `closebutton-size` from the Runtime check at its first render, bound or not | The Variant property is also the only run-time evidence that the include carrying the 2.5.8 floor is present | Requesting only when `size` is bound (a missing include would go unreported wherever the default size is used) |
+| D10 | The directive requests `closebutton-size` from the Runtime check from its first render on, bound or not | The Variant property is also the only run-time evidence that the include carrying the 2.5.8 floor is present | Requesting only when `size` is bound (a missing include would go unreported wherever the default size is used) |
 | D11 | Native implementation level; no Aria, no CDK | A native button covers the role, focus, keys, and `type`; Aria has no button pattern | CDK `FocusMonitor` (the browser's `:focus-visible` already decides the ring) |
 | D12 | Listener-free: host bindings only | Keeps the button hydration-clean and adds no `jsaction`; a Trigger beside it brings its own listener | A host `click` listener (it would have nothing to do) |
 
@@ -400,8 +403,8 @@ The container directives (`nfsCallout`, `nfsToggler`, `nfsReveal`) are shown onl
 
 Sass. The consumer compiles Foundation's Sass from its own settings; the library imports no Foundation code and copies no Foundation rule. This component relies on Foundation's export mixin `foundation-close-button`, configured through the `$closebutton-*` settings. Its documented custom CSS is the `nfs-close-button` mixin of the library's Sass (`@import 'ngx-foundation-sites';` after Foundation), included after `foundation-close-button`.
 
-1. Rules. (a) `.close-button { min-width: 24px; min-height: 24px; }`. Reason: WCAG 2.2 success criterion 2.5.8; Foundation sizes the button by its glyph (the `$closebutton-size` font sizes, `line-height: 1`, and the global button reset's zero padding) and has no minimum-size setting, and the spacing exception depends on a container's layout. 24 px is WCAG's number, not a Foundation value. The rule applies wherever a close button sits, so no container's mixin adds a target-size rule for it; Foundation's rule that hides the button in revealed and in-canvas off-canvas panels is unchanged. (b) `:root { --nfs-closebutton-size: <keys>; }`, the Variant property in (6). (c) Compile-time checks that emit no CSS: `@error` naming the setting when the unrounded ratio of `$closebutton-color`, or of `$closebutton-color-hover`, against `$body-background` is under 3 (1.4.11), each computed from Foundation's `color-luminance()` with the WCAG formula; Foundation's `color-contrast()` is not used, because it rounds to one decimal.
-2. Reused, read from the consumer's compile: the keys of `$closebutton-size`, `$closebutton-color`, `$closebutton-color-hover`, `$body-background`, and Foundation's `color-luminance()`. No Foundation value is copied, and the mixin takes no parameters.
+1. Rules. (a) `.close-button { min-width: 24px; min-height: 24px; }`. Reason: WCAG 2.2 success criterion 2.5.8; Foundation sizes the button by its glyph (the `$closebutton-size` font sizes, `line-height: 1`, and the global button reset's zero padding) and has no minimum-size setting, and the spacing exception depends on a container's layout. 24 px is WCAG's number, not a Foundation value. The rule applies wherever a close button sits, so no container's mixin adds a target-size rule for it; Foundation's rule that hides the button in revealed and in-canvas off-canvas panels is unchanged. (b) `:root { --nfs-closebutton-size: <keys>; }`, the Variant property in (6). (c) Compile-time checks that emit no CSS: `@error` naming the setting when the unrounded ratio of `$closebutton-color`, or of `$closebutton-color-hover`, against `$body-background` is under 3 (1.4.11). Every contrast ratio the mixin checks is computed unrounded with the exact WCAG 2.2 relative-luminance formula by the library's internal contrast helper (`math.pow`), which composites a translucent colour over `$body-background` first (building-blocks 1.10); never with Foundation's `color-luminance()`, whose approximate power overstates some ratios, or its `color-contrast()`, which rounds to one decimal.
+2. Reused, read from the consumer's compile: the keys of `$closebutton-size`, `$closebutton-color`, `$closebutton-color-hover`, and `$body-background`; the ratios come from the library's internal contrast helper. No Foundation value is copied, and the mixin takes no parameters.
 3. Custom properties the directive writes: none.
 4. Motion classes: none, and no `prefers-reduced-motion` override, because nothing animates.
 5. Missing include: close buttons fall back to Foundation's glyph box (18.69 by 32 px at the medium size) and pass 2.5.8 only where the spacing exception happens to hold; the colour check does not run; the Variant property is absent, which the `strictVariantProperties` Runtime check reports in development, naming the include (D10), and the Variant declaration file's generator cannot list the sizes.

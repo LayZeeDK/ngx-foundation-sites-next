@@ -154,3 +154,19 @@ No ADR: the floor is reversible and carries no API, so it misses the "hard to re
 ### Gist for Decisions so far
 
 - [Spec: Close Button](issues/83-spec-close-button.md) -- one listener-free `button[nfsCloseButton]` binding `.close-button`, a `type` input defaulting to `button`, and a `size` Variant input over `NfsClosebuttonSizeOverrides`; it closes nothing, so `nfsClose` or a handler sits beside it, never hosted; development checks warn on a missing or symbol-only name and on `nfsButton` on the same element; `nfs-close-button` gives every close button a 24 px box floor (measured in three engines: axe passes it, while it reports Foundation's glyph box and a pseudo-element hit area as incomplete over a link), replacing Off-canvas's panel rule, and checks the colours against the page at 3:1, with containers checking their own backgrounds (the Callout's primary, secondary, and alert fail on Foundation's defaults); impact MEDIUM, confidence HIGH; no ADR. Spec: [specs/close-button.md](specs/close-button.md).
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2, group b, applying [its decisions](../research/consistency-review-decisions.md) and the review's checks CR-A to CR-D; `specs/close-button.md` was revised in place, and [the group's report](../research/consistency-review-group-b.md) lists every edit.
+
+- R17: `NfsCloseButton` has no `exportAs` (building-blocks 1.3: it owns no state or method to read; adding one later is additive, and ADR 0045's deprecation policy starts at the first release). This reverses the `exportAs: 'nfsCloseButton'` of this ticket's Q14.
+- R2: the Animation paragraph names the Toggler's typed Motion input and `animate.leave` with the consumer's own keyframe class (the Triggers spec's D17); `close-button--closable` closes its second callout with `animate="slide-out-right"`.
+- R4: the WCAG lead and the Sass checks name the exact WCAG formula and the library's internal contrast helper; `color-luminance()` leaves the reused list. Every figure stands.
+- R25: `close-button--closable` names the Close Button docs page's pair and points at the Callout's; the story intro says the stories render the Callout's `$closebutton-color: #767676`.
+- R59: the Runtime check bullet names `nfsVariantCheck('nfsCloseButton')` and `include('nfs-close-button', ['closebutton-size'])` on every run; the missing-property case sits in a test file of its own; D10 reads "from its first render on".
+- R74: check 1 counts an image's non-blank `alt` (or a `role="img"` element's `aria-label`) as text, check 2 reads the name as check 1 does, and the development-check cases gain a silent image-only button.
+- A5: the Rendered HTML note names `nfsCallout` as the [Spec: Callout](89-spec-callout.md)'s directive.
+- CR-B: the mapping gains rows for the Callout's, the Toggler's, and the Reveal's classes the examples carry.
+- Unchanged (confirmed): R14, R50, R65; CR-A, CR-C, and CR-D hold. A single directive with no in-family parent, child, or peer, so no In-family line.
+
+Triage: impact LOW (an `exportAs` removed before the first release, R17's rating; wording and development checks), confidence HIGH. Nothing is OPEN FOR HUMAN.

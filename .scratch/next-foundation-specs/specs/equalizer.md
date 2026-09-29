@@ -19,7 +19,7 @@ What remains after CSS is a small residue: boxes that are not items of one flex 
 
 The spec answers in two parts, CSS first. Under the class rule ([ADR 0039](../adr/0039-directives-manage-every-foundation-class.md)) neither part has the developer write a Foundation or library class: Equalizer has no class of its own, and the classes of the grids and the boxes are set by the directives of their own specs, written beside the Equalizer's.
 
-1. CSS guidance, with no Equalizer directive: for boxes inside XY grid cells, Foundation's own CSS does it. The cell is a column flex container and the box a growing flex child, classes that the Flexbox Utilities directives set beside the XY Grid's `nfsCell`, and each wrapped row equalizes separately, which is Foundation's `equalizeByRow`. For one height across every row, or across a stacked column, the developer's own CSS grid rule on the developer's own class uses `grid-auto-rows: 1fr`; for aligning parts of cards across a row, `grid-template-rows: subgrid`. Every feature is in the Browser target, and the directives that set the classes bind them on their hosts, so the server-rendered HTML carries them and is equal at first paint, with no library code measuring anything. The usage examples start here, and the stories test it.
+1. CSS guidance, with no Equalizer directive: for boxes inside XY grid cells, Foundation's own CSS does it. The cell is a column flex container and the box a growing flex child, classes that the Flexbox Utilities directives set beside the XY Grid's `nfsCell`, and each wrapped row equalizes separately, which is Foundation's `equalizeByRow`. For one height across every row, or across a stacked column, the consumer's own CSS grid rule on the consumer's own class uses `grid-auto-rows: 1fr`; for aligning parts of cards across a row, `grid-template-rows: subgrid`. Every feature is in the Browser target, and the directives that set the classes bind them on their hosts, so the server-rendered HTML carries them and is equal at first paint, with no library code measuring anything. The usage examples start here, and the stories test it.
 2. An optional pair of directives for the residue: `nfsEqualizer` on the container and `nfsEqualizerWatch` on each box. Each `nfsEqualizerWatch` registers its watched element with the nearest equalizer through DI (no names). The container observes the boxes and itself with one `ResizeObserver`, and on each signal runs one pass in an `afterRenderEffect`: clear the inline `min-height` it wrote, measure, then give every box except the tallest of its row `min-height` equal to that tallest height. The tallest box keeps its natural height, so any growth or shrinkage anywhere changes an observed size and triggers the next pass; images that load, fonts that swap, text that is enlarged, and panels that open are all caught without an image loader or a MutationObserver. `equalizeOn`, `equalizeOnStack`, and `equalizeByRow` keep Foundation's meaning; `equalizeOn` goes through the Breakpoint service. One output, `equalized`, reports the row heights applied.
 
 What earns the directive its place, stated plainly: not Foundation parity. A developer on the XY grid should not use it; the stories and the docs say so. It exists because Foundation 6.9 still ships markup that CSS cannot equalize without restructuring (the float grid, non-grid lists) and because a drop-in counterpart of `data-equalizer` lets such pages move to Angular without a layout rewrite. Whether that residue justifies shipping the directive in the first release was decided at triage on 2026-09-26: ship it, small and optional (impact HIGH, because a shipped directive is public API; confidence HIGH, because the map's Destination asks for a directive or component per plugin and the residue is real).
@@ -125,7 +125,7 @@ Equalizer has no Structural class, no Variant class, and no State class: Foundat
 | `.is-hidden` | State class of the Toggler | The container of `equalizer--hidden-then-shown` | `NfsToggler`'s host binding (Visibility mode) | [Spec: Toggler](../issues/17-spec-toggler.md) |
 | `.button` | Structural class of the Button | Story controls | `NfsButton` (`button[nfsButton]`) | [Spec: Button](../issues/37-spec-button.md) |
 
-`NfsCallout`, `color`, and `size` are the Callout spec's names, `NfsToggler` the Toggler spec's, and `NfsButton` the Button spec's. `NfsGridX`, `NfsCell`, `size`, `up`, and `gridMarginX` are the [Spec: XY Grid](../issues/99-spec-xy-grid.md)'s; `nfsFlexContainer` with `direction` and `nfsFlexChild` are the [Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md)'s names; `NfsRow` and `NfsColumn`, with the column's `size`, are the [Spec: Float Grid](../issues/100-spec-float-grid.md)'s; `NfsCard`, `NfsCardDivider`, and `NfsCardSection` are the out-of-scope triage's. The XY Grid, Flexbox Utilities, Float Grid, and Card specs own those names, and the class-rule consistency review aligns this spec's examples if their final names differ.
+`NfsCallout`, `color`, and `size` are the Callout spec's names, `NfsToggler` the Toggler spec's, and `NfsButton` the Button spec's. `NfsGridX`, `NfsCell`, `size`, `up`, and `gridMarginX` are the [Spec: XY Grid](../issues/99-spec-xy-grid.md)'s; `nfsFlexContainer` with `direction` and `nfsFlexChild` are the [Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md)'s names; `NfsRow` and `NfsColumn`, with the column's `size`, are the [Spec: Float Grid](../issues/100-spec-float-grid.md)'s; `NfsCard`, `NfsCardDivider`, and `NfsCardSection` are the [Spec: Card](../issues/90-spec-card.md)'s.
 
 The three Options are not Variant inputs: they set no class. `equalizeOnStack` and `equalizeByRow` keep `booleanAttribute`, and `equalizeOn` keeps the Breakpoint service's open query string (building-blocks 1.4 and 1.7), so no Variant registry, Variant property, or Runtime check is involved, and no directive of this entry point calls `nfsVariantCheck`.
 
@@ -237,7 +237,7 @@ Both the CSS answer and the directive must comply with WCAG 2.2 AA. These criter
 | Criterion (WCAG 2.2 AA) | Requirement | CSS answer | Directive | Test |
 | --- | --- | --- | --- | --- |
 | 1.4.4 Resize Text | At 200 percent text size or zoom no content is clipped or overlapped | No height is ever fixed: flex stretch, `grid-auto-rows: 1fr`, and `subgrid` size tracks from content, so rows grow with enlarged text | `min-height`, never `height`: a box always grows past the equal height; the growth changes an observed size and the next pass re-equalizes | Playwright: root font size 200 percent and browser zoom 200 percent, no watched box overflows (`scrollHeight <= clientHeight + 1`) |
-| 1.4.10 Reflow | At 320 CSS px width (400 percent zoom of 1280 px) no two-dimensional scrolling and no clipped content | XY grid cells go full width below `medium` and stack at natural height; the grid recipes are single-column at the Zero breakpoint and add columns only inside `breakpoint(medium)` and up (a fixed multi-column grid at every width would fail) | Below its `equalizeOn` breakpoint, or when every box sits on its own row with `equalizeOnStack` off, it writes nothing; with `equalizeOnStack` on it writes only `min-height`, which cannot clip and cannot cause horizontal scrolling | Playwright at a 320 px viewport: no horizontal scroll on the document, no overflowing box, in every story |
+| 1.4.10 Reflow | At 320 CSS px width (400 percent zoom of 1280 px) no two-dimensional scrolling and no clipped content | XY grid cells go full width below `medium` and stack at natural height; the grid recipes are single-column at the Zero breakpoint and add columns only inside `breakpoint(medium)` and up (a fixed multi-column grid at every width would fail) | Below its `equalizeOn` breakpoint, or when every box sits on its own row with `equalizeOnStack` off, it writes nothing; with `equalizeOnStack` on it writes only `min-height`, which cannot clip and cannot cause horizontal scrolling | Playwright at a 320 px viewport: no horizontal scroll on the document, no overflowing box, in `equalizer--reflow` |
 | 1.4.12 Text Spacing | With line height 1.5, paragraph spacing 2, letter spacing 0.12, word spacing 0.16 no content is lost | Same as 1.4.4: content-sized tracks | Same as 1.4.4: `min-height` plus a re-equalizing pass | Playwright injects the text-spacing stylesheet and asserts no overflow |
 | 1.3.2 Meaningful Sequence | Reading order equals the visual order that carries meaning | The recipes rely on source-order auto placement; the docs forbid ordering (CSS `order` and the Flexbox Utilities' order input), `grid-auto-flow: dense`, and explicit placement that reorders cards | Never reorders or moves nodes; writes one inline style | Story play functions assert the DOM order of the watched boxes is unchanged after each pass |
 | 2.4.3 Focus Order | Focus order follows the meaningful sequence | Follows from 1.3.2 | Follows from 1.3.2; no `tabindex` | Covered by the 1.3.2 check |
@@ -250,7 +250,7 @@ Consumer markup writes directive attributes and no class. Every class in the ser
 
 ```html
 <!-- CSS answer (no Equalizer directive): consumer markup, no class written -->
-<div nfsGridX>
+<div nfsGridX gridMarginX>
   <div nfsCell [size]="{medium: 4}" nfsFlexContainer direction="column">
     <div nfsCallout nfsFlexChild="grow">...</div>
   </div>
@@ -260,7 +260,7 @@ Consumer markup writes directive attributes and no class. Every class in the ser
 </div>
 
 <!-- Its server HTML and hydrated DOM: identical, and already equal -->
-<div class="grid-x">
+<div class="grid-x grid-margin-x">
   <div class="cell medium-4 flex-container flex-dir-column">
     <div class="callout flex-child-grow">...</div>
   </div>
@@ -310,29 +310,30 @@ Per ADR 0008 and the rendering-modes research, section 7 rules 1 to 11:
 
 ### Sass and custom CSS
 
-No library CSS, no `nfs-equalizer` mixin. The directive writes only inline `min-height`; the CSS answer uses only Foundation classes, set by their own directives, plus the developer's own grid rules on the developer's own classes. The Sass subsection under Further Notes gives the details.
+No library CSS, no `nfs-equalizer` mixin. The directive writes only inline `min-height`; the CSS answer uses only Foundation classes, set by their own directives, plus the consumer's own grid rules on the consumer's own classes. The Sass subsection under Further Notes gives the details.
 
 ## Testing Decisions
 
 A good test asserts what a user sees: rendered box heights (`getBoundingClientRect().height` equal within 1 px), which element carries an inline `min-height`, the server HTML, the `equalized` payloads, and the console, never the directives' private fields. No story, test host, or fixture writes a `class` attribute. There is no prior art in the new repository; the patterns are the building-blocks testing rule, Angular's `renderApplication`-based SSR tests, the rendering-mode test seam prototype, and the Angular Components universal-app e2e.
 
-Story ids follow `equalizer--<story>`. CSS answer, no Equalizer directive: `equalizer--css-flex-cells`, `equalizer--css-block-grid-rows`, `equalizer--css-grid-equal-rows`, `equalizer--css-subgrid-card-sections`. Directive: `equalizer--docs-markup`, `equalizer--float-grid`, `equalizer--by-row`, `equalizer--on-stack`, `equalizer--nested`, `equalizer--dynamic-content`, `equalizer--hidden-then-shown`. Stories use breakpoint-independent layouts (`size="4"` cells, `up="2"` grids, `size="6"` float columns, which set Foundation's Zero-breakpoint classes), never a breakpoint-dependent layout, because the Storybook test runner's viewport is narrow; breakpoint behaviour is Playwright's.
+Story ids follow `equalizer--<story>`. CSS answer, no Equalizer directive: `equalizer--css-flex-cells`, `equalizer--css-block-grid-rows`, `equalizer--css-grid-equal-rows`, `equalizer--css-subgrid-card-sections`. Directive: `equalizer--docs-markup`, `equalizer--float-grid`, `equalizer--by-row`, `equalizer--on-stack`, `equalizer--nested`, `equalizer--dynamic-content`, `equalizer--hidden-then-shown`, `equalizer--reflow`. Stories use breakpoint-independent layouts (`size="4"` cells, `up="2"` grids, `size="6"` float columns, which set Foundation's Zero-breakpoint classes), never a breakpoint-dependent layout, because the Storybook test runner's viewport is narrow; breakpoint behaviour is Playwright's. The one exception is `equalizer--reflow`, Foundation's docs example in the breakpoint-aware form the spec recommends, which exists for the 1.4.10 case: those layouts are not reflow evidence, because a fixed multi-column grid at every width would fail it.
 
-Story markup follows the class rule (Storybook conventions, section 8; ADR 0039): no story element carries a Foundation or library class written in the template. Scaffolding is each spec's directive, imported from its own entry point beside `NfsEqualizer` and `NfsEqualizerWatch` in the stories file's `moduleMetadata.imports`: `nfsGridX` and `nfsCell` (the XY Grid spec fixes the names), the Flexbox Utilities' container and child directives, `nfsCallout`, the Card directives, the Float Grid's `nfsRow` and `nfsColumn`, `nfsToggler` with a `button[nfsButton]` Trigger, and `button[nfsButton]` controls. The two CSS grid stories put the recipe's declarations in inline `style` attributes, values Foundation has no class for. The Storybook stylesheet includes `foundation-grid` before `foundation-everything` for the Float Grid's stories and `equalizer--float-grid`; the two grids share their size, offset, and block-grid class names, which that order and Foundation's equal default column counts keep harmless ([Spec: Float Grid](../issues/100-spec-float-grid.md)).
+Story markup follows the class rule (Storybook conventions, section 8; ADR 0039): no story element carries a Foundation or library class written in the template. Scaffolding is each spec's directive, imported from its own entry point beside `NfsEqualizer` and `NfsEqualizerWatch` in the stories file's `moduleMetadata.imports`: `nfsGridX` and `nfsCell` (the [Spec: XY Grid](../issues/99-spec-xy-grid.md)'s, with `gridMarginX` or `gridPaddingX` where the ported Foundation example has that gutter), the Flexbox Utilities' container and child directives, `nfsCallout`, the Card directives, the Float Grid's `nfsRow` and `nfsColumn`, `nfsToggler` with a `button[nfsButton]` Trigger, and `button[nfsButton]` controls. The two CSS grid stories put the recipe's declarations in inline `style` attributes, values Foundation has no class for. The Storybook stylesheet includes `foundation-grid` before `foundation-everything` for the Float Grid's stories and `equalizer--float-grid`; the two grids share their size, offset, and block-grid class names, which that order and Foundation's equal default column counts keep harmless ([Spec: Float Grid](../issues/100-spec-float-grid.md)).
 
 ### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`, `npx nx test-storybook <lib>`)
 
 Every story runs axe with `parameters.a11y.test = 'error'` and `runOnly` set to the six tags of the preview's rule set (`wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`, `best-practice`), and every directive story asserts that the DOM order of its watched boxes is unchanged after each pass (WCAG 1.3.2).
 
-- `equalizer--css-flex-cells`, `equalizer--css-block-grid-rows`: no Equalizer directive in the story; the grid, flex, and callout directives set every class; the callouts of each line are equal; in the block grid, lines have different heights; appending text to one callout keeps its line equal after the next frame.
+- `equalizer--css-flex-cells` (its grid with `gridMarginX`), `equalizer--css-block-grid-rows` (with `gridPaddingX`, Foundation's by-row example): no Equalizer directive in the story; the grid, flex, and callout directives set every class; the callouts of each line are equal; in the block grid, lines have different heights; appending text to one callout keeps its line equal after the next frame.
 - `equalizer--css-grid-equal-rows`: every item of every row equal; `equalizer--css-subgrid-card-sections`: each card's section tops align across the row.
-- `equalizer--docs-markup` (Foundation's docs example, ported to `nfsGridX`, `nfsCell`, and `nfsCallout`, `equalizeOn` empty): the watched callouts are equal; exactly one has no inline `min-height`; the story's docs text points at the CSS alternative.
+- `equalizer--docs-markup` (Foundation's docs example, ported to `nfsGridX` with `gridMarginX`, `nfsCell`, and `nfsCallout`, `equalizeOn` empty): the watched callouts are equal; exactly one has no inline `min-height`; the story's docs text points at the CSS alternative.
 - `equalizer--float-grid`: equal heights on the Float Grid directives' `.row` and `.column` markup, where the CSS answer does not apply.
 - `equalizer--by-row`: rows equal within themselves and different from each other; a one-item row has no inline `min-height`; the story shows the last `equalized` payload with one entry per multi-item row.
 - `equalizer--on-stack`: a single-column stack with `equalizeOnStack` has equal boxes; toggling the input off clears every inline `min-height` and shows `[]`.
 - `equalizer--nested`: Foundation's nesting markup with one `nfsCallout` element carrying both directives; the inner callouts are equal, the outer panels are equal, and the outer panel containing the inner group is the one that decides the outer height when its inner boxes grow.
 - `equalizer--dynamic-content`: `button[nfsButton]` controls that append and remove text in the tallest box (heights follow up and down), add and remove a watched box through `@for`, and load an image from a data URI after the first pass; heights are equal after each action.
 - `equalizer--hidden-then-shown`: the group sits in an `nfsToggler` target in Visibility mode, opened by a `button[nfsButton]` with `[nfsToggle]`; showing it yields equal heights without any notification.
+- `equalizer--reflow`: Foundation's docs example in the breakpoint-aware form (`nfsGridX gridMarginX nfsEqualizer equalizeOn="medium"`, three `nfsCell [size]="{medium: 4}"` cells, each an `nfsCallout nfsEqualizerWatch`, one holding a long word); at the test runner's 414 px the cells stack and no `min-height` is written.
 
 ### 2. Browser-level test (Vitest browser mode, `npx nx test <lib>`)
 
@@ -364,7 +365,7 @@ Against the static Storybook build, in Chromium, Firefox, and WebKit:
 - Viewport breakpoints on a story variant with `equalizeOn="medium"` and `[size]="{medium: 4}"` cells: at 400 px no inline `min-height`; resizing to 800 px equalizes; back to 400 px clears. The same resize on `equalizer--css-flex-cells` keeps CSS heights equal at 800 px with no Equalizer directive.
 - By-row regrouping: `equalizer--by-row` resized across `[up]="{medium: 2, large: 4}"` layouts regroups rows and keeps each equal.
 - WCAG 1.4.4: on every directive story and every CSS story, at root font size 200 percent and again at a 640 px viewport (how a 1280 px window lays out at 200 percent zoom), no box has content overflowing it (`scrollHeight <= clientHeight + 1`), and the directive's boxes are equal again after the next pass.
-- WCAG 1.4.10: every story at a 320 px viewport: `document.documentElement.scrollWidth <= 320`, no overflowing box, and the directive with `equalizeOn="medium"` writes no `min-height`.
+- WCAG 1.4.10: `equalizer--reflow` at a 320 px viewport: `document.documentElement.scrollWidth <= 320`, no overflowing box, and the directive with `equalizeOn="medium"` writes no `min-height`. The other stories keep breakpoint-independent layouts for the 414 px test runner and are not reflow evidence.
 - WCAG 1.4.12: the text-spacing stylesheet (line height 1.5, paragraph spacing 2 em, letter spacing 0.12 em, word spacing 0.16 em) injected into every story leaves no overflowing box.
 - Console: no `ResizeObserver loop` message during any of the above.
 
@@ -379,7 +380,7 @@ Against the prerendered fixture app (the harness from the rendering-mode test se
 
 Each item carries its reason and one category of the out-of-scope exclusions research.
 
-- Library CSS for equal heights (an `nfs-equalizer` mixin, utility classes): Foundation has no class or rule for one height across wrapped rows or for aligned card parts, so a library class would add a class family Foundation lacks, and a CSS grid copy of the block grid would re-implement Foundation's grid layout (map, Standing preferences); Foundation's own feature, one height across every row, is `nfsEqualizer` with `equalizeByRow` off, and the recipes without JavaScript are the developer's own rules on the developer's own classes (D14). Category: `scope-boundary`.
+- Library CSS for equal heights (an `nfs-equalizer` mixin, utility classes): Foundation has no class or rule for one height across wrapped rows or for aligned card parts, so a library class would add a class family Foundation lacks, and a CSS grid copy of the block grid would re-implement Foundation's grid layout (map, Standing preferences); Foundation's own feature, one height across every row, is `nfsEqualizer` with `equalizeByRow` off, and the recipes without JavaScript are the consumer's own rules on the consumer's own classes (D14). Category: `scope-boundary`.
 - Equalizing widths, or any dimension other than height in the horizontal writing mode: not a Foundation feature. Category: `scope-boundary`.
 - Content-box watched elements: the written value assumes Foundation's global `box-sizing: border-box`, as Foundation's own written `height` does. Category: `scope-boundary`.
 - Transitions on the equalized height: Foundation's writes are instant, and the pass measures after an instant reset (Animation). Category: `scope-boundary`.
@@ -411,7 +412,7 @@ Each rejected alternative carries its reason and one category of the out-of-scop
 | D12 | Defaults token `nfsEqualizerDefaultsToken` | Building-blocks 1.4: one per Plugin with `defaults` | No token: `Equalizer.defaults` is part of Foundation's Plugin (`scope-boundary`) |
 | D13 | No listeners, no host bindings, no styles on the server | Hydration-clean by construction; nothing to replay | Host `[style.min-height]` bindings from the container: a binding cannot be reset and measured inside one pass (`other`, mechanism) |
 | D14 | No library CSS | Foundation's classes, set by their own directives, and the developer's own grid rules cover the CSS answer; the directive writes one inline value | An `nfs-equalizer` mixin shipping equal-rows utilities: a class family Foundation lacks, and a CSS grid copy of the block grid would re-implement Foundation's layout (`scope-boundary`) |
-| D15 | The classes of the CSS answer and of the residue's grid are set by the XY Grid, Flexbox Utilities, Float Grid, Callout, and Card directives beside the pair; the developer writes none, and the recipes select only the developer's own classes and elements (`.card-row > article`). Decided 2026-09-28 under the class rule | ADR 0039 and building-blocks 1.1; those directives bind host classes, which render on the server, so D1's first-paint reason holds; each class keeps one owner; the element selector outranks Foundation's `.card` rule whatever the stylesheet order | Foundation's classes written in the markup (this spec before 2026-09-28): the class rule rules them out (`superseded`); an Equalizer mode that binds the flex helpers on its container's cells: a second owner of the Flexbox Utilities' classes, written on elements it does not host (`scope-boundary`); a recipe selector on `.card`: a Foundation class in the developer's stylesheet (`superseded`) |
+| D15 | The classes of the CSS answer and of the residue's grid are set by the XY Grid, Flexbox Utilities, Float Grid, Callout, and Card directives beside the pair; the developer writes none, and the recipes select only the consumer's own classes and elements (`.card-row > article`). Decided 2026-09-28 under the class rule | ADR 0039 and building-blocks 1.1; those directives bind host classes, which render on the server, so D1's first-paint reason holds; each class keeps one owner; the element selector outranks Foundation's `.card` rule whatever the stylesheet order | Foundation's classes written in the markup (this spec before 2026-09-28): the class rule rules them out (`superseded`); an Equalizer mode that binds the flex helpers on its container's cells: a second owner of the Flexbox Utilities' classes, written on elements it does not host (`scope-boundary`); a recipe selector on `.card`: a Foundation class in the developer's stylesheet (`superseded`) |
 | D16 | Neither directive has a class, a Variant input, or a copied-class check; `equalizeOn`, `equalizeOnStack`, and `equalizeByRow` stay Options (`string`, `booleanAttribute`). Decided 2026-09-28 under the class rule | Equalizer has no Foundation class; the three Options set none, so ADR 0040's closed types and `nfsVariantBoolean` do not apply, and `equalizeOn` keeps the Breakpoint service's open query (building-blocks 1.7) | `nfsVariantBoolean` for the two booleans: they set no class, and building-blocks 1.4 keeps that transform for Variant inputs (`other`, not a Variant); a copied-class check in the pair: the class belongs to the directive that binds it, as the Triggers spec rules (`scope-boundary`) |
 
 ### Usage examples
@@ -419,28 +420,28 @@ Each rejected alternative carries its reason and one category of the out-of-scop
 CSS first. Boxes inside XY grid cells, equal per line, natural when stacked below `medium` (Foundation's `equalizeOn="medium"` with `equalizeOnStack` off), using only Foundation's classes, set by their directives:
 
 ```html
-<div nfsGridX>
+<div nfsGridX gridMarginX>
   <div nfsCell [size]="{medium: 4}" nfsFlexContainer direction="column">
-    <div nfsCallout nfsFlexChild="grow"><img src="square.jpg" alt="..." width="400" height="400"></div>
+    <div nfsCallout nfsFlexChild="grow"><img ngSrc="square.jpg" alt="..." width="400" height="400"></div>
   </div>
   <div nfsCell [size]="{medium: 4}" nfsFlexContainer direction="column">
     <div nfsCallout nfsFlexChild="grow"><p>Pellentesque habitant morbi tristique senectus.</p></div>
   </div>
   <div nfsCell [size]="{medium: 4}" nfsFlexContainer direction="column">
-    <div nfsCallout nfsFlexChild="grow"><img src="rectangle.jpg" alt="..." width="400" height="250"></div>
+    <div nfsCallout nfsFlexChild="grow"><img ngSrc="rectangle.jpg" alt="..." width="400" height="250"></div>
   </div>
 </div>
 
 <!-- Cards need only the flex container: a card already grows in a flex container -->
-<div nfsGridX [up]="{small: 1, medium: 2, large: 4}">
+<div nfsGridX gridPaddingX [up]="{small: 1, medium: 2, large: 4}">
   <div nfsCell nfsFlexContainer><div nfsCard>...</div></div>
   <div nfsCell nfsFlexContainer><div nfsCard>...</div></div>
 </div>
 ```
 
-No class is written: `nfsGridX` and `nfsCell` with `size` and `up` render `.grid-x`, `.cell`, `.medium-4`, and `.small-up-1.medium-up-2.large-up-4`; the Flexbox Utilities' directives render `.flex-container`, `.flex-dir-column`, and `.flex-child-grow`; `nfsCallout` and `nfsCard` render `.callout` and `.card`.
+No class is written: `nfsGridX` and `nfsCell` with `size`, `up`, `gridMarginX`, and `gridPaddingX` render `.grid-x`, `.cell`, `.medium-4`, `.small-up-1.medium-up-2.large-up-4`, `.grid-margin-x`, and `.grid-padding-x`; the Flexbox Utilities' directives render `.flex-container`, `.flex-dir-column`, and `.flex-child-grow`; `nfsCallout` and `nfsCard` render `.callout` and `.card`.
 
-The block grid above is Foundation's by-row case: each wrapped line stretches on its own. One height for every row, or for a stacked column (`equalizeOnStack`), is the developer's own CSS grid rule on the developer's own class, written with Foundation's `breakpoint()` mixin; so is aligning card parts across a row:
+The block grid above is Foundation's by-row case: each wrapped line stretches on its own. One height for every row, or for a stacked column (`equalizeOnStack`), is the consumer's own CSS grid rule on the consumer's own class, written with Foundation's `breakpoint()` mixin; so is aligning card parts across a row:
 
 ```html
 <div class="equal-rows">
@@ -493,7 +494,7 @@ The block grid above is Foundation's by-row case: each wrapped line stretches on
 }
 ```
 
-Both recipes select only the developer's own classes and elements, never a Foundation or library class (building-blocks 1.1); `.card-row > article` outranks Foundation's `.card` rule whatever the stylesheet order. Both keep source-order auto placement: no ordering (CSS `order` or the Flexbox Utilities' order input), no `grid-auto-flow: dense`, no explicit placement that reorders cards (WCAG 1.3.2).
+Both recipes select only the consumer's own classes and elements, never a Foundation or library class (building-blocks 1.1); `.card-row > article` outranks Foundation's `.card` rule whatever the stylesheet order. Both keep source-order auto placement: no ordering (CSS `order` or the Flexbox Utilities' order input), no `grid-auto-flow: dense`, no explicit placement that reorders cards (WCAG 1.3.2).
 
 The directive, for markup CSS cannot reach. Foundation's float grid, gated at `medium`:
 

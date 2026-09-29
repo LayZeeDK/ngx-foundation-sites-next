@@ -179,3 +179,19 @@ No ADR: the room rule and the hook are reversible CSS with no consumer API, and 
 ### Note, 2026-09-28 (out-of-scope survivors)
 
 - 2026-09-28: the Out of Scope bullet on typography colours is corrected by [Re-run: Typography Helpers spec, out-of-scope survivors](146-rerun-typography-helpers-out-of-scope-survivors.md), from [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md): the greys inside the container are the Typography Helpers' requirement, met by the `#666666` it requires.
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2, group b, applying [its decisions](../research/consistency-review-decisions.md) and the review's checks CR-A to CR-D; `specs/callout.md` was revised in place, and [the group's report](../research/consistency-review-group-b.md) lists every edit.
+
+- R2: the sentence after the Rendered HTML and the Animation paragraph name the Toggler's `animate` ([Spec: Toggler](17-spec-toggler.md), D18) and the `data-closable` replacements of the [Spec: Triggers (shared utility)](54-spec-triggers.md) (D17) instead of deferring to the re-runs; the Out of Scope Closing bullet and `callout--closable` follow (`animate="slide-out-right"` for Foundation's `data-closable="slide-out-right"`).
+- R4: the WCAG subsection's lead and the Sass subsection's checks name the exact WCAG formula and the library's internal contrast helper, and `color-luminance()` leaves the list of reused functions; the link figures are recomputed (3.83:1 to 4.26:1 on five callouts on Foundation's defaults; with the required setting at least 4.95:1, hover at least 6.18:1, 6.01:1 on the page; 4.10:1 on alert at a 90 percent fade); the purple compile test takes `#4b0082` (4.02:1), because `#5b2a86` passes at 4.51:1 by the exact formula.
+- R25: `callout--closable` names the Callout docs page's Making Closable pair.
+- R30: the story intro states the alert tint the Storybook overrides give every callout story, with its measured figures.
+- R59: the Runtime check bullet names `nfsVariantCheck('nfsCallout')` and `include('nfs-callout', ['callout-sizes'])` on every run; the missing-property case sits in a test file of its own; D12 reads "from the first render on".
+- CR-B: the mapping gains rows for the Close Button's `.close-button` and the Toggler's `.is-hidden`, another family's classes the spec's markup carries.
+- Other fix: the WCAG lead's note on axe says its figures differ in the second decimal; with the exact figures they are no longer "a few hundredths higher".
+- Not changed, a decided API: `exportAs: 'nfsCallout'` (API, D4) contradicts building-blocks 1.3's rule now that R17 removed the Button's and the Close Button's; the report proposes the removal in R17's form (impact LOW, confidence HIGH).
+- Unchanged (confirmed): R5, R14, R26, R28/R29, R65, R73; CR-A, CR-C, and CR-D hold. A single directive with no in-family parent, child, or peer, so no In-family line.
+
+Triage: impact LOW (wording, figures, test placement, documentation rows), confidence HIGH. Nothing is OPEN FOR HUMAN.

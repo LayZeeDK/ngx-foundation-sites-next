@@ -169,3 +169,18 @@ No change is needed to `CONTEXT.md`, any ADR, or `README.md`, whose Dropdown row
 ### Note, 2026-09-28 (out-of-scope reasons)
 
 - 2026-09-28: the Out of Scope reasons named in [Triage: out-of-scope items across the specs](138-triage-out-of-scope-across-specs.md) are corrected in the spec.
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2, group b, applying [its decisions](../research/consistency-review-decisions.md) and the review's checks CR-A to CR-D; `specs/dropdown.md` was revised in place, and [the group's report](../research/consistency-review-group-b.md) lists every edit.
+
+- R2: development check 5's third case reads "a value that does not split into one entering and one leaving value ..., which the type admits only through a value that starts with a dot"; the Motion names rule says such a value maps to no class in either direction (`nfsMotionPairClasses`); the Out of Scope Motion bullet takes the Toggler's wording (the `fast`/`slow` modifiers, and Motion UI names outside the `nfs-motion` set in the dot form).
+- R52, R54: the Animation parenthesis and D21 cite the Breakpoint service spec's "consuming-directive rule 3", for directives that bind no Motion class under reduced motion.
+- R57: the `parentClass` row names an Application class; the `animate` row names Application classes that are keyframe animations; "application class" is capitalised in the Positioner rule and D6.
+- R59: the missing-property case sits in a test file of its own.
+- CR-B: the mapping gains the `.is-opening` row (dropped, reported by dev check 7) and rows for the Button's, Button Group's, Visibility Classes', XY Grid's, and Reveal's classes the examples carry.
+- CR-C: the API paragraph no longer says the Toggler re-run "confirms or renames" `NfsMotionPair` (the [Spec: Toggler](17-spec-toggler.md) takes it, D18); the stories paragraph drops "demo scaffolding whose Foundation classes have no directive yet", and `dropdown-pane--default` ports its docs example's form grid with the [Spec: XY Grid](99-spec-xy-grid.md)'s directives, where it left the grid out while that spec was unpublished.
+- CR-D: `app-header` imports `HeavyDetails`, the component its `@defer` block renders.
+- Unchanged (confirmed): R17, R50, R51, R65, R68, R69/R70; CR-A holds. The pane's check 3 finds Triggers by registration, but a bound Trigger's forgotten import fails to compile (NG8002) and a bare Trigger sits inside the pane it cannot open, so the registration rule needs no change there.
+
+Triage: impact LOW (development messages, wording, a story's scaffolding, documentation rows), confidence HIGH. Nothing is OPEN FOR HUMAN.

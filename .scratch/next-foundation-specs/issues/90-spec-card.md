@@ -161,3 +161,15 @@ No new ADR: the rule and the checks are reversible CSS with no consumer API, and
 ### Amendment, 2026-09-29 (in-family check lines)
 
 [Re-run: CSS-only component and free-behaviour family specs, In-family check lines](154-rerun-css-only-component-and-free-behaviour-family-in-family-lines.md), from item R4 of [Audit: the specs against the architecture guide](142-audit-specs-against-architecture-guide.md), adds the Card's In-family checks under Hierarchy and DI shape by the rule of [Spec: forgotten-import checks (shared utility)](150-spec-forgotten-import-checks.md) ([ADR 0046](../adr/0046-forgotten-imports-caught-by-checks.md)): `NfsCard` calls `nfsDirectiveCheck('NfsCard', {children: ['NfsCardDivider', 'NfsCardSection', 'NfsCardImage']})` and probes its three parts; the parts call it with their class name and probe nothing; no part has a parent check, because none injects a parent and a part outside a card stays legal and unreported, so a forgotten `NfsCard` is the `strictDirectiveImports` check's report; no peer; `strictParents` changes nothing. The Injection bullet, the implementation level, the before-hydration bullet, and D10 now say that in development builds each directive's only code is that call, which the entry point imports from `ngx-foundation-sites/media-query`. No other decision changes.
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2, group b, applying [its decisions](../research/consistency-review-decisions.md) and the review's checks CR-A to CR-D; `specs/card.md` was revised in place, and [the group's report](../research/consistency-review-group-b.md) lists every edit.
+
+- R26: `card--sizing`, `card--long-words`, and the two grid recipes carry the margin gutter (`gridMarginX`) that Foundation writes on every card grid, and the story paragraph names it among the scaffolding.
+- R32/R64: the Rendered HTML and the list recipe write `ngSrc`; the rendered lines drop `src`; the lead-in says `NgOptimizedImage`'s own attributes are left out; the sentence after the block reads "The images use `NgOptimizedImage` (building-blocks 1.2); no card directive sits on an image."
+- CR-B: the mapping gains rows for the XY Grid's, the Flexbox Utilities', and the Typography Helpers' classes on and around cards.
+- R4 (S1 equivalent): the Sass checks' sentence named the helper "on 8-bit channels", which is the figures' paint mode, not the helper's, and did not name Foundation's two functions as unused; it now names the exact formula, the library's helper, and both functions as never used (building-blocks 1.10). Every figure stands.
+- Unchanged (confirmed): R31, R34/R35, R73; the In-family line of 2026-09-29 stands; CR-A, CR-C, and CR-D hold.
+
+Triage: impact LOW (examples, stories, wording), confidence HIGH. Nothing is OPEN FOR HUMAN.

@@ -78,6 +78,9 @@ Docs conventions kept or corrected: `h4` headings (kept in the stories for Found
 | `.card-divider` | `NfsCardDivider` (`[nfsCardDivider]`), static host class | - | - | `card-divider` | - |
 | `.card-section` | `NfsCardSection` (`[nfsCardSection]`), static host class | - | - | `card-section` | - |
 | `.card-image` | `NfsCardImage` (`[nfsCardImage]`), static host class | - | - | `card-image` | - |
+| `.grid-x`, `.grid-margin-x`, `.<bp>-up-<n>`, `.cell` (another family's: the XY Grid's) | `NfsGridX` with its `gridMarginX` and `up` Variant inputs, and `NfsCell`, around or beside `nfsCard` | The [Spec: XY Grid](../issues/99-spec-xy-grid.md)'s types and settings | - | - | - |
+| `.flex-container` (another family's: the Flexbox Utilities') | `NfsFlexContainer` on the cell of the equal-height recipe | The [Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md)'s | - | `flex-container` | - |
+| `.no-bullet` (another family's: the Typography Helpers') | `NfsNoBullet` (`ul[nfsNoBullet]`) on the list of cards | The [Spec: Typography Helpers](../issues/106-spec-typography-helpers.md)'s | - | `no-bullet` | - |
 
 Variant classes: none. Foundation's card has no palette, size, or modifier class, and `$global-flexbox` is a Sass boolean, compile-time configuration and never an input (building-blocks 1.13). State classes: none. No class is left for the consumer to write (ADR 0039). The layout classes on and around cards (cells, the block grid, the flex helpers) belong to the XY Grid's and Flexbox Utilities' directives, written beside `nfsCard`.
 
@@ -169,13 +172,13 @@ The axe gate in every story runs the WCAG 2.2 AA rule set (tags `wcag2a`, `wcag2
 
 ### Rendered HTML
 
-Consumer markup, then the server HTML. The hydrated DOM equals the server HTML: the directives declare no listener, so nothing adds `jsaction`. Class order is not significant; Angular also renders the directive attributes (`nfscard=""`), which the resulting DOM below leaves out, as the other specs do.
+Consumer markup, then the server HTML. The hydrated DOM equals the server HTML: the directives declare no listener, so nothing adds `jsaction`. Class order is not significant; Angular also renders the directive attributes (`nfscard=""`), and `NgOptimizedImage` its own image attributes (`src`, `loading`, `fetchpriority`, and the like), which the resulting DOM below leaves out, as the other specs do.
 
 ```html
 <!-- Basics: an article card with a divider, a full-bleed image, and a section -->
 <article nfsCard style="width: 300px;">
   <div nfsCardDivider>This is a header</div>
-  <img src="/assets/rectangle-1.jpg" alt="" width="600" height="300">
+  <img ngSrc="/assets/rectangle-1.jpg" alt="" width="600" height="300">
   <div nfsCardSection>
     <h4>This is a card.</h4>
     <p>It has an easy to override visual style, and is appropriately subdued.</p>
@@ -184,7 +187,7 @@ Consumer markup, then the server HTML. The hydrated DOM equals the server HTML: 
 
 <article class="card" style="width: 300px;">
   <div class="card-divider">This is a header</div>
-  <img src="/assets/rectangle-1.jpg" alt="" width="600" height="300">
+  <img alt="" width="600" height="300">
   <div class="card-section">
     <h4>This is a card.</h4>
     <p>It has an easy to override visual style, and is appropriately subdued.</p>
@@ -206,12 +209,12 @@ Consumer markup, then the server HTML. The hydrated DOM equals the server HTML: 
 </article>
 
 <!-- Foundation's IE 11 image wrapper, kept for migrated markup; optional in the Browser target -->
-<div nfsCardImage><img src="/assets/rectangle-1.jpg" alt="The team at the spring offsite" width="600" height="300"></div>
+<div nfsCardImage><img ngSrc="/assets/rectangle-1.jpg" alt="The team at the spring offsite" width="600" height="300"></div>
 
-<div class="card-image"><img src="/assets/rectangle-1.jpg" alt="The team at the spring offsite" width="600" height="300"></div>
+<div class="card-image"><img alt="The team at the spring offsite" width="600" height="300"></div>
 ```
 
-An `NgOptimizedImage` image (`ngSrc`) renders the same way, because no card directive sits on the image.
+The images use `NgOptimizedImage` (building-blocks 1.2); no card directive sits on an image.
 
 ### Animation
 
@@ -232,7 +235,7 @@ Per ADR 0008 and the rendering-modes research, section 7 rules 1 to 11:
 
 A good test asserts what a user or assistive technology observes: the classes, roles and names, the computed backgrounds and padding, where images and text sit against the card's edges, and the DOM order. No test reads a directive's fields. The patterns are the four layers of building-blocks 1.12 and the [Spec: Callout](../issues/89-spec-callout.md)'s and [Spec: Badge](../issues/93-spec-badge.md)'s tests, the nearest precedents.
 
-Story ids follow `card--<story>`: `card--default`, `card--divider`, `card--images`, `card--sizing`, `card--long-words`. `meta.component` is `NfsCard`; there are no args, because no directive has an input. The Storybook settings overrides already carry the required setting (the Callout's `$anchor-color` line), and the preview includes `nfs-card`. Grid scaffolding uses the [Spec: XY Grid](../issues/99-spec-xy-grid.md)'s `nfsGridX`, `nfsCell`, and `up`; every story image has an `alt`.
+Story ids follow `card--<story>`: `card--default`, `card--divider`, `card--images`, `card--sizing`, `card--long-words`. `meta.component` is `NfsCard`; there are no args, because no directive has an input. The Storybook settings overrides already carry the required setting (the Callout's `$anchor-color` line), and the preview includes `nfs-card`. Grid scaffolding uses the [Spec: XY Grid](../issues/99-spec-xy-grid.md)'s `nfsGridX`, `nfsCell`, `up`, and `gridMarginX`, the margin gutter Foundation writes on every card grid; every story image has an `alt`.
 
 ### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`)
 
@@ -241,8 +244,8 @@ Run by `npx nx test-storybook <lib>`. Every story runs axe with `parameters.a11y
 - `card--default`: Foundation's Basics as an `article` (`style="width: 300px"`) with a divider, a full-bleed image, and a section. The card is found by `getByRole('article')` and carries `.card`; the divider's computed background is Foundation's `$card-divider-background`, the section's computed padding 16 px; the image's width equals the card's inner width; the heading is found by role and name.
 - `card--divider`: Foundation's Card Divider example (an `h4` "I'm featured" in a divider) and a second `article` with a linked `h3` title in a section and a `footer` divider holding "View due invoices". Both links are found by role and name; axe passes `color-contrast` for the footer link under the preview's required `$anchor-color`; the play function tabs to the title link and asserts its box lies at least 3 px inside the card's padding box, so its outline is not clipped.
 - `card--images`: Foundation's Images examples, one card each: an image directly at the top, an image inside a section, an image directly below the content, and an image inside an `nfsCardImage` wrapper, with informative `alt` on the first and last. Each direct or wrapped image's width equals its card's inner width, the in-section image's width its section's content width; each informative image is found by `getByRole('img', {name})`; each card's parts are in the DOM order written.
-- `card--sizing`: Foundation's Sizing example, three `article` cards in a block grid (`nfsGridX` with `[up]="{small: 2, medium: 3}"`, each card in an `nfsCell`); the three articles and their headings are found by role.
-- `card--long-words`: two cards in a two-up block grid whose headings are "Internationalization" and whose paragraphs hold a long URL; each card's `scrollWidth` equals its `clientWidth`, and its computed `overflow-wrap` is `anywhere`.
+- `card--sizing`: Foundation's Sizing example, three `article` cards in a block grid with margin gutters (`nfsGridX` with `gridMarginX` and `[up]="{small: 2, medium: 3}"`, each card in an `nfsCell`); the three articles and their headings are found by role.
+- `card--long-words`: two cards in a two-up block grid with margin gutters (`gridMarginX`), the Card's measured 1.4.12 case, whose headings are "Internationalization" and whose paragraphs hold a long URL; each card's `scrollWidth` equals its `clientWidth`, and its computed `overflow-wrap` is `anywhere`.
 
 ### 2. Browser-level test (Vitest browser mode, `npx nx test <lib>`)
 
@@ -316,10 +319,10 @@ Against the prerendered fixture app, on the Card route:
 
 ```html
 <!-- A set of cards that is a list, each an article with a linked title; nfsNoBullet removes the markers and the list indent, and role="list" keeps it a list in WebKit -->
-<ul nfsGridX [up]="{small: 1, medium: 3}" nfsNoBullet role="list">
+<ul nfsGridX gridMarginX [up]="{small: 1, medium: 3}" nfsNoBullet role="list">
   <li nfsCell>
     <article nfsCard>
-      <img src="/menus/winter.jpg" alt="" width="600" height="300">
+      <img ngSrc="/menus/winter.jpg" alt="" width="600" height="300">
       <div nfsCardSection>
         <h3><a href="/menus/winter">Winter menu</a></h3>
         <p>Seasonal dishes from local farms.</p>
@@ -336,7 +339,7 @@ Against the prerendered fixture app, on the Card route:
 </section>
 
 <!-- Equal-height cards in a row: the Flexbox Utilities' container on the cell -->
-<div nfsGridX [up]="{small: 1, medium: 2}">
+<div nfsGridX gridMarginX [up]="{small: 1, medium: 2}">
   <div nfsCell nfsFlexContainer><article nfsCard>...</article></div>
   <div nfsCell nfsFlexContainer><article nfsCard>...</article></div>
 </div>
@@ -377,7 +380,7 @@ export class ProductCard {
 
 Sass. The consumer compiles Foundation's Sass from its own settings; the library imports no Foundation code and copies no Foundation rule. This component relies on Foundation's export mixin `foundation-card`, configured through the `$card-*` settings and `$global-flexbox`. Its documented custom CSS is the `nfs-card` mixin of the library's Sass (`@import 'ngx-foundation-sites';` after Foundation), included after `foundation-card`.
 
-1. Rules. (a) `.card { overflow-wrap: anywhere; }`. Reason: WCAG 2.2 success criteria 1.4.10 and 1.4.12; Foundation's `.card` clips with `overflow: hidden`, which it needs for full-bleed images under a border radius, and has no setting that keeps a word wider than the card inside it (D7). The selector equals Foundation's and adds one declaration Foundation does not set, so the Equalizer's `.card-row > article` recipe still outranks `.card` for `display`. (b) Compile-time checks that emit no CSS, D8: one `@error` listing every failing pair, each with the setting, its colour, the background setting, its colour, and the ratio, computed by the library's exact relative-luminance helper (`math.pow` on 8-bit channels), unrounded: `$card-font-color`, `$anchor-color`, and `$anchor-color-hover`, each against `$card-background` composited over `$body-background` and against `$card-divider-background` composited over that card background, under 4.5:1.
+1. Rules. (a) `.card { overflow-wrap: anywhere; }`. Reason: WCAG 2.2 success criteria 1.4.10 and 1.4.12; Foundation's `.card` clips with `overflow: hidden`, which it needs for full-bleed images under a border radius, and has no setting that keeps a word wider than the card inside it (D7). The selector equals Foundation's and adds one declaration Foundation does not set, so the Equalizer's `.card-row > article` recipe still outranks `.card` for `display`. (b) Compile-time checks that emit no CSS, D8: one `@error` listing every failing pair, each with the setting, its colour, the background setting, its colour, and the ratio, computed by the library's exact relative-luminance helper (`math.pow`), unrounded, never with Foundation's `color-luminance()`, whose approximate power overstates some ratios, or its `color-contrast()`, which rounds to one decimal (building-blocks 1.10): `$card-font-color`, `$anchor-color`, and `$anchor-color-hover`, each against `$card-background` composited over `$body-background` and against `$card-divider-background` composited over that card background, under 4.5:1.
 2. Reused, read from the consumer's compile: `$card-background`, `$card-divider-background`, `$card-font-color`, `$anchor-color`, `$anchor-color-hover`, `$body-background`. No Foundation value is copied; 4.5 is WCAG's number. The mixin takes no parameters.
 3. Custom properties the directives write: none.
 4. Motion classes: none, and no `prefers-reduced-motion` override, because nothing animates.

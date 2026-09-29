@@ -130,3 +130,16 @@ From [Re-run: navigation family specs, In-family check lines](151-rerun-navigati
 - Hierarchy and DI shape gains the In-family lines. `NfsDrilldown` probes `NfsMenuItem` and `NfsDrilldownBack` (from the responsive `ul` when a ResponsiveMenu hosts it); its wrapper injection stays optional, with the shared spec's reason, so it has no parent check. `NfsDrilldownWrapper` probes `NfsDrilldown`. `NfsDrilldownBack` has a parent check over `NfsDrilldown` and `NfsResponsiveMenu` with the sentence "It stays hidden and closes no level.", and throws under `strictParents`; its `NfsSubmenu` injection stays optional.
 - Development checks: check 1 says nothing for a root whose parent element carries `nfsDrilldownWrapper` without a registered wrapper, and check 2 nothing for a level holding an element that carries `nfsDrilldownBack`, because each is a forgotten import that the runtime check or the root's child probe reports once; check 3's outside-a-drilldown-root case is the parent check's report. The browser-level warning cases gain both silent cases.
 - No API, class, ARIA, keyboard, rendering, or Sass change. Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2, group b, applying [its decisions](../research/consistency-review-decisions.md) and the review's checks CR-A to CR-D; `specs/drilldown-menu.md` was revised in place, and [the group's report](../research/consistency-review-group-b.md) lists every edit.
+
+- R26: Library mixin rule 5 adds `overflow-wrap: break-word` beside `overflow: clip` (measured: a 27-letter word in a 250 px panel loses 31.3 px with the 1.4.12 spacing in three engines), and the 1.4.4 and 1.4.12 row says a word wider than the wrapper breaks.
+- R57: "application class" in the copied-class test case reads "Application class".
+- R74 (a check that reads a name from content): development check 3 reads the back button's name as accessible-name computation does, an image's non-blank `alt` included, and the development-warning cases gain a silent image-only back button.
+- Registration rule (the brief's addendum): checks 1 and 2 already say nothing for an element that carries the peer's attribute, the shared spec's bullet; no change.
+- Not changed, a decided API: `NfsDrilldownWrapper` and `NfsDrilldownBack` export `nfsDrilldownWrapper` and `nfsDrilldownBack` with no input, output, or public method, against building-blocks 1.3's `exportAs` rule; the report proposes their removal (impact LOW, confidence HIGH).
+- Unchanged (confirmed): R1, R3, R4, R39, R66; the In-family lines of 2026-09-29 stand; CR-A, CR-C, and CR-D hold.
+
+Triage: impact LOW (a Library mixin declaration inside an existing rule, a development check's reading, wording), confidence HIGH. Nothing is OPEN FOR HUMAN.

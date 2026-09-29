@@ -194,3 +194,15 @@ What changed, against the decisions above:
 - Found, not changed: check 3 has no exception for a column row, so the `nfsColumn` of a top-level `<article nfsRow nfsColumn>`, this spec's own Rendered HTML example, warns that it is not a direct child of `nfsRow`, while the Float Grid's check 2 skips a host that is also a row; routed to [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md) with a proposed fix in the re-run's Answer.
 - Tests: one browser-level case for a parent row whose directive is left out.
 - Spec sections revised: Hierarchy and DI shape (one bullet added), the development checks (check 3), and Testing Decisions (layer 2).
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2, group b, applying [its decisions](../research/consistency-review-decisions.md) and the review's checks CR-A to CR-D; `specs/flex-grid.md` was revised in place, and [the group's report](../research/consistency-review-group-b.md) lists every edit.
+
+- R16: the Notes line on the `hidden` attribute is the shared sentence for `.row`, pointing at the Toggler's `.is-hidden`, `nfsVisibility` with a bare `hideFor`, and the four specs that state the same rule, with its measured detail after it.
+- R59: the Injection bullet names the handles `nfsVariantCheck('nfsRow')` and `nfsVariantCheck('nfsColumn')`.
+- From [Re-run: layout system and flex utility family specs, In-family check lines](155-rerun-layout-system-and-flex-utility-family-in-family-lines.md), routed to this review: development check 3 warns for "a host that is not also a row, whose parent element is not a row", so the spec's own top-level column row (`<article nfsRow nfsColumn>`) is silent, as the Float Grid's check 2 is; layer 2 gains that case.
+- CR-B: the mapping gains rows for the Flexbox Utilities', Callout's, Visibility Classes', and Typography Helpers' classes that Foundation's docs page and the spec's markup put on rows and columns.
+- Unchanged (confirmed): R34/R35, R37; the In-family lines of 2026-09-29 stand; check 3 agrees with the shared spec's DOM-placement bullet (S2), and check 5 is silent for a parent whose column import was forgotten; CR-A, CR-C, and CR-D hold.
+
+Triage: impact LOW (a development warning's condition, wording, documentation rows), confidence HIGH. Nothing is OPEN FOR HUMAN.

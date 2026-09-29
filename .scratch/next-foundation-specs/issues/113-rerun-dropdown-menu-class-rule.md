@@ -221,3 +221,12 @@ Paths are relative to the effort root; links inside each quoted text are relativ
 ### Note, 2026-09-29 (in-family check lines)
 
 - 2026-09-29: `specs/dropdown-menu.md` gains its In-family checks line, quoted in [Re-run: navigation family specs, In-family check lines](151-rerun-navigation-family-in-family-lines.md).
+
+### Amendment, 2026-09-29 (consistency review)
+
+From [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md), phase 2, group b, applying [its decisions](../research/consistency-review-decisions.md) and the review's checks CR-A to CR-D; `specs/dropdown-menu.md` was revised in place, and [the group's report](../research/consistency-review-group-b.md) lists every edit.
+
+- R3: the `.dropdown` row of the class mapping states that the [Spec: Responsive Menu](23-spec-responsive-menu.md) does not report a copied `dropdown` either (its D22), in place of the deferral to that spec.
+- Unchanged (confirmed): R4, R22/R53, R47 (D9, D15), R66; the In-family line of 2026-09-29 (the note above) stands; CR-A, CR-B, CR-C, and CR-D hold.
+
+Triage: impact LOW (one mapping row's wording), confidence HIGH. Nothing is OPEN FOR HUMAN.

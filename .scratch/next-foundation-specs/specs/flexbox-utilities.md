@@ -91,7 +91,7 @@ Flexbox Utilities has no Plugin, no `defaults` object, no `data-*` Options, no e
 | Flex container (vanilla helper) | `.flex-container`; `.<bp>-flex-container` | A literal rule; the responsive form loops over `$breakpoint-classes` without the Zero breakpoint, behind `$flexbox-responsive-breakpoints` | `display: flex`, no `flex-wrap` |
 | Direction (vanilla helper) | `.flex-dir-row`, `.flex-dir-row-reverse`, `.flex-dir-column`, `.flex-dir-column-reverse`; `.<bp>-flex-dir-<dir>` | Foundation's private direction map; responsive form as above | `flex-direction`. Closed names; responsive form over Class breakpoints behind the flag |
 | Flex child size (vanilla helper) | `.flex-child-auto`, `.flex-child-grow`, `.flex-child-shrink`; `.<bp>-flex-child-<size>` | Literal rules; responsive form as above | `flex: 1 1 auto`, `1 0 auto`, `0 1 auto` |
-| Helper mixins | `flex`, `flex-align($x, $y)`, `flex-align-self($y)`, `flex-order($order)`, `flex-direction($direction)` | Foundation's flex utility mixins | For the developer's own classes in the developer's own Sass; not classes, so no directive (Out of Scope) |
+| Helper mixins | `flex`, `flex-align($x, $y)`, `flex-align-self($y)`, `flex-order($order)`, `flex-direction($direction)` | Foundation's flex utility mixins | For the consumer's own classes in the consumer's own Sass; not classes, so no directive (Out of Scope) |
 
 Settings: `$flex-source-ordering-count` (count, 6) and `$flexbox-responsive-breakpoints` (flag, `true`); `$breakpoint-classes` and `$global-text-direction` are global. The partial is compiled by `foundation-everything` only while its `$flex` argument is true (the default), or by `@include foundation-flex-classes`.
 
@@ -109,6 +109,13 @@ Docs conventions kept or corrected: every example (kept, with directives in plac
 | `.flex-child-<size>`, `.<bp>-flex-child-<size>` | `nfsFlexChild`, the selector-named input of `NfsFlexChild` | `NfsFlexChildInput` over `NfsFlexChildSize` (closed: `auto`, `grow`, `shrink`); rules keys `NfsClassBreakpoint`; responsive form behind the flag | `''` (the bare attribute), a bare value (the Zero breakpoint), or a Breakpoint rules object | `''` sets none; `'grow'` sets `.flex-child-grow`; `{small: 'shrink', large: 'auto'}` sets `.flex-child-shrink` and `.large-flex-child-auto` | the same two, for rules keys above the Zero breakpoint |
 | `.align-self-top`, `.align-self-middle`, `.align-self-bottom`, `.align-self-stretch` | `alignSelf` of `NfsFlexChild` | `NfsFlexAlignY`, closed (the same map as `alignY`) | a name | `.align-self-<name>`; no value sets none | none (closed) |
 | `.<bp>-order-<n>` | `order` of `NfsFlexChild` | `NfsFlexOrderInput` over `NfsFlexOrder`, `NfsOverridableCount<6, NfsFlexSourceOrderingCountOverrides>` (`$flex-source-ordering-count`, Open Variant family), and rules keys `NfsClassBreakpoint` (`$breakpoint-classes`, `NfsBreakpointClassesOverrides`) | a count (the Zero breakpoint; the static attribute strings `'1'` to `'6'` too) or a Breakpoint rules object of counts | `2` and `'2'` set `.small-order-2` (Foundation prefixes the Zero breakpoint in this family, so there is no gap); `{small: 2, medium: 1}` sets `.small-order-2` and `.medium-order-1`; no value sets none | `--nfs-flex-source-ordering-count` and `--nfs-breakpoint-classes` |
+| `.grid-x`, `.grid-padding-x`, `.cell`, `.small-<n>` (another family's: the XY Grid's) | `NfsGridX` with its `gridPaddingX` Variant input and `NfsCell` with its `size`, the Flex parents and children of Foundation's examples | The [Spec: XY Grid](../issues/99-spec-xy-grid.md)'s | - | - | - |
+| `.callout` and its colour class (another family's: the Callout's) | `NfsCallout` (`[nfsCallout]`) with its `color` Variant input, the boxes of the examples | The [Spec: Callout](../issues/89-spec-callout.md)'s | - | `callout` | - |
+| `.button-group` (another family's: the Button Group's) | `NfsButtonGroup` (`[nfsButtonGroup]`), beside `nfsFlexAlign` | The [Spec: Button Group](../issues/82-spec-button-group.md)'s | - | `button-group` | - |
+| `.button` (another family's: the Button's) | `NfsButton` (`button[nfsButton]`) with its Variant inputs, the buttons of the examples | The [Spec: Button](../issues/37-spec-button.md)'s | - | `button` | - |
+| `.media-object`, `.media-object-section` (another family's: the Media Object's) | `NfsMediaObject` and `NfsMediaObjectSection`, beside `nfsFlexChild` | The [Spec: Media Object](../issues/91-spec-media-object.md)'s | - | - | - |
+| `.menu` with `.align-left`, `.align-right`, `.align-center` (another family's: the Menu's) | `NfsMenu` (`ul[nfsMenu]`) with its `align` Variant input, not `nfsFlexAlign` (D7) | The [Spec: Menu](../issues/85-spec-menu.md)'s | - | - | - |
+| `.text-center` (another family's: the Typography Helpers') | `NfsTextAlignment` (`nfsTextAlign="center"`), the docs' demo class in story scaffolding | The [Spec: Typography Helpers](../issues/106-spec-typography-helpers.md)'s | - | `text-center` | - |
 
 State classes: none. Foundation's Flexbox Utilities have no State class, and the directives bind no library hook. No class of this family is left for the consumer to write (ADR 0039). The class of each value is derived from the Zero breakpoint of `nfsBreakpointsToken` (`nfsBreakpointForWidth(map, 0)`, `small` by default), the same on server and client (building-blocks 1.4).
 
@@ -123,9 +130,9 @@ State classes: none. Foundation's Flexbox Utilities have no State class, and the
 
 - No token, no providers, no parent discovery through DI, and no Defaults token: no directive of this family needs another's state, and a Defaults token never holds a Variant input's default (building-blocks 1.4). `NfsFlexChild` reads its parent element only in its development checks.
 - Composition (building-blocks 1.9): the three directives are written beside the class directives of the elements they sit on (`<div nfsGridX nfsFlexAlign alignY="middle">`, `<div nfsCell size="6" nfsFlexChild [order]="{small: 2, medium: 1}">`, `<div nfsCallout nfsFlexChild="grow">`) and beside each other: a grid cell can carry `nfsCell`, `nfsFlexChild`, and `nfsFlexContainer`, because their input names are disjoint (`nfsFlexContainer`, `direction`, `alignX`, `alignY`, `alignCenterMiddle`, `nfsFlexChild`, `alignSelf`, `order`) and none binds a class another binds. `NfsFlexContainer` hosts `NfsFlexAlign` because a `.flex-container` is always a Flex parent; a developer who also writes `nfsFlexAlign` on it gets one `NfsFlexAlign`, because a template match of a directive discards its host-directive matches (measured with Angular 22.2.0 by the [Spec: Menu](../issues/85-spec-menu.md) ticket). A directive whose element is always a Flex parent or a Flex child (the XY Grid's grid or cell, the Flex Grid's row or column, the Media Object and its sections) may host `NfsFlexAlign` or `NfsFlexChild` the same way, exposing `alignX`, `alignY`, `alignCenterMiddle`, `alignSelf`, and `order` under those names, and never declares inputs of its own for these classes (D8).
-- Injection: `nfsBreakpointsToken` and `nfsBreakpointForWidth` (`NfsFlexContainer`, `NfsFlexChild`) and the Runtime checks' `nfsVariantCheck()` handle, all from `ngx-foundation-sites/media-query`; in development builds only, `HostAttributeToken('class')` (optional) for the copied-class warnings, CDK's `InteractivityChecker` and `NfsMediaQuery` for the visual-order check, and `ElementRef`.
+- Injection: `nfsBreakpointsToken` and `nfsBreakpointForWidth` (`NfsFlexContainer`, `NfsFlexChild`) and the Runtime checks' handles, `nfsVariantCheck('nfsFlexContainer')` and `nfsVariantCheck('nfsFlexChild')` (`NfsFlexAlign` makes no call), all from `ngx-foundation-sites/media-query`; in development builds only, `HostAttributeToken('class')` (optional) for the copied-class warnings, CDK's `InteractivityChecker` and `NfsMediaQuery` for the visual-order check, and `ElementRef`.
 - Entry point: `ngx-foundation-sites/flexbox-utilities` (one per Foundation docs page), so a consumer's `@defer` can split it. The aliases below are exported beside the directives; `NfsFlexSourceOrderingCountOverrides`, `NfsBreakpointClassesOverrides`, `NfsOverridableCount`, `NfsClassBreakpointQuery`, `NfsClassBreakpointRules`, and `NfsVariantBoolean` live in the primary entry point `ngx-foundation-sites` and are used here as types only; `nfsVariantBoolean` is its one runtime import.
-- In-family checks ([Spec: forgotten-import checks (shared utility)](../issues/150-spec-forgotten-import-checks.md)): `NfsFlexContainer`, `NfsFlexAlign`, and `NfsFlexChild` each call `nfsDirectiveCheck` with their class name (`nfsDirectiveCheck('NfsFlexChild')`), with no parent check, no child probes, and no peers, because no directive of the family needs another: any family's directive, or the consumer's CSS, makes an element a Flex parent, so `NfsFlexChild` has no parent directive to name and `NfsFlexContainer` no child part to probe, and the not-a-Flex-parent warning (check 2) reads the computed `display` instead. `NfsFlexAlign` makes its call in its own constructor also where `NfsFlexContainer` hosts it, so the host record shows it on that element and an `nfsFlexAlign` attribute written there is reported by no check, the static check reading the hosted directive from the Selector manifest's `hosts`. `strictParents` changes nothing.
+- In-family checks ([Spec: forgotten-import checks (shared utility)](../issues/150-spec-forgotten-import-checks.md)): `NfsFlexContainer`, `NfsFlexAlign`, and `NfsFlexChild` each call `nfsDirectiveCheck` with their class name (`nfsDirectiveCheck('NfsFlexChild')`), with no parent check, no child probes, and no peers, because no directive of the family needs another: any family's directive, or the consumer's CSS, makes an element a Flex parent, so `NfsFlexChild` has no parent directive to name and `NfsFlexContainer` no child part to probe, and the not-a-Flex-parent warning (check 2) reads the computed `display` instead. `NfsFlexAlign` makes its call in its own constructor also where `NfsFlexContainer` hosts it, so the host record shows it on that element and an `nfsFlexAlign` attribute written there is reported by no check, the static check reading the hosted directive from the Selector manifest's `hosts`. The Flex parents' and Flex children's own directives written beside these (`nfsGridX`, `nfsCell`, `nfsButtonGroup`, `nfsMediaObjectSection`) belong to other families: no part here probes them, and the runtime check and the static check decide each attribute on its own (the shared spec's family rule). `strictParents` changes nothing.
 
 ### API
 
@@ -242,40 +249,40 @@ The target is WCAG 2.2 level AA (user rule; ADR 0022). Each criterion below is a
 
 ### Rendered HTML
 
-Consumer markup, then the server HTML. The hydrated DOM equals the server HTML: no directive declares a listener, so nothing adds `jsaction`. Class order is not significant; Angular also renders the directive attributes and the static attributes that feed inputs (`nfsflexcontainer=""`, `direction="column"`), which the resulting DOM below leaves out, as the other specs do. `nfsGridX`, `nfsCell`, and `size` are the names the [Spec: Equalizer](../issues/34-spec-equalizer.md) and the [Spec: Card](../issues/90-spec-card.md) use until the [Spec: XY Grid](../issues/99-spec-xy-grid.md) names its directives, and its gutter classes are left out until it names that input; `nfsCallout` and `color` are the [Spec: Callout](../issues/89-spec-callout.md)'s.
+Consumer markup, then the server HTML. The hydrated DOM equals the server HTML: no directive declares a listener, so nothing adds `jsaction`. Class order is not significant; Angular also renders the directive attributes and the static attributes that feed inputs (`nfsflexcontainer=""`, `direction="column"`), which the resulting DOM below leaves out, as the other specs do. `nfsGridX`, `nfsCell`, `size`, and `gridPaddingX`, the gutter every grid of Foundation's examples carries, are the [Spec: XY Grid](../issues/99-spec-xy-grid.md)'s; `nfsCallout` and `color` are the [Spec: Callout](../issues/89-spec-callout.md)'s, and `nfsButtonGroup` the [Spec: Button Group](../issues/82-spec-button-group.md)'s.
 
 ```html
 <!-- Horizontal alignment on the XY grid -->
-<div nfsGridX nfsFlexAlign alignX="right">
+<div nfsGridX gridPaddingX nfsFlexAlign alignX="right">
   <div nfsCell size="4">Aligned to</div>
   <div nfsCell size="4">the right</div>
 </div>
 
-<div class="grid-x align-right">
+<div class="grid-x grid-padding-x align-right">
   <div class="cell small-4">Aligned to</div>
   <div class="cell small-4">the right</div>
 </div>
 
 <!-- A cell aligning itself, and central alignment -->
-<div nfsGridX>
+<div nfsGridX gridPaddingX>
   <div nfsCell size="3" nfsFlexChild alignSelf="bottom">Align bottom</div>
 </div>
-<div nfsGridX nfsFlexAlign alignCenterMiddle>...</div>
+<div nfsGridX gridPaddingX nfsFlexAlign alignCenterMiddle>...</div>
 
-<div class="grid-x">
+<div class="grid-x grid-padding-x">
   <div class="cell small-3 align-self-bottom">Align bottom</div>
 </div>
-<div class="grid-x align-center-middle">...</div>
+<div class="grid-x grid-padding-x align-center-middle">...</div>
 
 <!-- The vanilla helpers, responsive -->
-<div nfsGridX>
+<div nfsGridX gridPaddingX>
   <div nfsCell size="12" nfsFlexContainer [direction]="{small: 'column', large: 'row'}">
     <div nfsCallout color="primary" nfsFlexChild="auto">Auto</div>
     <div nfsCallout color="primary" [nfsFlexChild]="{small: 'shrink', large: 'auto'}">Auto on large</div>
   </div>
 </div>
 
-<div class="grid-x">
+<div class="grid-x grid-padding-x">
   <div class="cell small-12 flex-container flex-dir-column large-flex-dir-row">
     <div class="callout primary flex-child-auto">Auto</div>
     <div class="callout primary flex-child-shrink large-flex-child-auto">Auto on large</div>
@@ -283,12 +290,12 @@ Consumer markup, then the server HTML. The hydrated DOM equals the server HTML: 
 </div>
 
 <!-- Source ordering: text only, DOM order is the reading order -->
-<div nfsGridX>
+<div nfsGridX gridPaddingX>
   <div nfsCell size="6" nfsFlexChild [order]="{small: 2, medium: 1}">This column will come second on small, and first on medium and larger.</div>
   <div nfsCell size="6" nfsFlexChild [order]="{small: 1, medium: 2}">This column will come first on small, and second on medium and larger.</div>
 </div>
 
-<div class="grid-x">
+<div class="grid-x grid-padding-x">
   <div class="cell small-6 small-order-2 medium-order-1">This column will come second on small, and first on medium and larger.</div>
   <div class="cell small-6 small-order-1 medium-order-2">This column will come first on small, and second on medium and larger.</div>
 </div>
@@ -320,7 +327,7 @@ Per ADR 0008 and the rendering-modes research, section 7 rules 1 to 11:
 
 A good test asserts what a user or the browser observes: the classes, the computed `justify-content`, `align-items`, `align-self`, `order`, `flex`, and `flex-direction`, the geometry of the items, the DOM order against the visual order, and the development reports. No test reads a directive's fields. The patterns are the four layers of building-blocks 1.12 and the [Spec: Menu](../issues/85-spec-menu.md)'s and [Spec: Button Group](../issues/82-spec-button-group.md)'s tests, the nearest precedents.
 
-Story ids follow `flexbox-utilities--<story>`: `flexbox-utilities--horizontal-alignment`, `--vertical-alignment`, `--align-self`, `--central-alignment`, `--flex-container`, `--responsive`, `--source-ordering`, `--button-group`, and `--fixture` (args for every input, `!autodocs`, for e2e). The stories file sets `id: 'flexbox-utilities'`, `title: 'Utilities/Flexbox Utilities'`, and `component: NfsFlexContainer`. Stories use Foundation's default names, count, and Class breakpoints only, so the library's Storybook program needs no Variant declaration file (ADR 0040); the preview includes `nfs-flexbox-utilities`. Boxes are `nfsCallout` hosts and grids the XY Grid's directives, imported as scaffolding; no story element carries a Foundation or library class written in the template, and no reordered item holds focusable content.
+Story ids follow `flexbox-utilities--<story>`: `flexbox-utilities--horizontal-alignment`, `--vertical-alignment`, `--align-self`, `--central-alignment`, `--flex-container`, `--responsive`, `--source-ordering`, `--button-group`, and `--fixture` (args for every input, `!autodocs`, for e2e). The stories file sets `id: 'flexbox-utilities'`, `title: 'Utilities/Flexbox Utilities'`, and `component: NfsFlexContainer`. Stories use Foundation's default names, count, and Class breakpoints only, so the library's Storybook program needs no Variant declaration file (ADR 0040); the preview includes `nfs-flexbox-utilities`. Boxes are `nfsCallout` hosts and grids the XY Grid's directives, imported as scaffolding, a grid ported from Foundation's examples with their `gridPaddingX` gutter; no story element carries a Foundation or library class written in the template, and no reordered item holds focusable content.
 
 ### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`)
 
@@ -376,11 +383,11 @@ No manual assistive-technology test: the directives expose nothing to assistive 
 ## Out of Scope
 
 - The Menu's `.align-left`, `.align-right`, and `.align-center` on a `ul[nfsMenu]`, and Foundation's vertical-menu link alignment built on them: the Menu's own `align` input sets them, because Foundation's Menu partial has its own rules for those names ([Spec: Menu](../issues/85-spec-menu.md)); `nfsFlexAlign` warns when asked for them on a menu (D7). Category: `scope-boundary`.
-- Foundation's helper mixins (`flex`, `flex-align`, `flex-align-self`, `flex-order`, `flex-direction`) for the developer's own classes: they are Sass for the developer's own stylesheet, not classes, so there is nothing to bind; the docs point to them for a component of the developer's own. Category: `scope-boundary`.
+- Foundation's helper mixins (`flex`, `flex-align`, `flex-align-self`, `flex-order`, `flex-direction`) for the consumer's own classes: they are Sass for the developer's own stylesheet, not classes, so there is nothing to bind; the docs point to them for a component of the developer's own. Category: `scope-boundary`.
 - An `order` of 0, an unprefixed `.order-<n>`, gap, wrap, and offset classes: Foundation's flex partial generates none of them, and the library adds no class Foundation lacks (AGENTS.md Styling Guidelines). To return an item to its source position at a larger breakpoint, every sibling takes an order there, as Foundation's own example does. Category: `other`.
 - Foundation's Flexbox Mode switch (`$global-flexbox`, `foundation-everything`'s `$flex` argument): compile-time configuration, never an input (building-blocks 1.13); without the flex partial the classes have no CSS, and the not-a-Flex-parent warning reports an alignment on an element that is not one. Category: `scope-boundary`.
 - The grids, the Button Group, the Media Object, the Card, and the Callout, whose directives the examples use: their own specs ([Spec: XY Grid](../issues/99-spec-xy-grid.md), [Spec: Flex Grid](../issues/101-spec-flex-grid.md), [Spec: Button Group](../issues/82-spec-button-group.md), [Spec: Media Object](../issues/91-spec-media-object.md), [Spec: Card](../issues/90-spec-card.md), [Spec: Callout](../issues/89-spec-callout.md)). Category: `scope-boundary`.
-- Hiding a Flex parent: `@if`, a Toggler in Visibility mode (which also binds `.is-hidden`), or the hide directive of the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md); the `hidden` attribute alone does not hide an element whose Foundation class sets `display` (Notes). Category: `scope-boundary`.
+- Hiding a Flex parent: `@if`, a Toggler in Visibility mode (which also binds `.is-hidden`), or `nfsVisibility` with a bare `hideFor` ([Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)); the `hidden` attribute alone does not hide an element whose Foundation class sets `display` (Notes). Category: `scope-boundary`.
 - Focus and reading that follow the visual order in a reordered flex container (CSS `reading-flow`): not Baseline widely available on 2026-05-07, so out of the Browser target (Platform features). Category: `platform-or-a11y`.
 - The Variant registries, the helper types, the manifest rows, and the declaration-file generator: [Spec: Variant declaration tooling](../issues/136-spec-variant-declaration-tooling.md); the Runtime checks' configuration: [Spec: Breakpoint service (shared utility)](../issues/53-spec-breakpoint-service.md). Category: `scope-boundary`.
 - Runtime theming through custom properties (building-blocks 1.13). Category: `scope-boundary`.
@@ -421,7 +428,7 @@ No manual assistive-technology test: the directives expose nothing to assistive 
 </div>
 
 <!-- Equal-height callouts inside grid cells (the Equalizer spec's CSS answer) -->
-<div nfsGridX>
+<div nfsGridX gridMarginX>
   <div nfsCell [size]="{medium: 4}" nfsFlexContainer direction="column">
     <div nfsCallout nfsFlexChild="grow">...</div>
   </div>
@@ -435,7 +442,7 @@ No manual assistive-technology test: the directives expose nothing to assistive 
   <div nfsCell size="6" nfsFlexChild alignSelf="top" nfsFlexContainer alignY="middle">...</div>
 </div>
 
-<!-- Media object sections aligned one by one (the Media Object spec names its directives) -->
+<!-- Media object sections aligned one by one (NfsMediaObject and NfsMediaObjectSection, from ngx-foundation-sites/media-object) -->
 <div nfsMediaObject>
   <div nfsMediaObjectSection nfsFlexChild alignSelf="middle">...</div>
   <div nfsMediaObjectSection>...</div>
@@ -485,7 +492,7 @@ declare module 'ngx-foundation-sites' {
 }
 ```
 
-With it, `[order]="{xlarge: 12}"` compiles; `order="13"` fails to compile (ADR 0040). `NfsButton`, `NfsGridX`, `NfsCell`, `NfsCallout`, `NfsMediaObject`, and `NfsMediaObjectSection` are shown only to place them; the grid and media object names are placeholders until their specs publish.
+With it, `[order]="{xlarge: 12}"` compiles; `order="13"` fails to compile (ADR 0040). `NfsButton`, `NfsGridX`, `NfsCell`, `NfsCallout`, `NfsMediaObject`, and `NfsMediaObjectSection` are shown only to place them; `NfsGridX` and `NfsCell` are the [Spec: XY Grid](../issues/99-spec-xy-grid.md)'s, and `NfsMediaObject` and `NfsMediaObjectSection` the [Spec: Media Object](../issues/91-spec-media-object.md)'s.
 
 ### Platform features to adopt when the browser target moves
 
@@ -513,7 +520,7 @@ No required setting: Foundation's defaults pass.
 
 ### Notes
 
-- The `hidden` attribute does not hide a Flex parent: Foundation's `.flex-container`, and `.grid-x` likewise, set `display: flex` after normalize's `[hidden] { display: none; }` at equal specificity (measured in Chromium, Firefox, and WebKit). Hide a Flex parent with `@if`, a Toggler in Visibility mode, which also binds `.is-hidden`, or the Visibility Classes' hide directive.
+- The `hidden` attribute alone does not hide a Flex parent: Foundation's `.flex-container` and `.grid-x` set `display` after normalize's `[hidden] { display: none }` at equal specificity (measured in Chromium, Firefox, and WebKit), as building-blocks 1.10 records. Remove it with `@if`, or hide it with a Toggler in Visibility mode, which binds Foundation's `.is-hidden` ([Spec: Toggler](../issues/17-spec-toggler.md), D3), or with `nfsVisibility` and a bare `hideFor` ([Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)); the Thumbnail, Float Classes, XY Grid, and Flex Grid specs state the same rule for their classes. Both classes set `display: flex` there.
 - Column parents: Foundation's names assume a row. In a column container (`direction="column"`, the XY Grid's vertical grid), `alignX` moves children along the column and `alignY` across it.
 - Right to left: Foundation compiles `left` and `right` against `$global-text-direction`. In a right-to-left compile `.align-right` still means the right edge; inside a `dir="rtl"` region of a left-to-right compile, `alignX="right"` gives `flex-end`, the region's left edge (D16). `justify`, `spaced`, and `center` read the same in both.
 - On an XY grid cell, the grid's own `auto` and `shrink` cell sizes are the grid's sizing; `nfsFlexChild`'s sizes are the vanilla helpers' (`flex: 1 1 auto` and `0 1 auto`, against the grid's `1 1 0` and `0 0 auto`) and belong on boxes inside a Flex parent.
