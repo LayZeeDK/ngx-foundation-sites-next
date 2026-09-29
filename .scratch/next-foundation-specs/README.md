@@ -190,7 +190,7 @@ The ruling of [Triage the out-of-scope Foundation components and variants](issue
 
 Opened by [Decide: checks move to a later milestone](issues/158-decide-checks-move-to-a-later-milestone.md).
 
-1. [Task: extract the checks from the specs](issues/159-task-extract-checks-from-specs.md): open.
+1. [Task: extract the checks from the specs](issues/159-task-extract-checks-from-specs.md): resolved; seven manifests, `research/checks-extraction-a.md` to `-f.md` and `-shared.md`.
 2. [Spec: family checks (later milestone)](issues/160-spec-family-checks-later-milestone.md), [Spec: misuse warnings (later milestone)](issues/161-spec-misuse-warnings-later-milestone.md), [Spec: Runtime checks (later milestone)](issues/162-spec-runtime-checks-later-milestone.md), [Spec: build-time checks (later milestone)](issues/163-spec-build-time-checks-later-milestone.md), and [Re-run: forgotten-import checks spec for the later milestone](issues/164-rerun-forgotten-import-checks-later-milestone.md): open.
 3. [Re-run: specs without checks, group a](issues/165-rerun-specs-without-checks-group-a.md) to [Re-run: specs without checks, group f](issues/170-rerun-specs-without-checks-group-f.md): open.
 4. [Task: shared documents for the later-milestone checks](issues/171-task-shared-documents-later-milestone-checks.md): open; the wave audit follows it.
