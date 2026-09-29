@@ -159,3 +159,7 @@ The rules of the briefs held, with one kind of exception in the coordinator's sh
 ### Note, 2026-09-29 (exportAs on every directive)
 
 R17 and the closing pass's extension to twelve more directives without an `exportAs` are reversed: the user ruled that every directive and component has an `exportAs` ([Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md)).
+
+### Note, 2026-09-29 (family checks report a forgotten peer)
+
+The registration and DOM-only placement rule the phase-2 reviewers aligned the family specs to ("says nothing" where the element carries the peer's attribute) is replaced for the later milestone: a family's own check reports the forgotten peer itself ([Decide: family checks report a forgotten peer themselves](157-decide-family-checks-report-forgotten-peers.md)), and every check moves to that milestone ([Decide: checks move to a later milestone](158-decide-checks-move-to-a-later-milestone.md)).
