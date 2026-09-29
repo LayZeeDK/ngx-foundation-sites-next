@@ -162,6 +162,7 @@ The ruling of [Triage the out-of-scope Foundation components and variants](issue
 1. [Research: directive and component architecture principles for Angular UI libraries](issues/140-research-directive-component-architecture-principles.md), three research lenses in parallel, testing the user's draft ([research/architecture-principles-user-draft.md](research/architecture-principles-user-draft.md)).
 2. [Decide: the directive and component architecture guide](issues/141-decide-directive-component-architecture-guide.md), which wrote `architecture-guide.md` (resolved 2026-09-28; the user decided the release policy, [ADR 0045](adr/0045-release-policy-devkit-version-scheme.md), and the import array, [ADR 0046](adr/0046-forgotten-imports-caught-by-checks.md), the same day, and [Decide: inputs named like HTML presentational attributes](issues/139-decide-inputs-named-like-presentational-attributes.md) decided the presentational-attribute rule).
 3. [Audit: the specs against the architecture guide](issues/142-audit-specs-against-architecture-guide.md), after the wave, the out-of-scope triage, and the presentational-attribute decision; its survivors block the consistency review.
+- OPEN FOR HUMAN (2026-09-29): whether Prototyping Utilities keeps one Library mixin for its seventeen export mixins (ADR 0012's dated note and ADR 0044 disagree); options and the recommendation are in [Audit: the specs against the architecture guide](issues/142-audit-specs-against-architecture-guide.md), OPEN FOR HUMAN.
 
 ### Forgotten imports (3 tickets, opened 2026-09-28)
 

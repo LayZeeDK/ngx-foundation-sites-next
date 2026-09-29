@@ -132,6 +132,7 @@ Binding rule: `NfsVisibility` binds one `computed` class list holding only the c
 - Injection, `NfsVisibility`: `nfsBreakpointsToken` (the Zero breakpoint, as `nfsBreakpointForWidth(map, 0)`, the same on server and client; never `NfsMediaQuery`); `ElementRef` for the development checks; in development builds only, `HostAttributeToken('class')` (optional) for the copied-class warning; the Runtime checks' `nfsVariantCheck('nfsVisibility')` handle. All from `ngx-foundation-sites/media-query`, except the Angular core tokens.
 - Injection, `NfsShowForSr` and `NfsShowOnFocus`: `ElementRef`, and in development builds only CDK's `InteractivityChecker` for the focus checks. Nothing else.
 - Entry point: `ngx-foundation-sites/visibility` (one per Foundation docs page), exporting the three directives and the aliases `NfsVisibilityShowFor`, `NfsVisibilityHideFor`, `NfsVisibilityQuery`, and `NfsVisibilityCondition`. `NfsClassBreakpointQuery`, `NfsBreakpointClassesOverrides`, `NfsVariantBoolean`, and `nfsVariantBoolean` live in the primary entry point; this entry point uses them as types and `nfsVariantBoolean` as the transform.
+- In-family checks ([Spec: forgotten-import checks (shared utility)](../issues/150-spec-forgotten-import-checks.md)): `NfsVisibility`, `NfsShowForSr`, and `NfsShowOnFocus` each call `nfsDirectiveCheck` with their class name, with no parent check, no child probes, and no peers, and `strictParents` changes nothing.
 
 ### API: `NfsVisibility`
 

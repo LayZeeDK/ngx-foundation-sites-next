@@ -116,3 +116,7 @@ Nothing is OPEN FOR HUMAN, and no prototype is needed.
 ### Gist for Decisions so far
 
 - [Re-run: Interchange spec under the class rule](issues/127-rerun-interchange-class-rule.md) -- Interchange has no Foundation class, so the re-run removes the classes the consumer still wrote around it (the story's and data example's `.callout` become `nfsCallout`, a table's `.hover` goes) and composes a background host with the directive that owns its look by placement, never by hosting; an Interchange rule's breakpoint names are behaviour, the Breakpoint map's `NfsBreakpointName`, never Class breakpoints, and the query stays `string`; the project's image rule applies (`NgOptimizedImage` for every static `<img>`, with a loader for `srcset`, except inside an art-directed `<picture>` and for `data:`/`blob:` URLs); a `null` background binding removes a static inline default, so defaults live in stylesheets; the image-mode exclusion is re-checked under the CSS-only ruling (C9) and stays out as `platform-or-a11y`, and every exclusion carries a category; impact MEDIUM, confidence HIGH. Spec: [specs/interchange.md](specs/interchange.md).
+
+### Note, 2026-09-29 (architecture audit)
+
+- 2026-09-29: the fixer items of [Audit: the specs against the architecture guide](142-audit-specs-against-architecture-guide.md) are applied to the spec.

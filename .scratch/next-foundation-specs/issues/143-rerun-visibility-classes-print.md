@@ -144,3 +144,7 @@ Nothing is OPEN FOR HUMAN, and no prototype is needed: every question that neede
 ### Gist for Decisions so far
 
 - [Re-run: Visibility Classes spec for the print classes](issues/143-rerun-visibility-classes-print.md) -- Foundation's `.show-for-print` and `.hide-for-print` (from `foundation-print-styles`, documented on the Typography Base page) become a fifth condition, `showFor="print"` and `hideFor="print"`, of `nfsVisibility`, closed and needing no Runtime-check include; measured in four engines: in print the orientation classes print as fixed answers and the dark-mode classes as in light mode, `.show-for-print` prints a list item, caption, table footer, inline element, or flex menu as a block (documented, no CSS), beside any `hideFor` it hides the element everywhere or does nothing, so check 2 warns, and `hideFor="print"` combines with every breakpoint `showFor`, `sticky`, `dark-mode`, and `portrait` but not `landscape`; the classes are in the server HTML (Angular 22.2.0), so an early print is right; print-only content only adds to the screen page; `.print-break-inside` and `.ir` go to a proposed Typography Helpers ticket; impact MEDIUM, confidence HIGH; no ADR. Spec: [specs/visibility-classes.md](specs/visibility-classes.md).
+
+### Note, 2026-09-29 (architecture audit)
+
+- 2026-09-29: the fixer items of [Audit: the specs against the architecture guide](142-audit-specs-against-architecture-guide.md) are applied to the spec.

@@ -207,3 +207,7 @@ None: no published spec names a directive of this family under a placeholder. Re
 ### Gist for Decisions so far
 
 Eighteen export-mixin directives set all 357 Prototype classes through 42 `nfs`-prefixed, selector-named Utility attributes typed by ADR 0040, resolve overlaps per side, and reprint responsive spacing in breakpoint order; the Utility directive rule is the precedent for Float Classes and Typography Helpers.
+
+### Note, 2026-09-29 (architecture audit)
+
+- 2026-09-29: the fixer items of [Audit: the specs against the architecture guide](142-audit-specs-against-architecture-guide.md) are applied to the spec.

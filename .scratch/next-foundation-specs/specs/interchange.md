@@ -141,6 +141,7 @@ Internal: the selection computed (rules + NfsMediaQuery + namedQueries), the ren
 - No hosted class directive: a behaviour that may sit on any element is written beside the class directive, never hosts it (building-blocks 1.9, "Hosting a class directive"), so `nfsInterchange` composes with `nfsCallout` or a grid cell's directive on one element by placement. No Variant registry and no `nfsVariantCheck` handle: Interchange has no Variant input.
 - `NfsMediaQuery` is injected, never re-provided. CDK `InteractivityChecker` is injected by the outlet for the focus rule.
 - Entry point: `ngx-foundation-sites/interchange`, which imports `ngx-foundation-sites/media-query`, so a consumer `@defer` block pulls in both with the first Interchange use.
+- In-family checks ([Spec: forgotten-import checks (shared utility)](../issues/150-spec-forgotten-import-checks.md)): `NfsInterchange` calls `nfsDirectiveCheck('NfsInterchange')`, with no parent check, no child probes, and no peers, and `strictParents` changes nothing; `NfsInterchangeOutlet` sits on `ng-container` and calls nothing, so only the static check sees a forgotten outlet.
 
 ### API
 

@@ -203,7 +203,7 @@ The rule each family spec follows. A spec with more than one directive lists its
 4. Its peers linked by reference or by value, which get no probe.
 5. What `strictParents` changes for the part (the table below), or "nothing".
 
-A single directive's spec states only that it calls `nfsDirectiveCheck` with its name.
+A spec with a single directive and no parent, child, or peer adds no line: building-blocks 1.9, which every spec inherits, gives the directive the call with its class name.
 
 ### The runtime manifest check: `strictDirectiveImports`
 

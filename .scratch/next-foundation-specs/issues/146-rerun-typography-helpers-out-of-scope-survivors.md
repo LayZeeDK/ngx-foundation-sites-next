@@ -150,3 +150,7 @@ No `CONTEXT.md` term and no ADR.
 ### Gist for Decisions so far
 
 - [Re-run: Typography Helpers spec, out-of-scope survivors](issues/146-rerun-typography-helpers-out-of-scope-survivors.md) -- checks-only `nfs-typography-base` also stops the compile on `$blockquote-color` (`$dark-gray`, 3.423:1 on the page, failing axe in three engines), with no directive, while the other colours of `foundation-typography-base` pass on the defaults and stay unchecked; the four greys are required at `#666666`, not `#737373`, because `#737373` fails 10 of the 13 light container backgrounds the specs keep (3.799:1 on a card divider, 4.014:1 on a hovered table stripe) and `#666666` passes all 13 (4.601:1 at worst), measured in three engines; the spec states the greys-on-containers requirement with no container check, and `--composition` asserts it; the blockquote's side border stays out (1.4.11); the Callout and Card bullets point to the requirement; impact MEDIUM, confidence HIGH; no ADR. Spec: [specs/typography-helpers.md](specs/typography-helpers.md).
+
+### Note, 2026-09-29 (architecture audit)
+
+- 2026-09-29: the fixer items of [Audit: the specs against the architecture guide](142-audit-specs-against-architecture-guide.md) are applied to the spec.

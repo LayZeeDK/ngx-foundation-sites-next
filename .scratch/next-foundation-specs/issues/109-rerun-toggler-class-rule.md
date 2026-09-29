@@ -152,3 +152,7 @@ No change to `README.md` (its Toggler row names no class), `storybook-convention
 ### Gist for Decisions so far
 
 - [Re-run: Toggler spec under the class rule](issues/109-rerun-toggler-class-rule.md) -- the Toggler has no Structural or Variant class, so no Variant input, and `.is-hidden` stays its host binding; class mode names only the developer's own classes, and `toggler` written without a value switches none, so Foundation's `.expanded` example becomes `<ul nfsMenu nfsToggler toggler [expanded]="menuBar.active()">` with the Menu keeping its class (D17); `animate` takes the Reveal re-run's shared Motion names and dot form as a pair, `NfsMotionPair`, which also allows a leaving name alone, so Foundation's `data-animate` and `data-closable` values copy unchanged (D18); the `is-hidden` seed goes and a copied one is reported; examples and stories write `nfsCallout`, `nfsMenu`, `nfsThumbnail`, `nfsButton`, and `nfsCloseButton` beside the Toggler, and close buttons meet 2.5.8 through the Close Button's floor; ARIA, keys, focus, animation phases, rendering modes, and Story ids unchanged; impact HIGH, confidence HIGH. Spec: [specs/toggler.md](specs/toggler.md).
+
+### Note, 2026-09-29 (architecture audit)
+
+- 2026-09-29: the fixer items of [Audit: the specs against the architecture guide](142-audit-specs-against-architecture-guide.md) are applied to the spec.
