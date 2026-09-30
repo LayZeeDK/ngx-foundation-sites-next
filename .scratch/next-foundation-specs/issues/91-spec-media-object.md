@@ -179,3 +179,15 @@ Unchanged: both directives, their API, the development checks (check 3 as [Re-ru
 ### Amendment, 2026-09-29 (exportAs on every directive)
 
 From [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md): `specs/media-object.md`'s `NfsMediaObject` and `NfsMediaObjectSection` gain `exportAs: 'nfsMediaObject'` and `exportAs: 'nfsMediaObjectSection'` (the two API lines and D1).
+
+### Amendment, 2026-09-29 (checks move to a later milestone)
+
+From [Decide: checks move to a later milestone](158-decide-checks-move-to-a-later-milestone.md), applied by [Re-run: specs without checks, group c](167-rerun-specs-without-checks-group-c.md): `specs/media-object.md` describes and accepts a library with no checks. What left the spec, per check:
+
+- Misuse warnings: development check 1 (copied Variant and Flexbox Utilities classes, D9), check 2 (`stackFor` naming a breakpoint other than the Zero breakpoint), and check 4 (overflow at 320 CSS px through a `ResizeObserver`, D8), with their messages, the browser-level cases, the SSR smoke's `console.warn` spy, and the development-only `HostAttributeToken('class')` and `ElementRef` reads.
+- Family checks: check 3 (a section that is not a direct child of a media object, D10), with its message and browser-level cases.
+- Forgotten-import checks: the In-family bullet (`nfsDirectiveCheck` for both directives and the section probe).
+- Runtime checks: `nfsVariantCheck('nfsMediaObjectSection')`, the `include()` and `value()` calls, `strictVariantNames` and `strictVariantProperties`, the browser-level case, and user stories 12 and 13's reports.
+- Build-time checks: `--nfs-media-object-section`, a flag-gated property that only the Runtime check read (it is not in the Variant manifest), and with it the properties-only `nfs-media-object` mixin, which held nothing else, and its Sass compile test (D6). The entry point now has no Library mixin, and the Storybook preview no longer includes it.
+
+Each rule is stated as documented usage: the JSDoc of `stackFor`, `NfsMediaObjectSection`, `alignment`, and `mainSection`; a "Usage rules" section in place of "Development checks and runtime checks" (stacking at the Zero breakpoint, reflow at 320 CSS px, placement, which build styles which family, and the class each copied class maps to); the Solution; the mapping table; and the 1.4.10 row. A new Imports bullet says what a forgotten import does. The class records still strip a copied Variant class, with their test. D2, D4, D6, D8, D9, D10, D12, and D13 are rewritten to what the spec now decides; user stories 6, 12, 13, 15, 17, and 19 state documentation, and story 35 drops the Sass compile test. Unchanged: the two directives, their inputs and types, the binding rule, ARIA, the rendering modes, the stories, and the e2e tests.

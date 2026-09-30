@@ -182,3 +182,13 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 ### Amendment, 2026-09-29 (exportAs on every directive)
 
 From [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md), which reverses R17 and this ticket's closing-pass line above: `specs/label.md`'s `NfsLabel` gains `exportAs: 'nfsLabel'` (the API line, the bullet, D1).
+
+### Amendment, 2026-09-29 (checks move to a later milestone)
+
+From [Decide: checks move to a later milestone](158-decide-checks-move-to-a-later-milestone.md), applied by [Re-run: specs without checks, group c](167-rerun-specs-without-checks-group-c.md): `specs/label.md` describes and accepts a library with no checks. What left the spec, per check:
+
+- Misuse warnings: development check 1 (a label with no text for screen readers, D5, with its `aria-prohibited-attr` sentence), check 2 (copied palette classes, D7), and check 3 (a label on an `a` host, D12), with the directive's development-only `afterRenderEffect`, its `ElementRef` and `HostAttributeToken('class')` injections, and the browser-level cases for all three and for `ngDevMode` off.
+- Runtime checks: the Variant check (`nfsVariantCheck('nfsLabel')`, `include('nfs-label', ['label-palette'])`, `value()`, `strictVariantNames`, `strictVariantProperties`, D11), with its browser-level case, the SSR smoke's no-report clause, the missing-include sentence, and the empty-palette opt-out.
+- Build-time checks: the `nfs-label` `@error` contrast check (Sass item 1(c), D9), with the Sass compile cases that asserted only it (the defaults' stop, `#777777` and `#1177dd`, `$label-background: #ffae00`); the overrides-file case now asserts the compiled `.label.alert` background.
+
+Each rule is stated as documented usage: the JSDoc of `NfsLabel` and two usage rules in the API section (text for screen readers, with its two exceptions; never on a link), a bullet on copied classes (not stripped; bind `color`), the 1.1.1 and 1.4.3 rows, and a "Documented usage for the settings" paragraph in the Sass subsection with the ratios, a dark `$label-color` for a light `$label-background`, and the required alert. A new Imports bullet says what a forgotten import does. The pick-correction rule keeps the library's contrast helper; `--nfs-label-palette` stays, for the Variant declaration tooling's generator. D5, D7, D9, D11, D12, and D13 are rewritten, and D6's rejected alternative no longer names a check; user stories 13, 15 to 20, and 22 state documentation, not warnings. Unchanged: the directive, its `color` input and type, ARIA, the rendering modes, the pick-correction rule, the required setting, the stories, and the e2e and manual tests.

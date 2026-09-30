@@ -136,3 +136,13 @@ Unchanged: both directives, their API, the query resolution, the emission timing
 ### Amendment, 2026-09-29 (audit 0008)
 
 - L5, [Audit 0008: the class-rule wave](../audits/0008-class-rule-wave.md): the Background mode lead-in's "`hero` is the application's own class" reads "`hero` is an Application class", and the later "`hero` and `banner` are the application's own classes" reads "`hero` and `banner` are Application classes".
+
+### Amendment, 2026-09-29 (checks move to a later milestone)
+
+From [Decide: checks move to a later milestone](158-decide-checks-move-to-a-later-milestone.md), applied by [Re-run: specs without checks, group c](167-rerun-specs-without-checks-group-c.md): `specs/interchange.md` describes and accepts a library with no checks. What left the spec, per check:
+
+- Misuse warnings: the development-mode error for `nfsInterchange` on an `<img>`, and the warnings for an unparseable rule-string segment, an unknown bare-word query, and a Named query key equal to a breakpoint name, with their messages and browser-level cases, and the "warn" in `parseNfsInterchangeRules`' JSDoc.
+- Forgotten-import checks: the In-family bullet (`nfsDirectiveCheck('NfsInterchange')`, and the outlet that only the static check sees).
+- Also gone: the statements that no Runtime check or `nfsVariantCheck` reads Interchange (the Solution, the mapping table, the Hierarchy bullet, decision 19, and Sass items 5 and 6).
+
+The behaviour stays: a malformed segment is skipped, an unknown bare word never matches, and a breakpoint wins over a Named query of the same name. Each rule is stated as documented usage: a usage-rules list in the API section for the JSDoc of `rules` (never on an `<img>`; `[path, query]` segments; bare-word queries), Query resolution step 4, and the Deltas. A new Imports bullet says what a forgotten import does. Decisions 1, 7, and 19 are rewritten to what the spec now decides; user stories 6, 19, and 20 state documentation, not warnings; the `interchange--background-rule-forms` story asserts the retina rule by `window.matchMedia` in place of a silent console. Unchanged: both directives, their API, the emission timing, the focus rule, ARIA, the rendering modes, and the e2e tests.

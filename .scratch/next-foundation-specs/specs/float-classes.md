@@ -21,7 +21,7 @@ A server-rendered application adds the usual second problem: whatever the Angula
 
 One attribute directive, `NfsFloatClasses`, named after Foundation's `foundation-float-classes` export mixin, sets the four classes through two Utility attributes written where Foundation's docs write the classes: `nfsFloat="left"`, `nfsFloat="right"`, and `nfsFloat="center"` for `.float-left`, `.float-right`, and `.float-center`, and the boolean `nfsClearfix` for `.clearfix`. `nfsFloat` takes exactly Foundation's three names, so a misspelt name or a class name such as `nfsFloat="float-left"` fails to compile, and one element cannot ask to float and to centre at once. No value sets no class. The directive binds only its own classes, declares no listener, and adds no role, so it sits beside any library directive: `<button nfsButton nfsFloat="right">`, `<div nfsCallout nfsClearfix>`.
 
-The DOM order is the reading and focus order. A developer who wants a group of controls at the far edge floats one element that holds them in reading order; in development builds the directive reports a float that follows a sibling floated toward the end of the reading direction when either holds focusable content, a float on a flex or grid item, a clearfix on a flex or grid container, and a copied Foundation class. Everything else is Foundation's CSS: there is no Library mixin and no Variant property, and the server HTML is the final DOM.
+The DOM order is the reading and focus order. A developer who wants a group of controls at the far edge floats one element that holds them in reading order, and never floats an element after a sibling floated toward the end of the reading direction when either holds focusable content. A float on a flex or grid item does nothing and a clearfix on a flex or grid container contains nothing, so there the Flexbox Utilities align instead. The API's JSDoc and the usage section state these rules. Everything else is Foundation's CSS: there is no Library mixin and no Variant property, and the server HTML is the final DOM.
 
 ## User Stories
 
@@ -36,14 +36,14 @@ The DOM order is the reading and focus order. A developer who wants a group of c
 9. As an application developer, I want the attributes never to capture another directive's input or a native attribute, so that composition has no surprises.
 10. As an application developer, I want a bound `nfsFloat` that changes to swap only its own class, so that my own classes and other directives' classes stay.
 11. As an application developer, I want an unbound attribute to set no class, so that `[nfsFloat]="undefined"` changes nothing.
-12. As an application developer migrating Foundation markup, I want a copied `class="float-right"` on an element that carries the directive to be reported in development, naming the attribute to write.
-13. As an application developer, I want a development warning when a float follows a sibling floated toward the end of the reading direction and either holds focusable content, so that I do not ship a row whose focus order runs against its visual order.
+12. As an application developer migrating Foundation markup, I want the spec to name the attribute that replaces each Foundation class, so that I replace a copied `class="float-right"` with `nfsFloat="right"`.
+13. As an application developer, I want the spec to state that a float never follows a sibling floated toward the end of the reading direction when either holds focusable content, so that I do not ship a row whose focus order runs against its visual order.
 14. As an application developer, I want the spec to show how to put a group of controls at the far edge in reading order, so that the recipe is one floated container, not one float per control.
-15. As an application developer, I want a development warning when I float a flex or grid item, so that an alignment that does nothing is caught and I reach for the Flexbox Utilities instead.
-16. As an application developer, I want a development warning when I put `nfsClearfix` on a flex or grid container, so that its pseudo-elements do not silently shift my `justify-content` spacing.
+15. As an application developer, I want the spec to tell me that a float on a flex or grid item does nothing, so that I reach for the Flexbox Utilities instead.
+16. As an application developer, I want the spec to tell me that `nfsClearfix` on a flex or grid container contains nothing and that its pseudo-elements shift `justify-content` spacing, so that I leave it off such a container.
 17. As an application developer, I want the spec to tell me that `nfsFloat="center"` needs a width narrower than the container, and that a percentage width works, so that I am not misled by Foundation's docs.
 18. As an application developer, I want the spec to tell me that the `hidden` attribute does not hide an `nfsFloat="center"` element, and what does, so that hidden content stays hidden.
-19. As an application developer building a right-to-left page, I want the spec to tell me that `left` and `right` are physical, and that the order check follows the reading direction, so that I choose the side on purpose.
+19. As an application developer building a right-to-left page, I want the spec to tell me that `left` and `right` are physical, and that the reading-order rule follows the reading direction, so that I choose the side on purpose.
 20. As an application developer, I want the spec to name which utilities of other families override a float or a centring (`nfsDisplay`, horizontal margins, `nfsPosition`), so that I know what Foundation's cascade decides.
 21. As a keyboard user, I want focus to move through floated controls in the order I see them, so that I can predict where it goes next.
 22. As a screen reader user, I want floated content to be read in the order it makes sense, so that the page's meaning does not change with its layout.
@@ -71,13 +71,13 @@ The Float Classes have no Plugin, no `defaults` object, no `data-*` Options, no 
 
 Every class is printed in every build: `foundation-everything` always includes `foundation-float-classes`, after every component and before the Flexbox, Visibility, and Prototype classes.
 
-Docs conventions kept or corrected: the class-for-class attributes (kept, as Utility attributes); the Float Left/Right example's callout with a clearfix and two floated buttons (kept, as `nfsCallout nfsClearfix` with `nfsButton nfsFloat`; the `<a class="button">` elements without `href` become `<button>` elements, building-blocks 1.10); the Float Center image (kept, as an `NgOptimizedImage` image with `nfsFloat="center"` and an `alt`, 1.1.1); "only work on elements with an absolute width, which means not a percentage" (corrected: a percentage width centres too, and an `auto` width does not, measured); the right-to-left warning (kept, with the order check reading the direction, D8).
+Docs conventions kept or corrected: the class-for-class attributes (kept, as Utility attributes); the Float Left/Right example's callout with a clearfix and two floated buttons (kept, as `nfsCallout nfsClearfix` with `nfsButton nfsFloat`; the `<a class="button">` elements without `href` become `<button>` elements, building-blocks 1.10); the Float Center image (kept, as an `NgOptimizedImage` image with `nfsFloat="center"` and an `alt`, 1.1.1); "only work on elements with an absolute width, which means not a percentage" (corrected: a percentage width centres too, and an `auto` width does not, measured); the right-to-left warning (kept, with the reading-order rule following the direction, D8).
 
 ### CSS class to directive mapping
 
 Every class is a Utility class. There are no Structural classes and no State classes, and no class is left for the consumer to write (ADR 0039).
 
-| Foundation classes | Directive and Utility attribute | Type alias; Sass setting and Variant registry | Value shape | Class each value sets | Variant properties the Runtime check reads |
+| Foundation classes | Directive and Utility attribute | Type alias; Sass setting and Variant registry | Value shape | Class each value sets | Variant properties |
 | --- | --- | --- | --- | --- | --- |
 | `.float-left`, `.float-right`, `.float-center` | `NfsFloatClasses`: `nfsFloat` | `NfsFloatName`: `'left' \| 'right' \| 'center'`, closed (the export mixin writes the three classes itself; no setting) | a name | `'left'` sets `.float-left`, `'right'` `.float-right`, `'center'` `.float-center`; no value sets none | none (closed) |
 | `.clearfix` | `NfsFloatClasses`: `nfsClearfix` | `NfsVariantBoolean` through `nfsVariantBoolean`, closed | a boolean | `true` sets `.clearfix`; `false` (default) sets none | none (closed) |
@@ -105,7 +105,7 @@ The Float Classes take the stand-alone shape of the rule (clause 0). Each class 
 4. Values: a closed union and a typed boolean (ADR 0040); no responsive form, because Foundation has none; no value sets no class.
 5. Composition: one computed class list, no un-prefixed input, no listener, no role, name, or state.
 6. Overlap: none within the family. The three placements are one attribute, so at most one of their classes is bound, and `.clearfix` styles only the host's pseudo-elements, so it never sets a property a placement sets. Across families Foundation's cascade decides, and the Notes name each pair (D12).
-7. Ownership: the directive owns its development checks (1.3.2, 2.4.3, and the two no-effect cases). The entry point has no Library mixin, because it has no Open Variant family, no flag, no order to fix, and no compile-time check (ADR 0012, dated note: one that needs neither custom CSS nor checks has none).
+7. Ownership: the directive's documentation owns the reading-order rule (1.3.2, 2.4.3) and the two no-effect cases. The entry point has no Library mixin, because it has no Open Variant family, no flag, and no order to fix, so it needs no custom CSS (ADR 0012, dated note).
 
 ### Hierarchy and DI shape
 
@@ -115,8 +115,9 @@ The Float Classes take the stand-alone shape of the rule (clause 0). Each class 
 
 - One standalone directive with no template, no parent, no children, no Parent token, no providers, and no host directives. Nothing finds it through DI, and it finds nothing.
 - No Defaults token: the family has no Options, and a Defaults token never holds a Variant input's default (building-blocks 1.4).
-- Injection: `ElementRef` for the development checks; in development builds only, `HostAttributeToken('class')` (optional) for the copied-class check. No `nfsBreakpointsToken` (there is no responsive form) and no `nfsVariantCheck()` handle (there is no Variant property).
+- Injection: none. No `nfsBreakpointsToken`, because there is no responsive form.
 - Entry point: `ngx-foundation-sites/float-classes` (one per Foundation docs page). It exports `NfsFloatClasses` and `NfsFloatName`. `NfsVariantBoolean` and `nfsVariantBoolean` come from the primary entry point `ngx-foundation-sites`, as a type and one pure function.
+- Imports (documented usage): a component imports `NfsFloatClasses` wherever its template writes `nfsFloat` or `nfsClearfix`. Without that import the element renders with no float class and no error, unless the template binds `[nfsFloat]` or `[nfsClearfix]`, which then fails to compile (NG8002).
 
 ### API
 
@@ -127,9 +128,14 @@ Standalone, no template, `exportAs: 'nfsFloatClasses'`, no model, no output, no 
 type NfsFloatName = 'left' | 'right' | 'center';
 
 class NfsFloatClasses {
-  /** Foundation `.float-left`, `.float-right` (`float: <v> !important`), `.float-center` (`display: block` and automatic side margins). */
+  /**
+   * Foundation `.float-left`, `.float-right` (`float: <v> !important`), `.float-center` (`display: block` and automatic side margins).
+   * Write floated content in reading order: never float an element after a sibling floated toward the end of the reading
+   * direction when either holds focusable content (WCAG 1.3.2, 2.4.3). `left` and `right` do nothing on a flex or grid item;
+   * `center` centres only a box narrower than its container.
+   */
   readonly float: InputSignal<NfsFloatName | undefined>; // 'nfsFloat'; default undefined: no class
-  /** Foundation `.clearfix` (the `clearfix` mixin): the host contains its floated children. */
+  /** Foundation `.clearfix` (the `clearfix` mixin): the host contains its floated children. Contains nothing on a flex or grid container. */
   readonly clearfix: InputSignalWithTransform<boolean, NfsVariantBoolean>; // 'nfsClearfix'; default false: no class
 }
 ```
@@ -140,12 +146,10 @@ class NfsFloatClasses {
 | `nfsClearfix` | `nfsVariantBoolean` (never `booleanAttribute`, so `nfsClearfix="flase"` fails to compile) | `false`: no class | `.clearfix` | None |
 
 - Host: one `[class]` binding to a `computed` list of the classes the two inputs set. The consumer's static classes, its own class bindings, and every other directive's classes stay, because Angular combines static classes and class bindings. No attribute, no style, no listener.
-- A copied Foundation class is not stripped, because the list binds only the classes the inputs set (clause 5), so it keeps styling until removed; the development check reports it (D7).
-- Development-mode checks, in the directive's one `afterRenderEffect` read phase, which it creates only when `ngDevMode` is on (never on the server and never in a production build); each warns once per instance:
-  1. Copied classes (D7), at the first render: a static class list that holds `float-left`, `float-right`, `float-center`, or `clearfix` warns, naming the attribute to write: "class="float-right" is set by nfsFloat: write nfsFloat="right" instead"; "class="clearfix" is set by nfsClearfix: write nfsClearfix instead". The consumer's own classes are not reported.
-  2. Reversed order (D8), on every run while `nfsFloat` is `left` or `right`: when the parent element's computed `display` is not a flex or grid value, the host's computed `float` is `left` or `right`, its previous element sibling's computed `display` is not `none` and its computed `float` is the end side of the parent's computed `direction` (`right` for `ltr`, `left` for `rtl`), and the host or that sibling is or contains focusable content (`a[href]`, `button`, `input`, `select`, `textarea`, `[tabindex]` other than `-1`, `[contenteditable]`, none disabled): "nfsFloat="right": this element follows a sibling floated right, so on a shared line it is drawn before that sibling in the reading direction while Tab and assistive technology reach it after (WCAG 1.3.2, 2.4.3). Float one element that holds both in reading order, or lay them out with the Flexbox Utilities." The side and direction in the message are the ones read.
-  3. No effect (D9), on every run: `nfsFloat` `left` or `right` whose parent element's computed `display` is `flex`, `inline-flex`, `grid`, or `inline-grid`: "nfsFloat="right" does nothing on a flex or grid item; align it with the Flexbox Utilities (alignX on the parent, alignSelf on the item) instead". `nfsClearfix` on a host whose own computed `display` is one of those: "nfsClearfix on a flex or grid container contains no floats, because its children cannot float, and its two pseudo-elements become items that shift justify-content spacing; remove it". `nfsFloat="center"` is not reported there: automatic margins centre a flex item on the main axis (CSS Flexbox, section 8.1).
-- Runtime checks: none. The family is closed and writes no Variant property, so the directive makes no `include()` or `value()` call, and a missing `foundation-float-classes` include is not reported (as for every Foundation export mixin, Out of Scope).
+- A copied Foundation class is not stripped, because the list binds only the classes the inputs set (clause 5), so it keeps styling until removed (D7); the consumer writes the attribute the mapping table names instead (`nfsFloat="right"` for `float-right`, `nfsClearfix` for `clearfix`).
+- Usage rules, stated in the JSDoc above and in the usage examples:
+  1. Reading order (D8): floated content is written in reading order. An element floated `left` or `right` never follows a sibling floated toward the end side of the parent's `direction` (`right` for `ltr`, `left` for `rtl`) when either is or contains focusable content: on a shared line it is drawn before that sibling in the reading direction while Tab and assistive technology reach it after (WCAG 1.3.2, 2.4.3). Float one element that holds the group in reading order, or lay the group out with the Flexbox Utilities.
+  2. No effect (D9): `nfsFloat` `left` or `right` does nothing on a flex or grid item (a child of a `flex`, `inline-flex`, `grid`, or `inline-grid` parent); align it with the Flexbox Utilities there (`alignX` on the parent, `alignSelf` on the item). `nfsClearfix` on a flex or grid container contains no floats, because its children cannot float, and its two pseudo-elements become items that shift `justify-content` spacing, so it is left off such a container. `nfsFloat="center"` works there: automatic margins centre a flex item on the main axis (CSS Flexbox, section 8.1).
 
 ### Comparison with Angular Material (22.2)
 
@@ -154,14 +158,14 @@ Material and the CDK ship no float utilities: Material's components lay themselv
 | Concern | Angular Material and CDK (22.2) | Float Classes |
 | --- | --- | --- |
 | Float or centring utilities | None | One directive over Foundation's four classes |
-| Reading direction | `Directionality` for code; logical CSS in its components | Physical classes, as Foundation's; the order check reads the computed `direction` |
+| Reading direction | `Directionality` for code; logical CSS in its components | Physical classes, as Foundation's; the reading-order rule follows the computed `direction` |
 | Testing | Component harnesses | DOM-first assertions; no harness |
 
 Borrowed: nothing; there is no counterpart. Not borrowed: `NgClass`-style class strings (ADR 0039).
 
 ### Implementation level and primitives
 
-Implementation level: native platform. Floats, automatic margins, and the clearfix's table pseudo-elements are CSS; the order is the DOM's. `@angular/aria` has no pattern for layout helpers, and `@angular/cdk` adds nothing: `Directionality` reports the `dir` attribute, while float placement follows the computed `direction`, so the development check reads the computed style. The Angular layer is two `input()` signals, one `computed` class list, one host `[class]` binding, and a development-only render callback. No `effect`, no listener, no timer, no observer, no `Renderer2` write.
+Implementation level: native platform. Floats, automatic margins, and the clearfix's table pseudo-elements are CSS; the order is the DOM's. `@angular/aria` has no pattern for layout helpers, and `@angular/cdk` adds nothing: `Directionality` reports the `dir` attribute, while float placement follows the computed `direction`, and the directive reads neither. The Angular layer is two `input()` signals, one `computed` class list, and one host `[class]` binding. No `effect`, no render callback, no listener, no timer, no observer, no `Renderer2` write.
 
 Fallback: none needed. The facts the design rests on (the reversed order and the real Tab order, the float on a flex item, the clearfix in a flex container, the percentage-width centring, the `hidden` attribute, the physical sides, and the HTML attributes the names avoid) were measured by this spec's ticket with Dart Sass 1.104.1 over Foundation 6.9.0 in Chromium 153, Firefox 155, and WebKit 26.6 through Playwright 1.63, with axe-core 4.13.0.
 
@@ -179,7 +183,7 @@ APG pattern: none; the utilities are presentation.
 | --- | --- | --- |
 | Tab, Shift+Tab | Follows the DOM order whatever the floats draw; measured in three engines: two right-floated buttons are reached right to left, and one right-floated group holding them in reading order left to right | Native |
 
-Focus: the directive moves no focus and never changes DOM order. Floated content keeps a DOM order that matches the order it is seen in the reading direction (1.3.2, 2.4.3); development check 2 reports the reversed pair.
+Focus: the directive moves no focus and never changes DOM order. Floated content keeps a DOM order that matches the order it is seen in the reading direction (1.3.2, 2.4.3), as usage rule 1 states.
 
 ### WCAG 2.2 AA
 
@@ -187,7 +191,7 @@ The target is WCAG 2.2 level AA (user rule; ADR 0022). Each criterion below is a
 
 | Criterion | Requirement and how it is met | Foundation default | Test |
 | --- | --- | --- | --- |
-| 1.3.2 Meaningful Sequence; 2.4.3 Focus Order | Floated content is written in reading order, and a group of controls at the end of the line is one floated element holding them in that order; two floats never meet where the earlier one floats toward the end of the reading direction and either holds focusable content. `NfsFloatClasses` warns in development (check 2) | The docs' example (a left float, then a right float) passes; two right floats, or a right float before a left one, reverse the visual order against the Tab order (measured in three engines) | Play function of `float-classes--reading-order` walks Tab through the group and asserts each focused box starts to the right of the previous one; e2e does the same with real key presses in three engines; browser-level tests of check 2, right-to-left included |
+| 1.3.2 Meaningful Sequence; 2.4.3 Focus Order | Floated content is written in reading order, and a group of controls at the end of the line is one floated element holding them in that order; two floats never meet where the earlier one floats toward the end of the reading direction and either holds focusable content (usage rule 1, in the JSDoc of `nfsFloat`) | The docs' example (a left float, then a right float) passes; two right floats, or a right float before a left one, reverse the visual order against the Tab order (measured in three engines) | Play function of `float-classes--reading-order` walks Tab through the group and asserts each focused box starts to the right of the previous one; e2e does the same with real key presses in three engines |
 | 1.4.10 Reflow | At 320 CSS px no float scrolls the page sideways: floated boxes shrink to fit and wrap to the next line; a floated box never has a fixed width wider than its container (documented); images keep Foundation's `max-width: 100%` | Foundation's examples fit | e2e at 320 by 640 px in three engines: `document.documentElement.scrollWidth` is at most 320 in `float-classes--float-left-right`, `--float-center`, and `--reading-order` |
 | 1.4.12 Text Spacing | A clearfix container has no fixed height, so it grows with its floated content under the text spacing (documented) | Passes | e2e with the text-spacing stylesheet at 320 by 640 px: in `float-classes--float-left-right` the callout's bottom edge is at or below both buttons' |
 | 1.1.1 Non-text Content | An image centred with `nfsFloat="center"` keeps its `alt` | The docs' Float Center image has none | axe `image-alt` in `float-classes--float-center` |
@@ -259,7 +263,7 @@ None. Foundation's float partial declares no transition, and the library adds no
 Per ADR 0008 and the rendering-modes research, section 7 rules 1 to 11:
 
 - Server-side rendering and first paint: the server HTML carries every class the attributes set, exactly as the hydrated DOM does; nothing depends on the viewport, the platform, or a token.
-- Before hydration: the directive touches no DOM outside its host binding, measures nothing, and starts no timer. The development checks run in a render callback, a no-op on the server.
+- Before hydration: the directive touches no DOM outside its host binding, measures nothing, and starts no timer.
 - Full and incremental hydration: the host binding's value equals the server's, so hydration changes nothing; there is no structure to mismatch and no Hydration boundary of its own.
 - Event replay: the directive declares no listener and adds no `jsaction`; floated links and buttons keep their own behaviour and replay as any other.
 - `@defer`: library templates contain no `@defer`. Inside a dehydrated block a float is its server HTML. Inside `@defer (hydrate never)` every float and clearfix stays applied for good, which suits layout; a bound value that should change later does not go in `hydrate never`.
@@ -278,7 +282,7 @@ Run by `npx nx test-storybook <lib>`. Every story runs axe with `parameters.a11y
 - `float-classes--float-left-right`: Foundation's docs example: an `nfsCallout nfsClearfix` holding two `nfsButton` buttons with `nfsFloat="left"` and `nfsFloat="right"`, found by `getByRole('button', {name: 'Left'})` and `{name: 'Right'}`. Their computed `float` is `left` and `right`; the left button's left edge and the right button's right edge lie on the callout's content box edges (within 1 px); the callout's bottom edge is at or below both buttons'.
 - `float-classes--float-center`: an `NgOptimizedImage` image and a box whose 50% width comes from the Prototyping Utilities' `nfsWidth="50"` (`NfsPrototypeSizing`, listed in the story's `moduleMetadata.imports`; Foundation's `.width-50`, because storybook-conventions section 8 keeps inline styles for values Foundation has no class for), each with `nfsFloat="center"`, in a container of known width: each has equal gaps to both container edges (within 1 px), and the image keeps its name (`getByRole('img', {name})`). A third box with an `auto` width shows that it fills the line (gaps of 0).
 - `float-classes--clearfix`: the same two floated boxes in two containers, one with `nfsClearfix` and one without: the first container's height reaches its floats, the second's does not; setting the story's `nfsClearfix` arg, which the second container binds, to `true` makes it reach them too.
-- `float-classes--reading-order`: the recipe of the Rendered HTML (a heading floated left and one right-floated group holding Cancel and Save). The play function focuses a button before the example and presses Tab three times with `userEvent.tab()`; the focus reaches Cancel, then Save, and each focused box's left edge is greater than the previous one's. A spy on `console.warn` records no warning.
+- `float-classes--reading-order`: the recipe of the Rendered HTML (a heading floated left and one right-floated group holding Cancel and Save). The play function focuses a button before the example and presses Tab three times with `userEvent.tab()`; the focus reaches Cancel, then Save, and each focused box's left edge is greater than the previous one's.
 - `float-classes--rtl`: a `dir="rtl"` region with `nfsFloat="left"` and `nfsFloat="right"` boxes: the left one's left edge is the region's left edge, the right one's right edge its right edge (the classes are physical); the Forms label-positioning example of the Rendered HTML, whose label is found by `getByLabelText('Amount')`.
 - `float-classes--composition`: `nfsButton color="primary" nfsFloat="right"` with the Prototyping Utilities' `nfsMarginLeft="1"` and a consumer class on one element, and `nfsCallout nfsClearfix` around it: each host carries its component's classes, the utilities' classes, and the consumer's class; changing a bound `nfsFloat` from `right` to `left` swaps `.float-right` for `.float-left` and leaves every other class.
 
@@ -286,16 +290,12 @@ Run by `npx nx test-storybook <lib>`. Every story runs axe with `parameters.a11y
 
 TestBed specs next to the directive over bare test host components, zoneless with `await fixture.whenStable()`; no story is mounted and no axe runs here.
 
-- Host bindings, driven by data: `nfsFloat` `left`, `right`, and `center` each set exactly their class; no value and a bound `undefined` set none; a value reached through `$any()` that is not one of the names (`'left right'`, `'float-left'`) sets none; `nfsClearfix` bare, `"true"`, and `[nfsClearfix]="true"` set `.clearfix`, and `"false"`, `[nfsClearfix]="false"`, and no attribute set none; both attributes on one element create one instance and set both classes; changing one value swaps only its own class and leaves the consumer's static class, its `[class.x]` binding, and `nfsButton`'s classes alone.
-- Copied classes (check 1): each of the four classes written statically beside the directive warns once, naming the attribute, and keeps styling (not stripped); a consumer class is silent.
-- Reversed order (check 2): with two buttons in a block parent: right then right warns once, naming the side and direction; right then left warns; left then right, and left then left, are silent; right then right with two images and no focusable content is silent; in a `dir="rtl"` parent, left then left warns and right then left is silent; a right float whose previous sibling is not floated is silent.
-- No effect (check 3): `nfsFloat="right"` in a `display: flex` parent and in a `display: grid` parent warns once; `nfsFloat="center"` there is silent; `nfsClearfix` on a `display: flex` host warns once, and on a block host is silent.
-- Nothing is checked or warned when `ngDevMode` is false.
+- Host bindings, driven by data: `nfsFloat` `left`, `right`, and `center` each set exactly their class; no value and a bound `undefined` set none; a value reached through `$any()` that is not one of the names (`'left right'`, `'float-left'`) sets none; `nfsClearfix` bare, `"true"`, and `[nfsClearfix]="true"` set `.clearfix`, and `"false"`, `[nfsClearfix]="false"`, and no attribute set none; both attributes on one element create one instance and set both classes; changing one value swaps only its own class and leaves the consumer's static class, its `[class.x]` binding, and `nfsButton`'s classes alone; each of the four Foundation classes written statically beside the directive stays on the element (not stripped, D7).
 - Zoneless: the suite runs with zoneless change detection; no test needs `NgZone`.
 
 ### 3. Node-level Vitest
 
-- SSR smoke through the shared `renderServer()` helper, under `npx nx test <lib>`: a fixture with each `nfsFloat` value, a bound `nfsClearfix`, an element with both, and a copied static `float-right`. `whenStable()` resolves; the server HTML carries every expected class, the copied class included, and the consumer's own attributes; no element carries `jsaction` from the directive; no development warning is made on the server.
+- SSR smoke through the shared `renderServer()` helper, under `npx nx test <lib>`: a fixture with each `nfsFloat` value, a bound `nfsClearfix`, an element with both, and a copied static `float-right`. `whenStable()` resolves; the server HTML carries every expected class, the copied class included, and the consumer's own attributes; no element carries `jsaction` from the directive.
 - No pure-logic test: the class list is a lookup of two inputs that layer 2 covers value by value. No Sass compile test: the entry point has no library Sass.
 
 ### 4. Playwright e2e (`npx nx e2e <lib>-e2e` against the static Storybook build; `npx nx e2e <fixture-app>-e2e` against the prerendered fixture app)
@@ -316,8 +316,6 @@ Against the prerendered fixture app, on the Float Classes route:
 - Logical floats (`float: inline-start`, `inline-end`) for mixed-direction pages: Foundation's classes are physical by design, as its docs say; a float that follows the reading direction is the consumer's own CSS, as `nfs-breadcrumbs` does for its own items ([Spec: Breadcrumbs](../issues/88-spec-breadcrumbs.md)). Category: `scope-boundary`.
 - Foundation's `clearfix` Sass mixin: it prints no class, so there is nothing for a directive to set; it stays consumer Sass for its own CSS, and the components that include it (Breadcrumbs, Pagination, Tabs, the Top Bar, the Title Bar) are their specs'. Category: `scope-boundary`.
 - Hiding an `nfsFloat="center"` element with the `hidden` attribute. The `hidden` attribute alone does not hide an `nfsFloat="center"` element: Foundation's `.float-center` sets `display: block` after normalize's `[hidden] { display: none }` at equal specificity (measured in Chromium, Firefox, and WebKit), as building-blocks 1.10 records. Remove it with `@if`, or hide it with a Toggler in Visibility mode, which binds Foundation's `.is-hidden` ([Spec: Toggler](../issues/17-spec-toggler.md), D3), or with `nfsVisibility` and a bare `hideFor` ([Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)); the Thumbnail, Flexbox Utilities, XY Grid, and Flex Grid specs state the same rule for their classes. `.float-left`, `.float-right`, and `.clearfix` set no `display` on their host, so `hidden` hides such an element. Category: `scope-boundary`.
-- A development check that `nfsFloat="center"` has a width narrower than its container: the answer depends on the viewport and the content at first render, as the Prototyping Utilities' D18 found for width checks; the requirement is documented and the story shows it. Category: `other`.
-- Detecting a missing `foundation-float-classes` include: the Runtime checks read the Variant properties a Library mixin writes, not Foundation's rules, and this family writes none, as the [Spec: Prototyping Utilities](../issues/102-spec-prototyping-utilities.md) decides for its export mixins. Category: `platform-or-a11y`.
 - Runtime theming through custom properties (building-blocks 1.13). Category: `scope-boundary`.
 
 ## Further Notes
@@ -332,10 +330,10 @@ Against the prerendered fixture app, on the Float Classes route:
 | D4 | `nfsFloat` takes the closed union `'left' \| 'right' \| 'center'`; `.float-center` is a value (clause 3) | `.float-center` fits the `.float-<v>` template; one attribute makes floating and centring one element impossible to ask for at once, which Foundation's CSS would resolve by dropping the centring (a float ignores automatic margins); the export mixin writes the three classes itself, so no registry | A boolean `nfsFloatCenter` or `nfsCenter` beside `nfsFloat` (a second attribute for a class that fits the template, and a combination with no meaning) (`other`); an Open family over a registry (no Sass setting lists the names) (`other`) |
 | D5 | `nfsClearfix` is a boolean through `nfsVariantBoolean` (clause 3) | A class with no value is a boolean named with the camelCase of the class; the typed transform fails `nfsClearfix="flase"` | `booleanAttribute` (accepts any value, ADR 0040) (`other`); the name `nfsClear` (reads as the CSS `clear` property, which the class does not set on its host) (`other`) |
 | D6 | No responsive form, no `nfsBreakpointsToken` | Foundation generates no responsive float class; building-blocks 1.4 gives a responsive form only where the classes exist | Library CSS for `.<bp>-float-<v>` (a rule Foundation does not have, for no requirement) (`scope-boundary`) |
-| D7 | One computed class list; copied Foundation classes reported in development, not stripped (clause 5) | Clause 5 as written, and one behaviour across the utility families (the Prototyping Utilities, Flexbox Utilities, and Visibility Classes all report copies); the list sets no class to `false`, so it never outranks another binding of the same class | A class record of the four classes that strips copies (building-blocks 1.4's shape for a component's own classes, the Menu's; cheap here, but it departs from clause 5 and from the other utility families, and its `false` entries would outrank a future owner's binding, as the Visibility Classes' D8 found) (`other`); no copy check (a silent second spelling) (`other`) |
-| D8 | A development check for a float that follows a sibling floated toward the end of the reading direction when either holds focusable content | Measured in three engines: two right-floated buttons are drawn in reverse and reached by Tab right to left, and a right float before a left one reverses the pair; ADR 0039 passes the ordering hazard (1.3.2, 2.4.3) to the utility specs; computed `float` and `direction` answer it the same at every width, and the focusable-content condition keeps it to what 2.4.3 measures, as the Flexbox Utilities' order check does; the computed `direction`, not `Directionality`, decides where a float goes | No check, only documentation (the one ordering hazard of this family would ship silently) (`other`); a geometric check comparing the boxes at the first render (floats that wrap at a narrow width would pass and fail at a wide one) (`other`); warning on every reversed pair, focusable or not (a row of decorative images would warn for no criterion) (`other`) |
-| D9 | A development check for a float on a flex or grid item and a clearfix on a flex or grid container | Measured in three engines: the float does nothing (and WebKit even reports `float: none`, so the check reads the parent's `display`), and the clearfix's pseudo-elements take part in `justify-content` (267 px lost in a 600 px row); Foundation's flex parents make both easy to write; the Flexbox Utilities and Media Object report their own no-effect cases the same way | No check (a silent no-op, and a silent layout shift) (`other`); stripping the clearfix's pseudo-elements with library CSS on flex containers (a rule over a consumer mistake, and `:has()` is not used in library CSS) (`other`) |
-| D10 | No Library mixin, Variant property, or Runtime check call | The family is closed, has no flag, no order to fix, and no compile-time check (ADR 0012, dated note) | A properties-only `nfs-float-classes` (lists nothing a check reads) (`other`) |
+| D7 | One computed class list; a copied Foundation class is not stripped (clause 5) | Clause 5 as written, and the same behaviour as the other utility families (the Prototyping Utilities, Flexbox Utilities, and Visibility Classes); the list sets no class to `false`, so it never outranks another binding of the same class | A class record of the four classes that strips copies (building-blocks 1.4's shape for a component's own classes, the Menu's; cheap here, but it departs from clause 5 and from the other utility families, and its `false` entries would outrank a future owner's binding, as the Visibility Classes' D8 found) (`other`) |
+| D8 | Floated content is written in reading order: a float never follows a sibling floated toward the end of the reading direction when either holds focusable content, and a group of controls at the end of a line is one floated element holding them in that order; the JSDoc of `nfsFloat`, the recipe, and `float-classes--reading-order` state it | Measured in three engines: two right-floated buttons are drawn in reverse and reached by Tab right to left, and a right float before a left one reverses the pair; ADR 0039 passes the ordering hazard (1.3.2, 2.4.3) to the utility specs; the rule is limited to focusable content, which is what 2.4.3 measures; the parent's `direction`, not `Directionality`, decides which side is the end | Foundation's docs alone, which show a passing example and warn only that the classes are physical (the one ordering hazard of this family would go unstated) (`platform-or-a11y`); a rule for every reversed pair, focusable or not (a row of decorative images breaks no criterion) (`other`) |
+| D9 | A float on a flex or grid item and a clearfix on a flex or grid container are documented as having no effect, with the Flexbox Utilities named in their place | Measured in three engines: the float does nothing (and WebKit even reports `float: none`), and the clearfix's pseudo-elements take part in `justify-content` (267 px lost in a 600 px row); Foundation's flex parents make both easy to write | Stripping the clearfix's pseudo-elements with library CSS on flex containers (a rule over a consumer mistake, and `:has()` is not used in library CSS) (`other`) |
+| D10 | No Library mixin and no Variant property | The family is closed and has no flag and no order to fix, so it needs no custom CSS (ADR 0012, dated note) | A properties-only `nfs-float-classes` (a closed family has no names to list) (`other`) |
 | D11 | Utility attribute names that are no HTML attribute: `nfsFloat` and `nfsClearfix`, rendered `nfsfloat` and `nfsclearfix` | Angular renders every static attribute on the element, input or not ([Spec: Media Object](../issues/91-spec-media-object.md), D3); the general rule is building-blocks 1.4's (inputs named like HTML attributes, [Decide: inputs named like HTML presentational attributes](../issues/139-decide-inputs-named-like-presentational-attributes.md)), and Utility attributes keep the `nfs` prefix, so the question does not arise here | `align` for the placements (HTML maps `align="left"` and `"right"` on `img`, `iframe`, `embed`, `object`, `input type="image"`, and `table` to `float`, and `align="center"` on `table` to automatic margins; measured: `img align="right"` computes `float: right`, and a `table align="center"` 200 px wide is centred, in three engines) (`platform-or-a11y`); `clear` for the clearfix (HTML maps `br clear` to the `clear` property; measured: `br clear="all"` computes `clear: both` in three engines) (`platform-or-a11y`) |
 | D12 | Across families, Foundation's cascade decides, and the Notes name each pair | Each pair is two different Foundation utilities asked of one element; the Utility directive rule's clause 6 | Resolving across directives (would couple independent families through DI for combinations with no meaning) (`other`) |
 | D13 | Six stories; e2e for real Tab order, reflow, and text spacing in three engines, and the fixture app's first paint and hydration | Real keys and geometry at 320 px need real engines; everything else is DOM state a play function reads | A story per class (four stories that show less than the docs example does) (`other`) |
@@ -380,18 +378,18 @@ export class OrderHeader {
 }
 ```
 
-`NfsButton` comes from `ngx-foundation-sites/button` and is shown only to place it. A component whose direction can change floats the heading toward the start side and the group toward the end side in both directions, so the pair never reverses and development check 2 stays silent.
+`NfsButton` comes from `ngx-foundation-sites/button` and is shown only to place it. A component whose direction can change floats the heading toward the start side and the group toward the end side in both directions, so the pair never reverses (usage rule 1).
 
 ### Platform features to adopt when the browser target moves
 
-None. The logical `float` values `inline-start` and `inline-end` are already in the Browser target; Foundation has no class for them (Out of Scope). `:has()` would let library CSS disable a clearfix on a flex container, but the check reports the mistake instead (D9).
+None. The logical `float` values `inline-start` and `inline-end` are already in the Browser target; Foundation has no class for them (Out of Scope). `:has()` would let library CSS disable a clearfix on a flex container, but the spec documents the mistake instead (D9).
 
 ### Foundation behaviour changed or dropped
 
 - The three placements are one attribute, so an element cannot carry two of them (D4).
 - The docs' example floats buttons, not anchors without `href`, and the Float Center image has an `alt`.
 - The docs' claim that `.float-center` does not work with a percentage width is corrected: it does, and it does not work with an `auto` width.
-- Floats that reverse the reading order, floats on flex or grid items, and a clearfix on a flex or grid container are reported in development (D8, D9).
+- The docs gain the reading-order rule and the two no-effect cases (D8, D9).
 
 ### Sass
 
@@ -401,7 +399,7 @@ Sass. The consumer compiles Foundation's Sass from its own settings; the library
 2. Reused: Foundation's classes as the consumer compiles them; `$global-flexbox` decides whether the clearfix's pseudo-elements get `flex-basis: 0` and `order: 1`.
 3. Custom properties the directive writes: none.
 4. Motion classes: none, and no `prefers-reduced-motion` override, because nothing animates.
-5. Missing include: without `foundation-float-classes` nothing floats, centres, or clears, and nothing reports it (Out of Scope).
+5. Missing include: without `foundation-float-classes` nothing floats, centres, or clears.
 6. Variant properties: none; both families are closed.
 
 Required settings on Foundation's defaults: none.
@@ -415,6 +413,6 @@ Required settings on Foundation's defaults: none.
   - The Typography Helpers' text alignment (`nfsTextAlign`, [Spec: Typography Helpers](../issues/106-spec-typography-helpers.md)) is independent: Foundation's Forms page offers `.text-right` or `.float-right` to right-align a label, and either works.
 - A Responsive Embed beside a float keeps the ratio of its container's width, not its own, because its `padding-bottom` percentage resolves against the containing block (measured by the [Spec: Responsive Embed](../issues/96-spec-responsive-embed.md) ticket: 400 by 337.5 px beside a 200 px float in a 600 px container); `nfs-responsive-embed`'s `display: flow-root` keeps it beside the float when its video takes focus.
 - Floats on a Trigger: the [Spec: Dropdown](../issues/26-spec-dropdown.md) and [Spec: Tooltip](../issues/27-spec-tooltip.md) read no float class for placement ([Spec: Anchored pane (shared utility)](../issues/55-spec-anchored-pane.md), D22), so `nfsFloat` beside a Trigger moves only the Trigger; the pane's side is the Dropdown's `alignment` and `position`.
-- RTL: `left` and `right` are physical, as Foundation's classes are, and a right-to-left page chooses the side for its direction (Foundation's Forms page: "In a right-to-left environment, use `.float-left` instead"); check 2 reads the parent's computed `direction`, so it reports a reversed pair in either direction.
+- RTL: `left` and `right` are physical, as Foundation's classes are, and a right-to-left page chooses the side for its direction (Foundation's Forms page: "In a right-to-left environment, use `.float-left` instead"); the reading-order rule (usage rule 1) takes its end side from the parent's `direction`, so it holds in either direction.
 - Forced colours: the utilities draw nothing.
 - Story scaffolding: stories may lay out their scaffolding with these attributes wherever Foundation has a float class, and keep inline styles for values it has none for (a fixed pixel width).

@@ -141,3 +141,12 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - The class mapping gains `.top-bar-left` (`NfsTopBarLeft`) and a `.menu-text` row (`NfsMenuText`) for Foundation's docs example, and a `.button` row for the `magellan--programmatic` story's controls (CR-B).
 
 Unchanged: the directive, its API, tracking, the marker (D11, D18), deep linking, ARIA, the rendering modes, and the Story ids. Confirmed: R40 (the `nfsCell` Sticky container spans its row), R48 items 2 to 4 (the State-class reading, the list-item marker, the corrected duplicate-directive text), CR-A, CR-C, CR-D (the four component examples). Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (checks move to a later milestone)
+
+From [Decide: checks move to a later milestone](158-decide-checks-move-to-a-later-milestone.md), applied by [Re-run: specs without checks, group c](167-rerun-specs-without-checks-group-c.md): `specs/magellan.md` describes and accepts a library with no checks. What left the spec, per check:
+
+- Misuse warnings, all six: a container with no in-page links (with its quote of the Smooth Scroll spec's `#`-only link check), a container outside any `nav` landmark, `updateHistory` without `deepLinking`, targets in different scroll containers, an unknown id written to `active`, and a copied `.is-active` or `aria-current` on a tracked link or its `li` (D18), with the development-mode paragraph, their browser-level cases, and user story 42's warnings.
+- Also gone: the 1.4.11 row's quote of the Menu spec's compile stop, now its required 3:1 setting.
+
+The behaviour stays: an unknown id marks nothing and scrolls nowhere, `updateHistory` alone writes nothing, and Magellan still removes a copied marker at its first write (D18). Each rule is stated as documented usage: six usage rules in the API section for the JSDoc, the input table's `updateHistory` row, the Model and Tracking bullets, the ARIA table's Navigation row, and the 2.4.1 row. A new Imports bullet says what a forgotten import does. D18 is rewritten to what the spec now decides; user stories 42 and 45 state documentation, not warnings. Unchanged: the directive, its API, tracking, the marker, deep linking, ARIA, the rendering modes, the stories, and the e2e and manual tests.

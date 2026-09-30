@@ -157,3 +157,13 @@ Unchanged: the API, the two attributes' types and defaults, the development chec
 ### Amendment, 2026-09-29 (exportAs on every directive)
 
 From [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md): `specs/float-classes.md`'s `NfsFloatClasses` gains `exportAs: 'nfsFloatClasses'` (the API line).
+
+### Amendment, 2026-09-29 (checks move to a later milestone)
+
+From [Decide: checks move to a later milestone](158-decide-checks-move-to-a-later-milestone.md), applied by [Re-run: specs without checks, group c](167-rerun-specs-without-checks-group-c.md): `specs/float-classes.md` describes and accepts a library with no checks. What left the spec, per check:
+
+- Misuse warnings: development check 1 (copied `float-*` and `clearfix` classes, D7) and check 3 (a float on a flex or grid item, and a clearfix on a flex or grid container, D9), with their messages, the browser-level cases, and the development-only `HostAttributeToken('class')` and `ElementRef` injections.
+- Family checks: development check 2 (a float after a sibling floated toward the end of the reading direction when either holds focusable content, D8), with its message, its browser-level cases (right to left included), the `console.warn` spy of `float-classes--reading-order`, and the development-only render callback.
+- Also gone: the "Runtime checks: none" bullet, the SSR smoke's no-warning clause, and two Out of Scope bullets that named checks (a width check for `nfsFloat="center"`, and detecting a missing `foundation-float-classes` include).
+
+Each rule is stated as documented usage: the JSDoc of `nfsFloat` and `nfsClearfix`, two usage rules in the API section (reading order; no effect on flex and grid items and containers), the Solution, the 1.3.2 and 2.4.3 row, and the RTL note. A new Imports bullet says what a forgotten import does (a plain element; a bound input fails with NG8002). A copied class is still not stripped (D7), and the host-bindings test keeps that assertion. D7, D8, D9, and D10 are rewritten to what the spec now decides; user stories 12, 13, 15, 16, and 19 state documentation, not warnings; the mapping table's last column is "Variant properties". Unchanged: the directive, its two attributes and their types, ARIA, the rendering modes, the stories, and the e2e tests.

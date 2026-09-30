@@ -227,3 +227,14 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 ### Amendment, 2026-09-29 (exportAs on every directive)
 
 From [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md), which reverses R17 and this ticket's closing-pass line above: `specs/menu.md`'s `NfsMenu` and `NfsMenuText` gain `exportAs: 'nfsMenu'` and `exportAs: 'nfsMenuText'` (the hierarchy block and the two API lines).
+
+### Amendment, 2026-09-29 (checks move to a later milestone)
+
+From [Decide: checks move to a later milestone](158-decide-checks-move-to-a-later-milestone.md), applied by [Re-run: specs without checks, group c](167-rerun-specs-without-checks-group-c.md): `specs/menu.md` describes and accepts a library with no checks. What left the spec, per check:
+
+- Misuse warnings: development check 1 (a Foundation Menu class copied onto the host) and check 2 (a copied current-page marker without `aria-current`), with their browser-level cases, the SSR smoke's no-warning clause, and the development-only `HostAttributeToken('class')`, `ElementRef`, and `afterNextRender`.
+- Forgotten-import checks: the In-family bullets, including `NfsMenuText`'s parent check (check 3) and its development-only `inject(NfsMenu, {optional: true})`.
+- Runtime checks: `nfsVariantCheck('nfsMenu')`, `include('nfs-breakpoint-properties', ['breakpoint-classes'])`, `value()`, `strictVariantNames`, and `strictVariantProperties`, with the browser-level case and the "is reported" of an unmapped value.
+- Build-time checks: `nfs-menu`'s three `@error` checks (the current link's text at 4.5:1, the current fill at 3:1, rows of 24 px), with the Sass compile cases that asserted only them. The mixin keeps its two rules.
+
+Each rule is stated as documented usage: a "Usage rules" section in place of "Development checks and runtime checks" (the input for each copied class, `aria-current` for the current page, text items inside a menu), `NfsMenuText`'s JSDoc, the 1.3.1, 1.4.1, 1.4.3, and 2.5.8 rows, and a "Documented usage for the settings" paragraph in the Sass subsection (Foundation's defaults pass, so no setting is required). A new Imports bullet says what a forgotten import does. The class record still strips a copied class, with its test. D3, D9, D13, and D15's rejected alternative are rewritten; user stories 17, 37, and 40 state documentation, not warnings. Unchanged: both directives, the inputs and types, the hosting rule, ARIA, the rendering modes, the stories, and the e2e tests.

@@ -234,3 +234,15 @@ Unchanged: the API, types, defaults, development checks, the In-family line of [
 ### Amendment, 2026-09-29 (exportAs on every directive)
 
 From [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md): `specs/float-grid.md`'s `NfsRow` and `NfsColumn` gain `exportAs: 'nfsRow'` and `exportAs: 'nfsColumn'` (the class sketch comments, the Models/outputs/methods bullet, the Material comparison table, and D1), the same names as the Flex Grid's directives for the same classes.
+
+### Amendment, 2026-09-29 (checks move to a later milestone)
+
+From [Decide: checks move to a later milestone](158-decide-checks-move-to-a-later-milestone.md), applied by [Re-run: specs without checks, group c](167-rerun-specs-without-checks-group-c.md): `specs/float-grid.md` describes and accepts a library with no checks. What left the spec, per check:
+
+- Misuse warnings: development check 1 (copied Float Grid classes, D7) and check 3 (no Float Grid in the page's stylesheet, read from the row's clearfix, D10), with their messages and browser-level cases.
+- Family checks: check 2 (a column outside a row, and a sized column row inside another row, D11) and check 4 (the visual order of pushed and pulled columns holding focusable content, and a column moved out of its row or over its neighbour, D9), with their messages, the browser-level cases, the node-level sequence logic, the `console.warn` spy of `float-grid--source-ordering`, and the development-only `ElementRef`, `HostAttributeToken('class')`, CDK `InteractivityChecker`, and `NfsMediaQuery` injections.
+- Forgotten-import checks: the In-family bullet (`nfsDirectiveCheck` for `NfsRow` and `NfsColumn`, the probe, and the Selector manifest's rule 2 for the two same-named grids).
+- Runtime checks: `nfsVariantCheck` for both directives, the `include()` and `value()` calls and their needs, the browser-level case, user story 26's report, and the missing-include sentence of Sass item 5.
+- Also gone: the Out of Scope bullet about a check for equal column counts (never specified), the mention of the Flex Grid's own check and of `nfsFlexAlign`'s not-a-Flex-parent check, and D12's rejected presence property.
+
+Each rule is stated as documented usage: the JSDoc of `NfsRow` (the stylesheet the grid needs), `NfsColumn` (placement), and `push` and `pull` (the columns holding focusable content keep their DOM order on screen at every breakpoint, and every push is paired with its pull); three usage rules in the API section; the Solution; and the 2.4.3, 1.4.10, and 2.4.11 rows. A new Imports bullet says what a forgotten import does. D5, D7, D9, D10, D11, D12, and D13 are rewritten to what the spec now decides; user stories 10 to 12 and 23 to 26 state documentation (story 26 is now the generated Variant declaration file), and story 37 drops development reports. The Variant properties and their Sass compile test stay, for the Variant declaration tooling's generator. Unchanged: the directives, their inputs and types, the class mapping, ARIA, the rendering modes, the stories, and the e2e tests.

@@ -186,3 +186,13 @@ Unchanged: the seven directives, their API, the development checks, the In-famil
 ### Amendment, 2026-09-29 (exportAs on every directive)
 
 From [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md), which reverses R17 and D8's 2026-09-28 reading: `specs/forms.md`'s seven directives gain `exportAs: 'nfsFormLabel'`, `exportAs: 'nfsHelpText'`, `exportAs: 'nfsFieldset'`, `exportAs: 'nfsInputGroup'`, `exportAs: 'nfsInputGroupLabel'`, `exportAs: 'nfsInputGroupField'`, and `exportAs: 'nfsInputGroupButton'` (the Models/outputs/methods bullet and D8).
+
+### Amendment, 2026-09-29 (checks move to a later milestone)
+
+From [Decide: checks move to a later milestone](158-decide-checks-move-to-a-later-milestone.md), applied by [Re-run: specs without checks, group c](167-rerun-specs-without-checks-group-c.md): `specs/forms.md` describes and accepts a library with no checks. What left the spec, per check:
+
+- Misuse warnings: `NfsFormLabel`'s `for` check, `NfsHelpText`'s id, pairing, and placement check, and `NfsInputGroupField`'s name check, with their messages, their browser-level cases, the `afterNextRender` read callback (D14), the development-only `ElementRef` injections, and the SSR smoke's no-warning clause.
+- Forgotten-import checks: the In-family bullets for the seven directives, and the paragraph on the Abide directives beside them.
+- Build-time checks: the `nfs-forms` Library mixin's five `@error` checks (D11), with the Sass compile test. The mixin held nothing else (no rule, no Variant property), so the entry point has no Library mixin, as the Abide spec's `nfs-abide` went; the Storybook preview no longer includes it. The quotes of the Abide and Switch specs' own compile checks go too.
+
+Each rule is stated as documented usage: the JSDoc of `NfsFormLabel`, `NfsHelpText`, and `NfsInputGroupField` (a new usage-rule column in the API table), the Solution, the mapping table's notes, and the 1.3.1 and 3.3.2 rows. The five ratios are in Sass item 2 with the three required settings, and the 1.4.1, 1.4.3, and 1.4.11 rows point at them; `forms--field-contrast` and the e2e focus test still assert them. A new Imports bullet says what a forgotten import does. D5, D6, D9, D10, D11, and D14 are rewritten to what the spec now decides; user stories 8, 9, 12, 15, and 26 state documentation, not warnings. Unchanged: the seven directives, `middle`, the class mapping, the Abide composition, ARIA, the rendering modes, the stories, and the e2e tests.
