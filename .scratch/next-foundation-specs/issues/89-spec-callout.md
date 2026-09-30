@@ -205,3 +205,13 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 ### Amendment, 2026-09-29 (exportAs on every directive)
 
 From [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md), which reverses R17 and this ticket's closing-pass line above: `specs/callout.md`'s `NfsCallout` gains `exportAs: 'nfsCallout'` (the API line, the bullet, D4).
+
+### Amendment, 2026-09-29 (checks move to a later milestone)
+
+From [Decide: checks move to a later milestone](158-decide-checks-move-to-a-later-milestone.md), applied by [Re-run: specs without checks, group b](166-rerun-specs-without-checks-group-b.md): `specs/callout.md` describes and accepts a library with no checks. What left the spec, per check:
+
+- Misuse warnings: the copied palette or size class warning (the development-mode bullet, its `afterNextRender` callback, the development-only `HostAttributeToken('class')` injection, the browser-level case, and user story 28's report).
+- Runtime checks: the Callout Variant check (`nfsVariantCheck('nfsCallout')`, `include('nfs-callout', ['callout-sizes'])`, `value()`, `strictVariantNames`, `strictVariantProperties`), with the Runtime check hook injection, its browser-level case, the SSR smoke's no-report clause, the render-callback sentence of Rendering modes, the missing-include sentence, user story 29's report, and the Out of Scope pointer to the Runtime checks' configuration.
+- Build-time checks: the `nfs-callout` contrast `@error` (Sass item 1(c)) for text, links, and close-button glyphs on every callout background, with the Sass compile cases that asserted only it (the defaults' stop, the purple `#4b0082` stop, the `$callout-background-fade: 0%` stop), the 1.4.3 and 1.4.11 rows' compile clauses and test entries, user stories 20 and 21's compile error, and the settings the mixin read only for it.
+
+Each rule is stated as documented usage: two Documented usage bullets in the API section (bind `color` and `size`, never the classes; the include is required and the declaration file comes from the same Sass), the inputs' JSDoc, the 1.4.3 and 1.4.11 rows, the purple example's ratios in Usage examples, and Sass items 2 and 5. D7, D11, D12, and D15 are rewritten to what the spec now decides; user stories 20, 21, 28, and 29 state documentation, not reports; the Out of Scope bullets on the close button and on typography colours no longer name a check. Unchanged: the directive, its inputs and types, the close-button hook and its room rule, ARIA, the required settings, the rendering modes, and the Story ids.

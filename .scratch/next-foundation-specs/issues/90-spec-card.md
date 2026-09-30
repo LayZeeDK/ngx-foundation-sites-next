@@ -177,3 +177,13 @@ Triage: impact LOW (examples, stories, wording), confidence HIGH. Nothing is OPE
 ### Amendment, 2026-09-29 (exportAs on every directive)
 
 From [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md): `specs/card.md`'s `NfsCard`, `NfsCardDivider`, `NfsCardSection`, and `NfsCardImage` gain `exportAs: 'nfsCard'`, `exportAs: 'nfsCardDivider'`, `exportAs: 'nfsCardSection'`, and `exportAs: 'nfsCardImage'` (the combined prose line and D1).
+
+### Amendment, 2026-09-29 (checks move to a later milestone)
+
+From [Decide: checks move to a later milestone](158-decide-checks-move-to-a-later-milestone.md), applied by [Re-run: specs without checks, group b](166-rerun-specs-without-checks-group-b.md): `specs/card.md` describes and accepts a library with no checks. What left the spec, per check:
+
+- Forgotten-import checks: the In-family checks bullet (the four `nfsDirectiveCheck` calls, `NfsCard`'s probe of its parts, the `strictDirectiveImports` and `strictParents` sentences, the `ngx-foundation-sites/media-query` import), and its mentions in the Injection bullet, Implementation level, and Rendering modes. A new Imports bullet states what a forgotten import does: the element stays plain, with no error, unless the template references it (NG8003).
+- Build-time checks: the `nfs-card` contrast `@error` (Sass item 1(b)) for `$card-font-color`, `$anchor-color`, and `$anchor-color-hover` on the card and divider backgrounds, with the Sass compile cases that asserted only it, the 1.4.3 row's compile clause and test entry, user stories 11 to 13's compile error, the missing-include sentence's lost checks, and the settings the mixin read only for it.
+- Rejected checks named in the text: the Out of Scope bullets on an `alt` check and a landmark-divider check, D4's and D6's rejected development checks, and D10's "no development checks of its own".
+
+Each rule is stated as documented usage: the 1.4.3 row (a theme keeps every pair at 4.5:1, with the required setting), the 1.1.1 row (the docs require every card image's `alt`), the Hierarchy bullet (a part outside a card is harmless; the docs place parts inside a card), and Sass items 2 and 5. D2, D8, and D10 are rewritten to what the spec now decides; D6 reads "documented usage". Unchanged: the four directives, the `overflow-wrap` rule, ARIA, the required setting, the rendering modes, and the Story ids.

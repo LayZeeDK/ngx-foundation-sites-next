@@ -116,3 +116,12 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 ### Amendment, 2026-09-29 (exportAs on every directive)
 
 From [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md), which reverses R17 and this ticket's closing-pass line above: `specs/equalizer.md`'s `NfsEqualizer` and `NfsEqualizerWatch` gain `exportAs: 'nfsEqualizer'` and `exportAs: 'nfsEqualizerWatch'` (the two API lines).
+
+### Amendment, 2026-09-29 (checks move to a later milestone)
+
+From [Decide: checks move to a later milestone](158-decide-checks-move-to-a-later-milestone.md), applied by [Re-run: specs without checks, group b](166-rerun-specs-without-checks-group-b.md): `specs/equalizer.md` describes and accepts a library with no checks. What left the spec, per check:
+
+- Forgotten-import checks: the In-family checks bullet (the two `nfsDirectiveCheck` calls, `NfsEqualizer`'s probe, `NfsEqualizerWatch`'s parent check with its `alone` sentence, the `strictParents` throw) and the development-only description of `nfsEqualizerToken`, which now has its plain name as its description; the Hierarchy bullet's "its In-family parent check reports it", the browser-level case's warnings and `strictParents` throw, and user story 29's warning. A new Imports bullet states what a forgotten import does (NG8002 or NG8003 where the template binds or references it; otherwise nothing equalizes, with no error).
+- A check named in the text: the Breakpoint service's development warning for an unknown `equalizeOn` name (owned by that spec), the Out of Scope bullet's "development check" for copied classes, D16's copied-class check and rejected alternative, and the "no Runtime check is involved" sentence.
+
+Each rule is stated as documented usage: the Hierarchy bullet (every watched element inside an equalizer declared in the same template, or rendered inside its element through a template outlet), the `equalizeOn` row (a breakpoint of the Breakpoint map), and user story 29. Unchanged: the two directives, the pass, the Options, `equalized`, `equalize()`, the optional injection with `skipSelf`, the rendering modes, and the Story ids.

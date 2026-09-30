@@ -180,3 +180,13 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 ### Amendment, 2026-09-29 (exportAs on every directive)
 
 From [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md): `specs/close-button.md`'s `NfsCloseButton` gains `exportAs: 'nfsCloseButton'` (the API line and the Models/outputs/methods bullet).
+
+### Amendment, 2026-09-29 (checks move to a later milestone)
+
+From [Decide: checks move to a later milestone](158-decide-checks-move-to-a-later-milestone.md), applied by [Re-run: specs without checks, group b](166-rerun-specs-without-checks-group-b.md): `specs/close-button.md` describes and accepts a library with no checks. What left the spec, per check:
+
+- Misuse warnings: development checks 1 (no accessible name), 2 (a symbol-only name), and 3 (`nfsButton` on the same element), with their `afterNextRender` callback, the `ElementRef` injection read only by them, the first-render timing sentence, the browser-level case, the 4.1.2 row's check clause and test entry, the Material comparison's "development-mode name checks", the Solution's warnings, and user stories 14 to 16's warnings.
+- Runtime checks: the Close Button Variant check (`nfsVariantCheck('nfsCloseButton')`, `include('nfs-close-button', ['closebutton-size'])`, `strictVariantNames`, `strictVariantProperties`), with the Runtime check hook injection, its browser-level case, the render-callback sentence of Rendering modes, the missing-include sentence, and user story 27's report.
+- Build-time checks: the `nfs-close-button` glyph contrast `@error` against `$body-background` (Sass item 1(c)), with its Sass compile case (`#aaaaaa`), the 1.4.11 row's compile clause and test entry, user stories 25 and 26's compile error and container checks, and the settings the mixin read only for it.
+
+Each rule is stated as documented usage: a Documented usage list in the API section (a name that says what the button closes, present from the first render; the glyph in `aria-hidden="true"`, never a symbol alone; no `nfsButton` on the same element; the include), the 1.4.11 and 4.1.2 rows, the docs conventions line, and Sass items 2 and 5. D6, D7, D9, and D10 are rewritten to what the spec now decides; user stories 14 to 16 and 25 to 27 state documentation, not warnings or compile errors. Unchanged: the directive, `type` and `size`, the 24 px floor, ARIA and keys, the lightweight token, the rendering modes, and the Story ids.
