@@ -138,3 +138,13 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - CR-B: the class mapping gains rows for the Button's classes on a trigger and the Dropdown pane's class in the usage example.
 - Unchanged: R51 (the labelled check-6 input), R65, R66; CR-A, CR-C, CR-D (no component example).
 - Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (checks move to a later milestone)
+
+From [Re-run: specs without checks, group f](170-rerun-specs-without-checks-group-f.md), under [Decide: checks move to a later milestone](158-decide-checks-move-to-a-later-milestone.md); `specs/tooltip.md` was revised in place. What left the spec, per check:
+
+- Misuse warnings, to [Spec: misuse warnings (later milestone)](161-spec-misuse-warnings-later-milestone.md): checks 1 (host not interactive) and 2 (host not focusable) with CDK's `InteractivityChecker` and the interactive-host classifier; check 3 (no text); check 4 (no name of its own); check 5 (host inside a `label`); check 6 (a copied legacy position class) with its development-only `HostAttributeToken('class')` read, its matcher, and its tests; check 7 (a tip class or `nfs-` class in `templateClasses`, the report only: the filter stays, with its tests). The Render hooks row and the browser-level and pure-logic cases go with them.
+- The Positioner's three warnings (same-axis alignment, negative offsets, a tip that is not `position: absolute`) are the Anchored pane spec's; the quote left, and the rules are documented usage in the `alignment` and `vOffset`/`hOffset` rows and the Sass subsection.
+- Each rule is documented usage now: the Host, Name, and Classes behaviour rules, the text rule, the documented limits (`label` with `for`), the WCAG rows for 2.1.1, 2.4.11, and 4.1.2, user stories 19, 20, 43, and 44, the migration notes, and D5, D6, D7, and D9 (rewritten); the 1.4.3 row states the colour pair as a requirement.
+- Mentions removed: the "no Runtime check request" clauses (class mapping, D24).
+- No API, class, ARIA, rendering, or Sass change. Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.

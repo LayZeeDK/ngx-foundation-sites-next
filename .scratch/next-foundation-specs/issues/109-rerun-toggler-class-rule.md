@@ -172,3 +172,13 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 ### Amendment, 2026-09-29 (audit 0008)
 
 - L5, [Audit 0008: the class-rule wave](../audits/0008-class-rule-wave.md): the story's "the class is the application's own and carries no Foundation style" reads "the class is an Application class and carries no Foundation style", and the "Class mode switching the application's own class" comment reads "Class mode switching an Application class".
+
+### Amendment, 2026-09-29 (checks move to a later milestone)
+
+From [Re-run: specs without checks, group f](170-rerun-specs-without-checks-group-f.md), under [Decide: checks move to a later milestone](158-decide-checks-move-to-a-later-milestone.md); `specs/toggler.md` was revised in place. What left the spec, per check:
+
+- Forgotten-import checks: the In-family line (`nfsDirectiveCheck('NfsToggler')`, `nfsDirectiveCheck('NfsClassToggler')`, `strictParents`) goes to [Re-run: forgotten-import checks spec for the later milestone](164-rerun-forgotten-import-checks-later-milestone.md). An "Imports (documented usage)" bullet says what a forgotten import does (NG8002, NG8003, or nothing).
+- Misuse warnings, to [Spec: misuse warnings (later milestone)](161-spec-misuse-warnings-later-milestone.md): check 1 (a copied `is-hidden`) with its development-only `HostAttributeToken('class')` read; check 2 (`animate` in class mode); check 3 (a Foundation or library class in `toggler`) with its known-class function and its pure-logic test; check 4 (an `animate` value that starts no animation or does not split). Their browser-level cases go with them.
+- Each rule is documented usage now: the `isOpen`, `animate`, and `toggler` rows, two behaviour rules (`animate` belongs to visibility mode; one entering and one leaving value), user stories 18 and 45, D19, and D20 (rewritten to what the API text names). The stripping of a copied `is-hidden` stays, with its test, minus the warning.
+- Mentions removed: the Runtime checks line of the class mapping, the Triggers spec's warnings (host kind, mixed roles), and the Close Button's and Callout's compile checks (now "their specs state the settings").
+- No API, class, ARIA, rendering, or Sass change. Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.

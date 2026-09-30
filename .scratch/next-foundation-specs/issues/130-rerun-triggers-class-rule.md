@@ -163,3 +163,13 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - CR-B: the class mapping gains rows for the other families' classes the examples use (the Openables, the Title Bar, the Callout, the Menu).
 - Unchanged: R50, R51, R56; CR-A; `nfsOpenableToken`'s description.
 - Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (checks move to a later milestone)
+
+From [Re-run: specs without checks, group f](170-rerun-specs-without-checks-group-f.md), under [Decide: checks move to a later milestone](158-decide-checks-move-to-a-later-milestone.md); `specs/triggers.md` was revised in place. What left the spec, per check:
+
+- Forgotten-import checks, to [Re-run: forgotten-import checks spec for the later milestone](164-rerun-forgotten-import-checks-later-milestone.md): the In-family lines of `NfsOpen`, `NfsClose`, and `NfsToggle`, and `nfsOpenableToken`'s development-only M7 description, which is now its plain name. The reason the Nearest Openable injection stays optional moved to the Nearest Openable bullet, and an "Imports (documented usage)" bullet keeps NG8002 and NG8003 and says a bare Trigger left out of `imports` does nothing.
+- Misuse warnings, to [Spec: misuse warnings (later milestone)](161-spec-misuse-warnings-later-milestone.md): the five dev-mode checks (no target, not an Openable, a host the keyboard cannot operate, submit risk, mixed Trigger roles), their `afterRenderEffect`, and their browser-level cases.
+- Each rule is documented usage now: three numbered rules in the API (target, host, form), the Typing and Multiple targets bullets, the 2.1.1 row, user stories 18 and 19, and D13.
+- Mentions removed: the "no Runtime check request" clause, the Off-canvas panel's development checks among `registerTrigger`'s users, `nfsCloseButton`'s name check, and the Tooltip's development-mode warning.
+- No API, ARIA, rendering, or Sass change. Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.

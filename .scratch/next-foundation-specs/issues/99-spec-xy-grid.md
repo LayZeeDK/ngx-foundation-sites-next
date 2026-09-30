@@ -205,3 +205,14 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 ### Amendment, 2026-09-29 (exportAs on every directive)
 
 - [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md): `NfsGridContainer`, `NfsGridX`, `NfsGridY`, and `NfsCell` each gain an `exportAs` for the first time (`nfsGridContainer`, `nfsGridX`, `nfsGridY`, `nfsCell`); D1 and the Material comparison row no longer say the family has none.
+
+### Amendment, 2026-09-29 (checks move to a later milestone)
+
+From [Re-run: specs without checks, group f](170-rerun-specs-without-checks-group-f.md), under [Decide: checks move to a later milestone](158-decide-checks-move-to-a-later-milestone.md); `specs/xy-grid.md` was revised in place. What left the spec, per check:
+
+- Forgotten-import checks, to [Re-run: forgotten-import checks spec for the later milestone](164-rerun-forgotten-import-checks-later-milestone.md): the In-family line with the container's and grids' child probes. An "Imports (documented usage)" bullet says what a forgotten import does.
+- Misuse warnings, to [Spec: misuse warnings (later milestone)](161-spec-misuse-warnings-later-milestone.md): checks 1 (copied classes, with the development-only `HostAttributeToken('class')` read), 3 (cell block name), 4 (both container widths), and 5 (frame clipping, with its `ResizeObserver`), with their browser-level cases.
+- Family checks, to [Spec: family checks (later milestone)](160-spec-family-checks-later-milestone.md): check 2 (a cell outside a grid, an offset in a vertical grid).
+- Runtime checks, to [Spec: Runtime checks (later milestone)](162-spec-runtime-checks-later-milestone.md): the `nfsVariantCheck` handles of `NfsGridX`, `NfsGridY`, and `NfsCell` with their requests and browser-level cases. `nfs-xy-grid` keeps its two Variant properties, which the Variant declaration tooling reads.
+- Each rule is documented usage now: five numbered rules in the API, the `fluid`/`full`, `gridFrame`, and `offset` rows, the 1.4.10 and 4.1.2 rows, user stories 22, 23, and 30 to 32, and D3, D7, D9, D10, D12, and D16 (rewritten). The copied-class binding test stays, minus the warning.
+- Unchanged: every class, input, attribute, measurement, and the Sass. Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.

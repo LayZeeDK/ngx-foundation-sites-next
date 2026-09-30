@@ -1,6 +1,6 @@
 # Spec: Variant declaration tooling (shared utility)
 
-Ticket: [Spec: Variant declaration tooling](../issues/136-spec-variant-declaration-tooling.md). Targets Angular 22.2, Nx 23.2, TypeScript 6.0.x, Dart Sass 1.104 (the version `@angular/build` 22.2.0 loads), Storybook 10.6 with `@storybook/angular-vite`, Vitest 4.1.x, and Foundation for Sites 6.9.0 Sass. Decided upstream in ADR 0040 (Variant input types), ADR 0039 (the class rule), ADR 0012 (Sass packaging, with its dated note on the Variant properties), and ADR 0005 (the Breakpoint source of truth, with its dated note on `--nfs-breakpoint-classes`); the decision log with sources is in the ticket answer. The runtime checks that read the same Variant properties in the browser are specified by the [Spec: Breakpoint service (shared utility)](../issues/53-spec-breakpoint-service.md) and its re-run, not here.
+Ticket: [Spec: Variant declaration tooling](../issues/136-spec-variant-declaration-tooling.md). Targets Angular 22.2, Nx 23.2, TypeScript 6.0.x, Dart Sass 1.104 (the version `@angular/build` 22.2.0 loads), Storybook 10.6 with `@storybook/angular-vite`, Vitest 4.1.x, and Foundation for Sites 6.9.0 Sass. Decided upstream in ADR 0040 (Variant input types), ADR 0039 (the class rule), ADR 0012 (Sass packaging, with its dated note on the Variant properties), and ADR 0005 (the Breakpoint source of truth, with its dated note on `--nfs-breakpoint-classes`); the decision log with sources is in the ticket answer.
 
 Evidence is cited as: T, the probes of [Decide: typed Variant inputs over open Sass maps](../issues/81-decide-typed-variant-inputs-open-sass-maps.md) (the typing decision), round 1 cases J and round 2 cases A, B, C, K, O, and R; SYNC and ALT, the sync-tooling and alternatives research of [Research: further typing and synchronisation options for Variant inputs](../issues/135-research-further-variant-typing-options.md), with their section numbers; D, the first dossier of [Research: typed Variant inputs over open Sass maps](../issues/80-research-typed-variant-inputs-open-sass-maps.md); and "this ticket's probe", the measurements in this spec's ticket answer (Dart Sass 1.104.1, TypeScript 6.0.3, `@angular/core` 22.2.0 types). Nx behaviour is cited from Nx 23.2.1's source by function name.
 
@@ -11,14 +11,14 @@ Under the class rule a consumer writes no Foundation class; every Variant class 
 Writing and keeping that file by hand does not work well:
 
 - The file is a mirror of the Sass. When the Sass gains a name, a template that uses it fails to compile until someone declares it. When the Sass loses a name, the file still declares it, templates keep compiling, and the element renders with a class the CSS no longer has. Nothing tells the developer.
-- Nx runs sync generators before local tasks, but no task runs one when `CI` is set: a build in CI passed against a stale file and shipped a Variant with no class (measured, SYNC 4.2). A check has to be its own CI step.
+- Nx runs sync generators before local tasks, but no task runs one when `CI` is set: a build in CI passed against a stale file and shipped a Variant with no class (measured, SYNC 4.2). The file CI builds against must already be in step when it is committed.
 - The Angular CLI has no target dependencies at all: a bare `ng build` or `ng serve` runs nothing first.
 - Some names generate classes only under a Sass flag, some families chain (`$button-palette` defaults to `$foundation-palette`), counts are numbers, and Foundation's docs let a palette lose names as well as gain them. A hand-written file easily gets one of these wrong, and one easy mistake (a file with no `import`) silently replaces the library's types.
-- A shared library in an Nx workspace is compiled, tested, and type-checked in programs that see no application's declaration file, so its own checks reject the names its applications use. Storybook's own compile checks neither templates nor story arguments, so only a type check of its TypeScript configuration sees a declaration file there.
+- A shared library in an Nx workspace is compiled, tested, and type-checked in programs that see no application's declaration file, so its own type checks reject the names its applications use. Storybook's own compile checks neither templates nor story arguments, so only a type check of its TypeScript configuration sees a declaration file there.
 - The library itself can break the whole scheme without noticing: TypeScript's declaration emit may print an input's type as Foundation's resolved default union, and then no consumer declaration reaches that input.
 - Every Library mixin writes a Variant property, every component spec types inputs over a registry, and the generator must know every registry with its setting, property, and default names. Without one list, these drift apart inside the library.
 
-Developers need the library to write the Variant declaration file from their Sass, keep it in step before the tasks that read it, fail CI when it is out of step, cover shared libraries, and never freeze Foundation's defaults into its own typings.
+Developers need the library to write the Variant declaration file from their Sass, keep it in step before the tasks that read it, cover shared libraries, and never freeze Foundation's defaults into its own typings.
 
 ## Solution
 
@@ -26,12 +26,12 @@ The library ships, inside its own package, everything a consumer needs to write 
 
 - The primary entry point `ngx-foundation-sites` holds the 26 Variant registries (one empty interface per Sass setting whose names or count become Variant classes), the helper types that build closed unions and ranges over them (`NfsOverridableStringUnion`, `NfsOverridableCount`, `NfsOverridableCountValue`, `NfsRange`), the Class breakpoint types (`NfsClassBreakpoint`, `NfsClassBreakpointQuery`, `NfsClassBreakpointRules`), `NfsFoundationPaletteColor`, and `NfsVariantBoolean` with its transform `nfsVariantBoolean`. Of the Variant pieces there, everything is a type except that one pure function; the primary entry point also holds the Motion name types, the pair type `NfsMotionPair`, and their pure functions `nfsMotionClasses` and `nfsMotionPairClasses`, which `building-blocks.md` 1.6 rule 4 defines for every Motion input and which are not Variant tooling ([Re-run: Reveal spec under the class rule](../issues/110-rerun-reveal-class-rule.md)).
 - The Variant manifest, shipped in the same package version, lists every registry with its Sass setting, its Variant property, its default names or count, the setting whose names are its defaults (`$button-palette` builds on `$foundation-palette`), the Library mixins that write its property, and the Variant inputs that follow it.
-- One shared core compiles a project's global stylesheet with the Sass JavaScript API, reads the Variant properties from the compiled CSS, works out what the declaration file must say, reads what the existing file says, and writes or compares. Three thin entry points sit over it:
+- One shared core compiles a project's global stylesheet with the Sass JavaScript API, reads the Variant properties from the compiled CSS, works out what the declaration file must say, reads what the existing generated file says, and writes when the two differ. Three thin entry points sit over it:
   - a setup generator, `ngx-foundation-sites:variant-types`, an Nx generator exposed to the Angular CLI as a schematic, which adds an `nfs-variants` target to each project, writes its first Variant declaration file, and in Nx registers the sync generator on the project's own targets;
-  - an Nx task sync generator, `ngx-foundation-sites:variant-types-sync`, which keeps every project's file in step before its build, serve, test, and Storybook tasks, and which `nx sync:check` runs in CI;
-  - an Architect builder, `ngx-foundation-sites:variant-types`, behind the `nfs-variants` target, which rewrites the file (`ng run <app>:nfs-variants`) or fails on Declaration drift (`ng run <app>:nfs-variants:check`), on the Angular CLI and under Nx alike.
-- The file is written deterministically and compared by meaning, not by bytes, so a formatter, line-ending conversion, or hand-written layout never counts as drift. The tooling rewrites only a file it generated itself; a hand-written file is checked just the same and never overwritten.
-- CI runs `nx sync:check` (Nx) or `ng run <app>:nfs-variants:check` (Angular CLI) as its own step.
+  - an Nx task sync generator, `ngx-foundation-sites:variant-types-sync`, which keeps every project's file in step before its build, serve, test, and Storybook tasks;
+  - an Architect builder, `ngx-foundation-sites:variant-types`, behind the `nfs-variants` target, which rewrites the file (`ng run <app>:nfs-variants`), on the Angular CLI and under Nx alike.
+- The file is written deterministically and compared by meaning, not by bytes, so a formatter or a line-ending conversion never causes a rewrite. The tooling rewrites only a file it generated itself; a hand-written file is never overwritten.
+- The generated file is committed with the Sass change that changed it: outside CI, Nx rewrites it before the registered tasks, and on the Angular CLI the `nfs-variants` target or the optional npm `pre` scripts do; CI builds against the committed file.
 - A shared library whose own programs use names the defaults lack gets a Variant declaration file of its own, generated from an application build target it names or from its own stylesheet, such as its Storybook preview stylesheet.
 - The library's own pipeline runs the Variant typings check after its build: the emitted typings name each listed input's alias, and a generated probe program proves that a declared name reaches every listed input and that misspelt, removed, and out-of-range values still fail.
 
@@ -47,18 +47,18 @@ The library ships, inside its own package, everything a consumer needs to write 
 8. As an application developer who gave `$button-palette` its own map without `purple`, I want `purple` to fail on buttons while it still works on callouts, so that each family follows its own setting.
 9. As an application developer on Nx, I want the file rewritten before `nx build`, `nx serve`, and `nx test` when my Sass changed, so that local tasks never run against stale types.
 10. As an application developer on Nx, I want the choice between Nx's prompt and automatic syncing, so that I decide how much Nx does for me without the library changing a workspace-wide setting behind my back.
-11. As a CI maintainer, I want one step that fails when any declaration file is out of step, so that drift never reaches the main branch.
-12. As a CI maintainer, I want that step to fail with the file, the project, the stylesheet, and the exact names that differ, so that the fix is obvious from the log.
-13. As a CI maintainer on the Angular CLI, I want a check target per application, so that the same guarantee holds without Nx.
+11. As an application developer, I want the docs to say that the generated file is committed with the Sass change that changed it, so that CI, where Nx runs no sync generator, builds against a file in step.
+12. As an application developer, I want each rewrite to name the file, the project, the stylesheet, and the names that changed, so that I see what a Sass change did to my types.
+13. As an application developer on the Angular CLI, I want an `nfs-variants` target per application that rewrites the file, so that the file stays in step without Nx.
 14. As an application developer on the Angular CLI, I want optional npm `pre` scripts that regenerate the file, so that `npm run build`, `npm start`, and `npm test` keep it in step.
-15. As an application developer, I want the tooling to tell me when my stylesheet has no Variant properties at all, naming the import and the includes to add, so that a missing `@import 'ngx-foundation-sites';` does not look like a typing bug.
+15. As an application developer, I want the setup docs to name the import and the includes my stylesheet needs, so that a missing `@import 'ngx-foundation-sites';` does not look like a typing bug.
 16. As an application developer, I want a family I did not include in my Sass to keep Foundation's defaults, without any error, so that I include only the Library mixins I use.
 17. As an application developer, I want the generated file to be stable byte for byte for the same Sass and formatter settings, so that it does not churn in my diffs.
 18. As an application developer who runs Prettier on everything, I want the generated file to come out already formatted and to stay in step after Prettier touches it, so that the formatter and the sync never fight.
 19. As an application developer on Windows with `core.autocrlf`, I want line endings never to count as drift, so that checkouts on another platform stay in sync.
-20. As an application developer who prefers to write the file by hand, I want CI to check my hand-written file against the Sass just the same, and never overwrite it, so that I keep control.
-21. As an application developer, I want a check failure when my file declares a registry the library does not have, so that a typo in a registry name does not silently declare a new, unused interface.
-22. As an application developer, I want a check failure when my hand-written file has no `import`, so that the ambient-module trap that replaces the library's types is caught.
+20. As an application developer who prefers to write the file by hand, I want the tooling never to overwrite my hand-written file, so that I keep control.
+21. As an application developer who writes the file by hand, I want the docs to list the registry names the library has, so that a typo in a registry name does not declare a new, unused interface.
+22. As an application developer who writes the file by hand, I want the docs to say that it starts with `import 'ngx-foundation-sites';`, so that I avoid the ambient-module trap that replaces the library's types.
 23. As an application developer who wants open typing for one palette, I want a documented opt-out that survives regeneration, so that I can accept any string there on purpose.
 24. As an application developer with several global stylesheets, I want the tooling to read every injected Sass stylesheet of my build and tell me when two of them disagree, so that the file follows what my application really loads.
 25. As an application developer with a lazily loaded theme stylesheet, I want to name which stylesheets the file follows, so that a theme switched at runtime does not decide my types by accident.
@@ -71,8 +71,8 @@ The library ships, inside its own package, everything a consumer needs to write 
 32. As a developer whose one application's Sass is broken, I want the error to name that application and its fix, so that I know why every task stopped.
 33. As a developer running `ng serve` or `nx serve`, I want the dev server to re-check my templates after the Variant declaration file is rewritten, so that stale template errors in the terminal do not mislead me.
 34. As a developer running git hooks or an agent shell, I want the docs to say to run `nx sync` first, so that a non-interactive run does not stop on an out-of-sync workspace.
-35. As an Angular CLI developer, I want the schematic to tell me which packages to install when `nx` is missing, so that its dependency is explicit, and I want the check target to work without Nx, so that CI stays lean.
-36. As an application developer upgrading ngx-foundation-sites, I want the next sync or check to report every change in the library's registries and defaults, so that an upgrade never leaves my file silently out of step.
+35. As an Angular CLI developer, I want the schematic to tell me which packages to install when `nx` is missing, so that its dependency is explicit, and I want the `nfs-variants` target to work without Nx, so that a workspace without Nx stays lean.
+36. As an application developer upgrading ngx-foundation-sites, I want the next sync to rewrite the generated file for every change in the library's registries and defaults, so that an upgrade never leaves my file out of step.
 37. As an application developer, I want the setup command to be idempotent, so that I can re-run it after adding an application.
 38. As a library maintainer, I want one manifest that lists every registry with its setting, property, defaults, and the inputs that follow it, so that the Sass, the types, and the generator cannot drift apart.
 39. As a library maintainer, I want a check after every build that fails when an emitted Variant input type no longer names its alias or no longer accepts a declared name, so that declaration emit never freezes Foundation's defaults.
@@ -125,15 +125,15 @@ Settings that are deliberately not registries:
 - `$breakpoints`: behaviour Options keep the open `NfsBreakpointName` (ADR 0005, ADR 0040). The Zero breakpoint's name in Media Object's `stack-for-<zero>` needs no registry: `stackFor` is typed `NfsClassBreakpoint`, and the directive builds the class from `nfsBreakpointsToken`'s Zero breakpoint ([Spec: Media Object](../issues/91-spec-media-object.md), D2).
 - `$offcanvas-sizes` and `$offcanvas-vertical-sizes`: keyed by breakpoint, they produce media queries, not classes.
 - `$button-fill`: the fills `solid`, `hollow`, `clear` are a Closed Variant family whatever the setting says (ADR 0039, dated note).
-- Flags that gate a family's classes (`$button-responsive-expanded`, the `$prototype-*-breakpoints` flags, `$global-flexbox`, `$xy-grid`, `$flexbox-responsive-breakpoints`): they change whether classes exist, not which names they have, so the types do not change. The owning spec gives a gated family a Variant property of its own, which its mixin writes as the empty list while the flag is off and which only the runtime check reads (or, for two families one flag gates in opposite directions, one property listing whichever names the compile generates, as `--nfs-media-object-section`); a flag that only chooses which of two opposite classes exists, where the absent class's look is already the default, needs none (the Table's `striped` and `unstriped` under `$table-is-striped`, [Spec: Table](../issues/92-spec-table.md), D5). A gated family never writes a registry's property, such as `--nfs-breakpoint-classes`, empty. Such a property follows the Variant property format and is not in the manifest; `$flexbox-responsive-breakpoints`'s is `--nfs-flexbox-responsive-breakpoints`.
-- Class-name renames (`$grid-column-alias`, the Float Grid's class-name parameters, `$maincontent-class`): they rename Structural or Utility classes, which directives bind; the Float Grid spec leaves them unsupported, because the directives bind Foundation's default names and the library's mixin cannot read `foundation-grid(...)`'s arguments, and `$grid-column-alias` needs nothing, because no directive binds the alias; the Off-canvas spec decided that `nfs-off-canvas` stops the compile on a renamed `$maincontent-class`.
+- Flags that gate a family's classes (`$button-responsive-expanded`, the `$prototype-*-breakpoints` flags, `$global-flexbox`, `$xy-grid`, `$flexbox-responsive-breakpoints`): they change whether classes exist, not which names they have, so the types do not change, and the tooling reads nothing for them. A gated family never writes a registry's property, such as `--nfs-breakpoint-classes`, empty.
+- Class-name renames (`$grid-column-alias`, the Float Grid's class-name parameters, `$maincontent-class`): they rename Structural or Utility classes, which directives bind; the Float Grid spec leaves them unsupported, because the directives bind Foundation's default names and the library's mixin cannot read `foundation-grid(...)`'s arguments, and `$grid-column-alias` needs nothing, because no directive binds the alias; a renamed `$maincontent-class` is the [Spec: Off-canvas](../issues/25-spec-off-canvas.md)'s to decide.
 - `$prototype-sizing`: its names are CSS properties, which become the attribute names `nfsWidth` and `nfsHeight`; a template cannot grow attributes from Sass, so names a consumer adds generate classes no attribute sets ([Spec: Prototyping Utilities](../issues/102-spec-prototyping-utilities.md), D10).
 
 A component spec declares no registry (the typing decision). A spec whose family needs a setting missing from this table proposes a new row for this spec.
 
 ### Registry to property and input mapping: the Variant manifest
 
-The Variant manifest is a JSON document inside the package, read by the tooling from its own install location, never exported through the package's `exports` and never loaded by application code. It is the one list the library's Sass, types, generator, and typings check agree on. The package ships a second JSON document under the same rules, the Selector manifest of [Spec: forgotten-import checks (shared utility)](../issues/150-spec-forgotten-import-checks.md), which the `ngx-foundation-sites:missing-imports` builder reads; that spec owns its shape and its build steps. Its shape:
+The Variant manifest is a JSON document inside the package, read by the tooling from its own install location, never exported through the package's `exports` and never loaded by application code. It is the one list the library's Sass, types, generator, and typings check agree on. Its shape:
 
 ```ts
 interface NfsVariantManifest {
@@ -163,7 +163,7 @@ interface NfsVariantManifestUse {
 ```
 
 - One entry per row of the table above, in that order. `mixins` and `uses` are filled from the component specs: every Open Variant family row of a component spec's class mapping (building-blocks 1.14 item 2) becomes one `uses` entry per registry it reads. An input that takes a count or a Breakpoint rules object reads two registries (`NfsCell.size` reads `NfsGridColumnsOverrides` with shape `count` and `NfsBreakpointClassesOverrides` with shape `rules`) and appears under both.
-- Known `mixins` today: `nfs-callout` and `nfs-progress-bar` write `--nfs-foundation-palette` (the exception to one writer per property for a setting no entry point owns, which the legacy grids' shared settings below also take), and `nfs-callout` writes `--nfs-callout-sizes` alone; `nfs-button` writes `--nfs-button-palette` and `--nfs-button-sizes`; `nfs-badge`, `nfs-label`, `nfs-close-button`, `nfs-dropdown-pane`, and `nfs-responsive-embed` write their settings; `nfs-breakpoint-properties` writes `--nfs-breakpoint-classes`; `nfs-flexbox-utilities` writes `--nfs-flex-source-ordering-count`. `nfs-xy-grid` writes `--nfs-grid-columns` and `--nfs-xy-block-grid-max`. `nfs-prototyping-utilities` writes the ten `$prototype-*` registry properties, and one flag property per `$prototype-*-breakpoints` flag outside the manifest ([Spec: Prototyping Utilities](../issues/102-spec-prototyping-utilities.md)). `nfs-flex-grid` writes `--nfs-grid-column-count` and `--nfs-block-grid-max`, as the Float Grid's mixin does (the shared-setting exception) ([Spec: Flex Grid](../issues/101-spec-flex-grid.md)). `nfs-float-grid` writes `--nfs-grid-column-count` and `--nfs-block-grid-max`, as `nfs-flex-grid` does, and `--nfs-grid-column-gutter` alone ([Spec: Float Grid](../issues/100-spec-float-grid.md)); the `mixins` of the `$grid-column-count` and `$block-grid-max` manifest rows hold both legacy grid mixins, and the new `$grid-column-gutter` row's holds `nfs-float-grid`. `nfs-button-group` writes none: it reads `nfs-button`'s ([Spec: Button Group](../issues/82-spec-button-group.md), D11).
+- Known `mixins` today: `nfs-callout` and `nfs-progress-bar` write `--nfs-foundation-palette` (the exception to one writer per property for a setting no entry point owns, which the legacy grids' shared settings below also take), and `nfs-callout` writes `--nfs-callout-sizes` alone; `nfs-button` writes `--nfs-button-palette` and `--nfs-button-sizes`; `nfs-badge`, `nfs-label`, `nfs-close-button`, `nfs-dropdown-pane`, and `nfs-responsive-embed` write their settings; `nfs-breakpoint-properties` writes `--nfs-breakpoint-classes`; `nfs-flexbox-utilities` writes `--nfs-flex-source-ordering-count`. `nfs-xy-grid` writes `--nfs-grid-columns` and `--nfs-xy-block-grid-max`. `nfs-prototyping-utilities` writes the ten `$prototype-*` registry properties ([Spec: Prototyping Utilities](../issues/102-spec-prototyping-utilities.md)). `nfs-flex-grid` writes `--nfs-grid-column-count` and `--nfs-block-grid-max`, as the Float Grid's mixin does (the shared-setting exception) ([Spec: Flex Grid](../issues/101-spec-flex-grid.md)). `nfs-float-grid` writes `--nfs-grid-column-count` and `--nfs-block-grid-max`, as `nfs-flex-grid` does, and `--nfs-grid-column-gutter` alone ([Spec: Float Grid](../issues/100-spec-float-grid.md)); the `mixins` of the `$grid-column-count` and `$block-grid-max` manifest rows hold both legacy grid mixins, and the new `$grid-column-gutter` row's holds `nfs-float-grid`. `nfs-button-group` writes none: it reads `nfs-button`'s ([Spec: Button Group](../issues/82-spec-button-group.md), D11).
 - Known `uses` under `NfsBreakpointClassesOverrides` ([Re-run: Off-canvas spec under the class rule](../issues/117-rerun-off-canvas-class-rule.md)): `{entryPoint: 'ngx-foundation-sites/off-canvas', directive: 'NfsOffCanvas', input: 'revealOn', alias: 'NfsClassBreakpoint', shape: 'name'}` and the same for `inCanvasOn`; `position` is closed and has no entry. [Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md) adds `{entryPoint: 'ngx-foundation-sites/flexbox-utilities', directive: 'NfsFlexChild', input: 'order', alias: 'NfsFlexOrderInput', shape: 'rules'}`, the same with `input: 'nfsFlexChild', alias: 'NfsFlexChildInput', shape: 'rules'`, with `directive: 'NfsFlexContainer', input: 'direction', alias: 'NfsFlexDirectionInput', shape: 'rules'`, and with `directive: 'NfsFlexContainer', input: 'nfsFlexContainer', alias: 'NfsFlexContainerInput', shape: 'query'`. [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md) adds `{entryPoint: 'ngx-foundation-sites/visibility', directive: 'NfsVisibility', input: 'showFor', alias: 'NfsVisibilityShowFor', shape: 'query'}` and `{entryPoint: 'ngx-foundation-sites/visibility', directive: 'NfsVisibility', input: 'hideFor', alias: 'NfsVisibilityHideFor', shape: 'query'}`. [Spec: XY Grid](../issues/99-spec-xy-grid.md) adds, all with entry point `ngx-foundation-sites/xy-grid`: `{directive: 'NfsCell', input: 'size', alias: 'NfsCellSizeInput', shape: 'rules'}`, `{directive: 'NfsCell', input: 'offset', alias: 'NfsCellOffsetInput', shape: 'rules'}`, `{directive: 'NfsGridX', input: 'up', alias: 'NfsGridUpInput', shape: 'rules'}`, and, all with alias `NfsGridQuery` and shape `query`, `{directive: 'NfsCell', input: 'cellBlock'}`, `{directive: 'NfsCell', input: 'cellBlockY'}`, `{directive: 'NfsCell', input: 'cellBlockContainer'}`, `{directive: 'NfsGridX', input: 'marginCollapse'}`, `{directive: 'NfsGridX', input: 'paddingCollapse'}`, `{directive: 'NfsGridX', input: 'gridFrame'}`, and `{directive: 'NfsGridY', input: 'gridFrame'}`. [Spec: Flex Grid](../issues/101-spec-flex-grid.md) adds, all with entry point `ngx-foundation-sites/flex-grid` and shape `rules`: `{directive: 'NfsColumn', input: 'size', alias: 'NfsFlexGridColumnSizeInput'}`, `{directive: 'NfsColumn', input: 'offset', alias: 'NfsFlexGridOffsetInput'}`, `{directive: 'NfsRow', input: 'up', alias: 'NfsFlexGridUpInput'}`, `{directive: 'NfsRow', input: 'collapse', alias: 'NfsFlexGridCollapseInput'}`, and, with alias `NfsFlexGridQuery` and shape `query`, `{directive: 'NfsRow', input: 'unstack'}`. [Spec: Float Grid](../issues/100-spec-float-grid.md) adds, all with entry point `ngx-foundation-sites/float-grid` and shape `rules`: `{directive: 'NfsColumn', input: 'size', alias: 'NfsFloatGridColumnSizeInput'}`, `{directive: 'NfsColumn', input: 'offset', alias: 'NfsFloatGridOffsetInput'}`, `{directive: 'NfsColumn', input: 'push', alias: 'NfsFloatGridOffsetInput'}`, `{directive: 'NfsColumn', input: 'pull', alias: 'NfsFloatGridOffsetInput'}`, `{directive: 'NfsRow', input: 'up', alias: 'NfsFloatGridUpInput'}`, `{directive: 'NfsColumn', input: 'centered', alias: 'NfsFloatGridCenteredInput'}`, and `{directive: 'NfsRow', input: 'collapse', alias: 'NfsFloatGridCollapseInput'}`.
 - Known `uses` under `NfsResponsiveEmbedRatiosOverrides` ([Spec: Responsive Embed](../issues/96-spec-responsive-embed.md)): `{entryPoint: 'ngx-foundation-sites/responsive-embed', directive: 'NfsResponsiveEmbed', input: 'ratio', alias: 'NfsResponsiveEmbedRatio', shape: 'name'}`.
 - Known `uses` under `NfsGridColumnCountOverrides`: [Spec: Flex Grid](../issues/101-spec-flex-grid.md) adds, both with entry point `ngx-foundation-sites/flex-grid` and shape `count`: `{directive: 'NfsColumn', input: 'size', alias: 'NfsFlexGridColumnSizeInput'}` and `{directive: 'NfsColumn', input: 'offset', alias: 'NfsFlexGridOffsetInput'}`. [Spec: Float Grid](../issues/100-spec-float-grid.md) adds, all with entry point `ngx-foundation-sites/float-grid` and shape `count`: `{directive: 'NfsColumn', input: 'size', alias: 'NfsFloatGridColumnSizeInput'}`, `{directive: 'NfsColumn', input: 'offset', alias: 'NfsFloatGridOffsetInput'}`, `{directive: 'NfsColumn', input: 'push', alias: 'NfsFloatGridOffsetInput'}`, and `{directive: 'NfsColumn', input: 'pull', alias: 'NfsFloatGridOffsetInput'}`. The entries' `entryPoint` keeps the two grids' `NfsColumn` apart.
@@ -193,10 +193,6 @@ Workspace tooling (Node, CommonJS, not an Angular entry point):
     <- setup generator  ngx-foundation-sites:variant-types       (package "generators": Nx; "schematics": Angular CLI via convertNxGenerator)
     <- sync generator   ngx-foundation-sites:variant-types-sync  (package "generators", hidden)
     <- builder          ngx-foundation-sites:variant-types       (package "builders": Angular CLI and Nx)
-
-  Selector manifest (JSON), for the forgotten-import checks
-    <- setup generator  ngx-foundation-sites:missing-imports   (package "generators"; "schematics" via convertNxGenerator)
-    <- builder          ngx-foundation-sites:missing-imports   (package "builders": Angular CLI and Nx)
 ```
 
 - Family aliases live in their component's entry point (building-blocks 1.3); the primary entry point holds only what several entry points share: the registries, the helpers, the Class breakpoint types, and `NfsFoundationPaletteColor`, the base of three chained registries. A family alias another entry point needs is imported as a type from its own entry point (Button Group's colour from `ngx-foundation-sites/button`).
@@ -244,7 +240,7 @@ export function nfsVariantBoolean(value: NfsVariantBoolean): boolean;
 
 ### API: the Variant property format
 
-The grammar every reader of a Variant property uses, the generator here and the runtime checks in the browser:
+The grammar of a Variant property, which the Library mixins write and the generator reads:
 
 ```
 value  := names | count | empty
@@ -255,7 +251,7 @@ count  := a whole number from 0 to 999
 empty  := whitespace only
 ```
 
-- Library mixins write names as a space-separated list on `:root`, a count as a bare whole number, and the empty list as whitespace only. Dart Sass 1.104 rejects `#{()}` ("() isn't a valid CSS value", measured), so a mixin prints an empty list with `unquote('')`, which compiles to `--nfs-x: ;` expanded and `--nfs-x: ` compressed (measured). In the browser, computed style returns the empty string for an empty list and for a missing property alike (measured in Chromium 153, Firefox 155, and WebKit 26.6 by [Re-run: Button spec under the class rule](../issues/128-rerun-button-class-rule.md); ADR 0040, dated note), so only a reader of the compiled CSS text, such as the generator, tells the two apart.
+- Library mixins write names as a space-separated list on `:root`, a count as a bare whole number, and the empty list as whitespace only. Dart Sass 1.104 rejects `#{()}` ("() isn't a valid CSS value", measured), so a mixin prints an empty list with `unquote('')`, which compiles to `--nfs-x: ;` expanded and `--nfs-x: ` compressed (measured). In the browser, computed style returns the empty string for an empty list and for a missing property alike (measured in Chromium 153, Firefox 155, and WebKit 26.6 by [Re-run: Button spec under the class rule](../issues/128-rerun-button-class-rule.md); ADR 0040, dated note), so the generator reads the compiled CSS text, which tells the two apart.
 - The reader also accepts commas, because Sass prints `map-keys()` as a comma list, and line breaks, because an unoptimized build breaks long lists (SYNC 3). Duplicate names are dropped; order is kept.
 - Colour-name keys (`purple`, `teal`, `white`) print as written in both output styles (measured, SYNC 3 and this ticket's probe); reading the compiled text avoids the custom-function trap where they arrive as colours.
 - A property appears once per compile. If a compile prints one property twice with different values (a setting reassigned between two includes), the reader reports it rather than guessing.
@@ -301,25 +297,20 @@ Format rules, which make the output deterministic for the same Sass, library ver
 
 Ownership and reading:
 
-- The tooling owns a file whose first line starts with `// Generated by ngx-foundation-sites`, or a file that does not exist yet. It never overwrites any other file: a file without the header is hand-written, and the tooling only checks it.
-- Reading uses TypeScript's parser alone (`createSourceFile`, no program, no type checker), on generated and hand-written files alike. It records:
-  - whether the file has a top-level `import` or `export` (else the not-a-module problem);
-  - every interface inside every `declare module 'ngx-foundation-sites'` block (several blocks merge, as TypeScript merges them);
-  - for each interface: its name, which must be a registry of the installed manifest; for a names registry, each member as a name with the literal type `true` or `false`; for a count registry, the one member `count` with a whole-number literal; an index signature marks the registry open.
-- Anything the reader cannot model (a member typed with anything but those literals, a derived type such as `Record<(typeof x)[number], true>`, a bare numeric key, an interface outside the block, a registry name the manifest lacks) is a problem the check reports with the member's line, never a silent pass. Comments, blank lines, and an empty `declare global {}` are ignored.
+- The tooling owns a file whose first line starts with `// Generated by ngx-foundation-sites`, or a file that does not exist yet. It never overwrites any other file: a file without the header is hand-written, and the tooling leaves it alone.
+- Reading a generated file uses TypeScript's parser alone (`createSourceFile`, no program, no type checker). It records every interface inside every `declare module 'ngx-foundation-sites'` block (several blocks merge, as TypeScript merges them), and for each interface its name, and, for a names registry, each member as a name with the literal type `true` or `false`, or, for a count registry, the one member `count` with a whole-number literal. Comments, blank lines, and an empty `declare global {}` are ignored. A generated file edited into anything the reader cannot model (a member typed with anything but those literals, a derived type, a bare numeric key, an interface the manifest lacks) differs from the expected model and is rewritten.
 - Comparison is by meaning: the expected model from the Sass against the file's model, registry by registry. Formatting, quotes, member order, and line endings never count. A generated file is rewritten only when the models differ; a model-equal file is left untouched, so a formatter's changes never cause churn.
+- A hand-written file follows the rules of the generated form, as documented usage: `import 'ngx-foundation-sites';` or another top-level `import` or `export` first, because without one its `declare module` is an ambient module that replaces the library's types (TS2305); interfaces only inside the `declare module 'ngx-foundation-sites'` block, each named after a registry of the settings table above (an interface of another name declares a new, unused interface); members `name: true` or `name: false`, numeric names quoted (`'25': true`), or, in a count registry, `count: <whole number>`. The consumer keeps it in step with the Sass by hand.
 
-Declaration drift, as the check reports it:
+Declaration drift, what the file and the Sass can disagree on, and the line the sync generator's summary (M1) gives each difference a rewrite removes:
 
-| Drift | Effect while it lasts | Reported as |
+| Drift | Effect while it lasts | Summary line |
 | --- | --- | --- |
 | The Sass generates a name the file does not declare | a template using it fails to compile (loud) | `add <name>: true` |
 | The file declares a name the Sass does not generate | compiles, renders a class with no CSS (silent) | `remove <name>: true` |
 | The Sass removed a default the file keeps | compiles, renders nothing (silent) | `add <name>: false` |
 | The file removes a default the Sass generates | a template using it fails (loud) | `remove <name>: false` |
 | The counts differ | wrong range | `count is <file> in the file and <sass> in <property>` |
-| The file declares a registry the manifest lacks | nothing happens (silent) | `<Name> is not a Variant registry of ngx-foundation-sites <version>` |
-| An open registry (index signature) | any string compiles for that setting, by the consumer's choice | not drift; listed once as open |
 
 The open-typing opt-out (ADR 0040) lives in a separate, hand-written module of the consumer's, never in the generated file, as `[name: string]: boolean` inside the registry. The `boolean` form merges with the generated file's `name: false` members; a `[name: string]: true` signature conflicts with them, and the Angular CLI's default `skipLibCheck: true` hides that conflict (measured).
 
@@ -331,9 +322,9 @@ Pure functions over a small file-system interface (read, exists, write), so the 
    - With `buildTarget` (default `<project>:build`): read that target's options merged with its configuration, the one the `buildTarget` string names or else the target's `defaultConfiguration` (Angular's own merge: base options, then the configuration's). Take every global stylesheet entry of `styles` whose input ends in `.scss` or `.sass` and that is injected (a string entry, or an object without `inject: false`), and `stylePreprocessorOptions.includePaths` as load paths. A configuration of the same target that overrides `styles` or `stylePreprocessorOptions` produces warning M11.
    - With `stylesheets` (and optional `includePaths`): exactly those files, for a library project or a lazily loaded stylesheet. `stylesheets` and `buildTarget` are exclusive.
 2. Compile each source with the Sass compiler the application builder itself loads, resolved from `@angular/build`: `sass-embedded`, its dependency, or its pure-JS `sass` dependency when `NG_BUILD_SASS_EMBEDDED` is `0` or `false` (`@angular/build` 22.2.0 `src/utils/environment-options.js`), through `initAsyncCompiler()`, because the importer is asynchronous. Options: `style: 'expanded'`, the load paths, Sass warnings silenced (Foundation's `@import` and global-function deprecations), and the application builder's importer (`src/tools/esbuild/stylesheets/sass-language.js`): relative imports as Sass does them; every bare specifier, and every `pkg:` URL with `pkg:` removed, resolved from the importing file's directory by esbuild's resolver (the esbuild `@angular/build` depends on, called through a context whose plugin exposes `build.resolve`) with the builder's stylesheet options, `conditions: ['style', 'sass', 'less']` plus `production` or `development` by the build's style optimization, `mainFields: ['style', 'sass']`, and `resolveExtensions: []` (`src/tools/esbuild/stylesheets/bundle-options.js`), which is how `@import 'ngx-foundation-sites';` reaches the library's `_index.scss` through the `sass` export condition (ADR 0012); then the builder's deep-import fallback (the package root found through `<name>/package.json`, plus the rest of the path); then the load paths. There is no `~` handling and no Sass `NodePackageImporter`: the builder strips no `~` from Sass imports, and `NodePackageImporter` prefers a package's `sass` field where the builder takes `style` (both measured by the prototype, which found the core's properties equal to the built `styles.css` in eight cases).
-3. Read the Variant properties: for each registry of the manifest, find its property's declarations in the compiled CSS and parse the value with the Variant property format. A registry whose property is absent from every source is absent: its registry stays empty (Foundation's defaults) and nothing is reported, because a project includes only the Library mixins it uses. When no registry's property is found in any source, the project fails with M3. When two sources print the same property with different values, the project fails with M12.
+3. Read the Variant properties: for each registry of the manifest, find its property's declarations in the compiled CSS and parse the value with the Variant property format. A registry whose property is absent from every source is absent: its registry stays empty (Foundation's defaults), because a project includes only the Library mixins it uses; a stylesheet that prints no Variant property at all leaves every registry at Foundation's defaults. The documented setup is `@import 'ngx-foundation-sites';` after the Foundation imports and the Library mixin of each family the consumer customises (for example `@include nfs-button;`). When two sources print the same property with different values, the project fails with M12.
 4. Build the expected model. A names registry with a `base` compares against the base setting's found names, or the base's defaults when the base's property was not found (its registry then stays empty, so its alias still means the defaults); any other names registry compares against its own defaults. Added names are the found names outside those, and removed names are those not found. A count registry records `count` when it differs from the default; a count outside 0 to 999, or not a whole number, fails with M10.
-5. Parse the existing file (above).
+5. Parse the existing generated file (above).
 6. Compare the models and list the drift.
 7. Render and format (above).
 8. Messages (below).
@@ -354,24 +345,23 @@ Pure functions over a small file-system interface (read, exists, write), so the 
 
 What it does, per project, and idempotently:
 
-1. Resolve and compile the sources (core 1 to 4). A project that fails (M3, M8, M10, M12) is skipped with its message, and nothing is written for it; the generator fails only when no project succeeds.
+1. Resolve and compile the sources (core 1 to 4). A project that fails (M8, M10, M12) is skipped with its message, and nothing is written for it; the generator fails only when no project succeeds.
 2. Add the `nfs-variants` target if the project has none:
 
    ```json
    "nfs-variants": {
      "executor": "ngx-foundation-sites:variant-types",
-     "options": { "buildTarget": "shop:build" },
-     "configurations": { "check": { "check": true } }
+     "options": { "buildTarget": "shop:build" }
    }
    ```
 
    in `project.json` (Nx, `executor`) or `angular.json` (Angular CLI, `builder` for `executor`), with `stylesheets` and `includePaths` in place of `buildTarget` when given. On the Angular CLI the generator edits `angular.json` itself: `@nx/devkit`'s `getProjects` and `readProjectConfiguration` read an `angular.json` project (with `builder` renamed to `executor`), but `updateProjectConfiguration` writes a project without a `project.json` into the root `package.json`'s `nx` field (measured by the prototype). Nx caches nothing for this target.
-3. Write the Variant declaration file when it is absent or generated; keep a hand-written one and report its drift (M4) instead.
+3. Write the Variant declaration file when it is absent or generated; keep a hand-written one untouched and list it in the summary (M13).
 4. Make every TypeScript configuration of the project that type-checks it see the file: the `tsConfig` of each target the sync generator is registered on (below) and the project's Storybook TypeScript configuration when it has one. A configuration whose `include` or `files` already matches the file is left alone; the generator adds the file to `include` of any other and reports each edit. A library build target (`@nx/angular:package`, `@nx/angular:ng-packagr-lite`) is the exception: ng-packagr sets the program's root names to the entry file (ng-packagr 22.2.0 `src/lib/ts/tsconfig.js`), so `include` and `files` never reach it; the generator adds the file's path relative to that `tsConfig` (`./src/nfs-variants.d.ts`) to its `compilerOptions.types`, and only reports the edit when the configuration lists no `types`, since adding the option there would switch off automatic `@types` inclusion (measured by the prototype: the library build failed with TS2322 on a declared name while its `include` matched the file, and passed with the `types` entry, which the emitted typings do not reference). The Angular CLI and Nx application templates already include the file (`src/**/*.ts` in the application program, `src/**/*.d.ts` in the test program; verified by the typing decision and by the prototype's unit-test runs).
 5. Nx with `sync` on: for each of the project's targets whose executor type-checks it (the table below), add `"syncGenerators": ["...", "ngx-foundation-sites:variant-types-sync"]` to that target in `project.json`, keeping anything already listed. The `"..."` spread keeps the generators that `targetDefaults` and inferred targets contribute (Nx 23.2.1 project configuration reference: `syncGenerators` accepts the array spread).
 6. Nx with `applyChanges`: set `sync.applyChanges: true`.
 7. Angular CLI with `npmScripts`: add `"prebuild": "ng run shop:nfs-variants"` and the same for `prestart` and `pretest`, one `ng run` per project joined with `&&`, appended with `&&` to an existing script.
-8. Under Nx, format the edited files with `formatFiles` (Nx writes JSON unformatted; the Angular CLI formats a schematic's output with the workspace's Prettier itself, `@angular/cli` 22.2.0 `src/utilities/prettier.js`). Then print the summary (M13): what it wrote and edited, the CI step to add, and the dev-server note.
+8. Under Nx, format the edited files with `formatFiles` (Nx writes JSON unformatted; the Angular CLI formats a schematic's output with the workspace's Prettier itself, `@angular/cli` 22.2.0 `src/utilities/prettier.js`). Then print the summary (M13): what it wrote and edited, the hand-written files it kept, and the dev-server note.
 
 Targets that get the sync generator (by executor, plus Storybook's inferred targets by name):
 
@@ -387,12 +377,13 @@ Why per-project registration and not `targetDefaults` keyed by executor: Nx reso
 
 ### API: the Nx task sync generator
 
-`ngx-foundation-sites:variant-types-sync`, registered by the setup generator, run by Nx before each registered task outside CI, by `nx sync`, and by `nx sync:check`.
+`ngx-foundation-sites:variant-types-sync`, registered by the setup generator, run by Nx before each registered task outside CI and by `nx sync`.
 
 - Nx calls it with the tree alone. It reads the project graph (`createProjectGraphAsync()`, as `@nx/js:typescript-sync` does), so inferred targets count, and covers every project that has a target whose executor is `ngx-foundation-sites:variant-types`, with that target's `options`. One run covers the whole workspace.
 - For each project it runs core 1 to 6. A generated or missing file whose model differs is written into the tree (rendered and formatted); anything else is left untouched. Nx counts a sync generator as out of sync only when it changes the tree or throws (Nx `getSyncGeneratorChanges` keeps a result only if it has an error or `changes.length > 0`), so a model-equal file is in sync whatever its bytes.
-- It returns `outOfSyncMessage` (M1) and one `outOfSyncDetails` line per changed file (M1), which `nx sync:check` prints.
-- Failures: a project whose compile fails (M8), that has no Variant properties (M3), whose sources disagree (M12), whose count is invalid (M10), or whose file is hand-written and drifted (M4), or not a module (M5), or not readable (M6, M7). The generator collects every project's failure and throws one plain `Error` listing each project with its fix (M2). It does not use Nx's `SyncError`, which only `@nx/devkit/internal` exports; Nx prints a plain error's message the same way (`errorToString`). A throw discards that run's other changes; they are applied by the first run after the fix.
+- It returns `outOfSyncMessage` (M1) and one `outOfSyncDetails` line per changed file (M1), which Nx prints when it prompts before a task or stops one.
+- A hand-written file is left untouched.
+- Failures: a project whose compile fails (M8), whose sources disagree (M12), or whose count is invalid (M10). The generator collects every project's failure and throws one plain `Error` listing each project with its fix (M2). It does not use Nx's `SyncError`, which only `@nx/devkit/internal` exports; Nx prints a plain error's message the same way (`errorToString`). A throw discards that run's other changes; they are applied by the first run after the fix.
 - What Nx does around it (measured on Nx 23.2.1, SYNC 4.2 and 4.3, and read in the task runner's source): in a terminal, Nx prompts before applying unless `sync.applyChanges` is `true`; outside a terminal without `CI` (git hooks, agent shells, IDE tasks) it stops the task on any drift, whatever `applyChanges` says; with `CI` set it skips task sync generators entirely. With the daemon on, each batch of workspace file changes reruns it in the background, one Sass compile per covered project (0.6 to 0.8 s each with `foundation-everything` and `sass-embedded` on win32-arm64, measured by the prototype; the pure-JS `sass` asynchronous compiler took 8.5 to 9.5 s for the same compile); results reach disk only when a command flushes them.
 
 ### API: the Architect builder
@@ -404,27 +395,25 @@ Why per-project registration and not `targetDefaults` keyed by executor: Nx reso
 | `buildTarget` | `string` | `<project>:build` | As in the setup generator |
 | `stylesheets` | `string[]` | none | As in the setup generator |
 | `includePaths` | `string[]` | none | As in the setup generator |
-| `check` | `boolean` | `false` | Compare only: succeed when the file matches the Sass, fail with the drift (M2) otherwise; never write |
 
-- Write mode (`ng run shop:nfs-variants`, `nx run shop:nfs-variants`): writes the file when it is absent or generated and its model differs; fails with M4 on a drifted hand-written file; succeeds silently when in step.
+- `ng run shop:nfs-variants`, `nx run shop:nfs-variants`: writes the file when it is absent or generated and its model differs; leaves a hand-written file untouched; succeeds silently when in step.
 - It reads the build target's options through Architect (`context.getTargetOptions`, which applies the configuration the `buildTarget` string names, else the target's `defaultConfiguration`: Architect 0.2202.0 `getOptionsForTarget`), so it compiles with the application's own `styles` and Sass options.
 - Its schema's `$schema` is `http://json-schema.org/draft-07/schema`. A schema naming `https://json-schema.org/schema` made `ng run` fetch the URL and fail with a 301 and exit 127 (measured, SYNC 5.1).
-- It imports neither `nx` nor `@nx/devkit`, so the check runs on an Angular CLI workspace with only `@angular-devkit/architect`, which the CLI installs.
+- It imports neither `nx` nor `@nx/devkit`, so the builder runs on an Angular CLI workspace with only `@angular-devkit/architect`, which the CLI installs.
 
 ### Workspace configuration
 
 - Nx: the setup generator writes the `nfs-variants` target and the per-target `syncGenerators` entries in `project.json`, and `sync.applyChanges` in `nx.json` only when asked. It adds no `targetDefaults` entry.
 - Angular CLI: the `nfs-variants` target in `angular.json`, optional npm scripts, nothing else.
-- Dependencies: the Variant tooling adds no dependency to applications and no `dependencies` entry to the package; the opt-in `ngx-foundation-sites:missing-imports` setup adds `angular-html-parser`, an optional peer dependency of the package, to a workspace's `devDependencies` ([Spec: forgotten-import checks (shared utility)](../issues/150-spec-forgotten-import-checks.md)). It loads, only when it runs: `sass-embedded` (or `sass`) and `esbuild`, both dependencies of `@angular/build`, and `typescript` (in every Angular workspace), `@angular-devkit/architect` (the builder), `nx` and `@nx/devkit` (the generators; optional peer dependencies of the package at the Nx major the release is tested with, `^23.0.0` first), and `prettier` if installed. A missing package ends the run with M9 naming the install command. The schematic therefore needs `nx` and `@nx/devkit` as development dependencies on an Angular CLI workspace (36 MB on win32-arm64, SYNC 5.3); the check builder does not.
+- Dependencies: the Variant tooling adds no dependency to applications and no `dependencies` entry to the package. It loads, only when it runs: `sass-embedded` (or `sass`) and `esbuild`, both dependencies of `@angular/build`, and `typescript` (in every Angular workspace), `@angular-devkit/architect` (the builder), `nx` and `@nx/devkit` (the generators; optional peer dependencies of the package at the Nx major the release is tested with, `^23.0.0` first), and `prettier` if installed. A missing package ends the run with M9 naming the install command. The schematic therefore needs `nx` and `@nx/devkit` as development dependencies on an Angular CLI workspace (36 MB on win32-arm64, SYNC 5.3); the builder does not.
 - Nothing is ever written under `node_modules` (veto C).
 
-### CI steps
+### Keeping the file in step (documented usage)
 
-- Nx: `npx nx sync:check` as its own step, before any task. It is required: tasks skip sync generators in CI, and a build against a stale file passes and ships a Variant with no class (SYNC 4.2). With Nx Cloud distributed agents it runs on the main job, since agents set CI variables too.
-- Nx workspace that declines the sync generator: `npx nx run-many -t nfs-variants -c check`.
-- Angular CLI: `npx ng run <project>:nfs-variants:check` for each project with an `nfs-variants` target.
-- The setup generator prints the step (M13); it edits no CI file.
-- Local non-interactive runs (git hooks, agent shells): `npx nx sync` first, because Nx stops a task on drift outside a terminal.
+- The generated file is committed with the Sass change that changed it. Tasks skip sync generators in CI, and a build against a stale file passes and ships a Variant with no class (SYNC 4.2), so CI builds against the committed file; Nx Cloud distributed agents set CI variables too.
+- Nx: outside CI, the sync generator runs before every registered task. Local non-interactive runs (git hooks, agent shells) run `npx nx sync` first, because Nx stops a task on drift outside a terminal. A workspace that declines the sync generator runs `npx nx run-many -t nfs-variants` after a Sass change.
+- Angular CLI: `npx ng run <project>:nfs-variants` after a Sass change, or the optional npm `pre` scripts.
+- The setup generator edits no CI file.
 
 ### Shared libraries (the shared-library rule)
 
@@ -441,18 +430,13 @@ Every message starts with `ngx-foundation-sites:` and names the project, the fil
 | Id | When | Text (placeholders in angle brackets) |
 | --- | --- | --- |
 | M1 | Nx sync, changed files | Message: "the Variant declaration files no longer match the Sass they are generated from." Detail per file: "<file> (<project>, from <sources>): <drift summary>" |
-| M2 | check failure, or the sync generator's thrown error | "<file> no longer matches <sources>:" then one line per registry with its drift (table above), then "Run <command> to update it." For the thrown error: "could not keep the Variant declaration files in step for <n> project(s):" then "<project>: <message>" per project |
-| M3 | no Variant property in any source | "<sources> of <project> print no Variant properties. Add `@import 'ngx-foundation-sites';` after your Foundation imports and include the Library mixins of the families you use (for example `@include nfs-button;`), or remove the project's nfs-variants target." |
-| M4 | hand-written file with drift | "<file> was not generated by ngx-foundation-sites, so it is not rewritten. Make these edits:" then the drift lines, then "or delete it to let the tooling write it." |
-| M5 | no `import` or `export` | "<file> has no import or export, so its declare module replaces the library's types. Add `import 'ngx-foundation-sites';` as its first statement." |
-| M6 | unknown registry | "<file>:<line> declares <Name>, which is not a Variant registry of ngx-foundation-sites <version>." plus the nearest registry name when one is close |
-| M7 | a member the reader cannot model | "<file>:<line>: <Registry>.<member> must be `true`, `false`, or (for count registries) `count: <whole number>`; quote numeric names ('25': true)." |
+| M2 | the sync generator's thrown error | "could not keep the Variant declaration files in step for <n> project(s):" then "<project>: <message>" per project |
 | M8 | Sass compile error | "compiling <stylesheet> for <project> failed: <Sass message and span>" |
 | M9 | missing package | "the <generator, schematic, or builder> needs <package>. Install it: npm install --save-dev <packages>" |
 | M10 | invalid count | "<property> is '<value>' in <stylesheet>; a count must be a whole number from 0 to 999." |
 | M11 | a configuration changes the styles (warning) | "the <configuration> configuration of <buildTarget> changes styles or stylePreprocessorOptions; <file> follows <used configuration>." |
 | M12 | sources disagree | "<property> lists different names in <stylesheet A> and <stylesheet B>; name the one to follow in the nfs-variants target's stylesheets option." |
-| M13 | setup summary | what was written and edited per project, then "Add this step to CI: <step>." and, for each hand-written file it kept that has no global augmentation, "Add declare global {} to <file>, or restart the dev server after the file changes." |
+| M13 | setup summary | what was written and edited per project, each hand-written file it kept, and, for a kept file that has no global augmentation, "Add declare global {} to <file>, or restart the dev server after the file changes." |
 
 ### Comparison with Angular Material, the CDK, and prior art
 
@@ -460,12 +444,11 @@ Every message starts with `ngx-foundation-sites:` and names the project, the fil
 | --- | --- | --- | --- |
 | Typed theme names | MUI and Mantine: declaration merging into empty `...Overrides` interfaces, written by hand | The same registry shape (`name: true`/`false`), with the file generated from the Sass | Foundation's names live in Sass, so a hand list goes stale (ADR 0040) |
 | Code generation | Chakra `typegen` writes into the installed package; Panda `codegen` writes a folder in the project | Writes one file in the project's source tree | Writing into `node_modules` is vetoed |
-| Check mode | typed-scss-modules `--listDifferent` (exit 1 on a difference); Style Dictionary has none | `nx sync:check` and the builder's `check` configuration, by meaning | A byte check fails on formatting and on hand-written files |
 | Keeping in step | `@nx/js:typescript-sync` (a sync generator reading the project graph) | A task sync generator reading the project graph | Nx's own mechanism for files generated before tasks |
 | Schematics | Angular Material ships `ng add` and `ng generate` schematics written for the devkit | One Nx generator exposed as a schematic through `convertNxGenerator` | The user's rule: Nx generator first |
-| Build-time hooks | `@angular/build` 22.2 has no hook in its Sass compile; code plugins never see it | A separate step and a CI check | Regenerating inside the build is not adopted (ADR 0040) |
+| Build-time hooks | `@angular/build` 22.2 has no hook in its Sass compile; code plugins never see it | A separate step before tasks, and a committed file | Regenerating inside the build is not adopted (ADR 0040) |
 
-Borrowed: MUI's registry semantics, typed-scss-modules' write-only-when-different and exit-1 check, `typescript-sync`'s project-graph reading. Not borrowed: generated narrowing directives, an ESLint rule, a language-service plugin, a watcher, a wrapper around the application builder (all not adopted by ADR 0040).
+Borrowed: MUI's registry semantics, typed-scss-modules' write-only-when-different, `typescript-sync`'s project-graph reading. Not borrowed: generated narrowing directives, an ESLint rule, a language-service plugin, a watcher, a wrapper around the application builder (all not adopted by ADR 0040).
 
 ### Implementation level and primitives
 
@@ -477,7 +460,7 @@ None: nothing here renders.
 
 ### WCAG 2.2 AA
 
-No criterion applies: the tooling and the types render nothing and change no markup. The accessibility of each Variant (contrast, target size) belongs to its component spec and its Library mixin's compile-time checks; a consumer name added through the declaration file gets those same checks, because the mixin reads the same Sass.
+No criterion applies: the tooling and the types render nothing and change no markup. The accessibility of each Variant (contrast, target size) belongs to its component spec and its Library mixin; a consumer name added through the declaration file gets the same rules, because the mixin reads the same Sass.
 
 ### Rendered output
 
@@ -485,7 +468,7 @@ The only output is the Variant declaration file (the API section). The Variant p
 
 ### Rendering modes
 
-The types have no runtime. `nfsVariantBoolean` is a pure function with the same result on the server and in the browser, so a Variant input's class is in server HTML exactly as on the client. The tooling runs before builds and in CI, never in an application. The runtime checks that read the Variant properties in the browser only, after the first render, are the Breakpoint service spec's.
+The types have no runtime. `nfsVariantBoolean` is a pure function with the same result on the server and in the browser, so a Variant input's class is in server HTML exactly as on the client. The tooling runs before builds, never in an application.
 
 ### The Variant typings check (the build assertion)
 
@@ -502,7 +485,7 @@ A failure names the use and what went wrong. The check lives in the library's ow
 
 ## Testing Decisions
 
-A good test asserts what a developer observes: the file the tooling writes, the exit status and message of a check, the diagnostics TypeScript reports against the file, and the workspace configuration the setup leaves; never the core's internal data structures. Prior art: Nx's own generator tests on a virtual tree (`createTreeWithEmptyWorkspace`), Nx plugin workspace e2e tests, Architect's `TestingArchitectHost`, and the probes of [Decide: typed Variant inputs over open Sass maps](../issues/81-decide-typed-variant-inputs-open-sass-maps.md) and [Research: further typing and synchronisation options for Variant inputs](../issues/135-research-further-variant-typing-options.md), whose cases the tests keep.
+A good test asserts what a developer observes: the file the tooling writes, the exit status and message of a command, the diagnostics TypeScript reports against the file, and the workspace configuration the setup leaves; never the core's internal data structures. Prior art: Nx's own generator tests on a virtual tree (`createTreeWithEmptyWorkspace`), Nx plugin workspace e2e tests, Architect's `TestingArchitectHost`, and the probes of [Decide: typed Variant inputs over open Sass maps](../issues/81-decide-typed-variant-inputs-open-sass-maps.md) and [Research: further typing and synchronisation options for Variant inputs](../issues/135-research-further-variant-typing-options.md), whose cases the tests keep.
 
 ### 1. Story play function
 
@@ -510,7 +493,7 @@ No stories: nothing here renders. The component specs' stories use Foundation's 
 
 ### 2. Browser-level test (Vitest browser mode, `npx nx test <lib>`)
 
-No cases: nothing here touches the DOM. `nfsVariantBoolean` is pure logic (layer 3). The runtime checks' reading of the Variant property format in three engines is the Breakpoint service spec's and the component specs' browser-level test.
+No cases: nothing here touches the DOM. `nfsVariantBoolean` is pure logic (layer 3).
 
 ### 3. Node-level Vitest
 
@@ -520,16 +503,16 @@ Pure logic (table-driven):
 
 - `nfsVariantBoolean` over its whole parameter type.
 - The Variant property reader: space and comma lists, line breaks, duplicates, the empty list (`--nfs-x: ;` and compressed `--nfs-x: `), a count, an invalid count (M10), a property printed twice with different values (M12), colour-name keys.
-- The expected model: additions and removals, a chained registry against a found base, against a missing base, and a base-added name removed by the child (`purple: false` on buttons), counts at the default and not, a missing property leaving the registry empty, zero properties (M3).
+- The expected model: additions and removals, a chained registry against a found base, against a missing base, and a base-added name removed by the child (`purple: false` on buttons), counts at the default and not, a missing property leaving the registry empty, zero properties leaving every registry empty.
 - The renderer: the header per workspace kind (the same from the sync generator and the builder), registry and member order, identifier and quoted keys (`'inline-block'`, `'33'`), the empty block, LF and final newline; the same model renders the same bytes twice.
-- The reader: generated and hand-written files; several `declare module` blocks; CRLF; single and double quotes; an index signature (open); the not-a-module problem (M5); an unknown registry (M6); a derived member type, a bare numeric key, and a non-literal count (M7).
+- The reader: generated files; several `declare module` blocks; CRLF; single and double quotes; a generated file edited into a derived member type, a bare numeric key, or an unknown interface compares unequal and is rewritten.
 - The comparison: each drift row of the table; a Prettier-reformatted generated file compares equal; a model-equal file is not rewritten.
 
 Generators and builder:
 
-- Setup generator on a virtual tree (Nx and Angular CLI layouts): targets written in `project.json` and `angular.json`; `syncGenerators` entries with the spread added only to the listed executors and Storybook targets, existing entries kept; no `targetDefaults` change; `sync.applyChanges` only with the flag; npm scripts added and appended; tsconfig includes added only where missing; a hand-written file kept with M4; a failing project skipped; a second run changes nothing.
+- Setup generator on a virtual tree (Nx and Angular CLI layouts): targets written in `project.json` and `angular.json`; `syncGenerators` entries with the spread added only to the listed executors and Storybook targets, existing entries kept; no `targetDefaults` change; `sync.applyChanges` only with the flag; npm scripts added and appended; tsconfig includes added only where missing; a hand-written file kept untouched and listed in the summary; a failing project skipped; a second run changes nothing.
 - Sync generator on a virtual tree with a stubbed project graph: in step (no tree change), drifted (one change, M1 details), a formatted but model-equal file (no change), several projects in one run, a failing project (one thrown error listing it, M2).
-- Builder under `TestingArchitectHost`: write mode, check mode in step and drifted, a hand-written file, the configuration merge, M11.
+- Builder under `TestingArchitectHost`: in step (no write), drifted (one write), a hand-written file left untouched, the configuration merge, M11.
 
 Sass fixtures (real Dart Sass 1.104 over Foundation 6.9.0 and the library's `_index.scss`): the first dossier's customised settings (`purple` added to `$button-palette`, `warning` removed from `$label-palette`, a `huge` size, `xlarge` added to `$breakpoint-classes`, `$grid-columns: 16`) produce the expected file; a flag-off family prints the empty list; the manifest-to-Sass check of the typings check, item 3.
 
@@ -537,9 +520,9 @@ The Variant typings check (items 1 and 2) runs as its own target after the libra
 
 Workspace e2e (the tooling e2e project, against the packed package installed into scratch workspaces created per run):
 
-- Nx 23.2 workspace, two applications and a shared library: `nx g ngx-foundation-sites:variant-types` writes both files and the targets; `nx sync:check` passes; removing `warning` from one application's Sass makes `nx sync:check` exit 1 with the file and `warning: false` in its details; `CI=true nx build <app>` passes against the stale file (the hazard the CI step exists for); `nx sync` rewrites it; `nx build <app>` then fails with TS2322 on the template's `color="warning"`; the library with its own `nfs-variants` target from an application's build target type-checks a template that uses that application's name.
+- Nx 23.2 workspace, two applications and a shared library: `nx g ngx-foundation-sites:variant-types` writes both files and the targets; after `warning` is removed from one application's Sass, `CI=true nx build <app>` passes against the stale file (the hazard committing the file in step removes); `nx sync` rewrites it, with the file and `warning: false` in its M1 details; `nx build <app>` then fails with TS2322 on the template's `color="warning"`; the library with its own `nfs-variants` target from an application's build target type-checks a template that uses that application's name.
 - The same workspace with an existing `targetDefaults.build` entry (`dependsOn: ['^build']`): after setup, `nx show project <app> --json` still lists that `dependsOn` and lists the sync generator on `build`, `serve`, and `test`.
-- Angular CLI 22.2 workspace: `ng g ngx-foundation-sites:variant-types --npm-scripts` with `nx` and `@nx/devkit` installed writes `angular.json` and the scripts; `ng run <app>:nfs-variants:check` passes in step and exits 1 after a Sass change; `npm run build` regenerates first; without `nx` installed, the schematic ends with M9 while the check target still runs.
+- Angular CLI 22.2 workspace: `ng g ngx-foundation-sites:variant-types --npm-scripts` with `nx` and `@nx/devkit` installed writes `angular.json` and the scripts; after a Sass change `ng run <app>:nfs-variants` rewrites the file and `npm run build` regenerates it first; without `nx` installed, the schematic ends with M9 while the `nfs-variants` target still runs.
 - Dev server: under `ng serve` and `nx serve`, five alternating rewrites of the generated file (a Sass edit, then `ng run <app>:nfs-variants` or `nx sync`) each change the template diagnostics (TS2322 appears and disappears), also after a component edit spent the first incremental rebuild; a file without `declare global {}` keeps its cached diagnostics in that case (the control).
 
 ### 4. Playwright e2e
@@ -548,13 +531,12 @@ No cases: nothing here runs in a browser. The workspace e2e above takes its plac
 
 ## Out of Scope
 
-- The runtime checks (`strictVariantNames`, `strictVariantProperties`, `strictBreakpointSync`), their provider functions, and their reading of the Variant properties in the browser: the [Spec: Breakpoint service (shared utility)](../issues/53-spec-breakpoint-service.md) and its re-run own them (ADR 0040).
 - Writing the Variant properties: each Library mixin's spec owns its rules; this spec fixes the property names and format.
 - The family aliases, input names, value shapes, transforms, and class mappings of each Variant family: the component specs.
-- An `ng add` or `nx add` entry for the whole library: additive in any release (ADR 0045), and such an entry would also have to decide the Sass import, the settings overrides, and the `nx` and `@nx/devkit` development dependencies the schematic needs on an Angular CLI workspace, which no spec has designed; the setup generator is the install step. A migration for the Variant declaration file: the next sync or check reports any registry change an upgrade brings (D29). The library's own migrations follow ADR 0045 (Nx migrations in the package's `migrations.json`, reused as `ng update` migrations) and arrive with the first release that needs one, because `nx migrate` and `ng update` read the migrations of the version they move to; a renamed registry interface follows ADR 0045's deprecation rule, because a hand-written file (ADR 0040) keeps the old name.
+- An `ng add` or `nx add` entry for the whole library: additive in any release (ADR 0045), and such an entry would also have to decide the Sass import, the settings overrides, and the `nx` and `@nx/devkit` development dependencies the schematic needs on an Angular CLI workspace, which no spec has designed; the setup generator is the install step. A migration for the Variant declaration file: the next sync rewrites the generated file for any registry change an upgrade brings (D29); a hand-written file is the consumer's to update. The library's own migrations follow ADR 0045 (Nx migrations in the package's `migrations.json`, reused as `ng update` migrations) and arrive with the first release that needs one, because `nx migrate` and `ng update` read the migrations of the version they move to; a renamed registry interface follows ADR 0045's deprecation rule, because a hand-written file (ADR 0040) keeps the old name.
 - A watch mode, an esbuild plugin, a builder that wraps `@angular/build:application`, an ESLint rule, a language-service plugin, generated narrowing directives, a provider or theme constant as the source of names, and the reverse direction (TypeScript or design tokens as the source): not adopted by ADR 0040.
 - Merging several applications' files into one program: merging adds every application's names and removes every application's removals, and conflicting counts pass unseen under `skipLibCheck: true` (Implementation Decisions; ADR 0040, dated note).
-- Editing CI configuration files: CI configuration is the workspace's own; the docs name the check step (`nx sync:check`, `ng run <app>:nfs-variants:check`), and the tooling writes only files it generated (ADR 0040, dated note).
+- Editing CI configuration files: CI configuration is the workspace's own, and the tooling writes only files it generated (ADR 0040, dated note).
 - Caching the sync generator's Sass compile between daemon runs: each run costs one compile per covered project in the background; add a cache keyed on the loaded Sass files if that cost is ever measured as a problem.
 
 ## Further Notes
@@ -570,8 +552,8 @@ No cases: nothing here runs in a browser. The workspace e2e above takes its plac
 | D5 | Manifest | One JSON document in the package with setting, property, kind, defaults or count, base, mixins, uses | A TypeScript constant (the generator would load Angular code in Node); separate files for the generator and the typings check (two lists) |
 | D6 | Chained registries | Diffed against the base setting's effective names | Diffed against library defaults only (would repeat every parent name in every child registry) |
 | D7 | Property format | Whitespace or comma list, bare count, whitespace-only empty list | `none` as the empty marker (a possible palette name); comma lists only (Library mixins print space lists) |
-| D8 | Missing property | Registry stays at its defaults, no report; zero properties fails | Fail on each missing property (forces every Library mixin into every application) |
-| D9 | Comparison | By meaning, after parsing with TypeScript's parser | Byte comparison (fails after Prettier, CRLF checkout, or any hand-written layout) |
+| D8 | Missing property | Registry stays at its defaults; with zero properties every registry does | Fail on each missing property (forces every Library mixin into every application) |
+| D9 | Comparison | By meaning, after parsing with TypeScript's parser | Byte comparison (rewrites after Prettier or a CRLF checkout) |
 | D10 | Rewrites | Only a generated or absent file, only when its model differs | Always rewrite (churn and a fight with formatters); overwrite hand-written files (destroys the consumer's content) |
 | D11 | Formatting | The workspace's Prettier when it resolves | Nx `formatFiles` in Nx only (the builder would write another format) |
 | D12 | Open-typing opt-out | A separate consumer module with `[name: string]: boolean` | Inside the generated file (lost on regeneration); `true` index signatures (conflict with removals, hidden by `skipLibCheck`) |
@@ -583,15 +565,15 @@ No cases: nothing here runs in a browser. The workspace e2e above takes its plac
 | D18 | Sync failures | Collected and thrown as one plain `Error` | `SyncError` (only in `@nx/devkit/internal`); reporting failures as out-of-sync details (Nx counts only tree changes as out of sync) |
 | D19 | Sources | The build target's injected Sass global stylesheets under the named or default configuration; `stylesheets` to override | Every configuration compiled and required to agree (a compile per configuration on every task for a rare case); the built CSS (only after a build) |
 | D20 | Sass resolution | The application builder's importer re-implemented over its own esbuild resolver and stylesheet options, compiled with the Sass compiler it loads (`sass-embedded`), confirmed by the prototype in eight cases | `@angular/build`'s private Sass service (not public API); Node resolution with Sass's `NodePackageImporter` and `~` stripping (both differ from the builder, measured) |
-| D21 | Shared libraries | A file of the library's own, from a named build target or stylesheet | Including applications' files (merging hides count conflicts under `skipLibCheck`); no file (the library's own checks reject application names) |
-| D22 | Packaging | CommonJS tooling beside the Angular entry points; generators and schematics in one collection; one Architect builder per tool for both workspace kinds (`variant-types`, and `missing-imports` of the forgotten-import checks) | A separate tooling package (a second version to keep in step with the manifest); an Nx executor beside the builder (two implementations of the check) |
+| D21 | Shared libraries | A file of the library's own, from a named build target or stylesheet | Including applications' files (merging hides count conflicts under `skipLibCheck`); no file (the library's own type checks reject application names) |
+| D22 | Packaging | CommonJS tooling beside the Angular entry points; generators and schematics in one collection; one Architect builder for both workspace kinds | A separate tooling package (a second version to keep in step with the manifest); an Nx executor beside the builder (two implementations of the check) |
 | D23 | Dependencies | Optional peers loaded on demand, M9 when missing | `dependencies` on `nx` and `@nx/devkit` (installs them for every consumer, used or not) |
-| D24 | CI | `nx sync:check`, or the builder's `check` configuration, as its own step | A check inside the build (tasks skip sync in CI; the CLI has no target dependencies) |
+| D24 | Keeping in step | The sync generator before tasks outside CI and the `nfs-variants` target; the generated file is committed, and CI builds against it | Regenerating inside the build (`@angular/build` has no Sass hook, tasks skip sync generators in CI, and the CLI has no target dependencies) |
 | D25 | npm scripts | Opt-in `--npmScripts` | Always (edits `package.json` scripts for users who run `ng` directly) |
 | D26 | Build assertion | Alias names in the emitted typings plus two probe programs from the manifest, plus the manifest-to-Sass compile | The alias-name check alone (misses an intermediate alias or a transform's parameter printed resolved while the input still names its alias); template fixtures per input (needs a selector and element per directive) |
 | D27 | Testing layers | Node-level Vitest, workspace e2e included; no story, browser, or Playwright case | A Playwright runner for command tests (no browser behaviour to test) |
 | D28 | Dev server | The generated file ends with `declare global {}`, so every rewrite reaches the dev server's template diagnostics (measured by the prototype) | A restart note (the dev server re-checks templates after a rewrite only in its first incremental rebuild, when the placeholder type-check shims are replaced); a shipped watcher; a `/// <reference path>` from the entry file or a `files` entry (measured: neither changes which files are affected) |
-| D29 | Library upgrades | The next sync or check reports every registry and default change; unknown registries fail | A migration schematic for the file (the semantic comparison already reports it; the library's own migrations are ADR 0045's) |
+| D29 | Library upgrades | The next sync rewrites the generated file for every registry and default change | A migration schematic for the file (the semantic comparison already rewrites it; the library's own migrations are ADR 0045's) |
 
 ### Usage examples
 
@@ -637,11 +619,10 @@ declare module 'ngx-foundation-sites' {
 declare global {}
 ```
 
-Setting up an Nx workspace, then CI:
+Setting up an Nx workspace:
 
 ```
 npx nx g ngx-foundation-sites:variant-types
-npx nx sync:check   # its own CI step, before any task
 ```
 
 Setting up an Angular CLI workspace:
@@ -649,7 +630,7 @@ Setting up an Angular CLI workspace:
 ```
 npm install --save-dev nx @nx/devkit
 npx ng g ngx-foundation-sites:variant-types --npm-scripts
-npx ng run shop:nfs-variants:check   # CI
+npx ng run shop:nfs-variants   # after a Sass change, or through the npm pre scripts
 ```
 
 A shared library tested against `shop`, and a library with its own Storybook stylesheet:
@@ -666,18 +647,16 @@ import 'ngx-foundation-sites';
 
 declare module 'ngx-foundation-sites' {
   interface NfsButtonPaletteOverrides {
-    [name: string]: boolean; // any string compiles for buttons; the runtime check still reports names the CSS lacks
+    [name: string]: boolean; // any string compiles for buttons; a name the CSS lacks renders a class with no CSS
   }
 }
 ```
 
-A check failure in CI, after `purple` was dropped from `$button-palette` and `warning` put back into `$label-palette` without a sync:
+What `nx sync` reports (M1) when it rewrites the file after `purple` was dropped from `$button-palette` and `warning` put back into `$label-palette`:
 
 ```
-ngx-foundation-sites: <file> no longer matches <stylesheet>:
-  NfsButtonPaletteOverrides: remove purple: true (purple is not in --nfs-button-palette)
-  NfsLabelPaletteOverrides: remove warning: false (warning is in --nfs-label-palette again)
-Run `nx sync` to update it.
+ngx-foundation-sites: the Variant declaration files no longer match the Sass they are generated from.
+  <file> (shop, from <stylesheet>): NfsButtonPaletteOverrides: remove purple: true; NfsLabelPaletteOverrides: remove warning: false
 ```
 
 ### Sass
@@ -688,12 +667,12 @@ Sass. The consumer compiles Foundation's Sass from its own settings; the library
 2. Reuse: it reads the consumer's compiled Sass, never a setting directly, so every Foundation setting and every `map-merge` or `map-remove` the consumer writes reaches the file by construction.
 3. Properties the directives write: none.
 4. Motion classes and reduced motion: none.
-5. What breaks when an include is missing: the registry of every property that include writes stays at Foundation's defaults, so a custom name fails to compile (loud) and a default name compiles; the runtime check `strictVariantProperties` reports the missing include in development. With no include at all, the tooling fails with M3.
+5. What breaks when an include is missing: the registry of every property that include writes stays at Foundation's defaults, so a custom name fails to compile (loud) and a default name compiles. With no include at all, every registry stays at Foundation's defaults; the documented setup includes the Library mixin of every family the consumer customises.
 6. Variant properties: it writes none and reads all of them, every property of the settings table in the Variant property format.
 
 ### Tooling changes to adopt when they arrive
 
 - An `@angular/build` hook inside its Sass compile: the file could be regenerated inside the build instead of beside it.
-- Nx running task sync generators in CI (its docs describe a dry-run check that 23.2.1 does not perform): the separate `nx sync:check` step would become a safety net rather than a requirement.
+- Nx running task sync generators in CI (its docs describe a dry run that 23.2.1 does not perform): CI would then keep the file in step itself, not only through the committed file.
 - Foundation moving to Sass modules: the tooling compiles whatever the consumer's stylesheet loads, so only the Library mixins change (ADR 0012).
 - TypeScript 7's native port: the registry shapes are language features; the language service's completion of registry names is re-measured then.

@@ -169,3 +169,14 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 ### Amendment, 2026-09-29 (exportAs on every directive)
 
 - [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md): `NfsTextAlignment`, `NfsTypographyHelpers`, `NfsNoBullet`, `NfsTypographyBase`, and `NfsPrintStyles` each gain an `exportAs` for the first time, each its class name with a lowercase first letter; D17 no longer lists `exportAs` among what the family lacks.
+
+### Amendment, 2026-09-29 (checks move to a later milestone)
+
+From [Re-run: specs without checks, group f](170-rerun-specs-without-checks-group-f.md), under [Decide: checks move to a later milestone](158-decide-checks-move-to-a-later-milestone.md); `specs/typography-helpers.md` was revised in place. What left the spec, per check:
+
+- Forgotten-import checks, to [Re-run: forgotten-import checks spec for the later milestone](164-rerun-forgotten-import-checks-later-milestone.md): the In-family line of the five directives, and the Notes' `strictDirectiveImports` and static-check sentence. An "Imports (documented usage)" bullet says what a forgotten import does.
+- Misuse warnings, to [Spec: misuse warnings (later milestone)](161-spec-misuse-warnings-later-milestone.md): check 1 (copied classes) with its development-only `HostAttributeToken('class')` and `ElementRef` reads, and check 2 (an unreachable or unnamed code block), with their browser-level cases.
+- Runtime checks, to [Spec: Runtime checks (later milestone)](162-spec-runtime-checks-later-milestone.md): `NfsTextAlignment`'s `nfsVariantCheck('nfsTextAlign')` with its requests and browser-level cases (D15 rewritten to the Variant property the types come from).
+- Build-time checks, to [Spec: build-time checks (later milestone)](163-spec-build-time-checks-later-milestone.md): the `@error` of `nfs-typography-helpers` (subheader, citation, and code colours) and all of `nfs-typography-base` (heading `small` and blockquote colours), with their Sass compile cases. `nfs-typography-base` held only checks, so the first milestone has no such mixin (ADR 0012); `nfs-typography-helpers` keeps its grid margin rules. The four greys and the code colour are required settings (D9, D23 rewritten; the Sass subsection, the 1.4.3 row, and the Out of Scope base-styles line).
+- Each other rule is documented usage now: two numbered rules in the API (classes through their attributes; the code block's Scroll region recipe), user stories 5, 21, 22, 27, 28, 29, and 33, and D10, D12, D14, D21, and D22.
+- Unchanged: every attribute, class, recipe, and measurement. Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.

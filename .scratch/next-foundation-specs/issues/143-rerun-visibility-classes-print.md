@@ -169,3 +169,14 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 ### Amendment, 2026-09-29 (exportAs on every directive)
 
 - [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md): `NfsVisibility` regains `exportAs: 'nfsVisibility'` (removed by the consistency review's closing pass, above); `NfsShowForSr` and `NfsShowOnFocus` gain one for the first time (`nfsShowForSr`, `nfsShowOnFocus`).
+
+### Amendment, 2026-09-29 (checks move to a later milestone)
+
+From [Re-run: specs without checks, group f](170-rerun-specs-without-checks-group-f.md), under [Decide: checks move to a later milestone](158-decide-checks-move-to-a-later-milestone.md); `specs/visibility-classes.md` was revised in place. What left the spec, per check:
+
+- Forgotten-import checks, to [Re-run: forgotten-import checks spec for the later milestone](164-rerun-forgotten-import-checks-later-milestone.md): the In-family line of the three directives. An "Imports (documented usage)" bullet says what a forgotten import does.
+- Misuse warnings, to [Spec: misuse warnings (later milestone)](161-spec-misuse-warnings-later-milestone.md): `NfsVisibility`'s checks 1 (copied classes, with the development-only `HostAttributeToken('class')` and `ElementRef` reads), 2 (combinations Foundation's CSS cannot give, the print pairs included), 4 (a second owner), and 5 (`invisible` with `visible`); `NfsShowForSr`'s and `NfsShowOnFocus`'s focus checks, with CDK's `InteractivityChecker`; their browser-level cases.
+- Family checks, to [Spec: family checks (later milestone)](160-spec-family-checks-later-milestone.md): check 3 (a sticky condition out of place).
+- Runtime checks, to [Spec: Runtime checks (later milestone)](162-spec-runtime-checks-later-milestone.md): `nfsVariantCheck('nfsVisibility')` with its requests, the needs the mapping function returned, and the browser-level cases.
+- Each rule is documented usage now: five numbered rules on `NfsVisibility` and one each on `NfsShowForSr` and `NfsShowOnFocus`, the 2.4.7 row, the key table, user stories 17 to 22, 27, and 29, and D4 to D11, D14, D17, D18, D20, and D21 (rewritten; D11 is now the Variant property the types come from, D17 has no CDK).
+- Unchanged: every class, input, recipe, content rule, and measurement. Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.
