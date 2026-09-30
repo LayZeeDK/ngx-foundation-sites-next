@@ -129,7 +129,7 @@ ADRs, each a dated note (after the last one):
 
 > | Build-time checks, later milestone (the Library mixins' `@error` and `@warn` checks, the checks-only mixins, the import-order guard, the presence markers, the Variant declaration tooling's check mode) | [specs/build-time-checks.md](specs/build-time-checks.md) | Sass `@error` and `@warn` over the exact-contrast helper, and Node workspace tooling ([ADR 0022](adr/0022-wcag-2-2-aa-enforcement.md), [ADR 0012](adr/0012-sass-packaging.md), [ADR 0040](adr/0040-variant-input-types.md)) | The seven [checks extraction manifests](research/checks-extraction-shared.md) | None needed | Every spec with a Library mixin; the Variant declaration tooling |
 
-and the wave list's item 2 marks [Spec: build-time checks (later milestone)](issues/163-spec-build-time-checks-later-milestone.md) resolved.
+and the wave list's item 2 marks [Spec: build-time checks (later milestone)](163-spec-build-time-checks-later-milestone.md) resolved.
 
 ### Gist for Decisions so far
 

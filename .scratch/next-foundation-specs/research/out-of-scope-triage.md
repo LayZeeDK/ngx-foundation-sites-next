@@ -89,7 +89,7 @@ The grids are not settled. The map's line named "Grid" (`map.md:243`), and Found
 
 **Map Out of scope, first line (`map.md:243`).** Replace with:
 
-> - Foundation's layout systems (XY Grid, Float Grid, Flex Grid), utility class families (Prototyping, Flexbox, Visibility, Float, Typography helpers), and base element styles. They are Utility classes and element selectors that the consumer writes, not UI components, and none gets a directive of its own; Visibility classes stay host bindings inside Plugin directives ([ADR 0039](adr/0039-css-only-components-get-directives.md)).
+> - Foundation's layout systems (XY Grid, Float Grid, Flex Grid), utility class families (Prototyping, Flexbox, Visibility, Float, Typography helpers), and base element styles. They are Utility classes and element selectors that the consumer writes, not UI components, and none gets a directive of its own; Visibility classes stay host bindings inside Plugin directives ([ADR 0039](adr/0039-directives-manage-every-foundation-class.md)).
 
 **ADR 0010.** Under Decision 1 (a), an amendment, not a new ADR: the decision stands and one reason falls, as with ADR 0004's dated corrections (`adr/0004-menus-use-disclosure-navigation.md:21`). Append:
 

@@ -126,7 +126,7 @@ ADRs, each a dated note after the last one:
     > | Runtime checks, later milestone (`strictVariantNames`, `strictVariantProperties`, `strictBreakpointSync`, `provideNfsRuntimeChecks`, `provideNfsProductionRuntimeChecks`, `nfsVariantCheck`) | [specs/runtime-checks.md](specs/runtime-checks.md) | Custom Angular in development builds, with one opt-in production path, in `ngx-foundation-sites/media-query` ([ADR 0040](adr/0040-variant-input-types.md), [ADR 0005](adr/0005-breakpoint-source-of-truth.md)) | The seven [checks extraction manifests](research/checks-extraction-shared.md) | None needed | The twenty specs whose directives report a Variant property, the Breakpoint service's go-live callback, and the forgotten-import checks, which extend its configuration |
 
 22. The Variant declaration tooling row's Consumers cell: replace "the Breakpoint service's runtime checks (the Variant property format)" with "the later milestone's Runtime checks (the Variant property format)".
-23. The wave list's item 2: mark [Spec: Runtime checks (later milestone)](issues/162-spec-runtime-checks-later-milestone.md) resolved.
+23. The wave list's item 2: mark [Spec: Runtime checks (later milestone)](162-spec-runtime-checks-later-milestone.md) resolved.
 
 ### Gist for Decisions so far
 

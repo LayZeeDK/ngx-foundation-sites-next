@@ -108,7 +108,7 @@ Nothing is OPEN FOR HUMAN, and no prototype is needed: every question that neede
 
 5. `map.md`, Out of scope, the base-styles line: replace "and `.show-for-print` and `.hide-for-print` are Visibility classes." with "`.show-for-print` and `.hide-for-print` are Visibility classes, and the print styles' `.print-break-inside` is the Typography Helpers' `nfsPrintBreakInside` (their undocumented `.ir` is dropped there)."
 
-6. `map.md`, Decisions so far: the gist below, after the [Re-run: Visibility Classes spec for the print classes](issues/143-rerun-visibility-classes-print.md) line.
+6. `map.md`, Decisions so far: the gist below, after the [Re-run: Visibility Classes spec for the print classes](143-rerun-visibility-classes-print.md) line.
 
 ### What other specs need from this one
 

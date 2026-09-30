@@ -95,7 +95,7 @@ Nothing is OPEN FOR HUMAN, and no prototype is needed: every point rests on ADR 
 
    "A Trigger binds no class, and no Openable writes one on its Triggers: the classes on a Trigger's host come from the directive beside it (`nfsButton`, `nfsCloseButton`, `nfsMenuIcon`), placed beside rather than hosted ([Spec: Triggers (shared utility)](issues/54-spec-triggers.md), D16, D18)."
 
-3. `building-blocks.md` 1.8, once the [Spec: Top Bar](issues/86-spec-top-bar.md) confirms the `type` default the triage gave the menu icon: after "or from `nfsCloseButton` ([Spec: Close Button](issues/83-spec-close-button.md))" insert ", or from `nfsMenuIcon` ([Spec: Top Bar](issues/86-spec-top-bar.md))".
+3. `building-blocks.md` 1.8, once the [Spec: Top Bar](86-spec-top-bar.md) confirms the `type` default the triage gave the menu icon: after "or from `nfsCloseButton` ([Spec: Close Button](issues/83-spec-close-button.md))" insert ", or from `nfsMenuIcon` ([Spec: Top Bar](issues/86-spec-top-bar.md))".
 
 4. `building-blocks.md` Table C, Triggers row, first cell. Replace:
 

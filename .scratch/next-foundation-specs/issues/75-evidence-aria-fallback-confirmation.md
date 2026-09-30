@@ -243,7 +243,7 @@ Replace "`@angular/aria` 22.2 has no disclosure, dialog, or trigger pattern." wi
    No available Aria pattern was declined elsewhere: `@angular/aria` 22.2 ships accordion, combobox, grid, listbox, menu, tabs, toolbar, and tree, and has nothing for Button, the Breakpoint service, the Anchored pane, Reveal, Off-canvas, Tooltip, Toggler, Responsive Toggle, Slider, Abide, Interchange, Equalizer, Sticky, Smooth Scroll, or Magellan."
 5. Upstream filings item 7 (the documentation question on host-binding override precedence), if the list is kept: append "Closed 2026-09-27 as not filed (user ruling); the third clause of the rule is now measured (ADR 0037)."
 
-**L. `map.md`**: the Decisions so far line below; in the [Re-run: Orbit spec, the slide's ARIA contract and the focus handoff](issues/70-rerun-orbit-slide-contract-and-focus-handoff.md) line, "and the Aria fallback awaits the user's confirmation" becomes "and the fallback was later overruled by ADR 0037".
+**L. `map.md`**: the Decisions so far line below; in the [Re-run: Orbit spec, the slide's ARIA contract and the focus handoff](70-rerun-orbit-slide-contract-and-focus-handoff.md) line, "and the Aria fallback awaits the user's confirmation" becomes "and the fallback was later overruled by ADR 0037".
 
 **M. Research**
 

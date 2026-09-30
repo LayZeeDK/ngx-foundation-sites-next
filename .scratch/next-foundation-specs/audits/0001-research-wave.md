@@ -132,7 +132,7 @@ High means a spec or decision ticket reading the document as written would be mi
 
 ### M7. Bare ticket numbers in narration and a ticket title that no longer matches its content
 
-- Files: `map.md` lines 43 ("Research ticket 38 supplies the facts") and 57 ("ticket 41" twice); `issues/36` ("ticket 41", "ticket 38"); `issues/41` ("ticket 38"); `research/angular-rendering-modes.md` line 3 ("Ticket: [38](...)"); `issues/12` title.
+- Files: `map.md` lines 43 ("Research ticket 38 supplies the facts") and 57 ("ticket 41" twice); `issues/36` ("ticket 41", "ticket 38"); `issues/41` ("ticket 38"); `research/angular-rendering-modes.md` line 3 ("Ticket: `[38](...)`"); `issues/12` title.
 - Rule: `/wayfinder` Refer by name ("never by a bare id, number, or slug").
 - Evidence: as quoted. Ticket 12 is titled "Tooling baseline: Nx 23.2, Angular 22.2, Storybook 10.6, Vitest 5 browser mode" while its answer pins Vitest 4.1; the map's link text silently shortened it to "... Vitest", so the name the map uses is not the ticket's name.
 - Fix: replace the bare numbers with linked names (for example "[Angular 22.2 @defer, SSR, prerendering, hydration, and event replay](issues/38-angular-rendering-modes.md)"); retitle ticket 12 to "... Vitest browser mode" and make the map link text match.

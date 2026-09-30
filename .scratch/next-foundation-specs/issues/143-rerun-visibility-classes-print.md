@@ -131,7 +131,7 @@ Nothing is OPEN FOR HUMAN, and no prototype is needed: every question that neede
    >
    > Revise `specs/typography-helpers.md` in place and append a dated amendment to the [Spec: Typography Helpers](106-spec-typography-helpers.md) ticket. Read Foundation 6.9.0's `scss/typography/_print.scss`, ADR 0039, ADR 0044, and building-blocks 1.3 and 1.4. Measure `.print-break-inside` under print emulation in Chromium (`page.pdf()` page count) where the engines allow it. Every Out of Scope item carries a reason and a category from `research/out-of-scope-exclusions.md`.
 
-8. `map.md`, Decisions so far: the gist below, after the [Spec: Visibility Classes](issues/104-spec-visibility-classes.md) line.
+8. `map.md`, Decisions so far: the gist below, after the [Spec: Visibility Classes](104-spec-visibility-classes.md) line.
 
 ### What other specs need from this one
 

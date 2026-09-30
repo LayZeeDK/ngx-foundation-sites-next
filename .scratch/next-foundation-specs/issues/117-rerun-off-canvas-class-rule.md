@@ -105,7 +105,7 @@ Read against the documents as they stand; several items build on the Top Bar and
 
    > A Variant family without which Foundation's CSS gives the element no look, because Foundation's docs require one of its classes and no Sass setting names a default, is a required input instead, so the no-class state cannot arise: the Off-canvas `position` ([Spec: Off-canvas](issues/25-spec-off-canvas.md), D6).
 
-3. `building-blocks.md` 1.10, the Target size bullet: apply the [Spec: Top Bar](issues/86-spec-top-bar.md) Answer's proposal 2 as written; it removes the sentence "The same `.title-bar .menu-icon` rule serves ... the Off-canvas spec requires `@include nfs-responsive-toggle;` for it, and no separate title-bar mixin exists (Table B OffCanvas)", which no longer holds: the Off-canvas spec requires `nfs-menu-icon` and `nfs-title-bar`.
+3. `building-blocks.md` 1.10, the Target size bullet: apply the [Spec: Top Bar](86-spec-top-bar.md) Answer's proposal 2 as written; it removes the sentence "The same `.title-bar .menu-icon` rule serves ... the Off-canvas spec requires `@include nfs-responsive-toggle;` for it, and no separate title-bar mixin exists (Table B OffCanvas)", which no longer holds: the Off-canvas spec requires `nfs-menu-icon` and `nfs-title-bar`.
 
 4. `building-blocks.md` Table A, OffCanvas row, first cell: replace it with:
 
