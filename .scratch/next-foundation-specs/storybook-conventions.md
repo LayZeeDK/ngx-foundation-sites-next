@@ -40,7 +40,7 @@ Stories are never mounted by browser-level tests (layer 2) and never render serv
 
 ### Title
 
-`title: '<Group>/<Name>'` with five groups: `Plugins/<Foundation docs name>` (`Plugins/Accordion`, `Plugins/Off-canvas`), `CSS-only components/Button`, `Shared utilities/<glossary name>` (`Shared utilities/Breakpoint service`, `Shared utilities/Triggers`), `Utilities/<Foundation docs name>` for Foundation's utility families (`Utilities/Flexbox Utilities`), and `Layout systems/<Foundation docs name>` (`Layout systems/XY Grid`, `Layout systems/Flex Grid`). The title is display only; the id comes from `meta.id`.
+`title: '<Group>/<Name>'` with five groups: `Plugins/<Foundation docs name>` (`Plugins/Accordion`, `Plugins/Off-canvas`), `CSS-only components/Button`, `Shared utilities/<glossary name>` (`Shared utilities/Breakpoint service`, `Shared utilities/Triggers`), `Utilities/<Foundation docs name>` for Foundation's utility families (`Utilities/Flexbox Utilities`), and `Layout systems/<Foundation docs name>` (`Layout systems/XY Grid`, `Layout systems/Flex Grid`); the `Utilities` and `Layout systems` groups hold only the later milestone's stories. The title is display only; the id comes from `meta.id`.
 
 ### Story names
 
@@ -92,7 +92,7 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
 @import 'foundation-sites/scss/foundation';
 @import '../index'; // (2) the library's own _index.scss (this project is its source)
 
-@include foundation-grid; // Float Grid: every float-grid--* story, and Equalizer: equalizer--float-grid. Before (3): its unscoped size classes would otherwise halve the width of the XY Grid's vertical cells (measured), and its offsets agree with the XY Grid's because both counts stay 12
+@include foundation-grid; // Equalizer: equalizer--float-grid (and, in the later milestone, Float Grid: every float-grid--* story). Before (3): its unscoped size classes would otherwise halve the width of the XY Grid's vertical cells (measured), and its offsets agree with the XY Grid's because both counts stay 12
 
 @include foundation-everything($prototype: true); // (3) every Export mixin plus the Prototype utilities
 
@@ -116,17 +116,17 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
 @include nfs-card; // Card: overflow-wrap for words the card would cut off (1.4.10, 1.4.12); every card--* story
 @include nfs-responsive-embed; // Responsive Embed: the clip released while the box holds focus (2.4.7) and --nfs-responsive-embed-ratios; every responsive-embed--* story
 @include nfs-off-canvas; // Off-canvas: reduced motion and the wrapper clip; every off-canvas--* story
-@include nfs-float-grid; // Float Grid: the three Variant properties; every float-grid--* story
-@include nfs-flexbox-utilities; // Flexbox Utilities: --nfs-flex-source-ordering-count for the Variant declaration file's generator; every flexbox-utilities--* story that binds order or a responsive helper
+// @include nfs-float-grid; // later milestone. Float Grid: the three Variant properties; every float-grid--* story
+// @include nfs-flexbox-utilities; // later milestone. Flexbox Utilities: --nfs-flex-source-ordering-count for the Variant declaration file's generator; every flexbox-utilities--* story that binds order or a responsive helper
 // ... one @include nfs-<plugin> per plugin that has a Library mixin, after foundation-everything,
 // with the arguments its spec names (for example @include nfs-responsive-toggle(xlarge xxlarge);).
 @include nfs-smooth-scroll; // Smooth Scroll: smooth native jumps on html; play functions scroll with behavior: 'instant'
-@include nfs-prototype-classes; // Prototyping Utilities: responsive spacing in breakpoint order and the Variant properties; every prototyping-utilities--* story and every story whose scaffolding uses a Utility attribute
-@include nfs-typography-helpers; // Typography Helpers: list grid margins under nfsNoBullet; every typography-helpers--* story and every story whose list grid uses nfsNoBullet
+// @include nfs-prototype-classes; // later milestone. Prototyping Utilities: responsive spacing in breakpoint order and the Variant properties; every prototyping-utilities--* story and every story whose scaffolding uses a Utility attribute
+// @include nfs-typography-helpers; // later milestone. Typography Helpers: list grid margins under nfsNoBullet; every typography-helpers--* story and every story whose list grid uses nfsNoBullet
 ```
 
 - Foundation's settings file is imported, not copied: stories then show Foundation 6.9's defaults exactly, and every deviation is visible in one short file. The settings file's own first line, `@import 'util/util'`, needs `node_modules/foundation-sites/scss` on the Sass load path, as Foundation's docs tell every consumer; `main.ts` adds it in `viteFinal` (`css.preprocessorOptions.scss.loadPaths`). Whether `@storybook/addon-vitest`'s run picks up that `viteFinal` the same way `storybook build` does is proved by the first story of the new repository; if it does not, the same path goes into `storybookAngularVitest({stylePreprocessorOptions: {includePaths: [...]}})`, which the framework's options plugin turns into Sass load paths (`@storybook/angular-vite` `dist/preset.js:1294-1310`).
-- One exception to one stylesheet (2026-09-28, [Spec: Flex Grid](issues/101-spec-flex-grid.md)): the legacy Flex Grid cannot share a compile with the XY Grid or the Float Grid (measured: beside the Float Grid a justified row leaves 178 px empty at its end; beside the XY Grid a vertical grid's `small-6` cell is half as wide as its grid). Its stories run in a second Storybook configuration of the library, `<lib>/.storybook-flex-grid/`, whose `preview.scss` is this one with `@include foundation-everything($prototype: true, $xy-grid: false);` in place of line (3), without the `foundation-grid` line, and with `@include nfs-flex-grid;` among the Library mixins; its `preview.ts` re-exports the shared preview configuration; its `stories` glob holds only the Flex Grid's stories, which the main configuration's glob excludes; it has its own `storybookTest` project in the Vitest configuration, its own static build on port 4411, and its own e2e project whose `baseURL` points there.
+- One exception to one stylesheet, for the later milestone (2026-09-28, [Spec: Flex Grid](issues/101-spec-flex-grid.md)): the legacy Flex Grid cannot share a compile with the XY Grid or the Float Grid (measured: beside the Float Grid a justified row leaves 178 px empty at its end; beside the XY Grid a vertical grid's `small-6` cell is half as wide as its grid). Its stories run in a second Storybook configuration of the library, `<lib>/.storybook-flex-grid/`, whose `preview.scss` is this one with `@include foundation-everything($prototype: true, $xy-grid: false);` in place of line (3), without the `foundation-grid` line, and with `@include nfs-flex-grid;` among the Library mixins; its `preview.ts` re-exports the shared preview configuration; its `stories` glob holds only the Flex Grid's stories, which the main configuration's glob excludes; it has its own `storybookTest` project in the Vitest configuration, its own static build on port 4411, and its own e2e project whose `baseURL` points there.
 - `_settings-overrides.scss` is the only place a story changes a Foundation setting. Each override is one variable per failing Foundation default, with a comment naming the axe rule id or the WCAG 2.2 SC, the spec, and the story that fails without it, and the same override is listed in that spec's Sass subsection (ADR 0018, ADR 0022):
 
   ```scss
@@ -245,16 +245,15 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
 
   // color-contrast (1.4.3): Foundation's $dark-gray subheaders, citations, and blockquote text are 3.423:1 and its
   // $medium-gray heading small text 1.625:1 on the page (axe fails them in three engines), which
-  // the Typography Helpers spec's required settings fix. #666666, not the page's minimum #737373, because the greys must also
-  // reach 4.5:1 inside callouts, card dividers, and table rows (4.601:1 at worst). Spec: Typography Helpers,
-  // typography-helpers--subheader, --code-and-citations, --typescale, --composition, and --print-breaks; also every
-  // story with a cite, a blockquote, or a small inside a heading.
+  // the Callout's D17 and the Card's D14 require on Foundation's defaults: #666666 reaches 4.5:1 on the page, on every
+  // callout tint, and on the card divider, where #737373 does not (4.601:1 at worst). Every story with a cite, a
+  // blockquote, a subheader, or a small inside a heading; the Typography Helpers' own stories come with the later milestone.
   $subheader-color: #666666;
   $cite-color: #666666;
   $header-small-font-color: #666666;
   $blockquote-color: #666666;
 
-  // Feature switches, not accessibility overrides. Prototyping Utilities: prototyping-utilities--responsive.
+  // Feature switches, not accessibility overrides. Prototyping Utilities (later milestone): prototyping-utilities--responsive.
   // $global-prototype-breakpoints does nothing here: the settings file assigned each flag from it.
   $prototype-spacing-breakpoints: true;
   $prototype-sizing-breakpoints: true;
@@ -317,14 +316,9 @@ A play function never:
 - `args` hold only the public API: inputs (including `model()` inputs, bound two-way in the template), and outputs as `fn()` spies. Public signals, methods, and `exportAs` references are shown through the template (a printed value, a button calling a method), never as args. Nothing private or story-internal is an arg. `argTypes` are added only where docgen cannot infer a control (a string-literal union input gets `control: 'select'` with its options). Measured by [Prototype: Variant declaration tooling in real Nx and Angular CLI workspaces](issues/137-prototype-variant-declaration-tooling.md): a Variant input typed with a registry-built alias declared in source (`NfsOverridableStringUnion<...>`, chained or not) gets an enum control of Foundation's default names from the docgen server, so this library's stories need no `argTypes` for it; the docgen server skips aliases declared in declaration files, so a consumer's story over an alias from the installed package gets no options.
 - The arg names are the e2e `props` names (section 10), so an arg rename is a breaking change to the spec's e2e tests.
 - Outputs shown in the story (a log line, a printed value) are for readers; assertions use the spy.
-- Demo scaffolding (wrappers, layout, spacing, lists, filler content) takes its look from Foundation's CSS through the library's directives, never through a class written in the story (ADR 0039); each directive is imported from its entry point and listed in `moduleMetadata.imports`:
+- Demo scaffolding (wrappers, layout, spacing, lists, filler content) takes its look from Foundation's CSS through the first milestone's directives, each imported from its entry point and listed in `moduleMetadata.imports`, and, for a family with no first-milestone spec, through Foundation's own classes written as normal classes (ADR 0039's exception, [Decide: grids, typography, and utilities move to a later milestone](issues/174-decide-grids-typography-utilities-later-milestone.md)):
   - containers and filler: the CSS-only components' own directives (`nfsCallout` with `color` and `size`, `nfsCard` with `nfsCardDivider` and `nfsCardSection`, `nfsButton`);
-  - layout: the XY Grid's `nfsGridContainer`, `nfsGridX`, `nfsGridY`, and `nfsCell` (`ngx-foundation-sites/xy-grid`); the Float Grid's `nfsRow` and `nfsColumn` (`ngx-foundation-sites/float-grid`) only in the stories that show that grid (`float-grid--*`, `equalizer--float-grid`), and the Flex Grid's only in its own configuration (section 5);
-  - flex layout: the Flexbox Utilities' `nfsFlexContainer` (`direction`), `nfsFlexAlign` (`alignX`, `alignY`, `alignCenterMiddle`), and `nfsFlexChild` (`alignSelf`, `order`) (`ngx-foundation-sites/flexbox-utilities`); scaffolding never sets `order` or a reverse `direction`, which change only the visual order (building-blocks 1.10);
-  - text and lists: the Typography Helpers' `nfsTextAlign`, `nfsSubheader`, `nfsLead`, `nfsStat`, `nfsHeadingSize`, and `nfsNoBullet` on a `ul` or `ol` (`ngx-foundation-sites/typography-helpers`);
-  - visibility: `nfsVisibility` (`showFor`, `hideFor`, `invisible`, `visible`), `nfsShowForSr`, and `nfsShowOnFocus` (`ngx-foundation-sites/visibility`);
-  - floats: the Float Classes' `nfsFloat` and `nfsClearfix` (`ngx-foundation-sites/float-classes`);
-  - spacing, sizing, display, overflow, position, borders, and text: the Prototyping Utilities' Utility attributes (`nfsMargin*`, `nfsPadding*`, `nfsWidth`, `nfsHeight`, `nfsDisplay`, `nfsOverflow*`, `nfsPosition`, `nfsListStyleType`, `nfsTextTruncate`, and the rest of that family, `ngx-foundation-sites/prototyping-utilities`), compiled by `foundation-everything($prototype: true)` from Foundation's default lists.
+  - layout, flex layout, text and lists, visibility, floats, spacing, sizing, display, overflow, position, borders, and text: Foundation's own classes of the XY, Float, and Flex Grids, the Flexbox Utilities, the Typography Helpers, the Visibility Classes, the Float Classes, and the Prototyping Utilities, written as normal classes (`class="grid-x grid-margin-x"`, `class="cell medium-4"`, `flex-container`, `align-self-middle`, `text-center`, `no-bullet`, `class="show-for-sr"`, `hide-for-large`, `float-right`, `class="position-relative"`, `overflow-hidden`), because those families have no first-milestone spec; the Float Grid's `row` and `column` only in `equalizer--float-grid`, and the Prototyping Utilities' compiled by `foundation-everything($prototype: true)` from Foundation's default lists. Scaffolding never writes an order class or a reverse direction class, which change only the visual order (building-blocks 1.10). In the later milestone these become the families' directives, as each family's spec lists in its closing section.
 
   They go on scaffolding only, never on an element of the component a story demonstrates, whose look must be Foundation's component CSS unaltered, except in the stories of the family that owns them. The `.text-primary`-style colour classes in this repo's AGENTS.md are not Foundation classes (Foundation 6.9's Sass defines no such class) and are not used; colour comes from Foundation components.
 - Inline `style` only for: `--nfs-*` custom properties a scenario demonstrates, values Foundation's default lists have no class for (a scroll container height, a tall page, `overflow: auto` and `overflow: clip`, which `$prototype-overflow` lacks), and nothing else. `dir="rtl"` is an attribute, not a style.
@@ -358,6 +352,6 @@ The Fixture app is not built from stories: it has its own components, one route 
 - [ ] `args` hold only inputs and `fn()` output spies; controls change only public inputs.
 - [ ] Play functions use `canvas`, `userEvent`, `step` from the context and `expect`, `fn`, `waitFor`, `within` from `storybook/test`; they assert DOM and ARIA state, wait on Completion outputs rather than time, hold at a 414 px viewport, and restore any global state.
 - [ ] Any provider a story needs (`nfsAnimationsToken` off, Router, a Defaults token) is a story-level `applicationConfig`, with the reason in the story's JSDoc.
-- [ ] No library element carries a Foundation or NFS class written in the story; Structural classes come from directives, Variant classes from typed inputs, State classes from host bindings (ADR 0039).
-- [ ] Demo scaffolding uses the directives of the CSS-only components and utility families, the Prototyping Utilities' attributes among them (section 8); inline styles only for `--nfs-*` properties and values Foundation has no class for.
+- [ ] No library element carries a Foundation or NFS class written in the story, except the classes of a family with no first-milestone spec (section 8); Structural classes come from directives, Variant classes from typed inputs, State classes from host bindings (ADR 0039).
+- [ ] Demo scaffolding uses the directives of the CSS-only components, and Foundation's own classes, written as normal classes, for the families with no first-milestone spec (section 8); inline styles only for `--nfs-*` properties and values Foundation has no class for.
 - [ ] `npx nx test-storybook <lib>` passes with the Accessibility gate, and the spec's e2e tests mount the same ids with `embed=true`.

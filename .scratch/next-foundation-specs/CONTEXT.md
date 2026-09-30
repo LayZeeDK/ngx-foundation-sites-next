@@ -151,7 +151,7 @@ A Foundation CSS class that selects a static look for a Structural class (`.smal
 _Avoid_: modifier, appearance class, style class
 
 **Open Variant family**:
-The Variant classes whose names come from a Sass setting the consumer can change (a palette, a size or ratio map, `$breakpoint-classes`, a count, a Prototyping list).
+The Variant classes whose names come from a Sass setting the consumer can change (a palette, a size or ratio map, `$breakpoint-classes`, a count (a count arrives with the later milestone's families), a Prototyping list (later milestone)).
 _Avoid_: dynamic variant, custom variant, open set
 
 **Closed Variant family**:
@@ -179,7 +179,7 @@ A Foundation CSS class from a layout system or utility family (`.grid-x`, `.cell
 _Avoid_: helper class, layout class, utility helper
 
 **Utility family**:
-The Utility classes one Foundation export mixin prints (`foundation-prototype-spacing`, `foundation-float-classes`), which one library directive sets through its Utility attributes.
+The Utility classes one Foundation export mixin prints (`foundation-prototype-spacing`, `foundation-float-classes`), which one library directive sets through its Utility attributes (later milestone; in the first milestone the Foundation class itself).
 _Avoid_: utility group, helper set, utility module
 
 **Clearfix**:
@@ -477,7 +477,7 @@ A directive input that sets one family of Variant classes, or of a layout system
 _Avoid_: appearance input, style input, modifier input
 
 **Utility attribute**:
-An `nfs`-prefixed input of a Utility family's directive whose name is also one of that directive's attribute selectors (`nfsMarginTop="1"`, `nfsBordered`), written where Foundation's docs write the Utility class and typed like a Variant input.
+An `nfs`-prefixed input of a Utility family's directive whose name is also one of that directive's attribute selectors (`nfsMarginTop="1"`, `nfsBordered`), written where Foundation's docs write the Utility class and typed like a Variant input (later milestone; in the first milestone the Foundation class itself).
 _Avoid_: utility input, utility directive (for the attribute), helper attribute
 
 **Variant registry**:
@@ -489,11 +489,11 @@ The `nfs-variants.d.ts` at the source root of a consumer's application, or of a 
 _Avoid_: theme typings, typegen output, augmentation file
 
 **Variant manifest**:
-The library's list of its Variant registries, each with its Sass setting, its Variant property, its default names or count, and the Variant inputs that follow it; the one list the library's Sass, types, and tooling agree on.
+The library's list of its Variant registries, each with its Sass setting, its Variant property, its default names or count (a count arrives with the later milestone's families), and the Variant inputs that follow it; the one list the library's Sass, types, and tooling agree on.
 _Avoid_: registry list, variant config, schema
 
 **Declaration drift**:
-A difference between a Variant declaration file and the Variant properties of the Sass it mirrors: a name one has and the other lacks, or a differing count, which the tooling's next rewrite removes from a generated file.
+A difference between a Variant declaration file and the Variant properties of the Sass it mirrors: a name one has and the other lacks, or a differing count (a count arrives with the later milestone's families), which the tooling's next rewrite removes from a generated file.
 _Avoid_: stale types, out of sync (Nx's word for any sync generator), mismatch
 
 **Error-state policy**:
@@ -585,7 +585,7 @@ The `--nfs-breakpoint-<name>` custom properties on `:root`, in px, that mirror t
 _Avoid_: breakpoint variables, CSS breakpoints, breakpoint tokens
 
 **Variant properties**:
-The `--nfs-<setting>` custom properties on `:root` that a Library mixin writes to list the names (or the count) the consumer's Sass generates Variant classes for, such as `--nfs-button-palette` and `--nfs-breakpoint-classes`; read by the library's generator (and, in a later milestone, by the Runtime checks).
+The `--nfs-<setting>` custom properties on `:root` that a Library mixin writes to list the names (or the count; a count arrives with the later milestone's families) the consumer's Sass generates Variant classes for, such as `--nfs-button-palette` and `--nfs-breakpoint-classes`; read by the library's generator (and, in a later milestone, by the Runtime checks).
 _Avoid_: theme tokens, palette variables, names property
 
 **Runtime check**:
