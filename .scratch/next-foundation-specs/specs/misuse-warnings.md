@@ -93,6 +93,51 @@ Nothing in the first milestone depends on a misuse warning. The re-runs of the c
 
 When a warning lands, it comes back beside its documented-usage sentence, which stays: the sentence is the rule, the warning reports its breach. The closing section of Further Notes lists what comes back to each spec.
 
+### Foundation contract
+
+Foundation 6.9's JavaScript has a handful of reports, each about an option value or a method call, and none about markup: a search of `js/` at v6.9.0 (`foundation-sites`, `337be7a8d`) for `console.warn`, `console.error`, `console.info`, and `throw` finds only the sites below, and one commented out (`foundation.tooltip.js:134`). Most of the misuses this spec covers are Foundation's own API or pass without a word:
+
+| Misuse | What Foundation's JavaScript does | Source | This spec |
+| --- | --- | --- | --- |
+| A Foundation class in the markup | Reads it as state or as a part: the Accordion opens the items marked `.is-active` at init, the Accordion Menu opens its `.is-active` submenus, and the Drilldown keeps a `.js-drilldown-back` item it finds instead of generating one | `foundation.accordion.js:63-67`; `foundation.accordionMenu.js:87-91`; `foundation.drilldown.js:100-101` | S1: under the class rule (ADR 0039) the copy is the misuse, reported naming the input to bind |
+| An option value the plugin does not know | The Interchange warns ``Warning: invalid value "<type>" for Interchange option "type"`` and falls back to `auto`; the Drilldown logs `console.error` for a `backButtonPosition` other than `top` or `bottom`; the Toggler throws ``The 'toggler' option containing the target class is required, got "<input>"`` | `foundation.interchange.js:95-101`; `foundation.drilldown.js:103-112`; `foundation.toggler.js:59-62` | S11 and the Interchange's, Drilldown's, and Toggler's entries; typed inputs make most such values a compile error |
+| Two options that need each other | The Off-canvas warns `Remember to use the nested option if using the content ID option!` when `contentId` is set and `nested` is not | `foundation.offcanvas.js:84-88` | S11, the Off-canvas' entries |
+| A breakpoint name or query string | `MediaQuery.is()` throws on a modifier other than `only`, `up`, or `down`; `next()` throws on an unknown name, and `_getQueryName()` on a value that is neither a name nor a query; `get()` answers `null` and `atLeast()` `false` for an unknown name, without a report | `foundation.util.mediaQuery.js:133-141`, `:180-200`, `:209-218`, `:227-233`, `:245-253` | The Breakpoint service's entry: an unknown name warns once per string and answers `false`, so a typo in a template does not crash the application; an invalid Breakpoint map throws |
+| A method called on a disabled accordion | `console.info('Cannot toggle an accordion that is disabled.')`, and the same for `down` and `up` | `foundation.accordion.js:186`, `:214`, `:234` | No counterpart: the library's disabled contract is its own (ADR 0011) |
+| A missing stylesheet | The media query utility reads the breakpoints from the `font-family` of a `meta.foundation-mq` it appends, which Foundation's CSS sets; a value it cannot parse gives no breakpoint, and nothing reports it | `foundation.util.mediaQuery.js:89-109`, `:300-311` | S7 reads one computed value per directive and names the include |
+| A plugin or method that does not exist | The core throws a `ReferenceError` for an unknown method name and a `TypeError` for a non-string argument to `$().foundation()`, and logs any error a plugin constructor throws with `console.error`; the keyboard utility warns `Component not defined!`; the triggers utility logs `Plugin names must be strings` | `foundation.core.js:121-122`, `:166-171`, `:209-214`; `foundation.util.keyboard.js:102`; `foundation.util.triggers.js:145` | No counterpart: the compiler reports an unknown directive member |
+| A missing name, a host that cannot take focus, a Scroll region, a Motion value, a link host | No report | (none in the search above) | S2 to S6 and S8 to S10 add reports Foundation never had |
+
+So Foundation's own reports are call-time, like the Breakpoint service's and the Interchange parser's here, and the rest of this spec reads the rendered page, which Foundation's plugins never checked. No Foundation option, event, or class is added or dropped.
+
+### Hierarchy and package shape
+
+The misuse warnings have no directive, no component, and no entry point of their own. Each warning is code in the directive the component entry names, in that directive's source file and entry point; the three shared helpers sit beside the other development-only functions for library directives:
+
+```
+ngx-foundation-sites/<entry point>   (the owning directive's; this spec adds no entry point)
+  each directive with a misuse warning (The checks, per component)
+    fields:      development-only HostAttributeToken reads (S1 class, S2 autoFocus, type, selector attributes)
+    constructor: if (typeof ngDevMode === 'undefined' || ngDevMode) { a client render callback, or the read phase it shares with its Variant check (contract 6) }
+    its own tables: the names and inputs of S1, the name sources of S3, its messages
+  call-time warnings                 the Breakpoint service's unknown names and rule strings, the Interchange parser, a method called with a wrong option
+  construction-time throws           the Interchange on an <img> host, the Breakpoint service's invalid map
+
+ngx-foundation-sites/media-query     (the Breakpoint service's entry point, and the home of the functions for library directives)
+  (library-internal, development builds only)
+    the copied-class token splitter and whole-token matcher   S1
+    the name reader                                           S3
+    the Scroll region test                                    S4
+
+@angular/cdk/a11y
+  InteractivityChecker               isFocusable, isTabbable: the Visibility Classes' NfsShowForSr and NfsShowOnFocus, the Tooltip's check 2
+```
+
+- Library-internal means not public API: the three helpers are for library directives only, documented nowhere for consumers, and each is called behind the inline guard at its call site. A secondary entry point reaches another's code only through its exports, and the helpers serve directives in most entry points, so they are exported from `ngx-foundation-sites/media-query` in the way `nfsVariantCheck` ([Spec: Runtime checks (later milestone)](../issues/162-spec-runtime-checks-later-milestone.md)), `nfsDirectiveCheck`, and `nfsReportForgottenPeer` ([Spec: forgotten-import checks (shared utility)](../issues/150-spec-forgotten-import-checks.md)) are: exported for library directives, not for consumers. "Never exported to consumers" in Implementation level and primitives means that.
+- An entry point that imports nothing else from `ngx-foundation-sites/media-query` gains that import when a warning that uses a helper lands, as the Runtime checks spec records for its own function. Every call sits behind the inline guard, so a production build keeps none of the helpers' code (common contract 1).
+- The five checks S12 names call `nfsReportForgottenPeer`, from the same entry point, only when the forgotten-import checks are in the build; the Triggers' check 1 reads their shared verdict in its silent form too, so it lands with them or after them (common contract 8).
+- No warning adds a provider, a token, a public input, or a consumer-facing export.
+
 ### The common contract
 
 These rules hold for every warning unless its entry below says otherwise.
@@ -755,11 +800,25 @@ Spec: [xy-grid.md](xy-grid.md). "Development-mode checks, in each directive's on
 
 Tests: browser-level test, "`class="cell medium-6 medium-offset-2 grid-margin-x"` on `nfsCell` warns once, naming `size`, `offset`, and `nfsGridX`'s `gridMarginX`, and the copied classes remain; a redundant `cell` does not warn; `grid-y` copied onto `nfsGridX` names `nfsGridY`; `class="align-center"` on `nfsGridX` and `class="small-order-2"` on `nfsCell` name `nfsFlexAlign` with `alignX` and `nfsFlexChild` with `order`; ... an unnamed `div` or `section` cell block warns, a named one, a `main` one, and an `aside` one do not; an `aria-labelledby` naming a missing id warns; `fluid` with `full` warns; a frame fixture of fixed height with `overflow: hidden` whose content is taller warns once and stays silent after later resizes (once per instance); a frame whose overflowing cell is a cell block does not warn; nothing warns when `ngDevMode` is false" (the placement cases are the family check's).
 
+### Comparison with Angular Material, the CDK, Angular Aria, and prior art
+
+Read from the angular/components clone (`src/aria` and `src/cdk` at `708d4c6e2`; Material's removed checks at the parent of commit `54875a3`):
+
+| Concern | Prior art | This library | Why |
+| --- | --- | --- | --- |
+| A directive's own development warning | Angular Aria: a development `afterRenderEffect` read phase behind the inline guard passes its violations to `reportViolations`, which logs the element and each violation through `console.warn` on every run that finds one (`src/aria/private/utils/violations.ts:10-16`; `src/aria/accordion/accordion-trigger.ts:100-119`) | The same guard and render timing (common contract 1 and 2); one `console.warn` with the entry's message, once per instance or per the unit its entry names (common contract 3) | A read phase that re-runs would repeat Aria's form in the console |
+| What the warnings read | Aria's violations are about its own pattern's parts: a trigger inside its panel, a panel without its content or its trigger, a tab without a panel, a repeated value (`accordion-trigger.ts:105-114`, `accordion-panel.ts:92-105`, `tabs/tab.ts:100-110`, `tabs/tab-panel.ts:103-117`, `tabs/tab-list.ts:152-163`, `private/menu/menu.ts:198-209`); none reads a class, a name, a value's meaning, or computed style | The host, its inputs, its content, and the page (What a misuse warning is), through S1 to S12 | Aria's patterns have no Foundation classes, no Library mixins, and no Foundation markup to copy; Aria's warnings stay Aria's, in every milestone |
+| A missing stylesheet | Angular Material's `MatCommonModule` theme check until commit `54875a3` (#29688): in development builds, once per application, it appended a `.mat-theme-loaded-marker` element to `body` and warned "Could not find Angular Material core theme" when the element's computed `display` was not `none`, beside a doctype check and a Material-against-CDK version check (`src/material/core/common-behaviors/common-module.ts:63-97`, `:100-151` at `54875a3^`; the marker rule in `src/material/core/_core-theme.scss:18-32` there). Removed "since they won't execute with standalone by default, they mostly aren't necessary now that we're loading structural styles automatically and they produce some concrete styles that are problematic for the new theming APIs" | S7: a directive reads one computed value of its own host or content and names the Library mixin include or the setting; it writes no DOM (common contract 7) | Each directive checks what it needs, so a standalone application runs the checks; the value read is one the consumer's own CSS rules produce, so the library emits no marker rule; no library CSS loads itself (ADR 0012) |
+| Configuration | `MATERIAL_SANITY_CHECKS`: `true`, `false`, or `GranularSanityChecks` (`doctype`, `theme`, `version`), every check skipped in a test environment (`common-module.ts:18-39`, `:86-97` at `54875a3^`) | No switch and no production form (common contract 5, D10); the tests assert the warnings | Every report is a real misuse (P23); a check skipped under test could not be tested |
+| Focusable and tabbable | The CDK's `InteractivityChecker` (`isFocusable`, `isTabbable`; `src/cdk/a11y/interactivity-checker/interactivity-checker.ts:65`, `:144`) | Reused as the one CDK primitive: the Visibility Classes' `NfsShowForSr` and `NfsShowOnFocus` checks and the Tooltip's check 2 | Its judgement of what Tab reaches is the one the CDK's focus trap uses; the Scroll region test (S4) and the link checks keep the specs' own selector lists, as the specs gave them |
+| Names | No Aria or CDK check reads an accessible name; axe's rules run only where axe runs | S3's name reader, read as accessible-name computation reads it | A name check that ignored visually hidden text or an image's `alt` would report names a screen reader announces |
+| Copied classes | Material and Aria own no consumer-written class, so nothing is copied; Foundation's own JavaScript reads the classes as state (Foundation contract) | S1, through `HostAttributeToken('class')` before a binding strips the copy | The class rule (ADR 0039) makes a copied class a misuse |
+
 ### Implementation level and primitives
 
 Custom Angular, in development builds only: no Aria or CDK piece reports a consumer's misuse of Foundation's markup. Angular Aria's own development warnings (`reportViolations`: a trigger inside its panel, a panel without its content directive, a tab without a panel) cover Aria's own patterns, stay Aria's, and run in every milestone; they are not part of this spec.
 
-Primitives: `HostAttributeToken` (the static `class`, `autoFocus`, `type`, and selector attributes), `ElementRef`, `afterNextRender`, `afterRenderEffect` with its phases, a self-destroying `afterEveryRender` (Breadcrumbs, Pagination), `ResizeObserver` (Media Object, XY Grid), a development-only `focusin` listener added in code (Sticky), `getComputedStyle`, `Element.closest()`, `compareDocumentPosition`, `CSS.escape`, the native `labels` and `control` properties, CDK's `InteractivityChecker` (`isFocusable`, `isTabbable`), and `nfsBreakpointsToken` for the Zero breakpoint and the templated class names. Library-internal helpers, never exported: the copied-class token matcher (S1), the name reader (S3), and the Scroll region test (S4).
+Primitives: `HostAttributeToken` (the static `class`, `autoFocus`, `type`, and selector attributes), `ElementRef`, `afterNextRender`, `afterRenderEffect` with its phases, a self-destroying `afterEveryRender` (Breadcrumbs, Pagination), `ResizeObserver` (Media Object, XY Grid), a development-only `focusin` listener added in code (Sticky), `getComputedStyle`, `Element.closest()`, `compareDocumentPosition`, `CSS.escape`, the native `labels` and `control` properties, CDK's `InteractivityChecker` (`isFocusable`, `isTabbable`), and `nfsBreakpointsToken` for the Zero breakpoint and the templated class names. Library-internal helpers, never exported to consumers (Hierarchy and package shape): the copied-class token matcher (S1), the name reader (S3), and the Scroll region test (S4).
 
 ### ARIA and keyboard
 

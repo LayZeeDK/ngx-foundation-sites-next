@@ -89,6 +89,56 @@ Not family checks, and left to their own specs:
 
 The 43 checks below come from 24 component specs. A check a manifest classified under another kind is left there even where this spec's author reads it as a family check; each such case is recorded in the ticket answer, so that no check lands in two specs.
 
+### Foundation contract
+
+Foundation 6.9's JavaScript reports none of the arrangements these checks cover. Where its plugin finds a part missing, it builds the part itself; where it finds a part in the wrong place, it ignores it; its CSS-only families (the Button Group, the Float, Flex, and XY Grids, the Flexbox Utilities, the Float Classes, the Media Object, the Switch, the Top Bar, and the Visibility Classes) have no JavaScript, so nothing reports for them. The one report near a family check is the Responsive Toggle's. Read from `js/` at v6.9.0 (`foundation-sites`, `337be7a8d`):
+
+| Arrangement | What Foundation's plugin does | Source | This spec |
+| --- | --- | --- | --- |
+| A drilldown root without its wrapper | Wraps the root in `options.wrapper` with `is-drilldown` when its parent lacks that class; no report | `foundation.drilldown.js:122-127` | Drilldown check 1: a directive cannot wrap the consumer's markup, so it warns |
+| A drilldown submenu without a back item | Prepends or appends `options.backButton` to every submenu that holds no `.js-drilldown-back`; its only report is `console.error` for a `backButtonPosition` other than `top` or `bottom` | `foundation.drilldown.js:100-112` | Drilldown check 2 (the position error is a misuse, not this kind) |
+| A sticky element whose parent is not a container | Wraps it in `<div data-sticky-container>` and adds `sticky-container`; nothing reads the parent's height | `foundation.sticky.js:41-51`, `:424` | Sticky warnings 1 and 2 |
+| Several accordion items open at init in single mode | `_init` passes every pre-active item's content to `_openSingleTab` at once, which closes only open items outside the set it opens, so all of them stay open; no report | `foundation.accordion.js:63-67`, `:255-264` | Accordion check 4 (F8) |
+| Several Accordion Menu sections open at init with `multiOpen` off | `_init` calls `down()` on each pre-active submenu in turn, and `down()` closes the others first, so the last one stays open; no report | `foundation.accordionMenu.js:87-91`, `:230-240` | Accordion Menu check 1 (F8), which keeps every bound section open |
+| A third slider handle, or handles out of order | Reads `[data-slider-handle]` and uses the first two only; every position it sets, the initial ones included, is clamped so that the first handle stays at least one step below the second, which moves a first handle set above the second; no report | `foundation.slider.js:69-88`, `:106-113`, `:194-216`, `:312-330` | Slider checks 1 and 4 (the library does not reorder or clamp, so it warns) |
+| An Abide field with no label or Form error | `findFormError` looks at siblings, the parent, and `[data-form-error-for]`, and `findLabel` at `label[for]` and the closest `label`; `addErrorClasses` adds a class to what it found and sets `aria-invalid` either way; no report | `foundation.abide.js:177-218`, `:269-284` | Abide checks 1, 2, and 4 |
+| A dropdown pane and its Triggers | Takes its anchors from `[data-toggle="<id>"]`, else `[data-open="<id>"]`, wherever they are; reads neither their order nor the pane's ancestors | `foundation.dropdown.js:52-61` | Dropdown checks 3 and 8 |
+| A Reveal's focus restore | Remembers at open the focused element when it is one of its anchors, else its anchors, and calls `focus()` on that at close, without checking that it exists or can take focus | `foundation.reveal.js:236`, `:484` | Reveal check 7 |
+| An Off-canvas panel and its content | Finds the content by `contentId`, else as a sibling or an ancestor `[data-off-canvas-content]`, and treats a panel with no sibling content as nested; its only report is a `console.warn` for `contentId` without `nested` | `foundation.offcanvas.js:72-88` | Off-canvas checks 3 (part b) and 9 read what the plugin never did; the `contentId` warning is a misuse |
+| A tab outside a title | Finds the tabs as `.tabs-title` elements; a link outside one is not a tab | `foundation.tabs.js:49`, `:524` | The Tabs tab's parent check |
+| Orbit slides and bullets | Writes each slide's index into its `data-slide` and moves to the slide whose index a clicked bullet's `data-slide` holds, so a slide has no value of its own that could repeat | `foundation.orbit.js:106`, `:145-147`, `:232-235` | Orbit check 6 exists because the library pairs by `value` |
+| A Responsive Toggle bar without its menu | `console.error('Your tab bar needs an ID of a Menu as the value of data-tab-bar.')` when `data-responsive-toggle` names no id, then goes on with that empty id | `foundation.responsiveToggle.js:39-44` | Responsive Toggle check 3; the library's required reference makes the missing menu a compile error (NG8002, NG8003), so the check reports only a menu with no title bar or two |
+
+Foundation's core also logs any error a plugin constructor throws, through `console.error`, which is how malformed markup that breaks a plugin shows up (`foundation.core.js:121-122`, `:166-171`); that is not a report of an arrangement. So the checks add reports Foundation never had, and no Foundation option, event, or class is involved.
+
+### Hierarchy and package shape
+
+The family checks have no directive, no component, and no entry point of their own. Each check is code in the directive that owns it, in that directive's source file and entry point, as the Checks per component entries name it:
+
+```
+ngx-foundation-sites/<entry point>   (the owning directive's; this spec adds no entry point)
+  each directive that owns a family check
+    constructor: if (typeof ngDevMode === 'undefined' || ngDevMode) { a browser render callback: the check }   (F1)
+    reads of what production already registers                                                             (F2)
+    development-only lookups, inside the same guard                                                        (F3)
+      Button Group     contentChildren(NfsButton, {descendants: true})
+      Nested menu      the toggle text's inject(NfsSubmenuToggle, {optional: true})
+      Responsive Menu  inject(NfsMenu, {self: true}), inject(nfsBreakpointsToken)
+      Float Grid       ElementRef, InteractivityChecker, NfsMediaQuery on NfsColumn
+      Drilldown Menu   NfsDrilldownBack's registration with the root, and the root's #backs
+  the visual-order sequence functions (F6)   Flexbox Utilities and Float Grid, each unexported in its own entry point, pure, tested at node level
+
+ngx-foundation-sites/media-query   (Spec: forgotten-import checks (shared utility); not this spec's)
+  nfsReportForgottenPeer(element, directive, foundBy)   called in F5's second form only, behind the same guard
+
+@angular/cdk/a11y
+  InteractivityChecker   isFocusable, isTabbable; injected in development builds only (F3, F6)
+```
+
+- Library-internal helpers: none. The only shared function a check calls is `nfsReportForgottenPeer`, which the forgotten-import checks export from `ngx-foundation-sites/media-query` for library directives, beside `nfsVariantCheck` and `nfsDirectiveCheck`; built without that spec, no check imports it (F5's first form). Out of Scope below rejects a helper of this kind's own.
+- An entry point whose directive calls `nfsReportForgottenPeer` imports `ngx-foundation-sites/media-query`; the call sits inside the inline guard, so a production build keeps none of it, as the forgotten-import checks measured for `nfsDirectiveCheck` (PEER 4, RUNTIME 3). The measurement that production keeps no message is this spec's own (Testing Decisions, layer 4).
+- No check adds a provider, a token, a public input, or an export: the first milestone's public API is the later milestone's too.
+
 ### What every family check shares
 
 F1, development only. Each check's code sits inside an inline `if (typeof ngDevMode === 'undefined' || ngDevMode) { ... }` block at its call site, which a production build removes, and runs in a browser render callback (`afterNextRender`, a read phase of `afterRenderEffect`, an `afterEveryRender` callback, or a `ResizeObserver` that such a callback creates), which Angular makes a no-op on the server. The guard is written inline because a hoisted `const dev = typeof ngDevMode === 'undefined' || !!ngDevMode` kept 4336 B of check code and every message in the production bundle when the forgotten-import checks were measured ([research/missing-directive-import-peer.md](../research/missing-directive-import-peer.md), PEER 4). Each check warns once per instance, or once per the key its text names (per container and sequence, per row and breakpoint, per group), through `console.warn`, and has no switch: every warning is a defect in the consumer's markup and names the fix. A check that needs a render callback its directive does not otherwise have creates one only in development builds. Each check's own timing is quoted with it.
@@ -542,6 +592,21 @@ The shared manifest's seven family entries state the pattern, not checks of thei
 - building-blocks 1.9, "Ordered children" (`contentChildren` for development validation only): F3, the Button Group's query.
 - The glossary's "In-family check": the forgotten-import checks' term, not this kind's.
 
+### Comparison with Angular Material, the CDK, Angular Aria, and prior art
+
+Read from the angular/components clone (`src/aria` and `src/cdk` at `708d4c6e2`; Material's removed checks at the parent of commit `54875a3`):
+
+| Concern | Prior art | This library | Why |
+| --- | --- | --- | --- |
+| A family's own development report | Angular Aria: each part runs a development `afterRenderEffect` read phase behind the inline guard and passes its violations to `reportViolations`, which logs the element and then each violation through `console.warn`, on every run that finds one (`src/aria/private/utils/violations.ts:10-16`; `src/aria/accordion/accordion-trigger.ts:100-119`) | The same guard and timing (F1); one `console.warn` per check naming the fix, once per instance or per the key its entry names | A re-run of the read phase would repeat Aria's form in the console; the specs chose once per instance |
+| What Aria reports | A trigger inside its own panel and a panel with a second trigger (`accordion-trigger.ts:105-114`); a panel without its content or its trigger (`accordion-panel.ts:92-105`); a tab without a panel, a panel without its content or its tab, and a repeated tab value (`tabs/tab.ts:100-110`, `tabs/tab-panel.ts:103-117`, `tabs/tab-list.ts:152-163`); a repeated menu value (`private/menu/menu.ts:198-209`) | Left to Aria and never repeated (The kind and its boundary); the library's checks cover what Aria's patterns do not see: Foundation's placements, orders, and sizes | Aria's checks read only what registered with its own pattern |
+| Several items open in single mode | Aria's accordion pattern reports several items initially expanded while `multiExpandable` is `false` (`private/accordion/accordion.ts:131-143`) | Accordion check 4 and Accordion Menu check 1 (F8) | The library keeps Aria's `multiExpandable` at `true` and owns `multiExpand` itself ([Spec: Accordion](../issues/15-spec-accordion.md), the `multiExpand` row; ADR 0028), so Aria's report never fires |
+| A part the markup put somewhere else | Aria finds its parts through dependency injection and registration only; nothing in Aria or the CDK reads a part's DOM parent | DOM-only placement reads (F4) | A part a layout component projects has no injection path to the parent it renders in (building-blocks 1.9) |
+| A forgotten peer | Aria's "ngAccordionPanel must have an ngAccordionTrigger to control it." cannot tell a forgotten import from missing markup | F5: silent, or one report through `nfsReportForgottenPeer` | The DOM still carries the attribute of a directive that was never imported (PEER 1) |
+| A missing stylesheet or environment | Angular Material's `MatCommonModule` sanity checks until commit `54875a3` (#29688): in development builds, once per application, a doctype check, a theme check that appended a `.mat-theme-loaded-marker` element to `body` and warned when its computed `display` was not `none`, and a Material-against-CDK version check, configured through `MATERIAL_SANITY_CHECKS` (`true`, `false`, or `GranularSanityChecks`) and off in test environments (`src/material/core/common-behaviors/common-module.ts:18-39`, `:63-97`, `:100-151` at `54875a3^`); removed "since they won't execute with standalone by default, they mostly aren't necessary now that we're loading structural styles automatically and they produce some concrete styles that are problematic for the new theming APIs" | None of this kind. A family check that reads computed style (the Sticky's warnings, the Flexbox Utilities' check 2, F6, F7) reads the consumer's arrangement, not whether a stylesheet loaded; it writes no DOM and has no switch (D6) | Each check runs in its own directive, so a standalone application runs it; a missing include is the misuse warnings' S7 and the Runtime checks' concern |
+| Focusable and tabbable | The CDK's `InteractivityChecker` (`isTabbable`, `isFocusable`; `src/cdk/a11y/interactivity-checker/interactivity-checker.ts:65`, `:144`), which the CDK's focus trap uses | Reused as the one CDK primitive: F6's visual-order checks keep only the items that are or hold an element it reports focusable and tabbable, injected in development builds only (F3) | Its judgement of what Tab reaches is the one the CDK already maintains; the Float Classes' check 2 keeps its own selector list, as its spec gave it |
+| A check that breaks the page | Aria's accordion trigger and ng-primitives' children require their parent: NG0201, in production too | Warnings only; no family check throws | The forgotten-import checks' `strictParents` is the opt-in throw, in development only |
+
 ### Implementation level and primitives
 
 Custom Angular in development builds only, because no Aria or CDK piece reports a family's arrangement: Aria's own checks read what registered and report its own pairing rules only. Primitives: `afterNextRender`, `afterRenderEffect` read phases, `afterEveryRender` where a spec uses it, `inject` with `optional` and `self`, `contentChildren` (the Button Group only), `ElementRef`, `Element.closest()`, `Element.matches()`, `previousElementSibling`, `compareDocumentPosition`, `getComputedStyle`, `getBoundingClientRect`, `ResizeObserver`, CDK's `InteractivityChecker`, `NfsMediaQuery` and `nfsBreakpointsToken` of the Breakpoint service, and the Triggers' `registerTrigger` list. No private Angular field is read. The one shared helper, `nfsReportForgottenPeer`, is the forgotten-import checks' (F5).
@@ -618,6 +683,54 @@ The Fixture app is built in the development configuration, so the checks run in 
 | D12 | Misclassified checks | Left with the kind their manifest gave, recorded as boundary cases in the ticket answer | Copying them here too (two specs for one check; `other`) |
 | D13 | Lookups only a check needs | Come back with their check, in development builds only (F3) | Keeping them in the first milestone (a production query for a development warning; `other`) |
 | D14 | The Tabs tab's timing | The tab's own development-only `afterNextRender`, once per instance | The strip's read phase (the tab is its own directive, and the strip holds no reference to it; `other`) |
+
+### Usage examples
+
+A consumer writes nothing for these checks. The one example is a check's call site, the shape the component specs follow: the Media Object's check 3, a placement check that reads the DOM alone (F1, F4, F5), with the section's other members left out.
+
+```ts
+// ngx-foundation-sites/media-object (names as the Media Object spec gives them)
+import {afterNextRender, Directive, ElementRef, inject} from '@angular/core';
+// Only with the forgotten-import checks in the build (F5, second form).
+import {nfsReportForgottenPeer} from 'ngx-foundation-sites/media-query';
+
+@Directive({selector: '[nfsMediaObjectSection]', exportAs: 'nfsMediaObjectSection'})
+export class NfsMediaObjectSection {
+  readonly #host: HTMLElement = inject(ElementRef).nativeElement;
+
+  constructor() {
+    // F1: the guard is written inline at the call site, never hoisted into a module constant.
+    if (typeof ngDevMode === 'undefined' || ngDevMode) {
+      afterNextRender({
+        read: () => {
+          const parent = this.#host.parentElement;
+
+          if (parent?.classList.contains('media-object')) {
+            return;
+          }
+
+          // F5: a parent that carries nfsMediaObject without its class is a forgotten import,
+          // not a misplaced section. The helper reports it once (M2, found by the section) and
+          // returns true; the placement message is given only when it returns false.
+          // Built without the forgotten-import checks, the branch reads
+          // `if (parent?.hasAttribute('nfsMediaObject')) { return; }` and says nothing.
+          if (parent && nfsReportForgottenPeer(parent, 'NfsMediaObject', 'NfsMediaObjectSection')) {
+            return;
+          }
+
+          console.warn(
+            'nfsMediaObjectSection: this section is not a direct child of an nfsMediaObject element, so ' +
+              "Foundation's CSS does not lay it out as a section; when a component renders it, put " +
+              "NfsMediaObjectSection in that component's hostDirectives",
+          );
+        },
+      });
+    }
+  }
+}
+```
+
+The callback runs once, at the first client render, so the warning fires at most once per instance, and never on the server. A production build removes the whole block, and with it every use of the helper; layer 4's bundle search is the test that no message survives.
 
 ### Adding the checks back, per component spec
 
