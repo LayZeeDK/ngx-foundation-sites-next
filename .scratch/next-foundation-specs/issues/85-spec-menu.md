@@ -252,3 +252,10 @@ From [Decide: grids, typography, and utilities move to a later milestone](174-de
 From [Audit 0010: the later-milestone families wave](../audits/0010-later-milestone-families-wave.md); `specs/menu.md` was revised in place:
 
 - L3: the Out of Scope bullet on source-ordering classes adds that an order class changes only the visual order, so the consumer writes the items in reading order (WCAG 1.3.2, 2.4.3).
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves)
+
+From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md), group a; `specs/menu.md` was revised in place:
+
+- Problem Statement, second paragraph: "the developer writes no Foundation or library class" is narrowed to "of a family with a first-milestone spec", because the same spec has the consumer write `.show-for-sr`, the flex alignment classes, and the source-ordering and visibility classes as normal classes (ADR 0039, note of 2026-09-30).
+- Testing Decisions, browser-level test: the Router case, run into the end of the Hosting bullet ("is set.- Router:"), is its own bullet again (hygiene).

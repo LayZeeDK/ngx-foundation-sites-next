@@ -506,6 +506,7 @@ export class Checkout {
 // How the Magellan spec composes it (sketch; Magellan owns its own API)
 @Directive({
   selector: '[nfsMagellan]',
+  exportAs: 'nfsMagellan',
   hostDirectives: [NfsSmoothScroll],
 })
 export class NfsMagellan {

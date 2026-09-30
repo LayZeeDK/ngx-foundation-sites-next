@@ -726,6 +726,7 @@ const menuModes = ['dropdown', 'drilldown', 'accordion'] as const;
 
 @Directive({
   selector: 'ul[nfsResponsiveMenu]',
+  exportAs: 'nfsResponsiveMenu',
   providers: [nfsMenuRootProviders('accordion')],
   hostDirectives: [
     {directive: NfsAccordionMenu, inputs: ['multiOpen'], outputs: ['opened', 'closed']},

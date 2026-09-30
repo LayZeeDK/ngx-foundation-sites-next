@@ -187,3 +187,10 @@ From [Audit 0010: the later-milestone families wave](../audits/0010-later-milest
 
 - M1: the `overflow-y-scroll` sentence says the preview's `foundation-everything($prototype: true)` prints it.
 - L1: the Visibility class sentence reads "a Visibility class this plugin does not bind on that host is not stripped here", matching the wording the wave used earlier in the spec.
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves)
+
+From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md), group a; `specs/responsive-toggle.md` was revised in place:
+
+- Solution: "The consumer writes no Visibility class" is limited to the bar and the menu, as usage rule 1 is, because the hamburger's visually hidden name may use Foundation's `show-for-sr` (ARIA and keyboard).
+- CSS class to Angular mapping, binding rule: "No class is left for the consumer to write" becomes "No class of a family with a first-milestone spec is left" (ADR 0039, note of 2026-09-30).

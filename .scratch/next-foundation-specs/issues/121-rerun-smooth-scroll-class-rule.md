@@ -117,3 +117,9 @@ What left the spec, per check, and where its rule now stands:
 Kept: the click handling and its link filter, `scrollTo`, focus and reduced-motion behaviour, the ARIA and WCAG rows, the `nfs-smooth-scroll` Library mixin and its Sass compile test, and every story, browser-level, node-level, and e2e case of behaviour.
 
 Triage: impact LOW (development messages become documented usage; no API, behaviour, or story changes), confidence HIGH (the ruling; the group e manifest). Nothing is OPEN FOR HUMAN.
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves)
+
+From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md), group a; `specs/smooth-scroll.md` was revised in place:
+
+- Usage examples, the `NfsMagellan` composition sketch: the `@Directive` metadata gains `exportAs: 'nfsMagellan'`, the name the [Spec: Magellan](30-spec-magellan.md) gives it, as every directive has one ([Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md)).

@@ -176,3 +176,11 @@ From [Re-run: specs without the later-milestone families, group c](178-rerun-spe
 - The menu icon's naming rule (Behaviour), the ARIA table's "Menu icon name" row, the dark menu icon example (`<span class="show-for-sr">Menu</span>`), and the note under Rendered HTML (no directive is imported for `.show-for-sr`) say the same.
 
 Triage: impact LOW (examples, stories, and documented usage change; no input, default, or rule of this spec changes), confidence HIGH (the ruling's decisions 2 and 3: a family with no first-milestone spec is written as Foundation's normal classes, with Foundation's global styles loaded). Nothing is OPEN FOR HUMAN.
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves)
+
+From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md), group a; `specs/top-bar.md` was revised in place:
+
+- CSS class to Angular mapping, State classes paragraph: "No class is left for the consumer to write" becomes "No class of a family with a first-milestone spec is left", because the next table has the consumer write `.show-for-sr` (ADR 0039, note of 2026-09-30).
+- Testing Decisions, Story ids paragraph: "no story writes a Foundation or library class" names the one exception, `show-for-sr` for a menu icon's visually hidden name (ADR 0039, note of 2026-09-30).
+- Node-level Sass compile test: the parenthesis drops "as ADR 0012 guards `-zf-bp-to-em`", since ADR 0012's note of 2026-09-29 moves that dependency and its guard to the later milestone.

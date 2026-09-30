@@ -106,7 +106,7 @@ Dropped behaviours, each with its reason under Further Notes: the generated wrap
 
 ### CSS class to Angular mapping
 
-Every class on the Drilldown's elements, per building-blocks 1.14 item 2; the consumer writes none ([ADR 0039](../adr/0039-directives-manage-every-foundation-class.md)). This entry point declares no Variant input, no Variant registry, and no Variant property: the root's Variant inputs are the Menu's, typed in the [Spec: Menu](../issues/85-spec-menu.md), and reach the root through `hostDirectives`.
+Every class on the Drilldown's elements, per building-blocks 1.14 item 2; the consumer writes none but the back suffixes' `show-for-sr`, a Visibility class under [ADR 0039](../adr/0039-directives-manage-every-foundation-class.md)'s exception for a family with no first-milestone spec. This entry point declares no Variant input, no Variant registry, and no Variant property: the root's Variant inputs are the Menu's, typed in the [Spec: Menu](../issues/85-spec-menu.md), and reach the root through `hostDirectives`.
 
 | Foundation markup or class | Kind | Angular | Rationale |
 | --- | --- | --- | --- |
@@ -719,7 +719,7 @@ Sass. The consumer compiles Foundation's Sass from its own settings; the library
 | 4 [8] | `.drilldown .has-submenu-toggle > a::after` | `content: none` | Foundation's drilldown link arrow has no `.has-submenu-toggle` exclusion, so a Hybrid item would draw two arrows |
 | 5 [9] | `.is-drilldown` | `overflow: clip; overflow-wrap: break-word` | Overrides Foundation's `overflow: hidden`, which a focus during the slide could scroll sideways (prototype rows 11, 12); a clipping box is no scroll container, which the reveal step relies on; `overflow-wrap: break-word` because the clip cuts off a label word wider than the wrapper (measured: a 27-letter word in a 250 px panel loses 31.3 px with the 1.4.12 spacing in three engines), and the ResizeObserver height takes the extra line |
 | 6 [12, extended] | inside `@media (prefers-reduced-motion: reduce)`: `.drilldown .is-drilldown-submenu`, `.is-drilldown.animate-height` | `transition-duration: 1ms` | Reduced motion for the slide the utility awaits and the height transition `animateHeight` turns on (building-blocks 1.6 rule 5) |
-| 7 (new) | `.is-drilldown a:focus-visible`, `.is-drilldown button:focus-visible` | `outline-offset: -2px` | The wrapper must clip, so rings drawn outside a control lose their edges at the wrapper's sides (and, with `autoHeight`, top and bottom); an inset ring keeps every edge visible (2.4.7) |
+| 7 [13] | `.is-drilldown a:focus-visible`, `.is-drilldown button:focus-visible` | `outline-offset: -2px` | The wrapper must clip, so rings drawn outside a control lose their edges at the wrapper's sides (and, with `autoHeight`, top and bottom); an inset ring keeps every edge visible (2.4.7) |
 
 Settings a theme keeps (no CSS output), as the WCAG 2.2 AA table states them: the arrow colours at 3:1 against the level backgrounds (1.4.11), the Hybrid toggle and every row at least 24 px (2.5.8, D20), and the current link's fill at 3:1 against the level backgrounds (1.4.1), each by the exact WCAG ratio, unrounded (D30). With Foundation's defaults every such pair is `$primary-color` on `$white`, 4.65:1 exactly.
 

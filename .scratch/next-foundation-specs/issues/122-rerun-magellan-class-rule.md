@@ -164,3 +164,11 @@ From [Decide: grids, typography, and utilities move to a later milestone](174-de
 From [Audit 0010: the later-milestone families wave](../audits/0010-later-milestone-families-wave.md); `specs/magellan.md` was revised in place:
 
 - L1: the consumer's no-class sentence is narrowed to families with a first-milestone spec.
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves)
+
+From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md), group a; `specs/magellan.md` was revised in place:
+
+- CSS class to Angular mapping, lead paragraph: "never by the consumer" names the exception the table's XY grid row records, the classes of a family with no first-milestone spec (ADR 0039, note of 2026-09-30).
+- WCAG table, 1.4.3 row, and Sass item 2: the `$topbar-background` setting is cited from the [Spec: Top Bar](86-spec-top-bar.md), which requires it (its D15 and Sass subsection), not from the Dropdown Menu spec, which defers that pair to the Top Bar spec (its D14).
+- Testing Decisions: a blank line before the "3. Node-level Vitest" heading (hygiene).

@@ -164,3 +164,13 @@ From [Audit 0010: the later-milestone families wave](../audits/0010-later-milest
 
 - M4: the class-rule test and the fixture route name the back items' `show-for-sr` as the one class written.
 - L1: user story 44 and the class sentence are narrowed to families with a first-milestone spec, naming the back items' `show-for-sr`.
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves)
+
+From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md), group a; `specs/responsive-menu.md` was revised in place:
+
+- Opening paragraph: "The consumer writes no Foundation or library class" is narrowed to "of a family with a first-milestone spec" (ADR 0039, note of 2026-09-30).
+- Problem Statement, the classes bullet: "writes none of them" names `show-for-sr`, a Visibility class the developer still writes, so "each of the others" needs a directive (ADR 0039, note of 2026-09-30).
+- User story 50: the back items' hidden suffix uses Foundation's `show-for-sr` as a normal class, not a library directive, as D23 decides.
+- Testing Decisions, first paragraph: the "no story, test host, or fixture writes a class" sentence names the back suffixes' `show-for-sr`, as the class-rule test and the fixture route already do.
+- Sass, item (1): the Nested menu spec has fourteen Library mixin rules, not thirteen (its rule 14, the Dropdown Menu's current top-level link).

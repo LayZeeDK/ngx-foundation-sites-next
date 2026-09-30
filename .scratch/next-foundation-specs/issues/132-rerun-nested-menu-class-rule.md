@@ -218,3 +218,9 @@ From [Re-run: specs without checks, group d](168-rerun-specs-without-checks-grou
 From [Audit 0010: the later-milestone families wave](../audits/0010-later-milestone-families-wave.md); `specs/nested-menu.md` was revised in place:
 
 - L4: D30's rejected alternative names Foundation's `.show-for-sr` class, not a later-milestone family's directive.
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves)
+
+From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md), group a; `specs/nested-menu.md` was revised in place:
+
+- Usage examples, the `NfsResponsiveMenu` sketch: the `@Directive` metadata gains `exportAs: 'nfsResponsiveMenu'`, the name the [Spec: Responsive Menu](23-spec-responsive-menu.md) gives it, as every directive has one ([Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md)).

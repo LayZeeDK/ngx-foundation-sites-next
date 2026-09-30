@@ -169,3 +169,10 @@ Each rule is stated as documented usage: a Documented usage list in the API sect
 ### Amendment, 2026-09-30 (later-milestone families)
 
 From [Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md), applied by [Re-run: specs without the later-milestone families, group a](176-rerun-specs-without-later-families-group-a.md): `specs/drilldown-menu.md` no longer assumes the Visibility Classes. The back button's visually hidden suffix is a `span` with `class="show-for-sr"` in place of `nfsShowForSr`, with Foundation's global styles loaded, and the usage example's `imports` drops `NfsShowForSr`. D29 now decides the written class, and the Problem Statement, the Solution, user story 42, the mapping row, the Imports bullet, the two ARIA rows, the Rendered HTML intro, the tests paragraph, the SSR smoke fixture, Out of Scope, the Sass paragraph, and the last notes bullet say so; no link to that spec remains. The Nested menu utility's `invisible` and `visible` State classes are Foundation's CSS, bound by that utility, and are unchanged. Unchanged: the three directives, their Options, the focus rules, the height animation, ARIA, the rendering modes, and the Story ids.
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves)
+
+From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md), group a; `specs/drilldown-menu.md` was revised in place:
+
+- CSS class to Angular mapping, lead sentence: "the consumer writes none" names the back suffixes' `show-for-sr`, which the table's own row has the consumer write (ADR 0039, note of 2026-09-30).
+- Sass, rule 7: its Nested menu rule number is `[13]`, not "(new)", since the [Spec: Nested menu (shared utility)](56-spec-nested-menu.md) carries the inset focus ring as its rule 13.
