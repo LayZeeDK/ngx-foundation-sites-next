@@ -269,3 +269,23 @@ Hygiene:
 13. No non-ASCII character, no banned word, no banned pair, and no table row with the wrong cell count in the 107 files; no unresolved relative link outside proposal text and gist lines; the 8 commit messages are clean lower-case `docs(wayfinder): ...` subjects with no attribution line.
 
 ## Resolution log
+
+Every finding was fixed as its Fix states, by one Opus 5.5 fixer at low effort, in commit `dfd4ba0`; none became a ticket, none was rejected, and none adds an OPEN FOR HUMAN item. Its check script verified all 68 edits and 23 amendments, with a positive control for every scan.
+
+| Finding | Where |
+| --- | --- |
+| H1 | `specs/interchange.md` (six places), `specs/xy-grid.md` (its closing list gains Interchange), ticket 175 (a correction paragraph); amendments in tickets 127 and 99 |
+| M1 | `specs/anchored-pane.md`, `specs/sticky.md`, `specs/responsive-toggle.md` (Prototype mode named); amendments in tickets 131, 120, 116 |
+| M2 | `README.md` (the open list) |
+| M3 | `specs/prototyping-utilities.md` (D25 and the Sass subsection), `building-blocks.md` Part 4, `README.md`, `adr/0012-sass-packaging.md`; amendment in ticket 102 |
+| M4 | `specs/label.md`, `specs/pagination.md`, `specs/responsive-menu.md`; amendments in tickets 94, 87, 115 |
+| M5 | `specs/variant-declaration-tooling.md` (`'ultra-wide'` at three places; the code-block line matched without the audit's backticks); amendment in ticket 136 |
+| M6 | `specs/table.md` (a D17 row, the 1.4.3 row, the Sass lines), `storybook-conventions.md`, `map.md`; amendment in ticket 92 |
+| M7 | `specs/misuse-warnings.md` (four report sites), ticket 172 (a correction paragraph); amendment in ticket 161 |
+| L1 | sixteen sentences in thirteen specs; amendments in the specs' tickets |
+| L2 | `specs/callout.md`, `specs/card.md`; amendments in tickets 89, 90 |
+| L3 | `building-blocks.md` 1.10, `specs/menu.md`; amendment in ticket 85 |
+| L4 | `specs/nested-menu.md` (D30), `CONTEXT.md` (the Cell block entry); amendment in ticket 132 |
+| L5 | `README.md` (the audit count, the wave heading, item 4) |
+
+The shared-document edits carry no ticket amendment, as the audit named none for them.
