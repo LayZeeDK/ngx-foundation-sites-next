@@ -15,3 +15,4 @@ Foundation's Abide finds a field's label (`label[for]`, else the closest `label`
 
 - Consumers add one attribute per label, error, and alert, and a template reference where the label or error is not inside a wrapping label.
 - Dev-mode warnings cover a label or error that resolves no field, and a field that shows an error with no visible Form error.
+- 2026-09-29 ([Decide: checks move to a later milestone](../issues/158-decide-checks-move-to-a-later-milestone.md)): the dev-mode warnings for a label or Form error that resolves no field, and for a field in error with no visible Form error, are planned for a later milestone ([Spec: family checks (later milestone)](../issues/160-spec-family-checks-later-milestone.md), Abide 1, 2, and 4). In the first milestone the Abide spec states each as documented usage: every label and Form error resolves a field, and every field that can show an error has a Form error.

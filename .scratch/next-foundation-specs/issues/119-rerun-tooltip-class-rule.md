@@ -148,3 +148,7 @@ From [Re-run: specs without checks, group f](170-rerun-specs-without-checks-grou
 - Each rule is documented usage now: the Host, Name, and Classes behaviour rules, the text rule, the documented limits (`label` with `for`), the WCAG rows for 2.1.1, 2.4.11, and 4.1.2, user stories 19, 20, 43, and 44, the migration notes, and D5, D6, D7, and D9 (rewritten); the 1.4.3 row states the colour pair as a requirement.
 - Mentions removed: the "no Runtime check request" clauses (class mapping, D24).
 - No API, class, ARIA, rendering, or Sass change. Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-30 (audit 0009)
+
+- [Audit 0009: the later-milestone checks wave](../audits/0009-later-milestone-checks-wave.md), L8: `NfsTooltipDescription` gets `exportAs: 'nfsTooltipDescription'` and `NfsTooltipTip` gets `exportAs: 'nfsTooltipTip'`. The user was asked on 2026-09-30 whether the Tooltip's two internal components get an `exportAs`, and answered "Name them anyway".

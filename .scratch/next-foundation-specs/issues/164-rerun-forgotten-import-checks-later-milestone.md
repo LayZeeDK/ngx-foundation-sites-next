@@ -87,3 +87,9 @@ For the orchestrator, not a shared document: the family checks spec's entries fo
 ### Gist for Decisions so far
 
 - [Re-run: forgotten-import checks spec for the later milestone](issues/164-rerun-forgotten-import-checks-later-milestone.md) -- the forgotten-import checks spec is marked for a later milestone and made complete on its own: it quotes verbatim every In-family line, `nfsDirectiveCheck` call, token description, and `strictParents` line of 38 specs and the shared documents' statements, takes in the `strictDirectiveImports` and `strictParents` keys (the Runtime checks spec owns the configuration) and the `missing-imports` tooling of the Variant tooling's package, adds `nfsReportForgottenPeer` and rewrites the two "says nothing" bullets to the user-approved rule (also covering the Top Bar's check 7 and the Tabs tab warning), and ends with what the later milestone adds back to each spec; nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-30 (audit 0009)
+
+- [Audit 0009: the later-milestone checks wave](../audits/0009-later-milestone-checks-wave.md), H2: the spec names [Spec: misuse warnings (later milestone)](../issues/161-spec-misuse-warnings-later-milestone.md) as the home of the Orbit's checks 1 and 3, the Off-canvas panel's check 3 (part a), and the Triggers' check 1 (the Problem Statement, the In-family lead, the registration bullet, the usage example, and the closing section).
+- [Audit 0009: the later-milestone checks wave](../audits/0009-later-milestone-checks-wave.md), L5: the registration bullet and the closing section's Off-canvas entry add the Off-canvas' check 4 by the same wording.
+- [Audit 0009: the later-milestone checks wave](../audits/0009-later-milestone-checks-wave.md), L4: user story 46 asks for the report of a part that sits outside its parent.

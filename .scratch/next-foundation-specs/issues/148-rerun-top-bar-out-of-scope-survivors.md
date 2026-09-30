@@ -163,3 +163,7 @@ From [Re-run: specs without checks, group f](170-rerun-specs-without-checks-grou
 - Build-time checks, to [Spec: build-time checks (later milestone)](163-spec-build-time-checks-later-milestone.md): the `@warn` of `nfs-menu-icon` (the dark icon on the page), and every `@error` and `@warn` of `nfs-title-bar` and `nfs-top-bar`, with their Sass compile cases and the exact-formula helper's false-pass case. `nfs-title-bar` and `nfs-top-bar` held only checks, so, as ADR 0012 decides for a component that needs neither custom CSS nor Variant properties, the first milestone has no such mixin; `nfs-menu-icon` keeps its two rules. The colour pairs are required settings in the WCAG rows and the Sass subsection (D7, D8 rewritten).
 - Each other rule is documented usage in the API sections: the menu icon's name, one class contract per element, the `nfs-menu-icon` include, the sections' placement, and `stackedFor` not at the Zero breakpoint (user stories 6, 14, 16, 17, 18, 20, and 32; D2, D5, D13).
 - Unchanged: every class, input, ARIA rule, the 24 px box, the forced-colours drawing, and the stripping of copied classes with its tests. Impact LOW, confidence HIGH (ADR 0012's rule decides the two mixins, and adding a mixin later breaks no consumer); nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-30 (audit 0009)
+
+- [Audit 0009: the later-milestone checks wave](../audits/0009-later-milestone-checks-wave.md), M4: the Imports bullet says a bound `[type]` on the menu icon's `button` compiles and sets the native property; `[dark]` stays NG8002.

@@ -30,6 +30,8 @@ Done 2026-09-29 by seven Sonnet 5 sweeps, each reading its files at `ba07780`, t
 
 Per kind, in the 52 component specs (the forgotten-import checks spec moves as a whole): forgotten-import 40, family 47, misuse 190, Runtime 25, build-time 47; in the shared documents: 15, 7, 23, 11, and 29. Each entry holds its location, its text verbatim, its tests and stories, what it alone needs, the rule as one documented-usage sentence, and every other place that names it; each file ends with what it keeps because it is not a check.
 
+Correction (2026-09-30, audit 0009): the figures are the manifests' headings per kind. The later-milestone specs count 43 family checks (47 headings: three quote the Nested menu's checks, one records that the Toggler has none), 24 Runtime checks (25 headings, one for the Toggler), and 46 build-time entries (47 headings, one for the Toggler).
+
 The sweeps recorded their boundary calls in their manifests. The orchestrator's notes on them, for the spec authors and re-runs of this wave:
 
 - A check that is only the library's own test, gate, or story check of its own components stays where it is (the ruling keeps the library's own tests), for example the Variant declaration tooling's internal typings check, which group f listed as build-time.
@@ -43,4 +45,4 @@ Triage: impact LOW (a read-only inventory; the deferred specs and re-runs decide
 
 ### Gist for Decisions so far
 
-- [Task: extract the checks from the specs](issues/159-task-extract-checks-from-specs.md) -- seven Sonnet sweeps listed every check verbatim, by kind, file, tests, and mentions, with the rule each enforces as one documented-usage sentence, in seven manifests: in the 52 component specs 40 forgotten-import, 47 family, 190 misuse, 25 Runtime, and 47 build-time checks, and 85 statements of checks in the shared documents; the forgotten-import checks spec moves as a whole.
+- [Task: extract the checks from the specs](issues/159-task-extract-checks-from-specs.md) -- seven Sonnet sweeps listed every check verbatim, by kind, file, tests, and mentions, with the rule each enforces as one documented-usage sentence, in seven manifests: in the 52 component specs 40 forgotten-import, 47 family, 190 misuse, 25 Runtime, and 47 build-time entries (manifest headings; the later-milestone specs count 43 family checks, 24 Runtime checks, and 46 build-time entries, because a heading may record a component with no check or quote another spec's check), and 85 statements of checks in the shared documents; the forgotten-import checks spec moves as a whole.

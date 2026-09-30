@@ -131,9 +131,9 @@ ngx-foundation-sites/tooltip  (secondary entry point)
                ViewContainerRef, HostAttributeToken('title' | 'aria-describedby')
       calls    nfsLightDismiss(), nfsHoverIntent()   (Anchored pane utility)
     creates in its first client render callback, via its ViewContainerRef, as the host's next sibling:
-    nfs-tooltip-description  NfsTooltipDescription   internal component, not public API (hidden, role tooltip, the text)
+    nfs-tooltip-description  NfsTooltipDescription   internal component, not public API, exportAs: 'nfsTooltipDescription' (hidden, role tooltip, the text)
     creates on first show, via its ViewContainerRef, after the description element, then keeps:
-    nfs-tooltip-tip  NfsTooltipTip   internal component, not public API
+    nfs-tooltip-tip  NfsTooltipTip   internal component, not public API, exportAs: 'nfsTooltipTip'
       injects  nfsTooltipToken (the directive, through the container's injector)
       calls    nfsPositioner()    (the placed element is the tip)
 ```

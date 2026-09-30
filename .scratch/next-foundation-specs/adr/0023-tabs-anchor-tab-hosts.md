@@ -16,3 +16,4 @@ The library's rule is native elements first (`building-blocks.md` 1.10), and the
 - Consumers delete `href` and `data-tabs-target` from Foundation's docs markup and add `value`.
 - A tab has no native activation before hydration; Enter, Space, and arrow keys pressed then are replayed from the strip's `keydown` listener, and clicks from its `click` listener.
 - If Foundation's Sass later styles a button tab, `button[nfsTab]` can be added without breaking `a[nfsTab]`.
+- 2026-09-29 ([Decide: checks move to a later milestone](../issues/158-decide-checks-move-to-a-later-milestone.md)): the dev-mode warning for a tab's `href` is planned for a later milestone ([Spec: misuse warnings (later milestone)](../issues/161-spec-misuse-warnings-later-milestone.md)). In the first milestone the Tabs spec states the rule as documented usage: a tab carries no `href` (its usage rule 2).

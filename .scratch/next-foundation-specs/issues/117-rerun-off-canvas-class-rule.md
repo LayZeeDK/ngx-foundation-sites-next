@@ -201,3 +201,7 @@ From [Re-run: specs without checks, group d](168-rerun-specs-without-checks-grou
 - Quotes of checks other specs own, removed beyond the manifest: the Close Button's name report and page-background check, `nfsMenuIcon`'s name check and missing-include warning (the Top Bar spec's development check 4), and the Runtime checks' configuration pointer.
 - Kept: the four directives, the Openable, the phase model, the Modal inert set, focus rules, the Scroll lock (with its removal of a copied class), the breakpoint reactions, Library mixin rules (a) and (b), every story and its axe gate, the behaviour cases of the browser-level layer, the SSR smoke, the pure logic, the e2e layer, and the manual release test. Decision numbers are unchanged.
 - No API, class, ARIA, keyboard, or rendering change. Impact LOW, confidence HIGH (a user ruling applied); nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-30 (audit 0009)
+
+- [Audit 0009: the later-milestone checks wave](../audits/0009-later-milestone-checks-wave.md), H1: the title bar relies on `foundation-title-bar`, and on `foundation-menu-icon` with `nfs-menu-icon`; `nfs-title-bar`, which the first milestone does not have, is no longer named.

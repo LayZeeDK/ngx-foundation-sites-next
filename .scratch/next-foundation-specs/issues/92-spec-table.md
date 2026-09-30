@@ -218,3 +218,7 @@ What left the spec, per check, and where its rule now stands:
 Kept: the native table semantics and the Scroll region's `role`, `tabindex`, and focus behaviour, the five typed Variant inputs (`stack="flase"` fails to compile) and their stripping bindings, the `table.stack tfoot` rule, and the four testing layers and the manual release test.
 
 Triage: impact LOW (development-only diagnostics and one compile-time check leave; no API, class, or CSS rule changes), confidence HIGH (the ruling and the group e manifest). Nothing is OPEN FOR HUMAN.
+
+### Amendment, 2026-09-30 (audit 0009)
+
+- [Audit 0009: the later-milestone checks wave](../audits/0009-later-milestone-checks-wave.md), L9: the 1.4.3 row says the four hover pairs are not automated, because axe reads the rest state only.

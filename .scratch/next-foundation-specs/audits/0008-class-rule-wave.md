@@ -239,3 +239,5 @@ Every finding was fixed as its Fix states; none became a ticket, none was reject
 Departures from M4's line list, each kept on purpose: six lines keep a bare number, because it sits inside quoted text that reproduces another document's earlier wording verbatim (`issues/139-decide-inputs-named-like-presentational-attributes.md:158`, `:172`, `:174`; `research/presentational-attribute-lens-api.md:72`; `research/presentational-attribute-lens-adversarial.md:93`) or inside an existing link's text (`research/architecture-guide-review.md:19`). The fixer's reasons are in its skip list; the audit's rule excepts both cases.
 
 The one unrecorded departure this file lists is closed by L4, and the recorded conflict it names is now stated in the spec by M1; T9 itself stays OPEN FOR HUMAN in its ticket.
+
+2026-09-29: L4 is superseded by the user's ruling [Decide: an exportAs on every directive](../issues/156-decide-exportas-on-every-directive.md); the four names it removed are back.

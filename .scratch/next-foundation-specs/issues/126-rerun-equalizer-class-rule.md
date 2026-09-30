@@ -125,3 +125,9 @@ From [Decide: checks move to a later milestone](158-decide-checks-move-to-a-late
 - A check named in the text: the Breakpoint service's development warning for an unknown `equalizeOn` name (owned by that spec), the Out of Scope bullet's "development check" for copied classes, D16's copied-class check and rejected alternative, and the "no Runtime check is involved" sentence.
 
 Each rule is stated as documented usage: the Hierarchy bullet (every watched element inside an equalizer declared in the same template, or rendered inside its element through a template outlet), the `equalizeOn` row (a breakpoint of the Breakpoint map), and user story 29. Unchanged: the two directives, the pass, the Options, `equalized`, `equalize()`, the optional injection with `skipSelf`, the rendering modes, and the Story ids.
+
+### Amendment, 2026-09-30 (audit 0009)
+
+- [Audit 0009: the later-milestone checks wave](../audits/0009-later-milestone-checks-wave.md), M4: the Imports bullet says an `(equalized)` binding of a forgotten import compiles, as a DOM event listener that never fires.
+- [Audit 0009: the later-milestone checks wave](../audits/0009-later-milestone-checks-wave.md), L2: `equalizeOn` reads `nfsBreakpointsToken`, without the CSS mirror clause.
+- [Audit 0009: the later-milestone checks wave](../audits/0009-later-milestone-checks-wave.md), L6: the pointer to the shared spec's template-outlet pattern goes; the sentence states the recipe.

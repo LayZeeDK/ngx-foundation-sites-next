@@ -110,7 +110,7 @@ every library directive whose Variant inputs read a Variant property (Per compon
 ```
 
 - The entry point is `ngx-foundation-sites/media-query` (Foundation's utility name, building-blocks 1.3), as at `53144f3`: it exports the Runtime-check API (`NfsRuntimeChecks`, `NfsRuntimeCheckReport`, `provideNfsRuntimeChecks`, `provideNfsProductionRuntimeChecks`, `nfsVariantCheck`, `NfsVariantCheck`, `NfsVariantNeed`), so every entry point with a Variant input imports it too. What such an entry point keeps of it in a production build without the opt-in is the `nfsVariantCheck` call and one injection of a token whose factory returns `null` (measured); `NfsMediaQuery` itself is tree-shaken from an application that never injects it.
-- An entry point that imports nothing else from `ngx-foundation-sites/media-query` in the first milestone (the Badge, the Label, the Callout, the Close Button) gains that import when this spec lands.
+- An entry point that imports nothing else from `ngx-foundation-sites/media-query` in the first milestone (the Badge, the Label, the Callout, the Close Button, the Button Group, the Progress Bar, the Responsive Embed) gains that import when this spec lands.
 - `strictBreakpointSync` runs inside the Breakpoint service, in its go-live callback, so this spec changes that service's implementation: the callback runs the drift check "when a Runtime checker exists".
 
 ### API: configuration
@@ -252,8 +252,8 @@ Said once here; each component entry names the ones it uses.
 
 - The handle. Each directive creates its handle once, at construction, with its selector name (`nfsVariantCheck('nfsBadge')`), or with the camelCase of its class where several attributes create one instance (the Prototyping Utilities, ADR 0044). An Off-canvas panel passes the name of the selector that matched (`'nfsOffCanvas'` or `'nfsOffCanvasAbsolute'`).
 - The render callback. The requests run in an `afterRenderEffect` read phase the directive creates only when its handle is not `null`; at `53144f3` most directives shared that read phase with their development-mode warnings, created "only when `ngDevMode` is on or the Variant check handle is not `null` (never on the server, and in a production build only under the Runtime checks' opt-in)" (Milestone and what this spec needs). Two directives keep a read callback of their own for the requests: the Dropdown pane ("one more `afterRenderEffect`") and the Responsive Embed ("its own `afterRenderEffect` read callback").
-- Presence request, rule P1, on every run whether or not a value is bound, because the directive's own mixin holds a rule or a check every instance needs: the Badge, the Label, the Button, the Button Group (naming `nfs-button`), the Callout, the Close Button, the Dropdown pane, the Progress Bar, the Responsive Embed, and the Prototyping Utilities.
-- Presence request, rule P2, only while a value that reads a property is bound, because the mixin holds nothing the directive needs otherwise: the Off-canvas panel, the Top Bar, the Menu, the Visibility Classes, the Typography Helpers' `NfsTextAlignment`, the Media Object section, the three grids, and the Flexbox Utilities.
+- Presence request, rule Q1, on every run whether or not a value is bound, because the directive's own mixin holds a rule or a check every instance needs: the Badge, the Label, the Button, the Button Group (naming `nfs-button`), the Callout, the Close Button, the Dropdown pane, the Progress Bar, the Responsive Embed, and the Prototyping Utilities.
+- Presence request, rule Q2, only while a value that reads a property is bound, because the mixin holds nothing the directive needs otherwise: the Off-canvas panel, the Top Bar, the Menu, the Visibility Classes, the Typography Helpers' `NfsTextAlignment`, the Media Object section, the three grids, and the Flexbox Utilities.
 - Needs, from the same mapping that sets the classes:
   - N1, a one-token name: `{setting, name}` for a value that is one class token, `null` otherwise: the Badge, the Label, the Callout, the Close Button, the Dropdown pane, the Progress Bar, the Responsive Embed, the Button, and the Button Group.
   - N2, a Class breakpoint: `{setting: 'breakpoint-classes', name: bp}` for each breakpoint above the Zero breakpoint, and `[]` for the Zero breakpoint, whose class always exists, with the exceptions each entry names (the XY Grid's Zero-breakpoint collapse, the Flexbox Utilities' `order`): the Off-canvas panel, the Top Bar, the Menu, the Visibility Classes, the Typography Helpers, the three grids, and the Flexbox Utilities.
@@ -265,32 +265,32 @@ Said once here; each component entry names the ones it uses.
 
 | Spec | Directive | Handle | `include()` | Rule | `value()` inputs | Properties read |
 | --- | --- | --- | --- | --- | --- | --- |
-| Badge | `NfsBadge` | `nfsBadge` | `('nfs-badge', ['badge-palette'])` | P1 | `color` | `--nfs-badge-palette` |
-| Button | `NfsButton` | `nfsButton` | `('nfs-button', ['button-palette', 'button-sizes'])` | P1 | `color`, `size`, responsive `expanded` | `--nfs-button-palette`, `--nfs-button-sizes`, `--nfs-button-responsive-expanded` |
-| Button Group | `NfsButtonGroup` | `nfsButtonGroup` | `('nfs-button', ['button-palette', 'button-sizes'])` | P1 | `color`, `size` | `--nfs-button-palette`, `--nfs-button-sizes` |
-| Callout | `NfsCallout` | `nfsCallout` | `('nfs-callout', ['callout-sizes'])` | P1 | `color`, `size` | `--nfs-foundation-palette`, `--nfs-callout-sizes` |
-| Close Button | `NfsCloseButton` | `nfsCloseButton` | `('nfs-close-button', ['closebutton-size'])` | P1 | `size` | `--nfs-closebutton-size` |
-| Dropdown | `NfsDropdownPane` | `nfsDropdownPane` | `('nfs-dropdown-pane', ['dropdown-sizes'])` | P1 | `size` | `--nfs-dropdown-sizes` |
-| Flex Grid | `NfsColumn`, `NfsRow` | `nfsColumn`, `nfsRow` | `('nfs-flex-grid', ['grid-column-count'])` or `['block-grid-max']`; `('nfs-breakpoint-properties', ['breakpoint-classes'])` | P2 | `size`, `offset`, `up`, and the responsive keys | `--nfs-grid-column-count`, `--nfs-block-grid-max`, `--nfs-breakpoint-classes` |
-| Flexbox Utilities | `NfsFlexContainer`, `NfsFlexChild` | `nfsFlexContainer`, `nfsFlexChild` | `('nfs-flexbox-utilities', ['flex-source-ordering-count'])`; `('nfs-breakpoint-properties', ['breakpoint-classes'])` | P2 | `order`, `nfsFlexChild`, `direction`, `nfsFlexContainer` | `--nfs-flex-source-ordering-count`, `--nfs-flexbox-responsive-breakpoints`, `--nfs-breakpoint-classes` |
-| Float Grid | `NfsColumn`, `NfsRow` | `nfsColumn`, `nfsRow` | `('nfs-float-grid', ['grid-column-count'])` or `['block-grid-max']`; `('nfs-breakpoint-properties', ['breakpoint-classes'])` | P2 | `size`, `offset`, `push`, `pull`, `up`, `gutter`, and the rules keys | `--nfs-grid-column-count`, `--nfs-block-grid-max`, `--nfs-grid-column-gutter`, `--nfs-breakpoint-classes` |
-| Label | `NfsLabel` | `nfsLabel` | `('nfs-label', ['label-palette'])` | P1 | `color` | `--nfs-label-palette` |
-| Media Object | `NfsMediaObjectSection` | `nfsMediaObjectSection` | `('nfs-media-object', ['media-object-section'])` | P2 | `alignment`, `mainSection` | `--nfs-media-object-section` |
-| Menu | `NfsMenu` | `nfsMenu` | `('nfs-breakpoint-properties', ['breakpoint-classes'])` | P2 | `orientation`, `expanded` | `--nfs-breakpoint-classes` |
-| Off-canvas | the panel | `nfsOffCanvas` or `nfsOffCanvasAbsolute` | `('nfs-breakpoint-properties', ['breakpoint-classes'])` | P2 | `revealOn`, `inCanvasOn` | `--nfs-breakpoint-classes` |
-| Progress Bar | `NfsProgress`, `NfsProgressElement` | `nfsProgress`, `nfsProgressElement` | `('nfs-progress-bar', ['foundation-palette'])` | P1 | `color` | `--nfs-foundation-palette` |
-| Prototyping Utilities | every directive of the family | the camelCase of its class (`nfsPrototypeSpacing`) | `('nfs-prototyping-utilities', ['prototype-spacers-count', <its own registry settings>])` | P1 | each bound attribute | the ten registry properties and the sixteen flag properties |
-| Responsive Embed | `NfsResponsiveEmbed` | `nfsResponsiveEmbed` | `('nfs-responsive-embed', ['responsive-embed-ratios'])` | P1 | `ratio` | `--nfs-responsive-embed-ratios` |
-| Top Bar | `NfsTopBar` | `nfsTopBar` | `('nfs-breakpoint-properties', ['breakpoint-classes'])` | P2 | `stackedFor` | `--nfs-breakpoint-classes` |
-| Typography Helpers | `NfsTextAlignment` | `nfsTextAlign` | `('nfs-breakpoint-properties', ['breakpoint-classes'])` | P2 | `nfsTextAlign` | `--nfs-breakpoint-classes` |
-| Visibility Classes | `NfsVisibility` | `nfsVisibility` | `('nfs-breakpoint-properties', ['breakpoint-classes'])` | P2 | `showFor`, `hideFor` | `--nfs-breakpoint-classes` |
-| XY Grid | `NfsCell`, `NfsGridX`, `NfsGridY` | `nfsCell`, `nfsGridX`, `nfsGridY` | `('nfs-xy-grid', ['grid-columns'])` or `['xy-block-grid-max']`; `('nfs-breakpoint-properties', ['breakpoint-classes'])` | P2 | `size`, `offset`, `up`, and the responsive keys | `--nfs-grid-columns`, `--nfs-xy-block-grid-max`, `--nfs-breakpoint-classes` |
+| Badge | `NfsBadge` | `nfsBadge` | `('nfs-badge', ['badge-palette'])` | Q1 | `color` | `--nfs-badge-palette` |
+| Button | `NfsButton` | `nfsButton` | `('nfs-button', ['button-palette', 'button-sizes'])` | Q1 | `color`, `size`, responsive `expanded` | `--nfs-button-palette`, `--nfs-button-sizes`, `--nfs-button-responsive-expanded` |
+| Button Group | `NfsButtonGroup` | `nfsButtonGroup` | `('nfs-button', ['button-palette', 'button-sizes'])` | Q1 | `color`, `size` | `--nfs-button-palette`, `--nfs-button-sizes` |
+| Callout | `NfsCallout` | `nfsCallout` | `('nfs-callout', ['callout-sizes'])` | Q1 | `color`, `size` | `--nfs-foundation-palette`, `--nfs-callout-sizes` |
+| Close Button | `NfsCloseButton` | `nfsCloseButton` | `('nfs-close-button', ['closebutton-size'])` | Q1 | `size` | `--nfs-closebutton-size` |
+| Dropdown | `NfsDropdownPane` | `nfsDropdownPane` | `('nfs-dropdown-pane', ['dropdown-sizes'])` | Q1 | `size` | `--nfs-dropdown-sizes` |
+| Flex Grid | `NfsColumn`, `NfsRow` | `nfsColumn`, `nfsRow` | `('nfs-flex-grid', ['grid-column-count'])` or `['block-grid-max']`; `('nfs-breakpoint-properties', ['breakpoint-classes'])` | Q2 | `size`, `offset`, `up`, and the responsive keys | `--nfs-grid-column-count`, `--nfs-block-grid-max`, `--nfs-breakpoint-classes` |
+| Flexbox Utilities | `NfsFlexContainer`, `NfsFlexChild` | `nfsFlexContainer`, `nfsFlexChild` | `('nfs-flexbox-utilities', ['flex-source-ordering-count'])`; `('nfs-breakpoint-properties', ['breakpoint-classes'])` | Q2 | `order`, `nfsFlexChild`, `direction`, `nfsFlexContainer` | `--nfs-flex-source-ordering-count`, `--nfs-flexbox-responsive-breakpoints`, `--nfs-breakpoint-classes` |
+| Float Grid | `NfsColumn`, `NfsRow` | `nfsColumn`, `nfsRow` | `('nfs-float-grid', ['grid-column-count'])` or `['block-grid-max']`; `('nfs-breakpoint-properties', ['breakpoint-classes'])` | Q2 | `size`, `offset`, `push`, `pull`, `up`, `gutter`, and the rules keys | `--nfs-grid-column-count`, `--nfs-block-grid-max`, `--nfs-grid-column-gutter`, `--nfs-breakpoint-classes` |
+| Label | `NfsLabel` | `nfsLabel` | `('nfs-label', ['label-palette'])` | Q1 | `color` | `--nfs-label-palette` |
+| Media Object | `NfsMediaObjectSection` | `nfsMediaObjectSection` | `('nfs-media-object', ['media-object-section'])` | Q2 | `alignment`, `mainSection` | `--nfs-media-object-section` |
+| Menu | `NfsMenu` | `nfsMenu` | `('nfs-breakpoint-properties', ['breakpoint-classes'])` | Q2 | `orientation`, `expanded` | `--nfs-breakpoint-classes` |
+| Off-canvas | the panel | `nfsOffCanvas` or `nfsOffCanvasAbsolute` | `('nfs-breakpoint-properties', ['breakpoint-classes'])` | Q2 | `revealOn`, `inCanvasOn` | `--nfs-breakpoint-classes` |
+| Progress Bar | `NfsProgress`, `NfsProgressElement` | `nfsProgress`, `nfsProgressElement` | `('nfs-progress-bar', ['foundation-palette'])` | Q1 | `color` | `--nfs-foundation-palette` |
+| Prototyping Utilities | every directive of the family | the camelCase of its class (`nfsPrototypeSpacing`) | `('nfs-prototyping-utilities', ['prototype-spacers-count', <its own registry settings>])` | Q1 | each bound attribute | the ten registry properties and the sixteen flag properties |
+| Responsive Embed | `NfsResponsiveEmbed` | `nfsResponsiveEmbed` | `('nfs-responsive-embed', ['responsive-embed-ratios'])` | Q1 | `ratio` | `--nfs-responsive-embed-ratios` |
+| Top Bar | `NfsTopBar` | `nfsTopBar` | `('nfs-breakpoint-properties', ['breakpoint-classes'])` | Q2 | `stackedFor` | `--nfs-breakpoint-classes` |
+| Typography Helpers | `NfsTextAlignment` | `nfsTextAlign` | `('nfs-breakpoint-properties', ['breakpoint-classes'])` | Q2 | `nfsTextAlign` | `--nfs-breakpoint-classes` |
+| Visibility Classes | `NfsVisibility` | `nfsVisibility` | `('nfs-breakpoint-properties', ['breakpoint-classes'])` | Q2 | `showFor`, `hideFor` | `--nfs-breakpoint-classes` |
+| XY Grid | `NfsCell`, `NfsGridX`, `NfsGridY` | `nfsCell`, `nfsGridX`, `nfsGridY` | `('nfs-xy-grid', ['grid-columns'])` or `['xy-block-grid-max']`; `('nfs-breakpoint-properties', ['breakpoint-classes'])` | Q2 | `size`, `offset`, `up`, and the responsive keys | `--nfs-grid-columns`, `--nfs-xy-block-grid-max`, `--nfs-breakpoint-classes` |
 
 Directives that host another's inputs report through it: the Accordion Menu, Dropdown Menu, Drilldown, and Responsive Menu roots and the Nested menu's submenus host `NfsMenu`, whose requests are the Menu's.
 
 #### Badge
 
-[Spec: Badge](../issues/93-spec-badge.md). Mechanisms: P1, N1.
+[Spec: Badge](../issues/93-spec-badge.md). Mechanisms: Q1, N1.
 
 - Handle: the Runtime checks' `nfsVariantCheck('nfsBadge')` handle of `ngx-foundation-sites/media-query`.
 - Request: in the directive's one `afterRenderEffect` read phase, on every run, `NfsBadge` calls `include('nfs-badge', ['badge-palette'])` whether or not `color` is bound, then `value('color', color, needs)` with the need `{setting: 'badge-palette', name: color}` for a one-token value and `null` otherwise (D11). `strictVariantNames` compares a bound `color` with `--nfs-badge-palette` and reports a value that is not one class token; `strictVariantProperties` reports a missing `@include nfs-badge;` when that property reads empty. Only `nfs-badge` writes it, so the one-writer rule holds.
@@ -318,7 +318,7 @@ User stories 1 to 12 above.
 
 #### Button
 
-[Spec: Button](../issues/37-spec-button.md). Mechanisms: P1, N1, N4.
+[Spec: Button](../issues/37-spec-button.md). Mechanisms: Q1, N1, N4.
 
 - Handle: in development builds or under a production opt-in, the Runtime checks' Variant check (optional).
 - Request: `NfsButton` creates the handle `nfsVariantCheck('nfsButton')` (development builds, and production only when the consumer lists the checks in `provideNfsProductionRuntimeChecks`) and, in its `afterRenderEffect` read phase, calls `include('nfs-button', ['button-palette', 'button-sizes'])` on every run, never the flag-gated `button-responsive-expanded`, then `value()` for each bound `color`, `size`, and responsive `expanded`. `strictVariantNames` compares `color`, `size`, and the Breakpoint of a responsive `expanded` with `--nfs-button-palette`, `--nfs-button-sizes`, and `--nfs-button-responsive-expanded`, and reports any value that is not one class token or a query it cannot parse. A responsive `expanded` value (every query except the Zero breakpoint's `up` form, which sets `.expanded`) whose Breakpoint `--nfs-button-responsive-expanded` does not list is reported naming `$button-responsive-expanded`, since that list is empty while the flag is off. `strictVariantProperties` reports a missing `@include nfs-button;` when `--nfs-button-palette` and `--nfs-button-sizes` both read empty, never from the gated property, which is empty by default (D19).
@@ -331,7 +331,7 @@ User stories 1 to 12 above.
 
 #### Button Group
 
-[Spec: Button Group](../issues/82-spec-button-group.md). Mechanisms: P1, N1, Writers.
+[Spec: Button Group](../issues/82-spec-button-group.md). Mechanisms: Q1, N1, Writers.
 
 - Handle: in development builds, and in production only under the opt-in, the Runtime checks' Variant check (optional).
 - Request: `NfsButtonGroup` creates the handle `nfsVariantCheck('nfsButtonGroup')` (development builds, and production only when the consumer lists the checks in `provideNfsProductionRuntimeChecks`) and, in its read phase, calls `include('nfs-button', ['button-palette', 'button-sizes'])` on every run, naming `nfs-button`, the one writer of both properties (D11), then `value()` for a bound `color` and `size`. `strictVariantNames` compares them with `--nfs-button-palette` and `--nfs-button-sizes`; `strictVariantProperties` reports a missing `@include nfs-button;` when both read empty, because `nfs-button` is the one writer of both properties (D11).
@@ -344,7 +344,7 @@ User stories 1 to 12 above.
 
 #### Callout
 
-[Spec: Callout](../issues/89-spec-callout.md). Mechanisms: P1, N1, Writers.
+[Spec: Callout](../issues/89-spec-callout.md). Mechanisms: Q1, N1, Writers.
 
 - Handle: the Runtime check hook of `ngx-foundation-sites/media-query`, which every directive with a Variant input uses.
 - Request: `NfsCallout` creates the handle `nfsVariantCheck('nfsCallout')` and, from its first render on, calls `include('nfs-callout', ['callout-sizes'])` on every run whether or not an input is bound, then `value()` for a bound `color` (need on `foundation-palette`) and `size` (need on `callout-sizes`) (D12). `strictVariantNames` compares a bound `color` with `--nfs-foundation-palette` and a bound `size` with `--nfs-callout-sizes` (`'default'` is never compared), and reports a value that is not one class token. `strictVariantProperties` reports a missing `@include nfs-callout;` when `--nfs-callout-sizes` reads empty. That property, and not `--nfs-foundation-palette`, decides, because `nfs-progress-bar` also writes the palette property, so its presence says nothing about `nfs-callout`.
@@ -356,7 +356,7 @@ User stories 1 to 12 above.
 
 #### Close Button
 
-[Spec: Close Button](../issues/83-spec-close-button.md). Mechanisms: P1, N1.
+[Spec: Close Button](../issues/83-spec-close-button.md). Mechanisms: Q1, N1.
 
 - Handle: the Runtime check hook of `ngx-foundation-sites/media-query`, which every directive with a Variant input uses.
 - Request: `NfsCloseButton` creates the handle `nfsVariantCheck('nfsCloseButton')` and, from its first render on, calls `include('nfs-close-button', ['closebutton-size'])` on every run whether or not `size` is bound, then `value('size', ...)` for a bound size (D10). `strictVariantNames` reports a bound size that `--nfs-closebutton-size` does not list, which only a cast or `$any()` can reach. `strictVariantProperties` reports a missing `--nfs-closebutton-size` and names `@include nfs-close-button;`, whose absence also removes the 2.5.8 floor.
@@ -367,7 +367,7 @@ User stories 1 to 12 above.
 
 #### Dropdown
 
-[Spec: Dropdown](../issues/26-spec-dropdown.md). Mechanisms: P1, N1.
+[Spec: Dropdown](../issues/26-spec-dropdown.md). Mechanisms: Q1, N1.
 
 - Handle: `nfsVariantCheck('nfsDropdownPane')`, called once at construction.
 - Request: when it returns a handle (development builds, or production with `provideNfsProductionRuntimeChecks`), the directive creates one more `afterRenderEffect` whose `read` phase calls `include('nfs-dropdown-pane', ['dropdown-sizes'])` on every run, whether or not `size` is bound, then `value('size', size(), needs)` when `size` has a value, with `needs` `[{setting: 'dropdown-sizes', name: size()}]` from the same mapping that sets the class, or `null` for a value that is not one class token. So `strictVariantNames` reports a size the compiled CSS lacks, naming `$dropdown-sizes` and the listed names, and `strictVariantProperties` reports a missing `@include nfs-dropdown-pane;` when `--nfs-dropdown-sizes` reads empty (D28). A consumer who empties `$dropdown-sizes` gets that report too and switches the check off. No Runtime check runs on the server.
@@ -379,7 +379,7 @@ User stories 1 to 12 above.
 
 #### Flex Grid
 
-[Spec: Flex Grid](../issues/101-spec-flex-grid.md). Mechanisms: P2, N2, N3, Writers.
+[Spec: Flex Grid](../issues/101-spec-flex-grid.md). Mechanisms: Q2, N2, N3, Writers.
 
 - Handle: the Runtime checks' handles, `nfsVariantCheck('nfsRow')` and `nfsVariantCheck('nfsColumn')`.
 - Request, in the same read phase: each directive calls `include()` only while a value that reads a property is bound, because `nfs-flex-grid` carries no rule the grid needs (the XY Grid's rule): `NfsColumn` calls `include('nfs-flex-grid', ['grid-column-count'])` while `size` or `offset` holds a count, `NfsRow` calls `include('nfs-flex-grid', ['block-grid-max'])` while `up` is bound, and each calls `include('nfs-breakpoint-properties', ['breakpoint-classes'])` while a bound value names a Class breakpoint above the Zero breakpoint. Then `value(input, value, needs)` for each bound input, with the needs from the same mapping that sets its classes: a size `n` needs `{setting: 'grid-column-count', name: n}`, an offset `n` needs `{setting: 'grid-column-count', name: n + 1}`, an `up` count `n` needs `{setting: 'block-grid-max', name: n}`, every breakpoint above the Zero breakpoint needs `{setting: 'breakpoint-classes', name: bp}`, and the Zero breakpoint needs nothing, because Foundation's iterator always adds it. `'shrink'`, whose class always exists, and a value that intentionally sets no class (`'expand'` or `unstack` at the Zero breakpoint) pass `[]`; a value that maps to no class passes `null`. `expanded`, `isCollapseChild`, `columnBlock`, and the bare `collapse` are closed and make no call.
@@ -388,7 +388,7 @@ User stories 1 to 12 above.
 
 #### Flexbox Utilities
 
-[Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md). Mechanisms: P2, N2, N4.
+[Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md). Mechanisms: Q2, N2, N4.
 
 - Handle: the Runtime checks' handles, `nfsVariantCheck('nfsFlexContainer')` and `nfsVariantCheck('nfsFlexChild')` (`NfsFlexAlign` makes no call).
 - Request: in the same read phase, through the handle of `nfsVariantCheck('nfsFlexContainer')` or `nfsVariantCheck('nfsFlexChild')`. A directive of this family calls `include()` only while a value that reads a Variant property is bound, because the mixin holds nothing a directive needs otherwise (the Off-canvas and Top Bar rule of the Runtime checks): `NfsFlexChild` while `order` is bound or `nfsFlexChild` holds a rules key above the Zero breakpoint, `NfsFlexContainer` while `nfsFlexContainer` is a query above the Zero breakpoint or `direction` holds a rules key above it. Then it calls `include('nfs-flexbox-utilities', ['flex-source-ordering-count'])` and `include('nfs-breakpoint-properties', ['breakpoint-classes'])`, and `value()` per bound input with the needs from the same mapping that sets its classes: for `order`, `{setting: 'flex-source-ordering-count', name: n}` and `{setting: 'breakpoint-classes', name: bp}` per class, the Zero breakpoint's name included; for a responsive helper class above the Zero breakpoint, `{setting: 'breakpoint-classes', name: bp}` and `{setting: 'flexbox-responsive-breakpoints', name: bp}`; `[]` for a class that always exists; `null` for a value that binds no class (D11). `strictVariantNames` then reports an order above the compiled count, a breakpoint the compiled Class breakpoints lack, and a responsive helper while `--nfs-flexbox-responsive-breakpoints` is empty, naming `$flexbox-responsive-breakpoints`; `strictVariantProperties` reports a missing `@include nfs-flexbox-utilities;` or `@include nfs-breakpoint-properties;`. `NfsFlexAlign` has only closed families, reads no Variant property, and makes no call.
@@ -399,7 +399,7 @@ User stories 1 to 12 above.
 
 #### Float Grid
 
-[Spec: Float Grid](../issues/100-spec-float-grid.md). Mechanisms: P2, N2, N3, Writers.
+[Spec: Float Grid](../issues/100-spec-float-grid.md). Mechanisms: Q2, N2, N3, Writers.
 
 - Handle: the Runtime checks' handle in both, `nfsVariantCheck('nfsRow')` and `nfsVariantCheck('nfsColumn')`.
 - Request, in the same read phase: each directive calls `include()` only while a value that reads a property is bound, because `nfs-float-grid` carries no rule the grid needs: `NfsColumn` calls `include('nfs-float-grid', ['grid-column-count'])` while `size`, `offset`, `push`, or `pull` holds a count; `NfsRow` calls `include('nfs-float-grid', ['block-grid-max'])` while `up` or `gutter` is bound, naming the count because `--nfs-grid-column-gutter` is legitimately empty under a static gutter; each calls `include('nfs-breakpoint-properties', ['breakpoint-classes'])` while a rules key above the Zero breakpoint is bound. Then `value(input, value, needs)` for each bound input, with the needs from the same mapping that sets its classes: a size `n` needs `{setting: 'grid-column-count', name: n}`; an offset, push, or pull `n` needs `{setting: 'grid-column-count', name: n + 1}`; an `up` count `n` needs `{setting: 'block-grid-max', name: n}`; a gutter key needs `{setting: 'grid-column-gutter', name: key}`; every rules key above the Zero breakpoint needs `{setting: 'breakpoint-classes', name: bp}`. The Zero breakpoint needs no `breakpoint-classes` name, because every Float Grid family adds it to `$breakpoint-classes` (measured). `.collapse`, `expanded`, `end`, and `columnBlock` need nothing. A value that maps to no class passes `null`. One writer: `nfs-float-grid` alone writes `--nfs-grid-column-gutter`; `--nfs-grid-column-count` and `--nfs-block-grid-max` belong to settings the Flex Grid loops over too, so its Library mixin writes them as well (D12), and a missing `nfs-float-grid` is reported only while the Flex Grid's mixin is missing too, as a missing `nfs-progress-bar` is only while `nfs-callout` is missing.
@@ -409,7 +409,7 @@ User stories 1 to 12 above.
 
 #### Label
 
-[Spec: Label](../issues/94-spec-label.md). Mechanisms: P1, N1. The Badge's shape, applied to Foundation's other coloured text tag.
+[Spec: Label](../issues/94-spec-label.md). Mechanisms: Q1, N1. The Badge's shape, applied to Foundation's other coloured text tag.
 
 - Handle: the Runtime checks' handle `nfsVariantCheck('nfsLabel')` of `ngx-foundation-sites/media-query`.
 - Request: in the same read phase, on every run, `NfsLabel` calls `include('nfs-label', ['label-palette'])` whether or not `color` is bound, then `value('color', color, needs)` with the need `{setting: 'label-palette', name: color}` for a one-token value and `null` otherwise (D11). `strictVariantNames` compares a bound `color` with `--nfs-label-palette` and reports a value that is not one class token; `strictVariantProperties` reports a missing `@include nfs-label;` when that property reads empty. Only `nfs-label` writes it, so the one-writer rule holds.
@@ -419,7 +419,7 @@ User stories 1 to 12 above.
 
 #### Media Object
 
-[Spec: Media Object](../issues/91-spec-media-object.md). Mechanisms: P2, N4 (one property for two families).
+[Spec: Media Object](../issues/91-spec-media-object.md). Mechanisms: Q2, N4 (one property for two families).
 
 - Handle: `NfsMediaObjectSection` takes the Runtime checks' handle from `nfsVariantCheck('nfsMediaObjectSection')`. `NfsMediaObject` reads no Variant property and makes no call: `stackFor`'s class exists in every compile of `foundation-media-object`, and a drifted Zero breakpoint name is `strictBreakpointSync`'s report (D2: the class name follows `$breakpoints`' first key, which the token mirrors and `strictBreakpointSync` checks).
 - Request: `NfsMediaObjectSection` calls `nfsVariantCheck('nfsMediaObjectSection')` at construction and, in a render callback it creates only when the handle is not `null`, while `alignment` has a value or `mainSection` is true, calls `include('nfs-media-object', ['media-object-section'])`, then `value('alignment', value, needs)` and `value('mainSection', true, needs)`. The needs are `[{setting: 'media-object-section', name: 'middle'}]`, `'bottom'`, or `'main-section'`, and `null` for a value that is not one of the names. `strictVariantNames` then reports an `alignment` bound in a flexbox build (the property lists `main-section`) and a `mainSection` bound in a table build (it lists `middle bottom`), for example R2's second text; `strictVariantProperties` reports a missing `@include nfs-media-object;` once. An application that binds neither is not asked for the include. They run in the browser after the first render, never on the server.
@@ -430,7 +430,7 @@ User stories 1 to 12 above.
 
 #### Menu
 
-[Spec: Menu](../issues/85-spec-menu.md). Mechanisms: P2, N2. Hosted by every menu root and by the Nested menu's submenus.
+[Spec: Menu](../issues/85-spec-menu.md). Mechanisms: Q2, N2. Hosted by every menu root and by the Nested menu's submenus.
 
 - The Variant property the runtime check reads is `--nfs-breakpoint-classes` for every breakpoint-keyed value; the closed names need none.
 - Request: `NfsMenu` creates the handle `nfsVariantCheck('nfsMenu')` and, only while an `orientation` rules key or an `expanded` query names a Class breakpoint above the Zero breakpoint, calls `include('nfs-breakpoint-properties', ['breakpoint-classes'])`, then `value()` for those values, because `nfs-breakpoint-properties` holds nothing else the Menu needs (the Top Bar's rule); under `strictVariantNames`, a breakpoint above the Zero breakpoint named by an `orientation` rules key or an `expanded` query that `--nfs-breakpoint-classes` does not list (drift between the Variant declaration file and the compiled Sass), and a value that maps to no class; under `strictVariantProperties`, a missing `--nfs-breakpoint-classes`, naming `@include nfs-breakpoint-properties;`. They run in the browser after the first render, never on the server.
@@ -438,7 +438,7 @@ User stories 1 to 12 above.
 
 #### Off-canvas
 
-[Spec: Off-canvas](../issues/25-spec-off-canvas.md). Mechanisms: P2, N2, and the Zero-breakpoint split with the misuse warnings.
+[Spec: Off-canvas](../issues/25-spec-off-canvas.md). Mechanisms: Q2, N2, and the Zero-breakpoint split with the misuse warnings.
 
 - Handle: `nfsVariantCheck('nfsOffCanvas')` (or `'nfsOffCanvasAbsolute'`, by selector); the entry point imports `nfsVariantCheck` from the media-query entry point.
 - A breakpoint that is a Class breakpoint in the Variant declaration file but has no classes in the compiled CSS is not a development check: the Runtime check reports it, in development by default and in production on opt-in.
@@ -449,7 +449,7 @@ User stories 1 to 12 above.
 
 #### Progress Bar
 
-[Spec: Progress Bar](../issues/95-spec-progress-bar.md). Mechanisms: P1, N1, Writers.
+[Spec: Progress Bar](../issues/95-spec-progress-bar.md). Mechanisms: Q1, N1, Writers.
 
 - Handles: `nfsVariantCheck('nfsProgress')` in `NfsProgress` and `nfsVariantCheck('nfsProgressElement')` in `NfsProgressElement`.
 - Request, `NfsProgress`: in the same read phase, on every run, `NfsProgress` calls `include('nfs-progress-bar', ['foundation-palette'])` whether or not `color` is bound, then `value('color', color, needs)` with the need `{setting: 'foundation-palette', name: color}` for a one-token value and `null` otherwise (D14). `strictVariantNames` compares a bound `color` with `--nfs-foundation-palette`; `strictVariantProperties` reports a missing `@include nfs-progress-bar;` when that property reads empty. `nfs-callout` writes the same property, so in an application that includes `nfs-callout`, a missing `nfs-progress-bar` is not reported (D14).
@@ -460,7 +460,7 @@ User stories 1 to 12 above.
 
 #### Prototyping Utilities
 
-[Spec: Prototyping Utilities](../issues/102-spec-prototyping-utilities.md). Mechanisms: P1, N4, and a count need of its own (`prototype-spacers-count`).
+[Spec: Prototyping Utilities](../issues/102-spec-prototyping-utilities.md). Mechanisms: Q1, N4, and a count need of its own (`prototype-spacers-count`).
 
 - Handle: the Runtime checks' handle of `ngx-foundation-sites/media-query`, `nfsVariantCheck('<directive>')` with the camelCase of the directive's class (`nfsVariantCheck('nfsPrototypeSpacing')`, ADR 0044), because several attributes create one instance.
 - Request (D19): in the same read phase, on every run, each directive calls `include('nfs-prototyping-utilities', ['prototype-spacers-count', <its own registry settings>])`, never a `prototype-<flag>-breakpoints` flag property, which is empty while its flag is off, whether or not an attribute is bound, then `value(<attribute>, value, needs)` for each bound attribute, with `needs` from the same mapping that sets its classes: `{setting: 'prototype-spacers-count', name: n}` for each spacing class, the registry setting and name for each named class (none for the closed separator and the fixed position forms), and `{setting: 'prototype-<flag>-breakpoints', name: bp}` for each class above the Zero breakpoint. `strictVariantNames` reports a name or count its property lacks, and a responsive class while its flag's property is empty, naming the flag (`$prototype-spacing-breakpoints`); `strictVariantProperties` reports a missing `@include nfs-prototyping-utilities;`. Each report names the attribute as its input.
@@ -472,7 +472,7 @@ User stories 1 to 12 above.
 
 #### Responsive Embed
 
-[Spec: Responsive Embed](../issues/96-spec-responsive-embed.md). Mechanisms: P1, N1.
+[Spec: Responsive Embed](../issues/96-spec-responsive-embed.md). Mechanisms: Q1, N1.
 
 - Handle: the Runtime check hook `nfsVariantCheck('nfsResponsiveEmbed')` of `ngx-foundation-sites/media-query`, which every directive with a Variant property uses.
 - Request: in its own `afterRenderEffect` read callback, created only when the handle is not `null`, `NfsResponsiveEmbed` calls `include('nfs-responsive-embed', ['responsive-embed-ratios'])` on every run, whether or not `ratio` is bound, because the mixin holds the focus rule every box needs; then `value('ratio', ratio, needs)` with the need `{setting: 'responsive-embed-ratios', name: ratio}` for a one-token value other than `'default'`, `[]` for no value and `'default'`, and `null` for anything else. `strictVariantNames` compares a bound `ratio` with `--nfs-responsive-embed-ratios` and reports a value that is not one class token; `strictVariantProperties` reports a missing `@include nfs-responsive-embed;` when the property reads empty. A consumer whose map keeps only `default` has an empty property and opts `strictVariantProperties` out, as the Callout's consumer without sizes does.
@@ -482,13 +482,13 @@ User stories 1 to 12 above.
 
 #### Top Bar
 
-[Spec: Top Bar](../issues/86-spec-top-bar.md). Mechanisms: P2, N2, and the Zero-breakpoint split with the misuse warnings.
+[Spec: Top Bar](../issues/86-spec-top-bar.md). Mechanisms: Q2, N2, and the Zero-breakpoint split with the misuse warnings.
 
 - Request: `NfsTopBar` creates the handle `nfsVariantCheck('nfsTopBar')` and, only while `stackedFor` is bound, calls `include('nfs-breakpoint-properties', ['breakpoint-classes'])`, then `value('stackedFor', value, needs)` with `needs` `[{setting: 'breakpoint-classes', name: value}]` for a Class breakpoint above the Zero breakpoint and `[]` for the Zero breakpoint (development check 6 reports that one, so one mistake makes one report), as the Off-canvas panel does for `revealOn` and `inCanvasOn`; `strictVariantNames` reports a breakpoint `--nfs-breakpoint-classes` does not list (drift between the Variant declaration file and the compiled Sass) and a value that is not one class token, and `strictVariantProperties` reports a missing `--nfs-breakpoint-classes`, naming `@include nfs-breakpoint-properties;`. `dark` is closed and needs none. They run in the browser after the first render, never on the server.
 
 #### Typography Helpers
 
-[Spec: Typography Helpers](../issues/106-spec-typography-helpers.md). Mechanisms: P2, N2.
+[Spec: Typography Helpers](../issues/106-spec-typography-helpers.md). Mechanisms: Q2, N2.
 
 - Handle: `NfsTextAlignment` creates the Runtime checks' handle `nfsVariantCheck('nfsTextAlign')` of `ngx-foundation-sites/media-query`; its read phase exists when `ngDevMode` is on or the Variant check handle is not `null`.
 - Request (D15): `NfsTextAlignment` only, in the same read phase, and only while `nfsTextAlign` holds a rules key above the Zero breakpoint: `include('nfs-breakpoint-properties', ['breakpoint-classes'])`, then `value('nfsTextAlign', value, needs)` with `{setting: 'breakpoint-classes', name: bp}` for each key above the Zero breakpoint, `[]` for the Zero breakpoint's key (its class always exists), and `null` for a value that maps to no class. `strictVariantNames` reports a breakpoint `--nfs-breakpoint-classes` does not list; `strictVariantProperties` reports a missing `@include nfs-breakpoint-properties;`. A bare value reads no property and makes no call. `NfsTypographyHelpers`, `NfsNoBullet`, `NfsTypographyBase`, and `NfsPrintStyles` have only closed families, read no Variant property, and make no call.
@@ -497,7 +497,7 @@ User stories 1 to 12 above.
 
 #### Visibility Classes
 
-[Spec: Visibility Classes](../issues/104-spec-visibility-classes.md). Mechanisms: P2, N2.
+[Spec: Visibility Classes](../issues/104-spec-visibility-classes.md). Mechanisms: Q2, N2.
 
 - Handle: the Runtime checks' `nfsVariantCheck('nfsVisibility')` handle.
 - The mapping is one pure function over `(input, value, zeroBreakpoint)` returning the class and the Runtime check's needs, so the check and the class always agree.
@@ -508,7 +508,7 @@ User stories 1 to 12 above.
 
 #### XY Grid
 
-[Spec: XY Grid](../issues/99-spec-xy-grid.md). Mechanisms: P2, N2, N3.
+[Spec: XY Grid](../issues/99-spec-xy-grid.md). Mechanisms: Q2, N2, N3.
 
 - Handles: `nfsVariantCheck('nfsGridX')`, `nfsVariantCheck('nfsGridY')`, and `nfsVariantCheck('nfsCell')`, in `NfsGridX`, `NfsGridY`, and `NfsCell`. `NfsGridContainer` makes no call: its families are closed (the Tabs precedent).
 - Request, in the same read phase: each directive calls `include()` only while a value that reads a property is bound, because `nfs-xy-grid` carries no rule the grid needs: `NfsCell` calls `include('nfs-xy-grid', ['grid-columns'])` while `size` or `offset` holds a count, `NfsGridX` calls `include('nfs-xy-grid', ['xy-block-grid-max'])` while `up` is bound, and each calls `include('nfs-breakpoint-properties', ['breakpoint-classes'])` while a bound value names a Class breakpoint above the Zero breakpoint. Then `value(input, value, needs)` for each bound input, with the needs from the same mapping that sets its classes: a size `n` needs `{setting: 'grid-columns', name: n}`, an offset `n` needs `{setting: 'grid-columns', name: n + 1}`, an `up` count `n` needs `{setting: 'xy-block-grid-max', name: n}`, and every breakpoint above the Zero breakpoint needs `{setting: 'breakpoint-classes', name: bp}`; a Zero-breakpoint collapse needs `{setting: 'breakpoint-classes', name: <zero>}` too, because Foundation loops the collapse classes over `$breakpoint-classes` alone, while every other family adds the Zero breakpoint itself. A value that maps to no class passes `null`. `nfs-xy-grid` alone writes its two properties, so the one-writer rule holds.
@@ -609,7 +609,7 @@ Against production builds of the fixture app (the production-bundle measurement;
 - Without the production call, the bundle contains none of the checker's report texts (`has no class in the compiled CSS`, `were found on :root`) and no `getPropertyValue` from this entry point; with only `provideNfsRuntimeChecks({strictVariantProperties: false})` added, the same holds.
 - With the production call, the texts are present; served, a probe value cast past its type reaches the `report` callback once with `check: 'strictVariantNames'`, the drift fixture reports nothing (not listed), and the console shows no development report.
 
-The Storybook half of the e2e layer sees none of the checks, because the static Storybook build runs in production mode (the architecture guide's P23).
+The Storybook half of the e2e layer sees none of the checks, because the static Storybook build runs in production mode (ADR 0018).
 
 ## Out of Scope
 

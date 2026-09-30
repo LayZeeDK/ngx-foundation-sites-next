@@ -146,3 +146,7 @@ From [Decide: checks move to a later milestone](158-decide-checks-move-to-a-late
 - Also gone: the statements that no Runtime check or `nfsVariantCheck` reads Interchange (the Solution, the mapping table, the Hierarchy bullet, decision 19, and Sass items 5 and 6).
 
 The behaviour stays: a malformed segment is skipped, an unknown bare word never matches, and a breakpoint wins over a Named query of the same name. Each rule is stated as documented usage: a usage-rules list in the API section for the JSDoc of `rules` (never on an `<img>`; `[path, query]` segments; bare-word queries), Query resolution step 4, and the Deltas. A new Imports bullet says what a forgotten import does. Decisions 1, 7, and 19 are rewritten to what the spec now decides; user stories 6, 19, and 20 state documentation, not warnings; the `interchange--background-rule-forms` story asserts the retina rule by `window.matchMedia` in place of a silent console. Unchanged: both directives, their API, the emission timing, the focus rule, ARIA, the rendering modes, and the e2e tests.
+
+### Amendment, 2026-09-30 (audit 0009)
+
+- [Audit 0009: the later-milestone checks wave](../audits/0009-later-milestone-checks-wave.md), L2: the breakpoint names read `nfsBreakpointsToken`, without the CSS mirror clause.
