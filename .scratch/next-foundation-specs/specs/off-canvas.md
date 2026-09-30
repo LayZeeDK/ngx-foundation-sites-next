@@ -288,7 +288,7 @@ Documented usage. The JSDoc of `NfsOffCanvas` states rules 1 to 8, 10, and 11, a
 3. Content and wrapper: a panel whose configuration needs a content (push, or `closeOnClick` without an overlay) is linked to one, through `[content]` or by sitting inside it, and a push panel's content sits inside an element carrying `nfsOffCanvasWrapper`, whose clip hides the pushed content's overflow (1.4.10).
 4. Modal panels: a modal panel (`trapFocus` with an overlay) carries `aria-label` or `aria-labelledby`, holds a Trigger inside it, a close button with a bare `nfsClose` (APG, 2.1.2), and keeps `autoFocus` on.
 5. `trapFocus` and `closeOnEsc`: `trapFocus` without an overlay wraps Tab but leaves a disclosure that is not announced as modal, so a panel meant as a dialog has its overlay; `closeOnEsc` stays `true` on a non-modal panel, whose Escape is its 2.4.11 escape route.
-6. Triggers at the reveal breakpoint: a Trigger outside the panel is hidden while the panel is revealed or in-canvas, where it would do nothing, for example with `nfsVisibility hideFor` of the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md).
+6. Triggers at the reveal breakpoint: a Trigger outside the panel is hidden while the panel is revealed or in-canvas, where it would do nothing, for example with Foundation's `hide-for-<bp>` class written as a normal class (`class="hide-for-large"`), with Foundation's global styles loaded.
 7. Breakpoints: `revealOn` and `inCanvasOn` name a Class breakpoint above the Zero breakpoint, because Foundation generates no Zero-breakpoint reveal or in-canvas class and a panel shown at every width is not an off-canvas panel; `inCanvasOn` goes on an `nfsOffCanvas` panel, because Foundation's in-canvas rule selects `.off-canvas`.
 8. A revealed `position="top"` or `"bottom"` panel that stays fixed (`$offcanvas-fixed-reveal: true`) comes with `scroll-padding-top` (or `-bottom`) on the document of at least the panel's height (2.4.11).
 9. The overlay is written beside the panel, never inside an element the Modal inert set covers (the linked content, for example).
@@ -503,7 +503,7 @@ The panel, content, overlay, wrapper, reveal, and in-canvas styles are all Found
 
 A good test asserts what a visitor or assistive technology observes: the panel's, content's, overlay's, and wrapper's classes, `inert`, `role` and `aria-modal`, the Trigger's ARIA, whether the panel is displayed, where focus lands, whether the page scrolls, and when `opened` and `closed` fire. No test reads private fields. There is no prior art in the new repository; the patterns are the building-blocks testing rule, the Triggers, Breakpoint service, Close Button, Top Bar, and Responsive Toggle specs, and the harness of the [Prototype: Rendering-mode test seam](../issues/59-prototype-rendering-mode-test-seam.md).
 
-Story ids follow `off-canvas--<story>`: `off-canvas--default` (Foundation's docs markup: push, left, overlay, close button, `nav` menu), `off-canvas--positions` (four panels, one per `position`, with Triggers), `off-canvas--overlap`, `off-canvas--modal` (`trapFocus`, overlay, `aria-labelledby`), `off-canvas--modal-nested` (a modal panel nested inside the content, with a `header` outside the wrapper), `off-canvas--no-overlay` (`closeOnClick` on the content), `off-canvas--nested`, `off-canvas--absolute` (two `nfsOffCanvasAbsolute` panels in wrapped grid cells), `off-canvas--reveal-for-large`, `off-canvas--reveal-top` (`revealOn` on a `position="top"` panel with `scroll-padding-top`), `off-canvas--in-canvas`, `off-canvas--content-scroll-locked`, `off-canvas--two-way-binding`, `off-canvas--with-sticky` (an `nfsSticky` bar in an `nfsStickyContainer` inside the content). Every story's Storybook settings include `$offcanvas-background: $white`. Story markup follows the class rule (Storybook conventions, section 8; ADR 0039): no story element carries a Foundation or library class written in the template. Scaffolding is each spec's directive, imported from its own entry point: close buttons are `nfsCloseButton` with a bare `nfsClose`, Triggers sit on `nfsButton`, menus are `ul[nfsMenu]` with `orientation="vertical"`, callouts `nfsCallout`, the grid cells the [Spec: XY Grid](../issues/99-spec-xy-grid.md)'s `nfsGridX` and `nfsCell`, the sticky bar the Sticky spec's directives, and a Trigger hidden at the reveal breakpoint uses `nfsVisibility hideFor` from the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md). A title bar with a menu icon opening story panels is the Top Bar spec's `top-bar--title-bar`. Story ids are unchanged by the class rule.
+Story ids follow `off-canvas--<story>`: `off-canvas--default` (Foundation's docs markup: push, left, overlay, close button, `nav` menu), `off-canvas--positions` (four panels, one per `position`, with Triggers), `off-canvas--overlap`, `off-canvas--modal` (`trapFocus`, overlay, `aria-labelledby`), `off-canvas--modal-nested` (a modal panel nested inside the content, with a `header` outside the wrapper), `off-canvas--no-overlay` (`closeOnClick` on the content), `off-canvas--nested`, `off-canvas--absolute` (two `nfsOffCanvasAbsolute` panels in wrapped grid cells), `off-canvas--reveal-for-large`, `off-canvas--reveal-top` (`revealOn` on a `position="top"` panel with `scroll-padding-top`), `off-canvas--in-canvas`, `off-canvas--content-scroll-locked`, `off-canvas--two-way-binding`, `off-canvas--with-sticky` (an `nfsSticky` bar in an `nfsStickyContainer` inside the content). Every story's Storybook settings include `$offcanvas-background: $white`. Story markup follows the class rule (Storybook conventions, section 8; ADR 0039) with its exception for families that have no first-milestone spec: no story element carries a class that a first-milestone directive binds, written in the template. Scaffolding is each spec's directive, imported from its own entry point: close buttons are `nfsCloseButton` with a bare `nfsClose`, Triggers sit on `nfsButton`, menus are `ul[nfsMenu]` with `orientation="vertical"`, callouts `nfsCallout`, and the sticky bar the Sticky spec's directives. The grid cells are Foundation's `grid-x` and `cell` classes, and a Trigger hidden at the reveal breakpoint carries Foundation's `hide-for-large` class, both written as normal classes with Foundation's global styles loaded. A title bar with a menu icon opening story panels is the Top Bar spec's `top-bar--title-bar`. Story ids are unchanged by the class rule.
 
 ### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`)
 
@@ -572,7 +572,7 @@ Release test (manual, before each release; [Resolve the assistive-technology che
 ## Out of Scope
 
 - The Trigger's ARIA and click handling: the [Spec: Triggers (shared utility)](../issues/54-spec-triggers.md). Breakpoint state: the [Spec: Breakpoint service (shared utility)](../issues/53-spec-breakpoint-service.md). The Light dismiss registry that a Dropdown pane inside the panel uses: the [Spec: Anchored pane (shared utility)](../issues/55-spec-anchored-pane.md).
-- The close button: the [Spec: Close Button](../issues/83-spec-close-button.md). The title bar and menu icon: the [Spec: Top Bar](../issues/86-spec-top-bar.md). The menus inside the panel (Menu, AccordionMenu, Drilldown, DropdownMenu, ResponsiveMenu): their own specs. Hiding a Trigger at the reveal breakpoint: `nfsVisibility` of the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md).
+- The close button: the [Spec: Close Button](../issues/83-spec-close-button.md). The title bar and menu icon: the [Spec: Top Bar](../issues/86-spec-top-bar.md). The menus inside the panel (Menu, AccordionMenu, Drilldown, DropdownMenu, ResponsiveMenu): their own specs. Hiding a Trigger at the reveal breakpoint: Foundation's `hide-for-<bp>` class, which the consumer writes as a normal class.
 - A `<dialog>` or `popover` panel (ADR 0030), a generated overlay, and container components computing margins (Material's shape).
 - Fixed elements inside a pushed content: Foundation's `data-off-canvas-sticky` inline rewrite is dropped; a `position: fixed` element inside `.off-canvas-content` behaves as absolutely positioned while a push panel is open (the content's transform), so such elements go outside the content or the panel uses `overlap`. The next library's Sticky is `position: sticky`, which a transform does not break.
 - Logical positions (`start`/`end`) and automatic RTL mirroring: Foundation's off-canvas classes are physical.
@@ -665,14 +665,14 @@ A modal filter panel from the right, overlapping:
 <div [nfsOffCanvasOverlay]="filters"></div>
 ```
 
-A sidebar that is a drawer below large (the Trigger hidden at large by `nfsVisibility hideFor="large"`, from `ngx-foundation-sites/visibility`):
+A sidebar that is a drawer below large (the Trigger hidden at large by Foundation's `hide-for-large` class, written as a normal class):
 
 ```html
 <div nfsOffCanvas position="left" id="sidebar" #sidebar="nfsOffCanvas" [content]="page" revealOn="large">
   <nav aria-label="Sections">...</nav>
 </div>
 <div nfsOffCanvasContent #page="nfsOffCanvasContent">
-  <button nfsButton nfsVisibility hideFor="large" [nfsToggle]="sidebar">Sections</button>
+  <button nfsButton class="hide-for-large" [nfsToggle]="sidebar">Sections</button>
   ...
 </div>
 ```
@@ -681,7 +681,7 @@ In-canvas at large, nested, no content reference needed:
 
 ```html
 <div nfsOffCanvasContent>
-  <button nfsButton nfsVisibility hideFor="large" [nfsToggle]="related">Related</button>
+  <button nfsButton class="hide-for-large" [nfsToggle]="related">Related</button>
   <div nfsOffCanvas position="right" id="related" #related="nfsOffCanvas" inCanvasOn="large">
     <div nfsCallout>Related articles</div>
   </div>

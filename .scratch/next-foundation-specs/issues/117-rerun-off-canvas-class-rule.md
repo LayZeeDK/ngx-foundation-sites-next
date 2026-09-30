@@ -205,3 +205,11 @@ From [Re-run: specs without checks, group d](168-rerun-specs-without-checks-grou
 ### Amendment, 2026-09-30 (audit 0009)
 
 - [Audit 0009: the later-milestone checks wave](../audits/0009-later-milestone-checks-wave.md), H1: the title bar relies on `foundation-title-bar`, and on `foundation-menu-icon` with `nfs-menu-icon`; `nfs-title-bar`, which the first milestone does not have, is no longer named.
+
+### Amendment, 2026-09-30 (later-milestone families)
+
+From [Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md), applied by [Re-run: specs without the later-milestone families, group b](177-rerun-specs-without-later-families-group-b.md): `specs/off-canvas.md` no longer assumes the XY, Float, or Flex Grid, the Typography Helpers, or the four Utilities specs, names none of their directives, and links none of them. Their classes are Foundation's normal classes, which the consumer and the library's own stories write, with Foundation's global styles loaded (ADR 0039's exception for a family with no first-milestone spec). What changed:
+
+- A Trigger hidden at the reveal breakpoint carries Foundation's `hide-for-large` class, written as a normal class beside `nfsButton` (`<button nfsButton class="hide-for-large" [nfsToggle]="sidebar">`): usage rule 6, the related-specs bullet, and the two usage examples say so.
+- The story scaffolding writes the absolute-panel story's grid cells as `grid-x` and `cell` normal classes and the hidden Trigger's `hide-for-large`; its class-rule sentence carries the exception.
+- Unchanged: the four directives, their APIs, the focus rules, ARIA, the animation, the rendering modes, and the Story ids.

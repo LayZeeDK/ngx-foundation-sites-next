@@ -212,3 +212,11 @@ From [Re-run: specs without checks, group d](168-rerun-specs-without-checks-grou
 - Also rewritten beyond the manifest: Aria's own development log for each slide is described without naming a console method, and D20's rejected ADR 0034 contract no longer lists its per-bullet warning.
 - Kept: the thirteen directives, the scroll-snap layout, Aria's Tabs composition and the `inert` override, the focus handoff, the rotation, every Library mixin rule 1 to 14, every story and its axe gate, the browser-level behaviour cases, the SSR smoke, the e2e layer, and the manual release test. Decision numbers are unchanged.
 - No API, class, ARIA, keyboard, or rendering change. Impact LOW, confidence HIGH (a user ruling applied); nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-30 (later-milestone families)
+
+From [Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md), applied by [Re-run: specs without the later-milestone families, group b](177-rerun-specs-without-later-families-group-b.md): `specs/orbit.md` no longer assumes the XY, Float, or Flex Grid, the Typography Helpers, or the four Utilities specs, names none of their directives, and links none of them. Their classes are Foundation's normal classes, which the consumer and the library's own stories write, with Foundation's global styles loaded (ADR 0039's exception for a family with no first-milestone spec). What changed:
+
+- The arrows' and bullets' screen-reader text is `<span class="show-for-sr">`, a normal class: the Solution, user story 1 (now "no Orbit class"), the class-mapping row, the entry-point bullet, the ARIA row, the Rendered HTML lead, markup, and class note, the styling line, the Sass paragraph, the story note, D26, and the usage example, whose `imports` drops the visibility directive.
+- D26 keeps its rejected alternatives; the first is restated as an Orbit owner of another family's class.
+- Unchanged: the thirteen directives, the tokens, the slide contract, the focus handoff, ARIA and keyboard, the required settings, the rendering modes, and the Story ids.

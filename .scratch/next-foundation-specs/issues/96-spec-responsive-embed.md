@@ -187,3 +187,10 @@ From [Re-run: specs without checks, group d](168-rerun-specs-without-checks-grou
 - Also rewritten, beyond the manifest: two Out of Scope items that named checks (captions, autoplay, and fallback length read from content; the second load at hydration) now state what the directive cannot read and what the recipes do, and D8 loses a rejected check alternative.
 - Kept: the directive, `ratio` and its type, the `nfs-responsive-embed` rules and its Variant property `--nfs-responsive-embed-ratios`, every story and its axe gate, the host-class, composition, and zoneless browser-level cases, the SSR smoke, the Sass compile cases, and the e2e layer. The directive now injects nothing. Decision numbers are unchanged.
 - No API, class, ARIA, keyboard, or rendering change. Impact LOW, confidence HIGH (a user ruling applied); nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-30 (later-milestone families)
+
+From [Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md), applied by [Re-run: specs without the later-milestone families, group b](177-rerun-specs-without-later-families-group-b.md): `specs/responsive-embed.md` no longer assumes the XY, Float, or Flex Grid, the Typography Helpers, or the four Utilities specs, names none of their directives, and links none of them. Their classes are Foundation's normal classes, which the consumer and the library's own stories write, with Foundation's global styles loaded (ADR 0039's exception for a family with no first-milestone spec). What changed:
+
+- The Composition bullet places `nfsResponsiveEmbed` beside Foundation's XY grid cell, visibility, and float classes, written as normal classes. The two Notes bullets on floats and cells drop the Float Classes link and the XY Grid's cell directive; the measurements are unchanged.
+- Unchanged: the directive, `ratio`, the focus rule and `nfs-responsive-embed`, ARIA, the rendering modes, the stories, and the tests.

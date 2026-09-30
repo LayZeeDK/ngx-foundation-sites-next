@@ -126,7 +126,7 @@ Every class on a responsive menu's elements, per building-blocks 1.14 item 2; th
 | `.submenu-toggle-text` | Structural | `NfsSubmenuToggleText`, `span[nfsSubmenuToggleText]` inside a Hybrid item's toggle, static host class | Foundation's visually hidden name holder (ADR 0039 names it) |
 | Generated `div.is-drilldown` wrapper | State (`is-drilldown`, `animate-height`) | The Drilldown Menu's `[nfsDrilldownWrapper]` on the consumer's element around the root (a `div`, the `nav`, or a Top Bar section), when the rules name drilldown | Binds `is-drilldown` and the measured height only in drilldown mode, and `animate-height` from the `animateHeight` Option |
 | Generated `li.js-drilldown-back` | Structural | The Drilldown Menu's `li[nfsDrilldownBack]` (static `.js-drilldown-back`) holding a `<button type="button">`, in every submenu, when the rules name drilldown | `hidden` plus `.is-hidden` outside drilldown mode |
-| `.show-for-sr` around a back button's hidden suffix | Visibility class | The screen-reader-only directive of the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md), `nfsShowForSr` | The suffix names the level the button returns to (the Drilldown Menu spec's naming rule) |
+| `.show-for-sr` around a back button's hidden suffix | Visibility class, a family with no first-milestone spec | The consumer, as a normal class (`class="show-for-sr"`), with Foundation's global styles loaded (ADR 0039's exception) | The suffix names the level the button returns to (the Drilldown Menu spec's naming rule) |
 | `.is-active` on a submenu, Foundation's pre-open marker | State, never read | The item's `[expanded]="true"` or `[(expanded)]` (Nested menu); a copied one is stripped in every mode | Building-blocks 1.4: initial state is bound, never read from a class |
 | `.is-active` on the current page's `li` | State, not bound | `aria-current` on its link, styled by `nfs-menu` (the Menu spec, D4); a copied one is stripped | `.is-active` is the Nested menu's open state; no class marks the current page in any mode |
 | `.title-bar`, `.title-bar-title`, `.menu-icon`, `.top-bar`, `.top-bar-left`, `.top-bar-right` around a responsive menu | Structural (Top Bar) | The [Spec: Top Bar](../issues/86-spec-top-bar.md)'s directives, with the [Spec: Responsive Toggle](../issues/24-spec-responsive-toggle.md)'s written beside them | A right-hand Top Bar section turns the dropdown Base side through the Nested menu root (Hierarchy and DI shape) |
@@ -155,8 +155,8 @@ consumer markup (other entry points):
     ul[nfsResponsiveMenu]
       li[nfsMenuItem] > button[nfsSubmenuToggle] + ul[nfsSubmenu]   ngx-foundation-sites/nested-menu
         (Hybrid item: a[href] + button[nfsSubmenuToggle][hybrid] > span[nfsSubmenuToggleText])
-        li[nfsDrilldownBack] > button > span[nfsShowForSr]   ngx-foundation-sites/drilldown-menu; the
-                                                          screen-reader-only directive of Visibility Classes
+        li[nfsDrilldownBack] > button > span.show-for-sr     ngx-foundation-sites/drilldown-menu; the
+                                                          suffix's class written as a normal class
 uses: NfsMediaQuery (resolve, serverBreakpoint, breakpoints) and parseNfsBreakpointRules
       from ngx-foundation-sites/media-query
 ```
@@ -311,7 +311,7 @@ Pattern: Disclosure Navigation Menu (APG) in every mode, with the hybrid variant
 | Root and submenu `ul`, every `li` | Native `list` and `listitem`; no `role`, and no `aria-*` except, in drilldown mode, `aria-labelledby` on each submenu naming its Drilldown level after its parent toggle (Nested menu) | Nested menu |
 | Parent toggle | Native `button`, `type="button"`, an `id` in every mode (the consumer's static one, else generated), `aria-expanded`, `aria-controls` = the submenu id, named by its text | Nested menu |
 | Hybrid item | `a[href]` that navigates, then the toggle with `.submenu-toggle`, named by its `span[nfsSubmenuToggleText]` | Nested menu |
-| Drilldown back item | Native `button`, name "Back" plus a visually hidden suffix inside the screen-reader-only directive's span; `hidden` outside drilldown mode | Drilldown Menu |
+| Drilldown back item | Native `button`, name "Back" plus a visually hidden suffix inside a `span.show-for-sr`; `hidden` outside drilldown mode | Drilldown Menu |
 | Current page | `aria-current="page"` on its link, consumer-written (Router: `routerLinkActive` plus `ariaCurrentWhenActive="page"`, with `[routerLinkActiveOptions]="{exact: true}"` on a Hybrid item's link so a page has one current link), in every mode and never a class; `nfs-menu` gives the link Foundation's active look (the Menu spec, D4) | APG; Nested menu; Menu |
 | Closed submenu | `inert`; hidden by the live mode's CSS | Nested menu |
 | Hidden drilldown level | Foundation's `invisible`, never `inert` | Nested menu |
@@ -367,7 +367,7 @@ Outside a Top Bar, no Foundation default fails a criterion in accordion or drill
 
 ### Rendered HTML
 
-Consumer markup, Foundation's docs example with parents as buttons, the `nav` as the Drilldown wrapper, back items, a Hybrid item, and the current page marked. It carries no class: the root's `menu vertical medium-horizontal` come from `orientation` on the one hosted `NfsMenu`, each submenu's `menu nested vertical` from `NfsSubmenu`, the back items' `js-drilldown-back` from `NfsDrilldownBack`, the hidden suffix's `show-for-sr` from the screen-reader-only directive (`nfsShowForSr` is the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)'s directive, imported as `NfsShowForSr` from `ngx-foundation-sites/visibility`), and the toggle text's class from `NfsSubmenuToggleText`:
+Consumer markup, Foundation's docs example with parents as buttons, the `nav` as the Drilldown wrapper, back items, a Hybrid item, and the current page marked. It carries one class, the hidden suffix's `show-for-sr`, Foundation's visibility class written as a normal class; every other class comes from a directive: the root's `menu vertical medium-horizontal` from `orientation` on the one hosted `NfsMenu`, each submenu's `menu nested vertical` from `NfsSubmenu`, the back items' `js-drilldown-back` from `NfsDrilldownBack`, and the toggle text's class from `NfsSubmenuToggleText`:
 
 ```html
 <nav nfsDrilldownWrapper aria-label="Main">
@@ -376,11 +376,11 @@ Consumer markup, Foundation's docs example with parents as buttons, the `nav` as
     <li nfsMenuItem>
       <button nfsSubmenuToggle>Item 1</button>
       <ul nfsSubmenu>
-        <li nfsDrilldownBack><button type="button">Back<span nfsShowForSr> to main menu</span></button></li>
+        <li nfsDrilldownBack><button type="button">Back<span class="show-for-sr"> to main menu</span></button></li>
         <li nfsMenuItem>
           <button nfsSubmenuToggle>Item 1A</button>
           <ul nfsSubmenu>
-            <li nfsDrilldownBack><button type="button">Back<span nfsShowForSr> to Item 1</span></button></li>
+            <li nfsDrilldownBack><button type="button">Back<span class="show-for-sr"> to Item 1</span></button></li>
             <li nfsMenuItem><a href="/1a/i">Item 1A i</a></li>
           </ul>
         </li>
@@ -391,7 +391,7 @@ Consumer markup, Foundation's docs example with parents as buttons, the `nav` as
       <a href="/products">Products</a>
       <button nfsSubmenuToggle hybrid><span nfsSubmenuToggleText>Products pages</span></button>
       <ul nfsSubmenu>
-        <li nfsDrilldownBack><button type="button">Back<span nfsShowForSr> to main menu</span></button></li>
+        <li nfsDrilldownBack><button type="button">Back<span class="show-for-sr"> to main menu</span></button></li>
         <li nfsMenuItem><a href="/products/boards" aria-current="page">Boards</a></li>
       </ul>
     </li>
@@ -529,7 +529,7 @@ Vitest browser mode under the Angular unit-test builder (`npx nx test <lib>`, Ch
 
 Runs under `npx nx test <lib>` in `<name>.ssr.spec.ts` through the shared `renderServer()` helper; `npx nx test-node <lib>` only if the server path depends on the DOM adapter, which none here does.
 
-- SSR smoke: `renderApplication` over fixtures that write no class attribute: the Rendered HTML markup (`drilldown medium-dropdown` with `[orientation]="{small: 'vertical', medium: 'horizontal'}"`, a Hybrid item with its `span[nfsSubmenuToggleText]`, back items, the Products item bound `[expanded]="true"`), `accordion medium-dropdown`, `medium-dropdown large-accordion` on an `orientation="vertical"` root, a server provider `{map, serverBreakpoint: 'large'}` for the first fixture, the same fixture with `align="right"` under that provider, and one inside `@defer (hydrate on interaction)`. Assert `whenStable()` resolves (no pending timers); the HTML matches the Rendered HTML section: exactly one mode class on each root (`drilldown`, `accordion-menu`, `dropdown`, and `dropdown` for the `large` provider), `menu` and the orientation classes on each root, `menu nested vertical` on every submenu, `submenu-toggle-text` on the span, `show-for-sr` on each back suffix, `align-right` on the aligned root and `opens-left` on each of its parents, the mode's item and submenu classes, `aria-expanded` and `aria-controls` resolving to an element, an `id` on every toggle, `aria-labelledby` on each submenu only in drilldown mode, resolving to its parent toggle's `id`, `inert` on closed submenus, the `[expanded]` section open with `data-nfs-shown` in drilldown mode, the wrapper `is-drilldown` only in drilldown mode, back items `hidden` with `is-hidden` outside drilldown mode, no `role` or `aria-hidden` anywhere, no inline `style`; `jsaction="keydown:;click:;"` on the root, `click:;` on each toggle and back item, none on links; `ngb` and `click:;keydown:;` on the deferred block's root; the `ng-state` script carries `nfsServerBreakpoint`.
+- SSR smoke: `renderApplication` over fixtures whose only class attribute is the back items' `show-for-sr`: the Rendered HTML markup (`drilldown medium-dropdown` with `[orientation]="{small: 'vertical', medium: 'horizontal'}"`, a Hybrid item with its `span[nfsSubmenuToggleText]`, back items, the Products item bound `[expanded]="true"`), `accordion medium-dropdown`, `medium-dropdown large-accordion` on an `orientation="vertical"` root, a server provider `{map, serverBreakpoint: 'large'}` for the first fixture, the same fixture with `align="right"` under that provider, and one inside `@defer (hydrate on interaction)`. Assert `whenStable()` resolves (no pending timers); the HTML matches the Rendered HTML section: exactly one mode class on each root (`drilldown`, `accordion-menu`, `dropdown`, and `dropdown` for the `large` provider), `menu` and the orientation classes on each root, `menu nested vertical` on every submenu, `submenu-toggle-text` on the span, `show-for-sr` on each back suffix, `align-right` on the aligned root and `opens-left` on each of its parents, the mode's item and submenu classes, `aria-expanded` and `aria-controls` resolving to an element, an `id` on every toggle, `aria-labelledby` on each submenu only in drilldown mode, resolving to its parent toggle's `id`, `inert` on closed submenus, the `[expanded]` section open with `data-nfs-shown` in drilldown mode, the wrapper `is-drilldown` only in drilldown mode, back items `hidden` with `is-hidden` outside drilldown mode, no `role` or `aria-hidden` anywhere, no inline `style`; `jsaction="keydown:;click:;"` on the root, `click:;` on each toggle and back item, none on links; `ngb` and `click:;keydown:;` on the deferred block's root; the `ng-state` script carries `nfsServerBreakpoint`.
 - Pure logic, table-driven over the module's mode-resolution function (not public API): rules by breakpoint, before and after the first render callback, with the smallest-rule and empty-rules fallbacks.
 - Sass compile: `nfs-menu` after `foundation-menu`, and `nfs-accordion-menu`, `nfs-drilldown`, and `nfs-dropdown-menu` included together after their Foundation export mixins, with Foundation's defaults plus the Dropdown Menu spec's settings, compile, and every rule the three mode mixins emit has a selector scoped to its own mode's root class (`.accordion-menu`, `.drilldown` or `.is-drilldown`, `.dropdown.menu`), so no rule matches a root that carries another mode's class; the same include list with `foundation-top-bar`, over the Top Bar spec's two settings, compiles.
 
@@ -567,7 +567,7 @@ Release test (manual, before each release; [Resolve the assistive-technology che
 - Each mode's Options, outputs, Defaults token, Library mixin, and mode-specific methods: the [Spec: Accordion Menu](../issues/20-spec-accordion-menu.md), the [Spec: Drilldown Menu](../issues/22-spec-drilldown-menu.md), and the [Spec: Dropdown Menu](../issues/21-spec-dropdown-menu.md).
 - The Menu directive, its Variant inputs and their types, and `nfs-menu`: the [Spec: Menu](../issues/85-spec-menu.md). This spec gets one `NfsMenu` through its roots and adds no Menu input of its own.
 - The title bar that shows and hides a mobile menu: the [Spec: Responsive Toggle](../issues/24-spec-responsive-toggle.md); the Title Bar, Top Bar, and menu icon directives and the Top Bar's required settings: the [Spec: Top Bar](../issues/86-spec-top-bar.md) (Usage examples show them together).
-- The screen-reader-only directive of the back items' hidden suffix: the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md).
+- A screen-reader-only directive for the back items' hidden suffix: the consumer writes Foundation's `.show-for-sr` class, which Foundation's global styles provide.
 - Deriving the Menu's `orientation` from the rules (D20).
 - Container queries as the switch, and rules keyed on a container's width instead of the viewport (ADR 0005).
 - A swap animation or a live-region announcement of a swap: Foundation's swap is instant, and a swap changes layout, not content (the Breakpoint service's consuming-directive rule 4); the focus moved to the equivalent control is the announcement.
@@ -606,13 +606,13 @@ Release test (manual, before each release; [Resolve the assistive-technology che
 | D20 | The Menu's `orientation` pairs with the rules by the consumer's binding; the documented usage asks for `vertical` at the Zero breakpoint when that breakpoint's mode is `dropdown` (Documented usage, 3) | Foundation's docs pair the orientation classes with the rules by hand, and the orientation is a Variant (a static look Foundation's CSS turns per breakpoint), not a behaviour of the mode; the input is the one source | Deriving the orientation from the rules (dropdown horizontal, the others vertical: a second source that fights an explicit value, and Foundation's `drilldown medium-accordion` example is vertical at every width) |
 | D21 | A section open at first paint is `[expanded]="true"` or `[(expanded)]` on its item; a copied `is-active` opens nothing in any mode | Building-blocks 1.4 and the Nested menu spec's D29 remove the static seed; a bound value renders identically on server and client and emits nothing; D10 still closes it on entering dropdown with focus outside, and the item's model emits `false` | Keeping the seed for responsive markup (a class-based second spelling of the state) |
 | D22 | Copied Foundation classes are stripped in every mode: the Menu's by `NfsMenu`'s record, the mode root classes by the roots' `false` bindings, the Nest and State classes by the Nested menu's all-key maps; a copied mode class merges in the live mode | Building-blocks 1.4: a class bound from state is stripped, a Structural class written redundantly merges; a copied `accordion-menu`, `drilldown`, or `dropdown` is stripped in the modes whose root binds it `false` and merges in the live one, so it can change nothing, as on the Accordion Menu (D24) and Drilldown Menu (D28) roots, and the three roots and a responsive root stay alike; the State and Option classes the roots bind (`invisible`, `animate-height`, `is-hidden`) are stripped by the Drilldown's own bindings | Reading a copied mode class as the mode (a class-based second spelling of `rules`; building-blocks 1.4 reads no class) |
-| D23 | The Hybrid toggle's name is `span[nfsSubmenuToggleText]`; the back items' hidden suffix is the Visibility Classes spec's screen-reader-only directive | ADR 0039 names `.submenu-toggle-text` (the Nested menu spec, D30); `.show-for-sr` is a Visibility class, which gets its directive in that spec | An `aria-label` replacing the back button's visible text (the Drilldown Menu spec's D8); a consumer-written `show-for-sr` class (forbidden by ADR 0039) |
+| D23 | The Hybrid toggle's name is `span[nfsSubmenuToggleText]`; the back items' hidden suffix is a `span` with Foundation's `show-for-sr`, written as a normal class (2026-09-30: the Visibility Classes have no first-milestone spec) | ADR 0039 names `.submenu-toggle-text` (the Nested menu spec, D30); `.show-for-sr` is a Visibility class, a family with no first-milestone spec, which ADR 0039's exception lets the consumer write | An `aria-label` replacing the back button's visible text (the Drilldown Menu spec's D8); a Responsive Menu directive for the suffix (a Responsive Menu owner of another family's class) |
 | D24 | Around a responsive menu, the Top Bar spec's directives, and its two settings for a menu in a Top Bar, and the Base side from a right-hand section through the Nested menu root | Foundation's Advanced Layout is a Title Bar beside a Top Bar; Foundation's default bar fails 1.4.3 in every mode, so a menu in a Top Bar takes the Top Bar spec's two settings ([Spec: Top Bar](../issues/86-spec-top-bar.md)); the root this directive provides is the one that reads the section | Top Bar settings of this spec's own (a second copy of the Top Bar spec's) |
 | D25 | The current link's look is `nfs-menu`'s; its fill keeps 3:1 against each mode's backgrounds (1.4.1, the Nested menu spec's required settings), with every ratio from the exact WCAG formula | The Menu spec's D4 and the Nested menu spec's D32; Foundation's `color-luminance()` passes failing pairs (the [Spec: Top Bar](../issues/86-spec-top-bar.md), measured), so the ratios this spec quotes are exact | A responsive-menu list of the fill's pairs (a second copy of the Nested menu spec's) |
 
 ### Usage examples
 
-No example writes a class: `[orientation]` replaces Foundation's `vertical medium-horizontal`, `nfsSubmenu` gives every nested list `menu nested vertical`, `[expanded]` replaces the pre-open `is-active`, and `routerLinkActive ariaCurrentWhenActive="page"` replaces the current page's `is-active`. `nfsShowForSr` is the screen-reader-only directive of the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md), imported as `NfsShowForSr` from `ngx-foundation-sites/visibility`.
+No example writes a class but the back items' `show-for-sr`, Foundation's visibility class: `[orientation]` replaces Foundation's `vertical medium-horizontal`, `nfsSubmenu` gives every nested list `menu nested vertical`, `[expanded]` replaces the pre-open `is-active`, and `routerLinkActive ariaCurrentWhenActive="page"` replaces the current page's `is-active`. `show-for-sr` is written as a normal class, with Foundation's global styles loaded.
 
 ```ts
 @Component({
@@ -620,7 +620,7 @@ No example writes a class: `[orientation]` replaces Foundation's `vertical mediu
   imports: [
     NfsResponsiveMenu,
     NfsMenuItem, NfsSubmenu, NfsSubmenuToggle, NfsSubmenuToggleText,
-    NfsDrilldownWrapper, NfsDrilldownBack, NfsShowForSr, NfsButton,
+    NfsDrilldownWrapper, NfsDrilldownBack, NfsButton,
     RouterLink, RouterLinkActive,
   ],
   template: `
@@ -632,7 +632,7 @@ No example writes a class: `[orientation]` replaces Foundation's `vertical mediu
         <li nfsMenuItem>
           <button nfsSubmenuToggle>Products</button>
           <ul nfsSubmenu>
-            <li nfsDrilldownBack><button type="button">Back<span nfsShowForSr> to main menu</span></button></li>
+            <li nfsDrilldownBack><button type="button">Back<span class="show-for-sr"> to main menu</span></button></li>
             <li nfsMenuItem>
               <a routerLink="/products/boards" routerLinkActive ariaCurrentWhenActive="page">Boards</a>
             </li>
@@ -644,7 +644,7 @@ No example writes a class: `[orientation]` replaces Foundation's `vertical mediu
              ariaCurrentWhenActive="page">Services</a>
           <button nfsSubmenuToggle hybrid><span nfsSubmenuToggleText>Services pages</span></button>
           <ul nfsSubmenu>
-            <li nfsDrilldownBack><button type="button">Back<span nfsShowForSr> to main menu</span></button></li>
+            <li nfsDrilldownBack><button type="button">Back<span class="show-for-sr"> to main menu</span></button></li>
             <li nfsMenuItem>
               <a routerLink="/services/repairs" routerLinkActive ariaCurrentWhenActive="page">Repairs</a>
             </li>
@@ -739,7 +739,7 @@ Mode-specific members through the hosted roots on the same element:
 
 ### Sass
 
-Sass. The consumer compiles Foundation's Sass from its own settings; the library imports no Foundation code and copies no Foundation rule. This plugin relies on Foundation's export mixins `foundation-menu` (`.menu`, `.vertical`, the `.<bp>-horizontal` and `.<bp>-vertical` orientation classes that pair with the rules) and, for each mode its rules name, `foundation-accordion-menu`, `foundation-drilldown-menu`, or `foundation-dropdown-menu`, plus `foundation-visibility-classes` (`invisible`, `visible`, and `show-for-sr`, which the screen-reader-only directive binds on the back items' suffix) and `foundation-global-styles` (`is-hidden`); a Hybrid item in any mode also needs `foundation-accordion-menu`, which holds Foundation's only `.submenu-toggle` and `.submenu-toggle-text` rules, and a menu in a Top Bar needs `foundation-top-bar`. No library CSS; there is no `nfs-responsive-menu` mixin. The documented custom CSS of each mode is that mode's Library mixin of the library's Sass (`@import 'ngx-foundation-sites';` after Foundation), included after its Foundation export mixin: `@include nfs-accordion-menu;` after `foundation-accordion-menu`, `@include nfs-drilldown;` after `foundation-drilldown-menu`, `@include nfs-dropdown-menu;` after `foundation-dropdown-menu`, one for every mode the rules name. Every root and submenu is a Menu, so the consumer also includes `@include nfs-menu;` after `foundation-menu` (the [Spec: Menu](../issues/85-spec-menu.md)); a menu in a Top Bar needs no Top Bar mixin, only the [Spec: Top Bar](../issues/86-spec-top-bar.md)'s two required settings below.
+Sass. The consumer compiles Foundation's Sass from its own settings; the library imports no Foundation code and copies no Foundation rule. This plugin relies on Foundation's export mixins `foundation-menu` (`.menu`, `.vertical`, the `.<bp>-horizontal` and `.<bp>-vertical` orientation classes that pair with the rules) and, for each mode its rules name, `foundation-accordion-menu`, `foundation-drilldown-menu`, or `foundation-dropdown-menu`, plus `foundation-visibility-classes` (`invisible`, `visible`, and `show-for-sr`, which the consumer writes on the back items' suffix) and `foundation-global-styles` (`is-hidden`); a Hybrid item in any mode also needs `foundation-accordion-menu`, which holds Foundation's only `.submenu-toggle` and `.submenu-toggle-text` rules, and a menu in a Top Bar needs `foundation-top-bar`. No library CSS; there is no `nfs-responsive-menu` mixin. The documented custom CSS of each mode is that mode's Library mixin of the library's Sass (`@import 'ngx-foundation-sites';` after Foundation), included after its Foundation export mixin: `@include nfs-accordion-menu;` after `foundation-accordion-menu`, `@include nfs-drilldown;` after `foundation-drilldown-menu`, `@include nfs-dropdown-menu;` after `foundation-dropdown-menu`, one for every mode the rules name. Every root and submenu is a Menu, so the consumer also includes `@include nfs-menu;` after `foundation-menu` (the [Spec: Menu](../issues/85-spec-menu.md)); a menu in a Top Bar needs no Top Bar mixin, only the [Spec: Top Bar](../issues/86-spec-top-bar.md)'s two required settings below.
 
 (1) Rules the directive adds: none. The rules it depends on are the Nested menu spec's thirteen, each emitted by its mode's mixin and scoped to that mode's root class (`.accordion-menu`, `.drilldown` or `.is-drilldown`, `.dropdown.menu`), so on a responsive `ul` only the live mode's rules match; they are listed with their reasons in that spec and in the three root specs. `nfs-menu`'s rules give the current link Foundation's active look from `aria-current` and simple-menu links a 24 px row, in every mode.
 
@@ -776,7 +776,7 @@ $topbar-submenu-background: $topbar-background;
 - No attribute is left behind by a swap; Foundation's AccordionMenu cleanup left `aria-expanded`, `aria-controls`, `aria-hidden`, and `role="group"` on elements the next plugin never updated.
 - Rules resolve by breakpoint order, a bare mode applies from the Zero breakpoint, tokens split at the last hyphen, unknown modes are skipped, and below the first rule the smallest rule's mode applies instead of no plugin.
 - A swap into dropdown with focus outside the menu closes every submenu; Foundation's DropdownMenu opened nothing at load (only its AccordionMenu read a pre-open `is-active`; its Drilldown did not either), and the library matches that on every entry into dropdown mode, for a section bound open with `[expanded]`, which drilldown and accordion mode now both show.
-- The consumer writes no class (ADR 0039): the Menu directive the three roots host binds `.menu` and the Menu's Variants, with `[orientation]` in place of the `vertical medium-horizontal` classes Foundation's docs pair with the rules; submenus get `menu nested vertical` from `nfsSubmenu`; a section open at load is `[expanded]`, never a static `is-active`; the current page is `aria-current` on its link; `align="right"` replaces the root's `align-right` class; the Hybrid toggle's name and the back items' suffix use directives; a Foundation class copied from Foundation's markup is stripped in every mode, except a redundant Structural class, which merges.
+- The consumer writes no class of a family with a first-milestone spec (ADR 0039): the Menu directive the three roots host binds `.menu` and the Menu's Variants, with `[orientation]` in place of the `vertical medium-horizontal` classes Foundation's docs pair with the rules; submenus get `menu nested vertical` from `nfsSubmenu`; a section open at load is `[expanded]`, never a static `is-active`; the current page is `aria-current` on its link; `align="right"` replaces the root's `align-right` class; the Hybrid toggle's name uses a directive and the back items' suffix Foundation's `show-for-sr`, written as a normal class; a Foundation class copied from Foundation's markup is stripped in every mode, except a redundant Structural class, which merges.
 - Every instance starts from the Server breakpoint's mode, so server HTML and deferred blocks hydrate as sent; the swap happens in the first render callback.
 - Per-mode Options are exposed inputs with typed values instead of attributes every child re-read; each mode keeps its own Defaults token.
 - The live child's events become `opened` and `closed` with the item from the live mode; `init`, `destroyed`, and the child lifecycle events at every swap disappear.

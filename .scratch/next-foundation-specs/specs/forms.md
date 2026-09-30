@@ -70,7 +70,7 @@ For WCAG 2.2 AA the spec requires three Foundation settings (placeholder colour,
 33. As a developer using `@defer (hydrate never)`, I want a form built with these directives to look and work as native HTML, so that static regions need no JavaScript.
 34. As a developer of a zoneless application, I want the directives to need no zone, so that they work with zoneless change detection.
 35. As an application developer, I want every Forms directive in one entry point, so that a `@defer` block can split them with the form.
-36. As an application developer, I want label alignment and grid placement to come from the Typography Helpers and XY Grid directives beside `nfsFormLabel`, so that Forms does not repeat utility classes.
+36. As an application developer, I want label alignment and grid placement to come from Foundation's own text-alignment, float, and XY grid classes, written beside `nfsFormLabel` as normal classes, so that Forms does not repeat utility classes.
 37. As a user who prefers reduced motion, I want form fields to add no motion, so that focusing a field moves nothing.
 38. As a library maintainer, I want every behaviour asserted through roles, names, descriptions, classes, and computed styles in stories, browser-level tests, a server-render smoke test, and e2e, so that regressions surface at the layer that owns them.
 
@@ -92,7 +92,7 @@ Forms has no Plugin, no `defaults` object, no `data-*` Options, no events, and n
 | Validation state | `.is-invalid-input`, `.is-invalid-label`, `.form-error`, `.is-visible` | `foundation-form-error` (inside `foundation-forms`) | Documented on the Abide page: [Spec: Abide](../issues/31-spec-abide.md) |
 | Range, progress, meter | `input[type='range']`, `progress`, `meter` | `foundation-range-input`, `foundation-progress-element`, `foundation-meter-element` (not in `foundation-forms`) | Documented on the Slider and Progress Bar pages: [Spec: Slider](../issues/32-spec-slider.md), [Spec: Progress Bar](../issues/95-spec-progress-bar.md) |
 
-The page's other sections use classes that other specs own: Label Positioning's `.text-right`, `.float-right`, and `.float-left` ([Spec: Typography Helpers](../issues/106-spec-typography-helpers.md), [Spec: Float Classes](../issues/105-spec-float-classes.md)); every example's grid ([Spec: XY Grid](../issues/99-spec-xy-grid.md)); File Upload Button's `label.button` ([Spec: Button](../issues/37-spec-button.md), whose `nfsButton` takes no `label` host, its D11) and `.show-for-sr` ([Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)); Custom Controls' slider ([Spec: Slider](../issues/32-spec-slider.md)).
+The page's other sections use classes of other families. Label Positioning's `.text-right`, `.float-right`, and `.float-left`, every example's grid, and the File Upload Button's `.show-for-sr` are Foundation's text-alignment, float, XY grid, and visibility classes, families with no first-milestone spec, so a consumer writes them as normal classes with Foundation's global styles loaded (ADR 0039's exception). File Upload Button's `label.button` belongs to the [Spec: Button](../issues/37-spec-button.md), whose `nfsButton` takes no `label` host (its D11); Custom Controls' slider to the [Spec: Slider](../issues/32-spec-slider.md).
 
 Docs conventions the spec keeps or corrects: wrapping labels and `for`/`id` pairs (kept); `fieldset` with `legend` for groups (kept); help text with a unique id and `aria-describedby` (kept, and required); the unlabelled Input Group example (corrected: its field gets a label in every example); the label-as-button file upload (replaced by the native file input, D12).
 
@@ -110,11 +110,11 @@ Docs conventions the spec keeps or corrects: wrapping labels and `for`/`id` pair
 | `.is-invalid-input`, `.is-invalid-label`, `.form-error`, `.is-visible` | fields, labels, messages | The Abide directives (`NfsAbideInput`, `NfsAbideLabel`, `NfsFormError`) | State and Structural | Never bound by a Forms directive (D4) |
 | none | text inputs, `textarea`, `select`, checkboxes, radios, file inputs, bare `fieldset`, `legend` | No directive | Styled by tag or type | Documented here (ADR 0039) |
 | `.button` | the input group's button; `label.button` in Foundation's File Upload Button | `NfsButton` (`button[nfsButton]`, `a[nfsButton]`, and the `input[type=submit\|button\|reset]` hosts), inside `nfsInputGroupButton`; no `label` host, so the File Upload Button recipe is not offered (D12) | Another family's (the Button) | [Spec: Button](../issues/37-spec-button.md), D11 |
-| `.text-right` (and the other text alignments) | a label (Label Positioning) | `NfsTextAlignment`, `nfsTextAlign="right"`, beside `nfsFormLabel` | Another family's (the Typography Helpers) | [Spec: Typography Helpers](../issues/106-spec-typography-helpers.md) |
-| `.float-right`, `.float-left` | a label (Label Positioning) | `NfsFloatClasses`, `nfsFloat="right"`, beside `nfsFormLabel` | Another family's (the Float Classes) | [Spec: Float Classes](../issues/105-spec-float-classes.md) |
-| `.grid-container`, `.grid-x`, `.grid-padding-x`, `.cell`, the cell sizes (`.small-3`, `.medium-6`) | every example's grid | `NfsGridContainer`, `NfsGridX` with `gridPaddingX`, `NfsCell` with `size` | Another family's (the XY Grid) | [Spec: XY Grid](../issues/99-spec-xy-grid.md) |
-| `.align-center` on the Label Positioning grid | the grid | `NfsFlexAlign`, `alignX="center"`, beside `nfsGridX` | Another family's (the Flexbox Utilities) | [Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md) |
-| `.show-for-sr` on the File Upload Button's input | the file input | Not used: the file control is the native input with its own label (D12); the class is `NfsShowForSr`'s | Another family's (the Visibility Classes) | [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md) |
+| `.text-right` (and the other text alignments) | a label (Label Positioning) | No directive: a normal class written beside `nfsFormLabel` (`class="text-right"`) | Foundation's text-alignment classes, with no first-milestone spec | Foundation's global styles |
+| `.float-right`, `.float-left` | a label (Label Positioning) | No directive: a normal class written beside `nfsFormLabel` (`class="float-right"`) | Foundation's float classes, with no first-milestone spec | Foundation's global styles |
+| `.grid-container`, `.grid-x`, `.grid-padding-x`, `.cell`, the cell sizes (`.small-3`, `.medium-6`) | every example's grid | No directive: normal classes (`class="grid-x"`, `class="cell small-3"`) | Foundation's XY grid classes, with no first-milestone spec | Foundation's global styles |
+| `.align-center` on the Label Positioning grid | the grid | No directive: a normal class beside `.grid-x` | Foundation's flex alignment classes, with no first-milestone spec | Foundation's global styles |
+| `.show-for-sr` on the File Upload Button's input | the file input | Not used: the file control is the native input with its own label (D12) | Foundation's visibility classes, with no first-milestone spec | Foundation's global styles |
 | `.slider`, `.slider-handle`, `.slider-fill` (Custom Controls) | the range control | `NfsSlider` (`[nfsSlider]`) and `NfsSliderFill`; the Handle, `NfsSliderHandle` on a native range input, replaces Foundation's `.slider-handle` span | Another family's (the Slider) | [Spec: Slider](../issues/32-spec-slider.md) |
 
 Variant families (building-blocks 1.14 item 2):
@@ -265,7 +265,7 @@ The axe gate in every story runs the WCAG 2.2 AA rule set (tags `wcag2a`, `wcag2
 
 ### Rendered HTML
 
-Server HTML and the hydrated DOM are identical for every example: every class is a static host class or a host binding on an input, and no directive reads the platform, a breakpoint, or a generated id. The directive attributes themselves (`nfsinputgroup=""` and so on) are left out below, and class order is not significant. `nfsGridX` and `nfsCell` with `size` are the [Spec: XY Grid](../issues/99-spec-xy-grid.md)'s. `nfsTextAlign` is the [Spec: Typography Helpers](../issues/106-spec-typography-helpers.md)'s text-alignment attribute (`NfsTextAlignment`).
+Server HTML and the hydrated DOM are identical for every example: every class the Forms directives set is a static host class or a host binding on an input, the grid and text-alignment classes are written as normal classes, and no directive reads the platform, a breakpoint, or a generated id. The directive attributes themselves (`nfsinputgroup=""` and so on) are left out below, and class order is not significant.
 
 ```html
 <!-- Input group, unvalidated -->
@@ -312,16 +312,16 @@ Server HTML and the hydrated DOM are identical for every example: every class is
 </fieldset>
 
 <!-- Label positioning with middle -->
-<div nfsGridX>
-  <div nfsCell size="3">
-    <label for="middle-label" nfsFormLabel middle nfsTextAlign="right">Label</label>
+<div class="grid-x">
+  <div class="cell small-3">
+    <label for="middle-label" nfsFormLabel middle class="text-right">Label</label>
   </div>
-  <div nfsCell size="9">
+  <div class="cell small-9">
     <input type="text" id="middle-label" placeholder="Right- and middle-aligned text input">
   </div>
 </div>
 
-<!-- the label's classes; the grid and alignment classes come from their own specs -->
+<!-- the label's classes: .middle from nfsFormLabel, .text-right as written; the grid is unchanged -->
 <label for="middle-label" class="middle text-right">Label</label>
 ```
 
@@ -330,11 +330,11 @@ Beside Abide (the Abide directives as the [Spec: Abide](../issues/31-spec-abide.
 ```html
 <form [formRoot]="f" nfsAbide #abide="nfsAbide" aria-labelledby="pay-h">
   <h2 id="pay-h">Payment</h2>
-  <div nfsGridX>
-    <div nfsCell size="3">
+  <div class="grid-x">
+    <div class="cell small-3">
       <label for="amount" nfsFormLabel middle [nfsAbideLabel]="amount">Amount in dollars (required)</label>
     </div>
-    <div nfsCell size="9">
+    <div class="cell small-9">
       <div nfsInputGroup>
         <span nfsInputGroupLabel>$</span>
         <input id="amount" type="number" inputmode="decimal" autocomplete="transaction-amount"
@@ -440,8 +440,8 @@ Against the prerendered fixture app, route `/forms`:
 - A form-field component (Material's `mat-form-field` shape), floating labels, and hints connected to the field automatically (D5).
 - Validation, the error state and its classes (`.is-invalid-input`, `.is-invalid-label`, `.form-error`, `.is-visible`), and the Form alert: [Spec: Abide](../issues/31-spec-abide.md).
 - Switch: [Spec: Switch](../issues/84-spec-switch.md). Range inputs: [Spec: Slider](../issues/32-spec-slider.md). `progress` and `meter`: [Spec: Progress Bar](../issues/95-spec-progress-bar.md).
-- The label-as-button file upload (`label.button` over a `.show-for-sr` input): `nfsButton` takes `<input type="submit|button|reset">` hosts and no `label` host, because focus would land on a clipped input with no visible indicator ([Spec: Button](../issues/37-spec-button.md), D11), and `.show-for-sr` is the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)'s `nfsShowForSr`; this spec offers the native file input (D12).
-- Label alignment and floats (`.text-right`, `.float-right`, `.float-left`) and grid placement: [Spec: Typography Helpers](../issues/106-spec-typography-helpers.md), [Spec: Float Classes](../issues/105-spec-float-classes.md), [Spec: XY Grid](../issues/99-spec-xy-grid.md).
+- The label-as-button file upload (`label.button` over a `.show-for-sr` input): `nfsButton` takes `<input type="submit|button|reset">` hosts and no `label` host, because focus would land on a clipped input with no visible indicator ([Spec: Button](../issues/37-spec-button.md), D11), and `.show-for-sr` is Foundation's visibility class; this spec offers the native file input (D12).
+- Label alignment and floats (`.text-right`, `.float-right`, `.float-left`) and grid placement: Foundation's own classes, which the consumer writes as normal classes with Foundation's global styles loaded.
 - A forced-colours rule for the select arrow: WCAG 2.2 AA has no forced-colours criterion, and the arrow is not the select's only visual, as the Switch's drawing is (the [Spec: Switch](../issues/84-spec-switch.md), D12): the select stays identifiable by its border and text, which take system colours (not measured; see Further Notes).
 - Runtime theming of form colours (building-blocks 1.13).
 - How the library's Sass ships next to the consumer's Foundation: [Sass packaging for the new library](../issues/57-sass-packaging.md) (ADR 0012).
@@ -466,7 +466,7 @@ Against the prerendered fixture app, route `/forms`:
 | D12 | The file control is the native `<input type="file">` with its own label; no file-upload directive | The native control is keyboard operable, shows the browser's focus ring, and shows the chosen file name; Foundation's label-as-button recipe puts focus on a clipped 1 px input (2.4.7) and hides the file name; `nfsButton` takes no `label` host for the same reason ([Spec: Button](../issues/37-spec-button.md), D11) | A directive that styles a label as a button over a hidden input; binding `.show-for-sr` from this spec |
 | D13 | No library CSS and no Variant properties | Foundation's forms Sass styles every class the directives set; the page has no Open Variant family | A properties-only mixin (nothing to list) |
 | D14 | No directive reads the DOM: each rule the markup follows (a label's `for`, help text's pairing and place, an input group field's name, a fieldset's legend) is stated in the directive's JSDoc and shown in every example | The rules are consumer markup that native HTML defines and axe's `label` rule covers in the library's stories; the directives stay host bindings, identical on server and client | A directive that writes the missing link itself (D5's generated id: a DOM write on another directive's host and a second writer of `aria-describedby`) |
-| D15 | Label alignment and grid placement come from the Typography Helpers and XY Grid directives placed beside `nfsFormLabel` | One spec per docs page; the classes are those families' Utility classes (ADR 0039) | `align` or `float` inputs on `NfsFormLabel` (a second spelling of utility classes) |
+| D15 | Label alignment and grid placement come from Foundation's text-alignment, float, and XY grid classes, written as normal classes beside `nfsFormLabel` (2026-09-30: those families have no first-milestone spec) | One spec per docs page; the classes are other families' Utility classes, which ADR 0039's exception lets the consumer write while those families have no first-milestone spec | `align` or `float` inputs on `NfsFormLabel` (a second spelling of utility classes) |
 
 ### Usage examples
 
@@ -565,5 +565,4 @@ Sass. The consumer compiles Foundation's Sass from its own settings; the library
 
 - The unlabelled Input Group example: the field gets a label in every example (D6).
 - The File Upload Button recipe: replaced by the native file input (D12).
-- `.text-right`, `.float-right`, and `.float-left` on labels, and the grid classes in every example: set by the Typography Helpers, Float Classes, and XY Grid directives instead of written by the consumer.
 - The focus border: Foundation's default is kept as a setting, but the spec requires a darker one, because the field border that WCAG 1.4.11 requires would otherwise equal it.

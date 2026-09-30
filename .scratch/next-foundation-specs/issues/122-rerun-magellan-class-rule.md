@@ -150,3 +150,11 @@ From [Decide: checks move to a later milestone](158-decide-checks-move-to-a-late
 - Also gone: the 1.4.11 row's quote of the Menu spec's compile stop, now its required 3:1 setting.
 
 The behaviour stays: an unknown id marks nothing and scrolls nowhere, `updateHistory` alone writes nothing, and Magellan still removes a copied marker at its first write (D18). Each rule is stated as documented usage: six usage rules in the API section for the JSDoc, the input table's `updateHistory` row, the Model and Tracking bullets, the ARIA table's Navigation row, and the 2.4.1 row. A new Imports bullet says what a forgotten import does. D18 is rewritten to what the spec now decides; user stories 42 and 45 state documentation, not warnings. Unchanged: the directive, its API, tracking, the marker, deep linking, ARIA, the rendering modes, the stories, and the e2e and manual tests.
+
+### Amendment, 2026-09-30 (later-milestone families)
+
+From [Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md), applied by [Re-run: specs without the later-milestone families, group b](177-rerun-specs-without-later-families-group-b.md): `specs/magellan.md` no longer assumes the XY, Float, or Flex Grid, the Typography Helpers, or the four Utilities specs, names none of their directives, and links none of them. Their classes are Foundation's normal classes, which the consumer and the library's own stories write, with Foundation's global styles loaded (ADR 0039's exception for a family with no first-milestone spec). What changed:
+
+- The guide usage example and the `magellan--table-of-contents` layout write `class="grid-x grid-margin-x"` and `class="cell large-3"` / `class="cell large-9"`; the example's `imports` drops `NfsGridX` and `NfsCell`. The class-mapping row, the names paragraph, the story scaffolding, and the Out of Scope bullet are restated.
+- The select-versus-navigation note writes `hide-for-large` and `show-for-large` as normal classes in place of the visibility directive.
+- Unchanged: the directive, its API, tracking, the marker, deep linking, ARIA, the rendering modes, and the Story ids.

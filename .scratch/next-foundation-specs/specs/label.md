@@ -14,7 +14,7 @@ A developer on Foundation for Sites who wants to tag content with a word or a sh
 - The icon examples put an icon font glyph in the label without `aria-hidden`, so its Private Use Area character becomes part of the label's text for assistive technology (measured in Chromium), and the colour classes "give labels additional meaning" that only sighted users who perceive colour receive.
 - Written on a link, as a tag link often is, the uncoloured label's text takes Foundation's link hover colour on hover and focus: 1.27:1 on the label's background in Chromium, Firefox, and WebKit, in a state axe does not test.
 - `white-space: nowrap` keeps a label on one line, so a label wider than its container at 320 CSS px scrolls the page sideways (1.4.10).
-- Under the library's class rule the developer writes no Foundation class at all, so `.label` and the palette classes need an Angular home.
+- Under the library's class rule the developer writes no class of a Foundation family that has a first-milestone spec, and the Label has one, so `.label` and the palette classes need an Angular home.
 
 A server-rendered application adds the usual second problem: whatever the Angular layer does must already be right in the server HTML, must not break hydration, and must leave the label styled before hydration and inside dehydrated `@defer` blocks.
 
@@ -91,11 +91,11 @@ Docs conventions kept or corrected: the `span` (kept); `aria-describedby` from t
 | `.label` | `NfsLabel` (`[nfsLabel]`), static host class | - | - | `label` | - |
 | Palette classes (`.primary`, `.secondary`, `.success`, `.warning`, `.alert` by default) | `color` Variant input of `NfsLabel` | `NfsLabelColor`, built on `NfsFoundationPaletteColor`, over `$label-palette`, which defaults to `$foundation-palette`; `NfsLabelPaletteOverrides`, chained on `NfsFoundationPaletteOverrides` (Open Variant family) | a name | the name itself (`color="alert"` sets `.alert`); no value sets none, so `$label-background` is the look | `--nfs-label-palette` (`primary secondary success warning alert` by default) |
 
-Other families' classes in this spec's examples and stories, each set by its own directive (building-blocks 1.14 item 2):
+Other families' classes in this spec's examples and stories (building-blocks 1.14 item 2): a class of a family with a first-milestone spec is set by its own directive; a class of a family with none is written as a normal class, with Foundation's global styles loaded (ADR 0039's exception):
 
 | Foundation classes | Kind | Element | Set by | Owner |
 | --- | --- | --- | --- | --- |
-| `.show-for-sr` | Another family's (the Visibility Classes) | The visually hidden text of an icon-only label (Rendered HTML, `label--icons`) | `NfsShowForSr` (`[nfsShowForSr]`) | [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md) |
+| `.show-for-sr` | Another family's (Foundation's visibility classes, with no first-milestone spec) | The visually hidden text of an icon-only label (Rendered HTML, `label--icons`) | The consumer, as a normal class (`class="show-for-sr"`) | Foundation's global styles |
 | `.button` | Another family's (the Button) | The Save button of the status usage example | `NfsButton` (`button[nfsButton]`) | [Spec: Button](../issues/37-spec-button.md) |
 
 Foundation's icon examples write Foundation Icon Fonts classes (`fi-*`), an icon library's classes, which are the consumer's own (Out of Scope).
@@ -214,7 +214,7 @@ The axe gate in every story runs the WCAG 2.2 AA rule set (tags `wcag2a`, `wcag2
 
 ### Rendered HTML
 
-Consumer markup, then the server HTML. The hydrated DOM equals the server HTML: the directive declares no listener, so nothing adds `jsaction`. Class order is not significant; Angular also renders the directive attributes and the static attributes that feed inputs (`nfslabel=""`, `color="alert"`), which the resulting DOM below leaves out, as the other specs do. `nfsShowForSr` is the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)'s directive for `.show-for-sr`, imported as `NfsShowForSr` from `ngx-foundation-sites/visibility`; its class belongs to that spec and is shown only to place it.
+Consumer markup, then the server HTML. The hydrated DOM equals the server HTML: the directive declares no listener, so nothing adds `jsaction`. Class order is not significant; Angular also renders the directive attributes and the static attributes that feed inputs (`nfslabel=""`, `color="alert"`), which the resulting DOM below leaves out, as the other specs do. `.show-for-sr` is Foundation's visually hidden class, written as a normal class; it is shown only to place it.
 
 ```html
 <!-- Basics: the label inside the heading it tags -->
@@ -242,7 +242,7 @@ Consumer markup, then the server HTML. The hydrated DOM equals the server HTML: 
 <span class="label alert"><svg aria-hidden="true" ...><path stroke="currentColor" .../></svg> Overdue</span>
 
 <!-- An icon-only label: visually hidden text says what it shows -->
-<span nfsLabel color="success"><svg aria-hidden="true" ...><path stroke="currentColor" .../></svg><span nfsShowForSr>Verified</span></span>
+<span nfsLabel color="success"><svg aria-hidden="true" ...><path stroke="currentColor" .../></svg><span class="show-for-sr">Verified</span></span>
 
 <span class="label success"><svg aria-hidden="true" ...><path stroke="currentColor" .../></svg><span class="show-for-sr">Verified</span></span>
 ```
@@ -276,7 +276,7 @@ Run by `npx nx test-storybook <lib>`. Every story runs axe with `parameters.a11y
 
 - `label--default`: Foundation's Basics as a heading with a label inside ("Quarterly report" and "Draft"). The label carries `.label` and no role; its computed background is Foundation's `$label-background` and its text colour `$label-color`; the heading is found by `getByRole('heading', {name: 'Quarterly report Draft'})`.
 - `label--colors`: Foundation's Coloring example, one label per default palette name plus one with no `color`, each in a table cell of an invoice list whose label text names its meaning ("Draft", "Sent", "Paid", "Due soon", "Overdue"). Each carries its name's class; each computed background differs from the uncoloured one except `primary`'s, which equals it; the computed text colour is `$white` on the uncoloured, primary, secondary, and alert labels and `$black` on success and warning; axe passes `color-contrast` under the required setting.
-- `label--icons`: Foundation's Icons example with inline SVG icons (`aria-hidden="true"`, `stroke` or `fill` in `currentColor`) beside visible text on alert, warning, and uncoloured labels, and one icon-only success label whose hidden text ("Verified") carries `nfsShowForSr` (`NfsShowForSr` from `ngx-foundation-sites/visibility`, in the story's `moduleMetadata.imports`). Each label's text is found and holds no Private Use Area character; each icon's computed stroke equals its label's computed colour.
+- `label--icons`: Foundation's Icons example with inline SVG icons (`aria-hidden="true"`, `stroke` or `fill` in `currentColor`) beside visible text on alert, warning, and uncoloured labels, and one icon-only success label whose hidden text ("Verified") carries Foundation's `show-for-sr` class, written as a normal class. Each label's text is found and holds no Private Use Area character; each icon's computed stroke equals its label's computed colour.
 - `label--in-controls`: Foundation's pairing corrected to links: a list of two message links, the first described by two labels beside it, which the play function asserts with `toHaveAccessibleDescription('High priority Unread')`, the second by one; a tag link with a secondary label inside, found by `getByRole('link', {name: 'Sass'})`, whose label keeps its computed text and background colours after `userEvent.hover` and after focus; the Basics heading again.
 - `label--status`: a "Save" button and a `role="status"` label beside a document title that reads "Unsaved changes"; after a click the label's text is "Saved", its `color` has changed from `warning` to `success`, and focus stays on the button.
 
@@ -321,7 +321,7 @@ Manual release test (ADR 0022): with NVDA on Firefox and Chrome, JAWS on Chrome,
 - A default live role, a `role` or politeness input, or a library announcer (D8): the consumer's native `role="status"` covers the case, and only the consumer knows which labels report a result. Category: `platform-or-a11y`.
 - An input that writes `aria-describedby` on the element a label describes: the native attribute on the consumer's element does it, and a label inside its element needs none (D4). Category: `platform-or-a11y`.
 - A forced-colours rule: measured, label text takes CanvasText on Canvas in Chromium and Firefox, so the painted box disappears and the text stays, and the text carries the meaning (D6). Category: `platform-or-a11y`.
-- The screen-reader-only directive for `.show-for-sr`: the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md). Category: `scope-boundary`.
+- A screen-reader-only directive: the consumer writes Foundation's `.show-for-sr` class, which Foundation's global styles provide. Category: `scope-boundary`.
 - Foundation Icon Fonts (`fi-*`), a separate package the docs use for the Icons example: any icon works, and an icon library's classes are the consumer's own. Category: `scope-boundary`.
 - The Form label (`label[nfsFormLabel]` and its `middle` Variant): the [Spec: Forms](../issues/98-spec-forms.md). Category: `scope-boundary`.
 - Foundation's Badge (`.badge`), the round tag for a count: the [Spec: Badge](../issues/93-spec-badge.md). Category: `scope-boundary`.

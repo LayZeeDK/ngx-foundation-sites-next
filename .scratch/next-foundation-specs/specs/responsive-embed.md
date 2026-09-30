@@ -125,7 +125,7 @@ Host bindings, all on signal state:
 
 - Attribute ownership: the directive owns `.responsive-embed` and the ratio class. It never touches `role`, `id`, `tabindex`, `hidden`, `aria-*`, or anything on the embedded element.
 - Hosts: any element; Foundation's docs use `div`. A video with a caption is a `figure` holding the box and a `figcaption` (ARIA and keyboard). The embedded element is a child of the box, as in Foundation's docs; Foundation's CSS also sizes deeper descendants, which is how `youtube-player` works inside a box (Further Notes).
-- Composition: `nfsResponsiveEmbed` sits beside the XY Grid's cell directive, the Visibility Classes' directives, and Float Classes' directives on one element and binds nothing they bind. A consumer component that is always a Responsive Embed hosts `NfsResponsiveEmbed` through `hostDirectives` and exposes `ratio`, which carries the static host class, so its host metadata names no Foundation class.
+- Composition: `nfsResponsiveEmbed` sits on one element beside Foundation's XY grid cell, visibility, and float classes, which the consumer writes as normal classes (families with no first-milestone spec), and binds none of them. A consumer component that is always a Responsive Embed hosts `NfsResponsiveEmbed` through `hostDirectives` and exposes `ratio`, which carries the static host class, so its host metadata names no Foundation class.
 
 Documented usage. The JSDoc of `NfsResponsiveEmbed` states these four rules and the recipes follow them. The directive reads none of it: markup that departs from a rule renders as written, with the result the rule names.
 
@@ -434,7 +434,7 @@ No Foundation setting is required: Responsive Embed has no colours, and its size
 ### Notes
 
 - RTL: nothing visible flips. Foundation positions the embedded element with `$global-left`, which becomes `right` under `$global-text-direction: rtl`, and the element is 100% wide either way; the library's rules are direction-free.
-- Beside a float the box keeps the ratio of its container's width, not its own: `padding-bottom` percentages resolve against the containing block, so the box beside a 200 px float in a 600 px container is 400 by 337.5 px (measured in three engines). This is Foundation's technique; the [Spec: Float Classes](../issues/105-spec-float-classes.md) notes it too.
+- Beside a float the box keeps the ratio of its container's width, not its own: `padding-bottom` percentages resolve against the containing block, so the box beside a 200 px float in a 600 px container is 400 by 337.5 px (measured in three engines). This is Foundation's technique.
 - Angular's `youtube-player` renders the YouTube API's frame inside two unpositioned `div`s (read in its 22.2 source), so Foundation's descendant rule sizes the frame to the box; its placeholder takes `width` and `height` in px and is not one of Foundation's embedded elements, so inside a box it is written with `disablePlaceholder`, and a `@defer` placeholder takes its place when the load should wait.
 - Forced colours: the box draws nothing, and focus rings are the browser's, which forced-colours mode draws in its system colour.
-- `.responsive-embed` beside the XY Grid's cell directive or inside a cell sizes to the cell's width, because the cell is its containing block.
+- `.responsive-embed` beside Foundation's `.cell` class or inside a cell sizes to the cell's width, because the cell is its containing block.

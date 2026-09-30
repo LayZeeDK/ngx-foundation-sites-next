@@ -149,3 +149,11 @@ From [Re-run: specs without checks, group d](168-rerun-specs-without-checks-grou
 ### Amendment, 2026-09-30 (audit 0009)
 
 - [Audit 0009: the later-milestone checks wave](../audits/0009-later-milestone-checks-wave.md), H1: the spec no longer names `nfs-top-bar`, which the first milestone does not have (the Sass sources paragraph, the Sass compile test, the Top Bar dependency line, D24, the Top Bar settings lead, the include list, and the missing-include sentence); a menu in a Top Bar needs only the Top Bar spec's two required settings.
+
+### Amendment, 2026-09-30 (later-milestone families)
+
+From [Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md), applied by [Re-run: specs without the later-milestone families, group b](177-rerun-specs-without-later-families-group-b.md): `specs/responsive-menu.md` no longer assumes the XY, Float, or Flex Grid, the Typography Helpers, or the four Utilities specs, names none of their directives, and links none of them. Their classes are Foundation's normal classes, which the consumer and the library's own stories write, with Foundation's global styles loaded (ADR 0039's exception for a family with no first-milestone spec). What changed:
+
+- The back items' hidden suffix is `<span class="show-for-sr">`, a normal class: the class-mapping row, the hierarchy block, the back-item ARIA row, the Rendered HTML lead and markup, the Out of Scope bullet, D23, the usage example lead and `imports` (the visibility directive is dropped), the Sass include note, the SSR fixture wording, and the class-rule Note say so.
+- D23's rejected alternative "a consumer-written `show-for-sr` class (forbidden by ADR 0039)" is now the decision; the rejected alternative is a Responsive Menu directive for the suffix.
+- Unchanged: the directive, the rules input, the swap, the hosted Menu and its inputs, ARIA and keyboard per mode, the rendering modes, and the Story ids.

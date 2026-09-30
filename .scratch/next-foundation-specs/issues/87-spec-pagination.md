@@ -179,3 +179,11 @@ From [Re-run: specs without checks, group d](168-rerun-specs-without-checks-grou
 - The "Runtime checks: none" paragraph goes: Pagination has no Variant input or property, so the spec says only that.
 - Kept: the four directives, their classes and `aria-hidden`, the three `nfs-pagination` rules, the stories and their axe gate (the computed current-fill ratios in `pagination--basic` included), the browser-level host-binding and Router cases, the SSR smoke, the Sass compile of the rules, and the e2e layer. D11 is removed and the other decision numbers are kept, so citations of D12 to D14 stay valid.
 - No API, class, ARIA, keyboard, or rendering change. Impact LOW, confidence HIGH (a user ruling applied); nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-30 (later-milestone families)
+
+From [Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md), applied by [Re-run: specs without the later-milestone families, group b](177-rerun-specs-without-later-families-group-b.md): `specs/pagination.md` no longer assumes the XY, Float, or Flex Grid, the Typography Helpers, or the four Utilities specs, names none of their directives, and links none of them. Their classes are Foundation's normal classes, which the consumer and the library's own stories write, with Foundation's global styles loaded (ADR 0039's exception for a family with no first-milestone spec). What changed:
+
+- Centring is Foundation's `.text-center`, written as a normal class (`<ul nfsPagination class="text-center">`): the Solution, user story 11, the Foundation contract row, the docs conventions, the class-mapping rows for `.text-center` and `.show-for-sr`, the Rendered HTML note and markup, `pagination--centered`, the Out of Scope bullet, D7's rejected alternative, and D10 say so.
+- The "Foundation behaviour changed or dropped" bullet on `.text-center` is removed, because the class is now written as Foundation writes it. The Problem Statement's class-rule line now reads "no class of a Foundation family that has a first-milestone spec".
+- Unchanged: the four directives, the current and disabled rules, ARIA, the rendering modes, the Library mixin, and the Story ids.
