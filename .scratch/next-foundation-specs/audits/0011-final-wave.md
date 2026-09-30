@@ -204,3 +204,19 @@ Hygiene:
 12. No non-ASCII character, no banned word, no banned pair, and no table row with the wrong cell count in the wave's 110 files; no unresolved relative link outside quoted replacement text and gist lines in the whole bundle; the 11 commit messages are lower-case `docs(wayfinder): ...` subjects with bodies that give the why and no attribution line, and the one wrong phrase in `40a28fa` is corrected in `466bdde`'s body.
 
 ## Resolution log
+
+Every finding was fixed as its Fix states, by one Opus 5.5 fixer at low effort, in commit `9e1c8d6`; none became a ticket, none was rejected, and none adds an OPEN FOR HUMAN item. Its apply script required each quoted text to match exactly once before it wrote any file, and its check script verified the edits over 29 files, with a positive control. Where a Fix corrects a claim in a resolved ticket, the claim stays as written and a dated note, `Note, 2026-10-01 (audit 0011): ...`, follows it, in place of the Fix's in-place rewrite or its "Correction" label.
+
+| Finding | Where |
+| --- | --- |
+| M1 | `README.md` (the link repair shown resolved at three places; the open item under building-blocks Part 4 marked as ruled) |
+| M2 | thirteen statements in `specs/card.md`, `specs/breakpoint-service.md` (three), `specs/slider.md`, `specs/orbit.md`, `specs/variant-declaration-tooling.md`, `specs/dropdown.md` (two), `specs/toggler.md`, `specs/tabs.md` (two), `specs/responsive-toggle.md`; a dated note after recorded point 6 of [Consistency review: the later-milestone waves](../issues/180-consistency-review-later-milestone-waves.md); amendments in the nine specs' amendment homes |
+| M3 | `architecture-guide.md` (a dated paragraph after P3's Rule); a dated note after the closing pass's shared-documents paragraph in [Consistency review: the later-milestone waves](../issues/180-consistency-review-later-milestone-waves.md) |
+| L1 | `specs/tooltip.md` (two places), `specs/dropdown.md`; amendments in their amendment homes |
+| L2 | `specs/responsive-menu.md`; amendment in its amendment home |
+| L3 | `specs/misuse-warnings.md` (Flex Grid 1, XY Grid 1); amendment in [Spec: misuse warnings (later milestone)](../issues/161-spec-misuse-warnings-later-milestone.md) |
+| L4 | a dated note after the Progress Bar's closing-pass amendment line, in [Spec: Progress Bar](../issues/95-spec-progress-bar.md) |
+| L5 | [Decide: grids, typography, and utilities move to a later milestone](../issues/174-decide-grids-typography-utilities-later-milestone.md) gains its `## Answer` heading; its Decision, The wave, and Triage headings move one level down |
+| L6 | `README.md` (eleven audits; the final wave in the audit list; the later-waves section heading names this audit) |
+
+The Card's and the Tooltip's amendment homes hold no 2026-09-30 consistency-review heading, because neither spec changed in that review; the fixer used the tickets this audit's Fixes point to (Spec: Card, and the Tooltip's class-rule re-run, the L1 fallback).
