@@ -302,3 +302,26 @@ Hygiene:
 13. No non-ASCII character, no banned word, no banned pair, and no table row with the wrong cell count in the 159 files; no unresolved relative link outside proposal text, gist lines, and verbatim quotes; the 18 commit messages are clean lower-case `docs(wayfinder): ...` subjects with no attribution line.
 
 ## Resolution log
+
+Every finding but M6 was fixed as its Fix states, by one Opus 5.5 fixer at low effort, in commit `06bcd17`; M6 became [Re-run: family checks and misuse warnings specs, spec-shape subsections](../issues/172-rerun-family-and-misuse-specs-spec-shape.md), open. No finding was rejected, and none adds an OPEN FOR HUMAN item.
+
+| Finding | Where |
+| --- | --- |
+| H1 | `specs/responsive-menu.md` (seven places, the compile test included), `specs/dropdown-menu.md` (three), `specs/off-canvas.md`, `building-blocks.md` (the DropdownMenu row); amendments in tickets 115, 113, 117 |
+| H2, L5 | `specs/misuse-warnings.md` (S12 and the Off-canvas and Triggers entries), `specs/forgotten-import-checks.md` (six places and the Off-canvas closing entry), `specs/family-checks.md` (F5); amendments in tickets 161, 164, 160 |
+| M1 | `specs/family-checks.md`, ticket 160, `README.md`, `map.md` (two lines), ticket 159's gist and a correction after its counts |
+| M2 | ADRs 0023 and 0026 (a dated Consequences note each) |
+| M3 | `architecture-guide.md` P22 |
+| M4 | `specs/equalizer.md`, `specs/dropdown-menu.md`, `specs/top-bar.md`; amendments in tickets 126, 113, 148 |
+| M5 | `specs/flexbox-utilities.md` (two rows, the second a `.flex-child-<size>` row with the same error); amendment in ticket 103 |
+| M6 | ticket, open |
+| L1 | `map.md` (the spec count and the Forgotten imports note), `README.md` (the Sass claim, the audit count, the wave heading and item 4) |
+| L2 | three places; amendments in tickets 127, 126 |
+| L3 | `specs/runtime-checks.md` (Q1/Q2 for the request rules, the import list, the ADR 0018 citation), ticket 162 |
+| L4 | `specs/family-checks.md` (F4, Drilldown check 3, story 43), `specs/forgotten-import-checks.md` (story 46) |
+| L6 | `specs/equalizer.md` |
+| L7 | `specs/flexbox-utilities.md` (usage 5 and its decision row); amendment in ticket 103 |
+| L8 | ticket 123 (Abide's `exportAs` amendment), `audits/0008-class-rule-wave.md` (a dated line at the end of its resolution log), `specs/tooltip.md` (`nfsTooltipDescription`, `nfsTooltipTip`, by the user's ruling of 2026-09-30, "Name them anyway"); amendment in ticket 119 |
+| L9 | `specs/table.md`, `specs/slider.md`; amendments in tickets 92, 124 |
+
+Departures from the Fixes, each needed for the Fix to hold: the S12 paragraph also lists the element check 4 reports (a modal panel's `nfsClose` or `nfsToggle`); M5's second row had the same error and was fixed too; in the Tooltip's fenced code block the names are written without backticks. Ticket 160's Verification paragraph still says "46 checks", as a record of what its script checked.
