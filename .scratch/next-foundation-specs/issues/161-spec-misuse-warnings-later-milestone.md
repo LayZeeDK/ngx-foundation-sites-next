@@ -130,3 +130,18 @@ For [Task: shared documents for the later-milestone checks](171-task-shared-docu
 From [Audit 0010: the later-milestone families wave](../audits/0010-later-milestone-families-wave.md); `specs/misuse-warnings.md` was revised in place:
 
 - M7: the Foundation contract's lead-in lists the four report sites the search missed and says this spec has no counterpart for them; no check changes.
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves)
+
+From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md), group g (`research/consistency-review-later-waves-group-g.md`); `specs/misuse-warnings.md` was revised in place:
+
+- Header: a Milestone line, and Nx 23.2 and TypeScript 6.0.x among the target versions (the ticket's checks 2 and 5).
+- S1, S2, S7, and S9: the building-blocks 1.4, 1.5, and P23 rules are cited as usage rules, which they now are, and the report is this spec's (building-blocks 1.4 and 1.5; architecture guide P23).
+- S1's "Not reported", Button Group 5, Media Object 1, and Testing Decisions layer 1: a class of a family [Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md) moved is a normal class until that family's spec lands, so the clauses that report one land no earlier than it (its decision 3; ADR 0039's exception; the Button Group's D9, the Media Object's D4).
+- Off-canvas check 6: the fix it names is Foundation's `hide-for-<bp>` class, as the Off-canvas spec's documented usage 6 writes it, or `nfsVisibility` once the Visibility Classes spec lands.
+- Drilldown 7: `js-drilldown-back` is the back item's static host class and merges in every mode, as the Drilldown spec's mapping and D7 state.
+- Common contract 6: the Button, Button Group, and Off-canvas entries share the read phase with their Runtime check too, as the Runtime checks spec's entries say.
+- WCAG 2.2 AA table, the 4.1.2 row: the Forms' `NfsFormLabel` and `NfsInputGroupField`, whose messages name 4.1.2.
+- Orbit: the unknown-`selected` warning sits in the API bullet on `selected` (now Documented usage 9); the Orbit spec has no Behaviour rules section.
+- Out of Scope, the rejected checks: the Typography Helpers', Visibility Classes', and Toggler's rejected checks, which the re-runs removed from their decision rows.
+- What the later milestone adds back: the Abide heading is "Foundation behaviour dropped or changed"; the Menu, Nested menu, Off-canvas, Orbit, Pagination, Progress Bar, Responsive Accordion Tabs, Responsive Menu, Responsive Toggle, Reveal, Slider, Smooth Scroll, Sticky, Table, Thumbnail, Toggler, Tooltip, Top Bar, Triggers, Typography Helpers, Visibility Classes, and XY Grid entries name the user stories and decisions that named a warning at `53144f3`, and drop those that never did (the Smooth Scroll has no user story 51).

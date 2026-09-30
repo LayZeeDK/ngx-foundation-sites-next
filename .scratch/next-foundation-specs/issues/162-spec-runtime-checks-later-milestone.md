@@ -133,3 +133,15 @@ ADRs, each a dated note after the last one:
 ### Amendment, 2026-09-30 (audit 0009)
 
 - [Audit 0009: the later-milestone checks wave](../audits/0009-later-milestone-checks-wave.md), L3: the two presence-request rules are Q1 and Q2, apart from the presence markers P1 to P5; the entry points that gain a `media-query` import add the Button Group, the Progress Bar, and the Responsive Embed (the spec and decision 3); the production-mode Storybook build cites ADR 0018.
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves)
+
+From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md), group g (`research/consistency-review-later-waves-group-g.md`); `specs/runtime-checks.md` was revised in place:
+
+- Header: a Milestone line (the ticket's check 2).
+- Milestone and what this spec needs, the Flexbox Utilities entry's Properties bullet, Rendered output, Out of Scope, and D4: the registries and Variant properties of the eight families [Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md) moved go with those families (its decision 4), so they are not first-milestone Sass, and those families' requests land no earlier than their specs; decision 6 of this ticket's Answer, which says the same of the first milestone, stays as the record of its day.
+- Milestone and what this spec needs, and D4: when the forgotten-import checks spec lands first it brings only its two keys and the development path, and `provideNfsProductionRuntimeChecks` comes with this spec, as that spec's The two `NfsRuntimeChecks` keys says.
+- User Stories and the Typography Helpers entry and row: user story 36, the Typography Helpers' story 5 at `53144f3`, which the manifest missed.
+- Testing Decisions, the Button Group case: the report names `nfsButtonGroup`, the handle's name, not the class.
+- What the later milestone adds back, the menu-roots row: the Responsive Menu's two sentences, in CSS class to Angular mapping and in API.
+- Design decisions, the closing list of component decisions: the Flex Grid's D12 and the Float Grid's D10 and D12, which the entries cite.

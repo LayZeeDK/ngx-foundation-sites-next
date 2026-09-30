@@ -292,3 +292,15 @@ From [Re-run: forgotten-import checks spec for the later milestone](164-rerun-fo
 - Messages: M2 and M3 also come from a family's own check through the helper. Testing Decisions: the three cases of 157, and the family specs' tests come back with their lines. Out of Scope: the first milestone. Design decisions D30 to D33.
 
 Unchanged: the four checks, the Selector manifest, the verdict, the `strictParents` table and kept-optional list, the static check, M1 and M4 to M10, NFS9001 to NFS9004, and every test layer's existing cases. Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves)
+
+From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md), group g (`research/consistency-review-later-waves-group-g.md`); `specs/forgotten-import-checks.md` was revised in place:
+
+- In-family checks, the parent check's third case: "the development warning building-blocks 1.9 already requires" becomes "required ... before the checks moved; the later milestone restores that rule", because building-blocks 1.9's Parent handle bullet no longer names a warning ([Decide: checks move to a later milestone](158-decide-checks-move-to-a-later-milestone.md)).
+- Solution, the API bullet on `nfsReportForgottenPeer`, the family-check bullet of In-family checks, and the closing section's lead-in: the misuse warnings spec's registration checks are five, not four, adding the Off-canvas panel's check 4, as `specs/misuse-warnings.md` S12 and audit 0009's L5 have it.
+- Family entries' lead-in: the glossary's In-family check term is recorded as the shared manifest's `family:` entry handed to this kind, as the family checks spec records.
+- Messages, M9: labelled "the Variant tooling's M9 in this tool's form", because its text differs from the tooling spec's M9.
+- Testing Decisions, layer 4: the Storybook half cites ADR 0018, not P23, for the production-mode static build (P23 no longer says it; audit 0009 L3 made the same fix in the Runtime checks spec).
+- Closing section: a sentence on the quoted lines that name a directive of a family [Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md) moved (that clause names Foundation's class while the spec writes it as a normal class); the Breadcrumbs and Pagination entries say their declaration-site notes were dropped by the first milestone and how they come back.
+- In-family checks, the family rule's lead-in: a spec states its imports as documented usage in an Imports bullet or through its usage examples (the architecture guide's P24), because six multi-directive specs (Responsive Toggle, Slider, Sticky, Switch, Table, Tabs) have no Imports bullet.
