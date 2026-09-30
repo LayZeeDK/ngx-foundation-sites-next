@@ -172,3 +172,23 @@ Triage: impact LOW (examples and a story), confidence HIGH (ADR 0019, Foundation
 ### Amendment, 2026-09-29 (exportAs on every directive)
 
 - [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md): `NfsStickyContainer` gains `exportAs: 'nfsStickyContainer'` for the first time; `NfsSticky` already had `exportAs: 'nfsSticky'`.
+
+### Amendment, 2026-09-29 (checks move to a later milestone)
+
+From [Re-run: specs without checks, group e](169-rerun-specs-without-checks-group-e.md), under [Decide: checks move to a later milestone](158-decide-checks-move-to-a-later-milestone.md); `specs/sticky.md` was revised in place. The spec describes and accepts a Sticky with no checks: each rule a check enforced is now documented usage in its API text (usage rules 1 to 6 under API, stated in the directive's JSDoc).
+
+What left the spec, per check, and where its rule now stands:
+
+- Forgotten-import: the In-family line (`NfsStickyContainer`'s `nfsDirectiveCheck` probe of `nfsSticky` elements, `NfsSticky`'s `nfsDirectiveCheck`, and the hand-off of a parent that carries `nfsStickyContainer` without its class to `strictDirectiveImports` and the static check) -- no rule to state beyond importing the directives the template uses; usage rule 1 names the parent's `nfsStickyContainer`. [Re-run: forgotten-import checks spec for the later milestone](164-rerun-forgotten-import-checks-later-milestone.md)
+- Family: development warning 1 (the parent is not positioned) -- usage rule 1: put `nfsStickyContainer` on the sticky element's parent. [Spec: family checks (later milestone)](160-spec-family-checks-later-milestone.md)
+- Family: development warning 2 (the parent is no taller than the element) -- usage rule 2: the parent spans the range and is taller than the element; the Foundation-contract note on the title-bar example now points at it. [Spec: family checks (later milestone)](160-spec-family-checks-later-milestone.md)
+- Misuse: development warning 3 (an `overflow: hidden` ancestor is the scroll container) -- usage rule 3 (`overflow: clip`), D20 and the off-canvas usage note. [Spec: misuse warnings (later milestone)](161-spec-misuse-warnings-later-milestone.md)
+- Misuse: development warning 4 (leftover `data-anchor`, `data-top-anchor`, `data-btm-anchor`) -- usage rule 4; D3. [Spec: misuse warnings (later milestone)](161-spec-misuse-warnings-later-milestone.md)
+- Misuse: development warning 5 (a focused element hidden behind a stuck element) and its development-only `focusin` listener -- usage rule 5 (`scroll-padding`), the WCAG 2.4.11 row, D15, and the Out of Scope line on automatic `scroll-padding`; the `sticky--navigation` story and the e2e focus-not-obscured case stay as the library's own tests. [Spec: misuse warnings (later milestone)](161-spec-misuse-warnings-later-milestone.md)
+- D12 (five development-mode warnings) is rewritten to the six usage rules; D16 drops its copied-State-class warning alternative and its Runtime check mention.
+- Mentions rewritten: user stories 20, 21, 22, 23, and 39 (numbering kept); the mapping paragraph's "requests no Runtime check" and its "not reported" notes; measurement step 1's warning; the WCAG 2.4.11 row and the note under the WCAG table; the Rendering modes list of what starts in the first render callback; the Testing Decisions intro; the browser-level host-binding case's "no warning is logged" and the development-warnings case; the e2e focus case's "no development warning is logged"; D20; the off-canvas usage note; Sass item 6.
+- Other specs' checks the spec quoted: the Breakpoint service's unknown-name warning for a malformed `stickyOn` (now usage rule 6 and "`NfsMediaQuery.is()` answers `false`"), the Breakpoint service's drift check in D4 (now "while the Breakpoint map matches the consumer's `$breakpoints`, as the Breakpoint service spec documents"), the Top Bar spec's compile-time contrast check in the WCAG 1.4.3 row, and the checks-only `nfs-title-bar` in the Storybook preview note (now "the Top Bar spec's title-bar lines").
+
+Kept: no parent injection (the Sticky range is the DOM parent), the State-class bindings and their stripping of a copied State class, the `stickyOn` gate and `width: auto` rules of `nfs-sticky`, the measurement, ARIA, and focus behaviour, and the library's own stories, browser-level, node-level, SSR, Sass-output, and e2e tests, the 2.4.11 and 1.4.10 cases included.
+
+Triage: impact LOW (documented markup rules replace development warnings; no API changes; each check keeps its design in its later-milestone spec), confidence HIGH (the ruling's Decision items 2 to 4). Nothing is OPEN FOR HUMAN.

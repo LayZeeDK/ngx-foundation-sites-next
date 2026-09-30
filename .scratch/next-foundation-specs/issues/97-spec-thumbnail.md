@@ -157,3 +157,19 @@ Triage: impact LOW (wording), confidence HIGH. Nothing is OPEN FOR HUMAN.
 ### Amendment, 2026-09-29 (exportAs on every directive)
 
 - [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md): `NfsThumbnail` gains `exportAs: 'nfsThumbnail'` for the first time.
+
+### Amendment, 2026-09-29 (checks move to a later milestone)
+
+From [Re-run: specs without checks, group e](169-rerun-specs-without-checks-group-e.md), under [Decide: checks move to a later milestone](158-decide-checks-move-to-a-later-milestone.md); `specs/thumbnail.md` was revised in place. The spec describes and accepts a Thumbnail with no checks: each rule a check enforced is now documented usage in its API text and usage rules (three usage rules, numbered as the checks were, stated in the directive's JSDoc).
+
+What left the spec, per check, and where its rule now stands:
+
+- misuse: check 1 (no text alternative) -- usage rule 1: every thumbnail image has an `alt` (WCAG 1.1.1), `alt=""` where the text beside it says the same or the image is decoration; an image hidden from assistive technology on purpose needs none. [Spec: misuse warnings (later milestone)](161-spec-misuse-warnings-later-milestone.md)
+- misuse: check 2 (an `a` host without `href`, or with no name) -- usage rule 2: a Linked thumbnail has a real `href` (2.1.1), an action is a `<button type="button">`, and the image's `alt` names the destination (2.4.4, 4.1.2). [Spec: misuse warnings (later milestone)](161-spec-misuse-warnings-later-milestone.md)
+- misuse: check 3 (a thumbnail inside a plain link) -- usage rule 3: the directive goes on the link, never on the image or a wrapper inside a plain link or inside a Linked thumbnail (2.4.7). [Spec: misuse warnings (later milestone)](161-spec-misuse-warnings-later-milestone.md)
+- The development-only `ElementRef` injection and the render callback that ran the checks: the directive now injects nothing and has no render callback.
+- Mentions rewritten: the Solution paragraph; user stories 9 to 13 (documented-usage stories, numbering kept); Hierarchy and DI shape's injection line; the Material comparison's two rows; Implementation level and Fallback; the Focus paragraph; the WCAG rows 1.1.1, 2.4.4 and 4.1.2, 2.1.1, and 2.4.7 (their tests are now the axe rules, the play functions, and the e2e ring case) and the axe-gate paragraph; Rendering modes' before-hydration bullet; the browser-level cases for checks 1 to 3 and the once-at-first-render case; the SSR smoke's no-warning clause; the "no Runtime check, no copied-class check" bullet; three Out of Scope lines that only declined further checks (a clipping-ancestor check, an NG02952 predictor, a 2.5.8 size check); D2 (no Runtime check), D4 (now the three usage rules; its citations of the Card's D10, the Close Button's and the Menu icon's name checks, and the Button's placeholder warning are gone), D5 and D7 (rejected check alternatives dropped), D8 (the Triggers' typeless-button warning replaced by the native fact that a typeless button in a form submits it), D10; Foundation behaviour changed or dropped. The Problem Statement's and the Material comparison's words for `NgOptimizedImage`'s own NG02952 diagnostic, and the browser-level test that pins it (now "a spy on the console"), no longer use the word the checks used.
+
+Kept: no parent and no injection; native ARIA; no input; no Library mixin; the library's own tests (axe in every story, the play functions, the browser-level host-class, composition, and NG02952 cases, the SSR smoke, e2e); Angular's own NG02952, which the docs explain (D5).
+
+Triage: impact LOW (development-only diagnostics leave; the rules stay as documented usage, and the stories still pass the axe gate), confidence HIGH (the ruling of ticket 158). Nothing is OPEN FOR HUMAN.

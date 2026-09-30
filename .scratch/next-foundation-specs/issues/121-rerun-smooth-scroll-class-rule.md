@@ -101,3 +101,19 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - Unchanged (confirmed): R48 (D13 already states the Angular 22 fact); CR-A, CR-C, and CR-D hold. The directive is a single directive with no parent, child, or peer, so it adds no In-family line (the family rule of [Spec: forgotten-import checks (shared utility)](150-spec-forgotten-import-checks.md)); D13 states the Menu written beside it.
 
 Triage: impact LOW (one sentence), confidence HIGH. Nothing is OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (checks move to a later milestone)
+
+From [Re-run: specs without checks, group e](169-rerun-specs-without-checks-group-e.md), under [Decide: checks move to a later milestone](158-decide-checks-move-to-a-later-milestone.md); `specs/smooth-scroll.md` was revised in place. The spec describes and accepts a Smooth Scroll with no checks: each rule a check enforced is now documented usage in its API text and usage rules.
+
+What left the spec, per check, and where its rule now stands:
+
+- Misuse warning: the `<base href>` link (an `href` that starts with `#` but resolves to another document, at first render and at click time) -- usage rule 3 in the API section: under `<base href>`, write no bare `#id` link inside `nfsSmoothScroll` on a route other than the base URL; bind the current path (`routerLink` with `fragment`, or an `href` built from the current path). [Spec: misuse warnings (later milestone)](161-spec-misuse-warnings-later-milestone.md)
+- Misuse warning: a handled link whose fragment names no element -- usage rule 2: give every in-page link's fragment a matching `id` (or an `a[name]`); such a link is left to the browser (click handling step 4, unchanged). [Spec: misuse warnings (later milestone)](161-spec-misuse-warnings-later-milestone.md)
+- Misuse warning: a link host that is not an `a` and holds no link -- usage rule 1: put `nfsSmoothScroll` on an `a[href]`, or on a container that holds at least one in-page link. [Spec: misuse warnings (later milestone)](161-spec-misuse-warnings-later-milestone.md)
+- With the three warnings, the development-only `afterNextRender` that ran them left the spec: the directive now uses no render hook (Implementation level and primitives), and the pure in-page decision takes no raw `href`.
+- Mentions rewritten: user stories 15 and 16 (now ask for the documented rules); click handling step 4 (the missing-id warning); Rendered HTML's `<base href>` paragraph and Rendering modes' dehydrated link-host case (both now point at usage rule 3); the browser-level test's development-check case (removed; the link-filter case that a `#`-only `href` under `<base href>` is not handled stays); D9 (the warning dropped from its decision; its rationale that a bare link under `<base href>` fails on the first click in development stays, because that is the link's own behaviour); Sass item 6 (the Runtime-check clause).
+
+Kept: the click handling and its link filter, `scrollTo`, focus and reduced-motion behaviour, the ARIA and WCAG rows, the `nfs-smooth-scroll` Library mixin and its Sass compile test, and every story, browser-level, node-level, and e2e case of behaviour.
+
+Triage: impact LOW (development messages become documented usage; no API, behaviour, or story changes), confidence HIGH (the ruling; the group e manifest). Nothing is OPEN FOR HUMAN.
