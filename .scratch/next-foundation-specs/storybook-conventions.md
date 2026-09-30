@@ -108,25 +108,21 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
 @include nfs-pagination; // Pagination: the current and disabled looks from ARIA and the 24 px floor; every pagination--* story
 @include nfs-breadcrumbs; // Breadcrumbs: the current link's colour, silent separators, 24 px targets, and the direction; every breadcrumbs--* story
 @include nfs-progress-bar; // Progress Bar: meter text colours and --nfs-foundation-palette; every progress-bar--* story
-@include nfs-table; // Table: the stacked footer and the table contrast checks; every table--* story
-@include nfs-switch; // Switch: the focus ring, forced colours, reduced motion, and contrast and height checks; every switch--* story
-@include nfs-badge; // Badge: text contrast check, the text colour where Foundation's pick is the worse, and --nfs-badge-palette; every badge--* story
-@include nfs-label; // Label: text contrast check, the text colour where Foundation's pick is the worse, and --nfs-label-palette; every label--* story
+@include nfs-table; // Table: the stacked footer; every table--* story
+@include nfs-switch; // Switch: the focus ring, forced colours, and reduced motion; every switch--* story
+@include nfs-badge; // Badge: the text colour where Foundation's pick is the worse, and --nfs-badge-palette; every badge--* story
+@include nfs-label; // Label: the text colour where Foundation's pick is the worse, and --nfs-label-palette; every label--* story
 @include nfs-menu-icon; // Top Bar: the menu icon's 24 px box and its forced-colours bars; every story with a menu icon (Top Bar, Responsive Toggle, Off-canvas, Triggers)
-@include nfs-title-bar; // Top Bar: title-bar contrast checks
-@include nfs-top-bar; // Top Bar: Top Bar contrast checks
-@include nfs-card; // Card: overflow-wrap for words the card would cut off (1.4.10, 1.4.12) and text and link contrast checks; every card--* story
+@include nfs-card; // Card: overflow-wrap for words the card would cut off (1.4.10, 1.4.12); every card--* story
 @include nfs-responsive-embed; // Responsive Embed: the clip released while the box holds focus (2.4.7) and --nfs-responsive-embed-ratios; every responsive-embed--* story
-@include nfs-off-canvas; // Off-canvas: reduced motion, the wrapper clip, panel contrast checks; every off-canvas--* story
-@include nfs-media-object; // Media Object: --nfs-media-object-section for the Variant check; every media-object--* story
+@include nfs-off-canvas; // Off-canvas: reduced motion and the wrapper clip; every off-canvas--* story
 @include nfs-float-grid; // Float Grid: the three Variant properties; every float-grid--* story
-@include nfs-flexbox-utilities; // Flexbox Utilities: --nfs-flex-source-ordering-count and --nfs-flexbox-responsive-breakpoints for the Runtime checks; every flexbox-utilities--* story that binds order or a responsive helper
+@include nfs-flexbox-utilities; // Flexbox Utilities: --nfs-flex-source-ordering-count for the Variant declaration file's generator; every flexbox-utilities--* story that binds order or a responsive helper
 // ... one @include nfs-<plugin> per plugin that has a Library mixin, after foundation-everything,
 // with the arguments its spec names (for example @include nfs-responsive-toggle(xlarge xxlarge);).
 @include nfs-smooth-scroll; // Smooth Scroll: smooth native jumps on html; play functions scroll with behavior: 'instant'
 @include nfs-prototyping-utilities; // Prototyping Utilities: responsive spacing in breakpoint order and the Variant properties; every prototyping-utilities--* story and every story whose scaffolding uses a Utility attribute
-@include nfs-typography-base; // Typography Helpers: the heading small-text and blockquote contrast checks
-@include nfs-typography-helpers; // Typography Helpers: list grid margins under nfsNoBullet and the subheader, citation, and code contrast checks; every typography-helpers--* story and every story whose list grid uses nfsNoBullet
+@include nfs-typography-helpers; // Typography Helpers: list grid margins under nfsNoBullet; every typography-helpers--* story and every story whose list grid uses nfsNoBullet
 ```
 
 - Foundation's settings file is imported, not copied: stories then show Foundation 6.9's defaults exactly, and every deviation is visible in one short file. The settings file's own first line, `@import 'util/util'`, needs `node_modules/foundation-sites/scss` on the Sass load path, as Foundation's docs tell every consumer; `main.ts` adds it in `viteFinal` (`css.preprocessorOptions.scss.loadPaths`). Whether `@storybook/addon-vitest`'s run picks up that `viteFinal` the same way `storybook build` does is proved by the first story of the new repository; if it does not, the same path goes into `storybookAngularVitest({stylePreprocessorOptions: {includePaths: [...]}})`, which the framework's options plugin turns into Sass load paths (`@storybook/angular-vite` `dist/preset.js:1294-1310`).
@@ -135,7 +131,7 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
 
   ```scss
   // color-contrast (1.4.3) and non-text contrast (1.4.11): Foundation's selected tab is about 3.76:1 (axe reports 3.75)
-  // and its selected look 1.24:1, and nfs-tabs stops the compile on both. Spec: Tabs, tabs--default;
+  // and its selected look 1.24:1, and the Tabs spec requires both lines. Spec: Tabs, tabs--default;
   // also Responsive Accordion Tabs in tabs mode.
   $tab-background-active: $primary-color;
   $tab-active-color: $white;
@@ -145,8 +141,8 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
   // It reaches buttons and button groups only.
   $button-palette: map-merge($foundation-palette, ('alert': #bf3f2c, 'success': #177a3d, 'warning': #8a5a00));
 
-  // color-contrast (1.4.3): Foundation's default Top Bar puts $anchor-color links at 3.76:1, and nfs-top-bar
-  // stops the compile. Spec: Top Bar, every top-bar--* story; also the Dropdown Menu (dropdown-menu--top-bar),
+  // color-contrast (1.4.3): Foundation's default Top Bar puts $anchor-color links at 3.76:1, which the Top Bar
+  // spec's required settings fix. Spec: Top Bar, every top-bar--* story; also the Dropdown Menu (dropdown-menu--top-bar),
   // Nested menu, Magellan (magellan--sticky-top-bar), Responsive Menu, and Responsive Toggle
   // (responsive-toggle--default) stories that show a Top Bar.
   $topbar-background: $white;
@@ -169,12 +165,12 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
   $input-border: 1px solid $dark-gray;
   $input-border-focus: 1px solid $black;
 
-  // color-contrast (1.4.3): Foundation's disabled breadcrumb is 1.63:1 (axe reports 1.62), and nfs-breadcrumbs
-  // stops the compile. Spec: Breadcrumbs, breadcrumbs--basic.
+  // color-contrast (1.4.3): Foundation's disabled breadcrumb is 1.63:1 (axe reports 1.62), a required setting
+  // of the Breadcrumbs spec. Spec: Breadcrumbs, breadcrumbs--basic.
   $breadcrumbs-item-color-disabled: #737373;
 
   // Non-text contrast (1.4.11) and color-contrast (1.4.3): the off track is 1.63:1 against the page and the knob,
-  // and white inner-label text 1.63:1 on it; nfs-switch stops the compile. Spec: Switch, every switch--* story.
+  // and white inner-label text 1.63:1 on it; the Switch spec requires the setting. Spec: Switch, every switch--* story.
   $switch-background: #767676;
   // Foundation's settings file set the focus track from the old colour; without this line it stays 2.02:1.
   $switch-background-focus: scale-color($switch-background, $lightness: -10%);
@@ -185,17 +181,17 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
   $form-label-color-invalid: #bf3f2c;
   $input-background-invalid: #bf3f2c;
 
-  // Non-text contrast (1.4.11) and 1.4.3 over images: nfs-orbit stops the compile on Foundation's bullets
-  // (1.63:1) and caption band (3.68:1 over #fff, exact formula). Spec: Orbit, every orbit--* story.
+  // Non-text contrast (1.4.11) and 1.4.3 over images: Foundation's bullets fail
+  // (1.63:1), as does its caption band (3.68:1 over #fff, exact formula); the Orbit spec requires these. Spec: Orbit, every orbit--* story.
   $orbit-bullet-background: $dark-gray;
   $orbit-bullet-background-active: $black;
   $orbit-caption-background: rgba($black, 0.6);
 
-  // Non-text contrast (1.4.11): nfs-slider stops the compile on Foundation's fill against its track
+  // Non-text contrast (1.4.11): Foundation's fill fails against its track
   // (about 1.3:1); the Slider spec's example passing fill. Spec: Slider, every slider--* story.
   $slider-fill-background: $primary-color;
 
-  // Non-text contrast (1.4.11) and color-contrast (1.4.3): on Foundation's defaults nfs-off-canvas stops the compile on the
+  // Non-text contrast (1.4.11) and color-contrast (1.4.3): on Foundation's defaults the Off-canvas panel fails on the
   // close button (2.77:1 on $light-gray) and links are 3.76:1 (exact WCAG formula). With the Callout lines below they would
   // pass on $light-gray (3.64:1 and 4.86:1); the Off-canvas stories keep the setting the spec documents.
   // Spec: Off-canvas, every off-canvas--* story.
@@ -213,7 +209,7 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
   $anchor-color-hover: scale-color($anchor-color, $lightness: -14%);
   $closebutton-color: #767676;
 
-  // color-contrast (1.4.3): nfs-progress-bar stops the compile on Foundation's alert fill, whose $white meter
+  // color-contrast (1.4.3): Foundation's alert fill fails, a required setting of the Progress Bar spec: its $white meter
   // text is 4.498:1 (4.36:1 with $black; axe reports 4.49). Spec: Progress Bar, progress-bar--with-text and
   // progress-bar--colors. It reaches every class Foundation's mixins loop over $foundation-palette at their include,
   // so it also recolours alert callouts in every story (still passing) and the native progress element; badges,
@@ -224,16 +220,16 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
 
   // 1.3.1 and 1.4.10 (no axe rule): Foundation's stacked table hides its column headers below
   // $table-stack-breakpoint (two rows and no column headers in the Chromium and Firefox platform trees),
-  // and nfs-table stops the compile. Spec: Table, table--stacked.
+  // a required setting of the Table spec. Spec: Table, table--stacked.
   $show-header-for-stacked: true;
 
-  // color-contrast (1.4.3): nfs-badge stops the compile on Foundation's alert badge, whose $white text is 4.498:1
+  // color-contrast (1.4.3): Foundation's alert badge fails: its $white text is 4.498:1
   // (4.36:1 with $black); axe marks one-character badges incomplete (shortTextContent) and reports 4.49 on longer
   // ones. Foundation's settings file assigned $badge-palette before this file, so a $foundation-palette merge does
   // not reach it. Spec: Badge, badge--colors and badge--in-controls.
   $badge-palette: map-merge($foundation-palette, (alert: #bf3f2c));
 
-  // color-contrast (1.4.3): nfs-label stops the compile on Foundation's alert label, whose $white text is 4.498:1
+  // color-contrast (1.4.3): Foundation's alert label fails: its $white text is 4.498:1
   // (4.364:1 with $black; axe reports 4.49). Foundation's settings file assigned $label-palette before this file,
   // so a $foundation-palette merge does not reach it. Spec: Label, label--colors and label--icons.
   $label-palette: map-merge($foundation-palette, (alert: #bf3f2c));
@@ -248,8 +244,8 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
   );
 
   // color-contrast (1.4.3): Foundation's $dark-gray subheaders, citations, and blockquote text are 3.423:1 and its
-  // $medium-gray heading small text 1.625:1 on the page (axe fails them in three engines), and nfs-typography-helpers
-  // and nfs-typography-base stop the compile. #666666, not the page's minimum #737373, because the greys must also
+  // $medium-gray heading small text 1.625:1 on the page (axe fails them in three engines), which
+  // the Typography Helpers spec's required settings fix. #666666, not the page's minimum #737373, because the greys must also
   // reach 4.5:1 inside callouts, card dividers, and table rows (4.601:1 at worst). Spec: Typography Helpers,
   // typography-helpers--subheader, --code-and-citations, --typescale, --composition, and --print-breaks; also every
   // story with a cite, a blockquote, or a small inside a heading.
@@ -270,7 +266,7 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
 - Recipe CSS: a spec that documents consumer CSS and shows it in a story puts it in `preview.scss` after the Library mixins, one block per recipe on the recipe's own classes (never a Foundation or NFS class), with a comment naming the spec and the story. Tabs: `tabs--nav-bar` (`.account-tabs`, Foundation's `tabs-container` and `tabs-title` mixins plus the recipe's `aria-current` rule) and `tabs--equal-heights` (`.equal-heights`). Interchange: the background stories (`.hero`: a `min-height` and `background-size: cover`, so an empty host shows its background) and `interchange--no-match` (`.hero-default`: the stylesheet background that shows when no rule matches; an inline `style` cannot carry it, because the directive's `null` binding removes a static inline `background-image`).
 - The library's Sass is imported relatively (line 2) because inside its own repository the package is source. The consumer path through the `sass` export condition is proved by the Sass packaging ticket's built-package compile test (decision 18b), not by Storybook.
 - `foundation-everything` (`foundation-sites/scss/foundation.scss:79-155`) is the union of the per-component includes a consumer writes, except `foundation-range-input`, which the Slider spec adds, and `foundation-progress-element` and `foundation-meter-element`, which the Progress Bar spec adds, so each story sees exactly the rules its Export mixins print; a spec that needs an Export mixin outside it adds one line after it, and the spec states that the new classes do not overlap existing ones; `foundation-grid`, whose size, offset, and block-grid classes have the XY Grid's names, comes before it, and the stories keep `$grid-column-count` equal to `$grid-columns` ([Spec: Float Grid](issues/100-spec-float-grid.md)). `$prototype: true` adds the Prototype utilities (section 8); they are additive classes that restyle no component.
-- Every `nfs-<plugin>` include comes after `foundation-everything`, as ADR 0012 requires (library rules override Foundation's at equal specificity through source order). A Library mixin that refuses to compile with a Foundation default (the Slider's fill contrast check) is satisfied through `_settings-overrides.scss`, never by skipping its include.
+- Every `nfs-<plugin>` include comes after `foundation-everything`, as ADR 0012 requires (library rules override Foundation's at equal specificity through source order). A required setting is set in `_settings-overrides.scss`, never by skipping a Library mixin's include.
 - No story, stories file, or demo component declares `styles` or `styleUrl`, and no stories file imports CSS. Scenario scaffolding that needs a value Foundation has no class for (a scroll container's height, a tall page for Sticky) uses an inline `style` in the template (section 8).
 
 ## 6. Accessibility gate and the anti-pattern exception
@@ -317,7 +313,7 @@ A play function never:
 
 - `meta.component` is the plugin's primary directive or component class, so the docs props table and the controls come from its declared inputs and outputs (the framework's docgen server documents directive classes as well as components, `@storybook/angular-vite` `dist/docgen/docgen-worker.js:210, 545`). The `propsTable` framework option keeps its default, `'api'`.
 - Stories render through `render: (args) => ({ props: args, template: \`...\` })` with the consumer markup written out (Foundation's elements with the library's directives, and no Foundation or NFS class, ADR 0039), because the library is directive-first and the markup is part of what a story documents. `moduleMetadata.imports` lists the entry point's directives; components come from `imports` too.
-- Layer 1 runs in Angular development mode, so the forgotten-import checks run in every story ([Spec: forgotten-import checks (shared utility)](issues/150-spec-forgotten-import-checks.md)): `preview.ts` spies on `console.warn` in a `beforeEach` and fails the story when the library logs a forgotten-import or wrong-element report, because a story's `render()` template is outside the static check, so a directive missing from `moduleMetadata.imports` fails its story. An Anti-pattern story that demonstrates a forgotten import asserts that report in its play function instead (section 6).
+- A directive missing from `moduleMetadata.imports` leaves its element without the directive's classes and ARIA, with no report, because a static attribute that matches no imported directive is plain HTML; the story's class and ARIA assertions (section 7) and the Accessibility gate fail on that element, so each story asserts the classes and ARIA of every directive its template writes.
 - `args` hold only the public API: inputs (including `model()` inputs, bound two-way in the template), and outputs as `fn()` spies. Public signals, methods, and `exportAs` references are shown through the template (a printed value, a button calling a method), never as args. Nothing private or story-internal is an arg. `argTypes` are added only where docgen cannot infer a control (a string-literal union input gets `control: 'select'` with its options). Measured by [Prototype: Variant declaration tooling in real Nx and Angular CLI workspaces](issues/137-prototype-variant-declaration-tooling.md): a Variant input typed with a registry-built alias declared in source (`NfsOverridableStringUnion<...>`, chained or not) gets an enum control of Foundation's default names from the docgen server, so this library's stories need no `argTypes` for it; the docgen server skips aliases declared in declaration files, so a consumer's story over an alias from the installed package gets no options.
 - The arg names are the e2e `props` names (section 10), so an arg rename is a breaking change to the spec's e2e tests.
 - Outputs shown in the story (a log line, a printed value) are for readers; assertions use the spy.
@@ -338,7 +334,7 @@ A play function never:
 Stories run client-side rendering only, in Chromium, in Angular development mode (layer 1) or production mode (the static build). They do not cover, and no story pretends to:
 
 - server rendering, prerendering, hydration, incremental hydration triggers, `hydrate never`, event replay, or first paint without JavaScript: layer 3 (`<name>.ssr.spec.ts` through `renderServer()`) and the Playwright e2e fixture half against the prerendered Fixture app (`npx nx e2e <fixture-app>-e2e`). Plain client-side `@defer` inside a story is fine (Interchange's `template-deferred` scenario);
-- TestBed-only cases (DI overrides, `DeferBlockBehavior.Manual`, dev-mode warnings, replay-shaped events): layer 2;
+- TestBed-only cases (DI overrides, `DeferBlockBehavior.Manual`, replay-shaped events): layer 2;
 - viewport breakpoints, `emulateMedia` (reduced motion, print), real key presses in Firefox and WebKit, History and hash across navigation, storage, reload: layer 4, on the same Story ids.
 
 The Fixture app is not built from stories: it has its own components, one route per plugin at `/<plugin>` (the same kebab segment as the Story id, so a spec's two e2e halves read alike), because its routes must be prerendered and hydrated, which Storybook cannot do.
@@ -365,4 +361,3 @@ The Fixture app is not built from stories: it has its own components, one route 
 - [ ] No library element carries a Foundation or NFS class written in the story; Structural classes come from directives, Variant classes from typed inputs, State classes from host bindings (ADR 0039).
 - [ ] Demo scaffolding uses the directives of the CSS-only components and utility families, the Prototyping Utilities' attributes among them (section 8); inline styles only for `--nfs-*` properties and values Foundation has no class for.
 - [ ] `npx nx test-storybook <lib>` passes with the Accessibility gate, and the spec's e2e tests mount the same ids with `embed=true`.
-- [ ] The story logs no forgotten-import or wrong-element report.

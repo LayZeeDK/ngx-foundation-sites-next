@@ -485,7 +485,7 @@ An empty interface the library declares for one Sass setting (`NfsButtonPaletteO
 _Avoid_: overrides interface, theme interface, type registry
 
 **Variant declaration file**:
-The `nfs-variants.d.ts` at the source root of a consumer's application, or of a shared library whose own programs use names Foundation's defaults lack, generated from its Sass by the library's tooling or written by hand, that augments the Variant registries; kept in step by a sync step and checked for Declaration drift in CI.
+The `nfs-variants.d.ts` at the source root of a consumer's application, or of a shared library whose own programs use names Foundation's defaults lack, generated from its Sass by the library's tooling or written by hand, that augments the Variant registries; kept in step by a sync step before tasks and committed with the Sass change that changed it.
 _Avoid_: theme typings, typegen output, augmentation file
 
 **Variant manifest**:
@@ -493,7 +493,7 @@ The library's list of its Variant registries, each with its Sass setting, its Va
 _Avoid_: registry list, variant config, schema
 
 **Declaration drift**:
-A difference between a Variant declaration file and the Variant properties of the Sass it mirrors: a name one has and the other lacks, a differing count, or a registry the library does not have.
+A difference between a Variant declaration file and the Variant properties of the Sass it mirrors: a name one has and the other lacks, or a differing count, which the tooling's next rewrite removes from a generated file.
 _Avoid_: stale types, out of sync (Nx's word for any sync generator), mismatch
 
 **Error-state policy**:
@@ -581,25 +581,37 @@ A mixin of the library's Sass (`nfs-accordion`, `nfs-motion`) that prints only t
 _Avoid_: `_nfs-<plugin>.scss`, custom stylesheet, theme mixin
 
 **Breakpoint properties**:
-The `--nfs-breakpoint-<name>` custom properties on `:root`, in px, that mirror the Sass `$breakpoints` the consumer compiles Foundation with, and that the `strictBreakpointSync` Runtime check compares with the Breakpoint map.
+The `--nfs-breakpoint-<name>` custom properties on `:root`, in px, that mirror the Sass `$breakpoints` the consumer compiles Foundation with, and that the `strictBreakpointSync` Runtime check compares with the Breakpoint map. A later-milestone term: the Breakpoint properties are written by the [Spec: build-time checks (later milestone)](issues/163-spec-build-time-checks-later-milestone.md) and read by the `strictBreakpointSync` Runtime check of the [Spec: Runtime checks (later milestone)](issues/162-spec-runtime-checks-later-milestone.md); in the first milestone `nfs-breakpoint-properties` writes only `--nfs-breakpoint-classes`.
 _Avoid_: breakpoint variables, CSS breakpoints, breakpoint tokens
 
 **Variant properties**:
-The `--nfs-<setting>` custom properties on `:root` that a Library mixin writes to list the names (or the count) the consumer's Sass generates Variant classes for, such as `--nfs-button-palette` and `--nfs-breakpoint-classes`; read by the library's generator and by the Runtime checks.
+The `--nfs-<setting>` custom properties on `:root` that a Library mixin writes to list the names (or the count) the consumer's Sass generates Variant classes for, such as `--nfs-button-palette` and `--nfs-breakpoint-classes`; read by the library's generator (and, in a later milestone, by the Runtime checks).
 _Avoid_: theme tokens, palette variables, names property
 
 **Runtime check**:
-A check the library runs in development builds after the first render, on by default with a per-check opt-out, that reports what the compiler cannot see: a Variant value with no class in the compiled CSS, missing Variant properties, Breakpoint drift, or a Forgotten import on a rendered element; the Variant and Breakpoint checks can also be opted into production. The `strictParents` flag beside them is not one: it is off unless the consumer opts in, and makes a missing parent throw at construction.
+A check the library runs in development builds after the first render, on by default with a per-check opt-out, that reports what the compiler cannot see: a Variant value with no class in the compiled CSS, missing Variant properties, Breakpoint drift, or, through `strictDirectiveImports`, a Forgotten import on a rendered element; the Variant and Breakpoint checks can also be opted into production. A later-milestone term: the first milestone has no Runtime check ([Spec: Runtime checks (later milestone)](issues/162-spec-runtime-checks-later-milestone.md)). The `strictParents` flag beside them is not one: it is off unless the consumer opts in, and makes a missing parent throw at construction.
 _Avoid_: dev check, drift warning, sanity check
 
 **Forgotten import**:
-A library attribute written in a template whose component's imports do not bring in the directive it names, so the element renders without that directive's classes, ARIA, and behaviour, with no compiler error.
+A library attribute written in a template whose component's imports do not bring in the directive it names, so the element renders without that directive's classes, ARIA, and behaviour, with no compiler error. The first milestone reports none; the later milestone's forgotten-import checks do ([Spec: forgotten-import checks (shared utility)](issues/150-spec-forgotten-import-checks.md)).
 _Avoid_: missing import, unimported directive, dead attribute
 
 **Selector manifest**:
-The library's list of its exported directives and components that have an attribute selector, each with its class name, entry point, selector, the Structural class it always binds, and the library directives it hosts; the list the forgotten-import checks match templates and rendered elements against.
+The library's list of its exported directives and components that have an attribute selector, each with its class name, entry point, selector, the Structural class it always binds, and the library directives it hosts; the list the forgotten-import checks match templates and rendered elements against. A later-milestone term: [Spec: forgotten-import checks (shared utility)](issues/150-spec-forgotten-import-checks.md), planned and implemented in a later milestone ([Decide: checks move to a later milestone](issues/158-decide-checks-move-to-a-later-milestone.md)).
 _Avoid_: directive manifest, import manifest, selector list
 
 **In-family check**:
-A development warning from one part of a directive family about a peer: an element that carries the peer's attribute with no instance of it, or a parent that dependency injection cannot reach from the part's template.
+A development warning from one part of a directive family about a peer: an element that carries the peer's attribute with no instance of it, or a parent that dependency injection cannot reach from the part's template. A later-milestone term: [Spec: forgotten-import checks (shared utility)](issues/150-spec-forgotten-import-checks.md), planned and implemented in a later milestone ([Decide: checks move to a later milestone](issues/158-decide-checks-move-to-a-later-milestone.md)).
 _Avoid_: peer check, family validation, sibling check
+
+**Family check**:
+A later-milestone term: a development warning from one part of a directive family, or a directive placed beside or inside another family's part, about how the consumer arranged the parts: a registration a part lacks, a part placed where the family's CSS or behaviour does not reach it, or parts in an order the family cannot use; planned and implemented in a later milestone ([Decide: checks move to a later milestone](issues/158-decide-checks-move-to-a-later-milestone.md)), by [Spec: family checks (later milestone)](issues/160-spec-family-checks-later-milestone.md).
+_Avoid_: In-family check (a Forgotten import report), placement warning, structure check
+
+**Misuse warning**:
+A directive's own development warning about how the consumer used it, reading only its host, its inputs, its content, or the page: a copied Foundation class, a missing accessible name, a value the directive cannot use. A later-milestone term: planned and implemented in a later milestone ([specs/misuse-warnings.md](specs/misuse-warnings.md)); in the first milestone each rule it reports is documented usage in the directive's spec.
+_Avoid_: dev check, lint, sanity check
+
+**Usage rule**:
+A rule of documented usage a spec states for a directive's host, numbered in its API section and stated in the directive's JSDoc; the usage examples follow it. In the first milestone the library reports no breach.
+_Avoid_: constraint, validation rule

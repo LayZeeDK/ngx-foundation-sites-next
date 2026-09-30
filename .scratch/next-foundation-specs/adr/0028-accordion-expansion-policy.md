@@ -16,3 +16,4 @@ status: accepted
 
 - Programmatic writes to a title's `[expanded]` binding bypass the policy, as they bypass Aria's own single mode; the library warns in dev mode when single mode starts with several open items.
 - The same rule applies to any other Aria-hosted plugin whose Aria default differs from Foundation's: declare a library input, never expose the Aria one, and enforce through Aria's models, methods, and event interception.
+- 2026-09-29 ([Decide: checks move to a later milestone](../issues/158-decide-checks-move-to-a-later-milestone.md)): the development warning for several items bound open in single mode is planned for a later milestone ([Spec: family checks (later milestone)](../issues/160-spec-family-checks-later-milestone.md)). In the first milestone the Accordion and Accordion Menu specs state the rule as documented usage: while single mode is on, bind at most one item open per level; every item bound open renders open, and nothing warns.

@@ -19,3 +19,4 @@ Foundation's Triggers utility addresses targets by id strings (`data-toggle="a b
 - Linking a Trigger in one component to an Openable in another passes the `NfsOpenable` through an input, or the wrapping component provides `nfsOpenableToken` itself.
 - Every Openable spec states its Trigger role, the id `aria-controls` must name, and what it does with `trigger` and `result`.
 - When Invoker Commands reach the browser target, Triggers may add `commandfor`, which needs consumer-supplied ids; the reference stays the API.
+- 2026-09-29 ([Decide: checks move to a later milestone](../issues/158-decide-checks-move-to-a-later-milestone.md)): without strict templates, a target that is not an Openable gets no dev-mode report in the first milestone; the check is planned for a later milestone ([Spec: misuse warnings (later milestone)](../issues/161-spec-misuse-warnings-later-milestone.md)), and `#x="nfsReveal"` is documented usage.

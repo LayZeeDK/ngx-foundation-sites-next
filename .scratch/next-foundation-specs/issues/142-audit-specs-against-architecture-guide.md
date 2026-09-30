@@ -188,6 +188,8 @@ T9, the Prototyping Utilities' Library mixin. `specs/prototyping-utilities.md:58
 
 Recommendation: (c). Why confidence is not high: the applied default contradicts ADR 0012's dated note, ADR 0044's singular wording points the other way, and whether to add an umbrella is a vocabulary choice no record makes. After the ruling, (b) or (c) opens "Re-run: Prototyping Utilities spec, architecture-guide findings", which the audit after it checks (map, Audits), since [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md) resolved on 2026-09-29 with T9 open; (a) is a dated note on ADR 0012.
 
+2026-09-29 (checks move to a later milestone, [Decide: checks move to a later milestone](158-decide-checks-move-to-a-later-milestone.md), decision 5): T9 stays OPEN FOR HUMAN. Its main argument for one Library mixin per export mixin, that each check runs only for a component the consumer compiles, now belongs to the later milestone, and the presence markers and flag properties that options (b) and (c) would split are the later milestone's too; in the first milestone the choice decides only which CSS rules a consumer includes (the responsive spacing rules and the registry Variant properties of `nfs-prototyping-utilities`).
+
 No ADR from this ticket. No prototype is needed.
 
 ### Gist for Decisions so far
