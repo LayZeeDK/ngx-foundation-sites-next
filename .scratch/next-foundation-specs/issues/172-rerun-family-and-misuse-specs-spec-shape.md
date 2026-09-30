@@ -38,6 +38,8 @@ Both specs now carry the spec-shape subsections that the map's Spec shape note a
   - Comparison with Angular Material, the CDK, Angular Aria, and prior art: Aria's `reportViolations` and what its violations read; Material's theme marker against S7; `MATERIAL_SANITY_CHECKS` against no switch; `InteractivityChecker` for the Visibility Classes' two checks and the Tooltip's check 2; names; copied classes.
   - Its usage examples were there already.
 
+Correction (2026-09-30, audit 0010): the search listed in the misuse warnings spec missed four sites, which audit 0010's M7 adds to the contract's lead-in.
+
 ### Questions asked and settled
 
 1. Where do the misuse warnings' three shared helpers live, when the spec says they are "never exported"? A secondary entry point reaches another's code only through its exports, and the helpers serve directives in most entry points. The bundle has one precedent for exactly this: functions exported from `ngx-foundation-sites/media-query` for library directives only (`nfsVariantCheck`, `nfsDirectiveCheck`, `nfsReportForgottenPeer`). Settled: the helpers sit there, not public API; Implementation level and primitives now says "never exported to consumers". Impact LOW (no consumer-facing API; an import some entry points gain only when a warning lands), confidence MEDIUM (inferred from the bundle's precedent and the entry-point model, not measured).

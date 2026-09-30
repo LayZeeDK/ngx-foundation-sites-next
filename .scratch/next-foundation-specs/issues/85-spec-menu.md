@@ -246,3 +246,9 @@ From [Decide: grids, typography, and utilities move to a later milestone](174-de
 - The icon-only link row names Foundation's `.show-for-sr` as a normal class. The Out of Scope bullet on `.align-justify` and `.align-spaced` says the consumer writes them as normal classes and `NfsMenu`'s class record, which holds only its three `align-*` classes, leaves them in place. The layout note names Foundation's source-ordering and visibility classes (`medium-order-2`, `hide-for-medium`) as normal classes.
 - D12 keeps its rejected alternative `alignX` and its measured collision, and names the Flexbox Utilities' alignment directive as one that a later milestone adds; this is the one sentence in the spec that names a later-milestone directive.
 - Unchanged: both directives, the inputs and types, the hosting rule, ARIA, the rendering modes, the stories, and the tests.
+
+### Amendment, 2026-09-30 (audit 0010)
+
+From [Audit 0010: the later-milestone families wave](../audits/0010-later-milestone-families-wave.md); `specs/menu.md` was revised in place:
+
+- L3: the Out of Scope bullet on source-ordering classes adds that an order class changes only the visual order, so the consumer writes the items in reading order (WCAG 1.3.2, 2.4.3).

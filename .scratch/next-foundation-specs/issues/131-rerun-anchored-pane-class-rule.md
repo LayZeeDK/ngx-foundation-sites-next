@@ -135,3 +135,9 @@ Each rule is stated as documented usage: a Positioner bullet in place of the war
 ### Amendment, 2026-09-30 (later-milestone families)
 
 From [Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md), applied by [Re-run: specs without the later-milestone families, group a](176-rerun-specs-without-later-families-group-a.md): `specs/anchored-pane.md` no longer assumes the Prototyping Utilities. A story's positioned containing block (the `relative` and `scroll` containing blocks of `anchored-pane--fixture` included) writes Foundation's `.position-relative` as a normal class in place of `nfsPosition="relative"` (`NfsPrototypePosition`), which the library's Storybook prints through `foundation-everything($prototype: true)`. The mapping row, the tests paragraph, the Story ids paragraph, user story 46, and D24 say so, and no link to that spec remains. Unchanged: the three parts, their API, the placement formulas, the Light dismiss and hover-intent rules, ARIA, the rendering modes, and the Story ids.
+
+### Amendment, 2026-09-30 (audit 0010)
+
+From [Audit 0010: the later-milestone families wave](../audits/0010-later-milestone-families-wave.md); `specs/anchored-pane.md` was revised in place:
+
+- M1: the two `position-relative` sentences say the class comes from Foundation's Prototype mode (`foundation-everything($prototype: true)`), not its global styles.

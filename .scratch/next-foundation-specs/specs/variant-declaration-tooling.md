@@ -283,7 +283,7 @@ declare module 'ngx-foundation-sites' {
     warning: false;
   }
   interface NfsResponsiveEmbedRatiosOverrides {
-    '21by9': true;
+    'ultra-wide': true;
   }
 }
 
@@ -297,7 +297,7 @@ Format rules, which make the output deterministic for the same Sass, library ver
 - Then `import 'ngx-foundation-sites';`, which makes the file a module; without it, `declare module` is an ambient module that replaces the library's types (TS2305, ALT 2.3).
 - Then one `declare module 'ngx-foundation-sites'` block. Inside it, one interface per registry that differs from its defaults, ordered by registry name in code-unit order; a registry equal to its defaults is left out, and the block may be empty.
 - In a names registry, added names come first as `name: true`, sorted in code-unit order, then removed names as `name: false`, in the order the registry's defaults list them (the base setting's effective order for a chained registry).
-- A name is written as an identifier when it is one (letters, digits, `_`, `$`, not starting with a digit), and as a single-quoted string otherwise (`'extra-large': true`, `'21by9': true`, `'33': true`). Numeric-like names are always quoted: in this ticket's probe a bare numeric addition (`33: true`) dropped out of the string union, and a bare numeric removal of a default (`50: false`) collapsed the whole union to `never`, while the quoted forms added and removed as intended.
+- A name is written as an identifier when it is one (letters, digits, `_`, `$`, not starting with a digit), and as a single-quoted string otherwise (`'extra-large': true`, `'33': true`). Numeric-like names are always quoted: in this ticket's probe a bare numeric addition (`33: true`) dropped out of the string union, and a bare numeric removal of a default (`50: false`) collapsed the whole union to `never`, while the quoted forms added and removed as intended.
 - Then a blank line, the comment `// Makes a running dev server re-check templates after every change to this file.`, and `declare global {}`. An empty global augmentation makes TypeScript's builder treat each change to the file as affecting every file (`isFileAffectingGlobalScope`, checked before its `isolatedModules` shortcut), and `@angular/build`'s dev server computes template diagnostics only for affected files, so every rewrite reaches the templates' diagnostics under `ng serve` and `nx serve` (measured by [Prototype: Variant declaration tooling in real Nx and Angular CLI workspaces](../issues/137-prototype-variant-declaration-tooling.md), question 1; without it only the dev server's first incremental rebuild re-checks templates). The line is part of the rendered format, not of the compared model: a generated file without it is not rewritten for it alone, and the next rewrite adds it.
 - UTF-8 without a byte order mark, LF line endings, two-space indent, a final newline.
 - After rendering, the text is formatted with the workspace's own Prettier and its configuration when Prettier resolves from the workspace root and does not ignore the file; otherwise it is written as rendered. So the file matches the consumer's formatter and `prettier --check` stays green.
@@ -509,7 +509,7 @@ Pure logic (table-driven):
 - `nfsVariantBoolean` over its whole parameter type.
 - The Variant property reader: space and comma lists, line breaks, duplicates, the empty list (`--nfs-x: ;` and compressed `--nfs-x: `), a property printed twice with different values (M12), colour-name keys.
 - The expected model: additions and removals, a chained registry against a found base, against a missing base, and a base-added name removed by the child (`purple: false` on buttons), a missing property leaving the registry empty, zero properties leaving every registry empty.
-- The renderer: the header per workspace kind (the same from the sync generator and the builder), registry and member order, identifier and quoted keys (`'extra-large'`, `'21by9'`, `'33'`), the empty block, LF and final newline; the same model renders the same bytes twice.
+- The renderer: the header per workspace kind (the same from the sync generator and the builder), registry and member order, identifier and quoted keys (`'extra-large'`, `'ultra-wide'`, `'33'`), the empty block, LF and final newline; the same model renders the same bytes twice.
 - The reader: generated files; several `declare module` blocks; CRLF; single and double quotes; a generated file edited into a derived member type, a bare numeric key, or an unknown interface compares unequal and is rewritten.
 - The comparison: each drift row of the table; a Prettier-reformatted generated file compares equal; a model-equal file is not rewritten.
 

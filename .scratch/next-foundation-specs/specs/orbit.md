@@ -112,7 +112,7 @@ Dropped options, each with its reason and category in the table above: `bullets`
 
 ### CSS class to Angular mapping
 
-No Foundation or library class is left for the consumer to write ([ADR 0039](../adr/0039-directives-manage-every-foundation-class.md)); the consumer writes Foundation's elements, the directives' attributes, and its own classes, which are kept beside the bound ones.
+No Foundation or library class of a family with a first-milestone spec is left for the consumer to write ([ADR 0039](../adr/0039-directives-manage-every-foundation-class.md)); the consumer writes Foundation's elements, the directives' attributes, and its own classes, which are kept beside the bound ones.
 
 | Foundation class or element | Kind | Angular | Rationale |
 | --- | --- | --- | --- |

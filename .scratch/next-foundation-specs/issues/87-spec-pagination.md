@@ -187,3 +187,10 @@ From [Decide: grids, typography, and utilities move to a later milestone](174-de
 - Centring is Foundation's `.text-center`, written as a normal class (`<ul nfsPagination class="text-center">`): the Solution, user story 11, the Foundation contract row, the docs conventions, the class-mapping rows for `.text-center` and `.show-for-sr`, the Rendered HTML note and markup, `pagination--centered`, the Out of Scope bullet, D7's rejected alternative, and D10 say so.
 - The "Foundation behaviour changed or dropped" bullet on `.text-center` is removed, because the class is now written as Foundation writes it. The Problem Statement's class-rule line now reads "no class of a Foundation family that has a first-milestone spec".
 - Unchanged: the four directives, the current and disabled rules, ARIA, the rendering modes, the Library mixin, and the Story ids.
+
+### Amendment, 2026-09-30 (audit 0010)
+
+From [Audit 0010: the later-milestone families wave](../audits/0010-later-milestone-families-wave.md); `specs/pagination.md` was revised in place:
+
+- M4: the Testing line on story classes names `text-center` in `pagination--centered` as the exception.
+- L1: "No class is left for the consumer to write" is narrowed to families with a first-milestone spec.

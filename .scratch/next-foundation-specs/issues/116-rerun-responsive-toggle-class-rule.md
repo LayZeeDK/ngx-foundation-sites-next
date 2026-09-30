@@ -180,3 +180,10 @@ From [Re-run: specs without the later-milestone families, group c](178-rerun-spe
 - The sentence on a copied Visibility class the plugin does not bind (`show-for-large` on the bar) no longer calls it "the other family's".
 
 Triage: impact LOW (examples, stories, and documented usage change; no input, default, or rule of this spec changes), confidence HIGH (the ruling's decisions 2 and 3: a family with no first-milestone spec is written as Foundation's normal classes, with Foundation's global styles loaded). Decision 5 is read as "the Visibility classes the Responsive Toggle binds come from Foundation's global styles", not as moving the binding to the consumer: that reading would change the decided `hideFor` Option and the server-HTML and hydration design, which the ruling does not address, and the class-rule exception allows, but does not require, a consumer-written class. Nothing is OPEN FOR HUMAN.
+
+### Amendment, 2026-09-30 (audit 0010)
+
+From [Audit 0010: the later-milestone families wave](../audits/0010-later-milestone-families-wave.md); `specs/responsive-toggle.md` was revised in place:
+
+- M1: the `overflow-y-scroll` sentence says the preview's `foundation-everything($prototype: true)` prints it.
+- L1: the Visibility class sentence reads "a Visibility class this plugin does not bind on that host is not stripped here", matching the wording the wave used earlier in the spec.

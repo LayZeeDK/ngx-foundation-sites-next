@@ -150,3 +150,9 @@ The behaviour stays: a malformed segment is skipped, an unknown bare word never 
 ### Amendment, 2026-09-30 (audit 0009)
 
 - [Audit 0009: the later-milestone checks wave](../audits/0009-later-milestone-checks-wave.md), L2: the breakpoint names read `nfsBreakpointsToken`, without the CSS mirror clause.
+
+### Amendment, 2026-09-30 (audit 0010)
+
+From [Audit 0010: the later-milestone families wave](../audits/0010-later-milestone-families-wave.md); `specs/interchange.md` was revised in place:
+
+- H1: the Background host sentence, user story 45, the class-mapping row, the composition bullet, the `hostDirectives` sentence, and D17 no longer name an XY Grid cell directive; a grid cell's `class="cell"` is Foundation's own class written as a normal class (ADR 0039's exception), and D17's no-class sentence is narrowed to families with a first-milestone spec.

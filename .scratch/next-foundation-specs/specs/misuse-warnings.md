@@ -95,7 +95,7 @@ When a warning lands, it comes back beside its documented-usage sentence, which 
 
 ### Foundation contract
 
-Foundation 6.9's JavaScript has a handful of reports, each about an option value or a method call, and none about markup: a search of `js/` at v6.9.0 (`foundation-sites`, `337be7a8d`) for `console.warn`, `console.error`, `console.info`, and `throw` finds only the sites below, and one commented out (`foundation.tooltip.js:134`). Most of the misuses this spec covers are Foundation's own API or pass without a word:
+Foundation 6.9's JavaScript has a handful of reports, each about an option value or a method call, and none about markup: a search of `js/` at v6.9.0 (`foundation-sites`, `337be7a8d`) for `console.warn`, `console.error`, `console.info`, and `throw` finds the sites below, one commented out (`foundation.tooltip.js:134`), and four this spec has no counterpart for: the Responsive Toggle's `console.error` for a bar with no menu id (`foundation.responsiveToggle.js:40-42`, recorded in the family checks spec's Foundation contract), the Responsive Accordion Tabs' `console.warn` when reading its Accordion or Tabs options throws (`foundation.responsiveAccordionTabs.js:122-124`), and two internal throws that no markup reaches (`foundation.util.box.js:66-68`, `foundation.core.js:285-288`). Most of the misuses this spec covers are Foundation's own API or pass without a word:
 
 | Misuse | What Foundation's JavaScript does | Source | This spec |
 | --- | --- | --- | --- |

@@ -212,3 +212,9 @@ From [Re-run: specs without checks, group d](168-rerun-specs-without-checks-grou
 - Quotes of checks other specs own, removed beyond the manifest (the orchestrator's boundary note and the owners' manifests): `nfs-dropdown-menu`'s `@warn` for `$dropdownmenu-min-width` (the 1.4.10 row) and for the Top Bar pairs, `nfs-top-bar`'s `@error` for `$anchor-color` (the 1.4.3 row), `nfs-menu`'s own fill check, the Menu directive's check 2 and its runtime and development checks (Out of Scope, the mapping table), and ResponsiveMenu's Zero-breakpoint warning in the consuming-spec table.
 - Kept: the four directives, the root handle and the swap commit, the class maps and their stripping, the key tables, focus rules, Light dismiss and hover intent, every Library mixin rule 1 to 14, every story and its axe gate, the other browser-level cases, the SSR smoke, the pure logic, and the e2e layer. Decision numbers are unchanged.
 - No API, class, ARIA, keyboard, or rendering change. Impact LOW, confidence HIGH (a user ruling applied); nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-30 (audit 0010)
+
+From [Audit 0010: the later-milestone families wave](../audits/0010-later-milestone-families-wave.md); `specs/nested-menu.md` was revised in place:
+
+- L4: D30's rejected alternative names Foundation's `.show-for-sr` class, not a later-milestone family's directive.

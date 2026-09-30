@@ -227,7 +227,7 @@ An XY Grid sized to the viewport that clips whatever does not fit, so that its c
 _Avoid_: app shell, full-height grid, viewport grid
 
 **Cell block**:
-A cell that scrolls its own overflow inside a Grid frame (Foundation's `.cell-block`, `.cell-block-y`), which the library makes a Scroll region.
+A cell that scrolls its own overflow inside a Grid frame (Foundation's `.cell-block`, `.cell-block-y`), which the XY Grid's `nfsCell` makes a Scroll region in the later milestone; in the first milestone the consumer writes the region's attributes on it (building-blocks 1.10).
 _Avoid_: scroll cell, scroll pane, scroller
 
 **Flex parent**:

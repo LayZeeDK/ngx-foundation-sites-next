@@ -258,3 +258,9 @@ From [Re-run: grid, typography, and utility specs for the later milestone](175-r
 - Restated: nothing; the spec made no claim that a first-milestone spec, story, or example depends on it.
 - Added: Further Notes, What the later milestone changes, per spec: per first-milestone spec, the Prototyping Utilities classes it writes in the first milestone and the directives that replace them, read from the directives each spec wrote before the ruling.
 - No directive, input, class, ARIA row, story, or test changes. Impact LOW, confidence HIGH (a user ruling applied); nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-30 (audit 0010)
+
+From [Audit 0010: the later-milestone families wave](../audits/0010-later-milestone-families-wave.md); `specs/prototyping-utilities.md` was revised in place:
+
+- M3: D25 and the Sass subsection place `nfs-prototype-classes` "when this spec lands" and per-export mixins in "a later release", not in the first and later milestones; D25 notes that ticket 174 moved the spec the same day ticket 173 ruled.

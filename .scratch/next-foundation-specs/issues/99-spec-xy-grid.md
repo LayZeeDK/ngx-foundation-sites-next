@@ -225,3 +225,9 @@ From [Re-run: grid, typography, and utility specs for the later milestone](175-r
 - Restated: D1's rationale, which said the directive names are "the ones every earlier spec wrote", now says the first-milestone specs get them back when the spec lands.
 - Added: Further Notes, What the later milestone changes, per spec: per first-milestone spec, the XY Grid classes it writes in the first milestone and the directives that replace them, read from the directives each spec wrote before the ruling.
 - No directive, input, class, ARIA row, story, or test changes. Impact LOW, confidence HIGH (a user ruling applied); nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-30 (audit 0010)
+
+From [Audit 0010: the later-milestone families wave](../audits/0010-later-milestone-families-wave.md); `specs/xy-grid.md` was revised in place:
+
+- H1: the closing section lists the Interchange spec, whose grid-cell background host becomes `nfsCell` beside `nfsInterchange` in the later milestone.

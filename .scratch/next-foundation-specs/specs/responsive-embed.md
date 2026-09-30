@@ -13,7 +13,7 @@ A developer on Foundation for Sites who embeds a video, a map, a calendar, or a 
 - The box is also why the page reflows: Foundation's docs iframe (`width="560"`) written bare makes a 320 px page 560 px wide; inside the box it is 320 by 180 (measured), so an embed outside a box fails 1.4.10.
 - Under server-side rendering, Angular writes the embedded element's `src` again when it hydrates, static or bound, so every server-rendered frame and video loads twice, and a video the user started before hydration returns to its start (measured with Angular 22.2 in three engines). Nothing on Foundation's page anticipates it.
 - Foundation still styles `.flex-video`, the component's name before Foundation 6.3.0, as an undocumented alias whose mixins it removed in 6.5.0, so migrated markup carries a class the docs no longer mention.
-- Under the library's class rule the developer writes no Foundation class at all, so `.responsive-embed` and its ratio classes need an Angular home, and a ratio name the consumer adds to the Sass map must reach a typed input.
+- Under the library's class rule the developer writes no Foundation class of a family with a first-milestone spec, so `.responsive-embed` and its ratio classes need an Angular home, and a ratio name the consumer adds to the Sass map must reach a typed input.
 
 A server-rendered application adds the usual second problem: whatever the Angular layer does must already be right in the server HTML, must not break hydration, and must leave the box sized before hydration and inside dehydrated `@defer` blocks.
 
@@ -82,7 +82,7 @@ Docs conventions kept or corrected: the wrapper `div` (kept; the directive works
 | `.widescreen` and every other key of `$responsive-embed-ratios` except `default` | `ratio` Variant input of `NfsResponsiveEmbed` | `NfsResponsiveEmbedRatio` over `$responsive-embed-ratios` and its registry `NfsResponsiveEmbedRatiosOverrides` (Open Variant family), plus the library literal `'default'` | a name | the name itself (`ratio="widescreen"` sets `.widescreen`); `'default'` and no value set none, so the `default` key is the look | `--nfs-responsive-embed-ratios` (`widescreen` by default) |
 | `.flex-video` | none | - | - | never bound; the documented usage drops it | - |
 
-State classes: none. Foundation's Responsive Embed has no State class; the focus rule keys on `:focus-within`, a pseudo-class, not a class. Foundation has no responsive ratio class, so `ratio` takes no Breakpoint query or rules object. No class is left for the consumer to write (ADR 0039). The Variant manifest's `NfsResponsiveEmbedRatiosOverrides` entry gets `mixins: ['nfs-responsive-embed']` and one `uses` entry: `{entryPoint: 'ngx-foundation-sites/responsive-embed', directive: 'NfsResponsiveEmbed', input: 'ratio', alias: 'NfsResponsiveEmbedRatio', shape: 'name'}`.
+State classes: none. Foundation's Responsive Embed has no State class; the focus rule keys on `:focus-within`, a pseudo-class, not a class. Foundation has no responsive ratio class, so `ratio` takes no Breakpoint query or rules object. No class of a family with a first-milestone spec is left for the consumer to write (ADR 0039). The Variant manifest's `NfsResponsiveEmbedRatiosOverrides` entry gets `mixins: ['nfs-responsive-embed']` and one `uses` entry: `{entryPoint: 'ngx-foundation-sites/responsive-embed', directive: 'NfsResponsiveEmbed', input: 'ratio', alias: 'NfsResponsiveEmbedRatio', shape: 'name'}`.
 
 ### Hierarchy and DI shape
 

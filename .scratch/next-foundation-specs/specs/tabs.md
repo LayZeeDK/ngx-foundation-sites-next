@@ -18,7 +18,7 @@ A server-rendered Angular application adds more: the selected panel must be in t
 
 ## Solution
 
-Six attribute directives on Foundation's own elements plus one wrapping element, built on `@angular/aria/tabs` through host directives. The developer writes Foundation's elements and the directives' attributes, and no Foundation or library class: each directive binds its Structural class, the Variant classes are typed inputs, and the State classes are host bindings ([ADR 0039](../adr/0039-directives-manage-every-foundation-class.md)).
+Six attribute directives on Foundation's own elements plus one wrapping element, built on `@angular/aria/tabs` through host directives. The developer writes Foundation's elements and the directives' attributes, and no Foundation or library class of a family with a first-milestone spec (the vertical layout's XY Grid classes are written as normal classes): each directive binds its Structural class, the Variant classes are typed inputs, and the State classes are host bindings ([ADR 0039](../adr/0039-directives-manage-every-foundation-class.md)).
 
 - `[nfsTabsGroup]` on an element the developer writes around the tab strip and the content box, because Aria needs one common ancestor and Foundation's strip and content are siblings. The XY Grid row that already holds both in Foundation's vertical tabs layout can carry it.
 - `ul[nfsTabs]`: binds `.tabs`; the tab list, its keyboard, the `selected` model (by value), and Foundation's deep linking; its `orientation` also binds `.vertical`, and the `simple` and `primary` inputs bind Foundation's two strip looks.

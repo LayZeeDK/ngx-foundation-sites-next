@@ -213,3 +213,9 @@ From [Decide: grids, typography, and utilities move to a later milestone](174-de
 - A Trigger hidden at the reveal breakpoint carries Foundation's `hide-for-large` class, written as a normal class beside `nfsButton` (`<button nfsButton class="hide-for-large" [nfsToggle]="sidebar">`): usage rule 6, the related-specs bullet, and the two usage examples say so.
 - The story scaffolding writes the absolute-panel story's grid cells as `grid-x` and `cell` normal classes and the hidden Trigger's `hide-for-large`; its class-rule sentence carries the exception.
 - Unchanged: the four directives, their APIs, the focus rules, ARIA, the animation, the rendering modes, and the Story ids.
+
+### Amendment, 2026-09-30 (audit 0010)
+
+From [Audit 0010: the later-milestone families wave](../audits/0010-later-milestone-families-wave.md); `specs/off-canvas.md` was revised in place:
+
+- L1: "No Foundation or library class is left for the consumer" is narrowed to families with a first-milestone spec.

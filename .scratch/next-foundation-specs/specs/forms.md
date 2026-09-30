@@ -4,7 +4,7 @@ Ticket: [Spec: Forms](../issues/98-spec-forms.md). Decision records: [ADR 0039](
 
 ## Problem Statement
 
-Foundation for Sites' Forms page is a styling contract with no Plugin: native text inputs, text areas, select menus, checkboxes, radios, and fieldsets styled by tag, plus a few classes for the parts native HTML lacks (`.input-group` and its three parts, `.help-text`, `.fieldset`, and the form label's `.middle` Variant). Under the library's class rule (ADR 0039) a developer writes no Foundation class, so every one of those classes needs a directive, and a developer needs to know which form elements need none.
+Foundation for Sites' Forms page is a styling contract with no Plugin: native text inputs, text areas, select menus, checkboxes, radios, and fieldsets styled by tag, plus a few classes for the parts native HTML lacks (`.input-group` and its three parts, `.help-text`, `.fieldset`, and the form label's `.middle` Variant). Under the library's class rule (ADR 0039) a developer writes no Foundation class of a family with a first-milestone spec, so every one of those classes needs a directive, and a developer needs to know which form elements need none.
 
 The documented markup also leaves accessibility gaps that a developer inherits by copying it:
 
@@ -199,7 +199,7 @@ export class NfsInputGroupButton {}
 | `NfsInputGroupField` | `input[nfsInputGroupField], select[nfsInputGroupField], textarea[nfsInputGroupField]` | static `class`: `input-group-field` | none | Has a name source: a wrapping or `for` label, an `aria-labelledby` that resolves, or a non-empty `aria-label`; a placeholder, a `title`, and the group's prefix text do not count (WCAG 1.3.1, 3.3.2, 4.1.2) |
 | `NfsInputGroupButton` | `[nfsInputGroupButton]` | static `class`: `input-group-button` | none | none |
 
-- Static host classes merge with any class the consumer's own application adds; the consumer writes no Foundation class (ADR 0039).
+- Static host classes merge with any class the consumer's own application adds; the consumer writes no Foundation class of a family with a first-milestone spec (ADR 0039).
 - `middle` follows building-blocks 1.4: named with the camelCase of its class, a boolean through `nfsVariantBoolean` (never `booleanAttribute`, so `middle="flase"` fails to compile), declared with explicit type arguments, defaulting to `false`, which sets no class. Its JSDoc names the class template and says no Sass setting applies.
 - Models, outputs, and methods: none. No directive owns state a consumer reads, and native events are the API. `exportAs`: `nfsFormLabel`, `nfsHelpText`, `nfsFieldset`, `nfsInputGroup`, `nfsInputGroupLabel`, `nfsInputGroupField`, `nfsInputGroupButton`, one per directive by its class name.
 - No directive reads the DOM or runs a render callback (D14): each usage rule is the consumer's markup, stated in the JSDoc and followed by every example.

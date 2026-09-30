@@ -245,8 +245,8 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
 
   // color-contrast (1.4.3): Foundation's $dark-gray subheaders, citations, and blockquote text are 3.423:1 and its
   // $medium-gray heading small text 1.625:1 on the page (axe fails them in three engines), which
-  // the Callout's D17 and the Card's D14 require on Foundation's defaults: #666666 reaches 4.5:1 on the page, on every
-  // callout tint, and on the card divider, where #737373 does not (4.601:1 at worst). Every story with a cite, a
+  // the Callout's D17, the Card's D14, and the Table's D17 require on Foundation's defaults: #666666 reaches 4.5:1 on the page, on every
+  // callout tint, on the card divider, and on every table background, where #737373 does not (4.601:1 at worst). Every story with a cite, a
   // blockquote, a subheader, or a small inside a heading; the Typography Helpers' own stories come with the later milestone.
   $subheader-color: #666666;
   $cite-color: #666666;

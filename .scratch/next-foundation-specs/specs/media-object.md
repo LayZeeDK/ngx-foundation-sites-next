@@ -11,7 +11,7 @@ A developer on Foundation for Sites who wants an item, usually an image, set bes
 - `.stack-for-small` is not a free-form class: Foundation generates only `.stack-for-<zero>`, named after the first key of `$breakpoints` (`small` by default), and it applies only at that Zero breakpoint.
 - No image in Foundation's media-object examples has an `alt` attribute; axe reports `image-alt` on every one (measured).
 - The container is only a `div`: a comment thread built from nested media objects has no structure a screen reader can move through unless the author picks elements that carry it.
-- Under the library's class rule the developer writes no Foundation class at all, so `.media-object`, `.media-object-section`, and the four Variant classes need an Angular home.
+- Under the library's class rule the developer writes no Foundation class of a family with a first-milestone spec, so `.media-object`, `.media-object-section`, and the four Variant classes need an Angular home.
 
 A server-rendered application adds the usual second problem: whatever the Angular layer does must already be right in the server HTML, must not break hydration, and must leave the media object styled before hydration and inside dehydrated `@defer` blocks.
 

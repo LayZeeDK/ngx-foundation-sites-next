@@ -231,3 +231,10 @@ From [Re-run: specs without the later-milestone families, group c](178-rerun-spe
 - D16's rationale says the XY Grid's scrolling cells are a later milestone's.
 
 Triage: impact LOW (examples, stories, and documented usage change; no input, default, or rule of this spec changes), confidence HIGH (the ruling's decisions 2 and 3: a family with no first-milestone spec is written as Foundation's normal classes, with Foundation's global styles loaded). The consumer-written attributes restate the Scroll region contract this spec already decides; they were not measured anew. Nothing is OPEN FOR HUMAN.
+
+### Amendment, 2026-09-30 (audit 0010)
+
+From [Audit 0010: the later-milestone families wave](../audits/0010-later-milestone-families-wave.md); `specs/table.md` was revised in place:
+
+- M6: D17 is added: `$header-small-font-color`, `$blockquote-color`, `$cite-color`, and `$subheader-color` at `#666666` are required settings on Foundation's defaults, with the measured ratios on every table background.
+- M6: the 1.4.3 row, Foundation behaviour changed or dropped, and the Sass required settings name the four greys.

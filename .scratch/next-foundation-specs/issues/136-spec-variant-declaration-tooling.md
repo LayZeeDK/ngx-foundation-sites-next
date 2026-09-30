@@ -257,3 +257,9 @@ The tooling keeps only the first milestone's registries (the ruling's decision 4
 - Wording that assumed counts: the manifest's two-registry input sentence, the merge argument (a member that differs between two files, not a count), D2, D3 (now: added by the later milestone), D4, D5, D7, and D21.
 
 Triage: moving the count kind with the count registries: impact LOW (the manifest is internal, and the later milestone adds the helper exports and the `count` kind additively, ADR 0045), confidence HIGH (the ruling's decision 4 keeps only what the first milestone needs, and no first-milestone spec reads a count registry or a count helper: searched across `specs/`). Keeping the 16 rows and the count design in this spec, under a later-milestone heading, keeps the one list the manifest follows; impact LOW, confidence HIGH. Nothing is OPEN FOR HUMAN.
+
+### Amendment, 2026-09-30 (audit 0010)
+
+From [Audit 0010: the later-milestone families wave](../audits/0010-later-milestone-families-wave.md); `specs/variant-declaration-tooling.md` was revised in place:
+
+- M5: the example ratio `'21by9'`, which Foundation's `foundation-responsive-embed` cannot compile, becomes `'ultra-wide'` in the generated-file example and the renderer test, and leaves the quoting rule's examples.

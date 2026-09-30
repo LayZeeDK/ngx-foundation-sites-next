@@ -35,7 +35,7 @@ The `nfs-card` Library mixin adds one rule, `.card { overflow-wrap: anywhere; }`
 9. As an application developer, I want my own card component to host `NfsCard` through `hostDirectives`, so that its host metadata names no Foundation class.
 10. As an application developer, I want `NgOptimizedImage` to work on a card's image, so that card images are optimised like every other image.
 11. As an application developer, I want the spec to list every text and link pair a card puts on its card and divider backgrounds, with the 4.5:1 each must reach, so that I can keep a theme of my own at WCAG 2.2 AA.
-12. As an application developer on Foundation's defaults, I want the spec to name the one setting that passes, so that my cards pass with the line other components already need.
+12. As an application developer on Foundation's defaults, I want the spec to name the settings that pass, so that my cards pass with the lines other components already need.
 13. As an application developer with a translucent divider background, I want the spec to measure the ratio with it composited over the card background, so that I compare the colour users see.
 14. As an application developer who changes `$global-flexbox`, I want the directives and the rule to work unchanged, so that a Sass setting stays compile-time configuration.
 15. As a user with low vision, I want links in a card divider to contrast at least 4.5:1 with it, at rest and on hover, so that I can read a card's footer link.
@@ -235,7 +235,7 @@ Per ADR 0008 and the rendering-modes research, section 7 rules 1 to 11:
 
 A good test asserts what a user or assistive technology observes: the classes, roles and names, the computed backgrounds and padding, where images and text sit against the card's edges, and the DOM order. No test reads a directive's fields. The patterns are the four layers of building-blocks 1.12 and the [Spec: Callout](../issues/89-spec-callout.md)'s and [Spec: Badge](../issues/93-spec-badge.md)'s tests, the nearest precedents.
 
-Story ids follow `card--<story>`: `card--default`, `card--divider`, `card--images`, `card--sizing`, `card--long-words`. `meta.component` is `NfsCard`; there are no args, because no directive has an input. The Storybook settings overrides already carry the required setting (the Callout's `$anchor-color` line), and the preview includes `nfs-card`. Grid scaffolding writes Foundation's XY Grid classes as normal classes (`grid-x`, `grid-margin-x`, `<bp>-up-<n>`, `cell`), the margin gutter Foundation writes on every card grid, with Foundation's global styles loaded in the preview; every story image has an `alt`.
+Story ids follow `card--<story>`: `card--default`, `card--divider`, `card--images`, `card--sizing`, `card--long-words`. `meta.component` is `NfsCard`; there are no args, because no directive has an input. The Storybook settings overrides already carry the required settings (the Callout's `$anchor-color` line and the four greys of D14), and the preview includes `nfs-card`. Grid scaffolding writes Foundation's XY Grid classes as normal classes (`grid-x`, `grid-margin-x`, `<bp>-up-<n>`, `cell`), the margin gutter Foundation writes on every card grid, with Foundation's global styles loaded in the preview; every story image has an `alt`.
 
 ### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`)
 
@@ -259,7 +259,7 @@ TestBed specs next to the directives over a bare test host component, zoneless w
 
 - SSR smoke through the shared `renderServer()` helper, under `npx nx test <lib>`: a fixture with the Basics card, a card with a `footer` divider holding a link, an `nfsCardImage` wrapper, and a host-directive card component. `whenStable()` resolves; the server HTML carries the four classes and the consumer's `alt` and `href` values; no element carries `jsaction` or a role from the directives.
 - Sass compile, over Foundation 6.9.0's settings file and an overrides file after it, with `@import 'ngx-foundation-sites';`:
-  - `@include nfs-card;` emits exactly `.card { overflow-wrap: anywhere; }`, and no other rule, on Foundation's defaults and with the required setting.
+  - `@include nfs-card;` emits exactly `.card { overflow-wrap: anywhere; }`, and no other rule, on Foundation's defaults and with the required settings.
   - `$global-flexbox: false` emits the same rule.
 - Pure logic: none.
 

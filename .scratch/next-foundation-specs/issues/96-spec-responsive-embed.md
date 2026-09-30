@@ -194,3 +194,9 @@ From [Decide: grids, typography, and utilities move to a later milestone](174-de
 
 - The Composition bullet places `nfsResponsiveEmbed` beside Foundation's XY grid cell, visibility, and float classes, written as normal classes. The two Notes bullets on floats and cells drop the Float Classes link and the XY Grid's cell directive; the measurements are unchanged.
 - Unchanged: the directive, `ratio`, the focus rule and `nfs-responsive-embed`, ARIA, the rendering modes, the stories, and the tests.
+
+### Amendment, 2026-09-30 (audit 0010)
+
+From [Audit 0010: the later-milestone families wave](../audits/0010-later-milestone-families-wave.md); `specs/responsive-embed.md` was revised in place:
+
+- L1: the Problem Statement and the class sentence are narrowed to families with a first-milestone spec.

@@ -220,3 +220,9 @@ From [Decide: grids, typography, and utilities move to a later milestone](174-de
 - The arrows' and bullets' screen-reader text is `<span class="show-for-sr">`, a normal class: the Solution, user story 1 (now "no Orbit class"), the class-mapping row, the entry-point bullet, the ARIA row, the Rendered HTML lead, markup, and class note, the styling line, the Sass paragraph, the story note, D26, and the usage example, whose `imports` drops the visibility directive.
 - D26 keeps its rejected alternatives; the first is restated as an Orbit owner of another family's class.
 - Unchanged: the thirteen directives, the tokens, the slide contract, the focus handoff, ARIA and keyboard, the required settings, the rendering modes, and the Story ids.
+
+### Amendment, 2026-09-30 (audit 0010)
+
+From [Audit 0010: the later-milestone families wave](../audits/0010-later-milestone-families-wave.md); `specs/orbit.md` was revised in place:
+
+- L1: "No Foundation or library class is left for the consumer" is narrowed to families with a first-milestone spec.

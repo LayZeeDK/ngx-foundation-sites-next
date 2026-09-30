@@ -220,3 +220,9 @@ From [Re-run: specs without the later-milestone families, group c](178-rerun-spe
 - Sass: the vertical layout's grid classes come from Foundation's global styles, `foundation-xy-grid-classes` among them.
 
 Triage: impact LOW (examples, stories, and documented usage change; no input, default, or rule of this spec changes), confidence HIGH (the ruling's decisions 2 and 3: a family with no first-milestone spec is written as Foundation's normal classes, with Foundation's global styles loaded). Nothing is OPEN FOR HUMAN.
+
+### Amendment, 2026-09-30 (audit 0010)
+
+From [Audit 0010: the later-milestone families wave](../audits/0010-later-milestone-families-wave.md); `specs/tabs.md` was revised in place:
+
+- L1: the headline no-class sentence is narrowed to families with a first-milestone spec, naming the vertical layout's XY Grid classes written as normal classes.

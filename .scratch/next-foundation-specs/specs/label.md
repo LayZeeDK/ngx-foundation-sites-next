@@ -100,7 +100,7 @@ Other families' classes in this spec's examples and stories (building-blocks 1.1
 
 Foundation's icon examples write Foundation Icon Fonts classes (`fi-*`), an icon library's classes, which are the consumer's own (Out of Scope).
 
-State classes: none. Foundation's Label has no State class, and the directive binds no library hook. No class is left for the consumer to write (ADR 0039). Foundation has no responsive label colour, so `color` takes no Breakpoint query or rules object. The form `label` element and its `.middle` Variant belong to `label[nfsFormLabel]` ([Spec: Forms](../issues/98-spec-forms.md)); the two directives never meet, because `.label` is a class on any element and `.middle` a class on the `label` element.
+State classes: none. Foundation's Label has no State class, and the directive binds no library hook. No class of a family with a first-milestone spec is left for the consumer to write (ADR 0039). Foundation has no responsive label colour, so `color` takes no Breakpoint query or rules object. The form `label` element and its `.middle` Variant belong to `label[nfsFormLabel]` ([Spec: Forms](../issues/98-spec-forms.md)); the two directives never meet, because `.label` is a class on any element and `.middle` a class on the `label` element.
 
 ### Hierarchy and DI shape
 
@@ -272,7 +272,7 @@ Story ids follow `label--<story>`: `label--default`, `label--colors`, `label--ic
 
 ### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`)
 
-Run by `npx nx test-storybook <lib>`. Every story runs axe with `parameters.a11y.test = 'error'` and the six tags (which include `color-contrast`, `aria-prohibited-attr`, `link-name`, and `target-size`). No story element carries a Foundation class written in the story.
+Run by `npx nx test-storybook <lib>`. Every story runs axe with `parameters.a11y.test = 'error'` and the six tags (which include `color-contrast`, `aria-prohibited-attr`, `link-name`, and `target-size`). No story element carries a Foundation class written in the story, except `show-for-sr` in `label--icons`, a visibility class whose family has no first-milestone spec.
 
 - `label--default`: Foundation's Basics as a heading with a label inside ("Quarterly report" and "Draft"). The label carries `.label` and no role; its computed background is Foundation's `$label-background` and its text colour `$label-color`; the heading is found by `getByRole('heading', {name: 'Quarterly report Draft'})`.
 - `label--colors`: Foundation's Coloring example, one label per default palette name plus one with no `color`, each in a table cell of an invoice list whose label text names its meaning ("Draft", "Sent", "Paid", "Due soon", "Overdue"). Each carries its name's class; each computed background differs from the uncoloured one except `primary`'s, which equals it; the computed text colour is `$white` on the uncoloured, primary, secondary, and alert labels and `$black` on success and warning; axe passes `color-contrast` under the required setting.

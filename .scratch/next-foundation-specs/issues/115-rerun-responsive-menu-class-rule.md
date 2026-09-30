@@ -157,3 +157,10 @@ From [Decide: grids, typography, and utilities move to a later milestone](174-de
 - The back items' hidden suffix is `<span class="show-for-sr">`, a normal class: the class-mapping row, the hierarchy block, the back-item ARIA row, the Rendered HTML lead and markup, the Out of Scope bullet, D23, the usage example lead and `imports` (the visibility directive is dropped), the Sass include note, the SSR fixture wording, and the class-rule Note say so.
 - D23's rejected alternative "a consumer-written `show-for-sr` class (forbidden by ADR 0039)" is now the decision; the rejected alternative is a Responsive Menu directive for the suffix.
 - Unchanged: the directive, the rules input, the swap, the hosted Menu and its inputs, ARIA and keyboard per mode, the rendering modes, and the Story ids.
+
+### Amendment, 2026-09-30 (audit 0010)
+
+From [Audit 0010: the later-milestone families wave](../audits/0010-later-milestone-families-wave.md); `specs/responsive-menu.md` was revised in place:
+
+- M4: the class-rule test and the fixture route name the back items' `show-for-sr` as the one class written.
+- L1: user story 44 and the class sentence are narrowed to families with a first-milestone spec, naming the back items' `show-for-sr`.

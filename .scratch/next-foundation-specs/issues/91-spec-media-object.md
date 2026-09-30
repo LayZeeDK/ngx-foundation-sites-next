@@ -200,3 +200,9 @@ From [Decide: grids, typography, and utilities move to a later milestone](174-de
 - The behaviour a flex helper class had on the hosts is unchanged (the class records never strip it); what changed is that the spec now documents writing it, where it had pointed to the Flexbox Utilities' directives. The browser-level composition case asserts that a static `align-self-middle` or `align-middle` stays beside the records.
 - The entry point no longer mentions a Flexbox Utilities entry point, and the Imports bullet names only the Thumbnail's directive. Reordering sections is the consumer's choice under WCAG 1.3.2 and 2.4.3; stacking at a non-Zero breakpoint uses Foundation's XY grid classes.
 - Unchanged: the two directives, their inputs and types, the binding rule for the Media Object classes, ARIA, the rendering modes, and the Story ids.
+
+### Amendment, 2026-09-30 (audit 0010)
+
+From [Audit 0010: the later-milestone families wave](../audits/0010-later-milestone-families-wave.md); `specs/media-object.md` was revised in place:
+
+- L1: the Problem Statement's "writes no Foundation class at all" is narrowed to families with a first-milestone spec.

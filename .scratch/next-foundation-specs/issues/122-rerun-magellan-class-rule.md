@@ -158,3 +158,9 @@ From [Decide: grids, typography, and utilities move to a later milestone](174-de
 - The guide usage example and the `magellan--table-of-contents` layout write `class="grid-x grid-margin-x"` and `class="cell large-3"` / `class="cell large-9"`; the example's `imports` drops `NfsGridX` and `NfsCell`. The class-mapping row, the names paragraph, the story scaffolding, and the Out of Scope bullet are restated.
 - The select-versus-navigation note writes `hide-for-large` and `show-for-large` as normal classes in place of the visibility directive.
 - Unchanged: the directive, its API, tracking, the marker, deep linking, ARIA, the rendering modes, and the Story ids.
+
+### Amendment, 2026-09-30 (audit 0010)
+
+From [Audit 0010: the later-milestone families wave](../audits/0010-later-milestone-families-wave.md); `specs/magellan.md` was revised in place:
+
+- L1: the consumer's no-class sentence is narrowed to families with a first-milestone spec.

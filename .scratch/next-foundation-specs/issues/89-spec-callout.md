@@ -219,3 +219,9 @@ Each rule is stated as documented usage: two Documented usage bullets in the API
 ### Amendment, 2026-09-30 (later-milestone families)
 
 From [Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md), applied by [Re-run: specs without the later-milestone families, group a](176-rerun-specs-without-later-families-group-a.md): `specs/callout.md` no longer relies on the Typography Helpers spec for the greys inside a callout. A heading `small`, a `blockquote`, and a `cite` are base element styles that a first-milestone callout shows, and a `.subheader` is a class the consumer may write, so the spec now requires their settings itself: new D17 sets `$header-small-font-color`, `$blockquote-color`, `$cite-color`, and `$subheader-color` to `#666666` on Foundation's defaults (at least 4.686:1 on every callout tint, 5.693:1 on the page; the defaults fail even on the page), stated in the Solution, the 1.4.3 row, the Sass subsection's required settings, the Foundation-behaviour list, and the Out of Scope bullet, whose link to that spec is gone. The Storybook settings overrides already carry the four lines. Unchanged: `NfsCallout`, its inputs and registries, D7's list of pairs, D8's two settings, and the Story ids.
+
+### Amendment, 2026-09-30 (audit 0010)
+
+From [Audit 0010: the later-milestone families wave](../audits/0010-later-milestone-families-wave.md); `specs/callout.md` was revised in place:
+
+- L2: the Storybook settings sentence no longer counts two required settings; it names the Sass subsection, the four greys of D17 included.

@@ -204,3 +204,9 @@ From [Re-run: specs without the later-milestone families, group c](178-rerun-spe
 - D19 rewritten: examples, stories, test hosts, and fixtures write no Foundation or library class other than those of a family with no first-milestone spec (the XY Grid's `grid-x` and `cell small-6`, the Prototyping Utilities' `overflow-hidden`). Its rejected option "Foundation's `.overflow-hidden` class in the story" is now the chosen form, and the rejected "docs classes in examples" is narrowed to first-milestone families. The usage-examples intro names the same exception.
 
 Triage: impact LOW (examples, stories, and documented usage change; no input, default, or rule of this spec changes), confidence HIGH (the ruling's decisions 2 and 3: a family with no first-milestone spec is written as Foundation's normal classes, with Foundation's global styles loaded). The written classes are the ones the directives bound, so the stories' assertions stand (inferred, not re-run). Nothing is OPEN FOR HUMAN.
+
+### Amendment, 2026-09-30 (audit 0010)
+
+From [Audit 0010: the later-milestone families wave](../audits/0010-later-milestone-families-wave.md); `specs/sticky.md` was revised in place:
+
+- M1: the stories sentence and D19 say `overflow-hidden` needs Foundation's Prototype mode compiled (`foundation-everything($prototype: true)`).

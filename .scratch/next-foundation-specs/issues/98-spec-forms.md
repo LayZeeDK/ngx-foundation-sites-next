@@ -204,3 +204,9 @@ From [Decide: grids, typography, and utilities move to a later milestone](174-de
 - Label Positioning's `.text-right`, `.float-right`, and `.float-left`, every example's XY grid classes, the Label Positioning grid's `.align-center`, and the File Upload Button's `.show-for-sr` are normal classes: the Foundation contract paragraph and the five class-mapping rows say so, and the Rendered HTML's Label Positioning and Abide examples write `class="grid-x"`, `class="cell small-3"`, and `class="text-right"` beside `nfsFormLabel`.
 - User story 36, the two Out of Scope bullets, and D15 are restated; the "Foundation behaviour changed or dropped" bullet about those classes is removed, because they are now written as Foundation writes them.
 - Unchanged: the seven directives, `middle`, the Abide composition, ARIA, the rendering modes, the stories, and the e2e tests.
+
+### Amendment, 2026-09-30 (audit 0010)
+
+From [Audit 0010: the later-milestone families wave](../audits/0010-later-milestone-families-wave.md); `specs/forms.md` was revised in place:
+
+- L1: the Problem Statement and the class sentence are narrowed to families with a first-milestone spec.

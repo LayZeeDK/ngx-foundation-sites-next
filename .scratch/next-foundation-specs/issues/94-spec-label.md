@@ -200,3 +200,10 @@ From [Decide: grids, typography, and utilities move to a later milestone](174-de
 - The icon-only label's hidden text is `<span class="show-for-sr">`: the other-families row, the Rendered HTML note and markup, `label--icons` (which no longer imports a visibility directive), and the Out of Scope bullet say so.
 - The Problem Statement's class-rule line now reads "no class of a Foundation family that has a first-milestone spec".
 - Unchanged: the directive, its `color` input and type, ARIA, the rendering modes, the required setting, the stories, and the tests.
+
+### Amendment, 2026-09-30 (audit 0010)
+
+From [Audit 0010: the later-milestone families wave](../audits/0010-later-milestone-families-wave.md); `specs/label.md` was revised in place:
+
+- M4: the Testing line on story classes names `show-for-sr` in `label--icons` as the exception.
+- L1: "No class is left for the consumer to write" is narrowed to families with a first-milestone spec.

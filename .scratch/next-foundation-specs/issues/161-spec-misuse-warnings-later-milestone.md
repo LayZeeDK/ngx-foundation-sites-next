@@ -124,3 +124,9 @@ For [Task: shared documents for the later-milestone checks](171-task-shared-docu
 ### Amendment, 2026-09-30 (audit 0009 M6)
 
 - [Audit 0009: the later-milestone checks wave](../audits/0009-later-milestone-checks-wave.md), M6, worked by [Re-run: family checks and misuse warnings specs, spec-shape subsections](172-rerun-family-and-misuse-specs-spec-shape.md): the spec gains the three spec-shape subsections it lacked (its usage examples were there). Implementation Decisions: a Foundation contract (Foundation 6.9's JavaScript reports only option values and method calls, such as the Interchange's invalid `type`, the Toggler's missing class, the Off-canvas' `contentId` without `nested`, and `MediaQuery`'s throws; it reads a copied class as state and reports no name, host, or stylesheet, each with file and line), a Hierarchy and package shape subsection (no directive and no entry point of its own; each warning lives in its directive's file and entry point; the three library-internal helpers of S1, S3, and S4 sit in `ngx-foundation-sites/media-query`, exported for library directives only, as `nfsVariantCheck` and `nfsReportForgottenPeer` are), and a comparison with Angular Aria's development warnings, Material's removed `MatCommonModule` sanity checks (commit `54875a3`), and the CDK's `InteractivityChecker`. Implementation level and primitives now reads "never exported to consumers". No check, message, or test changes.
+
+### Amendment, 2026-09-30 (audit 0010)
+
+From [Audit 0010: the later-milestone families wave](../audits/0010-later-milestone-families-wave.md); `specs/misuse-warnings.md` was revised in place:
+
+- M7: the Foundation contract's lead-in lists the four report sites the search missed and says this spec has no counterpart for them; no check changes.

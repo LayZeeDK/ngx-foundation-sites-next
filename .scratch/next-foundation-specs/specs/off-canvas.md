@@ -117,7 +117,7 @@ Dropped behaviours, each with its reason under Further Notes: `aria-hidden` on t
 
 ### CSS class to Angular mapping
 
-No Foundation or library class is left for the developer to write ([ADR 0039](../adr/0039-directives-manage-every-foundation-class.md)); the developer writes the panel, content, overlay, and wrapper elements and the directives' attributes.
+No Foundation or library class of a family with a first-milestone spec is left for the developer to write ([ADR 0039](../adr/0039-directives-manage-every-foundation-class.md)); the developer writes the panel, content, overlay, and wrapper elements and the directives' attributes.
 
 | Foundation class or element | Kind | Angular | Type, Sass setting, and Variant registry | Class each value sets | Variant property |
 | --- | --- | --- | --- | --- | --- |
