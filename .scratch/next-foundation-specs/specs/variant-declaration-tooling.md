@@ -457,7 +457,7 @@ Borrowed: MUI's registry semantics, typed-scss-modules' write-only-when-differen
 
 ### Implementation level and primitives
 
-The browser target does not apply; the tooling runs in Node at development and CI time. Primitives: the Sass JavaScript API (`initAsyncCompiler`, `compileAsync`, a file importer), esbuild's `build.resolve` from the esbuild `@angular/build` depends on, TypeScript's parser (`createSourceFile` only), `@nx/devkit` (`Tree`, `createProjectGraphAsync`, project configuration helpers, `convertNxGenerator`), `@angular-devkit/architect` (`createBuilder`, `getTargetOptions`, `getProjectMetadata`), and Prettier when present. On the Angular side: TypeScript types and one pure function; no `@angular/aria`, CDK, or runtime Angular API.
+Implementation level: not an Implementation level choice, as building-blocks Table C records for this utility: the order of native platform, `@angular/aria`, `@angular/cdk`, and custom Angular ranks the primitives a directive or component is built on, and nothing here is one or runs in a browser. The types are declaration merging, and the tooling is Node code. The browser target does not apply; the tooling runs in Node at development and CI time. Primitives: the Sass JavaScript API (`initAsyncCompiler`, `compileAsync`, a file importer), esbuild's `build.resolve` from the esbuild `@angular/build` depends on, TypeScript's parser (`createSourceFile` only), `@nx/devkit` (`Tree`, `createProjectGraphAsync`, project configuration helpers, `convertNxGenerator`), `@angular-devkit/architect` (`createBuilder`, `getTargetOptions`, `getProjectMetadata`), and Prettier when present. On the Angular side: TypeScript types and one pure function; no `@angular/aria`, CDK, or runtime Angular API.
 
 ### ARIA and keyboard
 
@@ -470,6 +470,10 @@ No criterion applies: the tooling and the types render nothing and change no mar
 ### Rendered output
 
 The only output is the Variant declaration file (the API section). The Variant properties it reads are written by the component specs' Library mixins and by `nfs-breakpoint-properties` (ADR 0012, dated note); this spec fixes their format and nothing else.
+
+### Animation
+
+None: nothing here renders, so there is no State class, Motion class, or reduced-motion rule (Sass, item 4).
 
 ### Rendering modes
 
@@ -571,7 +575,7 @@ No cases: nothing here runs in a browser. The workspace e2e above takes its plac
 | D19 | Sources | The build target's injected Sass global stylesheets under the named or default configuration; `stylesheets` to override | Every configuration compiled and required to agree (a compile per configuration on every task for a rare case); the built CSS (only after a build) |
 | D20 | Sass resolution | The application builder's importer re-implemented over its own esbuild resolver and stylesheet options, compiled with the Sass compiler it loads (`sass-embedded`), confirmed by the prototype in eight cases | `@angular/build`'s private Sass service (not public API); Node resolution with Sass's `NodePackageImporter` and `~` stripping (both differ from the builder, measured) |
 | D21 | Shared libraries | A file of the library's own, from a named build target or stylesheet | Including applications' files (merging hides member conflicts under `skipLibCheck`); no file (the library's own type checks reject application names) |
-| D22 | Packaging | CommonJS tooling beside the Angular entry points; generators and schematics in one collection; one Architect builder for both workspace kinds | A separate tooling package (a second version to keep in step with the manifest); an Nx executor beside the builder (two implementations of the check) |
+| D22 | Packaging | CommonJS tooling beside the Angular entry points; generators and schematics in one collection; one Architect builder for both workspace kinds | A separate tooling package (a second version to keep in step with the manifest); an Nx executor beside the builder (two implementations of the same rewrite) |
 | D23 | Dependencies | Optional peers loaded on demand, M9 when missing | `dependencies` on `nx` and `@nx/devkit` (installs them for every consumer, used or not) |
 | D24 | Keeping in step | The sync generator before tasks outside CI and the `nfs-variants` target; the generated file is committed, and CI builds against it | Regenerating inside the build (`@angular/build` has no Sass hook, tasks skip sync generators in CI, and the CLI has no target dependencies) |
 | D25 | npm scripts | Opt-in `--npmScripts` | Always (edits `package.json` scripts for users who run `ng` directly) |

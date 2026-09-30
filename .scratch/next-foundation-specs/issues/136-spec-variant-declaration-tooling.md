@@ -263,3 +263,11 @@ Triage: moving the count kind with the count registries: impact LOW (the manifes
 From [Audit 0010: the later-milestone families wave](../audits/0010-later-milestone-families-wave.md); `specs/variant-declaration-tooling.md` was revised in place:
 
 - M5: the example ratio `'21by9'`, which Foundation's `foundation-responsive-embed` cannot compile, becomes `'ultra-wide'` in the generated-file example and the renderer test, and leaves the quoting rule's examples.
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves)
+
+From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md), group d; `specs/variant-declaration-tooling.md` was revised in place. Each change is impact LOW, confidence HIGH.
+
+- D22, rejected alternative: "two implementations of the check" becomes "two implementations of the same rewrite", because the builder lost its check mode to the later milestone ([Decide: checks move to a later milestone](158-decide-checks-move-to-a-later-milestone.md); this ticket's amendment of 2026-09-29), so a first-milestone spec names no check there.
+- Implementation level and primitives: the section now states the level, "not an Implementation level choice", with its reason, as building-blocks Table C's row for this utility does, because the map's Standing preferences ask every spec to say which level it stopped at and why.
+- A new Animation subsection between Rendered output and Rendering modes says nothing animates (Sass, item 4), so Implementation Decisions carries every subsection of building-blocks 1.14.

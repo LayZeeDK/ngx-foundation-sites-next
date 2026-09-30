@@ -45,7 +45,7 @@ The callout's text, its links, and a close-button glyph must reach WCAG 2.2 AA c
 18. As a user with low vision, I want callout text and links to contrast at least 4.5:1 with every callout background, at rest, on hover, and on focus, so that I can read them.
 19. As a user with low vision, I want the close button's glyph to contrast at least 3:1 with the callout it sits on, so that I can find the control.
 20. As an application developer, I want the spec to list every text, link, and close-button glyph pair a callout puts on its backgrounds, with the ratio each must reach, so that I can keep a theme of my own at WCAG 2.2 AA.
-21. As an application developer on Foundation's defaults, I want the spec to name the settings that pass, so that my callouts pass with two lines.
+21. As an application developer on Foundation's defaults, I want the spec to name the settings that pass, so that my callouts pass with the lines the Sass subsection lists.
 22. As a screen reader user, I want a callout that reports the result of my action to be announced without moving my focus, so that I hear "Invoice sent" (the developer's `role="status"` or `role="alert"`, which the recipe shows).
 23. As a screen reader user, I want a callout that is static page content to be announced as ordinary content, not as an alert, so that page load does not interrupt me.
 24. As a user who does not perceive colour, I want the callout's text to say what kind of message it is, so that the alert colour is not the only cue.

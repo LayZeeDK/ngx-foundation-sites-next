@@ -225,3 +225,7 @@ From [Decide: grids, typography, and utilities move to a later milestone](174-de
 From [Audit 0010: the later-milestone families wave](../audits/0010-later-milestone-families-wave.md); `specs/callout.md` was revised in place:
 
 - L2: the Storybook settings sentence no longer counts two required settings; it names the Sass subsection, the four greys of D17 included.
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves)
+
+- User story 21 no longer says the callouts pass "with two lines"; it says "with the lines the Sass subsection lists", because D17 (2026-09-30, [Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md)) added the four greys to the required settings, as audit 0010's L2 did for the Storybook sentence and the Card's user story 12 ([Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md), group d; impact LOW, confidence HIGH).
