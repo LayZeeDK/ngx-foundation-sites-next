@@ -230,3 +230,10 @@ From [Re-run: grid, typography, and utility specs for the later milestone](175-r
 - Restated: D1's rationale, which said the Equalizer spec "already writes" `nfsRow` and `nfsColumn`, now says it wrote the Float Grid's pair before the grids moved and writes Foundation's `.row` and `.column` until then.
 - Added: Further Notes, What the later milestone changes, per spec: per first-milestone spec, the Flex Grid classes it writes in the first milestone and the directives that replace them, read from the directives each spec wrote before the ruling.
 - No directive, input, class, ARIA row, story, or test changes. Impact LOW, confidence HIGH (a user ruling applied); nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves)
+
+From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md), group f; the spec was revised in place:
+
+- WCAG 2.2 AA, the paragraph after the table: "which is why check 4 exists" becomes "which is why documented usage 4 states the rule and the e2e reflow case asserts it". Why: the spec names no check (the map's Milestones ruling, [Decide: checks move to a later milestone](158-decide-checks-move-to-a-later-milestone.md)), and documented usage 4 is the rule that paragraph means. Impact LOW, confidence HIGH.
+- Out of Scope, the Flexbox Utilities bullet: "whose visual-order check owns" becomes "whose visual-order rule owns", as the ARIA table already says. Why: the same ruling. Impact LOW, confidence HIGH.

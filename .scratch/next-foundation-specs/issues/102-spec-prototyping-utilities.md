@@ -264,3 +264,10 @@ From [Re-run: grid, typography, and utility specs for the later milestone](175-r
 From [Audit 0010: the later-milestone families wave](../audits/0010-later-milestone-families-wave.md); `specs/prototyping-utilities.md` was revised in place:
 
 - M3: D25 and the Sass subsection place `nfs-prototype-classes` "when this spec lands" and per-export mixins in "a later release", not in the first and later milestones; D25 notes that ticket 174 moved the spec the same day ticket 173 ruled.
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves)
+
+From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md), group f; the spec was revised in place:
+
+- Testing Decisions, the Story ids paragraph: the Storybook preview turns on the four prototype breakpoint flags `prototyping-utilities--responsive` needs (spacing, sizing, display, and bordered), not every flag. Why: `storybook-conventions.md` section 5 sets those four, and no other story binds a responsive value. Impact LOW, confidence HIGH.
+- D19, rejected alternative: "(nothing in the first milestone reads it)" becomes "(nothing reads it)". Why: the spec is a later milestone's ([Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md)), as audit 0010's M3 already applied to D25 and the Sass subsection. Impact LOW, confidence HIGH.

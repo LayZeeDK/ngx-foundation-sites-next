@@ -237,3 +237,10 @@ From [Re-run: grid, typography, and utility specs for the later milestone](175-r
 - Restated: D6's rationale, which said the Equalizer spec "already writes" `nfsFlexChild="grow"`, and D8's, which said the Button Group and the Equalizer "already compose beside", now say those specs get the directives when the spec lands.
 - Added: Further Notes, What the later milestone changes, per spec: per first-milestone spec, the Flexbox Utilities classes it writes in the first milestone and the directives that replace them, read from the directives each spec wrote before the ruling.
 - No directive, input, class, ARIA row, story, or test changes. Impact LOW, confidence HIGH (a user ruling applied); nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves)
+
+From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md), group f; the spec was revised in place:
+
+- Testing Decisions, layer 3, Sass compile: the third bullet, which repeated the count case and said the mixin writes the Class breakpoints, now says `$breakpoint-classes` changes nothing the mixin writes. Why: the bullet above it (exactly one property and no other rule), the Sass subsection's items 1 and 6, and D14 say `nfs-flexbox-utilities` writes `--nfs-flex-source-ordering-count` alone, and building-blocks 1.13 gives `--nfs-breakpoint-classes` one writer, `nfs-breakpoint-properties`. Impact LOW, confidence HIGH.
+- Notes, the Sticky container cell bullet: "the Sticky spec documents it" becomes "the Sticky spec's sticky column relies on the cell stretching to its row's height". Why: `specs/sticky.md` says the grid cell stretches to the row's height and says nothing about a self alignment. Impact LOW, confidence HIGH.

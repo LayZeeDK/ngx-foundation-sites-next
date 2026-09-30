@@ -636,6 +636,8 @@ In the first milestone no spec names this spec's directives or links to it. Wher
 - [Spec: Responsive Toggle](../issues/24-spec-responsive-toggle.md): the hamburger's name given as hidden text; the bar's and menu's own Visibility classes stay that spec's bindings (D7).
 - [Spec: Top Bar](../issues/86-spec-top-bar.md): a menu icon's name given as hidden text.
 - [Spec: Breadcrumbs](../issues/88-spec-breadcrumbs.md), [Spec: Pagination](../issues/87-spec-pagination.md), and [Spec: Switch](../issues/84-spec-switch.md): the lines that say their recipes need no visually hidden text name `nfsShowForSr` again.
+- [Spec: Forms](../issues/98-spec-forms.md): the File Upload Button's `.show-for-sr` row, the line on other families' classes, and the Out of Scope line on the label-as-button file upload name `nfsShowForSr` again.
+- [Spec: Nested menu (shared utility)](../issues/56-spec-nested-menu.md): D30's rejected alternative, Foundation's `.show-for-sr` class, names `nfsShowForSr` again.
 
 The other Visibility classes become `nfsVisibility` in:
 
@@ -643,6 +645,7 @@ The other Visibility classes become `nfsVisibility` in:
 - [Spec: Magellan](../issues/30-spec-magellan.md): the jump menu's `class="hide-for-large"` and the navigation's `class="show-for-large"` become `nfsVisibility hideFor="large"` and `nfsVisibility showFor="large"`.
 - [Spec: Menu](../issues/85-spec-menu.md): a plain menu's items shown or hidden by breakpoint name `nfsVisibility` again.
 - [Spec: Off-canvas](../issues/25-spec-off-canvas.md): the Trigger hidden at the reveal breakpoint, `class="hide-for-large"`, becomes `nfsVisibility hideFor="large"` in that spec's usage rule, its stories, and its usage example.
+- [Spec: Responsive Embed](../issues/96-spec-responsive-embed.md): the composition bullet, which names Foundation's visibility classes, names this spec's directives again.
 - [Spec: Thumbnail](../issues/97-spec-thumbnail.md): the hiding rule's `class="hide"` becomes `nfsVisibility` with a bare `hideFor` (that spec's D9).
 - [Spec: Variant declaration tooling](../issues/136-spec-variant-declaration-tooling.md): the manifest row of `NfsVisibility` comes back; its breakpoint values read `NfsBreakpointClassesOverrides`, which stays in the first milestone.
 - The Variant declaration tooling's Known `mixins` and `uses` entries for this spec, which [Re-run: specs without the later-milestone families, group c](../issues/178-rerun-specs-without-later-families-group-c.md) removed from that spec's manifest; they come back with this spec, as that spec listed them at commit d5a1eee:

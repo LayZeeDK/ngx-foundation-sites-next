@@ -256,7 +256,7 @@ The target is WCAG 2.2 level AA (user rule; ADR 0022). Each criterion below is a
 | 1.3.1 Info and Relationships | The grid adds no meaning; the consumer's elements carry it. A list row stays a list, with its markers (the Typography Helpers' `nfsNoBullet` removes them; `role="list"` where the count matters) | Passes | axe in every story |
 | 4.1.2 Name, Role, Value | The directives add no role, name, or state | Passes (measured: the docs examples are axe-clean at 320 and 1280 px in three engines) | axe in every story |
 
-2.1.1, 2.4.7, and 2.4.11 are not affected: the grid holds no control, scroll container, or positioned element. The axe gate in every story runs the WCAG 2.2 AA rule set (tags `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`, plus `best-practice`) with `parameters.a11y.test = 'error'` (ADR 0018); axe has no rule for content that overflows its column, which is why check 4 exists.
+2.1.1, 2.4.7, and 2.4.11 are not affected: the grid holds no control, scroll container, or positioned element. The axe gate in every story runs the WCAG 2.2 AA rule set (tags `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`, plus `best-practice`) with `parameters.a11y.test = 'error'` (ADR 0018); axe has no rule for content that overflows its column, which is why documented usage 4 states the rule and the e2e reflow case asserts it.
 
 ### Rendered HTML
 
@@ -428,7 +428,7 @@ No fixture-app route: the Flex Grid has no control, listener, or first-paint sta
 
 ## Out of Scope
 
-- Source ordering (`.<bp>-order-<n>`), flex alignment (`.align-*`, `.align-self-*`, `.align-center-middle`), and the flex container helpers on rows and columns: the [Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md), whose `nfsFlexAlign` and `nfsFlexChild` are written beside `nfsRow` and `nfsColumn`, and whose visual-order check owns the 1.3.2 and 2.4.3 hazard of reordering. Category: `scope-boundary`.
+- Source ordering (`.<bp>-order-<n>`), flex alignment (`.align-*`, `.align-self-*`, `.align-center-middle`), and the flex container helpers on rows and columns: the [Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md), whose `nfsFlexAlign` and `nfsFlexChild` are written beside `nfsRow` and `nfsColumn`, and whose visual-order rule owns the 1.3.2 and 2.4.3 hazard of reordering. Category: `scope-boundary`.
 - Showing and hiding rows and columns by breakpoint (`.hide-for-*`, `.show-for-*`): the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md). Category: `scope-boundary`.
 - Removing a list row's markers (`.no-bullet`): the [Spec: Typography Helpers](../issues/106-spec-typography-helpers.md)'s `nfsNoBullet`. Category: `scope-boundary`.
 - The Float Grid's own classes (`.<bp>-push-<n>`, `.<bp>-pull-<n>`, `.<bp>-centered`, `.<bp>-uncentered`, `.end`, `.gutter-<bp>`) and the XY Grid: the [Spec: Float Grid](../issues/100-spec-float-grid.md) and the [Spec: XY Grid](../issues/99-spec-xy-grid.md); the Flex Grid's CSS prints none of the Float Grid's. Category: `scope-boundary`.

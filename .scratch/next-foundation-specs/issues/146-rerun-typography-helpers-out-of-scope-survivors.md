@@ -189,3 +189,9 @@ From [Re-run: grid, typography, and utility specs for the later milestone](175-r
 - Restated: the Problem Statement's `.no-bullet` bullet no longer counts the Card among the specs that leave list markers to this spec (the Card's list of cards gets `nfsNoBullet` when the spec lands), and D4's rationale no longer says the Forms and Pagination specs write `nfsTextAlign` (they get it back then).
 - Added: Further Notes, What the later milestone changes, per spec: per first-milestone spec, the Typography Helpers classes it writes in the first milestone and the directives that replace them, read from the directives each spec wrote before the ruling.
 - No directive, input, class, ARIA row, story, or test changes. Impact LOW, confidence HIGH (a user ruling applied); nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves)
+
+From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md), group f; the spec was revised in place:
+
+- Testing Decisions, the Story ids paragraph: the parenthesis saying the Storybook conventions change the Answers of this spec's ticket and of this ticket propose becomes a pointer to `storybook-conventions.md` section 5. Why: the conventions carry the four greys and the commented `nfs-typography-helpers` include, so the change is no longer pending. Impact LOW, confidence HIGH.

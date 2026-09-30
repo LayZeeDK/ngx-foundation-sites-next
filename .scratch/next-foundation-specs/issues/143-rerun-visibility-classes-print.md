@@ -189,3 +189,9 @@ From [Re-run: grid, typography, and utility specs for the later milestone](175-r
 - Restated: user story 33 speaks of every component, not every spec, that uses `nfsShowForSr`, and D1's rationale, which said "a dozen published specs already write `nfsShowForSr`", now says those first-milestone specs write Foundation's `.show-for-sr` until the spec lands and get `nfsShowForSr` back then.
 - Added: Further Notes, What the later milestone changes, per spec: per first-milestone spec, the Visibility classes it writes in the first milestone and the directives that replace them, read from the directives each spec wrote before the ruling.
 - No directive, input, class, ARIA row, story, or test changes. Impact LOW, confidence HIGH (a user ruling applied); nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves)
+
+From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md), group f; the spec was revised in place:
+
+- Further Notes, What the later milestone changes, per spec: adds the Forms (its File Upload Button row, its line on other families' classes, and its Out of Scope line named `NfsShowForSr` or the Visibility Classes spec), the Nested menu (D30's rejected alternative named the Visibility Classes' screen-reader-only directive), and the Responsive Embed (its composition bullet named the Visibility Classes' directives), all read from the specs at d5a1eee. Why: the section's own rule, read from the directives and links each spec wrote before the ruling, under [Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md), decisions 2 and 5. Impact LOW, confidence HIGH.

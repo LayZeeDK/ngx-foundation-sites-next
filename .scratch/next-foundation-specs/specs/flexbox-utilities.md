@@ -363,7 +363,7 @@ TestBed specs next to the directives over a bare test host component, zoneless w
 - Sass compile, over Foundation 6.9.0's settings file with `@import 'ngx-foundation-sites';` after Foundation and `@include nfs-flexbox-utilities;` after `foundation-flex-classes`:
   - Foundation's defaults emit exactly `:root { --nfs-flex-source-ordering-count: 6; }` and no other rule.
   - `$flex-source-ordering-count: 12` writes 12; `$flexbox-responsive-breakpoints: false` changes nothing the mixin writes.
-  - `$flex-source-ordering-count: 12` writes `12`; `$breakpoint-classes: (small medium large xlarge)` writes `medium large xlarge`; `$breakpoint-classes: (medium large)` writes `medium large`.
+  - `$breakpoint-classes: (small medium large xlarge)` changes nothing the mixin writes: `--nfs-breakpoint-classes` is `nfs-breakpoint-properties`' property.
 
 ### 4. Playwright e2e (`npx nx e2e <lib>-e2e` against the static Storybook build; `npx nx e2e <fixture-app>-e2e` against the prerendered fixture app)
 
@@ -523,7 +523,7 @@ No required setting: Foundation's defaults pass.
 - Column parents: Foundation's names assume a row. In a column container (`direction="column"`, the XY Grid's vertical grid), `alignX` moves children along the column and `alignY` across it.
 - Right to left: Foundation compiles `left` and `right` against `$global-text-direction`. In a right-to-left compile `.align-right` still means the right edge; inside a `dir="rtl"` region of a left-to-right compile, `alignX="right"` gives `flex-end`, the region's left edge (D16). `justify`, `spaced`, and `center` read the same in both.
 - On an XY grid cell, the grid's own `auto` and `shrink` cell sizes are the grid's sizing; `nfsFlexChild`'s sizes are the vanilla helpers' (`flex: 1 1 auto` and `0 1 auto`, against the grid's `1 1 0` and `0 0 auto`) and belong on boxes inside a Flex parent.
-- A Sticky container cell ([Spec: Sticky](../issues/28-spec-sticky.md)) with an `alignSelf` other than `stretch` no longer stretches to its row, so it is only as tall as its sticky element; the Sticky spec documents it.
+- A Sticky container cell ([Spec: Sticky](../issues/28-spec-sticky.md)) with an `alignSelf` other than `stretch` no longer stretches to its row, so it is only as tall as its sticky element; the Sticky spec's sticky column relies on the cell stretching to its row's height.
 - `wrap-reverse` also changes the visual order; no Foundation class sets it, so it is the consumer's own CSS, under the same rule as documented usage 5.
 
 ### What the later milestone changes, per spec
