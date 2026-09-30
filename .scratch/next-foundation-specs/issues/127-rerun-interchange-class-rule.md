@@ -156,3 +156,7 @@ The behaviour stays: a malformed segment is skipped, an unknown bare word never 
 From [Audit 0010: the later-milestone families wave](../audits/0010-later-milestone-families-wave.md); `specs/interchange.md` was revised in place:
 
 - H1: the Background host sentence, user story 45, the class-mapping row, the composition bullet, the `hostDirectives` sentence, and D17 no longer name an XY Grid cell directive; a grid cell's `class="cell"` is Foundation's own class written as a normal class (ADR 0039's exception), and D17's no-class sentence is narrowed to families with a first-milestone spec.
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves)
+
+- From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md), group c: ARIA and keyboard, the "Swap while focused" and "Announcements" rows: "Breakpoint service spec, ARIA rule 1" and "ARIA rule 4" become "consuming-directive rule 1" and "consuming-directive rule 4", the Breakpoint service spec's own name for its four rules, which the same table and [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md) (R52) use. Impact LOW, confidence HIGH.

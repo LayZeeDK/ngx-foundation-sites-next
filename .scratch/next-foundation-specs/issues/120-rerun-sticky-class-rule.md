@@ -210,3 +210,12 @@ Triage: impact LOW (examples, stories, and documented usage change; no input, de
 From [Audit 0010: the later-milestone families wave](../audits/0010-later-milestone-families-wave.md); `specs/sticky.md` was revised in place:
 
 - M1: the stories sentence and D19 say `overflow-hidden` needs Foundation's Prototype mode compiled (`foundation-everything($prototype: true)`).
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves)
+
+From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md); `specs/sticky.md` was revised in place:
+
+- WCAG table, the 1.4.3 row: `$topbar-background: $white` is the Top Bar spec's example of its required bar background, not the requirement itself (the Top Bar spec's 1.4.3 row: "a bar background on which `$anchor-color` reaches 4.5:1, for example `$topbar-background: $white;`").
+- Testing Decisions, the Story ids paragraph: the preview stylesheet includes `foundation-sticky` and the title-bar rules through `foundation-everything`, then `nfs-breakpoint-properties` and `nfs-sticky`, in place of "the Top Bar spec's title-bar lines it already has", which names nothing the preview holds (storybook-conventions.md, section 5).
+
+Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.

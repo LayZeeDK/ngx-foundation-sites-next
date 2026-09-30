@@ -147,3 +147,14 @@ Each rule is stated as documented usage: `nfsBreakpointsToken` takes the Sass `$
 ### Amendment, 2026-09-30 (later-milestone families)
 
 From [Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md), applied by [Re-run: specs without the later-milestone families, group a](176-rerun-specs-without-later-families-group-a.md): `specs/breakpoint-service.md` no longer assumes the Visibility Classes or the XY Grid. The looks-only example writes `<aside class="show-for-large">` in place of `nfsVisibility showFor="large"`; the Solution, user story 22, the Variant row, the `hydrate never` note, and design decision 24 say that the visibility classes and grid sizes are normal classes the consumer writes, and the consuming-directive table drops `NfsVisibility` and the grid cells from its list of directives with a responsive Variant input. No link to either spec remains. The Class breakpoint types, their registry `NfsBreakpointClassesOverrides`, and `--nfs-breakpoint-classes` stay: the first milestone's responsive Variant inputs and class-setting Options (Button `expanded`, Menu `orientation`, Button Group and Top Bar `stackedFor`, Off-canvas `revealOn`) need them. Unchanged: the service, its API, the token, the Library mixin, and the Story ids.
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves)
+
+From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md); `specs/breakpoint-service.md` was revised in place:
+
+- Problem Statement, the class-rule bullet: the list of looks that change per breakpoint drops `.show-for-medium`, a Visibility class the consumer writes in the first milestone rather than one a directive sets from a typed input (map, Later-milestone families; ADR 0039, note of 2026-09-30).
+- Solution, the paragraph on looks that change per breakpoint: the owners' examples add the Responsive Toggle's `hideFor`, and the consumer's exception covers the visibility classes on its own elements, because a first-milestone directive that binds a Visibility class for its own behaviour keeps binding it (ADR 0039, note of 2026-09-30; building-blocks 1.7).
+- The two-type table, the `NfsBreakpointName` row: Tooltip `showOn`, Sticky `stickyOn`, and Equalizer `equalizeOn` are Breakpoint queries typed `string` whose name part is an `NfsBreakpointName`, as the three specs declare them (`showOn?: string`, `stickyOn` a `string`, `equalizeOn: InputSignal<string>`).
+- WCAG table, the 1.4.4 row's test: `.show-for-medium` is a Visibility class the fixture writes as a normal class, in place of "set by a Visibility Classes directive from `showFor="medium"`", a directive of a later-milestone family (map, Later-milestone families; ticket 180, check 2).
+
+Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.

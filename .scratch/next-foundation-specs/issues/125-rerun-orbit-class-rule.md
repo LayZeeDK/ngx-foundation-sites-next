@@ -226,3 +226,7 @@ From [Decide: grids, typography, and utilities move to a later milestone](174-de
 From [Audit 0010: the later-milestone families wave](../audits/0010-later-milestone-families-wave.md); `specs/orbit.md` was revised in place:
 
 - L1: "No Foundation or library class is left for the consumer" is narrowed to families with a first-milestone spec.
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves)
+
+- From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md), group c: Hierarchy and DI shape, the Imports bullet: `[value]` fails to compile only on a slide; a bound `[value]` on a bullet's `button` still compiles and sets the native property, as audit 0009 measured for `[type]` on a `button` (its question 1 and M4; building-blocks 1.9, Imports). Impact LOW, confidence HIGH.

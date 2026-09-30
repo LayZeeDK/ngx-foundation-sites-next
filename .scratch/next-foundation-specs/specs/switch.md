@@ -14,7 +14,7 @@ A developer on Foundation for Sites who needs an on/off control writes Foundatio
 - The inner labels stay out of the name only by convention: without `aria-hidden="true"` the shown word joins the name ("Do you like me? Yes", measured), so the name changes with the state, which the APG Switch pattern forbids.
 - The role is a checkbox, even where the control reads as an on/off setting, and `role="switch"` copied onto a radio switch is not allowed (axe `aria-allowed-role`, measured).
 - Foundation's radio switches sit in no group: no `fieldset`, `legend`, or `radiogroup` names the question they answer (1.3.1), and axe has no rule for it (none of axe-core 4.13.0's rule ids names a radio, a group, a fieldset, or a legend; measured).
-- Under the library's class rule the developer writes no Foundation class at all, so the five Structural classes and the three size classes need an Angular home, and nothing may break Angular Forms, which picks its checkbox and radio value accessors from the input's static `type` attribute.
+- Under the library's class rule the developer writes no Foundation class of a family with a first-milestone spec, so the five Structural classes and the three size classes need an Angular home, and nothing may break Angular Forms, which picks its checkbox and radio value accessors from the input's static `type` attribute.
 
 A server-rendered application adds the usual second problem: every class must already be in the server HTML, nothing may break hydration, and the switch must keep toggling as plain HTML before hydration and inside dehydrated `@defer` blocks.
 

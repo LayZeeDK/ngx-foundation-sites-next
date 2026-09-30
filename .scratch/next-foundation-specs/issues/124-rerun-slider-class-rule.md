@@ -162,3 +162,7 @@ From [Re-run: specs without the later-milestone families, group c](178-rerun-spe
 - Usage examples: the data binding example's row and cells write Foundation's `grid-x grid-margin-x`, `cell small-10`, and `cell small-2` as normal classes in place of the XY Grid directives, as Foundation's docs example does; the closing sentence says these are the only Foundation classes an example writes and why, and the link to the XY Grid spec is gone. The stories already used no grid.
 
 Triage: impact LOW (examples, stories, and documented usage change; no input, default, or rule of this spec changes), confidence HIGH (the ruling's decisions 2 and 3: a family with no first-milestone spec is written as Foundation's normal classes, with Foundation's global styles loaded). Nothing is OPEN FOR HUMAN.
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves)
+
+- From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md), group c: CSS class to Angular mapping, the lead sentence: "No Foundation or library class is left for the consumer to write" becomes "No Foundation or library class of a family with a first-milestone spec is left for the consumer to write", because the data binding example writes the XY Grid's `grid-x grid-margin-x` and `cell small-*` as normal classes; [Re-run: specs without the later-milestone families, group c](178-rerun-specs-without-later-families-group-c.md), decision 1, and audit 0010's L1, which narrowed the Orbit's matching sentence the same way. Impact LOW, confidence HIGH.

@@ -117,7 +117,7 @@ Dropped options, each with its reason and category in the table above: `binding`
 
 ### CSS class to Angular mapping
 
-No Foundation or library class is left for the consumer to write ([ADR 0039](../adr/0039-directives-manage-every-foundation-class.md)); the consumer writes the container `div`, the range inputs, and the fill `span`, and the directives' attributes.
+No Foundation or library class of a family with a first-milestone spec is left for the consumer to write ([ADR 0039](../adr/0039-directives-manage-every-foundation-class.md)); the consumer writes the container `div`, the range inputs, and the fill `span`, and the directives' attributes.
 
 | Foundation class or element | Kind | Angular | Type, Sass setting, and Variant registry | Class each value sets | Variant property |
 | --- | --- | --- | --- | --- | --- |

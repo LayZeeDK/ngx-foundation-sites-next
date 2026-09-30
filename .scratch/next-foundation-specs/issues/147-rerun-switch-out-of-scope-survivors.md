@@ -170,3 +170,7 @@ From [Re-run: specs without the later-milestone families, group c](178-rerun-spe
 - Notes: side-by-side layouts come from Foundation's XY Grid classes written as normal classes (`class="grid-x"`, `class="cell"`), not from the XY Grid directives; the link to its spec is gone.
 
 Triage: impact LOW (examples, stories, and documented usage change; no input, default, or rule of this spec changes), confidence HIGH (the ruling's decisions 2 and 3: a family with no first-milestone spec is written as Foundation's normal classes, with Foundation's global styles loaded). Nothing is OPEN FOR HUMAN.
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves)
+
+- From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md), group c: Problem Statement, the class-rule bullet: "writes no Foundation class at all" becomes "writes no Foundation class of a family with a first-milestone spec", the wording audit 0010's L1 gave the other specs, because the Notes write Foundation's XY Grid classes as normal classes under ADR 0039's exception ([Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md), decision 3). Impact LOW, confidence HIGH.

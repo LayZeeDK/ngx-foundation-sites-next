@@ -210,3 +210,7 @@ From [Decide: grids, typography, and utilities move to a later milestone](174-de
 From [Audit 0010: the later-milestone families wave](../audits/0010-later-milestone-families-wave.md); `specs/forms.md` was revised in place:
 
 - L1: the Problem Statement and the class sentence are narrowed to families with a first-milestone spec.
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves)
+
+- From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md), group c: Problem Statement, the focus-border bullet: "the Abide spec's required `$dark-gray`" becomes "the `$dark-gray` this spec requires, Sass item 2", because the resting field border is this spec's required setting ([Spec: Abide](31-spec-abide.md), D15 and D22: the resting field's settings are the Forms spec's). Impact LOW, confidence HIGH.
