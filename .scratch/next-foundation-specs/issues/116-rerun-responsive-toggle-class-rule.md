@@ -169,3 +169,14 @@ What left the spec, per check, and where its rule now stands:
 Kept: no parent injection exists (the plugin injects none); the Trigger's ARIA, keys, and the focus rule; the typed `hideFor` and `animate` inputs and their compile errors; the `nfs-responsive-toggle` rules and its required argument; the four test layers, now without development-check cases.
 
 Triage: impact LOW (development-only diagnostics and wording; the public API is unchanged), confidence HIGH (the ruling; the Top Bar spec's D7 for the two mixins that only checked). Nothing is OPEN FOR HUMAN.
+
+### Amendment, 2026-09-30 (later-milestone families)
+
+From [Re-run: specs without the later-milestone families, group c](178-rerun-specs-without-later-families-group-c.md), under [Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md); `specs/responsive-toggle.md` was revised in place.
+
+- Hamburger name (ARIA table): the visually hidden text alternative is a `span` with Foundation's `show-for-sr` class, which the consumer writes as a normal class; the Visibility Classes directive and the link to its spec are gone.
+- `responsive-toggle--sticky-title-bar`: its scroller writes Foundation's `overflow-y-scroll` as a normal class in place of the Prototyping Utilities directive and entry point, and the stories' class-rule sentence names that one exception, with Foundation's global styles loaded in the preview.
+- The behaviour that relied on a later-milestone family, restated (the ruling's decision 5 names it): the plugin still binds `.hide-for-<hideFor>` on the bar and `.show-for-<hideFor>` on the closed menu itself; the Solution now says these are the rules of Foundation's global styles (`foundation-visibility-classes`), which the consumer loads, and that no other library directive is needed for them. The usage rules and the Sass subsection, which already named `foundation-visibility-classes`, are unchanged.
+- The sentence on a copied Visibility class the plugin does not bind (`show-for-large` on the bar) no longer calls it "the other family's".
+
+Triage: impact LOW (examples, stories, and documented usage change; no input, default, or rule of this spec changes), confidence HIGH (the ruling's decisions 2 and 3: a family with no first-milestone spec is written as Foundation's normal classes, with Foundation's global styles loaded). Decision 5 is read as "the Visibility classes the Responsive Toggle binds come from Foundation's global styles", not as moving the binding to the consumer: that reading would change the decided `hideFor` Option and the server-HTML and hydration design, which the ruling does not address, and the class-rule exception allows, but does not require, a consumer-written class. Nothing is OPEN FOR HUMAN.

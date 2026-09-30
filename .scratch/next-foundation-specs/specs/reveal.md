@@ -392,7 +392,7 @@ The `nfs-reveal` mixin adds one WCAG rule, the close-button room for 1.4.12 (rul
 
 ### Rendered HTML
 
-Consumer markup (Foundation's docs example with its deltas: `<dialog>` for `div`, and directive attributes for its classes and data attributes: `nfsReveal` for `.reveal` and `data-reveal`, `nfsCloseButton` with a bare `nfsClose` for `.close-button` and `data-close`, `nfsButton` for `.button`). The docs' `p.lead` is `p nfsLead`, the [Spec: Typography Helpers](../issues/106-spec-typography-helpers.md)'s attribute, which the examples here leave out because it changes nothing the dialog owns:
+Consumer markup (Foundation's docs example with its deltas: `<dialog>` for `div`, and directive attributes for its classes and data attributes: `nfsReveal` for `.reveal` and `data-reveal`, `nfsCloseButton` with a bare `nfsClose` for `.close-button` and `data-close`, `nfsButton` for `.button`). The docs' `p.lead` stays Foundation's `.lead`, a normal class the consumer writes (`<p class="lead">`) with Foundation's global styles loaded; the examples here leave it out because it changes nothing the dialog owns:
 
 ```html
 <button nfsButton [nfsOpen]="signup">Click me for a modal</button>

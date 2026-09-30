@@ -192,3 +192,15 @@ What left the spec, per check, and where its rule now stands:
 Kept: no parent injection (the Sticky range is the DOM parent), the State-class bindings and their stripping of a copied State class, the `stickyOn` gate and `width: auto` rules of `nfs-sticky`, the measurement, ARIA, and focus behaviour, and the library's own stories, browser-level, node-level, SSR, Sass-output, and e2e tests, the 2.4.11 and 1.4.10 cases included.
 
 Triage: impact LOW (documented markup rules replace development warnings; no API changes; each check keeps its design in its later-milestone spec), confidence HIGH (the ruling's Decision items 2 to 4). Nothing is OPEN FOR HUMAN.
+
+### Amendment, 2026-09-30 (later-milestone families)
+
+From [Re-run: specs without the later-milestone families, group c](178-rerun-specs-without-later-families-group-c.md), under [Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md); `specs/sticky.md` was revised in place.
+
+- Class mapping: the `.grid-x`, `.cell`, `.small-6` row now says the consumer writes them as normal classes, with Foundation's global styles loaded, and `nfsStickyContainer` sits on the cell; the XY Grid directives and the link to its spec are gone.
+- Solution, user story 42, the Hierarchy block, the composition bullet, and D18: `nfsStickyContainer` sits on any parent, a grid cell written with Foundation's `cell` class included, instead of beside the XY Grid's cell directive.
+- Rendered HTML and the first usage example: `<div class="grid-x">` and `<div class="cell small-6" nfsStickyContainer>`; the server and hydrated HTML drop the grid directives' attributes, and the note says the grid classes are the consumer's static classes.
+- Stories: column layouts write `grid-x` and `cell small-6`; `sticky--overflow-hidden-ancestor` writes its first ancestor with Foundation's `overflow-hidden` class instead of the Prototyping Utilities directive, and its `moduleMetadata.imports` needs no directive for either ancestor; the class-rule sentence names the two families as its exception.
+- D19 rewritten: examples, stories, test hosts, and fixtures write no Foundation or library class other than those of a family with no first-milestone spec (the XY Grid's `grid-x` and `cell small-6`, the Prototyping Utilities' `overflow-hidden`). Its rejected option "Foundation's `.overflow-hidden` class in the story" is now the chosen form, and the rejected "docs classes in examples" is narrowed to first-milestone families. The usage-examples intro names the same exception.
+
+Triage: impact LOW (examples, stories, and documented usage change; no input, default, or rule of this spec changes), confidence HIGH (the ruling's decisions 2 and 3: a family with no first-milestone spec is written as Foundation's normal classes, with Foundation's global styles loaded). The written classes are the ones the directives bound, so the stories' assertions stand (inferred, not re-run). Nothing is OPEN FOR HUMAN.

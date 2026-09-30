@@ -22,7 +22,7 @@ One attribute directive, `nfsThumbnail`, on the element the developer already wr
 
 A linked thumbnail puts the directive on the link. This is the reverse of the Label's rule, which moves a label inside its link because Foundation's link colour replaces the label's text colour: `.thumbnail` sets no colour and holds only an image, so the link's hover colour changes nothing visible, and the link form is the one Foundation styles for hover and focus. The directive's JSDoc and the docs state three usage rules: every thumbnail image has a text alternative, a linked thumbnail has an `href` and an accessible name, and a thumbnail inside a link goes on the link itself.
 
-The docs give the three forms and when each fits, the `NgOptimizedImage` sizing rule, a `figure` recipe for a caption, and the hiding rule (`@if`, a Toggler, which binds Foundation's `.is-hidden`, or `nfsVisibility` with a bare `hideFor`). The library adds no CSS: Foundation's thumbnail passes WCAG 2.2 AA with its defaults, so there is no `nfs-thumbnail` mixin and no required setting.
+The docs give the three forms and when each fits, the `NgOptimizedImage` sizing rule, a `figure` recipe for a caption, and the hiding rule (`@if`, a Toggler, which binds Foundation's `.is-hidden`, or Foundation's `.hide` written as a normal class). The library adds no CSS: Foundation's thumbnail passes WCAG 2.2 AA with its defaults, so there is no `nfs-thumbnail` mixin and no required setting.
 
 ## User Stories
 
@@ -223,14 +223,14 @@ Per ADR 0008 and the rendering-modes research, section 7 rules 1 to 11:
 
 A good test asserts what a user or assistive technology observes: the class, roles and names, the image and frame sizes, where the focus ring is drawn, and the page's scroll width. No test reads the directive's fields. The patterns are the four layers of building-blocks 1.12 and the [Spec: Card](../issues/90-spec-card.md)'s and [Spec: Label](../issues/94-spec-label.md)'s tests, the nearest precedents.
 
-Story ids follow `thumbnail--<story>`: `thumbnail--default`, `thumbnail--gallery`, `thumbnail--sizing`, `thumbnail--captioned`. `meta.component` is `NfsThumbnail`; there are no args, because the directive has no input. The Storybook preview needs no settings override and no Library mixin include. Every story image uses `NgOptimizedImage` (`ngSrc` with `width` and `height`) and has an `alt`. Grid scaffolding in `thumbnail--gallery` uses the [Spec: XY Grid](../issues/99-spec-xy-grid.md)'s directives, `nfsGridX` with its `up` Variant input and `nfsCell`, imported from `ngx-foundation-sites/xy-grid` as scaffolding.
+Story ids follow `thumbnail--<story>`: `thumbnail--default`, `thumbnail--gallery`, `thumbnail--sizing`, `thumbnail--captioned`. `meta.component` is `NfsThumbnail`; there are no args, because the directive has no input. The Storybook preview needs no settings override and no Library mixin include. Every story image uses `NgOptimizedImage` (`ngSrc` with `width` and `height`) and has an `alt`. Grid scaffolding in `thumbnail--gallery` writes Foundation's XY Grid classes (`grid-x small-up-2 medium-up-3` and `cell`) as normal classes, with Foundation's global styles loaded in the preview, because the XY Grid has no first-milestone spec; the story imports no grid directive.
 
 ### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`)
 
-Run by `npx nx test-storybook <lib>`. Every story runs axe with `parameters.a11y.test = 'error'` and the six tags (which include `image-alt`, `link-name`, and `target-size`). No story element carries a Foundation class written in the story.
+Run by `npx nx test-storybook <lib>`. Every story runs axe with `parameters.a11y.test = 'error'` and the six tags (which include `image-alt`, `link-name`, and `target-size`). No story element carries a Foundation class written in the story, except the XY Grid's classes in `thumbnail--gallery`, a family with no first-milestone spec.
 
 - `thumbnail--default`: Foundation's docs example as the recipe: two image thumbnails (Uranus, Pluto) and a Linked thumbnail (Neptune) with a real `href`. Each host carries `.thumbnail`; each image is found by `getByRole('img', {name})`; the link by `getByRole('link', {name: 'Photo of Neptune.'})`; the link's computed box-shadow at rest is Foundation's `$thumbnail-shadow`, and its box is its image's box grown by 4 px on every side.
-- `thumbnail--gallery`: six Linked thumbnails in a list (`ul nfsGridX` with `[up]="{small: 2, medium: 3}"`, each in an `li nfsCell`), each named by its image. Tab reaches each link in DOM order (`toHaveFocus()`); after each Tab the focused link's computed box-shadow becomes Foundation's `$thumbnail-shadow-hover` (`waitFor`, past the 200 ms transition); each link's box encloses its image, and no ancestor of a link up to the story root has a computed `overflow` other than `visible`, so nothing clips its ring.
+- `thumbnail--gallery`: six Linked thumbnails in a list (`ul class="grid-x small-up-2 medium-up-3"`, each in an `li class="cell"`), each named by its image. Tab reaches each link in DOM order (`toHaveFocus()`); after each Tab the focused link's computed box-shadow becomes Foundation's `$thumbnail-shadow-hover` (`waitFor`, past the 200 ms transition); each link's box encloses its image, and no ancestor of a link up to the story root has a computed `overflow` other than `visible`, so nothing clips its ring.
 - `thumbnail--sizing`: the same 120 by 60 px `NgOptimizedImage` in the three forms side by side: on the image, the picture's content box is 112 by 56 px inside a 120 by 64 px frame; on a `span` wrapper and on a link, the picture is 120 by 60 px inside a 128 by 68 px frame. The story's JSDoc explains the `border-box` rule and the NG02952 warning of the first form (D5).
 - `thumbnail--captioned`: a `figure` with a thumbnail image and a `figcaption`; the play function finds `getByRole('figure', {name: 'Pluto, photographed by New Horizons in 2015.'})` and the image inside it by its name.
 
@@ -276,7 +276,7 @@ Against the prerendered fixture app, on the Thumbnail route:
 - Opening a full-size image in a lightbox: a Reveal opened by a Trigger on a button thumbnail ([Spec: Reveal](../issues/18-spec-reveal.md), [Spec: Triggers (shared utility)](../issues/54-spec-triggers.md)). Category: `scope-boundary`.
 - Responsive image sources: `<picture>`, `srcset`, and `NgOptimizedImage`, documented by the [Spec: Interchange](../issues/35-spec-interchange.md). Category: `scope-boundary`.
 - The Media Object's layout around a thumbnail (its `img { max-width: none; }` and stacked width rules): the [Spec: Media Object](../issues/91-spec-media-object.md). Category: `scope-boundary`.
-- The grid that lays out a gallery: the [Spec: XY Grid](../issues/99-spec-xy-grid.md). Category: `scope-boundary`.
+- The grid that lays out a gallery: Foundation's XY Grid classes, which the consumer writes as normal classes; a later milestone adds the XY Grid's directives. Category: `scope-boundary`.
 - Runtime theming through custom properties (building-blocks 1.13). Category: `scope-boundary`.
 
 ## Further Notes
@@ -293,7 +293,7 @@ Against the prerendered fixture app, on the Thumbnail route:
 | D6 | Captions are a `figure` holding the thumbnail and a `figcaption` | The figure is named by its caption (1.3.1), with no library code; Foundation shows no caption | A caption directive or input (the native elements carry the relationship) (`platform-or-a11y`) |
 | D7 | The recipes keep a Linked thumbnail off a clipping ancestor's edges, inside padding such as a card section's; documented, with no outline rule | Measured in three engines: flush in an `overflow: hidden` box, the ring and shadow keep only the bottom edge (Firefox, WebKit) or that edge and Chromium's inner line; in a card section the whole ring shows; 2.4.7 holds with one edge; the Card's D6 | An `outline-offset` rule drawing the ring over the frame (styles the browser's focus ring, which Foundation leaves alone, and a `$thumbnail-border` of 0 leaves nothing to draw on) (`other`) |
 | D8 | A thumbnail that opens something is `<button type="button" nfsThumbnail>` around its image with a Trigger beside it; no `type` input and no library shadow | The any-element selector already binds the class; measured, a button thumbnail gets the browser's focus ring around its frame (1 px dotted in Firefox, from Foundation's normalize, as every button does); Foundation shows no button thumbnail; a button without `type="button"` inside a form submits it | A `type` input defaulting to `button`, as the Close Button has (a documented host of images and links does not need it; additive later) (`scope-boundary`); an `nfs-thumbnail` mixin giving `button.thumbnail` Foundation's `thumbnail-link` shadow (a look Foundation never gives a button; additive later) (`scope-boundary`) |
-| D9 | A thumbnail is hidden with `@if`, a Toggler in visibility mode, or `nfsVisibility` with a bare `hideFor`, never with a bare `hidden` | Measured in three engines: `hidden` alone leaves a thumbnail displayed (`inline-block`, full size), and with Foundation's `.is-hidden`, which the Toggler binds, it is gone | A `hidden` input binding `.is-hidden` (a second spelling of the Toggler) (`scope-boundary`); a library `[hidden]` rule (`other`) |
+| D9 | A thumbnail is hidden with `@if`, a Toggler in visibility mode, or Foundation's `.hide` written as a normal class, never with a bare `hidden` | Measured in three engines: `hidden` alone leaves a thumbnail displayed (`inline-block`, full size), and with Foundation's `.is-hidden`, which the Toggler binds, it is gone | A `hidden` input binding `.is-hidden` (a second spelling of the Toggler) (`scope-boundary`); a library `[hidden]` rule (`other`) |
 | D10 | Native implementation level; listener-free; a static host class in server HTML | The element, its attributes, and Foundation's CSS cover everything; host bindings render on the server | A focus-within or hover State class (Foundation's look is pseudo-classes) (`scope-boundary`) |
 | D11 | Four stories; e2e for the focus ring and reflow in three engines and the fixture app's first paint and hydration; a browser-level test that pins Angular's NG02952 behaviour | Firefox draws a different ring for the wrong form, so the ring needs real engines; axe cannot see clipping or reflow; the NG02952 test tells maintainers when D5's guidance goes stale | An Anti-pattern story for the thumbnail inside a plain link (it passes the gate, so it would demonstrate nothing the gate enforces) (`other`); a forced-colours e2e (measured once; the library adds nothing there) (`platform-or-a11y`) |
 | D12 | Two glossary terms, **Thumbnail** and **Linked thumbnail** | Foundation's name for the component, and the one form with its own look and its own accessibility rules | A term for the wrapper form (a structural detail, not domain language) (`other`) |
@@ -302,13 +302,13 @@ Against the prerendered fixture app, on the Thumbnail route:
 
 ```html
 <!-- A gallery of Linked thumbnails that is a list -->
-<ul nfsGridX [up]="{small: 2, medium: 3}">
-  <li nfsCell>
+<ul class="grid-x small-up-2 medium-up-3">
+  <li class="cell">
     <a routerLink="/planets/uranus" nfsThumbnail>
       <img ngSrc="/assets/thumbnail/uranus.jpg" width="300" height="200" alt="Uranus">
     </a>
   </li>
-  <li nfsCell>
+  <li class="cell">
     <a routerLink="/planets/neptune" nfsThumbnail>
       <img ngSrc="/assets/thumbnail/neptune.jpg" width="300" height="200" alt="Neptune">
     </a>
@@ -337,7 +337,7 @@ export class Avatar {
 }
 ```
 
-`<app-avatar>` renders `class="thumbnail"` from the hosted directive, as a wrapper around its image, so its host metadata names no Foundation class and the 64 by 64 px photo renders at its declared size inside a 72 by 72 px frame. `nfsGridX` with its `up` Variant input and `nfsCell` are the [Spec: XY Grid](../issues/99-spec-xy-grid.md)'s directives. An `<img>` inside an art-directed `<picture>` stays a plain `<img>` with its own `srcset`, the one exception to the project's `NgOptimizedImage` rule ([Spec: Interchange](../issues/35-spec-interchange.md), D18); `nfsThumbnail` goes on that `<img>` or on the `<picture>`.
+`<app-avatar>` renders `class="thumbnail"` from the hosted directive, as a wrapper around its image, so its host metadata names no Foundation class and the 64 by 64 px photo renders at its declared size inside a 72 by 72 px frame. The gallery's `grid-x`, `small-up-2`, `medium-up-3`, and `cell` are Foundation's XY Grid classes, which the consumer writes as normal classes, with Foundation's global styles loaded, because the XY Grid has no first-milestone spec. An `<img>` inside an art-directed `<picture>` stays a plain `<img>` with its own `srcset`, the one exception to the project's `NgOptimizedImage` rule ([Spec: Interchange](../issues/35-spec-interchange.md), D18); `nfsThumbnail` goes on that `<img>` or on the `<picture>`.
 
 ### Platform features to adopt when the browser target moves
 
@@ -368,5 +368,5 @@ Required settings: none.
 - Forced colours: measured in Chromium and Firefox, the frame's border computes to CanvasText (an image) or LinkText (a link), the shadows to `none`, and the focus outline stays `auto`, so the image's edge and the focus ring remain.
 - Without `width` and `height` attributes, as Foundation's docs write images, the frame adds to the picture's natural size (a 120 by 80 px image in a 128 by 88 px frame); the image form shrinks the picture only when its size is declared.
 - The Card, Sticky, Toggler, and Media Object specs write this directive on the image form, `img[nfsThumbnail]`.
-- The `hidden` attribute alone does not hide a thumbnail: Foundation's `.thumbnail` sets `display: inline-block` after normalize's `[hidden] { display: none }` at equal specificity (measured in Chromium, Firefox, and WebKit), as building-blocks 1.10 records. Remove it with `@if`, or hide it with a Toggler in Visibility mode, which binds Foundation's `.is-hidden` ([Spec: Toggler](../issues/17-spec-toggler.md), D3), or with `nfsVisibility` and a bare `hideFor` ([Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)); the Float Classes, Flexbox Utilities, XY Grid, and Flex Grid specs state the same rule for their classes (D9).
+- The `hidden` attribute alone does not hide a thumbnail: Foundation's `.thumbnail` sets `display: inline-block` after normalize's `[hidden] { display: none }` at equal specificity (measured in Chromium, Firefox, and WebKit), as building-blocks 1.10 records. Remove it with `@if`, or hide it with a Toggler in Visibility mode, which binds Foundation's `.is-hidden` ([Spec: Toggler](../issues/17-spec-toggler.md), D3), or with Foundation's `.hide` (`display: none !important`), a Visibility class the consumer writes as a normal class, with Foundation's global styles loaded (D9). The same rule holds for an element that carries another Foundation class setting `display`, such as the XY Grid's or the Float Classes'.
 - The Media Object's `img { max-width: none; }` and its stacked `width: 100%` reach a thumbnail image or a wrapper's image inside a section differently; the [Spec: Media Object](../issues/91-spec-media-object.md) decides which form its recipe writes.

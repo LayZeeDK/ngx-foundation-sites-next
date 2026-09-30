@@ -638,14 +638,14 @@ export class Filters {
 
 ```html
 <!-- Foundation's data binding example: the same signal on a number input -->
-<div nfsGridX gridMarginX>
-  <div nfsCell size="10">
+<div class="grid-x grid-margin-x">
+  <div class="cell small-10">
     <div nfsSlider [step]="5">
       <input type="range" nfsSliderHandle aria-label="Amount" [(value)]="amount" />
       <span nfsSliderFill></span>
     </div>
   </div>
-  <div nfsCell size="2">
+  <div class="cell small-2">
     <input type="number" aria-label="Amount" [value]="amount()" (input)="amount.set($any($event.target).valueAsNumber)" />
   </div>
 </div>
@@ -663,7 +663,7 @@ providers: [{ provide: nfsSliderDefaultsToken, useValue: { decimal: 0, step: 5 }
 
 A `type="number"` input needs no `inputmode`; a `type="text"` input bound the same way gets `inputmode="decimal"`.
 
-No example writes a Foundation or library class. The data binding example's row and cells use the [Spec: XY Grid](../issues/99-spec-xy-grid.md)'s directives (`nfsGridX` with `gridMarginX` for Foundation's `.grid-margin-x`, `nfsCell` with `size="10"` and `size="2"` for `small-10` and `small-2`).
+No example writes a library class, and the only Foundation classes an example writes are the XY Grid's, which has no first-milestone spec: the data binding example's row and cells write Foundation's `grid-x grid-margin-x`, `cell small-10`, and `cell small-2` as normal classes, with Foundation's global styles loaded.
 
 ### Sass
 

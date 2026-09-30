@@ -110,14 +110,14 @@ Every class of the three partials, per building-blocks 1.14 item 2. `small` in t
 
 State classes: none. Foundation's three partials define no State class; the menu icon's hover is the `:hover` pseudo-class. The Responsive Toggle's `.hide-for-<bp>`, `.show-for-<bp>`, and `.is-open` on a Title Bar or Top Bar element are that directive's host bindings, written beside these ones (D10). No class is left for the consumer to write (ADR 0039).
 
-Other families' classes that this spec's markup or Foundation's Top Bar docs page uses, each set by its own directive, written beside or inside these:
+Other families' classes that this spec's markup or Foundation's Top Bar docs page uses, each set by its own directive, written beside or inside these, except `.show-for-sr`, whose family has no first-milestone spec:
 
 | Foundation classes | Kind | Element | Set by | Owner |
 | --- | --- | --- | --- | --- |
 | `.menu`, `.menu-text`, `.vertical` | Another family's: the Menu's | The menus in the bars and their title item | `NfsMenu` (`ul[nfsMenu]`) with its `orientation` Variant input, and `NfsMenuText` (`li[nfsMenuText]`) | [Spec: Menu](../issues/85-spec-menu.md) |
 | `.dropdown` and the classes of its parents and submenus (`.is-dropdown-submenu-parent`, `.opens-left`, and the rest that spec lists) | Another family's: the Dropdown Menu's | A Dropdown Menu in a section | `NfsDropdownMenu` (`ul[nfsDropdownMenu]`) with the Nested menu's `NfsMenuItem`, `NfsSubmenuToggle`, and `NfsSubmenu` | [Spec: Dropdown Menu](../issues/21-spec-dropdown-menu.md), [Spec: Nested menu (shared utility)](../issues/56-spec-nested-menu.md) |
 | `.button` | Another family's: the Button's | The search button | `NfsButton` (`button[nfsButton]`) | [Spec: Button](../issues/37-spec-button.md) |
-| `.show-for-sr` | Another family's: the Visibility Classes' | Visually hidden text naming a menu icon | `NfsShowForSr` (`[nfsShowForSr]`) | [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md) |
+| `.show-for-sr` | A family with no first-milestone spec: the Visibility Classes' | Visually hidden text naming a menu icon | None: the consumer writes it as a normal class (`class="show-for-sr"`), with Foundation's global styles loaded | The class rule's exception for a family with no first-milestone spec |
 | `.hide-for-<bp>`, `.show-for-<bp>`, `.is-open` | Another family's: the Responsive Toggle's | The title bar and the Top Bar of the Advanced Layout | `NfsResponsiveToggle` (its `hideFor` Option) and `NfsResponsiveToggleMenu` | [Spec: Responsive Toggle](../issues/24-spec-responsive-toggle.md) |
 | `.sticky-container`, `.sticky` and its State classes | Another family's: the Sticky's | A sticky bar and its container | `NfsStickyContainer` and `NfsSticky` | [Spec: Sticky](../issues/28-spec-sticky.md) |
 | `.off-canvas`, `.position-left`, `.position-right` | Another family's: the Off-canvas's | The story panels of `top-bar--title-bar` | `NfsOffCanvas` with its `position` Variant input | [Spec: Off-canvas](../issues/25-spec-off-canvas.md) |
@@ -198,7 +198,7 @@ class NfsMenuIcon {
 - Models, outputs, and methods: none. The native `click` is the API, and the Trigger beside it handles it. The directive declares no listener.
 - Opening: never built in. The Responsive Toggle's bare `nfsToggle`, a `[nfsOpen]` or `[nfsToggle]` Trigger, or the consumer's `(click)` sits beside `nfsMenuIcon` on the same element; `nfsMenuIcon` never hosts a Trigger, because host directives are static and a hosted Trigger could not be left off an icon with the consumer's own handler (the Close Button's D2 reasoning).
 - The drawing stays Foundation's: the icon's content box is `hamburger()`'s 20 by 16 px, and the consumer writes no content inside the button beyond visually hidden text when that is its name.
-- Name, documented in the directive's JSDoc (4.1.2): every menu icon has an accessible name that says what it opens, from `aria-labelledby` pointing at the title bar's title (its static `id`), visually hidden text inside the button (`nfsShowForSr`), or `aria-label`, for example `aria-label="Menu"`; a name with no letter or digit (a pasted "U+2630" trigram, a dash) is only a symbol and names nothing. The [Spec: Close Button](../issues/83-spec-close-button.md)'s naming rule, with the menu icon's wording.
+- Name, documented in the directive's JSDoc (4.1.2): every menu icon has an accessible name that says what it opens, from `aria-labelledby` pointing at the title bar's title (its static `id`), visually hidden text inside the button (a `span` with Foundation's `show-for-sr` class, written as a normal class), or `aria-label`, for example `aria-label="Menu"`; a name with no letter or digit (a pasted "U+2630" trigram, a dash) is only a symbol and names nothing. The [Spec: Close Button](../issues/83-spec-close-button.md)'s naming rule, with the menu icon's wording.
 - One class contract per element: `nfsButton` and `nfsCloseButton` never sit on the menu icon's element, because `.menu-icon` and `.button` or `.close-button` are separate class contracts.
 - Size: `@include nfs-menu-icon;` after `foundation-menu-icon` gives every menu icon its 24 by 24 CSS px box (2.5.8, D6); without it the icon keeps Foundation's 20 by 16 px box.
 
@@ -235,7 +235,7 @@ APG pattern: none of their own. A Top Bar holds site navigation (a list of links
 | Search in the bar | A `form` with `role="search"` and a label on its field (`aria-label` or a visually hidden `label`); the button is `nfsButton type="submit"` | Consumer ([Spec: Forms](../issues/98-spec-forms.md), [Spec: Button](../issues/37-spec-button.md)) |
 | Sections and titles | Generic elements; a title may be a heading or a link the consumer writes | Consumer |
 | `button[nfsMenuIcon]` | Native `button`, `type="button"` unless the consumer sets another | `nfsMenuIcon` |
-| Menu icon name | `aria-labelledby` pointing at the `nfsTitleBarTitle` element's static `id` (visible text beats `aria-label`), visually hidden text inside the button (`nfsShowForSr` of the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)), or `aria-label`; required (API: `NfsMenuIcon`) | Consumer |
+| Menu icon name | `aria-labelledby` pointing at the `nfsTitleBarTitle` element's static `id` (visible text beats `aria-label`), visually hidden text inside the button (Foundation's `show-for-sr` class, written as a normal class), or `aria-label`; required (API: `NfsMenuIcon`) | Consumer |
 | Menu icon state | `aria-expanded` and `aria-controls` from a disclosure Trigger (Responsive Toggle, an Off-canvas panel); `aria-haspopup="dialog"` and `aria-controls` without `aria-expanded` from the Trigger of an Off-canvas panel in Modal mode; nothing from `nfsMenuIcon` | [Spec: Triggers (shared utility)](../issues/54-spec-triggers.md) |
 | Current page in a Top Bar menu | `aria-current` on the link, styled by `nfs-menu` | [Spec: Menu](../issues/85-spec-menu.md) |
 
@@ -363,7 +363,7 @@ Consumer markup and the resulting DOM. Server HTML and hydrated DOM are identica
 </div>
 
 <!-- A dark menu icon on a light header, named by visually hidden text -->
-<button nfsMenuIcon dark nfsToggle><span nfsShowForSr>Menu</span></button>
+<button nfsMenuIcon dark nfsToggle><span class="show-for-sr">Menu</span></button>
 <button class="menu-icon dark" type="button" aria-expanded="false" aria-controls="..." jsaction="click:;">
   <span class="show-for-sr">Menu</span>
 </button>
@@ -373,7 +373,7 @@ Consumer markup and the resulting DOM. Server HTML and hydrated DOM are identica
 <div class="top-bar site-header">...</div>
 ```
 
-The Trigger attributes (`aria-expanded`, `aria-haspopup`, `aria-controls`, `jsaction`) and the Responsive Toggle's `.hide-for-medium` and `.show-for-medium` belong to those specs; the Dropdown Menu's `opens-left` in the server HTML follows D9 once the Nested menu root reads `nfsTopBarRightToken`. `nfsShowForSr` is the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)'s directive for `.show-for-sr`, imported as `NfsShowForSr` from `ngx-foundation-sites/visibility`. None of the nine directives causes a `jsaction` attribute: they declare no listeners.
+The Trigger attributes (`aria-expanded`, `aria-haspopup`, `aria-controls`, `jsaction`) and the Responsive Toggle's `.hide-for-medium` and `.show-for-medium` belong to those specs; the Dropdown Menu's `opens-left` in the server HTML follows D9 once the Nested menu root reads `nfsTopBarRightToken`. `.show-for-sr` is Foundation's Visibility class, written by the consumer as a normal class with Foundation's global styles loaded, because that family has no first-milestone spec; no directive is imported for it. None of the nine directives causes a `jsaction` attribute: they declare no listeners.
 
 ### Animation
 

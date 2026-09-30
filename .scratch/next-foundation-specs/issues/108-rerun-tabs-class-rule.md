@@ -210,3 +210,13 @@ What left the spec, per check, and where its rule now stands:
 Kept: the required injections and their NG0201 (Aria's and the library's), the ARIA and keyboard tables, the typed Variant inputs, the `nfs-tabs` rules, Aria's own duplicate-value warning, and every story, browser-level, node-level, and e2e case of behaviour and accessibility, the play functions' 3:1 assertions included.
 
 Triage: impact LOW (development messages and compile stops become documented usage; `nfs-tabs` becomes optional for a plain strip, a narrowing of when to include it that changes no emitted CSS; no API, behaviour, or story changes), confidence HIGH (the ruling; the group e manifest). Nothing is OPEN FOR HUMAN.
+
+### Amendment, 2026-09-30 (later-milestone families)
+
+From [Re-run: specs without the later-milestone families, group c](178-rerun-specs-without-later-families-group-c.md), under [Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md); `specs/tabs.md` was revised in place.
+
+- Rendered HTML and Usage examples: both vertical-tabs examples write Foundation's `grid-x`, `cell medium-3`, and `cell medium-9` as normal classes (Foundation's docs layout) with `nfsTabsGroup` on the `grid-x` row, in place of the XY Grid directives and their `size` rules objects; the link to the XY Grid spec is gone.
+- Story `tabs--vertical`: the XY Grid classes are written as normal classes, the story's only Foundation classes.
+- Sass: the vertical layout's grid classes come from Foundation's global styles, `foundation-xy-grid-classes` among them.
+
+Triage: impact LOW (examples, stories, and documented usage change; no input, default, or rule of this spec changes), confidence HIGH (the ruling's decisions 2 and 3: a family with no first-milestone spec is written as Foundation's normal classes, with Foundation's global styles loaded). Nothing is OPEN FOR HUMAN.

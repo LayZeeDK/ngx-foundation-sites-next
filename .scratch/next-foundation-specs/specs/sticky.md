@@ -10,7 +10,7 @@ An Angular developer who builds on Foundation's Sass wants Foundation's Sticky e
 
 ## Solution
 
-Two attribute directives on the elements the developer writes, which bind every Sticky class; the developer writes none ([ADR 0039](../adr/0039-directives-manage-every-foundation-class.md)). `[nfsSticky]` sits on the sticky element, binds `.sticky`, and binds its offset from `marginTop` or `marginBottom` as an inline `top` or `bottom` in em. The Library mixin `nfs-sticky` turns `.sticky` into `position: sticky` above the `stickyOn` breakpoint, with media queries built from the consumer's own `$breakpoints` by Foundation's `breakpoint()` mixin, so the element sticks correctly at every viewport width from the server HTML alone, before any script runs. `[nfsStickyContainer]` sits on the element Foundation marks `[data-sticky-container]` and binds `.sticky-container`. Each is written beside the directive of the element it sits on (a Title Bar's `nfsTitleBar`, a grid cell's `nfsCell`), and neither hosts the other's directives nor is hosted. The browser pins the element; its Sticky range is its parent element's box.
+Two attribute directives on the elements the developer writes, which bind every Sticky class; the developer writes none ([ADR 0039](../adr/0039-directives-manage-every-foundation-class.md)). `[nfsSticky]` sits on the sticky element, binds `.sticky`, and binds its offset from `marginTop` or `marginBottom` as an inline `top` or `bottom` in em. The Library mixin `nfs-sticky` turns `.sticky` into `position: sticky` above the `stickyOn` breakpoint, with media queries built from the consumer's own `$breakpoints` by Foundation's `breakpoint()` mixin, so the element sticks correctly at every viewport width from the server HTML alone, before any script runs. `[nfsStickyContainer]` sits on the element Foundation marks `[data-sticky-container]` and binds `.sticky-container`. Each is written beside the directive of the element it sits on (a Title Bar's `nfsTitleBar`), or on an element that has none (a grid cell the consumer writes with Foundation's `cell` class), and neither hosts the other's directives nor is hosted. The browser pins the element; its Sticky range is its parent element's box.
 
 After the first render the directive measures, in the browser, whether the element is pinned and at which end of its range it rests, and binds Foundation's State classes from that. It exposes the result as the read-only signals `isStuck` and `edge` and emits the Completion outputs `stuck` and `unstuck` with the edge as payload. Measurement uses two invisible sentinels inside the container observed by `IntersectionObserver`, a `requestAnimationFrame`-throttled scroll listener that catches instantaneous jumps the observers miss, and `ResizeObserver` for size changes, all against the element's real scroll container. Foundation's anchor Options (`anchor`, `topAnchor`, `btmAnchor`) have no counterpart, because `position: sticky` cannot bound an element by anything but its containing block; the documented recipe is to make the container span the wanted range. Sticky has no Variant class, so it has no Variant input; a developer who wants a stuck element to look different binds a class of their own from `isStuck()`.
 
@@ -57,7 +57,7 @@ After the first render the directive measures, in the browser, whether the eleme
 39. As an Angular developer, I want the directive's docs to state when a stuck element needs `scroll-padding` on its scroll container and how much, so that I add what WCAG 2.4.11 requires before users meet the problem.
 40. As a low-vision user reading at 400% zoom, I want sticking never to add horizontal scrolling and small viewports to stay free of pinned elements by default, so that content reflows (WCAG 1.4.10).
 41. As a reader, I want a stuck element that overlaps content to have an opaque background, so that neither its text nor the text under it loses contrast (WCAG 1.4.3).
-42. As an Angular developer, I want to write `nfsSticky` beside `nfsTitleBar`, `nfsTopBar`, or `nfsCallout`, and `nfsStickyContainer` beside `nfsCell`, on one element, so that a sticky bar, a sticky callout, or a sticky grid column needs no extra element and each directive keeps its own classes.
+42. As an Angular developer, I want to write `nfsSticky` beside `nfsTitleBar`, `nfsTopBar`, or `nfsCallout`, on one element, and `nfsStickyContainer` on a grid cell that carries Foundation's `cell` class, so that a sticky bar, a sticky callout, or a sticky grid column needs no extra element and each directive keeps its own classes.
 43. As an Angular developer, I want to style a stuck element (a shadow, a smaller logo) through a class of my own bound from `isStuck()`, so that my templates and stylesheets name no Foundation or library class.
 
 ## Implementation Decisions
@@ -111,7 +111,7 @@ Foundation's `foundation-sticky` Export mixin defines two Structural classes, `.
 | `.title-bar`, `.title-bar-left` (the title-bar usage example and `sticky--navigation`) | Structural classes of the Title Bar | A bar written with `nfsSticky` beside it, and its left section | `NfsTitleBar` (`[nfsTitleBar]`) and `NfsTitleBarLeft` (`[nfsTitleBarLeft]`) | [Spec: Top Bar](../issues/86-spec-top-bar.md) |
 | `.top-bar` | Structural class of the Top Bar | A bar written with `nfsSticky` beside it | `NfsTopBar` (`[nfsTopBar]`) | [Spec: Top Bar](../issues/86-spec-top-bar.md) |
 | `.callout` (the stick-to-bottom usage example) | Structural class of the Callout | A callout written with `nfsSticky` beside it | `NfsCallout` (`[nfsCallout]`) | [Spec: Callout](../issues/89-spec-callout.md) |
-| `.grid-x`, `.cell`, `.small-6` (the column examples) | Utility classes of the XY Grid | The grid, the cell that is the Sticky container, and the content cell | `NfsGridX` (`[nfsGridX]`) and `NfsCell` (`[nfsCell]`) with its `size` Variant input (`size="6"`, a bare value, so the Zero breakpoint's `.small-6`), written beside `nfsStickyContainer` | [Spec: XY Grid](../issues/99-spec-xy-grid.md) |
+| `.grid-x`, `.cell`, `.small-6` (the column examples) | Utility classes of the XY Grid, a family with no first-milestone spec | The grid, the cell that is the Sticky container, and the content cell | None: normal classes the consumer writes (`class="grid-x"`, `class="cell small-6"`), with Foundation's global styles loaded; `nfsStickyContainer` sits on the cell | The class rule's exception for a family with no first-milestone spec |
 | `.thumbnail` (the column examples) | Structural class of the Thumbnail | The image inside the sticky element | `img[nfsThumbnail]` (`NfsThumbnail`) | [Spec: Thumbnail](../issues/97-spec-thumbnail.md) |
 
 A State class written statically on the host (copied from a page Foundation's JavaScript rendered) is stripped on server and client, because each State-class binding always has a boolean value and Angular's styling resolution consults a static class only when every binding for it is `undefined` (D16). `stickTo` stays an Option, not a Variant input: the classes it influences, `.is-at-top` and `.is-at-bottom`, are State classes from `edge`, which is `'bottom'` for an element with `stickTo: 'top'` once scrolled past its range.
@@ -120,7 +120,7 @@ A State class written statically on the host (copied from a page Foundation's Ja
 
 ```
 [nfsStickyContainer]  (.sticky-container, position: relative from Foundation;
- |                     on any parent element, beside nfsCell on a grid cell)
+ |                     on any parent element, such as a grid cell with class="cell")
  '-- [nfsSticky]      (.sticky and the four State classes; its DOM parent is its Sticky range;
                        on any element, beside nfsTitleBar, nfsTopBar, or nfsCallout)
       injects: NfsMediaQuery, nfsStickyDefaultsToken (optional), ElementRef, DestroyRef, NgZone
@@ -128,7 +128,7 @@ A State class written statically on the host (copied from a page Foundation's Ja
 
 - No parent token. The sticky element's range is its DOM parent, which is what CSS uses; DI would answer a different question (the declaration-site injector), and nothing else needs the instance. The building-blocks sketch named an `nfsStickyToken`; nothing injects it, so it is not created.
 - `NfsStickyContainer` has no inputs, outputs, or DI and binds only its class, which is what ADR 0039 asks of a directive for a Structural class. Under the class rule it is the only way to get `.sticky-container`: the consumer writes no class, and a `Renderer2` write from `nfsSticky` onto its parent is not allowed, because ADR 0039's dated note permits that only for state with no first-paint value, and the container's `position: relative` is first-paint layout (D1).
-- Composition by placement (building-blocks 1.9; the [Spec: Top Bar](../issues/86-spec-top-bar.md)'s D10): `nfsSticky` is written beside the class directive of the element it pins (`<header nfsTitleBar nfsSticky>`, `<div nfsTopBar nfsSticky>`, `<div nfsCallout nfsSticky>`) and `nfsStickyContainer` beside the one of the element that bounds the range (`<div nfsCell size="6" nfsStickyContainer>`). Neither hosts another directive and none hosts them, because host directives are static and Sticky may sit on any element: a bar that hosted `NfsSticky` would pin every bar (D18). None of `.title-bar`, `.top-bar`, or `.cell` sets `position`; `.callout` sets `position: relative` at the same specificity as `.sticky`, and the `nfs-sticky` gate rule (0,2,0) overrides both where it is open.
+- Composition by placement (building-blocks 1.9; the [Spec: Top Bar](../issues/86-spec-top-bar.md)'s D10): `nfsSticky` is written beside the class directive of the element it pins (`<header nfsTitleBar nfsSticky>`, `<div nfsTopBar nfsSticky>`, `<div nfsCallout nfsSticky>`) and `nfsStickyContainer` beside the one of the element that bounds the range, or on an element that has none, such as a grid cell written with Foundation's normal classes (`<div class="cell small-6" nfsStickyContainer>`). Neither hosts another directive and none hosts them, because host directives are static and Sticky may sit on any element: a bar that hosted `NfsSticky` would pin every bar (D18). None of `.title-bar`, `.top-bar`, or `.cell` sets `position`; `.callout` sets `position: relative` at the same specificity as `.sticky`, and the `nfs-sticky` gate rule (0,2,0) overrides both where it is open.
 - `nfsStickyDefaultsToken`: `InjectionToken<NfsStickyDefaults>` with `interface NfsStickyDefaults { stickTo?: NfsStickyEdge; marginTop?: number; marginBottom?: number; stickyOn?: string }`, injected with `{optional: true}` and used to seed the input defaults (building-blocks 1.4, Shape B). Provided at bootstrap, route, or element level; the nearest wins.
 - `NfsMediaQuery` from the [Spec: Breakpoint service (shared utility)](../issues/53-spec-breakpoint-service.md), used exactly as defined there: `canStick = computed(() => mq.is(this.stickyOn()))`.
 - Entry point `ngx-foundation-sites/sticky`, which imports the Breakpoint service's entry point.
@@ -234,39 +234,39 @@ Stories are gated by axe with the WCAG 2.2 AA rule set (Testing Decisions); axe 
 
 ### Rendered HTML
 
-Consumer markup (Foundation's column example, with no class written):
+Consumer markup (Foundation's column example; the only classes written are the XY Grid's, a family with no first-milestone spec, as normal classes):
 
 ```html
-<div nfsGridX>
-  <div nfsCell size="6" nfsStickyContainer>
+<div class="grid-x">
+  <div class="cell small-6" nfsStickyContainer>
     <div nfsSticky [marginTop]="0">
       <img nfsThumbnail ngSrc="..." width="600" height="400" alt="...">
     </div>
   </div>
-  <div nfsCell size="6">...long content...</div>
+  <div class="cell small-6">...long content...</div>
 </div>
 ```
 
 Server HTML and hydrated DOM before the first measurement (identical; `NgOptimizedImage`'s own image attributes, `ngsrc`, `src`, `loading`, `fetchpriority`, and the like, are left out):
 
 ```html
-<div nfsgridx="" class="grid-x">
-  <div nfscell="" size="6" nfsstickycontainer="" class="cell sticky-container small-6">
+<div class="grid-x">
+  <div nfsstickycontainer="" class="cell small-6 sticky-container">
     <div nfssticky="" class="sticky is-anchored is-at-top"
          data-nfs-sticky-on="medium" style="top: 0em; bottom: auto;">
       <img nfsthumbnail="" width="600" height="400" alt="..." class="thumbnail">
     </div>
   </div>
-  <div nfscell="" size="6" class="cell small-6">...long content...</div>
+  <div class="cell small-6">...long content...</div>
 </div>
 ```
 
-Every class comes from a directive's host binding, so the server HTML carries all of them. Static template attributes, directive selectors included, are serialised in lowercase; the order of class tokens follows directive matching and is not part of the contract; the grid and thumbnail classes are the XY Grid and Thumbnail specs', shown with Foundation's names.
+Every class except the grid classes comes from a directive's host binding, so the server HTML carries all of them; the grid classes are the consumer's static classes, rendered as written. Static template attributes, directive selectors included, are serialised in lowercase; the order of class tokens is not part of the contract; the thumbnail class is the Thumbnail spec's, shown with Foundation's name.
 
 Hydrated, after measuring, while the element is pinned (the grid wrapper and the content cell are unchanged and left out):
 
 ```html
-<div nfscell="" size="6" nfsstickycontainer="" class="cell sticky-container small-6">
+<div nfsstickycontainer="" class="cell small-6 sticky-container">
   <div nfssticky="" class="sticky is-stuck is-at-top"
        data-nfs-sticky-on="medium" style="top: 0em; bottom: auto;">
     <img nfsthumbnail="" width="600" height="400" alt="..." class="thumbnail">
@@ -311,7 +311,7 @@ A good test asserts what a visitor or a consumer observes: whether the element i
 
 Story ids: `sticky--basic`, `sticky--stick-to-bottom`, `sticky--margins`, `sticky--sticky-on`, `sticky--navigation`, `sticky--anchor-range-recipe`, `sticky--scroll-container`, `sticky--overflow-hidden-ancestor`, `sticky--outputs`. The Storybook preview stylesheet includes `foundation-sticky`, `nfs-sticky`, and `nfs-breakpoint-properties` (and, for the title bar of `sticky--navigation`, the Top Bar spec's title-bar lines it already has). Stories other than `sticky--sticky-on` set `stickyOn="all"` so they behave at any iframe width.
 
-Story markup follows the class rule (Storybook conventions, section 8; ADR 0039): no story element carries a Foundation or library class written in the template. Sticky elements are `nfsSticky` hosts and their parents `nfsStickyContainer` hosts; the bar in `sticky--navigation` is `nfsTitleBar` with `nfsTitleBarLeft`, the checkout bar in `sticky--stick-to-bottom` is `nfsCallout`, column layouts use the XY Grid's `nfsGridX` and `nfsCell` with `size`, images are `img[nfsThumbnail]` with `NgOptimizedImage`'s `ngSrc`, `width`, and `height` (building-blocks 1.2), and controls are `button[nfsButton]`, each imported from its own entry point. `sticky--overflow-hidden-ancestor` writes its `overflow: hidden` ancestor with the [Spec: Prototyping Utilities](../issues/102-spec-prototyping-utilities.md)'s `nfsOverflow="hidden"`. Inline `style` only for heights, tall pages, the scroll panel's `overflow: auto`, and the `overflow: clip` that `sticky--overflow-hidden-ancestor` compares with it, values Foundation's default lists have no class for (D19).
+Story markup follows the class rule (Storybook conventions, section 8; ADR 0039): no story element carries a Foundation or library class written in the template, except the classes of a family with no first-milestone spec (the XY Grid's and the Prototyping Utilities'), which stories write as normal classes, with Foundation's global styles loaded in the Storybook preview. Sticky elements are `nfsSticky` hosts and their parents `nfsStickyContainer` hosts; the bar in `sticky--navigation` is `nfsTitleBar` with `nfsTitleBarLeft`, the checkout bar in `sticky--stick-to-bottom` is `nfsCallout`, column layouts write Foundation's `grid-x` and `cell small-6` classes, images are `img[nfsThumbnail]` with `NgOptimizedImage`'s `ngSrc`, `width`, and `height` (building-blocks 1.2), and controls are `button[nfsButton]`, each directive imported from its own entry point. `sticky--overflow-hidden-ancestor` writes its `overflow: hidden` ancestor with Foundation's `overflow-hidden` class. Inline `style` only for heights, tall pages, the scroll panel's `overflow: auto`, and the `overflow: clip` that `sticky--overflow-hidden-ancestor` compares with it, values Foundation's default lists have no class for (D19).
 
 ### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`, `npx nx test-storybook <lib>`)
 
@@ -324,7 +324,7 @@ Every story runs axe through `@storybook/addon-a11y` with `parameters.a11y.test 
 - `sticky--navigation`: a page-spanning `nfsStickyContainer` holding a `header` with `nfsTitleBar` and `nfsSticky` beside each other and a `nav` landmark with links down the page; the bar carries `.title-bar` and `.sticky` with no class in the template; one large `scrollTo` jump into the range yields `is-stuck` (the backstop); tabbing to a link far down leaves that link's rectangle clear of the stuck bar (the `scroll-padding-top` recipe).
 - `sticky--anchor-range-recipe`: Foundation's two-anchor example rewritten with the container spanning the anchors; the element unsticks where the bottom anchor ends.
 - `sticky--scroll-container`: inside an `overflow: auto` panel, scrolling the panel (not the window) pins the element and sets `is-stuck`; scrolling the window leaves it unchanged.
-- `sticky--overflow-hidden-ancestor`: inside an ancestor written `nfsOverflow="hidden"` (the clash Foundation's `.off-canvas-wrapper` has without the `nfs-off-canvas` include) the element does not pin and never reports `is-stuck`; the same markup with an inline `overflow: clip` instead pins and reports it. The first ancestor's value comes from the Prototyping Utilities' `nfsOverflow="hidden"` (`NfsPrototypeOverflow`, from `ngx-foundation-sites/prototyping-utilities`), which sets Foundation's `.overflow-hidden`; `overflow: clip` stays inline, because Foundation has no class for it (D19). The story's `moduleMetadata.imports` lists `NfsPrototypeOverflow`.
+- `sticky--overflow-hidden-ancestor`: inside an ancestor written `class="overflow-hidden"` (the clash Foundation's `.off-canvas-wrapper` has without the `nfs-off-canvas` include) the element does not pin and never reports `is-stuck`; the same markup with an inline `overflow: clip` instead pins and reports it. The first ancestor's value comes from Foundation's `.overflow-hidden`, a Prototyping Utilities class the story writes as a normal class because that family has no first-milestone spec; `overflow: clip` stays inline, because Foundation has no class for it (D19). The story's `moduleMetadata.imports` needs no directive for either ancestor.
 - `sticky--outputs`: a log shows `stuck: top`, `unstuck: bottom`, `stuck: top`, `unstuck: top` for a scroll down through the range and back up; `isStuck()` read through `#s="nfsSticky"` matches the log.
 
 ### 2. Browser-level test (Vitest browser mode, `npx nx test <lib>`)
@@ -403,24 +403,24 @@ A row whose decision leaves a Foundation feature or Option out names that item's
 | D15 | WCAG 2.4.11 is met by required consumer `scroll-padding` (usage rule 5), which the library's story follows and a Playwright case asserts; 1.4.3 by a required opaque background on overlapping stuck elements (a Top Bar has one only while `$topbar-background` is opaque) | The overlap depends on the page, which only the consumer knows; the rule states the requirement where the consumer reads the API, and the e2e case proves the library's own story meets it. Exclusion category of automatic `scroll-padding`: `scope-boundary` | The directive writing `scroll-padding` on the scroll container (a global write that several stuck elements would fight over); documenting it as advice only |
 | D16 | No Variant input, Variant registry, or Variant property; the four State classes stay host bindings; a static copy of a State class is stripped by the bindings | Foundation's `foundation-sticky` defines no Variant class (ADR 0040 has nothing to type); `stickTo` is an Option whose classes are State classes of the measured `edge`; Sticky's state is measured, never set: a copy changes nothing the bindings do not already correct, and Foundation's Sticky markup carries no State class to copy | `stickTo` as a Variant input for `.is-at-top` and `.is-at-bottom` (an element with `stickTo: 'top'` carries `.is-at-bottom` once scrolled past its range) |
 | D17 | Styling a stuck element is the consumer's own class bound from `isStuck()` or `edge()` through `#s="nfsSticky"`; no recipe selects `.is-stuck` or another Foundation or library class | Building-blocks 1.1: a spec's recipe for consumer CSS selects elements, attributes, or the consumer's own classes; the signals are public API, zoneless-safe, and false on the server exactly as the State classes are; the State classes stay Foundation's contract for Foundation's own CSS and CSS migrated from Foundation | Recipes on `.sticky.is-stuck` (a Foundation class in consumer code however the rule is read for stylesheets); a library styling attribute such as `data-nfs-stuck` (a second spelling of the State class that adds no information) |
-| D18 | Composition by placement: `nfsSticky` beside `nfsTitleBar`, `nfsTopBar`, or `nfsCallout`, or on any element; `nfsStickyContainer` beside `nfsCell`, or on any parent; neither hosts another directive or is hosted | Building-blocks 1.9: a behaviour that may sit on any element is written beside the class directive; the Top Bar spec's D10; host directives are static, so a bar that hosted `NfsSticky` would pin every bar; none of the bar, callout, or cell rules sets a `position` the gate cannot override | `NfsTitleBar` or `NfsTopBar` hosting `NfsSticky`; a `sticky` boolean on the bar directives (Sticky is a Plugin with its own Options, not a Variant of the bar) |
-| D19 | Examples, stories, test hosts, and fixtures write no Foundation or library class (except the one browser-level case that copies `is-stuck` onto a host to show it is stripped, D16): `nfsGridX` and `nfsCell` with `size`, `img[nfsThumbnail]`, `nfsCallout`, `nfsTitleBar` with `nfsTitleBarLeft`, `button[nfsButton]`; `sticky--overflow-hidden-ancestor` writes its first ancestor with `nfsOverflow="hidden"` and sets `overflow: clip` inline on the second | ADR 0039 and the Storybook conventions' class-rule note; `nfsGridX` and `nfsCell` are the [Spec: XY Grid](../issues/99-spec-xy-grid.md)'s, `nfsThumbnail` the [Spec: Thumbnail](../issues/97-spec-thumbnail.md)'s, `nfsCallout` the [Spec: Callout](../issues/89-spec-callout.md)'s, and `nfsTitleBar`, `nfsTitleBarLeft`, and `nfsTopBar` the [Spec: Top Bar](../issues/86-spec-top-bar.md)'s; the overflow story compares two values: Foundation's `.overflow-hidden` comes from the [Spec: Prototyping Utilities](../issues/102-spec-prototyping-utilities.md)'s `nfsOverflow="hidden"`, and `overflow: clip` has no Foundation class, so it stays inline (Storybook conventions, section 8) | Keeping Foundation's docs classes in examples (copied into applications, they would bring back what the rule removes); Foundation's `.overflow-hidden` class in the story (a Foundation class in story markup); `overflow: hidden` inline (a value Foundation has a class for, against Storybook conventions section 8) |
+| D18 | Composition by placement: `nfsSticky` beside `nfsTitleBar`, `nfsTopBar`, or `nfsCallout`, or on any element; `nfsStickyContainer` on any parent, a grid cell written with Foundation's `cell` class included; neither hosts another directive or is hosted | Building-blocks 1.9: a behaviour that may sit on any element is written beside the class directive; the Top Bar spec's D10; host directives are static, so a bar that hosted `NfsSticky` would pin every bar; none of the bar, callout, or cell rules sets a `position` the gate cannot override | `NfsTitleBar` or `NfsTopBar` hosting `NfsSticky`; a `sticky` boolean on the bar directives (Sticky is a Plugin with its own Options, not a Variant of the bar) |
+| D19 | Examples, stories, test hosts, and fixtures write no Foundation or library class (except the one browser-level case that copies `is-stuck` onto a host to show it is stripped, D16), other than the classes of a family with no first-milestone spec, written as normal classes: the XY Grid's `grid-x` and `cell small-6`, and the Prototyping Utilities' `overflow-hidden`; `img[nfsThumbnail]`, `nfsCallout`, `nfsTitleBar` with `nfsTitleBarLeft`, `button[nfsButton]`; `sticky--overflow-hidden-ancestor` writes its first ancestor with `class="overflow-hidden"` and sets `overflow: clip` inline on the second | ADR 0039, its exception for a family with no first-milestone spec (consumers load Foundation's global styles), and the Storybook conventions' class-rule note; `nfsThumbnail` is the [Spec: Thumbnail](../issues/97-spec-thumbnail.md)'s, `nfsCallout` the [Spec: Callout](../issues/89-spec-callout.md)'s, and `nfsTitleBar`, `nfsTitleBarLeft`, and `nfsTopBar` the [Spec: Top Bar](../issues/86-spec-top-bar.md)'s; the overflow story compares two values: Foundation's `.overflow-hidden` class, and `overflow: clip`, which has no Foundation class, so it stays inline (Storybook conventions, section 8) | Keeping Foundation's docs classes of a first-milestone family in examples (copied into applications, they would bring back what the rule removes); `overflow: hidden` inline (a value Foundation has a class for, against Storybook conventions section 8) |
 | D20 | No consumer CSS recipe for Foundation's off-canvas wrapper: `@include nfs-off-canvas;` is the fix, and usage rule 3 gives `overflow: clip` for any other clipping ancestor | Building-blocks 1.1 (no recipe selects a Foundation class); the Off-canvas spec's Sass subsection already lists sticking inside the wrapper among what breaks without its include | Keeping `.off-canvas-wrapper { overflow: clip; display: flow-root; }` (a Foundation class in a consumer recipe); the same rule on `[nfsOffCanvasWrapper]` (a second copy of the Off-canvas mixin's rule in consumer CSS) |
 
 ### Usage examples
 
-Every example writes Foundation's elements and the library's directives, never a Foundation or library class (ADR 0039); each directive comes from its own entry point (`NfsSticky` and `NfsStickyContainer` from the Sticky one, `NfsTitleBar` and `NfsTitleBarLeft` from the Top Bar one, and so on), and an image uses `NgOptimizedImage` from `@angular/common` (building-blocks 1.2).
+Every example writes Foundation's elements and the library's directives, never a Foundation or library class (ADR 0039), except the XY Grid's classes, which the consumer writes as normal classes because that family has no first-milestone spec; each directive comes from its own entry point (`NfsSticky` and `NfsStickyContainer` from the Sticky one, `NfsTitleBar` and `NfsTitleBarLeft` from the Top Bar one, and so on), and an image uses `NgOptimizedImage` from `@angular/common` (building-blocks 1.2).
 
 A sticky column (Foundation's first docs example); the grid cell, which stretches to the row's height, is the Sticky container:
 
 ```html
-<div nfsGridX>
-  <div nfsCell size="6" nfsStickyContainer>
+<div class="grid-x">
+  <div class="cell small-6" nfsStickyContainer>
     <div nfsSticky [marginTop]="0">
       <img nfsThumbnail ngSrc="assets/rectangle-3.jpg" width="600" height="400" alt="Product photo">
     </div>
   </div>
-  <div nfsCell size="6"><!-- long content --></div>
+  <div class="cell small-6"><!-- long content --></div>
 </div>
 ```
 

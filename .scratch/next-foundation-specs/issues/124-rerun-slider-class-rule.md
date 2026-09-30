@@ -154,3 +154,11 @@ Triage: impact LOW (development-only diagnostics and one compile-time check leav
 ### Amendment, 2026-09-30 (audit 0009)
 
 - [Audit 0009: the later-milestone checks wave](../audits/0009-later-milestone-checks-wave.md), L9: the 1.4.11 row's test column begins "Not automated (axe has no 1.4.11 rule)".
+
+### Amendment, 2026-09-30 (later-milestone families)
+
+From [Re-run: specs without the later-milestone families, group c](178-rerun-specs-without-later-families-group-c.md), under [Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md); `specs/slider.md` was revised in place.
+
+- Usage examples: the data binding example's row and cells write Foundation's `grid-x grid-margin-x`, `cell small-10`, and `cell small-2` as normal classes in place of the XY Grid directives, as Foundation's docs example does; the closing sentence says these are the only Foundation classes an example writes and why, and the link to the XY Grid spec is gone. The stories already used no grid.
+
+Triage: impact LOW (examples, stories, and documented usage change; no input, default, or rule of this spec changes), confidence HIGH (the ruling's decisions 2 and 3: a family with no first-milestone spec is written as Foundation's normal classes, with Foundation's global styles loaded). Nothing is OPEN FOR HUMAN.

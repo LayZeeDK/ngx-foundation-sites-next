@@ -99,7 +99,7 @@ Dropped options and behaviours: `data-toggle-focus` (Triggers spec; replaced by 
 
 ### CSS class to Angular mapping
 
-Toggler has no Structural class of its own and no Variant class: it works on any element, and the class it toggles in class mode is the consumer's own. So it has no Variant input, no Variant registry or alias, and no Variant property. The directive names follow building-blocks 1.3 (plugin name when there is no Structural class). No class is left for the developer to write (ADR 0039).
+Toggler has no Structural class of its own and no Variant class: it works on any element, and the class it toggles in class mode is the consumer's own. So it has no Variant input, no Variant registry or alias, and no Variant property. The directive names follow building-blocks 1.3 (plugin name when there is no Structural class). No class is left for the developer to write (ADR 0039), except the classes of a family with no first-milestone spec, such as the XY Grid's in the table below.
 
 | Foundation markup or class | Kind | Angular | Rationale |
 | --- | --- | --- | --- |
@@ -111,7 +111,7 @@ Toggler has no Structural class of its own and no Variant class: it works on any
 | `.callout` and its colour class | Another family's: the Callout's Structural and Variant classes | `NfsCallout` (`[nfsCallout]`) with its `color` Variant input, beside `nfsToggler` | [Spec: Callout](../issues/89-spec-callout.md); the panels, hints, and dismissible callouts of the examples |
 | `.menu` | Another family's: the Menu's Structural class (its `.expanded` is the row above) | `NfsMenu` (`ul[nfsMenu]`), beside `nfsToggler` | [Spec: Menu](../issues/85-spec-menu.md) |
 | `.thumbnail` | Another family's: the Thumbnail's Structural class | `NfsThumbnail` (`[nfsThumbnail]`), beside `nfsToggler` | [Spec: Thumbnail](../issues/97-spec-thumbnail.md); Foundation's multiple-targets example |
-| `.grid-x`, `.grid-margin-x`, `.cell`, `.small-4` | Another family's: the XY Grid's | `NfsGridX` with `gridMarginX`, and `NfsCell` with `size` | [Spec: XY Grid](../issues/99-spec-xy-grid.md); the layout of Foundation's multiple-targets example |
+| `.grid-x`, `.grid-margin-x`, `.cell`, `.small-4` | A family with no first-milestone spec: the XY Grid's | None: normal classes the consumer writes (`class="grid-x grid-margin-x"`, `class="cell small-4"`), with Foundation's global styles loaded | The class rule's exception for a family with no first-milestone spec; the layout of Foundation's multiple-targets example, which the examples here leave out |
 | `.button` and its Variant classes | Another family's: the Button's | `NfsButton` with its Variant inputs, on a Trigger | [Spec: Button](../issues/37-spec-button.md) |
 | `.close-button` | Another family's: the Close Button's Structural class | `NfsCloseButton` (`button[nfsCloseButton]`), on a Trigger | [Spec: Close Button](../issues/83-spec-close-button.md) |
 

@@ -208,3 +208,11 @@ What left the spec, per check, and where its rule now stands:
 Kept: no required parent injection (a content component injects `nfsRevealToken` optionally); ARIA and focus behaviour, including the restore chain; the typed `size`, `collapse`, and Motion inputs and their compile errors; the eight `nfs-reveal` rules and the `nfs-motion` additions; the library's own tests (stories with axe, browser-level, SSR smoke, Sass compile of the emitted rules, e2e, the manual release test).
 
 Triage: impact LOW (development-only diagnostics and compile stops leave; every rule stays as documented usage, and the stories still pass axe and the e2e cases with Foundation's defaults), confidence HIGH (the ruling of ticket 158). Nothing is OPEN FOR HUMAN.
+
+### Amendment, 2026-09-30 (later-milestone families)
+
+From [Re-run: specs without the later-milestone families, group c](178-rerun-specs-without-later-families-group-c.md), under [Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md); `specs/reveal.md` was revised in place.
+
+- Rendered HTML: the docs' `p.lead` stays Foundation's `.lead`, a normal class the consumer writes (`<p class="lead">`) with Foundation's global styles loaded; the Typography Helpers attribute and the link to its spec are gone. The examples still leave the paragraph out.
+
+Triage: impact LOW (examples, stories, and documented usage change; no input, default, or rule of this spec changes), confidence HIGH (the ruling's decisions 2 and 3: a family with no first-milestone spec is written as Foundation's normal classes, with Foundation's global styles loaded). Nothing is OPEN FOR HUMAN.

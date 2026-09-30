@@ -161,3 +161,12 @@ What left the spec, per check, and where its rule now stands:
 Kept: the size record's stripping of copied size classes, the static `aria-hidden` on the inner labels, the native roles, states, and keys, the typed `size` input and its compile errors, `nfs-switch`'s focus-ring, forced-colours, and reduced-motion rules, and the library's own stories (axe, computed contrast, paddle boxes), browser-level, SSR, Sass-output, e2e, and manual release tests.
 
 Triage: impact LOW (the rules were already the spec's documented markup; no API changes; each check keeps its design in its later-milestone spec), confidence HIGH (the ruling's Decision items 2 to 4). Nothing is OPEN FOR HUMAN.
+
+### Amendment, 2026-09-30 (later-milestone families)
+
+From [Re-run: specs without the later-milestone families, group c](178-rerun-specs-without-later-families-group-c.md), under [Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md); `specs/switch.md` was revised in place.
+
+- Out of Scope: `.show-for-sr` is a normal class the consumer writes, with Foundation's global styles loaded, because the Visibility Classes have no first-milestone spec; the library's switch markup still needs none (D4). The link to the Visibility Classes spec is gone.
+- Notes: side-by-side layouts come from Foundation's XY Grid classes written as normal classes (`class="grid-x"`, `class="cell"`), not from the XY Grid directives; the link to its spec is gone.
+
+Triage: impact LOW (examples, stories, and documented usage change; no input, default, or rule of this spec changes), confidence HIGH (the ruling's decisions 2 and 3: a family with no first-milestone spec is written as Foundation's normal classes, with Foundation's global styles loaded). Nothing is OPEN FOR HUMAN.

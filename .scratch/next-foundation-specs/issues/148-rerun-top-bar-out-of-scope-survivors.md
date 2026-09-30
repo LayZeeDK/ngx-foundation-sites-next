@@ -167,3 +167,12 @@ From [Re-run: specs without checks, group f](170-rerun-specs-without-checks-grou
 ### Amendment, 2026-09-30 (audit 0009)
 
 - [Audit 0009: the later-milestone checks wave](../audits/0009-later-milestone-checks-wave.md), M4: the Imports bullet says a bound `[type]` on the menu icon's `button` compiles and sets the native property; `[dark]` stays NG8002.
+
+### Amendment, 2026-09-30 (later-milestone families)
+
+From [Re-run: specs without the later-milestone families, group c](178-rerun-specs-without-later-families-group-c.md), under [Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md); `specs/top-bar.md` was revised in place.
+
+- Other families' classes: the `.show-for-sr` row says the consumer writes it as a normal class (`class="show-for-sr"`) with Foundation's global styles loaded, and the table's intro names that one exception; the Visibility Classes directive and the link to its spec are gone.
+- The menu icon's naming rule (Behaviour), the ARIA table's "Menu icon name" row, the dark menu icon example (`<span class="show-for-sr">Menu</span>`), and the note under Rendered HTML (no directive is imported for `.show-for-sr`) say the same.
+
+Triage: impact LOW (examples, stories, and documented usage change; no input, default, or rule of this spec changes), confidence HIGH (the ruling's decisions 2 and 3: a family with no first-milestone spec is written as Foundation's normal classes, with Foundation's global styles loaded). Nothing is OPEN FOR HUMAN.

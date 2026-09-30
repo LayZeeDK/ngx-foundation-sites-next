@@ -222,3 +222,12 @@ Triage: impact LOW (development-only diagnostics and one compile-time check leav
 ### Amendment, 2026-09-30 (audit 0009)
 
 - [Audit 0009: the later-milestone checks wave](../audits/0009-later-milestone-checks-wave.md), L9: the 1.4.3 row says the four hover pairs are not automated, because axe reads the rest state only.
+
+### Amendment, 2026-09-30 (later-milestone families)
+
+From [Re-run: specs without the later-milestone families, group c](178-rerun-specs-without-later-families-group-c.md), under [Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md); `specs/table.md` was revised in place.
+
+- Further Notes, "Scroll regions elsewhere": the XY Grid, which a later milestone adds, can give its cell blocks the Scroll region contract; in the first milestone a consumer who writes Foundation's cell-block classes as normal classes (`class="cell medium-cell-block-y"`) writes `tabindex="0"`, `role="region"`, and the name on that `div` itself, as the Table's wrapper binds them. The link to the XY Grid spec and its D8 is gone.
+- D16's rationale says the XY Grid's scrolling cells are a later milestone's.
+
+Triage: impact LOW (examples, stories, and documented usage change; no input, default, or rule of this spec changes), confidence HIGH (the ruling's decisions 2 and 3: a family with no first-milestone spec is written as Foundation's normal classes, with Foundation's global styles loaded). The consumer-written attributes restate the Scroll region contract this spec already decides; they were not measured anew. Nothing is OPEN FOR HUMAN.

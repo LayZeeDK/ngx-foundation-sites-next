@@ -6,14 +6,14 @@ Evidence is cited as: T, the probes of [Decide: typed Variant inputs over open S
 
 ## Problem Statement
 
-Under the class rule a consumer writes no Foundation class; every Variant class is set by a Variant input whose type is closed (ADR 0040). Many Variant names are not Foundation's to fix: a developer adds `purple` to `$button-palette`, drops `warning` from `$label-palette`, adds `xlarge` to `$breakpoint-classes`, or sets `$grid-columns: 16`, exactly as Foundation's docs teach. The library's types only know Foundation's defaults, so the developer's own names reach the Variant inputs only through the Variant declaration file, which augments the library's Variant registries.
+Under the class rule a consumer writes no Foundation class; every Variant class is set by a Variant input whose type is closed (ADR 0040). Many Variant names are not Foundation's to fix: a developer adds `purple` to `$button-palette`, drops `warning` from `$label-palette`, adds `xlarge` to `$breakpoint-classes`, or adds a `huge` size to `$button-sizes`, exactly as Foundation's docs teach. The library's types only know Foundation's defaults, so the developer's own names reach the Variant inputs only through the Variant declaration file, which augments the library's Variant registries.
 
 Writing and keeping that file by hand does not work well:
 
 - The file is a mirror of the Sass. When the Sass gains a name, a template that uses it fails to compile until someone declares it. When the Sass loses a name, the file still declares it, templates keep compiling, and the element renders with a class the CSS no longer has. Nothing tells the developer.
 - Nx runs sync generators before local tasks, but no task runs one when `CI` is set: a build in CI passed against a stale file and shipped a Variant with no class (measured, SYNC 4.2). The file CI builds against must already be in step when it is committed.
 - The Angular CLI has no target dependencies at all: a bare `ng build` or `ng serve` runs nothing first.
-- Some names generate classes only under a Sass flag, some families chain (`$button-palette` defaults to `$foundation-palette`), counts are numbers, and Foundation's docs let a palette lose names as well as gain them. A hand-written file easily gets one of these wrong, and one easy mistake (a file with no `import`) silently replaces the library's types.
+- Some names generate classes only under a Sass flag, some families chain (`$button-palette` defaults to `$foundation-palette`), and Foundation's docs let a palette lose names as well as gain them. A hand-written file easily gets one of these wrong, and one easy mistake (a file with no `import`) silently replaces the library's types.
 - A shared library in an Nx workspace is compiled, tested, and type-checked in programs that see no application's declaration file, so its own type checks reject the names its applications use. Storybook's own compile checks neither templates nor story arguments, so only a type check of its TypeScript configuration sees a declaration file there.
 - The library itself can break the whole scheme without noticing: TypeScript's declaration emit may print an input's type as Foundation's resolved default union, and then no consumer declaration reaches that input.
 - Every Library mixin writes a Variant property, every component spec types inputs over a registry, and the generator must know every registry with its setting, property, and default names. Without one list, these drift apart inside the library.
@@ -24,8 +24,8 @@ Developers need the library to write the Variant declaration file from their Sas
 
 The library ships, inside its own package, everything a consumer needs to write and keep the Variant declaration file, plus the types those files augment:
 
-- The primary entry point `ngx-foundation-sites` holds the 26 Variant registries (one empty interface per Sass setting whose names or count become Variant classes), the helper types that build closed unions and ranges over them (`NfsOverridableStringUnion`, `NfsOverridableCount`, `NfsOverridableCountValue`, `NfsRange`), the Class breakpoint types (`NfsClassBreakpoint`, `NfsClassBreakpointQuery`, `NfsClassBreakpointRules`), `NfsFoundationPaletteColor`, and `NfsVariantBoolean` with its transform `nfsVariantBoolean`. Of the Variant pieces there, everything is a type except that one pure function; the primary entry point also holds the Motion name types, the pair type `NfsMotionPair`, and their pure functions `nfsMotionClasses` and `nfsMotionPairClasses`, which `building-blocks.md` 1.6 rule 4 defines for every Motion input and which are not Variant tooling ([Re-run: Reveal spec under the class rule](../issues/110-rerun-reveal-class-rule.md)).
-- The Variant manifest, shipped in the same package version, lists every registry with its Sass setting, its Variant property, its default names or count, the setting whose names are its defaults (`$button-palette` builds on `$foundation-palette`), the Library mixins that write its property, and the Variant inputs that follow it.
+- The primary entry point `ngx-foundation-sites` holds the first milestone's 10 Variant registries (one empty interface per Sass setting whose names become Variant classes), the helper type that builds closed unions over them (`NfsOverridableStringUnion`), the Class breakpoint types (`NfsClassBreakpoint`, `NfsClassBreakpointQuery`, `NfsClassBreakpointRules`), `NfsFoundationPaletteColor`, and `NfsVariantBoolean` with its transform `nfsVariantBoolean`. Of the Variant pieces there, everything is a type except that one pure function; the primary entry point also holds the Motion name types, the pair type `NfsMotionPair`, and their pure functions `nfsMotionClasses` and `nfsMotionPairClasses`, which `building-blocks.md` 1.6 rule 4 defines for every Motion input and which are not Variant tooling ([Re-run: Reveal spec under the class rule](../issues/110-rerun-reveal-class-rule.md)).
+- The Variant manifest, shipped in the same package version, lists every registry with its Sass setting, its Variant property, its default names, the setting whose names are its defaults (`$button-palette` builds on `$foundation-palette`), the Library mixins that write its property, and the Variant inputs that follow it.
 - One shared core compiles a project's global stylesheet with the Sass JavaScript API, reads the Variant properties from the compiled CSS, works out what the declaration file must say, reads what the existing generated file says, and writes when the two differ. Three thin entry points sit over it:
   - a setup generator, `ngx-foundation-sites:variant-types`, an Nx generator exposed to the Angular CLI as a schematic, which adds an `nfs-variants` target to each project, writes its first Variant declaration file, and in Nx registers the sync generator on the project's own targets;
   - an Nx task sync generator, `ngx-foundation-sites:variant-types-sync`, which keeps every project's file in step before its build, serve, test, and Storybook tasks;
@@ -33,7 +33,8 @@ The library ships, inside its own package, everything a consumer needs to write 
 - The file is written deterministically and compared by meaning, not by bytes, so a formatter or a line-ending conversion never causes a rewrite. The tooling rewrites only a file it generated itself; a hand-written file is never overwritten.
 - The generated file is committed with the Sass change that changed it: outside CI, Nx rewrites it before the registered tasks, and on the Angular CLI the `nfs-variants` target or the optional npm `pre` scripts do; CI builds against the committed file.
 - A shared library whose own programs use names the defaults lack gets a Variant declaration file of its own, generated from an application build target it names or from its own stylesheet, such as its Storybook preview stylesheet.
-- The library's own pipeline runs the Variant typings check after its build: the emitted typings name each listed input's alias, and a generated probe program proves that a declared name reaches every listed input and that misspelt, removed, and out-of-range values still fail.
+- The library's own pipeline runs the Variant typings check after its build: the emitted typings name each listed input's alias, and a generated probe program proves that a declared name reaches every listed input and that misspelt and removed values still fail.
+- The families a later milestone adds bring their own registries, and with their count registries the count kind of every piece above (Later milestone, under Implementation Decisions).
 
 ## User Stories
 
@@ -42,7 +43,7 @@ The library ships, inside its own package, everything a consumer needs to write 
 3. As an application developer, I want the file generated from my compiled Sass, so that the names I add with Foundation's `map-merge` are the names my templates may use.
 4. As an application developer, I want a name I removed from a palette to stop compiling, so that I never ship an element whose class my CSS no longer has.
 5. As an application developer who added `xlarge` to `$breakpoint-classes`, I want `expanded="xlarge down"` and `{xlarge: 6}` to compile, so that my responsive Variants follow my breakpoints.
-6. As an application developer who set `$grid-columns: 16`, I want `size="16"` to compile and `size="17"` to fail, so that grid sizes follow my count.
+6. As an application developer who added a `huge` size to `$button-sizes`, I want `size="huge"` to compile on buttons and fail on callouts, so that each size family follows its own setting.
 7. As an application developer who added `purple` to `$foundation-palette`, I want Button, Badge, and Label to accept `purple` too, so that the palettes chain as Foundation's Sass defaults chain.
 8. As an application developer who gave `$button-palette` its own map without `purple`, I want `purple` to fail on buttons while it still works on callouts, so that each family follows its own setting.
 9. As an application developer on Nx, I want the file rewritten before `nx build`, `nx serve`, and `nx test` when my Sass changed, so that local tasks never run against stale types.
@@ -78,7 +79,7 @@ The library ships, inside its own package, everything a consumer needs to write 
 39. As a library maintainer, I want a check after every build that fails when an emitted Variant input type no longer names its alias or no longer accepts a declared name, so that declaration emit never freezes Foundation's defaults.
 40. As a library maintainer, I want a Sass compile test that fails when a Library mixin's Variant property disagrees with the manifest's defaults, so that the property and the manifest stay one list.
 41. As a component spec author, I want a published table of registry, setting, and property names, so that my spec's class mapping names them exactly.
-42. As a component spec author, I want `nfsVariantBoolean` and the range helpers in one place, so that every boolean Variant and every count family parses values the same way.
+42. As a component spec author, I want `nfsVariantBoolean` and the union helper in one place, so that every boolean Variant and every open family parses values the same way.
 43. As a test author, I want the shared core's pure functions testable in Node, and the generators testable against a virtual workspace tree, so that most cases run without installing anything.
 44. As a security-conscious maintainer, I want the tooling never to write into `node_modules` and never to add a runtime dependency to applications, so that the user's veto and the bundle size both hold.
 45. As a developer reading a generated file, I want its header to name the stylesheet it came from and the command that regenerates it, so that I never edit it by hand by mistake.
@@ -87,7 +88,7 @@ The library ships, inside its own package, everything a consumer needs to write 
 
 ### Foundation contract: the settings that become Variant registries
 
-Foundation 6.9's Sass settings whose names or count become Variant class names (D section 2, re-checked against Foundation 6.9.0's Sass, the Prototyping lists included). Each is one Variant registry, named by the mechanical rule of building-blocks 1.3 (`Nfs` + PascalCase of the setting + `Overrides`), and one Variant property (`--nfs-` + the setting's name). "Defaults" are the names that generate a class, in Foundation's order; a key such as `default` that Foundation reads as the base look and gives no class is not a name.
+Foundation 6.9's Sass settings whose names become Variant class names in the first milestone's families (D section 2, re-checked against Foundation 6.9.0's Sass). The later milestone adds the settings of its families (Later milestone, below). Each is one Variant registry, named by the mechanical rule of building-blocks 1.3 (`Nfs` + PascalCase of the setting + `Overrides`), and one Variant property (`--nfs-` + the setting's name). "Defaults" are the names that generate a class, in Foundation's order; a key such as `default` that Foundation reads as the base look and gives no class is not a name.
 
 | Sass setting | Registry | Variant property | Kind | Defaults | Base | Families |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -101,33 +102,14 @@ Foundation 6.9's Sass settings whose names or count become Variant class names (
 | `$dropdown-sizes` | `NfsDropdownSizesOverrides` | `--nfs-dropdown-sizes` | names | `tiny small large` | none | Dropdown pane |
 | `$responsive-embed-ratios` | `NfsResponsiveEmbedRatiosOverrides` | `--nfs-responsive-embed-ratios` | names | `widescreen` | none | Responsive Embed |
 | `$breakpoint-classes` | `NfsBreakpointClassesOverrides` | `--nfs-breakpoint-classes` | names | `small medium large` | none | every responsive Variant (Class breakpoints) |
-| `$prototype-display` | `NfsPrototypeDisplayOverrides` | `--nfs-prototype-display` | names | `inline inline-block block table table-cell` | none | Prototyping Utilities |
-| `$prototype-position` | `NfsPrototypePositionOverrides` | `--nfs-prototype-position` | names | `static relative absolute fixed` | none | Prototyping Utilities |
-| `$prototype-overflow` | `NfsPrototypeOverflowOverrides` | `--nfs-prototype-overflow` | names | `visible hidden scroll` | none | Prototyping Utilities |
-| `$prototype-sizes` | `NfsPrototypeSizesOverrides` | `--nfs-prototype-sizes` | names | `25 50 75 100` | none | Prototyping Utilities |
-| `$prototype-text-decoration` | `NfsPrototypeTextDecorationOverrides` | `--nfs-prototype-text-decoration` | names | `overline underline line-through` | none | Prototyping Utilities |
-| `$prototype-text-transformation` | `NfsPrototypeTextTransformationOverrides` | `--nfs-prototype-text-transformation` | names | `lowercase uppercase capitalize` | none | Prototyping Utilities |
-| `$prototype-style-type-unordered` | `NfsPrototypeStyleTypeUnorderedOverrides` | `--nfs-prototype-style-type-unordered` | names | `disc circle square` | none | Prototyping Utilities |
-| `$prototype-style-type-ordered` | `NfsPrototypeStyleTypeOrderedOverrides` | `--nfs-prototype-style-type-ordered` | names | `decimal lower-alpha lower-latin lower-roman upper-alpha upper-latin upper-roman` | none | Prototyping Utilities |
-| `$prototype-arrow-directions` | `NfsPrototypeArrowDirectionsOverrides` | `--nfs-prototype-arrow-directions` | names | `down up right left` | none | Prototyping Utilities |
-| `$grid-columns` | `NfsGridColumnsOverrides` | `--nfs-grid-columns` | count | 12 | none | XY Grid |
-| `$xy-block-grid-max` | `NfsXyBlockGridMaxOverrides` | `--nfs-xy-block-grid-max` | count | 8 | none | XY Grid |
-| `$grid-column-count` | `NfsGridColumnCountOverrides` | `--nfs-grid-column-count` | count | 12 | none | Float Grid, Flex Grid |
-| `$block-grid-max` | `NfsBlockGridMaxOverrides` | `--nfs-block-grid-max` | count | 8 | none | Float Grid, Flex Grid |
-| `$grid-column-gutter` (its keys, while a map) | `NfsGridColumnGutterOverrides` | `--nfs-grid-column-gutter` | names | `small medium` | none | Float Grid |
-| `$flex-source-ordering-count` | `NfsFlexSourceOrderingCountOverrides` | `--nfs-flex-source-ordering-count` | count | 6 | none | Flexbox Utilities |
-| `$prototype-spacers-count` | `NfsPrototypeSpacersCountOverrides` | `--nfs-prototype-spacers-count` | count | 3 | none | Prototyping Utilities |
-
-A single-length `$grid-column-gutter` generates no `.gutter-*` class, so `nfs-float-grid` writes `--nfs-grid-column-gutter` as the empty list and the generated file declares `small: false` and `medium: false`.
 
 Settings that are deliberately not registries:
 
 - `$breakpoints`: behaviour Options keep the open `NfsBreakpointName` (ADR 0005, ADR 0040). The Zero breakpoint's name in Media Object's `stack-for-<zero>` needs no registry: `stackFor` is typed `NfsClassBreakpoint`, and the directive builds the class from `nfsBreakpointsToken`'s Zero breakpoint ([Spec: Media Object](../issues/91-spec-media-object.md), D2).
 - `$offcanvas-sizes` and `$offcanvas-vertical-sizes`: keyed by breakpoint, they produce media queries, not classes.
 - `$button-fill`: the fills `solid`, `hollow`, `clear` are a Closed Variant family whatever the setting says (ADR 0039, dated note).
-- Flags that gate a family's classes (`$button-responsive-expanded`, the `$prototype-*-breakpoints` flags, `$global-flexbox`, `$xy-grid`, `$flexbox-responsive-breakpoints`): they change whether classes exist, not which names they have, so the types do not change, and the tooling reads nothing for them. A gated family never writes a registry's property, such as `--nfs-breakpoint-classes`, empty.
-- Class-name renames (`$grid-column-alias`, the Float Grid's class-name parameters, `$maincontent-class`): they rename Structural or Utility classes, which directives bind; the Float Grid spec leaves them unsupported, because the directives bind Foundation's default names and the library's mixin cannot read `foundation-grid(...)`'s arguments, and `$grid-column-alias` needs nothing, because no directive binds the alias; a renamed `$maincontent-class` is the [Spec: Off-canvas](../issues/25-spec-off-canvas.md)'s to decide.
-- `$prototype-sizing`: its names are CSS properties, which become the attribute names `nfsWidth` and `nfsHeight`; a template cannot grow attributes from Sass, so names a consumer adds generate classes no attribute sets ([Spec: Prototyping Utilities](../issues/102-spec-prototyping-utilities.md), D10).
+- Flags that gate a family's classes (`$button-responsive-expanded`, `$global-flexbox`): they change whether classes exist, not which names they have, so the types do not change, and the tooling reads nothing for them. A gated family never writes a registry's property, such as `--nfs-breakpoint-classes`, empty.
+- Class-name renames (`$maincontent-class`): they rename Structural classes, which directives bind; a renamed `$maincontent-class` is the [Spec: Off-canvas](../issues/25-spec-off-canvas.md)'s to decide.
 
 A component spec declares no registry (the typing decision). A spec whose family needs a setting missing from this table proposes a new row for this spec.
 
@@ -145,9 +127,8 @@ interface NfsVariantManifestRegistry {
   readonly registry: string; // 'NfsButtonPaletteOverrides'
   readonly setting: string; // '$button-palette'
   readonly property: string; // '--nfs-button-palette'
-  readonly kind: 'names' | 'count';
-  readonly defaults?: readonly string[]; // kind 'names': the names that generate a class, in Foundation's order
-  readonly count?: number; // kind 'count': Foundation's default
+  readonly kind: 'names'; // the later milestone adds 'count' (Later milestone, below)
+  readonly defaults: readonly string[]; // the names that generate a class, in Foundation's order
   readonly base?: string; // a setting whose effective names are this registry's defaults: '$foundation-palette'
   readonly mixins: readonly string[]; // the Library mixins that write the property: ['nfs-button']
   readonly uses: readonly NfsVariantManifestUse[];
@@ -158,21 +139,60 @@ interface NfsVariantManifestUse {
   readonly directive: string; // 'NfsButton'
   readonly input: string; // 'color'
   readonly alias: string; // 'NfsButtonColor': the exported alias the input's write type names
-  readonly shape: 'name' | 'query' | 'rules' | 'count'; // how the input takes this registry's names
+  readonly shape: 'name' | 'query' | 'rules'; // how the input takes this registry's names
 }
 ```
 
-- One entry per row of the table above, in that order. `mixins` and `uses` are filled from the component specs: every Open Variant family row of a component spec's class mapping (building-blocks 1.14 item 2) becomes one `uses` entry per registry it reads. An input that takes a count or a Breakpoint rules object reads two registries (`NfsCell.size` reads `NfsGridColumnsOverrides` with shape `count` and `NfsBreakpointClassesOverrides` with shape `rules`) and appears under both.
-- Known `mixins` today: `nfs-callout` and `nfs-progress-bar` write `--nfs-foundation-palette` (the exception to one writer per property for a setting no entry point owns, which the legacy grids' shared settings below also take), and `nfs-callout` writes `--nfs-callout-sizes` alone; `nfs-button` writes `--nfs-button-palette` and `--nfs-button-sizes`; `nfs-badge`, `nfs-label`, `nfs-close-button`, `nfs-dropdown-pane`, and `nfs-responsive-embed` write their settings; `nfs-breakpoint-properties` writes `--nfs-breakpoint-classes`; `nfs-flexbox-utilities` writes `--nfs-flex-source-ordering-count`. `nfs-xy-grid` writes `--nfs-grid-columns` and `--nfs-xy-block-grid-max`. `nfs-prototype-classes` writes the ten `$prototype-*` registry properties ([Spec: Prototyping Utilities](../issues/102-spec-prototyping-utilities.md)). `nfs-flex-grid` writes `--nfs-grid-column-count` and `--nfs-block-grid-max`, as the Float Grid's mixin does (the shared-setting exception) ([Spec: Flex Grid](../issues/101-spec-flex-grid.md)). `nfs-float-grid` writes `--nfs-grid-column-count` and `--nfs-block-grid-max`, as `nfs-flex-grid` does, and `--nfs-grid-column-gutter` alone ([Spec: Float Grid](../issues/100-spec-float-grid.md)); the `mixins` of the `$grid-column-count` and `$block-grid-max` manifest rows hold both legacy grid mixins, and the new `$grid-column-gutter` row's holds `nfs-float-grid`. `nfs-button-group` writes none: it reads `nfs-button`'s ([Spec: Button Group](../issues/82-spec-button-group.md), D11).
-- Known `uses` under `NfsBreakpointClassesOverrides` ([Re-run: Off-canvas spec under the class rule](../issues/117-rerun-off-canvas-class-rule.md)): `{entryPoint: 'ngx-foundation-sites/off-canvas', directive: 'NfsOffCanvas', input: 'revealOn', alias: 'NfsClassBreakpoint', shape: 'name'}` and the same for `inCanvasOn`; `position` is closed and has no entry. [Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md) adds `{entryPoint: 'ngx-foundation-sites/flexbox-utilities', directive: 'NfsFlexChild', input: 'order', alias: 'NfsFlexOrderInput', shape: 'rules'}`, the same with `input: 'nfsFlexChild', alias: 'NfsFlexChildInput', shape: 'rules'`, with `directive: 'NfsFlexContainer', input: 'direction', alias: 'NfsFlexDirectionInput', shape: 'rules'`, and with `directive: 'NfsFlexContainer', input: 'nfsFlexContainer', alias: 'NfsFlexContainerInput', shape: 'query'`. [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md) adds `{entryPoint: 'ngx-foundation-sites/visibility', directive: 'NfsVisibility', input: 'showFor', alias: 'NfsVisibilityShowFor', shape: 'query'}` and `{entryPoint: 'ngx-foundation-sites/visibility', directive: 'NfsVisibility', input: 'hideFor', alias: 'NfsVisibilityHideFor', shape: 'query'}`. [Spec: XY Grid](../issues/99-spec-xy-grid.md) adds, all with entry point `ngx-foundation-sites/xy-grid`: `{directive: 'NfsCell', input: 'size', alias: 'NfsCellSizeInput', shape: 'rules'}`, `{directive: 'NfsCell', input: 'offset', alias: 'NfsCellOffsetInput', shape: 'rules'}`, `{directive: 'NfsGridX', input: 'up', alias: 'NfsGridUpInput', shape: 'rules'}`, and, all with alias `NfsGridQuery` and shape `query`, `{directive: 'NfsCell', input: 'cellBlock'}`, `{directive: 'NfsCell', input: 'cellBlockY'}`, `{directive: 'NfsCell', input: 'cellBlockContainer'}`, `{directive: 'NfsGridX', input: 'marginCollapse'}`, `{directive: 'NfsGridX', input: 'paddingCollapse'}`, `{directive: 'NfsGridX', input: 'gridFrame'}`, and `{directive: 'NfsGridY', input: 'gridFrame'}`. [Spec: Flex Grid](../issues/101-spec-flex-grid.md) adds, all with entry point `ngx-foundation-sites/flex-grid` and shape `rules`: `{directive: 'NfsColumn', input: 'size', alias: 'NfsFlexGridColumnSizeInput'}`, `{directive: 'NfsColumn', input: 'offset', alias: 'NfsFlexGridOffsetInput'}`, `{directive: 'NfsRow', input: 'up', alias: 'NfsFlexGridUpInput'}`, `{directive: 'NfsRow', input: 'collapse', alias: 'NfsFlexGridCollapseInput'}`, and, with alias `NfsFlexGridQuery` and shape `query`, `{directive: 'NfsRow', input: 'unstack'}`. [Spec: Float Grid](../issues/100-spec-float-grid.md) adds, all with entry point `ngx-foundation-sites/float-grid` and shape `rules`: `{directive: 'NfsColumn', input: 'size', alias: 'NfsFloatGridColumnSizeInput'}`, `{directive: 'NfsColumn', input: 'offset', alias: 'NfsFloatGridOffsetInput'}`, `{directive: 'NfsColumn', input: 'push', alias: 'NfsFloatGridOffsetInput'}`, `{directive: 'NfsColumn', input: 'pull', alias: 'NfsFloatGridOffsetInput'}`, `{directive: 'NfsRow', input: 'up', alias: 'NfsFloatGridUpInput'}`, `{directive: 'NfsColumn', input: 'centered', alias: 'NfsFloatGridCenteredInput'}`, and `{directive: 'NfsRow', input: 'collapse', alias: 'NfsFloatGridCollapseInput'}`.
+- One entry per row of the table above, in that order. `mixins` and `uses` are filled from the component specs: every Open Variant family row of a component spec's class mapping (building-blocks 1.14 item 2) becomes one `uses` entry per registry it reads. An input whose values come from two registries (an open family's names and, as the keys of a Breakpoint rules object, the Class breakpoints) appears under both.
+- Known `mixins` today: `nfs-callout` and `nfs-progress-bar` write `--nfs-foundation-palette` (the exception to one writer per property for a setting no entry point owns), and `nfs-callout` writes `--nfs-callout-sizes` alone; `nfs-button` writes `--nfs-button-palette` and `--nfs-button-sizes`; `nfs-badge`, `nfs-label`, `nfs-close-button`, `nfs-dropdown-pane`, and `nfs-responsive-embed` write their settings; `nfs-breakpoint-properties` writes `--nfs-breakpoint-classes`. `nfs-button-group` writes none: it reads `nfs-button`'s ([Spec: Button Group](../issues/82-spec-button-group.md), D11).
+- Known `uses` under `NfsBreakpointClassesOverrides` ([Re-run: Off-canvas spec under the class rule](../issues/117-rerun-off-canvas-class-rule.md)): `{entryPoint: 'ngx-foundation-sites/off-canvas', directive: 'NfsOffCanvas', input: 'revealOn', alias: 'NfsClassBreakpoint', shape: 'name'}` and the same for `inCanvasOn`; `position` is closed and has no entry.
 - Known `uses` under `NfsResponsiveEmbedRatiosOverrides` ([Spec: Responsive Embed](../issues/96-spec-responsive-embed.md)): `{entryPoint: 'ngx-foundation-sites/responsive-embed', directive: 'NfsResponsiveEmbed', input: 'ratio', alias: 'NfsResponsiveEmbedRatio', shape: 'name'}`.
-- Known `uses` under `NfsGridColumnCountOverrides`: [Spec: Flex Grid](../issues/101-spec-flex-grid.md) adds, both with entry point `ngx-foundation-sites/flex-grid` and shape `count`: `{directive: 'NfsColumn', input: 'size', alias: 'NfsFlexGridColumnSizeInput'}` and `{directive: 'NfsColumn', input: 'offset', alias: 'NfsFlexGridOffsetInput'}`. [Spec: Float Grid](../issues/100-spec-float-grid.md) adds, all with entry point `ngx-foundation-sites/float-grid` and shape `count`: `{directive: 'NfsColumn', input: 'size', alias: 'NfsFloatGridColumnSizeInput'}`, `{directive: 'NfsColumn', input: 'offset', alias: 'NfsFloatGridOffsetInput'}`, `{directive: 'NfsColumn', input: 'push', alias: 'NfsFloatGridOffsetInput'}`, and `{directive: 'NfsColumn', input: 'pull', alias: 'NfsFloatGridOffsetInput'}`. The entries' `entryPoint` keeps the two grids' `NfsColumn` apart.
-- Known `uses` under `NfsBlockGridMaxOverrides`: [Spec: Flex Grid](../issues/101-spec-flex-grid.md) adds `{entryPoint: 'ngx-foundation-sites/flex-grid', directive: 'NfsRow', input: 'up', alias: 'NfsFlexGridUpInput', shape: 'count'}`. [Spec: Float Grid](../issues/100-spec-float-grid.md) adds `{entryPoint: 'ngx-foundation-sites/float-grid', directive: 'NfsRow', input: 'up', alias: 'NfsFloatGridUpInput', shape: 'count'}`.
-- Known `uses` under `NfsGridColumnGutterOverrides` ([Spec: Float Grid](../issues/100-spec-float-grid.md)): `{entryPoint: 'ngx-foundation-sites/float-grid', directive: 'NfsRow', input: 'gutter', alias: 'NfsFloatGridGutter', shape: 'name'}`.
-- Known `uses` under `NfsFlexSourceOrderingCountOverrides` ([Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md)): `mixins: ['nfs-flexbox-utilities']` and `uses: [{entryPoint: 'ngx-foundation-sites/flexbox-utilities', directive: 'NfsFlexChild', input: 'order', alias: 'NfsFlexOrderInput', shape: 'count'}]`.
-- Known `uses` under `NfsGridColumnsOverrides` ([Spec: XY Grid](../issues/99-spec-xy-grid.md)): `{entryPoint: 'ngx-foundation-sites/xy-grid', directive: 'NfsCell', input: 'size', alias: 'NfsCellSizeInput', shape: 'count'}` and `{entryPoint: 'ngx-foundation-sites/xy-grid', directive: 'NfsCell', input: 'offset', alias: 'NfsCellOffsetInput', shape: 'count'}`.
-- Known `uses` under `NfsXyBlockGridMaxOverrides` ([Spec: XY Grid](../issues/99-spec-xy-grid.md)): `{entryPoint: 'ngx-foundation-sites/xy-grid', directive: 'NfsGridX', input: 'up', alias: 'NfsGridUpInput', shape: 'count'}`.
+- The later milestone's families fill the `mixins` and `uses` of their own rows, and add their `uses` under `NfsBreakpointClassesOverrides`, from their specs (Later milestone, below).
 - `base` records Foundation's chained defaults: `$button-palette`, `$badge-palette`, and `$label-palette` default to `$foundation-palette`, so their aliases build on `NfsFoundationPaletteColor` (T, B01).
+
+### Later milestone: the registries of the later families and the count kind
+
+Planned and implemented in a later milestone, with the XY, Float, and Flex Grids, the Prototyping Utilities, and the Flexbox Utilities (2026-09-30, [Decide: grids, typography, and utilities move to a later milestone](../issues/174-decide-grids-typography-utilities-later-milestone.md)); until then a consumer writes those families' Foundation classes as normal classes, and no first-milestone registry is a count. The later milestone adds:
+
+1. These registries, in this order after the first milestone's rows, each with its Variant property:
+
+   | Sass setting | Registry | Variant property | Kind | Defaults | Base | Families |
+   | --- | --- | --- | --- | --- | --- | --- |
+   | `$prototype-display` | `NfsPrototypeDisplayOverrides` | `--nfs-prototype-display` | names | `inline inline-block block table table-cell` | none | Prototyping Utilities |
+   | `$prototype-position` | `NfsPrototypePositionOverrides` | `--nfs-prototype-position` | names | `static relative absolute fixed` | none | Prototyping Utilities |
+   | `$prototype-overflow` | `NfsPrototypeOverflowOverrides` | `--nfs-prototype-overflow` | names | `visible hidden scroll` | none | Prototyping Utilities |
+   | `$prototype-sizes` | `NfsPrototypeSizesOverrides` | `--nfs-prototype-sizes` | names | `25 50 75 100` | none | Prototyping Utilities |
+   | `$prototype-text-decoration` | `NfsPrototypeTextDecorationOverrides` | `--nfs-prototype-text-decoration` | names | `overline underline line-through` | none | Prototyping Utilities |
+   | `$prototype-text-transformation` | `NfsPrototypeTextTransformationOverrides` | `--nfs-prototype-text-transformation` | names | `lowercase uppercase capitalize` | none | Prototyping Utilities |
+   | `$prototype-style-type-unordered` | `NfsPrototypeStyleTypeUnorderedOverrides` | `--nfs-prototype-style-type-unordered` | names | `disc circle square` | none | Prototyping Utilities |
+   | `$prototype-style-type-ordered` | `NfsPrototypeStyleTypeOrderedOverrides` | `--nfs-prototype-style-type-ordered` | names | `decimal lower-alpha lower-latin lower-roman upper-alpha upper-latin upper-roman` | none | Prototyping Utilities |
+   | `$prototype-arrow-directions` | `NfsPrototypeArrowDirectionsOverrides` | `--nfs-prototype-arrow-directions` | names | `down up right left` | none | Prototyping Utilities |
+   | `$grid-columns` | `NfsGridColumnsOverrides` | `--nfs-grid-columns` | count | 12 | none | XY Grid |
+   | `$xy-block-grid-max` | `NfsXyBlockGridMaxOverrides` | `--nfs-xy-block-grid-max` | count | 8 | none | XY Grid |
+   | `$grid-column-count` | `NfsGridColumnCountOverrides` | `--nfs-grid-column-count` | count | 12 | none | Float Grid, Flex Grid |
+   | `$block-grid-max` | `NfsBlockGridMaxOverrides` | `--nfs-block-grid-max` | count | 8 | none | Float Grid, Flex Grid |
+   | `$grid-column-gutter` (its keys, while a map) | `NfsGridColumnGutterOverrides` | `--nfs-grid-column-gutter` | names | `small medium` | none | Float Grid |
+   | `$flex-source-ordering-count` | `NfsFlexSourceOrderingCountOverrides` | `--nfs-flex-source-ordering-count` | count | 6 | none | Flexbox Utilities |
+   | `$prototype-spacers-count` | `NfsPrototypeSpacersCountOverrides` | `--nfs-prototype-spacers-count` | count | 3 | none | Prototyping Utilities |
+
+   A single-length `$grid-column-gutter` generates no `.gutter-*` class, so the Float Grid's Library mixin writes `--nfs-grid-column-gutter` as the empty list and the generated file declares `small: false` and `medium: false`. The `mixins` and `uses` of these rows come from those families' specs. The `$grid-column-count` and `$block-grid-max` rows each list the Float and Flex Grids' two mixins, the second exception to one writer per property.
+2. Settings that stay deliberately not registries, beside the first milestone's: the `$prototype-*-breakpoints`, `$xy-grid`, and `$flexbox-responsive-breakpoints` flags (they gate classes); `$grid-column-alias` and the Float Grid's class-name parameters (renames of classes directives bind, left unsupported by the Float Grid); `$prototype-sizing` (its names are CSS properties that become attribute names, which a template cannot grow from Sass).
+3. The count kind: `kind: 'count'` with `count: number` (Foundation's default) in the manifest, `shape: 'count'` for a use, the `count := a whole number from 0 to 999` production of the Variant property format (a Library mixin writes a count as a bare whole number), the one member `count: N` of a count registry in the Variant declaration file and its reader (a whole-number literal), the drift row "The counts differ | wrong range | `count is <file> in the file and <sass> in <property>`", message M10 ("<property> is '<value>' in <stylesheet>; a count must be a whole number from 0 to 999.") for a count outside 0 to 999 or not a whole number, and the expected model's rule that a count registry records `count` when it differs from the default.
+4. The count helpers of the primary entry point (D3), measured by this ticket's probe with TypeScript 6.0.3 (`count: 16` accepted 16 and `'16'` and rejected 17; ranges up to 999 compiled):
+
+   ```ts
+   type NfsBelow<N extends number, Acc extends number[] = []> = Acc['length'] extends N ? Acc[number] : NfsBelow<N, [...Acc, Acc['length']]>;
+   /** The integers Start..End. */
+   export type NfsRange<Start extends number, End extends number> = Exclude<NfsBelow<End> | End, NfsBelow<Start>>;
+   /** A count registry's `count` member, else the library default D. */
+   export type NfsOverridableCountValue<D extends number, R> = R extends { count: infer N extends number } ? N : D;
+   /** The range Start..count of a count registry (Start is 1 unless given). */
+   export type NfsOverridableCount<D extends number, R, Start extends number = 1> = NfsRange<Start, NfsOverridableCountValue<D, R>>;
+   ```
+
+   Ranges for the count families are built from these helpers by their specs: sizes `NfsOverridableCount<12, NfsGridColumnsOverrides>` (1 to 12), offsets `Exclude<NfsOverridableCount<12, NfsGridColumnsOverrides, 0>, NfsOverridableCountValue<12, NfsGridColumnsOverrides>>` (0 to 11), spacers `NfsOverridableCount<3, NfsPrototypeSpacersCountOverrides, 0>` (0 to 3). A count family's transform, keywords (`auto`, `shrink`), and static-attribute strings are its spec's. `NfsBelow` stays module-local, as the other unexported helpers do.
+5. The typings check's count clauses: with no declaration file, the default count of each count registry is assignable to each of its uses' write types and the default count plus 1 is not; with the generated probe file, which sets every count registry's `count` to its default plus 4, the raised count is assignable to every count use and the raised count plus 1 is not.
+6. The tests' count cases: the property reader's count and invalid count (M10), the expected model's counts at the default and not, the renderer's and reader's `count` member, the drift row, and the Sass fixture `$grid-columns: 16`.
 
 ### Hierarchy and package shape
 
@@ -180,11 +200,11 @@ There is no directive family. The pieces, all in the one `ngx-foundation-sites` 
 
 ```
 ngx-foundation-sites (primary entry point)
-  Variant registries (26 empty interfaces), helper types, Class breakpoint types,
+  Variant registries (10 empty interfaces), helper type, Class breakpoint types,
   NfsFoundationPaletteColor, NfsVariantBoolean + nfsVariantBoolean
       ^ import type (no runtime import)                      ^ import (one pure function)
       |                                                      |
-ngx-foundation-sites/<entry point>: family aliases (NfsButtonColor, NfsCalloutSize, NfsCellSize) and Variant inputs
+ngx-foundation-sites/<entry point>: family aliases (NfsButtonColor, NfsCalloutSize, NfsLabelColor) and Variant inputs
 
 Workspace tooling (Node, CommonJS, not an Angular entry point):
   Variant manifest (JSON)
@@ -195,7 +215,7 @@ Workspace tooling (Node, CommonJS, not an Angular entry point):
     <- builder          ngx-foundation-sites:variant-types       (package "builders": Angular CLI and Nx)
 ```
 
-- Family aliases live in their component's entry point (building-blocks 1.3); the primary entry point holds only what several entry points share: the registries, the helpers, the Class breakpoint types, and `NfsFoundationPaletteColor`, the base of three chained registries. A family alias another entry point needs is imported as a type from its own entry point (Button Group's colour from `ngx-foundation-sites/button`).
+- Family aliases live in their component's entry point (building-blocks 1.3); the primary entry point holds only what several entry points share: the registries, the helper, the Class breakpoint types, and `NfsFoundationPaletteColor`, the base of three chained registries. A family alias another entry point needs is imported as a type from its own entry point (Button Group's colour from `ngx-foundation-sites/button`).
 - The primary entry point imports nothing at runtime. `nfsVariantBoolean` is written without `@angular/core`, so a secondary entry point's import of it adds a few bytes and no Angular code to its chunk, and per-plugin `@defer` splitting is untouched (type-only imports added no runtime import to a secondary's FESM bundle, T round 2).
 - One collection file carries both the Nx `generators` entries (native implementations) and the Angular CLI `schematics` entries (the same generator wrapped with `convertNxGenerator`); the package's `generators` and `schematics` fields both point at it. Nx reads `generators` first and treats those entries as native, and the Angular CLI reads `schematics` (Nx `readGeneratorsJson`, `getGeneratorInformation`). The sync generator is marked hidden, as `@nx/js:typescript-sync` is.
 - The builder is a plain Architect builder. The package declares it under `builders`, which the Angular CLI runs, and which Nx also runs as an Angular-compatible builder when a package has no `executors` field (Nx `readExecutorJson`: `packageJson.executors ?? packageJson.builders`, then `isNgCompat`). There is no separate Nx executor.
@@ -203,21 +223,13 @@ Workspace tooling (Node, CommonJS, not an Angular entry point):
 
 ### API: the primary entry point
 
-Types (the registry and range shapes were measured: T round 2 across a real ng-packagr 22.2 package, and this ticket's probe with TypeScript 6.0.3, where a declared sentinel name reached a name, query, rules, and count input, `count: 16` accepted 16 and `'16'` and rejected 17, and ranges up to 999 compiled):
+Types (the registry shapes were measured: T round 2 across a real ng-packagr 22.2 package, and this ticket's probe with TypeScript 6.0.3, where a declared sentinel name reached a name, query, and rules input; the same probe's count measurements belong to the later milestone's count helpers, below):
 
 ```ts
 type NfsOverwrite<T, U> = Omit<T, keyof U> & U;
 type NfsTrueKeys<T> = Extract<{ [K in keyof T]: true extends T[K] ? K : never }[keyof T], string>;
 /** Foundation's default names T with the registry U applied: `name: true` adds, `name: false` removes. */
 export type NfsOverridableStringUnion<T extends string, U = {}> = NfsTrueKeys<NfsOverwrite<Record<T, true>, U>>;
-
-type NfsBelow<N extends number, Acc extends number[] = []> = Acc['length'] extends N ? Acc[number] : NfsBelow<N, [...Acc, Acc['length']]>;
-/** The integers Start..End. */
-export type NfsRange<Start extends number, End extends number> = Exclude<NfsBelow<End> | End, NfsBelow<Start>>;
-/** A count registry's `count` member, else the library default D. */
-export type NfsOverridableCountValue<D extends number, R> = R extends { count: infer N extends number } ? N : D;
-/** The range Start..count of a count registry (Start is 1 unless given). */
-export type NfsOverridableCount<D extends number, R, Start extends number = 1> = NfsRange<Start, NfsOverridableCountValue<D, R>>;
 
 export interface NfsFoundationPaletteOverrides {}
 // ... one empty interface per row of the settings table ...
@@ -233,8 +245,7 @@ export function nfsVariantBoolean(value: NfsVariantBoolean): boolean;
 ```
 
 - `nfsVariantBoolean` returns `true` for `true`, `''` (the bare attribute), and `'true'`, and `false` for `false`, `'false'`, `null`, and `undefined`: `booleanAttribute`'s results over a typed parameter, so `dropdown="flase"` fails to compile (T, J05 against J09). A boolean Variant input is declared `input<boolean, NfsVariantBoolean>(false, {transform: nfsVariantBoolean})`.
-- Ranges for the count families are built from these helpers by the component specs: sizes `NfsOverridableCount<12, NfsGridColumnsOverrides>` (1 to 12), offsets `Exclude<NfsOverridableCount<12, NfsGridColumnsOverrides, 0>, NfsOverridableCountValue<12, NfsGridColumnsOverrides>>` (0 to 11), spacers `NfsOverridableCount<3, NfsPrototypeSpacersCountOverrides, 0>` (0 to 3). A count family's transform, keywords (`auto`, `shrink`), and static-attribute strings are its spec's.
-- The helper aliases that are not exported (`NfsOverwrite`, `NfsTrueKeys`, `NfsBelow`) stay module-local in the typings, as the probe's did across ng-packagr.
+- The helper aliases that are not exported (`NfsOverwrite`, `NfsTrueKeys`) stay module-local in the typings, as the probe's did across ng-packagr.
 - The library's lint configuration allows empty interfaces for the registries.
 - Every Variant input follows building-blocks 1.4's authoring rule (explicit type arguments that name exported aliases); the Variant typings check below enforces it.
 
@@ -243,15 +254,14 @@ export function nfsVariantBoolean(value: NfsVariantBoolean): boolean;
 The grammar of a Variant property, which the Library mixins write and the generator reads:
 
 ```
-value  := names | count | empty
+value  := names | empty
 names  := name (sep name)*
 sep    := one or more whitespace characters or commas
 name   := one class-name token, as Sass prints a map key or list item
-count  := a whole number from 0 to 999
 empty  := whitespace only
 ```
 
-- Library mixins write names as a space-separated list on `:root`, a count as a bare whole number, and the empty list as whitespace only. Dart Sass 1.104 rejects `#{()}` ("() isn't a valid CSS value", measured), so a mixin prints an empty list with `unquote('')`, which compiles to `--nfs-x: ;` expanded and `--nfs-x: ` compressed (measured). In the browser, computed style returns the empty string for an empty list and for a missing property alike (measured in Chromium 153, Firefox 155, and WebKit 26.6 by [Re-run: Button spec under the class rule](../issues/128-rerun-button-class-rule.md); ADR 0040, dated note), so the generator reads the compiled CSS text, which tells the two apart.
+- Library mixins write names as a space-separated list on `:root` and the empty list as whitespace only. Dart Sass 1.104 rejects `#{()}` ("() isn't a valid CSS value", measured), so a mixin prints an empty list with `unquote('')`, which compiles to `--nfs-x: ;` expanded and `--nfs-x: ` compressed (measured). In the browser, computed style returns the empty string for an empty list and for a missing property alike (measured in Chromium 153, Firefox 155, and WebKit 26.6 by [Re-run: Button spec under the class rule](../issues/128-rerun-button-class-rule.md); ADR 0040, dated note), so the generator reads the compiled CSS text, which tells the two apart.
 - The reader also accepts commas, because Sass prints `map-keys()` as a comma list, and line breaks, because an unoptimized build breaks long lists (SYNC 3). Duplicate names are dropped; order is kept.
 - Colour-name keys (`purple`, `teal`, `white`) print as written in both output styles (measured, SYNC 3 and this ticket's probe); reading the compiled text avoids the custom-function trap where they arrive as colours.
 - A property appears once per compile. If a compile prints one property twice with different values (a setting reassigned between two includes), the reader reports it rather than guessing.
@@ -272,11 +282,8 @@ declare module 'ngx-foundation-sites' {
     purple: true;
     warning: false;
   }
-  interface NfsGridColumnsOverrides {
-    count: 16;
-  }
-  interface NfsPrototypeSizesOverrides {
-    '33': true;
+  interface NfsResponsiveEmbedRatiosOverrides {
+    '21by9': true;
   }
 }
 
@@ -289,8 +296,8 @@ Format rules, which make the output deterministic for the same Sass, library ver
 - The first line is the header: `// Generated by ngx-foundation-sites from <sources>. Do not edit; run <command> to update it.` `<sources>` lists the compiled stylesheets as workspace-relative paths with `/`, joined by `, ` (shown as `<stylesheet>` in this spec's examples). `<command>` depends only on the workspace kind, so every writer prints the same header: `` `nx sync` or `nx run <project>:nfs-variants` `` in an Nx workspace (one with `nx.json`), and `` `ng run <project>:nfs-variants` `` on the Angular CLI. The header carries no library version, so an upgrade that changes nothing else rewrites nothing. The header is not part of the compared model; only its first words mark ownership.
 - Then `import 'ngx-foundation-sites';`, which makes the file a module; without it, `declare module` is an ambient module that replaces the library's types (TS2305, ALT 2.3).
 - Then one `declare module 'ngx-foundation-sites'` block. Inside it, one interface per registry that differs from its defaults, ordered by registry name in code-unit order; a registry equal to its defaults is left out, and the block may be empty.
-- In a names registry, added names come first as `name: true`, sorted in code-unit order, then removed names as `name: false`, in the order the registry's defaults list them (the base setting's effective order for a chained registry). In a count registry, the one member `count: N`.
-- A name is written as an identifier when it is one (letters, digits, `_`, `$`, not starting with a digit), and as a single-quoted string otherwise (`'inline-block': true`, `'33': true`). Numeric-like names are always quoted: in this ticket's probe a bare numeric addition (`33: true`) dropped out of the string union, and a bare numeric removal of a default (`50: false`) collapsed the whole union to `never`, while the quoted forms added and removed as intended.
+- In a names registry, added names come first as `name: true`, sorted in code-unit order, then removed names as `name: false`, in the order the registry's defaults list them (the base setting's effective order for a chained registry).
+- A name is written as an identifier when it is one (letters, digits, `_`, `$`, not starting with a digit), and as a single-quoted string otherwise (`'extra-large': true`, `'21by9': true`, `'33': true`). Numeric-like names are always quoted: in this ticket's probe a bare numeric addition (`33: true`) dropped out of the string union, and a bare numeric removal of a default (`50: false`) collapsed the whole union to `never`, while the quoted forms added and removed as intended.
 - Then a blank line, the comment `// Makes a running dev server re-check templates after every change to this file.`, and `declare global {}`. An empty global augmentation makes TypeScript's builder treat each change to the file as affecting every file (`isFileAffectingGlobalScope`, checked before its `isolatedModules` shortcut), and `@angular/build`'s dev server computes template diagnostics only for affected files, so every rewrite reaches the templates' diagnostics under `ng serve` and `nx serve` (measured by [Prototype: Variant declaration tooling in real Nx and Angular CLI workspaces](../issues/137-prototype-variant-declaration-tooling.md), question 1; without it only the dev server's first incremental rebuild re-checks templates). The line is part of the rendered format, not of the compared model: a generated file without it is not rewritten for it alone, and the next rewrite adds it.
 - UTF-8 without a byte order mark, LF line endings, two-space indent, a final newline.
 - After rendering, the text is formatted with the workspace's own Prettier and its configuration when Prettier resolves from the workspace root and does not ignore the file; otherwise it is written as rendered. So the file matches the consumer's formatter and `prettier --check` stays green.
@@ -298,9 +305,9 @@ Format rules, which make the output deterministic for the same Sass, library ver
 Ownership and reading:
 
 - The tooling owns a file whose first line starts with `// Generated by ngx-foundation-sites`, or a file that does not exist yet. It never overwrites any other file: a file without the header is hand-written, and the tooling leaves it alone.
-- Reading a generated file uses TypeScript's parser alone (`createSourceFile`, no program, no type checker). It records every interface inside every `declare module 'ngx-foundation-sites'` block (several blocks merge, as TypeScript merges them), and for each interface its name, and, for a names registry, each member as a name with the literal type `true` or `false`, or, for a count registry, the one member `count` with a whole-number literal. Comments, blank lines, and an empty `declare global {}` are ignored. A generated file edited into anything the reader cannot model (a member typed with anything but those literals, a derived type, a bare numeric key, an interface the manifest lacks) differs from the expected model and is rewritten.
+- Reading a generated file uses TypeScript's parser alone (`createSourceFile`, no program, no type checker). It records every interface inside every `declare module 'ngx-foundation-sites'` block (several blocks merge, as TypeScript merges them), and for each interface its name, and each member as a name with the literal type `true` or `false`. Comments, blank lines, and an empty `declare global {}` are ignored. A generated file edited into anything the reader cannot model (a member typed with anything but those literals, a derived type, a bare numeric key, an interface the manifest lacks) differs from the expected model and is rewritten.
 - Comparison is by meaning: the expected model from the Sass against the file's model, registry by registry. Formatting, quotes, member order, and line endings never count. A generated file is rewritten only when the models differ; a model-equal file is left untouched, so a formatter's changes never cause churn.
-- A hand-written file follows the rules of the generated form, as documented usage: `import 'ngx-foundation-sites';` or another top-level `import` or `export` first, because without one its `declare module` is an ambient module that replaces the library's types (TS2305); interfaces only inside the `declare module 'ngx-foundation-sites'` block, each named after a registry of the settings table above (an interface of another name declares a new, unused interface); members `name: true` or `name: false`, numeric names quoted (`'25': true`), or, in a count registry, `count: <whole number>`. The consumer keeps it in step with the Sass by hand.
+- A hand-written file follows the rules of the generated form, as documented usage: `import 'ngx-foundation-sites';` or another top-level `import` or `export` first, because without one its `declare module` is an ambient module that replaces the library's types (TS2305); interfaces only inside the `declare module 'ngx-foundation-sites'` block, each named after a registry of the settings table above (an interface of another name declares a new, unused interface); members `name: true` or `name: false`, numeric names quoted (`'33': true`). The consumer keeps it in step with the Sass by hand.
 
 Declaration drift, what the file and the Sass can disagree on, and the line the sync generator's summary (M1) gives each difference a rewrite removes:
 
@@ -310,7 +317,6 @@ Declaration drift, what the file and the Sass can disagree on, and the line the 
 | The file declares a name the Sass does not generate | compiles, renders a class with no CSS (silent) | `remove <name>: true` |
 | The Sass removed a default the file keeps | compiles, renders nothing (silent) | `add <name>: false` |
 | The file removes a default the Sass generates | a template using it fails (loud) | `remove <name>: false` |
-| The counts differ | wrong range | `count is <file> in the file and <sass> in <property>` |
 
 The open-typing opt-out (ADR 0040) lives in a separate, hand-written module of the consumer's, never in the generated file, as `[name: string]: boolean` inside the registry. The `boolean` form merges with the generated file's `name: false` members; a `[name: string]: true` signature conflicts with them, and the Angular CLI's default `skipLibCheck: true` hides that conflict (measured).
 
@@ -323,7 +329,7 @@ Pure functions over a small file-system interface (read, exists, write), so the 
    - With `stylesheets` (and optional `includePaths`): exactly those files, for a library project or a lazily loaded stylesheet. `stylesheets` and `buildTarget` are exclusive.
 2. Compile each source with the Sass compiler the application builder itself loads, resolved from `@angular/build`: `sass-embedded`, its dependency, or its pure-JS `sass` dependency when `NG_BUILD_SASS_EMBEDDED` is `0` or `false` (`@angular/build` 22.2.0 `src/utils/environment-options.js`), through `initAsyncCompiler()`, because the importer is asynchronous. Options: `style: 'expanded'`, the load paths, Sass warnings silenced (Foundation's `@import` and global-function deprecations), and the application builder's importer (`src/tools/esbuild/stylesheets/sass-language.js`): relative imports as Sass does them; every bare specifier, and every `pkg:` URL with `pkg:` removed, resolved from the importing file's directory by esbuild's resolver (the esbuild `@angular/build` depends on, called through a context whose plugin exposes `build.resolve`) with the builder's stylesheet options, `conditions: ['style', 'sass', 'less']` plus `production` or `development` by the build's style optimization, `mainFields: ['style', 'sass']`, and `resolveExtensions: []` (`src/tools/esbuild/stylesheets/bundle-options.js`), which is how `@import 'ngx-foundation-sites';` reaches the library's `_index.scss` through the `sass` export condition (ADR 0012); then the builder's deep-import fallback (the package root found through `<name>/package.json`, plus the rest of the path); then the load paths. There is no `~` handling and no Sass `NodePackageImporter`: the builder strips no `~` from Sass imports, and `NodePackageImporter` prefers a package's `sass` field where the builder takes `style` (both measured by the prototype, which found the core's properties equal to the built `styles.css` in eight cases).
 3. Read the Variant properties: for each registry of the manifest, find its property's declarations in the compiled CSS and parse the value with the Variant property format. A registry whose property is absent from every source is absent: its registry stays empty (Foundation's defaults), because a project includes only the Library mixins it uses; a stylesheet that prints no Variant property at all leaves every registry at Foundation's defaults. The documented setup is `@import 'ngx-foundation-sites';` after the Foundation imports and the Library mixin of each family the consumer customises (for example `@include nfs-button;`). When two sources print the same property with different values, the project fails with M12.
-4. Build the expected model. A names registry with a `base` compares against the base setting's found names, or the base's defaults when the base's property was not found (its registry then stays empty, so its alias still means the defaults); any other names registry compares against its own defaults. Added names are the found names outside those, and removed names are those not found. A count registry records `count` when it differs from the default; a count outside 0 to 999, or not a whole number, fails with M10.
+4. Build the expected model. A names registry with a `base` compares against the base setting's found names, or the base's defaults when the base's property was not found (its registry then stays empty, so its alias still means the defaults); any other names registry compares against its own defaults. Added names are the found names outside those, and removed names are those not found.
 5. Parse the existing generated file (above).
 6. Compare the models and list the drift.
 7. Render and format (above).
@@ -345,7 +351,7 @@ Pure functions over a small file-system interface (read, exists, write), so the 
 
 What it does, per project, and idempotently:
 
-1. Resolve and compile the sources (core 1 to 4). A project that fails (M8, M10, M12) is skipped with its message, and nothing is written for it; the generator fails only when no project succeeds.
+1. Resolve and compile the sources (core 1 to 4). A project that fails (M8, M12) is skipped with its message, and nothing is written for it; the generator fails only when no project succeeds.
 2. Add the `nfs-variants` target if the project has none:
 
    ```json
@@ -383,7 +389,7 @@ Why per-project registration and not `targetDefaults` keyed by executor: Nx reso
 - For each project it runs core 1 to 6. A generated or missing file whose model differs is written into the tree (rendered and formatted); anything else is left untouched. Nx counts a sync generator as out of sync only when it changes the tree or throws (Nx `getSyncGeneratorChanges` keeps a result only if it has an error or `changes.length > 0`), so a model-equal file is in sync whatever its bytes.
 - It returns `outOfSyncMessage` (M1) and one `outOfSyncDetails` line per changed file (M1), which Nx prints when it prompts before a task or stops one.
 - A hand-written file is left untouched.
-- Failures: a project whose compile fails (M8), whose sources disagree (M12), or whose count is invalid (M10). The generator collects every project's failure and throws one plain `Error` listing each project with its fix (M2). It does not use Nx's `SyncError`, which only `@nx/devkit/internal` exports; Nx prints a plain error's message the same way (`errorToString`). A throw discards that run's other changes; they are applied by the first run after the fix.
+- Failures: a project whose compile fails (M8) or whose sources disagree (M12). The generator collects every project's failure and throws one plain `Error` listing each project with its fix (M2). It does not use Nx's `SyncError`, which only `@nx/devkit/internal` exports; Nx prints a plain error's message the same way (`errorToString`). A throw discards that run's other changes; they are applied by the first run after the fix.
 - What Nx does around it (measured on Nx 23.2.1, SYNC 4.2 and 4.3, and read in the task runner's source): in a terminal, Nx prompts before applying unless `sync.applyChanges` is `true`; outside a terminal without `CI` (git hooks, agent shells, IDE tasks) it stops the task on any drift, whatever `applyChanges` says; with `CI` set it skips task sync generators entirely. With the daemon on, each batch of workspace file changes reruns it in the background, one Sass compile per covered project (0.6 to 0.8 s each with `foundation-everything` and `sass-embedded` on win32-arm64, measured by the prototype; the pure-JS `sass` asynchronous compiler took 8.5 to 9.5 s for the same compile); results reach disk only when a command flushes them.
 
 ### API: the Architect builder
@@ -418,7 +424,7 @@ Why per-project registration and not `targetDefaults` keyed by executor: Nx reso
 ### Shared libraries (the shared-library rule)
 
 - A library project needs a Variant declaration file only when its own programs (its build, type check, tests, or Storybook) use names Foundation's defaults lack. It gets one exactly as an application does: its own `nfs-variants` target, with `buildTarget` naming the application build target it is tested against, or `stylesheets` (and `includePaths`) naming its own stylesheet, typically its Storybook preview stylesheet. The file sits at the library's source root, where the library's programs include it.
-- No program merges several applications' files. Merging adds every application's names and removes every application's removals, and a count that differs between two files is a declaration conflict that the default `skipLibCheck: true` hides (this ticket's probe: conflicting members across `.d.ts` files compiled without a diagnostic under `skipLibCheck: true`).
+- No program merges several applications' files. Merging adds every application's names and removes every application's removals, and a member that differs between two files (`purple: true` in one, `purple: false` in the other) is a declaration conflict that the default `skipLibCheck: true` hides (this ticket's probe: conflicting members across `.d.ts` files compiled without a diagnostic under `skipLibCheck: true`).
 - Each application's own build stays the authority: a library component that uses `purple` compiles in the library and in `shop`, and fails in `admin`, whose Sass lacks it (SYNC 4.4, measured on the stand-in).
 - Storybook: `@storybook/angular-vite` 10.6 compiles stories in JIT mode by default and reported no template diagnostics with `jit: false` either, so `storybook dev`, `storybook build`, and the `@storybook/addon-vitest` run neither check a Variant name nor fail without the file; a story's `args` are checked only by a type check of the Storybook TypeScript configuration (a `typecheck` target running `tsc -p .storybook/tsconfig.json`; measured: TS2322 on `color: 'purple'` without the setup's `include` edit, clean with it). Its docgen skips type aliases declared in declaration files, so a Variant input typed with an alias from the installed package gets no select control (a JSON editor), with or without the file; such a story lists `argTypes.<input>.options` itself. An alias declared in the project's own source gets an enum of its names, including names that a declaration file in the source tree adds (all measured by the prototype).
 - ngx-foundation-sites itself needs no Variant declaration file: its stories and tests use Foundation's default names, and its Storybook settings change values, never names ([Storybook conventions for the new library](../issues/58-storybook-conventions.md), section 5).
@@ -433,7 +439,6 @@ Every message starts with `ngx-foundation-sites:` and names the project, the fil
 | M2 | the sync generator's thrown error | "could not keep the Variant declaration files in step for <n> project(s):" then "<project>: <message>" per project |
 | M8 | Sass compile error | "compiling <stylesheet> for <project> failed: <Sass message and span>" |
 | M9 | missing package | "the <generator, schematic, or builder> needs <package>. Install it: npm install --save-dev <packages>" |
-| M10 | invalid count | "<property> is '<value>' in <stylesheet>; a count must be a whole number from 0 to 999." |
 | M11 | a configuration changes the styles (warning) | "the <configuration> configuration of <buildTarget> changes styles or stylePreprocessorOptions; <file> follows <used configuration>." |
 | M12 | sources disagree | "<property> lists different names in <stylesheet A> and <stylesheet B>; name the one to follow in the nfs-variants target's stylesheets option." |
 | M13 | setup summary | what was written and edited per project, each hand-written file it kept, and, for a kept file that has no global augmentation, "Add declare global {} to <file>, or restart the dev server after the file changes." |
@@ -476,10 +481,10 @@ After every library build, before tests that consume the package and before publ
 
 1. Names: for each use, the emitted typings of its entry point declare the directive's input with an `InputSignal` or `InputSignalWithTransform` whose write type argument names the use's alias (read from the typings' syntax tree with TypeScript's parser).
 2. Behaviour: two generated probe programs, type-checked with `tsc` against the packed package resolved through its `exports`:
-   - with no declaration file: every default name of each names registry, and the default count of each count registry, is assignable to each of its uses' write types, and the sentinel name and the default count plus 1 are not;
-   - with a generated declaration file that adds the sentinel `nfsProbeSentinel` to every names registry, removes every default, and sets every count registry's `count` to its default plus 4: the sentinel is assignable to every name, query, and rules use (a rules use as the key `{nfsProbeSentinel: ...}`), the raised count to every count use, and a removed default, a misspelt name, and the raised count plus 1 are not (`@ts-expect-error`, so an unexpected pass fails as TS2578).
+   - with no declaration file: every default name of each registry is assignable to each of its uses' write types, and the sentinel name is not;
+   - with a generated declaration file that adds the sentinel `nfsProbeSentinel` to every registry and removes every default: the sentinel is assignable to every name, query, and rules use (a rules use as the key `{nfsProbeSentinel: ...}`), and a removed default and a misspelt name are not (`@ts-expect-error`, so an unexpected pass fails as TS2578).
    - The write type is read as `S extends InputSignalWithTransform<any, infer W> ? W : never` from the directive's public input member, which is what the template type check assigns to (measured with `@angular/core` 22.2.0 types: `unknown` in place of `any` infers `never`).
-3. Sass: compiling Foundation 6.9's defaults with `@import 'ngx-foundation-sites';` and every Library mixin prints, for every registry, exactly the manifest's defaults or count in the Variant property format, and each registry's property is printed by exactly the mixins its `mixins` field names.
+3. Sass: compiling Foundation 6.9's defaults with `@import 'ngx-foundation-sites';` and every Library mixin prints, for every registry, exactly the manifest's defaults in the Variant property format, and each registry's property is printed by exactly the mixins its `mixins` field names.
 
 A failure names the use and what went wrong. The check lives in the library's own workspace; consumers never run it.
 
@@ -502,9 +507,9 @@ In the library's `test` target (`<name>.spec.ts` beside the tooling source), and
 Pure logic (table-driven):
 
 - `nfsVariantBoolean` over its whole parameter type.
-- The Variant property reader: space and comma lists, line breaks, duplicates, the empty list (`--nfs-x: ;` and compressed `--nfs-x: `), a count, an invalid count (M10), a property printed twice with different values (M12), colour-name keys.
-- The expected model: additions and removals, a chained registry against a found base, against a missing base, and a base-added name removed by the child (`purple: false` on buttons), counts at the default and not, a missing property leaving the registry empty, zero properties leaving every registry empty.
-- The renderer: the header per workspace kind (the same from the sync generator and the builder), registry and member order, identifier and quoted keys (`'inline-block'`, `'33'`), the empty block, LF and final newline; the same model renders the same bytes twice.
+- The Variant property reader: space and comma lists, line breaks, duplicates, the empty list (`--nfs-x: ;` and compressed `--nfs-x: `), a property printed twice with different values (M12), colour-name keys.
+- The expected model: additions and removals, a chained registry against a found base, against a missing base, and a base-added name removed by the child (`purple: false` on buttons), a missing property leaving the registry empty, zero properties leaving every registry empty.
+- The renderer: the header per workspace kind (the same from the sync generator and the builder), registry and member order, identifier and quoted keys (`'extra-large'`, `'21by9'`, `'33'`), the empty block, LF and final newline; the same model renders the same bytes twice.
 - The reader: generated files; several `declare module` blocks; CRLF; single and double quotes; a generated file edited into a derived member type, a bare numeric key, or an unknown interface compares unequal and is rewritten.
 - The comparison: each drift row of the table; a Prettier-reformatted generated file compares equal; a model-equal file is not rewritten.
 
@@ -514,7 +519,7 @@ Generators and builder:
 - Sync generator on a virtual tree with a stubbed project graph: in step (no tree change), drifted (one change, M1 details), a formatted but model-equal file (no change), several projects in one run, a failing project (one thrown error listing it, M2).
 - Builder under `TestingArchitectHost`: in step (no write), drifted (one write), a hand-written file left untouched, the configuration merge, M11.
 
-Sass fixtures (real Dart Sass 1.104 over Foundation 6.9.0 and the library's `_index.scss`): the first dossier's customised settings (`purple` added to `$button-palette`, `warning` removed from `$label-palette`, a `huge` size, `xlarge` added to `$breakpoint-classes`, `$grid-columns: 16`) produce the expected file; a flag-off family prints the empty list; the manifest-to-Sass check of the typings check, item 3.
+Sass fixtures (real Dart Sass 1.104 over Foundation 6.9.0 and the library's `_index.scss`): the first dossier's customised settings (`purple` added to `$button-palette`, `warning` removed from `$label-palette`, a `huge` size, `xlarge` added to `$breakpoint-classes`) produce the expected file; a flag-off family prints the empty list; the manifest-to-Sass check of the typings check, item 3.
 
 The Variant typings check (items 1 and 2) runs as its own target after the library build, in CI and before publishing.
 
@@ -535,7 +540,7 @@ No cases: nothing here runs in a browser. The workspace e2e above takes its plac
 - The family aliases, input names, value shapes, transforms, and class mappings of each Variant family: the component specs.
 - An `ng add` or `nx add` entry for the whole library: additive in any release (ADR 0045), and such an entry would also have to decide the Sass import, the settings overrides, and the `nx` and `@nx/devkit` development dependencies the schematic needs on an Angular CLI workspace, which no spec has designed; the setup generator is the install step. A migration for the Variant declaration file: the next sync rewrites the generated file for any registry change an upgrade brings (D29); a hand-written file is the consumer's to update. The library's own migrations follow ADR 0045 (Nx migrations in the package's `migrations.json`, reused as `ng update` migrations) and arrive with the first release that needs one, because `nx migrate` and `ng update` read the migrations of the version they move to; a renamed registry interface follows ADR 0045's deprecation rule, because a hand-written file (ADR 0040) keeps the old name.
 - A watch mode, an esbuild plugin, a builder that wraps `@angular/build:application`, an ESLint rule, a language-service plugin, generated narrowing directives, a provider or theme constant as the source of names, and the reverse direction (TypeScript or design tokens as the source): not adopted by ADR 0040.
-- Merging several applications' files into one program: merging adds every application's names and removes every application's removals, and conflicting counts pass unseen under `skipLibCheck: true` (Implementation Decisions; ADR 0040, dated note).
+- Merging several applications' files into one program: merging adds every application's names and removes every application's removals, and conflicting members pass unseen under `skipLibCheck: true` (Implementation Decisions; ADR 0040, dated note).
 - Editing CI configuration files: CI configuration is the workspace's own, and the tooling writes only files it generated (ADR 0040, dated note).
 - Caching the sync generator's Sass compile between daemon runs: each run costs one compile per covered project in the background; add a cache keyed on the loaded Sass files if that cost is ever measured as a problem.
 
@@ -546,12 +551,12 @@ No cases: nothing here runs in a browser. The workspace e2e above takes its plac
 | # | Decision | Chosen | Alternatives not taken, and why |
 | --- | --- | --- | --- |
 | D1 | Spec home | A shared-utility spec of its own | Inside the Breakpoint service spec (it owns runtime behaviour, not workspace tooling; the judge's recommendation) |
-| D2 | Primary entry point | 26 registries, the helpers, the Class breakpoint types, `NfsFoundationPaletteColor`, `NfsVariantBoolean` and `nfsVariantBoolean`; no runtime Angular import | Family aliases there too (couples every entry point's types to one file); registries per entry point (ADR 0040 chose one module to augment) |
-| D3 | Count helpers | `NfsOverridableCount<D, R, Start = 1>` as the range, `NfsOverridableCountValue`, `NfsRange` | Only the range (no way to build offsets 0 to N-1); a helper per family shape (more exports for one idea) |
-| D4 | Registry list | The 26 settings of the table, named mechanically | Registries for `$breakpoints`, flags, or renames (behaviour Options, class existence, and Structural classes are not Variant names) |
-| D5 | Manifest | One JSON document in the package with setting, property, kind, defaults or count, base, mixins, uses | A TypeScript constant (the generator would load Angular code in Node); separate files for the generator and the typings check (two lists) |
+| D2 | Primary entry point | The first milestone's 10 registries, the union helper, the Class breakpoint types, `NfsFoundationPaletteColor`, `NfsVariantBoolean` and `nfsVariantBoolean`; no runtime Angular import | Family aliases there too (couples every entry point's types to one file); registries per entry point (ADR 0040 chose one module to augment) |
+| D3 | Count helpers | Added by the later milestone with its count registries (2026-09-30, [Decide: grids, typography, and utilities move to a later milestone](../issues/174-decide-grids-typography-utilities-later-milestone.md)): `NfsOverridableCount<D, R, Start = 1>` as the range, `NfsOverridableCountValue`, `NfsRange` | Only the range (no way to build offsets 0 to N-1); a helper per family shape (more exports for one idea); shipping them in the first milestone, where no registry is a count (types and tests nothing uses) |
+| D4 | Registry list | The 10 settings of the table, named mechanically; the later milestone adds the 16 of its families (2026-09-30) | Registries for `$breakpoints`, flags, or renames (behaviour Options, class existence, and Structural classes are not Variant names) |
+| D5 | Manifest | One JSON document in the package with setting, property, kind, defaults, base, mixins, uses | A TypeScript constant (the generator would load Angular code in Node); separate files for the generator and the typings check (two lists) |
 | D6 | Chained registries | Diffed against the base setting's effective names | Diffed against library defaults only (would repeat every parent name in every child registry) |
-| D7 | Property format | Whitespace or comma list, bare count, whitespace-only empty list | `none` as the empty marker (a possible palette name); comma lists only (Library mixins print space lists) |
+| D7 | Property format | Whitespace or comma list, whitespace-only empty list; the later milestone adds a bare count | `none` as the empty marker (a possible palette name); comma lists only (Library mixins print space lists) |
 | D8 | Missing property | Registry stays at its defaults; with zero properties every registry does | Fail on each missing property (forces every Library mixin into every application) |
 | D9 | Comparison | By meaning, after parsing with TypeScript's parser | Byte comparison (rewrites after Prettier or a CRLF checkout) |
 | D10 | Rewrites | Only a generated or absent file, only when its model differs | Always rewrite (churn and a fight with formatters); overwrite hand-written files (destroys the consumer's content) |
@@ -565,7 +570,7 @@ No cases: nothing here runs in a browser. The workspace e2e above takes its plac
 | D18 | Sync failures | Collected and thrown as one plain `Error` | `SyncError` (only in `@nx/devkit/internal`); reporting failures as out-of-sync details (Nx counts only tree changes as out of sync) |
 | D19 | Sources | The build target's injected Sass global stylesheets under the named or default configuration; `stylesheets` to override | Every configuration compiled and required to agree (a compile per configuration on every task for a rare case); the built CSS (only after a build) |
 | D20 | Sass resolution | The application builder's importer re-implemented over its own esbuild resolver and stylesheet options, compiled with the Sass compiler it loads (`sass-embedded`), confirmed by the prototype in eight cases | `@angular/build`'s private Sass service (not public API); Node resolution with Sass's `NodePackageImporter` and `~` stripping (both differ from the builder, measured) |
-| D21 | Shared libraries | A file of the library's own, from a named build target or stylesheet | Including applications' files (merging hides count conflicts under `skipLibCheck`); no file (the library's own type checks reject application names) |
+| D21 | Shared libraries | A file of the library's own, from a named build target or stylesheet | Including applications' files (merging hides member conflicts under `skipLibCheck`); no file (the library's own type checks reject application names) |
 | D22 | Packaging | CommonJS tooling beside the Angular entry points; generators and schematics in one collection; one Architect builder for both workspace kinds | A separate tooling package (a second version to keep in step with the manifest); an Nx executor beside the builder (two implementations of the check) |
 | D23 | Dependencies | Optional peers loaded on demand, M9 when missing | `dependencies` on `nx` and `@nx/devkit` (installs them for every consumer, used or not) |
 | D24 | Keeping in step | The sync generator before tasks outside CI and the `nfs-variants` target; the generated file is committed, and CI builds against it | Regenerating inside the build (`@angular/build` has no Sass hook, tasks skip sync generators in CI, and the CLI has no target dependencies) |
@@ -585,7 +590,7 @@ A consumer's settings and the file the tooling writes from them:
 $button-palette: map-merge($foundation-palette, (purple: #7a3fbf));
 $label-palette: map-merge(map-remove($foundation-palette, warning), (alert: #bf3f2c));
 $breakpoint-classes: (small medium large xlarge);
-$grid-columns: 16;
+$button-sizes: map-merge($button-sizes, (huge: 1.5rem));
 @import 'foundation-sites/scss/foundation';
 @import 'ngx-foundation-sites';
 
@@ -593,7 +598,6 @@ $grid-columns: 16;
 @include nfs-breakpoint-properties;
 @include nfs-button;
 @include nfs-label;
-@include nfs-xy-grid;
 ```
 
 ```ts
@@ -607,8 +611,8 @@ declare module 'ngx-foundation-sites' {
   interface NfsButtonPaletteOverrides {
     purple: true;
   }
-  interface NfsGridColumnsOverrides {
-    count: 16;
+  interface NfsButtonSizesOverrides {
+    huge: true;
   }
   interface NfsLabelPaletteOverrides {
     warning: false;

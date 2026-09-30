@@ -182,3 +182,11 @@ From [Re-run: specs without checks, group f](170-rerun-specs-without-checks-grou
 - Each rule is documented usage now: the `isOpen`, `animate`, and `toggler` rows, two behaviour rules (`animate` belongs to visibility mode; one entering and one leaving value), user stories 18 and 45, D19, and D20 (rewritten to what the API text names). The stripping of a copied `is-hidden` stays, with its test, minus the warning.
 - Mentions removed: the Runtime checks line of the class mapping, the Triggers spec's warnings (host kind, mixed roles), and the Close Button's and Callout's compile checks (now "their specs state the settings").
 - No API, class, ARIA, rendering, or Sass change. Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-30 (later-milestone families)
+
+From [Re-run: specs without the later-milestone families, group c](178-rerun-specs-without-later-families-group-c.md), under [Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md); `specs/toggler.md` was revised in place.
+
+- Class mapping: the `.grid-x`, `.grid-margin-x`, `.cell`, `.small-4` row now says no directive sets them: they are normal classes the consumer writes (`class="grid-x grid-margin-x"`, `class="cell small-4"`) with Foundation's global styles loaded, the class rule's exception for a family with no first-milestone spec; the XY Grid directives and the link to its spec are gone. The examples still leave the grid out. The mapping's opening paragraph names the exception.
+
+Triage: impact LOW (examples, stories, and documented usage change; no input, default, or rule of this spec changes), confidence HIGH (the ruling's decisions 2 and 3: a family with no first-milestone spec is written as Foundation's normal classes, with Foundation's global styles loaded). Nothing is OPEN FOR HUMAN.

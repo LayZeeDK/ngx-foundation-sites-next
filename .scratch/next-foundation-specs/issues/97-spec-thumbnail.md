@@ -173,3 +173,13 @@ What left the spec, per check, and where its rule now stands:
 Kept: no parent and no injection; native ARIA; no input; no Library mixin; the library's own tests (axe in every story, the play functions, the browser-level host-class, composition, and NG02952 cases, the SSR smoke, e2e); Angular's own NG02952, which the docs explain (D5).
 
 Triage: impact LOW (development-only diagnostics leave; the rules stay as documented usage, and the stories still pass the axe gate), confidence HIGH (the ruling of ticket 158). Nothing is OPEN FOR HUMAN.
+
+### Amendment, 2026-09-30 (later-milestone families)
+
+From [Re-run: specs without the later-milestone families, group c](178-rerun-specs-without-later-families-group-c.md), under [Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md); `specs/thumbnail.md` was revised in place.
+
+- Hiding a thumbnail (Solution, D9, and the Notes' `hidden` bullet): `@if`, a Toggler in visibility mode, or Foundation's `.hide` (`display: none !important`) written as a normal class, in place of the Visibility Classes directive with a bare `hideFor`; the Notes' list of later specs that state the same rule is now one sentence about any Foundation class that sets `display`. The links to the Visibility Classes spec are gone.
+- Gallery (usage example, `thumbnail--gallery` story and its play function): `ul class="grid-x small-up-2 medium-up-3"` with `li class="cell"`, in place of the XY Grid directives and their `up` rules object; the story imports no grid directive, and the stories' class sentence names this one exception.
+- Out of Scope: the grid that lays out a gallery is Foundation's XY Grid classes, written as normal classes; a later milestone adds the XY Grid's directives. The links to the XY Grid spec are gone.
+
+Triage: impact LOW (examples, stories, and documented usage change; no input, default, or rule of this spec changes), confidence HIGH (the ruling's decisions 2 and 3: a family with no first-milestone spec is written as Foundation's normal classes, with Foundation's global styles loaded). That `.hide` beats `.thumbnail`'s `display: inline-block` is read from Foundation's `_visibility.scss` (`!important`), not measured in the three engines as `.is-hidden` was. Nothing is OPEN FOR HUMAN.
