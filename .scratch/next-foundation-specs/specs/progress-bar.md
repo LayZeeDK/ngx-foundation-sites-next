@@ -13,7 +13,7 @@ A developer on Foundation for Sites who wants to show how far a task has come wr
 - The meter text is centred on the meter. While the meter is narrower than its text, the text spills onto the track and past the bar's start edge (measured in Chromium, Firefox, and WebKit: at 320 CSS px, "100%" fits only from a value of 10, "3 of 12 files" only from 25), where white text is 1.63:1 on the track and 1:1 on the page; axe marks it incomplete.
 - A native `<meter>` colours itself by its `low`, `high`, and `optimum` ranges, so its colour alone says whether a value is good or bad (1.4.1).
 - Under forced colours the `.progress` track and meter both take the page's Canvas colour in Chromium and Firefox, and the bar disappears.
-- Under the library's class rule the developer writes no Foundation class at all, so `.progress`, `.progress-meter`, `.progress-meter-text`, and the palette classes need an Angular home.
+- Under the library's class rule the developer writes no Foundation class of a family with a first-milestone spec, so `.progress`, `.progress-meter`, `.progress-meter-text`, and the palette classes need an Angular home.
 
 A server-rendered application adds the usual second problem: whatever the Angular layer does must already be right in the server HTML, must not break hydration, and must leave the bar styled and its value exposed before hydration and inside dehydrated `@defer` blocks.
 

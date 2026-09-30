@@ -188,3 +188,9 @@ Each rule is stated as documented usage: the "Development checks" section become
 ### Amendment, 2026-09-30 (later-milestone families)
 
 From [Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md), applied by [Re-run: specs without the later-milestone families, group a](176-rerun-specs-without-later-families-group-a.md): `specs/breadcrumbs.md` no longer names the Visibility Classes directive. The `.show-for-sr` mapping row says that where visually hidden text is wanted the consumer writes `class="show-for-sr"`, a normal class from Foundation's global styles, and the Out of Scope bullet says a later milestone adds the directive; no link to that spec remains. Unchanged: the two directives, `aria-current` in place of Foundation's "Current: " text, the separators, the Sass, and the Story ids.
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves)
+
+From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md), group e; `specs/breadcrumbs.md` was revised in place:
+
+- The Problem Statement's class-rule bullet ("writes no Foundation or library class") and the class mapping's closing sentence ("No class is left for the consumer to write") now name the families with a first-milestone spec, because the `.show-for-sr` row lets the consumer write that Visibility class as a normal class ([ADR 0039](../adr/0039-directives-manage-every-foundation-class.md)'s note of 2026-09-30; audit 0010's L1 form). Impact LOW, confidence HIGH.

@@ -238,3 +238,11 @@ From [Audit 0010: the later-milestone families wave](../audits/0010-later-milest
 
 - M6: D17 is added: `$header-small-font-color`, `$blockquote-color`, `$cite-color`, and `$subheader-color` at `#666666` are required settings on Foundation's defaults, with the measured ratios on every table background.
 - M6: the 1.4.3 row, Foundation behaviour changed or dropped, and the Sass required settings name the four greys.
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves)
+
+From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md), group e; `specs/table.md` was revised in place:
+
+- The Problem Statement's class-rule bullet ("writes no Foundation class at all") and the class mapping's closing sentence ("No class is left for the consumer to write") now name the families with a first-milestone spec, because the Notes' cell-block bullet has the consumer write the XY Grid's classes ([ADR 0039](../adr/0039-directives-manage-every-foundation-class.md)'s note of 2026-09-30; audit 0010's L1 form). Impact LOW, confidence HIGH.
+- The Solution, user story 18 ("three lines"), and the Testing Decisions' settings-overrides sentence ("this spec's required setting and the Callout's `$anchor-color` lines") now include the four greys D17 requires, which audit 0010's M6 added to the 1.4.3 row and the Sass subsection only. Impact LOW, confidence HIGH.
+- D5's rationale cited "building-blocks 1.13's flag-gated property", which 1.13 no longer has (a family that a Sass flag gates writes no Variant property; the flag-gated presence markers moved to the later milestone, [Decide: checks move to a later milestone](158-decide-checks-move-to-a-later-milestone.md)); it now cites 1.13 as it stands. The decision is unchanged. Impact LOW, confidence HIGH.

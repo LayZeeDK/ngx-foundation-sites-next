@@ -206,3 +206,9 @@ From [Decide: grids, typography, and utilities move to a later milestone](174-de
 From [Audit 0010: the later-milestone families wave](../audits/0010-later-milestone-families-wave.md); `specs/media-object.md` was revised in place:
 
 - L1: the Problem Statement's "writes no Foundation class at all" is narrowed to families with a first-milestone spec.
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves)
+
+From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md), group e; `specs/media-object.md` was revised in place:
+
+- The `stackFor` input row and D2 (twice) cited "building-blocks 1.4 rule 5", a rule number building-blocks does not have; they now cite building-blocks 1.4's responsive-form rule, the unnumbered paragraph after rule 4 that keeps a `<words>-for-<bp>` class's words. Impact LOW, confidence HIGH.

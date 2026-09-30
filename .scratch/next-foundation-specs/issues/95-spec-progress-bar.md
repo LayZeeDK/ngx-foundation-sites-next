@@ -228,3 +228,9 @@ From [Re-run: specs without checks, group d](168-rerun-specs-without-checks-grou
 - Beyond the manifest: the Out of Scope item for `<meter>` and D11 lose their "name check" wording, D7 loses the optional check parameter, and the Out of Scope pointer to the Runtime checks' configuration goes.
 - Kept: the four directives, their inputs, bindings, and `percentage`, the token and its required injections, the ARIA contract, every story and its axe gate, the host-binding, DI, native-element, and zoneless browser-level cases, the SSR smoke, the Sass compile of the rules, the e2e layer, and the manual release test. Decision numbers are unchanged.
 - No API, class, ARIA, keyboard, or rendering change. Impact LOW, confidence HIGH (a user ruling applied); nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves)
+
+From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md), group e; `specs/progress-bar.md` was revised in place:
+
+- The Problem Statement's class-rule bullet ("writes no Foundation class at all") now names the families with a first-milestone spec, the class rule as [ADR 0039](../adr/0039-directives-manage-every-foundation-class.md)'s note of 2026-09-30 states it (audit 0010's L1 form). Impact LOW, confidence HIGH.

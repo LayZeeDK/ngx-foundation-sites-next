@@ -183,3 +183,9 @@ From [Re-run: specs without the later-milestone families, group c](178-rerun-spe
 - Out of Scope: the grid that lays out a gallery is Foundation's XY Grid classes, written as normal classes; a later milestone adds the XY Grid's directives. The links to the XY Grid spec are gone.
 
 Triage: impact LOW (examples, stories, and documented usage change; no input, default, or rule of this spec changes), confidence HIGH (the ruling's decisions 2 and 3: a family with no first-milestone spec is written as Foundation's normal classes, with Foundation's global styles loaded). That `.hide` beats `.thumbnail`'s `display: inline-block` is read from Foundation's `_visibility.scss` (`!important`), not measured in the three engines as `.is-hidden` was. Nothing is OPEN FOR HUMAN.
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves)
+
+From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md), group e; `specs/thumbnail.md` was revised in place:
+
+- The Problem Statement's class-rule bullet ("writes no Foundation class at all") and the class mapping's closing sentence ("No class is left for the consumer to write") now name the families with a first-milestone spec, because the gallery writes the XY Grid's classes and the hiding rule Foundation's `.hide` as normal classes ([ADR 0039](../adr/0039-directives-manage-every-foundation-class.md)'s note of 2026-09-30; audit 0010's L1 form). Impact LOW, confidence HIGH.

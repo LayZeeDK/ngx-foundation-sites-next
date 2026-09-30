@@ -12,7 +12,7 @@ A developer on Foundation for Sites who wants a framed image, a photo in a galle
 - The docs' link is `href="#"`. A link without `href` is not focusable, so a developer who drops the placeholder `#` gets a thumbnail that looks linked on hover and cannot be reached from the keyboard.
 - `.thumbnail { display: inline-block }` follows normalize's `[hidden] { display: none }`, so a bare `hidden` attribute does not hide a thumbnail (measured in three engines).
 - Angular's `NgOptimizedImage`, the project's image rule, requires `width` and `height`. Under Foundation's global `border-box` sizing the thumbnail's 4 px border then sits inside those dimensions: the picture renders 8 px narrower and shorter than declared, and `NgOptimizedImage` reports a distortion that is not there for small wide images (its NG02952 warning at 120 by 60, 100 by 56, and 80 by 40 px, measured in three engines).
-- Under the library's class rule the developer writes no Foundation class at all, so `.thumbnail` needs an Angular home.
+- Under the library's class rule the developer writes no Foundation class of a family with a first-milestone spec, so `.thumbnail` needs an Angular home.
 
 A server-rendered application adds the usual second problem: whatever the Angular layer does must already be right in the server HTML, must not break hydration, must leave the thumbnail framed before hydration and inside dehydrated `@defer` blocks, and must not stop a linked thumbnail from navigating natively.
 
@@ -82,7 +82,7 @@ Docs conventions kept or corrected: the image form and the link form (kept); `al
 | --- | --- | --- | --- | --- | --- |
 | `.thumbnail` | `NfsThumbnail` (`[nfsThumbnail]`), static host class | - | - | `thumbnail` | - |
 
-Variant classes: none. Foundation's thumbnail has no size, colour, or modifier class; its frame, shadow, radius, margin, and transition are Sass settings, compile-time configuration and never inputs (building-blocks 1.13). State classes: none; the hover and focus look is Foundation's `a.thumbnail:hover` and `:focus`, pseudo-classes the browser owns. No class is left for the consumer to write (ADR 0039).
+Variant classes: none. Foundation's thumbnail has no size, colour, or modifier class; its frame, shadow, radius, margin, and transition are Sass settings, compile-time configuration and never inputs (building-blocks 1.13). State classes: none; the hover and focus look is Foundation's `a.thumbnail:hover` and `:focus`, pseudo-classes the browser owns. No class of a family with a first-milestone spec is left for the consumer to write (ADR 0039).
 
 ### Hierarchy and DI shape
 
