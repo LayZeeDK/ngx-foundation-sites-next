@@ -141,3 +141,7 @@ From [Decide: grids, typography, and utilities move to a later milestone](174-de
 From [Audit 0010: the later-milestone families wave](../audits/0010-later-milestone-families-wave.md); `specs/anchored-pane.md` was revised in place:
 
 - M1: the two `position-relative` sentences say the class comes from Foundation's Prototype mode (`foundation-everything($prototype: true)`), not its global styles.
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves)
+
+- Testing Decisions, lead paragraph: "before the Dropdown and Tooltip specs exist" now reads "not the Dropdown pane and Tooltip directives (D24)", because both specs are published and D24 keeps the test consumers for good.

@@ -216,3 +216,7 @@ From [Re-run: specs without the later-milestone families, group c](178-rerun-spe
 - Rendered HTML: the docs' `p.lead` stays Foundation's `.lead`, a normal class the consumer writes (`<p class="lead">`) with Foundation's global styles loaded; the Typography Helpers attribute and the link to its spec are gone. The examples still leave the paragraph out.
 
 Triage: impact LOW (examples, stories, and documented usage change; no input, default, or rule of this spec changes), confidence HIGH (the ruling's decisions 2 and 3: a family with no first-milestone spec is written as Foundation's normal classes, with Foundation's global styles loaded). Nothing is OPEN FOR HUMAN.
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves)
+
+- Further Notes, Sass: a blank line now ends the rule table before the "Required settings" paragraph, which GitHub-flavoured Markdown otherwise renders as one more table row (hygiene).

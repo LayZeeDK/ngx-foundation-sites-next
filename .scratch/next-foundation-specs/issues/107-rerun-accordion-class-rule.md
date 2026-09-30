@@ -114,3 +114,7 @@ From [Decide: checks move to a later milestone](158-decide-checks-move-to-a-late
 - Build-time checks: the `nfs-accordion` contrast `@warn` (three pairs, unrounded), with its Sass compile test clauses and the mixin's reused settings listed only for it.
 
 Each rule is stated as documented usage: a Behaviour rules bullet and the class sketch comments (the heading rule, explicit content ids with `deepLink`, no `HashLocationStrategy`, one title bound open in single mode, `collapseAll()` only with `allowAllClosed`, the `nfs-accordion` include, `[expanded]="true"` instead of `class="is-active"`); the content `id` row; the 1.3.1 and 1.4.3 rows; the Sass subsection's settings paragraph with its ratios. The item's binding still strips a copied `is-active`, and the initial-state test still asserts it. D3, D19, D21, and D25 are rewritten to what the spec now decides; user stories 28, 29, and 51 state documentation, not warnings. Unchanged: the directives, inputs, outputs, methods, ARIA, keys, required injections, animation, rendering modes, the Sass rules, the Story ids, and the library's own tests of behaviour and accessibility.
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves)
+
+- Animation, the Completion bullet: the sentence that set the measured duration against building-blocks 1.6 rule 1's "declared duration" now says rule 1 measures the same way since 2026-09-28, because rule 1 no longer holds that phrase (building-blocks 1.6 rule 1).

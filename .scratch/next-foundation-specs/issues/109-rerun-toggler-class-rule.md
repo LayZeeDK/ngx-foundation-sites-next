@@ -190,3 +190,8 @@ From [Re-run: specs without the later-milestone families, group c](178-rerun-spe
 - Class mapping: the `.grid-x`, `.grid-margin-x`, `.cell`, `.small-4` row now says no directive sets them: they are normal classes the consumer writes (`class="grid-x grid-margin-x"`, `class="cell small-4"`) with Foundation's global styles loaded, the class rule's exception for a family with no first-milestone spec; the XY Grid directives and the link to its spec are gone. The examples still leave the grid out. The mapping's opening paragraph names the exception.
 
 Triage: impact LOW (examples, stories, and documented usage change; no input, default, or rule of this spec changes), confidence HIGH (the ruling's decisions 2 and 3: a family with no first-milestone spec is written as Foundation's normal classes, with Foundation's global styles loaded). Nothing is OPEN FOR HUMAN.
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves)
+
+- Hierarchy and DI shape, the `nfsTogglerToken` bullet: the sketch named a token and Table B now records none; the sentence said Table B named one (building-blocks Table B, Toggler row).
+- Animation, the Completion bullet: "This refines building-blocks 1.6 rule 1's "declared duration"" now says rule 1 measures the same way since 2026-09-28 (building-blocks 1.6 rule 1).

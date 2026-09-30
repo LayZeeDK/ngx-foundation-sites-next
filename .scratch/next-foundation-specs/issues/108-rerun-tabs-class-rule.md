@@ -226,3 +226,9 @@ Triage: impact LOW (examples, stories, and documented usage change; no input, de
 From [Audit 0010: the later-milestone families wave](../audits/0010-later-milestone-families-wave.md); `specs/tabs.md` was revised in place:
 
 - L1: the headline no-class sentence is narrowed to families with a first-milestone spec, naming the vertical layout's XY Grid classes written as normal classes.
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves)
+
+- Hierarchy and DI shape, the first-tab default bullet: "building-blocks 1.9 keeps queries for validation otherwise" now says 1.9's other `contentChildren` use is the Responsive Accordion Tabs' rendering query, because 1.9's validation clause left with the checks ([Decide: checks move to a later milestone](158-decide-checks-move-to-a-later-milestone.md)); the review's report proposes that 1.9 name this query too.
+- CSS class to Angular mapping: the lead sentence names families with a first-milestone spec, and a new row maps the vertical layout's XY Grid classes (`.grid-x`, `.cell`, `.medium-3`, `.medium-9`) as normal classes the consumer writes, as the Rendered HTML and the usage examples write them ([Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md), decision 3; [ADR 0039](../adr/0039-directives-manage-every-foundation-class.md), note of 2026-09-30).
+- Testing Decisions, lead paragraph: the no-class sentence names families with a first-milestone spec and the XY Grid classes `tabs--vertical` writes ([Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md), decision 3).

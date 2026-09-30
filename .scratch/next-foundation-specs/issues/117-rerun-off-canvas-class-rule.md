@@ -219,3 +219,8 @@ From [Decide: grids, typography, and utilities move to a later milestone](174-de
 From [Audit 0010: the later-milestone families wave](../audits/0010-later-milestone-families-wave.md); `specs/off-canvas.md` was revised in place:
 
 - L1: "No Foundation or library class is left for the consumer" is narrowed to families with a first-milestone spec.
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves)
+
+- Problem Statement and Solution: "without writing any Foundation or library class" and "never a Foundation or library class" name families with a first-milestone spec, because documented usage 6 and the stories write `hide-for-<bp>` and the XY Grid's classes ([Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md), decision 3; audit 0010's L1 narrowed only the mapping's lead sentence).
+- CSS class to Angular mapping: a row for `.hide-for-<bp>`, `.grid-x`, and `.cell`, normal classes of families with no first-milestone spec that the developer and the stories write ([Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md), decision 3; one row per class the spec's markup uses, as the class-rule review's CR-B asked).

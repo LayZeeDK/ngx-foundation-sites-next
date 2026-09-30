@@ -173,3 +173,7 @@ From [Re-run: specs without checks, group f](170-rerun-specs-without-checks-grou
 - Each rule is documented usage now: three numbered rules in the API (target, host, form), the Typing and Multiple targets bullets, the 2.1.1 row, user stories 18 and 19, and D13.
 - Mentions removed: the "no Runtime check request" clause, the Off-canvas panel's development checks among `registerTrigger`'s users, `nfsCloseButton`'s name check, and the Tooltip's development-mode warning.
 - No API, ARIA, rendering, or Sass change. Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves)
+
+- Testing Decisions, lead paragraph: "Tests that need an Openable before the plugin specs exist use a test Openable" now reads "The Triggers' own tests use a test Openable, so they depend on no plugin directive", because every Openable spec is published and the test Openable stays.
