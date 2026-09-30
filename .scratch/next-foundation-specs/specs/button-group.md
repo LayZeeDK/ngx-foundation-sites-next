@@ -47,7 +47,7 @@ The split button is a composition, not a directive: a Button Group holding an ac
 21. As a screen reader user, I want a group whose grouping carries meaning to be announced as a named group, so that I know which buttons belong together.
 22. As a keyboard user, I want every button in a group to be its own tab stop in reading order, so that a Button Group behaves like the buttons it holds.
 23. As a keyboard user, I want the focus indicator of a button inside a no-gaps group to stay whole, so that the neighbouring button does not cover it.
-24. As an application developer, I want to position a group's buttons with Foundation's Flexbox alignment through the Flexbox Utilities directive beside `nfsButtonGroup`, so that the Flexbox Button Group example works without classes.
+24. As an application developer, I want to position a group's buttons with Foundation's Flexbox alignment classes written beside `nfsButtonGroup`, so that the Flexbox Button Group example works with Foundation's global styles loaded.
 25. As a developer of a server-rendered application, I want the server HTML to carry `.button-group` and every Variant class, so that the first paint is correct and hydration changes nothing.
 26. As a developer using `@defer (hydrate never)`, I want a group inside the block to look and work as it does after hydration, so that static regions need no JavaScript.
 27. As a developer of a zoneless application, I want the directive to need no zone.
@@ -97,13 +97,13 @@ Variant classes, one row per family (building-blocks 1.14 item 2):
 | `.stacked-for-small`, `.stacked-for-medium` | `stackedFor` | `NfsButtonGroupStackedFor` | Closed: Foundation writes both names and their breakpoints literally | Name | `'small'` sets `.stacked-for-small` (stacked below `medium`); `'medium'` sets `.stacked-for-medium` (stacked below `large`); no value sets none | None (closed) |
 | `.no-gaps` | `noGaps` | `boolean` through `nfsVariantBoolean` | Closed | Boolean | `.no-gaps` | None (closed) |
 
-Other families' classes in this spec's markup and Foundation's docs page, each set by its own directive, never by the group:
+Other families' classes in this spec's markup and Foundation's docs page, each set by its own directive, or written by the consumer as a normal class where the family has no first-milestone spec, never by the group:
 
 | Foundation class | Kind | Element | Set by | Owner |
 | --- | --- | --- | --- | --- |
-| `.align-center`, `.align-right`, `.align-spaced`, `.align-justify` | Utility classes of the Flexbox Utilities | The group | `NfsFlexAlign` (`nfsFlexAlign`) with its `alignX` input, beside `nfsButtonGroup` (D9) | [Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md) |
+| `.align-center`, `.align-right`, `.align-spaced`, `.align-justify` | Flexbox utility classes, a family with no first-milestone spec | The group | The consumer, `class="align-center"` and so on, beside `nfsButtonGroup` (D9) | Foundation's global styles (`foundation-flex-classes`) |
 | A grouped button's own palette, size, and fill classes, `.dropdown`, `.arrow-only`, `.disabled` | Variant and State classes of the Button | Each grouped button | `NfsButton`'s `color`, `size`, `fill`, `dropdown`, `arrowOnly`, and `disabled` inputs (a button's `size` never renders in a group, D5) | [Spec: Button](../issues/37-spec-button.md) |
-| `.show-for-sr` | Visibility class | The split button's screen-reader-only text | `NfsShowForSr` (`[nfsShowForSr]`) | [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md) |
+| `.show-for-sr` | Visibility class, a family with no first-milestone spec | The split button's screen-reader-only text | The consumer, `class="show-for-sr"` | Foundation's global styles |
 | `.dropdown-pane` and its State classes | Structural class of the Dropdown | The split button's pane, placed after the group | `NfsDropdownPane` (`[nfsDropdownPane]`) | [Spec: Dropdown](../issues/26-spec-dropdown.md) |
 
 ### Hierarchy and DI shape
@@ -163,7 +163,7 @@ Host bindings (all on signal state):
   2. `color` is set on the group or on its buttons, not both: the group's colour wins on solid groups, and on hollow and clear groups the name later in `$button-palette` wins.
   3. `fill` is set on the group or on its buttons, not both: a group fill other than `$button-fill` replaces the button's.
   4. Bind one of `stacked` and `stackedFor`: with both set, `stackedFor` unstacks the group from the next breakpoint up.
-  5. Foundation's group classes are bound through the inputs, never written on the host (`size="small"` and `color="primary"`, not `class="small primary"`; the closed names `solid`, `hollow`, `clear`, `expanded`, `stacked`, `stacked-for-small`, `stacked-for-medium`, and `no-gaps` included), and a Flexbox alignment class comes from `nfsFlexAlign` beside `nfsButtonGroup` (D9). A redundant `button-group` merges with the static host class and does no harm.
+  5. Foundation's group classes are bound through the inputs, never written on the host (`size="small"` and `color="primary"`, not `class="small primary"`; the closed names `solid`, `hollow`, `clear`, `expanded`, `stacked`, `stacked-for-small`, `stacked-for-medium`, and `no-gaps` included), and a Flexbox alignment class is Foundation's own `align-*` class, written as a normal class beside `nfsButtonGroup` (D9). A redundant `button-group` merges with the static host class and does no harm.
 
 ### Implementation level and primitives
 
@@ -206,7 +206,7 @@ APG pattern: none for the group, which is not a widget; each button follows the 
 | `[nfsButtonGroup]` | The host element's own semantics (a `div` has none); no role from the directive | APG names and descriptions: naming a `group` is discretionary; a role is added by the consumer when the grouping carries meaning |
 | A group whose grouping carries meaning (a split button, a set of related actions without context in their names) | The consumer writes `role="group"` with `aria-labelledby` pointing at visible text, or `aria-label` | WAI-ARIA `group`; APG names and descriptions |
 | Buttons | Native roles and names, as in the Button spec | HTML |
-| Split button's arrow-only button | Named from screen-reader-only text that says what the menu holds ("More save options"), inside the Visibility Classes directive; `aria-expanded` and `aria-controls` from the Trigger | Foundation's docs (screen-reader-only text); Triggers utility |
+| Split button's arrow-only button | Named from screen-reader-only text that says what the menu holds ("More save options"), inside an element with Foundation's `.show-for-sr`; `aria-expanded` and `aria-controls` from the Trigger | Foundation's docs (screen-reader-only text); Triggers utility |
 
 | Key | Behaviour | Owner |
 | --- | --- | --- |
@@ -284,7 +284,7 @@ Consumer markup and the resulting DOM. Server HTML and hydrated DOM are identica
 <div nfsButtonGroup role="group" aria-label="Save">
   <button nfsButton (click)="save()">Save</button>
   <button nfsButton dropdown arrowOnly [nfsToggle]="saveMenu">
-    <span nfsShowForSr>More save options</span>
+    <span class="show-for-sr">More save options</span>
   </button>
 </div>
 <div nfsDropdownPane #saveMenu="nfsDropdownPane">...</div>
@@ -295,12 +295,12 @@ Consumer markup and the resulting DOM. Server HTML and hydrated DOM are identica
   </button>
 </div>
 
-<!-- Flexbox alignment from the Flexbox Utilities directive beside the group -->
-<div nfsButtonGroup nfsFlexAlign alignX="center">...</div>
+<!-- Flexbox alignment from Foundation's align-center class, written beside the group -->
+<div nfsButtonGroup class="align-center">...</div>
 <div class="button-group align-center">...</div>
 ```
 
-The Trigger's attributes belong to the [Spec: Triggers (shared utility)](../issues/54-spec-triggers.md) and the pane's markup to the [Spec: Dropdown](../issues/26-spec-dropdown.md); they are shown only to place them. `nfsShowForSr` is the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)'s directive for `.show-for-sr`, imported as `NfsShowForSr` from `ngx-foundation-sites/visibility`; `nfsFlexAlign` and `alignX` are the [Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md)'s. No `jsaction` appears on the group; the buttons carry one only where the consumer or another directive declared a listener.
+The Trigger's attributes belong to the [Spec: Triggers (shared utility)](../issues/54-spec-triggers.md) and the pane's markup to the [Spec: Dropdown](../issues/26-spec-dropdown.md); they are shown only to place them. `show-for-sr` and `align-center` are Foundation's own visibility and Flexbox utility classes, written as normal classes with Foundation's global styles loaded; they reach the server HTML unchanged. No `jsaction` appears on the group; the buttons carry one only where the consumer or another directive declared a listener.
 
 ### Animation
 
@@ -322,7 +322,7 @@ Per ADR 0008 and the rendering-modes research, section 7:
 
 A good test here asserts what a user or assistive technology observes: the classes on the group, the computed size, colour, arrow colour, and geometry of its buttons, the role and name of a named group, and Tab order. No test reads the directive's fields. Prior art: the [Spec: Button](../issues/37-spec-button.md)'s layers, whose Variant mapping and copied-class cases this spec follows.
 
-Story ids follow `button-group--<story>`, Foundation's docs examples in docs order after `Default`: `button-group--default`, `button-group--sizing`, `button-group--coloring`, `button-group--hollow-and-clear`, `button-group--no-gaps`, `button-group--even-width`, `button-group--stacking`, `button-group--split-buttons`, `button-group--flexbox`. The Button spec's former `button--button-group` and `button--split-button` stories are these. Stories set inputs, use Foundation's default names only (so the library's Storybook program needs no Variant declaration file), and write no Foundation class; every Foundation `<a class="button">` without `href` becomes a `<button nfsButton>` or a link with an `href`.
+Story ids follow `button-group--<story>`, Foundation's docs examples in docs order after `Default`: `button-group--default`, `button-group--sizing`, `button-group--coloring`, `button-group--hollow-and-clear`, `button-group--no-gaps`, `button-group--even-width`, `button-group--stacking`, `button-group--split-buttons`, `button-group--flexbox`. The Button spec's former `button--button-group` and `button--split-button` stories are these. Stories set inputs, use Foundation's default names only (so the library's Storybook program needs no Variant declaration file), and write no Foundation class except `show-for-sr` and the `align-*` classes, whose families have no first-milestone spec; every Foundation `<a class="button">` without `href` becomes a `<button nfsButton>` or a link with an `href`.
 
 ### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`)
 
@@ -336,7 +336,7 @@ Run by `npx nx test-storybook <lib>`. Every story runs axe with `parameters.a11y
 - `button-group--even-width`: the buttons of an `expanded` group have equal widths that add up to the group's content width, less the spacing.
 - `button-group--stacking`: `stacked`, `stackedFor="small"`, and `stackedFor="medium"` groups are all stacked at 414 px (each button on its own line); Tab order equals DOM order.
 - `button-group--split-buttons`: Foundation's split button and one in a `fill="hollow"` group, each a named `group` holding the action and an arrow-only button found by its screen-reader-only name; clicking the arrow toggles `aria-expanded` and opens the Dropdown pane placed after the group; in the hollow group, the arrow's computed `border-top-color` equals the button's computed `color`.
-- `button-group--flexbox`: Foundation's four alignments through the Flexbox Utilities directive; the group's computed `justify-content` matches each.
+- `button-group--flexbox`: Foundation's four alignments, each written as its `align-*` class beside `nfsButtonGroup`; the group's computed `justify-content` matches each.
 
 ### 2. Browser-level test (Vitest browser mode, `npx nx test <lib>`)
 
@@ -371,7 +371,7 @@ Against the prerendered fixture app: JavaScript disabled, a screenshot plus axe 
 - Selection among the group's buttons (Material's button toggle group); a pressed button is the Button spec's `aria-pressed` guidance or a Toggler in class mode.
 - A group-level `disabled` (D8).
 - A responsive `expanded` on the group: Foundation has no such class.
-- The Flexbox alignment classes (the [Spec: Flexbox Utilities](../issues/103-spec-flexbox-utilities.md)) and `.show-for-sr` (the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)).
+- The Flexbox alignment classes and `.show-for-sr`: Foundation's own classes, which the consumer writes; a later milestone adds directives for their families.
 - The split button's menu: a Dropdown pane opened by a Trigger (the [Spec: Dropdown](../issues/26-spec-dropdown.md), the [Spec: Triggers (shared utility)](../issues/54-spec-triggers.md)).
 - More than `$buttongroup-expand-max` buttons in an even-width group under `$global-flexbox: false`, and renamed breakpoints, both limits of Foundation's own Sass.
 - Runtime theming through custom properties (building-blocks 1.13).
@@ -388,9 +388,9 @@ Against the prerendered fixture app: JavaScript disabled, a screenshot plus axe 
 | D4 | No default `role`; the consumer writes `role="group"` with a name where the grouping carries meaning | The triage's decision stands: the APG calls naming a group discretionary, an unnamed `group` adds nothing, and a static host `role` would replace the semantics of any other host element (a `nav`, a `fieldset`); the buttons carry the names WCAG requires. Guidance and the split-button examples show the named form | A static host `role="group"` (Bootstrap's markup) |
 | D5 | The JSDoc of `size`, `color`, and `fill` states Foundation's cascade as documented usage: `size` goes on the group, never on a button inside it, and `color` and `fill` are set on the group or on its buttons, not both | Measured in three engines: Foundation's group rule resets every button to the default size, a group colour wins on solid groups and palette order decides on filled ones, and a non-default group fill wins; the typed inputs make these look supported, so the documentation and the usage examples say where each value goes, and the group needs no view of its buttons | A group token that `nfsButton` reads (a Button amendment); a library rule letting a button's own size win (overrides Foundation's cascade) |
 | D6 | `stacked` and `stackedFor` are documented as alternatives: bind one of them | Both classes together unstack from the next breakpoint (measured at 800 px), which neither input's name suggests; two inputs cannot exclude each other in the template type | The directive setting only one of the two classes (an explicit value always sets its class, building-blocks 1.4) |
-| D7 | Foundation classes copied onto the host are not read and stay in the class list; the documented usage binds the matching input, and `nfsFlexAlign` for the docs page's four alignment classes | Building-blocks 1.4's initial-state rule: the inputs are the contract; a `[class]` list sets only its own classes, so a copied class keeps styling beside them, and the alignment classes appear on this docs page's own example | Reading copied classes as input values (a second spelling the class rule removes) |
+| D7 | Foundation classes copied onto the host are not read and stay in the class list; the documented usage binds the matching input, and writes the docs page's four alignment classes as normal classes (revised 2026-09-30, later-milestone families) | Building-blocks 1.4's initial-state rule: the inputs are the contract; a `[class]` list sets only its own classes, so a copied class keeps styling beside them, and the alignment classes appear on this docs page's own example | Reading copied classes as input values (a second spelling the class rule removes) |
 | D8 | No group-level `disabled`, outputs, methods, or models | Foundation has no group state; each `nfsButton` owns its disabled contract, which a group value could only duplicate | Material's toggle-group `disabled` cascade |
-| D9 | Flexbox alignment comes from `nfsFlexAlign` and its `alignX` input, written beside `nfsButtonGroup` | `.align-*` are Utility classes of `foundation-flex-classes`, not of the button-group partial; directive composition over duplication (map, Standing preferences) | An `align` input on the group, which would give one Utility class family two owners |
+| D9 | Flexbox alignment is Foundation's `align-*` class, written by the consumer as a normal class beside `nfsButtonGroup` (revised 2026-09-30, later-milestone families) | `.align-*` are Utility classes of `foundation-flex-classes`, not of the button-group partial; the Flexbox utilities have no first-milestone spec, so the class rule's exception for such a family applies, and the group's `[class]` list keeps a written class (D7) | An `align` input on the group, which would give one Utility class family two owners |
 | D10 | Native implementation level; Aria's `Toolbar` is not used, and this is not a fallback | Foundation's Button Group has no keyboard contract; the APG toolbar pattern changes Tab into arrow keys and is for three or more controls; `nfsButton` on an `ngToolbarWidget` fights its `disabled` and `aria-disabled` bindings | Hosting `ngToolbar` on the group |
 | D11 | `nfs-button-group` writes no Variant property; the group's `color` and `size` follow `--nfs-button-palette` and `--nfs-button-sizes`, which `nfs-button` alone writes | One writer per Variant property (the Variant declaration tooling's manifest names `nfs-button` for both): the group's families are the Button's `$button-palette` and `$button-sizes`, and a group is always used with `nfsButton`, so `nfs-button` is always there to write them | Writing both properties again, as a literal reading of building-blocks 1.13 would have it (duplicate CSS, and a second writer of one list) |
 | D12 | `exportAs: 'nfsButtonGroup'` | Every directive and component has one, the class name with a lowercase first letter (2026-09-29, user ruling, [Decide: an exportAs on every directive](../issues/156-decide-exportas-on-every-directive.md), which supersedes this row's 2026-09-28 reading of building-blocks 1.3) | No `exportAs`, kept for parity with `nfsButton` and `nfsCloseButton` (building-blocks 1.3's 2026-09-28 rule: a directive with no state or method to read has none) |
@@ -398,18 +398,18 @@ Against the prerendered fixture app: JavaScript disabled, a screenshot plus axe 
 
 ### Usage examples
 
-`nfsShowForSr` is the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)'s directive for `.show-for-sr`, imported as `NfsShowForSr` from `ngx-foundation-sites/visibility`.
+`show-for-sr` is Foundation's visibility class, written as a normal class with Foundation's global styles loaded.
 
 ```ts
 @Component({
   selector: 'app-document-actions',
-  imports: [NfsButtonGroup, NfsButton, NfsToggle, NfsDropdownPane, NfsShowForSr],
+  imports: [NfsButtonGroup, NfsButton, NfsToggle, NfsDropdownPane],
   template: `
     <!-- A split button: the arrow's text names its menu -->
     <div nfsButtonGroup fill="hollow" role="group" aria-label="Save">
       <button nfsButton (click)="save()">Save</button>
       <button nfsButton dropdown arrowOnly [nfsToggle]="saveMenu">
-        <span nfsShowForSr>More save options</span>
+        <span class="show-for-sr">More save options</span>
       </button>
     </div>
     <!-- After the group: Foundation's group rules style every button inside the group, the pane's included -->

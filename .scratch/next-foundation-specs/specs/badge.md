@@ -12,7 +12,7 @@ A developer on Foundation for Sites who wants to show a count next to something 
 - The docs describe a heading with `aria-describedby` pointing at a badge beside it. The description is not part of the heading's name (measured in Chromium: the heading "Unread Messages", described by "1"), so a user who moves by headings hears "Unread Messages" and not the count, and screen readers announce descriptions mainly when their element takes focus, which a heading does not.
 - The icon examples hold only an icon font glyph, so their badges say nothing to a screen reader, and the colour classes "give badges additional meaning" that only sighted users who perceive colour receive.
 - A count that changes after the user's action (items in a cart) is a status message, which nothing announces.
-- Under the library's class rule the developer writes no Foundation class at all, so `.badge`, the palette classes, and `.show-for-sr` need an Angular home.
+- Under the library's class rule the developer writes no Foundation class at all, so `.badge` and the palette classes need an Angular home. `.show-for-sr` is a visibility class, a family with no first-milestone spec, which the developer writes as a normal class with Foundation's global styles loaded.
 
 A server-rendered application adds the usual second problem: whatever the Angular layer does must already be right in the server HTML, must not break hydration, and must leave the badge styled before hydration and inside dehydrated `@defer` blocks.
 
@@ -37,7 +37,7 @@ The `nfs-badge` Library mixin gives a coloured badge the better of Foundation's 
 9. As an application developer, I want to put a badge inside a heading or a button and have its count become part of the heading's text or the button's name, so that the count is never separated from what it counts.
 10. As an application developer, I want a badge beside a button or link to describe it through `aria-describedby`, so that Foundation's pairing still works where the badge cannot sit inside.
 11. As an application developer, I want the spec to tell me where `aria-describedby` does not help (a heading or other element that takes no focus), so that I do not rely on a description nobody hears.
-12. As an application developer, I want to add visually hidden context to a count with the library's screen-reader-only directive, so that "3" is announced as "3 unread" without writing `.show-for-sr`.
+12. As an application developer, I want to add visually hidden context to a count with Foundation's `.show-for-sr` class on an inner element, so that "3" is announced as "3 unread".
 13. As an application developer, I want an icon badge to carry visually hidden text and its icon `aria-hidden`, so that the badge means the same to every user.
 14. As an application developer, I want the documentation to state that every badge needs text for a screen reader (WCAG 1.1.1), with the markup for an icon badge, so that an icon-only badge never ships.
 15. As an application developer, I want the documentation to name the two exceptions, a badge I hid from assistive technology on purpose and one I named as an image, so that I know which markup is correct.
@@ -74,9 +74,9 @@ Badge has no Plugin, no `defaults` object, no `data-*` Options, no events, and n
 | Badge | `.badge` | `@mixin foundation-badge` (in `foundation-everything`) | Structural class on any element ("any tag will work fine"). `display: inline-block`, `min-width: $badge-minwidth` (2.1em), `padding: $badge-padding` (0.3em), `border-radius: 50%`, `font-size: $badge-font-size` (0.6rem), centred text; `background: $badge-background` (`$primary-color`) and `color: $badge-color` (`$white`), with no pick between text colours. For one character at a 16 px root font size, 20.16 px wide and 20.1 to 21.1 px tall by the surrounding line height (measured) |
 | Colours | `.primary`, `.secondary`, `.success`, `.warning`, `.alert` | The keys of `$badge-palette` (`@each $name, $color in $badge-palette`, as `.badge.<name>`), which defaults to `$foundation-palette`; Foundation's settings file assigns it from `$foundation-palette` in its Badge section | Open Variant family. Each class sets `background` to its colour and `color` to `color-pick-contrast(<colour>, ($badge-color, $badge-color-alt))`: the first candidate unless the second's ratio, rounded to one decimal through Foundation's approximate `color-luminance()`, is higher |
 | Icons | an icon element inside the badge | Foundation's docs (Foundation Icon Fonts glyphs) | No class of Foundation for Sites; the icon is the consumer's |
-| Context | `aria-describedby` on the described element pointing at the badge's `id`; `.show-for-sr` text inside the badge | Foundation's docs | `.show-for-sr` is a Visibility class, bound by the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)'s screen-reader-only directive, `nfsShowForSr` |
+| Context | `aria-describedby` on the described element pointing at the badge's `id`; `.show-for-sr` text inside the badge | Foundation's docs | `.show-for-sr` is a visibility class, written by the consumer as a normal class from Foundation's global styles |
 
-Docs conventions kept or corrected: the `span` (kept); `aria-describedby` from a heading to a badge beside it (corrected: the badge goes inside the heading, and `aria-describedby` is used only from a focusable control, D4); `.show-for-sr` context text (kept, as the Visibility Classes directive); icon badges (kept, corrected with hidden text and an `aria-hidden` icon, D5); colour "to give badges additional meaning" (corrected: the text says the meaning, 1.4.1); the AA claim for the default settings (corrected: the alert badge is 4.498:1, and a required setting fixes it, D10).
+Docs conventions kept or corrected: the `span` (kept); `aria-describedby` from a heading to a badge beside it (corrected: the badge goes inside the heading, and `aria-describedby` is used only from a focusable control, D4); `.show-for-sr` context text (kept, as a normal class); icon badges (kept, corrected with hidden text and an `aria-hidden` icon, D5); colour "to give badges additional meaning" (corrected: the text says the meaning, 1.4.1); the AA claim for the default settings (corrected: the alert badge is 4.498:1, and a required setting fixes it, D10).
 
 ### CSS class to directive mapping
 
@@ -85,13 +85,13 @@ Docs conventions kept or corrected: the `span` (kept); `aria-describedby` from a
 | `.badge` | `NfsBadge` (`[nfsBadge]`), static host class | - | - | `badge` | - |
 | Palette classes (`.primary`, `.secondary`, `.success`, `.warning`, `.alert` by default) | `color` Variant input of `NfsBadge` | `NfsBadgeColor`, built on `NfsFoundationPaletteColor`, over `$badge-palette`, which defaults to `$foundation-palette`; `NfsBadgePaletteOverrides`, chained on `NfsFoundationPaletteOverrides` (Open Variant family) | a name | the name itself (`color="alert"` sets `.alert`); no value sets none, so `$badge-background` is the look | `--nfs-badge-palette` (`primary secondary success warning alert` by default) |
 
-State classes: none. Foundation's Badge has no State class, and the directive binds no library hook. `.show-for-sr` inside a badge belongs to the Visibility Classes directive written on the consumer's inner element. No class is left for the consumer to write (ADR 0039). Foundation has no responsive badge colour, so `color` takes no Breakpoint query or rules object.
+State classes: none. Foundation's Badge has no State class, and the directive binds no library hook. `.show-for-sr` inside a badge is a normal class the consumer writes on its inner element: visibility classes have no first-milestone spec, so the class rule's exception for such a family applies. No Badge class is left for the consumer to write (ADR 0039). Foundation has no responsive badge colour, so `color` takes no Breakpoint query or rules object.
 
-Other families' classes in this spec's markup and Foundation's docs page, each set by its own directive:
+Other families' classes in this spec's markup and Foundation's docs page, each set by its own directive, or written as a normal class where the family has no first-milestone spec:
 
 | Foundation class | Kind | Element | Set by | Owner |
 | --- | --- | --- | --- | --- |
-| `.show-for-sr` | Visibility class | The visually hidden text inside a badge | `NfsShowForSr` (`[nfsShowForSr]`) | [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md) |
+| `.show-for-sr` | Visibility class | The visually hidden text inside a badge | The consumer, `class="show-for-sr"` | Foundation's global styles; a family with no first-milestone spec |
 | `.button` and its Variant classes | Structural class of the Button | A button holding a badge | `NfsButton` (`button[nfsButton]`) with its Variant inputs | [Spec: Button](../issues/37-spec-button.md) |
 
 ### Hierarchy and DI shape
@@ -200,28 +200,28 @@ The axe gate in every story runs the WCAG 2.2 AA rule set (tags `wcag2a`, `wcag2
 
 ### Rendered HTML
 
-Consumer markup, then the server HTML. The hydrated DOM equals the server HTML: the directive declares no listener, so nothing adds `jsaction`. Class order is not significant; Angular also renders the directive attributes and the static attributes that feed inputs (`nfsbadge=""`, `color="alert"`), which the resulting DOM below leaves out, as the other specs do. `nfsShowForSr` is the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)'s directive for `.show-for-sr`, imported as `NfsShowForSr` from `ngx-foundation-sites/visibility`; its class belongs to that spec and is shown only to place it.
+Consumer markup, then the server HTML. The hydrated DOM equals the server HTML: the directive declares no listener, so nothing adds `jsaction`. Class order is not significant; Angular also renders the directive attributes and the static attributes that feed inputs (`nfsbadge=""`, `color="alert"`), which the resulting DOM below leaves out, as the other specs do. `.show-for-sr` is Foundation's visibility class, which the consumer writes as a normal class with Foundation's global styles loaded; it passes through to the server HTML unchanged.
 
 ```html
 <!-- Basics: the badge inside the heading it counts -->
-<h2>Unread messages <span nfsBadge>1<span nfsShowForSr> unread message</span></span></h2>
+<h2>Unread messages <span nfsBadge>1<span class="show-for-sr"> unread message</span></span></h2>
 
 <h2>Unread messages <span class="badge">1<span class="show-for-sr"> unread message</span></span></h2>
 
 <!-- A coloured badge inside a button: the count joins the button's name -->
-<button nfsButton>Messages <span nfsBadge color="alert">3<span nfsShowForSr> unread</span></span></button>
+<button nfsButton>Messages <span nfsBadge color="alert">3<span class="show-for-sr"> unread</span></span></button>
 
 <button class="button" type="button">Messages <span class="badge alert">3<span class="show-for-sr"> unread</span></span></button>
 
 <!-- A badge beside a link, referenced as its description -->
 <a href="/cart" aria-describedby="cart-count">Cart</a>
-<span nfsBadge id="cart-count">2<span nfsShowForSr> items</span></span>
+<span nfsBadge id="cart-count">2<span class="show-for-sr"> items</span></span>
 
 <a href="/cart" aria-describedby="cart-count">Cart</a>
 <span class="badge" id="cart-count">2<span class="show-for-sr"> items</span></span>
 
 <!-- An icon badge: the icon is hidden, the text says what it means -->
-<span nfsBadge color="success"><svg aria-hidden="true" ...><path stroke="currentColor" .../></svg><span nfsShowForSr>Done</span></span>
+<span nfsBadge color="success"><svg aria-hidden="true" ...><path stroke="currentColor" .../></svg><span class="show-for-sr">Done</span></span>
 
 <span class="badge success"><svg aria-hidden="true" ...><path stroke="currentColor" .../></svg><span class="show-for-sr">Done</span></span>
 ```
@@ -251,7 +251,7 @@ Story ids follow `badge--<story>`: `badge--default`, `badge--colors`, `badge--ic
 
 ### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`)
 
-Run by `npx nx test-storybook <lib>`. Every story runs axe with `parameters.a11y.test = 'error'` and the six tags (which include `color-contrast`, `aria-prohibited-attr`, `button-name`, `link-name`, and `target-size`). No story element carries a Foundation class written in the story.
+Run by `npx nx test-storybook <lib>`. Every story runs axe with `parameters.a11y.test = 'error'` and the six tags (which include `color-contrast`, `aria-prohibited-attr`, `button-name`, `link-name`, and `target-size`). No story element carries a Foundation class written in the story, except `show-for-sr`, a visibility class whose family has no first-milestone spec.
 
 - `badge--default`: Foundation's Basics as a heading with a badge inside ("Unread messages", "1", and the hidden " unread message"). The badge carries `.badge` and no role; its computed background is Foundation's `$badge-background` and its text colour `$badge-color`; the heading is found by `getByRole('heading', {name: 'Unread messages 1 unread message'})`.
 - `badge--colors`: Foundation's Coloring example, one badge per default palette name plus one with no `color`, each in a list item whose text and the badge's hidden text name its meaning. Each carries its name's class; each computed background differs from the uncoloured one except `primary`'s, which equals it; the computed text colour is `$white` on the uncoloured, primary, secondary, and alert badges and `$black` on success and warning; axe passes `color-contrast` under the required setting, and, because axe leaves one-character badges incomplete, the play function computes each badge's ratio from its computed text and background colours with the exact WCAG formula and asserts at least 4.5:1.
@@ -298,7 +298,7 @@ Manual release test (ADR 0022): with NVDA on Firefox and Chrome, JAWS on Chrome,
 - A default live role, a `role` or politeness input, or a library announcer (D8): the consumer's native `role="status"` covers the case, and only the consumer knows which counts are status messages. Category: `platform-or-a11y`.
 - An input that writes `aria-describedby` on the element a badge describes: the native attribute on the consumer's element does it, and a badge inside its element needs none (D4). Category: `platform-or-a11y`.
 - A forced-colours rule: measured, badge text and a `currentColor` icon stay CanvasText on Canvas in Chromium and Firefox, and the text carries the meaning. Category: `platform-or-a11y`.
-- The screen-reader-only directive for `.show-for-sr`: the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md). Category: `scope-boundary`.
+- A screen-reader-only directive for `.show-for-sr`: visibility classes have no first-milestone spec, so the consumer writes the class; a later milestone adds the directive. Category: `scope-boundary`.
 - Foundation Icon Fonts (`fi-*`), a separate package the docs use for the Icons example: any icon works, and an icon library's classes are the consumer's own. Category: `scope-boundary`.
 - Foundation's Label (`.label`), the rectangular tag for longer text: the [Spec: Label](../issues/94-spec-label.md). Category: `scope-boundary`.
 - The Variant registries, the helper types, the manifest rows, and the declaration-file generator: [Spec: Variant declaration tooling](../issues/136-spec-variant-declaration-tooling.md). Category: `scope-boundary`.
@@ -331,28 +331,28 @@ Manual release test (ADR 0022): with NVDA on Firefox and Chrome, JAWS on Chrome,
 
 ```html
 <!-- A heading with its count -->
-<h2>Invoices <span nfsBadge color="warning">4<span nfsShowForSr> overdue</span></span></h2>
+<h2>Invoices <span nfsBadge color="warning">4<span class="show-for-sr"> overdue</span></span></h2>
 
 <!-- A button whose name carries the count -->
-<button nfsButton>Messages <span nfsBadge color="alert">3<span nfsShowForSr> unread</span></span></button>
+<button nfsButton>Messages <span nfsBadge color="alert">3<span class="show-for-sr"> unread</span></span></button>
 
 <!-- An icon badge -->
 <span nfsBadge color="success">
   <svg aria-hidden="true" width="10" height="10" viewBox="0 0 10 10"><path d="M1 5l3 3 5-6" fill="none" stroke="currentColor" stroke-width="2" /></svg>
-  <span nfsShowForSr>Done</span>
+  <span class="show-for-sr">Done</span>
 </span>
 ```
 
 ```ts
 @Component({
   selector: 'app-cart-button',
-  imports: [NfsBadge, NfsButton, NfsShowForSr],
+  imports: [NfsBadge, NfsButton],
   template: `
     <button nfsButton (click)="add()">Add to cart</button>
     <a href="/cart" aria-describedby="cart-count">Cart</a>
     <!-- The status badge exists before the count changes and holds the whole message -->
     <span nfsBadge id="cart-count" role="status">
-      {{ count() }}<span nfsShowForSr> {{ count() === 1 ? 'item' : 'items' }} in cart</span>
+      {{ count() }}<span class="show-for-sr"> {{ count() === 1 ? 'item' : 'items' }} in cart</span>
     </span>
   `,
 })
@@ -379,7 +379,7 @@ declare module 'ngx-foundation-sites' {
 
 With it, `color="purple"` compiles on badges; `color="pruple"` fails with the compiler's suggestion (ADR 0040). The purple badge's text reaches 4.569:1 with `$white`, as the documented ratio requires.
 
-`NfsButton` and `NfsShowForSr` are shown only to place them; their names and inputs belong to their own specs.
+`NfsButton` is shown only to place it; its name and inputs belong to its own spec. `show-for-sr` is Foundation's visibility class, written as a normal class.
 
 ### Platform features to adopt when the browser target moves
 

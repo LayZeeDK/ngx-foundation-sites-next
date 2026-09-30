@@ -110,7 +110,7 @@ Field attributes Abide reads, and their replacement:
 
 Error markup Abide reads: `.form-error` as sibling or inside the parent (replaced by explicit links, below), `[data-form-error-for]` (replaced by `[nfsFormError]="field"`), `[data-form-error-on]` (the `formErrorOn` input), `[data-abide-error]` (the element carrying `nfsAbideAlert`).
 
-Classes the Abide docs page writes in its examples, and who sets each under the class rule (ADR 0039; mapping below): `.form-error` (`nfsFormError`); `.is-invalid-label`, `.is-invalid-input`, and `.form-error.is-visible`, written statically to show the error look (host bindings of the Abide directives, which strip a copied one); `.alert.callout` on the Form alert (`nfsCallout color="alert"`, [Spec: Callout](../issues/89-spec-callout.md)); `.help-text`, `.input-group`, `.input-group-label`, and `.input-group-field` (the [Spec: Forms](../issues/98-spec-forms.md) directives); `.button` on the submit and reset controls (`nfsButton`). The input group example's Form alert writes `.sr-only`, which Foundation 6.9 does not define; a visually hidden Form alert takes the Visibility Classes directive for `.show-for-sr` instead (`nfsShowForSr`).
+Classes the Abide docs page writes in its examples, and who sets each under the class rule (ADR 0039; mapping below): `.form-error` (`nfsFormError`); `.is-invalid-label`, `.is-invalid-input`, and `.form-error.is-visible`, written statically to show the error look (host bindings of the Abide directives, which strip a copied one); `.alert.callout` on the Form alert (`nfsCallout color="alert"`, [Spec: Callout](../issues/89-spec-callout.md)); `.help-text`, `.input-group`, `.input-group-label`, and `.input-group-field` (the [Spec: Forms](../issues/98-spec-forms.md) directives); `.button` on the submit and reset controls (`nfsButton`). The input group example's Form alert writes `.sr-only`, which Foundation 6.9 does not define; a visually hidden Form alert writes Foundation's `.show-for-sr` instead, as a normal class. Visibility classes and grid classes belong to families with no first-milestone spec, so the consumer writes them as normal classes with Foundation's global styles loaded (the class rule's exception for such a family); a later milestone adds directives for them.
 
 Events: `valid.zf.abide`, `invalid.zf.abide`, `formvalid.zf.abide`, `forminvalid.zf.abide`, `formreset.zf.abide` have no outputs (building-blocks 1.4; ADR 0006). Consumers read field state signals; a failed submit is Signal Forms' `onInvalid` submission callback.
 
@@ -131,8 +131,8 @@ Methods: none carried. `validateForm()` is a native submit (`requestSubmit()` or
 | `.middle` on a label | `label` | `nfsFormLabel` with `middle`, beside `nfsAbideLabel` ([Spec: Forms](../issues/98-spec-forms.md)) | Variant, not Abide's | `NfsAbideLabel` does not host `NfsFormLabel` (D19) |
 | `.input-group`, `.input-group-label`, `.input-group-field`, `.input-group-button` | the group, its prefix, the field, the button wrapper | `nfsInputGroup`, `nfsInputGroupLabel`, `nfsInputGroupField` beside `nfsAbideInput`, `nfsInputGroupButton` ([Spec: Forms](../issues/98-spec-forms.md)) | Structural, not Abide's | The field's Form error goes after the group, linked by reference |
 | `.button` and a palette class on the submit control | `button` | `nfsButton` with `color` ([Spec: Button](../issues/37-spec-button.md)) | Structural and Variant, not Abide's | |
-| `.show-for-sr` on a visually hidden Form alert | the Form alert element | `nfsShowForSr` beside `nfsAbideAlert` ([Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)) | Visibility class, not Abide's | `hidden` still hides it: `.show-for-sr` sets no `display` |
-| `.grid-x`, `.cell`, and the cell sizes around a validated input group | the layout `div`s of the usage example | `nfsGridX`, and `nfsCell` with `size` ([Spec: XY Grid](../issues/99-spec-xy-grid.md)) | Utility classes, not Abide's | |
+| `.show-for-sr` on a visually hidden Form alert | the Form alert element | `class="show-for-sr"`, a normal class the consumer writes beside `nfsAbideAlert`, from Foundation's global styles | Visibility class, not Abide's; a family with no first-milestone spec | `hidden` still hides it: `.show-for-sr` sets no `display` |
+| `.grid-x`, `.cell`, and the cell sizes around a validated input group | the layout `div`s of the usage example | `class="grid-x"` and `class="cell small-3"`, normal classes the consumer writes, from Foundation's global styles | Grid classes, not Abide's; a family with no first-milestone spec | |
 
 Variant families (building-blocks 1.14 item 2): none. Foundation's Abide classes are one Structural class (`.form-error`) and three State classes; the Variant classes in its examples belong to Callout, Forms, and Button, whose specs type them. So the entry point declares no Variant registry and writes no Variant property.
 
@@ -543,7 +543,7 @@ Release test (manual, before each release; [Resolve the assistive-technology che
 - Moving focus on submit (a documented recipe instead).
 - Server-side handling of native POST submissions (the consumer's server).
 - Runtime theming of error colours (building-blocks 1.13).
-- The looks of the neighbouring directives: the Form alert's callout look ([Spec: Callout](../issues/89-spec-callout.md)); form labels and `.middle`, help text and its pairing, input groups, and the resting field's contrast settings ([Spec: Forms](../issues/98-spec-forms.md)); the submit control ([Spec: Button](../issues/37-spec-button.md)); a visually hidden Form alert's `.show-for-sr` ([Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)).
+- The looks of the neighbouring directives: the Form alert's callout look ([Spec: Callout](../issues/89-spec-callout.md)); form labels and `.middle`, help text and its pairing, input groups, and the resting field's contrast settings ([Spec: Forms](../issues/98-spec-forms.md)); the submit control ([Spec: Button](../issues/37-spec-button.md)); a visually hidden Form alert's `.show-for-sr`, which is Foundation's global styles, written as a normal class.
 
 ## Further Notes
 
@@ -681,14 +681,14 @@ export class Profile {
 
 Angular's `Validators.email` error key is `email`; Reactive error keys are the kinds. Reactive consumers write `required` themselves (Signal Forms mirrors it).
 
-A validated input group with a `middle` label (the [Spec: Forms](../issues/98-spec-forms.md) directives beside the Abide ones; `nfsGridX` and `nfsCell` are the [Spec: XY Grid](../issues/99-spec-xy-grid.md)'s):
+A validated input group with a `middle` label (the [Spec: Forms](../issues/98-spec-forms.md) directives beside the Abide ones; `grid-x`, `cell`, `small-3`, and `small-9` are Foundation's grid classes, written as normal classes with Foundation's global styles loaded):
 
 ```html
-<div nfsGridX>
-  <div nfsCell size="3">
+<div class="grid-x">
+  <div class="cell small-3">
     <label for="amount" nfsFormLabel middle [nfsAbideLabel]="amount">Amount in dollars (required)</label>
   </div>
-  <div nfsCell size="9">
+  <div class="cell small-9">
     <div nfsInputGroup>
       <span nfsInputGroupLabel>$</span>
       <input id="amount" type="number" inputmode="decimal" autocomplete="transaction-amount"
@@ -701,10 +701,10 @@ A validated input group with a `middle` label (the [Spec: Forms](../issues/98-sp
 </div>
 ```
 
-A visually hidden Form alert, as in Foundation's input group example (`nfsShowForSr`, from `ngx-foundation-sites/visibility`):
+A visually hidden Form alert, as in Foundation's input group example (`show-for-sr` is Foundation's visibility class, written as a normal class):
 
 ```html
-<div nfsAbideAlert nfsShowForSr>There are some errors in your form.</div>
+<div nfsAbideAlert class="show-for-sr">There are some errors in your form.</div>
 ```
 
 ### Sass
@@ -763,4 +763,4 @@ A consumer with a different palette or background picks any colour with 4.5:1 on
 - The implicit pattern from the `type` attribute: dropped (Foundation contract table).
 - `.form-error` inside the label, as Foundation's docs write it: for a native control the Form error goes after the label with `[nfsFormError]="ref"` (documented usage, D3). This gives up user story 14's reference-free errors for native controls, a migration step for every docs-shaped form.
 - Every class in Foundation's Abide examples (added 2026-09-27, class rule): the consumer writes directive attributes instead (ADR 0039): `nfsFormError` for `.form-error`, `nfsCallout color="alert"` for the Form alert's `.alert.callout`, `nfsHelpText` for `.help-text`, the input group directives for `.input-group` and its parts, and `nfsButton` for `.button`. The static `is-invalid-label`, `is-invalid-input`, and `is-visible` that the docs write to show the error look are stripped by the directives' bindings (D20), so copied markup shows no error look; the look appears only from field state.
-- The input group example's Form alert with `class="sr-only"`, a class Foundation 6.9 does not define (added 2026-09-27, class rule): a visually hidden Form alert takes the Visibility Classes directive for `.show-for-sr` (usage examples).
+- The input group example's Form alert with `class="sr-only"`, a class Foundation 6.9 does not define (added 2026-09-27, class rule): a visually hidden Form alert writes Foundation's `.show-for-sr` as a normal class (usage examples; revised 2026-09-30, later-milestone families).

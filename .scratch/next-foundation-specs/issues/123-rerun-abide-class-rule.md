@@ -151,3 +151,7 @@ Each rule is stated as documented usage: the label's and the Form error's Host p
 ### Amendment, 2026-09-29 (exportAs on every directive)
 
 - [Decide: an exportAs on every directive](156-decide-exportas-on-every-directive.md): `NfsAbideLabel`, `NfsFormError`, and `NfsAbideAlert` gain `exportAs: 'nfsAbideLabel'`, `'nfsFormError'`, and `'nfsAbideAlert'` (added 2026-09-30, audit 0009).
+
+### Amendment, 2026-09-30 (later-milestone families)
+
+From [Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md), applied by [Re-run: specs without the later-milestone families, group a](176-rerun-specs-without-later-families-group-a.md): `specs/abide.md` no longer assumes the XY Grid or the Visibility Classes. The validated input group example writes Foundation's grid classes as normal classes (`class="grid-x"`, `class="cell small-3"`, `class="cell small-9"`) in place of `nfsGridX` and `nfsCell`, and the visually hidden Form alert writes `class="show-for-sr"` beside `nfsAbideAlert` in place of `nfsShowForSr`, with Foundation's global styles loaded. The classes paragraph of the Foundation contract, the two mapping rows, the neighbouring-looks bullet of Out of Scope, and the last Foundation-behaviour bullet say so, and no link to either spec remains. `hidden` still hides the alert, because `.show-for-sr` sets no `display`. Unchanged: the five directives, their inputs, host bindings, ARIA, the Error-state policy, the rendering modes, the Sass settings, and the Story ids.

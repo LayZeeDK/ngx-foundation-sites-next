@@ -135,8 +135,8 @@ Structural and State classes, and the markup Foundation keys on:
 | Motion class from `animate` | A class in the host's `[class]` list during the enter or leave phase only: the library's keyframe class of each typed Motion name (`fade-in` binds `nfs-fade-in`), or the consumer's own class written with a leading dot | ADR 0003 rule 1; the consumer writes Motion names, never a library class name (ADR 0039, class names passed as input values) |
 | `.button` and its Variant classes on a Trigger (another family's: the Button's) | `NfsButton` (`button[nfsButton]`) with its Variant inputs, beside the Trigger; the split button's arrow-only Trigger takes its `dropdown` and `arrowOnly` inputs | The [Spec: Button](../issues/37-spec-button.md)'s |
 | `.button-group` (another family's: the Button Group's) | `NfsButtonGroup` (`[nfsButtonGroup]`) around the split button's buttons, never around the pane (D30) | The [Spec: Button Group](../issues/82-spec-button-group.md)'s |
-| `.show-for-sr` (another family's: the Visibility Classes') | `NfsShowForSr` (`[nfsShowForSr]`) naming the split button's arrow-only Trigger | The [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)'s |
-| `.grid-container`, `.grid-x`, `.grid-margin-x`, `.cell`, `.medium-6` (another family's: the XY Grid's) | `NfsGridContainer`, `NfsGridX` with `gridMarginX`, and `NfsCell` with `size`, the form grid of Foundation's docs example (`dropdown-pane--default`) | The [Spec: XY Grid](../issues/99-spec-xy-grid.md)'s |
+| `.show-for-sr` (another family's: the Visibility Classes', with no first-milestone spec) | `class="show-for-sr"`, a normal class the consumer writes on the text naming the split button's arrow-only Trigger | Foundation's global styles |
+| `.grid-container`, `.grid-x`, `.grid-margin-x`, `.cell`, `.medium-6` (another family's: the XY Grid's, with no first-milestone spec) | Normal classes the story writes, the form grid of Foundation's docs example (`dropdown-pane--default`) | Foundation's global styles |
 | `.reveal` (another family's: the Reveal's) | `NfsReveal` (`dialog[nfsReveal]`) around a pane | The [Spec: Reveal](../issues/18-spec-reveal.md)'s |
 
 Variant classes, one row per family (building-blocks 1.14 item 2):
@@ -491,7 +491,7 @@ Story ids follow `dropdown-pane--<story>`: `dropdown-pane--default`, `dropdown-p
 
 Stack: `@storybook/angular-vite` 10.6 with `@storybook/addon-vitest` on Vitest 4.1 browser mode, Playwright Chromium headless; inferred `test-storybook`: `npx nx test-storybook <lib>`. Axe: `@storybook/addon-a11y`, `parameters.a11y.test = 'error'`, `parameters.a11y.options.runOnly = {type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice']}` in the Storybook preview configuration, the enforcing gate; every story runs it with its pane open as well as closed. CSR only; the single home of interaction tests. Animated stories wait for the Completion output, never a timeout.
 
-- `dropdown-pane--default`: Foundation's docs example, with the library's directives in place of its classes, the form's grid included (the [Spec: XY Grid](../issues/99-spec-xy-grid.md)'s `nfsGridContainer`, `nfsGridX` with `gridMarginX`, and `nfsCell` with `[size]="{medium: 6}"`); the pane carries `.dropdown-pane` although the story writes no class; the Trigger has `aria-expanded="false"`, `aria-controls` equal to the pane id, and no `aria-haspopup`; a click adds `.is-open`, `has-position-bottom has-alignment-left`, and `aria-expanded="true"`; clicking the Trigger again closes it once (no reopen); reopening then Escape with focus inside closes with `'keydown'` and focus returns to the Trigger; Tab out of the pane closes with `'tab'`; Enter and Space on the Trigger toggle through `userEvent.keyboard`.
+- `dropdown-pane--default`: Foundation's docs example, with the library's directives in place of its classes, except the form's grid, which keeps Foundation's classes as normal classes (`grid-container`, `grid-x grid-margin-x`, and `cell medium-6`), because the XY Grid has no first-milestone spec; the pane carries `.dropdown-pane` although the story writes no class on it; the Trigger has `aria-expanded="false"`, `aria-controls` equal to the pane id, and no `aria-haspopup`; a click adds `.is-open`, `has-position-bottom has-alignment-left`, and `aria-expanded="true"`; clicking the Trigger again closes it once (no reopen); reopening then Escape with focus inside closes with `'keydown'` and focus returns to the Trigger; Tab out of the pane closes with `'tab'`; Enter and Space on the Trigger toggle through `userEvent.keyboard`.
 - `dropdown-pane--positions`: for each of the 12 position and alignment pairs (args) with `vOffset` and `hOffset`, the placement classes match and the pane box sits on the expected side of the Trigger. Foundation's docs Positioning examples, written there with the legacy `.top`, `.left`, `.right`, and `.bottom` pane classes, are the `position` arg values; the Trigger sits in the middle of a scaffold whose padding is an inline style.
 - `dropdown-pane--multiple-triggers`: two Triggers; the pane sits against the one clicked; `pane.open()` from a third button places it against the first Trigger; after Escape with focus inside, focus returns to the Trigger that opened it.
 - `dropdown-pane--hover`: `hover`; hovering the Trigger opens after the delay without moving focus; moving onto the pane keeps it open; leaving both closes it; clicking the Trigger of the hover-opened pane keeps it open; Escape while hovering closes and it does not reopen until the pointer re-enters; with focus moved into the pane, leaving with the pointer keeps it open.
@@ -608,12 +608,12 @@ Against the prerendered fixture app (the harness from the rendering-mode test se
 
 ### Usage examples
 
-`nfsShowForSr` is the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)'s directive for `.show-for-sr`, imported as `NfsShowForSr` from `ngx-foundation-sites/visibility`. `account-box` is the application's own class, and `HeavyDetails` (`app-heavy-details`) its own component, loaded only inside the `@defer` block.
+`show-for-sr` is Foundation's visibility class, written as a normal class with Foundation's global styles loaded; its family has no first-milestone spec. `account-box` is the application's own class, and `HeavyDetails` (`app-heavy-details`) its own component, loaded only inside the `@defer` block.
 
 ```ts
 @Component({
   selector: 'app-header',
-  imports: [NfsButton, NfsButtonGroup, NfsToggle, NfsClose, NfsDropdownPane, NfsShowForSr, HeavyDetails],
+  imports: [NfsButton, NfsButtonGroup, NfsToggle, NfsClose, NfsDropdownPane, HeavyDetails],
   template: `
     <!-- Click to toggle, Foundation's docs example: no class on the pane -->
     <button nfsButton [nfsToggle]="example">Toggle Dropdown</button>
@@ -659,7 +659,7 @@ Against the prerendered fixture app (the harness from the rendering-mode test se
     <div nfsButtonGroup role="group" aria-label="Save">
       <button nfsButton (click)="save()">Save</button>
       <button nfsButton dropdown arrowOnly [nfsToggle]="saveMenu">
-        <span nfsShowForSr>More save options</span>
+        <span class="show-for-sr">More save options</span>
       </button>
     </div>
     <div nfsDropdownPane #saveMenu="nfsDropdownPane">

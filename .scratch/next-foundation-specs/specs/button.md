@@ -94,7 +94,7 @@ Button has no Plugin, no `defaults` object, no `data-*` Options, no events, and 
 
 Button Group (`.button-group`) and Close Button (`.close-button`) are separate CSS-only components with their own docs pages and their own specs.
 
-Docs conventions the spec keeps or corrects: `type="button"` on every non-submit `<button>` (kept, now the default); the `.submit` marker on submit buttons (dropped: under the class rule a submit button says `type="submit"`, D5); `aria-disabled` without a value on disabled links (corrected: `aria-disabled="true"` with `role="link"` on a link whose target is removed); screen-reader-only text plus an `aria-hidden="true"` icon for icon-only buttons (kept as guidance, with the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)'s directive for `.show-for-sr` in place of the class).
+Docs conventions the spec keeps or corrects: `type="button"` on every non-submit `<button>` (kept, now the default); the `.submit` marker on submit buttons (dropped: under the class rule a submit button says `type="submit"`, D5); `aria-disabled` without a value on disabled links (corrected: `aria-disabled="true"` with `role="link"` on a link whose target is removed); screen-reader-only text plus an `aria-hidden="true"` icon for icon-only buttons (kept as guidance, with Foundation's `.show-for-sr` written as a normal class: visibility classes have no first-milestone spec, and Foundation's global styles are loaded).
 
 ### CSS class to Angular mapping
 
@@ -106,7 +106,7 @@ Structural and State classes:
 | `.disabled` | State class, a host binding of `NfsButton` while a link or a focusable disabled button is disabled; a copied static one is stripped (D22) | Foundation's CSS styles `.disabled` and `[disabled]` but not `[aria-disabled]` |
 | `[disabled]` | Native attribute bound by `NfsButton` on `<button>` and `<input>` hosts | Platform disabling |
 | `.submit` | Neither read to seed `type` nor bound; a copied one has no effect (D22) | A docs marker with no CSS; `type="submit"` says the same (D5) |
-| `.show-for-sr` on the screen-reader-only text of an icon-only or arrow-only button | Another family's (a Visibility class): `NfsShowForSr` (`[nfsShowForSr]`) on the consumer's inner element | [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md); not this entry point's |
+| `.show-for-sr` on the screen-reader-only text of an icon-only or arrow-only button | Another family's (a Visibility class, a family with no first-milestone spec): `class="show-for-sr"`, a normal class the consumer writes on its inner element | Foundation's global styles; not this entry point's |
 | `.button-group` around grouped buttons, and the Dropdown pane a Trigger on a button opens | Another family's: `NfsButtonGroup` and `NfsDropdownPane` | [Spec: Button Group](../issues/82-spec-button-group.md), [Spec: Dropdown](../issues/26-spec-dropdown.md) |
 
 Variant classes, one row per family (building-blocks 1.14 item 2). `small` in the value column stands for the Zero breakpoint, the key of `nfsBreakpointsToken`'s map whose value is 0 (D20), and `medium` for any other Class breakpoint:
@@ -240,7 +240,7 @@ APG pattern: Button (command and toggle variants); Link for `<a>` hosts.
 | Disabled link | No `href` (consumer), `role="link"`, `aria-disabled="true"`, `.disabled`; not focusable, not navigable | HTML ("If the a element has no href attribute, then the element represents a placeholder for where a link might otherwise have been placed"); WAI-ARIA `aria-disabled` note on host-language equivalents; `link` supports `aria-disabled` |
 | Toggle button | Consumer binds `[attr.aria-pressed]`; the label never changes with the state | APG Button pattern ("it is critical the label on a toggle does not change when its state changes") |
 | Menu-opening or dialog-opening button | `aria-expanded`, `aria-controls`, and `aria-haspopup` come from the Triggers utility, not from `NfsButton` | Building-blocks Triggers rule |
-| Icon-only, arrow-only | Name from a screen-reader-only child (the Visibility Classes directive that binds `.show-for-sr`); the icon wrapped in `aria-hidden="true"`; `aria-label` only when no visible or screen-reader text exists | Foundation Button docs; APG naming: button and link are named from content |
+| Icon-only, arrow-only | Name from a screen-reader-only child (Foundation's `.show-for-sr`, written as a normal class); the icon wrapped in `aria-hidden="true"`; `aria-label` only when no visible or screen-reader text exists | Foundation Button docs; APG naming: button and link are named from content |
 
 | Key | `<button>` and `<input>` | `<a href>` | Owner |
 | --- | --- | --- | --- |
@@ -313,14 +313,14 @@ Consumer markup and the resulting DOM. Server HTML and hydrated DOM are identica
 
 <!-- Arrow-only button opening a Dropdown pane (a Trigger on the same element) -->
 <button nfsButton dropdown arrowOnly [nfsToggle]="saveMenu">
-  <span nfsShowForSr>More save options</span>
+  <span class="show-for-sr">More save options</span>
 </button>
 <button class="button dropdown arrow-only" type="button" aria-expanded="false" aria-controls="...">
   <span class="show-for-sr">More save options</span>
 </button>
 ```
 
-The Trigger's attributes in the last example belong to the Triggers utility spec and are shown only to place them. `nfsShowForSr` is the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)'s directive for `.show-for-sr`, imported as `NfsShowForSr` from `ngx-foundation-sites/visibility`. A `jsaction` attribute appears in server HTML only on hosts where the consumer (or another directive, such as a Trigger) declared a listener; `NfsButton` itself never causes one. The split button, a Button Group holding a main action and an arrow-only button, is the [Spec: Button Group](../issues/82-spec-button-group.md)'s.
+The Trigger's attributes in the last example belong to the Triggers utility spec and are shown only to place them. `show-for-sr` is Foundation's visibility class, which the consumer writes as a normal class with Foundation's global styles loaded; it reaches the server HTML unchanged. A `jsaction` attribute appears in server HTML only on hosts where the consumer (or another directive, such as a Trigger) declared a listener; `NfsButton` itself never causes one. The split button, a Button Group holding a main action and an arrow-only button, is the [Spec: Button Group](../issues/82-spec-button-group.md)'s.
 
 ### Animation
 
@@ -350,7 +350,7 @@ Story ids follow `button--<story>`: `button--basics`, `button--sizes`, `button--
 
 ### 1. Story play function (`@storybook/angular-vite` with `@storybook/addon-vitest`)
 
-Run by `npx nx test-storybook <lib>`. Every story runs axe with `parameters.a11y.test = 'error'` and the WCAG 2.2 AA rule set (tags `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`, plus `best-practice`, which include `target-size`, `color-contrast`, `button-name`, `input-button-name`, and `link-name`), under the Storybook preview settings that carry the required `$button-palette`. No story element carries a Foundation class written in the story.
+Run by `npx nx test-storybook <lib>`. Every story runs axe with `parameters.a11y.test = 'error'` and the WCAG 2.2 AA rule set (tags `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`, plus `best-practice`, which include `target-size`, `color-contrast`, `button-name`, `input-button-name`, and `link-name`), under the Storybook preview settings that carry the required `$button-palette`. No story element carries a Foundation class written in the story, except `show-for-sr`, a visibility class whose family has no first-milestone spec.
 
 - `button--basics`: each host has `.button`; the `<button>` has `type="button"`; the `<a>` has an `href` and no `type`; `getByRole('button')` and `getByRole('link')` find them by name.
 - `button--sizes`: `size="tiny"` (one labelled `I`), `size="small"`, no size, `size="default"`, and `size="large"`; the computed `font-size` for `size="small"` equals Foundation's `0.75rem`; `size="default"` and no size carry no size class and share the default size.
@@ -496,9 +496,9 @@ export class InvoiceActions {
 ```
 
 ```html
-<!-- Icon-only button (Foundation's accessibility pattern; the span takes the Visibility Classes directive) -->
+<!-- Icon-only button (Foundation's accessibility pattern; the span carries Foundation's show-for-sr class) -->
 <button nfsButton color="alert">
-  <span nfsShowForSr>Delete invoice</span>
+  <span class="show-for-sr">Delete invoice</span>
   <svg aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 16 16"><path d="..."/></svg>
 </button>
 

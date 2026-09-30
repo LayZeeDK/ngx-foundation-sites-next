@@ -94,7 +94,7 @@ Every Foundation Breadcrumbs class, per building-blocks 1.14 item 2. Breadcrumbs
 | `.breadcrumbs` | Structural | `NfsBreadcrumbs`, `ul[nfsBreadcrumbs]` and `ol[nfsBreadcrumbs]`, static host class | Always |
 | `.disabled` on an item | State | `NfsBreadcrumbsItem`, `li[nfsBreadcrumbsItem]`, host binding `[class.disabled]` from the `disabled` input (D5) | `true` sets `.disabled`; `false` sets none and strips a copied static one |
 | Current page | No class | Not bound. `aria-current` on the current page's link, which `nfs-breadcrumbs` colours with `$breadcrumbs-item-color-current`, or on its `li` when it is text (D4) | A link whose `aria-current` is present and neither `false` nor empty |
-| `.show-for-sr` | Utility (Visibility classes) | Not used by the recipes: `aria-current` replaces Foundation's "Current: " text (D4). Where visually hidden text is wanted, the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md)'s `nfsShowForSr` | Not this entry point's |
+| `.show-for-sr` | Utility (Visibility classes) | Not used by the recipes: `aria-current` replaces Foundation's "Current: " text (D4). Where visually hidden text is wanted, the consumer writes `class="show-for-sr"`, a normal class from Foundation's global styles (a family with no first-milestone spec) | Not this entry point's |
 
 No class is left for the consumer to write (ADR 0039). A `disabled` copied onto an `li` without `nfsBreadcrumbsItem` is not stripped, because no directive binds that element; it still draws Foundation's disabled look, so the documented form of a disabled step is `li[nfsBreadcrumbsItem] disabled` (Usage rules 2). A copied `current` or `is-active` draws nothing in Foundation's breadcrumbs CSS and says nothing to assistive technology; the current page is `aria-current="page"` (D4).
 
@@ -356,7 +356,7 @@ Manual release test (ADR 0022): with NVDA on Firefox and Chrome, JAWS on Chrome,
 - Silent separators for a consumer's own character: CSS in the Browser target cannot remove a text glyph from the accessibility tree, and CSS generated-content alternative text (`content: '>' / ''`) needs Safari 17.4 and Firefox 128 (the [Spec: Accordion](../issues/15-spec-accordion.md)'s D18); such a consumer keeps Foundation's glyph (D6). Category: `platform-or-a11y`.
 - Collapsing a long trail into an overflow control: Foundation has no such form, and the trail wraps at 320 px (1.4.10). Category: `scope-boundary`.
 - The separator's lean following a `dir` region of the other direction: its `/` or `\` follows `$global-text-direction` as Foundation's glyph does, and `:dir()` needs Chrome 120 (D8). Category: `platform-or-a11y`.
-- The screen-reader-only directive for `.show-for-sr`: the [Spec: Visibility Classes](../issues/104-spec-visibility-classes.md). Category: `scope-boundary`.
+- A screen-reader-only directive for `.show-for-sr`: visibility classes have no first-milestone spec, so the consumer writes the class; a later milestone adds the directive. Category: `scope-boundary`.
 - Runtime theming through custom properties (building-blocks 1.13). Category: `scope-boundary`.
 
 ## Further Notes
