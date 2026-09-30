@@ -121,3 +121,13 @@ From [Consistency review: the class-rule wave](133-consistency-review-class-rule
 - CR-B: the class mapping gains rows for the other families the examples and stories write, the Button's `.button` on the Triggers and the Prototyping Utilities' `.position-relative` on the stories' containing blocks.
 
 Unchanged: the three parts, their API, the placement formulas, the Light dismiss rules, ARIA, the rendering modes, and the Story ids. Confirmed: R51 (every `class="dropdown-pane"` is rendered output or library directive metadata), R52 (the renamed headings stand; "test consumers" stays), R65 (the Triggers are `nfsButton` hosts with no class), CR-A, CR-D (no `@Component` example writes a library directive it does not import). Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-29 (checks move to a later milestone)
+
+From [Decide: checks move to a later milestone](158-decide-checks-move-to-a-later-milestone.md), applied by [Re-run: specs without checks, group a](165-rerun-specs-without-checks-group-a.md): `specs/anchored-pane.md` describes and accepts a library with no checks. What left the spec, per check:
+
+- Misuse warnings: the Positioner's development-mode warnings (same-axis alignment, negative offsets, a placed element whose computed `position` is not `absolute`), with their browser-level test, the 2.4.11 row's "dev warning below 0", D23's "the Positioner's development `position` check reports a missing rule", and the Sass subsection's "which the dev-mode `position` check reports"; and every mention of the Dropdown's and Tooltip's copied-class checks, which those specs own (user story 44, the `position` contract row, the legacy-class mapping row, Out of Scope, the Foundation behaviour list, and the open-at-first-paint bullet's "its development check reports").
+- Runtime checks: "or Runtime check request" in the no-Variant paragraph.
+- Build-time checks: "no compile-time contrast check of its own" in the WCAG subsection.
+
+Each rule is stated as documented usage: a Positioner bullet in place of the warnings and the `NfsPositionerOptions` comments (an alignment on the position's own axis resolves to `center`; `vOffset` and `hOffset` are 0 or more, 2.4.11; the placed element needs `position: absolute` from its Foundation export mixin or its Application class). The browser-level test that a copied legacy class changes no placement stays. D23 is rewritten; no decision row was about a check alone. Unchanged: the three parts, their API, the placement formulas, the Light dismiss rules, the hover-intent rules, ARIA, the rendering modes, the Story ids, and the library's own tests of behaviour and accessibility.
