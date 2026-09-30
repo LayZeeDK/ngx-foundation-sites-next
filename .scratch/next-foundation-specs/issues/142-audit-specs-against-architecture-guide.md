@@ -178,7 +178,7 @@ Guide edits, `architecture-guide.md`:
 
   > A hidden Drilldown ancestor level, which still holds the open level, uses Foundation's `invisible`, never `inert`, because `inert` cannot be undone inside a subtree and the open level's `visible` overrides `visibility: hidden` ([Spec: Nested menu (shared utility)](issues/56-spec-nested-menu.md), D9, measured in [Prototype: Nested menu directive family with breakpoint mode switching](issues/50-prototype-nested-menu.md); recorded 2026-09-29 by [Audit: the specs against the architecture guide](issues/142-audit-specs-against-architecture-guide.md)).
 
-### OPEN FOR HUMAN
+### T9, decided 2026-09-30
 
 T9, the Prototyping Utilities' Library mixin. `specs/prototyping-utilities.md:584` gives the whole page one `nfs-prototyping-utilities` mixin over seventeen family export mixins (`foundation-prototype-spacing` to `foundation-prototype-text-decoration`) and Foundation's umbrella `foundation-prototype-classes`. ADR 0012's dated note, written before the spec, says "an entry point whose docs page covers several Foundation export mixins gets one Library mixin per export mixin, named after it and included after it, so each check runs only for a component the consumer compiles"; ADR 0044 speaks of "the family's Library mixin". With one mixin, the arrow check runs, the responsive spacing reprint prints, and every registry's Variant and flag properties are written whether or not the consumer compiled that export mixin, so `strictVariantProperties` cannot report a directive whose Foundation export mixin is missing.
 
@@ -189,6 +189,8 @@ T9, the Prototyping Utilities' Library mixin. `specs/prototyping-utilities.md:58
 Recommendation: (c). Why confidence is not high: the applied default contradicts ADR 0012's dated note, ADR 0044's singular wording points the other way, and whether to add an umbrella is a vocabulary choice no record makes. After the ruling, (b) or (c) opens "Re-run: Prototyping Utilities spec, architecture-guide findings", which the audit after it checks (map, Audits), since [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md) resolved on 2026-09-29 with T9 open; (a) is a dated note on ADR 0012.
 
 2026-09-29 (checks move to a later milestone, [Decide: checks move to a later milestone](158-decide-checks-move-to-a-later-milestone.md), decision 5): T9 stays OPEN FOR HUMAN. Its main argument for one Library mixin per export mixin, that each check runs only for a component the consumer compiles, now belongs to the later milestone, and the presence markers and flag properties that options (b) and (c) would split are the later milestone's too; in the first milestone the choice decides only which CSS rules a consumer includes (the responsive spacing rules and the registry Variant properties of `nfs-prototyping-utilities`).
+
+2026-09-30: T9 is decided by [Decide: the Prototyping Utilities' Library mixin](173-decide-prototyping-utilities-library-mixin.md). The user approved a fourth option, (a'): one mixin in the first milestone, renamed `nfs-prototype-classes` after Foundation's umbrella; the per-export mixins of (c) may follow in the later milestone. The re-run this section names for (b) or (c) is not opened.
 
 No ADR from this ticket. No prototype is needed.
 

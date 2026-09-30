@@ -121,7 +121,7 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
 // ... one @include nfs-<plugin> per plugin that has a Library mixin, after foundation-everything,
 // with the arguments its spec names (for example @include nfs-responsive-toggle(xlarge xxlarge);).
 @include nfs-smooth-scroll; // Smooth Scroll: smooth native jumps on html; play functions scroll with behavior: 'instant'
-@include nfs-prototyping-utilities; // Prototyping Utilities: responsive spacing in breakpoint order and the Variant properties; every prototyping-utilities--* story and every story whose scaffolding uses a Utility attribute
+@include nfs-prototype-classes; // Prototyping Utilities: responsive spacing in breakpoint order and the Variant properties; every prototyping-utilities--* story and every story whose scaffolding uses a Utility attribute
 @include nfs-typography-helpers; // Typography Helpers: list grid margins under nfsNoBullet; every typography-helpers--* story and every story whose list grid uses nfsNoBullet
 ```
 

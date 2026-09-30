@@ -120,7 +120,7 @@ Every contrast ratio a check compares is computed with the exact WCAG 2.2 relati
 
 #### S2. Where a check lives
 
-- One Library mixin per Foundation export mixin, named after it and included after it, so each check runs only for a component the consumer compiles ([ADR 0012](../adr/0012-sass-packaging.md), dated note of 2026-09-28; Top Bar D7). Whether an entry point with several export mixins keeps one mixin per export mixin is T9 of [Audit: the specs against the architecture guide](../issues/142-audit-specs-against-architecture-guide.md), which stays OPEN FOR HUMAN; this spec follows the rule as recorded.
+- One Library mixin per Foundation export mixin, named after it and included after it, so each check runs only for a component the consumer compiles ([ADR 0012](../adr/0012-sass-packaging.md), dated note of 2026-09-28; Top Bar D7). The Prototyping Utilities page has one mixin, `nfs-prototype-classes`, named after Foundation's umbrella `foundation-prototype-classes` ([Decide: the Prototyping Utilities' Library mixin](../issues/173-decide-prototyping-utilities-library-mixin.md)); per-export mixins (`nfs-prototype-spacing` and so on) may split it later, with `nfs-prototype-classes` including them all, and each of its checks then moves to the mixin of its family.
 - A component that needs custom CSS or compile-time checks gets a Library mixin; one whose only Sass is a check gets a checks-only mixin that emits no CSS ([ADR 0012](../adr/0012-sass-packaging.md), dated note of 2026-09-27; building-blocks 1.10; the Abide precedent of [ADR 0022](../adr/0022-wcag-2-2-aa-enforcement.md)). Such a mixin exists only in this milestone.
 - Target size and non-text contrast are guaranteed by the Library mixin where Foundation's settings can fail them: a `max(24px, <setting>)` floor (a CSS rule, first milestone) or a compile-time `@error` on sizes (the menu mixins stop the compile on toggle sizes and row heights), and a compile-time `@error` with the exact unrounded ratio for colour pairs that carry state (building-blocks 1.10).
 
@@ -463,7 +463,7 @@ First milestone: `$foundation-palette: map-merge($foundation-palette, (alert: #b
 
 #### Prototyping Utilities
 
-[Spec: Prototyping Utilities](../issues/102-spec-prototyping-utilities.md); `nfs-prototyping-utilities` (presence marker P4).
+[Spec: Prototyping Utilities](../issues/102-spec-prototyping-utilities.md); `nfs-prototype-classes` (presence marker P4), the page's one Library mixin ([Decide: the Prototyping Utilities' Library mixin](../issues/173-decide-prototyping-utilities-library-mixin.md)); per-export mixins may split it later, and this check then moves to `nfs-prototype-arrow`.
 
 **prototyping-utilities/1**, the arrow colour (1.4.11). A compile-time check that emits no CSS: `@warn` when `$prototype-arrow-color` is under 3:1 against `$body-background`, naming both colours and the ratio.
 
@@ -555,7 +555,7 @@ First milestone: `$tab-background-active: $primary-color; $tab-active-color: $wh
 
 Tests: `$body-background: #202020` warns for the dark icon; `nfs-title-bar` emits no CSS, and `$titlebar-color: #555` stops the compile (2.66:1), and so does `$titlebar-icon-color-hover: #333` (1.57:1); `nfs-top-bar` emits no CSS, Foundation's defaults stop the compile naming `$anchor-color` on `$topbar-background` (3.76:1), `$topbar-background: $white` set after the settings file without the submenu line stops it naming `$topbar-submenu-background` (3.76:1), both lines compile, `$topbar-background: transparent` with `$topbar-submenu-background: $white` compiles (the bar composited over the page), a translucent `$topbar-submenu-background` warns, a darker `$anchor-color` on the default bar compiles and warns that no menu icon reaches 3:1 on the bar, and `$topbar-unstack-breakpoint: small` warns; the exact-formula helper returns 2.94:1 for `#116666` on `#0a0a0a` and 4.44:1 for `#1177dd` on `#0a0a0a`, the two false passes of Foundation's `color-luminance()` below 3:1 and 4.5:1 that the ticket measured.
 
-Decisions: D7 (one Library mixin per export mixin, so each check runs only for a component the consumer compiles: an Off-canvas application with a title bar and no Top Bar is not stopped by the Top Bar's link check; T9 of the audit stays OPEN FOR HUMAN), D8 (the exact formula; `@error` for pairs the component always draws, `@warn` for pairs that exist only in a placement the consumer may not use; not taken: Foundation's `color-luminance()`, `@error` everywhere).
+Decisions: D7 (one Library mixin per export mixin, so each check runs only for a component the consumer compiles: an Off-canvas application with a title bar and no Top Bar is not stopped by the Top Bar's link check; the Prototyping Utilities keep one umbrella mixin, `nfs-prototype-classes`, which per-export mixins may split later, as [Decide: the Prototyping Utilities' Library mixin](../issues/173-decide-prototyping-utilities-library-mixin.md) ruled), D8 (the exact formula; `@error` for pairs the component always draws, `@warn` for pairs that exist only in a placement the consumer may not use; not taken: Foundation's `color-luminance()`, `@error` everywhere).
 
 First milestone: `$topbar-background: $white;` and, when written after Foundation's settings file, `$topbar-submenu-background: $topbar-background;` stay required; `$titlebar-color` at 4.5:1 and the title bar's icon colours at 3:1 against `$titlebar-background`, an opaque bar where a stuck bar covers content, and a menu icon on the bar or a dark icon on a dark page at 3:1, stay documented usage. The Responsive Toggle, Responsive Menu, Dropdown Menu, and Sticky specs quote these checks.
 
@@ -860,7 +860,7 @@ Every `build-time` entry of the seven manifests, by its heading, and where it la
 | shared | `nfs-badge` text-contrast `@error` | badge/1 |
 | shared | `nfs-card` text/link contrast `@error` | card/1 |
 | shared | `nfs-label` text-contrast `@error` | label/1 |
-| shared | `nfs-prototyping-utilities` arrow-contrast `@warn` | prototyping-utilities/1 |
+| shared | `nfs-prototype-classes` arrow-contrast `@warn` | prototyping-utilities/1 |
 | shared | `nfs-typography-helpers`/`nfs-typography-base` contrast `@error` | typography-helpers/1 |
 | shared | `nfs-table` stacked-header and contrast `@error` | table/1 |
 | shared | Variant-property one-writer rule and flag-gated presence markers | Presence markers, P1 to P5; the one-writer rule is a boundary case, left out (Out of Scope) |
