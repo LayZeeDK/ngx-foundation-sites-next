@@ -271,3 +271,7 @@ From [Consistency review: the later-milestone waves](180-consistency-review-late
 - D22, rejected alternative: "two implementations of the check" becomes "two implementations of the same rewrite", because the builder lost its check mode to the later milestone ([Decide: checks move to a later milestone](158-decide-checks-move-to-a-later-milestone.md); this ticket's amendment of 2026-09-29), so a first-milestone spec names no check there.
 - Implementation level and primitives: the section now states the level, "not an Implementation level choice", with its reason, as building-blocks Table C's row for this utility does, because the map's Standing preferences ask every spec to say which level it stopped at and why.
 - A new Animation subsection between Rendered output and Rendering modes says nothing animates (Sass, item 4), so Implementation Decisions carries every subsection of building-blocks 1.14.
+
+### Amendment, 2026-10-01 (audit 0011)
+
+- From [Audit 0011: the final wave](../audits/0011-final-wave.md), M2: the statement of the class rule reads "no Foundation class of a family with a first-milestone spec" ([Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md), decision 3).

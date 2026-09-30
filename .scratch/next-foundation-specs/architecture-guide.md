@@ -77,6 +77,8 @@ Sources: `adr/0041-menu-plugin-roots-host-menu-directive.md:12`; `adr/0039-direc
 
 Rule: Consumer markup keeps the element structure of Foundation's docs, with the deltas each spec lists (building-blocks 1.1), and carries directive attributes where the docs carry classes; no Foundation or `nfs-` class appears in consumer code, and an input that selects a library class takes a typed name the directive maps to its class. Inputs that apply the consumer's own Application classes stay.
 
+2026-09-30: in the first milestone the Foundation classes of a family with no first-milestone spec (the XY, Float, and Flex Grids, Typography Helpers, Prototyping Utilities, Flexbox Utilities, Visibility Classes, and Float Classes) are normal classes the consumer and the library's stories write, with Foundation's global styles loaded; the rule holds for every family with a first-milestone spec ([ADR 0039](adr/0039-directives-manage-every-foundation-class.md), note of 2026-09-30; [Decide: grids, typography, and utilities move to a later milestone](issues/174-decide-grids-typography-utilities-later-milestone.md), decision 3).
+
 Why: the user's rule; a misspelt Variant or Motion name then fails to compile, and the server HTML still carries every class because host bindings render on the server.
 
 Preferred: `<div nfsCallout color="alert" size="small">`; `animationIn="fade-in"`; `<ul nfsMenu [orientation]="{small: 'vertical', medium: 'horizontal'}">`; `templateClasses="my-tip"`.

@@ -238,3 +238,5 @@ From [Consistency review: the later-milestone waves](180-consistency-review-late
 ### Amendment, 2026-09-30 (consistency review of the later-milestone waves, closing pass)
 
 - From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md), group c's proposal P4: D16's rejected alternative says the Slider's rule 13 paints its fill and track (a `Highlight` fill, a `CanvasText` track outline), not its thumb, as that rule reads. Impact LOW, confidence HIGH.
+
+Note, 2026-10-01 (audit 0011): read "(a `Highlight` fill, a `CanvasText` track outline), the two parts a meter has, as that rule reads." for the line's "not its thumb, as that rule reads."; rule 13 does paint the thumbs (`specs/slider.md`, "thumbs `background: CanvasText`"), and the spec edit itself is true ([Audit 0011: the final wave](../audits/0011-final-wave.md), L4).

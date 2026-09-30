@@ -1,6 +1,6 @@
 # Spec: Tabs
 
-Ticket: [Spec: Tabs](../issues/16-spec-tabs.md). Targets Angular 22.2 (`@angular/aria` and `@angular/cdk` 22.2), Nx 23.2, Storybook 10.6 with `@storybook/angular-vite`, Vitest 4.1.x, TypeScript 6.0.x, and Foundation for Sites 6.9.0 Sass. Accessibility target: WCAG 2.2 AA, every criterion a requirement. Revised on 2026-09-27 by the [Re-run: Tabs spec under the class rule](../issues/108-rerun-tabs-class-rule.md): the directives set every Foundation class, so the consumer writes none ([ADR 0039](../adr/0039-directives-manage-every-foundation-class.md)), and the Variant classes are typed inputs ([ADR 0040](../adr/0040-variant-input-types.md)).
+Ticket: [Spec: Tabs](../issues/16-spec-tabs.md). Targets Angular 22.2 (`@angular/aria` and `@angular/cdk` 22.2), Nx 23.2, Storybook 10.6 with `@storybook/angular-vite`, Vitest 4.1.x, TypeScript 6.0.x, and Foundation for Sites 6.9.0 Sass. Accessibility target: WCAG 2.2 AA, every criterion a requirement. Revised on 2026-09-27 by the [Re-run: Tabs spec under the class rule](../issues/108-rerun-tabs-class-rule.md): the directives set every Foundation class of a family with a first-milestone spec, so the consumer writes none of those ([ADR 0039](../adr/0039-directives-manage-every-foundation-class.md)), and the Variant classes are typed inputs ([ADR 0040](../adr/0040-variant-input-types.md)).
 
 ## Problem Statement
 
@@ -753,7 +753,7 @@ Sass. The consumer compiles Foundation's Sass from its own settings; the library
 
 ### Foundation behaviour changed or dropped
 
-- The consumer writes no Foundation class and no `data-tabs` or `data-tabs-content` attribute: `nfsTabs`, `nfsTabsTitle`, `nfsTabsContent`, and `nfsTabsPanel` bind `.tabs`, `.tabs-title`, `.tabs-content`, and `.tabs-panel`, the title and panel bind `.is-active`, and `orientation`, `simple`, and `primary` bind `.vertical`, `.simple`, and `.primary` (ADR 0039). Foundation's initial state, `class="is-active"` on a title and a panel, becomes `selected` on the strip or the first-tab default; a copied class is stripped.
+- The consumer writes no Foundation class of a family with a first-milestone spec and no `data-tabs` or `data-tabs-content` attribute: `nfsTabs`, `nfsTabsTitle`, `nfsTabsContent`, and `nfsTabsPanel` bind `.tabs`, `.tabs-title`, `.tabs-content`, and `.tabs-panel`, the title and panel bind `.is-active`, and `orientation`, `simple`, and `primary` bind `.vertical`, `.simple`, and `.primary` (ADR 0039). Foundation's initial state, `class="is-active"` on a title and a panel, becomes `selected` on the strip or the first-tab default; a copied class is stripped.
 - `.vertical` is set on the strip and the content box from `orientation` alone, so Foundation's two hand-written classes can no longer disagree with each other or with the arrow keys.
 - On a `.primary` bar the selected tab takes the panel's colours (`$tab-content-background` behind `$tab-color`) instead of `$tab-background-active` behind the bar's text colour, and `.simple` titles get a 24 by 24 px minimum.
 - The nav bar is a consumer recipe on the consumer's own class; the library has no rule for it.

@@ -215,3 +215,8 @@ From [Decide: grids, typography, and utilities move to a later milestone](174-de
 - Rendering modes: the "Open at first paint" bullet, which ran on from the end of the first bullet, is its own bullet again (hygiene).
 - CSS class to Angular mapping, below the Variant table: "No class is left for the consumer to write" names families with a first-milestone spec, as the `.show-for-sr` and XY Grid rows above it show ([Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md), decision 3; audit 0010's L1 wording).
 - Testing Decisions, the Story ids paragraph: stories write no Foundation or library class of a family with a first-milestone spec, and the paragraph names the XY Grid classes `dropdown-pane--default` writes ([Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md), decision 3).
+
+### Amendment, 2026-10-01 (audit 0011)
+
+- From [Audit 0011: the final wave](../audits/0011-final-wave.md), M2: the Solution's class-rule sentence and D1 read "no Foundation or library class of a family with a first-milestone spec", as the `show-for-sr` and XY Grid rows show ([Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md), decision 3).
+- From [Audit 0011: the final wave](../audits/0011-final-wave.md), L1: the animation sentence says building-blocks 1.6 rule 1 measures the duration (since 2026-09-28), as the Toggler spec does, not that the measurement is the Toggler spec's refinement.

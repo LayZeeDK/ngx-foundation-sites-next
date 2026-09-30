@@ -174,3 +174,7 @@ From [Consistency review: the later-milestone waves](180-consistency-review-late
 - User story 50: the back items' hidden suffix uses Foundation's `show-for-sr` as a normal class, not a library directive, as D23 decides.
 - Testing Decisions, first paragraph: the "no story, test host, or fixture writes a class" sentence names the back suffixes' `show-for-sr`, as the class-rule test and the fixture route already do.
 - Sass, item (1): the Nested menu spec has fourteen Library mixin rules, not thirteen (its rule 14, the Dropdown Menu's current top-level link).
+
+### Amendment, 2026-10-01 (audit 0011)
+
+- From [Audit 0011: the final wave](../audits/0011-final-wave.md), L2: the shared `closeOnClick` sentence cites the Dropdown Menu spec's D5 and the Drilldown Menu spec's D12 and D27, not the spec tickets' decisions 13 and 18.

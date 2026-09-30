@@ -152,3 +152,7 @@ From [Re-run: specs without checks, group f](170-rerun-specs-without-checks-grou
 ### Amendment, 2026-09-30 (audit 0009)
 
 - [Audit 0009: the later-milestone checks wave](../audits/0009-later-milestone-checks-wave.md), L8: `NfsTooltipDescription` gets `exportAs: 'nfsTooltipDescription'` and `NfsTooltipTip` gets `exportAs: 'nfsTooltipTip'`. The user was asked on 2026-09-30 whether the Tooltip's two internal components get an `exportAs`, and answered "Name them anyway".
+
+### Amendment, 2026-10-01 (audit 0011)
+
+- From [Audit 0011: the final wave](../audits/0011-final-wave.md), L1: the animation bullet and D19 say building-blocks 1.6 rule 1 measures the duration (since 2026-09-28), as the Toggler spec does, not that the measurement is the Toggler spec's refinement.

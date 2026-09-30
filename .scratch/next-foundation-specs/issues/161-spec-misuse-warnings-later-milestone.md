@@ -145,3 +145,7 @@ From [Consistency review: the later-milestone waves](180-consistency-review-late
 - Orbit: the unknown-`selected` warning sits in the API bullet on `selected` (now Documented usage 9); the Orbit spec has no Behaviour rules section.
 - Out of Scope, the rejected checks: the Typography Helpers', Visibility Classes', and Toggler's rejected checks, which the re-runs removed from their decision rows.
 - What the later milestone adds back: the Abide heading is "Foundation behaviour dropped or changed"; the Menu, Nested menu, Off-canvas, Orbit, Pagination, Progress Bar, Responsive Accordion Tabs, Responsive Menu, Responsive Toggle, Reveal, Slider, Smooth Scroll, Sticky, Table, Thumbnail, Toggler, Tooltip, Top Bar, Triggers, Typography Helpers, Visibility Classes, and XY Grid entries name the user stories and decisions that named a warning at `53144f3`, and drop those that never did (the Smooth Scroll has no user story 51).
+
+### Amendment, 2026-10-01 (audit 0011)
+
+- From [Audit 0011: the final wave](../audits/0011-final-wave.md), L3: Flex Grid 1 and XY Grid 1 say that their Flexbox Utilities clause lands with the later-milestone Flexbox Utilities spec or after it, and that the check is silent for those classes until then (S1).

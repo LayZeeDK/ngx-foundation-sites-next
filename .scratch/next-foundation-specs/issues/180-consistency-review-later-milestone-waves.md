@@ -111,9 +111,13 @@ Each spec edit carries one line under `### Amendment, 2026-09-30 (consistency re
 5. The amendment home and heading. As [Consistency review: the class-rule wave](133-consistency-review-class-rule-wave.md)'s recorded point 2, with the four later-milestone check specs amended in their own spec tickets (160 to 163); the groups' lines sit under `### Amendment, 2026-09-30 (consistency review of the later-milestone waves)` and the closing pass's under the same heading with `, closing pass`.
 6. Shared names across groups. The groups edited disjoint specs, and no two reviewers changed one shared name in different directions. Where one group's fix is read by another group's spec (the Breakpoint service's query types, the `exportAs` values in the Nested menu's and Smooth Scroll's sketches, the Drilldown back item's class, the Card's grids, the Tabs' query), the two agree after the proposals above.
 
+Note, 2026-10-01 (audit 0011): recorded point 1 held for the sentences the groups edited; audit 0011's M2 qualified thirteen more in nine specs, and the Card, listed above as needing no change, is one of them ([Audit 0011: the final wave](../audits/0011-final-wave.md)).
+
 ### Shared documents changed by the closing pass
 
 `building-blocks.md` (1.3's Variant types bullet, 1.7's Service and CSS-first bullets, 1.9's Ordered children bullet, 1.10's Typography Helpers and Table bullets, 1.14 item 2), `CONTEXT.md` (Utility class, Variant registry), `storybook-conventions.md` (section 5's `preview.scss`: the three extra Foundation Export mixins included, a commented `nfs-xy-grid` line), and `README.md` (this review and [Task: repair the broken relative links](181-task-repair-broken-relative-links.md) in the Open list, a section for this review, the ticket and research counts). No ADR and no line of the architecture guide needed a change. Dated notes: `research/checks-extraction-a.md` and [Spec: Runtime checks (later milestone)](162-spec-runtime-checks-later-milestone.md); a dated correction in [research/consistency-review-later-waves-group-f.md](../research/consistency-review-later-waves-group-f.md). `map.md` is the orchestrator's (the gist below).
+
+Note, 2026-10-01 (audit 0011): audit 0011's M3 adds the exception to the architecture guide's P3, which the paragraph above says needed no change ([Audit 0011: the final wave](../audits/0011-final-wave.md)).
 
 ### Triage
 

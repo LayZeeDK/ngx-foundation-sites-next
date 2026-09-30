@@ -158,3 +158,7 @@ From [Consistency review: the later-milestone waves](180-consistency-review-late
 - WCAG table, the 1.4.4 row's test: `.show-for-medium` is a Visibility class the fixture writes as a normal class, in place of "set by a Visibility Classes directive from `showFor="medium"`", a directive of a later-milestone family (map, Later-milestone families; ticket 180, check 2).
 
 Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-10-01 (audit 0011)
+
+- From [Audit 0011: the final wave](../audits/0011-final-wave.md), M2: three class-rule sentences (the Solution's, the examples-and-fixtures sentence, and the host-bindings sentence) name families with a first-milestone spec and the Visibility classes the consumer writes as normal classes ([Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md), decision 3).

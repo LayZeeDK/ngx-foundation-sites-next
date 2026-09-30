@@ -197,3 +197,7 @@ From [Decide: grids, typography, and utilities move to a later milestone](174-de
 From [Audit 0010: the later-milestone families wave](../audits/0010-later-milestone-families-wave.md); `specs/card.md` was revised in place:
 
 - L2: user story 12, the Storybook settings sentence, and the compile test speak of required settings in the plural, the four greys of D14 included.
+
+### Amendment, 2026-10-01 (audit 0011)
+
+- From [Audit 0011: the final wave](../audits/0011-final-wave.md), M2: the Summary's class-rule sentence reads "no Foundation class of a family with a first-milestone spec", as the recipes' `grid-x`, `cell`, `flex-container`, and `no-bullet` show ([Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md), decision 3).

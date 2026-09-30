@@ -6,7 +6,7 @@ Evidence is cited as: T, the probes of [Decide: typed Variant inputs over open S
 
 ## Problem Statement
 
-Under the class rule a consumer writes no Foundation class; every Variant class is set by a Variant input whose type is closed (ADR 0040). Many Variant names are not Foundation's to fix: a developer adds `purple` to `$button-palette`, drops `warning` from `$label-palette`, adds `xlarge` to `$breakpoint-classes`, or adds a `huge` size to `$button-sizes`, exactly as Foundation's docs teach. The library's types only know Foundation's defaults, so the developer's own names reach the Variant inputs only through the Variant declaration file, which augments the library's Variant registries.
+Under the class rule a consumer writes no Foundation class of a family with a first-milestone spec; every Variant class is set by a Variant input whose type is closed (ADR 0040). Many Variant names are not Foundation's to fix: a developer adds `purple` to `$button-palette`, drops `warning` from `$label-palette`, adds `xlarge` to `$breakpoint-classes`, or adds a `huge` size to `$button-sizes`, exactly as Foundation's docs teach. The library's types only know Foundation's defaults, so the developer's own names reach the Variant inputs only through the Variant declaration file, which augments the library's Variant registries.
 
 Writing and keeping that file by hand does not work well:
 

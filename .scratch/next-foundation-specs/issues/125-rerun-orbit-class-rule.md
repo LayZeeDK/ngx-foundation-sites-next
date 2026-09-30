@@ -230,3 +230,7 @@ From [Audit 0010: the later-milestone families wave](../audits/0010-later-milest
 ### Amendment, 2026-09-30 (consistency review of the later-milestone waves)
 
 - From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md), group c: Hierarchy and DI shape, the Imports bullet: `[value]` fails to compile only on a slide; a bound `[value]` on a bullet's `button` still compiles and sets the native property, as audit 0009 measured for `[type]` on a `button` (its question 1 and M4; building-blocks 1.9, Imports). Impact LOW, confidence HIGH.
+
+### Amendment, 2026-10-01 (audit 0011)
+
+- From [Audit 0011: the final wave](../audits/0011-final-wave.md), M2: the opening class-rule sentence reads "no Foundation or library class of a family with a first-milestone spec", as the examples' `show-for-sr` shows ([Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md), decision 3).

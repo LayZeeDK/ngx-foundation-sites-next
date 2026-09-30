@@ -195,3 +195,7 @@ Triage: impact LOW (examples, stories, and documented usage change; no input, de
 
 - Hierarchy and DI shape, the `nfsTogglerToken` bullet: the sketch named a token and Table B now records none; the sentence said Table B named one (building-blocks Table B, Toggler row).
 - Animation, the Completion bullet: "This refines building-blocks 1.6 rule 1's "declared duration"" now says rule 1 measures the same way since 2026-09-28 (building-blocks 1.6 rule 1).
+
+### Amendment, 2026-10-01 (audit 0011)
+
+- From [Audit 0011: the final wave](../audits/0011-final-wave.md), M2: the Solution's class-rule sentence reads "no Foundation or library class of a family with a first-milestone spec", as the XY Grid mapping row shows ([Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md), decision 3).

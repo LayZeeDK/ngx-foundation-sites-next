@@ -166,3 +166,7 @@ Triage: impact LOW (examples, stories, and documented usage change; no input, de
 ### Amendment, 2026-09-30 (consistency review of the later-milestone waves)
 
 - From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md), group c: CSS class to Angular mapping, the lead sentence: "No Foundation or library class is left for the consumer to write" becomes "No Foundation or library class of a family with a first-milestone spec is left for the consumer to write", because the data binding example writes the XY Grid's `grid-x grid-margin-x` and `cell small-*` as normal classes; [Re-run: specs without the later-milestone families, group c](178-rerun-specs-without-later-families-group-c.md), decision 1, and audit 0010's L1, which narrowed the Orbit's matching sentence the same way. Impact LOW, confidence HIGH.
+
+### Amendment, 2026-10-01 (audit 0011)
+
+- From [Audit 0011: the final wave](../audits/0011-final-wave.md), M2: the opening class-rule sentence reads "no Foundation or library class of a family with a first-milestone spec", as the example's XY Grid classes show ([Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md), decision 3).

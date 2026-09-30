@@ -194,3 +194,7 @@ From [Consistency review: the later-milestone waves](180-consistency-review-late
 
 - Solution: "The consumer writes no Visibility class" is limited to the bar and the menu, as usage rule 1 is, because the hamburger's visually hidden name may use Foundation's `show-for-sr` (ARIA and keyboard).
 - CSS class to Angular mapping, binding rule: "No class is left for the consumer to write" becomes "No class of a family with a first-milestone spec is left" (ADR 0039, note of 2026-09-30).
+
+### Amendment, 2026-10-01 (audit 0011)
+
+- From [Audit 0011: the final wave](../audits/0011-final-wave.md), M2: the Solution's class-rule sentence names the Foundation classes of a family with a first-milestone spec, as the hamburger name's `show-for-sr` shows ([Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md), decision 3).

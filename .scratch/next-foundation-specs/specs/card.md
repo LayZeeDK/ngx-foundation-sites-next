@@ -12,7 +12,7 @@ A developer on Foundation for Sites who wants a self-contained block of content 
 - The `.card-image` wrapper exists for an Internet Explorer 11 flexbox bug. In the Browser target an image written directly in the card renders at its own ratio with no space under it, wrapped or not (measured in three engines), so the wrapper is optional.
 - A card is only a `div`: its meaning comes from the element the author picks, and a `header` or `footer` used as a divider in a `div` card outside `main` becomes a page `banner` or `contentinfo` landmark (measured in Chromium).
 - A link written directly in the card, such as a full-bleed image link, touches the card's edges, where `overflow: hidden` clips its focus outline on three sides (measured in three engines).
-- Under the library's class rule the developer writes no Foundation class at all, so `.card`, `.card-divider`, `.card-section`, and `.card-image` need an Angular home.
+- Under the library's class rule the developer writes no Foundation class of a family with a first-milestone spec, so `.card`, `.card-divider`, `.card-section`, and `.card-image` need an Angular home.
 
 A server-rendered application adds the usual second problem: whatever the Angular layer does must already be right in the server HTML, must not break hydration, and must leave the card styled before hydration and inside dehydrated `@defer` blocks.
 

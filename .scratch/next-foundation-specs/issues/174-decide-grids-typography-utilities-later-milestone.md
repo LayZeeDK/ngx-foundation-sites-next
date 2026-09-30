@@ -26,7 +26,11 @@ On how to staff the work:
 
 > Use subagents as per my global CLAUDE.md and its references/ documents.
 
-## Decision
+## Answer
+
+The user's ruling above, as the decision, the wave, and the triage below record it.
+
+### Decision
 
 1. Eight specs are planned and implemented in a later milestone of the implementing repository:
    - `specs/xy-grid.md`
@@ -46,7 +50,7 @@ On how to staff the work:
    - the Responsive Toggle's visibility classes;
    - a layout that an example laid out with a grid.
 
-## The wave
+### The wave
 
 | Ticket | Kind | Blocked by |
 | --- | --- | --- |
@@ -56,7 +60,7 @@ On how to staff the work:
 
 The wave audit follows (map, Audits).
 
-## Triage
+### Triage
 
 This is a user ruling, so no triage decides it. The orchestrator made three calls, each impact LOW and confidence HIGH:
 - The eight specs were read from Foundation's docs navigation.
