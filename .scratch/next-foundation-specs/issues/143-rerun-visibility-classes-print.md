@@ -195,3 +195,7 @@ From [Re-run: grid, typography, and utility specs for the later milestone](175-r
 From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md), group f; the spec was revised in place:
 
 - Further Notes, What the later milestone changes, per spec: adds the Forms (its File Upload Button row, its line on other families' classes, and its Out of Scope line named `NfsShowForSr` or the Visibility Classes spec), the Nested menu (D30's rejected alternative named the Visibility Classes' screen-reader-only directive), and the Responsive Embed (its composition bullet named the Visibility Classes' directives), all read from the specs at d5a1eee. Why: the section's own rule, read from the directives and links each spec wrote before the ruling, under [Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md), decisions 2 and 5. Impact LOW, confidence HIGH.
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves, closing pass)
+
+- From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md), closing pass: Further Notes, What the later milestone changes, per spec, the Breakpoint service entry adds its WCAG 1.4.4 row, whose e2e fixture named this spec's directive with `showFor="medium"` at `d5a1eee` and writes Foundation's `.show-for-medium` as a normal class since group c's change B4. Impact LOW, confidence HIGH.

@@ -176,3 +176,7 @@ From [Consistency review: the later-milestone waves](180-consistency-review-late
 
 - CSS class to Angular mapping, lead sentence: "the consumer writes none" names the back suffixes' `show-for-sr`, which the table's own row has the consumer write (ADR 0039, note of 2026-09-30).
 - Sass, rule 7: its Nested menu rule number is `[13]`, not "(new)", since the [Spec: Nested menu (shared utility)](56-spec-nested-menu.md) carries the inset focus ring as its rule 13.
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves, closing pass)
+
+- From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md), group g's proposal P1: documented usage 7 and D28 say a copied `js-drilldown-back` merges with the back item's static host class in every mode, as the mapping row, the Host line, and D7 bind it; only a copied `drilldown` or `is-drilldown` is stripped outside drilldown mode. Impact LOW, confidence HIGH.

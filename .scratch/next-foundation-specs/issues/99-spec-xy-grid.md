@@ -237,3 +237,7 @@ From [Audit 0010: the later-milestone families wave](../audits/0010-later-milest
 From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md), group f; the spec was revised in place:
 
 - Further Notes, What the later milestone changes, per spec: adds the Media Object, whose Out of Scope line on stacking at a breakpoint above the Zero breakpoint named the XY Grid's directives before the ruling, and the Responsive Embed, whose composition bullet and cell note named the XY Grid's cell directive (both read from the specs at d5a1eee). Why: the section's own rule, read from the directives each spec wrote before the ruling, under [Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md), decisions 2 and 5. Impact LOW, confidence HIGH.
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves, closing pass)
+
+- From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md), group d's proposal P1: Further Notes, What the later milestone changes, per spec, the Card entry names the list of cards' padding grid (`grid-padding-x`) apart from the margin grids of the equal-height recipe, `card--sizing`, and `card--long-words`, as the Card spec writes them. Impact LOW, confidence HIGH.

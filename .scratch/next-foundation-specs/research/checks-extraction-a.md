@@ -121,6 +121,8 @@ Rule as documented usage: "The consumer must give every field that can show an e
 
 Mentions: user story 40, line 68; WCAG table row 3.3.1, line 356.
 
+Note, 2026-09-30 (consistency review of the later-milestone waves): the WCAG row that named this check at `53144f3` is 1.4.1 (line 351: "dev-mode warning when a field shows an error with no visible Form error"); the 3.3.1 row (line 356) names none. [specs/family-checks.md](../specs/family-checks.md) reads 1.4.1 in its Abide row of What the later milestone adds back since group g of [Consistency review: the later-milestone waves](../issues/180-consistency-review-later-milestone-waves.md).
+
 ### misuse: copied State class warning (D20)
 
 Location: "CSS class to Angular mapping" line 269; "Further Notes" D20, line 581.

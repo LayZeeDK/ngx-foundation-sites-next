@@ -175,7 +175,7 @@ A link at the start of a page, Visually hidden until it has focus, that moves fo
 _Avoid_: skip-to-content button, bypass link, jump link
 
 **Utility class**:
-A Foundation CSS class from a layout system or utility family (`.grid-x`, `.cell`, `.align-center`, `.float-left`, `.text-center`, `.margin-1`) that can style any element and names no element of a component's markup; set by its directive, never written by the consumer. Visibility classes are one family of them.
+A Foundation CSS class from a layout system or utility family (`.grid-x`, `.cell`, `.align-center`, `.float-left`, `.text-center`, `.margin-1`) that can style any element and names no element of a component's markup; set by its directive in the later milestone, and in the first milestone written by the consumer as a normal class (ADR 0039's exception for a family with no first-milestone spec). Visibility classes are one family of them.
 _Avoid_: helper class, layout class, utility helper
 
 **Utility family**:
@@ -481,7 +481,7 @@ An `nfs`-prefixed input of a Utility family's directive whose name is also one o
 _Avoid_: utility input, utility directive (for the attribute), helper attribute
 
 **Variant registry**:
-An empty interface the library declares for one Sass setting (`NfsButtonPaletteOverrides`) and the consumer's Variant declaration file augments, adding names (`purple: true`), removing defaults (`warning: false`), or setting a count, so the Variant inputs over that setting accept exactly the names the consumer's Sass generates.
+An empty interface the library declares for one Sass setting (`NfsButtonPaletteOverrides`) and the consumer's Variant declaration file augments, adding names (`purple: true`), removing defaults (`warning: false`), or setting a count (a count arrives with the later milestone's families), so the Variant inputs over that setting accept exactly the names the consumer's Sass generates.
 _Avoid_: overrides interface, theme interface, type registry
 
 **Variant declaration file**:

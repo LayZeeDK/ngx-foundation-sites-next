@@ -195,3 +195,7 @@ From [Re-run: grid, typography, and utility specs for the later milestone](175-r
 From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md), group f; the spec was revised in place:
 
 - Testing Decisions, the Story ids paragraph: the parenthesis saying the Storybook conventions change the Answers of this spec's ticket and of this ticket propose becomes a pointer to `storybook-conventions.md` section 5. Why: the conventions carry the four greys and the commented `nfs-typography-helpers` include, so the change is no longer pending. Impact LOW, confidence HIGH.
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves, closing pass)
+
+- From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md), group d's proposal P2: Further Notes, What the later milestone changes, per spec, the Card entry no longer calls the list of cards a margin grid: the Card writes it as a padding grid in the first milestone, and D8's rules let it take margin gutters again. Impact LOW, confidence HIGH.

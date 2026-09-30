@@ -234,3 +234,7 @@ From [Re-run: specs without checks, group d](168-rerun-specs-without-checks-grou
 From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md), group e; `specs/progress-bar.md` was revised in place:
 
 - The Problem Statement's class-rule bullet ("writes no Foundation class at all") now names the families with a first-milestone spec, the class rule as [ADR 0039](../adr/0039-directives-manage-every-foundation-class.md)'s note of 2026-09-30 states it (audit 0010's L1 form). Impact LOW, confidence HIGH.
+
+### Amendment, 2026-09-30 (consistency review of the later-milestone waves, closing pass)
+
+- From [Consistency review: the later-milestone waves](180-consistency-review-later-milestone-waves.md), group c's proposal P4: D16's rejected alternative says the Slider's rule 13 paints its fill and track (a `Highlight` fill, a `CanvasText` track outline), not its thumb, as that rule reads. Impact LOW, confidence HIGH.

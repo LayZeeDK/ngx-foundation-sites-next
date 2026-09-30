@@ -641,7 +641,7 @@ In the first milestone no spec names this spec's directives or links to it. Wher
 
 The other Visibility classes become `nfsVisibility` in:
 
-- [Spec: Breakpoint service (shared utility)](../issues/53-spec-breakpoint-service.md): the CSS-only example, `class="show-for-large"`, becomes `nfsVisibility showFor="large"`, and `NfsVisibility` rejoins the directives with a responsive Variant input that read the Zero breakpoint from `nfsBreakpointsToken`.
+- [Spec: Breakpoint service (shared utility)](../issues/53-spec-breakpoint-service.md): the CSS-only example, `class="show-for-large"`, becomes `nfsVisibility showFor="large"`, the WCAG 1.4.4 row's e2e fixture, which writes `.show-for-medium` as a normal class, sets it with `nfsVisibility showFor="medium"` again, and `NfsVisibility` rejoins the directives with a responsive Variant input that read the Zero breakpoint from `nfsBreakpointsToken`.
 - [Spec: Magellan](../issues/30-spec-magellan.md): the jump menu's `class="hide-for-large"` and the navigation's `class="show-for-large"` become `nfsVisibility hideFor="large"` and `nfsVisibility showFor="large"`.
 - [Spec: Menu](../issues/85-spec-menu.md): a plain menu's items shown or hidden by breakpoint name `nfsVisibility` again.
 - [Spec: Off-canvas](../issues/25-spec-off-canvas.md): the Trigger hidden at the reveal breakpoint, `class="hide-for-large"`, becomes `nfsVisibility hideFor="large"` in that spec's usage rule, its stories, and its usage example.

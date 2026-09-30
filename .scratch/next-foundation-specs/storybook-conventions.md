@@ -97,9 +97,9 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
 @include foundation-everything($prototype: true); // (3) every Export mixin plus the Prototype utilities
 
 // Extra Foundation Export mixins a spec asks for, one line each with the spec named:
-// @include foundation-range-input; // Slider: every slider--* story
-// @include foundation-progress-element; // Progress Bar: progress-bar--native-progress and progress-bar--right-to-left (element selector; no other story renders <progress>)
-// @include foundation-meter-element; // Progress Bar: progress-bar--native-meter (element selector; no other story renders <meter>)
+@include foundation-range-input; // Slider: every slider--* story
+@include foundation-progress-element; // Progress Bar: progress-bar--native-progress and progress-bar--right-to-left (element selector; no other story renders <progress>)
+@include foundation-meter-element; // Progress Bar: progress-bar--native-meter (element selector; no other story renders <meter>)
 
 @include nfs-breakpoint-properties;
 @include nfs-motion;
@@ -116,6 +116,7 @@ One stylesheet for every story, `.storybook/preview.scss`, imported by `preview.
 @include nfs-card; // Card: overflow-wrap for words the card would cut off (1.4.10, 1.4.12); every card--* story
 @include nfs-responsive-embed; // Responsive Embed: the clip released while the box holds focus (2.4.7) and --nfs-responsive-embed-ratios; every responsive-embed--* story
 @include nfs-off-canvas; // Off-canvas: reduced motion and the wrapper clip; every off-canvas--* story
+// @include nfs-xy-grid; // later milestone. XY Grid: the two Variant properties; every xy-grid--* story
 // @include nfs-float-grid; // later milestone. Float Grid: the three Variant properties; every float-grid--* story
 // @include nfs-flexbox-utilities; // later milestone. Flexbox Utilities: --nfs-flex-source-ordering-count for the Variant declaration file's generator; every flexbox-utilities--* story that binds order or a responsive helper
 // ... one @include nfs-<plugin> per plugin that has a Library mixin, after foundation-everything,

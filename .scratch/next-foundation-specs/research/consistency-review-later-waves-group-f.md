@@ -184,3 +184,7 @@ P2. `CONTEXT.md`, **Utility class** (line 178). Current text: "A Foundation CSS 
 Links are checked on added lines only in the tickets, whose older lines hold gist lines and quoted proposals written for their target files. The two proposals here carry no link, so every link in this report resolves from `research/`. A positive control ran the same checks over a synthetic file with one of each fault (a banned word, a non-ASCII character, a broken link, a wrong link text, a row with an extra cell, a mixed line ending); all six were reported. Result: 16 files checked, no fault, `RESULT: PASS`, exit code 0.
 
 Process note: one patch to the verification script went through a multi-statement inline `node -e`, against the brief's scripting rule. It changed only the script in the scratchpad, and the script was then corrected with the Edit tool and rerun.
+
+## Correction, 2026-09-30 (closing pass)
+
+The Visibility Classes section's "Every other entry matches what its spec writes now" missed one place: at `d5a1eee` the WCAG 1.4.4 row of `specs/breakpoint-service.md` named "a Visibility Classes directive from `showFor="medium"`", and group c's change B4 made it Foundation's `.show-for-medium` written as a normal class. The closing pass of [Consistency review: the later-milestone waves](../issues/180-consistency-review-later-milestone-waves.md) added that row to the Breakpoint service entry of `specs/visibility-classes.md`, with its amendment line in [Re-run: Visibility Classes spec for the print classes](../issues/143-rerun-visibility-classes-print.md).
