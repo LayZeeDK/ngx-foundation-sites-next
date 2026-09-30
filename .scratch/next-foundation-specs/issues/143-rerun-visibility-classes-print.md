@@ -180,3 +180,12 @@ From [Re-run: specs without checks, group f](170-rerun-specs-without-checks-grou
 - Runtime checks, to [Spec: Runtime checks (later milestone)](162-spec-runtime-checks-later-milestone.md): `nfsVariantCheck('nfsVisibility')` with its requests, the needs the mapping function returned, and the browser-level cases.
 - Each rule is documented usage now: five numbered rules on `NfsVisibility` and one each on `NfsShowForSr` and `NfsShowOnFocus`, the 2.4.7 row, the key table, user stories 17 to 22, 27, and 29, and D4 to D11, D14, D17, D18, D20, and D21 (rewritten; D11 is now the Variant property the types come from, D17 has no CDK).
 - Unchanged: every class, input, recipe, content rule, and measurement. Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-30 (later-milestone families)
+
+From [Re-run: grid, typography, and utility specs for the later milestone](175-rerun-grid-typography-utility-specs-later-milestone.md), under [Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md): `specs/visibility-classes.md` is marked as a later-milestone spec; its design is unchanged.
+
+- A `Milestone: later` line under the Ticket line, and a closing Problem Statement paragraph: the spec is planned and implemented in a later milestone of the implementing repository, because the user ruled on 2026-09-30 that the grids, Typography Helpers, and the Utilities leave the first milestone to make it simpler and more minimal, each a whole and separate spec; until then a consumer, and the library's own stories, write Foundation's Visibility classes as normal classes with Foundation's global styles loaded, and no first-milestone spec assumes the spec, names its directives, or links to it.
+- Restated: user story 33 speaks of every component, not every spec, that uses `nfsShowForSr`, and D1's rationale, which said "a dozen published specs already write `nfsShowForSr`", now says those first-milestone specs write Foundation's `.show-for-sr` until the spec lands and get `nfsShowForSr` back then.
+- Added: Further Notes, What the later milestone changes, per spec: per first-milestone spec, the Visibility classes it writes in the first milestone and the directives that replace them, read from the directives each spec wrote before the ruling.
+- No directive, input, class, ARIA row, story, or test changes. Impact LOW, confidence HIGH (a user ruling applied); nothing OPEN FOR HUMAN.

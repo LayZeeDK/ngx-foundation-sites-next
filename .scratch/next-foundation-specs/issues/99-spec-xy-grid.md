@@ -216,3 +216,12 @@ From [Re-run: specs without checks, group f](170-rerun-specs-without-checks-grou
 - Runtime checks, to [Spec: Runtime checks (later milestone)](162-spec-runtime-checks-later-milestone.md): the `nfsVariantCheck` handles of `NfsGridX`, `NfsGridY`, and `NfsCell` with their requests and browser-level cases. `nfs-xy-grid` keeps its two Variant properties, which the Variant declaration tooling reads.
 - Each rule is documented usage now: five numbered rules in the API, the `fluid`/`full`, `gridFrame`, and `offset` rows, the 1.4.10 and 4.1.2 rows, user stories 22, 23, and 30 to 32, and D3, D7, D9, D10, D12, and D16 (rewritten). The copied-class binding test stays, minus the warning.
 - Unchanged: every class, input, attribute, measurement, and the Sass. Impact LOW, confidence HIGH; nothing OPEN FOR HUMAN.
+
+### Amendment, 2026-09-30 (later-milestone families)
+
+From [Re-run: grid, typography, and utility specs for the later milestone](175-rerun-grid-typography-utility-specs-later-milestone.md), under [Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md): `specs/xy-grid.md` is marked as a later-milestone spec; its design is unchanged.
+
+- A `Milestone: later` line under the Ticket line, and a closing Problem Statement paragraph: the spec is planned and implemented in a later milestone of the implementing repository, because the user ruled on 2026-09-30 that the grids, Typography Helpers, and the Utilities leave the first milestone to make it simpler and more minimal, each a whole and separate spec; until then a consumer, and the library's own stories, write Foundation's XY Grid classes as normal classes with Foundation's global styles loaded, and no first-milestone spec assumes the spec, names its directives, or links to it.
+- Restated: D1's rationale, which said the directive names are "the ones every earlier spec wrote", now says the first-milestone specs get them back when the spec lands.
+- Added: Further Notes, What the later milestone changes, per spec: per first-milestone spec, the XY Grid classes it writes in the first milestone and the directives that replace them, read from the directives each spec wrote before the ruling.
+- No directive, input, class, ARIA row, story, or test changes. Impact LOW, confidence HIGH (a user ruling applied); nothing OPEN FOR HUMAN.

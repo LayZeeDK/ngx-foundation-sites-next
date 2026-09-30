@@ -2,6 +2,8 @@
 
 Ticket: [Spec: Float Classes](../issues/105-spec-float-classes.md). Targets Angular 22.2, Nx 23.2, Storybook 10.6 with `@storybook/angular-vite`, Vitest 4.1.x, TypeScript 6.0.x, and Foundation for Sites 6.9.0 Sass. Written under the class rule ([ADR 0039](../adr/0039-directives-manage-every-foundation-class.md)) and the Variant typing rules ([ADR 0040](../adr/0040-variant-input-types.md)), in the stand-alone shape of the Utility directive rule of the [Spec: Prototyping Utilities](../issues/102-spec-prototyping-utilities.md).
 
+Milestone: later. This spec is planned and implemented in a later milestone of the implementing repository, not in the first ([Decide: grids, typography, and utilities move to a later milestone](../issues/174-decide-grids-typography-utilities-later-milestone.md); Problem Statement). Revised for the later milestone by [Re-run: grid, typography, and utility specs for the later milestone](../issues/175-rerun-grid-typography-utility-specs-later-milestone.md).
+
 ## Problem Statement
 
 A developer on Foundation for Sites who wants an element pushed to one side, or a fixed-width block centred, writes Foundation's Float Classes: `.float-left` and `.float-right` float the element (both `!important`, which Foundation's docs call out as one of its few uses of it), `.float-center` centres a block with automatic side margins ("it's not *really* a float", the docs say), and `.clearfix` on the parent makes it contain its floated children. Foundation's `foundation-float-classes` export mixin prints these four classes in every build, and `foundation-everything` always includes it. There is no Plugin, no Option, no responsive form, and no Sass setting. The markup contract leaves the hard parts to the author:
@@ -16,6 +18,8 @@ A developer on Foundation for Sites who wants an element pushed to one side, or 
 - Under the library's class rule the developer writes no Foundation class at all, so the four classes need an Angular home.
 
 A server-rendered application adds the usual second problem: whatever the Angular layer does must already be right in the server HTML, must not break hydration, and must leave the page laid out before hydration and inside dehydrated `@defer` blocks.
+
+This spec is planned and implemented in a later milestone of the implementing repository, not in the first. The user ruled on 2026-09-30 ([Decide: grids, typography, and utilities move to a later milestone](../issues/174-decide-grids-typography-utilities-later-milestone.md)) that the XY, Float, and Flex Grids, Typography Helpers, and the four Utilities specs (Prototyping Utilities, Flexbox Utilities, Visibility Classes, Float Classes) move to a later milestone, each a whole and separate spec, so that the first milestone is simpler and more minimal. Until then a consumer who needs a Float class writes Foundation's own classes as normal classes (`class="float-right"`, `class="clearfix"`) with Foundation's global styles loaded; the library's own stories write the same classes, because the class rule exempts a family with no first-milestone spec (decision 3 of the ruling). No first-milestone spec assumes this spec, names its directive, or links to it. The design below is the later milestone's and stays whole; the closing section (Further Notes, What the later milestone changes, per spec) lists, per first-milestone spec, the Foundation classes that this spec's directive replaces there.
 
 ## Solution
 
@@ -416,3 +420,10 @@ Required settings on Foundation's defaults: none.
 - RTL: `left` and `right` are physical, as Foundation's classes are, and a right-to-left page chooses the side for its direction (Foundation's Forms page: "In a right-to-left environment, use `.float-left` instead"); the reading-order rule (usage rule 1) takes its end side from the parent's `direction`, so it holds in either direction.
 - Forced colours: the utilities draw nothing.
 - Story scaffolding: stories may lay out their scaffolding with these attributes wherever Foundation has a float class, and keep inline styles for values it has none for (a fixed pixel width).
+
+### What the later milestone changes, per spec
+
+In the first milestone no spec names this spec's directive or links to it. Where a first-milestone spec needs a Float class, its examples, stories, and tests write Foundation's own class as a normal class, with Foundation's global styles loaded ([Decide: grids, typography, and utilities move to a later milestone](../issues/174-decide-grids-typography-utilities-later-milestone.md), decisions 2 and 5). When this spec lands, the later milestone replaces those classes with this spec's Utility attributes and gives each spec back the sentences that name them. The list is read from the directives and links each spec wrote before the ruling; [Re-run: specs without the later-milestone families, group b](../issues/177-rerun-specs-without-later-families-group-b.md) holds the class forms each spec writes now.
+
+- [Spec: Forms](../issues/98-spec-forms.md): Label Positioning's `class="float-right"` and `class="float-left"` on a label become `nfsFloat="right"` and `nfsFloat="left"` beside `nfsFormLabel`.
+- [Spec: Responsive Embed](../issues/96-spec-responsive-embed.md): the note on a box beside a float names this spec again.

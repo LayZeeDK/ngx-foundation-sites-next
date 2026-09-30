@@ -228,3 +228,12 @@ Each rule is stated as documented usage: a Documented usage list in the API sect
 
 - [Audit 0009: the later-milestone checks wave](../audits/0009-later-milestone-checks-wave.md), M5: the mapping table's `.flex-container` , `.flex-dir-<dir>`, and `.flex-child-<size>` rows read `--nfs-breakpoint-classes` only.
 - [Audit 0009: the later-milestone checks wave](../audits/0009-later-milestone-checks-wave.md), L7: documented usage 5 and D10 allow reordering items that hold no focusable content, or any set whose focusable items keep their DOM sequence.
+
+### Amendment, 2026-09-30 (later-milestone families)
+
+From [Re-run: grid, typography, and utility specs for the later milestone](175-rerun-grid-typography-utility-specs-later-milestone.md), under [Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md): `specs/flexbox-utilities.md` is marked as a later-milestone spec; its design is unchanged.
+
+- A `Milestone: later` line under the Ticket line, and a closing Problem Statement paragraph: the spec is planned and implemented in a later milestone of the implementing repository, because the user ruled on 2026-09-30 that the grids, Typography Helpers, and the Utilities leave the first milestone to make it simpler and more minimal, each a whole and separate spec; until then a consumer, and the library's own stories, write Foundation's Flexbox Utilities classes as normal classes with Foundation's global styles loaded, and no first-milestone spec assumes the spec, names its directives, or links to it.
+- Restated: D6's rationale, which said the Equalizer spec "already writes" `nfsFlexChild="grow"`, and D8's, which said the Button Group and the Equalizer "already compose beside", now say those specs get the directives when the spec lands.
+- Added: Further Notes, What the later milestone changes, per spec: per first-milestone spec, the Flexbox Utilities classes it writes in the first milestone and the directives that replace them, read from the directives each spec wrote before the ruling.
+- No directive, input, class, ARIA row, story, or test changes. Impact LOW, confidence HIGH (a user ruling applied); nothing OPEN FOR HUMAN.
