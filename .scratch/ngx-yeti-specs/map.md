@@ -14,10 +14,7 @@ One published spec (via `/to-spec`) for each Yeti component, layout, recipe, and
 
 Yeti (https://github.com/foundation/yeti, `develop` branch; docs at https://www.foundationcss.com/yeti/) is the successor to Foundation for Sites. Its README describes "a CSS-first, native, zero-build layout and styling framework": one stylesheet, no Sass, cascade layers, container queries, runtime `--yeti-*` tokens, and optional JavaScript modules. Its README says it targets Baseline 2025, and its stability guide (`src/guides/stability.md`) lists what `7.0.0-beta` froze. The Angular package wraps Yeti's CSS and attribute contract and replaces or complements its optional JavaScript; which of those it does is decided here.
 
-Two risks hang over the whole map until [Decide: whether Yeti's licence and readiness allow this package](issues/15-decide-yeti-licence-and-readiness.md) resolves, and that decision is the user's:
-
-- Yeti's licence is FSL-1.1-MIT, whose Competing Use clause may or may not cover a wrapper.
-- Its announcement (foundation/yeti#15554) says of `develop`: "unstable until the beta. Do not build on it yet."
+The user ruled Yeti's FSL-1.1-MIT licence compatible with this package as a free and open-source MIT project ([ADR 0001](adr/0001-yeti-licence-compatible-with-mit-package.md)). One risk remains until [Decide: which Yeti version the specs target, and how the package tracks it](issues/12-decide-yeti-version-policy.md) resolves: Yeti's announcement (foundation/yeti#15554) says of `develop`, "unstable until the beta. Do not build on it yet."
 
 ### Inheritance from next-foundation-specs (user instruction, 2026-10-01)
 
@@ -74,6 +71,8 @@ Online: https://www.foundationcss.com/yeti/, https://github.com/foundation/yeti/
 Subagents edit only their own ticket and the output files it names. Only the orchestrating session appends to Decisions so far, edits other tickets, and commits.
 
 ## Decisions so far
+
+- [Decide: whether Yeti's licence and readiness allow this package](issues/15-decide-yeti-licence-and-readiness.md) -- the user ruled FSL-1.1-MIT compatible with the package as a free and open-source MIT project ([ADR 0001](adr/0001-yeti-licence-compatible-with-mit-package.md)). The readiness question moved to the Yeti version decision.
 
 ## Not yet specified
 
