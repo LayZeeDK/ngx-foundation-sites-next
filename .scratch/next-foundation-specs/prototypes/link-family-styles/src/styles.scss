@@ -1,0 +1,10 @@
+// CONSUMER FILE. Their own global styles; nothing from Foundation is left here.
+// PROTOTYPE: the leave animation used by the lifecycle page.
+.proto-fade-out {
+  animation: proto-fade 600ms linear forwards;
+}
+@keyframes proto-fade {
+  to {
+    opacity: 0;
+  }
+}

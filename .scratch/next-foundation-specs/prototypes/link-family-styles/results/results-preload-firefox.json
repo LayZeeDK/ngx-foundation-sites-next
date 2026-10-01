@@ -1,0 +1,60 @@
+{
+  "firefox": {
+    "clientDefer": {
+      "link, css delayed 300 ms": {
+        "framesWithElement": 78,
+        "unstyledFrames": 19,
+        "unstyledMs": 300,
+        "firstValues": "0px 0px 0px"
+      },
+      "link + index.html preload of every family, css delayed 300 ms": {
+        "framesWithElement": 78,
+        "unstyledFrames": 0,
+        "unstyledMs": 0,
+        "firstValues": "44px 44px 44px"
+      }
+    },
+    "enter": {
+      "link + preload click-inserted, cold, 300 ms delay": {
+        "verdict": "on time",
+        "unstyledFrames": 0,
+        "styledAfterMs": 0,
+        "animationStartMs": 0,
+        "animatedFrames": 30,
+        "minOpacity": 0.1,
+        "classSeen": true,
+        "classRemovedAfterMs": 509
+      },
+      "link + preload click-inserted, cold local": {
+        "verdict": "on time",
+        "unstyledFrames": 0,
+        "styledAfterMs": 0,
+        "animationStartMs": 0,
+        "animatedFrames": 29,
+        "minOpacity": 0.13,
+        "classSeen": true,
+        "classRemovedAfterMs": 493
+      },
+      "link + preload client-only @defer, cold, 300 ms delay": {
+        "verdict": "on time",
+        "unstyledFrames": 0,
+        "styledAfterMs": 0,
+        "animationStartMs": 16,
+        "animatedFrames": 29,
+        "minOpacity": 0.13,
+        "classSeen": true,
+        "classRemovedAfterMs": 507
+      },
+      "link + preload client-only @defer, cold local": {
+        "verdict": "on time",
+        "unstyledFrames": 0,
+        "styledAfterMs": 0,
+        "animationStartMs": 15,
+        "animatedFrames": 29,
+        "minOpacity": 0.13,
+        "classSeen": true,
+        "classRemovedAfterMs": 506
+      }
+    }
+  }
+}

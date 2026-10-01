@@ -1,0 +1,21 @@
+// LIBRARY FILE, shipped as source. A non-injected `styles` entry with `bundleName: nfs-callout`,
+// so the consumer's build compiles it with the consumer's settings (on includePaths).
+@import 'settings';
+@import 'layer';
+@import 'foundation-sites/scss/foundation';
+@include nfs-layer(callout) {
+  @include foundation-callout;
+}
+
+// PROTOTYPE ONLY (enter-animation measurement): an enter animation that ships in the family's
+// own CSS, so it is unknown to the page until the family's bundle has loaded.
+@include nfs-layer(callout) {
+  .proto-enter {
+    animation: proto-enter 500ms linear both;
+  }
+  @keyframes proto-enter {
+    from {
+      opacity: 0.1;
+    }
+  }
+}

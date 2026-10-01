@@ -1,0 +1,15 @@
+// CONSUMER FILE. The consumer's Foundation settings, changed from Foundation's defaults
+// so the rendered CSS shows whose settings applied. On includePaths, so every library
+// family entry imports this file with `@import 'settings'`.
+$foundation-palette: (
+  primary: #a3001e,
+  secondary: #767676,
+  success: #3adb76,
+  warning: #ffae00,
+  alert: #cc4b37,
+);
+$global-radius: 8px;
+$button-padding: 1.1em 2.2em; // default 0.85em 1em
+$callout-sizes: (small: 0.5rem, default: 2.75rem, large: 3rem); // default 1rem
+$menu-items-padding: 1.2rem 1.5rem; // default 0.7rem 1rem
+$dropdownmenu-submenu-background: #fdf3d0; // default $white

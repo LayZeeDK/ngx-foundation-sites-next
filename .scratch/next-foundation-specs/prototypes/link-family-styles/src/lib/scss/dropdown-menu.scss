@@ -1,0 +1,8 @@
+// LIBRARY FILE, shipped as source. A non-injected `styles` entry with `bundleName: nfs-dropdown-menu`,
+// so the consumer's build compiles it with the consumer's settings (on includePaths).
+@import 'settings';
+@import 'layer';
+@import 'foundation-sites/scss/foundation';
+@include nfs-layer(dropdown-menu) {
+  @include foundation-dropdown-menu;
+}

@@ -1,0 +1,9 @@
+// LIBRARY FILE, shipped as source. The single-entry variant: every family in one non-injected
+// bundle (`bundleName: nfs-families`). Loads as one unit; no per-family unload.
+@import 'settings';
+@import 'layer';
+@import 'foundation-sites/scss/foundation';
+@include nfs-layer(button) { @include foundation-button; }
+@include nfs-layer(callout) { @include foundation-callout; }
+@include nfs-layer(menu) { @include foundation-menu; }
+@include nfs-layer(dropdown-menu) { @include foundation-dropdown-menu; }

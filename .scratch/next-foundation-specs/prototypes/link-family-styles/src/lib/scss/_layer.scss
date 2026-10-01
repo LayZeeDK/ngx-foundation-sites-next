@@ -1,0 +1,12 @@
+// LIBRARY FILE (prototype switch): `$nfs-layers: false` before this import turns the layers off,
+// for the `unlayered` build only. The real library would write `@layer` directly.
+$nfs-layers: true !default;
+@mixin nfs-layer($name) {
+  @if $nfs-layers {
+    @layer nfs.#{$name} {
+      @content;
+    }
+  } @else {
+    @content;
+  }
+}

@@ -1,0 +1,518 @@
+{
+  "webkit": {
+    "m1": {
+      "production": {
+        "pass": true,
+        "got": {
+          "calloutPadding": "44px",
+          "buttonBg": "rgb(163, 0, 30)",
+          "buttonRadius": "8px",
+          "buttonPaddingLeft": "31.679998px",
+          "menuLinkPaddingTop": "19.200001px",
+          "submenuBg": "rgb(253, 243, 208)"
+        }
+      },
+      "single": {
+        "pass": true,
+        "got": {
+          "calloutPadding": "44px",
+          "buttonBg": "rgb(163, 0, 30)",
+          "buttonRadius": "8px",
+          "buttonPaddingLeft": "31.679998px",
+          "menuLinkPaddingTop": "19.200001px",
+          "submenuBg": "rgb(253, 243, 208)"
+        }
+      },
+      "plugin": {
+        "pass": true,
+        "got": {
+          "calloutPadding": "44px",
+          "buttonBg": "rgb(163, 0, 30)",
+          "buttonRadius": "8px",
+          "buttonPaddingLeft": "31.679998px",
+          "menuLinkPaddingTop": "19.200001px",
+          "submenuBg": "rgb(253, 243, 208)"
+        }
+      },
+      "subpath": {
+        "pass": true,
+        "got": {
+          "calloutPadding": "44px",
+          "buttonBg": "rgb(163, 0, 30)",
+          "buttonRadius": "8px",
+          "buttonPaddingLeft": "31.679998px",
+          "menuLinkPaddingTop": "19.200001px",
+          "submenuBg": "rgb(253, 243, 208)"
+        }
+      },
+      "cdn": {
+        "pass": true,
+        "got": {
+          "calloutPadding": "44px",
+          "buttonBg": "rgb(163, 0, 30)",
+          "buttonRadius": "8px",
+          "buttonPaddingLeft": "31.679998px",
+          "menuLinkPaddingTop": "19.200001px",
+          "submenuBg": "rgb(253, 243, 208)"
+        }
+      },
+      "i18nDa": {
+        "pass": true,
+        "got": {
+          "calloutPadding": "44px",
+          "buttonBg": "rgb(163, 0, 30)",
+          "buttonRadius": "8px",
+          "buttonPaddingLeft": "31.679998px",
+          "menuLinkPaddingTop": "19.200001px",
+          "submenuBg": "rgb(253, 243, 208)"
+        }
+      },
+      "i18nEn": {
+        "pass": true,
+        "got": {
+          "calloutPadding": "44px",
+          "buttonBg": "rgb(163, 0, 30)",
+          "buttonRadius": "8px",
+          "buttonPaddingLeft": "31.679998px",
+          "menuLinkPaddingTop": "19.200001px",
+          "submenuBg": "rgb(253, 243, 208)"
+        }
+      },
+      "noskip": {
+        "pass": true,
+        "got": {
+          "calloutPadding": "44px",
+          "buttonBg": "rgb(163, 0, 30)",
+          "buttonRadius": "8px",
+          "buttonPaddingLeft": "31.679998px",
+          "menuLinkPaddingTop": "19.200001px",
+          "submenuBg": "rgb(253, 243, 208)"
+        }
+      }
+    },
+    "m2": {
+      "pass": true,
+      "counts": "0 1 1 1 0 1 0",
+      "paddings": " 44px 44px 44px  44px ",
+      "requests": "nfs-callout.css",
+      "serverHtmlHasFamilyElement": false
+    },
+    "m2_single": {
+      "pass": true,
+      "counts": "0 1 1 1 0 1 0",
+      "paddings": " 44px 44px 44px  44px ",
+      "requests": "nfs-families.css",
+      "serverHtmlHasFamilyElement": false
+    },
+    "m2_plugin": {
+      "pass": true,
+      "counts": "0 1 1 1 0 1 0",
+      "paddings": " 44px 44px 44px  44px ",
+      "requests": "",
+      "serverHtmlHasFamilyElement": false
+    },
+    "ssr": {
+      "serverElements": "link:button link:menu link:dropdown-menu link:callout",
+      "inlinedCriticalHasFamilyRules": false,
+      "noJs": {
+        "settingsPass": true,
+        "deferred": "44px",
+        "submenu": "none"
+      },
+      "afterHydration": {
+        "button": 1,
+        "callout": 1,
+        "menu": 1,
+        "dropdown-menu": 1,
+        "all": 0,
+        "order": "button > menu > dropdown-menu > callout"
+      },
+      "styleMutationsAfterDcl": [],
+      "unstyledFrames": 0,
+      "framesSampled": 53,
+      "m7": {
+        "linksWhileDehydratedRemains": 1,
+        "dehydratedPadding": "44px",
+        "afterHydratingDeferred": 1,
+        "mutationsAfterDcl": 0,
+        "afterLastDestroyed": 0,
+        "probeAfterUnload": "0px"
+      }
+    },
+    "ssr_holdOff": {
+      "serverElements": "link:button link:menu link:dropdown-menu link:callout",
+      "inlinedCriticalHasFamilyRules": false,
+      "noJs": {
+        "settingsPass": true,
+        "deferred": "44px",
+        "submenu": "none"
+      },
+      "afterHydration": {
+        "button": 1,
+        "callout": 1,
+        "menu": 1,
+        "dropdown-menu": 1,
+        "all": 0,
+        "order": "button > menu > dropdown-menu > callout"
+      },
+      "styleMutationsAfterDcl": [],
+      "unstyledFrames": 0,
+      "framesSampled": 29,
+      "m7": {
+        "linksWhileDehydratedRemains": 0,
+        "dehydratedPadding": "0px",
+        "afterHydratingDeferred": 1,
+        "mutationsAfterDcl": 2,
+        "afterLastDestroyed": 0,
+        "probeAfterUnload": "0px"
+      }
+    },
+    "ssr_noskip": {
+      "serverElements": "link:button(print) link:menu(print) link:dropdown-menu(print) link:callout(print)",
+      "inlinedCriticalHasFamilyRules": true,
+      "noJs": {
+        "settingsPass": true,
+        "deferred": "44px",
+        "submenu": "none"
+      },
+      "afterHydration": {
+        "button": 1,
+        "callout": 1,
+        "menu": 1,
+        "dropdown-menu": 1,
+        "all": 0,
+        "order": "button > menu > dropdown-menu > callout"
+      },
+      "styleMutationsAfterDcl": [],
+      "unstyledFrames": 0,
+      "framesSampled": 41,
+      "m7": {
+        "linksWhileDehydratedRemains": 1,
+        "dehydratedPadding": "44px",
+        "afterHydratingDeferred": 1,
+        "mutationsAfterDcl": 0,
+        "afterLastDestroyed": 0,
+        "probeAfterUnload": "44px"
+      }
+    },
+    "ssr_plugin": {
+      "serverElements": "style:button style:menu style:dropdown-menu style:callout",
+      "inlinedCriticalHasFamilyRules": false,
+      "noJs": {
+        "settingsPass": true,
+        "deferred": "44px",
+        "submenu": "none"
+      },
+      "afterHydration": {
+        "button": 1,
+        "callout": 1,
+        "menu": 1,
+        "dropdown-menu": 1,
+        "all": 0,
+        "order": "button > menu > dropdown-menu > callout"
+      },
+      "styleMutationsAfterDcl": [],
+      "unstyledFrames": 0,
+      "framesSampled": 32,
+      "m7": {
+        "linksWhileDehydratedRemains": 1,
+        "dehydratedPadding": "44px",
+        "afterHydratingDeferred": 1,
+        "mutationsAfterDcl": 0,
+        "afterLastDestroyed": 0,
+        "probeAfterUnload": "0px"
+      }
+    },
+    "clientDefer": {
+      "link, local": {
+        "framesWithElement": 50,
+        "unstyledFrames": 1,
+        "unstyledMs": 0,
+        "firstValues": "0px 44px 44px"
+      },
+      "link, css delayed 300 ms": {
+        "framesWithElement": 76,
+        "unstyledFrames": 19,
+        "unstyledMs": 304,
+        "firstValues": "0px 0px 0px"
+      },
+      "link + server preload of every family, css delayed 300 ms": {
+        "framesWithElement": 59,
+        "unstyledFrames": 19,
+        "unstyledMs": 351,
+        "firstValues": "0px 0px 0px"
+      },
+      "plugin <style>, local": {
+        "framesWithElement": 56,
+        "unstyledFrames": 0,
+        "unstyledMs": 0,
+        "firstValues": "44px 44px 44px"
+      },
+      "plugin <style>, chunk delayed 300 ms": {
+        "framesWithElement": 51,
+        "unstyledFrames": 17,
+        "unstyledMs": 309,
+        "firstValues": "0px 0px 0px"
+      }
+    },
+    "enter": {
+      "link click-inserted, cold local": {
+        "verdict": "on time",
+        "unstyledFrames": 0,
+        "styledAfterMs": 0,
+        "animationStartMs": 0,
+        "animatedFrames": 26,
+        "minOpacity": 0.1072,
+        "classSeen": true,
+        "classRemovedAfterMs": 513
+      },
+      "link click-inserted, cold, 300 ms delay": {
+        "verdict": "skipped",
+        "unstyledFrames": 18,
+        "styledAfterMs": 352,
+        "animationStartMs": null,
+        "animatedFrames": 0,
+        "minOpacity": 1,
+        "classSeen": true,
+        "classRemovedAfterMs": 17
+      },
+      "link click-inserted, warm cache": {
+        "verdict": "on time",
+        "unstyledFrames": 0,
+        "styledAfterMs": 0,
+        "animationStartMs": 0,
+        "animatedFrames": 16,
+        "minOpacity": 0.1054,
+        "classSeen": true,
+        "classRemovedAfterMs": 515
+      },
+      "link client-only @defer, cold local": {
+        "verdict": "on time",
+        "unstyledFrames": 0,
+        "styledAfterMs": 0,
+        "animationStartMs": 0,
+        "animatedFrames": 14,
+        "minOpacity": 0.1036,
+        "classSeen": true,
+        "classRemovedAfterMs": 503
+      },
+      "link client-only @defer, cold, 300 ms delay": {
+        "verdict": "skipped",
+        "unstyledFrames": 18,
+        "styledAfterMs": 336,
+        "animationStartMs": null,
+        "animatedFrames": 0,
+        "minOpacity": 1,
+        "classSeen": true,
+        "classRemovedAfterMs": 24
+      },
+      "link client-only @defer, warm cache": {
+        "verdict": "on time",
+        "unstyledFrames": 0,
+        "styledAfterMs": 0,
+        "animationStartMs": 0,
+        "animatedFrames": 23,
+        "minOpacity": 0.1324,
+        "classSeen": true,
+        "classRemovedAfterMs": 484
+      },
+      "plugin click-inserted, cold local": {
+        "verdict": "skipped",
+        "unstyledFrames": 1,
+        "styledAfterMs": 67,
+        "animationStartMs": null,
+        "animatedFrames": 0,
+        "minOpacity": 1,
+        "classSeen": true,
+        "classRemovedAfterMs": 67
+      },
+      "plugin click-inserted, cold, 300 ms delay": {
+        "verdict": "skipped",
+        "unstyledFrames": 17,
+        "styledAfterMs": 343,
+        "animationStartMs": null,
+        "animatedFrames": 0,
+        "minOpacity": 1,
+        "classSeen": true,
+        "classRemovedAfterMs": 21
+      },
+      "plugin click-inserted, warm cache": {
+        "verdict": "on time",
+        "unstyledFrames": 0,
+        "styledAfterMs": 0,
+        "animationStartMs": 0,
+        "animatedFrames": 31,
+        "minOpacity": 0.1054,
+        "classSeen": true,
+        "classRemovedAfterMs": 507
+      },
+      "plugin client-only @defer, cold local": {
+        "verdict": "skipped",
+        "unstyledFrames": 1,
+        "styledAfterMs": 44,
+        "animationStartMs": null,
+        "animatedFrames": 0,
+        "minOpacity": 1,
+        "classSeen": true,
+        "classRemovedAfterMs": 44
+      },
+      "plugin client-only @defer, cold, 300 ms delay": {
+        "verdict": "skipped",
+        "unstyledFrames": 16,
+        "styledAfterMs": 348,
+        "animationStartMs": null,
+        "animatedFrames": 0,
+        "minOpacity": 1,
+        "classSeen": true,
+        "classRemovedAfterMs": 17
+      },
+      "plugin client-only @defer, warm cache": {
+        "verdict": "on time",
+        "unstyledFrames": 0,
+        "styledAfterMs": 0,
+        "animationStartMs": 0,
+        "animatedFrames": 17,
+        "minOpacity": 0.1486,
+        "classSeen": true,
+        "classRemovedAfterMs": 498
+      }
+    },
+    "hydrateDefer": {
+      "link": {
+        "calloutLinksBeforeHydration": 1,
+        "calloutLinksAfter": 1,
+        "framesSampled": 136,
+        "unstyledFrames": 0,
+        "styleMutationsAfterDcl": 0,
+        "viewportBlockHydrated": true
+      },
+      "plugin": {
+        "calloutLinksBeforeHydration": 1,
+        "calloutLinksAfter": 1,
+        "framesSampled": 149,
+        "unstyledFrames": 0,
+        "styleMutationsAfterDcl": 0,
+        "viewportBlockHydrated": true
+      }
+    },
+    "m4": {
+      "layered": {
+        "client: menu sheet first": "none/absolute [menu > dropdown-menu]",
+        "client: dropdown-menu sheet first": "none/absolute [dropdown-menu > menu]",
+        "client: plain menu, then dropdown-menu first": "none/absolute [menu > dropdown-menu]",
+        "server: menu sheet first": "none/absolute [menu > dropdown-menu] frames: none",
+        "server: dropdown-menu sheet first": "none/absolute [dropdown-menu > menu] frames: none"
+      },
+      "unlayered": {
+        "client: menu sheet first": "none/absolute [menu > dropdown-menu]",
+        "client: dropdown-menu sheet first": "flex/relative [dropdown-menu > menu]",
+        "client: plain menu, then dropdown-menu first": "none/absolute [menu > dropdown-menu]",
+        "server: menu sheet first": "none/absolute [menu > dropdown-menu] frames: none",
+        "server: dropdown-menu sheet first": "flex/relative [dropdown-menu > menu] frames: flex"
+      }
+    },
+    "m6": {
+      "immediate/L1 callout inside leaving element": {
+        "duringLeave": {
+          "wrapperInDom": true,
+          "calloutPadding": "0px",
+          "links": 0
+        },
+        "unstyledFramesWhileLeaving": 29,
+        "linkRemovedMsAfterHostLeft": -615,
+        "afterLeave": 0,
+        "afterRecheck": "44px/0 44px/0"
+      },
+      "immediate/L2 unrelated leave running": {
+        "afterLeave": 0,
+        "afterRecheck": "44px/0 44px/0"
+      },
+      "immediate/L3 (animate.leave) listener on the page": {
+        "whileListenerPresent": 0,
+        "afterListenerLeft": 0,
+        "afterRecheck": "44px/0 44px/0"
+      },
+      "animations/L1 callout inside leaving element": {
+        "duringLeave": {
+          "wrapperInDom": true,
+          "calloutPadding": "44px",
+          "links": 1
+        },
+        "unstyledFramesWhileLeaving": 0,
+        "linkRemovedMsAfterHostLeft": 45,
+        "afterLeave": 0,
+        "afterRecheck": "44px/0 44px/0"
+      },
+      "animations/L2 unrelated leave running": {
+        "afterLeave": 0,
+        "afterRecheck": "44px/0 44px/0"
+      },
+      "animations/L3 (animate.leave) listener on the page": {
+        "whileListenerPresent": 0,
+        "afterListenerLeft": 0,
+        "afterRecheck": "44px/0 44px/0"
+      },
+      "host/L1 callout inside leaving element": {
+        "duringLeave": {
+          "wrapperInDom": true,
+          "calloutPadding": "44px",
+          "links": 1
+        },
+        "unstyledFramesWhileLeaving": 0,
+        "linkRemovedMsAfterHostLeft": 0,
+        "afterLeave": 0,
+        "afterRecheck": "44px/0 44px/0"
+      },
+      "host/L2 unrelated leave running": {
+        "afterLeave": 0,
+        "afterRecheck": "44px/0 44px/0"
+      },
+      "host/L3 (animate.leave) listener on the page": {
+        "whileListenerPresent": 0,
+        "afterListenerLeft": 0,
+        "afterRecheck": "44px/0 44px/0"
+      }
+    },
+    "urls": {
+      "production": {
+        "serverRenderedPass": true,
+        "serverHrefs": "http://localhost:4691/*.css",
+        "clientInsertedPadding": "44px",
+        "clientHref": "http://localhost:4691/nfs-callout.css",
+        "failed": []
+      },
+      "subpath": {
+        "serverRenderedPass": true,
+        "serverHrefs": "http://localhost:4695/sub/*.css",
+        "clientInsertedPadding": "44px",
+        "clientHref": "http://localhost:4695/sub/nfs-callout.css",
+        "failed": []
+      },
+      "cdn": {
+        "serverRenderedPass": true,
+        "serverHrefs": "http://127.0.0.1:4696/cdn/*.css",
+        "clientInsertedPadding": "44px",
+        "clientHref": "http://127.0.0.1:4696/cdn/nfs-callout.css",
+        "failed": []
+      },
+      "i18nDa": {
+        "serverRenderedPass": true,
+        "serverHrefs": "http://localhost:4697/da/*.css",
+        "clientInsertedPadding": "44px",
+        "clientHref": "http://localhost:4697/da/nfs-callout.css",
+        "failed": []
+      },
+      "i18nEn": {
+        "serverRenderedPass": true,
+        "serverHrefs": "http://localhost:4697/en-US/*.css",
+        "clientInsertedPadding": "44px",
+        "clientHref": "http://localhost:4697/en-US/nfs-callout.css",
+        "failed": []
+      }
+    },
+    "cost": {
+      "production": "nfs-button.css 7897, nfs-callout.css 688, nfs-dropdown-menu.css 5528, nfs-menu.css 3811",
+      "single": "nfs-families.css 17812"
+    }
+  }
+}
