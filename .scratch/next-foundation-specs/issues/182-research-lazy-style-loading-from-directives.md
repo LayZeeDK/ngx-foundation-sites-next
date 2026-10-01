@@ -1,7 +1,7 @@
 # 182. Research: loading and unloading component styles from directives in Angular 22.2
 
 Type: research
-Status: open
+Status: resolved
 Blocked by:
 Labels: wayfinder:research
 Map: ../map.md
@@ -21,3 +21,15 @@ Resolve with a `/research` subagent, against the local clones first (`d:/project
 5. Prior art outside this repo: how Angular Material, PrimeNG, Taiga UI, and Spartan load styles per component or directive, if they do.
 
 Write `research/lazy-style-loading.md` with the options, the evidence, and the open unknowns. Decide nothing.
+
+## Answer
+
+Resolved 2026-10-01 (Opus 5.5, with a Sonnet 5.5 sweep of prior art and `@layer` data). Findings: [research/lazy-style-loading.md](../research/lazy-style-loading.md). Nothing is decided; [Decide: how first-milestone directives load and unload their family styles](185-decide-lazy-family-styles.md) chooses.
+
+- `SharedStylesHost` counts per component instance, keyed by style text or URL, and removes the element at 0; `ViewEncapsulation.None` changes only shimming, and identical `None` CSS from two component types shares one `<style>` (measured). Server styles carry `ng-app-id` and are reused at hydration with no re-insert (measured); nothing else in hydration handles styles.
+- The strongest public-API candidate is a hidden `None` carrier component per directive instance, created with `createComponent`, compiled in the consumer's project so `includePaths` and `@import 'settings'` apply the consumer's settings (measured: `$callout-sizes` reached the output). It is in the server HTML, reused at hydration, and removed on the last destroy (measured). Behind a dynamic `import()` with `PendingTasks` it becomes its own lazy chunk and is still in the server HTML (measured).
+- Two measured gaps in that count: a destroy while any `animate.leave` runs anywhere in the app skips `removeStyles` for good (`dom_renderer.ts:683`), so the style leaks and the count stays high; and dehydrated incremental-hydration instances are not counted, so their styles are removed while their server DOM is visible.
+- A non-injected global `styles` entry (`inject: false`, `bundleName`) builds an unhashed `.css` with the consumer's settings (measured). Counted through the private `ɵSharedStylesHost.addStyles([], [url])`, it is in the server HTML and reused, but the URL must equal the file name, and Beasties' critical-CSS copy stays after unload (measured).
+- CDK's `_CdkPrivateStyleLoader` and Taiga's `tuiWithStyles` load once per application and never unload; PrimeNG loads once by name. `MatBadge` is a directive that loads its whole family this way, themed through CSS custom properties, which Foundation's Sass settings cannot use. No library found counts and unloads on the last destroy.
+- `@layer` is Baseline widely available (high since 2024-09-14) across the core table. One order statement placed first fixes the order of layered sheets added in any order, and an unlayered rule beats any layered rule, in Chromium, Firefox, and WebKit (measured). Foundation's unlayered global resets (`button`, `a`) would therefore beat layered family rules unless they are layered too.
+- Open: how to unload after `animate.leave` without the leak, how to count dehydrated instances, whether Beasties keeps an `@layer` statement first, the unstyled interval on a cold fetch, wrapping `foundation-global-styles` and `foundation-forms` in a layer, and the cost of one hidden view per instance.

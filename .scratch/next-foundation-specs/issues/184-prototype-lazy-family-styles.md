@@ -20,4 +20,14 @@ Build a synthetic Nx 23.2 / Angular 22.2 workspace under `D:/tmp/`, with SSR, an
 4. The cascade order is the same in every load order (`@layer` or whatever the research found).
 5. What the consumer writes, counted in files and lines.
 
+Added 2026-10-01 from the two research answers. The measured gaps in Angular's style count need a working answer, or a recorded failure:
+
+6. A destroy while any `animate.leave` runs anywhere in the app skips `removeStyles` for good (`dom_renderer.ts:683`). Find a removal that waits for the leave animation and does not leak, without private API if possible.
+7. Instances still waiting for incremental hydration are not counted, so their styles are removed while their server-rendered markup is on the page. Find a way to count them.
+8. Beasties' critical-CSS copy outlives an unload. Find whether it keeps a leading `@layer` order statement first.
+9. Foundation's unlayered tag and attribute rules (global styles, most of Forms) beat any layered family rule. Measure whether putting them in the first layer of the order keeps Foundation's look.
+10. The cost of one hidden carrier view per directive instance, against one per family with the library counting instances itself.
+
+For the second family, use one that needs another family's rules: Button Group over Button, or the dropdown menu over `foundation-menu`, the one pair whose load order changes the result.
+
 Capture the decisive files and a README with the question, how to run it, and the verdict under `prototypes/lazy-family-styles/` (map, Where things live).
