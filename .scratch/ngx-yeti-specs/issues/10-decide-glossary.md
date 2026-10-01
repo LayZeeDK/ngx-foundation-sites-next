@@ -1,7 +1,7 @@
 # 10. Decide: the glossary
 
 Type: grilling
-Status: open
+Status: claimed
 Blocked by: 08, 09
 Labels: wayfinder:grilling
 Map: ../map.md
