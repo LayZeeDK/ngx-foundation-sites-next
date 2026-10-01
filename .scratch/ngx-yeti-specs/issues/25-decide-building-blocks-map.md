@@ -1,7 +1,7 @@
 # 25. Decide: the building-blocks map for every ngx-yeti item
 
 Type: grilling
-Status: open
+Status: claimed
 Blocked by: 06, 07, 09, 11, 13, 16, 17, 18, 19, 20, 22, 23
 Labels: wayfinder:grilling
 Map: ../map.md
