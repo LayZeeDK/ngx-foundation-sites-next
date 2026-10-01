@@ -1,0 +1,149 @@
+{
+ "chromium immediate": {
+  "mutations": [],
+  "jsFetched": [
+   "other",
+   "CALLOUT-CARRIER"
+  ],
+  "where": {
+   "style": [
+    ""
+   ],
+   "adopted": 0
+  }
+ },
+ "chromium own-style": {
+  "mutations": [],
+  "jsFetched": [
+   "other"
+  ],
+  "where": {
+   "style": [
+    "data-nfs-family"
+   ],
+   "adopted": 0
+  }
+ },
+ "chromium adopted": {
+  "mutations": [
+   "remove style interactive"
+  ],
+  "jsFetched": [
+   "other"
+  ],
+  "where": {
+   "style": [],
+   "adopted": 1
+  }
+ },
+ "chromium own-link": {
+  "mutations": [],
+  "jsFetched": [
+   "other"
+  ],
+  "where": {
+   "style": [
+    ""
+   ],
+   "adopted": 0
+  }
+ },
+ "firefox immediate": {
+  "mutations": [],
+  "jsFetched": [
+   "other",
+   "CALLOUT-CARRIER"
+  ],
+  "where": {
+   "style": [
+    ""
+   ],
+   "adopted": 0
+  }
+ },
+ "firefox own-style": {
+  "mutations": [],
+  "jsFetched": [
+   "other"
+  ],
+  "where": {
+   "style": [
+    "data-nfs-family"
+   ],
+   "adopted": 0
+  }
+ },
+ "firefox adopted": {
+  "mutations": [
+   "remove style interactive"
+  ],
+  "jsFetched": [
+   "other"
+  ],
+  "where": {
+   "style": [],
+   "adopted": 1
+  }
+ },
+ "firefox own-link": {
+  "mutations": [],
+  "jsFetched": [
+   "other"
+  ],
+  "where": {
+   "style": [
+    ""
+   ],
+   "adopted": 0
+  }
+ },
+ "webkit immediate": {
+  "mutations": [],
+  "jsFetched": [
+   "other",
+   "CALLOUT-CARRIER"
+  ],
+  "where": {
+   "style": [
+    ""
+   ],
+   "adopted": 0
+  }
+ },
+ "webkit own-style": {
+  "mutations": [],
+  "jsFetched": [
+   "other"
+  ],
+  "where": {
+   "style": [
+    "data-nfs-family"
+   ],
+   "adopted": 0
+  }
+ },
+ "webkit adopted": {
+  "mutations": [
+   "remove style interactive"
+  ],
+  "jsFetched": [
+   "other"
+  ],
+  "where": {
+   "style": [],
+   "adopted": 1
+  }
+ },
+ "webkit own-link": {
+  "mutations": [],
+  "jsFetched": [
+   "other"
+  ],
+  "where": {
+   "style": [
+    ""
+   ],
+   "adopted": 0
+  }
+ }
+}

@@ -1,0 +1,699 @@
+{
+  "engine": "chromium",
+  "version": "153.0.8010.12",
+  "modes": {
+    "immediate": {
+      "L1": {
+        "framesWithLeavingCallout": 43,
+        "unstyledDuringLeave": 0,
+        "leaveMs": 671,
+        "unloadAfterHostGoneMs": null,
+        "unloaded": false,
+        "recheck": "44px/stays 44px/stays"
+      },
+      "L2": {
+        "unloadAfterDestroyMs": null,
+        "unloaded": false,
+        "recheck": "44px/stays 44px/stays"
+      },
+      "L3": {
+        "unloadedWhileListenerPresent": false,
+        "unloadedAfterListenerLeft": false,
+        "recheck": "44px/stays 44px/stays",
+        "retries": 0
+      },
+      "clientFirstRender": {
+        "unstyledFrames": 0,
+        "of": 48
+      },
+      "ssrFull": {
+        "serverHtml": {
+          "angularStyle": 1,
+          "ownStyle": 0,
+          "ownLink": 0,
+          "beastiesCopiedCalloutRules": false
+        },
+        "noJsPadding": "44px",
+        "styleMutationsAfterDcl": 0,
+        "unstyledFrames": 0,
+        "framesSampled": 59,
+        "copiesAfterHydration": {
+          "styles": 1,
+          "links": 0,
+          "adopted": 0,
+          "total": 1
+        },
+        "unloadedAfterRemove": true
+      },
+      "ssrIncremental": {
+        "dehydratedPadding": "44px",
+        "mutationsAtBootstrap": 0,
+        "paddingWhileOnlyDehydratedRemains": "44px",
+        "mutationsAtIncrementalHydration": 0,
+        "copiesAfterHydration": {
+          "styles": 1,
+          "links": 0,
+          "adopted": 0,
+          "total": 1
+        },
+        "probeAfterLastDestroyed": "0px",
+        "copiesAfterLastDestroyed": {
+          "styles": 0,
+          "links": 0,
+          "adopted": 0,
+          "total": 0
+        }
+      }
+    },
+    "animations": {
+      "L1": {
+        "framesWithLeavingCallout": 41,
+        "unstyledDuringLeave": 0,
+        "leaveMs": 649,
+        "unloadAfterHostGoneMs": 15,
+        "unloaded": true,
+        "recheck": "44px/gone 44px/gone"
+      },
+      "L2": {
+        "unloadAfterDestroyMs": 617,
+        "unloaded": true,
+        "recheck": "44px/gone 44px/gone"
+      },
+      "L3": {
+        "unloadedWhileListenerPresent": false,
+        "unloadedAfterListenerLeft": false,
+        "recheck": "44px/stays 44px/stays",
+        "retries": 0
+      },
+      "clientFirstRender": {
+        "unstyledFrames": 0,
+        "of": 48
+      },
+      "ssrFull": {
+        "serverHtml": {
+          "angularStyle": 1,
+          "ownStyle": 0,
+          "ownLink": 0,
+          "beastiesCopiedCalloutRules": false
+        },
+        "noJsPadding": "44px",
+        "styleMutationsAfterDcl": 0,
+        "unstyledFrames": 0,
+        "framesSampled": 58,
+        "copiesAfterHydration": {
+          "styles": 1,
+          "links": 0,
+          "adopted": 0,
+          "total": 1
+        },
+        "unloadedAfterRemove": true
+      },
+      "ssrIncremental": {
+        "dehydratedPadding": "44px",
+        "mutationsAtBootstrap": 0,
+        "paddingWhileOnlyDehydratedRemains": "44px",
+        "mutationsAtIncrementalHydration": 0,
+        "copiesAfterHydration": {
+          "styles": 1,
+          "links": 0,
+          "adopted": 0,
+          "total": 1
+        },
+        "probeAfterLastDestroyed": "0px",
+        "copiesAfterLastDestroyed": {
+          "styles": 0,
+          "links": 0,
+          "adopted": 0,
+          "total": 0
+        }
+      }
+    },
+    "private": {
+      "L1": {
+        "framesWithLeavingCallout": 42,
+        "unstyledDuringLeave": 0,
+        "leaveMs": 660,
+        "unloadAfterHostGoneMs": 15,
+        "unloaded": true,
+        "recheck": "44px/gone 44px/gone"
+      },
+      "L2": {
+        "unloadAfterDestroyMs": 641,
+        "unloaded": true,
+        "recheck": "44px/gone 44px/gone"
+      },
+      "L3": {
+        "unloadedWhileListenerPresent": false,
+        "unloadedAfterListenerLeft": true,
+        "recheck": "44px/gone 44px/gone",
+        "retries": 0
+      },
+      "clientFirstRender": {
+        "unstyledFrames": 0,
+        "of": 48
+      },
+      "ssrFull": {
+        "serverHtml": {
+          "angularStyle": 1,
+          "ownStyle": 0,
+          "ownLink": 0,
+          "beastiesCopiedCalloutRules": false
+        },
+        "noJsPadding": "44px",
+        "styleMutationsAfterDcl": 0,
+        "unstyledFrames": 0,
+        "framesSampled": 58,
+        "copiesAfterHydration": {
+          "styles": 1,
+          "links": 0,
+          "adopted": 0,
+          "total": 1
+        },
+        "unloadedAfterRemove": true
+      },
+      "ssrIncremental": {
+        "dehydratedPadding": "44px",
+        "mutationsAtBootstrap": 0,
+        "paddingWhileOnlyDehydratedRemains": "44px",
+        "mutationsAtIncrementalHydration": 0,
+        "copiesAfterHydration": {
+          "styles": 1,
+          "links": 0,
+          "adopted": 0,
+          "total": 1
+        },
+        "probeAfterLastDestroyed": "0px",
+        "copiesAfterLastDestroyed": {
+          "styles": 0,
+          "links": 0,
+          "adopted": 0,
+          "total": 0
+        }
+      }
+    },
+    "repair": {
+      "L1": {
+        "framesWithLeavingCallout": 42,
+        "unstyledDuringLeave": 0,
+        "leaveMs": 661,
+        "unloadAfterHostGoneMs": 15,
+        "unloaded": true,
+        "recheck": "44px/gone 44px/gone"
+      },
+      "L2": {
+        "unloadAfterDestroyMs": 642,
+        "unloaded": true,
+        "recheck": "44px/gone 44px/gone"
+      },
+      "L3": {
+        "unloadedWhileListenerPresent": true,
+        "unloadedAfterListenerLeft": true,
+        "recheck": "44px/gone 44px/gone",
+        "retries": 0
+      },
+      "clientFirstRender": {
+        "unstyledFrames": 0,
+        "of": 48
+      },
+      "ssrFull": {
+        "serverHtml": {
+          "angularStyle": 1,
+          "ownStyle": 0,
+          "ownLink": 0,
+          "beastiesCopiedCalloutRules": false
+        },
+        "noJsPadding": "44px",
+        "styleMutationsAfterDcl": 0,
+        "unstyledFrames": 0,
+        "framesSampled": 58,
+        "copiesAfterHydration": {
+          "styles": 1,
+          "links": 0,
+          "adopted": 0,
+          "total": 1
+        },
+        "unloadedAfterRemove": true
+      },
+      "ssrIncremental": {
+        "dehydratedPadding": "44px",
+        "mutationsAtBootstrap": 0,
+        "paddingWhileOnlyDehydratedRemains": "44px",
+        "mutationsAtIncrementalHydration": 0,
+        "copiesAfterHydration": {
+          "styles": 1,
+          "links": 0,
+          "adopted": 0,
+          "total": 1
+        },
+        "probeAfterLastDestroyed": "0px",
+        "copiesAfterLastDestroyed": {
+          "styles": 0,
+          "links": 0,
+          "adopted": 0,
+          "total": 0
+        }
+      }
+    },
+    "host": {
+      "L1": {
+        "framesWithLeavingCallout": 41,
+        "unstyledDuringLeave": 0,
+        "leaveMs": 651,
+        "unloadAfterHostGoneMs": 0,
+        "unloaded": true,
+        "recheck": "44px/gone 44px/gone"
+      },
+      "L2": {
+        "unloadAfterDestroyMs": null,
+        "unloaded": false,
+        "recheck": "44px/stays 44px/stays"
+      },
+      "L3": {
+        "unloadedWhileListenerPresent": false,
+        "unloadedAfterListenerLeft": false,
+        "recheck": "44px/stays 44px/stays",
+        "retries": 0
+      },
+      "clientFirstRender": {
+        "unstyledFrames": 0,
+        "of": 48
+      },
+      "ssrFull": {
+        "serverHtml": {
+          "angularStyle": 1,
+          "ownStyle": 0,
+          "ownLink": 0,
+          "beastiesCopiedCalloutRules": false
+        },
+        "noJsPadding": "44px",
+        "styleMutationsAfterDcl": 0,
+        "unstyledFrames": 0,
+        "framesSampled": 58,
+        "copiesAfterHydration": {
+          "styles": 1,
+          "links": 0,
+          "adopted": 0,
+          "total": 1
+        },
+        "unloadedAfterRemove": true
+      },
+      "ssrIncremental": {
+        "dehydratedPadding": "44px",
+        "mutationsAtBootstrap": 0,
+        "paddingWhileOnlyDehydratedRemains": "44px",
+        "mutationsAtIncrementalHydration": 0,
+        "copiesAfterHydration": {
+          "styles": 1,
+          "links": 0,
+          "adopted": 0,
+          "total": 1
+        },
+        "probeAfterLastDestroyed": "0px",
+        "copiesAfterLastDestroyed": {
+          "styles": 0,
+          "links": 0,
+          "adopted": 0,
+          "total": 0
+        }
+      }
+    },
+    "host-animations": {
+      "L1": {
+        "framesWithLeavingCallout": 42,
+        "unstyledDuringLeave": 0,
+        "leaveMs": 663,
+        "unloadAfterHostGoneMs": 31,
+        "unloaded": true,
+        "recheck": "44px/gone 44px/gone"
+      },
+      "L2": {
+        "unloadAfterDestroyMs": 644,
+        "unloaded": true,
+        "recheck": "44px/gone 44px/gone"
+      },
+      "L3": {
+        "unloadedWhileListenerPresent": false,
+        "unloadedAfterListenerLeft": false,
+        "recheck": "44px/stays 44px/stays",
+        "retries": 0
+      },
+      "clientFirstRender": {
+        "unstyledFrames": 0,
+        "of": 48
+      },
+      "ssrFull": {
+        "serverHtml": {
+          "angularStyle": 1,
+          "ownStyle": 0,
+          "ownLink": 0,
+          "beastiesCopiedCalloutRules": false
+        },
+        "noJsPadding": "44px",
+        "styleMutationsAfterDcl": 0,
+        "unstyledFrames": 0,
+        "framesSampled": 58,
+        "copiesAfterHydration": {
+          "styles": 1,
+          "links": 0,
+          "adopted": 0,
+          "total": 1
+        },
+        "unloadedAfterRemove": true
+      },
+      "ssrIncremental": {
+        "dehydratedPadding": "44px",
+        "mutationsAtBootstrap": 0,
+        "paddingWhileOnlyDehydratedRemains": "44px",
+        "mutationsAtIncrementalHydration": 0,
+        "copiesAfterHydration": {
+          "styles": 1,
+          "links": 0,
+          "adopted": 0,
+          "total": 1
+        },
+        "probeAfterLastDestroyed": "0px",
+        "copiesAfterLastDestroyed": {
+          "styles": 0,
+          "links": 0,
+          "adopted": 0,
+          "total": 0
+        }
+      }
+    },
+    "after-render": {
+      "L1": {
+        "framesWithLeavingCallout": 42,
+        "unstyledDuringLeave": 0,
+        "leaveMs": 666,
+        "unloadAfterHostGoneMs": null,
+        "unloaded": false,
+        "recheck": "44px/stays 44px/stays"
+      },
+      "L2": {
+        "unloadAfterDestroyMs": null,
+        "unloaded": false,
+        "recheck": "44px/stays 44px/stays"
+      },
+      "L3": {
+        "unloadedWhileListenerPresent": false,
+        "unloadedAfterListenerLeft": false,
+        "recheck": "44px/stays 44px/stays",
+        "retries": 0
+      },
+      "clientFirstRender": {
+        "unstyledFrames": 0,
+        "of": 48
+      },
+      "ssrFull": {
+        "serverHtml": {
+          "angularStyle": 1,
+          "ownStyle": 0,
+          "ownLink": 0,
+          "beastiesCopiedCalloutRules": false
+        },
+        "noJsPadding": "44px",
+        "styleMutationsAfterDcl": 0,
+        "unstyledFrames": 0,
+        "framesSampled": 59,
+        "copiesAfterHydration": {
+          "styles": 1,
+          "links": 0,
+          "adopted": 0,
+          "total": 1
+        },
+        "unloadedAfterRemove": true
+      },
+      "ssrIncremental": {
+        "dehydratedPadding": "44px",
+        "mutationsAtBootstrap": 0,
+        "paddingWhileOnlyDehydratedRemains": "44px",
+        "mutationsAtIncrementalHydration": 0,
+        "copiesAfterHydration": {
+          "styles": 1,
+          "links": 0,
+          "adopted": 0,
+          "total": 1
+        },
+        "probeAfterLastDestroyed": "0px",
+        "copiesAfterLastDestroyed": {
+          "styles": 0,
+          "links": 0,
+          "adopted": 0,
+          "total": 0
+        }
+      }
+    },
+    "retry": {
+      "L1": {
+        "framesWithLeavingCallout": 41,
+        "unstyledDuringLeave": 0,
+        "leaveMs": 648,
+        "unloadAfterHostGoneMs": 32,
+        "unloaded": true,
+        "recheck": "44px/gone 44px/gone"
+      },
+      "L2": {
+        "unloadAfterDestroyMs": 674,
+        "unloaded": true,
+        "recheck": "44px/gone 44px/gone"
+      },
+      "L3": {
+        "unloadedWhileListenerPresent": false,
+        "unloadedAfterListenerLeft": true,
+        "recheck": "44px/gone 44px/gone",
+        "retries": 29
+      },
+      "clientFirstRender": {
+        "unstyledFrames": 0,
+        "of": 48
+      },
+      "ssrFull": {
+        "serverHtml": {
+          "angularStyle": 1,
+          "ownStyle": 0,
+          "ownLink": 0,
+          "beastiesCopiedCalloutRules": false
+        },
+        "noJsPadding": "44px",
+        "styleMutationsAfterDcl": 0,
+        "unstyledFrames": 0,
+        "framesSampled": 60,
+        "copiesAfterHydration": {
+          "styles": 1,
+          "links": 0,
+          "adopted": 0,
+          "total": 1
+        },
+        "unloadedAfterRemove": true
+      },
+      "ssrIncremental": {
+        "dehydratedPadding": "44px",
+        "mutationsAtBootstrap": 0,
+        "paddingWhileOnlyDehydratedRemains": "44px",
+        "mutationsAtIncrementalHydration": 0,
+        "copiesAfterHydration": {
+          "styles": 1,
+          "links": 0,
+          "adopted": 0,
+          "total": 1
+        },
+        "probeAfterLastDestroyed": "0px",
+        "copiesAfterLastDestroyed": {
+          "styles": 0,
+          "links": 0,
+          "adopted": 0,
+          "total": 0
+        }
+      }
+    },
+    "own-style": {
+      "L1": {
+        "framesWithLeavingCallout": 42,
+        "unstyledDuringLeave": 0,
+        "leaveMs": 667,
+        "unloadAfterHostGoneMs": 0,
+        "unloaded": true,
+        "recheck": "44px/gone 44px/gone"
+      },
+      "L2": {
+        "unloadAfterDestroyMs": 57,
+        "unloaded": true,
+        "recheck": "44px/gone 44px/gone"
+      },
+      "L3": {
+        "unloadedWhileListenerPresent": true,
+        "unloadedAfterListenerLeft": true,
+        "recheck": "44px/gone 44px/gone",
+        "retries": 0
+      },
+      "clientFirstRender": {
+        "unstyledFrames": 0,
+        "of": 48
+      },
+      "ssrFull": {
+        "serverHtml": {
+          "angularStyle": 0,
+          "ownStyle": 1,
+          "ownLink": 0,
+          "beastiesCopiedCalloutRules": false
+        },
+        "noJsPadding": "44px",
+        "styleMutationsAfterDcl": 0,
+        "unstyledFrames": 0,
+        "framesSampled": 54,
+        "copiesAfterHydration": {
+          "styles": 1,
+          "links": 0,
+          "adopted": 0,
+          "total": 1
+        },
+        "unloadedAfterRemove": true
+      },
+      "ssrIncremental": {
+        "dehydratedPadding": "44px",
+        "mutationsAtBootstrap": 0,
+        "paddingWhileOnlyDehydratedRemains": "44px",
+        "mutationsAtIncrementalHydration": 0,
+        "copiesAfterHydration": {
+          "styles": 1,
+          "links": 0,
+          "adopted": 0,
+          "total": 1
+        },
+        "probeAfterLastDestroyed": "0px",
+        "copiesAfterLastDestroyed": {
+          "styles": 0,
+          "links": 0,
+          "adopted": 0,
+          "total": 0
+        }
+      }
+    },
+    "adopted": {
+      "L1": {
+        "framesWithLeavingCallout": 42,
+        "unstyledDuringLeave": 0,
+        "leaveMs": 660,
+        "unloadAfterHostGoneMs": 0,
+        "unloaded": true,
+        "recheck": "44px/gone 44px/gone"
+      },
+      "L2": {
+        "unloadAfterDestroyMs": 101,
+        "unloaded": true,
+        "recheck": "44px/gone 44px/gone"
+      },
+      "L3": {
+        "unloadedWhileListenerPresent": true,
+        "unloadedAfterListenerLeft": true,
+        "recheck": "44px/gone 44px/gone",
+        "retries": 0
+      },
+      "clientFirstRender": {
+        "unstyledFrames": 0,
+        "of": 48
+      },
+      "ssrFull": {
+        "serverHtml": {
+          "angularStyle": 0,
+          "ownStyle": 1,
+          "ownLink": 0,
+          "beastiesCopiedCalloutRules": false
+        },
+        "noJsPadding": "44px",
+        "styleMutationsAfterDcl": 0,
+        "unstyledFrames": 0,
+        "framesSampled": 55,
+        "copiesAfterHydration": {
+          "styles": 0,
+          "links": 0,
+          "adopted": 1,
+          "total": 1
+        },
+        "unloadedAfterRemove": true
+      },
+      "ssrIncremental": {
+        "dehydratedPadding": "44px",
+        "mutationsAtBootstrap": 0,
+        "paddingWhileOnlyDehydratedRemains": "44px",
+        "mutationsAtIncrementalHydration": 0,
+        "copiesAfterHydration": {
+          "styles": 0,
+          "links": 0,
+          "adopted": 1,
+          "total": 1
+        },
+        "probeAfterLastDestroyed": "0px",
+        "copiesAfterLastDestroyed": {
+          "styles": 0,
+          "links": 0,
+          "adopted": 0,
+          "total": 0
+        }
+      }
+    },
+    "own-link": {
+      "L1": {
+        "framesWithLeavingCallout": 42,
+        "unstyledDuringLeave": 0,
+        "leaveMs": 667,
+        "unloadAfterHostGoneMs": 0,
+        "unloaded": true,
+        "recheck": "44px/gone 44px/gone"
+      },
+      "L2": {
+        "unloadAfterDestroyMs": 58,
+        "unloaded": true,
+        "recheck": "44px/gone 44px/gone"
+      },
+      "L3": {
+        "unloadedWhileListenerPresent": true,
+        "unloadedAfterListenerLeft": true,
+        "recheck": "44px/gone 44px/gone",
+        "retries": 0
+      },
+      "clientFirstRender": {
+        "unstyledFrames": 0,
+        "of": 47
+      },
+      "ssrFull": {
+        "serverHtml": {
+          "angularStyle": 0,
+          "ownStyle": 0,
+          "ownLink": 2,
+          "beastiesCopiedCalloutRules": true
+        },
+        "noJsPadding": "44px",
+        "styleMutationsAfterDcl": 0,
+        "unstyledFrames": 0,
+        "framesSampled": 53,
+        "copiesAfterHydration": {
+          "styles": 1,
+          "links": 1,
+          "adopted": 0,
+          "total": 2
+        },
+        "unloadedAfterRemove": false
+      },
+      "ssrIncremental": {
+        "dehydratedPadding": "44px",
+        "mutationsAtBootstrap": 0,
+        "paddingWhileOnlyDehydratedRemains": "44px",
+        "mutationsAtIncrementalHydration": 0,
+        "copiesAfterHydration": {
+          "styles": 1,
+          "links": 1,
+          "adopted": 0,
+          "total": 2
+        },
+        "probeAfterLastDestroyed": "44px",
+        "copiesAfterLastDestroyed": {
+          "styles": 1,
+          "links": 0,
+          "adopted": 0,
+          "total": 1
+        }
+      }
+    }
+  }
+}
