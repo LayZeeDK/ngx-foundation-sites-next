@@ -40,3 +40,24 @@ AFK grilling (map, AFK override) against [Research: Angular 22's browser baselin
 - which unguarded features break which components.
 
 Record the decision as an ADR in `adr/`. This is HIGH impact: every spec inherits it. Use the triage rule if confidence is not HIGH.
+
+## Orchestrator analysis, 2026-10-01
+
+The user asked for the orchestrator's recommendation on the two options of their ruling: "47. Browser target: Give me your recommendation after your research, analysis, prototyping, or whatever you plan to do to decide."
+
+Computed from the appendix table of [Research: Angular 22's browser baseline against what Yeti expects](01-research-browser-baseline-vs-yeti.md): web-features first-support versions for the 170 features Yeti uses at least once without a guard, with the 31 fully guarded features left out. The lowest common set is the highest first-support version per browser:
+
+| | Chrome | Edge | Firefox | Safari and Safari iOS |
+| --- | --- | --- | --- | --- |
+| Yeti's Baseline 2025 (the research's section 3) | 141 | 141 | 145 | 26.2 |
+| Lowest common set | 136 | 136 | 144 | 26.2 |
+| What sets the lowest common version | `print-color-adjust` (printing only) | `print-color-adjust` | invoker commands, view transitions | `accent-color`, invoker commands |
+
+Even without `print-color-adjust`, invoker commands hold Chrome and Edge at 135. The script is the orchestrator's own (`lcd.mjs`, scratchpad), reading the committed table; no browser at either floor was run, because Playwright ships current engines only (ticket 18 lists the floor browsers as not run).
+
+Recommendation, which the user has not yet ruled on: state Yeti's Baseline 2025 as the package's target.
+
+1. **Reach is the same.** Safari 26.2, the binding constraint, is identical in both options. The lowest common set gains only Chrome and Edge 136 to 140 and Firefox 144, which evergreen updates leave few users on.
+2. **It is a stable, named rule.** Yeti's README states Baseline 2025, and its stability guide says browser minimums "track Baseline". A named Baseline year is the vocabulary both projects use. The lowest common set is a number recomputed at every pin move, and it shifts whenever Yeti starts or stops using a feature.
+3. **It gives the package's own code a clear rule.** Spec authors may use any feature in Baseline 2025 without a guard, the rule Yeti follows. Under the lowest common set, every new feature the package uses would need checking against a computed list.
+4. **Guarded features stay as Yeti has them.** Anchor positioning, scroll-driven animations, `field-sizing`, and `interpolate-size` work with Yeti's fallbacks below their support. Each spec states the fallback it relies on.
