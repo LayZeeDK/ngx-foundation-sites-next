@@ -1,0 +1,60 @@
+own          none   serverJsOff=styled  hydrated=styled  button=rgb(163, 0, 30)  global=rgb(254, 254, 254)  appRuns=true  clientInsert=styled  clientDefer=styled  tt=true  errors=0
+      ssr violations: -
+      client violations: - | defer: -
+own          self   serverJsOff=styled  hydrated=styled  button=rgb(163, 0, 30)  global=rgb(254, 254, 254)  appRuns=true  clientInsert=styled  clientDefer=styled  tt=true  errors=0
+      ssr violations: -
+      client violations: - | defer: -
+own          nonce  serverJsOff=styled  hydrated=styled  button=rgb(163, 0, 30)  global=rgb(254, 254, 254)  appRuns=true  clientInsert=styled  clientDefer=styled  tt=true  errors=0
+      ssr violations: style-src-elem styles-*.css x1 / style-src-elem styles-*.css x2 / style-src-elem styles-*.css x2
+      client violations: style-src-elem styles-*.css x1 / style-src-elem styles-*.css x2 / style-src-elem styles-*.css x2 | defer: style-src-elem styles-*.css x1 / style-src-elem styles-*.css x2 / style-src-elem styles-*.css x2
+own          tt     serverJsOff=styled  hydrated=styled  button=rgb(163, 0, 30)  global=rgb(254, 254, 254)  appRuns=true  clientInsert=styled  clientDefer=styled  tt=true  errors=0
+      ssr violations: -
+      client violations: - | defer: -
+link         none   serverJsOff=styled  hydrated=styled  button=rgb(163, 0, 30)  global=rgb(254, 254, 254)  appRuns=true  clientInsert=styled  clientDefer=styled  tt=true  errors=0
+      ssr violations: -
+      client violations: - | defer: -
+link         self   serverJsOff=styled  hydrated=styled  button=rgb(163, 0, 30)  global=rgb(254, 254, 254)  appRuns=true  clientInsert=styled  clientDefer=styled  tt=true  errors=0
+      ssr violations: -
+      client violations: - | defer: -
+link         nonce  serverJsOff=UNSTYLED  hydrated=UNSTYLED  button=rgba(0, 0, 0, 0)  global=rgb(254, 254, 254)  appRuns=true  clientInsert=UNSTYLED  clientDefer=UNSTYLED  tt=true  errors=0
+      ssr violations: style-src-elem styles-*.css x1, style-src-elem nfs-button.css x1, style-src-elem nfs-menu.css x1, style-src-elem nfs-dropdown-menu.css x1, style-src-elem nfs-callout.css x1 / style-src-elem styles-*.css x2, style-src-elem nfs-button.css x1, style-src-elem nfs-menu.css x1, style-src-elem nfs-dropdown-menu.css x1, style-src-elem nfs-callout.css x1 / style-src-elem styles-*.css x2, style-src-elem nfs-button.css x1, style-src-elem nfs-menu.css x1, style-src-elem nfs-dropdown-menu.css x1, style-src-elem nfs-callout.css x1
+      client violations: style-src-elem styles-*.css x1, style-src-elem nfs-callout.css x1 / style-src-elem styles-*.css x2, style-src-elem nfs-callout.css x1 / style-src-elem styles-*.css x2, style-src-elem nfs-callout.css x1 | defer: style-src-elem styles-*.css x1, style-src-elem nfs-callout.css x1 / style-src-elem styles-*.css x2, style-src-elem nfs-callout.css x1 / style-src-elem styles-*.css x2, style-src-elem nfs-callout.css x1
+link         tt     serverJsOff=styled  hydrated=styled  button=rgb(163, 0, 30)  global=rgb(254, 254, 254)  appRuns=true  clientInsert=styled  clientDefer=styled  tt=true  errors=0
+      ssr violations: -
+      client violations: - | defer: -
+link+nonce   none   serverJsOff=styled  hydrated=styled  button=rgb(163, 0, 30)  global=rgb(254, 254, 254)  appRuns=true  clientInsert=styled  clientDefer=styled  tt=true  errors=0
+      ssr violations: -
+      client violations: - | defer: -
+link+nonce   self   serverJsOff=styled  hydrated=styled  button=rgb(163, 0, 30)  global=rgb(254, 254, 254)  appRuns=true  clientInsert=styled  clientDefer=styled  tt=true  errors=0
+      ssr violations: -
+      client violations: - | defer: -
+link+nonce   nonce  serverJsOff=styled  hydrated=styled  button=rgb(163, 0, 30)  global=rgb(254, 254, 254)  appRuns=true  clientInsert=styled  clientDefer=styled  tt=true  errors=0
+      ssr violations: style-src-elem styles-*.css x1 / style-src-elem styles-*.css x2 / style-src-elem styles-*.css x2
+      client violations: style-src-elem styles-*.css x1 / style-src-elem styles-*.css x2 / style-src-elem styles-*.css x2 | defer: style-src-elem styles-*.css x1 / style-src-elem styles-*.css x2 / style-src-elem styles-*.css x2
+link+nonce   tt     serverJsOff=styled  hydrated=styled  button=rgb(163, 0, 30)  global=rgb(254, 254, 254)  appRuns=true  clientInsert=styled  clientDefer=styled  tt=true  errors=0
+      ssr violations: -
+      client violations: - | defer: -
+chunk        none   serverJsOff=styled  hydrated=styled  button=rgb(163, 0, 30)  global=rgb(254, 254, 254)  appRuns=true  clientInsert=styled  clientDefer=styled  tt=true  errors=0
+      ssr violations: -
+      client violations: - | defer: -
+chunk        self   serverJsOff=UNSTYLED  hydrated=UNSTYLED  button=rgba(0, 0, 0, 0)  global=rgb(254, 254, 254)  appRuns=true  clientInsert=UNSTYLED  clientDefer=UNSTYLED  tt=true  errors=0
+      ssr violations: style-src-elem inline x4
+      client violations: style-src-elem inline x1 | defer: style-src-elem inline x1
+chunk        nonce  serverJsOff=UNSTYLED  hydrated=UNSTYLED  button=rgba(0, 0, 0, 0)  global=rgb(254, 254, 254)  appRuns=true  clientInsert=UNSTYLED  clientDefer=UNSTYLED  tt=true  errors=0
+      ssr violations: style-src-elem styles-*.css x1, style-src-elem inline x4 / style-src-elem styles-*.css x2, style-src-elem inline x4 / style-src-elem styles-*.css x2, style-src-elem inline x4
+      client violations: style-src-elem styles-*.css x1, style-src-elem inline x1 / style-src-elem styles-*.css x2, style-src-elem inline x1 / style-src-elem styles-*.css x2, style-src-elem inline x1 | defer: style-src-elem styles-*.css x1, style-src-elem inline x1 / style-src-elem styles-*.css x2, style-src-elem inline x1 / style-src-elem styles-*.css x2, style-src-elem inline x1
+chunk        tt     serverJsOff=UNSTYLED  hydrated=UNSTYLED  button=rgba(0, 0, 0, 0)  global=rgb(254, 254, 254)  appRuns=true  clientInsert=UNSTYLED  clientDefer=UNSTYLED  tt=true  errors=0
+      ssr violations: style-src-elem inline x4
+      client violations: style-src-elem inline x1 | defer: style-src-elem inline x1
+chunk+nonce  none   serverJsOff=styled  hydrated=styled  button=rgb(163, 0, 30)  global=rgb(254, 254, 254)  appRuns=true  clientInsert=styled  clientDefer=styled  tt=true  errors=0
+      ssr violations: -
+      client violations: - | defer: -
+chunk+nonce  self   serverJsOff=styled  hydrated=styled  button=rgb(163, 0, 30)  global=rgb(254, 254, 254)  appRuns=true  clientInsert=styled  clientDefer=styled  tt=true  errors=0
+      ssr violations: -
+      client violations: - | defer: -
+chunk+nonce  nonce  serverJsOff=styled  hydrated=styled  button=rgb(163, 0, 30)  global=rgb(254, 254, 254)  appRuns=true  clientInsert=styled  clientDefer=styled  tt=true  errors=0
+      ssr violations: style-src-elem styles-*.css x1 / style-src-elem styles-*.css x2 / style-src-elem styles-*.css x2
+      client violations: style-src-elem styles-*.css x1 / style-src-elem styles-*.css x2 / style-src-elem styles-*.css x2 | defer: style-src-elem styles-*.css x1 / style-src-elem styles-*.css x2 / style-src-elem styles-*.css x2
+chunk+nonce  tt     serverJsOff=styled  hydrated=styled  button=rgb(163, 0, 30)  global=rgb(254, 254, 254)  appRuns=true  clientInsert=styled  clientDefer=styled  tt=true  errors=0
+      ssr violations: -
+      client violations: - | defer: -

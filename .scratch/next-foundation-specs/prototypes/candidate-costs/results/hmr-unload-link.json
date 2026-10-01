@@ -1,0 +1,65 @@
+[
+ {
+  "engine": "chromium",
+  "before": "44px",
+  "headBefore": [
+   "link[owned] nfs-callout.css"
+  ],
+  "afterEdit": "56px",
+  "reloaded": false,
+  "headAfterEdit": [
+   "link[owned] http://localhost:4822/nfs-callout.css?…"
+  ],
+  "probeAfterRemove": "56px",
+  "headAfterRemove": [
+   "link[owned] http://localhost:4822/nfs-callout.css?…"
+  ],
+  "secondAdd": "56px",
+  "probeAfterSecondRemove": "56px",
+  "headAfterSecondRemove": [
+   "link[owned] http://localhost:4822/nfs-callout.css?…"
+  ]
+ },
+ {
+  "engine": "firefox",
+  "before": "56px",
+  "headBefore": [
+   "link[owned] nfs-callout.css"
+  ],
+  "afterEdit": "44px",
+  "reloaded": false,
+  "headAfterEdit": [
+   "link[owned] http://localhost:4822/nfs-callout.css?…"
+  ],
+  "probeAfterRemove": "44px",
+  "headAfterRemove": [
+   "link[owned] http://localhost:4822/nfs-callout.css?…"
+  ],
+  "secondAdd": "56px",
+  "probeAfterSecondRemove": "44px",
+  "headAfterSecondRemove": [
+   "link[owned] http://localhost:4822/nfs-callout.css?…"
+  ]
+ },
+ {
+  "engine": "webkit",
+  "before": "44px",
+  "headBefore": [
+   "link[owned] nfs-callout.css"
+  ],
+  "afterEdit": "56px",
+  "reloaded": false,
+  "headAfterEdit": [
+   "link[owned] http://localhost:4822/nfs-callout.css?…"
+  ],
+  "probeAfterRemove": "56px",
+  "headAfterRemove": [
+   "link[owned] http://localhost:4822/nfs-callout.css?…"
+  ],
+  "secondAdd": "56px",
+  "probeAfterSecondRemove": "56px",
+  "headAfterSecondRemove": [
+   "link[owned] http://localhost:4822/nfs-callout.css?…"
+  ]
+ }
+]

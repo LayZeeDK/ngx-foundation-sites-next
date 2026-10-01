@@ -1,0 +1,53 @@
+[
+ {
+  "engine": "chromium",
+  "before": "44px",
+  "headBefore": [
+   "style[owned]"
+  ],
+  "afterEdit": "44px",
+  "reloaded": false,
+  "headAfterEdit": [
+   "style[owned]"
+  ],
+  "probeAfterRemove": "0px",
+  "headAfterRemove": [],
+  "secondAdd": "44px",
+  "probeAfterSecondRemove": "0px",
+  "headAfterSecondRemove": []
+ },
+ {
+  "engine": "firefox",
+  "before": "44px",
+  "headBefore": [
+   "style[owned]"
+  ],
+  "afterEdit": "44px",
+  "reloaded": false,
+  "headAfterEdit": [
+   "style[owned]"
+  ],
+  "probeAfterRemove": "0px",
+  "headAfterRemove": [],
+  "secondAdd": "44px",
+  "probeAfterSecondRemove": "0px",
+  "headAfterSecondRemove": []
+ },
+ {
+  "engine": "webkit",
+  "before": "44px",
+  "headBefore": [
+   "style[owned]"
+  ],
+  "afterEdit": "44px",
+  "reloaded": false,
+  "headAfterEdit": [
+   "style[owned]"
+  ],
+  "probeAfterRemove": "0px",
+  "headAfterRemove": [],
+  "secondAdd": "44px",
+  "probeAfterSecondRemove": "0px",
+  "headAfterSecondRemove": []
+ }
+]

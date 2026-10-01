@@ -1,0 +1,54 @@
+== own shared
+  both started, nothing shown        A.callout=- B.callout=- A.button=- B.button=- B.menu=- | probes 0px rgba(0, 0, 0, 0) 0px | elements=- sheets=2
+  A shows callout                    A.callout=44px B.callout=- A.button=- B.button=- B.menu=- | probes 44px rgba(0, 0, 0, 0) 0px | elements=style:callout sheets=3
+  B shows callout                    A.callout=44px B.callout=44px A.button=- B.button=- B.menu=- | probes 44px rgba(0, 0, 0, 0) 0px | elements=style:callout sheets=3
+  A hides callout (B still shows)    A.callout=- B.callout=0px A.button=- B.button=- B.menu=- | probes 0px rgba(0, 0, 0, 0) 0px | elements=- sheets=2
+  A shows callout again              A.callout=44px B.callout=44px A.button=- B.button=- B.menu=- | probes 44px rgba(0, 0, 0, 0) 0px | elements=style:callout sheets=3
+  A destroyed (B still shows)        A.callout=- B.callout=0px A.button=- B.button=- B.menu=- | probes 0px rgba(0, 0, 0, 0) 0px | elements=- sheets=2
+  B hides callout                    A.callout=- B.callout=- A.button=- B.button=- B.menu=- | probes 0px rgba(0, 0, 0, 0) 0px | elements=- sheets=2
+  B shows callout again              A.callout=- B.callout=44px A.button=- B.button=- B.menu=- | probes 44px rgba(0, 0, 0, 0) 0px | elements=style:callout sheets=3
+  B destroyed                        A.callout=- B.callout=- A.button=- B.button=- B.menu=- | probes 0px rgba(0, 0, 0, 0) 0px | elements=- sheets=2
+== own not-shared
+  both started, nothing shown        A.callout=- B.callout=- A.button=- B.button=- B.menu=- | probes 0px rgba(0, 0, 0, 0) 0px | elements=- sheets=2
+  A shows button                     A.callout=- B.callout=- A.button=rgb(163, 0, 30) B.button=- B.menu=- | probes 0px rgb(163, 0, 30) 0px | elements=style:button sheets=3
+  B shows menu                       A.callout=- B.callout=- A.button=rgb(163, 0, 30) B.button=- B.menu=19.2px / 19.2px / 19.200001px | probes 0px rgb(163, 0, 30) 19.2px / 19.2px / 19.200001px | elements=style:button,style:menu sheets=4
+  A destroyed (B still shows menu)   A.callout=- B.callout=- A.button=- B.button=- B.menu=19.2px / 19.2px / 19.200001px | probes 0px rgba(0, 0, 0, 0) 19.2px / 19.2px / 19.200001px | elements=style:menu sheets=3
+  B shows button                     A.callout=- B.callout=- A.button=- B.button=rgb(163, 0, 30) B.menu=19.2px / 19.2px / 19.200001px | probes 0px rgb(163, 0, 30) 19.2px / 19.2px / 19.200001px | elements=style:menu,style:button sheets=4
+  B hides button and menu            A.callout=- B.callout=- A.button=- B.button=- B.menu=- | probes 0px rgba(0, 0, 0, 0) 0px | elements=- sheets=2
+  B destroyed                        A.callout=- B.callout=- A.button=- B.button=- B.menu=- | probes 0px rgba(0, 0, 0, 0) 0px | elements=- sheets=2
+== link shared
+  both started, nothing shown        A.callout=- B.callout=- A.button=- B.button=- B.menu=- | probes 0px rgba(0, 0, 0, 0) 0px | elements=- sheets=2
+  A shows callout                    A.callout=44px B.callout=- A.button=- B.button=- B.menu=- | probes 44px rgba(0, 0, 0, 0) 0px | elements=link:callout sheets=3
+  B shows callout                    A.callout=44px B.callout=44px A.button=- B.button=- B.menu=- | probes 44px rgba(0, 0, 0, 0) 0px | elements=link:callout sheets=3
+  A hides callout (B still shows)    A.callout=- B.callout=0px A.button=- B.button=- B.menu=- | probes 0px rgba(0, 0, 0, 0) 0px | elements=- sheets=2
+  A shows callout again              A.callout=44px B.callout=44px A.button=- B.button=- B.menu=- | probes 44px rgba(0, 0, 0, 0) 0px | elements=link:callout sheets=3
+  A destroyed (B still shows)        A.callout=- B.callout=0px A.button=- B.button=- B.menu=- | probes 0px rgba(0, 0, 0, 0) 0px | elements=- sheets=2
+  B hides callout                    A.callout=- B.callout=- A.button=- B.button=- B.menu=- | probes 0px rgba(0, 0, 0, 0) 0px | elements=- sheets=2
+  B shows callout again              A.callout=- B.callout=44px A.button=- B.button=- B.menu=- | probes 44px rgba(0, 0, 0, 0) 0px | elements=link:callout sheets=3
+  B destroyed                        A.callout=- B.callout=- A.button=- B.button=- B.menu=- | probes 0px rgba(0, 0, 0, 0) 0px | elements=- sheets=2
+== link not-shared
+  both started, nothing shown        A.callout=- B.callout=- A.button=- B.button=- B.menu=- | probes 0px rgba(0, 0, 0, 0) 0px | elements=- sheets=2
+  A shows button                     A.callout=- B.callout=- A.button=rgb(163, 0, 30) B.button=- B.menu=- | probes 0px rgb(163, 0, 30) 0px | elements=link:button sheets=3
+  B shows menu                       A.callout=- B.callout=- A.button=rgb(163, 0, 30) B.button=- B.menu=19.2px / 19.2px / 19.200001px | probes 0px rgb(163, 0, 30) 19.2px / 19.2px / 19.200001px | elements=link:button,link:menu sheets=4
+  A destroyed (B still shows menu)   A.callout=- B.callout=- A.button=- B.button=- B.menu=19.2px / 19.2px / 19.200001px | probes 0px rgba(0, 0, 0, 0) 19.2px / 19.2px / 19.200001px | elements=link:menu sheets=3
+  B shows button                     A.callout=- B.callout=- A.button=- B.button=rgba(0, 0, 0, 0) B.menu=19.2px / 19.2px / 19.200001px | probes 0px rgba(0, 0, 0, 0) 19.2px / 19.2px / 19.200001px | elements=link:menu sheets=3
+  B hides button and menu            A.callout=- B.callout=- A.button=- B.button=- B.menu=- | probes 0px rgba(0, 0, 0, 0) 0px | elements=- sheets=2
+  B destroyed                        A.callout=- B.callout=- A.button=- B.button=- B.menu=- | probes 0px rgba(0, 0, 0, 0) 0px | elements=- sheets=2
+== chunk shared
+  both started, nothing shown        A.callout=- B.callout=- A.button=- B.button=- B.menu=- | probes 0px rgba(0, 0, 0, 0) 0px | elements=- sheets=2
+  A shows callout                    A.callout=44px B.callout=- A.button=- B.button=- B.menu=- | probes 44px rgba(0, 0, 0, 0) 0px | elements=style:callout sheets=3
+  B shows callout                    A.callout=44px B.callout=44px A.button=- B.button=- B.menu=- | probes 44px rgba(0, 0, 0, 0) 0px | elements=style:callout sheets=3
+  A hides callout (B still shows)    A.callout=- B.callout=0px A.button=- B.button=- B.menu=- | probes 0px rgba(0, 0, 0, 0) 0px | elements=- sheets=2
+  A shows callout again              A.callout=44px B.callout=44px A.button=- B.button=- B.menu=- | probes 44px rgba(0, 0, 0, 0) 0px | elements=style:callout sheets=3
+  A destroyed (B still shows)        A.callout=- B.callout=0px A.button=- B.button=- B.menu=- | probes 0px rgba(0, 0, 0, 0) 0px | elements=- sheets=2
+  B hides callout                    A.callout=- B.callout=- A.button=- B.button=- B.menu=- | probes 0px rgba(0, 0, 0, 0) 0px | elements=- sheets=2
+  B shows callout again              A.callout=- B.callout=44px A.button=- B.button=- B.menu=- | probes 44px rgba(0, 0, 0, 0) 0px | elements=style:callout sheets=3
+  B destroyed                        A.callout=- B.callout=- A.button=- B.button=- B.menu=- | probes 0px rgba(0, 0, 0, 0) 0px | elements=- sheets=2
+== chunk not-shared
+  both started, nothing shown        A.callout=- B.callout=- A.button=- B.button=- B.menu=- | probes 0px rgba(0, 0, 0, 0) 0px | elements=- sheets=2
+  A shows button                     A.callout=- B.callout=- A.button=rgb(163, 0, 30) B.button=- B.menu=- | probes 0px rgb(163, 0, 30) 0px | elements=style:button sheets=3
+  B shows menu                       A.callout=- B.callout=- A.button=rgb(163, 0, 30) B.button=- B.menu=19.2px / 19.2px / 19.200001px | probes 0px rgb(163, 0, 30) 19.2px / 19.2px / 19.200001px | elements=style:button,style:menu sheets=4
+  A destroyed (B still shows menu)   A.callout=- B.callout=- A.button=- B.button=- B.menu=19.2px / 19.2px / 19.200001px | probes 0px rgba(0, 0, 0, 0) 19.2px / 19.2px / 19.200001px | elements=style:menu sheets=3
+  B shows button                     A.callout=- B.callout=- A.button=- B.button=rgba(0, 0, 0, 0) B.menu=19.2px / 19.2px / 19.200001px | probes 0px rgba(0, 0, 0, 0) 19.2px / 19.2px / 19.200001px | elements=style:menu sheets=3
+  B hides button and menu            A.callout=- B.callout=- A.button=- B.button=- B.menu=- | probes 0px rgba(0, 0, 0, 0) 0px | elements=- sheets=2
+  B destroyed                        A.callout=- B.callout=- A.button=- B.button=- B.menu=- | probes 0px rgba(0, 0, 0, 0) 0px | elements=- sheets=2

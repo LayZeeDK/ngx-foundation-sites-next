@@ -1,0 +1,936 @@
+[
+ {
+  "engine": "firefox",
+  "candidate": "own",
+  "policy": "none",
+  "serverJsOff": {
+   "bodyBg": "rgb(254, 254, 254)",
+   "callout": "44px",
+   "button": "rgb(163, 0, 30)",
+   "submenu": "none",
+   "families": [
+    "style:button:sheet",
+    "style:menu:sheet",
+    "style:dropdown-menu:sheet",
+    "style:callout:sheet"
+   ],
+   "trustedTypes": true
+  },
+  "hydrated": {
+   "bodyBg": "rgb(254, 254, 254)",
+   "callout": "44px",
+   "button": "rgb(163, 0, 30)",
+   "submenu": "none",
+   "families": [
+    "style:button:sheet",
+    "style:menu:sheet",
+    "style:dropdown-menu:sheet",
+    "style:callout:sheet"
+   ],
+   "trustedTypes": true
+  },
+  "appRuns": true,
+  "ssrViolations": {},
+  "ssrErrors": [],
+  "clientInsert": {
+   "callout": "44px",
+   "families": [
+    "style:callout:nonce"
+   ]
+  },
+  "clientViolations": {},
+  "clientDefer": "44px",
+  "deferViolations": {}
+ },
+ {
+  "engine": "firefox",
+  "candidate": "own",
+  "policy": "self",
+  "serverJsOff": {
+   "bodyBg": "rgb(254, 254, 254)",
+   "callout": "44px",
+   "button": "rgb(163, 0, 30)",
+   "submenu": "none",
+   "families": [
+    "style:button:sheet",
+    "style:menu:sheet",
+    "style:dropdown-menu:sheet",
+    "style:callout:sheet"
+   ],
+   "trustedTypes": true
+  },
+  "hydrated": {
+   "bodyBg": "rgb(254, 254, 254)",
+   "callout": "44px",
+   "button": "rgb(163, 0, 30)",
+   "submenu": "none",
+   "families": [
+    "style:button:sheet",
+    "style:menu:sheet",
+    "style:dropdown-menu:sheet",
+    "style:callout:sheet"
+   ],
+   "trustedTypes": true
+  },
+  "appRuns": true,
+  "ssrViolations": {
+   "img-src data": 2
+  },
+  "ssrErrors": [],
+  "clientInsert": {
+   "callout": "44px",
+   "families": [
+    "style:callout:nonce"
+   ]
+  },
+  "clientViolations": {},
+  "clientDefer": "44px",
+  "deferViolations": {}
+ },
+ {
+  "engine": "firefox",
+  "candidate": "own",
+  "policy": "nonce",
+  "serverJsOff": {
+   "bodyBg": "rgb(254, 254, 254)",
+   "callout": "44px",
+   "button": "rgb(163, 0, 30)",
+   "submenu": "none",
+   "families": [
+    "style:button:sheet",
+    "style:menu:sheet",
+    "style:dropdown-menu:sheet",
+    "style:callout:sheet"
+   ],
+   "trustedTypes": true
+  },
+  "hydrated": {
+   "bodyBg": "rgb(254, 254, 254)",
+   "callout": "44px",
+   "button": "rgb(163, 0, 30)",
+   "submenu": "none",
+   "families": [
+    "style:button:sheet",
+    "style:menu:sheet",
+    "style:dropdown-menu:sheet",
+    "style:callout:sheet"
+   ],
+   "trustedTypes": true
+  },
+  "appRuns": true,
+  "ssrViolations": {
+   "style-src-elem styles-*.css": 2,
+   "img-src data": 1
+  },
+  "ssrErrors": [],
+  "clientInsert": {
+   "callout": "44px",
+   "families": [
+    "style:callout:nonce"
+   ]
+  },
+  "clientViolations": {
+   "style-src-elem styles-*.css": 2
+  },
+  "clientDefer": "44px",
+  "deferViolations": {
+   "style-src-elem styles-*.css": 2
+  }
+ },
+ {
+  "engine": "firefox",
+  "candidate": "own",
+  "policy": "tt",
+  "serverJsOff": {
+   "bodyBg": "rgb(254, 254, 254)",
+   "callout": "44px",
+   "button": "rgb(163, 0, 30)",
+   "submenu": "none",
+   "families": [
+    "style:button:sheet",
+    "style:menu:sheet",
+    "style:dropdown-menu:sheet",
+    "style:callout:sheet"
+   ],
+   "trustedTypes": true
+  },
+  "hydrated": {
+   "bodyBg": "rgb(254, 254, 254)",
+   "callout": "44px",
+   "button": "rgb(163, 0, 30)",
+   "submenu": "none",
+   "families": [
+    "style:button:sheet",
+    "style:menu:sheet",
+    "style:dropdown-menu:sheet",
+    "style:callout:sheet"
+   ],
+   "trustedTypes": true
+  },
+  "appRuns": true,
+  "ssrViolations": {
+   "img-src data": 2
+  },
+  "ssrErrors": [],
+  "clientInsert": {
+   "callout": "44px",
+   "families": [
+    "style:callout:nonce"
+   ]
+  },
+  "clientViolations": {},
+  "clientDefer": "44px",
+  "deferViolations": {}
+ },
+ {
+  "engine": "firefox",
+  "candidate": "link",
+  "policy": "none",
+  "serverJsOff": {
+   "bodyBg": "rgb(254, 254, 254)",
+   "callout": "44px",
+   "button": "rgb(163, 0, 30)",
+   "submenu": "none",
+   "families": [
+    "link:button:sheet",
+    "link:menu:sheet",
+    "link:dropdown-menu:sheet",
+    "link:callout:sheet"
+   ],
+   "trustedTypes": true
+  },
+  "hydrated": {
+   "bodyBg": "rgb(254, 254, 254)",
+   "callout": "44px",
+   "button": "rgb(163, 0, 30)",
+   "submenu": "none",
+   "families": [
+    "link:button:sheet",
+    "link:menu:sheet",
+    "link:dropdown-menu:sheet",
+    "link:callout:sheet"
+   ],
+   "trustedTypes": true
+  },
+  "appRuns": true,
+  "ssrViolations": {},
+  "ssrErrors": [],
+  "clientInsert": {
+   "callout": "44px",
+   "families": [
+    "link:callout:no-nonce"
+   ]
+  },
+  "clientViolations": {},
+  "clientDefer": "44px",
+  "deferViolations": {}
+ },
+ {
+  "engine": "firefox",
+  "candidate": "link",
+  "policy": "self",
+  "serverJsOff": {
+   "bodyBg": "rgb(254, 254, 254)",
+   "callout": "44px",
+   "button": "rgb(163, 0, 30)",
+   "submenu": "none",
+   "families": [
+    "link:button:sheet",
+    "link:menu:sheet",
+    "link:dropdown-menu:sheet",
+    "link:callout:sheet"
+   ],
+   "trustedTypes": true
+  },
+  "hydrated": {
+   "bodyBg": "rgb(254, 254, 254)",
+   "callout": "44px",
+   "button": "rgb(163, 0, 30)",
+   "submenu": "none",
+   "families": [
+    "link:button:sheet",
+    "link:menu:sheet",
+    "link:dropdown-menu:sheet",
+    "link:callout:sheet"
+   ],
+   "trustedTypes": true
+  },
+  "appRuns": true,
+  "ssrViolations": {
+   "img-src data": 2
+  },
+  "ssrErrors": [],
+  "clientInsert": {
+   "callout": "44px",
+   "families": [
+    "link:callout:no-nonce"
+   ]
+  },
+  "clientViolations": {},
+  "clientDefer": "44px",
+  "deferViolations": {}
+ },
+ {
+  "engine": "firefox",
+  "candidate": "link",
+  "policy": "nonce",
+  "serverJsOff": {
+   "bodyBg": "rgb(254, 254, 254)",
+   "callout": "0px",
+   "button": "rgba(0, 0, 0, 0)",
+   "submenu": "block",
+   "families": [
+    "link:button:nosheet",
+    "link:menu:nosheet",
+    "link:dropdown-menu:nosheet",
+    "link:callout:nosheet"
+   ],
+   "trustedTypes": true
+  },
+  "hydrated": {
+   "bodyBg": "rgb(254, 254, 254)",
+   "callout": "0px",
+   "button": "rgba(0, 0, 0, 0)",
+   "submenu": "block",
+   "families": [
+    "link:button:nosheet",
+    "link:menu:nosheet",
+    "link:dropdown-menu:nosheet",
+    "link:callout:nosheet"
+   ],
+   "trustedTypes": true
+  },
+  "appRuns": true,
+  "ssrViolations": {
+   "style-src-elem styles-*.css": 2,
+   "style-src-elem nfs-button.css": 1,
+   "style-src-elem nfs-menu.css": 1,
+   "style-src-elem nfs-dropdown-menu.css": 1,
+   "style-src-elem nfs-callout.css": 1,
+   "img-src data": 1
+  },
+  "ssrErrors": [],
+  "clientInsert": {
+   "callout": "0px",
+   "families": [
+    "link:callout:no-nonce"
+   ]
+  },
+  "clientViolations": {
+   "style-src-elem styles-*.css": 2,
+   "style-src-elem nfs-callout.css": 1
+  },
+  "clientDefer": "0px",
+  "deferViolations": {
+   "style-src-elem styles-*.css": 2,
+   "style-src-elem nfs-callout.css": 1
+  }
+ },
+ {
+  "engine": "firefox",
+  "candidate": "link",
+  "policy": "tt",
+  "serverJsOff": {
+   "bodyBg": "rgb(254, 254, 254)",
+   "callout": "44px",
+   "button": "rgb(163, 0, 30)",
+   "submenu": "none",
+   "families": [
+    "link:button:sheet",
+    "link:menu:sheet",
+    "link:dropdown-menu:sheet",
+    "link:callout:sheet"
+   ],
+   "trustedTypes": true
+  },
+  "hydrated": {
+   "bodyBg": "rgb(254, 254, 254)",
+   "callout": "44px",
+   "button": "rgb(163, 0, 30)",
+   "submenu": "none",
+   "families": [
+    "link:button:sheet",
+    "link:menu:sheet",
+    "link:dropdown-menu:sheet",
+    "link:callout:sheet"
+   ],
+   "trustedTypes": true
+  },
+  "appRuns": true,
+  "ssrViolations": {
+   "img-src data": 2
+  },
+  "ssrErrors": [],
+  "clientInsert": {
+   "callout": "44px",
+   "families": [
+    "link:callout:no-nonce"
+   ]
+  },
+  "clientViolations": {},
+  "clientDefer": "44px",
+  "deferViolations": {}
+ },
+ {
+  "engine": "firefox",
+  "candidate": "link+nonce",
+  "policy": "none",
+  "serverJsOff": {
+   "bodyBg": "rgb(254, 254, 254)",
+   "callout": "44px",
+   "button": "rgb(163, 0, 30)",
+   "submenu": "none",
+   "families": [
+    "link:button:sheet",
+    "link:menu:sheet",
+    "link:dropdown-menu:sheet",
+    "link:callout:sheet"
+   ],
+   "trustedTypes": true
+  },
+  "hydrated": {
+   "bodyBg": "rgb(254, 254, 254)",
+   "callout": "44px",
+   "button": "rgb(163, 0, 30)",
+   "submenu": "none",
+   "families": [
+    "link:button:sheet",
+    "link:menu:sheet",
+    "link:dropdown-menu:sheet",
+    "link:callout:sheet"
+   ],
+   "trustedTypes": true
+  },
+  "appRuns": true,
+  "ssrViolations": {},
+  "ssrErrors": [],
+  "clientInsert": {
+   "callout": "44px",
+   "families": [
+    "link:callout:nonce"
+   ]
+  },
+  "clientViolations": {},
+  "clientDefer": "44px",
+  "deferViolations": {}
+ },
+ {
+  "engine": "firefox",
+  "candidate": "link+nonce",
+  "policy": "self",
+  "serverJsOff": {
+   "bodyBg": "rgb(254, 254, 254)",
+   "callout": "44px",
+   "button": "rgb(163, 0, 30)",
+   "submenu": "none",
+   "families": [
+    "link:button:sheet",
+    "link:menu:sheet",
+    "link:dropdown-menu:sheet",
+    "link:callout:sheet"
+   ],
+   "trustedTypes": true
+  },
+  "hydrated": {
+   "bodyBg": "rgb(254, 254, 254)",
+   "callout": "44px",
+   "button": "rgb(163, 0, 30)",
+   "submenu": "none",
+   "families": [
+    "link:button:sheet",
+    "link:menu:sheet",
+    "link:dropdown-menu:sheet",
+    "link:callout:sheet"
+   ],
+   "trustedTypes": true
+  },
+  "appRuns": true,
+  "ssrViolations": {
+   "img-src data": 2
+  },
+  "ssrErrors": [],
+  "clientInsert": {
+   "callout": "44px",
+   "families": [
+    "link:callout:nonce"
+   ]
+  },
+  "clientViolations": {},
+  "clientDefer": "44px",
+  "deferViolations": {}
+ },
+ {
+  "engine": "firefox",
+  "candidate": "link+nonce",
+  "policy": "nonce",
+  "serverJsOff": {
+   "bodyBg": "rgb(254, 254, 254)",
+   "callout": "44px",
+   "button": "rgb(163, 0, 30)",
+   "submenu": "none",
+   "families": [
+    "link:button:sheet",
+    "link:menu:sheet",
+    "link:dropdown-menu:sheet",
+    "link:callout:sheet"
+   ],
+   "trustedTypes": true
+  },
+  "hydrated": {
+   "bodyBg": "rgb(254, 254, 254)",
+   "callout": "44px",
+   "button": "rgb(163, 0, 30)",
+   "submenu": "none",
+   "families": [
+    "link:button:sheet",
+    "link:menu:sheet",
+    "link:dropdown-menu:sheet",
+    "link:callout:sheet"
+   ],
+   "trustedTypes": true
+  },
+  "appRuns": true,
+  "ssrViolations": {
+   "style-src-elem styles-*.css": 2,
+   "img-src data": 1
+  },
+  "ssrErrors": [],
+  "clientInsert": {
+   "callout": "44px",
+   "families": [
+    "link:callout:nonce"
+   ]
+  },
+  "clientViolations": {
+   "style-src-elem styles-*.css": 2
+  },
+  "clientDefer": "44px",
+  "deferViolations": {
+   "style-src-elem styles-*.css": 2
+  }
+ },
+ {
+  "engine": "firefox",
+  "candidate": "link+nonce",
+  "policy": "tt",
+  "serverJsOff": {
+   "bodyBg": "rgb(254, 254, 254)",
+   "callout": "44px",
+   "button": "rgb(163, 0, 30)",
+   "submenu": "none",
+   "families": [
+    "link:button:sheet",
+    "link:menu:sheet",
+    "link:dropdown-menu:sheet",
+    "link:callout:sheet"
+   ],
+   "trustedTypes": true
+  },
+  "hydrated": {
+   "bodyBg": "rgb(254, 254, 254)",
+   "callout": "44px",
+   "button": "rgb(163, 0, 30)",
+   "submenu": "none",
+   "families": [
+    "link:button:sheet",
+    "link:menu:sheet",
+    "link:dropdown-menu:sheet",
+    "link:callout:sheet"
+   ],
+   "trustedTypes": true
+  },
+  "appRuns": true,
+  "ssrViolations": {
+   "img-src data": 2
+  },
+  "ssrErrors": [],
+  "clientInsert": {
+   "callout": "44px",
+   "families": [
+    "link:callout:nonce"
+   ]
+  },
+  "clientViolations": {},
+  "clientDefer": "44px",
+  "deferViolations": {}
+ },
+ {
+  "engine": "firefox",
+  "candidate": "chunk",
+  "policy": "none",
+  "serverJsOff": {
+   "bodyBg": "rgb(254, 254, 254)",
+   "callout": "44px",
+   "button": "rgb(163, 0, 30)",
+   "submenu": "none",
+   "families": [
+    "style:button:sheet",
+    "style:menu:sheet",
+    "style:dropdown-menu:sheet",
+    "style:callout:sheet"
+   ],
+   "trustedTypes": true
+  },
+  "hydrated": {
+   "bodyBg": "rgb(254, 254, 254)",
+   "callout": "44px",
+   "button": "rgb(163, 0, 30)",
+   "submenu": "none",
+   "families": [
+    "style:button:sheet",
+    "style:menu:sheet",
+    "style:dropdown-menu:sheet",
+    "style:callout:sheet"
+   ],
+   "trustedTypes": true
+  },
+  "appRuns": true,
+  "ssrViolations": {},
+  "ssrErrors": [],
+  "clientInsert": {
+   "callout": "44px",
+   "families": [
+    "style:callout:no-nonce"
+   ]
+  },
+  "clientViolations": {},
+  "clientDefer": "44px",
+  "deferViolations": {}
+ },
+ {
+  "engine": "firefox",
+  "candidate": "chunk",
+  "policy": "self",
+  "serverJsOff": {
+   "bodyBg": "rgb(254, 254, 254)",
+   "callout": "0px",
+   "button": "rgba(0, 0, 0, 0)",
+   "submenu": "block",
+   "families": [
+    "style:button:nosheet",
+    "style:menu:nosheet",
+    "style:dropdown-menu:nosheet",
+    "style:callout:nosheet"
+   ],
+   "trustedTypes": true
+  },
+  "hydrated": {
+   "bodyBg": "rgb(254, 254, 254)",
+   "callout": "0px",
+   "button": "rgba(0, 0, 0, 0)",
+   "submenu": "block",
+   "families": [
+    "style:button:nosheet",
+    "style:menu:nosheet",
+    "style:dropdown-menu:nosheet",
+    "style:callout:nosheet"
+   ],
+   "trustedTypes": true
+  },
+  "appRuns": true,
+  "ssrViolations": {
+   "style-src-elem inline": 4,
+   "img-src data": 2
+  },
+  "ssrErrors": [],
+  "clientInsert": {
+   "callout": "0px",
+   "families": [
+    "style:callout:no-nonce"
+   ]
+  },
+  "clientViolations": {
+   "style-src-elem inline": 1
+  },
+  "clientDefer": "0px",
+  "deferViolations": {
+   "style-src-elem inline": 1
+  }
+ },
+ {
+  "engine": "firefox",
+  "candidate": "chunk",
+  "policy": "nonce",
+  "serverJsOff": {
+   "bodyBg": "rgb(254, 254, 254)",
+   "callout": "0px",
+   "button": "rgba(0, 0, 0, 0)",
+   "submenu": "block",
+   "families": [
+    "style:button:nosheet",
+    "style:menu:nosheet",
+    "style:dropdown-menu:nosheet",
+    "style:callout:nosheet"
+   ],
+   "trustedTypes": true
+  },
+  "hydrated": {
+   "bodyBg": "rgb(254, 254, 254)",
+   "callout": "0px",
+   "button": "rgba(0, 0, 0, 0)",
+   "submenu": "block",
+   "families": [
+    "style:button:nosheet",
+    "style:menu:nosheet",
+    "style:dropdown-menu:nosheet",
+    "style:callout:nosheet"
+   ],
+   "trustedTypes": true
+  },
+  "appRuns": true,
+  "ssrViolations": {
+   "style-src-elem styles-*.css": 2,
+   "style-src-elem inline": 4,
+   "img-src data": 1
+  },
+  "ssrErrors": [],
+  "clientInsert": {
+   "callout": "0px",
+   "families": [
+    "style:callout:no-nonce"
+   ]
+  },
+  "clientViolations": {
+   "style-src-elem styles-*.css": 2,
+   "style-src-elem inline": 1
+  },
+  "clientDefer": "0px",
+  "deferViolations": {
+   "style-src-elem styles-*.css": 2,
+   "style-src-elem inline": 1
+  }
+ },
+ {
+  "engine": "firefox",
+  "candidate": "chunk",
+  "policy": "tt",
+  "serverJsOff": {
+   "bodyBg": "rgb(254, 254, 254)",
+   "callout": "0px",
+   "button": "rgba(0, 0, 0, 0)",
+   "submenu": "block",
+   "families": [
+    "style:button:nosheet",
+    "style:menu:nosheet",
+    "style:dropdown-menu:nosheet",
+    "style:callout:nosheet"
+   ],
+   "trustedTypes": true
+  },
+  "hydrated": {
+   "bodyBg": "rgb(254, 254, 254)",
+   "callout": "0px",
+   "button": "rgba(0, 0, 0, 0)",
+   "submenu": "block",
+   "families": [
+    "style:button:nosheet",
+    "style:menu:nosheet",
+    "style:dropdown-menu:nosheet",
+    "style:callout:nosheet"
+   ],
+   "trustedTypes": true
+  },
+  "appRuns": true,
+  "ssrViolations": {
+   "style-src-elem inline": 4,
+   "img-src data": 2
+  },
+  "ssrErrors": [],
+  "clientInsert": {
+   "callout": "0px",
+   "families": [
+    "style:callout:no-nonce"
+   ]
+  },
+  "clientViolations": {
+   "style-src-elem inline": 1
+  },
+  "clientDefer": "0px",
+  "deferViolations": {
+   "style-src-elem inline": 1
+  }
+ },
+ {
+  "engine": "firefox",
+  "candidate": "chunk+nonce",
+  "policy": "none",
+  "serverJsOff": {
+   "bodyBg": "rgb(254, 254, 254)",
+   "callout": "44px",
+   "button": "rgb(163, 0, 30)",
+   "submenu": "none",
+   "families": [
+    "style:button:sheet",
+    "style:menu:sheet",
+    "style:dropdown-menu:sheet",
+    "style:callout:sheet"
+   ],
+   "trustedTypes": true
+  },
+  "hydrated": {
+   "bodyBg": "rgb(254, 254, 254)",
+   "callout": "44px",
+   "button": "rgb(163, 0, 30)",
+   "submenu": "none",
+   "families": [
+    "style:button:sheet",
+    "style:menu:sheet",
+    "style:dropdown-menu:sheet",
+    "style:callout:sheet"
+   ],
+   "trustedTypes": true
+  },
+  "appRuns": true,
+  "ssrViolations": {},
+  "ssrErrors": [],
+  "clientInsert": {
+   "callout": "44px",
+   "families": [
+    "style:callout:nonce"
+   ]
+  },
+  "clientViolations": {},
+  "clientDefer": "44px",
+  "deferViolations": {}
+ },
+ {
+  "engine": "firefox",
+  "candidate": "chunk+nonce",
+  "policy": "self",
+  "serverJsOff": {
+   "bodyBg": "rgb(254, 254, 254)",
+   "callout": "44px",
+   "button": "rgb(163, 0, 30)",
+   "submenu": "none",
+   "families": [
+    "style:button:sheet",
+    "style:menu:sheet",
+    "style:dropdown-menu:sheet",
+    "style:callout:sheet"
+   ],
+   "trustedTypes": true
+  },
+  "hydrated": {
+   "bodyBg": "rgb(254, 254, 254)",
+   "callout": "44px",
+   "button": "rgb(163, 0, 30)",
+   "submenu": "none",
+   "families": [
+    "style:button:sheet",
+    "style:menu:sheet",
+    "style:dropdown-menu:sheet",
+    "style:callout:sheet"
+   ],
+   "trustedTypes": true
+  },
+  "appRuns": true,
+  "ssrViolations": {
+   "img-src data": 2
+  },
+  "ssrErrors": [],
+  "clientInsert": {
+   "callout": "44px",
+   "families": [
+    "style:callout:nonce"
+   ]
+  },
+  "clientViolations": {},
+  "clientDefer": "44px",
+  "deferViolations": {}
+ },
+ {
+  "engine": "firefox",
+  "candidate": "chunk+nonce",
+  "policy": "nonce",
+  "serverJsOff": {
+   "bodyBg": "rgb(254, 254, 254)",
+   "callout": "44px",
+   "button": "rgb(163, 0, 30)",
+   "submenu": "none",
+   "families": [
+    "style:button:sheet",
+    "style:menu:sheet",
+    "style:dropdown-menu:sheet",
+    "style:callout:sheet"
+   ],
+   "trustedTypes": true
+  },
+  "hydrated": {
+   "bodyBg": "rgb(254, 254, 254)",
+   "callout": "44px",
+   "button": "rgb(163, 0, 30)",
+   "submenu": "none",
+   "families": [
+    "style:button:sheet",
+    "style:menu:sheet",
+    "style:dropdown-menu:sheet",
+    "style:callout:sheet"
+   ],
+   "trustedTypes": true
+  },
+  "appRuns": true,
+  "ssrViolations": {
+   "style-src-elem styles-*.css": 2,
+   "img-src data": 1
+  },
+  "ssrErrors": [],
+  "clientInsert": {
+   "callout": "44px",
+   "families": [
+    "style:callout:nonce"
+   ]
+  },
+  "clientViolations": {
+   "style-src-elem styles-*.css": 2
+  },
+  "clientDefer": "44px",
+  "deferViolations": {
+   "style-src-elem styles-*.css": 2
+  }
+ },
+ {
+  "engine": "firefox",
+  "candidate": "chunk+nonce",
+  "policy": "tt",
+  "serverJsOff": {
+   "bodyBg": "rgb(254, 254, 254)",
+   "callout": "44px",
+   "button": "rgb(163, 0, 30)",
+   "submenu": "none",
+   "families": [
+    "style:button:sheet",
+    "style:menu:sheet",
+    "style:dropdown-menu:sheet",
+    "style:callout:sheet"
+   ],
+   "trustedTypes": true
+  },
+  "hydrated": {
+   "bodyBg": "rgb(254, 254, 254)",
+   "callout": "44px",
+   "button": "rgb(163, 0, 30)",
+   "submenu": "none",
+   "families": [
+    "style:button:sheet",
+    "style:menu:sheet",
+    "style:dropdown-menu:sheet",
+    "style:callout:sheet"
+   ],
+   "trustedTypes": true
+  },
+  "appRuns": true,
+  "ssrViolations": {
+   "img-src data": 2
+  },
+  "ssrErrors": [],
+  "clientInsert": {
+   "callout": "44px",
+   "families": [
+    "style:callout:nonce"
+   ]
+  },
+  "clientViolations": {},
+  "clientDefer": "44px",
+  "deferViolations": {}
+ }
+]

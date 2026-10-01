@@ -1,0 +1,822 @@
+[
+ {
+  "engine": "chromium",
+  "candidate": "own",
+  "kind": "shared",
+  "steps": [
+   {
+    "label": "both started, nothing shown",
+    "aCallout": "-",
+    "bCallout": "-",
+    "aButton": "-",
+    "bButton": "-",
+    "bMenu": "-",
+    "probeCallout": "0px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "0px",
+    "familyElements": [],
+    "styleSheets": 2,
+    "adopted": 0,
+    "unloads": 0
+   },
+   {
+    "label": "A shows callout",
+    "aCallout": "44px",
+    "bCallout": "-",
+    "aButton": "-",
+    "bButton": "-",
+    "bMenu": "-",
+    "probeCallout": "44px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "0px",
+    "familyElements": [
+     "style:callout"
+    ],
+    "styleSheets": 3,
+    "adopted": 0,
+    "unloads": 0
+   },
+   {
+    "label": "B shows callout",
+    "aCallout": "44px",
+    "bCallout": "44px",
+    "aButton": "-",
+    "bButton": "-",
+    "bMenu": "-",
+    "probeCallout": "44px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "0px",
+    "familyElements": [
+     "style:callout"
+    ],
+    "styleSheets": 3,
+    "adopted": 0,
+    "unloads": 0
+   },
+   {
+    "label": "A hides callout (B still shows)",
+    "aCallout": "-",
+    "bCallout": "0px",
+    "aButton": "-",
+    "bButton": "-",
+    "bMenu": "-",
+    "probeCallout": "0px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "0px",
+    "familyElements": [],
+    "styleSheets": 2,
+    "adopted": 0,
+    "unloads": 1
+   },
+   {
+    "label": "A shows callout again",
+    "aCallout": "44px",
+    "bCallout": "44px",
+    "aButton": "-",
+    "bButton": "-",
+    "bMenu": "-",
+    "probeCallout": "44px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "0px",
+    "familyElements": [
+     "style:callout"
+    ],
+    "styleSheets": 3,
+    "adopted": 0,
+    "unloads": 1
+   },
+   {
+    "label": "A destroyed (B still shows)",
+    "aCallout": "-",
+    "bCallout": "0px",
+    "aButton": "-",
+    "bButton": "-",
+    "bMenu": "-",
+    "probeCallout": "0px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "0px",
+    "familyElements": [],
+    "styleSheets": 2,
+    "adopted": 0,
+    "unloads": 2
+   },
+   {
+    "label": "B hides callout",
+    "aCallout": "-",
+    "bCallout": "-",
+    "aButton": "-",
+    "bButton": "-",
+    "bMenu": "-",
+    "probeCallout": "0px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "0px",
+    "familyElements": [],
+    "styleSheets": 2,
+    "adopted": 0,
+    "unloads": 3
+   },
+   {
+    "label": "B shows callout again",
+    "aCallout": "-",
+    "bCallout": "44px",
+    "aButton": "-",
+    "bButton": "-",
+    "bMenu": "-",
+    "probeCallout": "44px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "0px",
+    "familyElements": [
+     "style:callout"
+    ],
+    "styleSheets": 3,
+    "adopted": 0,
+    "unloads": 3
+   },
+   {
+    "label": "B destroyed",
+    "aCallout": "-",
+    "bCallout": "-",
+    "aButton": "-",
+    "bButton": "-",
+    "bMenu": "-",
+    "probeCallout": "0px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "0px",
+    "familyElements": [],
+    "styleSheets": 2,
+    "adopted": 0,
+    "unloads": 4
+   }
+  ],
+  "errors": []
+ },
+ {
+  "engine": "chromium",
+  "candidate": "own",
+  "kind": "not-shared",
+  "steps": [
+   {
+    "label": "both started, nothing shown",
+    "aCallout": "-",
+    "bCallout": "-",
+    "aButton": "-",
+    "bButton": "-",
+    "bMenu": "-",
+    "probeCallout": "0px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "0px",
+    "familyElements": [],
+    "styleSheets": 2,
+    "adopted": 0,
+    "unloads": 0
+   },
+   {
+    "label": "A shows button",
+    "aCallout": "-",
+    "bCallout": "-",
+    "aButton": "rgb(163, 0, 30)",
+    "bButton": "-",
+    "bMenu": "-",
+    "probeCallout": "0px",
+    "probeButton": "rgb(163, 0, 30)",
+    "probeMenu": "0px",
+    "familyElements": [
+     "style:button"
+    ],
+    "styleSheets": 3,
+    "adopted": 0,
+    "unloads": 0
+   },
+   {
+    "label": "B shows menu",
+    "aCallout": "-",
+    "bCallout": "-",
+    "aButton": "rgb(163, 0, 30)",
+    "bButton": "-",
+    "bMenu": "19.2px",
+    "probeCallout": "0px",
+    "probeButton": "rgb(163, 0, 30)",
+    "probeMenu": "19.2px",
+    "familyElements": [
+     "style:button",
+     "style:menu"
+    ],
+    "styleSheets": 4,
+    "adopted": 0,
+    "unloads": 0
+   },
+   {
+    "label": "A destroyed (B still shows menu)",
+    "aCallout": "-",
+    "bCallout": "-",
+    "aButton": "-",
+    "bButton": "-",
+    "bMenu": "19.2px",
+    "probeCallout": "0px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "19.2px",
+    "familyElements": [
+     "style:menu"
+    ],
+    "styleSheets": 3,
+    "adopted": 0,
+    "unloads": 1
+   },
+   {
+    "label": "B shows button",
+    "aCallout": "-",
+    "bCallout": "-",
+    "aButton": "-",
+    "bButton": "rgb(163, 0, 30)",
+    "bMenu": "19.2px",
+    "probeCallout": "0px",
+    "probeButton": "rgb(163, 0, 30)",
+    "probeMenu": "19.2px",
+    "familyElements": [
+     "style:menu",
+     "style:button"
+    ],
+    "styleSheets": 4,
+    "adopted": 0,
+    "unloads": 1
+   },
+   {
+    "label": "B hides button and menu",
+    "aCallout": "-",
+    "bCallout": "-",
+    "aButton": "-",
+    "bButton": "-",
+    "bMenu": "-",
+    "probeCallout": "0px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "0px",
+    "familyElements": [],
+    "styleSheets": 2,
+    "adopted": 0,
+    "unloads": 3
+   },
+   {
+    "label": "B destroyed",
+    "aCallout": "-",
+    "bCallout": "-",
+    "aButton": "-",
+    "bButton": "-",
+    "bMenu": "-",
+    "probeCallout": "0px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "0px",
+    "familyElements": [],
+    "styleSheets": 2,
+    "adopted": 0,
+    "unloads": 3
+   }
+  ],
+  "errors": []
+ },
+ {
+  "engine": "chromium",
+  "candidate": "link",
+  "kind": "shared",
+  "steps": [
+   {
+    "label": "both started, nothing shown",
+    "aCallout": "-",
+    "bCallout": "-",
+    "aButton": "-",
+    "bButton": "-",
+    "bMenu": "-",
+    "probeCallout": "0px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "0px",
+    "familyElements": [],
+    "styleSheets": 2,
+    "adopted": 0,
+    "unloads": 0
+   },
+   {
+    "label": "A shows callout",
+    "aCallout": "44px",
+    "bCallout": "-",
+    "aButton": "-",
+    "bButton": "-",
+    "bMenu": "-",
+    "probeCallout": "44px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "0px",
+    "familyElements": [
+     "link:callout"
+    ],
+    "styleSheets": 3,
+    "adopted": 0,
+    "unloads": 0
+   },
+   {
+    "label": "B shows callout",
+    "aCallout": "44px",
+    "bCallout": "44px",
+    "aButton": "-",
+    "bButton": "-",
+    "bMenu": "-",
+    "probeCallout": "44px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "0px",
+    "familyElements": [
+     "link:callout"
+    ],
+    "styleSheets": 3,
+    "adopted": 0,
+    "unloads": 0
+   },
+   {
+    "label": "A hides callout (B still shows)",
+    "aCallout": "-",
+    "bCallout": "0px",
+    "aButton": "-",
+    "bButton": "-",
+    "bMenu": "-",
+    "probeCallout": "0px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "0px",
+    "familyElements": [],
+    "styleSheets": 2,
+    "adopted": 0,
+    "unloads": 1
+   },
+   {
+    "label": "A shows callout again",
+    "aCallout": "44px",
+    "bCallout": "44px",
+    "aButton": "-",
+    "bButton": "-",
+    "bMenu": "-",
+    "probeCallout": "44px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "0px",
+    "familyElements": [
+     "link:callout"
+    ],
+    "styleSheets": 3,
+    "adopted": 0,
+    "unloads": 1
+   },
+   {
+    "label": "A destroyed (B still shows)",
+    "aCallout": "-",
+    "bCallout": "0px",
+    "aButton": "-",
+    "bButton": "-",
+    "bMenu": "-",
+    "probeCallout": "0px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "0px",
+    "familyElements": [],
+    "styleSheets": 2,
+    "adopted": 0,
+    "unloads": 2
+   },
+   {
+    "label": "B hides callout",
+    "aCallout": "-",
+    "bCallout": "-",
+    "aButton": "-",
+    "bButton": "-",
+    "bMenu": "-",
+    "probeCallout": "0px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "0px",
+    "familyElements": [],
+    "styleSheets": 2,
+    "adopted": 0,
+    "unloads": 3
+   },
+   {
+    "label": "B shows callout again",
+    "aCallout": "-",
+    "bCallout": "44px",
+    "aButton": "-",
+    "bButton": "-",
+    "bMenu": "-",
+    "probeCallout": "44px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "0px",
+    "familyElements": [
+     "link:callout"
+    ],
+    "styleSheets": 3,
+    "adopted": 0,
+    "unloads": 3
+   },
+   {
+    "label": "B destroyed",
+    "aCallout": "-",
+    "bCallout": "-",
+    "aButton": "-",
+    "bButton": "-",
+    "bMenu": "-",
+    "probeCallout": "0px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "0px",
+    "familyElements": [],
+    "styleSheets": 2,
+    "adopted": 0,
+    "unloads": 4
+   }
+  ],
+  "errors": []
+ },
+ {
+  "engine": "chromium",
+  "candidate": "link",
+  "kind": "not-shared",
+  "steps": [
+   {
+    "label": "both started, nothing shown",
+    "aCallout": "-",
+    "bCallout": "-",
+    "aButton": "-",
+    "bButton": "-",
+    "bMenu": "-",
+    "probeCallout": "0px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "0px",
+    "familyElements": [],
+    "styleSheets": 2,
+    "adopted": 0,
+    "unloads": 0
+   },
+   {
+    "label": "A shows button",
+    "aCallout": "-",
+    "bCallout": "-",
+    "aButton": "rgb(163, 0, 30)",
+    "bButton": "-",
+    "bMenu": "-",
+    "probeCallout": "0px",
+    "probeButton": "rgb(163, 0, 30)",
+    "probeMenu": "0px",
+    "familyElements": [
+     "link:button"
+    ],
+    "styleSheets": 3,
+    "adopted": 0,
+    "unloads": 0
+   },
+   {
+    "label": "B shows menu",
+    "aCallout": "-",
+    "bCallout": "-",
+    "aButton": "rgb(163, 0, 30)",
+    "bButton": "-",
+    "bMenu": "19.2px",
+    "probeCallout": "0px",
+    "probeButton": "rgb(163, 0, 30)",
+    "probeMenu": "19.2px",
+    "familyElements": [
+     "link:button",
+     "link:menu"
+    ],
+    "styleSheets": 4,
+    "adopted": 0,
+    "unloads": 0
+   },
+   {
+    "label": "A destroyed (B still shows menu)",
+    "aCallout": "-",
+    "bCallout": "-",
+    "aButton": "-",
+    "bButton": "-",
+    "bMenu": "19.2px",
+    "probeCallout": "0px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "19.2px",
+    "familyElements": [
+     "link:menu"
+    ],
+    "styleSheets": 3,
+    "adopted": 0,
+    "unloads": 1
+   },
+   {
+    "label": "B shows button",
+    "aCallout": "-",
+    "bCallout": "-",
+    "aButton": "-",
+    "bButton": "rgba(0, 0, 0, 0)",
+    "bMenu": "19.2px",
+    "probeCallout": "0px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "19.2px",
+    "familyElements": [
+     "link:menu"
+    ],
+    "styleSheets": 3,
+    "adopted": 0,
+    "unloads": 1
+   },
+   {
+    "label": "B hides button and menu",
+    "aCallout": "-",
+    "bCallout": "-",
+    "aButton": "-",
+    "bButton": "-",
+    "bMenu": "-",
+    "probeCallout": "0px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "0px",
+    "familyElements": [],
+    "styleSheets": 2,
+    "adopted": 0,
+    "unloads": 3
+   },
+   {
+    "label": "B destroyed",
+    "aCallout": "-",
+    "bCallout": "-",
+    "aButton": "-",
+    "bButton": "-",
+    "bMenu": "-",
+    "probeCallout": "0px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "0px",
+    "familyElements": [],
+    "styleSheets": 2,
+    "adopted": 0,
+    "unloads": 3
+   }
+  ],
+  "errors": []
+ },
+ {
+  "engine": "chromium",
+  "candidate": "chunk",
+  "kind": "shared",
+  "steps": [
+   {
+    "label": "both started, nothing shown",
+    "aCallout": "-",
+    "bCallout": "-",
+    "aButton": "-",
+    "bButton": "-",
+    "bMenu": "-",
+    "probeCallout": "0px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "0px",
+    "familyElements": [],
+    "styleSheets": 2,
+    "adopted": 0,
+    "unloads": 0
+   },
+   {
+    "label": "A shows callout",
+    "aCallout": "44px",
+    "bCallout": "-",
+    "aButton": "-",
+    "bButton": "-",
+    "bMenu": "-",
+    "probeCallout": "44px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "0px",
+    "familyElements": [
+     "style:callout"
+    ],
+    "styleSheets": 3,
+    "adopted": 0,
+    "unloads": 0
+   },
+   {
+    "label": "B shows callout",
+    "aCallout": "44px",
+    "bCallout": "44px",
+    "aButton": "-",
+    "bButton": "-",
+    "bMenu": "-",
+    "probeCallout": "44px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "0px",
+    "familyElements": [
+     "style:callout"
+    ],
+    "styleSheets": 3,
+    "adopted": 0,
+    "unloads": 0
+   },
+   {
+    "label": "A hides callout (B still shows)",
+    "aCallout": "-",
+    "bCallout": "0px",
+    "aButton": "-",
+    "bButton": "-",
+    "bMenu": "-",
+    "probeCallout": "0px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "0px",
+    "familyElements": [],
+    "styleSheets": 2,
+    "adopted": 0,
+    "unloads": 1
+   },
+   {
+    "label": "A shows callout again",
+    "aCallout": "44px",
+    "bCallout": "44px",
+    "aButton": "-",
+    "bButton": "-",
+    "bMenu": "-",
+    "probeCallout": "44px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "0px",
+    "familyElements": [
+     "style:callout"
+    ],
+    "styleSheets": 3,
+    "adopted": 0,
+    "unloads": 1
+   },
+   {
+    "label": "A destroyed (B still shows)",
+    "aCallout": "-",
+    "bCallout": "0px",
+    "aButton": "-",
+    "bButton": "-",
+    "bMenu": "-",
+    "probeCallout": "0px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "0px",
+    "familyElements": [],
+    "styleSheets": 2,
+    "adopted": 0,
+    "unloads": 2
+   },
+   {
+    "label": "B hides callout",
+    "aCallout": "-",
+    "bCallout": "-",
+    "aButton": "-",
+    "bButton": "-",
+    "bMenu": "-",
+    "probeCallout": "0px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "0px",
+    "familyElements": [],
+    "styleSheets": 2,
+    "adopted": 0,
+    "unloads": 3
+   },
+   {
+    "label": "B shows callout again",
+    "aCallout": "-",
+    "bCallout": "44px",
+    "aButton": "-",
+    "bButton": "-",
+    "bMenu": "-",
+    "probeCallout": "44px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "0px",
+    "familyElements": [
+     "style:callout"
+    ],
+    "styleSheets": 3,
+    "adopted": 0,
+    "unloads": 3
+   },
+   {
+    "label": "B destroyed",
+    "aCallout": "-",
+    "bCallout": "-",
+    "aButton": "-",
+    "bButton": "-",
+    "bMenu": "-",
+    "probeCallout": "0px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "0px",
+    "familyElements": [],
+    "styleSheets": 2,
+    "adopted": 0,
+    "unloads": 4
+   }
+  ],
+  "errors": []
+ },
+ {
+  "engine": "chromium",
+  "candidate": "chunk",
+  "kind": "not-shared",
+  "steps": [
+   {
+    "label": "both started, nothing shown",
+    "aCallout": "-",
+    "bCallout": "-",
+    "aButton": "-",
+    "bButton": "-",
+    "bMenu": "-",
+    "probeCallout": "0px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "0px",
+    "familyElements": [],
+    "styleSheets": 2,
+    "adopted": 0,
+    "unloads": 0
+   },
+   {
+    "label": "A shows button",
+    "aCallout": "-",
+    "bCallout": "-",
+    "aButton": "rgb(163, 0, 30)",
+    "bButton": "-",
+    "bMenu": "-",
+    "probeCallout": "0px",
+    "probeButton": "rgb(163, 0, 30)",
+    "probeMenu": "0px",
+    "familyElements": [
+     "style:button"
+    ],
+    "styleSheets": 3,
+    "adopted": 0,
+    "unloads": 0
+   },
+   {
+    "label": "B shows menu",
+    "aCallout": "-",
+    "bCallout": "-",
+    "aButton": "rgb(163, 0, 30)",
+    "bButton": "-",
+    "bMenu": "19.2px",
+    "probeCallout": "0px",
+    "probeButton": "rgb(163, 0, 30)",
+    "probeMenu": "19.2px",
+    "familyElements": [
+     "style:button",
+     "style:menu"
+    ],
+    "styleSheets": 4,
+    "adopted": 0,
+    "unloads": 0
+   },
+   {
+    "label": "A destroyed (B still shows menu)",
+    "aCallout": "-",
+    "bCallout": "-",
+    "aButton": "-",
+    "bButton": "-",
+    "bMenu": "19.2px",
+    "probeCallout": "0px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "19.2px",
+    "familyElements": [
+     "style:menu"
+    ],
+    "styleSheets": 3,
+    "adopted": 0,
+    "unloads": 1
+   },
+   {
+    "label": "B shows button",
+    "aCallout": "-",
+    "bCallout": "-",
+    "aButton": "-",
+    "bButton": "rgba(0, 0, 0, 0)",
+    "bMenu": "19.2px",
+    "probeCallout": "0px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "19.2px",
+    "familyElements": [
+     "style:menu"
+    ],
+    "styleSheets": 3,
+    "adopted": 0,
+    "unloads": 1
+   },
+   {
+    "label": "B hides button and menu",
+    "aCallout": "-",
+    "bCallout": "-",
+    "aButton": "-",
+    "bButton": "-",
+    "bMenu": "-",
+    "probeCallout": "0px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "0px",
+    "familyElements": [],
+    "styleSheets": 2,
+    "adopted": 0,
+    "unloads": 3
+   },
+   {
+    "label": "B destroyed",
+    "aCallout": "-",
+    "bCallout": "-",
+    "aButton": "-",
+    "bButton": "-",
+    "bMenu": "-",
+    "probeCallout": "0px",
+    "probeButton": "rgba(0, 0, 0, 0)",
+    "probeMenu": "0px",
+    "familyElements": [],
+    "styleSheets": 2,
+    "adopted": 0,
+    "unloads": 3
+   }
+  ],
+  "errors": []
+ }
+]

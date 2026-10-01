@@ -1,0 +1,6 @@
+| Candidate | Cold start to first SSR response, ms | Warm start, ms | First bundle, s (cold) | Settings edit: shown / reload / ms (Chromium) | Settings rebuild, s | Component edit: reload / ms (Chromium) | Component rebuild, s | Firefox, WebKit |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| baseline | 7921 (7184-8739) | 7364 (6880-7510) | 1.97 (1.63-2.06) | 5/5 / 0/5 / 521 (493-521) | 0.32 (0.31-0.33) | 0/5 / 340 (264-821) | 0.11 (0.08-0.60) | firefox: settings HMR 495 ms, component HMR 330 ms; webkit: settings HMR 515 ms, component HMR 268 ms |
+| own | 10509 (10132-11768) | 8682 (8339-9020) | 3.10 (2.81-3.50) | 5/5 / 5/5 / 1049 (988-1747) | 0.63 (0.57-1.31) | 0/5 / 363 (289-394) | 0.14 (0.12-0.17) | firefox: settings reload 1018 ms, component HMR 346 ms; webkit: settings reload 1184 ms, component HMR 373 ms |
+| link | 7765 (7503-9119) | 6811 (6756-7103) | 1.87 (1.75-2.04) | 5/5 / 0/5 / 469 (418-495) | 0.28 (0.25-0.30) | 0/5 / 311 (261-952) | 0.11 (0.10-0.69) | firefox: settings HMR 422 ms, component HMR 339 ms; webkit: settings HMR 432 ms, component HMR 341 ms |
+| chunk | 10949 (10119-12027) | 10711 (9473-11856) | 4.06 (3.80-4.40) | 2/5 / 0/5 / - | 0.15 (0.14-0.18) | 0/5 / 2091 (2060-2650) | 1.87 (1.86-2.44) | firefox: settings not shown - ms, component HMR 1812 ms; webkit: settings not shown - ms, component HMR 1979 ms |

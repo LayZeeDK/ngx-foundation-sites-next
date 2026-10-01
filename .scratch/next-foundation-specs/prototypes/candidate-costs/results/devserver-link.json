@@ -1,0 +1,316 @@
+{
+ "name": "link",
+ "cold": [
+  {
+   "readyMs": 7503,
+   "bundleSeconds": [
+    1.752
+   ]
+  },
+  {
+   "readyMs": 7765,
+   "bundleSeconds": [
+    1.868
+   ]
+  },
+  {
+   "readyMs": 8341,
+   "bundleSeconds": [
+    2.042
+   ]
+  },
+  {
+   "readyMs": 9119,
+   "bundleSeconds": [
+    1.964
+   ]
+  },
+  {
+   "readyMs": 7741,
+   "bundleSeconds": [
+    1.76
+   ]
+  }
+ ],
+ "warm": [
+  {
+   "readyMs": 6756,
+   "bundleSeconds": [
+    1.54
+   ]
+  },
+  {
+   "readyMs": 7103,
+   "bundleSeconds": [
+    1.597
+   ]
+  },
+  {
+   "readyMs": 6811,
+   "bundleSeconds": [
+    1.624
+   ]
+  }
+ ],
+ "edits": [
+  {
+   "engine": "chromium",
+   "edit": "settings",
+   "expect": "56px",
+   "shown": true,
+   "ms": 472,
+   "reloaded": false,
+   "rebuildSeconds": [
+    0.271
+   ],
+   "sent": [
+    "Stylesheet update sent"
+   ],
+   "head": [
+    "link[owned] http://localhost:4822/nfs-callout.css?t=1790860874544"
+   ]
+  },
+  {
+   "engine": "chromium",
+   "edit": "component",
+   "expect": "v1",
+   "shown": true,
+   "ms": 952,
+   "reloaded": false,
+   "rebuildSeconds": [
+    0.695
+   ],
+   "sent": [
+    "Component update sent"
+   ],
+   "head": [
+    "link[owned] http://localhost:4822/nfs-callout.css?t=1790860874544"
+   ]
+  },
+  {
+   "engine": "chromium",
+   "edit": "settings",
+   "expect": "44px",
+   "shown": true,
+   "ms": 418,
+   "reloaded": false,
+   "rebuildSeconds": [
+    0.282
+   ],
+   "sent": [
+    "Stylesheet update sent"
+   ],
+   "head": [
+    "link[owned] http://localhost:4822/nfs-callout.css?t=1790860878946"
+   ]
+  },
+  {
+   "engine": "chromium",
+   "edit": "component",
+   "expect": "v2",
+   "shown": true,
+   "ms": 344,
+   "reloaded": false,
+   "rebuildSeconds": [
+    0.128
+   ],
+   "sent": [
+    "Component update sent"
+   ],
+   "head": [
+    "link[owned] http://localhost:4822/nfs-callout.css?t=1790860878946"
+   ]
+  },
+  {
+   "engine": "chromium",
+   "edit": "settings",
+   "expect": "56px",
+   "shown": true,
+   "ms": 469,
+   "reloaded": false,
+   "rebuildSeconds": [
+    0.284
+   ],
+   "sent": [
+    "Stylesheet update sent"
+   ],
+   "head": [
+    "link[owned] http://localhost:4822/nfs-callout.css?t=1790860882788"
+   ]
+  },
+  {
+   "engine": "chromium",
+   "edit": "component",
+   "expect": "v3",
+   "shown": true,
+   "ms": 270,
+   "reloaded": false,
+   "rebuildSeconds": [
+    0.111
+   ],
+   "sent": [
+    "Component update sent"
+   ],
+   "head": [
+    "link[owned] http://localhost:4822/nfs-callout.css?t=1790860882788"
+   ]
+  },
+  {
+   "engine": "chromium",
+   "edit": "settings",
+   "expect": "44px",
+   "shown": true,
+   "ms": 495,
+   "reloaded": false,
+   "rebuildSeconds": [
+    0.301
+   ],
+   "sent": [
+    "Stylesheet update sent"
+   ],
+   "head": [
+    "link[owned] http://localhost:4822/nfs-callout.css?t=1790860886575"
+   ]
+  },
+  {
+   "engine": "chromium",
+   "edit": "component",
+   "expect": "v4",
+   "shown": true,
+   "ms": 311,
+   "reloaded": false,
+   "rebuildSeconds": [
+    0.101
+   ],
+   "sent": [
+    "Component update sent"
+   ],
+   "head": [
+    "link[owned] http://localhost:4822/nfs-callout.css?t=1790860886575"
+   ]
+  },
+  {
+   "engine": "chromium",
+   "edit": "settings",
+   "expect": "56px",
+   "shown": true,
+   "ms": 442,
+   "reloaded": false,
+   "rebuildSeconds": [
+    0.25
+   ],
+   "sent": [
+    "Stylesheet update sent"
+   ],
+   "head": [
+    "link[owned] http://localhost:4822/nfs-callout.css?t=1790860890346"
+   ]
+  },
+  {
+   "engine": "chromium",
+   "edit": "component",
+   "expect": "v5",
+   "shown": true,
+   "ms": 261,
+   "reloaded": false,
+   "rebuildSeconds": [
+    0.103
+   ],
+   "sent": [
+    "Component update sent"
+   ],
+   "head": [
+    "link[owned] http://localhost:4822/nfs-callout.css?t=1790860890346"
+   ]
+  },
+  {
+   "engine": "chromium",
+   "unloadAfterEdits": "56px",
+   "head": [
+    "link[owned] http://localhost:4822/nfs-callout.css?t=1790860890346"
+   ]
+  },
+  {
+   "engine": "firefox",
+   "edit": "settings",
+   "expect": "44px",
+   "shown": true,
+   "ms": 422,
+   "reloaded": false,
+   "rebuildSeconds": [
+    0.29
+   ],
+   "sent": [
+    "Stylesheet update sent"
+   ],
+   "head": [
+    "link[owned] http://localhost:4822/nfs-callout.css?t=1790860899217"
+   ]
+  },
+  {
+   "engine": "firefox",
+   "edit": "component",
+   "expect": "v6",
+   "shown": true,
+   "ms": 339,
+   "reloaded": false,
+   "rebuildSeconds": [
+    0.092
+   ],
+   "sent": [
+    "Component update sent"
+   ],
+   "head": [
+    "link[owned] http://localhost:4822/nfs-callout.css?t=1790860899217"
+   ]
+  },
+  {
+   "engine": "firefox",
+   "unloadAfterEdits": "44px",
+   "head": [
+    "link[owned] http://localhost:4822/nfs-callout.css?t=1790860899217"
+   ]
+  },
+  {
+   "engine": "webkit",
+   "edit": "settings",
+   "expect": "56px",
+   "shown": true,
+   "ms": 432,
+   "reloaded": false,
+   "rebuildSeconds": [
+    0.235
+   ],
+   "sent": [
+    "Stylesheet update sent"
+   ],
+   "head": [
+    "link[owned] http://localhost:4822/nfs-callout.css?t=1790860906682"
+   ]
+  },
+  {
+   "engine": "webkit",
+   "edit": "component",
+   "expect": "v7",
+   "shown": true,
+   "ms": 341,
+   "reloaded": false,
+   "rebuildSeconds": [
+    0.103
+   ],
+   "sent": [
+    "Component update sent"
+   ],
+   "head": [
+    "link[owned] http://localhost:4822/nfs-callout.css?t=1790860906682"
+   ]
+  },
+  {
+   "engine": "webkit",
+   "unloadAfterEdits": "56px",
+   "head": [
+    "link[owned] http://localhost:4822/nfs-callout.css?t=1790860906682"
+   ]
+  }
+ ]
+}

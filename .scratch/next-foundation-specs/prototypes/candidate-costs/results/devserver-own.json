@@ -1,0 +1,314 @@
+{
+ "name": "own",
+ "cold": [
+  {
+   "readyMs": 11768,
+   "bundleSeconds": [
+    3.495
+   ]
+  },
+  {
+   "readyMs": 10132,
+   "bundleSeconds": [
+    2.806
+   ]
+  },
+  {
+   "readyMs": 10509,
+   "bundleSeconds": [
+    3.158
+   ]
+  },
+  {
+   "readyMs": 11000,
+   "bundleSeconds": [
+    3.098
+   ]
+  },
+  {
+   "readyMs": 10282,
+   "bundleSeconds": [
+    2.845
+   ]
+  }
+ ],
+ "warm": [
+  {
+   "readyMs": 8682,
+   "bundleSeconds": [
+    2.333
+   ]
+  },
+  {
+   "readyMs": 9020,
+   "bundleSeconds": [
+    2.791
+   ]
+  },
+  {
+   "readyMs": 8339,
+   "bundleSeconds": [
+    2.224
+   ]
+  }
+ ],
+ "edits": [
+  {
+   "engine": "chromium",
+   "edit": "settings",
+   "expect": "56px",
+   "shown": true,
+   "ms": 1747,
+   "reloaded": true,
+   "rebuildSeconds": [
+    1.306
+   ],
+   "sent": [
+    "Page reload sent"
+   ],
+   "head": [
+    "style[owned]"
+   ]
+  },
+  {
+   "engine": "chromium",
+   "edit": "component",
+   "expect": "v1",
+   "shown": true,
+   "ms": 394,
+   "reloaded": false,
+   "rebuildSeconds": [
+    0.165
+   ],
+   "sent": [
+    "Component update sent"
+   ],
+   "head": [
+    "style[owned]"
+   ]
+  },
+  {
+   "engine": "chromium",
+   "edit": "settings",
+   "expect": "44px",
+   "shown": true,
+   "ms": 1000,
+   "reloaded": true,
+   "rebuildSeconds": [
+    0.597
+   ],
+   "sent": [
+    "Page reload sent"
+   ],
+   "head": [
+    "style[owned]"
+   ]
+  },
+  {
+   "engine": "chromium",
+   "edit": "component",
+   "expect": "v2",
+   "shown": true,
+   "ms": 363,
+   "reloaded": false,
+   "rebuildSeconds": [
+    0.133
+   ],
+   "sent": [
+    "Component update sent"
+   ],
+   "head": [
+    "style[owned]"
+   ]
+  },
+  {
+   "engine": "chromium",
+   "edit": "settings",
+   "expect": "56px",
+   "shown": true,
+   "ms": 988,
+   "reloaded": true,
+   "rebuildSeconds": [
+    0.573
+   ],
+   "sent": [
+    "Page reload sent"
+   ],
+   "head": [
+    "style[owned]"
+   ]
+  },
+  {
+   "engine": "chromium",
+   "edit": "component",
+   "expect": "v3",
+   "shown": true,
+   "ms": 390,
+   "reloaded": false,
+   "rebuildSeconds": [
+    0.158
+   ],
+   "sent": [
+    "Component update sent"
+   ],
+   "head": [
+    "style[owned]"
+   ]
+  },
+  {
+   "engine": "chromium",
+   "edit": "settings",
+   "expect": "44px",
+   "shown": true,
+   "ms": 1049,
+   "reloaded": true,
+   "rebuildSeconds": [
+    0.632
+   ],
+   "sent": [
+    "Page reload sent"
+   ],
+   "head": [
+    "style[owned]"
+   ]
+  },
+  {
+   "engine": "chromium",
+   "edit": "component",
+   "expect": "v4",
+   "shown": true,
+   "ms": 289,
+   "reloaded": false,
+   "rebuildSeconds": [
+    0.138
+   ],
+   "sent": [
+    "Component update sent"
+   ],
+   "head": [
+    "style[owned]"
+   ]
+  },
+  {
+   "engine": "chromium",
+   "edit": "settings",
+   "expect": "56px",
+   "shown": true,
+   "ms": 1122,
+   "reloaded": true,
+   "rebuildSeconds": [
+    0.769
+   ],
+   "sent": [
+    "Page reload sent"
+   ],
+   "head": [
+    "style[owned]"
+   ]
+  },
+  {
+   "engine": "chromium",
+   "edit": "component",
+   "expect": "v5",
+   "shown": true,
+   "ms": 340,
+   "reloaded": false,
+   "rebuildSeconds": [
+    0.116
+   ],
+   "sent": [
+    "Component update sent"
+   ],
+   "head": [
+    "style[owned]"
+   ]
+  },
+  {
+   "engine": "chromium",
+   "unloadAfterEdits": "56px",
+   "head": [
+    "style[owned]"
+   ]
+  },
+  {
+   "engine": "firefox",
+   "edit": "settings",
+   "expect": "44px",
+   "shown": true,
+   "ms": 1018,
+   "reloaded": true,
+   "rebuildSeconds": [
+    0.533
+   ],
+   "sent": [
+    "Page reload sent"
+   ],
+   "head": [
+    "style[owned]"
+   ]
+  },
+  {
+   "engine": "firefox",
+   "edit": "component",
+   "expect": "v6",
+   "shown": true,
+   "ms": 346,
+   "reloaded": false,
+   "rebuildSeconds": [
+    0.117
+   ],
+   "sent": [
+    "Component update sent"
+   ],
+   "head": [
+    "style[owned]"
+   ]
+  },
+  {
+   "engine": "firefox",
+   "unloadAfterEdits": "44px",
+   "head": [
+    "style[owned]"
+   ]
+  },
+  {
+   "engine": "webkit",
+   "edit": "settings",
+   "expect": "56px",
+   "shown": true,
+   "ms": 1184,
+   "reloaded": true,
+   "rebuildSeconds": [
+    0.635
+   ],
+   "sent": [
+    "Page reload sent"
+   ],
+   "head": [
+    "style[owned]"
+   ]
+  },
+  {
+   "engine": "webkit",
+   "edit": "component",
+   "expect": "v7",
+   "shown": true,
+   "ms": 373,
+   "reloaded": false,
+   "rebuildSeconds": [
+    0.139
+   ],
+   "sent": [
+    "Component update sent"
+   ],
+   "head": [
+    "style[owned]"
+   ]
+  },
+  {
+   "engine": "webkit",
+   "unloadAfterEdits": "0px",
+   "head": []
+  }
+ ]
+}

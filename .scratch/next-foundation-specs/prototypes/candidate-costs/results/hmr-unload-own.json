@@ -1,0 +1,47 @@
+[
+ {
+  "engine": "chromium",
+  "before": "44px",
+  "headBefore": [
+   "style[owned]"
+  ],
+  "afterEdit": "0px",
+  "reloaded": true,
+  "headAfterEdit": [],
+  "probeAfterRemove": "0px",
+  "headAfterRemove": [],
+  "secondAdd": "56px",
+  "probeAfterSecondRemove": "0px",
+  "headAfterSecondRemove": []
+ },
+ {
+  "engine": "firefox",
+  "before": "56px",
+  "headBefore": [
+   "style[owned]"
+  ],
+  "afterEdit": "0px",
+  "reloaded": true,
+  "headAfterEdit": [],
+  "probeAfterRemove": "0px",
+  "headAfterRemove": [],
+  "secondAdd": "44px",
+  "probeAfterSecondRemove": "0px",
+  "headAfterSecondRemove": []
+ },
+ {
+  "engine": "webkit",
+  "before": "44px",
+  "headBefore": [
+   "style[owned]"
+  ],
+  "afterEdit": "0px",
+  "reloaded": true,
+  "headAfterEdit": [],
+  "probeAfterRemove": "0px",
+  "headAfterRemove": [],
+  "secondAdd": "56px",
+  "probeAfterSecondRemove": "0px",
+  "headAfterSecondRemove": []
+ }
+]
