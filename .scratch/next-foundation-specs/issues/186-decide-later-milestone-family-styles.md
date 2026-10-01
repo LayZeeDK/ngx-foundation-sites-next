@@ -1,0 +1,20 @@
+# 186. Decide: how later-milestone families manage their styles
+
+Type: grilling
+Status: open
+Blocked by: 185
+Labels: wayfinder:grilling
+Map: ../map.md
+
+## Question
+
+The user left this open in the ruling recorded in [Decide: how first-milestone directives load and unload their family styles](185-decide-lazy-family-styles.md): "It's unclear how later milestone's specs should manage styles - whether to keep assuming that their styles are loaded in the consumer's global stylesheets or whether it would be possible to lazy load styles." When the XY, Float, and Flex Grids, Typography Helpers, Prototyping Utilities, Flexbox Utilities, Visibility Classes, and Float Classes get their directives in a later milestone, do they keep their styles in the consumer's global stylesheet, or do they adopt the first milestone's mechanism?
+
+## How to work it
+
+Grill once the first-milestone mechanism is decided. Weigh:
+
+1. Feasibility. Until their directives land, a consumer writes these families' Foundation classes directly ([Decide: grids, typography, and utilities move to a later milestone](174-decide-grids-typography-utilities-later-milestone.md)). Styles tied to a directive's lifecycle would stop applying to that markup.
+2. Release policy ([ADR 0045](../adr/0045-release-policy-devkit-version-scheme.md)): whether moving these styles from the global stylesheet to lazy loading is a breaking change that must wait for an Angular major, with a deprecation and a migration.
+3. Benefit. These classes appear on most pages, so lazy loading may save nothing. Weigh that against their size, which [Research: splitting Foundation 6.9's CSS per family](183-research-foundation-sass-per-family-split.md) measures (the grids' and Prototyping Utilities' output is large).
+4. What the eight later-milestone specs and their `Milestone: later` lines say afterwards.
