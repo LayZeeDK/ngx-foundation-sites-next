@@ -1,7 +1,7 @@
 # 12. Decide: which Yeti version the specs target, and how the package tracks it
 
 Type: grilling
-Status: open
+Status: claimed
 Blocked by: 05, 21, 22
 Labels: wayfinder:grilling
 Map: ../map.md
