@@ -1,0 +1,22 @@
+// CONSUMER FILE. Global stylesheet: the layer order first, then the families that stay global.
+@import 'settings';
+@if $nfs-layers {
+  @layer nfs.global, nfs.forms, nfs.button, nfs.callout, nfs.dropdown, nfs.menu, nfs.dropdown-menu;
+}
+@import 'foundation-sites/scss/foundation';
+@include nfs-proto-layer(global) {
+  @include foundation-global-styles;
+}
+@include nfs-proto-layer(forms) {
+  @include foundation-forms;
+}
+
+// PROTOTYPE: leave animations used by the lifecycle page.
+.proto-fade-out {
+  animation: proto-fade 600ms linear forwards;
+}
+@keyframes proto-fade {
+  to {
+    opacity: 0;
+  }
+}

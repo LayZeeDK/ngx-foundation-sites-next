@@ -1,0 +1,285 @@
+{
+  "name": "fixture",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "nfs",
+  "sourceRoot": "apps/fixture/src",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@angular/build:application",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/apps/fixture",
+        "browser": "apps/fixture/src/main.ts",
+        "server": "apps/fixture/src/main.server.ts",
+        "tsConfig": "apps/fixture/tsconfig.app.json",
+        "inlineStyleLanguage": "scss",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/fixture/public"
+          }
+        ],
+        "styles": [
+          "apps/fixture/src/styles.scss"
+        ],
+        "stylePreprocessorOptions": {
+          "includePaths": [
+            "apps/fixture/src/foundation-settings"
+          ],
+          "sass": {
+            "silenceDeprecations": [
+              "import",
+              "global-builtin",
+              "color-functions",
+              "slash-div",
+              "if-function"
+            ]
+          }
+        },
+        "outputMode": "server",
+        "ssr": {
+          "entry": "apps/fixture/src/server.ts"
+        },
+        "security": {
+          "allowedHosts": []
+        }
+      },
+      "configurations": {
+        "production": {
+          "budgets": [],
+          "outputHashing": "all"
+        },
+        "eager": {
+          "budgets": [],
+          "outputHashing": "all",
+          "outputPath": "dist/apps/fixture-eager",
+          "fileReplacements": [
+            {
+              "replace": "apps/fixture/src/nfs-families/carriers.ts",
+              "with": "apps/fixture/src/nfs-families/carriers.eager.ts"
+            }
+          ]
+        },
+        "unlayered": {
+          "budgets": [],
+          "outputHashing": "all",
+          "outputPath": "dist/apps/fixture-unlayered",
+          "stylePreprocessorOptions": {
+            "includePaths": [
+              "apps/fixture/src/foundation-settings-unlayered",
+              "apps/fixture/src/foundation-settings"
+            ],
+            "sass": {
+              "silenceDeprecations": [
+                "import",
+                "global-builtin",
+                "color-functions",
+                "slash-div",
+                "if-function"
+              ]
+            }
+          }
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true
+        },
+        "mixed": {
+          "budgets": [],
+          "outputHashing": "all",
+          "outputPath": "dist/apps/fixture-mixed",
+          "fileReplacements": [
+            {
+              "replace": "apps/fixture/src/nfs-families/carriers.ts",
+              "with": "apps/fixture/src/nfs-families/carriers.mixed.ts"
+            }
+          ]
+        },
+        "idle": {
+          "budgets": [],
+          "outputHashing": "all",
+          "outputPath": "dist/apps/fixture-idle",
+          "fileReplacements": [
+            {
+              "replace": "apps/fixture/src/nfs-families/prefetch.ts",
+              "with": "apps/fixture/src/nfs-families/prefetch.idle.ts"
+            }
+          ]
+        },
+        "own": {
+          "budgets": [],
+          "outputHashing": "all",
+          "outputPath": "dist/apps/fixture-own",
+          "fileReplacements": [
+            {
+              "replace": "apps/fixture/src/lib/family-styles.ts",
+              "with": "apps/fixture/src/lib/family-styles.own.ts"
+            }
+          ]
+        },
+        "link": {
+          "budgets": [],
+          "outputHashing": "all",
+          "outputPath": "dist/apps/fixture-link",
+          "fileReplacements": [
+            {
+              "replace": "apps/fixture/src/lib/family-styles.ts",
+              "with": "apps/fixture/src/lib/link-styles.ts"
+            },
+            {
+              "replace": "apps/fixture/src/nfs-families/carriers.ts",
+              "with": "apps/fixture/src/nfs-families/carriers.none.ts"
+            }
+          ],
+          "styles": [
+            "apps/fixture/src/styles.scss",
+            {
+              "input": "apps/fixture/src/nfs-families/button.scss",
+              "bundleName": "nfs-button",
+              "inject": false
+            },
+            {
+              "input": "apps/fixture/src/nfs-families/callout.scss",
+              "bundleName": "nfs-callout",
+              "inject": false
+            },
+            {
+              "input": "apps/fixture/src/nfs-families/dropdown.scss",
+              "bundleName": "nfs-dropdown",
+              "inject": false
+            },
+            {
+              "input": "apps/fixture/src/nfs-families/menu.scss",
+              "bundleName": "nfs-menu",
+              "inject": false
+            },
+            {
+              "input": "apps/fixture/src/nfs-families/dropdown-menu.scss",
+              "bundleName": "nfs-dropdown-menu",
+              "inject": false
+            }
+          ]
+        },
+        "link-preload": {
+          "budgets": [],
+          "outputHashing": "all",
+          "outputPath": "dist/apps/fixture-link-preload",
+          "fileReplacements": [
+            {
+              "replace": "apps/fixture/src/lib/family-styles.ts",
+              "with": "apps/fixture/src/lib/link-styles.ts"
+            },
+            {
+              "replace": "apps/fixture/src/nfs-families/carriers.ts",
+              "with": "apps/fixture/src/nfs-families/carriers.none.ts"
+            }
+          ],
+          "styles": [
+            "apps/fixture/src/styles.scss",
+            {
+              "input": "apps/fixture/src/nfs-families/button.scss",
+              "bundleName": "nfs-button",
+              "inject": false
+            },
+            {
+              "input": "apps/fixture/src/nfs-families/callout.scss",
+              "bundleName": "nfs-callout",
+              "inject": false
+            },
+            {
+              "input": "apps/fixture/src/nfs-families/dropdown.scss",
+              "bundleName": "nfs-dropdown",
+              "inject": false
+            },
+            {
+              "input": "apps/fixture/src/nfs-families/menu.scss",
+              "bundleName": "nfs-menu",
+              "inject": false
+            },
+            {
+              "input": "apps/fixture/src/nfs-families/dropdown-menu.scss",
+              "bundleName": "nfs-dropdown-menu",
+              "inject": false
+            }
+          ],
+          "index": "apps/fixture/src/index.preload.html"
+        }
+      }
+    },
+    "build-static": {
+      "executor": "@nx/angular:application",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "options": {
+        "outputPath": "dist/apps/fixture-static",
+        "browser": "apps/fixture/src/main.ts",
+        "server": "apps/fixture/src/main.server.ts",
+        "tsConfig": "apps/fixture/tsconfig.app.json",
+        "inlineStyleLanguage": "scss",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/fixture/public"
+          }
+        ],
+        "styles": [
+          "apps/fixture/src/styles.scss"
+        ],
+        "stylePreprocessorOptions": {
+          "includePaths": [
+            "apps/fixture/src/foundation-settings"
+          ],
+          "sass": {
+            "silenceDeprecations": [
+              "import",
+              "global-builtin",
+              "color-functions",
+              "slash-div",
+              "if-function"
+            ]
+          }
+        },
+        "outputMode": "server",
+        "ssr": {
+          "entry": "apps/fixture/src/server.ts"
+        },
+        "security": {
+          "allowedHosts": []
+        },
+        "fileReplacements": [
+          {
+            "replace": "apps/fixture/src/lib/family-styles.ts",
+            "with": "apps/fixture/src/lib/static-styles.ts"
+          },
+          {
+            "replace": "apps/fixture/src/nfs-families/carriers.ts",
+            "with": "apps/fixture/src/nfs-families/carriers.none.ts"
+          },
+          {
+            "replace": "apps/fixture/src/app/app.routes.ts",
+            "with": "apps/fixture/src/app/app.routes.static.ts"
+          }
+        ],
+        "plugins": [
+          {
+            "path": "tools/nfs-esbuild-plugin.mjs",
+            "options": {
+              "includePaths": [
+                "apps/fixture/src/foundation-settings"
+              ]
+            }
+          }
+        ],
+        "budgets": [],
+        "outputHashing": "all"
+      }
+    }
+  }
+}

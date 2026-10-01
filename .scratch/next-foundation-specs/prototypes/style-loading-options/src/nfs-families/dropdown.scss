@@ -1,0 +1,6 @@
+// CONSUMER FILE (a generator could write it). Compiled by the consumer's build with their settings.
+@import 'settings';
+@import 'foundation-sites/scss/foundation';
+@include nfs-proto-layer(dropdown) {
+  @include foundation-dropdown;
+}
