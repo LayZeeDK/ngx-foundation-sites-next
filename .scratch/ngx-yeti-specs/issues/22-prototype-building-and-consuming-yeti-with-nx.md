@@ -1,7 +1,7 @@
 # 22. Prototype: building, consuming, and theming Yeti from a pinned commit with Nx
 
 Type: prototype
-Status: open
+Status: claimed
 Blocked by: 21
 Labels: wayfinder:prototype
 Map: ../map.md

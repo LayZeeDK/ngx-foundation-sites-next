@@ -1,7 +1,7 @@
 # 23. Research: Yeti's cascade layers and stylesheet order, for lazy loading
 
 Type: research
-Status: open
+Status: claimed
 Blocked by: 04
 Labels: wayfinder:research
 Map: ../map.md
