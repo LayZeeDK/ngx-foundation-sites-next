@@ -1,0 +1,44 @@
+{
+ "ssr": {
+  "serverStyles": [
+   "button",
+   "menu",
+   "dropdown-menu",
+   "callout"
+  ],
+  "families": [
+   "button",
+   "menu",
+   "dropdown-menu",
+   "callout"
+  ],
+  "calloutPadding": "44px",
+  "buttonBg": "rgb(163, 0, 30)"
+ },
+ "clientDefer": {
+  "serverStyles": [],
+  "families": [
+   "callout"
+  ],
+  "calloutPadding": "44px",
+  "buttonBg": null
+ },
+ "afterSettingsEdit": {
+  "serverStyles": [
+   "button",
+   "menu",
+   "dropdown-menu",
+   "callout"
+  ],
+  "families": [
+   "button",
+   "menu",
+   "dropdown-menu",
+   "callout"
+  ],
+  "calloutPadding": "44px",
+  "buttonBg": "rgb(163, 0, 30)",
+  "secondsUntilSeen": 65
+ },
+ "errors": []
+}

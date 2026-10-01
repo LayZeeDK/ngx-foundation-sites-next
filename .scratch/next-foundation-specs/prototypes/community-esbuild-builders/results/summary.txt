@@ -1,0 +1,60 @@
+chromium ssr: server styles / settings              button,menu,dropdown-menu,callout / pass
+chromium ssr: hydration                             unstyled 0/50, mutations after DCL 0, families 4
+chromium ssr: incremental hydration                 hydrated true, mutations 0
+chromium ssr: after last callout                    style:button,style:menu,style:dropdown-menu; new div.callout 0px
+chromium prerendered: server styles / settings      button,menu,dropdown-menu,callout / pass
+chromium prerendered: hydration                     unstyled 0/56, mutations after DCL 0, families 4
+chromium prerendered: incremental hydration         hydrated true, mutations 0
+chromium prerendered: after last callout            style:button,style:menu,style:dropdown-menu; new div.callout 0px
+chromium hydrate-defer                              unstyled 0/157, mutations 0, hydrated vp true int true
+chromium client-defer, chunk local                  unstyled 0/59, first 44px 44px 44px, chunks /chunk-DExGr4fy.js /chunk-xN1--8eh.js
+chromium client-defer, chunk delayed 300 ms         unstyled 0/41, first 44px 44px 44px, chunks /chunk-DExGr4fy.js /chunk-xN1--8eh.js
+chromium enter, c-click, cold local                 on time (start 0 ms), unstyled 0
+chromium enter, c-click, cold, 300 ms chunk delay   on time (start 0 ms), unstyled 0
+chromium enter, c-click, warm cache                 on time (start 0 ms), unstyled 0
+chromium enter, c-defer, cold local                 on time (start 14 ms), unstyled 0
+chromium enter, c-defer, cold, 300 ms chunk delay   on time (start 13 ms), unstyled 0
+chromium enter, c-defer, warm cache                 on time (start 19 ms), unstyled 0
+chromium L1                                         unstyled 0/39 during 650 ms leave, removed +0 ms after host left, after 0, recheck 44px/0 44px/0
+chromium L2                                         after 0, recheck 44px/0 44px/0
+chromium L3                                         while listener present 0, after 0, recheck 44px/0 44px/0
+firefox  ssr: server styles / settings              button,menu,dropdown-menu,callout / pass
+firefox  ssr: hydration                             unstyled 0/50, mutations after DCL 0, families 4
+firefox  ssr: incremental hydration                 hydrated true, mutations 0
+firefox  ssr: after last callout                    style:button,style:menu,style:dropdown-menu; new div.callout 0px
+firefox  prerendered: server styles / settings      button,menu,dropdown-menu,callout / pass
+firefox  prerendered: hydration                     unstyled 0/54, mutations after DCL 0, families 4
+firefox  prerendered: incremental hydration         hydrated true, mutations 0
+firefox  prerendered: after last callout            style:button,style:menu,style:dropdown-menu; new div.callout 0px
+firefox  hydrate-defer                              unstyled 0/159, mutations 0, hydrated vp true int true
+firefox  client-defer, chunk local                  unstyled 0/60, first 44px 44px 44px, chunks /chunk-DExGr4fy.js /chunk-xN1--8eh.js
+firefox  client-defer, chunk delayed 300 ms         unstyled 0/45, first 44px 44px 44px, chunks /chunk-DExGr4fy.js /chunk-xN1--8eh.js
+firefox  enter, c-click, cold local                 on time (start 0 ms), unstyled 0
+firefox  enter, c-click, cold, 300 ms chunk delay   on time (start 0 ms), unstyled 0
+firefox  enter, c-click, warm cache                 on time (start 0 ms), unstyled 0
+firefox  enter, c-defer, cold local                 on time (start 16 ms), unstyled 0
+firefox  enter, c-defer, cold, 300 ms chunk delay   on time (start 0 ms), unstyled 0
+firefox  enter, c-defer, warm cache                 late (start 22 ms), unstyled 0
+firefox  L1                                         unstyled 0/43 during 695 ms leave, removed +0 ms after host left, after 0, recheck 44px/0 44px/0
+firefox  L2                                         after 0, recheck 44px/0 44px/0
+firefox  L3                                         while listener present 0, after 0, recheck 44px/0 44px/0
+webkit   ssr: server styles / settings              button,menu,dropdown-menu,callout / pass
+webkit   ssr: hydration                             unstyled 0/45, mutations after DCL 0, families 4
+webkit   ssr: incremental hydration                 hydrated true, mutations 0
+webkit   ssr: after last callout                    style:button,style:menu,style:dropdown-menu; new div.callout 0px
+webkit   prerendered: server styles / settings      button,menu,dropdown-menu,callout / pass
+webkit   prerendered: hydration                     unstyled 0/41, mutations after DCL 0, families 4
+webkit   prerendered: incremental hydration         hydrated true, mutations 0
+webkit   prerendered: after last callout            style:button,style:menu,style:dropdown-menu; new div.callout 0px
+webkit   hydrate-defer                              unstyled 0/146, mutations 0, hydrated vp true int true
+webkit   client-defer, chunk local                  unstyled 0/59, first 44px 44px 44px, chunks /chunk-DExGr4fy.js /chunk-xN1--8eh.js
+webkit   client-defer, chunk delayed 300 ms         unstyled 0/30, first 44px 44px 44px, chunks /chunk-DExGr4fy.js /chunk-xN1--8eh.js
+webkit   enter, c-click, cold local                 on time (start 0 ms), unstyled 0
+webkit   enter, c-click, cold, 300 ms chunk delay   on time (start 0 ms), unstyled 0
+webkit   enter, c-click, warm cache                 on time (start 0 ms), unstyled 0
+webkit   enter, c-defer, cold local                 on time (start 0 ms), unstyled 0
+webkit   enter, c-defer, cold, 300 ms chunk delay   on time (start 0 ms), unstyled 0
+webkit   enter, c-defer, warm cache                 on time (start 0 ms), unstyled 0
+webkit   L1                                         unstyled 0/48 during 811 ms leave, removed +0 ms after host left, after 0, recheck 44px/0 44px/0
+webkit   L2                                         after 0, recheck 44px/0 44px/0
+webkit   L3                                         while listener present 0, after 0, recheck 44px/0 44px/0

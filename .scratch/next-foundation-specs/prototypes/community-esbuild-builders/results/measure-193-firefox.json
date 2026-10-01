@@ -1,0 +1,193 @@
+{
+  "ssr": {
+    "serverStyles": [
+      "button",
+      "menu",
+      "dropdown-menu",
+      "callout"
+    ],
+    "framesSampled": 50,
+    "unstyledFrames": 0,
+    "styleMutationsAfterDcl": [],
+    "settings": {
+      "calloutPadding": "44px",
+      "buttonBg": "rgb(163, 0, 30)",
+      "buttonRadius": "8px",
+      "buttonPaddingLeft": "31.6938px",
+      "menuLinkPaddingTop": "19.2px",
+      "submenuBg": "rgb(253, 243, 208)"
+    },
+    "settingsPass": true,
+    "incremental": {
+      "deferredHydrated": true,
+      "styleMutationsAfterDcl": 0,
+      "families": [
+        "style:button",
+        "style:menu",
+        "style:dropdown-menu",
+        "style:callout"
+      ]
+    },
+    "afterLastInstance": {
+      "families": [
+        "style:button",
+        "style:menu",
+        "style:dropdown-menu"
+      ],
+      "plainCalloutPadding": "0px"
+    }
+  },
+  "prerendered": {
+    "serverStyles": [
+      "button",
+      "menu",
+      "dropdown-menu",
+      "callout"
+    ],
+    "framesSampled": 54,
+    "unstyledFrames": 0,
+    "styleMutationsAfterDcl": [],
+    "settings": {
+      "calloutPadding": "44px",
+      "buttonBg": "rgb(163, 0, 30)",
+      "buttonRadius": "8px",
+      "buttonPaddingLeft": "31.6938px",
+      "menuLinkPaddingTop": "19.2px",
+      "submenuBg": "rgb(253, 243, 208)"
+    },
+    "settingsPass": true,
+    "incremental": {
+      "deferredHydrated": true,
+      "styleMutationsAfterDcl": 0,
+      "families": [
+        "style:button",
+        "style:menu",
+        "style:dropdown-menu",
+        "style:callout"
+      ]
+    },
+    "afterLastInstance": {
+      "families": [
+        "style:button",
+        "style:menu",
+        "style:dropdown-menu"
+      ],
+      "plainCalloutPadding": "0px"
+    }
+  },
+  "hydrateDefer": {
+    "framesSampled": 159,
+    "unstyledFrames": 0,
+    "styleMutationsAfterDcl": 0,
+    "viewportBlockHydrated": true,
+    "interactionBlockHydrated": true,
+    "families": [
+      "style:callout"
+    ]
+  },
+  "clientDefer": {
+    "chunk local": {
+      "framesWithElement": 60,
+      "unstyledFrames": 0,
+      "firstValues": "44px 44px 44px",
+      "familyStylesBefore": 0,
+      "familyStylesAfter": [
+        "style:callout"
+      ],
+      "requestsAfterClick": [
+        "/chunk-DExGr4fy.js",
+        "/chunk-xN1--8eh.js"
+      ],
+      "styleMutations": [
+        {
+          "kind": "add",
+          "t": 1198,
+          "afterDcl": true,
+          "text": "callout"
+        }
+      ]
+    },
+    "chunk delayed 300 ms": {
+      "framesWithElement": 45,
+      "unstyledFrames": 0,
+      "firstValues": "44px 44px 44px",
+      "familyStylesBefore": 0,
+      "familyStylesAfter": [
+        "style:callout"
+      ],
+      "requestsAfterClick": [
+        "/chunk-DExGr4fy.js",
+        "/chunk-xN1--8eh.js"
+      ],
+      "styleMutations": [
+        {
+          "kind": "add",
+          "t": 2071,
+          "afterDcl": true,
+          "text": "callout"
+        }
+      ]
+    }
+  },
+  "enter": {
+    "c-click, cold local": {
+      "verdict": "on time",
+      "unstyledFrames": 0,
+      "animationStartMs": 0,
+      "animatedFrames": 30
+    },
+    "c-click, cold, 300 ms chunk delay": {
+      "verdict": "on time",
+      "unstyledFrames": 0,
+      "animationStartMs": 0,
+      "animatedFrames": 31
+    },
+    "c-click, warm cache": {
+      "verdict": "on time",
+      "unstyledFrames": 0,
+      "animationStartMs": 0,
+      "animatedFrames": 31
+    },
+    "c-defer, cold local": {
+      "verdict": "on time",
+      "unstyledFrames": 0,
+      "animationStartMs": 16,
+      "animatedFrames": 29
+    },
+    "c-defer, cold, 300 ms chunk delay": {
+      "verdict": "on time",
+      "unstyledFrames": 0,
+      "animationStartMs": 0,
+      "animatedFrames": 31
+    },
+    "c-defer, warm cache": {
+      "verdict": "late",
+      "unstyledFrames": 0,
+      "animationStartMs": 22,
+      "animatedFrames": 29
+    }
+  },
+  "leave": {
+    "L1 callout inside leaving element": {
+      "duringLeave": {
+        "wrapperInDom": true,
+        "styles": 1
+      },
+      "leaveMs": 695,
+      "framesWhileLeaving": 43,
+      "unstyledFramesWhileLeaving": 0,
+      "styleRemovedMsAfterHostLeft": 0,
+      "afterLeave": 0,
+      "afterRecheck": "44px/0 44px/0"
+    },
+    "L2 unrelated leave running": {
+      "afterLeave": 0,
+      "afterRecheck": "44px/0 44px/0"
+    },
+    "L3 (animate.leave) listener on the page": {
+      "whileListenerPresent": 0,
+      "afterListenerLeft": 0,
+      "afterRecheck": "44px/0 44px/0"
+    }
+  }
+}
