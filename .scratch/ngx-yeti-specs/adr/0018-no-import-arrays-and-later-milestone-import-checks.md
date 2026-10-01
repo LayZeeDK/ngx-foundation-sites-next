@@ -25,3 +25,4 @@ We decided:
 
 - The other check families of the old bundle have no cross-cutting successor here. Its build-time checks rested on Foundation's Sass; its Variant runtime checks (`strictVariantNames`, `strictVariantProperties`, `strictBreakpointSync`) rested on the registries and breakpoints that [ADR 0005](0005-closed-unions-from-yetis-vocabularies.md) and ticket 08 abandoned. Per-item misuse warnings and family checks follow their items' records, which ticket 08 has now decided against the spec list.
 - NgModule consumers stay supported: the standalone directives remain importable into an NgModule's `imports`.
+- 2026-10-02: [Decide: the glossary](../issues/10-decide-glossary.md) retires "family", so point 3's "in-family check" is called the **In-item check** from now on. Its rule is unchanged.

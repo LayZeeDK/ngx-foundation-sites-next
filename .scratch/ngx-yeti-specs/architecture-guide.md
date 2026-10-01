@@ -4,7 +4,7 @@ Ticket: [Decide: which architecture principles and building-blocks rules carry o
 
 Precedence: the map's Notes, the ADRs, and `building-blocks.md` outrank this guide (map, Inherited preferences and rulings, Precedence). Where a principle restates one of them it cites it and does not change its substance. Where a principle restates an old ADR, [Decide: which ADRs carry over](issues/08-decide-inherited-adrs.md) owns that ADR's record here; the principle names the old number and says so. Where this guide adds a rule no record covers, the principle says "New" in its Decided-by line and the ticket's Answer rates it under the map's triage rule.
 
-Names: the package's class, selector, and token prefix is set with the glossary ([Decide: the glossary](issues/10-decide-glossary.md); map, Inherited preferences and rulings, Input naming). Until then the examples here write `pfx`, `Pfx`, and `pfx-` as stand-ins (`<article pfxCard>`, `PfxCard`, `pfxCardToken`), and ticket 10 replaces them. Yeti's own words are used for Yeti's things, as its docs and manifest use them: an item (one of the 49 entries of the manifest: a layout, recipe, component, or utility), its class, its `data-*` attributes and their vocabularies, its markers, its tokens, its module, its part file, and its events. Ticket 10 fixes the glossary; where it picks another word, this guide follows it.
+Names follow the user's prefix ruling as [ADR 0080](adr/0080-yeti-prefix-ngx-yeti-runtime-names-ngxyeti-on-collision.md) records it (map, Standing rulings, Prefix): `yeti` for selectors, `exportAs`, injection tokens, provider functions, and entry points (`<article yetiCard>`, `yetiCardToken`); `Yeti` for TypeScript names (`YetiCard`), and `NgxYeti` where a `Yeti` name equals a name Yeti's `yeti.d.ts` exports (today `NgxYetiColumns`, `NgxYetiAttention`, `NgxYetiEnter`, `NgxYetiLift`, `NgxYetiPrint`); Yeti's own vocabulary types for inputs (`YetiGap`); and `ngx-yeti` for the custom properties, cascade layers, data attributes, and generated ids the package writes. Words follow [CONTEXT.md](CONTEXT.md) ([Decide: the glossary](issues/10-decide-glossary.md)): Yeti's own words for Yeti's things, as its docs and manifest use them: an item (one of the 49 entries of the manifest: a layout, recipe, component, or utility), its identity class, its attributes and their vocabularies, its markers, its tokens, its module, its part file, and its events.
 
 How to audit a spec against it: each principle has one rule. For each, an auditor answers "meets it" or "falls short, at <section>" from the spec's contract mapping, hierarchy and DI shape, API, ARIA and keyboard tables, rendered HTML, rendering modes, styles subsection, and Testing Decisions (building-blocks 1.14). The Preferred and Avoided examples use Yeti's documented markup (`src/components/<item>/example.html` at `f52d1e8b9`); a spec that matches an Avoided form falls short. A finding is recorded once, under the lowest-numbered principle it falls short of; other principles it touches are cited, not counted.
 
@@ -18,12 +18,12 @@ A directive can be of more than one kind at once. The kind decides which princip
 
 | Kind | What it is | Decided by | Examples |
 | --- | --- | --- | --- |
-| Item directive | One attribute directive per item on the element Yeti's docs put the class on: binds the class as a static host class, sets the item's `data-*` attributes from typed inputs, binds the ARIA state it owns from signals, and carries the behaviour the item's module had. | ADR 0003 points 1, 2, 3; ADR 0040; building-blocks 1.1 | `button[pfxButton]` (`.button`, `variant`, `emphasis`, `size`), `article[pfxCard]`, `dialog[pfxDialog]`, `nav[pfxNav]` (`threshold`, `panel`, `sticky`), `div[pfxTabs]`, `div[pfxField]` |
-| Part directive | A directive on an element of an item's markup that Yeti marks with a marker (`data-brand`, `data-close`, `data-track`, `data-slide`, `data-dots`, `data-hint`, `data-error`) or names in the manifest's `children` (`> button[popovertarget]`, `> ul[popover]`, `[role="tab"]`), where the part carries an input, a generated id or reference, an output, or behaviour. It sets the marker, because the consumer writes no Yeti attribute (ADR 0003 point 2). A child Yeti styles only by element and position (`.nav > ul[popover] > li`) gets no directive. | ADR 0003 point 2; building-blocks 1.1, 1.3; [Decide: how the package maps each of Yeti's `data-*` attributes](issues/26-decide-yeti-data-attributes-mapping.md) for each marker | `button[pfxNavToggle]`, `ul[pfxNavList]`, `button[pfxTab]` (hosts Aria's `Tab`), `section[pfxTabPanel]`, `p[pfxFieldError]`, `a[pfxCarouselDot]`, `li[pfxTimelineEntry]` where the entry carries a marker |
-| Free behaviour directive | Binds no item class or `data-*` attribute, may sit on any element, and is written beside the item directive of its host, never hosted by it: the opener of a dialog (`commandfor` and `command` with the dialog's id), and the single-page-application pieces ticket 25 places (fragment links under `<base href>`). | ADR 0003 point 5; ADR 0040; building-blocks 1.8, 1.9 | `button[pfxButton] [pfxDialogOpener]="dialog"`, `a[pfxFragmentLink]` |
-| Coordinating directive | A parent that provides a lightweight token its parts read, with which ordered parts register; may host an Aria pattern through `hostDirectives`. Coordination never makes it a component. | building-blocks 1.9; old P4 carried | `div[pfxTabs]` (`pfxTabsToken`, hosts Aria's `Tabs`), `nav[pfxNav]` (`pfxNavToken`, generated id shared by toggle and list), `div[pfxField]` (`pfxFieldToken`, composes `aria-describedby`), `div[pfxCarousel]`, `nav[pfxToc]` |
+| Item directive | One attribute directive per item on the element Yeti's docs put the class on: binds the class as a static host class, sets the item's `data-*` attributes from typed inputs, binds the ARIA state it owns from signals, and carries the behaviour the item's module had. | ADR 0003 points 1, 2, 3; ADR 0040; building-blocks 1.1 | `button[yetiButton]` (`.button`, `variant`, `emphasis`, `size`), `article[yetiCard]`, `dialog[yetiDialog]`, `nav[yetiNav]` (`threshold`, `panel`, `sticky`), `div[yetiTabs]`, `div[yetiField]` |
+| Part directive | A directive on an element of an item's markup that Yeti marks with a marker (`data-brand`, `data-close`, `data-track`, `data-slide`, `data-dots`, `data-hint`, `data-error`) or names in the manifest's `children` (`> button[popovertarget]`, `> ul[popover]`, `[role="tab"]`), where the part carries an input, a generated id or reference, an output, or behaviour. It sets the marker, because the consumer writes no Yeti attribute (ADR 0003 point 2). A child Yeti styles only by element and position (`.nav > ul[popover] > li`) gets no directive. | ADR 0003 point 2; building-blocks 1.1, 1.3; [Decide: how the package maps each of Yeti's `data-*` attributes](issues/26-decide-yeti-data-attributes-mapping.md) for each marker | `button[yetiNavToggle]`, `ul[yetiNavList]`, `button[yetiTab]` (hosts Aria's `Tab`), `section[yetiTabPanel]`, `p[yetiFieldError]`, `a[yetiCarouselDot]`, `li[yetiTimelineEntry]` where the entry carries a marker |
+| Free behaviour directive | Binds no item class or `data-*` attribute, may sit on any element, and is written beside the item directive of its host, never hosted by it: the opener of a dialog (`commandfor` and `command` with the dialog's id), and the single-page-application pieces ticket 25 places (fragment links under `<base href>`). | ADR 0003 point 5; ADR 0040; building-blocks 1.8, 1.9 | `button[yetiButton] [yetiDialogOpener]="dialog"`, `a[yetiFragmentLink]` |
+| Coordinating directive | A parent that provides a lightweight token its parts read, with which ordered parts register; may host an Aria pattern through `hostDirectives`. Coordination never makes it a component. | building-blocks 1.9; old P4 carried | `div[yetiTabs]` (`yetiTabsToken`, hosts Aria's `Tabs`), `nav[yetiNav]` (`yetiNavToken`, generated id shared by toggle and list), `div[yetiField]` (`yetiFieldToken`, composes `aria-describedby`), `div[yetiCarousel]`, `nav[yetiToc]` |
 | Component | Only where a part needs structure the consumer should not hand-write, or where a `styleUrl` is what makes lazy styles meet the requirements under the user's standing ruling 28 (map, Standing rulings). No Yeti item generates structure; the second reason is [Decide: how component styles load and unload](issues/13-decide-style-loading.md)'s to grant or refuse. On a consumer element it takes an attribute selector. | ADR 0003 point 6; map, Directives first; ticket 13 | None decided; a candidate is any first-milestone item whose part file ticket 13 loads through a `styleUrl` |
-| Shared service, function, token, or type | A service only for state shared across instances; otherwise an injection-context function, a token, or a type in the primary entry point. | building-blocks 1.5, 1.9; ADR 0005; old P15, P22 | The 32 vocabulary unions (`PfxGap`, `PfxWidth`, `PfxVariant`), a `NavigationStart` closer if ticket 25 makes it shared, `_IdGenerator` from CDK |
+| Shared service, function, token, or type | A service only for state shared across instances; otherwise an injection-context function, a token, or a type in the primary entry point. | building-blocks 1.5, 1.9; ADR 0005; old P15, P22 | Yeti's 32 vocabulary types (`YetiGap`, `YetiWidth`, `YetiVariant`), re-exported, never redeclared (ADR 0080 point 5), a `NavigationStart` closer if ticket 25 makes it shared, `_IdGenerator` from CDK |
 | Part file | The styles side: one of Yeti's 49 part files, loaded with its directives and unloaded after the last instance, over the always-loaded group (map, Lazy styles; The always-loaded group). The package writes no CSS of its own, pending ticket 07's open item. | ADR 0004; map, Lazy styles; ticket 13 (mechanism) | `components/card/card.css`, `layouts/stack/stack.css`; the always-loaded `layers.css`, `tokens/*`, `base/*`, `layouts/attributes.css` |
 
 The old kinds that have no Yeti counterpart: the Plugin element directive without a Structural class (Yeti's parts carry markers, so they are part directives), the layout-system and utility-family directive (Yeti's 17 layouts and 7 utilities are items like any other: one class and a few attributes, ticket 07), and the Library mixin (Yeti has no Sass; ticket 07 abandoned ADR 0012).
@@ -58,8 +58,8 @@ Rule: Every item becomes attribute directives on the elements Yeti's docs put it
 
 Why: all 49 items are one class plus `data-*` attributes on markup the consumer writes, with an empty `classes` array, and none generates structure (ticket 02; `Y/src/components/card/manifest.json`); Angular's criterion for a component is a template, and Aria ships no component; an element component inside a `ul` or a `dialog` is non-conforming HTML. The second reason is the user's standing ruling 28, conditional in the user's own words ("where applicable").
 
-Preferred: `<dialog pfxDialog>`, `<nav pfxNav threshold="sm" panel="drawer">`, `<div pfxTabs>`, `<article pfxCard raised>`.
-Avoided: `<pfx-dialog>`, `<pfx-nav>`, `<pfx-card>`; a component for a state Yeti does not have.
+Preferred: `<dialog yetiDialog>`, `<nav yetiNav threshold="sm" panel="drawer">`, `<div yetiTabs>`, `<article yetiCard raised>`.
+Avoided: `<yeti-dialog>`, `<yeti-nav>`, `<yeti-card>`; a component for a state Yeti does not have.
 
 Origin: old P1, adapted (second component reason added; the old three cases have no Yeti counterpart).
 Decided by: ADR 0003 point 6; map, Directives first; ticket 13.
@@ -71,8 +71,8 @@ Rule: Every item has one attribute directive that binds its class as a static ho
 
 Why: two attributes for one element leave the element unstyled when one is forgotten (old ADR 0041's finding, carried as reasoning); a marker is a Yeti attribute, and the consumer writes none (ADR 0003 point 2); a bare `li` under `.nav > ul[popover]` has nothing to set and nothing to own.
 
-Preferred: `button[pfxTab]` sets nothing of Yeti's but hosts Aria's `Tab` and carries `aria-controls`; `li[pfxNavClose]` sets `data-close` and holds the hide button; `p[pfxFieldHint]` sets `data-hint` and gives the field its `aria-describedby` id; `article[pfxCard]` binds `.card` and nothing else; a bare `<li>` in a nav list.
-Avoided: `<div pfxTabs pfxTabsKeyboard>`; `<li pfxNavItem>` for a position-styled `li`; `<p data-hint>` written by the consumer; a second directive for an item's own module behaviour.
+Preferred: `button[yetiTab]` sets nothing of Yeti's but hosts Aria's `Tab` and carries `aria-controls`; `li[yetiNavClose]` sets `data-close` and holds the hide button; `p[yetiFieldHint]` sets `data-hint` and gives the field its `aria-describedby` id; `article[yetiCard]` binds `.card` and nothing else; a bare `<li>` in a nav list.
+Avoided: `<div yetiTabs yetiTabsKeyboard>`; `<li yetiNavItem>` for a position-styled `li`; `<p data-hint>` written by the consumer; a second directive for an item's own module behaviour.
 
 Origin: old P2, adapted (Structural class becomes the item class; the Plugin-element case becomes the marked part; no Variant or State classes to split over).
 Decided by: ADR 0003 points 1 and 2; ADR 0040; building-blocks 1.1, 1.3; ticket 26 (per marker).
@@ -84,8 +84,8 @@ Rule: Consumer markup keeps the element structure of Yeti's docs and carries dir
 
 Why: the user's class rule, whose reasoning covers an attribute whose value list the package can type (ADR 0003); a misspelt `data-variant="prmary"` is silent in Yeti and a compile error here (ADR 0005); host bindings render on the server, so the server HTML still carries Yeti's documented markup.
 
-Preferred: `<button pfxButton variant="alert" emphasis="medium">`; `<div pfxStack gap="lg">`; `<nav pfxNav aria-label="Site">` with the consumer's `aria-label`.
-Avoided: `<button class="button" data-variant="alert">`; `<div class="stack" data-gap="lg">`; `<button pfxButton class="button">`; `popovertarget="menu"` written by hand beside a nav directive that generates the id.
+Preferred: `<button yetiButton variant="alert" emphasis="medium">`; `<div yetiStack gap="lg">`; `<nav yetiNav aria-label="Site">` with the consumer's `aria-label`.
+Avoided: `<button class="button" data-variant="alert">`; `<div class="stack" data-gap="lg">`; `<button yetiButton class="button">`; `popovertarget="menu"` written by hand beside a nav directive that generates the id.
 
 Origin: old P3, adapted (classes become class plus attributes and markers; "not even as a value" becomes "a vocabulary value is the value"; the later-milestone note is ticket 11's shape).
 Decided by: ADR 0003; ADR 0005; map, The contract the package manages; ticket 26.
@@ -97,8 +97,8 @@ Rule: A parent provides an `InjectionToken` typed with `import type` of its clas
 
 Why: Angular resolves projected content against the injector where it is declared; registration survives `@for`, `@defer`, and projection; a token instead of a class keeps the parent's class out of every part's bundle (P22); Yeti's own modules resolve by the declared relationship, never by "any popover" (`hover.js:26-27`, `tabs.js`), and so does the package.
 
-Preferred: `nav[pfxNav]` provides `pfxNavToken` and one generated id that `button[pfxNavToggle]` binds as `popovertarget` and `ul[pfxNavList]` as `id`; `div[pfxField]` composes `aria-describedby` from its hint's and error's generated ids; `[pfxDialogOpener]="confirm"` with `#confirm="pfxDialog"`; `button[pfxTab]` paired with its panel by Aria's value pairing.
-Avoided: `<pfx-nav>` as the coordinator; `contentChildren(PfxTab)` for order; a DOM walk that also runs when the token is present; a popover found by `querySelector('[popover]')`.
+Preferred: `nav[yetiNav]` provides `yetiNavToken` and one generated id that `button[yetiNavToggle]` binds as `popovertarget` and `ul[yetiNavList]` as `id`; `div[yetiField]` composes `aria-describedby` from its hint's and error's generated ids; `[yetiDialogOpener]="confirm"` with `#confirm="yetiDialog"`; `button[yetiTab]` paired with its panel by Aria's value pairing.
+Avoided: `<yeti-nav>` as the coordinator; `contentChildren(YetiTab)` for order; a DOM walk that also runs when the token is present; a popover found by `querySelector('[popover]')`.
 
 Origin: old P4, carried over (examples change; the ids clause is Yeti's relationship attributes). Old ADRs 0009, 0013, and 0043 are ticket 08's; the rule here does not depend on them.
 Decided by: building-blocks 1.9; ADR 0003 point 5.
@@ -106,12 +106,12 @@ Sources: `NG/guide/components/content-projection.md`; `NG/guide/di/lightweight-i
 
 #### P5. Native element first; selectors name the element Yeti's manifest expects
 
-Rule: The directive's selector names the native element wherever Yeti's manifest, CSS, or the ARIA depends on it: `dialog[pfxDialog]` (Yeti's own `dialog.dialog`), `nav[pfxNav]`, `button[pfxNavToggle]`, `ul[pfxNavList]`, `details` inside an accordion, `input[type=range]` in a field, `a[href]` for links. Because a hosted directive's selector is ignored, the host's own selector carries the restriction. The platform element is the one Yeti documents; the package never swaps it for another to fit an Aria pattern.
+Rule: The directive's selector names the native element wherever Yeti's manifest, CSS, or the ARIA depends on it: `dialog[yetiDialog]` (Yeti's own `dialog.dialog`), `nav[yetiNav]`, `button[yetiNavToggle]`, `ul[yetiNavList]`, `details` inside an accordion, `input[type=range]` in a field, `a[href]` for links. Because a hosted directive's selector is ignored, the host's own selector carries the restriction. The platform element is the one Yeti documents; the package never swaps it for another to fit an Aria pattern.
 
 Why: Yeti's validator refuses markup that does not match the manifest's `children`, and its CSS is written against the element (`.nav > button[popovertarget]`, `dialog.dialog`); the APG and the platform behaviour (top layer, `::backdrop`, Escape, `details name`) come from the element; replacing a working native element with an Aria pattern would change Yeti's semantics (map, Implementation order).
 
-Preferred: `dialog[pfxDialog]`, `details` with a consumer `name` inside `div[pfxAccordion]`, `button[type=button][pfxTab]`, `input[type=checkbox][role=switch]` as Yeti writes a switch.
-Avoided: `<pfx-dialog>`; an accordion rebuilt on buttons and `region`s to host Aria's Accordion; a `div` toggle for the nav.
+Preferred: `dialog[yetiDialog]`, `details` with a consumer `name` inside `div[yetiAccordion]`, `button[type=button][yetiTab]`, `input[type=checkbox][role=switch]` as Yeti writes a switch.
+Avoided: `<yeti-dialog>`; an accordion rebuilt on buttons and `region`s to host Aria's Accordion; a `div` toggle for the nav.
 
 Origin: old P5, carried over (strengthened by Yeti's validator).
 Decided by: building-blocks 1.2, 1.10; map, Implementation order; ADR 0003.
@@ -121,10 +121,10 @@ Sources: `Y/src/components/dialog/dialog.js:30-31` (`dialog.dialog`); `Y/src/com
 
 Rule: A directive whose element is always another item's element hosts that item's directive through `hostDirectives` and exposes its inputs under their own names, so the class and its attributes have one owner. Two items a consumer may compose on one element (`center box`, `seam box`) are written beside each other, and the spec of each says so. An opener is never hosted by the panel it opens, and no panel writes an attribute on its opener other than through the opener's own directive.
 
-Why: hosting gives one owner without two attributes; hosting a free combination would put one item's class on elements that are not that item; the dialog opener beside `pfxButton` stacks with any button look and keeps the dialog's bundle free of button code; Yeti relates a trigger and its panel by `popovertarget` or `commandfor`, which the opener's directive renders (ADR 0003 point 5).
+Why: hosting gives one owner without two attributes; hosting a free combination would put one item's class on elements that are not that item; the dialog opener beside `yetiButton` stacks with any button look and keeps the dialog's bundle free of button code; Yeti relates a trigger and its panel by `popovertarget` or `commandfor`, which the opener's directive renders (ADR 0003 point 5).
 
-Preferred: `<div pfxCenter pfxBox>` where Yeti's docs compose them; `<button pfxButton [pfxDialogOpener]="confirm">`; a `.dropdown` inside a nav as a nested element with its own directive, read by the nav through the dropdown's optional injection of `pfxNavToken`.
-Avoided: `pfxCenter` hosting `PfxBox`; an opener hosted by `pfxDialog`; a dropdown directive that writes `data-side` on the nav.
+Preferred: `<div yetiCenter yetiBox>` where Yeti's docs compose them; `<button yetiButton [yetiDialogOpener]="confirm">`; a `.dropdown` inside a nav as a nested element with its own directive, read by the nav through the dropdown's optional injection of `yetiNavToken`.
+Avoided: `yetiCenter` hosting `YetiBox`; an opener hosted by `yetiDialog`; a dropdown directive that writes `data-side` on the nav.
 
 Origin: old P6, carried over (the Trigger clause becomes the opener clause; whether any Yeti item always sits on another's element is decided per spec by ticket 25, since the 49 manifests declare composition by `children`, not by shared element).
 Decided by: building-blocks 1.9; ADR 0003 point 5; ticket 25.
@@ -136,8 +136,8 @@ Rule: The package reuses and extends behaviour only through `hostDirectives` and
 
 Why: the user's rule; a subclass inherits host bindings, inputs, outputs, and hooks but not `providers`, its selector, or `exportAs`, so a consumer subclass of a token-providing directive leaves its parts silently without a parent.
 
-Preferred: `<button pfxButton [pfxDialogOpener]="confirm">`; a consumer card component hosting `PfxCard`.
-Avoided: `class MyButton extends PfxButton`; an exported abstract base for consumers to type an input.
+Preferred: `<button yetiButton [yetiDialogOpener]="confirm">`; a consumer card component hosting `YetiCard`.
+Avoided: `class MyButton extends YetiButton`; an exported abstract base for consumers to type an input.
 
 Origin: old P7, carried over (the `NfsOpenable` consumer-implemented contract is gone with Triggers, P8 of the building blocks).
 Decided by: map, Composition over subclassing (the user's rule, 2026-09-27).
@@ -149,7 +149,7 @@ Rule: Host directives are applied statically, their selectors are ignored, their
 
 Why: Angular's documented constraints and the old bundle's measurements with 22.2.0; since 22.0 a directive reached several times through host directives is created once with the input maps merged, and a template match wins over host-directive matches. The one Aria pattern that fits Yeti without changing its elements is Tabs (ticket 03 hypothesis, ticket 17 reading), and Aria's `TabPanel` binds `inert` while Yeti's CSS and `tabs.js` key on `hidden`, so the wrapper binds `hidden` from the same `visible()` signal Aria binds `inert` from.
 
-Preferred: `section[pfxTabPanel]` hosting Aria's `TabPanel` with `'[attr.hidden]': '!visible() ? "" : null'` derived from Aria's own signal; `button[pfxTab]` hosting `Tab`.
+Preferred: `section[yetiTabPanel]` hosting Aria's `TabPanel` with `'[attr.hidden]': '!visible() ? "" : null'` derived from Aria's own signal; `button[yetiTab]` hosting `Tab`.
 Avoided: a `hostDirectives` entry behind a condition; a plain `[attr.hidden]` override that can disagree with Aria's `inert`; the same Aria input exposed under two names.
 
 Origin: old P8, carried over (examples change to Tabs).
@@ -162,7 +162,7 @@ Rule: Two package directives that can share an element do not declare one input 
 
 Why: Angular sets a template binding on every directive on the element that declares the input, so a shared name with different types fails to compile; a static input attribute stays on the element and HTML lowercases it, so `align` on any element maps to `text-align` in Blink and WebKit, and the browser acts on `autofocus` when the element is inserted, before any host binding runs (measured by old ticket 139 in three engines; carried as evidence by ticket 07).
 
-Preferred: `<div pfxStack gap="lg">` and `<div pfxCluster gap="lg">` sharing `PfxGap`; `<table pfxTable align="end">` with `PfxTable` binding `'[attr.align]': 'null'` and `data-align` from the input; a `width` input whose spec row says `removed` on `img` and `inert` on `div`.
+Preferred: `<div yetiStack gap="lg">` and `<div yetiCluster gap="lg">` sharing `YetiGap`; `<table yetiTable align="end">` with `YetiTable` binding `'[attr.align]': 'null'` and `data-align` from the input; a `width` input whose spec row says `removed` on `img` and `inert` on `div`.
 Avoided: two directives on one element declaring `size` as different unions; a static `align` left in the DOM; a static `autoFocus` on a dialog.
 
 Origin: old P9, adapted (the `nfs`-prefixed Utility attribute shape is abandoned with old ADR 0044, ticket 07; the shared-vocabulary clause is new for Yeti; the presentational-attribute kinds carry from old ticket 139).
@@ -175,7 +175,7 @@ Sources: ticket 02 (vocabulary sharing counts); `old research/presentational-att
 
 Rule: Public API is `input()` (with `booleanAttribute` on boolean attributes and markers and `numberAttribute` on counts, closed unions on enum attributes), `model()` for state Yeti exposes as both an attribute and an event (a tab's selection, a dialog's open state, a carousel's index, a toc's current link), `output()` for each `yeti:*` event the item would have dispatched, a read-only `Signal` or `computed()` for derived state a consumer needs, and `linkedSignal()` for derived-but-writable state, all `readonly`; no `@Input`, `@Output`, `EventEmitter`, `@HostBinding`, or `@HostListener`. `effect()` is never public API, never writes the DOM, `history`, or a timer, and never copies one signal into another; its two uses are the reverse-link registration of a reference input with cleanup (an opener registering with its dialog), and nothing else until a spec states a third with its reason.
 
-Why: Angular recommends the signal functions and calls `effect()` the last API to reach for; effects run on the server; a plain field written from a `yeti:slide` listener does not refresh the view zoneless while a signal does (ticket 18, measured); `model()` takes no transform, so a boolean model has no bare-attribute form; Yeti's boolean attributes (`data-raised`, `data-sticky`, `data-once`) are presence attributes that `booleanAttribute` turns into `<article pfxCard raised>`.
+Why: Angular recommends the signal functions and calls `effect()` the last API to reach for; effects run on the server; a plain field written from a `yeti:slide` listener does not refresh the view zoneless while a signal does (ticket 18, measured); `model()` takes no transform, so a boolean model has no bare-attribute form; Yeti's boolean attributes (`data-raised`, `data-sticky`, `data-once`) are presence attributes that `booleanAttribute` turns into `<article yetiCard raised>`.
 
 Preferred: `readonly raised = input(false, {transform: booleanAttribute})`; `readonly selected = model<string | null>(null)` on the tabs root; `readonly slide = output<{index: number; slide: HTMLElement}>()` for `yeti:slide`; `readonly fill = computed(() => ...)` behind `'[style.--yeti-range-value]'`.
 Avoided: `@Input() variant`; `readonly open = input(false)` on a boolean attribute without the transform; an `effect()` that calls `showModal()`; an `effect()` that mirrors `selected` into `aria-selected` (a host binding does it).
@@ -191,7 +191,7 @@ Rule: Each state has one writer and one representation, and it is the platform's
 Why: "No component invents a state attribute" (`Y/src/guides/components.md:83`), with seven states from the element or ARIA; a second source drifts; `:open`, `:popover-open`, and `:has()` are inside Baseline 2025 (ADR 0002), so they can be a source, which they could not be under the old target; measured: a static `open` reopens a `details` the user closed, a static `aria-selected="true"` leaves two tabs selected after `tabs.js` moved the selection, and a restored `data-once` stops the arrival from ever playing (ticket 18, three engines).
 
 Preferred: `[attr.aria-selected]` from the tabs model on each tab; `[open]` bound from an `open` model on a dialog the page may ship open; `aria-pressed` bound by a toggle button's directive from its model; `aria-current` left to the consumer or to `RouterLinkActive` with `ariaCurrentWhenActive="page"` on a nav link, and bound by the toc directive from its `IntersectionObserver` state.
-Avoided: a `data-pfx-open` attribute beside `[open]`; a directive reading a static `aria-selected` to seed its model; a static `open` on a `details` inside `@if`; a `Renderer2` write of a state class.
+Avoided: a `data-ngx-yeti-open` attribute beside `[open]`; a directive reading a static `aria-selected` to seed its model; a static `open` on a `details` inside `@if`; a `Renderer2` write of a state class.
 
 Origin: old P11, adapted (platform state is the only source; the two old exceptions, a `Renderer2` State class on `html` or `body` and the `data-nfs-<state>` hook, have no Yeti counterpart and are dropped; the hydration clause is new from ticket 18).
 Decided by: ADR 0003 points 3 and 4; map, The contract the package manages; ADR 0002.
@@ -212,15 +212,15 @@ Sources: ticket 18 Answer (checked); ticket 16 Answer (no replay for any option)
 
 #### P13. Every public name by a stated rule
 
-Rule: Classes are the prefix plus the PascalCase of the item's manifest name (`PfxCard`, `PfxNav`, `PfxButtons` for the `buttons` group); a part directive is the item plus the part's marker or role in PascalCase (`PfxNavToggle`, `PfxNavList`, `PfxNavClose`, `PfxFieldError`, `PfxCarouselDot`, `PfxTab`, `PfxTabPanel`); directive selectors are prefixed camelCase attributes, components prefixed dash-case elements; tokens are camelCase with the `Token` suffix (`pfxNavToken`); inputs take Yeti's attribute and marker names in camelCase (`data-variant` to `variant`, `data-threshold` to `threshold`) and their types take the vocabulary's name (`PfxVariant`, `PfxWidth`); each `yeti:*` event becomes an output named by its verb without the prefix (`yeti:select` to `select` or `selected`, `yeti:slide` to `slide`, `yeti:current` to `current`, `yeti:open` and `yeti:close` to `opened` and `closed`), one form per spec, with Material's vocabulary for methods (`open()`, `close()`, `toggle()`, `select()`) and `xChange` from models, never an `on` prefix; `exportAs` is the directive's camelCase name, and every directive and component has one. The prefix's letters are ticket 10's.
+Rule: Classes are `Yeti` plus the PascalCase of the item's manifest name (`YetiCard`, `YetiNav`, `YetiButtons` for the `buttons` group), and `NgxYeti` plus it where that name equals one Yeti's `yeti.d.ts` exports (`NgxYetiColumns`, `NgxYetiAttention`, `NgxYetiEnter`, `NgxYetiLift`, `NgxYetiPrint`); a part directive is the item plus the part's marker or role in PascalCase (`YetiNavToggle`, `YetiNavList`, `YetiNavClose`, `YetiFieldError`, `YetiCarouselDot`, `YetiTab`, `YetiTabPanel`); directive selectors are `yeti`-prefixed camelCase attributes, components `yeti-`-prefixed dash-case elements; tokens are camelCase with the `Token` suffix (`yetiNavToken`); inputs take Yeti's attribute and marker names in camelCase (`data-variant` to `variant`, `data-threshold` to `threshold`) and their types are Yeti's own vocabulary types (`YetiVariant`, `YetiWidth`), never redeclared; each `yeti:*` event becomes an output named by its verb without the prefix (`yeti:select` to `select` or `selected`, `yeti:slide` to `slide`, `yeti:current` to `current`, `yeti:open` and `yeti:close` to `opened` and `closed`), one form per spec, with Material's vocabulary for methods (`open()`, `close()`, `toggle()`, `select()`) and `xChange` from models, never an `on` prefix; `exportAs` is the directive's camelCase name, and every directive and component has one. Names the package writes into the page at run time (custom properties, cascade layers, data attributes, generated ids) take `ngx-yeti`.
 
 Why: bare class names collide with Aria's `Tabs`, `Tab`, and `TabPanel`, which the package hosts; Yeti's 49 names, 54 attribute names, 31 markers, and 6 event names are frozen (`stability.md`), so names derived from them are stable; Aria names its own `exportAs` after the directive (`ngTab`, `ngTabPanel`); the user ruled an `exportAs` on every directive (2026-09-29).
 
-Preferred: `PfxDialog` with `exportAs: 'pfxDialog'`, `readonly closed = output<void>()`; `PfxTabs` with `readonly select = output<{tab: HTMLElement; panel: HTMLElement | null}>()`; `pfxFieldToken`; `threshold: PfxWidth`.
-Avoided: `Tabs` (Aria's name); `PFX_NAV` as a token; `onSelect`; `yetiSelect` as an output name; `exportAs: 'tabs'`; a directive without `exportAs`.
+Preferred: `YetiDialog` with `exportAs: 'yetiDialog'`, `readonly closed = output<void>()`; `YetiTabs` with `readonly select = output<{tab: HTMLElement; panel: HTMLElement | null}>()`; `yetiFieldToken`; `threshold: YetiWidth`.
+Avoided: `Tabs` (Aria's name); `YETI_NAV` as a token; `onSelect`; `yetiSelect` as an output name; `exportAs: 'tabs'`; a directive without `exportAs`.
 
 Origin: old P13, adapted (the Structural-class and Variant naming orders are replaced by Yeti's names; outputs come from events rather than from a Foundation event map; the `exportAs` clause carries as the user's ruling).
-Decided by: map, Input naming; map, The contract the package manages; ADR 0005; ticket 10 (the prefix).
+Decided by: map, Input naming; map, The contract the package manages; ADR 0005; ADR 0080 (the prefix, the user's ruling).
 Sources: `Y/src/guides/stability.md:15-22` (checked); `NC/src/aria/tabs/tab.ts:40`, `tab-panel.ts:44`, `tabs.ts:54` (`exportAs`, checked); `NG/best-practices/style-guide.md`; ticket 07 (input naming row, `exportAs` row).
 
 #### P14. Every input earns its place by tracing to Yeti, Aria, the APG, WCAG, or Material; no count
@@ -229,7 +229,7 @@ Rule: Every input traces to a Yeti attribute or marker of the item's manifest, t
 
 Why: Material's standard, "once a feature is released, it never goes away"; Yeti's attributes are all vocabularies and markers (ticket 02), so none of the old drop categories (jQuery options, HTML-string options, class-name options, timing options) exists, and Yeti's timings are tokens (`--yeti-dropdown-open-delay`, `--yeti-duration-fast`) that stay the consumer's under ADR 0004; what remains to drop is what ticket 26 leaves to the consumer.
 
-Preferred: `PfxNav` with `variant`, `threshold`, `panel`, `gap`, `sticky`, the five attributes of its manifest; a `closePredicate` from Material where a dialog needs a veto, beside the native `cancel` event; `orientation` from Aria's `TabList` where the vertical tabs need `aria-orientation` (ticket 17).
+Preferred: `YetiNav` with `variant`, `threshold`, `panel`, `gap`, `sticky`, the five attributes of its manifest; a `closePredicate` from Material where a dialog needs a veto, beside the native `cancel` event; `orientation` from Aria's `TabList` where the vertical tabs need `aria-orientation` (ticket 17).
 Avoided: a `2-5 inputs` cap; an `openDelay` input for a token; a cancelable `closing` output beside `closePredicate`; an attribute dropped without a row in ticket 26.
 
 Origin: old P14, adapted (the Dropped-options categories have no Yeti counterpart; the token exception is ADR 0004's).
@@ -257,7 +257,7 @@ Rule: Each behaviour stops at the first level that covers it: native platform, t
 
 Why: Yeti is platform-first by design and the user chose its target (ADR 0002); two code paths double the test matrix; Yeti's own guards are `@supports` blocks with a stated fallback ("Where anchor positioning exists the sheet sits exactly under the bar; elsewhere it starts at the top of the viewport", `nav/docs.md`), so a package guard would duplicate them; the only Aria pattern that fits Yeti's elements is Tabs (ticket 03, ticket 17).
 
-Preferred: `details` with a consumer `name` for the exclusive accordion; `popover` for the dropdown and the nav, positioned by Yeti's CSS; Aria Tabs under `div[pfxTabs]`; `IntersectionObserver` for the toc and the `enter` utility; `FocusKeyManager`, `Directionality`, and `LiveAnnouncer` for the carousel, which no Aria pattern covers.
+Preferred: `details` with a consumer `name` for the exclusive accordion; `popover` for the dropdown and the nav, positioned by Yeti's CSS; Aria Tabs under `div[yetiTabs]`; `IntersectionObserver` for the toc and the `enter` utility; `FocusKeyManager`, `Directionality`, and `LiveAnnouncer` for the carousel, which no Aria pattern covers.
 Avoided: a package `@supports` check or a `'anchorName' in document.documentElement.style` test; a `getBoundingClientRect` positioner for the dropdown; CDK Overlay for a popover; Aria's Accordion over `details`; `MediaMatcher` for `data-threshold`.
 
 Origin: old P16, adapted (target, feature lists, and the CDK list change; the "no progressive enhancement" clause becomes "Yeti's CSS fallbacks, no package guards", because ADR 0002 requires a fallback for anything newer and Yeti already provides it in CSS).
@@ -309,8 +309,8 @@ Rule: A native control the package only styles (every control in a `field`, the 
 
 Why: a second value source beside the native control drifts; measured in three engines: under `FormRoot` and reactive forms Angular prevents the submit before `validate.js` runs, so no `aria-invalid` and no message; a form invalid only through `pattern()` or a custom rule submits with `validate.js` alone; after a refused submit only natively invalid fields match `:user-invalid`, so Yeti's CSS shows nothing for `email()`, `pattern()`, or custom rules unless the package binds `aria-invalid` (ticket 19); `@angular/forms` sets neither `aria-invalid` nor `aria-describedby` (ticket 03, ticket 19).
 
-Preferred: `input[pfxFieldControl]` beside `[formField]`, binding `aria-invalid` and `aria-describedby`; `p[pfxFieldError]` rendering the field's first error message; `'[style.--yeti-range-value]'` on the range field.
-Avoided: `<pfx-input>` re-rendering the control; a `checked` model on a switch; a directive implementing both forms contracts; loading `validate.js`; a `role="alert"` error that Yeti's contract does not have.
+Preferred: `input[yetiFieldControl]` beside `[formField]`, binding `aria-invalid` and `aria-describedby`; `p[yetiFieldError]` rendering the field's first error message; `'[style.--yeti-range-value]'` on the range field.
+Avoided: `<yeti-input>` re-rendering the control; a `checked` model on a switch; a directive implementing both forms contracts; loading `validate.js`; a `role="alert"` error that Yeti's contract does not have.
 
 Origin: old P20, adapted (no transformed control remains, so no forms contract is implemented; the `aria-invalid` and `:user-invalid` findings are new from ticket 19). Old ADRs 0006 and 0026 are ticket 08's.
 Decided by: ADR 0040; ADR 0004 exception 1; ticket 19 (evidence); the field spec (the per-field decisions).
@@ -333,12 +333,12 @@ Sources: `NC/src/cdk/bidi/directionality.ts:43` (`valueSignal`, checked); `Y/src
 
 #### P22. One entry point per item; nothing unused reaches a bundle
 
-Rule: Every item the spec list keeps is its own secondary entry point (`ngx-yeti/<item>`), so a consumer can `@defer` per item and a part file travels with its directives. A class another entry point needs only to find an optional parent or part goes through a lightweight token typed with `import type` (a dropdown inside a nav, a spinner inside a button); a required dependency (a hosted Aria directive, the primary entry point's vocabulary types) is a value import by package path; the 32 vocabulary unions live in the primary entry point and are imported as types. Global configuration is a purpose-named provider function where a spec needs one, never an umbrella `provideNgxYeti()` or an NgModule; no item has a defaults token unless its spec says why, because Yeti's defaults are the manifest's and a token would be a second place to look.
+Rule: Every item the spec list keeps is its own secondary entry point (`ngx-yeti/<item>`), so a consumer can `@defer` per item and a part file travels with its directives. A class another entry point needs only to find an optional parent or part goes through a lightweight token typed with `import type` (a dropdown inside a nav, a spinner inside a button); a required dependency (a hosted Aria directive, the primary entry point's vocabulary types) is a value import by package path; Yeti's 32 vocabulary types are re-exported from the primary entry point and imported as types. Global configuration is a purpose-named provider function where a spec needs one, never an umbrella `provideYeti()` or an NgModule; no item has a defaults token unless its spec says why, because Yeti's defaults are the manifest's and a token would be a second place to look.
 
 Why: entry points define the granularity of lazy loading and preventing retention is the package author's job; measured: a badge in its own secondary entry point inside `@defer` rode in a hashed lazy chunk of 575 bytes transfer and was styled when inserted, while in one entry point it went into `main.js` (ticket 04); a class referenced as a value for an optional part is retained even when unused (old bundle measurement, carried as evidence).
 
-Preferred: `ngx-yeti/nav`, `ngx-yeti/dropdown`; `inject(pfxNavToken, {optional: true})` in the dropdown; `import type {PfxGap} from 'ngx-yeti'`.
-Avoided: one entry point for the whole package; `inject(PfxNav)` in the dropdown; `provideNgxYeti()`; a defaults token per item by habit.
+Preferred: `ngx-yeti/nav`, `ngx-yeti/dropdown`; `inject(yetiNavToken, {optional: true})` in the dropdown; `import type {YetiGap} from 'ngx-yeti'`.
+Avoided: one entry point for the whole package; `inject(YetiNav)` in the dropdown; `provideYeti()` as an umbrella provider; a defaults token per item by habit.
 
 Origin: old P22, adapted (the unit is the item; the Variant registries are gone and the vocabulary unions take their place; defaults tokens become opt-in per spec).
 Decided by: building-blocks 1.3, 1.9; ADR 0005 consequences; ticket 11 (the list).
@@ -350,7 +350,7 @@ Rule: Each misuse the compiler cannot see (a part outside a parent it may stand 
 
 Why: the user's reasons for deferring checks (map, Milestones); the closed unions catch a literal value at compile time (ADR 0005); Yeti's own validator refuses mismatched markup in Yeti's repository, not in a consumer's, so the package's bar is the same as Yeti's: its items, used as documented, pass; whether a later-milestone check spec is worth writing at all is decided in the ticket's Answer: no, because Angular's NG0201, NG8002, and NG8003 and the compile-time unions cover what a check would, and the remaining gap (a static attribute with no imported directive, a computed value outside a vocabulary) is one Yeti itself never needed a check for.
 
-Preferred: "Put `role="list"` on the `ul`: Yeti's reset only removes list markers where that role says the list is decorative" as the nav spec's usage rule; `inject(pfxTabsToken)` required in `PfxTab`.
+Preferred: "Put `role="list"` on the `ul`: Yeti's reset only removes list markers where that role says the list is decorative" as the nav spec's usage rule; `inject(yetiTabsToken)` required in `YetiTab`.
 Avoided: a rule that only a check states; a thrown error for a missing `role`; a `strictParents` option.
 
 Origin: old P23, carried over (the Yeti examples are new; the later-milestone check spec is dropped, recorded in the ticket's Answer). Old ADR 0046's record is ticket 08's.
@@ -363,8 +363,8 @@ Rule: Entry points export their directive classes and no import arrays. A compon
 
 Why: Angular reports no error for a static attribute that matches no imported directive; a bound input on the missing directive fails (NG8002), a static one does not; an exported array hides its members from the unused-imports diagnostic; the user ruled against arrays (2026-09-28). Yeti strengthens the detection: a bare element renders unstyled rather than half-styled, because the class itself is the directive's.
 
-Preferred: `imports: [PfxNav, PfxNavToggle, PfxNavList, PfxNavClose]`; `[threshold]="'sm'"`, which fails to compile when `PfxNav` is not imported.
-Avoided: an exported `PFX_NAV` array; a TypeScript example that shows `<button pfxButton>` without its import.
+Preferred: `imports: [YetiNav, YetiNavToggle, YetiNavList, YetiNavClose]`; `[threshold]="'sm'"`, which fails to compile when `YetiNav` is not imported.
+Avoided: an exported `YETI_NAV` array; a TypeScript example that shows `<button yetiButton>` without its import.
 
 Origin: old P24, carried over.
 Decided by: map, Milestones (entry points export classes and no import arrays, the user's ruling); building-blocks 1.9.
@@ -377,7 +377,7 @@ Rule: Assertions at every test layer are DOM-first (the class, the `data-*` attr
 Why: Yeti's class and attribute contract is the DOM the directives bind, and it is frozen, so tests can assert it directly and against the manifest; Material's harnesses exist because its DOM is not a contract.
 
 Preferred: `await expect(nav).toHaveAttribute('data-threshold', 'sm')`; `await expect(tab).toHaveAttribute('aria-selected', 'true')`; `nav--drawer` listed in the spec's Testing Decisions.
-Avoided: `expect(fixture.componentInstance.nav.threshold()).toBe('sm')`; a `PfxNavHarness` in a spec.
+Avoided: `expect(fixture.componentInstance.nav.threshold()).toBe('sm')`; a `YetiNavHarness` in a spec.
 
 Origin: old P25, carried over (the manifest check is this map's Testing addition). Old ADR 0018's record is ticket 08's.
 Decided by: map, Testing; building-blocks 1.12.
@@ -389,7 +389,7 @@ Rule: Every spec meets the shared baselines the records state, checked against t
 
 Why: each is a recorded rule; restating them here would risk rewording them, so the audit reads the section.
 
-Preferred: a dialog directive that focuses the opener on `close` (`dialog.js:54-57` is the behaviour it keeps); `pfx-nav-` ids; a `select` output typed `{tab: HTMLElement; panel: HTMLElement | null}`.
+Preferred: a dialog directive that focuses the opener on `close` (`dialog.js:54-57` is the behaviour it keeps); `ngx-yeti-nav-` ids; a `select` output typed `{tab: HTMLElement; panel: HTMLElement | null}`.
 Avoided: focusing the `<dialog>` element itself; `keyCode` comparisons; a plain `<img>` in a story where `NgOptimizedImage` can be used.
 
 Origin: old P26, adapted (the items point to this bundle's sections and Yeti's behaviours).
@@ -417,8 +417,8 @@ Rule: Every size-dependent change in Yeti is a container query in CSS (`data-thr
 
 Why: checked: no Yeti module reads `matchMedia` for a breakpoint or `innerWidth` (`hover.js:14` reads a pointer capability, which is not a breakpoint); `attributes.css:368-387` keys `data-show` and `data-hide` on `@container (inline-size ...)`; the nav collapses at "its own width, not the screen's" (`nav/docs.md`); so the old server-breakpoint problem (a first client render swapping a mode) does not arise, and the old rendered-state rule that existed for it is not needed.
 
-Preferred: `<nav pfxNav threshold="md">`, which Yeti's CSS resolves with no script; `ResizeObserver` in `afterNextRender` where a spec measures.
-Avoided: a `PfxMediaQuery` service; `serverBreakpoint`; a `[hideFor]` input; `matchMedia('(min-width: ...)')` anywhere in the package.
+Preferred: `<nav yetiNav threshold="md">`, which Yeti's CSS resolves with no script; `ResizeObserver` in `afterNextRender` where a spec measures.
+Avoided: a `YetiMediaQuery` service; `serverBreakpoint`; a `[hideFor]` input; `matchMedia('(min-width: ...)')` anywhere in the package.
 
 Origin: New for Yeti (abandons old building-blocks 1.7 and the Breakpoint service of old Part 3).
 Decided by: this guide; building-blocks 1.7; the ticket's Answer (question 6, impact MEDIUM, confidence HIGH).
@@ -430,7 +430,7 @@ Rule: A trigger and its panel are related by the platform's attributes, rendered
 
 Why: measured with JavaScript off: the dialog opens by invoker commands and the dropdown by `popover` (ticket 18); Yeti's dropdown, nav, and tooltip position by `position-anchor` and `position-area` inside `@supports (anchor-name: --a) and (anchor-scope: --a) and (position-anchor: --a) and (position-area: block-end)`, with the user agent centring the panel or the sheet starting at the top of the viewport where anchor positioning is missing (`dropdown.css:44-56`, `nav.css:118-138`, `tooltip.css:64-69`); anchor positioning is outside Baseline 2025 but guarded, so ADR 0002 keeps Yeti's fallback; `interestfor` and `closedby` are the stated ends of `hover.js` and the backdrop click and are not yet in the target.
 
-Preferred: `<button pfxButton [pfxDialogOpener]="confirm">` rendering `commandfor` and `command="show-modal"`; `nav[pfxNav]` giving its list `popover` and its toggle `popovertarget`; `data-trigger="hover"` as a `trigger="hover"` input whose directive keeps `hover.js`'s `pointerover` and `pointerout` behaviour with `--yeti-dropdown-open-delay` read from computed style.
+Preferred: `<button yetiButton [yetiDialogOpener]="confirm">` rendering `commandfor` and `command="show-modal"`; `nav[yetiNav]` giving its list `popover` and its toggle `popovertarget`; `data-trigger="hover"` as a `trigger="hover"` input whose directive keeps `hover.js`'s `pointerover` and `pointerout` behaviour with `--yeti-dropdown-open-delay` read from computed style.
 Avoided: a `getBoundingClientRect` positioner; CDK Overlay; a `nfsLightDismiss` registry; a `click` handler calling `showPopover()` as the primary path; `closedby="any"` or `interestfor` before they reach the target.
 
 Origin: New for Yeti (abandons old building-blocks 1.8 Triggers, the Anchored pane of old Part 3, and old ADR 0002; adapts their reasoning into the platform's attributes).
@@ -443,7 +443,7 @@ Rule: Each `yeti:*` event an item would have dispatched is an `output()` of the 
 
 Why: `(yeti:select)` is a compile error (`Unexpected global target 'yeti'`), so a plugin never sees the name; an aliasing plugin and a re-dispatcher both work but type `detail` only through global augmentation or not at all, cost one extra event per Yeti event on every page in the re-dispatcher's case, and gain nothing once the modules that dispatch the events are not loaded (ADR 0040); the directive `output()` was measured working zoneless and under SSR, typed without augmentation, and costing nothing where unused (ticket 16).
 
-Preferred: `readonly select = output<{tab: HTMLElement; panel: HTMLElement | null}>()`; `<div pfxTabs (select)="onSelect($event)">`.
+Preferred: `readonly select = output<{tab: HTMLElement; panel: HTMLElement | null}>()`; `<div yetiTabs (select)="onSelect($event)">`.
 Avoided: `(yeti:select)`; `(yeti-select)` through a plugin; `(document:yeti:select)`; `dispatchEvent(new CustomEvent('yeti:select'))` from a directive.
 
 Origin: New for Yeti as a principle; the record is the map's "The contract the package manages" line (ticket 07) and ADR 0040's consequences.
