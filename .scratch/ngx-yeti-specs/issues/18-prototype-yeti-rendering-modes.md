@@ -23,6 +23,12 @@ The user's own message to the orchestrator, verbatim:
 
 > 23. We should also evaluate Yeti compatibility with SSR, hydration, animate.leave/enter, @defer, and so on.
 
+The user added, verbatim:
+
+> We must not forget about support for `withEventReplay()`, `provideClientHydration()`, [incremental hydration](https://angular.dev/guide/incremental-hydration), and `withI18nSupport()`.
+
+So the prototype measures each of these providers explicitly. That means `provideClientHydration()` with and without `withEventReplay()`, `withIncrementalHydration()` with its `hydrate on ...` triggers, and `withI18nSupport()` with a translated build (`$localize`) of at least one item that carries text.
+
 ## How to work it
 
 Build an Nx 23.2 / Angular 22.2 SSR workspace under `D:/tmp/` with Yeti at `f52d1e8b9`. Render one item of each kind:
