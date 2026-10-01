@@ -90,3 +90,4 @@ Files here are copies of the decisive files; `package-versions.json` lists the a
 - SSR and hydration (ticket 18) and event replay were out of scope.
 - The listener counts come from Chromium only; Firefox and WebKit counts are inferred from the identical `yeti:select` counts.
 - Ordering: modules loaded after Angular's first render (for example imported once from `bootstrapApplication(...).then`) would catch the first route but not later ones; not run.
+Note, 2026-10-01 (audit 0002, L15): the `nfs` prefix in the directive names is a placeholder carried from the old package; the new package's prefix is open.

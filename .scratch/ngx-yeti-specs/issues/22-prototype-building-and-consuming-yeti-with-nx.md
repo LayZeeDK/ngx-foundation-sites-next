@@ -47,3 +47,5 @@ Resolved 2026-10-01 by Opus 5.5. Capture, commands and per-option table: [protot
 - **`@nx/esbuild:esbuild`** builds the docs' custom subset, but writes the CSS bundle as `site.js` after three attempts; the docs' `esbuild` command through `nx:run-commands` gives `site.min.css` and caches.
 - **Nx 24:** not published, so nothing ran on it (the user's ruling: "41. Approve recommendation."). `nx g infer-targets` found nothing to convert; 0 of 26 targets use a removed executor; `nx:run-script`, `@nx/web:file-server` and `@nx/js:release-publish` are not on the blog post's keep list either.
 - **Theming:** `--yeti-hue-primary: 30` and `--yeti-button-radius: var(--yeti-radius-full)` on `:root` turned the button to `9999px` / `oklch(0.52 0.15 30)` (Yeti alone: `9px` / hue 250) in Chromium 153, Firefox 155 and WebKit 26.6.
+
+Note, 2026-10-01 (audit 0002, L4, L14): the prototype ran on Angular 22.1, the version the preset pins, not 22.2; that it works on 22.2 is inferred. "0 of 26 targets use a removed executor" covers this prototype's targets only.

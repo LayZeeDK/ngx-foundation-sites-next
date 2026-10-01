@@ -24,7 +24,7 @@ The user's own message to the orchestrator, verbatim:
 
 > 26. Browser baseline: For this project, accept Yeti's Baseline 2025 or the least common denominator browser set/baseline supporting browser/CSS features Yeti relies on.
 
-So Angular 22's own baseline is not the package's target. The ticket still decides between the two options the user allows:
+Orchestrator's reading: Angular 22's own baseline is not the package's target. The ticket still decides between the two options the user allows:
 
 - Yeti's Baseline 2025, which implies Chrome and Edge 141, Firefox 145, and Safari 26.2 ([Research: Angular 22's browser baseline against what Yeti expects](01-research-browser-baseline-vs-yeti.md)).
 - The least common denominator: the oldest browser versions that support every feature Yeti relies on without a guard. That is computed from the same research's feature table, and may be older than Yeti's set.

@@ -2,7 +2,7 @@
 
 Type: grilling
 Status: open
-Blocked by: 05
+Blocked by: 05, 21, 22
 Labels: wayfinder:grilling
 Map: ../map.md
 
@@ -28,3 +28,5 @@ Orchestrator's reading: the specs target, and the package builds against, one pi
 ## How to work it
 
 AFK grilling against [Task: carry the old map's Yeti findings into this bundle](05-task-carry-yeti-findings-from-old-map.md), Yeti's `src/guides/stability.md` and `bin/frozen.js`, its release history, and the announcement (foundation/yeti#15554, read only). Record an ADR. Whether the specs may name only frozen surface is open (point 4); the user's readiness ruling does not say. Also an input: the MCP server Yeti's README mentions does not exist anywhere ([Research: Foundation's `llms.txt` and `llms-full.txt` as sources for this map](14-research-foundationcss-llms-txt.md)).
+
+Note, 2026-10-01 (audit 0002, M6): also read [Prototype: Yeti as a dependency from GitHub at a pinned commit](21-prototype-yeti-as-github-dependency.md) and [Prototype: building, consuming, and theming Yeti from a pinned commit with Nx](22-prototype-building-and-consuming-yeti-with-nx.md); point 3 is what they measured.

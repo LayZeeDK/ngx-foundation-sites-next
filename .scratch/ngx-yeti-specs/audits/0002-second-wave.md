@@ -180,3 +180,21 @@ Not checked (no web access): whether angular/angular#66244 is still open, the te
 Run last with `node <scratchpad>/audit0002.mjs .scratch/ngx-yeti-specs/audits/0002-second-wave.md`: see the line directly below, added after the run.
 
 Result: 15 links checked in this file, none broken (exit 0). The whole bundle with this file included: all links resolve, no problems (exit 0). Banned-word, paired-terms, variant, and non-ASCII searches over this file and the bundle all exit 1.
+
+The orchestrator applied the fixes on 2026-10-01.
+
+- H1: put to the user, not applied. Whether a body line naming the model and effort counts as AI attribution under the user's Git rules is the user's reading of their own rule, and fixing it means rewording commits. The orchestrator stops adding the line until the user rules.
+- H2: applied to the map's gist. The commit body cannot change without a rewrite, which waits on the user's H1 ruling.
+- M1: applied. The eight long gists are rewritten, the longest now 461 characters.
+- M2: applied as a dated note in ticket 17's Answer, and in the shortened gist.
+- M3: applied to ticket 23's Answer and its gist.
+- M4: applied to the map's two lines and to `upstream-bugs.md`'s bare ticket references. The research files' bare references are left, because they cite another file's section, not a ticket by name.
+- M5: applied. The fog item now asks only about theme files and starter themes.
+- M6: applied. Tickets 12, 13, and 25 gain the blockers the audit named, all resolved except 13, and 12 and 13 gain notes linking the research.
+- M7: applied. `upstream-bugs.md` gains O1 (Nx), O2 (Chromium and WebKit), and Y7 (`bin/build.js`), and Y6 is struck through with its reason.
+- L1, L2, L3: applied.
+- L4, L5, L6, L14: applied as dated notes in tickets 16 and 22, and a scope clause in ticket 21.
+- L7, L8, L10, L13, L15: applied.
+- L9: not applied. Ticket 25 runs on `fable-high`, which has the context for it; it is split if it overruns one session.
+- L11: no change, as the audit allows.
+- L12: applied for the section signs in the two files named. The em dashes, arrows, and ellipsis in the accessibility research are left, because they sit in quoted text and tables, not in citations.

@@ -24,7 +24,7 @@ For each standing preference and user ruling in `.scratch/next-foundation-specs/
 - the class rule;
 - one spec per docs page.
 
-Added 2026-10-01. The user asked, verbatim: "21. What about adding CSS classes or setting CSS Custom Properties?" This was a reply to [Research: Yeti's JavaScript modules and what Angular adds](03-research-yeti-javascript-and-angular.md), which found that a wrapper adds only types for most items. The decision covers it as two parts of the class rule's successor:
+Added 2026-10-01. The user's own message to the orchestrator, verbatim: "21. What about adding CSS classes or setting CSS Custom Properties?" This was a reply to [Research: Yeti's JavaScript modules and what Angular adds](03-research-yeti-javascript-and-angular.md), which found that a wrapper adds only types for most items. The decision covers it as two parts of the class rule's successor:
 
 - whether the package's directives set Yeti's classes, data attributes, and markers from typed inputs, so that the consumer writes none (the old map's ADR 0039 did this for Foundation's classes);
 - whether, and how, typed inputs or providers set Yeti's public `--yeti-*` tokens as custom properties, for example per instance through host style bindings or per application through a provider.

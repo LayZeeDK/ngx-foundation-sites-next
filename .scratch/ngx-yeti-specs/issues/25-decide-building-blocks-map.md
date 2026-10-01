@@ -2,7 +2,7 @@
 
 Type: grilling
 Status: open
-Blocked by: 06, 07, 09, 11, 16, 17, 18, 19, 20, 23
+Blocked by: 06, 07, 09, 11, 13, 16, 17, 18, 19, 20, 22, 23
 Labels: wayfinder:grilling
 Map: ../map.md
 
@@ -61,3 +61,5 @@ Every spec later adds its rows. Seed `ledger.md` with the accessibility issues f
 Each row records whether it was measured or read, and whether a minimal reproduction exists. Record ADRs for cross-cutting calls. Where Aria or CDK is available but not used, the row says why (map, Standing rulings, item 37).
 
 This is the architecture ticket of the map, so it runs on `fable-high`, as the map's Models note allows for cross-cutting decisions.
+
+Note, 2026-10-01 (audit 0002, L8): add these findings of ticket 17 to the ledger seeds as well: the `center` layout overflows by 2 px at 320 px (WCAG 1.4.10); five items need a manual contrast check; the accordion header is not a button inside a heading; the `buttons` group has no toolbar single Tab stop; and the spinner spins forever (WCAG 2.2.2, open).

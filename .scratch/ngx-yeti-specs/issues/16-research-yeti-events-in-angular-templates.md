@@ -50,3 +50,5 @@ Resolved 2026-10-01 by Claude Opus 5.5. Findings: [research/yeti-events-in-angul
 - No option gets event replay: replay only covers a fixed list of native events. Measured: the server HTML held `jsaction="click:;"` only, and a Yeti event dispatched before bootstrap reached no Angular listener.
 - Prior art: `HammerGesturesPlugin` (opt-in from 9.0.0, deprecated in 20.0.0 by #60257, removed in 22.0.0-next.5 by `f99e7ed20f`; no reason given beyond "use your own implementation"), `@taiga-ui/event-plugins` 5.1.0 (formerly `@tinkoff/ng-event-plugins`), MDC issue #4221 (colon names, which the reporter worked around by re-emitting under kebab names), and five plugin articles. No package maps colon-named library events.
 - Not measured: real Yeti modules (a stand-in copied from `carousel.js` was used), shadow DOM, incremental hydration, the dot alias, and Zone.js.
+
+Note, 2026-10-01 (audit 0002, L5, L6, L14): the probe ran in Chromium (Edge) only, with Playwright 1.57. The five articles are cited from search-tool summaries, not fetched in full. The dot alias `(yeti.close)` was not measured.
