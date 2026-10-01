@@ -1,7 +1,7 @@
 # 196. Research: extending Foundation 6.9's styles with runtime custom properties
 
 Type: research
-Status: claimed
+Status: resolved
 Blocked by: 191
 Labels: wayfinder:research
 Map: ../map.md
@@ -26,3 +26,15 @@ Resolve with a `/research` subagent, compiling with Dart Sass 1.104.1 under `D:/
 4. What it costs against ADR 0012 and P18 (never re-implement Foundation), the Out of scope line, and the Variant declaration tooling (ADR 0040).
 
 Write `research/runtime-custom-properties.md`, and append an `## Answer`. Decide nothing.
+
+## Answer
+
+Resolved 2026-10-01 (Opus 5.5). Findings: [research/runtime-custom-properties.md](../research/runtime-custom-properties.md). Measured with Dart Sass 1.104.1 against Foundation 6.9.0 under `D:/tmp/nfs-research-196`; the Out of scope line and the user's clarification on 191 are recorded as inputs, not reopened. Nothing is decided.
+
+- **Share that survives.** Of the 354 settings the 35 first-milestone export mixins read, 237 (67%) can become `var(--nfs-<setting>)` and still reproduce Foundation's output, at the default and at one or two further values; 74 (21%) fail to compile and 43 (12%) give a wrong value. 144 of the 180 list and map elements pass as per-element properties. Compiled together, they leave 357 of 1,714 declarations (21%) reading a property.
+- **What fails.** Every palette colour, `$black`, `$white`, `$global-font-size`, the breakpoints, and the arithmetic inputs: Foundation feeds them to `scale-color`, `color-pick-contrast`, `smart-scale`, `rem-calc` and `strip-unit`, arithmetic, comparisons, and selector interpolation, 93 of 104 failures inside its mixin code. Booleans, `null` defaults, keywords, `nth()` lookups, and `has-value()` give wrong values.
+- **Selectors and media queries stay compile-time.** Of 191's 1,091 setting-dependent declarations, 102 follow properties fully, 81 for their value only, 336 depend on a setting only through selector, media query, or presence (`var()` is valid only in property values), and 572 depend on a setting that cannot be a property.
+- **CSS in the target.** `calc()`, `min()`/`max()`, `color-mix()`, and trigonometric functions are Baseline widely available on 2026-05-07; relative colour, `contrast-color()`, `light-dark()`, `@property`, `if()`, and container style queries are not. Measured in Chromium, `color-mix()` reproduces `mix()` and `rgba()` exactly and `scale-color` in 12 of 17 Foundation cases (off by up to 13.3 of 255 otherwise); `color-pick-contrast` has no replacement.
+- **Lazy family styles.** One library-compiled sheet for the 35 mixins compiles, is 12% larger (80,035 bytes) plus 253 `:root` defaults (9,271 bytes), computes the same as Foundation in Chromium, and eight properties changed at runtime matched Foundation compiled with the same setting. A directive could load it with no consumer build, but a consumer who changes a failing setting still needs the consumer's compile.
+- **Cost against the records.** The library would compile Foundation and ship its CSS (ADR 0012), 253 public properties are the runtime theming API P18, the Out of scope line, and building-blocks rule out, extending past the passing set means rewriting Foundation's mixin math (P18), and `--nfs-<setting>` is already the Variant properties' namespace (14 name collisions; ADR 0040's generator would see Foundation's default names only).
+- **Yeti.** Yeti's 297 runtime tokens derive values with `pow()`, `oklch()`, `light-dark()`, and relative colour, outside the map's target; laid over Foundation 6.9, the same model reaches the values Foundation prints directly but not the ones it computes, the palette included.
