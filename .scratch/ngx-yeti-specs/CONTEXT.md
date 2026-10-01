@@ -145,10 +145,10 @@ Yeti's `layers.css`, every file under `tokens/` and `base/`, and `layouts/attrib
 _Avoid_: base styles, core CSS, global styles (bare), reset
 _Origin_: Yeti (`src/guides/install.md`, "Four groups always stay"); this map (Notes, The always-loaded group)
 
-**Part file**:
-The loading unit: one item's own stylesheet among Yeti's 49 (`components/card/card.css`), loaded when the item's first instance renders and unloaded after its last. The "part" in it is Yeti's install-guide sense, a whole item; a Part has no file of its own. The term follows [ticket 13](issues/13-decide-style-loading.md), which owns the mechanism.
-_Avoid_: family styles, component styles, loading unit (as a name), chunk, Export mixin, part (bare)
-_Origin_: this map (Notes, Lazy styles; tickets 04, 07, 23); Yeti (`src/guides/install.md`: "each layout, recipe, component and utility is one file")
+**Item file**:
+The loading unit: one item's own stylesheet among Yeti's 49, `yeti-css/css/<kind>/<name>/<name>.css` (`components/card/card.css`). It is loaded as a counted `<link>` when the item's first instance renders and removed after its last ([ADR 0060](adr/0060-item-styles-are-counted-links-to-the-consumers-yeti-build.md)). The name follows [ticket 13](issues/13-decide-style-loading.md), which owns the mechanism. It replaces this glossary's first name, "part file", because a Part is an element below an item's root and has no file of its own.
+_Avoid_: part file, family styles, component styles, loading unit (as a name), chunk, Export mixin
+_Origin_: this map (Notes, Lazy styles; tickets 04, 07, 13, 23); Yeti (`src/guides/install.md`: "each layout, recipe, component and utility is one file")
 
 **Cascade layer**:
 A CSS `@layer`, always written in full: Yeti's own layers, and the package's single `ngx-yeti` layer after them for the accessibility rules it adds.
