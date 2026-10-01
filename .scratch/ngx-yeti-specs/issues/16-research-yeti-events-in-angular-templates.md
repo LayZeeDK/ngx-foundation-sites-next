@@ -1,7 +1,7 @@
 # 16. Research: binding Yeti's `yeti:*` events in Angular templates
 
 Type: research
-Status: claimed
+Status: resolved
 Blocked by: 03
 Labels: wayfinder:research
 Map: ../map.md
@@ -38,3 +38,15 @@ For each option, record:
 - what breaks when Yeti adds an event.
 
 Write `research/yeti-events-in-angular-templates.md`, and append an `## Answer`. Decide nothing.
+
+## Answer
+
+Resolved 2026-10-01 by Claude Opus 5.5. Findings: [research/yeti-events-in-angular-templates.md](../research/yeti-events-in-angular-templates.md). Decides nothing.
+
+- `(yeti:close)` is a compile error (`Unexpected global target 'yeti'`), measured in an Angular 22.2 build, so an event manager plugin never sees the name. Code can still listen with `Renderer2.listen` or `addEventListener` (read in the source).
+- Event manager plugin: works when the template uses a colon-free alias such as `(yeti-close)` or `(yeti.close)` that the plugin maps to `yeti:close`. Measured working zoneless and under SSR. A prefix mapping forwards events Yeti adds later with no code change; `$event.detail` is typed only through a `HTMLElementEventMap` entry for the alias.
+- Re-dispatcher (`yeti:*` -> `yeti-*` on `document`, capture phase): measured working. It keeps `detail` (same object), `bubbles`, and `composed` only because it copies them, and the copy runs before the original finishes. It costs one extra event per Yeti event on every page, and the fixed name list misses events Yeti adds later.
+- Directive with `output()` per Yeti element: measured working. Typed without global augmentation, costs nothing where unused, and needs a new output for each event Yeti adds.
+- No option gets event replay: replay only covers a fixed list of native events. Measured: the server HTML held `jsaction="click:;"` only, and a Yeti event dispatched before bootstrap reached no Angular listener.
+- Prior art: `HammerGesturesPlugin` (opt-in from 9.0.0, deprecated in 20.0.0 by #60257, removed in 22.0.0-next.5 by `f99e7ed20f`; no reason given beyond "use your own implementation"), `@taiga-ui/event-plugins` 5.1.0 (formerly `@tinkoff/ng-event-plugins`), MDC issue #4221 (colon names, which the reporter worked around by re-emitting under kebab names), and five plugin articles. No package maps colon-named library events.
+- Not measured: real Yeti modules (a stand-in copied from `carousel.js` was used), shadow DOM, incremental hydration, the dot alias, and Zone.js.
