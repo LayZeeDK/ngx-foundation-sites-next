@@ -1,7 +1,7 @@
 # 24. Prototype: the package beside Tailwind v4 in one Angular application
 
 Type: prototype
-Status: open
+Status: claimed
 Blocked by: 04, 23
 Labels: wayfinder:prototype
 Map: ../map.md
