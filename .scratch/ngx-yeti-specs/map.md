@@ -26,7 +26,7 @@ The user asked, verbatim (the user's own message to the orchestrator, 2026-10-01
 
 ### Target platform
 
-Angular 22.2 (`@angular/core`, `forms`, `cdk`, `aria`), Nx 23.2, Storybook 10.6 with `@storybook/angular-vite`, Vitest 4.1.x, TypeScript 6.0.x, as in the old map's Target platform note. Yeti at `develop` (`f52d1e8b9`, 2026-09-25, `7.0.0-alpha.0` in `package.json` while the README says `7.0.0-beta`), until a version decision pins it. The browser target is open: [Decide: the browser target](issues/06-decide-browser-target.md).
+Angular 22.2 (`@angular/core`, `forms`, `cdk`, `aria`), Nx 23.2, Storybook 10.6 with `@storybook/angular-vite`, Vitest 4.1.x, TypeScript 6.0.x, as in the old map's Target platform note. Yeti at `develop` (`f52d1e8b9`, 2026-09-25, `7.0.0-alpha.0` in `package.json` while the README says `7.0.0-beta`), until a version decision pins it. The browser target is Yeti's Baseline 2025: Chrome and Edge 141, Firefox 145, and Safari and Safari iOS 26.2 ([ADR 0002](adr/0002-browser-target-baseline-2025.md)).
 
 ### AFK override (user ruling, 2026-10-01)
 
@@ -102,6 +102,7 @@ Subagents edit only their own ticket and the output files it names. Only the orc
 - [Prototype: building, consuming, and theming Yeti from a pinned commit with Nx](issues/22-prototype-building-and-consuming-yeti-with-nx.md) -- a small local `createNodes` plugin running Yeti's `bin/build.js` through `nx:run-commands` caches `dist/` on Nx 23.2.1, with no target v24 removes; theming is tokens on `:root`.
 - [Research: Yeti's cascade layers and stylesheet order, for lazy loading](issues/23-research-yeti-layers-and-import-order.md) -- `layers.css` fixes Yeti's layer order once, and every insertion method matched full Yeti in three engines through unload and reload, apart from one order-dependent tie and stale computed styles on 2 to 7 pages in Chromium and WebKit (engine invalidation, inferred).
 - [Prototype: the package beside Tailwind v4 in one Angular application](issues/24-prototype-ngx-yeti-with-tailwind-v4.md) -- measured in three engines: with Tailwind first, Yeti beats every utility; with Yeti first, Tailwind's preflight beats Yeti. One shared order, `@layer theme, base, yeti, components, utilities;`, lets utilities win over Yeti and Yeti over preflight, or the preflight can be left out. Either needs `@source not inline('container');`, because Tailwind otherwise generates `.container` over Yeti's container. It is set in the consumer's global stylesheet, which component styles cannot do. Lazy loading and unloading behaved in every order.
+- [Decide: the browser target](issues/06-decide-browser-target.md) -- the user chose Yeti's Baseline 2025 (Chrome and Edge 141, Firefox 145, Safari 26.2) over the lowest common set, which differed only in Chrome, Edge, and Firefox ([ADR 0002](adr/0002-browser-target-baseline-2025.md)).
 
 ## Not yet specified
 

@@ -1,7 +1,7 @@
 # 06. Decide: the browser target
 
 Type: grilling
-Status: open
+Status: resolved
 Blocked by: 01
 Labels: wayfinder:grilling
 Map: ../map.md
@@ -61,3 +61,12 @@ Recommendation, which the user has not yet ruled on: state Yeti's Baseline 2025 
 2. **It is a stable, named rule.** Yeti's README states Baseline 2025, and its stability guide says browser minimums "track Baseline". A named Baseline year is the vocabulary both projects use. The lowest common set is a number recomputed at every pin move, and it shifts whenever Yeti starts or stops using a feature.
 3. **It gives the package's own code a clear rule.** Spec authors may use any feature in Baseline 2025 without a guard, the rule Yeti follows. Under the lowest common set, every new feature the package uses would need checking against a computed list.
 4. **Guarded features stay as Yeti has them.** Anchor positioning, scroll-driven animations, `field-sizing`, and `interpolate-size` work with Yeti's fallbacks below their support. Each spec states the fallback it relies on.
+
+## Answer
+
+Resolved 2026-10-01 by the user's ruling. Asked to choose between the two options after the orchestrator's analysis above, the user chose "Baseline 2025 (Recommended)": the package targets Yeti's Baseline 2025, which implies Chrome and Edge 141, Firefox 145, and Safari and Safari iOS 26.2. Recorded as [ADR 0002](../adr/0002-browser-target-baseline-2025.md).
+
+- Package code may use any Baseline 2025 feature without a guard; anything newer needs a fallback.
+- Yeti's guarded features keep Yeti's fallbacks, and each spec states the one it relies on.
+- A Yeti pin move that changes Yeti's own target reopens ADR 0002.
+- The old map's rule ("Baseline widely available on that date") is abandoned for this map: it was written for Foundation 6.9's browser target.
