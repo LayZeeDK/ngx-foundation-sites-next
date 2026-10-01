@@ -1,7 +1,7 @@
 # 11. Decide: the spec list
 
 Type: grilling
-Status: open
+Status: claimed
 Blocked by: 02, 03, 07
 Labels: wayfinder:grilling
 Map: ../map.md

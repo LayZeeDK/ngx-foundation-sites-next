@@ -1,7 +1,7 @@
 # 08. Decide: which ADRs carry over
 
 Type: grilling
-Status: open
+Status: claimed
 Blocked by: 06, 07
 Labels: wayfinder:grilling
 Map: ../map.md

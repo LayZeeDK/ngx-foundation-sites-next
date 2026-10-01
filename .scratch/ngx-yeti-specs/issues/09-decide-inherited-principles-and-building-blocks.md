@@ -1,7 +1,7 @@
 # 09. Decide: which architecture principles and building-blocks rules carry over
 
 Type: grilling
-Status: open
+Status: claimed
 Blocked by: 06, 07
 Labels: wayfinder:grilling
 Map: ../map.md
