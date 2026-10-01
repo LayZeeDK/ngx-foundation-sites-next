@@ -1,0 +1,22 @@
+// LIBRARY FILE, shipped as source. The consumer's FIRST `styles` entry (injected).
+// The layer order first, then Foundation's global styles and forms in the first two layers.
+@import 'settings';
+@import 'layer';
+@if $nfs-layers {
+  @layer nfs.global, nfs.forms, nfs.button, nfs.callout, nfs.menu, nfs.dropdown-menu;
+}
+@import 'foundation-sites/scss/foundation';
+@include nfs-layer(global) {
+  @include foundation-global-styles;
+}
+@include nfs-layer(forms) {
+  @include foundation-forms;
+}
+
+// PROTOTYPE 197, proposal D: the paint gate. A family host whose stylesheet has not applied yet
+// carries `data-nfs-pending`; this global (always present) rule hides it until the sheet loads.
+@include nfs-layer(global) {
+  [data-nfs-pending] {
+    visibility: hidden;
+  }
+}

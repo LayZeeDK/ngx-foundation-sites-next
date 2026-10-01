@@ -1,0 +1,396 @@
+{
+  "engine": "chromium",
+  "settings": {
+    "production": {
+      "pass": true,
+      "got": {
+        "calloutPadding": "44px",
+        "buttonBg": "rgb(163, 0, 30)",
+        "buttonRadius": "8px",
+        "buttonPaddingLeft": "31.68px",
+        "menuLinkPaddingTop": "19.2px",
+        "submenuBg": "rgb(253, 243, 208)"
+      }
+    },
+    "subpath": {
+      "pass": true,
+      "got": {
+        "calloutPadding": "44px",
+        "buttonBg": "rgb(163, 0, 30)",
+        "buttonRadius": "8px",
+        "buttonPaddingLeft": "31.68px",
+        "menuLinkPaddingTop": "19.2px",
+        "submenuBg": "rgb(253, 243, 208)"
+      }
+    },
+    "cdn": {
+      "pass": true,
+      "got": {
+        "calloutPadding": "44px",
+        "buttonBg": "rgb(163, 0, 30)",
+        "buttonRadius": "8px",
+        "buttonPaddingLeft": "31.68px",
+        "menuLinkPaddingTop": "19.2px",
+        "submenuBg": "rgb(253, 243, 208)"
+      }
+    },
+    "i18nDa": {
+      "pass": true,
+      "got": {
+        "calloutPadding": "44px",
+        "buttonBg": "rgb(163, 0, 30)",
+        "buttonRadius": "8px",
+        "buttonPaddingLeft": "31.68px",
+        "menuLinkPaddingTop": "19.2px",
+        "submenuBg": "rgb(253, 243, 208)"
+      }
+    },
+    "i18nEn": {
+      "pass": true,
+      "got": {
+        "calloutPadding": "44px",
+        "buttonBg": "rgb(163, 0, 30)",
+        "buttonRadius": "8px",
+        "buttonPaddingLeft": "31.68px",
+        "menuLinkPaddingTop": "19.2px",
+        "submenuBg": "rgb(253, 243, 208)"
+      }
+    },
+    "prefix production": {
+      "pass": true,
+      "got": {
+        "calloutPadding": "44px",
+        "buttonBg": "rgb(163, 0, 30)",
+        "buttonRadius": "8px",
+        "buttonPaddingLeft": "31.68px",
+        "menuLinkPaddingTop": "19.2px",
+        "submenuBg": "rgb(253, 243, 208)"
+      }
+    },
+    "prefix subpath": {
+      "pass": true,
+      "got": {
+        "calloutPadding": "44px",
+        "buttonBg": "rgb(163, 0, 30)",
+        "buttonRadius": "8px",
+        "buttonPaddingLeft": "31.68px",
+        "menuLinkPaddingTop": "19.2px",
+        "submenuBg": "rgb(253, 243, 208)"
+      }
+    },
+    "prefix cdn": {
+      "pass": true,
+      "got": {
+        "calloutPadding": "44px",
+        "buttonBg": "rgb(163, 0, 30)",
+        "buttonRadius": "8px",
+        "buttonPaddingLeft": "31.68px",
+        "menuLinkPaddingTop": "19.2px",
+        "submenuBg": "rgb(253, 243, 208)"
+      }
+    },
+    "prefix i18nDa": {
+      "pass": true,
+      "got": {
+        "calloutPadding": "44px",
+        "buttonBg": "rgb(163, 0, 30)",
+        "buttonRadius": "8px",
+        "buttonPaddingLeft": "31.68px",
+        "menuLinkPaddingTop": "19.2px",
+        "submenuBg": "rgb(253, 243, 208)"
+      }
+    },
+    "prefix i18nEn": {
+      "pass": true,
+      "got": {
+        "calloutPadding": "44px",
+        "buttonBg": "rgb(163, 0, 30)",
+        "buttonRadius": "8px",
+        "buttonPaddingLeft": "31.68px",
+        "menuLinkPaddingTop": "19.2px",
+        "submenuBg": "rgb(253, 243, 208)"
+      }
+    }
+  },
+  "urls": {
+    "production": {
+      "serverRenderedPass": true,
+      "serverHrefs": "http://localhost:4793/media/*.css",
+      "clientInsertedPadding": "44px",
+      "clientHref": "http://localhost:4793/media/nfs-callout-SKWDWX34.css",
+      "failed": [],
+      "ssrCssResponses": [
+        "200 text/css; charset=UTF-8 http://localhost:4793/media/nfs-button-SAPM3SLH.css",
+        "200 text/css; charset=UTF-8 http://localhost:4793/media/nfs-callout-SKWDWX34.css",
+        "200 text/css; charset=UTF-8 http://localhost:4793/media/nfs-dropdown-menu-VQNJXHLD.css",
+        "200 text/css; charset=UTF-8 http://localhost:4793/media/nfs-menu-6YFHJQ47.css"
+      ]
+    },
+    "subpath": {
+      "serverRenderedPass": true,
+      "serverHrefs": "http://localhost:4794/sub/media/*.css",
+      "clientInsertedPadding": "44px",
+      "clientHref": "http://localhost:4794/sub/media/nfs-callout-SKWDWX34.css",
+      "failed": [],
+      "ssrCssResponses": [
+        "200 text/css; charset=UTF-8 http://localhost:4794/sub/media/nfs-button-SAPM3SLH.css",
+        "200 text/css; charset=UTF-8 http://localhost:4794/sub/media/nfs-callout-SKWDWX34.css",
+        "200 text/css; charset=UTF-8 http://localhost:4794/sub/media/nfs-dropdown-menu-VQNJXHLD.css",
+        "200 text/css; charset=UTF-8 http://localhost:4794/sub/media/nfs-menu-6YFHJQ47.css"
+      ]
+    },
+    "cdn": {
+      "serverRenderedPass": true,
+      "serverHrefs": "http://localhost:4795/media/*.css",
+      "clientInsertedPadding": "44px",
+      "clientHref": "http://localhost:4795/media/nfs-callout-SKWDWX34.css",
+      "failed": [],
+      "ssrCssResponses": [
+        "200 text/css; charset=UTF-8 http://localhost:4795/media/nfs-button-SAPM3SLH.css",
+        "200 text/css; charset=UTF-8 http://localhost:4795/media/nfs-callout-SKWDWX34.css",
+        "200 text/css; charset=UTF-8 http://localhost:4795/media/nfs-dropdown-menu-VQNJXHLD.css",
+        "200 text/css; charset=UTF-8 http://localhost:4795/media/nfs-menu-6YFHJQ47.css"
+      ]
+    },
+    "i18nDa": {
+      "serverRenderedPass": true,
+      "serverHrefs": "http://localhost:4796/da/media/*.css",
+      "clientInsertedPadding": "44px",
+      "clientHref": "http://localhost:4796/da/media/nfs-callout-SKWDWX34.css",
+      "failed": [],
+      "ssrCssResponses": [
+        "200 text/css; charset=UTF-8 http://localhost:4796/da/media/nfs-button-SAPM3SLH.css",
+        "200 text/css; charset=UTF-8 http://localhost:4796/da/media/nfs-callout-SKWDWX34.css",
+        "200 text/css; charset=UTF-8 http://localhost:4796/da/media/nfs-dropdown-menu-VQNJXHLD.css",
+        "200 text/css; charset=UTF-8 http://localhost:4796/da/media/nfs-menu-6YFHJQ47.css"
+      ]
+    },
+    "i18nEn": {
+      "serverRenderedPass": true,
+      "serverHrefs": "http://localhost:4796/en-US/media/*.css",
+      "clientInsertedPadding": "44px",
+      "clientHref": "http://localhost:4796/en-US/media/nfs-callout-SKWDWX34.css",
+      "failed": [],
+      "ssrCssResponses": [
+        "200 text/css; charset=UTF-8 http://localhost:4796/en-US/media/nfs-button-SAPM3SLH.css",
+        "200 text/css; charset=UTF-8 http://localhost:4796/en-US/media/nfs-callout-SKWDWX34.css",
+        "200 text/css; charset=UTF-8 http://localhost:4796/en-US/media/nfs-dropdown-menu-VQNJXHLD.css",
+        "200 text/css; charset=UTF-8 http://localhost:4796/en-US/media/nfs-menu-6YFHJQ47.css"
+      ]
+    },
+    "prefix production": {
+      "serverRenderedPass": true,
+      "serverHrefs": "http://localhost:4801/media/*.css",
+      "clientInsertedPadding": "44px",
+      "clientHref": "http://localhost:4801/media/nfs-callout-SKWDWX34.css",
+      "failed": [],
+      "ssrCssResponses": [
+        "200 text/css; charset=UTF-8 http://localhost:4801/media/nfs-button-SAPM3SLH.css",
+        "200 text/css; charset=UTF-8 http://localhost:4801/media/nfs-callout-SKWDWX34.css",
+        "200 text/css; charset=UTF-8 http://localhost:4801/media/nfs-dropdown-menu-VQNJXHLD.css",
+        "200 text/css; charset=UTF-8 http://localhost:4801/media/nfs-menu-6YFHJQ47.css"
+      ]
+    },
+    "prefix subpath": {
+      "serverRenderedPass": true,
+      "serverHrefs": "http://localhost:4802/sub/media/*.css",
+      "clientInsertedPadding": "44px",
+      "clientHref": "http://localhost:4802/sub/media/nfs-callout-SKWDWX34.css",
+      "failed": [],
+      "ssrCssResponses": [
+        "200 text/css; charset=UTF-8 http://localhost:4802/sub/media/nfs-button-SAPM3SLH.css",
+        "200 text/css; charset=UTF-8 http://localhost:4802/sub/media/nfs-callout-SKWDWX34.css",
+        "200 text/css; charset=UTF-8 http://localhost:4802/sub/media/nfs-dropdown-menu-VQNJXHLD.css",
+        "200 text/css; charset=UTF-8 http://localhost:4802/sub/media/nfs-menu-6YFHJQ47.css"
+      ]
+    },
+    "prefix cdn": {
+      "serverRenderedPass": true,
+      "serverHrefs": "http://127.0.0.1:4803/cdn/media/*.css",
+      "clientInsertedPadding": "44px",
+      "clientHref": "http://127.0.0.1:4803/cdn/media/nfs-callout-SKWDWX34.css",
+      "failed": [],
+      "ssrCssResponses": [
+        "200 text/css; charset=UTF-8 http://127.0.0.1:4803/cdn/media/nfs-button-SAPM3SLH.css",
+        "200 text/css; charset=UTF-8 http://127.0.0.1:4803/cdn/media/nfs-callout-SKWDWX34.css",
+        "200 text/css; charset=UTF-8 http://127.0.0.1:4803/cdn/media/nfs-dropdown-menu-VQNJXHLD.css",
+        "200 text/css; charset=UTF-8 http://127.0.0.1:4803/cdn/media/nfs-menu-6YFHJQ47.css"
+      ]
+    },
+    "prefix i18nDa": {
+      "serverRenderedPass": true,
+      "serverHrefs": "http://localhost:4804/da/media/*.css",
+      "clientInsertedPadding": "44px",
+      "clientHref": "http://localhost:4804/da/media/nfs-callout-SKWDWX34.css",
+      "failed": [],
+      "ssrCssResponses": [
+        "200 text/css; charset=UTF-8 http://localhost:4804/da/media/nfs-button-SAPM3SLH.css",
+        "200 text/css; charset=UTF-8 http://localhost:4804/da/media/nfs-callout-SKWDWX34.css",
+        "200 text/css; charset=UTF-8 http://localhost:4804/da/media/nfs-dropdown-menu-VQNJXHLD.css",
+        "200 text/css; charset=UTF-8 http://localhost:4804/da/media/nfs-menu-6YFHJQ47.css"
+      ]
+    },
+    "prefix i18nEn": {
+      "serverRenderedPass": true,
+      "serverHrefs": "http://localhost:4804/en-US/media/*.css",
+      "clientInsertedPadding": "44px",
+      "clientHref": "http://localhost:4804/en-US/media/nfs-callout-SKWDWX34.css",
+      "failed": [],
+      "ssrCssResponses": [
+        "200 text/css; charset=UTF-8 http://localhost:4804/en-US/media/nfs-button-SAPM3SLH.css",
+        "200 text/css; charset=UTF-8 http://localhost:4804/en-US/media/nfs-callout-SKWDWX34.css",
+        "200 text/css; charset=UTF-8 http://localhost:4804/en-US/media/nfs-dropdown-menu-VQNJXHLD.css",
+        "200 text/css; charset=UTF-8 http://localhost:4804/en-US/media/nfs-menu-6YFHJQ47.css"
+      ]
+    }
+  },
+  "cacheBust": {
+    "before": {
+      "padding": "44px",
+      "href": "./media/nfs-callout-SKWDWX34.css"
+    },
+    "afterSwap": {
+      "padding": "56px",
+      "href": "./media/nfs-callout-A74BGC2W.css"
+    },
+    "pass": true
+  },
+  "lifecycle": {
+    "file": {
+      "pass": true,
+      "counts": "0 1 1 1 0 1 0",
+      "paddings": " 44px 44px 44px  44px ",
+      "requests": "nfs-callout-SKWDWX34.css",
+      "serverHtmlHasFamilyElement": false
+    },
+    "link": {
+      "pass": true,
+      "counts": "0 1 1 1 0 1 0",
+      "paddings": " 44px 44px 44px  44px ",
+      "requests": "nfs-callout.css",
+      "serverHtmlHasFamilyElement": false
+    }
+  },
+  "ssr": {
+    "file": {
+      "serverElements": "link:button link:menu link:dropdown-menu link:callout",
+      "inlinedCriticalHasFamilyRules": false,
+      "noJs": {
+        "settingsPass": true,
+        "deferred": "44px",
+        "submenu": "none"
+      },
+      "afterHydration": {
+        "button": 1,
+        "callout": 1,
+        "menu": 1,
+        "dropdown-menu": 1,
+        "all": 0,
+        "order": "button > menu > dropdown-menu > callout"
+      },
+      "styleMutationsAfterDcl": [],
+      "unstyledFrames": 0,
+      "framesSampled": 61,
+      "m7": {
+        "linksWhileDehydratedRemains": 1,
+        "dehydratedPadding": "44px",
+        "afterHydratingDeferred": 1,
+        "mutationsAfterDcl": 0,
+        "afterLastDestroyed": 0,
+        "probeAfterUnload": "0px"
+      }
+    },
+    "link": {
+      "serverElements": "link:button link:menu link:dropdown-menu link:callout",
+      "inlinedCriticalHasFamilyRules": false,
+      "noJs": {
+        "settingsPass": true,
+        "deferred": "44px",
+        "submenu": "none"
+      },
+      "afterHydration": {
+        "button": 1,
+        "callout": 1,
+        "menu": 1,
+        "dropdown-menu": 1,
+        "all": 0,
+        "order": "button > menu > dropdown-menu > callout"
+      },
+      "styleMutationsAfterDcl": [],
+      "unstyledFrames": 0,
+      "framesSampled": 60,
+      "m7": {
+        "linksWhileDehydratedRemains": 1,
+        "dehydratedPadding": "44px",
+        "afterHydratingDeferred": 1,
+        "mutationsAfterDcl": 0,
+        "afterLastDestroyed": 0,
+        "probeAfterUnload": "0px"
+      }
+    }
+  },
+  "hydrateDefer": {
+    "file": {
+      "calloutLinksBeforeHydration": 1,
+      "calloutLinksAfter": 1,
+      "framesSampled": 163,
+      "unstyledFrames": 0,
+      "styleMutationsAfterDcl": 0,
+      "viewportBlockHydrated": true
+    },
+    "link": {
+      "calloutLinksBeforeHydration": 1,
+      "calloutLinksAfter": 1,
+      "framesSampled": 166,
+      "unstyledFrames": 0,
+      "styleMutationsAfterDcl": 0,
+      "viewportBlockHydrated": true
+    }
+  },
+  "leave": {
+    "file": {
+      "host/L1 callout inside leaving element": {
+        "duringLeave": {
+          "wrapperInDom": true,
+          "calloutPadding": "44px",
+          "links": 1
+        },
+        "unstyledFramesWhileLeaving": 0,
+        "linkRemovedMsAfterHostLeft": 0,
+        "afterLeave": 0,
+        "afterRecheck": "44px/0 44px/0"
+      },
+      "host/L2 unrelated leave running": {
+        "afterLeave": 0,
+        "afterRecheck": "44px/0 44px/0"
+      },
+      "host/L3 (animate.leave) listener on the page": {
+        "whileListenerPresent": 0,
+        "afterListenerLeft": 0,
+        "afterRecheck": "44px/0 44px/0"
+      }
+    },
+    "link": {
+      "host/L1 callout inside leaving element": {
+        "duringLeave": {
+          "wrapperInDom": true,
+          "calloutPadding": "44px",
+          "links": 1
+        },
+        "unstyledFramesWhileLeaving": 0,
+        "linkRemovedMsAfterHostLeft": 0,
+        "afterLeave": 0,
+        "afterRecheck": "44px/0 44px/0"
+      },
+      "host/L2 unrelated leave running": {
+        "afterLeave": 0,
+        "afterRecheck": "44px/0 44px/0"
+      },
+      "host/L3 (animate.leave) listener on the page": {
+        "whileListenerPresent": 0,
+        "afterListenerLeft": 0,
+        "afterRecheck": "44px/0 44px/0"
+      }
+    }
+  }
+}

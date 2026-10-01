@@ -1,0 +1,840 @@
+{
+  "engine": "webkit",
+  "runs": 5,
+  "clientDefer": {
+    "link": [
+      {
+        "framesWithElement": 73,
+        "visibleUnstyledFrames": 19,
+        "invisibleFrames": 0,
+        "msToFirstStyledVisibleFrame": 313,
+        "afterTop": "40 -> 40 -> 130",
+        "afterMovesWhileElementPresent": 1,
+        "layoutShift": {
+          "afterClickTotal": 0,
+          "countedTowardsCls": 0,
+          "entries": ""
+        },
+        "focus": {
+          "t": 1305,
+          "atInsert": "c-inner",
+          "pending": false,
+          "activeAfterLoad": "c-inner"
+        }
+      },
+      {
+        "framesWithElement": 79,
+        "visibleUnstyledFrames": 19,
+        "invisibleFrames": 0,
+        "msToFirstStyledVisibleFrame": 311,
+        "afterTop": "40 -> 40 -> 130",
+        "afterMovesWhileElementPresent": 1,
+        "layoutShift": {
+          "afterClickTotal": 0,
+          "countedTowardsCls": 0,
+          "entries": ""
+        },
+        "focus": {
+          "t": 1339,
+          "atInsert": "c-inner",
+          "pending": false,
+          "activeAfterLoad": "c-inner"
+        }
+      },
+      {
+        "framesWithElement": 38,
+        "visibleUnstyledFrames": 12,
+        "invisibleFrames": 0,
+        "msToFirstStyledVisibleFrame": 423,
+        "afterTop": "40 -> 40 -> 130",
+        "afterMovesWhileElementPresent": 1,
+        "layoutShift": {
+          "afterClickTotal": 0,
+          "countedTowardsCls": 0,
+          "entries": ""
+        },
+        "focus": {
+          "t": 2649,
+          "atInsert": "c-inner",
+          "pending": false,
+          "activeAfterLoad": "c-inner"
+        }
+      },
+      {
+        "framesWithElement": 40,
+        "visibleUnstyledFrames": 8,
+        "invisibleFrames": 0,
+        "msToFirstStyledVisibleFrame": 369,
+        "afterTop": "40 -> 40 -> 130",
+        "afterMovesWhileElementPresent": 1,
+        "layoutShift": {
+          "afterClickTotal": 0,
+          "countedTowardsCls": 0,
+          "entries": ""
+        },
+        "focus": {
+          "t": 2231,
+          "atInsert": "c-inner",
+          "pending": false,
+          "activeAfterLoad": "c-inner"
+        }
+      },
+      {
+        "framesWithElement": 31,
+        "visibleUnstyledFrames": 8,
+        "invisibleFrames": 0,
+        "msToFirstStyledVisibleFrame": 357,
+        "afterTop": "40 -> 40 -> 130",
+        "afterMovesWhileElementPresent": 1,
+        "layoutShift": {
+          "afterClickTotal": 0,
+          "countedTowardsCls": 0,
+          "entries": ""
+        },
+        "focus": {
+          "t": 2362,
+          "atInsert": "c-inner",
+          "pending": false,
+          "activeAfterLoad": "c-inner"
+        }
+      }
+    ],
+    "link + gate": [
+      {
+        "framesWithElement": 61,
+        "visibleUnstyledFrames": 0,
+        "invisibleFrames": 15,
+        "msToFirstStyledVisibleFrame": 349,
+        "afterTop": "40 -> 40 -> 130",
+        "afterMovesWhileElementPresent": 1,
+        "layoutShift": {
+          "afterClickTotal": 0,
+          "countedTowardsCls": 0,
+          "entries": ""
+        },
+        "focus": {
+          "t": 1785,
+          "atInsert": "BODY",
+          "pending": true,
+          "activeAfterLoad": "BODY"
+        }
+      },
+      {
+        "framesWithElement": 53,
+        "visibleUnstyledFrames": 0,
+        "invisibleFrames": 14,
+        "msToFirstStyledVisibleFrame": 316,
+        "afterTop": "40 -> 40 -> 130",
+        "afterMovesWhileElementPresent": 1,
+        "layoutShift": {
+          "afterClickTotal": 0,
+          "countedTowardsCls": 0,
+          "entries": ""
+        },
+        "focus": {
+          "t": 1903,
+          "atInsert": "BODY",
+          "pending": true,
+          "activeAfterLoad": "BODY"
+        }
+      },
+      {
+        "framesWithElement": 43,
+        "visibleUnstyledFrames": 0,
+        "invisibleFrames": 7,
+        "msToFirstStyledVisibleFrame": 356,
+        "afterTop": "40 -> 40 -> 130",
+        "afterMovesWhileElementPresent": 1,
+        "layoutShift": {
+          "afterClickTotal": 0,
+          "countedTowardsCls": 0,
+          "entries": ""
+        },
+        "focus": {
+          "t": 2470,
+          "atInsert": "BODY",
+          "pending": true,
+          "activeAfterLoad": "BODY"
+        }
+      },
+      {
+        "framesWithElement": 33,
+        "visibleUnstyledFrames": 0,
+        "invisibleFrames": 9,
+        "msToFirstStyledVisibleFrame": 393,
+        "afterTop": "40 -> 40 -> 130",
+        "afterMovesWhileElementPresent": 1,
+        "layoutShift": {
+          "afterClickTotal": 0,
+          "countedTowardsCls": 0,
+          "entries": ""
+        },
+        "focus": {
+          "t": 5133,
+          "atInsert": "BODY",
+          "pending": true,
+          "activeAfterLoad": "BODY"
+        }
+      },
+      {
+        "framesWithElement": 47,
+        "visibleUnstyledFrames": 0,
+        "invisibleFrames": 13,
+        "msToFirstStyledVisibleFrame": 356,
+        "afterTop": "40 -> 40 -> 130",
+        "afterMovesWhileElementPresent": 1,
+        "layoutShift": {
+          "afterClickTotal": 0,
+          "countedTowardsCls": 0,
+          "entries": ""
+        },
+        "focus": {
+          "t": 2248,
+          "atInsert": "BODY",
+          "pending": true,
+          "activeAfterLoad": "BODY"
+        }
+      }
+    ],
+    "file": [
+      {
+        "framesWithElement": 30,
+        "visibleUnstyledFrames": 6,
+        "invisibleFrames": 0,
+        "msToFirstStyledVisibleFrame": 316,
+        "afterTop": "40 -> 40 -> 130",
+        "afterMovesWhileElementPresent": 1,
+        "layoutShift": {
+          "afterClickTotal": 0,
+          "countedTowardsCls": 0,
+          "entries": ""
+        },
+        "focus": {
+          "t": 3570,
+          "atInsert": "c-inner",
+          "pending": false,
+          "activeAfterLoad": "c-inner"
+        }
+      },
+      {
+        "framesWithElement": 54,
+        "visibleUnstyledFrames": 12,
+        "invisibleFrames": 0,
+        "msToFirstStyledVisibleFrame": 314,
+        "afterTop": "40 -> 40 -> 130",
+        "afterMovesWhileElementPresent": 1,
+        "layoutShift": {
+          "afterClickTotal": 0,
+          "countedTowardsCls": 0,
+          "entries": ""
+        },
+        "focus": {
+          "t": 2687,
+          "atInsert": "c-inner",
+          "pending": false,
+          "activeAfterLoad": "c-inner"
+        }
+      },
+      {
+        "framesWithElement": 71,
+        "visibleUnstyledFrames": 16,
+        "invisibleFrames": 0,
+        "msToFirstStyledVisibleFrame": 293,
+        "afterTop": "40 -> 40 -> 130",
+        "afterMovesWhileElementPresent": 1,
+        "layoutShift": {
+          "afterClickTotal": 0,
+          "countedTowardsCls": 0,
+          "entries": ""
+        },
+        "focus": {
+          "t": 1489,
+          "atInsert": "c-inner",
+          "pending": false,
+          "activeAfterLoad": "c-inner"
+        }
+      },
+      {
+        "framesWithElement": 62,
+        "visibleUnstyledFrames": 16,
+        "invisibleFrames": 0,
+        "msToFirstStyledVisibleFrame": 308,
+        "afterTop": "40 -> 40 -> 130",
+        "afterMovesWhileElementPresent": 1,
+        "layoutShift": {
+          "afterClickTotal": 0,
+          "countedTowardsCls": 0,
+          "entries": ""
+        },
+        "focus": {
+          "t": 1806,
+          "atInsert": "c-inner",
+          "pending": false,
+          "activeAfterLoad": "c-inner"
+        }
+      },
+      {
+        "framesWithElement": 71,
+        "visibleUnstyledFrames": 19,
+        "invisibleFrames": 0,
+        "msToFirstStyledVisibleFrame": 339,
+        "afterTop": "40 -> 40 -> 130",
+        "afterMovesWhileElementPresent": 1,
+        "layoutShift": {
+          "afterClickTotal": 0,
+          "countedTowardsCls": 0,
+          "entries": ""
+        },
+        "focus": {
+          "t": 1544,
+          "atInsert": "c-inner",
+          "pending": false,
+          "activeAfterLoad": "c-inner"
+        }
+      }
+    ],
+    "file + gate": [
+      {
+        "framesWithElement": 68,
+        "visibleUnstyledFrames": 0,
+        "invisibleFrames": 20,
+        "msToFirstStyledVisibleFrame": 338,
+        "afterTop": "40 -> 40 -> 130",
+        "afterMovesWhileElementPresent": 1,
+        "layoutShift": {
+          "afterClickTotal": 0,
+          "countedTowardsCls": 0,
+          "entries": ""
+        },
+        "focus": {
+          "t": 1390,
+          "atInsert": "BODY",
+          "pending": true,
+          "activeAfterLoad": "BODY"
+        }
+      },
+      {
+        "framesWithElement": 79,
+        "visibleUnstyledFrames": 0,
+        "invisibleFrames": 19,
+        "msToFirstStyledVisibleFrame": 310,
+        "afterTop": "40 -> 40 -> 130",
+        "afterMovesWhileElementPresent": 1,
+        "layoutShift": {
+          "afterClickTotal": 0,
+          "countedTowardsCls": 0,
+          "entries": ""
+        },
+        "focus": {
+          "t": 1423,
+          "atInsert": "BODY",
+          "pending": true,
+          "activeAfterLoad": "BODY"
+        }
+      },
+      {
+        "framesWithElement": 74,
+        "visibleUnstyledFrames": 0,
+        "invisibleFrames": 19,
+        "msToFirstStyledVisibleFrame": 323,
+        "afterTop": "40 -> 40 -> 130",
+        "afterMovesWhileElementPresent": 1,
+        "layoutShift": {
+          "afterClickTotal": 0,
+          "countedTowardsCls": 0,
+          "entries": ""
+        },
+        "focus": {
+          "t": 1463,
+          "atInsert": "BODY",
+          "pending": true,
+          "activeAfterLoad": "BODY"
+        }
+      },
+      {
+        "framesWithElement": 75,
+        "visibleUnstyledFrames": 0,
+        "invisibleFrames": 20,
+        "msToFirstStyledVisibleFrame": 336,
+        "afterTop": "40 -> 40 -> 130",
+        "afterMovesWhileElementPresent": 1,
+        "layoutShift": {
+          "afterClickTotal": 0,
+          "countedTowardsCls": 0,
+          "entries": ""
+        },
+        "focus": {
+          "t": 1342,
+          "atInsert": "BODY",
+          "pending": true,
+          "activeAfterLoad": "BODY"
+        }
+      },
+      {
+        "framesWithElement": 76,
+        "visibleUnstyledFrames": 0,
+        "invisibleFrames": 19,
+        "msToFirstStyledVisibleFrame": 322,
+        "afterTop": "40 -> 40 -> 130",
+        "afterMovesWhileElementPresent": 1,
+        "layoutShift": {
+          "afterClickTotal": 0,
+          "countedTowardsCls": 0,
+          "entries": ""
+        },
+        "focus": {
+          "t": 1519,
+          "atInsert": "BODY",
+          "pending": true,
+          "activeAfterLoad": "BODY"
+        }
+      }
+    ]
+  },
+  "enter": {
+    "link, c-click": [
+      {
+        "verdict": "skipped",
+        "animationStartMs": null,
+        "styledAfterMs": 312,
+        "animatedFrames": 0,
+        "visibleUnstyledFrames": 19,
+        "invisibleFrames": 0,
+        "styledFramesBeforeAnimation": null,
+        "minOpacity": 1
+      },
+      {
+        "verdict": "skipped",
+        "animationStartMs": null,
+        "styledAfterMs": 344,
+        "animatedFrames": 0,
+        "visibleUnstyledFrames": 11,
+        "invisibleFrames": 0,
+        "styledFramesBeforeAnimation": null,
+        "minOpacity": 1
+      },
+      {
+        "verdict": "skipped",
+        "animationStartMs": null,
+        "styledAfterMs": 327,
+        "animatedFrames": 0,
+        "visibleUnstyledFrames": 6,
+        "invisibleFrames": 0,
+        "styledFramesBeforeAnimation": null,
+        "minOpacity": 1
+      },
+      {
+        "verdict": "skipped",
+        "animationStartMs": null,
+        "styledAfterMs": 386,
+        "animatedFrames": 0,
+        "visibleUnstyledFrames": 16,
+        "invisibleFrames": 0,
+        "styledFramesBeforeAnimation": null,
+        "minOpacity": 1
+      },
+      {
+        "verdict": "skipped",
+        "animationStartMs": null,
+        "styledAfterMs": 394,
+        "animatedFrames": 0,
+        "visibleUnstyledFrames": 18,
+        "invisibleFrames": 0,
+        "styledFramesBeforeAnimation": null,
+        "minOpacity": 1
+      }
+    ],
+    "link, c-defer": [
+      {
+        "verdict": "skipped",
+        "animationStartMs": null,
+        "styledAfterMs": 331,
+        "animatedFrames": 0,
+        "visibleUnstyledFrames": 19,
+        "invisibleFrames": 0,
+        "styledFramesBeforeAnimation": null,
+        "minOpacity": 1
+      },
+      {
+        "verdict": "skipped",
+        "animationStartMs": null,
+        "styledAfterMs": 370,
+        "animatedFrames": 0,
+        "visibleUnstyledFrames": 10,
+        "invisibleFrames": 0,
+        "styledFramesBeforeAnimation": null,
+        "minOpacity": 1
+      },
+      {
+        "verdict": "skipped",
+        "animationStartMs": null,
+        "styledAfterMs": 448,
+        "animatedFrames": 0,
+        "visibleUnstyledFrames": 14,
+        "invisibleFrames": 0,
+        "styledFramesBeforeAnimation": null,
+        "minOpacity": 1
+      },
+      {
+        "verdict": "skipped",
+        "animationStartMs": null,
+        "styledAfterMs": 288,
+        "animatedFrames": 0,
+        "visibleUnstyledFrames": 7,
+        "invisibleFrames": 0,
+        "styledFramesBeforeAnimation": null,
+        "minOpacity": 1
+      },
+      {
+        "verdict": "skipped",
+        "animationStartMs": null,
+        "styledAfterMs": 316,
+        "animatedFrames": 0,
+        "visibleUnstyledFrames": 12,
+        "invisibleFrames": 0,
+        "styledFramesBeforeAnimation": null,
+        "minOpacity": 1
+      }
+    ],
+    "link + gate, c-click": [
+      {
+        "verdict": "plays",
+        "animationStartMs": 357,
+        "styledAfterMs": 357,
+        "animatedFrames": 22,
+        "visibleUnstyledFrames": 0,
+        "invisibleFrames": 16,
+        "styledFramesBeforeAnimation": 0,
+        "minOpacity": 0.1126
+      },
+      {
+        "verdict": "plays",
+        "animationStartMs": 383,
+        "styledAfterMs": 383,
+        "animatedFrames": 10,
+        "visibleUnstyledFrames": 0,
+        "invisibleFrames": 12,
+        "styledFramesBeforeAnimation": 0,
+        "minOpacity": 0.1108
+      },
+      {
+        "verdict": "plays",
+        "animationStartMs": 317,
+        "styledAfterMs": 317,
+        "animatedFrames": 9,
+        "visibleUnstyledFrames": 0,
+        "invisibleFrames": 11,
+        "styledFramesBeforeAnimation": 0,
+        "minOpacity": 0.1036
+      },
+      {
+        "verdict": "plays",
+        "animationStartMs": 356,
+        "styledAfterMs": 356,
+        "animatedFrames": 7,
+        "visibleUnstyledFrames": 0,
+        "invisibleFrames": 11,
+        "styledFramesBeforeAnimation": 0,
+        "minOpacity": 0.109
+      },
+      {
+        "verdict": "plays",
+        "animationStartMs": 371,
+        "styledAfterMs": 371,
+        "animatedFrames": 7,
+        "visibleUnstyledFrames": 0,
+        "invisibleFrames": 13,
+        "styledFramesBeforeAnimation": 0,
+        "minOpacity": 0.1126
+      }
+    ],
+    "link + gate, c-defer": [
+      {
+        "verdict": "plays",
+        "animationStartMs": 340,
+        "styledAfterMs": 340,
+        "animatedFrames": 15,
+        "visibleUnstyledFrames": 0,
+        "invisibleFrames": 15,
+        "styledFramesBeforeAnimation": 0,
+        "minOpacity": 0.109
+      },
+      {
+        "verdict": "plays",
+        "animationStartMs": 350,
+        "styledAfterMs": 350,
+        "animatedFrames": 17,
+        "visibleUnstyledFrames": 0,
+        "invisibleFrames": 16,
+        "styledFramesBeforeAnimation": 0,
+        "minOpacity": 0.1126
+      },
+      {
+        "verdict": "late after styling",
+        "animationStartMs": 470,
+        "styledAfterMs": 442,
+        "animatedFrames": 8,
+        "visibleUnstyledFrames": 0,
+        "invisibleFrames": 9,
+        "styledFramesBeforeAnimation": 0,
+        "minOpacity": 0.1342
+      },
+      {
+        "verdict": "plays",
+        "animationStartMs": 349,
+        "styledAfterMs": 349,
+        "animatedFrames": 9,
+        "visibleUnstyledFrames": 0,
+        "invisibleFrames": 14,
+        "styledFramesBeforeAnimation": 0,
+        "minOpacity": 0.1108
+      },
+      {
+        "verdict": "plays",
+        "animationStartMs": 391,
+        "styledAfterMs": 391,
+        "animatedFrames": 8,
+        "visibleUnstyledFrames": 0,
+        "invisibleFrames": 13,
+        "styledFramesBeforeAnimation": 0,
+        "minOpacity": 0.1054
+      }
+    ],
+    "file, c-click": [
+      {
+        "verdict": "skipped",
+        "animationStartMs": null,
+        "styledAfterMs": 346,
+        "animatedFrames": 0,
+        "visibleUnstyledFrames": 8,
+        "invisibleFrames": 0,
+        "styledFramesBeforeAnimation": null,
+        "minOpacity": 1
+      },
+      {
+        "verdict": "skipped",
+        "animationStartMs": null,
+        "styledAfterMs": 345,
+        "animatedFrames": 0,
+        "visibleUnstyledFrames": 15,
+        "invisibleFrames": 0,
+        "styledFramesBeforeAnimation": null,
+        "minOpacity": 1
+      },
+      {
+        "verdict": "skipped",
+        "animationStartMs": null,
+        "styledAfterMs": 314,
+        "animatedFrames": 0,
+        "visibleUnstyledFrames": 19,
+        "invisibleFrames": 0,
+        "styledFramesBeforeAnimation": null,
+        "minOpacity": 1
+      },
+      {
+        "verdict": "skipped",
+        "animationStartMs": null,
+        "styledAfterMs": 333,
+        "animatedFrames": 0,
+        "visibleUnstyledFrames": 18,
+        "invisibleFrames": 0,
+        "styledFramesBeforeAnimation": null,
+        "minOpacity": 1
+      },
+      {
+        "verdict": "skipped",
+        "animationStartMs": null,
+        "styledAfterMs": 299,
+        "animatedFrames": 0,
+        "visibleUnstyledFrames": 18,
+        "invisibleFrames": 0,
+        "styledFramesBeforeAnimation": null,
+        "minOpacity": 1
+      }
+    ],
+    "file, c-defer": [
+      {
+        "verdict": "skipped",
+        "animationStartMs": null,
+        "styledAfterMs": 380,
+        "animatedFrames": 0,
+        "visibleUnstyledFrames": 11,
+        "invisibleFrames": 0,
+        "styledFramesBeforeAnimation": null,
+        "minOpacity": 1
+      },
+      {
+        "verdict": "skipped",
+        "animationStartMs": null,
+        "styledAfterMs": 292,
+        "animatedFrames": 0,
+        "visibleUnstyledFrames": 13,
+        "invisibleFrames": 0,
+        "styledFramesBeforeAnimation": null,
+        "minOpacity": 1
+      },
+      {
+        "verdict": "skipped",
+        "animationStartMs": null,
+        "styledAfterMs": 311,
+        "animatedFrames": 0,
+        "visibleUnstyledFrames": 19,
+        "invisibleFrames": 0,
+        "styledFramesBeforeAnimation": null,
+        "minOpacity": 1
+      },
+      {
+        "verdict": "skipped",
+        "animationStartMs": null,
+        "styledAfterMs": 305,
+        "animatedFrames": 0,
+        "visibleUnstyledFrames": 18,
+        "invisibleFrames": 0,
+        "styledFramesBeforeAnimation": null,
+        "minOpacity": 1
+      },
+      {
+        "verdict": "skipped",
+        "animationStartMs": null,
+        "styledAfterMs": 313,
+        "animatedFrames": 0,
+        "visibleUnstyledFrames": 20,
+        "invisibleFrames": 0,
+        "styledFramesBeforeAnimation": null,
+        "minOpacity": 1
+      }
+    ],
+    "file + gate, c-click": [
+      {
+        "verdict": "plays",
+        "animationStartMs": 326,
+        "styledAfterMs": 326,
+        "animatedFrames": 32,
+        "visibleUnstyledFrames": 0,
+        "invisibleFrames": 19,
+        "styledFramesBeforeAnimation": 0,
+        "minOpacity": 0.1036
+      },
+      {
+        "verdict": "plays",
+        "animationStartMs": 325,
+        "styledAfterMs": 325,
+        "animatedFrames": 31,
+        "visibleUnstyledFrames": 0,
+        "invisibleFrames": 19,
+        "styledFramesBeforeAnimation": 0,
+        "minOpacity": 0.1036
+      },
+      {
+        "verdict": "plays",
+        "animationStartMs": 319,
+        "styledAfterMs": 319,
+        "animatedFrames": 31,
+        "visibleUnstyledFrames": 0,
+        "invisibleFrames": 18,
+        "styledFramesBeforeAnimation": 0,
+        "minOpacity": 0.1036
+      },
+      {
+        "verdict": "plays",
+        "animationStartMs": 315,
+        "styledAfterMs": 315,
+        "animatedFrames": 33,
+        "visibleUnstyledFrames": 0,
+        "invisibleFrames": 19,
+        "styledFramesBeforeAnimation": 0,
+        "minOpacity": 0.1018
+      },
+      {
+        "verdict": "plays",
+        "animationStartMs": 400,
+        "styledAfterMs": 400,
+        "animatedFrames": 26,
+        "visibleUnstyledFrames": 0,
+        "invisibleFrames": 17,
+        "styledFramesBeforeAnimation": 0,
+        "minOpacity": 0.1036
+      }
+    ],
+    "file + gate, c-defer": [
+      {
+        "verdict": "plays",
+        "animationStartMs": 360,
+        "styledAfterMs": 360,
+        "animatedFrames": 27,
+        "visibleUnstyledFrames": 0,
+        "invisibleFrames": 19,
+        "styledFramesBeforeAnimation": 0,
+        "minOpacity": 0.109
+      },
+      {
+        "verdict": "plays",
+        "animationStartMs": 319,
+        "styledAfterMs": 319,
+        "animatedFrames": 31,
+        "visibleUnstyledFrames": 0,
+        "invisibleFrames": 19,
+        "styledFramesBeforeAnimation": 0,
+        "minOpacity": 0.109
+      },
+      {
+        "verdict": "plays",
+        "animationStartMs": 316,
+        "styledAfterMs": 316,
+        "animatedFrames": 33,
+        "visibleUnstyledFrames": 0,
+        "invisibleFrames": 20,
+        "styledFramesBeforeAnimation": 0,
+        "minOpacity": 0.1036
+      },
+      {
+        "verdict": "plays",
+        "animationStartMs": 326,
+        "styledAfterMs": 326,
+        "animatedFrames": 32,
+        "visibleUnstyledFrames": 0,
+        "invisibleFrames": 20,
+        "styledFramesBeforeAnimation": 0,
+        "minOpacity": 0.127
+      },
+      {
+        "verdict": "plays",
+        "animationStartMs": 299,
+        "styledAfterMs": 299,
+        "animatedFrames": 18,
+        "visibleUnstyledFrames": 0,
+        "invisibleFrames": 15,
+        "styledFramesBeforeAnimation": 0,
+        "minOpacity": 0.1036
+      }
+    ]
+  },
+  "a11y": {
+    "link": {
+      "gap": {
+        "stateBefore": "0px/visible",
+        "stateAfterChecks": "0px/visible",
+        "axeViolations": "landmark-one-main(moderate, 1) page-has-heading-one(moderate, 1) region(moderate, 1)",
+        "tree": "- text: client-only deferred callout\n- button \"inner action\"\n- paragraph: content below the callout"
+      },
+      "loaded": {
+        "state": "44px/visible",
+        "axeViolations": "landmark-one-main(moderate, 1) page-has-heading-one(moderate, 1) region(moderate, 1)",
+        "tree": "- text: client-only deferred callout\n- button \"inner action\"\n- paragraph: content below the callout"
+      }
+    },
+    "link + gate": {
+      "gap": {
+        "stateBefore": "0px/hidden/pending",
+        "stateAfterChecks": "44px/visible",
+        "axeViolations": "landmark-one-main(moderate, 1) page-has-heading-one(moderate, 1) region(moderate, 1)",
+        "tree": "- text: client-only deferred callout\n- button \"inner action\"\n- paragraph: content below the callout"
+      },
+      "loaded": {
+        "state": "44px/visible",
+        "axeViolations": "landmark-one-main(moderate, 1) page-has-heading-one(moderate, 1) region(moderate, 1)",
+        "tree": "- text: client-only deferred callout\n- button \"inner action\"\n- paragraph: content below the callout"
+      }
+    }
+  }
+}

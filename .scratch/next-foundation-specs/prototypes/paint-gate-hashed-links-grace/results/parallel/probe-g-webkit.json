@@ -1,0 +1,864 @@
+{
+  "engine": "webkit",
+  "runs": 5,
+  "cycles": 20,
+  "halfCycleMs": 100,
+  "results": {
+    "link, remove": [
+      {
+        "headInserts": 20,
+        "headRemoves": 20,
+        "disabledToggles": 0,
+        "sheetLoadEvents": 20,
+        "cssRequests": 1,
+        "forcedFlushMs": 1940,
+        "forcedFlushes": 60,
+        "unstyledFrames": "0/68",
+        "chromium": null,
+        "loopWallMs": 4434,
+        "justAfterLast": {
+          "probePadding": "0px",
+          "element": "none"
+        },
+        "after1500ms": {
+          "probePadding": "0px",
+          "element": "none"
+        },
+        "reacquiredPadding": "44px"
+      },
+      {
+        "headInserts": 20,
+        "headRemoves": 20,
+        "disabledToggles": 0,
+        "sheetLoadEvents": 20,
+        "cssRequests": 1,
+        "forcedFlushMs": 2115,
+        "forcedFlushes": 60,
+        "unstyledFrames": "0/64",
+        "chromium": null,
+        "loopWallMs": 4419,
+        "justAfterLast": {
+          "probePadding": "0px",
+          "element": "none"
+        },
+        "after1500ms": {
+          "probePadding": "0px",
+          "element": "none"
+        },
+        "reacquiredPadding": "44px"
+      },
+      {
+        "headInserts": 20,
+        "headRemoves": 20,
+        "disabledToggles": 0,
+        "sheetLoadEvents": 20,
+        "cssRequests": 1,
+        "forcedFlushMs": 2506,
+        "forcedFlushes": 60,
+        "unstyledFrames": "0/48",
+        "chromium": null,
+        "loopWallMs": 4554,
+        "justAfterLast": {
+          "probePadding": "0px",
+          "element": "none"
+        },
+        "after1500ms": {
+          "probePadding": "0px",
+          "element": "none"
+        },
+        "reacquiredPadding": "44px"
+      },
+      {
+        "headInserts": 20,
+        "headRemoves": 20,
+        "disabledToggles": 0,
+        "sheetLoadEvents": 20,
+        "cssRequests": 1,
+        "forcedFlushMs": 2833,
+        "forcedFlushes": 60,
+        "unstyledFrames": "0/39",
+        "chromium": null,
+        "loopWallMs": 4625,
+        "justAfterLast": {
+          "probePadding": "0px",
+          "element": "none"
+        },
+        "after1500ms": {
+          "probePadding": "0px",
+          "element": "none"
+        },
+        "reacquiredPadding": "44px"
+      },
+      {
+        "headInserts": 20,
+        "headRemoves": 20,
+        "disabledToggles": 0,
+        "sheetLoadEvents": 20,
+        "cssRequests": 1,
+        "forcedFlushMs": 2572,
+        "forcedFlushes": 60,
+        "unstyledFrames": "0/44",
+        "chromium": null,
+        "loopWallMs": 4542,
+        "justAfterLast": {
+          "probePadding": "0px",
+          "element": "none"
+        },
+        "after1500ms": {
+          "probePadding": "0px",
+          "element": "none"
+        },
+        "reacquiredPadding": "44px"
+      }
+    ],
+    "link, grace 1000 ms": [
+      {
+        "headInserts": 1,
+        "headRemoves": 0,
+        "disabledToggles": 0,
+        "sheetLoadEvents": 1,
+        "cssRequests": 1,
+        "forcedFlushMs": 40,
+        "forcedFlushes": 41,
+        "unstyledFrames": "0/126",
+        "chromium": null,
+        "loopWallMs": 4708,
+        "justAfterLast": {
+          "probePadding": "44px",
+          "element": "LINK"
+        },
+        "after1500ms": {
+          "probePadding": "0px",
+          "element": "none"
+        },
+        "reacquiredPadding": "44px"
+      },
+      {
+        "headInserts": 1,
+        "headRemoves": 0,
+        "disabledToggles": 0,
+        "sheetLoadEvents": 1,
+        "cssRequests": 1,
+        "forcedFlushMs": 42,
+        "forcedFlushes": 41,
+        "unstyledFrames": "0/112",
+        "chromium": null,
+        "loopWallMs": 4640,
+        "justAfterLast": {
+          "probePadding": "44px",
+          "element": "LINK"
+        },
+        "after1500ms": {
+          "probePadding": "0px",
+          "element": "none"
+        },
+        "reacquiredPadding": "44px"
+      },
+      {
+        "headInserts": 1,
+        "headRemoves": 0,
+        "disabledToggles": 0,
+        "sheetLoadEvents": 1,
+        "cssRequests": 1,
+        "forcedFlushMs": 42,
+        "forcedFlushes": 41,
+        "unstyledFrames": "0/123",
+        "chromium": null,
+        "loopWallMs": 4582,
+        "justAfterLast": {
+          "probePadding": "44px",
+          "element": "LINK"
+        },
+        "after1500ms": {
+          "probePadding": "0px",
+          "element": "none"
+        },
+        "reacquiredPadding": "44px"
+      },
+      {
+        "headInserts": 1,
+        "headRemoves": 0,
+        "disabledToggles": 0,
+        "sheetLoadEvents": 1,
+        "cssRequests": 1,
+        "forcedFlushMs": 44,
+        "forcedFlushes": 41,
+        "unstyledFrames": "0/128",
+        "chromium": null,
+        "loopWallMs": 4712,
+        "justAfterLast": {
+          "probePadding": "44px",
+          "element": "LINK"
+        },
+        "after1500ms": {
+          "probePadding": "0px",
+          "element": "none"
+        },
+        "reacquiredPadding": "44px"
+      },
+      {
+        "headInserts": 1,
+        "headRemoves": 0,
+        "disabledToggles": 0,
+        "sheetLoadEvents": 1,
+        "cssRequests": 1,
+        "forcedFlushMs": 59,
+        "forcedFlushes": 41,
+        "unstyledFrames": "0/125",
+        "chromium": null,
+        "loopWallMs": 4501,
+        "justAfterLast": {
+          "probePadding": "44px",
+          "element": "LINK"
+        },
+        "after1500ms": {
+          "probePadding": "0px",
+          "element": "none"
+        },
+        "reacquiredPadding": "44px"
+      }
+    ],
+    "link, keep, element.disabled": [
+      {
+        "headInserts": 1,
+        "headRemoves": 0,
+        "disabledToggles": 59,
+        "sheetLoadEvents": 20,
+        "cssRequests": 1,
+        "forcedFlushMs": 2190,
+        "forcedFlushes": 80,
+        "unstyledFrames": "0/63",
+        "chromium": null,
+        "loopWallMs": 4521,
+        "justAfterLast": {
+          "probePadding": "0px",
+          "element": "LINK disabled (no sheet)"
+        },
+        "after1500ms": {
+          "probePadding": "0px",
+          "element": "LINK disabled (no sheet)"
+        },
+        "reacquiredPadding": "44px"
+      },
+      {
+        "headInserts": 1,
+        "headRemoves": 0,
+        "disabledToggles": 58,
+        "sheetLoadEvents": 20,
+        "cssRequests": 1,
+        "forcedFlushMs": 2374,
+        "forcedFlushes": 79,
+        "unstyledFrames": "0/44",
+        "chromium": null,
+        "loopWallMs": 4957,
+        "justAfterLast": {
+          "probePadding": "0px",
+          "element": "LINK disabled (no sheet)"
+        },
+        "after1500ms": {
+          "probePadding": "0px",
+          "element": "LINK disabled (no sheet)"
+        },
+        "reacquiredPadding": "44px"
+      },
+      {
+        "headInserts": 1,
+        "headRemoves": 0,
+        "disabledToggles": 59,
+        "sheetLoadEvents": 20,
+        "cssRequests": 1,
+        "forcedFlushMs": 2322,
+        "forcedFlushes": 80,
+        "unstyledFrames": "0/54",
+        "chromium": null,
+        "loopWallMs": 4589,
+        "justAfterLast": {
+          "probePadding": "0px",
+          "element": "LINK disabled (no sheet)"
+        },
+        "after1500ms": {
+          "probePadding": "0px",
+          "element": "LINK disabled (no sheet)"
+        },
+        "reacquiredPadding": "44px"
+      },
+      {
+        "headInserts": 1,
+        "headRemoves": 0,
+        "disabledToggles": 59,
+        "sheetLoadEvents": 20,
+        "cssRequests": 1,
+        "forcedFlushMs": 2195,
+        "forcedFlushes": 80,
+        "unstyledFrames": "0/56",
+        "chromium": null,
+        "loopWallMs": 4608,
+        "justAfterLast": {
+          "probePadding": "0px",
+          "element": "LINK disabled (no sheet)"
+        },
+        "after1500ms": {
+          "probePadding": "0px",
+          "element": "LINK disabled (no sheet)"
+        },
+        "reacquiredPadding": "44px"
+      },
+      {
+        "headInserts": 1,
+        "headRemoves": 0,
+        "disabledToggles": 59,
+        "sheetLoadEvents": 20,
+        "cssRequests": 1,
+        "forcedFlushMs": 2135,
+        "forcedFlushes": 80,
+        "unstyledFrames": "0/64",
+        "chromium": null,
+        "loopWallMs": 4498,
+        "justAfterLast": {
+          "probePadding": "0px",
+          "element": "LINK disabled (no sheet)"
+        },
+        "after1500ms": {
+          "probePadding": "0px",
+          "element": "LINK disabled (no sheet)"
+        },
+        "reacquiredPadding": "44px"
+      }
+    ],
+    "link, keep, sheet.disabled": [
+      {
+        "headInserts": 1,
+        "headRemoves": 0,
+        "disabledToggles": 0,
+        "sheetLoadEvents": 1,
+        "cssRequests": 1,
+        "forcedFlushMs": 1980,
+        "forcedFlushes": 41,
+        "unstyledFrames": "0/59",
+        "chromium": null,
+        "loopWallMs": 4475,
+        "justAfterLast": {
+          "probePadding": "0px",
+          "element": "LINK sheet.disabled"
+        },
+        "after1500ms": {
+          "probePadding": "0px",
+          "element": "LINK sheet.disabled"
+        },
+        "reacquiredPadding": "44px"
+      },
+      {
+        "headInserts": 1,
+        "headRemoves": 0,
+        "disabledToggles": 0,
+        "sheetLoadEvents": 1,
+        "cssRequests": 1,
+        "forcedFlushMs": 1906,
+        "forcedFlushes": 41,
+        "unstyledFrames": "0/61",
+        "chromium": null,
+        "loopWallMs": 4433,
+        "justAfterLast": {
+          "probePadding": "0px",
+          "element": "LINK sheet.disabled"
+        },
+        "after1500ms": {
+          "probePadding": "0px",
+          "element": "LINK sheet.disabled"
+        },
+        "reacquiredPadding": "44px"
+      },
+      {
+        "headInserts": 1,
+        "headRemoves": 0,
+        "disabledToggles": 0,
+        "sheetLoadEvents": 1,
+        "cssRequests": 1,
+        "forcedFlushMs": 2076,
+        "forcedFlushes": 41,
+        "unstyledFrames": "0/59",
+        "chromium": null,
+        "loopWallMs": 4587,
+        "justAfterLast": {
+          "probePadding": "0px",
+          "element": "LINK sheet.disabled"
+        },
+        "after1500ms": {
+          "probePadding": "0px",
+          "element": "LINK sheet.disabled"
+        },
+        "reacquiredPadding": "44px"
+      },
+      {
+        "headInserts": 1,
+        "headRemoves": 0,
+        "disabledToggles": 0,
+        "sheetLoadEvents": 1,
+        "cssRequests": 1,
+        "forcedFlushMs": 2167,
+        "forcedFlushes": 41,
+        "unstyledFrames": "0/59",
+        "chromium": null,
+        "loopWallMs": 4503,
+        "justAfterLast": {
+          "probePadding": "0px",
+          "element": "LINK sheet.disabled"
+        },
+        "after1500ms": {
+          "probePadding": "0px",
+          "element": "LINK sheet.disabled"
+        },
+        "reacquiredPadding": "44px"
+      },
+      {
+        "headInserts": 1,
+        "headRemoves": 0,
+        "disabledToggles": 0,
+        "sheetLoadEvents": 1,
+        "cssRequests": 1,
+        "forcedFlushMs": 2146,
+        "forcedFlushes": 41,
+        "unstyledFrames": "0/62",
+        "chromium": null,
+        "loopWallMs": 4583,
+        "justAfterLast": {
+          "probePadding": "0px",
+          "element": "LINK sheet.disabled"
+        },
+        "after1500ms": {
+          "probePadding": "0px",
+          "element": "LINK sheet.disabled"
+        },
+        "reacquiredPadding": "44px"
+      }
+    ],
+    "style, remove": [
+      {
+        "headInserts": 20,
+        "headRemoves": 20,
+        "disabledToggles": 0,
+        "sheetLoadEvents": 0,
+        "cssRequests": 0,
+        "forcedFlushMs": 2229,
+        "forcedFlushes": 40,
+        "unstyledFrames": "0/61",
+        "chromium": null,
+        "loopWallMs": 4391,
+        "justAfterLast": {
+          "probePadding": "0px",
+          "element": "none"
+        },
+        "after1500ms": {
+          "probePadding": "0px",
+          "element": "none"
+        },
+        "reacquiredPadding": "44px"
+      },
+      {
+        "headInserts": 20,
+        "headRemoves": 20,
+        "disabledToggles": 0,
+        "sheetLoadEvents": 0,
+        "cssRequests": 0,
+        "forcedFlushMs": 2166,
+        "forcedFlushes": 40,
+        "unstyledFrames": "0/58",
+        "chromium": null,
+        "loopWallMs": 4414,
+        "justAfterLast": {
+          "probePadding": "0px",
+          "element": "none"
+        },
+        "after1500ms": {
+          "probePadding": "0px",
+          "element": "none"
+        },
+        "reacquiredPadding": "44px"
+      },
+      {
+        "headInserts": 20,
+        "headRemoves": 20,
+        "disabledToggles": 0,
+        "sheetLoadEvents": 0,
+        "cssRequests": 0,
+        "forcedFlushMs": 3437,
+        "forcedFlushes": 40,
+        "unstyledFrames": "0/26",
+        "chromium": null,
+        "loopWallMs": 5849,
+        "justAfterLast": {
+          "probePadding": "0px",
+          "element": "none"
+        },
+        "after1500ms": {
+          "probePadding": "0px",
+          "element": "none"
+        },
+        "reacquiredPadding": "44px"
+      },
+      {
+        "headInserts": 20,
+        "headRemoves": 20,
+        "disabledToggles": 0,
+        "sheetLoadEvents": 0,
+        "cssRequests": 0,
+        "forcedFlushMs": 3058,
+        "forcedFlushes": 40,
+        "unstyledFrames": "0/39",
+        "chromium": null,
+        "loopWallMs": 4544,
+        "justAfterLast": {
+          "probePadding": "0px",
+          "element": "none"
+        },
+        "after1500ms": {
+          "probePadding": "0px",
+          "element": "none"
+        },
+        "reacquiredPadding": "44px"
+      },
+      {
+        "headInserts": 20,
+        "headRemoves": 20,
+        "disabledToggles": 0,
+        "sheetLoadEvents": 0,
+        "cssRequests": 0,
+        "forcedFlushMs": 3100,
+        "forcedFlushes": 40,
+        "unstyledFrames": "0/31",
+        "chromium": null,
+        "loopWallMs": 4717,
+        "justAfterLast": {
+          "probePadding": "0px",
+          "element": "none"
+        },
+        "after1500ms": {
+          "probePadding": "0px",
+          "element": "none"
+        },
+        "reacquiredPadding": "44px"
+      }
+    ],
+    "style, grace 1000 ms": [
+      {
+        "headInserts": 1,
+        "headRemoves": 0,
+        "disabledToggles": 0,
+        "sheetLoadEvents": 0,
+        "cssRequests": 0,
+        "forcedFlushMs": 100,
+        "forcedFlushes": 40,
+        "unstyledFrames": "0/126",
+        "chromium": null,
+        "loopWallMs": 4380,
+        "justAfterLast": {
+          "probePadding": "44px",
+          "element": "STYLE"
+        },
+        "after1500ms": {
+          "probePadding": "0px",
+          "element": "none"
+        },
+        "reacquiredPadding": "44px"
+      },
+      {
+        "headInserts": 1,
+        "headRemoves": 0,
+        "disabledToggles": 0,
+        "sheetLoadEvents": 0,
+        "cssRequests": 0,
+        "forcedFlushMs": 113,
+        "forcedFlushes": 40,
+        "unstyledFrames": "0/125",
+        "chromium": null,
+        "loopWallMs": 4441,
+        "justAfterLast": {
+          "probePadding": "44px",
+          "element": "STYLE"
+        },
+        "after1500ms": {
+          "probePadding": "0px",
+          "element": "none"
+        },
+        "reacquiredPadding": "44px"
+      },
+      {
+        "headInserts": 1,
+        "headRemoves": 0,
+        "disabledToggles": 0,
+        "sheetLoadEvents": 0,
+        "cssRequests": 0,
+        "forcedFlushMs": 88,
+        "forcedFlushes": 40,
+        "unstyledFrames": "0/127",
+        "chromium": null,
+        "loopWallMs": 4462,
+        "justAfterLast": {
+          "probePadding": "44px",
+          "element": "STYLE"
+        },
+        "after1500ms": {
+          "probePadding": "0px",
+          "element": "none"
+        },
+        "reacquiredPadding": "44px"
+      },
+      {
+        "headInserts": 1,
+        "headRemoves": 0,
+        "disabledToggles": 0,
+        "sheetLoadEvents": 0,
+        "cssRequests": 0,
+        "forcedFlushMs": 121,
+        "forcedFlushes": 40,
+        "unstyledFrames": "0/127",
+        "chromium": null,
+        "loopWallMs": 4437,
+        "justAfterLast": {
+          "probePadding": "44px",
+          "element": "STYLE"
+        },
+        "after1500ms": {
+          "probePadding": "0px",
+          "element": "none"
+        },
+        "reacquiredPadding": "44px"
+      },
+      {
+        "headInserts": 1,
+        "headRemoves": 0,
+        "disabledToggles": 0,
+        "sheetLoadEvents": 0,
+        "cssRequests": 0,
+        "forcedFlushMs": 95,
+        "forcedFlushes": 40,
+        "unstyledFrames": "0/128",
+        "chromium": null,
+        "loopWallMs": 4411,
+        "justAfterLast": {
+          "probePadding": "44px",
+          "element": "STYLE"
+        },
+        "after1500ms": {
+          "probePadding": "0px",
+          "element": "none"
+        },
+        "reacquiredPadding": "44px"
+      }
+    ],
+    "style, keep, element.disabled": [
+      {
+        "headInserts": 1,
+        "headRemoves": 0,
+        "disabledToggles": 0,
+        "sheetLoadEvents": 0,
+        "cssRequests": 0,
+        "forcedFlushMs": 2063,
+        "forcedFlushes": 40,
+        "unstyledFrames": "0/70",
+        "chromium": null,
+        "loopWallMs": 4414,
+        "justAfterLast": {
+          "probePadding": "0px",
+          "element": "STYLE disabled sheet.disabled"
+        },
+        "after1500ms": {
+          "probePadding": "0px",
+          "element": "STYLE disabled sheet.disabled"
+        },
+        "reacquiredPadding": "44px"
+      },
+      {
+        "headInserts": 1,
+        "headRemoves": 0,
+        "disabledToggles": 0,
+        "sheetLoadEvents": 0,
+        "cssRequests": 0,
+        "forcedFlushMs": 2176,
+        "forcedFlushes": 40,
+        "unstyledFrames": "0/64",
+        "chromium": null,
+        "loopWallMs": 4462,
+        "justAfterLast": {
+          "probePadding": "0px",
+          "element": "STYLE disabled sheet.disabled"
+        },
+        "after1500ms": {
+          "probePadding": "0px",
+          "element": "STYLE disabled sheet.disabled"
+        },
+        "reacquiredPadding": "44px"
+      },
+      {
+        "headInserts": 1,
+        "headRemoves": 0,
+        "disabledToggles": 0,
+        "sheetLoadEvents": 0,
+        "cssRequests": 0,
+        "forcedFlushMs": 2232,
+        "forcedFlushes": 40,
+        "unstyledFrames": "0/57",
+        "chromium": null,
+        "loopWallMs": 4426,
+        "justAfterLast": {
+          "probePadding": "0px",
+          "element": "STYLE disabled sheet.disabled"
+        },
+        "after1500ms": {
+          "probePadding": "0px",
+          "element": "STYLE disabled sheet.disabled"
+        },
+        "reacquiredPadding": "44px"
+      },
+      {
+        "headInserts": 1,
+        "headRemoves": 0,
+        "disabledToggles": 0,
+        "sheetLoadEvents": 0,
+        "cssRequests": 0,
+        "forcedFlushMs": 2270,
+        "forcedFlushes": 40,
+        "unstyledFrames": "0/56",
+        "chromium": null,
+        "loopWallMs": 4408,
+        "justAfterLast": {
+          "probePadding": "0px",
+          "element": "STYLE disabled sheet.disabled"
+        },
+        "after1500ms": {
+          "probePadding": "0px",
+          "element": "STYLE disabled sheet.disabled"
+        },
+        "reacquiredPadding": "44px"
+      },
+      {
+        "headInserts": 1,
+        "headRemoves": 0,
+        "disabledToggles": 0,
+        "sheetLoadEvents": 0,
+        "cssRequests": 0,
+        "forcedFlushMs": 2333,
+        "forcedFlushes": 40,
+        "unstyledFrames": "0/62",
+        "chromium": null,
+        "loopWallMs": 4479,
+        "justAfterLast": {
+          "probePadding": "0px",
+          "element": "STYLE disabled sheet.disabled"
+        },
+        "after1500ms": {
+          "probePadding": "0px",
+          "element": "STYLE disabled sheet.disabled"
+        },
+        "reacquiredPadding": "44px"
+      }
+    ],
+    "style, keep, sheet.disabled": [
+      {
+        "headInserts": 1,
+        "headRemoves": 0,
+        "disabledToggles": 0,
+        "sheetLoadEvents": 0,
+        "cssRequests": 0,
+        "forcedFlushMs": 2225,
+        "forcedFlushes": 40,
+        "unstyledFrames": "0/60",
+        "chromium": null,
+        "loopWallMs": 4405,
+        "justAfterLast": {
+          "probePadding": "0px",
+          "element": "STYLE disabled sheet.disabled"
+        },
+        "after1500ms": {
+          "probePadding": "0px",
+          "element": "STYLE disabled sheet.disabled"
+        },
+        "reacquiredPadding": "44px"
+      },
+      {
+        "headInserts": 1,
+        "headRemoves": 0,
+        "disabledToggles": 0,
+        "sheetLoadEvents": 0,
+        "cssRequests": 0,
+        "forcedFlushMs": 2294,
+        "forcedFlushes": 40,
+        "unstyledFrames": "0/51",
+        "chromium": null,
+        "loopWallMs": 4421,
+        "justAfterLast": {
+          "probePadding": "0px",
+          "element": "STYLE disabled sheet.disabled"
+        },
+        "after1500ms": {
+          "probePadding": "0px",
+          "element": "STYLE disabled sheet.disabled"
+        },
+        "reacquiredPadding": "44px"
+      },
+      {
+        "headInserts": 1,
+        "headRemoves": 0,
+        "disabledToggles": 0,
+        "sheetLoadEvents": 0,
+        "cssRequests": 0,
+        "forcedFlushMs": 2377,
+        "forcedFlushes": 40,
+        "unstyledFrames": "0/58",
+        "chromium": null,
+        "loopWallMs": 4491,
+        "justAfterLast": {
+          "probePadding": "0px",
+          "element": "STYLE disabled sheet.disabled"
+        },
+        "after1500ms": {
+          "probePadding": "0px",
+          "element": "STYLE disabled sheet.disabled"
+        },
+        "reacquiredPadding": "44px"
+      },
+      {
+        "headInserts": 1,
+        "headRemoves": 0,
+        "disabledToggles": 0,
+        "sheetLoadEvents": 0,
+        "cssRequests": 0,
+        "forcedFlushMs": 2420,
+        "forcedFlushes": 40,
+        "unstyledFrames": "0/50",
+        "chromium": null,
+        "loopWallMs": 4449,
+        "justAfterLast": {
+          "probePadding": "0px",
+          "element": "STYLE disabled sheet.disabled"
+        },
+        "after1500ms": {
+          "probePadding": "0px",
+          "element": "STYLE disabled sheet.disabled"
+        },
+        "reacquiredPadding": "44px"
+      },
+      {
+        "headInserts": 1,
+        "headRemoves": 0,
+        "disabledToggles": 0,
+        "sheetLoadEvents": 0,
+        "cssRequests": 0,
+        "forcedFlushMs": 2963,
+        "forcedFlushes": 40,
+        "unstyledFrames": "0/43",
+        "chromium": null,
+        "loopWallMs": 4650,
+        "justAfterLast": {
+          "probePadding": "0px",
+          "element": "STYLE disabled sheet.disabled"
+        },
+        "after1500ms": {
+          "probePadding": "0px",
+          "element": "STYLE disabled sheet.disabled"
+        },
+        "reacquiredPadding": "44px"
+      }
+    ]
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "chromium": {
+    "http://localhost:4791 /ssr?gate=1": {
+      "framesSampled": 110,
+      "pendingHostFrames": 0,
+      "consoleErrors": []
+    },
+    "http://localhost:4791 /hydrate-defer?gate=1": {
+      "framesSampled": 136,
+      "pendingHostFrames": 0,
+      "consoleErrors": []
+    },
+    "http://localhost:4793 /ssr?gate=1": {
+      "framesSampled": 103,
+      "pendingHostFrames": 0,
+      "consoleErrors": []
+    },
+    "http://localhost:4793 /hydrate-defer?gate=1": {
+      "framesSampled": 135,
+      "pendingHostFrames": 0,
+      "consoleErrors": []
+    }
+  },
+  "firefox": {
+    "http://localhost:4791 /ssr?gate=1": {
+      "framesSampled": 123,
+      "pendingHostFrames": 0,
+      "consoleErrors": []
+    },
+    "http://localhost:4791 /hydrate-defer?gate=1": {
+      "framesSampled": 140,
+      "pendingHostFrames": 0,
+      "consoleErrors": []
+    },
+    "http://localhost:4793 /ssr?gate=1": {
+      "framesSampled": 102,
+      "pendingHostFrames": 0,
+      "consoleErrors": []
+    },
+    "http://localhost:4793 /hydrate-defer?gate=1": {
+      "framesSampled": 139,
+      "pendingHostFrames": 0,
+      "consoleErrors": []
+    }
+  },
+  "webkit": {
+    "http://localhost:4791 /ssr?gate=1": {
+      "framesSampled": 106,
+      "pendingHostFrames": 0,
+      "consoleErrors": []
+    },
+    "http://localhost:4791 /hydrate-defer?gate=1": {
+      "framesSampled": 147,
+      "pendingHostFrames": 0,
+      "consoleErrors": []
+    },
+    "http://localhost:4793 /ssr?gate=1": {
+      "framesSampled": 105,
+      "pendingHostFrames": 0,
+      "consoleErrors": []
+    },
+    "http://localhost:4793 /hydrate-defer?gate=1": {
+      "framesSampled": 143,
+      "pendingHostFrames": 0,
+      "consoleErrors": []
+    }
+  }
+}
