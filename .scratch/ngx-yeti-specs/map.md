@@ -14,6 +14,11 @@ One published spec (via `/to-spec`) for each Yeti component, layout, recipe, and
 
 Yeti (https://github.com/foundation/yeti, `develop` branch; docs at https://www.foundationcss.com/yeti/) is the successor to Foundation for Sites. Its README describes "a CSS-first, native, zero-build layout and styling framework": one stylesheet, no Sass, cascade layers, container queries, runtime `--yeti-*` tokens, and optional JavaScript modules. Its README says it targets Baseline 2025, and its stability guide (`src/guides/stability.md`) lists what `7.0.0-beta` froze. The Angular package wraps Yeti's CSS and attribute contract and replaces or complements its optional JavaScript; which of those it does is decided here.
 
+Two risks hang over the whole map until [Decide: whether Yeti's licence and readiness allow this package](issues/15-decide-yeti-licence-and-readiness.md) resolves, and that decision is the user's:
+
+- Yeti's licence is FSL-1.1-MIT, whose Competing Use clause may or may not cover a wrapper.
+- Its announcement (foundation/yeti#15554) says of `develop`: "unstable until the beta. Do not build on it yet."
+
 ### Inheritance from next-foundation-specs (user instruction, 2026-10-01)
 
 The user asked, verbatim:
