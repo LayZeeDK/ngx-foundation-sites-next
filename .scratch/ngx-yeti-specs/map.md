@@ -37,7 +37,7 @@ Asked how decision tickets are worked, the user chose "AFK, like the old map" (t
 The user chose to carry over, as they are:
 
 - **Audits after each wave:** an audit subagent reviews the map, tickets, and documents for compliance with `/wayfinder`, `/domain-modeling`, `/grilling`, `/research`, `/to-spec`, and `/mattpocock-skills:prototype`; findings go to `audits/NNNN-<scope>.md` with a resolution log.
-- **Commit rules:** every change under `.scratch/ngx-yeti-specs/` is committed as it lands, as an atomic Conventional Commit (`docs(wayfinder): ...`) with a body that gives the why. Stage files by name and commit with `git commit -F <file>`; one resolved ticket is one commit.
+- **Commit rules:** every change under `.scratch/ngx-yeti-specs/` is committed as it lands, as an atomic Conventional Commit (`docs(wayfinder): ...`) with a body that gives the why. Stage files by name and commit with `git commit -F <file>`; one resolved ticket is one commit. No commit message names the model or effort that did the work (the user, 2026-10-01, ruling on audit 0002's H1: remove the line and reword the unpushed commits); each ticket's Answer records the model instead.
 - **Bundle layout:** `map.md`, `issues/NN-<slug>.md`, `research/`, `prototypes/`, `adr/`, `CONTEXT.md`, `building-blocks.md`, `specs/`, `audits/`, `README.md`, `upstream-bugs.md`, `ledger.md`, all under `.scratch/ngx-yeti-specs/`.
 
 ### Standing rulings (the user's own messages to the orchestrator, 2026-10-01)

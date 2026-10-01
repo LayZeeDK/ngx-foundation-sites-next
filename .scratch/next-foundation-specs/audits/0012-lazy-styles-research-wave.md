@@ -5,14 +5,14 @@ Auditor: audit judge (Opus 5.5), one pass with no sweepers; read-only except thi
 
 ## Scope
 
-Everything below was audited as committed at HEAD `60b9ca6` ("claim the lazy family styles prototype"). The working tree was clean at the start of the run (`git status --porcelain` empty), so the files read equal the commit. [Prototype: a directive that loads and unloads its family's consumer-compiled styles](../issues/184-prototype-lazy-family-styles.md) is being worked by another session; it was audited as committed, `Status: claimed`, with no `prototypes/lazy-family-styles/` folder in the tree.
+Everything below was audited as committed at HEAD `5bd914f` ("claim the lazy family styles prototype"). The working tree was clean at the start of the run (`git status --porcelain` empty), so the files read equal the commit. [Prototype: a directive that loads and unloads its family's consumer-compiled styles](../issues/184-prototype-lazy-family-styles.md) is being worked by another session; it was audited as committed, `Status: claimed`, with no `prototypes/lazy-family-styles/` folder in the tree.
 
-The wave is every commit in `89b4592..60b9ca6`: 4 commits, `git diff --name-status 89b4592 60b9ca6` over 8 files (7 added, 1 modified, none deleted). It holds:
+The wave is every commit in `89b4592..5bd914f`: 4 commits, `git diff --name-status 89b4592 5bd914f` over 8 files (7 added, 1 modified, none deleted). It holds:
 
 - `5a34dd0`, which charts the user's lazy family styles ruling of 2026-10-01: the Destination sentence, the Notes bullet, the Not yet specified patch, and five tickets, [Research: loading and unloading component styles from directives in Angular 22.2](../issues/182-research-lazy-style-loading-from-directives.md), [Research: splitting Foundation 6.9's CSS per family](../issues/183-research-foundation-sass-per-family-split.md), [Prototype: a directive that loads and unloads its family's consumer-compiled styles](../issues/184-prototype-lazy-family-styles.md), [Decide: how first-milestone directives load and unload their family styles](../issues/185-decide-lazy-family-styles.md), and [Decide: how later-milestone families manage their styles](../issues/186-decide-later-milestone-family-styles.md);
-- `1ec9784`, which resolves ticket 183 with `research/foundation-sass-per-family.md`;
-- `6d37fde`, which resolves ticket 182 with `research/lazy-style-loading.md` and adds points 6 to 10 to ticket 184;
-- `60b9ca6`, which claims ticket 184.
+- `f67fc25`, which resolves ticket 183 with `research/foundation-sass-per-family.md`;
+- `cb8d706`, which resolves ticket 182 with `research/lazy-style-loading.md` and adds points 6 to 10 to ticket 184;
+- `5bd914f`, which claims ticket 184.
 
 What was checked:
 
@@ -25,7 +25,7 @@ Governing rules: `/wayfinder`, `/research`, `docs/agents/issue-tracker.md` (Wayf
 
 ## Method
 
-The judge read the five tickets at `60b9ca6` in full, the two findings files in full, the map's diff and its Notes, Decisions so far, Not yet specified, and Out of scope, audit 0011 in full, ADR 0008 and ADR 0012, architecture guide P18, building-blocks 1.13, the glossary's Library mixin entry, and the Storybook preview conventions. Every candidate was re-read in the file at HEAD before it was kept.
+The judge read the five tickets at `5bd914f` in full, the two findings files in full, the map's diff and its Notes, Decisions so far, Not yet specified, and Out of scope, audit 0011 in full, ADR 0008 and ADR 0012, architecture guide P18, building-blocks 1.13, the glossary's Library mixin entry, and the Storybook preview conventions. Every candidate was re-read in the file at HEAD before it was kept.
 
 Spot checks of citations (33, all against the clones at the commits the findings name: `angular/angular` `5db6fc4` on `22.2.x`, `angular/components` `708d4c6` on `22.2.x`, `foundation-sites` `337be7a`, which is `v6.9.0-1` with no `scss/` change since the tag):
 
@@ -52,7 +52,7 @@ Convention in this file: links inside quoted replacement text are written relati
 
 - Claims of tickets 182 and 183 were not committed before their research ran. The tracker rule is "set `Status: claimed` and save before any work"; it does not require a commit, the claim cannot be seen in history either way, and the map's Commits rule makes one resolved ticket one commit. Ticket 184's claim is its own commit, before any prototype file exists.
 - The gists of tickets 182 and 183 run to five and six sentences with figures. The map's gists have carried figures since the first waves (ticket 181's gist gives four counts), and audit 0011 read that form as true; L1 takes up only the sentence that decides.
-- The commit bodies of `1ec9784` and `6d37fde` name the models that resolved the research. That is provenance the map's Model per ticket rule asks each answer to record, and earlier commits do the same; there is no trailer or attribution line.
+- The commit bodies of `f67fc25` and `cb8d706` name the models that resolved the research. That is provenance the map's Model per ticket rule asks each answer to record, and earlier commits do the same; there is no trailer or attribution line.
 - Ticket 182's Answer says the strongest candidate is M1. The ticket's question and ticket 184 both ask for a ranking ("the strongest candidate"), and the findings file says it decides nothing; a ranking of options is evidence for ticket 185, not a decision.
 - The Notes bullet's "unload them when no instance remains" and "Families moved to a later milestone keep relying on the consumer's global stylesheet": the first spells out the "unload" the user asked about, and the second is the user's "are assumed to depend on the consumer loading styles in their global stylesheets", with ticket 186 named for the half the user left open.
 
@@ -173,10 +173,10 @@ The main pattern: the research is well sourced. Every one of the 33 citations ch
 
 ### L6. The claim commit has no body, and this audit makes a README statement false when it lands
 
-- File: commit `60b9ca6`; `README.md:24`.
+- File: commit `5bd914f`; `README.md:24`.
 - Rule: map, Orchestration rules, Commits ("a Conventional Commit (`docs(wayfinder): ...`) with a body that gives the why"); the README indexes the bundle (audit 0011, L6).
-- Evidence: `git log -1 --format=%B 60b9ca6` is the subject alone. The other three messages have bodies that give the why. `README.md:24` says "eleven compliance audits (... and the final wave)", which is false once this file lands.
-- Fix: if the branch is not yet pushed, reword `60b9ca6` with `git history reword` (as for audit 0011's group g commit) to add a body such as "Ticket 184 is unblocked now that both research tickets are resolved; claiming it first keeps a parallel session off it while the prototype is built." Otherwise record the gap in the Resolution log. When this file lands, `README.md:24`: replace "eleven compliance audits (" with "twelve compliance audits (" and "and the final wave)" with "the final wave, and the lazy styles research wave)", and name [Audit 0012: the lazy styles research wave](audits/0012-lazy-styles-research-wave.md) in the README section M5 adds.
+- Evidence: `git log -1 --format=%B 5bd914f` is the subject alone. The other three messages have bodies that give the why. `README.md:24` says "eleven compliance audits (... and the final wave)", which is false once this file lands.
+- Fix: if the branch is not yet pushed, reword `5bd914f` with `git history reword` (as for audit 0011's group g commit) to add a body such as "Ticket 184 is unblocked now that both research tickets are resolved; claiming it first keeps a parallel session off it while the prototype is built." Otherwise record the gap in the Resolution log. When this file lands, `README.md:24`: replace "eleven compliance audits (" with "twelve compliance audits (" and "and the final wave)" with "the final wave, and the lazy styles research wave)", and name [Audit 0012: the lazy styles research wave](audits/0012-lazy-styles-research-wave.md) in the README section M5 adds.
 - Handling: orchestrator (the commit) and fixers (the README).
 
 ### L7. Ticket 184, point 2: "a `animate.leave` animation"
@@ -192,9 +192,9 @@ The main pattern: the research is well sourced. Every one of the 33 citations ch
 The process:
 
 1. Ticket headers: all five carry `Type:`, `Status:`, `Blocked by:`, `Labels: wayfinder:<type>`, and `Map: ../map.md` in the form of tickets 174 and 181; the types match the labels (two research, one prototype, two grilling).
-2. `Blocked by` edges: 184 by 182 and 183, 185 by 184, 186 by 185; 182 and 183 by none. Ticket 184 was unblocked when it was claimed (both blockers `resolved` at `6d37fde`).
-3. Claim before work: ticket 184's claim is its own commit, and the tree at `60b9ca6` holds no `prototypes/lazy-family-styles/` folder.
-4. Each resolved ticket (182, 183) has an `## Answer`, `Status: resolved`, and exactly one gist in Decisions so far (183 lines in all, one per ticket), linked by its title; each resolving commit carries the ticket, its findings file, and its gist line, as the map's Commits rule asks. `6d37fde` also adds points 6 to 10 to ticket 184, the graduation step 5 of Work through the map asks for.
+2. `Blocked by` edges: 184 by 182 and 183, 185 by 184, 186 by 185; 182 and 183 by none. Ticket 184 was unblocked when it was claimed (both blockers `resolved` at `cb8d706`).
+3. Claim before work: ticket 184's claim is its own commit, and the tree at `5bd914f` holds no `prototypes/lazy-family-styles/` folder.
+4. Each resolved ticket (182, 183) has an `## Answer`, `Status: resolved`, and exactly one gist in Decisions so far (183 lines in all, one per ticket), linked by its title; each resolving commit carries the ticket, its findings file, and its gist line, as the map's Commits rule asks. `cb8d706` also adds points 6 to 10 to ticket 184, the graduation step 5 of Work through the map asks for.
 5. Out of scope still holds: the base element styles line says Global Styles and Typography Base have nothing for a directive to manage, which ticket 183 measured (45 of 49 global rules are tag or attribute rules).
 6. The Destination sentence adds the one condition the ruling implies for the specs and links the decision ticket by name.
 
@@ -225,5 +225,5 @@ The orchestrator applied the fixes on 2026-10-01, each as the finding's Fix stat
 - L3: applied.
 - L4: applied to the findings (open unknown 3) and ticket 183's Answer.
 - L5: applied; the five section signs read "section".
-- L6: the README count and audit list are applied. The claim commit `60b9ca6` is not reworded: rewording also rewrites the audit commit after it while a prototype session is editing the working tree, and the gap is a missing body on a one-line status change. Recorded here instead.
+- L6: the README count and audit list are applied. The claim commit `5bd914f` is not reworded: rewording also rewrites the audit commit after it while a prototype session is editing the working tree, and the gap is a missing body on a one-line status change. Recorded here instead.
 - L7: applied in the commit that resolves ticket 184, after its session finished.

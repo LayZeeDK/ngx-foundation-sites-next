@@ -8,7 +8,7 @@ Map: ../map.md
 
 ## Question
 
-The old map's [Research: Yeti, Foundation's version 7](../../next-foundation-specs/issues/194-research-yeti-foundation-7.md) resolved on 2026-10-01 (commit `950412c`). It covers:
+The old map's [Research: Yeti, Foundation's version 7](../../next-foundation-specs/issues/194-research-yeti-foundation-7.md) resolved on 2026-10-01 (commit `4e02060`). It covers:
 
 - Yeti's status and timeline;
 - the migration guide;
