@@ -2,7 +2,7 @@
 
 Type: grilling
 Status: open
-Blocked by: 184, 188, 189, 190, 191
+Blocked by: 184, 188, 189, 190, 191, 192
 Labels: wayfinder:grilling
 Map: ../map.md
 
@@ -29,6 +29,7 @@ Grill against the two research tickets and the prototype. Decide at least:
 5. Whether the first milestone keeps a global "everything" path for consumers who do not want lazy styles (ADR 0045 release policy: adding one later is not breaking, removing one is).
 6. The records to supersede or amend, and the re-run tickets that bring every first-milestone spec's Sass subsection in line.
 7. The records that assume one global compile, which both research files flag: the Variant declaration tooling reads the Variant properties from a compile of the project's global stylesheet (building-blocks 1.13; [ADR 0040](../adr/0040-variant-input-types.md); `specs/variant-declaration-tooling.md:29`); the Storybook preview includes `foundation-everything` and every Library mixin after it (`storybook-conventions.md:97`, `:122`, `:268-269`); and `foundation-everything` forces `$global-flexbox: true`, which per-family includes do not ([research/foundation-sass-per-family.md](../research/foundation-sass-per-family.md), 3.5). Added by audit 0012. The user settled the `$global-flexbox` part on 2026-10-01 (below), so it is a documented assumption, not a point to decide.
+8. The unit that loads and unloads together, and its name. Tickets 182 to 191 call it a "family" and use the output of one Foundation export mixin (`foundation-callout`, `foundation-menu`). The glossary already uses "directive family" for the directives of one entry point (In-family check, Family check), so the decision picks a glossary term for the loading unit and its granularity: one per export mixin, one per entry point, or another split. The user asked on 2026-10-01, verbatim: "Explain what you mean by *a family*. Why are components grouped into families? What's the benefit?"
 
 ## User rulings on Foundation's flexbox and grid settings, 2026-10-01
 
