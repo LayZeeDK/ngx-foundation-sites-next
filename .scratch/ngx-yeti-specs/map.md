@@ -40,6 +40,13 @@ The user chose to carry over, as they are:
 - **Commit rules:** every change under `.scratch/ngx-yeti-specs/` is committed as it lands, as an atomic Conventional Commit (`docs(wayfinder): ...`) with a body that gives the why. Stage files by name and commit with `git commit -F <file>`; one resolved ticket is one commit.
 - **Bundle layout:** `map.md`, `issues/NN-<slug>.md`, `research/`, `prototypes/`, `adr/`, `CONTEXT.md`, `building-blocks.md`, `specs/`, `audits/`, `README.md`, all under `.scratch/ngx-yeti-specs/`.
 
+### Standing rulings (the user's own messages to the orchestrator, 2026-10-01)
+
+- Browser target: "26. Browser baseline: For this project, accept Yeti's Baseline 2025 or the least common denominator browser set/baseline supporting browser/CSS features Yeti relies on." [Decide: the browser target](issues/06-decide-browser-target.md) chooses between the two.
+- Components for styles: "28. If using Angular components with styles/styleUrl(s) can be used for lazy-loading/unloading component-specific styles and to pass requirements and bugs Angular's leave-animation guard and Beasties critical CSS, that's a valid reason to use components instead of directives where applicable." This relaxes the old map's "directive over component" preference for this map, wherever a component's `styleUrl` is what makes lazy styles meet the requirements. [Decide: which standing preferences and user rulings carry over](issues/07-decide-inherited-preferences-and-rulings.md) and [Decide: how component styles load and unload](issues/13-decide-style-loading.md) apply it.
+- Deployment URLs: "29. `deployUrl`/`--deploy-url` is unsupported/to-be-removed as per https://angular.dev/tools/cli/build-system-migration#manual-migration-to-the-new-application-builder so we don't need to support it. Only `baseHref`/`--base-href`/`<base href>` should be supported." No spec supports or tests `deployUrl`.
+- Temporary files: the user's temporary replies file in the repository root is never referenced, read as evidence, staged, or committed (item 30). Every brief says so.
+
 ### Models and briefs (user ruling, 2026-10-01)
 
 Model, effort, and prompting follow the user's global CLAUDE.md and `~/.claude/references/subagent-model-choice.md` and `prompting-<model>.md`, re-read before each wave. Every subagent is a `<model>-<effort>` type with `model` unset. As read on 2026-10-01:
