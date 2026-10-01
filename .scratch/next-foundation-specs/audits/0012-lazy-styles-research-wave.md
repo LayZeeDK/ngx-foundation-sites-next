@@ -213,3 +213,17 @@ Hygiene:
 
 ## Resolution log
 
+The orchestrator applied the fixes on 2026-10-01, each as the finding's Fix states unless noted.
+
+- M1: applied. The map's Notes bullet now says the ruling cannot be met under ADR 0012 and P18 as they read today, and leaves supersede, amend, or keep to the decision ticket, marked as the orchestrator's reading.
+- M2: applied to the findings (section 7), ticket 182's Answer, and the map's gist. The gist reads "as the carrier does" in place of "as M1 does", because the map does not define M1.
+- M3: applied to the findings (section 1 item 2, and 3.5's Rules bullet, where the note leads the bullet) and to ticket 183's Answer.
+- M4: applied to ticket 186, point 3.
+- M5: applied. Ticket 185 has point 7; the map's Not yet specified names the Variant declaration tooling, ADR 0040, and the Storybook preview; the README's counts, Open list, and a new section for the lazy family styles question are updated.
+- L1: applied to ticket 183's gist.
+- L2: applied to ticket 182's Answer, with the reason in brackets in place of a separate note.
+- L3: applied.
+- L4: applied to the findings (open unknown 3) and ticket 183's Answer.
+- L5: applied; the five section signs read "section".
+- L6: the README count and audit list are applied. The claim commit `60b9ca6` is not reworded: rewording also rewrites the audit commit after it while a prototype session is editing the working tree, and the gap is a missing body on a one-line status change. Recorded here instead.
+- L7: deferred to the commit that resolves ticket 184, since that ticket is claimed by a running session.
