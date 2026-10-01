@@ -243,6 +243,6 @@ Candidates for a shared spec here, for ticket 11 and ticket 25 to decide: the na
 
 ## Part 4. Open items
 
-- Whether the package may add CSS of its own where Yeti's CSS fails WCAG 2.2 AA (no `forced-colors` rules): `OPEN FOR HUMAN` in ticket 07's `### Triage`; 1.10 and 1.13 record the gap until the user rules.
+- Whether the package may add CSS of its own where Yeti's CSS fails WCAG 2.2 AA (no `forced-colors` rules): yes, by the user's ruling of 2026-10-02 ("Accessibility CSS: Yes.", map, Standing rulings). 1.10 and 1.13 record the gaps, and each owning spec writes the rule.
 - Testing at the floor browsers: ticket 27 (research, open).
 - The style-loading mechanism: ticket 13.

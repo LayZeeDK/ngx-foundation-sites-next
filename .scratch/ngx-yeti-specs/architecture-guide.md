@@ -472,7 +472,7 @@ Carried over as it reads (map, Release policy; the user's ruling of 2026-09-28):
 1. Implementation order. This repository's `AGENTS.md` puts `@angular/aria` first; the map's order puts the native platform first and says it wins (map, Implementation order). P16 states the map's order. Yeti makes the conflict sharper than Foundation did: Aria's Accordion over `details` or Aria's Menu over a nav of links would change Yeti's semantics (`Y/src/components/accordion/docs.md:19`; `nav/docs.md`, "It is a bar of links, not a menu system").
 2. The DI example. `AGENTS.md`'s pattern injects a parent token with `{optional: true, skipSelf: true}` in every child; building-blocks 1.9 injects it required when the part cannot exist alone and optional when it can. P4 and P23 follow building-blocks; the map's Precedence line covers it.
 3. One code path against ADR 0002's "anything newer needs a fallback". The old P16 forbade progressive enhancement onto a not-usable feature; ADR 0002 requires a fallback for a feature outside Baseline 2025. P16 settles it by taking Yeti's CSS fallbacks as the fallbacks and adding no package guard: both records hold, and the package's own code stays one path.
-4. Package CSS for WCAG gaps. P17 and P18 do not settle it; it is `OPEN FOR HUMAN` in ticket 07's `### Triage` and this guide records the gap per spec until the user rules.
+4. Package CSS for WCAG gaps. P17 and P18 did not settle it; the user did on 2026-10-02 ("Accessibility CSS: Yes.", map, Standing rulings). The package adds one small documented rule per gap in its own `ngx-yeti` cascade layer, each a row in [ledger.md](ledger.md), and each spec decides its rows.
 
 ## What this guide adds beyond the records
 
