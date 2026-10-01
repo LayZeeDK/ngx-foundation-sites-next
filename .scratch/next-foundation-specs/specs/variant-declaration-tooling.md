@@ -152,7 +152,7 @@ interface NfsVariantManifestUse {
 
 ### Later milestone: the registries of the later families and the count kind
 
-Planned and implemented in a later milestone, with the XY, Float, and Flex Grids, the Prototyping Utilities, and the Flexbox Utilities (2026-09-30, [Decide: grids, typography, and utilities move to a later milestone](../issues/174-decide-grids-typography-utilities-later-milestone.md)); until then a consumer writes those families' Foundation classes as normal classes, and no first-milestone registry is a count. The later milestone adds:
+Planned and implemented in a later milestone, with the XY Grid, the Prototyping Utilities, and the Flexbox Utilities (2026-09-30, [Decide: grids, typography, and utilities move to a later milestone](../issues/174-decide-grids-typography-utilities-later-milestone.md)); until then a consumer writes those families' Foundation classes as normal classes, and no first-milestone registry is a count. The later milestone adds:
 
 1. These registries, in this order after the first milestone's rows, each with its Variant property:
 
@@ -169,14 +169,11 @@ Planned and implemented in a later milestone, with the XY, Float, and Flex Grids
    | `$prototype-arrow-directions` | `NfsPrototypeArrowDirectionsOverrides` | `--nfs-prototype-arrow-directions` | names | `down up right left` | none | Prototyping Utilities |
    | `$grid-columns` | `NfsGridColumnsOverrides` | `--nfs-grid-columns` | count | 12 | none | XY Grid |
    | `$xy-block-grid-max` | `NfsXyBlockGridMaxOverrides` | `--nfs-xy-block-grid-max` | count | 8 | none | XY Grid |
-   | `$grid-column-count` | `NfsGridColumnCountOverrides` | `--nfs-grid-column-count` | count | 12 | none | Float Grid, Flex Grid |
-   | `$block-grid-max` | `NfsBlockGridMaxOverrides` | `--nfs-block-grid-max` | count | 8 | none | Float Grid, Flex Grid |
-   | `$grid-column-gutter` (its keys, while a map) | `NfsGridColumnGutterOverrides` | `--nfs-grid-column-gutter` | names | `small medium` | none | Float Grid |
    | `$flex-source-ordering-count` | `NfsFlexSourceOrderingCountOverrides` | `--nfs-flex-source-ordering-count` | count | 6 | none | Flexbox Utilities |
    | `$prototype-spacers-count` | `NfsPrototypeSpacersCountOverrides` | `--nfs-prototype-spacers-count` | count | 3 | none | Prototyping Utilities |
 
-   A single-length `$grid-column-gutter` generates no `.gutter-*` class, so the Float Grid's Library mixin writes `--nfs-grid-column-gutter` as the empty list and the generated file declares `small: false` and `medium: false`. The `mixins` and `uses` of these rows come from those families' specs. The `$grid-column-count` and `$block-grid-max` rows each list the Float and Flex Grids' two mixins, the second exception to one writer per property.
-2. Settings that stay deliberately not registries, beside the first milestone's: the `$prototype-*-breakpoints`, `$xy-grid`, and `$flexbox-responsive-breakpoints` flags (they gate classes); `$grid-column-alias` and the Float Grid's class-name parameters (renames of classes directives bind, left unsupported by the Float Grid); `$prototype-sizing` (its names are CSS properties that become attribute names, which a template cannot grow from Sass).
+   The `mixins` and `uses` of these rows come from those families' specs.
+2. Settings that stay deliberately not registries, beside the first milestone's: the `$prototype-*-breakpoints`, `$xy-grid`, and `$flexbox-responsive-breakpoints` flags (they gate classes); `$prototype-sizing` (its names are CSS properties that become attribute names, which a template cannot grow from Sass).
 3. The count kind: `kind: 'count'` with `count: number` (Foundation's default) in the manifest, `shape: 'count'` for a use, the `count := a whole number from 0 to 999` production of the Variant property format (a Library mixin writes a count as a bare whole number), the one member `count: N` of a count registry in the Variant declaration file and its reader (a whole-number literal), the drift row "The counts differ | wrong range | `count is <file> in the file and <sass> in <property>`", message M10 ("<property> is '<value>' in <stylesheet>; a count must be a whole number from 0 to 999.") for a count outside 0 to 999 or not a whole number, and the expected model's rule that a count registry records `count` when it differs from the default.
 4. The count helpers of the primary entry point (D3), measured by this ticket's probe with TypeScript 6.0.3 (`count: 16` accepted 16 and `'16'` and rejected 17; ranges up to 999 compiled):
 

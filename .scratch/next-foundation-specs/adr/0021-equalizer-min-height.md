@@ -18,3 +18,4 @@ Foundation's Equalizer writes the tallest `offsetHeight` as an inline `height` o
 - The directive owns the inline `min-height` of watched elements; consumer minimums go in stylesheets.
 - A pass costs one forced layout (reset, measure, apply in the `mixedReadWrite` phase), and a change settles within two passes; a content change after load may paint unequal heights for one frame.
 - Someone reading the code will see the tallest element skipped on purpose; this record is why.
+- 2026-10-01 ([Task: remove the Float Grid and Flex Grid from the bundle](../issues/187-task-remove-float-and-flex-grids.md)): the user ruled the Float Grid out of scope, so the float grid no longer stands as an example of markup CSS cannot reach; the directive's residue is non-grid markup (inline-block lists, CMS content, boxes at unrelated depths).

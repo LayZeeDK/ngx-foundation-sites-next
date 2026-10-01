@@ -1,5 +1,7 @@
 # Spec: Flex Grid
 
+> **Out of scope since 2026-10-01.** The user excluded the Flex Grid because Foundation 6.4 replaced it with the XY Grid ("From Foundation v6.4, the Flex Grid is disabled by default, replaced by the new XY Grid"). The library supports only the XY Grid. This spec is kept as history, so the links to it from earlier records still resolve. It is not part of the destination and no other spec depends on it. See [Task: remove the Float Grid and Flex Grid from the bundle](../issues/187-task-remove-float-and-flex-grids.md).
+
 Ticket: [Spec: Flex Grid](../issues/101-spec-flex-grid.md). Targets Angular 22.2, Nx 23.2, Storybook 10.6 with `@storybook/angular-vite`, Vitest 4.1.x, TypeScript 6.0.x, and Foundation for Sites 6.9.0 Sass. Written under the class rule ([ADR 0039](../adr/0039-directives-manage-every-foundation-class.md)) and the Variant typing rules ([ADR 0040](../adr/0040-variant-input-types.md)). The nearest precedent is the [Spec: XY Grid](../issues/99-spec-xy-grid.md); this spec follows its choices and says why wherever the Flex Grid's CSS forces a difference.
 
 Milestone: later. This spec is planned and implemented in a later milestone of the implementing repository, not in the first ([Decide: grids, typography, and utilities move to a later milestone](../issues/174-decide-grids-typography-utilities-later-milestone.md); Problem Statement). Revised for the later milestone by [Re-run: grid, typography, and utility specs for the later milestone](../issues/175-rerun-grid-typography-utility-specs-later-milestone.md).

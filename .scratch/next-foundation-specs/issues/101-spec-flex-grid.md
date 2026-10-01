@@ -237,3 +237,7 @@ From [Consistency review: the later-milestone waves](180-consistency-review-late
 
 - WCAG 2.2 AA, the paragraph after the table: "which is why check 4 exists" becomes "which is why documented usage 4 states the rule and the e2e reflow case asserts it". Why: the spec names no check (the map's Milestones ruling, [Decide: checks move to a later milestone](158-decide-checks-move-to-a-later-milestone.md)), and documented usage 4 is the rule that paragraph means. Impact LOW, confidence HIGH.
 - Out of Scope, the Flexbox Utilities bullet: "whose visual-order check owns" becomes "whose visual-order rule owns", as the ARIA table already says. Why: the same ruling. Impact LOW, confidence HIGH.
+
+## Note, 2026-10-01
+
+Out of scope: the user excluded the Float Grid and Flex Grid and kept only the XY Grid. The spec stays as history with an out-of-scope banner. See [Task: remove the Float Grid and Flex Grid from the bundle](187-task-remove-float-and-flex-grids.md).

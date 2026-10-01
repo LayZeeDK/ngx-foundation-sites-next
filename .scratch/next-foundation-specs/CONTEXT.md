@@ -204,23 +204,11 @@ _Avoid_: heading level (for the look), typescale (for the value), header size
 
 **Cell**:
 An element of an XY Grid, marked by `.cell`, whose size and offset per breakpoint are set on it; distinct from a table cell and from the ARIA `gridcell` role, which no layout uses.
-_Avoid_: column (the legacy grids' word), tile, grid item
+_Avoid_: column, tile, grid item
 
 **Block grid**:
-A grid whose Cells or Columns share each row equally from a per-breakpoint count set on the grid or Row (Foundation's `.<bp>-up-<n>`), rather than from each one's own size.
+A grid whose Cells share each row equally from a per-breakpoint count set on the grid (Foundation's `.<bp>-up-<n>`), rather than from each one's own size.
 _Avoid_: card grid, equal grid, up grid
-
-**Row**:
-An element of a legacy grid (the Float Grid or the Flex Grid), marked by `.row`, that holds Columns and carries the settings they share, such as a block grid count or collapsed gutters.
-_Avoid_: grid (bare), line, container
-
-**Column**:
-An element of a legacy grid's Row, marked by `.column`, whose size and offset per breakpoint are set on it, and in the Float Grid also its push, pull, and centring; in the Flex Grid a Column without a size expands into the space its Row leaves.
-_Avoid_: cell (the XY Grid's word), col, grid item
-
-**Column row**:
-An element that is both a Row and a Column, which Foundation draws as a centred, padded block for content rather than a Row of Columns.
-_Avoid_: single-column row, row column
 
 **Grid frame**:
 An XY Grid sized to the viewport that clips whatever does not fit, so that its cell blocks scroll on their own (Foundation's `.grid-frame`).
@@ -239,7 +227,7 @@ An immediate child of a Flex parent, which can align itself, take a share of the
 _Avoid_: flex item (CSS's term), cell (the XY Grid's element), column
 
 **Source ordering**:
-Foundation's per-breakpoint change of the visual order of a layout's items, through the Flexbox Utilities' order classes or the Float Grid's push and pull classes, which leaves the DOM order, the reading and focus order, as written.
+Foundation's per-breakpoint change of the visual order of a layout's items, through the Flexbox Utilities' order classes, which leaves the DOM order, the reading and focus order, as written.
 _Avoid_: reordering (bare), sort order
 
 **Application class**:
@@ -307,12 +295,12 @@ A Foundation Sass mixin that prints one component's CSS (`foundation-accordion`,
 _Avoid_: Foundation styles, component mixin
 
 **Float build**:
-Foundation's CSS compiled with Flexbox mode off (`foundation-everything($flex: false)`, what Foundation ships as its float CSS), the one `foundation-everything` compile that prints the Float Grid, and one without the XY Grid, the Flex Grid, and the Flexbox Utilities.
+Foundation's CSS compiled with Flexbox mode off (`foundation-everything($flex: false)`, what Foundation ships as its float CSS), a compile without the XY Grid and the Flexbox Utilities.
 _Avoid_: float mode, legacy build, IE build
 
 **Flexbox mode**:
 Foundation compiled with `$global-flexbox: true`, its default, in which its components lay out with flexbox; with `$global-flexbox: false` they use Foundation's older float and table layouts, and some Variant classes exist in only one of the two.
-_Avoid_: flex mode, flex build, Flex Grid (a layout system)
+_Avoid_: flex mode, flex build
 
 ### Angular side
 

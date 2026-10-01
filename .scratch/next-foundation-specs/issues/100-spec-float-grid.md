@@ -255,3 +255,7 @@ From [Re-run: grid, typography, and utility specs for the later milestone](175-r
 - Restated: D1's rationale, which said the Equalizer spec "already wrote" the names, now says it wrote them before the grids moved and gets them back when the spec lands.
 - Added: Further Notes, What the later milestone changes, per spec: per first-milestone spec, the Float Grid classes it writes in the first milestone and the directives that replace them, read from the directives each spec wrote before the ruling.
 - No directive, input, class, ARIA row, story, or test changes. Impact LOW, confidence HIGH (a user ruling applied); nothing OPEN FOR HUMAN.
+
+## Note, 2026-10-01
+
+Out of scope: the user excluded the Float Grid and Flex Grid and kept only the XY Grid. The spec stays as history with an out-of-scope banner. See [Task: remove the Float Grid and Flex Grid from the bundle](187-task-remove-float-and-flex-grids.md).
