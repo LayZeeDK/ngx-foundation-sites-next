@@ -47,6 +47,17 @@ Also write `ledger.md`. It has one row per feature the package adds that Yeti do
 - how it is tested;
 - the spec that owns it.
 
-Every spec later adds its rows. Record ADRs for cross-cutting calls. Where Aria or CDK is available but not used, the row says why (map, Standing rulings, item 37).
+Every spec later adds its rows. Seed `ledger.md` with the accessibility issues found so far, which the user ruled go there rather than in [upstream-bugs.md](../upstream-bugs.md) (map, Standing rulings, item 44). They come from [Research: Yeti against WHATWG, WAI-ARIA, the APG, and Angular Aria, CDK, and Material patterns](17-research-yeti-accessibility-and-standards.md):
+
+- the tooltip ignores Escape;
+- dropdown and nav panels stay open on focus-out;
+- the carousel pattern is incomplete;
+- vertical tabs lack `aria-orientation`;
+- the required `*` is in a field's name;
+- the demo grip has no `aria-controls`;
+- there are no `forced-colors` rules;
+- the dialog's Tab order passes through the browser UI in Chromium and WebKit.
+
+Each row records whether it was measured or read, and whether a minimal reproduction exists. Record ADRs for cross-cutting calls. Where Aria or CDK is available but not used, the row says why (map, Standing rulings, item 37).
 
 This is the architecture ticket of the map, so it runs on `fable-high`, as the map's Models note allows for cross-cutting decisions.
