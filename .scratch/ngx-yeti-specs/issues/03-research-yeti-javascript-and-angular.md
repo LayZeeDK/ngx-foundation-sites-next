@@ -46,3 +46,5 @@ Resolved 2026-10-01 by Claude Opus 5.5. Findings: [research/yeti-javascript-and-
 - Yeti in an SPA breaks in ways a wrapper would fix (inferred): `tabs.js`, `toc.js`, `enter.js` scan only at load; fragment links resolve against `<base href>`; popover panels stay open after a `routerLink` navigation; `tabs.js` writes attributes Angular may own.
 - Hypothesis: for SSR, keeping `commandfor` and `popovertarget` in the rendered HTML beats Angular click handlers, since the platform acts before hydration and event replay only replays later.
 - Not confirmed: browser behaviour (nothing was run), popover focus-out, and event replay's handling of fragment-link clicks.
+
+Note, 2026-10-01 ([Task: carry the old map's Yeti findings into this bundle](05-task-carry-yeti-findings-from-old-map.md)): section 5 of [research/yeti-foundation-7.md](../research/yeti-foundation-7.md) is an earlier count of Yeti's JavaScript.

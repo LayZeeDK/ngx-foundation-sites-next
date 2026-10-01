@@ -56,3 +56,5 @@ Resolved 2026-10-01 (Opus 5.5). Findings: [research/yeti-styles-and-lazy-loading
   - **S2:** a library-owned `<style>` from a CSS string generated at library build, with 188's runtime. It needs the same from the consumer and avoids the guard. The Yeti build step is untested.
   - **S3:** 189's counted `<link>` to Yeti's files. The consumer also adds an assets copy, and the fetch gap and URL handling remain.
   - **S4:** everything global, one `styles` entry.
+
+Note, 2026-10-01 ([Task: carry the old map's Yeti findings into this bundle](05-task-carry-yeti-findings-from-old-map.md)): sections 6 and 7 of [research/yeti-foundation-7.md](../research/yeti-foundation-7.md) are an earlier reading of the styling model and lazy loading.
