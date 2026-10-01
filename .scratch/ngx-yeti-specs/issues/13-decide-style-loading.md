@@ -1,7 +1,7 @@
 # 13. Decide: how component styles load and unload
 
 Type: grilling
-Status: open
+Status: claimed
 Blocked by: 04, 06, 08, 23
 Labels: wayfinder:grilling
 Map: ../map.md

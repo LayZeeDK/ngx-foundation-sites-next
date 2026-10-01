@@ -1,7 +1,7 @@
 # 26. Decide: how the package maps each of Yeti's `data-*` attributes
 
 Type: grilling
-Status: open
+Status: claimed
 Blocked by: 02, 07, 11, 16, 18, 20
 Labels: wayfinder:grilling
 Map: ../map.md
