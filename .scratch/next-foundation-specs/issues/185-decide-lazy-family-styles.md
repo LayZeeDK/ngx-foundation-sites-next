@@ -28,4 +28,12 @@ Grill against the two research tickets and the prototype. Decide at least:
 4. The rendering-mode contract: server HTML, hydration, `@defer`, and unloading after a leave animation (ADR 0008; building-blocks 1.6 and 1.11).
 5. Whether the first milestone keeps a global "everything" path for consumers who do not want lazy styles (ADR 0045 release policy: adding one later is not breaking, removing one is).
 6. The records to supersede or amend, and the re-run tickets that bring every first-milestone spec's Sass subsection in line.
-7. The records that assume one global compile, which both research files flag: the Variant declaration tooling reads the Variant properties from a compile of the project's global stylesheet (building-blocks 1.13; [ADR 0040](../adr/0040-variant-input-types.md); `specs/variant-declaration-tooling.md:29`); the Storybook preview includes `foundation-everything` and every Library mixin after it (`storybook-conventions.md:97`, `:122`, `:268-269`); and `foundation-everything` forces `$global-flexbox: true`, which per-family includes do not ([research/foundation-sass-per-family.md](../research/foundation-sass-per-family.md), 3.5). Added by audit 0012.
+7. The records that assume one global compile, which both research files flag: the Variant declaration tooling reads the Variant properties from a compile of the project's global stylesheet (building-blocks 1.13; [ADR 0040](../adr/0040-variant-input-types.md); `specs/variant-declaration-tooling.md:29`); the Storybook preview includes `foundation-everything` and every Library mixin after it (`storybook-conventions.md:97`, `:122`, `:268-269`); and `foundation-everything` forces `$global-flexbox: true`, which per-family includes do not ([research/foundation-sass-per-family.md](../research/foundation-sass-per-family.md), 3.5). Added by audit 0012. The user settled the `$global-flexbox` part on 2026-10-01 (below), so it is a documented assumption, not a point to decide.
+
+## User ruling on `$global-flexbox`, 2026-10-01
+
+The user wrote, verbatim:
+
+> According to https://get.foundation/sites/docs/global.html#sass-variables, $global-flexbox defaults to `true`. I consider a reasonable modern assumption that it isn't disabled.
+
+Checked against the 6.9.0 clone: `$global-flexbox: true !default;` (`scss/_global.scss:112`) and `$global-flexbox: true;` in the settings file (`scss/settings/_settings.scss:98`). The decision therefore assumes `$global-flexbox: true`, so per-family includes and `foundation-everything` give the same Menu output that 3.5 of the findings measured.
