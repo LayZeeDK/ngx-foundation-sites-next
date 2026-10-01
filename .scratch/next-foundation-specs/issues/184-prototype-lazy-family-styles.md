@@ -1,7 +1,7 @@
 # 184. Prototype: a directive that loads and unloads its family's consumer-compiled styles
 
 Type: prototype
-Status: open
+Status: claimed
 Blocked by: 182, 183
 Labels: wayfinder:prototype
 Map: ../map.md
