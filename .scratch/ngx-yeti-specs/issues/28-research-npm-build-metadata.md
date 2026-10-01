@@ -1,0 +1,15 @@
+# 28. Research: whether the npm registry keeps a version's build metadata
+
+Type: research
+Status: open
+Blocked by: none
+Labels: wayfinder:research
+Map: ../map.md
+
+## Question
+
+The user's version format (map, Standing rulings, 2026-10-02; [ADR 0017](../adr/0017-release-policy-with-a-pinned-yeti.md)) puts the pinned Yeti in semver build metadata: `0.220200.0+yeti.7.0.0-alpha.0.f52d1e8`. `npm pack` with npm 11.16 keeps the `+` suffix in `package.json` and the tarball name (measured). Does the npm registry keep it once the version is published, and how does it show up in `npm view`, `npm install ngx-yeti@<version>`, the lockfile, `ng update`, and `nx migrate`? Do any registry rules on build metadata (for example, refusing two versions that differ only in metadata) affect this scheme, where every release also bumps its core version?
+
+## How to work it
+
+Use a `/research` subagent and read sources only: npm's docs, the source of the npm CLI, `pacote`, `npm-registry-fetch`, `@npmcli/package-json` (its `normalize.js` calls `semver.clean`, which strips build metadata; find out which commands run it), and registry issues or RFCs. Also check published packages that already use build metadata. Do not publish anything: a throwaway publish is outward-facing and needs the user's own confirmation. If the sources leave the answer open, say so and describe the publish test that would settle it. Write `research/npm-build-metadata.md` and append an `## Answer`. Decide nothing.
