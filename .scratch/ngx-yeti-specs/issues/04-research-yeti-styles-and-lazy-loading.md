@@ -1,7 +1,7 @@
 # 04. Research: Yeti's styling model, and loading component styles lazily
 
 Type: research
-Status: open
+Status: claimed
 Blocked by:
 Labels: wayfinder:research
 Map: ../map.md

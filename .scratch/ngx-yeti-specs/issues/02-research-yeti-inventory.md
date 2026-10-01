@@ -1,7 +1,7 @@
 # 02. Research: inventory of Yeti's components, layouts, recipes, utilities, and contract
 
 Type: research
-Status: open
+Status: claimed
 Blocked by:
 Labels: wayfinder:research
 Map: ../map.md

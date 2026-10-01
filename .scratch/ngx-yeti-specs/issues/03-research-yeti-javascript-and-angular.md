@@ -1,7 +1,7 @@
 # 03. Research: Yeti's JavaScript modules and what Angular adds
 
 Type: research
-Status: open
+Status: claimed
 Blocked by:
 Labels: wayfinder:research
 Map: ../map.md

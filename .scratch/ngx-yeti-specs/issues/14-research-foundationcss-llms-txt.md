@@ -1,7 +1,7 @@
 # 14. Research: Foundation's `llms.txt` and `llms-full.txt` as sources for this map
 
 Type: research
-Status: open
+Status: claimed
 Blocked by:
 Labels: wayfinder:research
 Map: ../map.md

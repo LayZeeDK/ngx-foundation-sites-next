@@ -1,7 +1,7 @@
 # 01. Research: Angular 22's browser baseline against what Yeti expects
 
 Type: research
-Status: open
+Status: claimed
 Blocked by:
 Labels: wayfinder:research
 Map: ../map.md
