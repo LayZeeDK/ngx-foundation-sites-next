@@ -49,3 +49,4 @@ We decided:
 - Where `frozen.js` runs as a test layer beside the pin-move check is for the testing decision (map, "Inherited preferences and rulings", Testing).
 
 - 2026-10-02: the user ruled on the open vendoring item, verbatim: "Vendoring: Yes, but if possible don't bundle Yeti's CSS in our package. Try to find a way to let the consumer" (the message ends there). Redistributing Yeti's files is allowed; whether the package ships Yeti's CSS is reopened and goes to [Decide: how component styles load and unload](../issues/13-decide-style-loading.md), on the orchestrator's reading that the consumer should provide it.
+- 2026-10-02: the user completed the vendoring ruling, verbatim: "Vendoring: Try to find a way to let the consumer bring a build." [Decide: how component styles load and unload](../issues/13-decide-style-loading.md) looks for that route first.
