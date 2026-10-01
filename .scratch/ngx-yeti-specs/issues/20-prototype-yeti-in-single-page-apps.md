@@ -1,7 +1,7 @@
 # 20. Prototype: Yeti's modules in a single-page Angular app
 
 Type: prototype
-Status: open
+Status: claimed
 Blocked by: 03
 Labels: wayfinder:prototype
 Map: ../map.md

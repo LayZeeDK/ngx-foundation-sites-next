@@ -1,7 +1,7 @@
 # 16. Research: binding Yeti's `yeti:*` events in Angular templates
 
 Type: research
-Status: open
+Status: claimed
 Blocked by: 03
 Labels: wayfinder:research
 Map: ../map.md

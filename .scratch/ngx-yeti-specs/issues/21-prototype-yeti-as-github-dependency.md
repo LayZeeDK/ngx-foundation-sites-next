@@ -1,7 +1,7 @@
 # 21. Prototype: Yeti as a dependency from GitHub at a pinned commit
 
 Type: prototype
-Status: open
+Status: claimed
 Blocked by:
 Labels: wayfinder:prototype
 Map: ../map.md

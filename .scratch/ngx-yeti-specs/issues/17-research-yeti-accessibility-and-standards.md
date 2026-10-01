@@ -1,7 +1,7 @@
 # 17. Research: Yeti against WHATWG, WAI-ARIA, the APG, and Angular Aria, CDK, and Material patterns
 
 Type: research
-Status: open
+Status: claimed
 Blocked by: 02, 03
 Labels: wayfinder:research
 Map: ../map.md

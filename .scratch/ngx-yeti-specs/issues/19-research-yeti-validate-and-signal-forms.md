@@ -1,7 +1,7 @@
 # 19. Research: what `validate.js` does, and replacing it with Angular Signal Forms
 
 Type: research
-Status: open
+Status: claimed
 Blocked by: 03
 Labels: wayfinder:research
 Map: ../map.md

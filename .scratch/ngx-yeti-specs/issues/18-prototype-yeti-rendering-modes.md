@@ -1,7 +1,7 @@
 # 18. Prototype: Yeti under SSR, hydration, `@defer`, event replay, and `animate.enter` and `animate.leave`
 
 Type: prototype
-Status: open
+Status: claimed
 Blocked by: 03
 Labels: wayfinder:prototype
 Map: ../map.md
