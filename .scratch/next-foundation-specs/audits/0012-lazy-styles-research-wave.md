@@ -226,4 +226,4 @@ The orchestrator applied the fixes on 2026-10-01, each as the finding's Fix stat
 - L4: applied to the findings (open unknown 3) and ticket 183's Answer.
 - L5: applied; the five section signs read "section".
 - L6: the README count and audit list are applied. The claim commit `60b9ca6` is not reworded: rewording also rewrites the audit commit after it while a prototype session is editing the working tree, and the gap is a missing body on a one-line status change. Recorded here instead.
-- L7: deferred to the commit that resolves ticket 184, since that ticket is claimed by a running session.
+- L7: applied in the commit that resolves ticket 184, after its session finished.

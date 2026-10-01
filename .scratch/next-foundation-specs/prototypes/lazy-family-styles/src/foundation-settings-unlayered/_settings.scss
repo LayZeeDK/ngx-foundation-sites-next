@@ -1,0 +1,4 @@
+// PROTOTYPE ONLY: the `unlayered` build. Sets the switch, then loads the consumer's settings
+// (the next includePaths entry has no file of the same name, so import it by its path).
+$nfs-layers: false;
+@import '../foundation-settings/settings';

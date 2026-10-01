@@ -1,0 +1,136 @@
+{
+  "chromium": {
+    "families layered, global and forms unlayered": {
+      "differences": 44,
+      "elements": [
+        "btn"
+      ],
+      "properties": 44,
+      "examples": [
+        "btn background-color: rgb(163, 0, 30) -> rgba(0, 0, 0, 0)",
+        "btn cursor: pointer -> auto",
+        "btn font-size: 14.4px -> 16px",
+        "btn height: 48.0625px -> 16px",
+        "btn line-height: 14.4px -> 16px",
+        "btn margin-bottom: 16px -> 0px",
+        "btn padding-bottom: 15.84px -> 0px",
+        "btn padding-left: 31.68px -> 0px",
+        "btn padding-right: 31.68px -> 0px",
+        "btn padding-top: 15.84px -> 0px",
+        "btn perspective-origin: 53.4844px 24.0312px -> 23.125px 8px",
+        "btn transform-origin: 53.4922px 24.0312px -> 23.1328px 8px"
+      ]
+    },
+    "global and forms in the first layers (the app)": {
+      "differences": 0,
+      "elements": [],
+      "properties": 0,
+      "examples": []
+    },
+    "the running app (lazy carriers, SSR + hydration)": {
+      "differences": 0,
+      "elements": [],
+      "properties": 0,
+      "examples": []
+    }
+  },
+  "firefox": {
+    "families layered, global and forms unlayered": {
+      "differences": 44,
+      "elements": [
+        "btn"
+      ],
+      "properties": 44,
+      "examples": [
+        "btn background-color: rgb(163, 0, 30) -> rgba(0, 0, 0, 0)",
+        "btn cursor: pointer -> auto",
+        "btn font-size: 14.4063px -> 16px",
+        "btn height: 48.1px -> 16px",
+        "btn line-height: 14.4px -> 16px",
+        "btn margin-bottom: 16px -> 0px",
+        "btn padding-bottom: 15.8469px -> 0px",
+        "btn padding-left: 31.6938px -> 0px",
+        "btn padding-right: 31.6938px -> 0px",
+        "btn padding-top: 15.8469px -> 0px",
+        "btn perspective-origin: 53.525px 24.05px -> 23.1333px 8px",
+        "btn transform-origin: 53.525px 24.05px -> 23.1333px 8px"
+      ]
+    },
+    "global and forms in the first layers (the app)": {
+      "differences": 0,
+      "elements": [],
+      "properties": 0,
+      "examples": []
+    },
+    "the running app (lazy carriers, SSR + hydration)": {
+      "differences": 23,
+      "elements": [
+        "toggle-hydrated",
+        "toggle-deferred",
+        "c-hydrated",
+        "btn",
+        "menu",
+        "li",
+        "a",
+        "dd",
+        "dd-sub",
+        "form",
+        "label",
+        "in-text",
+        "sel",
+        "option",
+        "c-deferred"
+      ],
+      "properties": 1,
+      "examples": [
+        "toggle-hydrated font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif -> Helvetica Neue, Helvetica, Roboto, Arial, sans-serif",
+        "toggle-deferred font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif -> Helvetica Neue, Helvetica, Roboto, Arial, sans-serif",
+        "c-hydrated font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif -> Helvetica Neue, Helvetica, Roboto, Arial, sans-serif",
+        "btn font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif -> Helvetica Neue, Helvetica, Roboto, Arial, sans-serif",
+        "menu font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif -> Helvetica Neue, Helvetica, Roboto, Arial, sans-serif",
+        "li font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif -> Helvetica Neue, Helvetica, Roboto, Arial, sans-serif",
+        "a font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif -> Helvetica Neue, Helvetica, Roboto, Arial, sans-serif",
+        "li font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif -> Helvetica Neue, Helvetica, Roboto, Arial, sans-serif",
+        "a font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif -> Helvetica Neue, Helvetica, Roboto, Arial, sans-serif",
+        "dd font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif -> Helvetica Neue, Helvetica, Roboto, Arial, sans-serif",
+        "li font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif -> Helvetica Neue, Helvetica, Roboto, Arial, sans-serif",
+        "a font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif -> Helvetica Neue, Helvetica, Roboto, Arial, sans-serif"
+      ]
+    }
+  },
+  "webkit": {
+    "families layered, global and forms unlayered": {
+      "differences": 44,
+      "elements": [
+        "btn"
+      ],
+      "properties": 44,
+      "examples": [
+        "btn background-color: rgb(163, 0, 30) -> rgba(0, 0, 0, 0)",
+        "btn cursor: pointer -> auto",
+        "btn font-size: 14.4px -> 16px",
+        "btn height: 48.046875px -> 16px",
+        "btn line-height: 14.4px -> 16px",
+        "btn margin-bottom: 16px -> 0px",
+        "btn padding-bottom: 15.839999px -> 0px",
+        "btn padding-left: 31.679998px -> 0px",
+        "btn padding-right: 31.679998px -> 0px",
+        "btn padding-top: 15.839999px -> 0px",
+        "btn perspective-origin: 53.492188px 24.023438px -> 23.132813px 8px",
+        "btn transform-origin: 53.492188px 24.023438px -> 23.132813px 8px"
+      ]
+    },
+    "global and forms in the first layers (the app)": {
+      "differences": 0,
+      "elements": [],
+      "properties": 0,
+      "examples": []
+    },
+    "the running app (lazy carriers, SSR + hydration)": {
+      "differences": 0,
+      "elements": [],
+      "properties": 0,
+      "examples": []
+    }
+  }
+}

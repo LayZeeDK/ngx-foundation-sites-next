@@ -1,0 +1,962 @@
+{
+  "beasties": {
+    "familyStylesEqualCompiledCss": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "firstStyle": {
+      "attrs": "",
+      "start": "@layer nfs.global,nfs.forms,nfs.button,nfs.callout,nfs.menu,nfs.dropdown-menu;@layer nfs.g",
+      "length": 3158
+    },
+    "firstStyleBeforeStylesheetLink": true,
+    "familyStylesAfterIt": [
+      "ng-app-id=\"ng\" @layer nfs.button{.button{disp [7897]",
+      "ng-app-id=\"ng\" @layer nfs.menu{.menu{padding: [3811]",
+      "ng-app-id=\"ng\" @layer nfs.dropdown-menu{.drop [5528]",
+      "ng-app-id=\"ng\" @layer nfs.callout{.callout{ba [579]"
+    ],
+    "link": "<link rel=\"stylesheet\" href=\"styles-NWRFCIUC.css\" media=\"print\" data-beasties-media=\"all\">"
+  },
+  "chromium": {
+    "m1": {
+      "pass": true,
+      "got": {
+        "calloutPadding": "44px",
+        "buttonBg": "rgb(163, 0, 30)",
+        "buttonRadius": "8px",
+        "buttonPaddingLeft": "31.68px",
+        "menuLinkPaddingTop": "19.2px",
+        "submenuBg": "rgb(253, 243, 208)"
+      }
+    },
+    "m2": {
+      "pass": true,
+      "steps": [
+        {
+          "label": "before first instance",
+          "callout": 0
+        },
+        {
+          "label": "1 instance",
+          "callout": 1
+        },
+        {
+          "label": "2 instances",
+          "callout": 1
+        },
+        {
+          "label": "1 instance after remove",
+          "callout": 1
+        },
+        {
+          "label": "0 instances",
+          "callout": 0
+        },
+        {
+          "label": "re-added",
+          "callout": 1
+        },
+        {
+          "label": "0 again",
+          "callout": 0
+        }
+      ],
+      "serverHtmlHasCalloutRules": false
+    },
+    "m3m7": {
+      "serverCounts": {
+        "button": 1,
+        "callout": 1,
+        "menu": 1,
+        "dropdown-menu": 1
+      },
+      "noJs": {
+        "noJsCallout": "44px",
+        "noJsDeferred": "44px",
+        "noJsSubmenu": "none"
+      },
+      "afterHydration": {
+        "button": 1,
+        "callout": 1,
+        "menu": 1,
+        "dropdown-menu": 1,
+        "order": "button > menu > dropdown-menu > callout"
+      },
+      "styleMutationsAfterDcl": [],
+      "unstyledFrames": 0,
+      "framesSampled": 59,
+      "m7": {
+        "stylesWhileDehydratedRemains": 1,
+        "dehydratedPadding": "44px",
+        "afterHydratingDeferred": 1,
+        "mutationsAtIncrementalHydration": 0,
+        "afterLastDestroyed": 0,
+        "probeAfterUnload": "0px"
+      },
+      "m7b": {
+        "deferredInDom": true,
+        "stylesAfterDehydratedRemoved": 1
+      }
+    },
+    "m3m7_holdOff": {
+      "serverCounts": {
+        "button": 1,
+        "callout": 1,
+        "menu": 1,
+        "dropdown-menu": 1
+      },
+      "noJs": {
+        "noJsCallout": "44px",
+        "noJsDeferred": "44px",
+        "noJsSubmenu": "none"
+      },
+      "afterHydration": {
+        "button": 1,
+        "callout": 1,
+        "menu": 1,
+        "dropdown-menu": 1,
+        "order": "button > menu > dropdown-menu > callout"
+      },
+      "styleMutationsAfterDcl": [],
+      "unstyledFrames": 0,
+      "framesSampled": 60,
+      "m7": {
+        "stylesWhileDehydratedRemains": 0,
+        "dehydratedPadding": "0px",
+        "afterHydratingDeferred": 1,
+        "mutationsAtIncrementalHydration": 2,
+        "afterLastDestroyed": 0,
+        "probeAfterUnload": "0px"
+      },
+      "m7b": {
+        "deferredInDom": true,
+        "stylesAfterDehydratedRemoved": 0
+      }
+    },
+    "m3ClientDefer": {
+      "lazy carrier, cached": {
+        "framesWithElement": 60,
+        "unstyledFrames": 0,
+        "firstValues": [
+          "44px",
+          "44px",
+          "44px"
+        ],
+        "calloutStyles": 1
+      },
+      "lazy carrier, chunk delayed 300 ms": {
+        "framesWithElement": 59,
+        "unstyledFrames": 19,
+        "firstValues": [
+          "0px",
+          "0px",
+          "0px"
+        ],
+        "calloutStyles": 1
+      },
+      "eager carrier": {
+        "framesWithElement": 60,
+        "unstyledFrames": 0,
+        "firstValues": [
+          "44px",
+          "44px",
+          "44px"
+        ],
+        "calloutStyles": 1
+      }
+    },
+    "m4": {
+      "layered": {
+        "client: menu sheet first": {
+          "display": "none",
+          "position": "absolute",
+          "order": "menu > dropdown-menu"
+        },
+        "client: dropdown-menu sheet first": {
+          "display": "none",
+          "position": "absolute",
+          "order": "dropdown-menu > menu"
+        },
+        "client: plain menu, then dropdown-menu first": {
+          "display": "none",
+          "position": "absolute",
+          "order": "menu > dropdown-menu"
+        },
+        "server: menu sheet first": {
+          "display": "none",
+          "position": "absolute",
+          "order": "menu > dropdown-menu",
+          "framesDisplay": "none"
+        },
+        "server: dropdown-menu sheet first": {
+          "display": "none",
+          "position": "absolute",
+          "order": "dropdown-menu > menu",
+          "framesDisplay": "none"
+        }
+      },
+      "unlayered": {
+        "client: menu sheet first": {
+          "display": "none",
+          "position": "absolute",
+          "order": "menu > dropdown-menu"
+        },
+        "client: dropdown-menu sheet first": {
+          "display": "flex",
+          "position": "relative",
+          "order": "dropdown-menu > menu"
+        },
+        "client: plain menu, then dropdown-menu first": {
+          "display": "none",
+          "position": "absolute",
+          "order": "menu > dropdown-menu"
+        },
+        "server: menu sheet first": {
+          "display": "none",
+          "position": "absolute",
+          "order": "menu > dropdown-menu",
+          "framesDisplay": "none"
+        },
+        "server: dropdown-menu sheet first": {
+          "display": "flex",
+          "position": "relative",
+          "order": "dropdown-menu > menu",
+          "framesDisplay": "flex"
+        }
+      }
+    },
+    "m6": {
+      "immediate/L1 callout inside leaving element": {
+        "duringLeave": {
+          "wrapperInDom": true,
+          "calloutPadding": "44px",
+          "styles": 1
+        },
+        "afterLeave": 1,
+        "afterRecheck": "44px/1 44px/1"
+      },
+      "immediate/L2 unrelated leave running": {
+        "afterLeave": 1,
+        "afterRecheck": "44px/1 44px/1"
+      },
+      "immediate/L3 (animate.leave) listener on the page": {
+        "whileListenerPresent": 1,
+        "afterListenerLeft": 1,
+        "afterRecheck": "44px/1 44px/1"
+      },
+      "animations/L1 callout inside leaving element": {
+        "duringLeave": {
+          "wrapperInDom": true,
+          "calloutPadding": "44px",
+          "styles": 1
+        },
+        "afterLeave": 0,
+        "afterRecheck": "44px/0 44px/0"
+      },
+      "animations/L2 unrelated leave running": {
+        "afterLeave": 0,
+        "afterRecheck": "44px/0 44px/0"
+      },
+      "animations/L3 (animate.leave) listener on the page": {
+        "whileListenerPresent": 1,
+        "afterListenerLeft": 1,
+        "afterRecheck": "44px/1 44px/1"
+      },
+      "private/L1 callout inside leaving element": {
+        "duringLeave": {
+          "wrapperInDom": true,
+          "calloutPadding": "44px",
+          "styles": 1
+        },
+        "afterLeave": 0,
+        "afterRecheck": "44px/0 44px/0"
+      },
+      "private/L2 unrelated leave running": {
+        "afterLeave": 0,
+        "afterRecheck": "44px/0 44px/0"
+      },
+      "private/L3 (animate.leave) listener on the page": {
+        "whileListenerPresent": 1,
+        "afterListenerLeft": 0,
+        "afterRecheck": "44px/0 44px/0"
+      },
+      "repair/L1 callout inside leaving element": {
+        "duringLeave": {
+          "wrapperInDom": true,
+          "calloutPadding": "44px",
+          "styles": 1
+        },
+        "afterLeave": 0,
+        "afterRecheck": "44px/0 44px/0"
+      },
+      "repair/L2 unrelated leave running": {
+        "afterLeave": 0,
+        "afterRecheck": "44px/0 44px/0"
+      },
+      "repair/L3 (animate.leave) listener on the page": {
+        "whileListenerPresent": 0,
+        "afterListenerLeft": 0,
+        "afterRecheck": "44px/0 44px/0"
+      }
+    },
+    "m10": {
+      "n1000": {
+        "family": {
+          "createMs": 28,
+          "destroyMs": 14,
+          "heapKb": 1442,
+          "stylesWhileRendered": 1
+        },
+        "instance": {
+          "createMs": 43,
+          "destroyMs": 10,
+          "heapKb": 3226,
+          "stylesWhileRendered": 1
+        }
+      },
+      "n5000": {
+        "family": {
+          "createMs": 189,
+          "destroyMs": 20,
+          "heapKb": 3572,
+          "stylesWhileRendered": 1
+        },
+        "instance": {
+          "createMs": 227,
+          "destroyMs": 22,
+          "heapKb": 12469,
+          "stylesWhileRendered": 1
+        }
+      }
+    }
+  },
+  "firefox": {
+    "m1": {
+      "pass": true,
+      "got": {
+        "calloutPadding": "44px",
+        "buttonBg": "rgb(163, 0, 30)",
+        "buttonRadius": "8px",
+        "buttonPaddingLeft": "31.6938px",
+        "menuLinkPaddingTop": "19.2px",
+        "submenuBg": "rgb(253, 243, 208)"
+      }
+    },
+    "m2": {
+      "pass": true,
+      "steps": [
+        {
+          "label": "before first instance",
+          "callout": 0
+        },
+        {
+          "label": "1 instance",
+          "callout": 1
+        },
+        {
+          "label": "2 instances",
+          "callout": 1
+        },
+        {
+          "label": "1 instance after remove",
+          "callout": 1
+        },
+        {
+          "label": "0 instances",
+          "callout": 0
+        },
+        {
+          "label": "re-added",
+          "callout": 1
+        },
+        {
+          "label": "0 again",
+          "callout": 0
+        }
+      ],
+      "serverHtmlHasCalloutRules": false
+    },
+    "m3m7": {
+      "serverCounts": {
+        "button": 1,
+        "callout": 1,
+        "menu": 1,
+        "dropdown-menu": 1
+      },
+      "noJs": {
+        "noJsCallout": "44px",
+        "noJsDeferred": "44px",
+        "noJsSubmenu": "none"
+      },
+      "afterHydration": {
+        "button": 1,
+        "callout": 1,
+        "menu": 1,
+        "dropdown-menu": 1,
+        "order": "button > menu > dropdown-menu > callout"
+      },
+      "styleMutationsAfterDcl": [],
+      "unstyledFrames": 0,
+      "framesSampled": 57,
+      "m7": {
+        "stylesWhileDehydratedRemains": 1,
+        "dehydratedPadding": "44px",
+        "afterHydratingDeferred": 1,
+        "mutationsAtIncrementalHydration": 0,
+        "afterLastDestroyed": 0,
+        "probeAfterUnload": "0px"
+      },
+      "m7b": {
+        "deferredInDom": true,
+        "stylesAfterDehydratedRemoved": 1
+      }
+    },
+    "m3m7_holdOff": {
+      "serverCounts": {
+        "button": 1,
+        "callout": 1,
+        "menu": 1,
+        "dropdown-menu": 1
+      },
+      "noJs": {
+        "noJsCallout": "44px",
+        "noJsDeferred": "44px",
+        "noJsSubmenu": "none"
+      },
+      "afterHydration": {
+        "button": 1,
+        "callout": 1,
+        "menu": 1,
+        "dropdown-menu": 1,
+        "order": "button > menu > dropdown-menu > callout"
+      },
+      "styleMutationsAfterDcl": [],
+      "unstyledFrames": 0,
+      "framesSampled": 59,
+      "m7": {
+        "stylesWhileDehydratedRemains": 0,
+        "dehydratedPadding": "0px",
+        "afterHydratingDeferred": 1,
+        "mutationsAtIncrementalHydration": 2,
+        "afterLastDestroyed": 0,
+        "probeAfterUnload": "0px"
+      },
+      "m7b": {
+        "deferredInDom": true,
+        "stylesAfterDehydratedRemoved": 0
+      }
+    },
+    "m3ClientDefer": {
+      "lazy carrier, cached": {
+        "framesWithElement": 61,
+        "unstyledFrames": 1,
+        "firstValues": [
+          "0px",
+          "44px",
+          "44px"
+        ],
+        "calloutStyles": 1
+      },
+      "lazy carrier, chunk delayed 300 ms": {
+        "framesWithElement": 62,
+        "unstyledFrames": 19,
+        "firstValues": [
+          "0px",
+          "0px",
+          "0px"
+        ],
+        "calloutStyles": 1
+      },
+      "eager carrier": {
+        "framesWithElement": 61,
+        "unstyledFrames": 0,
+        "firstValues": [
+          "44px",
+          "44px",
+          "44px"
+        ],
+        "calloutStyles": 1
+      }
+    },
+    "m4": {
+      "layered": {
+        "client: menu sheet first": {
+          "display": "none",
+          "position": "absolute",
+          "order": "menu > dropdown-menu"
+        },
+        "client: dropdown-menu sheet first": {
+          "display": "none",
+          "position": "absolute",
+          "order": "dropdown-menu > menu"
+        },
+        "client: plain menu, then dropdown-menu first": {
+          "display": "none",
+          "position": "absolute",
+          "order": "menu > dropdown-menu"
+        },
+        "server: menu sheet first": {
+          "display": "none",
+          "position": "absolute",
+          "order": "menu > dropdown-menu",
+          "framesDisplay": "none"
+        },
+        "server: dropdown-menu sheet first": {
+          "display": "none",
+          "position": "absolute",
+          "order": "dropdown-menu > menu",
+          "framesDisplay": "none"
+        }
+      },
+      "unlayered": {
+        "client: menu sheet first": {
+          "display": "none",
+          "position": "absolute",
+          "order": "menu > dropdown-menu"
+        },
+        "client: dropdown-menu sheet first": {
+          "display": "flex",
+          "position": "relative",
+          "order": "dropdown-menu > menu"
+        },
+        "client: plain menu, then dropdown-menu first": {
+          "display": "none",
+          "position": "absolute",
+          "order": "menu > dropdown-menu"
+        },
+        "server: menu sheet first": {
+          "display": "none",
+          "position": "absolute",
+          "order": "menu > dropdown-menu",
+          "framesDisplay": "none"
+        },
+        "server: dropdown-menu sheet first": {
+          "display": "flex",
+          "position": "relative",
+          "order": "dropdown-menu > menu",
+          "framesDisplay": "flex"
+        }
+      }
+    },
+    "m6": {
+      "immediate/L1 callout inside leaving element": {
+        "duringLeave": {
+          "wrapperInDom": true,
+          "calloutPadding": "44px",
+          "styles": 1
+        },
+        "afterLeave": 1,
+        "afterRecheck": "44px/1 44px/1"
+      },
+      "immediate/L2 unrelated leave running": {
+        "afterLeave": 1,
+        "afterRecheck": "44px/1 44px/1"
+      },
+      "immediate/L3 (animate.leave) listener on the page": {
+        "whileListenerPresent": 1,
+        "afterListenerLeft": 1,
+        "afterRecheck": "44px/1 44px/1"
+      },
+      "animations/L1 callout inside leaving element": {
+        "duringLeave": {
+          "wrapperInDom": true,
+          "calloutPadding": "44px",
+          "styles": 1
+        },
+        "afterLeave": 0,
+        "afterRecheck": "44px/0 44px/0"
+      },
+      "animations/L2 unrelated leave running": {
+        "afterLeave": 0,
+        "afterRecheck": "44px/0 44px/0"
+      },
+      "animations/L3 (animate.leave) listener on the page": {
+        "whileListenerPresent": 1,
+        "afterListenerLeft": 1,
+        "afterRecheck": "44px/1 44px/1"
+      },
+      "private/L1 callout inside leaving element": {
+        "duringLeave": {
+          "wrapperInDom": true,
+          "calloutPadding": "44px",
+          "styles": 1
+        },
+        "afterLeave": 0,
+        "afterRecheck": "44px/0 44px/0"
+      },
+      "private/L2 unrelated leave running": {
+        "afterLeave": 0,
+        "afterRecheck": "44px/0 44px/0"
+      },
+      "private/L3 (animate.leave) listener on the page": {
+        "whileListenerPresent": 1,
+        "afterListenerLeft": 0,
+        "afterRecheck": "44px/0 44px/0"
+      },
+      "repair/L1 callout inside leaving element": {
+        "duringLeave": {
+          "wrapperInDom": true,
+          "calloutPadding": "44px",
+          "styles": 1
+        },
+        "afterLeave": 0,
+        "afterRecheck": "44px/0 44px/0"
+      },
+      "repair/L2 unrelated leave running": {
+        "afterLeave": 0,
+        "afterRecheck": "44px/0 44px/0"
+      },
+      "repair/L3 (animate.leave) listener on the page": {
+        "whileListenerPresent": 0,
+        "afterListenerLeft": 0,
+        "afterRecheck": "44px/0 44px/0"
+      }
+    },
+    "m10": {
+      "n1000": {
+        "family": {
+          "createMs": 30,
+          "destroyMs": 26,
+          "heapKb": null,
+          "stylesWhileRendered": 1
+        },
+        "instance": {
+          "createMs": 31,
+          "destroyMs": 26,
+          "heapKb": null,
+          "stylesWhileRendered": 1
+        }
+      },
+      "n5000": {
+        "family": {
+          "createMs": 79,
+          "destroyMs": 22,
+          "heapKb": null,
+          "stylesWhileRendered": 1
+        },
+        "instance": {
+          "createMs": 128,
+          "destroyMs": 20,
+          "heapKb": null,
+          "stylesWhileRendered": 1
+        }
+      }
+    }
+  },
+  "webkit": {
+    "m1": {
+      "pass": true,
+      "got": {
+        "calloutPadding": "44px",
+        "buttonBg": "rgb(163, 0, 30)",
+        "buttonRadius": "8px",
+        "buttonPaddingLeft": "31.679998px",
+        "menuLinkPaddingTop": "19.200001px",
+        "submenuBg": "rgb(253, 243, 208)"
+      }
+    },
+    "m2": {
+      "pass": true,
+      "steps": [
+        {
+          "label": "before first instance",
+          "callout": 0
+        },
+        {
+          "label": "1 instance",
+          "callout": 1
+        },
+        {
+          "label": "2 instances",
+          "callout": 1
+        },
+        {
+          "label": "1 instance after remove",
+          "callout": 1
+        },
+        {
+          "label": "0 instances",
+          "callout": 0
+        },
+        {
+          "label": "re-added",
+          "callout": 1
+        },
+        {
+          "label": "0 again",
+          "callout": 0
+        }
+      ],
+      "serverHtmlHasCalloutRules": false
+    },
+    "m3m7": {
+      "serverCounts": {
+        "button": 1,
+        "callout": 1,
+        "menu": 1,
+        "dropdown-menu": 1
+      },
+      "noJs": {
+        "noJsCallout": "44px",
+        "noJsDeferred": "44px",
+        "noJsSubmenu": "none"
+      },
+      "afterHydration": {
+        "button": 1,
+        "callout": 1,
+        "menu": 1,
+        "dropdown-menu": 1,
+        "order": "button > menu > dropdown-menu > callout"
+      },
+      "styleMutationsAfterDcl": [],
+      "unstyledFrames": 0,
+      "framesSampled": 59,
+      "m7": {
+        "stylesWhileDehydratedRemains": 1,
+        "dehydratedPadding": "44px",
+        "afterHydratingDeferred": 1,
+        "mutationsAtIncrementalHydration": 0,
+        "afterLastDestroyed": 0,
+        "probeAfterUnload": "0px"
+      },
+      "m7b": {
+        "deferredInDom": true,
+        "stylesAfterDehydratedRemoved": 1
+      }
+    },
+    "m3m7_holdOff": {
+      "serverCounts": {
+        "button": 1,
+        "callout": 1,
+        "menu": 1,
+        "dropdown-menu": 1
+      },
+      "noJs": {
+        "noJsCallout": "44px",
+        "noJsDeferred": "44px",
+        "noJsSubmenu": "none"
+      },
+      "afterHydration": {
+        "button": 1,
+        "callout": 1,
+        "menu": 1,
+        "dropdown-menu": 1,
+        "order": "button > menu > dropdown-menu > callout"
+      },
+      "styleMutationsAfterDcl": [],
+      "unstyledFrames": 0,
+      "framesSampled": 59,
+      "m7": {
+        "stylesWhileDehydratedRemains": 0,
+        "dehydratedPadding": "0px",
+        "afterHydratingDeferred": 1,
+        "mutationsAtIncrementalHydration": 2,
+        "afterLastDestroyed": 0,
+        "probeAfterUnload": "0px"
+      },
+      "m7b": {
+        "deferredInDom": true,
+        "stylesAfterDehydratedRemoved": 0
+      }
+    },
+    "m3ClientDefer": {
+      "lazy carrier, cached": {
+        "framesWithElement": 63,
+        "unstyledFrames": 0,
+        "firstValues": [
+          "44px",
+          "44px",
+          "44px"
+        ],
+        "calloutStyles": 1
+      },
+      "lazy carrier, chunk delayed 300 ms": {
+        "framesWithElement": 63,
+        "unstyledFrames": 20,
+        "firstValues": [
+          "0px",
+          "0px",
+          "0px"
+        ],
+        "calloutStyles": 1
+      },
+      "eager carrier": {
+        "framesWithElement": 63,
+        "unstyledFrames": 0,
+        "firstValues": [
+          "44px",
+          "44px",
+          "44px"
+        ],
+        "calloutStyles": 1
+      }
+    },
+    "m4": {
+      "layered": {
+        "client: menu sheet first": {
+          "display": "none",
+          "position": "absolute",
+          "order": "menu > dropdown-menu"
+        },
+        "client: dropdown-menu sheet first": {
+          "display": "none",
+          "position": "absolute",
+          "order": "dropdown-menu > menu"
+        },
+        "client: plain menu, then dropdown-menu first": {
+          "display": "none",
+          "position": "absolute",
+          "order": "menu > dropdown-menu"
+        },
+        "server: menu sheet first": {
+          "display": "none",
+          "position": "absolute",
+          "order": "menu > dropdown-menu",
+          "framesDisplay": "none"
+        },
+        "server: dropdown-menu sheet first": {
+          "display": "none",
+          "position": "absolute",
+          "order": "dropdown-menu > menu",
+          "framesDisplay": "none"
+        }
+      },
+      "unlayered": {
+        "client: menu sheet first": {
+          "display": "none",
+          "position": "absolute",
+          "order": "menu > dropdown-menu"
+        },
+        "client: dropdown-menu sheet first": {
+          "display": "flex",
+          "position": "relative",
+          "order": "dropdown-menu > menu"
+        },
+        "client: plain menu, then dropdown-menu first": {
+          "display": "none",
+          "position": "absolute",
+          "order": "menu > dropdown-menu"
+        },
+        "server: menu sheet first": {
+          "display": "none",
+          "position": "absolute",
+          "order": "menu > dropdown-menu",
+          "framesDisplay": "none"
+        },
+        "server: dropdown-menu sheet first": {
+          "display": "flex",
+          "position": "relative",
+          "order": "dropdown-menu > menu",
+          "framesDisplay": "flex"
+        }
+      }
+    },
+    "m6": {
+      "immediate/L1 callout inside leaving element": {
+        "duringLeave": {
+          "wrapperInDom": true,
+          "calloutPadding": "44px",
+          "styles": 1
+        },
+        "afterLeave": 1,
+        "afterRecheck": "44px/1 44px/1"
+      },
+      "immediate/L2 unrelated leave running": {
+        "afterLeave": 1,
+        "afterRecheck": "44px/1 44px/1"
+      },
+      "immediate/L3 (animate.leave) listener on the page": {
+        "whileListenerPresent": 1,
+        "afterListenerLeft": 1,
+        "afterRecheck": "44px/1 44px/1"
+      },
+      "animations/L1 callout inside leaving element": {
+        "duringLeave": {
+          "wrapperInDom": true,
+          "calloutPadding": "44px",
+          "styles": 1
+        },
+        "afterLeave": 0,
+        "afterRecheck": "44px/0 44px/0"
+      },
+      "animations/L2 unrelated leave running": {
+        "afterLeave": 0,
+        "afterRecheck": "44px/0 44px/0"
+      },
+      "animations/L3 (animate.leave) listener on the page": {
+        "whileListenerPresent": 1,
+        "afterListenerLeft": 1,
+        "afterRecheck": "44px/1 44px/1"
+      },
+      "private/L1 callout inside leaving element": {
+        "duringLeave": {
+          "wrapperInDom": true,
+          "calloutPadding": "44px",
+          "styles": 1
+        },
+        "afterLeave": 0,
+        "afterRecheck": "44px/0 44px/0"
+      },
+      "private/L2 unrelated leave running": {
+        "afterLeave": 0,
+        "afterRecheck": "44px/0 44px/0"
+      },
+      "private/L3 (animate.leave) listener on the page": {
+        "whileListenerPresent": 1,
+        "afterListenerLeft": 0,
+        "afterRecheck": "44px/0 44px/0"
+      },
+      "repair/L1 callout inside leaving element": {
+        "duringLeave": {
+          "wrapperInDom": true,
+          "calloutPadding": "44px",
+          "styles": 1
+        },
+        "afterLeave": 0,
+        "afterRecheck": "44px/0 44px/0"
+      },
+      "repair/L2 unrelated leave running": {
+        "afterLeave": 0,
+        "afterRecheck": "44px/0 44px/0"
+      },
+      "repair/L3 (animate.leave) listener on the page": {
+        "whileListenerPresent": 0,
+        "afterListenerLeft": 0,
+        "afterRecheck": "44px/0 44px/0"
+      }
+    },
+    "m10": {
+      "n1000": {
+        "family": {
+          "createMs": 61,
+          "destroyMs": 27,
+          "heapKb": null,
+          "stylesWhileRendered": 1
+        },
+        "instance": {
+          "createMs": 76,
+          "destroyMs": 26,
+          "heapKb": null,
+          "stylesWhileRendered": 1
+        }
+      },
+      "n5000": {
+        "family": {
+          "createMs": 451,
+          "destroyMs": 41,
+          "heapKb": null,
+          "stylesWhileRendered": 1
+        },
+        "instance": {
+          "createMs": 483,
+          "destroyMs": 58,
+          "heapKb": null,
+          "stylesWhileRendered": 1
+        }
+      }
+    }
+  }
+}
