@@ -1,0 +1,70 @@
+{
+ "split": {
+  "theme": {
+   "sheets": 35,
+   "bytes": 55230,
+   "gzip": 12792
+  },
+  "structure": {
+   "sheets": 35,
+   "bytes": 19150,
+   "gzip": 8880
+  },
+  "critical": {
+   "sheets": 1,
+   "bytes": 3700,
+   "gzip": 1214
+  }
+ },
+ "nofilter": {
+  "theme": {
+   "sheets": 35,
+   "bytes": 70326,
+   "gzip": 17626
+  },
+  "structure": {
+   "sheets": 35,
+   "bytes": 19150,
+   "gzip": 8880
+  },
+  "critical": {
+   "sheets": 1,
+   "bytes": 3700,
+   "gzip": 1214
+  }
+ },
+ "noadopt": {
+  "theme": {
+   "sheets": 35,
+   "bytes": 55230,
+   "gzip": 12793
+  },
+  "structure": {
+   "sheets": 35,
+   "bytes": 19150,
+   "gzip": 8880
+  },
+  "critical": {
+   "sheets": 1,
+   "bytes": 3700,
+   "gzip": 1214
+  }
+ },
+ "samelayer": {
+  "theme": {
+   "sheets": 70,
+   "bytes": 74240,
+   "gzip": 21583
+  },
+  "structure": {
+   "sheets": 0,
+   "bytes": 0,
+   "gzip": 0
+  },
+  "critical": {
+   "sheets": 1,
+   "bytes": 3700,
+   "gzip": 1214
+  }
+ }
+}

@@ -1,0 +1,5 @@
+/* CONSUMER FILE. Tailwind v4 through postcss.config.json. Theme and utilities only: the preflight (layer base)
+   is left out so the computed-style comparison with Foundation's single compile stays meaningful. */
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+@source './app';

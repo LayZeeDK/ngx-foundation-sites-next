@@ -1,0 +1,142 @@
+{
+  "name": "fixture",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "nfs",
+  "sourceRoot": "apps/fixture/src",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@angular/build:application",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/apps/fixture",
+        "browser": "apps/fixture/src/main.ts",
+        "server": "apps/fixture/src/main.server.ts",
+        "tsConfig": "apps/fixture/tsconfig.app.json",
+        "inlineStyleLanguage": "scss",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/fixture/public"
+          }
+        ],
+        "styles": [
+          "apps/fixture/src/styles.scss",
+          "apps/fixture/src/tailwind.css",
+          {
+            "input": "apps/fixture/src/nfs-families/callout.scss",
+            "bundleName": "nfs-callout",
+            "inject": false
+          }
+        ],
+        "stylePreprocessorOptions": {
+          "includePaths": [
+            "apps/fixture/src/foundation-settings"
+          ],
+          "sass": {
+            "silenceDeprecations": [
+              "import",
+              "global-builtin",
+              "color-functions",
+              "slash-div",
+              "if-function"
+            ]
+          }
+        },
+        "outputMode": "server",
+        "ssr": {
+          "entry": "apps/fixture/src/server.ts"
+        },
+        "security": {
+          "allowedHosts": []
+        }
+      },
+      "configurations": {
+        "production": {
+          "budgets": [],
+          "outputHashing": "all",
+          "outputPath": "dist/split"
+        },
+        "reference": {
+          "budgets": [],
+          "outputHashing": "all",
+          "outputPath": "dist/reference",
+          "styles": [
+            "apps/fixture/src/styles.reference.scss",
+            "apps/fixture/src/tailwind.css"
+          ],
+          "fileReplacements": [
+            {
+              "replace": "apps/fixture/src/nfs-families/carriers.ts",
+              "with": "apps/fixture/src/nfs-families/carriers.reference.ts"
+            }
+          ]
+        },
+        "badorder": {
+          "budgets": [],
+          "outputHashing": "all",
+          "outputPath": "dist/badorder",
+          "styles": [
+            "apps/fixture/src/styles.badorder.scss",
+            "apps/fixture/src/tailwind.css",
+            {
+              "input": "apps/fixture/src/nfs-families/callout.scss",
+              "bundleName": "nfs-callout",
+              "inject": false
+            }
+          ]
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "outputPath": "dist/dev-split"
+        },
+        "reference-development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "outputPath": "dist/dev-reference",
+          "styles": [
+            "apps/fixture/src/styles.reference.scss",
+            "apps/fixture/src/tailwind.css"
+          ],
+          "fileReplacements": [
+            {
+              "replace": "apps/fixture/src/nfs-families/carriers.ts",
+              "with": "apps/fixture/src/nfs-families/carriers.reference.ts"
+            }
+          ]
+        },
+        "samelayer": {
+          "budgets": [],
+          "outputHashing": "all",
+          "outputPath": "dist/samelayer",
+          "fileReplacements": [
+            {
+              "replace": "apps/fixture/src/lib/structure-source.ts",
+              "with": "apps/fixture/src/lib/structure-source.same.ts"
+            }
+          ]
+        }
+      }
+    },
+    "serve": {
+      "executor": "@angular/build:dev-server",
+      "options": {
+        "buildTarget": "fixture:build:development",
+        "port": 4621
+      },
+      "configurations": {
+        "reference": {
+          "buildTarget": "fixture:build:reference-development",
+          "port": 4622
+        }
+      }
+    }
+  }
+}

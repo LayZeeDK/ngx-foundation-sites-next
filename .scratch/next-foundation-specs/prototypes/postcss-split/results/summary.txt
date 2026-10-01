@@ -1,0 +1,23 @@
+engines {"chromium":"153.0.8010.12","firefox":"155.0","webkit":"26.6"}
+| Variant | chromium large | chromium small | firefox large | firefox small | webkit large | webkit small | Families with differences (Chromium large) |
+| split | 319 | 294 | 319 | 294 | 319 | 294 | forms 92, switch 14, accordion 30, media-object 18, tabs 6, menu 4, menu-icon 16, accordion-menu 8, drilldown-menu 2, dropdown-menu 2, off-canvas 1, top-bar 13, kitchen-sink 113 |
+| split, structure first | 322 | 294 | 321 | 294 | 320 | 294 | forms 92, switch 14, accordion 30, media-object 18, tabs 6, menu 4, menu-icon 16, accordion-menu 8, drilldown-menu 2, dropdown-menu 2, off-canvas 1, top-bar 13, kitchen-sink 116 |
+| split, families reversed | 322 | 294 | 321 | 294 | 320 | 294 | forms 92, switch 14, accordion 30, media-object 18, tabs 6, menu 4, menu-icon 16, accordion-menu 8, drilldown-menu 2, dropdown-menu 2, off-canvas 1, top-bar 13, kitchen-sink 116 |
+| split, structure first, families reversed | 322 | 294 | 321 | 294 | 320 | 294 | forms 92, switch 14, accordion 30, media-object 18, tabs 6, menu 4, menu-icon 16, accordion-menu 8, drilldown-menu 2, dropdown-menu 2, off-canvas 1, top-bar 13, kitchen-sink 116 |
+| split, JavaScript off | 322 | 294 | 321 | 294 | 320 | 294 | forms 92, switch 14, accordion 30, media-object 18, tabs 6, menu 4, menu-icon 16, accordion-menu 8, drilldown-menu 2, dropdown-menu 2, off-canvas 1, top-bar 13, kitchen-sink 116 |
+| no filter (NFS_SPLIT=off) | 324 | 294 | 323 | 294 | 322 | 294 | forms 92, switch 14, accordion 30, media-object 18, tabs 6, menu 4, menu-icon 16, accordion-menu 8, drilldown-menu 2, dropdown-menu 2, off-canvas 1, reveal 2, top-bar 13, kitchen-sink 116 |
+| no reveal adoption (NFS_SPLIT_ADOPT=off) | 324 | 294 | 323 | 294 | 322 | 294 | forms 92, switch 14, accordion 30, media-object 18, tabs 6, menu 4, menu-icon 16, accordion-menu 8, drilldown-menu 2, dropdown-menu 2, off-canvas 1, reveal 2, top-bar 13, kitchen-sink 116 |
+| layering only: full theme carriers, no structure sheets (184 shape) | 66 | 61 | 65 | 61 | 64 | 61 | forms 16, switch 8, media-object 18, reveal 2, kitchen-sink 22 |
+| same layer: structure sheet in nfs.<f>.theme, inserted after the theme | 110 | 79 | 109 | 79 | 108 | 79 | forms 18, switch 8, media-object 18, menu-icon 16, off-canvas 1, top-bar 13, kitchen-sink 36 |
+| same layer, structure sheet inserted first | 241 | 238 | 240 | 238 | 239 | 238 | forms 26, button 43, button-group 12, switch 8, accordion 54, media-object 18, tabs 18, kitchen-sink 62 |
+| negative control: structure layers before theme | 337 | 296 | 336 | 296 | 335 | 296 | forms 33, button 54, button-group 12, switch 8, accordion 54, media-object 20, tabs 24, menu 24, reveal 38, kitchen-sink 70 |
+elements 2386
+chromium large states {"interactive":801,"checked":1536,"diffs":910,"samples":["#13 hover margin-inline-end: 16px -> 0px","#13 hover margin-inline-start: 8px -> 0px","#13 hover margin-left: 8px -> 0px"]}
+firefox large states {"interactive":801,"checked":1536,"diffs":910,"samples":["#13 hover margin-inline-end: 16px -> 0px","#13 hover margin-inline-start: 8px -> 0px","#13 hover margin-left: 8px -> 0px"]}
+webkit large states {"interactive":801,"checked":1536,"diffs":910,"samples":["#13 hover margin-inline-end: 16px -> 0px","#13 hover margin-inline-start: 8px -> 0px","#13 hover margin-left: 8px -> 0px"]}
+chromium large tailwind probe split {"paddingTop":"13px","color":"oklch(0.508 0.118 165.612)","textDecorationStyle":"wavy"} reference {"paddingTop":"13px","color":"oklch(0.508 0.118 165.612)","textDecorationStyle":"wavy"}
+chromium small tailwind probe split {"paddingTop":"13px","color":"oklch(0.508 0.118 165.612)","textDecorationStyle":"wavy"} reference {"paddingTop":"13px","color":"oklch(0.508 0.118 165.612)","textDecorationStyle":"wavy"}
+firefox large tailwind probe split {"paddingTop":"13px","color":"oklch(0.508 0.118 165.612)","textDecorationStyle":"wavy"} reference {"paddingTop":"13px","color":"oklch(0.508 0.118 165.612)","textDecorationStyle":"wavy"}
+firefox small tailwind probe split {"paddingTop":"13px","color":"oklch(0.508 0.118 165.612)","textDecorationStyle":"wavy"} reference {"paddingTop":"13px","color":"oklch(0.508 0.118 165.612)","textDecorationStyle":"wavy"}
+webkit large tailwind probe split {"paddingTop":"13px","color":"oklch(0.508 0.118 165.612)","textDecorationStyle":"wavy"} reference {"paddingTop":"13px","color":"oklch(0.508 0.118 165.612)","textDecorationStyle":"wavy"}
+webkit small tailwind probe split {"paddingTop":"13px","color":"oklch(0.508 0.118 165.612)","textDecorationStyle":"wavy"} reference {"paddingTop":"13px","color":"oklch(0.508 0.118 165.612)","textDecorationStyle":"wavy"}

@@ -1,0 +1,7 @@
+/* CONSUMER FILE. Tailwind v4 through postcss.config.json. Theme and utilities only: the preflight (layer base)
+   is left out, and only the page component is scanned (not the Foundation doc markup, whose class names such
+   as `sticky` and `table` are also Tailwind utilities), so the computed-style comparison with Foundation's
+   single compile measures the split alone. scratch/tailwind.scan-app.css is the first run's file. */
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities) source(none);
+@source './app/families-page.ts';

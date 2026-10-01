@@ -1,0 +1,23 @@
+{
+ "before": {
+  "color": "rgb(10, 10, 10)",
+  "position": "relative",
+  "styleCount": 70,
+  "hasMarker": false,
+  "themeHasInvariant": false,
+  "themeBytes": 1155
+ },
+ "after": {
+  "color": "rgb(1, 2, 3)",
+  "position": "relative",
+  "styleCount": 70,
+  "hasMarker": true,
+  "themeHasInvariant": false,
+  "themeBytes": 1203
+ },
+ "fullReloads": 0,
+ "console": [
+  "[vite] connecting...",
+  "[vite] connected."
+ ]
+}

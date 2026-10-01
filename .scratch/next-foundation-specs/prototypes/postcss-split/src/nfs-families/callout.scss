@@ -1,0 +1,6 @@
+// CONSUMER FILE (a generator could write it). Compiled by the consumer's build with their settings.
+@import 'settings';
+@import 'foundation-sites/scss/foundation';
+@layer nfs.callout.theme {
+  @include foundation-callout;
+}

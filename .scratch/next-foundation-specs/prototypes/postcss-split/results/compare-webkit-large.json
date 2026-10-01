@@ -1,0 +1,655 @@
+{
+ "at": "2026-10-01T16:44:49.244Z",
+ "dev": false,
+ "engines": {
+  "webkit": {
+   "version": "26.6",
+   "runs": {
+    "reference large": {
+     "sizes": {
+      "theme": [
+       0,
+       0,
+       0
+      ],
+      "structure": [
+       0,
+       0,
+       0
+      ],
+      "other": [
+       2,
+       36505,
+       7463
+      ]
+     },
+     "tailwindProbe": {
+      "paddingTop": "13px",
+      "color": "oklch(0.508 0.118 165.612)",
+      "textDecorationStyle": "wavy"
+     }
+    },
+    "split large": {
+     "elements": 2386,
+     "mismatchedBoxes": 96,
+     "diffs": 319,
+     "geometryOnly": 178,
+     "byFamily": {
+      "forms": 92,
+      "switch": 14,
+      "accordion": 30,
+      "media-object": 18,
+      "tabs": 6,
+      "menu": 4,
+      "menu-icon": 16,
+      "accordion-menu": 8,
+      "drilldown-menu": 2,
+      "dropdown-menu": 2,
+      "off-canvas": 1,
+      "top-bar": 13,
+      "kitchen-sink": 113
+     },
+     "samples": [
+      "forms label margin-inline-end: 16px -> 0px",
+      "forms label margin-inline-start: 8px -> 0px",
+      "forms label margin-left: 8px -> 0px",
+      "forms label margin-right: 16px -> 0px",
+      "forms label margin-inline-end: 16px -> 0px",
+      "forms label margin-inline-start: 8px -> 0px",
+      "forms label margin-left: 8px -> 0px",
+      "forms label margin-right: 16px -> 0px",
+      "forms label margin-inline-end: 16px -> 0px",
+      "forms label margin-inline-start: 8px -> 0px",
+      "forms label margin-left: 8px -> 0px",
+      "forms label margin-right: 16px -> 0px"
+     ],
+     "sizes": {
+      "theme": [
+       32,
+       53481,
+       12012
+      ],
+      "structure": [
+       35,
+       19150,
+       8880
+      ],
+      "other": [
+       5,
+       5521,
+       2067
+      ]
+     },
+     "tailwindProbe": {
+      "paddingTop": "13px",
+      "color": "oklch(0.508 0.118 165.612)",
+      "textDecorationStyle": "wavy"
+     },
+     "states": {
+      "interactive": 801,
+      "checked": 1536,
+      "diffs": 910,
+      "samples": [
+       "#13 hover margin-inline-end: 16px -> 0px",
+       "#13 hover margin-inline-start: 8px -> 0px",
+       "#13 hover margin-left: 8px -> 0px",
+       "#13 hover margin-right: 16px -> 0px",
+       "#13 focus margin-inline-end: 16px -> 0px",
+       "#13 focus margin-inline-start: 8px -> 0px"
+      ]
+     }
+    },
+    "split, structure first large": {
+     "elements": 2386,
+     "mismatchedBoxes": 97,
+     "diffs": 320,
+     "geometryOnly": 178,
+     "byFamily": {
+      "forms": 92,
+      "switch": 14,
+      "accordion": 30,
+      "media-object": 18,
+      "tabs": 6,
+      "menu": 4,
+      "menu-icon": 16,
+      "accordion-menu": 8,
+      "drilldown-menu": 2,
+      "dropdown-menu": 2,
+      "off-canvas": 1,
+      "top-bar": 13,
+      "kitchen-sink": 114
+     },
+     "samples": [
+      "forms label margin-inline-end: 16px -> 0px",
+      "forms label margin-inline-start: 8px -> 0px",
+      "forms label margin-left: 8px -> 0px",
+      "forms label margin-right: 16px -> 0px",
+      "forms label margin-inline-end: 16px -> 0px",
+      "forms label margin-inline-start: 8px -> 0px",
+      "forms label margin-left: 8px -> 0px",
+      "forms label margin-right: 16px -> 0px",
+      "forms label margin-inline-end: 16px -> 0px",
+      "forms label margin-inline-start: 8px -> 0px",
+      "forms label margin-left: 8px -> 0px",
+      "forms label margin-right: 16px -> 0px"
+     ],
+     "sizes": {
+      "theme": [
+       32,
+       53481,
+       12012
+      ],
+      "structure": [
+       35,
+       19150,
+       8880
+      ],
+      "other": [
+       5,
+       5521,
+       2067
+      ]
+     },
+     "tailwindProbe": {
+      "paddingTop": "13px",
+      "color": "oklch(0.508 0.118 165.612)",
+      "textDecorationStyle": "wavy"
+     }
+    },
+    "split, families reversed large": {
+     "elements": 2386,
+     "mismatchedBoxes": 97,
+     "diffs": 320,
+     "geometryOnly": 178,
+     "byFamily": {
+      "forms": 92,
+      "switch": 14,
+      "accordion": 30,
+      "media-object": 18,
+      "tabs": 6,
+      "menu": 4,
+      "menu-icon": 16,
+      "accordion-menu": 8,
+      "drilldown-menu": 2,
+      "dropdown-menu": 2,
+      "off-canvas": 1,
+      "top-bar": 13,
+      "kitchen-sink": 114
+     },
+     "samples": [
+      "forms label margin-inline-end: 16px -> 0px",
+      "forms label margin-inline-start: 8px -> 0px",
+      "forms label margin-left: 8px -> 0px",
+      "forms label margin-right: 16px -> 0px",
+      "forms label margin-inline-end: 16px -> 0px",
+      "forms label margin-inline-start: 8px -> 0px",
+      "forms label margin-left: 8px -> 0px",
+      "forms label margin-right: 16px -> 0px",
+      "forms label margin-inline-end: 16px -> 0px",
+      "forms label margin-inline-start: 8px -> 0px",
+      "forms label margin-left: 8px -> 0px",
+      "forms label margin-right: 16px -> 0px"
+     ],
+     "sizes": {
+      "theme": [
+       32,
+       53481,
+       12012
+      ],
+      "structure": [
+       35,
+       19150,
+       8880
+      ],
+      "other": [
+       5,
+       5521,
+       2067
+      ]
+     },
+     "tailwindProbe": {
+      "paddingTop": "13px",
+      "color": "oklch(0.508 0.118 165.612)",
+      "textDecorationStyle": "wavy"
+     }
+    },
+    "split, structure first, families reversed large": {
+     "elements": 2386,
+     "mismatchedBoxes": 97,
+     "diffs": 320,
+     "geometryOnly": 178,
+     "byFamily": {
+      "forms": 92,
+      "switch": 14,
+      "accordion": 30,
+      "media-object": 18,
+      "tabs": 6,
+      "menu": 4,
+      "menu-icon": 16,
+      "accordion-menu": 8,
+      "drilldown-menu": 2,
+      "dropdown-menu": 2,
+      "off-canvas": 1,
+      "top-bar": 13,
+      "kitchen-sink": 114
+     },
+     "samples": [
+      "forms label margin-inline-end: 16px -> 0px",
+      "forms label margin-inline-start: 8px -> 0px",
+      "forms label margin-left: 8px -> 0px",
+      "forms label margin-right: 16px -> 0px",
+      "forms label margin-inline-end: 16px -> 0px",
+      "forms label margin-inline-start: 8px -> 0px",
+      "forms label margin-left: 8px -> 0px",
+      "forms label margin-right: 16px -> 0px",
+      "forms label margin-inline-end: 16px -> 0px",
+      "forms label margin-inline-start: 8px -> 0px",
+      "forms label margin-left: 8px -> 0px",
+      "forms label margin-right: 16px -> 0px"
+     ],
+     "sizes": {
+      "theme": [
+       32,
+       53481,
+       12012
+      ],
+      "structure": [
+       35,
+       19150,
+       8880
+      ],
+      "other": [
+       5,
+       5521,
+       2067
+      ]
+     },
+     "tailwindProbe": {
+      "paddingTop": "13px",
+      "color": "oklch(0.508 0.118 165.612)",
+      "textDecorationStyle": "wavy"
+     }
+    },
+    "split, JavaScript off large": {
+     "elements": 2386,
+     "mismatchedBoxes": 97,
+     "diffs": 320,
+     "geometryOnly": 178,
+     "byFamily": {
+      "forms": 92,
+      "switch": 14,
+      "accordion": 30,
+      "media-object": 18,
+      "tabs": 6,
+      "menu": 4,
+      "menu-icon": 16,
+      "accordion-menu": 8,
+      "drilldown-menu": 2,
+      "dropdown-menu": 2,
+      "off-canvas": 1,
+      "top-bar": 13,
+      "kitchen-sink": 114
+     },
+     "samples": [
+      "forms label margin-inline-end: 16px -> 0px",
+      "forms label margin-inline-start: 8px -> 0px",
+      "forms label margin-left: 8px -> 0px",
+      "forms label margin-right: 16px -> 0px",
+      "forms label margin-inline-end: 16px -> 0px",
+      "forms label margin-inline-start: 8px -> 0px",
+      "forms label margin-left: 8px -> 0px",
+      "forms label margin-right: 16px -> 0px",
+      "forms label margin-inline-end: 16px -> 0px",
+      "forms label margin-inline-start: 8px -> 0px",
+      "forms label margin-left: 8px -> 0px",
+      "forms label margin-right: 16px -> 0px"
+     ],
+     "sizes": {
+      "theme": [
+       32,
+       53481,
+       12012
+      ],
+      "structure": [
+       35,
+       19150,
+       8880
+      ],
+      "other": [
+       5,
+       5521,
+       2067
+      ]
+     },
+     "tailwindProbe": {
+      "paddingTop": "13px",
+      "color": "oklch(0.508 0.118 165.612)",
+      "textDecorationStyle": "wavy"
+     }
+    },
+    "no filter (NFS_SPLIT=off) large": {
+     "elements": 2386,
+     "mismatchedBoxes": 98,
+     "diffs": 322,
+     "geometryOnly": 178,
+     "byFamily": {
+      "forms": 92,
+      "switch": 14,
+      "accordion": 30,
+      "media-object": 18,
+      "tabs": 6,
+      "menu": 4,
+      "menu-icon": 16,
+      "accordion-menu": 8,
+      "drilldown-menu": 2,
+      "dropdown-menu": 2,
+      "off-canvas": 1,
+      "reveal": 2,
+      "top-bar": 13,
+      "kitchen-sink": 114
+     },
+     "samples": [
+      "forms label margin-inline-end: 16px -> 0px",
+      "forms label margin-inline-start: 8px -> 0px",
+      "forms label margin-left: 8px -> 0px",
+      "forms label margin-right: 16px -> 0px",
+      "forms label margin-inline-end: 16px -> 0px",
+      "forms label margin-inline-start: 8px -> 0px",
+      "forms label margin-left: 8px -> 0px",
+      "forms label margin-right: 16px -> 0px",
+      "forms label margin-inline-end: 16px -> 0px",
+      "forms label margin-inline-start: 8px -> 0px",
+      "forms label margin-left: 8px -> 0px",
+      "forms label margin-right: 16px -> 0px"
+     ],
+     "sizes": {
+      "theme": [
+       32,
+       66638,
+       16199
+      ],
+      "structure": [
+       35,
+       19150,
+       8880
+      ],
+      "other": [
+       5,
+       7460,
+       2714
+      ]
+     },
+     "tailwindProbe": {
+      "paddingTop": "13px",
+      "color": "oklch(0.508 0.118 165.612)",
+      "textDecorationStyle": "wavy"
+     }
+    },
+    "no reveal adoption (NFS_SPLIT_ADOPT=off) large": {
+     "elements": 2386,
+     "mismatchedBoxes": 98,
+     "diffs": 322,
+     "geometryOnly": 178,
+     "byFamily": {
+      "forms": 92,
+      "switch": 14,
+      "accordion": 30,
+      "media-object": 18,
+      "tabs": 6,
+      "menu": 4,
+      "menu-icon": 16,
+      "accordion-menu": 8,
+      "drilldown-menu": 2,
+      "dropdown-menu": 2,
+      "off-canvas": 1,
+      "reveal": 2,
+      "top-bar": 13,
+      "kitchen-sink": 114
+     },
+     "samples": [
+      "forms label margin-inline-end: 16px -> 0px",
+      "forms label margin-inline-start: 8px -> 0px",
+      "forms label margin-left: 8px -> 0px",
+      "forms label margin-right: 16px -> 0px",
+      "forms label margin-inline-end: 16px -> 0px",
+      "forms label margin-inline-start: 8px -> 0px",
+      "forms label margin-left: 8px -> 0px",
+      "forms label margin-right: 16px -> 0px",
+      "forms label margin-inline-end: 16px -> 0px",
+      "forms label margin-inline-start: 8px -> 0px",
+      "forms label margin-left: 8px -> 0px",
+      "forms label margin-right: 16px -> 0px"
+     ],
+     "sizes": {
+      "theme": [
+       31,
+       52628,
+       11695
+      ],
+      "structure": [
+       35,
+       19150,
+       8880
+      ],
+      "other": [
+       6,
+       6374,
+       2385
+      ]
+     },
+     "tailwindProbe": {
+      "paddingTop": "13px",
+      "color": "oklch(0.508 0.118 165.612)",
+      "textDecorationStyle": "wavy"
+     }
+    },
+    "layering only: full theme carriers, no structure sheets (184 shape) large": {
+     "elements": 2386,
+     "mismatchedBoxes": 24,
+     "diffs": 64,
+     "geometryOnly": 14,
+     "byFamily": {
+      "forms": 16,
+      "switch": 8,
+      "media-object": 18,
+      "reveal": 2,
+      "kitchen-sink": 20
+     },
+     "samples": [
+      "forms input.button border-bottom-left-radius: 0px -> 8px",
+      "forms input.button border-end-start-radius: 0px -> 8px",
+      "forms input.button border-start-start-radius: 0px -> 8px",
+      "forms input.button border-top-left-radius: 0px -> 8px",
+      "forms input.button font-size: 16px -> 14.4px",
+      "forms input.button line-height: 16px -> 14.4px",
+      "forms input.button margin-block-end: 0px -> 16px",
+      "forms input.button margin-bottom: 0px -> 16px",
+      "forms input.button padding-block-end: 0px -> 15.839999px",
+      "forms input.button padding-block-start: 0px -> 15.839999px",
+      "forms input.button padding-bottom: 0px -> 15.839999px",
+      "forms input.button padding-inline-end: 35.200001px -> 31.679998px"
+     ],
+     "sizes": {
+      "theme": [
+       32,
+       66638,
+       16199
+      ],
+      "structure": [
+       0,
+       0,
+       0
+      ],
+      "other": [
+       5,
+       7460,
+       2714
+      ]
+     },
+     "tailwindProbe": {
+      "paddingTop": "13px",
+      "color": "oklch(0.508 0.118 165.612)",
+      "textDecorationStyle": "wavy"
+     }
+    },
+    "same layer: structure sheet in nfs.<f>.theme, inserted after the theme large": {
+     "elements": 2386,
+     "mismatchedBoxes": 47,
+     "diffs": 108,
+     "geometryOnly": 106,
+     "byFamily": {
+      "forms": 18,
+      "switch": 8,
+      "media-object": 18,
+      "menu-icon": 16,
+      "off-canvas": 1,
+      "top-bar": 13,
+      "kitchen-sink": 34
+     },
+     "samples": [
+      "forms legend margin-inline-start: -3px -> 0px",
+      "forms legend margin-left: -3px -> 0px",
+      "forms input.button border-bottom-left-radius: 0px -> 8px",
+      "forms input.button border-end-start-radius: 0px -> 8px",
+      "forms input.button border-start-start-radius: 0px -> 8px",
+      "forms input.button border-top-left-radius: 0px -> 8px",
+      "forms input.button font-size: 16px -> 14.4px",
+      "forms input.button line-height: 16px -> 14.4px",
+      "forms input.button margin-block-end: 0px -> 16px",
+      "forms input.button margin-bottom: 0px -> 16px",
+      "forms input.button padding-block-end: 0px -> 15.839999px",
+      "forms input.button padding-block-start: 0px -> 15.839999px"
+     ],
+     "sizes": {
+      "theme": [
+       67,
+       72491,
+       20803
+      ],
+      "structure": [
+       0,
+       0,
+       0
+      ],
+      "other": [
+       5,
+       5521,
+       2067
+      ]
+     },
+     "tailwindProbe": {
+      "paddingTop": "13px",
+      "color": "oklch(0.508 0.118 165.612)",
+      "textDecorationStyle": "wavy"
+     }
+    },
+    "same layer, structure sheet inserted first large": {
+     "elements": 2386,
+     "mismatchedBoxes": 96,
+     "diffs": 239,
+     "geometryOnly": 26,
+     "byFamily": {
+      "forms": 26,
+      "button": 43,
+      "button-group": 12,
+      "switch": 8,
+      "accordion": 54,
+      "media-object": 18,
+      "tabs": 18,
+      "kitchen-sink": 60
+     },
+     "samples": [
+      "forms input.input-group-field border-bottom-left-radius: 0px -> 8px",
+      "forms input.input-group-field border-bottom-right-radius: 0px -> 8px",
+      "forms input.input-group-field border-end-end-radius: 0px -> 8px",
+      "forms input.input-group-field border-end-start-radius: 0px -> 8px",
+      "forms input.input-group-field border-start-end-radius: 0px -> 8px",
+      "forms input.input-group-field border-start-start-radius: 0px -> 8px",
+      "forms input.input-group-field border-top-left-radius: 0px -> 8px",
+      "forms input.input-group-field border-top-right-radius: 0px -> 8px",
+      "forms input.input-group-field margin-block-end: 0px -> 16px",
+      "forms input.input-group-field margin-bottom: 0px -> 16px",
+      "forms input.button border-bottom-left-radius: 0px -> 8px",
+      "forms input.button border-end-start-radius: 0px -> 8px"
+     ],
+     "sizes": {
+      "theme": [
+       67,
+       72491,
+       20803
+      ],
+      "structure": [
+       0,
+       0,
+       0
+      ],
+      "other": [
+       5,
+       5521,
+       2067
+      ]
+     },
+     "tailwindProbe": {
+      "paddingTop": "13px",
+      "color": "oklch(0.508 0.118 165.612)",
+      "textDecorationStyle": "wavy"
+     }
+    },
+    "negative control: structure layers before theme large": {
+     "elements": 2386,
+     "mismatchedBoxes": 123,
+     "diffs": 335,
+     "geometryOnly": 58,
+     "byFamily": {
+      "forms": 33,
+      "button": 54,
+      "button-group": 12,
+      "switch": 8,
+      "accordion": 54,
+      "media-object": 20,
+      "tabs": 24,
+      "menu": 24,
+      "reveal": 38,
+      "kitchen-sink": 68
+     },
+     "samples": [
+      "forms select padding-block-end: 0px -> 8px",
+      "forms select padding-block-start: 0px -> 8px",
+      "forms select padding-bottom: 0px -> 8px",
+      "forms select padding-top: 0px -> 8px",
+      "forms select background-image: none -> url(\"data:image/svg+xml;utf8,<svg xmlns=\\\"http://www.w3.org/2000/svg\\\" version=\\\"1.1\\\" width=\\\"32\\\" height=\\\"24\\\" viewBox=\\\"0 0 32 24\\\"><polygon points=\\\"0,0 32,0 16,24\\\" style=\\\"fill: rgb%28138, 138, 138%29\\\"></polygon></svg>\")",
+      "forms legend margin-block-end: 0px -> 8px",
+      "forms legend margin-bottom: 0px -> 8px",
+      "forms input.input-group-field border-bottom-left-radius: 0px -> 8px",
+      "forms input.input-group-field border-bottom-right-radius: 0px -> 8px",
+      "forms input.input-group-field border-end-end-radius: 0px -> 8px",
+      "forms input.input-group-field border-end-start-radius: 0px -> 8px",
+      "forms input.input-group-field border-start-end-radius: 0px -> 8px"
+     ],
+     "sizes": {
+      "theme": [
+       32,
+       53481,
+       12012
+      ],
+      "structure": [
+       35,
+       19150,
+       8880
+      ],
+      "other": [
+       5,
+       5521,
+       2068
+      ]
+     },
+     "tailwindProbe": {
+      "paddingTop": "13px",
+      "color": "oklch(0.508 0.118 165.612)",
+      "textDecorationStyle": "wavy"
+     }
+    }
+   }
+  }
+ }
+}
