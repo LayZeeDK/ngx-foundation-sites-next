@@ -176,3 +176,20 @@ Not checked (no web access in this audit): the text of foundation/yeti#15554 and
 Run last with `node <scratchpad>/audit0001.mjs .scratch/ngx-yeti-specs/audits/0001-research-wave.md`: see the line directly below, added after the run.
 
 Result: 10 links checked, none broken (exit 0); banned-word, variant, and non-ASCII searches over this file all exit 1.
+
+The orchestrator applied the fixes on 2026-10-01.
+
+- M1: applied. Decisions so far is rewritten as one block of short gists, 343 to 461 characters each, in resolution order (L5). The lists of breakages, candidates, and additions stay in the Answers.
+- M2: applied. Ticket 04's Answer gains a note with the scope limits, the unexplained earlier difference on the demo pages, and the inferred status of the library-owned `<style>`; the gist says both.
+- M3: applied. The baseline table row and a correction note at the end of the findings say 47 uses in the token files (45 and 2). The map's gist drops the count and says "per web-features data" in place of "checked".
+- M4: applied. The Testing and Release policy fog items now ask only what tickets 08 and 12 do not, and name those tickets.
+- M5: applied. Ticket 15's Answer drops the frozen-surface sentence and points at ticket 12, its stale Question sentence is dated, and ticket 12 labels the gloss "Orchestrator's reading" and leaves the frozen-surface question open under point 4.
+- M6: applied. The auditor could not see the conversation, so these quotes had one copy each. The orchestrator holds the user's messages, and each flagged quote is verbatim from one of them. The map's two quotes and ticket 11's instruction now say so. "AFK, like the old map" is marked as the label of the option the user picked. Ticket 11's "confirmed" and ticket 14's note quote the user's messages.
+- M7: applied to the two sentences in the JavaScript findings, which now read as options for the spec and spec-list tickets. The llms recommendations stay.
+- L1, L2, L3, L6, L9, L10, L11, L12: applied as each Fix says. L6's fact went into ticket 12; L11's wording is in the rewritten gist.
+- L4: applied to tickets 05 and 13. Skipped for the research files' `Ticket:` header lines, which link the ticket file; their link text is a number, not a sentence.
+- L5: applied with M1.
+- L7: no change; the first AFK decision gets the check the finding asks for.
+- L8: skipped. Each cited claim already carries its "inferred" label, which is what the Fix allows.
+- Also noted (tickets 10 and 13): no change.
+- One more point, raised by the orchestrator: the audit's first draft cited a temporary, uncommitted file of the user's as corroboration. The user ruled on 2026-10-01 that the file is never to be referenced, so those citations are replaced with the orchestrator's check against the user's messages.

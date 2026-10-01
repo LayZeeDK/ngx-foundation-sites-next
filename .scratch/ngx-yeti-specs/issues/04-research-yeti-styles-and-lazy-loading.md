@@ -34,6 +34,8 @@ Write `research/yeti-styles-and-lazy-loading.md`, and append an `## Answer`. Dec
 
 ## Answer
 
+Note, 2026-10-01 (audit 0001, M2): the measurements cover static light-scheme pages at 1280 px with scripts stripped, each file's own example and fixture only. Section 3.2 of the findings records one earlier difference on the demo pages that the final run did not reproduce and nobody explained. That the library-owned `<style>` needs no consumer plugin is inferred, because its Yeti build step was not built.
+
 Resolved 2026-10-01 (Opus 5.5). Findings: [research/yeti-styles-and-lazy-loading.md](../research/yeti-styles-and-lazy-loading.md). Yeti `f52d1e8b9` was built in `D:/tmp/ngx-yeti-04/yeti`, and an Angular CLI 22.2.0 SSR workspace with an ng-packagr library is at `D:/tmp/ngx-yeti-04/app`. Both were measured in Chromium, Firefox, and WebKit through Playwright 1.63.0, with the same results in all three. Old tickets 190, 195, 197, and 198 had no Answer yet and are not used. Nothing is decided; 13 chooses.
 
 - **Packaging (read).** `bin/build.js` copies `src/` verbatim to `dist/css/`, exported as `yeti-css/css/*`: 49 part files (22 components, 17 layouts, 3 recipes, 7 utilities) and an always-group (`layers.css`, 8 token files, 6 base files, `layouts/attributes.css`). Every part rule sits in a `yeti.*` layer. No part file reads a custom property that only another part file defines (measured by reading the text).

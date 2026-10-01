@@ -18,7 +18,7 @@ The user settled readiness, verbatim:
 
 > Readiness: We will spec and build against a specific commit of `foundation/yeti`'s `develop` branch.
 
-So the specs target, and the package builds against, one pinned commit of `develop`, not a tag, a beta, or an npm release. This ticket still decides:
+Orchestrator's reading: the specs target, and the package builds against, one pinned commit of `develop`, not a tag, a beta, or an npm release. This ticket still decides:
 
 1. Which commit to pin first. The candidate is `f52d1e8b9` (2026-09-25), the clone's commit, which every research ticket reads.
 2. When and how the pin moves: what triggers a move, whether `bin/frozen.js` gates it, and how the specs record the commit they target.
@@ -27,4 +27,4 @@ So the specs target, and the package builds against, one pinned commit of `devel
 
 ## How to work it
 
-AFK grilling against [Task: carry the old map's Yeti findings into this bundle](05-task-carry-yeti-findings-from-old-map.md), Yeti's `src/guides/stability.md` and `bin/frozen.js`, its release history, and the announcement (foundation/yeti#15554, read only). Record an ADR. The specs may name only frozen surface, unless this decision says otherwise.
+AFK grilling against [Task: carry the old map's Yeti findings into this bundle](05-task-carry-yeti-findings-from-old-map.md), Yeti's `src/guides/stability.md` and `bin/frozen.js`, its release history, and the announcement (foundation/yeti#15554, read only). Record an ADR. Whether the specs may name only frozen surface is open (point 4); the user's readiness ruling does not say. Also an input: the MCP server Yeti's README mentions does not exist anywhere ([Research: Foundation's `llms.txt` and `llms-full.txt` as sources for this map](14-research-foundationcss-llms-txt.md)).

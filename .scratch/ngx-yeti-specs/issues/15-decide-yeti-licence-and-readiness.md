@@ -24,7 +24,7 @@ Human-only by kind. This is a legal reading of a licence for a package published
 - the announcement's wording;
 - any FAQ from the licence's authors.
 
-The user decides; the orchestrator never does. Asking Foundation for clarification is outward-facing and needs the user's confirmation first. Until this resolves, the specs are drafted as research under the risk, and the map's Destination does not count as reached.
+The user decides; the orchestrator never does. Asking Foundation for clarification is outward-facing and needs the user's confirmation first. Until this resolves, the specs are drafted as research under the risk, and the map's Destination does not count as reached. (Stale since 2026-10-01: the user ruled on the licence, and readiness moved to ticket 12.)
 
 ## Answer
 
@@ -33,4 +33,4 @@ Resolved 2026-10-01 by the user's ruling, quoted verbatim:
 > I approve that FSL-1.1-MIT is compatible with what we want to do as a free and open-source project that will be using the MIT license.
 
 - **Licence:** decided by the user. The package is a free and open-source project under MIT, and it wraps Yeti under FSL-1.1-MIT. Recorded as [ADR 0001](../adr/0001-yeti-licence-compatible-with-mit-package.md).
-- **Readiness:** not part of the user's ruling. The orchestrator moved it to [Decide: which Yeti version the specs target, and how the package tracks it](12-decide-yeti-version-policy.md), because it is a question about which version the specs target. These specs name only Yeti's frozen surface, and writing specs is not building on `develop`. That ticket records the announcement's warning as an input. This is the orchestrator's reading, not the user's words.
+- **Readiness:** not part of the user's ruling. The orchestrator moved it to [Decide: which Yeti version the specs target, and how the package tracks it](12-decide-yeti-version-policy.md), because it is a question about which version the specs target. Whether the specs may name only Yeti's frozen surface is an open question of that ticket (audit 0001, M5). That ticket records the announcement's warning as an input. This is the orchestrator's reading, not the user's words.

@@ -185,7 +185,7 @@ Aria 22.2 ships accordion, combobox, grid, listbox, menu, tabs, toolbar, tree (`
 
 - **API:** `withEventReplay` (`NG/packages/platform-browser/src/hydration.ts:127`), `withIncrementalHydration` (`:149`), `@defer` triggers including `on viewport` over `IntersectionObserver` (`adev/src/content/guide/templates/defer.md:187`, `208`) and `hydrate on viewport|interaction|hover|idle|timer` (`adev/src/content/guide/incremental-hydration.md:51-66`). Server renders a defer block's placeholder unless a `hydrate` trigger is set (`defer.md:381-383`).
 - **Beats Yeti:** host bindings render state on the server: the selected tab's `aria-selected`, roving `tabindex`, and `hidden`; the toc's `aria-current` for a routed page; the range fill. `tabs.js` writes those only after load, so the first paint shows every panel (`tabs.js:2-3`). Per-family code splits under `@defer`, against Yeti's whole-file modules.
-- **Where the platform beats Angular here (inferred):** invoker commands and `popovertarget` act at once on server-rendered HTML with no script, before hydration; an Angular `(click)="dialog.showModal()"` waits for replay (`adev/src/content/guide/hydration.md:76-91`, "native browser events"). So the Yeti route of keeping `commandfor` and `popovertarget` in the markup is the stronger SSR story, and a wrapper should render those attributes rather than replace them with click handlers.
+- **Where the platform beats Angular here (inferred):** invoker commands and `popovertarget` act at once on server-rendered HTML with no script, before hydration; an Angular `(click)="dialog.showModal()"` waits for replay (`adev/src/content/guide/hydration.md:76-91`, "native browser events"). So the Yeti route of keeping `commandfor` and `popovertarget` in the markup is the stronger SSR story, and a wrapper could render those attributes rather than replace them with click handlers, an option for the specs to weigh (reworded by audit 0001, M7).
 
 ### 4.6 `animate.enter` and `animate.leave`
 
@@ -205,7 +205,7 @@ Aria 22.2 ships accordion, combobox, grid, listbox, menu, tabs, toolbar, tree (`
 | --- | --- | --- |
 | alert | `animate.leave` removal inside Angular's view; typed `closed` output; focus-return kept | no |
 | carousel | typed `slide` output; `Directionality`; a current-slide signal Yeti declines (`carousel/docs.md:32`) via `IntersectionObserver`; router-safe dots (section 6) | no |
-| demo | none useful for apps; docs tooling (Storybook already frames stories) | out of scope (inferred) |
+| demo | none useful for apps; docs tooling (Storybook already frames stories) | a candidate to leave out, for the spec list to decide (reworded by audit 0001, M7) |
 | dialog | a typed `open` model and `opened`/`closed` outputs; `commandfor` set by element reference; generated `aria-labelledby`; `cancel` event for veto | partly; native does the core |
 | dropdown (`hover.js`) | timers cleared on destroy; capability from `BreakpointObserver`; focus-out close per APG (`disclosure-navigation.html:165`); close on router navigation (section 6) | no |
 | field, `range.js` | fill as a `computed` rendered on the server; forms value | no |

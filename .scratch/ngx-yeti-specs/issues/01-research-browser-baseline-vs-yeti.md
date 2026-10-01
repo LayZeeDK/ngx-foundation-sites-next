@@ -19,7 +19,7 @@ The baselines are:
 
 > Compare Angular 22's browser baseline to what Yeti expects to be available in a browser.
 
-An earlier request named these features to check: "container queries, `popover`s, `dialog`s, anchor positioning, cascade layers, native nesting, `light-dark()`, and scroll-snap".
+An earlier request named these features as examples: "container queries, `popover`s, `dialog`s, anchor positioning, cascade layers, native nesting, `light-dark()`, and scroll-snap".
 
 ## How to work it
 

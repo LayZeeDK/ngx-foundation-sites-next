@@ -12,16 +12,18 @@ Which Yeti components, layouts, recipes, and utilities get a spec, and at what g
 
 ## User instruction, 2026-10-01
 
+The user's own message to the orchestrator, verbatim:
+
 > Use the LLMs files, docs sitemap, and clone file/folder layout/structure to inform the number and names of specs the destination contains.
 
 The three sources, as the orchestrator found them on 2026-10-01:
 
-- **The LLMs files:** https://www.foundationcss.com/yeti/llms.txt and https://www.foundationcss.com/yeti/llms-full.txt, which the user confirmed are the intended files. They are identical to `docs/llms*.txt` at `f52d1e8b9` and list the manifest's 49 items.
+- **The LLMs files:** https://www.foundationcss.com/yeti/llms.txt and https://www.foundationcss.com/yeti/llms-full.txt, which the user confirmed are the intended files ("Oh, so the yeti/llms.txt and yeti/llms-full.txt URLs were what I intended.", 2026-10-01). They are identical to `docs/llms*.txt` at `f52d1e8b9` and list the manifest's 49 items.
 - **The docs sitemap:** https://www.foundationcss.com/sitemap.xml, the one `robots.txt` names; `/yeti/sitemap.xml` returns 404. It holds 72 `/yeti/` URLs, including guides.
 - **The clone's layout:** `d:/projects/github/foundation/yeti`.
   - `docs/` has 50 top-level `.md` pages.
   - `src/` has `components/`, `layouts/`, `recipes/`, `utilities/`, `base/`, `tokens/`, `themes/`, `guides/`, and `starter/`.
-  - `dist/js/` has 10 modules.
+  - `src/` holds the 10 `.js` modules (`dist/js/` exists only after a build).
 
 The counts differ (49 items, 50 docs pages, 72 sitemap URLs), so the decision reconciles them. Its Answer gives one table: each candidate spec, its name in each of the three sources, whether each source lists it, the reason for including it or leaving it out, and the final count and names. A spec's name follows Yeti's own name for the item, as the old map's naming rule did for Foundation.
 

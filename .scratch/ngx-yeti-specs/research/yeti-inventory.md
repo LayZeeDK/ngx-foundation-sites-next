@@ -12,7 +12,7 @@ Source: `d:/projects/github/foundation/yeti` at `develop`, commit `f52d1e8b9` (c
 | By `kind` | 17 layouts, 3 recipes, 22 components, 7 utilities | same, grouped by each entry's `kind` |
 | Rows in section 2 | 49 (17 + 3 + 22 + 7) | this file |
 | Stability guide | "The forty-nine names in the manifest" | `src/guides/stability.md:15` |
-| README | "seventeen layout primitives, three recipes, twenty-two components, and seven utilities" | `README.md:38` |
+| README | "seventeen layout primitives, three recipes, twenty-two components, and seven utilities" | `README.md:36` |
 | Validator output quoted in a guide | `validate: ok (49 components)` | `src/guides/base.md:184` |
 | Source manifests on disk | 49 `manifest.json` files under `src/layouts`, `src/recipes`, `src/components`, `src/utilities` | listing of those folders |
 | Source manifest vs built manifest | equal for all 49 after three build-time normalisations: the build copies a vocabulary's `values` into each attribute that names one, inlines `example.html` as the `example` string, and adds empty `markers`/`classes`/`children` arrays | compared in a script; 0 differences |
@@ -84,7 +84,7 @@ Columns: `Attributes` lists each attribute with its vocabulary in brackets and i
 | toc | docs/toc.md | `toc` | `data-variant` [variant] (9); `data-size` [size-control] (3); `data-numbered` (boolean) | none | 15 (3) | example root `<nav>`; `> ul` `li` | toc.js; yeti:current { link, heading } | src/components/toc/manifest.json:3, js :148 | yes: names, values, markers, tokens, module file, events |
 | tooltip | docs/tooltip.md | `tooltip` | `data-placement` [placement] (4) | none | 8 (3) | example root `<span>`; `> *` `> [role="tooltip"]` | none | src/components/tooltip/manifest.json:3 | yes: names, values, markers, tokens |
 
-### utilitys (7)
+### utilities (7)
 
 | Name | Docs page | Class | Attributes [vocabulary] (value count) | Markers (on, value count) | Public tokens listed (own-prefixed) | Expected elements | JS module; events | Manifest line | Frozen at 7.0.0-beta (stability.md) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -282,7 +282,7 @@ Per-row frozen status is in the last column of section 2. Every row is covered b
 
 Source: `https://www.foundationcss.com/yeti/guides/migrating/`, fetched through `markdown.new` (returned HTTP 200). Its tables have 58 data rows and match `src/guides/migrating.md` row for row, apart from code formatting lost in the conversion (compared in a script). Line numbers below are in `src/guides/migrating.md`. "Not in guide" means the old spec's family does not appear in the guide's tables; the Yeti column then comes from the manifests and other guides and is marked inferred.
 
-`.scratch/next-foundation-specs/specs/` has 57 files; excluding `float-grid.md` and `flex-grid.md` leaves 55. (The earlier coverage pass in `.scratch/next-foundation-specs/research/yeti-foundation-7.md` section 4.2 speaks of 51 specs and groups some; the table below is per file.)
+`.scratch/next-foundation-specs/specs/` has 57 files; excluding `float-grid.md` and `flex-grid.md`, which the old map ruled out of scope on 2026-10-01 and which the migration guide's grid rows cover, leaves 55. (The earlier coverage pass in `.scratch/next-foundation-specs/research/yeti-foundation-7.md` section 4.2 speaks of 51 specs and groups some; the table below is per file.)
 
 | Old spec | Yeti counterpart | Evidence |
 | --- | --- | --- |

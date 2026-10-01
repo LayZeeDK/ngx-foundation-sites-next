@@ -18,7 +18,7 @@ The old map's [Research: Yeti, Foundation's version 7](../../next-foundation-spe
 - its JavaScript;
 - lazy loading.
 
-When it resolves, copy its findings into this bundle, so the bundle stands alone, and list which of tickets 01 to 04 and 12 they already answer in part.
+When it resolves, copy its findings into this bundle, so the bundle stands alone, and list which of the four research tickets and [Decide: which Yeti version the specs target, and how the package tracks it](12-decide-yeti-version-policy.md) they already answer in part.
 
 ## How to work it
 
