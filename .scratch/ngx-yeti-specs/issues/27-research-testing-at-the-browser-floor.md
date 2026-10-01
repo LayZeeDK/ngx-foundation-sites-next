@@ -16,6 +16,23 @@ The user's own message to the orchestrator, verbatim, replying to the note that 
 
 > 48. Then choose a/multiple version(s) of Playwright that include the target browser versions or research what other projects do to mitigate this.
 
+The user then added, verbatim:
+
+> #48 Could Playwright run a specific Chrome for Testing version?
+
+> #48 Consider whether we could use WebDriverIO as the driver for Vitest Browser instead of Playwright and whether it could run specific versions of the target browsers, accepting that a macOS CI runner is needed to run Safari and cannot run on my local Windows machine.
+
+So the research also covers point 6 below. The user accepts that Safari runs only on a macOS CI runner, not on the local Windows machine.
+
+6. WebdriverIO as the Vitest browser-mode provider (`@vitest/browser-webdriverio`), in place of `@vitest/browser-playwright`. Cover:
+   - whether it supports Vitest 4.1.x, Angular 22.2, and Storybook 10.6's Vitest addon;
+   - whether WebdriverIO's `browserVersion` capability, with its automatic browser and driver download, can pin Chrome 141, Edge 141, and Firefox 145 (stock builds, which avoids Playwright's patched Firefox);
+   - Safari 26.2 through `safaridriver` on a macOS runner, including which GitHub-hosted macOS image ships Safari 26.2 or later;
+   - what Vitest browser mode loses or gains with WebdriverIO against Playwright (traces, network interception, `userEvent` fidelity, parallelism, speed);
+   - whether Playwright e2e and WebdriverIO component tests can coexist.
+
+   Probe it on this machine: run one Vitest browser-mode test with WebdriverIO at Chrome 141 and Firefox 145, if the drivers run on Windows ARM64 natively or under emulation.
+
 ## How to work it
 
 Use a `/research` subagent, with small probes under `D:/tmp/` where a claim needs one. Cover, with sources:
