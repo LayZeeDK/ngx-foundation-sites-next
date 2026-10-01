@@ -23,5 +23,5 @@ We decided:
 
 ## Consequences
 
-- The other check families of the old bundle have no cross-cutting successor here. Its build-time checks rested on Foundation's Sass; its Variant runtime checks (`strictVariantNames`, `strictVariantProperties`, `strictBreakpointSync`) rested on the registries and breakpoints that [ADR 0005](0005-closed-unions-from-yetis-vocabularies.md) and ticket 08 abandoned. Per-item misuse warnings and family checks follow their items' records, which ticket 08 leaves pending on the spec list.
+- The other check families of the old bundle have no cross-cutting successor here. Its build-time checks rested on Foundation's Sass; its Variant runtime checks (`strictVariantNames`, `strictVariantProperties`, `strictBreakpointSync`) rested on the registries and breakpoints that [ADR 0005](0005-closed-unions-from-yetis-vocabularies.md) and ticket 08 abandoned. Per-item misuse warnings and family checks follow their items' records, which ticket 08 has now decided against the spec list.
 - NgModule consumers stay supported: the standalone directives remain importable into an NgModule's `imports`.
