@@ -324,3 +324,7 @@ Yeti's `enter` declares no event (`js[0].events` is empty), so the directive add
 | Types come from `yeti-css`'s `yeti.d.ts`, with `Extract` for own value lists | MEDIUM | HIGH | the user's prefix ruling ("Input value types reuse Yeti's own exported vocabulary types"); `exports` map (checked) | decided; resolvability handed to ADR 0006 and ticket 13 (Findings) |
 | ADR 0005's static-attribute consequence does not hold for an owned attribute; `$any` binding instead | MEDIUM | MEDIUM | `shared.ts:530-535`, read, not run | recorded in ADR 0070; ADR 0005 left to the orchestrator |
 | Presentational-attribute kinds per row | LOW | MEDIUM | ticket 139's measurements on other hosts | recommended per row; each spec confirms |
+
+### Later notes
+
+- 2026-10-02: [Decide: the building-blocks map for every ngx-yeti item](../issues/25-decide-building-blocks-map.md) moves row 153's `orientation` input from `yetiTabs` to `yetiTabList`, because Aria's tabs read it there and a wrapping directive cannot set an input of a directive it hosts. The root still renders `data-orientation` for Yeti's CSS.

@@ -27,3 +27,4 @@ We decided:
 - The `dialog` spec's opener and dialog share one hydration boundary unless the dialog has a static `id` ([ADR 0011](0011-rendering-modes-contract-for-yeti.md) clause 7).
 - A shell dialog left open across a `routerLink` navigation is closed by the navigation-close shared spec (ticket 20 measured it staying open and the page inert).
 - `yeti:open` and `yeti:close` become outputs under the events shared spec; `close` is never replayed (ticket 18).
+- 2026-10-02: [Decide: the building-blocks map for every ngx-yeti item](../issues/25-decide-building-blocks-map.md) decided that the dialog uses no CDK `FocusTrap` in the first milestone. Focus return is the dialog's own `command` and `close` listeners ([ADR 0043](0043-light-dismiss-additions-are-host-listeners-not-cdk-services.md)), and the Tab-wrapping gap stays [ledger](../ledger.md) row A11Y-8.

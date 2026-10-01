@@ -29,3 +29,4 @@ We decided:
 - The consistency review checks that every spec carries the criteria subsection and its `ledger.md` rows.
 - [Research: Yeti against WHATWG, WAI-ARIA, the APG](../issues/17-research-yeti-accessibility-and-standards.md) classes forced colours as not a WCAG 2.2 AA criterion (measured there, "not a WCAG AA criterion"). The open item in point 6 is therefore also a question of whether the package goes beyond AA, which the person deciding it should know.
 - The old record's exact-formula Sass helper has no successor; the formula lives in a test helper.
+- 2026-10-02: point 6 is settled. The user ruled "Accessibility CSS: Yes." (map, Standing rulings): where Yeti's CSS fails, the package adds one small documented rule in its own `ngx-yeti` cascade layer, recorded as a [ledger](../ledger.md) row that [Decide: the building-blocks map for every ngx-yeti item](../issues/25-decide-building-blocks-map.md) gives an owning spec.
