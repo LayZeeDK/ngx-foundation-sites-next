@@ -50,3 +50,4 @@ We decided:
 - A pin move changes the `?v=` query on every item URL and regenerates the rank table and the types module; the consumer rebuilds Yeti at the new pin. A consumer who builds Yeti at another commit gets that commit's CSS under the package's pin query, which is documented as unsupported.
 - The `MutationObserver` runs for the life of the application and the sweep queries the document once per item at most once per frame; the old map's ticket 198 measured observer callbacks at 31 ms in total for 5,000 hosts. An implementation may connect the observer only while some item has a zero live count.
 - The old map's requirements that remain unmet for Yeti: none. Its "cache busting" is met by the pin query; its "no consumer code" by point 11.
+- 2026-10-02: told that per-item loading saves at most about 13 kB gzipped of CSS per page, the user chose "Keep per-item loading (Recommended)" (map, Standing rulings). The lazy-styles requirement and this record stand.
