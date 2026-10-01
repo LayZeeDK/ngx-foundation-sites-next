@@ -1,7 +1,7 @@
 # 07. Decide: which standing preferences and user rulings carry over
 
 Type: grilling
-Status: open
+Status: claimed
 Blocked by: 01, 02, 03
 Labels: wayfinder:grilling
 Map: ../map.md
