@@ -1,7 +1,7 @@
 # 31. Research: Yeti's removed planning documents and its stated roadmap
 
 Type: research
-Status: claimed
+Status: resolved
 Blocked by: none
 Labels: wayfinder:research
 Map: ../map.md
@@ -26,3 +26,13 @@ The user's own message, verbatim:
 ## How to work it
 
 Use a `/research` subagent. Read the deleted files from history in the read-only clone at `D:/projects/github/foundation/yeti` with `git show fa61d90d2^:<path>`. Do not check out, fetch, or modify the clone. Read the announcement and the repository's Discussions through `gh api`, read-only. Write `research/yeti-planning-documents.md`, with findings tagged read (with commit and path) or inferred, and append an `## Answer`. Decide nothing.
+
+## Answer
+
+Resolved 2026-10-03. Findings: [research/yeti-planning-documents.md](../research/yeti-planning-documents.md). Each point is tagged read (with commit and line) or inferred.
+
+- The five files (architecture spec, phase 0 design, phase 0 plan, reset survey, inspiration notes) were committed in `a994b2e29` and removed and ignored 43 minutes later in `fa61d90d2` (both 2026-09-12). Read from `fa61d90d2^` in full, one section each in the findings file. They exist on no branch and not on `develop`.
+- Planned phases: 0 repo transition and skeleton, 1 tokens and reset, 2 layouts and recipes, 3 styled essentials, 4 navigation and interactive items, 5 guides, `gen-types.js`, screenshots, API freeze and `7.0.0-beta.0`, 6 MCP server and `7.0.0`. The first npm publish of `yeti-css` is `7.0.0-beta.0`. No dates or milestone names appear.
+- JavaScript was budgeted at two modules (`tabs.js`, `dialog.js`); the pin has ten and a `yeti.js` bundle. The frozen surface is stated only as a strict-semver principle; the list lives in `stability.md` at the pin. The documents plan no Angular or wrapper work.
+- Public availability: no `docs/superpowers/` on `develop` or any branch, 0 open milestones (30 closed), Discussions are disabled, the announcement has no comments, and the docs site has no roadmap page. The announcement's pointers are already stale.
+- Map decisions: mostly confirmed (Baseline 2025, layers, naming contract, optional modules, public-token flag, WCAG floor). Contradicted by the pin: MIT licence (now FSL-1.1-MIT), five layers (six), two modules (ten). Table in the findings file.
