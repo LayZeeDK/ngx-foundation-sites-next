@@ -96,6 +96,13 @@ The user chose to carry over, as they are:
   - Open state: asked how the package handles a `details` or `dialog` toggled before hydration, the user chose "Never bind; read once (Recommended)". No directive binds `open` as a property or an attribute. A directive reads the element's open state once, when it is created, then follows the native `toggle` and `close` events. A dialog opens only through `command` or `showModal()` ([ADR 0021](adr/0021-dialog-is-a-directive-on-the-native-dialog.md)).
   - `tabs` with JavaScript off: the user chose "All panels show (Recommended)". The server HTML shows every panel, with one tab drawn selected, and the package hides the other panels once the app is live. Ledger row A11Y-17's server-HTML test is corrected to match.
   - The Aria rows: asked to accept the measured outcomes at once, the user chose "Decide each row".
+- The Aria rows, one by one (2026-10-03), after tickets 29 to 34. The user chose:
+  - `buttons`: "Aria Toolbar by composition (Recommended)".
+  - `accordion`: "Heading in summary (Recommended)".
+  - The carousel's picker: "Custom: links + prev/next (Recommended)".
+  - `nav` and `dropdown`: "Custom disclosure nav (Recommended)".
+
+  [building-blocks.md](building-blocks.md) section "Aria decisions (2026-10-03)" records how each row changes.
 - Temporary files: the user's temporary replies file in the repository root is never referenced, read as evidence, staged, or committed (item 30). Every brief says so.
 
 ### Models and briefs (user ruling, 2026-10-01)

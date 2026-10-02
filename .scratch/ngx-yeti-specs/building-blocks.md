@@ -342,3 +342,17 @@ The user required compliance with Angular's hydration constraints (map, Standing
 - `table`: a usage rule requires an explicit `<tbody>`, because the browser inserts one and the DOM would differ from the server's.
 - Every spec: a consumer writes no static attribute on an attribute a directive binds, because hydration writes static attributes again before the binding wins (tickets 18 and 30).
 - Generated ids: see the 2026-10-03 note on [ADR 0042](adr/0042-generated-ids-come-from-cdk-idgenerator-through-one-helper.md).
+
+## Aria decisions (2026-10-03)
+
+The user decided each Aria row after [Prototype: Angular Aria for the four items that keep a native pattern](issues/29-prototype-aria-for-the-native-pattern-items.md), [Prototype: fitting Angular Aria to Yeti by directive composition](issues/30-prototype-fitting-aria-by-directive-composition.md), [Research: where Angular Aria's attribute directives fit Yeti's own markup](issues/32-research-aria-directives-on-yetis-own-markup.md), and [Prototype: subclassing Aria's directives, and `[open]` against `[attr.open]`](issues/34-prototype-subclassing-aria-and-open-binding-forms.md). The user's words are quoted in the map's Standing rulings. Where this section and Part 2 disagree, this section wins until Part 2 is rewritten.
+
+| Row | Item | Decision | Change to Part 2 |
+| --- | --- | --- | --- |
+| 27 | `buttons` | Aria Toolbar by composition: `yetiButtons` hosts `ngToolbar`, and `yetiButton` hosts `ngToolbarWidget` with `inputs: ['disabled: busy']`. The package's `[attr.tabindex]` gives the first widget the Tab stop until Aria's `active()` is true, and its `[attr.role]` keeps `toolbar`. | Replaces "role=\"group\" with the consumer writing `ngToolbar` beside it". Closes A11Y-12. |
+| 40 | `tabs` | Aria Tabs by composition, as decided, plus the `tabindex` hand-over for the selected tab, an `id` input so that ids match across hydration, and every panel visible with JavaScript off. The package adds `hidden` to non-selected panels once the app is live. | Adds the hand-over, the `id` input, and the visible panels. |
+| 21 | `accordion` | Native `details`/`summary` with a heading inside `summary`, and no Aria. `open` is never bound: it is read once and follows `toggle`. The spec chooses between `<h3>` with one documented CSS rule and `span[role=heading]`, and checks Firefox's lost heading on an opened item. | Closes A11Y-11 without Aria. |
+| 29 | carousel picker | Custom, as ADR 0024 says: fragment-link dots, previous and next buttons, and `aria-current`. | None. |
+| 32, 34 | `nav`, `dropdown` | Custom disclosure navigation, as ADR 0019 says. | None. |
+
+Every Aria directive the package hosts follows the composition ruling and the open-state ruling (map, Standing rulings, 2026-10-03).
