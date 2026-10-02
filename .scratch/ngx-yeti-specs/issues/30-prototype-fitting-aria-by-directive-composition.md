@@ -1,7 +1,7 @@
 # 30. Prototype: fitting Angular Aria to Yeti by directive composition
 
 Type: prototype
-Status: claimed
+Status: resolved
 Blocked by: 29
 Labels: wayfinder:prototype
 Map: ../map.md
@@ -24,3 +24,19 @@ The user's own message, verbatim, given after reading ticket 29's findings:
 ## How to work it
 
 Two prototypes, reusing ticket 29's workspaces under `D:/tmp/ngx-yeti-29-<item>/`. The first covers points 1 for `buttons`, `tabs`, and the carousel. The second covers point 2. Measure in Chromium, Firefox, and WebKit, as ticket 29 did: computed styles against Yeti's `example.html`, the server HTML with JavaScript off, before hydration, inside `hydrate never`, and after hydration, axe, and the APG keyboard pattern. Each prototype writes `prototypes/aria-composition-<topic>/README.md`, and the orchestrator appends the `## Answer`. Decide nothing.
+
+## Answer
+
+Resolved 2026-10-03 by two Claude Opus 5.5 prototypes: [aria-composition-roving](../prototypes/aria-composition-roving/README.md) (point 1) and [aria-composition-accordion](../prototypes/aria-composition-accordion/README.md) (point 2). They ran in Chromium, Firefox, and WebKit, with Angular and `@angular/aria` 22.2.1, in ticket 29's workspaces. Results are measured unless marked. Decides nothing.
+
+**Point 1: Toolbar and Tabs can be fitted.** The package's directive binds `[attr.tabindex]`. It gives the first widget, or the selected tab, the one Tab stop, and keeps it until Aria's public `active()` turns true, then passes Aria's value through. It uses no platform check and no private API. Host-directive bindings run before the host's (read, `directive-composition-api.md:122-131`).
+- `buttons`, `tabs`, and the carousel's picker each have exactly one Tab-reachable item, and nothing `inert`, with JavaScript off, before hydration, and inside `hydrate never`. This meets ADR 0024 point 1 for the carousel. No `tabindex` changed during hydration, and no `NG05xx` mismatch or warning was logged.
+- `buttons`: busy routed into Aria's `disabled` keeps `aria-disabled="true"` and Yeti's look. The package's `[attr.role]` beats a consumer's `role="group"`, but hydration writes the static value again for one task (read, `shared.ts:599`). Ticket 29's Shift+Tab race remains.
+- `tabs`: Yeti's own markup shows every panel before its script runs (read, `tabs.css:1-5`). The server HTML does too, with one stop. Once live, the package adds `hidden`, because Aria sets only `inert`.
+- Carousel: the glue is still needed (66 lines). The tab stop does not follow a swipe without Aria's private `activeItem` (read, `tab-list.ts:127`).
+- Aria's generated ids change at hydration because of a random infix (`id-generator.ts:24`), unless an `id` is passed in. This is carried into [Research: the decided records against Angular's hydration constraints](33-research-decided-records-against-hydration-constraints.md) and ADR 0042's note.
+
+**Point 2: the accordion.**
+- **(C) Aria on Yeti's `details`/`summary` by composition** takes about 45 lines and uses only Aria's public API. Content projected directly into the panel renders on the server, every trigger is reachable by Tab, and Yeti's styles match. Enter, Space, and the arrow keys work, with `details[open]` in sync both ways. Against that, Aria writes `inert` on closed panels, so an item opened with JavaScript off or before hydration stays inert. Overriding `inert` holds only until the first toggle. A bound `open` undoes a click made before hydration unless `open` is read from the element in the constructor, a DOM read that has to be judged against the hydration rules. A fragment link followed before hydration ends closed in Chromium and WebKit. Development builds warn that the panel has no `ngAccordionContent`. `role="button"` on `summary` is not allowed by ARIA in HTML (read), though axe passed it.
+- **(D) A heading inside `summary`, no Aria, no new code:** every Yeti selector and state matches, and axe reports 0. Chromium (CDP) and Firefox (UI Automation) expose a level-3 heading inside the expandable summary, which closes ledger A11Y-11. A bare `h3` takes Yeti's heading style (29 px, rows 7 px taller). `span[role=heading]` matches Yeti's look exactly, but Firefox lost that heading on an item clicked open (cause not isolated). WebKit's tree was not inspected, and no screen reader was run.
+- Server and client DOM matched for every variant, with no `NG0500` errors.
