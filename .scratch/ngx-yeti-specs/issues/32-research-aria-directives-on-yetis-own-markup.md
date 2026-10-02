@@ -1,7 +1,7 @@
 # 32. Research: where Angular Aria's attribute directives fit Yeti's own markup
 
 Type: research
-Status: open
+Status: claimed
 Blocked by: 30
 Labels: wayfinder:research
 Map: ../map.md
