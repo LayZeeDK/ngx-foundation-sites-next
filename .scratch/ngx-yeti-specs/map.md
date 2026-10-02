@@ -89,6 +89,7 @@ The user chose to carry over, as they are:
   > Generally, only reach for Angular Aria when it addresses an accesibility feature that Yeti is missing. If Angular Aria itself introduces accessibility or SSR/hydration issues or violates any other constraint, first see if it can be modified to fit using other patterns like directive composition. If fitting Angular Aria doesn't seem possible and CDK does not provide a suitable alternative either, add custom, modern Angular-native code.
 
   This refines the repository's AGENTS.md implementation hierarchy for this package. [Prototype: fitting Angular Aria to Yeti by directive composition](issues/30-prototype-fitting-aria-by-directive-composition.md) tests the second step for `buttons`, `tabs`, the carousel's picker, and `accordion`.
+- Hydration constraints (2026-10-03): the user wrote, verbatim: "54. Make sure that we always comply with [hydration constraints](https://angular.dev/guide/hydration#constraints)." Every spec complies: the same DOM on the server and the client, no direct DOM manipulation, valid HTML, a consistent `preserveWhitespaces`, and no output branched on the platform. [Research: the decided records against Angular's hydration constraints](issues/33-research-decided-records-against-hydration-constraints.md) checks the decided records.
 - Temporary files: the user's temporary replies file in the repository root is never referenced, read as evidence, staged, or committed (item 30). Every brief says so.
 
 ### Models and briefs (user ruling, 2026-10-01)
