@@ -29,3 +29,4 @@ We decided:
 - A consumer that navigates by other means (`Location.go`, a full reload) gets no closing from this function; the spec says so.
 - A panel the consumer opens by other code paths than the platform's attributes still reports its state through `toggle` or `close`, so the function sees it.
 - The spec's e2e layer runs against the fixture app: open the shell panel, navigate with `routerLink`, assert that the panel is closed and focus is on the opener, in three engines.
+- 2026-10-03: [Research: the decided records against Angular's hydration constraints](../issues/33-research-decided-records-against-hydration-constraints.md) rates this record at risk (inferred from the Router and event-replay sources): the application's first `NavigationStart` may close a dialog or panel the user opened before hydration. The `navigation-close` spec measures it and ignores the initial navigation if so.

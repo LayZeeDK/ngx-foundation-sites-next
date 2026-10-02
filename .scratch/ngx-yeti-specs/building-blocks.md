@@ -332,3 +332,13 @@ Shared pieces that have no spec of their own:
 - Testing at the floor browsers: [ticket 27](issues/27-research-testing-at-the-browser-floor.md) resolved on 2026-10-01 (Chrome for Testing 141 through `executablePath`; stock Firefox 145 through WebdriverIO or Playwright 1.57's `moz-firefox` channel; no runner ships Safari 26.2). Which of its options layer 2 and layer 4 adopt is the testing decision's, not yet taken; the specs name the floor as ADR 0002 sets it.
 - Whether the package may add CSS of its own where Yeti's CSS fails WCAG 2.2 AA: yes, by the user's ruling of 2026-10-02 ("Accessibility CSS: Yes.", map, Standing rulings); 1.13 and Part 3 record the stylesheet, and each owning spec writes its rule.
 - The style-loading mechanism: decided by [ticket 13](issues/13-decide-style-loading.md) and [ADR 0060](adr/0060-item-styles-are-counted-links-to-the-consumers-yeti-build.md); the user kept per-item loading on 2026-10-02. No item needs a `styleUrl`, so standing ruling 28 triggers nowhere and `demo` is the only component.
+
+## Hydration constraints (2026-10-03)
+
+The user required compliance with Angular's hydration constraints (map, Standing rulings). [Research: the decided records against Angular's hydration constraints](issues/33-research-decided-records-against-hydration-constraints.md) found these items for the owning specs:
+
+- `accordion`: a `details` that ships open loses a toggle made before hydration; its `open` model is never bound to `[open]` (row 21).
+- `demo`: writing `srcdoc` again with the same value reloads the frame in three engines (measured), so the spec builds the frame from the `code` input and decides how to avoid the second load.
+- `table`: a usage rule requires an explicit `<tbody>`, because the browser inserts one and the DOM would differ from the server's.
+- Every spec: a consumer writes no static attribute on an attribute a directive binds, because hydration writes static attributes again before the binding wins (tickets 18 and 30).
+- Generated ids: see the 2026-10-03 note on [ADR 0042](adr/0042-generated-ids-come-from-cdk-idgenerator-through-one-helper.md).
