@@ -1,7 +1,7 @@
 # 34. Prototype: subclassing Aria's directives, and `[open]` against `[attr.open]`
 
 Type: prototype
-Status: claimed
+Status: resolved
 Blocked by: 30, 33
 Labels: wayfinder:prototype
 Map: ../map.md
@@ -33,3 +33,18 @@ The user's own messages, verbatim:
 ## How to work it
 
 One prototype in ticket 29's workspaces (`D:/tmp/ngx-yeti-29-buttons/ws`, `D:/tmp/ngx-yeti-29-accordion/ws`), using development builds so that Angular's hydration checks run. Measure in Chromium, Firefox, and WebKit. Write `prototypes/aria-subclass-and-open/README.md`; the orchestrator appends the `## Answer`. Decide nothing.
+
+## Answer
+
+Resolved 2026-10-03 by a Claude Opus 5.5 prototype: [aria-subclass-and-open](../prototypes/aria-subclass-and-open/README.md). It used development builds in Chromium, Firefox, and WebKit, with Angular and `@angular/aria` 22.2.1, and logged no `NG05xx` error anywhere. Results are measured unless marked. Decides nothing.
+
+**Point 1: subclassing gives the same results as composition.** Server HTML, JavaScript off, before hydration, `hydrate never`, and after hydration all matched, with axe at 0. A subclass is slightly smaller: 34 lines against 37 for `buttons`, and 6 against 12 for the accordion trigger.
+- Neither form avoids the rewrite at hydration. A role overridden by a binding comes back and is removed again 9 to 40 ms later (`group` on the toolbar, `button` on `summary`), with an animation frame between the two writes in 5 of 9 engine runs. A static replacement in the subclass (`role: ''`) avoids it, and Chromium then shows the native disclosure role. But a static value cannot remove an attribute or beat a consumer's static one (read). Firefox and WebKit were not inspected for `role=""`.
+- **Correction to ticket 30:** at hydration the first widget's `tabindex` goes `0`, `-1`, `0` within one batch, in both forms. Ticket 30's probe could not see a write undone within the same batch.
+- What a subclass depends on: it restates Aria's `useExisting` providers, because providers and `exportAs` are not inherited (read). Re-aliasing an inherited signal input (`inputs: ['disabled: busy']`) threw at run time. Aria 22.2.0 exported its injection tokens "to support custom subclasses" (`8d3da9ea3`, angular/components#33607, read). A maintainer called Aria a developer preview expected to be stable in v22 (#32977, read).
+
+**Point 2: `[open]` and `[attr.open]` behave the same, in every engine.**
+- The server writes `open=""` for both, because domino reflects `open` on `details` and `dialog` (read).
+- Hydration writes `open` again in both forms. Both undo a toggle made before hydration, on `details` and on a non-modal `dialog`.
+- On a modal `dialog` opened before hydration by `command="show-modal"`, hydration removes `open`. The dialog stays modal but hidden, the page stays blocked, and Escape does not recover it. The same happens after hydration if the bound value turns false while `showModal()` has the dialog open.
+- No binding form keeps a toggle made before hydration without reading the DOM. Only `hydrate never` kept every toggle.
