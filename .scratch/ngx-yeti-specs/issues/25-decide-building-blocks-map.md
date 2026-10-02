@@ -64,6 +64,10 @@ This is the architecture ticket of the map, so it runs on `fable-high`, as the m
 
 Note, 2026-10-01 (audit 0002, L8): add these findings of ticket 17 to the ledger seeds as well: the `center` layout overflows by 2 px at 320 px (WCAG 1.4.10); five items need a manual contrast check; the accordion header is not a button inside a heading; the `buttons` group has no toolbar single Tab stop; and the spinner spins forever (WCAG 2.2.2, open).
 
+## User answers, 2026-10-02
+
+Recorded by the orchestrator in the map's Standing rulings. On the four Aria-fallback rows the user answered, verbatim: "For each item, prototype and analyze whether using Angular Aria would keep Yeti's styles and whether it would fully replace any Yeti JavaScript where applicable." Those rows wait for [Prototype: Angular Aria for the four items that keep a native pattern](29-prototype-aria-for-the-native-pattern-items.md). The user added a `setup` spec ("Add a `setup` spec (Recommended)") and kept A11Y-5 and A11Y-6 as ledger rows ("Ledger only").
+
 ## Answer
 
 Resolved 2026-10-02 by Claude Fable 5.1, AFK grilling under the map's AFK override, with `/domain-modeling`'s terms from [CONTEXT.md](../CONTEXT.md), against Yeti at `f52d1e8b9` (read-only clone; the built `dist/` of ticket 02 at `D:/tmp/ngx-yeti-02/yeti/dist/`), Angular components at `708d4c6e2` (`22.2.x`), Angular at `5db6fc4453` (`22.2.0`), the APG at `3f094fd`, the resolved tickets this one is blocked by, ADRs 0003, 0010 to 0025, 0040, 0060, 0070, and 0080, and the old map's `building-blocks.md` and its ticket 14 as evidence of the shape only. No probe was needed: every claim below is read in source at the commit named, cited to the ticket that measured it, or marked inferred. The map, other tickets, other ADRs, `CONTEXT.md`, and `architecture-guide.md` are not edited here; what they need is listed under "For the orchestrator".
