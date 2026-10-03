@@ -4,7 +4,7 @@ Ticket: [89. Spec: table (component)](../issues/89-spec-table.md)
 
 Targets: Angular 22.2, Nx 23.2, Storybook 10.6 with `@storybook/angular-vite`, Vitest 4.1.x, TypeScript 6.0.x, and Yeti `f52d1e8b9` (`f52d1e8b93de5bbde322480ba77d5be26c49b0ef`, `develop`, 2026-09-25). Browser target: Chrome and Edge 141, Firefox 145, Safari and Safari iOS 26.2 ([ADR 0002](../adr/0002-browser-target-baseline-2025.md)). Accessibility target: WCAG 2.2 AA.
 
-Deciding records: [building-blocks.md](../building-blocks.md) Part 2 row 39, Part 1, and "Hydration constraints (2026-10-03)" (the `table` bullet); [Decide: the spec list](../issues/11-decide-spec-list.md) row 39 and Q9; [Decide: how the package maps each of Yeti's `data-*` attributes](../issues/26-decide-yeti-data-attributes-mapping.md) rows 143 to 151 and Q10, Q15, Q16; [ADR 0003](../adr/0003-directives-set-yetis-class-attributes-and-markers.md), [ADR 0004](../adr/0004-yeti-tokens-are-a-consumer-stylesheet-surface.md), [ADR 0005](../adr/0005-closed-unions-from-yetis-vocabularies.md), [ADR 0011](../adr/0011-rendering-modes-contract-for-yeti.md), [ADR 0014](../adr/0014-testing-stack-for-yeti.md), [ADR 0015](../adr/0015-wcag-2-2-aa-enforcement-over-yeti.md), [ADR 0040](../adr/0040-package-replaces-yetis-optional-modules.md), [ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md), [ADR 0060](../adr/0060-item-styles-are-counted-links-to-the-consumers-yeti-build.md), [ADR 0070](../adr/0070-where-a-yeti-attribute-sits-decides-its-mapping.md), and [ADR 0080](../adr/0080-yeti-prefix-ngx-yeti-runtime-names-ngxyeti-on-collision.md); [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decisions 2, 6, 7, 8, 9, 10, 11, 39, 45, and 59; the [icon](icon.md) spec's usage rule 5, the [box](box.md) spec's usage rule 3, and the [scroller](scroller.md) spec's usage rule 1. `Y/` is `d:/projects/github/foundation/yeti/` at the **Pin**; `NC/` is `d:/projects/github/angular/components/` at `708d4c6e2` (22.2.x); `NG/` is `d:/projects/github/angular/angular/` at 22.2.x. Points no record settles are marked "(open: see ticket)" and listed under the ticket's `### Open`.
+Deciding records: [building-blocks.md](../building-blocks.md) Part 2 row 39, Part 1, and "Hydration constraints (2026-10-03)" (the `table` bullet); [Decide: the spec list](../issues/11-decide-spec-list.md) row 39 and Q9; [Decide: how the package maps each of Yeti's `data-*` attributes](../issues/26-decide-yeti-data-attributes-mapping.md) rows 143 to 151 and Q10, Q15, Q16; [ADR 0003](../adr/0003-directives-set-yetis-class-attributes-and-markers.md), [ADR 0004](../adr/0004-yeti-tokens-are-a-consumer-stylesheet-surface.md), [ADR 0005](../adr/0005-closed-unions-from-yetis-vocabularies.md), [ADR 0011](../adr/0011-rendering-modes-contract-for-yeti.md), [ADR 0014](../adr/0014-testing-stack-for-yeti.md), [ADR 0015](../adr/0015-wcag-2-2-aa-enforcement-over-yeti.md), [ADR 0040](../adr/0040-package-replaces-yetis-optional-modules.md), [ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md), [ADR 0060](../adr/0060-item-styles-are-counted-links-to-the-consumers-yeti-build.md), [ADR 0070](../adr/0070-where-a-yeti-attribute-sits-decides-its-mapping.md), and [ADR 0080](../adr/0080-yeti-prefix-ngx-yeti-runtime-names-ngxyeti-on-collision.md); [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decisions 2, 6, 7, 8, 9, 10, 11, 39, 45, and 59; the [icon](icon.md) spec's usage rule 5, the [box](box.md) spec's usage rule 3, and the [scroller](scroller.md) spec's usage rule 1. `Y/` is `d:/projects/github/foundation/yeti/` at the **Pin**; `NC/` is `d:/projects/github/angular/components/` at `708d4c6e2` (22.2.x); `NG/` is `d:/projects/github/angular/angular/` at 22.2.x. The points the ticket listed as open were decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md) (decisions 195 to 197), and each is cited where it applies.
 
 ## Problem Statement
 
@@ -25,7 +25,7 @@ One **Item directive**, one **Part directive**, and one any-element marker direc
 - `YetiTable`, selector `table[yetiTable]`, `exportAs: 'yetiTable'`. It binds `table` as a static host class, sets `data-ngx-yeti-item-table` on its host, and acquires the `table` item file with `injectYetiItemStyles('table')` as the last statement of its constructor ([setup](setup.md); [ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md); ADR 0060 point 2). Inputs: `size` (`YetiSizeControl`) and the booleans `striped`, `hover`, `border`, `nowrap`, and `fixed`, each bound as its `data-*` attribute and rendering nothing when unset. It binds the HTML `border` attribute to `null`.
 - `YetiTableCell`, selector `th[yetiTableCell], td[yetiTableCell], tr[yetiTableCell]`, `exportAs: 'yetiTableCell'`. Inputs: `nowrap` (`boolean`) for one cell's `data-nowrap`, and `align` (`YetiTableAlign`, which is `Extract<YetiAlign, 'start' | 'center' | 'end'>`) for a cell's or a row's `data-align`. It binds the HTML `align` attribute to `null` (ticket 26 rows 150 and 151).
 - `YetiNumeric`, selector `[yetiNumeric]`, `exportAs: 'yetiNumeric'`, input `yetiNumeric` (`boolean`): `<td yetiNumeric>` renders `data-numeric`. It binds no class, sets no presence attribute, and acquires no item file, because its figures rule is in the always-loaded `layouts/attributes.css` (ticket 26 row 149, kind G; ticket 50 decision 7).
-- A Part directive for a pinned header row, `YetiTableHead` on `thead[yetiTableHead]` with a `sticky` input that renders `data-sticky` (open: see ticket). Yeti's docs, CSS, and tests pin a `thead` with `data-sticky`, but the table's manifest declares no such marker, so no record maps it.
+- A Part directive for a pinned header row, `YetiTableHead` on `thead[yetiTableHead]` with a `sticky` input that renders `data-sticky` ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 195). Yeti's docs, CSS, and tests pin a `thead` with `data-sticky`, but the table's manifest declares no such marker, so no record mapped it before that decision.
 
 Everything else is Yeti's CSS and the platform. The table keeps its native role and its native header relationships; the package adds no role, no Aria `Grid`, and no CDK table (Part 2 row 39). Every value is a host binding on an input signal, so the server HTML is Yeti's documented markup and the table renders the same before hydration, after it, with JavaScript off, and inside any `@defer` or hydrate block. The package writes no **Token** ([ADR 0004](../adr/0004-yeti-tokens-are-a-consumer-stylesheet-surface.md)).
 
@@ -56,7 +56,7 @@ The hydration fact becomes a **Usage rule**: every table template writes an expl
 21. As an application developer, I want to mark a column of numbers with `yetiNumeric` on its cells and header, so that the digits line up and the column is end-aligned.
 22. As an application developer, I want `yetiNumeric` on any element outside a table, a price or a legend's values, so that figures line up anywhere.
 23. As an application developer, I want `yetiNumeric` to load no stylesheet on its own, so that marking a price costs no request.
-24. As an application developer, I want to pin the header row while the rows scroll under it, as Yeti's docs show, so that a long table keeps its column names in view (open: see ticket).
+24. As an application developer, I want to pin the header row while the rows scroll under it, as Yeti's docs show, so that a long table keeps its column names in view ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 195).
 25. As an application developer, I want a wide table to scroll inside a `scroller` while the table stays a table, so that I follow Yeti's docs without turning rows into cards.
 26. As an application developer, I want the usage rules to tell me to write an explicit `tbody`, so that my server-rendered tables hydrate without a mismatch.
 27. As an application developer, I want the usage rules to tell me how to write a row component, so that a component that renders rows keeps the table valid.
@@ -82,7 +82,7 @@ The hydration fact becomes a **Usage rule**: every table template writes an expl
 47. As a low-vision user, I want cell text, header text, the caption, striped rows, and the hovered row to meet 4.5:1 in light and dark schemes, so that I can read every row.
 48. As a low-vision user, I want a page with a wide table to reflow at 320 CSS pixels with only the table's own region scrolling sideways, so that the rest of the page never scrolls in two directions.
 49. As a low-vision user who overrides text spacing, I want cells to grow rather than clip, so that my spacing settings keep every value visible.
-50. As a forced-colours user, I want the cell borders and the header rule to stay visible, so that the grid of a bordered table remains (open: see ticket).
+50. As a forced-colours user, I want the cell borders and the header rule to stay visible, so that the grid of a bordered table remains ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 197).
 51. As a package maintainer, I want the contract check to cover the table's class, six attributes, three markers, and their unions, so that a pin move that adds a value or a marker fails before release.
 52. As a package maintainer, I want the SSR smoke to assert the server HTML of a table with every input, a static `border` and `align`, and an explicit `tbody`, so that the first paint is proven.
 53. As a package maintainer, I want the fixture app to render a table route prerendered and server-rendered, with JavaScript on and off, so that both rendering paths of the JavaScript-off ruling are tested.
@@ -126,9 +126,9 @@ Attributes left to the consumer: none of Yeti's `data-*` (ticket 26). The consum
 | Attribute `data-nowrap` | every cell keeps its line | `nowrap` on `yetiTable`: `boolean`, `booleanAttribute` | `inert`: HTML `nowrap` is a cell attribute and does nothing on a `table` | ticket 26 row 147 (R) |
 | Attribute `data-fixed` | fixed table layout | `fixed` on `yetiTable`: `boolean`, `booleanAttribute` | not an HTML attribute | ticket 26 row 148 (R) |
 | Marker `data-numeric` (`on: "*"`) | tabular figures anywhere; end-aligned in a table | `yetiNumeric` on `[yetiNumeric]` (`YetiNumeric`): `boolean`, `booleanAttribute` | `yetinumeric` is not an HTML attribute | ticket 26 row 149 (G); ADR 0070 kind G |
-| Marker `data-nowrap` (`on: "th, td"`) | this cell keeps its line | `nowrap` on `yetiTableCell` (`YetiTableCell`): `boolean`, `booleanAttribute` | `output` on `th` and `td`: `[attr.nowrap]` bound from the input, `null` when off (open: see ticket) | ticket 26 row 150 (C) and Q15 |
+| Marker `data-nowrap` (`on: "th, td"`) | this cell keeps its line | `nowrap` on `yetiTableCell` (`YetiTableCell`): `boolean`, `booleanAttribute` | `removed`: `'[attr.nowrap]': 'null'` on `th`, `td`, and `tr`, because HTML's `nowrap` is obsolete ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 196) | ticket 26 row 150 (C) and Q15; ticket 50 decisions 9 and 196 |
 | Marker `data-align` (`on: "th, td, tr"`) | aligns a cell, or a row's cells | `align` on `yetiTableCell`: `YetiTableAlign`, unset renders nothing | `removed`: `'[attr.align]': 'null'` | ticket 26 row 151 (C) and Q15; ticket 50 decision 9 |
-| `data-sticky` on `> thead` (named in `children`, not declared as a marker) | pins the header row | `sticky` on `thead[yetiTableHead]` (`YetiTableHead`): `boolean`, `booleanAttribute` (open: see ticket) | not an HTML attribute | none; manifest `children` `> thead` |
+| `data-sticky` on `> thead` (named in `children`, not declared as a marker) | pins the header row | `sticky` on `thead[yetiTableHead]` (`YetiTableHead`): `boolean`, `booleanAttribute` ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 195) | not an HTML attribute | ticket 50 decision 195; manifest `children` `> thead` |
 | Children `> caption`, `> thead`, `> tbody` | the title, the header row, the rows | the consumer's elements; `tbody` required by usage rule 1 | not applicable | manifest `children`; building-blocks "Hydration constraints (2026-10-03)" |
 | Events | none | no output | not applicable | manifest `js: null`; [events](events.md) |
 | Tokens `--yeti-table-stripe`, `--yeti-table-border` | the stripe fill; row and cell borders | the consumer's; the package writes none | not applicable | ADR 0004 |
@@ -145,7 +145,7 @@ The `removed` kind for `border` on a `table`: HTML's `border` attribute on a `ta
 
 The `removed` kind for `align` on `th`, `td`, and `tr`: HTML's `align` on these elements is a text-alignment hint. The directive binds `[attr.align]` to `null`, with the same comment, as Material's `MatHint` does for `align`. Static `align="center"` is accepted on the same terms as `border` (decision 9).
 
-The kind for `nowrap` on a cell: ticket 26 row 150 recommends `output`, because HTML's `nowrap` on a `th` or `td` means what `data-nowrap` means. The directive binds `[attr.nowrap]` from the input, `''` when true and `null` when false. The HTML attribute is obsolete in HTML, so a cell with `nowrap` true carries an attribute the Nu Html Checker reports, which Yeti's own markup does not (open: see ticket).
+The `removed` kind for `nowrap` on a cell: ticket 26 row 150 recommended `output`, because HTML's `nowrap` on a `th` or `td` means what `data-nowrap` means. But the HTML attribute is obsolete, so a cell carrying it would hold an attribute the Nu Html Checker reports, which Yeti's own markup never has, and `data-nowrap` already keeps the line. The directive binds `'[attr.nowrap]': 'null'` on all three hosts, with the same comment as `align`, so the server HTML stays Yeti's documented markup. Static `nowrap` is accepted on the same terms as `border` and `align` (decision 9) ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 196).
 
 The `inert` kinds: a static `size="sm"` or `nowrap` on a `table` stays on the element beside its `data-*` form and does nothing, because neither is a `table` attribute (ticket 26 rows 143 and 147); the directive binds nothing for them.
 
@@ -155,7 +155,7 @@ The `inert` kinds: a static `size="sm"` or `nowrap` on a `table` stays on the el
 | --- | --- | --- |
 | Table semantics, header association, `scope` | the platform's | nothing; the consumer writes the structure (usage rules 1, 4, 5) |
 | Row tint under the pointer | Yeti's CSS (`:hover`) | renders `data-hover` from `hover` |
-| A pinned header row | Yeti's CSS and the always-loaded `[data-sticky]` rule | renders `data-sticky` from `YetiTableHead`'s `sticky` (open: see ticket) |
+| A pinned header row | Yeti's CSS and the always-loaded `[data-sticky]` rule | renders `data-sticky` from `YetiTableHead`'s `sticky` ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 195) |
 | Sideways scrolling of a wide table | the `scroller` item | nothing here; the consumer wraps the table in `yetiScroller` (usage rule 7) |
 
 **Tokens subsection** (ADR 0004 consequences; building-blocks 1.13). The table reads the nine public tokens above and `--yeti-sticky-offset` through the always-loaded sticky rule. The package writes none of them and offers no input, provider, or theme for them. A consumer sets them in a `:root` block in any stylesheet, in a **Theme** file after Yeti, or with a runtime `setProperty`. The stripe, border, and surface tokens are derived colour roles and may also be set on a table; `--yeti-sticky-offset` may be set on the `thead`, as Yeti's docs say ("Set the offset to `0` on the `thead` to pin it flush with the top"). Hues, chroma, and the scale stay on `:root` (`Y/src/guides/theming.md:38`). The scheme is the consumer's `color-scheme` (building-blocks 1.13).
@@ -164,7 +164,7 @@ The `inert` kinds: a static `size="sm"` or `nowrap` on a `table` stays on the el
 
 - `YetiTable` provides `yetiTableToken` (`InjectionToken<YetiTable>`, `useExisting`), building-blocks 1.9 and 1.3's token naming.
 - `YetiTableCell` injects it with `{ optional: true, skipSelf: true }` (ADR 0070 kind C). The cell reads nothing from the token in the first milestone: no behaviour depends on the table, and an **In-item check** that would use it belongs to a later milestone (map, Milestones). A cell of a table with no `yetiTable` renders its markers, which then do nothing, because Yeti scopes them under `.table` (`table.css:30`, `:38-43`). The token is absent when rows come from another component's template (building-blocks 1.9, content projection); the cell does not need it.
-- `YetiTableHead`, if adopted, injects the token the same way and reads nothing (open: see ticket).
+- `YetiTableHead` injects the token the same way and reads nothing ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 195).
 - `YetiNumeric` injects nothing.
 - One directive serves cells and rows, as ticket 26 row 151 and Part 2 row 39 name it: `align` is one marker on `th`, `td`, and `tr`, and a part's name is the spec's to fix (CONTEXT.md **Part**). `nowrap` is declared on the same directive but has a rule only on `th` and `td`; usage rule 3 keeps it off a `tr`.
 - No host directives. No Yeti item always sits on another's element (Part 2, "Two findings that hold across the matrix").
@@ -193,7 +193,7 @@ The `inert` kinds: a static `size="sm"` or `nowrap` on a `table` stays on the el
 | --- | --- |
 | Class | `YetiTableCell` (free of the 46 names) |
 | Selector, `exportAs` | `th[yetiTableCell], td[yetiTableCell], tr[yetiTableCell]`, `yetiTableCell` |
-| Host | `[attr.data-nowrap]`: `''` when `nowrap` is true, `null` otherwise; `[attr.nowrap]`: the same value (output kind; open: see ticket); `[attr.data-align]` from `align`, `null` when unset; `'[attr.align]': 'null'` (removed kind) |
+| Host | `[attr.data-nowrap]`: `''` when `nowrap` is true, `null` otherwise; `'[attr.nowrap]': 'null'` (removed kind; [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 196); `[attr.data-align]` from `align`, `null` when unset; `'[attr.align]': 'null'` (removed kind) |
 | Inputs | `nowrap: boolean`, `booleanAttribute`, default `false`; `align: YetiTableAlign \| undefined`, default `undefined` |
 | Models, outputs, methods | none |
 | DI | `inject(yetiTableToken, { optional: true, skipSelf: true })`, unread |
@@ -208,7 +208,7 @@ The `inert` kinds: a static `size="sm"` or `nowrap` on a `table` stays on the el
 | Host | `[attr.data-numeric]`: `''` when true, `null` when false |
 | Class, presence attribute, item file | none |
 
-**`YetiTableHead`** (open: see ticket)
+**`YetiTableHead`** ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 195)
 
 | Member | Value |
 | --- | --- |
@@ -231,7 +231,7 @@ The `inert` kinds: a static `size="sm"` or `nowrap` on a `table` stays on the el
 7. Put a table wider than its container inside a `yetiScroller`, as its one child, and name the scroller; never put `yetiScroller` on the `table` itself, because its `role="region"` would replace the table's role ([scroller](scroller.md) usage rules 1 and 2; [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 59). With `nowrap`, a scroller is where the kept lines go (`docs.md`).
 8. Keep the table a table: put no directive or style that changes `display` on the `table`, its rows, or its cells, and never restyle rows as cards at narrow widths (manifest `a11y.notes`: "the table itself never changes shape"). A layout goes inside a cell, not on it.
 9. Put the same `yetiNumeric` on a numeric column's header cell and its data cells, so that the header aligns with its figures (`docs.md`). A cell's own `align` outranks its `yetiNumeric`, and a cell's `yetiNumeric` outranks its row's `align` (`table.css:25`, `:38-43`).
-10. A pinned head (`sticky` on `yetiTableHead`) pins to the nearest scroll container. Inside a `scroller`, which scrolls sideways and so is also a scroll container on the other axis, the head does not pin to the page (inferred from CSS sticky positioning and `scroller.css:7`, not measured). Where the stuck head can sit above focusable content in the rows, set `--yeti-scroll-padding` on `:root` to at least the offset plus the head's height (open: see ticket).
+10. A pinned head (`sticky` on `yetiTableHead`) pins to the nearest scroll container. Inside a `scroller`, which scrolls sideways and so is also a scroll container on the other axis, the head does not pin to the page (inferred from CSS sticky positioning and `scroller.css:7`, not measured). Where the stuck head can sit above focusable content in the rows, set `--yeti-scroll-padding` on `:root` to at least the offset plus the head's height ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 195).
 11. Import each directive in every component whose template writes its attribute. A **Forgotten import** of `YetiTable`, `YetiTableCell`, or `YetiNumeric` with no bound input renders the bare element with Yeti's base table look and no error; a bound input makes the compiler report it (building-blocks 1.9).
 
 ### 5. Material comparison
@@ -240,7 +240,7 @@ The `inert` kinds: a static `size="sm"` or `nowrap` on a `table` stays on the el
 | --- | --- | --- |
 | Shape | attribute directives on the consumer's native `table`, rows written in the consumer's template | `table[mat-table]` (`NC/src/material/table/table.ts:32`), a component that renders rows from a `dataSource` through CDK's row and cell definitions (`cell.ts:25-101`) |
 | Header cells and rows | the consumer's `th`, `tr`, with `scope` | `th[mat-header-cell]`, `td[mat-cell]` (`cell.ts:82`, `:101`); CDK sets cell roles from the table's own role (`NC/src/cdk/table/table.ts:480-482`) |
-| Pinned header | `sticky` on `thead[yetiTableHead]`, Yeti's CSS (open: see ticket) | `sticky` on `cdkHeaderRowDef` (`NC/src/cdk/table/row.ts:87`, `:95-106`), applied by CDK's sticky styler |
+| Pinned header | `sticky` on `thead[yetiTableHead]`, Yeti's CSS ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 195) | `sticky` on `cdkHeaderRowDef` (`NC/src/cdk/table/row.ts:87`, `:95-106`), applied by CDK's sticky styler |
 | Density, stripes, borders | `size`, `striped`, `hover`, `border`, `nowrap`, `fixed` from Yeti's attributes | theme density; no stripe or border input |
 | Numbers | `yetiNumeric`: tabular figures and end alignment | none; the author's own styles |
 | Sorting, paging, selection | none | `MatSort`, `MatPaginator`, a selection model |
@@ -272,12 +272,12 @@ WCAG 2.2 AA criteria the item touches, and how each is met:
 | 1.4.11 Non-text Contrast | Not claimed. Row rules, cell borders, stripes, and the hover tint mark no UI component or state. |
 | 1.4.12 Text Spacing | The rules set no height and no overflow on cells; overridden spacing grows the rows (read). `nowrap` cells grow sideways into the scroller. |
 | 2.1.1 Keyboard | The table has nothing to operate. A wide table's scroller takes focus and scrolls with the arrow keys (usage rule 7). |
-| 2.4.11 Focus Not Obscured (Minimum) | Only with a pinned head over focusable cell content (open: see ticket). |
+| 2.4.11 Focus Not Obscured (Minimum) | Only with a pinned head over focusable cell content: the table shares ledger row [A11Y-22](../ledger.md), through usage rule 10 and the layer-4 Shift+Tab walk ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 195). |
 | 4.1.2 Name, Role, Value | The native `table` role and the consumer's name (usage rule 4). |
 
-Forced colours: the platform replaces backgrounds, so the stripes and the hover tint disappear, while row rules, cell borders, and the header rule take system colours and stay (inferred, not measured). Neither tint draws a state, and forced colours is not an AA criterion of its own (ticket 17 section 2.6; ADR 0015 consequences). This spec adds no ledger row and no package CSS for it; layer 4 records the borders under `forcedColors: 'active'` (open: see ticket).
+Forced colours: the platform replaces backgrounds, so the stripes and the hover tint disappear, while row rules, cell borders, and the header rule take system colours and stay (inferred, not measured). Neither tint draws a state, and forced colours is not an AA criterion of its own (ticket 17 section 2.6; ADR 0015 consequences). This spec adds no ledger row and no package CSS for it; layer 4 records the borders under `forcedColors: 'active'` ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 197).
 
-**Ledger rows owned:** none (Part 2 row 39, "Ledger: none"). Ticket 17 measured Yeti's table example as conforming. A pinned head may join the shared row [A11Y-22](../ledger.md) (open: see ticket).
+**Ledger rows owned:** none (Part 2 row 39, "Ledger: none"). Ticket 17 measured Yeti's table example as conforming. A pinned head shares the row [A11Y-22](../ledger.md), owned by `sidebar` ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 195).
 
 ### 8. Rendered HTML
 
@@ -320,7 +320,7 @@ Yeti's comparison example, with the static presentational forms:
 </table>
 ```
 
-Server HTML: the `table` has `data-fixed=""` and `data-border=""` and no `border` attribute; each `yetiTableCell` host has its `data-align` and no `align` attribute. A `<td yetiTableCell nowrap>` renders `nowrap=""` and `data-nowrap=""` (open: see ticket). A `<p>Total: <span yetiNumeric>1,345</span></p>` outside any table renders `data-numeric=""` and nothing else from the package: no class, no presence attribute, no link.
+Server HTML: the `table` has `data-fixed=""` and `data-border=""` and no `border` attribute; each `yetiTableCell` host has its `data-align` and no `align` attribute. A `<td yetiTableCell nowrap>` renders `data-nowrap=""` and no `nowrap` attribute ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 196). A `<p>Total: <span yetiNumeric>1,345</span></p>` outside any table renders `data-numeric=""` and nothing else from the package: no class, no presence attribute, no link.
 
 The delta from Yeti's docs markup: the consumer writes `yetiTable` and inputs where the docs write the class and `data-*` attributes, `yetiTableCell` with `nowrap` or `align` where they write those markers, and `yetiNumeric` where they write `data-numeric`. The table has no closed or open state.
 
@@ -332,7 +332,7 @@ None. The table has no state transition: the hover tint is an instant `:hover` b
 
 - **Server output and first paint:** the static class, `data-ngx-yeti-item-table`, every bound `data-*` attribute on the table, its cells, and its numeric elements, plus the item link in `<head>` (section 8). No value is **Pre-hydration state**: no person and no Module changes these attributes (ADR 0003 point 4).
 - **Before hydration:** the directives create no node, read no layout, start no timer or observer, and touch no `window`, `history`, or `location` (ADR 0011 clauses 1 and 4). `YetiTable`'s only constructor work is the item acquisition, which runs on the server too; the other directives do none.
-- **Full hydration:** each element is claimed as is, provided usage rules 1 and 2 hold; the bindings compute the same values; a static `border` or `align` is written back and removed again in the same pass (decision 9).
+- **Full hydration:** each element is claimed as is, provided usage rules 1 and 2 hold; the bindings compute the same values; a static `border`, `align`, or cell `nowrap` is written back and removed again in the same pass (decisions 9 and 196).
 - **Incremental hydration (`@defer (hydrate on ...)`):** the server rendered the table, its markers, and the link; a dehydrated host holds the link through `data-ngx-yeti-item-table` for as long as it is on the page (ADR 0060 point 4; ADR 0045). An input bound to state changes only after the block hydrates. Rows inside a hydrate block render on the server like any other content.
 - **`hydrate never`:** the table is its server HTML and stays styled while its host is connected, whatever live tables do. Hover and a pinned head are CSS and keep working. Bound values stay at their server values.
 - **Client-only `@defer`:** `YetiTable` fetches the item file when it is constructed, which can show frames with only the base table look; the consumer closes the gap with `provideYetiStyles({ preload: ['table'] })` (ADR 0060 point 6; [setup](setup.md)). `yetiNumeric`'s figures render at once; its end alignment waits for the item file.
@@ -351,7 +351,7 @@ The item complies with each of Angular's hydration constraints (map, Standing ru
 - **Valid HTML:** the directives change no element. The consumer's table structure must be what the parser builds: usage rules 1 and 2, the requirement the building-blocks "Hydration constraints (2026-10-03)" section places on this spec and Angular's guide names ("`<table>` without a `<tbody>`", `NG/adev/src/content/guide/hydration.md:119`). Layer 3 asserts the `tbody` in the server HTML, and a layer-4 negative control records the mismatch without it.
 - **`preserveWhitespaces`:** the directives have no template. White space between rows is table text the parser keeps in place.
 - **No output branched on the platform:** none.
-- **Static attributes the directives bind:** usage rule 6 keeps the consumer from writing them. The one static form the records invite is the `removed` kind, `border` and `align`, written back and removed again in one pass ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 9). The `inert` `size` and table-level `nowrap` are never bound, so hydration writes back what the server rendered. A static `nowrap` on a cell equals its `output` binding's value, so nothing changes.
+- **Static attributes the directives bind:** usage rule 6 keeps the consumer from writing them. The one static form the records invite is the `removed` kind, `border`, `align`, and a cell's `nowrap` (decision 196), written back and removed again in one pass ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 9). The `inert` `size` and table-level `nowrap` are never bound, so hydration writes back what the server rendered.
 
 ### 12. Single-page application
 
@@ -375,13 +375,13 @@ Every story loads the always-loaded group globally and the `table` item file thr
 - `table--sizes`: three tables with `size="sm"`, none, and `size="lg"`. Asserts `data-size` only where bound, and cell padding `sm` < default < `lg`. Toggling a bound `size` to `undefined` removes `data-size`.
 - `table--hover`: `hover` on a table; the play function hovers a body row and asserts its background changed and its text still meets 4.5:1 against the new background, in both schemes.
 - `table--border`: `<table yetiTable border size="sm">`. Asserts `data-border`, no `border` attribute, a cell's border width above 0, the table's own top border 0 (Yeti's test, `table.spec.js:29-30`), and the header rule's colour unlike the cell border's.
-- `table--nowrap`: a table with `nowrap` and one with a single `yetiTableCell nowrap` cell. Asserts `white-space: nowrap` on every cell of the first, on the marked cell only in the second, `data-nowrap` on the marked cell, and the table-level `nowrap` attribute left as written (inert).
+- `table--nowrap`: a table with `nowrap` and one with a single `yetiTableCell nowrap` cell. Asserts `white-space: nowrap` on every cell of the first, on the marked cell only in the second, `data-nowrap` and no `nowrap` attribute on the marked cell (ticket 50 decision 196), and the table-level `nowrap` attribute left as written (inert).
 - `table--fixed`: four columns with `fixed`; asserts equal header widths; a second table with a first header at `inline-size: 40%` asserts that column wider and the rest equal.
 - `table--align`: Yeti's comparison table (section 8), with static `align` on cells and a row. Asserts `data-align` on each host and no `align` attribute; a centred row's cells are centred, a cell's own `start` outranks its row, a numeric cell outranks its row; the tick inside `span yetiIcon` is centred in its cell (Yeti's test, `table.spec.js:67-77`); the cell's accessible text includes the visually hidden "Included".
 - `table--numeric-anywhere`: `yetiNumeric` on a `span` in a paragraph and on `dd` values, with no table on the story. Asserts `data-numeric`, `tabular-nums`, no end alignment, no class, and no `table.css` link.
 - `table--row-headers`: a table whose first column is `th scope="row"`. Asserts the computed row headers through the accessibility tree.
 - `table--wide`: a wide `nowrap` table as the one child of a named `yetiScroller`. Asserts the scroller overflows, the table's computed `display` is `table`, and the table's role is unchanged (Yeti's test, `table.spec.js:38-42`).
-- `table--sticky-head` (open: see ticket): a long table whose `thead` has `yetiTableHead sticky`. After scrolling, asserts the head's top equals a probe reading `--yeti-sticky-offset`, its cells' background equals the page surface, and its rule is an inset shadow (Yeti's test, `table.spec.js:79-91`).
+- `table--sticky-head` ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 195): a long table whose `thead` has `yetiTableHead sticky`. After scrolling, asserts the head's top equals a probe reading `--yeti-sticky-offset`, its cells' background equals the page surface, and its rule is an inset shadow (Yeti's test, `table.spec.js:79-91`).
 
 ### Layer 2: browser-level (`npx nx test <lib>`, `table.spec.ts`)
 
@@ -389,31 +389,31 @@ Through `TestBed.createDirective(type, { tagName, bindings })` (map, Standing ru
 
 - `YetiTable` with `tagName: 'table'`: class `table` and `data-ngx-yeti-item-table`; with no bindings none of the six `data-*` attributes; with `bindings` for each input, each attribute carries its value (`''` for booleans), and setting a bound signal to `undefined` or `false` removes it after `whenStable()`; no `border` attribute in any state;
 - `YetiTable`: while the fixture lives, one `<link data-ngx-yeti-styles="table">` is in `document.head`; after `fixture.destroy()` and an animation frame it is gone; two fixtures share one link until both are destroyed;
-- `YetiTableCell` with `tagName` `td`, `th`, and `tr`: `align` renders `data-align` and never `align`; `nowrap` renders `data-nowrap` and `nowrap` together and removes both when false (open: see ticket); no class, no presence attribute, no item link;
+- `YetiTableCell` with `tagName` `td`, `th`, and `tr`: `align` renders `data-align` and never `align`; `nowrap` renders `data-nowrap` and never `nowrap`, and removes `data-nowrap` when false ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 196); no class, no presence attribute, no item link;
 - `YetiNumeric`: `true` renders `data-numeric=""`, `false` renders none; no class, no presence attribute, no item link;
-- `YetiTableHead` with `tagName: 'thead'`: `sticky` renders `data-sticky` (open: see ticket);
+- `YetiTableHead` with `tagName: 'thead'`: `sticky` renders `data-sticky` ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 195);
 - no directive leaves a listener on its host.
 
 A small test host covers what `createDirective` cannot: static `border` on the table and static `align="center"` on a cell are input values (`true`, `'center'`) with no HTML attribute after `whenStable()`; the cell inside a `yetiTable` receives the table through `yetiTableToken`, and a cell in a plain table gets `null` without an error; the template references resolve to their instances; the consumer's own `class` is kept beside `table`.
 
 ### Layer 3: node-level and SSR smoke (`npx nx test <lib>`, `table.ssr.spec.ts`)
 
-Through the shared `renderServer()` helper with `withI18nSupport()` and a fixture whose table has an `i18n` caption, a `thead`, an explicit `tbody` with rows from `@for`, a static `border`, a static `align="center"` on a cell and a row, a `nowrap` cell, and numeric cells (building-blocks 1.11 decision 11, 1.12): `whenStable()` resolves; the table renders `class="table"`, `data-ngx-yeti-item-table`, and its bound attributes, and no `border` attribute; the aligned hosts render `data-align` and no `align`; the `nowrap` cell renders `data-nowrap` (and `nowrap`, open: see ticket); the server HTML holds the consumer's `tbody` with the rows inside it; `<head>` holds exactly one item link with `data-ngx-yeti-styles="table"`, `data-beasties-skip`, and an `href` ending `components/table/table.css?v=<pin>`; a fixture with only `yetiNumeric` writes no item link; no element carries `jsaction`.
+Through the shared `renderServer()` helper with `withI18nSupport()` and a fixture whose table has an `i18n` caption, a `thead`, an explicit `tbody` with rows from `@for`, a static `border`, a static `align="center"` on a cell and a row, a `nowrap` cell, and numeric cells (building-blocks 1.11 decision 11, 1.12): `whenStable()` resolves; the table renders `class="table"`, `data-ngx-yeti-item-table`, and its bound attributes, and no `border` attribute; the aligned hosts render `data-align` and no `align`; the `nowrap` cell renders `data-nowrap` and no `nowrap` (ticket 50 decision 196); the server HTML holds the consumer's `tbody` with the rows inside it; `<head>` holds exactly one item link with `data-ngx-yeti-styles="table"`, `data-beasties-skip`, and an `href` ending `components/table/table.css?v=<pin>`; a fixture with only `yetiNumeric` writes no item link; no element carries `jsaction`.
 
-The **Contract check** ([ADR 0014](../adr/0014-testing-stack-for-yeti.md) point 3) covers the item through the contract mapping: class `table` has `YetiTable`; `data-size` has `size` with `YetiSizeControl`; the five boolean attributes have their `boolean` inputs; markers `data-numeric`, `data-nowrap`, and `data-align` have `yetiNumeric`, `nowrap`, and `align`, and `YetiTableAlign`'s members equal the manifest's own `values` (`start`, `center`, `end`); the table has no events. A pin move that adds a value, an attribute, or a marker fails here before any story does. `data-sticky` on the `thead` is outside the manifest, so the check cannot cover it (open: see ticket).
+The **Contract check** ([ADR 0014](../adr/0014-testing-stack-for-yeti.md) point 3) covers the item through the contract mapping: class `table` has `YetiTable`; `data-size` has `size` with `YetiSizeControl`; the five boolean attributes have their `boolean` inputs; markers `data-numeric`, `data-nowrap`, and `data-align` have `yetiNumeric`, `nowrap`, and `align`, and `YetiTableAlign`'s members equal the manifest's own `values` (`start`, `center`, `end`); the table has no events. A pin move that adds a value, an attribute, or a marker fails here before any story does. `data-sticky` on the `thead` is outside the manifest, so the check cannot cover it; [upstream-bugs.md](../upstream-bugs.md) records the manifest gap ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 195).
 
 ### Layer 4: Playwright e2e (three engines in CI)
 
 On the fixture app, built with `outputMode: 'server'`, with a `/table` route marked `RenderMode.Prerender` and one marked `RenderMode.Server`, each run with JavaScript on and off ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 2; ADR 0011 consequences). The route renders section 8's two tables and a wide table in a scroller:
 
-- hydration logs no `NG05xx` and `componentsSkippedHydration === 0`; after hydration the table has no `border` attribute and the cells and row no `align`; a `MutationObserver` with a `requestAnimationFrame` probe asserts that no frame paints while a written-back `border` or `align` is present (decision 9);
+- hydration logs no `NG05xx` and `componentsSkippedHydration === 0`; after hydration the table has no `border` attribute and the cells and row no `align` and the cells no `nowrap`; a `MutationObserver` with a `requestAnimationFrame` probe asserts that no frame paints while a written-back `border`, `align`, or `nowrap` is present (decision 9);
 - with JavaScript disabled the table's stripes, borders, alignment, and numeric alignment match the JavaScript-on render, hovering a row tints it, and `@axe-core/playwright` with the six tags reports no violation;
 - a negative-control route, labelled as what not to write, renders a `table` without a `tbody` and records the hydration error it logs, so usage rule 1's reason stays measured;
 - a table inside a client-only `@defer` block with `table` in the preload list shows no frame with only the base look; a table inside a `hydrate never` block stays styled after the live tables on the page are removed;
 - navigating from the table route to a route without a table removes the item link, and navigating back re-inserts it; a route with only `yetiNumeric` loads no `table.css`;
 - at a 320 px viewport the page has no horizontal overflow while the wide table scrolls inside its scroller (1.4.10), and Tab reaches the scroller;
-- with `emulateMedia({ forcedColors: 'active' })` a bordered table's cell borders and header rule keep a visible computed border, recorded as behaviour with a screenshot in three engines (open: see ticket);
-- with a pinned head (open: see ticket), a Shift+Tab walk through links in the rows is recorded with Yeti's defaults and asserted with usage rule 10 followed, after the [sidebar](sidebar.md) spec's case for A11Y-22.
+- with `emulateMedia({ forcedColors: 'active' })` a bordered table's cell borders and header rule keep a visible computed border, recorded as behaviour with a screenshot in three engines ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 197);
+- with a pinned head ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 195), a Shift+Tab walk through links in the rows is recorded with Yeti's defaults and asserted with usage rule 10 followed, after the [sidebar](sidebar.md) spec's case for A11Y-22.
 
 Testing at the floor browsers is not decided yet ([building-blocks.md](../building-blocks.md) Part 4; ADR 0014 point 7).
 
@@ -442,8 +442,8 @@ Prior art: Yeti's `example.html`, `docs.md` examples, and `test/browser/componen
 | Static host class; the consumer writes no Yeti class or attribute | ADR 0003 points 1 and 2 |
 | `size`, `striped`, `hover`, `border`, `nowrap`, `fixed` as root inputs typed `YetiSizeControl` and `boolean` | ticket 26 rows 143 to 148; ADR 0070 R; ADR 0005 |
 | `align` typed `YetiTableAlign = Extract<YetiAlign, 'start' \| 'center' \| 'end'>` | ticket 26 row 151; ADR 0070 rule 2; ADR 0080 point 5; ticket 50 decision 60 (precedent) |
-| `border` and `align` are `removed`; `size` and table-level `nowrap` are `inert`; static `removed` forms accepted | building-blocks 1.4; ticket 26 Q15; ticket 50 decision 9 |
-| Cell-level `nowrap` is `output` | ticket 26 row 150 (open: see ticket) |
+| `border`, `align`, and cell-level `nowrap` are `removed`; `size` and table-level `nowrap` are `inert`; static `removed` forms accepted | building-blocks 1.4; ticket 26 Q15; ticket 50 decisions 9 and 196 |
+| Cell-level `nowrap` is `removed` | ticket 26 row 150; ticket 50 decision 196 |
 | Unset inputs render nothing; Yeti's `md` comes from its CSS | ADR 0070 rule 1 |
 | Selector-named, class-free `yetiNumeric`; class `YetiNumeric` | ticket 26 row 149 and Q10; ADR 0070 G; the user's "Selector name (Recommended)" (map, Standing rulings); ticket 50 decision 11 |
 | Class names checked against the 46 names of `yeti.d.ts` | ADR 0080 point 4; ticket 50 decision 10 |
@@ -456,8 +456,8 @@ Prior art: Yeti's `example.html`, `docs.md` examples, and `test/browser/componen
 | Native platform, level 1, types only; no ledger row | building-blocks 1.2; Part 2 row 39 |
 | Item file as a counted link; presence attribute on the table only | ADR 0060 points 2 to 6; ADR 0045; ticket 50 decisions 6, 7, and 45 |
 | Contrast at 4.5:1 for every text checked | ticket 50 decision 8 |
-| `YetiTableHead` with `sticky` for the pinned head | none (open: see ticket) |
-| Forced colours: no row, no package CSS, recorded in layer 4 | none (open: see ticket) |
+| `YetiTableHead` with `sticky` for the pinned head | ticket 50 decision 195 |
+| Forced colours: no row, no package CSS, recorded in layer 4 | ticket 50 decision 197 |
 | Directive tests through `TestBed.createDirective` | map, Standing rulings, Directive testing; ADR 0014 note |
 | Fixture app `outputMode: 'server'` with prerendered and server routes | ticket 50 decision 2 |
 
@@ -542,7 +542,7 @@ A wide, compact result inside a scroller, after Yeti's docs:
 
 Its imports are `YetiScroller`, `YetiTable`, and `YetiNumeric`. Alignment bound from state: `<td yetiTableCell [align]="column.align">`. A value newer than the pin: `<table yetiTable [size]="$any('xl')">`. Figures outside a table: `<dd yetiNumeric>14.2 km</dd>`.
 
-A pinned head, flush with the top (open: see ticket):
+A pinned head, flush with the top ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 195):
 
 ```html
 <table yetiTable aria-label="Stages" i18n-aria-label>

@@ -196,3 +196,5 @@ Note, 2026-10-02 (orchestrator): the line above was cut off mid-sentence when th
 Note, 2026-10-03 (orchestrator, after audit 0003 M1): the list is now 54 specs. On 2026-10-02 the user chose "Add a `setup` spec (Recommended)" ([map](../map.md), Standing rulings, Ticket 25's open items), a fifth shared-utility spec. Per [ticket 25](25-decide-building-blocks-map.md)'s "For the orchestrator" item 3, it owns the consumer-facing setup: the cascade-layer statement, the `assets` entry for the Yeti build, `provideYetiStyles()`, the package's accessibility stylesheet, and `provideYetiFragmentLinks()`.
 
 Note, 2026-10-03 (orchestrator): "part file" in this ticket now reads "item file", the glossary's name (CONTEXT.md, **Item file**; [ticket 50](50-decide-open-points-of-the-specs.md) decision 7).
+
+Note, 2026-10-03 (orchestrator, full AFK mode): row 30's component has the selector `figure[yetiDemo]`, an attribute-selector component with class `YetiDemo` and `exportAs: 'yetiDemo'`, not an element named `<yeti-demo>` ([ticket 50](50-decide-open-points-of-the-specs.md) decisions 136 and 223). Its kind, a component, stands.

@@ -196,7 +196,7 @@ Added over `hover.js`, which the module never did: focus-out closing (A11Y-3a; A
 | Inputs | `side: YetiSide \| undefined` (Yeti default `start`); `trigger: YetiTrigger \| undefined` (Yeti default `click`); each `input()` with no default value | none | none |
 | Model | `isOpen: ModelSignal<boolean>`, default `false`, following the platform (below) | none | none |
 | Outputs | `opened: OutputRef<void>`, `closed: OutputRef<void>`: Completion outputs | none | none |
-| Methods | none: programmatic open and close go through `isOpen`; no item has public `open()`, `close()`, or `toggle()` methods ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 91) | none | none |
+| Methods | none: programmatic open and close go through `isOpen`; no item but the dialog has public `open()`, `close()`, or `toggle()` methods ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 91, as amended by decision 222) | none | none |
 | Host | static `class: 'dropdown'`; static `data-ngx-yeti-item-dropdown: ''`; `[attr.data-side]`, `[attr.data-trigger]`, `null` when unset; listeners `(focusout)`, `(pointerdown)`, `(pointerenter)`, `(pointerleave)` | `[attr.popovertarget]` from the token | static `popover: ''`; `[attr.id]`; listeners `(toggle)`, `(transitionend)` |
 | Providers | `{provide: yetiDropdownToken, useExisting: YetiDropdown}` | none | none |
 | Lifecycle | calls `injectCloseOnNavigation(isOpen, closeForNavigation)` and, as its last constructor statement, `injectYetiItemStyles('dropdown')`; on destroy clears its hover timer and its pending completion wait | none | registers at construction, unregisters on destroy |
