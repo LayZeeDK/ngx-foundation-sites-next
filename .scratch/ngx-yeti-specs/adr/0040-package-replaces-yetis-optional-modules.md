@@ -16,7 +16,7 @@ Yeti's ten optional modules are 760 lines, about 412 of code ([Research: Yeti's 
 
 We decided that the package owns every behaviour a Yeti module has, in Angular's form, and that a consumer loads none of Yeti's modules beside the package. Each directive sets up its own element when it is created, in whatever rendering mode, and tears down what it created on destroy. The platform features the modules lean on stay in the markup: `details`, `popover` and `popovertarget`, invoker commands and `showModal()`, scroll snap, `form method="dialog"` ([ADR 0003](0003-directives-set-yetis-class-attributes-and-markers.md) point 5). What a module added on top is the directive's: the selection and arrow keys of `tabs.js`, the backdrop click and the focus return of `dialog.js`, the hover intent of `hover.js`, the fill of `range.js` ([ADR 0004](0004-yeti-tokens-are-a-consumer-stylesheet-surface.md) exception 1), the current mark of `toc.js`, the once-only arrival of `enter.js`, the history-free dots of `carousel.js`, the fade of `alert.js`, and the validity marks of `validate.js` through Angular's forms ([Research: what `validate.js` does, and replacing it with Angular Signal Forms](../issues/19-research-yeti-validate-and-signal-forms.md)). `demo.js` is docs tooling; [Decide: the spec list](../issues/11-decide-spec-list.md) says whether the `demo` item is specified at all.
 
-Each spec names the module it replaces and, line by line, what of that module's behaviour it keeps, changes, or drops, so the replacement is checkable against the pinned commit.
+Each spec names the module it replaces and, line by line, what of that module's behaviour it keeps, changes, or removes, so the replacement is checkable against the pinned commit.
 
 ## Considered options
 

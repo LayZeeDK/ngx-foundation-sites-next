@@ -44,7 +44,7 @@ The three engines agreed on every row except the one about `window.find()`.
 | 3c. `hydrate never` | works | dead: no listeners, empty panels | `details` opens, empty |
 | 4. axe | 0 violations, shut or open | 0 | 0 |
 | 4. Keyboard (APG) | Tab, Shift+Tab, Enter, Space. No arrows, Home, or End | Tab, Shift+Tab, Enter, Space, ArrowUp, ArrowDown, Home, End | same as B |
-| 4. Tree (Chromium CDP) | `group` > `DisclosureTriangleGrouped "…" expanded=true/false` > `paragraph` | `heading` > `button "…" expanded`, then `region "…"` (labelled by the trigger) > `paragraph` | `group` > `button "…" expanded`, `region "…"` |
+| 4. Tree (Chromium CDP) | `group` > `DisclosureTriangleGrouped "..." expanded=true/false` > `paragraph` | `heading` > `button "..." expanded`, then `region "..."` (labelled by the trigger) > `paragraph` | `group` > `button "..." expanded`, `region "..."` |
 
 ## Findings
 

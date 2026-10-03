@@ -14,7 +14,7 @@ We decided:
 2. **The directive does what `dialog.js` does**: backdrop closing only when both `pointerdown` and the click land outside the dialog's box (the same rule old ADR 0031 measured), and focus back on the opener taken from the `command` event's `source`.
 3. **Escape stays the platform's close request.** If the `dialog` spec offers a veto (Material's `disableClose` or a `closePredicate`), it handles the Escape `keydown` on `window` before it becomes a close request and cancels it last, because repeated Escape without user activation makes `cancel` non-cancelable and the browser closes the dialog anyway (measured in the old bundle's [Prototype: Reveal on native `<dialog>`](../../next-foundation-specs/issues/42-prototype-reveal-dialog.md) in three engines; not re-measured here).
 4. **The opener renders no `aria-expanded`** (from ADR 0036): HTML-AAM maps no expanded state for `command="show-modal"`, and while a modal dialog is open its opener is inert. Whether the opener also renders `aria-haspopup="dialog"` and `aria-controls`, which Yeti's example lacks, is the `dialog` spec's, as a `ledger.md` row if added.
-5. **Dropped with Foundation:** the scroll lock (Foundation's Sass did the locking, and Yeti locks nothing), the `.reveal` size classes, and the non-modal `overlay: false` mode (Yeti's dialog is opened only with `show-modal`).
+5. **Abandoned with Foundation:** the scroll lock (Foundation's Sass did the locking, and Yeti locks nothing), the `.reveal` size classes, and the non-modal `overlay: false` mode (Yeti's dialog is opened only with `show-modal`).
 
 ## Considered options
 

@@ -171,3 +171,5 @@ Left alone: the historical `nfs` names in Origin lines and the avoided `nfsLight
 | Part names per item left to the specs | LOW | HIGH | Ticket 26 owns markers, ticket 25 the per-item rows | decided |
 
 Nothing is `OPEN FOR HUMAN`.
+
+Note, 2026-10-03 (orchestrator, after audit 0003 L7): the loading unit is the **Item file**. Ticket 13 named it so, and this ticket's own entry said ticket 13's name wins; [CONTEXT.md](../CONTEXT.md) records **Item file**. Read each "Part file" above as **Item file**.

@@ -2,7 +2,7 @@
 
 Type: research
 Status: resolved
-Blocked by: none
+Blocked by:
 Labels: wayfinder:research
 Map: ../map.md
 
@@ -23,3 +23,5 @@ Resolved 2026-10-02. Findings: [research/npm-build-metadata.md](../research/npm-
 - `npm view`/`npm install` with the full `+` spec still resolve (semver ignores build); `package.json` saves `^0.220200.0` [measured]. `ng update` and `nx migrate` compare with semver, which ignores build [read].
 - Duplicate-version rejection does not affect this scheme, since each release bumps the core; two releases sharing a core and differing only in the pinned Yeti cannot be told apart in the registry [inferred].
 - Open: the live registry was not queried and `ng update`/`nx migrate` were not run; the throwaway publish test is described in the findings file and needs the user's confirmation.
+
+Note, 2026-10-03 (orchestrator, after audit 0003 M9): this Answer and its findings file do not cover prerelease tags. That a prerelease tag survives publish and that `npm publish --tag latest` accepts one was measured afterwards by the orchestrator, with a dry run, and is recorded in [ADR 0017](../adr/0017-release-policy-with-a-pinned-yeti.md)'s 2026-10-02 note ("later the same day"), not here.

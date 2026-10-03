@@ -225,9 +225,9 @@ _Avoid_: component (bare, where a Component item could be meant), Wrapper compon
 _Origin_: this map (ADR 0003 point 6; standing ruling 28; ticket 11)
 
 **Shared-utility spec**:
-One of the four specs for package behaviour that no Yeti item owns: navigation-close, fragment-links, events, generated-ids.
+One of the five specs for package behaviour that no Yeti item owns: navigation-close, fragment-links, events, generated-ids, and setup (the consumer-facing setup: the cascade-layer statement, the `assets` entry for the Yeti build, `provideYetiStyles()`, the package's accessibility stylesheet, `provideYetiFragmentLinks()`).
 _Avoid_: utility (bare), utility spec, shared utility (for an item)
-_Origin_: this map (ticket 11)
+_Origin_: this map (ticket 11; `setup` added by the user's choice of 2026-10-02, map, Standing rulings, Ticket 25's open items)
 
 **Vocabulary type**:
 Yeti's own exported TypeScript type for one Vocabulary (`YetiGap`, `YetiWidth`, `YetiVariant`), a closed union of its values, which the package reuses as the type of every input that takes that vocabulary and never redeclares.

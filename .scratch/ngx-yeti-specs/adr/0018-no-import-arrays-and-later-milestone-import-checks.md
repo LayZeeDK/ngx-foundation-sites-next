@@ -17,7 +17,7 @@ We decided:
 
 ## Considered options
 
-- **Drop the checks for good**, since the user's reason says the fix belongs to Angular. Not adopted: the user deferred the checks and never withdrew them ("family/peer/parent/similar checks should be specced but deferred like missing import checks", the same message of 2026-09-29, old ticket 158), and the problem is unchanged.
+- **Abandon the checks for good**, since the user's reason says the fix belongs to Angular. Not adopted: the user deferred the checks and never withdrew them ("family/peer/parent/similar checks should be specced but deferred like missing import checks", the same message of 2026-09-29, old ticket 158), and the problem is unchanged.
 - **An import array per entry point or per multi-part item.** Rejected, as in the old record and by the user's choice.
 - **Required parent injection by default.** Rejected, as in the old record: a forgotten parent throws NG0201 in production too.
 

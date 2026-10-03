@@ -141,7 +141,7 @@ Both sides were played against the sources; the answer recorded is the one the e
 | Rendered-state rule dropped | LOW | HIGH | Decided |
 | Defaults tokens opt-in | LOW | HIGH | Decided |
 | Every other row | LOW to HIGH | HIGH | Decided; each row's reason is its evidence |
-| Package CSS where Yeti's CSS fails WCAG 2.2 AA | HIGH | NOT HIGH | `OPEN FOR HUMAN` in ticket 07's `### Triage`; not re-opened here, referenced by P17, P18, 1.10, 1.13 |
+| Package CSS where Yeti's CSS fails WCAG 2.2 AA | HIGH | NOT HIGH | `OPEN FOR HUMAN` in ticket 07's `### Triage` when written; ruled by the user on 2026-10-02 (see the note below); referenced by P17, P18, 1.10, 1.13 |
 
 No new item falls in the trap quadrant.
 

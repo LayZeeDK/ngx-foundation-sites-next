@@ -14,8 +14,8 @@ Can Aria's trigger on Yeti's `<summary>` keep the panel content in the server HT
   - `/c` **(C)**: Aria by composition, with content projected directly.
   - `/c-noinert` **(C-noinert)**: C, with Aria's `inert` overridden by the hosting directive.
   - `/c-open`: C with the first item `[expanded]="true"`, to check what the server writes.
-  - `/d` **(D)**: (A) with `<summary><h3>…</h3></summary>`.
-  - `/d-role` **(D-role)**: (A) with `<summary><span role="heading" aria-level="3">…</span></summary>`.
+  - `/d` **(D)**: (A) with `<summary><h3>...</h3></summary>`.
+  - `/d-role` **(D-role)**: (A) with `<summary><span role="heading" aria-level="3">...</span></summary>`.
 
 ```sh
 cd D:/tmp/ngx-yeti-29-accordion/ws
@@ -63,9 +63,9 @@ export class YetiAccordionItemC implements AfterContentInit {
 <div yetiAccordion [multiExpandable]="false">
   <details name="faq" yetiAccordionItem>
     <summary [yetiAccordionTrigger]="p1.aria" [(expanded)]="e1">Does Yeti need JavaScript?</summary>
-    <p yetiAccordionPanel #p1="yetiAccordionPanel" id="ans1">Almost never. …</p>
+    <p yetiAccordionPanel #p1="yetiAccordionPanel" id="ans1">Almost never. ...</p>
   </details>
-  …
+  ...
 ```
 
 Only public Aria API is used: the directives, their inputs, and the `expanded` model. `contentChild(AccordionTrigger)` finds the trigger when it is a host directive (measured: the sync works).
@@ -115,7 +115,7 @@ All cells were measured ([results/probe-summary.txt](results/probe-summary.txt))
 
 ### C.5 What C adds over plain `<details>`
 
-- **Measured: accessibility tree (Chromium CDP).** (A) has `group` > `DisclosureTriangleGrouped "…" expanded` > text, then `paragraph`. C has `group` > `button "…" expanded`, then `region "…"` (named by the trigger through `aria-labelledby`), and `aria-controls` points at the panel. The closed panel is not in the tree. **Firefox (UIA):** C has `Button expand=Expanded`, then `Group [region] "Does Yeti need JavaScript?"` > text ([results/uia.txt](results/uia.txt)). C has no heading.
+- **Measured: accessibility tree (Chromium CDP).** (A) has `group` > `DisclosureTriangleGrouped "..." expanded` > text, then `paragraph`. C has `group` > `button "..." expanded`, then `region "..."` (named by the trigger through `aria-labelledby`), and `aria-controls` points at the panel. The closed panel is not in the tree. **Firefox (UIA):** C has `Button expand=Expanded`, then `Group [region] "Does Yeti need JavaScript?"` > text ([results/uia.txt](results/uia.txt)). C has no heading.
 - **Measured: keyboard.** ArrowDown, ArrowUp, Home, and End between summaries, which the APG marks optional. Enter, Space, Tab, and Shift+Tab are the same as (A).
 - **Read.** C replaces the summary's native role with `role="button"`. MDN lists "Permitted ARIA roles: No role permitted" for `summary`. axe did not flag it (measured).
 
@@ -124,7 +124,7 @@ All cells were measured ([results/probe-summary.txt](results/probe-summary.txt))
 ```html
 <details name="faq" yetiAccordionItem (openChange)="s1.set($event)">
   <summary><h3>Does Yeti need JavaScript?</h3></summary>
-  <p id="ans1">Almost never. …</p>
+  <p id="ans1">Almost never. ...</p>
 </details>
 ```
 
@@ -133,10 +133,10 @@ The directives are ticket 29's (A) unchanged: 16 lines, a class and a `toggle` l
 - **Valid HTML (read).** MDN gives `summary`'s permitted content as "Phrasing content, optionally intermixed with Heading content", and Yeti's own docs advise it: "if the rows are section titles, put a heading element inside each one" (`src/components/accordion/docs.md:36`). **Measured:** the browser's parse of the server HTML has the same element tree as the hydrated DOM, in all three engines.
 - **Styles (measured).** Every selector of `accordion.css` and of the base layer's `details` rules matches, as in (A). The summary's own properties are identical to ref. But the `h3` brings Yeti's base heading rule (`base/typography.css:25-34`): 29.17 px at weight 700, where the summary text is 17.42 px at weight 600. Each row grows from 60.9 px to 68.4 px (the accordion from 124.9 px to 139.7 px shut), and the chevron moves because the text is wider. This is the same in all three engines ([results/styles-diff.txt](results/styles-diff.txt)). D-role has 0 property differences and the same heights, because Yeti has no rule for `[role=heading]`. An `h3` that should look like ref needs package or consumer CSS (for example `summary > h3 { font: inherit; }`, not tried) or a heading class. Yeti has no such class (searched `src/`: only component-scoped `font: inherit` rules).
 - **Accessibility tree.**
-  - **Chromium (CDP), measured:** D and D-role both give `DisclosureTriangleGrouped "…" expanded=true/false` > `heading "…" level=3`. The summary stays the expandable control, and the heading is its child, not flattened.
-  - **Firefox (Windows UIA, headed), measured:** D gives `Button "…" expand=Expanded/Collapsed` > `Text` with localized type "overskrift" (heading) for every item. For D-role, the item that was clicked open showed "tekst" (plain text) instead of a heading in two runs, while the other items showed headings. The cause was not isolated. UIA did not report the heading level (`AriaProperties` was empty).
+  - **Chromium (CDP), measured:** D and D-role both give `DisclosureTriangleGrouped "..." expanded=true/false` > `heading "..." level=3`. The summary stays the expandable control, and the heading is its child, not flattened.
+  - **Firefox (Windows UIA, headed), measured:** D gives `Button "..." expand=Expanded/Collapsed` > `Text` with localized type "overskrift" (heading) for every item. For D-role, the item that was clicked open showed "tekst" (plain text) instead of a heading in two runs, while the other items showed headings. The cause was not isolated. UIA did not report the heading level (`AriaProperties` was empty).
   - **WebKit: not inspected.** Playwright's WebKit build on Windows exposed nothing under its window to UIA, and Playwright 1.63 has no engine accessibility API (`page.accessibility` is gone). Chromium also exposed no web content to this UIA walk (cause not investigated), so CDP was used for it.
-  - **Playwright `ariaSnapshot`** (Playwright's own computation, the same in every engine, not an engine tree): `group` > `heading "…" [level=3]`, then `paragraph`.
+  - **Playwright `ariaSnapshot`** (Playwright's own computation, the same in every engine, not an engine tree): `group` > `heading "..." [level=3]`, then `paragraph`.
   - **Not measured:** whether a screen reader's heading navigation (NVDA H, JAWS H, VoiceOver rotor) stops on these headings. **Read:** MDN warns that some browsers give `summary` a button role with presentational children, which would remove the heading. Chromium and Firefox did not do that here.
 - **Rendering modes (measured):** the same as (A) in every state. JavaScript off: opens, closes, one at a time by `name`. Before hydration: a click opens at once and the replayed `toggle` reaches the model (`true,false`). Fragment before hydration: opens (in Chromium and WebKit once `main.js` has run). `hydrate never`: works. `window.find()` and fragment: as (A).
 - **axe and keyboard (measured):** 0 violations, shut and open, in all three engines. Enter, Space, Tab, and Shift+Tab, with no arrows, Home, or End: the same as (A).

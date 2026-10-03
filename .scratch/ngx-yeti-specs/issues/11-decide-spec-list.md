@@ -132,7 +132,7 @@ Considered and not made a spec:
 
 - **Module ownership.** Yeti's modules are replaced, not loaded, and a loaded module must not fight an owner directive (ticket 20: `preventDefault` to keep `tabs.js` out). Ticket 25 owns this ("which of Yeti's JavaScript modules does each replace or keep"), and each item spec applies it.
 - **Forms integration.** It lives in the `field` spec, which owns both form modules.
-- **Forced colours.** This is CSS the package would add. Whether the package may add CSS at all is `OPEN FOR HUMAN` in ticket 07, so no spec is made until that is ruled.
+- **Forced colours.** This is CSS the package would add. Whether the package may add CSS at all was `OPEN FOR HUMAN` in ticket 07 when this was written; the user ruled it on 2026-10-02, "Accessibility CSS: Yes." ([map](../map.md), Standing rulings, Package CSS for accessibility). Each rule belongs to the item spec whose ledger row it closes, so it still gets no spec of its own.
 - **A typed union of token names.** Nothing needs one under ADR 0004.
 
 ### Grilling record (both sides, AFK)
@@ -192,3 +192,5 @@ Nothing is `OPEN FOR HUMAN`.
 53 specs under `specs/`. That is 49 item specs (17 layouts: box, breakout, center, cluster, columns, container, cover, frame, grid, icon, layer, masonry, overlay, scroller, sidebar, stack, timeline; 3 recipes: hero, media, shell; 22 components: accordion, affix, alert, badge, breadcrumbs, button, buttons, card, carousel, demo, dialog, dropdown, field, nav, pagination, progress, seam, spinner, table, tabs, toc, tooltip; 7 utilities: attention, billboard, enter, lede, lift, print, visually-hidden), plus 4 shared-utility specs (navigation-close, fragment-links, events, generated-ids). The Destination becomes 53 specs plus the building-blocks map and the ledger.
 
 Note, 2026-10-02 (orchestrator): the line above was cut off mid-sentence when the agent's response stopped; the orchestrator completed it from the "Shared-utility specs (4)" table (rows 50 to 53).
+
+Note, 2026-10-03 (orchestrator, after audit 0003 M1): the list is now 54 specs. On 2026-10-02 the user chose "Add a `setup` spec (Recommended)" ([map](../map.md), Standing rulings, Ticket 25's open items), a fifth shared-utility spec. Per [ticket 25](25-decide-building-blocks-map.md)'s "For the orchestrator" item 3, it owns the consumer-facing setup: the cascade-layer statement, the `assets` entry for the Yeti build, `provideYetiStyles()`, the package's accessibility stylesheet, and `provideYetiFragmentLinks()`.

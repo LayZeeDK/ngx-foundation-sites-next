@@ -17,7 +17,7 @@ Ticket: [31](../issues/31-research-yetis-removed-planning-documents.md). Researc
 ## Provenance and fate of the five files
 
 - [read] The files were committed in `a994b2e29` (2026-09-12 11:22, "chore: clear the Foundation 6 tree for Yeti"), which lists all five under `docs/superpowers/` (`git ls-tree -r a994b2e29`). `git log -- docs/superpowers` printed only `fa61d90d2` in the read-only clone, so path-limited history alone does not show their addition.
-- [read] `fa61d90d2` (2026-09-12 11:54:52 -0700, "chore: keep planning documents out of the repository") deleted the five files (3,400 lines) and added `docs/superpowers/` and `.superpowers/` to `.gitignore`. It was made 43 minutes after the add, in the middle of phase 0 tooling work (parent `b23f8b8c2`, "feat(tools): add the validator").
+- [read] `fa61d90d2` (2026-09-12 11:54:52 -0700, "chore: keep planning documents out of the repository") deleted the five files (3,400 lines) and added `docs/superpowers/` and `.superpowers/` to `.gitignore`. It was made 32 minutes after the add, in the middle of phase 0 tooling work (parent `b23f8b8c2`, "feat(tools): add the validator").
 - [read] `d0edc5f37` (2026-09-23) later added `PRODUCT.md`, `.impeccable/`, and `DESIGN.md` to the same ignore list ("keep the design-tooling context files out of the repo"). That is a second set of ignored planning-type files; their contents are not in any commit.
 - [read] The five files exist in no branch of the clone: `git log --all -- docs/superpowers` lists only `fa61d90d2`, and the remote branches are `develop`, `master`, `v5`, `v6`, and two dependabot branches. GitHub's `develop` tree has 0 paths matching `superpowers` (GitHub API).
 
@@ -165,7 +165,7 @@ Findings of 2026-10-03:
 - [read] **Announcement comments:** `issues/15554/comments` returns none. The issue is open and was created 2026-09-12 22:28 UTC (the plan's commit was 11:54 PDT the same day).
 - [read] **Docs site:** `https://www.foundationcss.com/yeti/` returns 200; `/yeti/superpowers/` and `/yeti/roadmap/` return 404; `/yeti/llms.txt` has no match for "superpowers", "roadmap", "phase 0", or "milestone".
 - [read] **GitHub code search:** `repo:foundation/yeti superpowers` returned a total count of 0.
-- [inferred] The five documents and any phase specs after phase 0 live only on the maintainer's machine. The planning files were committed once, and 43 minutes later removed and ignored, so the announcement's pointer was already stale on the day it was written (its text was drafted in P0P and published the same day as `fa61d90d2`). No later phase spec (the documents promise one per phase) is anywhere public.
+- [inferred] The five documents and any phase specs after phase 0 live only on the maintainer's machine. The planning files were committed once, and 32 minutes later removed and ignored, so the announcement's pointer was already stale on the day it was written (its text was drafted in P0P and published the same day as `fa61d90d2`). No later phase spec (the documents promise one per phase) is anywhere public.
 - [inferred] `PRODUCT.md`, `.impeccable/`, and `DESIGN.md` (ignored since `d0edc5f37`) are the same kind of local planning file; I did not look for them anywhere.
 
 ## What the map may want to note (not decided here)

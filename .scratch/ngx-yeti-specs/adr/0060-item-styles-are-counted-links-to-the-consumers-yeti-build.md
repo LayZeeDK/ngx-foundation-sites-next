@@ -24,7 +24,7 @@ We decided:
     - the global stylesheet of point 7: the layer statement, 16 `@import 'yeti-css/css/...'` lines, and the package's stylesheet;
     - optionally `provideYetiStyles({ url, preload })`.
 
-    A generator may write the last three; whether the first milestone ships one is the shared-setup spec's call. No consumer TypeScript per item, no carrier component, and no Yeti class or attribute written by hand ([ADR 0003](0003-directives-set-yetis-class-attributes-and-markers.md)).
+    A generator may write the last three; whether the first milestone ships one is the `setup` spec's call (named 2026-10-03; see the note below). No consumer TypeScript per item, no carrier component, and no Yeti class or attribute written by hand ([ADR 0003](0003-directives-set-yetis-class-attributes-and-markers.md)).
 
 ## Considered options
 
@@ -51,3 +51,4 @@ We decided:
 - The `MutationObserver` runs for the life of the application and the sweep queries the document once per item at most once per frame; the old map's ticket 198 measured observer callbacks at 31 ms in total for 5,000 hosts. An implementation may connect the observer only while some item has a zero live count.
 - The old map's requirements that remain unmet for Yeti: none. Its "cache busting" is met by the pin query; its "no consumer code" by point 11.
 - 2026-10-02: told that per-item loading saves at most about 13 kB gzipped of CSS per page, the user chose "Keep per-item loading (Recommended)" (map, Standing rulings). The lazy-styles requirement and this record stand.
+- 2026-10-02, recorded 2026-10-03 (audit 0003 M1): asked whether the consumer-facing setup gets its own spec, the user chose "Add a `setup` spec (Recommended)" (map, Standing rulings, Ticket 25's open items). The `setup` spec, the fifth shared spec, owns what point 11 lists: the layer statement and global stylesheet of point 7, the `assets` entry, `provideYetiStyles()`, the package's accessibility stylesheet of point 8, `provideYetiFragmentLinks()` (as the map lists it), and whether a generator writes them. Point 11's "shared-setup spec" is that spec.

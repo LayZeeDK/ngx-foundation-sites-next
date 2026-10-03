@@ -213,7 +213,38 @@ Not checked: the npm CLI sources ticket 28 cites (`libnpmpublish` `patchManifest
 
 ## Resolution log
 
-<!-- empty: filled in by whoever fixes the findings -->
+Applied 2026-10-03 by the orchestrating session. Ticket 35 ran in parallel, so ADR 0042, ADRs 0044 to 0049, ticket 35, and `prototypes/hydration-safe-ids/` were not edited.
+
+- H1: fixed, as the orchestrator's change of mechanism, not a user ruling. The user's choice, "Aria Toolbar by composition (Recommended)", stands; `ngToolbarWidget` moves from `yetiButton` to a part directive of the group, `[yetiButtonsItem]`, which the consumer writes beside `yetiButton` on each button inside a `buttons` group, with the `busy` alias and the `tabindex` hand-over; `yetiButton` hosts nothing from Aria, and row 26 keeps `aria-busy` the consumer's. Inferred from `toolbar-widget.ts:67`; not yet measured. Recorded in `building-blocks.md` "Aria decisions" row 27, `ledger.md`'s 2026-10-03 note on A11Y-12, ticket 25's Triage note, and guide P8. The user has not been told yet; the orchestrator does that.
+- M1: fixed. Dated note on ticket 11 (54 specs, what `setup` owns); `building-blocks.md` Part 3 entry and the accessibility-stylesheet bullet; `CONTEXT.md` Shared-utility spec (five); ADR 0060 point 11 and ticket 13 name `setup`; the map's gists of tickets 11 and 25.
+- M2: fixed in `map.md` Accessibility, the ticket 07 gist, tickets 11 and 09, and guide P17 (Rule now names ADR 0043's `focusout` host listener; Avoided updated).
+- M3: fixed. Dated note under ticket 25's Triage and on ticket 29; `building-blocks.md` Part 4 rewritten as decided, Part 2 rows 21, 27, 29, 32, 34 and the 1.2 Aria bullet point at "Aria decisions", counts updated (45 native, 2 Aria); gists of tickets 25 and 29.
+- M4: fixed in `map.md` Release policy and the guide's Release policy: the 0.x rules, with the devkit rule returning at 1.0, citing ADR 0017's 2026-10-02 notes.
+- M5: fixed. Guide P11 and `building-blocks.md` 1.4 carry the read-once rule for `open`; guide P8 uses ticket 30's `ariaLive() && !panel.visible()` binding and names both hosted patterns; guide P26 and 1.5's id clauses marked pending ticket 35; the Kinds row names ADR 0041's function.
+- M6: fixed; ticket 07's 16 targets rewritten relative to `issues/`.
+- M7: fixed in tickets 26 and 13 ("the approved recommendation in the map's Prefix bullet", no quotation).
+- M8: fixed; every gist in Decisions so far is now 450 characters or fewer.
+- M9: fixed in the gists of tickets 33, 28, 10, and 08; ticket 28 has a dated note pointing at ADR 0017's dry run. The two commit bodies are not applied: they change only with a history rewrite.
+- M10: fixed; theming line removed, testing line replaced by the floor-browser and provider question of ADR 0014 points 2 and 7 (no ticket yet), spec-waves line names ticket 35 as what still blocks.
+- M11: fixed with a dated note on ADR 0043: panels can be open before hydration, `focusout` and `keydown` are replayed and `pointerdown` is not (Angular `event_type.ts`, read), so a replayed `focusout` can close such a panel (inferred, not measured).
+- M12: fixed; `upstream-bugs.md` rows A6 (Aria ids change at hydration, measured in ticket 30, cause read) and A7 (Aria Menu click undone at hydration, cause not investigated).
+- L1: fixed in the research file (two places), ticket 31, and the map gist.
+- L2: fixed. Ticket 29 cites `nav/docs.md:3`; the carousel claim cites `carousel-pattern.html:110-111` ("a series of tab stops", checked) in ticket 25, ADR 0043, and building-blocks row 29; the alert claim in ticket 25 is marked inferred.
+- L3: fixed; tickets 28, 31, 33 have an empty `Blocked by:`; ticket 08 now waits on `06, 07, 11` (no cycle: ticket 11 waits on 02, 03, 07).
+- L4: not applied. The model that ran tickets 28, 31, and 33 is in the orchestrator's run record, not in the bundle, and guessing it would be wrong.
+- L5: fixed in ticket 32's heading (date and source in brackets); the user's own "54." in the map's quotation is left verbatim.
+- L6: fixed where the bundle allows. `map.md:40` and the temporary-files line now say the user's words are not in the bundle and the sentence is the orchestrator's summary; the JavaScript-off bullet says the description of option 1 is the orchestrator's; the ledger quote is copied into the map's Standing rulings. Not applied: quoting the missing messages, which only the orchestrator holds.
+- L7: fixed; dated note on ticket 10 (Part file reads as Item file); ticket 26:75 says each spec names its part selectors.
+- L8: fixed; dated note on ADR 0011 clause 7 pointing at ADR 0042's note and ticket 35.
+- L9: fixed; dated note on ADR 0080 point 5 and a clause in `building-blocks.md` 1.3 naming ADR 0060 point 10's `yeti-types.ts`.
+- L10: fixed; rows 32 and 34 cite A11Y-3a and A11Y-3b.
+- L11: fixed in ADRs 0018, 0021, 0040, tickets 13 and 08, the guide, and `building-blocks.md` 1.13; uses that describe what software does are left.
+- L12: not applied; pushed history. Later commits keep subjects at 72 characters or fewer, with a body for every non-claim commit.
+- L13: fixed in ticket 30, both accordion READMEs, and ADRs 0003 and 0004; the section sign inside a quotation and Angular's U+0275 identifiers stay.
+- L14: fixed; Target platform names the pin decision, the Standing rulings heading covers 2026-10-01 to 2026-10-03, and the two links carry ticket titles.
+- L15: fixed in the guide and `building-blocks.md`.
+- Deferred to ticket 35: the "pending ticket 35" markers on guide P26 and `building-blocks.md` 1.5, upstream bug A6's outcome, and the ADR 0011 note wait for ticket 35's outcome to be folded in by the orchestrator. Ticket 35 resolved while these fixes ran; only its header was read here.
+- Also fixed, outside the findings: guide P16 no longer lists the CDK services ADR 0043 does not inject; `building-blocks.md` 1.12 no longer calls ticket 27 open.
 
 ## Link check on this file
 
