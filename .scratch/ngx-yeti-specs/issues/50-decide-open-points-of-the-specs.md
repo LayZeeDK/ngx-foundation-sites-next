@@ -190,3 +190,139 @@ These four were recorded in [ticket 37](37-prototype-consumer-boundaries-around-
 - [building-blocks.md](../building-blocks.md) 1.3 (decisions 10 and 11), 1.7 (decision 33), and the "Types only" definition (decision 18); [architecture-guide.md](../architecture-guide.md) (decision 33).
 - [Ticket 11](11-decide-spec-list.md): "part file" now reads "item file" (decision 7).
 - The specs for attention, billboard, enter, lede, lift, print, visually-hidden, box, breakout, center, cluster, columns, container, cover, frame, and icon: every "(open: see ticket)" mark replaced by its decision, and the old `data-ngx-yeti-item="<item>"` replaced by `data-ngx-yeti-item-<item>` (decision 12). Their tickets mark each open point decided.
+
+## Decisions: the remaining layouts, recipes, setup, and the first components, 2026-10-03
+
+Decided by the orchestrator under full AFK mode (map, Standing rulings). None of these is the user's ruling. The numbering continues from the section above. "As the writer recommended" means the recommendation under the ticket's `### Open`, which holds the full text. The batch is tickets 38 (setup), 59 (grid), 61 (layer), 62 (masonry), 63 (overlay), 64 (scroller), 65 (sidebar), 66 (stack), 67 (timeline), 68 (hero), 69 (media), 70 (shell), 72 (affix), 74 (badge), and 75 (breadcrumbs). Decisions 46, 47, and 48 are trap-quadrant decisions (HIGH impact, confidence below HIGH). Each carries the writer's options record, as the map's "Trap-quadrant decisions in full AFK mode" ruling asks.
+
+### Cross-cutting
+
+45. **The style loader's API** (ticket 38 point 1; MEDIUM impact, MEDIUM confidence). As the writer recommended, option (i): a secondary entry point `ngx-yeti/styles` exports `provideYetiStyles`, its configuration type, and `injectYetiItemStyles(item: YetiComponentName): void`. The helper registers the release on `DestroyRef` and then acquires. An item's root directive calls `injectYetiItemStyles('<item>')` as the last statement of its constructor, after anything that can throw (decision 42). The root service stays unexported, and `preload` is typed `readonly YetiComponentName[]`. Reason: it mirrors `ngx-yeti/generated-ids` and `ngx-yeti/fragment-links`, and keeps the primary entry point types-only. Every item spec links [setup](../specs/setup.md) for the loader and does not restate it; this was already in the writers' brief.
+46. **A consumer's `aria-describedby` on a control that a package directive also describes** (ticket 72 point 1; HIGH impact, MEDIUM confidence; trap quadrant). Option A, and the general rule: a package directive that binds `aria-describedby` on a control takes an input aliased `aria-describedby` and merges the consumer's ids with its own (the hint's and the error's), consumer's ids first, as Material's `userAriaDescribedBy` does. It never replaces the consumer's ids. The field spec (ticket 83) states it for `yetiFieldControl`, with an e2e case asserting no `NG05xx` and the merged value after hydration. This was already in the writers' brief. The writer's record, from [ticket 72](72-spec-affix.md):
+   - **Question.** Yeti asks the developer to give a meaningful `span` an id and list it in the control's `aria-describedby` (`affix/manifest.json` `a11y.notes`). Part 2 row 22 keeps that attribute the consumer's. But inside a package field the control carries `yetiFieldControl`, which binds `aria-describedby` from the hint's and error's ids (Part 2 row 33; ADR 0020 point 2). A bound `aria-describedby` replaces the consumer's static one, and building-blocks' "Hydration constraints (2026-10-03)" bullet says a consumer writes no static attribute that a directive binds. As the records stand, the prefix silently falls out of the control's description inside every package field, which is where Yeti says the affix usually sits (WCAG 1.3.1).
+   - **Option A (chosen): the field's control directive composes the consumer's ids.** It declares an input aliased `aria-describedby`, the consumer writes `aria-describedby="price-unit"` on the control, and the directive binds the consumer's ids followed by the hint's and the error's. This is Material's shape (`NC/src/material/input/input.ts:243` `userAriaDescribedBy`; `form-field.ts:759` `_syncDescribedByIds`) and the old bundle's abide decision 12 ([research/yeti-validate-and-signal-forms.md](../research/yeti-validate-and-signal-forms.md) line 119). Approved because it keeps Yeti's documented markup working unchanged, needs no affix code, and serves any consumer description, not only the affix's. The static attribute is written back at hydration and replaced by the composed value in the same pass, the same shape as decision 9, so the field spec's e2e should assert no `NG05xx` and the composed value after hydration.
+   - **Option B: a usage rule only, "inside a package field, say the unit in the label".** The manifest's second form ("Price in dollars"). Dismissed as the only answer: it removes Yeti's first documented form, and a domain or long suffix reads badly in a label. It stays in the spec as the form that is always correct.
+   - **Option C: a part directive on the attachment `span`** (`[yetiAffixAddon]`) that generates an id and registers it with `yetiFieldToken`, so the field's control directive adds it. Dismissed: Part 2 row 22 makes the affix class only and says the consumer's id does the job; it adds a part, a cross-item DI link, and a generated id for a case a consumer id already covers.
+   - **Evidence and confidence.** The collision is read from Part 2 rows 22 and 33 and ADR 0020 point 2. Material's composition is read at `708d4c6e2`. The field spec (ticket 83) was being written in parallel, so whether it already chose A was not known; that is why confidence is MEDIUM.
+   - **To overrule.** For B: replace usage rule 3's field case with "say the unit in the label", remove the description assertion from `affix--default` and use the label in the examples. For C: add `YetiAffixAddon` to sections 2 to 4, use [generated-ids](../specs/generated-ids.md), and amend Part 2 row 22. Either way the field spec states the matching rule.
+47. **A sticky child over stacked content** (ticket 65 point 1; HIGH impact, MEDIUM confidence; trap quadrant). Option A: usage rule 4, a layer-4 Shift+Tab walk asserted with the rule followed and recorded with Yeti's defaults, and no package CSS. One new shared ledger row, [A11Y-22](../ledger.md), "a stuck sticky child can obscure focus": owned by `sidebar` and shared with `stack` and `shell`, WCAG 2.2 2.4.11 and 1.4.10, verified *inferred*, tested by L4. Part 2 rows 15, 16, and 20 name it. The writer's record, from [ticket 65](65-spec-sidebar.md):
+   - **Question.** Side by side, a sticky child covers nothing. Once the pair has stacked, a sticky child that comes first in the stacked order sits above the content scrolling under it (`[data-sticky]` has `z-index: 2`, `Y/src/layouts/attributes.css:333-342`). A control that focus scrolls into view stops at `--yeti-scroll-padding` from the top, which defaults to the sticky offset (`Y/src/tokens/space.css:56-69`), so Shift+Tab can put a focused link entirely behind the stuck child (WCAG 2.2 2.4.11). A sticky child taller than the viewport also keeps its own lower content out of reach until the container ends (1.4.10 at 320 x 256). Ticket 17 measured the sidebar example clean, but that example has no sticky child. What does the package do?
+   - **Option A (chosen): a usage rule, a ledger row, and a layer-4 measurement; no package CSS.** Usage rule 4: stick only a child that fits the smallest supported viewport, and where a stuck first child sits above stacked content, set `--yeti-scroll-padding` on the root to at least its height, or stick only a child that comes last. A new ledger row, owned by `sidebar` (WCAG 2.2 2.4.11 and 1.4.10; Yeti does what its CSS says; the package adds the usage rule; verified *inferred*; tested by L4), which `stack` and `shell` share. Layer 4 asserts the Shift+Tab walk with the rule followed and records the walk with Yeti's defaults. Approved because it follows decision 32 (a usage rule where the package cannot fix Yeti's CSS without its private tokens) and decision 17 (every gap found is a row, with no unmeasured CSS), and uses Yeti's own tokens for this exact purpose (`Y/src/tokens/tokens.json:125-126`, `Y/src/guides/layouts.md:115`).
+   - **Option B: a package rule in `@layer ngx-yeti`** under the user's ruling "Accessibility CSS: Yes." (map, Standing rulings). Dismissed for now: CSS cannot tell when the sidebar has stacked, because the switch is flex-basis arithmetic with no container query, and a rule that unsticks children everywhere removes the feature side by side. A scroll-state container query (`@container scroll-state(stuck: top)`) could react to the stuck state, but it is not in the Baseline 2025 target (inferred, not checked against web-features data).
+   - **Option C: remove the `sticky` input from `YetiSidebarChild`.** Dismissed: it breaks ticket 26 row 60 and ADR 0003 point 2 (every marker set from a typed input), and leaves the consumer no way to write the marker.
+   - **Option D: no row and no rule, treating it as Yeti's design.** Dismissed: decision 32 dismissed the same option ("the package's AA requirement is never a recommendation"), and decision 17 dismissed "no row" because the ledger records Yeti's gaps too.
+   - **Evidence and confidence.** The stacking geometry and the z-index: read in `sidebar.css` and `attributes.css` (HIGH). That focus scrolling honours the root scroll padding and so leaves a focused link under the stuck child: inferred from the CSS scroll-padding model, not measured (MEDIUM). Whether a usage rule meets the map's accessibility line: a reading of the records, with decision 32 as precedent (MEDIUM).
+   - **To overrule.** For B, add the rule to the package's accessibility stylesheet, set A11Y-22's "What the package adds" to it, and turn layer 4's recorded walk into an assertion. For D, remove usage rule 4's second sentence, the row, and the layer-4 walk. If the recorded walk shows a focused link fully hidden even with the usage rule followed, A fails and B (or a new decision) is needed. Any change applies to `stack` (decision 49) and `shell` (decision 48) too.
+48. **A sticky shell region over stacked content** (ticket 70 point 1; HIGH impact, MEDIUM confidence; trap quadrant). Option A: follow decision 47. Usage rule 7 as written, the shared row A11Y-22, and the layer-4 Shift+Tab walk asserted with the rule followed and recorded with Yeti's defaults. The writer's record, from [ticket 70](70-spec-shell.md):
+   - **Question.** Once the body row has stacked (below about twice `width` plus the gap), a sticky `nav` comes first and sits above `main` while `main` scrolls under it (`[data-sticky]` has `z-index: 2`, `Y/src/layouts/attributes.css:333-342`). A control that focus scrolls into view stops at `--yeti-scroll-padding`, which defaults to the sticky offset (`Y/src/tokens/space.css:56-69`), so Shift+Tab can leave a focused link entirely behind the stuck `nav` (WCAG 2.2 2.4.11). A sticky `aside` comes last and has no later content in the body row to cover (inferred from sticky positioning within its containing block). A sticky region taller than the viewport keeps its own lower content out of reach (1.4.10). A page-top bar that sticks above the whole shell, as in Yeti's starter, raises the same question for every control on the page.
+   - **Option A (chosen): follow ticket 65's option A.** Usage rule 7 as written (stick only a region that fits the smallest viewport; where a stuck `nav` sits above stacked content, set `--yeti-scroll-padding` on `:root` to at least its height, or stick only the `aside`), the ledger row ticket 65 proposes, shared by `sidebar`, `stack`, and `shell`, and the layer-4 Shift+Tab walk asserted with the rule followed and recorded with Yeti's defaults. Approved because it is one decision for three items whose sticky CSS is the same always-loaded rule, and it follows decisions 17 and 32.
+   - **Option B: a package rule in `@layer ngx-yeti`.** Dismissed for the reason ticket 65 gives: CSS cannot tell when the body row has stacked, because the switch is flex-basis arithmetic with no container query, so a rule that unsticks regions would also remove the feature side by side.
+   - **Option C: a shell-only answer that differs from the sidebar's.** Dismissed: the geometry and the rule are the same, and two answers for one rule would confuse consumers who build a shell from a stack and a sidebar (Yeti's docs, "Built from primitives").
+   - **Evidence and confidence.** The stacking geometry, the z-index, and the order of `nav` before `main`: read in `shell.css` and `attributes.css` (HIGH). That focus scrolling leaves a link under the stuck region: inferred from the scroll-padding model, not measured (MEDIUM).
+   - **To overrule.** Whatever overrules decision 47 applies here unchanged: replace usage rule 7, the section 7 rows for 1.4.10 and 2.4.11, and the layer-4 walk with that decision's text.
+49. **A pinned stack child and WCAG 2.4.11** (ticket 66 point 1; MEDIUM impact, MEDIUM confidence). Option (a), revised to cite the shared row: a usage rule that the consumer sets `--yeti-scroll-padding` on `:root` to at least the pinned child's height, and a layer-4 Tab case. No ledger row of the stack's own: the stack shares A11Y-22, owned by `sidebar` (decision 47), because its `sticky` is the same always-loaded rule. Reason: Yeti's own token comment names this use, the [fragment-links](../specs/fragment-links.md) spec already leaves sticky offsets to the consumer (its usage rule 4), and the offset depends on content only the consumer knows.
+50. **`fill` on an element that is both a `stack` and an overlay's held child** (ticket 63 point 1; MEDIUM impact, HIGH confidence). As the writer recommended: keep both input names (building-blocks 1.3: input names follow Yeti's), and state the same usage rule in both specs: put the stack inside the held child, never `yetiStack` with `fill` on a filled held child. The [stack](../specs/stack.md) spec carries the mirror rule. Reason: measured in Chromium and Firefox, a `.stack` held child with `data-fill` in a 200 px box was 800 px tall, and a usage rule covers the one case a rename would.
+
+### grid (ticket 59)
+
+51. **An `ol` cell's `start`** (point 1; LOW, HIGH). As the writer recommended, option (i): bind `'[attr.start]': 'null'` on every host, since `start` means nothing on any other element, and a consumer sets an `ol` cell's own first number with `value` on its first `li`.
+52. **The grid's manifest `support` list** (point 2; LOW, MEDIUM). The grid joins [upstream-bugs.md](../upstream-bugs.md) row Y8: its list omits container queries (the fold and tracks modes) and subgrid (`data-rows`). Verified *read*, no minimal reproduction, not filed. The package does nothing either way.
+
+### masonry (ticket 62)
+
+53. **The reading-order risk is a ledger row** (point 1; MEDIUM, MEDIUM). As the writer recommended: new row [A11Y-23](../ledger.md), owned by `masonry`, WCAG 2.2 1.3.2 and 2.4.3, "What the package adds": none, usage rules 3 and 4 state the author's responsibility; verified *read*; tested by L1 and L4 (`masonry--order`). The package adds no CSS or code. Part 2 row 12's usage rule now covers both paths (the fallback's column-first order and the native path's steps between tracks) and names the row. Reason: the ledger records every gap found in Yeti, whether or not the package closes it, with A11Y-10b as the author-owned precedent.
+54. **Native masonry in building-blocks 1.2's table** (point 2; LOW, HIGH). Added to the column "Yeti guards it in CSS with a stated fallback": native masonry (`grid-template-rows: masonry`, `Y/src/layouts/masonry/masonry.css:29`), with the multi-column fallback, where items read down each column.
+
+### layer (ticket 61)
+
+55. **Contrast over a translucent scrim** (point 1; MEDIUM, MEDIUM). Option (a): composite the scrim's computed colour over pure black and over pure white and assert at least 4.5:1 against both, in the light and dark schemes. Reason: it bounds every picture, needs no image decoding, and holds for any theme.
+56. **No focusable control under a later opaque child** (point 2; LOW, HIGH). A usage rule only, with no ledger row and no check (WCAG 2.2 2.4.11). The covered form in the loading-message example is `inert`.
+57. **Ledger A11Y-10b's "What Yeti does" cell** (point 3; LOW, HIGH). Rewritten as the writer recommended: Yeti adds a scrim to a `figure`'s caption, and other text over an image is the author's (`layer/manifest.json:72`; `layer.css:24-34`). A docs-inconsistency row, [upstream-bugs.md](../upstream-bugs.md) Y11, records that the manifest's a11y note says the layer adds no scrim while its CSS scrims a `figure`'s direct-child `figcaption`. Verified *read*, not filed. The spec's usage rule 3 is unchanged.
+
+### stack (ticket 66)
+
+Point 1 is decision 49. The `fill` mirror rule is decision 50.
+
+58. **The rule's line under WCAG 1.4.11** (point 2; LOW, MEDIUM). As the writer recommended: the line is decorative ("Purely visual" in the manifest), so no play function asserts a ratio and there is no ledger row.
+
+### sidebar (ticket 65)
+
+Point 1 is decision 47.
+
+### scroller (ticket 64)
+
+59. **Hosts limited to `div` and `section`** (point 1; MEDIUM, MEDIUM). Usage rule 1 as written: the static `role="region"` replaces a list's or table's own role, so the scroller never goes on a `ul`, `ol`, or `table`; a wide table goes inside it as its one child.
+60. **The `justify` type's name** (point 2; LOW, HIGH). The named type `YetiScrollerJustify`, declared as `Extract<YetiJustify, 'start' | 'center' | 'end'>` and exported beside the re-exported vocabulary types. The consistency review aligns the [cluster](../specs/cluster.md) spec's inline wording with it.
+61. **No other `display`-setting layout on the scroller's element** (point 3; LOW, HIGH). Usage rule 5 as written; `yetiBox` beside it stays allowed.
+62. **A 3:1 focus-ring assertion** (point 4; LOW, MEDIUM). `scroller--keyboard` asserts at least 3:1 between the ring and the background behind it with the exact WCAG formula (WCAG 1.4.11; ADR 0015 point 3).
+
+### timeline (ticket 67)
+
+63. **The guide's `li[yetiTimelineEntry]` example** (point 1; LOW, HIGH). Removed from [architecture-guide.md](../architecture-guide.md)'s glossary row for a part directive: at the pin no timeline entry carries a marker, so the directive does not exist.
+64. **The rail and the dots under WCAG 1.4.11** (point 2; LOW, MEDIUM). Decorative, as the manifest says: no assertion and no ledger row. Usage rule 7 keeps status and meaning out of the dots.
+65. **Another item on an entry** (point 3; LOW, MEDIUM). Usage rule 6 as written: put another item inside the `li`, not on it.
+66. **A timeline in a shrink-to-fit parent** (point 4; LOW, MEDIUM). Usage rule 8 as written, plus one layer-4 measurement in three engines, a timeline inside a `cluster`, to confirm the collapse.
+
+### overlay (ticket 63)
+
+Point 1 is decision 50.
+
+67. **Yeti's docs veil is as tall as the viewport** (point 2; LOW, HIGH). A Yeti row, [upstream-bugs.md](../upstream-bugs.md) Y10: the veil in `Y/src/layouts/overlay/docs.md` takes `.cover`'s `min-block-size: var(--yeti-cover-height)`, `100dvh` by default, so it is 800 px tall over a 76 px form at an 800 px viewport. Verified *measured* (Chromium and Firefox); the minimal reproduction is the docs snippet itself; no upstream report unless the user confirms one. The spec's veil example already sets `--yeti-cover-height: auto`.
+
+### setup (ticket 38)
+
+Point 1 is decision 45. Points 2 to 7 are decided as the writer recommended:
+
+68. **The accessibility stylesheet's specifier** (point 2; MEDIUM, MEDIUM). `@import 'ngx-yeti/accessibility.css';`, published through the package's `exports` map.
+69. **No generator in the first milestone** (point 3; MEDIUM, MEDIUM). The documentation is the setup; an Nx generator, reused as `ng add`, is for a later milestone.
+70. **The Tailwind form** (point 4; MEDIUM, MEDIUM). The documentation leads with C2 (no preflight) and documents C1 beside it with its two measured losses and no fix. Layer 4 tests both under a second build configuration of the one fixture app, with a check that the `ngx-yeti` cascade layer keeps its place.
+71. **Stray and leaked item links around a consumer `@boundary`** (point 5; LOW, MEDIUM). Documented, no change.
+72. **Upstream bug A4** (point 6; MEDIUM, LOW). The documentation describes the bug and the `inlineCritical: false` option without recommending either setting; layer 4 counts the token-less frames in each engine with inlining on and off.
+73. **What `provideYetiStyles({ url })` accepts** (point 7; LOW, MEDIUM). A path relative to `<base href>` only; an absolute URL is not supported or tested.
+
+### hero (ticket 68)
+
+74. **Y9 gains the hero's rows** (point 1; LOW, HIGH). [upstream-bugs.md](../upstream-bugs.md) row Y9 now also records that the committed guide's `data-min` row lists only `grid, masonry` and its `data-span` row only `columns (> *)` with values `1` to `6`, while the generated guide lists `hero (> *)` in both and `span`'s twelve values. No upstream report.
+75. **`NgOptimizedImage` on a direct child** (point 2; MEDIUM, MEDIUM). Usage rule 11 as written: a direct `img` child takes `width` and `height` with the image's ratio equal to the hero's `ratio`; where they must differ, wrap it and use decision 35's form (`fill` plus `position: relative` on the wrapper); never `fill` on a direct child; `priority` on the opening picture. The `hero--optimized-image` story records both forms' console output. If the direct form warns anyway, the rule becomes "expect the development-mode warning when the ratios differ".
+76. **The caption's contrast assertion** (point 3; LOW, MEDIUM). Kept in `hero--caption` at 4.5:1 in light and dark (decision 8): it costs one helper call and catches a pin move that lowers the muted token's contrast.
+
+### badge (ticket 74)
+
+77. **The badge's hosts** (point 1; LOW, MEDIUM). Usage rule 1 as written: a non-interactive inline element (`span`, `strong`, `em`, `small`, `mark`, `data`, or `time`), never a link, a button, or a form control. HTML `size` is `inert` on every one of them.
+78. **Forced colours** (point 2; LOW, MEDIUM). No ledger row and no package CSS, after decisions 26 and 30. Layer 4 asserts the text's contrast under `forcedColors: 'active'` and records the border's computed colour and a screenshot in three engines.
+
+### media (ticket 69)
+
+79. **Ledger A11Y-10d's "What Yeti does" cell** (point 1; LOW, HIGH). Rewritten as the writer recommended, like decisions 23 and 24: text beside a cropped picture on the page surface; axe left `color-contrast` incomplete on the example's heading as partially obscured, cause not traced.
+80. **`NgOptimizedImage` for the figure** (point 2; MEDIUM, MEDIUM). Usage rule 6 as written: a direct-child `img` takes `width` and `height` from the image file and never `fill`; a wrapped figure uses decision 35's form, `fill` plus `position: relative` on the wrapper.
+81. **`side` against WCAG 1.3.2 and 2.4.3** (point 3; MEDIUM, MEDIUM). Usage rule 4 as written (the author puts the figure where it is read), no ledger row and no package code. Test layer 1 keeps its assertions that tree order equals DOM order and that a focusable figure keeps its source place in the Tab sequence.
+82. **No `yetiFrame` or `yetiStack` on the media's own children** (point 4; LOW, MEDIUM). Usage rule 8 as written, pointing to the composed form; `yetiBox` on the body stays allowed.
+
+### affix (ticket 72)
+
+Point 1 is decision 46.
+
+### shell (ticket 70)
+
+Point 1 is decision 48. Points 2 to 5 are decided as the writer recommended:
+
+83. **Where `yetiShell` goes** (point 2; MEDIUM, HIGH). Option (a): the outermost `div` of the root component's template. Yeti's reset zeroes `body`'s margin, so that host matches `body.shell`.
+84. **The `router-outlet` inside `main`** (point 3; MEDIUM, MEDIUM). Usage rule 3 as written, and the layer-4 variant fixture that measures the outlet as a direct body-row child.
+85. **The skip link in `index.html`** (point 4; MEDIUM, HIGH). Usage rule 5 as written: the skip link is `body`'s first child in `index.html`, pointing at an `id` on `main`, because Yeti's skip-link rule matches only `body > a[href^="#"]:first-child`. The [setup](../specs/setup.md) spec's skip-link example carries the same note.
+86. **The `center` and `shell` order in two other specs** (point 5; LOW, HIGH). Corrected: Yeti's order keeps a center centred inside a `stack`, but a center placed directly in a `shell` has 0 margins in Yeti's order (ticket 23, measured), as in full Yeti. The [center](../specs/center.md) spec's user story 11 and section 13 and the [setup](../specs/setup.md) spec's "The loader's behaviour" item 5 now say so. No package CSS: the package reproduces Yeti, and the shell spec's usage rule 9 puts a center inside `main`.
+
+### breadcrumbs (ticket 75)
+
+87. **Which `aria-current` form the examples lead with** (point 1; MEDIUM, MEDIUM). Form (a), the consumer's binding on the last step from the trail's data. Form (b), `RouterLinkActive` with exact matching, is documented beside it, and layer 3 checks that its attribute is in the server HTML. If that check fails, form (b) becomes a client-rendered-only usage rule and leaves the JavaScript-off e2e case.
+88. **Forced colours and the current step** (point 2; LOW, MEDIUM). No ledger row and no package CSS now; layer 4 asserts that the weight difference survives `forcedColors: 'active'`. If it fails, a ledger row owned by `breadcrumbs` and one `@layer ngx-yeti` rule follow, after A11Y-1f.
+89. **The separator** (point 3; LOW, MEDIUM). Decoration: no contrast assertion.
+90. **A `routerLink` step inside `hydrate never`** (point 4; MEDIUM, LOW). Usage rule 10 as written, and layer 4 records what a click does. If the click is held and never replayed, usage rule 10 extends to plain `href` links without `routerLink` inside `hydrate never`.
+
+### Applied
+
+- [ledger.md](../ledger.md): new A11Y-22 (decisions 47 to 49) and A11Y-23 (decision 53); A11Y-10b (decision 57) and A11Y-10d (decision 79) rewritten.
+- [upstream-bugs.md](../upstream-bugs.md): Y8 gains the grid (decision 52); Y9 gains the hero's `data-min` and `data-span` (decision 74); new Y10 (decision 67) and Y11 (decision 57).
+- [building-blocks.md](../building-blocks.md): 1.2's table (decision 54); Part 2 row 12 (decision 53), and rows 15, 16, and 20 name A11Y-22 (decisions 47 to 49).
+- [architecture-guide.md](../architecture-guide.md): the `li[yetiTimelineEntry]` example removed (decision 63).
+- [specs/center.md](../specs/center.md) user story 11 and section 13, and [specs/setup.md](../specs/setup.md) "The loader's behaviour" item 5 (decision 86); the setup spec's skip-link example (decision 85).
+- The specs for grid, masonry, layer, stack, sidebar, scroller, timeline, overlay, hero, media, shell, setup, badge, affix, and breadcrumbs: every "(open: see ticket)" mark replaced by its decision. Their tickets mark each open point decided.
