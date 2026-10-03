@@ -101,7 +101,7 @@ Module replaced: none. Yeti's `print` has no module ([ADR 0040](../adr/0040-pack
 - One directive, no **Part directive**: the manifest declares no children and no markers ([architecture-guide.md](../architecture-guide.md) P2).
 - No injection token, no parent, no `hostDirectives`. `print` is not always on another item's element, so it hosts nothing; where it shares an element with another item (`button`, a `stack` child, a `card`), the consumer writes both directives beside each other ([building-blocks.md](../building-blocks.md) 1.9; P6). The two never declare the same input name, because `yetiPrint` is selector-named (P9; ADR 0070's consideration of plain names).
 - No generated id and no platform relationship attribute ([generated-ids spec](generated-ids.md) does not apply).
-- The one injection is the root styles service of ADR 0060: the directive acquires the `print` item file in its constructor, on the server and in the browser, and releases it on destroy (ADR 0060 point 2). Part 2's "types only" ("no service") was written before ADR 0060 gave every directive this acquisition; this spec reads the two together.
+- The one injection is the root styles service of ADR 0060, reached by `injectYetiItemStyles('print')` from `ngx-yeti/styles` as the last statement of its constructor ([setup](setup.md); ticket 50 decisions 42 and 45): the directive acquires the `print` item file, on the server and in the browser, and releases it through `DestroyRef` on destroy (ADR 0060 point 2). Part 2's "types only" ("no service") was written before ADR 0060 gave every directive this acquisition; this spec reads the two together.
 - **Two items on one element.** Each item directive sets its own presence attribute, `data-ngx-yeti-item-<item>`, and ADR 0060 point 4 keeps an item's link while an element carrying that attribute is connected ([ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md); [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 12). When `yetiPrint` shares an element with another item directive (`<button yetiButton yetiPrint="none">`, Yeti's own example), the host carries both `data-ngx-yeti-item-button` and `data-ngx-yeti-item-print`. The names differ, so Angular's merge of host attributes, where a later value for the same name overwrites the earlier one (`mergeHostAttribute`, `NGP/core/src/render3/util/attrs_utils.ts:191-197`, read at `5db6fc4453`, not run), never loses either.
 
 ### 4. API
@@ -235,7 +235,7 @@ Story ids (building-blocks 1.3; `<item>` is `print`):
 
 1. With no binding, the host has class `print`, `data-ngx-yeti-item-print`, and no `data-print`.
 2. With `yetiPrint` bound to `''`, no `data-print`; to `'only'` and `'none'`, the attribute equals the value; changing the bound signal updates it without `detectChanges` beyond `whenStable()`.
-3. The styles service holds the `print` item while the fixture lives and releases it on destroy (its count returns to zero), through the service's public API.
+3. `<link data-ngx-yeti-styles="print">` is in `document.head` while the fixture lives and gone after destroy, observed in the DOM (the root service is unexported, so no double of it can be built).
 4. A test host with `<button yetiButton yetiPrint="none">` renders `class="button print"` and both directives' attributes, including both `data-ngx-yeti-item-button` and `data-ngx-yeti-item-print` (ADR 0045).
 
 **Layer 3, node-level** (`npx nx test <lib>`):
@@ -258,7 +258,6 @@ Prior art: Yeti's own `print.spec.js` and its fixture, which the layer 4 Storybo
 - Show and hide by container width (`data-show`, `data-hide`): the `container` spec's any-element directives (Part 2 row 6).
 - Hidden-but-announced text: the `visually-hidden` spec (Part 2 row 49).
 - A misuse warning for usage rules 3 and 5, or any other check: a later milestone (map, Milestones).
-- Which runner adopts the floor browsers (building-blocks Part 4).
 
 ## Further Notes
 
@@ -329,7 +328,7 @@ What no longer compiles: `<p yetiPrint="nnone">`. What is never written: `class=
 
 1. **Item file and the consumer's line:** `utilities/print/print.css`, loaded by the directive as a counted link (section 13). The consumer writes nothing per item; the setup is the `setup` spec's (ADR 0060 point 11), plus `print` in the preload list where the first instance is client-rendered.
 2. **Always-loaded rules relied on:** the layer statement that places `yeti.utilities` last inside `yeti` (`layers.css`, first in the consumer's global stylesheet; ADR 0060 point 7). Related but not required: `[data-paint]` keeps its colour on paper through `print-color-adjust: exact` (`Y/src/layouts/attributes.css:452-456`), owned by the `box` spec's `yetiPaint` (Part 2 row 1).
-3. **Cross-item rules:** none in CSS. The utility outranks any item's `display` through layer order, which is what makes `yetiButton` beside `yetiPrint="none"` work (`print.css:26-29`); the host-attribute question when two items share an element is open (section 3).
+3. **Cross-item rules:** none in CSS. The utility outranks any item's `display` through layer order, which is what makes `yetiButton` beside `yetiPrint="none"` work (`print.css:26-29`); two items sharing an element each set their own presence attribute (section 3; [ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md), ticket 50 decision 12).
 4. **Tokens:** none read, none written.
 5. **What breaks without the item file:** both media show everything: paper-only lines appear on screen and screen-only controls print.
 6. **Tailwind name collision:** none in the names building-blocks 1.13 lists (`container`, `grid`, `table`, `hidden`). Tailwind v4's `print:` is a variant prefix, not a `.print` utility (inferred, not measured). Usage rule 5 covers Tailwind's later `utilities` layer.

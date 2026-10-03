@@ -96,12 +96,12 @@ No Module is replaced, so the spec has no "Module replaced" subsection ([ADR 004
 
 - One Item directive, no part directive and no child directive: the item has no markers and no children (building-blocks Part 2 row 44).
 - No item always sits on another item's element, so `YetiBillboard` hosts nothing through `hostDirectives` (building-blocks Part 2, "Two findings"). Directives a consumer composes on the same element (`yetiCoverChild` with `center`, `yetiPaint`, `yetiText`, `yetiLede`) are written beside it (building-blocks 1.9). None of them declares an input named `fit`, so one element has one owner per attribute (building-blocks 1.4, Shared vocabularies; architecture guide P9).
-- The directive provides no Injection token, because nothing reads it, and injects one thing: the root item-file loader service of ADR 0060 point 2, through which it acquires `billboard` in its constructor (on the server too) and releases it on destroy. Acquiring the item file through ADR 0060's root styles service is the one injection every types-only item directive makes (a note on building-blocks Part 2's "Types only" definition; [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 18).
+- The directive provides no Injection token, because nothing reads it, and injects one thing: the root styles service of ADR 0060 point 2, reached by `injectYetiItemStyles('billboard')` from `ngx-yeti/styles` as the last statement of its constructor ([setup](setup.md); ticket 50 decisions 42 and 45), through which it acquires `billboard` (on the server too) and releases it through `DestroyRef` on destroy. Acquiring the item file through ADR 0060's root styles service is the one injection every types-only item directive makes (a note on building-blocks Part 2's "Types only" definition; [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 18).
 - No generated id and no relationship attribute: nothing points at a billboard, so the [generated-ids](generated-ids.md) spec does not apply.
 
 ### API
 
-`YetiBillboard`, selector `[yetiBillboard]`, `exportAs: 'yetiBillboard'`, entry point `ngx-yeti/billboard` (building-blocks 1.3; ADR 0080 points 1 and 3). The class name does not collide with Yeti's typings: only `columns`, `attention`, `enter`, `lift`, and `print` take `NgxYeti` (ADR 0080 point 4).
+`YetiBillboard`, selector `[yetiBillboard]`, `exportAs: 'yetiBillboard'`, entry point `ngx-yeti/billboard` (building-blocks 1.3; ADR 0080 points 1 and 3). The class name does not collide with Yeti's typings: only `columns`, `attention`, `enter`, `lift`, and `print` take `NgxYeti` (ADR 0080 point 4), and `NgxYetiPaint` is the sixth, because `YetiPaint` is one of the 46 names `yeti.d.ts` exports ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 10).
 
 | Member | Kind | Type | Default | Yeti default | Notes |
 | --- | --- | --- | --- | --- | --- |
@@ -185,7 +185,7 @@ None: the item has no state to close on navigation and no fragment link ([naviga
 
 ### Item file
 
-The item file is `billboard`, kind `utilities`, loaded by ADR 0060's counted `<link>` from the consumer's Yeti build at the pin, acquired in the constructor and released on destroy, removed only when no host with `data-ngx-yeti-item-billboard` is connected (ADR 0060 points 1 to 4). The consumer writes nothing per item beyond the one-time setup the `setup` spec owns ([ticket 38](../issues/38-spec-setup.md); ADR 0060 point 11). The billboard acquires no other item file: its rules depend on a size container's `container-type`, which is another element's and is acquired by that element's own directive (`container` for `yetiContainer`), so ADR 0060 point 9's cross-item rule names nothing here.
+The item file is `billboard`, kind `utilities`, loaded by ADR 0060's counted `<link>` from the consumer's Yeti build at the pin, acquired in the constructor and released on destroy, removed only when no host with `data-ngx-yeti-item-billboard` is connected (ADR 0060 points 1 to 4). The consumer writes nothing per item beyond the one-time setup the `setup` spec owns ([setup](setup.md); ADR 0060 point 11). The billboard acquires no other item file: its rules depend on a size container's `container-type`, which is another element's and is acquired by that element's own directive (`container` for `yetiContainer`), so ADR 0060 point 9's cross-item rule names nothing here.
 
 ## Testing Decisions
 
@@ -288,7 +288,7 @@ Each example imports `YetiBillboard` from `ngx-yeti/billboard` and every other d
 
 ### Styles
 
-1. **Item file and the consumer's line:** `billboard`, loaded by ADR 0060's loader; the consumer's setup is the `setup` spec's ([ticket 38](../issues/38-spec-setup.md)), plus `preload: ['billboard']` for client-only inserts.
+1. **Item file and the consumer's line:** `billboard`, loaded by ADR 0060's loader; the consumer's setup is the `setup` spec's ([setup](setup.md)), plus `preload: ['billboard']` for client-only inserts.
 2. **Always-loaded rules relied on:** the type scale and the `--yeti-text-*` steps, `--yeti-tracking-heading`, and `--yeti-fit-width` from Yeti's tokens; the base heading rules for the element's own size before the item file applies.
 3. **Cross-item rules:** none in Yeti's CSS. The billboard reads the nearest size container, which `container` and the size-container items provide on another element.
 4. **Tokens:** reads `--yeti-fit-width`, `--yeti-tracking-heading`, and the eight `--yeti-text-*` steps; writes none. A consumer sets them in any stylesheet or with `setProperty`; the scale inputs (`--yeti-base`, `--yeti-ratio`) only on `:root` (ADR 0004; Yeti's theming guide).

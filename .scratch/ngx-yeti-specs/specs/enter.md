@@ -113,7 +113,7 @@ Attributes left to the consumer: none of Yeti's. The consumer's own attributes o
 
 - One item directive, no part directives, no child directive: `enter` declares no markers and no `children` (ADR 0070 rules R, U, S).
 - No parent token, no Injection token of its own, no service. The observer is per instance, so no state is shared between instances (building-blocks 1.5).
-- Injects `ElementRef` (the observer's target), `DestroyRef` (teardown), and the package's style loader for the item file (ADR 0060 point 2). No generated ids, so nothing from the [generated-ids spec](generated-ids.md); no relationship attributes.
+- Injects `ElementRef` (the observer's target), `DestroyRef` (teardown), and the package's style loader for the item file, through `injectYetiItemStyles('enter')` from `ngx-yeti/styles` as the last statement of its constructor ([setup](setup.md); [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decisions 42 and 45), which releases it through `DestroyRef` (ADR 0060 point 2). No generated ids, so nothing from the [generated-ids spec](generated-ids.md); no relationship attributes.
 - Not hosted by any other item and hosts none (building-blocks Part 2, "no Yeti item always sits on another item's element"). On one element it composes by being written beside a layout directive (`yetiGrid`, `yetiCluster`, `yetiStack`) or `yetiMedia`.
 - Shared input name: `side` is also declared by `yetiMedia`, `yetiSidebar`, `yetiHero`, and `yetiDropdown`, all typed `YetiSide` (ticket 26 rows 56, 74, 83, 115, 163), so two of them on one element receive one value of one type, and both bind the one `data-side` Yeti declares for both (building-blocks 1.4, "Shared vocabularies"; ADR 0070, considered option on defaults).
 
@@ -132,7 +132,7 @@ Attributes left to the consumer: none of Yeti's. The consumer's own attributes o
 
 No `model()`, no outputs, no public methods. Behaviour:
 
-1. **Construction** (server and client): acquire the `enter` item file; nothing else. No DOM access, no observer (building-blocks 1.11 decision 3).
+1. **Construction** (server and client): acquire the `enter` item file through `injectYetiItemStyles('enter')`, the constructor's last statement ([setup](setup.md); ticket 50 decisions 42 and 45); nothing else. No DOM access, no observer (building-blocks 1.11 decision 3).
 2. **First client render** (`afterNextRender`): if `once()` is true and `arrived()` is false, create one `IntersectionObserver` with `rootMargin: '0px 0px 10% 0px'` and observe the host. Under zone.js it starts outside the Angular zone ([ADR 0011](../adr/0011-rendering-modes-contract-for-yeti.md) clause 4).
 3. **First intersecting entry:** set `arrived` to `true`, then disconnect the observer. The `computed` turns `data-once` off, the host binding removes it, and Yeti's CSS starts the arrival as a new animation (`enter.css:103-114`).
 4. **Changes to `once` after the first client render** ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 20): the arrival is one-way; once `arrived` is true, no later value of `once` renders `data-once` again. A `once` that is `false` at the first client render is treated as already arrived, because the element has played its load arrival, so a later `true` renders nothing and creates no observer.
@@ -193,7 +193,7 @@ All of it is Yeti's CSS on the identity class and attributes (ADR 0010 point 1; 
 
 ### 10. Item file
 
-`enter`'s item file is the `utilities/enter/enter.css` file of the consumer's Yeti build, in cascade layer `yeti.utilities` ([Research: Yeti's cascade layers and stylesheet order](../issues/23-research-yeti-layers-and-import-order.md)). The directive sets `data-ngx-yeti-item-enter` on its host ([ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md)) and acquires the file in its constructor, on the server too; the root style service writes one counted `<link>`, in Yeti's order, and removes it after the last host leaves the DOM (ADR 0060 points 2 to 5). The consumer's one line is the `setup` spec's global setup; for a client-only insertion the consumer adds `enter` to `provideYetiStyles({ preload: [...] })` (ADR 0060 point 6; building-blocks row 45). The package's accessibility stylesheet has no `enter` rule.
+`enter`'s item file is the `utilities/enter/enter.css` file of the consumer's Yeti build, in cascade layer `yeti.utilities` ([Research: Yeti's cascade layers and stylesheet order](../issues/23-research-yeti-layers-and-import-order.md)). The directive sets `data-ngx-yeti-item-enter` on its host ([ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md)) and acquires the file through `injectYetiItemStyles('enter')`, the last statement of its constructor, on the server too ([setup](setup.md); ticket 50 decisions 42 and 45); the root style service writes one counted `<link>`, in Yeti's order, and removes it after the last host leaves the DOM (ADR 0060 points 2 to 5). The consumer's one line is the [setup](setup.md) spec's global setup; for a client-only insertion the consumer adds `enter` to `provideYetiStyles({ preload: [...] })` (ADR 0060 point 6; building-blocks row 45). The package's accessibility stylesheet has no `enter` rule.
 
 ### 11. Rendering modes
 
@@ -253,7 +253,7 @@ Story ids (building-blocks 1.3): `enter--default`, `enter--arrivals`, `enter--st
 - `once` true, then set to `false` before arrival: the attribute goes; set back to `true`: it returns and the arrival still happens on intersection; after arrival, `true` renders nothing ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 20);
 - `once` false at the first render, later `true`: no `data-once` (decision 20);
 - destroyed before intersecting: no error; `IntersectionObserver.prototype.disconnect` was called (the one structural assertion, for building-blocks 1.15's teardown);
-- the item file is acquired on creation and released on destroy, through a double of the style service (ADR 0060 point 2).
+- while the fixture lives, one `<link data-ngx-yeti-styles="enter">` is in `document.head`; after `fixture.destroy()` and an animation frame it is gone (ADR 0060 point 2; the root service is unexported, so the test reads the DOM).
 
 ### Test layer 3: node-level tests
 
@@ -306,6 +306,7 @@ Contract check: the class `enter`, the five attributes, the five `enter` values 
 | No `animate.enter` in the directive | ADR 0010 point 4; building-blocks row 45 |
 | No outputs; no ledger row | ticket 26; ADR 0040, Consequences; building-blocks row 45 |
 | Item file acquired in the constructor; preload for client-only insertion | ADR 0060 points 2 and 6; building-blocks row 45 |
+| `injectYetiItemStyles('enter')` last in the constructor | [setup](setup.md); ticket 50 decisions 42 and 45 |
 | `enter.js` replaced; consumers load none of Yeti's modules | ADR 0040 |
 | Each item on a host writes its own presence attribute, `data-ngx-yeti-item-enter` | [ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md); ticket 50 decision 12 |
 

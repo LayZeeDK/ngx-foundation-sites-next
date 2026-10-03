@@ -129,7 +129,7 @@ None. The three directives are independent: no injection token, no parent inject
 
 No Yeti item always sits on another item's element (Part 2, "Two findings that hold across the matrix"), so `YetiContainer` hosts nothing. A consumer composes it beside another directive on one element by writing both attributes, as Yeti's example puts `container` and `box` on one `div`: `<div yetiContainer yetiBox surface="raised" yetiBorder>`. The directives declare no shared input name (building-blocks 1.4, shared vocabularies). Each item directive on the shared host sets its own presence attribute, so the `box` item file and the `container` item file are each held while the element is connected (ADR 0045).
 
-The only injection is the root styles service of ADR 0060, through which `YetiContainer` acquires and releases the `container` item file. That service is the [setup](../issues/38-spec-setup.md) spec's (`provideYetiStyles()`) and ADR 0060's; this spec only names the item it acquires.
+The only injection is the root styles service of ADR 0060, reached by `injectYetiItemStyles('container')` from `ngx-yeti/styles` as the last statement of the constructor ([setup](setup.md); ticket 50 decisions 42 and 45), through which `YetiContainer` acquires and releases the `container` item file. That service is the [setup](setup.md) spec's (`provideYetiStyles()`) and ADR 0060's; this spec only names the item it acquires.
 
 Generated ids and the platform's relationship attributes: none. Nothing here renders or references an `id`, so the item does not use [generated-ids](generated-ids.md).
 
@@ -144,7 +144,7 @@ Generated ids and the platform's relationship attributes: none. Nothing here ren
 | `exportAs` | `yetiContainer` (building-blocks 1.3) |
 | Host | `class: 'container'`; `'data-ngx-yeti-item-container': ''` (both static) |
 | Inputs, models, outputs, methods | none |
-| Lifecycle | acquires the `container` item file in its constructor and releases it on destroy, through `DestroyRef` (ADR 0060 point 2; building-blocks 1.9) |
+| Lifecycle | acquires the `container` item file, on the server too, with `injectYetiItemStyles('container')` as the last statement of its constructor (ticket 50 decisions 42 and 45) and releases it on destroy, through `DestroyRef` (ADR 0060 point 2; building-blocks 1.9) |
 
 **`YetiShow`** and **`YetiHide`**
 
@@ -248,7 +248,7 @@ None. The markers switch `display` with no transition, and `container` has no st
 - **Full hydration:** each element is claimed as is; the host bindings write the same values; 0 style mutations (ADR 0060 point 5, measured for the mechanism).
 - **Incremental hydration (`@defer (hydrate on ...)`):** the server rendered the `container`, its markers, and the link; a dehydrated `container` holds the link for as long as it is on the page through its presence attribute (ADR 0060 point 4; ADR 0045). The markers need nothing: their rules are always loaded.
 - **`hydrate never`:** the item is its server HTML and stays a size container while the host is connected, whatever live `container` instances do (ADR 0060 point 4; ADR 0045). A shared host such as `yetiContainer yetiBox` keeps both item files (ADR 0045 consequences). There is no Angular behaviour to lose.
-- **Client-only `@defer`:** the `container` item file is fetched when `YetiContainer` is constructed. Until it applies, the box is not a size container, so every marker inside it matches nothing and every version shows, the narrow and the wide one together, for a few frames. The consumer closes the gap with `provideYetiStyles({ preload: ['container'] })` (ADR 0060 point 6; [setup](../issues/38-spec-setup.md)). A marker inside another item's size container depends on that item's file in the same way, which that item's spec covers.
+- **Client-only `@defer`:** the `container` item file is fetched when `YetiContainer` is constructed. Until it applies, the box is not a size container, so every marker inside it matches nothing and every version shows, the narrow and the wide one together, for a few frames. The consumer closes the gap with `provideYetiStyles({ preload: ['container'] })` (ADR 0060 point 6; [setup](setup.md)). A marker inside another item's size container depends on that item's file in the same way, which that item's spec covers.
 - **Event replay:** no directive here declares a listener, so nothing replays and no `jsaction` is added.
 - **`withI18nSupport()`:** text inside a `container` or on a marked element is the consumer's, translated with `i18n` in the consumer's component. The directives add no `i18n` block of their own; the consumer's component needs `withI18nSupport()` to hydrate rather than re-render (ADR 0011 clause 11; building-blocks 1.11 decision 11).
 - **Zoneless:** `YetiContainer` has no state. A marker's binding reads an `input()` signal, which refreshes zoneless when the consumer's bound value changes (ADR 0070 rule 4; map, Standing rulings, item 43).
@@ -272,7 +272,7 @@ None. The item has no navigation or fragment behaviour, so it uses neither [navi
 
 ### 13. Item file
 
-`yeti-css/css/layouts/container/container.css`, one of Yeti's 49, loaded as a counted `<link>` by the root styles service of ADR 0060: acquired when the first `[yetiContainer]` is created, on the server too, inserted in Yeti's order (`Y/src/yeti.css:35`, the rank table of point 3), and removed after the last host has left the DOM. The consumer's part is ADR 0060 point 11's setup, which the [setup](../issues/38-spec-setup.md) spec owns: Yeti's build at the Pin under `yeti-css`, the `assets` entry, the global stylesheet with the layer statement (with `@source not inline('container');` in a Tailwind v4 application, ADR 0060 point 7), and optionally `provideYetiStyles({ preload: ['container'] })`. The item adds nothing to it. Cross-item files acquired: none (`container.css` has no cross-item rule; ADR 0060 point 9).
+`yeti-css/css/layouts/container/container.css`, one of Yeti's 49, loaded as a counted `<link>` by the root styles service of ADR 0060: acquired when the first `[yetiContainer]` is created, on the server too, inserted in Yeti's order (`Y/src/yeti.css:35`, the rank table of point 3), and removed after the last host has left the DOM. The consumer's part is ADR 0060 point 11's setup, which the [setup](setup.md) spec owns: Yeti's build at the Pin under `yeti-css`, the `assets` entry, the global stylesheet with the layer statement (with `@source not inline('container');` in a Tailwind v4 application, ADR 0060 point 7), and optionally `provideYetiStyles({ preload: ['container'] })`. The item adds nothing to it. Cross-item files acquired: none (`container.css` has no cross-item rule; ADR 0060 point 9).
 
 `YetiShow` and `YetiHide` load no file. Their rules are in `layouts/attributes.css`, which the consumer's global stylesheet loads with the **Always-loaded group** (map, The always-loaded group; building-blocks 1.13).
 
@@ -327,7 +327,7 @@ Fixture-app half, built with `outputMode: 'server'`, with a `/container` route m
 - navigating from the `container` route to a route without one removes the item link, and navigating back re-inserts it;
 - at a 320 px viewport the page has no horizontal overflow (1.4.10).
 
-Testing at the floor browsers is not decided yet ([building-blocks.md](../building-blocks.md) Part 4; ADR 0014 point 7).
+Floor engines: [ticket 93](../issues/93-decide-testing-at-the-browser-floor.md) (a weekly and release-branch job; Safari 26.2 held statically).
 
 Prior art: Yeti's `example.html` and the docs pairs in `docs.md` and `visibility.md` for the stories; ticket 18's fixture app and ADR 0060's prototype for the server HTML and the item link; [Prototype: the package beside Tailwind v4](../issues/24-prototype-ngx-yeti-with-tailwind-v4.md) for the `.container` collision, which this spec does not test again.
 
@@ -340,9 +340,8 @@ Prior art: Yeti's `example.html` and the docs pairs in `docs.md` and `visibility
 - An input or token that moves a marker's width with a theme. The widths are Yeti's literals (`docs.md:16`).
 - A check that a marker has a size container above it, or that hidden content exists elsewhere. Checks belong to a later milestone (map, Milestones); usage rules 1 and 3 state them.
 - Package CSS for the item. None is needed, and no ledger row asks for it.
-- How the styles service counts, inserts, and removes links (ADR 0060; the [setup](../issues/38-spec-setup.md) spec), and the Tailwind setup itself (the setup spec, ADR 0060 point 7).
+- How the styles service counts, inserts, and removes links (ADR 0060; the [setup](setup.md) spec), and the Tailwind setup itself (the setup spec, ADR 0060 point 7).
 - The `box`, `cluster`, `nav`, and `table` directives in this spec's examples, which their own specs own.
-- Testing at the floor browsers (building-blocks Part 4).
 
 ## Further Notes
 
@@ -434,12 +433,12 @@ A page whose `container` renders inside a client-only `@defer` block preloads th
 
 Per building-blocks 1.13:
 
-1. **Item file:** `layouts/container/container.css`, loaded by `YetiContainer` as a counted link (section 13). The consumer writes nothing for the item beyond the [setup](../issues/38-spec-setup.md) spec's one-time configuration.
+1. **Item file:** `layouts/container/container.css`, loaded by `YetiContainer` as a counted link (section 13). The consumer writes nothing for the item beyond the [setup](setup.md) spec's one-time configuration.
 2. **Always-loaded rules relied on:** `layouts/attributes.css:345-388`, the 14 `data-show` and `data-hide` rules in `@layer yeti.utilities`; `layers.css`, which places that layer last.
 3. **Cross-item rules:** none in `container.css`. Other items' size containers (`nav`, `pagination`, `timeline`, `demo`, and the shapes of `grid`, `cluster`, `card`, and `breakout`) also make markers work, through their own item files.
 4. **Tokens:** reads none and writes none (section 2). The markers' widths are literals, not the `--yeti-width-*` tokens.
 5. **What breaks without the item file:** the box is not a size container, so markers inside it measure the next size container above, or none, in which case every marked element shows at every width, with no error. A consumer `@container` rule that targets the box stops matching.
-6. **Tailwind name collision:** yes. Tailwind v4 generates `.container` in its `utilities` layer, above `yeti`, unless the consumer's global stylesheet has `@source not inline('container');` (building-blocks 1.13; ADR 0060 point 7; ticket 24, measured in three engines). The [setup](../issues/38-spec-setup.md) spec documents the statement; this spec relies on it.
+6. **Tailwind name collision:** yes. Tailwind v4 generates `.container` in its `utilities` layer, above `yeti`, unless the consumer's global stylesheet has `@source not inline('container');` (building-blocks 1.13; ADR 0060 point 7; ticket 24, measured in three engines). The [setup](setup.md) spec documents the statement; this spec relies on it.
 
 ### Platform facts the consumer should know
 

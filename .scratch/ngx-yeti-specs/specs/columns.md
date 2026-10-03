@@ -126,7 +126,7 @@ The input value types are Yeti's own, imported from the package's generated `yet
 
 No item directive hosts another. Part 2's finding holds: no Yeti item always sits on another item's element. A consumer composes `yetiColumns` or `yetiColumnsChild` beside other item directives on one element by writing both attributes (`<section yetiBox yetiColumnsChild span="2">`, Yeti's own example). Two directives on one element that declare the same input name share the vocabulary's exported type (building-blocks 1.4, shared vocabularies): `yetiColumns` beside `yetiBox` both declare `gap: YetiGap`, so one static `gap="lg"` feeds both and both bind the same `data-gap`, which is what Yeti's single attribute means on that element (ticket 26 grilling question 16). Each directive sets its own presence attribute, so the box's item file and the columns' item file are each held (ADR 0045).
 
-The only other injection is the root styles service of ADR 0060, through which `NgxYetiColumns` acquires and releases the `columns` item file. That service belongs to the [setup](../issues/38-spec-setup.md) spec and ADR 0060.
+The only other injection is the root styles service of ADR 0060, reached by `injectYetiItemStyles('columns')` from `ngx-yeti/styles` as the last statement of the constructor ([setup](setup.md); ticket 50 decisions 42 and 45), through which `NgxYetiColumns` acquires and releases the `columns` item file. That service belongs to the [setup](setup.md) spec and ADR 0060.
 
 Generated ids and the platform's relationship attributes: none. The layout renders no `id` and references none, so it does not use [generated-ids](generated-ids.md).
 
@@ -144,7 +144,7 @@ Generated ids and the platform's relationship attributes: none. The layout rende
 | Host | static `class: 'columns'`; static `'data-ngx-yeti-item-columns': ''`; `'[attr.data-threshold]'`, `'[attr.data-gap]'`, `'[attr.data-align]'`, `'[attr.data-justify]'`, `'[attr.data-columns]'` from the inputs, `null` when unset; `'[attr.align]': 'null'` with a source comment naming the presentational hint it prevents (building-blocks 1.4) |
 | Providers | `{provide: yetiColumnsToken, useExisting: NgxYetiColumns}` |
 | Models, outputs, methods, listeners | none |
-| Lifecycle | acquires the `columns` item file in its constructor and releases it on destroy through `DestroyRef` (ADR 0060 point 2; building-blocks 1.9) |
+| Lifecycle | acquires the `columns` item file, on the server too, with `injectYetiItemStyles('columns')` as the last statement of its constructor (ticket 50 decisions 42 and 45) and releases it on destroy through `DestroyRef` (ADR 0060 point 2; building-blocks 1.9) |
 
 **`YetiColumnsChild`**
 
@@ -234,7 +234,7 @@ None. The layout has no state and no transition; Yeti's reduced-motion handling 
 - **Full hydration:** both hosts are claimed as they are; 0 style mutations (ADR 0060 point 5, measured for the mechanism). A static `align` is written back and removed again in the same pass (section 11).
 - **Incremental hydration (`@defer (hydrate on ...)`):** the server rendered the layout and its link; a dehydrated host holds the link for as long as it is on the page (ADR 0060 point 4, measured for the mechanism).
 - **`hydrate never`:** the layout is its server HTML and stays styled while the host is connected, whatever live layouts do (ADR 0060 point 4). Nothing is lost except changing a bound input, which needs Angular.
-- **Client-only `@defer`:** the item file is fetched when `NgxYetiColumns` is constructed, which can show unstyled frames (the children stacked); the consumer closes the gap with `provideYetiStyles({ preload: ['columns'] })` (ADR 0060 point 6; [setup](../issues/38-spec-setup.md)). A `@defer` block inside the host renders its placeholder or loading element as a direct child, so that element is a column while it shows (inferred from Yeti's `> *` selector).
+- **Client-only `@defer`:** the item file is fetched when `NgxYetiColumns` is constructed, which can show unstyled frames (the children stacked); the consumer closes the gap with `provideYetiStyles({ preload: ['columns'] })` (ADR 0060 point 6; [setup](setup.md)). A `@defer` block inside the host renders its placeholder or loading element as a direct child, so that element is a column while it shows (inferred from Yeti's `> *` selector).
 - **Event replay:** neither directive declares a listener, so nothing replays and no `jsaction` is added.
 - **`withI18nSupport()`:** column content is usually translated with `i18n` in the consumer's component. The directives add no `i18n` block of their own; the consumer's component needs `withI18nSupport()` to hydrate rather than re-render (ADR 0011 clause 11; building-blocks 1.11 decision 11).
 - **Zoneless:** inputs are `input()` signals read by host bindings, so a changed input refreshes its attribute with no zone (ADR 0070 rule 4; map, Standing rulings, item 43).
@@ -258,7 +258,7 @@ None. The layout has no navigation or fragment behaviour, so it uses neither [na
 
 ### 13. Item file
 
-`yeti-css/css/layouts/columns/columns.css`, one of Yeti's 49, loaded as a counted `<link>` by the root styles service of ADR 0060: acquired when the first `[yetiColumns]` is created, on the server too, inserted in Yeti's order (`Y/src/yeti.css:23`, after `sidebar` and before `cover`, the rank table of point 3), and removed after the last host has left the DOM. `YetiColumnsChild` acquires nothing ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 6). The consumer's part is ADR 0060 point 11's setup, which the [setup](../issues/38-spec-setup.md) spec owns: Yeti's build at the Pin under `yeti-css`, the `assets` entry, the global stylesheet with the layer statement, and optionally `provideYetiStyles({ preload: ['columns'] })`. The layout adds nothing to it. Cross-item files acquired: none. `columns.css` has no cross-item rule, and the value rules it depends on are in the always-loaded `layouts/attributes.css` (ADR 0060 point 9).
+`yeti-css/css/layouts/columns/columns.css`, one of Yeti's 49, loaded as a counted `<link>` by the root styles service of ADR 0060: acquired when the first `[yetiColumns]` is created, on the server too, inserted in Yeti's order (`Y/src/yeti.css:23`, after `sidebar` and before `cover`, the rank table of point 3), and removed after the last host has left the DOM. `YetiColumnsChild` acquires nothing ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 6). The consumer's part is ADR 0060 point 11's setup, which the [setup](setup.md) spec owns: Yeti's build at the Pin under `yeti-css`, the `assets` entry, the global stylesheet with the layer statement, and optionally `provideYetiStyles({ preload: ['columns'] })`. The layout adds nothing to it. Cross-item files acquired: none. `columns.css` has no cross-item rule, and the value rules it depends on are in the always-loaded `layouts/attributes.css` (ADR 0060 point 9).
 
 ## Testing Decisions
 
@@ -304,7 +304,7 @@ Fixture half, on the **Fixture app** built with `outputMode: 'server'`, with a `
 - navigating from the columns route to a route without one removes the item link, and navigating back re-inserts it;
 - at a 320 px viewport the page has no horizontal overflow and the example's children are rows (1.4.10).
 
-Testing at the floor browsers is not decided yet ([building-blocks.md](../building-blocks.md) Part 4; ADR 0014 point 7).
+Floor engines: [ticket 93](../issues/93-decide-testing-at-the-browser-floor.md) (a weekly and release-branch job; Safari 26.2 held statically).
 
 Prior art: Yeti's `example.html` and `docs.md` examples for the stories; ticket 18's fixture app and ADR 0060's prototype for the server HTML and the item link; the [lede](lede.md) spec's probe technique for token-independent assertions.
 
@@ -315,8 +315,7 @@ Prior art: Yeti's `example.html` and `docs.md` examples for the stories; ticket 
 - A check that the host has at least two children, that a `yetiColumnsChild` sits under a `yetiColumns` host, or that no child is reordered. Checks belong to a later milestone (map, Milestones); the usage rules state them.
 - A shared any-element `[yetiSpan]` directive for `columns`, `grid`, and `hero` (ADR 0070, Considered options).
 - Package CSS for the layout (building-blocks 1.13).
-- How the styles service counts, inserts, and removes links (ADR 0060; the [setup](../issues/38-spec-setup.md) spec).
-- Testing at the floor browsers (building-blocks Part 4).
+- How the styles service counts, inserts, and removes links (ADR 0060; the [setup](setup.md) spec).
 
 ## Further Notes
 
@@ -402,7 +401,7 @@ A page whose columns render inside a client-only `@defer` block preloads the ite
 
 Per building-blocks 1.13:
 
-1. **Item file:** `layouts/columns/columns.css`, loaded by `NgxYetiColumns` as a counted link (section 13). The consumer writes nothing for the layout beyond the [setup](../issues/38-spec-setup.md) spec's one-time configuration.
+1. **Item file:** `layouts/columns/columns.css`, loaded by `NgxYetiColumns` as a counted link (section 13). The consumer writes nothing for the layout beyond the [setup](setup.md) spec's one-time configuration.
 2. **Always-loaded rules relied on:** `layouts/attributes.css` maps every `data-threshold`, `data-gap`, `data-align`, `data-justify`, and `data-span` value to its private token; `tokens/space.css` declares `--yeti-width-*` and `--yeti-space-*`. `attributes.css` also holds `[data-columns]` rules for `grid` and `masonry` (`--_yeti-column-cap`, `--_yeti-column-count`), which `columns.css` does not read.
 3. **Cross-item rules:** none. A `box` as a column (Yeti's example) loads its own item file through its own directive.
 4. **Tokens:** reads `--yeti-width-md` and `--yeti-space-md` by default and the named `--yeti-width-*` and `--yeti-space-*` through the value rules; writes none (section 2).

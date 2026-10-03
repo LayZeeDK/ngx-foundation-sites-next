@@ -18,7 +18,7 @@ The user chose to close that gap with Angular Aria's Toolbar, hosted by composit
 
 Two directives in the secondary entry point `ngx-yeti/buttons` ([building-blocks.md](../building-blocks.md) 1.3; "Aria decisions" row 27):
 
-- **`YetiButtons`**, the **Item directive** and **Coordinating directive**, on `[yetiButtons]`, `exportAs: 'yetiButtons'`. It hosts Aria's `Toolbar` through `hostDirectives`, binds `buttons` as a static host class, binds `data-gap` and `data-affix` from the typed inputs `gap` (`YetiGap`) and `affix` (`boolean`), binds `[attr.role]` to `toolbar` so that a written `role="group"` cannot win, carries the **Replay guard**, provides `yetiButtonsToken`, sets the static presence attribute `data-ngx-yeti-item-buttons` ([ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md)), and acquires the `buttons` item file as the last statement of its constructor ([setup](setup.md); ticket 50 decision 42).
+- **`YetiButtons`**, the **Item directive** and **Coordinating directive**, on `[yetiButtons]`, `exportAs: 'yetiButtons'`. It hosts Aria's `Toolbar` through `hostDirectives`, binds `buttons` as a static host class, binds `data-gap` and `data-affix` from the typed inputs `gap` (`YetiGap`) and `affix` (`boolean`), binds `[attr.role]` to `toolbar` so that a written `role="group"` cannot win, carries the **Replay guard**, provides `yetiButtonsToken`, sets the static presence attribute `data-ngx-yeti-item-buttons` ([ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md)), and acquires the `buttons` item file, on the server too, through `injectYetiItemStyles('buttons')` from `ngx-yeti/styles` as the last statement of its constructor ([setup](setup.md); ticket 50 decisions 42 and 45).
 - **`YetiButtonsItem`**, a **Part directive**, on `button[yetiButtonsItem]`, `a[yetiButtonsItem]`, and `input[yetiButtonsItem]`, `exportAs: 'yetiButtonsItem'`, written beside `yetiButton` on each member of the group. It hosts Aria's `ToolbarWidget` with `inputs: ['disabled: busy']`, lists `provideYetiAriaIds()` in its `providers` ([ADR 0044](../adr/0044-generated-ids-count-per-application-and-are-adopted-at-hydration.md)), and binds `[attr.tabindex]` to `null` until Aria's public `active()` turns true, so the server HTML keeps a native Tab stop on every member, then passes Aria's roving value through ("Aria decisions" row 27 as amended; ticket 50 decision 113). It sets no presence attribute and acquires no item file (ticket 50 decision 6).
 
 `YetiButton` hosts nothing from Aria ([button](button.md) spec; audit 0003 H1). The consumer writes `<div yetiButtons affix aria-label="Text style">` with `<button yetiButton yetiButtonsItem type="button" emphasis="medium" [attr.aria-pressed]="bold()">` members where Yeti's docs write `<div class="buttons" role="group" aria-label="Text style" data-affix>` with `<button class="button" ...>` members. Aria then owns the single Tab stop, Left and Right with wrap, Home and End, and the RTL key swap; Space and Enter stay each button's own. Moving `aria-pressed` stays the consumer's, as Yeti and Aria both leave it (ticket 29, finding 5; [button](button.md) usage rule 5).
@@ -49,7 +49,7 @@ A segmented control of radios keeps the platform's own keyboard and has no `yeti
 20. As an application developer, I want one `[busy]` binding to reach Aria's disabled state, so that I do not bind `aria-disabled` by hand on a member.
 21. As an application developer, I want the members' ids equal on the server and the client, so that hydration rewrites no id.
 22. As an application developer, I want the toolbar's ids to leave the ids of Material, CDK, or Aria content inside a member unchanged, so that the package changes only ids it owns.
-23. As an application developer, I want the server HTML to have exactly one reachable member per toolbar, so that the toolbar is never unreachable before Aria is live.
+23. As an application developer, I want every member reachable by Tab in the server HTML, and one Tab stop once Aria is live, so that the toolbar is never unreachable before Aria is live ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 113).
 24. As an application developer, I want hydration to log no `NG05xx` error and keep each member's final `tabindex`, so that a server-rendered toolbar stays stable.
 25. As an application developer, I want a press made before hydration to reach my handler once the app is live, so that an early toggle is not lost.
 26. As an application developer, I want an arrow key pressed before hydration and replayed to move focus once and stop at the toolbar, so that an outer widget does not handle it again.
@@ -161,7 +161,7 @@ protected readonly tabIndex = computed(() =>
 - **Same-element siblings on a member:** `yetiButton` (class and `data-*`), `yetiButtonsItem` (Aria's widget and the hand-over), and optionally an opener such as `[yetiDialogOpener]` or a tooltip trigger. `YetiButton` binds none of the attributes Aria binds ([button](button.md) section 3), so no attribute has two writers, provided the consumer follows usage rules 4 to 6.
 - **Item-less group:** a group whose content query finds no `YetiButtonsItem` (Yeti's segmented control of radios, which has `label.button` members only). Read in Aria's source: with no items, `ListFocus.isListDisabled()` is true (`NC/src/aria/private/behaviors/list-focus/list-focus.ts:62-64`, `every` over an empty list), so Aria renders the toolbar itself `tabindex="0"` and `aria-disabled="true"` (`:77-83`; `toolbar.ts:50-51`), and its `keydown` handler returns at once (`NC/src/aria/private/toolbar/toolbar.ts:202-206`), so the radios keep their native arrow keys (inferred, not measured). Decided (ticket 50 decision 112): while no member is registered, `YetiButtons` binds `role`, `tabindex`, `aria-disabled`, and `aria-orientation` to `null`, so the element renders as Yeti's plain group inside its `fieldset`; while at least one member is registered, its `role` is `toolbar` and the other three equal Aria's values, computed from the same public signals (`Toolbar.disabled()`, `Toolbar.orientation()`, and each member's `ToolbarWidget.disabled()`), so the 1.9 rule holds; the replay guard is inactive while the group is item-less.
 - **Generated ids and relationship attributes:** the members' `ng-toolbar-widget-<n>` ids only. The group references none of them. A member that is an opener renders its own relationship attributes through its own directive.
-- **Styles service:** `YetiButtons` acquires the `buttons` item file as the last statement of its constructor and releases it on destroy ([setup](setup.md); ADR 0060 point 2; ticket 50 decision 42). It does not acquire `button`: each member's `YetiButton` does.
+- **Styles service:** `YetiButtons` acquires the `buttons` item file through `injectYetiItemStyles('buttons')` as the last statement of its constructor and releases it on destroy ([setup](setup.md); ADR 0060 point 2; ticket 50 decisions 42 and 45). It does not acquire `button`: each member's `YetiButton` does.
 
 ### 4. API
 
@@ -175,10 +175,10 @@ protected readonly tabIndex = computed(() =>
 | Inputs | `gap: YetiGap \| undefined` (Yeti default `sm`); `affix: boolean`, `booleanAttribute`, default `false` | `busy: boolean`, `booleanAttribute` (Aria's), default `false` |
 | Host | static `class: 'buttons'`; static `data-ngx-yeti-item-buttons: ''`; `[attr.data-gap]`, `[attr.data-affix]`; `[attr.role]`; while item-less, `[attr.tabindex]`, `[attr.aria-disabled]`, `[attr.aria-orientation]` as section 3 says; `(keydown)` replay guard | `[attr.tabindex]` hand-over |
 | Providers | `yetiButtonsToken` with `useExisting` | `provideYetiAriaIds()` |
-| Injection | `Toolbar` (its host directive); the ADR 0060 styles service | `yetiButtonsToken` (required); `ToolbarWidget` (its host directive) |
+| Injection | `Toolbar` (its host directive); the ADR 0060 styles service, through `injectYetiItemStyles('buttons')` | `yetiButtonsToken` (required); `ToolbarWidget` (its host directive) |
 | Members read by the part | `members` (the content query) and `ariaLive`, documented as internal | none |
 | Models, outputs, methods | none | none |
-| Lifecycle | acquires `buttons` last in its constructor; releases through `DestroyRef` | none |
+| Lifecycle | `injectYetiItemStyles('buttons')` is the last statement of its constructor, so `buttons` is acquired on the server too; the release runs through `DestroyRef` (ADR 0060 point 2; [setup](setup.md); ticket 50 decisions 42 and 45) | none |
 
 No input default differs from Yeti's (ADR 0070 rule 1). A static attribute type-checks as a string literal under `strictTemplates`, so `gap="md"` compiles and `gap="medium"` does not (ADR 0070 rule 2).
 
@@ -350,7 +350,7 @@ Through `TestBed.createDirective` (map, Standing rulings, Directive testing; ADR
 - **Ids:** members get `ng-toolbar-widget-0`, `-1`, `-2` with no random infix; a CDK id consumer (`_IdGenerator.getId('cdk-test-')`) inside a member gets CDK's own id (ADR 0044's ticket-50 note).
 - **Replay guard:** an outer `keydown` listener on the host's parent sees no ArrowRight dispatched on a member; a dispatched ArrowRight whose `preventDefault` throws still moves focus and still does not reach the outer listener (building-blocks 1.12, replay-safe handlers).
 - **Required parent:** creating `YetiButtonsItem` without a `yetiButtons` ancestor throws a missing-provider error (usage rule 11).
-- **Native `disabled` on a member** (evidence for the open point): `<button yetiButton yetiButtonsItem disabled>` is recorded after the first pass, not asserted.
+- **Native `disabled` on a member** (evidence for decision 115's usage rule; [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 115): `<button yetiButton yetiButtonsItem disabled>` is recorded after the first pass, not asserted.
 - Template references `#g="yetiButtons"` and `#m="yetiButtonsItem"` resolve.
 
 ### Layer 3: node-level and SSR smoke (`npx nx test <lib>`, `buttons.ssr.spec.ts`)
@@ -373,7 +373,7 @@ Fixture-app half, built with `outputMode: 'server'`, with a `/buttons` route mar
 - the static-role toolbar is `role="toolbar"` in the server HTML and after hydration, and the one-task flip to `group` is recorded with whether a frame ran between the writes (known issue 2);
 - navigating to a route without a group removes the `buttons` link, and back re-inserts it.
 
-Testing at the floor browsers is not decided yet ([building-blocks.md](../building-blocks.md) Part 4; ADR 0014 point 7).
+Floor engines: [ticket 93](../issues/93-decide-testing-at-the-browser-floor.md) (a weekly and release-branch job; Safari 26.2 held statically).
 
 Prior art: Yeti's `example.html`, `docs.md`, and `test/browser/components/buttons.spec.js` (gap, affix overlap, lifted focus, segmented radios); ticket 29's and ticket 30's probes (`tools/probe.mjs`, `tools/probe30.mjs`) and ticket 34's observer method (`tools/probe34-buttons.mjs`), which records each write's own value; ticket 35's prototype for the id comparison; the [button](button.md) spec's stories for the members.
 
@@ -388,7 +388,6 @@ Prior art: Yeti's `example.html`, `docs.md`, and `test/browser/components/button
 - A check that each member carries `yetiButtonsItem`, that the group has a name, or that no static `role` is written. Checks belong to a later milestone (map, Milestones).
 - An input per token (ADR 0004); how the styles service counts links (ADR 0060; [setup](setup.md)).
 - Fixing Aria's server `tabindex`, random ids, or the Shift+Tab race upstream; filing needs the user's confirmation (map, AFK override).
-- Testing at the floor browsers (building-blocks Part 4).
 
 ## Further Notes
 
@@ -405,13 +404,14 @@ Prior art: Yeti's `example.html`, `docs.md`, and `test/browser/components/button
 | No consumer `id` on a member | ticket 50 decision 5 ([generated-ids](generated-ids.md)) |
 | Composition, not subclassing | map, Standing rulings, 2026-10-03; ticket 34 |
 | Replay guard on the root | building-blocks 1.9; CONTEXT.md |
-| Content query for the first member's server default | building-blocks 1.9, Ordered parts |
+| Content query that detects a member-less group for its server HTML | building-blocks 1.9, Ordered parts; ticket 50 decision 112 |
 | Item-less group renders as Yeti's plain group | Aria's source; ticket 50 decision 112 |
 | Every member a native Tab stop until Aria is live | "Aria decisions" row 27 as amended; ticket 50 decision 113 |
 | No Aria toolbar input exposed | building-blocks 1.9; ticket 50 decision 114 |
 | Part selector `button`, `a`, `input`; members disabled only through `busy` | Part 2's provisional part selectors; `toolbar-widget.ts:52-56`; ticket 50 decisions 115 and 116 |
 | Inputs `gap: YetiGap`, `affix: boolean`; unset renders nothing | ticket 26 rows 97 and 98; ADR 0005; ADR 0070 |
 | Only `YetiButtons` marks its host and acquires `buttons` | ADR 0045; ticket 50 decisions 6 and 42 |
+| `injectYetiItemStyles('buttons')` last in the constructor | [setup](setup.md); ticket 50 decisions 42 and 45 |
 | Shift+Tab race and role rewrite carried as known issues | ledger.md 2026-10-03 note; tickets 29, 30, 34 |
 | No package CSS of the item's own; A11Y-1a's rule covers A11Y-1b | ledger A11Y-1b; [button](button.md) |
 | Directive tests through `TestBed.createDirective`; fixture app with prerendered and server routes | map, Standing rulings; ADR 0014 notes; ticket 50 decision 2 |

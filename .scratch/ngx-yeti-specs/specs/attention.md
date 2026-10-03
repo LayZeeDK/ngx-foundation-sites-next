@@ -81,7 +81,7 @@ No module is replaced: Yeti has none for this item ([ADR 0040](../adr/0040-packa
 
 ### 3. Hierarchy and DI shape
 
-One item directive; no part directives, no child directive, no injection token of its own, no `hostDirectives`. No Yeti item always sits on another's element (building-blocks Part 2, "Two findings"), so the directive is written beside the host's own item directive (`yetiAlert`, `yetiBadge`, `yetiField`), never hosted by it (building-blocks 1.9). Its one injection is ADR 0060's root styles service: it acquires the `attention` item file in its constructor, on the server too, and releases it on destroy (ADR 0060 point 2). "Types only" in row 43 describes the item's own behaviour; the acquisition is what ADR 0060 adds to every directive. No generated id: the directive renders no id and no reference ([generated-ids](generated-ids.md) does not apply).
+One item directive; no part directives, no child directive, no injection token of its own, no `hostDirectives`. No Yeti item always sits on another's element (building-blocks Part 2, "Two findings"), so the directive is written beside the host's own item directive (`yetiAlert`, `yetiBadge`, `yetiField`), never hosted by it (building-blocks 1.9). Its one injection is ADR 0060's root styles service, reached by `injectYetiItemStyles('attention')` from `ngx-yeti/styles` as the last statement of its constructor ([setup](setup.md); ticket 50 decisions 42 and 45): it acquires the `attention` item file, on the server too, and releases it through `DestroyRef` on destroy (ADR 0060 point 2). "Types only" in row 43 describes the item's own behaviour; the acquisition is what ADR 0060 adds to every directive. No generated id: the directive renders no id and no reference ([generated-ids](generated-ids.md) does not apply).
 
 ### 4. API
 
@@ -161,7 +161,7 @@ None. The directive does nothing on navigation and has no fragment link. A host 
 
 ### 13. Item file
 
-`attention` (`utilities/attention/attention.css` of the consumer's Yeti build, rank 42 in Yeti's file order), acquired by every `yetiAttention` host through ADR 0060's counted link and removed once no host is connected (ADR 0060 points 2 to 4). The consumer's one line is the `setup` spec's ([ticket 38](../issues/38-spec-setup.md)): the `assets` entry for the Yeti build, plus `provideYetiStyles({ preload: ['attention'] })` where hosts are client-inserted. No other item file is acquired (ADR 0060 point 9: no cross-item rule touches this item).
+`attention` (`utilities/attention/attention.css` of the consumer's Yeti build, rank 42 in Yeti's file order), acquired by every `yetiAttention` host through ADR 0060's counted link and removed once no host is connected (ADR 0060 points 2 to 4). The consumer's one line is the `setup` spec's ([setup](setup.md)): the `assets` entry for the Yeti build, plus `provideYetiStyles({ preload: ['attention'] })` where hosts are client-inserted. No other item file is acquired (ADR 0060 point 9: no cross-item rule touches this item).
 
 ## Testing Decisions
 
@@ -173,7 +173,7 @@ Story ids (building-blocks 1.3): `attention--default` (Yeti's example: a success
 
 ### Test layer 2: browser-level tests (`npx nx test <lib>`, `attention.spec.ts`)
 
-`TestBed.createDirective(NgxYetiAttention, { tagName: 'p', bindings: [...] })` (the user's ruling "58. Specs should assume that the ngx-yeti repo is using Angular 22.2 with Angular's new [directive testing API]...", map, Standing rulings; ADR 0014's 2026-10-03 note). Cases: unset renders no `data-attention`; `''` renders none; `'shake'` renders `shake`; a signal binding moving from `shake` to `''` removes the attribute after `whenStable()`, zoneless; the class and `data-ngx-yeti-item-attention` are present in every case; `exportAs` resolves through a template reference in a test host; the directive acquires `attention` once on creation and releases it on destroy, observed through a double of ADR 0060's styles service.
+`TestBed.createDirective(NgxYetiAttention, { tagName: 'p', bindings: [...] })` (the user's ruling "58. Specs should assume that the ngx-yeti repo is using Angular 22.2 with Angular's new [directive testing API]...", map, Standing rulings; ADR 0014's 2026-10-03 note). Cases: unset renders no `data-attention`; `''` renders none; `'shake'` renders `shake`; a signal binding moving from `shake` to `''` removes the attribute after `whenStable()`, zoneless; the class and `data-ngx-yeti-item-attention` are present in every case; `exportAs` resolves through a template reference in a test host; the directive acquires `attention` on creation and releases it on destroy, observed in the DOM: `<link data-ngx-yeti-styles="attention">` is in `document.head` while the host lives and gone after destroy (the root service is unexported, so no double of it can be built).
 
 ### Test layer 3: node-level Vitest and the SSR smoke (`npx nx test <lib>`, `attention.ssr.spec.ts`)
 
@@ -196,7 +196,7 @@ Against the fixture app (`outputMode: 'server'`, one `/attention` route marked `
 - a `hydrate never` block: the host keeps its item link and plays its gesture;
 - a client-only `@defer` host, with and without `preload: ['attention']`: the gesture plays once in both, and with the preload the first frame after insertion is styled.
 
-The floor browsers are named by [ADR 0002](../adr/0002-browser-target-baseline-2025.md); which runner tests them is not yet decided (building-blocks Part 4).
+The floor browsers are named by [ADR 0002](../adr/0002-browser-target-baseline-2025.md). Floor engines: [ticket 93](../issues/93-decide-testing-at-the-browser-floor.md) (a weekly and release-branch job; Safari 26.2 held statically).
 
 ## Out of Scope
 

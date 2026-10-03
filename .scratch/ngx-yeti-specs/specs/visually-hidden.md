@@ -109,13 +109,13 @@ Module replaced: none. Yeti has no module for this item ([ADR 0040](../adr/0040-
 
 ### 3. Hierarchy and DI shape
 
-One directive, no **Part directive**, no **Injection token**, no parent discovery, no generated id, and no platform relationship attribute. The directive is written on its own element, never hosted through `hostDirectives` by another item ([building-blocks.md](../building-blocks.md) Part 2, "Two findings that hold across the matrix"). Its only injection is the item-file acquisition of [ADR 0060](../adr/0060-item-styles-are-counted-links-to-the-consumers-yeti-build.md) point 2, through the root service the `setup` spec owns (`YetiStyles` in the [style-loading prototype](../prototypes/style-loading/README.md)). That is the same for every item directive and is not a dependency of this item's own design.
+One directive, no **Part directive**, no **Injection token**, no parent discovery, no generated id, and no platform relationship attribute. The directive is written on its own element, never hosted through `hostDirectives` by another item ([building-blocks.md](../building-blocks.md) Part 2, "Two findings that hold across the matrix"). Its only injection is the item-file acquisition of [ADR 0060](../adr/0060-item-styles-are-counted-links-to-the-consumers-yeti-build.md) point 2, through the root service the [setup](setup.md) spec owns, reached by `injectYetiItemStyles('visually-hidden')` from `ngx-yeti/styles` as the last statement of the constructor (ticket 50 decisions 42 and 45), which acquires the item file on the server too and releases it through `DestroyRef`. That is the same for every item directive and is not a dependency of this item's own design.
 
 An item that uses hidden text in its markup does not host this directive and does not acquire its item file for the consumer: the consumer writes `yetiVisuallyHidden` on the span, and that directive acquires it. This covers the carousel's dots (`Y/src/components/carousel/manifest.json:16`, `:42`) and any table header cell or scroller label (`Y/src/layouts/scroller/docs.md:7`). No cross-item rule ([ADR 0060](../adr/0060-item-styles-are-counted-links-to-the-consumers-yeti-build.md) point 9) names this item.
 
 ### 4. API
 
-`YetiVisuallyHidden`, selector `[yetiVisuallyHidden]`, `exportAs: 'yetiVisuallyHidden'`, entry point `ngx-yeti/visually-hidden`. The class name does not collide with any name Yeti's `yeti.d.ts` exports, so it keeps `Yeti` ([ADR 0080](../adr/0080-yeti-prefix-ngx-yeti-runtime-names-ngxyeti-on-collision.md) point 4 lists the five that collide; `Y/bin/gen-types.js:31-32` names exported types after vocabularies, and this item has none).
+`YetiVisuallyHidden`, selector `[yetiVisuallyHidden]`, `exportAs: 'yetiVisuallyHidden'`, entry point `ngx-yeti/visually-hidden`. The class name does not collide with any name Yeti's `yeti.d.ts` exports, so it keeps `Yeti` ([ADR 0080](../adr/0080-yeti-prefix-ngx-yeti-runtime-names-ngxyeti-on-collision.md) point 4 lists the five item classes that collide, and [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 10 adds `NgxYetiPaint` as the sixth; `Y/bin/gen-types.js:31-32` names exported types after vocabularies, and this item has none).
 
 - Host: `class: 'visually-hidden'` and `'data-ngx-yeti-item-visually-hidden': ''`, both static.
 - Inputs: none. Models: none. Outputs: none. Public methods: none.
@@ -281,7 +281,7 @@ On the **Fixture app**, one route for this item rendered both with `RenderMode.P
 
 On the Storybook half, the `visually-hidden--carousel-dots` story under Tab in three engines: each dot takes focus and shows the page's focus ring on the link.
 
-Floor-browser testing follows whatever [building-blocks.md](../building-blocks.md) Part 4 adopts; the item names the floor of [ADR 0002](../adr/0002-browser-target-baseline-2025.md).
+The item names the floor of [ADR 0002](../adr/0002-browser-target-baseline-2025.md). Floor engines: [ticket 93](../issues/93-decide-testing-at-the-browser-floor.md) (a weekly and release-branch job; Safari 26.2 held statically).
 
 ## Out of Scope
 

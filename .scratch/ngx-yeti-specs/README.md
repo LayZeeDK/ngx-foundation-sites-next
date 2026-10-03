@@ -89,7 +89,7 @@ The decisions in [Decide: the open points of the specs](issues/50-decide-open-po
 | [buttons](specs/buttons.md) | A group of buttons as an Aria toolbar |
 | [card](specs/card.md) | A bordered surface with an optional stretched link |
 | [carousel](specs/carousel.md) | A scroll-snap carousel with link dots and previous and next buttons |
-| [demo](specs/demo.md) | An example preview in a sandboxed frame with its code (the only Angular component) |
+| [demo](specs/demo.md) | An example preview in a sandboxed frame with its code (one of the package's two Angular components, with `YetiFieldError`, ticket 50 decision 159) |
 | [dialog](specs/dialog.md) | A modal on native `dialog`, opened by invoker commands |
 | [dropdown](specs/dropdown.md) | A disclosure panel on `popover` |
 | [field](specs/field.md) | A form field with hint, error, and validation over Angular forms |

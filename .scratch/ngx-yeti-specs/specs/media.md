@@ -144,7 +144,7 @@ The presentational-attribute kinds (building-blocks 1.4), confirmed for this ite
 - It is written beside other directives on one element: `yetiEnter` (an arriving row), `yetiBox` (padding and a surface), `yetiBorder`. Inside, the body may carry `yetiBox`. Building-blocks 1.9 has composed items written beside each other.
 - Shared input names (building-blocks 1.4, shared vocabularies; ticket 26 grilling question 16): `width` is `YetiWidth` on `sidebar`, `scroller`, `shell`, and `demo`; `max` is `YetiWidth` on `breakout`, `center`, and `dialog`; `ratio` is `YetiRatio` on `frame`, `hero`, and `card`; `gap` is `YetiGap` on every item that has it; `align` is `YetiAlign` wherever the vocabulary is `align`; `side` is `YetiSide` on `sidebar`, `hero`, `dropdown`, and `enter` (ticket 26 rows 8, 12, 30, 53, 56, 57, 72, 74, 85, 101, 110, 114, 115, 163). So no two package directives on one element declare one input name with different types. Where two directives on one element share an input name, one static attribute or one binding feeds both and both render the one `data-*` attribute, which is what Yeti's single attribute means (ADR 0070, considered options on defaults).
 - The case that matters is `side` with `enter`: `<div yetiMedia yetiEnter="slide" side="end">` puts the figure at the end and makes the row slide in from the end edge, from one `data-side="end"` ([enter](enter.md) user story 21 and Further Notes). `enter`'s own default is `start` and the recipe's is none, and neither directive writes its default, so an unset `side` renders nothing for both (ticket 26 grilling question 3; ADR 0070 rule 1). A consumer who wants the slide to come from a side other than the figure's puts `yetiEnter` on a wrapper around the `media`, not on the `media` itself (usage rule 7).
-- The only other injection is the root styles service of ADR 0060, through which `YetiMedia` acquires and releases the item file, after anything in its constructor that can throw ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 42). That service is the [setup](../issues/38-spec-setup.md) spec's and ADR 0060's.
+- The only other injection is the root styles service of ADR 0060, through `injectYetiItemStyles('media')` from `ngx-yeti/styles` as the last statement of `YetiMedia`'s constructor, after anything there that can throw ([setup](setup.md); [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decisions 42 and 45). It acquires the item file on the server too and releases it through `DestroyRef`. That service is the [setup](setup.md) spec's and ADR 0060's.
 - Generated ids and the platform's relationship attributes: none. The recipe renders no `id` and references none, so it does not use [generated-ids](generated-ids.md).
 
 ### 4. API
@@ -159,7 +159,7 @@ The presentational-attribute kinds (building-blocks 1.4), confirmed for this ite
 | Host | static `class: 'media'`; static `data-ngx-yeti-item-media: ''`; `[attr.data-width]`, `[attr.data-ratio]`, `[attr.data-gap]`, `[attr.data-align]`, `[attr.data-max]`, and `[attr.data-side]` from the inputs, `null` when unset; `'[attr.align]': 'null'` |
 | Providers | none |
 | Models, outputs, methods | none |
-| Lifecycle | acquires the `media` item file in its constructor and releases it through `DestroyRef` (ADR 0060 point 2; building-blocks 1.9) |
+| Lifecycle | its constructor ends with `injectYetiItemStyles('media')` from `ngx-yeti/styles`, which acquires the `media` item file, on the server too, and releases it through `DestroyRef` (ADR 0060 point 2; building-blocks 1.9; [setup](setup.md); ticket 50 decisions 42 and 45) |
 
 Types come from the generated `yeti-types.ts` copy of Yeti's typings at the pin, re-exported by name (ADR 0060 point 10; building-blocks 1.3). The selector and inputs are the ones Part 2 row 19 and ticket 26 name.
 
@@ -263,7 +263,7 @@ None of its own. The recipe has no state and no transition, and Yeti's reduced-m
 - **Full hydration:** every element is claimed as is; bindings computed from the same inputs give the same values (usage rule 12); 0 style mutations (ADR 0060 point 5, measured for the mechanism).
 - **Incremental hydration (`@defer (hydrate on ...)`):** the server rendered the `media` and its link; a dehydrated host holds the link for as long as it is on the page (ADR 0060 point 4, measured for the mechanism). With no part directive, a `media` cannot be split across **Hydration boundaries**; a deferred block inside it must render its whole child, because a block's content that adds or removes a child breaks usage rule 1.
 - **`hydrate never`:** the `media` is its server HTML and stays styled while its host is connected, whatever live `media` hosts do (ADR 0060 point 4; ADR 0045). There is no Angular behaviour to lose; a bound input never changes.
-- **Client-only `@defer`:** the item file is fetched when `YetiMedia` is constructed, which can show unstyled frames (the two children stacked and the picture uncropped); the consumer closes the gap with `provideYetiStyles({ preload: ['media'] })` (ADR 0060 point 6; [setup](../issues/38-spec-setup.md)). With `yetiEnter` on the same element, the `enter` file must be present before insertion too, so both go in the preload list ([enter](enter.md) section 11).
+- **Client-only `@defer`:** the item file is fetched when `YetiMedia` is constructed, which can show unstyled frames (the two children stacked and the picture uncropped); the consumer closes the gap with `provideYetiStyles({ preload: ['media'] })` (ADR 0060 point 6; [setup](setup.md)). With `yetiEnter` on the same element, the `enter` file must be present before insertion too, so both go in the preload list ([enter](enter.md) section 11).
 - **Event replay:** the directive declares no listener, so nothing replays and it adds no `jsaction`.
 - **`withI18nSupport()`:** body text and `alt` text are translated with `i18n` and `i18n-alt` in the consumer's component. The directive adds no `i18n` block; the consumer's component needs `withI18nSupport()` to hydrate rather than re-render (ADR 0011 clause 11; building-blocks 1.11 decision 11).
 - **Zoneless:** inputs are signals and host bindings read them, so any bound input refreshes with no zone (map, Standing rulings, item 43; ADR 0070 rule 4).
@@ -287,7 +287,7 @@ None. The recipe has no navigation or fragment behaviour, so it uses neither [na
 
 ### 13. Item file
 
-`yeti-css/css/recipes/media/media.css`, one of Yeti's 49, loaded as a counted `<link>` by the root styles service of ADR 0060: acquired when the first `[yetiMedia]` is created, on the server too, inserted in Yeti's order (`Y/src/yeti.css:37`, after every layout file and before `hero.css`, through the rank table of point 3), and removed after the last host carrying `data-ngx-yeti-item-media` has left the DOM. The consumer's part is ADR 0060 point 11's setup, which the [setup](../issues/38-spec-setup.md) spec owns: Yeti's build at the Pin under `yeti-css`, the `assets` entry, the global stylesheet with the layer statement and the always-loaded group (which holds every `media` value rule and the tokens), and optionally `provideYetiStyles({ preload: ['media'] })`. The recipe adds nothing to it. Cross-item files acquired: none. `media.css` has no rule for another item, and the composed form's `sidebar`, `frame`, and `stack` files are not needed by the one-class form (`docs.md`: "a project that prefers the composed form can leave `css/recipes/media/media.css` out of a hand-built bundle"; ADR 0060 point 9).
+`yeti-css/css/recipes/media/media.css`, one of Yeti's 49, loaded as a counted `<link>` by the root styles service of ADR 0060: acquired when the first `[yetiMedia]` is created, on the server too, inserted in Yeti's order (`Y/src/yeti.css:37`, after every layout file and before `hero.css`, through the rank table of point 3), and removed after the last host carrying `data-ngx-yeti-item-media` has left the DOM. The consumer's part is ADR 0060 point 11's setup, which the [setup](setup.md) spec owns: Yeti's build at the Pin under `yeti-css`, the `assets` entry, the global stylesheet with the layer statement and the always-loaded group (which holds every `media` value rule and the tokens), and optionally `provideYetiStyles({ preload: ['media'] })`. The recipe adds nothing to it. Cross-item files acquired: none. `media.css` has no rule for another item, and the composed form's `sidebar`, `frame`, and `stack` files are not needed by the one-class form (`docs.md`: "a project that prefers the composed form can leave `css/recipes/media/media.css` out of a hand-built bundle"; ADR 0060 point 9).
 
 One order matters inside `yeti.layouts`: `.media > *` sets `margin: 0` and `.center` sets `margin-inline: auto` at equal specificity, and `media.css` comes after `center.css`, so a `center` that is a `media`'s child is not centred in full Yeti either (usage rule 9). ADR 0060 point 3 inserts links in Yeti's order whichever directive is created first, so the package's result equals full Yeti's in both load orders (read in `yeti.css`, not measured). Test layer 4 asserts it.
 
@@ -336,7 +336,7 @@ Fixture-app half, built with `outputMode: 'server'`, with a `/media` route marke
 - a `video` figure with `<source>` children counts one load across hydration (usage rule 10; ticket 50 decision 36);
 - navigating from the `media` route to a route without one removes the item link, and navigating back re-inserts it.
 
-Testing at the floor browsers is not decided yet ([building-blocks.md](../building-blocks.md) Part 4; ADR 0014 point 7).
+Floor engines: [ticket 93](../issues/93-decide-testing-at-the-browser-floor.md) (a weekly and release-branch job; Safari 26.2 held statically).
 
 Prior art: Yeti's `example.html` for the default story, its `test/browser/recipes/media.spec.js` and `test/browser/fixtures/recipes/media.html` for the geometry cases and the composed-form comparison; the [frame](frame.md) spec's `frame--optimized-image` story for `NgOptimizedImage`; the [lede](lede.md) and [breakout](breakout.md) specs' contrast assertions for A11Y-10d; ticket 18's fixture app and ADR 0060's prototype for the server HTML and the item link.
 
@@ -350,8 +350,7 @@ Prior art: Yeti's `example.html` for the default story, its `test/browser/recipe
 - A role written by the package, or any reordering of the DOM to follow `side`.
 - A viewport-keyed input or any JavaScript size read (building-blocks 1.7).
 - Package CSS for the recipe, unless an A11Y-10d contrast assertion fails.
-- How the styles service counts, inserts, and removes links (ADR 0060; the [setup](../issues/38-spec-setup.md) spec).
-- Testing at the floor browsers (building-blocks Part 4).
+- How the styles service counts, inserts, and removes links (ADR 0060; the [setup](setup.md) spec).
 
 ## Further Notes
 
@@ -367,7 +366,7 @@ Prior art: Yeti's `example.html` for the default story, its `test/browser/recipe
 | `side` shared with `enter` on one element: one value, one attribute, no default | ticket 26 grilling questions 3 and 16; ADR 0070, considered options; building-blocks 1.4 |
 | No injection token, no host directives | building-blocks 1.9; Part 2, "Two findings that hold across the matrix" |
 | Presence attribute `data-ngx-yeti-item-media`; item file as a counted link in Yeti's order | ADR 0045; ADR 0060 points 2 to 6 |
-| Acquisition after anything in the constructor that can throw | ticket 50 decision 42 |
+| `injectYetiItemStyles('media')` last in the constructor, after anything that can throw | [setup](setup.md); ticket 50 decisions 42 and 45 |
 | `exportAs`; class name with no collision | building-blocks 1.3; ADR 0080 point 4 and its 2026-10-03 note |
 | Entry point `ngx-yeti/media` | building-blocks 1.3; ADR 0011 clause 10 |
 | Native platform, level 1, types only | building-blocks 1.2; Part 2 row 19 and "Types only" with its note (ticket 50 decision 18) |
@@ -467,7 +466,7 @@ Here `side` belongs to the [sidebar](sidebar.md) and picks which child is the si
 
 Per building-blocks 1.13:
 
-1. **Item file:** `recipes/media/media.css`, loaded by `YetiMedia` as a counted link in Yeti's order (section 13). The consumer writes nothing for the recipe beyond the [setup](../issues/38-spec-setup.md) spec's one-time configuration.
+1. **Item file:** `recipes/media/media.css`, loaded by `YetiMedia` as a counted link in Yeti's order (section 13). The consumer writes nothing for the recipe beyond the [setup](setup.md) spec's one-time configuration.
 2. **Always-loaded rules relied on:** `layouts/attributes.css` maps every `data-width`, `data-max`, `data-ratio`, `data-gap`, and `data-align` value to its private property (section 1); `tokens/space.css` declares the width and space scales; `tokens/type.css` and `tokens/color.css` declare the caption's size and colour; `base/reset.css` makes an `img`, `picture`, or `video` a block with `block-size: auto`, which lets the figure's `aspect-ratio` win over an `NgOptimizedImage`'s `height` attribute; `base/media.css` styles a `figcaption` outside a `media` too.
 3. **Cross-item rules:** none in `media.css`. The tie with `center` is settled by ADR 0060 point 3's order and leaves Yeti's own result (section 13; usage rule 9). Items composed on the recipe (`enter`, `box`, `border`) load their own files through their own directives.
 4. **Tokens:** reads `--yeti-width-xs`, `--yeti-space-md`, `--yeti-space-sm`, `--yeti-text-sm`, and `--yeti-color-text-muted`, and through its values any width or space token named; writes none (section 2).

@@ -377,7 +377,7 @@ Fixture-app half, built with `outputMode: 'server'`, with a `/results` route mar
 - a row inside a client-only `@defer` block with `pagination` in the preload list shows no unstyled frame;
 - navigating to a route with no pagination removes the item link in the next animation frame, and navigating back re-inserts it.
 
-Testing at the floor browsers is not decided yet ([building-blocks.md](../building-blocks.md) Part 4; ADR 0014 point 7).
+Floor engines: [ticket 93](../issues/93-decide-testing-at-the-browser-floor.md) (a weekly and release-branch job; Safari 26.2 held statically).
 
 Prior art: Yeti's `example.html` and `docs.md` examples for the stories, and its `test/browser/components/pagination.spec.js` with the fixture `test/browser/fixtures/components/pagination.html` for the target-size, fill, compact-form, and axe cases; ticket 17's forced-colours screenshots for A11Y-1f; the [button](button.md) spec's forced-colours case for A11Y-1a, which this spec's layer-4 case follows; the [breadcrumbs](breadcrumbs.md) spec for the `aria-current` forms and the `RouterLinkActive` measurements; ticket 18's fixture app and ADR 0060's prototype for the server HTML and the item link; the [sidebar](sidebar.md) spec's probe technique for token-independent sizes.
 
@@ -392,7 +392,6 @@ Prior art: Yeti's `example.html` and `docs.md` examples for the stories, and its
 - Any check that the host has one `ol`, at least two items, exactly one `aria-current`, `rel` on Previous and Next, real URLs, or a name. Checks belong to a later milestone (map, Milestones); the usage rules state them.
 - Package CSS for the item beyond A11Y-1f's forced-colours rule (building-blocks 1.13; map, Package CSS for accessibility).
 - How the styles service counts, inserts, and removes links (ADR 0060; the [setup](setup.md) spec).
-- Testing at the floor browsers (building-blocks Part 4).
 
 ## Further Notes
 

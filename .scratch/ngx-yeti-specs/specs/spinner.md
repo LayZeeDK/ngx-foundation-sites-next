@@ -102,7 +102,7 @@ How it works, in `@layer yeti.components`: `.spinner` and `.button[aria-busy="tr
 
 The value rules for `data-variant` and `data-size` are in the **Always-loaded group** (`Y/src/layouts/attributes.css:237-254`, `:256-259`). `--yeti-spinner-duration` defaults to `0.8s` and `--yeti-spinner-width` to `0.15em` (`Y/src/tokens/components.css:52-53`). Under `prefers-reduced-motion: reduce`, `--yeti-spinner-duration` becomes `0.01ms` (`components.css:180`) and `--yeti-motion-iterations` becomes `1` (`Y/src/tokens/motion.css:28-29`): Yeti's comment explains that the component's own `infinite` would otherwise outrank the reset and "strobe" at a random phase every frame (`motion.css:8-13`). So the ring runs one 0.01 ms turn and stands still with its bright edge at the top. No item other than `button` is named by `spinner.css`, and no other item's CSS names `.spinner` (checked with `rg` over `Y/src/**/*.css`).
 
-Attributes left to the consumer (ticket 26 rows 141 and 142 map only the two `data-*` attributes; everything else is native): `role="status"`, `aria-label` (or `aria-labelledby`), and, in the form where the ring only decorates text already in a status region, `aria-hidden="true"` (section 7, open point on the form).
+Attributes left to the consumer (ticket 26 rows 141 and 142 map only the two `data-*` attributes; everything else is native): `role="status"`, `aria-label` (or `aria-labelledby`), and, in the form where the ring only decorates text already in a status region, `aria-hidden="true"` (section 7; [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 190).
 
 ### 2. Contract mapping
 
@@ -180,10 +180,10 @@ A static attribute type-checks as a string literal under `strictTemplates`, so `
 | Hue | `variant` from Yeti's nine values | `color` (M2 themes only, `:28-34`) |
 | Focus | not focusable | `tabindex="-1"` "so screen readers will read the aria-label" (`:69-71`) |
 | Reduced motion | Yeti's tokens: one 0.01 ms turn, then still | the animation slowed by 25 % (`progress-spinner.scss:60`, `progress-spinner.ts:125-126`) |
-| Forced colours | none in Yeti (section 7, open point) | the arc's stroke set to `CanvasText` under the CDK `high-contrast` mixin (`progress-spinner.scss:46-54`, `:103-105`) |
+| Forced colours | none in Yeti (section 7; ticket 50 decision 193: no rule now) | the arc's stroke set to `CanvasText` under the CDK `high-contrast` mixin (`progress-spinner.scss:46-54`, `:103-105`) |
 | `exportAs` | `yetiSpinner` | `matProgressSpinner` (`:65`) |
 
-Borrowed: nothing in the first milestone; the forced-colours technique, a `CanvasText` arc, is the model if section 7's open point adds a rule. Not borrowed: the component and its SVG (Yeti's ring is the item, building-blocks 1.10, Native elements first), `role="progressbar"` (Yeti's docs and Part 2 row 38 make the role the consumer's and name `status`), `tabindex="-1"` (a status is not focused in Yeti's model), the determinate mode (`progress` covers it), and the slowed reduced-motion animation (reduced motion is Yeti's, building-blocks 1.6 rule 4).
+Borrowed: nothing in the first milestone; the forced-colours technique, a `CanvasText` arc, is the model if the layer-4 record shows a lost bright edge (ticket 50 decision 193). Not borrowed: the component and its SVG (Yeti's ring is the item, building-blocks 1.10, Native elements first), `role="progressbar"` (Yeti's docs and Part 2 row 38 make the role the consumer's and name `status`), `tabindex="-1"` (a status is not focused in Yeti's model), the determinate mode (`progress` covers it), and the slowed reduced-motion animation (reduced motion is Yeti's, building-blocks 1.6 rule 4).
 
 ### 6. Implementation level and primitives
 
@@ -193,7 +193,7 @@ Individual transform properties (`rotate`) and `color-mix()` are the manifest's 
 
 ### 7. ARIA, keyboard, and the ledger
 
-- **APG pattern:** none (above). Yeti's form maps to role `status` with the consumer's name ("`role="status" aria-label="Loading"` → Chromium `status "Loading"`", ticket 17 section 4.17, measured in the tree). The directive adds no role, state, or property.
+- **APG pattern:** none (above). Yeti's form maps to role `status` with the consumer's name ("`role="status" aria-label="Loading"` -> Chromium `status "Loading"`", ticket 17 section 4.17, measured in the tree). The directive adds no role, state, or property.
 - **Announcement:** a `status` region is a polite live region. Whether a screen reader announces a status region inserted with a name and no text content, once, is not measured in any record (ticket 17 measured the tree, not screen readers); it is a manual release test (ADR 0015 point 7) ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 190).
 - **Keyboard and focus:** none. The host is not focusable and the directive adds no `tabindex` (building-blocks 1.10, Focus).
 - **Names:** the consumer's `aria-label` or `aria-labelledby` (usage rule 2); a decorating ring is out of the tree through the consumer's `aria-hidden` (usage rule 4).
@@ -275,7 +275,7 @@ None. The spinner has no navigation or fragment behaviour, so it uses neither [n
 
 ### 13. Item file
 
-`yeti-css/css/components/spinner/spinner.css`, one of Yeti's 49, loaded as a counted `<link>` by the root styles service of ADR 0060: acquired when the first `YetiSpinner` is created, on the server too, inserted in Yeti's order (`Y/src/yeti.css:54`, after `progress` and before `accordion`, the rank table of point 3), and removed after the live count reaches zero and no host carrying `data-ngx-yeti-item-spinner` is connected. The count is shared: `YetiButton` acquires the same item unconditionally with `button`, because the busy ring is this file's rule (ADR 0060 point 9; [button](button.md) section 13 and its open point on the unconditional acquisition). So the link stays while any `YetiButton` or `YetiSpinner` lives. A server-rendered busy button inside a `hydrate never` block carries no spinner presence attribute, which is the button spec's open point, not this one's.
+`yeti-css/css/components/spinner/spinner.css`, one of Yeti's 49, loaded as a counted `<link>` by the root styles service of ADR 0060: acquired when the first `YetiSpinner` is created, on the server too, inserted in Yeti's order (`Y/src/yeti.css:54`, after `progress` and before `accordion`, the rank table of point 3), and removed after the live count reaches zero and no host carrying `data-ngx-yeti-item-spinner` is connected. The count is shared: `YetiButton` acquires the same item unconditionally with `button`, because the busy ring is this file's rule (ADR 0060 point 9; [button](button.md) section 13; [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 109). So the link stays while any `YetiButton` or `YetiSpinner` lives. A server-rendered busy button inside a `hydrate never` block carries no spinner presence attribute, which the button spec documents and layer 4 records (ticket 50 decision 110).
 
 The consumer's part is ADR 0060 point 11's setup, which the [setup](setup.md) spec owns: Yeti's build at the Pin under `yeti-css`, the `assets` entry, the global stylesheet with the layer statement and the always-loaded group (which holds the `[data-variant]` and `[data-size]` value rules and the tokens, among them the motion tokens), the package's accessibility stylesheet, and optionally `provideYetiStyles({ preload: ['spinner'] })`. Cross-item files acquired by this item: none (`spinner.css` names `.button` for the two used together, and "those rules simply match nothing once the other part is gone", `Y/src/guides/install.md:97`).
 
@@ -289,7 +289,7 @@ Every story loads the always-loaded group and the package's accessibility styles
 
 - `spinner--default`: Yeti's example, `<p><span yetiSpinner role="status" aria-label="Loading"></span> Loading the latest posts</p>`. Asserts `class="spinner"`, `data-ngx-yeti-item-spinner`, and no `data-variant` or `data-size`; no `tabindex`, `id`, or ARIA attribute from the package (a test-host variant without the consumer's role carries no role); the host is not focusable; the computed role is `status` and the name "Loading"; the ring's width and height equal its own `font-size` within 1 px; a corner radius is not `0px`; `animation-name` is `yeti-spin` and an animation is `running`; the bright edge meets 3:1 against the surface and the visible text 4.5:1, in a light and a dark `color-scheme` wrapper (ADR 0015 point 3; ticket 50 decision 8; section 7, open point).
 - `spinner--sizes`: `sm`, `md`, `lg` in lines of matching text. Asserts each `data-size` value, each ring's width equal to its own `font-size`, the `lg` ring wider than the `md` one, and a static `size="lg"` rendering both `size="lg"` and `data-size="lg"` (the `inert` kind).
-- `spinner--variants`: the seven hued variants on the page surface and `black` and `white` on suitable paints, each with visible text. Asserts each `data-variant` value and visible text per ring (usage rule 3), and 4.5:1 for the texts in both scheme wrappers; records, without asserting, the bright edge's ratio for each (section 7, open point).
+- `spinner--variants`: the seven hued variants on the page surface and `black` and `white` on suitable paints, each with visible text. Asserts each `data-variant` value and visible text per ring (usage rule 3), and 4.5:1 for the texts in both scheme wrappers; records, without asserting, the bright edge's ratio for each (section 7; ticket 50 decision 191).
 - `spinner--inputs`: Storybook controls bind `variant` and `size`. The play function sets each, asserts the matching `data-*` value, resets it, and asserts the attribute is absent.
 - `spinner--waiting`: a consumer status region and a button-less "Load" control: pressing it inserts the spinner with `@if`; finishing removes it and writes "Loaded 12 posts" into the status region. Asserts the spinner exists only while waiting, the status region is in the DOM before and after, and its text changes to the completion message (usage rules 5 and 6).
 - `spinner--decorative`: the ring with `aria-hidden="true"` inside a consumer's `role="status"` paragraph whose text says "Loading". Asserts the ring is absent from the accessibility tree and the paragraph's computed role is `status` (usage rule 4).
@@ -318,7 +318,7 @@ Storybook half, on the layer-1 story ids:
 
 - **Reduced motion (A11Y-13):** on `spinner--default` with `emulateMedia({ reducedMotion: 'reduce' })`, `animation-duration` is at most 0.01 ms and `animation-iteration-count` is `1`; after the page has painted twice, six animation frames read the same computed `rotate` (after Yeti's test, which explains why the iteration count, not the duration, is what stops the strobe).
 - **Without the preference:** on `spinner--default`, the ring's animation is `running` and two frames 100 ms apart read different angles.
-- **Forced colours:** on `spinner--default` under `emulateMedia({ forcedColors: 'active' })` in Chromium and Firefox, record the computed block-start border colour and another edge's, and a screenshot; asserted only if section 7's open point adds a rule.
+- **Forced colours:** on `spinner--default` under `emulateMedia({ forcedColors: 'active' })` in Chromium and Firefox, record the computed block-start border colour and another edge's, and a screenshot; asserted only once a rule is added (ticket 50 decision 193).
 - **Reflow and contrast:** at a 320 px viewport no story overflows horizontally (1.4.10); `spinner--variants` repeats the visible-text contrast assertions with `emulateMedia({ colorScheme: 'light' })` and `'dark'`.
 
 Fixture-app half, built with `outputMode: 'server'`, with a `/spinner` route marked `RenderMode.Prerender` and one marked `RenderMode.Server`, each run with JavaScript on and off ([Decide: the open points of the specs](../issues/50-decide-open-points-of-the-specs.md) decision 2; ADR 0011 consequences). The route renders section 8's markup with `loading()` true on the server, and a `@defer (on idle)` block with a spinner placeholder:
@@ -329,7 +329,7 @@ Fixture-app half, built with `outputMode: 'server'`, with a `/spinner` route mar
 - a spinner inside a client-only `@defer` block with `spinner` in the preload list shows no unstyled frame;
 - navigating from the spinner route to a route with no spinner and no button removes the item link, and navigating back re-inserts it; navigating to a route with a `yetiButton` and no spinner keeps it.
 
-Testing at the floor browsers is not decided yet ([building-blocks.md](../building-blocks.md) Part 4; ADR 0014 point 7). The screen-reader announcement of an inserted status (section 7) is a manual release test (ADR 0015 point 7).
+Floor engines: [ticket 93](../issues/93-decide-testing-at-the-browser-floor.md) (a weekly and release-branch job; Safari 26.2 held statically). The screen-reader announcement of an inserted status (section 7) is a manual release test (ADR 0015 point 7).
 
 Prior art: Yeti's `example.html` and `docs.md` for the stories, and its `test/browser/components/spinner.spec.js` with the fixture `test/browser/fixtures/components/spinner.html` for the one-em ring, the running animation, the larger `lg` ring, reduced motion, and axe; the busy-button case there belongs to the [button](button.md) spec's `button--busy`; ticket 17's motion measurements (`out/behave.json`, `motion-*` keys); ticket 23's `probe.mjs` for the busy ring's dependence on `spinner.css`; the [progress](progress.md) spec's reduced-motion and indeterminate cases; ticket 18's fixture app for the `hydrate never` case; ADR 0060's prototype for the server HTML and the item link.
 
@@ -345,7 +345,6 @@ Prior art: Yeti's `example.html` and `docs.md` for the stories, and its `test/br
 - An input per token, a thickness or speed input, or a hue outside Yeti's `variant` vocabulary (ADR 0004; ADR 0070 rule 2).
 - Any check that the host is empty, that a standalone spinner has a role and name, or that it is not inside a button. Checks belong to a later milestone (map, Milestones); the usage rules state them.
 - How the styles service counts, inserts, and removes links (ADR 0060; the [setup](setup.md) spec).
-- Testing at the floor browsers (building-blocks Part 4).
 
 ## Further Notes
 

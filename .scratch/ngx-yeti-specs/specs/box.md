@@ -18,7 +18,7 @@ Two accessibility facts come with the markers. Yeti's own colour guide says that
 
 One **Item directive** and three any-element marker directives, all in the secondary entry point `ngx-yeti/box` (building-blocks Part 2 row 1; [Decide: the spec list](../issues/11-decide-spec-list.md) Q9):
 
-- `YetiBox`, selector `[yetiBox]`, `exportAs: 'yetiBox'`. It binds `box` as a static host class, sets `data-ngx-yeti-item-box` on its host, acquires the `box` item file when it is created (on the server too) and releases it when it is destroyed ([ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md); ADR 0060 point 2). It has four inputs, `gap`, `gapInline`, `gapBlock` (`YetiGap`) and `surface` (`YetiSurface`), each bound as its `data-*` attribute and rendering nothing when unset.
+- `YetiBox`, selector `[yetiBox]`, `exportAs: 'yetiBox'`. It binds `box` as a static host class, sets `data-ngx-yeti-item-box` on its host, acquires the `box` item file when it is created (on the server too) and releases it when it is destroyed ([ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md); ADR 0060 point 2), through `injectYetiItemStyles('box')` from `ngx-yeti/styles` as the last statement of its constructor ([setup](setup.md); ticket 50 decisions 42 and 45). It has four inputs, `gap`, `gapInline`, `gapBlock` (`YetiGap`) and `surface` (`YetiSurface`), each bound as its `data-*` attribute and rendering nothing when unset.
 - `YetiBorder`, selector `[yetiBorder]`, `exportAs: 'yetiBorder'`, input `yetiBorder` (`boolean`, `booleanAttribute`): `<div yetiBorder>` renders `data-border`.
 - `NgxYetiPaint`, selector `[yetiPaint]`, `exportAs: 'yetiPaint'`, required input `yetiPaint` (`YetiPaint`): `<section yetiPaint="primary">` renders `data-paint="primary"`. Its class takes `NgxYeti` because Yeti's typings export a type named `YetiPaint` (ADR 0080 point 4, section 4).
 - `YetiText`, selector `[yetiText]`, `exportAs: 'yetiText'`, required input `yetiText` (`YetiPaint`): `<p yetiText="grey-70">` renders `data-text="grey-70"`.
@@ -132,7 +132,7 @@ No input name lowercases to an HTML attribute (`gap`, `gapinline`, `gapblock`, `
 
 None. The four directives are standalone. None provides an **Injection token**, injects a parent, hosts a directive, or is hosted: no Yeti item always sits on another item's element (Part 2, "Two findings that hold across the matrix"). They are written beside each other on one element (`<section yetiBox yetiBorder yetiPaint="primary">`), and beside other items (`<div yetiCenter yetiBox>`, `<section yetiSeam yetiBox>` for a band whose padding keeps a child's focus ring inside the seam's clip ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 189; architecture-guide P6), Yeti's `center box`), as building-blocks 1.9 has composed items. Two directives that declare the same input name share its type: `gap` is `YetiGap` on `yetiBox` and on every other layout that reads the vocabulary, so one binding feeds both and both render the one `data-gap` Yeti means (building-blocks 1.4, shared vocabularies; ticket 26 Q16). The marker inputs are selector-named, so no other directive's input on the element receives their value (ADR 0070, considered options).
 
-The only injection is `YetiBox`'s use of the root styles service of ADR 0060, through which it acquires and releases the `box` item file. That service is the [setup](../issues/38-spec-setup.md) spec's (`provideYetiStyles()`) and ADR 0060's. The marker directives inject nothing.
+The only injection is `YetiBox`'s use of the root styles service of ADR 0060, through `injectYetiItemStyles('box')` from `ngx-yeti/styles` ([setup](setup.md); ticket 50 decisions 42 and 45), which acquires and releases the `box` item file. That service is the [setup](setup.md) spec's (`provideYetiStyles()`) and ADR 0060's. The marker directives inject nothing.
 
 Generated ids and the platform's relationship attributes: none. Nothing here renders or references an `id`, so the item does not use [generated-ids](generated-ids.md).
 
@@ -147,7 +147,7 @@ Generated ids and the platform's relationship attributes: none. Nothing here ren
 | Host | `class: 'box'`; `'data-ngx-yeti-item-box': ''` (static); `[attr.data-gap]`, `[attr.data-gap-inline]`, `[attr.data-gap-block]`, `[attr.data-surface]` from the inputs, `null` when unset |
 | Inputs | `gap`, `gapInline`, `gapBlock`: `YetiGap \| undefined`; `surface`: `YetiSurface \| undefined`; all default `undefined` (ADR 0070 rule 1). Yeti's default for `data-gap` is `md` and applies from its CSS |
 | Models, outputs, methods | none |
-| Lifecycle | acquires `box` in its constructor and releases it on destroy, through `DestroyRef` (ADR 0060 point 2; building-blocks 1.9) |
+| Lifecycle | `injectYetiItemStyles('box')` is the last statement of its constructor, after anything there that can throw (nothing does today); it acquires `box`, on the server too, and releases it on destroy, through `DestroyRef` (ADR 0060 point 2; building-blocks 1.9; [setup](setup.md); ticket 50 decisions 42 and 45) |
 
 **`YetiBorder`**, **`NgxYetiPaint`**, **`YetiText`**
 
@@ -168,7 +168,7 @@ Why the two colour inputs are required: ticket 26 rows 6 and 7 type them "(requi
 2. A box adds no semantics. Use a `section` or `article` when the content is one, as Yeti's manifest says (`a11y.notes`); the directive changes no element.
 3. Do not put `yetiBorder` on a `table[yetiTable]`. Yeti's border marker skips `.table`, and the table's own `data-border` means cell borders; use the table's `border` input (ticket 26 Q16; `attributes.css:462-465`).
 4. Do not put text on `yetiPaint="grey-40"`, `"grey-50"`, or `"grey-60"`. Yeti: "The middle steps, `grey-40` to `grey-60`, suit a fill more than a block of text: no text color reaches full contrast on them" (`Y/src/guides/color.md:80`). Use them for fills without text (ADR 0015 point 4).
-5. A `yetiText` colour must reach 4.5:1 (3:1 for large text) against the background it sits on. The package cannot read the background, so this is the author's (ADR 0015 point 4). A `yetiText` value on a painted element replaces the colour Yeti chose for that background.
+5. A `yetiText` colour must reach 4.5:1, at any text size (ticket 50 decision 8), against the background it sits on. The package cannot read the background, so this is the author's (ADR 0015 point 4). A `yetiText` value on a painted element replaces the colour Yeti chose for that background.
 6. Inside a painted element, a link that carries any class keeps its own colour, because Yeti's inheritance rule matches only `a:not([class])` (`attributes.css:450-451`). A package directive that binds a class on a link (`yetiButton`) keeps its own colours by design; a link with an **Application class** inside a band takes `yetiText` to stay readable.
 7. Import each directive in every component whose template writes its attribute. A **Forgotten import** of `YetiBox` or `YetiBorder` with no bound input renders the bare element with no error; a bound input, or `yetiPaint` and `yetiText` with their required input, makes the compiler report it (building-blocks 1.9).
 
@@ -238,7 +238,7 @@ None. The box and the markers have no state and no transition, and Yeti's reduce
 - **Full hydration:** each element is claimed as is; the bindings compute the same values; 0 style mutations (ADR 0060 point 5, measured for the mechanism).
 - **Incremental hydration (`@defer (hydrate on ...)`):** the server rendered the box, its markers, and the link; a dehydrated host holds the link through its `data-ngx-yeti-item-box` for as long as it is on the page (ADR 0060 point 4; ADR 0045). An input bound to state changes only after the block hydrates.
 - **`hydrate never`:** the box is its server HTML and stays styled while the host is connected, whatever live boxes do (ADR 0060 point 4; ADR 0045). The markers' rules are always loaded, so they need nothing. There is no behaviour to lose; bound values stay at their server values.
-- **Client-only `@defer`:** `YetiBox` fetches the item file when it is constructed, which can show unpadded frames; the consumer closes the gap with `provideYetiStyles({ preload: ['box'] })` (ADR 0060 point 6; [setup](../issues/38-spec-setup.md)). The markers render styled at once.
+- **Client-only `@defer`:** `YetiBox` fetches the item file when it is constructed, which can show unpadded frames; the consumer closes the gap with `provideYetiStyles({ preload: ['box'] })` (ADR 0060 point 6; [setup](setup.md)). The markers render styled at once.
 - **Event replay:** no directive declares a listener, so nothing replays and no `jsaction` is added.
 - **`withI18nSupport()`:** content inside a box is the consumer's and usually carries `i18n`; the directives add no `i18n` block. The consumer's component needs `withI18nSupport()` to hydrate rather than re-render (ADR 0011 clause 11; building-blocks 1.11 decision 11).
 - **Zoneless:** every value is an `input()` signal read by a host binding, the form ticket 18 measured refreshing zoneless (ADR 0070 rule 4; map, Standing rulings, item 43).
@@ -262,7 +262,7 @@ None. The item has no navigation or fragment behaviour, so it uses neither [navi
 
 ### 13. Item file
 
-`yeti-css/css/layouts/box/box.css`, one of Yeti's 49, loaded as a counted `<link>` by the root styles service of ADR 0060: acquired when the first `[yetiBox]` is created, on the server too, inserted in Yeti's order (`Y/src/yeti.css:29`, the rank table of point 3), and removed after the last `[data-ngx-yeti-item-box]` host has left the DOM. The consumer's part is ADR 0060 point 11's setup, which the [setup](../issues/38-spec-setup.md) spec owns, optionally with `provideYetiStyles({ preload: ['box'] })`. Cross-item files acquired: none (`box.css` has no cross-item rule; ADR 0060 point 9).
+`yeti-css/css/layouts/box/box.css`, one of Yeti's 49, loaded as a counted `<link>` by the root styles service of ADR 0060: acquired when the first `[yetiBox]` is created, on the server too, inserted in Yeti's order (`Y/src/yeti.css:29`, the rank table of point 3), and removed after the last `[data-ngx-yeti-item-box]` host has left the DOM. The consumer's part is ADR 0060 point 11's setup, which the [setup](setup.md) spec owns, optionally with `provideYetiStyles({ preload: ['box'] })`. Cross-item files acquired: none (`box.css` has no cross-item rule; ADR 0060 point 9).
 
 The marker directives acquire no item file: their rules are in `layouts/attributes.css`, part of the always-loaded group the consumer's global stylesheet carries (Part 2 row 1; ticket 11 row 1, whose "part file" is the **Item file**). They also set no `data-ngx-yeti-item-*` attribute, because ADR 0045 gives one to "each item directive" and a marker directive is not one (ticket 26 Q10: "the marker is not an item"); a marker on a page with no box keeps no `box.css` loaded.
 
@@ -314,7 +314,7 @@ On the fixture app, built with `outputMode: 'server'`, with a `/box` route marke
 - with `emulateMedia({ forcedColors: 'active' })` a `yetiBorder` box keeps a visible border (computed `border-style` not `none`), recorded as behaviour, not as a ledger assertion;
 - printed with `page.pdf()` in Chromium, a painted band keeps `print-color-adjust: exact` (Yeti's rule, asserted from computed style).
 
-Testing at the floor browsers is not decided yet ([building-blocks.md](../building-blocks.md) Part 4; ADR 0014 point 7).
+Floor engines: [ticket 93](../issues/93-decide-testing-at-the-browser-floor.md) (a weekly and release-branch job; Safari 26.2 held statically).
 
 Prior art: Yeti's `example.html` and the colour guide's paint examples (`Y/src/guides/color.md`) for the stories; ticket 18's fixture app and ADR 0060's prototype for the server HTML and the item link; ticket 17's contrast harness for the formula; the [lede](lede.md) spec's probe pattern.
 
@@ -322,12 +322,11 @@ Prior art: Yeti's `example.html` and the colour guide's paint examples (`Y/src/g
 
 - An input per token, a padding or colour input beyond Yeti's attributes, or a theme (ADR 0004).
 - Corner radius, elevation, or any look Yeti gives the `card` instead (`docs.md`).
-- Package CSS for the middle greys or for forced colours, unless an open point decides otherwise.
+- Package CSS for the middle greys or for forced colours: none; the greys are ledger row A11Y-21's usage rules and ratio assertions ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decisions 29 and 30).
 - A check that a `yetiText` colour reads on its background, that `yetiBorder` is not on a table, or that a box with content is a sectioning element. Checks belong to a later milestone (map, Milestones); the usage rules state them.
 - `data-show` and `data-hide` (the `container` spec) and `data-numeric` (the `table` spec), the other any-element markers.
 - The 2 px overflow of `center` with a border, A11Y-9, owned by the `center` spec.
-- How the styles service counts, inserts, and removes links (ADR 0060; the [setup](../issues/38-spec-setup.md) spec).
-- Testing at the floor browsers (building-blocks Part 4).
+- How the styles service counts, inserts, and removes links (ADR 0060; the [setup](setup.md) spec).
 
 ## Further Notes
 
@@ -345,6 +344,7 @@ Prior art: Yeti's `example.html` and the colour guide's paint examples (`Y/src/g
 | `exportAs` on all four; entry point `ngx-yeti/box` | building-blocks 1.3; ADR 0011 clause 10 |
 | Native platform, level 1, types only | building-blocks 1.2; Part 2 row 1 |
 | Item file as a counted link; presence attribute `data-ngx-yeti-item-box` on the box only | ADR 0060 points 2 to 6; ADR 0045 |
+| `injectYetiItemStyles('box')` last in the constructor | [setup](setup.md); ticket 50 decisions 42 and 45 |
 | Markers load no item file and set no item attribute | Part 2 row 1; ticket 11 row 1; ADR 0045 ("each item directive") |
 | `yetiBorder` not on a table | ticket 26 Q16 |
 | Contrast asserted in play functions; middle greys only in an anti-pattern story | ADR 0015 points 2 to 4 |
@@ -408,7 +408,7 @@ A page whose box renders inside a client-only `@defer` block preloads the item: 
 
 Per building-blocks 1.13:
 
-1. **Item file:** `layouts/box/box.css`, loaded by `YetiBox` as a counted link (section 13). The marker directives load none. The consumer writes nothing for the box beyond the [setup](../issues/38-spec-setup.md) spec's one-time configuration.
+1. **Item file:** `layouts/box/box.css`, loaded by `YetiBox` as a counted link (section 13). The marker directives load none. The consumer writes nothing for the box beyond the [setup](setup.md) spec's one-time configuration.
 2. **Always-loaded rules relied on:** `layouts/attributes.css` maps every `data-gap`, `data-gap-inline`, and `data-gap-block` value (`:5-109`) and holds all three markers' rules (`:403-466`); `tokens/space.css`, `tokens/color.css`, and `tokens/surface.css` declare the space stops, the surfaces, the paint colours, and the border width.
 3. **Cross-item rules:** none in `box.css`. In `attributes.css`, `[data-border]` skips `.table`, and `table.css` gives a table's own `data-border` cell borders (usage rule 3).
 4. **Tokens:** reads the manifest's four and the markers' colour and border tokens, writes none (section 2).

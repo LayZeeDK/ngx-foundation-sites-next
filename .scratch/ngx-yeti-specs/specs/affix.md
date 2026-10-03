@@ -126,7 +126,7 @@ Attributes left to the consumer: none to map (ticket 26 has no `affix` row). The
 - One item directive. No part directive, no provider, no injection token, and no `hostDirectives`. No Yeti item always sits on another's element, and `affix > .button` is a nested element, written inside, never on the same element (Part 2, "Two findings that hold across the matrix"; `affix/manifest.json:36`).
 - Composition with `field`: the consumer writes `<div yetiAffix>` as the direct child of a `yetiField` host, where Yeti's field manifest puts `> .affix` ("The control slot as an affix", `field/manifest.json:62-65`). `YetiAffix` reads nothing from the field and the field reads nothing from it; Yeti's CSS relates the two (`field.css:189-190`, and the private size tokens above). Whether the field's control directive finds a control nested inside an affix is the field spec's (Part 2 row 33; [Spec: field](../issues/83-spec-field.md)).
 - Composition with `button`: each button attachment carries `yetiButton`, which binds `.button` and acquires the `button` item file through its own directive. `affix.css`'s `.affix > .button` rule only adds the radius, so the affix acquires no other item file (ADR 0060 point 9).
-- The only injection is the root styles service of ADR 0060, through which `YetiAffix` acquires and releases the item file ([setup](setup.md)).
+- The only injection is the root styles service of ADR 0060, reached by `injectYetiItemStyles('affix')` from `ngx-yeti/styles` as the last statement of the constructor ([setup](setup.md); ticket 50 decisions 42 and 45), through which `YetiAffix` acquires and releases the item file ([setup](setup.md)).
 - Generated ids and the platform's relationship attributes: none. The `span`'s id that a meaningful prefix needs is the consumer's: "`_IdGenerator` not used here (the consumer's id does the job)" (Part 2 row 22), so the item does not use [generated-ids](generated-ids.md). Ticket 17's suggestion of `_IdGenerator.getId` for that id ([research](../research/yeti-accessibility-and-standards.md) section 4.2) was not adopted by row 22.
 - `aria-describedby` ownership (ticket 25 grilling question 11, Triage row "decided (affix: the consumer's)"): the affix has no directive on the control, because a package control directive there would collide with the field's control directive, which owns `aria-describedby` on the same input (building-blocks 1.4, "two package directives on one element"). How the consumer's prefix id and the field's hint and error ids meet on one control is usage rule 3 ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 46).
 
@@ -141,8 +141,8 @@ Attributes left to the consumer: none to map (ticket 26 has no `affix` row). The
 | Inputs, models, outputs, methods, listeners | none |
 | Host | static `class: 'affix'`; static `data-ngx-yeti-item-affix: ''` |
 | Providers | none |
-| Injection | the ADR 0060 styles service only |
-| Lifecycle | acquires the `affix` item file as the last statement of its constructor, after anything there that can throw (nothing does today), and releases it through `DestroyRef` (ADR 0060 point 2; ticket 50 decisions 18 and 42; [setup](setup.md)'s item-file helper) |
+| Injection | the ADR 0060 styles service, through `injectYetiItemStyles('affix')` only |
+| Lifecycle | acquires the `affix` item file with `injectYetiItemStyles('affix')` as the last statement of its constructor, after anything there that can throw (nothing does today), and releases it through `DestroyRef` (ADR 0060 point 2; ticket 50 decisions 18 and 42; [setup](setup.md)'s item-file helper) |
 
 **Usage rules** (numbered here and in the directive's JSDoc; the first milestone reports no breach, map, Milestones):
 
@@ -223,9 +223,9 @@ None of the item's. The only transition inside the row is the field's border-col
 
 ### 10. Rendering modes
 
-- **Server output and first paint:** the static class and presence attribute and the item link in `<head>` (section 8). Everything at first paint is a static host binding (ADR 0011 clause 1). Nothing is **Pre-hydration state**: the item has no attribute that a person or a module changes. What a person changes before hydration is the controls' own values, which Angular's forms own and hydration leaves in place.
+- **Server output and first paint:** the static class and presence attribute and the item link in `<head>` (section 8). Everything at first paint is a static host binding (ADR 0011 clause 1). Nothing is **Pre-hydration state**: the item has no attribute that a person or a module changes. What a person changes before hydration is the controls' own values, which Angular's forms own: hydration's first forms update clears them, and only a control inside a package field keeps them, through `YetiFieldControl`'s adoption before hydration ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 161; ledger A11Y-28). An affix control outside a package field is not covered.
 - **Before hydration:** the directive creates no node, reads no layout, starts no timer or observer, and touches no `window`, `history`, or `location` (ADR 0011 clauses 1 and 4). Its only constructor work is the item acquisition, which ADR 0060 runs on the server too.
-- **Full hydration:** the host is claimed as it is; 0 style mutations (ADR 0060 point 5, measured for the mechanism). Typing into a control before hydration is kept: the value is the control's, and the directive binds nothing on it.
+- **Full hydration:** the host is claimed as it is; 0 style mutations (ADR 0060 point 5, measured for the mechanism). Typing into a control before hydration is kept only where the control is a package field's `YetiFieldControl`, which adopts the value (decision 161; A11Y-28); the affix directive binds nothing on it.
 - **Incremental hydration (`@defer (hydrate on ...)`):** the server rendered the row and its link; a dehydrated host holds the link for as long as it is on the page (ADR 0060 point 4, measured for the mechanism). The controls work while dehydrated, because they are native.
 - **`hydrate never`:** the row is its server HTML and stays joined while its host is connected, whatever live affixes do (ADR 0060 point 4; ADR 0045). The controls and buttons keep their native behaviour; a button's Angular click handler, if the consumer wrote one, never runs, which is the button's and the consumer's concern.
 - **Client-only `@defer`:** the item file is fetched when `YetiAffix` is constructed, which can show unstyled frames (members unjoined, double seams, a plain-text `span`); the consumer closes the gap with `provideYetiStyles({ preload: ['affix'] })` (ADR 0060 point 6; [setup](setup.md)). A field around it needs `field` in the same list.
@@ -295,11 +295,11 @@ Fixture-app half, built with `outputMode: 'server'`, with an `/affix` route mark
 
 - hydration logs no `NG05xx` and `componentsSkippedHydration === 0`;
 - with JavaScript disabled, the members' positions equal those with JavaScript on at the same width, a value can be typed into each control and an option chosen, and `@axe-core/playwright` with the six tags reports no violation;
-- a value typed into the price input before hydration (with `main.js` held back) is still there after hydration;
+- a value typed into the price input, a package field's `YetiFieldControl`, before hydration (with `main.js` held back) is still there after hydration (decision 161; A11Y-28);
 - an affix inside a client-only `@defer` block with `affix` and `field` in the preload list shows no unstyled frame; an affix inside a `hydrate never` block keeps its link after every live affix on the page is removed;
 - navigating from the affix route to a route without one removes the item link, and navigating back re-inserts it.
 
-Testing at the floor browsers is not decided yet ([building-blocks.md](../building-blocks.md) Part 4; ADR 0014 point 7).
+Floor engines: [ticket 93](../issues/93-decide-testing-at-the-browser-floor.md) (a weekly and release-branch job; Safari 26.2 held statically).
 
 Prior art: Yeti's `example.html` and `docs.md` examples for the stories, and its `test/browser/components/affix.spec.js` with the fixture `test/browser/fixtures/components/affix.html` for the geometry, size, contrast, and two-control cases and axe; ticket 29's affixed-`buttons` measurement for the lift; ticket 18's fixture app and ADR 0060's prototype for the server HTML and the item link; the [sidebar](sidebar.md) spec for a types-only item's layer-2 and layer-3 cases.
 
@@ -314,7 +314,6 @@ Prior art: Yeti's `example.html` and `docs.md` examples for the stories, and its
 - The button's own contract, busy state, and its `spinner` acquisition: the [button](../issues/76-spec-button.md) spec's.
 - A row of buttons joined the same way: that is `buttons` with `affix` (Part 2 row 27; `docs.md`, "When to use it"), the [buttons](../issues/77-spec-buttons.md) spec's.
 - How the styles service counts, inserts, and removes links (ADR 0060; the [setup](setup.md) spec).
-- Testing at the floor browsers (building-blocks Part 4).
 
 ## Further Notes
 

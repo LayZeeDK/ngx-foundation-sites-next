@@ -351,7 +351,7 @@ Fixture-app half, built with `outputMode: 'server'`, with an `/accordion` route 
 
 **Engine accessibility tree, outside the four layers.** Playwright 1.63 has no engine accessibility API, and `ariaSnapshot` is Playwright's own computation (ticket 30). So the check that the heading survives on an opened row in the engines' own trees is a recorded check run on each **Pin move** and on each Angular or browser-floor change, after ticket 30's method: Chromium's tree over CDP and Firefox's over Windows UI Automation (headed), on `accordion--default` with the first row opened by a click. It passes when every summary, the opened one included, exposes an expandable control with a heading child. Ticket 30 measured this for `h3` (Firefox UIA: "overskrift" on the opened row) and measured the loss for `span[role=heading]` (Firefox UIA: "tekst" on the clicked-open row, two runs). WebKit's tree could not be inspected on Windows and no screen reader was run; both stay recorded gaps.
 
-Testing at the floor browsers is not decided yet ([building-blocks.md](../building-blocks.md) Part 4; ADR 0014 point 7).
+Floor engines: [ticket 93](../issues/93-decide-testing-at-the-browser-floor.md) (a weekly and release-branch job; Safari 26.2 held statically).
 
 ## Out of Scope
 
@@ -365,7 +365,6 @@ Testing at the floor browsers is not decided yet ([building-blocks.md](../buildi
 - Any check that the host holds `details`, that each `summary` holds a heading, or that a `name` is unique. Checks belong to a later milestone (map, Milestones); the usage rules state them.
 - Package CSS beyond the one heading rule, including a forced-colours rule ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decisions 95 and 99).
 - How the styles service counts, inserts, and removes links (ADR 0060; [setup](setup.md)).
-- Testing at the floor browsers (building-blocks Part 4).
 
 ## Further Notes
 

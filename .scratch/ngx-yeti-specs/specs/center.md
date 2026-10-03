@@ -26,7 +26,7 @@ One **Item directive**, `YetiCenter`, with selector `[yetiCenter]`, in the secon
 
 Everything else is Yeti's CSS and the platform: `max-inline-size`, automatic inline margins, gutters as `padding-inline`, and an explicit inline size so a center inside a `stack` (a flex column) still fills its container (`Y/src/layouts/center/center.css:6-15`). The center renders the same on the server, before hydration, with JavaScript off, and inside any `@defer` or hydrate block, because everything it renders is a static class, a static presence attribute, and three attributes bound from inputs.
 
-A center composes with `box` on one element by writing both directives (`<main yetiCenter yetiBox>`), as Yeti's example composes the two classes ([architecture-guide.md](../architecture-guide.md) P6). One composition from Yeti's example, a border on the center's own element, overflows at 320 px; section 7 and the ticket's `### Open` say what the package does about it.
+A center composes with `box` on one element by writing both directives (`<main yetiCenter yetiBox>`), as Yeti's example composes the two classes ([architecture-guide.md](../architecture-guide.md) P6). One composition from Yeti's example, a border on the center's own element, overflows at 320 px; section 7 says what the package does about it ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 32).
 
 ## User Stories
 
@@ -121,7 +121,7 @@ None. `YetiCenter` is a standalone item directive. It provides no injection toke
 
 On a `yetiCenter yetiBox` element both directives declare a `gap` input for the one `data-gap` attribute. One binding feeds both inputs and both render the same value, which is what Yeti's single attribute means: the center's gutter and the box's padding come from the same gap (ticket 26, decision 16; ADR 0070's Considered options). Neither directive invents a default, so the two never disagree. The box's `data-border` marker is the any-element directive `[yetiBorder]` (ticket 26 row 5), written beside both.
 
-The only injection is the root styles service of ADR 0060, through which the directive acquires and releases the `center` item file. That service is the [setup](../issues/38-spec-setup.md) spec's (`provideYetiStyles()`) and ADR 0060's.
+The only injection is the root styles service of ADR 0060, reached by `injectYetiItemStyles('center')` from `ngx-yeti/styles` as the last statement of the constructor ([setup](setup.md); ticket 50 decisions 42 and 45), through which the directive acquires and releases the `center` item file. That service is the [setup](setup.md) spec's (`provideYetiStyles()`) and ADR 0060's.
 
 Generated ids and the platform's relationship attributes: none. The center renders no `id` and references none, so it does not use [generated-ids](generated-ids.md).
 
@@ -141,7 +141,7 @@ Generated ids and the platform's relationship attributes: none. The center rende
 | `gap` | `input()` | `YetiGap \| undefined` | `undefined` | shared with `yetiBox` on one element (section 3) |
 | `intrinsic` | `input()` with `booleanAttribute` | `boolean` | `false` | |
 
-No models, outputs, or methods. Lifecycle: acquires the `center` item file in its constructor and releases it on destroy, through `DestroyRef` (ADR 0060 point 2; building-blocks 1.9).
+No models, outputs, or methods. Lifecycle: acquires the `center` item file, on the server too, with `injectYetiItemStyles('center')` as the last statement of its constructor (ticket 50 decisions 42 and 45) and releases it on destroy, through `DestroyRef` (ADR 0060 point 2; building-blocks 1.9).
 
 **Usage rules** (numbered here and in the directive's JSDoc; the first milestone reports no breach, map, Milestones):
 
@@ -183,11 +183,11 @@ WCAG 2.2 AA criteria the item touches, and how each is met:
 
 **Ledger row A11Y-9: the cause, traced.** Below its maximum a center's content box is the container's width less two gutters, and it is `content-box`, so its padding brings it back to exactly the container's width (`center.css:5`, `:12`, `:15`). Anything else on the inline axis is added on top:
 
-- **A border.** `[data-border]` draws `--yeti-border-width` (1px at the pin, `Y/src/tokens/surface.css:5`) on every side of any element (`Y/src/layouts/attributes.css:465`). On a center it adds twice the border width. On Yeti's example at 320 px: 320 px less two gutters, plus two gutters, plus 2 × 1 px = 322 px, which is the `scrollWidth` ticket 17 measured. So the cause is Yeti's CSS, read and matching the measured number (the arithmetic was not re-run in a browser).
+- **A border.** `[data-border]` draws `--yeti-border-width` (1px at the pin, `Y/src/tokens/surface.css:5`) on every side of any element (`Y/src/layouts/attributes.css:465`). On a center it adds twice the border width. On Yeti's example at 320 px: 320 px less two gutters, plus two gutters, plus 2 x 1 px = 322 px, which is the `scrollWidth` ticket 17 measured. So the cause is Yeti's CSS, read and matching the measured number (the arithmetic was not re-run in a browser).
 - **The box's inline padding.** `.box[data-gap-inline]` (`Y/src/layouts/box/box.css:8`) has a higher specificity than `.center`, so on a `center box` element it replaces the center's inline padding while the center's width still subtracts its own gutters. A `gapInline` larger than the gap overflows by the difference on each side (read, inferred; not measured).
 - **Not affected:** `intrinsic`, whose `fit-content` width is computed from the space left after padding and border (read, inferred), and a plain `center box` with no border, whose padding the center's own `padding-inline` overrides on the inline axis (`box.css` comes before `center.css` in `Y/src/yeti.css:29-30`, and ADR 0060 point 3 keeps that order).
 
-The ledger row's **What the package adds** column reads "Undecided until the spec traces the cause: if it is Yeti's CSS, one rule in `@layer ngx-yeti` or an upstream fix (the user's confirmation to file)". It is Yeti's CSS. The package adds usage rule 3, the anti-pattern story, and the layer-4 `scrollWidth` assertion, and no package CSS ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 32, option C). No upstream report is drafted now; filing would need the user's confirmation in any case. A package rule with a sizing keyword (option A2) is adopted later only if a layer-4 measurement passes in all three engines, and then usage rule 3 is relaxed. The orchestrator updates the ledger row; this spec does not edit it.
+The ledger row's **What the package adds** column, which first read "Undecided until the spec traces the cause", now records decision 32: the cause is Yeti's CSS. The package adds usage rule 3, the anti-pattern story, and the layer-4 `scrollWidth` assertion, and no package CSS ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 32, option C). No upstream report is drafted now; filing would need the user's confirmation in any case. A package rule with a sizing keyword (option A2) is adopted later only if a layer-4 measurement passes in all three engines, and then usage rule 3 is relaxed. The ledger row records this (decision 32).
 
 No new ledger row: the center adds no feature Yeti lacks.
 
@@ -219,7 +219,7 @@ None. The center has no state and no transition. Yeti's reduced-motion handling 
 - **Full hydration:** the element is claimed as is; the input bindings write the values the server wrote; 0 style mutations (ADR 0060 point 5, measured for the mechanism).
 - **Incremental hydration (`@defer (hydrate on ...)`):** the server rendered the center and its link; a dehydrated host holds the link through its presence attribute for as long as it is on the page (ADR 0060 point 4; ADR 0045).
 - **`hydrate never`:** the center is its server HTML and stays styled while the host is connected, whatever live centers do (ADR 0060 point 4; ADR 0045). Its inputs never change there, which loses nothing: the server rendered their values.
-- **Client-only `@defer`:** the item file is fetched when the directive is constructed, which can show frames at full width; the consumer closes the gap with `provideYetiStyles({ preload: ['center'] })` (ADR 0060 point 6; [setup](../issues/38-spec-setup.md)).
+- **Client-only `@defer`:** the item file is fetched when the directive is constructed, which can show frames at full width; the consumer closes the gap with `provideYetiStyles({ preload: ['center'] })` (ADR 0060 point 6; [setup](setup.md)).
 - **Event replay:** the directive declares no listener, so nothing replays and no `jsaction` is added to the center.
 - **`withI18nSupport()`:** a center's content is usually translated with `i18n` in the consumer's component. The directive adds no `i18n` block of its own; the consumer's component needs `withI18nSupport()` to hydrate rather than re-render (ADR 0011 clause 11; building-blocks 1.11 decision 11).
 - **Zoneless:** the three inputs are `input()` signals read by host bindings, so a changed binding refreshes the attribute zoneless (ADR 0070 rule 4; map, Standing rulings, item 43).
@@ -243,7 +243,7 @@ None. The center has no navigation or fragment behaviour, so it uses neither [na
 
 ### 13. Item file
 
-`yeti-css/css/layouts/center/center.css`, one of Yeti's 49, loaded as a counted `<link>` by the root styles service of ADR 0060: acquired when the first `[yetiCenter]` is created, on the server too, inserted in Yeti's order (`Y/src/yeti.css:30`, after `box` at `:29` and `stack` at `:20`, before the rest of the layouts; the rank table of point 3), and removed after the last host has left the DOM. That order gives full Yeti's result in the ties with `.stack > * { margin: 0 }` and `.shell > * { margin: 0 }` (`Y/src/layouts/stack/stack.css:12`, `Y/src/recipes/shell/shell.css:13`), the ties building-blocks 1.13 names and ticket 23 measured: `center.css` comes after `stack.css`, so a center in a stack keeps its `margin-inline: auto`; `shell.css` comes after `center.css` (`Y/src/yeti.css:30`, `:39`), so a center placed directly in a shell has 0 margins, as in Yeti, and the [shell](shell.md) spec puts a center inside `main` ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 86). The consumer's part is ADR 0060 point 11's setup, which the [setup](../issues/38-spec-setup.md) spec owns. The center adds nothing to it. Cross-item files acquired: none (`center.css` has no cross-item rule; ADR 0060 point 9). The rules for set `data-max` and `data-gap` values live in the always-loaded `layouts/attributes.css`, which no directive manages.
+`yeti-css/css/layouts/center/center.css`, one of Yeti's 49, loaded as a counted `<link>` by the root styles service of ADR 0060: acquired when the first `[yetiCenter]` is created, on the server too, inserted in Yeti's order (`Y/src/yeti.css:30`, after `box` at `:29` and `stack` at `:20`, before the rest of the layouts; the rank table of point 3), and removed after the last host has left the DOM. That order gives full Yeti's result in the ties with `.stack > * { margin: 0 }` and `.shell > * { margin: 0 }` (`Y/src/layouts/stack/stack.css:12`, `Y/src/recipes/shell/shell.css:13`), the ties building-blocks 1.13 names and ticket 23 measured: `center.css` comes after `stack.css`, so a center in a stack keeps its `margin-inline: auto`; `shell.css` comes after `center.css` (`Y/src/yeti.css:30`, `:39`), so a center placed directly in a shell has 0 margins, as in Yeti, and the [shell](shell.md) spec puts a center inside `main` ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 86). The consumer's part is ADR 0060 point 11's setup, which the [setup](setup.md) spec owns. The center adds nothing to it. Cross-item files acquired: none (`center.css` has no cross-item rule; ADR 0060 point 9). The rules for set `data-max` and `data-gap` values live in the always-loaded `layouts/attributes.css`, which no directive manages.
 
 ## Testing Decisions
 
@@ -290,7 +290,7 @@ On the fixture app, built with `outputMode: 'server'`, with a `/center` route ma
 - a `stack` of centers loaded in either order keeps every center centred (the tie);
 - navigating from the center route to a route without a center removes the item link, and navigating back re-inserts it.
 
-Testing at the floor browsers is not decided yet ([building-blocks.md](../building-blocks.md) Part 4; ADR 0014 point 7).
+Floor engines: [ticket 93](../issues/93-decide-testing-at-the-browser-floor.md) (a weekly and release-branch job; Safari 26.2 held statically).
 
 Prior art: Yeti's `example.html` for the default story; ticket 17's `over.mjs` reflow script for the 320 px assertion; ticket 23's tie pages for the in-stack story; ticket 18's fixture app and ADR 0060's prototype for the server HTML and the item link.
 
@@ -302,8 +302,7 @@ Prior art: Yeti's `example.html` for the default story; ticket 17's `over.mjs` r
 - `yetiCenter` hosting `YetiBox`, or any combined center-and-box directive (architecture-guide P6).
 - Any check that a center does not carry a border, or that its host is a landmark. Checks belong to a later milestone (map, Milestones); the usage rules state them.
 - Filing the upstream report for A11Y-9: the map keeps upstream reports behind the user's confirmation (map, Out of scope; AFK override).
-- How the styles service counts, inserts, and removes links (ADR 0060; the [setup](../issues/38-spec-setup.md) spec).
-- Testing at the floor browsers (building-blocks Part 4).
+- How the styles service counts, inserts, and removes links (ADR 0060; the [setup](setup.md) spec).
 
 ## Further Notes
 
@@ -335,7 +334,7 @@ A page that is a stack of centred sections, with a reading column for the articl
     <h1 i18n>Trail maps</h1>
   </header>
   <main yetiCenter max="lg" gap="sm-lg">
-    <article i18n>…</article>
+    <article i18n>...</article>
   </main>
 </div>
 ```
@@ -366,7 +365,7 @@ A surfaced column, with the border on the inner box (usage rule 3):
 
 ```html
 <main yetiCenter max="md">
-  <div yetiBox yetiBorder surface="raised">…</div>
+  <div yetiBox yetiBorder surface="raised">...</div>
 </main>
 ```
 
@@ -384,7 +383,7 @@ A page whose center renders inside a client-only `@defer` block preloads the ite
 
 Per building-blocks 1.13:
 
-1. **Item file:** `layouts/center/center.css`, loaded by the directive as a counted link in Yeti's order (section 13). The consumer writes nothing for the center beyond the [setup](../issues/38-spec-setup.md) spec's one-time configuration.
+1. **Item file:** `layouts/center/center.css`, loaded by the directive as a counted link in Yeti's order (section 13). The consumer writes nothing for the center beyond the [setup](setup.md) spec's one-time configuration.
 2. **Always-loaded rules relied on:** `tokens/space.css` declares `--yeti-width-*` and `--yeti-space-*`; `layouts/attributes.css` turns set `data-max` and `data-gap` values into the center's maximum and gutter, and draws `[data-border]`.
 3. **Cross-item rules:** none. The ties with `stack` and `shell` are an order, not a rule; insertion in Yeti's order gives Yeti's result for both (centred in a stack, not directly in a shell; ticket 50 decision 86).
 4. **Tokens:** reads two public tokens and the width and gap scales; writes none (section 2).

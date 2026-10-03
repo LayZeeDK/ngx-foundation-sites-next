@@ -435,7 +435,7 @@ Fixture-app half, built with `outputMode: 'server'`, served under `<base href="/
 - a toc in the persistent shell outside the `router-outlet`: after a `routerLink` to another route with the same heading ids, every `href` names the new route and scrolling the new route marks its headings; navigating to a route without a toc and back removes and re-inserts the item link;
 - a nav of bare in-page links on a route without a toc: `html`'s `scroll-behavior` is `auto`, recorded as ADR 0060 point 9's documented residue.
 
-Testing at the floor browsers is not decided yet ([building-blocks.md](../building-blocks.md) Part 4; ADR 0014 point 7).
+Floor engines: [ticket 93](../issues/93-decide-testing-at-the-browser-floor.md) (a weekly and release-branch job; Safari 26.2 held statically).
 
 Prior art: Yeti's `example.html` and `docs.md` examples for the stories, and its `test/browser/components/toc.spec.js` with the fixture `test/browser/fixtures/components/toc.html` for the topmost-heading mark, the move and its event, the drawn difference, smooth scrolling and reduced motion, links without the module, the per-element padding token, the hover token, the cluster row, the numbered list, and axe; [Prototype: Yeti's modules in a single-page Angular app](../prototypes/yeti-spa/README.md) for the reload table under `<base href>`; ticket 18's fixture app for the `hydrate never` and `@defer` cases; the [carousel](carousel.md) spec's data-driven dots for the `@for` case; the [fragment-links](fragment-links.md) spec's layer 4 for the reload marker.
 
@@ -454,7 +454,6 @@ Prior art: Yeti's `example.html` and `docs.md` examples for the stories, and its
 - A forced-colours rule now (section 7) ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 213).
 - Any check that the host is a `nav`, that it is named, that every link carries `yetiTocLink`, or that each fragment resolves. Checks belong to a later milestone (map, Milestones); the usage rules state them.
 - How the styles service counts, inserts, and removes links (ADR 0060; the [setup](setup.md) spec).
-- Testing at the floor browsers (building-blocks Part 4).
 
 ## Further Notes
 

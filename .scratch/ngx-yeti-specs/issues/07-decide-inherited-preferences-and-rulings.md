@@ -161,7 +161,7 @@ The competing options, with no option applied as settled:
 
 - (a) The package ships a small documented rule per gap, in its own layer above Yeti's, built from the CDK `high-contrast` mixin and Material's per-control rules, and lists each one in `ledger.md` as a feature the package adds. Meets the requirement, at the cost of package CSS that selects Yeti's classes and may need revisiting on a pin move.
 - (b) The package adds no CSS: each spec states the gap as a documented limitation, with the token or markup a consumer can use, and the gap goes to `ledger.md` as unmet by either project. Keeps Yeti's contract intact and fails the user's requirement for the affected items.
-- (c) The package ships the rules and the gap is reported upstream, so the fix can be dropped later. Needs the user's confirmation for the filing (map, Standing rulings, item 44 and the Out of scope line), so it cannot be chosen here.
+- (c) The package ships the rules and the gap is reported upstream, so the fix can be removed later. Needs the user's confirmation for the filing (map, Standing rulings, item 44 and the Out of scope line), so it cannot be chosen here.
 
 Recommendation, for the user to accept or refuse: (a), with each rule in one place the specs share, each named in `ledger.md` with the criterion it meets and the engines it was measured in, and each written against Yeti's state hooks rather than its internals, so a pin move breaks a test rather than a page. [Decide: the building-blocks map](25-decide-building-blocks-map.md) and [Decide: which ADRs carry over](08-decide-inherited-adrs.md) are the tickets that would record it.
 

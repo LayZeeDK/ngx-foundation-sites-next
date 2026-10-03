@@ -115,7 +115,7 @@ What each consuming item passes (building-blocks rows 31, 32, 34):
 
 | Item | `isOpen` | `close` | Focus return |
 | --- | --- | --- | --- |
-| `dialog` | the `isOpen` model, read once at creation and following `close` and the opener's `command` (ADR 0021 2026-10-03 note) | `close()` on the native `dialog` | the dialog's own `close` handler focuses the opener recorded from the `command` event (ADR 0021 point 2; ADR 0043 point 3) |
+| `dialog` | the `isOpen` model, read once at creation and following the `dialog`'s `toggle` event ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 147; ADR 0021 2026-10-03 note) | `close()` on the native `dialog` | the dialog's own `close` handler focuses the opener recorded from the `command` event (ADR 0021 point 2; ADR 0043 point 3) |
 | `dropdown` | the `isOpen` model from the panel's `toggle` | `hidePopover()` on the panel | the dropdown spec measures whether `hidePopover()` restores focus and adds `focus()` on the opener if not (ADR 0041 point 4) |
 | `nav` | the `isOpen` model from the list's `toggle` | `hidePopover()` on the list | as `dropdown` |
 

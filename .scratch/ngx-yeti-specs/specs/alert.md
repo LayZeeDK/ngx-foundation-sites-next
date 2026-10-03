@@ -167,7 +167,7 @@ The input value types are Yeti's own `YetiVariant` and `YetiEmphasis`, from the 
 - `YetiAlert` is a **Coordinating directive** in the narrow sense of building-blocks 1.9: it provides `yetiAlertToken` (`InjectionToken<YetiAlert>`, `useExisting`), declared with `import type` in the entry point's token file, and no part registers with it.
 - `YetiAlertClose` injects `yetiAlertToken` as required, with no `optional` flag: building-blocks 1.9 makes a parent token required "when the part cannot exist alone", and a close button outside an alert has no alert to close and no Yeti rule to style it (`.alert > [data-close]`). Because DI follows the declaration site, the close button is declared in the same template as its alert host (usage rule 5); a close button projected into an Angular component that renders the alert fails to find the token and throws at creation.
 - No host directives. No Yeti item always sits on another's element (Part 2, "Two findings that hold across the matrix"), and no Aria pattern applies (section 6). The close button is not a `yetiButton`: Yeti styles it by `.alert > [data-close]` alone, and the `button` item's class would add a second look to it (usage rule 5).
-- The only other injection is ADR 0060's root styles service, through which `YetiAlert` acquires and releases the item file. That service is the [setup](setup.md) spec's and ADR 0060's.
+- The only other injection is ADR 0060's root styles service, reached by `injectYetiItemStyles('alert')` from `ngx-yeti/styles` as the last statement of the constructor ([setup](setup.md); ticket 50 decisions 42 and 45), through which `YetiAlert` acquires and releases the item file. That service is the [setup](setup.md) spec's and ADR 0060's.
 - Generated ids and the platform's relationship attributes: none. The alert renders no `id` and references none, so it does not use [generated-ids](generated-ids.md). The close button does not need `aria-controls`: it removes the alert rather than toggling it.
 
 ### 4. API
@@ -183,8 +183,8 @@ The input value types are Yeti's own `YetiVariant` and `YetiEmphasis`, from the 
 | Models, methods | none ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 104) | none |
 | Host | static `class: 'alert'`; static `data-ngx-yeti-item-alert: ''`; `[attr.data-variant]`, `[attr.data-emphasis]` from the inputs, `null` when unset | static `data-close: ''`; `(click)` listener |
 | Providers | `yetiAlertToken` | none |
-| Injection | the ADR 0060 styles service | `yetiAlertToken` (required); `DOCUMENT` |
-| Lifecycle | acquires the `alert` item file in its constructor, after anything there that can throw (nothing does today), and releases it through `DestroyRef` (ADR 0060 point 2; ticket 50 decisions 18 and 42) | none |
+| Injection | the ADR 0060 styles service, through `injectYetiItemStyles('alert')` | `yetiAlertToken` (required); `DOCUMENT` |
+| Lifecycle | acquires the `alert` item file, on the server too, with `injectYetiItemStyles('alert')` as the last statement of its constructor (ticket 50 decisions 42 and 45), after anything there that can throw (nothing does today), and releases it through `DestroyRef` (ADR 0060 point 2; ticket 50 decisions 18 and 42) | none |
 
 The close handler, in order (Part 2 row 23; building-blocks 1.5 and 1.11 clause 5):
 
@@ -226,7 +226,7 @@ Material has no inline alert. The nearest is `MatSnackBar`, a toast opened from 
 | Focus after dismissal | to the alert's parent when focus was inside (Yeti's behaviour) | not moved by the snack bar (inferred from the ref's API; not traced) |
 | `exportAs` | `yetiAlert`, `yetiAlertClose` | none: opened from code |
 
-Nothing from Material's API is adopted. A `politeness` option would be an input per role, which the records leave to the consumer's attribute (ADR 0003 point 3), and Material's delayed live-region move is a workaround for content inserted with its live region, which section 7 records as an open point rather than adopting. The comparison is recorded because building-blocks 1.14 item 5 asks every spec for one.
+Nothing from Material's API is adopted. A `politeness` option would be an input per role, which the records leave to the consumer's attribute (ADR 0003 point 3), and Material's delayed live-region move is a workaround for content inserted with its live region, which section 7 answers with a usage rule and a manual release check rather than adopting ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 105). The comparison is recorded because building-blocks 1.14 item 5 asks every spec for one.
 
 ### 6. Implementation level and primitives
 
@@ -389,7 +389,7 @@ Fixture-app half, built with `outputMode: 'server'`, with an `/alert` route mark
 - a `role="alert"` alert inserted after hydration appears in the accessibility tree with role `alert`; whether a screen reader announces an inserted `role="status"` is a manual release check (ADR 0015 point 7; section 7);
 - navigating from the alert route to a route without one removes the item link, and navigating back re-inserts it.
 
-Testing at the floor browsers is not decided yet ([building-blocks.md](../building-blocks.md) Part 4; ADR 0014 point 7).
+Floor engines: [ticket 93](../issues/93-decide-testing-at-the-browser-floor.md) (a weekly and release-branch job; Safari 26.2 held statically).
 
 Prior art: Yeti's `example.html` and `docs.md` for the stories, and its `test/browser/components/alert.spec.js` with `test/browser/fixtures/components/alert.html` for the emphasis, edge, icon, height, focus, parent-`tabindex`, and hue cases; Yeti's `test/browser/contrast.spec.js` for the contrast pairs its fixture marks with `data-contrast`; ticket 18's fixture app and its alert and `animate.leave` measurements; ADR 0060's prototype for the server HTML and the item link; the [sidebar](sidebar.md) spec's probe technique for token-independent sizes.
 
@@ -399,11 +399,10 @@ Prior art: Yeti's `example.html` and `docs.md` for the stories, and its `test/br
 - `LiveAnnouncer`, a live-region service, a `politeness` or `role` input, or any announcement from code (Part 2 row 23; ADR 0043 point 4).
 - Package CSS for the leave transition, or a package-defined leave class (ADR 0060 point 8: the package's CSS is accessibility rules only; section 9).
 - Dispatching a `yeti:close` DOM event for non-Angular listeners (ADR 0040 consequences: a later decision on request).
-- A predicate input that vetoes a close (building-blocks 1.4), unless the open point on `defaultPrevented` decides otherwise.
+- A predicate input that vetoes a close (building-blocks 1.4): the `defaultPrevented` check stays like for like ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 103).
 - An Angular component that renders the alert's markup, an `icon` or `message` input, or a generated close button (ADR 0003 point 6; building-blocks 1.1).
 - Any check that the close button is a direct child, last, inside an alert, or named, or that the role is set. Checks belong to a later milestone (map, Milestones); the usage rules state them.
 - How the styles service counts, inserts, and removes links (ADR 0060; the [setup](setup.md) spec).
-- Testing at the floor browsers (building-blocks Part 4).
 
 ## Further Notes
 

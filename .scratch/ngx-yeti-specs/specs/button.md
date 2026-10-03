@@ -147,23 +147,23 @@ The input value types are Yeti's own, from the package's generated `yeti-types.t
 - Compositions on one element are written beside each other: `yetiIcon yetiButton` (Yeti's `class="icon button"`), `yetiButton yetiPrint="none"`, `yetiButton yetiStackChild`, `yetiButton yetiButtonsItem`, `yetiButton [yetiDialogOpener]`, a dropdown toggle with `yetiButton` (Yeti's dropdown example puts `class="button"` on the `popovertarget` button), and a tooltip trigger with `yetiButton`. `YetiButton` declares only `variant`, `emphasis`, and `size`, and binds only the class, the three `data-*` attributes, and its presence attribute, so no input name is declared twice with different types on any of these elements (building-blocks 1.4, shared vocabularies) and no attribute has two writers. In particular it binds no `aria-disabled`, `tabindex`, `role`, `type`, `commandfor`, `command`, `popovertarget`, or `aria-describedby`; the prototype of ticket 29 measured `ngToolbarWidget`'s `aria-disabled` binding overwriting a second writer's value (`prototypes/aria-buttons/README.md`, finding 2).
 - The opener of a dialog is the dialog spec's free directive `[yetiDialogOpener]`, which renders `commandfor` and `command="show-modal"` from the dialog's id ([ADR 0021](../adr/0021-dialog-is-a-directive-on-the-native-dialog.md) point 1; [ADR 0013](../adr/0013-parts-name-their-targets-by-reference.md); building-blocks 1.8). The button item knows nothing about it, which keeps the dialog's bundle free of button code (architecture-guide P8's reason).
 - `YetiButtonDisabledLink` matches only an `a[yetiButton]` that also has `disabled`, static or bound: Angular matches attribute selectors against property-binding names as well as static attributes (`NGP/compiler/src/render3/view/util.ts:213-217`, read). It reads nothing from `YetiButton`.
-- The only other injection is the root styles service of ADR 0060, through which `YetiButton` acquires and releases its two item files. That service is the [setup](setup.md) spec's and ADR 0060's.
+- The only other injection is the root styles service of ADR 0060, through `injectYetiItemStyles('button')` and `injectYetiItemStyles('spinner')` from `ngx-yeti/styles` as the last statements of `YetiButton`'s constructor ([setup](setup.md); [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decisions 42, 45, and 109), which acquire its two item files on the server too and release them through `DestroyRef`. That service is the [setup](setup.md) spec's and ADR 0060's.
 - Generated ids and the platform's relationship attributes: none of the item's own. The button renders no `id` and references none, so it does not use [generated-ids](generated-ids.md). Openers on the same element render theirs.
 
 ### 4. API
 
 | Member | `YetiButton` | `YetiButtonDisabledLink` |
 | --- | --- | --- |
-| Class name | not among the 46 names `yeti.d.ts` exports at the Pin, so `Yeti`, not `NgxYeti` (ADR 0080 point 4; ticket 50 decision 10) | as left; its name is part of the open point ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 108) |
+| Class name | not among the 46 names `yeti.d.ts` exports at the Pin, so `Yeti`, not `NgxYeti` (ADR 0080 point 4; ticket 50 decision 10) | as left; the second directive is decision 108's option C ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 108) |
 | Selector | `button[yetiButton], a[yetiButton], input[yetiButton], label[yetiButton]` (Part 2 row 26; `label` is this spec's addition, [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 107) | `a[yetiButton][disabled]` (ticket 50 decision 108) |
 | `exportAs` | `yetiButton` | `yetiButtonDisabledLink` (building-blocks 1.3) |
 | Entry point | `ngx-yeti/button` (building-blocks 1.3; ADR 0011 clause 10) | same |
 | Inputs | `variant: YetiVariant \| undefined` (Yeti default `primary`); `emphasis: YetiEmphasis \| undefined` (`high`); `size: YetiSizeControl \| undefined` (`md`); each `input()` with no default value | `disabled: boolean`, `booleanAttribute`, default `false` |
 | Host | static `class: 'button'`; static `data-ngx-yeti-item-button: ''`; `[attr.data-variant]`, `[attr.data-emphasis]`, `[attr.data-size]` from the inputs, `null` when unset | `[attr.role]`: `'link'` while `disabled()`, else `null`; `[attr.aria-disabled]`: `'true'` while `disabled()`, else `null`; `'[attr.disabled]': 'null'` with its source comment |
 | Providers | none | none |
-| Injection | the ADR 0060 styles service | none |
+| Injection | the ADR 0060 styles service, through `injectYetiItemStyles('button')` and `injectYetiItemStyles('spinner')` ([setup](setup.md)) | none |
 | Models, outputs, methods, listeners | none ([ADR 0022](../adr/0022-button-declares-no-listeners.md) point 1) | none (ADR 0022 point 1 applies to it as well) |
-| Lifecycle | acquires the `button` and `spinner` item files in its constructor, after anything there that can throw (nothing does today), and releases both through `DestroyRef` (ADR 0060 points 2 and 9; ticket 50 decision 42) | none |
+| Lifecycle | its constructor ends with `injectYetiItemStyles('button')` and `injectYetiItemStyles('spinner')` from `ngx-yeti/styles`, after anything there that can throw (nothing does today), which acquire the `button` and `spinner` item files, on the server too, and release both through `DestroyRef` (ADR 0060 points 2 and 9; [setup](setup.md); ticket 50 decisions 42, 45, and 109) | none |
 
 No input default differs from Yeti's (ADR 0070 rule 1). A static attribute type-checks as a string literal under `strictTemplates`, so `emphasis="low"` compiles and `emphasis="quiet"` does not (ADR 0070 rule 2).
 
@@ -333,7 +333,7 @@ Through `TestBed.createDirective` (map, Standing rulings, Directive testing; ADR
 - `createDirective(YetiButtonDisabledLink, { tagName: 'a' })`: with `disabled` bound `true`, the host has `role="link"` and `aria-disabled="true"`; bound `false`, neither; the host never carries `disabled`; it carries no presence attribute and acquires no link.
 - No directive adds a listener to its host.
 
-A small test host covers what `createDirective` cannot: `<button yetiButton [disabled]="d()">` sets the native `disabled` property to `true` and back to `false` (the open point's guard); `<a yetiButton [disabled]="d()" [routerLink]="d() ? null : '/x'">` gets `YetiButtonDisabledLink` and loses its `href` while disabled; a static `<a yetiButton disabled>` renders `role="link"`, `aria-disabled="true"`, and no `disabled`; `<button yetiButton disabled>` keeps its native `disabled` and gets no `YetiButtonDisabledLink`; template references `#b="yetiButton"` and `#l="yetiButtonDisabledLink"` resolve; `yetiIcon yetiButton` and `yetiButton yetiPrint="none"` render both classes and both presence attributes; a consumer `[attr.aria-pressed]`, `[attr.aria-busy]`, and `[attr.aria-disabled]` on a `button` host render as written; and the consumer's own `class` is kept.
+A small test host covers what `createDirective` cannot: `<button yetiButton [disabled]="d()">` sets the native `disabled` property to `true` and back to `false` (decision 108's guard); `<a yetiButton [disabled]="d()" [routerLink]="d() ? null : '/x'">` gets `YetiButtonDisabledLink` and loses its `href` while disabled; a static `<a yetiButton disabled>` renders `role="link"`, `aria-disabled="true"`, and no `disabled`; `<button yetiButton disabled>` keeps its native `disabled` and gets no `YetiButtonDisabledLink`; template references `#b="yetiButton"` and `#l="yetiButtonDisabledLink"` resolve; `yetiIcon yetiButton` and `yetiButton yetiPrint="none"` render both classes and both presence attributes; a consumer `[attr.aria-pressed]`, `[attr.aria-busy]`, and `[attr.aria-disabled]` on a `button` host render as written; and the consumer's own `class` is kept.
 
 ### Layer 3: node-level and SSR smoke (`npx nx test <lib>`, `button.ssr.spec.ts`)
 
@@ -351,11 +351,11 @@ Fixture-app half, built with `outputMode: 'server'`, with a `/button` route mark
 - with JavaScript disabled: the submit button submits the form; the enabled link navigates; the disabled link is not focusable and does not navigate; Space checks the toggle label's input and the form submits its value; the opener opens the dialog; the busy button shows its ring; `@axe-core/playwright` with the six tags reports no violation;
 - with `main.js` held back, a click on the toggle button before hydration reaches the consumer's handler after hydration and `aria-pressed` becomes `true` (event replay);
 - a button inside a client-only `@defer` block with `button` and `spinner` in the preload list shows no unstyled frame; a `yetiIcon yetiButton` host inside a `hydrate never` block keeps both the `button` and `icon` links after every live button and icon on the page is removed (ADR 0045's shared-host case);
-- a server-rendered busy button inside a `hydrate never` block, after every live button and spinner is removed: its ring is recorded, not asserted, as the evidence for the open point on the spinner presence attribute ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 110);
+- a server-rendered busy button inside a `hydrate never` block, after every live button and spinner is removed: its ring is recorded, not asserted, documenting the residue of having no spinner presence attribute ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 110);
 - navigating from the button route to a route without one removes both item links, and navigating back re-inserts them;
 - under `<base href="/sub/">`, an `a[yetiButton] href="#contact"` with `provideYetiFragmentLinks()` keeps the route and moves to the target (the [fragment-links](fragment-links.md) spec's case, repeated for a button link).
 
-Testing at the floor browsers is not decided yet ([building-blocks.md](../building-blocks.md) Part 4; ADR 0014 point 7).
+Floor engines: [ticket 93](../issues/93-decide-testing-at-the-browser-floor.md) (a weekly and release-branch job; Safari 26.2 held statically).
 
 Prior art: Yeti's `example.html` and `docs.md` examples for the stories; its `test/browser/components/button.spec.js` and fixture `test/browser/fixtures/components/button.html` for the height, emphasis, pressed-hover, disabled-hover, link, icon, focus-ring, contrast, and black-and-white cases, and `spinner.spec.js` for the ring; ticket 17's forced-colours screenshots and keyboard scripts; ticket 23's `probe.mjs` for the ring's dependence on `spinner.css`; ticket 18's fixture app and ADR 0060's prototype for the server HTML, replay, and item links; the [icon](icon.md) spec's standalone story for the icon-only size and name.
 
@@ -369,7 +369,6 @@ Prior art: Yeti's `example.html` and `docs.md` examples for the stories; its `te
 - A check that a disabled link has no target, that a host is one of the four elements, or that a toggle label wraps exactly one input. Checks belong to a later milestone (map, Milestones); the usage rules state them.
 - An input per token (ADR 0004).
 - How the styles service counts, inserts, and removes links (ADR 0060; the [setup](setup.md) spec).
-- Testing at the floor browsers (building-blocks Part 4).
 
 ## Further Notes
 
@@ -390,7 +389,7 @@ Prior art: Yeti's `example.html` and `docs.md` examples for the stories; its `te
 | Inputs typed by `YetiVariant`, `YetiEmphasis`, `YetiSizeControl`; unset renders nothing | ADR 0005; ADR 0070 rules 1 and 2; ADR 0080 point 5 |
 | `size` is `inert`; the link's `disabled` is `removed`, its static form accepted | building-blocks 1.4; ticket 26 row 96; ticket 50 decision 9 |
 | Only `YetiButton` marks its host and acquires item files | ADR 0045; ticket 50 decision 6 |
-| Acquisition after anything in the constructor that can throw | ticket 50 decision 42 |
+| `injectYetiItemStyles('button')` and `injectYetiItemStyles('spinner')` last in the constructor, after anything that can throw | [setup](setup.md); ticket 50 decisions 42, 45, and 109 |
 | `exportAs` on both; no class-name collision | building-blocks 1.3; ADR 0080 points 3 and 4; ticket 50 decision 10 |
 | Entry point `ngx-yeti/button` | building-blocks 1.3; ADR 0011 clause 10 |
 | Native platform, level 1 | building-blocks 1.2; Part 2 row 26 |

@@ -34,3 +34,5 @@ Resolved 2026-10-03 by the orchestrator (Claude Opus 5.5) under the user's full-
 **To overrule.** An implementer who picks D adds the grid capabilities to the floor job and keeps everything else. One who picks E removes the floor job, and states in each spec's Testing Decisions that the floor is held statically only.
 
 ADR 0014 gets a dated note pointing here. Every spec's Testing Decisions name "layer 2" and "layer 4" without a provider, so no spec changes.
+
+**Note (2026-10-03, audit 0004 M1 and L15).** The sentence above missed one change: 48 specs, building-blocks Part 4, the setup spec, and the map's gist of ticket 27 still said testing at the floor was not decided. Each now points here ("Floor engines: ticket 93"), and the Out of Scope bullets that listed it are removed.

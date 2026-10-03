@@ -18,7 +18,7 @@ Two more things make this layout different from its neighbours. First, Yeti ship
 
 One directive in the secondary entry point `ngx-yeti/masonry` ([building-blocks.md](../building-blocks.md) Part 2 row 12; 1.3):
 
-- The **Item directive** `YetiMasonry`, selector `[yetiMasonry]`, `exportAs: 'yetiMasonry'`. It binds `masonry` as a static host class, binds `data-min`, `data-columns`, and `data-gap` from the typed inputs `min`, `columns`, and `gap`, sets its presence attribute `data-ngx-yeti-item-masonry` ([ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md)), and acquires the `masonry` item file when it is created, on the server too, and releases it when it is destroyed (ADR 0060 point 2).
+- The **Item directive** `YetiMasonry`, selector `[yetiMasonry]`, `exportAs: 'yetiMasonry'`. It binds `masonry` as a static host class, binds `data-min`, `data-columns`, and `data-gap` from the typed inputs `min`, `columns`, and `gap`, sets its presence attribute `data-ngx-yeti-item-masonry` ([ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md)), and acquires the `masonry` item file when it is created, on the server too, and releases it when it is destroyed (ADR 0060 point 2), through `injectYetiItemStyles('masonry')` from `ngx-yeti/styles` as the last statement of its constructor ([setup](setup.md); ticket 50 decisions 42 and 45).
 
 The developer writes `<div yetiMasonry min="xs" columns="3">` where Yeti's docs write `<div class="masonry" data-min="xs" data-columns="3">`. An unset input renders no attribute, so Yeti's own default applies from its CSS ([ADR 0070](../adr/0070-where-a-yeti-attribute-sits-decides-its-mapping.md) rule 1). The directive is **types only** in building-blocks' sense: no listener, no render callback, no service, and no DI. It has no part directive, because the manifest declares no marker and an item needs none.
 
@@ -135,7 +135,7 @@ The input value types are Yeti's own, imported from the package's generated `yet
 
 ### 3. Hierarchy and DI shape
 
-`YetiMasonry` provides nothing and injects only the root styles service of ADR 0060, through which it acquires and releases the `masonry` item file. That service belongs to the [setup](../issues/38-spec-setup.md) spec and ADR 0060. No injection token is declared: building-blocks 1.9 gives an item a token for its part directives to find it, and this item has none. If a later pin adds a marker, the part directive and its token come with it (ADR 0070 kind C).
+`YetiMasonry` provides nothing and injects only the root styles service of ADR 0060, through `injectYetiItemStyles('masonry')` from `ngx-yeti/styles` ([setup](setup.md); ticket 50 decisions 42 and 45), which acquires and releases the `masonry` item file. That service belongs to the [setup](setup.md) spec and ADR 0060. No injection token is declared: building-blocks 1.9 gives an item a token for its part directives to find it, and this item has none. If a later pin adds a marker, the part directive and its token come with it (ADR 0070 kind C).
 
 No item directive hosts another (Part 2, "Two findings that hold across the matrix"). A consumer composes `yetiMasonry` beside another item directive on one element by writing both attributes. Two directives on one element that declare the same input name share the vocabulary's exported type (building-blocks 1.4, shared vocabularies): `yetiMasonry` beside `yetiBox` both declare `gap: YetiGap`, so one static `gap="lg"` feeds both and both bind the same `data-gap`, which is what Yeti's single attribute means on that element. Each directive sets its own presence attribute, so both item files are held (ADR 0045). An item directive on a masonry's child (`<article yetiBox>`) is an ordinary item; `.masonry > *` styles it as an item.
 
@@ -155,7 +155,7 @@ Generated ids and the platform's relationship attributes: none. The layout rende
 | Host | static `class: 'masonry'`; static `'data-ngx-yeti-item-masonry': ''`; `'[attr.data-min]'`, `'[attr.data-columns]'`, `'[attr.data-gap]'` from the inputs, `null` when unset. No `[attr.min]` binding (`inert`) |
 | Providers | none |
 | Models, outputs, methods, listeners | none |
-| Lifecycle | acquires the `masonry` item file in its constructor and releases it on destroy through `DestroyRef` (ADR 0060 point 2; building-blocks 1.9) |
+| Lifecycle | `injectYetiItemStyles('masonry')` is the last statement of its constructor, after anything there that can throw (nothing does today); it acquires the `masonry` item file, on the server too, and releases it on destroy through `DestroyRef` (ADR 0060 point 2; building-blocks 1.9; [setup](setup.md); ticket 50 decisions 42 and 45) |
 
 No input default differs from Yeti's: every input is `undefined` until the consumer sets it, and Yeti's CSS supplies the manifest's default (ADR 0070 rule 1). A static attribute type-checks as a string literal under `strictTemplates`, so `columns="3"` compiles and `columns="7"` does not (ADR 0070 rule 2).
 
@@ -244,7 +244,7 @@ None. The layout has no state and no transition; Yeti's reduced-motion handling 
 - **Full hydration:** the host is claimed as it is; 0 style mutations (ADR 0060 point 5, measured for the mechanism).
 - **Incremental hydration (`@defer (hydrate on ...)`):** the server rendered the layout and its link; a dehydrated host holds the link for as long as it is on the page (ADR 0060 point 4, measured for the mechanism).
 - **`hydrate never`:** the layout is its server HTML and stays styled while the host is connected, whatever live layouts do (ADR 0060 point 4). Nothing is lost except changing a bound input, which needs Angular.
-- **Client-only `@defer`:** the item file is fetched when `YetiMasonry` is constructed, which can show unstyled frames (the items stacked); the consumer closes the gap with `provideYetiStyles({ preload: ['masonry'] })` (ADR 0060 point 6; [setup](../issues/38-spec-setup.md)). A `@defer` block inside the host renders its placeholder or loading element as a direct child, so that element is an item while it shows (inferred from Yeti's `> *` selector).
+- **Client-only `@defer`:** the item file is fetched when `YetiMasonry` is constructed, which can show unstyled frames (the items stacked); the consumer closes the gap with `provideYetiStyles({ preload: ['masonry'] })` (ADR 0060 point 6; [setup](setup.md)). A `@defer` block inside the host renders its placeholder or loading element as a direct child, so that element is an item while it shows (inferred from Yeti's `> *` selector).
 - **Event replay:** the directive declares no listener, so nothing replays and no `jsaction` is added.
 - **`withI18nSupport()`:** item content is usually translated with `i18n` in the consumer's component. The directive adds no `i18n` block of its own; the consumer's component needs `withI18nSupport()` to hydrate rather than re-render (ADR 0011 clause 11; building-blocks 1.11 decision 11).
 - **Zoneless:** inputs are `input()` signals read by host bindings, so a changed input refreshes its attribute with no zone (ADR 0070 rule 4; map, Standing rulings, item 43).
@@ -268,7 +268,7 @@ None. The layout has no navigation or fragment behaviour, so it uses neither [na
 
 ### 13. Item file
 
-`yeti-css/css/layouts/masonry/masonry.css`, one of Yeti's 49, loaded as a counted `<link>` by the root styles service of ADR 0060: acquired when the first `[yetiMasonry]` is created, on the server too, inserted in Yeti's order (`Y/src/yeti.css:32`, after `icon` and before `breakout`, the rank table of point 3), and removed after the last host has left the DOM. The consumer's part is ADR 0060 point 11's setup, which the [setup](../issues/38-spec-setup.md) spec owns: Yeti's build at the Pin under `yeti-css`, the `assets` entry, the global stylesheet with the layer statement, and optionally `provideYetiStyles({ preload: ['masonry'] })`. The layout adds nothing to it. Cross-item files acquired: none. `masonry.css` has no cross-item rule, and the value rules it depends on are in the always-loaded `layouts/attributes.css` (ADR 0060 point 9).
+`yeti-css/css/layouts/masonry/masonry.css`, one of Yeti's 49, loaded as a counted `<link>` by the root styles service of ADR 0060: acquired when the first `[yetiMasonry]` is created, on the server too, inserted in Yeti's order (`Y/src/yeti.css:32`, after `icon` and before `breakout`, the rank table of point 3), and removed after the last host has left the DOM. The consumer's part is ADR 0060 point 11's setup, which the [setup](setup.md) spec owns: Yeti's build at the Pin under `yeti-css`, the `assets` entry, the global stylesheet with the layer statement, and optionally `provideYetiStyles({ preload: ['masonry'] })`. The layout adds nothing to it. Cross-item files acquired: none. `masonry.css` has no cross-item rule, and the value rules it depends on are in the always-loaded `layouts/attributes.css` (ADR 0060 point 9).
 
 ## Testing Decisions
 
@@ -317,7 +317,7 @@ Fixture half, on the **Fixture app** built with `outputMode: 'server'`, with a `
 - navigating from the masonry route to a route without one removes the item link, and navigating back re-inserts it;
 - at a 320 px viewport the page has no horizontal overflow and the example's items are in one column (1.4.10).
 
-Testing at the floor browsers is not decided yet ([building-blocks.md](../building-blocks.md) Part 4; ADR 0014 point 7). It matters more here than for most layouts, because the floor and the current engines may differ in which path they take.
+Floor engines: [ticket 93](../issues/93-decide-testing-at-the-browser-floor.md) (a weekly and release-branch job; Safari 26.2 held statically). It matters more here than for most layouts, because the floor and the current engines may differ in which path they take.
 
 Prior art: Yeti's `example.html`, `docs.md`, and `test/browser/layouts/masonry.spec.js` with its fixture (the column count formula, the path branch, the gap check) for the stories; ticket 18's fixture app and ADR 0060's prototype for the server HTML and the item link; the [columns](columns.md) spec's probe technique for token-independent assertions.
 
@@ -328,8 +328,7 @@ Prior art: Yeti's `example.html`, `docs.md`, and `test/browser/layouts/masonry.s
 - Feature detection in the package, an input to choose a path, or package CSS that forces one path (building-blocks 1.2 and 1.13).
 - Reordering items in script to make the visual order match a row-by-row scan, or a JavaScript masonry fallback. Yeti's docs name a JavaScript library as "the thing this layout replaces".
 - A check that the host has at least two children, that `min="none"` comes with `columns`, or that no item is reordered or given a margin. Checks belong to a later milestone (map, Milestones); the usage rules state them.
-- How the styles service counts, inserts, and removes links (ADR 0060; the [setup](../issues/38-spec-setup.md) spec).
-- Testing at the floor browsers (building-blocks Part 4).
+- How the styles service counts, inserts, and removes links (ADR 0060; the [setup](setup.md) spec).
 
 ## Further Notes
 
@@ -351,6 +350,7 @@ Prior art: Yeti's `example.html`, `docs.md`, and `test/browser/layouts/masonry.s
 | Reading order is the author's risk, stated as usage rules | Part 2 row 12; manifest `a11y.notes`; ticket 17; ledger row A11Y-23 ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 53) |
 | Tokens are the consumer's | ADR 0004 |
 | Item file as a counted link | ADR 0060 points 2 to 6 |
+| `injectYetiItemStyles('masonry')` last in the constructor | [setup](setup.md); ticket 50 decisions 42 and 45 |
 | Directive tests through `TestBed.createDirective` | map, Standing rulings, Directive testing; ADR 0014 note |
 | Fixture app `outputMode: 'server'` with prerendered and server routes | ticket 50 decision 2 |
 
@@ -409,7 +409,7 @@ A page whose masonry renders inside a client-only `@defer` block preloads the it
 
 Per building-blocks 1.13:
 
-1. **Item file:** `layouts/masonry/masonry.css`, loaded by `YetiMasonry` as a counted link (section 13). The consumer writes nothing for the layout beyond the [setup](../issues/38-spec-setup.md) spec's one-time configuration.
+1. **Item file:** `layouts/masonry/masonry.css`, loaded by `YetiMasonry` as a counted link (section 13). The consumer writes nothing for the layout beyond the [setup](setup.md) spec's one-time configuration.
 2. **Always-loaded rules relied on:** `layouts/attributes.css` maps every `data-min`, `data-columns`, and `data-gap` value to its private token (`--_yeti-min`, `--_yeti-column-count` and `--_yeti-column-cap`, `--_yeti-gap`); `tokens/space.css` declares `--yeti-width-*` and `--yeti-space-*`.
 3. **Cross-item rules:** none. An item directive on a child (a `box` or a `card` as an item) loads its own item file through its own directive.
 4. **Tokens:** reads `--yeti-width-xs` and `--yeti-space-md` by default and the named `--yeti-width-*` and `--yeti-space-*` through the value rules; writes none (section 2).

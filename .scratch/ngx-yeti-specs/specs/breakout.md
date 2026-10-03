@@ -18,7 +18,7 @@ The breakout is also one of five items whose contrast axe could not compute on Y
 
 Three directives in the secondary entry point `ngx-yeti/breakout` ([building-blocks.md](../building-blocks.md) Part 2 row 2):
 
-- **`YetiBreakout`**, the **Item directive**, on `[yetiBreakout]`. It binds `breakout` as a static host class, `data-max` from a `max` input typed `YetiWidth`, and `data-gap` from a `gap` input typed `YetiGap`. It sets the static presence attribute `data-ngx-yeti-item-breakout` ([ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md)), acquires the `breakout` item file when it is created, on the server too, and releases it when destroyed. It provides `yetiBreakoutToken`.
+- **`YetiBreakout`**, the **Item directive**, on `[yetiBreakout]`. It binds `breakout` as a static host class, `data-max` from a `max` input typed `YetiWidth`, and `data-gap` from a `gap` input typed `YetiGap`. It sets the static presence attribute `data-ngx-yeti-item-breakout` ([ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md)), acquires the `breakout` item file when it is created, on the server too, and releases it when destroyed, through `injectYetiItemStyles('breakout')` from `ngx-yeti/styles` as the last statement of its constructor ([setup](setup.md); ticket 50 decisions 42 and 45). It provides `yetiBreakoutToken`.
 - **`YetiBreakoutChild`**, a **Part directive** for a child that changes placement, on `[yetiBreakoutChild]`. It binds `data-bleed` from a `bleed` input with `booleanAttribute` (ticket 26 row 10, kind C).
 - **`YetiBreakoutNote`**, a **Part directive** for a margin note, on `[yetiBreakoutNote]`. It binds `data-note` as a static host attribute and takes no input (ticket 26 row 11, kind P).
 
@@ -129,7 +129,7 @@ The `inert` kind for `max` (building-blocks 1.4): a static `max="lg"` stays on t
 - `YetiBreakout` provides `yetiBreakoutToken` (`InjectionToken<YetiBreakout>`, `useExisting`), building-blocks 1.9 and 1.3's token naming.
 - `YetiBreakoutChild` injects it with `{ optional: true, skipSelf: true }` ([ADR 0070](../adr/0070-where-a-yeti-attribute-sits-decides-its-mapping.md) kind C). `YetiBreakoutNote` injects it the same way, as building-blocks 1.9 has a part that may stand alone do. Neither reads anything from it in the first milestone: no behaviour depends on the parent, and the **In-item check** that would use it belongs to a later milestone (map, Milestones). A part outside a breakout renders its marker and nothing else happens, because Yeti's rules are `.breakout > [data-bleed]` and `.breakout > [data-note]`.
 - No host directives. No Yeti item always sits on another's element (Part 2, "Two findings that hold across the matrix"). A consumer composes by writing directives beside each other: `yetiBreakout` with `yetiBox` on one element, or `yetiBreakoutChild` with `yetiFrame` on one child, as Yeti's example does. The breakout's `max` and `gap` share their types with `center`'s and every other `gap` reader, so no two package directives on one element declare one input name with different types (building-blocks 1.4, shared vocabularies). Where `box` and `breakout` sit on one element, one `gap` attribute feeds both, which is what Yeti's single attribute means (ticket 26 grilling Q16).
-- The only other injection is the root styles service of ADR 0060, through which `YetiBreakout` acquires and releases the item file. That service is the [setup](../issues/38-spec-setup.md) spec's and ADR 0060's. The two part directives set no presence attribute and acquire no item file: their rules match only under a `.breakout`, whose own host holds the link for as long as it is connected ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 6).
+- The only other injection is the root styles service of ADR 0060, through `injectYetiItemStyles('breakout')` ([setup](setup.md)), with which `YetiBreakout` acquires and releases the item file. That service is the [setup](setup.md) spec's and ADR 0060's. The two part directives set no presence attribute and acquire no item file: their rules match only under a `.breakout`, whose own host holds the link for as long as it is connected ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 6).
 - Generated ids and the platform's relationship attributes: none. The breakout renders no `id` and references none, so it does not use [generated-ids](generated-ids.md).
 
 ### 4. API
@@ -144,7 +144,7 @@ The `inert` kind for `max` (building-blocks 1.4): a static `max="lg"` stays on t
 | Host | static `class: 'breakout'`; static `data-ngx-yeti-item-breakout: ''`; `[attr.data-max]` and `[attr.data-gap]` from the inputs, `null` when unset | `[attr.data-bleed]`: `''` when `bleed()` is true, else `null` | static `data-note: ''` |
 | Providers | `yetiBreakoutToken` | none | none |
 | Models, outputs, methods | none | none | none |
-| Lifecycle | acquires the `breakout` item file in its constructor and releases it through `DestroyRef` (ADR 0060 point 2; building-blocks 1.9) | none | none |
+| Lifecycle | `injectYetiItemStyles('breakout')` from `ngx-yeti/styles` is the last statement of its constructor, after anything there that can throw (nothing does today); it acquires the `breakout` item file, on the server too, and releases it through `DestroyRef` (ADR 0060 point 2; building-blocks 1.9; [setup](setup.md); ticket 50 decisions 42 and 45) | none | none |
 
 Types come from the generated `yeti-types.ts` copy of Yeti's typings at the pin, re-exported by name (ADR 0060 point 10; building-blocks 1.3). The selectors are the ones Part 2 row 2 names; this spec fixes them, as ticket 26 left part selectors to the specs.
 
@@ -226,7 +226,7 @@ None. The breakout has no state and no transition, and Yeti's reduced-motion han
 - **Full hydration:** every element is claimed as is; bindings computed from the same inputs give the same values (usage rule 5); 0 style mutations (ADR 0060 point 5, measured for the mechanism).
 - **Incremental hydration (`@defer (hydrate on ...)`):** the server rendered the breakout and its link; a dehydrated host holds the link for as long as it is on the page (ADR 0060 point 4, measured for the mechanism). A breakout and its marked children share one **Hydration boundary** by construction, because the part directives must sit on direct children (usage rule 2); a deferred block inside a breakout makes its own wrapper element the child, unless the block's content is the child itself.
 - **`hydrate never`:** the breakout is its server HTML and stays styled while its host is connected, whatever live breakouts do (ADR 0060 point 4; ADR 0045's presence attribute is what the check queries). There is no Angular behaviour to lose; a bound input simply never changes.
-- **Client-only `@defer`:** the item file is fetched when `YetiBreakout` is constructed, which can show unstyled frames; the consumer closes the gap with `provideYetiStyles({ preload: ['breakout'] })` (ADR 0060 point 6; [setup](../issues/38-spec-setup.md)). No entry animation needs the file.
+- **Client-only `@defer`:** the item file is fetched when `YetiBreakout` is constructed, which can show unstyled frames; the consumer closes the gap with `provideYetiStyles({ preload: ['breakout'] })` (ADR 0060 point 6; [setup](setup.md)). No entry animation needs the file.
 - **Event replay:** the directives declare no listener, so nothing replays and no `jsaction` is added by them.
 - **`withI18nSupport()`:** a long read's text is translated with `i18n` in the consumer's component. The directives add no `i18n` block; the consumer's component needs `withI18nSupport()` to hydrate rather than re-render (ADR 0011 clause 11; building-blocks 1.11 decision 11).
 - **Zoneless:** inputs are signals and host bindings read them, so a bound `max`, `gap`, or `bleed` refreshes with no zone (map, Standing rulings, item 43; ADR 0070 rule 4).
@@ -249,7 +249,7 @@ None. The breakout has no navigation or fragment behaviour, so it uses neither [
 
 ### 13. Item file
 
-`yeti-css/css/layouts/breakout/breakout.css`, one of Yeti's 49, loaded as a counted `<link>` by the root styles service of ADR 0060: acquired when the first `[yetiBreakout]` is created, on the server too, inserted in Yeti's order (`Y/src/yeti.css:33`, the rank table of point 3), and removed after the last host carrying `data-ngx-yeti-item-breakout` has left the DOM. The consumer's part is ADR 0060 point 11's setup, which the [setup](../issues/38-spec-setup.md) spec owns: Yeti's build at the Pin under `yeti-css`, the `assets` entry, the global stylesheet with the layer statement and the always-loaded group (which holds the `[data-max]` and `[data-gap]` value rules), and optionally `provideYetiStyles({ preload: ['breakout'] })`. The breakout adds nothing to it. Cross-item files acquired: none (`breakout.css` has no cross-item rule; ADR 0060 point 9). An item placed inside or beside a breakout (`frame`, `box`) loads its own file through its own directive.
+`yeti-css/css/layouts/breakout/breakout.css`, one of Yeti's 49, loaded as a counted `<link>` by the root styles service of ADR 0060: acquired when the first `[yetiBreakout]` is created, on the server too, inserted in Yeti's order (`Y/src/yeti.css:33`, the rank table of point 3), and removed after the last host carrying `data-ngx-yeti-item-breakout` has left the DOM. The consumer's part is ADR 0060 point 11's setup, which the [setup](setup.md) spec owns: Yeti's build at the Pin under `yeti-css`, the `assets` entry, the global stylesheet with the layer statement and the always-loaded group (which holds the `[data-max]` and `[data-gap]` value rules), and optionally `provideYetiStyles({ preload: ['breakout'] })`. The breakout adds nothing to it. Cross-item files acquired: none (`breakout.css` has no cross-item rule; ADR 0060 point 9). An item placed inside or beside a breakout (`frame`, `box`) loads its own file through its own directive.
 
 ## Testing Decisions
 
@@ -294,7 +294,7 @@ Fixture-app half, built with `outputMode: 'server'`, with a `/breakout` route ma
 - a breakout inside a client-only `@defer` block with `breakout` in the preload list shows no unstyled frame; a breakout inside a `hydrate never` block stays styled after a live breakout on the page is removed;
 - navigating from the breakout route to a route without one removes the item link, and navigating back re-inserts it.
 
-Testing at the floor browsers is not decided yet ([building-blocks.md](../building-blocks.md) Part 4; ADR 0014 point 7).
+Floor engines: [ticket 93](../issues/93-decide-testing-at-the-browser-floor.md) (a weekly and release-branch job; Safari 26.2 held statically).
 
 Prior art: Yeti's `example.html` for the default story and its `test/browser/layouts/breakout.spec.js` and fixture for the geometry cases; ticket 18's fixture app and ADR 0060's prototype for the server HTML and the item link; ticket 17's contrast harness for the formula.
 
@@ -306,8 +306,7 @@ Prior art: Yeti's `example.html` for the default story and its `test/browser/lay
 - Any check that parts sit on direct children, that a note follows a child, or that a breakout has a child. Checks belong to a later milestone (map, Milestones); the usage rules state them.
 - A viewport-keyed input or any JavaScript size read (building-blocks 1.7).
 - Package CSS for the breakout, unless a contrast assertion fails (A11Y-10a's rule).
-- How the styles service counts, inserts, and removes links (ADR 0060; the [setup](../issues/38-spec-setup.md) spec).
-- Testing at the floor browsers (building-blocks Part 4).
+- How the styles service counts, inserts, and removes links (ADR 0060; the [setup](setup.md) spec).
 
 ## Further Notes
 
@@ -327,6 +326,7 @@ Prior art: Yeti's `example.html` for the default story and its `test/browser/lay
 | Tokens are the consumer's | ADR 0004 |
 | Item file as a counted link; presence attribute `data-ngx-yeti-item-breakout` | ADR 0060 points 2 to 6; ADR 0045 |
 | Only the item directive marks its host and acquires the item file | [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 6 |
+| `injectYetiItemStyles('breakout')` last in the constructor | [setup](setup.md); ticket 50 decisions 42 and 45 |
 | Contrast asserted in the play function | ADR 0015 point 3; ledger A11Y-10c |
 | Normal-text 4.5:1 threshold for every text checked | [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 8 |
 | Directive tests through `TestBed.createDirective` | map, Standing rulings, Directive testing; ADR 0014 note |
@@ -378,7 +378,7 @@ A page whose breakout renders inside a client-only `@defer` block preloads the i
 
 Per building-blocks 1.13:
 
-1. **Item file:** `layouts/breakout/breakout.css`, loaded by `YetiBreakout` as a counted link (section 13). The consumer writes nothing for the breakout beyond the [setup](../issues/38-spec-setup.md) spec's one-time configuration.
+1. **Item file:** `layouts/breakout/breakout.css`, loaded by `YetiBreakout` as a counted link (section 13). The consumer writes nothing for the breakout beyond the [setup](setup.md) spec's one-time configuration.
 2. **Always-loaded rules relied on:** `layouts/attributes.css` maps `data-max` and `data-gap` values to the private tokens; `tokens/space.css` declares `--yeti-width-md` and `--yeti-space-md`; `tokens/type.css` the heading-space tokens and `--yeti-text-sm`; `base/prose.css` caps prose at `--yeti-measure`.
 3. **Cross-item rules:** none in `breakout.css`. Items placed inside it keep their own rules; `.breakout > *` zeroes their outer margins, as every gap-based layout does (`docs.md`).
 4. **Tokens:** reads six public tokens, writes none (section 2).

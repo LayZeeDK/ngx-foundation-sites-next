@@ -127,7 +127,7 @@ The input value types are Yeti's own, from the package's generated `yeti-types.t
 - One directive, no parts. The `svg` child is styled by element and position and takes no directive (building-blocks 1.1; ticket 26 grilling question 6). So the item provides no injection token (building-blocks 1.9: a token is the parent handle a part injects).
 - No host directives. No Yeti item always sits on another's element (Part 2, "Two findings that hold across the matrix"). A consumer composes by writing directives beside each other. Yeti's examples put a badge inside a heading, a paragraph, a painted `box`, and a card footer (`docs.md`; `Y/src/components/card/example.html:6`), each a nested element, never the badge's own element.
 - Shared input names (building-blocks 1.4, shared vocabularies): `variant` is `YetiVariant` on every item that declares it (alert, button, card, field, nav, pagination, progress, spinner, tabs, toc; ticket 26), `emphasis` is `YetiEmphasis` on alert and button and `Extract<YetiEmphasis, 'high'>` on tabs, and `size` is `YetiSizeControl` on every reader. The badge sits on its own element, so it never shares an element with those items in Yeti's markup; the any-element marker directives a consumer may write beside it (`yetiPaint`, `yetiText`, `yetiBorder`) declare selector-named inputs only ([ADR 0070](../adr/0070-where-a-yeti-attribute-sits-decides-its-mapping.md) kind G), so no name collides.
-- The only injection is the root styles service of ADR 0060, through which `YetiBadge` acquires and releases the item file (ticket 50 decision 18). That service is the [setup](setup.md) spec's and ADR 0060's.
+- The only injection is the root styles service of ADR 0060, reached by `injectYetiItemStyles('badge')` from `ngx-yeti/styles` as the last statement of the constructor ([setup](setup.md); ticket 50 decisions 42 and 45), through which `YetiBadge` acquires and releases the item file (ticket 50 decision 18). That service is the [setup](setup.md) spec's and ADR 0060's.
 - Generated ids and the platform's relationship attributes: none. The badge renders no `id` and references none, so it does not use [generated-ids](generated-ids.md).
 
 ### 4. API
@@ -141,9 +141,9 @@ The input value types are Yeti's own, from the package's generated `yeti-types.t
 | Inputs | `variant: YetiVariant \| undefined` (Yeti default `primary`); `emphasis: YetiEmphasis \| undefined` (`medium`); `size: YetiSizeControl \| undefined` (`md`); each `input()` with no default value |
 | Host | static `class: 'badge'`; static `data-ngx-yeti-item-badge: ''`; `[attr.data-variant]`, `[attr.data-emphasis]`, `[attr.data-size]` from the inputs, `null` when unset. No binding for HTML `size` (`inert`) |
 | Providers | none |
-| Injection | the ADR 0060 styles service |
+| Injection | the ADR 0060 styles service, through `injectYetiItemStyles('badge')` |
 | Models, outputs, methods, listeners | none |
-| Lifecycle | acquires the `badge` item file in its constructor, after anything there that can throw (nothing does today), and releases it through `DestroyRef` (ADR 0060 point 2; ticket 50 decisions 18 and 42) |
+| Lifecycle | acquires the `badge` item file, on the server too, with `injectYetiItemStyles('badge')` as the last statement of its constructor (ticket 50 decisions 42 and 45), after anything there that can throw (nothing does today), and releases it through `DestroyRef` (ADR 0060 point 2; ticket 50 decisions 18 and 42) |
 
 No input default differs from Yeti's (ADR 0070 rule 1). A static attribute type-checks as a string literal under `strictTemplates`, so `variant="success"` compiles and `variant="succes"` does not (ADR 0070 rule 2; ticket 26 grilling question 14, read, not run).
 
@@ -303,7 +303,7 @@ Fixture-app half, built with `outputMode: 'server'`, with a `/badge` route marke
 - a badge inside a client-only `@defer` block with `badge` in the preload list shows no unstyled frame;
 - navigating from the badge route to a route without one removes the item link, and navigating back re-inserts it.
 
-Testing at the floor browsers is not decided yet ([building-blocks.md](../building-blocks.md) Part 4; ADR 0014 point 7).
+Floor engines: [ticket 93](../issues/93-decide-testing-at-the-browser-floor.md) (a weekly and release-branch job; Safari 26.2 held statically).
 
 Prior art: Yeti's `example.html` and `docs.md` examples for the stories, and its `test/browser/components/badge.spec.js` with the fixture `test/browser/fixtures/components/badge.html` for the size ratio, the transparent low emphasis, the pill radius, the per-scheme AA check, the lettering-width token, and axe; ticket 18's fixture app for the `hydrate never` case; ADR 0060's prototype for the server HTML and the item link; the [box](box.md) spec's play-function contrast assertions on painted bands.
 
@@ -314,9 +314,8 @@ Prior art: Yeti's `example.html` and `docs.md` examples for the stories, and its
 - Writing the count into a control's name for the consumer, or any `aria-label` the package composes (building-blocks 1.10, Names and Strings).
 - A badge that is itself a link or a control (usage rule 1).
 - Any check that the host is a non-interactive inline element, that the text is short, that the word carries the meaning, or that a count is in its control's name. Checks belong to a later milestone (map, Milestones); the usage rules state them.
-- Package CSS for the badge, including forced colours, unless the open point decides otherwise (building-blocks 1.13; ADR 0060 point 8).
+- Package CSS for the badge, including forced colours: none, and no ledger row; layer 4 records the forced-colours result (ticket 50 decision 78; building-blocks 1.13; ADR 0060 point 8).
 - How the styles service counts, inserts, and removes links (ADR 0060; the [setup](setup.md) spec).
-- Testing at the floor browsers (building-blocks Part 4).
 
 ## Further Notes
 

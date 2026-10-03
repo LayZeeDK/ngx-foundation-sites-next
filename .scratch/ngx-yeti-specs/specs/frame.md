@@ -18,7 +18,7 @@ Three accessibility facts come with cropping, and Yeti names two of them in its 
 
 One **Item directive** in the secondary entry point `ngx-yeti/frame` (building-blocks Part 2 row 8; [Decide: the spec list](../issues/11-decide-spec-list.md) row 8 and Q9):
 
-- `YetiFrame`, selector `[yetiFrame]`, `exportAs: 'yetiFrame'`. It binds `frame` as a static host class, sets `data-ngx-yeti-item-frame` on its host, acquires the `frame` item file when it is created (on the server too) and releases it when it is destroyed ([ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md); ADR 0060 point 2). It has one input, `ratio` (`YetiRatio`), bound as `data-ratio` and rendering nothing when unset, so Yeti's 16/9 applies from its CSS.
+- `YetiFrame`, selector `[yetiFrame]`, `exportAs: 'yetiFrame'`. It binds `frame` as a static host class, sets `data-ngx-yeti-item-frame` on its host, acquires the `frame` item file when it is created (on the server too) and releases it when it is destroyed ([ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md); ADR 0060 point 2), through `injectYetiItemStyles('frame')` from `ngx-yeti/styles` as the last statement of its constructor ([setup](setup.md); ticket 50 decisions 42 and 45). It has one input, `ratio` (`YetiRatio`), bound as `data-ratio` and rendering nothing when unset, so Yeti's 16/9 applies from its CSS.
 
 There is no **Part directive**: the frame's one child is the consumer's element with no marker, and Yeti's CSS selects it by tag (`frame.css`; ticket 26 has no child row for `frame`). Everything else is Yeti's CSS and the platform. The value is a host binding on an input signal, so the server HTML is Yeti's documented markup and the frame renders the same before hydration, after it, with JavaScript off, and inside any `@defer` or hydrate block. The package writes no **Token** and offers no input per token ([ADR 0004](../adr/0004-yeti-tokens-are-a-consumer-stylesheet-surface.md)).
 
@@ -117,7 +117,7 @@ Attributes left to the consumer: none ([ticket 26](../issues/26-decide-yeti-data
 
 None. `YetiFrame` is standalone. It provides no **Injection token**, injects no parent, hosts no directive, and is hosted by none: no Yeti item always sits on another item's element (Part 2, "Two findings that hold across the matrix"). It is written beside other directives on one element (`<div yetiFrame yetiBorder>`, `<div yetiFrame yetiBreakoutChild bleed>`) and inside other layouts (`yetiSidebar`, `yetiStack`, `yetiColumns`), as building-blocks 1.9 has composed items. `ratio` is shared with `hero`, `media`, and `card`, each `YetiRatio` (ticket 26 rows 30, 72, 79, 101), so if two of them ever sit on one element one binding feeds both and renders the one `data-ratio` Yeti means (building-blocks 1.4, shared vocabularies).
 
-The only injection is the root styles service of ADR 0060, through which `YetiFrame` acquires and releases the `frame` item file. That service is the [setup](../issues/38-spec-setup.md) spec's (`provideYetiStyles()`) and ADR 0060's.
+The only injection is the root styles service of ADR 0060, through `injectYetiItemStyles('frame')` ([setup](setup.md); ticket 50 decisions 42 and 45), with which `YetiFrame` acquires and releases the `frame` item file. That service is the [setup](setup.md) spec's (`provideYetiStyles()`) and ADR 0060's.
 
 Generated ids and the platform's relationship attributes: none. Nothing here renders or references an `id`, so the item does not use [generated-ids](generated-ids.md).
 
@@ -130,7 +130,7 @@ Generated ids and the platform's relationship attributes: none. Nothing here ren
 | Host | `class: 'frame'`; `'data-ngx-yeti-item-frame': ''` (static); `[attr.data-ratio]` from `ratio`, `null` when unset |
 | Inputs | `ratio`: `YetiRatio \| undefined`, default `undefined` (ADR 0070 rule 1). Yeti's default `16/9` applies from its CSS. `YetiRatio` is Yeti's own vocabulary type, re-exported from the package's generated types module (ADR 0060 point 10; ADR 0005) |
 | Models, outputs, methods | none |
-| Lifecycle | acquires `frame` in its constructor and releases it on destroy, through `DestroyRef` (ADR 0060 point 2; building-blocks 1.9) |
+| Lifecycle | `injectYetiItemStyles('frame')` is the last statement of its constructor, after anything there that can throw (nothing does today), so `frame` is acquired on the server too; the release runs through `DestroyRef` (ADR 0060 point 2; [setup](setup.md); ticket 50 decisions 42 and 45; building-blocks 1.9) |
 
 **Usage rules** (numbered here and in the directive's JSDoc; the first milestone reports no breach, map, Milestones):
 
@@ -185,12 +185,14 @@ Forced colours: the frame draws nothing of its own. A `yetiBorder` edge is the `
 Consumer markup, after Yeti's example:
 
 ```html
-<div yetiFrame ratio="16/9">
-  <img src="photo.jpg" alt="A lake at dawn, cropped to sixteen by nine" />
+<div yetiFrame ratio="16/9" class="photo">
+  <img ngSrc="photo.jpg" fill alt="A lake at dawn, cropped to sixteen by nine" />
 </div>
 ```
 
-Server HTML and the hydrated DOM are the same. The `div` carries the consumer's static attributes as Angular renders them (`yetiframe=""`, `ratio="16/9"`), and from the package `class="frame"`, `data-ngx-yeti-item-frame=""`, and `data-ratio="16/9"`. The server also writes one item link into `<head>` in Yeti's order: `rel="stylesheet"`, `href` `<url>layouts/frame/frame.css?v=<pin>` with `url` defaulting to `yeti-css/` relative to `<base href>`, `data-ngx-yeti-styles="frame"`, `data-ngx-yeti-app="<APP_ID>"`, `data-beasties-skip`, and the `CSP_NONCE` when one is provided (ADR 0060 points 2, 3, and 5). The client adopts it at bootstrap.
+The image is `NgOptimizedImage` in `fill` mode, and the consumer's own stylesheet gives `.photo` `position: relative` (usage rule 6; [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 35).
+
+Server HTML and the hydrated DOM are the same. The `div` carries the consumer's static attributes as Angular renders them (`yetiframe=""`, `ratio="16/9"`, and the class `photo`), and from the package the class `frame`, `data-ngx-yeti-item-frame=""`, and `data-ratio="16/9"`. The server also writes one item link into `<head>` in Yeti's order: `rel="stylesheet"`, `href` `<url>layouts/frame/frame.css?v=<pin>` with `url` defaulting to `yeti-css/` relative to `<base href>`, `data-ngx-yeti-styles="frame"`, `data-ngx-yeti-app="<APP_ID>"`, `data-beasties-skip`, and the `CSP_NONCE` when one is provided (ADR 0060 points 2, 3, and 5). The client adopts it at bootstrap.
 
 A frame with no `ratio`, `<div yetiFrame>`, renders `class="frame"` and `data-ngx-yeti-item-frame=""` and no `data-ratio`, and Yeti's default ratio applies.
 
@@ -207,7 +209,7 @@ None. The frame has no state and no transition, and Yeti's reduced-motion handli
 - **Full hydration:** the element is claimed as is; the binding computes the same value; 0 style mutations (ADR 0060 point 5, measured for the mechanism). The child's own static attributes are written again by hydration, which reloads an `iframe` and a `video` with a `src` attribute (usage rule 7; [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 36).
 - **Incremental hydration (`@defer (hydrate on ...)`):** the server rendered the frame, its child, and the link; a dehydrated host holds the link through `data-ngx-yeti-item-frame` for as long as it is on the page (ADR 0060 point 4; ADR 0045). A bound `ratio` changes only after the block hydrates. Inside a not-yet-hydrated block, the child's attributes are not rewritten until the block hydrates.
 - **`hydrate never`:** the frame is its server HTML and keeps its shape while the host is connected, whatever live frames do (ADR 0060 point 4; ADR 0045). There is no behaviour to lose; a bound value stays at its server value, and the media are the platform's.
-- **Client-only `@defer`:** `YetiFrame` fetches the item file when it is constructed, so an image can show at its own size and shift the layout for a few frames; the consumer closes the gap with `provideYetiStyles({ preload: ['frame'] })` (ADR 0060 point 6; [setup](../issues/38-spec-setup.md)).
+- **Client-only `@defer`:** `YetiFrame` fetches the item file when it is constructed, so an image can show at its own size and shift the layout for a few frames; the consumer closes the gap with `provideYetiStyles({ preload: ['frame'] })` (ADR 0060 point 6; [setup](setup.md)).
 - **Event replay:** the directive declares no listener, so nothing replays and no `jsaction` is added.
 - **`withI18nSupport()`:** the `alt` and `title` inside a frame are the consumer's and usually carry `i18n-alt` and `i18n-title`; the directive adds no `i18n` block. The consumer's component needs `withI18nSupport()` to hydrate rather than re-render (ADR 0011 clause 11; building-blocks 1.11 decision 11).
 - **Zoneless:** the value is an `input()` signal read by a host binding, the form ticket 18 measured refreshing zoneless (ADR 0070 rule 4; map, Standing rulings, item 43).
@@ -231,7 +233,7 @@ None. The item has no navigation or fragment behaviour, so it uses neither [navi
 
 ### 13. Item file
 
-`yeti-css/css/layouts/frame/frame.css`, one of Yeti's 49, loaded as a counted `<link>` by the root styles service of ADR 0060: acquired when the first `[yetiFrame]` is created, on the server too, inserted in Yeti's order (`Y/src/yeti.css:26`, the rank table of point 3), and removed after the last `[data-ngx-yeti-item-frame]` host has left the DOM. The consumer's part is ADR 0060 point 11's setup, which the [setup](../issues/38-spec-setup.md) spec owns, optionally with `provideYetiStyles({ preload: ['frame'] })`. Cross-item files acquired: none (`frame.css` has no cross-item rule; ADR 0060 point 9). The `data-ratio` values are in the always-loaded `attributes.css`, so they need no file of their own.
+`yeti-css/css/layouts/frame/frame.css`, one of Yeti's 49, loaded as a counted `<link>` by the root styles service of ADR 0060: acquired when the first `[yetiFrame]` is created, on the server too, inserted in Yeti's order (`Y/src/yeti.css:26`, the rank table of point 3), and removed after the last `[data-ngx-yeti-item-frame]` host has left the DOM. The consumer's part is ADR 0060 point 11's setup, which the [setup](setup.md) spec owns, optionally with `provideYetiStyles({ preload: ['frame'] })`. Cross-item files acquired: none (`frame.css` has no cross-item rule; ADR 0060 point 9). The `data-ratio` values are in the always-loaded `attributes.css`, so they need no file of their own.
 
 ## Testing Decisions
 
@@ -278,7 +280,7 @@ On the fixture app, built with `outputMode: 'server'`, with a `/frame` route mar
 - navigating from the frame route to a route without a frame removes the item link, and navigating back re-inserts it;
 - at a 320 px viewport a `21/9` frame causes no horizontal overflow (1.4.10).
 
-Testing at the floor browsers is not decided yet ([building-blocks.md](../building-blocks.md) Part 4; ADR 0014 point 7).
+Floor engines: [ticket 93](../issues/93-decide-testing-at-the-browser-floor.md) (a weekly and release-branch job; Safari 26.2 held statically).
 
 Prior art: Yeti's `example.html`, `docs.md`, and the layouts guide's card for the stories; ticket 18's fixture app and ADR 0060's prototype for the server HTML and the item link; ticket 33's C2 probe for counting an `iframe`'s loads; the [box](box.md) and [lede](lede.md) specs' probe pattern.
 
@@ -290,8 +292,7 @@ Prior art: Yeti's `example.html`, `docs.md`, and the layouts guide's card for th
 - A check that a frame has one child, that its image's `alt` fits the crop, that an `iframe` has a `title`, or that no text sits inside a frame. Checks belong to a later milestone (map, Milestones); the usage rules state them, and axe covers `alt` and `title` presence in the stories.
 - `data-border` and its rules, the [box](box.md) spec's `yetiBorder`.
 - `ratio` on `hero`, `media`, and `card`, owned by their specs.
-- How the styles service counts, inserts, and removes links (ADR 0060; the [setup](../issues/38-spec-setup.md) spec).
-- Testing at the floor browsers (building-blocks Part 4).
+- How the styles service counts, inserts, and removes links (ADR 0060; the [setup](setup.md) spec).
 
 ## Further Notes
 
@@ -308,6 +309,7 @@ Prior art: Yeti's `example.html`, `docs.md`, and the layouts guide's card for th
 | `exportAs`; secondary entry point | building-blocks 1.3; ADR 0011 clause 10 |
 | Native platform, level 1, types only | building-blocks 1.2; Part 2 row 8 |
 | Item file as a counted link; presence attribute `data-ngx-yeti-item-frame` | ADR 0060 points 2 to 6; ADR 0045 |
+| `injectYetiItemStyles('frame')` last in the constructor | [setup](setup.md); ticket 50 decisions 42 and 45 |
 | No ledger row | Part 2 row 8; the `masonry` precedent, Part 2 row 12; [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 37 |
 | Directive tests through `TestBed.createDirective` | map, Standing rulings, Directive testing; ADR 0014 note |
 | Fixture app `outputMode: 'server'` with prerendered and server routes | ticket 50 decision 2 |
@@ -321,8 +323,8 @@ A card thumbnail from Yeti's layouts guide, in a bordered box with a stack:
 ```html
 <div yetiBox yetiBorder>
   <div yetiStack gap="sm">
-    <div yetiFrame ratio="4/3">
-      <img src="trail.jpg" alt="A mountain trail at dawn, cropped to four by three" i18n-alt />
+    <div yetiFrame ratio="4/3" class="thumb">
+      <img ngSrc="trail.jpg" fill alt="A mountain trail at dawn, cropped to four by three" i18n-alt />
     </div>
     <h3 i18n>Weekend in the hills</h3>
     <p i18n>Six miles, one summit, and a view worth the early start.</p>
@@ -331,17 +333,26 @@ A card thumbnail from Yeti's layouts guide, in a bordered box with a stack:
 ```
 
 ```ts
+import { NgOptimizedImage } from '@angular/common';
 import { YetiBorder, YetiBox } from 'ngx-yeti/box';
 import { YetiFrame } from 'ngx-yeti/frame';
 import { YetiStack } from 'ngx-yeti/stack';
 
 @Component({
   selector: 'app-trail-card',
-  imports: [YetiBox, YetiBorder, YetiStack, YetiFrame],
+  imports: [NgOptimizedImage, YetiBox, YetiBorder, YetiStack, YetiFrame],
   templateUrl: './trail-card.html',
+  styleUrl: './trail-card.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TrailCard {}
+```
+
+```css
+/* NgOptimizedImage's fill mode needs a positioned parent (usage rule 6; ticket 50 decision 35) */
+.thumb {
+  position: relative;
+}
 ```
 
 A video embed that keeps the page still while it loads, with a title and static security attributes:
@@ -378,7 +389,7 @@ A picture that bleeds out of a reading column: `<div yetiFrame yetiBreakoutChild
 
 Per building-blocks 1.13:
 
-1. **Item file:** `layouts/frame/frame.css`, loaded by `YetiFrame` as a counted link (section 13). The consumer writes nothing for the frame beyond the [setup](../issues/38-spec-setup.md) spec's one-time configuration.
+1. **Item file:** `layouts/frame/frame.css`, loaded by `YetiFrame` as a counted link (section 13). The consumer writes nothing for the frame beyond the [setup](setup.md) spec's one-time configuration.
 2. **Always-loaded rules relied on:** `layouts/attributes.css` maps the five `data-ratio` values to `--_yeti-aspect` (`:221-226`) and holds the `data-border` marker rule (`:462-465`); `base/reset.css` makes an image a fluid block (`Y/src/guides/base.md:403`).
 3. **Cross-item rules:** none in `frame.css`. Yeti's `hero`, `media`, and `card` crop their own media with their own rules and do not load `frame.css` (`Y/src/recipes/hero/hero.css`, `media.css`, read).
 4. **Tokens:** reads only the private `--_yeti-aspect`; writes none (section 2).

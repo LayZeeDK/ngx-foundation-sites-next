@@ -18,7 +18,7 @@ The accessibility of the trail rests on three things the markup carries, and two
 
 One directive in the secondary entry point `ngx-yeti/breadcrumbs` ([building-blocks.md](../building-blocks.md) Part 2 row 25; 1.3):
 
-- **`YetiBreadcrumbs`**, the **Item directive**, on `nav[yetiBreadcrumbs]`, `exportAs: 'yetiBreadcrumbs'`. It binds `breadcrumbs` as a static host class, binds `data-size` from the typed input `size` (`YetiSizeControl`), sets the static presence attribute `data-ngx-yeti-item-breadcrumbs` ([ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md)), acquires the `breadcrumbs` item file when it is created, on the server too, and releases it when it is destroyed (ADR 0060 point 2).
+- **`YetiBreadcrumbs`**, the **Item directive**, on `nav[yetiBreadcrumbs]`, `exportAs: 'yetiBreadcrumbs'`. It binds `breadcrumbs` as a static host class, binds `data-size` from the typed input `size` (`YetiSizeControl`), sets the static presence attribute `data-ngx-yeti-item-breadcrumbs` ([ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md)), acquires the `breadcrumbs` item file when it is created, on the server too, and releases it when it is destroyed (ADR 0060 point 2), through `injectYetiItemStyles('breadcrumbs')` from `ngx-yeti/styles` as the last statement of its constructor ([setup](setup.md); ticket 50 decisions 42 and 45).
 
 The developer writes `<nav yetiBreadcrumbs size="sm" aria-label="Breadcrumb">` where Yeti's docs write `<nav class="breadcrumbs" aria-label="Breadcrumb" data-size="sm">`. An unset `size` renders no attribute, so Yeti's own default (`md`) applies from its CSS ([ADR 0070](../adr/0070-where-a-yeti-attribute-sits-decides-its-mapping.md) rule 1). The `ol` with `role="list"`, the `li` steps, the links, the `nav`'s name, and `aria-current="page"` stay the consumer's markup (Part 2 row 25; building-blocks 1.1 and 1.10). The `ol` and the steps get no directive: Yeti styles them by element and position only (building-blocks 1.1, "a child Yeti styles only by element and position gets no directive").
 
@@ -133,9 +133,9 @@ The input value type is Yeti's own, from the package's generated `yeti-types.ts`
 
 - No injection token, no parent, no part directives. The item has one directive, and nothing needs to find it (building-blocks 1.9 applies to items with parts).
 - No host directives. No Yeti item always sits on another's element (Part 2, "Two findings that hold across the matrix"). A consumer composes by writing directives beside each other: the `nav` may also carry a utility such as `yetiPrint`, each item with its own presence attribute (ADR 0045).
-- No Aria. Aria has no breadcrumb pattern, and the APG breadcrumb is met by Yeti's markup (Part 2 row 25; ticket 17 section 4.5). Toolbar was considered and not used: a breadcrumb is a list of links with `aria-current`, met by Yeti's markup ([Research: where Angular Aria's attribute directives fit Yeti's own markup](../issues/32-research-aria-directives-on-yetis-own-markup.md), section "Items where no Aria pattern fits any gap"). The user's rule "only reach for Angular Aria when it addresses an accessibility feature that Yeti is missing" (map, Standing rulings, When to use Angular Aria) gives no reason to reach for it.
+- No Aria. Aria has no breadcrumb pattern, and the APG breadcrumb is met by Yeti's markup (Part 2 row 25; ticket 17 section 4.5). Toolbar was considered and not used: a breadcrumb is a list of links with `aria-current`, met by Yeti's markup ([Research: where Angular Aria's attribute directives fit Yeti's own markup](../issues/32-research-aria-directives-on-yetis-own-markup.md), section "Items where no Aria pattern fits any gap"). The user's rule to reach for Angular Aria only when it addresses an accessibility feature Yeti is missing (map, Standing rulings, When to use Angular Aria, paraphrased) gives no reason to reach for it.
 - `RouterLinkActive` is the consumer's, from `@angular/router`, not hosted and not injected. The package has no dependency on the Router for this item.
-- The only injection is the root styles service of ADR 0060, through which `YetiBreadcrumbs` acquires and releases the item file. That service is the [setup](setup.md) spec's and ADR 0060's.
+- The only injection is the root styles service of ADR 0060, through `injectYetiItemStyles('breadcrumbs')` from `ngx-yeti/styles` ([setup](setup.md); ticket 50 decisions 42 and 45), with which `YetiBreadcrumbs` acquires and releases the item file. That service is the [setup](setup.md) spec's and ADR 0060's.
 - Generated ids and the platform's relationship attributes: none. A consumer who names the trail with `aria-labelledby` writes the heading's `id` and the reference, both static; the package does not use [generated-ids](generated-ids.md).
 
 ### 4. API
@@ -149,9 +149,9 @@ The input value type is Yeti's own, from the package's generated `yeti-types.ts`
 | Inputs | `size: YetiSizeControl \| undefined` (Yeti default `md`), `input()` with no default value |
 | Host | static `class: 'breadcrumbs'`; static `data-ngx-yeti-item-breadcrumbs: ''`; `[attr.data-size]` from `size()`, `null` when unset |
 | Providers | none |
-| Injection | the ADR 0060 styles service |
+| Injection | the ADR 0060 styles service, through `injectYetiItemStyles('breadcrumbs')` |
 | Models, outputs, methods, listeners | none |
-| Lifecycle | acquires the `breadcrumbs` item file in its constructor, after anything there that can throw (nothing does today), and releases it through `DestroyRef` (ADR 0060 point 2; ticket 50 decisions 18 and 42) |
+| Lifecycle | `injectYetiItemStyles('breadcrumbs')` is the last statement of its constructor, after anything there that can throw (nothing does today); it acquires the `breadcrumbs` item file, on the server too, and releases it through `DestroyRef` (ADR 0060 point 2; [setup](setup.md); ticket 50 decisions 18, 42, and 45) |
 
 No input default differs from Yeti's (ADR 0070 rule 1). A static attribute type-checks as a string literal under `strictTemplates`, so `size="sm"` compiles and `size="small"` does not (ADR 0070 rule 2; ticket 26 grilling question 14, read, not run).
 
@@ -313,7 +313,7 @@ A small test host covers what `createDirective` cannot: the template reference `
 
 ### Layer 3: node-level and SSR smoke (`npx nx test <lib>`, `breadcrumbs.ssr.spec.ts`)
 
-Through the shared `renderServer()` helper with `withI18nSupport()`, `provideRouter` with three routes, and the URL `/docs/nav` (building-blocks 1.11 decision 11, 1.12). Two fixtures, one per form of usage rule 4, each with `aria-label="Breadcrumb" i18n-aria-label`, a static `size="sm"`, and an `i18n` step text: `whenStable()` resolves; the `nav` renders `class="breadcrumbs"`, `data-size="sm"`, `size="sm"`, and `data-ngx-yeti-item-breadcrumbs`; the `ol` keeps `role="list"`; exactly one element carries `aria-current="page"`, the last `li` in form (a) and the `/docs/nav` link in form (b); `<head>` holds one item link with `data-ngx-yeti-styles="breadcrumbs"`, `data-beasties-skip`, and an `href` ending `components/breadcrumbs/breadcrumbs.css?v=<pin>`; the `nav` carries no `jsaction`. The form (b) assertion is the measurement the open point on `RouterLinkActive` in server HTML needs.
+Through the shared `renderServer()` helper with `withI18nSupport()`, `provideRouter` with three routes, and the URL `/docs/nav` (building-blocks 1.11 decision 11, 1.12). Two fixtures, one per form of usage rule 4, each with `aria-label="Breadcrumb" i18n-aria-label`, a static `size="sm"`, and an `i18n` step text: `whenStable()` resolves; the `nav` renders `class="breadcrumbs"`, `data-size="sm"`, `size="sm"`, and `data-ngx-yeti-item-breadcrumbs`; the `ol` keeps `role="list"`; exactly one element carries `aria-current="page"`, the last `li` in form (a) and the `/docs/nav` link in form (b); `<head>` holds one item link with `data-ngx-yeti-styles="breadcrumbs"`, `data-beasties-skip`, and an `href` ending `components/breadcrumbs/breadcrumbs.css?v=<pin>`; the `nav` carries no `jsaction`. The form (b) assertion is the check [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 87 names: if it fails, form (b) becomes a client-rendered-only usage rule.
 
 The **Contract check** ([ADR 0014](../adr/0014-testing-stack-for-yeti.md) point 3) covers the item through the contract mapping: class `breadcrumbs` has `YetiBreadcrumbs`; `data-size` has an input whose union equals the manifest's vocabulary `size-control`; the item has no markers and no events. A pin move that adds an attribute, a value, or a marker fails here before any story does. The attribute-and-value check over the stories (building-blocks 1.12) covers every `data-size` value they render.
 
@@ -336,7 +336,7 @@ Fixture-app half, built with `outputMode: 'server'`, with a `/docs/nav` route ma
 - a trail inside a client-only `@defer` block with `breadcrumbs` in the preload list shows no unstyled frame;
 - navigating from the route to one without a routed trail removes nothing while the shell trail remains, and the item link is removed only on a page with no trail at all.
 
-Testing at the floor browsers is not decided yet ([building-blocks.md](../building-blocks.md) Part 4; ADR 0014 point 7).
+Floor engines: [ticket 93](../issues/93-decide-testing-at-the-browser-floor.md) (a weekly and release-branch job; Safari 26.2 held statically).
 
 Prior art: Yeti's `example.html` and `docs.md` examples for the stories, and its `test/browser/components/breadcrumbs.spec.js` with the fixture `test/browser/fixtures/components/breadcrumbs.html` for the separator, current-step, and axe cases; the APG breadcrumb example for the accessibility features; ticket 18's fixture app and ADR 0060's prototype for the server HTML and the item link; the [sidebar](sidebar.md) spec's probe technique for token-independent sizes.
 
@@ -349,7 +349,6 @@ Prior art: Yeti's `example.html` and `docs.md` examples for the stories, and its
 - Any check that the host has one `ol`, at least two steps, exactly one `aria-current`, a name, or no separator in markup. Checks belong to a later milestone (map, Milestones); the usage rules state them.
 - Package CSS for the item, unless the forced-colours assertion fails ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 88; building-blocks 1.13).
 - How the styles service counts, inserts, and removes links (ADR 0060; the [setup](setup.md) spec).
-- Testing at the floor browsers (building-blocks Part 4).
 
 ## Further Notes
 
@@ -367,6 +366,7 @@ Prior art: Yeti's `example.html` and `docs.md` examples for the stories, and its
 | No Aria, no CDK | building-blocks 1.2; Part 2 row 25; map, Standing rulings (When to use Angular Aria) |
 | The separator stays Yeti's generated content with empty alternative text | Yeti's CSS; manifest `a11y.notes`; ADR 0004 for the token |
 | The presence attribute and the item file | ADR 0045; ADR 0060 points 2 to 6 |
+| `injectYetiItemStyles('breadcrumbs')` last in the constructor | [setup](setup.md); ticket 50 decisions 42 and 45 |
 | `exportAs`; the class name has no collision | building-blocks 1.3; ADR 0080 points 3 and 4 |
 | Entry point `ngx-yeti/breadcrumbs` | building-blocks 1.3; ADR 0011 clause 10 |
 | Native platform, level 1, types only | building-blocks 1.2; Part 2 row 25 and "Types only"; ticket 50 decision 18 |

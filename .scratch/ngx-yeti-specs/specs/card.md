@@ -338,7 +338,7 @@ Fixture-app half, built with `outputMode: 'server'`, with a `/card` route marked
 - the `NgOptimizedImage` console output for a cropped card picture and for the row form is recorded in development mode ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 118);
 - navigating from the card route to a route without one removes the item link, and navigating back re-inserts it.
 
-Testing at the floor browsers is not decided yet ([building-blocks.md](../building-blocks.md) Part 4; ADR 0014 point 7).
+Floor engines: [ticket 93](../issues/93-decide-testing-at-the-browser-floor.md) (a weekly and release-branch job; Safari 26.2 held statically).
 
 Prior art: Yeti's `example.html` and `docs.md` examples for the stories; its `test/browser/components/card.spec.js` with the fixture `test/browser/fixtures/components/card.html` for the geometry, click, contrast, and axe cases (the bleed and crop, the footer at the bottom, the footer button's click, the intrinsic width in a cluster, the row form and `data-threshold`, raised and tinted, the layer caption, the ranked grid, AA in light and dark); ticket 18's fixture app and ADR 0060's prototype for the server HTML and the item link; the [lift](lift.md) spec's card cases; the [sidebar](sidebar.md) spec's probe technique for token-independent widths.
 
@@ -354,7 +354,6 @@ Prior art: Yeti's `example.html` and `docs.md` examples for the stories; its `te
 - Package CSS for the card (building-blocks 1.13; ADR 0060 point 8): the item owns no ledger row.
 - How the styles service counts, inserts, and removes links (ADR 0060; the [setup](setup.md) spec).
 - The `box` layout's `surface="raised"`, which Yeti calls "a tone", not a card (`Y/src/components/card/docs.md`), and the `media` recipe, each with its own spec.
-- Testing at the floor browsers (building-blocks Part 4).
 
 ## Further Notes
 

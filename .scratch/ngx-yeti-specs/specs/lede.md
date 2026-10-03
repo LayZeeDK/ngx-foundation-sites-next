@@ -19,7 +19,7 @@ The lede is also one of five items whose contrast axe could not compute on Yeti'
 One **Item directive**, `YetiLede`, with selector `[yetiLede]`, in the secondary entry point `ngx-yeti/lede` ([building-blocks.md](../building-blocks.md) Part 2 row 46, "class only"; 1.3). The developer writes `<p yetiLede>` where Yeti's docs write `<p class="lede">`. The directive:
 
 - binds `lede` as a static host class;
-- sets the presence attribute `data-ngx-yeti-item-lede` on its host ([ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md)) and acquires the `lede` item file when it is created, on the server too, and releases it when it is destroyed (ADR 0060 point 2);
+- sets the presence attribute `data-ngx-yeti-item-lede` on its host ([ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md)) and acquires the `lede` item file when it is created, on the server too, and releases it when it is destroyed (ADR 0060 point 2), through `injectYetiItemStyles('lede')` from `ngx-yeti/styles` as the last statement of its constructor ([setup](setup.md); ticket 50 decisions 42 and 45);
 - declares no input, no output, no listener, no render callback, and no injection token, so it is **types only** in building-blocks' sense, with no types to bind;
 - has `exportAs: 'yetiLede'` (building-blocks 1.3).
 
@@ -111,7 +111,7 @@ Attributes left to the consumer: none to leave. [Decide: how the package maps ea
 
 None. `YetiLede` is a standalone item directive. It provides no injection token, injects no parent, hosts no directive, and is hosted by none: no Yeti item always sits on another item's element (Part 2, "Two findings that hold across the matrix"). A consumer composes it beside another directive on the same element by writing both attributes, for example a lede that is also an `enter` target (`<p yetiLede yetiEnter>`), because the two declare no shared input name (building-blocks 1.4, shared vocabularies).
 
-The only injection is the root styles service of ADR 0060, through which the directive acquires and releases the `lede` item file. That service is the [setup](../issues/38-spec-setup.md) spec's (`provideYetiStyles()`) and ADR 0060's; this spec only names the item it acquires.
+The only injection is the root styles service of ADR 0060, through `injectYetiItemStyles('lede')` ([setup](setup.md); ticket 50 decisions 42 and 45), with which the directive acquires and releases the `lede` item file. That service is the [setup](setup.md) spec's (`provideYetiStyles()`) and ADR 0060's; this spec only names the item it acquires.
 
 Generated ids and the platform's relationship attributes: none. The lede renders no `id` and references none, so it does not use [generated-ids](generated-ids.md).
 
@@ -125,7 +125,7 @@ Generated ids and the platform's relationship attributes: none. The lede renders
 | Entry point | `ngx-yeti/lede` (building-blocks 1.3; ADR 0011 clause 10) |
 | Host | `class: 'lede'`; `'data-ngx-yeti-item-lede': ''` (both static) |
 | Inputs, models, outputs, methods | none |
-| Lifecycle | acquires the `lede` item file in its constructor and releases it on destroy, through `DestroyRef` (ADR 0060 point 2; building-blocks 1.9) |
+| Lifecycle | `injectYetiItemStyles('lede')` is the last statement of its constructor, after anything there that can throw (nothing does today), so the `lede` item file is acquired on the server too; the release runs through `DestroyRef` (ADR 0060 point 2; [setup](setup.md); ticket 50 decisions 42 and 45; building-blocks 1.9) |
 
 No input exists, so building-blocks 1.4's rule for inputs named like HTML attributes has nothing to apply to, and no default changes.
 
@@ -198,7 +198,7 @@ None. The lede has no state and no transition. Yeti's reduced-motion handling do
 - **Full hydration:** the paragraph is claimed as is; 0 style mutations (ADR 0060 point 5, measured for the mechanism).
 - **Incremental hydration (`@defer (hydrate on ...)`):** the server rendered the lede and its link; a dehydrated host holds the link for as long as it is on the page (ADR 0060 point 4, measured for the mechanism).
 - **`hydrate never`:** the lede is its server HTML and stays styled while the host is connected, whatever live ledes do (ADR 0060 point 4). There is no Angular behaviour to lose.
-- **Client-only `@defer`:** the item file is fetched when the directive is constructed, which can show unstyled frames; the consumer closes the gap with `provideYetiStyles({ preload: ['lede'] })` (ADR 0060 point 6; [setup](../issues/38-spec-setup.md)).
+- **Client-only `@defer`:** the item file is fetched when the directive is constructed, which can show unstyled frames; the consumer closes the gap with `provideYetiStyles({ preload: ['lede'] })` (ADR 0060 point 6; [setup](setup.md)).
 - **Event replay:** the directive declares no listener, so nothing replays and no `jsaction` is added to the lede.
 - **`withI18nSupport()`:** a lede's text is usually translated with `i18n` in the consumer's component. The directive adds no `i18n` block of its own; the consumer's component needs `withI18nSupport()` to hydrate rather than re-render (ADR 0011 clause 11; building-blocks 1.11 decision 11).
 - **Zoneless:** no state, so nothing for change detection to refresh (map, Standing rulings, item 43).
@@ -222,7 +222,7 @@ None. The lede has no navigation or fragment behaviour, so it uses neither [navi
 
 ### 13. Item file
 
-`yeti-css/css/utilities/lede/lede.css`, one of Yeti's 49, loaded as a counted `<link>` by the root styles service of ADR 0060: acquired when the first `[yetiLede]` is created, on the server too, inserted in Yeti's order (`Y/src/yeti.css:68`, the rank table of point 3), and removed after the last host has left the DOM. The consumer's part is ADR 0060 point 11's setup, which the [setup](../issues/38-spec-setup.md) spec owns: Yeti's build at the Pin under `yeti-css`, the `assets` entry, the global stylesheet with the layer statement, and optionally `provideYetiStyles({ preload: ['lede'] })`. The lede adds nothing to it. Cross-item files acquired: none (`lede.css` has no cross-item rule; ADR 0060 point 9).
+`yeti-css/css/utilities/lede/lede.css`, one of Yeti's 49, loaded as a counted `<link>` by the root styles service of ADR 0060: acquired when the first `[yetiLede]` is created, on the server too, inserted in Yeti's order (`Y/src/yeti.css:68`, the rank table of point 3), and removed after the last host has left the DOM. The consumer's part is ADR 0060 point 11's setup, which the [setup](setup.md) spec owns: Yeti's build at the Pin under `yeti-css`, the `assets` entry, the global stylesheet with the layer statement, and optionally `provideYetiStyles({ preload: ['lede'] })`. The lede adds nothing to it. Cross-item files acquired: none (`lede.css` has no cross-item rule; ADR 0060 point 9).
 
 ## Testing Decisions
 
@@ -265,7 +265,7 @@ On the fixture app, built with `outputMode: 'server'`, with a `/lede` route mark
 - at a 320 px viewport the page has no horizontal overflow (1.4.10);
 - in Firefox, the lede renders with normal wrapping, with no error (Yeti's `text-wrap: pretty` is outside the browser target there).
 
-Testing at the floor browsers is not decided yet ([building-blocks.md](../building-blocks.md) Part 4; ADR 0014 point 7).
+Floor engines: [ticket 93](../issues/93-decide-testing-at-the-browser-floor.md) (a weekly and release-branch job; Safari 26.2 held statically).
 
 Prior art: Yeti's `example.html` for the lede story; ticket 18's fixture app and ADR 0060's prototype for the server HTML and the item link; ticket 17's contrast harness for the formula.
 
@@ -275,8 +275,7 @@ Prior art: Yeti's `example.html` for the lede story; ticket 18's fixture app and
 - A `p[yetiLede]` selector or any check that the host is a paragraph or that a page has one lede. Checks belong to a later milestone (map, Milestones); the usage rules state them.
 - Package CSS for the lede, unless the contrast assertion fails (A11Y-10a's rule).
 - Heading semantics, `aria-describedby` from the heading to the lede, or any role on the lede (manifest `a11y.notes`).
-- How the styles service counts, inserts, and removes links (ADR 0060; the [setup](../issues/38-spec-setup.md) spec).
-- Testing at the floor browsers (building-blocks Part 4).
+- How the styles service counts, inserts, and removes links (ADR 0060; the [setup](setup.md) spec).
 
 ## Further Notes
 
@@ -291,6 +290,7 @@ Prior art: Yeti's `example.html` for the lede story; ticket 18's fixture app and
 | Native platform, level 1 | building-blocks 1.2; Part 2 row 46 |
 | Tokens are the consumer's | ADR 0004 |
 | Item file as a counted link with `data-ngx-yeti-item-lede` ([ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md)) | ADR 0060 points 2 to 6 |
+| `injectYetiItemStyles('lede')` last in the constructor | [setup](setup.md); ticket 50 decisions 42 and 45 |
 | Contrast asserted in the play function | ADR 0015 point 3; ledger A11Y-10e |
 | Normal-text 4.5:1 threshold for the lede | [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 8 |
 | Directive tests through `TestBed.createDirective` | map, Standing rulings, Directive testing; ADR 0014 note |
@@ -335,7 +335,7 @@ A page whose lede renders inside a client-only `@defer` block preloads the item:
 
 Per building-blocks 1.13:
 
-1. **Item file:** `utilities/lede/lede.css`, loaded by the directive as a counted link (section 13). The consumer writes nothing for the lede beyond the [setup](../issues/38-spec-setup.md) spec's one-time configuration.
+1. **Item file:** `utilities/lede/lede.css`, loaded by the directive as a counted link (section 13). The consumer writes nothing for the lede beyond the [setup](setup.md) spec's one-time configuration.
 2. **Always-loaded rules relied on:** `tokens/type.css` declares `--yeti-lede-size`, `--yeti-lede-measure`, `--yeti-leading-md`, and the type scale; `base/typography.css` sets the body prose the lede is measured against.
 3. **Cross-item rules:** none.
 4. **Tokens:** reads three, writes none (section 2).

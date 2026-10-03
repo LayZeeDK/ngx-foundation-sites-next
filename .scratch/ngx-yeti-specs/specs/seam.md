@@ -302,7 +302,7 @@ Fixture-app half, built with `outputMode: 'server'`, with a `/seam` route marked
 - a seam inside a client-only `@defer` block with `seam` and `box` in the preload list shows no frame with `mask-image: none`;
 - navigating from the seam route to a route without one removes the item link, and navigating back re-inserts it.
 
-Testing at the floor browsers is not decided yet ([building-blocks.md](../building-blocks.md) Part 4; ADR 0014 point 7).
+Floor engines: [ticket 93](../issues/93-decide-testing-at-the-browser-floor.md) (a weekly and release-branch job; Safari 26.2 held statically).
 
 Prior art: Yeti's `example.html`, `docs.md`, and the components guide's alternating run for the stories, and its `test/browser/components/seam.spec.js` with the fixture `test/browser/fixtures/components/seam.html` for the hit tests, the strip alpha samples, the in-flow spacer, the per-scheme AA check, and axe; ticket 18's fixture app for the `hydrate never` case; ADR 0060's prototype for the server HTML and the item link; the [box](box.md) spec's composed story and painted-band contrast assertions; the [affix](affix.md) spec's ring-pixel screenshot crop.
 
@@ -312,9 +312,8 @@ Prior art: Yeti's `example.html`, `docs.md`, and the components guide's alternat
 - A background, paint, or padding input on `yetiSeam`: those are `yetiPaint`'s, `yetiBox`'s, or the consumer's CSS (Part 2 row 37 names four inputs).
 - Mirroring the shape by writing direction: Yeti's polygon is physical, and `flip` is the consumer's choice (section 6).
 - Any check that the host is a block-level section, that it has padding, that its height follows its content, or that nothing overflows its edges. Checks belong to a later milestone (map, Milestones); the usage rules state them.
-- Package CSS for the seam, including forced colours and clipping guards, unless the open points decide otherwise (building-blocks 1.13; ADR 0060 point 8).
+- Package CSS for the seam, including forced colours and clipping guards: none; usage rules 2 to 4 and the layer-4 cases cover the clip (building-blocks 1.13; ADR 0060 point 8; [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decisions 184 to 188).
 - How the styles service counts, inserts, and removes links (ADR 0060; the [setup](setup.md) spec).
-- Testing at the floor browsers (building-blocks Part 4).
 
 ## Further Notes
 
@@ -325,7 +324,7 @@ Prior art: Yeti's `example.html`, `docs.md`, and the components guide's alternat
 | Item directive `[yetiSeam]` with `shape`, `size`, `edge`, `flip`; no part directive | building-blocks Part 2 row 37; ticket 26 rows 137 to 140; [Decide: the spec list](../issues/11-decide-spec-list.md) row 37 |
 | Static host class; the consumer writes no Yeti class or attribute | ADR 0003 points 1 and 2 |
 | Inputs typed by Yeti's `YetiShape`, `YetiSizeControl`, `YetiEdge`, and `booleanAttribute`; unset renders nothing | ADR 0005; ADR 0070 rules 1 and 2; ADR 0080 point 5; building-blocks 1.4 |
-| `size` is `inert` on the seam's hosts | building-blocks 1.4; ticket 26 row 138, grilling question 15; the host list is open (ticket) |
+| `size` is `inert` on the seam's hosts | building-blocks 1.4; ticket 26 row 138, grilling question 15; the host list is usage rule 1 ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 183) |
 | `yetiSeam` beside `yetiBox` and `yetiPaint`, never hosting them; one presence attribute and one item file per item | architecture-guide P6; building-blocks 1.9; ADR 0045; ticket 50 decisions 7 and 12 |
 | `YetiSeam` marks its host with `data-ngx-yeti-item-seam` and acquires the item file last in its constructor | ADR 0045; ADR 0060 point 2; ticket 50 decisions 42 and 45 |
 | `exportAs`; class name with no collision | building-blocks 1.3; ADR 0080 points 3 and 4; ticket 50 decision 10 |
@@ -333,7 +332,7 @@ Prior art: Yeti's `example.html`, `docs.md`, and the components guide's alternat
 | Native platform, level 1, types only; no Module | building-blocks 1.2; Part 2 row 37; ADR 0040 |
 | Tokens are the consumer's, `--yeti-seam-size` included | ADR 0004 |
 | Item file as a counted link in Yeti's order | ADR 0060 points 2 to 6 |
-| Requirements on markup (host, padding, height, overflow, CSP) as usage rules asserted or recorded in the stories and e2e | ADR 0015 point 4; manifest `a11y.notes`; `docs.md`; open points (ticket) |
+| Requirements on markup (host, padding, height, overflow, CSP) as usage rules asserted or recorded in the stories and e2e | ADR 0015 point 4; manifest `a11y.notes`; `docs.md`; [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decisions 183 to 187 |
 | 4.5:1 text contrast asserted in both schemes; the cut edge is decoration with no 1.4.11 assertion | ADR 0015 point 3; ticket 50 decisions 8 and 58 |
 | No ledger row; forced colours recorded, not fixed | Part 2 row 37; ticket 50 decisions 30 and 78 ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 188) |
 | Directive tests through `TestBed.createDirective` | map, Standing rulings, Directive testing; ADR 0014 note |

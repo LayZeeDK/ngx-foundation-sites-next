@@ -133,7 +133,7 @@ None. `YetiScroller` is standalone: it provides no **Injection token**, injects 
 
 Composition. A consumer puts item directives on the scroller's children (`<article yetiCard>`, `<div yetiFrame>`, `<table yetiTable>`), as Yeti's example puts boxes there. On the scroller's own element, `yetiBox` may sit beside it: both declare `gap: YetiGap`, so one static `gap="lg"` feeds both and renders the one `data-gap` Yeti means, the box's padding and the scroller's gap at once (ticket 26 grilling Q16; building-blocks 1.4, shared vocabularies), and each sets its own presence attribute (ADR 0045). `width` is `YetiWidth` on every root directive that declares it (`sidebar`, `media`, `shell`, `demo`; ticket 26 rows 57, 78, 85, 110). `justify` is narrower here than on `cluster`, `columns`, and `pagination` (`YetiJustify`, ticket 26 rows 17, 22, 133). Those three set the element's `display` as the scroller does, and Yeti's docs never put two of them on one element, so this spec reads, as the [cluster](cluster.md) spec does, that a scroller never shares its element with another layout, and states it as usage rule 5 ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 61).
 
-The only injection is the root styles service of ADR 0060, through which `YetiScroller` acquires and releases the `scroller` item file. That service is the [setup](../issues/38-spec-setup.md) spec's (`provideYetiStyles()`) and ADR 0060's.
+The only injection is the root styles service of ADR 0060, reached by `injectYetiItemStyles('scroller')` from `ngx-yeti/styles` as the last statement of the constructor ([setup](setup.md); ticket 50 decisions 42 and 45), through which `YetiScroller` acquires and releases the `scroller` item file. That service is the [setup](setup.md) spec's (`provideYetiStyles()`) and ADR 0060's.
 
 Generated ids and the platform's relationship attributes: none. The directive renders no `id` and references none, so it does not use [generated-ids](generated-ids.md). An `aria-labelledby` names the consumer's own heading by the consumer's own static `id`.
 
@@ -148,7 +148,7 @@ Generated ids and the platform's relationship attributes: none. The directive re
 | Host | static `class: 'scroller'`; static `role: 'region'`; static `tabindex: '0'`; static `'data-ngx-yeti-item-scroller': ''`; `[attr.data-gap]`, `[attr.data-width]`, `[attr.data-justify]` from the inputs, `null` when unset; `[attr.data-snap]`: `''` when `snap()` is true, else `null` |
 | Providers | none |
 | Models, outputs, methods, listeners | none |
-| Lifecycle | acquires the `scroller` item file in its constructor and releases it through `DestroyRef` (ADR 0060 point 2; building-blocks 1.9) |
+| Lifecycle | acquires the `scroller` item file, on the server too, with `injectYetiItemStyles('scroller')` as the last statement of its constructor (ticket 50 decisions 42 and 45) and releases it through `DestroyRef` (ADR 0060 point 2; building-blocks 1.9) |
 
 Types come from the generated `yeti-types.ts` copy of Yeti's typings at the pin, re-exported by name (ADR 0060 point 10; ADR 0080 point 5). `YetiScrollerJustify` is declared in the item's entry point from `YetiJustify` and re-exported by name from the primary entry point beside the vocabulary types ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 60). No input changes a Yeti default. A static attribute type-checks as a string literal under `strictTemplates`, so `justify="center"` compiles and `justify="between"` does not (ADR 0070 rule 2; ticket 26 grilling Q14, read, not run).
 
@@ -238,7 +238,7 @@ None. The scroller has no state and no transition. Scroll snapping is the browse
 - **Full hydration:** the host is claimed as it is; its static and bound attributes are written again with the same values (usage rule 8). Hydration claims the existing element rather than replacing it, so a scroll position or focus a person set before hydration stays (inferred from hydration's node claiming, ADR 0011 and building-blocks 1.11; layer 4 measures it). 0 style mutations (ADR 0060 point 5, measured for the mechanism).
 - **Incremental hydration (`@defer (hydrate on ...)`):** the server rendered the scroller and its link; a dehydrated host holds the link for as long as it is on the page (ADR 0060 point 4, measured for the mechanism), and keyboard access needs no hydration. A `@defer` block inside a scroller adds no element, so its content is the scroller's direct children; its placeholder or loading element is an item while it shows (inferred from Yeti's `> *` selector).
 - **`hydrate never`:** the scroller is its server HTML: styled, focusable, and scrollable by keyboard while the host is connected, whatever live scrollers do (ADR 0060 point 4; ADR 0045's presence attribute is what the check queries). Nothing is lost except changing a bound input, which needs Angular.
-- **Client-only `@defer`:** the item file is fetched when `YetiScroller` is constructed, which can show frames with the items wrapping or shrinking; the role and `tabindex` are there from the first frame. The consumer closes the gap with `provideYetiStyles({ preload: ['scroller'] })` (ADR 0060 point 6; [setup](../issues/38-spec-setup.md)).
+- **Client-only `@defer`:** the item file is fetched when `YetiScroller` is constructed, which can show frames with the items wrapping or shrinking; the role and `tabindex` are there from the first frame. The consumer closes the gap with `provideYetiStyles({ preload: ['scroller'] })` (ADR 0060 point 6; [setup](setup.md)).
 - **Event replay:** the directive declares no listener, so nothing replays and the directive adds no `jsaction`. Keyboard scrolling is native and needs no replay.
 - **`withI18nSupport()`:** the name is usually translated with `i18n-aria-label` and the items' text with `i18n` in the consumer's component, which needs `withI18nSupport()` to hydrate rather than re-render (ADR 0011 clause 11; building-blocks 1.11 decision 11). The directive adds no `i18n` block and renders no string of its own (building-blocks 1.10).
 - **Zoneless:** inputs are `input()` signals read by host bindings, so a changed input refreshes its attribute with no zone (ADR 0070 rule 4; map, Standing rulings, item 43).
@@ -262,7 +262,7 @@ None. The scroller has no navigation or fragment behaviour, so it uses neither [
 
 ### 13. Item file
 
-`yeti-css/css/layouts/scroller/scroller.css`, one of Yeti's 49, loaded as a counted `<link>` by the root styles service of ADR 0060: acquired when the first `[yetiScroller]` is created, on the server too, inserted in Yeti's order (`Y/src/yeti.css:27`, after `frame` and before `overlay`, the rank table of point 3), and removed after the last host carrying `data-ngx-yeti-item-scroller` has left the DOM. The consumer's part is ADR 0060 point 11's setup, which the [setup](../issues/38-spec-setup.md) spec owns: Yeti's build at the Pin under `yeti-css`, the `assets` entry, the global stylesheet with the layer statement and the always-loaded group (which holds the `[data-gap]` and `[data-width]` value rules, the reset's media cap that the scroller lifts, and the base focus ring), and optionally `provideYetiStyles({ preload: ['scroller'] })`. The scroller adds nothing to it. Cross-item files acquired: none. `scroller.css` has no rule that names another item's class, and the items' own directives load their own files (ADR 0060 point 9).
+`yeti-css/css/layouts/scroller/scroller.css`, one of Yeti's 49, loaded as a counted `<link>` by the root styles service of ADR 0060: acquired when the first `[yetiScroller]` is created, on the server too, inserted in Yeti's order (`Y/src/yeti.css:27`, after `frame` and before `overlay`, the rank table of point 3), and removed after the last host carrying `data-ngx-yeti-item-scroller` has left the DOM. The consumer's part is ADR 0060 point 11's setup, which the [setup](setup.md) spec owns: Yeti's build at the Pin under `yeti-css`, the `assets` entry, the global stylesheet with the layer statement and the always-loaded group (which holds the `[data-gap]` and `[data-width]` value rules, the reset's media cap that the scroller lifts, and the base focus ring), and optionally `provideYetiStyles({ preload: ['scroller'] })`. The scroller adds nothing to it. Cross-item files acquired: none. `scroller.css` has no rule that names another item's class, and the items' own directives load their own files (ADR 0060 point 9).
 
 One order inside `yeti.layouts` touches the scroller's items (read, not measured): `.scroller > *` sets `margin: 0` at the same specificity as the item rules of later files, so an item that is a `center` keeps its `margin-inline: auto` because `center.css` comes after `scroller.css` (`Y/src/yeti.css:27`, `:30`). ADR 0060 point 3 keeps that order whichever directive is created first.
 
@@ -315,7 +315,7 @@ Fixture-app half, built with `outputMode: 'server'`, with a `/scroller` route ma
 - a scroller inside a client-only `@defer` block with `scroller` in the preload list shows no frame with wrapped items; a scroller inside a `hydrate never` block stays one row and focusable after every live scroller on the page is removed;
 - navigating from the scroller route to a route without one removes the item link, and navigating back re-inserts it.
 
-Testing at the floor browsers is not decided yet ([building-blocks.md](../building-blocks.md) Part 4; ADR 0014 point 7).
+Floor engines: [ticket 93](../issues/93-decide-testing-at-the-browser-floor.md) (a weekly and release-branch job; Safari 26.2 held statically).
 
 Prior art: Yeti's `example.html` for the default story, its `test/browser/layouts/scroller.spec.js` with the fixture `test/browser/fixtures/layouts/scroller.html` for the geometry, focus, media, measure, and positioned-child cases, and Yeti's table docs for the wide-table story; ticket 17's keyboard script for the arrow-key measurement; ticket 18's fixture app and ADR 0060's prototype for the server HTML and the item link; the [cover](cover.md) and [columns](columns.md) specs' probe technique for token-independent assertions.
 
@@ -328,8 +328,7 @@ Prior art: Yeti's `example.html` for the default story, its `test/browser/layout
 - An input per token (ADR 0004).
 - A check that the scroller is named, sits on an allowed host, or has a child. Checks belong to a later milestone (map, Milestones); the usage rules state them.
 - Package CSS for the scroller. The item owns no ledger row (ADR 0060 point 8).
-- How the styles service counts, inserts, and removes links (ADR 0060; the [setup](../issues/38-spec-setup.md) spec).
-- Testing at the floor browsers (building-blocks Part 4).
+- How the styles service counts, inserts, and removes links (ADR 0060; the [setup](setup.md) spec).
 
 ## Further Notes
 
@@ -422,7 +421,7 @@ A page whose scroller renders inside a client-only `@defer` block preloads the i
 
 Per building-blocks 1.13:
 
-1. **Item file:** `layouts/scroller/scroller.css`, loaded by `YetiScroller` as a counted link (section 13). The consumer writes nothing for the scroller beyond the [setup](../issues/38-spec-setup.md) spec's one-time configuration.
+1. **Item file:** `layouts/scroller/scroller.css`, loaded by `YetiScroller` as a counted link (section 13). The consumer writes nothing for the scroller beyond the [setup](setup.md) spec's one-time configuration.
 2. **Always-loaded rules relied on:** `layouts/attributes.css` maps `data-gap` and `data-width` to the private gap and width (`:6-37`, `:171-177`); `base/reset.css` caps media at 100 % (`:22-26`), which the scroller lifts for its media children; `base/prose.css` gives text children the measure (`:22-24`); `base/typography.css` draws the focus ring (`:101-104`); `tokens/space.css` declares the space and width scales.
 3. **Cross-item rules:** none in `scroller.css`. Items composed inside (`card`, `box`, `frame`, `table`) and `box` on the scroller's own element load their own files through their own directives. The `center` item tie is settled by ADR 0060 point 3's order (section 13).
 4. **Tokens:** reads `--yeti-space-md` by default and the named `--yeti-space-*` and `--yeti-width-*` through the value rules; writes none (section 2).

@@ -125,7 +125,7 @@ The `inert` kind for `height` (building-blocks 1.4): a static `height="md"` stay
 - `YetiCover` provides `yetiCoverToken` (`InjectionToken<YetiCover>`, `useExisting`), building-blocks 1.9 and 1.3's token naming.
 - `YetiCoverChild` injects it with `{ optional: true, skipSelf: true }` ([ADR 0070](../adr/0070-where-a-yeti-attribute-sits-decides-its-mapping.md) kind C). It reads nothing from it in the first milestone: no behaviour depends on the parent, and the **In-item check** that would use it belongs to a later milestone (map, Milestones). A part outside a cover renders its marker and nothing else happens, because Yeti's rule is `.cover > [data-center]`.
 - No host directives. No Yeti item always sits on another's element (Part 2, "Two findings that hold across the matrix"). A consumer composes by writing directives beside each other: `yetiCover` with `yetiBox` on one element, as Yeti's example does, or `yetiCoverChild` with `yetiColumns`, `yetiCenter`, or `yetiBox` on one child. The cover's `gap` shares `YetiGap` with every other `gap` reader, and `height` shares `YetiHeight` with `hero` and `demo`, so no two package directives on one element declare one input name with different types (building-blocks 1.4, shared vocabularies). Where `box` and `cover` sit on one element, one `gap` attribute feeds both and both render the one `data-gap` Yeti means (ticket 26 grilling Q16): it is the box's padding and the cover's gap at once, as in Yeti's example.
-- The only other injection is the root styles service of ADR 0060, through which `YetiCover` acquires and releases the item file. That service is the [setup](../issues/38-spec-setup.md) spec's and ADR 0060's. `YetiCoverChild` sets no presence attribute and acquires no item file, because only an item's root directive does: its rule matches only under a `.cover`, whose own host holds the link for as long as it is connected ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 6).
+- The only other injection is the root styles service of ADR 0060, reached by `injectYetiItemStyles('cover')` from `ngx-yeti/styles` as the last statement of the constructor ([setup](setup.md); ticket 50 decisions 42 and 45), through which `YetiCover` acquires and releases the item file. That service is the [setup](setup.md) spec's and ADR 0060's. `YetiCoverChild` sets no presence attribute and acquires no item file, because only an item's root directive does: its rule matches only under a `.cover`, whose own host holds the link for as long as it is connected ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 6).
 - Generated ids and the platform's relationship attributes: none. The cover renders no `id` and references none, so it does not use [generated-ids](generated-ids.md).
 
 ### 4. API
@@ -140,7 +140,7 @@ The `inert` kind for `height` (building-blocks 1.4): a static `height="md"` stay
 | Host | static `class: 'cover'`; static `data-ngx-yeti-item-cover: ''`; `[attr.data-gap]` and `[attr.data-height]` from the inputs, `null` when unset | `[attr.data-center]`: `''` when `center()` is true, else `null` |
 | Providers | `yetiCoverToken` | none |
 | Models, outputs, methods | none | none |
-| Lifecycle | acquires the `cover` item file in its constructor and releases it through `DestroyRef` (ADR 0060 point 2; building-blocks 1.9) | none |
+| Lifecycle | acquires the `cover` item file, on the server too, with `injectYetiItemStyles('cover')` as the last statement of its constructor (ticket 50 decisions 42 and 45) and releases it through `DestroyRef` (ADR 0060 point 2; building-blocks 1.9) | none |
 
 Types come from the generated `yeti-types.ts` copy of Yeti's typings at the pin, re-exported by name (ADR 0060 point 10; building-blocks 1.3). The selectors are the ones Part 2 row 7 names; this spec fixes them, as ticket 26 left part selectors to the specs. No input changes a Yeti default.
 
@@ -218,7 +218,7 @@ None. The cover has no state and no transition, and Yeti's reduced-motion handli
 - **Full hydration:** every element is claimed as is; bindings computed from the same inputs give the same values (usage rule 6); 0 style mutations (ADR 0060 point 5, measured for the mechanism).
 - **Incremental hydration (`@defer (hydrate on ...)`):** the server rendered the cover and its link; a dehydrated host holds the link for as long as it is on the page (ADR 0060 point 4, measured for the mechanism). A `@defer` block inside a cover adds no element, so its content is the cover's direct child, and `yetiCoverChild` inside it works before and after the block hydrates.
 - **`hydrate never`:** the cover is its server HTML and stays styled while its host is connected, whatever live covers do (ADR 0060 point 4; ADR 0045's presence attribute is what the check queries). On a host shared with `box`, each item's presence attribute keeps its own link (ADR 0045). There is no Angular behaviour to lose; a bound input simply never changes.
-- **Client-only `@defer`:** the item file is fetched when `YetiCover` is constructed, which can show collapsed frames; the consumer closes the gap with `provideYetiStyles({ preload: ['cover'] })` (ADR 0060 point 6; [setup](../issues/38-spec-setup.md)). No entry animation needs the file.
+- **Client-only `@defer`:** the item file is fetched when `YetiCover` is constructed, which can show collapsed frames; the consumer closes the gap with `provideYetiStyles({ preload: ['cover'] })` (ADR 0060 point 6; [setup](setup.md)). No entry animation needs the file.
 - **Event replay:** the directives declare no listener, so nothing replays and no `jsaction` is added by them.
 - **`withI18nSupport()`:** a hero's text is translated with `i18n` in the consumer's component. The directives add no `i18n` block; the consumer's component needs `withI18nSupport()` to hydrate rather than re-render (ADR 0011 clause 11; building-blocks 1.11 decision 11).
 - **Zoneless:** inputs are signals and host bindings read them, so a bound `gap`, `height`, or `center` refreshes with no zone (map, Standing rulings, item 43; ADR 0070 rule 4).
@@ -242,7 +242,7 @@ None. The cover has no navigation or fragment behaviour, so it uses neither [nav
 
 ### 13. Item file
 
-`yeti-css/css/layouts/cover/cover.css`, one of Yeti's 49, loaded as a counted `<link>` by the root styles service of ADR 0060: acquired when the first `[yetiCover]` is created, on the server too, inserted in Yeti's order (`Y/src/yeti.css:24`, the rank table of point 3), and removed after the last host carrying `data-ngx-yeti-item-cover` has left the DOM. The consumer's part is ADR 0060 point 11's setup, which the [setup](../issues/38-spec-setup.md) spec owns: Yeti's build at the Pin under `yeti-css`, the `assets` entry, the global stylesheet with the layer statement and the always-loaded group (which holds the `[data-gap]` and `[data-height]` value rules and the `--yeti-cover-height` token), and optionally `provideYetiStyles({ preload: ['cover'] })`. The cover adds nothing to it. Cross-item files acquired: none (`cover.css` has no cross-item rule; ADR 0060 point 9).
+`yeti-css/css/layouts/cover/cover.css`, one of Yeti's 49, loaded as a counted `<link>` by the root styles service of ADR 0060: acquired when the first `[yetiCover]` is created, on the server too, inserted in Yeti's order (`Y/src/yeti.css:24`, the rank table of point 3), and removed after the last host carrying `data-ngx-yeti-item-cover` has left the DOM. The consumer's part is ADR 0060 point 11's setup, which the [setup](setup.md) spec owns: Yeti's build at the Pin under `yeti-css`, the `assets` entry, the global stylesheet with the layer statement and the always-loaded group (which holds the `[data-gap]` and `[data-height]` value rules and the `--yeti-cover-height` token), and optionally `provideYetiStyles({ preload: ['cover'] })`. The cover adds nothing to it. Cross-item files acquired: none (`cover.css` has no cross-item rule; ADR 0060 point 9).
 
 One order matters inside `yeti.layouts` (read, not measured): `.cover > *` sets `margin: 0`, and `.center` sets `margin-inline: auto`, at equal specificity, so a `center` that is a cover's child keeps its inline centring only because `center.css` comes after `cover.css` in `yeti.css` (`:24`, `:30`). ADR 0060 point 3 inserts links in that order whichever directive is created first, which is the case ticket 23 measured for `stack` and `center`. Layer 4 tests it for the cover.
 
@@ -295,7 +295,7 @@ Fixture-app half, built with `outputMode: 'server'`, with a `/cover` route marke
 - a page that first shows a standalone `center` and then inserts a cover holding a `center` keeps the inner center's auto inline margins, so the `cover` link went in before the `center` link (ADR 0060 point 3; section 13);
 - navigating from the cover route to a route without one removes the item link, and navigating back re-inserts it.
 
-Testing at the floor browsers is not decided yet ([building-blocks.md](../building-blocks.md) Part 4; ADR 0014 point 7).
+Floor engines: [ticket 93](../issues/93-decide-testing-at-the-browser-floor.md) (a weekly and release-branch job; Safari 26.2 held statically).
 
 Prior art: Yeti's `example.html` for the default story, and its `test/browser/layouts/cover.spec.js` with the fixture `test/browser/fixtures/layouts/cover.html` for the geometry cases; ticket 18's fixture app and ADR 0060's prototype for the server HTML and the item link; ticket 23's measurement of the `stack` and `center` tie for the order case.
 
@@ -307,9 +307,8 @@ Prior art: Yeti's `example.html` for the default story, and its `test/browser/la
 - Any check that exactly one direct child is centered, that the part sits on a direct child, or that a cover has a child. Checks belong to a later milestone (map, Milestones); the usage rules state them.
 - A viewport-keyed input or any JavaScript read of the viewport's height (building-blocks 1.7).
 - Package CSS for the cover. The cover owns no ledger row, so no accessibility rule applies (ADR 0060 point 8).
-- How the styles service counts, inserts, and removes links (ADR 0060; the [setup](../issues/38-spec-setup.md) spec).
+- How the styles service counts, inserts, and removes links (ADR 0060; the [setup](setup.md) spec).
 - The `hero` recipe, which is "the one-class form of a cover holding columns" with its own spec (Part 2 row 18).
-- Testing at the floor browsers (building-blocks Part 4).
 
 ## Further Notes
 
@@ -394,7 +393,7 @@ The centered child chosen from state: `<p yetiCoverChild [center]="!hasHeading()
 
 Per building-blocks 1.13:
 
-1. **Item file:** `layouts/cover/cover.css`, loaded by `YetiCover` as a counted link (section 13). The consumer writes nothing for the cover beyond the [setup](../issues/38-spec-setup.md) spec's one-time configuration.
+1. **Item file:** `layouts/cover/cover.css`, loaded by `YetiCover` as a counted link (section 13). The consumer writes nothing for the cover beyond the [setup](setup.md) spec's one-time configuration.
 2. **Always-loaded rules relied on:** `layouts/attributes.css` maps `data-gap` and `data-height` to the private gap and height (`:6-37`, `:185-190`); `tokens/space.css` declares `--yeti-cover-height`, the height family, and the space scale.
 3. **Cross-item rules:** none in `cover.css`. The tie with `center` (`.cover > *` against `.center`) is settled by ADR 0060 point 3's order (section 13). Items composed on the cover's element or its children (`box`, `columns`, `center`, `stack`) load their own files through their own directives.
 4. **Tokens:** reads `--yeti-cover-height` and `--yeti-space-md`, and the token behind a bound value; writes none (section 2).

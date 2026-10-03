@@ -20,7 +20,7 @@ An Angular author cannot use that module as it is:
 - The frame runs whatever the code holds (`demo.js:74`), and nothing restricts it ([ticket 25](../issues/25-decide-building-blocks-map.md) point 9).
 - The grip lacks two things the APG's window splitter asks for: `aria-controls` naming the pane, and Enter to collapse and restore (ledger A11Y-7; `APG/windowsplitter/windowsplitter-pattern.html:59-60`, `:95`).
 
-`demo` is the only item whose markup the package generates, and so the package's only **Angular component** (ticket 11 row 30; building-blocks Part 2 row 30).
+`demo` is the only item whose markup the package generates, and so one of the package's two **Angular component**s, with the field's `YetiFieldError` ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 159; ticket 11 row 30; building-blocks Part 2 row 30).
 
 ## Solution
 
@@ -159,7 +159,7 @@ The input value types are Yeti's own, from the package's generated `yeti-types.t
 
 ### 3. Hierarchy and DI shape
 
-- `YetiDemo` is the one **Angular component**. It provides no **Injection token**, injects no parent, hosts no directive, and is hosted by none (Part 2, "Two findings that hold across the matrix").
+- `YetiDemo` is one of the package's two **Angular component**s, with `YetiFieldError` (ticket 50 decision 159). It provides no **Injection token**, injects no parent, hosts no directive, and is hosted by none (Part 2, "Two findings that hold across the matrix").
 - `YetiDemoPreview` is an internal directive on the preview box in the component's own template, `exportAs: 'yetiDemoPreview'`. It is not exported from the entry point. It calls `injectYetiId('demo')` in a field initializer and binds the result as `[attr.id]`, because the directive whose host renders the id calls the helper ([generated-ids](generated-ids.md), "Who calls `injectYetiId`"). The grip binds `aria-controls` to that value through a template reference. The component does not call `injectYetiId` itself, because adoption would read the figure's own `id`, and a consumer's `id` there would become a second element's id.
 - Injections in `YetiDemo`: `DomSanitizer`, to mark the frame document trusted (section 4); `DestroyRef`; the configuration of `provideYetiStyles()` for the default stylesheet ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 142); the item-file helper of [setup](setup.md), `injectYetiItemStyles('demo')`, as the last statement of the constructor (ticket 50 decision 42).
 - `Directionality` is not injected: the arrow keys and the drag follow the box's computed `direction`, read in the handler ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 143).
@@ -277,7 +277,7 @@ Server HTML: the `figure` carries `yetidemo=""`, `preview="Card"`, `width="lg"` 
 
 There is no grip. The server writes the item link into `<head>`: `href` `<url>components/demo/demo.css?v=<pin>`, with `data-ngx-yeti-styles="demo"`, `data-ngx-yeti-app`, `data-beasties-skip`, and the `CSP_NONCE` when provided (ADR 0060 points 2, 3, and 5).
 
-Hydrated DOM: the same, and then, in the frame after hydration, a `div` after the box: `role="separator"`, `aria-orientation="vertical"`, `tabindex="0"`, `aria-label="Card"`, `aria-controls="ngx-yeti-demo-0"`, the four value attributes, and `style="--_yeti-demo-edge: …px; --_yeti-demo-middle: …px"`. Yeti's CSS then hands the width to the grip (`resize: none` on the box, `demo.css:197-201`). After a drag, the box carries `style="inline-size: …px"`.
+Hydrated DOM: the same, and then, in the frame after hydration, a `div` after the box: `role="separator"`, `aria-orientation="vertical"`, `tabindex="0"`, `aria-label="Card"`, `aria-controls="ngx-yeti-demo-0"`, the four value attributes, and `style="--_yeti-demo-edge: ...px; --_yeti-demo-middle: ...px"`. Yeti's CSS then hands the width to the grip (`resize: none` on the box, `demo.css:197-201`). After a drag, the box carries `style="inline-size: ...px"`.
 
 The delta from Yeti's docs markup: the consumer writes `figure yetiDemo` with inputs where the docs write the class, `data-*`, the box, the `details`, and the `pre`; the code is one input; the frame has a `sandbox`; the frame and grip are named by `preview` alone.
 
@@ -363,7 +363,7 @@ Fixture-app half, `outputMode: 'server'`, a `/demo` route under `RenderMode.Prer
 - a route with `require-trusted-types-for 'script'` and `trusted-types angular angular#unsafe-bypass` shows no violation; a route with a strict `style-src` records whether the frame body's padding is blocked (usage rule 9);
 - a demo in a client-only `@defer` with `demo` preloaded shows no unstyled frame; a demo in `hydrate never` keeps its link and its corner after every live demo leaves.
 
-Testing at the floor browsers is not decided yet (building-blocks Part 4; ADR 0014 point 7).
+Floor engines: [ticket 93](../issues/93-decide-testing-at-the-browser-floor.md) (a weekly and release-branch job; Safari 26.2 held statically).
 
 Prior art: Yeti's `test/browser/components/demo.spec.js` with `test/browser/fixtures/components/demo.html` (box geometry, the label's flips, the grip's place, keys, drags, axe) and `test/tools/demo.test.js` (the pure functions); ticket 33's C2 page for the reload count; ADR 0060's prototype for the item link; the [frame](frame.md) spec's load-count case.
 
@@ -379,7 +379,6 @@ Prior art: Yeti's `test/browser/components/demo.spec.js` with `test/browser/fixt
 - Highlighting the code's syntax.
 - Any check that `code` is trusted, that `preview` is meaningful, or that the host is a `figure`: checks are a later milestone (map, Milestones).
 - How the styles service counts and inserts links ([setup](setup.md); ADR 0060).
-- Testing at the floor browsers (building-blocks Part 4).
 
 ## Further Notes
 
@@ -387,7 +386,7 @@ Prior art: Yeti's `test/browser/components/demo.spec.js` with `test/browser/fixt
 
 | Decision | Record |
 | --- | --- |
-| `demo` is the package's only Angular component; its template renders the box, the frame, the grip, and the code | ticket 11 row 30 and question 8; Part 2 row 30; ADR 0003 point 6 |
+| `demo` is one of the package's two Angular components (with `YetiFieldError`, ticket 50 decision 159); its template renders the box, the frame, the grip, and the code | ticket 11 row 30 and question 8; Part 2 row 30; ADR 0003 point 6 |
 | Selector `figure[yetiDemo]`, not `<yeti-demo>` | [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 136 (architecture-guide P1; valid HTML) |
 | The code comes from a `code` input, not a projected `pre` | building-blocks "Hydration constraints (2026-10-03)"; ticket 33 row 7 |
 | `sandbox="allow-forms"`; no script in the frame | ticket 25 point 9 leaves it to this spec; [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 137 |

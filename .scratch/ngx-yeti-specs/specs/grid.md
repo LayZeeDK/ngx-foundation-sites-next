@@ -4,7 +4,7 @@ Ticket: [59. Spec: grid (layout)](../issues/59-spec-grid.md)
 
 Targets: Angular 22.2, Nx 23.2, Storybook 10.6 with `@storybook/angular-vite`, Vitest 4.1.x, TypeScript 6.0.x, and Yeti `f52d1e8b9` (`f52d1e8b93de5bbde322480ba77d5be26c49b0ef`, `develop`, 2026-09-25). Browser target: Chrome and Edge 141, Firefox 145, Safari and Safari iOS 26.2 ([ADR 0002](../adr/0002-browser-target-baseline-2025.md)). Accessibility target: WCAG 2.2 AA.
 
-Deciding records: [building-blocks.md](../building-blocks.md) Part 2 row 9 and Part 1, [Decide: how the package maps each of Yeti's `data-*` attributes](../issues/26-decide-yeti-data-attributes-mapping.md) rows 31 to 39, [ADR 0003](../adr/0003-directives-set-yetis-class-attributes-and-markers.md), [ADR 0004](../adr/0004-yeti-tokens-are-a-consumer-stylesheet-surface.md), [ADR 0005](../adr/0005-closed-unions-from-yetis-vocabularies.md), [ADR 0011](../adr/0011-rendering-modes-contract-for-yeti.md), [ADR 0014](../adr/0014-testing-stack-for-yeti.md), [ADR 0015](../adr/0015-wcag-2-2-aa-enforcement-over-yeti.md), [ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md), [ADR 0060](../adr/0060-item-styles-are-counted-links-to-the-consumers-yeti-build.md), [ADR 0070](../adr/0070-where-a-yeti-attribute-sits-decides-its-mapping.md), [ADR 0080](../adr/0080-yeti-prefix-ngx-yeti-runtime-names-ngxyeti-on-collision.md), and the orchestrator's multi-part decision of 2026-10-03 ([Decide: the open points of the specs](../issues/50-decide-open-points-of-the-specs.md)). The grid owns no [ledger.md](../ledger.md) row. `Y/` is `d:/projects/github/foundation/yeti/` at the **Pin**. The points the ticket listed as open were decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md) (decisions 51 and 52), and each is cited where it applies.
+Deciding records: [building-blocks.md](../building-blocks.md) Part 2 row 9 and Part 1, [Decide: how the package maps each of Yeti's `data-*` attributes](../issues/26-decide-yeti-data-attributes-mapping.md) rows 31 to 39, [ADR 0003](../adr/0003-directives-set-yetis-class-attributes-and-markers.md), [ADR 0004](../adr/0004-yeti-tokens-are-a-consumer-stylesheet-surface.md), [ADR 0005](../adr/0005-closed-unions-from-yetis-vocabularies.md), [ADR 0011](../adr/0011-rendering-modes-contract-for-yeti.md), [ADR 0014](../adr/0014-testing-stack-for-yeti.md), [ADR 0015](../adr/0015-wcag-2-2-aa-enforcement-over-yeti.md), [ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md), [ADR 0060](../adr/0060-item-styles-are-counted-links-to-the-consumers-yeti-build.md), [ADR 0070](../adr/0070-where-a-yeti-attribute-sits-decides-its-mapping.md), [ADR 0080](../adr/0080-yeti-prefix-ngx-yeti-runtime-names-ngxyeti-on-collision.md), and [Decide: the open points of the specs](../issues/50-decide-open-points-of-the-specs.md) decision 6. The grid owns no [ledger.md](../ledger.md) row. `Y/` is `d:/projects/github/foundation/yeti/` at the **Pin**. The points the ticket listed as open were decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md) (decisions 51 and 52), and each is cited where it applies.
 
 ## Problem Statement
 
@@ -118,13 +118,13 @@ Attributes left to the consumer: none (ticket 26 rows 31 to 39). `role="list"` o
 | Token `--yeti-width-xs` | default minimum cell width | the consumer's; the package writes none | not applicable | ADR 0004 |
 | Token `--yeti-space-md` | default gap | the consumer's | not applicable | ADR 0004 |
 | Tokens `--_yeti-gap`, `--_yeti-min`, `--_yeti-column-cap` (and the unlisted `--_yeti-tracks`, `--_yeti-start`, `--_yeti-span`, `--_yeti-rows`) | private | never read or written | not applicable | building-blocks 1.13 |
-| Presence attribute (package) | not Yeti's | static `data-ngx-yeti-item-grid=""` on `[yetiGrid]` only | always present | ADR 0045; ADR 0060 point 2; ADR 0080 point 2; multi-part decision (ticket 50) |
+| Presence attribute (package) | not Yeti's | static `data-ngx-yeti-item-grid=""` on `[yetiGrid]` only | always present | ADR 0045; ADR 0060 point 2; ADR 0080 point 2; ticket 50 decision 6 |
 
 The presentational-attribute kinds (building-blocks 1.4), confirmed for this item's hosts:
 
 - `min` and `rows` on `yetiGrid`: `inert`. HTML's `min` means something only on `input`, `meter`, and `progress`, and `rows` only on `textarea`; none of them can hold the grid's element children, so a static `min="2xs"` stays on the host beside `data-min="2xs"` and does nothing (ticket 26 rows 31 and 34, grilling Q15). The grid's hosts are `ul`, `ol`, `div`, `section`, and the like.
 - `span` on `yetiGridChild`: `inert`. HTML's `span` means something only on `col` and `colgroup`, which cannot be a grid's child (ticket 26 row 39).
-- `start` on `yetiGridChild`: `removed`. HTML's `start` sets an `ol`'s first number, and a grid cell may be an `ol` (a numbered step list as one cell), so the directive binds `'[attr.start]': 'null'` with a source comment naming the effect it prevents: the input's static form renumbering the list (ticket 26 row 38). The binding is unconditional: on any other element `start` means nothing, so removing it changes nothing. The consumer may write `start` statically: hydration writes the static value back and the `null` binding removes it in the same pass, so the final DOM equals the server's (the orchestrator's static-presentational-attribute decision, 2026-10-03, ticket 50). A consumer who wants an `ol` cell to count from another number writes `value` on its first `li` ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 51).
+- `start` on `yetiGridChild`: `removed`. HTML's `start` sets an `ol`'s first number, and a grid cell may be an `ol` (a numbered step list as one cell), so the directive binds `'[attr.start]': 'null'` with a source comment naming the effect it prevents: the input's static form renumbering the list (ticket 26 row 38). The binding is unconditional: on any other element `start` means nothing, so removing it changes nothing. The consumer may write `start` statically: hydration writes the static value back and the `null` binding removes it in the same pass, so the final DOM equals the server's (ticket 50 decision 9). A consumer who wants an `ol` cell to count from another number writes `value` on its first `li` ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 51).
 
 **Module replaced:** none. Yeti's `grid` has no Module ([ADR 0040](../adr/0040-package-replaces-yetis-optional-modules.md); Part 2 row 9, "Yeti module: none").
 
@@ -135,7 +135,7 @@ The presentational-attribute kinds (building-blocks 1.4), confirmed for this ite
 - `YetiGrid` provides `yetiGridToken` (`InjectionToken<YetiGrid>`, `useExisting`), building-blocks 1.9 and 1.3's token naming.
 - `YetiGridChild` injects it with `{ optional: true, skipSelf: true }` ([ADR 0070](../adr/0070-where-a-yeti-attribute-sits-decides-its-mapping.md) kind C). It reads nothing from it in the first milestone: no behaviour depends on the parent, and the **In-item check** that would use it (a placement past the last track, a placement on a grid without `tracks`) belongs to a later milestone (map, Milestones). A child outside a grid, or in a fitted grid, renders its markers and nothing else happens, because Yeti's rules are `.grid[data-tracks] > [data-start]` and `> [data-span]`.
 - No host directives. No Yeti item always sits on another's element (Part 2, "Two findings that hold across the matrix"). A consumer composes by writing directives beside each other: `yetiBox` or `yetiCard` on a cell beside `yetiGridChild`, as Yeti's example puts `box` on each `li`. The grid's inputs share their types with every other reader of the vocabulary (`min` with `masonry`, `columns` with `columns` and `masonry`, `threshold` with `columns`, `cluster`, and the rest, `span` with the `columns` and `hero` children), so no two package directives on one element declare one input name with different types (building-blocks 1.4, shared vocabularies).
-- The only other injection is the root styles service of ADR 0060, through which `YetiGrid` acquires and releases the item file. That service is the [setup](../issues/38-spec-setup.md) spec's and ADR 0060's. `YetiGridChild` sets no presence attribute and acquires nothing, because Yeti's rules for it apply only under a `.grid`, whose own host keeps the link (multi-part decision, ticket 50).
+- The only other injection is the root styles service of ADR 0060, reached by `injectYetiItemStyles('grid')` from `ngx-yeti/styles` as the last statement of the constructor ([setup](setup.md); ticket 50 decisions 42 and 45), through which `YetiGrid` acquires and releases the item file. That service is the [setup](setup.md) spec's and ADR 0060's. `YetiGridChild` sets no presence attribute and acquires nothing, because Yeti's rules for it apply only under a `.grid`, whose own host keeps the link (ticket 50 decision 6).
 - Generated ids and the platform's relationship attributes: none. The grid renders no `id` and references none, so it does not use [generated-ids](generated-ids.md).
 
 ### 4. API
@@ -150,7 +150,7 @@ The presentational-attribute kinds (building-blocks 1.4), confirmed for this ite
 | Host | static `class: 'grid'`; static `data-ngx-yeti-item-grid: ''`; `[attr.data-min]`, `[attr.data-columns]`, `[attr.data-gap]`, `[attr.data-rows]`, `[attr.data-tracks]`, `[attr.data-threshold]` from the inputs, `null` when unset; `[attr.data-fold]`: `''` when `fold()` is true, else `null` | `[attr.data-start]` and `[attr.data-span]` from the inputs, `null` when unset; `'[attr.start]': 'null'` |
 | Providers | `yetiGridToken` | none |
 | Models, outputs, methods | none | none |
-| Lifecycle | acquires the `grid` item file in its constructor and releases it through `DestroyRef` (ADR 0060 point 2; building-blocks 1.9) | none |
+| Lifecycle | acquires the `grid` item file, on the server too, with `injectYetiItemStyles('grid')` as the last statement of its constructor (ticket 50 decisions 42 and 45) and releases it through `DestroyRef` (ADR 0060 point 2; building-blocks 1.9) | none |
 
 Types come from the generated `yeti-types.ts` copy of Yeti's typings at the pin, re-exported by name (ADR 0060 point 10; building-blocks 1.3). The numeric vocabularies are string unions, so `columns="3"` and `[span]="'6'"` compile and `[span]="6"` does not (ADR 0070 rule 2). The selectors are the ones Part 2 row 9 names; this spec fixes them, as ticket 26 left child selectors to the specs.
 
@@ -164,7 +164,7 @@ Types come from the generated `yeti-types.ts` copy of Yeti's typings at the pin,
 6. With `tracks`, leave `min` and `columns` unset; they have no effect on a tracks grid (manifest `data-tracks`). `threshold` has an effect only with `tracks`.
 7. With `rows`, give the number of parts of the fullest cell; a cell with fewer leaves its last rows empty, and a cell that spans rows cannot also be a size container (`docs.md`).
 8. Do not write `class="grid"`, any of the grid's `data-*` attributes or markers, or `data-ngx-yeti-item-grid` statically. The directives bind them, and hydration writes a static attribute again before the binding wins (ADR 0003 points 1 and 2; building-blocks, "Hydration constraints (2026-10-03)"; ADR 0070 consequences). A value newer than the pin goes through `[columns]="$any('7')"` (ADR 0070).
-9. On a child that is an `ol`, `start` places the cell and never sets the list's first number; set that with `value` on the first `li` (section 2; [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 51). Writing `start` statically is allowed (ticket 50, static presentational attributes).
+9. On a child that is an `ol`, `start` places the cell and never sets the list's first number; set that with `value` on the first `li` (section 2; [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 51). Writing `start` statically is allowed (ticket 50 decision 9).
 10. Bind every input from values that are the same on the server and the client, never from a browser-only read such as the window's width. The grid already responds to its own width through Yeti's CSS (building-blocks 1.7), and the hydration constraints require the same DOM on both sides.
 11. Import every directive class the template writes. A **Forgotten import** of `YetiGridChild` with static `start` and `span` renders an unplaced cell, and one of `YetiGrid` with static inputs renders a plain list, both with no error; only a bound input (`[columns]`, `[span]`) makes the compiler report it (NG8002) (building-blocks 1.9).
 
@@ -243,7 +243,7 @@ None. The grid has no state and no transition, and Yeti's reduced-motion handlin
 - **Full hydration:** every element is claimed as is; bindings computed from the same inputs give the same values (usage rule 10); 0 style mutations (ADR 0060 point 5, measured for the mechanism).
 - **Incremental hydration (`@defer (hydrate on ...)`):** the server rendered the grid and its link; a dehydrated host holds the link for as long as it is on the page (ADR 0060 point 4, measured for the mechanism). A grid and its placed children share one **Hydration boundary** by construction, because `yetiGridChild` must sit on direct children (usage rule 2); a deferred block inside a grid makes its own wrapper element the cell, unless the block's content is the cell itself.
 - **`hydrate never`:** the grid is its server HTML and stays styled while its host is connected, whatever live grids do (ADR 0060 point 4; ADR 0045). There is no Angular behaviour to lose; a bound input simply never changes.
-- **Client-only `@defer`:** the item file is fetched when `YetiGrid` is constructed, which can show unstyled frames; the consumer closes the gap with `provideYetiStyles({ preload: ['grid'] })` (ADR 0060 point 6; [setup](../issues/38-spec-setup.md)). No entry animation needs the file.
+- **Client-only `@defer`:** the item file is fetched when `YetiGrid` is constructed, which can show unstyled frames; the consumer closes the gap with `provideYetiStyles({ preload: ['grid'] })` (ADR 0060 point 6; [setup](setup.md)). No entry animation needs the file.
 - **Event replay:** the directives declare no listener, so nothing replays and no `jsaction` is added by them.
 - **`withI18nSupport()`:** cell text is translated with `i18n` in the consumer's component. The directives add no `i18n` block; the consumer's component needs `withI18nSupport()` to hydrate rather than re-render (ADR 0011 clause 11; building-blocks 1.11 decision 11).
 - **Zoneless:** inputs are signals and host bindings read them, so any bound input refreshes with no zone (map, Standing rulings, item 43; ADR 0070 rule 4).
@@ -258,7 +258,7 @@ The grid complies with each of Angular's hydration constraints (map, Standing ru
 - **Valid HTML:** the directives change no element. The consumer's markup must be valid as written; for example the cells of a `ul` grid are `li` elements, never a `div` directly in the `ul`, and a `@for` inside a `ul` renders `li`.
 - **`preserveWhitespaces`:** the directives have no template. The grid ignores whitespace text between cells.
 - **No output branched on the platform:** none.
-- **Static attributes the directives bind:** usage rule 8 keeps the consumer from writing the `data-*` attributes. The static forms of `min`, `rows`, and `span` are the inputs' own and stay on the element unchanged on both sides (`inert`). The static form of `start` is the one static attribute a directive also binds (to `null`); hydration writes it back and the binding removes it again in the same pass, so the final DOM equals the server's. This form is allowed by the orchestrator's static-presentational-attribute decision (2026-10-03, ticket 50), and layer 4 asserts that no frame paints with `start` present.
+- **Static attributes the directives bind:** usage rule 8 keeps the consumer from writing the `data-*` attributes. The static forms of `min`, `rows`, and `span` are the inputs' own and stay on the element unchanged on both sides (`inert`). The static form of `start` is the one static attribute a directive also binds (to `null`); hydration writes it back and the binding removes it again in the same pass, so the final DOM equals the server's. This form is allowed by ticket 50 decision 9, and layer 4 asserts that no frame paints with `start` present.
 
 ### 12. Single-page application
 
@@ -266,7 +266,7 @@ None. The grid has no navigation or fragment behaviour, so it uses neither [navi
 
 ### 13. Item file
 
-`yeti-css/css/layouts/grid/grid.css`, one of Yeti's 49, loaded as a counted `<link>` by the root styles service of ADR 0060: acquired when the first `[yetiGrid]` is created, on the server too, inserted in Yeti's order (`Y/src/yeti.css:25`, the rank table of point 3), and removed after the last host carrying `data-ngx-yeti-item-grid` has left the DOM. The consumer's part is ADR 0060 point 11's setup, which the [setup](../issues/38-spec-setup.md) spec owns: Yeti's build at the Pin under `yeti-css`, the `assets` entry, the global stylesheet with the layer statement and the always-loaded group (which holds every grid value rule), and optionally `provideYetiStyles({ preload: ['grid'] })`. The grid adds nothing to it. Cross-item files acquired: none. `grid.css` has no rule for another item (ADR 0060 point 9). The card's rule for a card in a row-aligned grid (`.grid[data-rows] > .card`, `Y/src/components/card/card.css:99-114`) is in `card.css`, which the card's own directive loads.
+`yeti-css/css/layouts/grid/grid.css`, one of Yeti's 49, loaded as a counted `<link>` by the root styles service of ADR 0060: acquired when the first `[yetiGrid]` is created, on the server too, inserted in Yeti's order (`Y/src/yeti.css:25`, the rank table of point 3), and removed after the last host carrying `data-ngx-yeti-item-grid` has left the DOM. The consumer's part is ADR 0060 point 11's setup, which the [setup](setup.md) spec owns: Yeti's build at the Pin under `yeti-css`, the `assets` entry, the global stylesheet with the layer statement and the always-loaded group (which holds every grid value rule), and optionally `provideYetiStyles({ preload: ['grid'] })`. The grid adds nothing to it. Cross-item files acquired: none. `grid.css` has no rule for another item (ADR 0060 point 9). The card's rule for a card in a row-aligned grid (`.grid[data-rows] > .card`, `Y/src/components/card/card.css:99-114`) is in `card.css`, which the card's own directive loads.
 
 ## Testing Decisions
 
@@ -289,7 +289,7 @@ Through `TestBed.createDirective` (map, Standing rulings, Directive testing; ADR
 
 - `createDirective(YetiGrid, { tagName: 'ul' })`: the host has class `grid` and `data-ngx-yeti-item-grid`, and none of the seven `data-*` attributes; with `bindings` setting each input (`min` `'none'`, `columns` `'4'`, `gap` `'sm-lg'`, `rows` `'3'`, `fold` `true`, `tracks` `'12'`, `threshold` `'lg'`), each attribute follows, and setting them back to `undefined` or `false` removes them.
 - While a `YetiGrid` fixture lives, one `<link data-ngx-yeti-styles="grid">` is in `document.head`; after `fixture.destroy()` and an animation frame it is gone; two fixtures share one link until both are destroyed.
-- `createDirective(YetiGridChild, { tagName: 'figure' })`: no `data-start` or `data-span` by default; bound `start` `'2'` and `span` `'6'` render them; the host carries no presence attribute and acquires no link (multi-part decision, ticket 50).
+- `createDirective(YetiGridChild, { tagName: 'figure' })`: no `data-start` or `data-span` by default; bound `start` `'2'` and `span` `'6'` render them; the host carries no presence attribute and acquires no link (ticket 50 decision 6).
 - `createDirective(YetiGridChild, { tagName: 'ol' })` with `start` bound: the host has `data-start` and no `start` attribute.
 - No directive adds a listener to its host.
 
@@ -310,10 +310,10 @@ Fixture-app half, built with `outputMode: 'server'`, with a `/grid` route marked
 - hydration logs no `NG05xx` and `componentsSkippedHydration === 0`;
 - with JavaScript disabled the fitted, folded, and tracks grids land as in the Storybook half, and `@axe-core/playwright` with the six tags reports no violation;
 - a grid inside a client-only `@defer` block with `grid` in the preload list shows no unstyled frame; a grid inside a `hydrate never` block stays styled after a live grid on the page is removed;
-- an `ol` cell written with static `start="2"` and `span="6"`: no frame paints with a `start` attribute on it, from the first paint through hydration, and its first marker reads 1 (ticket 50, static presentational attributes);
+- an `ol` cell written with static `start="2"` and `span="6"`: no frame paints with a `start` attribute on it, from the first paint through hydration, and its first marker reads 1 (ticket 50 decision 9);
 - navigating from the grid route to a route without one removes the item link, and navigating back re-inserts it.
 
-Testing at the floor browsers is not decided yet ([building-blocks.md](../building-blocks.md) Part 4; ADR 0014 point 7).
+Floor engines: [ticket 93](../issues/93-decide-testing-at-the-browser-floor.md) (a weekly and release-branch job; Safari 26.2 held statically).
 
 Prior art: Yeti's `example.html` for the default story and its `test/browser/layouts/grid.spec.js` and fixture for the geometry cases; ticket 18's fixture app and ADR 0060's prototype for the server HTML and the item link; ticket 24's prototype for the Tailwind case.
 
@@ -328,8 +328,7 @@ Prior art: Yeti's `example.html` for the default story and its `test/browser/lay
 - Angular Aria's `ngGrid` or any keyboard navigation between cells (Part 2 row 9).
 - A viewport-keyed input or any JavaScript size read (building-blocks 1.7).
 - Package CSS for the grid.
-- How the styles service counts, inserts, and removes links (ADR 0060; the [setup](../issues/38-spec-setup.md) spec).
-- Testing at the floor browsers (building-blocks Part 4).
+- How the styles service counts, inserts, and removes links (ADR 0060; the [setup](setup.md) spec).
 
 ## Further Notes
 
@@ -342,10 +341,10 @@ Prior art: Yeti's `example.html` for the default story and its `test/browser/lay
 | Static host class; the consumer writes no Yeti class or attribute | ADR 0003 points 1 and 2 |
 | Inputs typed by Yeti's vocabulary types; `fold` with `booleanAttribute`; unset renders nothing | ADR 0005; ADR 0070 rules 1 and 2; building-blocks 1.4 |
 | `min`, `rows`, `span` are `inert`; `start` is `removed`, unconditionally | building-blocks 1.4; ticket 26 rows 31, 34, 38, 39 and grilling Q15; ADR 0070 consequences |
-| Static `start` allowed; the `null` binding removes it in the hydration pass | static-presentational-attribute decision (ticket 50) |
+| Static `start` allowed; the `null` binding removes it in the hydration pass | ticket 50 decision 9 |
 | An `ol` cell's numbering through `value` on its first `li` | [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 51 |
 | Child injects `yetiGridToken` optionally with `skipSelf` and reads nothing from it | ADR 0070 kind C; building-blocks 1.9 |
-| Only the item directive marks its host and acquires the item file | ADR 0045; multi-part decision (ticket 50) |
+| Only the item directive marks its host and acquires the item file | ADR 0045; ticket 50 decision 6 |
 | `exportAs` on both; class names with no collision | building-blocks 1.3; ADR 0080 points 3 and 4 |
 | Entry point `ngx-yeti/grid` | building-blocks 1.3; ADR 0011 clause 10 |
 | Native platform, level 1, types only; Aria `Grid` not used | building-blocks 1.2; Part 2 row 9 |
@@ -413,7 +412,7 @@ A page whose grid renders inside a client-only `@defer` block preloads the item:
 
 Per building-blocks 1.13:
 
-1. **Item file:** `layouts/grid/grid.css`, loaded by `YetiGrid` as a counted link (section 13). The consumer writes nothing for the grid beyond the [setup](../issues/38-spec-setup.md) spec's one-time configuration.
+1. **Item file:** `layouts/grid/grid.css`, loaded by `YetiGrid` as a counted link (section 13). The consumer writes nothing for the grid beyond the [setup](setup.md) spec's one-time configuration.
 2. **Always-loaded rules relied on:** `layouts/attributes.css` maps every `data-min`, `data-columns`, `data-gap`, `data-tracks`, `data-start`, `data-span`, and `data-rows` value to its private token (section 1); `tokens/space.css` declares the width and space tokens; `base/reset.css` removes a `role="list"` list's markers and padding.
 3. **Cross-item rules:** none in `grid.css`. `card.css` holds the card's rule for a row-aligned grid and turns off the card's own container there, loaded by the card's directive. Items placed in cells keep their own rules; `.grid > *` zeroes their outer margins, as every gap-based layout does.
 4. **Tokens:** reads two public tokens, writes none (section 2).

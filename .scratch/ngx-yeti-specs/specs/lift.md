@@ -121,7 +121,7 @@ None: Yeti has no `lift` module ([ADR 0040](../adr/0040-package-replaces-yetis-o
 
 Host: static class `lift`; `[attr.data-lift]` from the input, `null` for `''` and unset; the static presence attribute `data-ngx-yeti-item-lift` ([ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md)). No models, no outputs, no methods, no host listeners.
 
-Lifecycle: acquires the `lift` item file at construction, on the server too, and releases it on destroy (ADR 0060 point 2).
+Lifecycle: the constructor ends with `injectYetiItemStyles('lift')` from `ngx-yeti/styles` ([setup](setup.md); ticket 50 decisions 42 and 45), which acquires the `lift` item file, on the server too, and releases it through `DestroyRef` (ADR 0060 point 2).
 
 Usage rules (building-blocks 1.10; P23; numbered for the directive's JSDoc):
 
@@ -188,7 +188,7 @@ Per [ADR 0011](../adr/0011-rendering-modes-contract-for-yeti.md) and building-bl
 - **Full hydration:** hydration writes the same static class and the same bound attribute; no node or attribute changes.
 - **Event replay:** the directive declares no listener, so nothing replays. A click before hydration belongs to the card's link and the platform.
 - **Incremental hydration (`hydrate on ...`):** the dehydrated card is its server HTML, and Yeti's CSS lifts it before the trigger fires. The item link stays while the host is on the page (ADR 0060 point 4).
-- **`hydrate never`:** the card keeps lifting for as long as it is on the page; the item link is held by the DOM sweep of ADR 0060 point 4, which finds the host by its host attribute (which value that attribute holds when the card shares the element is the open point above).
+- **`hydrate never`:** the card keeps lifting for as long as it is on the page; the item link is held by the DOM sweep of ADR 0060 point 4, which finds the host by its host attribute (when the card shares the element, each item sets its own `data-ngx-yeti-item-<item>`, [ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md); [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 12).
 - **Client-only `@defer`:** the directive acquires the item file when constructed; without `provideYetiStyles({ preload: ['lift'] })` the first frames have no lift rules (ADR 0060 point 6). Nothing is visible until a hover, so the gap matters only for a hover inside those frames (inferred).
 - **`withI18nSupport()`:** the directive has no template; a consumer component with `i18n` text around a lifted card needs `withI18nSupport()` to hydrate without re-rendering (ADR 0011 clause 11). The fixture includes one `i18n` text (building-blocks 1.11 decision 11).
 - **Zoneless:** the one dynamic binding reads an `input()` signal, which refreshes zoneless (ADR 0070 rule 4).
@@ -211,7 +211,7 @@ None. The lift does nothing on navigation and owns no fragment link. Yeti's exam
 
 ### 13. Item file
 
-The `lift` item file of kind `utilities`, one counted `<link>` per application, acquired by `NgxYetiLift` at construction and released on destroy, inserted in Yeti's order ([ADR 0060](../adr/0060-item-styles-are-counted-links-to-the-consumers-yeti-build.md) points 2 to 4). The consumer's part is the one-time setup of the `setup` spec ([ticket 38](../issues/38-spec-setup.md)): the Yeti build at the pin, the `assets` entry, the global stylesheet with the cascade-layer statement, and, for client-only `@defer`, `provideYetiStyles({ preload: ['lift'] })`. The directive acquires no other item's file: `lift` reads only tokens of the always-loaded group (ADR 0060 point 9).
+The `lift` item file of kind `utilities`, one counted `<link>` per application, acquired by `NgxYetiLift` at construction and released on destroy, inserted in Yeti's order ([ADR 0060](../adr/0060-item-styles-are-counted-links-to-the-consumers-yeti-build.md) points 2 to 4). The consumer's part is the one-time setup of the [setup](setup.md) spec: the Yeti build at the pin, the `assets` entry, the global stylesheet with the cascade-layer statement, and, for client-only `@defer`, `provideYetiStyles({ preload: ['lift'] })`. The directive acquires no other item's file: `lift` reads only tokens of the always-loaded group (ADR 0060 point 9).
 
 ## Testing Decisions
 
@@ -274,6 +274,7 @@ Fixture app half (`npx nx e2e <fixture-app>-e2e`; the `lift` route under both `R
 | Item file as a counted link, acquired at construction | ADR 0060 |
 | One presence attribute per item on a two-item element | [ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md); ticket 50 decision 12 |
 | No ledger row; forced-colours reading recorded here | building-blocks row 47; ticket 50 decision 26 |
+| `injectYetiItemStyles('lift')` last in the constructor | [setup](setup.md); ticket 50 decisions 42 and 45 |
 
 ### Usage examples
 

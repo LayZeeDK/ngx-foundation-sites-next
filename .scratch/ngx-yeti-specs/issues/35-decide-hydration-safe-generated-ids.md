@@ -72,7 +72,7 @@ Rule: the map's AFK override. Only HIGH impact with NOT-HIGH confidence stays `O
 
 | Point | Impact | Confidence | Evidence | Outcome |
 | --- | --- | --- | --- | --- |
-| Adopt the server's id at hydration, and seed the counter through `TransferState` | HIGH (every item with a generated id) | HIGH (0 rewrites, 0 duplicates, and every reference resolved in 6 cases × 3 engines; controls failed as predicted) | prototype, ADR 0044 | decided |
+| Adopt the server's id at hydration, and seed the counter through `TransferState` | HIGH (every item with a generated id) | HIGH (0 rewrites, 0 duplicates, and every reference resolved in 6 cases x 3 engines; controls failed as predicted) | prototype, ADR 0044 | decided |
 | One `getAttribute('id')` on the host at creation complies with the hydration constraints | HIGH (the user's ruling 54) | HIGH (no write and no structure change; measured 0 rewrites, no `NG05xx`; same read-once pattern as the open-state decision) | `hydration.md:99-101`; prototype | decided |
 | Aria's ids through an element-level `_IdGenerator` provider | MEDIUM (depends on Aria injecting an underscore class, already a dependency under ADR 0042) | HIGH (measured on all three Aria directives the package hosts) | `tab.ts:62`, `tab-panel.ts:73`, `toolbar-widget.ts:70` | decided; the generated-ids spec's server-and-client test watches it |
 | `APP_ID` appended to the prefix when not `ng` | LOW | MEDIUM (read from CDK; not measured) | `id-generator.ts:34-36` | decided; the spec measures it |

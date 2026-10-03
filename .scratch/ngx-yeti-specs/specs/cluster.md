@@ -140,9 +140,9 @@ A consumer composes it with other directives on one element by writing them side
 
 Each of these marks the host with its own presence attribute, so the element carries `data-ngx-yeti-item-cluster` beside, for example, `data-ngx-yeti-item-enter` (ADR 0045).
 
-Shared input names: `gap` is typed `YetiGap` on every item that declares it, and `align` is `YetiAlign` on every root directive that declares it, so two items on one element receive one value of one type (building-blocks 1.4, shared vocabularies; architecture-guide P9). `justify` is `YetiJustify` on `cluster`, `columns`, and `pagination`, and `Extract<YetiJustify, 'start' | 'center' | 'end'>` on `scroller` (ticket 26 rows 17, 22, 55, 133). A cluster and a scroller on one element would be two layouts setting one element's `display`, which Yeti's docs never write, so this spec reads that the two cannot share an element and P9's rule is not broken (inferred).
+Shared input names: `gap` is typed `YetiGap` on every item that declares it, and `align` is `YetiAlign` on every root directive that declares it, so two items on one element receive one value of one type (building-blocks 1.4, shared vocabularies; architecture-guide P9). `justify` is `YetiJustify` on `cluster`, `columns`, and `pagination`, and `YetiScrollerJustify` (declared as `Extract<YetiJustify, 'start' | 'center' | 'end'>`; [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 60) on `scroller` (ticket 26 rows 17, 22, 55, 133). A cluster and a scroller on one element would be two layouts setting one element's `display`, which Yeti's docs never write, so this spec reads that the two cannot share an element and P9's rule is not broken (inferred).
 
-The only injection is the root styles service of ADR 0060, through which the directive acquires and releases the `cluster` item file. That service is the [setup](../issues/38-spec-setup.md) spec's (`provideYetiStyles()`) and ADR 0060's; this spec only names the item it acquires.
+The only injection is the root styles service of ADR 0060, reached by `injectYetiItemStyles('cluster')` from `ngx-yeti/styles` as the last statement of the constructor ([setup](setup.md); ticket 50 decisions 42 and 45), through which the directive acquires and releases the `cluster` item file. That service is the [setup](setup.md) spec's (`provideYetiStyles()`) and ADR 0060's; this spec only names the item it acquires.
 
 Generated ids and the platform's relationship attributes: none. The cluster renders no `id` and references none, so it does not use [generated-ids](generated-ids.md).
 
@@ -157,7 +157,7 @@ Generated ids and the platform's relationship attributes: none. The cluster rend
 | Host | `class: 'cluster'`; `'data-ngx-yeti-item-cluster': ''` (both static); `'[attr.data-gap]': 'gap() ?? null'`, and the same for `data-align`, `data-justify`, `data-threshold`; `'[attr.align]': 'null'`, with a source comment naming the effect it prevents (a static `align` is a `text-align` hint in Blink and WebKit; building-blocks 1.4) |
 | Inputs | `gap: input<YetiGap>()`, `align: input<YetiAlign>()`, `justify: input<YetiJustify>()`, `threshold: input<YetiWidth>()`, each defaulting to `undefined` |
 | Models, outputs, methods | none |
-| Lifecycle | acquires the `cluster` item file in its constructor and releases it on destroy, through `DestroyRef` (ADR 0060 point 2; building-blocks 1.9) |
+| Lifecycle | acquires the `cluster` item file, on the server too, with `injectYetiItemStyles('cluster')` as the last statement of its constructor (ticket 50 decisions 42 and 45) and releases it on destroy, through `DestroyRef` (ADR 0060 point 2; building-blocks 1.9) |
 
 No default differs from Yeti's: every input is unset by default and renders nothing (ADR 0070 rule 1). The directive does not compute an effective value, because nothing in it behaves differently by value.
 
@@ -239,7 +239,7 @@ None. The cluster has no state and no transition, and Yeti's reduced-motion hand
 - **Full hydration:** the element is claimed as is; the bindings write the values the server wrote; 0 style mutations from the item link (ADR 0060 point 5, measured for the mechanism). The static `align` rewrite is section 8's.
 - **Incremental hydration (`@defer (hydrate on ...)`):** the server rendered the cluster and its link; a dehydrated host holds the link for as long as it is on the page (ADR 0060 point 4, measured for the mechanism). Hydrating the block changes no attribute.
 - **`hydrate never`:** the cluster is its server HTML and stays laid out while the host is connected, whatever live clusters do, because the presence attribute keeps the link (ADR 0045; ADR 0060 point 4). There is no Angular behaviour to lose; bound inputs keep their server values.
-- **Client-only `@defer`, `@if`, `@for`, routes:** the item file is fetched when the directive is constructed, which can show unstyled frames; the consumer closes the gap with `provideYetiStyles({ preload: ['cluster'] })` (ADR 0060 point 6; [setup](../issues/38-spec-setup.md)).
+- **Client-only `@defer`, `@if`, `@for`, routes:** the item file is fetched when the directive is constructed, which can show unstyled frames; the consumer closes the gap with `provideYetiStyles({ preload: ['cluster'] })` (ADR 0060 point 6; [setup](setup.md)).
 - **Event replay:** the directive declares no listener, so nothing replays and no `jsaction` is added to the cluster. Items inside it replay their own listeners.
 - **`withI18nSupport()`:** a cluster's items are usually translated with `i18n` in the consumer's component. The directive adds no `i18n` block of its own; the consumer's component needs `withI18nSupport()` to hydrate rather than re-render (ADR 0011 clause 11; building-blocks 1.11 decision 11).
 - **Zoneless:** the inputs are `input()` signals read by host bindings, so a bound `[gap]` or `[justify]` refreshes without zone.js (ADR 0070 rule 4; map, Standing rulings, item 43).
@@ -263,7 +263,7 @@ None. The cluster has no navigation or fragment behaviour, so it uses neither [n
 
 ### 13. Item file
 
-`yeti-css/css/layouts/cluster/cluster.css`, one of Yeti's 49, loaded as a counted `<link>` by the root styles service of ADR 0060: acquired when the first `[yetiCluster]` is created, on the server too, inserted in Yeti's order (`Y/src/yeti.css:21`, the rank table of point 3), and removed after the last host has left the DOM. The consumer's part is ADR 0060 point 11's setup, which the [setup](../issues/38-spec-setup.md) spec owns: Yeti's build at the Pin under `yeti-css`, the `assets` entry, the global stylesheet with the layer statement and the always-loaded group (whose `layouts/attributes.css` holds the gap, align, and justify value rules), and optionally `provideYetiStyles({ preload: ['cluster'] })`. The cluster adds nothing to it. Cross-item files acquired: none (`cluster.css` has no selector naming another item; ADR 0060 point 9).
+`yeti-css/css/layouts/cluster/cluster.css`, one of Yeti's 49, loaded as a counted `<link>` by the root styles service of ADR 0060: acquired when the first `[yetiCluster]` is created, on the server too, inserted in Yeti's order (`Y/src/yeti.css:21`, the rank table of point 3), and removed after the last host has left the DOM. The consumer's part is ADR 0060 point 11's setup, which the [setup](setup.md) spec owns: Yeti's build at the Pin under `yeti-css`, the `assets` entry, the global stylesheet with the layer statement and the always-loaded group (whose `layouts/attributes.css` holds the gap, align, and justify value rules), and optionally `provideYetiStyles({ preload: ['cluster'] })`. The cluster adds nothing to it. Cross-item files acquired: none (`cluster.css` has no selector naming another item; ADR 0060 point 9).
 
 ## Testing Decisions
 
@@ -312,7 +312,7 @@ Fixture app half, built with `outputMode: 'server'`, with a `/cluster` route mar
 - navigating from the cluster route to a route without a cluster removes the item link, and navigating back re-inserts it;
 - at a 320 px viewport the page has no horizontal overflow (1.4.10).
 
-Testing at the floor browsers is not decided yet ([building-blocks.md](../building-blocks.md) Part 4; ADR 0014 point 7).
+Floor engines: [ticket 93](../issues/93-decide-testing-at-the-browser-floor.md) (a weekly and release-branch job; Safari 26.2 held statically).
 
 Prior art: Yeti's `example.html` and docs snippets for the stories; Yeti's `Y/test/browser/layouts/cluster.spec.js` for the geometry assertions (one row when there is room, the gap on both axes, `between` at the edges, the threshold column, `container-type` only on a thresholded cluster); ticket 18's fixture app and ADR 0060's prototype for the server HTML and the item link; ticket 30's `MutationObserver` record of a static attribute rewritten at hydration for the `align` measurement.
 
@@ -324,9 +324,8 @@ Prior art: Yeti's `example.html` and docs snippets for the stories; Yeti's `Y/te
 - A role, a keyboard model, or a roving tab stop on the cluster: it is layout only (manifest `a11y.notes`). A consumer who wants a toolbar of buttons uses the `buttons` item.
 - The Misuse warning for a thresholded cluster inside another cluster, and any check of the host element: later milestone (map, Milestones); usage rules 1 and 3 state them.
 - Package CSS for the cluster: Yeti's CSS meets the criteria in section 7, and the package adds no ledger row.
-- How the styles service counts, inserts, and removes links (ADR 0060; the [setup](../issues/38-spec-setup.md) spec).
+- How the styles service counts, inserts, and removes links (ADR 0060; the [setup](setup.md) spec).
 - `deployUrl`: unsupported (map, Standing rulings).
-- Testing at the floor browsers (building-blocks Part 4).
 
 ## Further Notes
 
@@ -410,7 +409,7 @@ A bound gap that follows a signal: `<div yetiCluster [gap]="dense() ? 'xs' : 'md
 
 Per building-blocks 1.13:
 
-1. **Item file:** `layouts/cluster/cluster.css`, loaded by the directive as a counted link (section 13). The consumer writes nothing for the cluster beyond the [setup](../issues/38-spec-setup.md) spec's one-time configuration.
+1. **Item file:** `layouts/cluster/cluster.css`, loaded by the directive as a counted link (section 13). The consumer writes nothing for the cluster beyond the [setup](setup.md) spec's one-time configuration.
 2. **Always-loaded rules relied on:** `layouts/attributes.css` turns `data-gap`, `data-align`, and `data-justify` into the private tokens the cluster reads (`:5-37`, `:147-160`); `tokens/space.css` declares the `--yeti-space-*` steps and `tokens/scale.css` the fluid interpolation the gap pairs use.
 3. **Cross-item rules:** none in `cluster.css`. `toc.css` names `.cluster` in `.toc > ul:not(.cluster)`, so a toc whose list is a cluster keeps the cluster's row and gap (`Y/src/components/toc/toc.css:24-33`); that rule is the toc item's, and the `yetiCluster` on that list acquires its own item file.
 4. **Tokens:** reads `--yeti-space-md` and the space steps; writes none (section 2).

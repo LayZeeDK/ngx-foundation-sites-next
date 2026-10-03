@@ -199,7 +199,7 @@ Why not `meter`: Yeti's fill rules target `::-webkit-progress-value` and `::-moz
 
 ### 7. ARIA, keyboard, and the ledger
 
-- **APG pattern:** none (above). The native `progress` maps to role `progressbar` ("native `progress` → Chromium `progressbar "Upload"`", ticket 17 section 4.16, measured). The directive adds no role, state, or property.
+- **APG pattern:** none (above). The native `progress` maps to role `progressbar` ("native `progress` -> Chromium `progressbar "Upload"`", ticket 17 section 4.16, measured). The directive adds no role, state, or property.
 - **Values:** the platform's. A determinate bar exposes its value as a percentage of `max`; an indeterminate bar exposes no current value and is announced as busy ("An indeterminate bar is announced as busy with no percentage, which is right", `docs.md`). `aria-valuetext` is the consumer's option (usage rule 5).
 - **Keyboard and focus:** none. A `progress` is not focusable and the directive adds no `tabindex` (building-blocks 1.10, Focus).
 - **Names:** the consumer's `aria-labelledby` or `aria-label` (usage rule 4); the reading bar is out of the tree through the consumer's `aria-hidden` (usage rule 6), "measured absent from the tree" (ticket 17 section 4.16).
@@ -342,7 +342,7 @@ Fixture-app half, built with `outputMode: 'server'`, with a `/progress` route ma
 - a bar inside a client-only `@defer` block with `progress` in the preload list shows no unstyled frame;
 - navigating from the progress route to a route without a bar removes the item link, and navigating back re-inserts it.
 
-Testing at the floor browsers is not decided yet ([building-blocks.md](../building-blocks.md) Part 4; ADR 0014 point 7).
+Floor engines: [ticket 93](../issues/93-decide-testing-at-the-browser-floor.md) (a weekly and release-branch job; Safari 26.2 held statically).
 
 Prior art: Yeti's `example.html` and `docs.md` examples for the stories, and its `test/browser/components/progress.spec.js` with the fixture `test/browser/fixtures/components/progress.html` for the thickness, the variant fill (Firefox only), the stripes, reduced motion, the scroll fill and its fallback, the per-element size token, and axe; ticket 17's forced-colours screenshots (`out/fc-*.png`) for the measured loss; the [button](button.md) spec's forced-colours comparison with the accessibility stylesheet left out; ticket 18's fixture app for the `hydrate never` case; ADR 0060's prototype for the server HTML and the item link.
 
@@ -358,7 +358,6 @@ Prior art: Yeti's `example.html` and `docs.md` examples for the stories, and its
 - A forced-colours rule for the reading bar (section 7) ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 182).
 - Any check that the host is `progress` or `div`, that a name and a visible value exist, or that `scroll` sits on a `div`. Checks belong to a later milestone (map, Milestones); the usage rules state them.
 - How the styles service counts, inserts, and removes links (ADR 0060; the [setup](setup.md) spec).
-- Testing at the floor browsers (building-blocks Part 4).
 
 ## Further Notes
 

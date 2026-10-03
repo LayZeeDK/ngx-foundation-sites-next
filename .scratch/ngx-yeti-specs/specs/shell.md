@@ -18,7 +18,7 @@ Three things are particular to the shell in an Angular application. First, Yeti 
 
 Two directives in the secondary entry point `ngx-yeti/shell` ([building-blocks.md](../building-blocks.md) Part 2 row 20; 1.3):
 
-- **`YetiShell`**, the **Item directive**, on `[yetiShell]`, `exportAs: 'yetiShell'`. It binds `shell` as a static host class and binds `data-gap` and `data-width` from the typed inputs `gap` (`YetiGap`) and `width` (`YetiWidth`) (ticket 26 rows 84 and 85). It sets the static presence attribute `data-ngx-yeti-item-shell` ([ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md)), acquires the `shell` item file when it is created, on the server too, and releases it when it is destroyed (ADR 0060 point 2). It provides `yetiShellToken`.
+- **`YetiShell`**, the **Item directive**, on `[yetiShell]`, `exportAs: 'yetiShell'`. It binds `shell` as a static host class and binds `data-gap` and `data-width` from the typed inputs `gap` (`YetiGap`) and `width` (`YetiWidth`) (ticket 26 rows 84 and 85). It sets the static presence attribute `data-ngx-yeti-item-shell` ([ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md)), acquires the `shell` item file when it is created, on the server too, and releases it when it is destroyed (ADR 0060 point 2), through `injectYetiItemStyles('shell')` from `ngx-yeti/styles` as the last statement of its constructor ([setup](setup.md); ticket 50 decisions 42 and 45). It provides `yetiShellToken`.
 - **`YetiShellRegion`**, a **Part directive** for a body-row `nav` or `aside` that sticks, on `[yetiShellRegion]`, `exportAs: 'yetiShellRegion'`. It binds `data-sticky` from a `sticky` input with `booleanAttribute` (ticket 26 row 86, kind C). A region that does not stick needs no directive (ticket 26 grilling question 6).
 
 The developer puts `yetiShell` on the outermost element of the root component's template, because a template cannot reach `<body>` (ticket 11 row 20; [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 83). Where Yeti's docs write `<body class="shell" data-width="xs">`, the developer writes `<div yetiShell width="xs">` as the first element of `app-root`'s template, with the `router-outlet` inside `main`. An unset input renders no attribute, so Yeti's own defaults (`md` gap, `sm` width) apply from its CSS ([ADR 0070](../adr/0070-where-a-yeti-attribute-sits-decides-its-mapping.md) rule 1).
@@ -143,7 +143,7 @@ The input value types are Yeti's own, from the package's generated `yeti-types.t
 - `YetiShellRegion` injects it with `{ optional: true, skipSelf: true }` (ADR 0070 kind C). The region is a grandchild of the shell (`> div > nav`), and both sit in the root component's template, so the element injector chain reaches the shell. Nothing in this milestone reads the token: the marker works through Yeti's CSS alone, and the **In-item check** that would use it belongs to a later milestone (map, Milestones). A region outside a shell renders its marker and still sticks through the always-loaded rule, but without `align-self: start` a stretched flex item has nowhere to move (`attributes.css:318-332`), building-blocks 1.9's "degrades as its spec documents" case.
 - No host directives. No Yeti item always sits on another's element (Part 2, "Two findings that hold across the matrix"). A consumer composes by writing directives beside each other: `yetiShellRegion` with `yetiNav` or `yetiBox` on a `nav`, `yetiBox` on a `header`, `main`, `aside`, or `footer` as in Yeti's example, `yetiStack` or `yetiCenter` inside `main`.
 - Shared input names (building-blocks 1.4, shared vocabularies; ticket 26 grilling question 16): `gap` is `YetiGap` on every reader, `width` is `YetiWidth` on `media`, `scroller`, `sidebar`, and `shell`, and `sticky` is `boolean` on `yetiNav`, `yetiStackChild`, `yetiSidebarChild`, and `yetiShellRegion`. So `<nav yetiNav yetiShellRegion sticky>` renders one `data-sticky=""` (Part 2 row 20: "written beside `yetiNav` where the region is a nav").
-- The only other injection is the root styles service of ADR 0060, through which `YetiShell` acquires and releases the item file. That service is the [setup](setup.md) spec's and ADR 0060's.
+- The only other injection is the root styles service of ADR 0060, through `injectYetiItemStyles('shell')` ([setup](setup.md); ticket 50 decisions 42 and 45), with which `YetiShell` acquires and releases the item file. That service is the [setup](setup.md) spec's and ADR 0060's.
 - Generated ids and the platform's relationship attributes: none. The recipe renders no `id` and references none, so it does not use [generated-ids](generated-ids.md). The skip link's target `id` on `main` is the consumer's.
 - Closing on navigation: no injection. The `nav`, `dropdown`, and `dialog` directives in the shell each call `injectCloseOnNavigation` ([navigation-close](navigation-close.md); ADR 0041 points 1 and 5; Part 2 row 20).
 
@@ -158,9 +158,9 @@ The input value types are Yeti's own, from the package's generated `yeti-types.t
 | Inputs | `gap: YetiGap \| undefined` (Yeti default `md`); `width: YetiWidth \| undefined` (`sm`); each `input()` with no default value | `sticky: boolean`, `booleanAttribute`, default `false` |
 | Host | static `class: 'shell'`; static `data-ngx-yeti-item-shell: ''`; `[attr.data-gap]` and `[attr.data-width]` from the inputs, `null` when unset | `[attr.data-sticky]`: `''` when `sticky()` is true, else `null` |
 | Providers | `yetiShellToken` | none |
-| Injection | the ADR 0060 styles service | `yetiShellToken`, `{ optional: true, skipSelf: true }` |
+| Injection | the ADR 0060 styles service, through `injectYetiItemStyles('shell')` | `yetiShellToken`, `{ optional: true, skipSelf: true }` |
 | Models, outputs, methods, listeners | none | none |
-| Lifecycle | acquires the `shell` item file in its constructor, after anything there that can throw (nothing does today), and releases it through `DestroyRef` (ADR 0060 point 2; ticket 50 decisions 18 and 42) | none |
+| Lifecycle | `injectYetiItemStyles('shell')` is the last statement of its constructor, after anything there that can throw (nothing does today), so the `shell` item file is acquired on the server too; the release runs through `DestroyRef` (ADR 0060 point 2; [setup](setup.md); ticket 50 decisions 18, 42, and 45) | none |
 
 No input default differs from Yeti's (ADR 0070 rule 1). A static attribute type-checks as a string literal under `strictTemplates`, so `width="xs"` compiles and `width="xxs"` does not (ADR 0070 rule 2; ticket 26 grilling question 14, read, not run).
 
@@ -217,7 +217,7 @@ WCAG 2.2 AA criteria the item touches, and how each is met:
 | 2.4.3 Focus Order | Visual order equals DOM order in both arrangements and in right-to-left pages (layer 1, `shell--rtl`). A shell panel closed by navigation returns focus to its opener rather than leaving it in a closed panel (ledger A11Y-15, owned by [navigation-close](navigation-close.md)). |
 | 2.4.11 Focus Not Obscured (Minimum) | Side by side, a sticky region sits beside `main` and covers none of it. Stacked, a sticky `nav` paints above `main` while it scrolls under (`z-index: 2`), and a control that focus scrolls into view stops at `--yeti-scroll-padding`, which by default clears only the offset. Usage rule 7 states how the consumer avoids it, and layer 4 asserts the backward-Tab case with the rule followed and records it with Yeti's defaults (row A11Y-22; [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 48). |
 
-**Ledger rows owned:** none ([ledger.md](../ledger.md); Part 2 row 20, "Ledger: none"). Ticket 17 classed the shell with the items that conform as far as measured (section 3), on an example with no sticky region. Two rows owned by other specs cover what the package adds in the shell's setting: A11Y-15 (navigation-close: shell panels close on navigation with focus back on the opener) and A11Y-16 (fragment-links: the skip link stays a same-document link under `<base href>`). The stacked sticky case shares [A11Y-22](../ledger.md), "a stuck sticky child can obscure focus", owned by the [sidebar](sidebar.md) spec and shared with `stack` and `shell` (WCAG 2.2 2.4.11 and 1.4.10), verified *inferred* and tested by layer 4, with no package CSS ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decisions 17, 32, 47, and 48).
+**Ledger rows owned:** none ([ledger.md](../ledger.md); Part 2 row 20, "Ledger: none"). Ticket 17 classed the shell with the items that conform as far as measured (section 3), on an example with no sticky region. Two rows owned by other specs cover what the package adds in the shell's setting: A11Y-15 (navigation-close: shell panels close on navigation with focus back on the opener) and A11Y-16 (fragment-links: the skip link stays a same-document link under `<base href>`). The stacked sticky case shares [A11Y-22](../ledger.md), "a stuck sticky child can obscure focus", owned by the [sidebar](sidebar.md) spec and shared with `stack`, `shell`, `nav`, and `table` (ticket 50 decisions 170 and 195) (WCAG 2.2 2.4.11 and 1.4.10), verified *inferred* and tested by layer 4, with no package CSS ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decisions 17, 32, 47, and 48).
 
 ### 8. Rendered HTML
 
@@ -340,7 +340,7 @@ Fixture-app half, built with `outputMode: 'server'`, whose root component is sec
 - a variant fixture with the `router-outlet` as a direct child of the body row, beside `nav`, is measured and recorded (the extra gap and the routed host's width), as the evidence for usage rule 3 ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 84);
 - a page that renders a `center` directly in the shell and a `center` inside `main`, in both arrival orders of the `shell` and `center` links, ends with the direct-child center's inline margins at 0 and the inner center's equal and non-zero, as in full Yeti (section 13).
 
-Testing at the floor browsers is not decided yet ([building-blocks.md](../building-blocks.md) Part 4; ADR 0014 point 7).
+Floor engines: [ticket 93](../issues/93-decide-testing-at-the-browser-floor.md) (a weekly and release-branch job; Safari 26.2 held statically).
 
 Prior art: Yeti's `example.html`, `docs.md`, and starter page for the stories; its `test/browser/recipes/shell.spec.js` with the fixture `test/browser/fixtures/recipes/shell.html` for the geometry cases (the composed form side by side and stacked, three regions at 1200 px with `xs`, the plain `div`, no child margins, axe); ticket 17's landmark snapshot of the shell example; ticket 20's fixture for the shell popover and dialog across a `routerLink`; the [navigation-close](navigation-close.md) and [fragment-links](fragment-links.md) e2e cases; ticket 23's tie measurement for the order case; the [sidebar](sidebar.md) and [stack](stack.md) specs' probe and sticky techniques.
 
@@ -357,7 +357,6 @@ Prior art: Yeti's `example.html`, `docs.md`, and starter page for the stories; i
 - Package CSS for the recipe; [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 48 adds none for the sticky case (building-blocks 1.13; ADR 0060 point 8).
 - How the styles service counts, inserts, and removes links (ADR 0060; the [setup](setup.md) spec).
 - The `media` and `hero` recipes, each with its own spec.
-- Testing at the floor browsers (building-blocks Part 4).
 
 ## Further Notes
 
@@ -374,6 +373,7 @@ Prior art: Yeti's `example.html`, `docs.md`, and starter page for the stories; i
 | Shared input names across directives on one element (`gap`, `width`, `sticky`) | building-blocks 1.4, shared vocabularies; ticket 26 grilling question 16 |
 | The part injects `yetiShellToken` optionally with `skipSelf` | ADR 0070 kind C; building-blocks 1.9 |
 | Only `YetiShell` marks its host with `data-ngx-yeti-item-shell` and acquires the item file | ADR 0045; ticket 50 decision 6 |
+| `injectYetiItemStyles('shell')` last in the constructor | [setup](setup.md); ticket 50 decisions 42 and 45 |
 | `exportAs` on both; class names with no collision | building-blocks 1.3; ADR 0080 points 3 and 4; ticket 50 decision 10 |
 | Entry point `ngx-yeti/shell` | building-blocks 1.3; ADR 0011 clause 10 |
 | Native platform, level 1, types only | building-blocks 1.2; Part 2 row 20 |

@@ -1,3 +1,7 @@
+---
+status: accepted
+---
+
 # Each item marks its host with its own presence attribute
 
 Status: accepted, 2026-10-03. Decided by the orchestrator under the user's full-AFK ruling (map, Standing rulings), as a trap-quadrant decision (HIGH impact, MEDIUM confidence). It is recorded with its options so that an implementer can overrule it. It is not the user's ruling.

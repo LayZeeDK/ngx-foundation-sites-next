@@ -415,7 +415,7 @@ On the fixture app, built with `outputMode: 'server'`, with a `/table` route mar
 - with `emulateMedia({ forcedColors: 'active' })` a bordered table's cell borders and header rule keep a visible computed border, recorded as behaviour with a screenshot in three engines ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 197);
 - with a pinned head ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 195), a Shift+Tab walk through links in the rows is recorded with Yeti's defaults and asserted with usage rule 10 followed, after the [sidebar](sidebar.md) spec's case for A11Y-22.
 
-Testing at the floor browsers is not decided yet ([building-blocks.md](../building-blocks.md) Part 4; ADR 0014 point 7).
+Floor engines: [ticket 93](../issues/93-decide-testing-at-the-browser-floor.md) (a weekly and release-branch job; Safari 26.2 held statically).
 
 Prior art: Yeti's `example.html`, `docs.md` examples, and `test/browser/components/table.spec.js` with its fixture for the stories and their assertions; the [box](box.md) spec's probe pattern and the [columns](columns.md) spec's no-frame probe for a `removed`-kind input; the [scroller](scroller.md) spec's `scroller--wide-table` story; ticket 18's fixture app and ADR 0060's prototype for the server HTML and the item link; ticket 17's contrast harness for the formula.
 
@@ -426,11 +426,10 @@ Prior art: Yeti's `example.html`, `docs.md` examples, and `test/browser/componen
 - Generating the caption, the name, `scope`, or `headers` (building-blocks 1.10, Names; usage rules 4 and 5).
 - Responsive card layouts for narrow screens, which Yeti refuses (manifest `a11y.notes`).
 - An input per token, or a theme (ADR 0004).
-- Package CSS for forced colours, unless the open point decides otherwise.
+- Package CSS for forced colours: none now; layer 4 records the borders and the header rule, and a row and one `@layer ngx-yeti` rule follow only if they vanish (ticket 50 decision 197).
 - A check that a table has a `tbody`, a name, or `scope`, or that `nowrap` is not on a `tr`. Checks belong to a later milestone (map, Milestones); the usage rules state them.
 - `data-border`, `data-paint`, and `data-text` as any-element markers (the [box](box.md) spec), and `data-show` and `data-hide` (the `container` spec).
 - How the styles service counts, inserts, and removes links (ADR 0060; the [setup](setup.md) spec).
-- Testing at the floor browsers (building-blocks Part 4).
 
 ## Further Notes
 

@@ -398,7 +398,7 @@ Fixture-app half, built with `outputMode: 'server'`, with a `/dialog` route mark
 - a shell dialog with a `routerLink` closes on navigation with focus on the opener (the [navigation-close](navigation-close.md) spec owns the case; this route supplies the dialog);
 - navigating from the dialog route to a route without one removes the item link, and navigating back re-inserts it.
 
-Testing at the floor browsers is not decided yet ([building-blocks.md](../building-blocks.md) Part 4; ADR 0014 point 7).
+Floor engines: [ticket 93](../issues/93-decide-testing-at-the-browser-floor.md) (a weekly and release-branch job; Safari 26.2 held statically).
 
 Prior art: Yeti's `example.html` and `docs.md` for the stories, and `Y/test/browser/components/dialog.spec.js` for the module cases; ticket 34's `/o34` fixture (`prototypes/aria-subclass-and-open/`) for the pre-hydration modal case; ticket 18's fixture app for the server HTML, JavaScript-off, and replay cases; ticket 20's shell dialog for navigation; the [alert](alert.md) spec's "Module replaced" tests for a replaced module's behaviours.
 
@@ -414,7 +414,6 @@ Prior art: Yeti's `example.html` and `docs.md` for the stories, and `Y/test/brow
 - A DOM event for non-Angular code (events spec; ADR 0040 consequences).
 - Any check that the dialog is named, that an opener is a `button`, or that a close control exists. Checks belong to a later milestone (map, Milestones); the usage rules state them.
 - How the styles service counts, inserts, and removes links (ADR 0060; the [setup](setup.md) spec).
-- Testing at the floor browsers (building-blocks Part 4).
 
 ## Further Notes
 
@@ -520,7 +519,7 @@ Per building-blocks 1.13:
 ### Platform features to adopt when the browser target moves
 
 - **`closedby="any"`** on the dialog: the platform's own light dismiss for a modal dialog, which would replace the Backdrop press listeners. Safari lacks it (`dialog.js:5-6`), and `@mdn/browser-compat-data` 8.1.4, the copy ticket 01 installed, lists Safari as "preview" (read). The veto would then move to the `cancel` event alone.
-- **`requestClose()`:** the same data lists it in Chrome 134, Firefox 139, and Safari 18.4, which is inside Baseline 2025, although building-blocks 1.8 lists it as not yet in the target (read; [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 154). It would let the Backdrop press go through `cancel`, so one listener could ask `closePredicate`.
+- **`requestClose()`:** the same data lists it in Chrome 134, Firefox 139, and Safari 18.4, which is inside Baseline 2025, as building-blocks 1.8's correcting note now says (read; [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 154). It would let the Backdrop press go through `cancel`, so one listener could ask `closePredicate`.
 - Neither changes the server HTML or the opener.
 
 ### Single-page-application pieces relied on

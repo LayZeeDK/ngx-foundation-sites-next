@@ -144,7 +144,7 @@ Tokens: none. Yeti's tokens are a consumer stylesheet surface ([ADR 0004](../adr
 
 In an Nx workspace `node_modules/yeti-css` is the npm workspaces link to the vendored package; that the glob follows the link was not measured (ticket 13, Triage) and is this spec's e2e case.
 
-**C. The global stylesheet** (the application's `styles` entry). The 16 imports and their order come from the [style-loading prototype](../prototypes/style-loading/README.md)'s `styles.css`; the first line is ADR 0060 point 7's, and the last line's specifier is open (see ticket, point 2):
+**C. The global stylesheet** (the application's `styles` entry). The 16 imports and their order come from the [style-loading prototype](../prototypes/style-loading/README.md)'s `styles.css`; the first line is ADR 0060 point 7's, and the last line's specifier is `ngx-yeti/accessibility.css`, published through the package's `exports` map ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 68):
 
 ```css
 @layer yeti, ngx-yeti;
@@ -174,7 +174,7 @@ With Tailwind v4 the first line becomes the one shared statement, with `ngx-yeti
 - **C1, with preflight:** `@layer theme, base, yeti, ngx-yeti, components, utilities;`, then `@import 'tailwindcss';`, then `@source not inline('container');`, then the imports above from `layers.css` on. Measured costs (ticket 24): preflight still sets what Yeti leaves unset, so list markers disappear and a Yeti modal dialog loses its centring (preflight's `* { margin: 0 }`); no fix was measured.
 - **C2, without preflight:** `@layer theme, yeti, ngx-yeti, components, utilities;`, then Tailwind's `theme.css` and `utilities.css` imported into their cascade layers, then the `@source` line, then the imports above. Measured: Yeti markup identical to Yeti alone, the dialog centred, utilities winning.
 
-Which form the documentation leads with is open (see ticket, point 4); this spec's reading is C2, with C1 documented beside it with its two losses. The `ngx-yeti` cascade layer itself was not part of ticket 24's measurement; that it keeps its place in both forms is inferred from the first-declaration rule and is this spec's e2e case. Item files are copied assets, not stylesheets in the build, so `@tailwindcss/postcss` never rewrites them (inferred; ticket 24 measured it rewriting `styleUrl` sheets with 0 computed differences).
+The documentation leads with C2 and documents C1 beside it with its two measured losses and no fix; layer 4 tests both ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 70). The `ngx-yeti` cascade layer itself was not part of ticket 24's measurement; that it keeps its place in both forms is inferred from the first-declaration rule and is this spec's e2e case. Item files are copied assets, not stylesheets in the build, so `@tailwindcss/postcss` never rewrites them (inferred; ticket 24 measured it rewriting `styleUrl` sheets with 0 computed differences).
 
 **D. Application providers**, in the application configuration:
 
@@ -202,7 +202,7 @@ Called once, in the application's root providers. The loader is a root service a
 3. **Adopt.** At creation on the client, the loader takes over every `<head>` link carrying `data-ngx-yeti-styles` and its own `APP_ID` in `data-ngx-yeti-app`, with a count of zero. A link of another `APP_ID` is never touched (ADR 0060 point 5; two applications inferred, not measured).
 4. **Preload.** Each listed item gets one preload link, written once; a link with the same `href` already in `<head>` (the server's) is kept, not duplicated (ADR 0060 point 6; prototype).
 5. **Order-sensitive pairs.** `stack` and `center`, `shell` and `center`, and `cover` and `center` tie inside `yeti.layouts`, so only Yeti's order gives full Yeti's result for each (ticket 23, measured for `stack` and `shell`; ticket 50 decision 34 for `cover`): a center in a stack or a cover is centred, and a center placed directly in a shell has 0 margins, because `shell.css` comes after `center.css` (`Y/src/yeti.css:30`, `:39`; ticket 50 decision 86). The [shell](shell.md) spec puts a center inside `main`. Rule 1 covers all of them for any order of first rendering.
-6. **Cross-item files.** An item that depends on another item's file acquires it too, and its spec names it (ADR 0060 point 9: the busy `button` acquires `spinner`). The loader treats it as any other acquisition.
+6. **Cross-item files.** An item that depends on another item's file acquires it too, and its spec names it (ADR 0060 point 9: `button` acquires `spinner` with `button`, whether or not it is busy, [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 109). The loader treats it as any other acquisition.
 7. **Angular's renderer never owns these links**, so Angular's leave guard (upstream bug A1) and its uncounted dehydrated instances (A2) do not reach them (ADR 0060 point 4, measured).
 
 #### The package's accessibility stylesheet
@@ -342,7 +342,7 @@ The Fixture app is built exactly as section 4 documents: the vendored `yeti-css`
 - Order: a `stack`, then a `center` inside it, rendered by the client in that order; the `center` stays centred.
 - Boundaries (ticket 37's cases, kept as regression tests of the documentation): a server-only constructor error shows the fallback with JavaScript off and the item after hydration; a boundary outside a `@defer` leaves the region empty and one inside shows the fallback; a pre-hydration click on replaced markup is lost; after `$reset()` with item CSS delayed and the cache off, WebKit's unstyled frames are recorded with and without `preload` for the item.
 - Tailwind: the same route built under a second build configuration of the fixture app with form C2, and again with C1 (ticket 50 decision 70): utilities win over Yeti, Yeti over preflight, a rule of `@layer ngx-yeti` over Yeti's, and a Yeti `container` is not capped at 1024 px at a 1100 px viewport.
-- Not measured before, measured here (ticket 13, Triage): a development-server run (`nx serve`) of the fixture app loads every item link; a route served with a strict `style-src 'self' 'nonce-…'` policy and `CSP_NONCE` shows no CSP violation; the `assets` glob through the npm workspaces link copies the 66 files.
+- Not measured before, measured here (ticket 13, Triage): a development-server run (`nx serve`) of the fixture app loads every item link; a route served with a strict `style-src 'self' 'nonce-...'` policy and `CSP_NONCE` shows no CSP violation; the `assets` glob through the npm workspaces link copies the 66 files.
 - Upstream bug A4: with the global stylesheet's response delayed, the count of frames in which a `card` computes `padding: 0` is recorded per engine, with Angular's critical-CSS inlining on and off (ticket 50 decision 72).
 
 ## Out of Scope
@@ -354,7 +354,6 @@ The Fixture app is built exactly as section 4 documents: the vendored `yeti-css`
 - Themes: the package ships, wraps, and generates none (ADR 0004).
 - `deployUrl` and absolute item URLs (map, Standing rulings, item 29).
 - Yeti's optional JavaScript modules: the package replaces them and loads none ([ADR 0040](../adr/0040-package-replaces-yetis-optional-modules.md)).
-- Testing at the floor browsers: undecided ([ADR 0014](../adr/0014-testing-stack-for-yeti.md) point 7; map, Not yet specified).
 - Filing upstream issues for A4 or A8: needs the user's confirmation (map, AFK override).
 
 ## Further Notes
@@ -394,7 +393,7 @@ The Fixture app is built exactly as section 4 documents: the vendored `yeti-css`
 
 1. Item file: none of its own (section 13).
 2. Always-loaded rules relied on: all of them; this spec is where the consumer imports them.
-3. Cross-item rules: `spinner` for a busy `button` (ADR 0060 point 9); the order-sensitive pairs of section 4, rule 5.
+3. Cross-item rules: `button` acquires `spinner` with `button` (ADR 0060 point 9; ticket 50 decision 109); the order-sensitive pairs of section 4, rule 5.
 4. Tokens: none read or written.
 5. What breaks without the setup: without the `assets` entry every item link fails and every item renders as bare HTML; without the layer statement or with an item file before `layers.css`, 65 or 66 of 98 pages break (ticket 23); without the accessibility stylesheet, the ledger rows it closes reopen.
 6. Tailwind collisions: `container` (fixed by `@source not inline('container');`), `grid`, `table`, and `hidden` (measured harmless, ticket 24).

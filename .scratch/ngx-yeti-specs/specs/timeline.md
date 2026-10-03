@@ -134,7 +134,7 @@ Attributes left to the consumer: none of Yeti's `data-*` attributes (ticket 26 r
 | Host attribute (package) | not Yeti's | static `data-ngx-yeti-item-timeline` (empty value) on `ol[yetiTimeline]` | not applicable | ADR 0045; ADR 0060 point 2; ADR 0080 point 2 |
 | Injection token | not Yeti's | none: the item has no part directive to find it | not applicable | ADR 0070 kind C applies only to a marker on a child; the manifest has none |
 
-The input value type `YetiGap` is Yeti's own, imported from the package's generated `yeti-types.ts` and re-exported by name from the primary entry point, never redeclared ([ADR 0080](../adr/0080-yeti-prefix-ngx-yeti-runtime-names-ngxyeti-on-collision.md) point 5; ADR 0060 point 10). It is a full vocabulary, so no `Extract` and no package-declared `Yeti<Item><Input>` type is needed. Neither input name is an HTML attribute on an `ol` (`start`, `reversed`, and `type` are, and the directive declares none of them), so no input has a presentational-attribute kind, and the orchestrator's static-presentational-attribute decision (ticket 50, 2026-10-03) does not reach this item.
+The input value type `YetiGap` is Yeti's own, imported from the package's generated `yeti-types.ts` and re-exported by name from the primary entry point, never redeclared ([ADR 0080](../adr/0080-yeti-prefix-ngx-yeti-runtime-names-ngxyeti-on-collision.md) point 5; ADR 0060 point 10). It is a full vocabulary, so no `Extract` and no package-declared `Yeti<Item><Input>` type is needed. Neither input name is an HTML attribute on an `ol` (`start`, `reversed`, and `type` are, and the directive declares none of them), so no input has a presentational-attribute kind, and ticket 50 decision 9 does not reach this item.
 
 **Module replaced:** none. Yeti's `timeline` has no Module ([ADR 0040](../adr/0040-package-replaces-yetis-optional-modules.md); Part 2 row 17, "Yeti module: none").
 
@@ -142,7 +142,7 @@ The input value type `YetiGap` is Yeti's own, imported from the package's genera
 
 ### 3. Hierarchy and DI shape
 
-`YetiTimeline` provides nothing and injects only the root styles service of ADR 0060, through which it acquires and releases the `timeline` item file. That service belongs to the [setup](../issues/38-spec-setup.md) spec and ADR 0060. No injection token is declared: building-blocks 1.9 gives an item a token for its part directives to find it, and this item has none. The [architecture-guide.md](../architecture-guide.md) glossary row for a part directive named `li[yetiTimelineEntry]` as an example "where the entry carries a marker"; at the pin no entry carries one, so the package has no such directive, and the example is removed from the guide ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 63). If a later pin adds a marker on an entry, the part directive and its token come with it (ADR 0070 kind C).
+`YetiTimeline` provides nothing and injects only the root styles service of ADR 0060, through `injectYetiItemStyles('timeline')` from `ngx-yeti/styles` as the last statement of its constructor ([setup](setup.md); [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decisions 42 and 45), which acquires the `timeline` item file on the server too and releases it through `DestroyRef`. That service belongs to the [setup](setup.md) spec and ADR 0060. No injection token is declared: building-blocks 1.9 gives an item a token for its part directives to find it, and this item has none. The [architecture-guide.md](../architecture-guide.md) glossary row for a part directive named `li[yetiTimelineEntry]` as an example "where the entry carries a marker"; at the pin no entry carries one, so the package has no such directive, and the example is removed from the guide ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 63). If a later pin adds a marker on an entry, the part directive and its token come with it (ADR 0070 kind C).
 
 No item directive hosts another (Part 2, "Two findings that hold across the matrix"). A consumer composes another item directive with `yetiTimeline` by writing both attributes on the `ol`; two directives that declare `gap` share `YetiGap` and bind the same `data-gap` (building-blocks 1.4, shared vocabularies). An item directive on an entry (`<li yetiBox>`) is an ordinary entry that also carries that item's class; whose padding wins between `.timeline > *` and the other item's rule is decided by Yeti's layer and source order, which this spec did not measure, so usage rule 6 puts another item inside the `li` rather than on it ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 65).
 
@@ -162,7 +162,7 @@ Generated ids and the platform's relationship attributes: none. The layout rende
 | Host | static `class: 'timeline'`; static `'data-ngx-yeti-item-timeline': ''`; `'[attr.data-gap]'` from `gap()`, `null` when unset; `'[attr.data-alternate]'`: `''` when `alternate()` is true, else `null` |
 | Providers | none |
 | Models, outputs, methods, listeners | none |
-| Lifecycle | acquires the `timeline` item file in its constructor, as its last step (ticket 50, decision 42; nothing else in it can throw), and releases it on destroy through `DestroyRef` (ADR 0060 point 2; building-blocks 1.9) |
+| Lifecycle | its constructor ends with `injectYetiItemStyles('timeline')` from `ngx-yeti/styles` ([setup](setup.md); ticket 50 decisions 42 and 45; nothing else in it can throw), which acquires the `timeline` item file, on the server too, and releases it on destroy through `DestroyRef` (ADR 0060 point 2; building-blocks 1.9) |
 
 No input default differs from Yeti's: `gap` is `undefined` until the consumer sets it, and Yeti's CSS supplies `lg`; `alternate` false is Yeti's absent attribute. A static attribute type-checks as a string literal under `strictTemplates`, so `gap="md"` compiles and `gap="large"` does not (ADR 0070 rule 2).
 
@@ -214,7 +214,7 @@ WCAG 2.2 AA criteria the item touches, and how each is met:
 | 1.3.1 Info and Relationships | The `ol` and `li` carry the list and its entries; `role="list"` keeps them in WebKit (usage rule 2). Each entry's date is a `time` with `datetime` and its title a real heading (usage rule 4). The layout adds no structure of its own. |
 | 1.3.2 Meaningful Sequence | Visual order equals source order in both modes (above). Usage rule 5 forbids reordering. |
 | 1.4.1 Use of Color | The dots are decorative and all one colour; usage rule 7 keeps meaning out of them. |
-| 1.4.3 Contrast (Minimum) | axe left `color-contrast` incomplete on the `time` elements in all three engines (ticket 17), because each entry holds a pseudo-element. The dot sits in the entry's start padding, single-sided, and outside the entry's box, alternating, so it never lies under the date (read in `timeline.css`). The play function asserts that geometry, then computes the ratio of each `time` element's computed colour against its effective background (the nearest ancestor with an opaque background colour) with the exact WCAG formula, unrounded, in the light and dark schemes, in both modes, and asserts at least 4.5:1 ([ADR 0015](../adr/0015-wcag-2-2-aa-enforcement-over-yeti.md) point 3; A11Y-10a; 4.5:1 for text, the orchestrator's decision of 2026-10-03 recorded in ticket 50). The same assertion covers the entries' headings and text. A package rule is added only if it fails (A11Y-10a). |
+| 1.4.3 Contrast (Minimum) | axe left `color-contrast` incomplete on the `time` elements in all three engines (ticket 17), because each entry holds a pseudo-element. The dot sits in the entry's start padding, single-sided, and outside the entry's box, alternating, so it never lies under the date (read in `timeline.css`). The play function asserts that geometry, then computes the ratio of each `time` element's computed colour against its effective background (the nearest ancestor with an opaque background colour) with the exact WCAG formula, unrounded, in the light and dark schemes, in both modes, and asserts at least 4.5:1 ([ADR 0015](../adr/0015-wcag-2-2-aa-enforcement-over-yeti.md) point 3; A11Y-10a; 4.5:1 for text, ticket 50 decision 8). The same assertion covers the entries' headings and text. A package rule is added only if it fails (A11Y-10a). |
 | 1.4.4 Resize Text | The gap, the room beside the rail, the dot, and the threshold are `rem` and `em` based, so text zoom scales them with the text (read, not measured). |
 | 1.4.10 Reflow | Below a 48rem list width the timeline is single-sided, and the entries wrap their content. Layer 4 asserts no horizontal overflow and one side at a 320 px viewport for Yeti's example. |
 | 1.4.11 Non-text Contrast | Not applicable: the rail and the dots are decorative (manifest `a11y.notes`) and convey nothing the `ol` and the `time` elements do not. Yeti's hex comments put `--yeti-color-border-strong` at about 2.1:1 against `--yeti-color-surface` in the light scheme (computed from `Y/src/tokens/color.css:96`, `:102`; inferred, not measured), which is why usage rule 7 keeps meaning out of them. No assertion and no ledger row ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 64). |
@@ -251,7 +251,7 @@ None. The layout has no state and no transition; Yeti's reduced-motion handling 
 - **Full hydration:** the host is claimed as it is; 0 style mutations (ADR 0060 point 5, measured for the mechanism).
 - **Incremental hydration (`@defer (hydrate on ...)`):** the server rendered the timeline and its link; a dehydrated host holds the link for as long as it is on the page (ADR 0060 point 4, measured for the mechanism).
 - **`hydrate never`:** the timeline is its server HTML and stays styled while the host is connected, whatever live timelines do (ADR 0060 point 4). Nothing is lost except changing a bound input, which needs Angular.
-- **Client-only `@defer`:** the item file is fetched when `YetiTimeline` is constructed, which can show unstyled frames (a plain list with no rail); the consumer closes the gap with `provideYetiStyles({ preload: ['timeline'] })` (ADR 0060 point 6; [setup](../issues/38-spec-setup.md)).
+- **Client-only `@defer`:** the item file is fetched when `YetiTimeline` is constructed, which can show unstyled frames (a plain list with no rail); the consumer closes the gap with `provideYetiStyles({ preload: ['timeline'] })` (ADR 0060 point 6; [setup](setup.md)).
 - **Event replay:** the directive declares no listener, so nothing replays and no `jsaction` is added. Links inside entries are the consumer's.
 - **`withI18nSupport()`:** entry text and dates are usually translated with `i18n` in the consumer's component, and a localised date is the consumer's `time` content, with `datetime` unchanged. The directive adds no `i18n` block of its own; the consumer's component needs `withI18nSupport()` to hydrate rather than re-render (ADR 0011 clause 11; building-blocks 1.11 decision 11).
 - **Zoneless:** inputs are `input()` signals read by host bindings, so a changed input refreshes its attribute with no zone (ADR 0070 rule 4; map, Standing rulings, item 43).
@@ -275,7 +275,7 @@ None. The layout has no navigation or fragment behaviour, so it uses neither [na
 
 ### 13. Item file
 
-`yeti-css/css/layouts/timeline/timeline.css`, one of Yeti's 49, loaded as a counted `<link>` by the root styles service of ADR 0060: acquired when the first `ol[yetiTimeline]` is created, on the server too, inserted in Yeti's order (`Y/src/yeti.css:36`, after `container` and before the `media` recipe, the rank table of point 3), and removed after the last host has left the DOM. The consumer's part is ADR 0060 point 11's setup, which the [setup](../issues/38-spec-setup.md) spec owns: Yeti's build at the Pin under `yeti-css`, the `assets` entry, the global stylesheet with the layer statement, and optionally `provideYetiStyles({ preload: ['timeline'] })`. The layout adds nothing to it. Cross-item files acquired: none. `timeline.css` has no rule for another item, and the `data-gap` value rules it depends on are in the always-loaded `layouts/attributes.css` (ADR 0060 point 9).
+`yeti-css/css/layouts/timeline/timeline.css`, one of Yeti's 49, loaded as a counted `<link>` by the root styles service of ADR 0060: acquired when the first `ol[yetiTimeline]` is created, on the server too, inserted in Yeti's order (`Y/src/yeti.css:36`, after `container` and before the `media` recipe, the rank table of point 3), and removed after the last host has left the DOM. The consumer's part is ADR 0060 point 11's setup, which the [setup](setup.md) spec owns: Yeti's build at the Pin under `yeti-css`, the `assets` entry, the global stylesheet with the layer statement, and optionally `provideYetiStyles({ preload: ['timeline'] })`. The layout adds nothing to it. Cross-item files acquired: none. `timeline.css` has no rule for another item, and the `data-gap` value rules it depends on are in the always-loaded `layouts/attributes.css` (ADR 0060 point 9).
 
 ## Testing Decisions
 
@@ -325,7 +325,7 @@ Fixture half, on the **Fixture app** built with `outputMode: 'server'`, with a `
 
 **Manual release test** (ADR 0015 point 7): with VoiceOver in Safari, the timeline is announced as a list with its number of entries, and each entry as a list item. The automated layers compute roles from the DOM, not from WebKit's accessibility tree, so they cannot assert what `role="list"` restores there.
 
-Testing at the floor browsers is not decided yet ([building-blocks.md](../building-blocks.md) Part 4; ADR 0014 point 7).
+Floor engines: [ticket 93](../issues/93-decide-testing-at-the-browser-floor.md) (a weekly and release-branch job; Safari 26.2 held statically).
 
 Prior art: Yeti's `example.html`, `docs.md`, and `test/browser/layouts/timeline.spec.js` with its fixture (the rail and dot geometry, the gap check, the alternate sides at 1000 and 500 px, the child margins) for the stories; ticket 18's fixture app and ADR 0060's prototype for the server HTML and the item link; ticket 17's contrast harness for the formula; the [lede](lede.md) and [layer](layer.md) specs' dark-scheme stories for the contrast cases; the [masonry](masonry.md) spec's probe technique.
 
@@ -337,8 +337,7 @@ Prior art: Yeti's `example.html`, `docs.md`, and `test/browser/layouts/timeline.
 - A part directive on the entries, or package CSS for the rail and the dots (no marker; building-blocks 1.13).
 - Package CSS for the dates' contrast, unless the A11Y-10a assertion fails.
 - A check that the host has at least two `li` children, that each holds a `time`, or that no entry is reordered or given a margin. Checks belong to a later milestone (map, Milestones); the usage rules state them.
-- How the styles service counts, inserts, and removes links (ADR 0060; the [setup](../issues/38-spec-setup.md) spec).
-- Testing at the floor browsers (building-blocks Part 4).
+- How the styles service counts, inserts, and removes links (ADR 0060; the [setup](setup.md) spec).
 
 ## Further Notes
 
@@ -362,6 +361,7 @@ Prior art: Yeti's `example.html`, `docs.md`, and `test/browser/layouts/timeline.
 | Usage rule for a shrink-to-fit parent, with one layer-4 measurement | [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 66 |
 | Tokens are the consumer's | ADR 0004 |
 | Item file as a counted link | ADR 0060 points 2 to 6 |
+| `injectYetiItemStyles('timeline')` last in the constructor | [setup](setup.md); ticket 50 decisions 42 and 45 |
 | Directive tests through `TestBed.createDirective` | map, Standing rulings, Directive testing; ADR 0014 note |
 | Fixture app `outputMode: 'server'` with prerendered and server routes | ticket 50 decision 2 |
 
@@ -424,7 +424,7 @@ An entry rendered by a component takes an attribute selector on the `li`: `<li a
 
 Per building-blocks 1.13:
 
-1. **Item file:** `layouts/timeline/timeline.css`, loaded by `YetiTimeline` as a counted link (section 13). The consumer writes nothing for the layout beyond the [setup](../issues/38-spec-setup.md) spec's one-time configuration.
+1. **Item file:** `layouts/timeline/timeline.css`, loaded by `YetiTimeline` as a counted link (section 13). The consumer writes nothing for the layout beyond the [setup](setup.md) spec's one-time configuration.
 2. **Always-loaded rules relied on:** `layouts/attributes.css` maps every `data-gap` value to `--_yeti-gap`; `tokens/space.css` declares `--yeti-space-*`; `tokens/color.css` declares `--yeti-color-border-strong`; `base/reset.css` removes list styling for `[role="list"]`, which the item file repeats for itself.
 3. **Cross-item rules:** none. The timeline is an inline-size container, so `data-show` and `data-hide` (always-loaded) inside an entry measure the list without a `container` around it (`Y/src/layouts/container/docs.md`, which names `timeline` among the layouts that are size containers with no conditions attached). An item directive inside an entry loads its own item file through its own directive.
 4. **Tokens:** reads `--yeti-space-lg` (default gap and the room beside the rail), `--yeti-color-border-strong`, and the named `--yeti-space-*` through the value rules; writes none (section 2).

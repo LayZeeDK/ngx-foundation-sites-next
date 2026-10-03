@@ -125,7 +125,7 @@ Two items a consumer composes on one element are written beside each other. Yeti
 
 One composition is excluded: `yetiIcon` on a table cell. The `table` item's cell directive declares `align` typed `Extract<YetiAlign, 'start' | 'center' | 'end'>` for the cell's `data-align` (ticket 26 row 151), so the two directives would declare one input name with different types and meanings on one element, which building-blocks 1.4 forbids. Yeti's table docs already say to wrap a cell's SVG in an icon inside the cell, not to make the cell an icon (`Y/src/components/table/docs.md`). Usage rule 5 states it, and the table spec states the same rule from its side ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 39).
 
-The only injection is the root styles service of ADR 0060, through which the directive acquires and releases the `icon` item file. That service is the [setup](../issues/38-spec-setup.md) spec's and ADR 0060's.
+The only injection is the root styles service of ADR 0060, reached by `injectYetiItemStyles('icon')` from `ngx-yeti/styles` as the last statement of the constructor ([setup](setup.md); ticket 50 decisions 42 and 45), through which the directive acquires and releases the `icon` item file. That service is the [setup](setup.md) spec's and ADR 0060's.
 
 Generated ids and the platform's relationship attributes: none. The icon renders no `id` and references none, so it does not use [generated-ids](generated-ids.md). A consumer who names an SVG with `aria-labelledby` pointing at a `<title>` writes that id; the package's examples use Yeti's `aria-label` form.
 
@@ -141,7 +141,7 @@ Generated ids and the platform's relationship attributes: none. The icon renders
 | Host | static `class: 'icon'`; static `'data-ngx-yeti-item-icon': ''`; `'[attr.data-gap]'` and `'[attr.data-align]'` from the inputs, `null` when unset; `'[attr.align]': 'null'` with a source comment naming the presentational hint it prevents |
 | Providers | none |
 | Models, outputs, methods | none |
-| Lifecycle | acquires the `icon` item file in its constructor and releases it through `DestroyRef` (ADR 0060 point 2; building-blocks 1.9) |
+| Lifecycle | acquires the `icon` item file, on the server too, with `injectYetiItemStyles('icon')` as the last statement of its constructor (ticket 50 decisions 42 and 45) and releases it through `DestroyRef` (ADR 0060 point 2; building-blocks 1.9) |
 
 Types come from the generated `yeti-types.ts` copy of Yeti's typings at the pin, re-exported by name (ADR 0060 point 10; building-blocks 1.3). The full `align` vocabulary is accepted, as ticket 26 row 41 types it; `start`, `end`, and `stretch` are Yeti's to define on an icon, and the package does not narrow them.
 
@@ -235,7 +235,7 @@ None. The icon has no state and no transition, and Yeti's reduced-motion handlin
 - **Full hydration:** every element is claimed as is; bindings computed from the same inputs give the same values (usage rule 7); 0 style mutations (ADR 0060 point 5, measured for the mechanism). A static `align` is written back and removed again in the same pass (section 11).
 - **Incremental hydration (`@defer (hydrate on ...)`):** the server rendered the icon and its link; a dehydrated host holds the link for as long as it is on the page (ADR 0060 point 4, measured for the mechanism). The icon and its SVG are one element and its child, so they share one **Hydration boundary**. A `hydrate on interaction` block holding an icon button replays the click to the consumer's handler; the icon adds no listener of its own.
 - **`hydrate never`:** the icon is its server HTML and stays styled while its host is connected, whatever live icons do (ADR 0060 point 4; ADR 0045's presence attribute is what the check queries). A link still navigates and a button still submits natively.
-- **Client-only `@defer`:** the item file is fetched when `YetiIcon` is constructed, which can show frames with an unsized SVG; the consumer closes the gap with `provideYetiStyles({ preload: ['icon'] })` (ADR 0060 point 6; [setup](../issues/38-spec-setup.md)).
+- **Client-only `@defer`:** the item file is fetched when `YetiIcon` is constructed, which can show frames with an unsized SVG; the consumer closes the gap with `provideYetiStyles({ preload: ['icon'] })` (ADR 0060 point 6; [setup](setup.md)).
 - **Event replay:** the directive declares no listener, so nothing replays because of it and it adds no `jsaction`. The consumer's own `(click)` on the host replays as any other.
 - **`withI18nSupport()`:** a label is translated with `i18n` and an SVG's name with `i18n-aria-label`, in the consumer's component. The directive adds no `i18n` block; the consumer's component needs `withI18nSupport()` to hydrate rather than re-render (ADR 0011 clause 11; building-blocks 1.11 decision 11).
 - **Zoneless:** inputs are signals and host bindings read them, so a bound `gap` or `align` refreshes with no zone (map, Standing rulings, item 43; ADR 0070 rule 4).
@@ -258,7 +258,7 @@ None. The icon has no navigation or fragment behaviour, so it uses neither [navi
 
 ### 13. Item file
 
-`yeti-css/css/layouts/icon/icon.css`, one of Yeti's 49, loaded as a counted `<link>` by the root styles service of ADR 0060: acquired when the first `[yetiIcon]` is created, on the server too, inserted in Yeti's order (`Y/src/yeti.css:31`, after `center` at `:30`, the rank table of point 3), and removed after the last host carrying `data-ngx-yeti-item-icon` has left the DOM. The consumer's part is ADR 0060 point 11's setup, which the [setup](../issues/38-spec-setup.md) spec owns: Yeti's build at the Pin under `yeti-css`, the `assets` entry, the global stylesheet with the layer statement and the always-loaded group (which holds the `[data-gap]` and `[data-align]` value rules and the reset that makes an `svg` a block), and optionally `provideYetiStyles({ preload: ['icon'] })`. The icon adds nothing to it. Cross-item files acquired: none (`icon.css` has no cross-item rule, and no other item's CSS names `.icon`; ADR 0060 point 9). An item composed on the same element (`button`) or around it (`cluster`) loads its own file through its own directive.
+`yeti-css/css/layouts/icon/icon.css`, one of Yeti's 49, loaded as a counted `<link>` by the root styles service of ADR 0060: acquired when the first `[yetiIcon]` is created, on the server too, inserted in Yeti's order (`Y/src/yeti.css:31`, after `center` at `:30`, the rank table of point 3), and removed after the last host carrying `data-ngx-yeti-item-icon` has left the DOM. The consumer's part is ADR 0060 point 11's setup, which the [setup](setup.md) spec owns: Yeti's build at the Pin under `yeti-css`, the `assets` entry, the global stylesheet with the layer statement and the always-loaded group (which holds the `[data-gap]` and `[data-align]` value rules and the reset that makes an `svg` a block), and optionally `provideYetiStyles({ preload: ['icon'] })`. The icon adds nothing to it. Cross-item files acquired: none (`icon.css` has no cross-item rule, and no other item's CSS names `.icon`; ADR 0060 point 9). An item composed on the same element (`button`) or around it (`cluster`) loads its own file through its own directive.
 
 ## Testing Decisions
 
@@ -298,9 +298,10 @@ Fixture-app half, built with `outputMode: 'server'`, with an `/icon` route marke
 - hydration logs no `NG05xx` and `componentsSkippedHydration === 0`;
 - with JavaScript disabled the SVGs are one em and aligned as in the Storybook half, the icon link navigates, and `@axe-core/playwright` with the six tags reports no violation;
 - an icon inside a client-only `@defer` block with `icon` in the preload list shows no frame with an unsized SVG; an icon inside a `hydrate never` block stays sized after a live icon on the page is removed;
-- navigating from the icon route to a route without one removes the item link, and navigating back re-inserts it.
+- navigating from the icon route to a route without one removes the item link, and navigating back re-inserts it;
+- a `MutationObserver` installed before the main bundle records the `align` attribute's rewrite and removal on an icon host whose consumer wrote a static `align` during hydration, and a `requestAnimationFrame` probe records whether a frame is painted while it is present; the test asserts the attribute is absent after hydration and that no frame is painted while it is present ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 9; if this fails, every `removed`-kind spec switches to bound-only inputs).
 
-Testing at the floor browsers is not decided yet ([building-blocks.md](../building-blocks.md) Part 4; ADR 0014 point 7). Screen-reader announcement of the decorative and standalone forms is a manual release test (ADR 0015 point 7).
+Floor engines: [ticket 93](../issues/93-decide-testing-at-the-browser-floor.md) (a weekly and release-branch job; Safari 26.2 held statically). Screen-reader announcement of the decorative and standalone forms is a manual release test (ADR 0015 point 7).
 
 Prior art: Yeti's `example.html` for the default story and its `test/browser/layouts/icon.spec.js` and fixture for the geometry cases; ticket 18's fixture app and ADR 0060's prototype for the server HTML and the item link; ticket 17's contrast harness for the formula.
 
@@ -312,8 +313,7 @@ Prior art: Yeti's `example.html` for the default story and its `test/browser/lay
 - An input per token (ADR 0004).
 - Any check that the host has exactly one SVG child, that a decorative SVG is hidden, or that an icon-only control has a name. Checks belong to a later milestone (map, Milestones); the usage rules state them and the stories test the package's own examples.
 - Package CSS for target size or forced colours, unless an assertion fails (building-blocks 1.10; the user's "Accessibility CSS: Yes." applies only where Yeti's CSS is what fails).
-- How the styles service counts, inserts, and removes links (ADR 0060; the [setup](../issues/38-spec-setup.md) spec).
-- Testing at the floor browsers (building-blocks Part 4).
+- How the styles service counts, inserts, and removes links (ADR 0060; the [setup](setup.md) spec).
 
 ## Further Notes
 
@@ -406,7 +406,7 @@ A page whose icons render inside a client-only `@defer` block preloads the item:
 
 Per building-blocks 1.13:
 
-1. **Item file:** `layouts/icon/icon.css`, loaded by `YetiIcon` as a counted link (section 13). The consumer writes nothing for the icon beyond the [setup](../issues/38-spec-setup.md) spec's one-time configuration.
+1. **Item file:** `layouts/icon/icon.css`, loaded by `YetiIcon` as a counted link (section 13). The consumer writes nothing for the icon beyond the [setup](setup.md) spec's one-time configuration.
 2. **Always-loaded rules relied on:** `layouts/attributes.css` maps `data-gap` and `data-align` values to the private tokens; `tokens/space.css` declares `--yeti-space-xs`; `base/reset.css:23-27` makes an `svg` a block with `max-inline-size: 100%`, which the item file overrides in size for a direct child.
 3. **Cross-item rules:** none in `icon.css`. `button.css` also sizes a direct `svg` child of a `.button`; on an element with both classes, both are Yeti's rules.
 4. **Tokens:** reads one public token, writes none (section 2).

@@ -210,7 +210,7 @@ None. The entry point renders nothing and animates nothing.
 - **Zoneless.** Required (map, Standing rulings, 43); ticket 35 ran zoneless (no zone.js loaded, measured). Nothing here is read by a template after creation, so no signal is needed.
 - **JavaScript off, under SSR and prerendering.** The server HTML has unique ids and resolving references, so every relationship attribute works for assistive technology and the platform's openers work (ADR 0011, 2026-10-03 note). Nothing is lost: the entry point has no client-only behaviour. A client-only application renders nothing with JavaScript off and promises nothing (map, Standing rulings, JavaScript off).
 - **Hydration constraints.** Same DOM on both ends (measured); no direct DOM manipulation: one read of the directive's own host, no write, no query (ADR 0044 point 4, the same read-once pattern as the open-state decision); valid HTML, no duplicate ids; nothing depends on `preserveWhitespaces`; no output branched on the platform.
-- **Hydration boundary.** Generated ids no longer require a widget and the parts its ids link to share one Hydration boundary (ADR 0011, 2026-10-03 note; CONTEXT, Hydration boundary). Whether the shared-boundary rule (building-blocks 1.11 decision 6) stays for other reasons is not this spec's.
+- **Hydration boundary.** Generated ids no longer require a widget and the parts its ids link to share one Hydration boundary (ADR 0011, 2026-10-03 note; CONTEXT, Hydration boundary). The shared-boundary rule (building-blocks 1.11 decision 6) stays for behaviour reasons, not ids ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 227; ADR 0011's note on clause 7).
 
 ### Single-page application
 
@@ -272,7 +272,6 @@ The Storybook half of layer 4 has nothing to test here. The Contract check needs
 - Passing the package's id into Aria's `id` input (rejected, ADR 0044).
 - Angular's private hydration data (`ngh`, defer block ids) as an id source (rejected as private, ADR 0044).
 - A development-mode misuse warning for the usage rules: checks are deferred to a later milestone (map, Milestones).
-- Whether building-blocks 1.11 decision 6 (one Hydration boundary per widget) stays for reasons other than ids.
 - Filing upstream bug A6 with Angular: no upstream report without the user's confirmation (map, Standing rulings, Upstream bugs).
 
 ## Further Notes

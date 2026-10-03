@@ -2,7 +2,7 @@
 
 Type: research
 Status: resolved
-Blocked by: none
+Blocked by:
 Labels: wayfinder:research
 Map: ../map.md
 

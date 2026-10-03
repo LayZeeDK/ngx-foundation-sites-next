@@ -247,7 +247,43 @@ Not met yet, by the map's own test. `map.md:9` says "The map is done when all sp
 
 ## Resolution log
 
-(empty)
+Applied 2026-10-03 by the orchestrator under the user's full-AFK ruling. The four choices the audit left open are [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decisions 225 to 228, the orchestrator's and not the user's.
+
+- **H1:** fixed. `specs/dropdown.md` section 4 item 5 and its layer-2 completion case follow decision 153: a close during the opening wait completes it at once, so `closed` always follows `opened` (decision 225).
+- **M1:** fixed. 45 specs now point to ticket 93 with "Floor engines: [ticket 93] (a weekly and release-branch job; Safari 26.2 held statically)", `attention` and `visually-hidden` among them, and the tooltip's reflow case names the floor job's Chromium 141 run. The Out of Scope bullet is removed from 42 specs, and the matching bullet from `events`, `print`, and `setup` (48 specs in all). Building-blocks Part 4 and the map's gist of ticket 27 are updated.
+- **M2:** fixed. All 33 specs name `injectYetiItemStyles('<item>')` as the last statement of the root directive's constructor, linked to `setup.md` (decisions 42 and 45). The layer-2 cases in `attention`, `enter`, and `print` check the `<link>` in `document.head`. No spec links the setup ticket for the setup spec. `setup.md` now says that `button` acquires `spinner` unconditionally (decision 109).
+- **M3:** fixed. `demo.md` (three places), `README.md`, and both map gists say `demo` is one of two Angular components, with `YetiFieldError`. `field.md` calls `YetiFieldError` an attribute-selector Angular component.
+- **M4:** fixed. Building-blocks 1.4, guide P10, and events rule 8 give the carousel a read-only `current` signal (decision 121). 1.4 gives the accordion a read-only `isOpen` signal and the `isOpenChange` output (decision 96).
+- **M5:** fixed. Events rule 9 and story 22 are limited to outputs that stand for Yeti events, and a model's `xChange` emits once at creation per decisions 146 and 199.
+- **M6:** fixed. `nav.md` says the open-state read happens at creation with no platform branch, and that the read is "creation-time".
+- **M7:** fixed. Part 2 row 34 names the list-and-toggle condition (decision 167), and row 32 names decision 92's one-shot flag.
+- **M8:** fixed. Buttons story 23 now asks for every member to be reachable by Tab in the server HTML, with one Tab stop once Aria is live (decision 113).
+- **M9:** fixed. The field e2e asserts the merged `aria-describedby` after hydration (decision 46).
+- **M10:** fixed. The affix spec says typed values survive only through `YetiFieldControl`'s adoption (decision 161, A11Y-28), and that a control outside a package field is not covered.
+- **M11:** fixed. The icon and tabs layer-4 sections have the cluster-form case: a `MutationObserver` plus a `requestAnimationFrame` probe (decisions 9 and 202).
+- **M12:** fixed. The tooltip claims A11Y-2 (decisions 215 to 217) and A11Y-29 (decision 220). The dropdown's deciding records and its ledger claim add A11Y-27 (decision 157).
+- **M13:** fixed. The settled open points in `setup` (decisions 68 and 70), `lift` (decision 12), `spinner` (decisions 109, 110, 190, 191, and 193), and `center` (decision 32) now cite their decisions.
+- **M14:** fixed. `overlay--veil` asserts decision 55's composite contrast in both schemes, and `overlay--default` names both schemes.
+- **M15:** fixed. Both frame examples use `NgOptimizedImage` with `fill` and a positioned frame (decision 35).
+- **M16:** fixed. Decision 226 records decision 1's options; decision 1 and ADR 0044's note point to it.
+- **M17:** fixed. Decision 227 records the shared-boundary rule's new reason, which is behaviour, not ids, as the orchestrator's reading. It adds dated notes on ADR 0011 clause 7, ADR 0013, and ADR 0021, plus pointers from ADR 0044, building-blocks 1.11 decision 6, and the generated-ids spec.
+- **M18:** not applied, reason: history is not rewritten (decision 228). The orchestrator's later commits carry bodies.
+- **M19:** fixed. `tabs.md` quotes the option label "All panels show (Recommended)" and attributes the details to the map's description and decision 206. `breadcrumbs.md` paraphrases the user's sentence without quotation marks.
+- **L1:** fixed. The open-point wording in `alert`, `button`, `buttons` (including the content-query row, decision 112), `carousel`, `table`, `print`, `box`, `badge`, `seam`, and `breadcrumbs` now cites its decisions.
+- **L2:** fixed. In `dialog.md`, 1.8's correcting note; in `navigation-close.md`, the dialog follows `toggle` (decision 147); in `fragment-links.md` rule 2, the selector-named inputs (decisions 126 and 208); in `nav.md`, A11Y-3b reads *measured*.
+- **L3:** fixed. `billboard` and `visually-hidden` name `NgxYetiPaint` as the sixth collision (decision 10).
+- **L4:** fixed. `cluster.md` names `YetiScrollerJustify` (decision 60).
+- **L5:** fixed. `sidebar` (two places) and `shell` list `nav` and `table` as A11Y-22 sharers (decisions 170 and 195).
+- **L6:** fixed. The box's usage rule holds 4.5:1 at any size (decision 8).
+- **L7:** fixed. `grid`, `layer`, `stack`, `timeline`, `overlay`, `field`, and `tabs` cite decisions 6, 8, 9, 46, and 113 by number, and `field.md` lists A11Y-28 among its deciding records.
+- **L8:** fixed. Citations now read `validate.js:59-61` and `:61`, `validate.js:69-84` for the clearing listener, and `control_native.ts:119-125`. They are in `specs/field.md`, tickets 50 and 83, and `ledger.md`, and were checked against the clones.
+- **L9:** fixed. The map's Prefix example is `figure[yetiDemo]`, Not yet specified keeps only the audit line, and P16 names Tabs and Toolbar.
+- **L10:** fixed. The map's Spec shape note records both choices: citations are kept as evidence, and the label is left to the implementing repository's tracker.
+- **L11:** fixed. Tickets 36 and 50 have an empty `Blocked by:` line.
+- **L12:** fixed. ADR 0045 has `status: accepted` front matter, and its status sentence is kept as the first paragraph.
+- **L13:** fixed for the prose glyphs in center, ticket 53, ticket 50, ticket 35, tabs, demo, setup, progress, and spinner. Not applied to `pagination.md`'s two `<span>` ellipses: they are the rendered gap marker inside markup, which the audit's own rule keeps.
+- **L14:** fixed. `events.md:27`, ticket 07, and ticket 09 (two places) no longer use that verb for a non-destructive action (now "removing", "removed", "abandoned", "no longer applies").
+- **L15:** fixed. Ticket 93 has a dated note about the M1 change.
 
 ## Link check on this file
 

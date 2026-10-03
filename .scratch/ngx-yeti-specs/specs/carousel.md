@@ -313,7 +313,7 @@ WCAG 2.2 AA criteria the item touches, and how each is met:
 | 2.5.8 Target Size (Minimum) | Each dot is `--yeti-control-size`, `2.5rem` by default; play functions assert at least 24 by 24 CSS pixels. Previous and next are the consumer's buttons; a `yetiButton` meets it. |
 | 4.1.2 Name, Role, Value | Slides, dots, the track, and the buttons carry names from the consumer; `aria-current` and `aria-disabled` state what is current and unavailable. Play functions assert non-empty computed names. |
 
-**Ledger rows owned:** A11Y-4 ([ledger.md](../ledger.md)). This spec confirms its building blocks (`IntersectionObserver` in `afterNextRender`, host bindings) and its tests, and proposes that its "What the package adds" cell record the spec's readings: no `aria-live` on the track, `aria-current` absent until the observer reports, previous and next `aria-disabled` at the ends and until live, and previous and next as the keyboard path in WebKit ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 134). Like-for-like replacements of `carousel.js` (the history-free dot, `slide`) are not ledger rows (ADR 0040 consequences). The carousel's dot under `<base href>` is part of A11Y-16, owned by [fragment-links](fragment-links.md). **Forced colours:** the dot is a `::before` circle painted with `background-color`, which forced-colours mode may replace with the canvas colour, leaving only the focus ring (inferred, not measured). No ledger row and no package CSS now; layer 4 asserts that the dots stay visible under `forcedColors: 'active'`, and if they do not, a ledger row owned by `carousel` and one `@layer ngx-yeti` rule follow, after ticket 50 decision 88's pattern (ticket 50 decision 131).
+**Ledger rows owned:** A11Y-4 ([ledger.md](../ledger.md)). This spec confirms its building blocks (`IntersectionObserver` in `afterNextRender`, host bindings) and its tests; its "What the package adds" cell records the spec's readings: no `aria-live` on the track, `aria-current` absent until the observer reports, previous and next `aria-disabled` at the ends and until live, and previous and next as the keyboard path in WebKit ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 134). Like-for-like replacements of `carousel.js` (the history-free dot, `slide`) are not ledger rows (ADR 0040 consequences). The carousel's dot under `<base href>` is part of A11Y-16, owned by [fragment-links](fragment-links.md). **Forced colours:** the dot is a `::before` circle painted with `background-color`, which forced-colours mode may replace with the canvas colour, leaving only the focus ring (inferred, not measured). No ledger row and no package CSS now; layer 4 asserts that the dots stay visible under `forcedColors: 'active'`, and if they do not, a ledger row owned by `carousel` and one `@layer ngx-yeti` rule follow, after ticket 50 decision 88's pattern (ticket 50 decision 131).
 
 **Manual release check** (ADR 0015 point 7): with a screen reader in each engine, that a slide is announced with its name and "slide", that the dot of the slide in view is announced as current, and that previous and next are announced as unavailable at the ends.
 
@@ -465,7 +465,7 @@ Fixture-app half, built with `outputMode: 'server'`, served under `<base href="/
 - a `routerLink` to the same component with another parameter updates every dot's `href` (fragment-links case 5);
 - navigating from the carousel route to a route without one removes the item link, and navigating back re-inserts it.
 
-Testing at the floor browsers is not decided yet ([building-blocks.md](../building-blocks.md) Part 4; ADR 0014 point 7).
+Floor engines: [ticket 93](../issues/93-decide-testing-at-the-browser-floor.md) (a weekly and release-branch job; Safari 26.2 held statically).
 
 Prior art: Yeti's `example.html` and `docs.md` for the stories, and its `test/browser/components/carousel.spec.js` with `test/browser/fixtures/components/carousel.html` for the slide widths, the scroll, the history, the quick-succession, the right-to-left, and the modified-click cases; the [aria-carousel prototype](../prototypes/aria-carousel/README.md)'s variant (A), which sketched these directives and measured them in three engines; ticket 18's fixture app; ADR 0060's prototype for the item link; the [fragment-links](fragment-links.md) spec's subpath cases; the [alert](alert.md) spec's part-to-root output and replay-safe handler tests.
 
@@ -483,7 +483,6 @@ Prior art: Yeti's `example.html` and `docs.md` for the stories, and its `test/br
 - An Angular component that renders the carousel's markup, generated dots, generated slide ids, or generated buttons (ADR 0003 point 6; building-blocks 1.1).
 - Any check that the parts are placed, named, or numbered as the usage rules say. Checks belong to a later milestone (map, Milestones).
 - How the styles service counts, inserts, and removes links (ADR 0060; the [setup](setup.md) spec).
-- Testing at the floor browsers (building-blocks Part 4).
 
 ## Further Notes
 
