@@ -4,7 +4,7 @@ Ticket: [46. Spec: lede (utility)](../issues/46-spec-lede.md)
 
 Targets: Angular 22.2, Nx 23.2, Storybook 10.6 with `@storybook/angular-vite`, Vitest 4.1.x, TypeScript 6.0.x, and Yeti `f52d1e8b9` (`f52d1e8b93de5bbde322480ba77d5be26c49b0ef`, `develop`, 2026-09-25). Browser target: Chrome and Edge 141, Firefox 145, Safari and Safari iOS 26.2 ([ADR 0002](../adr/0002-browser-target-baseline-2025.md)). Accessibility target: WCAG 2.2 AA.
 
-Deciding records: [building-blocks.md](../building-blocks.md) Part 2 row 46 and Part 1, [ADR 0003](../adr/0003-directives-set-yetis-class-attributes-and-markers.md), [ADR 0004](../adr/0004-yeti-tokens-are-a-consumer-stylesheet-surface.md), [ADR 0011](../adr/0011-rendering-modes-contract-for-yeti.md), [ADR 0014](../adr/0014-testing-stack-for-yeti.md), [ADR 0015](../adr/0015-wcag-2-2-aa-enforcement-over-yeti.md), [ADR 0060](../adr/0060-item-styles-are-counted-links-to-the-consumers-yeti-build.md), [ADR 0080](../adr/0080-yeti-prefix-ngx-yeti-runtime-names-ngxyeti-on-collision.md), and [ledger.md](../ledger.md) row A11Y-10e. `Y/` is `d:/projects/github/foundation/yeti/` at the **Pin**. Where this spec needs something no record settles, it gives its best reading marked "(open: see ticket)".
+Deciding records: [building-blocks.md](../building-blocks.md) Part 2 row 46 and Part 1, [ADR 0003](../adr/0003-directives-set-yetis-class-attributes-and-markers.md), [ADR 0004](../adr/0004-yeti-tokens-are-a-consumer-stylesheet-surface.md), [ADR 0011](../adr/0011-rendering-modes-contract-for-yeti.md), [ADR 0014](../adr/0014-testing-stack-for-yeti.md), [ADR 0015](../adr/0015-wcag-2-2-aa-enforcement-over-yeti.md), [ADR 0060](../adr/0060-item-styles-are-counted-links-to-the-consumers-yeti-build.md), [ADR 0080](../adr/0080-yeti-prefix-ngx-yeti-runtime-names-ngxyeti-on-collision.md), and [ledger.md](../ledger.md) row A11Y-10e. `Y/` is `d:/projects/github/foundation/yeti/` at the **Pin**. The points no record settled were listed under `### Open` in this spec's ticket and are decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md) (decisions 8, 23, and 25).
 
 ## Problem Statement
 
@@ -19,7 +19,7 @@ The lede is also one of five items whose contrast axe could not compute on Yeti'
 One **Item directive**, `YetiLede`, with selector `[yetiLede]`, in the secondary entry point `ngx-yeti/lede` ([building-blocks.md](../building-blocks.md) Part 2 row 46, "class only"; 1.3). The developer writes `<p yetiLede>` where Yeti's docs write `<p class="lede">`. The directive:
 
 - binds `lede` as a static host class;
-- sets `data-ngx-yeti-item="lede"` on its host and acquires the `lede` item file when it is created, on the server too, and releases it when it is destroyed (ADR 0060 point 2);
+- sets the presence attribute `data-ngx-yeti-item-lede` on its host ([ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md)) and acquires the `lede` item file when it is created, on the server too, and releases it when it is destroyed (ADR 0060 point 2);
 - declares no input, no output, no listener, no render callback, and no injection token, so it is **types only** in building-blocks' sense, with no types to bind;
 - has `exportAs: 'yetiLede'` (building-blocks 1.3).
 
@@ -101,7 +101,7 @@ Attributes left to the consumer: none to leave. [Decide: how the package maps ea
 | Token `--yeti-lede-size` | how large a lede reads | the consumer's; the package writes none | ADR 0004 |
 | Token `--yeti-lede-measure` | the lede's line length | the consumer's; the package writes none | ADR 0004 |
 | Token `--yeti-leading-md` | the line height, the same as body prose | the consumer's; the package writes none | ADR 0004 |
-| Host attribute (package) | not Yeti's | static `data-ngx-yeti-item="lede"` | ADR 0060 point 2; ADR 0080 point 2 |
+| Host attribute (package) | not Yeti's | static presence attribute `data-ngx-yeti-item-lede` (empty value) | [ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md); ADR 0080 point 2 |
 
 **Module replaced:** none. Yeti's `lede` has no Module ([ADR 0040](../adr/0040-package-replaces-yetis-optional-modules.md); Part 2 row 46, "Yeti module: none").
 
@@ -123,7 +123,7 @@ Generated ids and the platform's relationship attributes: none. The lede renders
 | Selector | `[yetiLede]` (Part 2 row 46) |
 | `exportAs` | `yetiLede` (building-blocks 1.3) |
 | Entry point | `ngx-yeti/lede` (building-blocks 1.3; ADR 0011 clause 10) |
-| Host | `class: 'lede'`; `'data-ngx-yeti-item': 'lede'` (both static) |
+| Host | `class: 'lede'`; `'data-ngx-yeti-item-lede': ''` (both static) |
 | Inputs, models, outputs, methods | none |
 | Lifecycle | acquires the `lede` item file in its constructor and releases it on destroy, through `DestroyRef` (ADR 0060 point 2; building-blocks 1.9) |
 
@@ -132,7 +132,7 @@ No input exists, so building-blocks 1.4's rule for inputs named like HTML attrib
 **Usage rules** (numbered here and in the directive's JSDoc; the first milestone reports no breach, map, Milestones):
 
 1. Put `yetiLede` on the one paragraph under the page's heading that says what the page is. Yeti: "Put it on that paragraph and nothing else: a second lede on a page is not a lede" (`docs.md`). The selector accepts any element, as row 46 has it; the paragraph is the documented host.
-2. Do not write `class="lede"` or `data-ngx-yeti-item` statically on the host. The directive binds both (ADR 0003 point 1; building-blocks, "Hydration constraints (2026-10-03)": a consumer writes no static attribute that a directive binds).
+2. Do not write `class="lede"` or `data-ngx-yeti-item-lede` statically on the host. The directive binds both (ADR 0003 point 1; building-blocks, "Hydration constraints (2026-10-03)": a consumer writes no static attribute that a directive binds).
 3. Do not use the lede in place of a heading. It takes no role and is not a heading (manifest `a11y.notes`); the page's heading stays a heading element.
 4. Import `YetiLede` in every component whose template writes `yetiLede`. A **Forgotten import** renders a plain paragraph with no error, because the directive has no input the compiler could report (building-blocks 1.9).
 
@@ -163,13 +163,13 @@ WCAG 2.2 AA criteria the item touches, and how each is met:
 | --- | --- |
 | 1.3.1 Info and Relationships | The lede is the consumer's `p`, with no role; its relationship to the page is its position under the heading, which the DOM order carries (manifest `a11y.notes`). Usage rule 3 keeps headings as headings. |
 | 1.3.2 Meaningful Sequence | The class changes size and line length only; DOM order is reading order. |
-| 1.4.3 Contrast (Minimum) | axe left `color-contrast` incomplete on Yeti's example in Chromium and Firefox (ticket 17). The play function computes the ratio of the lede's text and of the heading above it from computed colours with the exact WCAG formula, unrounded, in the light and dark schemes, and asserts at least 4.5:1 ([ADR 0015](../adr/0015-wcag-2-2-aa-enforcement-over-yeti.md) point 3; A11Y-10e). It uses the normal-text threshold even where the lede's computed size could count as large text, because the size is a token the consumer may lower (open: see ticket). A package rule is added only if the assertion fails (A11Y-10a's "package rule only if it fails"). |
+| 1.4.3 Contrast (Minimum) | axe left `color-contrast` incomplete on Yeti's example in Chromium and Firefox (ticket 17). The play function computes the ratio of the lede's text and of the heading above it from computed colours with the exact WCAG formula, unrounded, in the light and dark schemes, and asserts at least 4.5:1 ([ADR 0015](../adr/0015-wcag-2-2-aa-enforcement-over-yeti.md) point 3; A11Y-10e). It uses the normal-text threshold even where the lede's computed size could count as large text, because the size is a token the consumer may lower ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 8). A package rule is added only if the assertion fails (A11Y-10a's "package rule only if it fails"). |
 | 1.4.4 Resize Text | The size is `var(--yeti-text-lg)` at the pin, a step of Yeti's fluid type scale with `rem` bounds (`Y/src/tokens/type.css`), and the measure is in `ch`; both grow with text zoom (read, not measured for the lede). |
 | 1.4.10 Reflow | `max-inline-size` only caps the line; the lede sets no minimum width. Layer 4 asserts no horizontal overflow at a 320 px viewport. |
 | 1.4.12 Text Spacing | The rule sets no height and no overflow; overridden spacing grows the paragraph (read). |
 | 2.4.6 Headings and Labels | Not met by the lede and not claimed: the page's heading carries it (usage rule 3). |
 
-**Ledger rows owned:** A11Y-10e only ([ledger.md](../ledger.md)). This spec confirms its **What the package adds** column as written ("As A11Y-10a": a play-function assertion with the exact formula; a package rule only if it fails) and does not change it. Its **What Yeti does** column reads "as A11Y-10b" (text over an image, the author's responsibility), which does not describe the lede's example: there is no image, and axe's incomplete result names the example's heading (open: see ticket). No new ledger row: the lede adds no feature Yeti lacks.
+**Ledger rows owned:** A11Y-10e only ([ledger.md](../ledger.md)). This spec confirms its **What the package adds** column as written ("As A11Y-10a": a play-function assertion with the exact formula; a package rule only if it fails) and does not change it. Its **What Yeti does** column read "as A11Y-10b" (text over an image, the author's responsibility), which did not describe the lede's example: there is no image, and axe's incomplete result names the example's heading. [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 23 rewrites that cell: plain text on the page surface; axe left `color-contrast` incomplete on the example's heading as partially obscured, cause not traced. No new ledger row: the lede adds no feature Yeti lacks.
 
 ### 8. Rendered HTML
 
@@ -183,7 +183,7 @@ Consumer markup, after Yeti's example:
 </article>
 ```
 
-Server HTML and the hydrated DOM are the same: the paragraph carries `yetilede=""`, `class="lede"`, and `data-ngx-yeti-item="lede"`, and nothing else from the package. The server also writes one item link into `<head>` in Yeti's order: `rel="stylesheet"`, `href` `<url>utilities/lede/lede.css?v=<pin>` with `url` defaulting to `yeti-css/` relative to `<base href>`, `data-ngx-yeti-styles="lede"`, `data-ngx-yeti-app="<APP_ID>"`, `data-beasties-skip`, and the `CSP_NONCE` when one is provided (ADR 0060 points 2, 3, and 5). The client adopts that link at bootstrap. The lede has no closed or open state.
+Server HTML and the hydrated DOM are the same: the paragraph carries `yetilede=""`, `class="lede"`, and `data-ngx-yeti-item-lede=""`, and nothing else from the package. The server also writes one item link into `<head>` in Yeti's order: `rel="stylesheet"`, `href` `<url>utilities/lede/lede.css?v=<pin>` with `url` defaulting to `yeti-css/` relative to `<base href>`, `data-ngx-yeti-styles="lede"`, `data-ngx-yeti-app="<APP_ID>"`, `data-beasties-skip`, and the `CSP_NONCE` when one is provided (ADR 0060 points 2, 3, and 5). The client adopts that link at bootstrap. The lede has no closed or open state.
 
 The delta from Yeti's docs markup: the consumer writes `yetiLede` where the docs write `class="lede"`.
 
@@ -209,7 +209,7 @@ None. The lede has no state and no transition. Yeti's reduced-motion handling do
 
 The lede complies with each of Angular's hydration constraints (map, Standing rulings, 2026-10-03, item 54):
 
-- **Same DOM on the server and the client:** the host bindings are static, so both render `class="lede"` and `data-ngx-yeti-item="lede"`.
+- **Same DOM on the server and the client:** the host bindings are static, so both render `class="lede"` and `data-ngx-yeti-item-lede`.
 - **No direct DOM manipulation:** the directive writes nothing to the DOM. The item link is the ADR 0060 service's, which writes it on the server and adopts it on the client.
 - **Valid HTML:** the directive changes no element; the consumer's `p` stays a `p`. A `p` cannot hold block content, so a lede that wraps a `div` would be repaired by the parser and differ from the server's DOM; usage rule 1's paragraph host avoids it.
 - **`preserveWhitespaces`:** the directive has no template.
@@ -232,7 +232,7 @@ A good test asserts what a reader or a consumer observes: the class and attribut
 
 Every story loads the always-loaded group globally and the `lede` item file through the directive, as a consumer would (ADR 0014 point 1). Axe runs on every story with the six tags and `parameters.a11y.test = 'error'` (the **Story gate**). Story ids:
 
-- `lede--default`: Yeti's example (heading, lede, body paragraph). Asserts `class="lede"` and `data-ngx-yeti-item="lede"` on the paragraph, no other package attribute, no `tabindex`, and an accessible role of `paragraph`. Asserts the computed `font-size` and `max-inline-size` equal the probe's. Asserts the WCAG contrast ratio of the lede's text and of the heading, each against its computed background, with the exact formula, unrounded, at least 4.5:1 (A11Y-10e).
+- `lede--default`: Yeti's example (heading, lede, body paragraph). Asserts `class="lede"` and `data-ngx-yeti-item-lede` on the paragraph, no other package attribute, no `tabindex`, and an accessible role of `paragraph`. Asserts the computed `font-size` and `max-inline-size` equal the probe's. Asserts the WCAG contrast ratio of the lede's text and of the heading, each against its computed background, with the exact formula, unrounded, at least 4.5:1 (A11Y-10e).
 - `lede--dark-scheme`: the same markup in a wrapper with the consumer's `color-scheme: dark` (ADR 0004 consequences). Repeats the contrast assertion (ticket 17 measured both schemes).
 - `lede--in-stack`: the heading and the lede wrapped in a `stack` layout, Yeti's own reason for using a class (`docs.md`). Asserts the lede still matches the probe.
 - `lede--themed`: the story sets `--yeti-lede-size` and `--yeti-lede-measure` on its wrapper. Asserts the computed values follow the probe in that wrapper, so a consumer's token takes effect.
@@ -241,7 +241,7 @@ Every story loads the always-loaded group globally and the `lede` item file thro
 
 Through `TestBed.createDirective(YetiLede, { tagName: 'p' })` (map, Standing rulings, Directive testing; ADR 0014's 2026-10-03 note):
 
-- the host has class `lede` and `data-ngx-yeti-item="lede"`;
+- the host has class `lede` and `data-ngx-yeti-item-lede`;
 - the host has no other attribute from the package and no listener;
 - while the fixture lives, one `<link data-ngx-yeti-styles="lede">` is in `document.head`; after `fixture.destroy()` and an animation frame it is gone;
 - two fixtures share one link, and it stays until both are destroyed.
@@ -250,7 +250,7 @@ A small test host covers what `createDirective` cannot: a template reference `#l
 
 ### Layer 3: node-level and SSR smoke (`npx nx test <lib>`, `lede.ssr.spec.ts`)
 
-Through the shared `renderServer()` helper with `withI18nSupport()` and a fixture whose heading and lede carry `i18n` (building-blocks 1.11 decision 11, 1.12): `whenStable()` resolves; the lede renders `class="lede"` and `data-ngx-yeti-item="lede"`; `<head>` holds one item link with `data-ngx-yeti-styles="lede"`, `data-beasties-skip`, and an `href` ending `utilities/lede/lede.css?v=<pin>`; the lede carries no `jsaction`.
+Through the shared `renderServer()` helper with `withI18nSupport()` and a fixture whose heading and lede carry `i18n` (building-blocks 1.11 decision 11, 1.12): `whenStable()` resolves; the lede renders `class="lede"` and `data-ngx-yeti-item-lede`; `<head>` holds one item link with `data-ngx-yeti-styles="lede"`, `data-beasties-skip`, and an `href` ending `utilities/lede/lede.css?v=<pin>`; the lede carries no `jsaction`.
 
 The **Contract check** ([ADR 0014](../adr/0014-testing-stack-for-yeti.md) point 3) covers the lede through the contract mapping: class `lede` has `YetiLede`; the manifest's `attributes`, `markers`, and events for `lede` are empty, so a pin move that adds one fails here before any story does.
 
@@ -290,9 +290,9 @@ Prior art: Yeti's `example.html` for the lede story; ticket 18's fixture app and
 | Entry point `ngx-yeti/lede` | building-blocks 1.3; ADR 0011 clause 10 |
 | Native platform, level 1 | building-blocks 1.2; Part 2 row 46 |
 | Tokens are the consumer's | ADR 0004 |
-| Item file as a counted link with `data-ngx-yeti-item` | ADR 0060 points 2 to 6 |
+| Item file as a counted link with `data-ngx-yeti-item-lede` ([ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md)) | ADR 0060 points 2 to 6 |
 | Contrast asserted in the play function | ADR 0015 point 3; ledger A11Y-10e |
-| Normal-text 4.5:1 threshold for the lede | this spec's reading (open: see ticket) |
+| Normal-text 4.5:1 threshold for the lede | [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 8 |
 | Directive tests through `TestBed.createDirective` | map, Standing rulings, Directive testing; ADR 0014 note |
 | Fixture app `outputMode: 'server'` with prerendered and server routes | ticket 50 decision 2 |
 
@@ -344,7 +344,7 @@ Per building-blocks 1.13:
 
 ### Platform features to adopt when the browser target moves
 
-None for the package. Yeti's `text-wrap: pretty` (`lede.css:17`) is outside Baseline 2025 (Firefox lacks it; [Research: Angular 22's browser baseline against what Yeti expects](../issues/01-research-browser-baseline-vs-yeti.md)) and unguarded; it is one of the cosmetic features the specs treat as Yeti does (building-blocks 1.2), so Firefox wraps the lede normally. It needs nothing from the package when the target moves. Yeti's manifest lists `support.unguarded` as empty for the lede, which does not match ticket 01's finding (open: see ticket).
+None for the package. Yeti's `text-wrap: pretty` (`lede.css:17`) is outside Baseline 2025 (Firefox lacks it; [Research: Angular 22's browser baseline against what Yeti expects](../issues/01-research-browser-baseline-vs-yeti.md)) and unguarded; it is one of the cosmetic features the specs treat as Yeti does (building-blocks 1.2), so Firefox wraps the lede normally. It needs nothing from the package when the target moves. Yeti's manifest lists `support.unguarded` as empty for the lede, which does not match ticket 01's finding. This is upstream-bugs row Y8 (verified *read*, no minimal reproduction, not filed); the package does nothing either way ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 25).
 
 ### Single-page-application pieces relied on
 

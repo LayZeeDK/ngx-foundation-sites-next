@@ -413,7 +413,7 @@ Sources: ticket 20 Answer; ticket 18 Answer; `Y/src/guides/stability.md:20` (eac
 
 #### P28. Breakpoints are the container's; the package reads no viewport
 
-Rule: Every size-dependent change in Yeti is a container query in CSS (`data-threshold` on `nav` and `columns`, `data-show` and `data-hide` in `layouts/attributes.css`, the card's and pagination's shape changes), so the package has no breakpoint service, no server breakpoint, no breakpoint token, no `MediaMatcher`, and no rule-string parser. A directive that needs its own size observes its element with `ResizeObserver` from a render callback and says why; a spec never adds a viewport-keyed input.
+Rule: Every size-dependent change in Yeti is decided by a container's width in CSS (`data-threshold`: a container query on `nav`, flex-basis arithmetic on `columns`; `data-show` and `data-hide` in `layouts/attributes.css`; the card's and pagination's shape changes), so the package has no breakpoint service, no server breakpoint, no breakpoint token, no `MediaMatcher`, and no rule-string parser. A directive that needs its own size observes its element with `ResizeObserver` from a render callback and says why; a spec never adds a viewport-keyed input.
 
 Why: checked: no Yeti module reads `matchMedia` for a breakpoint or `innerWidth` (`hover.js:14` reads a pointer capability, which is not a breakpoint); `attributes.css:368-387` keys `data-show` and `data-hide` on `@container (inline-size ...)`; the nav collapses at "its own width, not the screen's" (`nav/docs.md`); so the old server-breakpoint problem (a first client render swapping a mode) does not arise, and the old rendered-state rule that existed for it is not needed.
 

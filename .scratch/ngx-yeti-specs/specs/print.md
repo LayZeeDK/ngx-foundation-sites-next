@@ -2,7 +2,7 @@
 
 Ticket: [Spec: print (utility)](../issues/48-spec-print.md). Targets Angular 22.2, Nx 23.2, Storybook 10.6 with `@storybook/angular-vite`, Vitest 4.1.x, TypeScript 6.0.x, and Yeti `f52d1e8b9` (`f52d1e8b93de5bbde322480ba77d5be26c49b0ef`, `develop`, 2026-09-25). Accessibility target: WCAG 2.2 AA.
 
-`print` is a **Utility** ([CONTEXT.md](../CONTEXT.md)): an **Item** of kind `utility` with one **Identity class**, one **Attribute**, no **Marker**, no **Token**, no **Module**, and no **Event**. The package's answer is one **Item directive** of the "types only" kind ([building-blocks.md](../building-blocks.md) Part 2 row 48). Every decision below cites the record that made it. A point no record settles is marked "(open: see ticket)".
+`print` is a **Utility** ([CONTEXT.md](../CONTEXT.md)): an **Item** of kind `utility` with one **Identity class**, one **Attribute**, no **Marker**, no **Token**, no **Module**, and no **Event**. The package's answer is one **Item directive** of the "types only" kind ([building-blocks.md](../building-blocks.md) Part 2 row 48). Every decision below cites the record that made it. The one point the ticket listed as open was decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md) (decision 12).
 
 Sources at the pin, read for this spec: `src/utilities/print/manifest.json`, `print.css`, `docs.md`, and `example.html`; `src/guides/visibility.md:28`, `:160-169`; `src/guides/migrating.md:44-45`; `src/yeti.css:70`; and Yeti's own browser test `test/browser/utilities/print.spec.js` with its fixture. `Y/` below is the Yeti clone at the pin.
 
@@ -90,7 +90,7 @@ Attributes left to the consumer: none. Ticket 26 row 168 maps `data-print` to th
 | markers | none | | | | manifest `markers: []` |
 | events | none; no output | | | | manifest `js: null`; [events spec](events.md) API rule 4 |
 | tokens | none named; the item reads no token | | | | manifest `tokens: []`; [ADR 0004](../adr/0004-yeti-tokens-are-a-consumer-stylesheet-surface.md) |
-| package runtime name | static host attribute `data-ngx-yeti-item="print"` | | always present | | ADR 0060 point 2 (see section 3 for the shared-element case) |
+| package runtime name | static presence attribute `data-ngx-yeti-item-print` (empty value) | | always present | | [ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md); ADR 0060 point 2 |
 
 The `''` member is ADR 0070 rule U's addition for the bare selector, not a value of Yeti's vocabulary. The **Contract check** compares the vocabulary part of the type, `YetiPrint`, with the manifest's values ([ADR 0014](../adr/0014-testing-stack-for-yeti.md) point 3).
 
@@ -102,7 +102,7 @@ Module replaced: none. Yeti's `print` has no module ([ADR 0040](../adr/0040-pack
 - No injection token, no parent, no `hostDirectives`. `print` is not always on another item's element, so it hosts nothing; where it shares an element with another item (`button`, a `stack` child, a `card`), the consumer writes both directives beside each other ([building-blocks.md](../building-blocks.md) 1.9; P6). The two never declare the same input name, because `yetiPrint` is selector-named (P9; ADR 0070's consideration of plain names).
 - No generated id and no platform relationship attribute ([generated-ids spec](generated-ids.md) does not apply).
 - The one injection is the root styles service of ADR 0060: the directive acquires the `print` item file in its constructor, on the server and in the browser, and releases it on destroy (ADR 0060 point 2). Part 2's "types only" ("no service") was written before ADR 0060 gave every directive this acquisition; this spec reads the two together.
-- **Two items on one element.** ADR 0060 point 2 has every directive set `data-ngx-yeti-item="<item>"` on its host, and point 4 keeps an item's link while an element with that value is connected. When `yetiPrint` shares an element with another item directive (`<button yetiButton yetiPrint="none">`, Yeti's own example), both write one static attribute name with different values, and Angular keeps one value: when it merges the host attributes of the matched directives, a later value for the same name overwrites the earlier one (`mergeHostAttribute`, `NGP/core/src/render3/util/attrs_utils.ts:191-197`, read at `5db6fc4453`, not run). The other item's link then loses the hold that point 4 gives a dehydrated or leaving host. The best reading for this spec: the directive writes `data-ngx-yeti-item="print"` as ADR 0060 says, and the cross-cutting answer comes from ADR 0060's owner and applies to every item, `center box` included (open: see ticket).
+- **Two items on one element.** Each item directive sets its own presence attribute, `data-ngx-yeti-item-<item>`, and ADR 0060 point 4 keeps an item's link while an element carrying that attribute is connected ([ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md); [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 12). When `yetiPrint` shares an element with another item directive (`<button yetiButton yetiPrint="none">`, Yeti's own example), the host carries both `data-ngx-yeti-item-button` and `data-ngx-yeti-item-print`. The names differ, so Angular's merge of host attributes, where a later value for the same name overwrites the earlier one (`mergeHostAttribute`, `NGP/core/src/render3/util/attrs_utils.ts:191-197`, read at `5db6fc4453`, not run), never loses either.
 
 ### 4. API
 
@@ -114,7 +114,7 @@ Module replaced: none. Yeti's `print` has no module ([ADR 0040](../adr/0040-pack
 | class name | `NgxYetiPrint` | `YetiPrint` is a **Colliding name**: Yeti's `yeti.d.ts` exports it as the `print` vocabulary type (ADR 0080 point 4; [Decide: the glossary](../issues/10-decide-glossary.md) question 11) |
 | `exportAs` | `yetiPrint` | the selector keeps `yeti` (ADR 0080 point 4); every directive has one (map, Input naming) |
 | input `yetiPrint` | `input<YetiPrint \| ''>()` | no transform; Yeti's default is never written (ADR 0070 rule 1) |
-| host | static `class: 'print'`, static `data-ngx-yeti-item: 'print'`, `[attr.data-print]` from the input, `null` when unset or `''` | building-blocks 1.5: host bindings on signal state |
+| host | static `class: 'print'`, static `'data-ngx-yeti-item-print': ''`, `[attr.data-print]` from the input, `null` when unset or `''` | building-blocks 1.5: host bindings on signal state |
 | models, outputs, methods | none | nothing in Yeti's contract changes state or reports one |
 
 `YetiPrint` is Yeti's type, re-exported by name from the package's primary entry point through the generated types module, never redeclared (ADR 0080 point 5; ADR 0060 point 10).
@@ -165,13 +165,13 @@ Consumer markup (Yeti's example, `Y/src/utilities/print/example.html`):
 Server HTML and the hydrated DOM are the same, apart from Angular's own hydration annotations:
 
 ```html
-<div class="stack" data-gap="sm" data-ngx-yeti-item="stack">
-  <p class="print" data-ngx-yeti-item="print">Printed from https://foundationcss.com/guides/visibility</p>
-  <button class="button print" data-print="none" data-ngx-yeti-item="…" type="button">Share this page</button>
+<div class="stack" data-gap="sm" data-ngx-yeti-item-stack="">
+  <p class="print" data-ngx-yeti-item-print="">Printed from https://foundationcss.com/guides/visibility</p>
+  <button class="button print" data-print="none" data-ngx-yeti-item-button="" data-ngx-yeti-item-print="" type="button">Share this page</button>
 </div>
 ```
 
-The button's `data-ngx-yeti-item` holds one of `button` and `print`, which is the open point of section 3. `<head>` carries the item links in Yeti's order, the `print` link among them: `<link rel="stylesheet" href="yeti-css/utilities/print/print.css?v=<pin>" data-ngx-yeti-styles="print" data-ngx-yeti-app="<APP_ID>" data-beasties-skip>` (ADR 0060 points 2, 3, 5). There is no closed or open state: the medium decides, and the DOM never changes.
+The button carries one presence attribute per item (section 3). `<head>` carries the item links in Yeti's order, the `print` link among them: `<link rel="stylesheet" href="yeti-css/utilities/print/print.css?v=<pin>" data-ngx-yeti-styles="print" data-ngx-yeti-app="<APP_ID>" data-beasties-skip>` (ADR 0060 points 2, 3, 5). There is no closed or open state: the medium decides, and the DOM never changes.
 
 ### 9. Animation
 
@@ -186,7 +186,7 @@ None. The medium switch is `display: none`, which Yeti does not transition, and 
 - **Full hydration.** The host bindings compute the same values on the client; the client adopts the server's link by `data-ngx-yeti-styles` and `data-ngx-yeti-app` (ADR 0060 point 5). Nothing is rewritten, provided the consumer writes no static `data-print` (usage rule 6).
 - **Event replay.** The directive declares no listener, so no `jsaction` is added for it and nothing replays. A click on a screen-only button replays to that button's own listeners as usual.
 - **Incremental hydration (`hydrate on ...`).** Before its trigger the host is **Dehydrated state**: Yeti's CSS does the whole job, and the host attribute holds the item link while the element is on the page (ADR 0060 point 4). After the trigger the bound value can change.
-- **`hydrate never`.** Everything works: the medium switch is CSS. What is lost is only a bound value's later change. The dehydrated host holds the link by its host attribute, which is exact when `yetiPrint` is alone on its element and depends on the open point of section 3 when it shares one.
+- **`hydrate never`.** Everything works: the medium switch is CSS. What is lost is only a bound value's later change. The dehydrated host holds the link by its presence attribute, alone on its element or sharing one (section 3).
 - **Client `@defer`, routed views, and `@if`.** A host rendered on the client fetches the item file on construction, and until the file arrives a paper-only line shows on screen: ADR 0060 point 6 measured 18 to 20 unstyled frames with a 300 ms delay and 1 to 2 with none. For `print` this is visible content, not only an unstyled box. A consumer whose first `print` host is client-rendered names `print` in `provideYetiStyles({ preload: ['print'] })`, which gave 0 frames in three engines (ADR 0060 point 6). That point measured client-only `@defer`; applying it to routed views and `@if` is this spec's reading of the same fetch-on-construct path.
 - **`withI18nSupport()`.** No effect on the directive. A component whose template has an `i18n` paper-only line needs it to hydrate rather than re-render (1.11; ADR 0011 clause 11); the fixture's one `i18n` text is the paper-only line.
 - **Zoneless.** The input is a signal and the host binding reads it; there is no listener and no field (map, Standing rulings, item 43).
@@ -233,10 +233,10 @@ Story ids (building-blocks 1.3; `<item>` is `print`):
 
 **Layer 2, browser-level** (`npx nx test <lib>`), through `TestBed.createDirective(NgxYetiPrint, { tagName: 'p', bindings })` (map, Standing rulings, Directive testing; ADR 0014's 2026-10-03 note):
 
-1. With no binding, the host has class `print`, `data-ngx-yeti-item="print"`, and no `data-print`.
+1. With no binding, the host has class `print`, `data-ngx-yeti-item-print`, and no `data-print`.
 2. With `yetiPrint` bound to `''`, no `data-print`; to `'only'` and `'none'`, the attribute equals the value; changing the bound signal updates it without `detectChanges` beyond `whenStable()`.
 3. The styles service holds the `print` item while the fixture lives and releases it on destroy (its count returns to zero), through the service's public API.
-4. A test host with `<button yetiButton yetiPrint="none">` renders `class="button print"` and both directives' attributes; it records which `data-ngx-yeti-item` value survives, the fact the open point of section 3 is decided on.
+4. A test host with `<button yetiButton yetiPrint="none">` renders `class="button print"` and both directives' attributes, including both `data-ngx-yeti-item-button` and `data-ngx-yeti-item-print` (ADR 0045).
 
 **Layer 3, node-level** (`npx nx test <lib>`):
 
@@ -276,7 +276,7 @@ Prior art: Yeti's own `print.spec.js` and its fixture, which the layer 4 Storybo
 | No listener, no output, no animation | manifest `js: null`; ADR 0040; ADR 0010 |
 | Native platform level 1; no Aria, CDK, or Material piece | building-blocks 1.2; Part 2 row 48 |
 | No ledger row | Part 2 row 48 |
-| Host attribute when two items share an element | open: see ticket |
+| One presence attribute per item when two items share an element | [ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md); ticket 50 decision 12 |
 
 ### Usage examples
 

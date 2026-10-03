@@ -40,4 +40,8 @@ Checked: Yeti's `lift` manifest, CSS, docs, example, and browser test at `f52d1e
    - **To overrule A:** an implementer who picks B adds the per-element coordinator and states its ordering in ADR 0060. One who picks C adds a usage rule to the lift, enter, attention, and print specs: no utility inside a `hydrate never` block without a live instance elsewhere, or `preload`. Any choice needs a fixture-app e2e case: a `card` plus `lift` host in `hydrate never` after all live lifts have left, asserting both links remain. That case is already in this spec's layer 4.
    - **Effect on this spec.** Contract mapping row 3, Implementation Decisions 3, 4, and 10, and the layer-2 shared-host test say "(open: see ticket)" and follow the decision. Nothing else changes.
 
+   Decided 2026-10-03 in ticket 50, decision 12 (orchestrator, full AFK mode).
+
 2. **Forced colours: the lift's shadow is not drawn, and no ledger row is added.** Impact LOW, confidence MEDIUM. Under forced colours `box-shadow` is not rendered, so with reduced motion as well a hover shows no change. This is inferred from the CSS Color Adjust rule and not measured. The focus ring stays. Recommendation: no package CSS and no ledger row, because the lift is decoration. The focus ring carries 2.4.7, no AA criterion depends on a hover cue, and building-blocks row 47 lists no ledger row. The reading is recorded in the spec, and the layer-4 forced-colours case measures that the ring remains. To overrule: add a ledger row `A11Y-<n>` owned by `lift`, with "What the package adds: none", if the orchestrator reads the ledger's "every accessibility gap found in Yeti" to cover decorative cues.
+
+   Decided 2026-10-03 in ticket 50, decision 26 (orchestrator, full AFK mode).

@@ -33,6 +33,8 @@ Write `specs/center.md` with the `/to-spec` template and the map's Spec shape no
 
    **To overrule.** An implementer who prefers a package rule writes A2 into the package's accessibility stylesheet in `@layer ngx-yeti`, removes usage rule 3 and the anti-pattern story, and turns the layer-4 case on Yeti's own composition into a pass assertion. One who prefers D removes usage rule 3 and records the gap as accepted in the ledger.
 
+   Decided 2026-10-03 in ticket 50, decision 32 (orchestrator, full AFK mode).
+
 ## Answer
 
 Resolved 2026-10-03 by Claude Opus 5.5. Spec: [specs/center.md](../specs/center.md).

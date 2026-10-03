@@ -2,7 +2,7 @@
 
 Ticket: [43. Spec: attention (utility)](../issues/43-spec-attention.md). Targets Angular 22.2, Nx 23.2, Storybook 10.6 with `@storybook/angular-vite`, Vitest 4.1.x, TypeScript 6.0.x, and Yeti `f52d1e8b9` (`f52d1e8b93de5bbde322480ba77d5be26c49b0ef`, `develop`, 2026-09-25). Accessibility target: WCAG 2.2 AA.
 
-Deciding records: [building-blocks.md](../building-blocks.md) Part 2 row 43 ("Native platform, 1; types only"; no module, no building block, no ledger row), [ticket 26](../issues/26-decide-yeti-data-attributes-mapping.md) row 160, [ADR 0070](../adr/0070-where-a-yeti-attribute-sits-decides-its-mapping.md) kind U (the selector-named input, chosen by the user on 2026-10-02: "Selector name (Recommended)", map, Standing rulings), [ADR 0080](../adr/0080-yeti-prefix-ngx-yeti-runtime-names-ngxyeti-on-collision.md) point 4 (the class is `NgxYetiAttention`, because Yeti's `yeti.d.ts` exports `YetiAttention`), [ADR 0060](../adr/0060-item-styles-are-counted-links-to-the-consumers-yeti-build.md) (the item file), [ADR 0010](../adr/0010-animation-is-yetis-css-with-class-form-enter-and-leave.md) (animation is Yeti's CSS), [ADR 0011](../adr/0011-rendering-modes-contract-for-yeti.md) (rendering modes), [ADR 0014](../adr/0014-testing-stack-for-yeti.md) (test layers), and [ADR 0015](../adr/0015-wcag-2-2-aa-enforcement-over-yeti.md) (WCAG 2.2 AA). Points no record settles are marked "(open: see ticket)" and listed under `### Open` in the ticket.
+Deciding records: [building-blocks.md](../building-blocks.md) Part 2 row 43 ("Native platform, 1; types only"; no module, no building block, no ledger row), [ticket 26](../issues/26-decide-yeti-data-attributes-mapping.md) row 160, [ADR 0070](../adr/0070-where-a-yeti-attribute-sits-decides-its-mapping.md) kind U (the selector-named input, chosen by the user on 2026-10-02: "Selector name (Recommended)", map, Standing rulings), [ADR 0080](../adr/0080-yeti-prefix-ngx-yeti-runtime-names-ngxyeti-on-collision.md) point 4 (the class is `NgxYetiAttention`, because Yeti's `yeti.d.ts` exports `YetiAttention`), [ADR 0060](../adr/0060-item-styles-are-counted-links-to-the-consumers-yeti-build.md) (the item file), [ADR 0010](../adr/0010-animation-is-yetis-css-with-class-form-enter-and-leave.md) (animation is Yeti's CSS), [ADR 0011](../adr/0011-rendering-modes-contract-for-yeti.md) (rendering modes), [ADR 0014](../adr/0014-testing-stack-for-yeti.md) (test layers), and [ADR 0015](../adr/0015-wcag-2-2-aa-enforcement-over-yeti.md) (WCAG 2.2 AA). The points no record settled were listed under `### Open` in the ticket and are decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md) (decisions 13 to 16).
 
 ## Problem Statement
 
@@ -73,7 +73,7 @@ Nothing is left to the consumer except the live region or `role`, which is the c
 | `data-attention` | input `yetiAttention` (selector-named, ADR 0070 kind U; ticket 26 row 160), bound as `[attr.data-attention]` | `YetiAttention \| ''`, unset by default; `''` and unset render no attribute, so Yeti's `pulse` applies (ADR 0070 rule 1) | `yetiAttention` is not an HTML attribute name, so no presentational-attribute kind applies |
 | `--yeti-attention-duration`, `--yeti-attention-distance`, `--yeti-attention-scale`, `--yeti-ease` | not written by the package; the consumer's stylesheet surface ([ADR 0004](../adr/0004-yeti-tokens-are-a-consumer-stylesheet-surface.md)) | Yeti's defaults: `600ms`, `0.35rem`, `1.06`, and the shared ease | n/a |
 | events | none (no module) | n/a | n/a |
-| (package) `data-ngx-yeti-item="attention"` | static host attribute, for ADR 0060's removal sweep (point 2) | always | n/a |
+| (package) `data-ngx-yeti-item-attention` (empty value) | static host presence attribute, for ADR 0060's removal sweep ([ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md)) | always | n/a |
 
 `YetiAttention` is Yeti's vocabulary type, reached through the package's generated `yeti-types.ts` and re-exported by name from `ngx-yeti` ([ADR 0060](../adr/0060-item-styles-are-counted-links-to-the-consumers-yeti-build.md) point 10; ADR 0080 point 5, as its 2026-10-02 note reads). A static `yetiAttention="shake"` type-checks as a string literal under `strictTemplates` (ADR 0070 rule 2).
 
@@ -115,7 +115,7 @@ No role, no state, no keys, no focus change, and no Tab stop. Ledger rows: none 
 - **2.2.2 Pause, Stop, Hide (A).** The gesture runs once for 600 ms at Yeti's default, under the 5-second threshold, and never repeats (iteration count 1, measured in all three engines by [ticket 17](../issues/17-research-yeti-accessibility-and-standards.md), research section 2.5).
 - **2.3.1 Three Flashes (A).** No flash: a scale or a translate with no colour change.
 - **2.3.3 Animation from Interactions** is AAA and outside the target; reduced motion collapses the gesture anyway (ticket 17, section 2.5, measured: `yeti-attention-pulse` collapsed to `0.00001s`).
-- **1.4.10 Reflow (AA).** Ticket 17 measured a page-level `scrollWidth` of 329 at 200 ms and 320 at 2.5 s on the shake example at 320 px, in Chromium: the throw overflows for the length of the gesture and then ends. The spec reads this as no 1.4.10 failure, because no content needs two-dimensional scrolling to be read, and adds no ledger row (open: see ticket). Test layer 4 asserts that the overflow is gone once the gesture ends.
+- **1.4.10 Reflow (AA).** Ticket 17 measured a page-level `scrollWidth` of 329 at 200 ms and 320 at 2.5 s on the shake example at 320 px, in Chromium: the throw overflows for the length of the gesture and then ends. The spec reads this as no 1.4.10 failure, because no content needs two-dimensional scrolling to be read, and adds no ledger row ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 13). Test layer 4 asserts that the overflow is gone once the gesture ends.
 - **2.4.7, 2.4.11 focus.** Untouched: the directive moves nothing that holds focus away from where it ends, and Yeti's ring is the host's.
 
 ### 8. Rendered HTML
@@ -125,7 +125,7 @@ Consumer markup (inside an Angular template):
 - `<div yetiAlert variant="success" yetiAttention role="status">...</div>`
 - `<p yetiBadge variant="alert" yetiAttention="shake" role="status">Card declined</p>`
 
-Server and hydrated DOM, identical: `<div class="alert attention" data-variant="success" data-ngx-yeti-item="..." role="status">` (each item directive on the host contributes its own `data-ngx-yeti-item` under ADR 0060; how two items on one host share that attribute is ADR 0060's and the `setup` spec's, not this spec's), and `<p class="badge attention" data-variant="alert" data-attention="shake" ... role="status">`. The server writes `<link rel="stylesheet" data-ngx-yeti-styles="attention" ...>` into `<head>` in Yeti's order (ADR 0060 points 3 and 5). No `jsaction`: the directive has no listener.
+Server and hydrated DOM, identical: `<div class="alert attention" data-variant="success" data-ngx-yeti-item-alert="" data-ngx-yeti-item-attention="" role="status">` (each item directive on the host sets its own presence attribute, [ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md); [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 12), and `<p class="badge attention" data-variant="alert" data-attention="shake" data-ngx-yeti-item-badge="" data-ngx-yeti-item-attention="" ... role="status">`. The server writes `<link rel="stylesheet" data-ngx-yeti-styles="attention" ...>` into `<head>` in Yeti's order (ADR 0060 points 3 and 5). No `jsaction`: the directive has no listener.
 
 ### 9. Animation
 
@@ -135,9 +135,9 @@ Changing a bound value after render changes the computed `animation-name` (the p
 
 ### 10. Rendering modes
 
-- **Server output and first paint.** The class, `data-attention` when set, and `data-ngx-yeti-item` are host bindings, so the server HTML is Yeti's markup ([ADR 0011](../adr/0011-rendering-modes-contract-for-yeti.md) clause 1). The item file link is in `<head>` and render-blocking, so the gesture plays at first paint.
+- **Server output and first paint.** The class, `data-attention` when set, and `data-ngx-yeti-item-attention` are host bindings, so the server HTML is Yeti's markup ([ADR 0011](../adr/0011-rendering-modes-contract-for-yeti.md) clause 1). The item file link is in `<head>` and render-blocking, so the gesture plays at first paint.
 - **Before hydration.** Nothing to touch: no DOM work, no observer, no timer, no render callback.
-- **Full and incremental hydration.** Hydration adopts the item link (ADR 0060 point 5) and writes the same class and attribute values again. A write of an unchanged value changes no computed style, so the gesture is inferred not to restart at hydration (inferred, not measured; open: see ticket). Test layer 4 counts `animationstart` on the host across hydration.
+- **Full and incremental hydration.** Hydration adopts the item link (ADR 0060 point 5) and writes the same class and attribute values again. A write of an unchanged value changes no computed style, so the gesture does not restart at hydration (inferred, not measured; accepted in [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 14). Test layer 4 asserts exactly one `animationstart` per host across load and hydration; if it fails, an upstream-bugs row is added and the point is revisited.
 - **Event replay.** Nothing replays and nothing needs to: no listener.
 - **Client-only `@defer`, `@if`, routed views.** The constructor acquires the item file. If it is not already on the page, the element renders unstyled until the file arrives, and the gesture then starts, late but once (ADR 0060 point 6 measured 1 to 20 unstyled frames for an item; that the late gesture still plays is inferred from CSS animation start rules). `provideYetiStyles({ preload: ['attention'] })` closes the gap, and is the documented setup for an application whose attention hosts are client-inserted, the common case (an alert after a save).
 - **`hydrate on ...` before its trigger, and `hydrate never`.** The dehydrated host is its server HTML: it holds its item link for as long as it is on the page (ADR 0060 point 4, measured) and plays its gesture from CSS. Nothing is lost, because the directive has no Angular-side behaviour.
@@ -173,11 +173,11 @@ Story ids (building-blocks 1.3): `attention--default` (Yeti's example: a success
 
 ### Test layer 2: browser-level tests (`npx nx test <lib>`, `attention.spec.ts`)
 
-`TestBed.createDirective(NgxYetiAttention, { tagName: 'p', bindings: [...] })` (the user's ruling "58. Specs should assume that the ngx-yeti repo is using Angular 22.2 with Angular's new [directive testing API]...", map, Standing rulings; ADR 0014's 2026-10-03 note). Cases: unset renders no `data-attention`; `''` renders none; `'shake'` renders `shake`; a signal binding moving from `shake` to `''` removes the attribute after `whenStable()`, zoneless; the class and `data-ngx-yeti-item` are present in every case; `exportAs` resolves through a template reference in a test host; the directive acquires `attention` once on creation and releases it on destroy, observed through a double of ADR 0060's styles service.
+`TestBed.createDirective(NgxYetiAttention, { tagName: 'p', bindings: [...] })` (the user's ruling "58. Specs should assume that the ngx-yeti repo is using Angular 22.2 with Angular's new [directive testing API]...", map, Standing rulings; ADR 0014's 2026-10-03 note). Cases: unset renders no `data-attention`; `''` renders none; `'shake'` renders `shake`; a signal binding moving from `shake` to `''` removes the attribute after `whenStable()`, zoneless; the class and `data-ngx-yeti-item-attention` are present in every case; `exportAs` resolves through a template reference in a test host; the directive acquires `attention` once on creation and releases it on destroy, observed through a double of ADR 0060's styles service.
 
 ### Test layer 3: node-level Vitest and the SSR smoke (`npx nx test <lib>`, `attention.ssr.spec.ts`)
 
-Through the shared `renderServer()` helper with `withI18nSupport()` and one `i18n` text inside the host: the server HTML has the class, `data-attention="shake"` on the shake host and no `data-attention` on the bare one, `data-ngx-yeti-item`, the item link in `<head>`, no `jsaction` on the host, and no `class="attention"` written twice. The contract check covers the item with no per-spec code: class `attention`, attribute `data-attention`, and the union `pulse | shake` against the built manifest (ADR 0014 point 3).
+Through the shared `renderServer()` helper with `withI18nSupport()` and one `i18n` text inside the host: the server HTML has the class, `data-attention="shake"` on the shake host and no `data-attention` on the bare one, `data-ngx-yeti-item-attention`, the item link in `<head>`, no `jsaction` on the host, and no `class="attention"` written twice. The contract check covers the item with no per-spec code: class `attention`, attribute `data-attention`, and the union `pulse | shake` against the built manifest (ADR 0014 point 3).
 
 ### Test layer 4: Playwright e2e (three engines in CI)
 
@@ -221,10 +221,10 @@ The floor browsers are named by [ADR 0002](../adr/0002-browser-target-baseline-2
 | No `animate.enter`; Yeti's CSS plays the gesture | [ADR 0010](../adr/0010-animation-is-yetis-css-with-class-form-enter-and-leave.md) points 1 to 3 |
 | Tokens are the consumer's | [ADR 0004](../adr/0004-yeti-tokens-are-a-consumer-stylesheet-surface.md) |
 | Live region is a stated requirement, asserted in stories | [ADR 0015](../adr/0015-wcag-2-2-aa-enforcement-over-yeti.md) point 4; Yeti's accessibility note |
-| Transient 1.4.10 overflow, no ledger row | open: see ticket |
-| Hydration does not restart the gesture | inferred; open: see ticket |
-| Duration override under reduced motion | open: see ticket |
-| Attention beside `enter` on one element | open: see ticket |
+| Transient 1.4.10 overflow, no ledger row | [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 13 |
+| Hydration does not restart the gesture | inferred; [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 14 |
+| Duration override under reduced motion: a usage rule | [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 15 |
+| Attention and `enter` go on different elements: a usage rule | [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 16 |
 
 ### Usage examples
 
@@ -233,14 +233,16 @@ The floor browsers are named by [ADR 0002](../adr/0002-browser-target-baseline-2
 - A gesture from state: `<output [yetiAttention]="gesture()" role="status">{{ total() }}</output>`, where `gesture` is a signal of `YetiAttention | ''`.
 - Playing the gesture again: create the element again, for example `@for (change of [lastChange()]; track change.id) { <p yetiAttention role="status">{{ change.text }}</p> }`, so a new id makes a new element.
 - Every example imports each directive it uses (building-blocks 1.9, Imports): a forgotten `NgxYetiAttention` leaves the element with no class and no gesture, and only a bound `[yetiAttention]` makes the compiler report it.
+- A consumer duration that keeps reduced motion: `.slow-attention { --yeti-attention-duration: 900ms; } @media (prefers-reduced-motion: reduce) { .slow-attention { --yeti-attention-duration: 0.01ms; } }` ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 15).
+- Beside an entrance: `<section yetiEnter><p yetiAttention role="status">New</p></section>`, never both on one element ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 16).
 - Application setup for client-inserted hosts: `provideYetiStyles({ preload: ['attention'] })` (the `setup` spec owns the provider).
 
 ### Styles
 
 1. Item file: `attention`, loaded by ADR 0060's counted link; the consumer's line is the `setup` spec's, plus the preload where hosts are client-inserted.
 2. Always-loaded rules relied on: the four tokens' defaults and the reduced-motion collapse of `--yeti-attention-duration` in Yeti's component tokens; `--yeti-ease` in Yeti's motion tokens.
-3. Cross-item rules: none. On one element, `attention` and `enter` both declare `animation` in `yeti.utilities`, and `enter.css` comes later in Yeti's order, so with equal specificity the entrance replaces the bare pulse, while `[data-attention="shake"]` sets only the name over the entrance's timing (read in the CSS, not measured; open: see ticket). `lift` animates the same `scale` and `translate` properties by transition on hover; a running gesture wins over the transition while it runs (inferred).
-4. Tokens: `--yeti-attention-duration`, `--yeti-attention-distance`, `--yeti-attention-scale`, `--yeti-ease`; the package writes none. A consumer sets them on `:root`, on any element, or in a theme file after Yeti (building-blocks 1.13). An unlayered consumer value beats Yeti's layered tokens wherever it sits ([ticket 04](../issues/04-research-yeti-styles-and-lazy-loading.md) 4.2, measured), so a consumer who sets `--yeti-attention-duration` also replaces Yeti's reduced-motion collapse of it unless the consumer repeats the collapse inside `prefers-reduced-motion: reduce` (inferred from that measurement; the usage rule is open: see ticket).
+3. Cross-item rules: none. On one element, `attention` and `enter` both declare `animation` in `yeti.utilities`, and `enter.css` comes later in Yeti's order, so with equal specificity the entrance replaces the bare pulse, while `[data-attention="shake"]` sets only the name over the entrance's timing (read in the CSS, not measured). So the two go on different elements, the gesture on a child of the entering element (usage rule, [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 16). `lift` animates the same `scale` and `translate` properties by transition on hover; a running gesture wins over the transition while it runs (inferred).
+4. Tokens: `--yeti-attention-duration`, `--yeti-attention-distance`, `--yeti-attention-scale`, `--yeti-ease`; the package writes none. A consumer sets them on `:root`, on any element, or in a theme file after Yeti (building-blocks 1.13). An unlayered consumer value beats Yeti's layered tokens wherever it sits ([ticket 04](../issues/04-research-yeti-styles-and-lazy-loading.md) 4.2, measured), so a consumer who sets `--yeti-attention-duration` also replaces Yeti's reduced-motion collapse of it unless the consumer repeats the collapse (inferred from that measurement). Usage rule: a consumer who sets `--yeti-attention-duration` also sets it to `0.01ms` inside `@media (prefers-reduced-motion: reduce)`; no package code and no input ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 15).
 5. Missing item file: the element renders with no gesture, and nothing else changes.
 6. Tailwind v4: no name collision. Of Yeti's class and attribute names, Tailwind 4.3.3 generates a utility only for `container`, `grid`, `table`, and `hidden` ([ticket 24](../issues/24-prototype-ngx-yeti-with-tailwind-v4.md), measured).
 

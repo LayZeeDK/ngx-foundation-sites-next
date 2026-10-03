@@ -4,7 +4,7 @@ Ticket: [55. Spec: columns (layout)](../issues/55-spec-columns.md)
 
 Targets: Angular 22.2, Nx 23.2, Storybook 10.6 with `@storybook/angular-vite`, Vitest 4.1.x, TypeScript 6.0.x, and Yeti `f52d1e8b9` (`f52d1e8b93de5bbde322480ba77d5be26c49b0ef`, `develop`, 2026-09-25). Browser target: Chrome and Edge 141, Firefox 145, Safari and Safari iOS 26.2 ([ADR 0002](../adr/0002-browser-target-baseline-2025.md)). Accessibility target: WCAG 2.2 AA.
 
-Deciding records: [building-blocks.md](../building-blocks.md) Part 2 row 5 and Part 1, [Decide: how the package maps each of Yeti's `data-*` attributes](../issues/26-decide-yeti-data-attributes-mapping.md) rows 19 to 24, [ADR 0003](../adr/0003-directives-set-yetis-class-attributes-and-markers.md), [ADR 0004](../adr/0004-yeti-tokens-are-a-consumer-stylesheet-surface.md), [ADR 0011](../adr/0011-rendering-modes-contract-for-yeti.md), [ADR 0014](../adr/0014-testing-stack-for-yeti.md), [ADR 0015](../adr/0015-wcag-2-2-aa-enforcement-over-yeti.md), [ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md), [ADR 0060](../adr/0060-item-styles-are-counted-links-to-the-consumers-yeti-build.md), [ADR 0070](../adr/0070-where-a-yeti-attribute-sits-decides-its-mapping.md), and [ADR 0080](../adr/0080-yeti-prefix-ngx-yeti-runtime-names-ngxyeti-on-collision.md). `Y/` is `d:/projects/github/foundation/yeti/` at the **Pin**; `NC/` is `d:/projects/github/angular/components/` at 22.2.x. Where this spec needs something no record settles, it gives its best reading marked "(open: see ticket)".
+Deciding records: [building-blocks.md](../building-blocks.md) Part 2 row 5 and Part 1, [Decide: how the package maps each of Yeti's `data-*` attributes](../issues/26-decide-yeti-data-attributes-mapping.md) rows 19 to 24, [ADR 0003](../adr/0003-directives-set-yetis-class-attributes-and-markers.md), [ADR 0004](../adr/0004-yeti-tokens-are-a-consumer-stylesheet-surface.md), [ADR 0011](../adr/0011-rendering-modes-contract-for-yeti.md), [ADR 0014](../adr/0014-testing-stack-for-yeti.md), [ADR 0015](../adr/0015-wcag-2-2-aa-enforcement-over-yeti.md), [ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md), [ADR 0060](../adr/0060-item-styles-are-counted-links-to-the-consumers-yeti-build.md), [ADR 0070](../adr/0070-where-a-yeti-attribute-sits-decides-its-mapping.md), and [ADR 0080](../adr/0080-yeti-prefix-ngx-yeti-runtime-names-ngxyeti-on-collision.md). `Y/` is `d:/projects/github/foundation/yeti/` at the **Pin**; `NC/` is `d:/projects/github/angular/components/` at 22.2.x. The points no record settled are decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md) (decisions 6, 9, and 33).
 
 ## Problem Statement
 
@@ -112,7 +112,7 @@ Attributes left to the consumer: none. Ticket 26 maps all six declarations (rows
 | Host attribute (package) | not Yeti's | static `data-ngx-yeti-item-columns` (empty value) on `[yetiColumns]` | not applicable | ADR 0045; ADR 0060 point 2; ADR 0080 point 2 |
 | Injection token | not Yeti's | `yetiColumnsToken`, provided by `NgxYetiColumns` | not applicable | ADR 0070 kind C; building-blocks 1.9 |
 
-The part directive `YetiColumnsChild` sets no presence attribute and acquires no item file: its only rule, `.columns > [data-span]`, applies under a `[yetiColumns]` host, which already holds the link (open: see ticket).
+The part directive `YetiColumnsChild` sets no presence attribute and acquires no item file: its only rule, `.columns > [data-span]`, applies under a `[yetiColumns]` host, which already holds the link ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 6).
 
 The input value types are Yeti's own, imported from the package's generated `yeti-types.ts` and re-exported by name from the primary entry point, never redeclared ([ADR 0080](../adr/0080-yeti-prefix-ngx-yeti-runtime-names-ngxyeti-on-collision.md) point 5 and its 2026-10-02 note; ADR 0060 point 10). Each is a full vocabulary, so no `Extract` and no package-declared `Yeti<Item><Input>` type is needed.
 
@@ -154,7 +154,7 @@ Generated ids and the platform's relationship attributes: none. The layout rende
 | Selector | `[yetiColumnsChild]` (Part 2 row 5; ticket 26 row 24; this spec fixes the provisional name, as [Decide: the glossary](../issues/10-decide-glossary.md) Q9 left part names to the specs) |
 | `exportAs` | `yetiColumnsChild` |
 | Inputs | `span: YetiSpan \| undefined`, `input()` with no default |
-| Host | `'[attr.data-span]'` from the input, `null` when unset. No class, no presence attribute (open: see ticket), no `[attr.span]` binding (`inert`) |
+| Host | `'[attr.data-span]'` from the input, `null` when unset. No class, no presence attribute ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 6), no `[attr.span]` binding (`inert`) |
 | Injection | `yetiColumnsToken`, `{optional: true, skipSelf: true}` |
 | Models, outputs, methods, listeners | none |
 
@@ -167,7 +167,7 @@ No input default differs from Yeti's: every input is `undefined` until the consu
 3. Do not write `class="columns"`, any of Yeti's `data-*` attributes, or `data-ngx-yeti-item-columns` statically on either host. The directives bind them, and a static copy is written back and removed again at hydration (ADR 0003 point 1; ADR 0070's 2026-10-03 consequence; building-blocks, "Hydration constraints (2026-10-03)"). A value newer than the pin goes through `$any` (`[columns]="$any('7')"`, ADR 0070).
 4. Keep reading order as source order. Do not reorder columns visually with CSS `order` or a reversed direction: Yeti's note "Reading order is source order in both arrangements" holds only for the markup Yeti documents (manifest `a11y.notes`; WCAG 1.3.2, 2.4.3).
 5. Choose a threshold at which each column's content fits its share. Above the threshold the children share the row whatever their content, and a long unbreakable word can overflow a narrow share (WCAG 1.4.10; the author's risk, as for masonry's reading order in Part 2 row 12).
-6. Write `align` either way: `align="center"` or `[align]="alignment()"`. The directive removes the HTML `align` attribute that the static form leaves (open: see ticket).
+6. Write `align` either way: `align="center"` or `[align]="alignment()"`. The directive removes the HTML `align` attribute that the static form leaves ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 9).
 7. Import `NgxYetiColumns`, and `YetiColumnsChild` where a template writes it, in every component whose template writes the attribute. A **Forgotten import** renders plain blocks with no error unless an input is bound (`[columns]`, NG8002) or a template reference names the `exportAs` (NG8003) (building-blocks 1.9).
 
 ### 5. Material comparison
@@ -250,7 +250,7 @@ The layout complies with each of Angular's hydration constraints (map, Standing 
 - **Valid HTML:** the directives change no element. The usage rules put no constraint on the host's element type; a host whose content model the children break (a `p` holding `div` columns) would be repaired by the parser and differ from the server's DOM, so the consumer's markup must already be valid HTML.
 - **`preserveWhitespaces`:** the directives have no template. Whitespace text between columns is not a flex item that takes a share (CSS: white-space-only text in a flex container is not rendered).
 - **No output branched on the platform:** none.
-- **Static attributes the directives bind:** usage rule 3 keeps the consumer from writing them. The one static form that the records invite is `align="center"`, an input whose name is also an HTML attribute that the directive removes (building-blocks 1.4). Hydration writes it back before the `null` binding removes it again in the same pass (ADR 0070's 2026-10-03 consequence, read in ticket 33). The final DOM equals the server's, and no frame paints between the two writes (inferred). Whether that is compliant, or whether the spec must require `[align]` bindings, is (open: see ticket).
+- **Static attributes the directives bind:** usage rule 3 keeps the consumer from writing them. The one static form that the records invite is `align="center"`, an input whose name is also an HTML attribute that the directive removes (building-blocks 1.4). Hydration writes it back before the `null` binding removes it again in the same pass (ADR 0070's 2026-10-03 consequence, read in ticket 33). The final DOM equals the server's, and no frame paints between the two writes (inferred; layer 4 asserts it). The static form is accepted; if the layer-4 case fails, every `removed`-kind spec switches to bound-only inputs ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 9).
 
 ### 12. Single-page application
 
@@ -258,7 +258,7 @@ None. The layout has no navigation or fragment behaviour, so it uses neither [na
 
 ### 13. Item file
 
-`yeti-css/css/layouts/columns/columns.css`, one of Yeti's 49, loaded as a counted `<link>` by the root styles service of ADR 0060: acquired when the first `[yetiColumns]` is created, on the server too, inserted in Yeti's order (`Y/src/yeti.css:23`, after `sidebar` and before `cover`, the rank table of point 3), and removed after the last host has left the DOM. `YetiColumnsChild` acquires nothing (open: see ticket). The consumer's part is ADR 0060 point 11's setup, which the [setup](../issues/38-spec-setup.md) spec owns: Yeti's build at the Pin under `yeti-css`, the `assets` entry, the global stylesheet with the layer statement, and optionally `provideYetiStyles({ preload: ['columns'] })`. The layout adds nothing to it. Cross-item files acquired: none. `columns.css` has no cross-item rule, and the value rules it depends on are in the always-loaded `layouts/attributes.css` (ADR 0060 point 9).
+`yeti-css/css/layouts/columns/columns.css`, one of Yeti's 49, loaded as a counted `<link>` by the root styles service of ADR 0060: acquired when the first `[yetiColumns]` is created, on the server too, inserted in Yeti's order (`Y/src/yeti.css:23`, after `sidebar` and before `cover`, the rank table of point 3), and removed after the last host has left the DOM. `YetiColumnsChild` acquires nothing ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 6). The consumer's part is ADR 0060 point 11's setup, which the [setup](../issues/38-spec-setup.md) spec owns: Yeti's build at the Pin under `yeti-css`, the `assets` entry, the global stylesheet with the layer statement, and optionally `provideYetiStyles({ preload: ['columns'] })`. The layout adds nothing to it. Cross-item files acquired: none. `columns.css` has no cross-item rule, and the value rules it depends on are in the always-loaded `layouts/attributes.css` (ADR 0060 point 9).
 
 ## Testing Decisions
 
@@ -298,7 +298,7 @@ Storybook half, on the layer 1 story ids: `columns--default` and `columns--span`
 
 Fixture half, on the **Fixture app** built with `outputMode: 'server'`, with a `/columns` route marked `RenderMode.Prerender` and one marked `RenderMode.Server`, each run with JavaScript on and off ([Decide: the open points of the specs](../issues/50-decide-open-points-of-the-specs.md) decision 2; ADR 0011 consequences). The route renders Yeti's example with a static `align="center"` and a spanning child:
 
-- hydration logs no `NG05xx` and `componentsSkippedHydration === 0`; after hydration the parent has no `align` attribute;
+- hydration logs no `NG05xx` and `componentsSkippedHydration === 0`; after hydration the parent has no `align` attribute, and a `MutationObserver` with a `requestAnimationFrame` probe asserts that no frame paints while the written-back `align` is present ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 9);
 - with JavaScript disabled, the columns' positions equal those with JavaScript on at the same width, and `@axe-core/playwright` with the six tags reports no violation;
 - a layout inside a client-only `@defer` block with `columns` in the preload list shows no unstyled frame; a layout inside a `hydrate never` block stays in columns after a live layout on the page is removed;
 - navigating from the columns route to a route without one removes the item link, and navigating back re-inserts it;
@@ -331,9 +331,9 @@ Prior art: Yeti's `example.html` and `docs.md` examples for the stories; ticket 
 | Input types are Yeti's vocabulary types from the generated `yeti-types.ts` | ADR 0080 point 5; ADR 0060 point 10 |
 | Unset input renders no attribute | ADR 0070 rule 1 |
 | `align` is `removed`; `span` is `inert` | building-blocks 1.4; ticket 26 rows 21 and 24 |
-| Static `align` written back and removed at hydration is accepted | this spec's reading (open: see ticket) |
+| Static `align` written back and removed at hydration is accepted | [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 9 |
 | Optional parent token, used by nothing in this milestone | ADR 0070 kind C; building-blocks 1.9 |
-| Presence attribute `data-ngx-yeti-item-columns` on the item directive only | ADR 0045; the child's absence is this spec's reading (open: see ticket) |
+| Presence attribute `data-ngx-yeti-item-columns` on the item directive only | ADR 0045; the child's absence is [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 6 |
 | Entry point `ngx-yeti/columns` | building-blocks 1.3; ADR 0011 clause 10 |
 | Native platform, level 1, types only | building-blocks 1.2; Part 2 row 5 |
 | Tokens are the consumer's | ADR 0004 |
@@ -411,7 +411,7 @@ Per building-blocks 1.13:
 
 ### Platform features to adopt when the browser target moves
 
-None. Both features the manifest lists as unguarded, flexbox `gap` and `calc()` in `flex-basis`, are inside Baseline 2025 (building-blocks 1.2), and the layout needs no feature outside it. The switch is deliberately not a container query, so `container-type` is not needed either. [building-blocks.md](../building-blocks.md) 1.7 and `architecture-guide.md` describe columns' `data-threshold` as a container query, which `columns.css` does not use (open: see ticket). [ADR 0011](../adr/0011-rendering-modes-contract-for-yeti.md)'s Considered options already name "flex-basis arithmetic".
+None. Both features the manifest lists as unguarded, flexbox `gap` and `calc()` in `flex-basis`, are inside Baseline 2025 (building-blocks 1.2), and the layout needs no feature outside it. The switch is deliberately not a container query, so `container-type` is not needed either. [building-blocks.md](../building-blocks.md) 1.7 and `architecture-guide.md` say the change is decided by the container's width: a container query on `nav`, flex-basis arithmetic on `columns` ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 33). [ADR 0011](../adr/0011-rendering-modes-contract-for-yeti.md)'s Considered options already name "flex-basis arithmetic".
 
 ### Single-page-application pieces relied on
 

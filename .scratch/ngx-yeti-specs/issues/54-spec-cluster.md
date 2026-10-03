@@ -22,6 +22,8 @@ Write `specs/cluster.md` with the `/to-spec` template and the map's Spec shape n
    - **Why.** (a) keeps the records as decided and the markup as short as Yeti's; on a flex container a one-pass `text-align` hint changes no layout of the container itself, and the rewrite and removal run in one synchronous hydration pass (read in ticket 33's sources). (b) is safe by construction but contradicts 1.4's premise that the static form is valid and needs a note on 1.4, P9, and every `align` spec.
    - **Recommendation:** (a). The spec marks it (open: see ticket) in sections 4, 8, 10, 11, and the e2e case. To overrule: change usage rule 5 to (b)'s wording, remove the static-form cases from layers 2 and 3, and amend building-blocks 1.4.
 
+   Decided 2026-10-03 in ticket 50, decision 9 (orchestrator, full AFK mode).
+
 ## Answer
 
 Resolved 2026-10-03 by Claude Opus 5.5. Spec: [specs/cluster.md](../specs/cluster.md).

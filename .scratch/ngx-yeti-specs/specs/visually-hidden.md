@@ -4,7 +4,7 @@ Ticket: [Spec: visually-hidden (utility)](../issues/49-spec-visually-hidden.md)
 
 Targets: Angular 22.2, Nx 23.2, Storybook 10.6 with `@storybook/angular-vite`, Vitest 4.1.x, TypeScript 6.0.x, and Yeti `f52d1e8b9` (`f52d1e8b93de5bbde322480ba77d5be26c49b0ef`, `develop`, 2026-09-25). Browser target: Chrome and Edge 141, Firefox 145, Safari and Safari iOS 26.2 ([ADR 0002](../adr/0002-browser-target-baseline-2025.md)). Accessibility target: WCAG 2.2 AA.
 
-Deciding records: [building-blocks.md](../building-blocks.md) Part 1 and Part 2 row 49; [Decide: the spec list](../issues/11-decide-spec-list.md) row 49 and question 7; [ADR 0003](../adr/0003-directives-set-yetis-class-attributes-and-markers.md), [ADR 0011](../adr/0011-rendering-modes-contract-for-yeti.md), [ADR 0014](../adr/0014-testing-stack-for-yeti.md), [ADR 0015](../adr/0015-wcag-2-2-aa-enforcement-over-yeti.md), [ADR 0060](../adr/0060-item-styles-are-counted-links-to-the-consumers-yeti-build.md), [ADR 0070](../adr/0070-where-a-yeti-attribute-sits-decides-its-mapping.md), and [ADR 0080](../adr/0080-yeti-prefix-ngx-yeti-runtime-names-ngxyeti-on-collision.md); the map's Standing rulings on hydration constraints, JavaScript off, zoneless, and directive testing ([map.md](../map.md)); [CONTEXT.md](../CONTEXT.md) (**Visually hidden**, **Skip link**, **Utility**, **Item file**). [Decide: how the package maps each of Yeti's `data-*` attributes](../issues/26-decide-yeti-data-attributes-mapping.md) has no row for this item, because it declares no attribute and no marker. The points no record settles are marked "(open: see ticket)" and listed under `### Open` in this spec's ticket.
+Deciding records: [building-blocks.md](../building-blocks.md) Part 1 and Part 2 row 49; [Decide: the spec list](../issues/11-decide-spec-list.md) row 49 and question 7; [ADR 0003](../adr/0003-directives-set-yetis-class-attributes-and-markers.md), [ADR 0011](../adr/0011-rendering-modes-contract-for-yeti.md), [ADR 0014](../adr/0014-testing-stack-for-yeti.md), [ADR 0015](../adr/0015-wcag-2-2-aa-enforcement-over-yeti.md), [ADR 0060](../adr/0060-item-styles-are-counted-links-to-the-consumers-yeti-build.md), [ADR 0070](../adr/0070-where-a-yeti-attribute-sits-decides-its-mapping.md), and [ADR 0080](../adr/0080-yeti-prefix-ngx-yeti-runtime-names-ngxyeti-on-collision.md); the map's Standing rulings on hydration constraints, JavaScript off, zoneless, and directive testing ([map.md](../map.md)); [CONTEXT.md](../CONTEXT.md) (**Visually hidden**, **Skip link**, **Utility**, **Item file**). [Decide: how the package maps each of Yeti's `data-*` attributes](../issues/26-decide-yeti-data-attributes-mapping.md) has no row for this item, because it declares no attribute and no marker. The points no record settled were listed under `### Open` in this spec's ticket and are decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md) (decisions 27 and 28).
 
 Source short forms, as in [building-blocks.md](../building-blocks.md): `Y/` is Yeti at `f52d1e8b9`; `NC/` is Angular components at `708d4c6e2` (`v22.2.0-15`). Every `file:line` below was read at that commit on 2026-10-03 unless marked otherwise.
 
@@ -25,7 +25,7 @@ The package ships one **Item directive**, `[yetiVisuallyHidden]` (class `YetiVis
 
 `<a href="/trail-map.pdf">Read more<span yetiVisuallyHidden> about the trail map</span></a>`
 
-The directive binds Yeti's **Identity class** `visually-hidden` as a static host class and sets `data-ngx-yeti-item="visually-hidden"` on its host. It acquires the item file `utilities/visually-hidden/visually-hidden.css` from the consumer's own Yeti build when created, on the server too, and releases it on destroy ([ADR 0060](../adr/0060-item-styles-are-counted-links-to-the-consumers-yeti-build.md) point 2). It has no inputs, no outputs, no listeners, no render callbacks, and no DI of its own: the item declares no attribute, no marker, no token, no module, and no event (`Y/src/utilities/visually-hidden/manifest.json:8-12`, `:18`). It is "Native platform, 1; types only" ([building-blocks.md](../building-blocks.md) Part 2 row 49). Being CSS-only does not exclude it: it gets a static host class and an `exportAs` like every item ([Decide: the spec list](../issues/11-decide-spec-list.md) question 7).
+The directive binds Yeti's **Identity class** `visually-hidden` as a static host class and sets the presence attribute `data-ngx-yeti-item-visually-hidden` on its host ([ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md)). It acquires the item file `utilities/visually-hidden/visually-hidden.css` from the consumer's own Yeti build when created, on the server too, and releases it on destroy ([ADR 0060](../adr/0060-item-styles-are-counted-links-to-the-consumers-yeti-build.md) point 2). It has no inputs, no outputs, no listeners, no render callbacks, and no DI of its own: the item declares no attribute, no marker, no token, no module, and no event (`Y/src/utilities/visually-hidden/manifest.json:8-12`, `:18`). It is "Native platform, 1; types only" ([building-blocks.md](../building-blocks.md) Part 2 row 49). Being CSS-only does not exclude it: it gets a static host class and an `exportAs` like every item ([Decide: the spec list](../issues/11-decide-spec-list.md) question 7).
 
 Yeti's CSS does the whole job. The package uses Yeti's class, not CDK's `cdk-visually-hidden`, and adds no CSS and no ledger row (row 49). This spec compares the two recipes for parity in Implementation Decisions 5 and lists the usage rules that Yeti's docs state and the compiler cannot check (P23 of [architecture-guide.md](../architecture-guide.md)).
 
@@ -102,7 +102,7 @@ Attributes left to the consumer: none; there are none (ticket 26 has no row for 
 | Markers | none | `manifest.json:11` |
 | Events | none | `js: null` (`manifest.json:18`) |
 | Tokens | none named | the manifest reads none (`manifest.json:12`); the rule uses no `--yeti-*` token |
-| Host attribute `data-ngx-yeti-item` | static `visually-hidden` | [ADR 0060](../adr/0060-item-styles-are-counted-links-to-the-consumers-yeti-build.md) point 2 |
+| Host presence attribute `data-ngx-yeti-item-visually-hidden` | static, empty value | [ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md) |
 | Item file | `utilities/visually-hidden/visually-hidden.css`, acquired in the constructor and released on destroy | ADR 0060 points 1 and 2; section 13 below |
 
 Module replaced: none. Yeti has no module for this item ([ADR 0040](../adr/0040-package-replaces-yetis-optional-modules.md); [Research: Yeti's JavaScript modules and what Angular adds](../issues/03-research-yeti-javascript-and-angular.md)).
@@ -117,7 +117,7 @@ An item that uses hidden text in its markup does not host this directive and doe
 
 `YetiVisuallyHidden`, selector `[yetiVisuallyHidden]`, `exportAs: 'yetiVisuallyHidden'`, entry point `ngx-yeti/visually-hidden`. The class name does not collide with any name Yeti's `yeti.d.ts` exports, so it keeps `Yeti` ([ADR 0080](../adr/0080-yeti-prefix-ngx-yeti-runtime-names-ngxyeti-on-collision.md) point 4 lists the five that collide; `Y/bin/gen-types.js:31-32` names exported types after vocabularies, and this item has none).
 
-- Host: `class: 'visually-hidden'` and `'data-ngx-yeti-item': 'visually-hidden'`, both static.
+- Host: `class: 'visually-hidden'` and `'data-ngx-yeti-item-visually-hidden': ''`, both static.
 - Inputs: none. Models: none. Outputs: none. Public methods: none.
 - Host element: any element whose content is text. The selector names no element, because Yeti's manifest names none and its docs write it on a `span` inside a link or a button (`docs.md:8`; `Y/src/components/carousel/docs.md:21-23`).
 - `OnPush` does not apply (it is a directive); it holds no state, so it is zoneless-safe by construction.
@@ -133,7 +133,7 @@ Usage rules (P23), stated in the directive's JSDoc and in Further Notes:
 7. **No static `class="visually-hidden"`.** The consumer writes the directive attribute, never Yeti's class ([ADR 0003](../adr/0003-directives-set-yetis-class-attributes-and-markers.md) point 1). An **Application class** of the consumer's own on the same element is allowed.
 8. **Last resort.** A control with room for a word should show the word (`docs.md:25`).
 
-Showing hidden words on a condition (Material's `[class.cdk-visually-hidden]="!_closeButtonFocused"`, `NC/src/material/datepicker/datepicker-content.html:38`) has no input: the manifest declares no attribute, and row 49 is "class only". A consumer who needs it renders the words inside or outside the hidden element with `@if` (open: see ticket).
+Showing hidden words on a condition (Material's `[class.cdk-visually-hidden]="!_closeButtonFocused"`, `NC/src/material/datepicker/datepicker-content.html:38`) has no input: the manifest declares no attribute, and row 49 is "class only". A consumer who needs it renders the words inside or outside the hidden element with `@if`; adding an input later is not breaking ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 28).
 
 ### 5. Material comparison
 
@@ -163,7 +163,7 @@ The recipe, property by property:
 | `appearance` | not set | `none` (prefixed, `_index.scss:21-23`) | CDK stops native control chrome showing on a hidden control (its issue #9049); not applicable to text-only content |
 | Inset | not set | `left: 0`, and `right: 0` under `[dir='rtl']` (`_index.scss:25-34`) | CDK pins the box so an absolutely positioned element pushed down cannot extend scrolling (its issue #24597); Yeti relies on the static position and on a positioned ancestor where it matters, as the `scroller` layout is (`Y/src/layouts/scroller/docs.md:7`; `Y/src/layouts/scroller/scroller.css:11`) |
 
-The package adds none of CDK's extra properties: row 49 keeps Yeti's class, no measured WCAG 2.2 AA failure exists for it ([Research: Yeti against WHATWG, WAI-ARIA, the APG, and Angular Aria, CDK, and Material patterns](../issues/17-research-yeti-accessibility-and-standards.md): axe clean, name measured), and the user's ruling on package CSS covers rules that close a WCAG gap (map, Standing rulings, Package CSS for accessibility). Whether the comparison itself becomes a ledger row is open (open: see ticket).
+The package adds none of CDK's extra properties: row 49 keeps Yeti's class, no measured WCAG 2.2 AA failure exists for it ([Research: Yeti against WHATWG, WAI-ARIA, the APG, and Angular Aria, CDK, and Material patterns](../issues/17-research-yeti-accessibility-and-standards.md): axe clean, name measured), and the user's ruling on package CSS covers rules that close a WCAG gap (map, Standing rulings, Package CSS for accessibility). The comparison is not a ledger row: the property-by-property table here is the record, and a later measured WCAG failure adds a row and one rule in `@layer ngx-yeti` ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 27).
 
 ### 6. Implementation level and primitives
 
@@ -175,7 +175,7 @@ Native platform, level 1; types only ([building-blocks.md](../building-blocks.md
 - Accessible name: the host's text joins the name of its container in source order, by accessible-name computation from content. An `aria-label` or `aria-labelledby` on the container replaces it (usage rule 2).
 - Focus: the host is never focusable and contains nothing focusable (usage rule 1).
 - Hidden content: this is the one hiding tool that keeps content in the tree; `hidden` and `aria-hidden` are not used with it ([building-blocks.md](../building-blocks.md) 1.10; usage rule 4).
-- Ledger rows: none (row 49). The item has no gap the package closes and the package adds no feature over Yeti here (open: see ticket, for the CDK comparison).
+- Ledger rows: none (row 49). The item has no gap the package closes and the package adds no feature over Yeti here; the CDK comparison is not a row either ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 27).
 
 ### 8. Rendered HTML
 
@@ -185,7 +185,7 @@ Consumer markup:
 
 Server HTML and hydrated DOM, identical:
 
-`<a href="/trail-map.pdf">Read more<span yetivisuallyhidden="" class="visually-hidden" data-ngx-yeti-item="visually-hidden"> about the trail map</span></a>`
+`<a href="/trail-map.pdf">Read more<span yetivisuallyhidden="" class="visually-hidden" data-ngx-yeti-item-visually-hidden=""> about the trail map</span></a>`
 
 plus, in `<head>` on the server and adopted at hydration, the item link of [ADR 0060](../adr/0060-item-styles-are-counted-links-to-the-consumers-yeti-build.md) point 2: `rel="stylesheet"`, `href` `<url>utilities/visually-hidden/visually-hidden.css?v=<pin>`, `data-ngx-yeti-styles="visually-hidden"`, `data-ngx-yeti-app="<APP_ID>"`, `data-beasties-skip`. No `jsaction`, no id, no ARIA attribute. There is no open or closed state.
 
@@ -245,7 +245,7 @@ A good test asserts what a visitor and the browser observe: the accessible name 
 
 Stories under the title `visually-hidden`, ids pinned by `meta.id` ([building-blocks.md](../building-blocks.md) 1.3). Every story loads the always-loaded group globally and lets the directive acquire its item file as a consumer would (ADR 0014 point 1), and runs axe with the six tags and `parameters.a11y.test = 'error'`.
 
-- `visually-hidden--read-more`: Yeti's example, two "Read more" links in a list. Asserts each link's name ("Read more about the trail map", "Read more about the field guide"), the host's class and `data-ngx-yeti-item`, the computed `position: absolute`, `overflow: hidden`, `white-space: nowrap`, `clip-path` beginning `inset(50%`, a box no larger than 1.5 by 1.5 pixels, and each link's width equal to a link with the visible words only.
+- `visually-hidden--read-more`: Yeti's example, two "Read more" links in a list. Asserts each link's name ("Read more about the trail map", "Read more about the field guide"), the host's class and `data-ngx-yeti-item-visually-hidden`, the computed `position: absolute`, `overflow: hidden`, `white-space: nowrap`, `clip-path` beginning `inset(50%`, a box no larger than 1.5 by 1.5 pixels, and each link's width equal to a link with the visible words only.
 - `visually-hidden--icon-button`: a `button` whose face is an image or an SVG with `aria-hidden="true"` on the image and hidden text beside it. Asserts the button's name equals the hidden text.
 - `visually-hidden--carousel-dots`: a list of fragment links whose only content is hidden text ("Slide 1" to "Slide 3"), as Yeti's carousel docs write them. Asserts each link's name and that each link is still a Tab stop with its focus ring visible on the link, not on the hidden span.
 - `visually-hidden--compared-with-hidden`: Yeti's fixture pair, "Save" plus hidden " changes" against "Save" plus a `hidden` span. Asserts "Save changes" and "Save".
@@ -257,14 +257,14 @@ Each play function asserts that the visible label starts the accessible name (us
 
 Through `TestBed.createDirective(YetiVisuallyHidden, { tagName: 'span' })` (map, Standing rulings, Directive testing; ADR 0014's 2026-10-03 note), with no test host, because the directive needs no parent and no content:
 
-- The host carries `class="visually-hidden"` and `data-ngx-yeti-item="visually-hidden"`.
+- The host carries `class="visually-hidden"` and `data-ngx-yeti-item-visually-hidden`.
 - After creation, `<head>` holds exactly one link with `data-ngx-yeti-styles="visually-hidden"`; a second fixture adds no second link; after both are destroyed and the hosts leave the DOM, the link is removed in a later animation frame (ADR 0060 point 4).
 - The `exportAs` name resolves: a small test host template takes `#v="yetiVisuallyHidden"` and reads it. This is the one case with a test host.
 - An application class written statically on the host is kept beside Yeti's class.
 
 ### Layer 3: node-level and SSR smoke (`npx nx test <lib>`, `visually-hidden.ssr.spec.ts`)
 
-`renderApplication` through the shared `renderServer()` helper over a fixture with the read-more link, the hidden words inside an `i18n` message, and `withI18nSupport()` (1.11 decision 11). Asserts: `whenStable()` resolves; the span has the class and `data-ngx-yeti-item`; `<head>` has the item link with `data-ngx-yeti-styles`, `data-ngx-yeti-app`, and `data-beasties-skip`, and an `href` ending in `utilities/visually-hidden/visually-hidden.css?v=<pin>`; no `jsaction` on the span; the translated words are present.
+`renderApplication` through the shared `renderServer()` helper over a fixture with the read-more link, the hidden words inside an `i18n` message, and `withI18nSupport()` (1.11 decision 11). Asserts: `whenStable()` resolves; the span has the class and `data-ngx-yeti-item-visually-hidden`; `<head>` has the item link with `data-ngx-yeti-styles`, `data-ngx-yeti-app`, and `data-beasties-skip`, and an `href` ending in `utilities/visually-hidden/visually-hidden.css?v=<pin>`; no `jsaction` on the span; the translated words are present.
 
 The contract check over the built manifest (ADR 0014 point 3) covers the item: the directive's class equals `visually-hidden`, and the manifest's `attributes`, `markers`, and `js` are empty, so a **Pin move** that adds any of them fails here first. The manifest attribute-and-value check over the stories ([building-blocks.md](../building-blocks.md) 1.12) finds only the class.
 
@@ -285,9 +285,9 @@ Floor-browser testing follows whatever [building-blocks.md](../building-blocks.m
 
 ## Out of Scope
 
-- Any CSS of the package's own for this item, including CDK's `margin`, `border`, `padding`, `outline`, `appearance`, and inset properties (row 49; open: see ticket for the ledger).
+- Any CSS of the package's own for this item, including CDK's `margin`, `border`, `padding`, `outline`, `appearance`, and inset properties (row 49; no ledger row, [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 27).
 - CDK's `cdk-visually-hidden` class, its mixin, its prebuilt stylesheet, and `_VisuallyHiddenLoader`.
-- An input that shows or hides the words on a condition, and a show-on-focus mode (Yeti has none, `Y/src/guides/migrating.md:43`; open: see ticket).
+- An input that shows or hides the words on a condition, and a show-on-focus mode (Yeti has none, `Y/src/guides/migrating.md:43`; [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 28).
 - The **Skip link**: Yeti's base rule owns it, and the [fragment-links spec](fragment-links.md) owns its same-document behaviour under `<base href>`.
 - Live announcements (`LiveAnnouncer`, `aria-live` regions): an item spec that needs one owns it.
 - `hidden`, `aria-hidden`, `inert`, `data-show`, `data-hide`, and `print`: other tools in Yeti's visibility guide, owned by the platform or their item specs.
@@ -303,12 +303,12 @@ Floor-browser testing follows whatever [building-blocks.md](../building-blocks.m
 | CSS-only items still get a directive with a static host class and `exportAs` | ticket 11 question 7; map, Scope shape; building-blocks 1.3 |
 | Yeti's class, not CDK's `cdk-visually-hidden` | row 49 |
 | The consumer writes no Yeti class | [ADR 0003](../adr/0003-directives-set-yetis-class-attributes-and-markers.md) point 1 |
-| Item file as a counted link, acquired in the constructor, `data-ngx-yeti-item` on the host | [ADR 0060](../adr/0060-item-styles-are-counted-links-to-the-consumers-yeti-build.md) points 1 to 6 |
+| Item file as a counted link, acquired in the constructor, `data-ngx-yeti-item-visually-hidden` on the host | [ADR 0060](../adr/0060-item-styles-are-counted-links-to-the-consumers-yeti-build.md) points 1 to 6; [ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md) |
 | `Yeti` prefix, no collision | [ADR 0080](../adr/0080-yeti-prefix-ngx-yeti-runtime-names-ngxyeti-on-collision.md) points 3 and 4 |
 | Native platform, level 1 | building-blocks 1.2; map, Implementation order |
 | Usage rules from Yeti's docs, not checks | architecture-guide P23; map, Milestones |
 | Visible words first, asserted in every story | [ADR 0015](../adr/0015-wcag-2-2-aa-enforcement-over-yeti.md) point 4 |
-| No ledger row | row 49 (open: see ticket, for the CDK comparison) |
+| No ledger row, the CDK comparison included | row 49; [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 27 |
 | Layer 2 through `TestBed.createDirective` | map, Standing rulings, Directive testing; ADR 0014 note |
 | Fixture app with prerendered and server routes | ticket 50 decision 2 |
 
@@ -348,7 +348,7 @@ Translated words, with the visible and hidden words in one `i18n` message so a t
 <a href="/trail-map.pdf" i18n>Read more<span yetiVisuallyHidden> about the trail map</span></a>
 ```
 
-Words shown only on a condition, without an input (open: see ticket):
+Words shown only on a condition, without an input ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 28):
 
 ```html
 @if (compact()) {

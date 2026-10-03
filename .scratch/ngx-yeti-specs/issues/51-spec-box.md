@@ -33,8 +33,16 @@ How the any-element markers relate to their own records: [building-blocks.md](..
    - Owner: box.
 
    Then change Part 2 row 1's Ledger column to that row. Not a trap-quadrant point.
+
+   Decided 2026-10-03 in ticket 50, decision 29 (orchestrator, full AFK mode).
 2. **`NgxYetiPaint` in ADR 0080's list.** Impact MEDIUM, confidence HIGH. `yeti.d.ts` at the Pin exports `type YetiPaint` (`:15`, checked), so ADR 0080 point 4's rule ("applies to every TypeScript name the package exports") makes the `[yetiPaint]` class `NgxYetiPaint`. ADR 0080 counts item names only, and its list of five does not include it. **Recommendation:** add a dated note to ADR 0080 and building-blocks 1.3 that names `NgxYetiPaint` as a sixth collision, from a marker directive, not an item. The spec already uses that name.
+
+   Decided 2026-10-03 in ticket 50, decision 10 (orchestrator, full AFK mode).
 3. **Forced colours on surfaces and paint.** Impact LOW, confidence MEDIUM. Under forced colours, a `surface` fill or a `yetiPaint` band loses its tone, and a `yetiBorder` edge stays (inferred, not measured). Neither draws a state, forced colours is not an AA criterion (ticket 17; ADR 0015 consequences), and Part 2 row 1 has no ledger row. **Recommendation:** add no ledger row and no package CSS. Keep the e2e case that records the border surviving `forcedColors: 'active'`. Revisit if the ledger is read as covering every forced-colours difference, not only lost states.
+
+   Decided 2026-10-03 in ticket 50, decision 30 (orchestrator, full AFK mode).
 4. **Which `yetiText` values the `box--text` story shows.** Impact LOW, confidence MEDIUM. No record says which of the 20 values clear 4.5:1 on the page surface in both schemes. **Recommendation:** the implementer measures them with the play function's formula. Passing values go in `box--text` and failing ones in `box--anti-pattern-low-contrast`. The spec states no list. No decision needed beyond accepting that.
+
+   Decided 2026-10-03 in ticket 50, decision 31 (orchestrator, full AFK mode).
 
 No open point has HIGH impact with confidence below HIGH, so none needs a trap-quadrant record. None blocks the spec.

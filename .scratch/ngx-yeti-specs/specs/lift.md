@@ -4,7 +4,7 @@ Ticket: [Spec: lift (utility)](../issues/47-spec-lift.md)
 
 Targets: Angular 22.2, Nx 23.2, Storybook 10.6 with `@storybook/angular-vite`, Vitest 4.1.x, TypeScript 6.0.x, and Yeti `f52d1e8b9` (`f52d1e8b93de5bbde322480ba77d5be26c49b0ef`, develop, 2026-09-25). Accessibility target: WCAG 2.2 AA. Browser target: Chrome and Edge 141, Firefox 145, Safari and Safari iOS 26.2 ([ADR 0002](../adr/0002-browser-target-baseline-2025.md)).
 
-Points no record settles are marked "(open: see ticket)" and listed under `### Open` in this spec's ticket, each with a recommendation, for the orchestrator to decide in [ticket 50](../issues/50-decide-open-points-of-the-specs.md).
+The points this spec's ticket listed as open were decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md) (decisions 12 and 26), and each is cited where it applies.
 
 ## Problem Statement
 
@@ -90,7 +90,7 @@ From the `lift` manifest at the pin (kind `utility`, group `Motion`, since `7.0.
 | --- | --- | --- | --- | --- |
 | `lift` | identity class | static host class on `[yetiLift]` (`NgxYetiLift`) | not applicable | ADR 0003 point 1; building-blocks row 47 |
 | `data-lift` | attribute (U) | input `yetiLift` on `[yetiLift]`, bound as `[attr.data-lift]`; `''` and unset render no attribute | `YetiLift \| ''`; input default unset; Yeti's default `rise` applies from its CSS | ADR 0070 U and rule 1; ticket 26 row 167 |
-| `data-ngx-yeti-item` | the package's host attribute for the item file | static host attribute naming `lift` (open: see ticket) | not applicable | ADR 0060 point 2 |
+| `data-ngx-yeti-item-lift` | the package's host attribute for the item file | static presence attribute (empty value) | not applicable | [ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md); ticket 50 decision 12 |
 | `--yeti-lift-ease`, `--yeti-lift-duration`, `--yeti-lift-distance`, `--yeti-lift-scale`, `--yeti-lift-shadow` | public tokens | none: the consumer's stylesheet surface; the package writes none | Yeti's defaults | ADR 0004 |
 | events | none | no output | not applicable | the events spec maps none for `lift` ([events.md](events.md)) |
 | Injection tokens | none | the directive provides and reads none | not applicable | building-blocks 1.9 (no parent, no part) |
@@ -109,7 +109,7 @@ None: Yeti has no `lift` module ([ADR 0040](../adr/0040-package-replaces-yetis-o
 - Not hosted by any other directive and hosting none: no Yeti item always sits on another's element (building-blocks Part 2, "Two findings"), so `yetiLift` is written beside `yetiCard`, `yetiBox`, `yetiCluster`'s children, or any other item directive (building-blocks 1.9; P6).
 - No generated ids and no relationship attributes ([generated-ids.md](generated-ids.md) has nothing to give it).
 - Two item directives on one element each bind their own static host class; Angular merges static host classes with each other and with the consumer's own `class` attribute, so `<article yetiCard yetiLift>` renders `class="card lift"`. Their inputs cannot collide: `yetiLift` is selector-named (ADR 0070, Considered options: an un-prefixed input on such a directive would receive a same-named input meant for another directive).
-- Both directives on one element would bind the same host attribute `data-ngx-yeti-item` with different values (`card`, `lift`); ADR 0060 assumes one item per host. How the two coexist is (open: see ticket).
+- Both directives on one element each write their own presence attribute, `data-ngx-yeti-item-card` and `data-ngx-yeti-item-lift`, so the two never collide ([ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md); ticket 50 decision 12).
 
 ### 4. API
 
@@ -119,7 +119,7 @@ None: Yeti has no `lift` module ([ADR 0040](../adr/0040-package-replaces-yetis-o
 | --- | --- | --- | --- | --- |
 | `yetiLift` | `input()` | `YetiLift \| ''` | unset | `''` (the bare selector) and unset render no `data-lift`; `rise` and `scale` render it. No transform. Yeti's default is `rise` (manifest) |
 
-Host: static class `lift`; `[attr.data-lift]` from the input, `null` for `''` and unset; the static `data-ngx-yeti-item` host attribute of ADR 0060 (open: see ticket). No models, no outputs, no methods, no host listeners.
+Host: static class `lift`; `[attr.data-lift]` from the input, `null` for `''` and unset; the static presence attribute `data-ngx-yeti-item-lift` ([ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md)). No models, no outputs, no methods, no host listeners.
 
 Lifecycle: acquires the `lift` item file at construction, on the server too, and releases it on destroy (ADR 0060 point 2).
 
@@ -160,7 +160,7 @@ APG pattern: none. The lift is decoration; it adds no role, state, property, nam
 | 2.3.3 Animation from Interactions (AAA, beyond the target) | Met by Yeti anyway: under `prefers-reduced-motion: reduce` the element does not move and only the shadow changes (Yeti's test, "under reduced motion the card stops moving and keeps the deeper shadow"; ticket 17 measured the transitions collapse). |
 | 1.4.11 Non-text Contrast | Not engaged: the lift indicates no state a user needs to perceive; focus is shown by the ring. |
 
-Forced colours (not a WCAG AA criterion, ticket 17): the deeper shadow is not drawn in forced-colours mode, so under forced colours with reduced motion a hover shows no change, while the focus ring remains (inferred from the CSS Color Adjust rule that forces `box-shadow` to none; not measured). The spec adds no package CSS and no ledger row for it (open: see ticket).
+Forced colours (not a WCAG AA criterion, ticket 17): the deeper shadow is not drawn in forced-colours mode, so under forced colours with reduced motion a hover shows no change, while the focus ring remains (inferred from the CSS Color Adjust rule that forces `box-shadow` to none; not measured). The spec adds no package CSS and no ledger row for it, because the lift is decoration and the focus ring carries 2.4.7; the layer-4 forced-colours case measures that the ring remains ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 26).
 
 Ledger rows: none (building-blocks row 47). Upstream bug relied on for a known risk: A4 (below, Rendering modes).
 
@@ -233,8 +233,8 @@ A good test asserts what the page shows: the class and `data-lift` on the host, 
 - no binding, and a binding of `''`: the host has class `lift` and no `data-lift`;
 - bindings of `rise` and `scale`: `data-lift` equals the value; changing the bound signal updates it after `whenStable()`, zoneless;
 - `exportAs` is `yetiLift` (a test host reads it through a template reference);
-- the host carries the ADR 0060 host attribute, and the item-file service holds one `lift` link while the directive lives and none after destroy (its count read through the DOM: `link[data-ngx-yeti-styles="lift"]` in `<head>`);
-- a test host with `article[yetiCard][yetiLift]` (two directives need a host): `class` contains both `card` and `lift`; both item links are acquired; destroying the host releases both. The assertion on the shared host attribute follows the open point's decision.
+- the host carries the presence attribute `data-ngx-yeti-item-lift` (ADR 0045), and the item-file service holds one `lift` link while the directive lives and none after destroy (its count read through the DOM: `link[data-ngx-yeti-styles="lift"]` in `<head>`);
+- a test host with `article[yetiCard][yetiLift]` (two directives need a host): `class` contains both `card` and `lift`; both item links are acquired; destroying the host releases both. The host carries both `data-ngx-yeti-item-card` and `data-ngx-yeti-item-lift` ([ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md)).
 
 ### 3. Node-level tests
 
@@ -253,7 +253,7 @@ Fixture app half (`npx nx e2e <fixture-app>-e2e`; the `lift` route under both `R
 - Any input per token (`distance`, `scale`, `shadow`, `duration`, `ease`): the tokens are the consumer's stylesheet surface (ADR 0004).
 - Hosting `yetiLift` from `yetiCard` or any other item, or a `lift` input on the card: no item always carries the lift (building-blocks 1.9 and Part 2).
 - A JavaScript hover or focus listener, `FocusMonitor`, or a `reducedMotion()` signal: Yeti's CSS does it (building-blocks 1.6 rule 4; 1.2).
-- Package CSS for forced colours on the lift (open: see ticket).
+- Package CSS for forced colours on the lift (ticket 50 decision 26).
 - Checks of misuse (a lift on a button or a paragraph, a static `data-lift`): later milestone; stated as usage rules (map, Inherited preferences, Milestones).
 - `deployUrl` for the item link: unsupported (map, Standing rulings).
 
@@ -272,8 +272,8 @@ Fixture app half (`npx nx e2e <fixture-app>-e2e`; the `lift` route under both `R
 | Tokens are the consumer's; the package writes none | ADR 0004 |
 | No module, no events, no outputs | manifest `js: null`; ADR 0040 |
 | Item file as a counted link, acquired at construction | ADR 0060 |
-| Shared host attribute on a two-item element | (open: see ticket) |
-| No ledger row; forced-colours reading recorded here | building-blocks row 47 (open: see ticket) |
+| One presence attribute per item on a two-item element | [ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md); ticket 50 decision 12 |
+| No ledger row; forced-colours reading recorded here | building-blocks row 47; ticket 50 decision 26 |
 
 ### Usage examples
 

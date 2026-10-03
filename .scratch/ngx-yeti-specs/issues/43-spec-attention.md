@@ -19,9 +19,13 @@ Write `specs/attention.md` with the `/to-spec` template and the map's Spec shape
 None of the four points has HIGH impact, so none is in the trap quadrant (map, Standing rulings, 2026-10-03).
 
 1. **The shake's transient overflow at 320 px (WCAG 1.4.10): ledger row or not?** Impact LOW, confidence MEDIUM. Ticket 17 measured a page `scrollWidth` of 329 at 200 ms and 320 at 2.5 s (Chromium). Recommendation: no ledger row. The spec reads it as no 1.4.10 failure, because no content needs two-dimensional scrolling to be read and the throw ends within the 600 ms gesture; test layer 4 asserts that the overflow is gone after the gesture.
+   Decided 2026-10-03 in ticket 50, decision 13 (orchestrator, full AFK mode).
 2. **Does hydration restart the gesture?** Impact MEDIUM, confidence MEDIUM. Inferred no: hydration writes the same class and attribute values again, which changes no computed style, and a CSS animation restarts only when `animation-name` changes or the element is re-created. Recommendation: accept the reading, and keep the spec's test layer 4 assertion of exactly one `animationstart` per host across load and hydration. If it fails, record an upstream bug and revisit.
+   Decided 2026-10-03 in ticket 50, decision 14 (orchestrator, full AFK mode).
 3. **A consumer's `--yeti-attention-duration` replaces Yeti's reduced-motion collapse.** Impact MEDIUM, confidence HIGH. An unlayered consumer value beats Yeti's layered token (ticket 04 4.2, measured), and Yeti collapses the token only on `:root` inside `prefers-reduced-motion: reduce`. Recommendation: a documented usage rule: a consumer who sets the duration also sets it to `0.01ms` inside `@media (prefers-reduced-motion: reduce)`. No package code and no input (ADR 0004).
+   Decided 2026-10-03 in ticket 50, decision 15 (orchestrator, full AFK mode).
 4. **`yetiAttention` beside `yetiEnter` on one element.** Impact LOW, confidence MEDIUM (read in Yeti's CSS, not measured). Both declare `animation` in `yeti.utilities`, and `enter.css` comes later, so the entrance replaces the bare pulse, while `[data-attention="shake"]` sets only the animation name over the entrance's timing. Recommendation: a usage rule that puts the two on different elements (the gesture on a child of the entering element). No check, because checks belong to a later milestone (map, Milestones).
+   Decided 2026-10-03 in ticket 50, decision 16 (orchestrator, full AFK mode).
 
 ## Answer
 

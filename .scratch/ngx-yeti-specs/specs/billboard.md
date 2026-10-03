@@ -2,7 +2,7 @@
 
 Ticket: [Spec: billboard (utility)](../issues/44-spec-billboard.md). Targets Angular 22.2, Nx 23.2, Storybook 10.6 with `@storybook/angular-vite`, Vitest 4.1.x, TypeScript 6.0.x, and Yeti `f52d1e8b9` (`f52d1e8b93de5bbde322480ba77d5be26c49b0ef`, `develop`, 2026-09-25). Accessibility target: WCAG 2.2 AA.
 
-`billboard` is a **Utility** ([CONTEXT.md](../CONTEXT.md)): an **Item** of kind `utility` in Yeti's **Manifest**, in the docs group "Content". It sizes display text to the size container it sits in, clamped between two steps of Yeti's type scale. This spec covers its one **Item directive**, `YetiBillboard`. Every decision below cites the record that made it. Two points no record settles are marked "(open: see ticket)" and listed under `### Open` in this spec's ticket.
+`billboard` is a **Utility** ([CONTEXT.md](../CONTEXT.md)): an **Item** of kind `utility` in Yeti's **Manifest**, in the docs group "Content". It sizes display text to the size container it sits in, clamped between two steps of Yeti's type scale. This spec covers its one **Item directive**, `YetiBillboard`. Every decision below cites the record that made it. The two points no record settled were listed under `### Open` in this spec's ticket and are decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md) (decisions 17 and 18).
 
 ## Problem Statement
 
@@ -16,7 +16,7 @@ An Angular developer who wants a hero headline, a figure's number, or a pull quo
 
 ## Solution
 
-One attribute directive, `[yetiBillboard]`, written on the element Yeti's docs put the class on. It binds the **Identity class** `billboard` as a static host class, renders `data-fit` from a typed `fit` input whose type is Yeti's own `YetiFit` vocabulary type, marks its host with `data-ngx-yeti-item="billboard"`, and acquires the item's **Item file** while it exists. It declares no listener, no render callback, no output, and no **Injection token**. Everything else is Yeti's CSS and the platform: the clamp, the container query units, and the tokens.
+One attribute directive, `[yetiBillboard]`, written on the element Yeti's docs put the class on. It binds the **Identity class** `billboard` as a static host class, renders `data-fit` from a typed `fit` input whose type is Yeti's own `YetiFit` vocabulary type, marks its host with the presence attribute `data-ngx-yeti-item-billboard` ([ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md)), and acquires the item's **Item file** while it exists. It declares no listener, no render callback, no output, and no **Injection token**. Everything else is Yeti's CSS and the platform: the clamp, the container query units, and the tokens.
 
 The developer writes `<h1 yetiBillboard fit="lg-display">`. A misspelt pair fails to compile. Leaving `fit` unset renders no attribute, so Yeti's `md-3xl` default applies through Yeti's own `:not([data-fit])` rule. The server HTML is Yeti's documented markup, styled with JavaScript off, and nothing changes at hydration.
 
@@ -46,7 +46,7 @@ The developer writes `<h1 yetiBillboard fit="lg-display">`. A misspelt pair fail
 22. As an application developer using `withI18nSupport()`, I want a translated billboard heading to hydrate without being re-rendered, so that localized pages keep their server HTML.
 23. As a visitor with JavaScript off, I want a server-rendered or prerendered billboard to read at its fitted size, so that nothing is lost without script.
 24. As a visitor who sets a larger default font size, I want the billboard's floor and ceiling to grow with it, so that the line never falls below a legible step.
-25. As a visitor who zooms the page, I want the headline to grow, so that I can read it at 200 % (open: see ticket).
+25. As a visitor who zooms the page, I want the headline to grow, so that I can read it at 200 % (ledger row A11Y-20, measured by layer 4; [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 17).
 26. As a visitor using assistive technology, I want the billboard to change nothing in the accessibility tree, so that headings and text are announced as they are written.
 27. As a designer theming with Yeti's tokens, I want to move `--yeti-fit-width` once, so that every pair reaches its ceiling at a different container width together.
 28. As a designer, I want `--yeti-tracking-heading` to set the billboard's letter-spacing along with every heading level, so that display type stays consistent.
@@ -88,7 +88,7 @@ From Yeti's billboard manifest, docs, and CSS at the pin:
 | `--yeti-tracking-heading` | Token (public) | the consumer's | Yeti's default, `normal` | ADR 0004 |
 | `--yeti-text-xs` to `--yeti-text-display` | Token (public) | the consumer's, through Yeti's scale | Yeti's fluid scale | ADR 0004 |
 | `--_yeti-fit-min`, `--_yeti-fit-max` | Private token | never read or written | none | ADR 0004, Consequences |
-| `data-ngx-yeti-item="billboard"` | the package's Runtime name | static host attribute | always present | ADR 0060 point 2; [ADR 0080](../adr/0080-yeti-prefix-ngx-yeti-runtime-names-ngxyeti-on-collision.md) point 2 |
+| `data-ngx-yeti-item-billboard` (empty value) | the package's Runtime name | static host presence attribute | always present | [ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md); [ADR 0080](../adr/0080-yeti-prefix-ngx-yeti-runtime-names-ngxyeti-on-collision.md) point 2 |
 
 No Module is replaced, so the spec has no "Module replaced" subsection ([ADR 0040](../adr/0040-package-replaces-yetis-optional-modules.md); building-blocks Part 2 row 44, "Yeti module: none").
 
@@ -96,7 +96,7 @@ No Module is replaced, so the spec has no "Module replaced" subsection ([ADR 004
 
 - One Item directive, no part directive and no child directive: the item has no markers and no children (building-blocks Part 2 row 44).
 - No item always sits on another item's element, so `YetiBillboard` hosts nothing through `hostDirectives` (building-blocks Part 2, "Two findings"). Directives a consumer composes on the same element (`yetiCoverChild` with `center`, `yetiPaint`, `yetiText`, `yetiLede`) are written beside it (building-blocks 1.9). None of them declares an input named `fit`, so one element has one owner per attribute (building-blocks 1.4, Shared vocabularies; architecture guide P9).
-- The directive provides no Injection token, because nothing reads it, and injects one thing: the root item-file loader service of ADR 0060 point 2, through which it acquires `billboard` in its constructor (on the server too) and releases it on destroy. Building-blocks Part 2 defines "types only" as declaring "no service"; ADR 0060 point 2 has every directive acquire its item, so this spec reads the loader as the one injection ADR 0060 adds to every types-only row (open: see ticket).
+- The directive provides no Injection token, because nothing reads it, and injects one thing: the root item-file loader service of ADR 0060 point 2, through which it acquires `billboard` in its constructor (on the server too) and releases it on destroy. Acquiring the item file through ADR 0060's root styles service is the one injection every types-only item directive makes (a note on building-blocks Part 2's "Types only" definition; [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 18).
 - No generated id and no relationship attribute: nothing points at a billboard, so the [generated-ids](generated-ids.md) spec does not apply.
 
 ### API
@@ -109,7 +109,7 @@ No Module is replaced, so the spec has no "Module replaced" subsection ([ADR 004
 
 No model, no output, no method, no defaults token (building-blocks 1.4, Defaults tokens: none by default), and no input per token (ADR 0004). `fit` is not selector-named: `data-fit` is an R attribute, not a utility attribute named as its item (ADR 0070, U lists `data-attention`, `data-enter`, `data-lift`, `data-print` only).
 
-Host bindings, all on signals or static: the class `billboard`, the static attribute `data-ngx-yeti-item`, and `data-fit` from `fit()`, which binds null and so removes the attribute when the input is unset (ADR 0070 rules 1 and 4).
+Host bindings, all on signals or static: the class `billboard`, the static presence attribute `data-ngx-yeti-item-billboard`, and `data-fit` from `fit()`, which binds null and so removes the attribute when the input is unset (ADR 0070 rules 1 and 4).
 
 **Usage rules** (CONTEXT, Usage rule; architecture guide P23; each repeated in the directive's JSDoc; the first milestone reports no breach, map, Milestones):
 
@@ -144,11 +144,11 @@ WCAG 2.2 AA criteria this item touches ([ADR 0015](../adr/0015-wcag-2-2-aa-enfor
 | --- | --- |
 | 1.3.1 Info and Relationships | The directive changes no element and no role; structure is the consumer's element (usage rule 3). Asserted by the play function's accessibility-tree check. |
 | 1.4.3 Contrast (Minimum) | Not changed by this item: the billboard sets size and letter-spacing only; colour comes from the consumer's context or `yetiText`/`yetiPaint`. The Story gate runs axe's `color-contrast` on every story. |
-| 1.4.4 Resize Text | Yeti's floor and ceiling are `rem` steps, so a larger default font size raises both (Yeti's `a11y` note). Between the two ends the size is a proportion of the container's width, which page zoom shrinks in CSS pixels; whether the line still reaches 200 % under page zoom inside the ramp was not measured (ticket 17 lists "200 % zoom (1.4.4) beyond the 320 px reflow" as not measured). Worked from Yeti's CSS and scale at their defaults, not run: a default-pair heading in a fluid 400 px container at a 1280 px window sets about 44 px; at 200 % page zoom the container is 200 CSS px, the fluid scale steps down, and the line falls to its floor of about 17 CSS px, about 33 device px, smaller than before zooming. Inferred risk; the e2e suite measures it (open: see ticket). |
+| 1.4.4 Resize Text | Yeti's floor and ceiling are `rem` steps, so a larger default font size raises both (Yeti's `a11y` note). Between the two ends the size is a proportion of the container's width, which page zoom shrinks in CSS pixels; whether the line still reaches 200 % under page zoom inside the ramp was not measured (ticket 17 lists "200 % zoom (1.4.4) beyond the 320 px reflow" as not measured). Worked from Yeti's CSS and scale at their defaults, not run: a default-pair heading in a fluid 400 px container at a 1280 px window sets about 44 px; at 200 % page zoom the container is 200 CSS px, the fluid scale steps down, and the line falls to its floor of about 17 CSS px, about 33 device px, smaller than before zooming. Inferred risk, recorded as ledger row A11Y-20 (owner `billboard`; verified *inferred*; tested by L4). The package adds no CSS until the layer-4 zoom case has measured it in three engines; a fix is decided once it has run ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 17). |
 | 1.4.10 Reflow | The floor keeps the line at or above a legible step in a narrow container; a long word at a high floor can overflow a narrow column, which is the author's choice of pair (inferred, not measured). Measured at a 320 px viewport in the e2e suite. |
 | 1.4.12 Text Spacing | `letter-spacing` comes from `--yeti-tracking-heading`; a user stylesheet that overrides spacing still applies (inferred; ticket 17 did not measure 1.4.12). Measured in the e2e suite with the WCAG text-spacing values. |
 
-**Ledger rows:** none today (building-blocks Part 2 row 44: "none"). Open point 1 in the ticket proposes an inferred row for 1.4.4.
+**Ledger rows:** A11Y-20 (WCAG 2.2 1.4.4 under page zoom; Yeti does what its `a11y` note says; the package adds nothing yet; verified *inferred*; tested by L4; owner `billboard`), added by [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 17. Building-blocks Part 2 row 44 listed none.
 
 ### Rendered HTML
 
@@ -156,7 +156,7 @@ Consumer markup:
 
 - `<div yetiContainer><h1 yetiBillboard fit="lg-display">Build interfaces that read their own container</h1></div>`
 
-Server HTML and hydrated DOM, identical: the `div` with the container item's class and its own `data-ngx-yeti-item`; the `h1` with `class="billboard"`, `data-fit="lg-display"`, and `data-ngx-yeti-item="billboard"`; in `<head>`, one `<link rel="stylesheet" data-ngx-yeti-styles="billboard" ...>` in Yeti's order (ADR 0060 points 2, 3, and 5). With `fit` unset the `h1` carries no `data-fit`. There is no open or closed state. No `jsaction` attribute on the billboard, because it declares no listener.
+Server HTML and hydrated DOM, identical: the `div` with the container item's class and its own `data-ngx-yeti-item-container=""`; the `h1` with `class="billboard"`, `data-fit="lg-display"`, and `data-ngx-yeti-item-billboard=""`; in `<head>`, one `<link rel="stylesheet" data-ngx-yeti-styles="billboard" ...>` in Yeti's order (ADR 0060 points 2, 3, and 5). With `fit` unset the `h1` carries no `data-fit`. There is no open or closed state. No `jsaction` attribute on the billboard, because it declares no listener.
 
 ### Animation
 
@@ -166,7 +166,7 @@ None. Yeti's billboard rules declare no transition or animation (building-blocks
 
 [ADR 0011](../adr/0011-rendering-modes-contract-for-yeti.md) and building-blocks 1.11, for this item:
 
-- **Server output:** the class, `data-fit` when bound, `data-ngx-yeti-item`, and the item link in `<head>`; all host bindings on signal or static state (clause 1). No template branches on the platform.
+- **Server output:** the class, `data-fit` when bound, `data-ngx-yeti-item-billboard`, and the item link in `<head>`; all host bindings on signal or static state (clause 1). No template branches on the platform.
 - **Before hydration:** nothing to touch: no listener, no render callback, no observer, no timer, no DOM write (clauses 3 and 4; building-blocks 1.11 decision 3). The item link is written on the server and adopted by attribute at bootstrap (ADR 0060 point 5).
 - **Full hydration:** no attribute changes, no rewrite (ADR 0060 point 5 measured 0 style mutations after `DOMContentLoaded` for the loader; the billboard's attributes are host bindings equal on both ends).
 - **Event replay:** no listener, so nothing replays and nothing waits for replay. No `yeti:*` event exists for this item.
@@ -185,7 +185,7 @@ None: the item has no state to close on navigation and no fragment link ([naviga
 
 ### Item file
 
-The item file is `billboard`, kind `utilities`, loaded by ADR 0060's counted `<link>` from the consumer's Yeti build at the pin, acquired in the constructor and released on destroy, removed only when no host with `data-ngx-yeti-item="billboard"` is connected (ADR 0060 points 1 to 4). The consumer writes nothing per item beyond the one-time setup the `setup` spec owns ([ticket 38](../issues/38-spec-setup.md); ADR 0060 point 11). The billboard acquires no other item file: its rules depend on a size container's `container-type`, which is another element's and is acquired by that element's own directive (`container` for `yetiContainer`), so ADR 0060 point 9's cross-item rule names nothing here.
+The item file is `billboard`, kind `utilities`, loaded by ADR 0060's counted `<link>` from the consumer's Yeti build at the pin, acquired in the constructor and released on destroy, removed only when no host with `data-ngx-yeti-item-billboard` is connected (ADR 0060 points 1 to 4). The consumer writes nothing per item beyond the one-time setup the `setup` spec owns ([ticket 38](../issues/38-spec-setup.md); ADR 0060 point 11). The billboard acquires no other item file: its rules depend on a size container's `container-type`, which is another element's and is acquired by that element's own directive (`container` for `yetiContainer`), so ADR 0060 point 9's cross-item rule names nothing here.
 
 ## Testing Decisions
 
@@ -197,7 +197,7 @@ Story ids (building-blocks 1.3): `billboard--default`, `billboard--fit`, `billbo
 
 Each story loads the always-loaded group globally and the item file as a consumer would (ADR 0014 point 1); the Story gate runs axe with the six tags and `parameters.a11y.test = 'error'`.
 
-- `billboard--default`: one billboard with `fit` unset in a `yetiContainer`. Asserts `class` contains `billboard`, no `data-fit`, `data-ngx-yeti-item="billboard"`; the accessibility tree shows the heading at its own level and name.
+- `billboard--default`: one billboard with `fit` unset in a `yetiContainer`. Asserts `class` contains `billboard`, no `data-fit`, `data-ngx-yeti-item-billboard`; the accessibility tree shows the heading at its own level and name.
 - `billboard--fit`: `fit` bound from a story arg (the Storybook control lists the 28 pairs). Asserts `data-fit` equals the arg after each change, and that the computed `font-size` lies between the computed values of the pair's two `--yeti-text-*` tokens.
 - `billboard--clamp`: the same heading in containers of 120 px, 200 px, 400 px, and 900 px. Asserts the 400 px heading is larger than the 200 px one, the 120 px one equals the computed floor token, and the 900 px one equals the computed ceiling token (Yeti's test, ported); a `sm-xl` heading at 400 px is smaller than the default at 400 px and inside its own ends.
 - `billboard--nested`: a `fit="sm-md"` billboard inside a `fit="lg-display"` billboard's container. Asserts the inner one has no inherited pair when its own `fit` is unset (its computed size lies within `md` to `3xl`).
@@ -208,7 +208,7 @@ Each story loads the always-loaded group globally and the item file as a consume
 
 Directive-level cases use `TestBed.createDirective(YetiBillboard, { tagName: 'h2', bindings })`, which returns a `DirectiveFixture` (map, Standing rulings, 2026-10-03, item 58; ADR 0014's note). Cases that need a sibling directive or content use a test host component, which ADR 0014's note keeps for those.
 
-- The host has the class `billboard` and `data-ngx-yeti-item="billboard"`, with and without `fit`.
+- The host has the class `billboard` and `data-ngx-yeti-item-billboard`, with and without `fit`.
 - `fit` unset: no `data-fit`. Bound to `lg-display`: `data-fit="lg-display"`. Changed to `sm-md` through the binding's signal: the attribute follows after `await fixture.whenStable()`. Set back to `undefined`: the attribute is removed.
 - Item file: after creation the document has one link with `data-ngx-yeti-styles="billboard"`; a second billboard does not add another; after both are destroyed and a frame has passed, the link is gone (ADR 0060 point 4).
 - Test host: `yetiBillboard` beside a cover's child directive with `center` and beside `yetiPaint`: each attribute is present once, and `fit` reaches only the billboard.
@@ -219,7 +219,7 @@ Directive-level cases use `TestBed.createDirective(YetiBillboard, { tagName: 'h2
 
 Through the shared `renderServer()` helper with `provideClientHydration()` and `withI18nSupport()`, over a fixture with one `i18n` billboard heading (building-blocks 1.11 decision 11):
 
-- The server HTML has `class="billboard"`, `data-fit` only where bound, `data-ngx-yeti-item="billboard"`, and no `jsaction` on the billboard host.
+- The server HTML has `class="billboard"`, `data-fit` only where bound, `data-ngx-yeti-item-billboard=""`, and no `jsaction` on the billboard host.
 - `<head>` has exactly one link with `data-ngx-yeti-styles="billboard"`, `data-ngx-yeti-app`, and `data-beasties-skip`, in Yeti's order relative to a `container` link from the same page (ADR 0060 points 2 and 3).
 - A fixture that also writes a static `data-fit` beside an unset `fit` documents the hydration hazard: the rendered output carries no `data-fit` (ADR 0070, 2026-10-03 note).
 
@@ -234,7 +234,7 @@ Storybook half (`npx nx e2e <lib>-e2e`, Chromium, Firefox, WebKit, on the story 
 - Tracking: with `--yeti-tracking-heading: -0.03em` added on `:root`, computed `letter-spacing` is close to `-0.03` times the computed `font-size` (Yeti's test, ported).
 - Text spacing (1.4.12): with the WCAG text-spacing values injected, the heading's text is not clipped and stays in its container.
 - Reflow (1.4.10): `billboard--hero` at a 320 px viewport has no horizontal scroll.
-- Zoom (1.4.4): the rendered `font-size` of `billboard--clamp`'s 400 px heading at 100 % and at 200 % page zoom, in Chromium through the protocol's page scale or an equivalent viewport and device scale factor (open: see ticket). The case records the measurement; its pass condition follows the decision on the ticket's open point 1.
+- Zoom (1.4.4): the rendered `font-size` of `billboard--clamp`'s 400 px heading at 100 % and at 200 % page zoom, in Chromium, Firefox, and WebKit, through the protocol's page scale or an equivalent viewport and device scale factor. The case records the measurement for ledger row A11Y-20 and has no size threshold yet: the package adds no CSS until it has run in all three engines, and the fix is decided then ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 17).
 
 Fixture half (`npx nx e2e <fixture-app>-e2e`, the `billboard` route as a server-rendered and a prerendered route, `outputMode: 'server'`; ADR 0014's 2026-10-03 note, decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md)):
 
@@ -251,7 +251,7 @@ Fixture half (`npx nx e2e <fixture-app>-e2e`, the `billboard` route as a server-
 - Choosing or changing the element's heading level: the element is the consumer's (usage rule 3).
 - Acquiring the `container` item file for a billboard: the size container's own directive does that (Item file, above).
 - A development-mode Misuse warning for the usage rules (a missing size container, a billboard on prose): checks are deferred to a later milestone (map, Milestones).
-- Package CSS for this item: no rule is planned unless open point 1 is measured to fail (map, Standing rulings, Package CSS for accessibility).
+- Package CSS for this item: no rule is planned unless the layer-4 zoom case for ledger row A11Y-20 measures a failure ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 17) (map, Standing rulings, Package CSS for accessibility).
 - Filing anything upstream with Yeti: no report without the user's confirmation (map, Standing rulings, Upstream bugs).
 
 ## Further Notes
@@ -267,10 +267,10 @@ Fixture half (`npx nx e2e <fixture-app>-e2e`, the `billboard` route as a server-
 | `fit` is not selector-named | ADR 0070, kinds R and U |
 | `YetiBillboard`, `[yetiBillboard]`, `exportAs: 'yetiBillboard'`, `ngx-yeti/billboard` | ADR 0080 points 1, 3, 4; building-blocks 1.3 |
 | Level 1, types only, no Module | building-blocks Part 2 row 44; ADR 0040 |
-| Item file through the counted link; `data-ngx-yeti-item` | ADR 0060 points 1 to 6 |
+| Item file through the counted link; `data-ngx-yeti-item-billboard` | ADR 0060 points 1 to 6; [ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md) |
 | No other item file acquired | ADR 0060 point 9 (this spec's reading) |
 | Tokens are the consumer's; private tokens untouched | ADR 0004 |
-| No ledger row today | building-blocks Part 2 row 44; open point 1 |
+| Ledger row A11Y-20 for 1.4.4, inferred, measured by L4 | [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 17 |
 | Rendering modes as host bindings only | ADR 0011 clauses 1, 3, 4; building-blocks 1.11 |
 | `TestBed.createDirective` in test layer 2 | map, Standing rulings, 2026-10-03; ADR 0014's note |
 | Fixture app's server and prerendered routes | ticket 50 decision 2; ADR 0014's note |

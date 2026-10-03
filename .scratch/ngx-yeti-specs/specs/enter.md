@@ -4,7 +4,7 @@ Ticket: [Spec: enter (utility)](../issues/45-spec-enter.md)
 
 Targets: Angular 22.2, Nx 23.2, Storybook 10.6 with `@storybook/angular-vite`, Vitest 4.1.x, TypeScript 6.0.x, and Yeti `f52d1e8b9` (`f52d1e8b93de5bbde322480ba77d5be26c49b0ef`, develop, 2026-09-25). Accessibility target: WCAG 2.2 AA. Browser target: Chrome and Edge 141, Firefox 145, Safari and Safari iOS 26.2 ([ADR 0002](../adr/0002-browser-target-baseline-2025.md)).
 
-Points marked "(open: see ticket)" are this spec's best reading of something no record settles; each is listed under `### Open` in the ticket with a recommendation. `Y/` is `d:/projects/github/foundation/yeti/` at the pin.
+The points the ticket listed as open were decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md) (decisions 12 and 19 to 22), and each is cited where it applies. `Y/` is `d:/projects/github/foundation/yeti/` at the pin.
 
 ## Problem Statement
 
@@ -89,7 +89,7 @@ Attributes left to the consumer: none of Yeti's. The consumer's own attributes o
 | `data-stagger` | Attribute | `stagger` input | `boolean`, `booleanAttribute`, default `false`; `true` renders `data-stagger=""`, `false` nothing | not an HTML attribute | ticket 26 row 164 |
 | `data-view` | Attribute | `view` input | `boolean`, `booleanAttribute`, default `false` | not an HTML attribute | ticket 26 row 165 |
 | `data-once` | Attribute, Angular-owned state | `once` input plus the private `arrived` signal; bound as `[attr.data-once]` from a `computed`: `''` while `once()` is true and `arrived()` is false, otherwise nothing | `boolean`, `booleanAttribute`, default `false` | not an HTML attribute | ADR 0070 rule S; ticket 26 row 166 |
-| `data-ngx-yeti-item="enter"` | the package's host attribute | static host attribute; the directive acquires the `enter` item file in its constructor and releases it on destroy. On an element shared with another item directive (`grid`, `cluster`, `media`) two directives write this one attribute with different values (open: see ticket, item 5) | always | n/a | [ADR 0060](../adr/0060-item-styles-are-counted-links-to-the-consumers-yeti-build.md) point 2 |
+| `data-ngx-yeti-item-enter` | the package's host attribute | static presence attribute (empty value); the directive acquires the `enter` item file in its constructor and releases it on destroy. On an element shared with another item directive (`grid`, `cluster`, `media`) each directive writes its own presence attribute, so they never collide ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 12) | always | n/a | [ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md); [ADR 0060](../adr/0060-item-styles-are-counted-links-to-the-consumers-yeti-build.md) point 2 |
 | Events | none | no output: `js[0].events` is empty | | | ticket 26, "Angular-owned state"; [events spec](events.md) |
 | `--yeti-enter-*` (six Tokens) | Token | none; the consumer's stylesheet | | | [ADR 0004](../adr/0004-yeti-tokens-are-a-consumer-stylesheet-surface.md) |
 | Injection tokens | none | the directive provides and reads none | | | building-blocks 1.9 |
@@ -128,14 +128,14 @@ Attributes left to the consumer: none of Yeti's. The consumer's own attributes o
 | `stagger` | `input()` with `booleanAttribute` | `boolean` | `false` | |
 | `view` | `input()` with `booleanAttribute` | `boolean` | `false` | |
 | `once` | `input()` with `booleanAttribute` | `boolean` | `false` | |
-| `arrived` | private signal (`#arrived`) | `boolean` | `false` | not public API (open: see ticket, item 1) |
+| `arrived` | private signal (`#arrived`) | `boolean` | `false` | not public API; `exportAs` exposes the inputs only ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 19) |
 
 No `model()`, no outputs, no public methods. Behaviour:
 
 1. **Construction** (server and client): acquire the `enter` item file; nothing else. No DOM access, no observer (building-blocks 1.11 decision 3).
 2. **First client render** (`afterNextRender`): if `once()` is true and `arrived()` is false, create one `IntersectionObserver` with `rootMargin: '0px 0px 10% 0px'` and observe the host. Under zone.js it starts outside the Angular zone ([ADR 0011](../adr/0011-rendering-modes-contract-for-yeti.md) clause 4).
 3. **First intersecting entry:** set `arrived` to `true`, then disconnect the observer. The `computed` turns `data-once` off, the host binding removes it, and Yeti's CSS starts the arrival as a new animation (`enter.css:103-114`).
-4. **Changes to `once` after the first client render** (open: see ticket, item 2): the arrival is one-way; once `arrived` is true, no later value of `once` renders `data-once` again. A `once` that is `false` at the first client render is treated as already arrived, because the element has played its load arrival, so a later `true` renders nothing and creates no observer.
+4. **Changes to `once` after the first client render** ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 20): the arrival is one-way; once `arrived` is true, no later value of `once` renders `data-once` again. A `once` that is `false` at the first client render is treated as already arrived, because the element has played its load arrival, so a later `true` renders nothing and creates no observer.
 5. **Destroy:** disconnect the observer if it exists; release the item file (ADR 0060 point 2; building-blocks 1.9).
 
 ### 5. Material comparison
@@ -149,7 +149,7 @@ Material has no entrance-animation directive, and building-blocks row 45 names n
 | The class | removed after one frame (ADR 0060 point 6) | the identity class `enter` stays |
 | Reduced motion | whatever the named class does | Yeti's tokens collapse it (`Y/src/tokens/components.css:183-189`) |
 
-The directive itself uses no `animate.enter` (ADR 0010 point 4; building-blocks row 45). Whether a consumer may still write `animate.enter="enter"` on an element is open: see ticket, item 4.
+The directive itself uses no `animate.enter` (ADR 0010 point 4; building-blocks row 45). A consumer writes `yetiEnter` on an element it inserts, which already plays on insertion, and never writes `animate.enter="enter"` beside `yetiEnter` on one element; building-blocks 1.6 point 2's allowance stays for package host bindings ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 22).
 
 ### 6. Implementation level and primitives
 
@@ -181,11 +181,11 @@ Consumer markup (a staggered grid of cards that arrives once):
 
 Server HTML and first paint, also the JavaScript-off page:
 
-`<ul class="grid enter" data-min="xs" data-enter="rise" data-stagger="" data-once="" role="list" data-ngx-yeti-item="...">`, where `data-ngx-yeti-item` holds one of `grid` and `enter` (open: see ticket, item 5), plus the item links for `grid`, `card`, and `enter` in `<head>` (ADR 0060 points 2 and 5). Yeti's `.enter[data-once][data-stagger] > *` rule gives the children `animation: none`, so they are present and still.
+`<ul class="grid enter" data-min="xs" data-enter="rise" data-stagger="" data-once="" role="list" data-ngx-yeti-item-grid="" data-ngx-yeti-item-enter="">`, one presence attribute per item ([ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md)), plus the item links for `grid`, `card`, and `enter` in `<head>` (ADR 0060 points 2 and 5). Yeti's `.enter[data-once][data-stagger] > *` rule gives the children `animation: none`, so they are present and still.
 
 After hydration, unchanged until the list first nears the viewport. Then `data-once` is gone, and each child plays `yeti-enter-rise`, a step behind the one before. Scrolling away and back changes nothing.
 
-`<p yetiEnter>` renders `<p class="enter" data-ngx-yeti-item="enter">` and fades on first paint. `<p yetiEnter="slide" side="end">` renders `data-enter="slide" data-side="end"`.
+`<p yetiEnter>` renders `<p class="enter" data-ngx-yeti-item-enter="">` and fades on first paint. `<p yetiEnter="slide" side="end">` renders `data-enter="slide" data-side="end"`.
 
 ### 9. Animation
 
@@ -193,7 +193,7 @@ All of it is Yeti's CSS on the identity class and attributes (ADR 0010 point 1; 
 
 ### 10. Item file
 
-`enter`'s item file is the `utilities/enter/enter.css` file of the consumer's Yeti build, in cascade layer `yeti.utilities` ([Research: Yeti's cascade layers and stylesheet order](../issues/23-research-yeti-layers-and-import-order.md)). The directive sets `data-ngx-yeti-item="enter"` on its host and acquires the file in its constructor, on the server too; the root style service writes one counted `<link>`, in Yeti's order, and removes it after the last host leaves the DOM (ADR 0060 points 2 to 5). The consumer's one line is the `setup` spec's global setup; for a client-only insertion the consumer adds `enter` to `provideYetiStyles({ preload: [...] })` (ADR 0060 point 6; building-blocks row 45). The package's accessibility stylesheet has no `enter` rule.
+`enter`'s item file is the `utilities/enter/enter.css` file of the consumer's Yeti build, in cascade layer `yeti.utilities` ([Research: Yeti's cascade layers and stylesheet order](../issues/23-research-yeti-layers-and-import-order.md)). The directive sets `data-ngx-yeti-item-enter` on its host ([ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md)) and acquires the file in its constructor, on the server too; the root style service writes one counted `<link>`, in Yeti's order, and removes it after the last host leaves the DOM (ADR 0060 points 2 to 5). The consumer's one line is the `setup` spec's global setup; for a client-only insertion the consumer adds `enter` to `provideYetiStyles({ preload: [...] })` (ADR 0060 point 6; building-blocks row 45). The package's accessibility stylesheet has no `enter` rule.
 
 ### 11. Rendering modes
 
@@ -203,7 +203,7 @@ Per [ADR 0011](../adr/0011-rendering-modes-contract-for-yeti.md) and building-bl
 - **Prerendering:** the same HTML; nothing reads request tokens (building-blocks 1.11 decision 10).
 - **JavaScript off, under SSR and prerendering:** every `enter` element is present and readable. An element without `once` plays its arrival from CSS on first paint (inferred from `enter.css`; ticket 18 probed only the `once` element). A `once` element stays still and visible forever (ticket 18, measured: "element visible, no arrival"). What is lost: only the `once` arrival. A client-only application promises nothing (ADR 0011, 2026-10-03 note).
 - **Before hydration:** nothing changes `data-once`: the consumer loads no Yeti module (ADR 0040), and no person can change a `data-*` attribute (ADR 0070 rule S). The element is visible and still.
-- **Full hydration:** hydration claims the host, and the binding's first client pass writes the same `data-once` it found, so nothing visible changes; the observer starts after the first render, and the arrival plays when the host nears the viewport ([Research: the decided records against Angular's hydration constraints](../issues/33-research-decided-records-against-hydration-constraints.md) row 16, "complies"). A `once` element already near the viewport when the app hydrates arrives right after hydration, as it would after `enter.js` ran at load, but later; this spec keeps that like-for-like behaviour (open: see ticket, item 3).
+- **Full hydration:** hydration claims the host, and the binding's first client pass writes the same `data-once` it found, so nothing visible changes; the observer starts after the first render, and the arrival plays when the host nears the viewport ([Research: the decided records against Angular's hydration constraints](../issues/33-research-decided-records-against-hydration-constraints.md) row 16, "complies"). A `once` element already near the viewport when the app hydrates arrives right after hydration, as it would after `enter.js` ran at load, but later; this spec keeps that like-for-like behaviour, with the usage rule that `once` is for content that starts below the fold, and layer 4 records the delay ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 21).
 - **Incremental hydration:** inside a `@defer (hydrate on ...)` block that has not hydrated, the host is its dehydrated state: still and visible, holding its item link (ADR 0060 point 4). With `hydrate on viewport`, the block hydrates as it comes into view, and the observer then reports the host near the viewport, so it arrives at once (inferred).
 - **`hydrate never`:** the directive never runs; a `once` element stays still and visible, Yeti's no-script state, and its item link stays while the host is on the page (ticket 26; ADR 0060 point 4).
 - **Client-only `@defer`, `@if`, `@for`, routes:** the directive is created with the element and sets itself up, so a `once` element arrives (fixes the failures of tickets 18 and 20). An element without `once` plays its arrival on insertion from CSS (ticket 18, measured: "A static `.enter` inserted by `@if` animated by itself"). The item file must be present before insertion: by a server-rendered instance holding the link, or by the preload list; without it the fetch can start the arrival late (ADR 0060 point 6; [Research: Yeti's styling model, and loading component styles lazily](../issues/04-research-yeti-styles-and-lazy-loading.md), inferred).
@@ -246,12 +246,12 @@ Story ids (building-blocks 1.3): `enter--default`, `enter--arrivals`, `enter--st
 
 `NgxYetiEnter` created with `TestBed.createDirective(NgxYetiEnter, { tagName, bindings })` (map, Standing rulings, 2026-10-03; ADR 0014's note), inputs bound through `bindings`; a test host component only for the inserted and staggered cases. Cases:
 
-- the class `enter` and `data-ngx-yeti-item="enter"` are on the host;
+- the class `enter` and `data-ngx-yeti-item-enter` are on the host;
 - each input renders its attribute; `''` for `yetiEnter`, unset `side`, and `false` booleans render nothing;
 - `once` true with the host below the viewport: `data-once=""` stays after `whenStable()`; after the host is scrolled into view and the observer fires, `data-once` is gone after `whenStable()` with no manual change detection (zoneless);
 - scrolled away and back: `data-once` does not return;
-- `once` true, then set to `false` before arrival: the attribute goes; set back to `true`: it returns and the arrival still happens on intersection; after arrival, `true` renders nothing (open: see ticket, item 2);
-- `once` false at the first render, later `true`: no `data-once` (open: see ticket, item 2);
+- `once` true, then set to `false` before arrival: the attribute goes; set back to `true`: it returns and the arrival still happens on intersection; after arrival, `true` renders nothing ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 20);
+- `once` false at the first render, later `true`: no `data-once` (decision 20);
 - destroyed before intersecting: no error; `IntersectionObserver.prototype.disconnect` was called (the one structural assertion, for building-blocks 1.15's teardown);
 - the item file is acquired on creation and released on destroy, through a double of the style service (ADR 0060 point 2).
 
@@ -267,7 +267,7 @@ Fixture app half, on the `enter` route, both as `RenderMode.Prerender` and as `R
 
 - hydration logs no `NG05xx`, and `componentsSkippedHydration` is 0;
 - **ticket 33 row 16:** with the main bundle held back, a below-the-fold `once` element has `data-once` and opacity 1; after hydration finishes it still has `data-once`; scrolled to, it loses it and `animationstart` fires once; scrolling away and back fires nothing more;
-- a `once` element already in view at load: record how long after first paint it arrives (open: see ticket, item 3);
+- a `once` element already in view at load: record how long after first paint it arrives ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 21);
 - JavaScript disabled: every `enter` element opaque, the `once` ones keep `data-once` and `animation-name` `none`; axe on the page;
 - a client `@defer (on interaction)` block, an `@if`, and a route change each insert a `once` element that arrives (the failures of tickets 18 and 20), with and without `provideYetiStyles({ preload: ['enter'] })`, recording when the first `animationstart` fires against when the item link loads (ADR 0060 point 6);
 - a `@defer (hydrate on viewport)` block holding a `once` element: dehydrated and still above the fold, arrives after scrolling to it;
@@ -299,14 +299,15 @@ Contract check: the class `enter`, the five attributes, the five `enter` values 
 | Types are Yeti's `YetiEnter` and `YetiSide` from the generated types copy | ADR 0005; ADR 0060 point 10; ADR 0080 point 5 |
 | `data-once` is Angular-owned state: a `computed` of `once` and `arrived` | ADR 0070 rule S; ADR 0003 point 4; ticket 26 |
 | One `IntersectionObserver` per instance, `rootMargin: '0px 0px 10% 0px'`, in `afterNextRender`, disconnected on arrival and destroy | building-blocks row 45 and 1.15; ticket 26 row 166 |
-| `arrived` is private | open: see ticket, item 1 |
-| The arrival is one-way, and a `once` that is `false` at the first client render latches it | open: see ticket, item 2 |
-| A `once` element in view at hydration arrives after hydration, like for like | open: see ticket, item 3 |
+| `arrived` is private | [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 19 |
+| The arrival is one-way, and a `once` that is `false` at the first client render latches it | ticket 50 decision 20 |
+| A `once` element in view at hydration arrives after hydration, like for like; `once` is for content below the fold | ticket 50 decision 21 |
+| No `animate.enter="enter"` beside `yetiEnter` on one element | ticket 50 decision 22 |
 | No `animate.enter` in the directive | ADR 0010 point 4; building-blocks row 45 |
 | No outputs; no ledger row | ticket 26; ADR 0040, Consequences; building-blocks row 45 |
 | Item file acquired in the constructor; preload for client-only insertion | ADR 0060 points 2 and 6; building-blocks row 45 |
 | `enter.js` replaced; consumers load none of Yeti's modules | ADR 0040 |
-| How `data-ngx-yeti-item` names two items on one host | open: see ticket, item 5 |
+| Each item on a host writes its own presence attribute, `data-ngx-yeti-item-enter` | [ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md); ticket 50 decision 12 |
 
 ### Usage examples
 
@@ -320,7 +321,7 @@ Contract check: the class `enter`, the five attributes, the five `enter` values 
 - Client-inserted content with a `once` arrival: the application config calls `provideYetiStyles({ preload: ['enter'] })` (the `setup` spec), and the template inserts `<section yetiEnter="rise" once>` from a `@defer` block.
 - Imports: each standalone component lists `NgxYetiEnter` and every other directive class its template writes (building-blocks 1.9, "Imports").
 
-Usage rules: write `once` for content that starts below the fold, as Yeti's docs describe it ("as it first comes near the viewport"); put `stagger` on the layout that holds the row, not on the items (`enter/docs.md`); use one arrival per page section, as Yeti's "When to use it" asks; write no Yeti class or `data-*` attribute on the host; load no `enter.js`.
+Usage rules: write `once` for content that starts below the fold, as Yeti's docs describe it ("as it first comes near the viewport"); put `stagger` on the layout that holds the row, not on the items (`enter/docs.md`); use one arrival per page section, as Yeti's "When to use it" asks; write no Yeti class or `data-*` attribute on the host; write no `animate.enter="enter"` beside `yetiEnter` (ticket 50 decision 22); load no `enter.js`.
 
 The owner directive ticket 20 measured as the fix, trimmed (from the prototype). It removed the attribute itself; ADR 0070 rule S replaces that write with a signal and a host binding so hydration has nothing to restore:
 

@@ -4,7 +4,7 @@ Ticket: [56. Spec: container (layout)](../issues/56-spec-container.md)
 
 Targets: Angular 22.2, Nx 23.2, Storybook 10.6 with `@storybook/angular-vite`, Vitest 4.1.x, TypeScript 6.0.x, and Yeti `f52d1e8b9` (`f52d1e8b93de5bbde322480ba77d5be26c49b0ef`, `develop`, 2026-09-25). Browser target: Chrome and Edge 141, Firefox 145, Safari and Safari iOS 26.2 ([ADR 0002](../adr/0002-browser-target-baseline-2025.md)). Accessibility target: WCAG 2.2 AA.
 
-Deciding records: [building-blocks.md](../building-blocks.md) Part 2 row 6 and Part 1 (1.3, 1.7, 1.13 in particular), [Decide: how the package maps each of Yeti's `data-*` attributes](../issues/26-decide-yeti-data-attributes-mapping.md) rows 25 and 26, [Decide: the spec list](../issues/11-decide-spec-list.md) row 6 and question 9, [ADR 0003](../adr/0003-directives-set-yetis-class-attributes-and-markers.md), [ADR 0004](../adr/0004-yeti-tokens-are-a-consumer-stylesheet-surface.md), [ADR 0005](../adr/0005-closed-unions-from-yetis-vocabularies.md), [ADR 0011](../adr/0011-rendering-modes-contract-for-yeti.md), [ADR 0014](../adr/0014-testing-stack-for-yeti.md), [ADR 0015](../adr/0015-wcag-2-2-aa-enforcement-over-yeti.md), [ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md), [ADR 0060](../adr/0060-item-styles-are-counted-links-to-the-consumers-yeti-build.md), [ADR 0070](../adr/0070-where-a-yeti-attribute-sits-decides-its-mapping.md), [ADR 0080](../adr/0080-yeti-prefix-ngx-yeti-runtime-names-ngxyeti-on-collision.md), and the architecture guide's P28 ([architecture-guide.md](../architecture-guide.md), which ranks below the records). `Y/` is `d:/projects/github/foundation/yeti/` at the **Pin**. Where this spec needs something no record settles, it gives its best reading marked "(open: see ticket)".
+Deciding records: [building-blocks.md](../building-blocks.md) Part 2 row 6 and Part 1 (1.3, 1.7, 1.13 in particular), [Decide: how the package maps each of Yeti's `data-*` attributes](../issues/26-decide-yeti-data-attributes-mapping.md) rows 25 and 26, [Decide: the spec list](../issues/11-decide-spec-list.md) row 6 and question 9, [ADR 0003](../adr/0003-directives-set-yetis-class-attributes-and-markers.md), [ADR 0004](../adr/0004-yeti-tokens-are-a-consumer-stylesheet-surface.md), [ADR 0005](../adr/0005-closed-unions-from-yetis-vocabularies.md), [ADR 0011](../adr/0011-rendering-modes-contract-for-yeti.md), [ADR 0014](../adr/0014-testing-stack-for-yeti.md), [ADR 0015](../adr/0015-wcag-2-2-aa-enforcement-over-yeti.md), [ADR 0045](../adr/0045-each-item-marks-its-host-with-its-own-attribute.md), [ADR 0060](../adr/0060-item-styles-are-counted-links-to-the-consumers-yeti-build.md), [ADR 0070](../adr/0070-where-a-yeti-attribute-sits-decides-its-mapping.md), [ADR 0080](../adr/0080-yeti-prefix-ngx-yeti-runtime-names-ngxyeti-on-collision.md), and the architecture guide's P28 ([architecture-guide.md](../architecture-guide.md), which ranks below the records). `Y/` is `d:/projects/github/foundation/yeti/` at the **Pin**. Its open points are decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md) (decisions 7 and 11).
 
 In this spec, `container` in code font is always the item; the plain words "size container" and "container query" are the CSS terms (CONTEXT.md, Item name).
 
@@ -117,7 +117,7 @@ Attributes left to the consumer: none. Ticket 26 maps both markers (rows 25 and 
 | Tokens | none declared | none read or written | manifest `tokens: []`; ADR 0004 |
 | Presence attribute (package) | not Yeti's | static `data-ngx-yeti-item-container` (empty value) on `YetiContainer`'s host only | ADR 0045; ADR 0080 point 2 |
 
-Neither input name is an HTML attribute, so building-blocks 1.4's presentational-attribute kinds do not apply. `YetiShow` and `YetiHide` set no presence attribute and acquire nothing, because they have no item file to count: their rules are in the always-loaded `attributes.css` (building-blocks row 6; row 1 says the same of `box`'s any-element markers; ADR 0045 names "each item directive") (open: see ticket).
+Neither input name is an HTML attribute, so building-blocks 1.4's presentational-attribute kinds do not apply. `YetiShow` and `YetiHide` set no presence attribute and acquire nothing, because they have no item file to count: their rules are in the always-loaded `attributes.css` (building-blocks row 6; row 1 says the same of `box`'s any-element markers; ADR 0045 applies to item root directives only; [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 7).
 
 **Module replaced:** none. Yeti's `container` has no Module ([ADR 0040](../adr/0040-package-replaces-yetis-optional-modules.md); Part 2 row 6, "Yeti module: none").
 
@@ -150,7 +150,7 @@ Generated ids and the platform's relationship attributes: none. Nothing here ren
 
 | Member | `YetiShow` | `YetiHide` |
 | --- | --- | --- |
-| Class | `YetiShow` (open: see ticket); not among the 46 names of `yeti.d.ts` (checked) | `YetiHide` (open: see ticket); not among them (checked) |
+| Class | `YetiShow` ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 11); not among the 46 names of `yeti.d.ts` (checked) | `YetiHide` ([ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 11); not among them (checked) |
 | Selector | `[yetiShow]` | `[yetiHide]` |
 | `exportAs` | `yetiShow` | `yetiHide` |
 | Input | `yetiShow = input.required<YetiWidth>()` | `yetiHide = input.required<YetiWidth>()` |
@@ -355,11 +355,11 @@ Prior art: Yeti's `example.html` and the docs pairs in `docs.md` and `visibility
 | Each marker is its own directive with a selector-named, required `YetiWidth` input, binding no class | ticket 26 rows 25 and 26; ADR 0070 G; the user's "Selector name (Recommended)" (map, Standing rulings) |
 | Types are Yeti's `YetiWidth`, from the generated types module | ADR 0005; ADR 0060 point 10; ADR 0080 point 5 |
 | `exportAs` on all three; class names with no collision | building-blocks 1.3; ADR 0080 point 4 |
-| Class names `YetiShow` and `YetiHide` | this spec's reading of building-blocks 1.3 (open: see ticket) |
+| Class names `YetiShow` and `YetiHide` | building-blocks 1.3; [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 11 |
 | Entry point `ngx-yeti/container` for all three | building-blocks 1.3; ADR 0011 clause 10; ticket 11 question 9 |
 | Native platform, level 1, types only | building-blocks 1.2; Part 2 row 6 |
 | Item file as a counted link; presence attribute `data-ngx-yeti-item-container` | ADR 0060 points 2 to 6; ADR 0045 |
-| The markers load no file and set no presence attribute | building-blocks Part 2 rows 1 and 6; ADR 0045 (open: see ticket) |
+| The markers load no file and set no presence attribute | building-blocks Part 2 rows 1 and 6; ADR 0045; [ticket 50](../issues/50-decide-open-points-of-the-specs.md) decision 7 |
 | No viewport reads; tests resize the container | building-blocks 1.7; architecture guide P28 |
 | Directive tests through `TestBed.createDirective` | map, Standing rulings, Directive testing; ADR 0014 note |
 | Fixture app `outputMode: 'server'` with prerendered and server routes | ticket 50 decision 2 |
