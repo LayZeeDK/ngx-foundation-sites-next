@@ -8,6 +8,8 @@ Created: 2026-10-01
 
 One published spec (via `/to-spec`) for each Yeti component, layout, recipe, and utility family that the spec-list decision keeps, plus a building-blocks map and a ledger (`ledger.md`) of every standards, accessibility, and Angular Aria, CDK, or Material feature the package adds that Yeti itself lacks. Each spec describes the Angular directives (preferred) or component of a new Angular package that wraps Yeti, Foundation's version 7 (`yeti-css`). The building-blocks map records which Angular, CDK, Aria, or native platform primitive each one is built on. [Decide: the spec list](issues/11-decide-spec-list.md) keeps 53: one spec per item of Yeti's manifest (49), named as Yeti names it, and 4 shared-utility specs (navigation-close, fragment-links, events, generated-ids). The user added a fifth shared spec, `setup`, on 2026-10-02, so the destination is 54 specs. The map is done when all specs exist under `specs/`, every carried-over requirement, ADR, decision, and principle from `.scratch/next-foundation-specs/` has been triaged and recorded here, and the consistency review has passed.
 
+**Status (2026-10-03): destination reached.** All 54 specs exist under `specs/`, written with `/to-spec` and indexed in [README.md](README.md). All 93 tickets are resolved. Every record from `.scratch/next-foundation-specs/` was triaged by tickets 05 to 09, and [audit 0004](audits/0004-final-consistency-review.md), the final consistency review, has every finding resolved (34 fixed, 1 not applied with its reason). The decisions taken in the user's full-AFK mode are the orchestrator's, recorded in [Decide: the open points of the specs](issues/50-decide-open-points-of-the-specs.md) and [ticket 93](issues/93-decide-testing-at-the-browser-floor.md). Each trap-quadrant decision there records its options and how an implementer can overrule it.
+
 ## Notes
 
 ### Domain
@@ -262,7 +264,7 @@ Subagents edit only their own ticket and the output files it names. Only the orc
 
 ## Not yet specified
 
-- The final consistency review is audit 0004.
+Nothing. The spec waves graduated into tickets 38 to 92, the floor-browser question into [Decide: the browser provider and the floor engines for testing](issues/93-decide-testing-at-the-browser-floor.md), and the consistency review is [audit 0004](audits/0004-final-consistency-review.md), whose findings are all resolved.
 
 ## Out of scope
 
