@@ -4,7 +4,7 @@ Ticket: [Spec: Navigation close (shared spec)](../issues/42-spec-navigation-clos
 
 Targets: Angular 22.2, Nx 23.2, Storybook 10.6 with `@storybook/angular-vite`, Vitest 4.1.x, TypeScript 6.0.x, and Yeti `f52d1e8b9` (`f52d1e8b93de5bbde322480ba77d5be26c49b0ef`, develop, 2026-09-25). Accessibility target: WCAG 2.2 AA. Browser target: Chrome and Edge 141, Firefox 145, Safari and Safari iOS 26.2 ([ADR 0002](../adr/0002-browser-target-baseline-2025.md)).
 
-Points marked "(open: see ticket)" are this spec's best reading of something no record settles; each is listed under `### Open` in the ticket with a recommendation.
+The points no record settled were decided on 2026-10-03 by the orchestrator in full AFK mode, in [ticket 50](../issues/50-decide-open-points-of-the-specs.md); each is marked "(decided in ticket 50)" and listed under `### Open` in this spec's ticket.
 
 ## Problem Statement
 
@@ -22,7 +22,7 @@ The package ships one injection-context function in its `ngx-yeti/navigation-clo
 
 While the panel is open, the function listens for the Router's `NavigationStart` and calls `close()` on the first one. It stops listening when the panel closes and when the directive is destroyed. While nothing is open, nothing listens. With no `Router` in the injector, the function does nothing, and `@angular/router` is an optional peer dependency. There is no service and no registry: each open panel already knows it is open from the `toggle` or `close` event it observes (ADR 0041 point 3).
 
-Focus goes back to the opener through the item's own close path, not through this function (ADR 0041 point 4). The application's initial navigation (the one the Router starts at bootstrap, with its redirects) never closes a panel: the function ignores every `NavigationStart` that arrives before the Router has completed its first navigation (open: see ticket, item 1). That is the spec's reading of ADR 0041's note, "measures it and ignores the initial navigation if so", and the measurement that confirms it is listed in the ticket.
+Focus goes back to the opener through the item's own close path, not through this function (ADR 0041 point 4). The application's initial navigation (the one the Router starts at bootstrap, with its redirects) never closes a panel: the function ignores every `NavigationStart` that arrives before the Router has completed its first navigation (decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md)). That is the spec's reading of ADR 0041's note, "measures it and ignores the initial navigation if so", and the measurement that confirms it is listed in the ticket.
 
 ## User Stories
 
@@ -37,11 +37,11 @@ Focus goes back to the opener through the item's own close path, not through thi
 9. As a keyboard user, I want focus back on the dropdown or nav opener after a navigation closes its panel, so that my place on the page is kept (ADR 0041 point 4; the dropdown and nav specs measure it).
 10. As a screen-reader user, I want the page outside a modal dialog to stop being inert once I navigate away from it, so that I can reach the new route's content.
 11. As a pointer user, I want the new route's first paint to be visible, not covered, so that the page I asked for is the one I see (ADR 0041, rejected `NavigationEnd` option).
-12. As a user who opened a shell dialog before the application finished loading, I want it to stay open when the application starts, so that my action is not undone by start-up (ADR 0041 note; open: see ticket, item 1).
+12. As a user who opened a shell dialog before the application finished loading, I want it to stay open when the application starts, so that my action is not undone by start-up (ADR 0041 note; decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md)).
 13. As a user who opened a shell dropdown before hydration, I want it to stay open when the application hydrates, so that the open state I set survives (the map's open-state ruling).
 14. As a user who presses Back or Forward while a shell panel is open, I want the panel to close, so that history navigation behaves like a link (inferred: a `popstate` navigation emits `NavigationStart` with the `popstate` trigger, `packages/router/src/events.ts:91`, read at `5db6fc4453`).
 15. As a user who follows a fragment link inside a panel that the Router handles, I want the panel to close like any other navigation, so that the target is not hidden behind it.
-16. As a consumer whose initial route redirects, I want the redirect chain not to close a panel the user opened before hydration, so that redirects count as start-up (open: see ticket, item 1).
+16. As a consumer whose initial route redirects, I want the redirect chain not to close a panel the user opened before hydration, so that redirects count as start-up (decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md)).
 17. As a consumer, I want a panel inside a routed component to need nothing, so that the route's removal closes it as the platform already does (ticket 20, measured).
 18. As a consumer navigating by `Location.go()` or a full page load, I want the docs to tell me this function does not see those, so that I am not surprised (ADR 0041, Consequences).
 19. As a consumer, I want a panel opened by my own code (`showModal()`, `showPopover()`) to close on navigation too, so that every open path is covered (ADR 0041, Consequences: the state still arrives through `toggle` or `close`).
@@ -81,13 +81,13 @@ This spec maps no Yeti class, attribute, marker, Event, or Token. Its contract i
 
 | Name | Kind | Type | Record |
 | --- | --- | --- | --- |
-| `injectCloseOnNavigation` | injection-context function, entry point `ngx-yeti/navigation-close` | takes `isOpen` and `close`, returns nothing (open: see ticket, item 3) | ADR 0041 point 1; building-blocks row 50 |
+| `injectCloseOnNavigation` | injection-context function, entry point `ngx-yeti/navigation-close` | takes `isOpen` and `close`, returns nothing (decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md)) | ADR 0041 point 1; building-blocks row 50 |
 | `isOpen` | argument | `Signal<boolean>`: the item's open state, read once from the element at creation and then following `toggle` or `close` (the map's open-state ruling) | ADR 0041 point 1 |
 | `close` | argument | a function of no arguments returning nothing: the item's own close path (`dialog.close()`, `hidePopover()`) | ADR 0041 points 1 and 4 |
 | `Router` | injected, `{optional: true}` | `@angular/router` `Router`; absent means the function does nothing | ADR 0041 point 2 |
 | `DestroyRef` | injected | removes the subscription on destroy | ADR 0041 point 1; building-blocks 1.9 |
 | Injection tokens | none | the function provides and reads no Injection token | ADR 0041 point 3 |
-| Defaults token | none | no option exists to default (open: see ticket, item 4) | building-blocks 1.4 |
+| Defaults token | none | no option exists to default (decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md)) | building-blocks 1.4 |
 
 ### Module replaced
 
@@ -105,11 +105,11 @@ None: Yeti has no module for this ([ADR 0040](../adr/0040-package-replaces-yetis
 `injectCloseOnNavigation(isOpen, close)`:
 
 1. If no `Router` is injected, return at once; nothing is subscribed (ADR 0041 point 2).
-2. Follow `isOpen()`. While it is true, subscribe to `Router.events` filtered to `NavigationStart`; when it turns false, unsubscribe (ADR 0041 point 1). The follower is an `effect` created in the caller's injection context whose cleanup unsubscribes (open: see ticket, item 2). The effect body only subscribes and unsubscribes; it writes no DOM and copies no signal (building-blocks 1.5). `close()` runs in the subscription's callback, never in the effect body.
+2. Follow `isOpen()`. While it is true, subscribe to `Router.events` filtered to `NavigationStart`; when it turns false, unsubscribe (ADR 0041 point 1). The follower is an `effect` created in the caller's injection context whose cleanup unsubscribes (decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md)). The effect body only subscribes and unsubscribes; it writes no DOM and copies no signal (building-blocks 1.5). `close()` runs in the subscription's callback, never in the effect body.
 3. On the first `NavigationStart` that the function does not ignore, call `close()` once and stop listening; listen again only after `isOpen()` has turned false and then true. This is ADR 0041 point 1's "calls `close()` on the first one", read so that a redirect's second `NavigationStart`, arriving before the item's asynchronous `toggle` or `close` event has turned `isOpen()` false, does not call `close()` a second time.
-4. Ignore every `NavigationStart` that arrives while `Router.navigated` is false (`packages/router/src/router.ts:136`, public: "True if at least one navigation event has occurred"; set on `NavigationEnd`, and on a `NavigationCancel` that is neither a redirect nor superseded, `router.ts:195-211`; read at `5db6fc4453`). This is the application's initial navigation and every redirect in it (open: see ticket, item 1).
+4. Ignore every `NavigationStart` that arrives while `Router.navigated` is false (`packages/router/src/router.ts:136`, public: "True if at least one navigation event has occurred"; set on `NavigationEnd`, and on a `NavigationCancel` that is neither a redirect nor superseded, `router.ts:195-211`; read at `5db6fc4453`). This is the application's initial navigation and every redirect in it (decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md)).
 5. On `DestroyRef.onDestroy`, unsubscribe (ADR 0041 point 1; building-blocks 1.9). The effect's own cleanup covers it; the record names `DestroyRef` and the function honours it.
-6. No options, no return value, no `exportAs` (the function is not a directive), no outputs. A consumer opt-out, as Material's `closeOnNavigation: false`, is not part of this function (open: see ticket, item 4).
+6. No options, no return value, no `exportAs` (the function is not a directive), no outputs. A consumer opt-out, as Material's `closeOnNavigation: false`, is not part of this function (decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md)).
 
 What each consuming item passes (building-blocks rows 31, 32, 34):
 
@@ -123,7 +123,7 @@ What each consuming item passes (building-blocks rows 31, 32, 34):
 
 | Aspect | CDK and Material Dialog | ngx-yeti navigation-close |
 | --- | --- | --- |
-| Name and default | `closeOnNavigation`, default `true` (`src/cdk/dialog/dialog-config.ts:148`, read at `708d4c6e2`) | always on for `dialog`, `dropdown`, `nav`; no option (open: see ticket, item 4) |
+| Name and default | `closeOnNavigation`, default `true` (`src/cdk/dialog/dialog-config.ts:148`, read at `708d4c6e2`) | always on for `dialog`, `dropdown`, `nav`; no option (decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md)) |
 | What counts as navigation | `Location.subscribe`, through the overlay's `disposeOnNavigation` (`dialog.ts:221`; `src/cdk/overlay/overlay-ref.ts:193-194`): history `popstate` only; the config's own comment says it "does not apply to navigation via anchor element unless using URL-hash based routing" | every Router `NavigationStart`: `routerLink`, `router.navigate`, and history navigation through the Router |
 | What it closes | the CDK overlay | the consumer's own native `dialog` or `popover` element, through the item's close path |
 | Focus | CDK's focus restoration | the item's own path (ADR 0041 point 4) |
@@ -144,7 +144,7 @@ The function sets no role, state, or key. What it changes for assistive technolo
 
 Criteria it touches: WCAG 2.2 2.4.3 Focus Order (ledger A11Y-15's source). The panels left open in ticket 20 also bear on 2.4.11 Focus Not Obscured (Minimum), the reason ADR 0016 gives for closing panels that cover the next focused control, and on 2.1.1 Keyboard while a dialog keeps the page inert (both inferred; the ledger row cites only 2.4.3).
 
-Ledger rows: A11Y-15 (owned by this spec). This spec confirms the row as written; it recommends one update to its "Tested by" column (open: see ticket, item 5).
+Ledger rows: A11Y-15 (owned by this spec). This spec confirms the row; its "Tested by" column reads L1 to L4, with a note that CDK's `closeOnNavigation` reacts only to `popstate` (decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md)).
 
 ### Rendered HTML
 
@@ -163,7 +163,7 @@ None: a utility without styles. Nothing is loaded through `provideYetiStyles()` 
 Per [ADR 0011](../adr/0011-rendering-modes-contract-for-yeti.md) and building-blocks 1.11:
 
 - **Server output:** nothing. On the server the Router runs its initial navigation and never a second one, and point 4 of the API ignores the initial one, so `close()`, a DOM call, never runs during a server render (inferred from `provide_router.ts:274-287`, read). A panel the consumer ships open stays open in server HTML.
-- **Before hydration:** the platform opens panels (`commandfor` with `command`, `popovertarget`), and the function is not yet running. With the default `initialNavigation`, the Router starts the initial navigation in its bootstrap listener, after the root view hydrates (`provide_router.ts:274-287`), while each directive has already read its open state at creation (the open-state ruling). So, without point 4, the initial `NavigationStart` would close a dialog or popover the user opened before hydration (ticket 33 row 9; inferred). Point 4 ignores it (open: see ticket, item 1). With `withEnabledBlockingInitialNavigation()`, the initial navigation runs in an app initialiser, before any directive exists, so nothing can be subscribed when it starts (`provide_router.ts:400-425`, read; inferred).
+- **Before hydration:** the platform opens panels (`commandfor` with `command`, `popovertarget`), and the function is not yet running. With the default `initialNavigation`, the Router starts the initial navigation in its bootstrap listener, after the root view hydrates (`provide_router.ts:274-287`), while each directive has already read its open state at creation (the open-state ruling). So, without point 4, the initial `NavigationStart` would close a dialog or popover the user opened before hydration (ticket 33 row 9; inferred). Point 4 ignores it (decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md)). With `withEnabledBlockingInitialNavigation()`, the initial navigation runs in an app initialiser, before any directive exists, so nothing can be subscribed when it starts (`provide_router.ts:400-425`, read; inferred).
 - **Full hydration:** the item directives are created against the claimed DOM, read their open state, and the function starts listening if they are open; it ignores start-up navigation and closes on the user's first navigation after it.
 - **Incremental hydration:** a panel inside a `@defer (hydrate on ...)` block that has not hydrated has no directive, so navigation does not close it until the block hydrates. A `routerLink` clicked inside such a block hydrates it under `hydrate on interaction` and replays the click (building-blocks 1.11), so the directive exists before the replayed navigation starts and closes the panel (inferred). The item specs document that shell panels belong in hydrated regions.
 - **`hydrate never`:** the item directive is never created, so its panel never closes on navigation. The platform still opens and closes it. The item specs state this residue.
@@ -181,7 +181,7 @@ Compliant (map, Standing rulings, 2026-10-03; ticket 33 row 9 with its mitigatio
 - no direct DOM manipulation: it calls the item's `close`, after hydration, from a Router event; never during a render and never on the server (point 4);
 - valid HTML and a consistent `preserveWhitespaces`: no template;
 - no output branched on the platform: it has no platform check; the server simply never sees a navigation it does not ignore;
-- state set before hydration is not undone: the initial navigation is ignored, so a panel the user opened before hydration stays open (open: see ticket, item 1).
+- state set before hydration is not undone: the initial navigation is ignored, so a panel the user opened before hydration stays open (decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md)).
 
 ### Single-page application
 
@@ -193,7 +193,7 @@ A good test checks behaviour a consumer sees: whether the panel is open, where f
 
 ### 1. Story play functions
 
-Story ids `navigation-close--shell-dialog` and `navigation-close--shell-dropdown`: a shell with a `dialog` and a `dropdown`, each holding a `routerLink`, rendered with the item directives, under `provideRouter` with `provideLocationMocks()` so the Storybook iframe's own URL does not change (open: see ticket, item 6). Play: open the panel, click the link, assert the panel is closed (`dialog` without `open`, the panel not `:popover-open`), assert focus is on the opener, assert the route outlet shows the new route; axe through the Story gate with the six tags. A third story, `navigation-close--no-router`, renders the same shell with no Router and asserts that clicking a plain link in an open panel leaves it to the platform.
+Story ids `navigation-close--shell-dialog` and `navigation-close--shell-dropdown`: a shell with a `dialog` and a `dropdown`, each holding a `routerLink`, rendered with the item directives, under `provideRouter` with `provideLocationMocks()` so the Storybook iframe's own URL does not change (decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md)). Play: open the panel, click the link, assert the panel is closed (`dialog` without `open`, the panel not `:popover-open`), assert focus is on the opener, assert the route outlet shows the new route; axe through the Story gate with the six tags. A third story, `navigation-close--no-router`, renders the same shell with no Router and asserts that clicking a plain link in an open panel leaves it to the platform.
 
 ### 2. Browser-level tests
 
@@ -207,7 +207,7 @@ A test-only directive that calls `injectCloseOnNavigation(isOpen, close)` with a
 - no Router provided: creation does not throw, and nothing is called;
 - open at creation, then `router.initialNavigation()`: `close` is not called during the initial navigation or its redirect; after its `NavigationEnd`, the next navigation calls it (point 4);
 - history navigation (`Location.back()` through the mocks) while open: `close` is called (inferred from the Router source; this case measures it);
-- an initial navigation that errors, then a user navigation: records whether `close` is called (open: see ticket, item 1).
+- an initial navigation that errors, then a user navigation: records whether `close` is called (decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md)).
 
 ### 3. Node-level tests
 
@@ -251,10 +251,10 @@ The Contract check has nothing to cover: this spec maps no Yeti name.
 | Used by `dialog`, `dropdown`, `nav`, and through them `shell`; any later top-layer panel too | ADR 0041 point 5; building-blocks rows 20, 31, 32, 34 |
 | `NavigationStart`, not `NavigationEnd` | ADR 0041, considered options |
 | Open state read once at creation, never bound | the map's open-state ruling (2026-10-03); ADR 0021 note |
-| Initial navigation ignored through `Router.navigated` | ADR 0041 2026-10-03 note; ticket 33 row 9 (open: see ticket, item 1) |
+| Initial navigation ignored through `Router.navigated` | ADR 0041 2026-10-03 note; ticket 33 row 9 (decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md)) |
 | `close()` once per open | ADR 0041 point 1, "on the first one" |
-| An `effect` follows `isOpen` | open: see ticket, item 2 |
-| No return value, no options | open: see ticket, items 3 and 4 |
+| An `effect` follows `isOpen` | decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md)|
+| No return value, no options | decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md)|
 | Ledger row A11Y-15 | standing ruling 36; ADR 0041, Consequences |
 
 ### Usage examples

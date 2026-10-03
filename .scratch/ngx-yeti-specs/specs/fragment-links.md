@@ -4,7 +4,7 @@ Ticket: [Spec: Fragment links (shared spec)](../issues/41-spec-fragment-links.md
 
 Targets: Angular 22.2, Nx 23.2, Storybook 10.6 with `@storybook/angular-vite`, Vitest 4.1.x, TypeScript 6.0.x, and Yeti `f52d1e8b9` (`f52d1e8b93de5bbde322480ba77d5be26c49b0ef`, `develop`, 2026-09-25). Browser target: Chrome and Edge 141, Firefox 145, Safari and Safari iOS 26.2 ([ADR 0002](../adr/0002-browser-target-baseline-2025.md)). Accessibility target: WCAG 2.2 AA.
 
-Deciding records: [ADR 0023](../adr/0023-fragment-links-are-same-document-links.md); [building-blocks.md](../building-blocks.md) 1.15 and Part 2 rows 29 (`carousel`), 40 (`tabs`), 41 (`toc`), 21 (`accordion`), and 51 (this spec); the map's Standing rulings on deployment URLs (only `baseHref`), hydration constraints, JavaScript off, zoneless, open state, and directive testing ([map.md](../map.md)); [Prototype: Yeti's modules in a single-page Angular app](../issues/20-prototype-yeti-in-single-page-apps.md); ledger row A11Y-16 ([ledger.md](../ledger.md)). Points no record settles are marked "(open: see ticket)" and listed under the ticket's `### Open`.
+Deciding records: [ADR 0023](../adr/0023-fragment-links-are-same-document-links.md); [building-blocks.md](../building-blocks.md) 1.15 and Part 2 rows 29 (`carousel`), 40 (`tabs`), 41 (`toc`), 21 (`accordion`), and 51 (this spec); the map's Standing rulings on deployment URLs (only `baseHref`), hydration constraints, JavaScript off, zoneless, open state, and directive testing ([map.md](../map.md)); [Prototype: Yeti's modules in a single-page Angular app](../issues/20-prototype-yeti-in-single-page-apps.md); ledger row A11Y-16 ([ledger.md](../ledger.md)). The points no record settled were decided on 2026-10-03 by the orchestrator in full AFK mode, in [ticket 50](../issues/50-decide-open-points-of-the-specs.md); each is marked "(decided in ticket 50)" and listed under `### Open` in this spec's ticket.
 
 ## Problem Statement
 
@@ -98,7 +98,7 @@ Module replaced: none in full. The dot interception of `carousel.js` is kept by 
 - **Who injects it**: the toc root, the carousel dot, and the tabs root directives inject it eagerly ([building-blocks.md](../building-blocks.md) row 51). Eager, not `injectAsync`: 1.9 leaves that choice to the owning spec, and the listener must be in place before the first click after the application is live, which a lazily loaded service cannot promise.
 - **`provideYetiFragmentLinks()`**: returns environment providers that create the service at application start, for a page with no toc, carousel, or tabs. It takes no options: there is nothing to configure (no offset, ADR 0023 point 3; no defaults token, 1.4). Its place in the consumer's setup is the `setup` spec's ([building-blocks.md](../building-blocks.md) Part 3).
 - **`injectSameDocumentHref(fragment)`**: an injection-context function, called by a part directive at construction. It injects Angular's `Location` (provided in root, so no Router is needed) and returns a signal of the same-document `href`. It subscribes to `Location.onUrlChange` (`NGP/common/src/location/location.ts:232`, read by ticket 25) and removes that subscription on `DestroyRef`.
-- **Router**: optional. Nothing in this spec injects `Router` or `ActivatedRoute`; `Location` already sees Router navigations and `popstate` (open: see ticket, point 3).
+- **Router**: optional. Nothing in this spec injects `Router` or `ActivatedRoute`; `Location` already sees Router navigations and `popstate` (decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md)).
 - **Generated ids**: none. A fragment target is addressed from outside the application, so its `id` is consumer-supplied ([building-blocks.md](../building-blocks.md) 1.5 and 1.11 decision 8; ADR 0011 clause 8).
 
 ### 4. API
@@ -111,7 +111,7 @@ Entry point `ngx-yeti/fragment-links`. It exports three names and no import arra
 - Returns: a read-only signal of the `href`. Its value is `Location.prepareExternalUrl(Location.path())` followed by `#` and the fragment. `Location.path()` is the current path *with its query string*, and `prepareExternalUrl` adds the application's base href. Both are needed for the link to be same-document: two URLs that differ in path or query are different documents (ADR 0023, carried from old ADR 0038's rule).
 - Recomputes on every `Location.onUrlChange` callback (Router navigations, `popstate`, `Location.go` and `replaceState`). The callback writes a signal, so the host binding refreshes under zoneless change detection ([building-blocks.md](../building-blocks.md) 1.5).
 - On the server, `Location` reads the request URL (SSR) or the prerendered route (prerendering), so the server HTML holds the right `href` without a browser.
-- The owning part binds it as `[attr.href]` in `host`. Where the fragment comes from is the owning spec's, under this spec's usage rule 2 (open: see ticket, point 1).
+- The owning part binds it as `[attr.href]` in `host`. Where the fragment comes from is the owning spec's, under this spec's usage rule 2 (decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md)).
 
 **`YetiFragmentLinks`** (root `@Service()`; no public members)
 
@@ -129,10 +129,10 @@ When they hold, the listener sets `location.hash` to the raw fragment and then c
 **Usage rules**
 
 1. Every fragment target carries a consumer-supplied `id` ([building-blocks.md](../building-blocks.md) 1.5).
-2. On a link a package directive sits on, the consumer writes Yeti's `href="#id"`, and the directive renders the same-document `href` from it ([ADR 0023](../adr/0023-fragment-links-are-same-document-links.md) Consequences; open: see ticket, point 1).
+2. On a link a package directive sits on, the consumer writes Yeti's `href="#id"`, and the directive renders the same-document `href` from it ([ADR 0023](../adr/0023-fragment-links-are-same-document-links.md) Consequences; decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md)).
 3. A consumer's own bare link works only once the application is live. Where it must work before hydration or with JavaScript off, the consumer writes the current path into the `href` (ADR 0023 point 2), or binds it from `injectSameDocumentHref` in a directive of their own. `routerLink` with `fragment` does not reload either, but it fires no `hashchange` (ticket 20, R3b), so a tab holding the target is not revealed.
 4. Sticky headers are offset with `scroll-margin-top` on targets or `scroll-padding-top` on the scrolling element.
-5. The application uses Angular's default path location strategy. `HashLocationStrategy` puts the route in the fragment, and no fragment link can work beside it (open: see ticket, point 4).
+5. The application uses Angular's default path location strategy. `HashLocationStrategy` puts the route in the fragment, and no fragment link can work beside it (decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md)).
 6. Only `baseHref` is supported; `deployUrl` is not (map, Standing rulings).
 
 ### 5. Material comparison
@@ -178,18 +178,18 @@ None. Smooth scrolling is Yeti's `scroll-behavior` rule under its reduced-motion
 | JavaScript off (SSR and prerendered) | in-page; the fragment scrolls natively and opens a closed `details` that holds it | **lost**: reloads to the base URL plus the fragment (ADR 0023 point 2) |
 | Before hydration | in-page natively | **lost**: reloads |
 | Full hydration | same value on both ends, so hydration rewrites nothing | listener starts in the first `afterNextRender` |
-| Incremental hydration, block not yet hydrated | server `href`, in-page natively | handled once the root has rendered: a plain link carries no `jsaction`, so the document listener sees the click (open: see ticket, point 2) |
-| `hydrate never` | server `href`; never updated, so it goes stale only if the Router reuses the route's component for another path (stated residue) | as the row above (open: see ticket, point 2) |
+| Incremental hydration, block not yet hydrated | server `href`, in-page natively | handled once the root has rendered: a plain link carries no `jsaction`, so the document listener sees the click (decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md)) |
+| `hydrate never` | server `href`; never updated, so it goes stale only if the Router reuses the route's component for another path (stated residue) | as the row above (decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md)) |
 | Client `@defer`, `@if`, routed views | `href` computed at creation from the current URL | handled |
 | Event replay | nothing to replay: package links have no `click` listener from this spec, so ADR 0011 clause 3 cannot cancel them | not replayed (a `document` listener; 1.11), which is correct: before hydration the link has already navigated |
 | `withI18nSupport()` | no strings, no effect | no effect |
 | Zoneless | `href` is a signal written from `onUrlChange` | the listener writes no view state |
 
-Hydration constraints (map, Standing rulings, item 54): the server and client DOM are equal, because the `href` is computed from the same URL on both ends; there is no DOM manipulation outside a host binding, apart from the listener's `location.hash` write after hydration, which is navigation, not DOM; there is no platform branch in any template; and the HTML is valid. One point needs a ruling: the static `href="#id"` the consumer writes on a link whose `href` the directive binds (open: see ticket, point 1).
+Hydration constraints (map, Standing rulings, item 54): the server and client DOM are equal, because the `href` is computed from the same URL on both ends; there is no DOM manipulation outside a host binding, apart from the listener's `location.hash` write after hydration, which is navigation, not DOM; there is no platform branch in any template; and the HTML is valid. The consumer's static `href="#id"` is the one documented case of a consumer's static attribute that a directive reads: the directive reads it once through `HostAttributeToken('href')` (ADR 0023's 2026-10-03 note; decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md)).
 
 ### 11. Single-page application
 
-- **Navigation**: setting `location.hash` fires `popstate` and `hashchange`, and Angular's `Location` hands the `popstate` to the Router, which is expected to run a fragment-only navigation. That navigation's `NavigationStart` would close open panels through navigation-close ([ADR 0041](../adr/0041-closing-on-navigation-is-a-per-instance-subscription.md)). This is inferred, not measured (open: see ticket, point 5). Whether `scrollPositionRestoration` or `anchorScrolling` then fights the jump is measured by layer 4 (ADR 0023 point 4).
+- **Navigation**: setting `location.hash` fires `popstate` and `hashchange`, and Angular's `Location` hands the `popstate` to the Router, which is expected to run a fragment-only navigation. That navigation's `NavigationStart` would close open panels through navigation-close ([ADR 0041](../adr/0041-closing-on-navigation-is-a-per-instance-subscription.md)). This is inferred; layer 4 measures it (case 8), and the closing is accepted as ADR 0041 reads (decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md)). Whether `scrollPositionRestoration` or `anchorScrolling` then fights the jump is measured by layer 4 (ADR 0023 point 4).
 - **Fragment targets that need revealing**:
   - `tabs`: the tabs root reveals the tab whose panel holds the target after hydration and on `hashchange`, nesting outward ([building-blocks.md](../building-blocks.md) row 40). This spec's part is that every in-page link fires `hashchange`: package links natively, and bare links through the listener. With JavaScript off every panel shows (map, Standing rulings, "All panels show"), so the native fragment scroll finds the target.
   - `details` (`accordion`): the browser opens a closed `details` that holds the fragment's target. Measured for a loaded page in Chromium, Firefox, and WebKit; on a cold load before hydration Chromium and WebKit hold it back until the deferred `main.js` has run ([prototypes/aria-composition-accordion/README.md](../prototypes/aria-composition-accordion/README.md), section C.3). Under the open-state ruling no directive binds `open`; the accordion item reads it once and follows `toggle` (map, Standing rulings, "Never bind; read once (Recommended)"), so a fragment reveal is never undone. This spec adds nothing for it.
@@ -228,9 +228,9 @@ Fixture application half, prerendered and served under `<base href="/sub/">`, on
 3. Consumer skip link before hydration and with JavaScript disabled: reloads to `/sub/#main`. This is asserted as the documented residue, so a change in it is noticed.
 4. Ctrl-click and middle click on both kinds open a new page at the right URL and leave the first page unchanged.
 5. Route reuse: a `routerLink` to the same component with another parameter updates the package-owned `href`.
-6. A bare link inside a `@defer (hydrate on interaction)` block before it hydrates, and inside a `hydrate never` block, after the root is live (open: see ticket, point 2).
+6. A bare link inside a `@defer (hydrate on interaction)` block before it hydrates, and inside a `hydrate never` block, after the root is live (decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md)).
 7. The Router with `scrollPositionRestoration: 'enabled'` and `anchorScrolling: 'enabled'`: after an intercepted jump, the scroll position is the target's (minus `scroll-margin-top`), and Back returns to the previous position (ADR 0023 point 4).
-8. With an open shell dropdown holding a fragment link: whether the jump closes it, recorded (open: see ticket, point 5).
+8. With an open shell dropdown holding a fragment link: whether the jump closes it, recorded (decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md)).
 9. A deep link into a non-selected tab panel and into a closed `details`: after the jump, the panel is shown and the `details` is open. This is the shared half of the tabs and accordion specs' own tests.
 10. `emulateMedia({reducedMotion: 'reduce'})`: the jump completes in one frame.
 11. Hydration without NG05xx and `componentsSkippedHydration === 0` on the route.
@@ -240,7 +240,7 @@ The manifest attribute-and-value check covers nothing here: this spec renders no
 ## Out of Scope
 
 - `deployUrl` and `--deploy-url` (map, Standing rulings).
-- `HashLocationStrategy` (open: see ticket, point 4).
+- `HashLocationStrategy` (decided in [ticket 50](../issues/50-decide-open-points-of-the-specs.md)).
 - Fragments inside a consumer's Shadow DOM: `getElementById` cannot reach them natively either, and the package never uses Shadow DOM ([ADR 0011](../adr/0011-rendering-modes-contract-for-yeti.md) clause 11).
 - Links whose `href` is a path or a full URL with a fragment (`/sub/other#x`, cross-route deep links). They are ordinary navigations, and the Router's `anchorScrolling` is the consumer's choice for them.
 - An offset input, a smooth-scroll input, or a scroll service (ADR 0023 point 3).

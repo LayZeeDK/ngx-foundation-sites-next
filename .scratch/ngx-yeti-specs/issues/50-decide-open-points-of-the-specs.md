@@ -1,7 +1,7 @@
 # 50. Decide: the open points of the specs
 
 Type: grilling
-Status: claimed
+Status: resolved
 Blocked by: none
 Labels: wayfinder:grilling
 Map: ../map.md
@@ -30,3 +30,14 @@ Decided by the orchestrator under full AFK mode.
    - renaming the toc's model away from `current`;
    - the `ngx-yeti/events` type-only entry point;
    - the guide's fix: the directive whose host renders an `id` generates it.
+
+## Answer
+
+2026-10-03: the decisions for the shared specs (tickets 39 to 42) are applied. Files changed:
+
+- [ADR 0044](../adr/0044-generated-ids-count-per-application-and-are-adopted-at-hydration.md), [ADR 0014](../adr/0014-testing-stack-for-yeti.md), [ADR 0023](../adr/0023-fragment-links-are-same-document-links.md): a dated note each (decisions 1, 2, 4).
+- [building-blocks.md](../building-blocks.md) Part 2 row 31: `opened` and `closed` fire after the transition (decision 3).
+- [architecture-guide.md](../architecture-guide.md): the nav example; the directive whose host renders an `id` calls `injectYetiId`.
+- [specs/generated-ids.md](../specs/generated-ids.md), [specs/events.md](../specs/events.md), [specs/fragment-links.md](../specs/fragment-links.md), [specs/navigation-close.md](../specs/navigation-close.md): every "(open: see ticket)" mark replaced by the decision.
+- Tickets [39](39-spec-generated-ids.md), [40](40-spec-events.md), [41](41-spec-fragment-links.md), [42](42-spec-navigation-close.md): each open point marked decided.
+- [ledger.md](../ledger.md) row A11Y-15: "Tested by" is L1 to L4, with the note that CDK's `closeOnNavigation` reacts only to `popstate`.
