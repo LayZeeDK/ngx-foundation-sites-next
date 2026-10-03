@@ -103,6 +103,7 @@ The user chose to carry over, as they are:
   - `nav` and `dropdown`: "Custom disclosure nav (Recommended)".
 
   [building-blocks.md](building-blocks.md) section "Aria decisions (2026-10-03)" records how each row changes.
+- Directive testing (2026-10-03): the user wrote, verbatim: "58. Specs should assume that the ngx-yeti repo is using Angular 22.2 with Angular's new [directive testing API](https://github.com/angular/angular/pull/70453)." That API is `TestBed.createDirective(type, { tagName?, bindings? })`, which returns a `DirectiveFixture`. It was merged on 2026-09-01 and is in 22.2.0 (read, `packages/core/testing/src/test_bed.ts:95-100`, `:441`, `:732`). Each spec's directive-level tests use it ([ADR 0014](adr/0014-testing-stack-for-yeti.md)).
 - Temporary files: the user's temporary replies file in the repository root is never referenced, read as evidence, staged, or committed (the user's item 30; its words are not in this bundle, and this sentence is the orchestrator's summary). Every brief says so.
 - Forced-colours gap: about Yeti's missing `forced-colors` support, the user wrote, verbatim: "Track in accessibility ledger." (first recorded in [ledger.md](ledger.md); copied here 2026-10-03, audit 0003 L6). The gap is a ledger row; the CSS that closes it is the Package CSS for accessibility ruling above.
 
