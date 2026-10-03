@@ -344,9 +344,9 @@ _Avoid_: Pre-hydration input (the old, narrower term), static attribute (for thi
 _Origin_: old glossary's Pre-hydration input, adapted (ADR 0003 point 4; ticket 18)
 
 **Hydration boundary**:
-The unit a widget and the parts its ids link must share: the whole page under full hydration, or one `@defer (hydrate on ...)` block.
+The unit that hydrates in one pass: the whole page under full hydration, or one `@defer (hydrate on ...)` block. Since ADR 0044 generated ids are equal on the server and the client, so a widget and the parts its ids link no longer need to share one for their ids to match.
 _Avoid_: defer boundary, island, hydration zone
-_Origin_: old glossary, carried over (ADR 0011 clause 7)
+_Origin_: old glossary, carried over (ADR 0011 clause 7; its id reason retired by ADR 0044)
 
 **Replayed event**:
 A native user event fired before hydration that reaches a package handler late, once its Hydration boundary hydrates; no Event is ever replayed.

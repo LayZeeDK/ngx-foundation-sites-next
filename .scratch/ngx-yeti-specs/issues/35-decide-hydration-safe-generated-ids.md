@@ -37,7 +37,7 @@ Resolved 2026-10-03 by Claude Opus 5.5, AFK grilling under the map's AFK overrid
 **Decision.** `ngx-yeti/generated-ids` exposes `injectYetiId(item)` and `provideYetiAriaIds()`, and nothing else.
 - `injectYetiId(item)` returns, in order: the consumer's static `id`; the host's current `id` if it has the shape `ngx-yeti-<item>-<n>`, which means the server rendered it and hydration claimed it; or the next number of a per-application counter.
 - The counter is a root `@Service()`, so there is one per SSR request. Its final counts reach the client in one `TransferState` key, and the client's counter continues from them.
-- `provideYetiAriaIds()` goes in the providers of `yetiTab`, `yetiTabPanel`, and `yetiButton`. It provides `_IdGenerator` on that element, so Aria's `Tab`, `TabPanel`, and `ToolbarWidget` get the same counter and adoption, keep their own prefixes, and lose the random infix.
+- `provideYetiAriaIds()` goes in the providers of `yetiTab`, `yetiTabPanel`, and `yetiButtonsItem` (the orchestrator's correction following audit 0003; first written as `yetiButton`). It provides `_IdGenerator` on that element, so Aria's `Tab`, `TabPanel`, and `ToolbarWidget` get the same counter and adoption, keep their own prefixes, and lose the random infix.
 - The consumer writes nothing new.
 
 **Grilling record (both sides, AFK).**
