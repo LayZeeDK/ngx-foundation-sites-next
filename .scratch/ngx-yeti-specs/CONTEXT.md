@@ -220,7 +220,7 @@ _Avoid_: container component, controller, parent component
 _Origin_: this map (architecture guide); old P4
 
 **Angular component**:
-An Angular `@Component`, used only where a part needs structure the consumer should not hand-write (the `demo` item) or where a `styleUrl` is what makes lazy styles meet the requirements.
+An Angular `@Component`, used only where a part needs structure the consumer should not hand-write or where a `styleUrl` is what makes lazy styles meet the requirements. The package has two, both on attribute selectors: `figure[yetiDemo]`, the `demo` item, and `[yetiFieldError]`, the field's error slot, whose `ng-content` falls back to the rule's message ([ticket 50](issues/50-decide-open-points-of-the-specs.md) decisions 136 and 159).
 _Avoid_: component (bare, where a Component item could be meant), Wrapper component
 _Origin_: this map (ADR 0003 point 6; standing ruling 28; ticket 11)
 
@@ -312,7 +312,7 @@ _Origin_: old glossary, carried over
 ### Names
 
 **Angular-side name**:
-A name that lives in Angular's namespaces: a selector (`[yetiCard]`, `<yeti-demo>`), an `exportAs`, an Injection token, a provider function (`provideYeti()`), or an entry point (`ngx-yeti/card`); it takes `yeti`.
+A name that lives in Angular's namespaces: a selector (`[yetiCard]`, `figure[yetiDemo]`), an `exportAs`, an Injection token, a provider function (`provideYeti()`), or an entry point (`ngx-yeti/card`); it takes `yeti`.
 _Avoid_: nfs, pfx, yt, ngx-yeti (for these, except the package name in an entry point)
 _Origin_: this map (the user's Prefix ruling; ADR 0080)
 
